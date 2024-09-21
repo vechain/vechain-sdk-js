@@ -1,7 +1,10 @@
+import { Clause } from '../../clause';
 import { Coin } from './Coin';
-import { Txt } from '../Txt';
 import { FPN } from '../FPN';
+import { Txt } from '../Txt';
 import { Units } from './Units';
+import { type Address } from '../Address';
+import { type ClauseOptions } from '../../transaction';
 
 /**
  * Represents a
@@ -57,6 +60,14 @@ class VTHO extends Coin {
     ): VTHO {
         const fpn = value instanceof FPN ? value : FPN.of(value);
         return new VTHO(fpn.div(FPN.of(10n ** (VTHO.WEI_FD - BigInt(unit)))));
+    }
+
+    public transferTokenTo(
+        tokenAddress: Address,
+        to: Address,
+        clauseOptions?: ClauseOptions
+    ): Clause {
+        return Clause.transferToken(tokenAddress, to, this, clauseOptions);
     }
 }
 

@@ -1,10 +1,10 @@
+import { Clause } from '../../clause';
 import { Coin } from './Coin';
 import { FPN } from '../FPN';
 import { Txt } from '../Txt';
 import { Units } from './Units';
 import { type Address } from '../Address';
-import { Clause } from '../../clause';
-import type { ClauseOptions } from '../../transaction';
+import { type ClauseOptions } from '../../transaction';
 
 /**
  * Represents a

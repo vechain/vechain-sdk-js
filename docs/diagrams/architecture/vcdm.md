@@ -153,12 +153,13 @@ classDiagram
         +Txt CODE$
         +bigint wei
         +VET of(bigint|number|string|FPN value)$
-        +Cluase transferTo(Address: address, ClauseOptions?: clauseOptionsre)
+        +Clause transferTo(Address: address, ClauseOptions?: clauseOptionsre)
     }
     class VTHO {
         +Txt CODE$
         +bigint wei
         +VTHO of(bigint|number|string|FPN value)$
+        +Clause transferTokenTo(Address address, Address to, ClauseOptions? clauseOptions)
     }
     ABI <|-- ABIItem
     ABIItem <|-- ABIEvent

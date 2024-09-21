@@ -245,6 +245,36 @@ describe('Clause class tests', () => {
             );
             expect(actual).toEqual(expected);
         });
+
+        test('Throw error <- negative amount VTHO', () => {
+            expect(() => {
+                Clause.transferToken(
+                    ClauseFixture.token.address,
+                    ClauseFixture.to,
+                    VTHO.of(-100)
+                );
+            }).toThrow(InvalidDataType);
+        });
+
+        test('Throw <- infinite amount VTHO', () => {
+            expect(() => {
+                Clause.transferToken(
+                    ClauseFixture.token.address,
+                    ClauseFixture.to,
+                    VTHO.of(Infinity)
+                );
+            }).toThrow(InvalidDataType);
+        });
+
+        test('Throw <- NaN amount VTHO', () => {
+            expect(() => {
+                Clause.transferToken(
+                    ClauseFixture.token.address,
+                    ClauseFixture.to,
+                    VTHO.of(NaN)
+                );
+            }).toThrow(InvalidDataType);
+        });
     });
 
     describe('transferVET method tests', () => {
@@ -256,7 +286,7 @@ describe('Clause class tests', () => {
                 comment: 'Transferring 1 wei VET.'
             } satisfies TransactionClause;
             const actual = Clause.transferVET(
-                Address.of(expected.to),
+                ClauseFixture.to,
                 VET.of(1, Units.wei),
                 { comment: expected.comment }
             ) as TransactionClause;
@@ -270,7 +300,7 @@ describe('Clause class tests', () => {
                 data: '0x'
             } satisfies TransactionClause;
             const actual = Clause.transferVET(
-                Address.of(expected.to),
+                ClauseFixture.to,
                 VET.of('0.1', Units.kwei)
             ) as TransactionClause;
             expect(actual).toEqual(expected);
@@ -283,36 +313,27 @@ describe('Clause class tests', () => {
                 data: '0x'
             } satisfies TransactionClause;
             const actual = Clause.transferVET(
-                Address.of(expected.to),
+                ClauseFixture.to,
                 VET.of(500000000n)
             ) as TransactionClause;
             expect(actual).toEqual(expected);
         });
 
-        test('Throw <- infinite VET', () => {
+        test('Throw <- infinite amount VET', () => {
             expect(() => {
-                Clause.transferVET(
-                    Address.of(ClauseFixture.to),
-                    VET.of(FPN.POSITIVE_INFINITY)
-                );
+                Clause.transferVET(ClauseFixture.to, VET.of(Infinity));
             }).toThrow(InvalidDataType);
         });
 
-        test('Throw <- NaN VET', () => {
+        test('Throw <- NaN amount VET', () => {
             expect(() => {
-                Clause.transferVET(
-                    Address.of(ClauseFixture.to),
-                    VET.of(FPN.NaN)
-                );
+                Clause.transferVET(ClauseFixture.to, VET.of(NaN));
             }).toThrow(InvalidDataType);
         });
 
-        test('Throw <- negative VET', () => {
+        test('Throw <- negative amount VET', () => {
             expect(() => {
-                Clause.transferVET(
-                    Address.of(ClauseFixture.to),
-                    VET.of(FPN.of('-1'))
-                );
+                Clause.transferVET(ClauseFixture.to, VET.of(-123.45));
             }).toThrow(InvalidDataType);
         });
     });
