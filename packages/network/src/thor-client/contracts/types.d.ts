@@ -4,11 +4,7 @@ import type {
     SignTransactionOptions
 } from '../transactions';
 
-import type {
-    ClauseOptions,
-    ExtendedTransactionClause,
-    vechain_sdk_core_ethers
-} from '@vechain/sdk-core';
+import type { ClauseOptions, vechain_sdk_core_ethers } from '@vechain/sdk-core';
 
 declare module 'abitype' {
     export interface Register {
@@ -49,7 +45,7 @@ type ContractCallResult = vechain_sdk_core_ethers.Result;
  * Represents a contract clause, which includes the clause and the corresponding function fragment.
  */
 interface ContractClause {
-    clause: ExtendedTransactionClause;
+    clause: TransactionClause;
     functionFragment: vechain_sdk_core_ethers.FunctionFragment;
 }
 
