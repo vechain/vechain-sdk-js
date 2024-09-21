@@ -6,7 +6,7 @@ import type {
 
 import type {
     ClauseOptions,
-    ExtendedTransactionClause,
+    TransactionClause,
     vechain_sdk_core_ethers
 } from '@vechain/sdk-core';
 
@@ -49,7 +49,7 @@ type ContractCallResult = vechain_sdk_core_ethers.Result;
  * Represents a contract clause, which includes the clause and the corresponding function fragment.
  */
 interface ContractClause {
-    clause: ExtendedTransactionClause;
+    clause: TransactionClause;
     functionFragment: vechain_sdk_core_ethers.FunctionFragment;
 }
 

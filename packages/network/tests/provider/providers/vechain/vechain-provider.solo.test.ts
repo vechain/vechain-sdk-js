@@ -1,10 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-
-import {
-    clauseBuilder,
-    coder,
-    type TransactionClause
-} from '@vechain/sdk-core';
+import { clauseBuilder, coder } from '@vechain/sdk-core';
 import { JSONRPCMethodNotFound } from '@vechain/sdk-errors';
 import { type FunctionFragment } from 'ethers';
 import {
@@ -318,7 +313,7 @@ describe('VeChain provider tests - solo', () => {
                 .createInterface(erc721Contract.abi)
                 .getFunction('mintItem') as FunctionFragment,
             [TEST_ACCOUNT.address]
-        ) as TransactionClause;
+        );
 
         const gas = await thorClient.gas.estimateGas([clauses]);
 
