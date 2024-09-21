@@ -300,9 +300,9 @@ describe('Clause class tests', () => {
     });
 
     describe('transferVET method tests', () => {
-        test('Return Clause <- 1 wei', () => {
+        test('Return Clause <- 1 wei VET', () => {
             const expected = {
-                to: ClauseFixture.token.address.toString().toLowerCase(),
+                to: ClauseFixture.to.toString().toLowerCase(),
                 value: `0x1`,
                 data: '0x',
                 comment: 'Transferring 1 wei VET.'

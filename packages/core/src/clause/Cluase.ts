@@ -50,14 +50,21 @@ class Clause implements TransactionClause {
         amount: VET = VET.of(FPN.ZERO),
         clauseOptions?: ClauseOptions
     ): Clause {
-        return new Clause(
-            contractAddress.toString().toLowerCase(),
-            Hex.PREFIX + amount.wei.toString(Hex.RADIX),
-            new abi.Function(functionFragment).encodeInput(args),
-            clauseOptions?.comment,
-            clauseOptions?.includeABI === true
-                ? functionFragment.format(Clause.FORMAT_TYPE)
-                : undefined
+        if (amount.value.isFinite() && amount.value.isPositive()) {
+            return new Clause(
+                contractAddress.toString().toLowerCase(),
+                Hex.PREFIX + amount.wei.toString(Hex.RADIX),
+                new abi.Function(functionFragment).encodeInput(args),
+                clauseOptions?.comment,
+                clauseOptions?.includeABI === true
+                    ? functionFragment.format(Clause.FORMAT_TYPE)
+                    : undefined
+            );
+        }
+        throw new InvalidDataType(
+            'Clause.callFunction',
+            'not finite positive amount',
+            { amount: `${amount.value}` }
         );
     }
 
@@ -101,7 +108,7 @@ class Clause implements TransactionClause {
         amount: VTHO,
         clauseOptions?: ClauseOptions
     ): Clause {
-        try {
+        if (amount.value.isFinite() && amount.value.isPositive()) {
             return this.callFunction(
                 tokenAddress,
                 coder
@@ -113,14 +120,12 @@ class Clause implements TransactionClause {
                 undefined,
                 clauseOptions
             );
-        } catch (e) {
-            throw new InvalidDataType(
-                'Clause.transferToken',
-                'not positive integer amount',
-                { amount: `${amount.value}` },
-                e
-            );
         }
+        throw new InvalidDataType(
+            'Clause.transferToken',
+            'not positive integer amount',
+            { amount: `${amount.value}` }
+        );
     }
 
     public static transferVET(
