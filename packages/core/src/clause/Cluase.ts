@@ -74,6 +74,7 @@ class Clause implements TransactionClause {
         return new Clause(null, Clause.NO_VALUE, data, clauseOptions?.comment);
     }
 
+    // https://docs.vechain.org/introduction-to-vechain/dual-token-economic-model/vethor-vtho#vip180-vechains-fungible-token-standard
     public static transferToken(
         tokenAddress: Address,
         to: Address,
