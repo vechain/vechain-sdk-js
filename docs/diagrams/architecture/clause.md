@@ -4,7 +4,9 @@ classDiagram
         +FPN amount()
         +Clause callFunction(Address contractAddress, FunctionFragment, functionFragment, unknown[] args, VET amount, ClauseOptions: clauseOptions)
         +Clause deployContract(HexUInt contractBytecode, DeployParams deployParams?, ClauseOptions clauseOptions?)
+        +Clause transferNFT(Address contractAddress, Address from, Address to, HexUInt tokenId, ClauseOptions clauseOptions?)
         +Clause transferToken(Address tokenAddress, Address: to, VTHO amount, ClauseOptions clauseOptions?)
+        +Cluase transferVET(Address to, VET amount, ClauseOptions clauseOptions?)
     }
     class ClauseOption{
         <<interface>>

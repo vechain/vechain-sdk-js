@@ -6,7 +6,7 @@ import { type ClauseOptions, type TransactionClause } from '../transaction';
 import type { DeployParams } from './DeployParams';
 import type { FunctionFragment } from 'ethers';
 import { coder } from '../contract';
-import { VIP180_ABI } from '../utils';
+import { ERC721_ABI, VIP180_ABI } from '../utils';
 
 class Clause implements TransactionClause {
     private static readonly FORMAT_TYPE = 'json';
@@ -14,6 +14,8 @@ class Clause implements TransactionClause {
     private static readonly NO_VALUE = Hex.PREFIX + '0';
 
     private static readonly NO_DATA = Hex.PREFIX;
+
+    private static readonly TRANSFER_NFT_FUNCTION = 'transferFrom';
 
     private static readonly TRANSFER_TOKEN_FUNCTION = 'transfer';
 
@@ -74,6 +76,24 @@ class Clause implements TransactionClause {
         return new Clause(null, Clause.NO_VALUE, data, clauseOptions?.comment);
     }
 
+    public static transferNFT(
+        contractAddress: Address,
+        from: Address,
+        to: Address,
+        tokenId: HexUInt,
+        clauseOptions?: ClauseOptions
+    ): Clause {
+        return Clause.callFunction(
+            contractAddress,
+            coder
+                .createInterface(ERC721_ABI)
+                .getFunction(Clause.TRANSFER_NFT_FUNCTION) as FunctionFragment,
+            [from.toString(), to.toString(), tokenId.bi.toString()],
+            undefined,
+            clauseOptions
+        );
+    }
+
     // https://docs.vechain.org/introduction-to-vechain/dual-token-economic-model/vethor-vtho#vip180-vechains-fungible-token-standard
     public static transferToken(
         tokenAddress: Address,
@@ -89,7 +109,7 @@ class Clause implements TransactionClause {
                     .getFunction(
                         Clause.TRANSFER_TOKEN_FUNCTION
                     ) as FunctionFragment,
-                [to.toString().toLowerCase(), amount.wei],
+                [to.toString(), amount.wei],
                 undefined,
                 clauseOptions
             );
