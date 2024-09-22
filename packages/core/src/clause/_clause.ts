@@ -130,6 +130,7 @@ function transferToken(
  * @returns A clause for transferring VET.
  * @throws {InvalidDataType}
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function transferVET(
     recipientAddress: string,
     amount: number | bigint | string,
@@ -185,6 +186,7 @@ function transferVET(
  * @returns {TransactionClause} - An object representing the transaction clause required for the transfer.
  * @throws {InvalidDataType}
  * */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function transferNFT(
     contractAddress: string,
     senderAddress: string,
@@ -233,9 +235,9 @@ function transferNFT(
  * clauseBuilder provides methods for building clauses for interacting with smart contracts or deploying smart contracts.
  */
 export const clauseBuilder = {
-    deployContract,
-    functionInteraction,
-    transferToken,
-    transferVET,
-    transferNFT
+    deployContract
+    // functionInteraction
+    // transferToken
+    // transferVET
+    // transferNFT
 };
