@@ -345,7 +345,7 @@ describe('Abi - Function & Event', () => {
 
                                 // // Decode output
                                 const decoded =
-                                    myEvent.decodeEthersEventLog(encoded);
+                                    myEvent.decodeEventLogAsArray(encoded);
 
                                 // Encoded input will be equal to decoded output
                                 expect(decoded).toStrictEqual(encodingInput);
