@@ -1,13 +1,13 @@
 import {
     Address,
-    clauseBuilder,
+    Clause,
     HDKey,
     Mnemonic,
+    TransactionHandler,
+    VET,
     networkInfo,
     type TransactionBody,
-    type TransactionClause,
-    TransactionHandler,
-    Units
+    type TransactionClause
 } from '@vechain/sdk-core';
 import { THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
@@ -29,10 +29,10 @@ const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL, {
 // 2 - Define clause and estimate gas
 
 const clauses: TransactionClause[] = [
-    clauseBuilder.transferVET(
-        '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        Units.parseEther('10000').bi
-    )
+    Clause.transferVET(
+        Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'),
+        VET.of(10000)
+    ) as TransactionClause
 ];
 
 // Get gas estimate
