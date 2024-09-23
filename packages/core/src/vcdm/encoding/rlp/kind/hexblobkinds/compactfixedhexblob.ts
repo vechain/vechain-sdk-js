@@ -1,9 +1,9 @@
 import { Hex } from '../../../../Hex';
+import { type BufferOutput, type DataOutput, type RLPInput } from '../../types';
 import {
     assertCompactFixedHexBlobBuffer,
     encodeCompactFixedHexBlob
-} from '../../helpers';
-import { type BufferOutput, type DataOutput, type RLPInput } from '../../types';
+} from '../helpers';
 import { FixedHexBlobKind } from './fixedhexblob';
 
 /**

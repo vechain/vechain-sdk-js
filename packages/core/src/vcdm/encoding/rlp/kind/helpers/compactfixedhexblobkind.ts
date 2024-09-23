@@ -1,5 +1,5 @@
-import { Hex } from '../../../../vcdm';
 import { InvalidRLP } from '@vechain/sdk-errors';
+import { Hex } from '../../../..';
 
 /**
  * Asserts that the provided buffer is of a specific length and does not contain leading zeros.
@@ -75,6 +75,6 @@ const decodeBufferToHexWithLeadingZeros = (
 
 export {
     assertCompactFixedHexBlobBuffer,
-    encodeCompactFixedHexBlob,
-    decodeBufferToHexWithLeadingZeros
+    decodeBufferToHexWithLeadingZeros,
+    encodeCompactFixedHexBlob
 };

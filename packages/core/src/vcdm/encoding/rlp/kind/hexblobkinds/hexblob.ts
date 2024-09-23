@@ -1,9 +1,9 @@
 import { Hex } from '../../../../Hex';
+import { type BufferOutput, type DataOutput, type RLPInput } from '../../types';
 import {
     assertValidHexBlobKindBuffer,
     assertValidHexBlobKindData
-} from '../../helpers';
-import { type BufferOutput, type DataOutput, type RLPInput } from '../../types';
+} from '../helpers';
 import { ScalarKind } from '../scalarkind.abstract';
 
 /**

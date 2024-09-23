@@ -1,11 +1,11 @@
-import { ScalarKind } from './scalarkind.abstract';
+import { type BufferOutput, type DataOutput, type RLPInput } from '../types';
 import {
     assertValidNumericKindBuffer,
     decodeBufferToNumberOrHex,
     encodeBigIntToBuffer,
     validateNumericKindData
-} from '../helpers';
-import { type BufferOutput, type DataOutput, type RLPInput } from '../types';
+} from './helpers';
+import { ScalarKind } from './scalarkind.abstract';
 
 /**
  * Represents a scalar kind with numeric functionality.

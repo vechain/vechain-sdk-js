@@ -1,6 +1,6 @@
-import { Hex } from '../../../../vcdm';
 import { InvalidRLP } from '@vechain/sdk-errors';
-import { type RLPInput } from '../types';
+import { Hex } from '../../../..';
+import { type RLPInput } from '../../types';
 
 /**
  * Validates if the input is a proper hex string for HexBlobKind.
@@ -77,4 +77,4 @@ const assertValidHexBlobKindBuffer = (
     }
 };
 
-export { assertValidHexBlobKindData, assertValidHexBlobKindBuffer };
+export { assertValidHexBlobKindBuffer, assertValidHexBlobKindData };
