@@ -15,7 +15,7 @@ import {
     TransactionUtils,
     UNSIGNED_TRANSACTION_RLP
 } from '../utils';
-import { type RLPValidObject } from '../encoding';
+import { type RLPValidObject } from '../vcdm';
 import { type TransactionBody } from './types';
 
 /**

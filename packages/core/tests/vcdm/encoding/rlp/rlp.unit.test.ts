@@ -1,5 +1,4 @@
-import { Hex } from '../../src/vcdm/Hex';
-import { RLP_CODER } from '../../src';
+import { Hex, RLP_CODER } from '../../../../src';
 import { describe, expect, test } from '@jest/globals';
 import { InvalidRLP } from '@vechain/sdk-errors';
 import {

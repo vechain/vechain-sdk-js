@@ -1,5 +1,5 @@
 import { InvalidRLP } from '@vechain/sdk-errors';
-import { FPN, Hex, HexUInt } from '../../../vcdm';
+import { FPN, Hex, HexUInt } from '../../../../vcdm';
 import { type RLPInput } from '../types';
 
 /**
@@ -204,8 +204,8 @@ const decodeBufferToNumberOrHex = (buffer: Buffer): number | string => {
 };
 
 export {
-    validateNumericKindData,
     assertValidNumericKindBuffer,
+    decodeBufferToNumberOrHex,
     encodeBigIntToBuffer,
-    decodeBufferToNumberOrHex
+    validateNumericKindData
 };

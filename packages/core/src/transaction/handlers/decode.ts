@@ -1,4 +1,4 @@
-import { type RLPValidObject } from '../../encoding';
+import { type RLPValidObject } from '../../vcdm';
 import {
     SIGNED_TRANSACTION_RLP,
     TRANSACTION_FEATURES_KIND,
