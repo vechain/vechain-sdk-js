@@ -257,7 +257,7 @@ class ABIContract extends ABI {
      */
     public parseLog(data: Hex, topics: Hex[]): DecodeEventLogReturnType {
         try {
-            return ABIEvent.parseLog(this.abi, data, topics);
+            return ABIEvent.parseLog(this.abi, { data, topics });
         } catch (e) {
             throw new InvalidAbiDataToEncodeOrDecode(
                 'ABIContract.parseLog()',
