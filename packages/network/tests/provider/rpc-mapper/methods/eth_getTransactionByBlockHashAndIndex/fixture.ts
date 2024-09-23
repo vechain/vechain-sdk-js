@@ -67,6 +67,15 @@ const ethGetTransactionByBlockHashAndIndexTestCases = [
             value: '0x0',
             yParity: '0x0'
         }
+    },
+    {
+        description:
+            "eth_getTransactionByBlockHashAndIndex with a hash that doesn't exist",
+        params: [
+            '0x000000000b2bce3c70bc649a02749e8687721b09ed2e15997f466536b20bb127',
+            '0x0'
+        ],
+        expected: null
     }
 ];
 
