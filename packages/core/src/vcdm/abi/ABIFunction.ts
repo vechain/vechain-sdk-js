@@ -19,13 +19,13 @@ import { ABIItem } from './ABIItem';
  * @extends ABIItem
  */
 class ABIFunction extends ABIItem {
-    private readonly functionSignature: AbiFunction;
+    private readonly abiFunction: AbiFunction;
     public constructor(signature: string);
     public constructor(signature: AbiFunction);
     public constructor(signature: string | AbiFunction) {
         try {
             super(signature);
-            this.functionSignature = this.signature as AbiFunction;
+            this.abiFunction = this.signature as AbiFunction;
         } catch (error) {
             throw new InvalidAbiItem(
                 'ABIFunction constructor',
@@ -58,7 +58,7 @@ class ABIFunction extends ABIItem {
     public decodeData(data: Hex): DecodeFunctionDataReturnType {
         try {
             return decodeFunctionData({
-                abi: [this.signature],
+                abi: [this.abiFunction],
                 data: data.toString() as ViemHex
             });
         } catch (error) {
@@ -82,7 +82,7 @@ class ABIFunction extends ABIItem {
         try {
             return Hex.of(
                 encodeFunctionData({
-                    abi: [this.signature],
+                    abi: [this.abiFunction],
                     args: dataToEncode
                 })
             );
@@ -113,7 +113,7 @@ class ABIFunction extends ABIItem {
     public decodeResult(data: Hex): DecodeFunctionResultReturnType {
         try {
             return decodeFunctionResult({
-                abi: [this.signature],
+                abi: [this.abiFunction],
                 data: data.toString() as ViemHex
             });
         } catch (error) {
@@ -133,11 +133,11 @@ class ABIFunction extends ABIItem {
      */
     public decodeOutputAsArray(data: Hex): unknown[] {
         const resultDecoded = this.decodeResult(data);
-        if (this.functionSignature.outputs.length > 1) {
+        if (this.abiFunction.outputs.length > 1) {
             return this.parseObjectValues(resultDecoded as object);
         } else if (
-            this.functionSignature.outputs.length === 1 &&
-            this.functionSignature.outputs[0].type === 'tuple'
+            this.abiFunction.outputs.length === 1 &&
+            this.abiFunction.outputs[0].type === 'tuple'
         ) {
             return [this.parseObjectValues(resultDecoded as object)];
         }

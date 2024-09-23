@@ -2,6 +2,7 @@ import {
     InvalidAbiDataToEncodeOrDecode,
     InvalidAbiItem
 } from '@vechain/sdk-errors';
+import { type AbiEventParameter } from 'abitype';
 import {
     type AbiEvent,
     type DecodeEventLogReturnType,
@@ -12,14 +13,14 @@ import {
     type Hex as ViemHex
 } from 'viem';
 import { Hex } from '../Hex';
-import { ABIEthersEvent } from './ABIEthersEvent';
+import { ABI } from './ABI';
 import { ABIItem } from './ABIItem';
 
 type Topics = [] | [signature: ViemHex, ...args: ViemHex[]];
 
 interface ABIEventData {
     data: Hex;
-    topics: Hex[];
+    topics: Array<null | Hex | Hex[]>;
 }
 
 /**
@@ -27,13 +28,13 @@ interface ABIEventData {
  * @extends ABIItem
  */
 class ABIEvent extends ABIItem {
-    private readonly ethersEvent: ABIEthersEvent<string | AbiEvent>;
+    private readonly abiEvent: AbiEvent;
     public constructor(signature: string);
     public constructor(signature: AbiEvent);
     public constructor(signature: string | AbiEvent) {
         try {
             super(signature);
-            this.ethersEvent = new ABIEthersEvent(signature);
+            this.abiEvent = this.signature as AbiEvent;
         } catch (error) {
             throw new InvalidAbiItem(
                 'ABIEvent constructor',
@@ -56,14 +57,20 @@ class ABIEvent extends ABIItem {
      */
     public static parseLog(
         abi: ViemABI,
-        data: Hex,
-        topics: Hex[]
+        eventData: ABIEventData
     ): DecodeEventLogReturnType {
         try {
             return viemDecodeEventLog({
                 abi,
-                data: data.toString() as ViemHex,
-                topics: topics.map((topic) => topic.toString()) as Topics
+                data: eventData.data.toString() as ViemHex,
+                topics: eventData.topics.map((topic) => {
+                    if (topic === null) {
+                        return topic;
+                    } else if (Array.isArray(topic)) {
+                        return topic.map((t) => t.toString());
+                    }
+                    return topic.toString();
+                }) as Topics
             });
         } catch (error) {
             throw new InvalidAbiDataToEncodeOrDecode(
@@ -72,8 +79,8 @@ class ABIEvent extends ABIItem {
                 {
                     data: {
                         abi,
-                        data,
-                        topics
+                        data: eventData.data,
+                        topics: eventData.topics
                     }
                 },
                 error
@@ -90,11 +97,7 @@ class ABIEvent extends ABIItem {
      */
     public decodeEventLog(event: ABIEventData): DecodeEventLogReturnType {
         try {
-            return ABIEvent.parseLog(
-                [this.signature],
-                event.data,
-                event.topics
-            );
+            return ABIEvent.parseLog([this.abiEvent], event);
         } catch (error) {
             throw new InvalidAbiDataToEncodeOrDecode(
                 'ABIEvent.decodeEventLog',
@@ -130,17 +133,45 @@ class ABIEvent extends ABIItem {
         }
     }
 
-    /** DISCLAIMER: There is no equivalent to encodeEventLog in viem {@link https://viem.sh/docs/ethers-migration}
-     * Discussion started here {@link https://github.com/wevm/viem/discussions/2676}.
+    /**
+     * Encode event log data returning the encoded data and topics.
      * @param dataToEncode - Data to encode.
-     * @returns Encoded data along with topics.
+     * @returns {ABIEventData} Encoded data along with topics.
+     * @remarks There is no equivalent to encodeEventLog in viem {@link https://viem.sh/docs/ethers-migration}. Discussion started here {@link https://github.com/wevm/viem/discussions/2676}.
      */
     public encodeEventLog<TValue>(dataToEncode: TValue[]): ABIEventData {
-        const { data, topics } = this.ethersEvent.encodeEventLog(dataToEncode);
-        return {
-            data: Hex.of(data),
-            topics: topics.map((topic) => Hex.of(topic))
-        };
+        try {
+            const topics = this.encodeFilterTopics(dataToEncode);
+            const dataTypes: AbiEventParameter[] = [];
+            const dataValues: unknown[] = [];
+            this.abiEvent.inputs.forEach((param, index) => {
+                if (param.indexed ?? false) {
+                    // Skip indexed parameters
+                    return;
+                }
+                const value = dataToEncode[index];
+                dataTypes.push(param);
+                dataValues.push(value);
+            });
+            return {
+                data: ABI.of(dataTypes, dataValues).toHex(),
+                topics: topics.map((topic) => {
+                    if (topic === null) {
+                        return topic;
+                    } else if (Array.isArray(topic)) {
+                        return topic.map((t) => Hex.of(t));
+                    }
+                    return Hex.of(topic);
+                })
+            };
+        } catch (error) {
+            throw new InvalidAbiDataToEncodeOrDecode(
+                'ABIEvent.encodeEventLog',
+                'Encoding failed: Data format is invalid. Event data must be correctly formatted for ABI-compliant encoding.',
+                { dataToEncode },
+                error
+            );
+        }
     }
 
     /**
@@ -154,8 +185,7 @@ class ABIEvent extends ABIItem {
     public encodeFilterTopics<TValue>(
         valuesToEncode: TValue[]
     ): EncodeEventTopicsReturnType {
-        const abiEvent = this.signature;
-        if (abiEvent.inputs.length < valuesToEncode.length) {
+        if (this.abiEvent.inputs.length < valuesToEncode.length) {
             throw new InvalidAbiDataToEncodeOrDecode(
                 'ABIEvent.encodeEventLog',
                 'Encoding failed: Data format is invalid. Number of values to encode is greater than the inputs.',
@@ -165,7 +195,7 @@ class ABIEvent extends ABIItem {
 
         try {
             return encodeEventTopics({
-                abi: [abiEvent],
+                abi: [this.abiEvent],
                 args: valuesToEncode
             });
         } catch (error) {
