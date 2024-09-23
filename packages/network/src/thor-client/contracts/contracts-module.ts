@@ -17,7 +17,6 @@ import {
 import { Contract, ContractFactory } from './model';
 import type {
     ContractCallOptions,
-    ContractCallResult,
     ContractClause,
     ContractTransactionOptions
 } from './types';
@@ -81,7 +80,7 @@ class ContractsModule {
         functionAbi: ABIFunction,
         functionData: unknown[],
         contractCallOptions?: ContractCallOptions
-    ): Promise<ContractCallResult | string> {
+    ): Promise<unknown[] | string> {
         // Simulate the transaction to get the result of the contract call
         const response = await this.thor.transactions.simulateTransaction(
             [
@@ -103,9 +102,9 @@ class ContractsModule {
              */
             return decodeRevertReason(response[0].data) ?? '';
         } else {
-            // Returning ethers format (array of anonymous values). To be removed with #1184
+            // Returning an array of values.
             // The viem format is a single value/JSON object (ABIFunction#decodeResult)
-            return functionAbi.decodeEthersOutput(Hex.of(response[0].data));
+            return functionAbi.decodeOutputAsArray(Hex.of(response[0].data));
         }
     }
 
@@ -117,16 +116,16 @@ class ContractsModule {
     public async executeMultipleClausesCall(
         clauses: ContractClause[],
         options?: SimulateTransactionOptions
-    ): Promise<Array<ContractCallResult | string>> {
+    ): Promise<Array<unknown[] | string>> {
         // Simulate the transaction to get the result of the contract call
         const response = await this.thor.transactions.simulateTransaction(
             clauses.map((clause) => clause.clause),
             options
         );
-        // Returning ethers format (array of anonymous values). To be removed with #1184
+        // Returning an array of values.
         // The viem format is a single value/JSON object (ABIFunction#decodeResult)
         return response.map((res, index) =>
-            clauses[index].functionAbi.decodeEthersOutput(Hex.of(res.data))
+            clauses[index].functionAbi.decodeOutputAsArray(Hex.of(res.data))
         );
     }
 

@@ -2,7 +2,6 @@ import {
     InvalidAbiDataToEncodeOrDecode,
     InvalidAbiItem
 } from '@vechain/sdk-errors';
-import { type Result } from 'ethers';
 import {
     type AbiFunction,
     decodeFunctionData,
@@ -128,23 +127,21 @@ class ABIFunction extends ABIItem {
     }
 
     /**
-     * DISCLAIMER: This method will be eventually deprecated in favour of viem via #1184.
-     * Decodes a function output following the ethers format.
+     * Decodes a function output returning an array of values.
      * @param {Hex} data The data to be decoded
-     * @returns {Result} The decoded data
-     * @deprecated
+     * @returns {unknown[]} The decoded data as array of values
      */
-    public decodeEthersOutput(data: Hex): Result {
+    public decodeOutputAsArray(data: Hex): unknown[] {
         const resultDecoded = this.decodeResult(data);
         if (this.functionSignature.outputs.length > 1) {
-            return this.parseObjectValues(resultDecoded as object) as Result;
+            return this.parseObjectValues(resultDecoded as object);
         } else if (
             this.functionSignature.outputs.length === 1 &&
             this.functionSignature.outputs[0].type === 'tuple'
         ) {
-            return [this.parseObjectValues(resultDecoded as object)] as Result;
+            return [this.parseObjectValues(resultDecoded as object)];
         }
-        return [resultDecoded] as Result;
+        return [resultDecoded];
     }
 }
 export { ABIFunction };
