@@ -64,4 +64,4 @@ ARG CONFIGURATION_FILE
 ENV ENV_CONFIGURATION_FILE=$CONFIGURATION_FILE
 
 # Set the default command to use node to run the app
-CMD ["sh", "-c", "sh run-proxy-docker.sh ${ENV_URL} ${ENV_PORT} ${ENV_ACCOUNTS} ${ENV_MNEMONIC} ${ENV_MNEMONIC_COUNT} ${ENV_MNEMONIC_INITIAL_INDEX} ${ENV_ENABLE_DELEGATION} ${ENV_DELEGATOR_PRIVATE_KEY} ${ENV_DELEGATOR_URL} ${ENV_VERBOSE} ${ENV_CONFIGURATION_FILE}"]
+CMD ["sh", "-c", "url=${ENV_URL} port=${ENV_PORT} accounts=${ENV_ACCOUNTS} mnemonic=${ENV_MNEMONIC} mnemonicCount=${ENV_MNEMONIC_COUNT} mnemonicInitialIndex=${ENV_MNEMONIC_INITIAL_INDEX} enableDelegation=${ENV_ENABLE_DELEGATION} delegatorPrivateKey=${ENV_DELEGATOR_PRIVATE_KEY} delegatorUrl=${ENV_DELEGATOR_URL} verbose=${ENV_VERBOSE} configurationFile=${ENV_CONFIGURATION_FILE} sh run-proxy-docker.sh"]
