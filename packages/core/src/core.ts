@@ -3,7 +3,6 @@ import { ethers } from 'ethers';
 // Our core library
 export * from './certificate';
 export * from './clause';
-export * from './contract';
 export * from './encoding';
 export * from './vcdm/hash';
 export * from './hdkey';

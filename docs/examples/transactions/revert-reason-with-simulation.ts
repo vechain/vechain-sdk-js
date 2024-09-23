@@ -1,5 +1,4 @@
-import { coder, Units } from '@vechain/sdk-core';
-import { stringifyData } from '@vechain/sdk-errors';
+import { ABIContract, Units } from '@vechain/sdk-core';
 import {
     THOR_SOLO_URL,
     ThorClient,
@@ -12,7 +11,7 @@ import { expect } from 'expect';
  *
  * @link see [energy.sol](https://docs.vechain.org/developer-resources/built-in-contracts#energy-sol)
  */
-const energyABI = stringifyData([
+const energyABI = [
     {
         constant: true,
         inputs: [],
@@ -269,7 +268,7 @@ const energyABI = stringifyData([
         name: 'Approval',
         type: 'event'
     }
-]);
+] as const;
 
 const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
 
@@ -280,10 +279,12 @@ const simulatedTx: TransactionSimulationResult[] =
         {
             to: '0x0000000000000000000000000000456e65726779',
             value: '0',
-            data: coder.encodeFunctionInput(energyABI, 'transfer', [
-                '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
-                Units.parseEther('1000000000').bi
-            ])
+            data: ABIContract.ofAbi(energyABI)
+                .encodeFunctionInput('transfer', [
+                    '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
+                    Units.parseEther('1000000000').bi
+                ])
+                .toString()
         }
     ]);
 

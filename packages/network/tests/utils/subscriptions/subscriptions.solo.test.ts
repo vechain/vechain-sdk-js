@@ -1,7 +1,17 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import {
+    ABIContract,
+    Address,
+    clauseBuilder,
+    Hex,
+    HexUInt,
+    type TransactionClause,
+    TransactionHandler,
+    Units
+} from '@vechain/sdk-core';
+import { type AbiEvent } from 'abitype';
+import {
     type CompressedBlockDetail,
-    type EventFragment,
     type EventLogs,
     signerUtils,
     subscriptions,
@@ -19,16 +29,6 @@ import {
 } from '../../fixture';
 // eslint-disable-next-line import/no-named-default
 import { default as NodeWebSocket } from 'isomorphic-ws';
-import {
-    Address,
-    HexUInt,
-    clauseBuilder,
-    coder,
-    type TransactionClause,
-    TransactionHandler,
-    Units
-} from '@vechain/sdk-core';
-import { type FunctionFragment } from 'ethers';
 
 const TIMEOUT = 15000; // 15-second timeout
 
@@ -123,16 +123,15 @@ describe('Subscriptions Solo network tests', () => {
         async () => {
             // Create an interface for the smart contract ABI
             const testingContractInterface =
-                coder.createInterface(TESTING_CONTRACT_ABI);
+                ABIContract.ofAbi(TESTING_CONTRACT_ABI);
 
-            // Get the event fragment for the StateChanged event
-            const eventFragment =
-                testingContractInterface.getEvent('StateChanged');
+            // Get the event ABI for the StateChanged event
+            const eventAbi = testingContractInterface.getEvent('StateChanged');
 
             // Get the URL for the event subscription
             const wsURL = subscriptions.getEventSubscriptionUrl(
                 THOR_SOLO_URL,
-                eventFragment as EventFragment,
+                eventAbi.signature as AbiEvent,
                 // Receive only events emitted that involve the EVENT_SUBSCRIPTION account address as the third indexed parameter of `event StateChanged(uint indexed newValue, uint indexed oldValue, address indexed sender, uint timestamp);`
                 [
                     null,
@@ -167,12 +166,19 @@ describe('Subscriptions Solo network tests', () => {
                         const decodedLog =
                             testingContractInterface.decodeEventLog(
                                 'StateChanged',
-                                log.data,
-                                log.topics
+                                {
+                                    data: Hex.of(log.data),
+                                    topics: log.topics.map((topic) =>
+                                        Hex.of(topic)
+                                    )
+                                }
                             );
+                        const decodedLogValues = Object.values(
+                            decodedLog.args as unknown[]
+                        );
 
-                        expect(decodedLog.length).toBe(4);
-                        expect(decodedLog[2]).toBe(
+                        expect(decodedLogValues.length).toBe(4);
+                        expect(decodedLogValues[2]).toBe(
                             Address.checksum(
                                 HexUInt.of(
                                     TEST_ACCOUNTS.SUBSCRIPTION
@@ -199,9 +205,9 @@ describe('Subscriptions Solo network tests', () => {
             // Trigger the smart contract function that emits the event
             const clause = clauseBuilder.functionInteraction(
                 TESTING_CONTRACT_ADDRESS,
-                coder
-                    .createInterface(TESTING_CONTRACT_ABI)
-                    .getFunction('setStateVariable') as FunctionFragment,
+                ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
+                    'setStateVariable'
+                ),
                 [1]
             );
             const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);

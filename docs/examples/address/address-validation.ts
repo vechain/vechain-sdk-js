@@ -11,6 +11,8 @@ console.log(Address.isValid('52908400098527886E0F7030069857D2E4169EE7')); // fal
 
 // END_SNIPPET: AddressValidationSnippet
 
-expect(Address.isValid('0x8617E340B3D01FA5F11F306F4090FD50E238070D')).toBeTruthy();
+expect(
+    Address.isValid('0x8617E340B3D01FA5F11F306F4090FD50E238070D')
+).toBeTruthy();
 
 expect(Address.isValid('52908400098527886E0F7030069857D2E4169EE7')).toBeFalsy();

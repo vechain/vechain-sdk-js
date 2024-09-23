@@ -11,7 +11,6 @@ import {
 } from 'viem';
 import { Hex } from '../Hex';
 import { type VeChainDataModel } from '../VeChainDataModel';
-import { ABIEthersEvent } from './ABIEthersEvent';
 
 /**
  * Represents an ABI (Application Binary Interface).
@@ -234,7 +233,6 @@ class ABI implements VeChainDataModel<ABI> {
 
 // Backwards compatibility, ethersAbi should be removed as part of #1184
 const ethersAbi = {
-    ABIEthersEvent,
     encode: <ValueType>(type: string | ParamType, value: ValueType): string =>
         ABI.of(
             type instanceof ParamType
@@ -246,7 +244,13 @@ const ethersAbi = {
             .toHex()
             .toString(),
     encodeParams: (types: string[] | ParamType[], values: string[]): string => {
-        const typesParam = parseAbiParameters((types as string[]).join(', '));
+        const stringTypes =
+            types instanceof ParamType
+                ? types.map((type) =>
+                      (type as ParamType).format('full').replace(' list', '')
+                  )
+                : types;
+        const typesParam = parseAbiParameters(stringTypes.join(', '));
         return ABI.of([...typesParam], values)
             .toHex()
             .toString();

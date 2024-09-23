@@ -13,7 +13,7 @@ Vechain SDK provides functionality to interact with smart contracts on the VeCha
 ```typescript { name=abi, category=example }
 // 1 - Create a simple function to encode into ABI
 
-const simpleAbiFunction = new abi.Function({
+const simpleAbiFunction = new ABIFunction({
     constant: false,
     inputs: [
         {
@@ -43,17 +43,17 @@ const simpleAbiFunction = new abi.Function({
 
 // 2 - Encode function
 
-const encodedFunction = simpleAbiFunction.encodeInput([1, 'foo']);
+const encodedFunction = simpleAbiFunction.encodeData([1, 'foo']).toString();
 ```
 
 ## Contract
 
-The contract interface is used to provide a higher level of abstraction to allow direct interaction with a smart contract. To create a contract interface is necessary to have a compatible smart contract ABI.VeChain SDK provides a full implementation of the Contract interface as well as some methods to encode directly a specific fragment of the smart contract (until now only functions and events fragments are supported). Encoding and decoding are based on the ABI one.
+The contract interface is used to provide a higher level of abstraction to allow direct interaction with a smart contract. To create a contract interface is necessary to have a compatible smart contract ABI.VeChain SDK provides a full implementation of the Contract interface as well as some methods to encode directly a specific ABI item of the smart contract (until now only function and event ABIs are supported). Encoding and decoding are based on the ABI one.
 
 ```typescript { name=contract, category=example }
 // 1 - Create a new function
 
-const contractABI = stringifyData([
+const contractABI = [
     {
         constant: false,
         inputs: [
@@ -82,14 +82,18 @@ const contractABI = stringifyData([
         stateMutability: 'view',
         type: 'function'
     }
-]);
+] as const;
 
 // 2 - Encode the function input, ready to be used to send a tx
-const encodedData = coder.encodeFunctionInput(contractABI, 'setValue', [123]);
+const encodedData = ABIContract.ofAbi(contractABI).encodeFunctionInput(
+    'setValue',
+    [123]
+);
 
 // 3 - Decode the function input data
 const decodedData = String(
-    coder.decodeFunctionInput(contractABI, 'setValue', encodedData)[0]
+    ABIContract.ofAbi(contractABI).decodeFunctionInput('setValue', encodedData)
+        .args[0]
 ); // decode the function input data
 ```
 

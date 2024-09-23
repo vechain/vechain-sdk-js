@@ -1,4 +1,4 @@
-import { abi, clauseBuilder } from '@vechain/sdk-core';
+import { clauseBuilder } from '@vechain/sdk-core';
 import { InvalidTransactionField } from '@vechain/sdk-errors';
 import type {
     Abi,
@@ -57,7 +57,7 @@ function getReadProxy<TAbi extends Abi>(
 
                 return (await contract.thor.contracts.executeCall(
                     contract.address,
-                    contract.getFunctionFragment(prop),
+                    contract.getFunctionAbi(prop),
                     extractOptionsResult.args,
                     {
                         caller:
@@ -124,7 +124,7 @@ function getTransactProxy<TAbi extends Abi>(
                 return await contract.thor.contracts.executeTransaction(
                     contract.getSigner() as VeChainSigner,
                     contract.address,
-                    contract.getFunctionFragment(prop),
+                    contract.getFunctionAbi(prop),
                     args,
                     {
                         ...transactionOptions,
@@ -199,7 +199,7 @@ function getClauseProxy<TAbi extends Abi>(
                 return {
                     clause: clauseBuilder.functionInteraction(
                         contract.address,
-                        contract.getFunctionFragment(prop),
+                        contract.getFunctionAbi(prop),
                         args,
                         transactionOptions.value ?? transactionValue ?? 0,
                         {
@@ -207,7 +207,7 @@ function getClauseProxy<TAbi extends Abi>(
                             includeABI: true
                         }
                     ),
-                    functionFragment: contract.getFunctionFragment(prop)
+                    functionAbi: contract.getFunctionAbi(prop)
                 };
             };
         }
@@ -251,13 +251,13 @@ function buildCriteria<TAbi extends Abi>(
     prop: string | symbol,
     args: unknown[]
 ): FilterCriteria {
-    // Create the VeChain sdk event fragment starting from the contract ABI event fragment
-    const eventFragment = new abi.Event(contract.getEventFragment(prop));
+    // Create the VeChain sdk event ABI
+    const eventAbi = contract.getEventAbi(prop);
 
     // Create a map of encoded filter topics for the event
     const topics = new Map<number, string | undefined>(
-        eventFragment
-            .encodeFilterTopics(args)
+        eventAbi
+            .encodeFilterTopicsNoNull(args)
             .map((topic, index) => [index, topic])
     );
 
@@ -271,7 +271,7 @@ function buildCriteria<TAbi extends Abi>(
             topic3: topics.has(3) ? topics.get(3) : undefined,
             topic4: topics.has(4) ? topics.get(4) : undefined
         },
-        eventFragment: eventFragment.fragment
+        eventAbi
     };
 }
 
@@ -432,7 +432,7 @@ function extractArgsArray<TAbi extends Abi>(
         argsArray = args;
     } else {
         // extract the event arguments from the abi
-        const eventsArgsMap = getEventArgsMap(contract.abi as Abi, prop);
+        const eventsArgsMap = getEventArgsMap(contract.abi, prop);
 
         // map the args as input to the event arguments
         const mappedObj = mapObjectToEventArgs(args, eventsArgsMap);

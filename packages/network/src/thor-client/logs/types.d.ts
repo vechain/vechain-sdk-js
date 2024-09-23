@@ -1,6 +1,6 @@
 /* --- Input options start --- */
 
-import type { EventFragment, Result } from 'ethers';
+import { type ABIEvent, type vechain_sdk_core_ethers } from '@vechain/sdk-core';
 
 /**
  * Range interface for specifying a range of data.
@@ -42,7 +42,7 @@ interface PaginationOptions {
  */
 interface FilterCriteria {
     criteria: EventCriteria;
-    eventFragment: EventFragment;
+    eventAbi: ABIEvent;
 }
 
 /**
@@ -240,7 +240,7 @@ interface EventLogs extends Event {
     /**
      * The decoded data from the event.
      */
-    decodedData?: Result[];
+    decodedData?: vechain_sdk_core_ethers.Result[];
 }
 
 /**
