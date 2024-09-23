@@ -17,6 +17,7 @@ import {
 import { Contract, ContractFactory } from './model';
 import type {
     ContractCallOptions,
+    ContractCallResult,
     ContractClause,
     ContractTransactionOptions
 } from './types';
@@ -80,7 +81,7 @@ class ContractsModule {
         functionAbi: ABIFunction,
         functionData: unknown[],
         contractCallOptions?: ContractCallOptions
-    ): Promise<unknown[] | string> {
+    ): Promise<ContractCallResult | string> {
         // Simulate the transaction to get the result of the contract call
         const response = await this.thor.transactions.simulateTransaction(
             [
@@ -116,7 +117,7 @@ class ContractsModule {
     public async executeMultipleClausesCall(
         clauses: ContractClause[],
         options?: SimulateTransactionOptions
-    ): Promise<Array<unknown[] | string>> {
+    ): Promise<Array<ContractCallResult | string>> {
         // Simulate the transaction to get the result of the contract call
         const response = await this.thor.transactions.simulateTransaction(
             clauses.map((clause) => clause.clause),
