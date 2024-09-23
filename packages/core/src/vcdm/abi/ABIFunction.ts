@@ -2,7 +2,6 @@ import {
     InvalidAbiDataToEncodeOrDecode,
     InvalidAbiItem
 } from '@vechain/sdk-errors';
-import { type Result } from 'ethers';
 import {
     type AbiFunction,
     decodeFunctionData,
@@ -12,21 +11,21 @@ import {
     encodeFunctionData,
     type Hex as ViemHex
 } from 'viem';
+import { Hex } from '../Hex';
 import { ABIItem } from './ABIItem';
-import { HexUInt } from '../HexUInt';
 
 /**
  * Represents a function call in the Function ABI.
  * @extends ABIItem
  */
 class ABIFunction extends ABIItem {
-    private readonly functionSignature: AbiFunction;
+    private readonly abiFunction: AbiFunction;
     public constructor(signature: string);
     public constructor(signature: AbiFunction);
     public constructor(signature: string | AbiFunction) {
         try {
             super(signature);
-            this.functionSignature = this.signature as AbiFunction;
+            this.abiFunction = this.signature as AbiFunction;
         } catch (error) {
             throw new InvalidAbiItem(
                 'ABIFunction constructor',
@@ -52,14 +51,14 @@ class ABIFunction extends ABIItem {
     /**
      * Decode data using the function's ABI.
      *
-     * @param {HexUInt} data - Data to decode.
+     * @param {Hex} data - Data to decode.
      * @returns Decoding results.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public decodeData(data: HexUInt): DecodeFunctionDataReturnType {
+    public decodeData(data: Hex): DecodeFunctionDataReturnType {
         try {
             return decodeFunctionData({
-                abi: [this.signature],
+                abi: [this.abiFunction],
                 data: data.toString() as ViemHex
             });
         } catch (error) {
@@ -76,14 +75,14 @@ class ABIFunction extends ABIItem {
      * Encode data using the function's ABI.
      *
      * @param dataToEncode - Data to encode.
-     * @returns {HexUInt} Encoded data.
+     * @returns {Hex} Encoded data.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public encodeData<TValue>(dataToEncode?: TValue[]): HexUInt {
+    public encodeData<TValue>(dataToEncode?: TValue[]): Hex {
         try {
-            return HexUInt.of(
+            return Hex.of(
                 encodeFunctionData({
-                    abi: [this.signature],
+                    abi: [this.abiFunction],
                     args: dataToEncode
                 })
             );
@@ -101,7 +100,7 @@ class ABIFunction extends ABIItem {
      * Decodes the output data from a transaction based on ABI (Application Binary Interface) specifications.
      * This method attempts to decode the given hex-like data into a readable format using the contract's interface.
      *
-     * @param {HexUInt} data - The data to be decoded, typically representing the output of a contract function call.
+     * @param {Hex} data - The data to be decoded, typically representing the output of a contract function call.
      * @returns {DecodeFunctionResultReturnType} An object containing the decoded data.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      *
@@ -111,10 +110,10 @@ class ABIFunction extends ABIItem {
      *   console.log('Decoded Output:', decoded);
      * ```
      */
-    public decodeResult(data: HexUInt): DecodeFunctionResultReturnType {
+    public decodeResult(data: Hex): DecodeFunctionResultReturnType {
         try {
             return decodeFunctionResult({
-                abi: [this.signature],
+                abi: [this.abiFunction],
                 data: data.toString() as ViemHex
             });
         } catch (error) {
@@ -128,23 +127,21 @@ class ABIFunction extends ABIItem {
     }
 
     /**
-     * DISCLAIMER: This method will be eventually deprecated in favour of viem via #1184.
-     * Decodes a function output following the ethers format.
-     * @param {HexUInt} data The data to be decoded
-     * @returns {Result} The decoded data
-     * @deprecated
+     * Decodes a function output returning an array of values.
+     * @param {Hex} data The data to be decoded
+     * @returns {unknown[]} The decoded data as array of values
      */
-    public decodeEthersOutput(data: HexUInt): Result {
+    public decodeOutputAsArray(data: Hex): unknown[] {
         const resultDecoded = this.decodeResult(data);
-        if (this.functionSignature.outputs.length > 1) {
-            return this.parseObjectValues(resultDecoded as object) as Result;
+        if (this.abiFunction.outputs.length > 1) {
+            return this.parseObjectValues(resultDecoded as object);
         } else if (
-            this.functionSignature.outputs.length === 1 &&
-            this.functionSignature.outputs[0].type === 'tuple'
+            this.abiFunction.outputs.length === 1 &&
+            this.abiFunction.outputs[0].type === 'tuple'
         ) {
-            return [this.parseObjectValues(resultDecoded as object)] as Result;
+            return [this.parseObjectValues(resultDecoded as object)];
         }
-        return [resultDecoded] as Result;
+        return [resultDecoded];
     }
 }
 export { ABIFunction };
