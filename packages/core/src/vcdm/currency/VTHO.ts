@@ -1,4 +1,4 @@
-import { Clause } from '../../clause';
+import { Clause } from '../../transaction';
 import { Coin } from './Coin';
 import { FPN } from '../FPN';
 import { Txt } from '../Txt';

@@ -12,7 +12,7 @@ import {
 import { Hex } from '../vcdm/Hex';
 import { HexInt } from '../vcdm/HexInt';
 import { ERC721_ABI, VIP180_ABI } from '../utils';
-import { type ClauseOptions, type TransactionClause } from '../transaction';
+import { type ClauseOptions, type TransactionClause } from './index';
 import type { DeployParams } from './DeployParams';
 
 class Clause implements TransactionClause {
