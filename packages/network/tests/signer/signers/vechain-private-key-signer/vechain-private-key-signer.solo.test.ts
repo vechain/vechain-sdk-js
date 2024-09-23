@@ -2,8 +2,9 @@ import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
     ABIContract,
     Address,
-    clauseBuilder,
+    Clause,
     HexUInt,
+    type TransactionClause,
     TransactionHandler
 } from '@vechain/sdk-core';
 import {
@@ -53,13 +54,13 @@ describe('VeChain base signer tests - solo', () => {
                 test(
                     description,
                     async () => {
-                        const sampleClause = clauseBuilder.functionInteraction(
-                            TESTING_CONTRACT_ADDRESS,
+                        const sampleClause = Clause.callFunction(
+                            Address.of(TESTING_CONTRACT_ADDRESS),
                             ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
                                 'deposit'
                             ),
                             [123]
-                        );
+                        ) as TransactionClause;
 
                         const gasResult = await thorClient.gas.estimateGas(
                             [sampleClause],
@@ -120,13 +121,13 @@ describe('VeChain base signer tests - solo', () => {
                 test(
                     description,
                     async () => {
-                        const sampleClause = clauseBuilder.functionInteraction(
-                            TESTING_CONTRACT_ADDRESS,
+                        const sampleClause = Clause.callFunction(
+                            Address.of(TESTING_CONTRACT_ADDRESS),
                             ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
                                 'setStateVariable'
                             ),
                             [123]
-                        );
+                        ) as TransactionClause;
 
                         const txBody =
                             await thorClient.transactions.buildTransactionBody(
@@ -257,11 +258,11 @@ describe('VeChain base signer tests - solo', () => {
         );
 
         test('perform a transaction with custom gas', async () => {
-            const sampleClause = clauseBuilder.functionInteraction(
-                TESTING_CONTRACT_ADDRESS,
+            const sampleClause = Clause.callFunction(
+                Address.of(TESTING_CONTRACT_ADDRESS),
                 ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction('deposit'),
                 [123]
-            );
+            ) as TransactionClause;
 
             const txBody = await thorClient.transactions.buildTransactionBody(
                 [sampleClause],

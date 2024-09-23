@@ -2,8 +2,9 @@ import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
     ABIContract,
     Address,
-    clauseBuilder,
+    Clause,
     HexUInt,
+    type TransactionClause,
     TransactionHandler
 } from '@vechain/sdk-core';
 import {
@@ -118,13 +119,13 @@ describe('VeChain base signer tests - testnet', () => {
                     async () => {
                         const thorClient = ThorClient.fromUrl(TESTNET_URL);
 
-                        const sampleClause = clauseBuilder.functionInteraction(
-                            TESTING_CONTRACT_ADDRESS,
+                        const sampleClause = Clause.callFunction(
+                            Address.of(TESTING_CONTRACT_ADDRESS),
                             ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
                                 'setStateVariable'
                             ),
                             [123]
-                        );
+                        ) as TransactionClause;
 
                         const gasResult = await thorClient.gas.estimateGas(
                             [sampleClause],
