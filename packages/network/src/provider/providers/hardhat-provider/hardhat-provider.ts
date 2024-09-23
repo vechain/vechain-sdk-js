@@ -172,12 +172,6 @@ class HardhatVeChainProvider extends VeChainProvider {
                     error
                 );
             }
-
-            // Throw the error
-            throw this.buildHardhatErrorFunctionCallback(
-                `Error on request ${args.method}`,
-                error as Error
-            );
         }
     }
 }
