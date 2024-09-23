@@ -140,26 +140,34 @@ class ABIEvent extends ABIItem {
      * @remarks There is no equivalent to encodeEventLog in viem {@link https://viem.sh/docs/ethers-migration}. Discussion started here {@link https://github.com/wevm/viem/discussions/2676}.
      */
     public encodeEventLog<TValue>(dataToEncode: TValue[]): ABIEventData {
-        const topics = this.encodeFilterTopics(dataToEncode);
-        const dataTypes: AbiEventParameter[] = [];
-        const dataValues: unknown[] = [];
-        this.abiEvent.inputs.forEach((param, index) => {
-            const value = dataToEncode[index];
-            dataTypes.push(param);
-            dataValues.push(value);
-        });
-        return {
-            data: ABI.of(dataTypes, dataValues).toHex(),
-            topics: topics.map((topic) => {
-                if (topic === null) {
-                    return topic;
-                } else if (Array.isArray(topic)) {
-                    return topic.map((t) => Hex.of(t));
-                } else {
+        try {
+            const topics = this.encodeFilterTopics(dataToEncode);
+            const dataTypes: AbiEventParameter[] = [];
+            const dataValues: unknown[] = [];
+            this.abiEvent.inputs.forEach((param, index) => {
+                const value = dataToEncode[index];
+                dataTypes.push(param);
+                dataValues.push(value);
+            });
+            return {
+                data: ABI.of(dataTypes, dataValues).toHex(),
+                topics: topics.map((topic) => {
+                    if (topic === null) {
+                        return topic;
+                    } else if (Array.isArray(topic)) {
+                        return topic.map((t) => Hex.of(t));
+                    }
                     return Hex.of(topic);
-                }
-            })
-        };
+                })
+            };
+        } catch (error) {
+            throw new InvalidAbiDataToEncodeOrDecode(
+                'ABIEvent.encodeEventLog',
+                'Encoding failed: Data format is invalid. Event data must be correctly formatted for ABI-compliant encoding.',
+                { dataToEncode },
+                error
+            );
+        }
     }
 
     /**
