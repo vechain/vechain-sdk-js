@@ -12,9 +12,6 @@ C4Context
             Boundary(certificate_module, "Certificate module") {
                 System(Certificate, "Certificate class", "Handle all certificate related operations.")
             }
-            Boundary(clause_module, "Clause module") {
-                System(Clause, "Clause class", "Handles all clause related operations.")
-            }
             System(contract, "Smart contract module", "Handle all smart contract related operations.")
             System(encoding, "RLP encoding module", "Handle RLP encoding related operations.")
             Boundary(hdkey, "HDKey module") {
@@ -24,7 +21,9 @@ C4Context
             Boundary(secp256k1, "Secp256k1 module") {
                 System(Secp256k1, "Secp256k1 class", "Handle all SECP256K1 related operations.")
             }
-            System(transaction, "Transaction module", "Handle all transaction related operations.")
+            Boundary(transaction, "Transaction module", "Handle all transaction related operations.") {
+                System(Clause, "Clause class", "Handles all clause related operations.")
+            }
             Boundary(vcdm, "VeChain Data Model module", "Provide types and methods to represent the data in Thor.") {
                 Boundary(account, "Account module") {
                     System(Account, "Account class", "Handle all account related operations.")    

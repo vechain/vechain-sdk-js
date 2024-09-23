@@ -2,11 +2,11 @@
 classDiagram
     class Clause {
         +FPN amount()
-        +Clause callFunction(Address contractAddress, FunctionFragment, functionFragment, unknown[] args, VET amount, ClauseOptions: clauseOptions)
+        +Clause callFunction(Address contractAddress, ABIFunction, functionABI, unknown[] args, VET amount, ClauseOptions: clauseOptions)
         +Clause deployContract(HexUInt contractBytecode, DeployParams deployParams?, ClauseOptions clauseOptions?)
-        +Clause transferNFT(Address contractAddress, Address from, Address to, HexUInt tokenId, ClauseOptions clauseOptions?)
-        +Clause transferToken(Address tokenAddress, Address: to, VTHO amount, ClauseOptions clauseOptions?)
-        +Cluase transferVET(Address to, VET amount, ClauseOptions clauseOptions?)
+        +Clause transferNFT(Address contractAddress, Address senderAddress, Address recipientAddress, HexUInt tokenId, ClauseOptions clauseOptions?)
+        +Clause transferToken(Address tokenAddress, Address: senderAddress, VTHO amount, ClauseOptions clauseOptions?)
+        +Cluase transferVET(Address recipientAddress, VET amount, ClauseOptions clauseOptions?)
     }
     class ClauseOption{
         <<interface>>
