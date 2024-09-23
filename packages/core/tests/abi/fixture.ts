@@ -1,7 +1,4 @@
-import {
-    InvalidAbiDataToEncodeOrDecode,
-    stringifyData
-} from '@vechain/sdk-errors';
+import { InvalidAbiDataToEncodeOrDecode } from '@vechain/sdk-errors';
 import { Address, HexUInt } from '../../src';
 import { Hex } from '../../src/vcdm/Hex';
 import { generateRandomValidAddress } from '../fixture';
@@ -40,7 +37,6 @@ const functions = [
         },
         full: 'function f1(uint256 a1, string a2) returns (address r1, bytes r2)',
         minimal: 'function f1(uint256,string) returns (address,bytes)',
-        sighash: 'f1(uint256,string)',
         signatureHash: '0x27fcbb2f',
         jsonStringifiedAbi:
             '{"type":"function","name":"f1","constant":false,"payable":false,"inputs":[{"type":"uint256","name":"a1"},{"type":"string","name":"a2"}],"outputs":[{"type":"address","name":"r1"},{"type":"bytes","name":"r2"}]}',
@@ -86,10 +82,8 @@ const functions = [
             stateMutability: 'nonpayable',
             type: 'function'
         },
-        full: 'function nodes() returns (tuple(address master, address endorsor, bytes32 identity, bool active)[] list)',
-        minimal:
-            'function nodes() returns (tuple(address,address,bytes32,bool)[])',
-        sighash: 'nodes()',
+        full: 'function nodes() returns ((address master, address endorsor, bytes32 identity, bool active)[])',
+        minimal: 'function nodes() returns ((address,address,bytes32,bool)[])',
         signatureHash: '0x5db82fa0',
         jsonStringifiedAbi:
             '{"type":"function","name":"nodes","constant":false,"payable":false,"inputs":[],"outputs":[{"type":"tuple[]","name":"list","components":[{"type":"address","name":"master"},{"type":"address","name":"endorsor"},{"type":"bytes32","name":"identity"},{"type":"bool","name":"active"}]}]}',
@@ -150,7 +144,6 @@ const events = [
         },
         full: 'event E1(uint256 indexed a1, string a2)',
         minimal: 'event E1(uint256 indexed,string)',
-        sighash: 'E1(uint256,string)',
         signatureHash:
             '0x47b78f0ec63d97830ace2babb45e6271b15a678528e901a9651e45b65105e6c2',
         jsonStringifiedAbi:
@@ -180,7 +173,6 @@ const events = [
         },
         full: 'event E2(uint256 indexed a1, string a2)',
         minimal: 'event E2(uint256 indexed,string)',
-        sighash: 'E2(uint256,string)',
         signatureHash:
             '0xed4f58f68ac84ec75a04444d287e454e22772efca5f47aca53950d7a135e6dab',
         jsonStringifiedAbi:
@@ -443,7 +435,7 @@ const encodedDecodedInvalidValues = [
     }
 ];
 
-const contractABI = stringifyData([
+const contractABI = [
     {
         constant: false,
         inputs: [
@@ -472,9 +464,9 @@ const contractABI = stringifyData([
         stateMutability: 'view',
         type: 'function'
     }
-]);
+] as const;
 
-const contractABIWithEvents = stringifyData([
+const contractABIWithEvents = [
     {
         constant: false,
         inputs: [
@@ -520,9 +512,9 @@ const contractABIWithEvents = stringifyData([
         name: 'ValueChanged',
         type: 'event'
     }
-]);
+] as const;
 
-const contractStorageABI = stringifyData([
+const contractStorageABI = [
     {
         inputs: [],
         name: 'getValue',
@@ -549,7 +541,7 @@ const contractStorageABI = stringifyData([
         stateMutability: 'nonpayable',
         type: 'function'
     }
-]);
+] as const;
 
 export const encodedParams =
     '0x000000000000000000000000000000000000000000000000000000000000007b00000000000000000000000000000000000000000000000000000000000000ea';

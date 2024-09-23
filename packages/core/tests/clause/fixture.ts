@@ -1,10 +1,10 @@
 // Specify the path to your Solidity contract file
-import { coder, ERC721_ABI, FPN, Units, VTHO_ADDRESS } from '../../src';
-import { generateRandomValidAddress } from '../fixture';
 import {
     InvalidAbiDataToEncodeOrDecode,
     InvalidDataType
 } from '@vechain/sdk-errors';
+import { ABIContract, ERC721_ABI, FPN, Units, VTHO_ADDRESS } from '../../src';
+import { generateRandomValidAddress } from '../fixture';
 
 const exampleContractBytecode =
     '608060405234801561001057600080fd5b506040516102063803806102068339818101604052810190610032919061007a565b80600081905550506100a7565b600080fd5b6000819050919050565b61005781610044565b811461006257600080fd5b50565b6000815190506100748161004e565b92915050565b6000602082840312156100905761008f61003f565b5b600061009e84828501610065565b91505092915050565b610150806100b66000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c806360fe47b11461003b5780636d4ce63c14610057575b600080fd5b610055600480360381019061005091906100c3565b610075565b005b61005f61007f565b60405161006c91906100ff565b60405180910390f35b8060008190555050565b60008054905090565b600080fd5b6000819050919050565b6100a08161008d565b81146100ab57600080fd5b50565b6000813590506100bd81610097565b92915050565b6000602082840312156100d9576100d8610088565b5b60006100e7848285016100ae565b91505092915050565b6100f98161008d565b82525050565b600060208201905061011460008301846100f0565b9291505056fea26469706673582212205afd59a6c45e89fb94e9e067818966a866fb7912880dd931923031b31555a92c64736f6c63430008160033';
@@ -47,7 +47,7 @@ const exampleContractAbi = [
         stateMutability: 'nonpayable',
         type: 'function'
     }
-];
+] as const;
 
 /**
  * Generates a random valid address.
@@ -229,11 +229,13 @@ const transferNFTtestCases = [
         expected: {
             to: contractAddress,
             value: 0,
-            data: coder.encodeFunctionInput(ERC721_ABI, 'transferFrom', [
-                senderAddress,
-                recipientAddress,
-                '0'
-            ])
+            data: ABIContract.ofAbi(ERC721_ABI)
+                .encodeFunctionInput('transferFrom', [
+                    senderAddress,
+                    recipientAddress,
+                    '0'
+                ])
+                .toString()
         }
     }
 ];
@@ -313,10 +315,10 @@ const invalidTransferVETTestCases = [
 export {
     exampleContractAbi,
     exampleContractBytecode,
-    transferTokenClausesTestCases,
-    invalidTransferTokenClausesTestCases,
-    transferVETtestCases,
-    transferNFTtestCases,
     invalidNFTtestCases,
-    invalidTransferVETTestCases
+    invalidTransferTokenClausesTestCases,
+    invalidTransferVETTestCases,
+    transferNFTtestCases,
+    transferTokenClausesTestCases,
+    transferVETtestCases
 };

@@ -1,5 +1,4 @@
-import { Address, ZERO_ADDRESS } from '@vechain/sdk-core';
-import { type FunctionFragment } from 'ethers';
+import { ABIFunction, ABIItem, Address, ZERO_ADDRESS } from '@vechain/sdk-core';
 import { type ThorClient } from '../../thor-client';
 import { NetworkContracts } from './addresses';
 
@@ -45,7 +44,10 @@ const resolveNames = async (
     // use the resolveUtils to lookup names
     const [addresses] = (await thorClient.contracts.executeCall(
         resolveUtilsAddress,
-        'function getAddresses(string[] names) returns (address[] addresses)' as unknown as FunctionFragment,
+        ABIItem.ofSignature(
+            ABIFunction,
+            'function getAddresses(string[] names) returns (address[] addresses)'
+        ),
         [names]
     )) as string[][];
 
@@ -101,7 +103,10 @@ const lookupAddresses = async (
     // use the resolveUtils to lookup names
     const [names] = (await thorClient.contracts.executeCall(
         resolveUtilsAddress,
-        'function getNames(address[] addresses) returns (string[] names)' as unknown as FunctionFragment,
+        ABIItem.ofSignature(
+            ABIFunction,
+            'function getNames(address[] addresses) returns (string[] names)'
+        ),
         [addresses]
     )) as string[][];
 

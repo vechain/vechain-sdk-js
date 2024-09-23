@@ -1,7 +1,7 @@
+import { ABIContract, dataUtils, Units } from '@vechain/sdk-core';
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { TEST_ACCOUNTS, ZERO_ADDRESS } from '../../fixture';
 import { BUILT_IN_CONTRACTS } from '../../../src';
-import { coder, dataUtils, Units } from '@vechain/sdk-core';
+import { TEST_ACCOUNTS, ZERO_ADDRESS } from '../../fixture';
 
 /**
  * Transaction details function fixture.
@@ -234,15 +234,15 @@ const simulateTransaction = {
                         {
                             to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
                             value: '0',
-                            data: coder.encodeFunctionInput(
-                                BUILT_IN_CONTRACTS.ENERGY_ABI,
-                                'transfer',
-                                [
+                            data: ABIContract.ofAbi(
+                                BUILT_IN_CONTRACTS.ENERGY_ABI
+                            )
+                                .encodeFunctionInput('transfer', [
                                     TEST_ACCOUNTS.TRANSACTION
                                         .TRANSACTION_RECEIVER.address,
                                     Units.parseEther('1').bi
-                                ]
-                            )
+                                ])
+                                .toString()
                         }
                     ],
                     simulateTransactionOptions: {
@@ -315,16 +315,16 @@ const simulateTransaction = {
                         {
                             to: BUILT_IN_CONTRACTS.PARAMS_ADDRESS,
                             value: '0',
-                            data: coder.encodeFunctionInput(
-                                BUILT_IN_CONTRACTS.PARAMS_ABI,
-                                'get',
-                                [
+                            data: ABIContract.ofAbi(
+                                BUILT_IN_CONTRACTS.PARAMS_ABI
+                            )
+                                .encodeFunctionInput('get', [
                                     dataUtils.encodeBytes32String(
                                         'base-gas-price',
                                         'left'
                                     )
-                                ]
-                            )
+                                ])
+                                .toString()
                         }
                     ]
                 },
@@ -363,14 +363,14 @@ const simulateTransaction = {
                             /**
                              * Checks the VTHO balance of TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
                              */
-                            data: coder.encodeFunctionInput(
-                                BUILT_IN_CONTRACTS.ENERGY_ABI,
-                                'balanceOf',
-                                [
+                            data: ABIContract.ofAbi(
+                                BUILT_IN_CONTRACTS.ENERGY_ABI
+                            )
+                                .encodeFunctionInput('balanceOf', [
                                     TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
                                         .address
-                                ]
-                            )
+                                ])
+                                .toString()
                         }
                     ],
                     simulateTransactionOptions: {
@@ -468,15 +468,13 @@ const simulateTransaction = {
                     {
                         to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
                         value: '0',
-                        data: coder.encodeFunctionInput(
-                            BUILT_IN_CONTRACTS.ENERGY_ABI,
-                            'transfer',
-                            [
+                        data: ABIContract.ofAbi(BUILT_IN_CONTRACTS.ENERGY_ABI)
+                            .encodeFunctionInput('transfer', [
                                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
                                     .address,
                                 Units.parseEther('1').bi
-                            ]
-                        )
+                            ])
+                            .toString()
                     }
                 ],
                 simulateTransactionOptions: {
@@ -491,8 +489,8 @@ const simulateTransaction = {
 };
 
 export {
-    transactionDetails,
-    transactionReceipts,
     sendTransactionErrors,
-    simulateTransaction
+    simulateTransaction,
+    transactionDetails,
+    transactionReceipts
 };

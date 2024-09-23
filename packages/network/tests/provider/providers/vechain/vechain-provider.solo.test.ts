@@ -1,12 +1,11 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 
 import {
+    ABIContract,
     clauseBuilder,
-    coder,
     type TransactionClause
 } from '@vechain/sdk-core';
 import { JSONRPCMethodNotFound } from '@vechain/sdk-errors';
-import { type FunctionFragment } from 'ethers';
 import {
     ProviderInternalBaseWallet,
     type SubscriptionEvent,
@@ -203,9 +202,7 @@ describe('VeChain provider tests - solo', () => {
         await thorClient.contracts.executeTransaction(
             (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner,
             contract.address,
-            coder
-                .createInterface(contract.abi)
-                .getFunction('transfer') as FunctionFragment,
+            ABIContract.ofAbi(contract.abi).getFunction('transfer'),
             [TEST_ACCOUNT.address, 100]
         );
 
@@ -306,17 +303,13 @@ describe('VeChain provider tests - solo', () => {
         await thorClient.contracts.executeTransaction(
             (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner,
             erc20Contract.address,
-            coder
-                .createInterface(erc20Contract.abi)
-                .getFunction('transfer') as FunctionFragment,
+            ABIContract.ofAbi(erc20Contract.abi).getFunction('transfer'),
             [TEST_ACCOUNT.address, 100]
         );
 
         const clauses = clauseBuilder.functionInteraction(
             erc721Contract.address,
-            coder
-                .createInterface(erc721Contract.abi)
-                .getFunction('mintItem') as FunctionFragment,
+            ABIContract.ofAbi(erc721Contract.abi).getFunction('mintItem'),
             [TEST_ACCOUNT.address]
         ) as TransactionClause;
 
@@ -325,9 +318,7 @@ describe('VeChain provider tests - solo', () => {
         await thorClient.contracts.executeTransaction(
             (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner,
             erc721Contract.address,
-            coder
-                .createInterface(erc721Contract.abi)
-                .getFunction('mintItem') as FunctionFragment,
+            ABIContract.ofAbi(erc721Contract.abi).getFunction('mintItem'),
             [TEST_ACCOUNT.address],
             { gas: gas.totalGas }
         );

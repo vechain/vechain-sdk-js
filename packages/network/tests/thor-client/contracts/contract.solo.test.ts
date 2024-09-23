@@ -1,19 +1,12 @@
 /* eslint-disable */
 
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import {
-    Address,
-    coder,
-    type DeployParams
-} from '@vechain/sdk-core';
+import { ABIContract, Address, type DeployParams } from '@vechain/sdk-core';
 import {
     CannotFindTransaction,
     ContractDeploymentFailed,
     InvalidTransactionField
 } from '@vechain/sdk-errors';
-import {
-    type FunctionFragment
-} from 'ethers';
 import {
     Contract,
     type ContractFactory,
@@ -358,14 +351,14 @@ describe('ThorClient - Contracts', () => {
             deployedContractAbi
         );
 
-        // The get function fragment call should fail because the function does not exist
+        // The get function ABI call should fail because the function does not exist
         expect(() =>
-            loadedContract.getFunctionFragment('notExistingFunction')
+            loadedContract.getFunctionAbi('notExistingFunction')
         ).toThrow();
 
-        // The get event fragment call should fail because the event does not exist
+        // The get event ABI call should fail because the event does not exist
         expect(() =>
-            loadedContract.getEventFragment('notExistingFunction')
+            loadedContract.getEventAbi('notExistingFunction')
         ).toThrow();
     }, 10000);
 
@@ -527,13 +520,13 @@ describe('ThorClient - Contracts', () => {
             'set the value in the contract to 123'
         );
         expect(clauseSet1.clause.abi).toEqual(
-            '{"type":"function","name":"set","constant":false,"payable":false,"inputs":[{"type":"uint256","name":"x"}],"outputs":[]}'
+            '{"inputs":[{"internalType":"uint256","name":"x","type":"uint256"}],"name":"set","outputs":[],"stateMutability":"nonpayable","type":"function"}'
         );
         expect(clauseSet2.clause.comment).toBe(
             'set the value in the contract to 321'
         );
         expect(clauseSet2.clause.abi).toEqual(
-            '{"type":"function","name":"set","constant":false,"payable":false,"inputs":[{"type":"uint256","name":"x"}],"outputs":[]}'
+            '{"inputs":[{"internalType":"uint256","name":"x","type":"uint256"}],"name":"set","outputs":[],"stateMutability":"nonpayable","type":"function"}'
         );
     }, 10000);
 
@@ -563,7 +556,11 @@ describe('ThorClient - Contracts', () => {
         );
 
         expect(clauseSet1.clause.abi).toEqual(
-            '{"type":"function","name":"set","constant":false,"payable":false,"inputs":[{"type":"uint256","name":"x"}],"outputs":[]}'
+            '{"inputs":[{"internalType":"uint256","name":"x","type":"uint256"}],"name":"set","outputs":[],"stateMutability":"nonpayable","type":"function"}'
+        );
+
+        expect(clauseSet2.clause.abi).toEqual(
+            '{"inputs":[{"internalType":"uint256","name":"x","type":"uint256"}],"name":"set","outputs":[],"stateMutability":"nonpayable","type":"function"}'
         );
     }, 10000);
 
@@ -581,9 +578,9 @@ describe('ThorClient - Contracts', () => {
             test(description, async () => {
                 const response = await thorSoloClient.contracts.executeCall(
                     TESTING_CONTRACT_ADDRESS,
-                    coder
-                        .createInterface(TESTING_CONTRACT_ABI)
-                        .getFunction(functionName) as FunctionFragment,
+                    ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
+                        functionName
+                    ),
                     params
                 );
 
@@ -600,9 +597,9 @@ describe('ThorClient - Contracts', () => {
             test(description, async () => {
                 const response = await thorSoloClient.contracts.executeCall(
                     TESTING_CONTRACT_ADDRESS,
-                    coder
-                        .createInterface(TESTING_CONTRACT_ABI)
-                        .getFunction(functionName) as FunctionFragment,
+                    ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
+                        functionName
+                    ),
                     params
                 );
                 expect(response).toBe(expected);
@@ -618,9 +615,9 @@ describe('ThorClient - Contracts', () => {
             test(description, async () => {
                 const response = await thorSoloClient.contracts.executeCall(
                     TESTING_CONTRACT_ADDRESS,
-                    coder
-                        .createInterface(TESTING_CONTRACT_ABI)
-                        .getFunction(functionName) as FunctionFragment,
+                    ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
+                        functionName
+                    ),
                     params
                 );
                 expect(response).toEqual(expected);

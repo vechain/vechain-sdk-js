@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import {
     InvalidAbiDataToEncodeOrDecode,
-    InvalidAbiFragment,
+    InvalidAbiItem,
     InvalidAbiSignatureFormat,
     VechainSDKError
 } from '../../src';
@@ -29,24 +29,24 @@ describe('Error package Available errors test - ABI', () => {
     });
 
     /**
-     * InvalidAbiFragment
+     * InvalidAbiItem
      */
-    test('InvalidAbiFragment', () => {
+    test('InvalidAbiItem', () => {
         // Inner error
         [undefined, new Error('error')].forEach((innerError) => {
-            // Fragment type
+            // ABI item type
             [
                 {
                     type: 'function' as 'function' | 'event',
-                    fragment: 'fragment' as unknown
+                    value: 'abiItem' as unknown
                 },
                 {
                     type: 'event' as 'function' | 'event',
-                    fragment: 'fragment' as unknown
+                    value: 'abiItem' as unknown
                 }
             ].forEach((data) => {
                 expect(() => {
-                    throw new InvalidAbiFragment(
+                    throw new InvalidAbiItem(
                         'method',
                         'message',
                         data,

@@ -1,4 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
+import { stringifyData } from '@vechain/sdk-errors';
+import { type AbiEvent } from 'abitype';
+import { subscriptions, TESTNET_URL } from '../../../src';
 import {
     getBeatSubscriptionUrlTestCases,
     getBlockSubscriptionUrlTestCases,
@@ -8,8 +11,6 @@ import {
     getVETtransfersSubscriptionUrlTestCases,
     testWebSocketConnection
 } from './fixture';
-import { subscriptions, TESTNET_URL } from '../../../src';
-import { stringifyData } from '@vechain/sdk-errors';
 
 /**
  * Test suite for the Subscriptions utility methods for getting the subscription URLs
@@ -33,7 +34,7 @@ describe('Subscriptions Testnet', () => {
                     expect(
                         subscriptions.getEventSubscriptionUrl(
                             TESTNET_URL,
-                            event,
+                            event as AbiEvent,
                             valuesToEncode,
                             options
                         )

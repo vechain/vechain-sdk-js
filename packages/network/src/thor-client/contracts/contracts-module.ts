@@ -1,6 +1,11 @@
-import { abi, clauseBuilder, coder, dataUtils } from '@vechain/sdk-core';
+import {
+    ABIContract,
+    clauseBuilder,
+    dataUtils,
+    Hex,
+    type ABIFunction
+} from '@vechain/sdk-core';
 import { type Abi } from 'abitype';
-import { type FunctionFragment, type InterfaceAbi } from 'ethers';
 import { type VeChainSigner } from '../../signer';
 import { BUILT_IN_CONTRACTS } from '../../utils';
 import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
@@ -41,12 +46,7 @@ class ContractsModule {
         bytecode: string,
         signer: VeChainSigner
     ): ContractFactory<TAbi> {
-        return new ContractFactory<TAbi>(
-            abi as InterfaceAbi,
-            bytecode,
-            signer,
-            this.thor
-        );
+        return new ContractFactory<TAbi>(abi, bytecode, signer, this.thor);
     }
 
     /**
@@ -62,19 +62,14 @@ class ContractsModule {
         abi: Tabi,
         signer?: VeChainSigner
     ): Contract<Tabi> {
-        return new Contract<Tabi>(
-            address,
-            abi as InterfaceAbi,
-            this.thor,
-            signer
-        );
+        return new Contract<Tabi>(address, abi, this.thor, signer);
     }
 
     /**
      * Executes a read-only call to a smart contract function, simulating the transaction to obtain the result.
      *
      * @param contractAddress - The address of the smart contract to interact with.
-     * @param functionFragment - The function fragment, including the name and types of the function to be called, derived from the contract's ABI.
+     * @param functionAbi - The function ABI, including the name and types of the function to be called, derived from the contract's ABI.
      * @param functionData - An array of arguments to be passed to the smart contract function, corresponding to the function's parameters.
      * @param contractCallOptions - (Optional) Additional options for the contract call, such as the sender's address, gas limit, and gas price, which can affect the simulation's context.
      * @returns A promise that resolves to the decoded output of the smart contract function call, the format of which depends on the function's return types.
@@ -83,7 +78,7 @@ class ContractsModule {
      */
     public async executeCall(
         contractAddress: string,
-        functionFragment: FunctionFragment,
+        functionAbi: ABIFunction,
         functionData: unknown[],
         contractCallOptions?: ContractCallOptions
     ): Promise<ContractCallResult | string> {
@@ -93,9 +88,7 @@ class ContractsModule {
                 {
                     to: contractAddress,
                     value: '0',
-                    data: new abi.Function(functionFragment).encodeInput(
-                        functionData
-                    )
+                    data: functionAbi.encodeData(functionData).toString()
                 }
             ],
             contractCallOptions
@@ -110,9 +103,9 @@ class ContractsModule {
              */
             return decodeRevertReason(response[0].data) ?? '';
         } else {
-            return new abi.Function(functionFragment).decodeOutput(
-                response[0].data
-            );
+            // Returning ethers format (array of anonymous values). To be removed with #1184
+            // The viem format is a single value/JSON object (ABIFunction#decodeResult)
+            return functionAbi.decodeEthersOutput(Hex.of(response[0].data));
         }
     }
 
@@ -130,11 +123,11 @@ class ContractsModule {
             clauses.map((clause) => clause.clause),
             options
         );
-        return response.map((res, index) => {
-            return new abi.Function(
-                clauses[index].functionFragment
-            ).decodeOutput(res.data);
-        });
+        // Returning ethers format (array of anonymous values). To be removed with #1184
+        // The viem format is a single value/JSON object (ABIFunction#decodeResult)
+        return response.map((res, index) =>
+            clauses[index].functionAbi.decodeEthersOutput(Hex.of(res.data))
+        );
     }
 
     /**
@@ -142,7 +135,7 @@ class ContractsModule {
      *
      * @param signer - The signer used for signing the transaction.
      * @param contractAddress - The address of the smart contract.
-     * @param functionFragment - The function fragment, including the name and types of the function to be called, derived from the contract's ABI.
+     * @param functionAbi - The function ABI, including the name and types of the function to be called, derived from the contract's ABI.
      * @param functionData - The input data for the function.
      * @param options - (Optional) An object containing options for the transaction body. Includes all options of the `buildTransactionBody` method
      *                  besides `isDelegated`.
@@ -153,7 +146,7 @@ class ContractsModule {
     public async executeTransaction(
         signer: VeChainSigner,
         contractAddress: string,
-        functionFragment: FunctionFragment,
+        functionAbi: ABIFunction,
         functionData: unknown[],
         options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {
@@ -163,7 +156,7 @@ class ContractsModule {
                 // Build a clause to interact with the contract function
                 clauseBuilder.functionInteraction(
                     contractAddress,
-                    functionFragment,
+                    functionAbi,
                     functionData,
                     options?.value ?? 0
                 )
@@ -230,9 +223,7 @@ class ContractsModule {
     public async getBaseGasPrice(): Promise<unknown> {
         return await this.executeCall(
             BUILT_IN_CONTRACTS.PARAMS_ADDRESS,
-            coder
-                .createInterface(BUILT_IN_CONTRACTS.PARAMS_ABI)
-                .getFunction('get') as FunctionFragment,
+            ABIContract.ofAbi(BUILT_IN_CONTRACTS.PARAMS_ABI).getFunction('get'),
             [dataUtils.encodeBytes32String('base-gas-price', 'left')]
         );
     }

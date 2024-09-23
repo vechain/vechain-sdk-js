@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
+    ABIContract,
     Address,
     clauseBuilder,
-    coder,
     HexUInt,
     TransactionHandler
 } from '@vechain/sdk-core';
@@ -10,7 +10,6 @@ import {
     InvalidSecp256k1PrivateKey,
     JSONRPCInvalidParams
 } from '@vechain/sdk-errors';
-import { type FunctionFragment } from 'ethers';
 import {
     ProviderInternalBaseWallet,
     signerUtils,
@@ -121,11 +120,9 @@ describe('VeChain base signer tests - testnet', () => {
 
                         const sampleClause = clauseBuilder.functionInteraction(
                             TESTING_CONTRACT_ADDRESS,
-                            coder
-                                .createInterface(TESTING_CONTRACT_ABI)
-                                .getFunction(
-                                    'setStateVariable'
-                                ) as FunctionFragment,
+                            ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
+                                'setStateVariable'
+                            ),
                             [123]
                         );
 
