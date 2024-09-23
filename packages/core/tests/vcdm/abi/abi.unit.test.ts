@@ -7,7 +7,7 @@ import {
 } from '@vechain/sdk-errors';
 import { ParamType, type ethers } from 'ethers';
 import { type AbiEvent, type AbiFunction } from 'viem';
-import { abi, ABIEvent, ABIFunction, Hex } from '../../src';
+import { abi, ABIEvent, ABIFunction, Hex } from '../../../src';
 import {
     encodedDecodedInvalidValues,
     encodedDecodedValues,
