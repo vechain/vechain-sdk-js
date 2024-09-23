@@ -8,7 +8,6 @@ import {
     ContractDeploymentFailed
 } from '@vechain/sdk-errors';
 import { type Abi } from 'abitype';
-import { type InterfaceAbi } from 'ethers';
 import { signerUtils, type VeChainSigner } from '../../../signer';
 import { type ThorClient } from '../../thor-client';
 import { type SendTransactionResult } from '../../transactions';
@@ -22,7 +21,7 @@ class ContractFactory<TAbi extends Abi> {
     /**
      * The ABI (Application Binary Interface) of the contract.
      */
-    private readonly abi: InterfaceAbi;
+    private readonly abi: Abi;
 
     /**
      * The bytecode of the smart contract.
@@ -52,7 +51,7 @@ class ContractFactory<TAbi extends Abi> {
      * @param thor An instance of ThorClient to interact with the blockchain.
      */
     constructor(
-        abi: InterfaceAbi,
+        abi: Abi,
         bytecode: string,
         signer: VeChainSigner,
         thor: ThorClient

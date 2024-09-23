@@ -66,7 +66,7 @@ describe('RPC Mapper - eth_signTransaction method tests', () => {
      * eth_signTransaction RPC call tests - Positive cases
      */
     describe('eth_signTransaction - Positive cases', () => {
-        const timeout = 10000; // 10 seconds
+        const timeout = 15000; // 15 seconds
         /**
          * Should be able to sign transactions
          */

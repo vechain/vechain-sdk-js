@@ -1,15 +1,15 @@
 import {
-    coder,
+    ABIContract,
     networkInfo,
     Units,
     type TransactionBody
 } from '@vechain/sdk-core';
+import { BUILT_IN_CONTRACTS } from '../../../src';
 import {
     TEST_ACCOUNTS,
     TESTING_CONTRACT_ABI,
     TESTING_CONTRACT_ADDRESS
 } from '../../fixture';
-import { BUILT_IN_CONTRACTS } from '../../../src';
 
 /**
  * Some random transaction nonces to use into tests
@@ -27,10 +27,12 @@ const transactionNonces = {
 const transfer1VTHOClause = {
     to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
     value: '0',
-    data: coder.encodeFunctionInput(BUILT_IN_CONTRACTS.ENERGY_ABI, 'transfer', [
-        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-        Units.parseEther('1').bi
-    ])
+    data: ABIContract.ofAbi(BUILT_IN_CONTRACTS.ENERGY_ABI)
+        .encodeFunctionInput('transfer', [
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+            Units.parseEther('1').bi
+        ])
+        .toString()
 };
 
 /**
@@ -39,10 +41,12 @@ const transfer1VTHOClause = {
 const transfer1VTHOClauseWithValueAsANumber = {
     to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
     value: 0,
-    data: coder.encodeFunctionInput(BUILT_IN_CONTRACTS.ENERGY_ABI, 'transfer', [
-        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-        Units.parseEther('1').bi
-    ])
+    data: ABIContract.ofAbi(BUILT_IN_CONTRACTS.ENERGY_ABI)
+        .encodeFunctionInput('transfer', [
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+            Units.parseEther('1').bi
+        ])
+        .toString()
 };
 
 /**
@@ -206,11 +210,12 @@ const buildTransactionBodyClausesTestCases = [
             {
                 to: TESTING_CONTRACT_ADDRESS,
                 value: '0',
-                data: coder.encodeFunctionInput(
-                    TESTING_CONTRACT_ABI,
-                    'testAssertError',
-                    [0] // Any number !== 0 will cause Panic error
-                )
+                data: ABIContract.ofAbi(TESTING_CONTRACT_ABI)
+                    .encodeFunctionInput(
+                        'testAssertError',
+                        [0] // Any number !== 0 will cause Panic error
+                    )
+                    .toString()
             },
             {
                 to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
@@ -487,13 +492,13 @@ const getRevertReasonTestCasesFixture = [
 ];
 
 export {
-    transactionNonces,
-    waitForTransactionTestCases,
+    buildTransactionBodyClausesTestCases,
+    expectedReceipt,
+    getRevertReasonTestCasesFixture,
     invalidWaitForTransactionTestCases,
+    transactionNonces,
+    transfer1VTHOClause,
     transferTransactionBody,
     transferTransactionBodyValueAsNumber,
-    expectedReceipt,
-    transfer1VTHOClause,
-    buildTransactionBodyClausesTestCases,
-    getRevertReasonTestCasesFixture
+    waitForTransactionTestCases
 };

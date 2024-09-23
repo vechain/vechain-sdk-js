@@ -1,4 +1,5 @@
-import { coder, Units } from '@vechain/sdk-core';
+import { ABIContract, Units } from '@vechain/sdk-core';
+import { InvalidDataType } from '@vechain/sdk-errors';
 import { BUILT_IN_CONTRACTS } from '../../../src';
 import {
     TEST_ACCOUNTS,
@@ -6,7 +7,6 @@ import {
     TESTING_CONTRACT_ADDRESS
 } from '../../fixture';
 import { transfer1VTHOClause } from '../transactions/fixture';
-import { InvalidDataType } from '@vechain/sdk-errors';
 
 /**
  * Test cases for `estimateGas` method
@@ -20,15 +20,13 @@ const estimateGasTestCases = {
                 {
                     to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
                     value: '0',
-                    data: coder.encodeFunctionInput(
-                        BUILT_IN_CONTRACTS.ENERGY_ABI,
-                        'transfer',
-                        [
+                    data: ABIContract.ofAbi(BUILT_IN_CONTRACTS.ENERGY_ABI)
+                        .encodeFunctionInput('transfer', [
                             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
                                 .address,
                             Units.parseEther('1000000000').bi
-                        ]
-                    )
+                        ])
+                        .toString()
                 }
             ],
             caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address,
@@ -47,15 +45,13 @@ const estimateGasTestCases = {
                 {
                     to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
                     value: '0',
-                    data: coder.encodeFunctionInput(
-                        BUILT_IN_CONTRACTS.ENERGY_ABI,
-                        'transfer',
-                        [
+                    data: ABIContract.ofAbi(BUILT_IN_CONTRACTS.ENERGY_ABI)
+                        .encodeFunctionInput('transfer', [
                             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
                                 .address,
                             Units.parseEther('1000000000').bi
-                        ]
-                    )
+                        ])
+                        .toString()
                 },
                 {
                     to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
@@ -79,15 +75,13 @@ const estimateGasTestCases = {
                 {
                     to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
                     value: '0',
-                    data: coder.encodeFunctionInput(
-                        BUILT_IN_CONTRACTS.ENERGY_ABI,
-                        'transfer',
-                        [
+                    data: ABIContract.ofAbi(BUILT_IN_CONTRACTS.ENERGY_ABI)
+                        .encodeFunctionInput('transfer', [
                             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
                                 .address,
                             Units.parseEther('1').bi
-                        ]
-                    )
+                        ])
+                        .toString()
                 },
                 {
                     to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
@@ -111,41 +105,35 @@ const estimateGasTestCases = {
                 {
                     to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
                     value: '0',
-                    data: coder.encodeFunctionInput(
-                        BUILT_IN_CONTRACTS.ENERGY_ABI,
-                        'transfer',
-                        [
+                    data: ABIContract.ofAbi(BUILT_IN_CONTRACTS.ENERGY_ABI)
+                        .encodeFunctionInput('transfer', [
                             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
                                 .address,
                             Units.parseEther('1').bi
-                        ]
-                    )
+                        ])
+                        .toString()
                 },
                 {
                     to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
                     value: '0',
-                    data: coder.encodeFunctionInput(
-                        BUILT_IN_CONTRACTS.ENERGY_ABI,
-                        'transfer',
-                        [
+                    data: ABIContract.ofAbi(BUILT_IN_CONTRACTS.ENERGY_ABI)
+                        .encodeFunctionInput('transfer', [
                             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
                                 .address,
                             Units.parseEther('1').bi
-                        ]
-                    )
+                        ])
+                        .toString()
                 },
                 {
                     to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
                     value: '0',
-                    data: coder.encodeFunctionInput(
-                        BUILT_IN_CONTRACTS.ENERGY_ABI,
-                        'transfer',
-                        [
+                    data: ABIContract.ofAbi(BUILT_IN_CONTRACTS.ENERGY_ABI)
+                        .encodeFunctionInput('transfer', [
                             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
                                 .address,
                             Units.parseEther('1000000000').bi
-                        ]
-                    )
+                        ])
+                        .toString()
                 }
             ],
             caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address,
@@ -164,11 +152,12 @@ const estimateGasTestCases = {
                 {
                     to: TESTING_CONTRACT_ADDRESS,
                     value: '0',
-                    data: coder.encodeFunctionInput(
-                        TESTING_CONTRACT_ABI,
-                        'testAssertError',
-                        [1] // Any number !== 0 will cause Panic error
-                    )
+                    data: ABIContract.ofAbi(TESTING_CONTRACT_ABI)
+                        .encodeFunctionInput(
+                            'testAssertError',
+                            [1] // Any number !== 0 will cause Panic error
+                        )
+                        .toString()
                 }
             ],
             caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address,
@@ -219,11 +208,12 @@ const estimateGasTestCases = {
                 {
                     to: TESTING_CONTRACT_ADDRESS,
                     value: '0',
-                    data: coder.encodeFunctionInput(
-                        TESTING_CONTRACT_ABI,
-                        'testAssertError',
-                        [0] // Any number !== 0 will cause Panic error
-                    )
+                    data: ABIContract.ofAbi(TESTING_CONTRACT_ABI)
+                        .encodeFunctionInput(
+                            'testAssertError',
+                            [0] // Any number !== 0 will cause Panic error
+                        )
+                        .toString()
                 },
                 {
                     to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,

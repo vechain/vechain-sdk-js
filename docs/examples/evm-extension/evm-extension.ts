@@ -1,11 +1,9 @@
-import { coder } from '@vechain/sdk-core';
-import { stringifyData } from '@vechain/sdk-errors';
+import { ABIContract } from '@vechain/sdk-core';
 import { THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
-import { type FunctionFragment } from 'ethers';
 import { expect } from 'expect';
 
 // ABI of the `TestingContract` smart contract
-const TESTING_CONTRACT_ABI = stringifyData([
+const TESTING_CONTRACT_ABI = [
     {
         inputs: [
             {
@@ -772,7 +770,7 @@ const TESTING_CONTRACT_ABI = stringifyData([
         stateMutability: 'nonpayable',
         type: 'function'
     }
-]);
+] as const;
 
 // Address of the `TestingContract` smart contract
 const TESTING_CONTRACT_ADDRESS: string =
@@ -786,9 +784,7 @@ const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
 // Call the getTotalSupply function of the `TestingContract` smart contract
 const totalSupply = await thorSoloClient.contracts.executeCall(
     TESTING_CONTRACT_ADDRESS,
-    coder
-        .createInterface(TESTING_CONTRACT_ABI)
-        .getFunction('getTotalSupply') as FunctionFragment,
+    ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction('getTotalSupply'),
     []
 );
 

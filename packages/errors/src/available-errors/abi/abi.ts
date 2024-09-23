@@ -10,14 +10,14 @@ import { type ObjectErrorData } from '../types';
 class InvalidAbiDataToEncodeOrDecode extends VechainSDKError<ObjectErrorData> {}
 
 /**
- * Invalid abi fragment error
+ * Invalid ABI item error
  *
  * WHEN TO USE:
- * * This error will be thrown when the abi fragment is invalid.
+ * * This error will be thrown when the ABI item is invalid.
  */
-class InvalidAbiFragment extends VechainSDKError<{
+class InvalidAbiItem extends VechainSDKError<{
     type: 'function' | 'event';
-    fragment: unknown;
+    value: unknown;
 }> {}
 
 /**
@@ -32,6 +32,6 @@ class InvalidAbiSignatureFormat extends VechainSDKError<{
 
 export {
     InvalidAbiDataToEncodeOrDecode,
-    InvalidAbiFragment,
+    InvalidAbiItem,
     InvalidAbiSignatureFormat
 };

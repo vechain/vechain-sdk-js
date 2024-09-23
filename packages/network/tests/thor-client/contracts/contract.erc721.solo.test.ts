@@ -1,7 +1,11 @@
 // Global variable to hold contract address
 import { beforeAll, describe, expect, test } from '@jest/globals';
-import { coder, ERC721_ABI } from '@vechain/sdk-core';
-import { type FunctionFragment, type LogDescription } from 'ethers';
+import {
+    ABIContract,
+    ERC721_ABI,
+    Hex,
+    type vechain_sdk_core_ethers
+} from '@vechain/sdk-core';
 import {
     THOR_SOLO_URL,
     ThorClient,
@@ -92,9 +96,9 @@ describe('ThorClient - ERC721 Contracts', () => {
                     if (isReadOnly) {
                         response = await thorSoloClient.contracts.executeCall(
                             contractAddress,
-                            coder
-                                .createInterface(ERC721_ABI)
-                                .getFunction(functionName) as FunctionFragment,
+                            ABIContract.ofAbi(ERC721_ABI).getFunction(
+                                functionName
+                            ),
                             params
                         );
                         expect(response).toBeDefined();
@@ -104,11 +108,9 @@ describe('ThorClient - ERC721 Contracts', () => {
                             await thorSoloClient.contracts.executeTransaction(
                                 signer,
                                 contractAddress,
-                                coder
-                                    .createInterface(ERC721_ABI)
-                                    .getFunction(
-                                        functionName
-                                    ) as FunctionFragment,
+                                ABIContract.ofAbi(ERC721_ABI).getFunction(
+                                    functionName
+                                ),
                                 params
                             );
 
@@ -121,7 +123,7 @@ describe('ThorClient - ERC721 Contracts', () => {
                             result as TransactionReceipt
                         );
 
-                        expect(logDescriptions[0][0]?.args).toEqual(expected);
+                        expect(logDescriptions[0][0]).toEqual(expected);
                     }
                 },
                 10000
@@ -131,10 +133,14 @@ describe('ThorClient - ERC721 Contracts', () => {
 
     function decodeResultOutput(
         result: TransactionReceipt
-    ): Array<Array<LogDescription | null>> {
+    ): vechain_sdk_core_ethers.Result[][] {
         return result?.outputs.map((output) => {
             return output.events.map((event) => {
-                return coder.parseLog(ERC721_ABI, event.data, event.topics);
+                // Modify when addressing #1184
+                return ABIContract.ofAbi(ERC721_ABI).parseEthersLog(
+                    Hex.of(event.data),
+                    event.topics.map((topic) => Hex.of(topic))
+                );
             });
         });
     }

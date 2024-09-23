@@ -1,11 +1,7 @@
 import { ethersAbi } from './ABI';
-import { Event } from './ABIEvent';
-import { Function } from './ABIFunction';
+import { ABIContract } from './ABIContract';
+import { ABIEvent } from './ABIEvent';
+import { ABIFunction } from './ABIFunction';
+import { ABIItem } from './ABIItem';
 
-const abi = {
-    ...ethersAbi,
-    Function,
-    Event
-};
-
-export { abi };
+export { ethersAbi as abi, ABIContract, ABIEvent, ABIFunction, ABIItem };

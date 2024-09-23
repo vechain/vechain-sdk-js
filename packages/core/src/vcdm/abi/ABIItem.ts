@@ -14,7 +14,7 @@ type ABIItemType = AbiFunction | AbiEvent;
  * @extends ABI
  */
 abstract class ABIItem extends ABI {
-    protected readonly signature: ABIItemType;
+    public readonly signature: ABIItemType;
     public readonly stringSignature: string;
     /**
      * ABIItem constructor from item (Event, Function...) signature.
@@ -39,9 +39,43 @@ abstract class ABIItem extends ABI {
                 : signature;
     }
 
+    public static ofSignature<T extends ABIItem>(
+        ABIItemConstructor: new (signature: string) => T,
+        signature: string
+    ): T;
+
+    public static ofSignature<T extends ABIItem>(
+        ABIItemConstructor: new (signature: ABIItemType) => T,
+        signature: ABIItemType
+    ): T;
+
     /**
-     * The signature hash of the ABI.
-     * @returns {string} The signature hash of the ABI.
+     * Returns and instance of an ABIItem from a signature.
+     * @param ABIItemConstructor ABIItem constructor.
+     * @param {string | ABIItemType} signature Signature of the ABIIItem.
+     * @returns {T} An instance of the ABIItem.
+     */
+    public static ofSignature<T extends ABIItem>(
+        ABIItemConstructor: new (signature: string | ABIItemType) => T,
+        signature: string | ABIItemType
+    ): T {
+        return new ABIItemConstructor(signature);
+    }
+
+    /**
+     * Returns a string representation of a JSON object or a string.
+     * @param {'json' | 'string'} formatType Either JSON or String
+     * @returns The string representation of the ABI item.
+     */
+    public format(formatType: 'json' | 'string' = 'string'): string {
+        return formatType === 'json'
+            ? JSON.stringify(this.signature)
+            : this.stringSignature;
+    }
+
+    /**
+     * The signature hash of the ABIItem.
+     * @returns {string} The signature hash of the ABIItem.
      * @remarks Wrapper for {@link toFunctionHash}.
      **/
     public get signatureHash(): string {
@@ -49,11 +83,10 @@ abstract class ABIItem extends ABI {
     }
 
     /**
-     * Compares the current ABI instance with another ABI instance.
-     * @param that The ABI to compare with.
-     * @returns {number} A non-zero number if the current ABI is different to the other ABI or zero if they are equal.
+     * Compares the current ABIItem instance with another ABIItem instance.
+     * @param {ABIItem} that The item to compare with.
+     * @returns {number} A non-zero number if the current ABIItem is different to the other ABI or zero if they are equal.
      * @override {@link VeChainDataModel#compareTo}
-     * @remark The comparison is done by comparing the types and values of the ABI instances.
      **/
     public compareTo(that: ABIItem): number {
         if (super.compareTo(that) !== 0) {
