@@ -16,7 +16,7 @@ describe('Units namespace tests', () => {
     describe('formatEther method tests', () => {
         test('integer result should append .0', () => {
             const exp = UnitsFixture.oneEther;
-            const expected = formatEther(exp);
+            const expected = Number(formatEther(exp)).toFixed(1);
             const actual = Units.formatEther(FPN.of(exp));
             expect(actual).toEqual(expected);
         });
