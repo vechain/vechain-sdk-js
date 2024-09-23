@@ -1,12 +1,19 @@
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { abi, type Address, FPN, type HexUInt, VET, type VTHO } from '../vcdm';
+import {
+    abi,
+    ABIContract,
+    FPN,
+    VET,
+    type ABIFunction,
+    type Address,
+    type HexUInt,
+    type VTHO
+} from '../vcdm';
 import { Hex } from '../vcdm/Hex';
 import { HexInt } from '../vcdm/HexInt';
+import { ERC721_ABI, VIP180_ABI } from '../utils';
 import { type ClauseOptions, type TransactionClause } from '../transaction';
 import type { DeployParams } from './DeployParams';
-import type { FunctionFragment } from 'ethers';
-import { coder } from '../contract';
-import { ERC721_ABI, VIP180_ABI } from '../utils';
 
 class Clause implements TransactionClause {
     private static readonly FORMAT_TYPE = 'json';
@@ -45,7 +52,7 @@ class Clause implements TransactionClause {
 
     public static callFunction(
         contractAddress: Address,
-        functionFragment: FunctionFragment,
+        functionAbi: ABIFunction,
         args: unknown[],
         amount: VET = VET.of(FPN.ZERO),
         clauseOptions?: ClauseOptions
@@ -54,10 +61,10 @@ class Clause implements TransactionClause {
             return new Clause(
                 contractAddress.toString().toLowerCase(),
                 Hex.PREFIX + amount.wei.toString(Hex.RADIX),
-                new abi.Function(functionFragment).encodeInput(args),
+                functionAbi.encodeData(args).toString(),
                 clauseOptions?.comment,
                 clauseOptions?.includeABI === true
-                    ? functionFragment.format(Clause.FORMAT_TYPE)
+                    ? functionAbi.format(Clause.FORMAT_TYPE)
                     : undefined
             );
         }
@@ -85,17 +92,21 @@ class Clause implements TransactionClause {
 
     public static transferNFT(
         contractAddress: Address,
-        from: Address,
-        to: Address,
+        senderAddress: Address,
+        recipientAddress: Address,
         tokenId: HexUInt,
         clauseOptions?: ClauseOptions
     ): Clause {
         return Clause.callFunction(
             contractAddress,
-            coder
-                .createInterface(ERC721_ABI)
-                .getFunction(Clause.TRANSFER_NFT_FUNCTION) as FunctionFragment,
-            [from.toString(), to.toString(), tokenId.bi.toString()],
+            ABIContract.ofAbi(ERC721_ABI).getFunction(
+                Clause.TRANSFER_NFT_FUNCTION
+            ),
+            [
+                senderAddress.toString(),
+                recipientAddress.toString(),
+                tokenId.bi.toString()
+            ],
             undefined,
             clauseOptions
         );
@@ -111,11 +122,9 @@ class Clause implements TransactionClause {
         if (amount.value.isFinite() && amount.value.isPositive()) {
             return this.callFunction(
                 tokenAddress,
-                coder
-                    .createInterface(VIP180_ABI)
-                    .getFunction(
-                        Clause.TRANSFER_TOKEN_FUNCTION
-                    ) as FunctionFragment,
+                ABIContract.ofAbi(VIP180_ABI).getFunction(
+                    Clause.TRANSFER_TOKEN_FUNCTION
+                ),
                 [to.toString(), amount.wei],
                 undefined,
                 clauseOptions

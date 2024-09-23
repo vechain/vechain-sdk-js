@@ -4,7 +4,6 @@ import { exampleContractBytecode } from './fixture';
 import {
     Address,
     Clause,
-    coder,
     ERC721_ABI,
     HexUInt,
     Units,
@@ -12,12 +11,12 @@ import {
     VTHO,
     type ClauseOptions,
     type DeployParams,
-    type TransactionClause
+    type TransactionClause,
+    ABIContract
 } from '../../src';
-import { type FunctionFragment } from 'ethers';
 
 const ClauseFixture = {
-    contact: {
+    contract: {
         abi: [
             {
                 inputs: [
@@ -56,7 +55,7 @@ const ClauseFixture = {
                 stateMutability: 'nonpayable',
                 type: 'function'
             }
-        ],
+        ] as const,
         address: Address.of('0x742d35Cc6634C0532925a3b844Bc454e4438f44e'),
         bytecode: HexUInt.of(
             '608060405234801561001057600080fd5b506040516102063803806102068339818101604052810190610032919061007a565b80600081905550506100a7565b600080fd5b6000819050919050565b61005781610044565b811461006257600080fd5b50565b6000815190506100748161004e565b92915050565b6000602082840312156100905761008f61003f565b5b600061009e84828501610065565b91505092915050565b610150806100b66000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c806360fe47b11461003b5780636d4ce63c14610057575b600080fd5b610055600480360381019061005091906100c3565b610075565b005b61005f61007f565b60405161006c91906100ff565b60405180910390f35b8060008190555050565b60008054905090565b600080fd5b6000819050919050565b6100a08161008d565b81146100ab57600080fd5b50565b6000813590506100bd81610097565b92915050565b6000602082840312156100d9576100d8610088565b5b60006100e7848285016100ae565b91505092915050565b6100f98161008d565b82525050565b600060208201905061011460008301846100f0565b9291505056fea26469706673582212205afd59a6c45e89fb94e9e067818966a866fb7912880dd931923031b31555a92c64736f6c63430008160033'
@@ -77,14 +76,14 @@ describe('Clause class tests', () => {
     describe('callFunction method tests', () => {
         test('Return Clause <- call function', () => {
             const actual = Clause.callFunction(
-                ClauseFixture.contact.address,
-                coder
-                    .createInterface(ClauseFixture.contact.abi)
-                    .getFunction('set') as FunctionFragment,
+                ClauseFixture.contract.address,
+                ABIContract.ofAbi(ClauseFixture.contract.abi).getFunction(
+                    'set'
+                ),
                 [1]
             );
             expect(actual.to).toBe(
-                ClauseFixture.contact.address.toString().toLowerCase()
+                ClauseFixture.contract.address.toString().toLowerCase()
             );
             expect(actual.amount().isZero()).toBe(true);
             expect(actual.data).toBeDefined();
@@ -93,16 +92,16 @@ describe('Clause class tests', () => {
         test('Return Clause <- call function & comment', () => {
             const comment = 'Setting x = 1.';
             const actual = Clause.callFunction(
-                ClauseFixture.contact.address,
-                coder
-                    .createInterface(ClauseFixture.contact.abi)
-                    .getFunction('set') as FunctionFragment,
+                ClauseFixture.contract.address,
+                ABIContract.ofAbi(ClauseFixture.contract.abi).getFunction(
+                    'set'
+                ),
                 [1],
                 undefined,
                 { comment }
             );
             expect(actual.to).toBe(
-                ClauseFixture.contact.address.toString().toLowerCase()
+                ClauseFixture.contract.address.toString().toLowerCase()
             );
             expect(actual.amount().isZero()).toBe(true);
             expect(actual.data).toBeDefined();
@@ -113,16 +112,16 @@ describe('Clause class tests', () => {
         test('Return Clause <- call function & comment & abi', () => {
             const comment = 'Setting x = 1.';
             const actual = Clause.callFunction(
-                ClauseFixture.contact.address,
-                coder
-                    .createInterface(ClauseFixture.contact.abi)
-                    .getFunction('set') as FunctionFragment,
+                ClauseFixture.contract.address,
+                ABIContract.ofAbi(ClauseFixture.contract.abi).getFunction(
+                    'set'
+                ),
                 [1],
                 undefined,
                 { comment, includeABI: true }
             );
             expect(actual.to).toBe(
-                ClauseFixture.contact.address.toString().toLowerCase()
+                ClauseFixture.contract.address.toString().toLowerCase()
             );
             expect(actual.amount().isZero()).toBe(true);
             expect(actual.data).toBeDefined();
@@ -134,16 +133,16 @@ describe('Clause class tests', () => {
     describe('deployContract method tests', () => {
         test('Return Clause <- contract bytecode', () => {
             const actual = Clause.deployContract(
-                ClauseFixture.contact.bytecode
+                ClauseFixture.contract.bytecode
             );
-            expect(actual.data).toEqual(ClauseFixture.contact.bytecode.digits);
+            expect(actual.data).toEqual(ClauseFixture.contract.bytecode.digits);
             expect(actual.to).toBe(null);
             expect(actual.amount().isZero()).toBe(true);
         });
 
         test('Return Clause <- contract bytecode & abi parameters', () => {
             const actual = Clause.deployContract(
-                ClauseFixture.contact.bytecode,
+                ClauseFixture.contract.bytecode,
                 {
                     types: ['uint256'],
                     values: ['100']
@@ -159,7 +158,7 @@ describe('Clause class tests', () => {
         test('Return Clause <- contract bytecode & comment', () => {
             const comment = 'Deploying a contract with a comment';
             const actual = Clause.deployContract(
-                ClauseFixture.contact.bytecode,
+                ClauseFixture.contract.bytecode,
                 undefined,
                 { comment } satisfies ClauseOptions
             );
@@ -173,16 +172,18 @@ describe('Clause class tests', () => {
     describe('transferNFT method tests', () => {
         test('Return Clause <- transfer NFT', () => {
             const expected = {
-                to: ClauseFixture.contact.address.toString().toLowerCase(),
+                to: ClauseFixture.contract.address.toString().toLowerCase(),
                 value: `0x0`,
-                data: coder.encodeFunctionInput(ERC721_ABI, 'transferFrom', [
-                    ClauseFixture.from.toString().toLowerCase(),
-                    ClauseFixture.to.toString().toLowerCase(),
-                    '0'
-                ])
+                data: ABIContract.ofAbi(ERC721_ABI)
+                    .encodeFunctionInput('transferFrom', [
+                        ClauseFixture.from.toString().toLowerCase(),
+                        ClauseFixture.to.toString().toLowerCase(),
+                        '0'
+                    ])
+                    .toString()
             };
             const actual = Clause.transferNFT(
-                ClauseFixture.contact.address,
+                ClauseFixture.contract.address,
                 ClauseFixture.from,
                 ClauseFixture.to,
                 HexUInt.of(0)

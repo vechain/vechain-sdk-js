@@ -231,9 +231,9 @@ function transferNFT(
  * clauseBuilder provides methods for building clauses for interacting with smart contracts or deploying smart contracts.
  */
 export const clauseBuilder = {
-    deployContract
-    // functionInteraction
-    // transferToken
-    // transferVET
-    // transferNFT
+    deployContract,
+    functionInteraction,
+    transferToken,
+    transferVET,
+    transferNFT
 };
