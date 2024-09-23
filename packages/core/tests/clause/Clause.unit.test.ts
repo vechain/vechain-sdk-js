@@ -134,7 +134,9 @@ describe('Clause class tests', () => {
             const actual = Clause.deployContract(
                 ClauseFixture.contract.bytecode
             );
-            expect(actual.data).toEqual(ClauseFixture.contract.bytecode.digits);
+            expect(actual.data).toEqual(
+                ClauseFixture.contract.bytecode.toString()
+            );
             expect(actual.to).toBe(null);
             expect(actual.amount().isZero()).toBe(true);
         });
@@ -163,7 +165,9 @@ describe('Clause class tests', () => {
             );
             expect(actual.to).toBe(null);
             expect(actual.amount().isZero()).toBe(true);
-            expect(actual.data).toEqual(ClauseFixture.contract.bytecode.digits);
+            expect(actual.data).toEqual(
+                ClauseFixture.contract.bytecode.toString()
+            );
             expect(actual.comment).toBe(comment);
         });
     });

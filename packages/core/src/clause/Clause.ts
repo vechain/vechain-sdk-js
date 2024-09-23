@@ -87,7 +87,12 @@ class Clause implements TransactionClause {
                       .encodeParams(deployParams.types, deployParams.values)
                       .replace(Hex.PREFIX, '')
                 : contractBytecode.digits;
-        return new Clause(null, Clause.NO_VALUE, data, clauseOptions?.comment);
+        return new Clause(
+            null,
+            Clause.NO_VALUE,
+            Hex.PREFIX + data,
+            clauseOptions?.comment
+        );
     }
 
     public static transferNFT(
