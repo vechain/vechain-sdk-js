@@ -97,7 +97,7 @@ class ABIEvent extends ABIItem {
      */
     public decodeEventLog(event: ABIEventData): DecodeEventLogReturnType {
         try {
-            return ABIEvent.parseLog([this.signature], event);
+            return ABIEvent.parseLog([this.abiEvent], event);
         } catch (error) {
             throw new InvalidAbiDataToEncodeOrDecode(
                 'ABIEvent.decodeEventLog',
