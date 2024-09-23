@@ -69,7 +69,7 @@ const HDKeyFixture = {
 };
 
 /**
- * Text HDKey class.
+ * Test HDKey class.
  * @group unit/hdkey
  */
 describe('HDKey class tests', () => {

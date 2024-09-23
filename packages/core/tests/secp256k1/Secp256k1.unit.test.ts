@@ -17,7 +17,7 @@ import {
 } from '@vechain/sdk-errors';
 
 /**
- * Text Secp256k1 class.
+ * Test Secp256k1 class.
  * @group unit/Secp256k1
  */
 describe('Secp256k1 class tests', () => {

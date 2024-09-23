@@ -135,9 +135,4 @@ interface TransactionBody {
     };
 }
 
-export type {
-    TransactionBody,
-    TransactionClause,
-    // ExtendedTransactionClause,
-    ClauseOptions
-};
+export type { TransactionBody, TransactionClause, ClauseOptions };
