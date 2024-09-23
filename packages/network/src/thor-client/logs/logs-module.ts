@@ -68,7 +68,7 @@ class LogsModule {
                         { type: 'event', value: log.topics[0] }
                     );
                 }
-                log.decodedData = eventAbi.decodeEthersEventLog({
+                log.decodedData = eventAbi.decodeEventLogAsArray({
                     data: Hex.of(log.data),
                     topics: log.topics.map((topic) => Hex.of(topic))
                 });
@@ -112,7 +112,7 @@ class LogsModule {
                     );
                 }
 
-                log.decodedData = eventAbi.decodeEthersEventLog({
+                log.decodedData = eventAbi.decodeEventLogAsArray({
                     data: Hex.of(log.data),
                     topics: log.topics.map((topic) => Hex.of(topic))
                 });

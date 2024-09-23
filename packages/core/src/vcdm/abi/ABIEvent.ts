@@ -2,7 +2,6 @@ import {
     InvalidAbiDataToEncodeOrDecode,
     InvalidAbiItem
 } from '@vechain/sdk-errors';
-import { type Result } from 'ethers';
 import {
     type AbiEvent,
     type DecodeEventLogReturnType,
@@ -107,25 +106,23 @@ class ABIEvent extends ABIItem {
     }
 
     /**
-     * DISCLAIMER: This method will be eventually deprecated in favour of viem via #1184.
-     * Decode event log data in a ethers format.
+     * Decode event log data as an array of values
      * @param {ABIEvent} event The data to decode.
-     * @returns {Result} The decoded data.
-     * @deprecated
+     * @returns {unknown[]} The decoded data as array of values.
      */
-    public decodeEthersEventLog(event: ABIEventData): Result {
+    public decodeEventLogAsArray(event: ABIEventData): unknown[] {
         try {
             const rawDecodedData = this.decodeEventLog(event);
 
-            if (rawDecodedData?.args === undefined) {
-                return [] as unknown as Result;
+            if (rawDecodedData.args === undefined) {
+                return [];
             } else if (rawDecodedData.args instanceof Object) {
-                return Object.values(rawDecodedData.args) as Result;
+                return Object.values(rawDecodedData.args);
             }
-            return rawDecodedData as unknown as Result;
+            return rawDecodedData.args as unknown[];
         } catch (error) {
             throw new InvalidAbiDataToEncodeOrDecode(
-                'ABIEvent.decodeEthersEventLog',
+                'ABIEvent.decodeEventLogAsArray',
                 'Decoding failed: Data must be a valid hex string encoding a compliant ABI type.',
                 { data: event },
                 error
