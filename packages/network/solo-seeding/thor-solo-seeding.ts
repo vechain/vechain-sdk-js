@@ -9,7 +9,9 @@ import {
     TransactionHandler,
     Units,
     ZERO_ADDRESS,
-    vechain_sdk_core_ethers
+    vechain_sdk_core_ethers,
+    Address,
+    Clause
 } from '@vechain/sdk-core';
 import { stringifyData } from '@vechain/sdk-errors';
 import {
@@ -362,7 +364,10 @@ const seedVnsSolo = async (): Promise<void> => {
                                 ABIFunction,
                                 'function setResolver(bytes32 node, address resolver)'
                             ),
-                            [vechain_sdk_core_ethers.namehash(fullName), vnsPublicResolver]
+                            [
+                                vechain_sdk_core_ethers.namehash(fullName),
+                                vnsPublicResolver
+                            ]
                         ),
                         Clause.callFunction(
                             Address.of(vnsPublicResolver),
@@ -370,7 +375,10 @@ const seedVnsSolo = async (): Promise<void> => {
                                 ABIFunction,
                                 'function setAddr(bytes32 node, address addr)'
                             ),
-                            [vechain_sdk_core_ethers.namehash(fullName), address]
+                            [
+                                vechain_sdk_core_ethers.namehash(fullName),
+                                address
+                            ]
                         ),
                         Clause.callFunction(
                             Address.of(vnsReverseRegistrar),
@@ -415,7 +423,9 @@ const seedVnsSolo = async (): Promise<void> => {
                                 'function setSubnodeOwner(bytes32 node, bytes32 label, address owner)'
                             ),
                             [
-                                vechain_sdk_core_ethers.namehash(`${parentName}.${tld}`),
+                                vechain_sdk_core_ethers.namehash(
+                                    `${parentName}.${tld}`
+                                ),
                                 vechain_sdk_core_ethers.id(name),
                                 THOR_SOLO_ACCOUNTS[4].address
                             ]
@@ -426,7 +436,10 @@ const seedVnsSolo = async (): Promise<void> => {
                                 ABIFunction,
                                 'function setResolver(bytes32 node, address resolver)'
                             ),
-                            [vechain_sdk_core_ethers.namehash(fullName), vnsPublicResolver]
+                            [
+                                vechain_sdk_core_ethers.namehash(fullName),
+                                vnsPublicResolver
+                            ]
                         ),
                         Clause.callFunction(
                             Address.of(vnsPublicResolver),
@@ -434,7 +447,10 @@ const seedVnsSolo = async (): Promise<void> => {
                                 ABIFunction,
                                 'function setAddr(bytes32 node, address addr)'
                             ),
-                            [vechain_sdk_core_ethers.namehash(fullName), address]
+                            [
+                                vechain_sdk_core_ethers.namehash(fullName),
+                                address
+                            ]
                         )
                     ]
                 },

@@ -1,8 +1,11 @@
 import {
     ABIContract,
-    clauseBuilder,
     dataUtils,
     Hex,
+    Address,
+    VET,
+    Units,
+    Clause,
     type ABIFunction
 } from '@vechain/sdk-core';
 import { type Abi } from 'abitype';

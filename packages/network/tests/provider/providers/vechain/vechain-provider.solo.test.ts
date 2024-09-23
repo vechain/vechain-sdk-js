@@ -1,9 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import {
-    ABIContract,
-    Clause,
-    type TransactionClause
-} from '@vechain/sdk-core';
+import { ABIContract, Address, Clause } from '@vechain/sdk-core';
 import { JSONRPCMethodNotFound } from '@vechain/sdk-errors';
 import {
     ProviderInternalBaseWallet,
