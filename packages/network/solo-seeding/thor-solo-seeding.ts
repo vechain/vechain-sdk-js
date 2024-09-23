@@ -3,15 +3,16 @@ import {
     ABIContract,
     ABIFunction,
     ABIItem,
+    Address,
     clauseBuilder,
+    Clause,
     networkInfo,
     Transaction,
     TransactionHandler,
     Units,
-    ZERO_ADDRESS,
     vechain_sdk_core_ethers,
-    Address,
-    Clause
+    ZERO_ADDRESS,
+    type TransactionClause
 } from '@vechain/sdk-core';
 import { stringifyData } from '@vechain/sdk-errors';
 import {
@@ -208,8 +209,8 @@ const seedVnsSolo = async (): Promise<void> => {
                     ...txBody,
                     nonce: ++nonce,
                     clauses: [
-                        clauseBuilder.functionInteraction(
-                            vnsRegistry,
+                        Clause.callFunction(
+                            Address.of(vnsRegistry),
                             ABIItem.ofSignature(
                                 ABIFunction,
                                 'function setSubnodeOwner(bytes32 node, bytes32 label, address owner)'
@@ -219,9 +220,9 @@ const seedVnsSolo = async (): Promise<void> => {
                                 vechain_sdk_core_ethers.id(tld),
                                 vnsRegistrar
                             ]
-                        ),
-                        clauseBuilder.functionInteraction(
-                            vnsRegistry,
+                        ) as TransactionClause,
+                        Clause.callFunction(
+                            Address.of(vnsRegistry),
                             ABIItem.ofSignature(
                                 ABIFunction,
                                 'function setSubnodeOwner(bytes32 node, bytes32 label, address owner)'
@@ -231,9 +232,9 @@ const seedVnsSolo = async (): Promise<void> => {
                                 vechain_sdk_core_ethers.id('reverse'),
                                 THOR_SOLO_ACCOUNTS[4].address
                             ]
-                        ),
-                        clauseBuilder.functionInteraction(
-                            vnsRegistry,
+                        ) as TransactionClause,
+                        Clause.callFunction(
+                            Address.of(vnsRegistry),
                             ABIItem.ofSignature(
                                 ABIFunction,
                                 'function setSubnodeOwner(bytes32 node, bytes32 label, address owner)'
@@ -243,7 +244,7 @@ const seedVnsSolo = async (): Promise<void> => {
                                 vechain_sdk_core_ethers.id('addr'),
                                 vnsReverseRegistrar
                             ]
-                        )
+                        ) as TransactionClause
                     ]
                 },
                 Buffer.from(THOR_SOLO_ACCOUNTS[4].privateKey, 'hex')

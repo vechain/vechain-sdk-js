@@ -1,4 +1,10 @@
-import { clauseBuilder } from '@vechain/sdk-core';
+import {
+    Address,
+    Clause,
+    type TransactionClause,
+    Units,
+    VET
+} from '@vechain/sdk-core';
 import { InvalidTransactionField } from '@vechain/sdk-errors';
 import type {
     Abi,
@@ -197,16 +203,19 @@ function getClauseProxy<TAbi extends Abi>(
 
                 // return the contract clause
                 return {
-                    clause: clauseBuilder.functionInteraction(
-                        contract.address,
+                    clause: Clause.callFunction(
+                        Address.of(contract.address),
                         contract.getFunctionAbi(prop),
                         args,
-                        transactionOptions.value ?? transactionValue ?? 0,
+                        VET.of(
+                            transactionOptions.value ?? transactionValue ?? 0,
+                            Units.wei
+                        ),
                         {
                             comment: clauseComment,
                             includeABI: true
                         }
-                    ),
+                    ) as TransactionClause,
                     functionAbi: contract.getFunctionAbi(prop)
                 };
             };
