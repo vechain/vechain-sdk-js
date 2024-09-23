@@ -1,6 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { exampleContractBytecode } from './fixture';
 import {
     Address,
     Clause,
@@ -151,7 +150,7 @@ describe('Clause class tests', () => {
             expect(actual.to).toBe(null);
             expect(actual.amount().isZero()).toBe(true);
             expect(actual.data.length).toBeGreaterThan(
-                exampleContractBytecode.length
+                ClauseFixture.contract.bytecode.toString().length
             );
         });
 
@@ -164,7 +163,7 @@ describe('Clause class tests', () => {
             );
             expect(actual.to).toBe(null);
             expect(actual.amount().isZero()).toBe(true);
-            expect(actual.data).toEqual(exampleContractBytecode);
+            expect(actual.data).toEqual(ClauseFixture.contract.bytecode.digits);
             expect(actual.comment).toBe(comment);
         });
     });
