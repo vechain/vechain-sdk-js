@@ -12,8 +12,8 @@ import {
     encodeFunctionData,
     type Hex as ViemHex
 } from 'viem';
-import { Hex } from '../Hex';
 import { ABIItem } from './ABIItem';
+import { HexUInt } from '../HexUInt';
 
 /**
  * Represents a function call in the Function ABI.
@@ -52,11 +52,11 @@ class ABIFunction extends ABIItem {
     /**
      * Decode data using the function's ABI.
      *
-     * @param {Hex} data - Data to decode.
+     * @param {HexUInt} data - Data to decode.
      * @returns Decoding results.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public decodeData(data: Hex): DecodeFunctionDataReturnType {
+    public decodeData(data: HexUInt): DecodeFunctionDataReturnType {
         try {
             return decodeFunctionData({
                 abi: [this.signature],
@@ -76,12 +76,12 @@ class ABIFunction extends ABIItem {
      * Encode data using the function's ABI.
      *
      * @param dataToEncode - Data to encode.
-     * @returns {Hex} Encoded data.
+     * @returns {HexUInt} Encoded data.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public encodeData<TValue>(dataToEncode?: TValue[]): Hex {
+    public encodeData<TValue>(dataToEncode?: TValue[]): HexUInt {
         try {
-            return Hex.of(
+            return HexUInt.of(
                 encodeFunctionData({
                     abi: [this.signature],
                     args: dataToEncode
@@ -101,7 +101,7 @@ class ABIFunction extends ABIItem {
      * Decodes the output data from a transaction based on ABI (Application Binary Interface) specifications.
      * This method attempts to decode the given hex-like data into a readable format using the contract's interface.
      *
-     * @param {Hex} data - The data to be decoded, typically representing the output of a contract function call.
+     * @param {HexUInt} data - The data to be decoded, typically representing the output of a contract function call.
      * @returns {DecodeFunctionResultReturnType} An object containing the decoded data.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      *
@@ -111,7 +111,7 @@ class ABIFunction extends ABIItem {
      *   console.log('Decoded Output:', decoded);
      * ```
      */
-    public decodeResult(data: Hex): DecodeFunctionResultReturnType {
+    public decodeResult(data: HexUInt): DecodeFunctionResultReturnType {
         try {
             return decodeFunctionResult({
                 abi: [this.signature],
@@ -130,11 +130,11 @@ class ABIFunction extends ABIItem {
     /**
      * DISCLAIMER: This method will be eventually deprecated in favour of viem via #1184.
      * Decodes a function output following the ethers format.
-     * @param {Hex} data The data to be decoded
+     * @param {HexUInt} data The data to be decoded
      * @returns {Result} The decoded data
      * @deprecated
      */
-    public decodeEthersOutput(data: Hex): Result {
+    public decodeEthersOutput(data: HexUInt): Result {
         const resultDecoded = this.decodeResult(data);
         if (this.functionSignature.outputs.length > 1) {
             return this.parseObjectValues(resultDecoded as object) as Result;
