@@ -145,6 +145,10 @@ class ABIEvent extends ABIItem {
             const dataTypes: AbiEventParameter[] = [];
             const dataValues: unknown[] = [];
             this.abiEvent.inputs.forEach((param, index) => {
+                if (param.indexed ?? false) {
+                    // Skip indexed parameters
+                    return;
+                }
                 const value = dataToEncode[index];
                 dataTypes.push(param);
                 dataValues.push(value);
