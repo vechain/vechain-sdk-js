@@ -4,7 +4,7 @@ The VeChain SDK allows querying the blockchain for events emitted by smart contr
 
 ## Filtering a single Transfer Event
 
-With the VeChain SDK the contract object could be used also for filtering events emitted from the contract. It is also possible to specify the some filtering options (range, result limit, etc)
+With the VeChain SDK the contract object could be used also for filtering events emitted from the contract. It is also possible to specify some filtering options (range, result limit, etc)
 
 Following an example on how to listen to a Transfer Event:
 
