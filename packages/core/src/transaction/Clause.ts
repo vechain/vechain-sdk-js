@@ -223,6 +223,8 @@ class Clause implements TransactionClause {
      * @param {ClauseOptions} [clauseOptions] - Optional clause settings.
      * @return {Clause} The clause to transfer VIP180 tokens as part of a transaction.
      * @throws {InvalidDataType} Throws an error if the amount is not a positive integer.
+     *
+     * @see VTHO.transferTokenTo
      */
     public static transferToken(
         tokenAddress: Address,
@@ -256,6 +258,8 @@ class Clause implements TransactionClause {
      * @param {ClauseOptions} [clauseOptions] - Optional clause settings.
      * @return {Clause} - The clause object to transfer VET as part of a transaction.
      * @throws {InvalidDataType} - If the amount is not a finite positive value.
+     *
+     * @see VET.transferTo
      */
     public static transferVET(
         recipientAddress: Address,

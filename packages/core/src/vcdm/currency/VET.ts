@@ -67,6 +67,8 @@ class VET extends Coin {
      * @param {Address} address The recipient's address to which the VET will be transferred.
      * @param {ClauseOptions} clauseOptions  Optional parameters that modify the behavior of the transaction.
      * @return {Clause} A Clause object representing the transfer transaction.
+     *
+     * @see Clause.transferVET
      */
     public transferTo(address: Address, clauseOptions?: ClauseOptions): Clause {
         return Clause.transferVET(address, this, clauseOptions);
