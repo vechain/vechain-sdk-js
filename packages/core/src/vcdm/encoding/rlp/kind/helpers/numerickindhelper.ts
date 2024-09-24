@@ -1,6 +1,6 @@
 import { InvalidRLP } from '@vechain/sdk-errors';
-import { FixedPointNumber, Hex, HexUInt } from '../../../../vcdm';
-import { type RLPInput } from '../types';
+import { FixedPointNumber, Hex, HexUInt } from '../../../..';
+import { type RLPInput } from '../../types';
 
 /**
  * Validates and converts the input data to a BigInt.

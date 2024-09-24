@@ -1,6 +1,6 @@
 import { RLP as EthereumjsRLP } from '@ethereumjs/rlp';
 import { InvalidRLP } from '@vechain/sdk-errors';
-import { RLP, RLPProfiles } from '.';
+import { RLP, ScalarKind } from '.';
 import {
     type RLPInput,
     type RLPProfile,
@@ -62,7 +62,7 @@ class RLPProfiler extends RLP {
         const kind = profile.kind;
 
         // ScalarKind: direct encoding using the provided method.
-        if (kind instanceof RLPProfiles.ScalarKind) {
+        if (kind instanceof ScalarKind) {
             return kind.data(obj, context).encode();
         }
 
@@ -123,7 +123,7 @@ class RLPProfiler extends RLP {
         const kind = profile.kind;
 
         // ScalarKind: Direct decoding using the provided method.
-        if (kind instanceof RLPProfiles.ScalarKind) {
+        if (kind instanceof ScalarKind) {
             if (!Buffer.isBuffer(packed) && !(packed instanceof Uint8Array)) {
                 throw new InvalidRLP(
                     'unpackData()',

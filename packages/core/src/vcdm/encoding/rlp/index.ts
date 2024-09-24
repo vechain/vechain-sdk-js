@@ -1,9 +1,7 @@
-import { RLPProfiles } from './kind';
-import { RLPBase } from './RLP';
+export { RLP } from './RLP';
+export { RLPProfiler } from './RLPProfiler';
 
 export * from './kind';
-export * from './kind/helpers';
-export * from './RLP';
 export * from './types.d';
 
 /**
@@ -17,7 +15,3 @@ export * from './types.d';
  * - `BufferKind` - Class managing buffers and ensuring type safety with encode/decode methods.
  * - `NumericKind` - Class managing numerical data ensuring it adheres to specific constraints.
  */
-export const RLP_CODER = {
-    ...RLPBase,
-    ...RLPProfiles
-};

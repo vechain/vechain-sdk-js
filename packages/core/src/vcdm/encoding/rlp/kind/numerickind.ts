@@ -17,7 +17,7 @@ class NumericKind extends ScalarKind {
      *
      * @param maxBytes - Optional parameter that specifies the maximum number of bytes that numeric data can occupy when encoded.
      */
-    constructor(readonly maxBytes?: number) {
+    public constructor(readonly maxBytes?: number) {
         super();
     }
 
