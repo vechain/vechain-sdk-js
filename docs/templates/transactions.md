@@ -4,10 +4,10 @@ description: Transactions related functions.
 
 # Transactions
 
-VeChain SDK provides comprehensive support for handling transactions. Developers can initialize a transaction by assembling the transaction body, adding clauses, and finally signing and sending the transaction. 
+The VeChain SDK provides comprehensive support for handling transactions. Developers can initialize a transaction by assembling the transaction body, adding clauses, and finally signing and sending the transaction. 
 
 > ⚠️ **Warning:**
-> All the examples listed below refers to low level transaction building. The VeChain SDK provides you built-in methods to sign and send transactions. Please refer to the contracts section for more information.
+> All the examples listed below refer to low level transaction building. The VeChain SDK provides built-in methods to sign and send transactions. Please refer to the contracts section for more information.
 
 
 To break it down:
@@ -22,8 +22,8 @@ In this example a simple transaction with a single clause is created, signed, en
 [SignDecodeSnippet](examples/transactions/sign-decode.ts)
 
 ## Example: Multiple Clauses
-In VeChainThor blockchain a transaction can be composed of multiple clauses. \
-Clauses allow to send multiple payloads to different recipients within a single transaction.
+On the VeChainThor blockchain a transaction can be composed of multiple clauses. \
+Clauses are a feature of the VeChainThor blockchain that increase the scalability of the blockchain by enabling the sending of multiple payloads to different recipients within a single transaction.
 
 [MultipleClausesSnippet](examples/transactions/multiple-clauses.ts)
 
