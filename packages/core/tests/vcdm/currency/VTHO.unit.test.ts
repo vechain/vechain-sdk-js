@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { FPN, Txt } from '../../../src';
+import { FixedPointNumber, Txt } from '../../../src';
 import { VTHO } from '../../../src/vcdm/currency/VTHO';
 
 /**
@@ -12,12 +12,16 @@ const VTHOFixture = {
 
 describe('VTHO class tests', () => {
     describe('Construction tests', () => {
-        expect(VTHO.of(FPN.of(VTHOFixture.value))).toBeInstanceOf(VTHO);
+        expect(VTHO.of(FixedPointNumber.of(VTHOFixture.value))).toBeInstanceOf(
+            VTHO
+        );
     });
 
     test('toString method', () => {
         const expected = `${Txt.of(VTHOFixture.value)} ${VTHO.CODE}`;
-        const actual = VTHO.of(FPN.of(VTHOFixture.value)).toString();
+        const actual = VTHO.of(
+            FixedPointNumber.of(VTHOFixture.value)
+        ).toString();
         expect(actual).toEqual(expected);
     });
 });

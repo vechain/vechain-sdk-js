@@ -2,7 +2,7 @@ import { InvalidDataType } from '@vechain/sdk-errors';
 import {
     abi,
     ABIContract,
-    FPN,
+    FixedPointNumber,
     VET,
     type ABIFunction,
     type Address,
@@ -110,10 +110,10 @@ class Clause implements TransactionClause {
      * Return the amount of {@link VET} or {@link VTHO} token
      * in {@link Units.wei} to transfer to the destination.
      *
-     * @return {FPN} The amount as a fixed-point number.
+     * @return {FixedPointNumber} The amount as a fixed-point number.
      */
-    public amount(): FPN {
-        return FPN.of(HexInt.of(this.value).bi);
+    public amount(): FixedPointNumber {
+        return FixedPointNumber.of(HexInt.of(this.value).bi);
     }
 
     /**
@@ -122,7 +122,7 @@ class Clause implements TransactionClause {
      * @param {Address} contractAddress - The address of the smart contract.
      * @param {ABIFunction} functionAbi - The ABI definition of the function to be called.
      * @param {unknown[]} args - The arguments for the function.
-     * @param {VET} [amount=VET.of(FPN.ZERO)] - The amount of VET to be sent with the transaction calling the function.
+     * @param {VET} [amount=VET.of(FixedPointNumber.ZERO)] - The amount of VET to be sent with the transaction calling the function.
      * @param {ClauseOptions} [clauseOptions] - Optional clause settings.
      * @return {Clause} A clause object to call the function in a transaction.
      * @throws {InvalidDataType} Throws an error if the amount is not a finite positive value.
@@ -131,7 +131,7 @@ class Clause implements TransactionClause {
         contractAddress: Address,
         functionAbi: ABIFunction,
         args: unknown[],
-        amount: VET = VET.of(FPN.ZERO),
+        amount: VET = VET.of(FixedPointNumber.ZERO),
         clauseOptions?: ClauseOptions
     ): Clause {
         if (amount.value.isFinite() && amount.value.isPositive()) {

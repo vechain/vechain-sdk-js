@@ -2,7 +2,7 @@ import { InvalidDataType, InvalidOperation } from '@vechain/sdk-errors';
 import { type VeChainDataModel } from './VeChainDataModel';
 import { Txt } from './Txt';
 
-class FPN implements VeChainDataModel<FPN> {
+class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
     /**
      * The default number of decimal places to use for fixed-point math.
      *
@@ -21,7 +21,7 @@ class FPN implements VeChainDataModel<FPN> {
      * @see [Number.NaN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/NaN)
      *
      */
-    public static readonly NaN = new FPN(0n, 0n, NaN);
+    public static readonly NaN = new FixedPointNumber(0n, 0n, NaN);
 
     /**
      * The negative Infinity value.
@@ -30,7 +30,7 @@ class FPN implements VeChainDataModel<FPN> {
      *
      * @see [Number.NEGATIVE_INFINITY](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/NEGATIVE_INFINITY)
      */
-    public static readonly NEGATIVE_INFINITY = new FPN(
+    public static readonly NEGATIVE_INFINITY = new FixedPointNumber(
         0n,
         0n,
         Number.NEGATIVE_INFINITY
@@ -43,7 +43,7 @@ class FPN implements VeChainDataModel<FPN> {
      *
      * @see [Number.POSITIVE_INFINITY](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/POSITIVE_INFINITY)
      */
-    public static readonly POSITIVE_INFINITY = new FPN(
+    public static readonly POSITIVE_INFINITY = new FixedPointNumber(
         0n,
         0n,
         Number.POSITIVE_INFINITY
@@ -51,58 +51,46 @@ class FPN implements VeChainDataModel<FPN> {
 
     /**
      * Regular expression pattern for matching integers expressed as base 10 strings.
-     *
-     * @type {RegExp}
-     * @constant
      */
     private static readonly REGEX_INTEGER: RegExp = /^[-+]?\d+$/;
 
     /**
      * Regular expression for matching numeric values expressed as base 10 strings.
-     *
-     * @constant {RegExp} NUMERIC_REGEX
      */
     private static readonly REGEX_NUMBER =
         /(^[-+]?\d+(\.\d+)?)$|(^[-+]?\.\d+)$/;
 
     /**
      * Regular expression pattern for matching natural numbers expressed as base 10 strings.
-     *
-     * @type {RegExp}
-     * @constant
      */
     private static readonly REGEX_NATURAL: RegExp = /^\d+$/;
 
     /**
      * Represents the zero constant.
      */
-    public static readonly ZERO = new FPN(0n, 0n, 0);
+    public static readonly ZERO = new FixedPointNumber(0n, 0n, 0);
 
     /**
      * Edge Flag denotes the {@link NaN} or {@link NEGATIVE_INFINITY} or {@link POSITIVE_INFINITY} value.
      *
      * @remarks If `ef` is not zero, {@link fd} and {@link sv} are not meaningful.
-     *
-     * @private
      */
     protected readonly ef: number;
 
     /**
      * Fractional Digits or decimal places.
-     * @private
      */
     protected readonly fd: bigint;
 
     /**
      * Scaled Value = value * 10 ^ {@link fd}.
-     * @private
      */
     public readonly sv: bigint;
 
     /**
-     * Returns the integer part of this FPN value.
+     * Returns the integer part of this FixedPointNumber value.
      *
-     * @return {bigint} the integer part of this FPN value.
+     * @return {bigint} the integer part of this FixedPointNumber value.
      *
      * @throws {InvalidOperation} If the value is not finite.
      */
@@ -111,7 +99,7 @@ class FPN implements VeChainDataModel<FPN> {
             return this.sv / 10n ** this.fd;
         }
         throw new InvalidOperation(
-            'FPN.bi',
+            'FixedPointNumber.bi',
             'not finite value cannot cast to big integer',
             { this: this.toString() }
         );
@@ -138,7 +126,7 @@ class FPN implements VeChainDataModel<FPN> {
     }
 
     /**
-     * Returns the new Fixed-Point Number (FPN) instance having
+     * Returns the new Fixed-Point Number (FixedPointNumber) instance having
      *
      * @param {bigint} fd - Number of Fractional Digits (or decimal places).
      * @param {bigint} sv - Scaled Value.
@@ -151,39 +139,46 @@ class FPN implements VeChainDataModel<FPN> {
     }
 
     /**
-     * Returns a FPN whose value is the absolute value, i.e. the magnitude, of the value of this FPN.
+     * Returns a FixedPointNumber whose value is the absolute value, i.e. the magnitude, of the value of this FixedPointNumber.
      *
-     * @return {FPN} the absolute value of this FPN.
+     * @return {FixedPointNumber} the absolute value of this FixedPointNumber.
      *
      * @see [bignumber.js absoluteValue](https://mikemcl.github.io/bignumber.js/#abs)
      */
-    public abs(): FPN {
-        if (this.isNaN()) return FPN.NaN;
-        if (this.isNegativeInfinite()) return FPN.POSITIVE_INFINITY;
-        return new FPN(this.fd, this.sv < 0n ? -this.sv : this.sv, this.ef);
+    public abs(): FixedPointNumber {
+        if (this.isNaN()) return FixedPointNumber.NaN;
+        if (this.isNegativeInfinite())
+            return FixedPointNumber.POSITIVE_INFINITY;
+        return new FixedPointNumber(
+            this.fd,
+            this.sv < 0n ? -this.sv : this.sv,
+            this.ef
+        );
     }
 
     /**
-     * Compares this instance with `that` FPN instance.
-     * * Returns 0 if this is equal to `that` FPN, including infinite with equal sign;
-     * * Returns -1, if this is -Infinite or less than `that` FPN;,
-     * * Returns 1 if this is +Infinite or greater than `that` FPN.
+     * Compares this instance with `that` FixedPointNumber instance.
+     * * Returns 0 if this is equal to `that` FixedPointNumber, including infinite with equal sign;
+     * * Returns -1, if this is -Infinite or less than `that` FixedPointNumber;,
+     * * Returns 1 if this is +Infinite or greater than `that` FixedPointNumber.
      *
-     * @param {FPN} that - The instance to compare with this instance.
-     *
+     * @param {FixedPointNumber} that The instance to compare with this instance.
      * @return {number} Returns -1, 0, or 1 if this instance is less than, equal to, or greater
      * than the specified instance, respectively.
-     *
-     * @throw InvalidOperation If this or `that` FPN is {@link NaN}.
+     * @throw InvalidOperation If this or `that` FixedPointNumber is {@link NaN}.
      *
      * @see [bignumber.js comparedTo](https://mikemcl.github.io/bignumber.js/#cmp)
      */
-    public compareTo(that: FPN): number {
+    public compareTo(that: FixedPointNumber): number {
         if (this.isNaN() || that.isNaN())
-            throw new InvalidOperation('FPN.compareTo', 'compare between NaN', {
-                this: `${this}`,
-                that: `${that}`
-            });
+            throw new InvalidOperation(
+                'FixedPointNumber.compareTo',
+                'compare between NaN',
+                {
+                    this: `${this}`,
+                    that: `${that}`
+                }
+            );
         if (this.isNegativeInfinite())
             return that.isNegativeInfinite() ? 0 : -1;
         if (this.isPositiveInfinite()) return that.isPositiveInfinite() ? 0 : 1;
@@ -195,14 +190,13 @@ class FPN implements VeChainDataModel<FPN> {
     }
 
     /**
-     * Compares this instance with `that` FPN instance.
+     * Compares this instance with `that` FixedPointNumber instance.
      * * **Returns `null` if either instance is NaN;**
-     * * Returns 0 if this is equal to `that` FPN, including infinite with equal sign;
-     * * Returns -1, if this is -Infinite or less than `that` FPN;,
-     * * Returns 1 if this is +Infinite or greater than `that` FPN.
+     * * Returns 0 if this is equal to `that` FixedPointNumber, including infinite with equal sign;
+     * * Returns -1, if this is -Infinite or less than `that` FixedPointNumber;,
+     * * Returns 1 if this is +Infinite or greater than `that` FixedPointNumber.
      *
-     * @param {FPN} that - The instance to compare with this instance.
-     *
+     * @param {FixedPointNumber} that The instance to compare with this instance.
      * @return {null | number} A null if either instance is NaN;
      * -1, 0, or 1 if this instance is less than, equal to, or greater
      * than the specified instance, respectively.
@@ -211,7 +205,7 @@ class FPN implements VeChainDataModel<FPN> {
      * when comparing between {@link NaN} values to behave according the
      * [[bignumber.js comparedTo](https://mikemcl.github.io/bignumber.js/#cmp)] rules.
      */
-    public comparedTo(that: FPN): null | number {
+    public comparedTo(that: FixedPointNumber): null | number {
         try {
             return this.compareTo(that);
             //  eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -221,7 +215,7 @@ class FPN implements VeChainDataModel<FPN> {
     }
 
     /**
-     * Returns a FPN whose value is the value of this FPN divided by `that` FPN.
+     * Returns a FixedPointNumber whose value is the value of this FixedPointNumber divided by `that` FixedPointNumber.
      *
      * Limit cases
      * * 0 / 0 = NaN
@@ -232,45 +226,47 @@ class FPN implements VeChainDataModel<FPN> {
      * * -n / 0 = -Infinity
      * * +n / 0 = +Infinity
      *
-     * @param {FPN} that - The fixed-point number to divide by.
-     *
-     * @return {FPN} The result of the division.
+     * @param {FixedPointNumber} that The fixed-point number to divide by.
+     * @return {FixedPointNumber} The result of the division.
      *
      * @remarks The precision is the greater of the precision of the two operands.
      *
      * @see [bignumber.js dividedBy](https://mikemcl.github.io/bignumber.js/#div)
      */
-    public div(that: FPN): FPN {
-        if (this.isNaN() || that.isNaN()) return FPN.NaN;
+    public div(that: FixedPointNumber): FixedPointNumber {
+        if (this.isNaN() || that.isNaN()) return FixedPointNumber.NaN;
         if (this.isNegativeInfinite())
             return that.isInfinite()
-                ? FPN.NaN
+                ? FixedPointNumber.NaN
                 : that.isPositive()
-                  ? FPN.NEGATIVE_INFINITY
-                  : FPN.POSITIVE_INFINITY;
+                  ? FixedPointNumber.NEGATIVE_INFINITY
+                  : FixedPointNumber.POSITIVE_INFINITY;
         if (this.isPositiveInfinite())
             return that.isInfinite()
-                ? FPN.NaN
+                ? FixedPointNumber.NaN
                 : that.isPositive()
-                  ? FPN.POSITIVE_INFINITY
-                  : FPN.NEGATIVE_INFINITY;
-        if (that.isInfinite()) return FPN.ZERO;
+                  ? FixedPointNumber.POSITIVE_INFINITY
+                  : FixedPointNumber.NEGATIVE_INFINITY;
+        if (that.isInfinite()) return FixedPointNumber.ZERO;
         if (that.isZero())
             return this.isZero()
-                ? FPN.NaN
+                ? FixedPointNumber.NaN
                 : this.isNegative()
-                  ? FPN.NEGATIVE_INFINITY
-                  : FPN.POSITIVE_INFINITY;
+                  ? FixedPointNumber.NEGATIVE_INFINITY
+                  : FixedPointNumber.POSITIVE_INFINITY;
         const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
-        return new FPN(fd, FPN.div(fd, this.dp(fd).sv, that.dp(fd).sv));
+        return new FixedPointNumber(
+            fd,
+            FixedPointNumber.div(fd, this.dp(fd).sv, that.dp(fd).sv)
+        );
     }
 
     /**
      * Divides the given dividend by the given divisor, adjusted by a factor based on fd.
      *
-     * @param {bigint} fd - The factor determining the power of 10 to apply to the dividend.
-     * @param {bigint} dividend - The number to be divided.
-     * @param {bigint} divisor - The number by which to divide the dividend.
+     * @param {bigint} fd The factor determining the power of 10 to apply to the dividend.
+     * @param {bigint} dividend The number to be divided.
+     * @param {bigint} divisor The number by which to divide the dividend.
      *
      * @return {bigint} - The result of the division, adjusted by the given factor fd.
      */
@@ -282,65 +278,61 @@ class FPN implements VeChainDataModel<FPN> {
      * Adjusts the precision of the floating-point number by the specified
      * number of decimal places.
      *
-     * @param {bigint | number} decimalPlaces - The number of decimal places to adjust to.
-     *
-     * @return {FPN} A new FPN instance with the adjusted precision.
+     * @param {bigint | number} decimalPlaces The number of decimal places to adjust to.
+     * @return {FixedPointNumber} A new FixedPointNumber instance with the adjusted precision.
      */
-    public dp(decimalPlaces: bigint | number): FPN {
+    public dp(decimalPlaces: bigint | number): FixedPointNumber {
         const fp = BigInt(decimalPlaces);
         const dd = fp - this.fd; // Fractional Decimals Difference.
         if (dd < 0) {
-            return new FPN(fp, this.sv / 10n ** -dd);
+            return new FixedPointNumber(fp, this.sv / 10n ** -dd);
         } else {
-            return new FPN(fp, this.sv * 10n ** dd);
+            return new FixedPointNumber(fp, this.sv * 10n ** dd);
         }
     }
 
     /**
-     * Returns `true `if the value of thisFPN is equal to the value of `that` FPN, otherwise returns `false`.
+     * Returns `true `if the value of thisFPN is equal to the value of `that` FixedPointNumber, otherwise returns `false`.
      *
      * As with JavaScript, `NaN` does not equal `NaN`.
      *
-     * @param {FPN} that - The FPN to compare against.
-     *
-     * @return {boolean} `true` if the FPN numbers are equal, otherwise `false`.
+     * @param {FixedPointNumber} that The FixedPointNumber to compare against.
+     * @return {boolean} `true` if the FixedPointNumber numbers are equal, otherwise `false`.
      *
      * @remarks This method uses {@link comparedTo} internally.
      *
      * @see [bigbumber.js isEqualTo](https://mikemcl.github.io/bignumber.js/#eq)
      */
-    public eq(that: FPN): boolean {
+    public eq(that: FixedPointNumber): boolean {
         return this.comparedTo(that) === 0;
     }
 
     /**
-     * Returns `true` if the value of this FPN is greater than `that` FPN`, otherwise returns `false`.
+     * Returns `true` if the value of this FixedPointNumber is greater than `that` FixedPointNumber`, otherwise returns `false`.
      *
-     * @param {FPN} that - The FPN to compare against.
-     *
-     * @return {boolean} `true` if this FPN is greater than `that` FPN, otherwise `false`.
+     * @param {FixedPointNumber} that The FixedPointNumber to compare against.
+     * @return {boolean} `true` if this FixedPointNumber is greater than `that` FixedPointNumber, otherwise `false`.
      *
      * @remarks This method uses {@link comparedTo} internally.
      *
      * @see [bignummber.js isGreaterThan](https://mikemcl.github.io/bignumber.js/#gt)
      */
-    public gt(that: FPN): boolean {
+    public gt(that: FixedPointNumber): boolean {
         const cmp = this.comparedTo(that);
         return cmp !== null && cmp > 0;
     }
 
     /**
-     * Returns `true` if the value of this FPN is greater or equal than `that` FPN`, otherwise returns `false`.
+     * Returns `true` if the value of this FixedPointNumber is greater or equal than `that` FixedPointNumber`, otherwise returns `false`.
      *
-     * @param {FPN} that - The FPN to compare against.
-     *
-     * @return {boolean} `true` if this FPN is greater or equal than `that` FPN, otherwise `false`.
+     * @param {FixedPointNumber} that The FixedPointNumber to compare against.
+     * @return {boolean} `true` if this FixedPointNumber is greater or equal than `that` FixedPointNumber, otherwise `false`.
      *
      * @remarks This method uses {@link comparedTo} internally.
      *
      * @see [bignumber.js isGreaterThanOrEqualTo](https://mikemcl.github.io/bignumber.js/#gte)
      */
-    public gte(that: FPN): boolean {
+    public gte(that: FixedPointNumber): boolean {
         const cmp = this.comparedTo(that);
         return cmp !== null && cmp >= 0;
     }
@@ -358,46 +350,47 @@ class FPN implements VeChainDataModel<FPN> {
      * * -n / 0 = -Infinite
      * * +n / 0 = +Infinite
      *
-     * @param {FPN} that - The fixed-point number to divide by.
-     *
-     * @return {FPN} The result of the division.
+     * @param {FixedPointNumber} that The fixed-point number to divide by.
+     * @return {FixedPointNumber} The result of the division.
      *
      * @remarks The precision is the greater of the precision of the two operands.
      *
      * @see [bignumber.js dividedToIntegerBy](https://mikemcl.github.io/bignumber.js/#divInt)
      */
-    public idiv(that: FPN): FPN {
-        if (this.isNaN() || that.isNaN()) return FPN.NaN;
+    public idiv(that: FixedPointNumber): FixedPointNumber {
+        if (this.isNaN() || that.isNaN()) return FixedPointNumber.NaN;
         if (this.isNegativeInfinite())
             return that.isInfinite()
-                ? FPN.NaN
+                ? FixedPointNumber.NaN
                 : that.isPositive()
-                  ? FPN.NEGATIVE_INFINITY
-                  : FPN.POSITIVE_INFINITY;
+                  ? FixedPointNumber.NEGATIVE_INFINITY
+                  : FixedPointNumber.POSITIVE_INFINITY;
         if (this.isPositiveInfinite())
             return that.isInfinite()
-                ? FPN.NaN
+                ? FixedPointNumber.NaN
                 : that.isPositive()
-                  ? FPN.POSITIVE_INFINITY
-                  : FPN.NEGATIVE_INFINITY;
-        if (that.isInfinite()) return FPN.ZERO;
+                  ? FixedPointNumber.POSITIVE_INFINITY
+                  : FixedPointNumber.NEGATIVE_INFINITY;
+        if (that.isInfinite()) return FixedPointNumber.ZERO;
         if (that.isZero())
             return this.isZero()
-                ? FPN.NaN
+                ? FixedPointNumber.NaN
                 : this.isNegative()
-                  ? FPN.NEGATIVE_INFINITY
-                  : FPN.POSITIVE_INFINITY;
+                  ? FixedPointNumber.NEGATIVE_INFINITY
+                  : FixedPointNumber.POSITIVE_INFINITY;
         const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
-        return new FPN(fd, FPN.idiv(fd, this.dp(fd).sv, that.dp(fd).sv));
+        return new FixedPointNumber(
+            fd,
+            FixedPointNumber.idiv(fd, this.dp(fd).sv, that.dp(fd).sv)
+        );
     }
 
     /**
      * Performs integer division on two big integers and scales the result by a factor of 10 raised to the power of fd.
      *
-     * @param {bigint} fd - The power to which 10 is raised to scale the result.
-     * @param {bigint} dividend - The number to be divided.
-     * @param {bigint} divisor - The number by which dividend is divided.
-     *
+     * @param {bigint} fd The power to which 10 is raised to scale the result.
+     * @param {bigint} dividend The number to be divided.
+     * @param {bigint} divisor The number by which dividend is divided.
      * @return {bigint} - The scaled result of the integer division.
      */
     private static idiv(fd: bigint, dividend: bigint, divisor: bigint): bigint {
@@ -405,26 +398,25 @@ class FPN implements VeChainDataModel<FPN> {
     }
 
     /**
-     * Returns `true `if the value of thisFPN is equal to the value of `that` FPN, otherwise returns `false`.
+     * Returns `true `if the value of thisFPN is equal to the value of `that` FixedPointNumber, otherwise returns `false`.
      *
      * As with JavaScript, `NaN` does not equal `NaN`.
      *
-     * @param {FPN} that - The FPN to compare against.
-     *
-     * @return {boolean} `true` if the FPN numbers are equal, otherwise `false`.
+     * @param {FixedPointNumber} that The FixedPointNumber to compare against.
+     * @return {boolean} `true` if the FixedPointNumber numbers are equal, otherwise `false`.
      *
      * @remarks This method uses {@link eq} internally.
      */
-    public isEqual(that: FPN): boolean {
+    public isEqual(that: FixedPointNumber): boolean {
         return this.eq(that);
     }
 
     /**
-     * Returns `true` if the value of this FPN is a finite number, otherwise returns `false`.
+     * Returns `true` if the value of this FixedPointNumber is a finite number, otherwise returns `false`.
      *
-     * The only possible non-finite values of a FPN are {@link NaN}, {@link NEGATIVE_INFINITY} and {@link POSITIVE_INFINITY}.
+     * The only possible non-finite values of a FixedPointNumber are {@link NaN}, {@link NEGATIVE_INFINITY} and {@link POSITIVE_INFINITY}.
      *
-     * @return `true` if the value of this FPN is a finite number, otherwise returns `false`.
+     * @return `true` if the value of this FixedPointNumber is a finite number, otherwise returns `false`.
      *
      * @see [bignumber.js isFinite](https://mikemcl.github.io/bignumber.js/#isF)
      */
@@ -433,20 +425,20 @@ class FPN implements VeChainDataModel<FPN> {
     }
 
     /**
-     * Return `true` if the value of this FPN is {@link NEGATIVE_INFINITY} and {@link POSITIVE_INFINITY},
+     * Return `true` if the value of this FixedPointNumber is {@link NEGATIVE_INFINITY} and {@link POSITIVE_INFINITY},
      * otherwise returns false.
      *
-     * @return true` if the value of this FPN is {@link NEGATIVE_INFINITY} and {@link POSITIVE_INFINITY},
+     * @return true` if the value of this FixedPointNumber is {@link NEGATIVE_INFINITY} and {@link POSITIVE_INFINITY},
      */
     public isInfinite(): boolean {
         return this.isNegativeInfinite() || this.isPositiveInfinite();
     }
 
     /**
-     * Returns `true` if the value of this FPN is an integer,
+     * Returns `true` if the value of this FixedPointNumber is an integer,
      * otherwise returns `false`.
      *
-     * @return `true` if the value of this FPN is an integer.
+     * @return `true` if the value of this FixedPointNumber is an integer.
      *
      * @see [bignumber.js isInteger](https://mikemcl.github.io/bignumber.js/#isInt)
      */
@@ -471,9 +463,9 @@ class FPN implements VeChainDataModel<FPN> {
     }
 
     /**
-     *  Returns `true` if the value of this FPN is `NaN`, otherwise returns `false`.
+     *  Returns `true` if the value of this FixedPointNumber is `NaN`, otherwise returns `false`.
      *
-     *  @return `true` if the value of this FPN is `NaN`, otherwise returns `false`.
+     *  @return `true` if the value of this FixedPointNumber is `NaN`, otherwise returns `false`.
      *
      *  @see [bignumber.js isNaN](https://mikemcl.github.io/bignumber.js/#isNaN)
      */
@@ -485,7 +477,7 @@ class FPN implements VeChainDataModel<FPN> {
      * Checks if a given string expression is a natural (unsigned positive integer)
      * number in base 10 notation.
      *
-     * @param {string} exp - The string expression to be tested.
+     * @param {string} exp The string expression to be tested.
      *
      * @return {boolean} `true` if the expression is a natural number,
      * `false` otherwise.
@@ -495,9 +487,9 @@ class FPN implements VeChainDataModel<FPN> {
     }
 
     /**
-     * Returns `true` if the sign of this FPN is negative, otherwise returns `false`.
+     * Returns `true` if the sign of this FixedPointNumber is negative, otherwise returns `false`.
      *
-     * @return `true` if the sign of this FPN is negative, otherwise returns `false`.
+     * @return `true` if the sign of this FixedPointNumber is negative, otherwise returns `false`.
      *
      * @see [bignumber.js isNegative](https://mikemcl.github.io/bignumber.js/#isNeg)
      */
@@ -506,7 +498,7 @@ class FPN implements VeChainDataModel<FPN> {
     }
 
     /**
-     * Returns `true` if this FPN value is {@link NEGATIVE_INFINITY}, otherwise returns `false`.
+     * Returns `true` if this FixedPointNumber value is {@link NEGATIVE_INFINITY}, otherwise returns `false`.
      */
     public isNegativeInfinite(): boolean {
         return this.ef === Number.NEGATIVE_INFINITY;
@@ -527,18 +519,18 @@ class FPN implements VeChainDataModel<FPN> {
      *     - Positive decimal numbers, optionally signed: .1, +.5, .75, ...
      *     - Negative decimal numbers: -.1, -.5, -.75, ...
      *
-     * @param exp - The string expression to be checked.
+     * @param exp The string expression to be checked.
      *
      * @return `true` is `exp` represents a number, otherwise `false`.
      */
     public static isNumberExpression(exp: string): boolean {
-        return FPN.REGEX_NUMBER.test(exp);
+        return FixedPointNumber.REGEX_NUMBER.test(exp);
     }
 
     /**
-     * Returns `true` if the sign of this FPN is positive, otherwise returns `false`.
+     * Returns `true` if the sign of this FixedPointNumber is positive, otherwise returns `false`.
      *
-     * @return `true` if the sign of this FPN is positive, otherwise returns `false`.
+     * @return `true` if the sign of this FixedPointNumber is positive, otherwise returns `false`.
      *
      * @see [bignumber.js isPositive](https://mikemcl.github.io/bignumber.js/#isPos)
      */
@@ -547,18 +539,18 @@ class FPN implements VeChainDataModel<FPN> {
     }
 
     /**
-     * Returns `true` if this FPN value is {@link POSITIVE_INFINITY}, otherwise returns `false`.
+     * Returns `true` if this FixedPointNumber value is {@link POSITIVE_INFINITY}, otherwise returns `false`.
      *
-     * @return `true` if this FPN value is {@link POSITIVE_INFINITY}, otherwise returns `false`.
+     * @return `true` if this FixedPointNumber value is {@link POSITIVE_INFINITY}, otherwise returns `false`.
      */
     public isPositiveInfinite(): boolean {
         return this.ef === Number.POSITIVE_INFINITY;
     }
 
     /**
-     * Returns `true` if the value of this FPN is zero or minus zero, otherwise returns `false`.
+     * Returns `true` if the value of this FixedPointNumber is zero or minus zero, otherwise returns `false`.
      *
-     * @return `true` if the value of this FPN is zero or minus zero, otherwise returns `false`.
+     * @return `true` if the value of this FixedPointNumber is zero or minus zero, otherwise returns `false`.
      *
      * [see bignumber.js isZero](https://mikemcl.github.io/bignumber.js/#isZ)
      */
@@ -567,42 +559,40 @@ class FPN implements VeChainDataModel<FPN> {
     }
 
     /**
-     * Returns `true` if the value of this FPN is less than the value of `that` FPN, otherwise returns `false`.
+     * Returns `true` if the value of this FixedPointNumber is less than the value of `that` FixedPointNumber, otherwise returns `false`.
      *
-     * @param {FPN} that - The FPN to compare against.
+     * @param {FixedPointNumber} that - The FixedPointNumber to compare against.
      *
-     * @return {boolean} `true` if the value of this FPN is less than the value of `that` FPN, otherwise returns `false`.
+     * @return {boolean} `true` if the value of this FixedPointNumber is less than the value of `that` FixedPointNumber, otherwise returns `false`.
      *
      * @remarks This method uses {@link comparedTo} internally.
      *
      * @see [bignumber.js isLessThan](https://mikemcl.github.io/bignumber.js/#lt)
      */
-    public lt(that: FPN): boolean {
+    public lt(that: FixedPointNumber): boolean {
         const cmp = this.comparedTo(that);
         return cmp !== null && cmp < 0;
     }
 
     /**
-     * Returns `true` if the value of this FPN is less than or equal to the value of `that` FPN,
+     * Returns `true` if the value of this FixedPointNumber is less than or equal to the value of `that` FixedPointNumber,
      * otherwise returns `false`.
      *
-     * @param {FPN} that true` if the value of this FPN is less than or equal to the value of `that` FPN,
-     * otherwise returns `false`.
-     *
-     * @return {boolean} `true` if the value of this FPN is less than or equal to the value of `that` FPN,
+     * @param {FixedPointNumber} that The FixedPointNumber to compare against.
+     * @return {boolean} `true` if the value of this FixedPointNumber is less than or equal to the value of `that` FixedPointNumber,
      * otherwise returns `false`.
      *
      * @remarks This method uses {@link comparedTo} internally.
      *
      * @see [bignumber.js isLessThanOrEqualTo](https://mikemcl.github.io/bignumber.js/#lte)
      */
-    public lte(that: FPN): boolean {
+    public lte(that: FixedPointNumber): boolean {
         const cmp = this.comparedTo(that);
         return cmp !== null && cmp <= 0;
     }
 
     /**
-     * Returns a FPN whose value is the value of this FPN minus `that` FPN.
+     * Returns a FixedPointNumber whose value is the value of this FixedPointNumber minus `that` FixedPointNumber.
      *
      * Limit cases
      * * NaN - ±n = NaN
@@ -612,27 +602,30 @@ class FPN implements VeChainDataModel<FPN> {
      * * +Infinity - +Infinity = NaN
      * * +Infinity - +n = +Infinity
      *
-     * @param {FPN} that The fixed-point number to subtract.
-     *
-     * @return {FPN} The result of the subtraction. The return value is always exact and unrounded.
+     * @param {FixedPointNumber} that The fixed-point number to subtract.
+     * @return {FixedPointNumber} The result of the subtraction. The return value is always exact and unrounded.
      *
      * @remarks The precision is the greater of the precision of the two operands.
      *
      * @see [bignumber.js minus](https://mikemcl.github.io/bignumber.js/#minus)
      */
-    public minus(that: FPN): FPN {
-        if (this.isNaN() || that.isNaN()) return FPN.NaN;
+    public minus(that: FixedPointNumber): FixedPointNumber {
+        if (this.isNaN() || that.isNaN()) return FixedPointNumber.NaN;
         if (this.isNegativeInfinite())
-            return that.isNegativeInfinite() ? FPN.NaN : FPN.NEGATIVE_INFINITY;
+            return that.isNegativeInfinite()
+                ? FixedPointNumber.NaN
+                : FixedPointNumber.NEGATIVE_INFINITY;
         if (this.isPositiveInfinite())
-            return that.isPositiveInfinite() ? FPN.NaN : FPN.POSITIVE_INFINITY;
+            return that.isPositiveInfinite()
+                ? FixedPointNumber.NaN
+                : FixedPointNumber.POSITIVE_INFINITY;
         const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
-        return new FPN(fd, this.dp(fd).sv - that.dp(fd).sv);
+        return new FixedPointNumber(fd, this.dp(fd).sv - that.dp(fd).sv);
     }
 
     /**
-     * Returns a FPN whose value is the value of this FPN modulo `that` FPN,
-     * i.e. the integer remainder of dividing this FPN by `that`.
+     * Returns a FixedPointNumber whose value is the value of this FixedPointNumber modulo `that` FixedPointNumber,
+     * i.e. the integer remainder of dividing this FixedPointNumber by `that`.
      *
      * Limit cases
      * * NaN % ±n = NaN
@@ -640,32 +633,31 @@ class FPN implements VeChainDataModel<FPN> {
      * * ±Infinity % n = NaN
      * * n % ±Infinity = NaN
      *
-     * @param that {FPN} The fixed-point number to divide by.
-     *
-     * @return {FPN} the integer remainder of dividing this FPN by `that`.
+     * @param that {FixedPointNumber} The fixed-point number to divide by.
+     * @return {FixedPointNumber} the integer remainder of dividing this FixedPointNumber by `that`.
      *
      * @remarks The precision is the greater of the precision of the two operands.
      *
      * @see [bignumber.js modulo](https://mikemcl.github.io/bignumber.js/#mod)
      */
-    public modulo(that: FPN): FPN {
-        if (this.isNaN() || that.isNaN()) return FPN.NaN;
-        if (this.isInfinite() || that.isInfinite()) return FPN.NaN;
-        if (that.isZero()) return FPN.NaN;
+    public modulo(that: FixedPointNumber): FixedPointNumber {
+        if (this.isNaN() || that.isNaN()) return FixedPointNumber.NaN;
+        if (this.isInfinite() || that.isInfinite()) return FixedPointNumber.NaN;
+        if (that.isZero()) return FixedPointNumber.NaN;
         const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
         let modulo = this.abs().dp(fd).sv;
         const divisor = that.abs().dp(fd).sv;
         while (modulo >= divisor) {
             modulo -= divisor;
         }
-        return new FPN(fd, modulo);
+        return new FixedPointNumber(fd, modulo);
     }
 
     /**
      * Multiplies two big integer values and divides by a factor of ten raised to a specified power.
      *
-     * @param {bigint} multiplicand - The first number to be multiplied.
-     * @param {bigint} multiplicator - The second number to be multiplied.
+     * @param {bigint} multiplicand The first number to be multiplied.
+     * @param {bigint} multiplicator The second number to be multiplied.
      * @param {bigint} fd - The power of ten by which the product is to be divided.
      *
      * @return {bigint} The result of the multiplication divided by ten raised to the specified power.
@@ -679,19 +671,21 @@ class FPN implements VeChainDataModel<FPN> {
     }
 
     /**
-     * Returns a new instance of FPN whose value is the value of this FPN value
+     * Returns a new instance of FixedPointNumber whose value is the value of this FixedPointNumber value
      * negated, i.e. multiplied by -1.
      *
      * @see [bignumber.js negated](https://mikemcl.github.io/bignumber.js/#neg)
      */
-    public negated(): FPN {
-        if (this.isNegativeInfinite()) return FPN.POSITIVE_INFINITY;
-        if (this.isPositiveInfinite()) return FPN.NEGATIVE_INFINITY;
-        return new FPN(this.fd, -this.sv, this.ef);
+    public negated(): FixedPointNumber {
+        if (this.isNegativeInfinite())
+            return FixedPointNumber.POSITIVE_INFINITY;
+        if (this.isPositiveInfinite())
+            return FixedPointNumber.NEGATIVE_INFINITY;
+        return new FixedPointNumber(this.fd, -this.sv, this.ef);
     }
 
     /**
-     * Constructs a new instance of FPN (Fixed Point Number) parsing the
+     * Constructs a new instance of FixedPointNumber (Fixed Point Number) parsing the
      * `exp` numeric expression in base 10 and representing the value with the
      * precision of `decimalPlaces` fractional decimal digits.
      *
@@ -700,32 +694,45 @@ class FPN implements VeChainDataModel<FPN> {
      * @param {bigint} [decimalPlaces=this.DEFAULT_FRACTIONAL_DECIMALS] The
      * number of fractional decimal digits to be used to represent the value.
      *
-     * @return {FPN} A new instance of FPN with the given parameters.
+     * @return {FixedPointNumber} A new instance of FixedPointNumber with the given parameters.
      *
      * @throws {InvalidDataType} If `exp` is not a numeric expression.
      */
     public static of(
         exp: bigint | number | string,
         decimalPlaces: bigint = this.DEFAULT_FRACTIONAL_DECIMALS
-    ): FPN {
+    ): FixedPointNumber {
         try {
             if (Number.isNaN(exp))
-                return new FPN(decimalPlaces, 0n, Number.NaN);
+                return new FixedPointNumber(decimalPlaces, 0n, Number.NaN);
             if (exp === Number.NEGATIVE_INFINITY)
-                return new FPN(decimalPlaces, -1n, Number.NEGATIVE_INFINITY);
+                return new FixedPointNumber(
+                    decimalPlaces,
+                    -1n,
+                    Number.NEGATIVE_INFINITY
+                );
             if (exp === Number.POSITIVE_INFINITY)
-                return new FPN(decimalPlaces, 1n, Number.POSITIVE_INFINITY);
-            return new FPN(
+                return new FixedPointNumber(
+                    decimalPlaces,
+                    1n,
+                    Number.POSITIVE_INFINITY
+                );
+            return new FixedPointNumber(
                 decimalPlaces,
                 this.txtToSV(exp.toString(), decimalPlaces)
             );
         } catch (e) {
-            throw new InvalidDataType('FPN.of', 'not a number', { exp }, e);
+            throw new InvalidDataType(
+                'FixedPointNumber.of',
+                'not a number',
+                { exp },
+                e
+            );
         }
     }
 
     /**
-     * Returns a FPN whose value is the value of this FPN plus `that` FPN.
+     * Returns a FixedPointNumber whose value is the value of this FixedPointNumber plus `that` FixedPointNumber.
      *
      * Limit cases
      * * NaN + ±n = NaN
@@ -735,26 +742,29 @@ class FPN implements VeChainDataModel<FPN> {
      * * +Infinity + -Infinity = NaN
      * * +Infinity + +Infinity = +Infinity
      *
-     * @param {FPN} that - The fixed-point number to add to the current number.
-     *
-     * @return {FPN} The result of the addition. The return value is always exact and unrounded.
+     * @param {FixedPointNumber} that The fixed-point number to add to the current number.
+     * @return {FixedPointNumber} The result of the addition. The return value is always exact and unrounded.
      *
      * @remarks The precision is the greater of the precision of the two operands.
      *
      * @see [bignumber.js plus](https://mikemcl.github.io/bignumber.js/#plus)
      */
-    public plus(that: FPN): FPN {
-        if (this.isNaN() || that.isNaN()) return FPN.NaN;
+    public plus(that: FixedPointNumber): FixedPointNumber {
+        if (this.isNaN() || that.isNaN()) return FixedPointNumber.NaN;
         if (this.isNegativeInfinite())
-            return that.isPositiveInfinite() ? FPN.NaN : FPN.NEGATIVE_INFINITY;
+            return that.isPositiveInfinite()
+                ? FixedPointNumber.NaN
+                : FixedPointNumber.NEGATIVE_INFINITY;
         if (this.isPositiveInfinite())
-            return that.isNegativeInfinite() ? FPN.NaN : FPN.POSITIVE_INFINITY;
+            return that.isNegativeInfinite()
+                ? FixedPointNumber.NaN
+                : FixedPointNumber.POSITIVE_INFINITY;
         const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
-        return new FPN(fd, this.dp(fd).sv + that.dp(fd).sv);
+        return new FixedPointNumber(fd, this.dp(fd).sv + that.dp(fd).sv);
     }
 
     /**
-     * Returns a FPN whose value is the value of this FPN raised to the power of `that` FPN.
+     * Returns a FixedPointNumber whose value is the value of this FixedPointNumber raised to the power of `that` FixedPointNumber.
      *
      * Limit cases
      * * NaN ^ e = NaN
@@ -765,11 +775,11 @@ class FPN implements VeChainDataModel<FPN> {
      * * ±Infinite ^ -e = 0
      * * ±Infinite ^ +e = +Infinite
      *
-     * @param {FPN} that - The exponent as a fixed-point number.
+     * @param {FixedPointNumber} that The exponent as a fixed-point number.
      *                     It can be negative, it can be not an integer value
      *                     ([bignumber.js pow](https://mikemcl.github.io/bignumber.js/#pow)
      *                     doesn't support not integer exponents).
-     * @return {FPN} - The result of raising this fixed-point number to the power of the given exponent.
+     * @return {FixedPointNumber} - The result of raising this fixed-point number to the power of the given exponent.
      *
      * @remarks The precision is the greater of the precision of the two operands.
      * @remarks In fixed-precision math, the comparisons between powers of operands having different fractional
@@ -777,32 +787,40 @@ class FPN implements VeChainDataModel<FPN> {
      *
      * @see [bignumber.js exponentiatedBy](https://mikemcl.github.io/bignumber.js/#pow)
      */
-    public pow(that: FPN): FPN {
-        if (this.isNaN() || that.isNaN()) return FPN.NaN;
+    public pow(that: FixedPointNumber): FixedPointNumber {
+        if (this.isNaN() || that.isNaN()) return FixedPointNumber.NaN;
         if (this.isInfinite())
             return that.isZero()
-                ? FPN.of(1)
+                ? FixedPointNumber.of(1)
                 : that.isNegative()
-                  ? FPN.ZERO
-                  : FPN.POSITIVE_INFINITY;
-        if (that.isNegativeInfinite()) return FPN.ZERO;
-        if (that.isPositiveInfinite()) return FPN.POSITIVE_INFINITY;
+                  ? FixedPointNumber.ZERO
+                  : FixedPointNumber.POSITIVE_INFINITY;
+        if (that.isNegativeInfinite()) return FixedPointNumber.ZERO;
+        if (that.isPositiveInfinite())
+            return FixedPointNumber.POSITIVE_INFINITY;
         const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
-        return new FPN(fd, FPN.pow(fd, this.dp(fd).sv, that.dp(fd).sv));
+        return new FixedPointNumber(
+            fd,
+            FixedPointNumber.pow(fd, this.dp(fd).sv, that.dp(fd).sv)
+        );
     }
 
     /**
      * Computes the power of a given base raised to a specified exponent.
      *
-     * @param {bigint} fd - The scale factor for decimal precision.
-     * @param {bigint} base - The base number to be raised to the power.
-     * @param {bigint} exponent - The exponent to which the base should be raised.
-     * @return {bigint} - The result of base raised to the power of exponent, scaled by the scale factor.
+     * @param {bigint} fd The scale factor for decimal precision.
+     * @param {bigint} base The base number to be raised to the power.
+     * @param {bigint} exponent The exponent to which the base should be raised.
+     * @return {bigint} The result of base raised to the power of exponent, scaled by the scale factor.
      */
     private static pow(fd: bigint, base: bigint, exponent: bigint): bigint {
         const sf = 10n ** fd; // Scale factor.
         if (exponent < 0n) {
-            return FPN.pow(fd, FPN.div(fd, sf, base), -exponent); // Recursive.
+            return FixedPointNumber.pow(
+                fd,
+                FixedPointNumber.div(fd, sf, base),
+                -exponent
+            ); // Recursive.
         }
         if (exponent === 0n) {
             return 1n * sf;
@@ -810,15 +828,18 @@ class FPN implements VeChainDataModel<FPN> {
         if (exponent === sf) {
             return base;
         }
-        return FPN.pow(fd, this.mul(base, base, fd), exponent - sf); // Recursive.
+        return FixedPointNumber.pow(
+            fd,
+            this.mul(base, base, fd),
+            exponent - sf
+        ); // Recursive.
     }
 
     /**
      * Computes the square root of a given positive bigint value using a fixed-point iteration method.
      *
-     * @param {bigint} value - The positive bigint value for which the square root is to be calculated.
-     * @param {bigint} fd - The iteration factor determinant.
-     *
+     * @param {bigint} value The positive bigint value for which the square root is to be calculated.
+     * @param {bigint} fd The iteration factor determinant.
      * @return {bigint} The calculated square root of the input bigint value.
      *
      * @throws {RangeError} If the input value is negative.
@@ -834,38 +855,43 @@ class FPN implements VeChainDataModel<FPN> {
         while (actualResult !== storedResult && iteration < sf) {
             storedResult = actualResult;
             actualResult =
-                (actualResult + FPN.div(fd, value, actualResult)) / 2n;
+                (actualResult + FixedPointNumber.div(fd, value, actualResult)) /
+                2n;
             iteration++;
         }
         return actualResult;
     }
 
     /**
-     * Returns a FPN whose value is the square root of the value of this FPN
+     * Returns a FixedPointNumber whose value is the square root of the value of this FixedPointNumber
      *
      * Limit cases
      * * NaN = NaN
      * * +Infinite = +Infinite
      * * -n = NaN
      *
-     * @return {FPN} The square root of the number.
+     * @return {FixedPointNumber} The square root of the number.
      *
      * @see [bignumber.js sqrt](https://mikemcl.github.io/bignumber.js/#sqrt)
      */
-    public sqrt(): FPN {
-        if (this.isNaN()) return FPN.NaN;
-        if (this.isNegativeInfinite()) return FPN.NaN;
-        if (this.isPositiveInfinite()) return FPN.POSITIVE_INFINITY;
+    public sqrt(): FixedPointNumber {
+        if (this.isNaN()) return FixedPointNumber.NaN;
+        if (this.isNegativeInfinite()) return FixedPointNumber.NaN;
+        if (this.isPositiveInfinite())
+            return FixedPointNumber.POSITIVE_INFINITY;
         try {
-            return new FPN(this.fd, FPN.sqr(this.sv, this.fd));
+            return new FixedPointNumber(
+                this.fd,
+                FixedPointNumber.sqr(this.sv, this.fd)
+            );
             //  eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
-            return FPN.NaN;
+            return FixedPointNumber.NaN;
         }
     }
 
     /**
-     * Returns a FPN whose value is the value of this FPN multiplied by `that` FPN.
+     * Returns a FixedPointNumber whose value is the value of this FixedPointNumber multiplied by `that` FixedPointNumber.
      *
      * Limits cases
      * * NaN * n = NaN
@@ -875,28 +901,36 @@ class FPN implements VeChainDataModel<FPN> {
      * * +Infinite * -n = -Infinite
      * * +Infinite * +n = +Infinite
      *
-     * @param {FPN} that - The fixed-point number to multiply with this number.
-     *
-     * @return {FPN} a FPN whose value is the value of this FPN multiplied by `that` FPN.
+     * @param {FixedPointNumber} that The fixed-point number to multiply with this number.
+     * @return {FixedPointNumber} a FixedPointNumber whose value is the value of this FixedPointNumber multiplied by `that` FixedPointNumber.
      *
      * @remarks The precision is the greater of the precision of the two operands.
      *
      * @see [bignumber.js multipliedBy](https://mikemcl.github.io/bignumber.js/#times)
      */
-    public times(that: FPN): FPN {
-        if (this.isNaN() || that.isNaN()) return FPN.NaN;
+    public times(that: FixedPointNumber): FixedPointNumber {
+        if (this.isNaN() || that.isNaN()) return FixedPointNumber.NaN;
         if (this.isNegativeInfinite())
             return that.isNegative()
-                ? FPN.POSITIVE_INFINITY
-                : FPN.NEGATIVE_INFINITY;
+                ? FixedPointNumber.POSITIVE_INFINITY
+                : FixedPointNumber.NEGATIVE_INFINITY;
         if (this.isPositiveInfinite())
             return that.isNegative()
-                ? FPN.NEGATIVE_INFINITY
-                : FPN.POSITIVE_INFINITY;
+                ? FixedPointNumber.NEGATIVE_INFINITY
+                : FixedPointNumber.POSITIVE_INFINITY;
         const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
-        return new FPN(fd, FPN.mul(this.dp(fd).sv, that.dp(fd).sv, fd));
+        return new FixedPointNumber(
+            fd,
+            FixedPointNumber.mul(this.dp(fd).sv, that.dp(fd).sv, fd)
+        );
     }
 
+    /**
+     * Converts the fixed-point number to its string representation.
+     *
+     * @param {string} [decimalSeparator='.'] The character to use as the decimal separator in the string representation. Default is '.'.
+     * @return {string} A string representation of the fixed-point number.
+     */
     public toString(decimalSeparator = '.'): string {
         if (this.ef === 0) {
             const sign = this.sv < 0n ? '-' : '';
@@ -906,7 +940,7 @@ class FPN implements VeChainDataModel<FPN> {
             const decimals = this.fd > 0 ? padded.slice(Number(-this.fd)) : '';
             const integers = padded.slice(0, padded.length - decimals.length);
             const integersShow = integers.length < 1 ? '0' : integers;
-            const decimalsShow = FPN.trimEnd(decimals);
+            const decimalsShow = FixedPointNumber.trimEnd(decimals);
             return (
                 sign +
                 integersShow +
@@ -916,15 +950,33 @@ class FPN implements VeChainDataModel<FPN> {
         return this.ef.toString();
     }
 
+    /**
+     * Trims the specified trailing substring from the end of the input string recursively.
+     *
+     * @param {string} str The input string to be trimmed.
+     * @param {string} [sub='0'] The substring to be removed from the end of the input string. Defaults to '0' if not provided.
+     * @return {string} The trimmed string with the specified trailing substring removed.
+     */
     private static trimEnd(str: string, sub: string = '0'): string {
         // Check if the input string ends with the trailing substring
         if (str.endsWith(sub)) {
             // Remove the trailing substring recursively.
-            return FPN.trimEnd(str.substring(0, str.length - sub.length), sub);
+            return FixedPointNumber.trimEnd(
+                str.substring(0, str.length - sub.length),
+                sub
+            );
         }
         return str;
     }
 
+    /**
+     * Converts a string expression of a number into a scaled value.
+     *
+     * @param {string} exp The string expression of the number to be converted.
+     * @param {bigint} fd The scale factor to be used for conversion.
+     * @param {string} [decimalSeparator='.'] The character used as the decimal separator in the string expression.
+     * @return {bigint} - The converted scaled value as a bigint.
+     */
     private static txtToSV(
         exp: string,
         fd: bigint,
@@ -952,4 +1004,4 @@ class FPN implements VeChainDataModel<FPN> {
     }
 }
 
-export { FPN };
+export { FixedPointNumber };

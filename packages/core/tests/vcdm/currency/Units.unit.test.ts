@@ -1,6 +1,6 @@
 import { expect } from '@jest/globals';
 import { formatEther, formatUnits, parseEther, parseUnits } from 'viem';
-import { FPN, Units } from '../../../src';
+import { FixedPointNumber, Units } from '../../../src';
 
 const UnitsFixture = {
     oneWei: 1n,
@@ -17,14 +17,14 @@ describe('Units namespace tests', () => {
         test('integer result should append .0', () => {
             const exp = UnitsFixture.oneEther;
             const expected = Number(formatEther(exp)).toFixed(1);
-            const actual = Units.formatEther(FPN.of(exp));
+            const actual = Units.formatEther(FixedPointNumber.of(exp));
             expect(actual).toEqual(expected);
         });
 
         test('not integer result', () => {
             const exp = 1234567890n;
             const expected = formatEther(exp);
-            const actual = Units.formatEther(FPN.of(exp));
+            const actual = Units.formatEther(FixedPointNumber.of(exp));
             expect(actual).toEqual(expected);
         });
     });
@@ -33,21 +33,27 @@ describe('Units namespace tests', () => {
         test('ether', () => {
             const exp = UnitsFixture.oneEther;
             const expected = Number(formatUnits(exp, Units.ether)).toFixed(1);
-            const actual = Units.formatUnits(FPN.of(exp));
+            const actual = Units.formatUnits(FixedPointNumber.of(exp));
             expect(actual).toEqual(expected);
         });
 
         test('gwei', () => {
             const exp = UnitsFixture.oneGwei;
             const expected = Number(formatUnits(exp, Units.gwei)).toFixed(1);
-            const actual = Units.formatUnits(FPN.of(exp), Units.gwei);
+            const actual = Units.formatUnits(
+                FixedPointNumber.of(exp),
+                Units.gwei
+            );
             expect(actual).toEqual(expected);
         });
 
         test('wei', () => {
             const exp = UnitsFixture.oneWei;
             const expected = formatUnits(exp, Units.wei);
-            const actual = Units.formatUnits(FPN.of(exp), Units.wei);
+            const actual = Units.formatUnits(
+                FixedPointNumber.of(exp),
+                Units.wei
+            );
             expect(Number(actual)).toEqual(Number(expected));
         });
     });
