@@ -1,5 +1,5 @@
 import { InvalidRLP } from '@vechain/sdk-errors';
-import { FPN, Hex, HexUInt } from '../../../vcdm';
+import { FixedPointNumber, Hex, HexUInt } from '../../../vcdm';
 import { type RLPInput } from '../types';
 
 /**
@@ -76,7 +76,7 @@ const _validateNumericKindNumber = (num: number, context: string): void => {
  */
 const _validateNumericKindString = (str: string, context: string): void => {
     const isHexUInt = HexUInt.isValid0x(str);
-    const isDecimal = FPN.isNaturalExpression(str);
+    const isDecimal = FixedPointNumber.isNaturalExpression(str);
     // Ensure the string is either a hex or decimal number.
     if (!isHexUInt && !isDecimal) {
         throw new InvalidRLP(

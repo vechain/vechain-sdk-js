@@ -1,9 +1,9 @@
-import { FPN, Txt } from '../../../src';
+import { FixedPointNumber, Txt } from '../../../src';
 import { VET } from '../../../src/vcdm/currency/VET';
 import { expect } from '@jest/globals';
 
 const VETFixture = {
-    value: FPN.of('123456789.012345678')
+    value: FixedPointNumber.of('123456789.012345678')
 };
 
 /**

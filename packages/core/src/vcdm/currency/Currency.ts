@@ -1,4 +1,4 @@
-import { type FPN } from '../FPN';
+import { type FixedPointNumber } from '../FixedPointNumber';
 import { type Txt } from '../Txt';
 import { type VeChainDataModel } from '../VeChainDataModel';
 
@@ -21,9 +21,9 @@ export interface Currency extends VeChainDataModel<Currency> {
     get code(): Txt;
 
     /**
-     * Return the current value as an FPN (Fixed-Point Number).
+     * Return the current value as an FixedPointNumber (Fixed-Point Number).
      *
-     * @return {FPN} The current value in Fixed-Point Number format.
+     * @return {FixedPointNumber} The current value in Fixed-Point Number format.
      */
-    get value(): FPN;
+    get value(): FixedPointNumber;
 }

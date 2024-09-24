@@ -1,4 +1,4 @@
-import { Address, FPN, Mnemonic, Account } from '../../../src';
+import { Address, FixedPointNumber, Mnemonic, Account } from '../../../src';
 import { VET } from '../../../src/vcdm/currency/VET';
 
 /**
@@ -6,7 +6,7 @@ import { VET } from '../../../src/vcdm/currency/VET';
  * @group unit/vcdm
  */
 describe('Account class tests', () => {
-    const balance = VET.of(FPN.of(0));
+    const balance = VET.of(FixedPointNumber.of(0));
     const mnemonic = Mnemonic.of();
     describe('Construction tests', () => {
         test('Return an Account instance if the passed arguments are valid', () => {

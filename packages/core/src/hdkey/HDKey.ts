@@ -2,7 +2,7 @@ import * as s_bip32 from '@scure/bip32';
 import * as s_bip39 from '@scure/bip39';
 import * as nc_utils from '@noble/curves/abstract/utils';
 import { base58 } from '@scure/base';
-import { FPN, Sha256 } from '../vcdm';
+import { FixedPointNumber, Sha256 } from '../vcdm';
 import { HexUInt } from '../vcdm/HexUInt';
 import { Secp256k1 } from '../secp256k1';
 import {
@@ -226,9 +226,9 @@ class HDKey extends s_bip32.HDKey {
             // m
             (index === 0 ? component === 'm' : false) ||
             // "number"
-            FPN.isNaturalExpression(component) ||
+            FixedPointNumber.isNaturalExpression(component) ||
             // "number'"
-            (FPN.isNaturalExpression(component.slice(0, -1)) &&
+            (FixedPointNumber.isNaturalExpression(component.slice(0, -1)) &&
                 component.endsWith("'"))
         );
     }

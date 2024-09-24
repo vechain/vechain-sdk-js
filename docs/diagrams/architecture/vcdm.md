@@ -63,22 +63,22 @@ classDiagram
     class Contract
     class Currency {
         +Txt code
-        +FPN value
+        +FixedPointNumber value
     }
-    class FPN {
+    class FixedPointNumber {
         +bigint sv
-        +FPN NaN$
-        +FPN NEGATIVE_INFINITY$
-        +FPN POSITIVE_INFINITY$
-        +FPN ZERO$
-        +FPN abs()
-        +null|number comparedTo(FPN that)
-        +FPN div(FPN that)
-        +FPN dp(bigint|number decimalPlaces)
-        +boolean eq(FPN that)
-        +boolean gt(FPN that)
-        +boolean gte(FPN that)
-        +FPN idiv(FPN that)
+        +FixedPointNumber NaN$
+        +FixedPointNumber NEGATIVE_INFINITY$
+        +FixedPointNumber POSITIVE_INFINITY$
+        +FixedPointNumber ZERO$
+        +FixedPointNumber abs()
+        +null|number comparedTo(FixedPointNumber that)
+        +FixedPointNumber div(FixedPointNumber that)
+        +FixedPointNumber dp(bigint|number decimalPlaces)
+        +boolean eq(FixedPointNumber that)
+        +boolean gt(FixedPointNumber that)
+        +boolean gte(FixedPointNumber that)
+        +FixedPointNumber idiv(FixedPointNumber that)
         +boolean isFinite()
         +boolean isInfinite()
         +boolean isInteger()
@@ -91,16 +91,16 @@ classDiagram
         +boolean isPositive()
         +boolean isPositiveInfinite()
         +boolean isZero()
-        +boolean lt(FPN that)
-        +boolean lte(FPN that)
-        +FPN minus(FPN that)
-        +FPN modulo(FPN that)
-        +FPN negated()
-        +FPN of(bigint|number|string exp)$
-        +FPN plus(FPN that)
-        +FPN pow(FPN that)
-        +FPN sqrt()
-        +FPN times(FPN that)
+        +boolean lt(FixedPointNumber that)
+        +boolean lte(FixedPointNumber that)
+        +FixedPointNumber minus(FixedPointNumber that)
+        +FixedPointNumber modulo(FixedPointNumber that)
+        +FixedPointNumber negated()
+        +FixedPointNumber of(bigint|number|string exp)$
+        +FixedPointNumber plus(FixedPointNumber that)
+        +FixedPointNumber pow(FixedPointNumber that)
+        +FixedPointNumber sqrt()
+        +FixedPointNumber times(FixedPointNumber that)
     }
     class Hex {
         +Hex abs
@@ -151,10 +151,10 @@ classDiagram
         +12 szabo$
         +15 finney$
         +18 ether$
-        +string formatEther(FPN wei)$
-        +string formatUnit(FPN wei, Units unit)$
-        +FPN parseEther(string: ether)$
-        +FPN parseUnit(string exp, Unit unit)$
+        +string formatEther(FixedPointNumber wei)$
+        +string formatUnit(FixedPointNumber wei, Units unit)$
+        +FixedPointNumber parseEther(string: ether)$
+        +FixedPointNumber parseUnit(string exp, Unit unit)$
     }
     class VeChainDataModel {
         <<interface>>
@@ -168,13 +168,13 @@ classDiagram
     class VET {
         +Txt CODE$
         +bigint wei
-        +VET of(bigint|number|string|FPN value)$
+        +VET of(bigint|number|string|FixedPointNumber value)$
         +Clause transferTo(Address: address, ClauseOptions?: clauseOptionsre)
     }
     class VTHO {
         +Txt CODE$
         +bigint wei
-        +VTHO of(bigint|number|string|FPN value)$
+        +VTHO of(bigint|number|string|FixedPointNumber value)$
         +Clause transferTokenTo(Address address, Address to, ClauseOptions? clauseOptions)
     }
     ABI <|-- ABIContract
@@ -187,8 +187,8 @@ classDiagram
     Coin <|-- VET
     Coin <|-- VTHO
     Currency <|.. Coin
-    FPN <|-- VET
-    FPN <|-- VTHO
+    FixedPointNumber <|-- VET
+    FixedPointNumber <|-- VTHO
     Hex <|-- HexInt
     HexInt <|-- HexUInt
     HexUInt <|-- Address
@@ -203,7 +203,7 @@ classDiagram
     VeChainDataModel <|.. ABI
     VeChainDataModel <|.. BloomFilter
     VeChainDataModel <|.. Currency
-    VeChainDataModel <|.. FPN
+    VeChainDataModel <|.. FixedPointNumber
     VeChainDataModel <|.. Hex
     VeChainDataModel <|.. Txt
 ```

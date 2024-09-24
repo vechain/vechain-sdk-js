@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, test } from '@jest/globals';
 import { MAINNET_URL, ThorClient } from '../../../src';
 
 import { B3TR, X2EarnRewardsPool } from '@vechain/vebetterdao-contracts';
-import { FPN, Units } from '@vechain/sdk-core';
+import { FixedPointNumber, Units } from '@vechain/sdk-core';
 
 describe('ThorClient - ERC20 Contracts', () => {
     // ThorClient instance
@@ -53,7 +53,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         console.log(
             'Total B3TR transferred:',
-            Units.formatEther(FPN.of(amount))
+            Units.formatEther(FixedPointNumber.of(amount))
         );
         expect(events.length).toBeGreaterThan(0);
         console.log(events[0]);

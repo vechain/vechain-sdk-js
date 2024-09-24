@@ -36,7 +36,7 @@ C4Context
                     System(VET, "VET class", "Represent VET monetary amounts.")
                     System(VTHO, "VTHO class", "Represent VTHO monetary amounts.")
                 }
-                System(FPN, "FPN class", "Handle all Fixed Point Number math.")
+                System(FixedPointNumber, "FixedPointNumber class", "Handle all Fixed Point Number math.")
                 Boundary(hash, "Hash module") {
                     System(Blake2b256, "Blake2b256 class")
                     System(Keccak, "Blake2b256 class")
