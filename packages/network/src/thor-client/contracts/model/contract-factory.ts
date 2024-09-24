@@ -1,6 +1,8 @@
 import {
-    clauseBuilder,
+    Clause,
     type DeployParams,
+    HexUInt,
+    type TransactionClause,
     TransactionHandler
 } from '@vechain/sdk-core';
 import {
@@ -83,10 +85,11 @@ class ContractFactory<TAbi extends Abi> {
         options?: ContractTransactionOptions
     ): Promise<ContractFactory<TAbi>> {
         // Build a transaction for deploying the smart contract
-        const deployContractClause = clauseBuilder.deployContract(
-            this.bytecode,
+
+        const deployContractClause = Clause.deployContract(
+            HexUInt.of(this.bytecode),
             deployParams
-        );
+        ) as TransactionClause;
 
         // Estimate the gas cost of the transaction
         const gasResult = await this.thor.gas.estimateGas(

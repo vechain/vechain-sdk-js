@@ -7,8 +7,7 @@ import type {
 import type {
     ABIFunction,
     ClauseOptions,
-    ExtendedTransactionClause,
-    vechain_sdk_core_ethers
+    TransactionClause
 } from '@vechain/sdk-core';
 
 declare module 'abitype' {
@@ -44,13 +43,13 @@ type ContractCallOptions = SimulateTransactionOptions & ClauseOptions;
 /**
  * Represents the result of a contract call operation, encapsulating the output of the call.
  */
-type ContractCallResult = vechain_sdk_core_ethers.Result;
+type ContractCallResult = unknown[];
 
 /**
  * Represents a contract clause, which includes the clause and the corresponding function ABI.
  */
 interface ContractClause {
-    clause: ExtendedTransactionClause;
+    clause: TransactionClause;
     functionAbi: ABIFunction;
 }
 

@@ -225,9 +225,9 @@ const latestBlock = await thorSoloClient.blocks.getBestBlockCompressed();
 // 3 - Create clauses
 
 const clauses = [
-    clauseBuilder.transferVET(
-        '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
-        Units.parseEther('10000').bi
+    Clause.transferVET(
+        Address.of('0x9e7911de289c3c856ce7f421034f66b6cde49c39'),
+        VET.of(10000)
     )
 ];
 
@@ -329,10 +329,10 @@ const latestBlock = await thorSoloClient.blocks.getBestBlockCompressed();
 // 3 - Create transaction clauses
 
 const clauses = [
-    clauseBuilder.transferVET(
-        '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
-        Units.parseEther('10000').bi
-    )
+    Clause.transferVET(
+        Address.of('0x9e7911de289c3c856ce7f421034f66b6cde49c39'),
+        VET.of('10000')
+    ) as TransactionClause
 ];
 
 // Get gas estimate

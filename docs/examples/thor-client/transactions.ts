@@ -1,8 +1,9 @@
 import {
-    clauseBuilder,
+    Address,
+    Clause,
     Hex,
     TransactionHandler,
-    Units
+    VET
 } from '@vechain/sdk-core';
 import { THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
@@ -27,9 +28,9 @@ const latestBlock = await thorSoloClient.blocks.getBestBlockCompressed();
 // 3 - Create clauses
 
 const clauses = [
-    clauseBuilder.transferVET(
-        '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
-        Units.parseEther('10000').bi
+    Clause.transferVET(
+        Address.of('0x9e7911de289c3c856ce7f421034f66b6cde49c39'),
+        VET.of(10000)
     )
 ];
 

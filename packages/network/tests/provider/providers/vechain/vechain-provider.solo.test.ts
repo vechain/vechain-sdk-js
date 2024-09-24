@@ -1,10 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-
-import {
-    ABIContract,
-    clauseBuilder,
-    type TransactionClause
-} from '@vechain/sdk-core';
+import { ABIContract, Address, Clause } from '@vechain/sdk-core';
 import { JSONRPCMethodNotFound } from '@vechain/sdk-errors';
 import {
     ProviderInternalBaseWallet,
@@ -307,11 +302,11 @@ describe('VeChain provider tests - solo', () => {
             [TEST_ACCOUNT.address, 100]
         );
 
-        const clauses = clauseBuilder.functionInteraction(
-            erc721Contract.address,
+        const clauses = Clause.callFunction(
+            Address.of(erc721Contract.address),
             ABIContract.ofAbi(erc721Contract.abi).getFunction('mintItem'),
             [TEST_ACCOUNT.address]
-        ) as TransactionClause;
+        );
 
         const gas = await thorClient.gas.estimateGas([clauses]);
 

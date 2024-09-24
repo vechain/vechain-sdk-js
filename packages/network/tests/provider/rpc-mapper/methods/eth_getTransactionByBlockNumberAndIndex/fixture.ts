@@ -1,5 +1,8 @@
 import { HexInt } from '@vechain/sdk-core';
-import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
+import {
+    JSONRPCInternalError,
+    JSONRPCInvalidParams
+} from '@vechain/sdk-errors';
 
 /**
  * Positive test cases for eth_getTransactionByBlockNumberAndIndex
@@ -59,6 +62,11 @@ const ethGetTransactionByBlockNumberAndIndexTestCases = [
             value: '0x0',
             yParity: '0x0'
         }
+    },
+    {
+        description: 'eth_getTransactionByBlockHashAndIndex should return null',
+        params: [HexInt.of(0).toString(), '0x0'],
+        expected: null
     }
 ];
 
@@ -77,6 +85,14 @@ const invalidEthGetTransactionByBlockNumberAndIndexTestCases = [
         description: 'Should throw an error when second param is not a strin',
         params: ['0x0', 0],
         expectedError: JSONRPCInvalidParams
+    },
+    {
+        description: 'Should throw an error when first param is invalid',
+        params: [
+            '0xb3b20624f8f0f86eb50dd04688409e5cea4bd02d700bf6e79e9384d47d6a5a35',
+            '0x0'
+        ],
+        expectedError: JSONRPCInternalError
     }
 ];
 

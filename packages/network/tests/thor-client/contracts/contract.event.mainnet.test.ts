@@ -47,7 +47,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         for (const event of events) {
             if (event?.decodedData !== undefined) {
-                amount += event.decodedData[2] as unknown as bigint;
+                amount += event.decodedData[2] as bigint;
             }
         }
 

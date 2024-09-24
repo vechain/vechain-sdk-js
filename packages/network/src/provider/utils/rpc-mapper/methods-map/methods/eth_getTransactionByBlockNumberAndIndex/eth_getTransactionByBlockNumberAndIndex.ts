@@ -29,9 +29,9 @@ const ethGetTransactionByBlockNumberAndIndex = async (
         typeof params[1] !== 'string'
     )
         throw new JSONRPCInvalidParams(
-            'eth_getTransactionByBlockHashAndIndex',
+            'eth_getTransactionByBlockNumberAndIndex',
             -32602,
-            `Invalid input params for "eth_getTransactionByBlockHashAndIndex" method. See ${RPC_DOCUMENTATION_URL} for details.`,
+            `Invalid input params for "eth_getTransactionByBlockNumberAndIndex" method. See ${RPC_DOCUMENTATION_URL} for details.`,
             { params }
         );
 
