@@ -1,4 +1,4 @@
-import { ABIContract, clauseBuilder } from '@vechain/sdk-core';
+import { ABIContract, Address, Clause } from '@vechain/sdk-core';
 import { THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
 
@@ -37,8 +37,8 @@ const contractABI = [
 ] as const;
 
 // 2 - Create a clause to call setValue(123)
-const clause = clauseBuilder.functionInteraction(
-    '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed', // just a sample deployed contract address
+const clause = Clause.callFunction(
+    Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'), // just a sample deployed contract address
     ABIContract.ofAbi(contractABI).getFunction('setValue'),
     [123]
 );
@@ -64,11 +64,11 @@ const setValueClause = contract.clause.setValue(123);
 // 3 - Check the parameters of the clause
 
 expect(clause.to).toBe('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed');
-expect(clause.value).toBe(0);
+expect(clause.value).toBe('0x0');
 expect(clause.data).toBeDefined();
 
 expect(setValueClause.clause.to).toBe(
     '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'
 );
-expect(setValueClause.clause.value).toBe(0);
+expect(setValueClause.clause.value).toBe('0x0');
 expect(setValueClause.clause.data).toBeDefined();

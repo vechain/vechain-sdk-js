@@ -1,6 +1,6 @@
 import {
     Address,
-    clauseBuilder,
+    Clause,
     Hex,
     HexUInt,
     type TransactionBody,
@@ -381,7 +381,11 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
                   } satisfies TransactionClause
               ]
             : // If 'to' address is not provided, it will be assumed that the transaction is a contract creation transaction.
-              [clauseBuilder.deployContract(transaction.data ?? '0x')];
+              [
+                  Clause.deployContract(
+                      HexUInt.of(transaction.data ?? 0)
+                  ) as TransactionClause
+              ];
     }
 }
 

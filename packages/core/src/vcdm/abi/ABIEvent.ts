@@ -51,7 +51,7 @@ class ABIEvent extends ABIItem {
     /**
      * Decode event log data using the event's ABI.
      *
-     * @param event - Event to decode.
+     * @param abi - Event to decode.
      * @returns Decoding results.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */

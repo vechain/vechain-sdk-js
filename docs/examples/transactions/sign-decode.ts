@@ -1,12 +1,13 @@
 import {
-    clauseBuilder,
-    networkInfo,
+    Address,
+    Clause,
     Secp256k1,
-    type TransactionBody,
-    type TransactionClause,
-    TransactionHandler,
     TransactionUtils,
-    Units
+    TransactionHandler,
+    VET,
+    networkInfo,
+    type TransactionBody,
+    type TransactionClause
 } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
@@ -15,10 +16,10 @@ import { expect } from 'expect';
 // 1 - Define clauses
 
 const clauses: TransactionClause[] = [
-    clauseBuilder.transferVET(
-        '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        Units.parseEther('10000').bi
-    )
+    Clause.transferVET(
+        Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'),
+        VET.of(10000)
+    ) as TransactionClause
 ];
 
 // 2 - Calculate intrinsic gas of clauses

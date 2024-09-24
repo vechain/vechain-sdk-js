@@ -66,6 +66,7 @@ classDiagram
         +FPN value
     }
     class FPN {
+        +bigint sv
         +FPN NaN$
         +FPN NEGATIVE_INFINITY$
         +FPN POSITIVE_INFINITY$
@@ -89,7 +90,6 @@ classDiagram
         +boolean isNumberExpression(string exp)$
         +boolean isPositive()
         +boolean isPositiveInfinite()
-        +boolean isUnsignedIntegerExpression(string exp)$
         +boolean isZero()
         +boolean lt(FPN that)
         +boolean lte(FPN that)
@@ -166,10 +166,16 @@ classDiagram
       +boolean isNumber()
     }
     class VET {
-        +VET of(FPN value)$
+        +Txt CODE$
+        +bigint wei
+        +VET of(bigint|number|string|FPN value)$
+        +Clause transferTo(Address: address, ClauseOptions?: clauseOptionsre)
     }
     class VTHO {
-        +VTHO of(FPN value)$
+        +Txt CODE$
+        +bigint wei
+        +VTHO of(bigint|number|string|FPN value)$
+        +Clause transferTokenTo(Address address, Address to, ClauseOptions? clauseOptions)
     }
     ABI <|-- ABIContract
     ABI <|-- ABIItem

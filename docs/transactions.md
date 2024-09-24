@@ -23,10 +23,10 @@ In this example a simple transaction with a single clause is created, signed, en
 // 1 - Define clauses
 
 const clauses: TransactionClause[] = [
-    clauseBuilder.transferVET(
-        '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        Units.parseEther('10000').bi
-    )
+    Clause.transferVET(
+        Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'),
+        VET.of(10000)
+    ) as TransactionClause
 ];
 
 // 2 - Calculate intrinsic gas of clauses
@@ -73,15 +73,15 @@ Clauses are a feature of the VeChainThor blockchain that increase the scalabilit
 // 1 - Define multiple clauses
 
 const clauses: TransactionClause[] = [
-    clauseBuilder.transferVET(
-        '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        Units.parseEther('10000').bi
-    ),
-    clauseBuilder.transferToken(
-        VTHO_ADDRESS,
-        '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        Units.parseUnits('10000', Units.ether).bi // 10000 VTHO, `ether` is the 10e18 magnitude in this context.
-    )
+    Clause.transferVET(
+        Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'),
+        VET.of(10000)
+    ) as TransactionClause,
+    Clause.transferToken(
+        Address.of(VTHO_ADDRESS),
+        Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'),
+        VTHO.of(10000)
+    ) as TransactionClause
 ];
 
 // 2 - Calculate intrinsic gas of both clauses
@@ -139,10 +139,10 @@ const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL, {
 // 2 - Define clause and estimate gas
 
 const clauses: TransactionClause[] = [
-    clauseBuilder.transferVET(
-        '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        Units.parseEther('10000').bi
-    )
+    Clause.transferVET(
+        Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'),
+        VET.of(10000)
+    ) as TransactionClause
 ];
 
 // Get gas estimate
@@ -200,10 +200,10 @@ Using the _BlockRef_ and _Expiration_ fields a transaction can be set to be proc
 // 1 - Define clauses
 
 const clauses: TransactionClause[] = [
-    clauseBuilder.transferVET(
-        '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        Units.parseEther('1000').bi
-    )
+    Clause.transferVET(
+        Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'),
+        VET.of(1000)
+    ) as TransactionClause
 ];
 
 // 2 - Define transaction body
@@ -246,15 +246,15 @@ A transaction can be set to only be processed after another transaction, therefo
 // 1 - Define transaction clauses
 
 const txAClauses: TransactionClause[] = [
-    clauseBuilder.transferVET(
-        '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        Units.parseEther('1000').bi
-    )
+    Clause.transferVET(
+        Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'),
+        VET.of(1000)
+    ) as TransactionClause
 ];
 const txBClauses: TransactionClause[] = [
-    clauseBuilder.transferVET(
-        '0x7ccadeea14dd6727845b58f8aa7aad0f41a002a2',
-        Units.parseEther('1').bi
+    Clause.transferVET(
+        Address.of('0x7ccadeea14dd6727845b58f8aa7aad0f41a002a2'),
+        VET.of(1)
     )
 ];
 
@@ -289,8 +289,8 @@ const txBBody: TransactionBody = {
 // Define the senders private key
 const senderPrivateKey = await Secp256k1.generatePrivateKey();
 
-// To define transaction B as dependant on transaction A
-// We need to sign transaction A, and then get its Id
+// To define transaction B as dependent on transaction
+// it's necessary to sign transaction A, and then get its Id
 // and set that Id into transaction B's dependsOn field
 
 // 4 - Get Tx A id
@@ -334,10 +334,10 @@ const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
 // 2(a) - create the transaction for a VET transfer
 const transaction1 = {
     clauses: [
-        clauseBuilder.transferVET(
-            '0xb717b660cd51109334bd10b2c168986055f58c1a',
-            Units.parseEther('1').bi
-        )
+        Clause.transferVET(
+            Address.of('0xb717b660cd51109334bd10b2c168986055f58c1a'),
+            VET.of(1)
+        ) as TransactionClause
     ],
     // Please note - this field one of the optional fields that may be passed (see SimulateTransactionOptions),
     // and is only required if you want to simulate a transaction
@@ -422,10 +422,10 @@ const provider = new VeChainProvider(
 // 2 - Create the transaction clauses
 const transaction = {
     clauses: [
-        clauseBuilder.transferVET(
-            '0xb717b660cd51109334bd10b2c168986055f58c1a',
-            Units.parseEther('1').bi
-        )
+        Clause.transferVET(
+            Address.of('0xb717b660cd51109334bd10b2c168986055f58c1a'),
+            VET.of(1)
+        ) as TransactionClause
     ],
     simulateTransactionOptions: {
         caller: senderAccount.address
@@ -522,10 +522,10 @@ const providerWithDelegationEnabled = new VeChainProvider(
 // 2 - Create the transaction clauses
 const transaction = {
     clauses: [
-        clauseBuilder.transferVET(
-            '0xb717b660cd51109334bd10b2c168986055f58c1a',
-            Units.parseEther('1').bi
-        )
+        Clause.transferVET(
+            Address.of('0xb717b660cd51109334bd10b2c168986055f58c1a'),
+            VET.of(1)
+        ) as TransactionClause
     ],
     simulateTransactionOptions: {
         caller: senderAccount.address
@@ -631,10 +631,10 @@ const providerWithDelegationEnabled = new VeChainProvider(
 // 2 - Create the transaction clauses
 const transaction = {
     clauses: [
-        clauseBuilder.transferVET(
-            '0xb717b660cd51109334bd10b2c168986055f58c1a',
-            Units.parseEther('1').bi
-        )
+        Clause.transferVET(
+            Address.of('0xb717b660cd51109334bd10b2c168986055f58c1a'),
+            VET.of(1)
+        ) as TransactionClause
     ],
     simulateTransactionOptions: {
         caller: senderAccount.address

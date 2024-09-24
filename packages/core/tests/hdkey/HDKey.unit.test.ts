@@ -69,7 +69,7 @@ const HDKeyFixture = {
 };
 
 /**
- * Mnemonic tests
+ * Test HDKey class.
  * @group unit/hdkey
  */
 describe('HDKey class tests', () => {
