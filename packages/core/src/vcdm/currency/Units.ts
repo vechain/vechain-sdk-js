@@ -15,12 +15,39 @@ import { FPN } from '../FPN';
  * @enum {number}
  */
 enum Units {
+    /**
+     * 1 ether = 1,000,000,000,000,000,000 wei. 0 fractional digits FPN.
+     */
     wei = 0,
+
+    /**
+     * 1 ether = 1,000,000,000,000,000 kwei. 3 fractional digits FPN.
+     */
     kwei = 3,
+
+    /**
+     * 1 ether = 1,000,000,000,000 mwei. 6 fractional digits FPN.
+     */
     mwei = 6,
+
+    /**
+     * 1 ether = 1,000,000,000 gwei. 9 fractional digits FPN.
+     */
     gwei = 9,
+
+    /**
+     * 1 ether = 1,000,000,000 szabo. 12 fractional digits FPN.
+     */
     szabo = 12,
+
+    /**
+     * 1 ether = 1,000,000 finney. 15 fractional digits FPN.
+     */
     finney = 15,
+
+    /**
+     * 18 fractional diguts FPN.
+     */
     ether = 18
 }
 

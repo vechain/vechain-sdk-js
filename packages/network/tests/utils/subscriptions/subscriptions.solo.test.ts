@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import {
     ABIContract,
     Address,
-    clauseBuilder,
+    Clause,
     Hex,
     HexUInt,
     type TransactionClause,
@@ -201,15 +201,13 @@ describe('Subscriptions Solo network tests', () => {
                     reject(error); // Reject the promise on WebSocket error
                 };
             });
-
-            // Trigger the smart contract function that emits the event
-            const clause = clauseBuilder.functionInteraction(
-                TESTING_CONTRACT_ADDRESS,
+            const clause = Clause.callFunction(
+                Address.of(TESTING_CONTRACT_ADDRESS),
                 ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
                     'setStateVariable'
                 ),
                 [1]
-            );
+            ) as TransactionClause;
             const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
             const gasResult = await thorSoloClient.gas.estimateGas(
                 [clause],

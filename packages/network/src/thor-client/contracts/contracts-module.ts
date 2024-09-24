@@ -1,8 +1,11 @@
 import {
     ABIContract,
-    clauseBuilder,
     dataUtils,
     Hex,
+    Address,
+    VET,
+    Units,
+    Clause,
     type ABIFunction
 } from '@vechain/sdk-core';
 import { type Abi } from 'abitype';
@@ -154,11 +157,11 @@ class ContractsModule {
         const id = await signer.sendTransaction({
             clauses: [
                 // Build a clause to interact with the contract function
-                clauseBuilder.functionInteraction(
-                    contractAddress,
+                Clause.callFunction(
+                    Address.of(contractAddress),
                     functionAbi,
                     functionData,
-                    options?.value ?? 0
+                    VET.of(options?.value ?? 0, Units.wei)
                 )
             ],
             gas: options?.gas,
@@ -181,9 +184,12 @@ class ContractsModule {
     }
 
     /**
-     * Executes a transaction to interact with multiple smart contract functions.
-     * @param clauses - An array of transaction clauses to interact with the contract functions.
-     * @param signer - The signer used to signing the transaction.
+     * Executes multiple contract clauses in a single transaction.
+     *
+     * @param {ContractClause[]} clauses - The list of contract clauses to be executed in the transaction.
+     * @param {VeChainSigner} signer - The signer responsible for signing and sending the transaction.
+     * @param {ContractTransactionOptions} [options] - Optional parameters for the transaction such as gas, gas limit, and nonce.
+     * @return {Promise<SendTransactionResult>} A promise that resolves to an object containing the transaction ID and a wait function to await the confirmation.
      */
     public async executeMultipleClausesTransaction(
         clauses: ContractClause[],

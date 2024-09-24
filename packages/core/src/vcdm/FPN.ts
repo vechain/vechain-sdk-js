@@ -97,7 +97,7 @@ class FPN implements VeChainDataModel<FPN> {
      * Scaled Value = value * 10 ^ {@link fd}.
      * @private
      */
-    protected readonly sv: bigint;
+    public readonly sv: bigint;
 
     /**
      * Returns the integer part of this FPN value.
@@ -158,7 +158,9 @@ class FPN implements VeChainDataModel<FPN> {
      * @see [bignumber.js absoluteValue](https://mikemcl.github.io/bignumber.js/#abs)
      */
     public abs(): FPN {
-        return new FPN(this.fd, this.sv < 0n ? -this.sv : this.sv);
+        if (this.isNaN()) return FPN.NaN;
+        if (this.isNegativeInfinite()) return FPN.POSITIVE_INFINITY;
+        return new FPN(this.fd, this.sv < 0n ? -this.sv : this.sv, this.ef);
     }
 
     /**
@@ -224,6 +226,7 @@ class FPN implements VeChainDataModel<FPN> {
      * Limit cases
      * * 0 / 0 = NaN
      * * NaN / ±n = NaN
+     * * ±Infinity / ±Infinity = NaN
      * * +n / NaN = NaN
      * * +n / ±Infinity = 0
      * * -n / 0 = -Infinity
@@ -239,6 +242,18 @@ class FPN implements VeChainDataModel<FPN> {
      */
     public div(that: FPN): FPN {
         if (this.isNaN() || that.isNaN()) return FPN.NaN;
+        if (this.isNegativeInfinite())
+            return that.isInfinite()
+                ? FPN.NaN
+                : that.isPositive()
+                  ? FPN.NEGATIVE_INFINITY
+                  : FPN.POSITIVE_INFINITY;
+        if (this.isPositiveInfinite())
+            return that.isInfinite()
+                ? FPN.NaN
+                : that.isPositive()
+                  ? FPN.POSITIVE_INFINITY
+                  : FPN.NEGATIVE_INFINITY;
         if (that.isInfinite()) return FPN.ZERO;
         if (that.isZero())
             return this.isZero()
@@ -337,6 +352,7 @@ class FPN implements VeChainDataModel<FPN> {
      * Limit cases
      * * 0 / 0 = NaN
      * * NaN / ±n = NaN
+     * * ±Infinity / ±Infinity = NaN
      * * +n / NaN = NaN
      * * +n / ±Infinite = 0
      * * -n / 0 = -Infinite
@@ -352,6 +368,18 @@ class FPN implements VeChainDataModel<FPN> {
      */
     public idiv(that: FPN): FPN {
         if (this.isNaN() || that.isNaN()) return FPN.NaN;
+        if (this.isNegativeInfinite())
+            return that.isInfinite()
+                ? FPN.NaN
+                : that.isPositive()
+                  ? FPN.NEGATIVE_INFINITY
+                  : FPN.POSITIVE_INFINITY;
+        if (this.isPositiveInfinite())
+            return that.isInfinite()
+                ? FPN.NaN
+                : that.isPositive()
+                  ? FPN.POSITIVE_INFINITY
+                  : FPN.NEGATIVE_INFINITY;
         if (that.isInfinite()) return FPN.ZERO;
         if (that.isZero())
             return this.isZero()
@@ -816,7 +844,7 @@ class FPN implements VeChainDataModel<FPN> {
      * Returns a FPN whose value is the square root of the value of this FPN
      *
      * Limit cases
-     * * √ NaN = NaN
+     * * NaN = NaN
      * * +Infinite = +Infinite
      * * -n = NaN
      *
@@ -826,6 +854,7 @@ class FPN implements VeChainDataModel<FPN> {
      */
     public sqrt(): FPN {
         if (this.isNaN()) return FPN.NaN;
+        if (this.isNegativeInfinite()) return FPN.NaN;
         if (this.isPositiveInfinite()) return FPN.POSITIVE_INFINITY;
         try {
             return new FPN(this.fd, FPN.sqr(this.sv, this.fd));

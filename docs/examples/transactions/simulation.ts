@@ -1,6 +1,6 @@
 import { expect } from 'expect';
 import { THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
-import { clauseBuilder, Units } from '@vechain/sdk-core';
+import { Address, Clause, TransactionClause, VET } from '@vechain/sdk-core';
 import { stringifyData } from '@vechain/sdk-errors';
 
 // START_SNIPPET: SimulationSnippet
@@ -14,10 +14,10 @@ const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
 // 2(a) - create the transaction for a VET transfer
 const transaction1 = {
     clauses: [
-        clauseBuilder.transferVET(
-            '0xb717b660cd51109334bd10b2c168986055f58c1a',
-            Units.parseEther('1').bi
-        )
+        Clause.transferVET(
+            Address.of('0xb717b660cd51109334bd10b2c168986055f58c1a'),
+            VET.of(1)
+        ) as TransactionClause
     ],
     // Please note - this field one of the optional fields that may be passed (see SimulateTransactionOptions),
     // and is only required if you want to simulate a transaction
