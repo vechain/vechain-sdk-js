@@ -1,12 +1,12 @@
-import { type RLPValidObject } from '../../encoding';
+import { InvalidTransactionField } from '@vechain/sdk-errors';
 import {
     SIGNED_TRANSACTION_RLP,
     TRANSACTION_FEATURES_KIND,
     UNSIGNED_TRANSACTION_RLP
 } from '../../utils';
+import { type RLPValidObject } from '../../vcdm/encoding';
 import { Transaction } from '../transaction';
 import { type TransactionBody } from '../types';
-import { InvalidTransactionField } from '@vechain/sdk-errors';
 
 /**
  * Decode a raw transaction.

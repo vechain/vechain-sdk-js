@@ -1,10 +1,10 @@
-import { FixedHexBlobKind } from './fixedhexblob';
-import { Hex } from '../../../../vcdm/Hex';
+import { Hex } from '../../../../Hex';
 import {
     assertCompactFixedHexBlobBuffer,
     encodeCompactFixedHexBlob
 } from '../../helpers';
 import { type BufferOutput, type DataOutput, type RLPInput } from '../../types';
+import { FixedHexBlobKind } from './fixedhexblob';
 
 /**
  * Represents a fixed hex blob kind with zero trimming and padding functionality.

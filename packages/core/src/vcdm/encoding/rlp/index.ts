@@ -1,10 +1,10 @@
-import { RLPBase } from './rlp';
 import { RLPProfiles } from './kind';
+import { RLPBase } from './rlp';
 
-export * from './rlp';
-export * from './kind';
-export * from './types.d';
 export * from './helpers';
+export * from './kind';
+export * from './rlp';
+export * from './types.d';
 
 /**
  * The `RLP_CODER` object, encapsulating all functionalities related to Recursive Length Prefix (RLP_CODER) encoding.

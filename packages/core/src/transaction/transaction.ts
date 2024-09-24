@@ -1,5 +1,3 @@
-import { Address, Hex } from '../vcdm';
-import { Blake2b256 } from '../vcdm/hash/Blake2b256';
 import {
     InvalidSecp256k1Signature,
     InvalidTransactionField,
@@ -15,7 +13,9 @@ import {
     TransactionUtils,
     UNSIGNED_TRANSACTION_RLP
 } from '../utils';
-import { type RLPValidObject } from '../encoding';
+import { Address, Hex } from '../vcdm';
+import { type RLPValidObject } from '../vcdm/encoding';
+import { Blake2b256 } from '../vcdm/hash/Blake2b256';
 import { type TransactionBody } from './types';
 
 /**
