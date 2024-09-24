@@ -1,17 +1,19 @@
 import {
-    clauseBuilder,
+    Address,
+    Clause,
     networkInfo,
     Secp256k1,
     TransactionHandler,
-    TransactionUtils
+    TransactionUtils,
+    VET
 } from '@vechain/sdk-core';
 
 export default {
     async fetch(): Promise<Response> {
         const clauses = [
-            clauseBuilder.transferVET(
-                '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-                0
+            Clause.transferVET(
+                Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'),
+                VET.of(0)
             )
         ];
 

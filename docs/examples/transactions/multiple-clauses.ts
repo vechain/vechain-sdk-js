@@ -1,13 +1,15 @@
 import {
-    clauseBuilder,
+    Address,
+    Clause,
     networkInfo,
     Secp256k1,
-    type TransactionBody,
-    type TransactionClause,
     TransactionHandler,
     TransactionUtils,
-    Units,
-    VTHO_ADDRESS
+    VET,
+    VTHO,
+    VTHO_ADDRESS,
+    type TransactionBody,
+    type TransactionClause
 } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
@@ -16,15 +18,15 @@ import { expect } from 'expect';
 // 1 - Define multiple clauses
 
 const clauses: TransactionClause[] = [
-    clauseBuilder.transferVET(
-        '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        Units.parseEther('10000').bi
-    ),
-    clauseBuilder.transferToken(
-        VTHO_ADDRESS,
-        '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        Units.parseUnits('10000', Units.ether).bi // 10000 VTHO, `ether` is the 10e18 magnitude in this context.
-    )
+    Clause.transferVET(
+        Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'),
+        VET.of(10000)
+    ) as TransactionClause,
+    Clause.transferToken(
+        Address.of(VTHO_ADDRESS),
+        Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'),
+        VTHO.of(10000)
+    ) as TransactionClause
 ];
 
 // 2 - Calculate intrinsic gas of both clauses

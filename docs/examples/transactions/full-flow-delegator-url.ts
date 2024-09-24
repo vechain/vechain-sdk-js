@@ -1,4 +1,4 @@
-import { clauseBuilder, TransactionHandler, Units } from '@vechain/sdk-core';
+import { Address, Clause, TransactionClause, TransactionHandler, VET } from '@vechain/sdk-core';
 import {
     ProviderInternalBaseWallet,
     signerUtils,
@@ -60,10 +60,10 @@ const providerWithDelegationEnabled = new VeChainProvider(
 // 2 - Create the transaction clauses
 const transaction = {
     clauses: [
-        clauseBuilder.transferVET(
-            '0xb717b660cd51109334bd10b2c168986055f58c1a',
-            Units.parseEther('1').bi
-        )
+        Clause.transferVET(
+            Address.of('0xb717b660cd51109334bd10b2c168986055f58c1a'),
+            VET.of(1)
+        ) as TransactionClause
     ],
     simulateTransactionOptions: {
         caller: senderAccount.address

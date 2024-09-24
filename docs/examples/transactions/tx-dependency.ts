@@ -1,12 +1,13 @@
 import {
-    networkInfo,
+    Address,
+    Clause,
     Secp256k1,
+    VET,
     TransactionUtils,
     TransactionHandler,
+    networkInfo,
     type TransactionClause,
-    type TransactionBody,
-    Units,
-    clauseBuilder
+    type TransactionBody
 } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
@@ -15,15 +16,15 @@ import { expect } from 'expect';
 // 1 - Define transaction clauses
 
 const txAClauses: TransactionClause[] = [
-    clauseBuilder.transferVET(
-        '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        Units.parseEther('1000').bi
-    )
+    Clause.transferVET(
+        Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'),
+        VET.of(1000)
+    ) as TransactionClause
 ];
 const txBClauses: TransactionClause[] = [
-    clauseBuilder.transferVET(
-        '0x7ccadeea14dd6727845b58f8aa7aad0f41a002a2',
-        Units.parseEther('1').bi
+    Clause.transferVET(
+        Address.of('0x7ccadeea14dd6727845b58f8aa7aad0f41a002a2'),
+        VET.of(1)
     )
 ];
 
@@ -58,8 +59,8 @@ const txBBody: TransactionBody = {
 // Define the senders private key
 const senderPrivateKey = await Secp256k1.generatePrivateKey();
 
-// To define transaction B as dependant on transaction A
-// We need to sign transaction A, and then get its Id
+// To define transaction B as dependent on transaction
+// it's necessary to sign transaction A, and then get its Id
 // and set that Id into transaction B's dependsOn field
 
 // 4 - Get Tx A id

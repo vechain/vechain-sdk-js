@@ -33,11 +33,16 @@ class Hex implements VeChainDataModel<Hex> {
     protected static readonly POSITIVE: number = 1;
 
     /**
+     * A constant string prefix used in hexadecimal notation.
+     */
+    public static readonly PREFIX = '0x';
+
+    /**
      * The radix used for representing numbers base 16 in a positional numeral notation system.
      *
      * @typedef {number} RADIX
      */
-    protected static readonly RADIX: number = 16;
+    public static readonly RADIX: number = 16;
 
     /**
      * Regular expression for matching hexadecimal strings.

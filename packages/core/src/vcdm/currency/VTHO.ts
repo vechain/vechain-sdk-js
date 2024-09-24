@@ -1,6 +1,10 @@
+import { Clause } from '../../transaction';
 import { Coin } from './Coin';
+import { FPN } from '../FPN';
 import { Txt } from '../Txt';
-import { type FPN } from '../FPN';
+import { Units } from './Units';
+import { type Address } from '../Address';
+import { type ClauseOptions } from '../../transaction';
 
 /**
  * Represents a
@@ -18,23 +22,52 @@ class VTHO extends Coin {
      * - U+004F - Latin capital letter 'O'.
      */
     public static readonly CODE = Txt.of('𝕍THO');
+
+    /**
+     * Wei fractional digits to express this value.
+     */
+    private static readonly WEI_FD = 18n;
+
+    /**
+     * Represents this monetary amount in terms of {@link Units.wei}.
+     *
+     * @type {bigint}
+     */
+    public readonly wei: bigint = this.value.dp(VTHO.WEI_FD).sv;
+
     /**
      * Create a new instance with the given `value`.
      *
-     * @param {FPN} value - The value to be used for initializing the instance.
+     * @param {FPN} value The value to be used for initializing the instance.
      */
     protected constructor(value: FPN) {
         super(VTHO.CODE, value);
     }
 
     /**
-     * Return a new instance of VET using the provided FPN `value`.
+     * Return a new VTHO instance with the specified value and unit.
      *
-     * @param {FPN} value - The FPN value to be used for creating a VTHO instance.
-     * @return {VTHO} The newly created instance of VET.
+     * @param {bigint | number | string | FPN} value The numerical value for the VTHO instance.
+     * @param {Units} unit The unit for the value.
+     *                     Defaults to {@link Units.ether} if not provided.
+     * @return {VTHO} A new VTHO instance with the provided value and unit.
+     *
+     * @throws {InvalidDataType} If `value` is not a numeric expression.
      */
-    public static of(value: FPN): VTHO {
-        return new VTHO(value);
+    public static of(
+        value: bigint | number | string | FPN,
+        unit: Units = Units.ether
+    ): VTHO {
+        const fpn = value instanceof FPN ? value : FPN.of(value);
+        return new VTHO(fpn.div(FPN.of(10n ** (VTHO.WEI_FD - BigInt(unit)))));
+    }
+
+    public transferTokenTo(
+        tokenAddress: Address,
+        to: Address,
+        clauseOptions?: ClauseOptions
+    ): Clause {
+        return Clause.transferToken(tokenAddress, to, this, clauseOptions);
     }
 }
 

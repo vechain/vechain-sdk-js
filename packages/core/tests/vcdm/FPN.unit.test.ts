@@ -355,6 +355,18 @@ describe('FPN class tests', () => {
     });
 
     describe('abs method tests', () => {
+        test('NaN -> Nan', () => {
+            expect(FPN.NaN.abs().isNaN()).toBe(true);
+        });
+
+        test('-Infinite -> +Infinite', () => {
+            expect(FPN.NEGATIVE_INFINITY.abs().isPositiveInfinite()).toBe(true);
+        });
+
+        test('+Infinite -> +Infinite', () => {
+            expect(FPN.POSITIVE_INFINITY.abs().isPositiveInfinite()).toBe(true);
+        });
+
         test('n < 0', () => {
             const n = -0.8;
             const actual = FPN.of(n).abs();
@@ -519,6 +531,48 @@ describe('FPN class tests', () => {
             expect(actual.toString()).toBe(expected.toString());
         });
 
+        test('-Infinite / ±Infinite -> NaN', () => {
+            expect(
+                FPN.NEGATIVE_INFINITY.div(FPN.NEGATIVE_INFINITY).isNaN()
+            ).toBe(true);
+            expect(
+                FPN.NEGATIVE_INFINITY.div(FPN.POSITIVE_INFINITY).isNaN()
+            ).toBe(true);
+        });
+
+        test('-Infinite / -n -> +Infinite', () => {
+            expect(
+                FPN.NEGATIVE_INFINITY.div(FPN.of(-123.45)).isPositiveInfinite()
+            ).toBe(true);
+        });
+
+        test('-Infinite / +n -> -Infinite', () => {
+            expect(
+                FPN.NEGATIVE_INFINITY.div(FPN.of(-123.45)).isPositive()
+            ).toBe(true);
+        });
+
+        test('+Infinite / ±Infinite -> NaN', () => {
+            expect(
+                FPN.POSITIVE_INFINITY.div(FPN.NEGATIVE_INFINITY).isNaN()
+            ).toBe(true);
+            expect(
+                FPN.POSITIVE_INFINITY.div(FPN.POSITIVE_INFINITY).isNaN()
+            ).toBe(true);
+        });
+
+        test('+Infinite / -n -> -Infinite', () => {
+            expect(
+                FPN.POSITIVE_INFINITY.div(FPN.of(-123.45)).isNegativeInfinite()
+            ).toBe(true);
+        });
+
+        test('+Infinite / +n -> +Infinite', () => {
+            expect(
+                FPN.POSITIVE_INFINITY.div(FPN.of(+123.45)).isPositiveInfinite()
+            ).toBe(true);
+        });
+
         test('n / NaN = NaN', () => {
             const lr = 123.45;
             const r = NaN;
@@ -609,6 +663,48 @@ describe('FPN class tests', () => {
             const actual = FPN.of(l).idiv(FPN.of(r));
             const expected = BigNumber(l).idiv(BigNumber(r));
             expect(actual.toString()).toBe(expected.toString());
+        });
+
+        test('-Infinite / ±Infinite -> NaN', () => {
+            expect(
+                FPN.NEGATIVE_INFINITY.idiv(FPN.NEGATIVE_INFINITY).isNaN()
+            ).toBe(true);
+            expect(
+                FPN.NEGATIVE_INFINITY.idiv(FPN.POSITIVE_INFINITY).isNaN()
+            ).toBe(true);
+        });
+
+        test('-Infinite / -n -> +Infinite', () => {
+            expect(
+                FPN.NEGATIVE_INFINITY.idiv(FPN.of(-123.45)).isPositiveInfinite()
+            ).toBe(true);
+        });
+
+        test('-Infinite / +n -> -Infinite', () => {
+            expect(
+                FPN.NEGATIVE_INFINITY.idiv(FPN.of(-123.45)).isPositiveInfinite()
+            ).toBe(true);
+        });
+
+        test('+Infinite / ±Infinite -> NaN', () => {
+            expect(
+                FPN.POSITIVE_INFINITY.idiv(FPN.NEGATIVE_INFINITY).isNaN()
+            ).toBe(true);
+            expect(
+                FPN.POSITIVE_INFINITY.idiv(FPN.POSITIVE_INFINITY).isNaN()
+            ).toBe(true);
+        });
+
+        test('+Infinite / -n -> -Infinite', () => {
+            expect(
+                FPN.POSITIVE_INFINITY.idiv(FPN.of(-123.45)).isNegativeInfinite()
+            ).toBe(true);
+        });
+
+        test('+Infinite / +n -> +Infinite', () => {
+            expect(
+                FPN.POSITIVE_INFINITY.idiv(FPN.of(123.45)).isPositiveInfinite()
+            ).toBe(true);
         });
 
         test('n / NaN = NaN', () => {
@@ -2079,7 +2175,7 @@ describe('FPN class tests', () => {
     });
 
     describe('sqrt method tests', () => {
-        test('√ NaN -> NaN', () => {
+        test('NaN -> NaN', () => {
             const n = NaN;
             const actual = FPN.of(n).sqrt();
             const expected = BigNumber(n).sqrt();
@@ -2087,14 +2183,22 @@ describe('FPN class tests', () => {
             expect(actual.n).toBe(NaN);
         });
 
-        test('√ +Infinity -> +Infinity', () => {
+        test('-Infinity -> NaN', () => {
+            const actual = FPN.NEGATIVE_INFINITY.sqrt();
+            const expected = Math.sqrt(-Infinity);
+            expect(actual.n).toBe(expected);
+            expect(actual.n).toBe(NaN);
+        });
+
+        test('+Infinity -> +Infinity', () => {
             const n = Infinity;
             const actual = FPN.of(n).sqrt();
             const expected = BigNumber(n).sqrt();
             expect(actual.n).toBe(expected.toNumber());
             expect(actual.n).toBe(Infinity);
         });
-        test('√ -n -> NaN', () => {
+
+        test('-n -> NaN', () => {
             const n = -123.45;
             const actual = FPN.of(n).sqrt();
             const expected = BigNumber(n).sqrt();
@@ -2102,14 +2206,14 @@ describe('FPN class tests', () => {
             expect(actual.n).toBe(NaN);
         });
 
-        test('√ n -> integer', () => {
+        test('n -> integer', () => {
             const n = 16;
             const actual = FPN.of(n).sqrt();
             const expected = BigNumber(n).sqrt();
             expect(actual.n).toBe(expected.toNumber());
         });
 
-        test('√ n -> rational', () => {
+        test('n -> rational', () => {
             const fd = 13;
             const n = 3;
             const actual = FPN.of(n).sqrt();
