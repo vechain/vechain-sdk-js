@@ -28,5 +28,8 @@ COPY --from=builder /app/node_modules /app/node_modules
 RUN adduser -D rpc-proxy-user
 USER rpc-proxy-user
 
+# Tell we are running with Docker
+ENV RUNNING_WITH_DOCKER=true
+
 # Set the default command to use node to run the app
-CMD ["node", "dist/index.js", "-c", "config.json"]
+CMD ["node", "dist/index.js"]
