@@ -1,4 +1,4 @@
-import { FPN } from '../FPN';
+import { FixedPointNumber } from '../FixedPointNumber';
 
 /**
  * Enumeration representing units (i.e. order of magnitude)
@@ -16,37 +16,37 @@ import { FPN } from '../FPN';
  */
 enum Units {
     /**
-     * 1 ether = 1,000,000,000,000,000,000 wei. 0 fractional digits FPN.
+     * 1 ether = 1,000,000,000,000,000,000 wei. 0 fractional digits FixedPointNumber.
      */
     wei = 0,
 
     /**
-     * 1 ether = 1,000,000,000,000,000 kwei. 3 fractional digits FPN.
+     * 1 ether = 1,000,000,000,000,000 kwei. 3 fractional digits FixedPointNumber.
      */
     kwei = 3,
 
     /**
-     * 1 ether = 1,000,000,000,000 mwei. 6 fractional digits FPN.
+     * 1 ether = 1,000,000,000,000 mwei. 6 fractional digits FixedPointNumber.
      */
     mwei = 6,
 
     /**
-     * 1 ether = 1,000,000,000 gwei. 9 fractional digits FPN.
+     * 1 ether = 1,000,000,000 gwei. 9 fractional digits FixedPointNumber.
      */
     gwei = 9,
 
     /**
-     * 1 ether = 1,000,000,000 szabo. 12 fractional digits FPN.
+     * 1 ether = 1,000,000,000 szabo. 12 fractional digits FixedPointNumber.
      */
     szabo = 12,
 
     /**
-     * 1 ether = 1,000,000 finney. 15 fractional digits FPN.
+     * 1 ether = 1,000,000 finney. 15 fractional digits FixedPointNumber.
      */
     finney = 15,
 
     /**
-     * 18 fractional diguts FPN.
+     * 18 fractional diguts FixedPointNumber.
      */
     ether = 18
 }
@@ -62,7 +62,7 @@ namespace Units {
      * Convert a value expressed in {@link Units.wei} as a string
      * representing the same value expressed in {@link Units.ether}.
      *
-     * @param {FPN} wei The value in {@link Units.wei}.
+     * @param {FixedPointNumber} wei The value in {@link Units.wei}.
      * @return {string} The formatted string representing the value in
      * {@link Units.ether}.
      *
@@ -71,7 +71,7 @@ namespace Units {
      *
      * @see [ethers formatEther](https://docs.ethers.org/v6/api/utils/#formatEther)
      */
-    export function formatEther(wei: FPN): string {
+    export function formatEther(wei: FixedPointNumber): string {
         return formatUnits(wei, Units.ether);
     }
 
@@ -79,7 +79,7 @@ namespace Units {
      * Convert a value expressed in {@link Units.wei} as a string
      * representing the same value expressed in `unit`.
      *
-     * @param {FPN} wei - The value in {@link Units.wei}.
+     * @param {FixedPointNumber} wei - The value in {@link Units.wei}.
      * @param {Units} unit The order of magnitude to express the `wei` value.
      * @return {string} The formatted string representing the value
      * in the named `unit`.
@@ -89,14 +89,17 @@ namespace Units {
      *
      * @see [ethers formatUnits](https://docs.ethers.org/v6/api/utils/#formatUnits)
      */
-    export function formatUnits(wei: FPN, unit: Units = Units.ether): string {
-        const fpn = wei.div(FPN.of(10n ** BigInt(unit)));
+    export function formatUnits(
+        wei: FixedPointNumber,
+        unit: Units = Units.ether
+    ): string {
+        const fpn = wei.div(FixedPointNumber.of(10n ** BigInt(unit)));
         return fpn.isInteger() ? `${fpn}.0` : `${fpn}`;
     }
 
     /**
      * Parse the decimal string expressing a value in {@link Units.ether}
-     * to return a {@link FPN} value expressed in {@link Units.wei}.
+     * to return a {@link FixedPointNumber} value expressed in {@link Units.wei}.
 
      * @param ether The representation of a numeric value expressed
      * in {@link Units.ether}.
@@ -109,13 +112,13 @@ namespace Units {
      *
      * @see [ethers parseEther](https://docs.ethers.org/v6/api/utils/#parseEther)
      */
-    export function parseEther(ether: string): FPN {
+    export function parseEther(ether: string): FixedPointNumber {
         return parseUnits(ether, Units.ether);
     }
 
     /**
      * Parse the decimal string expressing a value in the named `unit`
-     * ro return a {@link FPN} value expressed in {@link Units.wei}.
+     * ro return a {@link FixedPointNumber} value expressed in {@link Units.wei}.
 
      * @param {string} exp The representation of a numeric value expressed
      * in {@link Units.ether}.
@@ -129,8 +132,13 @@ namespace Units {
      *
      * @see [ethers parseUnits](https://docs.ethers.org/v6/api/utils/#parseUnits)
      */
-    export function parseUnits(exp: string, unit: Units = Units.ether): FPN {
-        return FPN.of(exp).times(FPN.of(10n ** BigInt(unit)));
+    export function parseUnits(
+        exp: string,
+        unit: Units = Units.ether
+    ): FixedPointNumber {
+        return FixedPointNumber.of(exp).times(
+            FixedPointNumber.of(10n ** BigInt(unit))
+        );
     }
 }
 

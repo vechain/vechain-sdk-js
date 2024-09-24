@@ -1,9 +1,9 @@
-import { type Coin, FPN, Txt, VET, VTHO } from '../../../src';
+import { type Coin, FixedPointNumber, Txt, VET, VTHO } from '../../../src';
 import { expect } from '@jest/globals';
 import { InvalidDataType } from '@vechain/sdk-errors';
 
 const CoinFixure = {
-    value: FPN.of('1234567.89')
+    value: FixedPointNumber.of('1234567.89')
 };
 
 /**
@@ -34,7 +34,9 @@ describe('Coin class tests', () => {
         describe('compareTo tests', () => {
             test('Return a valid number comparing between same currency codes', () => {
                 const more = VET.of(CoinFixure.value);
-                const less = VET.of(CoinFixure.value.div(FPN.of(2)));
+                const less = VET.of(
+                    CoinFixure.value.div(FixedPointNumber.of(2))
+                );
                 expect(more.compareTo(less)).toBeGreaterThan(0);
                 expect(less.compareTo(more)).toBeLessThan(0);
                 expect(more.compareTo(more)).toBe(0);
@@ -52,7 +54,9 @@ describe('Coin class tests', () => {
         describe('isEqualTo method tests', () => {
             test('Return boolean comparing between same currency codes', () => {
                 const more = VET.of(CoinFixure.value);
-                const less = VET.of(CoinFixure.value.div(FPN.of(2)));
+                const less = VET.of(
+                    CoinFixure.value.div(FixedPointNumber.of(2))
+                );
                 expect(more.isEqual(less)).toBe(false);
                 expect(less.isEqual(less)).toBe(true);
             });

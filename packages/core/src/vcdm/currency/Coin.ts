@@ -1,5 +1,5 @@
 import { type Currency } from './Currency';
-import { type FPN } from '../FPN';
+import { type FixedPointNumber } from '../FixedPointNumber';
 import { Txt } from '../Txt';
 import { InvalidDataType } from '@vechain/sdk-errors';
 
@@ -15,17 +15,17 @@ abstract class Coin implements Currency {
     /**
      * Represent the coin {@link value}.
      *
-     * @type {FPN}
+     * @type {FixedPointNumber}
      */
-    private readonly _value: FPN;
+    private readonly _value: FixedPointNumber;
 
     /**
      * Creates an instance of the class with the specified code and value.
      *
      * @param {Txt} code - The code associated with this instance.
-     * @param {FPN} value - The value associated with this instance.
+     * @param {FixedPointNumber} value - The value associated with this instance.
      */
-    protected constructor(code: Txt, value: FPN) {
+    protected constructor(code: Txt, value: FixedPointNumber) {
         this._code = code;
         this._value = value;
     }
@@ -43,22 +43,22 @@ abstract class Coin implements Currency {
     }
 
     /**
-     * Return the current value as an FPN (Fixed-Point Number).
+     * Return the current value as an FixedPointNumber (Fixed-Point Number).
      *
-     * @return {FPN} The current value in Fixed-Point Number format.
+     * @return {FixedPointNumber} The current value in Fixed-Point Number format.
      */
-    get value(): FPN {
+    get value(): FixedPointNumber {
         return this._value;
     }
 
     /**
-     * Returns the integer part of the FPN {@link value}.
+     * Returns the integer part of the FixedPointNumber {@link value}.
      *
-     * @return {bigint} the integer part of this FPN {@link value}.
+     * @return {bigint} the integer part of this FixedPointNumber {@link value}.
      *
      * @throws {InvalidOperation} If the {@link value} is not finite.
      *
-     * @remarks Do not use for financial math: apply {@link FPN} methods instead.
+     * @remarks Do not use for financial math: apply {@link FixedPointNumber} methods instead.
      */
     get bi(): bigint {
         return this._value.bi;
@@ -76,7 +76,7 @@ abstract class Coin implements Currency {
     /**
      * Return this {@linl value} approximated as {@link number}.
      *
-     * @remarks Do not use for financial math: apply {@link FPN} methods instead.
+     * @remarks Do not use for financial math: apply {@link FixedPointNumber} methods instead.
      */
     get n(): number {
         return this._value.n;

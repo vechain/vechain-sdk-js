@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { TEST_ACCOUNTS, TESTING_CONTRACT_ADDRESS } from '../../fixture';
-import { FPN, Units } from '@vechain/sdk-core';
+import { FixedPointNumber, Units } from '@vechain/sdk-core';
 import { TESTING_CONTRACT_BYTECODE } from './fixture';
 import { THOR_SOLO_URL, ThorClient } from '../../../src';
 
@@ -39,13 +39,15 @@ describe('ThorClient - Accounts Module', () => {
             // And at least 500000000 VTHO
             const expectedVTHO = 500000000n;
             expect(
-                FPN.of(
+                FixedPointNumber.of(
                     // In this context Ether is the 10E8 magnitude.
-                    Units.formatEther(FPN.of(accountBefore.balance))
-                ).isEqual(FPN.of(expectedVTHO))
+                    Units.formatEther(
+                        FixedPointNumber.of(accountBefore.balance)
+                    )
+                ).isEqual(FixedPointNumber.of(expectedVTHO))
             ).toBe(true);
             expect(
-                FPN.of(accountBefore.energy).gt(
+                FixedPointNumber.of(accountBefore.energy).gt(
                     // In this context Ether is the 10E8 magnitude.
                     Units.parseEther(expectedVTHO.toString())
                 )

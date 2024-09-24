@@ -1,6 +1,6 @@
 import { Clause } from '../../transaction';
 import { Coin } from './Coin';
-import { FPN } from '../FPN';
+import { FixedPointNumber } from '../FixedPointNumber';
 import { Txt } from '../Txt';
 import { Units } from './Units';
 import { type Address } from '../Address';
@@ -37,16 +37,16 @@ class VET extends Coin {
     /**
      * Create a new instance with the given `value`.
      *
-     * @param {FPN} value The value to be used for initializing the instance.
+     * @param {FixedPointNumber} value The value to be used for initializing the instance.
      */
-    protected constructor(value: FPN) {
+    protected constructor(value: FixedPointNumber) {
         super(VET.CODE, value);
     }
 
     /**
      * Return a new VET instance with the specified value and unit.
      *
-     * @param {bigint | number | string | FPN} value The numerical value for the VET instance.
+     * @param {bigint | number | string | FixedPointNumber} value The numerical value for the VET instance.
      * @param {Units} unit The unit for the value.
      *                     Defaults to {@link Units.ether} if not provided.
      * @return {VET} A new VET instance with the provided value and unit.
@@ -54,11 +54,16 @@ class VET extends Coin {
      * @throws {InvalidDataType} If `value` is not a numeric expression.
      */
     public static of(
-        value: bigint | number | string | FPN,
+        value: bigint | number | string | FixedPointNumber,
         unit: Units = Units.ether
     ): VET {
-        const fpn = value instanceof FPN ? value : FPN.of(value);
-        return new VET(fpn.div(FPN.of(10n ** (VET.WEI_FD - BigInt(unit)))));
+        const fpn =
+            value instanceof FixedPointNumber
+                ? value
+                : FixedPointNumber.of(value);
+        return new VET(
+            fpn.div(FixedPointNumber.of(10n ** (VET.WEI_FD - BigInt(unit))))
+        );
     }
 
     /**
@@ -67,6 +72,8 @@ class VET extends Coin {
      * @param {Address} address The recipient's address to which the VET will be transferred.
      * @param {ClauseOptions} clauseOptions  Optional parameters that modify the behavior of the transaction.
      * @return {Clause} A Clause object representing the transfer transaction.
+     *
+     * @see Clause.transferVET
      */
     public transferTo(address: Address, clauseOptions?: ClauseOptions): Clause {
         return Clause.transferVET(address, this, clauseOptions);
