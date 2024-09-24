@@ -3,7 +3,11 @@
 import defaultProxyConfig from '../default-proxy-config.json';
 import packageJson from '../package.json';
 import { type Config, type RequestBody } from './types';
-import { getOptionsFromCommandLine, parseAndGetFinalConfig } from './utils';
+import {
+    getArgsFromEnv,
+    getOptionsFromCommandLine,
+    parseAndGetFinalConfig
+} from './utils';
 import {
     ProviderInternalBaseWallet,
     ProviderInternalHDWallet,
@@ -27,10 +31,17 @@ function startProxy(): void {
     // Init the default configuration
     const defaultConfiguration: Config = defaultProxyConfig as Config;
 
+    // Chose what args to pass to the proxy.
+    // If we use docker, we will convert docker env variables to command line arguments
+    // Otherwise, we will use the command line arguments
+    const runIntoDockerContainer =
+        process.env.RUNNING_WITH_DOCKER !== undefined &&
+        process.env.RUNNING_WITH_DOCKER === 'true';
+
     // Get the command line arguments options. This will be used to parse the command line arguments
     const options = getOptionsFromCommandLine(
         packageJson.version,
-        process.argv
+        runIntoDockerContainer ? getArgsFromEnv() : process.argv
     );
 
     // Parse the SEMANTIC of the arguments and throw an error if the options are not valid
