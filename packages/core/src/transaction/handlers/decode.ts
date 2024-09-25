@@ -4,7 +4,7 @@ import {
     TRANSACTION_FEATURES_KIND,
     UNSIGNED_TRANSACTION_RLP
 } from '../../utils';
-import { type RLPValidObject } from '../../vcdm/encoding';
+import { type RLPValidObject } from '../../vcdm';
 import { Transaction } from '../transaction';
 import { type TransactionBody } from '../types';
 

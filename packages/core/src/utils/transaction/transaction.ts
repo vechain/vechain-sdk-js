@@ -1,7 +1,6 @@
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { type TransactionClause } from '../../transaction';
-import { Address } from '../../vcdm';
-import { Hex } from '../../vcdm/Hex';
+import { Address, Hex } from '../../vcdm';
 import { TRANSACTIONS_GAS_CONSTANTS } from '../const';
 
 /**

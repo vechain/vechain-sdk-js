@@ -2,12 +2,12 @@ import { describe, expect, test } from '@jest/globals';
 import { InvalidHDKey } from '@vechain/sdk-errors';
 import {
     Address,
+    Hex,
     mnemonic,
     Mnemonic,
     Secp256k1,
     type WordlistSizeType
 } from '../../../src';
-import { Hex } from '../../../src/vcdm/Hex';
 import {
     customRandomGeneratorWithXor,
     derivationPaths,

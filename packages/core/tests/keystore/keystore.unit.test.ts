@@ -1,5 +1,10 @@
-import { Hex } from '../../src/vcdm/Hex';
 import { beforeEach, describe, expect, test } from '@jest/globals';
+import {
+    InvalidKeystore,
+    InvalidKeystoreParams,
+    InvalidSecp256k1PrivateKey,
+    stringifyData
+} from '@vechain/sdk-errors';
 import {
     Address,
     HexUInt,
@@ -7,13 +12,8 @@ import {
     Secp256k1,
     type Keystore
 } from '../../src';
+import { Hex } from '../../src/vcdm';
 import { encryptionPassword } from './fixture';
-import {
-    InvalidKeystore,
-    InvalidKeystoreParams,
-    InvalidSecp256k1PrivateKey,
-    stringifyData
-} from '@vechain/sdk-errors';
 
 /**
  * Keystore tests

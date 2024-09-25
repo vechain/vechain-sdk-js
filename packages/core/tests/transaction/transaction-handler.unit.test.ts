@@ -1,18 +1,18 @@
-import { Hex } from '../../src/vcdm/Hex';
-import { SIGNATURE_LENGTH, TransactionHandler } from '../../src';
 import { describe, expect, test } from '@jest/globals';
-import {
-    delegator,
-    invalidDecodedNotTrimmedReserved,
-    signer,
-    transactions
-} from './fixture';
 import {
     InvalidSecp256k1PrivateKey,
     InvalidTransactionField,
     NotDelegatedTransaction,
     UnavailableTransactionField
 } from '@vechain/sdk-errors';
+import { SIGNATURE_LENGTH, TransactionHandler } from '../../src';
+import { Hex } from '../../src/vcdm';
+import {
+    delegator,
+    invalidDecodedNotTrimmedReserved,
+    signer,
+    transactions
+} from './fixture';
 
 /**
  * Transaction handler tests

@@ -1,13 +1,13 @@
 import { describe, expect, test } from '@jest/globals';
-import { delegator, signer, transactions } from './fixture';
-import { Transaction, TransactionHandler } from '../../src';
 import {
     InvalidSecp256k1Signature,
     InvalidTransactionField,
     NotDelegatedTransaction,
     UnavailableTransactionField
 } from '@vechain/sdk-errors';
-import { Hex } from '../../src/vcdm/Hex';
+import { Transaction, TransactionHandler } from '../../src';
+import { Hex } from '../../src/vcdm';
+import { delegator, signer, transactions } from './fixture';
 
 /**
  * Test transaction module

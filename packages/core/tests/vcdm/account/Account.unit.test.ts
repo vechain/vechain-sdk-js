@@ -1,5 +1,10 @@
-import { Address, FixedPointNumber, Mnemonic, Account } from '../../../src';
-import { VET } from '../../../src/vcdm/currency/VET';
+import {
+    Account,
+    Address,
+    FixedPointNumber,
+    Mnemonic,
+    VET
+} from '../../../src';
 
 /**
  * Test Account class.

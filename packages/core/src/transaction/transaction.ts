@@ -13,9 +13,7 @@ import {
     TransactionUtils,
     UNSIGNED_TRANSACTION_RLP
 } from '../utils';
-import { Address, Hex } from '../vcdm';
-import { type RLPValidObject } from '../vcdm/encoding';
-import { Blake2b256 } from '../vcdm/hash/Blake2b256';
+import { Address, Blake2b256, Hex, type RLPValidObject } from '../vcdm';
 import { type TransactionBody } from './types';
 
 /**

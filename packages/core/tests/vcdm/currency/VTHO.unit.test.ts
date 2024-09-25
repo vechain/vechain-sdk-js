@@ -1,6 +1,5 @@
 import { expect } from '@jest/globals';
-import { FixedPointNumber, Txt } from '../../../src';
-import { VTHO } from '../../../src/vcdm/currency/VTHO';
+import { FixedPointNumber, Txt, VTHO } from '../../../src';
 
 /**
  * Test VTHO class.

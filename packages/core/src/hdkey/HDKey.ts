@@ -1,15 +1,14 @@
-import * as s_bip32 from '@scure/bip32';
-import * as s_bip39 from '@scure/bip39';
 import * as nc_utils from '@noble/curves/abstract/utils';
 import { base58 } from '@scure/base';
-import { FixedPointNumber, Sha256 } from '../vcdm';
-import { HexUInt } from '../vcdm/HexUInt';
-import { Secp256k1 } from '../secp256k1';
+import * as s_bip32 from '@scure/bip32';
+import * as s_bip39 from '@scure/bip39';
 import {
     InvalidHDKey,
     InvalidHDKeyMnemonic,
     InvalidSecp256k1PrivateKey
 } from '@vechain/sdk-errors';
+import { Secp256k1 } from '../secp256k1';
+import { FixedPointNumber, HexUInt, Sha256 } from '../vcdm';
 
 /**
  * This class extends the
