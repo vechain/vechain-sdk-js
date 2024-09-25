@@ -1,6 +1,6 @@
 import { Address } from '../../vcdm';
 import { Secp256k1 } from '../../secp256k1';
-import { Transaction } from '../transaction';
+import { Transaction } from '../Transaction';
 import {
     InvalidSecp256k1PrivateKey,
     InvalidTransactionField,

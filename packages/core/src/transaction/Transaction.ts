@@ -1,11 +1,6 @@
-import { Address, Hex } from '../vcdm';
+import * as nc_utils from '@noble/curves/abstract/utils';
+import { Address, Hex, HexUInt } from '../vcdm';
 import { Blake2b256 } from '../vcdm/hash/Blake2b256';
-import {
-    InvalidSecp256k1Signature,
-    InvalidTransactionField,
-    NotDelegatedTransaction,
-    UnavailableTransactionField
-} from '@vechain/sdk-errors';
 import { Secp256k1 } from '../secp256k1';
 import {
     BLOCK_REF_LENGTH,
@@ -17,13 +12,20 @@ import {
 } from '../utils';
 import { type RLPValidObject } from '../encoding';
 import { type TransactionBody } from './TransactionBody';
+import {
+    InvalidSecp256k1Signature,
+    InvalidTransactionField,
+    NotDelegatedTransaction,
+    UnavailableTransactionField
+} from '@vechain/sdk-errors';
 
 /**
  * Represents an immutable transaction entity.
  *
  * @remarks
  * Properties should be treated as read-only to avoid unintended side effects.
- * Any modifications create a new transaction instance which should be handled by the TransactionHandler component.
+ * Any modifications create a new transaction instance
+ * which should be handled by the TransactionHandler component.
  *
  * @see {@link TransactionHandler} for transaction manipulation details.
  */
@@ -40,7 +42,7 @@ class Transaction {
      *
      * @note It is better to take it as a read-only property in order to avoid any external modification.
      */
-    public readonly signature?: Buffer;
+    public readonly signature?: Uint8Array;
 
     /**
      * Constructor with parameters.
@@ -50,7 +52,7 @@ class Transaction {
      * @param signature - Optional signature for the transaction
      * @throws {InvalidTransactionField, InvalidSecp256k1Signature}
      */
-    constructor(body: TransactionBody, signature?: Buffer) {
+    constructor(body: TransactionBody, signature?: Uint8Array) {
         // Body
         if (!Transaction.isValidBody(body)) {
             throw new InvalidTransactionField(
@@ -119,7 +121,7 @@ class Transaction {
 
         // Slice signature needed to recover public key
         // Obtains the recovery param from the signature
-        const signatureSliced = (this.signature as Buffer).subarray(
+        const signatureSliced = (this.signature as Uint8Array)?.slice(
             65,
             this.signature?.length
         );
@@ -131,7 +133,7 @@ class Transaction {
         );
 
         // Address from public key
-        return Address.ofPublicKey(Buffer.from(delegatorPublicKey)).toString();
+        return Address.ofPublicKey(delegatorPublicKey).toString();
     }
 
     /**
@@ -192,7 +194,7 @@ class Transaction {
      * @returns Signing hash of the transaction
      * @throws {InvalidTransactionField}
      */
-    public getSignatureHash(delegateFor?: string): Buffer {
+    public getSignatureHash(delegateFor?: string): Uint8Array {
         // Correct delegateFor address
         if (delegateFor !== undefined && !Address.isValid(delegateFor)) {
             throw new InvalidTransactionField(
@@ -207,17 +209,15 @@ class Transaction {
 
         // There is a delegateFor address (@note we already know that it is a valid address)
         if (delegateFor !== undefined) {
-            return Buffer.from(
-                Blake2b256.of(
-                    Buffer.concat([
-                        Buffer.from(transactionHash),
-                        Buffer.from(delegateFor.slice(2), 'hex')
-                    ])
-                ).bytes
-            );
+            return Blake2b256.of(
+                nc_utils.concatBytes(
+                    transactionHash,
+                    HexUInt.of(delegateFor).bytes
+                )
+            ).bytes;
         }
 
-        return Buffer.from(transactionHash);
+        return transactionHash;
     }
 
     /**
@@ -225,7 +225,7 @@ class Transaction {
      *
      * @returns The transaction encoded
      */
-    public get encoded(): Buffer {
+    public get encoded(): Uint8Array {
         return this._encode(this.isSigned);
     }
 
@@ -246,7 +246,7 @@ class Transaction {
 
         // Slice signature
         // Obtains the concatenated signature (r, s) of ECDSA digital signature
-        const signatureSliced = (this.signature as Buffer).subarray(0, 65);
+        const signatureSliced = (this.signature as Uint8Array)?.slice(0, 65);
 
         // Recover public key
         const originPublicKey = Secp256k1.recover(
@@ -255,7 +255,7 @@ class Transaction {
         );
 
         // Address from public key
-        return Address.ofPublicKey(Buffer.from(originPublicKey)).toString();
+        return Address.ofPublicKey(originPublicKey).toString();
     }
 
     /**
@@ -275,10 +275,10 @@ class Transaction {
 
         // Return transaction ID
         return Blake2b256.of(
-            Buffer.concat([
+            nc_utils.concatBytes(
                 this.getSignatureHash(),
-                Buffer.from(this.origin.slice(2), 'hex')
-            ])
+                Hex.of(this.origin).bytes
+            )
         ).toString();
     }
 
@@ -311,7 +311,7 @@ class Transaction {
      * @param signature Signature to check
      * @returns Weather the signature is valid or not
      */
-    private _isSignatureValid(signature: Buffer): boolean {
+    private _isSignatureValid(signature: Uint8Array): boolean {
         // Verify signature length
         const expectedSignatureLength = this._isDelegated(this.body)
             ? SIGNATURE_LENGTH * 2
@@ -330,7 +330,7 @@ class Transaction {
      *
      * @returns Encoding of reserved field
      */
-    private _encodeReservedField(): Buffer[] {
+    private _encodeReservedField(): Uint8Array[] {
         // Check if is reserved or not
         const reserved = this.body.reserved ?? {};
 
@@ -367,7 +367,7 @@ class Transaction {
     private _lowLevelEncodeTransactionBodyWithRLP(
         body: RLPValidObject,
         isSigned: boolean
-    ): Buffer {
+    ): Uint8Array {
         // Encode transaction object - SIGNED
         if (isSigned) {
             return SIGNED_TRANSACTION_RLP.encodeObject({
@@ -387,7 +387,7 @@ class Transaction {
      * @param isSigned If transaction is signed or not (needed to determine if encoding with SIGNED_TRANSACTION_RLP or UNSIGNED_TRANSACTION_RLP)
      * @returns Encoding of transaction
      */
-    private _encode(isSigned: boolean): Buffer {
+    private _encode(isSigned: boolean): Uint8Array {
         // Encode transaction body with RLP
         return this._lowLevelEncodeTransactionBodyWithRLP(
             {
@@ -427,8 +427,7 @@ class Transaction {
             // Block reference
             body.blockRef !== undefined &&
             Hex.isValid0x(body.blockRef) &&
-            Buffer.from(body.blockRef.slice(2), 'hex').length ===
-                BLOCK_REF_LENGTH &&
+            HexUInt.of(body.blockRef).bytes.length === BLOCK_REF_LENGTH &&
             // Expiration
             body.expiration !== undefined &&
             // Clauses

@@ -4,7 +4,7 @@ import {
     TRANSACTION_FEATURES_KIND,
     UNSIGNED_TRANSACTION_RLP
 } from '../../utils';
-import { Transaction } from '../transaction';
+import { Transaction } from '../Transaction';
 import { type TransactionBody } from '../TransactionBody';
 import { InvalidTransactionField } from '@vechain/sdk-errors';
 
@@ -16,7 +16,7 @@ import { InvalidTransactionField } from '@vechain/sdk-errors';
  * @param isSigned - If the transaction is signed or not
  * @returns Decoded transaction (signed or unsigned)
  */
-function decode(rawTransaction: Buffer, isSigned: boolean): Transaction {
+function decode(rawTransaction: Uint8Array, isSigned: boolean): Transaction {
     // Get correct decoder profiler
     const decoder = isSigned
         ? SIGNED_TRANSACTION_RLP
@@ -24,7 +24,7 @@ function decode(rawTransaction: Buffer, isSigned: boolean): Transaction {
 
     // Get decoded body
     const decodedRLPBody = decoder.decodeObject(
-        rawTransaction
+        Buffer.from(rawTransaction)
     ) as RLPValidObject;
 
     // Create correct transaction body without reserved field

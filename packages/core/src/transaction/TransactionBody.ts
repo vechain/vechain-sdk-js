@@ -84,7 +84,7 @@ interface TransactionBody {
         /**
          * Unused
          */
-        unused?: Buffer[];
+        unused?: Uint8Array[];
     };
 }
 
