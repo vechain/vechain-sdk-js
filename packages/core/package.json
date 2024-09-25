@@ -28,6 +28,7 @@
   ],
   "scripts": {
     "build": "rm -rf ./dist && tsup-node src/index.ts --format cjs,esm --dts",
+    "check:circular-dependencies": "npx madge --circular --extensions ts src",
     "lint": "eslint --ext .ts src --ext .ts tests",
     "format": "prettier --write src/**/*.ts tests/**/*.ts",
     "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
