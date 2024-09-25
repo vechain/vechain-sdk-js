@@ -278,7 +278,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         // Address of the origin account
         const originAddress = Address.ofPrivateKey(originPrivateKey).toString();
 
-        const unsignedTx = new Transaction(unsignedTransactionBody);
+        const unsignedTx = Transaction.of(unsignedTransactionBody);
 
         // Sign transaction with origin private key and delegator private key
         if (delegatorOptions?.delegatorPrivateKey !== undefined)
@@ -310,7 +310,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
 
         // Return new signed transaction
         return Hex.of(
-            new Transaction(unsignedTx.body, signature).encoded
+            Transaction.of(unsignedTx.body, signature).encoded
         ).toString();
     }
 }

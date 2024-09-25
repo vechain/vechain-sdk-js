@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { delegator, signer, transactions } from './fixture';
-import { Transaction, TransactionHandler } from '../../src';
+import { HexUInt, Transaction, TransactionHandler } from '../../src';
 import {
     InvalidSecp256k1Signature,
     InvalidTransactionField,
@@ -24,7 +24,7 @@ describe('Transaction', () => {
         test('Should be able to create unsigned transactions', () => {
             transactions.undelegated.forEach((transaction) => {
                 // Init unsigned transaction from body
-                const unsignedTransaction = new Transaction(transaction.body);
+                const unsignedTransaction = Transaction.of(transaction.body);
 
                 // Checks
                 expect(unsignedTransaction.signature).toBeUndefined();
@@ -51,9 +51,7 @@ describe('Transaction', () => {
 
                 // Encoding
                 expect(unsignedTransaction.encoded).toEqual(
-                    Buffer.from(
-                        Hex.of(transaction.encodedUnsignedExpected).bytes
-                    )
+                    Hex.of(transaction.encodedUnsignedExpected).bytes
                 );
 
                 // Intrinsic gas
@@ -74,7 +72,7 @@ describe('Transaction', () => {
                 // Init unsigned transaction from body
                 const signedTransaction = TransactionHandler.sign(
                     transaction.body,
-                    Buffer.from(Hex.of(signer.privateKey).bytes)
+                    Buffer.from(HexUInt.of(signer.privateKey).bytes)
                 );
 
                 // Checks on signature
@@ -98,7 +96,7 @@ describe('Transaction', () => {
 
                 // Encoding
                 expect(signedTransaction.encoded).toEqual(
-                    Buffer.from(Hex.of(transaction.encodedSignedExpected).bytes)
+                    Hex.of(transaction.encodedSignedExpected).bytes
                 );
             });
         });
@@ -114,7 +112,7 @@ describe('Transaction', () => {
         test('Should be able to create unsigned transactions', () => {
             transactions.delegated.forEach((transaction) => {
                 // Init unsigned transaction from body
-                const unsignedTransaction = new Transaction(transaction.body);
+                const unsignedTransaction = Transaction.of(transaction.body);
 
                 // Checks
                 expect(unsignedTransaction.signature).toBeUndefined();
@@ -140,7 +138,7 @@ describe('Transaction', () => {
                 );
 
                 // Encoding
-                expect(unsignedTransaction.encoded).toEqual(
+                expect(Buffer.from(unsignedTransaction.encoded)).toEqual(
                     transaction.encodedUnsignedExpected
                 );
 
@@ -170,13 +168,15 @@ describe('Transaction', () => {
 
                 // Checks on origin, id and delegator
                 expect(signedTransaction.origin).toEqual(signer.address);
-                expect(signedTransaction.delegator).toEqual(delegator.address);
+                expect(signedTransaction.delegator.toString()).toEqual(
+                    delegator.address
+                );
                 expect(signedTransaction.id).toEqual(
                     transaction.signedTransactionIdExpected
                 );
 
                 // Encoding
-                expect(signedTransaction.encoded).toEqual(
+                expect(Buffer.from(signedTransaction.encoded)).toEqual(
                     transaction.encodedSignedExpected
                 );
             });
@@ -188,21 +188,19 @@ describe('Transaction', () => {
      */
     test('Invalid transactions', () => {
         // Invalid signature (should throw error)
-        expect(
-            () =>
-                new Transaction(
-                    transactions.delegated[0].body,
-                    Buffer.from('INVALID_SIGNATURE')
-                )
+        expect(() =>
+            Transaction.of(
+                transactions.delegated[0].body,
+                Buffer.from('INVALID_SIGNATURE')
+            )
         ).toThrowError(InvalidSecp256k1Signature);
 
         // Invalid transaction body (should throw error)
-        expect(
-            () =>
-                new Transaction({
-                    ...transactions.delegated[0].body,
-                    blockRef: 'INVALID_BLOCK_REF'
-                })
+        expect(() =>
+            Transaction.of({
+                ...transactions.delegated[0].body,
+                blockRef: 'INVALID_BLOCK_REF'
+            })
         ).toThrowError(InvalidTransactionField);
     });
 });

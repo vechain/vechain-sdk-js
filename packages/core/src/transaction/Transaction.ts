@@ -21,128 +21,117 @@ import {
 
 /**
  * Represents an immutable transaction entity.
- *
- * @remarks
- * Properties should be treated as read-only to avoid unintended side effects.
- * Any modifications create a new transaction instance
- * which should be handled by the TransactionHandler component.
- *
- * @see {@link TransactionHandler} for transaction manipulation details.
  */
 class Transaction {
+    private static readonly SIGNATURE_RECOVERY_OFFSET = 65;
     /**
-     * Transaction body. It represents the body of the transaction.
-     *
-     * @note It is better to take it as a read-only property in order to avoid any external modification.
+     * It represents the content of the transaction.
      */
     public readonly body: TransactionBody;
 
     /**
-     * Transaction signature. It represents the signature of the transaction.
-     *
-     * @note It is better to take it as a read-only property in order to avoid any external modification.
+     * It represents the signature of the transaction content.
      */
     public readonly signature?: Uint8Array;
 
     /**
-     * Constructor with parameters.
-     * This constructor creates a transaction immutable object.
+     * Creates a new instance of the class with the specified transaction body and optional signature.
      *
-     * @param body - Transaction body
-     * @param signature - Optional signature for the transaction
-     * @throws {InvalidTransactionField, InvalidSecp256k1Signature}
+     * @param {TransactionBody} body The transaction body to be used.
+     * @param {Uint8Array} [signature] The optional signature for the transaction.
      */
-    constructor(body: TransactionBody, signature?: Uint8Array) {
-        // Body
-        if (!Transaction.isValidBody(body)) {
-            throw new InvalidTransactionField(
-                'Transaction constructor',
-                'Invalid transaction body. Ensure all required fields are correctly formatted and present.',
-                { fieldName: 'body', body }
-            );
-        }
-
+    protected constructor(body: TransactionBody, signature?: Uint8Array) {
         this.body = body;
-
-        // User passed a signature
-        if (signature !== undefined && !this._isSignatureValid(signature)) {
-            throw new InvalidSecp256k1Signature(
-                'Transaction constructor',
-                'Invalid transaction signature. Ensure it is correctly formatted.',
-                { signature }
-            );
-        }
-
         this.signature = signature;
     }
 
-    // ********** PUBLIC GET ONLY FUNCTIONS **********
+    public get delegator(): Address {
+        if (this.isDelegated) {
+            if (this.signature !== undefined) {
+                // Recover the delegator param from the signature
+                const delegator = this.signature.slice(
+                    Transaction.SIGNATURE_RECOVERY_OFFSET,
+                    this.signature.length
+                );
+                // Recover the delegator's public key.
+                const delegatorPublicKey = Secp256k1.recover(
+                    this.getSignatureHash(this.origin),
+                    delegator
+                );
+                return Address.ofPublicKey(delegatorPublicKey);
+            }
+            throw new UnavailableTransactionField(
+                'Transaction.delegator()',
+                'missing delegator',
+                { fieldName: 'delegator' }
+            );
+        }
+        throw new NotDelegatedTransaction(
+            'Transaction.delegator()',
+            'not delegated transaction',
+            undefined
+        );
+    }
 
     /**
-     * Calculate intrinsic gas required for this transaction
+     * Return the intrinsic gas required for this transaction.
      *
-     * @returns Intrinsic gas required for this transaction
+     * @return {number} The computed intrinsic gas for the transaction.
      */
     public get intrinsicGas(): number {
         return TransactionUtils.intrinsicGas(this.body.clauses);
     }
 
     /**
-     * Determines whether the transaction is delegated.
+     * Returns `true` if the transaction is delegated, otherwise `false`.
      *
-     * @returns If transaction is delegated or not
+     * @return {boolean} `true` if the transaction is delegated,
+     * otherwise `false`.
      */
     public get isDelegated(): boolean {
-        return this._isDelegated(this.body);
+        return Transaction._isDelegated(this.body);
     }
 
     /**
-     * Get transaction delegator address from signature.
+     * Return `true` if the signature is defined, otherwise `false`.
      *
-     * @returns Transaction delegator address
-     * @throws {NotDelegatedTransaction, UnavailableTransactionField}
-     */
-    public get delegator(): string {
-        // Undelegated transaction
-        if (!this.isDelegated)
-            throw new NotDelegatedTransaction(
-                'Transaction.delegator()',
-                'Transaction is not delegated. Delegate information is unavailable.',
-                undefined
-            );
-
-        // Unsigned transaction (@note we don't check if signature is valid or not, because we have checked it into constructor at creation time)
-        if (!this.isSigned)
-            throw new UnavailableTransactionField(
-                'Transaction.delegator()',
-                "Transaction is not signed. 'delegator' information is unavailable.",
-                { fieldName: 'delegator' }
-            );
-
-        // Slice signature needed to recover public key
-        // Obtains the recovery param from the signature
-        const signatureSliced = (this.signature as Uint8Array)?.slice(
-            65,
-            this.signature?.length
-        );
-
-        // Recover public key
-        const delegatorPublicKey = Secp256k1.recover(
-            this.getSignatureHash(this.origin),
-            signatureSliced
-        );
-
-        // Address from public key
-        return Address.ofPublicKey(delegatorPublicKey).toString();
-    }
-
-    /**
-     * Determines whether the transaction is signed or not.
-     *
-     * @returns If transaction is signed or not
+     * @return {boolean} return `true` if the signature is defined, otherwise `false`.
      */
     public get isSigned(): boolean {
         return this.signature !== undefined;
+    }
+
+    /**
+     * Creates a new Transaction instance if the provided body and optional
+     * signature are valid.
+     *
+     * @param {TransactionBody} body The transaction body to be validated.
+     * @param {Uint8Array} [signature] Optional signature to be validated.
+     * @return {Transaction} A new Transaction instance if validation is successful.
+     * @throws {InvalidSecp256k1Signature} If the provided signature is invalid.
+     * @throws {InvalidTransactionField} If the provided body is invalid.
+     */
+    public static of(
+        body: TransactionBody,
+        signature?: Uint8Array
+    ): Transaction {
+        if (Transaction.isValidBody(body)) {
+            if (
+                signature === undefined ||
+                Transaction._isSignatureValid(body, signature)
+            ) {
+                return new Transaction(body, signature);
+            }
+            throw new InvalidSecp256k1Signature(
+                'Transaction.of',
+                'invalid signature',
+                { signature }
+            );
+        }
+        throw new InvalidTransactionField('Transaction.of', 'invalid body', {
+            fieldName: 'body',
+            body
+        });
     }
 
     /**
@@ -292,7 +281,7 @@ class Transaction {
      * @param body Transaction body to check
      * @returns Weather the transaction is delegated or not
      */
-    private _isDelegated(body: TransactionBody): boolean {
+    private static _isDelegated(body: TransactionBody): boolean {
         // Check if is reserved or not
         const reserved = body.reserved ?? {};
 
@@ -311,9 +300,12 @@ class Transaction {
      * @param signature Signature to check
      * @returns Weather the signature is valid or not
      */
-    private _isSignatureValid(signature: Uint8Array): boolean {
+    private static _isSignatureValid(
+        body: TransactionBody,
+        signature: Uint8Array
+    ): boolean {
         // Verify signature length
-        const expectedSignatureLength = this._isDelegated(this.body)
+        const expectedSignatureLength = this._isDelegated(body)
             ? SIGNATURE_LENGTH * 2
             : SIGNATURE_LENGTH;
 
@@ -370,14 +362,16 @@ class Transaction {
     ): Uint8Array {
         // Encode transaction object - SIGNED
         if (isSigned) {
-            return SIGNED_TRANSACTION_RLP.encodeObject({
-                ...body,
-                signature: this.signature
-            });
+            return new Uint8Array(
+                SIGNED_TRANSACTION_RLP.encodeObject({
+                    ...body,
+                    signature: this.signature
+                })
+            );
         }
 
         // Encode transaction object - UNSIGNED
-        return UNSIGNED_TRANSACTION_RLP.encodeObject(body);
+        return new Uint8Array(UNSIGNED_TRANSACTION_RLP.encodeObject(body));
     }
 
     /**

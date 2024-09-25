@@ -36,7 +36,7 @@ describe('ThorClient - Transactions Module', () => {
             );
 
             // Create the unsigned transfer transaction
-            const tx = new Transaction({
+            const tx = Transaction.of({
                 ...transferTransactionBody,
                 gas: gasResult.totalGas,
                 nonce: transactionNonces

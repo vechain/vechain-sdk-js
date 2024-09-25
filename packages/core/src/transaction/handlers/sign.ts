@@ -29,7 +29,7 @@ function sign(
         );
     }
 
-    const transactionToSign = new Transaction(transactionBody);
+    const transactionToSign = Transaction.of(transactionBody);
 
     // Transaction is delegated
     if (transactionToSign.isDelegated)
@@ -46,7 +46,7 @@ function sign(
     );
 
     // Return new signed transaction
-    return new Transaction(transactionBody, Buffer.from(signature));
+    return Transaction.of(transactionBody, Buffer.from(signature));
 }
 
 /**
@@ -82,7 +82,7 @@ function signWithDelegator(
         );
     }
 
-    const transactionToSign = new Transaction(transactionBody);
+    const transactionToSign = Transaction.of(transactionBody);
 
     // Transaction is not delegated
     if (!transactionToSign.isDelegated)
@@ -104,7 +104,7 @@ function signWithDelegator(
     ]);
 
     // Return new signed transaction
-    return new Transaction(transactionBody, signature);
+    return Transaction.of(transactionBody, signature);
 }
 
 export { sign, signWithDelegator };

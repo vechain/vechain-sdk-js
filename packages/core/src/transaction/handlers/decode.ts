@@ -52,11 +52,11 @@ function decode(rawTransaction: Uint8Array, isSigned: boolean): Transaction {
 
     // Return decoded transaction (with signature or not)
     return decodedRLPBody.signature !== undefined
-        ? new Transaction(
+        ? Transaction.of(
               correctTransactionBody,
               decodedRLPBody.signature as Buffer
           )
-        : new Transaction(correctTransactionBody);
+        : Transaction.of(correctTransactionBody);
 }
 
 /**

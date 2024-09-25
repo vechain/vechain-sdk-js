@@ -98,7 +98,9 @@ describe('Transaction handler', () => {
                 expect(signedTransaction.origin).toBeDefined();
                 expect(signedTransaction.origin).toBe(signer.address);
                 expect(signedTransaction.delegator).toBeDefined();
-                expect(signedTransaction.delegator).toBe(delegator.address);
+                expect(signedTransaction.delegator.toString()).toBe(
+                    delegator.address
+                );
                 expect(signedTransaction.isDelegated).toBe(true);
                 expect(signedTransaction.id).toBeDefined();
             });
@@ -261,7 +263,9 @@ describe('Transaction handler', () => {
                 expect(() => decodedSigned.origin).toBeDefined();
                 expect(decodedSigned.origin).toBe(signer.address);
                 expect(() => decodedSigned.delegator).toBeDefined();
-                expect(decodedSigned.delegator).toBe(delegator.address);
+                expect(decodedSigned.delegator.toString()).toBe(
+                    delegator.address
+                );
                 expect(decodedSigned.isDelegated).toBe(true);
                 expect(() => decodedSigned.id).toBeDefined();
                 expect(decodedSigned.isSigned).toBe(true);
