@@ -1,10 +1,9 @@
 import { RLP } from '@ethereumjs/rlp';
 import { InvalidRLP } from '@vechain/sdk-errors';
-import { ScalarKind } from './kind/scalarkind.abstract';
+import { ScalarKind, type RLPProfile } from './kind/scalarkind.abstract';
 import {
     type RLPInput,
     type RLPOutput,
-    type RLPProfile,
     type RLPValidObject,
     type RLPValueType
 } from './types';

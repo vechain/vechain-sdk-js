@@ -1,9 +1,30 @@
 import {
-    type RLPInput,
     type BufferOutput,
-    type RLPValidObject,
-    type DataOutput
+    type DataOutput,
+    type RLPInput,
+    type RLPValidObject
 } from '../types';
+
+/* ------- RLP Profile Types ------- */
+/**
+ * `RLPProfile` Interface - Describes the profile of the RLP encoding.
+ */
+interface RLPProfile {
+    name: string;
+    kind: ScalarKind | ArrayKind | StructKind;
+}
+
+/**
+ * `ArrayKind` Interface - Describes an array-kind in the RLP encoding profile.
+ */
+interface ArrayKind {
+    item: RLPProfile['kind'];
+}
+
+/**
+ * `StructKind` Type - Describes a structured-kind in the RLP encoding profile using an array of `RLPProfile`.
+ */
+type StructKind = RLPProfile[];
 
 /**
  * `ScalarKind` Abstract Class - A base for scalar kinds providing contract for data and buffer manipulations.
@@ -29,4 +50,4 @@ abstract class ScalarKind {
     public abstract buffer(buffer: Buffer, context: string): BufferOutput;
 }
 
-export { ScalarKind };
+export { ScalarKind, type RLPProfile };
