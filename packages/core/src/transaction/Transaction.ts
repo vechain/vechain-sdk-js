@@ -4,7 +4,6 @@ import { Blake2b256 } from '../vcdm/hash/Blake2b256';
 import { Secp256k1 } from '../secp256k1';
 import {
     BLOCK_REF_LENGTH,
-    SIGNATURE_LENGTH,
     SIGNED_TRANSACTION_RLP,
     TRANSACTION_FEATURES_KIND,
     TransactionUtils,
@@ -23,7 +22,6 @@ import {
  * Represents an immutable transaction entity.
  */
 class Transaction {
-    private static readonly SIGNATURE_RECOVERY_OFFSET = 65;
     /**
      * It represents the content of the transaction.
      */
@@ -73,7 +71,7 @@ class Transaction {
             if (this.signature !== undefined) {
                 // Recover the delegator param from the signature
                 const delegator = this.signature.slice(
-                    Transaction.SIGNATURE_RECOVERY_OFFSET,
+                    Secp256k1.SIGNATURE_LENGTH,
                     this.signature.length
                 );
                 // Recover the delegator's public key.
@@ -170,10 +168,7 @@ class Transaction {
                 Secp256k1.recover(
                     this.getSignatureHash().bytes,
                     // Get the (r, s) of ECDSA digital signature without delegator params.
-                    this.signature.slice(
-                        0,
-                        Transaction.SIGNATURE_RECOVERY_OFFSET
-                    )
+                    this.signature.slice(0, Secp256k1.SIGNATURE_LENGTH)
                 )
             );
         }
@@ -249,21 +244,18 @@ class Transaction {
     private static _isDelegated(body: TransactionBody): boolean {
         // Check if is reserved or not
         const reserved = body.reserved ?? {};
-
         // Features
         const features = reserved.features ?? 0;
-
         // Fashion bitwise way to check if a number is even or not
         return (features & 1) === 1;
     }
 
     /**
-     * Internal function to check if signature is valid or not.
-     * This function is used to check directly the signature.
-     * @private
+     * Validates the signature of a given transaction body.
      *
-     * @param signature Signature to check
-     * @returns Weather the signature is valid or not
+     * @param {TransactionBody} body - The transaction body to be checked.
+     * @param {Uint8Array} signature - The signature to validate.
+     * @return {boolean} - Returns true if the signature is valid, otherwise false.
      */
     private static _isSignatureValid(
         body: TransactionBody,
@@ -271,8 +263,8 @@ class Transaction {
     ): boolean {
         // Verify signature length
         const expectedSignatureLength = this._isDelegated(body)
-            ? SIGNATURE_LENGTH * 2
-            : SIGNATURE_LENGTH;
+            ? Secp256k1.SIGNATURE_LENGTH * 2
+            : Secp256k1.SIGNATURE_LENGTH;
 
         return signature.length === expectedSignatureLength;
     }

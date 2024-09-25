@@ -140,12 +140,6 @@ const SIGNED_TRANSACTION_RLP = new RLP_CODER.Profiler({
 });
 
 /**
- * Signature length
- * @internal
- */
-const SIGNATURE_LENGTH = 65;
-
-/**
  * Block ref field length
  * @internal
  */
@@ -157,6 +151,5 @@ export {
     SIGNED_TRANSACTION_RLP,
     TRANSACTION_FEATURES_KIND,
     TRANSACTION_SIGNATURE_KIND,
-    SIGNATURE_LENGTH,
     BLOCK_REF_LENGTH
 };

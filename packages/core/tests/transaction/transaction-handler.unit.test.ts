@@ -1,5 +1,5 @@
 import { Hex } from '../../src/vcdm/Hex';
-import { SIGNATURE_LENGTH, TransactionHandler } from '../../src';
+import { Secp256k1, TransactionHandler } from '../../src';
 import { describe, expect, test } from '@jest/globals';
 import {
     delegator,
@@ -46,7 +46,7 @@ describe('Transaction handler', () => {
                 expect(signedTransaction.isSigned).toBe(true);
                 expect(signedTransaction.signature).toBeDefined();
                 expect(signedTransaction.signature?.length).toBe(
-                    SIGNATURE_LENGTH
+                    Secp256k1.SIGNATURE_LENGTH
                 );
 
                 // Checks on origin, id and delegator
@@ -93,7 +93,7 @@ describe('Transaction handler', () => {
                 expect(signedTransaction.isSigned).toBe(true);
                 expect(signedTransaction.signature).toBeDefined();
                 expect(signedTransaction.signature?.length).toBe(
-                    SIGNATURE_LENGTH * 2
+                    Secp256k1.SIGNATURE_LENGTH * 2
                 );
 
                 // Checks on origin, id and delegator
@@ -215,7 +215,9 @@ describe('Transaction handler', () => {
                         'hex'
                     )
                 );
-                expect(decodedSigned.signature?.length).toBe(SIGNATURE_LENGTH);
+                expect(decodedSigned.signature?.length).toBe(
+                    Secp256k1.SIGNATURE_LENGTH
+                );
             });
         });
 
@@ -285,7 +287,7 @@ describe('Transaction handler', () => {
                 );
                 expect(decodedSigned.signature).toBeDefined();
                 expect(decodedSigned.signature?.length).toBe(
-                    SIGNATURE_LENGTH * 2
+                    Secp256k1.SIGNATURE_LENGTH * 2
                 );
             });
         });

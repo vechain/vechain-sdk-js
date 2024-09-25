@@ -29,7 +29,7 @@ class Secp256k1 {
      *
      * @constant {number} SIGNATURE_LENGTH
      */
-    private static readonly SIGNATURE_LENGTH = 65;
+    public static readonly SIGNATURE_LENGTH = 65;
 
     /**
      * This value is used to identify uncompressed public key.
