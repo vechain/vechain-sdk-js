@@ -186,6 +186,55 @@ class Transaction {
     // ********** PUBLIC METHODS **********
 
     /**
+     * Decodes a raw transaction byte array into a new Transaction object.
+     *
+     * @param {Uint8Array} rawTransaction - The raw transaction bytes to decode.
+     * @param {boolean} isSigned - Flag indicating if the transaction is signed.
+     * @return {Transaction} The decoded transaction object.
+     */
+    public static decode(
+        rawTransaction: Uint8Array,
+        isSigned: boolean
+    ): Transaction {
+        // Get correct decoder profiler
+        const decoder = isSigned
+            ? SIGNED_TRANSACTION_RLP
+            : UNSIGNED_TRANSACTION_RLP;
+        // Get decoded body
+        const decodedRLPBody = decoder.decodeObject(
+            Buffer.from(rawTransaction)
+        ) as RLPValidObject;
+        // Create correct transaction body without reserved field
+        const bodyWithoutReservedField: TransactionBody = {
+            blockRef: decodedRLPBody.blockRef as string,
+            chainTag: decodedRLPBody.chainTag as number,
+            clauses: decodedRLPBody.clauses as [],
+            dependsOn: decodedRLPBody.dependsOn as string | null,
+            expiration: decodedRLPBody.expiration as number,
+            gas: decodedRLPBody.gas as number,
+            gasPriceCoef: decodedRLPBody.gasPriceCoef as number,
+            nonce: decodedRLPBody.nonce as number
+        };
+        // Create correct transaction body (with correct reserved field)
+        const correctTransactionBody: TransactionBody =
+            (decodedRLPBody.reserved as Buffer[]).length > 0
+                ? {
+                      ...bodyWithoutReservedField,
+                      reserved: Transaction._decodeReservedField(
+                          decodedRLPBody.reserved as Buffer[]
+                      )
+                  }
+                : bodyWithoutReservedField;
+        // Return decoded transaction (with signature or not)
+        return decodedRLPBody.signature !== undefined
+            ? Transaction.of(
+                  correctTransactionBody,
+                  decodedRLPBody.signature as Buffer
+              )
+            : Transaction.of(correctTransactionBody);
+    }
+
+    /**
      * Computes the signature hash, optionally incorporating a delegator's address.
      *
      * @param {Address} [delegator] - Optional delegator's address to include in the hash computation.
@@ -211,7 +260,6 @@ class Transaction {
      * @return {boolean} `true` if the transaction body is valid, `false` otherwise.
      */
     public static isValidBody(body: TransactionBody): boolean {
-        // Check if body is valid
         return (
             // Chain tag
             body.chainTag !== undefined &&
@@ -271,6 +319,33 @@ class Transaction {
     }
 
     // ********** PRIVATE FUNCTIONS **********
+
+    private static _decodeReservedField(reserved: Buffer[]): {
+        features?: number;
+        unused?: Buffer[];
+    } {
+        // Not trimmed reserved field
+        if (reserved[reserved.length - 1].length === 0) {
+            throw new InvalidTransactionField(
+                '_decodeReservedField()',
+                'Invalid reserved field. Fields in the reserved buffer must be properly trimmed.',
+                { fieldName: 'reserved', reserved }
+            );
+        }
+
+        // Get features field
+        const featuresField = TRANSACTION_FEATURES_KIND.kind
+            .buffer(reserved[0], TRANSACTION_FEATURES_KIND.name)
+            .decode() as number;
+
+        // Return encoded reserved field
+        return reserved.length > 1
+            ? {
+                  features: featuresField,
+                  unused: reserved.slice(1)
+              }
+            : { features: featuresField };
+    }
 
     /**
      * Determines whether a transaction is delegated based on its features.
