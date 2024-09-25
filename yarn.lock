@@ -3103,10 +3103,10 @@
     uuid "2.0.1"
     xmlhttprequest "1.8.0"
 
-"@vechain/vebetterdao-contracts@^1.0.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@vechain/vebetterdao-contracts/-/vebetterdao-contracts-1.1.0.tgz#8df5a53a8f6cee2d8df73a35bb16c040b0f4c582"
-  integrity sha512-k1dBFghEhhVgvPupajFov/hvZaU6hCcyVCXVhDCW43HDTX6XpBkb3M/JKpokJoazs5rnIAeFuwgNZKuZJxACZQ==
+"@vechain/vebetterdao-contracts@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@vechain/vebetterdao-contracts/-/vebetterdao-contracts-2.0.0.tgz#a72e3642e284c4a408653327c5aedb9e5cda35a4"
+  integrity sha512-2Q/OsRiC8VRZp6+IAel4ZyL/sFK6SEw60dLf8uBd8E4jM5ieYaqamCYgeJg0H7tc9BvDX0PHclQiU1FFb3i3HA==
   dependencies:
     "@openzeppelin/contracts" "^5.0.2"
     "@openzeppelin/contracts-upgradeable" "^5.0.2"
