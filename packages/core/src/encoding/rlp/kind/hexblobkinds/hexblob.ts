@@ -1,4 +1,4 @@
-import { Hex } from '../../../../vcdm';
+import { Hex } from '../../../../vcdm/Hex';
 import { ScalarKind } from '../scalarkind.abstract';
 import {
     assertValidHexBlobKindBuffer,
