@@ -47,7 +47,7 @@
     "@vechain/vebetterdao-contracts": "^1.0.0",
     "abitype": "^1.0.6",
     "isomorphic-ws": "^5.0.0",
-    "viem": "^2.21.9",
+    "viem": "^2.21.14",
     "ws": "^8.18.0"
   },
   "devDependencies": {
