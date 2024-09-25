@@ -6,7 +6,7 @@ import {
     InvalidTransactionField,
     NotDelegatedTransaction
 } from '@vechain/sdk-errors';
-import { type TransactionBody } from '../types';
+import { type TransactionBody } from '../TransactionBody';
 
 /**
  * Sign a transaction with a given private key

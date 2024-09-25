@@ -5,7 +5,7 @@ import {
     UNSIGNED_TRANSACTION_RLP
 } from '../../utils';
 import { Transaction } from '../transaction';
-import { type TransactionBody } from '../types';
+import { type TransactionBody } from '../TransactionBody';
 import { InvalidTransactionField } from '@vechain/sdk-errors';
 
 /**

@@ -16,7 +16,7 @@ import {
     UNSIGNED_TRANSACTION_RLP
 } from '../utils';
 import { type RLPValidObject } from '../encoding';
-import { type TransactionBody } from './types';
+import { type TransactionBody } from './TransactionBody';
 
 /**
  * Represents an immutable transaction entity.

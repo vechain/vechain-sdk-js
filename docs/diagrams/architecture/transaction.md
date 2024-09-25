@@ -18,13 +18,29 @@ classDiagram
         ParamType[]|string[] types
         string[] values
     }
+    class Reserved {
+        <<interface>>
+        +number features?
+        +UInt8Array[] unused?
+    }
+    class TransactionBody {
+        <<interface>>
+        +string blockRef
+        +number chainTag
+        +TransactionClause[] clauses
+        +null|string dependsOn
+        +number expiration
+        +numer|string gas
+        +number gasPriceCoef
+        +number|string nonce
+    }
     class TransactionClause {
         <<interface>>
+        +string abi?
+        +string comment?
+        +string data
         +null|string to
         +number|string value
-        +string data
-        +string comment?
-        +string abi?
     }
     TransactionClause <|.. Clause
 ```
