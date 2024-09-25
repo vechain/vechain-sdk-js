@@ -8,9 +8,6 @@ import {
     OptionalFixedHexBlobKind
 } from './hexblobkinds';
 
-/**
- * RLP_CODER profile classes.
- */
 export {
     ScalarKind,
     BufferKind,
