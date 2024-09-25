@@ -4,11 +4,10 @@ import { Blake2b256 } from '../vcdm/hash/Blake2b256';
 import { Secp256k1 } from '../secp256k1';
 import {
     SIGNED_TRANSACTION_RLP,
-    TRANSACTION_FEATURES_KIND,
     TransactionUtils,
     UNSIGNED_TRANSACTION_RLP
 } from '../utils';
-import { type RLPValidObject } from '../encoding';
+import { RLP_CODER, type RLPValidObject } from '../encoding';
 import { type TransactionBody } from './TransactionBody';
 import {
     InvalidSecp256k1Signature,
@@ -25,6 +24,11 @@ class Transaction {
      * Represent the block reference length in bytes.
      */
     private static readonly BLOCK_REF_LENGTH = 8;
+
+    private static readonly RLP_FEATURES = {
+        name: 'reserved.features',
+        kind: new RLP_CODER.NumericKind(4)
+    };
 
     /**
      * It represents the content of the transaction.
@@ -320,6 +324,15 @@ class Transaction {
 
     // ********** PRIVATE FUNCTIONS **********
 
+    /**
+     * Decodes a reserved field from the given buffer array.
+     *
+     * @param {Buffer[]} reserved  An array of Buffer objects representing the reserved field data.
+     * @return {Object} An object containing the decoded features and any unused buffer data.
+     * @return {number} [return.features] - The decoded features from the reserved field.
+     * @return {Buffer[]} [return.unused] - An array of Buffer objects representing unused data, if any.
+     * @throws {InvalidTransactionField} Thrown if the reserved field is not properly trimmed.
+     */
     private static _decodeReservedField(reserved: Buffer[]): {
         features?: number;
         unused?: Buffer[];
@@ -327,15 +340,15 @@ class Transaction {
         // Not trimmed reserved field
         if (reserved[reserved.length - 1].length === 0) {
             throw new InvalidTransactionField(
-                '_decodeReservedField()',
-                'Invalid reserved field. Fields in the reserved buffer must be properly trimmed.',
+                'Transaction._decodeReservedField()',
+                'invalid reserved field: fields in the reserved buffer must be properly trimmed',
                 { fieldName: 'reserved', reserved }
             );
         }
 
         // Get features field
-        const featuresField = TRANSACTION_FEATURES_KIND.kind
-            .buffer(reserved[0], TRANSACTION_FEATURES_KIND.name)
+        const featuresField = Transaction.RLP_FEATURES.kind
+            .buffer(reserved[0], Transaction.RLP_FEATURES.name)
             .decode() as number;
 
         // Return encoded reserved field
@@ -396,12 +409,12 @@ class Transaction {
         const reserved = this.body.reserved ?? {};
 
         // Init kind for features
-        const featuresKind = TRANSACTION_FEATURES_KIND.kind;
+        const featuresKind = Transaction.RLP_FEATURES.kind;
 
         // Features list
         const featuresList = [
             featuresKind
-                .data(reserved.features ?? 0, TRANSACTION_FEATURES_KIND.name)
+                .data(reserved.features ?? 0, Transaction.RLP_FEATURES.name)
                 .encode(),
             ...(reserved.unused ?? [])
         ];
