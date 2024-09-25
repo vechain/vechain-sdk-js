@@ -5,7 +5,7 @@ import {
     NumericKind,
     OptionalFixedHexBlobKind,
     RLPProfiler
-} from '../../vcdm';
+} from '../../vcdm/encoding';
 
 /**
  * Transaction gas constants
