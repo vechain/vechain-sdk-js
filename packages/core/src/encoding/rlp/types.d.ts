@@ -1,5 +1,5 @@
 import { type Input, type NestedUint8Array } from '@ethereumjs/rlp';
-import { type ScalarKind } from './kind';
+import { type ScalarKind } from './kind/scalarkind.abstract';
 /**
  * Represents a valid input for the RLP (Recursive Length Prefix) encoding.
  * The RLP encoding is used to encode arbitrary binary data (nested arrays of bytes).
