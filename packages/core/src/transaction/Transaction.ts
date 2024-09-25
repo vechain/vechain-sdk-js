@@ -3,7 +3,6 @@ import { Address, Hex, HexUInt, Units, VTHO } from '../vcdm';
 import { Blake2b256 } from '../vcdm/hash/Blake2b256';
 import { Secp256k1 } from '../secp256k1';
 import {
-    BLOCK_REF_LENGTH,
     SIGNED_TRANSACTION_RLP,
     TRANSACTION_FEATURES_KIND,
     TransactionUtils,
@@ -22,6 +21,11 @@ import {
  * Represents an immutable transaction entity.
  */
 class Transaction {
+    /**
+     * Represent the block reference length in bytes.
+     */
+    private static readonly BLOCK_REF_LENGTH = 8;
+
     /**
      * It represents the content of the transaction.
      */
@@ -201,6 +205,39 @@ class Transaction {
     }
 
     /**
+     * Return `true` if the transaction body is valid, `false` otherwise.
+     *
+     * @param {TransactionBody} body - The transaction body to validate.
+     * @return {boolean} `true` if the transaction body is valid, `false` otherwise.
+     */
+    public static isValidBody(body: TransactionBody): boolean {
+        // Check if body is valid
+        return (
+            // Chain tag
+            body.chainTag !== undefined &&
+            body.chainTag >= 0 &&
+            body.chainTag <= 255 &&
+            // Block reference
+            body.blockRef !== undefined &&
+            Hex.isValid0x(body.blockRef) &&
+            HexUInt.of(body.blockRef).bytes.length ===
+                Transaction.BLOCK_REF_LENGTH &&
+            // Expiration
+            body.expiration !== undefined &&
+            // Clauses
+            body.clauses !== undefined &&
+            // Gas price coef
+            body.gasPriceCoef !== undefined &&
+            // Gas
+            body.gas !== undefined &&
+            // Depends on
+            body.dependsOn !== undefined &&
+            // Nonce
+            body.nonce !== undefined
+        );
+    }
+
+    /**
      * Creates a new Transaction instance if the provided body and optional
      * signature are valid.
      *
@@ -360,37 +397,6 @@ class Transaction {
                 reserved: this._encodeReservedField()
             },
             isSigned
-        );
-    }
-
-    /**
-     * utility function to check transaction body validity.
-     *
-     * @param body Transaction body to check
-     */
-    public static isValidBody(body: TransactionBody): boolean {
-        // Check if body is valid
-        return (
-            // Chain tag
-            body.chainTag !== undefined &&
-            body.chainTag >= 0 &&
-            body.chainTag <= 255 &&
-            // Block reference
-            body.blockRef !== undefined &&
-            Hex.isValid0x(body.blockRef) &&
-            HexUInt.of(body.blockRef).bytes.length === BLOCK_REF_LENGTH &&
-            // Expiration
-            body.expiration !== undefined &&
-            // Clauses
-            body.clauses !== undefined &&
-            // Gas price coef
-            body.gasPriceCoef !== undefined &&
-            // Gas
-            body.gas !== undefined &&
-            // Depends on
-            body.dependsOn !== undefined &&
-            // Nonce
-            body.nonce !== undefined
         );
     }
 }
