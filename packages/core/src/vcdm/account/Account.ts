@@ -1,6 +1,6 @@
 import { InvalidOperation } from '@vechain/sdk-errors';
 import { type Address } from '../Address';
-import { type Currency } from '../currency';
+import { type Currency } from '../currency/Currency';
 import { type VeChainDataModel } from '../VeChainDataModel';
 
 type AccountType = 'EOA' | 'Contract';
