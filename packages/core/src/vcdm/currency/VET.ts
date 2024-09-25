@@ -1,10 +1,7 @@
-import { Clause } from '../../transaction';
 import { Coin } from './Coin';
 import { FixedPointNumber } from '../FixedPointNumber';
 import { Txt } from '../Txt';
 import { Units } from './Units';
-import { type Address } from '../Address';
-import { type ClauseOptions } from '../../transaction';
 
 /**
  * Represents a
@@ -64,19 +61,6 @@ class VET extends Coin {
         return new VET(
             fpn.div(FixedPointNumber.of(10n ** (VET.WEI_FD - BigInt(unit))))
         );
-    }
-
-    /**
-     * Transfers a specified amount of VET to the given address.
-     *
-     * @param {Address} address The recipient's address to which the VET will be transferred.
-     * @param {ClauseOptions} clauseOptions  Optional parameters that modify the behavior of the transaction.
-     * @return {Clause} A Clause object representing the transfer transaction.
-     *
-     * @see Clause.transferVET
-     */
-    public transferTo(address: Address, clauseOptions?: ClauseOptions): Clause {
-        return Clause.transferVET(address, this, clauseOptions);
     }
 }
 

@@ -110,7 +110,7 @@ describe('Transaction class tests', () => {
                 expect(actual.signature).toBeUndefined();
                 expect(actual.isSigned).toBe(false);
                 expect(actual.isDelegated).toBe(false);
-                expect(actual.getSignatureHash()).toEqual(
+                expect(actual.getSignatureHash().bytes).toEqual(
                     TransactionFixture.undelegated.signatureHashExpected
                 );
                 expect(() => actual.id).toThrowError(
@@ -122,7 +122,7 @@ describe('Transaction class tests', () => {
                 expect(() => actual.delegator).toThrowError(
                     NotDelegatedTransaction
                 );
-                expect(actual.encoded).toEqual(
+                expect(actual.bytes).toEqual(
                     TransactionFixture.undelegated.encodedUnsigned
                 );
                 expect(

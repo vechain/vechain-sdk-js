@@ -87,7 +87,7 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
                 Buffer.from(actors.sender.privateKey, 'hex')
             );
 
-            const raw = Hex.of(signedTransaction.encoded).toString();
+            const raw = Hex.of(signedTransaction.bytes).toString();
 
             // 3 - Send raw transaction
 
@@ -95,7 +95,7 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
                 RPC_METHODS.eth_sendRawTransaction
             ]([raw])) as string;
 
-            expect(result).toBe(signedTransaction.id);
+            expect(result).toBe(signedTransaction.id.toString());
         });
     });
 });

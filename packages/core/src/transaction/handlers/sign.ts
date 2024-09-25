@@ -41,7 +41,7 @@ function sign(
 
     // Sign transaction
     const signature = Secp256k1.sign(
-        transactionToSign.getSignatureHash(),
+        transactionToSign.getSignatureHash().bytes,
         signerPrivateKey
     );
 
@@ -94,13 +94,11 @@ function signWithDelegator(
 
     const transactionHash = transactionToSign.getSignatureHash();
     const delegatedHash = transactionToSign.getSignatureHash(
-        Address.ofPublicKey(
-            Secp256k1.derivePublicKey(signerPrivateKey)
-        ).toString()
+        Address.ofPublicKey(Secp256k1.derivePublicKey(signerPrivateKey))
     );
     const signature = Buffer.concat([
-        Secp256k1.sign(transactionHash, signerPrivateKey),
-        Secp256k1.sign(delegatedHash, delegatorPrivateKey)
+        Secp256k1.sign(transactionHash.bytes, signerPrivateKey),
+        Secp256k1.sign(delegatedHash.bytes, delegatorPrivateKey)
     ]);
 
     // Return new signed transaction

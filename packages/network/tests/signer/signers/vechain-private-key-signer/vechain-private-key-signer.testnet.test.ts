@@ -166,7 +166,7 @@ describe('VeChain base signer tests - testnet', () => {
 
                         expect(signedTx).toBeDefined();
                         expect(signedTx.body).toMatchObject(expected.body);
-                        expect(signedTx.origin).toBe(
+                        expect(signedTx.origin.toString()).toBe(
                             Address.checksum(HexUInt.of(origin.address))
                         );
                         expect(signedTx.isDelegated).toBe(isDelegated);

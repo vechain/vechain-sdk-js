@@ -45,8 +45,20 @@ class Transaction {
         this.signature = signature;
     }
 
+    // ********** GET COMPUTED PROPERTIES **********
+
     /**
-     * Return the delegator's address if the transaction is delegated.
+     * Get the encoded bytes as a Uint8Array.
+     * The encoding is determined by whether the data is signed.
+     *
+     * @return {Uint8Array} The encoded byte array.
+     */
+    public get bytes(): Uint8Array {
+        return this._encode(this.isSigned);
+    }
+
+    /**
+     * Get the delegator's address if the transaction is delegated.
      *
      * If the transaction is delegated and a signature is available, this method recovers
      * the delegator parameter from the signature and subsequently recovers the delegator's public key
@@ -66,7 +78,7 @@ class Transaction {
                 );
                 // Recover the delegator's public key.
                 const delegatorPublicKey = Secp256k1.recover(
-                    this.getSignatureHash(this.origin),
+                    this.getSignatureHash(this.origin).bytes,
                     delegator
                 );
                 return Address.ofPublicKey(delegatorPublicKey);
@@ -81,6 +93,34 @@ class Transaction {
             'Transaction.delegator()',
             'not delegated transaction',
             undefined
+        );
+    }
+
+    /**
+     * Get transaction ID.
+     *
+     * The ID is the Blake2b256 hash of the transaction's signature
+     * concatenated with the origin's address.
+     * If the transaction is not signed,
+     * it throws an UnavailableTransactionField error.
+     *
+     * @return {Blake2b256} The concatenated Blake2b256 hash of the signature
+     * and origin if the transaction is signed.
+     * @throws {UnavailableTransactionField} If the transaction is not signed.
+     */
+    public get id(): Blake2b256 {
+        if (this.isSigned) {
+            return Blake2b256.of(
+                nc_utils.concatBytes(
+                    this.getSignatureHash().bytes,
+                    this.origin.bytes
+                )
+            );
+        }
+        throw new UnavailableTransactionField(
+            'Transaction.id()',
+            'not signed transaction: id unavailable',
+            { fieldName: 'id' }
         );
     }
 
@@ -116,6 +156,56 @@ class Transaction {
     }
 
     /**
+     * Return the origin address of the transaction.
+     *
+     * The origin is determined by recovering the public key from the transaction's signature.
+     *
+     * @return {Address} The address derived from the public key of the transaction's signer.
+     * @throws {UnavailableTransactionField} If the transaction is not signed, an exception is thrown indicating the absence of the origin field.
+     */
+    public get origin(): Address {
+        if (this.signature !== undefined) {
+            return Address.ofPublicKey(
+                // Get the origin public key.
+                Secp256k1.recover(
+                    this.getSignatureHash().bytes,
+                    // Get the (r, s) of ECDSA digital signature without delegator params.
+                    this.signature.slice(
+                        0,
+                        Transaction.SIGNATURE_RECOVERY_OFFSET
+                    )
+                )
+            );
+        }
+        throw new UnavailableTransactionField(
+            'Transaction.origin()',
+            'not signed transaction, no origin',
+            { fieldName: 'origin' }
+        );
+    }
+
+    // ********** PUBLIC METHODS **********
+
+    /**
+     * Computes the signature hash, optionally incorporating a delegator's address.
+     *
+     * @param {Address} [delegator] - Optional delegator's address to include in the hash computation.
+     * @return {Blake2b256} - The computed Blake2b256 signature hash.
+     *
+     * @remarks
+     * `delegator` is used to sign a transaction on behalf of another account.
+     */
+    public getSignatureHash(delegator?: Address): Blake2b256 {
+        const txHash = Blake2b256.of(this._encode(false));
+        if (delegator !== undefined) {
+            return Blake2b256.of(
+                nc_utils.concatBytes(txHash.bytes, delegator.bytes)
+            );
+        }
+        return txHash;
+    }
+
+    /**
      * Creates a new Transaction instance if the provided body and optional
      * signature are valid.
      *
@@ -148,152 +238,13 @@ class Transaction {
         });
     }
 
-    /**
-     * Computes the signature hash for the transaction. The output is based on
-     * the presence of the 'delegateFor' parameter.
-     *
-     * @param delegateFor - Optional address of the delegator.
-     * @returns The computed hash.
-     *
-     * Mainly:
-     *  - No 'delegateFor': return txHash
-     * - 'delegateFor' return txHash +  hash('delegateFor' address)
-     *
-     * @remarks
-     * delegateFor is used to sign a transaction on behalf of another account.
-     * In fact when the delegator sign the transaction, delegator will add the address
-     * of who send the transaction to sign (in this case the 'delegateFor' address parameter)
-     *
-     * @example
-     * A is transaction origin
-     * B is the delegator
-     * TX is the transaction
-     *
-     * A sends a TX (signed by A) to B to who add his signature to TX using delegateFor parameter (that is A address)
-     * on signing hash of TX computation.
-     *
-     * Mathematically:
-     *
-     * ```
-     * final_signature = concat_buffer(
-     *      sign(TX.signingHash(), A.privateKey),
-     *      sign(TX.signingHash(A.address), B.privateKey)
-     * )
-     * ```
-     *
-     * Where:
-     *
-     * ```
-     * TX.signatureHash() = blake2b256(TX.encoded)
-     * TX.signingHash(A.address) = blake2b256(
-     *      concat(
-     *              blake2b256(TX.encoded),
-     *              A.address
-     *             )
-     * )
-     * ```
-     *
-     * @param delegateFor - Address of the delegator
-     * @returns Signing hash of the transaction
-     * @throws {InvalidTransactionField}
-     */
-    public getSignatureHash(delegateFor?: string): Uint8Array {
-        // Correct delegateFor address
-        if (delegateFor !== undefined && !Address.isValid(delegateFor)) {
-            throw new InvalidTransactionField(
-                'Transaction.getSignatureHash()',
-                'Invalid address given as input as delegateFor parameter. Ensure it is a valid address.',
-                { fieldName: 'delegateFor', delegateFor }
-            );
-        }
-
-        // Encode transaction
-        const transactionHash = Blake2b256.of(this._encode(false)).bytes;
-
-        // There is a delegateFor address (@note we already know that it is a valid address)
-        if (delegateFor !== undefined) {
-            return Blake2b256.of(
-                nc_utils.concatBytes(
-                    transactionHash,
-                    HexUInt.of(delegateFor).bytes
-                )
-            ).bytes;
-        }
-
-        return transactionHash;
-    }
+    // ********** PRIVATE FUNCTIONS **********
 
     /**
-     * Encode a transaction
+     * Determines whether a transaction is delegated based on its features.
      *
-     * @returns The transaction encoded
-     */
-    public get encoded(): Uint8Array {
-        return this._encode(this.isSigned);
-    }
-
-    /**
-     * Get transaction origin address from signature.
-     *
-     * @returns Transaction origin
-     * @throws {UnavailableTransactionField}
-     */
-    public get origin(): string {
-        // Unsigned transaction (@note we don't check if signature is valid or not, because we have checked it into constructor at creation time)
-        if (!this.isSigned)
-            throw new UnavailableTransactionField(
-                'Transaction.origin()',
-                "Transaction is not signed. 'origin' information is unavailable.",
-                { fieldName: 'origin' }
-            );
-
-        // Slice signature
-        // Obtains the concatenated signature (r, s) of ECDSA digital signature
-        const signatureSliced = (this.signature as Uint8Array)?.slice(0, 65);
-
-        // Recover public key
-        const originPublicKey = Secp256k1.recover(
-            this.getSignatureHash(),
-            signatureSliced
-        );
-
-        // Address from public key
-        return Address.ofPublicKey(originPublicKey).toString();
-    }
-
-    /**
-     * Get transaction ID from signature.
-     *
-     * @returns Transaction ID
-     * @throws {UnavailableTransactionField}
-     */
-    get id(): string {
-        // Unsigned transaction (@note we don't check if signature is valid or not, because we have checked it into constructor at creation time)
-        if (!this.isSigned)
-            throw new UnavailableTransactionField(
-                'Transaction.id()',
-                "Transaction is not signed. 'id' information is unavailable.",
-                { fieldName: 'id' }
-            );
-
-        // Return transaction ID
-        return Blake2b256.of(
-            nc_utils.concatBytes(
-                this.getSignatureHash(),
-                Hex.of(this.origin).bytes
-            )
-        ).toString();
-    }
-
-    // ********** INTERNAL PRIVATE FUNCTIONS **********
-
-    /**
-     * Internal function to check if transaction is delegated or not.
-     * This function is used to check directly the transaction body.
-     * @private
-     *
-     * @param body Transaction body to check
-     * @returns Weather the transaction is delegated or not
+     * @param {TransactionBody} body The transaction body.
+     * @return {boolean} `true` if the transaction is delegated, else `false`.
      */
     private static _isDelegated(body: TransactionBody): boolean {
         // Check if is reserved or not

@@ -31,7 +31,9 @@ describe('Transaction', () => {
                 expect(unsignedTransaction.isSigned).toEqual(false);
                 expect(unsignedTransaction.isDelegated).toEqual(false);
                 expect(
-                    Hex.of(unsignedTransaction.getSignatureHash()).toString()
+                    Hex.of(
+                        unsignedTransaction.getSignatureHash().bytes
+                    ).toString()
                 ).toEqual(transaction.signatureHashExpected);
 
                 // Get id from unsigned transaction (should throw error)
@@ -50,17 +52,12 @@ describe('Transaction', () => {
                 );
 
                 // Encoding
-                expect(unsignedTransaction.encoded).toEqual(
+                expect(unsignedTransaction.bytes).toEqual(
                     Hex.of(transaction.encodedUnsignedExpected).bytes
                 );
 
                 // Intrinsic gas
                 expect(unsignedTransaction.intrinsicGas.wei).toBe(37432n);
-
-                // Try to get signature hash with invalid address
-                expect(() =>
-                    unsignedTransaction.getSignatureHash('INVALID_ADDRESS')
-                ).toThrowError(InvalidTransactionField);
             });
         });
 
@@ -80,12 +77,16 @@ describe('Transaction', () => {
                 expect(signedTransaction.isSigned).toEqual(true);
                 expect(signedTransaction.isDelegated).toEqual(false);
                 expect(
-                    Hex.of(signedTransaction.getSignatureHash()).toString()
+                    Hex.of(
+                        signedTransaction.getSignatureHash().bytes
+                    ).toString()
                 ).toEqual(transaction.signatureHashExpected);
 
                 // Checks on origin, id and delegator
-                expect(signedTransaction.origin).toEqual(signer.address);
-                expect(signedTransaction.id).toEqual(
+                expect(signedTransaction.origin.toString()).toEqual(
+                    signer.address
+                );
+                expect(signedTransaction.id.toString()).toEqual(
                     transaction.signedTransactionIdExpected
                 );
 
@@ -95,7 +96,7 @@ describe('Transaction', () => {
                 );
 
                 // Encoding
-                expect(signedTransaction.encoded).toEqual(
+                expect(signedTransaction.bytes).toEqual(
                     Hex.of(transaction.encodedSignedExpected).bytes
                 );
             });
@@ -119,7 +120,9 @@ describe('Transaction', () => {
                 expect(unsignedTransaction.isSigned).toEqual(false);
                 expect(unsignedTransaction.isDelegated).toEqual(true);
                 expect(
-                    Hex.of(unsignedTransaction.getSignatureHash()).toString()
+                    Hex.of(
+                        unsignedTransaction.getSignatureHash().bytes
+                    ).toString()
                 ).toEqual(transaction.signatureHashExpected);
 
                 // Get id from unsigned transaction (should throw error)
@@ -138,7 +141,7 @@ describe('Transaction', () => {
                 );
 
                 // Encoding
-                expect(Buffer.from(unsignedTransaction.encoded)).toEqual(
+                expect(Buffer.from(unsignedTransaction.bytes)).toEqual(
                     transaction.encodedUnsignedExpected
                 );
 
@@ -163,20 +166,24 @@ describe('Transaction', () => {
                 expect(signedTransaction.isSigned).toEqual(true);
                 expect(signedTransaction.isDelegated).toEqual(true);
                 expect(
-                    Hex.of(signedTransaction.getSignatureHash()).toString()
+                    Hex.of(
+                        signedTransaction.getSignatureHash().bytes
+                    ).toString()
                 ).toEqual(transaction.signatureHashExpected);
 
                 // Checks on origin, id and delegator
-                expect(signedTransaction.origin).toEqual(signer.address);
+                expect(signedTransaction.origin.toString()).toEqual(
+                    signer.address
+                );
                 expect(signedTransaction.delegator.toString()).toEqual(
                     delegator.address
                 );
-                expect(signedTransaction.id).toEqual(
+                expect(signedTransaction.id.toString()).toEqual(
                     transaction.signedTransactionIdExpected
                 );
 
                 // Encoding
-                expect(Buffer.from(signedTransaction.encoded)).toEqual(
+                expect(Buffer.from(signedTransaction.bytes)).toEqual(
                     transaction.encodedSignedExpected
                 );
             });
