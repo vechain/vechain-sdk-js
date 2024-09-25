@@ -1,4 +1,4 @@
-import { sign, signWithDelegator, decode } from './handlers';
+import { sign, signWithDelegator } from './handlers';
 
 /**
  * TransactionHandler provides a set of utility functions for signing and decoding
@@ -7,9 +7,6 @@ import { sign, signWithDelegator, decode } from './handlers';
 const TransactionHandler = {
     // Sign transaction
     sign,
-    signWithDelegator,
-
-    // Decode transaction
-    decode
+    signWithDelegator
 };
 export { TransactionHandler };

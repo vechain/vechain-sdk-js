@@ -1,57 +1,3 @@
-import { Transaction } from '../Transaction';
-
-/**
- * Decode a raw transaction.
- * It can be signed or unsigned.
- *
- * @param rawTransaction - Raw transaction to decode
- * @param isSigned - If the transaction is signed or not
- * @returns Decoded transaction (signed or unsigned)
- */
-function decode(rawTransaction: Uint8Array, isSigned: boolean): Transaction {
-    return Transaction.decode(rawTransaction, isSigned);
-    // // Get correct decoder profiler
-    // const decoder = isSigned
-    //     ? SIGNED_TRANSACTION_RLP
-    //     : UNSIGNED_TRANSACTION_RLP;
-    //
-    // // Get decoded body
-    // const decodedRLPBody = decoder.decodeObject(
-    //     Buffer.from(rawTransaction)
-    // ) as RLPValidObject;
-    //
-    // // Create correct transaction body without reserved field
-    // const bodyWithoutReservedField: TransactionBody = {
-    //     blockRef: decodedRLPBody.blockRef as string,
-    //     chainTag: decodedRLPBody.chainTag as number,
-    //     clauses: decodedRLPBody.clauses as [],
-    //     dependsOn: decodedRLPBody.dependsOn as string | null,
-    //     expiration: decodedRLPBody.expiration as number,
-    //     gas: decodedRLPBody.gas as number,
-    //     gasPriceCoef: decodedRLPBody.gasPriceCoef as number,
-    //     nonce: decodedRLPBody.nonce as number
-    // };
-    //
-    // // Create correct transaction body (with correct reserved field)
-    // const correctTransactionBody: TransactionBody =
-    //     (decodedRLPBody.reserved as Buffer[]).length > 0
-    //         ? {
-    //               ...bodyWithoutReservedField,
-    //               reserved: _decodeReservedField(
-    //                   decodedRLPBody.reserved as Buffer[]
-    //               )
-    //           }
-    //         : bodyWithoutReservedField;
-    //
-    // // Return decoded transaction (with signature or not)
-    // return decodedRLPBody.signature !== undefined
-    //     ? Transaction.of(
-    //           correctTransactionBody,
-    //           decodedRLPBody.signature as Buffer
-    //       )
-    //     : Transaction.of(correctTransactionBody);
-}
-
 /**
  * Decode reserved field.
  *
@@ -90,4 +36,4 @@ function decode(rawTransaction: Uint8Array, isSigned: boolean): Transaction {
 //         : { features: featuresField };
 // }
 
-export { decode };
+// export { decode };

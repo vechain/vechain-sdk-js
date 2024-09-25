@@ -4,8 +4,8 @@ import {
     Address,
     Clause,
     HexUInt,
-    type TransactionClause,
-    TransactionHandler
+    Transaction,
+    type TransactionClause
 } from '@vechain/sdk-core';
 import {
     InvalidSecp256k1PrivateKey,
@@ -159,7 +159,7 @@ describe('VeChain base signer tests - testnet', () => {
                                 origin.address
                             )
                         );
-                        const signedTx = TransactionHandler.decode(
+                        const signedTx = Transaction.decode(
                             Buffer.from(signedRawTx.slice(2), 'hex'),
                             true
                         );

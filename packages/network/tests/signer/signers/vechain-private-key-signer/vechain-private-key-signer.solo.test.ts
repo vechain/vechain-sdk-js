@@ -4,8 +4,8 @@ import {
     Address,
     Clause,
     HexUInt,
-    type TransactionClause,
-    TransactionHandler
+    Transaction,
+    type TransactionClause
 } from '@vechain/sdk-core';
 import {
     ProviderInternalBaseWallet,
@@ -94,7 +94,7 @@ describe('VeChain base signer tests - solo', () => {
                                 origin.address
                             )
                         );
-                        const signedTx = TransactionHandler.decode(
+                        const signedTx = Transaction.decode(
                             Buffer.from(signedRawTx.slice(2), 'hex'),
                             true
                         );
@@ -284,7 +284,7 @@ describe('VeChain base signer tests - solo', () => {
                     TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
                 )
             );
-            const signedTx = TransactionHandler.decode(
+            const signedTx = Transaction.decode(
                 Buffer.from(signedRawTx.slice(2), 'hex'),
                 true
             );

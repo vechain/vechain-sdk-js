@@ -9,13 +9,12 @@ import {
     vnsUtils
 } from '../../utils';
 import {
-    Hex,
-    ThorId,
-    TransactionHandler,
     abi,
+    Hex,
     Revision,
+    ThorId,
+    Transaction,
     vechain_sdk_core_ethers,
-    type Transaction,
     type TransactionBody,
     type TransactionClause
 } from '@vechain/sdk-core';
@@ -191,7 +190,7 @@ class TransactionsModule {
 
         // Decode raw transaction to check if raw is ok
         try {
-            TransactionHandler.decode(Buffer.from(raw.slice(2), 'hex'), true);
+            Transaction.decode(Buffer.from(raw.slice(2), 'hex'), true);
         } catch (error) {
             throw new InvalidDataType(
                 'TransactionsModule.sendRawTransaction()',

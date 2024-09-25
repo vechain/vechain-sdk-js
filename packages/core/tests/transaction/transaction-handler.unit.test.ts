@@ -1,5 +1,5 @@
 import { Hex } from '../../src/vcdm/Hex';
-import { Secp256k1, TransactionHandler } from '../../src';
+import { Secp256k1, Transaction, TransactionHandler } from '../../src';
 import { describe, expect, test } from '@jest/globals';
 import {
     delegator,
@@ -159,7 +159,7 @@ describe('Transaction handler', () => {
         describe('Should be able to encode not delegated transactions', () => {
             transactions.undelegated.forEach((transaction) => {
                 // Unsigned transaction
-                const decodedUnsigned = TransactionHandler.decode(
+                const decodedUnsigned = Transaction.decode(
                     Buffer.from(transaction.encodedUnsignedExpected),
                     false
                 );
@@ -192,7 +192,7 @@ describe('Transaction handler', () => {
                 );
 
                 // Signed transaction
-                const decodedSigned = TransactionHandler.decode(
+                const decodedSigned = Transaction.decode(
                     Buffer.from(transaction.encodedSignedExpected),
                     true
                 );
@@ -227,7 +227,7 @@ describe('Transaction handler', () => {
         describe('Should be able to encode delegated transactions', () => {
             transactions.delegated.forEach((transaction) => {
                 // Unsigned transaction
-                const decodedUnsigned = TransactionHandler.decode(
+                const decodedUnsigned = Transaction.decode(
                     transaction.encodedUnsignedExpected,
                     false
                 );
@@ -262,7 +262,7 @@ describe('Transaction handler', () => {
                     );
 
                 // Signed transaction
-                const decodedSigned = TransactionHandler.decode(
+                const decodedSigned = Transaction.decode(
                     encodedSignedDelegated.bytes,
                     true
                 );
@@ -298,10 +298,7 @@ describe('Transaction handler', () => {
         test('Should throw error when decode with invalid data', () => {
             // Not trimmed reserved field error
             expect(() =>
-                TransactionHandler.decode(
-                    invalidDecodedNotTrimmedReserved,
-                    false
-                )
+                Transaction.decode(invalidDecodedNotTrimmedReserved, false)
             ).toThrowError(InvalidTransactionField);
         });
     });
