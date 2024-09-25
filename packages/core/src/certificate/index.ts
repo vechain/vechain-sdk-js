@@ -1,2 +1,2 @@
 export * from './Certificate';
-export * from './CertificateData';
+export type * from './CertificateData';

@@ -3,7 +3,7 @@ import { RLPProfiles } from './kind';
 
 export * from './rlp';
 export * from './kind';
-export * from './types.d';
+export type * from './types.d';
 export * from './helpers';
 
 /**

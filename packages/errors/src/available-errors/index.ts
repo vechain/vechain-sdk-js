@@ -15,4 +15,4 @@ export * from './secp256k1';
 export * from './transaction';
 export * from './vcdm';
 export * from './sdk-error';
-export * from './types.d';
+export type * from './types.d';

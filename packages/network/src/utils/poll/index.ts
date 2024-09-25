@@ -5,7 +5,7 @@ import { SyncPoll } from './sync';
 import { createEventPoll, type EventPoll } from './event';
 
 // Types
-export * from './types.d';
+export type * from './types.d';
 
 const Poll = { SyncPoll, createEventPoll };
 export { Poll, type EventPoll };

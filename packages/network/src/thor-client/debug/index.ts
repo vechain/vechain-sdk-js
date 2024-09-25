@@ -1,3 +1,3 @@
-export * from './types-by-name';
+export type * from './types-by-name';
 export * from './debug-module';
-export * from './types.d';
+export type * from './types.d';
