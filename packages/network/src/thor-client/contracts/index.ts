@@ -1,3 +1,3 @@
 export * from './contracts-module';
-export * from './types.d';
+export type * from './types.d';
 export * from './model';

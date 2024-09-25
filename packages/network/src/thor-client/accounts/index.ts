@@ -1,2 +1,2 @@
-export * from './types.d';
+export type * from './types.d';
 export * from './accounts-module';

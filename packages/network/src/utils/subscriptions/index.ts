@@ -4,7 +4,7 @@ import { getEventSubscriptionUrl } from './event';
 import { getNewTransactionsSubscriptionUrl } from './transaction';
 import { getVETtransfersSubscriptionUrl } from './transfer';
 
-export * from './types.d';
+export type * from './types.d';
 
 /**
  * Subscriptions utilities.

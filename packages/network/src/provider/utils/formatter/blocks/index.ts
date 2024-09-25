@@ -1,4 +1,4 @@
 import { formatToRPCStandard } from './formatter';
-export * from './types.d';
+export type * from './types.d';
 
 export const blocksFormatter = { formatToRPCStandard };

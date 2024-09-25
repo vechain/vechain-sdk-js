@@ -6,4 +6,4 @@
  */
 
 export * from './vechainSDKLogger';
-export * from './types.d';
+export type * from './types.d';

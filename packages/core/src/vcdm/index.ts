@@ -13,4 +13,4 @@ export * from './Quantity';
 export * from './Revision';
 export * from './ThorId';
 export * from './Txt';
-export * from './VeChainDataModel';
+export type * from './VeChainDataModel';

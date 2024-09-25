@@ -1,3 +1,3 @@
 export * from './methods-map';
 export * from './rpc-mapper';
-export * from './types.d';
+export type * from './types.d';
