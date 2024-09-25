@@ -1,5 +1,11 @@
 import { describe, expect } from '@jest/globals';
-import { HexUInt, Transaction, type TransactionBody } from '../../src';
+import {
+    HexUInt,
+    Transaction,
+    type TransactionBody,
+    Units,
+    VTHO
+} from '../../src';
 import {
     NotDelegatedTransaction,
     UnavailableTransactionField
@@ -44,7 +50,7 @@ const TransactionFixture = {
         encodedSigne: HexUInt.of(
             'f8970184aabbccdd20f840df947567d83b7b8d80addcb281a71d54fc7b3364ffed82271086000000606060df947567d83b7b8d80addcb281a71d54fc7b3364ffed824e208600000060606081808252088083bc614ec0b841f76f3c91a834165872aa9464fc55b03a13f46ea8d3b858e528fcceaf371ad6884193c3f313ff8effbb57fe4d1adc13dceb933bedbf9dbb528d2936203d5511df00'
         ).bytes,
-        intrinsicGas: 37432
+        intrinsicGas: VTHO.of(37432, Units.wei)
     },
     delegated: {
         body: {
@@ -119,9 +125,11 @@ describe('Transaction class tests', () => {
                 expect(actual.encoded).toEqual(
                     TransactionFixture.undelegated.encodedUnsigned
                 );
-                expect(actual.intrinsicGas).toBe(
-                    TransactionFixture.undelegated.intrinsicGas
-                );
+                expect(
+                    actual.intrinsicGas.isEqual(
+                        TransactionFixture.undelegated.intrinsicGas
+                    )
+                ).toBe(true);
             });
 
             test('of delegated transactions', () => {});

@@ -55,7 +55,7 @@ describe('Transaction', () => {
                 );
 
                 // Intrinsic gas
-                expect(unsignedTransaction.intrinsicGas).toBe(37432);
+                expect(unsignedTransaction.intrinsicGas.wei).toBe(37432n);
 
                 // Try to get signature hash with invalid address
                 expect(() =>
@@ -143,7 +143,7 @@ describe('Transaction', () => {
                 );
 
                 // Intrinsic gas
-                expect(unsignedTransaction.intrinsicGas).toBe(37432);
+                expect(unsignedTransaction.intrinsicGas.wei).toBe(37432n);
             });
         });
 

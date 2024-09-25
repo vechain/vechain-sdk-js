@@ -1,5 +1,5 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
-import { Address, Hex, HexUInt } from '../vcdm';
+import { Address, Hex, HexUInt, Units, VTHO } from '../vcdm';
 import { Blake2b256 } from '../vcdm/hash/Blake2b256';
 import { Secp256k1 } from '../secp256k1';
 import {
@@ -45,6 +45,17 @@ class Transaction {
         this.signature = signature;
     }
 
+    /**
+     * Return the delegator's address if the transaction is delegated.
+     *
+     * If the transaction is delegated and a signature is available, this method recovers
+     * the delegator parameter from the signature and subsequently recovers the delegator's public key
+     * to derive the delegator's address.
+     *
+     * @return {Address} The address of the delegator.
+     * @throws {UnavailableTransactionField} If the transaction is delegated but the signature is missing.
+     * @throws {NotDelegatedTransaction} If the transaction is not delegated.
+     */
     public get delegator(): Address {
         if (this.isDelegated) {
             if (this.signature !== undefined) {
@@ -76,10 +87,13 @@ class Transaction {
     /**
      * Return the intrinsic gas required for this transaction.
      *
-     * @return {number} The computed intrinsic gas for the transaction.
+     * @return {VTHO} The computed intrinsic gas for the transaction.
      */
-    public get intrinsicGas(): number {
-        return TransactionUtils.intrinsicGas(this.body.clauses);
+    public get intrinsicGas(): VTHO {
+        return VTHO.of(
+            TransactionUtils.intrinsicGas(this.body.clauses),
+            Units.wei
+        );
     }
 
     /**
