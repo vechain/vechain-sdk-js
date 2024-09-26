@@ -19,7 +19,7 @@ class Address extends HexUInt {
     /**
      * It checksums a given hexadecimal address.
      *
-     * @param {HexUInt} huint The HexUInt object representing the hexadecimal value.
+     * @param {HexUInt} huint - The HexUInt object representing the hexadecimal value.
      *
      * @returns {string} The checksummed address.
      */
@@ -41,7 +41,7 @@ class Address extends HexUInt {
     /**
      * Validate the given expression to be a valid address.
      *
-     *  @param {string} exp Expression to validate
+     *  @param {string} exp - Expression to validate
      *
      * @returns {boolean} true if the expression is a valid address, false otherwise
      */
@@ -52,7 +52,7 @@ class Address extends HexUInt {
     /**
      * Create ab Address instance from the given expression interpreted as an unsigned integer.
      *
-     * @param exp The expression to convert. It can be of type bigint, number, string, Uint8Array, or HexUInt.
+     * @param exp - The expression to convert. It can be of type bigint, number, string, Uint8Array, or HexUInt.
      *
      * @returns {Address} The converted hexadecimal unsigned integer.
      *
@@ -88,9 +88,9 @@ class Address extends HexUInt {
     /**
      * Create an Address instance from the given private key.
      *
-     * @param {Uint8Array} privateKey The private key to convert.
+     * @param {Uint8Array} privateKey - The private key to convert.
      *
-     * @param {boolean} [isCompressed=true] The flag to indicate if the derived public key should be compressed.
+     * @param {boolean} [isCompressed=true] - The flag to indicate if the derived public key should be compressed.
      *
      * @returns {Address} The converted address.
      *
@@ -121,7 +121,7 @@ class Address extends HexUInt {
     /**
      * Create an Address instance from the given public key.
      *
-     * @param {Uint8Array} publicKey The public key to convert.
+     * @param {Uint8Array} publicKey - The public key to convert.
      *
      * @returns {Address} The converted address.
      *

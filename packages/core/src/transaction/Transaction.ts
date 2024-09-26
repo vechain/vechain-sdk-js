@@ -3,9 +3,8 @@ import { Address, Hex, HexUInt, Units, VTHO } from '../vcdm';
 import { Blake2b256 } from '../vcdm/hash/Blake2b256';
 import { Secp256k1 } from '../secp256k1';
 import {
-    SIGNED_TRANSACTION_RLP,
-    TransactionUtils,
-    UNSIGNED_TRANSACTION_RLP
+    // TRANSACTION_SIGNATURE_KIND,
+    TransactionUtils
 } from '../utils';
 import { RLP_CODER, type RLPValidObject } from '../encoding';
 import { type TransactionBody } from './TransactionBody';
@@ -25,10 +24,49 @@ class Transaction {
      */
     private static readonly BLOCK_REF_LENGTH = 8;
 
+    private static readonly RLP_FIELDS = [
+        { name: 'chainTag', kind: new RLP_CODER.NumericKind(1) },
+        { name: 'blockRef', kind: new RLP_CODER.CompactFixedHexBlobKind(8) },
+        { name: 'expiration', kind: new RLP_CODER.NumericKind(4) },
+        {
+            name: 'clauses',
+            kind: {
+                item: [
+                    {
+                        name: 'to',
+                        kind: new RLP_CODER.OptionalFixedHexBlobKind(20)
+                    },
+                    { name: 'value', kind: new RLP_CODER.NumericKind(32) },
+                    { name: 'data', kind: new RLP_CODER.HexBlobKind() }
+                ]
+            }
+        },
+        { name: 'gasPriceCoef', kind: new RLP_CODER.NumericKind(1) },
+        { name: 'gas', kind: new RLP_CODER.NumericKind(8) },
+        { name: 'dependsOn', kind: new RLP_CODER.OptionalFixedHexBlobKind(32) },
+        { name: 'nonce', kind: new RLP_CODER.NumericKind(8) },
+        { name: 'reserved', kind: { item: new RLP_CODER.BufferKind() } }
+    ];
+
     private static readonly RLP_FEATURES = {
         name: 'reserved.features',
         kind: new RLP_CODER.NumericKind(4)
     };
+
+    private static readonly RLP_SIGNATURE = {
+        name: 'signature',
+        kind: new RLP_CODER.BufferKind()
+    };
+
+    private static readonly RLP_SIGNED_TRANSACTION = new RLP_CODER.Profiler({
+        name: 'tx',
+        kind: Transaction.RLP_FIELDS.concat([Transaction.RLP_SIGNATURE])
+    });
+
+    private static readonly RLP_UNSIGNED_TRANSACTION = new RLP_CODER.Profiler({
+        name: 'tx',
+        kind: Transaction.RLP_FIELDS
+    });
 
     /**
      * It represents the content of the transaction.
@@ -52,16 +90,6 @@ class Transaction {
     }
 
     // ********** GET COMPUTED PROPERTIES **********
-
-    /**
-     * Get the encoded bytes as a Uint8Array.
-     * The encoding is determined by whether the data is signed.
-     *
-     * @return {Uint8Array} The encoded byte array.
-     */
-    public get bytes(): Uint8Array {
-        return this._encode(this.isSigned);
-    }
 
     /**
      * Get the delegator's address if the transaction is delegated.
@@ -100,6 +128,18 @@ class Transaction {
             'not delegated transaction',
             undefined
         );
+    }
+
+    /**
+     * Get the encoded bytes as a Uint8Array.
+     * The encoding is determined by whether the data is signed.
+     *
+     * @return {Uint8Array} The encoded byte array.
+     *
+     * @see _encode
+     */
+    public get encode(): Uint8Array {
+        return this._encode(this.isSigned);
     }
 
     /**
@@ -195,6 +235,8 @@ class Transaction {
      * @param {Uint8Array} rawTransaction - The raw transaction bytes to decode.
      * @param {boolean} isSigned - Flag indicating if the transaction is signed.
      * @return {Transaction} The decoded transaction object.
+     *
+     * @see encode
      */
     public static decode(
         rawTransaction: Uint8Array,
@@ -202,9 +244,10 @@ class Transaction {
     ): Transaction {
         // Get correct decoder profiler
         const decoder = isSigned
-            ? SIGNED_TRANSACTION_RLP
-            : UNSIGNED_TRANSACTION_RLP;
+            ? Transaction.RLP_SIGNED_TRANSACTION
+            : Transaction.RLP_UNSIGNED_TRANSACTION;
         // Get decoded body
+        // todo: remove Buffer after #1120
         const decodedRLPBody = decoder.decodeObject(
             Buffer.from(rawTransaction)
         ) as RLPValidObject;
@@ -220,6 +263,7 @@ class Transaction {
             nonce: decodedRLPBody.nonce as number
         };
         // Create correct transaction body (with correct reserved field)
+        // todo: remove Buffer after #1120
         const correctTransactionBody: TransactionBody =
             (decodedRLPBody.reserved as Buffer[]).length > 0
                 ? {
@@ -230,6 +274,7 @@ class Transaction {
                   }
                 : bodyWithoutReservedField;
         // Return decoded transaction (with signature or not)
+        // todo: remove Buffer after #1120
         return decodedRLPBody.signature !== undefined
             ? Transaction.of(
                   correctTransactionBody,
@@ -293,8 +338,8 @@ class Transaction {
      * Creates a new Transaction instance if the provided body and optional
      * signature are valid.
      *
-     * @param {TransactionBody} body The transaction body to be validated.
-     * @param {Uint8Array} [signature] Optional signature to be validated.
+     * @param {TransactionBody} body - The transaction body to be validated.
+     * @param {Uint8Array} [signature] - Optional signature to be validated.
      * @return {Transaction} A new Transaction instance if validation is successful.
      * @throws {InvalidSecp256k1Signature} If the provided signature is invalid.
      * @throws {InvalidTransactionField} If the provided body is invalid.
@@ -325,45 +370,136 @@ class Transaction {
     // ********** PRIVATE FUNCTIONS **********
 
     /**
-     * Decodes a reserved field from the given buffer array.
+     * Decodes the {@link TransactionBody.reserver} field from the given buffer array.
      *
-     * @param {Buffer[]} reserved  An array of Buffer objects representing the reserved field data.
+     * @param {Buffer[]} reserved  - An array of Buffer objects representing the reserved field data.
      * @return {Object} An object containing the decoded features and any unused buffer data.
-     * @return {number} [return.features] - The decoded features from the reserved field.
-     * @return {Buffer[]} [return.unused] - An array of Buffer objects representing unused data, if any.
+     * @return {number} [return.features] The decoded features from the reserved field.
+     * @return {Buffer[]} [return.unused] An array of Buffer objects representing unused data, if any.
      * @throws {InvalidTransactionField} Thrown if the reserved field is not properly trimmed.
      */
+    // todo: remove Buffer after #1120
     private static _decodeReservedField(reserved: Buffer[]): {
         features?: number;
         unused?: Buffer[];
     } {
         // Not trimmed reserved field
-        if (reserved[reserved.length - 1].length === 0) {
-            throw new InvalidTransactionField(
-                'Transaction._decodeReservedField()',
-                'invalid reserved field: fields in the reserved buffer must be properly trimmed',
-                { fieldName: 'reserved', reserved }
-            );
+        if (reserved[reserved.length - 1].length > 0) {
+            // Get features field.
+            const featuresField = Transaction.RLP_FEATURES.kind
+                .buffer(reserved[0], Transaction.RLP_FEATURES.name)
+                .decode() as number;
+            // Return encoded reserved field
+            return reserved.length > 1
+                ? {
+                      features: featuresField,
+                      unused: reserved.slice(1)
+                  }
+                : { features: featuresField };
         }
-
-        // Get features field
-        const featuresField = Transaction.RLP_FEATURES.kind
-            .buffer(reserved[0], Transaction.RLP_FEATURES.name)
-            .decode() as number;
-
-        // Return encoded reserved field
-        return reserved.length > 1
-            ? {
-                  features: featuresField,
-                  unused: reserved.slice(1)
-              }
-            : { features: featuresField };
+        throw new InvalidTransactionField(
+            'Transaction._decodeReservedField',
+            'invalid reserved field: fields in the `reserved` property must be properly trimmed',
+            { fieldName: 'reserved', reserved }
+        );
     }
 
     /**
-     * Determines whether a transaction is delegated based on its features.
+     * Encodes the transaction body using RLP encoding.
      *
-     * @param {TransactionBody} body The transaction body.
+     * @param {boolean} isSigned - Indicates whether the transaction is signed.
+     * @return {Uint8Array} The RLP encoded transaction body.
+     */
+    private _encode(isSigned: boolean): Uint8Array {
+        // Encode transaction body with RLP
+        return this._encodeBodyField(
+            {
+                // Existing body and the optional `reserved` field if present.
+                ...this.body,
+                /*
+                 * The `body.clauses` property is already an array,
+                 * albeit TypeScript realize, hence cast is needed
+                 * otherwise encodeObject will throw an error.
+                 */
+                clauses: this.body.clauses as Array<{
+                    to: string | null;
+                    value: string | number;
+                    data: string;
+                }>,
+                // New reserved field.
+                reserved: this._encodeReservedField()
+            },
+            isSigned
+        );
+    }
+
+    /**
+     * Encodes the given transaction body into a Uint8Array, depending on whether
+     * the transaction is signed or not.
+     *
+     * @param body - The transaction object adhering to the RLPValidObject structure.
+     * @param isSigned - A boolean indicating if the transaction is signed.
+     * @return A Uint8Array representing the encoded transaction.
+     */
+    private _encodeBodyField(
+        body: RLPValidObject,
+        isSigned: boolean
+    ): Uint8Array {
+        // Encode transaction object - SIGNED
+        if (isSigned) {
+            // todo: remove Buffer->Uint8Array after #1120
+            return new Uint8Array(
+                Transaction.RLP_SIGNED_TRANSACTION.encodeObject({
+                    ...body,
+                    signature: this.signature
+                })
+            );
+        }
+        // Encode transaction object - UNSIGNED
+        // todo: remove Buffer->Uint8Array after #1120
+        return new Uint8Array(
+            Transaction.RLP_UNSIGNED_TRANSACTION.encodeObject(body)
+        );
+    }
+
+    /**
+     * Encodes the {@link TransactionBody.reserver} field data for a transaction.
+     *
+     * @return {Uint8Array[]} The encoded list of reserved features.
+     * It removes any trailing unused features that have zero length from the list.
+     *
+     * @remarks The {@link TransactionBody.reserver} is optional, albeit
+     * is required toperform RLP encoding.
+     *
+     * @see Transaction._encode
+     */
+    private _encodeReservedField(): Uint8Array[] {
+        // Check if is reserved or not
+        const reserved = this.body.reserved ?? {};
+        // Init kind for features
+        const featuresKind = Transaction.RLP_FEATURES.kind;
+        // Features list
+        const featuresList = [
+            featuresKind
+                .data(reserved.features ?? 0, Transaction.RLP_FEATURES.name)
+                .encode(),
+            ...(reserved.unused ?? [])
+        ];
+        // Trim features list
+        while (featuresList.length > 0) {
+            if (featuresList[featuresList.length - 1].length === 0) {
+                featuresList.pop();
+            } else {
+                break;
+            }
+        }
+        return featuresList;
+    }
+
+    /**
+     * Return `true` if the transaction is delegated, else `false`.
+     *
+     * @param {TransactionBody} body - The transaction body.
      * @return {boolean} `true` if the transaction is delegated, else `false`.
      */
     private static _isDelegated(body: TransactionBody): boolean {
@@ -376,7 +512,7 @@ class Transaction {
     }
 
     /**
-     * Validates the signature of a given transaction body.
+     * Return Returns true if the signature is valid, otherwise false.
      *
      * @param {TransactionBody} body - The transaction body to be checked.
      * @param {Uint8Array} signature - The signature to validate.
@@ -392,100 +528,6 @@ class Transaction {
             : Secp256k1.SIGNATURE_LENGTH;
 
         return signature.length === expectedSignatureLength;
-    }
-
-    /**
-     * Encodes the reserved field to ensure it exists in every encoding.
-     *
-     * Due to the fact that reserved field is optional in TransactionBody,
-     * BUT mandatory in RLPProfiler, we need to have it in every encoding.
-     * Fot this reason this function is needed.
-     * @private
-     *
-     * @returns Encoding of reserved field
-     */
-    private _encodeReservedField(): Uint8Array[] {
-        // Check if is reserved or not
-        const reserved = this.body.reserved ?? {};
-
-        // Init kind for features
-        const featuresKind = Transaction.RLP_FEATURES.kind;
-
-        // Features list
-        const featuresList = [
-            featuresKind
-                .data(reserved.features ?? 0, Transaction.RLP_FEATURES.name)
-                .encode(),
-            ...(reserved.unused ?? [])
-        ];
-
-        // Trim features list
-        while (featuresList.length > 0) {
-            if (featuresList[featuresList.length - 1].length === 0) {
-                featuresList.pop();
-            } else {
-                break;
-            }
-        }
-        return featuresList;
-    }
-
-    /**
-     * Make the RLP encoding of a transaction body.
-     * @private
-     *
-     * @param body Body to encode
-     * @param isSigned If transaction is signed or not
-     * @returns RLP encoding of transaction body
-     */
-    private _lowLevelEncodeTransactionBodyWithRLP(
-        body: RLPValidObject,
-        isSigned: boolean
-    ): Uint8Array {
-        // Encode transaction object - SIGNED
-        if (isSigned) {
-            return new Uint8Array(
-                SIGNED_TRANSACTION_RLP.encodeObject({
-                    ...body,
-                    signature: this.signature
-                })
-            );
-        }
-
-        // Encode transaction object - UNSIGNED
-        return new Uint8Array(UNSIGNED_TRANSACTION_RLP.encodeObject(body));
-    }
-
-    /**
-     * Private utility function to encode a transaction.
-     * @private
-     *
-     * @param isSigned If transaction is signed or not (needed to determine if encoding with SIGNED_TRANSACTION_RLP or UNSIGNED_TRANSACTION_RLP)
-     * @returns Encoding of transaction
-     */
-    private _encode(isSigned: boolean): Uint8Array {
-        // Encode transaction body with RLP
-        return this._lowLevelEncodeTransactionBodyWithRLP(
-            {
-                // Existing body (clauses, gasPrice, gasLimit, nonce, chainTag, blockRef, expiration, ... AND OPTIONALLY reserved field)
-                ...this.body,
-
-                /*
-                 * @note: this.body.clauses is already an array.
-                 * But TypeScript doesn't know that and for this reason we need to cast it.
-                 * Otherwise encodeObject will throw an error.
-                 */
-                clauses: this.body.clauses as Array<{
-                    to: string | null;
-                    value: string | number;
-                    data: string;
-                }>,
-
-                // New reserved field
-                reserved: this._encodeReservedField()
-            },
-            isSigned
-        );
     }
 }
 

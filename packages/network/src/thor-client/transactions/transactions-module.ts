@@ -234,7 +234,7 @@ class TransactionsModule {
             );
         }
 
-        const rawTx = Hex.of(signedTx.bytes).toString();
+        const rawTx = Hex.of(signedTx.encode).toString();
 
         return await this.sendRawTransaction(rawTx);
     }

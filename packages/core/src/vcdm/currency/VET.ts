@@ -43,8 +43,8 @@ class VET extends Coin {
     /**
      * Return a new VET instance with the specified value and unit.
      *
-     * @param {bigint | number | string | FixedPointNumber} value The numerical value for the VET instance.
-     * @param {Units} unit The unit for the value.
+     * @param {bigint | number | string | FixedPointNumber} value - The numerical value for the VET instance.
+     * @param {Units} unit - The unit for the value.
      *                     Defaults to {@link Units.ether} if not provided.
      * @return {VET} A new VET instance with the provided value and unit.
      *

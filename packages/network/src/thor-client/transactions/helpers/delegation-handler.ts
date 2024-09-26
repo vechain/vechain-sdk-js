@@ -25,7 +25,7 @@ const _getDelegationSignature = async (
     originAddress: string,
     httpClient: IHttpClient
 ): Promise<Buffer> => {
-    const rawTx = Hex.of(tx.bytes).toString();
+    const rawTx = Hex.of(tx.encode).toString();
 
     /**
      * The request body for the delegation transaction.

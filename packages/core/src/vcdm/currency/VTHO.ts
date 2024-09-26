@@ -44,9 +44,9 @@ class VTHO extends Coin {
     /**
      * Return a new VTHO instance with the specified value and unit.
      *
-     * @param {bigint | number | string | FixedPointNumber} value The numerical value for the VTHO instance.
-     * @param {Units} unit The unit for the value.
-     *                     Defaults to {@link Units.ether} if not provided.
+     * @param {bigint | number | string | FixedPointNumber} value - The numerical value for the VTHO instance.
+     * @param {Units} unit - The unit for the value.
+     *                       Defaults to {@link Units.ether} if not provided.
      * @return {VTHO} A new VTHO instance with the provided value and unit.
      *
      * @throws {InvalidDataType} If `value` is not a numeric expression.

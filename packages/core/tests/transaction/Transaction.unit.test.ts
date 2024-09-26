@@ -127,7 +127,7 @@ describe('Transaction class tests', () => {
                 expect(() => actual.delegator).toThrowError(
                     NotDelegatedTransaction
                 );
-                expect(actual.bytes).toEqual(
+                expect(actual.encode).toEqual(
                     TransactionFixture.undelegated.encodedUnsigned
                 );
                 expect(
@@ -158,7 +158,7 @@ describe('Transaction class tests', () => {
                 expect(() => actual.delegator).toThrowError(
                     UnavailableTransactionField
                 );
-                expect(actual.bytes).toEqual(
+                expect(actual.encode).toEqual(
                     TransactionFixture.delegated.encodedUnsigned
                 );
                 expect(
@@ -192,7 +192,7 @@ describe('Transaction class tests', () => {
                 expect(() => actual.delegator).toThrowError(
                     UnavailableTransactionField
                 );
-                expect(actual.bytes).toEqual(
+                expect(actual.encode).toEqual(
                     TransactionFixture.delegatedWithUnusedFields.encodedUnsigned
                 );
                 expect(

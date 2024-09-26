@@ -52,8 +52,8 @@ class HDKey extends s_bip32.HDKey {
      * [BIP39 Mnemonic Words](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
      * and the given derivation path.
      *
-     * @param {string[]} words An array of words representing the mnemonic.
-     * @param {string} path The derivation path to derive the child node.
+     * @param {string[]} words - An array of words representing the mnemonic.
+     * @param {string} path - The derivation path to derive the child node.
      * Default value is {@link VET_DERIVATION_PATH}.
      *
      * @return The derived child hierarchical deterministic key.
@@ -101,8 +101,8 @@ class HDKey extends s_bip32.HDKey {
      * [BIP32 Hierarchical Deterministic Key](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki)
      * from a private key and chain code.
      *
-     * @param {Uint8Array} privateKey The private key.
-     * @param {Uint8Array} chainCode The chain code.
+     * @param {Uint8Array} - privateKey The private key.
+     * @param {Uint8Array} - chainCode The chain code.
      *
      * @returns Returns the hierarchical deterministic key from `privateKey` and `chainCode`.
      *
@@ -159,8 +159,8 @@ class HDKey extends s_bip32.HDKey {
      * [BIP32 Hierarchical Deterministic Key](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki)
      * key from a public key and chain code.
      *
-     * @param {Uint8Array} publicKey The public key bytes.
-     * @param {Uint8Array} chainCode The chain code bytes.
+     * @param {Uint8Array} publicKey - The public key bytes.
+     * @param {Uint8Array} chainCode - The chain code bytes.
      *
      * @returns {HDKey} Returns the hierarchical deterministic key from `public` and `chainCode`.
      *

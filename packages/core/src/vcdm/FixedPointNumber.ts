@@ -162,7 +162,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * * Returns -1, if this is -Infinite or less than `that` FixedPointNumber;,
      * * Returns 1 if this is +Infinite or greater than `that` FixedPointNumber.
      *
-     * @param {FixedPointNumber} that The instance to compare with this instance.
+     * @param {FixedPointNumber} that - The instance to compare with this instance.
      * @return {number} Returns -1, 0, or 1 if this instance is less than, equal to, or greater
      * than the specified instance, respectively.
      * @throw InvalidOperation If this or `that` FixedPointNumber is {@link NaN}.
@@ -196,7 +196,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * * Returns -1, if this is -Infinite or less than `that` FixedPointNumber;,
      * * Returns 1 if this is +Infinite or greater than `that` FixedPointNumber.
      *
-     * @param {FixedPointNumber} that The instance to compare with this instance.
+     * @param {FixedPointNumber} that - The instance to compare with this instance.
      * @return {null | number} A null if either instance is NaN;
      * -1, 0, or 1 if this instance is less than, equal to, or greater
      * than the specified instance, respectively.
@@ -226,7 +226,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * * -n / 0 = -Infinity
      * * +n / 0 = +Infinity
      *
-     * @param {FixedPointNumber} that The fixed-point number to divide by.
+     * @param {FixedPointNumber} that - The fixed-point number to divide by.
      * @return {FixedPointNumber} The result of the division.
      *
      * @remarks The precision is the greater of the precision of the two operands.
@@ -264,9 +264,9 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
     /**
      * Divides the given dividend by the given divisor, adjusted by a factor based on fd.
      *
-     * @param {bigint} fd The factor determining the power of 10 to apply to the dividend.
-     * @param {bigint} dividend The number to be divided.
-     * @param {bigint} divisor The number by which to divide the dividend.
+     * @param {bigint} fd - The factor determining the power of 10 to apply to the dividend.
+     * @param {bigint} dividend - The number to be divided.
+     * @param {bigint} divisor - The number by which to divide the dividend.
      *
      * @return {bigint} - The result of the division, adjusted by the given factor fd.
      */
@@ -278,7 +278,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * Adjusts the precision of the floating-point number by the specified
      * number of decimal places.
      *
-     * @param {bigint | number} decimalPlaces The number of decimal places to adjust to.
+     * @param {bigint | number} decimalPlaces - The number of decimal places to adjust to.
      * @return {FixedPointNumber} A new FixedPointNumber instance with the adjusted precision.
      */
     public dp(decimalPlaces: bigint | number): FixedPointNumber {
@@ -296,7 +296,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      *
      * As with JavaScript, `NaN` does not equal `NaN`.
      *
-     * @param {FixedPointNumber} that The FixedPointNumber to compare against.
+     * @param {FixedPointNumber} that - The FixedPointNumber to compare against.
      * @return {boolean} `true` if the FixedPointNumber numbers are equal, otherwise `false`.
      *
      * @remarks This method uses {@link comparedTo} internally.
@@ -310,7 +310,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
     /**
      * Returns `true` if the value of this FixedPointNumber is greater than `that` FixedPointNumber`, otherwise returns `false`.
      *
-     * @param {FixedPointNumber} that The FixedPointNumber to compare against.
+     * @param {FixedPointNumber} - that The FixedPointNumber to compare against.
      * @return {boolean} `true` if this FixedPointNumber is greater than `that` FixedPointNumber, otherwise `false`.
      *
      * @remarks This method uses {@link comparedTo} internally.
@@ -325,7 +325,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
     /**
      * Returns `true` if the value of this FixedPointNumber is greater or equal than `that` FixedPointNumber`, otherwise returns `false`.
      *
-     * @param {FixedPointNumber} that The FixedPointNumber to compare against.
+     * @param {FixedPointNumber} that - The FixedPointNumber to compare against.
      * @return {boolean} `true` if this FixedPointNumber is greater or equal than `that` FixedPointNumber, otherwise `false`.
      *
      * @remarks This method uses {@link comparedTo} internally.
@@ -350,7 +350,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * * -n / 0 = -Infinite
      * * +n / 0 = +Infinite
      *
-     * @param {FixedPointNumber} that The fixed-point number to divide by.
+     * @param {FixedPointNumber} that - The fixed-point number to divide by.
      * @return {FixedPointNumber} The result of the division.
      *
      * @remarks The precision is the greater of the precision of the two operands.
@@ -388,9 +388,9 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
     /**
      * Performs integer division on two big integers and scales the result by a factor of 10 raised to the power of fd.
      *
-     * @param {bigint} fd The power to which 10 is raised to scale the result.
-     * @param {bigint} dividend The number to be divided.
-     * @param {bigint} divisor The number by which dividend is divided.
+     * @param {bigint} fd - The power to which 10 is raised to scale the result.
+     * @param {bigint} dividend - The number to be divided.
+     * @param {bigint} divisor - The number by which dividend is divided.
      * @return {bigint} - The scaled result of the integer division.
      */
     private static idiv(fd: bigint, dividend: bigint, divisor: bigint): bigint {
@@ -402,7 +402,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      *
      * As with JavaScript, `NaN` does not equal `NaN`.
      *
-     * @param {FixedPointNumber} that The FixedPointNumber to compare against.
+     * @param {FixedPointNumber} that - The FixedPointNumber to compare against.
      * @return {boolean} `true` if the FixedPointNumber numbers are equal, otherwise `false`.
      *
      * @remarks This method uses {@link eq} internally.
@@ -477,7 +477,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * Checks if a given string expression is a natural (unsigned positive integer)
      * number in base 10 notation.
      *
-     * @param {string} exp The string expression to be tested.
+     * @param {string} exp - The string expression to be tested.
      *
      * @return {boolean} `true` if the expression is a natural number,
      * `false` otherwise.
@@ -519,7 +519,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      *     - Positive decimal numbers, optionally signed: .1, +.5, .75, ...
      *     - Negative decimal numbers: -.1, -.5, -.75, ...
      *
-     * @param exp The string expression to be checked.
+     * @param exp - The string expression to be checked.
      *
      * @return `true` is `exp` represents a number, otherwise `false`.
      */
@@ -578,7 +578,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * Returns `true` if the value of this FixedPointNumber is less than or equal to the value of `that` FixedPointNumber,
      * otherwise returns `false`.
      *
-     * @param {FixedPointNumber} that The FixedPointNumber to compare against.
+     * @param {FixedPointNumber} that - The FixedPointNumber to compare against.
      * @return {boolean} `true` if the value of this FixedPointNumber is less than or equal to the value of `that` FixedPointNumber,
      * otherwise returns `false`.
      *
@@ -602,7 +602,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * * +Infinity - +Infinity = NaN
      * * +Infinity - +n = +Infinity
      *
-     * @param {FixedPointNumber} that The fixed-point number to subtract.
+     * @param {FixedPointNumber} that - The fixed-point number to subtract.
      * @return {FixedPointNumber} The result of the subtraction. The return value is always exact and unrounded.
      *
      * @remarks The precision is the greater of the precision of the two operands.
@@ -633,7 +633,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * * ±Infinity % n = NaN
      * * n % ±Infinity = NaN
      *
-     * @param that {FixedPointNumber} The fixed-point number to divide by.
+     * @param that {FixedPointNumber} - The fixed-point number to divide by.
      * @return {FixedPointNumber} the integer remainder of dividing this FixedPointNumber by `that`.
      *
      * @remarks The precision is the greater of the precision of the two operands.
@@ -656,8 +656,8 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
     /**
      * Multiplies two big integer values and divides by a factor of ten raised to a specified power.
      *
-     * @param {bigint} multiplicand The first number to be multiplied.
-     * @param {bigint} multiplicator The second number to be multiplied.
+     * @param {bigint} multiplicand - The first number to be multiplied.
+     * @param {bigint} multiplicator - The second number to be multiplied.
      * @param {bigint} fd - The power of ten by which the product is to be divided.
      *
      * @return {bigint} The result of the multiplication divided by ten raised to the specified power.
@@ -689,9 +689,9 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * `exp` numeric expression in base 10 and representing the value with the
      * precision of `decimalPlaces` fractional decimal digits.
      *
-     * @param {bigint|number|string} exp The value to represent.
+     * @param {bigint|number|string} exp - The value to represent.
      * It can be a bigint, number, or string representation of the number.
-     * @param {bigint} [decimalPlaces=this.DEFAULT_FRACTIONAL_DECIMALS] The
+     * @param {bigint} [decimalPlaces=this.DEFAULT_FRACTIONAL_DECIMALS] - The
      * number of fractional decimal digits to be used to represent the value.
      *
      * @return {FixedPointNumber} A new instance of FixedPointNumber with the given parameters.
@@ -742,7 +742,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * * +Infinity + -Infinity = NaN
      * * +Infinity + +Infinity = +Infinity
      *
-     * @param {FixedPointNumber} that The fixed-point number to add to the current number.
+     * @param {FixedPointNumber} that - The fixed-point number to add to the current number.
      * @return {FixedPointNumber} The result of the addition. The return value is always exact and unrounded.
      *
      * @remarks The precision is the greater of the precision of the two operands.
@@ -775,10 +775,10 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * * ±Infinite ^ -e = 0
      * * ±Infinite ^ +e = +Infinite
      *
-     * @param {FixedPointNumber} that The exponent as a fixed-point number.
-     *                     It can be negative, it can be not an integer value
-     *                     ([bignumber.js pow](https://mikemcl.github.io/bignumber.js/#pow)
-     *                     doesn't support not integer exponents).
+     * @param {FixedPointNumber} that - The exponent as a fixed-point number.
+     * It can be negative, it can be not an integer value
+     * ([bignumber.js pow](https://mikemcl.github.io/bignumber.js/#pow)
+     * doesn't support not integer exponents).
      * @return {FixedPointNumber} - The result of raising this fixed-point number to the power of the given exponent.
      *
      * @remarks The precision is the greater of the precision of the two operands.
@@ -808,9 +808,9 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
     /**
      * Computes the power of a given base raised to a specified exponent.
      *
-     * @param {bigint} fd The scale factor for decimal precision.
-     * @param {bigint} base The base number to be raised to the power.
-     * @param {bigint} exponent The exponent to which the base should be raised.
+     * @param {bigint} fd - The scale factor for decimal precision.
+     * @param {bigint} base - The base number to be raised to the power.
+     * @param {bigint} exponent - The exponent to which the base should be raised.
      * @return {bigint} The result of base raised to the power of exponent, scaled by the scale factor.
      */
     private static pow(fd: bigint, base: bigint, exponent: bigint): bigint {
@@ -838,8 +838,8 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
     /**
      * Computes the square root of a given positive bigint value using a fixed-point iteration method.
      *
-     * @param {bigint} value The positive bigint value for which the square root is to be calculated.
-     * @param {bigint} fd The iteration factor determinant.
+     * @param {bigint} value - The positive bigint value for which the square root is to be calculated.
+     * @param {bigint} fd - The iteration factor determinant.
      * @return {bigint} The calculated square root of the input bigint value.
      *
      * @throws {RangeError} If the input value is negative.
@@ -901,7 +901,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * * +Infinite * -n = -Infinite
      * * +Infinite * +n = +Infinite
      *
-     * @param {FixedPointNumber} that The fixed-point number to multiply with this number.
+     * @param {FixedPointNumber} that - The fixed-point number to multiply with this number.
      * @return {FixedPointNumber} a FixedPointNumber whose value is the value of this FixedPointNumber multiplied by `that` FixedPointNumber.
      *
      * @remarks The precision is the greater of the precision of the two operands.
@@ -928,7 +928,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
     /**
      * Converts the fixed-point number to its string representation.
      *
-     * @param {string} [decimalSeparator='.'] The character to use as the decimal separator in the string representation. Default is '.'.
+     * @param {string} [decimalSeparator='.'] - The character to use as the decimal separator in the string representation. Default is '.'.
      * @return {string} A string representation of the fixed-point number.
      */
     public toString(decimalSeparator = '.'): string {
@@ -953,8 +953,8 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
     /**
      * Trims the specified trailing substring from the end of the input string recursively.
      *
-     * @param {string} str The input string to be trimmed.
-     * @param {string} [sub='0'] The substring to be removed from the end of the input string. Defaults to '0' if not provided.
+     * @param {string} str - The input string to be trimmed.
+     * @param {string} [sub='0'] - The substring to be removed from the end of the input string. Defaults to '0' if not provided.
      * @return {string} The trimmed string with the specified trailing substring removed.
      */
     private static trimEnd(str: string, sub: string = '0'): string {
@@ -972,9 +972,9 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
     /**
      * Converts a string expression of a number into a scaled value.
      *
-     * @param {string} exp The string expression of the number to be converted.
-     * @param {bigint} fd The scale factor to be used for conversion.
-     * @param {string} [decimalSeparator='.'] The character used as the decimal separator in the string expression.
+     * @param {string} exp - The string expression of the number to be converted.
+     * @param {bigint} fd - The scale factor to be used for conversion.
+     * @param {string} [decimalSeparator='.'] - The character used as the decimal separator in the string expression.
      * @return {bigint} - The converted scaled value as a bigint.
      */
     private static txtToSV(

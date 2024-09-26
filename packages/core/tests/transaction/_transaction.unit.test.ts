@@ -52,7 +52,7 @@ describe('Transaction', () => {
                 );
 
                 // Encoding
-                expect(unsignedTransaction.bytes).toEqual(
+                expect(unsignedTransaction.encode).toEqual(
                     Hex.of(transaction.encodedUnsignedExpected).bytes
                 );
 
@@ -96,7 +96,7 @@ describe('Transaction', () => {
                 );
 
                 // Encoding
-                expect(signedTransaction.bytes).toEqual(
+                expect(signedTransaction.encode).toEqual(
                     Hex.of(transaction.encodedSignedExpected).bytes
                 );
             });
@@ -141,7 +141,7 @@ describe('Transaction', () => {
                 );
 
                 // Encoding
-                expect(Buffer.from(unsignedTransaction.bytes)).toEqual(
+                expect(Buffer.from(unsignedTransaction.encode)).toEqual(
                     transaction.encodedUnsignedExpected
                 );
 
@@ -183,7 +183,7 @@ describe('Transaction', () => {
                 );
 
                 // Encoding
-                expect(Buffer.from(signedTransaction.bytes)).toEqual(
+                expect(Buffer.from(signedTransaction.encode)).toEqual(
                     transaction.encodedSignedExpected
                 );
             });
