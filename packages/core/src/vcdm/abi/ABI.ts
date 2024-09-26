@@ -25,7 +25,7 @@ class ABI implements VeChainDataModel<ABI> {
      * @param {string | AbiParameter[]} types - A list of ABI types representing the types of the values.
      * @param {unknown[]} values - An array of values according to the specified ABI types.
      **/
-    public constructor(
+    protected constructor(
         types: string | AbiParameter[] = [],
         values: unknown[] = []
     ) {
