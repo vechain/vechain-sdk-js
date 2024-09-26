@@ -166,7 +166,7 @@ const invalidBufferKindDecodeTestCases = [
 const invalidNumericKindDecodeTestCases = [
     {
         kind: new NumericKind(8),
-        data: Buffer.alloc(9, 1),
+        data: new Uint8Array(9).fill(1),
         description: 'buffer exceeds max bytes'
     },
     {
