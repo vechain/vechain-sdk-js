@@ -1,9 +1,9 @@
 name: PR Checks
 
 on:
-  push:
+  pull_request:
     branches:
-      - feat/1120-rlp-encoding
+      - main
 
 jobs:
     doc-examples:
