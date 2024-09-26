@@ -25,9 +25,7 @@ async function encrypt(
 ): Promise<Keystore> {
     // Public and Address are derived from a private key
     const derivePublicKey = Secp256k1.derivePublicKey(privateKey);
-    const deriveAddress = Address.ofPublicKey(
-        Uint8Array.from(derivePublicKey)
-    ).toString();
+    const deriveAddress = Address.ofPublicKey(derivePublicKey).toString();
 
     // Create keystore account compatible with ethers
     const keystoreAccount: ethers.KeystoreAccount = {
