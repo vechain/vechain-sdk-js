@@ -1,7 +1,7 @@
 import { InvalidRLP } from '@vechain/sdk-errors';
-import { FixedPointNumber } from '../../../vcdm/FixedPointNumber';
-import { Hex } from '../../../vcdm/Hex';
-import { HexUInt } from '../../../vcdm/HexUInt';
+import { FixedPointNumber } from '../../../FixedPointNumber';
+import { Hex } from '../../../Hex';
+import { HexUInt } from '../../../HexUInt';
 import { type RLPInput } from '../types';
 
 /**

@@ -1,5 +1,5 @@
-import { Hex } from '../../../vcdm/Hex';
 import { InvalidRLP } from '@vechain/sdk-errors';
+import { Hex } from '../../../Hex';
 import { type RLPInput } from '../types';
 
 /**
@@ -77,4 +77,4 @@ const assertValidHexBlobKindBuffer = (
     }
 };
 
-export { assertValidHexBlobKindData, assertValidHexBlobKindBuffer };
+export { assertValidHexBlobKindBuffer, assertValidHexBlobKindData };

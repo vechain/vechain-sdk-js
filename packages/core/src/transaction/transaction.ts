@@ -4,7 +4,6 @@ import {
     NotDelegatedTransaction,
     UnavailableTransactionField
 } from '@vechain/sdk-errors';
-import { type RLPValidObject } from '../encoding';
 import { Secp256k1 } from '../secp256k1';
 import {
     BLOCK_REF_LENGTH,
@@ -16,6 +15,7 @@ import {
 } from '../utils';
 import { Address } from '../vcdm/Address';
 import { Hex } from '../vcdm/Hex';
+import { type RLPValidObject } from '../vcdm/encoding';
 import { Blake2b256 } from '../vcdm/hash/Blake2b256';
 import { type TransactionBody } from './types';
 
