@@ -1,6 +1,7 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
-import { Hex, Txt } from '../../vcdm';
 import { InvalidDataType } from '@vechain/sdk-errors';
+import { Hex } from '../../vcdm/Hex';
+import { Txt } from '../../vcdm/Txt';
 import { ZERO_BYTES } from '../const';
 
 /**
