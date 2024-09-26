@@ -1,5 +1,5 @@
 import { type BufferOutput, type DataOutput, type RLPInput } from '../../types';
-import { FixedHexBlobKind } from './fixedhexblob';
+import { FixedHexBlobKind } from './FixedHexBlobKind';
 
 /**
  * Represents a fixed hex blob kind with optional data functionality.

@@ -1,12 +1,12 @@
-import { BufferKind } from './bufferkind';
-import { NumericKind } from './numerickind';
-import { ScalarKind, type RLPProfile } from './scalarkind.abstract';
+import { BufferKind } from './BufferKind';
+import { NumericKind } from './NumericKind';
+import { ScalarKind, type RLPProfile } from './ScalarKind';
 import {
     CompactFixedHexBlobKind,
     FixedHexBlobKind,
     HexBlobKind,
     OptionalFixedHexBlobKind
-} from './hexblobkinds';
+} from './hexblob';
 
 export {
     ScalarKind,

@@ -4,7 +4,7 @@ import {
     encodeCompactFixedHexBlob
 } from '../../helpers';
 import { type BufferOutput, type DataOutput, type RLPInput } from '../../types';
-import { FixedHexBlobKind } from './fixedhexblob';
+import { FixedHexBlobKind } from './FixedHexBlobKind';
 
 /**
  * Represents a fixed hex blob kind with zero trimming and padding functionality.

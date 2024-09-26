@@ -3,7 +3,7 @@ import {
     assertFixedHexBlobKindData
 } from '../../helpers';
 import { type BufferOutput, type DataOutput, type RLPInput } from '../../types';
-import { HexBlobKind } from './hexblob';
+import { HexBlobKind } from './HexBlobKind';
 
 /**
  * Represents a hex blob kind with fixed bytes size functionality.

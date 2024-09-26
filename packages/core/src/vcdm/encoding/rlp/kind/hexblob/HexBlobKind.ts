@@ -2,7 +2,7 @@ import { Hex } from '../../../../Hex';
 import { HexUInt } from '../../../../HexUInt';
 import { assertValidHexBlobKindData } from '../../helpers';
 import { type BufferOutput, type DataOutput, type RLPInput } from '../../types';
-import { ScalarKind } from '../scalarkind.abstract';
+import { ScalarKind } from '../ScalarKind';
 
 /**
  * Represents a scalar kind with hex blob functionality.

@@ -1,4 +1,4 @@
-import { ScalarKind } from './scalarkind.abstract';
+import { ScalarKind } from './ScalarKind';
 import {
     assertValidNumericKindBuffer,
     decodeBufferToNumberOrHex,

@@ -1,7 +1,7 @@
 import { RLP as EthereumjsRLP } from '@ethereumjs/rlp';
 import { InvalidDataType, InvalidRLP } from '@vechain/sdk-errors';
 import { type VeChainDataModel } from '../../VeChainDataModel';
-import { ScalarKind, type RLPProfile } from './kind/scalarkind.abstract';
+import { ScalarKind, type RLPProfile } from './kind/ScalarKind';
 import { type RLPInput, type RLPValidObject, type RLPValueType } from './types';
 import { bytesToNumberBE } from '@noble/ciphers/utils';
 import { Hex } from '../../Hex';

@@ -1,4 +1,4 @@
-import { type RLPProfile } from './kind/scalarkind.abstract';
+import { type RLPProfile } from './kind/ScalarKind';
 import { RLP } from './RLP';
 import { type RLPInput, type RLPValidObject, type RLPValueType } from './types';
 

@@ -1,4 +1,4 @@
-import { ScalarKind } from './scalarkind.abstract';
+import { ScalarKind } from './ScalarKind';
 import { type BufferOutput, type DataOutput, type RLPInput } from '../types';
 import { InvalidRLP } from '@vechain/sdk-errors';
 
