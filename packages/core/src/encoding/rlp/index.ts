@@ -1,7 +1,6 @@
 import { RLPBase } from './rlp';
-import { RLPProfiles } from './kind';
+import * as RLPProfiles from './kind';
 
-export * from './rlp';
 export * from './kind';
 export type * from './types.d';
 export * from './helpers';

@@ -1,11 +1,10 @@
-import { Address, Hex } from '../vcdm';
-import { Blake2b256 } from '../vcdm/hash/Blake2b256';
 import {
     InvalidSecp256k1Signature,
     InvalidTransactionField,
     NotDelegatedTransaction,
     UnavailableTransactionField
 } from '@vechain/sdk-errors';
+import { type RLPValidObject } from '../encoding';
 import { Secp256k1 } from '../secp256k1';
 import {
     BLOCK_REF_LENGTH,
@@ -15,7 +14,9 @@ import {
     TransactionUtils,
     UNSIGNED_TRANSACTION_RLP
 } from '../utils';
-import { type RLPValidObject } from '../encoding';
+import { Address } from '../vcdm/Address';
+import { Hex } from '../vcdm/Hex';
+import { Blake2b256 } from '../vcdm/hash/Blake2b256';
 import { type TransactionBody } from './types';
 
 /**
