@@ -1,9 +1,5 @@
 import { Address, HexUInt, type TransactionClause } from '@vechain/sdk-core';
-import {
-    InvalidDataType,
-    InvalidSecp256k1PrivateKey,
-    NotDelegatedTransaction
-} from '@vechain/sdk-errors';
+import { InvalidDataType, NotDelegatedTransaction } from '@vechain/sdk-errors';
 import {
     type SignTransactionOptions,
     THOR_SOLO_ACCOUNTS,
@@ -127,7 +123,7 @@ const signTransactionTestCases = {
                     delegatorPrivateKey: 'INVALID_PRIVATE_KEY'
                 } satisfies SignTransactionOptions,
                 isDelegated: true,
-                expectedError: InvalidSecp256k1PrivateKey
+                expectedError: InvalidDataType
             },
             {
                 description:
