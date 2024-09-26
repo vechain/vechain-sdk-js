@@ -53,6 +53,7 @@ enum RPC_METHODS {
     debug_traceBlockByNumber = 'debug_traceBlockByNumber',
     eth_getUncleCountByBlockHash = 'eth_getUncleCountByBlockHash',
     eth_getUncleCountByBlockNumber = 'eth_getUncleCountByBlockNumber',
+    eth_signTypedData_v4 = 'eth_signTypedData_v4',
 
     /**
      * TO BE IMPLEMENTED METHODS:
