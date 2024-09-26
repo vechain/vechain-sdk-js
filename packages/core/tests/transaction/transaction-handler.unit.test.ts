@@ -178,9 +178,8 @@ describe('Transaction handler', () => {
                 expect(decodedUnsigned.getSignatureHash().length).toBe(32);
                 expect(decodedUnsigned.encoded).toBeDefined();
                 expect(Hex.of(decodedUnsigned.encoded).digits).toBe(
-                    transactions.undelegated[0].encodedUnsignedExpected.toString(
-                        'hex'
-                    )
+                    Hex.of(transactions.undelegated[0].encodedUnsignedExpected)
+                        .digits
                 );
 
                 // Signed transaction
@@ -203,9 +202,8 @@ describe('Transaction handler', () => {
                 expect(decodedSigned.getSignatureHash().length).toBe(32);
                 expect(decodedSigned.encoded).toBeDefined();
                 expect(Hex.of(decodedSigned.encoded).digits).toBe(
-                    transactions.undelegated[0].encodedSignedExpected.toString(
-                        'hex'
-                    )
+                    Hex.of(transactions.undelegated[0].encodedSignedExpected)
+                        .digits
                 );
                 expect(decodedSigned.signature?.length).toBe(SIGNATURE_LENGTH);
             });
