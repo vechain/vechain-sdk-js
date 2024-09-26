@@ -7,7 +7,8 @@ import {
     TransactionHandler,
     VET,
     type TransactionClause,
-    type TransactionBody
+    type TransactionBody,
+    HexUInt
 } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
@@ -41,10 +42,7 @@ const privateKey = await Secp256k1.generatePrivateKey();
 
 // 4 - Sign transaction
 
-const signedTransaction = TransactionHandler.sign(
-    body,
-    Buffer.from(privateKey)
-);
+const signedTransaction = TransactionHandler.sign(body, privateKey);
 
 // 5 - Encode transaction
 

@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { ABIContract, Address, type DeployParams } from '@vechain/sdk-core';
+import { ABIContract, Address, HexUInt, type DeployParams } from '@vechain/sdk-core';
 import {
     CannotFindTransaction,
     ContractDeploymentFailed,
@@ -60,18 +60,16 @@ describe('ThorClient - Contracts', () => {
     beforeEach(() => {
         thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
         signer = new VeChainPrivateKeySigner(
-            Buffer.from(
-                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
-                'hex'
-            ),
+            HexUInt.of(
+                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
+            ).bytes,
             new VeChainProvider(thorSoloClient)
         );
 
         receiverSigner = new VeChainPrivateKeySigner(
-            Buffer.from(
-                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.privateKey,
-                'hex'
-            ),
+            HexUInt.of(
+                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.privateKey
+            ).bytes,
             new VeChainProvider(thorSoloClient)
         );
     });
@@ -276,10 +274,9 @@ describe('ThorClient - Contracts', () => {
         // Set signer with another private key
         contract.setSigner(
             new VeChainPrivateKeySigner(
-                Buffer.from(
-                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.privateKey,
-                    'hex'
-                ),
+                HexUInt.of(
+                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.privateKey
+                ).bytes,
                 new VeChainProvider(thorSoloClient)
             )
         );
@@ -680,7 +677,7 @@ describe('ThorClient - Contracts', () => {
                             contractAbi,
                             contractBytecode,
                             new VeChainPrivateKeySigner(
-                                Buffer.from(contractCaller, 'hex'),
+                                HexUInt.of(contractCaller).bytes,
                                 new VeChainProvider(thorSoloClient)
                             )
                         );
@@ -731,11 +728,10 @@ describe('ThorClient - Contracts', () => {
                             contract.contractAbi,
                             contract.contractBytecode,
                             new VeChainPrivateKeySigner(
-                                Buffer.from(
+                                HexUInt.of(
                                     TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER
-                                        .privateKey,
-                                    'hex'
-                                ),
+                                        .privateKey
+                                ).bytes,
                                 new VeChainProvider(thorSoloClient)
                             )
                         );
@@ -776,11 +772,10 @@ describe('ThorClient - Contracts', () => {
                         await thorSoloClient.contracts.executeMultipleClausesTransaction(
                             contractClauses,
                             new VeChainPrivateKeySigner(
-                                Buffer.from(
+                                HexUInt.of(
                                     TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER
-                                        .privateKey,
-                                    'hex'
-                                ),
+                                        .privateKey
+                                ).bytes,
                                 new VeChainProvider(thorSoloClient)
                             )
                         );

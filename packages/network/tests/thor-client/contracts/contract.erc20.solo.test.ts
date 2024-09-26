@@ -10,7 +10,7 @@ import {
 } from '../../../src';
 import { TEST_ACCOUNTS } from '../../fixture';
 import { erc20ContractBytecode } from './fixture';
-import { Address, ERC20_ABI } from '@vechain/sdk-core';
+import { Address, ERC20_ABI, HexUInt } from '@vechain/sdk-core';
 
 /**
  * Tests for the ThorClient class, specifically focusing on ERC20 contract-related functionality.
@@ -31,10 +31,9 @@ describe('ThorClient - ERC20 Contracts', () => {
     beforeEach(() => {
         thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
         signer = new VeChainPrivateKeySigner(
-            Buffer.from(
-                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
-                'hex'
-            ),
+            HexUInt.of(
+                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+            ).bytes,
             new VeChainProvider(thorSoloClient)
         );
 
@@ -47,11 +46,10 @@ describe('ThorClient - ERC20 Contracts', () => {
             new ProviderInternalBaseWallet(
                 [
                     {
-                        privateKey: Buffer.from(
+                        privateKey: HexUInt.of(
                             TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER
-                                .privateKey,
-                            'hex'
-                        ),
+                                .privateKey
+                        ).bytes,
                         address:
                             TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address
                     }

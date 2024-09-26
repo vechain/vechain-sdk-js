@@ -10,7 +10,7 @@ import {
     waitForTransactionTestCases
 } from './fixture';
 import { TEST_ACCOUNTS } from '../../fixture';
-import { Transaction, TransactionHandler } from '@vechain/sdk-core';
+import { HexUInt, Transaction, TransactionHandler } from '@vechain/sdk-core';
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { THOR_SOLO_URL, ThorClient } from '../../../src';
 
@@ -73,11 +73,10 @@ describe('ThorClient - Transactions Module', () => {
                             gas: gasResult.totalGas,
                             nonce: options.nonce
                         },
-                        Buffer.from(
+                        HexUInt.of(
                             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
-                                .privateKey,
-                            'hex'
-                        )
+                                .privateKey
+                        ).bytes
                     );
 
                     // Send the transaction and obtain the transaction ID
@@ -123,10 +122,9 @@ describe('ThorClient - Transactions Module', () => {
                     nonce: transactionNonces
                         .sendTransactionWithANumberAsValueInTransactionBody[0]
                 },
-                Buffer.from(
-                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
-                    'hex'
-                )
+                HexUInt.of(
+                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
+                ).bytes
             );
 
             // Send the transaction and obtain the transaction ID
@@ -164,11 +162,10 @@ describe('ThorClient - Transactions Module', () => {
                                 gas: gasResult.totalGas,
                                 nonce: options.nonce
                             },
-                            Buffer.from(
+                            HexUInt.of(
                                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
-                                    .privateKey,
-                                'hex'
-                            )
+                                    .privateKey
+                            ).bytes
                         );
 
                         const sendTransactionResult =

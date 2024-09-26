@@ -16,7 +16,7 @@ Here’s an example of how to use the SDK in your JavaScript code:
 ``` javascript
 const { Hex, _blake2b256 } = require('@vechain/sdk-core');
 
-// Input of the hash function (it can be a string or a Buffer)
+// Input of the hash function (it can be a string or a Uint8Array)
 const toHash = 'hello world';
 
 const hash = _blake2b256(toHash);

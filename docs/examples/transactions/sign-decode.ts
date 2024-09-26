@@ -46,7 +46,7 @@ const privateKey = await Secp256k1.generatePrivateKey();
 
 const signedTransaction = TransactionHandler.sign(
     body,
-    Buffer.from(privateKey)
+    privateKey
 );
 
 // 5 - Encode transaction

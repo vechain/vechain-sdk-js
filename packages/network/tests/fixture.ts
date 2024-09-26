@@ -1,3 +1,4 @@
+import { HexUInt, Secp256k1 } from '@vechain/sdk-core';
 import {
     HttpClient,
     MAINNET_URL,
@@ -6,7 +7,6 @@ import {
     TESTNET_URL,
     THOR_SOLO_ACCOUNTS
 } from '../src';
-import { Secp256k1 } from '@vechain/sdk-core';
 
 /**
  * Main network instance fixture
@@ -34,11 +34,9 @@ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 const THOR_SOLO_ACCOUNTS_BASE_WALLET: ProviderInternalBaseWallet =
     new ProviderInternalBaseWallet(
         THOR_SOLO_ACCOUNTS.map((account) => ({
-            privateKey: Buffer.from(account.privateKey, 'hex'),
-            publicKey: Buffer.from(
-                Secp256k1.derivePublicKey(
-                    Buffer.from(account.privateKey, 'hex')
-                )
+            privateKey: HexUInt.of(account.privateKey).bytes,
+            publicKey: Secp256k1.derivePublicKey(
+                HexUInt.of(account.privateKey).bytes
             ),
             address: account.address
         }))
@@ -52,11 +50,9 @@ const THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR = (
 ): ProviderInternalBaseWallet =>
     new ProviderInternalBaseWallet(
         THOR_SOLO_ACCOUNTS.map((account) => ({
-            privateKey: Buffer.from(account.privateKey, 'hex'),
-            publicKey: Buffer.from(
-                Secp256k1.derivePublicKey(
-                    Buffer.from(account.privateKey, 'hex')
-                )
+            privateKey: HexUInt.of(account.privateKey).bytes,
+            publicKey: Secp256k1.derivePublicKey(
+                HexUInt.of(account.privateKey).bytes
             ),
             address: account.address
         })),
@@ -885,15 +881,15 @@ const TESTING_CONTRACT_ABI = [
 ] as const;
 
 export {
-    testNetwork,
     mainNetwork,
-    ZERO_ADDRESS,
-    testAccount,
     TEST_ACCOUNTS,
-    THOR_SOLO_ACCOUNTS_BASE_WALLET,
-    THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR,
+    testAccount,
+    TESTING_CONTRACT_ABI,
     TESTING_CONTRACT_ADDRESS,
     TESTING_CONTRACT_BYTECODE,
-    TESTING_CONTRACT_ABI,
-    TESTNET_DELEGATE_URL
+    TESTNET_DELEGATE_URL,
+    testNetwork,
+    THOR_SOLO_ACCOUNTS_BASE_WALLET,
+    THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR,
+    ZERO_ADDRESS
 };

@@ -9,8 +9,8 @@ import { secp256k1 as nc_secp256k1 } from '@noble/curves/secp256k1';
 const accountsFixture: ProviderInternalWalletAccount[] = Array.from(
     { length: 10 },
     () => {
-        const privateKey = Buffer.from(nc_secp256k1.utils.randomPrivateKey());
-        const publicKey = Buffer.from(Secp256k1.derivePublicKey(privateKey));
+        const privateKey = nc_secp256k1.utils.randomPrivateKey();
+        const publicKey = Secp256k1.derivePublicKey(privateKey);
         const address = Address.ofPublicKey(publicKey).toString();
 
         return {

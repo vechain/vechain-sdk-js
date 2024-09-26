@@ -1,6 +1,6 @@
 // Global variable to hold contract address
 import { beforeAll, describe, expect, test } from '@jest/globals';
-import { ABIContract, ERC721_ABI, Hex } from '@vechain/sdk-core';
+import { ABIContract, ERC721_ABI, Hex, HexUInt } from '@vechain/sdk-core';
 import {
     THOR_SOLO_URL,
     ThorClient,
@@ -49,10 +49,9 @@ describe('ThorClient - ERC721 Contracts', () => {
     beforeAll(async () => {
         thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
         signer = new VeChainPrivateKeySigner(
-            Buffer.from(
-                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
-                'hex'
-            ),
+            HexUInt.of(
+                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+            ).bytes,
             new VeChainProvider(thorSoloClient)
         );
 

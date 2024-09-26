@@ -1,6 +1,7 @@
 import {
     Address,
     Clause,
+    HexUInt,
     TransactionClause,
     TransactionHandler,
     VET
@@ -44,7 +45,7 @@ const providerWithDelegationEnabled = new VeChainProvider(
     new ProviderInternalBaseWallet(
         [
             {
-                privateKey: Buffer.from(senderAccount.privateKey, 'hex'),
+                privateKey: HexUInt.of(senderAccount.privateKey).bytes,
                 address: senderAccount.address
             }
         ],
@@ -100,7 +101,7 @@ const rawDelegateSigned = await signer.signTransaction(
 );
 
 const delegatedSigned = TransactionHandler.decode(
-    Buffer.from(rawDelegateSigned.slice(2), 'hex'),
+    HexUInt.of(rawDelegateSigned.slice(2)).bytes,
     true
 );
 

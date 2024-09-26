@@ -2,6 +2,7 @@ import {
     Address,
     Clause,
     Hex,
+    HexUInt,
     TransactionHandler,
     VET
 } from '@vechain/sdk-core';
@@ -57,13 +58,13 @@ const transactionBody = {
 
 const rawNormalSigned = TransactionHandler.sign(
     transactionBody,
-    Buffer.from(senderAccount.privateKey, 'hex')
+    HexUInt.of(senderAccount.privateKey).bytes
 ).encoded;
 
 // 6 - Send transaction
 
 const send = await thorSoloClient.transactions.sendRawTransaction(
-    `0x${rawNormalSigned.toString('hex')}`
+    `0x${HexUInt.of(rawNormalSigned).toString()}`
 );
 expect(send).toBeDefined();
 expect(send).toHaveProperty('id');

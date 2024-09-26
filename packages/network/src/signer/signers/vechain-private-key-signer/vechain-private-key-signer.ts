@@ -286,7 +286,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
                 TransactionHandler.signWithDelegator(
                     unsignedTransactionBody,
                     originPrivateKey,
-                    Buffer.from(delegatorOptions?.delegatorPrivateKey, 'hex')
+                    HexUInt.of(delegatorOptions?.delegatorPrivateKey).bytes
                 ).encoded
             ).toString();
 
@@ -306,7 +306,11 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         );
 
         // Sign the transaction with both signatures. Concat both signatures to get the final signature
-        const signature = Buffer.concat([originSignature, delegatorSignature]);
+        const signature = new Uint8Array(
+            originSignature.length + delegatorSignature.length
+        );
+        signature.set(originSignature);
+        signature.set(delegatorSignature, originSignature.length);
 
         // Return new signed transaction
         return Hex.of(

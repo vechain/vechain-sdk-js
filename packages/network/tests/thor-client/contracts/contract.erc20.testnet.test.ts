@@ -11,7 +11,7 @@ import {
     ERC20_CONTRACT_ADDRESS_ON_TESTNET,
     TESTNET_DELEGATE_URL
 } from './fixture';
-import { ERC20_ABI } from '@vechain/sdk-core';
+import { ERC20_ABI, HexUInt } from '@vechain/sdk-core';
 
 /**
  * Tests for the ThorClient class, specifically focusing on ERC20 contract-related functionality.
@@ -36,11 +36,10 @@ describe('ThorClient - ERC20 Contracts on testnet', () => {
             new ProviderInternalBaseWallet(
                 [
                     {
-                        privateKey: Buffer.from(
+                        privateKey: HexUInt.of(
                             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
-                                .privateKey,
-                            'hex'
-                        ),
+                                .privateKey
+                        ).bytes,
                         address:
                             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
                     }

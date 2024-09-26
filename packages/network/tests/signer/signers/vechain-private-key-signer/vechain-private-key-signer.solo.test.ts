@@ -78,7 +78,7 @@ describe('VeChain base signer tests - solo', () => {
 
                         // Get the signer and sign the transaction
                         const signer = new VeChainPrivateKeySigner(
-                            Buffer.from(origin.privateKey, 'hex'),
+                            HexUInt.of(origin.privateKey).bytes,
                             new VeChainProvider(
                                 thorClient,
                                 new ProviderInternalBaseWallet([], {
@@ -95,7 +95,7 @@ describe('VeChain base signer tests - solo', () => {
                             )
                         );
                         const signedTx = TransactionHandler.decode(
-                            Buffer.from(signedRawTx.slice(2), 'hex'),
+                            HexUInt.of(signedRawTx.slice(2)).bytes,
                             true
                         );
 
@@ -136,7 +136,7 @@ describe('VeChain base signer tests - solo', () => {
                             );
 
                         const signer = new VeChainPrivateKeySigner(
-                            Buffer.from(origin.privateKey, 'hex'),
+                            HexUInt.of(origin.privateKey).bytes,
                             new VeChainProvider(
                                 thorClient,
                                 new ProviderInternalBaseWallet([], {
@@ -171,7 +171,7 @@ describe('VeChain base signer tests - solo', () => {
          */
         test('call with no clauses transaction', async () => {
             const signer = new VeChainPrivateKeySigner(
-                Buffer.from(THOR_SOLO_ACCOUNTS[0].privateKey, 'hex'),
+                HexUInt.of(THOR_SOLO_ACCOUNTS[0].privateKey).bytes,
                 new VeChainProvider(
                     thorClient,
                     new ProviderInternalBaseWallet([]),
@@ -190,11 +190,10 @@ describe('VeChain base signer tests - solo', () => {
             ({ testName, transaction, expected }) => {
                 test(testName, async () => {
                     const signer = new VeChainPrivateKeySigner(
-                        Buffer.from(
+                        HexUInt.of(
                             transaction.simulateTransactionOptions
-                                .callerPrivateKey,
-                            'hex'
-                        ),
+                                .callerPrivateKey
+                        ).bytes,
                         new VeChainProvider(
                             thorClient,
                             new ProviderInternalBaseWallet([]),
@@ -232,7 +231,7 @@ describe('VeChain base signer tests - solo', () => {
             ({ testName, transaction, expected }) => {
                 test(testName, async () => {
                     const signer = new VeChainPrivateKeySigner(
-                        Buffer.from(THOR_SOLO_ACCOUNTS[0].privateKey, 'hex'),
+                        HexUInt.of(THOR_SOLO_ACCOUNTS[0].privateKey).bytes,
                         new VeChainProvider(
                             thorClient,
                             new ProviderInternalBaseWallet([]),
@@ -271,10 +270,9 @@ describe('VeChain base signer tests - solo', () => {
 
             // Get the signer and sign the transaction
             const signer = new VeChainPrivateKeySigner(
-                Buffer.from(
-                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
-                    'hex'
-                ),
+                HexUInt.of(
+                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
+                ).bytes,
                 new VeChainProvider(thorClient)
             );
 
@@ -285,7 +283,7 @@ describe('VeChain base signer tests - solo', () => {
                 )
             );
             const signedTx = TransactionHandler.decode(
-                Buffer.from(signedRawTx.slice(2), 'hex'),
+                HexUInt.of(signedRawTx.slice(2)).bytes,
                 true
             );
 

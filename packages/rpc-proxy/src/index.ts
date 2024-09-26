@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 
-import { Address, HDKey, Secp256k1 } from '@vechain/sdk-core';
+import { Address, HDKey, HexUInt, Secp256k1 } from '@vechain/sdk-core';
 import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
 import { VeChainSDKLogger } from '@vechain/sdk-logging';
 import {
@@ -56,12 +56,11 @@ function startProxy(): void {
         ? new ProviderInternalBaseWallet(
               config.accounts.map((privateKey: string) => {
                   // Convert the private key to a buffer
-                  const privateKeyBuffer = Buffer.from(
+                  const privateKeyBuffer = HexUInt.of(
                       privateKey.startsWith('0x')
                           ? privateKey.slice(2)
-                          : privateKey,
-                      'hex'
-                  );
+                          : privateKey
+                  ).bytes;
 
                   // Derive the public key and address from the private key
                   return {
