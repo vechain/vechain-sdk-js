@@ -1,8 +1,8 @@
-import { InvalidDataType } from '@vechain/sdk-errors';
-import { type TransactionClause } from '../../transaction/types';
 import { Address } from '../../vcdm/Address';
+import { InvalidDataType } from '@vechain/sdk-errors';
 import { Hex } from '../../vcdm/Hex';
 import { TRANSACTIONS_GAS_CONSTANTS } from '../const';
+import { type TransactionClause } from '../../transaction/TransactionClause';
 
 /**
  * Calculates intrinsic gas that a tx costs with the given set of clauses.
