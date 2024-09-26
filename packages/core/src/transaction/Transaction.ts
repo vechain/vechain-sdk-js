@@ -451,7 +451,8 @@ class Transaction {
             return new Uint8Array(
                 Transaction.RLP_SIGNED_TRANSACTION.encodeObject({
                     ...body,
-                    signature: this.signature
+                    // todo: remove Buffer after #1120
+                    signature: Buffer.from(this.signature as Uint8Array)
                 })
             );
         }
