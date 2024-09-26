@@ -1,18 +1,22 @@
 import { RLP as EthereumjsRLP } from '@ethereumjs/rlp';
+import { bytesToNumberBE } from '@noble/ciphers/utils';
 import { InvalidDataType, InvalidRLP } from '@vechain/sdk-errors';
+import { Hex } from '../../Hex';
 import { type VeChainDataModel } from '../../VeChainDataModel';
 import { ScalarKind, type RLPProfile } from './kind/ScalarKind';
 import { type RLPInput, type RLPValidObject, type RLPValueType } from './types';
-import { bytesToNumberBE } from '@noble/ciphers/utils';
-import { Hex } from '../../Hex';
 
 class RLP implements VeChainDataModel<RLP> {
     public readonly encoded: Uint8Array;
     public readonly decoded: RLPInput;
 
-    protected constructor(data: RLPInput) {
-        this.decoded = data;
-        this.encoded = EthereumjsRLP.encode(data);
+    protected constructor(data: RLPInput);
+    protected constructor(data: Uint8Array);
+    protected constructor(data: RLPInput | Uint8Array) {
+        this.decoded =
+            data instanceof Uint8Array ? EthereumjsRLP.decode(data) : data;
+        this.encoded =
+            data instanceof Uint8Array ? data : EthereumjsRLP.encode(data);
     }
 
     /**
@@ -104,8 +108,7 @@ class RLP implements VeChainDataModel<RLP> {
      */
     public static ofEncoded(encodedData: Uint8Array): RLP {
         try {
-            const decodedValue = EthereumjsRLP.decode(encodedData);
-            return new RLP(decodedValue);
+            return new RLP(encodedData);
         } catch (error) {
             throw new InvalidRLP(
                 'RLP.ofEncoded()',
