@@ -1,7 +1,4 @@
-import {
-    type TransactionClause,
-    TRANSACTIONS_GAS_CONSTANTS
-} from '../../../src';
+import { Transaction, type TransactionClause } from '../../../src';
 import { InvalidDataType } from '@vechain/sdk-errors';
 
 /**
@@ -38,8 +35,8 @@ const normalTransactions = [
             }
         ],
         expected:
-            TRANSACTIONS_GAS_CONSTANTS.CLAUSE_GAS +
-            TRANSACTIONS_GAS_CONSTANTS.TX_GAS
+            Transaction.GAS_CONSTANTS.CLAUSE_GAS +
+            Transaction.GAS_CONSTANTS.TX_GAS
     },
     // 5 clause transaction
     {
@@ -49,8 +46,8 @@ const normalTransactions = [
             data: ''
         }),
         expected:
-            TRANSACTIONS_GAS_CONSTANTS.CLAUSE_GAS * 5 +
-            TRANSACTIONS_GAS_CONSTANTS.TX_GAS
+            Transaction.GAS_CONSTANTS.CLAUSE_GAS * 5 +
+            Transaction.GAS_CONSTANTS.TX_GAS
     }
 ];
 
@@ -71,8 +68,8 @@ const smartContractTransactions = (
             }
         ],
         expected:
-            TRANSACTIONS_GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION +
-            TRANSACTIONS_GAS_CONSTANTS.TX_GAS
+            Transaction.GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION +
+            Transaction.GAS_CONSTANTS.TX_GAS
     },
 
     // Empty data contract creation - With some zeros
@@ -85,9 +82,9 @@ const smartContractTransactions = (
             }
         ],
         expected:
-            TRANSACTIONS_GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION +
-            TRANSACTIONS_GAS_CONSTANTS.TX_GAS +
-            TRANSACTIONS_GAS_CONSTANTS.ZERO_GAS_DATA * numberOfZeroBytes
+            Transaction.GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION +
+            Transaction.GAS_CONSTANTS.TX_GAS +
+            Transaction.GAS_CONSTANTS.ZERO_GAS_DATA * numberOfZeroBytes
     },
 
     // Smart contract creation - With some non-zero bytes
@@ -100,9 +97,9 @@ const smartContractTransactions = (
             }
         ],
         expected:
-            TRANSACTIONS_GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION +
-            TRANSACTIONS_GAS_CONSTANTS.TX_GAS +
-            TRANSACTIONS_GAS_CONSTANTS.NON_ZERO_GAS_DATA * numberOfNonZeroBytes
+            Transaction.GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION +
+            Transaction.GAS_CONSTANTS.TX_GAS +
+            Transaction.GAS_CONSTANTS.NON_ZERO_GAS_DATA * numberOfNonZeroBytes
     },
 
     // Smart contract creation - With some zeros and non-zero bytes
@@ -118,10 +115,10 @@ const smartContractTransactions = (
             }
         ],
         expected:
-            TRANSACTIONS_GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION +
-            TRANSACTIONS_GAS_CONSTANTS.TX_GAS +
-            TRANSACTIONS_GAS_CONSTANTS.ZERO_GAS_DATA * numberOfZeroBytes +
-            TRANSACTIONS_GAS_CONSTANTS.NON_ZERO_GAS_DATA * numberOfNonZeroBytes
+            Transaction.GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION +
+            Transaction.GAS_CONSTANTS.TX_GAS +
+            Transaction.GAS_CONSTANTS.ZERO_GAS_DATA * numberOfZeroBytes +
+            Transaction.GAS_CONSTANTS.NON_ZERO_GAS_DATA * numberOfNonZeroBytes
     }
 ];
 

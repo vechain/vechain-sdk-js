@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { TRANSACTIONS_GAS_CONSTANTS, TransactionUtils } from '../../../src';
+import { Transaction, TransactionUtils } from '../../../src';
 import {
     invalidData,
     normalTransactions,
@@ -34,8 +34,8 @@ describe('Transaction utils', () => {
      */
     test('Should calculate intrinsic gas for a transaction with no clauses', () => {
         expect(TransactionUtils.intrinsicGas([])).toBe(
-            TRANSACTIONS_GAS_CONSTANTS.TX_GAS +
-                TRANSACTIONS_GAS_CONSTANTS.CLAUSE_GAS
+            Transaction.GAS_CONSTANTS.TX_GAS +
+                Transaction.GAS_CONSTANTS.CLAUSE_GAS
         );
     });
 

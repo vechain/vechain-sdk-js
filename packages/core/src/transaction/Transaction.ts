@@ -2,19 +2,17 @@ import * as nc_utils from '@noble/curves/abstract/utils';
 import { Address, Hex, HexUInt, Units, VTHO } from '../vcdm';
 import { Blake2b256 } from '../vcdm/hash/Blake2b256';
 import { Secp256k1 } from '../secp256k1';
-import {
-    // TRANSACTION_SIGNATURE_KIND,
-    TransactionUtils
-} from '../utils';
 import { RLP_CODER, type RLPValidObject } from '../encoding';
 import { type TransactionBody } from './TransactionBody';
 import {
+    InvalidDataType,
     InvalidSecp256k1PrivateKey,
     InvalidSecp256k1Signature,
     InvalidTransactionField,
     NotDelegatedTransaction,
     UnavailableTransactionField
 } from '@vechain/sdk-errors';
+import type { TransactionClause } from './TransactionClause';
 
 /**
  * Represents an immutable transaction entity.
@@ -24,6 +22,38 @@ class Transaction {
      * Represent the block reference length in bytes.
      */
     private static readonly BLOCK_REF_LENGTH = 8;
+
+    public static readonly GAS_CONSTANTS = {
+        /**
+         * Default gas for a transaction
+         * @internal
+         */
+        TX_GAS: 5000,
+
+        /**
+         * Default gas for a clause
+         * @internal
+         */
+        CLAUSE_GAS: 16000,
+
+        /**
+         * Default gas for a contract creation clause
+         * @internal
+         */
+        CLAUSE_GAS_CONTRACT_CREATION: 48000,
+
+        /**
+         * Zero gas data
+         * @internal
+         */
+        ZERO_GAS_DATA: 4,
+
+        /**
+         * Non-zero gas data
+         * @internal
+         */
+        NON_ZERO_GAS_DATA: 68
+    };
 
     private static readonly RLP_FIELDS = [
         { name: 'chainTag', kind: new RLP_CODER.NumericKind(1) },
@@ -177,10 +207,7 @@ class Transaction {
      * @return {VTHO} The computed intrinsic gas for the transaction.
      */
     public get intrinsicGas(): VTHO {
-        return VTHO.of(
-            TransactionUtils.intrinsicGas(this.body.clauses),
-            Units.wei
-        );
+        return VTHO.of(Transaction.intrinsicGas(this.body.clauses), Units.wei);
     }
 
     /**
@@ -301,6 +328,35 @@ class Transaction {
             );
         }
         return txHash;
+    }
+
+    public static intrinsicGas(clauses: TransactionClause[]): number {
+        // No clauses
+        if (clauses.length === 0) {
+            return (
+                Transaction.GAS_CONSTANTS.TX_GAS +
+                Transaction.GAS_CONSTANTS.CLAUSE_GAS
+            );
+        }
+
+        // Some clauses
+        return clauses.reduce((sum: number, clause: TransactionClause) => {
+            if (clause.to !== null) {
+                // Invalid address or no vet.domains name
+                if (!Address.isValid(clause.to) && !clause.to.includes('.'))
+                    throw new InvalidDataType(
+                        'Transaction.intrinsicGas()',
+                        `Invalid data type in clause. Each 'to' field must be a valid address.`,
+                        { clause }
+                    );
+
+                sum += Transaction.GAS_CONSTANTS.CLAUSE_GAS;
+            } else {
+                sum += Transaction.GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION;
+            }
+            sum += Transaction._computeUsedGasFor(clause.data);
+            return sum;
+        }, Transaction.GAS_CONSTANTS.TX_GAS);
     }
 
     /**
@@ -453,6 +509,26 @@ class Transaction {
     }
 
     // ********** PRIVATE FUNCTIONS **********
+
+    private static _computeUsedGasFor(data: string): number {
+        // Invalid data
+        if (data !== '' && !Hex.isValid(data))
+            throw new InvalidDataType(
+                '_calculateDataUsedGas()',
+                `Invalid data type for gas calculation. Data should be a hexadecimal string.`,
+                { data }
+            );
+
+        let sum = 0;
+        for (let i = 2; i < data.length; i += 2) {
+            if (data.substring(i, i + 2) === '00') {
+                sum += Transaction.GAS_CONSTANTS.ZERO_GAS_DATA;
+            } else {
+                sum += Transaction.GAS_CONSTANTS.NON_ZERO_GAS_DATA;
+            }
+        }
+        return sum;
+    }
 
     /**
      * Decodes the {@link TransactionBody.reserved} field from the given buffer array.
