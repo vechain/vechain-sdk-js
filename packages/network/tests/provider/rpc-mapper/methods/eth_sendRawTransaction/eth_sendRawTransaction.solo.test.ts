@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
-    Hex,
-    type TransactionClause,
-    TransactionHandler
+    HexUInt,
+    Transaction,
+    type TransactionClause
 } from '@vechain/sdk-core';
 import {
     RPC_METHODS,
@@ -82,12 +82,11 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
 
             // 2- Sign transaction
 
-            const signedTransaction = TransactionHandler.sign(
-                transactionBody,
-                Buffer.from(actors.sender.privateKey, 'hex')
+            const signedTransaction = Transaction.of(transactionBody).sign(
+                HexUInt.of(actors.sender.privateKey).bytes
             );
 
-            const raw = Hex.of(signedTransaction.encode).toString();
+            const raw = HexUInt.of(signedTransaction.encode).toString();
 
             // 3 - Send raw transaction
 

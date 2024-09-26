@@ -7,7 +7,6 @@ import {
     Secp256k1,
     Transaction,
     type TransactionBody,
-    TransactionHandler,
     Txt,
     vechain_sdk_core_ethers
 } from '@vechain/sdk-core';
@@ -252,7 +251,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
                   delegator
               )
             : Hex.of(
-                  TransactionHandler.sign(populatedTransaction, this.privateKey)
+                  Transaction.of(populatedTransaction).sign(this.privateKey)
                       .encode
               ).toString();
     }
@@ -283,8 +282,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         // Sign transaction with origin private key and delegator private key
         if (delegatorOptions?.delegatorPrivateKey !== undefined)
             return Hex.of(
-                TransactionHandler.signWithDelegator(
-                    unsignedTransactionBody,
+                Transaction.of(unsignedTransactionBody).signWithDelegator(
                     originPrivateKey,
                     Buffer.from(delegatorOptions?.delegatorPrivateKey, 'hex')
                 ).encode

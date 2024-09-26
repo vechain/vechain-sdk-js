@@ -368,6 +368,14 @@ class Transaction {
         });
     }
 
+    /**
+     * Signs the transaction using the provided private key.
+     *
+     * @param {Uint8Array} signerPrivateKey - The private key used to sign the transaction.
+     * @return {Transaction} The signed transaction.
+     * @throws {InvalidTransactionField} If attempting to sign a delegated transaction.
+     * @throws {InvalidSecp256k1PrivateKey} If the provided private key is not valid.
+     */
     public sign(signerPrivateKey: Uint8Array): Transaction {
         // Check if the private key is valid.
         if (Secp256k1.isValidPrivateKey(signerPrivateKey)) {
@@ -393,6 +401,14 @@ class Transaction {
         );
     }
 
+    /**
+     * Signs the transaction using both the signer and the delegator private keys.
+     *
+     * @param {Uint8Array} signerPrivateKey - The private key of the signer.
+     * @param {Uint8Array} delegatorPrivateKey - The private key of the delegator.
+     * @return {Transaction} A new transaction with the concatenated signatures
+     * of the signer and the delegator.
+     */
     public signWithDelegator(
         signerPrivateKey: Uint8Array,
         delegatorPrivateKey: Uint8Array
@@ -439,7 +455,7 @@ class Transaction {
     // ********** PRIVATE FUNCTIONS **********
 
     /**
-     * Decodes the {@link TransactionBody.reserver} field from the given buffer array.
+     * Decodes the {@link TransactionBody.reserved} field from the given buffer array.
      *
      * @param {Buffer[]} reserved  - An array of Buffer objects representing the reserved field data.
      * @return {Object} An object containing the decoded features and any unused buffer data.
@@ -537,12 +553,12 @@ class Transaction {
     }
 
     /**
-     * Encodes the {@link TransactionBody.reserver} field data for a transaction.
+     * Encodes the {@link TransactionBody.reserved} field data for a transaction.
      *
      * @return {Uint8Array[]} The encoded list of reserved features.
      * It removes any trailing unused features that have zero length from the list.
      *
-     * @remarks The {@link TransactionBody.reserver} is optional, albeit
+     * @remarks The {@link TransactionBody.reserved} is optional, albeit
      * is required to perform RLP encoding.
      *
      * @see _encode

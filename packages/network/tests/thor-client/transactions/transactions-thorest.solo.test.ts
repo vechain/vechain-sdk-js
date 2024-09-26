@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { TEST_ACCOUNTS } from '../../fixture';
-import { Hex, TransactionHandler } from '@vechain/sdk-core';
+import { HexUInt, Transaction } from '@vechain/sdk-core';
 import { sendTransactionErrors, simulateTransaction } from './fixture-thorest';
 import { InvalidDataType, stringifyData } from '@vechain/sdk-errors';
 import { THOR_SOLO_URL, ThorClient } from '../../../src';
@@ -74,35 +74,31 @@ describe('ThorClient - Transactions Module', () => {
                 };
 
                 // Normal signature and delegation signature
-                const rawNormalSigned = TransactionHandler.sign(
-                    transactionBody,
-                    Buffer.from(
-                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
-                        'hex'
-                    )
+                const rawNormalSigned = Transaction.of(transactionBody).sign(
+                    HexUInt.of(
+                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
+                    ).bytes
                 ).encode;
 
-                const rawDelegatedSigned = TransactionHandler.signWithDelegator(
-                    delegatedTransactionBody,
-                    Buffer.from(
-                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
-                        'hex'
-                    ),
-                    Buffer.from(
-                        TEST_ACCOUNTS.TRANSACTION.DELEGATOR.privateKey,
-                        'hex'
-                    )
+                const rawDelegatedSigned = Transaction.of(
+                    delegatedTransactionBody
+                ).signWithDelegator(
+                    HexUInt.of(
+                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
+                    ).bytes,
+                    HexUInt.of(TEST_ACCOUNTS.TRANSACTION.DELEGATOR.privateKey)
+                        .bytes
                 ).encode;
 
                 // 2 - Send transaction
                 for (const raw of [rawNormalSigned, rawDelegatedSigned]) {
                     const send =
                         await thorSoloClient.transactions.sendRawTransaction(
-                            Hex.of(raw).toString()
+                            HexUInt.of(raw).toString()
                         );
                     expect(send).toBeDefined();
                     expect(send).toHaveProperty('id');
-                    expect(Hex.isValid0x(send.id)).toBe(true);
+                    expect(HexUInt.isValid0x(send.id)).toBe(true);
 
                     // 3 - Get transaction AND transaction receipt
                     const transaction =

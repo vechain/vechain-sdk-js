@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { delegator, signer, transactions } from './fixture';
-import { HexUInt, Transaction, TransactionHandler } from '../../src';
+import { HexUInt, Transaction } from '../../src';
 import {
     InvalidSecp256k1Signature,
     InvalidTransactionField,
@@ -67,9 +67,8 @@ describe('Transaction', () => {
         test('Should be able to create signed transactions', () => {
             transactions.undelegated.forEach((transaction) => {
                 // Init unsigned transaction from body
-                const signedTransaction = TransactionHandler.sign(
-                    transaction.body,
-                    Buffer.from(HexUInt.of(signer.privateKey).bytes)
+                const signedTransaction = Transaction.of(transaction.body).sign(
+                    HexUInt.of(signer.privateKey).bytes
                 );
 
                 // Checks on signature
@@ -155,10 +154,11 @@ describe('Transaction', () => {
          */
         test('Should be able to create signed transactions', () => {
             transactions.delegated.forEach((transaction) => {
-                const signedTransaction = TransactionHandler.signWithDelegator(
-                    transaction.body,
-                    Buffer.from(Hex.of(signer.privateKey).bytes),
-                    Buffer.from(Hex.of(delegator.privateKey).bytes)
+                const signedTransaction = Transaction.of(
+                    transaction.body
+                ).signWithDelegator(
+                    Hex.of(signer.privateKey).bytes,
+                    Hex.of(delegator.privateKey).bytes
                 );
 
                 // Checks on signature
