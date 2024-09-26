@@ -131,7 +131,7 @@ const invalidNumericKindEncodeTestCases = [
 const numericKindDecodeTestCases = [
     {
         kind: new NumericKind(8),
-        data: Buffer.alloc(0),
+        data: Uint8Array.from([]),
         description: 'empty buffer',
         expected: 0
     },
@@ -241,7 +241,7 @@ const invalidFixedHexBlobEncodeTestCases = [
 const hexBlobKindDecodeTestCases = [
     {
         kind: new HexBlobKind(),
-        data: Buffer.alloc(0),
+        data: Uint8Array.from([]),
         description: 'empty buffer',
         expected: '0x'
     },
