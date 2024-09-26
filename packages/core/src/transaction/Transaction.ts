@@ -23,38 +23,44 @@ class Transaction {
      */
     private static readonly BLOCK_REF_LENGTH = 8;
 
+    /**
+     * A collection of constants used for gas calculations in transactions.
+     *
+     * Properties
+     * - `TX_GAS` - The base gas cost for a transaction.
+     * - `CLAUSE_GAS` - The gas cost for executing a clause in a transaction.
+     * - `CLAUSE_GAS_CONTRACT_CREATION` - The gas cost for creating a contract via a clause.
+     * - `ZERO_GAS_DATA` - The gas cost for transmitting zero bytes of data.
+     * - `NON_ZERO_GAS_DATA` - The gas cost for transmitting non-zero bytes of data.
+     */
     public static readonly GAS_CONSTANTS = {
-        /**
-         * Default gas for a transaction
-         * @internal
-         */
         TX_GAS: 5000,
-
-        /**
-         * Default gas for a clause
-         * @internal
-         */
         CLAUSE_GAS: 16000,
-
-        /**
-         * Default gas for a contract creation clause
-         * @internal
-         */
         CLAUSE_GAS_CONTRACT_CREATION: 48000,
-
-        /**
-         * Zero gas data
-         * @internal
-         */
         ZERO_GAS_DATA: 4,
-
-        /**
-         * Non-zero gas data
-         * @internal
-         */
         NON_ZERO_GAS_DATA: 68
     };
 
+    /**
+     * RLP_FIELDS is an array of objects that defines the structure and encoding scheme
+     * for various components in a transaction using Recursive Length Prefix (RLP) encoding.
+     * Each object in the array represents a field in the transaction, specifying its name and kind.
+     * The `kind` attribute is an instance of an RLP coder that determines how the field is encoded.
+     *
+     * Properties
+     * - `chainTag` - Represent the id of the chain the transaction is sent to.
+     * - `blockRef` - Represent the last block of the chain the transaction is sent to.
+     * - `expiration` -  Represent the expiration date of the transaction.
+     * - `clauses` - List of clause objects, each containing:
+     *   - `to` - Represent the destination of the transaction.
+     *   - `value` - Represent the 'wei' quantity (VET or VTHO) value the transaction is worth.
+     *   - `data` - Represent the content of the transaction.
+     * - `gasPriceCoef` - Represent the gas price coefficient of the transaction.
+     * - `gas` - Represent the gas limit of the transaction.
+     * - `dependsOn` - Represent the hash of the transaction the current transaction depends on.
+     * - `nonce` - Represent the nonce of the transaction.
+     * - `reserved` -  Reserved field.
+     */
     private static readonly RLP_FIELDS = [
         { name: 'chainTag', kind: new RLP_CODER.NumericKind(1) },
         { name: 'blockRef', kind: new RLP_CODER.CompactFixedHexBlobKind(8) },
@@ -79,21 +85,49 @@ class Transaction {
         { name: 'reserved', kind: { item: new RLP_CODER.BufferKind() } }
     ];
 
+    /**
+     * Represent the Recursive Length Prefix (RLP) of the transaction features.
+     *
+     * Properties
+     * - `name` - A string indicating the name of the field in the RLP structure.
+     * - `kind` - RLP profile type.
+     */
     private static readonly RLP_FEATURES = {
         name: 'reserved.features',
         kind: new RLP_CODER.NumericKind(4)
     };
 
+    /**
+     * Represents a Recursive Length Prefix (RLP) of the transaction signature.
+     *
+     * Properties
+     * - `name` - A string indicating the name of the field in the RLP structure.
+     * - `kind` - RLP profile type.
+     */
     private static readonly RLP_SIGNATURE = {
         name: 'signature',
         kind: new RLP_CODER.BufferKind()
     };
 
+    /**
+     * Represents a Recursive Length Prefix (RLP) of the signed transaction.
+     *
+     * Properties
+     * - `name` - A string indicating the name of the field in the RLP structure.
+     * - `kind` - RLP profile type.
+     */
     private static readonly RLP_SIGNED_TRANSACTION = new RLP_CODER.Profiler({
         name: 'tx',
         kind: Transaction.RLP_FIELDS.concat([Transaction.RLP_SIGNATURE])
     });
 
+    /**
+     * Represents a Recursive Length Prefix (RLP) of the unsigned transaction.
+     *
+     * Properties
+     * - `name` - A string indicating the name of the field in the RLP structure.
+     * - `kind` - RLP profile type.
+     */
     private static readonly RLP_UNSIGNED_TRANSACTION = new RLP_CODER.Profiler({
         name: 'tx',
         kind: Transaction.RLP_FIELDS
