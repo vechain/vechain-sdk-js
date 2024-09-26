@@ -53,7 +53,7 @@ const privateKey = await Secp256k1.generatePrivateKey();
 
 const signedTransaction = TransactionHandler.sign(
     body,
-    Buffer.from(privateKey)
+    privateKey
 );
 
 // 5 - Encode transaction
@@ -106,10 +106,7 @@ const privateKey = await Secp256k1.generatePrivateKey();
 
 // 4 - Sign transaction
 
-const signedTransaction = TransactionHandler.sign(
-    body,
-    Buffer.from(privateKey)
-);
+const signedTransaction = TransactionHandler.sign(body, privateKey);
 
 // 5 - Encode transaction
 
@@ -180,8 +177,8 @@ const delegatorAddress = Address.ofPublicKey(nodeDelegate.publicKey).toString();
 
 const signedTransaction = TransactionHandler.signWithDelegator(
     body,
-    Buffer.from(senderAccount.privateKey, 'hex'),
-    Buffer.from(delegatorPrivateKey)
+    HexUInt.of(senderAccount.privateKey).bytes,
+    delegatorPrivateKey
 );
 
 // 7 - Encode transaction
@@ -225,10 +222,7 @@ const privateKey = await Secp256k1.generatePrivateKey();
 
 // 4 - Sign transaction
 
-const signedTransaction = TransactionHandler.sign(
-    body,
-    Buffer.from(privateKey)
-);
+const signedTransaction = TransactionHandler.sign(body, privateKey);
 
 // 5 - Encode transaction
 
@@ -297,7 +291,7 @@ const senderPrivateKey = await Secp256k1.generatePrivateKey();
 
 const txASigned = TransactionHandler.sign(
     txABody,
-    Buffer.from(senderPrivateKey)
+    senderPrivateKey
 );
 
 // 5 - Set it inside tx B
@@ -308,7 +302,7 @@ txBBody.dependsOn = txASigned.id;
 
 const txBSigned = TransactionHandler.sign(
     txBBody,
-    Buffer.from(senderPrivateKey)
+    senderPrivateKey
 );
 
 // 7 - encode Tx B
@@ -410,7 +404,7 @@ const provider = new VeChainProvider(
     // Internal wallet used by the provider (needed to call the getSigner() method)
     new ProviderInternalBaseWallet([
         {
-            privateKey: Buffer.from(senderAccount.privateKey, 'hex'),
+            privateKey: HexUInt.of(senderAccount.privateKey).bytes,
             address: senderAccount.address
         }
     ]),
@@ -455,7 +449,7 @@ const rawSignedTransaction = await signer.signTransaction(
 );
 
 const signedTransaction = TransactionHandler.decode(
-    Buffer.from(rawSignedTransaction.slice(2), 'hex'),
+    HexUInt.of(rawSignedTransaction.slice(2)).bytes,
     true
 );
 
@@ -504,7 +498,7 @@ const providerWithDelegationEnabled = new VeChainProvider(
     new ProviderInternalBaseWallet(
         [
             {
-                privateKey: Buffer.from(senderAccount.privateKey, 'hex'),
+                privateKey: HexUInt.of(senderAccount.privateKey).bytes,
                 address: senderAccount.address
             }
         ],
@@ -560,7 +554,7 @@ const rawDelegateSigned = await signer.signTransaction(
 );
 
 const delegatedSigned = TransactionHandler.decode(
-    Buffer.from(rawDelegateSigned.slice(2), 'hex'),
+    HexUInt.of(rawDelegateSigned.slice(2)).bytes,
     true
 );
 
@@ -613,7 +607,7 @@ const providerWithDelegationEnabled = new VeChainProvider(
     new ProviderInternalBaseWallet(
         [
             {
-                privateKey: Buffer.from(senderAccount.privateKey, 'hex'),
+                privateKey: HexUInt.of(senderAccount.privateKey).bytes,
                 address: senderAccount.address
             }
         ],
@@ -669,7 +663,7 @@ const rawDelegateSigned = await signer.signTransaction(
 );
 
 const delegatedSigned = TransactionHandler.decode(
-    Buffer.from(rawDelegateSigned.slice(2), 'hex'),
+    HexUInt.of(rawDelegateSigned.slice(2)).bytes,
     true
 );
 

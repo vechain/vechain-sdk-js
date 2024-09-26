@@ -254,13 +254,13 @@ const transactionBody = {
 
 const rawNormalSigned = TransactionHandler.sign(
     transactionBody,
-    Buffer.from(senderAccount.privateKey, 'hex')
+    HexUInt.of(senderAccount.privateKey).bytes
 ).encoded;
 
 // 6 - Send transaction
 
 const send = await thorSoloClient.transactions.sendRawTransaction(
-    `0x${rawNormalSigned.toString('hex')}`
+    `0x${HexUInt.of(rawNormalSigned).toString()}`
 );
 expect(send).toBeDefined();
 expect(send).toHaveProperty('id');
@@ -413,10 +413,9 @@ const senderAccount = {
 
 const receiverAccount = {
     address: '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
-    privateKey: Buffer.from(
-        '1758771c54938e977518e4ff1c297aca882f6598891df503030734532efa790e',
-        'hex'
-    )
+    privateKey: HexUInt.of(
+        '1758771c54938e977518e4ff1c297aca882f6598891df503030734532efa790e'
+    ).bytes
 };
 
 // 2 - Create transaction clauses and calcolate gas
