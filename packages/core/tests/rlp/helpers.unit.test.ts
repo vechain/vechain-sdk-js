@@ -47,7 +47,7 @@ describe('encodeBigIntToBuffer', () => {
  * @group unit/numerickind-helpers
  */
 describe('decodeBufferToHexWithLeadingZeros', () => {
-    const buffer: Buffer = Buffer.alloc(1);
+    const buffer = new Uint8Array(1);
     buffer[0] = 10;
     test('decodeBufferToHexWithLeadingZeros zero bytes', () => {
         expect(() => decodeBufferToHexWithLeadingZeros(buffer, 0)).toThrow(

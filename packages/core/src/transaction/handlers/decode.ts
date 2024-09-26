@@ -53,7 +53,7 @@ function decode(rawTransaction: Uint8Array, isSigned: boolean): Transaction {
     return decodedRLPBody.signature !== undefined
         ? new Transaction(
               correctTransactionBody,
-              decodedRLPBody.signature as Buffer
+              decodedRLPBody.signature as Uint8Array
           )
         : new Transaction(correctTransactionBody);
 }

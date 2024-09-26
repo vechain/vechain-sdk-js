@@ -12,11 +12,11 @@ import { ScalarKind } from '../scalarkind.abstract';
  */
 class HexBlobKind extends ScalarKind {
     /**
-     * Encodes the input data into a Buffer.
+     * Encodes the input data into a Uint8Array.
      *
      * @param data - The data to encode, expected to be a '0x' prefixed even sized hex string.
      * @param context - Context string for error handling.
-     * @returns An object containing an encode function which returns the encoded Buffer.
+     * @returns An object containing an encode function which returns the encoded Uint8Array.
      */
     public data(data: RLPInput, context: string): DataOutput {
         assertValidHexBlobKindData(data, context);

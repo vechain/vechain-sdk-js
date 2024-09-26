@@ -192,7 +192,7 @@ const encodeBigIntToBuffer = (
 
 /**
  * Decode a Uint8Array into a number or hexadecimal string.
- * @param {Uint8Array} buffer - Buffer instance to decode.
+ * @param {Uint8Array} buffer - Instance to decode.
  * @returns A number if the decoded BigInt is a safe integer, otherwise returns a hexadecimal string.
  */
 const decodeBufferToNumberOrHex = (buffer: Uint8Array): number | string => {

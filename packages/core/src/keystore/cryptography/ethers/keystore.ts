@@ -20,7 +20,7 @@ import { type Keystore, type KeystoreAccount } from '../../types';
  * @returns A Promise that resolves to the encrypted keystore.
  */
 async function encrypt(
-    privateKey: Buffer,
+    privateKey: Uint8Array,
     password: string
 ): Promise<Keystore> {
     // Public and Address are derived from a private key

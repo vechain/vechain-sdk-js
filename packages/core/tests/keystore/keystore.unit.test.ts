@@ -1,5 +1,10 @@
-import { Hex } from '../../src/vcdm/Hex';
 import { beforeEach, describe, expect, test } from '@jest/globals';
+import {
+    InvalidKeystore,
+    InvalidKeystoreParams,
+    InvalidSecp256k1PrivateKey,
+    stringifyData
+} from '@vechain/sdk-errors';
 import {
     Address,
     HexUInt,
@@ -7,13 +12,8 @@ import {
     Secp256k1,
     type Keystore
 } from '../../src';
+import { Hex } from '../../src/vcdm/Hex';
 import { encryptionPassword } from './fixture';
-import {
-    InvalidKeystore,
-    InvalidKeystoreParams,
-    InvalidSecp256k1PrivateKey,
-    stringifyData
-} from '@vechain/sdk-errors';
 
 /**
  * Keystore tests
@@ -36,7 +36,7 @@ import {
 
             //  Create keystore
             const myKeystore = await keystore.encrypt(
-                Buffer.from(privateKey),
+                Uint8Array.from(privateKey),
                 encryptionPassword
             );
 
@@ -58,7 +58,9 @@ import {
             await expect(
                 async () =>
                     await keystore.encrypt(
-                        Buffer.from('wrong private key', 'hex'),
+                        Uint8Array.from(
+                            new TextEncoder().encode('wrong private key')
+                        ),
                         encryptionPassword
                     )
             ).rejects.toThrowError(InvalidSecp256k1PrivateKey);
@@ -73,7 +75,7 @@ import {
 
             //  Create keystore
             const myKeystore = await keystore.encrypt(
-                Buffer.from(privateKey),
+                Uint8Array.from(privateKey),
                 encryptionPassword
             );
 
@@ -98,7 +100,7 @@ import {
 
             //  Create keystore
             const myKeystore = await keystore.encrypt(
-                Buffer.from(privateKey),
+                Uint8Array.from(privateKey),
                 encryptionPassword
             );
 
@@ -121,7 +123,7 @@ import {
 
             //  Create keystore
             const myKeystore = await keystore.encrypt(
-                Buffer.from(privateKey),
+                Uint8Array.from(privateKey),
                 encryptionPassword
             );
 
@@ -154,7 +156,7 @@ import {
 
             //  Create keystore
             const myKeystore = await keystore.encrypt(
-                Buffer.from(privateKey),
+                Uint8Array.from(privateKey),
                 encryptionPassword
             );
 

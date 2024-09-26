@@ -98,10 +98,19 @@ function signWithDelegator(
             Secp256k1.derivePublicKey(signerPrivateKey)
         ).toString()
     );
-    const signature = Buffer.concat([
-        Secp256k1.sign(transactionHash, signerPrivateKey),
-        Secp256k1.sign(delegatedHash, delegatorPrivateKey)
-    ]);
+    const transactionHashSignature = Secp256k1.sign(
+        transactionHash,
+        signerPrivateKey
+    );
+    const delegatedHashSignature = Secp256k1.sign(
+        delegatedHash,
+        delegatorPrivateKey
+    );
+    const signature = new Uint8Array(
+        transactionHashSignature.length + delegatedHashSignature.length
+    );
+    signature.set(transactionHashSignature);
+    signature.set(delegatedHashSignature, transactionHashSignature.length);
 
     // Return new signed transaction
     return new Transaction(transactionBody, signature);

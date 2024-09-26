@@ -12,11 +12,11 @@ import { FixedHexBlobKind } from './fixedhexblob';
  */
 class CompactFixedHexBlobKind extends FixedHexBlobKind {
     /**
-     * Encodes the input data into a Buffer, trimming leading zeros.
+     * Encodes the input data into a Uint8Array, trimming leading zeros.
      *
      * @param data - The data to encode, expected to be a '0x' prefixed hex string.
      * @param context - Context string for error handling.
-     * @returns An object containing an encode function which returns the encoded Buffer.
+     * @returns An object containing an encode function which returns the encoded Uint8Array.
      */
     public data(data: RLPInput, context: string): DataOutput {
         const buffer: Uint8Array = super.data(data, context).encode();
