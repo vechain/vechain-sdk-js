@@ -41,7 +41,7 @@ class Transaction {
      *
      * @note It is better to take it as a read-only property in order to avoid any external modification.
      */
-    public readonly signature?: Buffer;
+    public readonly signature?: Uint8Array;
 
     /**
      * Constructor with parameters.
@@ -51,7 +51,7 @@ class Transaction {
      * @param signature - Optional signature for the transaction
      * @throws {InvalidTransactionField, InvalidSecp256k1Signature}
      */
-    constructor(body: TransactionBody, signature?: Buffer) {
+    constructor(body: TransactionBody, signature?: Uint8Array) {
         // Body
         if (!Transaction.isValidBody(body)) {
             throw new InvalidTransactionField(
@@ -120,7 +120,7 @@ class Transaction {
 
         // Slice signature needed to recover public key
         // Obtains the recovery param from the signature
-        const signatureSliced = (this.signature as Buffer).subarray(
+        const signatureSliced = (this.signature as Uint8Array).subarray(
             65,
             this.signature?.length
         );
@@ -132,7 +132,9 @@ class Transaction {
         );
 
         // Address from public key
-        return Address.ofPublicKey(Buffer.from(delegatorPublicKey)).toString();
+        return Address.ofPublicKey(
+            Uint8Array.from(delegatorPublicKey)
+        ).toString();
     }
 
     /**
@@ -193,7 +195,7 @@ class Transaction {
      * @returns Signing hash of the transaction
      * @throws {InvalidTransactionField}
      */
-    public getSignatureHash(delegateFor?: string): Buffer {
+    public getSignatureHash(delegateFor?: string): Uint8Array {
         // Correct delegateFor address
         if (delegateFor !== undefined && !Address.isValid(delegateFor)) {
             throw new InvalidTransactionField(
@@ -208,17 +210,22 @@ class Transaction {
 
         // There is a delegateFor address (@note we already know that it is a valid address)
         if (delegateFor !== undefined) {
-            return Buffer.from(
-                Blake2b256.of(
-                    Buffer.concat([
-                        Buffer.from(transactionHash),
-                        Buffer.from(delegateFor.slice(2), 'hex')
-                    ])
-                ).bytes
+            const txHashAsUint8Array = Uint8Array.from(transactionHash);
+            const delegateForAsUint8Array = Uint8Array.from(
+                Uint8Array.from(Hex.of(delegateFor.slice(2)).bytes)
             );
+            const blake2b256Input = new Uint8Array(
+                txHashAsUint8Array.length + delegateForAsUint8Array.length
+            );
+            blake2b256Input.set(txHashAsUint8Array);
+            blake2b256Input.set(
+                delegateForAsUint8Array,
+                txHashAsUint8Array.length
+            );
+            return Uint8Array.from(Blake2b256.of(blake2b256Input).bytes);
         }
 
-        return Buffer.from(transactionHash);
+        return Uint8Array.from(transactionHash);
     }
 
     /**
@@ -247,7 +254,7 @@ class Transaction {
 
         // Slice signature
         // Obtains the concatenated signature (r, s) of ECDSA digital signature
-        const signatureSliced = (this.signature as Buffer).subarray(0, 65);
+        const signatureSliced = (this.signature as Uint8Array).subarray(0, 65);
 
         // Recover public key
         const originPublicKey = Secp256k1.recover(
@@ -256,7 +263,7 @@ class Transaction {
         );
 
         // Address from public key
-        return Address.ofPublicKey(Buffer.from(originPublicKey)).toString();
+        return Address.ofPublicKey(Uint8Array.from(originPublicKey)).toString();
     }
 
     /**
@@ -275,12 +282,17 @@ class Transaction {
             );
 
         // Return transaction ID
-        return Blake2b256.of(
-            Buffer.concat([
-                this.getSignatureHash(),
-                Buffer.from(this.origin.slice(2), 'hex')
-            ])
-        ).toString();
+        const signatureHash = this.getSignatureHash();
+        const originAsUint8Array = Uint8Array.from(
+            Uint8Array.from(Hex.of(this.origin.slice(2)).bytes)
+        );
+        const blake2b256Input = new Uint8Array(
+            signatureHash.length + originAsUint8Array.length
+        );
+        blake2b256Input.set(signatureHash);
+        blake2b256Input.set(originAsUint8Array, signatureHash.length);
+
+        return Blake2b256.of(blake2b256Input).toString();
     }
 
     // ********** INTERNAL PRIVATE FUNCTIONS **********
@@ -312,7 +324,7 @@ class Transaction {
      * @param signature Signature to check
      * @returns Weather the signature is valid or not
      */
-    private _isSignatureValid(signature: Buffer): boolean {
+    private _isSignatureValid(signature: Uint8Array): boolean {
         // Verify signature length
         const expectedSignatureLength = this._isDelegated(this.body)
             ? SIGNATURE_LENGTH * 2
@@ -432,7 +444,7 @@ class Transaction {
             // Block reference
             body.blockRef !== undefined &&
             Hex.isValid0x(body.blockRef) &&
-            Buffer.from(body.blockRef.slice(2), 'hex').length ===
+            Uint8Array.from(Hex.of(body.blockRef.slice(2)).bytes).length ===
                 BLOCK_REF_LENGTH &&
             // Expiration
             body.expiration !== undefined &&

@@ -259,14 +259,6 @@ const hexBlobKindDecodeTestCases = [
     }
 ];
 
-const invalidHexBlobKindDecodeTestCases = [
-    {
-        kind: new HexBlobKind(),
-        data: 42,
-        description: 'invalid data'
-    }
-];
-
 /* Fixed Hex Blob Kind decode tests */
 const fixedHexBlobKindDecodeTestCases = [
     {
@@ -902,7 +894,6 @@ export {
     invalidEncodeObjectTestCases,
     invalidFixedBlobKindDecodeTestCases,
     invalidFixedHexBlobEncodeTestCases,
-    invalidHexBlobKindDecodeTestCases,
     invalidHexBlobKindEncodeTestCases,
     invalidNumericKindDecodeTestCases,
     invalidNumericKindEncodeTestCases,

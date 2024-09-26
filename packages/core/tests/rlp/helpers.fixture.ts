@@ -40,22 +40,22 @@ const invalidNumberTestCases = [
 
 const validNumericBufferTestCases = [
     {
-        buffer: Buffer.from([1, 2, 3]),
+        buffer: Uint8Array.from([1, 2, 3]),
         context: 'testContext',
         maxBytes: undefined
     },
     {
-        buffer: Buffer.from([1, 2, 3]),
+        buffer: Uint8Array.from([1, 2, 3]),
         context: 'testContext',
         maxBytes: 3
     },
     {
-        buffer: Buffer.from([]),
+        buffer: Uint8Array.from([]),
         context: 'testContext',
         maxBytes: undefined
     },
     {
-        buffer: Buffer.from([]),
+        buffer: Uint8Array.from([]),
         context: 'testContext',
         maxBytes: 2
     }
@@ -63,17 +63,17 @@ const validNumericBufferTestCases = [
 
 const invalidNumericBufferTestCases = [
     {
-        buffer: Buffer.from([1, 2, 3, 4]),
+        buffer: Uint8Array.from([1, 2, 3, 4]),
         context: 'testContext',
         maxBytes: 3
     },
     {
-        buffer: Buffer.from([0, 2, 3]),
+        buffer: Uint8Array.from([0, 2, 3]),
         context: 'testContext',
         maxBytes: undefined
     },
     {
-        buffer: Buffer.from([0]),
+        buffer: Uint8Array.from([0]),
         context: 'testContext',
         maxBytes: 1
     }
@@ -115,11 +115,11 @@ const invalidHexBlobKindDataTestCases = [
 
 const validHexBlobKindBufferTestCases = [
     {
-        buffer: Buffer.from([1, 2, 3]),
+        buffer: Uint8Array.from([1, 2, 3]),
         context: 'testContext'
     },
     {
-        buffer: Buffer.from([]),
+        buffer: Uint8Array.from([]),
         context: 'testContext'
     }
 ];
@@ -158,12 +158,12 @@ const invalidFixedHexBlobKindDataTestCases = [
 
 const validFixedHexBlobKindBufferTestCases = [
     {
-        buffer: Buffer.from([1, 2]),
+        buffer: Uint8Array.from([1, 2]),
         context: 'testContext',
         bytes: 2
     },
     {
-        buffer: Buffer.from([]),
+        buffer: Uint8Array.from([]),
         context: 'testContext',
         bytes: 0
     }
@@ -171,7 +171,7 @@ const validFixedHexBlobKindBufferTestCases = [
 
 const invalidFixedHexBlobKindBufferTestCases = [
     {
-        buffer: Buffer.from([1, 2]),
+        buffer: Uint8Array.from([1, 2]),
         context: 'testContext',
         bytes: 1
     }
@@ -179,17 +179,17 @@ const invalidFixedHexBlobKindBufferTestCases = [
 
 const validCompactFixedHexBlobKindBufferTestCases = [
     {
-        buffer: Buffer.from([1, 2, 3]),
+        buffer: Uint8Array.from([1, 2, 3]),
         context: 'testContext',
         bytes: 5
     },
     {
-        buffer: Buffer.from([1, 2]),
+        buffer: Uint8Array.from([1, 2]),
         context: 'testContext',
         bytes: 2
     },
     {
-        buffer: Buffer.from([]),
+        buffer: Uint8Array.from([]),
         context: 'testContext',
         bytes: 0
     }
@@ -197,12 +197,12 @@ const validCompactFixedHexBlobKindBufferTestCases = [
 
 const invalidCompactFixedHexBlobKindBufferTestCases = [
     {
-        buffer: Buffer.from([1, 2, 3]),
+        buffer: Uint8Array.from([1, 2, 3]),
         context: 'testContext',
         bytes: 2
     },
     {
-        buffer: Buffer.from([0, 2, 3]),
+        buffer: Uint8Array.from([0, 2, 3]),
         context: 'testContext',
         bytes: 3
     }

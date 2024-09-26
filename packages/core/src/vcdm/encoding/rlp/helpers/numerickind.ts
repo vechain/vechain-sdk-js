@@ -170,7 +170,7 @@ const encodeBigIntToBuffer = (
     maxBytes: number | undefined,
     context: string
 ): Uint8Array => {
-    if (bi === 0n) return Uint8Array.of(0);
+    if (bi === 0n) return Uint8Array.from([]);
     const hex = Hex.of(bi).digits;
 
     if (maxBytes !== undefined && hex.length > maxBytes * 2) {

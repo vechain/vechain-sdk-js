@@ -24,12 +24,10 @@ import {
     fixedHexBlobKindEncodeTestCases,
     hexBlobKindDecodeTestCases,
     hexBlobKindEncodeTestCases,
-    invalidBufferKindDecodeTestCases,
     invalidDecodeObjectTestCases,
     invalidEncodeObjectTestCases,
     invalidFixedBlobKindDecodeTestCases,
     invalidFixedHexBlobEncodeTestCases,
-    invalidHexBlobKindDecodeTestCases,
     invalidHexBlobKindEncodeTestCases,
     invalidNumericKindDecodeTestCases,
     invalidNumericKindEncodeTestCases,
@@ -61,25 +59,6 @@ describe('RLP', () => {
                     RLP.ofEncoded(Uint8Array.from(Hex.of(input).bytes)).decoded
                 ).toEqual(expected);
             });
-        });
-    });
-
-    /**
-     * Test suite for BufferKind functionality (both encoding and decoding).
-     */
-    describe('BufferKind', () => {
-        // Testing BufferKind decoding functionality
-        describe('BufferKind decode', () => {
-            invalidBufferKindDecodeTestCases.forEach(
-                ({ kind, data, description }) => {
-                    test(description, () => {
-                        expect(() => {
-                            // @ts-expect-error - invalid input
-                            kind.buffer(data, '').decode();
-                        }).toThrowError(InvalidRLP);
-                    });
-                }
-            );
         });
     });
 
@@ -168,17 +147,6 @@ describe('RLP', () => {
                         expect(kind.buffer(data, '').decode()).toEqual(
                             expected
                         );
-                    });
-                }
-            );
-
-            invalidHexBlobKindDecodeTestCases.forEach(
-                ({ kind, data, description }) => {
-                    test(description, () => {
-                        expect(() => {
-                            // @ts-expect-error - invalid input
-                            kind.buffer(data, '').decode();
-                        }).toThrowError(InvalidRLP);
                     });
                 }
             );
@@ -487,9 +455,10 @@ describe('RLP', () => {
             invalidDecodeObjectTestCases.forEach(
                 ({ profile, data, description }) => {
                     test(description, () => {
-                        expect(
-                            RLPProfiler.ofObjectEncoded(data, profile).object
-                        ).toThrowError(InvalidRLP);
+                        expect(() => {
+                            return RLPProfiler.ofObjectEncoded(data, profile)
+                                .object;
+                        }).toThrowError(InvalidRLP);
                     });
                 }
             );

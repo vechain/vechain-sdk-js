@@ -17,7 +17,7 @@ class OptionalFixedHexBlobKind extends FixedHexBlobKind {
         // If data is null or undefined, return an empty Buffer.
         return data == null
             ? {
-                  encode: () => Uint8Array.of(0)
+                  encode: () => Uint8Array.from([])
               }
             : super.data(data, context);
     }

@@ -40,11 +40,11 @@ function decode(rawTransaction: Uint8Array, isSigned: boolean): Transaction {
 
     // Create correct transaction body (with correct reserved field)
     const correctTransactionBody: TransactionBody =
-        (decodedRLPBody.reserved as Buffer[]).length > 0
+        (decodedRLPBody.reserved as Uint8Array[]).length > 0
             ? {
                   ...bodyWithoutReservedField,
                   reserved: _decodeReservedField(
-                      decodedRLPBody.reserved as Buffer[]
+                      decodedRLPBody.reserved as Uint8Array[]
                   )
               }
             : bodyWithoutReservedField;
@@ -69,9 +69,9 @@ function decode(rawTransaction: Uint8Array, isSigned: boolean): Transaction {
  * @returns Decoded reserved field
  * @throws {InvalidTransactionField}
  */
-function _decodeReservedField(reserved: Buffer[]): {
+function _decodeReservedField(reserved: Uint8Array[]): {
     features?: number;
-    unused?: Buffer[];
+    unused?: Uint8Array[];
 } {
     // Not trimmed reserved field
     if (reserved[reserved.length - 1].length === 0) {

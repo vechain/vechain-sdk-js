@@ -43,7 +43,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
      * @param provider - The provider to connect to
      */
     constructor(
-        private readonly privateKey: Buffer,
+        private readonly privateKey: Uint8Array,
         provider: AvailableVeChainProviders | null
     ) {
         // Assert if the transaction can be signed
@@ -271,7 +271,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
      */
     private async _signWithDelegator(
         unsignedTransactionBody: TransactionBody,
-        originPrivateKey: Buffer,
+        originPrivateKey: Uint8Array,
         thorClient: ThorClient,
         delegatorOptions?: SignTransactionOptions
     ): Promise<string> {

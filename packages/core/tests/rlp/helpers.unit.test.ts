@@ -121,9 +121,7 @@ describe('NumericKind helpers', () => {
          * the function does not throw an error for valid inputs.
          */
         validNumericBufferTestCases.forEach(({ buffer, context, maxBytes }) => {
-            test(`should not throw error when buffer is valid ${buffer.toString(
-                'hex'
-            )}`, () => {
+            test(`should not throw error when buffer is valid ${Hex.of(buffer).toString()}`, () => {
                 expect(() => {
                     assertValidNumericKindBuffer(buffer, context, maxBytes);
                 }).not.toThrowError();
@@ -139,9 +137,7 @@ describe('NumericKind helpers', () => {
          */
         invalidNumericBufferTestCases.forEach(
             ({ buffer, context, maxBytes }) => {
-                test(`should throw error when buffer is invalid ${buffer.toString(
-                    'hex'
-                )}`, () => {
+                test(`should throw error when buffer is invalid ${Hex.of(buffer).toString()}}`, () => {
                     expect(() => {
                         assertValidNumericKindBuffer(buffer, context, maxBytes);
                     }).toThrowError(InvalidRLP);
@@ -218,9 +214,7 @@ describe('FixedHexBlobKind helpers', () => {
     describe('assertFixedHexBlobKindBuffer', () => {
         validFixedHexBlobKindBufferTestCases.forEach(
             ({ buffer, context, bytes }) => {
-                test(`should not throw error when buffer is valid ${buffer.toString(
-                    'hex'
-                )}`, () => {
+                test(`should not throw error when buffer is valid ${Hex.of(buffer).toString()}}`, () => {
                     expect(() => {
                         assertFixedHexBlobKindBuffer(buffer, context, bytes);
                     }).not.toThrowError();
@@ -252,9 +246,7 @@ describe('CompactFixedHexBlobKind helpers', () => {
     describe('assertCompactFixedHexBlobBuffer', () => {
         validCompactFixedHexBlobKindBufferTestCases.forEach(
             ({ buffer, context, bytes }) => {
-                test(`should not throw error when buffer is valid ${buffer.toString(
-                    'hex'
-                )}`, () => {
+                test(`should not throw error when buffer is valid ${Hex.of(buffer).toString()}}`, () => {
                     expect(() => {
                         assertCompactFixedHexBlobBuffer(buffer, context, bytes);
                     }).not.toThrowError();

@@ -53,7 +53,7 @@ const assertCompactFixedHexBlobBuffer = (
 const encodeCompactFixedHexBlob = (buffer: Uint8Array): Uint8Array => {
     const zeroIndex: number = buffer.findIndex((byte: number) => byte !== 0);
 
-    return zeroIndex !== -1 ? buffer.subarray(zeroIndex) : Uint8Array.of(0);
+    return zeroIndex !== -1 ? buffer.subarray(zeroIndex) : Uint8Array.from([]);
 };
 
 /**

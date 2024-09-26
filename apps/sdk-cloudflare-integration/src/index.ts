@@ -38,7 +38,7 @@ export default {
         // 4 - Sign transaction
         const signedTransaction = TransactionHandler.sign(
             body,
-            Buffer.from(privateKey)
+            Uint8Array.from(privateKey)
         );
 
         // 5 - Encode transaction

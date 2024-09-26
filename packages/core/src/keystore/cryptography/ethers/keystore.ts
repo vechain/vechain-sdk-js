@@ -26,7 +26,7 @@ async function encrypt(
     // Public and Address are derived from a private key
     const derivePublicKey = Secp256k1.derivePublicKey(privateKey);
     const deriveAddress = Address.ofPublicKey(
-        Buffer.from(derivePublicKey)
+        Uint8Array.from(derivePublicKey)
     ).toString();
 
     // Create keystore account compatible with ethers

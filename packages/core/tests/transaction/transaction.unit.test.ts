@@ -1,13 +1,13 @@
 import { describe, expect, test } from '@jest/globals';
-import { delegator, signer, transactions } from './fixture';
-import { Transaction, TransactionHandler } from '../../src';
 import {
     InvalidSecp256k1Signature,
     InvalidTransactionField,
     NotDelegatedTransaction,
     UnavailableTransactionField
 } from '@vechain/sdk-errors';
+import { Transaction, TransactionHandler } from '../../src';
 import { Hex } from '../../src/vcdm/Hex';
+import { delegator, signer, transactions } from './fixture';
 
 /**
  * Test transaction module
@@ -51,7 +51,7 @@ describe('Transaction', () => {
 
                 // Encoding
                 expect(unsignedTransaction.encoded).toEqual(
-                    Buffer.from(
+                    Uint8Array.from(
                         Hex.of(transaction.encodedUnsignedExpected).bytes
                     )
                 );
@@ -74,7 +74,7 @@ describe('Transaction', () => {
                 // Init unsigned transaction from body
                 const signedTransaction = TransactionHandler.sign(
                     transaction.body,
-                    Buffer.from(Hex.of(signer.privateKey).bytes)
+                    Uint8Array.from(Hex.of(signer.privateKey).bytes)
                 );
 
                 // Checks on signature
@@ -98,7 +98,9 @@ describe('Transaction', () => {
 
                 // Encoding
                 expect(signedTransaction.encoded).toEqual(
-                    Buffer.from(Hex.of(transaction.encodedSignedExpected).bytes)
+                    Uint8Array.from(
+                        Hex.of(transaction.encodedSignedExpected).bytes
+                    )
                 );
             });
         });
@@ -156,8 +158,8 @@ describe('Transaction', () => {
             transactions.delegated.forEach((transaction) => {
                 const signedTransaction = TransactionHandler.signWithDelegator(
                     transaction.body,
-                    Buffer.from(Hex.of(signer.privateKey).bytes),
-                    Buffer.from(Hex.of(delegator.privateKey).bytes)
+                    Uint8Array.from(Hex.of(signer.privateKey).bytes),
+                    Uint8Array.from(Hex.of(delegator.privateKey).bytes)
                 );
 
                 // Checks on signature
@@ -192,7 +194,9 @@ describe('Transaction', () => {
             () =>
                 new Transaction(
                     transactions.delegated[0].body,
-                    Buffer.from('INVALID_SIGNATURE')
+                    Uint8Array.from(
+                        new TextEncoder().encode('INVALID_SIGNATURE')
+                    )
                 )
         ).toThrowError(InvalidSecp256k1Signature);
 

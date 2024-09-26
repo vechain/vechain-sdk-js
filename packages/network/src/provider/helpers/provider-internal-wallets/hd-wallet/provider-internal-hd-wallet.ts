@@ -53,7 +53,7 @@ class ProviderInternalHDWallet extends ProviderInternalBaseWallet {
                 // Derive the public key and address from the private key
                 return {
                     privateKey: privateKeyBuffer,
-                    publicKey: Buffer.from(
+                    publicKey: Uint8Array.from(
                         Secp256k1.derivePublicKey(privateKeyBuffer)
                     ),
                     address: Address.ofPrivateKey(privateKeyBuffer).toString()
