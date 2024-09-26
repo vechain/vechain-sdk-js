@@ -187,7 +187,7 @@ const encodeBigIntToBuffer = (
         );
     }
 
-    return Uint8Array.from(Hex.of(hex).bytes);
+    return Hex.of(hex).bytes;
 };
 
 /**

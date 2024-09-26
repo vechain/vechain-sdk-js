@@ -1,4 +1,4 @@
-import { networkInfo, TransactionHandler } from '@vechain/sdk-core';
+import { HexUInt, networkInfo, TransactionHandler } from '@vechain/sdk-core';
 import { THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
 
@@ -15,9 +15,8 @@ const latestBlock = await thorSoloClient.blocks.getBestBlockCompressed();
 // 2.2 - Transaction sender and receiver
 const senderAccount = {
     address: '0x2669514f9fe96bc7301177ba774d3da8a06cace4',
-    privateKey: Buffer.from(
-        'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5',
-        'hex'
+    privateKey: HexUInt.of(
+        'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5'
     )
 };
 

@@ -12,7 +12,6 @@ import {
     Secp256k1,
     type Keystore
 } from '../../src';
-import { Hex } from '../../src/vcdm/Hex';
 import { encryptionPassword } from './fixture';
 
 /**
@@ -33,10 +32,12 @@ import { encryptionPassword } from './fixture';
         test('encrypt', async () => {
             // Generate a random private key
             const privateKey = await Secp256k1.generatePrivateKey();
+            const addressFromPrivateKey =
+                Address.ofPrivateKey(privateKey).toString();
 
             //  Create keystore
             const myKeystore = await keystore.encrypt(
-                Uint8Array.from(privateKey),
+                privateKey,
                 encryptionPassword
             );
 
@@ -45,8 +46,6 @@ import { encryptionPassword } from './fixture';
             const keyStoreAddress = Address.checksum(
                 HexUInt.of(myKeystore.address)
             );
-            const addressFromPrivateKey =
-                Address.ofPrivateKey(privateKey).toString();
             expect(keyStoreAddress).toEqual(addressFromPrivateKey);
         });
 
@@ -58,9 +57,7 @@ import { encryptionPassword } from './fixture';
             await expect(
                 async () =>
                     await keystore.encrypt(
-                        Uint8Array.from(
-                            new TextEncoder().encode('wrong private key')
-                        ),
+                        new TextEncoder().encode('wrong private key'),
                         encryptionPassword
                     )
             ).rejects.toThrowError(InvalidSecp256k1PrivateKey);
@@ -73,9 +70,11 @@ import { encryptionPassword } from './fixture';
             // Generate a random private key
             const privateKey = await Secp256k1.generatePrivateKey();
 
+            const expected = HexUInt.of(privateKey).toString();
+
             //  Create keystore
             const myKeystore = await keystore.encrypt(
-                Uint8Array.from(privateKey),
+                privateKey,
                 encryptionPassword
             );
 
@@ -86,9 +85,7 @@ import { encryptionPassword } from './fixture';
             );
 
             // Verify private key
-            expect(decryptedKeystore.privateKey).toEqual(
-                Hex.of(privateKey).toString()
-            );
+            expect(decryptedKeystore.privateKey).toEqual(expected);
         });
 
         /**
@@ -100,7 +97,7 @@ import { encryptionPassword } from './fixture';
 
             //  Create keystore
             const myKeystore = await keystore.encrypt(
-                Uint8Array.from(privateKey),
+                privateKey,
                 encryptionPassword
             );
 
@@ -123,7 +120,7 @@ import { encryptionPassword } from './fixture';
 
             //  Create keystore
             const myKeystore = await keystore.encrypt(
-                Uint8Array.from(privateKey),
+                privateKey,
                 encryptionPassword
             );
 
@@ -156,7 +153,7 @@ import { encryptionPassword } from './fixture';
 
             //  Create keystore
             const myKeystore = await keystore.encrypt(
-                Uint8Array.from(privateKey),
+                privateKey,
                 encryptionPassword
             );
 

@@ -1,7 +1,9 @@
 import {
     Address,
     Clause,
-    Hex, TransactionClause,
+    Hex,
+    HexUInt,
+    type TransactionClause,
     TransactionHandler,
     VET
 } from '@vechain/sdk-core';
@@ -69,14 +71,14 @@ const delegatedTransactionBody = {
 
 const rawDelegatedSigned = TransactionHandler.signWithDelegator(
     delegatedTransactionBody,
-    Buffer.from(senderAccount.privateKey, 'hex'),
-    Buffer.from(delegateAccount.privateKey, 'hex')
+    HexUInt.of(senderAccount.privateKey).bytes,
+    HexUInt.of(delegateAccount.privateKey).bytes
 ).encoded;
 
 // 6 - Send transaction
 
 const send = await thorSoloClient.transactions.sendRawTransaction(
-    `0x${rawDelegatedSigned.toString('hex')}`
+    `0x${HexUInt.of(rawDelegatedSigned).toString()}`
 );
 expect(send).toBeDefined();
 expect(send).toHaveProperty('id');

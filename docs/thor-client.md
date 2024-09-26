@@ -361,14 +361,14 @@ const delegatedTransactionBody = {
 
 const rawDelegatedSigned = TransactionHandler.signWithDelegator(
     delegatedTransactionBody,
-    Buffer.from(senderAccount.privateKey, 'hex'),
-    Buffer.from(delegateAccount.privateKey, 'hex')
+    HexUInt.of(senderAccount.privateKey).bytes,
+    HexUInt.of(delegateAccount.privateKey).bytes
 ).encoded;
 
 // 6 - Send transaction
 
 const send = await thorSoloClient.transactions.sendRawTransaction(
-    `0x${rawDelegatedSigned.toString('hex')}`
+    `0x${HexUInt.of(rawDelegatedSigned).toString()}`
 );
 expect(send).toBeDefined();
 expect(send).toHaveProperty('id');
@@ -406,9 +406,8 @@ const latestBlock = await thorSoloClient.blocks.getBestBlockCompressed();
 // 2.2 - Transaction sender and receiver
 const senderAccount = {
     address: '0x2669514f9fe96bc7301177ba774d3da8a06cace4',
-    privateKey: Buffer.from(
-        'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5',
-        'hex'
+    privateKey: HexUInt.of(
+        'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5'
     )
 };
 

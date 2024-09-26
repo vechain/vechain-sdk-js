@@ -1,4 +1,10 @@
-import { Address, Clause, TransactionClause, TransactionHandler, VET } from '@vechain/sdk-core';
+import {
+    Address,
+    Clause,
+    TransactionClause,
+    TransactionHandler,
+    VET
+} from '@vechain/sdk-core';
 import {
     ProviderInternalBaseWallet,
     signerUtils,

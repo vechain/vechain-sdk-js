@@ -46,7 +46,7 @@ function sign(
     );
 
     // Return new signed transaction
-    return new Transaction(transactionBody, Uint8Array.from(signature));
+    return new Transaction(transactionBody, signature);
 }
 
 /**

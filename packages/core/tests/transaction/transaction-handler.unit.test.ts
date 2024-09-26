@@ -1,5 +1,5 @@
 import { Hex } from '../../src/vcdm/Hex';
-import { SIGNATURE_LENGTH, TransactionHandler } from '../../src';
+import { HexUInt, SIGNATURE_LENGTH, TransactionHandler } from '../../src';
 import { describe, expect, test } from '@jest/globals';
 import {
     delegator,
@@ -30,15 +30,15 @@ describe('Transaction handler', () => {
             transactions.undelegated.forEach((transaction) => {
                 const signedTransaction = TransactionHandler.sign(
                     transaction.body,
-                    Uint8Array.from(Hex.of(signer.privateKey).bytes)
+                    HexUInt.of(signer.privateKey).bytes
                 );
 
                 // Sign a non-delegated transaction with delegator
                 expect(() =>
                     TransactionHandler.signWithDelegator(
                         transaction.body,
-                        Uint8Array.from(Hex.of(signer.privateKey).bytes),
-                        Uint8Array.from(Hex.of(delegator.privateKey).bytes)
+                        HexUInt.of(signer.privateKey).bytes,
+                        HexUInt.of(delegator.privateKey).bytes
                     )
                 ).toThrowError(NotDelegatedTransaction);
 
@@ -68,22 +68,22 @@ describe('Transaction handler', () => {
             transactions.delegated.forEach((transaction) => {
                 const signedTransaction = TransactionHandler.signWithDelegator(
                     transaction.body,
-                    Uint8Array.from(Hex.of(signer.privateKey).bytes),
-                    Uint8Array.from(Hex.of(delegator.privateKey).bytes)
+                    HexUInt.of(signer.privateKey).bytes,
+                    HexUInt.of(delegator.privateKey).bytes
                 );
 
                 // Sign normally a delegated transaction
                 expect(() =>
                     TransactionHandler.sign(
                         transaction.body,
-                        Uint8Array.from(Hex.of(signer.privateKey).bytes)
+                        HexUInt.of(signer.privateKey).bytes
                     )
                 ).toThrowError(InvalidTransactionField);
 
                 expect(() =>
                     TransactionHandler.sign(
                         transaction.body,
-                        Uint8Array.from(Hex.of(delegator.privateKey).bytes)
+                        HexUInt.of(delegator.privateKey).bytes
                     )
                 ).toThrowError(InvalidTransactionField);
 
@@ -113,7 +113,7 @@ describe('Transaction handler', () => {
             expect(() => {
                 TransactionHandler.sign(
                     transactions.undelegated[0].body,
-                    Uint8Array.from(invalid)
+                    invalid
                 );
             }).toThrowError(InvalidSecp256k1PrivateKey);
 
@@ -121,24 +121,24 @@ describe('Transaction handler', () => {
             expect(() => {
                 TransactionHandler.signWithDelegator(
                     transactions.delegated[0].body,
-                    Uint8Array.from(invalid),
-                    Uint8Array.from(Hex.of(delegator.privateKey).bytes)
+                    invalid,
+                    HexUInt.of(delegator.privateKey).bytes
                 );
             }).toThrowError(InvalidSecp256k1PrivateKey);
 
             expect(() => {
                 TransactionHandler.signWithDelegator(
                     transactions.delegated[0].body,
-                    Uint8Array.from(Hex.of(signer.privateKey).bytes),
-                    Uint8Array.from(invalid)
+                    HexUInt.of(signer.privateKey).bytes,
+                    invalid
                 );
             }).toThrowError(InvalidSecp256k1PrivateKey);
 
             expect(() => {
                 TransactionHandler.signWithDelegator(
                     transactions.delegated[0].body,
-                    Uint8Array.from(invalid),
-                    Uint8Array.from(invalid)
+                    invalid,
+                    invalid
                 );
             }).toThrowError(InvalidSecp256k1PrivateKey);
         });
@@ -155,7 +155,7 @@ describe('Transaction handler', () => {
             transactions.undelegated.forEach((transaction) => {
                 // Unsigned transaction
                 const decodedUnsigned = TransactionHandler.decode(
-                    Uint8Array.from(transaction.encodedUnsignedExpected),
+                    transaction.encodedUnsignedExpected,
                     false
                 );
 
@@ -185,7 +185,7 @@ describe('Transaction handler', () => {
 
                 // Signed transaction
                 const decodedSigned = TransactionHandler.decode(
-                    Uint8Array.from(transaction.encodedSignedExpected),
+                    transaction.encodedSignedExpected,
                     true
                 );
 
@@ -244,8 +244,8 @@ describe('Transaction handler', () => {
                 const encodedSignedDelegated =
                     TransactionHandler.signWithDelegator(
                         transactions.delegated[0].body,
-                        Uint8Array.from(Hex.of(signer.privateKey).bytes),
-                        Uint8Array.from(Hex.of(delegator.privateKey).bytes)
+                        HexUInt.of(signer.privateKey).bytes,
+                        HexUInt.of(delegator.privateKey).bytes
                     );
 
                 // Signed transaction

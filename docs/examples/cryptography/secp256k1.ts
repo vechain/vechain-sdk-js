@@ -13,7 +13,7 @@ console.log('Private key:', Hex.of(privateKey).toString());
 //     By default, the key is returned in compressed form.
 
 const publicKey = Secp256k1.derivePublicKey(privateKey);
-const userAddress = Address.ofPublicKey(Buffer.from(publicKey)).toString();
+const userAddress = Address.ofPublicKey(publicKey).toString();
 console.log('User address:', userAddress);
 // User address: 0x...SOME_ADDRESS...
 

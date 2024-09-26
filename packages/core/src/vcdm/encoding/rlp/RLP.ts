@@ -217,8 +217,6 @@ class RLP implements VeChainDataModel<RLP> {
                 );
             }
 
-            if (packed instanceof Uint8Array) packed = Uint8Array.from(packed);
-
             return kind.buffer(packed, context).decode();
         }
 

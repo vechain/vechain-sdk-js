@@ -15,6 +15,7 @@ import {
 } from '../utils';
 import { Address } from '../vcdm/Address';
 import { Hex } from '../vcdm/Hex';
+import { HexUInt } from '../vcdm/HexUInt';
 import { RLPProfiler, type RLPValidObject } from '../vcdm/encoding';
 import { Blake2b256 } from '../vcdm/hash/Blake2b256';
 import { type TransactionBody } from './types';
@@ -132,9 +133,7 @@ class Transaction {
         );
 
         // Address from public key
-        return Address.ofPublicKey(
-            Uint8Array.from(delegatorPublicKey)
-        ).toString();
+        return Address.ofPublicKey(delegatorPublicKey).toString();
     }
 
     /**
@@ -210,22 +209,21 @@ class Transaction {
 
         // There is a delegateFor address (@note we already know that it is a valid address)
         if (delegateFor !== undefined) {
-            const txHashAsUint8Array = Uint8Array.from(transactionHash);
-            const delegateForAsUint8Array = Uint8Array.from(
-                Uint8Array.from(Hex.of(delegateFor.slice(2)).bytes)
-            );
+            const delegateForAsUint8Array = HexUInt.of(
+                delegateFor.slice(2)
+            ).bytes;
             const blake2b256Input = new Uint8Array(
-                txHashAsUint8Array.length + delegateForAsUint8Array.length
+                transactionHash.length + delegateForAsUint8Array.length
             );
-            blake2b256Input.set(txHashAsUint8Array);
+            blake2b256Input.set(transactionHash);
             blake2b256Input.set(
                 delegateForAsUint8Array,
-                txHashAsUint8Array.length
+                transactionHash.length
             );
-            return Uint8Array.from(Blake2b256.of(blake2b256Input).bytes);
+            return Blake2b256.of(blake2b256Input).bytes;
         }
 
-        return Uint8Array.from(transactionHash);
+        return transactionHash;
     }
 
     /**
@@ -263,7 +261,7 @@ class Transaction {
         );
 
         // Address from public key
-        return Address.ofPublicKey(Uint8Array.from(originPublicKey)).toString();
+        return Address.ofPublicKey(originPublicKey).toString();
     }
 
     /**
@@ -283,9 +281,7 @@ class Transaction {
 
         // Return transaction ID
         const signatureHash = this.getSignatureHash();
-        const originAsUint8Array = Uint8Array.from(
-            Uint8Array.from(Hex.of(this.origin.slice(2)).bytes)
-        );
+        const originAsUint8Array = HexUInt.of(this.origin.slice(2)).bytes;
         const blake2b256Input = new Uint8Array(
             signatureHash.length + originAsUint8Array.length
         );
@@ -444,7 +440,7 @@ class Transaction {
             // Block reference
             body.blockRef !== undefined &&
             Hex.isValid0x(body.blockRef) &&
-            Uint8Array.from(Hex.of(body.blockRef.slice(2)).bytes).length ===
+            HexUInt.of(body.blockRef.slice(2)).bytes.length ===
                 BLOCK_REF_LENGTH &&
             // Expiration
             body.expiration !== undefined &&

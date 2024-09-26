@@ -5,8 +5,7 @@ import {
     NotDelegatedTransaction,
     UnavailableTransactionField
 } from '@vechain/sdk-errors';
-import { Transaction, TransactionHandler } from '../../src';
-import { Hex } from '../../src/vcdm/Hex';
+import { HexUInt, Transaction, TransactionHandler } from '../../src';
 import { delegator, signer, transactions } from './fixture';
 
 /**
@@ -31,7 +30,9 @@ describe('Transaction', () => {
                 expect(unsignedTransaction.isSigned).toEqual(false);
                 expect(unsignedTransaction.isDelegated).toEqual(false);
                 expect(
-                    Hex.of(unsignedTransaction.getSignatureHash()).toString()
+                    HexUInt.of(
+                        unsignedTransaction.getSignatureHash()
+                    ).toString()
                 ).toEqual(transaction.signatureHashExpected);
 
                 // Get id from unsigned transaction (should throw error)
@@ -51,9 +52,7 @@ describe('Transaction', () => {
 
                 // Encoding
                 expect(unsignedTransaction.encoded).toEqual(
-                    Uint8Array.from(
-                        Hex.of(transaction.encodedUnsignedExpected).bytes
-                    )
+                    HexUInt.of(transaction.encodedUnsignedExpected).bytes
                 );
 
                 // Intrinsic gas
@@ -74,7 +73,7 @@ describe('Transaction', () => {
                 // Init unsigned transaction from body
                 const signedTransaction = TransactionHandler.sign(
                     transaction.body,
-                    Uint8Array.from(Hex.of(signer.privateKey).bytes)
+                    HexUInt.of(signer.privateKey).bytes
                 );
 
                 // Checks on signature
@@ -82,7 +81,7 @@ describe('Transaction', () => {
                 expect(signedTransaction.isSigned).toEqual(true);
                 expect(signedTransaction.isDelegated).toEqual(false);
                 expect(
-                    Hex.of(signedTransaction.getSignatureHash()).toString()
+                    HexUInt.of(signedTransaction.getSignatureHash()).toString()
                 ).toEqual(transaction.signatureHashExpected);
 
                 // Checks on origin, id and delegator
@@ -98,9 +97,7 @@ describe('Transaction', () => {
 
                 // Encoding
                 expect(signedTransaction.encoded).toEqual(
-                    Uint8Array.from(
-                        Hex.of(transaction.encodedSignedExpected).bytes
-                    )
+                    HexUInt.of(transaction.encodedSignedExpected).bytes
                 );
             });
         });
@@ -123,7 +120,9 @@ describe('Transaction', () => {
                 expect(unsignedTransaction.isSigned).toEqual(false);
                 expect(unsignedTransaction.isDelegated).toEqual(true);
                 expect(
-                    Hex.of(unsignedTransaction.getSignatureHash()).toString()
+                    HexUInt.of(
+                        unsignedTransaction.getSignatureHash()
+                    ).toString()
                 ).toEqual(transaction.signatureHashExpected);
 
                 // Get id from unsigned transaction (should throw error)
@@ -158,8 +157,8 @@ describe('Transaction', () => {
             transactions.delegated.forEach((transaction) => {
                 const signedTransaction = TransactionHandler.signWithDelegator(
                     transaction.body,
-                    Uint8Array.from(Hex.of(signer.privateKey).bytes),
-                    Uint8Array.from(Hex.of(delegator.privateKey).bytes)
+                    HexUInt.of(signer.privateKey).bytes,
+                    HexUInt.of(delegator.privateKey).bytes
                 );
 
                 // Checks on signature
@@ -167,7 +166,7 @@ describe('Transaction', () => {
                 expect(signedTransaction.isSigned).toEqual(true);
                 expect(signedTransaction.isDelegated).toEqual(true);
                 expect(
-                    Hex.of(signedTransaction.getSignatureHash()).toString()
+                    HexUInt.of(signedTransaction.getSignatureHash()).toString()
                 ).toEqual(transaction.signatureHashExpected);
 
                 // Checks on origin, id and delegator
@@ -194,9 +193,7 @@ describe('Transaction', () => {
             () =>
                 new Transaction(
                     transactions.delegated[0].body,
-                    Uint8Array.from(
-                        new TextEncoder().encode('INVALID_SIGNATURE')
-                    )
+                    new TextEncoder().encode('INVALID_SIGNATURE')
                 )
         ).toThrowError(InvalidSecp256k1Signature);
 

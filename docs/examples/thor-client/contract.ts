@@ -7,7 +7,7 @@ import {
     type VeChainSigner
 } from '@vechain/sdk-network';
 import { expect } from 'expect';
-import type { DeployParams } from '@vechain/sdk-core';
+import { HexUInt, type DeployParams } from '@vechain/sdk-core';
 
 // START_SNIPPET: ContractSnippet
 
@@ -19,10 +19,9 @@ const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
 
 // Defining the deployer account, which has VTHO for deployment costs
 const deployerAccount: ProviderInternalWalletAccount = {
-    privateKey: Buffer.from(
-        '706e6acd567fdc22db54aead12cb39db01c4832f149f95299aa8dd8bef7d28ff',
-        'hex'
-    ),
+    privateKey: HexUInt.of(
+        '706e6acd567fdc22db54aead12cb39db01c4832f149f95299aa8dd8bef7d28ff'
+    ).bytes,
     address: '0xf02f557c753edf5fcdcbfe4c1c3a448b3cc84d54'
 };
 

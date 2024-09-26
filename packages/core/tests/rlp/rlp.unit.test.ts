@@ -34,6 +34,7 @@ import {
     numericKindDecodeTestCases,
     numericKindEncodeTestCases
 } from './rlp.fixture';
+import { HexUInt } from '../../src';
 
 /**
  * Test suite for RLP encoding/decoding functionality
@@ -55,9 +56,9 @@ describe('RLP', () => {
     describe('decode', () => {
         decodeTestCases.forEach(({ input, expected, description }) => {
             test(description, () => {
-                expect(
-                    RLP.ofEncoded(Uint8Array.from(Hex.of(input).bytes)).decoded
-                ).toEqual(expected);
+                expect(RLP.ofEncoded(HexUInt.of(input).bytes).decoded).toEqual(
+                    expected
+                );
             });
         });
     });

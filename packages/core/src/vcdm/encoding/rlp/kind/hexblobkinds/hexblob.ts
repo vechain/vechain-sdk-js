@@ -1,4 +1,5 @@
 import { Hex } from '../../../../Hex';
+import { HexUInt } from '../../../../HexUInt';
 import { assertValidHexBlobKindData } from '../../helpers';
 import { type BufferOutput, type DataOutput, type RLPInput } from '../../types';
 import { ScalarKind } from '../scalarkind.abstract';
@@ -22,8 +23,7 @@ class HexBlobKind extends ScalarKind {
         assertValidHexBlobKindData(data, context);
 
         return {
-            encode: () =>
-                Uint8Array.from(Hex.of((data as string).slice(2)).bytes)
+            encode: () => HexUInt.of((data as string).slice(2)).bytes
         };
     }
 

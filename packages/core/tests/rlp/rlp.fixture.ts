@@ -2,8 +2,8 @@ import {
     BufferKind,
     CompactFixedHexBlobKind,
     FixedHexBlobKind,
-    Hex,
     HexBlobKind,
+    HexUInt,
     NumericKind,
     OptionalFixedHexBlobKind,
     type RLPProfile,
@@ -149,7 +149,7 @@ const numericKindDecodeTestCases = [
     },
     {
         kind: new NumericKind(1),
-        data: Uint8Array.from(Hex.of('ff').bytes),
+        data: HexUInt.of('ff').bytes,
         description: 'buffer with data',
         expected: 255
     }
@@ -779,7 +779,7 @@ const invalidEncodeObjectTestCases = [
 const decodeBufferProfileTestCases = [
     {
         profile: bufferProfile,
-        data: Uint8Array.from(Hex.of('c88301020383040506').bytes),
+        data: HexUInt.of('c88301020383040506').bytes,
         expected: bufferData,
         description: 'decode buffer profile'
     }
@@ -788,19 +788,17 @@ const decodeBufferProfileTestCases = [
 const invalidDecodeObjectTestCases = [
     {
         profile: numericProfile,
-        data: Uint8Array.from(Hex.of('c60102c3c20304').bytes),
+        data: HexUInt.of('c60102c3c20304').bytes,
         description: 'decode buffer profile with invalid data'
     },
     {
         profile: numericProfile,
-        data: Uint8Array.from(Hex.of('c3010202').bytes),
+        data: HexUInt.of('c3010202').bytes,
         description: 'decode buffer profile with invalid data'
     },
     {
         profile: numericProfile,
-        data: Uint8Array.from(
-            Hex.of('d1c7c60304c3c2070802c7c60304c3c20708').bytes
-        ),
+        data: HexUInt.of('d1c7c60304c3c2070802c7c60304c3c20708').bytes,
         description: 'decode buffer profile with invalid data'
     }
 ];
@@ -808,15 +806,13 @@ const invalidDecodeObjectTestCases = [
 const decodeNumericProfileTestCases = [
     {
         profile: numericProfileWithMaxBytes,
-        data: Uint8Array.from(Hex.of('c90102c6c20304c20506').bytes),
+        data: HexUInt.of('c90102c6c20304c20506').bytes,
         expected: numericDataWithMaxBytes,
         description: 'decode numeric profile'
     },
     {
         profile: numericProfile,
-        data: Uint8Array.from(
-            Hex.of('d10102cec60304c3c20708c60506c3c2800a').bytes
-        ),
+        data: HexUInt.of('d10102cec60304c3c20708c60506c3c2800a').bytes,
         expected: numericData,
         description: 'decode numeric profile'
     }
@@ -825,7 +821,7 @@ const decodeNumericProfileTestCases = [
 const decodeHexBlobProfileTestCases = [
     {
         profile: hexBlobProfile,
-        data: Uint8Array.from(Hex.of('c88301020383040506').bytes),
+        data: HexUInt.of('c88301020383040506').bytes,
         expected: hexBlobData,
         description: 'decode hex blob profile'
     }
@@ -834,7 +830,7 @@ const decodeHexBlobProfileTestCases = [
 const decodeCompactFixedHexBlobProfileTestCases = [
     {
         profile: compactFixedHexBlobProfile,
-        data: Uint8Array.from(Hex.of('c50183010203').bytes),
+        data: HexUInt.of('c50183010203').bytes,
         expected: compactFixedHexBlobData,
         description: 'decode compact fixed hex blob profile'
     }
@@ -843,19 +839,15 @@ const decodeCompactFixedHexBlobProfileTestCases = [
 const decodeMixedKindProfileTestCases = [
     {
         profile: mixedKindProfile1,
-        data: Uint8Array.from(
-            Hex.of('d17b8412345678cac4118204d2c41282162e').bytes
-        ),
+        data: HexUInt.of('d17b8412345678cac4118204d2c41282162e').bytes,
         expected: mixedKindData1,
         description: 'decode mixed kind profile'
     },
     {
         profile: mixedKindProfile2,
-        data: Uint8Array.from(
-            Hex.of(
-                'f8530184aabbccdd20f840df947567d83b7b8d80addcb281a71d54fc7b3364ffed82271086000000606060df947567d83b7b8d80addcb281a71d54fc7b3364ffed824e208600000060606081808252088083bc614e'
-            ).bytes
-        ),
+        data: HexUInt.of(
+            'f8530184aabbccdd20f840df947567d83b7b8d80addcb281a71d54fc7b3364ffed82271086000000606060df947567d83b7b8d80addcb281a71d54fc7b3364ffed824e208600000060606081808252088083bc614e'
+        ).bytes,
         expected: mixedKindData2,
         description: 'decode mixed kind profile with transaction like data'
     }

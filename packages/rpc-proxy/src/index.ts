@@ -1,5 +1,17 @@
 #! /usr/bin/env node
 
+import { Address, HDKey, Secp256k1 } from '@vechain/sdk-core';
+import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
+import {
+    ProviderInternalBaseWallet,
+    ProviderInternalHDWallet,
+    type ProviderInternalWallet,
+    ThorClient,
+    VeChainProvider
+} from '@vechain/sdk-network';
+import cors from 'cors';
+import express, { type Express, type Request, type Response } from 'express';
 import defaultProxyConfig from '../default-proxy-config.json';
 import packageJson from '../package.json';
 import { type Config, type RequestBody } from './types';
@@ -8,18 +20,6 @@ import {
     getOptionsFromCommandLine,
     parseAndGetFinalConfig
 } from './utils';
-import {
-    ProviderInternalBaseWallet,
-    ProviderInternalHDWallet,
-    type ProviderInternalWallet,
-    ThorClient,
-    VeChainProvider
-} from '@vechain/sdk-network';
-import { Address, HDKey, Secp256k1 } from '@vechain/sdk-core';
-import { VeChainSDKLogger } from '@vechain/sdk-logging';
-import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
-import express, { type Express, type Request, type Response } from 'express';
-import cors from 'cors';
 
 /**
  * Start the proxy function.
@@ -66,9 +66,7 @@ function startProxy(): void {
                   // Derive the public key and address from the private key
                   return {
                       privateKey: privateKeyBuffer,
-                      publicKey: Uint8Array.from(
-                          Secp256k1.derivePublicKey(privateKeyBuffer)
-                      ),
+                      publicKey: Secp256k1.derivePublicKey(privateKeyBuffer),
                       address: Address.ofPrivateKey(privateKeyBuffer).toString()
                   };
               }),
