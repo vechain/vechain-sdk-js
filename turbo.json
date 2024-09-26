@@ -5,6 +5,7 @@
             "dependsOn": ["^build"],
             "outputs": ["dist/**"]
         },
+        "check:circular-dependencies": {},
         "test": {
             "outputs": ["coverage/**"],
             "dependsOn": ["^build"]

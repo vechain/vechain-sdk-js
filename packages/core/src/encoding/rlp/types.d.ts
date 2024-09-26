@@ -1,5 +1,4 @@
 import { type Input, type NestedUint8Array } from '@ethereumjs/rlp';
-import { type ScalarKind } from './kind';
 /**
  * Represents a valid input for the RLP (Recursive Length Prefix) encoding.
  * The RLP encoding is used to encode arbitrary binary data (nested arrays of bytes).
@@ -51,27 +50,6 @@ type RLPValidObject = Record<string, RLPValueType>;
  */
 type RLPValueType = RLPInput | RLPComplexObject | RLPComplexObject[];
 
-/* ------- RLP Profile Types ------- */
-/**
- * `RLPProfile` Interface - Describes the profile of the RLP encoding.
- */
-interface RLPProfile {
-    name: string;
-    kind: ScalarKind | ArrayKind | StructKind;
-}
-
-/**
- * `ArrayKind` Interface - Describes an array-kind in the RLP encoding profile.
- */
-interface ArrayKind {
-    item: RLPProfile['kind'];
-}
-
-/**
- * `StructKind` Type - Describes a structured-kind in the RLP encoding profile using an array of `RLPProfile`.
- */
-type StructKind = RLPProfile[];
-
 /**
  * `DataOutput` Interface - Provides an encoding mechanism to convert data into a Buffer.
  */
@@ -87,13 +65,10 @@ interface BufferOutput {
 }
 
 export type {
+    BufferOutput,
+    DataOutput,
     RLPInput,
     RLPOutput,
     RLPValidObject,
-    RLPValueType,
-    RLPProfile,
-    ArrayKind,
-    StructKind,
-    DataOutput,
-    BufferOutput
+    RLPValueType
 };

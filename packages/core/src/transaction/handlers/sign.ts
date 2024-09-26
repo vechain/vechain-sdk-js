@@ -1,4 +1,4 @@
-import { Address } from '../../vcdm';
+import { Address } from '../../vcdm/Address';
 import { Secp256k1 } from '../../secp256k1';
 import { Transaction } from '../Transaction';
 import {

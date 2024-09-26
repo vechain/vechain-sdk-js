@@ -1,6 +1,8 @@
-import { Coin } from './Coin';
+import { Clause, type ClauseOptions } from '../../transaction';
+import { type Address } from '../Address';
 import { FixedPointNumber } from '../FixedPointNumber';
 import { Txt } from '../Txt';
+import { Coin } from './Coin';
 import { Units } from './Units';
 
 /**
