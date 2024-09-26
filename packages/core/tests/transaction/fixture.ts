@@ -73,8 +73,8 @@ const transactions = {
                 reserved: {
                     features: 1,
                     unused: [
-                        HexUInt.of('0x000').bytes,
-                        HexUInt.of('0x000').bytes
+                        Uint8Array.from(Buffer.from('0x000')),
+                        Uint8Array.from(Buffer.from('0x000'))
                     ]
                 }
             },
