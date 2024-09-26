@@ -78,7 +78,7 @@ describe('ThorClient - Transactions Module', () => {
                     HexUInt.of(
                         TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
                     ).bytes
-                ).encode;
+                ).encoded;
 
                 const rawDelegatedSigned = Transaction.of(
                     delegatedTransactionBody
@@ -88,7 +88,7 @@ describe('ThorClient - Transactions Module', () => {
                     ).bytes,
                     HexUInt.of(TEST_ACCOUNTS.TRANSACTION.DELEGATOR.privateKey)
                         .bytes
-                ).encode;
+                ).encoded;
 
                 // 2 - Send transaction
                 for (const raw of [rawNormalSigned, rawDelegatedSigned]) {

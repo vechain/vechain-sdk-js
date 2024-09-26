@@ -51,7 +51,7 @@ const transactionBody = {
 
 const rawNormalSigned = Transaction.of(transactionBody).sign(
     HexUInt.of(senderAccount.privateKey).bytes
-).encode;
+).encoded;
 
 // 6 - Send transaction
 

@@ -55,7 +55,7 @@ const signedTransaction = Transaction.of(body).sign(privateKey);
 
 // 5 - Encode transaction
 
-const encodedRaw = signedTransaction.encode;
+const encodedRaw = signedTransaction.encoded;
 
 // 6 - Decode transaction
 
@@ -107,7 +107,7 @@ const signedTransaction = Transaction.of(body).sign(privateKey);
 
 // 5 - Encode transaction
 
-const encodedRaw = signedTransaction.encode;
+const encodedRaw = signedTransaction.encoded;
 
 // 6 - Decode transaction
 
@@ -179,7 +179,7 @@ const signedTransaction = Transaction.of(body).signWithDelegator(
 
 // 7 - Encode transaction
 
-const encodedRaw = signedTransaction.encode;
+const encodedRaw = signedTransaction.encoded;
 
 // 8 - Decode transaction and check
 
@@ -222,7 +222,7 @@ const signedTransaction = Transaction.of(body).sign(privateKey);
 
 // 5 - Encode transaction
 
-const encodedRaw = signedTransaction.encode;
+const encodedRaw = signedTransaction.encoded;
 
 // 6 - Decode transaction and check
 
@@ -297,7 +297,7 @@ const txBSigned = Transaction.of(txBBody).sign(senderPrivateKey);
 
 // 7 - encode Tx B
 
-const rawTxB = txBSigned.encode;
+const rawTxB = txBSigned.encoded;
 
 // Check (we can decode Tx B)
 const decodedTx = Transaction.decode(rawTxB, true);

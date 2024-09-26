@@ -203,7 +203,7 @@ class Transaction {
      *
      * @see decode
      */
-    public get encode(): Uint8Array {
+    public get encoded(): Uint8Array {
         return this._encode(this.isSigned);
     }
 
@@ -298,7 +298,7 @@ class Transaction {
      * @param {boolean} isSigned - Flag indicating if the transaction is signed.
      * @return {Transaction} The decoded transaction object.
      *
-     * @see encode
+     * @see encoded
      */
     public static decode(
         rawTransaction: Uint8Array,
@@ -626,7 +626,7 @@ class Transaction {
      * @param {boolean} isSigned - Indicates whether the transaction is signed.
      * @return {Uint8Array} The RLP encoded transaction body.
      *
-     * @see encode
+     * @see encoded
      */
     private _encode(isSigned: boolean): Uint8Array {
         // Encode transaction body with RLP
@@ -659,7 +659,7 @@ class Transaction {
      * @param isSigned - A boolean indicating if the transaction is signed.
      * @return A Uint8Array representing the encoded transaction.
      *
-     * @see encode
+     * @see encoded
      */
     private _encodeBodyField(
         body: RLPValidObject,

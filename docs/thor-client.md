@@ -254,7 +254,7 @@ const transactionBody = {
 
 const rawNormalSigned = Transaction.of(transactionBody).sign(
     HexUInt.of(senderAccount.privateKey).bytes
-).encode;
+).encoded;
 
 // 6 - Send transaction
 
@@ -363,7 +363,7 @@ const rawDelegatedSigned = Transaction.of(
 ).signWithDelegator(
     HexUInt.of(senderAccount.privateKey).bytes,
     HexUInt.of(delegateAccount.privateKey).bytes
-).encode;
+).encoded;
 
 // 6 - Send transaction
 
@@ -455,7 +455,7 @@ const transactionBody = {
 // 5 - Sign transaction
 const rawNormalSigned = Transaction.of(transactionBody).sign(
     senderAccount.privateKey
-).encode;
+).encoded;
 
 // 6 - Send transaction
 

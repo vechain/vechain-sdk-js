@@ -45,7 +45,7 @@ const signedTransaction = Transaction.of(body).sign(privateKey);
 
 // 5 - Encode transaction
 
-const encodedRaw = signedTransaction.encode;
+const encodedRaw = signedTransaction.encoded;
 
 // 6 - Decode transaction and check
 

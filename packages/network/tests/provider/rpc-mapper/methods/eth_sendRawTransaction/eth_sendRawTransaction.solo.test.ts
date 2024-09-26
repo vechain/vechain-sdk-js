@@ -86,7 +86,7 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
                 HexUInt.of(actors.sender.privateKey).bytes
             );
 
-            const raw = HexUInt.of(signedTransaction.encode).toString();
+            const raw = HexUInt.of(signedTransaction.encoded).toString();
 
             // 3 - Send raw transaction
 

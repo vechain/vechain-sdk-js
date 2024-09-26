@@ -64,7 +64,7 @@ const transactionBody = {
 // 5 - Sign transaction
 const rawNormalSigned = Transaction.of(transactionBody).sign(
     senderAccount.privateKey
-).encode;
+).encoded;
 
 // 6 - Send transaction
 

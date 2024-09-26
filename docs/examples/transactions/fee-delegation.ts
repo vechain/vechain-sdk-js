@@ -76,7 +76,7 @@ const signedTransaction = Transaction.of(body).signWithDelegator(
 
 // 7 - Encode transaction
 
-const encodedRaw = signedTransaction.encode;
+const encodedRaw = signedTransaction.encoded;
 
 // 8 - Decode transaction and check
 

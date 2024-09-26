@@ -252,7 +252,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
               )
             : Hex.of(
                   Transaction.of(populatedTransaction).sign(this.privateKey)
-                      .encode
+                      .encoded
               ).toString();
     }
 
@@ -285,7 +285,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
                 Transaction.of(unsignedTransactionBody).signWithDelegator(
                     originPrivateKey,
                     Buffer.from(delegatorOptions?.delegatorPrivateKey, 'hex')
-                ).encode
+                ).encoded
             ).toString();
 
         // Otherwise, get the signature of the delegator from the delegator endpoint
@@ -308,7 +308,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
 
         // Return new signed transaction
         return Hex.of(
-            Transaction.of(unsignedTx.body, signature).encode
+            Transaction.of(unsignedTx.body, signature).encoded
         ).toString();
     }
 }

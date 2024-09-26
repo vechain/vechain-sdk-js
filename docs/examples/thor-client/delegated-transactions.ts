@@ -73,7 +73,7 @@ const rawDelegatedSigned = Transaction.of(
 ).signWithDelegator(
     HexUInt.of(senderAccount.privateKey).bytes,
     HexUInt.of(delegateAccount.privateKey).bytes
-).encode;
+).encoded;
 
 // 6 - Send transaction
 

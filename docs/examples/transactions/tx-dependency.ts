@@ -77,7 +77,7 @@ const txBSigned = Transaction.of(txBBody).sign(senderPrivateKey);
 
 // 7 - encode Tx B
 
-const rawTxB = txBSigned.encode;
+const rawTxB = txBSigned.encoded;
 
 // Check (we can decode Tx B)
 const decodedTx = Transaction.decode(rawTxB, true);

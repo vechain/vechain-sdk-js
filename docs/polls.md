@@ -100,7 +100,7 @@ const transactionBody = {
 };
 
 // 2.5 - Sign and get raw transaction
-const encoded = Transaction.of(transactionBody).sign(sender.privateKey).encode;
+const encoded = Transaction.of(transactionBody).sign(sender.privateKey).encoded;
 const raw = HexUInt.of(encoded).toString();
 
 // 3 - Get the sender and receiver balance before the transaction

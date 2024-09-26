@@ -13,7 +13,7 @@ classDiagram
         +string comment?
         +boolean includeABI?
     }
-    class DeployParameters {
+    class DeployParams {
         <<interface>>
         ParamType[]|string[] types
         string[] values
@@ -21,7 +21,25 @@ classDiagram
     class Reserved {
         <<interface>>
         +number features?
-        +UInt8Array[] unused?
+        +Uint8Array[] unused?
+    }
+    class Transaction {
+        +TransactionBody body
+        +Uint8Array signature?
+        +Address delegator
+        +Uint8Array encoded
+        +Blake2b256 id
+        +VTHO intrisicGas
+        +boolean isDelegated
+        +boolean isSigned
+        +Address origin
+        +Transaction decode(Uint8Array rawTransaction, boolean isSigned)$
+        +Blake2b256 getSignatureHash(Address delegator?)
+        +VTHO intrinsicGas(TransactionClause[] clauses)$
+        +boolean isValidBody(TransactionBody body)$
+        +Transaction of(TransactionBody: body, Uint8Array signature?)$
+        +Transaction sign(Uint8Array signerPrivateKey)
+        +Transaction signWithDelegator(Uint8Array signerPrivateKey, Uint8Array delegatorPrivateKey)
     }
     class TransactionBody {
         <<interface>>
@@ -33,6 +51,7 @@ classDiagram
         +numer|string gas
         +number gasPriceCoef
         +number|string nonce
+        Reserved reserved?
     }
     class TransactionClause {
         <<interface>>
@@ -42,5 +61,10 @@ classDiagram
         +null|string to
         +number|string value
     }
+    Clause --> ClauseOption
+    Clause --> DeployParams
+    TransactionBody *-- Transaction
+    TransactionClause *-- TransactionBody
+    Reserved *-- TransactionBody
     TransactionClause <|.. Clause
 ```
