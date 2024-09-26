@@ -1,8 +1,5 @@
 import { Hex } from '../../../../Hex';
-import {
-    assertValidHexBlobKindBuffer,
-    assertValidHexBlobKindData
-} from '../../helpers';
+import { assertValidHexBlobKindData } from '../../helpers';
 import { type BufferOutput, type DataOutput, type RLPInput } from '../../types';
 import { ScalarKind } from '../scalarkind.abstract';
 
@@ -25,7 +22,8 @@ class HexBlobKind extends ScalarKind {
         assertValidHexBlobKindData(data, context);
 
         return {
-            encode: () => Buffer.from((data as string).slice(2), 'hex')
+            encode: () =>
+                Uint8Array.from(Hex.of((data as string).slice(2)).bytes)
         };
     }
 
@@ -36,9 +34,7 @@ class HexBlobKind extends ScalarKind {
      * @param context - Context string for error handling.
      * @returns An object containing a decode function which returns the decoded hex string.
      */
-    public buffer(buffer: Buffer, context: string): BufferOutput {
-        assertValidHexBlobKindBuffer(buffer, context);
-
+    public buffer(buffer: Uint8Array, _context: string): BufferOutput {
         return {
             decode: () => Hex.of(buffer).toString()
         };

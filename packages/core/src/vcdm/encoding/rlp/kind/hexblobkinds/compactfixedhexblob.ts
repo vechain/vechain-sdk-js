@@ -19,7 +19,7 @@ class CompactFixedHexBlobKind extends FixedHexBlobKind {
      * @returns An object containing an encode function which returns the encoded Buffer.
      */
     public data(data: RLPInput, context: string): DataOutput {
-        const buffer: Buffer = super.data(data, context).encode();
+        const buffer: Uint8Array = super.data(data, context).encode();
 
         return {
             encode: () => encodeCompactFixedHexBlob(buffer) // Encode the buffer, trimming leading zeros.
@@ -34,7 +34,7 @@ class CompactFixedHexBlobKind extends FixedHexBlobKind {
      * @returns BufferOutput object with a decode function.
      * @throws Will throw an error if buffer validation fails.
      */
-    public buffer(buffer: Buffer, context: string): BufferOutput {
+    public buffer(buffer: Uint8Array, context: string): BufferOutput {
         assertCompactFixedHexBlobBuffer(buffer, context, this.bytes);
 
         return {

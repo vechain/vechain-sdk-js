@@ -8,14 +8,14 @@ import { Secp256k1 } from '../secp256k1';
 import {
     BLOCK_REF_LENGTH,
     SIGNATURE_LENGTH,
-    SIGNED_TRANSACTION_RLP,
+    SIGNED_TRANSACTION_RLP_PROFILE,
     TRANSACTION_FEATURES_KIND,
     TransactionUtils,
-    UNSIGNED_TRANSACTION_RLP
+    UNSIGNED_TRANSACTION_RLP_PROFILE
 } from '../utils';
 import { Address } from '../vcdm/Address';
 import { Hex } from '../vcdm/Hex';
-import { type RLPValidObject } from '../vcdm/encoding';
+import { RLPProfiler, type RLPValidObject } from '../vcdm/encoding';
 import { Blake2b256 } from '../vcdm/hash/Blake2b256';
 import { type TransactionBody } from './types';
 
@@ -226,7 +226,7 @@ class Transaction {
      *
      * @returns The transaction encoded
      */
-    public get encoded(): Buffer {
+    public get encoded(): Uint8Array {
         return this._encode(this.isSigned);
     }
 
@@ -331,7 +331,7 @@ class Transaction {
      *
      * @returns Encoding of reserved field
      */
-    private _encodeReservedField(): Buffer[] {
+    private _encodeReservedField(): Uint8Array[] {
         // Check if is reserved or not
         const reserved = this.body.reserved ?? {};
 
@@ -368,17 +368,21 @@ class Transaction {
     private _lowLevelEncodeTransactionBodyWithRLP(
         body: RLPValidObject,
         isSigned: boolean
-    ): Buffer {
+    ): Uint8Array {
         // Encode transaction object - SIGNED
         if (isSigned) {
-            return SIGNED_TRANSACTION_RLP.encodeObject({
-                ...body,
-                signature: this.signature
-            });
+            return RLPProfiler.ofObject(
+                {
+                    ...body,
+                    signature: this.signature
+                },
+                SIGNED_TRANSACTION_RLP_PROFILE
+            ).encoded;
         }
 
         // Encode transaction object - UNSIGNED
-        return UNSIGNED_TRANSACTION_RLP.encodeObject(body);
+        return RLPProfiler.ofObject(body, UNSIGNED_TRANSACTION_RLP_PROFILE)
+            .encoded;
     }
 
     /**
@@ -386,9 +390,9 @@ class Transaction {
      * @private
      *
      * @param isSigned If transaction is signed or not (needed to determine if encoding with SIGNED_TRANSACTION_RLP or UNSIGNED_TRANSACTION_RLP)
-     * @returns Encoding of transaction
+     * @returns {Uint8Array} Encoding of transaction
      */
-    private _encode(isSigned: boolean): Buffer {
+    private _encode(isSigned: boolean): Uint8Array {
         // Encode transaction body with RLP
         return this._lowLevelEncodeTransactionBodyWithRLP(
             {

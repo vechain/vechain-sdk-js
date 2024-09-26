@@ -4,7 +4,6 @@ import {
     assertCompactFixedHexBlobBuffer,
     assertFixedHexBlobKindBuffer,
     assertFixedHexBlobKindData,
-    assertValidHexBlobKindBuffer,
     assertValidHexBlobKindData,
     assertValidNumericKindBuffer,
     decodeBufferToHexWithLeadingZeros,
@@ -15,7 +14,6 @@ import {
     invalidCompactFixedHexBlobKindBufferTestCases,
     invalidFixedHexBlobKindBufferTestCases,
     invalidFixedHexBlobKindDataTestCases,
-    invalidHexBlobKindBufferTestCases,
     invalidHexBlobKindDataTestCases,
     invalidNumberTestCases,
     invalidNumericBufferTestCases,
@@ -23,7 +21,6 @@ import {
     validCompactFixedHexBlobKindBufferTestCases,
     validFixedHexBlobKindBufferTestCases,
     validFixedHexBlobKindDataTestCases,
-    validHexBlobKindBufferTestCases,
     validHexBlobKindDataTestCases,
     validNumericBufferTestCases
 } from './helpers.fixture';
@@ -177,32 +174,6 @@ describe('HexBlobKind helpers', () => {
             test(`should throw error when data is invalid ${data}`, () => {
                 expect(() => {
                     assertValidHexBlobKindData(data, context);
-                }).toThrowError(InvalidRLP);
-            });
-        });
-    });
-
-    /**
-     * Test subset for `assertValidHexBlobKindBuffer` function.
-     */
-    describe('assertValidHexBlobKindBuffer', () => {
-        validHexBlobKindBufferTestCases.forEach(({ buffer, context }) => {
-            test(`should not throw error when buffer is valid ${buffer.toString(
-                'hex'
-            )}`, () => {
-                expect(() => {
-                    assertValidHexBlobKindBuffer(buffer, context);
-                }).not.toThrowError();
-            });
-        });
-
-        invalidHexBlobKindBufferTestCases.forEach(({ buffer, context }) => {
-            test(`should throw error when buffer is invalid ${stringifyData(
-                buffer
-            )}`, () => {
-                expect(() => {
-                    // @ts-expect-error - invalid input
-                    assertValidHexBlobKindBuffer(buffer, context);
                 }).toThrowError(InvalidRLP);
             });
         });

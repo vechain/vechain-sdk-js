@@ -3,10 +3,9 @@ import {
     CompactFixedHexBlobKind,
     HexBlobKind,
     NumericKind,
-    OptionalFixedHexBlobKind
+    OptionalFixedHexBlobKind,
+    type RLPProfile
 } from '../../vcdm/encoding/rlp/kind';
-
-import { RLPProfiler } from '../../vcdm/encoding/rlp/RLPProfiler';
 
 /**
  * Transaction gas constants
@@ -131,21 +130,21 @@ const TRANSACTION_SIGNATURE_KIND = {
  * RLPProfiler for simple unsigned transactions
  * @internal
  */
-const UNSIGNED_TRANSACTION_RLP = new RLPProfiler({
+const UNSIGNED_TRANSACTION_RLP_PROFILE: RLPProfile = {
     name: 'tx',
     kind: TRANSACTION_FIELDS
-});
+};
 
 /**
  * RLPProfiler for simple signed transactions
  * @internal
  */
-const SIGNED_TRANSACTION_RLP = new RLPProfiler({
+const SIGNED_TRANSACTION_RLP_PROFILE: RLPProfile = {
     name: 'tx',
 
     // Add signature to the transaction fields
     kind: TRANSACTION_FIELDS.concat([TRANSACTION_SIGNATURE_KIND])
-});
+};
 
 /**
  * Signature length
@@ -162,9 +161,9 @@ const BLOCK_REF_LENGTH = 8;
 export {
     BLOCK_REF_LENGTH,
     SIGNATURE_LENGTH,
-    SIGNED_TRANSACTION_RLP,
+    SIGNED_TRANSACTION_RLP_PROFILE,
     TRANSACTION_FEATURES_KIND,
     TRANSACTION_SIGNATURE_KIND,
     TRANSACTIONS_GAS_CONSTANTS,
-    UNSIGNED_TRANSACTION_RLP
+    UNSIGNED_TRANSACTION_RLP_PROFILE
 };

@@ -1,7 +1,6 @@
-import { RLP as EthereumjsRLP } from '@ethereumjs/rlp';
 import { type RLPProfile } from './kind/scalarkind.abstract';
 import { RLP } from './RLP';
-import { type RLPValidObject, type RLPValueType } from './types';
+import { type RLPInput, type RLPValidObject, type RLPValueType } from './types';
 
 /**
  * Class handling the profiling of RLP encoded/decoded objects.
@@ -12,27 +11,46 @@ class RLPProfiler extends RLP {
      * Creates a new Profiler instance.
      * @param profile - Profile for encoding/decoding structures.
      */
-    constructor(readonly profile: RLPProfile) {
-        super();
+    private constructor(
+        data: RLPInput,
+        readonly profile: RLPProfile
+    ) {
+        super(data);
     }
+
     /**
-     * Encodes an object following the provided profile.
-     * @param data - Object to be encoded.
-     * @returns - Encoded data as a Buffer.
+     * Creates an RLPProfiler instance from a valid object.
+     * @param {RLPValidObject} validObject Object to be encoded.
+     * @returns {RLPProfiler} RLPProfiler instance.
      */
-    public encodeObject(data: RLPValidObject): Buffer {
-        const packedData = this.packData(data, this.profile, '');
-        return Buffer.from(EthereumjsRLP.encode(packedData));
+    public static ofObject(
+        validObject: RLPValidObject,
+        profile: RLPProfile
+    ): RLPProfiler {
+        const packedData = this.packData(validObject, profile, '');
+        return new RLPProfiler(packedData, profile);
     }
 
     /**
      * Decodes an object following the provided profile.
-     * @param encodedData - Data to be decoded.
+     * @param encodedData Data to be decoded.
+     * @param profile Profile for encoding/decoding structures.
      * @returns - Decoded data as RLPValueType.
      */
-    public decodeObject(encodedData: Buffer): RLPValueType {
-        const packedData = EthereumjsRLP.decode(encodedData);
-        return this.unpackData(packedData, this.profile, '');
+    public static ofObjectEncoded(
+        encodedData: Uint8Array,
+        profile: RLPProfile
+    ): RLPProfiler {
+        const packedData = RLP.ofEncoded(encodedData).decoded;
+        return new RLPProfiler(packedData, profile);
+    }
+
+    /**
+     * Returns the decoded unpacked object.
+     * @returns {RLPValueType} Decoded unpacked object.
+     */
+    get object(): RLPValueType {
+        return RLPProfiler.unpackData(this.decoded, this.profile, '');
     }
 }
 

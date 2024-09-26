@@ -1,31 +1,125 @@
 import { RLP as EthereumjsRLP } from '@ethereumjs/rlp';
-import { InvalidRLP } from '@vechain/sdk-errors';
+import { InvalidDataType, InvalidRLP } from '@vechain/sdk-errors';
+import { type VeChainDataModel } from '../../VeChainDataModel';
 import { ScalarKind, type RLPProfile } from './kind/scalarkind.abstract';
-import {
-    type RLPInput,
-    type RLPOutput,
-    type RLPValidObject,
-    type RLPValueType
-} from './types';
+import { type RLPInput, type RLPValidObject, type RLPValueType } from './types';
+import { bytesToNumberBE } from '@noble/ciphers/utils';
+import { Hex } from '../../Hex';
 
-class RLP {
-    /**
-     * Encodes data using the Ethereumjs RLP library.
-     * @param data - The data to be encoded.
-     * @returns The encoded data as a Buffer.
-     */
-    public static encode(data: RLPInput): Buffer {
-        const encodedData = EthereumjsRLP.encode(data);
-        return Buffer.from(encodedData);
+class RLP implements VeChainDataModel<RLP> {
+    public readonly encoded: Uint8Array;
+    public readonly decoded: RLPInput;
+
+    protected constructor(data: RLPInput) {
+        this.decoded = data;
+        this.encoded = EthereumjsRLP.encode(data);
     }
 
     /**
-     * Decodes RLP-encoded data using the Ethereumjs RLP library.
-     * @param encodedData - The RLP-encoded data as a Buffer.
+     * Returns the bigint representation of the encoded data in the RLP instance.
+     * @returns {bigint} The bigint representation of the encoded data.
+     */
+    get bi(): bigint {
+        return bytesToNumberBE(this.bytes);
+    }
+
+    /**
+     * Returns the encoded data as a Uint8Array.
+     * @returns {Uint8Array} The encoded data.
+     */
+    get bytes(): Uint8Array {
+        return this.encoded;
+    }
+
+    /**
+     * Returns the number representation of the encoded data in the RLP instance.
+     * @returns {number} The number representation of the encoded data.
+     */
+    get n(): number {
+        const bi = this.bi;
+        if (Number.MIN_SAFE_INTEGER <= bi && bi <= Number.MAX_SAFE_INTEGER) {
+            return Number(bi);
+        }
+        throw new InvalidDataType('RLP.n', 'not in the safe number range', {
+            bytes: this.bytes
+        });
+    }
+
+    /**
+     * Compares the current RLP instance with another RLP instance.
+     * @param {RLP} that The RLP instance to compare.
+     * @returns 0 if the RLP instances are equal, -1/1 if they are not.
+     */
+    public compareTo(that: RLP): number {
+        if (this.encoded.length !== that.encoded.length) {
+            return -1;
+        }
+
+        for (let i = 0; i < this.encoded.length; i++) {
+            if (this.encoded[i] !== that.encoded[i]) {
+                return 1;
+            }
+        }
+
+        return 0;
+    }
+
+    /**
+     * Relies on compareTo to check if the RLP instances are equal.
+     * @param {RLP} that The RLP instance to compare.
+     * @returns true if the RLP instances are equal, false otherwise.
+     */
+    public isEqual(that: RLP): boolean {
+        return this.compareTo(that) === 0;
+    }
+
+    /**
+     * Returns an RLP instance from a plain value.
+     * @param data - The plain data
+     * @returns {RLP} The RLP instance.
+     */
+    public static of(data: RLPInput): RLP {
+        try {
+            return new RLP(data);
+        } catch (error) {
+            throw new InvalidRLP(
+                'RLP.of()',
+                `Error when creating an RLP instance for data ${data}`,
+                {
+                    context:
+                        'This method creates an RLP instance from a plain value.',
+                    data: {
+                        data
+                    }
+                },
+                error
+            );
+        }
+    }
+
+    /**
+     * Returns an RLP instancen from an encoded value.
+     * @param {Uint8Array} encodedData - The RLP-encoded data.
      * @returns The decoded data or null if decoding fails.
      */
-    public static decode(encodedData: Buffer): RLPOutput {
-        return EthereumjsRLP.decode(encodedData);
+    public static ofEncoded(encodedData: Uint8Array): RLP {
+        try {
+            const decodedValue = EthereumjsRLP.decode(encodedData);
+            return new RLP(decodedValue);
+        } catch (error) {
+            throw new InvalidRLP(
+                'RLP.ofEncoded()',
+                `Error when creating an RLP instance for encoded data.`,
+                {
+                    context:
+                        'This method creates an RLP instance from an encoded value.',
+                    data: {
+                        encodedData
+                    }
+                },
+                error
+            );
+        }
     }
 
     /**
@@ -39,7 +133,7 @@ class RLP {
      * @throws {InvalidRLP}
      *
      */
-    protected packData(
+    public static packData(
         obj: RLPValidObject,
         profile: RLPProfile,
         context: string
@@ -62,7 +156,7 @@ class RLP {
         // Valid RLP array
         if (!Array.isArray(obj)) {
             throw new InvalidRLP(
-                '_packData()',
+                'RLP.packData()',
                 `Validation error: Expected an array in ${context}.`,
                 {
                     context,
@@ -98,7 +192,7 @@ class RLP {
      * @throws {InvalidRLP}
      *
      */
-    protected unpackData(
+    protected static unpackData(
         packed: RLPInput,
         profile: RLPProfile,
         context: string
@@ -109,10 +203,10 @@ class RLP {
 
         // ScalarKind: Direct decoding using the provided method.
         if (kind instanceof ScalarKind) {
-            if (!Buffer.isBuffer(packed) && !(packed instanceof Uint8Array)) {
+            if (!(packed instanceof Uint8Array)) {
                 throw new InvalidRLP(
-                    '_unpackData()',
-                    `Unpacking error: Expected data type is Buffer.`,
+                    'RLP.unpackData()',
+                    `Unpacking error: Expected data type is Uint8Array.`,
                     {
                         context,
                         data: {
@@ -123,9 +217,9 @@ class RLP {
                 );
             }
 
-            if (packed instanceof Uint8Array) packed = Buffer.from(packed);
+            if (packed instanceof Uint8Array) packed = Uint8Array.from(packed);
 
-            return kind.buffer(packed as Buffer, context).decode();
+            return kind.buffer(packed, context).decode();
         }
 
         // StructKind: Recursively unpack each struct member based on its profile.
@@ -134,7 +228,7 @@ class RLP {
 
             if (kind.length !== parts.length) {
                 throw new InvalidRLP(
-                    '_unpackData()',
+                    'RLP.unpackData()',
                     `Unpacking error: Expected ${kind.length} items, but got ${parts.length}.`,
                     {
                         context,
@@ -163,7 +257,7 @@ class RLP {
         // Valid RLP array
         if (!Array.isArray(packed)) {
             throw new InvalidRLP(
-                '_unpackData()',
+                'RLP.unpackData()',
                 `Validation error: Expected an array in ${context}.`,
                 {
                     context,
@@ -187,6 +281,14 @@ class RLP {
                 )
             ) as RLPValueType;
         }
+    }
+
+    /**
+     * Creates {@link Hex} instance from the RLP encoded value.
+     * @returns {Hex} The Hex instance.
+     */
+    public toHex(): Hex {
+        return Hex.of(this.bytes);
     }
 }
 

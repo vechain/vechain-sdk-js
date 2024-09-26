@@ -1,4 +1,5 @@
 import {
+    Hex,
     HexBlobKind,
     NumericKind,
     OptionalFixedHexBlobKind,
@@ -30,15 +31,13 @@ const clause = {
 
 // 3 - RLPProfiler Instance to encode and decode
 
-const rlp = new RLPProfiler(profile);
-
 // Encoding and Decoding
-const data = rlp.encodeObject(clause);
-const obj = rlp.decodeObject(data);
+const data = RLPProfiler.ofObject(clause, profile).encoded;
+const obj = RLPProfiler.ofObjectEncoded(data, profile).object;
 
 // END_SNIPPET: RlpSnippet
 
-expect(data.toString('hex')).toBe(
-    'd7947567d83b7b8d80addcb281a71d54fc7b3364ffed0a80'
+expect(Hex.of(data).toString()).toBe(
+    '0xd7947567d83b7b8d80addcb281a71d54fc7b3364ffed0a80'
 );
 expect(stringifyData(obj)).toBe(stringifyData(clause));

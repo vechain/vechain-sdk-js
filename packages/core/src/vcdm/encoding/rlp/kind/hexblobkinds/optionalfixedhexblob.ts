@@ -17,7 +17,7 @@ class OptionalFixedHexBlobKind extends FixedHexBlobKind {
         // If data is null or undefined, return an empty Buffer.
         return data == null
             ? {
-                  encode: () => Buffer.alloc(0)
+                  encode: () => Uint8Array.of(0)
               }
             : super.data(data, context);
     }
@@ -29,7 +29,7 @@ class OptionalFixedHexBlobKind extends FixedHexBlobKind {
      * @param context - Context string for error handling.
      * @returns An object containing a decode function which returns the decoded hex string or null.
      */
-    public buffer(buffer: Buffer, context: string): BufferOutput {
+    public buffer(buffer: Uint8Array, context: string): BufferOutput {
         return buffer.length === 0
             ? {
                   decode: () => null

@@ -31,13 +31,13 @@ const assertFixedHexBlobKindData = (
 /**
  * Asserts that the buffer is of a specific length.
  *
- * @param buffer - The buffer to validate.
- * @param context - Descriptive context for error messages.
- * @param bytes - The expected number of bytes that the buffer can contain.
+ * @param {Uint8Array} buffer The buffer to validate.
+ * @param {string} context Descriptive context for error messages.
+ * @param {number} bytes The expected number of bytes that the buffer can contain.
  * @throws {InvalidRLP}
  */
 const assertFixedHexBlobKindBuffer = (
-    buffer: Buffer,
+    buffer: Uint8Array,
     context: string,
     bytes: number
 ): void => {

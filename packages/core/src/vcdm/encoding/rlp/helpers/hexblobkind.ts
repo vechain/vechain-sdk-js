@@ -52,29 +52,4 @@ const assertValidHexBlobKindData = (data: RLPInput, context: string): void => {
     }
 };
 
-/**
- * Validates if the input buffer is valid for HexBlobKind.
- *
- * @param buffer - The buffer to validate.
- * @param context - Additional context for error handling.
- * @throws {InvalidRLP}
- */
-const assertValidHexBlobKindBuffer = (
-    buffer: Buffer,
-    context: string
-): void => {
-    if (!Buffer.isBuffer(buffer)) {
-        throw new InvalidRLP(
-            'assertFixedHexBlobKindData()',
-            `Validation error: Input must be a valid buffer.`,
-            {
-                context,
-                data: {
-                    buffer
-                }
-            }
-        );
-    }
-};
-
-export { assertValidHexBlobKindBuffer, assertValidHexBlobKindData };
+export { assertValidHexBlobKindData };

@@ -2,6 +2,7 @@ import {
     BufferKind,
     CompactFixedHexBlobKind,
     FixedHexBlobKind,
+    Hex,
     HexBlobKind,
     NumericKind,
     OptionalFixedHexBlobKind,
@@ -24,7 +25,7 @@ const encodeTestCases = [
 const decodeTestCases = [
     {
         input: '0x2a',
-        expected: Buffer.from([42]),
+        expected: Uint8Array.from([42]),
         description: 'single value'
     },
     { input: '0xc0', expected: [], description: 'empty array' }
@@ -136,19 +137,19 @@ const numericKindDecodeTestCases = [
     },
     {
         kind: new NumericKind(8),
-        data: Buffer.from([1, 2, 3]),
+        data: Uint8Array.from([1, 2, 3]),
         description: 'buffer with data',
         expected: 0x010203
     },
     {
         kind: new NumericKind(8),
-        data: Buffer.from([1, 2, 3, 4, 5, 6, 7, 8]),
+        data: Uint8Array.from([1, 2, 3, 4, 5, 6, 7, 8]),
         description: 'buffer with data',
         expected: '0x102030405060708'
     },
     {
         kind: new NumericKind(1),
-        data: Buffer.from('ff', 'hex'),
+        data: Uint8Array.from(Hex.of('ff').bytes),
         description: 'buffer with data',
         expected: 255
     }
@@ -170,7 +171,7 @@ const invalidNumericKindDecodeTestCases = [
     },
     {
         kind: new NumericKind(8),
-        data: Buffer.from([0, 1]),
+        data: Uint8Array.from([0, 1]),
         description: 'buffer with leading zero'
     }
 ];
@@ -246,13 +247,13 @@ const hexBlobKindDecodeTestCases = [
     },
     {
         kind: new HexBlobKind(),
-        data: Buffer.from([1, 2, 3]),
+        data: Uint8Array.from([1, 2, 3]),
         description: 'buffer with data',
         expected: '0x010203'
     },
     {
         kind: new HexBlobKind(),
-        data: Buffer.from([1, 2, 3, 4, 5]),
+        data: Uint8Array.from([1, 2, 3, 4, 5]),
         description: 'buffer with data',
         expected: '0x0102030405'
     }
@@ -270,13 +271,13 @@ const invalidHexBlobKindDecodeTestCases = [
 const fixedHexBlobKindDecodeTestCases = [
     {
         kind: new FixedHexBlobKind(3),
-        data: Buffer.from([1, 2, 3]),
+        data: Uint8Array.from([1, 2, 3]),
         description: 'buffer with data',
         expected: '0x010203'
     },
     {
         kind: new FixedHexBlobKind(1),
-        data: Buffer.from([1]),
+        data: Uint8Array.from([1]),
         description: 'buffer with data',
         expected: '0x01'
     }
@@ -285,12 +286,12 @@ const fixedHexBlobKindDecodeTestCases = [
 const invalidFixedBlobKindDecodeTestCases = [
     {
         kind: new FixedHexBlobKind(3),
-        data: Buffer.from([1, 2]),
+        data: Uint8Array.from([1, 2]),
         description: 'buffer with data'
     },
     {
         kind: new FixedHexBlobKind(1),
-        data: Buffer.from([1, 2]),
+        data: Uint8Array.from([1, 2]),
         description: 'buffer with data'
     },
     {
@@ -318,13 +319,13 @@ const compactFixedHexBlobKindEncodeTestCases = [
 const compactFixedHexBlobKindDecodeTestCases = [
     {
         kind: new CompactFixedHexBlobKind(4),
-        data: Buffer.from([1, 2, 3]),
+        data: Uint8Array.from([1, 2, 3]),
         description: 'buffer with data',
         expected: '0x00010203'
     },
     {
         kind: new CompactFixedHexBlobKind(1),
-        data: Buffer.from([1]),
+        data: Uint8Array.from([1]),
         description: 'buffer with data',
         expected: '0x01'
     }
@@ -344,11 +345,11 @@ const [bufferProfile, bufferData, invalidBufferData]: [
         ]
     },
     {
-        foo: Buffer.from([1, 2, 3]),
-        bar: Buffer.from([4, 5, 6])
+        foo: Uint8Array.from([1, 2, 3]),
+        bar: Uint8Array.from([4, 5, 6])
     },
     {
-        foo: Buffer.from([1, 2, 3]),
+        foo: Uint8Array.from([1, 2, 3]),
         bar: 42
     }
 ];
@@ -786,7 +787,7 @@ const invalidEncodeObjectTestCases = [
 const decodeBufferProfileTestCases = [
     {
         profile: bufferProfile,
-        data: Buffer.from('c88301020383040506', 'hex'),
+        data: Uint8Array.from(Hex.of('c88301020383040506').bytes),
         expected: bufferData,
         description: 'decode buffer profile'
     }
@@ -795,17 +796,19 @@ const decodeBufferProfileTestCases = [
 const invalidDecodeObjectTestCases = [
     {
         profile: numericProfile,
-        data: Buffer.from('c60102c3c20304', 'hex'),
+        data: Uint8Array.from(Hex.of('c60102c3c20304').bytes),
         description: 'decode buffer profile with invalid data'
     },
     {
         profile: numericProfile,
-        data: Buffer.from('c3010202', 'hex'),
+        data: Uint8Array.from(Hex.of('c3010202').bytes),
         description: 'decode buffer profile with invalid data'
     },
     {
         profile: numericProfile,
-        data: Buffer.from('d1c7c60304c3c2070802c7c60304c3c20708', 'hex'),
+        data: Uint8Array.from(
+            Hex.of('d1c7c60304c3c2070802c7c60304c3c20708').bytes
+        ),
         description: 'decode buffer profile with invalid data'
     }
 ];
@@ -813,13 +816,15 @@ const invalidDecodeObjectTestCases = [
 const decodeNumericProfileTestCases = [
     {
         profile: numericProfileWithMaxBytes,
-        data: Buffer.from('c90102c6c20304c20506', 'hex'),
+        data: Uint8Array.from(Hex.of('c90102c6c20304c20506').bytes),
         expected: numericDataWithMaxBytes,
         description: 'decode numeric profile'
     },
     {
         profile: numericProfile,
-        data: Buffer.from('d10102cec60304c3c20708c60506c3c2800a', 'hex'),
+        data: Uint8Array.from(
+            Hex.of('d10102cec60304c3c20708c60506c3c2800a').bytes
+        ),
         expected: numericData,
         description: 'decode numeric profile'
     }
@@ -828,7 +833,7 @@ const decodeNumericProfileTestCases = [
 const decodeHexBlobProfileTestCases = [
     {
         profile: hexBlobProfile,
-        data: Buffer.from('c88301020383040506', 'hex'),
+        data: Uint8Array.from(Hex.of('c88301020383040506').bytes),
         expected: hexBlobData,
         description: 'decode hex blob profile'
     }
@@ -837,7 +842,7 @@ const decodeHexBlobProfileTestCases = [
 const decodeCompactFixedHexBlobProfileTestCases = [
     {
         profile: compactFixedHexBlobProfile,
-        data: Buffer.from('c50183010203', 'hex'),
+        data: Uint8Array.from(Hex.of('c50183010203').bytes),
         expected: compactFixedHexBlobData,
         description: 'decode compact fixed hex blob profile'
     }
@@ -846,15 +851,18 @@ const decodeCompactFixedHexBlobProfileTestCases = [
 const decodeMixedKindProfileTestCases = [
     {
         profile: mixedKindProfile1,
-        data: Buffer.from('d17b8412345678cac4118204d2c41282162e', 'hex'),
+        data: Uint8Array.from(
+            Hex.of('d17b8412345678cac4118204d2c41282162e').bytes
+        ),
         expected: mixedKindData1,
         description: 'decode mixed kind profile'
     },
     {
         profile: mixedKindProfile2,
-        data: Buffer.from(
-            'f8530184aabbccdd20f840df947567d83b7b8d80addcb281a71d54fc7b3364ffed82271086000000606060df947567d83b7b8d80addcb281a71d54fc7b3364ffed824e208600000060606081808252088083bc614e',
-            'hex'
+        data: Uint8Array.from(
+            Hex.of(
+                'f8530184aabbccdd20f840df947567d83b7b8d80addcb281a71d54fc7b3364ffed82271086000000606060df947567d83b7b8d80addcb281a71d54fc7b3364ffed824e208600000060606081808252088083bc614e'
+            ).bytes
         ),
         expected: mixedKindData2,
         description: 'decode mixed kind profile with transaction like data'

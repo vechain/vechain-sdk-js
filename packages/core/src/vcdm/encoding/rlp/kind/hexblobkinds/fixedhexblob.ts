@@ -41,7 +41,7 @@ class FixedHexBlobKind extends HexBlobKind {
      * @param context - Context string for error handling.
      * @returns An object containing a decode function which returns the decoded hex string.
      */
-    public buffer(buffer: Buffer, context: string): BufferOutput {
+    public buffer(buffer: Uint8Array, context: string): BufferOutput {
         const decoder = super.buffer(buffer, context);
 
         // Validate the buffer length against the fixed size.

@@ -125,10 +125,8 @@ const clause = {
 
 // 3 - RLPProfiler Instance to encode and decode
 
-const rlp = new RLPProfiler(profile);
-
 // Encoding and Decoding
-const data = rlp.encodeObject(clause);
-const obj = rlp.decodeObject(data);
+const data = RLPProfiler.ofObject(clause, profile).encoded;
+const obj = RLPProfiler.ofObjectEncoded(data, profile).object;
 ```
 

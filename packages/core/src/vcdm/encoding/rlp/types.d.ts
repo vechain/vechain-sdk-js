@@ -3,7 +3,7 @@ import { type Input, type NestedUint8Array } from '@ethereumjs/rlp';
  * Represents a valid input for the RLP (Recursive Length Prefix) encoding.
  * The RLP encoding is used to encode arbitrary binary data (nested arrays of bytes).
  *
- * @typeParam Input - Can be a Buffer, Array of Inputs, Buffer array, or nested array of Inputs.
+ * @typeParam Input - A {@link @ethereumjs/rlp#Input} type.
  * @see {@link https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/rlp/src/index.ts}
  */
 type RLPInput = Input;
@@ -51,10 +51,10 @@ type RLPValidObject = Record<string, RLPValueType>;
 type RLPValueType = RLPInput | RLPComplexObject | RLPComplexObject[];
 
 /**
- * `DataOutput` Interface - Provides an encoding mechanism to convert data into a Buffer.
+ * `DataOutput` Interface - Provides an encoding mechanism to convert data into a Uint8Array.
  */
 interface DataOutput {
-    encode: () => Buffer;
+    encode: () => Uint8Array;
 }
 
 /**
