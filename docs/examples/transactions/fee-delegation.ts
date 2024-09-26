@@ -2,8 +2,9 @@ import {
     Address,
     Clause,
     HDKey,
+    HexUInt,
     Mnemonic,
-    TransactionHandler,
+    Transaction,
     VET,
     networkInfo,
     type TransactionBody,
@@ -68,21 +69,20 @@ const delegatorAddress = Address.ofPublicKey(nodeDelegate.publicKey).toString();
 
 // 6 - Sign transaction as sender and delegate
 
-const signedTransaction = TransactionHandler.signWithDelegator(
-    body,
-    Buffer.from(senderAccount.privateKey, 'hex'),
-    Buffer.from(delegatorPrivateKey)
+const signedTransaction = Transaction.of(body).signWithDelegator(
+    HexUInt.of(senderAccount.privateKey).bytes,
+    HexUInt.of(delegatorPrivateKey).bytes
 );
 
 // 7 - Encode transaction
 
-const encodedRaw = signedTransaction.encoded;
+const encodedRaw = signedTransaction.encode;
 
 // 8 - Decode transaction and check
 
-const decodedTx = TransactionHandler.decode(encodedRaw, true);
+const decodedTx = Transaction.decode(encodedRaw, true);
 
 // END_SNIPPET: FeeDelegationSnippet
 
 expect(decodedTx.isDelegated).toBeTruthy();
-expect(decodedTx.delegator).toBe(delegatorAddress);
+expect(decodedTx.delegator.toString()).toBe(delegatorAddress);

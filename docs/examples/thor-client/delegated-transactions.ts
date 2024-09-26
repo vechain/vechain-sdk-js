@@ -1,8 +1,9 @@
 import {
     Address,
     Clause,
-    Hex, TransactionClause,
-    TransactionHandler,
+    HexUInt,
+    Transaction,
+    type TransactionClause,
     VET
 } from '@vechain/sdk-core';
 import { THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
@@ -67,20 +68,21 @@ const delegatedTransactionBody = {
 
 // 5 - Normal signature and delegation signature
 
-const rawDelegatedSigned = TransactionHandler.signWithDelegator(
-    delegatedTransactionBody,
-    Buffer.from(senderAccount.privateKey, 'hex'),
-    Buffer.from(delegateAccount.privateKey, 'hex')
-).encoded;
+const rawDelegatedSigned = Transaction.of(
+    delegatedTransactionBody
+).signWithDelegator(
+    HexUInt.of(senderAccount.privateKey).bytes,
+    HexUInt.of(delegateAccount.privateKey).bytes
+).encode;
 
 // 6 - Send transaction
 
 const send = await thorSoloClient.transactions.sendRawTransaction(
-    `0x${rawDelegatedSigned.toString('hex')}`
+    HexUInt.of(rawDelegatedSigned).toString()
 );
 expect(send).toBeDefined();
 expect(send).toHaveProperty('id');
-expect(Hex.isValid0x(send.id)).toBe(true);
+expect(HexUInt.isValid0x(send.id)).toBe(true);
 
 // 7 - Get transaction details and receipt
 
@@ -97,6 +99,6 @@ const transactionReceipt =
 
 expect(send).toBeDefined();
 expect(send).toHaveProperty('id');
-expect(Hex.isValid0x(send.id)).toBe(true);
+expect(HexUInt.isValid0x(send.id)).toBe(true);
 expect(transactionDetails).toBeDefined();
 expect(transactionReceipt).toBeDefined();

@@ -1,9 +1,10 @@
 import {
     Address,
     Clause,
-    type TransactionClause,
-    TransactionHandler,
-    VET
+    HexUInt,
+    Transaction,
+    VET,
+    type TransactionClause
 } from '@vechain/sdk-core';
 import {
     ProviderInternalBaseWallet,
@@ -80,8 +81,8 @@ const rawSignedTransaction = await signer.signTransaction(
     )
 );
 
-const signedTransaction = TransactionHandler.decode(
-    Buffer.from(rawSignedTransaction.slice(2), 'hex'),
+const signedTransaction = Transaction.decode(
+    HexUInt.of(rawSignedTransaction.slice(2)).bytes,
     true
 );
 

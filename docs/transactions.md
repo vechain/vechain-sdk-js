@@ -31,7 +31,7 @@ const clauses: TransactionClause[] = [
 
 // 2 - Calculate intrinsic gas of clauses
 
-const gas = TransactionUtils.intrinsicGas(clauses);
+const gas = Number(Transaction.intrinsicGas(clauses).wei);
 
 // 3 - Body of transaction
 
@@ -51,18 +51,15 @@ const privateKey = await Secp256k1.generatePrivateKey();
 
 // 4 - Sign transaction
 
-const signedTransaction = TransactionHandler.sign(
-    body,
-    Buffer.from(privateKey)
-);
+const signedTransaction = Transaction.of(body).sign(privateKey);
 
 // 5 - Encode transaction
 
-const encodedRaw = signedTransaction.encoded;
+const encodedRaw = signedTransaction.encode;
 
 // 6 - Decode transaction
 
-const decodedTx = TransactionHandler.decode(encodedRaw, true);
+const decodedTx = Transaction.decode(encodedRaw, true);
 ```
 
 ## Example: Multiple Clauses
@@ -86,7 +83,7 @@ const clauses: TransactionClause[] = [
 
 // 2 - Calculate intrinsic gas of both clauses
 
-const gas = TransactionUtils.intrinsicGas(clauses);
+const gas = Number(Transaction.intrinsicGas(clauses).wei);
 
 // 3 - Body of transaction
 
@@ -106,18 +103,15 @@ const privateKey = await Secp256k1.generatePrivateKey();
 
 // 4 - Sign transaction
 
-const signedTransaction = TransactionHandler.sign(
-    body,
-    Buffer.from(privateKey)
-);
+const signedTransaction = Transaction.of(body).sign(privateKey);
 
 // 5 - Encode transaction
 
-const encodedRaw = signedTransaction.encoded;
+const encodedRaw = signedTransaction.encode;
 
 // 6 - Decode transaction
 
-const decodedTx = TransactionHandler.decode(encodedRaw, true);
+const decodedTx = Transaction.decode(encodedRaw, true);
 ```
 
 ## Example: Fee Delegation
@@ -178,19 +172,18 @@ const delegatorAddress = Address.ofPublicKey(nodeDelegate.publicKey).toString();
 
 // 6 - Sign transaction as sender and delegate
 
-const signedTransaction = TransactionHandler.signWithDelegator(
-    body,
-    Buffer.from(senderAccount.privateKey, 'hex'),
-    Buffer.from(delegatorPrivateKey)
+const signedTransaction = Transaction.of(body).signWithDelegator(
+    HexUInt.of(senderAccount.privateKey).bytes,
+    HexUInt.of(delegatorPrivateKey).bytes
 );
 
 // 7 - Encode transaction
 
-const encodedRaw = signedTransaction.encoded;
+const encodedRaw = signedTransaction.encode;
 
 // 8 - Decode transaction and check
 
-const decodedTx = TransactionHandler.decode(encodedRaw, true);
+const decodedTx = Transaction.decode(encodedRaw, true);
 ```
 
 ## Example: BlockRef and Expiration
@@ -214,7 +207,7 @@ const body: TransactionBody = {
     expiration: 32, // tx will expire after block #16772280 + 32
     clauses,
     gasPriceCoef: 0,
-    gas: TransactionUtils.intrinsicGas(clauses), // use thor.gas.estimateGas() for better estimation
+    gas: HexUInt.of(Transaction.intrinsicGas(clauses).wei).toString(), // use thor.gas.estimateGas() for better estimation
     dependsOn: null,
     nonce: 1
 };
@@ -225,18 +218,15 @@ const privateKey = await Secp256k1.generatePrivateKey();
 
 // 4 - Sign transaction
 
-const signedTransaction = TransactionHandler.sign(
-    body,
-    Buffer.from(privateKey)
-);
+const signedTransaction = Transaction.of(body).sign(privateKey);
 
 // 5 - Encode transaction
 
-const encodedRaw = signedTransaction.encoded;
+const encodedRaw = signedTransaction.encode;
 
 // 6 - Decode transaction and check
 
-const decodedTx = TransactionHandler.decode(encodedRaw, true);
+const decodedTx = Transaction.decode(encodedRaw, true);
 ```
 
 ## Example: Transaction Dependency
@@ -267,7 +257,7 @@ const txABody: TransactionBody = {
     expiration: 0,
     clauses: txAClauses,
     gasPriceCoef: 0,
-    gas: TransactionUtils.intrinsicGas(txAClauses), // use thor.gas.estimateGas() for better estimation
+    gas: HexUInt.of(Transaction.intrinsicGas(txAClauses).wei).toString(), // use thor.gas.estimateGas() for better estimation
     dependsOn: null,
     nonce: 1
 };
@@ -281,7 +271,7 @@ const txBBody: TransactionBody = {
     expiration: 0,
     clauses: txBClauses,
     gasPriceCoef: 0,
-    gas: TransactionUtils.intrinsicGas(txBClauses), // use thor.gas.estimateGas() for better estimation
+    gas: HexUInt.of(Transaction.intrinsicGas(txBClauses).wei).toString(), // use thor.gas.estimateGas() for better estimation
     dependsOn: null,
     nonce: 2
 };
@@ -295,28 +285,22 @@ const senderPrivateKey = await Secp256k1.generatePrivateKey();
 
 // 4 - Get Tx A id
 
-const txASigned = TransactionHandler.sign(
-    txABody,
-    Buffer.from(senderPrivateKey)
-);
+const txASigned = Transaction.of(txABody).sign(senderPrivateKey);
 
 // 5 - Set it inside tx B
 
-txBBody.dependsOn = txASigned.id;
+txBBody.dependsOn = txASigned.id.toString();
 
 // 6 - Sign Tx B
 
-const txBSigned = TransactionHandler.sign(
-    txBBody,
-    Buffer.from(senderPrivateKey)
-);
+const txBSigned = Transaction.of(txBBody).sign(senderPrivateKey);
 
 // 7 - encode Tx B
 
-const rawTxB = txBSigned.encoded;
+const rawTxB = txBSigned.encode;
 
 // Check (we can decode Tx B)
-const decodedTx = TransactionHandler.decode(rawTxB, true);
+const decodedTx = Transaction.decode(rawTxB, true);
 ```
 
 ## Example: Transaction Simulation
@@ -454,8 +438,8 @@ const rawSignedTransaction = await signer.signTransaction(
     )
 );
 
-const signedTransaction = TransactionHandler.decode(
-    Buffer.from(rawSignedTransaction.slice(2), 'hex'),
+const signedTransaction = Transaction.decode(
+    HexUInt.of(rawSignedTransaction.slice(2)).bytes,
     true
 );
 
@@ -559,8 +543,8 @@ const rawDelegateSigned = await signer.signTransaction(
     )
 );
 
-const delegatedSigned = TransactionHandler.decode(
-    Buffer.from(rawDelegateSigned.slice(2), 'hex'),
+const delegatedSigned = Transaction.decode(
+    HexUInt.of(rawDelegateSigned.slice(2)).bytes,
     true
 );
 
@@ -668,8 +652,8 @@ const rawDelegateSigned = await signer.signTransaction(
     )
 );
 
-const delegatedSigned = TransactionHandler.decode(
-    Buffer.from(rawDelegateSigned.slice(2), 'hex'),
+const delegatedSigned = Transaction.decode(
+    HexUInt.of(rawDelegateSigned.slice(2)).bytes,
     true
 );
 

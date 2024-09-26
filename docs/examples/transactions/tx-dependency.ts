@@ -1,10 +1,10 @@
 import {
     Address,
     Clause,
+    HexUInt,
     Secp256k1,
     VET,
-    TransactionUtils,
-    TransactionHandler,
+    Transaction,
     networkInfo,
     type TransactionClause,
     type TransactionBody
@@ -37,7 +37,7 @@ const txABody: TransactionBody = {
     expiration: 0,
     clauses: txAClauses,
     gasPriceCoef: 0,
-    gas: TransactionUtils.intrinsicGas(txAClauses), // use thor.gas.estimateGas() for better estimation
+    gas: HexUInt.of(Transaction.intrinsicGas(txAClauses).wei).toString(), // use thor.gas.estimateGas() for better estimation
     dependsOn: null,
     nonce: 1
 };
@@ -51,7 +51,7 @@ const txBBody: TransactionBody = {
     expiration: 0,
     clauses: txBClauses,
     gasPriceCoef: 0,
-    gas: TransactionUtils.intrinsicGas(txBClauses), // use thor.gas.estimateGas() for better estimation
+    gas: HexUInt.of(Transaction.intrinsicGas(txBClauses).wei).toString(), // use thor.gas.estimateGas() for better estimation
     dependsOn: null,
     nonce: 2
 };
@@ -65,29 +65,23 @@ const senderPrivateKey = await Secp256k1.generatePrivateKey();
 
 // 4 - Get Tx A id
 
-const txASigned = TransactionHandler.sign(
-    txABody,
-    Buffer.from(senderPrivateKey)
-);
+const txASigned = Transaction.of(txABody).sign(senderPrivateKey);
 
 // 5 - Set it inside tx B
 
-txBBody.dependsOn = txASigned.id;
+txBBody.dependsOn = txASigned.id.toString();
 
 // 6 - Sign Tx B
 
-const txBSigned = TransactionHandler.sign(
-    txBBody,
-    Buffer.from(senderPrivateKey)
-);
+const txBSigned = Transaction.of(txBBody).sign(senderPrivateKey);
 
 // 7 - encode Tx B
 
-const rawTxB = txBSigned.encoded;
+const rawTxB = txBSigned.encode;
 
 // Check (we can decode Tx B)
-const decodedTx = TransactionHandler.decode(rawTxB, true);
+const decodedTx = Transaction.decode(rawTxB, true);
 
 // END_SNIPPET: TxDependencySnippet
 
-expect(decodedTx.body.dependsOn).toBe(txASigned.id);
+expect(decodedTx.body.dependsOn).toBe(txASigned.id.toString());

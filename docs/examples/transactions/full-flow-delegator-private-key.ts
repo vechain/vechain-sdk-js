@@ -1,4 +1,11 @@
-import { Address, Clause, TransactionClause, TransactionHandler, VET } from '@vechain/sdk-core';
+import {
+    Address,
+    Clause,
+    HexUInt,
+    Transaction,
+    type TransactionClause,
+    VET
+} from '@vechain/sdk-core';
 import {
     ProviderInternalBaseWallet,
     signerUtils,
@@ -93,8 +100,8 @@ const rawDelegateSigned = await signer.signTransaction(
     )
 );
 
-const delegatedSigned = TransactionHandler.decode(
-    Buffer.from(rawDelegateSigned.slice(2), 'hex'),
+const delegatedSigned = Transaction.decode(
+    HexUInt.of(rawDelegateSigned.slice(2)).bytes,
     true
 );
 
@@ -112,7 +119,7 @@ const txReceipt = await thorSoloClient.transactions.waitForTransaction(
 // Check the signed transaction
 expect(delegatedSigned.isSigned).toEqual(true);
 expect(delegatedSigned.isDelegated).toEqual(true);
-expect(delegatedSigned.delegator).toEqual(delegatorAccount.address);
+expect(delegatedSigned.delegator.toString()).toEqual(delegatorAccount.address);
 
 // Check the transaction receipt
 expect(txReceipt).toBeDefined();

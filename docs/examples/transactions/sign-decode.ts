@@ -2,8 +2,7 @@ import {
     Address,
     Clause,
     Secp256k1,
-    TransactionUtils,
-    TransactionHandler,
+    Transaction,
     VET,
     networkInfo,
     type TransactionBody,
@@ -24,7 +23,7 @@ const clauses: TransactionClause[] = [
 
 // 2 - Calculate intrinsic gas of clauses
 
-const gas = TransactionUtils.intrinsicGas(clauses);
+const gas = Number(Transaction.intrinsicGas(clauses).wei);
 
 // 3 - Body of transaction
 
@@ -44,18 +43,15 @@ const privateKey = await Secp256k1.generatePrivateKey();
 
 // 4 - Sign transaction
 
-const signedTransaction = TransactionHandler.sign(
-    body,
-    Buffer.from(privateKey)
-);
+const signedTransaction = Transaction.of(body).sign(privateKey);
 
 // 5 - Encode transaction
 
-const encodedRaw = signedTransaction.encoded;
+const encodedRaw = signedTransaction.encode;
 
 // 6 - Decode transaction
 
-const decodedTx = TransactionHandler.decode(encodedRaw, true);
+const decodedTx = Transaction.decode(encodedRaw, true);
 
 // END_SNIPPET: SignDecodeSnippet
 

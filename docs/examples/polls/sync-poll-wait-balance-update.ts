@@ -1,5 +1,5 @@
 import { Poll, THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
-import { Hex, TransactionHandler } from '@vechain/sdk-core';
+import { HexUInt, Transaction } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
 // 1 - Create thor client for solo network
@@ -14,18 +14,16 @@ const latestBlock = await thorSoloClient.blocks.getBestBlockCompressed();
 // 2.2 - Transaction sender and receiver
 const sender = {
     address: '0x2669514f9fe96bc7301177ba774d3da8a06cace4',
-    privateKey: Buffer.from(
-        'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5',
-        'hex'
-    )
+    privateKey: HexUInt.of(
+        'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5'
+    ).bytes
 };
 
 const receiver = {
     address: '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
-    privateKey: Buffer.from(
-        '1758771c54938e977518e4ff1c297aca882f6598891df503030734532efa790e',
-        'hex'
-    )
+    privateKey: HexUInt.of(
+        '1758771c54938e977518e4ff1c297aca882f6598891df503030734532efa790e'
+    ).bytes
 };
 
 // 2.2 - Create transaction clauses
@@ -55,11 +53,8 @@ const transactionBody = {
 };
 
 // 2.5 - Sign and get raw transaction
-const encoded = TransactionHandler.sign(
-    transactionBody,
-    sender.privateKey
-).encoded;
-const raw = `0x${encoded.toString('hex')}`;
+const encoded = Transaction.of(transactionBody).sign(sender.privateKey).encode;
+const raw = HexUInt.of(encoded).toString();
 
 // 3 - Get the sender and receiver balance before the transaction
 
@@ -82,7 +77,7 @@ const sentTransaction =
 // 4.1 - Check if the transaction is sent successfully (check if the transaction id is a valid hex string)
 expect(sentTransaction).toBeDefined();
 expect(sentTransaction).toHaveProperty('id');
-expect(Hex.isValid0x(sentTransaction.id)).toBe(true);
+expect(HexUInt.isValid0x(sentTransaction.id)).toBe(true);
 
 // 4 -Wait until balance is updated
 
