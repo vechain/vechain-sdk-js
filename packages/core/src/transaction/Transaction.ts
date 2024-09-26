@@ -9,6 +9,7 @@ import {
 import { RLP_CODER, type RLPValidObject } from '../encoding';
 import { type TransactionBody } from './TransactionBody';
 import {
+    InvalidSecp256k1PrivateKey,
     InvalidSecp256k1Signature,
     InvalidTransactionField,
     NotDelegatedTransaction,
@@ -365,6 +366,74 @@ class Transaction {
             fieldName: 'body',
             body
         });
+    }
+
+    public sign(signerPrivateKey: Uint8Array): Transaction {
+        // Check if the private key is valid.
+        if (Secp256k1.isValidPrivateKey(signerPrivateKey)) {
+            if (!this.isDelegated) {
+                // Sign transaction
+                const signature = Secp256k1.sign(
+                    this.getSignatureHash().bytes,
+                    signerPrivateKey
+                );
+                // Return new signed transaction.
+                return Transaction.of(this.body, signature);
+            }
+            throw new InvalidTransactionField(
+                `Transaction.sign`,
+                'delegated transaction: use signWithDelegator method',
+                { fieldName: 'delegator', body: this.body }
+            );
+        }
+        throw new InvalidSecp256k1PrivateKey(
+            `Transaction.sign`,
+            'invalid private key: ensure it is a secp256k1 key',
+            undefined
+        );
+    }
+
+    public signWithDelegator(
+        signerPrivateKey: Uint8Array,
+        delegatorPrivateKey: Uint8Array
+    ): Transaction {
+        // Check if the private key of the signer is valid.
+        if (Secp256k1.isValidPrivateKey(signerPrivateKey)) {
+            // Check if the private key of the delegator is valid.
+            if (Secp256k1.isValidPrivateKey(delegatorPrivateKey)) {
+                if (this.isDelegated) {
+                    const transactionHash = this.getSignatureHash().bytes;
+                    const delegatedHash = this.getSignatureHash(
+                        Address.ofPublicKey(
+                            Secp256k1.derivePublicKey(signerPrivateKey)
+                        )
+                    ).bytes;
+                    // Return new signed transaction
+                    return Transaction.of(
+                        this.body,
+                        nc_utils.concatBytes(
+                            Secp256k1.sign(transactionHash, signerPrivateKey),
+                            Secp256k1.sign(delegatedHash, delegatorPrivateKey)
+                        )
+                    );
+                }
+                throw new NotDelegatedTransaction(
+                    'Transaction.signWithDelegator',
+                    'not delegated transaction: use sign method',
+                    undefined
+                );
+            }
+            throw new InvalidSecp256k1PrivateKey(
+                `Transaction.signWithDelegator`,
+                'invalid delegator private: ensure it is a secp256k1 key',
+                undefined
+            );
+        }
+        throw new InvalidSecp256k1PrivateKey(
+            `Transaction.signWithDelegator`,
+            'invalid signer private key: ensure it is a secp256k1 key',
+            undefined
+        );
     }
 
     // ********** PRIVATE FUNCTIONS **********
