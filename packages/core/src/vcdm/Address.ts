@@ -1,8 +1,8 @@
 import { Keccak256 } from './hash/Keccak256';
-import { HDKey } from '../hdkey';
+import { HDKey } from '../hdkey/HDKey';
 import { Hex } from './Hex';
 import { HexUInt } from './HexUInt';
-import { Secp256k1 } from '../secp256k1';
+import { Secp256k1 } from '../secp256k1/Secp256k1';
 import { Txt } from './Txt';
 import {
     InvalidDataType,

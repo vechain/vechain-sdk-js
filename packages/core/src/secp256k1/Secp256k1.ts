@@ -1,5 +1,5 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
-import { HexUInt } from '../vcdm';
+import { HexUInt } from '../vcdm/HexUInt';
 import { randomBytes as nh_randomBytes } from '@noble/hashes/utils';
 import { secp256k1 as nc_secp256k1 } from '@noble/curves/secp256k1';
 import {

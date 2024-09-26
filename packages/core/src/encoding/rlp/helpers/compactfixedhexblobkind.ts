@@ -1,4 +1,4 @@
-import { Hex } from '../../../vcdm';
+import { Hex } from '../../../vcdm/Hex';
 import { InvalidRLP } from '@vechain/sdk-errors';
 
 /**
