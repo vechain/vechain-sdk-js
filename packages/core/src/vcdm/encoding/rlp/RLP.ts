@@ -78,6 +78,14 @@ class RLP implements VeChainDataModel<RLP> {
     }
 
     /**
+     * Creates {@link Hex} instance from the RLP encoded value.
+     * @returns {Hex} The Hex instance.
+     */
+    public toHex(): Hex {
+        return Hex.of(this.bytes);
+    }
+
+    /**
      * Returns an RLP instance from a plain value.
      * @param data - The plain data
      * @returns {RLP} The RLP instance.
@@ -136,7 +144,7 @@ class RLP implements VeChainDataModel<RLP> {
      * @throws {InvalidRLP}
      *
      */
-    public static packData(
+    protected static packData(
         obj: RLPValidObject,
         profile: RLPProfile,
         context: string
@@ -282,14 +290,6 @@ class RLP implements VeChainDataModel<RLP> {
                 )
             ) as RLPValueType;
         }
-    }
-
-    /**
-     * Creates {@link Hex} instance from the RLP encoded value.
-     * @returns {Hex} The Hex instance.
-     */
-    public toHex(): Hex {
-        return Hex.of(this.bytes);
     }
 }
 
