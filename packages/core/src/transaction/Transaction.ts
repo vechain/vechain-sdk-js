@@ -206,6 +206,7 @@ class Transaction {
             : UNSIGNED_TRANSACTION_RLP;
         // Get decoded body
         const decodedRLPBody = decoder.decodeObject(
+            // todo: remove after #1120
             Buffer.from(rawTransaction)
         ) as RLPValidObject;
         // Create correct transaction body without reserved field
