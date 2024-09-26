@@ -1,6 +1,10 @@
 import { describe, expect, test } from '@jest/globals';
 import {
-    Hex,
+    InvalidDataType,
+    InvalidRLP,
+    stringifyData
+} from '@vechain/sdk-errors';
+import {
     assertCompactFixedHexBlobBuffer,
     assertFixedHexBlobKindBuffer,
     assertFixedHexBlobKindData,
@@ -8,8 +12,9 @@ import {
     assertValidNumericKindBuffer,
     decodeBufferToHexWithLeadingZeros,
     encodeBigIntToBuffer,
+    Hex,
     validateNumericKindData
-} from '../../src';
+} from '../../../src';
 import {
     invalidCompactFixedHexBlobKindBufferTestCases,
     invalidFixedHexBlobKindBufferTestCases,
@@ -24,11 +29,6 @@ import {
     validHexBlobKindDataTestCases,
     validNumericBufferTestCases
 } from './helpers.fixture';
-import {
-    InvalidDataType,
-    InvalidRLP,
-    stringifyData
-} from '@vechain/sdk-errors';
 
 /**
  * Test suite for BigInt helper functions

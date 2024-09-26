@@ -41,7 +41,7 @@ class RLP implements VeChainDataModel<RLP> {
      */
     get n(): number {
         const bi = this.bi;
-        if (Number.MIN_SAFE_INTEGER <= bi && bi <= Number.MAX_SAFE_INTEGER) {
+        if (bi <= Number.MAX_SAFE_INTEGER) {
             return Number(bi);
         }
         throw new InvalidDataType('RLP.n', 'not in the safe number range', {

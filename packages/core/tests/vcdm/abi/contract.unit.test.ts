@@ -4,14 +4,14 @@ import {
     InvalidDataType
 } from '@vechain/sdk-errors';
 import { fail } from 'assert';
-import { ABIContract, ERC721_ABI, Hex } from '../../src';
+import { encodeFunctionResult } from 'viem';
+import { ABIContract, ERC721_ABI, Hex } from '../../../src';
 import {
     contractABI,
     contractABIWithEvents,
     contractStorageABI,
     ValueChangedEventData
 } from './fixture';
-import { encodeFunctionResult } from 'viem';
 
 /**
  * Contract tests - encode & decode

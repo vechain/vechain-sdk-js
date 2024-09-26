@@ -1,8 +1,9 @@
 import { describe, expect, test } from '@jest/globals';
-import { InvalidRLP } from '@vechain/sdk-errors';
-import { RLP } from '../../src/vcdm/encoding/rlp/RLP';
-import { RLPProfiler } from '../../src/vcdm/encoding/rlp/RLPProfiler';
-import { Hex } from '../../src/vcdm/Hex';
+import { InvalidDataType, InvalidRLP } from '@vechain/sdk-errors';
+import { HexUInt } from '../../../src';
+import { RLP } from '../../../src/vcdm/encoding/rlp/RLP';
+import { RLPProfiler } from '../../../src/vcdm/encoding/rlp/RLPProfiler';
+import { Hex } from '../../../src/vcdm/Hex';
 import {
     compactFixedHexBlobKindDecodeTestCases,
     compactFixedHexBlobKindEncodeTestCases,
@@ -34,7 +35,6 @@ import {
     numericKindDecodeTestCases,
     numericKindEncodeTestCases
 } from './rlp.fixture';
-import { HexUInt } from '../../src';
 
 /**
  * Test suite for RLP encoding/decoding functionality
@@ -60,6 +60,40 @@ describe('RLP', () => {
                     expected
                 );
             });
+        });
+    });
+
+    // Testing VCDM methods
+    describe('vcdm', () => {
+        test('should return a number', () => {
+            const number = 2;
+            const rlpNumber = RLP.of(number).n;
+
+            expect(number).toEqual(rlpNumber);
+        });
+        test('should throw an error when not in the range', () => {
+            const number1 = Number.MIN_SAFE_INTEGER;
+            expect(() => {
+                return RLP.of(number1).n;
+            }).toThrowError(InvalidRLP);
+
+            const number2 = BigInt(Number.MAX_SAFE_INTEGER);
+            expect(() => {
+                return RLP.of(number2).n;
+            }).toThrowError(InvalidDataType);
+        });
+        test('isEqual', () => {
+            const rlp1 = RLP.of(1);
+            const rlp2 = RLP.of(1);
+            const rlp3 = RLP.of(2);
+            const rlp4 = RLP.of(1234);
+            expect(rlp1.isEqual(rlp2)).toBe(true);
+            expect(rlp1.isEqual(rlp3)).toBe(false);
+            expect(rlp1.isEqual(rlp4)).toBe(false);
+        });
+        test('toHex', () => {
+            const rlp = RLP.of(1234);
+            expect(rlp.toHex().toString()).toBe('0x8204d2');
         });
     });
 
