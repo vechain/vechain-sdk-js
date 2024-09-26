@@ -1,4 +1,12 @@
-import { RLP_CODER } from '../../vcdm/encoding';
+import {
+    BufferKind,
+    CompactFixedHexBlobKind,
+    HexBlobKind,
+    NumericKind,
+    OptionalFixedHexBlobKind
+} from '../../vcdm/encoding/rlp/kind';
+
+import { RLPProfiler } from '../../vcdm/encoding/rlp/RLPProfiler';
 
 /**
  * Transaction gas constants
@@ -43,20 +51,20 @@ const TRANSACTION_FIELDS = [
     /**
      * Chain tag. It represents the id of the chain the transaction is sent to.
      */
-    { name: 'chainTag', kind: new RLP_CODER.NumericKind(1) },
+    { name: 'chainTag', kind: new NumericKind(1) },
 
     /**
      * Block reference. It represents the last block of the chain the transaction is sent to.
      */
     {
         name: 'blockRef',
-        kind: new RLP_CODER.CompactFixedHexBlobKind(8)
+        kind: new CompactFixedHexBlobKind(8)
     },
 
     /**
      * Expiration. It represents the expiration date of the transaction.
      */
-    { name: 'expiration', kind: new RLP_CODER.NumericKind(4) },
+    { name: 'expiration', kind: new NumericKind(4) },
 
     /**
      * Clauses of the transaction. They represent the actions to be executed by the transaction.
@@ -67,10 +75,10 @@ const TRANSACTION_FIELDS = [
             item: [
                 {
                     name: 'to',
-                    kind: new RLP_CODER.OptionalFixedHexBlobKind(20)
+                    kind: new OptionalFixedHexBlobKind(20)
                 },
-                { name: 'value', kind: new RLP_CODER.NumericKind(32) },
-                { name: 'data', kind: new RLP_CODER.HexBlobKind() }
+                { name: 'value', kind: new NumericKind(32) },
+                { name: 'data', kind: new HexBlobKind() }
             ]
         }
     },
@@ -78,27 +86,27 @@ const TRANSACTION_FIELDS = [
     /**
      * Gas price coef. It represents the gas price coefficient of the transaction.
      */
-    { name: 'gasPriceCoef', kind: new RLP_CODER.NumericKind(1) },
+    { name: 'gasPriceCoef', kind: new NumericKind(1) },
 
     /**
      * Gas. It represents the gas limit of the transaction.
      */
-    { name: 'gas', kind: new RLP_CODER.NumericKind(8) },
+    { name: 'gas', kind: new NumericKind(8) },
 
     /**
      * Depends on. It represents the hash of the transaction the current transaction depends on.
      */
-    { name: 'dependsOn', kind: new RLP_CODER.OptionalFixedHexBlobKind(32) },
+    { name: 'dependsOn', kind: new OptionalFixedHexBlobKind(32) },
 
     /**
      * Nonce. It represents the nonce of the transaction.
      */
-    { name: 'nonce', kind: new RLP_CODER.NumericKind(8) },
+    { name: 'nonce', kind: new NumericKind(8) },
 
     /**
      * Reserved. It represents the reserved field of the transaction.
      */
-    { name: 'reserved', kind: { item: new RLP_CODER.BufferKind() } }
+    { name: 'reserved', kind: { item: new BufferKind() } }
 ];
 
 /**
@@ -107,7 +115,7 @@ const TRANSACTION_FIELDS = [
  */
 const TRANSACTION_FEATURES_KIND = {
     name: 'reserved.features',
-    kind: new RLP_CODER.NumericKind(4)
+    kind: new NumericKind(4)
 };
 
 /**
@@ -116,23 +124,23 @@ const TRANSACTION_FEATURES_KIND = {
  */
 const TRANSACTION_SIGNATURE_KIND = {
     name: 'signature',
-    kind: new RLP_CODER.BufferKind()
+    kind: new BufferKind()
 };
 
 /**
- * RLP_CODER profiler for simple unsigned transactions
+ * RLPProfiler for simple unsigned transactions
  * @internal
  */
-const UNSIGNED_TRANSACTION_RLP = new RLP_CODER.Profiler({
+const UNSIGNED_TRANSACTION_RLP = new RLPProfiler({
     name: 'tx',
     kind: TRANSACTION_FIELDS
 });
 
 /**
- * RLP_CODER profiler for simple signed transactions
+ * RLPProfiler for simple signed transactions
  * @internal
  */
-const SIGNED_TRANSACTION_RLP = new RLP_CODER.Profiler({
+const SIGNED_TRANSACTION_RLP = new RLPProfiler({
     name: 'tx',
 
     // Add signature to the transaction fields
