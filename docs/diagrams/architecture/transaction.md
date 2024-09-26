@@ -64,7 +64,7 @@ classDiagram
     Clause --> ClauseOption
     Clause --> DeployParams
     TransactionBody *-- Transaction
+    TransactionBody --* Reserved
     TransactionClause *-- TransactionBody
-    Reserved *-- TransactionBody
     TransactionClause <|.. Clause
 ```

@@ -166,6 +166,11 @@ class Transaction {
      * @return {Address} The address of the delegator.
      * @throws {UnavailableTransactionField} If the transaction is delegated but the signature is missing.
      * @throws {NotDelegatedTransaction} If the transaction is not delegated.
+     *
+     * @remarks Security auditable method, depends on
+     * - {@link Address.ofPublicKey};
+     * - {@link Secp256k1.recover};
+     * - {@link Transaction.getSignatureHash}.
      */
     public get delegator(): Address {
         if (this.isDelegated) {
@@ -218,6 +223,9 @@ class Transaction {
      * @return {Blake2b256} The concatenated hash of the signature
      * and origin if the transaction is signed.
      * @throws {UnavailableTransactionField} If the transaction is not signed.
+     *
+     * @remarks Security auditable method, depends on
+     * - {@link Blake2b256.of}
      */
     public get id(): Blake2b256 {
         if (this.isSigned) {
@@ -270,6 +278,10 @@ class Transaction {
      *
      * @return {Address} The address derived from the public key of the transaction's signer.
      * @throws {UnavailableTransactionField} If the transaction is not signed, an exception is thrown indicating the absence of the origin field.
+     *
+     * @remarks Security auditable method, depends on
+     * - {@link Address.ofPublicKey};
+     * - {@link Secp256k1.recover}.
      */
     public get origin(): Address {
         if (this.signature !== undefined) {
@@ -353,6 +365,9 @@ class Transaction {
      *
      * @remarks
      * `delegator` is used to sign a transaction on behalf of another account.
+     *
+     * @remarks Security auditable method, depends on
+     * - {@link Blake2b256.of}.
      */
     public getSignatureHash(delegator?: Address): Blake2b256 {
         const txHash = Blake2b256.of(this._encode(false));
@@ -479,6 +494,10 @@ class Transaction {
      * @return {Transaction} The signed transaction.
      * @throws {InvalidTransactionField} If attempting to sign a delegated transaction.
      * @throws {InvalidSecp256k1PrivateKey} If the provided private key is not valid.
+     *
+     * @remarks Security auditable method, depends on
+     * - {@link Secp256k1.isValidPrivateKey};
+     * - {@link Secp256k1.sign}.
      */
     public sign(signerPrivateKey: Uint8Array): Transaction {
         // Check if the private key is valid.
@@ -512,6 +531,11 @@ class Transaction {
      * @param {Uint8Array} delegatorPrivateKey - The private key of the delegator.
      * @return {Transaction} A new transaction with the concatenated signatures
      * of the signer and the delegator.
+     *
+     * @remarks Security auditable method, depends on
+     * - {@link Address.ofPublicKey}
+     * - {@link Secp256k1.isValidPrivateKey};
+     * - {@link Secp256k1.sign}.
      */
     public signWithDelegator(
         signerPrivateKey: Uint8Array,
