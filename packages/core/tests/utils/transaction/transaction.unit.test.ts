@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { Transaction, TransactionUtils } from '../../../src';
+import { Transaction } from '../../../src';
 import {
     invalidData,
     normalTransactions,
@@ -18,7 +18,7 @@ describe('Transaction utils', () => {
     test('Should throw errors for invalid clauses data', () => {
         invalidData.forEach((invalidClause) => {
             expect(() => {
-                TransactionUtils.intrinsicGas([
+                Transaction.intrinsicGas([
                     {
                         to: invalidClause.to,
                         value: invalidClause.value,
@@ -33,7 +33,7 @@ describe('Transaction utils', () => {
      * Intrinsic gas - No clauses
      */
     test('Should calculate intrinsic gas for a transaction with no clauses', () => {
-        expect(TransactionUtils.intrinsicGas([])).toBe(
+        expect(Transaction.intrinsicGas([])).toBe(
             Transaction.GAS_CONSTANTS.TX_GAS +
                 Transaction.GAS_CONSTANTS.CLAUSE_GAS
         );
@@ -53,7 +53,7 @@ describe('Transaction utils', () => {
                     };
                 }
             );
-            expect(TransactionUtils.intrinsicGas(clauses)).toBe(
+            expect(Transaction.intrinsicGas(clauses)).toBe(
                 normalTransaction.expected
             );
         });
@@ -69,9 +69,7 @@ describe('Transaction utils', () => {
                 expected: number;
             }) => {
                 expect(
-                    TransactionUtils.intrinsicGas(
-                        smartContractTransaction.clauses
-                    )
+                    Transaction.intrinsicGas(smartContractTransaction.clauses)
                 ).toBe(smartContractTransaction.expected);
             }
         );
