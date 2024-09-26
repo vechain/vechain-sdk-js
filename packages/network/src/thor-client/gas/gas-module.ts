@@ -70,7 +70,7 @@ class GasModule {
         });
 
         // The intrinsic gas of the transaction
-        const intrinsicGas = Transaction.intrinsicGas(clauses);
+        const intrinsicGas = Number(Transaction.intrinsicGas(clauses).wei);
 
         // totalSimulatedGas represents the summation of all clauses' gasUsed
         const totalSimulatedGas = simulations.reduce((sum, simulation) => {

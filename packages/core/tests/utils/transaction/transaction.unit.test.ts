@@ -33,9 +33,11 @@ describe('Transaction utils', () => {
      * Intrinsic gas - No clauses
      */
     test('Should calculate intrinsic gas for a transaction with no clauses', () => {
-        expect(Transaction.intrinsicGas([])).toBe(
-            Transaction.GAS_CONSTANTS.TX_GAS +
-                Transaction.GAS_CONSTANTS.CLAUSE_GAS
+        expect(Transaction.intrinsicGas([]).wei).toBe(
+            BigInt(
+                Transaction.GAS_CONSTANTS.TX_GAS +
+                    Transaction.GAS_CONSTANTS.CLAUSE_GAS
+            )
         );
     });
 
@@ -53,8 +55,8 @@ describe('Transaction utils', () => {
                     };
                 }
             );
-            expect(Transaction.intrinsicGas(clauses)).toBe(
-                normalTransaction.expected
+            expect(Transaction.intrinsicGas(clauses).wei).toBe(
+                BigInt(normalTransaction.expected)
             );
         });
     });
@@ -70,7 +72,8 @@ describe('Transaction utils', () => {
             }) => {
                 expect(
                     Transaction.intrinsicGas(smartContractTransaction.clauses)
-                ).toBe(smartContractTransaction.expected);
+                        .wei
+                ).toBe(BigInt(smartContractTransaction.expected));
             }
         );
     });

@@ -215,7 +215,7 @@ class Transaction {
      * If the transaction is not signed,
      * it throws an UnavailableTransactionField error.
      *
-     * @return {Blake2b256} The concatenated Blake2b256 hash of the signature
+     * @return {Blake2b256} The concatenated hash of the signature
      * and origin if the transaction is signed.
      * @throws {UnavailableTransactionField} If the transaction is not signed.
      */
@@ -241,7 +241,7 @@ class Transaction {
      * @return {VTHO} The computed intrinsic gas for the transaction.
      */
     public get intrinsicGas(): VTHO {
-        return VTHO.of(Transaction.intrinsicGas(this.body.clauses), Units.wei);
+        return Transaction.intrinsicGas(this.body.clauses);
     }
 
     /**
@@ -349,7 +349,7 @@ class Transaction {
      * Computes the signature hash, optionally incorporating a delegator's address.
      *
      * @param {Address} [delegator] - Optional delegator's address to include in the hash computation.
-     * @return {Blake2b256} - The computed Blake2b256 signature hash.
+     * @return {Blake2b256} - The computed signature hash.
      *
      * @remarks
      * `delegator` is used to sign a transaction on behalf of another account.
@@ -364,33 +364,47 @@ class Transaction {
         return txHash;
     }
 
-    public static intrinsicGas(clauses: TransactionClause[]): number {
-        // No clauses
-        if (clauses.length === 0) {
-            return (
-                Transaction.GAS_CONSTANTS.TX_GAS +
-                Transaction.GAS_CONSTANTS.CLAUSE_GAS
+    /**
+     * Calculates the intrinsic gas required for the given transaction clauses.
+     *
+     * @param {TransactionClause[]} clauses - An array of transaction clauses to calculate the intrinsic gas for.
+     * @return {VTHO} The total intrinsic gas required for the provided clauses.
+     */
+    public static intrinsicGas(clauses: TransactionClause[]): VTHO {
+        if (clauses.length > 0) {
+            // Some clauses.
+            return VTHO.of(
+                clauses.reduce((sum: number, clause: TransactionClause) => {
+                    if (clause.to !== null) {
+                        // Invalid address or no vet.domains name
+                        if (
+                            !Address.isValid(clause.to) &&
+                            !clause.to.includes('.')
+                        )
+                            throw new InvalidDataType(
+                                'Transaction.intrinsicGas',
+                                'invalid data type in clause: each `to` field must be a valid address.',
+                                { clause }
+                            );
+
+                        sum += Transaction.GAS_CONSTANTS.CLAUSE_GAS;
+                    } else {
+                        sum +=
+                            Transaction.GAS_CONSTANTS
+                                .CLAUSE_GAS_CONTRACT_CREATION;
+                    }
+                    sum += Transaction._computeUsedGasFor(clause.data);
+                    return sum;
+                }, Transaction.GAS_CONSTANTS.TX_GAS),
+                Units.wei
             );
         }
-
-        // Some clauses
-        return clauses.reduce((sum: number, clause: TransactionClause) => {
-            if (clause.to !== null) {
-                // Invalid address or no vet.domains name
-                if (!Address.isValid(clause.to) && !clause.to.includes('.'))
-                    throw new InvalidDataType(
-                        'Transaction.intrinsicGas()',
-                        `Invalid data type in clause. Each 'to' field must be a valid address.`,
-                        { clause }
-                    );
-
-                sum += Transaction.GAS_CONSTANTS.CLAUSE_GAS;
-            } else {
-                sum += Transaction.GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION;
-            }
-            sum += Transaction._computeUsedGasFor(clause.data);
-            return sum;
-        }, Transaction.GAS_CONSTANTS.TX_GAS);
+        // No clauses.
+        return VTHO.of(
+            Transaction.GAS_CONSTANTS.TX_GAS +
+                Transaction.GAS_CONSTANTS.CLAUSE_GAS,
+            Units.wei
+        );
     }
 
     /**
@@ -544,6 +558,13 @@ class Transaction {
 
     // ********** PRIVATE FUNCTIONS **********
 
+    /**
+     * Computes the amount of gas used for the given data.
+     *
+     * @param {string} data - The hexadecimal string data for which the gas usage is computed.
+     * @return {number} The total gas used for the provided data.
+     * @throws {InvalidDataType} If the data is not a valid hexadecimal string.
+     */
     private static _computeUsedGasFor(data: string): number {
         // Invalid data
         if (data !== '' && !Hex.isValid(data))
