@@ -70,7 +70,7 @@ const rawNormalSigned = TransactionHandler.sign(
 // 6 - Send transaction
 
 const send = await thorSoloClient.transactions.sendRawTransaction(
-    `0x${HexUInt.of(rawNormalSigned).toString()}`
+    HexUInt.of(rawNormalSigned).toString()
 );
 
 // 7 - Get transaction details and receipt

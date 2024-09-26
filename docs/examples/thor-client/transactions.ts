@@ -64,7 +64,7 @@ const rawNormalSigned = TransactionHandler.sign(
 // 6 - Send transaction
 
 const send = await thorSoloClient.transactions.sendRawTransaction(
-    `0x${HexUInt.of(rawNormalSigned).toString()}`
+    HexUInt.of(rawNormalSigned).toString()
 );
 expect(send).toBeDefined();
 expect(send).toHaveProperty('id');

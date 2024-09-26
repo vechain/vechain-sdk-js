@@ -104,7 +104,7 @@ const encoded = TransactionHandler.sign(
     transactionBody,
     sender.privateKey
 ).encoded;
-const raw = `0x${HexUInt.of(encoded).toString()}`;
+const raw = HexUInt.of(encoded).toString();
 
 // 3 - Get the sender and receiver balance before the transaction
 
