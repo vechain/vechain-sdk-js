@@ -136,7 +136,7 @@ class Transaction {
      *
      * @return {Uint8Array} The encoded byte array.
      *
-     * @see _encode
+     * @see decode
      */
     public get encode(): Uint8Array {
         return this._encode(this.isSigned);
@@ -409,6 +409,8 @@ class Transaction {
      *
      * @param {boolean} isSigned - Indicates whether the transaction is signed.
      * @return {Uint8Array} The RLP encoded transaction body.
+     *
+     * @see encode
      */
     private _encode(isSigned: boolean): Uint8Array {
         // Encode transaction body with RLP
@@ -440,6 +442,8 @@ class Transaction {
      * @param body - The transaction object adhering to the RLPValidObject structure.
      * @param isSigned - A boolean indicating if the transaction is signed.
      * @return A Uint8Array representing the encoded transaction.
+     *
+     * @see encode
      */
     private _encodeBodyField(
         body: RLPValidObject,
@@ -470,9 +474,9 @@ class Transaction {
      * It removes any trailing unused features that have zero length from the list.
      *
      * @remarks The {@link TransactionBody.reserver} is optional, albeit
-     * is required toperform RLP encoding.
+     * is required to perform RLP encoding.
      *
-     * @see Transaction._encode
+     * @see _encode
      */
     private _encodeReservedField(): Uint8Array[] {
         // Check if is reserved or not
