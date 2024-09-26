@@ -17,7 +17,7 @@ const senderAccount = {
     address: '0x2669514f9fe96bc7301177ba774d3da8a06cace4',
     privateKey: HexUInt.of(
         'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5'
-    )
+    ).bytes
 };
 
 const receiverAccount = {
@@ -70,7 +70,7 @@ const rawNormalSigned = TransactionHandler.sign(
 // 6 - Send transaction
 
 const send = await thorSoloClient.transactions.sendRawTransaction(
-    `0x${rawNormalSigned.toString('hex')}`
+    `0x${HexUInt.of(rawNormalSigned).toString()}`
 );
 
 // 7 - Get transaction details and receipt
