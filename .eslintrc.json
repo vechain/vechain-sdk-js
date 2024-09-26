@@ -17,7 +17,7 @@
         "ecmaVersion": "latest",
         "project": "./tsconfig.json"
     },
-    "plugins": ["@typescript-eslint"],
+    "plugins": ["@typescript-eslint","local-rules"],
     "ignorePatterns": ["node_modules/", "dist/", "coverage/"],
     "rules": {
         "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
@@ -35,6 +35,7 @@
         "@typescript-eslint/lines-between-class-members": "off",
         "prettier/prettier": ["error", { "singleQuote": true, "trailingComma": "none", "tabWidth": 4 }],
         "no-warning-comments": "warn",
-        "no-multi-str": "off"
+        "no-multi-str": "off",
+        "local-rules/disallow-buffer-from": "error"
     }
 }
