@@ -1,5 +1,5 @@
-module.exports = { 
-    'disallow-buffer-from': {
+module.exports = {
+    'disallow-buffer-from-alloc': {
         meta: {
             type: 'problem', // Define the rule type
             docs: {

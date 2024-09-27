@@ -73,9 +73,9 @@ const transactions = {
                 reserved: {
                     features: 1,
                     unused: [
-                        // eslint-disable-next-line local-rules/disallow-buffer-from
+                        // eslint-disable-next-line local-rules/disallow-buffer-from-alloc
                         Uint8Array.from(Buffer.from('0x000')),
-                        // eslint-disable-next-line local-rules/disallow-buffer-from
+                        // eslint-disable-next-line local-rules/disallow-buffer-from-alloc
                         Uint8Array.from(Buffer.from('0x000'))
                     ]
                 }

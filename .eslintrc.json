@@ -36,6 +36,6 @@
         "prettier/prettier": ["error", { "singleQuote": true, "trailingComma": "none", "tabWidth": 4 }],
         "no-warning-comments": "warn",
         "no-multi-str": "off",
-        "local-rules/disallow-buffer-from": "error"
+        "local-rules/disallow-buffer-from-alloc": "error"
     }
 }
