@@ -10,7 +10,9 @@ module.exports = {
             schema: [], // No options for this rule
             messages: {
                 avoidBufferFrom:
-                    'Using Buffer.from is not allowed, please use Uint8Array.from or HexUint.of.bytes instead.'
+                    'Using Buffer.from is not allowed, please use Uint8Array.from or HexUint.of.bytes instead.',
+                avoidBufferAlloc:
+                    'Using Buffer.alloc is not allowed, please use Uint8Array methods instead.'
             }
         },
         create(context) {
@@ -19,13 +21,21 @@ module.exports = {
                     const callee = node.callee;
                     if (
                         callee.type === 'MemberExpression' && // Check if it's a member expression
-                        callee.object.name === 'Buffer' && // Ensure it's `Buffer`
-                        callee.property.name === 'from' // Ensure it's calling `from`
+                        callee.object.name === 'Buffer' // Ensure it's `Buffer`
                     ) {
-                        context.report({
-                            node,
-                            messageId: 'avoidBufferFrom'
-                        });
+                        if (callee.property.name === 'from') {
+                            // Ensure it's calling `from`)
+                            context.report({
+                                node,
+                                messageId: 'avoidBufferFrom'
+                            });
+                        } else if (callee.property.name === 'alloc') {
+                            // Ensure it's calling `from`)
+                            context.report({
+                                node,
+                                messageId: 'avoidBufferAlloc'
+                            });
+                        }
                     }
                 }
             };
