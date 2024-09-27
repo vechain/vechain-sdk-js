@@ -9,7 +9,8 @@ module.exports = {
             },
             schema: [], // No options for this rule
             messages: {
-                avoidBufferFrom: 'Using Buffer.from is not allowed, please use Uint8Array.from or HexUint.of instead.'
+                avoidBufferFrom:
+                    'Using Buffer.from is not allowed, please use Uint8Array.from or HexUint.of.bytes instead.'
             }
         },
         create(context) {
