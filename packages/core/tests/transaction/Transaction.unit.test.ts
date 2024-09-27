@@ -1,5 +1,6 @@
 import { describe, expect } from '@jest/globals';
 import {
+    Address,
     HexUInt,
     Transaction,
     type TransactionBody,
@@ -7,13 +8,33 @@ import {
     VTHO
 } from '../../src';
 import {
+    InvalidSecp256k1Signature,
+    InvalidTransactionField,
     NotDelegatedTransaction,
     UnavailableTransactionField
 } from '@vechain/sdk-errors';
 
-const IntrinsicGasFixture = VTHO.of(37432n, Units.wei);
+const DelegatorPrivateKeyFix = HexUInt.of(
+    '40de805e918403683fb9a6081c3fba072cdc5c88232c62a9509165122488dab7'
+).bytes;
 
-const TransactionBodyFixture: TransactionBody = {
+const DelegatorFix = {
+    privateKey: DelegatorPrivateKeyFix,
+    address: Address.ofPrivateKey(DelegatorPrivateKeyFix)
+};
+
+const SignerPrivateKeyFix = HexUInt.of(
+    '7582be841ca040aa940fff6c05773129e135623e41acce3e0b8ba520dc1ae26a'
+).bytes;
+
+const SignerFix = {
+    privateKey: SignerPrivateKeyFix,
+    address: Address.ofPrivateKey(SignerPrivateKeyFix)
+};
+
+const IntrinsicGasFix = VTHO.of(37432n, Units.wei);
+
+const TxBodyFixture: TransactionBody = {
     chainTag: 1,
     blockRef: '0x00000000aabbccdd',
     expiration: 32,
@@ -35,9 +56,9 @@ const TransactionBodyFixture: TransactionBody = {
     nonce: 12345678
 };
 
-const TransactionFixture = {
+const TxFixture = {
     undelegated: {
-        body: TransactionBodyFixture,
+        body: TxBodyFixture,
         signatureHash: HexUInt.of(
             '0x2a1c25ce0d66f45276a5f308b99bf410e2fc7d5b6ea37a49f2ab9f1da9446478'
         ),
@@ -50,11 +71,11 @@ const TransactionFixture = {
         encodedSigned: HexUInt.of(
             'f8970184aabbccdd20f840df947567d83b7b8d80addcb281a71d54fc7b3364ffed82271086000000606060df947567d83b7b8d80addcb281a71d54fc7b3364ffed824e208600000060606081808252088083bc614ec0b841f76f3c91a834165872aa9464fc55b03a13f46ea8d3b858e528fcceaf371ad6884193c3f313ff8effbb57fe4d1adc13dceb933bedbf9dbb528d2936203d5511df00'
         ).bytes,
-        intrinsicGas: IntrinsicGasFixture
+        intrinsicGas: IntrinsicGasFix
     },
     delegated: {
         body: {
-            ...TransactionBodyFixture,
+            ...TxBodyFixture,
             reserved: {
                 features: 1
             }
@@ -71,11 +92,11 @@ const TransactionFixture = {
         signedTransactionId: HexUInt.of(
             '0xd4d1ae152119bd7c9410844e70b82d6d42c15494f1d59b99f5808a90da403a98'
         ),
-        intrinsicGas: IntrinsicGasFixture
+        intrinsicGas: IntrinsicGasFix
     },
     delegatedWithUnusedFields: {
         body: {
-            ...TransactionBodyFixture,
+            ...TxBodyFixture,
             reserved: {
                 features: 1,
                 // todo: remove buffer once #1120 refactor encoding done
@@ -94,7 +115,7 @@ const TransactionFixture = {
         signedTransactionId: HexUInt.of(
             '0xd244b56d0ac6d05e6bb3c48867d3093e86414392d46e20f04ecaf026b6f8d20d'
         ),
-        intrinsicGas: IntrinsicGasFixture
+        intrinsicGas: IntrinsicGasFix
     }
 };
 
@@ -105,10 +126,8 @@ const TransactionFixture = {
 describe('Transaction class tests', () => {
     describe('Construction tests', () => {
         describe('of unsigned transactions', () => {
-            test('of undelegated transactions', () => {
-                const actual = Transaction.of(
-                    TransactionFixture.undelegated.body
-                );
+            test('Transaction <- of undelegated transactions', () => {
+                const actual = Transaction.of(TxFixture.undelegated.body);
                 expect(actual).toBeInstanceOf(Transaction);
                 expect(actual.signature).toBeUndefined();
                 expect(actual.isSigned).toBe(false);
@@ -116,7 +135,7 @@ describe('Transaction class tests', () => {
                 expect(
                     actual
                         .getSignatureHash()
-                        .isEqual(TransactionFixture.undelegated.signatureHash)
+                        .isEqual(TxFixture.undelegated.signatureHash)
                 ).toBe(true);
                 expect(() => actual.id).toThrowError(
                     UnavailableTransactionField
@@ -128,26 +147,24 @@ describe('Transaction class tests', () => {
                     NotDelegatedTransaction
                 );
                 expect(actual.encoded).toEqual(
-                    TransactionFixture.undelegated.encodedUnsigned
+                    TxFixture.undelegated.encodedUnsigned
                 );
                 expect(
                     actual.intrinsicGas.isEqual(
-                        TransactionFixture.undelegated.intrinsicGas
+                        TxFixture.undelegated.intrinsicGas
                     )
                 ).toBe(true);
             });
 
-            test('of delegated transactions', () => {
-                const actual = Transaction.of(
-                    TransactionFixture.delegated.body
-                );
+            test('Transaction <- of delegated transactions', () => {
+                const actual = Transaction.of(TxFixture.delegated.body);
                 expect(actual).toBeInstanceOf(Transaction);
                 expect(actual.isSigned).toBe(false);
                 expect(actual.isDelegated).toEqual(true);
                 expect(
                     actual
                         .getSignatureHash()
-                        .isEqual(TransactionFixture.delegated.signatureHash)
+                        .isEqual(TxFixture.delegated.signatureHash)
                 ).toBe(true);
                 expect(() => actual.id).toThrowError(
                     UnavailableTransactionField
@@ -159,18 +176,18 @@ describe('Transaction class tests', () => {
                     UnavailableTransactionField
                 );
                 expect(actual.encoded).toEqual(
-                    TransactionFixture.delegated.encodedUnsigned
+                    TxFixture.delegated.encodedUnsigned
                 );
                 expect(
                     actual.intrinsicGas.isEqual(
-                        TransactionFixture.delegated.intrinsicGas
+                        TxFixture.delegated.intrinsicGas
                     )
                 ).toBe(true);
             });
 
-            test('of delegated transactions with unused fields', () => {
+            test('Transaction <- of delegated transactions with unused fields', () => {
                 const actual = Transaction.of(
-                    TransactionFixture.delegatedWithUnusedFields.body
+                    TxFixture.delegatedWithUnusedFields.body
                 );
                 expect(actual).toBeInstanceOf(Transaction);
                 expect(actual.isSigned).toBe(false);
@@ -179,8 +196,7 @@ describe('Transaction class tests', () => {
                     actual
                         .getSignatureHash()
                         .isEqual(
-                            TransactionFixture.delegatedWithUnusedFields
-                                .signatureHash
+                            TxFixture.delegatedWithUnusedFields.signatureHash
                         )
                 ).toBe(true);
                 expect(() => actual.id).toThrowError(
@@ -193,23 +209,121 @@ describe('Transaction class tests', () => {
                     UnavailableTransactionField
                 );
                 expect(actual.encoded).toEqual(
-                    TransactionFixture.delegatedWithUnusedFields.encodedUnsigned
+                    TxFixture.delegatedWithUnusedFields.encodedUnsigned
                 );
                 expect(
                     actual.intrinsicGas.isEqual(
-                        TransactionFixture.delegatedWithUnusedFields
-                            .intrinsicGas
+                        TxFixture.delegatedWithUnusedFields.intrinsicGas
                     )
                 ).toBe(true);
             });
         });
 
         describe('of signed transactions', () => {
-            test('of undelegated transactions', () => {});
+            test('Transaction <- of undelegated transactions', () => {
+                const actual = Transaction.of(TxFixture.undelegated.body).sign(
+                    SignerFix.privateKey
+                );
+                expect(actual).toBeInstanceOf(Transaction);
+                expect(actual.signature).toBeDefined();
+                expect(actual.isSigned).toEqual(true);
+                expect(actual.isDelegated).toEqual(false);
+                expect(
+                    actual
+                        .getSignatureHash()
+                        .isEqual(TxFixture.undelegated.signatureHash)
+                ).toBe(true);
+                expect(actual.origin.isEqual(SignerFix.address)).toBe(true);
+                expect(() => actual.delegator).toThrowError(
+                    NotDelegatedTransaction
+                );
+                expect(
+                    actual.id.isEqual(TxFixture.undelegated.signedTransactionId)
+                ).toBe(true);
+                expect(actual.encoded).toEqual(
+                    TxFixture.undelegated.encodedSigned
+                );
+            });
 
-            test('of delegated transactions', () => {});
+            test('Transaction <- of delegated transactions', () => {
+                const actual = Transaction.of(
+                    TxFixture.delegated.body
+                ).signWithDelegator(
+                    SignerFix.privateKey,
+                    DelegatorFix.privateKey
+                );
+                expect(actual).toBeInstanceOf(Transaction);
+                expect(actual.signature).toBeDefined();
+                expect(actual.isSigned).toEqual(true);
+                expect(actual.isDelegated).toEqual(true);
+                expect(
+                    actual
+                        .getSignatureHash()
+                        .isEqual(TxFixture.delegated.signatureHash)
+                ).toBe(true);
+                expect(actual.origin.isEqual(SignerFix.address)).toBe(true);
+                expect(actual.delegator.isEqual(DelegatorFix.address)).toBe(
+                    true
+                );
+                expect(
+                    actual.id.isEqual(TxFixture.delegated.signedTransactionId)
+                ).toBe(true);
+                expect(actual.encoded).toEqual(
+                    TxFixture.delegated.encodedSigned
+                );
+            });
 
-            test('of delegated transactions with unused fields', () => {});
+            test('Transaction <- of delegated transactions with unused fields', () => {
+                const actual = Transaction.of(
+                    TxFixture.delegatedWithUnusedFields.body
+                ).signWithDelegator(
+                    SignerFix.privateKey,
+                    DelegatorFix.privateKey
+                );
+                expect(actual).toBeInstanceOf(Transaction);
+                expect(actual.signature).toBeDefined();
+                expect(actual.isSigned).toEqual(true);
+                expect(actual.isDelegated).toEqual(true);
+                expect(
+                    actual
+                        .getSignatureHash()
+                        .isEqual(
+                            TxFixture.delegatedWithUnusedFields.signatureHash
+                        )
+                ).toBe(true);
+                expect(actual.origin.isEqual(SignerFix.address)).toBe(true);
+                expect(actual.delegator.isEqual(DelegatorFix.address)).toBe(
+                    true
+                );
+                expect(
+                    actual.id.isEqual(
+                        TxFixture.delegatedWithUnusedFields.signedTransactionId
+                    )
+                ).toBe(true);
+                expect(actual.encoded).toEqual(
+                    TxFixture.delegatedWithUnusedFields.encodedSigned
+                );
+            });
+        });
+
+        describe('Exceptions', () => {
+            test('Throw <- of invalid signature', () => {
+                expect(() =>
+                    Transaction.of(
+                        TxFixture.delegated.body,
+                        HexUInt.of('0xBAAAAAAD').bytes
+                    )
+                ).toThrowError(InvalidSecp256k1Signature);
+            });
+
+            test('Throw <- of invalid body', () => {
+                expect(() =>
+                    Transaction.of({
+                        ...TxFixture.delegated.body,
+                        blockRef: '0xFEE1DEAD'
+                    })
+                ).toThrowError(InvalidTransactionField);
+            });
         });
     });
 });
