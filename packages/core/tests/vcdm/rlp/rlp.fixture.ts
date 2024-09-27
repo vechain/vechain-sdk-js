@@ -1,14 +1,14 @@
+import { HexUInt } from '../../../src';
 import {
     BufferKind,
     CompactFixedHexBlobKind,
     FixedHexBlobKind,
     HexBlobKind,
-    HexUInt,
     NumericKind,
     OptionalFixedHexBlobKind,
     type RLPProfile,
     type RLPValidObject
-} from '../../../src';
+} from '../../../src/vcdm/encoding';
 
 /* Simple encode */
 const encodeTestCases = [

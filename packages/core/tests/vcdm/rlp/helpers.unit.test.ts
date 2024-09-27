@@ -4,6 +4,7 @@ import {
     InvalidRLP,
     stringifyData
 } from '@vechain/sdk-errors';
+import { Hex } from '../../../src';
 import {
     assertCompactFixedHexBlobBuffer,
     assertFixedHexBlobKindBuffer,
@@ -12,9 +13,8 @@ import {
     assertValidNumericKindBuffer,
     decodeBufferToHexWithLeadingZeros,
     encodeBigIntToBuffer,
-    Hex,
     validateNumericKindData
-} from '../../../src';
+} from '../../../src/vcdm/encoding';
 import {
     invalidCompactFixedHexBlobKindBufferTestCases,
     invalidFixedHexBlobKindBufferTestCases,
