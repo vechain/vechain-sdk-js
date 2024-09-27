@@ -1,8 +1,6 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 const isUnitTest = process.env.UNIT;
 
-console.log('LLEGA isUnitTest', isUnitTest, typeof isUnitTest);
-
 module.exports = {
     preset: 'ts-jest',
     testEnvironment: 'node',
