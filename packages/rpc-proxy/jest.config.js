@@ -6,5 +6,13 @@ module.exports = {
     runner: 'groups',
     reporters: ['default', 'jest-junit'],
     workerThreads: true,
-    testTimeout: 60000
+    testTimeout: 60000,
+    coverageThreshold: {
+        global: {
+            branches: 100,
+            functions: 100,
+            lines: 100,
+            statements: 100
+        }
+    }
 };
