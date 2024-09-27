@@ -5,10 +5,12 @@ import {
     Secp256k1,
     Transaction,
     type TransactionBody,
+    type TransactionClause,
     Units,
     VTHO
 } from '../../src';
 import {
+    InvalidDataType,
     InvalidSecp256k1PrivateKey,
     InvalidSecp256k1Signature,
     InvalidTransactionField,
@@ -469,6 +471,157 @@ describe('Transaction class tests', () => {
                         false
                     )
                 ).toThrowError(InvalidTransactionField);
+            });
+        });
+    });
+
+    describe('intrinsicGas method tests', () => {
+        describe('intrinsicGas for clauses with smart-contract', () => {
+            test('VTHO <- intrinsicGas with no data', () => {
+                const clauses: TransactionClause[] = [
+                    {
+                        to: null,
+                        value: 0,
+                        data: ''
+                    }
+                ];
+                const actual = Transaction.intrinsicGas(clauses);
+                expect(actual.wei).toBe(
+                    BigInt(
+                        Transaction.GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION +
+                            Transaction.GAS_CONSTANTS.TX_GAS
+                    )
+                );
+            });
+
+            test('VTHO <- intrinsicGas with zeros data', () => {
+                const times = 100;
+                const clauses: TransactionClause[] = [
+                    {
+                        to: null,
+                        value: 0,
+                        data: '0x' + '00'.repeat(times)
+                    }
+                ];
+                const actual = Transaction.intrinsicGas(clauses);
+                expect(actual.wei).toBe(
+                    BigInt(
+                        Transaction.GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION +
+                            Transaction.GAS_CONSTANTS.TX_GAS +
+                            Transaction.GAS_CONSTANTS.ZERO_GAS_DATA * times
+                    )
+                );
+            });
+
+            test('VTHO <- intrinsicGas with non-zeros data', () => {
+                const times = 100;
+                const clauses: TransactionClause[] = [
+                    {
+                        to: null,
+                        value: 0,
+                        data: '0x' + '10'.repeat(times)
+                    }
+                ];
+                const actual = Transaction.intrinsicGas(clauses);
+                expect(actual.wei).toBe(
+                    BigInt(
+                        Transaction.GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION +
+                            Transaction.GAS_CONSTANTS.TX_GAS +
+                            Transaction.GAS_CONSTANTS.NON_ZERO_GAS_DATA * times
+                    )
+                );
+            });
+
+            test('VTHO <- intrinsicGas with mixed data', () => {
+                const times = 100;
+                const clauses: TransactionClause[] = [
+                    {
+                        to: null,
+                        value: 0,
+                        data: '0x' + '00'.repeat(times) + '10'.repeat(times)
+                    }
+                ];
+                const actual = Transaction.intrinsicGas(clauses);
+                expect(actual.wei).toBe(
+                    BigInt(
+                        Transaction.GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION +
+                            Transaction.GAS_CONSTANTS.TX_GAS +
+                            Transaction.GAS_CONSTANTS.ZERO_GAS_DATA * times +
+                            Transaction.GAS_CONSTANTS.NON_ZERO_GAS_DATA * times
+                    )
+                );
+            });
+        });
+
+        describe('intrinsicGas for clauses without smart-contract', () => {
+            test('VTHO <- intrinsicGas with no clauses', () => {
+                expect(Transaction.intrinsicGas([]).wei).toBe(
+                    BigInt(
+                        Transaction.GAS_CONSTANTS.TX_GAS +
+                            Transaction.GAS_CONSTANTS.CLAUSE_GAS
+                    )
+                );
+            });
+
+            test('VTHO <- intrinsicGas with single clause', () => {
+                const clauses: TransactionClause[] = [
+                    {
+                        to: '0x0000000000000000000000000000000000000000',
+                        value: 0,
+                        data: ''
+                    }
+                ];
+                const actual = Transaction.intrinsicGas(clauses);
+                expect(actual.wei).toBe(
+                    BigInt(
+                        Transaction.GAS_CONSTANTS.CLAUSE_GAS +
+                            Transaction.GAS_CONSTANTS.TX_GAS
+                    )
+                );
+            });
+
+            test('VTHO <- intrinsicGas with multiple clauses', () => {
+                const times = 5;
+                const clauses: TransactionClause[] = Array(times).fill({
+                    to: '0x0000000000000000000000000000000000000000',
+                    value: 0,
+                    data: ''
+                }) as TransactionClause[];
+                const actual = Transaction.intrinsicGas(clauses);
+                expect(actual.wei).toBe(
+                    BigInt(
+                        Transaction.GAS_CONSTANTS.CLAUSE_GAS * times +
+                            Transaction.GAS_CONSTANTS.TX_GAS
+                    )
+                );
+            });
+        });
+
+        describe('Exceptions', () => {
+            test('Throw <- invalid field', () => {
+                const clauses: TransactionClause[] = [
+                    {
+                        to: 'INVALID ADDRESS',
+                        value: 0,
+                        data: ''
+                    }
+                ];
+                expect(() => Transaction.intrinsicGas(clauses)).toThrowError(
+                    InvalidDataType
+                );
+            });
+
+            test('Throw <- invalid data content', () => {
+                const clauses: TransactionClause[] = [
+                    {
+                        to: null,
+                        value: 0,
+                        data: 'INVALID DATA FORMAT'
+                    }
+                ];
+                expect(() => Transaction.intrinsicGas(clauses)).toThrowError(
+                    InvalidDataType
+                );
             });
         });
     });
