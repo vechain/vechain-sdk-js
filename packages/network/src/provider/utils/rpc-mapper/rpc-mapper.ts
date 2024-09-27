@@ -5,6 +5,8 @@ import {
     debugGetRawHeader,
     debugGetRawReceipts,
     debugGetRawTransaction,
+    debugTraceBlockByHash,
+    debugTraceBlockByNumber,
     debugTraceCall,
     debugTraceTransaction,
     engineExchangeCapabilities,
@@ -58,10 +60,12 @@ import {
     ethNewFilter,
     ethNewPendingTransactionFilter,
     ethProtocolVersion,
+    ethRequestAccounts,
     ethSendRawTransaction,
     ethSendTransaction,
     ethSign,
     ethSignTransaction,
+    ethSignTypedDataV4,
     ethSubmitWork,
     ethSubscribe,
     ethSyncing,
@@ -72,6 +76,10 @@ import {
     netPeerCount,
     netVersion,
     parityNextNonce,
+    txPoolContent,
+    txPoolContentFrom,
+    txPoolInspect,
+    txPoolStatus,
     web3ClientVersion,
     web3Sha3
 } from './methods-map';
@@ -84,15 +92,8 @@ import {
     type TransactionReceiptRPC,
     type TransactionRPC
 } from '../formatter';
-import { ethRequestAccounts } from './methods-map/methods/eth_requestAccounts';
 import { type VeChainProvider } from '../../providers';
 import { type ThorClient } from '../../../thor-client';
-import { txPoolInspect } from './methods-map/methods/txpool_inspect';
-import { txPoolContent } from './methods-map/methods/txpool_content';
-import { txPoolContentFrom } from './methods-map/methods/txpool_contentFrom';
-import { txPoolStatus } from './methods-map/methods/txpool_status';
-import { debugTraceBlockByHash } from './methods-map/methods/debug_traceBlockByHash';
-import { debugTraceBlockByNumber } from './methods-map/methods/debug_traceBlockByNumber';
 
 /**
  * Map of RPC methods to their implementations with the SDK.
@@ -537,6 +538,10 @@ const RPCMethodsMap = (
             }>
         > => {
             return await debugTraceBlockByNumber(thorClient, params);
+        },
+
+        [RPC_METHODS.eth_signTypedData_v4]: async (params): Promise<string> => {
+            return await ethSignTypedDataV4(thorClient, params, provider);
         }
     };
 };
