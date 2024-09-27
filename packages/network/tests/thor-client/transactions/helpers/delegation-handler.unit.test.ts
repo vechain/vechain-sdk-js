@@ -2,7 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import { delegationHandlerFixture } from './fixture';
 import { DelegationHandler, TESTNET_URL, ThorClient } from '../../../../src';
 import { Transaction } from '@vechain/sdk-core';
-import { transactions } from '../../../../../core/tests/transaction/fixture';
+import { TransactionFixture } from '../../../../../core/tests/transaction/Transaction.unit.test';
 import { NotDelegatedTransaction } from '@vechain/sdk-errors';
 
 /**
@@ -45,7 +45,7 @@ describe('Tests of DelegationHandler helper function', () => {
                     delegatorPrivateKey:
                         '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
                 }).getDelegationSignatureUsingUrl(
-                    Transaction.of(transactions.delegated[0].body),
+                    Transaction.of(TransactionFixture.delegated.body),
                     '0x',
                     ThorClient.fromUrl(TESTNET_URL).httpClient
                 );

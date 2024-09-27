@@ -384,6 +384,7 @@ class Transaction {
      *
      * @param {TransactionClause[]} clauses - An array of transaction clauses to calculate the intrinsic gas for.
      * @return {VTHO} The total intrinsic gas required for the provided clauses.
+     * @throws {InvalidDataType} If clauses have invalid data as invalid addresses.
      */
     public static intrinsicGas(clauses: TransactionClause[]): VTHO {
         if (clauses.length > 0) {
@@ -531,6 +532,8 @@ class Transaction {
      * @param {Uint8Array} delegatorPrivateKey - The private key of the delegator.
      * @return {Transaction} A new transaction with the concatenated signatures
      * of the signer and the delegator.
+     * @throws {InvalidSecp256k1PrivateKey} - If either the signer or delegator private key is invalid.
+     * @throws {NotDelegatedTransaction} - If the transaction is not delegated.
      *
      * @remarks Security auditable method, depends on
      * - {@link Address.ofPublicKey}
