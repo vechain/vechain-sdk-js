@@ -1,4 +1,5 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} */
+// Coverage threshold would apply to yarn test, not yarn test:unit
 const isUnitTest = process.env.UNIT;
 
 module.exports = {
