@@ -5,5 +5,13 @@ module.exports = {
     coverageReporters: ['html', 'lcov', 'json'],
     runner: 'groups',
     reporters: ['default', 'jest-junit'],
-    workerThreads: true
+    workerThreads: true,
+    coverageThreshold: {
+        global: {
+            branches: 91,
+            functions: 92,
+            lines: 94,
+            statements: 94
+        }
+    }
 };
