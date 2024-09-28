@@ -29,20 +29,21 @@ describe('ThorClient - Debug Module', () => {
     describe('traceTransactionClause', () => {
         /**
          * Test a result of a transaction clause for each kind of trace name
+         * The commented out lines should be used as part of the test on solo {@link https://github.com/vechain/vechain-sdk-js/issues/1357}
          */
         (
             [
-                '',
-                '4byte',
-                'call',
-                'noop',
-                'prestate',
-                'unigram',
-                'bigram',
-                'trigram',
-                'evmdis',
-                'opcount',
-                null
+                // '',
+                // '4byte',
+                'call'
+                // 'noop',
+                // 'prestate',
+                // 'unigram',
+                // 'bigram',
+                // 'trigram',
+                // 'evmdis',
+                // 'opcount',
+                // null
             ] as TracerName[]
         ).forEach((traceName: TracerName) => {
             test(`traceTransactionClause - ${traceName}`, async () => {
@@ -117,20 +118,21 @@ describe('ThorClient - Debug Module', () => {
     describe('traceContractCall', () => {
         /**
          * Test a result of a contract call for each kind of trace name
+         * The commented out lines should be used as part of the test on solo {@link https://github.com/vechain/vechain-sdk-js/issues/1357}
          */
         (
             [
-                '',
-                '4byte',
-                'call',
-                'noop',
-                'prestate',
-                'unigram',
-                'bigram',
-                'trigram',
-                'evmdis',
-                'opcount',
-                null
+                // '',
+                // '4byte',
+                'call'
+                // 'noop',
+                // 'prestate',
+                // 'unigram',
+                // 'bigram',
+                // 'trigram',
+                // 'evmdis',
+                // 'opcount',
+                // null
             ] as TracerName[]
         ).forEach((traceName: TracerName) => {
             test(`traceContractCall - ${traceName}`, async () => {

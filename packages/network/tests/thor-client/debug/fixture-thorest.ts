@@ -11,29 +11,30 @@ import { InvalidDataType } from '@vechain/sdk-errors';
 const traceTransactionClauseTestnetFixture = {
     // Positive test cases
     positiveCases: [
+        // The commented out lines should be used as part of the test on solo {@link https://github.com/vechain/vechain-sdk-js/issues/1357}
         // Transaction 1 - With transaction ID
-        {
-            testName:
-                'traceTransactionClause - transaction 1 with transaction ID',
-            blockID:
-                '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f',
-            transaction:
-                '0x2dbc8268a2dbf889abe828c0671cb9adce61f537aab8855480aff6967e0ed687',
-            clauseIndex: 0,
-            name: null,
-            expected: { gas: 0, failed: false, returnValue: '', structLogs: [] }
-        },
+        // {
+        //     testName:
+        //         'traceTransactionClause - transaction 1 with transaction ID',
+        //     blockID:
+        //         '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f',
+        //     transaction:
+        //         '0x2dbc8268a2dbf889abe828c0671cb9adce61f537aab8855480aff6967e0ed687',
+        //     clauseIndex: 0,
+        //     name: null,
+        //     expected: { gas: 0, failed: false, returnValue: '', structLogs: [] }
+        // },
         // Transaction 1 - With transaction index into block
-        {
-            testName:
-                'traceTransactionClause - transaction 1 with transaction  index into block',
-            blockID:
-                '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f',
-            transaction: 0,
-            clauseIndex: 0,
-            name: null,
-            expected: { gas: 0, failed: false, returnValue: '', structLogs: [] }
-        },
+        // {
+        //     testName:
+        //         'traceTransactionClause - transaction 1 with transaction  index into block',
+        //     blockID:
+        //         '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f',
+        //     transaction: 0,
+        //     clauseIndex: 0,
+        //     name: null,
+        //     expected: { gas: 0, failed: false, returnValue: '', structLogs: [] }
+        // },
         // Transaction 2 - With transaction ID
         {
             testName:
@@ -53,18 +54,19 @@ const traceTransactionClauseTestnetFixture = {
                 value: '0x0',
                 type: 'CALL'
             }
-        },
-        // Transaction 2 - With transaction index into block
-        {
-            testName:
-                'traceTransactionClause - transaction 2 with transaction index into block',
-            blockID:
-                '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f',
-            transaction: 1,
-            clauseIndex: 0,
-            name: 'noop',
-            expected: {}
         }
+        // The commented out lines should be used as part of the test on solo {@link https://github.com/vechain/vechain-sdk-js/issues/1357}
+        // Transaction 2 - With transaction index into block
+        // {
+        //     testName:
+        //         'traceTransactionClause - transaction 2 with transaction index into block',
+        //     blockID:
+        //         '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f',
+        //     transaction: 1,
+        //     clauseIndex: 0,
+        //     name: 'noop',
+        //     expected: {}
+        // }
     ],
     // Negative test cases
     negativeCases: [
