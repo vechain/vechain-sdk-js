@@ -66,10 +66,9 @@ describe('VeChain base signer tests', () => {
         test('Should be able to connect with a provider', () => {
             // Provider is NOT attached
             const signerWithoutProvider = new VeChainPrivateKeySigner(
-                Buffer.from(
-                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
-                    'hex'
-                ),
+                HexUInt.of(
+                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
+                ).bytes,
                 null
             );
             expect(signerWithoutProvider.provider).toBeNull();
@@ -84,10 +83,9 @@ describe('VeChain base signer tests', () => {
          */
         test('Should be able to get the address of the signer', async () => {
             const signer = new VeChainPrivateKeySigner(
-                Buffer.from(
-                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
-                    'hex'
-                ),
+                HexUInt.of(
+                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
+                ).bytes,
                 provider
             );
             const address = await signer.getAddress();
@@ -105,10 +103,9 @@ describe('VeChain base signer tests', () => {
             // Generate nonce (provider attached and detached)
             for (const tempProvider of [provider, null]) {
                 const signer = new VeChainPrivateKeySigner(
-                    Buffer.from(
-                        '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
-                        'hex'
-                    ),
+                    HexUInt.of(
+                        '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
+                    ).bytes,
                     tempProvider
                 );
                 const nonce = await signer.getNonce('latest');
@@ -128,10 +125,9 @@ describe('VeChain base signer tests', () => {
                     // Test with provider attached and detached
 
                     const signer = new VeChainPrivateKeySigner(
-                        Buffer.from(
-                            populateCallTestCasesAccount.privateKey,
-                            'hex'
-                        ),
+                        HexUInt.of(
+                            populateCallTestCasesAccount.privateKey
+                        ).bytes,
                         null
                     );
                     const populatedCallTransaction = await signer.populateCall(
@@ -151,10 +147,9 @@ describe('VeChain base signer tests', () => {
                     // Test with provider attached and detached
 
                     const signer = new VeChainPrivateKeySigner(
-                        Buffer.from(
-                            populateCallTestCasesAccount.privateKey,
-                            'hex'
-                        ),
+                        HexUInt.of(
+                            populateCallTestCasesAccount.privateKey
+                        ).bytes,
                         null
                     );
 
@@ -169,10 +164,9 @@ describe('VeChain base signer tests', () => {
     describe('resolveName(vnsName)', () => {
         test('Should return null if provider is not set', async () => {
             const signer = new VeChainPrivateKeySigner(
-                Buffer.from(
-                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
-                    'hex'
-                ),
+                HexUInt.of(
+                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
+                ).bytes,
                 null
             );
 
@@ -183,10 +177,9 @@ describe('VeChain base signer tests', () => {
 
         test('Should use vnsUtils.resolveName() to resolve an address by name', async () => {
             const signer = new VeChainPrivateKeySigner(
-                Buffer.from(
-                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
-                    'hex'
-                ),
+                HexUInt.of(
+                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
+                ).bytes,
                 provider
             );
 
@@ -201,10 +194,9 @@ describe('VeChain base signer tests', () => {
 
         test('Should return null if there were invalid result', async () => {
             const signer = new VeChainPrivateKeySigner(
-                Buffer.from(
-                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
-                    'hex'
-                ),
+                HexUInt.of(
+                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
+                ).bytes,
                 provider
             );
             const name = 'error.vet';
@@ -219,10 +211,9 @@ describe('VeChain base signer tests', () => {
 
         test('Should pass address provided by resolveNames()', async () => {
             const signer = new VeChainPrivateKeySigner(
-                Buffer.from(
-                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
-                    'hex'
-                ),
+                HexUInt.of(
+                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
+                ).bytes,
                 provider
             );
             const name = 'address1.vet';
@@ -241,7 +232,7 @@ describe('VeChain base signer tests', () => {
     describe('EIP-191', () => {
         test('signMessage - invalid - simulate a signature error', async () => {
             const signer = new VeChainPrivateKeySigner(
-                Buffer.from(Hex.of(eip712TestCases.invalid.privateKey).bytes),
+                Hex.of(eip712TestCases.invalid.privateKey).bytes,
                 provider
             );
             jest.spyOn(Secp256k1, 'sign').mockImplementationOnce(() => {
@@ -257,7 +248,7 @@ describe('VeChain base signer tests', () => {
                 EIP191_PRIVATE_KEY
             ).signMessage(EIP191_MESSAGE);
             const actual = await new VeChainPrivateKeySigner(
-                Buffer.from(Hex.of(EIP191_PRIVATE_KEY).bytes),
+                Hex.of(EIP191_PRIVATE_KEY).bytes,
                 provider
             ).signMessage(EIP191_MESSAGE);
             expect(actual).toBe(expected);
@@ -269,7 +260,7 @@ describe('VeChain base signer tests', () => {
                 EIP191_PRIVATE_KEY
             ).signMessage(message);
             const actual = await new VeChainPrivateKeySigner(
-                Buffer.from(Hex.of(EIP191_PRIVATE_KEY).bytes),
+                Hex.of(EIP191_PRIVATE_KEY).bytes,
                 provider
             ).signMessage(message);
             expect(actual).toBe(expected);
@@ -279,7 +270,7 @@ describe('VeChain base signer tests', () => {
     describe('EIP-712', () => {
         test('signTypedData - invalid', async () => {
             const signer = new VeChainPrivateKeySigner(
-                Buffer.from(Hex.of(eip712TestCases.invalid.privateKey).bytes),
+                Hex.of(eip712TestCases.invalid.privateKey).bytes,
                 provider
             );
             await expect(
@@ -301,7 +292,7 @@ describe('VeChain base signer tests', () => {
             );
             expect(expected).toBe(eip712TestCases.valid.signature);
             const actual = await new VeChainPrivateKeySigner(
-                Buffer.from(Hex.of(eip712TestCases.valid.privateKey).bytes),
+                Hex.of(eip712TestCases.valid.privateKey).bytes,
                 provider
             ).signTypedData(
                 eip712TestCases.valid.domain,

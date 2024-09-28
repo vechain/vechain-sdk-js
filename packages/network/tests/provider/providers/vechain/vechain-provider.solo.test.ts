@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { ABIContract, Address, Clause } from '@vechain/sdk-core';
+import { ABIContract, Address, Clause, HexUInt } from '@vechain/sdk-core';
 import { JSONRPCMethodNotFound } from '@vechain/sdk-errors';
 import {
     ProviderInternalBaseWallet,
@@ -37,7 +37,7 @@ describe('VeChain provider tests - solo', () => {
             thorClient,
             new ProviderInternalBaseWallet([
                 {
-                    privateKey: Buffer.from(TEST_ACCOUNT.privateKey, 'hex'),
+                    privateKey: HexUInt.of(TEST_ACCOUNT.privateKey).bytes,
                     address: TEST_ACCOUNT.address
                 }
             ])

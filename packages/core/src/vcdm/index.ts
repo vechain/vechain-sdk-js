@@ -3,6 +3,7 @@ export * from './account';
 export * from './Address';
 export * from './BloomFilter';
 export * from './currency';
+export * from './encoding';
 export * from './FixedPointNumber';
 export * from './hash';
 export * from './Hex';

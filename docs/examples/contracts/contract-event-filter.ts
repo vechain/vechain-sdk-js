@@ -1,4 +1,4 @@
-import { ERC20_ABI } from '@vechain/sdk-core';
+import { ERC20_ABI, HexUInt } from '@vechain/sdk-core';
 import {
     type Contract,
     ProviderInternalBaseWallet,
@@ -68,10 +68,9 @@ const eventExampleAbi = [
 
 // Defining the deployer account, which has VTHO for deployment costs
 const deployerAccount: ProviderInternalWalletAccount = {
-    privateKey: Buffer.from(
-        '706e6acd567fdc22db54aead12cb39db01c4832f149f95299aa8dd8bef7d28ff',
-        'hex'
-    ),
+    privateKey: HexUInt.of(
+        '706e6acd567fdc22db54aead12cb39db01c4832f149f95299aa8dd8bef7d28ff'
+    ).bytes,
     address: '0xf02f557c753edf5fcdcbfe4c1c3a448b3cc84d54'
 };
 

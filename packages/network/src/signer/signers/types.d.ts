@@ -143,7 +143,7 @@ interface TransactionRequestInput {
         /**
          * Unused
          */
-        unused?: Buffer[];
+        unused?: Uint8Array[];
     };
 
     /**

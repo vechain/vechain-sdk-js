@@ -1,5 +1,10 @@
 import { describe, expect, test } from '@jest/globals';
-import { Secp256k1, ZERO_BYTES } from '../../src';
+import {
+    InvalidSecp256k1MessageHash,
+    InvalidSecp256k1PrivateKey,
+    InvalidSecp256k1Signature
+} from '@vechain/sdk-errors';
+import { HexUInt, Secp256k1, ZERO_BYTES } from '../../src';
 import {
     invalidMessageHashes,
     messageHashBuffer,
@@ -10,17 +15,13 @@ import {
     validMessageHashes,
     validPrivateKeys
 } from './fixture';
-import {
-    InvalidSecp256k1MessageHash,
-    InvalidSecp256k1PrivateKey,
-    InvalidSecp256k1Signature
-} from '@vechain/sdk-errors';
 
 /**
  * Test Secp256k1 class.
  * @group unit/Secp256k1
  */
 describe('Secp256k1 class tests', () => {
+    const invalid = new TextEncoder().encode('some_invalid_stuff');
     describe('Secp256k1 - compressPublicKey', () => {
         test('Secp256k1 - compressPublicKey - from compressed', () => {
             expect(
@@ -115,22 +116,18 @@ describe('Secp256k1 class tests', () => {
         });
 
         test('Secp256k1 - sign - failure - invalid message hash', () => {
-            expect(() =>
-                Secp256k1.sign(
-                    Buffer.from('some_invalid_stuff', 'hex'),
-                    privateKey
-                )
-            ).toThrowError(InvalidSecp256k1MessageHash);
+            expect(() => Secp256k1.sign(invalid, privateKey)).toThrowError(
+                InvalidSecp256k1MessageHash
+            );
         });
 
         test('Secp256k1 - sign - failure - invalid private key', () => {
             expect(() =>
                 Secp256k1.sign(
                     messageHashBuffer,
-                    Buffer.from(
-                        'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
-                        'hex'
-                    )
+                    HexUInt.of(
+                        'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
+                    ).bytes
                 )
             ).toThrowError(InvalidSecp256k1PrivateKey);
         });
@@ -160,21 +157,15 @@ describe('Secp256k1 class tests', () => {
         });
 
         test('Secp256k1 - recover - invalid message hash', () => {
-            expect(() =>
-                Secp256k1.recover(
-                    Buffer.from('some_invalid_stuff', 'hex'),
-                    signature
-                )
-            ).toThrowError(InvalidSecp256k1MessageHash);
+            expect(() => Secp256k1.recover(invalid, signature)).toThrowError(
+                InvalidSecp256k1MessageHash
+            );
         });
 
         test('Secp256k1 - recover - invalid signature', () => {
             // Invalid signature
             expect(() =>
-                Secp256k1.recover(
-                    messageHashBuffer,
-                    Buffer.from('some_invalid_stuff', 'hex')
-                )
+                Secp256k1.recover(messageHashBuffer, invalid)
             ).toThrowError(InvalidSecp256k1Signature);
         });
 
@@ -183,10 +174,7 @@ describe('Secp256k1 class tests', () => {
             const invalidSignatureRecovery = new Uint8Array(signature);
             invalidSignatureRecovery[64] = 8;
             expect(() =>
-                Secp256k1.recover(
-                    messageHashBuffer,
-                    Buffer.from(invalidSignatureRecovery)
-                )
+                Secp256k1.recover(messageHashBuffer, invalidSignatureRecovery)
             ).toThrowError(InvalidSecp256k1Signature);
         });
     });

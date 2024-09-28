@@ -1,12 +1,12 @@
-import { type RLPValidObject } from '../../encoding';
+import { InvalidTransactionField } from '@vechain/sdk-errors';
 import {
-    SIGNED_TRANSACTION_RLP,
+    SIGNED_TRANSACTION_RLP_PROFILE,
     TRANSACTION_FEATURES_KIND,
-    UNSIGNED_TRANSACTION_RLP
+    UNSIGNED_TRANSACTION_RLP_PROFILE
 } from '../../utils';
+import { RLPProfiler, type RLPValidObject } from '../../vcdm/encoding';
 import { Transaction } from '../transaction';
 import { type TransactionBody } from '../types';
-import { InvalidTransactionField } from '@vechain/sdk-errors';
 
 /**
  * Decode a raw transaction.
@@ -16,16 +16,15 @@ import { InvalidTransactionField } from '@vechain/sdk-errors';
  * @param isSigned - If the transaction is signed or not
  * @returns Decoded transaction (signed or unsigned)
  */
-function decode(rawTransaction: Buffer, isSigned: boolean): Transaction {
+function decode(rawTransaction: Uint8Array, isSigned: boolean): Transaction {
     // Get correct decoder profiler
-    const decoder = isSigned
-        ? SIGNED_TRANSACTION_RLP
-        : UNSIGNED_TRANSACTION_RLP;
+    const profile = isSigned
+        ? SIGNED_TRANSACTION_RLP_PROFILE
+        : UNSIGNED_TRANSACTION_RLP_PROFILE;
 
     // Get decoded body
-    const decodedRLPBody = decoder.decodeObject(
-        rawTransaction
-    ) as RLPValidObject;
+    const decodedRLPBody = RLPProfiler.ofObjectEncoded(rawTransaction, profile)
+        .object as RLPValidObject;
 
     // Create correct transaction body without reserved field
     const bodyWithoutReservedField: TransactionBody = {
@@ -41,11 +40,11 @@ function decode(rawTransaction: Buffer, isSigned: boolean): Transaction {
 
     // Create correct transaction body (with correct reserved field)
     const correctTransactionBody: TransactionBody =
-        (decodedRLPBody.reserved as Buffer[]).length > 0
+        (decodedRLPBody.reserved as Uint8Array[]).length > 0
             ? {
                   ...bodyWithoutReservedField,
                   reserved: _decodeReservedField(
-                      decodedRLPBody.reserved as Buffer[]
+                      decodedRLPBody.reserved as Uint8Array[]
                   )
               }
             : bodyWithoutReservedField;
@@ -54,7 +53,7 @@ function decode(rawTransaction: Buffer, isSigned: boolean): Transaction {
     return decodedRLPBody.signature !== undefined
         ? new Transaction(
               correctTransactionBody,
-              decodedRLPBody.signature as Buffer
+              decodedRLPBody.signature as Uint8Array
           )
         : new Transaction(correctTransactionBody);
 }
@@ -70,9 +69,9 @@ function decode(rawTransaction: Buffer, isSigned: boolean): Transaction {
  * @returns Decoded reserved field
  * @throws {InvalidTransactionField}
  */
-function _decodeReservedField(reserved: Buffer[]): {
+function _decodeReservedField(reserved: Uint8Array[]): {
     features?: number;
-    unused?: Buffer[];
+    unused?: Uint8Array[];
 } {
     // Not trimmed reserved field
     if (reserved[reserved.length - 1].length === 0) {

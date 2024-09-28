@@ -1,6 +1,7 @@
 import {
     Address,
     Clause,
+    HexUInt,
     type TransactionClause,
     TransactionHandler,
     VET
@@ -36,7 +37,7 @@ const provider = new VeChainProvider(
     // Internal wallet used by the provider (needed to call the getSigner() method)
     new ProviderInternalBaseWallet([
         {
-            privateKey: Buffer.from(senderAccount.privateKey, 'hex'),
+            privateKey: HexUInt.of(senderAccount.privateKey).bytes,
             address: senderAccount.address
         }
     ]),
@@ -81,7 +82,7 @@ const rawSignedTransaction = await signer.signTransaction(
 );
 
 const signedTransaction = TransactionHandler.decode(
-    Buffer.from(rawSignedTransaction.slice(2), 'hex'),
+    HexUInt.of(rawSignedTransaction.slice(2)).bytes,
     true
 );
 

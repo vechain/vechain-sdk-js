@@ -34,7 +34,7 @@ abstract class ScalarKind {
      * Abstract method to handle data encoding.
      * @param data - The data to encode.
      * @param context - Contextual information for error messaging.
-     * @returns An object providing a mechanism to encode the data into a Buffer.
+     * @returns An object providing a mechanism to encode the data into a Uint8Array.
      */
     public abstract data(
         data: RLPInput | RLPValidObject,
@@ -47,7 +47,7 @@ abstract class ScalarKind {
      * @param context - Contextual information for error messaging.
      * @returns An object providing a mechanism to decode the buffer back into data.
      */
-    public abstract buffer(buffer: Buffer, context: string): BufferOutput;
+    public abstract buffer(buffer: Uint8Array, context: string): BufferOutput;
 }
 
 export { ScalarKind, type RLPProfile };

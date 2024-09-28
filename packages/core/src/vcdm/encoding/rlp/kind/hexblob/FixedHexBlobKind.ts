@@ -3,7 +3,7 @@ import {
     assertFixedHexBlobKindData
 } from '../../helpers';
 import { type BufferOutput, type DataOutput, type RLPInput } from '../../types';
-import { HexBlobKind } from './hexblob';
+import { HexBlobKind } from './HexBlobKind';
 
 /**
  * Represents a hex blob kind with fixed bytes size functionality.
@@ -19,11 +19,11 @@ class FixedHexBlobKind extends HexBlobKind {
     }
 
     /**
-     * Encodes the input data into a Buffer with validation against fixed size.
+     * Encodes the input data into a Uint8Array with validation against fixed size.
      *
      * @param data - The data to encode, expected to be a '0x' prefixed even sized hex string.
      * @param context - Context string for error handling.
-     * @returns An object containing an encode function which returns the encoded Buffer.
+     * @returns An object containing an encode function which returns the encoded Uint8Array.
      */
     public data(data: RLPInput, context: string): DataOutput {
         const encoder = super.data(data, context);
@@ -41,7 +41,7 @@ class FixedHexBlobKind extends HexBlobKind {
      * @param context - Context string for error handling.
      * @returns An object containing a decode function which returns the decoded hex string.
      */
-    public buffer(buffer: Buffer, context: string): BufferOutput {
+    public buffer(buffer: Uint8Array, context: string): BufferOutput {
         const decoder = super.buffer(buffer, context);
 
         // Validate the buffer length against the fixed size.

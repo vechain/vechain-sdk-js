@@ -1,11 +1,11 @@
-import { Address } from '../../vcdm/Address';
-import { Secp256k1 } from '../../secp256k1';
-import { Transaction } from '../transaction';
 import {
     InvalidSecp256k1PrivateKey,
     InvalidTransactionField,
     NotDelegatedTransaction
 } from '@vechain/sdk-errors';
+import { Secp256k1 } from '../../secp256k1';
+import { Address } from '../../vcdm/Address';
+import { Transaction } from '../transaction';
 import { type TransactionBody } from '../types';
 
 /**
@@ -18,7 +18,7 @@ import { type TransactionBody } from '../types';
  */
 function sign(
     transactionBody: TransactionBody,
-    signerPrivateKey: Buffer
+    signerPrivateKey: Uint8Array
 ): Transaction {
     // Check if the private key is valid
     if (!Secp256k1.isValidPrivateKey(signerPrivateKey)) {
@@ -46,7 +46,7 @@ function sign(
     );
 
     // Return new signed transaction
-    return new Transaction(transactionBody, Buffer.from(signature));
+    return new Transaction(transactionBody, signature);
 }
 
 /**
@@ -60,8 +60,8 @@ function sign(
  */
 function signWithDelegator(
     transactionBody: TransactionBody,
-    signerPrivateKey: Buffer,
-    delegatorPrivateKey: Buffer
+    signerPrivateKey: Uint8Array,
+    delegatorPrivateKey: Uint8Array
 ): Transaction {
     // Invalid private keys (signer and delegator)
 
@@ -98,10 +98,19 @@ function signWithDelegator(
             Secp256k1.derivePublicKey(signerPrivateKey)
         ).toString()
     );
-    const signature = Buffer.concat([
-        Secp256k1.sign(transactionHash, signerPrivateKey),
-        Secp256k1.sign(delegatedHash, delegatorPrivateKey)
-    ]);
+    const transactionHashSignature = Secp256k1.sign(
+        transactionHash,
+        signerPrivateKey
+    );
+    const delegatedHashSignature = Secp256k1.sign(
+        delegatedHash,
+        delegatorPrivateKey
+    );
+    const signature = new Uint8Array(
+        transactionHashSignature.length + delegatedHashSignature.length
+    );
+    signature.set(transactionHashSignature);
+    signature.set(delegatedHashSignature, transactionHashSignature.length);
 
     // Return new signed transaction
     return new Transaction(transactionBody, signature);

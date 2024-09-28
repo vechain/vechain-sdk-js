@@ -17,7 +17,8 @@ import {
     vechain_sdk_core_ethers,
     type Transaction,
     type TransactionBody,
-    type TransactionClause
+    type TransactionClause,
+    HexUInt
 } from '@vechain/sdk-core';
 import {
     type GetTransactionInputOptions,
@@ -191,7 +192,7 @@ class TransactionsModule {
 
         // Decode raw transaction to check if raw is ok
         try {
-            TransactionHandler.decode(Buffer.from(raw.slice(2), 'hex'), true);
+            TransactionHandler.decode(HexUInt.of(raw.slice(2)).bytes, true);
         } catch (error) {
             throw new InvalidDataType(
                 'TransactionsModule.sendRawTransaction()',

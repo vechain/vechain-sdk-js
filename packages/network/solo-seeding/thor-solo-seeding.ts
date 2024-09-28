@@ -12,7 +12,8 @@ import {
     Units,
     vechain_sdk_core_ethers,
     ZERO_ADDRESS,
-    type TransactionClause
+    type TransactionClause,
+    HexUInt
 } from '@vechain/sdk-core';
 import { stringifyData } from '@vechain/sdk-errors';
 import {
@@ -89,7 +90,7 @@ const unsignedTxs = txBodies.map((txBody) => new Transaction(txBody));
 const txs = unsignedTxs.map((unsignedTx, index) =>
     TransactionHandler.sign(
         unsignedTx.body,
-        Buffer.from(THOR_SOLO_ACCOUNTS[10 + index].privateKey, 'hex') // 10 is the index of the first thor-solo genesis account
+        HexUInt.of(THOR_SOLO_ACCOUNTS[10 + index].privateKey).bytes // 10 is the index of the first thor-solo genesis account
     )
 );
 
@@ -111,7 +112,7 @@ const deployTestContractTransaction = (): Transaction => {
                     }
                 ]
             },
-            Buffer.from(THOR_SOLO_ACCOUNTS[4].privateKey, 'hex')
+            HexUInt.of(THOR_SOLO_ACCOUNTS[4].privateKey).bytes
         );
     } catch (err) {
         console.log('Error creating deploy testing contract tx:', err);
@@ -136,7 +137,7 @@ const seedVnsSolo = async (): Promise<void> => {
                     nonce: ++nonce,
                     clauses: [contract]
                 },
-                Buffer.from(THOR_SOLO_ACCOUNTS[4].privateKey, 'hex')
+                HexUInt.of(THOR_SOLO_ACCOUNTS[4].privateKey).bytes
             )
         );
 
@@ -163,7 +164,7 @@ const seedVnsSolo = async (): Promise<void> => {
                     nonce: ++nonce,
                     clauses: [contract]
                 },
-                Buffer.from(THOR_SOLO_ACCOUNTS[4].privateKey, 'hex')
+                HexUInt.of(THOR_SOLO_ACCOUNTS[4].privateKey).bytes
             )
         );
 
@@ -190,7 +191,7 @@ const seedVnsSolo = async (): Promise<void> => {
                     nonce: ++nonce,
                     clauses: [contract]
                 },
-                Buffer.from(THOR_SOLO_ACCOUNTS[4].privateKey, 'hex')
+                HexUInt.of(THOR_SOLO_ACCOUNTS[4].privateKey).bytes
             )
         );
 
@@ -247,7 +248,7 @@ const seedVnsSolo = async (): Promise<void> => {
                         ) as TransactionClause
                     ]
                 },
-                Buffer.from(THOR_SOLO_ACCOUNTS[4].privateKey, 'hex')
+                HexUInt.of(THOR_SOLO_ACCOUNTS[4].privateKey).bytes
             )
         );
 
@@ -276,7 +277,7 @@ const seedVnsSolo = async (): Promise<void> => {
                     nonce: ++nonce,
                     clauses: [contract]
                 },
-                Buffer.from(THOR_SOLO_ACCOUNTS[4].privateKey, 'hex')
+                HexUInt.of(THOR_SOLO_ACCOUNTS[4].privateKey).bytes
             )
         );
 
@@ -305,7 +306,7 @@ const seedVnsSolo = async (): Promise<void> => {
                         )
                     ]
                 },
-                Buffer.from(THOR_SOLO_ACCOUNTS[4].privateKey, 'hex')
+                HexUInt.of(THOR_SOLO_ACCOUNTS[4].privateKey).bytes
             )
         );
 
@@ -329,7 +330,7 @@ const seedVnsSolo = async (): Promise<void> => {
                     nonce: ++nonce,
                     clauses: [contract]
                 },
-                Buffer.from(THOR_SOLO_ACCOUNTS[4].privateKey, 'hex')
+                HexUInt.of(THOR_SOLO_ACCOUNTS[4].privateKey).bytes
             )
         );
 
@@ -391,7 +392,7 @@ const seedVnsSolo = async (): Promise<void> => {
                         )
                     ]
                 },
-                Buffer.from(THOR_SOLO_ACCOUNTS[4].privateKey, 'hex')
+                HexUInt.of(THOR_SOLO_ACCOUNTS[4].privateKey).bytes
             )
         );
 
@@ -455,7 +456,7 @@ const seedVnsSolo = async (): Promise<void> => {
                         )
                     ]
                 },
-                Buffer.from(THOR_SOLO_ACCOUNTS[4].privateKey, 'hex')
+                HexUInt.of(THOR_SOLO_ACCOUNTS[4].privateKey).bytes
             )
         );
 

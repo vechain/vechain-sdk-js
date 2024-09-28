@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { ABIContract } from '@vechain/sdk-core';
+import { ABIContract, HexUInt } from '@vechain/sdk-core';
 import {
     HardhatVeChainProvider,
     ProviderInternalBaseWallet,
@@ -36,7 +36,7 @@ describe('Hardhat provider tests', () => {
         provider = new HardhatVeChainProvider(
             new ProviderInternalBaseWallet([
                 {
-                    privateKey: Buffer.from(TEST_ACCOUNT.privateKey, 'hex'),
+                    privateKey: HexUInt.of(TEST_ACCOUNT.privateKey).bytes,
                     address: TEST_ACCOUNT.address
                 }
             ]),

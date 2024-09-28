@@ -25,7 +25,7 @@ function useExperimentalCryptography(experimentalCryptography: boolean): void {
  * @returns A Promise that resolves to the encrypted keystore.
  */
 async function encrypt(
-    privateKey: Buffer,
+    privateKey: Uint8Array,
     password: string
 ): Promise<Keystore> {
     if (EXPERIMENTAL_CRYPTOGRAPHY)

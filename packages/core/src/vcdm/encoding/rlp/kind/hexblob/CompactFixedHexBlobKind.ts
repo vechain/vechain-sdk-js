@@ -1,10 +1,10 @@
-import { FixedHexBlobKind } from './fixedhexblob';
-import { Hex } from '../../../../vcdm/Hex';
+import { Hex } from '../../../../Hex';
 import {
     assertCompactFixedHexBlobBuffer,
     encodeCompactFixedHexBlob
 } from '../../helpers';
 import { type BufferOutput, type DataOutput, type RLPInput } from '../../types';
+import { FixedHexBlobKind } from './FixedHexBlobKind';
 
 /**
  * Represents a fixed hex blob kind with zero trimming and padding functionality.
@@ -12,14 +12,14 @@ import { type BufferOutput, type DataOutput, type RLPInput } from '../../types';
  */
 class CompactFixedHexBlobKind extends FixedHexBlobKind {
     /**
-     * Encodes the input data into a Buffer, trimming leading zeros.
+     * Encodes the input data into a Uint8Array, trimming leading zeros.
      *
      * @param data - The data to encode, expected to be a '0x' prefixed hex string.
      * @param context - Context string for error handling.
-     * @returns An object containing an encode function which returns the encoded Buffer.
+     * @returns An object containing an encode function which returns the encoded Uint8Array.
      */
     public data(data: RLPInput, context: string): DataOutput {
-        const buffer: Buffer = super.data(data, context).encode();
+        const buffer: Uint8Array = super.data(data, context).encode();
 
         return {
             encode: () => encodeCompactFixedHexBlob(buffer) // Encode the buffer, trimming leading zeros.
@@ -34,7 +34,7 @@ class CompactFixedHexBlobKind extends FixedHexBlobKind {
      * @returns BufferOutput object with a decode function.
      * @throws Will throw an error if buffer validation fails.
      */
-    public buffer(buffer: Buffer, context: string): BufferOutput {
+    public buffer(buffer: Uint8Array, context: string): BufferOutput {
         assertCompactFixedHexBlobBuffer(buffer, context, this.bytes);
 
         return {

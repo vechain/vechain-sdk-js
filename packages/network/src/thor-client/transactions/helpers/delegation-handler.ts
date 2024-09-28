@@ -1,4 +1,4 @@
-import { Hex, type Transaction } from '@vechain/sdk-core';
+import { Hex, HexUInt, type Transaction } from '@vechain/sdk-core';
 import { NotDelegatedTransaction } from '@vechain/sdk-errors';
 import {
     type GetDelegationSignatureResult,
@@ -24,7 +24,7 @@ const _getDelegationSignature = async (
     delegatorUrl: string,
     originAddress: string,
     httpClient: IHttpClient
-): Promise<Buffer> => {
+): Promise<Uint8Array> => {
     const rawTx = Hex.of(tx.encoded).toString();
 
     /**
@@ -42,7 +42,7 @@ const _getDelegationSignature = async (
             body: sponsorRequestBody
         })) as GetDelegationSignatureResult;
 
-        return Buffer.from(response.signature.slice(2), 'hex');
+        return HexUInt.of(response.signature.slice(2)).bytes;
     } catch (error) {
         throw new NotDelegatedTransaction(
             '_getDelegationSignature()',
@@ -75,7 +75,7 @@ const DelegationHandler = (
         tx: Transaction,
         originAddress: string,
         httpClient: IHttpClient
-    ) => Promise<Buffer>;
+    ) => Promise<Uint8Array>;
 } => {
     // Check if delegator is undefined (null or undefined)
     const delegatorIsUndefined = delegator === undefined || delegator === null;
@@ -131,7 +131,7 @@ const DelegationHandler = (
             tx: Transaction,
             originAddress: string,
             httpClient: IHttpClient
-        ): Promise<Buffer> => {
+        ): Promise<Uint8Array> => {
             // Cannot be delegated by private key
             if (!isDelegatedWithUrl) {
                 throw new NotDelegatedTransaction(

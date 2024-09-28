@@ -65,10 +65,7 @@ const senderPrivateKey = await Secp256k1.generatePrivateKey();
 
 // 4 - Get Tx A id
 
-const txASigned = TransactionHandler.sign(
-    txABody,
-    Buffer.from(senderPrivateKey)
-);
+const txASigned = TransactionHandler.sign(txABody, senderPrivateKey);
 
 // 5 - Set it inside tx B
 
@@ -76,10 +73,7 @@ txBBody.dependsOn = txASigned.id;
 
 // 6 - Sign Tx B
 
-const txBSigned = TransactionHandler.sign(
-    txBBody,
-    Buffer.from(senderPrivateKey)
-);
+const txBSigned = TransactionHandler.sign(txBBody, senderPrivateKey);
 
 // 7 - encode Tx B
 

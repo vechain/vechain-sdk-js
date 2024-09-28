@@ -1,10 +1,8 @@
-import { Hex } from '../../../../vcdm/Hex';
-import { ScalarKind } from '../scalarkind.abstract';
-import {
-    assertValidHexBlobKindBuffer,
-    assertValidHexBlobKindData
-} from '../../helpers';
-import { type DataOutput, type BufferOutput, type RLPInput } from '../../types';
+import { Hex } from '../../../../Hex';
+import { HexUInt } from '../../../../HexUInt';
+import { assertValidHexBlobKindData } from '../../helpers';
+import { type BufferOutput, type DataOutput, type RLPInput } from '../../types';
+import { ScalarKind } from '../ScalarKind';
 
 /**
  * Represents a scalar kind with hex blob functionality.
@@ -15,17 +13,17 @@ import { type DataOutput, type BufferOutput, type RLPInput } from '../../types';
  */
 class HexBlobKind extends ScalarKind {
     /**
-     * Encodes the input data into a Buffer.
+     * Encodes the input data into a Uint8Array.
      *
      * @param data - The data to encode, expected to be a '0x' prefixed even sized hex string.
      * @param context - Context string for error handling.
-     * @returns An object containing an encode function which returns the encoded Buffer.
+     * @returns An object containing an encode function which returns the encoded Uint8Array.
      */
     public data(data: RLPInput, context: string): DataOutput {
         assertValidHexBlobKindData(data, context);
 
         return {
-            encode: () => Buffer.from((data as string).slice(2), 'hex')
+            encode: () => HexUInt.of((data as string).slice(2)).bytes
         };
     }
 
@@ -36,9 +34,7 @@ class HexBlobKind extends ScalarKind {
      * @param context - Context string for error handling.
      * @returns An object containing a decode function which returns the decoded hex string.
      */
-    public buffer(buffer: Buffer, context: string): BufferOutput {
-        assertValidHexBlobKindBuffer(buffer, context);
-
+    public buffer(buffer: Uint8Array, _context: string): BufferOutput {
         return {
             decode: () => Hex.of(buffer).toString()
         };

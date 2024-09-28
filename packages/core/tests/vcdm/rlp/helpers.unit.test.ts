@@ -1,21 +1,24 @@
 import { describe, expect, test } from '@jest/globals';
 import {
-    Hex,
+    InvalidDataType,
+    InvalidRLP,
+    stringifyData
+} from '@vechain/sdk-errors';
+import { Hex } from '../../../src';
+import {
     assertCompactFixedHexBlobBuffer,
     assertFixedHexBlobKindBuffer,
     assertFixedHexBlobKindData,
-    assertValidHexBlobKindBuffer,
     assertValidHexBlobKindData,
     assertValidNumericKindBuffer,
     decodeBufferToHexWithLeadingZeros,
     encodeBigIntToBuffer,
     validateNumericKindData
-} from '../../src';
+} from '../../../src/vcdm/encoding';
 import {
     invalidCompactFixedHexBlobKindBufferTestCases,
     invalidFixedHexBlobKindBufferTestCases,
     invalidFixedHexBlobKindDataTestCases,
-    invalidHexBlobKindBufferTestCases,
     invalidHexBlobKindDataTestCases,
     invalidNumberTestCases,
     invalidNumericBufferTestCases,
@@ -23,15 +26,9 @@ import {
     validCompactFixedHexBlobKindBufferTestCases,
     validFixedHexBlobKindBufferTestCases,
     validFixedHexBlobKindDataTestCases,
-    validHexBlobKindBufferTestCases,
     validHexBlobKindDataTestCases,
     validNumericBufferTestCases
 } from './helpers.fixture';
-import {
-    InvalidDataType,
-    InvalidRLP,
-    stringifyData
-} from '@vechain/sdk-errors';
 
 /**
  * Test suite for BigInt helper functions
@@ -50,7 +47,7 @@ describe('encodeBigIntToBuffer', () => {
  * @group unit/numerickind-helpers
  */
 describe('decodeBufferToHexWithLeadingZeros', () => {
-    const buffer: Buffer = Buffer.alloc(1);
+    const buffer = new Uint8Array(1);
     buffer[0] = 10;
     test('decodeBufferToHexWithLeadingZeros zero bytes', () => {
         expect(() => decodeBufferToHexWithLeadingZeros(buffer, 0)).toThrow(
@@ -124,9 +121,7 @@ describe('NumericKind helpers', () => {
          * the function does not throw an error for valid inputs.
          */
         validNumericBufferTestCases.forEach(({ buffer, context, maxBytes }) => {
-            test(`should not throw error when buffer is valid ${buffer.toString(
-                'hex'
-            )}`, () => {
+            test(`should not throw error when buffer is valid ${Hex.of(buffer).toString()}`, () => {
                 expect(() => {
                     assertValidNumericKindBuffer(buffer, context, maxBytes);
                 }).not.toThrowError();
@@ -142,9 +137,7 @@ describe('NumericKind helpers', () => {
          */
         invalidNumericBufferTestCases.forEach(
             ({ buffer, context, maxBytes }) => {
-                test(`should throw error when buffer is invalid ${buffer.toString(
-                    'hex'
-                )}`, () => {
+                test(`should throw error when buffer is invalid ${Hex.of(buffer).toString()}}`, () => {
                     expect(() => {
                         assertValidNumericKindBuffer(buffer, context, maxBytes);
                     }).toThrowError(InvalidRLP);
@@ -177,32 +170,6 @@ describe('HexBlobKind helpers', () => {
             test(`should throw error when data is invalid ${data}`, () => {
                 expect(() => {
                     assertValidHexBlobKindData(data, context);
-                }).toThrowError(InvalidRLP);
-            });
-        });
-    });
-
-    /**
-     * Test subset for `assertValidHexBlobKindBuffer` function.
-     */
-    describe('assertValidHexBlobKindBuffer', () => {
-        validHexBlobKindBufferTestCases.forEach(({ buffer, context }) => {
-            test(`should not throw error when buffer is valid ${buffer.toString(
-                'hex'
-            )}`, () => {
-                expect(() => {
-                    assertValidHexBlobKindBuffer(buffer, context);
-                }).not.toThrowError();
-            });
-        });
-
-        invalidHexBlobKindBufferTestCases.forEach(({ buffer, context }) => {
-            test(`should throw error when buffer is invalid ${stringifyData(
-                buffer
-            )}`, () => {
-                expect(() => {
-                    // @ts-expect-error - invalid input
-                    assertValidHexBlobKindBuffer(buffer, context);
                 }).toThrowError(InvalidRLP);
             });
         });
@@ -247,9 +214,7 @@ describe('FixedHexBlobKind helpers', () => {
     describe('assertFixedHexBlobKindBuffer', () => {
         validFixedHexBlobKindBufferTestCases.forEach(
             ({ buffer, context, bytes }) => {
-                test(`should not throw error when buffer is valid ${buffer.toString(
-                    'hex'
-                )}`, () => {
+                test(`should not throw error when buffer is valid ${Hex.of(buffer).toString()}}`, () => {
                     expect(() => {
                         assertFixedHexBlobKindBuffer(buffer, context, bytes);
                     }).not.toThrowError();
@@ -281,9 +246,7 @@ describe('CompactFixedHexBlobKind helpers', () => {
     describe('assertCompactFixedHexBlobBuffer', () => {
         validCompactFixedHexBlobKindBufferTestCases.forEach(
             ({ buffer, context, bytes }) => {
-                test(`should not throw error when buffer is valid ${buffer.toString(
-                    'hex'
-                )}`, () => {
+                test(`should not throw error when buffer is valid ${Hex.of(buffer).toString()}}`, () => {
                     expect(() => {
                         assertCompactFixedHexBlobBuffer(buffer, context, bytes);
                     }).not.toThrowError();

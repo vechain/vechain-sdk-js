@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { TEST_ACCOUNTS } from '../../fixture';
-import { Hex, TransactionHandler } from '@vechain/sdk-core';
-import { sendTransactionErrors, simulateTransaction } from './fixture-thorest';
+import { Hex, HexUInt, TransactionHandler } from '@vechain/sdk-core';
 import { InvalidDataType, stringifyData } from '@vechain/sdk-errors';
 import { THOR_SOLO_URL, ThorClient } from '../../../src';
+import { TEST_ACCOUNTS } from '../../fixture';
+import { sendTransactionErrors, simulateTransaction } from './fixture-thorest';
 
 /**
  * ThorClient class tests.
@@ -76,22 +76,18 @@ describe('ThorClient - Transactions Module', () => {
                 // Normal signature and delegation signature
                 const rawNormalSigned = TransactionHandler.sign(
                     transactionBody,
-                    Buffer.from(
-                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
-                        'hex'
-                    )
+                    HexUInt.of(
+                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
+                    ).bytes
                 ).encoded;
 
                 const rawDelegatedSigned = TransactionHandler.signWithDelegator(
                     delegatedTransactionBody,
-                    Buffer.from(
-                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
-                        'hex'
-                    ),
-                    Buffer.from(
-                        TEST_ACCOUNTS.TRANSACTION.DELEGATOR.privateKey,
-                        'hex'
-                    )
+                    HexUInt.of(
+                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
+                    ).bytes,
+                    HexUInt.of(TEST_ACCOUNTS.TRANSACTION.DELEGATOR.privateKey)
+                        .bytes
                 ).encoded;
 
                 // 2 - Send transaction

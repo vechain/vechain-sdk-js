@@ -2,6 +2,7 @@ import {
     Address,
     Clause,
     HDKey,
+    HexUInt,
     Mnemonic,
     TransactionHandler,
     VET,
@@ -70,8 +71,8 @@ const delegatorAddress = Address.ofPublicKey(nodeDelegate.publicKey).toString();
 
 const signedTransaction = TransactionHandler.signWithDelegator(
     body,
-    Buffer.from(senderAccount.privateKey, 'hex'),
-    Buffer.from(delegatorPrivateKey)
+    HexUInt.of(senderAccount.privateKey).bytes,
+    delegatorPrivateKey
 );
 
 // 7 - Encode transaction

@@ -46,7 +46,7 @@ Here, we explore the approach to monitor balance changes after a transfer. Synch
 
 ```typescript { name=sync-poll-wait-balance-update, category=example }
 import { Poll, THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
-import { Hex, TransactionHandler } from '@vechain/sdk-core';
+import { Hex, HexUInt, TransactionHandler } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
 // 1 - Create thor client for solo network
@@ -61,18 +61,16 @@ const latestBlock = await thorSoloClient.blocks.getBestBlockCompressed();
 // 2.2 - Transaction sender and receiver
 const sender = {
     address: '0x2669514f9fe96bc7301177ba774d3da8a06cace4',
-    privateKey: Buffer.from(
-        'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5',
-        'hex'
-    )
+    privateKey: HexUInt.of(
+        'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5'
+    ).bytes
 };
 
 const receiver = {
     address: '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
-    privateKey: Buffer.from(
-        '1758771c54938e977518e4ff1c297aca882f6598891df503030734532efa790e',
-        'hex'
-    )
+    privateKey: HexUInt.of(
+        '1758771c54938e977518e4ff1c297aca882f6598891df503030734532efa790e'
+    ).bytes
 };
 
 // 2.2 - Create transaction clauses
@@ -106,7 +104,7 @@ const encoded = TransactionHandler.sign(
     transactionBody,
     sender.privateKey
 ).encoded;
-const raw = `0x${encoded.toString('hex')}`;
+const raw = HexUInt.of(encoded).toString();
 
 // 3 - Get the sender and receiver balance before the transaction
 

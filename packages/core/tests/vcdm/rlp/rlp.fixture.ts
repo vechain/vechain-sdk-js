@@ -1,6 +1,16 @@
-import { RLP_CODER, type RLPProfile, type RLPValidObject } from '../../src';
+import { HexUInt } from '../../../src';
+import {
+    BufferKind,
+    CompactFixedHexBlobKind,
+    FixedHexBlobKind,
+    HexBlobKind,
+    NumericKind,
+    OptionalFixedHexBlobKind,
+    type RLPProfile,
+    type RLPValidObject
+} from '../../../src/vcdm/encoding';
 
-/* Simple RLP_CODER encode */
+/* Simple encode */
 const encodeTestCases = [
     {
         input: [1, 2, 3, [4, 5]],
@@ -11,11 +21,11 @@ const encodeTestCases = [
     { input: [], expected: '0xc0', description: 'empty array' }
 ];
 
-/* Simple RLP_CODER decode */
+/* Simple decode */
 const decodeTestCases = [
     {
         input: '0x2a',
-        expected: Buffer.from([42]),
+        expected: Uint8Array.from([42]),
         description: 'single value'
     },
     { input: '0xc0', expected: [], description: 'empty array' }
@@ -24,55 +34,55 @@ const decodeTestCases = [
 /* NumericKind encode */
 const numericKindEncodeTestCases = [
     {
-        kind: new RLP_CODER.NumericKind(8),
+        kind: new NumericKind(8),
         data: '0x0',
         expected: '0x',
         description: 'zero hex string'
     },
     {
-        kind: new RLP_CODER.NumericKind(8),
+        kind: new NumericKind(8),
         data: '0x123',
         expected: '0x0123',
         description: 'hex string'
     },
     {
-        kind: new RLP_CODER.NumericKind(8),
+        kind: new NumericKind(8),
         data: '0',
         expected: '0x',
         description: 'zero number string'
     },
     {
-        kind: new RLP_CODER.NumericKind(8),
+        kind: new NumericKind(8),
         data: '100',
         expected: '0x64',
         description: 'number string'
     },
     {
-        kind: new RLP_CODER.NumericKind(8),
+        kind: new NumericKind(8),
         data: 0,
         expected: '0x',
         description: 'zero number'
     },
     {
-        kind: new RLP_CODER.NumericKind(8),
+        kind: new NumericKind(8),
         data: 0x123,
         expected: '0x0123',
         description: 'number in hex format'
     },
     {
-        kind: new RLP_CODER.NumericKind(8),
+        kind: new NumericKind(8),
         data: 12524,
         expected: '0x30ec',
         description: 'number non hex format'
     },
     {
-        kind: new RLP_CODER.NumericKind(1),
+        kind: new NumericKind(1),
         data: '5',
         expected: '0x05',
         description: 'number in hex format'
     },
     {
-        kind: new RLP_CODER.NumericKind(1),
+        kind: new NumericKind(1),
         data: 255,
         expected: '0xff',
         description: 'number non hex format'
@@ -81,37 +91,37 @@ const numericKindEncodeTestCases = [
 
 const invalidNumericKindEncodeTestCases = [
     {
-        kind: new RLP_CODER.NumericKind(8),
+        kind: new NumericKind(8),
         data: '0x123z',
         description: 'invalid hex string'
     },
     {
-        kind: new RLP_CODER.NumericKind(8),
+        kind: new NumericKind(8),
         data: {},
         description: 'invalid object'
     },
     {
-        kind: new RLP_CODER.NumericKind(8),
+        kind: new NumericKind(8),
         data: '0x',
         description: 'invalid hex string'
     },
     {
-        kind: new RLP_CODER.NumericKind(8),
+        kind: new NumericKind(8),
         data: -1,
         description: 'negative number'
     },
     {
-        kind: new RLP_CODER.NumericKind(8),
+        kind: new NumericKind(8),
         data: '0x12345678123456780',
         description: 'number overflow'
     },
     {
-        kind: new RLP_CODER.NumericKind(8),
+        kind: new NumericKind(8),
         data: 2 ** 64,
         description: 'number overflow'
     },
     {
-        kind: new RLP_CODER.NumericKind(1),
+        kind: new NumericKind(1),
         data: 256,
         description: 'number overflow'
     }
@@ -120,26 +130,26 @@ const invalidNumericKindEncodeTestCases = [
 /* Numeric kind decode tests */
 const numericKindDecodeTestCases = [
     {
-        kind: new RLP_CODER.NumericKind(8),
-        data: Buffer.alloc(0),
+        kind: new NumericKind(8),
+        data: Uint8Array.from([]),
         description: 'empty buffer',
         expected: 0
     },
     {
-        kind: new RLP_CODER.NumericKind(8),
-        data: Buffer.from([1, 2, 3]),
+        kind: new NumericKind(8),
+        data: Uint8Array.from([1, 2, 3]),
         description: 'buffer with data',
         expected: 0x010203
     },
     {
-        kind: new RLP_CODER.NumericKind(8),
-        data: Buffer.from([1, 2, 3, 4, 5, 6, 7, 8]),
+        kind: new NumericKind(8),
+        data: Uint8Array.from([1, 2, 3, 4, 5, 6, 7, 8]),
         description: 'buffer with data',
         expected: '0x102030405060708'
     },
     {
-        kind: new RLP_CODER.NumericKind(1),
-        data: Buffer.from('ff', 'hex'),
+        kind: new NumericKind(1),
+        data: HexUInt.of('ff').bytes,
         description: 'buffer with data',
         expected: 255
     }
@@ -147,7 +157,7 @@ const numericKindDecodeTestCases = [
 
 const invalidBufferKindDecodeTestCases = [
     {
-        kind: new RLP_CODER.BufferKind(),
+        kind: new BufferKind(),
         data: 42,
         description: 'invalid data'
     }
@@ -155,13 +165,13 @@ const invalidBufferKindDecodeTestCases = [
 
 const invalidNumericKindDecodeTestCases = [
     {
-        kind: new RLP_CODER.NumericKind(8),
-        data: Buffer.alloc(9, 1),
+        kind: new NumericKind(8),
+        data: new Uint8Array(9).fill(1),
         description: 'buffer exceeds max bytes'
     },
     {
-        kind: new RLP_CODER.NumericKind(8),
-        data: Buffer.from([0, 1]),
+        kind: new NumericKind(8),
+        data: Uint8Array.from([0, 1]),
         description: 'buffer with leading zero'
     }
 ];
@@ -169,7 +179,7 @@ const invalidNumericKindDecodeTestCases = [
 /* Hex Blob Kind encode tests */
 const hexBlobKindEncodeTestCases = [
     {
-        kind: new RLP_CODER.HexBlobKind(),
+        kind: new HexBlobKind(),
         data: '0x010203',
         expected: '0x010203',
         description: 'hex string'
@@ -178,17 +188,17 @@ const hexBlobKindEncodeTestCases = [
 
 const invalidHexBlobKindEncodeTestCases = [
     {
-        kind: new RLP_CODER.HexBlobKind(),
+        kind: new HexBlobKind(),
         data: '0x123z',
         description: 'invalid hex string'
     },
     {
-        kind: new RLP_CODER.HexBlobKind(),
+        kind: new HexBlobKind(),
         data: {},
         description: 'invalid object'
     },
     {
-        kind: new RLP_CODER.HexBlobKind(),
+        kind: new HexBlobKind(),
         data: '0x123',
         description: 'invalid hex string'
     }
@@ -197,7 +207,7 @@ const invalidHexBlobKindEncodeTestCases = [
 /* Fixed Hex Blob Kind encode tests */
 const fixedHexBlobKindEncodeTestCases = [
     {
-        kind: new RLP_CODER.FixedHexBlobKind(1),
+        kind: new FixedHexBlobKind(1),
         data: '0x01',
         expected: '0x01',
         description: 'hex string'
@@ -206,22 +216,22 @@ const fixedHexBlobKindEncodeTestCases = [
 
 const invalidFixedHexBlobEncodeTestCases = [
     {
-        kind: new RLP_CODER.FixedHexBlobKind(1),
+        kind: new FixedHexBlobKind(1),
         data: '0x123z',
         description: 'invalid hex string'
     },
     {
-        kind: new RLP_CODER.FixedHexBlobKind(1),
+        kind: new FixedHexBlobKind(1),
         data: {},
         description: 'invalid data type'
     },
     {
-        kind: new RLP_CODER.FixedHexBlobKind(1),
+        kind: new FixedHexBlobKind(1),
         data: '0x123',
         description: 'invalid hex string'
     },
     {
-        kind: new RLP_CODER.FixedHexBlobKind(1),
+        kind: new FixedHexBlobKind(1),
         data: '0x012345',
         description: 'overflow hex string'
     }
@@ -230,44 +240,36 @@ const invalidFixedHexBlobEncodeTestCases = [
 /* Hex Blob Kind decode tests */
 const hexBlobKindDecodeTestCases = [
     {
-        kind: new RLP_CODER.HexBlobKind(),
-        data: Buffer.alloc(0),
+        kind: new HexBlobKind(),
+        data: Uint8Array.from([]),
         description: 'empty buffer',
         expected: '0x'
     },
     {
-        kind: new RLP_CODER.HexBlobKind(),
-        data: Buffer.from([1, 2, 3]),
+        kind: new HexBlobKind(),
+        data: Uint8Array.from([1, 2, 3]),
         description: 'buffer with data',
         expected: '0x010203'
     },
     {
-        kind: new RLP_CODER.HexBlobKind(),
-        data: Buffer.from([1, 2, 3, 4, 5]),
+        kind: new HexBlobKind(),
+        data: Uint8Array.from([1, 2, 3, 4, 5]),
         description: 'buffer with data',
         expected: '0x0102030405'
-    }
-];
-
-const invalidHexBlobKindDecodeTestCases = [
-    {
-        kind: new RLP_CODER.HexBlobKind(),
-        data: 42,
-        description: 'invalid data'
     }
 ];
 
 /* Fixed Hex Blob Kind decode tests */
 const fixedHexBlobKindDecodeTestCases = [
     {
-        kind: new RLP_CODER.FixedHexBlobKind(3),
-        data: Buffer.from([1, 2, 3]),
+        kind: new FixedHexBlobKind(3),
+        data: Uint8Array.from([1, 2, 3]),
         description: 'buffer with data',
         expected: '0x010203'
     },
     {
-        kind: new RLP_CODER.FixedHexBlobKind(1),
-        data: Buffer.from([1]),
+        kind: new FixedHexBlobKind(1),
+        data: Uint8Array.from([1]),
         description: 'buffer with data',
         expected: '0x01'
     }
@@ -275,17 +277,17 @@ const fixedHexBlobKindDecodeTestCases = [
 
 const invalidFixedBlobKindDecodeTestCases = [
     {
-        kind: new RLP_CODER.FixedHexBlobKind(3),
-        data: Buffer.from([1, 2]),
+        kind: new FixedHexBlobKind(3),
+        data: Uint8Array.from([1, 2]),
         description: 'buffer with data'
     },
     {
-        kind: new RLP_CODER.FixedHexBlobKind(1),
-        data: Buffer.from([1, 2]),
+        kind: new FixedHexBlobKind(1),
+        data: Uint8Array.from([1, 2]),
         description: 'buffer with data'
     },
     {
-        kind: new RLP_CODER.FixedHexBlobKind(1),
+        kind: new FixedHexBlobKind(1),
         data: '0x123',
         description: 'invalid data buffer'
     }
@@ -293,13 +295,13 @@ const invalidFixedBlobKindDecodeTestCases = [
 
 const compactFixedHexBlobKindEncodeTestCases = [
     {
-        kind: new RLP_CODER.CompactFixedHexBlobKind(4),
+        kind: new CompactFixedHexBlobKind(4),
         data: '0x00112233',
         description: 'buffer with data',
         expected: '0x112233'
     },
     {
-        kind: new RLP_CODER.CompactFixedHexBlobKind(1),
+        kind: new CompactFixedHexBlobKind(1),
         data: '0x00',
         description: 'buffer with data',
         expected: '0x'
@@ -308,20 +310,20 @@ const compactFixedHexBlobKindEncodeTestCases = [
 
 const compactFixedHexBlobKindDecodeTestCases = [
     {
-        kind: new RLP_CODER.CompactFixedHexBlobKind(4),
-        data: Buffer.from([1, 2, 3]),
+        kind: new CompactFixedHexBlobKind(4),
+        data: Uint8Array.from([1, 2, 3]),
         description: 'buffer with data',
         expected: '0x00010203'
     },
     {
-        kind: new RLP_CODER.CompactFixedHexBlobKind(1),
-        data: Buffer.from([1]),
+        kind: new CompactFixedHexBlobKind(1),
+        data: Uint8Array.from([1]),
         description: 'buffer with data',
         expected: '0x01'
     }
 ];
 
-/* ------ RLP_CODER Profile Objects & Data ------- */
+/* ------ Profile Objects & Data ------- */
 const [bufferProfile, bufferData, invalidBufferData]: [
     RLPProfile,
     RLPValidObject,
@@ -330,16 +332,16 @@ const [bufferProfile, bufferData, invalidBufferData]: [
     {
         name: '',
         kind: [
-            { name: 'foo', kind: new RLP_CODER.BufferKind() },
-            { name: 'bar', kind: new RLP_CODER.BufferKind() }
+            { name: 'foo', kind: new BufferKind() },
+            { name: 'bar', kind: new BufferKind() }
         ]
     },
     {
-        foo: Buffer.from([1, 2, 3]),
-        bar: Buffer.from([4, 5, 6])
+        foo: Uint8Array.from([1, 2, 3]),
+        bar: Uint8Array.from([4, 5, 6])
     },
     {
-        foo: Buffer.from([1, 2, 3]),
+        foo: Uint8Array.from([1, 2, 3]),
         bar: 42
     }
 ];
@@ -348,25 +350,25 @@ const [numericProfile, numericData]: [RLPProfile, RLPValidObject] = [
     {
         name: '',
         kind: [
-            { name: 'foo', kind: new RLP_CODER.NumericKind() },
-            { name: 'bar', kind: new RLP_CODER.NumericKind() },
+            { name: 'foo', kind: new NumericKind() },
+            { name: 'bar', kind: new NumericKind() },
             {
                 name: 'baz',
                 kind: {
                     item: [
-                        { name: 'x', kind: new RLP_CODER.NumericKind() },
-                        { name: 'y', kind: new RLP_CODER.NumericKind() },
+                        { name: 'x', kind: new NumericKind() },
+                        { name: 'y', kind: new NumericKind() },
                         {
                             name: 'z',
                             kind: {
                                 item: [
                                     {
                                         name: 'a',
-                                        kind: new RLP_CODER.NumericKind()
+                                        kind: new NumericKind()
                                     },
                                     {
                                         name: 'b',
-                                        kind: new RLP_CODER.NumericKind()
+                                        kind: new NumericKind()
                                     }
                                 ]
                             }
@@ -420,14 +422,14 @@ const [
     {
         name: '',
         kind: [
-            { name: 'foo', kind: new RLP_CODER.NumericKind(1) },
-            { name: 'bar', kind: new RLP_CODER.NumericKind() },
+            { name: 'foo', kind: new NumericKind(1) },
+            { name: 'bar', kind: new NumericKind() },
             {
                 name: 'baz',
                 kind: {
                     item: [
-                        { name: 'x', kind: new RLP_CODER.NumericKind() },
-                        { name: 'y', kind: new RLP_CODER.NumericKind() }
+                        { name: 'x', kind: new NumericKind() },
+                        { name: 'y', kind: new NumericKind() }
                     ]
                 }
             }
@@ -472,8 +474,8 @@ const [hexBlobProfile, hexBlobData, hexBlobDataWithInvalidHex]: [
     {
         name: '',
         kind: [
-            { name: 'foo', kind: new RLP_CODER.HexBlobKind() },
-            { name: 'bar', kind: new RLP_CODER.HexBlobKind() }
+            { name: 'foo', kind: new HexBlobKind() },
+            { name: 'bar', kind: new HexBlobKind() }
         ]
     },
     {
@@ -490,8 +492,8 @@ const [fixedHexBlobProfile, fixedHexBlobData]: [RLPProfile, RLPValidObject] = [
     {
         name: '',
         kind: [
-            { name: 'foo', kind: new RLP_CODER.FixedHexBlobKind(1) },
-            { name: 'bar', kind: new RLP_CODER.FixedHexBlobKind(3) }
+            { name: 'foo', kind: new FixedHexBlobKind(1) },
+            { name: 'bar', kind: new FixedHexBlobKind(3) }
         ]
     },
     {
@@ -518,8 +520,8 @@ const [
     {
         name: '',
         kind: [
-            { name: 'foo', kind: new RLP_CODER.OptionalFixedHexBlobKind(1) },
-            { name: 'bar', kind: new RLP_CODER.OptionalFixedHexBlobKind(3) }
+            { name: 'foo', kind: new OptionalFixedHexBlobKind(1) },
+            { name: 'bar', kind: new OptionalFixedHexBlobKind(3) }
         ]
     },
     {
@@ -551,8 +553,8 @@ const [compactFixedHexBlobProfile, compactFixedHexBlobData]: [
     {
         name: '',
         kind: [
-            { name: 'foo', kind: new RLP_CODER.CompactFixedHexBlobKind(1) },
-            { name: 'bar', kind: new RLP_CODER.CompactFixedHexBlobKind(3) }
+            { name: 'foo', kind: new CompactFixedHexBlobKind(1) },
+            { name: 'bar', kind: new CompactFixedHexBlobKind(3) }
         ]
     },
     {
@@ -565,14 +567,14 @@ const [mixedKindProfile1, mixedKindData1]: [RLPProfile, RLPValidObject] = [
     {
         name: '',
         kind: [
-            { name: 'foo', kind: new RLP_CODER.NumericKind() },
-            { name: 'bar', kind: new RLP_CODER.FixedHexBlobKind(4) },
+            { name: 'foo', kind: new NumericKind() },
+            { name: 'bar', kind: new FixedHexBlobKind(4) },
             {
                 name: 'baz',
                 kind: {
                     item: [
-                        { name: 'x', kind: new RLP_CODER.HexBlobKind() },
-                        { name: 'y', kind: new RLP_CODER.NumericKind() }
+                        { name: 'x', kind: new HexBlobKind() },
+                        { name: 'y', kind: new NumericKind() }
                     ]
                 }
             }
@@ -592,32 +594,32 @@ const [mixedKindProfile2, mixedKindData2]: [RLPProfile, RLPValidObject] = [
     {
         name: 'tx',
         kind: [
-            { name: 'chainTag', kind: new RLP_CODER.NumericKind(1) },
+            { name: 'chainTag', kind: new NumericKind(1) },
             {
                 name: 'blockRef',
-                kind: new RLP_CODER.CompactFixedHexBlobKind(8)
+                kind: new CompactFixedHexBlobKind(8)
             },
-            { name: 'expiration', kind: new RLP_CODER.NumericKind(4) },
+            { name: 'expiration', kind: new NumericKind(4) },
             {
                 name: 'clauses',
                 kind: {
                     item: [
                         {
                             name: 'to',
-                            kind: new RLP_CODER.OptionalFixedHexBlobKind(20)
+                            kind: new OptionalFixedHexBlobKind(20)
                         },
-                        { name: 'value', kind: new RLP_CODER.NumericKind(32) },
-                        { name: 'data', kind: new RLP_CODER.HexBlobKind() }
+                        { name: 'value', kind: new NumericKind(32) },
+                        { name: 'data', kind: new HexBlobKind() }
                     ]
                 }
             },
-            { name: 'gasPriceCoef', kind: new RLP_CODER.NumericKind(1) },
-            { name: 'gas', kind: new RLP_CODER.NumericKind(8) },
+            { name: 'gasPriceCoef', kind: new NumericKind(1) },
+            { name: 'gas', kind: new NumericKind(8) },
             {
                 name: 'dependsOn',
-                kind: new RLP_CODER.OptionalFixedHexBlobKind(32)
+                kind: new OptionalFixedHexBlobKind(32)
             },
-            { name: 'nonce', kind: new RLP_CODER.NumericKind(8) }
+            { name: 'nonce', kind: new NumericKind(8) }
         ]
     },
     {
@@ -643,7 +645,7 @@ const [mixedKindProfile2, mixedKindData2]: [RLPProfile, RLPValidObject] = [
     }
 ];
 
-/* ------ RLP_CODER Profile Encode Tests ------- */
+/* ------ Profile Encode Tests ------- */
 const encodeNumericProfileTestCases = [
     {
         profile: numericProfile,
@@ -773,11 +775,11 @@ const invalidEncodeObjectTestCases = [
     }
 ];
 
-/* ------ RLP_CODER Profile Decode Tests ------- */
+/* ------ Profile Decode Tests ------- */
 const decodeBufferProfileTestCases = [
     {
         profile: bufferProfile,
-        data: Buffer.from('c88301020383040506', 'hex'),
+        data: HexUInt.of('c88301020383040506').bytes,
         expected: bufferData,
         description: 'decode buffer profile'
     }
@@ -786,17 +788,17 @@ const decodeBufferProfileTestCases = [
 const invalidDecodeObjectTestCases = [
     {
         profile: numericProfile,
-        data: Buffer.from('c60102c3c20304', 'hex'),
+        data: HexUInt.of('c60102c3c20304').bytes,
         description: 'decode buffer profile with invalid data'
     },
     {
         profile: numericProfile,
-        data: Buffer.from('c3010202', 'hex'),
+        data: HexUInt.of('c3010202').bytes,
         description: 'decode buffer profile with invalid data'
     },
     {
         profile: numericProfile,
-        data: Buffer.from('d1c7c60304c3c2070802c7c60304c3c20708', 'hex'),
+        data: HexUInt.of('d1c7c60304c3c2070802c7c60304c3c20708').bytes,
         description: 'decode buffer profile with invalid data'
     }
 ];
@@ -804,13 +806,13 @@ const invalidDecodeObjectTestCases = [
 const decodeNumericProfileTestCases = [
     {
         profile: numericProfileWithMaxBytes,
-        data: Buffer.from('c90102c6c20304c20506', 'hex'),
+        data: HexUInt.of('c90102c6c20304c20506').bytes,
         expected: numericDataWithMaxBytes,
         description: 'decode numeric profile'
     },
     {
         profile: numericProfile,
-        data: Buffer.from('d10102cec60304c3c20708c60506c3c2800a', 'hex'),
+        data: HexUInt.of('d10102cec60304c3c20708c60506c3c2800a').bytes,
         expected: numericData,
         description: 'decode numeric profile'
     }
@@ -819,7 +821,7 @@ const decodeNumericProfileTestCases = [
 const decodeHexBlobProfileTestCases = [
     {
         profile: hexBlobProfile,
-        data: Buffer.from('c88301020383040506', 'hex'),
+        data: HexUInt.of('c88301020383040506').bytes,
         expected: hexBlobData,
         description: 'decode hex blob profile'
     }
@@ -828,7 +830,7 @@ const decodeHexBlobProfileTestCases = [
 const decodeCompactFixedHexBlobProfileTestCases = [
     {
         profile: compactFixedHexBlobProfile,
-        data: Buffer.from('c50183010203', 'hex'),
+        data: HexUInt.of('c50183010203').bytes,
         expected: compactFixedHexBlobData,
         description: 'decode compact fixed hex blob profile'
     }
@@ -837,16 +839,15 @@ const decodeCompactFixedHexBlobProfileTestCases = [
 const decodeMixedKindProfileTestCases = [
     {
         profile: mixedKindProfile1,
-        data: Buffer.from('d17b8412345678cac4118204d2c41282162e', 'hex'),
+        data: HexUInt.of('d17b8412345678cac4118204d2c41282162e').bytes,
         expected: mixedKindData1,
         description: 'decode mixed kind profile'
     },
     {
         profile: mixedKindProfile2,
-        data: Buffer.from(
-            'f8530184aabbccdd20f840df947567d83b7b8d80addcb281a71d54fc7b3364ffed82271086000000606060df947567d83b7b8d80addcb281a71d54fc7b3364ffed824e208600000060606081808252088083bc614e',
-            'hex'
-        ),
+        data: HexUInt.of(
+            'f8530184aabbccdd20f840df947567d83b7b8d80addcb281a71d54fc7b3364ffed82271086000000606060df947567d83b7b8d80addcb281a71d54fc7b3364ffed824e208600000060606081808252088083bc614e'
+        ).bytes,
         expected: mixedKindData2,
         description: 'decode mixed kind profile with transaction like data'
     }
@@ -885,7 +886,6 @@ export {
     invalidEncodeObjectTestCases,
     invalidFixedBlobKindDecodeTestCases,
     invalidFixedHexBlobEncodeTestCases,
-    invalidHexBlobKindDecodeTestCases,
     invalidHexBlobKindEncodeTestCases,
     invalidNumericKindDecodeTestCases,
     invalidNumericKindEncodeTestCases,

@@ -1,4 +1,4 @@
-import { ScalarKind } from './scalarkind.abstract';
+import { ScalarKind } from './ScalarKind';
 import {
     assertValidNumericKindBuffer,
     decodeBufferToNumberOrHex,
@@ -41,12 +41,12 @@ class NumericKind extends ScalarKind {
     /**
      * Decodes the input buffer into a number or hexadecimal string, ensuring it meets numeric data constraints.
      *
-     * @param buffer - The buffer to decode, containing numeric data.
+     * @param {Uint8Array} buffer - The buffer to decode, containing numeric data.
      * @param context - Descriptive context for error messages.
      * @returns BufferOutput object with a decode function.
      * @throws Will throw an error if buffer validation fails.
      */
-    public buffer(buffer: Buffer, context: string): BufferOutput {
+    public buffer(buffer: Uint8Array, context: string): BufferOutput {
         // Ensure the buffer adheres to constraints related to numeric data.
         assertValidNumericKindBuffer(buffer, context, this.maxBytes);
 

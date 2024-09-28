@@ -234,10 +234,7 @@ describe('Subscriptions Solo network tests', () => {
 
             // Send the signed transaction to the blockchain
             await thorSoloClient.transactions.sendTransaction(
-                TransactionHandler.decode(
-                    Buffer.from(raw.slice(2), 'hex'),
-                    true
-                )
+                TransactionHandler.decode(HexUInt.of(raw.slice(2)).bytes, true)
             );
 
             // Wait for the WebSocket message or a timeout
@@ -331,7 +328,7 @@ describe('Subscriptions Solo network tests', () => {
 
         // Send the signed transaction to the blockchain
         await thorSoloClient.transactions.sendTransaction(
-            TransactionHandler.decode(Buffer.from(raw.slice(2), 'hex'), true)
+            TransactionHandler.decode(HexUInt.of(raw.slice(2)).bytes, true)
         );
 
         // Wait for the WebSocket message or a timeout

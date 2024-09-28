@@ -1,7 +1,7 @@
 import { InvalidRLP } from '@vechain/sdk-errors';
-import { FixedPointNumber } from '../../../vcdm/FixedPointNumber';
-import { Hex } from '../../../vcdm/Hex';
-import { HexUInt } from '../../../vcdm/HexUInt';
+import { FixedPointNumber } from '../../../FixedPointNumber';
+import { Hex } from '../../../Hex';
+import { HexUInt } from '../../../HexUInt';
 import { type RLPInput } from '../types';
 
 /**
@@ -112,16 +112,16 @@ const _validateNumericKindString = (str: string, context: string): void => {
  * Validates a buffer to ensure it adheres to constraints and does not contain
  * leading zero bytes which are not canonical representation in integers.
  *
- * @param buf - The buffer to validate.
- * @param context - A string providing context for error messages.
- * @param maxBytes - [Optional] An integer representing the maximum allowed length
+ * @param {Uint8Array} buf - The buffer to validate.
+ * @param {string} context - A string providing context for error messages.
+ * @param {number} maxBytes - [Optional] An integer representing the maximum allowed length
  *                   of the buffer. If provided, an error will be thrown if buf is longer.
  * @throws {InvalidRLP}
  *
  * @private
  */
 const assertValidNumericKindBuffer = (
-    buf: Buffer,
+    buf: Uint8Array,
     context: string,
     maxBytes?: number
 ): void => {
@@ -159,18 +159,18 @@ const assertValidNumericKindBuffer = (
 /**
  * Encode a BigInt instance into a Buffer, ensuring it adheres to specific constraints.
  *
- * @param bi - BigInt instance to encode.
- * @param maxBytes - Maximum byte length allowed for the encoding. If undefined, no byte size limit is imposed.
- * @param context - Contextual information for error messages.
- * @returns A Buffer instance containing the encoded data.
+ * @param {bigint} bi - BigInt instance to encode.
+ * @param {number | undefined} maxBytes - Maximum byte length allowed for the encoding. If undefined, no byte size limit is imposed.
+ * @param {string} context - Contextual information for error messages.
+ * @returns {Uint8Array} Encoded data.
  * @throws {InvalidRLP}
  */
 const encodeBigIntToBuffer = (
     bi: bigint,
     maxBytes: number | undefined,
     context: string
-): Buffer => {
-    if (bi === 0n) return Buffer.alloc(0);
+): Uint8Array => {
+    if (bi === 0n) return Uint8Array.from([]);
     const hex = Hex.of(bi).digits;
 
     if (maxBytes !== undefined && hex.length > maxBytes * 2) {
@@ -187,15 +187,15 @@ const encodeBigIntToBuffer = (
         );
     }
 
-    return Buffer.from(hex, 'hex');
+    return Hex.of(hex).bytes;
 };
 
 /**
- * Decode a Buffer into a number or hexadecimal string.
- * @param buffer - Buffer instance to decode.
+ * Decode a Uint8Array into a number or hexadecimal string.
+ * @param {Uint8Array} buffer - Instance to decode.
  * @returns A number if the decoded BigInt is a safe integer, otherwise returns a hexadecimal string.
  */
-const decodeBufferToNumberOrHex = (buffer: Buffer): number | string => {
+const decodeBufferToNumberOrHex = (buffer: Uint8Array): number | string => {
     if (buffer.length === 0) return 0;
 
     const bi = Hex.of(buffer).bi;
