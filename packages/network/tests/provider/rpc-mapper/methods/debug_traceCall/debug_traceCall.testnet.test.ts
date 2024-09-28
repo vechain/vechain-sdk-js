@@ -51,8 +51,9 @@ describe('RPC Mapper - debug_traceCall method tests', () => {
         test('debug_traceCall - Should be able to trace a call with callTracer and prestateTracer', async () => {
             const fixtureTransaction =
                 debugTraceCallPositiveCasesFixtureTestnet[0];
-
-            for (const tracerName of ['callTracer', 'prestateTracer']) {
+            // The commented out line should be used as part of the test on solo {@link https://github.com/vechain/vechain-sdk-js/issues/1357}
+            // for (const tracerName of ['callTracer', 'prestateTracer']) {
+            for (const tracerName of ['callTracer']) {
                 const result = await RPCMethodsMap(thorClient)[
                     RPC_METHODS.debug_traceCall
                 ]([
