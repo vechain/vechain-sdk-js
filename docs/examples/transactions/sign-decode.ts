@@ -6,7 +6,8 @@ import {
     VET,
     networkInfo,
     type TransactionBody,
-    type TransactionClause
+    type TransactionClause,
+    HexUInt
 } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
@@ -23,7 +24,7 @@ const clauses: TransactionClause[] = [
 
 // 2 - Calculate intrinsic gas of clauses
 
-const gas = Number(Transaction.intrinsicGas(clauses).wei);
+const gas = HexUInt.of(Transaction.intrinsicGas(clauses).wei).toString();
 
 // 3 - Body of transaction
 

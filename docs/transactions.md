@@ -31,7 +31,7 @@ const clauses: TransactionClause[] = [
 
 // 2 - Calculate intrinsic gas of clauses
 
-const gas = Number(Transaction.intrinsicGas(clauses).wei);
+const gas = HexUInt.of(Transaction.intrinsicGas(clauses).wei).toString();
 
 // 3 - Body of transaction
 

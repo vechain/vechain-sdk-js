@@ -222,7 +222,7 @@ class Transaction {
      * @see decode
      */
     public get encoded(): Uint8Array {
-        return this._encode(this.isSigned);
+        return this.encode(this.isSigned);
     }
 
     /**
@@ -272,7 +272,7 @@ class Transaction {
      * otherwise `false`.
      */
     public get isDelegated(): boolean {
-        return Transaction._isDelegated(this.body);
+        return Transaction.isDelegated(this.body);
     }
 
     /**
@@ -355,7 +355,7 @@ class Transaction {
             (decodedRLPBody.reserved as Uint8Array[]).length > 0
                 ? {
                       ...bodyWithoutReservedField,
-                      reserved: Transaction._decodeReservedField(
+                      reserved: Transaction.decodeReservedField(
                           decodedRLPBody.reserved as Uint8Array[]
                       )
                   }
@@ -382,7 +382,7 @@ class Transaction {
      * - {@link Blake2b256.of}.
      */
     public getSignatureHash(delegator?: Address): Blake2b256 {
-        const txHash = Blake2b256.of(this._encode(false));
+        const txHash = Blake2b256.of(this.encode(false));
         if (delegator !== undefined) {
             return Blake2b256.of(
                 nc_utils.concatBytes(txHash.bytes, delegator.bytes)
@@ -421,7 +421,7 @@ class Transaction {
                             Transaction.GAS_CONSTANTS
                                 .CLAUSE_GAS_CONTRACT_CREATION;
                     }
-                    sum += Transaction._computeUsedGasFor(clause.data);
+                    sum += Transaction.computeUsedGasFor(clause.data);
                     return sum;
                 }, Transaction.GAS_CONSTANTS.TX_GAS),
                 Units.wei
@@ -604,7 +604,7 @@ class Transaction {
      * @return {number} The total gas used for the provided data.
      * @throws {InvalidDataType} If the data is not a valid hexadecimal string.
      */
-    private static _computeUsedGasFor(data: string): number {
+    private static computeUsedGasFor(data: string): number {
         // Invalid data
         if (data !== '' && !Hex.isValid(data))
             throw new InvalidDataType(
@@ -633,7 +633,7 @@ class Transaction {
      * @return {Buffer[]} [return.unused] An array of Buffer objects representing unused data, if any.
      * @throws {InvalidTransactionField} Thrown if the reserved field is not properly trimmed.
      */
-    private static _decodeReservedField(reserved: Uint8Array[]): {
+    private static decodeReservedField(reserved: Uint8Array[]): {
         features?: number;
         unused?: Uint8Array[];
     } {
@@ -652,7 +652,7 @@ class Transaction {
                 : { features: featuresField };
         }
         throw new InvalidTransactionField(
-            'Transaction._decodeReservedField',
+            'Transaction.decodeReservedField',
             'invalid reserved field: fields in the `reserved` property must be properly trimmed',
             { fieldName: 'reserved', reserved }
         );
@@ -666,9 +666,9 @@ class Transaction {
      *
      * @see encoded
      */
-    private _encode(isSigned: boolean): Uint8Array {
+    private encode(isSigned: boolean): Uint8Array {
         // Encode transaction body with RLP
-        return this._encodeBodyField(
+        return this.encodeBodyField(
             {
                 // Existing body and the optional `reserved` field if present.
                 ...this.body,
@@ -683,7 +683,7 @@ class Transaction {
                     data: string;
                 }>,
                 // New reserved field.
-                reserved: this._encodeReservedField()
+                reserved: this.encodeReservedField()
             },
             isSigned
         );
@@ -699,7 +699,7 @@ class Transaction {
      *
      * @see encoded
      */
-    private _encodeBodyField(
+    private encodeBodyField(
         body: RLPValidObject,
         isSigned: boolean
     ): Uint8Array {
@@ -729,9 +729,9 @@ class Transaction {
      * @remarks The {@link TransactionBody.reserved} is optional, albeit
      * is required to perform RLP encoding.
      *
-     * @see _encode
+     * @see encode
      */
-    private _encodeReservedField(): Uint8Array[] {
+    private encodeReservedField(): Uint8Array[] {
         // Check if is reserved or not
         const reserved = this.body.reserved ?? {};
         // Init kind for features
@@ -760,7 +760,7 @@ class Transaction {
      * @param {TransactionBody} body - The transaction body.
      * @return {boolean} `true` if the transaction is delegated, else `false`.
      */
-    private static _isDelegated(body: TransactionBody): boolean {
+    private static isDelegated(body: TransactionBody): boolean {
         // Check if is reserved or not
         const reserved = body.reserved ?? {};
         // Features
@@ -781,7 +781,7 @@ class Transaction {
         signature: Uint8Array
     ): boolean {
         // Verify signature length
-        const expectedSignatureLength = this._isDelegated(body)
+        const expectedSignatureLength = this.isDelegated(body)
             ? Secp256k1.SIGNATURE_LENGTH * 2
             : Secp256k1.SIGNATURE_LENGTH;
 
