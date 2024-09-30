@@ -1,5 +1,5 @@
 import { Poll, THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
-import { Hex, TransactionHandler } from '@vechain/sdk-core';
+import { HexUInt, Transaction } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
 // 1 - Create thor client for solo network
@@ -53,11 +53,8 @@ const transactionBody = {
 };
 
 // 2.5 - Sign and get raw transaction
-const encoded = TransactionHandler.sign(
-    transactionBody,
-    sender.privateKey
-).encoded;
-const raw = `0x${encoded.toString('hex')}`;
+const encoded = Transaction.of(transactionBody).sign(sender.privateKey).encoded;
+const raw = HexUInt.of(encoded).toString();
 
 // 3 - Get the sender and receiver balance before the transaction
 
