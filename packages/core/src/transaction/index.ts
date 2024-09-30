@@ -1,6 +1,7 @@
 export * from './Clause';
-export type * from './DeployParams';
-export * from './transaction';
-export * from './transaction-handler';
-export type * from './types.d';
+export * from './Transaction';
 export * from '../utils/const/network';
+export type * from './ClauseOptions';
+export type * from './DeployParams';
+export type * from './TransactionBody';
+export type * from './TransactionClause';

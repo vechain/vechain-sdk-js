@@ -69,7 +69,7 @@ const ClauseFixture = {
 
 /**
  * Test Clause class.
- * @group unit/clause
+ * @group unit/transaction
  */
 describe('Clause class tests', () => {
     describe('callFunction method tests', () => {

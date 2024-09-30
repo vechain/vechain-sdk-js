@@ -2,8 +2,8 @@ import {
     Address,
     Clause,
     HexUInt,
-    TransactionClause,
-    TransactionHandler,
+    Transaction,
+    type TransactionClause,
     VET
 } from '@vechain/sdk-core';
 import {
@@ -104,7 +104,7 @@ const rawDelegateSigned = await signer.signTransaction(
     )
 );
 
-const delegatedSigned = TransactionHandler.decode(
+const delegatedSigned = Transaction.decode(
     HexUInt.of(rawDelegateSigned.slice(2)).bytes,
     true
 );

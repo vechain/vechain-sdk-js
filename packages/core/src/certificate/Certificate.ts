@@ -235,7 +235,7 @@ class Certificate implements CertificateData {
      * @return {this} The current instance after signing.
      *
      * @throws {InvalidOperation} - If a hash error occurs.
-     * @throws {InvalidSecp256k1PrivateKey} if the private key is not a valid 32-byte private key.
+     * @throws {InvalidSecp256k1PrivateKey} - If the private key is not a valid 32-byte private key.
      *
      * @remarks Security auditable method, depends on
      * * {@link Blake2b256.of};

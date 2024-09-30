@@ -3,8 +3,7 @@ import {
     Clause,
     networkInfo,
     Secp256k1,
-    TransactionUtils,
-    TransactionHandler,
+    Transaction,
     VET,
     type TransactionClause,
     type TransactionBody,
@@ -31,7 +30,7 @@ const body: TransactionBody = {
     expiration: 32, // tx will expire after block #16772280 + 32
     clauses,
     gasPriceCoef: 0,
-    gas: TransactionUtils.intrinsicGas(clauses), // use thor.gas.estimateGas() for better estimation
+    gas: HexUInt.of(Transaction.intrinsicGas(clauses).wei).toString(), // use thor.gas.estimateGas() for better estimation
     dependsOn: null,
     nonce: 1
 };
@@ -42,7 +41,7 @@ const privateKey = await Secp256k1.generatePrivateKey();
 
 // 4 - Sign transaction
 
-const signedTransaction = TransactionHandler.sign(body, privateKey);
+const signedTransaction = Transaction.of(body).sign(privateKey);
 
 // 5 - Encode transaction
 
@@ -50,7 +49,7 @@ const encodedRaw = signedTransaction.encoded;
 
 // 6 - Decode transaction and check
 
-const decodedTx = TransactionHandler.decode(encodedRaw, true);
+const decodedTx = Transaction.decode(encodedRaw, true);
 
 // END_SNIPPET: BlockrefExpirationSnippet
 

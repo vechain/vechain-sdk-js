@@ -1,9 +1,8 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
-    Hex,
     HexUInt,
-    type TransactionClause,
-    TransactionHandler
+    Transaction,
+    type TransactionClause
 } from '@vechain/sdk-core';
 import {
     RPC_METHODS,
@@ -83,12 +82,11 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
 
             // 2- Sign transaction
 
-            const signedTransaction = TransactionHandler.sign(
-                transactionBody,
+            const signedTransaction = Transaction.of(transactionBody).sign(
                 HexUInt.of(actors.sender.privateKey).bytes
             );
 
-            const raw = Hex.of(signedTransaction.encoded).toString();
+            const raw = HexUInt.of(signedTransaction.encoded).toString();
 
             // 3 - Send raw transaction
 
@@ -96,7 +94,7 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
                 RPC_METHODS.eth_sendRawTransaction
             ]([raw])) as string;
 
-            expect(result).toBe(signedTransaction.id);
+            expect(result).toBe(signedTransaction.id.toString());
         });
     });
 });

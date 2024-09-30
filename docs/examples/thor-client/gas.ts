@@ -1,4 +1,4 @@
-import { HexUInt, networkInfo, TransactionHandler } from '@vechain/sdk-core';
+import { HexUInt, networkInfo, Transaction } from '@vechain/sdk-core';
 import { THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
 
@@ -27,7 +27,7 @@ const receiverAccount = {
     ).bytes
 };
 
-// 2 - Create transaction clauses and calcolate gas
+// 2 - Create transaction clauses and compute gas
 const clauses = [
     {
         to: receiverAccount.address,
@@ -62,8 +62,7 @@ const transactionBody = {
 };
 
 // 5 - Sign transaction
-const rawNormalSigned = TransactionHandler.sign(
-    transactionBody,
+const rawNormalSigned = Transaction.of(transactionBody).sign(
     senderAccount.privateKey
 ).encoded;
 

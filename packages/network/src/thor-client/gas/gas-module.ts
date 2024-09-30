@@ -1,8 +1,8 @@
 import { InvalidDataType } from '@vechain/sdk-errors';
-import type { SimulateTransactionClause } from '../transactions';
-import { type EstimateGasOptions, type EstimateGasResult } from './types';
-import { TransactionUtils } from '@vechain/sdk-core';
+import { Transaction } from '@vechain/sdk-core';
 import { decodeRevertReason } from './helpers/decode-evm-error';
+import { type EstimateGasOptions, type EstimateGasResult } from './types';
+import { type SimulateTransactionClause } from '../transactions';
 import { type ThorClient } from '../thor-client';
 
 /**
@@ -70,7 +70,7 @@ class GasModule {
         });
 
         // The intrinsic gas of the transaction
-        const intrinsicGas = TransactionUtils.intrinsicGas(clauses);
+        const intrinsicGas = Number(Transaction.intrinsicGas(clauses).wei);
 
         // totalSimulatedGas represents the summation of all clauses' gasUsed
         const totalSimulatedGas = simulations.reduce((sum, simulation) => {
