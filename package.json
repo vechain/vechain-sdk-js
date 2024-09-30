@@ -80,6 +80,5 @@
     },
     "peerDependencies": {
         "hardhat": "^2.22.7"
-    },
-    "version": "v1.22.22"
+    }
 }
