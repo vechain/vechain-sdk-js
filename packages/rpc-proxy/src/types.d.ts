@@ -48,6 +48,7 @@ interface Config {
 interface RequestBody {
     method: string;
     id: string;
+    params?: unknown[];
 }
 
 export type { Config, RequestBody };

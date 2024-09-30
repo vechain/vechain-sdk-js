@@ -1,8 +1,6 @@
 #! /usr/bin/env node
 
 import { Address, HDKey, HexUInt, Secp256k1 } from '@vechain/sdk-core';
-import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
-import { VeChainSDKLogger } from '@vechain/sdk-logging';
 import {
     ProviderInternalBaseWallet,
     ProviderInternalHDWallet,
@@ -20,6 +18,8 @@ import {
     getOptionsFromCommandLine,
     parseAndGetFinalConfig
 } from './utils';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
+import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
 
 /**
  * Start the proxy function.
@@ -104,42 +104,60 @@ function startProxy(): void {
 
     function handleRequest(req: Request, res: Response): void {
         void (async () => {
-            const requestBody = req.body as RequestBody;
-            try {
-                // Get result
-                const result = await provider.request(requestBody);
+            // Request array
+            const requests = Array.isArray(
+                req.body as RequestBody | RequestBody[]
+            )
+                ? (req.body as RequestBody[])
+                : [req.body as RequestBody];
 
-                res.json({
-                    jsonrpc: '2.0',
-                    result,
-                    id: requestBody.id
-                });
+            // Response array
+            const responses: unknown[] = [];
 
-                // Log the request and the response
-                if (config.verbose === true) {
-                    VeChainSDKLogger('log').log({
-                        title: `Sending request - ${requestBody.method}`,
-                        messages: [`response: ${stringifyData(result)}`]
+            for (const requestBody of requests) {
+                try {
+                    // Get result
+                    const result = await provider.request({
+                        method: requestBody.method,
+                        params: requestBody.params
                     });
-                }
-            } catch (e) {
-                res.json({
-                    jsonrpc: '2.0',
-                    error: e,
-                    id: requestBody.id
-                });
 
-                // Log the error
-                VeChainSDKLogger('error').log(
-                    new JSONRPCInternalError(
-                        requestBody.method,
-                        -32603,
-                        `Error on request - ${requestBody.method}`,
-                        { requestBody },
-                        e
-                    )
-                );
+                    // Push the result to the responses array
+                    responses.push({
+                        jsonrpc: '2.0',
+                        result,
+                        id: requestBody.id
+                    });
+
+                    // Log the request and the response
+                    if (config.verbose === true) {
+                        VeChainSDKLogger('log').log({
+                            title: `Sending request - ${requestBody.method}`,
+                            messages: [`response: ${stringifyData(result)}`]
+                        });
+                    }
+                } catch (e) {
+                    // Push the error to the responses array
+                    responses.push({
+                        jsonrpc: '2.0',
+                        error: e,
+                        id: requestBody.id
+                    });
+
+                    // Log the error
+                    VeChainSDKLogger('error').log(
+                        new JSONRPCInternalError(
+                            requestBody.method,
+                            -32603,
+                            `Error on request - ${requestBody.method}`,
+                            { requestBody },
+                            e
+                        )
+                    );
+                }
             }
+
+            res.json(responses.length === 1 ? responses[0] : responses);
         })();
     }
 }
