@@ -1,9 +1,10 @@
 import { InvalidDataType } from '@vechain/sdk-errors';
 import {
     Address,
-    HexUInt,
+    FixedPointNumber,
     Revision,
     ThorId,
+    Units,
     VET,
     VTHO
 } from '@vechain/sdk-core';
@@ -41,14 +42,14 @@ class AccountDetail implements AccountData {
      * Returns the balance of the account in {@link VET}.
      */
     get vet(): VET {
-        return VET.of(HexUInt.of(this.balance).bi);
+        return VET.of(Units.formatEther(FixedPointNumber.of(this.balance)));
     }
 
     /**
      * Returns the energy balance of the account in {@link VTHO}.
      */
     get vtho(): VTHO {
-        return VTHO.of(HexUInt.of(this.energy).bi);
+        return VTHO.of(Units.formatEther(FixedPointNumber.of(this.energy)));
     }
 
     /**
