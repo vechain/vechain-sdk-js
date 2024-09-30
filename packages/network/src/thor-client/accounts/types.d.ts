@@ -23,12 +23,12 @@ interface AccountInputOptions {
  */
 interface AccountData {
     /**
-     * The balance of VET of the account.
+     * The hexadecimal expression of the wei VET value of the balance.
      */
     balance: string;
 
     /**
-     * The balance of VTHO of the account.
+     * The hexadecimal expression of the wei VTHO value of the energy balance.
      */
     energy: string;
 
