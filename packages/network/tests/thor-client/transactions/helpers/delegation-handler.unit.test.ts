@@ -1,9 +1,9 @@
 import { describe, expect, test } from '@jest/globals';
-import { delegationHandlerFixture } from './fixture';
-import { DelegationHandler, TESTNET_URL, ThorClient } from '../../../../src';
 import { Transaction } from '@vechain/sdk-core';
-import { TransactionFixture } from '../../../../../core/tests/transaction/Transaction.unit.test';
 import { NotDelegatedTransaction } from '@vechain/sdk-errors';
+import { DelegationHandler, TESTNET_URL, ThorClient } from '../../../../src';
+import { TransactionFixture } from '../../../../../core/tests/transaction/Transaction.unit.test';
+import { delegationHandlerFixture } from './fixture';
 
 /**
  * DelegationHandler helper function tests.

@@ -57,7 +57,7 @@ describe('VeChain base signer tests - testnet', () => {
                 if (!fixture.isDelegated) {
                     // Init the signer
                     const signer = new VeChainPrivateKeySigner(
-                        Buffer.from(fixture.origin.privateKey, 'hex'),
+                        HexUInt.of(fixture.origin.privateKey).bytes,
                         new VeChainProvider(
                             thorClient,
                             THOR_SOLO_ACCOUNTS_BASE_WALLET,
@@ -83,7 +83,7 @@ describe('VeChain base signer tests - testnet', () => {
                 if (fixture.isDelegated) {
                     // Init the signer
                     const signer = new VeChainPrivateKeySigner(
-                        Buffer.from(fixture.origin.privateKey, 'hex'),
+                        HexUInt.of(fixture.origin.privateKey).bytes,
                         new VeChainProvider(
                             thorClient,
                             THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR(
@@ -143,7 +143,7 @@ describe('VeChain base signer tests - testnet', () => {
 
                         // Get the signer and sign the transaction
                         const signer = new VeChainPrivateKeySigner(
-                            Buffer.from(origin.privateKey, 'hex'),
+                            HexUInt.of(origin.privateKey).bytes,
                             new VeChainProvider(
                                 thorClient,
                                 new ProviderInternalBaseWallet([], {
@@ -160,7 +160,7 @@ describe('VeChain base signer tests - testnet', () => {
                             )
                         );
                         const signedTx = Transaction.decode(
-                            Buffer.from(signedRawTx.slice(2), 'hex'),
+                            HexUInt.of(signedRawTx.slice(2)).bytes,
                             true
                         );
 
@@ -182,10 +182,9 @@ describe('VeChain base signer tests - testnet', () => {
     describe('resolveName(name)', () => {
         test('Should be able to resolve an address by name', async () => {
             const signer = new VeChainPrivateKeySigner(
-                Buffer.from(
-                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
-                    'hex'
-                ),
+                HexUInt.of(
+                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
+                ).bytes,
                 new VeChainProvider(
                     thorClient,
                     THOR_SOLO_ACCOUNTS_BASE_WALLET,
@@ -198,10 +197,9 @@ describe('VeChain base signer tests - testnet', () => {
 
         test('Should resolve to null for unknown names', async () => {
             const signer = new VeChainPrivateKeySigner(
-                Buffer.from(
-                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
-                    'hex'
-                ),
+                HexUInt.of(
+                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
+                ).bytes,
                 new VeChainProvider(
                     thorClient,
                     THOR_SOLO_ACCOUNTS_BASE_WALLET,
@@ -222,8 +220,7 @@ describe('VeChain base signer tests - testnet', () => {
          */
         test('Should throw an error when the private key is wrong', () => {
             expect(
-                () =>
-                    new VeChainPrivateKeySigner(Buffer.from('10', 'hex'), null)
+                () => new VeChainPrivateKeySigner(HexUInt.of('10').bytes, null)
             ).toThrowError(InvalidSecp256k1PrivateKey);
         });
 
@@ -232,10 +229,9 @@ describe('VeChain base signer tests - testnet', () => {
          */
         test('Signer without a provider should throw errors when call some functions', async () => {
             const noProviderSigner = new VeChainPrivateKeySigner(
-                Buffer.from(
-                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
-                    'hex'
-                ),
+                HexUInt.of(
+                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
+                ).bytes,
                 null
             );
 

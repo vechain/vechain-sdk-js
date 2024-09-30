@@ -131,6 +131,20 @@ classDiagram
         +boolean isValid(number|string value)$
         +Revision of(bigint|number|string|Uint8Array|Hex value)$
     }
+    class RLP {
+        +Uint8Array encoded
+        +RLPInput decoded
+        +Hex toHex()
+        +RLP of(RLPInput data)$
+        +RLP ofEncoded(Uint8Array encodedData)$
+        #packData(RLPValidObject obj,RLPProfile profile,string context)$
+        #unpackData(RLPInput packed,RLPProfile profile,string context)$
+    }
+    class RLPProfiler {
+        +RLPValueType object
+        +ofObject(RLPValidObject validObject, RLPProfile profile)$
+        +ofObjectEncoded(RLPValidObject validObject, RLPProfile profile)$
+    }
     class Sha256 {
         +Sha256 of(bigint|number|string|Uint8Array|Hex exp)$
     }
@@ -195,6 +209,7 @@ classDiagram
     HexUInt <|-- Quantity
     HexUInt <|-- Sha256
     HexUInt <|-- ThorId
+    RLP <|-- RLPProfiler
     String <|-- Txt
     Txt <|-- Revision
     Txt <|-- Mnemonic
@@ -203,5 +218,6 @@ classDiagram
     VeChainDataModel <|.. Currency
     VeChainDataModel <|.. FixedPointNumber
     VeChainDataModel <|.. Hex
+    VeChainDataModel <|.. RLP
     VeChainDataModel <|.. Txt
 ```

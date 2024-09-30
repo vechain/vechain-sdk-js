@@ -113,7 +113,7 @@ class ContractFactory<TAbi extends Abi> {
 
         // Send the signed transaction to the blockchain
         this.deployTransaction = await this.thor.transactions.sendTransaction(
-            Transaction.decode(Buffer.from(signedTx.slice(2), 'hex'), true)
+            Transaction.decode(HexUInt.of(signedTx.slice(2)).bytes, true)
         );
 
         return this;

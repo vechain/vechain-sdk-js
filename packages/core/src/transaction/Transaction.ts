@@ -1,9 +1,4 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
-import { Address, Hex, HexUInt, Units, VTHO } from '../vcdm';
-import { Blake2b256 } from '../vcdm/hash/Blake2b256';
-import { Secp256k1 } from '../secp256k1';
-import { RLP_CODER, type RLPValidObject } from '../encoding';
-import { type TransactionBody } from './TransactionBody';
 import {
     InvalidDataType,
     InvalidSecp256k1PrivateKey,
@@ -12,6 +7,24 @@ import {
     NotDelegatedTransaction,
     UnavailableTransactionField
 } from '@vechain/sdk-errors';
+import { Secp256k1 } from '../secp256k1';
+import {
+    Address,
+    BufferKind,
+    CompactFixedHexBlobKind,
+    Hex,
+    HexBlobKind,
+    HexUInt,
+    NumericKind,
+    OptionalFixedHexBlobKind,
+    type RLPProfile,
+    RLPProfiler,
+    type RLPValidObject,
+    Units,
+    VTHO
+} from '../vcdm';
+import { Blake2b256 } from '../vcdm/hash/Blake2b256';
+import { type TransactionBody } from './TransactionBody';
 import type { TransactionClause } from './TransactionClause';
 
 /**
@@ -62,27 +75,27 @@ class Transaction {
      * - `reserved` -  Reserved field.
      */
     private static readonly RLP_FIELDS = [
-        { name: 'chainTag', kind: new RLP_CODER.NumericKind(1) },
-        { name: 'blockRef', kind: new RLP_CODER.CompactFixedHexBlobKind(8) },
-        { name: 'expiration', kind: new RLP_CODER.NumericKind(4) },
+        { name: 'chainTag', kind: new NumericKind(1) },
+        { name: 'blockRef', kind: new CompactFixedHexBlobKind(8) },
+        { name: 'expiration', kind: new NumericKind(4) },
         {
             name: 'clauses',
             kind: {
                 item: [
                     {
                         name: 'to',
-                        kind: new RLP_CODER.OptionalFixedHexBlobKind(20)
+                        kind: new OptionalFixedHexBlobKind(20)
                     },
-                    { name: 'value', kind: new RLP_CODER.NumericKind(32) },
-                    { name: 'data', kind: new RLP_CODER.HexBlobKind() }
+                    { name: 'value', kind: new NumericKind(32) },
+                    { name: 'data', kind: new HexBlobKind() }
                 ]
             }
         },
-        { name: 'gasPriceCoef', kind: new RLP_CODER.NumericKind(1) },
-        { name: 'gas', kind: new RLP_CODER.NumericKind(8) },
-        { name: 'dependsOn', kind: new RLP_CODER.OptionalFixedHexBlobKind(32) },
-        { name: 'nonce', kind: new RLP_CODER.NumericKind(8) },
-        { name: 'reserved', kind: { item: new RLP_CODER.BufferKind() } }
+        { name: 'gasPriceCoef', kind: new NumericKind(1) },
+        { name: 'gas', kind: new NumericKind(8) },
+        { name: 'dependsOn', kind: new OptionalFixedHexBlobKind(32) },
+        { name: 'nonce', kind: new NumericKind(8) },
+        { name: 'reserved', kind: { item: new BufferKind() } }
     ];
 
     /**
@@ -94,7 +107,7 @@ class Transaction {
      */
     private static readonly RLP_FEATURES = {
         name: 'reserved.features',
-        kind: new RLP_CODER.NumericKind(4)
+        kind: new NumericKind(4)
     };
 
     /**
@@ -106,7 +119,7 @@ class Transaction {
      */
     private static readonly RLP_SIGNATURE = {
         name: 'signature',
-        kind: new RLP_CODER.BufferKind()
+        kind: new BufferKind()
     };
 
     /**
@@ -116,10 +129,10 @@ class Transaction {
      * - `name` - A string indicating the name of the field in the RLP structure.
      * - `kind` - RLP profile type.
      */
-    private static readonly RLP_SIGNED_TRANSACTION = new RLP_CODER.Profiler({
+    private static readonly RLP_SIGNED_TRANSACTION_PROFILE: RLPProfile = {
         name: 'tx',
         kind: Transaction.RLP_FIELDS.concat([Transaction.RLP_SIGNATURE])
-    });
+    };
 
     /**
      * Represents a Recursive Length Prefix (RLP) of the unsigned transaction.
@@ -128,10 +141,10 @@ class Transaction {
      * - `name` - A string indicating the name of the field in the RLP structure.
      * - `kind` - RLP profile type.
      */
-    private static readonly RLP_UNSIGNED_TRANSACTION = new RLP_CODER.Profiler({
+    private static readonly RLP_UNSIGNED_TRANSACTION_PROFILE: RLPProfile = {
         name: 'tx',
         kind: Transaction.RLP_FIELDS
-    });
+    };
 
     /**
      * It represents the content of the transaction.
@@ -317,14 +330,15 @@ class Transaction {
         isSigned: boolean
     ): Transaction {
         // Get correct decoder profiler
-        const decoder = isSigned
-            ? Transaction.RLP_SIGNED_TRANSACTION
-            : Transaction.RLP_UNSIGNED_TRANSACTION;
+        const profile = isSigned
+            ? Transaction.RLP_SIGNED_TRANSACTION_PROFILE
+            : Transaction.RLP_UNSIGNED_TRANSACTION_PROFILE;
+
         // Get decoded body
-        // todo: remove Buffer after #1120
-        const decodedRLPBody = decoder.decodeObject(
-            Buffer.from(rawTransaction)
-        ) as RLPValidObject;
+        const decodedRLPBody = RLPProfiler.ofObjectEncoded(
+            rawTransaction,
+            profile
+        ).object as RLPValidObject;
         // Create correct transaction body without reserved field
         const bodyWithoutReservedField: TransactionBody = {
             blockRef: decodedRLPBody.blockRef as string,
@@ -337,22 +351,20 @@ class Transaction {
             nonce: decodedRLPBody.nonce as number
         };
         // Create correct transaction body (with correct reserved field)
-        // todo: remove Buffer after #1120
         const correctTransactionBody: TransactionBody =
-            (decodedRLPBody.reserved as Buffer[]).length > 0
+            (decodedRLPBody.reserved as Uint8Array[]).length > 0
                 ? {
                       ...bodyWithoutReservedField,
                       reserved: Transaction._decodeReservedField(
-                          decodedRLPBody.reserved as Buffer[]
+                          decodedRLPBody.reserved as Uint8Array[]
                       )
                   }
                 : bodyWithoutReservedField;
         // Return decoded transaction (with signature or not)
-        // todo: remove Buffer after #1120
         return decodedRLPBody.signature !== undefined
             ? Transaction.of(
                   correctTransactionBody,
-                  decodedRLPBody.signature as Buffer
+                  decodedRLPBody.signature as Uint8Array
               )
             : Transaction.of(correctTransactionBody);
     }
@@ -615,16 +627,15 @@ class Transaction {
     /**
      * Decodes the {@link TransactionBody.reserved} field from the given buffer array.
      *
-     * @param {Buffer[]} reserved  - An array of Buffer objects representing the reserved field data.
+     * @param {Buffer[]} reserved  - An array of Uint8Array objects representing the reserved field data.
      * @return {Object} An object containing the decoded features and any unused buffer data.
      * @return {number} [return.features] The decoded features from the reserved field.
      * @return {Buffer[]} [return.unused] An array of Buffer objects representing unused data, if any.
      * @throws {InvalidTransactionField} Thrown if the reserved field is not properly trimmed.
      */
-    // todo: remove Buffer after #1120
-    private static _decodeReservedField(reserved: Buffer[]): {
+    private static _decodeReservedField(reserved: Uint8Array[]): {
         features?: number;
-        unused?: Buffer[];
+        unused?: Uint8Array[];
     } {
         // Not trimmed reserved field
         if (reserved[reserved.length - 1].length > 0) {
@@ -694,20 +705,19 @@ class Transaction {
     ): Uint8Array {
         // Encode transaction object - SIGNED
         if (isSigned) {
-            // todo: remove Buffer->Uint8Array after #1120
-            return new Uint8Array(
-                Transaction.RLP_SIGNED_TRANSACTION.encodeObject({
+            return RLPProfiler.ofObject(
+                {
                     ...body,
-                    // todo: remove Buffer after #1120
-                    signature: Buffer.from(this.signature as Uint8Array)
-                })
-            );
+                    signature: Uint8Array.from(this.signature as Uint8Array)
+                },
+                Transaction.RLP_SIGNED_TRANSACTION_PROFILE
+            ).encoded;
         }
         // Encode transaction object - UNSIGNED
-        // todo: remove Buffer->Uint8Array after #1120
-        return new Uint8Array(
-            Transaction.RLP_UNSIGNED_TRANSACTION.encodeObject(body)
-        );
+        return RLPProfiler.ofObject(
+            body,
+            Transaction.RLP_UNSIGNED_TRANSACTION_PROFILE
+        ).encoded;
     }
 
     /**

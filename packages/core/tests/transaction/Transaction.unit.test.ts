@@ -108,8 +108,12 @@ const TransactionFixture = {
             ...TxBodyFix,
             reserved: {
                 features: 1,
-                // todo: remove buffer once #1120 refactor encoding done
-                unused: [Buffer.from('0x000'), Buffer.from('0x000')]
+                unused: [
+                    // eslint-disable-next-line local-rules/disallow-buffer-from-alloc
+                    Uint8Array.from(Buffer.from('0x000')),
+                    // eslint-disable-next-line local-rules/disallow-buffer-from-alloc
+                    Uint8Array.from(Buffer.from('0x000'))
+                ]
             }
         },
         signatureHash: HexUInt.of(

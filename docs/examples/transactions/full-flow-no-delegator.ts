@@ -37,7 +37,7 @@ const provider = new VeChainProvider(
     // Internal wallet used by the provider (needed to call the getSigner() method)
     new ProviderInternalBaseWallet([
         {
-            privateKey: Buffer.from(senderAccount.privateKey, 'hex'),
+            privateKey: HexUInt.of(senderAccount.privateKey).bytes,
             address: senderAccount.address
         }
     ]),

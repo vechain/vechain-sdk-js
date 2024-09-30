@@ -1,5 +1,17 @@
 #! /usr/bin/env node
 
+import { Address, HDKey, HexUInt, Secp256k1 } from '@vechain/sdk-core';
+import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
+import {
+    ProviderInternalBaseWallet,
+    ProviderInternalHDWallet,
+    type ProviderInternalWallet,
+    ThorClient,
+    VeChainProvider
+} from '@vechain/sdk-network';
+import cors from 'cors';
+import express, { type Express, type Request, type Response } from 'express';
 import defaultProxyConfig from '../default-proxy-config.json';
 import packageJson from '../package.json';
 import { type Config, type RequestBody } from './types';
@@ -8,18 +20,6 @@ import {
     getOptionsFromCommandLine,
     parseAndGetFinalConfig
 } from './utils';
-import {
-    ProviderInternalBaseWallet,
-    ProviderInternalHDWallet,
-    type ProviderInternalWallet,
-    ThorClient,
-    VeChainProvider
-} from '@vechain/sdk-network';
-import { Address, HDKey, Secp256k1 } from '@vechain/sdk-core';
-import { VeChainSDKLogger } from '@vechain/sdk-logging';
-import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
-import express, { type Express, type Request, type Response } from 'express';
-import cors from 'cors';
 
 /**
  * Start the proxy function.
@@ -56,19 +56,16 @@ function startProxy(): void {
         ? new ProviderInternalBaseWallet(
               config.accounts.map((privateKey: string) => {
                   // Convert the private key to a buffer
-                  const privateKeyBuffer = Buffer.from(
+                  const privateKeyBuffer = HexUInt.of(
                       privateKey.startsWith('0x')
                           ? privateKey.slice(2)
-                          : privateKey,
-                      'hex'
-                  );
+                          : privateKey
+                  ).bytes;
 
                   // Derive the public key and address from the private key
                   return {
                       privateKey: privateKeyBuffer,
-                      publicKey: Buffer.from(
-                          Secp256k1.derivePublicKey(privateKeyBuffer)
-                      ),
+                      publicKey: Secp256k1.derivePublicKey(privateKeyBuffer),
                       address: Address.ofPrivateKey(privateKeyBuffer).toString()
                   };
               }),

@@ -1,6 +1,12 @@
-import { RLP_CODER } from '@vechain/sdk-core';
-import { expect } from 'expect';
+import {
+    Hex,
+    HexBlobKind,
+    NumericKind,
+    OptionalFixedHexBlobKind,
+    RLPProfiler
+} from '@vechain/sdk-core';
 import { stringifyData } from '@vechain/sdk-errors';
+import { expect } from 'expect';
 
 // START_SNIPPET: RlpSnippet
 
@@ -9,9 +15,9 @@ import { stringifyData } from '@vechain/sdk-errors';
 const profile = {
     name: 'clause',
     kind: [
-        { name: 'to', kind: new RLP_CODER.OptionalFixedHexBlobKind(20) },
-        { name: 'value', kind: new RLP_CODER.NumericKind(32) },
-        { name: 'data', kind: new RLP_CODER.HexBlobKind() }
+        { name: 'to', kind: new OptionalFixedHexBlobKind(20) },
+        { name: 'value', kind: new NumericKind(32) },
+        { name: 'data', kind: new HexBlobKind() }
     ]
 };
 
@@ -23,17 +29,15 @@ const clause = {
     data: '0x'
 };
 
-// 3 - RLP_CODER Instance to encode and decode
-
-const rlp = new RLP_CODER.Profiler(profile);
+// 3 - RLPProfiler Instance to encode and decode
 
 // Encoding and Decoding
-const data = rlp.encodeObject(clause);
-const obj = rlp.decodeObject(data);
+const data = RLPProfiler.ofObject(clause, profile).encoded;
+const obj = RLPProfiler.ofObjectEncoded(data, profile).object;
 
 // END_SNIPPET: RlpSnippet
 
-expect(data.toString('hex')).toBe(
-    'd7947567d83b7b8d80addcb281a71d54fc7b3364ffed0a80'
+expect(Hex.of(data).toString()).toBe(
+    '0xd7947567d83b7b8d80addcb281a71d54fc7b3364ffed0a80'
 );
 expect(stringifyData(obj)).toBe(stringifyData(clause));

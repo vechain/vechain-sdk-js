@@ -17,12 +17,12 @@ interface ProviderInternalWalletAccount {
     /**
      * Private key of the account.
      */
-    privateKey?: Buffer;
+    privateKey?: Uint8Array;
 
     /**
      * Public key of the account.
      */
-    publicKey?: Buffer;
+    publicKey?: Uint8Array;
 }
 
 /**

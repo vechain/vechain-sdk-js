@@ -1,3 +1,14 @@
+import {
+    abi,
+    Hex,
+    HexUInt,
+    Revision,
+    ThorId,
+    Transaction,
+    vechain_sdk_core_ethers,
+    type TransactionBody,
+    type TransactionClause
+} from '@vechain/sdk-core';
 import { InvalidDataType, InvalidTransactionField } from '@vechain/sdk-errors';
 import { blocksFormatter, getTransactionIndexIntoBlock } from '../../provider';
 import {
@@ -8,16 +19,9 @@ import {
     thorest,
     vnsUtils
 } from '../../utils';
-import {
-    abi,
-    Hex,
-    Revision,
-    ThorId,
-    Transaction,
-    vechain_sdk_core_ethers,
-    type TransactionBody,
-    type TransactionClause
-} from '@vechain/sdk-core';
+import { type ExpandedBlockDetail } from '../blocks';
+import { type CallNameReturnType } from '../debug';
+import { type ThorClient } from '../thor-client';
 import {
     type GetTransactionInputOptions,
     type GetTransactionReceiptInputOptions,
@@ -31,9 +35,6 @@ import {
     type TransactionSimulationResult,
     type WaitForTransactionOptions
 } from './types';
-import { type ThorClient } from '../thor-client';
-import { type ExpandedBlockDetail } from '../blocks';
-import { type CallNameReturnType } from '../debug';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
@@ -190,7 +191,7 @@ class TransactionsModule {
 
         // Decode raw transaction to check if raw is ok
         try {
-            Transaction.decode(Buffer.from(raw.slice(2), 'hex'), true);
+            Transaction.decode(HexUInt.of(raw.slice(2)).bytes, true);
         } catch (error) {
             throw new InvalidDataType(
                 'TransactionsModule.sendRawTransaction()',

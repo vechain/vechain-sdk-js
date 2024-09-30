@@ -1,5 +1,10 @@
-import { Hex } from '../../src/vcdm/Hex';
 import { beforeEach, describe, expect, test } from '@jest/globals';
+import {
+    InvalidKeystore,
+    InvalidKeystoreParams,
+    InvalidSecp256k1PrivateKey,
+    stringifyData
+} from '@vechain/sdk-errors';
 import {
     Address,
     HexUInt,
@@ -8,12 +13,6 @@ import {
     type Keystore
 } from '../../src';
 import { encryptionPassword } from './fixture';
-import {
-    InvalidKeystore,
-    InvalidKeystoreParams,
-    InvalidSecp256k1PrivateKey,
-    stringifyData
-} from '@vechain/sdk-errors';
 
 /**
  * Keystore tests
@@ -33,10 +32,12 @@ import {
         test('encrypt', async () => {
             // Generate a random private key
             const privateKey = await Secp256k1.generatePrivateKey();
+            const addressFromPrivateKey =
+                Address.ofPrivateKey(privateKey).toString();
 
             //  Create keystore
             const myKeystore = await keystore.encrypt(
-                Buffer.from(privateKey),
+                privateKey,
                 encryptionPassword
             );
 
@@ -45,8 +46,6 @@ import {
             const keyStoreAddress = Address.checksum(
                 HexUInt.of(myKeystore.address)
             );
-            const addressFromPrivateKey =
-                Address.ofPrivateKey(privateKey).toString();
             expect(keyStoreAddress).toEqual(addressFromPrivateKey);
         });
 
@@ -58,7 +57,7 @@ import {
             await expect(
                 async () =>
                     await keystore.encrypt(
-                        Buffer.from('wrong private key', 'hex'),
+                        new TextEncoder().encode('wrong private key'),
                         encryptionPassword
                     )
             ).rejects.toThrowError(InvalidSecp256k1PrivateKey);
@@ -71,9 +70,11 @@ import {
             // Generate a random private key
             const privateKey = await Secp256k1.generatePrivateKey();
 
+            const expected = HexUInt.of(privateKey).toString();
+
             //  Create keystore
             const myKeystore = await keystore.encrypt(
-                Buffer.from(privateKey),
+                privateKey,
                 encryptionPassword
             );
 
@@ -84,9 +85,7 @@ import {
             );
 
             // Verify private key
-            expect(decryptedKeystore.privateKey).toEqual(
-                Hex.of(privateKey).toString()
-            );
+            expect(decryptedKeystore.privateKey).toEqual(expected);
         });
 
         /**
@@ -98,7 +97,7 @@ import {
 
             //  Create keystore
             const myKeystore = await keystore.encrypt(
-                Buffer.from(privateKey),
+                privateKey,
                 encryptionPassword
             );
 
@@ -121,7 +120,7 @@ import {
 
             //  Create keystore
             const myKeystore = await keystore.encrypt(
-                Buffer.from(privateKey),
+                privateKey,
                 encryptionPassword
             );
 
@@ -154,7 +153,7 @@ import {
 
             //  Create keystore
             const myKeystore = await keystore.encrypt(
-                Buffer.from(privateKey),
+                privateKey,
                 encryptionPassword
             );
 

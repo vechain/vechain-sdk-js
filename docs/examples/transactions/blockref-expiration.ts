@@ -1,13 +1,13 @@
 import {
     Address,
     Clause,
-    HexUInt,
     networkInfo,
     Secp256k1,
     Transaction,
     VET,
     type TransactionClause,
-    type TransactionBody
+    type TransactionBody,
+    HexUInt
 } from '@vechain/sdk-core';
 import { expect } from 'expect';
 

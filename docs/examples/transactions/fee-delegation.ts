@@ -3,6 +3,7 @@ import {
     Clause,
     HDKey,
     HexUInt,
+    HexUInt,
     Mnemonic,
     Transaction,
     VET,

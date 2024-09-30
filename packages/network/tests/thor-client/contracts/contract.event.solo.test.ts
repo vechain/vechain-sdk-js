@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { ERC20_ABI } from '@vechain/sdk-core';
+import { ERC20_ABI, HexUInt } from '@vechain/sdk-core';
 import { InvalidAbiItem } from '@vechain/sdk-errors';
 import {
     THOR_SOLO_URL,
@@ -33,10 +33,9 @@ describe('ThorClient - ERC20 Contracts', () => {
     beforeEach(() => {
         thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
         signer = new VeChainPrivateKeySigner(
-            Buffer.from(
-                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
-                'hex'
-            ),
+            HexUInt.of(
+                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+            ).bytes,
             new VeChainProvider(thorSoloClient)
         );
     });

@@ -145,10 +145,7 @@ const privateKey = await Secp256k1.generatePrivateKey();
 // keystore encryption is UTF-8 NFKC.
 const keyStorePassword = 'your password';
 
-const newKeyStore = await keystore.encrypt(
-    Buffer.from(privateKey),
-    keyStorePassword
-);
+const newKeyStore = await keystore.encrypt(privateKey, keyStorePassword);
 
 // @NOTE the `encrypt` function wipes private key and password after use.
 
