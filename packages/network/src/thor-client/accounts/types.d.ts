@@ -21,7 +21,7 @@ interface AccountInputOptions {
 /**
  * The account details represent the balance, energy & whether the account is a smart contract.
  */
-interface AccountDetail {
+interface AccountData {
     /**
      * The balance of VET of the account.
      */
@@ -64,7 +64,7 @@ interface ResponseStorage {
 
 export type {
     AccountInputOptions,
-    AccountDetail,
+    AccountData,
     ResponseBytecode,
     ResponseStorage
 };

@@ -1,13 +1,40 @@
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { Address, Revision, ThorId } from '@vechain/sdk-core';
+import {
+    Address,
+    HexUInt,
+    Revision,
+    ThorId,
+    VET,
+    VTHO
+} from '@vechain/sdk-core';
 import { buildQuery, thorest } from '../../utils';
 import {
-    type AccountDetail,
+    type AccountData,
     type AccountInputOptions,
     type ResponseBytecode,
     type ResponseStorage
 } from './types';
 import { type ThorClient } from '../thor-client';
+
+class AccountDetail implements AccountData {
+    readonly balance: string;
+    readonly energy: string;
+    readonly hasCode: boolean;
+
+    get vet(): VET {
+        return VET.of(HexUInt.of(this.balance).bi);
+    }
+
+    get vtho(): VTHO {
+        return VTHO.of(HexUInt.of(this.energy).bi);
+    }
+
+    constructor(accountData: AccountData) {
+        this.balance = accountData.balance;
+        this.energy = accountData.energy;
+        this.hasCode = accountData.hasCode;
+    }
+}
 
 /**
  * The `AccountModule` class provides methods to interact with account-related endpoints
@@ -55,13 +82,15 @@ class AccountsModule {
             );
         }
 
-        return (await this.thor.httpClient.http(
-            'GET',
-            thorest.accounts.get.ACCOUNT_DETAIL(address),
-            {
-                query: buildQuery({ revision: options?.revision })
-            }
-        )) as AccountDetail;
+        return new AccountDetail(
+            (await this.thor.httpClient.http(
+                'GET',
+                thorest.accounts.get.ACCOUNT_DETAIL(address),
+                {
+                    query: buildQuery({ revision: options?.revision })
+                }
+            )) as AccountData
+        );
     }
 
     /**
@@ -166,4 +195,4 @@ class AccountsModule {
     }
 }
 
-export { AccountsModule };
+export { AccountDetail, AccountsModule };
