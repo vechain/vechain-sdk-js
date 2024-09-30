@@ -12,8 +12,6 @@ import {
     ZERO_ADDRESS,
     type TransactionClause,
     HexUInt
-    type TransactionClause,
-    HexUInt
 } from '@vechain/sdk-core';
 import { stringifyData } from '@vechain/sdk-errors';
 import {
