@@ -10,7 +10,7 @@ import {
     type TraceOptionsRPC
 } from '../debug_traceTransaction';
 import { ethGetBlockByHash } from '../eth_getBlockByHash';
-import { type TracerReturnTypeRPC } from '../../../formatter';
+import { type TracerReturnTypeRPC } from '../../../formatter/debug/types';
 
 /**
  * RPC Method debug_traceBlockByHash implementation

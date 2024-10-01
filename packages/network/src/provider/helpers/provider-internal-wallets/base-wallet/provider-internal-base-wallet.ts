@@ -3,8 +3,8 @@ import { type SignTransactionOptions } from '../../../../thor-client';
 import {
     type AvailableVeChainProviders,
     type VeChainSigner
-} from '../../../../signer';
-import { AbstractProviderInternalWallet } from '../abstract-wallet';
+} from '../../../../signer/signers/types';
+import { AbstractProviderInternalWallet } from '../abstract-wallet/abstract-provider-internal-wallet';
 
 /**
  * Provider internal Base wallet class.
