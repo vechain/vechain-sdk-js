@@ -1,5 +1,5 @@
 import { AccountsModule } from './accounts';
-import { NodesModule } from './nodes';
+import { NodesModule } from './nodes/nodes-module';
 import { BlocksModule, type BlocksModuleOptions } from './blocks';
 import { ContractsModule } from './contracts';
 import { TransactionsModule } from './transactions';

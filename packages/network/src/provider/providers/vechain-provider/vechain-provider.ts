@@ -18,7 +18,8 @@ import {
 import { type ProviderInternalWallet } from '../../helpers';
 import { POLLING_INTERVAL } from '../../utils/const/providers';
 import { RPC_METHODS } from '../../utils/const/rpc-mapper/rpc-methods';
-import { ethGetLogs, RPCMethodsMap } from '../../utils/rpc-mapper';
+import { ethGetLogs } from '../../utils/rpc-mapper/methods';
+import { RPCMethodsMap } from '../../utils/rpc-mapper/rpc-mapper';
 import {
     type FilterOptions,
     type SubscriptionEvent,
