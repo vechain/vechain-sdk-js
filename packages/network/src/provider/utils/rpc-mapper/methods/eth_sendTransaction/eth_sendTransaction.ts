@@ -4,7 +4,7 @@ import {
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
-import { type VeChainProvider } from '../../../../providers';
+import { type VeChainProvider } from '../../../../providers/vechain-provider';
 import { type TransactionObjectInput } from './types';
 import { type VeChainSigner } from '../../../../../signer';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
