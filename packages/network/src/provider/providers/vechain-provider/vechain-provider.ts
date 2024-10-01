@@ -13,14 +13,12 @@ import {
     RPC_METHODS,
     RPCMethodsMap
 } from '../..';
+import { type VeChainSigner } from '../../../signer';
 import {
     type CompressedBlockDetail,
-    type EventPoll,
-    Poll,
-    type ThorClient,
-    type VeChainSigner,
-    vnsUtils
-} from '../../..';
+    type ThorClient
+} from '../../../thor-client';
+import { type EventPoll, Poll, vnsUtils } from '../../../utils';
 import {
     type FilterOptions,
     type SubscriptionEvent,
