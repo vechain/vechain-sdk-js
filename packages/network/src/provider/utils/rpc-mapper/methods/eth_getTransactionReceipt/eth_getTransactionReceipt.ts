@@ -1,6 +1,6 @@
 import { ThorId } from '@vechain/sdk-core';
-import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
-import { RPC_METHODS } from '../../../const';
+import { RPC_DOCUMENTATION_URL } from '../../../../../utils/const/rpc/rpc';
+import { RPC_METHODS } from '../../../const/rpc-mapper/rpc-methods';
 import { RPCMethodsMap } from '../../rpc-mapper';
 import {
     JSONRPCInternalError,

@@ -1,6 +1,6 @@
 import { type ThorClient } from '../../../thor-client';
 import { type VeChainProvider } from '../../providers/vechain-provider';
-import { RPC_METHODS } from '../const';
+import { RPC_METHODS } from '../const/rpc-mapper/rpc-methods';
 import {
     type BlocksRPC,
     type LogsRPC,
