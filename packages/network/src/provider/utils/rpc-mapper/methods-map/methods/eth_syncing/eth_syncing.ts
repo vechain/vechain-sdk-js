@@ -4,7 +4,7 @@ import {
     type CompressedBlockDetail,
     type ThorClient
 } from '../../../../../../thor-client';
-import { RPC_METHODS } from '../../../../const';
+import { RPC_METHODS } from '../../../../const/rpc-mapper/rpc-methods';
 import { RPCMethodsMap } from '../../../rpc-mapper';
 import { blocksFormatter, type SyncBlockRPC } from '../../../../formatter';
 
