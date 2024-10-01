@@ -3,16 +3,12 @@ import {
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
-import {
-    type BlocksRPC,
-    type TransactionRPC,
-    transactionsFormatter
-} from '../../../formatter';
-import { RPCMethodsMap } from '../../../rpc-mapper/rpc-mapper';
-import { RPC_METHODS } from '../../../const';
-import { getTransactionIndexIntoBlock } from '../../../helpers';
 import { type ThorClient } from '../../../../../thor-client';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
+import { type TransactionRPC, transactionsFormatter } from '../../../formatter';
+import { getTransactionIndexIntoBlock } from '../../../helpers';
+import { ethChainId } from '../eth_chainId';
+import { ethGetBlockByNumber } from '../eth_getBlockByNumber';
 
 /**
  * RPC Method eth_getTransactionByHash implementation
@@ -47,18 +43,19 @@ const ethGetTransactionByHash = async (
         if (tx === null) return null;
 
         // Get the block containing the transaction
-        const block = (await RPCMethodsMap(thorClient)[
-            RPC_METHODS.eth_getBlockByNumber
-        ]([tx.meta.blockID, false])) as BlocksRPC;
+        const block = await ethGetBlockByNumber(thorClient, [
+            tx.meta.blockID,
+            false
+        ]);
+
+        if (block === null) return null;
 
         // Get the index of the transaction in the block
         const txIndex = getTransactionIndexIntoBlock(block, hash);
         console.log('txIndex', txIndex);
 
         // Get the chain id
-        const chainId = (await RPCMethodsMap(thorClient)[
-            RPC_METHODS.eth_chainId
-        ]([])) as string;
+        const chainId = await ethChainId(thorClient);
 
         return transactionsFormatter.formatToRPCStandard(tx, chainId, txIndex);
     } catch (e) {

@@ -1,12 +1,11 @@
-import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
 import { HexInt } from '@vechain/sdk-core';
+import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
 import {
     type CompressedBlockDetail,
     type ThorClient
 } from '../../../../../thor-client';
-import { RPC_METHODS } from '../../../const/rpc-mapper/rpc-methods';
-import { RPCMethodsMap } from '../../../rpc-mapper/rpc-mapper';
 import { blocksFormatter, type SyncBlockRPC } from '../../../formatter';
+import { ethChainId } from '../eth_chainId';
 
 /**
  * Check if the block is out of sync in time.
@@ -51,9 +50,7 @@ const ethSyncing = async (
             if (_isBlockNotOutOfSyncInTime(bestBlock)) return false;
 
             // Calculate the chainId
-            const chainId = (await RPCMethodsMap(thorClient)[
-                RPC_METHODS.eth_chainId
-            ]([])) as string;
+            const chainId = await ethChainId(thorClient);
 
             return {
                 currentBlock: blocksFormatter.formatToRPCStandard(

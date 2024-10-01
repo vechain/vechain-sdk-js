@@ -1,13 +1,13 @@
-import { type ThorClient } from '../../../../../thor-client';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
+import { type ThorClient } from '../../../../../thor-client';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
-import { type BlocksRPC, type TransactionRPC } from '../../../formatter';
-import { RPCMethodsMap } from '../../../rpc-mapper/rpc-mapper';
-import { RPC_METHODS } from '../../../const';
+import { type TransactionRPC } from '../../../formatter';
+import { ethGetBlockByHash } from '../eth_getBlockByHash';
+import { ethGetTransactionByHash } from '../eth_getTransactionByHash';
 
 /**
  * RPC Method eth_getTransactionByBlockHashAndIndex implementation
@@ -39,15 +39,14 @@ const ethGetTransactionByBlockHashAndIndex = async (
         const [blockHash, index] = params as [string, string];
 
         // Get the block containing the transactions
-        const block = (await RPCMethodsMap(thorClient)[
-            RPC_METHODS.eth_getBlockByHash
-        ]([blockHash, false])) as BlocksRPC;
+        const block = await ethGetBlockByHash(thorClient, [blockHash, false]);
 
+        if (block == null) return null;
         for (let i = 0; i < block.transactions.length; i++) {
-            const transaction = (await RPCMethodsMap(thorClient)[
-                RPC_METHODS.eth_getTransactionByHash
-            ]([block.transactions[i]])) as TransactionRPC;
-            if (transaction.transactionIndex === index) {
+            const transaction = await ethGetTransactionByHash(thorClient, [
+                block.transactions[i]
+            ]);
+            if (transaction != null && transaction.transactionIndex === index) {
                 return transaction;
             }
         }

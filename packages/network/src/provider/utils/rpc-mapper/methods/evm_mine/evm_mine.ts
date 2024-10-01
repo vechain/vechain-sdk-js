@@ -1,8 +1,7 @@
+import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
 import { type ThorClient } from '../../../../../thor-client';
 import { blocksFormatter, type BlocksRPC } from '../../../formatter';
-import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
-import { RPCMethodsMap } from '../../rpc-mapper';
-import { RPC_METHODS } from '../../../const/rpc-mapper/rpc-methods';
+import { ethChainId } from '../eth_chainId';
 
 /**
  * RPC Method evm_mine implementation
@@ -24,9 +23,7 @@ const evmMine = async (thorClient: ThorClient): Promise<BlocksRPC | null> => {
                   )
                 : null;
 
-        const chainId = (await RPCMethodsMap(thorClient)[
-            RPC_METHODS.eth_chainId
-        ]([])) as string;
+        const chainId = await ethChainId(thorClient);
 
         return newBlock !== null
             ? blocksFormatter.formatToRPCStandard(newBlock, chainId)

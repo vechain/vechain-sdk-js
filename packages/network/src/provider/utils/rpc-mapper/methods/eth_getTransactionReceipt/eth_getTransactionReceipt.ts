@@ -1,20 +1,19 @@
 import { ThorId } from '@vechain/sdk-core';
-import { RPC_DOCUMENTATION_URL } from '../../../../../utils/const/rpc/rpc';
-import { RPC_METHODS } from '../../../const/rpc-mapper/rpc-methods';
-import { RPCMethodsMap } from '../../rpc-mapper';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
 import {
-    type TransactionReceiptRPC,
-    transactionsFormatter
-} from '../../../formatter';
-import {
     type ExpandedBlockDetail,
     type ThorClient
 } from '../../../../../thor-client';
+import { RPC_DOCUMENTATION_URL } from '../../../../../utils/const/rpc/rpc';
+import {
+    type TransactionReceiptRPC,
+    transactionsFormatter
+} from '../../../formatter';
+import { ethChainId } from '../eth_chainId';
 
 /**
  * RPC Method eth_getTransactionReceipt implementation
@@ -70,9 +69,7 @@ const ethGetTransactionReceipt = async (
                 await thorClient.transactions.getTransaction(hash);
 
             // Get the chain id
-            const chainId = (await RPCMethodsMap(thorClient)[
-                RPC_METHODS.eth_chainId
-            ]([])) as string;
+            const chainId = await ethChainId(thorClient);
 
             // Initialize the result
             if (transactionDetail !== null)

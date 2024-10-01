@@ -5,9 +5,9 @@ import {
 } from '@vechain/sdk-errors';
 import { type ThorClient } from '../../../../../thor-client';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
-import { getCorrectBlockNumberRPCToVeChain, RPC_METHODS } from '../../../const';
+import { getCorrectBlockNumberRPCToVeChain } from '../../../const';
 import { blocksFormatter, type BlocksRPC } from '../../../formatter';
-import { RPCMethodsMap } from '../../../rpc-mapper/rpc-mapper';
+import { ethChainId } from '../eth_chainId';
 
 /**
  * RPC Method eth_getBlockByNumber implementation
@@ -48,10 +48,9 @@ const ethGetBlockByNumber = async (
         let chainId: string = '0x0';
 
         // If the transaction detail flag is set, we need to get the chain id
-        if (isTxDetail)
-            chainId = (await RPCMethodsMap(thorClient)[RPC_METHODS.eth_chainId](
-                []
-            )) as string;
+        if (isTxDetail) {
+            chainId = await ethChainId(thorClient);
+        }
 
         const block = isTxDetail
             ? await thorClient.blocks.getBlockExpanded(
