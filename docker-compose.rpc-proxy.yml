@@ -3,7 +3,7 @@
 #  ...
 #
 #  rpc-proxy:
-#    build: .
+#    build: rpc-proxy.Dockerfile
 #
 #    # ********* SET HERE THE REQUIRED ENVIRONMENT VARIABLES *********
 #    environment:
@@ -52,7 +52,7 @@ services:
       - --persist
     volumes:
       - type: bind
-        source: ./config
+        source: ./docker/rpc-proxy/config
         target: /node/config
     deploy:
       resources:
@@ -62,7 +62,9 @@ services:
 
   # Default configuration for the RPC proxy service
   rpc-proxy:
-    build: .
+    build: 
+      context: .
+      dockerfile: docker/rpc-proxy/Dockerfile
     container_name: rpc-proxy
     depends_on:
       - thor-solo
@@ -73,20 +75,24 @@ services:
 
   # 1. Example of a custom configuration file for the RPC proxy service
   rpc-proxy-custom-config-file:
-    build: .
+    build: 
+      context: .
+      dockerfile: docker/rpc-proxy/Dockerfile
     environment:
       - CONFIGURATION_FILE=/app/custom-config.json
     container_name: rpc-proxy-custom-config-file
     depends_on:
       - thor-solo
     volumes:
-      - "./tests/config-files-fixtures/correct-proxy-config-accounts-list-of-private-keys.json:/app/custom-config.json"
+      - "./packages/rpc-proxy/tests/config-files-fixtures/correct-proxy-config-accounts-list-of-private-keys.json:/app/custom-config.json"
     ports:
       - "8545:8545"
 
   # 2. Example of a custom parameters for the RPC proxy service
   rpc-proxy-custom-parameters:
-    build: .
+    build: 
+      context: .
+      dockerfile: docker/rpc-proxy/Dockerfile
     environment:
       - PORT=9000
       - URL=https://testnet.vechain.org
@@ -99,7 +105,9 @@ services:
 
   # 3. Example of a custom accounts for the RPC proxy service
   rpc-proxy-custom-accounts:
-    build: .
+    build: 
+      context: .
+      dockerfile: docker/rpc-proxy/Dockerfile
     environment:
       - URL=https://testnet.vechain.org
       - VERBOSE=true
@@ -112,7 +120,9 @@ services:
 
   # 3. Example of a custom mnemonic for the RPC proxy service
   rpc-proxy-custom-mnemonic:
-    build: .
+    build: 
+      context: .
+      dockerfile: docker/rpc-proxy/Dockerfile
     environment:
       - URL=https://testnet.vechain.org
       - VERBOSE=true
@@ -127,7 +137,9 @@ services:
 
   # 4. Example of a custom delegation by private key for the RPC proxy service
   rpc-proxy-with-delegation-by-private-key:
-    build: .
+    build: 
+      context: .
+      dockerfile: docker/rpc-proxy/Dockerfile
     environment:
       - URL=https://testnet.vechain.org
       - VERBOSE=true
@@ -144,7 +156,9 @@ services:
 
   # 5. Example of a custom delegation by url for the RPC proxy service
   rpc-proxy-with-delegation-by-url:
-    build: .
+    build: 
+      context: .
+      dockerfile: docker/rpc-proxy/Dockerfile
     environment:
       - URL=https://testnet.vechain.org
       - VERBOSE=true

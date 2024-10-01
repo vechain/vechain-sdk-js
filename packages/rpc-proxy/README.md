@@ -182,7 +182,8 @@ Simple testnet configuration with a delegator private url:
 To run the RPC proxy as a Docker container, follow these steps:
 
 ``` bash
-docker build . -t vechain-rpc-proxy
+cd ../../docker
+docker build -f rpc-proxy.Dockerfile . -t vechain-rpc-proxy
 docker run -d -p 8545:8545 -v ./config.json:/app/config.json -t vechain-rpc-proxy
 ```
 

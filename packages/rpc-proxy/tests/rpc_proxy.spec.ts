@@ -10,7 +10,10 @@ let environment: StartedDockerComposeEnvironment;
 const RPC_PROXY_URL = `http://localhost:8545`;
 
 beforeAll(async () => {
-    environment = await new DockerComposeEnvironment('./', 'docker-compose.yml')
+    environment = await new DockerComposeEnvironment(
+        '../../docker',
+        'docker-compose.rpc-proxy.yml'
+    )
         .withPullPolicy(PullPolicy.alwaysPull())
         .withWaitStrategy(
             'thor-solo',
