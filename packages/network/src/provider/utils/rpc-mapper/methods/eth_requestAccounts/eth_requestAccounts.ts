@@ -1,6 +1,6 @@
-import { ethAccounts } from '../eth_accounts/eth_accounts';
 import { JSONRPCInvalidParams, stringifyData } from '@vechain/sdk-errors';
-import { type VeChainProvider } from '../../../../providers';
+import { type VeChainProvider } from '../../../../providers/vechain-provider';
+import { ethAccounts } from '../eth_accounts/eth_accounts';
 
 /**
  * RPC Method eth_requestAccounts implementation
