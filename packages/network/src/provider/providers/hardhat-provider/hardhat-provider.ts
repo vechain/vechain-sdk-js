@@ -1,4 +1,4 @@
-import { VeChainProvider } from '../vechain-provider';
+import { VeChainProvider } from '../vechain-provider/vechain-provider';
 import type { EIP1193RequestArguments } from '../../eip1193';
 import {
     JSONRPCInternalError,
