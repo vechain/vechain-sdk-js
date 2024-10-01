@@ -233,7 +233,7 @@ class ABI implements VeChainDataModel<ABI> {
 
 // Backwards compatibility, ethersAbi should be removed as part of #1184
 const ethersAbi = {
-    encode: <ValueType>(type: string | ParamType, value: ValueType): string =>
+    /*encode: <ValueType>(type: string | ParamType, value: ValueType): string =>
         ABI.of(
             type instanceof ParamType
                 ? // This condition is here to enable compatibility with ethers regarding tuple[] types.
@@ -242,7 +242,7 @@ const ethersAbi = {
             [value]
         )
             .toHex()
-            .toString(),
+            .toString(),*/
     encodeParams: (types: string[] | ParamType[], values: string[]): string => {
         const stringTypes =
             types instanceof ParamType

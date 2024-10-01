@@ -1,7 +1,7 @@
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { ERC721_ABI, VIP180_ABI } from '../utils';
 import {
-    abi,
+    ABI,
     ABIContract,
     FixedPointNumber,
     VET,
@@ -168,8 +168,8 @@ class Clause implements TransactionClause {
         const data =
             deployParams !== null && deployParams !== undefined
                 ? contractBytecode.digits +
-                  abi
-                      .encodeParams(deployParams.types, deployParams.values)
+                  ABI
+                      .of(deployParams.types, deployParams.values).toHex().toString()
                       .replace(Hex.PREFIX, '')
                 : contractBytecode.digits;
         return new Clause(
