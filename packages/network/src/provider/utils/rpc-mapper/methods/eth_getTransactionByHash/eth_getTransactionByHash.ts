@@ -8,7 +8,7 @@ import {
     type TransactionRPC,
     transactionsFormatter
 } from '../../../formatter';
-import { RPCMethodsMap } from '../../../rpc-mapper';
+import { RPCMethodsMap } from '../../../rpc-mapper/rpc-mapper';
 import { RPC_METHODS } from '../../../const';
 import { getTransactionIndexIntoBlock } from '../../../helpers';
 import { type ThorClient } from '../../../../../thor-client';

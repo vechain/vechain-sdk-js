@@ -4,22 +4,23 @@ import {
     JSONRPCMethodNotFound
 } from '@vechain/sdk-errors';
 import { EventEmitter } from 'events';
-import type { VeChainSigner } from '../../../signer';
-import {
-    type CompressedBlockDetail,
-    type ThorClient
-} from '../../../thor-client';
-import { type EventPoll, Poll } from '../../../utils/poll';
-import { vnsUtils } from '../../../utils/vns';
 import {
     type EIP1193ProviderMessage,
-    type EIP1193RequestArguments
-} from '../../eip1193';
-import { type ProviderInternalWallet } from '../../helpers';
-import { POLLING_INTERVAL } from '../../utils/const/providers';
-import { RPC_METHODS } from '../../utils/const/rpc-mapper/rpc-methods';
-import { ethGetLogs } from '../../utils/rpc-mapper/methods';
-import { RPCMethodsMap } from '../../utils/rpc-mapper/rpc-mapper';
+    type EIP1193RequestArguments,
+    ethGetLogs,
+    POLLING_INTERVAL,
+    type ProviderInternalWallet,
+    RPC_METHODS,
+    RPCMethodsMap
+} from '../..';
+import {
+    type CompressedBlockDetail,
+    type EventPoll,
+    Poll,
+    type ThorClient,
+    type VeChainSigner,
+    vnsUtils
+} from '../../..';
 import {
     type FilterOptions,
     type SubscriptionEvent,

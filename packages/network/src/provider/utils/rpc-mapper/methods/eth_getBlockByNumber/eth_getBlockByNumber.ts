@@ -7,7 +7,7 @@ import { type ThorClient } from '../../../../../thor-client';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
 import { getCorrectBlockNumberRPCToVeChain, RPC_METHODS } from '../../../const';
 import { blocksFormatter, type BlocksRPC } from '../../../formatter';
-import { RPCMethodsMap } from '../../../rpc-mapper';
+import { RPCMethodsMap } from '../../../rpc-mapper/rpc-mapper';
 
 /**
  * RPC Method eth_getBlockByNumber implementation

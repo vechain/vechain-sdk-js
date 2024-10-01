@@ -6,7 +6,7 @@ import {
 } from '@vechain/sdk-errors';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
 import { type BlocksRPC, type TransactionRPC } from '../../../formatter';
-import { RPCMethodsMap } from '../../../rpc-mapper';
+import { RPCMethodsMap } from '../../../rpc-mapper/rpc-mapper';
 import { RPC_METHODS } from '../../../const';
 
 /**

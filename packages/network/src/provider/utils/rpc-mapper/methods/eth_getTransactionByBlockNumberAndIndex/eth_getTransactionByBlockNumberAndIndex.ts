@@ -7,7 +7,7 @@ import { type ThorClient } from '../../../../../thor-client';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
 import { RPC_METHODS } from '../../../const';
 import { type BlocksRPC, type TransactionRPC } from '../../../formatter';
-import { RPCMethodsMap } from '../../../rpc-mapper';
+import { RPCMethodsMap } from '../../../rpc-mapper/rpc-mapper';
 
 /**
  * RPC Method eth_getTransactionByBlockNumberAndIndex implementation
