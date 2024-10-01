@@ -9,7 +9,7 @@ import {
     type ABIFunction
 } from '@vechain/sdk-core';
 import { type Abi } from 'abitype';
-import { type VeChainSigner } from '../../signer';
+import { type VeChainSigner } from '../../signer/signers/types';
 import { BUILT_IN_CONTRACTS } from '../../utils';
 import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
 import { type ThorClient } from '../thor-client';
