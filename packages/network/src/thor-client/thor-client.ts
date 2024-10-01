@@ -1,12 +1,15 @@
-import { AccountsModule } from './accounts';
-import { NodesModule } from './nodes/nodes-module';
-import { BlocksModule, type BlocksModuleOptions } from './blocks';
-import { ContractsModule } from './contracts';
-import { TransactionsModule } from './transactions';
-import { LogsModule } from './logs';
-import { GasModule } from './gas';
+import {
+    AccountsModule,
+    BlocksModule,
+    type BlocksModuleOptions,
+    ContractsModule,
+    DebugModule,
+    GasModule,
+    LogsModule,
+    NodesModule,
+    TransactionsModule
+} from '.';
 import { HttpClient, type IHttpClient } from '../utils';
-import { DebugModule } from './debug';
 
 /**
  * The `ThorClient` class serves as an interface to interact with the VeChainThor blockchain.
