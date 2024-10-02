@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { fail, strictEqual } from 'assert';
 
 const endpointsTestCases = [
     {
@@ -57,11 +57,7 @@ async function testRPCProxy(): Promise<void> {
                 throw new Error('Response does not contain result');
             }
 
-            assert.strictEqual(
-                data.result,
-                expected,
-                'Expected a different result'
-            );
+            strictEqual(data.result, expected, 'Expected a different result');
         }
     } catch (error) {
         console.error(
@@ -71,4 +67,4 @@ async function testRPCProxy(): Promise<void> {
     }
 }
 
-testRPCProxy().catch(console.error);
+testRPCProxy().catch(fail);
