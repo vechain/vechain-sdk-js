@@ -1,7 +1,8 @@
 {
-  "name": "vechain-sdk-hardhat-integration",
+  "name": "sdk-hardhat-integration",
   "description": "An example app of how to use the @vechain/sdk-hardhat-plugin to interact with the VeChainThor blockchain",
   "version": "1.0.0-beta.32",
+  "private": true,
   "main": "index.js",
   "author": "VeChain Foundation",
   "license": "MIT",
