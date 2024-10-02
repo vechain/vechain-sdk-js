@@ -1,21 +1,17 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { TESTNET_URL, ThorClient, type TracerName } from '../../../src';
+import { TESTNET_URL, ThorClient } from '../../../src';
 import {
-    firstTransactionTraceContractCallTestnetFixture,
-    firstTransactionTraceTransactionClauseTestnetFixture,
     retrieveStorageRangeTestnetFixture,
     traceContractCallTestnetFixture,
     traceTransactionClauseTestnetFixture
 } from './fixture-thorest';
 
 /**
- * ThorClient class tests
+ * Debug endpoints tests on the Testnet network.
  *
- * @NOTE: This test suite run on testnet network because it contains read-only tests.
- *
- * @group integration/clients/thor-client/debug
+ * @group integration/clients/thor-client/debug-testnet
  */
-describe('ThorClient - Debug Module', () => {
+describe('ThorClient - Debug Module - Testnet', () => {
     // ThorClient instance
     let thorClient: ThorClient;
 
@@ -28,45 +24,9 @@ describe('ThorClient - Debug Module', () => {
      */
     describe('traceTransactionClause', () => {
         /**
-         * Test a result of a transaction clause for each kind of trace name
-         * The commented out lines should be used as part of the test on solo {@link https://github.com/vechain/vechain-sdk-js/issues/1357}
-         */
-        (
-            [
-                // '',
-                // '4byte',
-                'call'
-                // 'noop',
-                // 'prestate',
-                // 'unigram',
-                // 'bigram',
-                // 'trigram',
-                // 'evmdis',
-                // 'opcount',
-                // null
-            ] as TracerName[]
-        ).forEach((traceName: TracerName) => {
-            test(`traceTransactionClause - ${traceName}`, async () => {
-                const result = await thorClient.debug.traceTransactionClause(
-                    {
-                        target: {
-                            blockID:
-                                firstTransactionTraceTransactionClauseTestnetFixture.blockID,
-                            transaction:
-                                firstTransactionTraceTransactionClauseTestnetFixture.transaction,
-                            clauseIndex:
-                                firstTransactionTraceTransactionClauseTestnetFixture.clauseIndex
-                        },
-                        config: {}
-                    },
-                    traceName
-                );
-                expect(result).toBeDefined();
-            });
-        });
-
-        /**
          * traceTransactionClause - correct cases
+         *
+         * @note Only 'call' tracer is tested here, other tracers are tested in the solo network
          */
         traceTransactionClauseTestnetFixture.positiveCases.forEach(
             (positiveTestCase) => {
@@ -81,7 +41,7 @@ describe('ThorClient - Debug Module', () => {
                                 },
                                 config: {}
                             },
-                            positiveTestCase.name as TracerName | undefined
+                            'call'
                         );
                     expect(result).toEqual(positiveTestCase.expected);
                 });
@@ -104,7 +64,7 @@ describe('ThorClient - Debug Module', () => {
                                 },
                                 config: {}
                             },
-                            negativeTestCase.name as TracerName | undefined
+                            'call'
                         )
                     ).rejects.toThrow(negativeTestCase.expectedError);
                 });
@@ -116,50 +76,6 @@ describe('ThorClient - Debug Module', () => {
      * traceContractCall tests
      */
     describe('traceContractCall', () => {
-        /**
-         * Test a result of a contract call for each kind of trace name
-         * The commented out lines should be used as part of the test on solo {@link https://github.com/vechain/vechain-sdk-js/issues/1357}
-         */
-        (
-            [
-                // '',
-                // '4byte',
-                'call'
-                // 'noop',
-                // 'prestate',
-                // 'unigram',
-                // 'bigram',
-                // 'trigram',
-                // 'evmdis',
-                // 'opcount',
-                // null
-            ] as TracerName[]
-        ).forEach((traceName: TracerName) => {
-            test(`traceContractCall - ${traceName}`, async () => {
-                const result = await thorClient.debug.traceContractCall(
-                    // Transaction 0x7bf1cbf0485e265075a771ac4b0875b09019163f93d8e281adb893875c36453f
-                    {
-                        contractInput: {
-                            to: firstTransactionTraceContractCallTestnetFixture.to,
-                            data: firstTransactionTraceContractCallTestnetFixture.data
-                        },
-                        transactionOptions: {
-                            caller: firstTransactionTraceContractCallTestnetFixture.caller,
-                            gasPayer:
-                                firstTransactionTraceContractCallTestnetFixture.gasPayer,
-                            expiration:
-                                firstTransactionTraceContractCallTestnetFixture.expiration,
-                            blockRef:
-                                firstTransactionTraceContractCallTestnetFixture.blockRef
-                        },
-                        config: {}
-                    },
-                    'call'
-                );
-                expect(result).toBeDefined();
-            });
-        });
-
         /**
          * traceContractCall - correct cases
          */
@@ -182,7 +98,7 @@ describe('ThorClient - Debug Module', () => {
                             },
                             config: {}
                         },
-                        positiveTestCase.name as TracerName | undefined
+                        'call'
                     );
                     expect(result).toEqual(positiveTestCase.expected);
                 });

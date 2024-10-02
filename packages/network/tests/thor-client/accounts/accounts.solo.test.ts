@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { TEST_ACCOUNTS, TESTING_CONTRACT_ADDRESS } from '../../fixture';
-import { FixedPointNumber, Units } from '@vechain/sdk-core';
+import { VET, VTHO } from '@vechain/sdk-core';
 import { TESTING_CONTRACT_BYTECODE } from './fixture';
 import { THOR_SOLO_URL, ThorClient } from '../../../src';
 
@@ -37,21 +37,10 @@ describe('ThorClient - Accounts Module', () => {
 
             // Thor-solo is being initialized with 500000000 VET
             // And at least 500000000 VTHO
-            const expectedVTHO = 500000000n;
-            expect(
-                FixedPointNumber.of(
-                    // In this context Ether is the 10E8 magnitude.
-                    Units.formatEther(
-                        FixedPointNumber.of(accountBefore.balance)
-                    )
-                ).isEqual(FixedPointNumber.of(expectedVTHO))
-            ).toBe(true);
-            expect(
-                FixedPointNumber.of(accountBefore.energy).gt(
-                    // In this context Ether is the 10E8 magnitude.
-                    Units.parseEther(expectedVTHO.toString())
-                )
-            ).toBe(true);
+            const expectedVET = VET.of(500000000n);
+            const expectedVTHO = VTHO.of(500000000n);
+            expect(accountBefore.vet.isEqual(expectedVET)).toBe(true);
+            expect(accountBefore.vtho.value.gt(expectedVTHO.value)).toBe(true);
 
             const currentBlock =
                 await thorSoloClient.blocks.getBlockCompressed('best');

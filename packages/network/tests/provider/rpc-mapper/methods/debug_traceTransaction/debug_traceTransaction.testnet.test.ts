@@ -13,9 +13,9 @@ import {
 /**
  * RPC Mapper integration tests for 'debug_traceTransaction' method
  *
- * @group integration/rpc-mapper/methods/debug_traceTransaction
+ * @group integration/rpc-mapper/methods/debug_traceTransaction-testnet
  */
-describe('RPC Mapper - debug_traceTransaction method tests', () => {
+describe('RPC Mapper - debug_traceTransaction method tests testnet', () => {
     /**
      * Thor client instance
      */
