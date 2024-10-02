@@ -11,11 +11,11 @@ import {
 } from './fixture';
 
 /**
- * RPC Mapper integration tests for 'debug_traceCall' method
+ * RPC Mapper integration tests for 'debug_traceCall' method on testnet
  *
- * @group integration/rpc-mapper/methods/debug_traceCall
+ * @group integration/rpc-mapper/methods/debug_traceCall-testnet
  */
-describe('RPC Mapper - debug_traceCall method tests', () => {
+describe('RPC Mapper - debug_traceCall method tests testnet', () => {
     /**
      * Thor client instance
      */
@@ -46,23 +46,20 @@ describe('RPC Mapper - debug_traceCall method tests', () => {
         });
 
         /**
-         * Should be able to trace a call with callTracer and prestateTracer
+         * Should be able to trace a call with callTracer
          */
-        test('debug_traceCall - Should be able to trace a call with callTracer and prestateTracer', async () => {
+        test('debug_traceCall - Should be able to trace a call with callTracer', async () => {
             const fixtureTransaction =
                 debugTraceCallPositiveCasesFixtureTestnet[0];
-            // The commented out line should be used as part of the test on solo {@link https://github.com/vechain/vechain-sdk-js/issues/1357}
-            // for (const tracerName of ['callTracer', 'prestateTracer']) {
-            for (const tracerName of ['callTracer']) {
-                const result = await RPCMethodsMap(thorClient)[
-                    RPC_METHODS.debug_traceCall
-                ]([
-                    fixtureTransaction.input.params[0],
-                    fixtureTransaction.input.params[1],
-                    { tracer: tracerName }
-                ]);
-                expect(result).toBeDefined();
-            }
+
+            const result = await RPCMethodsMap(thorClient)[
+                RPC_METHODS.debug_traceCall
+            ]([
+                fixtureTransaction.input.params[0],
+                fixtureTransaction.input.params[1],
+                { tracer: 'callTracer' }
+            ]);
+            expect(result).toBeDefined();
         });
     });
 
