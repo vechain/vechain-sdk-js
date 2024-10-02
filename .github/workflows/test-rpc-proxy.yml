@@ -26,7 +26,7 @@ jobs:
               id: start-solo
               run: yarn start-thor-solo
             
-            - name: Start PRC Proxy
+            - name: Start RPC Proxy
               run: |
                 cd packages/rpc-proxy
                 yarn start &
