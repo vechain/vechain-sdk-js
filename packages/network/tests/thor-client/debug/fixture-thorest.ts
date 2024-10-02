@@ -1,5 +1,17 @@
 import { InvalidDataType } from '@vechain/sdk-errors';
 
+import {
+    THOR_SOLO_ACCOUNTS,
+    type ThorClient,
+    type TransactionReceipt
+} from '../../../src';
+import {
+    transactionNonces,
+    transfer1VTHOClause,
+    transferTransactionBodyValueAsNumber
+} from '../transactions/fixture';
+import { HexUInt, Transaction } from '@vechain/sdk-core';
+
 /**
  * Debug traceTransactionClause tests fixture testnet
  *
@@ -11,30 +23,43 @@ import { InvalidDataType } from '@vechain/sdk-errors';
 const traceTransactionClauseTestnetFixture = {
     // Positive test cases
     positiveCases: [
-        // The commented out lines should be used as part of the test on solo {@link https://github.com/vechain/vechain-sdk-js/issues/1357}
         // Transaction 1 - With transaction ID
-        // {
-        //     testName:
-        //         'traceTransactionClause - transaction 1 with transaction ID',
-        //     blockID:
-        //         '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f',
-        //     transaction:
-        //         '0x2dbc8268a2dbf889abe828c0671cb9adce61f537aab8855480aff6967e0ed687',
-        //     clauseIndex: 0,
-        //     name: null,
-        //     expected: { gas: 0, failed: false, returnValue: '', structLogs: [] }
-        // },
+        {
+            testName:
+                'traceTransactionClause - transaction 1 with transaction ID',
+            blockID:
+                '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f',
+            transaction:
+                '0x2dbc8268a2dbf889abe828c0671cb9adce61f537aab8855480aff6967e0ed687',
+            clauseIndex: 0,
+            expected: {
+                from: '0x7487d912d03ab9de786278f679592b3730bdd540',
+                gas: '0x11c5',
+                gasUsed: '0x0',
+                to: '0x6e1ffe60656421eb12de92433c5a319ba606bb81',
+                input: '0x02fe53050000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000f6e657742617365546f6b656e5552490000000000000000000000000000000000',
+                value: '0x0',
+                type: 'CALL'
+            }
+        },
         // Transaction 1 - With transaction index into block
-        // {
-        //     testName:
-        //         'traceTransactionClause - transaction 1 with transaction  index into block',
-        //     blockID:
-        //         '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f',
-        //     transaction: 0,
-        //     clauseIndex: 0,
-        //     name: null,
-        //     expected: { gas: 0, failed: false, returnValue: '', structLogs: [] }
-        // },
+        {
+            testName:
+                'traceTransactionClause - transaction 1 with transaction  index into block',
+            blockID:
+                '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f',
+            transaction: 0,
+            clauseIndex: 0,
+            expected: {
+                from: '0x7487d912d03ab9de786278f679592b3730bdd540',
+                gas: '0x11c5',
+                gasUsed: '0x0',
+                to: '0x6e1ffe60656421eb12de92433c5a319ba606bb81',
+                input: '0x02fe53050000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000f6e657742617365546f6b656e5552490000000000000000000000000000000000',
+                value: '0x0',
+                type: 'CALL'
+            }
+        },
         // Transaction 2 - With transaction ID
         {
             testName:
@@ -44,7 +69,24 @@ const traceTransactionClauseTestnetFixture = {
             transaction:
                 '0x05b31824569f2f2ec64c62c4e6396199f56ae872ff219288eb3293b4a36e7b0f',
             clauseIndex: 0,
-            name: 'call',
+            expected: {
+                from: '0x105199a26b10e55300cb71b46c5b5e867b7df427',
+                gas: '0x8b92',
+                gasUsed: '0x50fa',
+                to: '0xaa854565401724f7061e0c366ca132c87c1e5f60',
+                input: '0xf14fcbc800d770b9faa11ba944366f3e7a14c166f780ece542e557e0b7fe4870fcbe8dbe',
+                value: '0x0',
+                type: 'CALL'
+            }
+        },
+        // Transaction 2 - With transaction index into block
+        {
+            testName:
+                'traceTransactionClause - transaction 2 with transaction index into block',
+            blockID:
+                '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f',
+            transaction: 1,
+            clauseIndex: 0,
             expected: {
                 from: '0x105199a26b10e55300cb71b46c5b5e867b7df427',
                 gas: '0x8b92',
@@ -55,18 +97,6 @@ const traceTransactionClauseTestnetFixture = {
                 type: 'CALL'
             }
         }
-        // The commented out lines should be used as part of the test on solo {@link https://github.com/vechain/vechain-sdk-js/issues/1357}
-        // Transaction 2 - With transaction index into block
-        // {
-        //     testName:
-        //         'traceTransactionClause - transaction 2 with transaction index into block',
-        //     blockID:
-        //         '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f',
-        //     transaction: 1,
-        //     clauseIndex: 0,
-        //     name: 'noop',
-        //     expected: {}
-        // }
     ],
     // Negative test cases
     negativeCases: [
@@ -77,7 +107,6 @@ const traceTransactionClauseTestnetFixture = {
             transaction:
                 '0x2dbc8268a2dbf889abe828c0671cb9adce61f537aab8855480aff6967e0ed687',
             clauseIndex: 0,
-            name: null,
             expectedError: InvalidDataType
         },
         // Invalid transaction ID
@@ -88,7 +117,6 @@ const traceTransactionClauseTestnetFixture = {
                 '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f',
             transaction: 'INVALID',
             clauseIndex: 0,
-            name: null,
             expectedError: InvalidDataType
         },
         // Invalid transaction index
@@ -99,7 +127,6 @@ const traceTransactionClauseTestnetFixture = {
                 '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f',
             transaction: -1,
             clauseIndex: 0,
-            name: null,
             expectedError: InvalidDataType
         },
         // Invalid clause index
@@ -110,19 +137,10 @@ const traceTransactionClauseTestnetFixture = {
                 '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f',
             transaction: 0,
             clauseIndex: -1,
-            name: null,
             expectedError: InvalidDataType
         }
     ]
 };
-
-/**
- * First transaction for traceTransactionClause testnet fixture
- *
- * @NOTE we refers, again, to block 0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f.
- */
-const firstTransactionTraceTransactionClauseTestnetFixture =
-    traceTransactionClauseTestnetFixture.positiveCases[0];
 
 /**
  * VTHO contract testnet - 0x0000000000000000000000000000456E65726779
@@ -140,7 +158,6 @@ const traceContractCallTestnetFixture = {
             gasPayer: '0x625fCe8dd8E2C05e82e77847F3da06AF6e55A7AF',
             expiration: 18,
             blockRef: '0x0101d05409d55cce',
-            name: 'call',
             expected: {
                 from: '0x625fce8dd8e2c05e82e77847f3da06af6e55a7af',
                 gas: '0x0',
@@ -181,7 +198,6 @@ const traceContractCallTestnetFixture = {
             caller: '0x0000000000000000000000000000000000000000',
             gasPayer: '0x0000000000000000000000000000000000000000',
             gas: 0,
-            name: 'call',
             expected: {
                 from: '0x0000000000000000000000000000000000000000',
                 gas: '0x0',
@@ -434,10 +450,43 @@ const retrieveStorageRangeTestnetFixture = {
     ]
 };
 
+/**
+ * Send a transaction using a sender account index
+ * @param senderIndex The index of the sender account
+ * @param thorClient The ThorClient instance
+ * @returns The transaction receipt
+ */
+const sendTransactionWithAccountIndex = async (
+    senderIndex: number,
+    thorClient: ThorClient
+): Promise<TransactionReceipt | null> => {
+    // Estimate the gas required for the transfer transaction
+    const gasResult = await thorClient.gas.estimateGas(
+        [transfer1VTHOClause],
+        THOR_SOLO_ACCOUNTS[senderIndex].address
+    );
+
+    // Create the signed transfer transaction
+    const tx = Transaction.of({
+        ...transferTransactionBodyValueAsNumber,
+        gas: gasResult.totalGas,
+        nonce: transactionNonces
+            .sendTransactionWithANumberAsValueInTransactionBody[0]
+    }).sign(HexUInt.of(THOR_SOLO_ACCOUNTS[senderIndex].privateKey).bytes);
+
+    // Send the transaction and obtain the transaction ID
+    const sendTransactionResult =
+        await thorClient.transactions.sendTransaction(tx);
+
+    // Wait for the transaction to be included in a block
+    const txReceipt = await sendTransactionResult.wait();
+    return txReceipt;
+};
+
 export {
     traceTransactionClauseTestnetFixture,
-    firstTransactionTraceTransactionClauseTestnetFixture,
     traceContractCallTestnetFixture,
     firstTransactionTraceContractCallTestnetFixture,
-    retrieveStorageRangeTestnetFixture
+    retrieveStorageRangeTestnetFixture,
+    sendTransactionWithAccountIndex
 };
