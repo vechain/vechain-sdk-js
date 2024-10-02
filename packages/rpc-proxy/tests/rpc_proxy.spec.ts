@@ -11,7 +11,7 @@ const RPC_PROXY_URL = `http://localhost:8545`;
 
 beforeAll(async () => {
     environment = await new DockerComposeEnvironment(
-        '../../docker',
+        '../../',
         'docker-compose.rpc-proxy.yml'
     )
         .withPullPolicy(PullPolicy.alwaysPull())
