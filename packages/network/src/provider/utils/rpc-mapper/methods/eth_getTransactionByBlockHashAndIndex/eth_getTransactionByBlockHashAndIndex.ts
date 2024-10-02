@@ -45,10 +45,10 @@ const ethGetTransactionByBlockHashAndIndex = async (
         ])) as BlocksRPC;
 
         for (let i = 0; i < block.transactions.length; i++) {
-            const transaction = await ethGetTransactionByHash(thorClient, [
+            const transaction = (await ethGetTransactionByHash(thorClient, [
                 block.transactions[i]
-            ]);
-            if (transaction != null && transaction.transactionIndex === index) {
+            ])) as TransactionRPC;
+            if (transaction.transactionIndex === index) {
                 return transaction;
             }
         }
