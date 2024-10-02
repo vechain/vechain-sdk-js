@@ -1,5 +1,5 @@
 import { type ProviderInternalWalletAccount } from '../types';
-import { type SignTransactionOptions } from '../../../../thor-client';
+import { type SignTransactionOptions } from '../../../../thor-client/transactions/types';
 import {
     type AvailableVeChainProviders,
     type VeChainSigner
