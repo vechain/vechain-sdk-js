@@ -6,8 +6,10 @@ import {
     stringifyData
 } from '@vechain/sdk-errors';
 import { type ThorClient } from '../../../../../thor-client';
-import { type VeChainProvider } from '../../../../providers/vechain-provider/vechain-provider';
-import { type FilterOptions } from '../../../../providers/vechain-provider/types';
+import {
+    type FilterOptions,
+    type VeChainProvider
+} from '../../../../providers/vechain-provider';
 
 /**
  * Enumerates the types of subscriptions supported by the`eth_subscribe` RPC method.

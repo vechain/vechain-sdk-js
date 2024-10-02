@@ -4,21 +4,23 @@ import {
     JSONRPCMethodNotFound
 } from '@vechain/sdk-errors';
 import { EventEmitter } from 'events';
-import {
-    type EIP1193ProviderMessage,
-    type EIP1193RequestArguments,
-    ethGetLogs,
-    POLLING_INTERVAL,
-    type ProviderInternalWallet,
-    RPC_METHODS,
-    RPCMethodsMap
-} from '../../../provider';
 import { type VeChainSigner } from '../../../signer';
 import {
     type CompressedBlockDetail,
     type ThorClient
 } from '../../../thor-client';
 import { type EventPoll, Poll, vnsUtils } from '../../../utils';
+import {
+    type EIP1193ProviderMessage,
+    type EIP1193RequestArguments
+} from '../../eip1193';
+import { type ProviderInternalWallet } from '../../helpers';
+import {
+    ethGetLogs,
+    POLLING_INTERVAL,
+    RPC_METHODS,
+    RPCMethodsMap
+} from '../../utils';
 import {
     type FilterOptions,
     type SubscriptionEvent,

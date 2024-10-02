@@ -1,5 +1,5 @@
 import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
-import type { VeChainProvider } from '../../../../providers/vechain-provider/vechain-provider';
+import type { VeChainProvider } from '../../../../providers/vechain-provider';
 
 /**
  * Asynchronously unsubscribes from a VeChain event subscription.
