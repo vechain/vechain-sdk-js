@@ -1,7 +1,8 @@
 {
-  "name": "sdk-user",
+  "name": "sdk-node-integration",
   "description": "An example app of how to integrate the VeChain SDK with Node.js",
   "version": "1.0.0-beta.32",
+  "private": true,
   "main": "dist/index.js",
   "types": "src/index.ts",
   "license": "MIT",
