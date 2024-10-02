@@ -5,15 +5,15 @@ FROM node:20.17-alpine3.20 AS builder
 WORKDIR /app
 
 # Copy the dependencies file to the working directory
-COPY ./packages/rpc-proxy /app/packages/rpc-proxy
-COPY ./packages/network /app/packages/network
-COPY ./packages/core /app/packages/core
-COPY ./packages/logging /app/packages/logging
-COPY ./packages/errors /app/packages/errors
-COPY ./package.json /app/package.json
-COPY ./turbo.json /app/turbo.json
-COPY ./yarn.lock /app/yarn.lock
-COPY ./tsconfig.json /app/tsconfig.json
+COPY ./packages/rpc-proxy ./packages/rpc-proxy
+COPY ./packages/network ./packages/network
+COPY ./packages/core ./packages/core
+COPY ./packages/logging ./packages/logging
+COPY ./packages/errors ./packages/errors
+COPY ./package.json ./package.json
+COPY ./turbo.json ./turbo.json
+COPY ./yarn.lock ./yarn.lock
+COPY ./tsconfig.json ./tsconfig.json
 
 # Install all the dependencies
 RUN yarn install
