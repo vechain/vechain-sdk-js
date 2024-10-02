@@ -25,8 +25,10 @@ RUN yarn build
 FROM node:20.17.0-alpine3.20 AS runner
 
 # Copy only the built files and essential runtime files from the builder stage
+## rpc-proxy
 COPY --from=builder /app/packages/rpc-proxy/dist /app/packages/rpc-proxy/dist
 COPY --from=builder /app/packages/rpc-proxy/package.json /app/packages/rpc-proxy/package.json
+## SDK dependencies
 COPY --from=builder /app/packages/network/dist /app/packages/network/dist
 COPY --from=builder /app/packages/network/package.json /app/packages/network/package.json
 COPY --from=builder /app/packages/core/dist /app/packages/core/dist
@@ -35,6 +37,7 @@ COPY --from=builder /app/packages/logging/dist /app/packages/logging/dist
 COPY --from=builder /app/packages/logging/package.json /app/packages/logging/package.json
 COPY --from=builder /app/packages/errors/dist /app/packages/errors/dist
 COPY --from=builder /app/packages/errors/package.json /app/packages/errors/package.json
+## node_modules
 COPY --from=builder /app/node_modules /app/node_modules
 
 # Create a new user to run the app so we do not use root
