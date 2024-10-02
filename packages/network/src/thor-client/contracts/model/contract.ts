@@ -10,7 +10,7 @@ import {
 } from 'abitype';
 import { type VeChainSigner } from '../../../signer';
 import { type ThorClient } from '../../thor-client';
-import type { TransactionReceipt } from '../../transactions';
+import type { TransactionReceipt } from '../../transactions/types';
 import type { ContractCallOptions, ContractTransactionOptions } from '../types';
 import {
     getClauseProxy,

@@ -16,7 +16,7 @@ import { type ThorClient } from '../thor-client';
 import {
     type SendTransactionResult,
     type SimulateTransactionOptions
-} from '../transactions';
+} from '../transactions/types';
 import { Contract, ContractFactory } from './model';
 import type {
     ContractCallOptions,
