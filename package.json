@@ -69,7 +69,7 @@
         "jest-junit": "^16.0.0",
         "jest-runner": "^29.7.0",
         "jest-runner-groups": "^2.2.0",
-        "nyc": "^17.0.0",
+        "nyc": "^17.1.0",
         "prettier": "^3.3.3",
         "ts-jest": "^29.2.5",
         "tsup": "^8.2.4",
