@@ -509,11 +509,9 @@ describe('Transaction class tests', () => {
                 ];
                 const actual = Transaction.intrinsicGas(clauses);
                 expect(actual.wei).toBe(
-                    BigInt(
-                        Transaction.GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION +
-                            Transaction.GAS_CONSTANTS.TX_GAS +
-                            Transaction.GAS_CONSTANTS.ZERO_GAS_DATA * times
-                    )
+                    Transaction.GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION +
+                        Transaction.GAS_CONSTANTS.TX_GAS +
+                        Transaction.GAS_CONSTANTS.ZERO_GAS_DATA * BigInt(times)
                 );
             });
 
@@ -528,11 +526,10 @@ describe('Transaction class tests', () => {
                 ];
                 const actual = Transaction.intrinsicGas(clauses);
                 expect(actual.wei).toBe(
-                    BigInt(
-                        Transaction.GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION +
-                            Transaction.GAS_CONSTANTS.TX_GAS +
-                            Transaction.GAS_CONSTANTS.NON_ZERO_GAS_DATA * times
-                    )
+                    Transaction.GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION +
+                        Transaction.GAS_CONSTANTS.TX_GAS +
+                        Transaction.GAS_CONSTANTS.NON_ZERO_GAS_DATA *
+                            BigInt(times)
                 );
             });
 
@@ -547,12 +544,12 @@ describe('Transaction class tests', () => {
                 ];
                 const actual = Transaction.intrinsicGas(clauses);
                 expect(actual.wei).toBe(
-                    BigInt(
-                        Transaction.GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION +
-                            Transaction.GAS_CONSTANTS.TX_GAS +
-                            Transaction.GAS_CONSTANTS.ZERO_GAS_DATA * times +
-                            Transaction.GAS_CONSTANTS.NON_ZERO_GAS_DATA * times
-                    )
+                    Transaction.GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION +
+                        Transaction.GAS_CONSTANTS.TX_GAS +
+                        Transaction.GAS_CONSTANTS.ZERO_GAS_DATA *
+                            BigInt(times) +
+                        Transaction.GAS_CONSTANTS.NON_ZERO_GAS_DATA *
+                            BigInt(times)
                 );
             });
         });
@@ -593,10 +590,8 @@ describe('Transaction class tests', () => {
                 }) as TransactionClause[];
                 const actual = Transaction.intrinsicGas(clauses);
                 expect(actual.wei).toBe(
-                    BigInt(
-                        Transaction.GAS_CONSTANTS.CLAUSE_GAS * times +
-                            Transaction.GAS_CONSTANTS.TX_GAS
-                    )
+                    Transaction.GAS_CONSTANTS.CLAUSE_GAS * BigInt(times) +
+                        Transaction.GAS_CONSTANTS.TX_GAS
                 );
             });
         });
