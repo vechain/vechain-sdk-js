@@ -1,5 +1,5 @@
 import type { ContractClause } from '../types';
-import type { SendTransactionResult } from '../../transactions';
+import type { SendTransactionResult } from '../../transactions/types';
 import { type ContractFilter } from './contract-filter';
 import type {
     FilterCriteria,

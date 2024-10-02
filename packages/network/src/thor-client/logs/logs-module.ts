@@ -1,6 +1,6 @@
 import { Hex, type ABIEvent } from '@vechain/sdk-core';
 import { InvalidAbiItem } from '@vechain/sdk-errors';
-import { thorest } from '../../utils';
+import { thorest } from '../../utils/thorest/thorest';
 import { type ThorClient } from '../thor-client';
 import {
     type EventLogs,

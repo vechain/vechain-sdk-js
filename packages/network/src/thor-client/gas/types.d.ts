@@ -1,4 +1,4 @@
-import { type SimulateTransactionOptions } from '../transactions';
+import { type SimulateTransactionOptions } from '../transactions/types';
 
 /* --- Input options start --- */
 
