@@ -1,7 +1,7 @@
 {
   "name": "sdk-user",
   "description": "An example app of how to integrate the VeChain SDK with Node.js",
-  "version": "1.0.0-beta.31",
+  "version": "1.0.0-beta.32",
   "main": "dist/index.js",
   "types": "src/index.ts",
   "license": "MIT",
@@ -12,7 +12,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@vechain/sdk-network": "1.0.0-beta.31",
+    "@vechain/sdk-network": "1.0.0-beta.32",
     "typescript": "^5.3.3"
   },
   "devDependencies": {
