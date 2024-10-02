@@ -3,7 +3,9 @@
 #  ...
 #
 #  rpc-proxy:
-#    build: rpc-proxy.Dockerfile
+#    build:
+#      context: .
+#      dockerfile: docker/rpc-proxy/Dockerfile
 #
 #    # ********* SET HERE THE REQUIRED ENVIRONMENT VARIABLES *********
 #    environment:
