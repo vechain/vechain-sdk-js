@@ -16,7 +16,7 @@ import type {
 } from 'abitype';
 import { type VeChainSigner } from '../../../signer';
 import { type FilterCriteria } from '../../logs';
-import { type SendTransactionResult } from '../../transactions';
+import { type SendTransactionResult } from '../../transactions/types';
 import { type ContractCallResult, type ContractClause } from '../types';
 import { type Contract } from './contract';
 import { ContractFilter } from './contract-filter';

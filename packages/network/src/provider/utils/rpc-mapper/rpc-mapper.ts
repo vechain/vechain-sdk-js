@@ -1,4 +1,14 @@
-import { type MethodHandlerType } from './types';
+import { type ThorClient } from '../../../thor-client';
+import { type VeChainProvider } from '../../providers/vechain-provider';
+import { RPC_METHODS } from '../const/rpc-mapper/rpc-methods';
+import {
+    type BlocksRPC,
+    type LogsRPC,
+    type SyncBlockRPC,
+    type TracerReturnTypeRPC,
+    type TransactionReceiptRPC,
+    type TransactionRPC
+} from '../formatter';
 import {
     debugGetBadBlocks,
     debugGetRawBlock,
@@ -82,18 +92,8 @@ import {
     txPoolStatus,
     web3ClientVersion,
     web3Sha3
-} from './methods-map';
-import { RPC_METHODS } from '../const';
-import {
-    type BlocksRPC,
-    type LogsRPC,
-    type SyncBlockRPC,
-    type TracerReturnTypeRPC,
-    type TransactionReceiptRPC,
-    type TransactionRPC
-} from '../formatter';
-import { type VeChainProvider } from '../../providers';
-import { type ThorClient } from '../../../thor-client';
+} from './methods';
+import { type MethodHandlerType } from './types';
 
 /**
  * Map of RPC methods to their implementations with the SDK.

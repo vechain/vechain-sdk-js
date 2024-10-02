@@ -2,7 +2,7 @@ import { InvalidDataType } from '@vechain/sdk-errors';
 import { Transaction } from '@vechain/sdk-core';
 import { decodeRevertReason } from './helpers/decode-evm-error';
 import { type EstimateGasOptions, type EstimateGasResult } from './types';
-import { type SimulateTransactionClause } from '../transactions';
+import { type SimulateTransactionClause } from '../transactions/types';
 import { type ThorClient } from '../thor-client';
 
 /**

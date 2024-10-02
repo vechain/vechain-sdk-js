@@ -2,7 +2,7 @@ import type {
     SignTransactionOptions,
     SimulateTransactionOptions,
     TransactionBodyOptions
-} from '../transactions';
+} from '../transactions/types';
 
 import type {
     ABIFunction,
