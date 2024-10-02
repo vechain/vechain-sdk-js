@@ -58,6 +58,8 @@ async function testRPCProxy(): Promise<void> {
             }
 
             strictEqual(data.result, expected, 'Expected a different result');
+
+            console.log(`RPC Proxy test for ${method} passed`);
         }
     } catch (error) {
         console.error(
