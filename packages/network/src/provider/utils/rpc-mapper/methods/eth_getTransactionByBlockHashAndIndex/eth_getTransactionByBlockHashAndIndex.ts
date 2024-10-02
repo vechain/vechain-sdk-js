@@ -5,7 +5,7 @@ import {
 } from '@vechain/sdk-errors';
 import { type ThorClient } from '../../../../../thor-client';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
-import { type TransactionRPC } from '../../../formatter';
+import { type BlocksRPC, type TransactionRPC } from '../../../formatter';
 import { ethGetBlockByHash } from '../eth_getBlockByHash';
 import { ethGetTransactionByHash } from '../eth_getTransactionByHash';
 
@@ -39,9 +39,11 @@ const ethGetTransactionByBlockHashAndIndex = async (
         const [blockHash, index] = params as [string, string];
 
         // Get the block containing the transactions
-        const block = await ethGetBlockByHash(thorClient, [blockHash, false]);
+        const block = (await ethGetBlockByHash(thorClient, [
+            blockHash,
+            false
+        ])) as BlocksRPC;
 
-        if (block == null) return null;
         for (let i = 0; i < block.transactions.length; i++) {
             const transaction = await ethGetTransactionByHash(thorClient, [
                 block.transactions[i]
