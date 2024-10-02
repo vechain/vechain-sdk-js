@@ -31,16 +31,16 @@ const endpointsTestCases = [
     }
 ];
 
-async function testRPCProxy() {
-    const proxyUrl = 'http://localhost:8545';
+const proxyUrl = 'http://localhost:8545';
 
+async function testRPCProxy(): Promise<void> {
     try {
         // Send RPC requests to test it
-        endpointsTestCases.forEach(async({method, params, expected})=>{
+        for (const { method, params, expected } of endpointsTestCases) {
             const response = await fetch(proxyUrl, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     jsonrpc: '2.0',
@@ -49,19 +49,26 @@ async function testRPCProxy() {
                     params
                 })
             });
-            const data = await response.json();
 
-            assert.ok(data && data.result, 'Response does not contain result');
-            assert.strictEqual(data.result, expected, 'Expected a different result');
-            return 0;
-        });
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            const data: { result?: unknown } = await response.json();
+
+            if (data.result === undefined) {
+                throw new Error('Response does not contain result');
+            }
+
+            assert.strictEqual(
+                data.result,
+                expected,
+                'Expected a different result'
+            );
+        }
     } catch (error) {
         console.error(
             'Error occurred while testing RPC Proxy:',
             (error as Error).message
         );
-        return 1;
     }
 }
 
-testRPCProxy();
+testRPCProxy().catch(console.error);
