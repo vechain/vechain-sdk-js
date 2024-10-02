@@ -7,7 +7,7 @@ import { Hex, HexUInt, Quantity, ZERO_BYTES } from '@vechain/sdk-core';
 import {
     getNumberOfLogsAheadOfTransactionIntoBlockExpanded,
     getTransactionIndexIntoBlock
-} from '../../helpers';
+} from '../../helpers/transaction/transaction-helpers';
 import { blocksFormatter } from '../blocks';
 import {
     type ExpandedBlockDetail,

@@ -12,7 +12,7 @@ import {
     type ProviderInternalWallet,
     RPC_METHODS,
     RPCMethodsMap
-} from '../..';
+} from '../../../provider';
 import { type VeChainSigner } from '../../../signer';
 import {
     type CompressedBlockDetail,
