@@ -34,39 +34,38 @@ const endpointsTestCases = [
 const proxyUrl = 'http://localhost:8545';
 
 async function testRPCProxy(): Promise<void> {
-    try {
-        // Send RPC requests to test it
-        for (const { method, params, expected } of endpointsTestCases) {
-            const response = await fetch(proxyUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    jsonrpc: '2.0',
-                    id: 1,
-                    method,
-                    params
-                })
-            });
+    // Send RPC requests to test it
+    for (const { method, params, expected } of endpointsTestCases) {
+        const response = await fetch(proxyUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                jsonrpc: '2.0',
+                id: 1,
+                method,
+                params
+            })
+        });
 
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const data: { result?: unknown } = await response.json();
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const data: { result?: unknown } = await response.json();
 
-            if (data.result === undefined) {
-                throw new Error('Response does not contain result');
-            }
-
-            strictEqual(data.result, expected, 'Expected a different result');
-
-            console.log(`RPC Proxy test for ${method} passed`);
+        if (data.result === undefined) {
+            throw new Error('Response does not contain result');
         }
-    } catch (error) {
-        console.error(
-            'Error occurred while testing RPC Proxy:',
-            (error as Error).message
-        );
+
+        strictEqual(data.result, expected, 'Expected a different result');
+
+        console.log(`RPC Proxy test for ${method} passed`);
     }
 }
 
-testRPCProxy().catch(fail);
+testRPCProxy().catch((error) => {
+    console.error(
+        'Error occurred while testing RPC Proxy:',
+        (error as Error).message
+    );
+    fail();
+});
