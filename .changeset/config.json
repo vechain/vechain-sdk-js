@@ -7,5 +7,11 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": []
+  "ignore": [
+    "docs",
+    "sdk-cloudflare-integration",
+    "sdk-hardhat-integration",
+    "sdk-nextjs-integration",
+    "sdk-node-integration"
+  ]
 }
