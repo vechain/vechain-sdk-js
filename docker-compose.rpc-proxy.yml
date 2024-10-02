@@ -81,12 +81,12 @@ services:
       context: .
       dockerfile: docker/rpc-proxy/Dockerfile
     environment:
-      - CONFIGURATION_FILE=/app/custom-config.json
+      - CONFIGURATION_FILE=/app/packages/rpc-proxy/custom-config.json
     container_name: rpc-proxy-custom-config-file
     depends_on:
       - thor-solo
     volumes:
-      - "./packages/rpc-proxy/tests/config-files-fixtures/correct-proxy-config-accounts-list-of-private-keys.json:/app/custom-config.json"
+      - "./packages/rpc-proxy/tests/config-files-fixtures/correct-proxy-config-accounts-list-of-private-keys.json:/app/packages/rpc-proxy/custom-config.json"
     ports:
       - "8545:8545"
 
