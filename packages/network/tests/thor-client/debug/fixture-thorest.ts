@@ -242,14 +242,6 @@ const traceContractCallTestnetFixture = {
 };
 
 /**
- * First transaction for traceContractCall testnet fixture
- *
- * @NOTE we refers, again, to block VTHO contract testnet - 0x0000000000000000000000000000456E65726779
- */
-const firstTransactionTraceContractCallTestnetFixture =
-    traceContractCallTestnetFixture.positiveCases[0];
-
-/**
  * Debug retrieveStorageRange Testnet Fixture
  *
  * @NOTE we refers again to:
@@ -479,14 +471,12 @@ const sendTransactionWithAccountIndex = async (
         await thorClient.transactions.sendTransaction(tx);
 
     // Wait for the transaction to be included in a block
-    const txReceipt = await sendTransactionResult.wait();
-    return txReceipt;
+    return await sendTransactionResult.wait();
 };
 
 export {
     traceTransactionClauseTestnetFixture,
     traceContractCallTestnetFixture,
-    firstTransactionTraceContractCallTestnetFixture,
     retrieveStorageRangeTestnetFixture,
     sendTransactionWithAccountIndex
 };
