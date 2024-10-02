@@ -47,11 +47,11 @@ class Transaction {
      * - `NON_ZERO_GAS_DATA` - The gas cost for transmitting non-zero bytes of data.
      */
     public static readonly GAS_CONSTANTS = {
-        TX_GAS: 5000,
-        CLAUSE_GAS: 16000,
-        CLAUSE_GAS_CONTRACT_CREATION: 48000,
-        ZERO_GAS_DATA: 4,
-        NON_ZERO_GAS_DATA: 68
+        TX_GAS: 5000n,
+        CLAUSE_GAS: 16000n,
+        CLAUSE_GAS_CONTRACT_CREATION: 48000n,
+        ZERO_GAS_DATA: 4n,
+        NON_ZERO_GAS_DATA: 68n
     };
 
     /**
@@ -402,7 +402,7 @@ class Transaction {
         if (clauses.length > 0) {
             // Some clauses.
             return VTHO.of(
-                clauses.reduce((sum: number, clause: TransactionClause) => {
+                clauses.reduce((sum: bigint, clause: TransactionClause) => {
                     if (clause.to !== null) {
                         // Invalid address or no vet.domains name
                         if (
@@ -484,7 +484,7 @@ class Transaction {
         if (Transaction.isValidBody(body)) {
             if (
                 signature === undefined ||
-                Transaction._isSignatureValid(body, signature)
+                Transaction.isSignatureValid(body, signature)
             ) {
                 return new Transaction(body, signature);
             }
@@ -601,19 +601,21 @@ class Transaction {
      * Computes the amount of gas used for the given data.
      *
      * @param {string} data - The hexadecimal string data for which the gas usage is computed.
-     * @return {number} The total gas used for the provided data.
+     * @return {bigint} The total gas used for the provided data.
      * @throws {InvalidDataType} If the data is not a valid hexadecimal string.
+     *
+     * @remarks gas value is expressed in {@link Units.wei} unit.
      */
-    private static computeUsedGasFor(data: string): number {
+    private static computeUsedGasFor(data: string): bigint {
         // Invalid data
         if (data !== '' && !Hex.isValid(data))
             throw new InvalidDataType(
-                '_calculateDataUsedGas()',
+                'calculateDataUsedGas()',
                 `Invalid data type for gas calculation. Data should be a hexadecimal string.`,
                 { data }
             );
 
-        let sum = 0;
+        let sum = 0n;
         for (let i = 2; i < data.length; i += 2) {
             if (data.substring(i, i + 2) === '00') {
                 sum += Transaction.GAS_CONSTANTS.ZERO_GAS_DATA;
@@ -776,7 +778,7 @@ class Transaction {
      * @param {Uint8Array} signature - The signature to validate.
      * @return {boolean} - Returns true if the signature is valid, otherwise false.
      */
-    private static _isSignatureValid(
+    private static isSignatureValid(
         body: TransactionBody,
         signature: Uint8Array
     ): boolean {
