@@ -1,5 +1,5 @@
 /**
- * RPC Method txpool_status implementation
+ * RPC Method txpool_inspect implementation
  *
  * @link [txpool_inspect](https://www.quicknode.com/docs/ethereum/txpool_inspect)
  *

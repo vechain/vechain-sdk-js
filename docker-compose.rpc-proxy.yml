@@ -49,6 +49,7 @@ services:
       - --api-addr=0.0.0.0:8669
       - --api-cors=*
       - --txpool-limit-per-account=256
+      - --api-allowed-tracers=all
       - --cache=1024
       - --verbosity=9
       - --persist
@@ -68,6 +69,8 @@ services:
       context: .
       dockerfile: docker/rpc-proxy/Dockerfile
     container_name: rpc-proxy
+    environment:
+      - CONFIGURATION_FILE=/app/packages/rpc-proxy/solo-config.json
     depends_on:
       - thor-solo
     ports:

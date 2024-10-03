@@ -21,7 +21,7 @@ const txPoolContentFrom = async (params: unknown[]): Promise<object> => {
         !addressUtils.isAddress(params[0])
     )
         throw new JSONRPCInvalidParams(
-            'eth_getBalance',
+            'txpool_contentFrom()',
             -32602,
             `Invalid input params for "txpool_contentFrom" method. See https://www.quicknode.com/docs/ethereum/txpool_contentFrom for details.`,
             { params }
