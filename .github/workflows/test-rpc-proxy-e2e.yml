@@ -21,5 +21,4 @@ jobs:
 
       - name: Run E2E RPC Proxy tests
         run: |
-          cd packages/rpc-proxy
-          jest ./tests/rpc_proxy.solo.test.ts
+          yarn workspace @vechain/sdk-rpc-proxy test:e2e
