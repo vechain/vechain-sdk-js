@@ -7,4 +7,4 @@ FROM vechain/thor:v2.1.0
 RUN rm -rf /data/thor
 
 # Copy the initial database directory to the container
-COPY ./thor-solo /data/thor
+COPY ./docker/thor/data /data/thor

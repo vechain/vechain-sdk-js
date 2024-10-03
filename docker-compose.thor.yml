@@ -2,7 +2,7 @@ services:
   thor-solo:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: docker/thor/Dockerfile
     container_name: thor-solo
     user: root
     ports:
