@@ -110,7 +110,7 @@ const ArgsValidator = {
             return url;
         } else {
             console.log(
-                '[rpc-proxy]: No url provided with command line arguments. Default port will be used.'
+                '[rpc-proxy]: No url provided with command line arguments. Default url will be used.'
             );
         }
         return null;
@@ -146,7 +146,7 @@ const ArgsValidator = {
             }
         } else {
             console.log(
-                '[rpc-proxy]: No accounts provided with command line arguments. Default port will be used.'
+                '[rpc-proxy]: No accounts provided with command line arguments. Default accounts will be used.'
             );
         }
         return null;
@@ -243,7 +243,7 @@ const ArgsValidator = {
             }
         } else {
             console.log(
-                '[rpc-proxy]: No mnemonic provided with command line arguments. Default port will be used.'
+                '[rpc-proxy]: No mnemonic provided with command line arguments. Default mnemonic will be used.'
             );
         }
 
