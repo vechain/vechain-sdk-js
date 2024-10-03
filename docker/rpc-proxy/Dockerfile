@@ -16,7 +16,7 @@ COPY ./yarn.lock ./yarn.lock
 COPY ./tsconfig.json ./tsconfig.json
 
 # Install all the dependencies
-RUN yarn install
+RUN yarn install --production
 
 # Build the app (assumes output is in /app/dist or similar)
 RUN yarn build
