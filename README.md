@@ -31,7 +31,7 @@ Welcome to the VeChain SDK repository! Here's a breakdown of our organized struc
    - `./packages/logging`: The logging package provides a simple and easy-to-use logging system for the VeChain SDK. This module is dedicated to managing and customizing logs within the SDK, ensuring your development experience remains transparent and insightful.
    - `./packages/network`: Embark on a journey through the network module, your gateway to all things related to blockchain interaction and transaction dissemination. Here, the VeChain SDK connects you seamlessly to the VeChainThor blockchain.
    - `./packages/rpc-proxy`: This package is designed to bridge the gap between Thor's RESTful API and Ethereum's JSON-RPC.
-- `./script`: Enhance your workflow efficiency with our collection of utility scripts. Located here are tools for tasks like automated testing, pre-release preparations, and file validation.
+- `./scripts`: Enhance your workflow efficiency with our collection of utility scripts. Located here are tools for tasks like automated testing, pre-release preparations, and file validation.
 
 Explore, experiment, and let the VeChain SDK empowers your blockchain adventures!
 
