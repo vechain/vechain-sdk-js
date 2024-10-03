@@ -5,8 +5,8 @@ import {
     InvalidDataType,
     stringifyData
 } from '@vechain/sdk-errors';
-import { ParamType, type ethers } from 'ethers';
-import { type AbiEvent, type AbiFunction, encodeAbiParameters } from 'viem';
+import { ParamType } from 'ethers';
+import { type AbiEvent, type AbiFunction, parseAbiParameters } from 'viem';
 import { ABI, ABIEvent, ABIFunction, Hex } from '../../../src';
 import {
     encodedDecodedInvalidValues,
@@ -73,32 +73,25 @@ describe('Abi - encode & decode', () => {
 
     /**
      * Test encoding and decoding of multiple parameters.
-     *
+     */
     test('encode/decode more parameters', () => {
         // Example encode of function 2 parameters
-        const encoded = abi.encode<
-            Array<{
-                master: string;
-                endorsor: string;
-                identity: string;
-                active: boolean;
-            }>
-        >(
-            ParamType.from(functions[1].objectAbi.outputs[0]),
-            simpleParametersDataForFunction2
-        );
-
-        // @NOTE: you can use encode and avoid types gymnastics.
-        // const encoded = abi.encode(
-        //     ParamType.from(functions[1].objectAbi.outputs[0]),
-        //     simpleParametersDataForFunction2
-        // );
+        const encoded = ABI.of(
+            ParamType.from(functions[1].objectAbi.outputs[0])
+                .format('full')
+                .replace(' list', ''),
+            [simpleParametersDataForFunction2]
+        )
+            .toHex()
+            .toString();
 
         // Example decode of function 2 parameters
-        const decoded = abi.decode<ethers.Result[][]>(
-            ParamType.from(functions[1].objectAbi.outputs[0]),
+        const decoded = ABI.ofEncoded(
+            ParamType.from(functions[1].objectAbi.outputs[0])
+                .format('full')
+                .replace(' list', ''),
             encoded
-        );
+        ).getFirstDecodedValue();
 
         expect(encoded).toBe(
             '0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e8fd586e022f825a109848832d7e552132bc332000000000000000000000000224626926a7a12225a60e127cec119c939db4a5cdbf2712e19af00dc4d376728f7cb06cc215c8e7c53b94cb47cefb4a26ada2a6c00000000000000000000000000000000000000000000000000000000000000000000000000000000000000004977d68df97bb313b23238520580d8d3a59939bf0000000000000000000000007ad1d568b3fe5bad3fc264aca70bc7bcd5e4a6ff83b137cf7e30864b8a4e56453eb1f094b4434685d86895de38ac2edcf5d3f5340000000000000000000000000000000000000000000000000000000000000000'
@@ -118,23 +111,22 @@ describe('Abi - encode & decode', () => {
                 false
             ]
         ]);
-        
-    }); */
+    });
 });
 
 /**
  * ABI tests - Function & Event
  * @group unit/function-event
- *
+ */
 describe('Abi - Function & Event', () => {
     /**
      * Functions
-     *
+     */
     describe('Functions', () => {
         /**
          * Encode and Decode.
          * Test with each function in each format.
-         *
+         */
         test('Encode AND Decode', () => {
             // Create a function from each format and compare between format (test if conversions are correct)
             functions
@@ -218,17 +210,20 @@ describe('Abi - Function & Event', () => {
          * Test case for parameters encoding.
          *
          * @test
-         *
+         */
         test('encode parameters', () => {
             /**
              * Parameters to be encoded using ABI.
              *
              * @type {string}
-             *
-            const params: string = abi.encodeParams(
-                ['uint256', 'uint256'],
-                ['123', '234']
+             */
+            const typesParam = parseAbiParameters(
+                ['uint256', 'uint256'].join(', ')
             );
+
+            const params: string = ABI.of([...typesParam], ['123', '234'])
+                .toHex()
+                .toString();
 
             // Assert that the encoded parameters match the expected value.
             expect(params).toBe(encodedParams);
@@ -238,20 +233,24 @@ describe('Abi - Function & Event', () => {
          * Test case for failed parameters encoding.
          *
          * @test
-         *
+         */
         test('should throw an error for invalid encoding', () => {
             const abiTypes = ['uint256', 'address'];
             const values = ['123', '0x1567890123456789012345678901234567890']; // the address is invalid
 
+            const typesParam = parseAbiParameters(abiTypes.join(', '));
+
             // Expect the function to throw an error with the specific message
-            expect(() => abi.encodeParams(abiTypes, values)).toThrowError(
-                InvalidAbiDataToEncodeOrDecode
-            );
+            expect(() =>
+                ABI.of([...typesParam], values)
+                    .toHex()
+                    .toString()
+            ).toThrowError(InvalidAbiDataToEncodeOrDecode);
         });
 
         /**
          * Invalid function
-         *
+         */
         test('Invalid function', () => {
             expect(() => new ABIFunction('INVALID_VALUE')).toThrowError(
                 InvalidAbiItem
@@ -260,7 +259,7 @@ describe('Abi - Function & Event', () => {
 
         /**
          * Invalid decode and encode
-         *
+         */
         test('Invalid decode and encode', () => {
             const myFunction = new ABIFunction(functions[0].full);
 
@@ -278,12 +277,12 @@ describe('Abi - Function & Event', () => {
 
     /**
      * Events
-     *
+     */
     describe('Events', () => {
         /**
          * Encode and Decode.
          * Test with each event in each format.
-         *
+         */
         test('Encode inputs AND Decode event log', () => {
             // Create an event from each format and compare between format (test if conversions are correct)
             events
@@ -362,7 +361,7 @@ describe('Abi - Function & Event', () => {
 
         /**
          * Invalid event
-         *
+         */
         test('Invalid event', () => {
             expect(() => new ABIEvent('INVALID_VALUE')).toThrowError(
                 InvalidAbiItem
@@ -371,7 +370,7 @@ describe('Abi - Function & Event', () => {
 
         /**
          * Invalid decode and encode
-         *
+         */
         test('Invalid decode and encode', () => {
             const myEvent = new ABIEvent(events[0].full);
 
@@ -391,7 +390,7 @@ describe('Abi - Function & Event', () => {
 
         /**
          * Encode Event topics test cases
-         *
+         */
         topicsEventTestCases.forEach(
             ({ event, valuesToEncode, expectedTopics }) => {
                 test(`Encode Event topics - ${
@@ -411,7 +410,7 @@ describe('Abi - Function & Event', () => {
 
         /**
          * Invalid Event topics test cases
-         *
+         */
         invalidTopicsEventTestCases.forEach(
             ({ event, valuesToEncode, expectedError }) => {
                 test(`Encode Event topics - ${stringifyData(event)}`, () => {
@@ -428,4 +427,3 @@ describe('Abi - Function & Event', () => {
         );
     });
 });
-*/

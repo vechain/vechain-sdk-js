@@ -12,7 +12,7 @@ import {
     Hex,
     ThorId,
     TransactionHandler,
-    abi,
+    ABI,
     Revision,
     vechain_sdk_core_ethers,
     type Transaction,
@@ -461,16 +461,16 @@ class TransactionsModule {
     ): string {
         // Error selector
         if (encodedRevertReason.startsWith(ERROR_SELECTOR))
-            return abi.decode<string>(
+            return ABI.ofEncoded(
                 'string',
                 `0x${encodedRevertReason.slice(ERROR_SELECTOR.length)}`
-            );
+            ).getFirstDecodedValue();
         // Panic selector
         else if (encodedRevertReason.startsWith(PANIC_SELECTOR)) {
-            const decoded = abi.decode<string>(
+            const decoded = ABI.ofEncoded(
                 'uint256',
                 `0x${encodedRevertReason.slice(PANIC_SELECTOR.length)}`
-            );
+            ).getFirstDecodedValue<string>();
             return `Panic(0x${parseInt(decoded).toString(16).padStart(2, '0')})`;
         }
 

@@ -1,7 +1,7 @@
 // https://docs.soliditylang.org/en/v0.8.16/control-structures.html#error-handling-assert-require-revert-and-exceptions
 // builtin errors in solidity, Error(string) and Panic(uint256)
 
-import { abi } from '@vechain/sdk-core';
+import { ABI } from '@vechain/sdk-core';
 import { SOLIDITY_ERROR_SELECTOR, SOLIDITY_PANIC_SELECTOR } from './const';
 
 /**
@@ -20,20 +20,22 @@ function decodeRevertReason(data: string): string | undefined {
     // Check if the revert reason starts with the error selector
     if (data.startsWith(SOLIDITY_ERROR_SELECTOR))
         // Decode the error message from the remaining data
-        return abi.decode(
+        return ABI.ofEncoded(
             'string',
             '0x' + data.slice(SOLIDITY_ERROR_SELECTOR.length)
-        );
+        )
+            .toHex()
+            .toString();
 
     if (data.startsWith(SOLIDITY_PANIC_SELECTOR)) {
         // Decode the panic code and format it as a string
-        const decoded = abi.decode(
+        const decoded = ABI.ofEncoded(
             'uint256',
             '0x' + data.slice(SOLIDITY_PANIC_SELECTOR.length)
-        );
-        return `Panic(0x${parseInt(decoded as string)
-            .toString(16)
-            .padStart(2, '0')})`;
+        )
+            .toHex()
+            .toString();
+        return `Panic(0x${parseInt(decoded).toString(16).padStart(2, '0')})`;
     }
 }
 

@@ -2,7 +2,6 @@ import {
     InvalidAbiDataToEncodeOrDecode,
     InvalidOperation
 } from '@vechain/sdk-errors';
-import { ParamType, type BytesLike } from 'ethers';
 import {
     decodeAbiParameters,
     encodeAbiParameters,
@@ -231,41 +230,4 @@ class ABI implements VeChainDataModel<ABI> {
     }
 }
 
-// Backwards compatibility, ethersAbi should be removed as part of #1184
-const ethersAbi = {
-    /* encode: <ValueType>(type: string | ParamType, value: ValueType): string =>
-        ABI.of(
-            type instanceof ParamType
-                ? // This condition is here to enable compatibility with ethers regarding tuple[] types.
-                  type.format('full').replace(' list', '')
-                : type,
-            [value]
-        )
-            .toHex()
-            .toString(), */
-    encodeParams: (types: string[] | ParamType[], values: string[]): string => {
-        const stringTypes =
-            types instanceof ParamType
-                ? types.map((type) =>
-                      (type as ParamType).format('full').replace(' list', '')
-                  )
-                : types;
-        const typesParam = parseAbiParameters(stringTypes.join(', '));
-        return ABI.of([...typesParam], values)
-            .toHex()
-            .toString();
-    },
-    decode: <ReturnType>(
-        types: string | ParamType,
-        data: BytesLike
-    ): ReturnType =>
-        ABI.ofEncoded(
-            types instanceof ParamType
-                ? // This condition is here to enable compatibility with ethers regarding tuple[] types.
-                  types.format('full').replace(' list', '')
-                : types,
-            data
-        ).getFirstDecodedValue()
-};
-
-export { ABI, ethersAbi };
+export { ABI };
