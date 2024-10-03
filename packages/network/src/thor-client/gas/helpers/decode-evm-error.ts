@@ -23,18 +23,14 @@ function decodeRevertReason(data: string): string | undefined {
         return ABI.ofEncoded(
             'string',
             '0x' + data.slice(SOLIDITY_ERROR_SELECTOR.length)
-        )
-            .toHex()
-            .toString();
+        ).getFirstDecodedValue();
 
     if (data.startsWith(SOLIDITY_PANIC_SELECTOR)) {
         // Decode the panic code and format it as a string
         const decoded = ABI.ofEncoded(
             'uint256',
             '0x' + data.slice(SOLIDITY_PANIC_SELECTOR.length)
-        )
-            .toHex()
-            .toString();
+        ).getFirstDecodedValue<string>();
         return `Panic(0x${parseInt(decoded).toString(16).padStart(2, '0')})`;
     }
 }
