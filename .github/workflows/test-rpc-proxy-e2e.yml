@@ -1,0 +1,25 @@
+name: Test E2E RPC Proxy
+
+on:
+  workflow_call:
+
+jobs:
+  build:
+    name: Test RPC Proxy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Install & Patch packages
+        run: yarn install
+
+      - name: Run E2E RPC Proxy tests
+        run: |
+          cd packages/rpc-proxy
+          jest ./tests/rpc_proxy.solo.test.ts
