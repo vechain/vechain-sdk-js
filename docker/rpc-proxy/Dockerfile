@@ -38,8 +38,11 @@ COPY --from=builder /app/packages/logging/dist /app/packages/logging/dist
 COPY --from=builder /app/packages/logging/package.json /app/packages/logging/package.json
 COPY --from=builder /app/packages/errors/dist /app/packages/errors/dist
 COPY --from=builder /app/packages/errors/package.json /app/packages/errors/package.json
-## node_modules
-COPY --from=builder /app/node_modules /app/node_modules
+## Just PROD dependencies
+COPY --from=builder /app/package.json /app/package.json
+COPY --from=builder /app/yarn.lock /app/yarn.lock
+WORKDIR /app
+RUN yarn workspace @vechain/sdk-rpc-proxy install --production --ignore-scripts
 
 # Create a new user to run the app so we do not use root
 RUN adduser -D rpc-proxy-user
@@ -49,4 +52,4 @@ USER rpc-proxy-user
 ENV RUNNING_WITH_DOCKER=true
 
 # Set the default command to use node to run the app
-CMD ["node", "/app/packages/rpc-proxy/dist/index.js"]
+CMD ["node", "packages/rpc-proxy/dist/index.js"]

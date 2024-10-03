@@ -13,14 +13,14 @@
     "test": "jest"
   },
   "dependencies": {
-    "@vechain/sdk-network": "1.0.0-beta.32",
-    "typescript": "^5.3.3"
+    "@vechain/sdk-network": "1.0.0-beta.32"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
     "jest": "^29.7.0",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
-    "tsup": "^8.3.0"
+    "tsup": "^8.3.0",
+    "typescript": "^5.3.3"
   }
 }
