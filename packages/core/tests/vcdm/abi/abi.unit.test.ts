@@ -30,15 +30,16 @@ describe('Abi - encode & decode', () => {
     test('encode / decode single parameter', () => {
         // Encode and Decode - NO Errors
         encodedDecodedValues.forEach((encodedDecodedValue) => {
-            const encoded = ABI.of(
-                encodedDecodedValue.type,
-                encodedDecodedValue.value as unknown[]
-            ).toHex();
+            const encoded = ABI.of(encodedDecodedValue.type, [
+                encodedDecodedValue.value
+            ])
+                .toHex()
+                .toString();
 
             const decoded = ABI.ofEncoded(
                 encodedDecodedValue.type,
                 encodedDecodedValue.encoded
-            );
+            ).getFirstDecodedValue();
 
             expect(encoded).toBe(encodedDecodedValue.encoded);
 
@@ -55,7 +56,10 @@ describe('Abi - encode & decode', () => {
         // Encode and Decode - Errors
         encodedDecodedInvalidValues.forEach((encodedDecodedValue) => {
             expect(() =>
-                ABI.of(encodedDecodedValue.type, encodedDecodedValue.value as unknown as unknown[]).toHex()
+                ABI.of(
+                    encodedDecodedValue.type,
+                    encodedDecodedValue.value as unknown as unknown[]
+                ).toHex()
             ).toThrowError(InvalidAbiDataToEncodeOrDecode);
 
             expect(() =>
@@ -115,7 +119,7 @@ describe('Abi - encode & decode', () => {
             ]
         ]);
         
-    });*/
+    }); */
 });
 
 /**

@@ -1,5 +1,4 @@
-import { type ParamType } from 'ethers';
-import { AbiParameter } from 'viem';
+import { type AbiParameter } from 'viem';
 
 /**
  * Represents the parameters required for deployment.
