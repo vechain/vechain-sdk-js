@@ -1,11 +1,11 @@
-name: Test E2E RPC Proxy
+name: E2E RPC Proxy test
 
 on:
   workflow_call:
 
 jobs:
   build:
-    name: Test RPC Proxy
+    name: E2E RPC Proxy test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

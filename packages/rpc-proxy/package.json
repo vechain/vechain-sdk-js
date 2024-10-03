@@ -32,7 +32,7 @@
     "lint": "eslint --ext .ts src --ext .ts",
     "format": "prettier --write src/**/*.ts",
     "start": "node dist/index.js",
-    "test:e2e": "cross-env DEBUG=\"testcontainers*\" jest ./tests/rpc_proxy.solo.test.ts",
+    "test:e2e": "cross-env DEBUG=\"testcontainers*\" jest tests/e2e_rpc_proxy.solo.test.ts",
     "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
     "test:integration": "rm -rf ./coverageIntegration && jest --coverage --coverageDirectory=coverageIntegration --group=integration",
     "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit",
