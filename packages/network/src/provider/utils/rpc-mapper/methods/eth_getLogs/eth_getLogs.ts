@@ -90,9 +90,9 @@ const ethGetLogs = async (
         return formatToLogsRPC(logs);
     } catch (e) {
         throw new JSONRPCInternalError(
-            'ethGetLogs()',
+            'eth_getLogs()',
             -32603,
-            'Method "ethGetLogs" failed.',
+            'Method "eth_getLogs" failed.',
             {
                 params: stringifyData(params),
                 url: thorClient.httpClient.baseURL,

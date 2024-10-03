@@ -11,7 +11,7 @@ const netListening = async (thorClient: ThorClient): Promise<boolean> => {
         return await thorClient.nodes.isHealthy();
     } catch (e) {
         throw new JSONRPCInternalError(
-            'net_listening',
+            'net_listening()',
             -32603,
             'Method "net_listening" failed.',
             {

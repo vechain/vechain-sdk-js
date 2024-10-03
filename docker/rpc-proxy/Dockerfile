@@ -28,6 +28,7 @@ FROM node:20.17.0-alpine3.20 AS runner
 ## rpc-proxy
 COPY --from=builder /app/packages/rpc-proxy/dist /app/packages/rpc-proxy/dist
 COPY --from=builder /app/packages/rpc-proxy/package.json /app/packages/rpc-proxy/package.json
+COPY --from=builder /app/packages/rpc-proxy/solo-config.json /app/packages/rpc-proxy/solo-config.json
 ## SDK dependencies
 COPY --from=builder /app/packages/network/dist /app/packages/network/dist
 COPY --from=builder /app/packages/network/package.json /app/packages/network/package.json
