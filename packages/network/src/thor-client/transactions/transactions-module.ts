@@ -1,5 +1,5 @@
 import {
-    abi,
+    ABI,
     Hex,
     HexUInt,
     Revision,
