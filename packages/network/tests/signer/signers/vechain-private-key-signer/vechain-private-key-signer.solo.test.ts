@@ -4,8 +4,8 @@ import {
     Address,
     Clause,
     HexUInt,
-    type TransactionClause,
-    TransactionHandler
+    Transaction,
+    type TransactionClause
 } from '@vechain/sdk-core';
 import {
     ProviderInternalBaseWallet,
@@ -94,14 +94,14 @@ describe('VeChain base signer tests - solo', () => {
                                 origin.address
                             )
                         );
-                        const signedTx = TransactionHandler.decode(
+                        const signedTx = Transaction.decode(
                             HexUInt.of(signedRawTx.slice(2)).bytes,
                             true
                         );
 
                         expect(signedTx).toBeDefined();
                         expect(signedTx.body).toMatchObject(expected.body);
-                        expect(signedTx.origin).toBe(
+                        expect(signedTx.origin.toString()).toBe(
                             Address.checksum(HexUInt.of(origin.address))
                         );
                         expect(signedTx.isDelegated).toBe(isDelegated);
@@ -282,14 +282,14 @@ describe('VeChain base signer tests - solo', () => {
                     TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
                 )
             );
-            const signedTx = TransactionHandler.decode(
+            const signedTx = Transaction.decode(
                 HexUInt.of(signedRawTx.slice(2)).bytes,
                 true
             );
 
             expect(signedTx).toBeDefined();
             expect(signedTx.body.gas).toEqual(6000000);
-            expect(signedTx.origin).toBe(
+            expect(signedTx.origin.toString()).toBe(
                 Address.checksum(
                     HexUInt.of(
                         TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address

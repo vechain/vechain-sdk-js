@@ -10,7 +10,7 @@ import {
     waitForTransactionTestCases
 } from './fixture';
 import { TEST_ACCOUNTS } from '../../fixture';
-import { HexUInt, Transaction, TransactionHandler } from '@vechain/sdk-core';
+import { HexUInt, Transaction } from '@vechain/sdk-core';
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { THOR_SOLO_URL, ThorClient } from '../../../src';
 
@@ -36,7 +36,7 @@ describe('ThorClient - Transactions Module', () => {
             );
 
             // Create the unsigned transfer transaction
-            const tx = new Transaction({
+            const tx = Transaction.of({
                 ...transferTransactionBody,
                 gas: gasResult.totalGas,
                 nonce: transactionNonces
@@ -67,12 +67,11 @@ describe('ThorClient - Transactions Module', () => {
                     );
 
                     // Create the signed transfer transaction
-                    const tx = TransactionHandler.sign(
-                        {
-                            ...transferTransactionBody,
-                            gas: gasResult.totalGas,
-                            nonce: options.nonce
-                        },
+                    const tx = Transaction.of({
+                        ...transferTransactionBody,
+                        gas: gasResult.totalGas,
+                        nonce: options.nonce
+                    }).sign(
                         HexUInt.of(
                             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
                                 .privateKey
@@ -115,13 +114,12 @@ describe('ThorClient - Transactions Module', () => {
             );
 
             // Create the signed transfer transaction
-            const tx = TransactionHandler.sign(
-                {
-                    ...transferTransactionBodyValueAsNumber,
-                    gas: gasResult.totalGas,
-                    nonce: transactionNonces
-                        .sendTransactionWithANumberAsValueInTransactionBody[0]
-                },
+            const tx = Transaction.of({
+                ...transferTransactionBodyValueAsNumber,
+                gas: gasResult.totalGas,
+                nonce: transactionNonces
+                    .sendTransactionWithANumberAsValueInTransactionBody[0]
+            }).sign(
                 HexUInt.of(
                     TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
                 ).bytes
@@ -156,12 +154,11 @@ describe('ThorClient - Transactions Module', () => {
                         );
 
                         // Create the signed transfer transaction
-                        const tx = TransactionHandler.sign(
-                            {
-                                ...transferTransactionBody,
-                                gas: gasResult.totalGas,
-                                nonce: options.nonce
-                            },
+                        const tx = Transaction.of({
+                            ...transferTransactionBody,
+                            gas: gasResult.totalGas,
+                            nonce: options.nonce
+                        }).sign(
                             HexUInt.of(
                                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
                                     .privateKey

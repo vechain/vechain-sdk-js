@@ -1,4 +1,4 @@
-import { type TransactionRPC } from '../transactions';
+import { type TransactionRPC } from '../transactions/types';
 
 /**
  * Return type of block header for RPC standard.

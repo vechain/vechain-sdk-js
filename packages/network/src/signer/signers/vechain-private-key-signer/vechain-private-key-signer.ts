@@ -7,7 +7,6 @@ import {
     Secp256k1,
     Transaction,
     type TransactionBody,
-    TransactionHandler,
     Txt,
     vechain_sdk_core_ethers
 } from '@vechain/sdk-core';
@@ -15,7 +14,7 @@ import {
     InvalidSecp256k1PrivateKey,
     JSONRPCInvalidParams
 } from '@vechain/sdk-errors';
-import { RPC_METHODS } from '../../../provider';
+import { RPC_METHODS } from '../../../provider/utils/const/rpc-mapper/rpc-methods';
 import {
     DelegationHandler,
     type SignTransactionOptions,
@@ -25,7 +24,7 @@ import {
     type AvailableVeChainProviders,
     type TransactionRequestInput
 } from '../types';
-import { VeChainAbstractSigner } from '../vechain-abstract-signer';
+import { VeChainAbstractSigner } from '../vechain-abstract-signer/vechain-abstract-signer';
 
 /**
  * Basic VeChain signer with the private key.
@@ -252,7 +251,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
                   delegator
               )
             : Hex.of(
-                  TransactionHandler.sign(populatedTransaction, this.privateKey)
+                  Transaction.of(populatedTransaction).sign(this.privateKey)
                       .encoded
               ).toString();
     }
@@ -278,13 +277,12 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         // Address of the origin account
         const originAddress = Address.ofPrivateKey(originPrivateKey).toString();
 
-        const unsignedTx = new Transaction(unsignedTransactionBody);
+        const unsignedTx = Transaction.of(unsignedTransactionBody);
 
         // Sign transaction with origin private key and delegator private key
         if (delegatorOptions?.delegatorPrivateKey !== undefined)
             return Hex.of(
-                TransactionHandler.signWithDelegator(
-                    unsignedTransactionBody,
+                Transaction.of(unsignedTransactionBody).signWithDelegator(
                     originPrivateKey,
                     HexUInt.of(delegatorOptions?.delegatorPrivateKey).bytes
                 ).encoded
@@ -301,7 +299,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
 
         // Sign transaction with origin private key
         const originSignature = Secp256k1.sign(
-            unsignedTx.getSignatureHash(),
+            unsignedTx.getSignatureHash().bytes,
             originPrivateKey
         );
 
@@ -314,7 +312,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
 
         // Return new signed transaction
         return Hex.of(
-            new Transaction(unsignedTx.body, signature).encoded
+            Transaction.of(unsignedTx.body, signature).encoded
         ).toString();
     }
 }

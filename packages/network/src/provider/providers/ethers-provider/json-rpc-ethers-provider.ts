@@ -1,5 +1,5 @@
 import { vechain_sdk_core_ethers } from '@vechain/sdk-core';
-import { type HardhatVeChainProvider } from '../hardhat-provider';
+import { type HardhatVeChainProvider } from '../hardhat-provider/hardhat-provider';
 import {
     type JsonRpcError,
     type JsonRpcPayload,

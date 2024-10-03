@@ -109,7 +109,7 @@ This section provides guidance on conducting integration tests using a local tho
 ### Setting Up
 
 The integration tests interact with a local thor-solo node.
-This node uses the `thor-solo/instance-a4988aba7aea69f6-v3/main.db` data directory,
+This node uses the `docker/thor/data/instance-a4988aba7aea69f6-v3/main.db` data directory,
 which is pre-configured with a block history and 20 seeded accounts for testing.
 
 ### Running Tests

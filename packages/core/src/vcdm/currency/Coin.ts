@@ -36,7 +36,7 @@ abstract class Coin implements Currency {
      * @return {Txt} The code object
      *
      * @remarks Since currency codes likely use Unicode composite symbols,
-     * {@link Txt} type enforce the reresentation of the code is normalized.
+     * {@link Txt} type enforce the representation of the code is normalized.
      */
     get code(): Txt {
         return this._code;
@@ -104,7 +104,7 @@ abstract class Coin implements Currency {
      * Determines if this Currency object is equal to another Currency object.
      *
      * @param {Currency} that - The Currency object to compare with the current instance.
-     * @return {boolean} - Return `true` if the objects are considered equal, otherwise `false`.
+     * @return {boolean} - `true` if the objects are considered equal, otherwise `false`.
      */
     isEqual(that: Currency): boolean {
         try {

@@ -252,8 +252,7 @@ const transactionBody = {
 
 // 5 - Normal signature (NO delegation)
 
-const rawNormalSigned = TransactionHandler.sign(
-    transactionBody,
+const rawNormalSigned = Transaction.of(transactionBody).sign(
     HexUInt.of(senderAccount.privateKey).bytes
 ).encoded;
 
@@ -264,7 +263,7 @@ const send = await thorSoloClient.transactions.sendRawTransaction(
 );
 expect(send).toBeDefined();
 expect(send).toHaveProperty('id');
-expect(Hex.isValid0x(send.id)).toBe(true);
+expect(HexUInt.isValid0x(send.id)).toBe(true);
 
 // 7 - Get transaction details and receipt
 
@@ -359,8 +358,9 @@ const delegatedTransactionBody = {
 
 // 5 - Normal signature and delegation signature
 
-const rawDelegatedSigned = TransactionHandler.signWithDelegator(
-    delegatedTransactionBody,
+const rawDelegatedSigned = Transaction.of(
+    delegatedTransactionBody
+).signWithDelegator(
     HexUInt.of(senderAccount.privateKey).bytes,
     HexUInt.of(delegateAccount.privateKey).bytes
 ).encoded;
@@ -372,7 +372,7 @@ const send = await thorSoloClient.transactions.sendRawTransaction(
 );
 expect(send).toBeDefined();
 expect(send).toHaveProperty('id');
-expect(Hex.isValid0x(send.id)).toBe(true);
+expect(HexUInt.isValid0x(send.id)).toBe(true);
 
 // 7 - Get transaction details and receipt
 
@@ -418,7 +418,7 @@ const receiverAccount = {
     ).bytes
 };
 
-// 2 - Create transaction clauses and calcolate gas
+// 2 - Create transaction clauses and compute gas
 const clauses = [
     {
         to: receiverAccount.address,
@@ -453,8 +453,7 @@ const transactionBody = {
 };
 
 // 5 - Sign transaction
-const rawNormalSigned = TransactionHandler.sign(
-    transactionBody,
+const rawNormalSigned = Transaction.of(transactionBody).sign(
     senderAccount.privateKey
 ).encoded;
 

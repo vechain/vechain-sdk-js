@@ -1,12 +1,20 @@
-import { EventEmitter } from 'events';
-import {
-    type EIP1193ProviderMessage,
-    type EIP1193RequestArguments
-} from '../../eip1193';
+import { HexInt } from '@vechain/sdk-core';
 import {
     JSONRPCInvalidParams,
     JSONRPCMethodNotFound
 } from '@vechain/sdk-errors';
+import { EventEmitter } from 'events';
+import { type VeChainSigner } from '../../../signer';
+import {
+    type CompressedBlockDetail,
+    type ThorClient
+} from '../../../thor-client';
+import { type EventPoll, Poll, vnsUtils } from '../../../utils';
+import {
+    type EIP1193ProviderMessage,
+    type EIP1193RequestArguments
+} from '../../eip1193';
+import { type ProviderInternalWallet } from '../../helpers';
 import {
     ethGetLogs,
     POLLING_INTERVAL,
@@ -18,14 +26,6 @@ import {
     type SubscriptionEvent,
     type SubscriptionManager
 } from './types';
-import { HexInt } from '@vechain/sdk-core';
-import { type EventPoll, Poll, vnsUtils } from '../../../utils';
-import {
-    type CompressedBlockDetail,
-    type ThorClient
-} from '../../../thor-client';
-import { type ProviderInternalWallet } from '../../helpers';
-import type { VeChainSigner } from '../../../signer';
 
 /**
  * Our core provider class for VeChain

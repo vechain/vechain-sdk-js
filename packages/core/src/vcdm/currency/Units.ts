@@ -62,7 +62,7 @@ namespace Units {
      * Convert a value expressed in {@link Units.wei} as a string
      * representing the same value expressed in {@link Units.ether}.
      *
-     * @param {FixedPointNumber} wei The value in {@link Units.wei}.
+     * @param {FixedPointNumber} wei - The value in {@link Units.wei}.
      * @return {string} The formatted string representing the value in
      * {@link Units.ether}.
      *
@@ -101,7 +101,7 @@ namespace Units {
      * Parse the decimal string expressing a value in {@link Units.ether}
      * to return a {@link FixedPointNumber} value expressed in {@link Units.wei}.
 
-     * @param ether The representation of a numeric value expressed
+     * @param ether = The representation of a numeric value expressed
      * in {@link Units.ether}.
      * @return The equivalent value in {@link Units.wei}.
      *
@@ -120,9 +120,9 @@ namespace Units {
      * Parse the decimal string expressing a value in the named `unit`
      * ro return a {@link FixedPointNumber} value expressed in {@link Units.wei}.
 
-     * @param {string} exp The representation of a numeric value expressed
+     * @param {string} exp - The representation of a numeric value expressed
      * in {@link Units.ether}.
-     * @param {Units} unit the order of magnitude to use to parse the `exp`
+     * @param {Units} unit - The order of magnitude to use to parse the `exp`
      * representation.
      *
      * @throws {InvalidDataType} If `exp` is not a numeric expression.

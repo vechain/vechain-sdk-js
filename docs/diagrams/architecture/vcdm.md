@@ -183,13 +183,11 @@ classDiagram
         +Txt CODE$
         +bigint wei
         +VET of(bigint|number|string|FixedPointNumber value)$
-        +Clause transferTo(Address: address, ClauseOptions?: clauseOptionsre)
     }
     class VTHO {
         +Txt CODE$
         +bigint wei
         +VTHO of(bigint|number|string|FixedPointNumber value)$
-        +Clause transferTokenTo(Address address, Address to, ClauseOptions? clauseOptions)
     }
     ABI <|-- ABIContract
     ABI <|-- ABIItem

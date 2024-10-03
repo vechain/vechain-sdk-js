@@ -1,6 +1,11 @@
 import { expect } from 'expect';
 import { THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
-import { Address, Clause, TransactionClause, VET } from '@vechain/sdk-core';
+import {
+    Address,
+    Clause,
+    type TransactionClause,
+    VET
+} from '@vechain/sdk-core';
 import { stringifyData } from '@vechain/sdk-errors';
 
 // START_SNIPPET: SimulationSnippet

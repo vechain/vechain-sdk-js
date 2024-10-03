@@ -1,6 +1,6 @@
 {
   "name": "@vechain/sdk-hardhat-plugin",
-  "version": "1.0.0-beta.31",
+  "version": "1.0.0-beta.32",
   "description": "This module allows to create smart contracts and interact with them using the VeChain SDK and Hardhat",
   "author": "VeChain Foundation",
   "license": "MIT",
@@ -26,8 +26,6 @@
     "LICENSE"
   ],
   "scripts": {
-    "start-thor-solo": "echo 'Starting thor solo node ...' && docker compose up -d --wait && echo '\nThor solo node started ...'",
-    "stop-thor-solo": "echo 'Stopping thor solo node ...' && docker compose down && echo 'Thor solo node stopped ...'",
     "build": "rm -rf ./dist && tsup-node src/index.ts --format cjs,esm --dts",
     "lint": "eslint --ext .ts src --ext .ts tests",
     "format": "prettier --write src/**/*.ts tests/**/*.ts",
@@ -37,9 +35,9 @@
     "test:solo": "(yarn start-thor-solo && yarn test && yarn stop-thor-solo) || yarn stop-thor-solo"
   },
   "dependencies": {
-    "@vechain/sdk-errors": "1.0.0-beta.31",
-    "@vechain/sdk-ethers-adapter": "1.0.0-beta.31",
-    "@vechain/sdk-network": "1.0.0-beta.31"
+    "@vechain/sdk-errors": "1.0.0-beta.32",
+    "@vechain/sdk-ethers-adapter": "1.0.0-beta.32",
+    "@vechain/sdk-network": "1.0.0-beta.32"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-ethers": "^3.0.8"

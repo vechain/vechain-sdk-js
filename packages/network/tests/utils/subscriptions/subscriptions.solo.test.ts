@@ -5,9 +5,9 @@ import {
     Clause,
     Hex,
     HexUInt,
-    type TransactionClause,
-    TransactionHandler,
-    Units
+    Transaction,
+    Units,
+    type TransactionClause
 } from '@vechain/sdk-core';
 import { type AbiEvent } from 'abitype';
 import {
@@ -234,7 +234,7 @@ describe('Subscriptions Solo network tests', () => {
 
             // Send the signed transaction to the blockchain
             await thorSoloClient.transactions.sendTransaction(
-                TransactionHandler.decode(HexUInt.of(raw.slice(2)).bytes, true)
+                Transaction.decode(HexUInt.of(raw.slice(2)).bytes, true)
             );
 
             // Wait for the WebSocket message or a timeout
@@ -328,7 +328,7 @@ describe('Subscriptions Solo network tests', () => {
 
         // Send the signed transaction to the blockchain
         await thorSoloClient.transactions.sendTransaction(
-            TransactionHandler.decode(HexUInt.of(raw.slice(2)).bytes, true)
+            Transaction.decode(HexUInt.of(raw.slice(2)).bytes, true)
         );
 
         // Wait for the WebSocket message or a timeout

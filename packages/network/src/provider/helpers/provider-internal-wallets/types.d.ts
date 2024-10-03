@@ -1,8 +1,8 @@
-import { type SignTransactionOptions } from '../../../thor-client';
+import { type SignTransactionOptions } from '../../../thor-client/transactions/types';
 import {
     type AvailableVeChainProviders,
     type VeChainSigner
-} from '../../../signer';
+} from '../../../signer/signers';
 
 /**
  * Represent a single account in a provider internal wallet.

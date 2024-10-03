@@ -1,13 +1,68 @@
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { Address, Revision, ThorId } from '@vechain/sdk-core';
+import {
+    Address,
+    FixedPointNumber,
+    Revision,
+    ThorId,
+    Units,
+    VET,
+    VTHO
+} from '@vechain/sdk-core';
 import { buildQuery, thorest } from '../../utils';
 import {
-    type AccountDetail,
+    type AccountData,
     type AccountInputOptions,
     type ResponseBytecode,
     type ResponseStorage
 } from './types';
 import { type ThorClient } from '../thor-client';
+
+/**
+ * Represents detailed account information.
+ *
+ * Implements the {@link AccountData} interface.
+ */
+class AccountDetail implements AccountData {
+    /**
+     * Return the hexadecimal expression of the wei VET value of the balance.
+     */
+    readonly balance: string;
+
+    /**
+     * Return the hexadecimal expression of the wei VTHO value of the energy balance.
+     */
+    readonly energy: string;
+
+    /**
+     * Return `true` if the account is a smart contract, otherwise `false`.
+     */
+    readonly hasCode: boolean;
+
+    /**
+     * Returns the balance of the account in {@link VET}.
+     */
+    get vet(): VET {
+        return VET.of(Units.formatEther(FixedPointNumber.of(this.balance)));
+    }
+
+    /**
+     * Returns the energy balance of the account in {@link VTHO}.
+     */
+    get vtho(): VTHO {
+        return VTHO.of(Units.formatEther(FixedPointNumber.of(this.energy)));
+    }
+
+    /**
+     * Constructs a new instance of the class.
+     *
+     * @param {AccountData} accountData - The data to initialize the account with.
+     */
+    constructor(accountData: AccountData) {
+        this.balance = accountData.balance;
+        this.energy = accountData.energy;
+        this.hasCode = accountData.hasCode;
+    }
+}
 
 /**
  * The `AccountModule` class provides methods to interact with account-related endpoints
@@ -55,13 +110,15 @@ class AccountsModule {
             );
         }
 
-        return (await this.thor.httpClient.http(
-            'GET',
-            thorest.accounts.get.ACCOUNT_DETAIL(address),
-            {
-                query: buildQuery({ revision: options?.revision })
-            }
-        )) as AccountDetail;
+        return new AccountDetail(
+            (await this.thor.httpClient.http(
+                'GET',
+                thorest.accounts.get.ACCOUNT_DETAIL(address),
+                {
+                    query: buildQuery({ revision: options?.revision })
+                }
+            )) as AccountData
+        );
     }
 
     /**
@@ -166,4 +223,4 @@ class AccountsModule {
     }
 }
 
-export { AccountsModule };
+export { AccountDetail, AccountsModule };

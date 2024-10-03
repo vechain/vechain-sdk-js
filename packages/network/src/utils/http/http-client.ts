@@ -1,9 +1,9 @@
+import { DEFAULT_HTTP_TIMEOUT } from '../const/client/http-client';
 import {
     type HttpClientOptions,
     type HttpParams,
     type IHttpClient
 } from './types';
-import { DEFAULT_HTTP_TIMEOUT } from '../index';
 import { InvalidHTTPRequest } from '@vechain/sdk-errors';
 
 /**

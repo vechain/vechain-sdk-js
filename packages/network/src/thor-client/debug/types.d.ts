@@ -20,7 +20,7 @@ import {
     type UnigramNameConfig,
     type UnigramNameReturnType
 } from './types-by-name';
-import { type SimulateTransactionOptions } from '../transactions';
+import { type SimulateTransactionOptions } from '../transactions/types';
 
 /**
  * Type for target of TraceTransactionClause.

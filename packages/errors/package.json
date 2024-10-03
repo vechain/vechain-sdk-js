@@ -1,6 +1,6 @@
 {
   "name": "@vechain/sdk-errors",
-  "version": "1.0.0-beta.31",
+  "version": "1.0.0-beta.32",
   "description": "This module is dedicated to managing and customizing errors within the VeChain SDK",
   "author": "VeChain Foundation",
   "license": "MIT",
@@ -24,8 +24,6 @@
     "LICENSE"
   ],
   "scripts": {
-    "start-thor-solo": "echo 'Starting thor solo node ...' && docker compose up -d --wait && echo '\nThor solo node started ...'",
-    "stop-thor-solo": "echo 'Stopping thor solo node ...' && docker compose down && echo 'Thor solo node stopped ...'",
     "build": "rm -rf ./dist && tsup-node src/index.ts --format cjs,esm --dts",
     "lint": "eslint --ext .ts src --ext .ts tests",
     "format": "prettier --write src/**/*.ts tests/**/*.ts",

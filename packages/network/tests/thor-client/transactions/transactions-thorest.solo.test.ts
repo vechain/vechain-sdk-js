@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { Hex, HexUInt, TransactionHandler } from '@vechain/sdk-core';
+import { TEST_ACCOUNTS } from '../../fixture';
+import { HexUInt, Transaction } from '@vechain/sdk-core';
+import { sendTransactionErrors, simulateTransaction } from './fixture-thorest';
 import { InvalidDataType, stringifyData } from '@vechain/sdk-errors';
 import { THOR_SOLO_URL, ThorClient } from '../../../src';
-import { TEST_ACCOUNTS } from '../../fixture';
-import { sendTransactionErrors, simulateTransaction } from './fixture-thorest';
 
 /**
  * ThorClient class tests.
@@ -74,15 +74,15 @@ describe('ThorClient - Transactions Module', () => {
                 };
 
                 // Normal signature and delegation signature
-                const rawNormalSigned = TransactionHandler.sign(
-                    transactionBody,
+                const rawNormalSigned = Transaction.of(transactionBody).sign(
                     HexUInt.of(
                         TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
                     ).bytes
                 ).encoded;
 
-                const rawDelegatedSigned = TransactionHandler.signWithDelegator(
-                    delegatedTransactionBody,
+                const rawDelegatedSigned = Transaction.of(
+                    delegatedTransactionBody
+                ).signWithDelegator(
                     HexUInt.of(
                         TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
                     ).bytes,
@@ -94,11 +94,11 @@ describe('ThorClient - Transactions Module', () => {
                 for (const raw of [rawNormalSigned, rawDelegatedSigned]) {
                     const send =
                         await thorSoloClient.transactions.sendRawTransaction(
-                            Hex.of(raw).toString()
+                            HexUInt.of(raw).toString()
                         );
                     expect(send).toBeDefined();
                     expect(send).toHaveProperty('id');
-                    expect(Hex.isValid0x(send.id)).toBe(true);
+                    expect(HexUInt.isValid0x(send.id)).toBe(true);
 
                     // 3 - Get transaction AND transaction receipt
                     const transaction =

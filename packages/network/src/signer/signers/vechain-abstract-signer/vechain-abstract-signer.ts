@@ -8,7 +8,7 @@ import {
     type vechain_sdk_core_ethers
 } from '@vechain/sdk-core';
 import { InvalidDataType, JSONRPCInvalidParams } from '@vechain/sdk-errors';
-import { RPC_METHODS } from '../../../provider';
+import { RPC_METHODS } from '../../../provider/utils/const/rpc-mapper/rpc-methods';
 import { type TransactionSimulationResult } from '../../../thor-client';
 import { vnsUtils } from '../../../utils';
 import {

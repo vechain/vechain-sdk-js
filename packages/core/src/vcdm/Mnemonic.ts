@@ -81,7 +81,7 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
 
     /**
      *
-     * @param _that The mnemonic to compare with.
+     * @param that - The mnemonic to compare with.
      */
     public compareTo(_that: Mnemonic): number {
         throw new InvalidOperation(
@@ -102,7 +102,7 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
     /**
      * Convert the number of words to the corresponding strength.
      *
-     * @param numberOfWords The number of words.
+     * @param numberOfWords - The number of words.
      *
      * @returns {number} The corresponding strength.
      *
@@ -173,8 +173,8 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
      * [BIP39 Mnemonic Words](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
      * phrase using the specified wordlist size and random generator.
      *
-     * @param {WordlistSizeType} wordlistSize The number of words to generate the mnemonic.
-     * @param {function} [randomGenerator] The random generator function used to generate the entropy.
+     * @param {WordlistSizeType} wordlistSize - The number of words to generate the mnemonic.
+     * @param {function} [randomGenerator] - The random generator function used to generate the entropy.
      *
      * @returns {Mnemonic} The generated mnemonic.
      *
@@ -216,7 +216,7 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
     /**
      * Check if the given mnemonic words are valid.
      *
-     * @param {string | string[]} words The mnemonic words to check.
+     * @param {string | string[]} words - The mnemonic words to check.
      *
      * @returns {boolean} true if the words are valid, false otherwise.
      *

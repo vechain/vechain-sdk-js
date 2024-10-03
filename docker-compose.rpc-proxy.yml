@@ -1,0 +1,176 @@
+#services:
+#
+#  ...
+#
+#  rpc-proxy:
+#    build:
+#      context: .
+#      dockerfile: docker/rpc-proxy/Dockerfile
+#
+#    # ********* SET HERE THE REQUIRED ENVIRONMENT VARIABLES *********
+#    environment:
+#      - URL= ... the url of the node ...
+#      - PORT={CONTAINER_PORT} ... the port of the node ...
+#      - ACCOUNTS=... the accounts as a list of private keys ... (a space-separated list of private keys)
+#      - MNEMONIC=... the mnemonic of the accounts ... (a space-separated list of mnemonics)
+#      - MNEMONIC_COUNT=... the number of accounts to generate ...
+#      - MNEMONIC_INITIAL_INDEX=... the initial index of the mnemonic ...
+#      - ENABLE_DELEGATION=... true or false ... (if true, the delegation will be enabled)
+#      - DELEGATOR_PRIVATE_KEY=... the private key of the delegator ... (without 0x)
+#      - DELEGATOR_URL=... the url of the delegator ...
+#      - VERBOSE=... true or false ... (if true, the logs will be displayed in the console)
+#      - CONFIGURATION_FILE={CONTAINER_PATH_OF_CUSTOM_CONFIG_FILE} ... the path of the custom configuration file ...
+#
+#    container_name: rpc-proxy
+#
+#    # ********* ADD THE DEPENDENCY ON THE THOR-SOLO SERVICE (IF YOU WANT TO USE THE THOR-SOLO SERVICE) *********
+#    depends_on:
+#      - thor-solo
+#
+#    # ********* MOUNT HERE THE CUSTOM CONFIGURATION FILE *********
+#    volumes:
+#      - "HOST_PATH_OF_CUSTOM_CONFIG_FILE:{CONTAINER_PATH_OF_CUSTOM_CONFIG_FILE}"
+#
+#    # ********* SET HERE THE REQUIRED PORT MAPPING *********
+#    ports:
+#      - "HOST_PORT:{CONTAINER_PORT}"
+
+services:
+  # The Thor solo service
+  thor-solo:
+    container_name: thor-solo
+    image: ${THOR_IMAGE:-ghcr.io/vechain/thor:master-latest}
+    ports:
+      - "8669:8669"
+    command:
+      - solo
+      - --genesis=/node/config/genesis.json
+      - --on-demand
+      - --api-addr=0.0.0.0:8669
+      - --api-cors=*
+      - --txpool-limit-per-account=256
+      - --cache=1024
+      - --verbosity=9
+      - --persist
+    volumes:
+      - type: bind
+        source: ./docker/rpc-proxy/config
+        target: /node/config
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 2048M
+
+  # Default configuration for the RPC proxy service
+  rpc-proxy:
+    build: 
+      context: .
+      dockerfile: docker/rpc-proxy/Dockerfile
+    container_name: rpc-proxy
+    depends_on:
+      - thor-solo
+    ports:
+      - "8545:8545"
+
+  # ********* SOME CUSTOM CONFIGURATION EXAMPLES *********
+
+  # 1. Example of a custom configuration file for the RPC proxy service
+  rpc-proxy-custom-config-file:
+    build: 
+      context: .
+      dockerfile: docker/rpc-proxy/Dockerfile
+    environment:
+      - CONFIGURATION_FILE=/app/packages/rpc-proxy/custom-config.json
+    container_name: rpc-proxy-custom-config-file
+    depends_on:
+      - thor-solo
+    volumes:
+      - "./packages/rpc-proxy/tests/config-files-fixtures/correct-proxy-config-accounts-list-of-private-keys.json:/app/packages/rpc-proxy/custom-config.json"
+    ports:
+      - "8545:8545"
+
+  # 2. Example of a custom parameters for the RPC proxy service
+  rpc-proxy-custom-parameters:
+    build: 
+      context: .
+      dockerfile: docker/rpc-proxy/Dockerfile
+    environment:
+      - PORT=9000
+      - URL=https://testnet.vechain.org
+      - VERBOSE=true
+    container_name: rpc-proxy-custom-parameters
+    depends_on:
+      - thor-solo
+    ports:
+      - "9000:9000"
+
+  # 3. Example of a custom accounts for the RPC proxy service
+  rpc-proxy-custom-accounts:
+    build: 
+      context: .
+      dockerfile: docker/rpc-proxy/Dockerfile
+    environment:
+      - URL=https://testnet.vechain.org
+      - VERBOSE=true
+      - ACCOUNTS=7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158 8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158
+    container_name: rpc-proxy-custom-accounts
+    depends_on:
+      - thor-solo
+    ports:
+      - "8545:8545"
+
+  # 3. Example of a custom mnemonic for the RPC proxy service
+  rpc-proxy-custom-mnemonic:
+    build: 
+      context: .
+      dockerfile: docker/rpc-proxy/Dockerfile
+    environment:
+      - URL=https://testnet.vechain.org
+      - VERBOSE=true
+      - MNEMONIC=expire pair material agent north ostrich fortune level cousin snow mixture nurse
+      - MNEMONIC_COUNT=10
+      - MNEMONIC_INITIAL_INDEX=0
+    container_name: rpc-proxy-custom-mnemonic
+    depends_on:
+      - thor-solo
+    ports:
+      - "8545:8545"
+
+  # 4. Example of a custom delegation by private key for the RPC proxy service
+  rpc-proxy-with-delegation-by-private-key:
+    build: 
+      context: .
+      dockerfile: docker/rpc-proxy/Dockerfile
+    environment:
+      - URL=https://testnet.vechain.org
+      - VERBOSE=true
+      - MNEMONIC=expire pair material agent north ostrich fortune level cousin snow mixture nurse
+      - MNEMONIC_COUNT=10
+      - MNEMONIC_INITIAL_INDEX=0
+      - ENABLE_DELEGATION=true
+      - DELEGATOR_PRIVATE_KEY=7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158
+    container_name: rpc-proxy-with-delegation-by-private-key
+    depends_on:
+      - thor-solo
+    ports:
+      - "8545:8545"
+
+  # 5. Example of a custom delegation by url for the RPC proxy service
+  rpc-proxy-with-delegation-by-url:
+    build: 
+      context: .
+      dockerfile: docker/rpc-proxy/Dockerfile
+    environment:
+      - URL=https://testnet.vechain.org
+      - VERBOSE=true
+      - MNEMONIC=expire pair material agent north ostrich fortune level cousin snow mixture nurse
+      - MNEMONIC_COUNT=10
+      - MNEMONIC_INITIAL_INDEX=0
+      - ENABLE_DELEGATION=true
+      - DELEGATOR_URL=https://sponsor-testnet.vechain.energy/by/269
+    container_name: rpc-proxy-with-delegation-by-url
+    depends_on:
+      - thor-solo
+    ports:
+      - "8545:8545"

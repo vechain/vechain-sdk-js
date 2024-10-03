@@ -6,7 +6,7 @@ import {
     ThorClient
 } from '../../../../../src';
 import { JSONRPCInternalError } from '@vechain/sdk-errors';
-import { Address, VET } from '@vechain/sdk-core';
+import { Address, Clause, VET } from '@vechain/sdk-core';
 
 /**
  * RPC Mapper integration tests for 'eth_estimateGas' method with Solo Network and mocked functionality
@@ -42,8 +42,11 @@ describe('RPC Mapper - eth_estimateGas method tests', () => {
 
             await expect(
                 RPCMethodsMap(thorClient)[RPC_METHODS.eth_estimateGas]([
-                    VET.of(1000).transferTo(
-                        Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed')
+                    Clause.transferVET(
+                        Address.of(
+                            '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'
+                        ),
+                        VET.of(1000)
                     ),
                     'latest'
                 ])

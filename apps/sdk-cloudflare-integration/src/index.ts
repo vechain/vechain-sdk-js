@@ -1,10 +1,10 @@
 import {
     Address,
     Clause,
+    HexUInt,
     networkInfo,
     Secp256k1,
-    TransactionHandler,
-    TransactionUtils,
+    Transaction,
     VET
 } from '@vechain/sdk-core';
 
@@ -18,7 +18,9 @@ export default {
         ];
 
         // 2 - Calculate intrinsic gas of clauses
-        const gas = TransactionUtils.intrinsicGas(clauses);
+        const gas = HexUInt.of(
+            Transaction.intrinsicGas(clauses).wei
+        ).toString();
 
         // 3 - Body of transaction
         const body = {
@@ -36,13 +38,13 @@ export default {
         const privateKey = await Secp256k1.generatePrivateKey();
 
         // 4 - Sign transaction
-        const signedTransaction = TransactionHandler.sign(body, privateKey);
+        const signedTransaction = Transaction.of(body).sign(privateKey);
 
         // 5 - Encode transaction
         const encodedRaw = signedTransaction.encoded;
 
         // 6 - Decode transaction
-        const decodedTx = TransactionHandler.decode(encodedRaw, true);
+        const decodedTx = Transaction.decode(encodedRaw, true);
         return new Response(JSON.stringify(decodedTx));
     }
 };

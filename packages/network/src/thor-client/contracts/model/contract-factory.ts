@@ -1,9 +1,9 @@
 import {
     Clause,
-    type DeployParams,
     HexUInt,
-    type TransactionClause,
-    TransactionHandler
+    Transaction,
+    type DeployParams,
+    type TransactionClause
 } from '@vechain/sdk-core';
 import {
     CannotFindTransaction,
@@ -12,7 +12,7 @@ import {
 import { type Abi } from 'abitype';
 import { signerUtils, type VeChainSigner } from '../../../signer';
 import { type ThorClient } from '../../thor-client';
-import { type SendTransactionResult } from '../../transactions';
+import { type SendTransactionResult } from '../../transactions/types';
 import type { ContractTransactionOptions } from '../types';
 import { Contract } from './contract';
 
@@ -113,7 +113,7 @@ class ContractFactory<TAbi extends Abi> {
 
         // Send the signed transaction to the blockchain
         this.deployTransaction = await this.thor.transactions.sendTransaction(
-            TransactionHandler.decode(HexUInt.of(signedTx.slice(2)).bytes, true)
+            Transaction.decode(HexUInt.of(signedTx.slice(2)).bytes, true)
         );
 
         return this;
