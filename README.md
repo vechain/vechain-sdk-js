@@ -33,7 +33,7 @@ Welcome to the VeChain SDK repository! Here's a breakdown of our organized struc
    - `./packages/rpc-proxy`: This package is designed to bridge the gap between Thor's RESTful API and Ethereum's JSON-RPC.
 - `./scripts`: Enhance your workflow efficiency with our collection of utility scripts. Located here are tools for tasks like automated testing, pre-release preparations, and file validation.
 
-Explore, experiment, and let the VeChain SDK empowers your blockchain adventures!
+Explore, experiment, and let the VeChain SDK empower your blockchain adventures!
 
 ## SDK Development
 
