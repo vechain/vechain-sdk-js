@@ -5,7 +5,6 @@ import {
     InvalidDataType,
     stringifyData
 } from '@vechain/sdk-errors';
-import { ParamType } from 'ethers';
 import { type AbiEvent, type AbiFunction, parseAbiParameters } from 'viem';
 import { ABI, ABIEvent, ABIFunction, Hex } from '../../../src';
 import {
@@ -77,9 +76,7 @@ describe('Abi - encode & decode', () => {
     test('encode/decode more parameters', () => {
         // Example encode of function 2 parameters
         const encoded = ABI.of(
-            ParamType.from(functions[1].objectAbi.outputs[0])
-                .format('full')
-                .replace(' list', ''),
+            [functions[1].objectAbi.outputs[0]],
             [simpleParametersDataForFunction2]
         )
             .toHex()
@@ -87,9 +84,7 @@ describe('Abi - encode & decode', () => {
 
         // Example decode of function 2 parameters
         const decoded = ABI.ofEncoded(
-            ParamType.from(functions[1].objectAbi.outputs[0])
-                .format('full')
-                .replace(' list', ''),
+            [functions[1].objectAbi.outputs[0]],
             encoded
         ).getFirstDecodedValue();
 
