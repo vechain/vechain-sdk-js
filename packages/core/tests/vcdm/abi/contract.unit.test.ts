@@ -347,10 +347,10 @@ describe('Contract interface for ABI encoding/decoding', () => {
      * Test ABIItem.ofSignature method.
      */
     test('we get an ABI item from a signature', () => {
-        const expectedABIEvent = contractAbiWithEvents.getEvent('ValueChanged');
-        const expected = expectedABIEvent.signature as AbiEvent;
-        const actual = ABIItem.ofSignature(ABIEvent, expected);
-        expect(expected).toEqual(actual.signature);
-        expect(actual.isEqual(expectedABIEvent)).toBeTruthy();
+        const expected = contractAbiWithEvents.getEvent('ValueChanged');
+        const expectedSignature = expected.signature as AbiEvent;
+        const actual = ABIItem.ofSignature(ABIEvent, expectedSignature);
+        expect(expectedSignature).toEqual(actual.signature);
+        expect(actual.isEqual(expected)).toBeTruthy();
     });
 });
