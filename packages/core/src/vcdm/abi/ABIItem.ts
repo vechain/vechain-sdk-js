@@ -17,7 +17,7 @@ abstract class ABIItem extends ABI {
     /**
      * ABIItem constructor from item (Event, Function...) signature.
      *
-     * @param {string | ViemABI} signature - The signature of the ABI item (Function, Event...).
+     * @param {string | AbiFunction | AbiEvent} signature - The signature of the ABI item (Function, Event...).
      **/
     public constructor(signature: string | AbiFunction | AbiEvent) {
         super();
