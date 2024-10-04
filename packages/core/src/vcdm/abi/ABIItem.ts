@@ -93,7 +93,7 @@ abstract class ABIItem extends ABI {
      * @returns {number} A non-zero number if the current ABIItem is different to the other ABI or zero if they are equal.
      * @override {@link VeChainDataModel#compareTo}
      **/
-    public compareTo(that: ABIItem): number {
+    public override compareTo(that: ABIItem): number {
         if (super.compareTo(that) !== 0) {
             return -1;
         }

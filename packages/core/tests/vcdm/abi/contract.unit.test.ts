@@ -5,8 +5,8 @@ import {
     InvalidDataType
 } from '@vechain/sdk-errors';
 import { fail } from 'assert';
-import { encodeFunctionResult } from 'viem';
-import { ABIContract, ABIEvent, ERC721_ABI, Hex } from '../../../src';
+import { type AbiEvent, encodeFunctionResult } from 'viem';
+import { ABIContract, ABIEvent, ABIItem, ERC721_ABI, Hex } from '../../../src';
 import {
     contractABI,
     contractABIWithEvents,
@@ -341,5 +341,16 @@ describe('Contract interface for ABI encoding/decoding', () => {
                 Hex.of(encodedFunctionOutput.toString() + 'InvalidDataString')
             )
         ).toThrowError(InvalidDataType);
+    });
+
+    /**
+     * Test ABIItem.ofSignature method.
+     */
+    test('we get an ABI item from a signature', () => {
+        const expectedABIEvent = contractAbiWithEvents.getEvent('ValueChanged');
+        const expected = expectedABIEvent.signature as AbiEvent;
+        const actual = ABIItem.ofSignature(ABIEvent, expected);
+        expect(expected).toEqual(actual.signature);
+        expect(actual.isEqual(expectedABIEvent)).toBeTruthy();
     });
 });
