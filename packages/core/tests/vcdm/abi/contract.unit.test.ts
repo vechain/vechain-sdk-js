@@ -273,6 +273,13 @@ describe('Contract interface for ABI encoding/decoding', () => {
         );
         expect(decodedOutput).toBeDefined();
         expect(decodedOutput).toEqual(mockReturnValue);
+
+        const decodedOutputAsArray = contractStorageAbi
+            .getFunction(functionName)
+            .decodeOutputAsArray(Hex.of(encodedFunctionOutput));
+
+        expect(decodedOutputAsArray).toBeDefined();
+        expect(decodedOutputAsArray).toEqual([mockReturnValue]);
     });
 
     /**
