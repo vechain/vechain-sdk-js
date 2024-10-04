@@ -1,4 +1,4 @@
-import { Hex, mnemonic, Secp256k1 } from '@vechain/sdk-core';
+import { Hex, Mnemonic, Secp256k1 } from '@vechain/sdk-core';
 
 /**
  * Check if the url field is valid
@@ -44,7 +44,7 @@ function isValidAccountsAsListOfPrivateKeys(accounts: string[]): boolean {
  * @returns True if the mnemonic is valid, false otherwise
  */
 function isValidMnemonic(mnemonicWords: string): boolean {
-    return mnemonic.isValid(mnemonicWords.split(' '));
+    return Mnemonic.isValid(mnemonicWords.split(' '));
 }
 
 /**

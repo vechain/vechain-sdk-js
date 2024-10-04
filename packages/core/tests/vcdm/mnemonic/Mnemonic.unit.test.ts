@@ -2,7 +2,6 @@ import { describe, expect, test } from '@jest/globals';
 import { InvalidHDKey } from '@vechain/sdk-errors';
 import {
     Address,
-    mnemonic,
     Mnemonic,
     Secp256k1,
     type WordlistSizeType
@@ -49,7 +48,7 @@ describe('Mnemonic', () => {
                     test(path.testName, () => {
                         expect(
                             Hex.of(
-                                mnemonic.derivePrivateKey(
+                                Mnemonic.toPrivateKey(
                                     words,
                                     path.derivationPath
                                 )
@@ -100,7 +99,7 @@ describe('Mnemonic', () => {
                         // Derive address from mnemonic words
                         expect(Address.ofMnemonic(words)).toBeDefined();
                         expect(
-                            mnemonic.deriveAddress(words).toString().length
+                            Address.ofMnemonic(words).toString().length
                         ).toEqual(42);
                         expect(
                             Address.isValid(
@@ -134,12 +133,10 @@ describe('Mnemonic', () => {
     describe('isValid', () => {
         test('isValid - false', () => {
             expect(Mnemonic.isValid('hello world')).toBeFalsy();
-            expect(mnemonic.isValid(['hello world'])).toBeFalsy();
         });
 
         test('isValid - true', () => {
             expect(Mnemonic.isValid(Mnemonic.of())).toBeTruthy();
-            expect(mnemonic.isValid(Mnemonic.of())).toBeTruthy();
         });
     });
 

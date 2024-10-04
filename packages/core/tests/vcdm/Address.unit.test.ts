@@ -5,7 +5,7 @@ import {
     InvalidSecp256k1PrivateKey
 } from '@vechain/sdk-errors';
 import { fail } from 'assert';
-import { Address, addressUtils } from '../../src';
+import { Address } from '../../src';
 
 /**
  * Test Address class.
@@ -116,31 +116,6 @@ describe('Address class tests', () => {
                     );
                 }
             }
-        });
-    });
-    describe('Backwards compatibility tests', () => {
-        test('Should get the address from a given private key', () => {
-            const privateKey = hexToBytes(
-                '5434c159b817c377a55f6be66369622976014e78bce2adfd3e44e5de88ce502f'
-            );
-            const address = addressUtils.fromPrivateKey(privateKey);
-            expect(address).toBe('0x769E8AA372c8309c834EA6749B88861FF73581FF');
-        });
-        test('Should get the address from a given public key', () => {
-            const publicKey = hexToBytes(
-                '04a6711e14234b1d4e69aeed2acf18b9c3bd0e97db317b509516bd3a87e5b732685ccaf855d9f8a955bc1f420b4ebf8f682c2e480d98a360e7fd0c08e6eef65607'
-            );
-            const address = addressUtils.fromPublicKey(publicKey);
-            expect(address).toBe('0x769E8AA372c8309c834EA6749B88861FF73581FF');
-        });
-        test('Should return true if the address is a valid address', () => {
-            const address = '0x769E8AA372c8309c834EA6749B88861FF73581FF';
-            expect(addressUtils.isAddress(address)).toBeTruthy();
-        });
-        test('Should get the ERC55 checksum', () => {
-            const address = '0x769e8aa372c8309c834eA6749b88861ff73581ff';
-            const checksum = addressUtils.toERC55Checksum(address);
-            expect(checksum).toBe('0x769E8AA372c8309c834EA6749B88861FF73581FF');
         });
     });
 });

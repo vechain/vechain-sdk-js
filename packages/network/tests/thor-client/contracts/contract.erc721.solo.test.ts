@@ -128,7 +128,6 @@ describe('ThorClient - ERC721 Contracts', () => {
     function decodeResultOutput(result: TransactionReceipt): unknown[][] {
         return result?.outputs.map((output) => {
             return output.events.map((event) => {
-                // Modify when addressing #1184
                 return ABIContract.ofAbi(ERC721_ABI).parseLogAsArray(
                     Hex.of(event.data),
                     event.topics.map((topic) => Hex.of(topic))

@@ -2,7 +2,6 @@ import { blake2b as nh_blake2b } from '@noble/hashes/blake2b';
 import { InvalidOperation } from '@vechain/sdk-errors';
 import { Hex } from '../Hex';
 import { HexUInt } from '../HexUInt';
-import { Txt } from '../Txt';
 
 /**
  * Represents the result of an [BLAKE](https://en.wikipedia.org/wiki/BLAKE_(hash_function)) [BlAKE2B 256](https://www.blake2.net/) hash operation.
@@ -40,23 +39,4 @@ class Blake2b256 extends HexUInt {
     }
 }
 
-// Backwards compatibility, remove in future release #1184
-
-function blake2b256(
-    data: string | Uint8Array,
-    returnType: 'buffer'
-): Uint8Array;
-
-function blake2b256(data: string | Uint8Array, returnType: 'hex'): string;
-
-function blake2b256(
-    data: string | Uint8Array,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    returnType: 'buffer' | 'hex' = 'buffer'
-): string | Uint8Array {
-    return returnType === 'buffer'
-        ? Blake2b256.of(Txt.of(data).bytes).bytes
-        : Blake2b256.of(Txt.of(data).bytes).toString();
-}
-
-export { Blake2b256, blake2b256 };
+export { Blake2b256 };
