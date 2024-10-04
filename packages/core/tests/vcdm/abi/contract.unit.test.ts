@@ -103,10 +103,12 @@ describe('Contract interface for ABI encoding/decoding', () => {
                 ValueChangedEventData.value
             ])
         ).toEqual(
-            contractAbiWithEvents.encodeEventLog('ValueChanged', [
-                ValueChangedEventData.sender,
-                ValueChangedEventData.value
-            ])
+            contractAbiWithEvents
+                .getEvent('ValueChanged')
+                .encodeEventLog([
+                    ValueChangedEventData.sender,
+                    ValueChangedEventData.value
+                ])
         );
     });
 
