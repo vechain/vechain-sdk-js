@@ -270,11 +270,9 @@ class ABIContract extends ABI {
         const eventLogDecoded = this.parseLog(data, topics);
         if (eventLogDecoded.args === undefined) {
             return [];
-        } else if (eventLogDecoded.args instanceof Object) {
-            return Object.values(eventLogDecoded.args);
         }
 
-        return eventLogDecoded.args;
+        return Object.values(eventLogDecoded.args);
     }
 }
 

@@ -1,6 +1,7 @@
 import { beforeAll, describe, expect, test } from '@jest/globals';
 import {
     InvalidAbiDataToEncodeOrDecode,
+    InvalidAbiItem,
     InvalidDataType
 } from '@vechain/sdk-errors';
 import { fail } from 'assert';
@@ -59,6 +60,15 @@ describe('Contract interface for ABI encoding/decoding', () => {
     });
 
     /**
+     * Test the error when getting a function ABI.
+     */
+    test('get a function ABI and throw an error', () => {
+        expect(() => contractAbi.getFunction('undefined')).toThrowError(
+            InvalidAbiItem
+        );
+    });
+
+    /**
      * Test the failed encoding of a function input.
      */
     test('Fail to encode a contract function input', () => {
@@ -109,6 +119,15 @@ describe('Contract interface for ABI encoding/decoding', () => {
                     ValueChangedEventData.sender,
                     ValueChangedEventData.value
                 ])
+        );
+    });
+
+    /**
+     * Test the error when getting an event ABI.
+     */
+    test('get an event ABI and throw an error', () => {
+        expect(() => contractAbi.getEvent('undefined')).toThrowError(
+            InvalidAbiItem
         );
     });
 
@@ -176,6 +195,36 @@ describe('Contract interface for ABI encoding/decoding', () => {
             '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54'
         );
         expect(argsValues[2]).toEqual(1n);
+    });
+
+    /**
+     * Test the decoding of an encoded event log from a contract transaction returned as an array of values.
+     */
+    test('parse an event log and return decoded data', () => {
+        const decodedEventLog = erc721Abi.parseLogAsArray(Hex.of('0x'), [
+            Hex.of(
+                '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
+            ),
+            Hex.of(
+                '0x0000000000000000000000000000000000000000000000000000000000000000'
+            ),
+            Hex.of(
+                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54'
+            ),
+            Hex.of(
+                '0x0000000000000000000000000000000000000000000000000000000000000001'
+            )
+        ]);
+
+        expect(decodedEventLog).toBeDefined();
+        expect(decodedEventLog.length).toEqual(3);
+        expect(decodedEventLog[0]).toEqual(
+            '0x0000000000000000000000000000000000000000'
+        );
+        expect(decodedEventLog[1]).toEqual(
+            '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54'
+        );
+        expect(decodedEventLog[2]).toEqual(1n);
     });
 
     /**
