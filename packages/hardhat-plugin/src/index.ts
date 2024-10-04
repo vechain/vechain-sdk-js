@@ -51,6 +51,13 @@ extendEnvironment((hre) => {
         networkConfig.enableDelegation !== undefined &&
         networkConfig.enableDelegation;
 
+    // 1.5 - Get the custom RPC Configuration
+    const rpcConfiguration = networkConfig.rpcConfiguration;
+    const ethGetTransactionCountMustReturn0 =
+        rpcConfiguration?.ethGetTransactionCountMustReturn0 !== undefined
+            ? rpcConfiguration?.ethGetTransactionCountMustReturn0
+            : false;
+
     // 2 - Check if network is vechain
 
     if (!networkName.includes('vechain')) {
@@ -73,6 +80,7 @@ extendEnvironment((hre) => {
 
     // 3 - Extend environment with the 'HardhatVeChainProvider'
 
+    console.log('networkConfig', networkConfig.rpcConfiguration);
     // 3.1 - Create the provider
     const hardhatVeChainProvider = new HardhatVeChainProvider(
         createWalletFromHardhatNetworkConfig(networkConfig),
@@ -84,7 +92,10 @@ extendEnvironment((hre) => {
                 parent
             ),
         debug,
-        enableDelegation
+        enableDelegation,
+        {
+            ethGetTransactionCountMustReturn0
+        }
     );
 
     // 3.2 - Extend environment
