@@ -66,9 +66,9 @@ const ethGetBlockReceipts = async (
         return transactionReceipts;
     } catch (e) {
         throw new JSONRPCInternalError(
-            'ethGetBlockReceipts()',
+            'eth_getBlockReceipts()',
             -32603,
-            'Method "ethGetBlockReceipts" failed.',
+            'Method "eth_getBlockReceipts" failed.',
             {
                 params: stringifyData(params),
                 url: thorClient.httpClient.baseURL,

@@ -32,6 +32,7 @@
     "lint": "eslint --ext .ts src --ext .ts",
     "format": "prettier --write src/**/*.ts",
     "start": "node dist/index.js",
+    "test:e2e": "cross-env DEBUG=\"testcontainers*\" jest tests/e2e_rpc_proxy.solo.test.ts",
     "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
     "test:integration": "rm -rf ./coverageIntegration && jest --coverage --coverageDirectory=coverageIntegration --group=integration",
     "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit",
@@ -42,14 +43,15 @@
     "@vechain/sdk-network": "1.0.0-beta.32",
     "commander": "^12.1.0",
     "cors": "^2.8.5",
-    "express": "^4.20.0",
-    "testcontainers": "^10.13.1",
-    "tsup": "^8.3.0",
-    "typescript": "^5.5.4"
+    "express": "^4.20.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
-    "@types/node": "^22.5.3"
+    "@types/node": "^22.5.3",
+    "cross-env": "^7.0.3",
+    "testcontainers": "^10.13.1",
+    "tsup": "^8.3.0",
+    "typescript": "^5.5.4"
   }
 }

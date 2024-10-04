@@ -9,7 +9,7 @@ import { type ThorClient } from '../../../../../thor-client';
 import {
     type FilterOptions,
     type VeChainProvider
-} from '../../../../providers/vechain-provider';
+} from '../../../../providers';
 
 /**
  * Enumerates the types of subscriptions supported by the`eth_subscribe` RPC method.
@@ -57,9 +57,9 @@ const ethSubscribe = async (
 ): Promise<string> => {
     if (provider === undefined) {
         throw new JSONRPCInternalError(
-            'ethSubscribe()',
+            'eth_subscribe()',
             -32603,
-            'Method "ethSubscribe" failed. Provider is not defined.',
+            'Method "eth_subscribe" failed. Provider is not defined.',
             {
                 url: thorClient.httpClient.baseURL,
                 params: stringifyData(params)
@@ -71,9 +71,9 @@ const ethSubscribe = async (
         params[0] !== SUBSCRIPTION_TYPE.LOGS
     ) {
         throw new JSONRPCInvalidParams(
-            'ethSubscribe()',
+            'eth_subscribe()',
             -32602,
-            'Method "ethSubscribe" failed. Invalid subscription type param.',
+            'Method "eth_subscribe" failed. Invalid subscription type param.',
             {
                 url: thorClient.httpClient.baseURL,
                 params: stringifyData(params)
@@ -89,9 +89,9 @@ const ethSubscribe = async (
             provider.subscriptionManager.currentBlockNumber = block.number;
         } else
             throw new JSONRPCServerError(
-                'ethSubscribe()',
+                'eth_subscribe()',
                 -32000,
-                'Method "ethSubscribe" failed. Best block not available.',
+                'Method "eth_subscribe" failed. Best block not available.',
                 {
                     url: thorClient.httpClient.baseURL,
                     params: stringifyData(params)

@@ -19,9 +19,9 @@ const ethRequestAccounts = async (
     // Here, instead, if there are no accounts into wallet OR wallet is not defined, we throw an error
     if (accounts.length === 0)
         throw new JSONRPCInvalidParams(
-            'eth_getTransactionReceipt()',
+            'eth_requestAccounts()',
             -32602,
-            'Method "ethRequestAccounts" failed.',
+            'Method "eth_requestAccounts" failed.',
             {
                 provider: stringifyData(provider)
             }
