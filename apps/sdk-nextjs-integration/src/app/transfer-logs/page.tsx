@@ -66,7 +66,6 @@ export default function TransferLogs(): JSX.Element {
 
     // Update the history when the address changes
     useEffect(() => {
-        // Backwards compatibility, from now on use Address.isValid
         if (Address.isValid(address)) {
             void getHistoryFor(address);
         }
