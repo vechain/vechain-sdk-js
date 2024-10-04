@@ -272,7 +272,7 @@ class ABIContract extends ABI {
             return [];
         }
 
-        return Object.values(eventLogDecoded.args);
+        return this.parseObjectValues(eventLogDecoded.args);
     }
 }
 

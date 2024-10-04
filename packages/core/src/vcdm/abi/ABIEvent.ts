@@ -120,7 +120,7 @@ class ABIEvent extends ABIItem {
             return [];
         }
 
-        return Object.values(rawDecodedData.args);
+        return this.parseObjectValues(rawDecodedData.args);
     }
 
     /**
