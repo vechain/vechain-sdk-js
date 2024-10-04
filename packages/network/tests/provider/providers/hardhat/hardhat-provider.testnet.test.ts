@@ -113,4 +113,61 @@ describe('Hardhat provider tests - testnet', () => {
                 })
         ).rejects.toThrowError();
     });
+
+    /**
+     * Custom RPC configuration tests
+     */
+    describe('Custom RPC configuration tests', () => {
+        /**
+         * Should return 0 when calling eth_getTransactionCount with rpcConfiguration.ethGetTransactionCountDefaultValue set to true
+         */
+        test('Should return 0 when calling eth_getTransactionCount with rpcConfiguration.ethGetTransactionCountMustReturn0 set to true', async () => {
+            // Set the custom RPC configuration
+            const providerWithCustomRPCConfiguration =
+                new HardhatVeChainProvider(
+                    new ProviderInternalBaseWallet([]),
+                    TESTNET_URL,
+                    (message: string, parent?: Error) =>
+                        new Error(message, parent),
+                    false,
+                    false,
+                    { ethGetTransactionCountMustReturn0: true }
+                );
+
+            // Call RPC function
+            const rpcCall = await providerWithCustomRPCConfiguration.request({
+                method: 'eth_getTransactionCount',
+                params: ['0x7567d83b7b8d80addcb281a71d54fc7b3364ffed', 'latest']
+            });
+
+            // Compare the result with the expected value
+            expect(rpcCall).toBe('0x0');
+        });
+
+        /**
+         * Should NOT return 0 when calling eth_getTransactionCount with rpcConfiguration.ethGetTransactionCountDefaultValue set to false
+         */
+        test('Should NOT return 0 when calling eth_getTransactionCount with rpcConfiguration.ethGetTransactionCountMustReturn0 set to false', async () => {
+            // Set the custom RPC configuration
+            const providerWithCustomRPCConfiguration =
+                new HardhatVeChainProvider(
+                    new ProviderInternalBaseWallet([]),
+                    TESTNET_URL,
+                    (message: string, parent?: Error) =>
+                        new Error(message, parent),
+                    false,
+                    false,
+                    { ethGetTransactionCountMustReturn0: false }
+                );
+
+            // Call RPC function
+            const rpcCall = await providerWithCustomRPCConfiguration.request({
+                method: 'eth_getTransactionCount',
+                params: ['0x7567d83b7b8d80addcb281a71d54fc7b3364ffed', 'latest']
+            });
+
+            // Compare the result with the expected value
+            expect(rpcCall).not.toBe('0x0');
+        });
+    });
 });
