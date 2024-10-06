@@ -32,6 +32,13 @@ class HardhatVeChainProvider extends VeChainProvider {
     buildHardhatErrorFunctionCallback: BuildHardhatErrorFunction;
 
     /**
+     * RPC configuration.
+     */
+    rpcConfiguration: {
+        ethGetTransactionCountMustReturn0: boolean;
+    };
+
+    /**
      * Constructor with the network configuration.
      *
      * @param walletToUse - The wallet to use.
@@ -45,7 +52,11 @@ class HardhatVeChainProvider extends VeChainProvider {
         nodeUrl: string,
         buildHardhatErrorFunctionCallback: BuildHardhatErrorFunction,
         debug: boolean = false,
-        enableDelegation: boolean = false
+        enableDelegation: boolean = false,
+        rpcConfiguration = {
+            // By default, the eth_getTransactionCount method returns a random number.
+            ethGetTransactionCountMustReturn0: false
+        }
     ) {
         // Initialize the provider with the network configuration.
         super(
@@ -56,6 +67,9 @@ class HardhatVeChainProvider extends VeChainProvider {
 
         // Save the debug mode.
         this.debug = debug;
+
+        // Save the RPC configuration.
+        this.rpcConfiguration = rpcConfiguration;
 
         // Save the buildHardhatErrorFunction.
         this.buildHardhatErrorFunctionCallback =
@@ -114,6 +128,11 @@ class HardhatVeChainProvider extends VeChainProvider {
      * @param args - The request arguments.
      */
     async request(args: EIP1193RequestArguments): Promise<unknown> {
+        // Must return 0 with the eth_getTransactionCount method
+        const mustReturn0 =
+            this.rpcConfiguration.ethGetTransactionCountMustReturn0 &&
+            args.method === 'eth_getTransactionCount';
+
         try {
             // Debug mode - get the request and the accounts
             if (this.debug) {
@@ -134,12 +153,13 @@ class HardhatVeChainProvider extends VeChainProvider {
                     ]
                 });
             }
-
             // Send the request
-            const result = await super.request({
-                method: args.method,
-                params: args.params as never
-            });
+            const result = mustReturn0
+                ? '0x0'
+                : await super.request({
+                      method: args.method,
+                      params: args.params as never
+                  });
 
             // Debug mode - get the result
             if (this.debug) {
