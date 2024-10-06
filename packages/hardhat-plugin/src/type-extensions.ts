@@ -59,5 +59,12 @@ declare module 'hardhat/types/config' {
          * Enable or not the fee's delegation of the transaction.
          */
         enableDelegation?: boolean;
+
+        /**
+         * RPC Configuration
+         */
+        rpcConfiguration?: {
+            ethGetTransactionCountMustReturn0: boolean;
+        };
     }
 }
