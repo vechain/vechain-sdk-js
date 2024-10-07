@@ -1,10 +1,10 @@
-import type { Config } from '../../types';
-import path from 'path';
-import fs from 'fs';
 import {
     InvalidConfigurationFile,
     InvalidConfigurationFilePath
 } from '@vechain/sdk-errors';
+import fs from 'fs';
+import path from 'path';
+import type { Config } from '../../types';
 import {
     isValidAccountsAsListOfPrivateKeys,
     isValidAccountsAsMnemonic,
@@ -109,15 +109,14 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
                     filePath
                 }
             );
-    } else {
-        if (!isValidAccountsAsMnemonic(configFile.accounts))
-            throw new InvalidConfigurationFile(
-                '_checkIfConfigurationFileHasCorrectStructure()',
-                `Invalid accounts in configuration file: ${absolutePath}. Accounts must contain a valid mnemonic, count, and initialIndex`,
-                {
-                    filePath
-                }
-            );
+    } else if (!isValidAccountsAsMnemonic(configFile.accounts)) {
+        throw new InvalidConfigurationFile(
+            '_checkIfConfigurationFileHasCorrectStructure()',
+            `Invalid accounts in configuration file: ${absolutePath}. Accounts must contain a valid mnemonic, count, and initialIndex`,
+            {
+                filePath
+            }
+        );
     }
 
     // Check the delegator

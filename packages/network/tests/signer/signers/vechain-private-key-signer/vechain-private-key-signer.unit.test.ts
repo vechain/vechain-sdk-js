@@ -243,6 +243,30 @@ describe('VeChain base signer tests', () => {
             ).rejects.toThrowError();
         });
 
+        test('signMessage - exception when parsing to text', async () => {
+            const signer = new VeChainPrivateKeySigner(
+                Hex.of(eip712TestCases.invalid.privateKey).bytes,
+                provider
+            );
+            const expectedErrorString = 'not an error instance';
+            jest.spyOn(Txt, 'of')
+                .mockImplementationOnce(() => {
+                    // eslint-disable-next-line @typescript-eslint/only-throw-error
+                    throw expectedErrorString;
+                })
+                .mockImplementationOnce(() => {
+                    // eslint-disable-next-line @typescript-eslint/only-throw-error
+                    throw undefined;
+                });
+            await expect(
+                signer.signMessage(EIP191_MESSAGE)
+            ).rejects.toThrowError(expectedErrorString);
+
+            await expect(
+                signer.signMessage(EIP191_MESSAGE)
+            ).rejects.toThrowError('Error while signing the message');
+        });
+
         test('signMessage - ethers compatible - string', async () => {
             const expected = await new vechain_sdk_core_ethers.Wallet(
                 EIP191_PRIVATE_KEY
@@ -280,6 +304,38 @@ describe('VeChain base signer tests', () => {
                     eip712TestCases.invalid.data
                 )
             ).rejects.toThrowError(TypeError);
+        });
+
+        test('signTypedData - exception when parsing to hex', async () => {
+            const signer = new VeChainPrivateKeySigner(
+                Hex.of(eip712TestCases.invalid.privateKey).bytes,
+                provider
+            );
+            const expectedErrorString = 'not an error instance';
+            jest.spyOn(Hex, 'of')
+                .mockImplementationOnce(() => {
+                    // eslint-disable-next-line @typescript-eslint/only-throw-error
+                    throw expectedErrorString;
+                })
+                .mockImplementationOnce(() => {
+                    // eslint-disable-next-line @typescript-eslint/only-throw-error
+                    throw undefined;
+                });
+            await expect(
+                signer.signTypedData(
+                    eip712TestCases.valid.domain,
+                    eip712TestCases.valid.types,
+                    eip712TestCases.valid.data
+                )
+            ).rejects.toThrowError(expectedErrorString);
+
+            await expect(
+                signer.signTypedData(
+                    eip712TestCases.valid.domain,
+                    eip712TestCases.valid.types,
+                    eip712TestCases.valid.data
+                )
+            ).rejects.toThrowError('Error while signing typed data');
         });
 
         test('signTypedData - ethers compatible', async () => {

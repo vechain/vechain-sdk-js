@@ -472,23 +472,17 @@ class TransactionsModule {
             ).getFirstDecodedValue<string>();
             return `Panic(0x${parseInt(decoded).toString(16).padStart(2, '0')})`;
         }
-
-        // Solidity error
-        else {
-            // An error fragment is provided, so decode the revert reason using solidity error
-            if (errorFragment !== undefined) {
-                const errorInterface = new vechain_sdk_core_ethers.Interface([
-                    vechain_sdk_core_ethers.ErrorFragment.from(errorFragment)
-                ]);
-                return errorInterface
-                    .decodeErrorResult(
-                        vechain_sdk_core_ethers.ErrorFragment.from(
-                            errorFragment
-                        ),
-                        encodedRevertReason
-                    )
-                    .toArray()[0] as string;
-            }
+        // Solidity error, an error fragment is provided, so decode the revert reason using solidity error
+        else if (errorFragment !== undefined) {
+            const errorInterface = new vechain_sdk_core_ethers.Interface([
+                vechain_sdk_core_ethers.ErrorFragment.from(errorFragment)
+            ]);
+            return errorInterface
+                .decodeErrorResult(
+                    vechain_sdk_core_ethers.ErrorFragment.from(errorFragment),
+                    encodedRevertReason
+                )
+                .toArray()[0] as string;
         }
 
         // Unknown revert reason (we know ONLY that transaction is reverted)
