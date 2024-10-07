@@ -5,8 +5,8 @@ import {
 } from '@vechain/sdk-network';
 import { type TypedDataDomain, type TypedDataParameter } from 'abitype';
 
-class KMSSigner extends VeChainAbstractSigner {
-    connect(provider: AvailableVeChainProviders | null): this {
+class KMSVeChainSigner extends VeChainAbstractSigner {
+    connect(_provider?: AvailableVeChainProviders): this {
         throw new Error('Method not implemented.');
     }
     async getAddress(): Promise<string> {
@@ -34,4 +34,4 @@ class KMSSigner extends VeChainAbstractSigner {
     }
 }
 
-export { KMSSigner };
+export { KMSVeChainSigner };

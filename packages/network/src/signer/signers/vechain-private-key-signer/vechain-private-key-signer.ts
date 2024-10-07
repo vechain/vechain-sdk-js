@@ -44,7 +44,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
      */
     constructor(
         private readonly privateKey: Uint8Array,
-        provider: AvailableVeChainProviders | null
+        provider?: AvailableVeChainProviders
     ) {
         // Assert if the transaction can be signed
         if (!Secp256k1.isValidPrivateKey(privateKey)) {
@@ -66,7 +66,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
      * @param provider - The provider to connect to
      * @returns a new instance of this Signer connected to //provider// or detached
      */
-    connect(provider: AvailableVeChainProviders | null): this {
+    connect(provider?: AvailableVeChainProviders): this {
         return new VeChainPrivateKeySigner(this.privateKey, provider) as this;
     }
 
@@ -94,7 +94,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         transactionToSign: TransactionRequestInput
     ): Promise<string> {
         // Check the provider (needed to sign the transaction)
-        if (this.provider === null) {
+        if (this.provider === undefined) {
             throw new JSONRPCInvalidParams(
                 'VeChainPrivateKeySigner.signTransaction()',
                 -32602,
@@ -126,7 +126,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         transactionToSend: TransactionRequestInput
     ): Promise<string> {
         // 1 - Get the provider (needed to send the raw transaction)
-        if (this.provider === null) {
+        if (this.provider === undefined) {
             throw new JSONRPCInvalidParams(
                 'VeChainPrivateKeySigner.sendTransaction()',
                 -32602,

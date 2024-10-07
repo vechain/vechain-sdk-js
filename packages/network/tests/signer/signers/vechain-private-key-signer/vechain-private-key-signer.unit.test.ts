@@ -68,8 +68,7 @@ describe('VeChain base signer tests', () => {
             const signerWithoutProvider = new VeChainPrivateKeySigner(
                 HexUInt.of(
                     '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
-                ).bytes,
-                null
+                ).bytes
             );
             expect(signerWithoutProvider.provider).toBeNull();
 
@@ -101,7 +100,7 @@ describe('VeChain base signer tests', () => {
          */
         test('Should be able to get the nonce', async () => {
             // Generate nonce (provider attached and detached)
-            for (const tempProvider of [provider, null]) {
+            for (const tempProvider of [provider, undefined]) {
                 const signer = new VeChainPrivateKeySigner(
                     HexUInt.of(
                         '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
@@ -127,8 +126,7 @@ describe('VeChain base signer tests', () => {
                     const signer = new VeChainPrivateKeySigner(
                         HexUInt.of(
                             populateCallTestCasesAccount.privateKey
-                        ).bytes,
-                        null
+                        ).bytes
                     );
                     const populatedCallTransaction = await signer.populateCall(
                         fixture.transactionToPopulate
@@ -149,8 +147,7 @@ describe('VeChain base signer tests', () => {
                     const signer = new VeChainPrivateKeySigner(
                         HexUInt.of(
                             populateCallTestCasesAccount.privateKey
-                        ).bytes,
-                        null
+                        ).bytes
                     );
 
                     await expect(
@@ -166,8 +163,7 @@ describe('VeChain base signer tests', () => {
             const signer = new VeChainPrivateKeySigner(
                 HexUInt.of(
                     '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
-                ).bytes,
-                null
+                ).bytes
             );
 
             const name = 'test-sdk.vet';

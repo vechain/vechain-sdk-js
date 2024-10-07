@@ -27,7 +27,7 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
     /**
      * The provider attached to this Signer (if any).
      */
-    provider: AvailableVeChainProviders | null;
+    provider?: AvailableVeChainProviders;
 
     /**
      * Create a new VeChainPrivateKeySigner.
@@ -35,19 +35,19 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
      *
      * @param provider - The provider to connect to
      */
-    protected constructor(provider: AvailableVeChainProviders | null) {
+    protected constructor(provider?: AvailableVeChainProviders) {
         // Store provider and delegator
         this.provider = provider;
     }
 
     /**
      *  Returns a new instance of this Signer connected to //provider// or detached
-     *  from any Provider if null.
+     *  from any Provider if undefined.
      *
      * @param provider - The provider to connect to
      * @returns a new instance of this Signer connected to //provider// or detached
      */
-    abstract connect(provider: AvailableVeChainProviders | null): this;
+    abstract connect(provider?: AvailableVeChainProviders): this;
 
     /**
      * Get the address of the Signer.
@@ -287,7 +287,7 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
      */
     async getNonce(blockTag?: string): Promise<string> {
         // If provider is available, get the nonce from the provider using eth_getTransactionCount
-        if (this.provider !== null) {
+        if (this.provider !== undefined) {
             return (await this.provider.request({
                 method: RPC_METHODS.eth_getTransactionCount,
                 params: [await this.getAddress(), blockTag]
@@ -352,7 +352,7 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
      * @returns the address for a name or null
      */
     async resolveName(vnsName: string): Promise<null | string> {
-        if (this.provider === null) {
+        if (this.provider === undefined) {
             return null;
         }
 
