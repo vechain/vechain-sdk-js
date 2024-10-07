@@ -27,6 +27,8 @@
     "build": "rm -rf ./dist && tsup-node src/index.ts --format cjs,esm --dts",
     "lint": "eslint --ext .ts src --ext .ts tests",
     "format": "prettier --write src/**/*.ts tests/**/*.ts",
+    "start-thor-solo": "echo 'Starting thor solo node ...' && docker compose -f ../../docker-compose.thor.yml up -d --wait && echo '\nThor solo node started ...'",
+    "stop-thor-solo": "echo 'Stopping thor solo node ...' && docker compose -f ../../docker-compose.thor.yml down && echo 'Thor solo node stopped ...'",
     "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
     "test:integration": "rm -rf ./coverageIntegration && jest --coverage --coverageDirectory=coverageIntegration --group=integration",
     "test:integration:solo": "(yarn start-thor-solo && yarn test:integration && yarn stop-thor-solo) || yarn stop-thor-solo",

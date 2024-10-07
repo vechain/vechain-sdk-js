@@ -82,7 +82,7 @@ describe('ThorClient - Contracts', () => {
     async function createExampleContractFactory(): Promise<
         ContractFactory<typeof deployedContractAbi>
     > {
-        const deployParams: DeployParams = { types: ['uint'], values: ['100'] };
+        const deployParams: DeployParams = { types: 'uint', values: ['100'] };
 
         const contractFactory = thorSoloClient.contracts.createContractFactory(
             deployedContractAbi,

@@ -62,7 +62,7 @@ let contractFactory = thorSoloClient.contracts.createContractFactory(
 );
 
 // Deploy parameters to be used for the contract creation
-const deployParams: DeployParams = { types: ['uint'], values: ['100'] };
+const deployParams: DeployParams = { types: 'uint', values: ['100'] };
 
 // Deploying the contract
 contractFactory = await contractFactory.startDeployment(deployParams);

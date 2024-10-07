@@ -743,7 +743,7 @@ const multipleClausesTestCases: MultipleClausesTestCase[] = [
                     }
                 ],
                 deploymentParams: {
-                    types: ['uint256'],
+                    types: 'uint256',
                     values: ['1000']
                 }
             }
@@ -766,7 +766,7 @@ const multipleClausesTestCases: MultipleClausesTestCase[] = [
                     }
                 ],
                 deploymentParams: {
-                    types: ['uint256'],
+                    types: 'uint256',
                     values: ['1000']
                 }
             },
