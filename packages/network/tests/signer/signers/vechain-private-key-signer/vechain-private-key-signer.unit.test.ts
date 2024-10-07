@@ -282,6 +282,38 @@ describe('VeChain base signer tests', () => {
             ).rejects.toThrowError(TypeError);
         });
 
+        test('signTypedData - exception when parsing to hex', async () => {
+            const signer = new VeChainPrivateKeySigner(
+                Hex.of(eip712TestCases.invalid.privateKey).bytes,
+                provider
+            );
+            const expectedErrorString = 'not an error instance';
+            jest.spyOn(Hex, 'of')
+                .mockImplementationOnce(() => {
+                    // eslint-disable-next-line @typescript-eslint/only-throw-error
+                    throw expectedErrorString;
+                })
+                .mockImplementationOnce(() => {
+                    // eslint-disable-next-line @typescript-eslint/only-throw-error
+                    throw undefined;
+                });
+            await expect(
+                signer.signTypedData(
+                    eip712TestCases.valid.domain,
+                    eip712TestCases.valid.types,
+                    eip712TestCases.valid.data
+                )
+            ).rejects.toThrowError(expectedErrorString);
+
+            await expect(
+                signer.signTypedData(
+                    eip712TestCases.valid.domain,
+                    eip712TestCases.valid.types,
+                    eip712TestCases.valid.data
+                )
+            ).rejects.toThrowError('Error while signing typed data');
+        });
+
         test('signTypedData - ethers compatible', async () => {
             const expected = await new vechain_sdk_core_ethers.Wallet(
                 eip712TestCases.valid.privateKey
