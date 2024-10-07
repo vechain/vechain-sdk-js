@@ -9,7 +9,7 @@ import { type ThorClient } from '../../../../../thor-client';
 import {
     type FilterOptions,
     type VeChainProvider
-} from '../../../../providers';
+} from '../../../../providers/vechain-provider';
 
 /**
  * Enumerates the types of subscriptions supported by the`eth_subscribe` RPC method.

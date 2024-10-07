@@ -1,7 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
-import { bytesToHex } from '@noble/hashes/utils';
 import { InvalidOperation } from '@vechain/sdk-errors';
-import { Hex, Keccak256, keccak256 } from '../../../src';
+import { Hex, Keccak256 } from '../../../src';
 import { CONTENT, NO_CONTENT } from './fixture';
 
 // Hex on purpose because it must be equal to the returned HexUInt hash.
@@ -44,21 +43,5 @@ describe('Keccak256 class tests', () => {
 
     test('Throw an exception for illegal content', () => {
         expect(() => Keccak256.of('0xfoe')).toThrow(InvalidOperation);
-    });
-});
-describe('Backwards compatibility tests', () => {
-    test('Should return the hash as hex', () => {
-        const rawString = 'Hello, World!';
-        const hash = keccak256(rawString, 'hex');
-        expect(hash).toBe(
-            '0xacaf3289d7b601cbd114fb36c4d29c85bbfd5e133f14cb355c3fd8d99367964f'
-        );
-    });
-    test('Should return the hash as buffer', () => {
-        const rawString = 'Hello, World!';
-        const hash = keccak256(rawString, 'buffer');
-        expect(bytesToHex(hash)).toBe(
-            'acaf3289d7b601cbd114fb36c4d29c85bbfd5e133f14cb355c3fd8d99367964f'
-        );
     });
 });

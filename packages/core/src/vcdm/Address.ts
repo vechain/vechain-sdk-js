@@ -186,17 +186,4 @@ class Address extends HexUInt {
     }
 }
 
-// Backwards compatibility, remove when it is matured enough #1184
-
-const addressUtils = {
-    fromPrivateKey: (privateKey: Uint8Array): string =>
-        Address.ofPrivateKey(privateKey).toString(),
-    fromPublicKey: (publicKey: Uint8Array): string =>
-        Address.ofPublicKey(publicKey).toString(),
-    isAddress: (addressToVerify: string): boolean =>
-        Address.isValid(addressToVerify),
-    toERC55Checksum: (address: string): string =>
-        Address.checksum(HexUInt.of(address)).toString()
-};
-
-export { Address, addressUtils };
+export { Address };

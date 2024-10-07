@@ -7,21 +7,19 @@ import {
 } from 'viem';
 import { ABI } from './ABI';
 
-type ABIItemType = AbiFunction | AbiEvent;
-
 /**
  * Represents an ABI (Application Binary Interface) item.
  * @extends ABI
  */
 abstract class ABIItem extends ABI {
-    public readonly signature: ABIItemType;
+    public readonly signature: AbiFunction | AbiEvent;
     public readonly stringSignature: string;
     /**
      * ABIItem constructor from item (Event, Function...) signature.
      *
-     * @param {string | ViemABI} signature - The signature of the ABI item (Function, Event...).
+     * @param {string | AbiFunction | AbiEvent} signature - The signature of the ABI item (Function, Event...).
      **/
-    public constructor(signature: string | ABIItemType) {
+    public constructor(signature: string | AbiFunction | AbiEvent) {
         super();
         switch (typeof signature) {
             case 'string':
@@ -45,19 +43,26 @@ abstract class ABIItem extends ABI {
     ): T;
 
     public static ofSignature<T extends ABIItem>(
-        ABIItemConstructor: new (signature: ABIItemType) => T,
-        signature: ABIItemType
+        ABIItemConstructor: new (signature: AbiFunction) => T,
+        signature: AbiFunction
+    ): T;
+
+    public static ofSignature<T extends ABIItem>(
+        ABIItemConstructor: new (signature: AbiEvent) => T,
+        signature: AbiEvent
     ): T;
 
     /**
      * Returns and instance of an ABIItem from a signature.
      * @param ABIItemConstructor ABIItem constructor.
-     * @param {string | ABIItemType} signature Signature of the ABIIItem.
+     * @param {string | AbiFunction | AbiEvent} signature Signature of the ABIIItem.
      * @returns {T} An instance of the ABIItem.
      */
     public static ofSignature<T extends ABIItem>(
-        ABIItemConstructor: new (signature: string | ABIItemType) => T,
-        signature: string | ABIItemType
+        ABIItemConstructor: new (
+            signature: string | AbiFunction | AbiEvent
+        ) => T,
+        signature: string | AbiFunction | AbiEvent
     ): T {
         return new ABIItemConstructor(signature);
     }
@@ -88,7 +93,7 @@ abstract class ABIItem extends ABI {
      * @returns {number} A non-zero number if the current ABIItem is different to the other ABI or zero if they are equal.
      * @override {@link VeChainDataModel#compareTo}
      **/
-    public compareTo(that: ABIItem): number {
+    public override compareTo(that: ABIItem): number {
         if (super.compareTo(that) !== 0) {
             return -1;
         }
@@ -96,4 +101,4 @@ abstract class ABIItem extends ABI {
     }
 }
 
-export { ABIItem, type ABIItemType };
+export { ABIItem };

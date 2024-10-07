@@ -7,7 +7,7 @@ import {
 import {
     Address,
     HDKey,
-    mnemonic,
+    Mnemonic,
     Secp256k1,
     ZERO_BYTES,
     type WordlistSizeType
@@ -166,7 +166,7 @@ describe('HDKey class tests', () => {
         test('fromMnemonic - valid - word list - multiple lengths', () => {
             new Array<WordlistSizeType>(12, 15, 18, 21, 24).forEach(
                 (length: WordlistSizeType) => {
-                    const hdKey = HDKey.fromMnemonic(mnemonic.generate(length));
+                    const hdKey = HDKey.fromMnemonic(Mnemonic.of(length));
                     expect(hdKey.privateKey).toBeDefined();
                     expect(
                         Secp256k1.isValidPrivateKey(

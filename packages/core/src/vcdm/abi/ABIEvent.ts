@@ -114,23 +114,13 @@ class ABIEvent extends ABIItem {
      * @returns {unknown[]} The decoded data as array of values.
      */
     public decodeEventLogAsArray(event: ABIEventData): unknown[] {
-        try {
-            const rawDecodedData = this.decodeEventLog(event);
+        const rawDecodedData = this.decodeEventLog(event);
 
-            if (rawDecodedData.args === undefined) {
-                return [];
-            } else if (rawDecodedData.args instanceof Object) {
-                return Object.values(rawDecodedData.args);
-            }
-            return rawDecodedData.args as unknown[];
-        } catch (error) {
-            throw new InvalidAbiDataToEncodeOrDecode(
-                'ABIEvent.decodeEventLogAsArray',
-                'Decoding failed: Data must be a valid hex string encoding a compliant ABI type.',
-                { data: event },
-                error
-            );
+        if (rawDecodedData.args === undefined) {
+            return [];
         }
+
+        return this.parseObjectValues(rawDecodedData.args);
     }
 
     /**

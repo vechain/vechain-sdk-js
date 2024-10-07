@@ -11,7 +11,6 @@ import {
     InvalidOperation
 } from '@vechain/sdk-errors';
 import { HDKey } from '../hdkey';
-import { Address } from './Address';
 import { type VeChainDataModel } from './VeChainDataModel';
 
 /**
@@ -229,21 +228,5 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
     }
 }
 
-// Backwards compatibility, remove in future versions #1184
-
-const mnemonic = {
-    deriveAddress: (words: string[], path: string = 'm/0'): string =>
-        Address.ofMnemonic(words, path).toString(),
-    derivePrivateKey: (words: string[], path: string = 'm/0'): Uint8Array =>
-        Mnemonic.toPrivateKey(words, path),
-    generate: (
-        wordlistSize?: WordlistSizeType,
-        randomGenerator?: (
-            numberOfBytes: WordListRandomGeneratorSizeInBytes
-        ) => Uint8Array
-    ): string[] => Mnemonic.of(wordlistSize, randomGenerator),
-    isValid: (words: string[]): boolean => Mnemonic.isValid(words)
-};
-
-export { Mnemonic, mnemonic };
+export { Mnemonic };
 export type { WordListRandomGeneratorSizeInBytes, WordlistSizeType };

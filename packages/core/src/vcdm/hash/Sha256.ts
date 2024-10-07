@@ -2,7 +2,6 @@ import * as nh_sha256 from '@noble/hashes/sha256';
 import { InvalidOperation } from '@vechain/sdk-errors';
 import { Hex } from '../Hex';
 import { HexUInt } from '../HexUInt';
-import { Txt } from '../Txt';
 
 /**
  * Represents the result of an [SHA256](https://en.wikipedia.org/wiki/SHA-2) hash operation.
@@ -36,20 +35,4 @@ class Sha256 extends HexUInt {
     }
 }
 
-// Backwards compatibility, remove in future release #1184
-
-function sha256(data: string | Uint8Array, returnType: 'buffer'): Uint8Array;
-
-function sha256(data: string | Uint8Array, returnType: 'hex'): string;
-
-function sha256(
-    data: string | Uint8Array,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    returnType: 'buffer' | 'hex' = 'buffer'
-): string | Uint8Array {
-    return returnType === 'buffer'
-        ? Sha256.of(Txt.of(data).bytes).bytes
-        : Sha256.of(Txt.of(data).bytes).toString();
-}
-
-export { Sha256, sha256 };
+export { Sha256 };
