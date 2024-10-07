@@ -82,24 +82,22 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
             );
         // Throw an error if the from address does not match the signer address
         // @note: this because we cannot sign a transaction with a different address
-        else {
-            if (
-                Address.checksum(HexUInt.of(transactionToPopulate.from)) !==
-                Address.checksum(HexUInt.of(await this.getAddress()))
-            ) {
-                throw new InvalidDataType(
-                    'VeChainAbstractSigner.populateCall()',
-                    'From address does not match the signer address.',
-                    {
-                        signerAddress: Address.checksum(
-                            HexUInt.of(await this.getAddress())
-                        ),
-                        fromAddress: Address.checksum(
-                            HexUInt.of(transactionToPopulate.from)
-                        )
-                    }
-                );
-            }
+        else if (
+            Address.checksum(HexUInt.of(transactionToPopulate.from)) !==
+            Address.checksum(HexUInt.of(await this.getAddress()))
+        ) {
+            throw new InvalidDataType(
+                'VeChainAbstractSigner.populateCall()',
+                'From address does not match the signer address.',
+                {
+                    signerAddress: Address.checksum(
+                        HexUInt.of(await this.getAddress())
+                    ),
+                    fromAddress: Address.checksum(
+                        HexUInt.of(transactionToPopulate.from)
+                    )
+                }
+            );
         }
 
         // 2 - Set to field
