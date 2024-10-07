@@ -47,7 +47,6 @@
     "viem": "^2.21.14"
   },
   "devDependencies": {
-    "@types/elliptic": "^6.4.18",
     "bignumber.js": "^9.1.2",
     "thor-devkit": "^2.0.9"
   }
