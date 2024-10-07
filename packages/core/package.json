@@ -37,14 +37,11 @@
     "test:browser": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit --config ./jest.config.browser.js"
   },
   "dependencies": {
-    "@ethereumjs/rlp": "^5.0.2",
     "@noble/ciphers": "^1.0.0",
     "@scure/bip32": "^1.4.0",
     "@scure/bip39": "^1.4.0",
     "@vechain/sdk-errors": "1.0.0-beta.32",
     "@vechain/sdk-logging": "1.0.0-beta.32",
-    "bignumber.js": "^9.1.2",
-    "blakejs": "^1.2.1",
     "ethers": "6.13.2",
     "fast-json-stable-stringify": "^2.1.0",
     "viem": "^2.21.14"
