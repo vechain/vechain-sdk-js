@@ -243,6 +243,30 @@ describe('VeChain base signer tests', () => {
             ).rejects.toThrowError();
         });
 
+        test('signMessage - exception when parsing to text', async () => {
+            const signer = new VeChainPrivateKeySigner(
+                Hex.of(eip712TestCases.invalid.privateKey).bytes,
+                provider
+            );
+            const expectedErrorString = 'not an error instance';
+            jest.spyOn(Txt, 'of')
+                .mockImplementationOnce(() => {
+                    // eslint-disable-next-line @typescript-eslint/only-throw-error
+                    throw expectedErrorString;
+                })
+                .mockImplementationOnce(() => {
+                    // eslint-disable-next-line @typescript-eslint/only-throw-error
+                    throw undefined;
+                });
+            await expect(
+                signer.signMessage(EIP191_MESSAGE)
+            ).rejects.toThrowError(expectedErrorString);
+
+            await expect(
+                signer.signMessage(EIP191_MESSAGE)
+            ).rejects.toThrowError('Error while signing the message');
+        });
+
         test('signMessage - ethers compatible - string', async () => {
             const expected = await new vechain_sdk_core_ethers.Wallet(
                 EIP191_PRIVATE_KEY
