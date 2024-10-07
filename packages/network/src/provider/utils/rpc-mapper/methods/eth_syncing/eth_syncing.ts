@@ -20,7 +20,7 @@ const _isBlockNotOutOfSyncInTime = (block: CompressedBlockDetail): boolean => {
 /**
  * RPC Method eth_syncing implementation
  *
- * @link [eth_syncing](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_syncing)
+ * @link [eth_syncing](https://ethereum.github.io/execution-apis/api-documentation/)
  *
  * @param thorClient - The thor client instance to use.
  *

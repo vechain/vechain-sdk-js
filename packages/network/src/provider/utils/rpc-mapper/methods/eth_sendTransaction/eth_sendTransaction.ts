@@ -12,7 +12,7 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
 /**
  * RPC Method eth_sendTransaction implementation
  *
- * @link [eth_sendTransaction](https://docs.metamask.io/wallet/reference/eth_sendtransaction/)
+ * @link [eth_sendTransaction](https://ethereum.github.io/execution-apis/api-documentation/)
  *
  * @NOTE: If 'to' address is not provided.
  * It will be assumed that the transaction is a contract creation transaction.

@@ -3,6 +3,8 @@ import { VeChainSDKLogger } from '@vechain/sdk-logging';
 /**
  * RPC Method eth_getWork implementation
  *
+ * @link [eth_getWork](https://docs.infura.io/api/networks/ethereum/json-rpc-methods/eth_getwork)
+ *
  * @param thorClient - The thor client instance to use.
  * @param params - The standard array of rpc call parameters.
  * @note:

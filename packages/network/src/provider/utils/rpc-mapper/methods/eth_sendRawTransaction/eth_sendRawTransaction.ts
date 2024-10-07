@@ -10,7 +10,7 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
 /**
  * RPC Method eth_sendRawTransaction implementation
  *
- * @link [eth_sendrawtransaction](https://docs.infura.io/api/networks/ethereum/json-rpc-methods/eth_sendrawtransaction)
+ * @link [eth_sendrawtransaction](https://ethereum.github.io/execution-apis/api-documentation/)
  *
  * @param thorClient - The thor client instance to use.
  * @param params - The standard array of rpc call parameters.

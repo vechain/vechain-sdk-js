@@ -8,6 +8,8 @@ import type { VeChainProvider } from '../../../../providers/vechain-provider';
  * `subscriptionId` does not match any active subscriptions, it may throw an error
  * or return `false`, respectively.
  *
+ * @link [eth_unsubscribe](https://docs.infura.io/api/networks/ethereum/json-rpc-methods/subscription-methods/eth_unsubscribe)
+ *
  * @param params - An array containing the subscription ID as its first element.
  * The subscription ID is used to identify and unsubscribe from the corresponding
  * Ethereum event subscription.

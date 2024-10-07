@@ -15,7 +15,7 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
 /**
  * RPC Method eth_estimateGas implementation
  *
- * @link [eth_estimateGas](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_estimategas)
+ * @link [eth_estimateGas](https://ethereum.github.io/execution-apis/api-documentation/)
  *
  * @note At the moment only the `to`, `value` and `data` fields are supported.
  *
@@ -23,7 +23,7 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
  * @param params - The standard array of rpc call parameters.
  *                 * params[0]: The transaction call object.
  *                 * params[1]: A string representing a block number, or one of the string tags latest, earliest, or pending.
- * @returns A hexadecimal of the estimate of the gas for the given transaction.
+ * @returns A hexadecimal number representing of the estimation of the gas for a given transaction.
  * @throws {JSONRPCInvalidParams, JSONRPCInternalError}
  */
 const ethEstimateGas = async (

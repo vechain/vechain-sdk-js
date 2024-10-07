@@ -12,7 +12,7 @@ import { type ThorClient } from '../../../../../thor-client';
 /**
  * RPC Method eth_getStorageAt implementation
  *
- * @link [eth_getStorageAt](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_getstorageat)
+ * @link [eth_getStorageAt](https://ethereum.github.io/execution-apis/api-documentation/)
  *
  * @note Only 'latest' and 'finalized' block numbers are supported.
  *

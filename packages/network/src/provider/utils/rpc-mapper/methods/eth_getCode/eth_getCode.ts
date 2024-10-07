@@ -11,7 +11,7 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
 /**
  * RPC Method eth_getCode implementation
  *
- * @link [eth_getCode](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_getcode)
+ * @link [eth_getCode](https://ethereum.github.io/execution-apis/api-documentation/)
  *
  * @note Only 'latest' and 'finalized' block numbers are supported.
  *

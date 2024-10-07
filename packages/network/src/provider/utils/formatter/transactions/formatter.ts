@@ -47,7 +47,7 @@ const _formatTransactionToRPC = (
 
         /**
          * `input`, `to`, `value` are being referred to the first clause.
-         *VeChain supports multiple clauses in one transaction, thus the actual data should be obtained by looking into each clause.
+         * VeChain supports multiple clauses in one transaction, thus the actual data should be obtained by looking into each clause.
          * Due to the single clause limitation of Ethereum, we assume the first clause is the clause from which we obtain the data.
          */
         input: tx.clauses[0]?.data !== undefined ? tx.clauses[0].data : '',
