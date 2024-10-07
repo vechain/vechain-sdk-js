@@ -232,7 +232,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
                         : new Error(
                               e !== undefined
                                   ? stringifyData(e)
-                                  : 'Error while signing the message'
+                                  : 'Error while signing typed data'
                           );
                 reject(error);
             }
