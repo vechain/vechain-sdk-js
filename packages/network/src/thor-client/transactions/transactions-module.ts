@@ -1,5 +1,5 @@
 import {
-    abi,
+    ABI,
     Hex,
     HexUInt,
     Revision,
@@ -459,18 +459,17 @@ class TransactionsModule {
         errorFragment?: string
     ): string {
         // Error selector
-        if (encodedRevertReason.startsWith(ERROR_SELECTOR)) {
-            return abi.decode<string>(
+        if (encodedRevertReason.startsWith(ERROR_SELECTOR))
+            return ABI.ofEncoded(
                 'string',
                 `0x${encodedRevertReason.slice(ERROR_SELECTOR.length)}`
-            );
-        }
+            ).getFirstDecodedValue();
         // Panic selector
         else if (encodedRevertReason.startsWith(PANIC_SELECTOR)) {
-            const decoded = abi.decode<string>(
+            const decoded = ABI.ofEncoded(
                 'uint256',
                 `0x${encodedRevertReason.slice(PANIC_SELECTOR.length)}`
-            );
+            ).getFirstDecodedValue<string>();
             return `Panic(0x${parseInt(decoded).toString(16).padStart(2, '0')})`;
         }
         // Solidity error, an error fragment is provided, so decode the revert reason using solidity error

@@ -145,7 +145,7 @@ describe('Clause class tests', () => {
             const actual = Clause.deployContract(
                 ClauseFixture.contract.bytecode,
                 {
-                    types: ['uint256'],
+                    types: 'uint256',
                     values: ['100']
                 } satisfies DeployParams
             );
