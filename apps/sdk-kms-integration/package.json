@@ -5,5 +5,8 @@
   "private": true,
   "main": "index.js",
   "author": "VeChain Foundation",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@vechain/sdk-network": "1.0.0-beta.32"
+  }
 }

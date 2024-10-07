@@ -4,10 +4,10 @@ import {
     Hex,
     HexUInt,
     type TransactionBody,
-    type TransactionClause,
-    type vechain_sdk_core_ethers
+    type TransactionClause
 } from '@vechain/sdk-core';
 import { InvalidDataType, JSONRPCInvalidParams } from '@vechain/sdk-errors';
+import { type TypedDataDomain, type TypedDataParameter } from 'abitype';
 import { RPC_METHODS } from '../../../provider/utils/const/rpc-mapper/rpc-methods';
 import { type TransactionSimulationResult } from '../../../thor-client';
 import { vnsUtils } from '../../../utils';
@@ -334,15 +334,15 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
     /**
      * Signs the [[link-eip-712]] typed data.
      *
-     * @param {vechain_sdk_core_ethers.TypedDataDomain} domain - The domain parameters used for signing.
-     * @param {Record<string, vechain_sdk_core_ethers.TypedDataField[]>} types - The types used for signing.
+     * @param {TypedDataDomain} domain - The domain parameters used for signing.
+     * @param {Record<string, TypedDataParameter[]>} types - The types used for signing.
      * @param {Record<string, unknown>} value - The value data to be signed.
      *
      * @return {Promise<string>} - A promise that resolves with the signature string.
      */
     abstract signTypedData(
-        domain: vechain_sdk_core_ethers.TypedDataDomain,
-        types: Record<string, vechain_sdk_core_ethers.TypedDataField[]>,
+        domain: TypedDataDomain,
+        types: Record<string, TypedDataParameter[]>,
         value: Record<string, unknown>
     ): Promise<string>;
 

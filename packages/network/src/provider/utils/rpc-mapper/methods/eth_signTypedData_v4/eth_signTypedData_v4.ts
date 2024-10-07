@@ -1,12 +1,13 @@
-import type { ThorClient } from '../../../../../thor-client';
-import type { VeChainProvider } from '../../../../providers/vechain-provider';
+import { Address } from '@vechain/sdk-core';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
+import { type TypedDataDomain, type TypedDataParameter } from 'viem';
 import type { VeChainSigner } from '../../../../../signer/signers';
-import { Address, type vechain_sdk_core_ethers } from '@vechain/sdk-core';
+import type { ThorClient } from '../../../../../thor-client';
+import type { VeChainProvider } from '../../../../providers/vechain-provider';
 
 /**
  * RPC Method eth_signTypedDataV4 implementation
@@ -59,8 +60,8 @@ const ethSignTypedDataV4 = async (
         string,
         {
             primaryType: string;
-            domain: vechain_sdk_core_ethers.TypedDataDomain;
-            types: Record<string, vechain_sdk_core_ethers.TypedDataField[]>;
+            domain: TypedDataDomain;
+            types: Record<string, TypedDataParameter[]>;
             message: Record<string, unknown>;
         }
     ];

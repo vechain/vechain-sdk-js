@@ -2,6 +2,7 @@ import {
     type TransactionClause,
     type vechain_sdk_core_ethers
 } from '@vechain/sdk-core';
+import { type TypedDataDomain, type TypedDataParameter } from 'abitype';
 import {
     type HardhatVeChainProvider,
     type VeChainProvider
@@ -351,8 +352,8 @@ interface VeChainSigner {
      *  Signs the [[link-eip-712]] typed data.
      */
     signTypedData: (
-        domain: vechain_sdk_core_ethers.TypedDataDomain,
-        types: Record<string, vechain_sdk_core_ethers.TypedDataField[]>,
+        domain: TypedDataDomain,
+        types: Record<string, TypedDataParameter[]>,
         value: Record<string, unknown>
     ) => Promise<string>;
 
@@ -363,7 +364,7 @@ interface VeChainSigner {
 }
 
 export {
-    type VeChainSigner,
     type AvailableVeChainProviders,
-    type TransactionRequestInput
+    type TransactionRequestInput,
+    type VeChainSigner
 };
