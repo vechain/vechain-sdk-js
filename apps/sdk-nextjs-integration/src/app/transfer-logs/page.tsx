@@ -4,7 +4,7 @@ import { Header } from '@/components';
 import { explorerUrl, thorClient } from '@/const';
 import { type Transfer } from '@/types';
 import { reduceHexStringSize } from '@/utils';
-import { addressUtils, FixedPointNumber, Units } from '@vechain/sdk-core';
+import { Address, FixedPointNumber, Units } from '@vechain/sdk-core';
 import {
     type CompressedBlockDetail,
     type FilterTransferLogsOptions
@@ -66,8 +66,7 @@ export default function TransferLogs(): JSX.Element {
 
     // Update the history when the address changes
     useEffect(() => {
-        // Backwards compatibility, from now on use Address.isValid
-        if (addressUtils.isAddress(address)) {
+        if (Address.isValid(address)) {
             void getHistoryFor(address);
         }
     }, [address]);

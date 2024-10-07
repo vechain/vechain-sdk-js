@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { Hex, Revision, revisionUtils, Txt } from '../../src';
+import { Hex, Revision, Txt } from '../../src';
 
 /**
  * Test Revision class.
@@ -140,93 +140,6 @@ describe('Revision class tests', () => {
             test('Throw an exception for an invalid value', () => {
                 expect(() => Revision.of(Txt.of('worst').bytes)).toThrow(
                     InvalidDataType
-                );
-            });
-        });
-    });
-
-    describe('Back-compatibility tests', () => {
-        /**
-         * Test cases for the `isRevisionAccount` function.
-         */
-        const accountRevisions = [
-            {
-                revision: 'invalid-address',
-                expected: false
-            },
-            {
-                revision: 'finalized',
-                expected: true
-            },
-            {
-                revision: '0x34123',
-                expected: true
-            },
-            {
-                revision: '100',
-                expected: true
-            },
-            {
-                revision: 100,
-                expected: true
-            },
-            {
-                revision: '0xG8656c6c6f',
-                expected: false
-            },
-            {
-                revision: 'best',
-                expected: true
-            }
-        ];
-
-        /**
-         * Test cases for the `isRevisionBlock` function.
-         */
-        const blockRevisions = [
-            {
-                revision: 'invalid-address',
-                expected: false
-            },
-            {
-                revision: '0x542fd',
-                expected: true
-            },
-            {
-                revision: '100',
-                expected: true
-            },
-            {
-                revision: 100,
-                expected: true
-            },
-            {
-                revision: '0xG8656c6c6f',
-                expected: false
-            },
-            {
-                revision: 'best',
-                expected: true
-            },
-            {
-                revision: 'finalized',
-                expected: true
-            }
-        ];
-
-        test('isBlockRevision function test', () => {
-            blockRevisions.forEach(({ revision, expected }) => {
-                expect(revisionUtils.isRevisionBlock(revision)).toBe(expected);
-            });
-        });
-
-        /**
-         * Test case for the `isRevisionAccount` function.
-         */
-        test('isAccountRevision', () => {
-            accountRevisions.forEach(({ revision, expected }) => {
-                expect(revisionUtils.isRevisionAccount(revision)).toBe(
-                    expected
                 );
             });
         });

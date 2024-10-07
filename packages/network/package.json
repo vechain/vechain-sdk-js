@@ -27,7 +27,7 @@
   ],
   "scripts": {
     "build": "rm -rf ./dist && tsup-node src/index.ts --format cjs,esm --dts",
-    "check:circular-dependencies": "npx madge --exclude '^(provider/providers/vechain-provider/vechain-provider.ts|thor-client/contracts/model/contract.ts|thor-client/index.ts|provider/utils/formatter/blocks/index.ts|signer/signers/types.d.ts|provider/utils/helpers/transaction/transaction-helpers.ts|thor-client/contracts/model/contract-filter.ts)$' --circular --extensions ts src",
+    "check:circular-dependencies": "npx madge --json --circular --extensions ts src | jq '. | length' | awk '{if($1 > 11) exit 1}'",
     "lint": "eslint --ext .ts src --ext .ts tests",
     "format": "prettier --write src/**/*.ts tests/**/*.ts solo-seeding/**/*.ts",
     "test:unit": "rm -rf ./coverageUnit && UNIT=true jest --coverage --coverageDirectory=coverageUnit --group=unit",

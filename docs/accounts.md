@@ -31,7 +31,7 @@ console.log('Mnemonic words', randomMnemonic);
 // 2 - Derive private key from mnemonic words according to BIP32, using the path `m/44'/818'/0'/0`.
 
 // Defined for VET at https://github.com/satoshilabs/slips/blob/master/slip-0044.md
-const privateKey = mnemonic.derivePrivateKey(randomMnemonic);
+const privateKey = Mnemonic.toPrivateKey(randomMnemonic);
 
 console.log(Hex.of(privateKey).toString());
 // ...SOME PRIVATE KEY...

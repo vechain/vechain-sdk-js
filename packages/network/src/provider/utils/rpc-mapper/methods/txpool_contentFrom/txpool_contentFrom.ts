@@ -1,5 +1,5 @@
 import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
-import { addressUtils } from '@vechain/sdk-core';
+import { Address } from '@vechain/sdk-core';
 
 /**
  * RPC Method txpool_contentFrom implementation
@@ -18,7 +18,7 @@ const txPoolContentFrom = async (params: unknown[]): Promise<object> => {
     if (
         params.length !== 1 ||
         typeof params[0] !== 'string' ||
-        !addressUtils.isAddress(params[0])
+        !Address.isValid(params[0])
     )
         throw new JSONRPCInvalidParams(
             'txpool_contentFrom()',

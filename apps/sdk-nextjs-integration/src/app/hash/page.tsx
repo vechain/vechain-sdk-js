@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
-import { blake2b256, keccak256, sha256 } from '@vechain/sdk-core';
+import { Blake2b256, Keccak256, Sha256, Txt } from '@vechain/sdk-core';
 import { type HashedContent } from '@/types';
 import { Header } from '@/components';
 
@@ -24,9 +24,9 @@ export default function HashPage(): JSX.Element {
     function hashContent(content: string): void {
         try {
             setHashedContent({
-                blake2b256: blake2b256(content, 'hex'),
-                keccak256: keccak256(content, 'hex'),
-                sha256: sha256(content, 'hex')
+                blake2b256: Blake2b256.of(Txt.of(content).bytes).toString(),
+                keccak256: Keccak256.of(Txt.of(content).bytes).toString(),
+                sha256: Sha256.of(Txt.of(content).bytes).toString()
             });
         } catch (error) {
             setHashedContent({

@@ -1,7 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
-import { bytesToHex } from '@noble/hashes/utils';
 import { InvalidOperation } from '@vechain/sdk-errors';
-import { Hex, sha256, Sha256 } from '../../../src';
+import { Hex, Sha256 } from '../../../src';
 import { CONTENT, NO_CONTENT } from './fixture';
 
 // Hex on purpose because it must be equal to the returned HexUInt hash.
@@ -43,21 +42,5 @@ describe('Sha256 class tests', () => {
 
     test('Throw an exception for illegal content', () => {
         expect(() => Sha256.of('0xfoe')).toThrow(InvalidOperation);
-    });
-});
-describe('Backwards compatibility tests', () => {
-    test('Should return the hash as hex', () => {
-        const rawString = 'Hello, World!';
-        const hash = sha256(rawString, 'hex');
-        expect(hash).toBe(
-            '0xdffd6021bb2bd5b0af676290809ec3a53191dd81c7f70a4b28688a362182986f'
-        );
-    });
-    test('Should return the hash as buffer', () => {
-        const rawString = 'Hello, World!';
-        const hash = sha256(rawString, 'buffer');
-        expect(bytesToHex(hash)).toBe(
-            'dffd6021bb2bd5b0af676290809ec3a53191dd81c7f70a4b28688a362182986f'
-        );
     });
 });

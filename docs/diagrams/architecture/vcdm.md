@@ -9,7 +9,6 @@ classDiagram
     }
     class ABIContract {
         +ABIContract ofAbi(ViemABI abi)$
-        +ABIContract ofStringAbi(string abi)$
         +ABIFunction getFunction(string name)
         +ABIEvent getEvent(string name)
         +Hex encodeFunctionInput(string functionName, unknown[] functionData)
