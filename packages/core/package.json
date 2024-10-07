@@ -43,14 +43,11 @@
     "@scure/bip39": "^1.4.0",
     "@vechain/sdk-errors": "1.0.0-beta.32",
     "@vechain/sdk-logging": "1.0.0-beta.32",
-    "bignumber.js": "^9.1.2",
-    "blakejs": "^1.2.1",
     "ethers": "6.13.2",
     "fast-json-stable-stringify": "^2.1.0",
     "viem": "^2.21.14"
   },
   "devDependencies": {
-    "@types/elliptic": "^6.4.18",
     "bignumber.js": "^9.1.2",
     "thor-devkit": "^2.0.9"
   }
