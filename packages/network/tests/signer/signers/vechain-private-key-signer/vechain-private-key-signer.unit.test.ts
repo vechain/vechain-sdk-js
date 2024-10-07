@@ -70,7 +70,7 @@ describe('VeChain base signer tests', () => {
                     '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
                 ).bytes
             );
-            expect(signerWithoutProvider.provider).toBeNull();
+            expect(signerWithoutProvider.provider).toBeUndefined();
 
             // Attach the provider
             const signerWithProvider = signerWithoutProvider.connect(provider);
