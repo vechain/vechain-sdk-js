@@ -84,7 +84,7 @@ class Certificate implements CertificateData {
      * @remarks
      * The signature is a lowercase hexadecimal expression prefixed with `0x`.
      */
-    signature?: string | undefined;
+    signature?: string;
 
     /**
      * Returns a new instance of this class assuring the formal validity of the

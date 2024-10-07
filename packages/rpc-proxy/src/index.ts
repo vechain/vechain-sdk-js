@@ -88,6 +88,7 @@ function startProxy(): void {
 
     // Start the express proxy server
     const app: Express = express();
+    app.disable('x-powered-by');
     app.use(
         (cors as (options: cors.CorsOptions) => express.RequestHandler)({})
     );

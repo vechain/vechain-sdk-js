@@ -214,14 +214,12 @@ class DebugModule {
                     `Invalid transaction id '${target.transaction}' given as input for ${functionName}.`,
                     { transaction: target.transaction }
                 );
-        } else {
-            if (target.transaction < 0) {
-                throw new InvalidDataType(
-                    'DebugModule.validateTarget()',
-                    `Invalid transaction index '${target.transaction}' given as input for ${functionName}.`,
-                    { transaction: target.transaction }
-                );
-            }
+        } else if (target.transaction < 0) {
+            throw new InvalidDataType(
+                'DebugModule.validateTarget()',
+                `Invalid transaction index '${target.transaction}' given as input for ${functionName}.`,
+                { transaction: target.transaction }
+            );
         }
 
         // Validate target - clauseIndex
