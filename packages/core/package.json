@@ -37,6 +37,7 @@
     "test:browser": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit --config ./jest.config.browser.js"
   },
   "dependencies": {
+    "@ethereumjs/rlp": "^5.0.2",
     "@noble/ciphers": "^1.0.0",
     "@scure/bip32": "^1.4.0",
     "@scure/bip39": "^1.4.0",
