@@ -1,15 +1,11 @@
 import { bytesToHex } from '@noble/curves/abstract/utils';
 import { type SignatureType } from '@noble/curves/abstract/weierstrass';
 import { secp256k1 } from '@noble/curves/secp256k1';
-import {
-    Address,
-    Hex,
-    Transaction,
-    type TransactionBody
-} from '@vechain/sdk-core';
+import { Address, Hex, Transaction, Txt } from '@vechain/sdk-core';
 import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
 import {
     type AvailableVeChainProviders,
+    RPC_METHODS,
     type TransactionRequestInput,
     VeChainAbstractSigner
 } from '@vechain/sdk-network';
@@ -38,18 +34,15 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         return Address.ofPublicKey(publicKey).toString();
     }
 
-    private async buildVeChainSignatureFromTx(
-        transactionBody: TransactionBody
-    ): Promise<string> {
-        // Get the transaction hash
-        const transactionHash =
-            Transaction.of(transactionBody).getTransactionHash().bytes;
+    private async buildVeChainSignatureFromPayload(
+        payload: Uint8Array
+    ): Promise<Uint8Array> {
         // Sign the transaction hash
-        const signature = await this.kmsVeChainProvider.sign(transactionHash);
+        const signature = await this.kmsVeChainProvider.sign(payload);
 
         if (signature === undefined) {
             // TODO: throw error
-            return '';
+            return new Uint8Array();
         }
 
         // Build the VeChain signature using the r, s and v components
@@ -59,17 +52,12 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
 
         const recoveryBit = await this.getRecoveryBit(
             decodedSignatureWithoutRecoveryBit,
-            transactionHash
+            payload
         );
         const decodedSignature =
             decodedSignatureWithoutRecoveryBit.addRecoveryBit(recoveryBit);
 
-        return Hex.of(
-            Transaction.of(
-                transactionBody,
-                decodedSignature.toCompactRawBytes()
-            ).encoded
-        ).toString();
+        return decodedSignature.toCompactRawBytes();
     }
 
     private async getRecoveryBit(
@@ -107,7 +95,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         // Check the provider (needed to sign the transaction)
         if (this.provider === undefined) {
             throw new JSONRPCInvalidParams(
-                'VeChainPrivateKeySigner.signTransaction()',
+                'KMSVeChainSigner.signTransaction()',
                 -32602,
                 'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
                 { transactionToSign }
@@ -117,17 +105,54 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         const populatedTransaction =
             await this.populateTransaction(transactionToSign);
 
-        return await this.buildVeChainSignatureFromTx(populatedTransaction);
+        // Get the transaction hash
+        const transactionHash =
+            Transaction.of(populatedTransaction).getTransactionHash().bytes;
+
+        const veChainSignature =
+            await this.buildVeChainSignatureFromPayload(transactionHash);
+
+        return Hex.of(
+            Transaction.of(populatedTransaction, veChainSignature).encoded
+        ).toString();
     }
-    async sendTransaction(
+
+    public async sendTransaction(
         transactionToSend: TransactionRequestInput
     ): Promise<string> {
-        throw new Error('Method not implemented.');
+        // 1 - Get the provider (needed to send the raw transaction)
+        if (this.provider === undefined) {
+            throw new JSONRPCInvalidParams(
+                'KMSVeChainSigner.sendTransaction()',
+                -32602,
+                'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
+                { transactionToSend }
+            );
+        }
+
+        const provider = this.provider;
+
+        // 2 - Sign the transaction
+        const signedTransaction = await this.signTransaction(transactionToSend);
+
+        // 3 - Send the signed transaction
+        return (await provider.request({
+            method: RPC_METHODS.eth_sendRawTransaction,
+            params: [signedTransaction]
+        })) as string;
     }
-    async signMessage(message: string | Uint8Array): Promise<string> {
-        throw new Error('Method not implemented.');
+
+    public async signMessage(message: string | Uint8Array): Promise<string> {
+        const payload =
+            typeof message === 'string' ? Txt.of(message).bytes : message;
+        const veChainSignature =
+            await this.buildVeChainSignatureFromPayload(payload);
+        // SCP256K1 encodes the recovery flag in the last byte. EIP-191 adds 27 to it.
+        veChainSignature[veChainSignature.length - 1] += 27;
+        return Hex.of(veChainSignature).toString();
     }
-    async signTypedData(
+
+    public async signTypedData(
         domain: TypedDataDomain,
         types: Record<string, TypedDataParameter[]>,
         value: Record<string, unknown>
