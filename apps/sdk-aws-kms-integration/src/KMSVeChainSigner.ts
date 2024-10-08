@@ -59,7 +59,9 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         }
 
         const hexSignature = bytesToHex(signature);
-        const decodedSignature = secp256k1.Signature.fromDER(hexSignature);
+        const decodedSignature =
+            secp256k1.Signature.fromDER(hexSignature).normalizeS();
+
         // TODO: add recovery bit
         decodedSignature.addRecoveryBit(0);
 
