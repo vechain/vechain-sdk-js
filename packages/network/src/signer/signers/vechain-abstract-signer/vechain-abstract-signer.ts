@@ -47,7 +47,7 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
      * @param provider - The provider to connect to
      * @returns a new instance of this Signer connected to //provider// or detached
      */
-    abstract connect(provider?: AvailableVeChainProviders): this;
+    abstract connect(provider: AvailableVeChainProviders): this;
 
     /**
      * Get the address of the Signer.

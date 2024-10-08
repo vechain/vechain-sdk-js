@@ -4,11 +4,20 @@ import {
     VeChainAbstractSigner
 } from '@vechain/sdk-network';
 import { type TypedDataDomain, type TypedDataParameter } from 'abitype';
+import { type KMSVeChainProvider } from './KMSVeChainProvider';
 
 class KMSVeChainSigner extends VeChainAbstractSigner {
-    connect(_provider?: AvailableVeChainProviders): this {
-        throw new Error('Method not implemented.');
+    private readonly kmsVeChainProvider: KMSVeChainProvider;
+
+    public constructor(provider?: AvailableVeChainProviders) {
+        super(provider);
+        this.kmsVeChainProvider = this.provider as KMSVeChainProvider;
     }
+
+    connect(provider: AvailableVeChainProviders): this {
+        return new KMSVeChainSigner(provider) as this;
+    }
+
     async getAddress(): Promise<string> {
         throw new Error('Method not implemented.');
     }

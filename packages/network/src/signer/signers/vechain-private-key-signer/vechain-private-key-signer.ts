@@ -66,7 +66,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
      * @param provider - The provider to connect to
      * @returns a new instance of this Signer connected to //provider// or detached
      */
-    connect(provider?: AvailableVeChainProviders): this {
+    connect(provider: AvailableVeChainProviders): this {
         return new VeChainPrivateKeySigner(this.privateKey, provider) as this;
     }
 
