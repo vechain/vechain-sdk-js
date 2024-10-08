@@ -14,6 +14,7 @@ import {
     Txt,
     vechain_sdk_core_ethers
 } from '@vechain/sdk-core';
+import { InvalidAbiEncodingTypeError } from 'viem';
 import {
     TESTNET_URL,
     ThorClient,
@@ -300,7 +301,7 @@ describe('VeChain base signer tests', () => {
                     eip712TestCases.invalid.primaryType,
                     eip712TestCases.invalid.data
                 )
-            ).rejects.toThrowError(TypeError);
+            ).rejects.toThrowError(InvalidAbiEncodingTypeError);
         });
 
         test('signTypedData - exception when parsing to hex', async () => {
