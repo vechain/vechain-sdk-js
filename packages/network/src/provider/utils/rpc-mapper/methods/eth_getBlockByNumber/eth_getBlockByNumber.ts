@@ -12,7 +12,7 @@ import { ethChainId } from '../eth_chainId';
 /**
  * RPC Method eth_getBlockByNumber implementation
  *
- * @link [eth_getBlockByNumber](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_getblockbynumber)
+ * @link [eth_getBlockByNumber](https://ethereum.github.io/execution-apis/api-documentation/)
  *
  * @note
  *  * Standard RPC method `eth_getBlockByNumber` support following block numbers: hex number of block, 'earliest', 'latest', 'safe', 'finalized', 'pending'. (@see https://ethereum.org/en/developers/docs/apis/json-rpc#default-block)

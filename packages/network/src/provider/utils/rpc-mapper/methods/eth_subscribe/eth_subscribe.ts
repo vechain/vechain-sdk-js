@@ -38,6 +38,8 @@ type ethSubscribeParams = [SUBSCRIPTION_TYPE, string | string[]] | unknown[];
  * that match given filter criteria. It ensures that the provided parameters are valid and that
  * the provider is available before setting up the subscription and generating a unique subscription ID.
  *
+ * @link [eth_subscribe](https://docs.infura.io/api/networks/ethereum/json-rpc-methods/subscription-methods/eth_subscribe)
+ *
  * @param thorClient - An instance of `ThorClient` used to interact with the blockchain, such as
  *                     retrieving the current best block when setting up a new subscription.
  * @param params - Parameters for the subscription, conforming to `ethSubscribeParams`. The first

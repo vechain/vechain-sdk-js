@@ -12,6 +12,8 @@ import type { VeChainSigner } from '../../../../../signer';
 /**
  * RPC Method eth_signTransaction implementation
  *
+ * @link [eth_signTransaction](https://ethereum.github.io/execution-apis/api-documentation/)
+ *
  * @param thorClient - The thor client instance to use.
  * @param params - The standard array of rpc call parameters.
  *               * params[0]: transaction - object - This describes the transaction info with following properties:
