@@ -22,6 +22,7 @@ import {
     type ThorClient
 } from '../../../thor-client';
 import {
+    SignTypedDataOptions,
     type AvailableVeChainProviders,
     type TransactionRequestInput
 } from '../types';
@@ -201,13 +202,15 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
      * @param {ethers.TypedDataDomain} domain - The domain parameters used for signing.
      * @param {Record<string, ethers.TypedDataField[]>} types - The types used for signing.
      * @param {Record<string, unknown>} value - The value data to be signed.
+     * @param {SignTypedDataOptions} [options] - The options used for signing.
      *
      * @return {Promise<string>} - A promise that resolves with the signature string.
      */
     async signTypedData(
         domain: vechain_sdk_core_ethers.TypedDataDomain,
         types: Record<string, vechain_sdk_core_ethers.TypedDataField[]>,
-        value: Record<string, unknown>
+        value: Record<string, unknown>,
+        options?: SignTypedDataOptions
     ): Promise<string> {
         return await new Promise((resolve, reject) => {
             try {

@@ -212,6 +212,13 @@ interface TransactionRequestInput {
 }
 
 /**
+ * Options for signing typed data
+ */
+interface SignTypedDataOptions {
+    signer?: string;
+}
+
+/**
  * A signer for VeChain, adding specific methods for VeChain to the ethers signer
  *
  * @NOTE: Su support completely our providers (that already support ethers provider format)
@@ -353,7 +360,8 @@ interface VeChainSigner {
     signTypedData: (
         domain: vechain_sdk_core_ethers.TypedDataDomain,
         types: Record<string, vechain_sdk_core_ethers.TypedDataField[]>,
-        value: Record<string, unknown>
+        value: Record<string, unknown>,
+        options?: SignTypedDataOptions
     ) => Promise<string>;
 
     /**
@@ -365,5 +373,6 @@ interface VeChainSigner {
 export {
     type VeChainSigner,
     type AvailableVeChainProviders,
-    type TransactionRequestInput
+    type TransactionRequestInput,
+    type SignTypedDataOptions
 };
