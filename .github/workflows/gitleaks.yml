@@ -1,4 +1,4 @@
-name: gitleaks
+name: Check for leaks in secrets
 on: 
     pull_request:
       branches:
