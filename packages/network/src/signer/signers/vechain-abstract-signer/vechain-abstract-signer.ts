@@ -12,7 +12,7 @@ import { RPC_METHODS } from '../../../provider/utils/const/rpc-mapper/rpc-method
 import { type TransactionSimulationResult } from '../../../thor-client';
 import { vnsUtils } from '../../../utils';
 import {
-    SignTypedDataOptions,
+    type SignTypedDataOptions,
     type AvailableVeChainProviders,
     type TransactionRequestInput,
     type VeChainSigner

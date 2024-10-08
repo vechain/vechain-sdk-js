@@ -22,7 +22,7 @@ import {
     type ThorClient
 } from '../../../thor-client';
 import {
-    SignTypedDataOptions,
+    type SignTypedDataOptions,
     type AvailableVeChainProviders,
     type TransactionRequestInput
 } from '../types';
