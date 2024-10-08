@@ -1,5 +1,5 @@
 {
-  "name": "sdk-kms-integration",
+  "name": "sdk-aws-kms-integration",
   "description": "An example app of how to use the VeChain abstract signer to integrate with AWS KMS",
   "version": "1.0.0-beta.32",
   "private": true,
