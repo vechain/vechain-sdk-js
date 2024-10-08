@@ -21,10 +21,20 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         this.kmsVeChainProvider = this.provider as KMSVeChainProvider;
     }
 
+    /**
+     * Connects the signer to a provider.
+     * @param provider The provider to connect to.
+     * @returns {this} The signer instance.
+     * @override VeChainAbstractSigner.connect
+     **/
     public connect(provider: AvailableVeChainProviders): this {
         return new KMSVeChainSigner(provider) as this;
     }
 
+    /**
+     * It returns the address associated with the signer.
+     * @returns The address associated with the signer.
+     */
     public async getAddress(): Promise<string> {
         const publicKey = await this.kmsVeChainProvider.getPublicKey();
         if (publicKey === undefined) {
@@ -34,6 +44,11 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         return Address.ofPublicKey(publicKey).toString();
     }
 
+    /**
+     * It builds a VeChain signature from a bytes payload.
+     * @param {Uint8Array} payload to sign.
+     * @returns {Uint8Array} The signature following the VeChain format.
+     */
     private async buildVeChainSignatureFromPayload(
         payload: Uint8Array
     ): Promise<Uint8Array> {
@@ -60,6 +75,12 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         return decodedSignature.toCompactRawBytes();
     }
 
+    /**
+     * Returns the recovery bit of a signature.
+     * @param decodedSignatureWithoutRecoveryBit Signature with the R and S components only.
+     * @param transactionHash Raw transaction hash.
+     * @returns {number} The V component of the signature (either 0 or 1).
+     */
     private async getRecoveryBit(
         decodedSignatureWithoutRecoveryBit: SignatureType,
         transactionHash: Uint8Array
@@ -89,6 +110,11 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         return -1;
     }
 
+    /**
+     * It signs a transaction.
+     * @param transactionToSign Transaction body to sign in plain format.
+     * @returns {string} The signed transaction in hexadecimal format.
+     */
     public async signTransaction(
         transactionToSign: TransactionRequestInput
     ): Promise<string> {
@@ -117,6 +143,11 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         ).toString();
     }
 
+    /**
+     * Submits a signed transaction to the network.
+     * @param transactionToSend Transaction to by signed and sent to the network.
+     * @returns {string} The transaction ID.
+     */
     public async sendTransaction(
         transactionToSend: TransactionRequestInput
     ): Promise<string> {
@@ -130,21 +161,22 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
             );
         }
 
-        const provider = this.provider;
-
         // 2 - Sign the transaction
         const signedTransaction = await this.signTransaction(transactionToSend);
 
         // 3 - Send the signed transaction
-        return (await provider.request({
+        return (await this.kmsVeChainProvider.request({
             method: RPC_METHODS.eth_sendRawTransaction,
             params: [signedTransaction]
         })) as string;
     }
 
-    public async signMessage(message: string | Uint8Array): Promise<string> {
-        const payload =
-            typeof message === 'string' ? Txt.of(message).bytes : message;
+    /**
+     * Signs a bytes payload returning the VeChain signature in hexadecimal format.
+     * @param {Uint8Array} payload in bytes to sign.
+     * @returns {string} The VeChain signature in hexadecimal format.
+     */
+    private async signPayload(payload: Uint8Array): Promise<string> {
         const veChainSignature =
             await this.buildVeChainSignatureFromPayload(payload);
         // SCP256K1 encodes the recovery flag in the last byte. EIP-191 adds 27 to it.
@@ -152,6 +184,25 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         return Hex.of(veChainSignature).toString();
     }
 
+    /**
+     * Signs a message returning the VeChain signature in hexadecimal format.
+     * @param {string | Uint8Array} message to sign.
+     * @returns {string} The VeChain signature in hexadecimal format.
+     */
+    public async signMessage(message: string | Uint8Array): Promise<string> {
+        const payload =
+            typeof message === 'string' ? Txt.of(message).bytes : message;
+        return await this.signPayload(payload);
+    }
+
+    /**
+     * Signs a typed data returning the VeChain signature in hexadecimal format.
+     * @param {TypedDataDomain} domain to hash as typed data.
+     * @param {Record<string, TypedDataParameter[]>} types to hash as typed data.
+     * @param {string} primaryType to hash as typed data.
+     * @param {Record<string, unknown>} message to hash as typed data.
+     * @returns {string} The VeChain signature in hexadecimal format.
+     */
     public async signTypedData(
         domain: TypedDataDomain,
         types: Record<string, TypedDataParameter[]>,
@@ -161,11 +212,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         const payload = Hex.of(
             hashTypedData({ domain, types, primaryType, message })
         ).bytes;
-        const veChainSignature =
-            await this.buildVeChainSignatureFromPayload(payload);
-        // SCP256K1 encodes the recovery flag in the last byte. EIP-191 adds 27 to it.
-        veChainSignature[veChainSignature.length - 1] += 27;
-        return Hex.of(veChainSignature).toString();
+        return await this.signPayload(payload);
     }
 }
 
