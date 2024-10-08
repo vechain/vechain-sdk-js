@@ -1,6 +1,11 @@
 import { bytesToHex } from '@noble/curves/abstract/utils';
 import { secp256k1 } from '@noble/curves/secp256k1';
-import { Address, Hex, Transaction } from '@vechain/sdk-core';
+import {
+    Address,
+    Hex,
+    Transaction,
+    type TransactionBody
+} from '@vechain/sdk-core';
 import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
 import {
     type AvailableVeChainProviders,
@@ -8,6 +13,7 @@ import {
     VeChainAbstractSigner
 } from '@vechain/sdk-network';
 import { type TypedDataDomain, type TypedDataParameter } from 'abitype';
+import { recoverPublicKey, toHex } from 'viem';
 import { type KMSVeChainProvider } from './KMSVeChainProvider';
 
 class KMSVeChainSigner extends VeChainAbstractSigner {
@@ -31,6 +37,59 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         return Address.ofPublicKey(publicKey).toString();
     }
 
+    private async buildVeChainSignatureFromTx(
+        transactionBody: TransactionBody
+    ): Promise<string> {
+        // Get the transaction hash
+        const transactionHash =
+            Transaction.of(transactionBody).getTransactionHash().bytes;
+        // Sign the transaction hash
+        const signature = await this.kmsVeChainProvider.sign(transactionHash);
+
+        if (signature === undefined) {
+            // TODO: throw error
+            return '';
+        }
+
+        // Build the VeChain signature using the r, s and v components
+        const hexSignature = bytesToHex(signature);
+        const decodedSignatureWithoutRecoveryBit =
+            secp256k1.Signature.fromDER(hexSignature).normalizeS();
+
+        const publicKey = await this.kmsVeChainProvider.getPublicKey();
+        if (publicKey === undefined) {
+            // TODO: throw error
+            return '';
+        }
+        const publicKeyHex = toHex(publicKey);
+
+        for (let i = 0n; i < 2n; i++) {
+            const publicKeyRecovered = await recoverPublicKey({
+                hash: transactionHash,
+                signature: {
+                    r: toHex(decodedSignatureWithoutRecoveryBit.r),
+                    s: toHex(decodedSignatureWithoutRecoveryBit.s),
+                    v: i
+                }
+            });
+            if (publicKeyRecovered === publicKeyHex) {
+                const decodedSignature =
+                    decodedSignatureWithoutRecoveryBit.addRecoveryBit(
+                        Number(i)
+                    );
+                return Hex.of(
+                    Transaction.of(
+                        transactionBody,
+                        decodedSignature.toCompactRawBytes()
+                    ).encoded
+                ).toString();
+            }
+        }
+
+        // TODO: throw error
+        return '';
+    }
+
     public async signTransaction(
         transactionToSign: TransactionRequestInput
     ): Promise<string> {
@@ -47,30 +106,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         const populatedTransaction =
             await this.populateTransaction(transactionToSign);
 
-        const transactionHash =
-            Transaction.of(populatedTransaction).getTransactionHash().bytes;
-
-        // Sign the transaction hash
-        const signature = await this.kmsVeChainProvider.sign(transactionHash);
-
-        if (signature === undefined) {
-            // TODO: throw error
-            return '';
-        }
-
-        const hexSignature = bytesToHex(signature);
-        const decodedSignature =
-            secp256k1.Signature.fromDER(hexSignature).normalizeS();
-
-        // TODO: add recovery bit
-        decodedSignature.addRecoveryBit(0);
-
-        return Hex.of(
-            Transaction.of(
-                populatedTransaction,
-                decodedSignature.toCompactRawBytes()
-            ).encoded
-        ).toString();
+        return await this.buildVeChainSignatureFromTx(populatedTransaction);
     }
     async sendTransaction(
         transactionToSend: TransactionRequestInput
