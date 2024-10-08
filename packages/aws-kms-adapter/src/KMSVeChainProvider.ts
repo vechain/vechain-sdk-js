@@ -47,7 +47,7 @@ class KMSVeChainProvider extends VeChainProvider {
 
     /**
      * Returns a new instance of the KMSVeChainSigner using this provider configuration.
-     * @param _addressOrIndex Unused parameter, will always return the signed associated to the keyId
+     * @param _addressOrIndex Unused parameter, will always return the signer associated to the keyId
      * @returns {KMSVeChainSigner} An instance of KMSVeChainSigner
      */
     public override async getSigner(
