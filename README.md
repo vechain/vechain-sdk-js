@@ -22,7 +22,7 @@
 Welcome to the VeChain SDK repository! Here's a breakdown of our organized structure:
 
 - `./apps`: Explore a suite of sample applications that demonstrate the versatility and power of our SDK in real-world scenarios. From Next.js to Node.js, HardHat, and CloudFlare, these examples serve as practical guides to kickstart your development journey.
-- `./docker`: Streamline your development and deployment with our comprehensive Docker configurations. This directory offers Dockerfiles and Docker Compose setups designed to create consistent, reproducible environments.
+- `./docker`: Streamline your development and deployment with our comprehensive Docker configurations. This directory offers Dockerfile setups designed to create consistent, reproducible environments.
 - `./docs`: Your go-to destination for comprehensive documentation. Explore demonstrative examples showcasing the prowess of our SDK. Knowledge is power, and our docs are here to enlighten your path.
 - `./packages`: A hub for our monorepo packages, each serving a distinct purpose:
    - `./packages/core`: The heart of the SDK, housing essential modules for fundamental operations like hashing and cryptography. Dive into the core for the building blocks of your decentralized dreams.
