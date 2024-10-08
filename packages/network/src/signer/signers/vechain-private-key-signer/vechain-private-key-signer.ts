@@ -7,14 +7,15 @@ import {
     Secp256k1,
     Transaction,
     type TransactionBody,
-    Txt,
-    vechain_sdk_core_ethers
+    Txt
 } from '@vechain/sdk-core';
 import {
     InvalidSecp256k1PrivateKey,
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
+import { type TypedDataDomain, type TypedDataParameter } from 'abitype';
+import { hashTypedData } from 'viem';
 import { RPC_METHODS } from '../../../provider/utils/const/rpc-mapper/rpc-methods';
 import {
     DelegationHandler,
@@ -198,25 +199,22 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
      * This function is a drop-in replacement for {@link ethers.BaseWallet.signTypedData} function,
      * albeit Ethereum Name Services are not resolved because he resolution depends on **ethers** provider implementation.
      *
-     * @param {ethers.TypedDataDomain} domain - The domain parameters used for signing.
-     * @param {Record<string, ethers.TypedDataField[]>} types - The types used for signing.
+     * @param {TypedDataDomain} domain - The domain parameters used for signing.
+     * @param {Record<string, TypedDataParameter[]>} types - The types used for signing.
      * @param {Record<string, unknown>} value - The value data to be signed.
      *
      * @return {Promise<string>} - A promise that resolves with the signature string.
      */
     async signTypedData(
-        domain: vechain_sdk_core_ethers.TypedDataDomain,
-        types: Record<string, vechain_sdk_core_ethers.TypedDataField[]>,
-        value: Record<string, unknown>
+        domain: TypedDataDomain,
+        types: Record<string, TypedDataParameter[]>,
+        primaryType: string,
+        message: Record<string, unknown>
     ): Promise<string> {
         return await new Promise((resolve, reject) => {
             try {
                 const hash = Hex.of(
-                    vechain_sdk_core_ethers.TypedDataEncoder.hash(
-                        domain,
-                        types,
-                        value
-                    )
+                    hashTypedData({ domain, types, primaryType, message })
                 ).bytes;
                 const sign = Secp256k1.sign(
                     hash,

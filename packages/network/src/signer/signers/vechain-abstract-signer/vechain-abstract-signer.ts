@@ -336,14 +336,16 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
      *
      * @param {TypedDataDomain} domain - The domain parameters used for signing.
      * @param {Record<string, TypedDataParameter[]>} types - The types used for signing.
-     * @param {Record<string, unknown>} value - The value data to be signed.
+     * @param {string} primaryType - The primary type used for signing.
+     * @param {Record<string, unknown>} message - The message data to be signed.
      *
      * @return {Promise<string>} - A promise that resolves with the signature string.
      */
     abstract signTypedData(
         domain: TypedDataDomain,
         types: Record<string, TypedDataParameter[]>,
-        value: Record<string, unknown>
+        primaryType: string,
+        message: Record<string, unknown>
     ): Promise<string>;
 
     /**

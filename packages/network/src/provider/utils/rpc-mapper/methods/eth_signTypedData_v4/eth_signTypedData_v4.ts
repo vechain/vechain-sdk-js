@@ -64,7 +64,7 @@ const ethSignTypedDataV4 = async (
             primaryType: string;
             domain: TypedDataDomain;
             types: Record<string, TypedDataParameter[]>;
-            message: Record<string, unknown>;
+            value: Record<string, unknown>;
         }
     ];
 
@@ -76,7 +76,8 @@ const ethSignTypedDataV4 = async (
         return await signer.signTypedData(
             typedData.domain,
             typedData.types,
-            typedData.message
+            typedData.primaryType,
+            typedData.value
         );
     } catch (error) {
         throw new JSONRPCInternalError(

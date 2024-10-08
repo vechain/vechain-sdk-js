@@ -354,7 +354,8 @@ interface VeChainSigner {
     signTypedData: (
         domain: TypedDataDomain,
         types: Record<string, TypedDataParameter[]>,
-        value: Record<string, unknown>
+        primaryType: string,
+        message: Record<string, unknown>
     ) => Promise<string>;
 
     /**

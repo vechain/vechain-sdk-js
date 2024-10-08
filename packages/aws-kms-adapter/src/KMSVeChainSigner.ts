@@ -10,7 +10,7 @@ import {
     VeChainAbstractSigner
 } from '@vechain/sdk-network';
 import { type TypedDataDomain, type TypedDataParameter } from 'abitype';
-import { recoverPublicKey, toHex } from 'viem';
+import { hashTypedData, recoverPublicKey, toHex } from 'viem';
 import { type KMSVeChainProvider } from './KMSVeChainProvider';
 
 class KMSVeChainSigner extends VeChainAbstractSigner {
@@ -155,9 +155,17 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
     public async signTypedData(
         domain: TypedDataDomain,
         types: Record<string, TypedDataParameter[]>,
-        value: Record<string, unknown>
+        primaryType: string,
+        message: Record<string, unknown>
     ): Promise<string> {
-        throw new Error('Method not implemented.');
+        const payload = Hex.of(
+            hashTypedData({ domain, types, primaryType, message })
+        ).bytes;
+        const veChainSignature =
+            await this.buildVeChainSignatureFromPayload(payload);
+        // SCP256K1 encodes the recovery flag in the last byte. EIP-191 adds 27 to it.
+        veChainSignature[veChainSignature.length - 1] += 27;
+        return Hex.of(veChainSignature).toString();
     }
 }
 
