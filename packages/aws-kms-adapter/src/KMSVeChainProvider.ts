@@ -1,7 +1,9 @@
 import {
     GetPublicKeyCommand,
     KMSClient,
-    SignCommand
+    MessageType,
+    SignCommand,
+    SigningAlgorithmSpec
 } from '@aws-sdk/client-kms';
 import {
     type ThorClient,
@@ -56,8 +58,8 @@ class KMSVeChainProvider extends VeChainProvider {
         const command = new SignCommand({
             KeyId: this.keyId,
             Message: message,
-            SigningAlgorithm: 'ECDSA_SHA_256',
-            MessageType: 'DIGEST'
+            SigningAlgorithm: SigningAlgorithmSpec.ECDSA_SHA_256,
+            MessageType: MessageType.DIGEST
         });
 
         const signOutput = await this.kmsClient.send(command);
