@@ -1,4 +1,5 @@
 import { bytesToHex } from '@noble/curves/abstract/utils';
+import { type SignatureType } from '@noble/curves/abstract/weierstrass';
 import { secp256k1 } from '@noble/curves/secp256k1';
 import {
     Address,
@@ -56,10 +57,29 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         const decodedSignatureWithoutRecoveryBit =
             secp256k1.Signature.fromDER(hexSignature).normalizeS();
 
+        const recoveryBit = await this.getRecoveryBit(
+            decodedSignatureWithoutRecoveryBit,
+            transactionHash
+        );
+        const decodedSignature =
+            decodedSignatureWithoutRecoveryBit.addRecoveryBit(recoveryBit);
+
+        return Hex.of(
+            Transaction.of(
+                transactionBody,
+                decodedSignature.toCompactRawBytes()
+            ).encoded
+        ).toString();
+    }
+
+    private async getRecoveryBit(
+        decodedSignatureWithoutRecoveryBit: SignatureType,
+        transactionHash: Uint8Array
+    ): Promise<number> {
         const publicKey = await this.kmsVeChainProvider.getPublicKey();
         if (publicKey === undefined) {
             // TODO: throw error
-            return '';
+            return -1;
         }
         const publicKeyHex = toHex(publicKey);
 
@@ -73,21 +93,12 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
                 }
             });
             if (publicKeyRecovered === publicKeyHex) {
-                const decodedSignature =
-                    decodedSignatureWithoutRecoveryBit.addRecoveryBit(
-                        Number(i)
-                    );
-                return Hex.of(
-                    Transaction.of(
-                        transactionBody,
-                        decodedSignature.toCompactRawBytes()
-                    ).encoded
-                ).toString();
+                return Number(i);
             }
         }
 
         // TODO: throw error
-        return '';
+        return -1;
     }
 
     public async signTransaction(
