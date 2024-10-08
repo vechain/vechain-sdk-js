@@ -12,6 +12,8 @@ import type { VeChainProvider } from '../../../../providers/vechain-provider';
 /**
  * RPC Method eth_signTypedDataV4 implementation
  *
+ * @link [eth_signTypedDataV4](https://docs.metamask.io/wallet/reference/eth_signtypeddata_v4/)
+ *
  * @param thorClient - The thor client instance to use.
  * @param params - The standard array of rpc call parameters.
  *               * params[0]: The hex encoded address of the account to sign the typed message.

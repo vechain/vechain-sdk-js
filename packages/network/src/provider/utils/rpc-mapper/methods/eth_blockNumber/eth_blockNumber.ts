@@ -4,7 +4,7 @@ import { type ThorClient } from '../../../../../thor-client';
 /**
  * RPC Method eth_blockNumber implementation
  *
- * @link [eth_blockNumber](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_blocknumber)
+ * @link [eth_blockNumber](https://ethereum.github.io/execution-apis/api-documentation/)
  *
  * @param thorClient - The thor client instance to use.
  * @returns the latest block number as a hex string. If the block number cannot be retrieved, it will return '0x0'

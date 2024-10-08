@@ -7,6 +7,8 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
 /**
  * RPC Method eth_getBlockTransactionCountByHash implementation
  *
+ * @link [eth_getBlockTransactionCountByHash](https://ethereum.github.io/execution-apis/api-documentation/)
+ *
  * @param thorClient - The thor client instance to use.
  * @param params - The standard array of rpc call parameters.
  *                 * params[0]: The block hash of block to get.

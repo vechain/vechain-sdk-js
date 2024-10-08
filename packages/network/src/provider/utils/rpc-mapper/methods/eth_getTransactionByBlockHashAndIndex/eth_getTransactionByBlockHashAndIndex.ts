@@ -12,6 +12,8 @@ import { ethGetTransactionByHash } from '../eth_getTransactionByHash';
 /**
  * RPC Method eth_getTransactionByBlockHashAndIndex implementation
  *
+ * @link [eth_getTransactionByBlockHashAndIndex](https://ethereum.github.io/execution-apis/api-documentation/)
+ *
  * @param thorClient - The thor client instance to use.
  * @param params - The standard array of rpc call parameters.
  * @note:

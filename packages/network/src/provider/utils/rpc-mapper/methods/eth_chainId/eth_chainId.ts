@@ -10,7 +10,7 @@ import { networkInfo } from '@vechain/sdk-core';
 /**
  * RPC Method eth_chainId implementation
  *
- * @link [eth_chainId](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_chainid)
+ * @link [eth_chainId](https://ethereum.github.io/execution-apis/api-documentation/)
  * @link [Chain IDs](https://chainlist.org/?search=vechain&testnets=true)
  *
  * @param thorClient - ThorClient instance.

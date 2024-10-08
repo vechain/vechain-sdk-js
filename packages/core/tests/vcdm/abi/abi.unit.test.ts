@@ -5,9 +5,8 @@ import {
     InvalidDataType,
     stringifyData
 } from '@vechain/sdk-errors';
-import { ParamType, type ethers } from 'ethers';
-import { type AbiEvent, type AbiFunction } from 'viem';
-import { abi, ABIEvent, ABIFunction, Hex } from '../../../src';
+import { type AbiEvent, type AbiFunction, parseAbiParameters } from 'viem';
+import { ABI, ABIEvent, ABIFunction, Hex } from '../../../src';
 import {
     encodedDecodedInvalidValues,
     encodedDecodedValues,
@@ -30,15 +29,16 @@ describe('Abi - encode & decode', () => {
     test('encode / decode single parameter', () => {
         // Encode and Decode - NO Errors
         encodedDecodedValues.forEach((encodedDecodedValue) => {
-            const encoded = abi.encode<string | string[]>(
-                encodedDecodedValue.type,
+            const encoded = ABI.of(encodedDecodedValue.type, [
                 encodedDecodedValue.value
-            );
+            ])
+                .toHex()
+                .toString();
 
-            const decoded = abi.decode<bigint | string | object>(
+            const decoded = ABI.ofEncoded(
                 encodedDecodedValue.type,
                 encodedDecodedValue.encoded
-            );
+            ).getFirstDecodedValue();
 
             expect(encoded).toBe(encodedDecodedValue.encoded);
 
@@ -55,11 +55,14 @@ describe('Abi - encode & decode', () => {
         // Encode and Decode - Errors
         encodedDecodedInvalidValues.forEach((encodedDecodedValue) => {
             expect(() =>
-                abi.encode(encodedDecodedValue.type, encodedDecodedValue.value)
+                ABI.of(
+                    encodedDecodedValue.type,
+                    encodedDecodedValue.value as unknown as unknown[]
+                ).toHex()
             ).toThrowError(InvalidAbiDataToEncodeOrDecode);
 
             expect(() =>
-                abi.decode(
+                ABI.ofEncoded(
                     encodedDecodedValue.type,
                     encodedDecodedValue.encoded
                 )
@@ -72,29 +75,18 @@ describe('Abi - encode & decode', () => {
      */
     test('encode/decode more parameters', () => {
         // Example encode of function 2 parameters
-        const encoded = abi.encode<
-            Array<{
-                master: string;
-                endorsor: string;
-                identity: string;
-                active: boolean;
-            }>
-        >(
-            ParamType.from(functions[1].objectAbi.outputs[0]),
-            simpleParametersDataForFunction2
-        );
-
-        // @NOTE: you can use encode and avoid types gymnastics.
-        // const encoded = abi.encode(
-        //     ParamType.from(functions[1].objectAbi.outputs[0]),
-        //     simpleParametersDataForFunction2
-        // );
+        const encoded = ABI.of(
+            [functions[1].objectAbi.outputs[0]],
+            [simpleParametersDataForFunction2]
+        )
+            .toHex()
+            .toString();
 
         // Example decode of function 2 parameters
-        const decoded = abi.decode<ethers.Result[][]>(
-            ParamType.from(functions[1].objectAbi.outputs[0]),
+        const decoded = ABI.ofEncoded(
+            [functions[1].objectAbi.outputs[0]],
             encoded
-        );
+        ).getFirstDecodedValue();
 
         expect(encoded).toBe(
             '0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e8fd586e022f825a109848832d7e552132bc332000000000000000000000000224626926a7a12225a60e127cec119c939db4a5cdbf2712e19af00dc4d376728f7cb06cc215c8e7c53b94cb47cefb4a26ada2a6c00000000000000000000000000000000000000000000000000000000000000000000000000000000000000004977d68df97bb313b23238520580d8d3a59939bf0000000000000000000000007ad1d568b3fe5bad3fc264aca70bc7bcd5e4a6ff83b137cf7e30864b8a4e56453eb1f094b4434685d86895de38ac2edcf5d3f5340000000000000000000000000000000000000000000000000000000000000000'
@@ -220,10 +212,13 @@ describe('Abi - Function & Event', () => {
              *
              * @type {string}
              */
-            const params: string = abi.encodeParams(
-                ['uint256', 'uint256'],
-                ['123', '234']
+            const typesParam = parseAbiParameters(
+                ['uint256', 'uint256'].join(', ')
             );
+
+            const params: string = ABI.of([...typesParam], ['123', '234'])
+                .toHex()
+                .toString();
 
             // Assert that the encoded parameters match the expected value.
             expect(params).toBe(encodedParams);
@@ -238,10 +233,14 @@ describe('Abi - Function & Event', () => {
             const abiTypes = ['uint256', 'address'];
             const values = ['123', '0x1567890123456789012345678901234567890']; // the address is invalid
 
+            const typesParam = parseAbiParameters(abiTypes.join(', '));
+
             // Expect the function to throw an error with the specific message
-            expect(() => abi.encodeParams(abiTypes, values)).toThrowError(
-                InvalidAbiDataToEncodeOrDecode
-            );
+            expect(() =>
+                ABI.of([...typesParam], values)
+                    .toHex()
+                    .toString()
+            ).toThrowError(InvalidAbiDataToEncodeOrDecode);
         });
 
         /**

@@ -11,7 +11,7 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
 /**
  * RPC Method eth_getBalance implementation
  *
- * @link [eth_getBalance](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_getbalance)
+ * @link [eth_getBalance](https://ethereum.github.io/execution-apis/api-documentation/)
  *
  * @note Only 'latest' and 'finalized' block numbers are supported.
  *

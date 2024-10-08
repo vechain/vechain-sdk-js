@@ -1,11 +1,11 @@
 import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
-import { Hex, Address, Secp256k1 } from '@vechain/sdk-core';
+import { Address, Hex, Secp256k1 } from '@vechain/sdk-core';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
 
 /**
  * RPC Method eth_getTransactionCount implementation
  *
- * @link [eth_getTransactionCount](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_gettransactioncount)
+ * @link [eth_getTransactionCount](https://ethereum.github.io/execution-apis/api-documentation/)
  *
  * @note: To respect differences between VeChain and Ethereum, in this function we will give a random number as output.
  * Basically Ethereum to get nonce to use the number of transactions sent from an address,
@@ -16,7 +16,6 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
  *                * params[1]: A string representing a block number, or one of the string tags latest, earliest, or pending.
  * @throws {JSONRPCInvalidParams, JSONRPCInternalError}
  */
-// eslint-disable-next-line @typescript-eslint/require-await
 const ethGetTransactionCount = async (params: unknown[]): Promise<string> => {
     // Input validation
     if (
@@ -41,7 +40,7 @@ const ethGetTransactionCount = async (params: unknown[]): Promise<string> => {
     }
 
     // Return a random number
-    return Hex.of(Secp256k1.randomBytes(6)).toString();
+    return await Promise.resolve(Hex.of(Secp256k1.randomBytes(6)).toString());
 };
 
 export { ethGetTransactionCount };
