@@ -195,7 +195,7 @@ class Transaction {
                 );
                 // Recover the delegator's public key.
                 const delegatorPublicKey = Secp256k1.recover(
-                    this.getSignatureHash(this.origin).bytes,
+                    this.getTransactionHash(this.origin).bytes,
                     delegator
                 );
                 return Address.ofPublicKey(delegatorPublicKey);
@@ -244,7 +244,7 @@ class Transaction {
         if (this.isSigned) {
             return Blake2b256.of(
                 nc_utils.concatBytes(
-                    this.getSignatureHash().bytes,
+                    this.getTransactionHash().bytes,
                     this.origin.bytes
                 )
             );
@@ -301,7 +301,7 @@ class Transaction {
             return Address.ofPublicKey(
                 // Get the origin public key.
                 Secp256k1.recover(
-                    this.getSignatureHash().bytes,
+                    this.getTransactionHash().bytes,
                     // Get the (r, s) of ECDSA digital signature without delegator params.
                     this.signature.slice(0, Secp256k1.SIGNATURE_LENGTH)
                 )
@@ -370,10 +370,10 @@ class Transaction {
     }
 
     /**
-     * Computes the signature hash, optionally incorporating a delegator's address.
+     * Computes the transaction hash, optionally incorporating a delegator's address.
      *
      * @param {Address} [delegator] - Optional delegator's address to include in the hash computation.
-     * @return {Blake2b256} - The computed signature hash.
+     * @return {Blake2b256} - The computed transaction hash.
      *
      * @remarks
      * `delegator` is used to sign a transaction on behalf of another account.
@@ -381,7 +381,7 @@ class Transaction {
      * @remarks Security auditable method, depends on
      * - {@link Blake2b256.of}.
      */
-    public getSignatureHash(delegator?: Address): Blake2b256 {
+    public getTransactionHash(delegator?: Address): Blake2b256 {
         const txHash = Blake2b256.of(this.encode(false));
         if (delegator !== undefined) {
             return Blake2b256.of(
@@ -518,7 +518,7 @@ class Transaction {
             if (!this.isDelegated) {
                 // Sign transaction
                 const signature = Secp256k1.sign(
-                    this.getSignatureHash().bytes,
+                    this.getTransactionHash().bytes,
                     signerPrivateKey
                 );
                 // Return new signed transaction.
@@ -561,8 +561,8 @@ class Transaction {
             // Check if the private key of the delegator is valid.
             if (Secp256k1.isValidPrivateKey(delegatorPrivateKey)) {
                 if (this.isDelegated) {
-                    const transactionHash = this.getSignatureHash().bytes;
-                    const delegatedHash = this.getSignatureHash(
+                    const transactionHash = this.getTransactionHash().bytes;
+                    const delegatedHash = this.getTransactionHash(
                         Address.ofPublicKey(
                             Secp256k1.derivePublicKey(signerPrivateKey)
                         )

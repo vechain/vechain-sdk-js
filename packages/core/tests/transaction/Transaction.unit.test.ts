@@ -1,5 +1,13 @@
 import { describe, expect } from '@jest/globals';
 import {
+    InvalidDataType,
+    InvalidSecp256k1PrivateKey,
+    InvalidSecp256k1Signature,
+    InvalidTransactionField,
+    NotDelegatedTransaction,
+    UnavailableTransactionField
+} from '@vechain/sdk-errors';
+import {
     Address,
     HexUInt,
     Secp256k1,
@@ -9,14 +17,6 @@ import {
     Units,
     VTHO
 } from '../../src';
-import {
-    InvalidDataType,
-    InvalidSecp256k1PrivateKey,
-    InvalidSecp256k1Signature,
-    InvalidTransactionField,
-    NotDelegatedTransaction,
-    UnavailableTransactionField
-} from '@vechain/sdk-errors';
 
 const DelegatorPrivateKeyFix = HexUInt.of(
     '40de805e918403683fb9a6081c3fba072cdc5c88232c62a9509165122488dab7'
@@ -148,7 +148,7 @@ describe('Transaction class tests', () => {
                 expect(actual.isDelegated).toBe(false);
                 expect(
                     actual
-                        .getSignatureHash()
+                        .getTransactionHash()
                         .isEqual(TransactionFixture.undelegated.signatureHash)
                 ).toBe(true);
                 expect(() => actual.id).toThrowError(
@@ -173,7 +173,7 @@ describe('Transaction class tests', () => {
                 expect(actual.isSigned).toBe(false);
                 expect(actual.isDelegated).toEqual(true);
                 expect(
-                    actual.getSignatureHash().isEqual(expected.signatureHash)
+                    actual.getTransactionHash().isEqual(expected.signatureHash)
                 ).toBe(true);
                 expect(() => actual.id).toThrowError(
                     UnavailableTransactionField
@@ -197,7 +197,7 @@ describe('Transaction class tests', () => {
                 expect(actual.isSigned).toBe(false);
                 expect(actual.isDelegated).toEqual(true);
                 expect(
-                    actual.getSignatureHash().isEqual(expected.signatureHash)
+                    actual.getTransactionHash().isEqual(expected.signatureHash)
                 ).toBe(true);
                 expect(() => actual.id).toThrowError(
                     UnavailableTransactionField
@@ -229,7 +229,7 @@ describe('Transaction class tests', () => {
                 expect(actual.isSigned).toEqual(true);
                 expect(actual.isDelegated).toEqual(false);
                 expect(
-                    actual.getSignatureHash().isEqual(expected.signatureHash)
+                    actual.getTransactionHash().isEqual(expected.signatureHash)
                 ).toBe(true);
                 expect(actual.origin.isEqual(SignerFix.address)).toBe(true);
                 expect(() => actual.delegator).toThrowError(
@@ -255,7 +255,7 @@ describe('Transaction class tests', () => {
                 expect(actual.isSigned).toEqual(true);
                 expect(actual.isDelegated).toEqual(true);
                 expect(
-                    actual.getSignatureHash().isEqual(expected.signatureHash)
+                    actual.getTransactionHash().isEqual(expected.signatureHash)
                 ).toBe(true);
                 expect(actual.origin.isEqual(SignerFix.address)).toBe(true);
                 expect(actual.delegator.isEqual(DelegatorFix.address)).toBe(
@@ -281,7 +281,7 @@ describe('Transaction class tests', () => {
                 expect(actual.isSigned).toEqual(true);
                 expect(actual.isDelegated).toEqual(true);
                 expect(
-                    actual.getSignatureHash().isEqual(expected.signatureHash)
+                    actual.getTransactionHash().isEqual(expected.signatureHash)
                 ).toBe(true);
                 expect(actual.origin.isEqual(SignerFix.address)).toBe(true);
                 expect(actual.delegator.isEqual(DelegatorFix.address)).toBe(
@@ -337,7 +337,7 @@ describe('Transaction class tests', () => {
                     UnavailableTransactionField
                 );
                 expect(actual.isSigned).toBe(false);
-                expect(actual.getSignatureHash()).toBeDefined();
+                expect(actual.getTransactionHash()).toBeDefined();
                 expect(actual.encoded).toBeDefined();
                 expect(actual.encoded).toEqual(expected.encodedUnsigned);
             });
@@ -355,7 +355,7 @@ describe('Transaction class tests', () => {
                 expect(actual.isDelegated).toBe(false);
                 expect(actual.id).toBeDefined();
                 expect(actual.isSigned).toBe(true);
-                expect(actual.getSignatureHash()).toBeDefined();
+                expect(actual.getTransactionHash()).toBeDefined();
                 expect(actual.encoded).toBeDefined();
                 expect(actual.encoded).toEqual(expected.encodedSigned);
             });
@@ -382,8 +382,8 @@ describe('Transaction class tests', () => {
                     UnavailableTransactionField
                 );
                 expect(actual.isSigned).toBe(false);
-                expect(actual.getSignatureHash()).toBeDefined();
-                expect(actual.getSignatureHash().bytes.length).toBe(32);
+                expect(actual.getTransactionHash()).toBeDefined();
+                expect(actual.getTransactionHash().bytes.length).toBe(32);
                 expect(actual.encoded).toBeDefined();
                 expect(actual.encoded).toEqual(expected.encodedUnsigned);
             });
@@ -403,7 +403,7 @@ describe('Transaction class tests', () => {
                 expect(actual.isDelegated).toBe(true);
                 expect(actual.id).toBeDefined();
                 expect(actual.isSigned).toBe(true);
-                expect(actual.getSignatureHash()).toBeDefined();
+                expect(actual.getTransactionHash()).toBeDefined();
                 expect(actual.encoded).toBeDefined();
                 expect(actual.encoded).toEqual(expected.encodedSigned);
                 expect(actual.signature).toBeDefined();
@@ -434,8 +434,8 @@ describe('Transaction class tests', () => {
                     UnavailableTransactionField
                 );
                 expect(actual.isSigned).toBe(false);
-                expect(actual.getSignatureHash()).toBeDefined();
-                expect(actual.getSignatureHash().bytes.length).toBe(32);
+                expect(actual.getTransactionHash()).toBeDefined();
+                expect(actual.getTransactionHash().bytes.length).toBe(32);
                 expect(actual.encoded).toBeDefined();
                 expect(actual.encoded).toEqual(expected.encodedUnsigned);
             });
@@ -455,7 +455,7 @@ describe('Transaction class tests', () => {
                 expect(actual.isDelegated).toBe(true);
                 expect(actual.id).toBeDefined();
                 expect(actual.isSigned).toBe(true);
-                expect(actual.getSignatureHash()).toBeDefined();
+                expect(actual.getTransactionHash()).toBeDefined();
                 expect(actual.encoded).toBeDefined();
                 expect(actual.encoded).toEqual(expected.encodedSigned);
                 expect(actual.signature).toBeDefined();
