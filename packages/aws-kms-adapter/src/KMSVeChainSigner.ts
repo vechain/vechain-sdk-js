@@ -119,7 +119,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         transactionToSign: TransactionRequestInput
     ): Promise<string> {
         // Check the provider (needed to sign the transaction)
-        if (this.provider === undefined) {
+        if (this.kmsVeChainProvider === undefined) {
             throw new JSONRPCInvalidParams(
                 'KMSVeChainSigner.signTransaction()',
                 -32602,
@@ -152,7 +152,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         transactionToSend: TransactionRequestInput
     ): Promise<string> {
         // 1 - Get the provider (needed to send the raw transaction)
-        if (this.provider === undefined) {
+        if (this.kmsVeChainProvider === undefined) {
             throw new JSONRPCInvalidParams(
                 'KMSVeChainSigner.sendTransaction()',
                 -32602,
