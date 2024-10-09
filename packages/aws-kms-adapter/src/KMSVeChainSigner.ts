@@ -46,7 +46,15 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
      * @returns The address associated with the signer.
      */
     public async getAddress(): Promise<string> {
-        const publicKey = await this.kmsVeChainProvider?.getPublicKey();
+        if (this.kmsVeChainProvider === undefined) {
+            throw new JSONRPCInvalidParams(
+                'KMSVeChainSigner.getAddress()',
+                -32602,
+                'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
+                {}
+            );
+        }
+        const publicKey = await this.kmsVeChainProvider.getPublicKey();
         if (publicKey === undefined) {
             // TODO: throw error
             return '';
@@ -62,8 +70,16 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
     private async buildVeChainSignatureFromPayload(
         payload: Uint8Array
     ): Promise<Uint8Array> {
+        if (this.kmsVeChainProvider === undefined) {
+            throw new JSONRPCInvalidParams(
+                'KMSVeChainSigner.getRecoveryBit()',
+                -32602,
+                'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
+                { payload }
+            );
+        }
         // Sign the transaction hash
-        const signature = await this.kmsVeChainProvider?.sign(payload);
+        const signature = await this.kmsVeChainProvider.sign(payload);
 
         if (signature === undefined) {
             // TODO: throw error
@@ -95,7 +111,15 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         decodedSignatureWithoutRecoveryBit: SignatureType,
         transactionHash: Uint8Array
     ): Promise<number> {
-        const publicKey = await this.kmsVeChainProvider?.getPublicKey();
+        if (this.kmsVeChainProvider === undefined) {
+            throw new JSONRPCInvalidParams(
+                'KMSVeChainSigner.getRecoveryBit()',
+                -32602,
+                'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
+                { decodedSignatureWithoutRecoveryBit, transactionHash }
+            );
+        }
+        const publicKey = await this.kmsVeChainProvider.getPublicKey();
         if (publicKey === undefined) {
             // TODO: throw error
             return -1;
