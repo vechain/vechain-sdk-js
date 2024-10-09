@@ -21,7 +21,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         if (this.provider !== undefined) {
             if (!(this.provider instanceof KMSVeChainProvider)) {
                 throw new JSONRPCInvalidParams(
-                    'KMSVeChainSigner.constructor()',
+                    'KMSVeChainSigner.constructor',
                     -32602,
                     'The provider must be an instance of KMSVeChainProvider.',
                     { provider }
@@ -48,17 +48,13 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
     public async getAddress(): Promise<string> {
         if (this.kmsVeChainProvider === undefined) {
             throw new JSONRPCInvalidParams(
-                'KMSVeChainSigner.getAddress()',
+                'KMSVeChainSigner.getAddress',
                 -32602,
                 'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
                 {}
             );
         }
         const publicKey = await this.kmsVeChainProvider.getPublicKey();
-        if (publicKey === undefined) {
-            // TODO: throw error
-            return '';
-        }
         return Address.ofPublicKey(publicKey).toString();
     }
 
@@ -72,7 +68,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
     ): Promise<Uint8Array> {
         if (this.kmsVeChainProvider === undefined) {
             throw new JSONRPCInvalidParams(
-                'KMSVeChainSigner.getRecoveryBit()',
+                'KMSVeChainSigner.getRecoveryBit',
                 -32602,
                 'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
                 { payload }
@@ -80,11 +76,6 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         }
         // Sign the transaction hash
         const signature = await this.kmsVeChainProvider.sign(payload);
-
-        if (signature === undefined) {
-            // TODO: throw error
-            return new Uint8Array();
-        }
 
         // Build the VeChain signature using the r, s and v components
         const hexSignature = bytesToHex(signature);
@@ -113,17 +104,13 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
     ): Promise<number> {
         if (this.kmsVeChainProvider === undefined) {
             throw new JSONRPCInvalidParams(
-                'KMSVeChainSigner.getRecoveryBit()',
+                'KMSVeChainSigner.getRecoveryBit',
                 -32602,
                 'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
                 { decodedSignatureWithoutRecoveryBit, transactionHash }
             );
         }
         const publicKey = await this.kmsVeChainProvider.getPublicKey();
-        if (publicKey === undefined) {
-            // TODO: throw error
-            return -1;
-        }
         const publicKeyHex = toHex(publicKey);
 
         for (let i = 0n; i < 2n; i++) {
@@ -155,7 +142,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         // Check the provider (needed to sign the transaction)
         if (this.kmsVeChainProvider === undefined) {
             throw new JSONRPCInvalidParams(
-                'KMSVeChainSigner.signTransaction()',
+                'KMSVeChainSigner.signTransaction',
                 -32602,
                 'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
                 { transactionToSign }
@@ -188,7 +175,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         // 1 - Get the provider (needed to send the raw transaction)
         if (this.kmsVeChainProvider === undefined) {
             throw new JSONRPCInvalidParams(
-                'KMSVeChainSigner.sendTransaction()',
+                'KMSVeChainSigner.sendTransaction',
                 -32602,
                 'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
                 { transactionToSend }

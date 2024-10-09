@@ -5,6 +5,7 @@ import {
     SignCommand,
     SigningAlgorithmSpec
 } from '@aws-sdk/client-kms';
+import { ProviderMethodError } from '@vechain/sdk-errors';
 import {
     type ThorClient,
     VeChainProvider,
@@ -57,23 +58,31 @@ class KMSVeChainProvider extends VeChainProvider {
 
     /**
      * Returns the public key associated with the keyId provided in the constructor.
-     * @returns {Uint8Array | undefined} The public key associated with the keyId
+     * @returns {Uint8Array} The public key associated with the keyId
      */
-    public async getPublicKey(): Promise<Uint8Array | undefined> {
+    public async getPublicKey(): Promise<Uint8Array> {
         const getPublicKeyCommand = new GetPublicKeyCommand({
             KeyId: this.keyId
         });
         const getPublicKeyOutput =
             await this.kmsClient.send(getPublicKeyCommand);
+
+        if (getPublicKeyOutput.PublicKey === undefined) {
+            throw new ProviderMethodError(
+                'KMSVeChainProvider.getPublicKey',
+                'The public key could not be retrieved.',
+                { getPublicKeyOutput }
+            );
+        }
         return getPublicKeyOutput.PublicKey;
     }
 
     /**
      * Performs a sign operation using the keyId provided in the constructor.
      * @param {Uint8Array} message Message to sign using KMS
-     * @returns {Uint8Array | undefined} The signature of the message
+     * @returns {Uint8Array} The signature of the message
      */
-    public async sign(message: Uint8Array): Promise<Uint8Array | undefined> {
+    public async sign(message: Uint8Array): Promise<Uint8Array> {
         const command = new SignCommand({
             KeyId: this.keyId,
             Message: message,
@@ -82,6 +91,14 @@ class KMSVeChainProvider extends VeChainProvider {
         });
 
         const signOutput = await this.kmsClient.send(command);
+
+        if (signOutput.Signature === undefined) {
+            throw new ProviderMethodError(
+                'KMSVeChainProvider.sign',
+                'The signature could not be generated.',
+                { signOutput }
+            );
+        }
 
         return signOutput.Signature;
     }

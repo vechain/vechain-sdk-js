@@ -2,6 +2,14 @@ import { VechainSDKError } from '../sdk-error';
 import { type ObjectErrorData } from '../types';
 
 /**
+ * Provider method error.
+ *
+ * WHEN TO USE:
+ * * This error will be thrown when a provider method has failed.
+ */
+class ProviderMethodError extends VechainSDKError<ObjectErrorData> {}
+
+/**
  * Provider generic error.
  *
  * WHEN TO USE:
@@ -82,11 +90,12 @@ class JSONRPCInternalError extends JSONRPCProviderError<-32603> {}
 class JSONRPCServerError extends JSONRPCProviderError<-32000> {}
 
 export {
-    JSONRPCProviderError,
-    JSONRPCParseError,
+    JSONRPCInternalError,
+    JSONRPCInvalidParams,
     JSONRPCInvalidRequest,
     JSONRPCMethodNotFound,
-    JSONRPCInvalidParams,
-    JSONRPCInternalError,
-    JSONRPCServerError
+    JSONRPCParseError,
+    JSONRPCProviderError,
+    JSONRPCServerError,
+    ProviderMethodError
 };
