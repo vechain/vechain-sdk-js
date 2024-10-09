@@ -6,7 +6,7 @@ import { KMSVeChainProvider, KMSVeChainSigner } from '../src';
  *
  * @group integration/signers/vechain-aws-kms-signer-solo
  */
-describe('KMSVeChainSigner', () => {
+describe('KMSVeChainSigner - Thor Solo', () => {
     /**
      * ThorClient and provider instances
      */
