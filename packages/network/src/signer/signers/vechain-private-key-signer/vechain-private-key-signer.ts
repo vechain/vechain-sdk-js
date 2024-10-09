@@ -22,7 +22,6 @@ import {
     type ThorClient
 } from '../../../thor-client';
 import {
-    type SignTypedDataOptions,
     type AvailableVeChainProviders,
     type TransactionRequestInput
 } from '../types';
