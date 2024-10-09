@@ -26,21 +26,18 @@ class KMSVeChainProvider extends VeChainProvider {
     public constructor(
         thorClient: ThorClient,
         region: string,
-        keyId?: string,
-        secretKey?: string
+        credentials?: {
+            accessKeyId: string;
+            secretAccessKey: string;
+            sessionToken: string;
+        }
     ) {
         super(thorClient);
         this.kmsClient =
-            keyId != null &&
-            keyId !== '' &&
-            secretKey != null &&
-            secretKey !== ''
+            credentials !== undefined
                 ? new KMSClient({
                       region,
-                      credentials: {
-                          accessKeyId: keyId,
-                          secretAccessKey: secretKey
-                      }
+                      credentials
                   })
                 : new KMSClient({ region });
     }
