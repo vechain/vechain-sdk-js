@@ -137,11 +137,11 @@ function startProxy(): void {
                             messages: [`response: ${stringifyData(result)}`]
                         });
                     }
-                } catch (e) {
+                } catch (error) {
                     // Push the error to the responses array
                     responses.push({
                         jsonrpc: '2.0',
-                        error: e,
+                        error,
                         id: requestBody.id
                     });
 
@@ -149,10 +149,9 @@ function startProxy(): void {
                     VeChainSDKLogger('error').log(
                         new JSONRPCInternalError(
                             requestBody.method,
-                            -32603,
                             `Error on request - ${requestBody.method}`,
                             { requestBody },
-                            e
+                            error
                         )
                     );
                 }

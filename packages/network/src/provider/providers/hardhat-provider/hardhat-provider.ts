@@ -176,7 +176,6 @@ class HardhatVeChainProvider extends VeChainProvider {
                 VeChainSDKLogger('error').log(
                     new JSONRPCInternalError(
                         args.method,
-                        -32603,
                         `Error on request - ${args.method}`,
                         {
                             args

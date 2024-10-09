@@ -21,7 +21,6 @@ const ethBlockNumber = async (thorClient: ThorClient): Promise<string> => {
     } catch (e) {
         throw new JSONRPCInternalError(
             'eth_blockNumber()',
-            -32603,
             'Method "eth_blockNumber" failed.',
             {
                 url: thorClient.httpClient.baseURL,

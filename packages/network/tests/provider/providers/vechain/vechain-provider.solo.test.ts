@@ -15,6 +15,7 @@ import {
     deployERC721Contract,
     waitForMessage
 } from '../helpers';
+import { fail } from 'assert';
 
 /**
  *VeChain provider tests - Solo Network
@@ -352,13 +353,22 @@ describe('VeChain provider tests - solo', () => {
         expect(provider).toBeDefined();
 
         // Call RPC function
-        await expect(
-            async () =>
-                await provider.request({
-                    method: 'INVALID_METHOD',
-                    params: [-1]
-                })
-        ).rejects.toThrowError(JSONRPCMethodNotFound);
+        try {
+            await provider.request({
+                method: 'INVALID_METHOD',
+                params: [-1]
+            });
+            fail('Should throw an error');
+        } catch (error) {
+            expect(error).toBeInstanceOf(JSONRPCMethodNotFound);
+            if (error instanceof JSONRPCMethodNotFound) {
+                expect(error.message).toBe(
+                    `Method 'VeChainProvider.request()' failed.` +
+                        `\n-Reason: 'Method not found. Invalid RPC method given as input.'` +
+                        `\n-Parameters: \n\t{\n  "code": -32601,\n  "message": "Method not found. Invalid RPC method given as input.",\n  "data": {\n    "method": "INVALID_METHOD"\n  }\n}`
+                );
+            }
+        }
     });
 
     describe('resolveName(vnsName)', () => {

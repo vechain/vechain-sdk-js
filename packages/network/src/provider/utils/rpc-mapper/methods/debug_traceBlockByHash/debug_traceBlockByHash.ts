@@ -46,7 +46,6 @@ const debugTraceBlockByHash = async (
     )
         throw new JSONRPCInvalidParams(
             'debug_traceBlockByHash',
-            -32602,
             `Invalid input params for "debug_traceBlockByHash" method. See https://www.quicknode.com/docs/ethereum/debug_traceBlockByHash for details.`,
             { params }
         );
@@ -86,7 +85,6 @@ const debugTraceBlockByHash = async (
     } catch (e) {
         throw new JSONRPCInternalError(
             'debug_traceBlockByHash()',
-            -32603,
             'Method "debug_traceBlockByHash" failed.',
             {
                 params: stringifyData(params),

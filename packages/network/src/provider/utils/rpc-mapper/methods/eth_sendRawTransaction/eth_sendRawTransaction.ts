@@ -25,7 +25,6 @@ const ethSendRawTransaction = async (
     if (params.length !== 1 || typeof params[0] !== 'string')
         throw new JSONRPCInvalidParams(
             'eth_sendRawTransaction()',
-            -32602,
             `Invalid input params for "eth_sendRawTransaction" method. See ${RPC_DOCUMENTATION_URL} for details.`,
             { params }
         );
@@ -34,7 +33,6 @@ const ethSendRawTransaction = async (
     if (!Hex.isValid0x(params[0])) {
         throw new JSONRPCInvalidParams(
             'eth_sendRawTransaction()',
-            -32602,
             'Invalid transaction encoded data given as input. Input must be a hex string.',
             { params }
         );
@@ -52,7 +50,6 @@ const ethSendRawTransaction = async (
     } catch (error) {
         throw new JSONRPCInternalError(
             'eth_sendRawTransaction()',
-            -32603,
             'Method "eth_sendRawTransaction" failed.',
             {
                 params: stringifyData(params),

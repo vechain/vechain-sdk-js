@@ -45,7 +45,6 @@ const debugTraceTransaction = async (
     )
         throw new JSONRPCInvalidParams(
             'debug_traceTransaction',
-            -32602,
             `Invalid input params for "debug_traceTransaction" method. See ${RPC_DOCUMENTATION_URL} for details.`,
             { params }
         );
@@ -87,7 +86,6 @@ const debugTraceTransaction = async (
     } catch (e) {
         throw new JSONRPCInternalError(
             'debug_traceTransaction()',
-            -32603,
             'Method "debug_traceTransaction" failed.',
             {
                 params: stringifyData(params),

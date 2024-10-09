@@ -14,7 +14,6 @@ const netListening = async (thorClient: ThorClient): Promise<boolean> => {
     } catch (e) {
         throw new JSONRPCInternalError(
             'net_listening()',
-            -32603,
             'Method "net_listening" failed.',
             {
                 url: thorClient.httpClient.baseURL,

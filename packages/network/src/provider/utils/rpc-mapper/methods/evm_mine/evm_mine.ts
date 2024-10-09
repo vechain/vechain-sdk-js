@@ -31,7 +31,6 @@ const evmMine = async (thorClient: ThorClient): Promise<BlocksRPC | null> => {
     } catch (e) {
         throw new JSONRPCInternalError(
             'evm_mine()',
-            -32603,
             'Method "evm_mine" failed.',
             {
                 url: thorClient.httpClient.baseURL,

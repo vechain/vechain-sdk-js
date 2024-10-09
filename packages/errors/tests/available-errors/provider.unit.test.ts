@@ -23,7 +23,6 @@ describe('Error package Available errors test - Provider', () => {
             expect(() => {
                 throw new JSONRPCParseError(
                     'method',
-                    -32700,
                     'message',
                     { data: 'data' },
                     innerError
@@ -41,7 +40,6 @@ describe('Error package Available errors test - Provider', () => {
             expect(() => {
                 throw new JSONRPCInvalidRequest(
                     'method',
-                    -32600,
                     'message',
                     { data: 'data' },
                     innerError
@@ -59,7 +57,6 @@ describe('Error package Available errors test - Provider', () => {
             expect(() => {
                 throw new JSONRPCMethodNotFound(
                     'method',
-                    -32601,
                     'message',
                     { data: 'data' },
                     innerError
@@ -77,7 +74,6 @@ describe('Error package Available errors test - Provider', () => {
             expect(() => {
                 throw new JSONRPCInvalidParams(
                     'method',
-                    -32602,
                     'message',
                     { data: 'data' },
                     innerError
@@ -95,7 +91,6 @@ describe('Error package Available errors test - Provider', () => {
             expect(() => {
                 throw new JSONRPCInternalError(
                     'method',
-                    -32603,
                     'message',
                     { data: 'data' },
                     innerError
@@ -113,7 +108,6 @@ describe('Error package Available errors test - Provider', () => {
             expect(() => {
                 throw new JSONRPCServerError(
                     'method',
-                    -32000,
                     'message',
                     { data: 'data' },
                     innerError

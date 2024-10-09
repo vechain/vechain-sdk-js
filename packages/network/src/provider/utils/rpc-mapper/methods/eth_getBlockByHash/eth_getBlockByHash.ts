@@ -34,7 +34,6 @@ const ethGetBlockByHash = async (
     )
         throw new JSONRPCInvalidParams(
             'eth_getBlockByHash',
-            -32602,
             `Invalid input params for "eth_getBlockByHash" method. See ${RPC_DOCUMENTATION_URL} for details.`,
             { params }
         );
@@ -45,7 +44,6 @@ const ethGetBlockByHash = async (
     } catch (e) {
         throw new JSONRPCInternalError(
             'eth_getBlockByHash()',
-            -32603,
             'Method "eth_getBlockByHash" failed.',
             {
                 params: stringifyData(params),

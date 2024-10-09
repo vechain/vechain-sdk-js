@@ -20,7 +20,6 @@ const ethRequestAccounts = async (
     if (accounts.length === 0)
         throw new JSONRPCInvalidParams(
             'eth_requestAccounts()',
-            -32602,
             'Method "eth_requestAccounts" failed.',
             {
                 provider: stringifyData(provider)
