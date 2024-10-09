@@ -1,5 +1,5 @@
 import { VechainSDKError } from '../sdk-error';
-import { type ObjectErrorData } from '../types';
+import type { JSONRpcErrorCode, ObjectErrorData } from '../types';
 
 /**
  * Provider generic error.
@@ -9,31 +9,19 @@ import { type ObjectErrorData } from '../types';
  *
  * @see{https://www.jsonrpc.org/specification#error_object}
  */
-class JSONRPCProviderError<
-    TJSONRpcErrorCode extends
-        | -32700
-        | -32600
-        | -32601
-        | -32602
-        | -32603
-        | -32000
-> extends VechainSDKError<{
-    code: TJSONRpcErrorCode;
+class JSONRPCProviderError extends VechainSDKError<{
+    code: JSONRpcErrorCode;
     message: string;
     data: ObjectErrorData;
 }> {
     constructor(
         readonly methodName: string,
+        code: JSONRpcErrorCode,
         message: string,
         data: ObjectErrorData,
         readonly innerError?: unknown
     ) {
-        super(
-            methodName,
-            message,
-            { code: undefined as unknown as TJSONRpcErrorCode, message, data },
-            innerError
-        );
+        super(methodName, message, { code, message, data }, innerError);
     }
 }
 
@@ -43,7 +31,16 @@ class JSONRPCProviderError<
  * WHEN TO USE:
  * * Invalid JSON was received by the server. An error occurred on the server while parsing the JSON text.
  */
-class JSONRPCParseError extends JSONRPCProviderError<-32700> {}
+class JSONRPCParseError extends JSONRPCProviderError {
+    constructor(
+        readonly methodName: string,
+        message: string,
+        data: ObjectErrorData,
+        readonly innerError?: unknown
+    ) {
+        super(methodName, -32700, message, data, innerError);
+    }
+}
 
 /**
  * Invalid request.
@@ -51,7 +48,16 @@ class JSONRPCParseError extends JSONRPCProviderError<-32700> {}
  * WHEN TO USE:
  * * The JSON sent is not a valid Request object.
  */
-class JSONRPCInvalidRequest extends JSONRPCProviderError<-32600> {}
+class JSONRPCInvalidRequest extends JSONRPCProviderError {
+    constructor(
+        readonly methodName: string,
+        message: string,
+        data: ObjectErrorData,
+        readonly innerError?: unknown
+    ) {
+        super(methodName, -32600, message, data, innerError);
+    }
+}
 
 /**
  * Method not found.
@@ -59,7 +65,16 @@ class JSONRPCInvalidRequest extends JSONRPCProviderError<-32600> {}
  * WHEN TO USE:
  * * The method does not exist / is not available.
  */
-class JSONRPCMethodNotFound extends JSONRPCProviderError<-32601> {}
+class JSONRPCMethodNotFound extends JSONRPCProviderError {
+    constructor(
+        readonly methodName: string,
+        message: string,
+        data: ObjectErrorData,
+        readonly innerError?: unknown
+    ) {
+        super(methodName, -32601, message, data, innerError);
+    }
+}
 
 /**
  * Invalid params.
@@ -67,7 +82,16 @@ class JSONRPCMethodNotFound extends JSONRPCProviderError<-32601> {}
  * WHEN TO USE:
  * * Invalid method parameter(s).
  */
-class JSONRPCInvalidParams extends JSONRPCProviderError<-32602> {}
+class JSONRPCInvalidParams extends JSONRPCProviderError {
+    constructor(
+        readonly methodName: string,
+        message: string,
+        data: ObjectErrorData,
+        readonly innerError?: unknown
+    ) {
+        super(methodName, -32602, message, data, innerError);
+    }
+}
 
 /**
  * Internal JSON-RPC error.
@@ -75,7 +99,16 @@ class JSONRPCInvalidParams extends JSONRPCProviderError<-32602> {}
  * WHEN TO USE:
  * * Internal JSON-RPC error.
  */
-class JSONRPCInternalError extends JSONRPCProviderError<-32603> {}
+class JSONRPCInternalError extends JSONRPCProviderError {
+    constructor(
+        readonly methodName: string,
+        message: string,
+        data: ObjectErrorData,
+        readonly innerError?: unknown
+    ) {
+        super(methodName, -32603, message, data, innerError);
+    }
+}
 
 /**
  * Server error.
@@ -83,7 +116,16 @@ class JSONRPCInternalError extends JSONRPCProviderError<-32603> {}
  * WHEN TO USE:
  * * Reserved for implementation-defined server-errors.
  */
-class JSONRPCServerError extends JSONRPCProviderError<-32000> {}
+class JSONRPCServerError extends JSONRPCProviderError {
+    constructor(
+        readonly methodName: string,
+        message: string,
+        data: ObjectErrorData,
+        readonly innerError?: unknown
+    ) {
+        super(methodName, -32000, message, data, innerError);
+    }
+}
 
 export {
     JSONRPCInternalError,
