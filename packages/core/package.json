@@ -45,7 +45,7 @@
     "@vechain/sdk-logging": "1.0.0-beta.32",
     "ethers": "6.13.2",
     "fast-json-stable-stringify": "^2.1.0",
-    "viem": "^2.21.14"
+    "viem": "^2.21.19"
   },
   "devDependencies": {
     "bignumber.js": "^9.1.2",
