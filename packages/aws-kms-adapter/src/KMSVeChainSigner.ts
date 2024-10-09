@@ -2,7 +2,7 @@ import { bytesToHex } from '@noble/curves/abstract/utils';
 import { type SignatureType } from '@noble/curves/abstract/weierstrass';
 import { secp256k1 } from '@noble/curves/secp256k1';
 import { Address, Hex, Transaction, Txt } from '@vechain/sdk-core';
-import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
+import { JSONRPCInvalidParams, SignerMethodError } from '@vechain/sdk-errors';
 import {
     type AvailableVeChainProviders,
     RPC_METHODS,
@@ -127,8 +127,11 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
             }
         }
 
-        // TODO: throw error
-        return -1;
+        throw new SignerMethodError(
+            'KMSVeChainSigner.getRecoveryBit',
+            'The recovery bit could not be found.',
+            { decodedSignatureWithoutRecoveryBit, transactionHash }
+        );
     }
 
     /**
