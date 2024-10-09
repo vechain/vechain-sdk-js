@@ -11,14 +11,24 @@ import {
 } from '@vechain/sdk-network';
 import { type TypedDataDomain, type TypedDataParameter } from 'abitype';
 import { hashTypedData, recoverPublicKey, toHex } from 'viem';
-import { type KMSVeChainProvider } from './KMSVeChainProvider';
+import { KMSVeChainProvider } from './KMSVeChainProvider';
 
 class KMSVeChainSigner extends VeChainAbstractSigner {
-    private readonly kmsVeChainProvider: KMSVeChainProvider;
+    private readonly kmsVeChainProvider?: KMSVeChainProvider;
 
     public constructor(provider?: AvailableVeChainProviders) {
         super(provider);
-        this.kmsVeChainProvider = this.provider as KMSVeChainProvider;
+        if (this.provider !== undefined) {
+            if (!(this.provider instanceof KMSVeChainProvider)) {
+                throw new JSONRPCInvalidParams(
+                    'KMSVeChainSigner.constructor()',
+                    -32602,
+                    'The provider must be an instance of KMSVeChainProvider.',
+                    { provider }
+                );
+            }
+            this.kmsVeChainProvider = this.provider;
+        }
     }
 
     /**
@@ -36,7 +46,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
      * @returns The address associated with the signer.
      */
     public async getAddress(): Promise<string> {
-        const publicKey = await this.kmsVeChainProvider.getPublicKey();
+        const publicKey = await this.kmsVeChainProvider?.getPublicKey();
         if (publicKey === undefined) {
             // TODO: throw error
             return '';
@@ -53,7 +63,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         payload: Uint8Array
     ): Promise<Uint8Array> {
         // Sign the transaction hash
-        const signature = await this.kmsVeChainProvider.sign(payload);
+        const signature = await this.kmsVeChainProvider?.sign(payload);
 
         if (signature === undefined) {
             // TODO: throw error
@@ -85,7 +95,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         decodedSignatureWithoutRecoveryBit: SignatureType,
         transactionHash: Uint8Array
     ): Promise<number> {
-        const publicKey = await this.kmsVeChainProvider.getPublicKey();
+        const publicKey = await this.kmsVeChainProvider?.getPublicKey();
         if (publicKey === undefined) {
             // TODO: throw error
             return -1;

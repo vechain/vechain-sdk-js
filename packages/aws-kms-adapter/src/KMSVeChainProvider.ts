@@ -14,7 +14,7 @@ import { KMSVeChainSigner } from './KMSVeChainSigner';
 
 class KMSVeChainProvider extends VeChainProvider {
     private readonly kmsClient: KMSClient;
-    private readonly keyId?: string;
+    private readonly keyId: string;
 
     /**
      * Creates a new instance of KMSVeChainProvider.
@@ -25,6 +25,7 @@ class KMSVeChainProvider extends VeChainProvider {
      **/
     public constructor(
         thorClient: ThorClient,
+        keyId: string,
         region: string,
         credentials?: {
             accessKeyId: string;
@@ -33,6 +34,7 @@ class KMSVeChainProvider extends VeChainProvider {
         }
     ) {
         super(thorClient);
+        this.keyId = keyId;
         this.kmsClient =
             credentials !== undefined
                 ? new KMSClient({
