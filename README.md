@@ -22,7 +22,7 @@
 Welcome to the VeChain SDK repository! Here's a breakdown of our organized structure:
 
 - `./apps`: Explore a suite of sample applications that demonstrate the versatility and power of our SDK in real-world scenarios. From Next.js to Node.js, HardHat, and CloudFlare, these examples serve as practical guides to kickstart your development journey.
-- `./docker`: Streamline your development and deployment with our comprehensive Docker configurations. This directory offers Dockerfiles and Docker Compose setups designed to create consistent, reproducible environments.
+- `./docker`: Streamline your development and deployment with our comprehensive Docker configurations. This directory offers Dockerfile setups designed to create consistent, reproducible environments.
 - `./docs`: Your go-to destination for comprehensive documentation. Explore demonstrative examples showcasing the prowess of our SDK. Knowledge is power, and our docs are here to enlighten your path.
 - `./packages`: A hub for our monorepo packages, each serving a distinct purpose:
    - `./packages/core`: The heart of the SDK, housing essential modules for fundamental operations like hashing and cryptography. Dive into the core for the building blocks of your decentralized dreams.
@@ -133,10 +133,6 @@ There are two ways to run tests:
 
 The SDK fully support execution in a browser environment. To run the tests in a browser-like environment, you can use the `yarn test:browser` command. This command requires a local thor-solo node to be running.
 Alternatively, you can run the tests with thor-solo by using the `yarn test:browser:solo` command. This command will start thor-solo, run the tests, and stop thor-solo at the end.
-
-
-
-```bash
 
 
 ### Custom thor-solo Data Starting Point
