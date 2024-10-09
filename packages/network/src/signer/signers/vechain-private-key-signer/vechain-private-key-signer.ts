@@ -314,7 +314,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
 
         // Sign transaction with origin private key
         const originSignature = Secp256k1.sign(
-            unsignedTx.getSignatureHash().bytes,
+            unsignedTx.getTransactionHash().bytes,
             originPrivateKey
         );
 
