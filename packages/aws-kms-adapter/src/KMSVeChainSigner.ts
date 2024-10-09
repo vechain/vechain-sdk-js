@@ -38,7 +38,16 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
      * @override VeChainAbstractSigner.connect
      **/
     public connect(provider: AvailableVeChainProviders): this {
-        return new KMSVeChainSigner(provider) as this;
+        try {
+            return new KMSVeChainSigner(provider) as this;
+        } catch (error) {
+            throw new SignerMethodError(
+                'KMSVeChainSigner.connect',
+                'The signer could not be connected to the provider.',
+                { provider },
+                error
+            );
+        }
     }
 
     /**
@@ -54,8 +63,17 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
                 {}
             );
         }
-        const publicKey = await this.kmsVeChainProvider.getPublicKey();
-        return Address.ofPublicKey(publicKey).toString();
+        try {
+            const publicKey = await this.kmsVeChainProvider.getPublicKey();
+            return Address.ofPublicKey(publicKey).toString();
+        } catch (error) {
+            throw new SignerMethodError(
+                'KMSVeChainSigner.getAddress',
+                'The address could not be retrieved.',
+                {},
+                error
+            );
+        }
     }
 
     /**
@@ -151,20 +169,30 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
                 { transactionToSign }
             );
         }
-        // Populate the call, to get proper from and to address (compatible with multi-clause transactions)
-        const populatedTransaction =
-            await this.populateTransaction(transactionToSign);
 
-        // Get the transaction hash
-        const transactionHash =
-            Transaction.of(populatedTransaction).getTransactionHash().bytes;
+        try {
+            // Populate the call, to get proper from and to address (compatible with multi-clause transactions)
+            const populatedTransaction =
+                await this.populateTransaction(transactionToSign);
 
-        const veChainSignature =
-            await this.buildVeChainSignatureFromPayload(transactionHash);
+            // Get the transaction hash
+            const transactionHash =
+                Transaction.of(populatedTransaction).getTransactionHash().bytes;
 
-        return Hex.of(
-            Transaction.of(populatedTransaction, veChainSignature).encoded
-        ).toString();
+            const veChainSignature =
+                await this.buildVeChainSignatureFromPayload(transactionHash);
+
+            return Hex.of(
+                Transaction.of(populatedTransaction, veChainSignature).encoded
+            ).toString();
+        } catch (error) {
+            throw new SignerMethodError(
+                'KMSVeChainSigner.signTransaction',
+                'The transaction could not be signed.',
+                { transactionToSign },
+                error
+            );
+        }
     }
 
     /**
@@ -185,14 +213,24 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
             );
         }
 
-        // 2 - Sign the transaction
-        const signedTransaction = await this.signTransaction(transactionToSend);
+        try {
+            // 2 - Sign the transaction
+            const signedTransaction =
+                await this.signTransaction(transactionToSend);
 
-        // 3 - Send the signed transaction
-        return (await this.kmsVeChainProvider.request({
-            method: RPC_METHODS.eth_sendRawTransaction,
-            params: [signedTransaction]
-        })) as string;
+            // 3 - Send the signed transaction
+            return (await this.kmsVeChainProvider.request({
+                method: RPC_METHODS.eth_sendRawTransaction,
+                params: [signedTransaction]
+            })) as string;
+        } catch (error) {
+            throw new SignerMethodError(
+                'KMSVeChainSigner.sendTransaction',
+                'The transaction could not be sent.',
+                { transactionToSend },
+                error
+            );
+        }
     }
 
     /**
@@ -214,9 +252,18 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
      * @returns {string} The VeChain signature in hexadecimal format.
      */
     public async signMessage(message: string | Uint8Array): Promise<string> {
-        const payload =
-            typeof message === 'string' ? Txt.of(message).bytes : message;
-        return await this.signPayload(payload);
+        try {
+            const payload =
+                typeof message === 'string' ? Txt.of(message).bytes : message;
+            return await this.signPayload(payload);
+        } catch (error) {
+            throw new SignerMethodError(
+                'KMSVeChainSigner.signMessage',
+                'The message could not be signed.',
+                { message },
+                error
+            );
+        }
     }
 
     /**
@@ -233,10 +280,19 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         primaryType: string,
         message: Record<string, unknown>
     ): Promise<string> {
-        const payload = Hex.of(
-            hashTypedData({ domain, types, primaryType, message })
-        ).bytes;
-        return await this.signPayload(payload);
+        try {
+            const payload = Hex.of(
+                hashTypedData({ domain, types, primaryType, message })
+            ).bytes;
+            return await this.signPayload(payload);
+        } catch (error) {
+            throw new SignerMethodError(
+                'KMSVeChainSigner.signTypedData',
+                'The typed data could not be signed.',
+                { domain, types, primaryType, message },
+                error
+            );
+        }
     }
 }
 
