@@ -35,7 +35,6 @@ const ethGetTransactionReceipt = async (
     if (params.length !== 1 || typeof params[0] !== 'string')
         throw new JSONRPCInvalidParams(
             'eth_getTransactionReceipt',
-            -32602,
             `Invalid input params for "eth_getTransactionReceipt" method. See ${RPC_DOCUMENTATION_URL} for details.`,
             { params }
         );
@@ -44,7 +43,6 @@ const ethGetTransactionReceipt = async (
     if (!ThorId.isValid(params[0])) {
         throw new JSONRPCInvalidParams(
             'eth_getTransactionReceipt',
-            -32602,
             'Invalid transaction ID given as input. Input must be an hex string of length 64.',
             { params }
         );
@@ -89,7 +87,6 @@ const ethGetTransactionReceipt = async (
     } catch (e) {
         throw new JSONRPCInternalError(
             'eth_getTransactionReceipt()',
-            -32603,
             'Method "eth_getTransactionReceipt" failed.',
             {
                 params: stringifyData(params),

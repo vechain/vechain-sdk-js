@@ -34,7 +34,6 @@ const ethGetCode = async (
     )
         throw new JSONRPCInvalidParams(
             'eth_getCode',
-            -32602,
             `Invalid input params for "eth_getCode" method. See ${RPC_DOCUMENTATION_URL} for details.`,
             { params }
         );
@@ -49,7 +48,6 @@ const ethGetCode = async (
     } catch (e) {
         throw new JSONRPCInternalError(
             'eth_getCode()',
-            -32603,
             'Method "eth_getCode" failed.',
             {
                 params: stringifyData(params),

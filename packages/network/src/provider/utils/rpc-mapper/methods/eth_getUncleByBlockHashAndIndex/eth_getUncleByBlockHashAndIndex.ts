@@ -29,7 +29,6 @@ const ethGetUncleByBlockHashAndIndex = async (
     )
         throw new JSONRPCInvalidParams(
             'eth_getUncleByBlockHashAndIndex',
-            -32602,
             'Invalid input params for "eth_getUncleByBlockHashAndIndex" method. See https://docs.infura.io/api/networks/ethereum/json-rpc-methods/eth_getunclebyblockhashandindex for details.',
             { params }
         );

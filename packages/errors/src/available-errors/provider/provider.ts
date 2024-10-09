@@ -24,12 +24,16 @@ class JSONRPCProviderError<
 }> {
     constructor(
         readonly methodName: string,
-        code: TJSONRpcErrorCode,
         message: string,
         data: ObjectErrorData,
         readonly innerError?: unknown
     ) {
-        super(methodName, message, { code, message, data }, innerError);
+        super(
+            methodName,
+            message,
+            { code: undefined as unknown as TJSONRpcErrorCode, message, data },
+            innerError
+        );
     }
 }
 
@@ -82,11 +86,11 @@ class JSONRPCInternalError extends JSONRPCProviderError<-32603> {}
 class JSONRPCServerError extends JSONRPCProviderError<-32000> {}
 
 export {
-    JSONRPCProviderError,
-    JSONRPCParseError,
+    JSONRPCInternalError,
+    JSONRPCInvalidParams,
     JSONRPCInvalidRequest,
     JSONRPCMethodNotFound,
-    JSONRPCInvalidParams,
-    JSONRPCInternalError,
+    JSONRPCParseError,
+    JSONRPCProviderError,
     JSONRPCServerError
 };

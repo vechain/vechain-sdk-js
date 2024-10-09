@@ -24,7 +24,6 @@ const ethChainId = async (thorClient: ThorClient): Promise<string> => {
         if (genesisBlock?.id === null || genesisBlock?.id === undefined) {
             throw new JSONRPCInvalidParams(
                 'eth_chainId()',
-                -32602,
                 'The genesis block id is null or undefined. Unable to get the chain id.',
                 {
                     url: thorClient.httpClient.baseURL
@@ -41,7 +40,6 @@ const ethChainId = async (thorClient: ThorClient): Promise<string> => {
     } catch (e) {
         throw new JSONRPCInternalError(
             'eth_chainId()',
-            -32603,
             'Method "eth_chainId" failed.',
             {
                 url: thorClient.httpClient.baseURL,

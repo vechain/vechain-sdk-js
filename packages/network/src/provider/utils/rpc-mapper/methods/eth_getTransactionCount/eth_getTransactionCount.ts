@@ -24,7 +24,6 @@ const ethGetTransactionCount = async (params: unknown[]): Promise<string> => {
     )
         throw new JSONRPCInvalidParams(
             'eth_getTransactionCount',
-            -32602,
             `Invalid input params for "eth_getTransactionCount" method. See ${RPC_DOCUMENTATION_URL} for details.`,
             { params }
         );
@@ -33,7 +32,6 @@ const ethGetTransactionCount = async (params: unknown[]): Promise<string> => {
     if (!Address.isValid(params[0])) {
         throw new JSONRPCInvalidParams(
             'eth_getTransactionCount',
-            -32602,
             'Invalid address, expected a 20 bytes address string.',
             { params }
         );

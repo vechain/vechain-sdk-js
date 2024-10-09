@@ -27,7 +27,6 @@ const ethGetBlockTransactionCountByHash = async (
     )
         throw new JSONRPCInvalidParams(
             'eth_getBlockTransactionCountByHash',
-            -32602,
             `Invalid input params for "eth_getBlockTransactionCountByHash" method. See ${RPC_DOCUMENTATION_URL} for details.`,
             { params }
         );

@@ -37,7 +37,6 @@ const ethGetStorageAt = async (
     )
         throw new JSONRPCInvalidParams(
             'eth_getStorageAt',
-            -32602,
             `Invalid input params for "eth_getStorageAt" method. See ${RPC_DOCUMENTATION_URL} for details.`,
             { params }
         );
@@ -60,7 +59,6 @@ const ethGetStorageAt = async (
     } catch (e) {
         throw new JSONRPCInternalError(
             'eth_getStorageAt()',
-            -32603,
             'Method "eth_getStorageAt" failed.',
             {
                 params: stringifyData(params),

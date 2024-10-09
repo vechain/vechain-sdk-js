@@ -18,7 +18,6 @@ const web3Sha3 = async (params: unknown[]): Promise<string> => {
     )
         throw new JSONRPCInvalidParams(
             'web3_sha3',
-            -32602,
             `Invalid input params for "web3_sha3" method. See 'https://docs.alchemy.com/reference/web3-sha3' for details.`,
             { params }
         );
