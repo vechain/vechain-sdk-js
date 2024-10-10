@@ -12,7 +12,7 @@ import path from 'path';
 import { KMSVeChainProvider, KMSVeChainSigner } from '../src';
 import { TESTING_CONTRACT_ABI, TESTING_CONTRACT_ADDRESS } from './fixture';
 
-interface AwsCredentials {
+interface AwsClientParameters {
     keyId: string;
     region: string;
     credentials: {
@@ -46,15 +46,15 @@ describe('KMSVeChainSigner - Thor Solo', () => {
             __dirname,
             './aws-credentials.json'
         );
-        const awsCredentials = JSON.parse(
+        const awsClientParameters = JSON.parse(
             fs.readFileSync(awsCredentialsPath, 'utf8')
-        ) as AwsCredentials;
+        ) as AwsClientParameters;
         thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
         const provider = new KMSVeChainProvider(
             thorClient,
-            awsCredentials.keyId,
-            awsCredentials.region,
-            awsCredentials.credentials
+            awsClientParameters.keyId,
+            awsClientParameters.region,
+            awsClientParameters.credentials
         );
         expect(provider).toBeInstanceOf(KMSVeChainProvider);
         signer = new KMSVeChainSigner(provider);
