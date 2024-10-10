@@ -86,7 +86,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
     private async getDecodedPublicKey(): Promise<Uint8Array> {
         if (this.kmsVeChainProvider === undefined) {
             throw new JSONRPCInvalidParams(
-                'KMSVeChainSigner.getAddress',
+                'KMSVeChainSigner.getDecodedPublicKey',
                 'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
                 {}
             );
@@ -123,7 +123,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
     ): Promise<Uint8Array> {
         if (this.kmsVeChainProvider === undefined) {
             throw new JSONRPCInvalidParams(
-                'KMSVeChainSigner.getRecoveryBit',
+                'KMSVeChainSigner.buildVeChainSignatureFromPayload',
                 'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
                 { payload }
             );
