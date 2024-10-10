@@ -14,7 +14,6 @@ const ethGetUncleCountByBlockNumber = async (
     if (params.length !== 1 || typeof params[0] !== 'string')
         throw new JSONRPCInvalidParams(
             'eth_getUncleCountByBlockNumber',
-            -32602,
             `Invalid input params for "eth_getUncleCountByBlockNumber" method. See ${RPC_DOCUMENTATION_URL} for details.`,
             { params }
         );

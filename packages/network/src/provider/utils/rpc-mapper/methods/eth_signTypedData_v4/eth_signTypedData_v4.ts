@@ -39,7 +39,6 @@ const ethSignTypedDataV4 = async (
     )
         throw new JSONRPCInvalidParams(
             'eth_signTypedDataV4',
-            -32602,
             `Invalid input params for "eth_signTypedDataV4" method. See https://docs.metamask.io/wallet/reference/eth_signtypeddata_v4/ for details.`,
             { params }
         );
@@ -51,7 +50,6 @@ const ethSignTypedDataV4 = async (
     ) {
         throw new JSONRPCInvalidParams(
             'eth_signTypedDataV4',
-            -32602,
             `Provider must be defined with a wallet. Ensure that the provider is defined, connected to the network and has the wallet with the address ${params[0]} into it.`,
             { provider }
         );
@@ -82,7 +80,6 @@ const ethSignTypedDataV4 = async (
     } catch (error) {
         throw new JSONRPCInternalError(
             'eth_signTypedDataV4',
-            -32603,
             'Method "eth_signTypedDataV4" failed.',
             {
                 params: stringifyData(params),

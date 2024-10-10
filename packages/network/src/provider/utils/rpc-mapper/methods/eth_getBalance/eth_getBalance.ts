@@ -34,7 +34,6 @@ const ethGetBalance = async (
     )
         throw new JSONRPCInvalidParams(
             'eth_getBalance',
-            -32602,
             `Invalid input params for "eth_getBalance" method. See ${RPC_DOCUMENTATION_URL} for details.`,
             { params }
         );
@@ -51,7 +50,6 @@ const ethGetBalance = async (
     } catch (e) {
         throw new JSONRPCInternalError(
             'eth_getBalance()',
-            -32603,
             'Method "eth_getBalance" failed.',
             {
                 params: stringifyData(params),

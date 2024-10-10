@@ -31,7 +31,6 @@ const ethGetBlockReceipts = async (
     if (params.length !== 1 || typeof params[0] !== 'string')
         throw new JSONRPCInvalidParams(
             'eth_getBlockReceipts',
-            -32602,
             `Invalid input params for "eth_getBlockReceipts" method. See ${RPC_DOCUMENTATION_URL} for details.`,
             { params }
         );
@@ -69,7 +68,6 @@ const ethGetBlockReceipts = async (
     } catch (e) {
         throw new JSONRPCInternalError(
             'eth_getBlockReceipts()',
-            -32603,
             'Method "eth_getBlockReceipts" failed.',
             {
                 params: stringifyData(params),

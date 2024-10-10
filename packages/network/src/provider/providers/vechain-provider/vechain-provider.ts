@@ -63,7 +63,6 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
         if (enableDelegation && wallet?.delegator === undefined) {
             throw new JSONRPCInvalidParams(
                 'VechainProvider constructor',
-                -32602,
                 'Delegation is enabled but the delegator is not defined. Ensure that the delegator is defined and connected to the network.',
                 { wallet }
             );
@@ -99,7 +98,6 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
         ) {
             throw new JSONRPCMethodNotFound(
                 'VeChainProvider.request()',
-                -32601,
                 'Method not found. Invalid RPC method given as input.',
                 { method: args.method }
             );

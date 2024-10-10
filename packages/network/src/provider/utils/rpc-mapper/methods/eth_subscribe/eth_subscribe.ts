@@ -60,7 +60,6 @@ const ethSubscribe = async (
     if (provider === undefined) {
         throw new JSONRPCInternalError(
             'eth_subscribe()',
-            -32603,
             'Method "eth_subscribe" failed. Provider is not defined.',
             {
                 url: thorClient.httpClient.baseURL,
@@ -74,7 +73,6 @@ const ethSubscribe = async (
     ) {
         throw new JSONRPCInvalidParams(
             'eth_subscribe()',
-            -32602,
             'Method "eth_subscribe" failed. Invalid subscription type param.',
             {
                 url: thorClient.httpClient.baseURL,
@@ -92,7 +90,6 @@ const ethSubscribe = async (
         } else
             throw new JSONRPCServerError(
                 'eth_subscribe()',
-                -32000,
                 'Method "eth_subscribe" failed. Best block not available.',
                 {
                     url: thorClient.httpClient.baseURL,

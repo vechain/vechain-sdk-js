@@ -15,14 +15,9 @@ describe('Error logger tests', () => {
         const logSpy = jest.spyOn(VeChainSDKLogger('error'), 'log');
 
         VeChainSDKLogger('error').log(
-            new JSONRPCInternalError(
-                'test-method',
-                -32603,
-                `Error on request`,
-                {
-                    some: 'data'
-                }
-            )
+            new JSONRPCInternalError('test-method', `Error on request`, {
+                some: 'data'
+            })
         );
 
         expect(logSpy).toHaveBeenCalled();

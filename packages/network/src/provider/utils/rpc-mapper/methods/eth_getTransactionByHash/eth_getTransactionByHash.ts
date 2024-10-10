@@ -29,7 +29,6 @@ const ethGetTransactionByHash = async (
     if (params.length !== 1 || typeof params[0] !== 'string')
         throw new JSONRPCInvalidParams(
             'eth_getTransactionByHash',
-            -32602,
             `Invalid input params for "eth_getTransactionByHash" method. See ${RPC_DOCUMENTATION_URL} for details.`,
             { params }
         );
@@ -60,7 +59,6 @@ const ethGetTransactionByHash = async (
     } catch (e) {
         throw new JSONRPCInternalError(
             'eth_getTransactionByHash()',
-            -32603,
             'Method "eth_getTransactionByHash" failed.',
             {
                 params: stringifyData(params),

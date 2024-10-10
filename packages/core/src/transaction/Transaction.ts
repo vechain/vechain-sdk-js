@@ -183,7 +183,7 @@ class Transaction {
      * @remarks Security auditable method, depends on
      * - {@link Address.ofPublicKey};
      * - {@link Secp256k1.recover};
-     * - {@link Transaction.getSignatureHash}.
+     * - {@link Transaction.getTransactionHash}.
      */
     public get delegator(): Address {
         if (this.isDelegated) {

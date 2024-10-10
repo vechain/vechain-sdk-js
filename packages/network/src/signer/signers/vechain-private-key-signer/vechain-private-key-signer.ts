@@ -98,7 +98,6 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         if (this.provider === undefined) {
             throw new JSONRPCInvalidParams(
                 'VeChainPrivateKeySigner.signTransaction()',
-                -32602,
                 'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
                 { transactionToSign }
             );
@@ -130,7 +129,6 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         if (this.provider === undefined) {
             throw new JSONRPCInvalidParams(
                 'VeChainPrivateKeySigner.sendTransaction()',
-                -32602,
                 'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
                 { transactionToSend }
             );

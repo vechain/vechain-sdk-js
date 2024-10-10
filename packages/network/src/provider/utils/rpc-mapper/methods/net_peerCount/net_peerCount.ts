@@ -15,7 +15,6 @@ const netPeerCount = async (thorClient: ThorClient): Promise<number> => {
     } catch (e) {
         throw new JSONRPCInternalError(
             'net_peerCount()',
-            -32603,
             'Method "net_peerCount" failed.',
             {
                 url: thorClient.httpClient.baseURL,

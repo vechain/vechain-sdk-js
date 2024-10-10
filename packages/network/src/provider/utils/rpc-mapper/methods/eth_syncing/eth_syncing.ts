@@ -75,7 +75,6 @@ const ethSyncing = async (
     } catch (e) {
         throw new JSONRPCInternalError(
             'eth_syncing()',
-            -32603,
             'Method "eth_syncing" failed.',
             {
                 url: thorClient.httpClient.baseURL,

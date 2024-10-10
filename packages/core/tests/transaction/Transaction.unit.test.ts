@@ -68,7 +68,7 @@ const TransactionFixture = {
     },
     undelegated: {
         body: TxBodyFix,
-        signatureHash: HexUInt.of(
+        transactionHash: HexUInt.of(
             '0x2a1c25ce0d66f45276a5f308b99bf410e2fc7d5b6ea37a49f2ab9f1da9446478'
         ),
         signedTransactionId: HexUInt.of(
@@ -89,7 +89,7 @@ const TransactionFixture = {
                 features: 1
             }
         },
-        signatureHash: HexUInt.of(
+        transactionHash: HexUInt.of(
             '0x005fb0b47dfd16b7f2f61bb17df791242bc37ed1fffe9b05fa55fb0fe069f9a3'
         ),
         encodedUnsigned: HexUInt.of(
@@ -116,7 +116,7 @@ const TransactionFixture = {
                 ]
             }
         },
-        signatureHash: HexUInt.of(
+        transactionHash: HexUInt.of(
             '0xd6e8f162e3e08585ee8fcf81868e5bd57a59966fef218528339766ee2587726c'
         ),
         encodedUnsigned: HexUInt.of(
@@ -149,7 +149,7 @@ describe('Transaction class tests', () => {
                 expect(
                     actual
                         .getTransactionHash()
-                        .isEqual(TransactionFixture.undelegated.signatureHash)
+                        .isEqual(TransactionFixture.undelegated.transactionHash)
                 ).toBe(true);
                 expect(() => actual.id).toThrowError(
                     UnavailableTransactionField
@@ -173,7 +173,9 @@ describe('Transaction class tests', () => {
                 expect(actual.isSigned).toBe(false);
                 expect(actual.isDelegated).toEqual(true);
                 expect(
-                    actual.getTransactionHash().isEqual(expected.signatureHash)
+                    actual
+                        .getTransactionHash()
+                        .isEqual(expected.transactionHash)
                 ).toBe(true);
                 expect(() => actual.id).toThrowError(
                     UnavailableTransactionField
@@ -197,7 +199,9 @@ describe('Transaction class tests', () => {
                 expect(actual.isSigned).toBe(false);
                 expect(actual.isDelegated).toEqual(true);
                 expect(
-                    actual.getTransactionHash().isEqual(expected.signatureHash)
+                    actual
+                        .getTransactionHash()
+                        .isEqual(expected.transactionHash)
                 ).toBe(true);
                 expect(() => actual.id).toThrowError(
                     UnavailableTransactionField
@@ -229,7 +233,9 @@ describe('Transaction class tests', () => {
                 expect(actual.isSigned).toEqual(true);
                 expect(actual.isDelegated).toEqual(false);
                 expect(
-                    actual.getTransactionHash().isEqual(expected.signatureHash)
+                    actual
+                        .getTransactionHash()
+                        .isEqual(expected.transactionHash)
                 ).toBe(true);
                 expect(actual.origin.isEqual(SignerFix.address)).toBe(true);
                 expect(() => actual.delegator).toThrowError(
@@ -255,7 +261,9 @@ describe('Transaction class tests', () => {
                 expect(actual.isSigned).toEqual(true);
                 expect(actual.isDelegated).toEqual(true);
                 expect(
-                    actual.getTransactionHash().isEqual(expected.signatureHash)
+                    actual
+                        .getTransactionHash()
+                        .isEqual(expected.transactionHash)
                 ).toBe(true);
                 expect(actual.origin.isEqual(SignerFix.address)).toBe(true);
                 expect(actual.delegator.isEqual(DelegatorFix.address)).toBe(
@@ -281,7 +289,9 @@ describe('Transaction class tests', () => {
                 expect(actual.isSigned).toEqual(true);
                 expect(actual.isDelegated).toEqual(true);
                 expect(
-                    actual.getTransactionHash().isEqual(expected.signatureHash)
+                    actual
+                        .getTransactionHash()
+                        .isEqual(expected.transactionHash)
                 ).toBe(true);
                 expect(actual.origin.isEqual(SignerFix.address)).toBe(true);
                 expect(actual.delegator.isEqual(DelegatorFix.address)).toBe(

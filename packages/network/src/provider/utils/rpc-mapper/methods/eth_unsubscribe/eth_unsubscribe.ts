@@ -30,7 +30,6 @@ const ethUnsubscribe = async (
     if (provider === undefined) {
         throw new JSONRPCInternalError(
             'eth_unsubscribe()',
-            -32603,
             'Method "eth_unsubscribe" failed. Provider is not defined.',
             {
                 params: stringifyData(params)

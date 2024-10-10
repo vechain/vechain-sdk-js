@@ -34,7 +34,6 @@ const ethEstimateGas = async (
     if (![1, 2].includes(params.length) || typeof params[0] !== 'object')
         throw new JSONRPCInvalidParams(
             'eth_estimateGas',
-            -32602,
             `Invalid input params for "eth_estimateGas" method. See ${RPC_DOCUMENTATION_URL} for details.`,
             { params }
         );
@@ -70,7 +69,6 @@ const ethEstimateGas = async (
     } catch (e) {
         throw new JSONRPCInternalError(
             'eth_estimateGas()',
-            -32603,
             'Method "eth_estimateGas" failed.',
             {
                 params: stringifyData(params),

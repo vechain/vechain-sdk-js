@@ -140,7 +140,6 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         if ((this.provider as AvailableVeChainProviders) === null) {
             throw new JSONRPCInvalidParams(
                 'VechainAbstractSigner.populateTransaction()',
-                -32602,
                 'Thor client not found into the signer. Please attach a Provider with a thor client to your signer instance.',
                 { provider: this.provider }
             );
@@ -196,7 +195,6 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         if ((this.provider as AvailableVeChainProviders) === null) {
             throw new JSONRPCInvalidParams(
                 'VechainAbstractSigner.estimateGas()',
-                -32602,
                 'Thor client not found into the signer. Please attach a Provider with a thor client to your signer instance.',
                 { provider: this.provider }
             );
@@ -243,7 +241,6 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         if ((this.provider as AvailableVeChainProviders) === null) {
             throw new JSONRPCInvalidParams(
                 'VechainAbstractSigner.call()',
-                -32602,
                 'Thor client not found into the signer. Please attach a Provider with a thor client to your signer instance.',
                 { provider: this.provider }
             );

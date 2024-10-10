@@ -36,7 +36,6 @@ const ethSignTransaction = async (
     if (params.length !== 1 || typeof params[0] !== 'object')
         throw new JSONRPCInvalidParams(
             'eth_signTransaction',
-            -32602,
             `Invalid input params for "eth_signTransaction" method. See ${RPC_DOCUMENTATION_URL} for details.`,
             { params }
         );
@@ -45,7 +44,6 @@ const ethSignTransaction = async (
     if (provider?.wallet === undefined) {
         throw new JSONRPCInvalidParams(
             'eth_signTransaction',
-            -32602,
             'Provider must be defined with a wallet. Ensure that the provider is defined and connected to the network.',
             { provider }
         );
@@ -55,7 +53,6 @@ const ethSignTransaction = async (
     if ((params[0] as TransactionObjectInput).from === undefined) {
         throw new JSONRPCInvalidParams(
             'eth_signTransaction',
-            -32602,
             'From field is required in the transaction object.',
             { provider }
         );
@@ -75,7 +72,6 @@ const ethSignTransaction = async (
     } catch (error) {
         throw new JSONRPCInternalError(
             'eth_signTransaction()',
-            -32603,
             'Method "eth_signTransaction" failed.',
             {
                 params: stringifyData(params),

@@ -34,7 +34,6 @@ const ethGetLogs = async (
     if (params.length !== 1 || typeof params[0] !== 'object')
         throw new JSONRPCInvalidParams(
             'eth_getLogs',
-            -32602,
             `Invalid input params for "eth_getLogs" method. See ${RPC_DOCUMENTATION_URL} for details.`,
             { params }
         );
@@ -93,7 +92,6 @@ const ethGetLogs = async (
     } catch (e) {
         throw new JSONRPCInternalError(
             'eth_getLogs()',
-            -32603,
             'Method "eth_getLogs" failed.',
             {
                 params: stringifyData(params),

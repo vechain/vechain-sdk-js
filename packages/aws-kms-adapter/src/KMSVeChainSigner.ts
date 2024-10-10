@@ -22,7 +22,6 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
             if (!(this.provider instanceof KMSVeChainProvider)) {
                 throw new JSONRPCInvalidParams(
                     'KMSVeChainSigner.constructor',
-                    -32602,
                     'The provider must be an instance of KMSVeChainProvider.',
                     { provider }
                 );
@@ -58,7 +57,6 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         if (this.kmsVeChainProvider === undefined) {
             throw new JSONRPCInvalidParams(
                 'KMSVeChainSigner.getAddress',
-                -32602,
                 'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
                 {}
             );
@@ -87,7 +85,6 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         if (this.kmsVeChainProvider === undefined) {
             throw new JSONRPCInvalidParams(
                 'KMSVeChainSigner.getRecoveryBit',
-                -32602,
                 'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
                 { payload }
             );
@@ -123,7 +120,6 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         if (this.kmsVeChainProvider === undefined) {
             throw new JSONRPCInvalidParams(
                 'KMSVeChainSigner.getRecoveryBit',
-                -32602,
                 'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
                 { decodedSignatureWithoutRecoveryBit, transactionHash }
             );
@@ -164,7 +160,6 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         if (this.kmsVeChainProvider === undefined) {
             throw new JSONRPCInvalidParams(
                 'KMSVeChainSigner.signTransaction',
-                -32602,
                 'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
                 { transactionToSign }
             );
@@ -207,7 +202,6 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         if (this.kmsVeChainProvider === undefined) {
             throw new JSONRPCInvalidParams(
                 'KMSVeChainSigner.sendTransaction',
-                -32602,
                 'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
                 { transactionToSend }
             );

@@ -32,7 +32,6 @@ const ethGetTransactionByBlockHashAndIndex = async (
     )
         throw new JSONRPCInvalidParams(
             'eth_getTransactionByBlockHashAndIndex',
-            -32602,
             `Invalid input params for "eth_getTransactionByBlockHashAndIndex" method. See ${RPC_DOCUMENTATION_URL} for details.`,
             { params }
         );
@@ -59,7 +58,6 @@ const ethGetTransactionByBlockHashAndIndex = async (
     } catch (e) {
         throw new JSONRPCInternalError(
             'eth_getTransactionByBlockHashAndIndex()',
-            -32603,
             'Method "eth_getTransactionByBlockHashAndIndex" failed.',
             {
                 params: stringifyData(params),

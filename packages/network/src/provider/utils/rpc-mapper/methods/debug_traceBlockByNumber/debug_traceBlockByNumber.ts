@@ -44,7 +44,6 @@ const debugTraceBlockByNumber = async (
     )
         throw new JSONRPCInvalidParams(
             'debug_traceBlockByNumber',
-            -32602,
             `Invalid input params for "debug_traceBlockByNumber" method. See https://www.quicknode.com/docs/ethereum/debug_traceBlockByNumber for details.`,
             { params }
         );
@@ -87,7 +86,6 @@ const debugTraceBlockByNumber = async (
     } catch (e) {
         throw new JSONRPCInternalError(
             'debug_traceBlockByNumber()',
-            -32603,
             'Method "debug_traceBlockByNumber" failed.',
             {
                 params: stringifyData(params),

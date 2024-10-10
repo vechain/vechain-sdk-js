@@ -22,7 +22,6 @@ const txPoolContentFrom = async (params: unknown[]): Promise<object> => {
     )
         throw new JSONRPCInvalidParams(
             'txpool_contentFrom()',
-            -32602,
             `Invalid input params for "txpool_contentFrom" method. See https://www.quicknode.com/docs/ethereum/txpool_contentFrom for details.`,
             { params }
         );
