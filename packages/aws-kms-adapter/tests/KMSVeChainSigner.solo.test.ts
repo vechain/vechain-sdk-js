@@ -7,8 +7,20 @@ import {
     type TransactionClause
 } from '@vechain/sdk-core';
 import { signerUtils, THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
+import fs from 'fs';
+import path from 'path';
 import { KMSVeChainProvider, KMSVeChainSigner } from '../src';
 import { TESTING_CONTRACT_ABI, TESTING_CONTRACT_ADDRESS } from './fixture';
+
+interface AwsCredentials {
+    keyId: string;
+    region: string;
+    credentials: {
+        accessKeyId: string;
+        secretAccessKey: string;
+        sessionToken: string;
+    };
+}
 
 /**
  * AWS KMS VeChain signer tests - solo
@@ -30,12 +42,20 @@ describe('KMSVeChainSigner - Thor Solo', () => {
      * Init thor client and provider before each test
      */
     beforeAll(() => {
+        const awsCredentialsPath = path.resolve(
+            __dirname,
+            './aws-credentials.json'
+        );
+        const awsCredentials = JSON.parse(
+            fs.readFileSync(awsCredentialsPath, 'utf8')
+        ) as AwsCredentials;
         thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
-        const provider = new KMSVeChainProvider(thorClient, '', 'eu-west-1', {
-            accessKeyId: '',
-            secretAccessKey: '',
-            sessionToken: ''
-        });
+        const provider = new KMSVeChainProvider(
+            thorClient,
+            awsCredentials.keyId,
+            awsCredentials.region,
+            awsCredentials.credentials
+        );
         expect(provider).toBeInstanceOf(KMSVeChainProvider);
         signer = new KMSVeChainSigner(provider);
     });
