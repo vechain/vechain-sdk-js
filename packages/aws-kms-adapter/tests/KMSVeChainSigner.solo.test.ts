@@ -10,7 +10,13 @@ import { signerUtils, THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
 import fs from 'fs';
 import path from 'path';
 import { KMSVeChainProvider, KMSVeChainSigner } from '../src';
-import { TESTING_CONTRACT_ABI, TESTING_CONTRACT_ADDRESS } from './fixture';
+import {
+    EIP712_CONTRACT,
+    EIP712_FROM,
+    EIP712_TO,
+    TESTING_CONTRACT_ABI,
+    TESTING_CONTRACT_ADDRESS
+} from './fixture';
 
 interface AwsClientParameters {
     keyId: string;
@@ -169,12 +175,75 @@ describe('KMSVeChainSigner - Thor Solo', () => {
     });
 
     /**
-     * Test suite for sendTransaction method
+     * Test suite for signMessage method
      */
     describe('signMessage', () => {
         test('should sign a message successfully', async () => {
             const message = 'Hello, VeChain!';
             const signature = await signer.signMessage(message);
+            expect(signature).toBeDefined();
+            // 64-bytes hex string
+            expect(signature.length).toBe(132);
+        });
+    });
+
+    /**
+     * Test suite for signTypedData method
+     */
+    describe('signTypedData', () => {
+        test('should sign typed data successfully', async () => {
+            const typedData = {
+                domain: {
+                    name: 'Ether Mail',
+                    version: '1',
+                    chainId: 1,
+                    verifyingContract: EIP712_CONTRACT
+                },
+                primaryType: 'Mail',
+                types: {
+                    Person: [
+                        {
+                            name: 'name',
+                            type: 'string'
+                        },
+                        {
+                            name: 'wallet',
+                            type: 'address'
+                        }
+                    ],
+                    Mail: [
+                        {
+                            name: 'from',
+                            type: 'Person'
+                        },
+                        {
+                            name: 'to',
+                            type: 'Person'
+                        },
+                        {
+                            name: 'contents',
+                            type: 'string'
+                        }
+                    ]
+                },
+                data: {
+                    from: {
+                        name: 'Cow',
+                        wallet: EIP712_FROM
+                    },
+                    to: {
+                        name: 'Bob',
+                        wallet: EIP712_TO
+                    },
+                    contents: 'Hello, Bob!'
+                }
+            };
+            const signature = await signer.signTypedData(
+                typedData.domain,
+                typedData.types,
+                typedData.primaryType,
+                typedData.data
+            );
             expect(signature).toBeDefined();
             // 64-bytes hex string
             expect(signature.length).toBe(132);
