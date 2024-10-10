@@ -10,6 +10,7 @@ import {
     VeChainAbstractSigner
 } from '@vechain/sdk-network';
 import { type TypedDataDomain, type TypedDataParameter } from 'abitype';
+import { BitString, ObjectIdentifier, Sequence, verifySchema } from 'asn1js';
 import { hashTypedData, recoverPublicKey, toHex } from 'viem';
 import { KMSVeChainProvider } from './KMSVeChainProvider';
 
@@ -50,6 +51,35 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
     }
 
     /**
+     * Decodes the public key from the DER-encoded public key.
+     * @param {Uint8Array} encodedPublicKey DER-encoded public key
+     * @returns {Uint8Array} The decoded public key.
+     */
+    private decodePublicKey(encodedPublicKey: Uint8Array): Uint8Array {
+        const schema = new Sequence({
+            value: [
+                new Sequence({ value: [new ObjectIdentifier()] }),
+                new BitString({ name: 'objectIdentifier' })
+            ]
+        });
+        const parsed = verifySchema(encodedPublicKey, schema);
+        if (!parsed.verified) {
+            throw new SignerMethodError(
+                'KMSVeChainSigner.decodePublicKey',
+                `Failed to parse the encoded public key: ${parsed.result.error}`,
+                { parsed }
+            );
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const objectIdentifier: ArrayBuffer =
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            parsed.result.objectIdentifier.valueBlock.valueHex;
+
+        return new Uint8Array(objectIdentifier);
+    }
+
+    /**
      * It returns the address associated with the signer.
      * @returns The address associated with the signer.
      */
@@ -63,7 +93,8 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         }
         try {
             const publicKey = await this.kmsVeChainProvider.getPublicKey();
-            return Address.ofPublicKey(publicKey).toString();
+            const publicKeyDecoded = this.decodePublicKey(publicKey);
+            return Address.ofPublicKey(publicKeyDecoded).toString();
         } catch (error) {
             throw new SignerMethodError(
                 'KMSVeChainSigner.getAddress',

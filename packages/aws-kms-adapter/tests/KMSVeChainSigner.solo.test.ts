@@ -13,27 +13,28 @@ describe('KMSVeChainSigner - Thor Solo', () => {
     let thorClient: ThorClient;
 
     /**
+     * KMSVeChainSigner instance
+     */
+    let signer: KMSVeChainSigner;
+
+    /**
      * Init thor client and provider before each test
      */
-    beforeEach(() => {
+    beforeAll(() => {
         thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
+        const provider = new KMSVeChainProvider(thorClient, '', 'eu-west-1', {
+            accessKeyId: '',
+            secretAccessKey: '',
+            sessionToken: ''
+        });
+        expect(provider).toBeInstanceOf(KMSVeChainProvider);
+        signer = new KMSVeChainSigner(provider);
     });
 
-    describe('constructor', () => {
-        test('should create a new instance of KMSVeChainSigner', () => {
-            const provider = new KMSVeChainProvider(
-                thorClient,
-                '',
-                'eu-west-1',
-                {
-                    accessKeyId: 'accessKeyId',
-                    secretAccessKey: 'secretAccess',
-                    sessionToken: ''
-                }
-            );
-            expect(provider).toBeInstanceOf(KMSVeChainProvider);
-            const signer = new KMSVeChainSigner(provider);
+    describe('getAddress', () => {
+        test('should get the address from the public key', async () => {
             expect(signer).toBeInstanceOf(KMSVeChainSigner);
+            expect(await signer.getAddress()).toBe('');
         });
     });
 });
