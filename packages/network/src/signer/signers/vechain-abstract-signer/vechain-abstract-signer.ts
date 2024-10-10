@@ -3,6 +3,7 @@ import {
     Clause,
     Hex,
     HexUInt,
+    Txt,
     type TransactionBody,
     type TransactionClause
 } from '@vechain/sdk-core';
@@ -24,6 +25,9 @@ import {
  * By implementing this abstract class, it will be easier to create new signers
  */
 abstract class VeChainAbstractSigner implements VeChainSigner {
+    protected readonly MESSAGE_PREFIX = Txt.of('\x19Ethereum Signed Message:\n')
+        .bytes;
+
     /**
      * The provider attached to this Signer (if any).
      */

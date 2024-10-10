@@ -33,9 +33,6 @@ import { VeChainAbstractSigner } from '../vechain-abstract-signer/vechain-abstra
  * This signer can be initialized using a private key.
  */
 class VeChainPrivateKeySigner extends VeChainAbstractSigner {
-    private readonly MESSAGE_PREFIX = Txt.of('\x19Ethereum Signed Message:\n')
-        .bytes;
-
     /**
      * Create a new VeChainPrivateKeySigner.
      * A signer can be initialized using a private key.

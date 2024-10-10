@@ -1,7 +1,7 @@
 import { bytesToHex, concatBytes } from '@noble/curves/abstract/utils';
 import { type SignatureType } from '@noble/curves/abstract/weierstrass';
 import { secp256k1 } from '@noble/curves/secp256k1';
-import { Address, Hex, Transaction, Txt } from '@vechain/sdk-core';
+import { Address, Hex, Keccak256, Transaction, Txt } from '@vechain/sdk-core';
 import { JSONRPCInvalidParams, SignerMethodError } from '@vechain/sdk-errors';
 import {
     type AvailableVeChainProviders,
@@ -128,6 +128,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
                 { payload }
             );
         }
+
         // Sign the transaction hash
         const signature = await this.kmsVeChainProvider.sign(payload);
 
@@ -291,7 +292,14 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         try {
             const payload =
                 typeof message === 'string' ? Txt.of(message).bytes : message;
-            return await this.signPayload(payload);
+            const payloadHashed = Keccak256.of(
+                concatBytes(
+                    this.MESSAGE_PREFIX,
+                    Txt.of(payload.length).bytes,
+                    payload
+                )
+            ).bytes;
+            return await this.signPayload(payloadHashed);
         } catch (error) {
             throw new SignerMethodError(
                 'KMSVeChainSigner.signMessage',

@@ -44,7 +44,7 @@ describe('KMSVeChainSigner - Thor Solo', () => {
         test('should get the address from the public key', async () => {
             expect(signer).toBeInstanceOf(KMSVeChainSigner);
             expect(await signer.getAddress()).toBe(
-                '0x4D31C0916a310DA4ddEC0DbED626e848937Fd465'
+                '0x3db469a79593dcc67f07DE1869d6682fC1eaf535'
             );
         });
     });
@@ -109,5 +109,55 @@ describe('KMSVeChainSigner - Thor Solo', () => {
             expect(signedTx.isSigned).toBe(true);
             expect(signedTx.signature).toBeDefined();
         }, 8000);
+    });
+
+    /**
+     * Test suite for sendTransaction method
+     */
+    describe('sendTransaction', () => {
+        test('should send a transaction successfully', async () => {
+            const sampleClause = Clause.callFunction(
+                Address.of(TESTING_CONTRACT_ADDRESS),
+                ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction('deposit'),
+                [123]
+            ) as TransactionClause;
+
+            const originAddress = await signer.getAddress();
+
+            const gasResult = await thorClient.gas.estimateGas(
+                [sampleClause],
+                originAddress
+            );
+
+            const txBody = await thorClient.transactions.buildTransactionBody(
+                [sampleClause],
+                gasResult.totalGas,
+                {
+                    isDelegated: false
+                }
+            );
+
+            const receipt = await signer.sendTransaction(
+                signerUtils.transactionBodyToTransactionRequestInput(
+                    txBody,
+                    originAddress
+                )
+            );
+
+            expect(receipt.match(/^0x([A-Fa-f0-9]{64})$/)).toBeTruthy();
+        }, 8000);
+    });
+
+    /**
+     * Test suite for sendTransaction method
+     */
+    describe('signMessage', () => {
+        test('should sign a message successfully', async () => {
+            const message = 'Hello, VeChain!';
+            const signature = await signer.signMessage(message);
+            expect(signature).toBeDefined();
+            // 64-bytes hex string
+            expect(signature.length).toBe(132);
+        });
     });
 });
