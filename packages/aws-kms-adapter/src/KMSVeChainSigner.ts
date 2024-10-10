@@ -1,4 +1,4 @@
-import { bytesToHex } from '@noble/curves/abstract/utils';
+import { bytesToHex, concatBytes } from '@noble/curves/abstract/utils';
 import { type SignatureType } from '@noble/curves/abstract/weierstrass';
 import { secp256k1 } from '@noble/curves/secp256k1';
 import { Address, Hex, Transaction, Txt } from '@vechain/sdk-core';
@@ -140,10 +140,13 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
             decodedSignatureWithoutRecoveryBit,
             payload
         );
-        const decodedSignature =
-            decodedSignatureWithoutRecoveryBit.addRecoveryBit(recoveryBit);
 
-        return decodedSignature.toCompactRawBytes();
+        const decodedSignature = concatBytes(
+            decodedSignatureWithoutRecoveryBit.toCompactRawBytes(),
+            new Uint8Array([recoveryBit])
+        );
+
+        return decodedSignature;
     }
 
     /**
