@@ -80,10 +80,10 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
     }
 
     /**
-     * It returns the address associated with the signer.
-     * @returns The address associated with the signer.
+     * Gets the DER-encoded public key from KMS and decodes it.
+     * @returns {Uint8Array} The decoded public key.
      */
-    public async getAddress(): Promise<string> {
+    private async getDecodedPublicKey(): Promise<Uint8Array> {
         if (this.kmsVeChainProvider === undefined) {
             throw new JSONRPCInvalidParams(
                 'KMSVeChainSigner.getAddress',
@@ -91,9 +91,17 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
                 {}
             );
         }
+        const publicKey = await this.kmsVeChainProvider.getPublicKey();
+        return this.decodePublicKey(publicKey);
+    }
+
+    /**
+     * It returns the address associated with the signer.
+     * @returns The address associated with the signer.
+     */
+    public async getAddress(): Promise<string> {
         try {
-            const publicKey = await this.kmsVeChainProvider.getPublicKey();
-            const publicKeyDecoded = this.decodePublicKey(publicKey);
+            const publicKeyDecoded = await this.getDecodedPublicKey();
             return Address.ofPublicKey(publicKeyDecoded).toString();
         } catch (error) {
             throw new SignerMethodError(
@@ -155,7 +163,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
                 { decodedSignatureWithoutRecoveryBit, transactionHash }
             );
         }
-        const publicKey = await this.kmsVeChainProvider.getPublicKey();
+        const publicKey = await this.getDecodedPublicKey();
         const publicKeyHex = toHex(publicKey);
 
         for (let i = 0n; i < 2n; i++) {
