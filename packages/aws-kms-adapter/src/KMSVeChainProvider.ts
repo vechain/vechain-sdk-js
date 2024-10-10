@@ -20,9 +20,9 @@ class KMSVeChainProvider extends VeChainProvider {
     /**
      * Creates a new instance of KMSVeChainProvider.
      * @param thorClient The thor client instance to use.
-     * @param region The AWS region to use.
      * @param keyId The AWS keyId to use for signing operations locally.
-     * @param secretKey The AWS secretKey to use for signing operations locally.
+     * @param region The AWS region to use.
+     * @param credentials The AWS credentials to connect to the KMS service.
      **/
     public constructor(
         thorClient: ThorClient,
