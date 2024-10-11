@@ -69,4 +69,12 @@ describe('KMSVeChainSigner', () => {
             ).rejects.toThrow(JSONRPCInvalidParams);
         });
     });
+    describe('sendTransaction', () => {
+        it('should break if there is no provider', async () => {
+            const signer = new KMSVeChainSigner();
+            await expect(
+                signer.sendTransaction({} as unknown as TransactionRequestInput)
+            ).rejects.toThrow(JSONRPCInvalidParams);
+        });
+    });
 });

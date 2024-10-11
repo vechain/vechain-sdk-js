@@ -32,7 +32,7 @@ class KMSVeChainProvider extends VeChainProvider {
         credentials?: {
             accessKeyId: string;
             secretAccessKey: string;
-            sessionToken: string;
+            sessionToken?: string;
         }
     ) {
         super(thorClient);
