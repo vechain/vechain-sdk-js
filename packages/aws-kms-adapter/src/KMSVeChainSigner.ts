@@ -5,7 +5,10 @@ import { Address, Hex, Keccak256, Transaction, Txt } from '@vechain/sdk-core';
 import { JSONRPCInvalidParams, SignerMethodError } from '@vechain/sdk-errors';
 import {
     type AvailableVeChainProviders,
+    DelegationHandler,
     RPC_METHODS,
+    SignTransactionOptions,
+    ThorClient,
     type TransactionRequestInput,
     VeChainAbstractSigner
 } from '@vechain/sdk-network';
@@ -83,15 +86,8 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
      * Gets the DER-encoded public key from KMS and decodes it.
      * @returns {Uint8Array} The decoded public key.
      */
-    private async getDecodedPublicKey(): Promise<Uint8Array> {
-        if (this.kmsVeChainProvider === undefined) {
-            throw new JSONRPCInvalidParams(
-                'KMSVeChainSigner.getDecodedPublicKey',
-                'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
-                {}
-            );
-        }
-        const publicKey = await this.kmsVeChainProvider.getPublicKey();
+    private async getDecodedPublicKey(getPublicKey: () => Promise<Uint8Array>): Promise<Uint8Array> {
+        const publicKey = await getPublicKey();
         return this.decodePublicKey(publicKey);
     }
 
@@ -100,8 +96,15 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
      * @returns The address associated with the signer.
      */
     public async getAddress(): Promise<string> {
+        if (this.kmsVeChainProvider === undefined) {
+            throw new JSONRPCInvalidParams(
+                'KMSVeChainSigner.getDecodedPublicKey',
+                'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
+                {}
+            );
+        }
         try {
-            const publicKeyDecoded = await this.getDecodedPublicKey();
+            const publicKeyDecoded = await this.getDecodedPublicKey(this.kmsVeChainProvider.getOriginPublicKey);
             return Address.ofPublicKey(publicKeyDecoded).toString();
         } catch (error) {
             throw new SignerMethodError(
@@ -119,7 +122,8 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
      * @returns {Uint8Array} The signature following the VeChain format.
      */
     private async buildVeChainSignatureFromPayload(
-        payload: Uint8Array
+        payload: Uint8Array,
+        sign: (message: Uint8Array) => Promise<Uint8Array>
     ): Promise<Uint8Array> {
         if (this.kmsVeChainProvider === undefined) {
             throw new JSONRPCInvalidParams(
@@ -130,7 +134,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         }
 
         // Sign the transaction hash
-        const signature = await this.kmsVeChainProvider.sign(payload);
+        const signature = await sign(payload);
 
         // Build the VeChain signature using the r, s and v components
         const hexSignature = bytesToHex(signature);
@@ -184,6 +188,54 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         );
     }
 
+    private async signWithDelegator(
+        transactionHash: Uint8Array,
+        originPrivateKey: Uint8Array,
+        thorClient: ThorClient,
+        delegatorOptions?: SignTransactionOptions
+    ): Promise<string> {
+        // Address of the origin account
+        const originAddress = await this.getAddress();
+
+        const unsignedTx = Transaction.of(unsignedTransactionBody);
+
+        // Sign transaction with origin private key and delegator private key
+        if (delegatorOptions?.delegatorPrivateKey !== undefined)
+            return Hex.of(
+                Transaction.of(unsignedTransactionBody).signWithDelegator(
+                    originPrivateKey,
+                    HexUInt.of(delegatorOptions?.delegatorPrivateKey).bytes
+                ).encoded
+            ).toString();
+
+        // Otherwise, get the signature of the delegator from the delegator endpoint
+        const delegatorSignature = await DelegationHandler(
+            delegatorOptions
+        ).getDelegationSignatureUsingUrl(
+            unsignedTx,
+            originAddress,
+            thorClient.httpClient
+        );
+
+        // Sign transaction with origin private key
+        const originSignature = Secp256k1.sign(
+            unsignedTx.getTransactionHash().bytes,
+            originPrivateKey
+        );
+
+        // Sign the transaction with both signatures. Concat both signatures to get the final signature
+        const signature = new Uint8Array(
+            originSignature.length + delegatorSignature.length
+        );
+        signature.set(originSignature);
+        signature.set(delegatorSignature, originSignature.length);
+
+        // Return new signed transaction
+        return Hex.of(
+            Transaction.of(unsignedTx.body, signature).encoded
+        ).toString();
+    }
+
     /**
      * It signs a transaction.
      * @param transactionToSign Transaction body to sign in plain format.
@@ -200,6 +252,21 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
             // Get the transaction hash
             const transactionHash =
                 Transaction.of(populatedTransaction).getTransactionHash().bytes;
+
+            if (this.kmsVeChainProvider?.delegator !== undefined) {
+                const delegatorParameter =
+                    this.kmsVeChainProvider.delegator.keyId !== undefined
+                        ? {
+                              delegatorPrivateKey:
+                                  this.kmsVeChainProvider.delegator.keyId
+                          }
+                        : {
+                              delegatorUrl: this.kmsVeChainProvider.delegator
+                                  .url as string
+                          };
+
+                return await this.signWithDelegator(
+            }
 
             const veChainSignature =
                 await this.buildVeChainSignatureFromPayload(transactionHash);

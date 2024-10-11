@@ -15,29 +15,34 @@ import { KMSVeChainSigner } from './KMSVeChainSigner';
 
 class KMSVeChainProvider extends VeChainProvider {
     private readonly kmsClient: KMSClient;
-    private readonly keyId: string;
     private signer?: KMSVeChainSigner;
+    private delegatorSigner?: KMSVeChainSigner;
 
     /**
      * Creates a new instance of KMSVeChainProvider.
      * @param thorClient The thor client instance to use.
      * @param keyId The AWS keyId to use for signing operations locally.
      * @param region The AWS region to use.
+     * @param endpoint The AWS endpoint to use (locally).
      * @param credentials The AWS credentials to connect to the KMS service.
+     * @param delegator The delegator configuration to use.
      **/
     public constructor(
         thorClient: ThorClient,
-        keyId: string,
+        private readonly keyId: string,
         region: string,
         endpoint?: string,
         credentials?: {
             accessKeyId: string;
             secretAccessKey: string;
             sessionToken?: string;
+        },
+        readonly delegator?: {
+            url?: string;
+            keyId?: string;
         }
     ) {
         super(thorClient);
-        this.keyId = keyId;
         this.kmsClient =
             endpoint !== undefined
                 ? new KMSClient({
@@ -52,26 +57,54 @@ class KMSVeChainProvider extends VeChainProvider {
 
     /**
      * Returns a new instance of the KMSVeChainSigner using this provider configuration.
-     * @param _addressOrIndex Unused parameter, will always return the signer associated to the keyId
+     * @param addressOrIndex Parameter with the keyId of either the origin or the delegator.
      * @returns {KMSVeChainSigner} An instance of KMSVeChainSigner
      */
     public override async getSigner(
-        _addressOrIndex?: string | number
+        addressOrIndex: string
     ): Promise<VeChainSigner | null> {
-        if (this.signer !== undefined) {
-            return this.signer;
+        if (addressOrIndex === this.keyId) {
+            if (this.signer !== undefined) {
+                return this.signer;
+            }
+            this.signer = new KMSVeChainSigner(this);
+            return await Promise.resolve(this.signer);
+        } else if (addressOrIndex === this.delegator?.keyId) {
+            if (this.delegatorSigner !== undefined) {
+                return this.delegatorSigner;
+            }
+            this.delegatorSigner = new KMSVeChainSigner(this);
+            return await Promise.resolve(this.delegatorSigner);
         }
-        this.signer = new KMSVeChainSigner(this);
-        return await Promise.resolve(this.signer);
+        return null;
+    }
+
+    /**
+     * Returns the public key associated with the keyId provided in
+     * the constructor.
+     * @returns {Uint8Array} The public key associated with the keyId
+     */
+    public async getOriginPublicKey(): Promise<Uint8Array> {
+        return await this.getPublicKey(this.keyId);
+    }
+
+    /**
+     * Returns the public key associated with the delegator keyId
+     * provided in the constructor.
+     * @returns {Uint8Array} The public key associated with the delegator keyId
+     */
+    public async getDelegatorPublicKey(): Promise<Uint8Array> {
+        return await this.getPublicKey(this.delegator?.keyId);
     }
 
     /**
      * Returns the public key associated with the keyId provided in the constructor.
+     * @param {string} keyId The keyId to retrieve
      * @returns {Uint8Array} The public key associated with the keyId
      */
-    public async getPublicKey(): Promise<Uint8Array> {
+    private async getPublicKey(keyId?: string): Promise<Uint8Array> {
         const getPublicKeyCommand = new GetPublicKeyCommand({
-            KeyId: this.keyId
+            KeyId: keyId
         });
         const getPublicKeyOutput =
             await this.kmsClient.send(getPublicKeyCommand);
@@ -86,14 +119,25 @@ class KMSVeChainProvider extends VeChainProvider {
         return getPublicKeyOutput.PublicKey;
     }
 
+    public async signWithOrigin(message: Uint8Array): Promise<Uint8Array> {
+        return await this.sign(message, this.keyId);
+    }
+
+    public async signWithDelegator(message: Uint8Array): Promise<Uint8Array> {
+        return await this.sign(message, this.delegator?.keyId);
+    }
+
     /**
      * Performs a sign operation using the keyId provided in the constructor.
      * @param {Uint8Array} message Message to sign using KMS
      * @returns {Uint8Array} The signature of the message
      */
-    public async sign(message: Uint8Array): Promise<Uint8Array> {
+    private async sign(
+        message: Uint8Array,
+        keyId?: string
+    ): Promise<Uint8Array> {
         const command = new SignCommand({
-            KeyId: this.keyId,
+            KeyId: keyId,
             Message: message,
             SigningAlgorithm: SigningAlgorithmSpec.ECDSA_SHA_256,
             MessageType: MessageType.DIGEST
