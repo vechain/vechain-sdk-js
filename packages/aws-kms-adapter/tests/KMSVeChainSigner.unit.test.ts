@@ -1,7 +1,11 @@
+import { Txt } from '@vechain/sdk-core';
 import { JSONRPCInvalidParams, SignerMethodError } from '@vechain/sdk-errors';
 import { VeChainProvider, type ThorClient } from '@vechain/sdk-network';
-import { KMSVeChainSigner } from '../src';
+import { KMSVeChainProvider, KMSVeChainSigner } from '../src';
 jest.mock('asn1js', () => ({
+    Sequence: jest.fn(),
+    ObjectIdentifier: jest.fn(),
+    BitString: jest.fn(),
     verifySchema: jest.fn().mockImplementation(() => ({
         verified: false
     }))
@@ -32,8 +36,22 @@ describe('KMSVeChainSigner', () => {
         });
     });
     describe('getAddress', () => {
-        it('should break if asn1 decoding fails', async () => {
+        it('should break if there is no provider', async () => {
             const signer = new KMSVeChainSigner();
+            await expect(signer.getAddress()).rejects.toThrow(
+                SignerMethodError
+            );
+        });
+        it('should break if asn1 decoding fails', async () => {
+            const provider = new KMSVeChainProvider(
+                {} as unknown as ThorClient,
+                'keyId',
+                'region'
+            );
+            jest.spyOn(provider, 'getPublicKey').mockResolvedValue(
+                Txt.of('publicKey').bytes
+            );
+            const signer = new KMSVeChainSigner(provider);
             await expect(signer.getAddress()).rejects.toThrow(
                 SignerMethodError
             );
