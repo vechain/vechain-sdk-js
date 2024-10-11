@@ -1,6 +1,10 @@
 import { Txt } from '@vechain/sdk-core';
 import { JSONRPCInvalidParams, SignerMethodError } from '@vechain/sdk-errors';
-import { VeChainProvider, type ThorClient } from '@vechain/sdk-network';
+import {
+    VeChainProvider,
+    type ThorClient,
+    type TransactionRequestInput
+} from '@vechain/sdk-network';
 import { KMSVeChainProvider, KMSVeChainSigner } from '../src';
 jest.mock('asn1js', () => ({
     Sequence: jest.fn(),
@@ -55,6 +59,14 @@ describe('KMSVeChainSigner', () => {
             await expect(signer.getAddress()).rejects.toThrow(
                 SignerMethodError
             );
+        });
+    });
+    describe('signTransaction', () => {
+        it('should break if there is no provider', async () => {
+            const signer = new KMSVeChainSigner();
+            await expect(
+                signer.signTransaction({} as unknown as TransactionRequestInput)
+            ).rejects.toThrow(JSONRPCInvalidParams);
         });
     });
 });
