@@ -5,6 +5,7 @@ import {
     type ThorClient,
     type TransactionRequestInput
 } from '@vechain/sdk-network';
+import { type TypedDataDomain, type TypedDataParameter } from 'viem';
 import { KMSVeChainProvider, KMSVeChainSigner } from '../src';
 jest.mock('asn1js', () => ({
     Sequence: jest.fn(),
@@ -97,6 +98,24 @@ describe('KMSVeChainSigner', () => {
             const signer = new KMSVeChainSigner(provider);
             await expect(
                 signer.signMessage({} as unknown as Uint8Array)
+            ).rejects.toThrow(SignerMethodError);
+        });
+    });
+    describe('signTypedData', () => {
+        it('should throw an error if there is an error in the body of the method', async () => {
+            const provider = new KMSVeChainProvider(
+                {} as unknown as ThorClient,
+                'keyId',
+                'region'
+            );
+            const signer = new KMSVeChainSigner(provider);
+            await expect(
+                signer.signTypedData(
+                    {} as unknown as TypedDataDomain,
+                    {} as unknown as Record<string, TypedDataParameter[]>,
+                    {} as unknown as string,
+                    {} as unknown as Record<string, unknown>
+                )
             ).rejects.toThrow(SignerMethodError);
         });
     });
