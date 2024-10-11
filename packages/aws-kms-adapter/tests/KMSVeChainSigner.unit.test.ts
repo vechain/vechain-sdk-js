@@ -1,4 +1,4 @@
-import { Txt } from '@vechain/sdk-core';
+import { Hex, Txt } from '@vechain/sdk-core';
 import { JSONRPCInvalidParams, SignerMethodError } from '@vechain/sdk-errors';
 import {
     VeChainProvider,
@@ -14,6 +14,9 @@ jest.mock('asn1js', () => ({
     verifySchema: jest.fn().mockImplementation(() => ({
         verified: false
     }))
+}));
+jest.mock('viem', () => ({
+    hashTypedData: jest.fn().mockReturnValue(Uint8Array.of(1))
 }));
 
 /**
@@ -102,6 +105,18 @@ describe('KMSVeChainSigner', () => {
         });
     });
     describe('signTypedData', () => {
+        it('should throw an error if there is no provider instance', async () => {
+            jest.spyOn(Hex, 'of').mockReturnValue(Hex.of('0x1'));
+            const signer = new KMSVeChainSigner();
+            await expect(
+                signer.signTypedData(
+                    {} as unknown as TypedDataDomain,
+                    {} as unknown as Record<string, TypedDataParameter[]>,
+                    {} as unknown as string,
+                    {} as unknown as Record<string, unknown>
+                )
+            ).rejects.toThrow(SignerMethodError);
+        });
         it('should throw an error if there is an error in the body of the method', async () => {
             const provider = new KMSVeChainProvider(
                 {} as unknown as ThorClient,
