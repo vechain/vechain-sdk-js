@@ -29,6 +29,7 @@ class KMSVeChainProvider extends VeChainProvider {
         thorClient: ThorClient,
         keyId: string,
         region: string,
+        endpoint?: string,
         credentials?: {
             accessKeyId: string;
             secretAccessKey: string;
@@ -38,12 +39,15 @@ class KMSVeChainProvider extends VeChainProvider {
         super(thorClient);
         this.keyId = keyId;
         this.kmsClient =
-            credentials !== undefined
+            endpoint !== undefined
                 ? new KMSClient({
                       region,
+                      endpoint,
                       credentials
                   })
-                : new KMSClient({ region });
+                : credentials !== undefined
+                  ? new KMSClient({ region, credentials })
+                  : new KMSClient({ region });
     }
 
     /**

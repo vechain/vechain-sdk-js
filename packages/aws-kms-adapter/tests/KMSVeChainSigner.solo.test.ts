@@ -21,10 +21,11 @@ import {
 interface AwsClientParameters {
     keyId: string;
     region: string;
+    endpoint: string;
     credentials: {
         accessKeyId: string;
         secretAccessKey: string;
-        sessionToken: string;
+        sessionToken?: string;
     };
 }
 
@@ -60,6 +61,7 @@ describe('KMSVeChainSigner - Thor Solo', () => {
             thorClient,
             awsClientParameters.keyId,
             awsClientParameters.region,
+            awsClientParameters.endpoint,
             awsClientParameters.credentials
         );
         expect(provider).toBeInstanceOf(KMSVeChainProvider);
