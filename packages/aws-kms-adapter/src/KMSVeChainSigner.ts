@@ -199,15 +199,6 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
     public async signTransaction(
         transactionToSign: TransactionRequestInput
     ): Promise<string> {
-        // Check the provider (needed to sign the transaction)
-        if (this.kmsVeChainProvider === undefined) {
-            throw new JSONRPCInvalidParams(
-                'KMSVeChainSigner.signTransaction',
-                'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
-                { transactionToSign }
-            );
-        }
-
         try {
             // Populate the call, to get proper from and to address (compatible with multi-clause transactions)
             const populatedTransaction =
