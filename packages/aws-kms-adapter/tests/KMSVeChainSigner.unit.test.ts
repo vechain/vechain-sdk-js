@@ -87,4 +87,17 @@ describe('KMSVeChainSigner', () => {
             ).rejects.toThrow(SignerMethodError);
         });
     });
+    describe('signMessage', () => {
+        it('should throw an error if there is an error in the body of the method', async () => {
+            const provider = new KMSVeChainProvider(
+                {} as unknown as ThorClient,
+                'keyId',
+                'region'
+            );
+            const signer = new KMSVeChainSigner(provider);
+            await expect(
+                signer.signMessage({} as unknown as Uint8Array)
+            ).rejects.toThrow(SignerMethodError);
+        });
+    });
 });
