@@ -48,6 +48,7 @@ describe('KMSVeChainProvider', () => {
         it('should return the instance of the signer', async () => {
             const signer = await instance.getSigner();
             expect(signer).toBeDefined();
+            expect(signer).toBe(await instance.getSigner());
         });
     });
     describe('getPublicKey', () => {
