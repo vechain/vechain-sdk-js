@@ -1,6 +1,10 @@
 import { Txt } from '@vechain/sdk-core';
 import { JSONRPCInvalidParams, SignerMethodError } from '@vechain/sdk-errors';
-import { VeChainProvider, type ThorClient } from '@vechain/sdk-network';
+import {
+    VeChainProvider,
+    type ThorClient,
+    type TransactionRequestInput
+} from '@vechain/sdk-network';
 import { KMSVeChainProvider, KMSVeChainSigner } from '../src';
 jest.mock('asn1js', () => ({
     Sequence: jest.fn(),
@@ -55,6 +59,32 @@ describe('KMSVeChainSigner', () => {
             await expect(signer.getAddress()).rejects.toThrow(
                 SignerMethodError
             );
+        });
+    });
+    describe('signTransaction', () => {
+        it('should throw an error if there is an error in the body of the method', async () => {
+            const provider = new KMSVeChainProvider(
+                {} as unknown as ThorClient,
+                'keyId',
+                'region'
+            );
+            const signer = new KMSVeChainSigner(provider);
+            await expect(
+                signer.signTransaction({} as unknown as TransactionRequestInput)
+            ).rejects.toThrow(SignerMethodError);
+        });
+    });
+    describe('sendTransaction', () => {
+        it('should throw an error if there is an error in the body of the method', async () => {
+            const provider = new KMSVeChainProvider(
+                {} as unknown as ThorClient,
+                'keyId',
+                'region'
+            );
+            const signer = new KMSVeChainSigner(provider);
+            await expect(
+                signer.sendTransaction({} as unknown as TransactionRequestInput)
+            ).rejects.toThrow(SignerMethodError);
         });
     });
 });
