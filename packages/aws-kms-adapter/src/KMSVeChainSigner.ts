@@ -160,13 +160,6 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         decodedSignatureWithoutRecoveryBit: SignatureType,
         transactionHash: Uint8Array
     ): Promise<number> {
-        if (this.kmsVeChainProvider === undefined) {
-            throw new JSONRPCInvalidParams(
-                'KMSVeChainSigner.getRecoveryBit',
-                'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
-                { decodedSignatureWithoutRecoveryBit, transactionHash }
-            );
-        }
         const publicKey = await this.getDecodedPublicKey();
         const publicKeyHex = toHex(publicKey);
 
