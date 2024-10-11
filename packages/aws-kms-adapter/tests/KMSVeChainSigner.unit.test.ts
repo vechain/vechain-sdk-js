@@ -1,6 +1,11 @@
 import { JSONRPCInvalidParams, SignerMethodError } from '@vechain/sdk-errors';
 import { VeChainProvider, type ThorClient } from '@vechain/sdk-network';
 import { KMSVeChainSigner } from '../src';
+jest.mock('asn1js', () => ({
+    verifySchema: jest.fn().mockImplementation(() => ({
+        verified: false
+    }))
+}));
 
 /**
  * AWS KMS VeChain signer tests - unit
@@ -24,6 +29,14 @@ describe('KMSVeChainSigner', () => {
             expect(() =>
                 signer.connect(new VeChainProvider({} as unknown as ThorClient))
             ).toThrow(SignerMethodError);
+        });
+    });
+    describe('getAddress', () => {
+        it('should break if asn1 decoding fails', async () => {
+            const signer = new KMSVeChainSigner();
+            await expect(signer.getAddress()).rejects.toThrow(
+                SignerMethodError
+            );
         });
     });
 });
