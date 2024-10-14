@@ -196,7 +196,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
      *
      * @param {TypedDataDomain} domain - The domain parameters used for signing.
      * @param {Record<string, TypedDataParameter[]>} types - The types used for signing.
-     * @param {Record<string, unknown>} value - The value data to be signed.
+     * @param {Record<string, unknown>} message - The value data to be signed.
      *
      * @return {Promise<string>} - A promise that resolves with the signature string.
      */
