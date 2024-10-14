@@ -12,6 +12,7 @@ import { RPC_METHODS } from '../../../provider/utils/const/rpc-mapper/rpc-method
 import { type TransactionSimulationResult } from '../../../thor-client';
 import { vnsUtils } from '../../../utils';
 import {
+    type SignTypedDataOptions,
     type AvailableVeChainProviders,
     type TransactionRequestInput,
     type VeChainSigner
@@ -340,7 +341,8 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
     abstract signTypedData(
         domain: vechain_sdk_core_ethers.TypedDataDomain,
         types: Record<string, vechain_sdk_core_ethers.TypedDataField[]>,
-        value: Record<string, unknown>
+        value: Record<string, unknown>,
+        options?: SignTypedDataOptions
     ): Promise<string>;
 
     /**
