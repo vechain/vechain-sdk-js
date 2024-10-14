@@ -1,7 +1,14 @@
 import { bytesToHex, concatBytes } from '@noble/curves/abstract/utils';
 import { type SignatureType } from '@noble/curves/abstract/weierstrass';
 import { secp256k1 } from '@noble/curves/secp256k1';
-import { Address, Hex, Keccak256, Transaction, Txt } from '@vechain/sdk-core';
+import {
+    Address,
+    Hex,
+    Keccak256,
+    Transaction,
+    Txt,
+    vechain_sdk_core_ethers
+} from '@vechain/sdk-core';
 import { JSONRPCInvalidParams, SignerMethodError } from '@vechain/sdk-errors';
 import {
     type AvailableVeChainProviders,
@@ -9,9 +16,8 @@ import {
     type TransactionRequestInput,
     VeChainAbstractSigner
 } from '@vechain/sdk-network';
-import { type TypedDataDomain, type TypedDataParameter } from 'abitype';
 import { BitString, ObjectIdentifier, Sequence, verifySchema } from 'asn1js';
-import { hashTypedData, recoverPublicKey, toHex } from 'viem';
+import { recoverPublicKey, toHex } from 'viem';
 import { KMSVeChainProvider } from './KMSVeChainProvider';
 
 class KMSVeChainSigner extends VeChainAbstractSigner {
@@ -287,28 +293,30 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
 
     /**
      * Signs a typed data returning the VeChain signature in hexadecimal format.
-     * @param {TypedDataDomain} domain to hash as typed data.
+     * @param {vechain_sdk_core_ethers.TypedDataDomain} domain to hash as typed data.
      * @param {Record<string, TypedDataParameter[]>} types to hash as typed data.
-     * @param {string} primaryType to hash as typed data.
-     * @param {Record<string, unknown>} message to hash as typed data.
+     * @param {Record<string, unknown>} value to hash as typed data.
      * @returns {string} The VeChain signature in hexadecimal format.
      */
     public async signTypedData(
-        domain: TypedDataDomain,
-        types: Record<string, TypedDataParameter[]>,
-        primaryType: string,
-        message: Record<string, unknown>
+        domain: vechain_sdk_core_ethers.TypedDataDomain,
+        types: Record<string, vechain_sdk_core_ethers.TypedDataField[]>,
+        value: Record<string, unknown>
     ): Promise<string> {
         try {
             const payload = Hex.of(
-                hashTypedData({ domain, types, primaryType, message })
+                vechain_sdk_core_ethers.TypedDataEncoder.hash(
+                    domain,
+                    types,
+                    value
+                )
             ).bytes;
             return await this.signPayload(payload);
         } catch (error) {
             throw new SignerMethodError(
                 'KMSVeChainSigner.signTypedData',
                 'The typed data could not be signed.',
-                { domain, types, primaryType, message },
+                { domain, types, value },
                 error
             );
         }

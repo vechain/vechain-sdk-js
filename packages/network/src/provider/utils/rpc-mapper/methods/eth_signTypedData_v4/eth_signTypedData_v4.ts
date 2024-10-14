@@ -1,10 +1,9 @@
-import { Address } from '@vechain/sdk-core';
+import { Address, type vechain_sdk_core_ethers } from '@vechain/sdk-core';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
-import { type TypedDataDomain, type TypedDataParameter } from 'viem';
 import type { VeChainSigner } from '../../../../../signer/signers';
 import type { ThorClient } from '../../../../../thor-client';
 import type { VeChainProvider } from '../../../../providers/vechain-provider';
@@ -60,8 +59,8 @@ const ethSignTypedDataV4 = async (
         string,
         {
             primaryType: string;
-            domain: TypedDataDomain;
-            types: Record<string, TypedDataParameter[]>;
+            domain: vechain_sdk_core_ethers.TypedDataDomain;
+            types: Record<string, vechain_sdk_core_ethers.TypedDataField[]>;
             message: Record<string, unknown>;
         }
     ];
@@ -74,10 +73,10 @@ const ethSignTypedDataV4 = async (
         return await signer.signTypedData(
             typedData.domain,
             typedData.types,
-            typedData.primaryType,
             typedData.message
         );
     } catch (error) {
+        console.error('LLEGA', error);
         throw new JSONRPCInternalError(
             'eth_signTypedDataV4',
             'Method "eth_signTypedDataV4" failed.',

@@ -112,7 +112,6 @@ describe('KMSVeChainSigner', () => {
                 signer.signTypedData(
                     {} as unknown as TypedDataDomain,
                     {} as unknown as Record<string, TypedDataParameter[]>,
-                    {} as unknown as string,
                     {} as unknown as Record<string, unknown>
                 )
             ).rejects.toThrow(SignerMethodError);
@@ -128,7 +127,6 @@ describe('KMSVeChainSigner', () => {
                 signer.signTypedData(
                     {} as unknown as TypedDataDomain,
                     {} as unknown as Record<string, TypedDataParameter[]>,
-                    {} as unknown as string,
                     {} as unknown as Record<string, unknown>
                 )
             ).rejects.toThrow(SignerMethodError);
