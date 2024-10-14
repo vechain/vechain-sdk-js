@@ -311,6 +311,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
                     value
                 )
             ).bytes;
+
             return await this.signPayload(payload);
         } catch (error) {
             throw new SignerMethodError(

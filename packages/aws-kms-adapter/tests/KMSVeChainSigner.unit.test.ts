@@ -1,12 +1,12 @@
-import { Hex, Txt } from '@vechain/sdk-core';
+import { Hex, Txt, type vechain_sdk_core_ethers } from '@vechain/sdk-core';
 import { JSONRPCInvalidParams, SignerMethodError } from '@vechain/sdk-errors';
 import {
     VeChainProvider,
     type ThorClient,
     type TransactionRequestInput
 } from '@vechain/sdk-network';
-import { type TypedDataDomain, type TypedDataParameter } from 'viem';
 import { KMSVeChainProvider, KMSVeChainSigner } from '../src';
+import { EIP712_CONTRACT, EIP712_FROM, EIP712_TO } from './fixture';
 jest.mock('asn1js', () => ({
     Sequence: jest.fn(),
     ObjectIdentifier: jest.fn(),
@@ -14,9 +14,6 @@ jest.mock('asn1js', () => ({
     verifySchema: jest.fn().mockImplementation(() => ({
         verified: false
     }))
-}));
-jest.mock('viem', () => ({
-    hashTypedData: jest.fn().mockReturnValue(Uint8Array.of(1))
 }));
 
 /**
@@ -110,9 +107,49 @@ describe('KMSVeChainSigner', () => {
             const signer = new KMSVeChainSigner();
             await expect(
                 signer.signTypedData(
-                    {} as unknown as TypedDataDomain,
-                    {} as unknown as Record<string, TypedDataParameter[]>,
-                    {} as unknown as Record<string, unknown>
+                    {
+                        name: 'Ether Mail',
+                        version: '1',
+                        chainId: 1,
+                        verifyingContract: EIP712_CONTRACT
+                    },
+                    {
+                        Person: [
+                            {
+                                name: 'name',
+                                type: 'string'
+                            },
+                            {
+                                name: 'wallet',
+                                type: 'address'
+                            }
+                        ],
+                        Mail: [
+                            {
+                                name: 'from',
+                                type: 'Person'
+                            },
+                            {
+                                name: 'to',
+                                type: 'Person'
+                            },
+                            {
+                                name: 'contents',
+                                type: 'string'
+                            }
+                        ]
+                    },
+                    {
+                        from: {
+                            name: 'Cow',
+                            wallet: EIP712_FROM
+                        },
+                        to: {
+                            name: 'Bob',
+                            wallet: EIP712_TO
+                        },
+                        contents: 'Hello, Bob!'
+                    }
                 )
             ).rejects.toThrow(SignerMethodError);
         });
@@ -125,8 +162,11 @@ describe('KMSVeChainSigner', () => {
             const signer = new KMSVeChainSigner(provider);
             await expect(
                 signer.signTypedData(
-                    {} as unknown as TypedDataDomain,
-                    {} as unknown as Record<string, TypedDataParameter[]>,
+                    {} as unknown as vechain_sdk_core_ethers.TypedDataDomain,
+                    {} as unknown as Record<
+                        string,
+                        vechain_sdk_core_ethers.TypedDataField[]
+                    >,
                     {} as unknown as Record<string, unknown>
                 )
             ).rejects.toThrow(SignerMethodError);

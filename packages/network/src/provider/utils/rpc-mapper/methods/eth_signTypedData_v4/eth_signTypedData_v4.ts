@@ -76,7 +76,6 @@ const ethSignTypedDataV4 = async (
             typedData.message
         );
     } catch (error) {
-        console.error('LLEGA', error);
         throw new JSONRPCInternalError(
             'eth_signTypedDataV4',
             'Method "eth_signTypedDataV4" failed.',
