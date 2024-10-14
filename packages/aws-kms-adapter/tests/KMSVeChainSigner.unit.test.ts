@@ -131,7 +131,7 @@ describe('KMSVeChainSigner', () => {
                     {} as unknown as string,
                     {} as unknown as Record<string, unknown>
                 )
-            ).rejects.toThrow(SignerMethodError);
+            ).rejects.toThrow(JSONRPCInvalidParams);
         });
     });
 });
