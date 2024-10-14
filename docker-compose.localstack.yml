@@ -32,6 +32,8 @@ services:
       timeout: 20s
       start_period: 2s
   thor-solo:
+      profiles:
+        - thor-solo
       depends_on:
         localstack:
           condition: service_healthy
