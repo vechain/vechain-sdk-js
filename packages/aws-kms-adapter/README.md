@@ -167,7 +167,7 @@ import {
         awsClientParameters.credentials
     );
     const signer = new KMSVeChainSigner(provider);
-    // Signing a sending a transaction
+    // Signing and sending a transaction
     const receipt = await signer.sendTransaction(
                 signerUtils.transactionBodyToTransactionRequestInput(
                     txBody,
