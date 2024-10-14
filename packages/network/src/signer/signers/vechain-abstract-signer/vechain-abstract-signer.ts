@@ -141,7 +141,7 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         transactionToPopulate: TransactionRequestInput
     ): Promise<TransactionBody> {
         // 1 - Get the thor client
-        if ((this.provider as AvailableVeChainProviders) === null) {
+        if ((this.provider as AvailableVeChainProviders) === undefined) {
             throw new JSONRPCInvalidParams(
                 'VechainAbstractSigner.populateTransaction()',
                 'Thor client not found into the signer. Please attach a Provider with a thor client to your signer instance.',
@@ -242,7 +242,7 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         revision?: string
     ): Promise<string> {
         // 1 - Get the thor client
-        if ((this.provider as AvailableVeChainProviders) === null) {
+        if ((this.provider as AvailableVeChainProviders) === undefined) {
             throw new JSONRPCInvalidParams(
                 'VechainAbstractSigner.call()',
                 'Thor client not found into the signer. Please attach a Provider with a thor client to your signer instance.',
