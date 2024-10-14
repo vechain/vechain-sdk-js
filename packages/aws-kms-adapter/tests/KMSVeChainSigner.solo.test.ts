@@ -61,12 +61,12 @@ const fundVTHO = async (
     const receiverAddress = await kmsSigner.getAddress();
     expectedAddress = receiverAddress;
 
-    const expectedVTHO = 2000000000000000000000000n;
+    const expectedVTHO = 20000000000000000000000n;
 
     // Execute a 'transfer' transaction on the deployed contract,
     // transferring a specified amount of tokens
     const transferResult = await contract.transact.transfer(
-        { value: 0, comment: 'Transfering tokens' },
+        { value: 0, comment: 'Transferring tokens' },
         receiverAddress,
         expectedVTHO
     );
