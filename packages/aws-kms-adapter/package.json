@@ -20,7 +20,7 @@
     "format": "prettier --write src/**/*.ts tests/**/*.ts",
     "start-thor-solo": "echo 'Starting thor solo node ...' && docker compose -f ../../docker-compose.thor.yml -f ../../docker-compose.localstack.yml --profile thor-solo up -d --wait && echo '\nThor solo node and localstack started ...'",
     "stop-thor-solo": "echo 'Stopping thor solo node ...' && docker compose -f ../../docker-compose.thor.yml -f ../../docker-compose.localstack.yml --profile thor-solo down && echo 'Thor solo node and localstack stopped ...'",
-    "test": "docker compose -f ../../docker-compose.localstack.yml up -d && sleep 10 && yarn test:all && docker compose -f ../../docker-compose.localstack.yml down",
+    "test": "docker compose -f ../../docker-compose.localstack.yml up -d && sleep 10 && yarn test:all; ret=$?; docker compose -f ../../docker-compose.localstack.yml down; exit $ret",
     "test:all": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit",
     "test:solo": "(yarn start-thor-solo && yarn test:all && yarn stop-thor-solo) || yarn stop-thor-solo",
     "test:unit": "rm -rf ./coverageUnit && UNIT=true jest --coverage --coverageDirectory=coverageUnit --group=unit"
