@@ -1,6 +1,9 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { Hex } from '@vechain/sdk-core';
-import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
+import {
+    JSONRPCInternalError,
+    JSONRPCInvalidParams
+} from '@vechain/sdk-errors';
 import {
     RPC_METHODS,
     TESTNET_URL,
@@ -89,7 +92,7 @@ describe('RPC Mapper - eth_signTypedData_v4 method tests', () => {
                         }
                     ]
                 })
-            ).rejects.toThrowError(JSONRPCInvalidParams);
+            ).rejects.toThrowError(JSONRPCInternalError);
         });
 
         /**
