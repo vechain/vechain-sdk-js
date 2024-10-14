@@ -196,7 +196,7 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         transactionToEstimate: TransactionRequestInput
     ): Promise<number> {
         // 1 - Get the thor client
-        if ((this.provider as AvailableVeChainProviders) === null) {
+        if ((this.provider as AvailableVeChainProviders) === undefined) {
             throw new JSONRPCInvalidParams(
                 'VechainAbstractSigner.estimateGas()',
                 'Thor client not found into the signer. Please attach a Provider with a thor client to your signer instance.',
