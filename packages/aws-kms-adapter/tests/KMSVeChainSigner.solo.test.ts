@@ -107,9 +107,22 @@ describe('KMSVeChainSigner - Thor Solo', () => {
             __dirname,
             './aws-credentials.json'
         );
-        const awsClientParameters = JSON.parse(
-            fs.readFileSync(awsCredentialsPath, 'utf8')
-        ) as AwsClientParameters;
+        let awsClientParameters: AwsClientParameters;
+        try {
+            awsClientParameters = JSON.parse(
+                fs.readFileSync(awsCredentialsPath, 'utf8')
+            ) as AwsClientParameters;
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+            console.log('Loading test credentials');
+            const testAwsCredentialsPath = path.resolve(
+                __dirname,
+                './test-aws-credentials.json'
+            );
+            awsClientParameters = JSON.parse(
+                fs.readFileSync(testAwsCredentialsPath, 'utf8')
+            ) as AwsClientParameters;
+        }
         thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
         const provider = new KMSVeChainProvider(
             thorClient,
