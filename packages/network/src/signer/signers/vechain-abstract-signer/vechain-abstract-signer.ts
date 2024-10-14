@@ -9,6 +9,7 @@ import {
 } from '@vechain/sdk-core';
 import { InvalidDataType, JSONRPCInvalidParams } from '@vechain/sdk-errors';
 import { type TypedDataDomain, type TypedDataParameter } from 'abitype';
+import { validate } from 'typia';
 import { RPC_METHODS } from '../../../provider/utils/const/rpc-mapper/rpc-methods';
 import { type TransactionSimulationResult } from '../../../thor-client';
 import { vnsUtils } from '../../../utils';
@@ -333,6 +334,21 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
     abstract signMessage(message: string | Uint8Array): Promise<string>;
 
     /**
+     * Implementation: Signs the [[link-eip-712]] typed data.
+     * @param {TypedDataDomain} domain - The domain parameters used for signing.
+     * @param {Record<string, TypedDataParameter[]>} types - The types used for signing.
+     * @param {string} primaryType - The primary type used for signing.
+     * @param {Record<string, unknown>} message - The message data to be signed.
+     * @return {Promise<string>} - A promise that resolves with the signature string.
+     */
+    protected abstract signTypedDataImplementation(
+        domain: TypedDataDomain,
+        types: Record<string, TypedDataParameter[]>,
+        primaryType: string,
+        message: Record<string, unknown>
+    ): Promise<string>;
+
+    /**
      * Signs the [[link-eip-712]] typed data.
      *
      * @param {TypedDataDomain} domain - The domain parameters used for signing.
@@ -342,12 +358,40 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
      *
      * @return {Promise<string>} - A promise that resolves with the signature string.
      */
-    abstract signTypedData(
+    public async signTypedData(
         domain: TypedDataDomain,
         types: Record<string, TypedDataParameter[]>,
         primaryType: string,
         message: Record<string, unknown>
-    ): Promise<string>;
+    ): Promise<string> {
+        const typedData = {
+            domain,
+            types,
+            primaryType,
+            message
+        };
+        const { success } = validate<{
+            primaryType: string;
+            domain: TypedDataDomain;
+            types: Record<string, TypedDataParameter[]>;
+            message: Record<string, unknown>;
+        }>(typedData);
+
+        if (!success) {
+            throw new JSONRPCInvalidParams(
+                'eth_signTypedDataV4',
+                'Invalid input params for "eth_signTypedDataV4" method. See https://eips.ethereum.org/EIPS/eip-712#specification-of-the-eth_signtypeddata-json-rpc for details.',
+                { typedData }
+            );
+        }
+
+        return await this.signTypedDataImplementation(
+            domain,
+            types,
+            primaryType,
+            message
+        );
+    }
 
     /**
      * Use vet.domains to resolve name to address

@@ -293,7 +293,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
      * @param {Record<string, unknown>} message to hash as typed data.
      * @returns {string} The VeChain signature in hexadecimal format.
      */
-    public async signTypedData(
+    protected async signTypedDataImplementation(
         domain: TypedDataDomain,
         types: Record<string, TypedDataParameter[]>,
         primaryType: string,

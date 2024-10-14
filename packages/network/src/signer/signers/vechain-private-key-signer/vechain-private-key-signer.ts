@@ -200,7 +200,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
      *
      * @return {Promise<string>} - A promise that resolves with the signature string.
      */
-    async signTypedData(
+    protected async signTypedDataImplementation(
         domain: TypedDataDomain,
         types: Record<string, TypedDataParameter[]>,
         primaryType: string,
