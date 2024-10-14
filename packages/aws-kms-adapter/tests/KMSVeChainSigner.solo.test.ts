@@ -55,13 +55,13 @@ const fundVTHO = async (
             false
         )
     );
-    // Deploy the ERC20 contract
+    // Load the ERC20 contract
     const contract = thorClient.contracts.load(VTHO_ADDRESS, ERC20_ABI, signer);
 
     const receiverAddress = await kmsSigner.getAddress();
     expectedAddress = receiverAddress;
 
-    const expectedVTHO = 2000000000000000000000n;
+    const expectedVTHO = 200000000000000000000n;
 
     // Execute a 'transfer' transaction on the deployed contract,
     // transferring a specified amount of tokens
