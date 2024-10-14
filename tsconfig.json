@@ -16,7 +16,12 @@
     "preserveWatchOutput": true,
     "skipLibCheck": true,
     "strict": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "plugins": [
+      {
+        "transform": "typia/lib/transform"
+      }
+    ]
   },
   "exclude": ["node_modules"],
   "ts-node": {

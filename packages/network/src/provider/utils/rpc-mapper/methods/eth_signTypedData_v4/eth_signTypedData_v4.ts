@@ -4,6 +4,7 @@ import {
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
+import { validate } from 'typia';
 import { type TypedDataDomain, type TypedDataParameter } from 'viem';
 import type { VeChainSigner } from '../../../../../signer/signers';
 import type { ThorClient } from '../../../../../thor-client';
@@ -65,6 +66,21 @@ const ethSignTypedDataV4 = async (
             message: Record<string, unknown>;
         }
     ];
+
+    const typeValidation = validate<{
+        primaryType: string;
+        domain: TypedDataDomain;
+        types: Record<string, TypedDataParameter[]>;
+        message: Record<string, unknown>;
+    }>(typedData);
+
+    if (!typeValidation.success) {
+        throw new JSONRPCInvalidParams(
+            'eth_signTypedDataV4',
+            'Invalid input params for "eth_signTypedDataV4" method. See https://eips.ethereum.org/EIPS/eip-712#specification-of-the-eth_signtypeddata-json-rpc for details.',
+            { params }
+        );
+    }
 
     try {
         // Get the signer of the provider

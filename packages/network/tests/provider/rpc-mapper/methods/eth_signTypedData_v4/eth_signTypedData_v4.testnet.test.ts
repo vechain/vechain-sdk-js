@@ -1,4 +1,6 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
+import { Hex } from '@vechain/sdk-core';
+import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
 import {
     RPC_METHODS,
     TESTNET_URL,
@@ -7,11 +9,6 @@ import {
     VeChainProvider
 } from '../../../../../src';
 import { THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../../../fixture';
-import { Hex } from '@vechain/sdk-core';
-import {
-    JSONRPCInternalError,
-    JSONRPCInvalidParams
-} from '@vechain/sdk-errors';
 import { eip712TestCases } from '../../../../signer/signers/vechain-private-key-signer/fixture';
 
 /**
@@ -92,7 +89,7 @@ describe('RPC Mapper - eth_signTypedData_v4 method tests', () => {
                         }
                     ]
                 })
-            ).rejects.toThrowError(JSONRPCInternalError);
+            ).rejects.toThrowError(JSONRPCInvalidParams);
         });
 
         /**

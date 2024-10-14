@@ -41,7 +41,8 @@
         "test:solo": "(yarn start-thor-solo && yarn test && yarn stop-thor-solo) || yarn stop-thor-solo",
         "test:browser:solo": "(yarn start-thor-solo && yarn test:browser && yarn stop-thor-solo) || yarn stop-thor-solo",
         "merge-coverage": "ts-node scripts/merge-coverage.ts",
-        "check:tests-naming": "ts-node scripts/check-tests-naming.ts"
+        "check:tests-naming": "ts-node scripts/check-tests-naming.ts",
+        "prepare": "ts-patch install && typia patch"
     },
     "devDependencies": {
         "@changesets/cli": "^2.27.7",
@@ -72,11 +73,13 @@
         "nyc": "^17.1.0",
         "prettier": "^3.3.3",
         "ts-jest": "^29.2.5",
+        "ts-patch": "^3.2.1",
         "tsup": "^8.3.0",
         "turbo": "^2.1.3",
         "typedoc": "^0.26.8",
         "typedoc-plugin-missing-exports": "^3.0.0",
-        "typescript": "^5.6.3"
+        "typescript": "^5.6.3",
+        "typia": "^6.11.2"
     },
     "peerDependencies": {
         "hardhat": "^2.22.13"
