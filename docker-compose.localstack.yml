@@ -31,4 +31,8 @@ services:
       interval: 5s
       timeout: 20s
       start_period: 2s
+  thor-solo:
+      depends_on:
+        localstack:
+          condition: service_healthy
   

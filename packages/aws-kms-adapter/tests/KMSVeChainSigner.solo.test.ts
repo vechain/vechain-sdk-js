@@ -2,11 +2,22 @@ import {
     ABIContract,
     Address,
     Clause,
+    ERC20_ABI,
     HexUInt,
     Transaction,
+    VTHO_ADDRESS,
     type TransactionClause
 } from '@vechain/sdk-core';
-import { signerUtils, THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
+import {
+    ProviderInternalBaseWallet,
+    signerUtils,
+    THOR_SOLO_ACCOUNTS,
+    THOR_SOLO_URL,
+    ThorClient,
+    VeChainPrivateKeySigner,
+    VeChainProvider,
+    type TransactionReceipt
+} from '@vechain/sdk-network';
 import fs from 'fs';
 import path from 'path';
 import { KMSVeChainProvider, KMSVeChainSigner } from '../src';
@@ -21,13 +32,56 @@ import {
 interface AwsClientParameters {
     keyId: string;
     region: string;
-    endpoint: string;
     credentials: {
         accessKeyId: string;
         secretAccessKey: string;
         sessionToken?: string;
     };
+    endpoint: string;
 }
+
+// This variable should be replaced once this is clarified  https://github.com/localstack/localstack/issues/11678
+let expectedAddress: string;
+
+const fundVTHO = async (
+    thorClient: ThorClient,
+    kmsSigner: KMSVeChainSigner
+): Promise<void> => {
+    const signer = new VeChainPrivateKeySigner(
+        HexUInt.of(THOR_SOLO_ACCOUNTS[0].privateKey).bytes,
+        new VeChainProvider(
+            thorClient,
+            new ProviderInternalBaseWallet([]),
+            false
+        )
+    );
+    // Deploy the ERC20 contract
+    const contract = thorClient.contracts.load(VTHO_ADDRESS, ERC20_ABI, signer);
+
+    const receiverAddress = await kmsSigner.getAddress();
+    expectedAddress = receiverAddress;
+
+    const expectedVTHO = 200000000000000000000000000n;
+
+    // Execute a 'transfer' transaction on the deployed contract,
+    // transferring a specified amount of tokens
+    const transferResult = await contract.transact.transfer(
+        { value: 0, comment: 'Transfer 1000 tokens' },
+        receiverAddress,
+        expectedVTHO
+    );
+
+    // Wait for the transfer transaction to complete and obtain its receipt
+    const transactionReceiptTransfer =
+        (await transferResult.wait()) as TransactionReceipt;
+
+    // Verify that the transfer transaction did not revert
+    expect(transactionReceiptTransfer.reverted).toBe(false);
+
+    // Execute a 'balanceOf' call on the contract to check the balance of the receiver
+    const balanceOfResult = await contract.read.balanceOf(receiverAddress);
+    expect(balanceOfResult).toStrictEqual([expectedVTHO]);
+};
 
 /**
  * AWS KMS VeChain signer tests - solo
@@ -48,7 +102,7 @@ describe('KMSVeChainSigner - Thor Solo', () => {
     /**
      * Init thor client and provider before each test
      */
-    beforeAll(() => {
+    beforeAll(async () => {
         const awsCredentialsPath = path.resolve(
             __dirname,
             './aws-credentials.json'
@@ -61,19 +115,19 @@ describe('KMSVeChainSigner - Thor Solo', () => {
             thorClient,
             awsClientParameters.keyId,
             awsClientParameters.region,
-            awsClientParameters.endpoint,
-            awsClientParameters.credentials
+            awsClientParameters.credentials,
+            awsClientParameters.endpoint
         );
         expect(provider).toBeInstanceOf(KMSVeChainProvider);
         signer = new KMSVeChainSigner(provider);
+        // This step should be removed once this is clarified  https://github.com/localstack/localstack/issues/11678
+        await fundVTHO(thorClient, signer);
     });
 
     describe('getAddress', () => {
         test('should get the address from the public key', async () => {
             expect(signer).toBeInstanceOf(KMSVeChainSigner);
-            expect(await signer.getAddress()).toBe(
-                '0x3db469a79593dcc67f07DE1869d6682fC1eaf535'
-            );
+            expect(await signer.getAddress()).toBe(expectedAddress);
         });
     });
 

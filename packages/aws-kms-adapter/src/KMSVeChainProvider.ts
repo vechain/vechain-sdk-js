@@ -29,12 +29,12 @@ class KMSVeChainProvider extends VeChainProvider {
         thorClient: ThorClient,
         keyId: string,
         region: string,
-        endpoint?: string,
         credentials?: {
             accessKeyId: string;
             secretAccessKey: string;
             sessionToken?: string;
-        }
+        },
+        endpoint?: string
     ) {
         super(thorClient);
         this.keyId = keyId;

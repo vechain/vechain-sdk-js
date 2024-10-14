@@ -43,6 +43,18 @@ describe('KMSVeChainProvider', () => {
         it('should return the instance of the client', () => {
             expect(instance).toBeInstanceOf(KMSVeChainProvider);
         });
+        it('should return an instance when credentials and no endpoint', () => {
+            const instance = new KMSVeChainProvider(
+                {} as unknown as ThorClient,
+                'keyId',
+                'region',
+                {
+                    accessKeyId: 'accessKeyId',
+                    secretAccessKey: 'secretAccess'
+                }
+            );
+            expect(instance).toBeInstanceOf(KMSVeChainProvider);
+        });
     });
     describe('getSigner', () => {
         it('should return the instance of the signer', async () => {
