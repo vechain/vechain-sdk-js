@@ -57,6 +57,10 @@ This is the preferred way. If you integrate this library in an app deployed in A
 
 ```ts
 import { KMSVeChainProvider, KMSVeChainSigner } from '@vechain/sdk-aws-kms-adapter';
+import {
+    THOR_SOLO_URL,
+    ThorClient
+} from '@vechain/sdk-network';
     ...
 
     interface AwsClientParameters {
@@ -93,6 +97,11 @@ This way you can connect to your AWS account by using `accessKeyId`, `secretAcce
 
 ```ts
 import { KMSVeChainProvider, KMSVeChainSigner } from '@vechain/sdk-aws-kms-adapter';
+import {
+    signerUtils,
+    THOR_SOLO_URL,
+    ThorClient
+} from '@vechain/sdk-network';
     ...
 
     interface AwsClientParameters {
@@ -131,6 +140,10 @@ You can also leverage LocalStack so you can try the library locally. Sample valu
 
 ```ts
 import { KMSVeChainProvider, KMSVeChainSigner } from '@vechain/sdk-aws-kms-adapter';
+import {
+    THOR_SOLO_URL,
+    ThorClient
+} from '@vechain/sdk-network';
     ...
 
     interface AwsClientParameters {
