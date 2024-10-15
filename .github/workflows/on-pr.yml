@@ -38,7 +38,7 @@ jobs:
         uses: ./.github/workflows/test-apps.yml
         secrets: inherit
     
-    test-rpc-proxy:
+    rpc-proxy:
         uses: ./.github/workflows/rpc-proxy.yml
         secrets: inherit
 
