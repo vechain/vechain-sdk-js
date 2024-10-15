@@ -15,11 +15,8 @@ COPY ./turbo.json ./turbo.json
 COPY ./yarn.lock ./yarn.lock
 COPY ./tsconfig.json ./tsconfig.json
 
-# Install all the dependencies
-RUN yarn install
-
-# Build the app (assumes output is in /app/dist or similar)
-RUN yarn build
+# Install all the dependencies and build the app
+RUN yarn install && yarn build
 
 # Stage 2: Serve the app using node
 FROM node:20.17.0-alpine3.20 AS runner
@@ -42,10 +39,10 @@ COPY --from=builder /app/packages/errors/package.json /app/packages/errors/packa
 COPY --from=builder /app/package.json /app/package.json
 COPY --from=builder /app/yarn.lock /app/yarn.lock
 WORKDIR /app
-RUN yarn workspace @vechain/sdk-rpc-proxy install --production --ignore-scripts
-
+RUN yarn workspace @vechain/sdk-rpc-proxy install --production --ignore-scripts \
+    && yarn cache clean \
+    && adduser -D rpc-proxy-user 
 # Create a new user to run the app so we do not use root
-RUN adduser -D rpc-proxy-user
 USER rpc-proxy-user
 
 # Tell we are running with Docker
