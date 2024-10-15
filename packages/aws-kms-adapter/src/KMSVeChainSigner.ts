@@ -294,7 +294,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
     /**
      * Signs a typed data returning the VeChain signature in hexadecimal format.
      * @param {vechain_sdk_core_ethers.TypedDataDomain} domain to hash as typed data.
-     * @param {Record<string, TypedDataParameter[]>} types to hash as typed data.
+     * @param {Record<string, vechain_sdk_core_ethers.TypedDataField[]>} types to hash as typed data.
      * @param {Record<string, unknown>} value to hash as typed data.
      * @returns {string} The VeChain signature in hexadecimal format.
      */
