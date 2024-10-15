@@ -1,0 +1,15 @@
+name: RPC Proxy
+
+on:
+  workflow_call:
+
+jobs:
+    test:
+      uses: ./.github/workflows/rpc-proxy-test.yml
+      secrets: inherit
+    
+    docker-vulnerability-check:
+      uses: ./.github/workflows/rpc-proxy-vulnerability-scan.yml
+      secrets: inherit
+            
+    
