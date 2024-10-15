@@ -46,3 +46,7 @@ jobs:
             - name: Stop Thor solo node
               id: stop-solo
               run: yarn stop-thor-solo
+            
+            - name: Run E2E RPC Proxy tests
+              run: |
+                yarn workspace @vechain/sdk-rpc-proxy test:e2e
