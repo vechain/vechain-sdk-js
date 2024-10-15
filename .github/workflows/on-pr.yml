@@ -39,7 +39,7 @@ jobs:
         secrets: inherit
     
     test-rpc-proxy:
-        uses: ./.github/workflows/test-rpc-proxy.yml
+        uses: ./.github/workflows/rpc-proxy.yml
         secrets: inherit
 
     install-build:
