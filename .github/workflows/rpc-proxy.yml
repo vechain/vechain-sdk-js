@@ -1,0 +1,22 @@
+name: RPC Proxy
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+    test:
+      if: github.event_name == 'pull_request'
+      uses: ./.github/workflows/rpc-proxy-test.yml
+      secrets: inherit
+    
+    docker-vulnerability-check:
+      if: github.event_name == 'push'
+      uses: ./.github/workflows/rpc-proxy-vulnerability-scan.yml
+      secrets: inherit
+            
+    

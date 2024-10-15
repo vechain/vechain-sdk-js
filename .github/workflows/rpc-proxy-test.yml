@@ -1,4 +1,4 @@
-name: Test RPC Proxy
+name: RPC Proxy - Test
 
 on:
     workflow_call:
