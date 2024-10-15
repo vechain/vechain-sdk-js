@@ -28,7 +28,7 @@ jobs:
             
             - name: Start RPC Proxy
               run: |
-                yarn workspace @vechain/sdk-rpc-proxy start
+                yarn workspace @vechain/sdk-rpc-proxy start & disown
             
             - name: Run RPC Proxy tests
               run: |
