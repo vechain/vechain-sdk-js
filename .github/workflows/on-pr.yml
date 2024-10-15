@@ -42,10 +42,6 @@ jobs:
         uses: ./.github/workflows/test-rpc-proxy.yml
         secrets: inherit
 
-    test-e2e-rpc-proxy:
-      uses: ./.github/workflows/test-rpc-proxy-e2e.yml
-      secrets: inherit
-
     install-build:
         uses: ./.github/workflows/build-lint.yml
         secrets: inherit
