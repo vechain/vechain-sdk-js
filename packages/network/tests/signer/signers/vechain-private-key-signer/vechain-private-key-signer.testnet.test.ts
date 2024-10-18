@@ -220,7 +220,7 @@ describe('VeChain base signer tests - testnet', () => {
          */
         test('Should throw an error when the private key is wrong', () => {
             expect(
-                () => new VeChainPrivateKeySigner(HexUInt.of('10').bytes, null)
+                () => new VeChainPrivateKeySigner(HexUInt.of('10').bytes)
             ).toThrowError(InvalidSecp256k1PrivateKey);
         });
 
@@ -231,8 +231,7 @@ describe('VeChain base signer tests - testnet', () => {
             const noProviderSigner = new VeChainPrivateKeySigner(
                 HexUInt.of(
                     '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
-                ).bytes,
-                null
+                ).bytes
             );
 
             // Impossible to call "populateTransaction" without a provider

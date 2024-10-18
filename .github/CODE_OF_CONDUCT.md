@@ -1,4 +1,4 @@
-#VeChain SDK Code of Conduct
+# VeChain SDK Code of Conduct
 
 ## 1. Introduction
 

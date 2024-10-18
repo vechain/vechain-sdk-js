@@ -1,0 +1,40 @@
+services:
+  localstack:
+    container_name: localstack
+    hostname: localstack
+    image: localstack/localstack:3.3.0
+    restart: always
+    ports:
+      - 4599:4599
+    environment:
+      - SERVICES=kms
+      - HOSTNAME_EXTERNAL=localstack
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - GATEWAY_LISTEN=0.0.0.0:4599
+      - AWS_ENDPOINT_URL=http://localstack:4599
+      - AWS_DEFAULT_REGION=eu-west-1
+    volumes:
+      - ./localstack/init:/etc/localstack/init/ready.d
+      - /var/run/docker.sock:/var/run/docker.sock
+    entrypoint: 
+      [
+        "/bin/sh",
+        "-c",
+        "apt-get update && apt-get -y install jq && docker-entrypoint.sh"
+      ]
+    healthcheck:
+      test:
+        - CMD
+        - bash
+        - -c
+        - $$(awslocal kms list-keys | jq '.Keys | length | . == 1') || exit 1; # There is 1 key at the moment
+      interval: 5s
+      timeout: 20s
+      start_period: 2s
+  thor-solo:
+      profiles:
+        - thor-solo
+      depends_on:
+        localstack:
+          condition: service_healthy
+  
