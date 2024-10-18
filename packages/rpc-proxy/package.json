@@ -50,7 +50,7 @@
     "@types/express": "^4.17.21",
     "@types/node": "^22.7.5",
     "cross-env": "^7.0.3",
-    "testcontainers": "^10.13.1",
+    "testcontainers": "^10.13.2",
     "tsup": "^8.3.0",
     "typescript": "^5.6.3"
   }
