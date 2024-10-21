@@ -22,18 +22,30 @@ import { KMSVeChainProvider } from './KMSVeChainProvider';
 
 class KMSVeChainSigner extends VeChainAbstractSigner {
     private readonly kmsVeChainProvider?: KMSVeChainProvider;
+    private readonly kmsVeChainDelegatorProvider?: KMSVeChainProvider;
 
-    public constructor(provider?: AvailableVeChainProviders) {
+    public constructor(provider: AvailableVeChainProviders);
+    public constructor(
+        provider: AvailableVeChainProviders,
+        delegatorProvider: AvailableVeChainProviders
+    );
+
+    public constructor(
+        provider?: AvailableVeChainProviders,
+        readonly delegatorProvider?: AvailableVeChainProviders
+    ) {
         super(provider);
-        if (this.provider !== undefined) {
-            if (!(this.provider instanceof KMSVeChainProvider)) {
-                throw new JSONRPCInvalidParams(
-                    'KMSVeChainSigner.constructor',
-                    'The provider must be an instance of KMSVeChainProvider.',
-                    { provider }
-                );
-            }
+        if (
+            this.provider !== undefined &&
+            this.provider instanceof KMSVeChainProvider
+        ) {
             this.kmsVeChainProvider = this.provider;
+        }
+        if (
+            this.delegatorProvider !== undefined &&
+            this.delegatorProvider instanceof KMSVeChainProvider
+        ) {
+            this.kmsVeChainDelegatorProvider = this.delegatorProvider;
         }
     }
 
