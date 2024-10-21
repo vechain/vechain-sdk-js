@@ -1,5 +1,5 @@
 import { Hex, Txt, type vechain_sdk_core_ethers } from '@vechain/sdk-core';
-import { JSONRPCInvalidParams, SignerMethodError } from '@vechain/sdk-errors';
+import { SignerMethodError } from '@vechain/sdk-errors';
 import {
     VeChainProvider,
     type ThorClient,
@@ -23,21 +23,20 @@ jest.mock('asn1js', () => ({
  */
 describe('KMSVeChainSigner', () => {
     describe('constructor', () => {
-        it('should break if the provider is not a KMSVeChainProvider', () => {
+        it('should instantiate a KMSVeChainSigner even though it is not a KMSVeChainProvider', () => {
             expect(
-                () =>
-                    new KMSVeChainSigner(
-                        new VeChainProvider({} as unknown as ThorClient)
-                    )
-            ).toThrow(JSONRPCInvalidParams);
+                new KMSVeChainSigner(
+                    new VeChainProvider({} as unknown as ThorClient)
+                )
+            ).toBeInstanceOf(KMSVeChainSigner);
         });
     });
     describe('connect', () => {
-        it('should break if the provider is not a KMSVeChainProvider', () => {
+        it('should return a KMSVeChainSigner even though it is not a KMSVeChainProvider', () => {
             const signer = new KMSVeChainSigner();
-            expect(() =>
+            expect(
                 signer.connect(new VeChainProvider({} as unknown as ThorClient))
-            ).toThrow(SignerMethodError);
+            ).toBeInstanceOf(KMSVeChainSigner);
         });
     });
     describe('getAddress', () => {
