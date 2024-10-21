@@ -2410,6 +2410,35 @@ describe('FixedPointNumber class tests', () => {
         });
     });
 
+    describe('scale method tests', () => {
+        test('NaN -> NaN', () => {
+            const n = Number.NaN;
+            const actual = FixedPointNumber.of(n).scale();
+            expect(actual.isNaN()).toBe(true);
+        });
+
+        test('-Infinity -> -Infinity', () => {
+            const n = Number.NEGATIVE_INFINITY;
+            const actual = FixedPointNumber.of(n).scale();
+            expect(actual.isNegativeInfinite()).toBe(true);
+        });
+
+        test('+Infinity -> +Infinity', () => {
+            const n = Number.POSITIVE_INFINITY;
+            const actual = FixedPointNumber.of(n).scale();
+            expect(actual.isPositiveInfinite()).toBe(true);
+        });
+
+        test('scale down', () => {
+            const fd = 2n;
+            const n = 123.45;
+            const expected = FixedPointNumber.of(n, fd);
+            const actual = expected.dp(127).scale();
+            expect(actual.isEqual(expected)).toBe(true);
+            expect(actual.fd).toBe(expected.fd);
+        });
+    });
+
     describe('sqrt method tests', () => {
         test('NaN -> NaN', () => {
             const n = NaN;

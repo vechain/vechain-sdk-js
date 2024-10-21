@@ -4,6 +4,11 @@ import { Txt } from './Txt';
 
 class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
     /**
+     * Base of value notation.
+     */
+    private static readonly BASE = 10n;
+
+    /**
      * The default number of decimal places to use for fixed-point math.
      *
      * @see
@@ -79,8 +84,10 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
 
     /**
      * Fractional Digits or decimal places.
+     *
+     * @see [bignumber.js precision](https://mikemcl.github.io/bignumber.js/#sd)
      */
-    protected readonly fd: bigint;
+    public readonly fd: bigint;
 
     /**
      * Scaled Value = value * 10 ^ {@link fd}.
@@ -96,7 +103,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      */
     get bi(): bigint {
         if (this.isFinite()) {
-            return this.sv / 10n ** this.fd;
+            return this.sv / FixedPointNumber.BASE ** this.fd;
         }
         throw new InvalidOperation(
             'FixedPointNumber.bi',
@@ -271,7 +278,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * @return {bigint} - The result of the division, adjusted by the given factor fd.
      */
     private static div(fd: bigint, dividend: bigint, divisor: bigint): bigint {
-        return (10n ** fd * dividend) / divisor;
+        return (FixedPointNumber.BASE ** fd * dividend) / divisor;
     }
 
     /**
@@ -285,9 +292,15 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
         const fp = BigInt(decimalPlaces);
         const dd = fp - this.fd; // Fractional Decimals Difference.
         if (dd < 0) {
-            return new FixedPointNumber(fp, this.sv / 10n ** -dd);
+            return new FixedPointNumber(
+                fp,
+                this.sv / FixedPointNumber.BASE ** -dd
+            );
         } else {
-            return new FixedPointNumber(fp, this.sv * 10n ** dd);
+            return new FixedPointNumber(
+                fp,
+                this.sv * FixedPointNumber.BASE ** dd
+            );
         }
     }
 
@@ -394,7 +407,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * @return {bigint} - The scaled result of the integer division.
      */
     private static idiv(fd: bigint, dividend: bigint, divisor: bigint): bigint {
-        return (dividend / divisor) * 10n ** fd;
+        return (dividend / divisor) * FixedPointNumber.BASE ** fd;
     }
 
     /**
@@ -425,10 +438,10 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
     }
 
     /**
-     * Return `true` if the value of this FixedPointNumber is {@link NEGATIVE_INFINITY} and {@link POSITIVE_INFINITY},
+     * Return `true` if the value of this FixedPointNumber is {@link NEGATIVE_INFINITY} or {@link POSITIVE_INFINITY},
      * otherwise returns false.
      *
-     * @return true` if the value of this FixedPointNumber is {@link NEGATIVE_INFINITY} and {@link POSITIVE_INFINITY},
+     * @return true` if the value of this FixedPointNumber is {@link NEGATIVE_INFINITY} or {@link POSITIVE_INFINITY},
      */
     public isInfinite(): boolean {
         return this.isNegativeInfinite() || this.isPositiveInfinite();
@@ -444,7 +457,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      */
     public isInteger(): boolean {
         if (this.isFinite()) {
-            return this.sv % 10n ** this.fd === 0n;
+            return this.sv % FixedPointNumber.BASE ** this.fd === 0n;
         }
         return false;
     }
@@ -667,7 +680,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
         multiplicator: bigint,
         fd: bigint
     ): bigint {
-        return (multiplicand * multiplicator) / 10n ** fd;
+        return (multiplicand * multiplicator) / FixedPointNumber.BASE ** fd;
     }
 
     /**
@@ -814,7 +827,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * @return {bigint} The result of base raised to the power of exponent, scaled by the scale factor.
      */
     private static pow(fd: bigint, base: bigint, exponent: bigint): bigint {
-        const sf = 10n ** fd; // Scale factor.
+        const sf = FixedPointNumber.BASE ** fd; // Scale factor.
         if (exponent < 0n) {
             return FixedPointNumber.pow(
                 fd,
@@ -835,6 +848,16 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
         ); // Recursive.
     }
 
+    public scale(): FixedPointNumber {
+        let fd = this.fd;
+        let sv = this.sv;
+        while (fd > 0 && sv % FixedPointNumber.BASE === 0n) {
+            fd--;
+            sv /= FixedPointNumber.BASE;
+        }
+        return new FixedPointNumber(fd, sv, this.ef);
+    }
+
     /**
      * Computes the square root of a given positive bigint value using a fixed-point iteration method.
      *
@@ -848,7 +871,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
         if (value < 0n) {
             throw new RangeError(`Value must be positive`);
         }
-        const sf = fd * 10n; // Scale Factor.
+        const sf = fd * FixedPointNumber.BASE; // Scale Factor.
         let iteration = 0;
         let actualResult = value;
         let storedResult = 0n;
@@ -990,7 +1013,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
         } else if (fc === '+') {
             exp = exp.substring(1);
         }
-        const sf = 10n ** fd; // Scale Factor.
+        const sf = FixedPointNumber.BASE ** fd; // Scale Factor.
         const di = exp.lastIndexOf(decimalSeparator); // Decimal Index.
         if (di < 0) {
             return sign * sf * BigInt(exp); // Signed Integer.
