@@ -26,7 +26,10 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
 
     public constructor(
         provider?: AvailableVeChainProviders,
-        readonly delegatorProvider?: AvailableVeChainProviders
+        readonly delegator?: {
+            provider?: AvailableVeChainProviders;
+            url?: string;
+        }
     ) {
         super(provider);
         if (
@@ -36,10 +39,10 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
             this.kmsVeChainProvider = this.provider;
         }
         if (
-            this.delegatorProvider !== undefined &&
-            this.delegatorProvider instanceof KMSVeChainProvider
+            this.delegator !== undefined &&
+            this.delegator.provider instanceof KMSVeChainProvider
         ) {
-            this.kmsVeChainDelegatorProvider = this.delegatorProvider;
+            this.kmsVeChainDelegatorProvider = this.delegator.provider;
         }
     }
 
