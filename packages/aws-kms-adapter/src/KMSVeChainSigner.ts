@@ -133,6 +133,10 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
     private async buildVeChainSignatureFromPayload(
         payload: Uint8Array
     ): Promise<Uint8Array> {
+        if (this.kmsVeChainDelegatorProvider !== undefined) {
+            // TODO: Implement the delegation signature
+        }
+
         if (this.kmsVeChainProvider === undefined) {
             throw new JSONRPCInvalidParams(
                 'KMSVeChainSigner.buildVeChainSignatureFromPayload',
