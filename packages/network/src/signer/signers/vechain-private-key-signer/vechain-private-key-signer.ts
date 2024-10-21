@@ -32,9 +32,6 @@ import { VeChainAbstractSigner } from '../vechain-abstract-signer/vechain-abstra
  * This signer can be initialized using a private key.
  */
 class VeChainPrivateKeySigner extends VeChainAbstractSigner {
-    private readonly MESSAGE_PREFIX = Txt.of('\x19Ethereum Signed Message:\n')
-        .bytes;
-
     /**
      * Create a new VeChainPrivateKeySigner.
      * A signer can be initialized using a private key.
@@ -44,7 +41,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
      */
     constructor(
         private readonly privateKey: Uint8Array,
-        provider: AvailableVeChainProviders | null
+        provider?: AvailableVeChainProviders
     ) {
         // Assert if the transaction can be signed
         if (!Secp256k1.isValidPrivateKey(privateKey)) {
@@ -66,7 +63,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
      * @param provider - The provider to connect to
      * @returns a new instance of this Signer connected to //provider// or detached
      */
-    connect(provider: AvailableVeChainProviders | null): this {
+    connect(provider: AvailableVeChainProviders): this {
         return new VeChainPrivateKeySigner(this.privateKey, provider) as this;
     }
 
@@ -94,7 +91,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         transactionToSign: TransactionRequestInput
     ): Promise<string> {
         // Check the provider (needed to sign the transaction)
-        if (this.provider === null) {
+        if (this.provider === undefined) {
             throw new JSONRPCInvalidParams(
                 'VeChainPrivateKeySigner.signTransaction()',
                 'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
@@ -125,7 +122,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         transactionToSend: TransactionRequestInput
     ): Promise<string> {
         // 1 - Get the provider (needed to send the raw transaction)
-        if (this.provider === null) {
+        if (this.provider === undefined) {
             throw new JSONRPCInvalidParams(
                 'VeChainPrivateKeySigner.sendTransaction()',
                 'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
@@ -196,8 +193,8 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
      * This function is a drop-in replacement for {@link ethers.BaseWallet.signTypedData} function,
      * albeit Ethereum Name Services are not resolved because he resolution depends on **ethers** provider implementation.
      *
-     * @param {ethers.TypedDataDomain} domain - The domain parameters used for signing.
-     * @param {Record<string, ethers.TypedDataField[]>} types - The types used for signing.
+     * @param {vechain_sdk_core_ethers.TypedDataDomain} domain - The domain parameters used for signing.
+     * @param {Record<string, vechain_sdk_core_ethers.TypedDataField[]>} types - The types used for signing.
      * @param {Record<string, unknown>} value - The value data to be signed.
      *
      * @return {Promise<string>} - A promise that resolves with the signature string.
