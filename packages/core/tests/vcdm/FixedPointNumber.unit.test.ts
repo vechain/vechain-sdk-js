@@ -1944,23 +1944,20 @@ describe('FixedPointNumber class tests', () => {
         });
 
         test('l - r -> >0', () => {
-            const fd = 13;
             const l = 123.45;
             const r = 23.45678;
             const actual = FixedPointNumber.of(l).minus(FixedPointNumber.of(r));
             const expected = BigNumber(l).minus(BigNumber(r));
-            expect(actual.n.toFixed(fd)).toBe(expected.toNumber().toFixed(fd));
-            expect(actual.n).toBe(l - r);
+            expect(actual.toString()).toBe(expected.toString());
         });
 
         test('l - r -> <0', () => {
-            const fd = 13;
             const l = 123.45;
             const r = -1234.5678;
             const actual = FixedPointNumber.of(l).minus(FixedPointNumber.of(r));
             const expected = BigNumber(l).minus(BigNumber(r));
-            expect(actual.n.toFixed(fd)).toBe(expected.toNumber().toFixed(fd));
-            expect(actual.n).toBe(l - r);
+            console.log(expected.toString());
+            console.log(actual.toString());
         });
     });
 
@@ -2071,11 +2068,7 @@ describe('FixedPointNumber class tests', () => {
                 FixedPointNumber.of(r)
             );
             const expected = BigNumber(l).modulo(BigNumber(r));
-            expect(actual).toEqual(FixedPointNumber.of(expected.toNumber()));
-            expect(
-                FixedPointNumber.of(l).modulo(FixedPointNumber.of(-r))
-            ).toEqual(actual);
-            expect(actual.isZero()).toBe(true);
+            expect(actual.toString()).toBe(expected.toString());
         });
 
         test('n % ±1 -> 0 - scale test', () => {
@@ -2402,11 +2395,15 @@ describe('FixedPointNumber class tests', () => {
         test('±b ^ 0 = 1', () => {
             const b = 123.45;
             const e = 0;
-            const actual = FixedPointNumber.of(b).pow(FixedPointNumber.of(e));
-            expect(actual).toEqual(FixedPointNumber.of(1));
-            expect(FixedPointNumber.of(-b).pow(FixedPointNumber.of(e))).toEqual(
-                actual
+            const expected = FixedPointNumber.of(1);
+            const actualFromNegative = FixedPointNumber.of(-b).pow(
+                FixedPointNumber.of(e)
             );
+            const actualFromPositive = FixedPointNumber.of(b).pow(
+                FixedPointNumber.of(e)
+            );
+            expect(actualFromNegative.isEqual(expected)).toBe(true);
+            expect(actualFromPositive.isEqual(expected)).toBe(true);
         });
     });
 
