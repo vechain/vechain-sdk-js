@@ -212,12 +212,12 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
     }
 
     /**
-     * Append the delegator signature to the origin signature if the delegator URL is set.
+     * Prepend the origin signature to the delegator signature if the delegator URL is set.
      * @param {Transaction} transaction Transaction to sign.
      * @param {Uint8Array} originSignature Origin signature.
      * @returns Both signatures concatenated if the delegator URL is set, the origin signature otherwise.
      */
-    private async appendSignatureIfDelegationUrl(
+    private async prependSignatureIfDelegationUrl(
         transaction: Transaction,
         originSignature: Uint8Array
     ): Promise<Uint8Array> {
@@ -263,8 +263,8 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
             const veChainSignature =
                 await this.buildVeChainSignatureFromPayload(transactionHash);
 
-            // Sign the transaction hash using the delegation key if needed and append the result
-            const signature = await this.appendSignatureIfDelegationUrl(
+            // Sign the transaction hash using the delegation key if needed
+            const signature = await this.prependSignatureIfDelegationUrl(
                 transaction,
                 veChainSignature
             );
