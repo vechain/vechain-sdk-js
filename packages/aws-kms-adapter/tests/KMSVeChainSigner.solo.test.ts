@@ -25,6 +25,7 @@ import {
     EIP712_CONTRACT,
     EIP712_FROM,
     EIP712_TO,
+    signTransactionTestCases,
     TESTING_CONTRACT_ABI,
     TESTING_CONTRACT_ADDRESS
 } from './fixture';
@@ -59,8 +60,6 @@ const fundVTHO = async (
     );
     // Load the ERC20 contract
     const contract = thorClient.contracts.load(VTHO_ADDRESS, ERC20_ABI, signer);
-
-    expectedAddress = receiverAddress;
 
     const expectedVTHO = 200000000000000000000n;
 
@@ -159,8 +158,9 @@ describe('KMSVeChainSigner - Thor Solo', () => {
             );
         }
         signer = new KMSVeChainSigner(provider);
+        expectedAddress = await signer.getAddress();
         // This step should be removed once this is clarified  https://github.com/localstack/localstack/issues/11678
-        await fundVTHO(thorClient, await signer.getAddress());
+        await fundVTHO(thorClient, expectedAddress);
     }, timeout);
 
     describe('getAddress', () => {
@@ -174,68 +174,66 @@ describe('KMSVeChainSigner - Thor Solo', () => {
      * Test suite for signTransaction method
      */
     describe('signTransaction', () => {
-        test(
-            'should sign a transaction successfully',
-            async () => {
-                const sampleClause = Clause.callFunction(
-                    Address.of(TESTING_CONTRACT_ADDRESS),
-                    ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
-                        'deposit'
-                    ),
-                    [123]
-                ) as TransactionClause;
+        /**
+         * signTransaction test cases with different options
+         */
+        signTransactionTestCases.solo.correct.forEach(
+            ({ description, isDelegated, expected }) => {
+                test(
+                    description,
+                    async () => {
+                        const signTransactionSigner = isDelegated
+                            ? signerWithDelegator
+                            : signer;
+                        const sampleClause = Clause.callFunction(
+                            Address.of(TESTING_CONTRACT_ADDRESS),
+                            ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
+                                'deposit'
+                            ),
+                            [123]
+                        ) as TransactionClause;
 
-                const originAddress = await signer.getAddress();
+                        const originAddress =
+                            await signTransactionSigner.getAddress();
 
-                const gasResult = await thorClient.gas.estimateGas(
-                    [sampleClause],
-                    originAddress
+                        const gasResult = await thorClient.gas.estimateGas(
+                            [sampleClause],
+                            originAddress
+                        );
+
+                        const txBody =
+                            await thorClient.transactions.buildTransactionBody(
+                                [sampleClause],
+                                gasResult.totalGas,
+                                {
+                                    isDelegated
+                                }
+                            );
+
+                        const signedRawTx =
+                            await signTransactionSigner.signTransaction(
+                                signerUtils.transactionBodyToTransactionRequestInput(
+                                    txBody,
+                                    originAddress
+                                )
+                            );
+                        const signedTx = Transaction.decode(
+                            HexUInt.of(signedRawTx.slice(2)).bytes,
+                            true
+                        );
+
+                        expect(signedTx).toBeDefined();
+                        expect(signedTx.body).toMatchObject(expected.body);
+                        expect(signedTx.origin.toString()).toBe(
+                            Address.checksum(HexUInt.of(originAddress))
+                        );
+                        expect(signedTx.isDelegated).toBe(isDelegated);
+                        expect(signedTx.isSigned).toBe(true);
+                        expect(signedTx.signature).toBeDefined();
+                    },
+                    timeout
                 );
-
-                const txBody =
-                    await thorClient.transactions.buildTransactionBody(
-                        [sampleClause],
-                        gasResult.totalGas,
-                        {
-                            isDelegated: false
-                        }
-                    );
-
-                const signedRawTx = await signer.signTransaction(
-                    signerUtils.transactionBodyToTransactionRequestInput(
-                        txBody,
-                        originAddress
-                    )
-                );
-                const signedTx = Transaction.decode(
-                    HexUInt.of(signedRawTx.slice(2)).bytes,
-                    true
-                );
-
-                expect(signedTx).toBeDefined();
-                const expectedBody = {
-                    chainTag: 246,
-                    clauses: [
-                        {
-                            data: '0xb6b55f25000000000000000000000000000000000000000000000000000000000000007b',
-                            to: '0xb2c20a6de401003a671659b10629eb82ff254fb8',
-                            value: 0
-                        }
-                    ],
-                    dependsOn: null,
-                    expiration: 32,
-                    gas: 57491,
-                    gasPriceCoef: 0
-                };
-                expect(signedTx.body).toMatchObject(expectedBody);
-                expect(signedTx.origin.toString()).toBe(
-                    Address.checksum(HexUInt.of(originAddress))
-                );
-                expect(signedTx.isDelegated).toBe(false);
-                expect(signedTx.isSigned).toBe(true);
-                expect(signedTx.signature).toBeDefined();
-            },
-            timeout
+            }
         );
     });
 

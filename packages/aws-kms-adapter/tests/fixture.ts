@@ -785,10 +785,69 @@ const EIP712_FROM = '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826';
 // This is private for EIP-712 unit test case only. Dummy address.
 const EIP712_TO = '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB';
 
+/**
+ * SignTransaction test cases
+ * Has both correct and incorrect for solo and an example of using delegatorUrl on testnet
+ */
+const signTransactionTestCases = {
+    solo: {
+        /**
+         * Correct test cases
+         */
+        correct: [
+            {
+                description: 'Should sign a transaction without delegation',
+                isDelegated: false,
+                expected: {
+                    body: {
+                        chainTag: 246,
+                        clauses: [
+                            {
+                                data: '0xb6b55f25000000000000000000000000000000000000000000000000000000000000007b',
+                                to: '0xb2c20a6de401003a671659b10629eb82ff254fb8',
+                                value: 0
+                            }
+                        ],
+                        dependsOn: null,
+                        expiration: 32,
+                        gas: 57491,
+                        gasPriceCoef: 0
+                    }
+                }
+            },
+            {
+                description:
+                    'Should sign a transaction with private key delegation',
+                isDelegated: true,
+                expected: {
+                    body: {
+                        chainTag: 246,
+                        clauses: [
+                            {
+                                data: '0xb6b55f25000000000000000000000000000000000000000000000000000000000000007b',
+                                to: '0xb2c20a6de401003a671659b10629eb82ff254fb8',
+                                value: 0
+                            }
+                        ],
+                        dependsOn: null,
+                        expiration: 32,
+                        gas: 57491,
+                        gasPriceCoef: 0,
+                        reserved: {
+                            features: 1
+                        }
+                    }
+                }
+            }
+        ]
+    }
+};
+
 export {
     EIP712_CONTRACT,
     EIP712_FROM,
     EIP712_TO,
     TESTING_CONTRACT_ABI,
-    TESTING_CONTRACT_ADDRESS
+    TESTING_CONTRACT_ADDRESS,
+    signTransactionTestCases
 };
