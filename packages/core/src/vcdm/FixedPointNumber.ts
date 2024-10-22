@@ -2,6 +2,9 @@ import { InvalidDataType, InvalidOperation } from '@vechain/sdk-errors';
 import { type VeChainDataModel } from './VeChainDataModel';
 import { Txt } from './Txt';
 
+/**
+ * Represents a fixed-point number for precision arithmetic.
+ */
 class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
     /**
      * Base of value notation.
@@ -191,7 +194,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
         if (this.isPositiveInfinite()) return that.isPositiveInfinite() ? 0 : 1;
         if (that.isNegativeInfinite()) return 1;
         if (that.isPositiveInfinite()) return -1;
-        const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
+        const fd = this.maxFD(that, this.fd); // Max common fractional decimals.
         const delta = this.dp(fd).sv - that.dp(fd).sv;
         return delta < 0n ? -1 : delta === 0n ? 0 : 1;
     }
@@ -261,11 +264,11 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
                 : this.isNegative()
                   ? FixedPointNumber.NEGATIVE_INFINITY
                   : FixedPointNumber.POSITIVE_INFINITY;
-        const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
+        const fd = this.maxFD(that, this.fd); // Max common fractional decimals.
         return new FixedPointNumber(
             fd,
             FixedPointNumber.div(fd, this.dp(fd).sv, that.dp(fd).sv)
-        ).scale(); // Minimize fractional decimals without precision loss.
+        ).scale(this.fd); // Minimize fractional decimals without precision loss.
     }
 
     /**
@@ -391,11 +394,11 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
                 : this.isNegative()
                   ? FixedPointNumber.NEGATIVE_INFINITY
                   : FixedPointNumber.POSITIVE_INFINITY;
-        const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
+        const fd = this.maxFD(that, this.fd); // Max common fractional decimals.
         return new FixedPointNumber(
             fd,
             FixedPointNumber.idiv(fd, this.dp(fd).sv, that.dp(fd).sv)
-        ).scale(); // Minimize fractional decimals without precision loss.
+        ).scale(this.fd); // Minimize fractional decimals without precision loss.
     }
 
     /**
@@ -605,6 +608,23 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
     }
 
     /**
+     * Return the maximum between the fixed decimal value of this object and `that` one.
+     * If the maximum fixed digits value is less than `minFixedDigits`, return `minFixedDigits`.
+     *
+     * @param {FixedPointNumber} that to evaluate if `that` has the maximum fixed digits value.
+     * @param {bigint} minFixedDigits Min value of returned value, {@link FixedPointNumber.DEFAULT_FRACTIONAL_DECIMALS} by default.
+     *
+     * @return the greater fixed digits value among `this`, `that` and `minFixedDigits`.
+     */
+    private maxFD(
+        that: FixedPointNumber,
+        minFixedDigits: bigint = FixedPointNumber.DEFAULT_FRACTIONAL_DECIMALS
+    ): bigint {
+        const fd = this.fd < that.fd ? that.fd : this.fd;
+        return fd > minFixedDigits ? fd : minFixedDigits;
+    }
+
+    /**
      * Returns a FixedPointNumber whose value is the value of this FixedPointNumber minus `that` FixedPointNumber.
      *
      * Limit cases
@@ -632,11 +652,10 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
             return that.isPositiveInfinite()
                 ? FixedPointNumber.NaN
                 : FixedPointNumber.POSITIVE_INFINITY;
-        const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
-        return new FixedPointNumber(
-            fd,
-            this.dp(fd).sv - that.dp(fd).sv
-        ).scale(); // Minimize fractional decimals without precision loss.
+        const fd = this.maxFD(that, this.fd); // Max common fractional decimals.
+        return new FixedPointNumber(fd, this.dp(fd).sv - that.dp(fd).sv).scale(
+            this.fd
+        ); // Minimize fractional decimals without precision loss.
     }
 
     /**
@@ -660,13 +679,13 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
         if (this.isNaN() || that.isNaN()) return FixedPointNumber.NaN;
         if (this.isInfinite() || that.isInfinite()) return FixedPointNumber.NaN;
         if (that.isZero()) return FixedPointNumber.NaN;
-        const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
+        const fd = this.maxFD(that, this.fd); // Max common fractional decimals.
         let modulo = this.abs().dp(fd).sv;
         const divisor = that.abs().dp(fd).sv;
         while (modulo >= divisor) {
             modulo -= divisor;
         }
-        return new FixedPointNumber(fd, modulo).scale(); // Minimize fractional decimals without precision loss.
+        return new FixedPointNumber(fd, modulo).scale(this.fd); // Minimize fractional decimals without precision loss.
     }
 
     /**
@@ -775,11 +794,10 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
             return that.isNegativeInfinite()
                 ? FixedPointNumber.NaN
                 : FixedPointNumber.POSITIVE_INFINITY;
-        const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
-        return new FixedPointNumber(
-            fd,
-            this.dp(fd).sv + that.dp(fd).sv
-        ).scale(); // Minimize fractional decimals without precision loss.
+        const fd = this.maxFD(that, this.fd); // Max common fractional decimals.
+        return new FixedPointNumber(fd, this.dp(fd).sv + that.dp(fd).sv).scale(
+            this.fd
+        ); // Minimize fractional decimals without precision loss.
     }
 
     /**
@@ -817,11 +835,11 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
         if (that.isNegativeInfinite()) return FixedPointNumber.ZERO;
         if (that.isPositiveInfinite())
             return FixedPointNumber.POSITIVE_INFINITY;
-        const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
+        const fd = this.maxFD(that, this.fd); // Max common fractional decimals.
         return new FixedPointNumber(
             fd,
             FixedPointNumber.pow(fd, this.dp(fd).sv, that.dp(fd).sv)
-        ).scale(); // Minimize fractional decimals without precision loss.
+        ).scale(this.fd); // Minimize fractional decimals without precision loss.
     }
 
     /**
@@ -854,14 +872,37 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
         ); // Recursive.
     }
 
-    public scale(): FixedPointNumber {
-        let fd = this.fd;
-        let sv = this.sv;
-        while (fd > 0 && sv % FixedPointNumber.BASE === 0n) {
-            fd--;
-            sv /= FixedPointNumber.BASE;
+    /**
+     * Adjust the precision of the floating-point number by the specified
+     * number of decimal places.
+     *
+     * @param decimalPlaces The number of decimal places to adjust to,
+     *                      it must be a positive value.
+     * @throws InvalidDataType if `decimalPlaces` is negative.
+     */
+    public scale(decimalPlaces: bigint): FixedPointNumber {
+        if (decimalPlaces >= 0) {
+            let fd = this.fd;
+            let sv = this.sv;
+            if (decimalPlaces > fd) {
+                sv *= FixedPointNumber.BASE ** (decimalPlaces - fd);
+            } else {
+                // Scale down.
+                while (
+                    fd > decimalPlaces &&
+                    sv % FixedPointNumber.BASE === 0n
+                ) {
+                    fd--;
+                    sv /= FixedPointNumber.BASE;
+                }
+            }
+            return new FixedPointNumber(fd, sv, this.ef);
         }
-        return new FixedPointNumber(fd, sv, this.ef);
+        throw new InvalidDataType(
+            'FixedPointNumber.scale',
+            'negative `decimalPlaces` arg',
+            { decimalPlaces: `${decimalPlaces}` }
+        );
     }
 
     /**
@@ -912,7 +953,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
             return new FixedPointNumber(
                 this.fd,
                 FixedPointNumber.sqr(this.sv, this.fd)
-            ).scale();
+            );
             //  eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
             return FixedPointNumber.NaN;
@@ -951,7 +992,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
         return new FixedPointNumber(
             fd,
             FixedPointNumber.mul(this.dp(fd).sv, that.dp(fd).sv, fd)
-        ).scale(); // Minimize fractional decimals without precision loss.
+        ).scale(this.fd); // Minimize fractional decimals without precision loss.
     }
 
     /**
