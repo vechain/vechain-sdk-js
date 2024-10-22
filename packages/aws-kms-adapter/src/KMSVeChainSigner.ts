@@ -36,31 +36,30 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         // Origin provider
         super(provider);
         if (this.provider !== undefined) {
-            if (this.provider instanceof KMSVeChainProvider) {
-                this.kmsVeChainProvider = this.provider;
-            } else {
+            if (!(this.provider instanceof KMSVeChainProvider)) {
                 throw new JSONRPCInvalidParams(
                     'KMSVeChainSigner.constructor',
                     'The provider object is not well formed, it should be an instance of KMSVeChainProvider.',
-                    { provider: this.provider }
+                    { provider }
                 );
             }
+            this.kmsVeChainProvider = this.provider;
         }
 
         // Delegator provider, if any
-        if (this.delegator !== undefined) {
+        if (delegator !== undefined) {
             if (
-                this.delegator.provider !== undefined &&
-                this.delegator.provider instanceof KMSVeChainProvider
+                delegator.provider !== undefined &&
+                delegator.provider instanceof KMSVeChainProvider
             ) {
-                this.kmsVeChainDelegatorProvider = this.delegator.provider;
-            } else if (this.delegator.url !== undefined) {
-                this.kmsVeChainDelegatorUrl = this.delegator.url;
+                this.kmsVeChainDelegatorProvider = delegator.provider;
+            } else if (delegator.url !== undefined) {
+                this.kmsVeChainDelegatorUrl = delegator.url;
             } else {
                 throw new JSONRPCInvalidParams(
                     'KMSVeChainSigner.constructor',
                     'The delegator object is not well formed, either provider or url should be provided.',
-                    { delegator: this.delegator }
+                    { delegator }
                 );
             }
         }
