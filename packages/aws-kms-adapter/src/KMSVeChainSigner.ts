@@ -116,6 +116,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
 
     /**
      * Gets the DER-encoded public key from KMS and decodes it.
+     * @param {KMSVeChainProvider} kmsProvider (Optional) The provider to get the public key from.
      * @returns {Uint8Array} The decoded public key.
      */
     private async getDecodedPublicKey(
