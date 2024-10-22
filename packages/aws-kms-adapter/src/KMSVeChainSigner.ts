@@ -212,6 +212,12 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         );
     }
 
+    /**
+     * Append the delegator signature to the origin signature if the delegator URL is set.
+     * @param transaction Transaction to sign.
+     * @param originSignature Origin signature.
+     * @returns Both signatures concatenated if the delegator URL is set, the origin signature otherwise.
+     */
     private async appendSignatureIfDelegationUrl(
         transaction: Transaction,
         originSignature: Uint8Array
