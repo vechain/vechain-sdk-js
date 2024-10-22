@@ -35,6 +35,7 @@ const timeout = 8000; // 8 seconds
 interface AwsClientParameters {
     keyId: string;
     region: string;
+    enableDelegation?: boolean;
     credentials: {
         accessKeyId: string;
         secretAccessKey: string;
@@ -130,37 +131,47 @@ describe('KMSVeChainSigner - Thor Solo', () => {
             ) as AwsClientParameters[];
         }
         thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
-        const provider = new KMSVeChainProvider(
-            thorClient,
-            awsClientParameters.keyId,
-            awsClientParameters.region,
-            awsClientParameters.credentials,
-            awsClientParameters.endpoint
-        );
-        expect(provider).toBeInstanceOf(KMSVeChainProvider);
 
-        if (delegatorAwsClientParameters !== undefined) {
-            const delegatorProvider = new KMSVeChainProvider(
+        // Signer with delegator disabled
+        signer = new KMSVeChainSigner(
+            new KMSVeChainProvider(
                 thorClient,
-                delegatorAwsClientParameters.keyId,
-                delegatorAwsClientParameters.region,
-                delegatorAwsClientParameters.credentials,
-                delegatorAwsClientParameters.endpoint
-            );
-            expect(delegatorProvider).toBeInstanceOf(KMSVeChainProvider);
-            signerWithDelegator = new KMSVeChainSigner(provider, {
-                provider: delegatorProvider
-            });
-            // This step should be removed once this is clarified  https://github.com/localstack/localstack/issues/11678
-            await fundVTHO(
-                thorClient,
-                await signerWithDelegator.getAddress(true)
-            );
-        }
-        signer = new KMSVeChainSigner(provider);
+                awsClientParameters.keyId,
+                awsClientParameters.region,
+                undefined,
+                awsClientParameters.credentials,
+                awsClientParameters.endpoint
+            )
+        );
         expectedAddress = await signer.getAddress();
         // This step should be removed once this is clarified  https://github.com/localstack/localstack/issues/11678
         await fundVTHO(thorClient, expectedAddress);
+
+        // Signer with delegator enabled
+        const delegatorProvider = new KMSVeChainProvider(
+            thorClient,
+            delegatorAwsClientParameters.keyId,
+            delegatorAwsClientParameters.region,
+            undefined,
+            delegatorAwsClientParameters.credentials,
+            delegatorAwsClientParameters.endpoint
+        );
+        expect(delegatorProvider).toBeInstanceOf(KMSVeChainProvider);
+        signerWithDelegator = new KMSVeChainSigner(
+            new KMSVeChainProvider(
+                thorClient,
+                awsClientParameters.keyId,
+                awsClientParameters.region,
+                true,
+                awsClientParameters.credentials,
+                awsClientParameters.endpoint
+            ),
+            {
+                provider: delegatorProvider
+            }
+        );
+        // This step should be removed once this is clarified  https://github.com/localstack/localstack/issues/11678
+        await fundVTHO(thorClient, await signerWithDelegator.getAddress(true));
     }, timeout);
 
     describe('getAddress', () => {

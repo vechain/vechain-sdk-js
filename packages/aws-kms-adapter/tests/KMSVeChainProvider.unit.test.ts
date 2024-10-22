@@ -48,6 +48,7 @@ describe('KMSVeChainProvider', () => {
                 {} as unknown as ThorClient,
                 'keyId',
                 'region',
+                false,
                 {
                     accessKeyId: 'accessKeyId',
                     secretAccessKey: 'secretAccess'
