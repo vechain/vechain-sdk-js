@@ -39,7 +39,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
             if (!(this.provider instanceof KMSVeChainProvider)) {
                 throw new JSONRPCInvalidParams(
                     'KMSVeChainSigner.constructor',
-                    'The provider object is not well formed, it should be an instance of KMSVeChainProvider.',
+                    'The provider must be an instance of KMSVeChainProvider.',
                     { provider }
                 );
             }
