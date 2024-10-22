@@ -207,7 +207,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
     private async getRecoveryBit(
         decodedSignatureWithoutRecoveryBit: SignatureType,
         transactionHash: Uint8Array,
-        kmsProvider: KMSVeChainProvider | undefined = this.kmsVeChainProvider
+        kmsProvider: KMSVeChainProvider
     ): Promise<number> {
         const publicKey = await this.getDecodedPublicKey(kmsProvider);
         const publicKeyHex = toHex(publicKey);
