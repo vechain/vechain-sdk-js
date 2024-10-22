@@ -29,26 +29,28 @@ yarn test:solo
 
 To integrate this into your code, depending on how you plan to manage your AWS credentials, you can choose one of the following examples.
 
-Within this repo, you can create a credentials file called `aws-credentials.json` with your custom credentials under the `tests` folder in case you want to give it a try before integrating with your project. A valid format would be as follows:
+Within this repo, you can create a credentials file called `aws-credentials.json` with your custom credentials under the `tests` folder in case you want to give it a try before integrating with your project. A valid format would be as follows (it is an array in case you want to include a delegator key):
 
 ```json
-{
-    // AWS KMS keyId (mandatory)
-    "keyId": "00000000-0000-0000-0000-000000000000", 
-    // AWS region (mandatory)
-    "region": "eu-west-1",
-    // AWS credentials (optional)
-    "credentials": { 
-        // AWS access key id (mandatory if credentials)
-        "accessKeyId": "test",
-        // AWS secret access key (mandatory if credentials)
-        "secretAccessKey": "test",
-        // AWS session token if SSO is configured (optional)
-        "sessionToken": "test"
-    },
-    // AWS endpoint (optional, to be used locally along with LocalStack)
-    "endpoint": "http://localhost:4599"
-}
+[
+    {
+        // AWS KMS keyId (mandatory)
+        "keyId": "00000000-0000-0000-0000-000000000000", 
+        // AWS region (mandatory)
+        "region": "eu-west-1",
+        // AWS credentials (optional)
+        "credentials": { 
+            // AWS access key id (mandatory if credentials)
+            "accessKeyId": "test",
+            // AWS secret access key (mandatory if credentials)
+            "secretAccessKey": "test",
+            // AWS session token if SSO is configured (optional)
+            "sessionToken": "test"
+        },
+        // AWS endpoint (optional, to be used locally along with LocalStack)
+        "endpoint": "http://localhost:4599"
+    }
+]
 ```
 
 ### IAM roles
