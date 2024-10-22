@@ -91,10 +91,7 @@ describe('KMSVeChainSigner - Thor Solo', () => {
         );
         expect(delegatorProvider).toBeInstanceOf(KMSVeChainProvider);
         signerWithDelegator = new KMSVeChainSigner(
-            new KMSVeChainProvider(thorClient, {
-                ...awsClientParameters,
-                enableDelegation: true
-            }),
+            new KMSVeChainProvider(thorClient, awsClientParameters, true),
             {
                 provider: delegatorProvider
             }

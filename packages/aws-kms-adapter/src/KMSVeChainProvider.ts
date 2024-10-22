@@ -16,7 +16,6 @@ import { KMSVeChainSigner } from './KMSVeChainSigner';
 interface KMSClientParameters {
     keyId: string;
     region: string;
-    enableDelegation?: boolean;
     credentials?: {
         accessKeyId: string;
         secretAccessKey: string;
@@ -34,9 +33,14 @@ class KMSVeChainProvider extends VeChainProvider {
      * Creates a new instance of KMSVeChainProvider.
      * @param thorClient The thor client instance to use.
      * @param params The parameters to configure the KMS client and the keyId.
+     * @param enableDelegation Whether to enable delegation or not.
      **/
-    public constructor(thorClient: ThorClient, params: KMSClientParameters) {
-        super(thorClient, undefined, params.enableDelegation);
+    public constructor(
+        thorClient: ThorClient,
+        params: KMSClientParameters,
+        enableDelegation: boolean = false
+    ) {
+        super(thorClient, undefined, enableDelegation);
         this.keyId = params.keyId;
         this.kmsClient =
             params.endpoint !== undefined

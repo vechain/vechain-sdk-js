@@ -48,7 +48,6 @@ describe('KMSVeChainProvider', () => {
                 {
                     keyId: 'keyId',
                     region: 'region',
-                    enableDelegation: false,
                     credentials: {
                         accessKeyId: 'accessKeyId',
                         secretAccessKey: 'secretAccess'
