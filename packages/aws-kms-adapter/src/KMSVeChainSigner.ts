@@ -28,7 +28,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
 
     public constructor(
         provider?: AvailableVeChainProviders,
-        readonly delegator?: {
+        delegator?: {
             provider?: AvailableVeChainProviders;
             url?: string;
         }
