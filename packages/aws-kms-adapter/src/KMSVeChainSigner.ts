@@ -12,7 +12,9 @@ import {
 import { JSONRPCInvalidParams, SignerMethodError } from '@vechain/sdk-errors';
 import {
     type AvailableVeChainProviders,
+    DelegationHandler,
     RPC_METHODS,
+    type ThorClient,
     type TransactionRequestInput,
     VeChainAbstractSigner
 } from '@vechain/sdk-network';
@@ -23,6 +25,7 @@ import { KMSVeChainProvider } from './KMSVeChainProvider';
 class KMSVeChainSigner extends VeChainAbstractSigner {
     private readonly kmsVeChainProvider?: KMSVeChainProvider;
     private readonly kmsVeChainDelegatorProvider?: KMSVeChainProvider;
+    private readonly kmsVeChainDelegatorUrl?: string;
 
     public constructor(
         provider?: AvailableVeChainProviders,
@@ -38,11 +41,21 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         ) {
             this.kmsVeChainProvider = this.provider;
         }
-        if (
-            this.delegator !== undefined &&
-            this.delegator.provider instanceof KMSVeChainProvider
-        ) {
-            this.kmsVeChainDelegatorProvider = this.delegator.provider;
+        if (this.delegator !== undefined) {
+            if (
+                this.delegator.provider !== undefined &&
+                this.delegator.provider instanceof KMSVeChainProvider
+            ) {
+                this.kmsVeChainDelegatorProvider = this.delegator.provider;
+            } else if (this.delegator.url !== undefined) {
+                this.kmsVeChainDelegatorUrl = this.delegator.url;
+            } else {
+                throw new JSONRPCInvalidParams(
+                    'KMSVeChainSigner.constructor',
+                    'The delegator object is not well formed, either provider or url should be provided.',
+                    { delegator: this.delegator }
+                );
+            }
         }
     }
 
@@ -136,10 +149,6 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
     private async buildVeChainSignatureFromPayload(
         payload: Uint8Array
     ): Promise<Uint8Array> {
-        if (this.kmsVeChainDelegatorProvider !== undefined) {
-            // TODO: Implement the delegation signature
-        }
-
         if (this.kmsVeChainProvider === undefined) {
             throw new JSONRPCInvalidParams(
                 'KMSVeChainSigner.buildVeChainSignatureFromPayload',
@@ -203,6 +212,26 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         );
     }
 
+    private async appendSignatureIfDelegationUrl(
+        transaction: Transaction,
+        originSignature: Uint8Array
+    ): Promise<Uint8Array> {
+        if (this.kmsVeChainDelegatorUrl !== undefined) {
+            const originAddress = await this.getAddress();
+            const delegatorSignature = await DelegationHandler({
+                delegatorUrl: this.kmsVeChainDelegatorUrl
+            }).getDelegationSignatureUsingUrl(
+                transaction,
+                originAddress,
+                (this.kmsVeChainProvider?.thorClient as ThorClient).httpClient
+            );
+
+            return concatBytes(originSignature, delegatorSignature);
+        }
+
+        return originSignature;
+    }
+
     /**
      * It signs a transaction.
      * @param transactionToSign Transaction body to sign in plain format.
@@ -213,18 +242,27 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
     ): Promise<string> {
         try {
             // Populate the call, to get proper from and to address (compatible with multi-clause transactions)
-            const populatedTransaction =
+            const transactionBody =
                 await this.populateTransaction(transactionToSign);
 
-            // Get the transaction hash
-            const transactionHash =
-                Transaction.of(populatedTransaction).getTransactionHash().bytes;
+            // Get the transaction object
+            const transaction = Transaction.of(transactionBody);
 
+            // Get the transaction hash
+            const transactionHash = transaction.getTransactionHash().bytes;
+
+            // Sign the transaction hash using origin key
             const veChainSignature =
                 await this.buildVeChainSignatureFromPayload(transactionHash);
 
+            // Sign the transaction hash using the delegation key if needed and append the result
+            const signature = await this.appendSignatureIfDelegationUrl(
+                transaction,
+                veChainSignature
+            );
+
             return Hex.of(
-                Transaction.of(populatedTransaction, veChainSignature).encoded
+                Transaction.of(transactionBody, signature).encoded
             ).toString();
         } catch (error) {
             throw new SignerMethodError(
