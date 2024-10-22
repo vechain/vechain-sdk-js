@@ -33,13 +33,21 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
             url?: string;
         }
     ) {
+        // Origin provider
         super(provider);
-        if (
-            this.provider !== undefined &&
-            this.provider instanceof KMSVeChainProvider
-        ) {
-            this.kmsVeChainProvider = this.provider;
+        if (this.provider !== undefined) {
+            if (this.provider instanceof KMSVeChainProvider) {
+                this.kmsVeChainProvider = this.provider;
+            } else {
+                throw new JSONRPCInvalidParams(
+                    'KMSVeChainSigner.constructor',
+                    'The provider object is not well formed, it should be an instance of KMSVeChainProvider.',
+                    { provider: this.provider }
+                );
+            }
         }
+
+        // Delegator provider, if any
         if (this.delegator !== undefined) {
             if (
                 this.delegator.provider !== undefined &&
@@ -110,25 +118,31 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
      * Gets the DER-encoded public key from KMS and decodes it.
      * @returns {Uint8Array} The decoded public key.
      */
-    private async getDecodedPublicKey(): Promise<Uint8Array> {
-        if (this.kmsVeChainProvider === undefined) {
+    private async getDecodedPublicKey(
+        kmsProvider: KMSVeChainProvider | undefined = this.kmsVeChainProvider
+    ): Promise<Uint8Array> {
+        if (kmsProvider === undefined) {
             throw new JSONRPCInvalidParams(
                 'KMSVeChainSigner.getDecodedPublicKey',
                 'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
                 {}
             );
         }
-        const publicKey = await this.kmsVeChainProvider.getPublicKey();
+        const publicKey = await kmsProvider.getPublicKey();
         return this.decodePublicKey(publicKey);
     }
 
     /**
      * It returns the address associated with the signer.
+     * @param {KMSVeChainProvider} kmsProvider (Optional) The provider to get the address from.
      * @returns The address associated with the signer.
      */
-    public async getAddress(): Promise<string> {
+    public async getAddress(
+        kmsProvider: KMSVeChainProvider | undefined = this.kmsVeChainProvider
+    ): Promise<string> {
         try {
-            const publicKeyDecoded = await this.getDecodedPublicKey();
+            const publicKeyDecoded =
+                await this.getDecodedPublicKey(kmsProvider);
             return Address.ofPublicKey(publicKeyDecoded).toString();
         } catch (error) {
             throw new SignerMethodError(
@@ -168,7 +182,8 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
 
         const recoveryBit = await this.getRecoveryBit(
             decodedSignatureWithoutRecoveryBit,
-            payload
+            payload,
+            kmsProvider
         );
 
         const decodedSignature = concatBytes(
@@ -181,15 +196,17 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
 
     /**
      * Returns the recovery bit of a signature.
-     * @param decodedSignatureWithoutRecoveryBit Signature with the R and S components only.
-     * @param transactionHash Raw transaction hash.
+     * @param {SignatureType} decodedSignatureWithoutRecoveryBit Signature with the R and S components only.
+     * @param {Uint8Array} transactionHash Raw transaction hash.
+     * @param {KMSVeChainProvider} kmsProvider The provider to sign the payload.
      * @returns {number} The V component of the signature (either 0 or 1).
      */
     private async getRecoveryBit(
         decodedSignatureWithoutRecoveryBit: SignatureType,
-        transactionHash: Uint8Array
+        transactionHash: Uint8Array,
+        kmsProvider: KMSVeChainProvider | undefined = this.kmsVeChainProvider
     ): Promise<number> {
-        const publicKey = await this.getDecodedPublicKey();
+        const publicKey = await this.getDecodedPublicKey(kmsProvider);
         const publicKeyHex = toHex(publicKey);
 
         for (let i = 0n; i < 2n; i++) {
@@ -228,6 +245,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         const originSignature =
             await this.buildVeChainSignatureFromPayload(transactionHash);
 
+        // We try first in case there is a delegator provider
         if (this.kmsVeChainDelegatorProvider !== undefined) {
             const delegatorSignature =
                 await this.buildVeChainSignatureFromPayload(
@@ -236,6 +254,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
                 );
             return concatBytes(originSignature, delegatorSignature);
         } else if (
+            // If not, we try with the delegator URL
             this.kmsVeChainDelegatorUrl !== undefined &&
             this.provider !== undefined
         ) {
