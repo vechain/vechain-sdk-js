@@ -2,87 +2,31 @@ import {
     ABIContract,
     Address,
     Clause,
-    ERC20_ABI,
     HexUInt,
     Transaction,
-    VTHO_ADDRESS,
     type TransactionClause
 } from '@vechain/sdk-core';
-import {
-    ProviderInternalBaseWallet,
-    signerUtils,
-    THOR_SOLO_ACCOUNTS,
-    THOR_SOLO_URL,
-    ThorClient,
-    VeChainPrivateKeySigner,
-    VeChainProvider,
-    type TransactionReceipt
-} from '@vechain/sdk-network';
+import { signerUtils, THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
 import fs from 'fs';
 import path from 'path';
-import { KMSVeChainProvider, KMSVeChainSigner } from '../src';
+import {
+    type KMSClientParameters,
+    KMSVeChainProvider,
+    KMSVeChainSigner
+} from '../src';
 import {
     EIP712_CONTRACT,
     EIP712_FROM,
     EIP712_TO,
+    fundVTHO,
     signTransactionTestCases,
     TESTING_CONTRACT_ABI,
-    TESTING_CONTRACT_ADDRESS
+    TESTING_CONTRACT_ADDRESS,
+    timeout
 } from './fixture';
-
-const timeout = 8000; // 8 seconds
-
-interface AwsClientParameters {
-    keyId: string;
-    region: string;
-    enableDelegation?: boolean;
-    credentials: {
-        accessKeyId: string;
-        secretAccessKey: string;
-        sessionToken?: string;
-    };
-    endpoint: string;
-}
 
 // This variable should be replaced once this is clarified  https://github.com/localstack/localstack/issues/11678
 let expectedAddress: string;
-
-const fundVTHO = async (
-    thorClient: ThorClient,
-    receiverAddress: string
-): Promise<void> => {
-    const signer = new VeChainPrivateKeySigner(
-        HexUInt.of(THOR_SOLO_ACCOUNTS[0].privateKey).bytes,
-        new VeChainProvider(
-            thorClient,
-            new ProviderInternalBaseWallet([]),
-            false
-        )
-    );
-    // Load the ERC20 contract
-    const contract = thorClient.contracts.load(VTHO_ADDRESS, ERC20_ABI, signer);
-
-    const expectedVTHO = 200000000000000000000n;
-
-    // Execute a 'transfer' transaction on the deployed contract,
-    // transferring a specified amount of tokens
-    const transferResult = await contract.transact.transfer(
-        { value: 0, comment: 'Transferring tokens' },
-        receiverAddress,
-        expectedVTHO
-    );
-
-    // Wait for the transfer transaction to complete and obtain its receipt
-    const transactionReceiptTransfer =
-        (await transferResult.wait()) as TransactionReceipt;
-
-    // Verify that the transfer transaction did not revert
-    expect(transactionReceiptTransfer.reverted).toBe(false);
-
-    // Execute a 'balanceOf' call on the contract to check the balance of the receiver
-    const balanceOfResult = await contract.read.balanceOf(receiverAddress);
-    expect(balanceOfResult).toStrictEqual([expectedVTHO]);
-};
 
 /**
  * AWS KMS VeChain signer tests - solo
@@ -106,19 +50,19 @@ describe('KMSVeChainSigner - Thor Solo', () => {
     let signerWithDelegator: KMSVeChainSigner;
 
     /**
-     * Init thor client and provider before each test
+     * Init thor client and provider before all tests
      */
     beforeAll(async () => {
         const awsCredentialsPath = path.resolve(
             __dirname,
             './aws-credentials.json'
         );
-        let awsClientParameters: AwsClientParameters;
-        let delegatorAwsClientParameters: AwsClientParameters;
+        let awsClientParameters: KMSClientParameters;
+        let delegatorAwsClientParameters: KMSClientParameters;
         try {
             [awsClientParameters, delegatorAwsClientParameters] = JSON.parse(
                 fs.readFileSync(awsCredentialsPath, 'utf8')
-            ) as AwsClientParameters[];
+            ) as KMSClientParameters[];
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             console.log('Loading test credentials');
@@ -128,20 +72,13 @@ describe('KMSVeChainSigner - Thor Solo', () => {
             );
             [awsClientParameters, delegatorAwsClientParameters] = JSON.parse(
                 fs.readFileSync(testAwsCredentialsPath, 'utf8')
-            ) as AwsClientParameters[];
+            ) as KMSClientParameters[];
         }
         thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
 
         // Signer with delegator disabled
         signer = new KMSVeChainSigner(
-            new KMSVeChainProvider(
-                thorClient,
-                awsClientParameters.keyId,
-                awsClientParameters.region,
-                undefined,
-                awsClientParameters.credentials,
-                awsClientParameters.endpoint
-            )
+            new KMSVeChainProvider(thorClient, awsClientParameters)
         );
         expectedAddress = await signer.getAddress();
         // This step should be removed once this is clarified  https://github.com/localstack/localstack/issues/11678
@@ -150,22 +87,14 @@ describe('KMSVeChainSigner - Thor Solo', () => {
         // Signer with delegator enabled
         const delegatorProvider = new KMSVeChainProvider(
             thorClient,
-            delegatorAwsClientParameters.keyId,
-            delegatorAwsClientParameters.region,
-            undefined,
-            delegatorAwsClientParameters.credentials,
-            delegatorAwsClientParameters.endpoint
+            delegatorAwsClientParameters
         );
         expect(delegatorProvider).toBeInstanceOf(KMSVeChainProvider);
         signerWithDelegator = new KMSVeChainSigner(
-            new KMSVeChainProvider(
-                thorClient,
-                awsClientParameters.keyId,
-                awsClientParameters.region,
-                true,
-                awsClientParameters.credentials,
-                awsClientParameters.endpoint
-            ),
+            new KMSVeChainProvider(thorClient, {
+                ...awsClientParameters,
+                enableDelegation: true
+            }),
             {
                 provider: delegatorProvider
             }

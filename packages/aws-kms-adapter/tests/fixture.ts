@@ -1,3 +1,15 @@
+import { ERC20_ABI, HexUInt, VTHO_ADDRESS } from '@vechain/sdk-core';
+import {
+    ProviderInternalBaseWallet,
+    THOR_SOLO_ACCOUNTS,
+    type ThorClient,
+    type TransactionReceipt,
+    VeChainPrivateKeySigner,
+    VeChainProvider
+} from '@vechain/sdk-network';
+
+const timeout = 8000; // 8 seconds
+
 /**
  * `TestingContract.sol` deployed contract address on thor-solo snapshot.
  */
@@ -840,14 +852,80 @@ const signTransactionTestCases = {
                 }
             }
         ]
+    },
+    testnet: {
+        correct: [
+            {
+                description: 'Should sign a transaction with delegation url',
+                isDelegated: true,
+                expected: {
+                    body: {
+                        chainTag: 39,
+                        clauses: [
+                            {
+                                data: '0x01cb08c5000000000000000000000000000000000000000000000000000000000000007b',
+                                to: '0xb2c20a6de401003a671659b10629eb82ff254fb8',
+                                value: 0
+                            }
+                        ],
+                        dependsOn: null,
+                        expiration: 32,
+                        gas: 21464,
+                        gasPriceCoef: 0,
+                        reserved: {
+                            features: 1
+                        }
+                    }
+                }
+            }
+        ]
     }
+};
+
+const fundVTHO = async (
+    thorClient: ThorClient,
+    receiverAddress: string
+): Promise<void> => {
+    const signer = new VeChainPrivateKeySigner(
+        HexUInt.of(THOR_SOLO_ACCOUNTS[0].privateKey).bytes,
+        new VeChainProvider(
+            thorClient,
+            new ProviderInternalBaseWallet([]),
+            false
+        )
+    );
+    // Load the ERC20 contract
+    const contract = thorClient.contracts.load(VTHO_ADDRESS, ERC20_ABI, signer);
+
+    const expectedVTHO = 200000000000000000000n;
+
+    // Execute a 'transfer' transaction on the deployed contract,
+    // transferring a specified amount of tokens
+    const transferResult = await contract.transact.transfer(
+        { value: 0, comment: 'Transferring tokens' },
+        receiverAddress,
+        expectedVTHO
+    );
+
+    // Wait for the transfer transaction to complete and obtain its receipt
+    const transactionReceiptTransfer =
+        (await transferResult.wait()) as TransactionReceipt;
+
+    // Verify that the transfer transaction did not revert
+    expect(transactionReceiptTransfer.reverted).toBe(false);
+
+    // Execute a 'balanceOf' call on the contract to check the balance of the receiver
+    const balanceOfResult = await contract.read.balanceOf(receiverAddress);
+    expect(balanceOfResult).toStrictEqual([expectedVTHO]);
 };
 
 export {
     EIP712_CONTRACT,
     EIP712_FROM,
     EIP712_TO,
+    fundVTHO,
+    signTransactionTestCases,
     TESTING_CONTRACT_ABI,
     TESTING_CONTRACT_ADDRESS,
-    signTransactionTestCases
+    timeout
 };

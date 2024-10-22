@@ -33,11 +33,10 @@ describe('KMSVeChainProvider', () => {
     let instance: KMSVeChainProvider;
     beforeEach(() => {
         jest.clearAllMocks();
-        instance = new KMSVeChainProvider(
-            {} as unknown as ThorClient,
-            'keyId',
-            'region'
-        );
+        instance = new KMSVeChainProvider({} as unknown as ThorClient, {
+            keyId: 'keyId',
+            region: 'region'
+        });
     });
     describe('constructor', () => {
         it('should return the instance of the client', () => {
@@ -46,12 +45,14 @@ describe('KMSVeChainProvider', () => {
         it('should return an instance when credentials and no endpoint', () => {
             const instance = new KMSVeChainProvider(
                 {} as unknown as ThorClient,
-                'keyId',
-                'region',
-                false,
                 {
-                    accessKeyId: 'accessKeyId',
-                    secretAccessKey: 'secretAccess'
+                    keyId: 'keyId',
+                    region: 'region',
+                    enableDelegation: false,
+                    credentials: {
+                        accessKeyId: 'accessKeyId',
+                        secretAccessKey: 'secretAccess'
+                    }
                 }
             );
             expect(instance).toBeInstanceOf(KMSVeChainProvider);

@@ -13,40 +13,44 @@ import {
 } from '@vechain/sdk-network';
 import { KMSVeChainSigner } from './KMSVeChainSigner';
 
+interface KMSClientParameters {
+    keyId: string;
+    region: string;
+    enableDelegation?: boolean;
+    credentials?: {
+        accessKeyId: string;
+        secretAccessKey: string;
+        sessionToken?: string;
+    };
+    endpoint?: string;
+}
+
 class KMSVeChainProvider extends VeChainProvider {
     private readonly kmsClient: KMSClient;
+    private readonly keyId: string;
     private signer?: KMSVeChainSigner;
 
     /**
      * Creates a new instance of KMSVeChainProvider.
      * @param thorClient The thor client instance to use.
-     * @param keyId The AWS keyId to use for signing operations locally.
-     * @param region The AWS region to use.
-     * @param credentials The AWS credentials to connect to the KMS service.
+     * @param params The parameters to configure the KMS client and the keyId.
      **/
-    public constructor(
-        thorClient: ThorClient,
-        readonly keyId: string,
-        region: string,
-        enableDelegation: boolean = false,
-        credentials?: {
-            accessKeyId: string;
-            secretAccessKey: string;
-            sessionToken?: string;
-        },
-        endpoint?: string
-    ) {
-        super(thorClient, undefined, enableDelegation);
+    public constructor(thorClient: ThorClient, params: KMSClientParameters) {
+        super(thorClient, undefined, params.enableDelegation);
+        this.keyId = params.keyId;
         this.kmsClient =
-            endpoint !== undefined
+            params.endpoint !== undefined
                 ? new KMSClient({
-                      region,
-                      endpoint,
-                      credentials
+                      region: params.region,
+                      endpoint: params.endpoint,
+                      credentials: params.credentials
                   })
-                : credentials !== undefined
-                  ? new KMSClient({ region, credentials })
-                  : new KMSClient({ region });
+                : params.credentials !== undefined
+                  ? new KMSClient({
+                        region: params.region,
+                        credentials: params.credentials
+                    })
+                  : new KMSClient({ region: params.region });
     }
 
     /**
@@ -112,4 +116,4 @@ class KMSVeChainProvider extends VeChainProvider {
     }
 }
 
-export { KMSVeChainProvider };
+export { KMSVeChainProvider, type KMSClientParameters };
