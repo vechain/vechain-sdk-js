@@ -143,12 +143,14 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
     /**
      * It builds a VeChain signature from a bytes payload.
      * @param {Uint8Array} payload to sign.
+     * @param {KMSVeChainProvider} kmsProvider The provider to sign the payload.
      * @returns {Uint8Array} The signature following the VeChain format.
      */
     private async buildVeChainSignatureFromPayload(
-        payload: Uint8Array
+        payload: Uint8Array,
+        kmsProvider: KMSVeChainProvider | undefined = this.kmsVeChainProvider
     ): Promise<Uint8Array> {
-        if (this.kmsVeChainProvider === undefined) {
+        if (kmsProvider === undefined) {
             throw new JSONRPCInvalidParams(
                 'KMSVeChainSigner.buildVeChainSignatureFromPayload',
                 'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
@@ -157,7 +159,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         }
 
         // Sign the transaction hash
-        const signature = await this.kmsVeChainProvider.sign(payload);
+        const signature = await kmsProvider.sign(payload);
 
         // Build the VeChain signature using the r, s and v components
         const hexSignature = bytesToHex(signature);
@@ -212,16 +214,28 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
     }
 
     /**
-     * Prepend the origin signature to the delegator signature if the delegator is set.
+     * Concat the origin signature to the delegator signature if the delegator is set.
      * @param {Transaction} transaction Transaction to sign.
-     * @param {Uint8Array} originSignature Origin signature.
      * @returns Both signatures concatenated if the delegator is set, the origin signature otherwise.
      */
-    private async prependSignatureIfDelegation(
-        transaction: Transaction,
-        originSignature: Uint8Array
+    private async concatSignatureIfDelegation(
+        transaction: Transaction
     ): Promise<Uint8Array> {
-        if (
+        // Get the transaction hash
+        const transactionHash = transaction.getTransactionHash().bytes;
+
+        // Sign the transaction hash using origin key
+        const originSignature =
+            await this.buildVeChainSignatureFromPayload(transactionHash);
+
+        if (this.kmsVeChainDelegatorProvider !== undefined) {
+            const delegatorSignature =
+                await this.buildVeChainSignatureFromPayload(
+                    transactionHash,
+                    this.kmsVeChainDelegatorProvider
+                );
+            return concatBytes(originSignature, delegatorSignature);
+        } else if (
             this.kmsVeChainDelegatorUrl !== undefined &&
             this.provider !== undefined
         ) {
@@ -256,18 +270,9 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
             // Get the transaction object
             const transaction = Transaction.of(transactionBody);
 
-            // Get the transaction hash
-            const transactionHash = transaction.getTransactionHash().bytes;
-
-            // Sign the transaction hash using origin key
-            const veChainSignature =
-                await this.buildVeChainSignatureFromPayload(transactionHash);
-
             // Sign the transaction hash using delegation if needed
-            const signature = await this.prependSignatureIfDelegation(
-                transaction,
-                veChainSignature
-            );
+            const signature =
+                await this.concatSignatureIfDelegation(transaction);
 
             return Hex.of(
                 Transaction.of(transactionBody, signature).encoded
