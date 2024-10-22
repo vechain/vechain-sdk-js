@@ -45,7 +45,7 @@ let expectedAddress: string;
 
 const fundVTHO = async (
     thorClient: ThorClient,
-    kmsSigner: KMSVeChainSigner
+    receiverAddress: string
 ): Promise<void> => {
     const signer = new VeChainPrivateKeySigner(
         HexUInt.of(THOR_SOLO_ACCOUNTS[0].privateKey).bytes,
@@ -58,7 +58,6 @@ const fundVTHO = async (
     // Load the ERC20 contract
     const contract = thorClient.contracts.load(VTHO_ADDRESS, ERC20_ABI, signer);
 
-    const receiverAddress = await kmsSigner.getAddress();
     expectedAddress = receiverAddress;
 
     const expectedVTHO = 200000000000000000000n;
@@ -100,6 +99,11 @@ describe('KMSVeChainSigner - Thor Solo', () => {
     let signer: KMSVeChainSigner;
 
     /**
+     * KMSVeChainSigner with delegator instance
+     */
+    let signerWithDelegator: KMSVeChainSigner;
+
+    /**
      * Init thor client and provider before each test
      */
     beforeAll(async () => {
@@ -108,8 +112,9 @@ describe('KMSVeChainSigner - Thor Solo', () => {
             './aws-credentials.json'
         );
         let awsClientParameters: AwsClientParameters;
+        let delegatorAwsClientParameters: AwsClientParameters;
         try {
-            [awsClientParameters] = JSON.parse(
+            [awsClientParameters, delegatorAwsClientParameters] = JSON.parse(
                 fs.readFileSync(awsCredentialsPath, 'utf8')
             ) as AwsClientParameters[];
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -119,7 +124,7 @@ describe('KMSVeChainSigner - Thor Solo', () => {
                 __dirname,
                 './test-aws-credentials.json'
             );
-            [awsClientParameters] = JSON.parse(
+            [awsClientParameters, delegatorAwsClientParameters] = JSON.parse(
                 fs.readFileSync(testAwsCredentialsPath, 'utf8')
             ) as AwsClientParameters[];
         }
@@ -132,9 +137,27 @@ describe('KMSVeChainSigner - Thor Solo', () => {
             awsClientParameters.endpoint
         );
         expect(provider).toBeInstanceOf(KMSVeChainProvider);
+
+        if (delegatorAwsClientParameters !== undefined) {
+            const delegatorProvider = new KMSVeChainProvider(
+                thorClient,
+                delegatorAwsClientParameters.keyId,
+                delegatorAwsClientParameters.region,
+                delegatorAwsClientParameters.credentials,
+                delegatorAwsClientParameters.endpoint
+            );
+            expect(delegatorProvider).toBeInstanceOf(KMSVeChainProvider);
+            signerWithDelegator = new KMSVeChainSigner(provider, {
+                provider: delegatorProvider
+            });
+            await fundVTHO(
+                thorClient,
+                await signerWithDelegator.getAddress(delegatorProvider)
+            );
+        }
         signer = new KMSVeChainSigner(provider);
         // This step should be removed once this is clarified  https://github.com/localstack/localstack/issues/11678
-        await fundVTHO(thorClient, signer);
+        await fundVTHO(thorClient, await signer.getAddress());
     });
 
     describe('getAddress', () => {
