@@ -14,7 +14,6 @@ import {
     type AvailableVeChainProviders,
     DelegationHandler,
     RPC_METHODS,
-    type ThorClient,
     type TransactionRequestInput,
     VeChainAbstractSigner
 } from '@vechain/sdk-network';
@@ -214,22 +213,25 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
 
     /**
      * Append the delegator signature to the origin signature if the delegator URL is set.
-     * @param transaction Transaction to sign.
-     * @param originSignature Origin signature.
+     * @param {Transaction} transaction Transaction to sign.
+     * @param {Uint8Array} originSignature Origin signature.
      * @returns Both signatures concatenated if the delegator URL is set, the origin signature otherwise.
      */
     private async appendSignatureIfDelegationUrl(
         transaction: Transaction,
         originSignature: Uint8Array
     ): Promise<Uint8Array> {
-        if (this.kmsVeChainDelegatorUrl !== undefined) {
+        if (
+            this.kmsVeChainDelegatorUrl !== undefined &&
+            this.provider !== undefined
+        ) {
             const originAddress = await this.getAddress();
             const delegatorSignature = await DelegationHandler({
                 delegatorUrl: this.kmsVeChainDelegatorUrl
             }).getDelegationSignatureUsingUrl(
                 transaction,
                 originAddress,
-                (this.kmsVeChainProvider?.thorClient as ThorClient).httpClient
+                this.provider.thorClient.httpClient
             );
 
             return concatBytes(originSignature, delegatorSignature);
