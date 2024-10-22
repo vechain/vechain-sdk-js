@@ -29,6 +29,8 @@ import {
     TESTING_CONTRACT_ADDRESS
 } from './fixture';
 
+const timeout = 8000; // 8 seconds
+
 interface AwsClientParameters {
     keyId: string;
     region: string;
@@ -150,15 +152,16 @@ describe('KMSVeChainSigner - Thor Solo', () => {
             signerWithDelegator = new KMSVeChainSigner(provider, {
                 provider: delegatorProvider
             });
+            // This step should be removed once this is clarified  https://github.com/localstack/localstack/issues/11678
             await fundVTHO(
                 thorClient,
-                await signerWithDelegator.getAddress(delegatorProvider)
+                await signerWithDelegator.getAddress(true)
             );
         }
         signer = new KMSVeChainSigner(provider);
         // This step should be removed once this is clarified  https://github.com/localstack/localstack/issues/11678
         await fundVTHO(thorClient, await signer.getAddress());
-    });
+    }, timeout);
 
     describe('getAddress', () => {
         test('should get the address from the public key', async () => {
@@ -171,99 +174,113 @@ describe('KMSVeChainSigner - Thor Solo', () => {
      * Test suite for signTransaction method
      */
     describe('signTransaction', () => {
-        test('should sign a transaction successfully', async () => {
-            const sampleClause = Clause.callFunction(
-                Address.of(TESTING_CONTRACT_ADDRESS),
-                ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction('deposit'),
-                [123]
-            ) as TransactionClause;
+        test(
+            'should sign a transaction successfully',
+            async () => {
+                const sampleClause = Clause.callFunction(
+                    Address.of(TESTING_CONTRACT_ADDRESS),
+                    ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
+                        'deposit'
+                    ),
+                    [123]
+                ) as TransactionClause;
 
-            const originAddress = await signer.getAddress();
+                const originAddress = await signer.getAddress();
 
-            const gasResult = await thorClient.gas.estimateGas(
-                [sampleClause],
-                originAddress
-            );
-
-            const txBody = await thorClient.transactions.buildTransactionBody(
-                [sampleClause],
-                gasResult.totalGas,
-                {
-                    isDelegated: false
-                }
-            );
-
-            const signedRawTx = await signer.signTransaction(
-                signerUtils.transactionBodyToTransactionRequestInput(
-                    txBody,
+                const gasResult = await thorClient.gas.estimateGas(
+                    [sampleClause],
                     originAddress
-                )
-            );
-            const signedTx = Transaction.decode(
-                HexUInt.of(signedRawTx.slice(2)).bytes,
-                true
-            );
+                );
 
-            expect(signedTx).toBeDefined();
-            const expectedBody = {
-                chainTag: 246,
-                clauses: [
-                    {
-                        data: '0xb6b55f25000000000000000000000000000000000000000000000000000000000000007b',
-                        to: '0xb2c20a6de401003a671659b10629eb82ff254fb8',
-                        value: 0
-                    }
-                ],
-                dependsOn: null,
-                expiration: 32,
-                gas: 57491,
-                gasPriceCoef: 0
-            };
-            expect(signedTx.body).toMatchObject(expectedBody);
-            expect(signedTx.origin.toString()).toBe(
-                Address.checksum(HexUInt.of(originAddress))
-            );
-            expect(signedTx.isDelegated).toBe(false);
-            expect(signedTx.isSigned).toBe(true);
-            expect(signedTx.signature).toBeDefined();
-        }, 8000);
+                const txBody =
+                    await thorClient.transactions.buildTransactionBody(
+                        [sampleClause],
+                        gasResult.totalGas,
+                        {
+                            isDelegated: false
+                        }
+                    );
+
+                const signedRawTx = await signer.signTransaction(
+                    signerUtils.transactionBodyToTransactionRequestInput(
+                        txBody,
+                        originAddress
+                    )
+                );
+                const signedTx = Transaction.decode(
+                    HexUInt.of(signedRawTx.slice(2)).bytes,
+                    true
+                );
+
+                expect(signedTx).toBeDefined();
+                const expectedBody = {
+                    chainTag: 246,
+                    clauses: [
+                        {
+                            data: '0xb6b55f25000000000000000000000000000000000000000000000000000000000000007b',
+                            to: '0xb2c20a6de401003a671659b10629eb82ff254fb8',
+                            value: 0
+                        }
+                    ],
+                    dependsOn: null,
+                    expiration: 32,
+                    gas: 57491,
+                    gasPriceCoef: 0
+                };
+                expect(signedTx.body).toMatchObject(expectedBody);
+                expect(signedTx.origin.toString()).toBe(
+                    Address.checksum(HexUInt.of(originAddress))
+                );
+                expect(signedTx.isDelegated).toBe(false);
+                expect(signedTx.isSigned).toBe(true);
+                expect(signedTx.signature).toBeDefined();
+            },
+            timeout
+        );
     });
 
     /**
      * Test suite for sendTransaction method
      */
     describe('sendTransaction', () => {
-        test('should send a transaction successfully', async () => {
-            const sampleClause = Clause.callFunction(
-                Address.of(TESTING_CONTRACT_ADDRESS),
-                ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction('deposit'),
-                [123]
-            ) as TransactionClause;
+        test(
+            'should send a transaction successfully',
+            async () => {
+                const sampleClause = Clause.callFunction(
+                    Address.of(TESTING_CONTRACT_ADDRESS),
+                    ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
+                        'deposit'
+                    ),
+                    [123]
+                ) as TransactionClause;
 
-            const originAddress = await signer.getAddress();
+                const originAddress = await signer.getAddress();
 
-            const gasResult = await thorClient.gas.estimateGas(
-                [sampleClause],
-                originAddress
-            );
-
-            const txBody = await thorClient.transactions.buildTransactionBody(
-                [sampleClause],
-                gasResult.totalGas,
-                {
-                    isDelegated: false
-                }
-            );
-
-            const receipt = await signer.sendTransaction(
-                signerUtils.transactionBodyToTransactionRequestInput(
-                    txBody,
+                const gasResult = await thorClient.gas.estimateGas(
+                    [sampleClause],
                     originAddress
-                )
-            );
+                );
 
-            expect(receipt.match(/^0x([A-Fa-f0-9]{64})$/)).toBeTruthy();
-        }, 8000);
+                const txBody =
+                    await thorClient.transactions.buildTransactionBody(
+                        [sampleClause],
+                        gasResult.totalGas,
+                        {
+                            isDelegated: false
+                        }
+                    );
+
+                const receipt = await signer.sendTransaction(
+                    signerUtils.transactionBodyToTransactionRequestInput(
+                        txBody,
+                        originAddress
+                    )
+                );
+
+                expect(receipt.match(/^0x([A-Fa-f0-9]{64})$/)).toBeTruthy();
+            },
+            timeout
+        );
     });
 
     /**

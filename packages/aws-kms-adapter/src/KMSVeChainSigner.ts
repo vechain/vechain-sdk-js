@@ -135,13 +135,16 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
 
     /**
      * It returns the address associated with the signer.
-     * @param {KMSVeChainProvider} kmsProvider (Optional) The provider to get the address from.
+     * @param {boolean} fromDelegator (Optional) If true, the provider will be the delegator.
      * @returns The address associated with the signer.
      */
     public async getAddress(
-        kmsProvider: KMSVeChainProvider | undefined = this.kmsVeChainProvider
+        fromDelegator: boolean | undefined = false
     ): Promise<string> {
         try {
+            const kmsProvider = fromDelegator
+                ? this.kmsVeChainDelegatorProvider
+                : this.kmsVeChainProvider;
             const publicKeyDecoded =
                 await this.getDecodedPublicKey(kmsProvider);
             return Address.ofPublicKey(publicKeyDecoded).toString();
