@@ -268,7 +268,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
         return new FixedPointNumber(
             fd,
             FixedPointNumber.div(fd, this.dp(fd).sv, that.dp(fd).sv)
-        ).scale(this.fd); // Minimize fractional decimals without precision loss.
+        ).dp(this.fd); // Minimize fractional decimals without precision loss.
     }
 
     /**
@@ -285,26 +285,36 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
     }
 
     /**
-     * Adjusts the precision of the floating-point number by the specified
+     * Adjust the precision of the floating-point number by the specified
      * number of decimal places.
      *
-     * @param {bigint | number} decimalPlaces - The number of decimal places to adjust to.
+     * @param decimalPlaces The number of decimal places to adjust to,
+     *                      it must be a positive value.
      * @return {FixedPointNumber} A new FixedPointNumber instance with the adjusted precision.
+     * @throws InvalidDataType if `decimalPlaces` is negative.
      */
     public dp(decimalPlaces: bigint | number): FixedPointNumber {
-        const fp = BigInt(decimalPlaces);
-        const dd = fp - this.fd; // Fractional Decimals Difference.
-        if (dd < 0) {
-            return new FixedPointNumber(
-                fp,
-                this.sv / FixedPointNumber.BASE ** -dd
-            );
-        } else {
-            return new FixedPointNumber(
-                fp,
-                this.sv * FixedPointNumber.BASE ** dd
-            );
+        const dp = BigInt(decimalPlaces);
+        if (dp >= 0) {
+            let fd = this.fd;
+            let sv = this.sv;
+            if (dp > fd) {
+                sv *= FixedPointNumber.BASE ** (dp - fd);
+                fd = dp;
+            } else {
+                // Scale down.
+                while (fd > dp && sv % FixedPointNumber.BASE === 0n) {
+                    fd--;
+                    sv /= FixedPointNumber.BASE;
+                }
+            }
+            return new FixedPointNumber(fd, sv, this.ef);
         }
+        throw new InvalidDataType(
+            'FixedPointNumber.scale',
+            'negative `dp` arg',
+            { dp: `${dp}` }
+        );
     }
 
     /**
@@ -398,7 +408,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
         return new FixedPointNumber(
             fd,
             FixedPointNumber.idiv(fd, this.dp(fd).sv, that.dp(fd).sv)
-        ).scale(this.fd); // Minimize fractional decimals without precision loss.
+        ).dp(this.fd); // Minimize fractional decimals without precision loss.
     }
 
     /**
@@ -653,7 +663,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
                 ? FixedPointNumber.NaN
                 : FixedPointNumber.POSITIVE_INFINITY;
         const fd = this.maxFD(that, this.fd); // Max common fractional decimals.
-        return new FixedPointNumber(fd, this.dp(fd).sv - that.dp(fd).sv).scale(
+        return new FixedPointNumber(fd, this.dp(fd).sv - that.dp(fd).sv).dp(
             this.fd
         ); // Minimize fractional decimals without precision loss.
     }
@@ -685,7 +695,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
         while (modulo >= divisor) {
             modulo -= divisor;
         }
-        return new FixedPointNumber(fd, modulo).scale(this.fd); // Minimize fractional decimals without precision loss.
+        return new FixedPointNumber(fd, modulo).dp(this.fd); // Minimize fractional decimals without precision loss.
     }
 
     /**
@@ -795,7 +805,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
                 ? FixedPointNumber.NaN
                 : FixedPointNumber.POSITIVE_INFINITY;
         const fd = this.maxFD(that, this.fd); // Max common fractional decimals.
-        return new FixedPointNumber(fd, this.dp(fd).sv + that.dp(fd).sv).scale(
+        return new FixedPointNumber(fd, this.dp(fd).sv + that.dp(fd).sv).dp(
             this.fd
         ); // Minimize fractional decimals without precision loss.
     }
@@ -839,7 +849,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
         return new FixedPointNumber(
             fd,
             FixedPointNumber.pow(fd, this.dp(fd).sv, that.dp(fd).sv)
-        ).scale(this.fd); // Minimize fractional decimals without precision loss.
+        ).dp(this.fd); // Minimize fractional decimals without precision loss.
     }
 
     /**
@@ -870,39 +880,6 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
             this.mul(base, base, fd),
             exponent - sf
         ); // Recursive.
-    }
-
-    /**
-     * Adjust the precision of the floating-point number by the specified
-     * number of decimal places.
-     *
-     * @param decimalPlaces The number of decimal places to adjust to,
-     *                      it must be a positive value.
-     * @throws InvalidDataType if `decimalPlaces` is negative.
-     */
-    public scale(decimalPlaces: bigint): FixedPointNumber {
-        if (decimalPlaces >= 0) {
-            let fd = this.fd;
-            let sv = this.sv;
-            if (decimalPlaces > fd) {
-                sv *= FixedPointNumber.BASE ** (decimalPlaces - fd);
-            } else {
-                // Scale down.
-                while (
-                    fd > decimalPlaces &&
-                    sv % FixedPointNumber.BASE === 0n
-                ) {
-                    fd--;
-                    sv /= FixedPointNumber.BASE;
-                }
-            }
-            return new FixedPointNumber(fd, sv, this.ef);
-        }
-        throw new InvalidDataType(
-            'FixedPointNumber.scale',
-            'negative `decimalPlaces` arg',
-            { decimalPlaces: `${decimalPlaces}` }
-        );
     }
 
     /**
@@ -992,7 +969,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
         return new FixedPointNumber(
             fd,
             FixedPointNumber.mul(this.dp(fd).sv, that.dp(fd).sv, fd)
-        ).scale(this.fd); // Minimize fractional decimals without precision loss.
+        ).dp(this.fd); // Minimize fractional decimals without precision loss.
     }
 
     /**
