@@ -19,6 +19,7 @@ import {
     EIP712_FROM,
     EIP712_TO,
     fundVTHO,
+    signTransactionTestCases as sendTransactionTestCases,
     signTransactionTestCases,
     TESTING_CONTRACT_ABI,
     TESTING_CONTRACT_ADDRESS,
@@ -178,43 +179,57 @@ describe('KMSVeChainSigner - Thor Solo', () => {
      * Test suite for sendTransaction method
      */
     describe('sendTransaction', () => {
-        test(
-            'should send a transaction successfully',
-            async () => {
-                const sampleClause = Clause.callFunction(
-                    Address.of(TESTING_CONTRACT_ADDRESS),
-                    ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
-                        'deposit'
-                    ),
-                    [123]
-                ) as TransactionClause;
+        /**
+         * sendTransaction test cases with different options
+         */
+        sendTransactionTestCases.solo.correct.forEach(
+            ({ description, isDelegated }) => {
+                test(
+                    description,
+                    async () => {
+                        const signTransactionSigner = isDelegated
+                            ? signerWithDelegator
+                            : signer;
+                        const sampleClause = Clause.callFunction(
+                            Address.of(TESTING_CONTRACT_ADDRESS),
+                            ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
+                                'deposit'
+                            ),
+                            [123]
+                        ) as TransactionClause;
 
-                const originAddress = await signer.getAddress();
+                        const originAddress =
+                            await signTransactionSigner.getAddress();
 
-                const gasResult = await thorClient.gas.estimateGas(
-                    [sampleClause],
-                    originAddress
+                        const gasResult = await thorClient.gas.estimateGas(
+                            [sampleClause],
+                            originAddress
+                        );
+
+                        const txBody =
+                            await thorClient.transactions.buildTransactionBody(
+                                [sampleClause],
+                                gasResult.totalGas,
+                                {
+                                    isDelegated
+                                }
+                            );
+
+                        const receipt =
+                            await signTransactionSigner.sendTransaction(
+                                signerUtils.transactionBodyToTransactionRequestInput(
+                                    txBody,
+                                    originAddress
+                                )
+                            );
+
+                        expect(
+                            receipt.match(/^0x([A-Fa-f0-9]{64})$/)
+                        ).toBeTruthy();
+                    },
+                    timeout
                 );
-
-                const txBody =
-                    await thorClient.transactions.buildTransactionBody(
-                        [sampleClause],
-                        gasResult.totalGas,
-                        {
-                            isDelegated: false
-                        }
-                    );
-
-                const receipt = await signer.sendTransaction(
-                    signerUtils.transactionBodyToTransactionRequestInput(
-                        txBody,
-                        originAddress
-                    )
-                );
-
-                expect(receipt.match(/^0x([A-Fa-f0-9]{64})$/)).toBeTruthy();
-            },
-            timeout
+            }
         );
     });
 
