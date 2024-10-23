@@ -48,7 +48,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
-    "@types/node": "^22.7.5",
+    "@types/node": "^22.7.9",
     "cross-env": "^7.0.3",
     "testcontainers": "^10.13.2",
     "tsup": "^8.3.0",
