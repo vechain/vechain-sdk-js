@@ -19,10 +19,10 @@ yarn add @vechain/sdk-aws-kms-adapter
 
 ## Test
 
-To run all the tests, including the ones relying on a local instance of Thor Solo + LocalStack, please run:
+To run all the tests, including the ones relying on a local instance of Thor Solo + LocalStack and Testnet, please run:
 
 ```bash
-yarn test:solo
+yarn test:integration
 ```
 
 ## Usage
