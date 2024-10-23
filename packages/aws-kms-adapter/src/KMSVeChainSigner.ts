@@ -250,9 +250,13 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
 
         // We try first in case there is a delegator provider
         if (this.kmsVeChainDelegatorProvider !== undefined) {
+            const publicKeyDecoded = await this.getDecodedPublicKey();
+            const originAddress = Address.ofPublicKey(publicKeyDecoded);
+            const delegatedHash =
+                transaction.getTransactionHash(originAddress).bytes;
             const delegatorSignature =
                 await this.buildVeChainSignatureFromPayload(
-                    transactionHash,
+                    delegatedHash,
                     this.kmsVeChainDelegatorProvider
                 );
             return concatBytes(originSignature, delegatorSignature);
