@@ -7,7 +7,7 @@ The AWS KMS Adapter for VeChain SDK provides a secure way to sign transactions u
 - **Secure Key Management**: Use AWS KMS to securely manage and protect your private keys.
 - **Transaction Signing**: Sign VeChain transactions using keys stored in AWS KMS.
 - **Integration with VeChain SDK**: Seamlessly integrate with the VeChain SDK for blockchain interactions.
-- **[WIP] Sign and send transactions using a delegator key**: You can specify the key ID of a delegator key to leverage this VeChain feature for signing and sending transactions.
+- **Sign and send transactions using a delegator key**: You can specify the key ID of a delegator key to leverage this VeChain feature for signing and sending transactions.
 
 ## Installation
 
@@ -29,7 +29,7 @@ yarn test:solo
 
 To integrate this into your code, depending on how you plan to manage your AWS credentials, you can choose one of the following examples.
 
-Within this repo, you can create a credentials file called `aws-credentials.json` with your custom credentials under the `tests` folder in case you want to give it a try before integrating with your project. A valid format would be as follows (it is an array in case you want to include a delegator key):
+Within this repo, you can create a credentials file called `aws-credentials.json` with your custom credentials under the `tests` folder in case you want to give it a try before integrating with your project. A valid format would be as follows (it is an array in case you want to include a delegator key, assumed to be the second one):
 
 ```json
 [
@@ -58,31 +58,22 @@ Within this repo, you can create a credentials file called `aws-credentials.json
 This is the preferred way. If you integrate this library in an app deployed in AWS following with IAM roles, you can just do as follows:
 
 ```ts
-import { KMSVeChainProvider, KMSVeChainSigner } from '@vechain/sdk-aws-kms-adapter';
+import { type KMSClientParameters, KMSVeChainProvider, KMSVeChainSigner } from '@vechain/sdk-aws-kms-adapter';
 import {
     THOR_SOLO_URL,
     ThorClient
 } from '@vechain/sdk-network';
     ...
-
-    interface AwsClientParameters {
-        keyId: string;
-        region: string;
-        credentials?: {
-            accessKeyId: string;
-            secretAccessKey: string;
-            sessionToken?: string;
-        };
-        endpoint?: string;
-    }
-
+    const awsClientParameters: KMSClientParameters = {
+        keyId: 'keyId',
+        region: 'region'
+    };
     ...
 
     const thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
     const provider = new KMSVeChainProvider(
         thorClient,
-        awsClientParameters.keyId,
-        awsClientParameters.region
+        awsClientParameters
     );
     const signer = new KMSVeChainSigner(provider);
     // Signing typed data as per EIP712
@@ -98,33 +89,27 @@ import {
 This way you can connect to your AWS account by using `accessKeyId`, `secretAccessKey` and `sessionToken` if SSO is enabled.
 
 ```ts
-import { KMSVeChainProvider, KMSVeChainSigner } from '@vechain/sdk-aws-kms-adapter';
+import { type KMSClientParameters, KMSVeChainProvider, KMSVeChainSigner } from '@vechain/sdk-aws-kms-adapter';
 import {
     signerUtils,
     THOR_SOLO_URL,
     ThorClient
 } from '@vechain/sdk-network';
     ...
-
-    interface AwsClientParameters {
-        keyId: string;
-        region: string;
-        credentials?: {
-            accessKeyId: string;
-            secretAccessKey: string;
-            sessionToken?: string;
-        };
-        endpoint?: string;
-    }
-
+    const awsClientParameters: KMSClientParameters = {
+        keyId: 'keyId',
+        region: 'region',
+        credentials: {
+            accessKeyId: 'accessKeyId',
+            secretAccessKey: 'secretAccessKey'
+        }
+    };
     ...
 
     const thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
     const provider = new KMSVeChainProvider(
         thorClient,
-        awsClientParameters.keyId,
-        awsClientParameters.region
-        awsClientParameters.credentials
+        awsClientParameters
     );
     const signer = new KMSVeChainSigner(provider);
     // Signing and sending a transaction
@@ -141,32 +126,27 @@ import {
 You can also leverage LocalStack so you can try the library locally. Sample values are included in the file `tests/test-aws-credentials.json`.
 
 ```ts
-import { KMSVeChainProvider, KMSVeChainSigner } from '@vechain/sdk-aws-kms-adapter';
+import { type KMSClientParameters, KMSVeChainProvider, KMSVeChainSigner } from '@vechain/sdk-aws-kms-adapter';
 import {
     THOR_SOLO_URL,
     ThorClient
 } from '@vechain/sdk-network';
     ...
-
-    interface AwsClientParameters {
-        keyId: string;
-        region: string;
-        credentials?: {
-            accessKeyId: string;
-            secretAccessKey: string;
-            sessionToken?: string;
-        };
-        endpoint?: string;
-    }
-
+    const awsClientParameters: KMSClientParameters = {
+        keyId: 'keyId',
+        region: 'region',
+        credentials: {
+            accessKeyId: 'accessKeyId',
+            secretAccessKey: 'secretAccessKey'
+        },
+        endpoint: 'localstackEndpoint'
+    };
     ...
 
     const thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
     const provider = new KMSVeChainProvider(
         thorClient,
-        awsClientParameters.keyId,
-        awsClientParameters.region
-        awsClientParameters.credentials
+        awsClientParameters
     );
     const signer = new KMSVeChainSigner(provider);
     // Returns the address related to the KMS key
