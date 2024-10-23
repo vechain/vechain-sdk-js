@@ -197,7 +197,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
         if (this.isPositiveInfinite()) return that.isPositiveInfinite() ? 0 : 1;
         if (that.isNegativeInfinite()) return 1;
         if (that.isPositiveInfinite()) return -1;
-        const fd = this.maxFD(that, this.fractionalDigits); // Max common fractional decimals.
+        const fd = this.maxFractionalDigits(that, this.fractionalDigits); // Max common fractional decimals.
         const delta = this.dp(fd).scaledValue - that.dp(fd).scaledValue;
         return delta < 0n ? -1 : delta === 0n ? 0 : 1;
     }
@@ -267,7 +267,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
                 : this.isNegative()
                   ? FixedPointNumber.NEGATIVE_INFINITY
                   : FixedPointNumber.POSITIVE_INFINITY;
-        const fd = this.maxFD(that, this.fractionalDigits); // Max common fractional decimals.
+        const fd = this.maxFractionalDigits(that, this.fractionalDigits); // Max common fractional decimals.
         return new FixedPointNumber(
             fd,
             FixedPointNumber.div(
@@ -411,7 +411,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
                 : this.isNegative()
                   ? FixedPointNumber.NEGATIVE_INFINITY
                   : FixedPointNumber.POSITIVE_INFINITY;
-        const fd = this.maxFD(that, this.fractionalDigits); // Max common fractional decimals.
+        const fd = this.maxFractionalDigits(that, this.fractionalDigits); // Max common fractional decimals.
         return new FixedPointNumber(
             fd,
             FixedPointNumber.idiv(
@@ -647,7 +647,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      *
      * @return the greater fixed digits value among `this`, `that` and `minFixedDigits`.
      */
-    private maxFD(
+    private maxFractionalDigits(
         that: FixedPointNumber,
         minFixedDigits: bigint = FixedPointNumber.DEFAULT_FRACTIONAL_DECIMALS
     ): bigint {
@@ -686,7 +686,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
             return that.isPositiveInfinite()
                 ? FixedPointNumber.NaN
                 : FixedPointNumber.POSITIVE_INFINITY;
-        const fd = this.maxFD(that, this.fractionalDigits); // Max common fractional decimals.
+        const fd = this.maxFractionalDigits(that, this.fractionalDigits); // Max common fractional decimals.
         return new FixedPointNumber(
             fd,
             this.dp(fd).scaledValue - that.dp(fd).scaledValue
@@ -714,7 +714,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
         if (this.isNaN() || that.isNaN()) return FixedPointNumber.NaN;
         if (this.isInfinite() || that.isInfinite()) return FixedPointNumber.NaN;
         if (that.isZero()) return FixedPointNumber.NaN;
-        const fd = this.maxFD(that, this.fractionalDigits); // Max common fractional decimals.
+        const fd = this.maxFractionalDigits(that, this.fractionalDigits); // Max common fractional decimals.
         let modulo = this.abs().dp(fd).scaledValue;
         const divisor = that.abs().dp(fd).scaledValue;
         while (modulo >= divisor) {
@@ -833,7 +833,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
             return that.isNegativeInfinite()
                 ? FixedPointNumber.NaN
                 : FixedPointNumber.POSITIVE_INFINITY;
-        const fd = this.maxFD(that, this.fractionalDigits); // Max common fractional decimals.
+        const fd = this.maxFractionalDigits(that, this.fractionalDigits); // Max common fractional decimals.
         return new FixedPointNumber(
             fd,
             this.dp(fd).scaledValue + that.dp(fd).scaledValue
@@ -875,7 +875,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
         if (that.isNegativeInfinite()) return FixedPointNumber.ZERO;
         if (that.isPositiveInfinite())
             return FixedPointNumber.POSITIVE_INFINITY;
-        const fd = this.maxFD(that, this.fractionalDigits); // Max common fractional decimals.
+        const fd = this.maxFractionalDigits(that, this.fractionalDigits); // Max common fractional decimals.
         return new FixedPointNumber(
             fd,
             FixedPointNumber.pow(
