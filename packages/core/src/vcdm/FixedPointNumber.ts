@@ -24,7 +24,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
     /**
      * Not a Number.
      *
-     * @remarks {@link fd} and {@link sv} not meaningful.
+     * @remarks {@link fractionalDigits} and {@link scaledValue} not meaningful.
      *
      * @see [Number.NaN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/NaN)
      *
@@ -34,7 +34,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
     /**
      * The negative Infinity value.
      *
-     * @remarks {@link fd} and {@link sv} not meaningful.
+     * @remarks {@link fractionalDigits} and {@link scaledValue} not meaningful.
      *
      * @see [Number.NEGATIVE_INFINITY](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/NEGATIVE_INFINITY)
      */
@@ -47,7 +47,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
     /**
      * The positive Infinite value.
      *
-     * @remarks {@link fd} and {@link sv} not meaningful.
+     * @remarks {@link fractionalDigits} and {@link scaledValue} not meaningful.
      *
      * @see [Number.POSITIVE_INFINITY](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/POSITIVE_INFINITY)
      */
@@ -81,21 +81,21 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
     /**
      * Edge Flag denotes the {@link NaN} or {@link NEGATIVE_INFINITY} or {@link POSITIVE_INFINITY} value.
      *
-     * @remarks If `ef` is not zero, {@link fd} and {@link sv} are not meaningful.
+     * @remarks If `ef` is not zero, {@link fractionalDigits} and {@link scaledValue} are not meaningful.
      */
-    protected readonly ef: number;
+    protected readonly edgeFlag: number;
 
     /**
      * Fractional Digits or decimal places.
      *
      * @see [bignumber.js precision](https://mikemcl.github.io/bignumber.js/#sd)
      */
-    public readonly fd: bigint;
+    public readonly fractionalDigits: bigint;
 
     /**
-     * Scaled Value = value * 10 ^ {@link fd}.
+     * Scaled Value = value * 10 ^ {@link fractionalDigits}.
      */
-    public readonly sv: bigint;
+    public readonly scaledValue: bigint;
 
     /**
      * Returns the integer part of this FixedPointNumber value.
@@ -106,7 +106,10 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      */
     get bi(): bigint {
         if (this.isFinite()) {
-            return this.sv / FixedPointNumber.BASE ** this.fd;
+            return (
+                this.scaledValue /
+                FixedPointNumber.BASE ** this.fractionalDigits
+            );
         }
         throw new InvalidOperation(
             'FixedPointNumber.bi',
@@ -132,7 +135,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
         if (this.isNegativeInfinite()) return Number.NEGATIVE_INFINITY;
         if (this.isPositiveInfinite()) return Number.POSITIVE_INFINITY;
         if (this.isZero()) return 0;
-        return Number(this.sv) * 10 ** -Number(this.fd);
+        return Number(this.scaledValue) * 10 ** -Number(this.fractionalDigits);
     }
 
     /**
@@ -143,9 +146,9 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * @param {number} [ef=0] - Edge Flag.
      */
     protected constructor(fd: bigint, sv: bigint, ef: number = 0) {
-        this.fd = fd;
-        this.ef = ef;
-        this.sv = sv;
+        this.fractionalDigits = fd;
+        this.edgeFlag = ef;
+        this.scaledValue = sv;
     }
 
     /**
@@ -160,9 +163,9 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
         if (this.isNegativeInfinite())
             return FixedPointNumber.POSITIVE_INFINITY;
         return new FixedPointNumber(
-            this.fd,
-            this.sv < 0n ? -this.sv : this.sv,
-            this.ef
+            this.fractionalDigits,
+            this.scaledValue < 0n ? -this.scaledValue : this.scaledValue,
+            this.edgeFlag
         );
     }
 
@@ -194,8 +197,8 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
         if (this.isPositiveInfinite()) return that.isPositiveInfinite() ? 0 : 1;
         if (that.isNegativeInfinite()) return 1;
         if (that.isPositiveInfinite()) return -1;
-        const fd = this.maxFD(that, this.fd); // Max common fractional decimals.
-        const delta = this.dp(fd).sv - that.dp(fd).sv;
+        const fd = this.maxFD(that, this.fractionalDigits); // Max common fractional decimals.
+        const delta = this.dp(fd).scaledValue - that.dp(fd).scaledValue;
         return delta < 0n ? -1 : delta === 0n ? 0 : 1;
     }
 
@@ -264,11 +267,15 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
                 : this.isNegative()
                   ? FixedPointNumber.NEGATIVE_INFINITY
                   : FixedPointNumber.POSITIVE_INFINITY;
-        const fd = this.maxFD(that, this.fd); // Max common fractional decimals.
+        const fd = this.maxFD(that, this.fractionalDigits); // Max common fractional decimals.
         return new FixedPointNumber(
             fd,
-            FixedPointNumber.div(fd, this.dp(fd).sv, that.dp(fd).sv)
-        ).dp(this.fd); // Minimize fractional decimals without precision loss.
+            FixedPointNumber.div(
+                fd,
+                this.dp(fd).scaledValue,
+                that.dp(fd).scaledValue
+            )
+        ).dp(this.fractionalDigits); // Minimize fractional decimals without precision loss.
     }
 
     /**
@@ -296,8 +303,8 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
     public dp(decimalPlaces: bigint | number): FixedPointNumber {
         const dp = BigInt(decimalPlaces);
         if (dp >= 0) {
-            let fd = this.fd;
-            let sv = this.sv;
+            let fd = this.fractionalDigits;
+            let sv = this.scaledValue;
             if (dp > fd) {
                 sv *= FixedPointNumber.BASE ** (dp - fd);
                 fd = dp;
@@ -308,7 +315,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
                     sv /= FixedPointNumber.BASE;
                 }
             }
-            return new FixedPointNumber(fd, sv, this.ef);
+            return new FixedPointNumber(fd, sv, this.edgeFlag);
         }
         throw new InvalidDataType(
             'FixedPointNumber.scale',
@@ -404,11 +411,15 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
                 : this.isNegative()
                   ? FixedPointNumber.NEGATIVE_INFINITY
                   : FixedPointNumber.POSITIVE_INFINITY;
-        const fd = this.maxFD(that, this.fd); // Max common fractional decimals.
+        const fd = this.maxFD(that, this.fractionalDigits); // Max common fractional decimals.
         return new FixedPointNumber(
             fd,
-            FixedPointNumber.idiv(fd, this.dp(fd).sv, that.dp(fd).sv)
-        ).dp(this.fd); // Minimize fractional decimals without precision loss.
+            FixedPointNumber.idiv(
+                fd,
+                this.dp(fd).scaledValue,
+                that.dp(fd).scaledValue
+            )
+        ).dp(this.fractionalDigits); // Minimize fractional decimals without precision loss.
     }
 
     /**
@@ -447,7 +458,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * @see [bignumber.js isFinite](https://mikemcl.github.io/bignumber.js/#isF)
      */
     public isFinite(): boolean {
-        return this.ef === 0;
+        return this.edgeFlag === 0;
     }
 
     /**
@@ -470,7 +481,11 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      */
     public isInteger(): boolean {
         if (this.isFinite()) {
-            return this.sv % FixedPointNumber.BASE ** this.fd === 0n;
+            return (
+                this.scaledValue %
+                    FixedPointNumber.BASE ** this.fractionalDigits ===
+                0n
+            );
         }
         return false;
     }
@@ -496,7 +511,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      *  @see [bignumber.js isNaN](https://mikemcl.github.io/bignumber.js/#isNaN)
      */
     public isNaN(): boolean {
-        return Number.isNaN(this.ef);
+        return Number.isNaN(this.edgeFlag);
     }
 
     /**
@@ -520,14 +535,17 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * @see [bignumber.js isNegative](https://mikemcl.github.io/bignumber.js/#isNeg)
      */
     public isNegative(): boolean {
-        return (this.isFinite() && this.sv < 0n) || this.isNegativeInfinite();
+        return (
+            (this.isFinite() && this.scaledValue < 0n) ||
+            this.isNegativeInfinite()
+        );
     }
 
     /**
      * Returns `true` if this FixedPointNumber value is {@link NEGATIVE_INFINITY}, otherwise returns `false`.
      */
     public isNegativeInfinite(): boolean {
-        return this.ef === Number.NEGATIVE_INFINITY;
+        return this.edgeFlag === Number.NEGATIVE_INFINITY;
     }
 
     /**
@@ -561,7 +579,10 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * @see [bignumber.js isPositive](https://mikemcl.github.io/bignumber.js/#isPos)
      */
     public isPositive(): boolean {
-        return (this.isFinite() && this.sv >= 0n) || this.isPositiveInfinite();
+        return (
+            (this.isFinite() && this.scaledValue >= 0n) ||
+            this.isPositiveInfinite()
+        );
     }
 
     /**
@@ -570,7 +591,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * @return `true` if this FixedPointNumber value is {@link POSITIVE_INFINITY}, otherwise returns `false`.
      */
     public isPositiveInfinite(): boolean {
-        return this.ef === Number.POSITIVE_INFINITY;
+        return this.edgeFlag === Number.POSITIVE_INFINITY;
     }
 
     /**
@@ -581,7 +602,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * [see bignumber.js isZero](https://mikemcl.github.io/bignumber.js/#isZ)
      */
     public isZero(): boolean {
-        return this.isFinite() && this.sv === 0n;
+        return this.isFinite() && this.scaledValue === 0n;
     }
 
     /**
@@ -630,7 +651,10 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
         that: FixedPointNumber,
         minFixedDigits: bigint = FixedPointNumber.DEFAULT_FRACTIONAL_DECIMALS
     ): bigint {
-        const fd = this.fd < that.fd ? that.fd : this.fd;
+        const fd =
+            this.fractionalDigits < that.fractionalDigits
+                ? that.fractionalDigits
+                : this.fractionalDigits;
         return fd > minFixedDigits ? fd : minFixedDigits;
     }
 
@@ -662,10 +686,11 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
             return that.isPositiveInfinite()
                 ? FixedPointNumber.NaN
                 : FixedPointNumber.POSITIVE_INFINITY;
-        const fd = this.maxFD(that, this.fd); // Max common fractional decimals.
-        return new FixedPointNumber(fd, this.dp(fd).sv - that.dp(fd).sv).dp(
-            this.fd
-        ); // Minimize fractional decimals without precision loss.
+        const fd = this.maxFD(that, this.fractionalDigits); // Max common fractional decimals.
+        return new FixedPointNumber(
+            fd,
+            this.dp(fd).scaledValue - that.dp(fd).scaledValue
+        ).dp(this.fractionalDigits); // Minimize fractional decimals without precision loss.
     }
 
     /**
@@ -689,13 +714,13 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
         if (this.isNaN() || that.isNaN()) return FixedPointNumber.NaN;
         if (this.isInfinite() || that.isInfinite()) return FixedPointNumber.NaN;
         if (that.isZero()) return FixedPointNumber.NaN;
-        const fd = this.maxFD(that, this.fd); // Max common fractional decimals.
-        let modulo = this.abs().dp(fd).sv;
-        const divisor = that.abs().dp(fd).sv;
+        const fd = this.maxFD(that, this.fractionalDigits); // Max common fractional decimals.
+        let modulo = this.abs().dp(fd).scaledValue;
+        const divisor = that.abs().dp(fd).scaledValue;
         while (modulo >= divisor) {
             modulo -= divisor;
         }
-        return new FixedPointNumber(fd, modulo).dp(this.fd); // Minimize fractional decimals without precision loss.
+        return new FixedPointNumber(fd, modulo).dp(this.fractionalDigits); // Minimize fractional decimals without precision loss.
     }
 
     /**
@@ -726,7 +751,11 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
             return FixedPointNumber.POSITIVE_INFINITY;
         if (this.isPositiveInfinite())
             return FixedPointNumber.NEGATIVE_INFINITY;
-        return new FixedPointNumber(this.fd, -this.sv, this.ef);
+        return new FixedPointNumber(
+            this.fractionalDigits,
+            -this.scaledValue,
+            this.edgeFlag
+        );
     }
 
     /**
@@ -804,10 +833,11 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
             return that.isNegativeInfinite()
                 ? FixedPointNumber.NaN
                 : FixedPointNumber.POSITIVE_INFINITY;
-        const fd = this.maxFD(that, this.fd); // Max common fractional decimals.
-        return new FixedPointNumber(fd, this.dp(fd).sv + that.dp(fd).sv).dp(
-            this.fd
-        ); // Minimize fractional decimals without precision loss.
+        const fd = this.maxFD(that, this.fractionalDigits); // Max common fractional decimals.
+        return new FixedPointNumber(
+            fd,
+            this.dp(fd).scaledValue + that.dp(fd).scaledValue
+        ).dp(this.fractionalDigits); // Minimize fractional decimals without precision loss.
     }
 
     /**
@@ -845,11 +875,15 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
         if (that.isNegativeInfinite()) return FixedPointNumber.ZERO;
         if (that.isPositiveInfinite())
             return FixedPointNumber.POSITIVE_INFINITY;
-        const fd = this.maxFD(that, this.fd); // Max common fractional decimals.
+        const fd = this.maxFD(that, this.fractionalDigits); // Max common fractional decimals.
         return new FixedPointNumber(
             fd,
-            FixedPointNumber.pow(fd, this.dp(fd).sv, that.dp(fd).sv)
-        ).dp(this.fd); // Minimize fractional decimals without precision loss.
+            FixedPointNumber.pow(
+                fd,
+                this.dp(fd).scaledValue,
+                that.dp(fd).scaledValue
+            )
+        ).dp(this.fractionalDigits); // Minimize fractional decimals without precision loss.
     }
 
     /**
@@ -928,8 +962,8 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
             return FixedPointNumber.POSITIVE_INFINITY;
         try {
             return new FixedPointNumber(
-                this.fd,
-                FixedPointNumber.sqr(this.sv, this.fd)
+                this.fractionalDigits,
+                FixedPointNumber.sqr(this.scaledValue, this.fractionalDigits)
             );
             //  eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
@@ -965,11 +999,18 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
             return that.isNegative()
                 ? FixedPointNumber.NEGATIVE_INFINITY
                 : FixedPointNumber.POSITIVE_INFINITY;
-        const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
+        const fd =
+            this.fractionalDigits > that.fractionalDigits
+                ? this.fractionalDigits
+                : that.fractionalDigits; // Max common fractional decimals.
         return new FixedPointNumber(
             fd,
-            FixedPointNumber.mul(this.dp(fd).sv, that.dp(fd).sv, fd)
-        ).dp(this.fd); // Minimize fractional decimals without precision loss.
+            FixedPointNumber.mul(
+                this.dp(fd).scaledValue,
+                that.dp(fd).scaledValue,
+                fd
+            )
+        ).dp(this.fractionalDigits); // Minimize fractional decimals without precision loss.
     }
 
     /**
@@ -979,12 +1020,17 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * @return {string} A string representation of the fixed-point number.
      */
     public toString(decimalSeparator = '.'): string {
-        if (this.ef === 0) {
-            const sign = this.sv < 0n ? '-' : '';
+        if (this.edgeFlag === 0) {
+            const sign = this.scaledValue < 0n ? '-' : '';
             const digits =
-                this.sv < 0n ? (-this.sv).toString() : this.sv.toString();
-            const padded = digits.padStart(Number(this.fd), '0');
-            const decimals = this.fd > 0 ? padded.slice(Number(-this.fd)) : '';
+                this.scaledValue < 0n
+                    ? (-this.scaledValue).toString()
+                    : this.scaledValue.toString();
+            const padded = digits.padStart(Number(this.fractionalDigits), '0');
+            const decimals =
+                this.fractionalDigits > 0
+                    ? padded.slice(Number(-this.fractionalDigits))
+                    : '';
             const integers = padded.slice(0, padded.length - decimals.length);
             const integersShow = integers.length < 1 ? '0' : integers;
             const decimalsShow = FixedPointNumber.trimEnd(decimals);
@@ -994,7 +1040,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
                 (decimalsShow.length > 0 ? decimalSeparator + decimalsShow : '')
             );
         }
-        return this.ef.toString();
+        return this.edgeFlag.toString();
     }
 
     /**
