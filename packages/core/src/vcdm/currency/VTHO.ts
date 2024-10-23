@@ -30,7 +30,7 @@ class VTHO extends Coin {
      *
      * @type {bigint}
      */
-    public readonly wei: bigint = this.value.dp(VTHO.WEI_FD).sv;
+    public readonly wei: bigint = this.value.dp(VTHO.WEI_FD).scaledValue;
 
     /**
      * Create a new instance with the given `value`.

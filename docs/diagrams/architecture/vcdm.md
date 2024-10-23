@@ -65,7 +65,8 @@ classDiagram
         +FixedPointNumber value
     }
     class FixedPointNumber {
-        +bigint sv
+        +bigint fractionalDigits
+        +bigint scaledValue
         +FixedPointNumber NaN$
         +FixedPointNumber NEGATIVE_INFINITY$
         +FixedPointNumber POSITIVE_INFINITY$
