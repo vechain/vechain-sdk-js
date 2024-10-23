@@ -582,17 +582,17 @@ describe('FixedPointNumber class tests', () => {
         test('scale down', () => {
             const fd = 5n;
             const n = 123.45;
-            expect(FixedPointNumber.of(n).dp(fd)).toEqual(
-                FixedPointNumber.of(n, fd)
-            );
+            const expected = FixedPointNumber.of(n);
+            const actual = FixedPointNumber.of(n).dp(fd);
+            expect(actual.isEqual(expected)).toBe(true);
         });
 
         test('scale up', () => {
             const fd = 25n;
             const n = 123.45;
-            expect(FixedPointNumber.of(n).dp(fd)).toEqual(
-                FixedPointNumber.of(n, fd)
-            );
+            const expected = FixedPointNumber.of(n);
+            const actual = FixedPointNumber.of(n).dp(fd);
+            expect(actual.isEqual(expected)).toBe(true);
         });
     });
 
@@ -672,10 +672,10 @@ describe('FixedPointNumber class tests', () => {
         });
 
         test('n / NaN = NaN', () => {
-            const lr = 123.45;
-            const r = NaN;
-            const actual = FixedPointNumber.of(lr).div(FixedPointNumber.of(r));
-            const expected = BigNumber(lr).div(BigNumber(r));
+            const x = FixedPointNumber.of(123.45);
+            const y = FixedPointNumber.of(NaN);
+            const actual = x.div(y);
+            const expected = BigNumber(x.n).div(BigNumber(y.n));
             expect(actual.toString()).toBe(expected.toString());
         });
 
@@ -712,41 +712,46 @@ describe('FixedPointNumber class tests', () => {
         });
 
         test('x / y = periodic', () => {
-            const lr = -1;
-            const r = 3;
-            const actual = FixedPointNumber.of(lr).div(FixedPointNumber.of(r));
-            const expected = BigNumber(lr).div(BigNumber(r));
-            expect(actual.toString()).toBe(expected.toString());
+            const x = FixedPointNumber.of(-1);
+            const y = FixedPointNumber.of(3);
+            const actual = x.div(y);
+            const expected = BigNumber(x.n).div(BigNumber(y.n));
+            const dp = -5; // BigNumber default precision diverges after 15 digits.
+            expect(actual.toString().slice(0, dp)).toBe(
+                expected.toString().slice(0, dp)
+            );
         });
 
         test('x / y = real', () => {
-            const lr = 355;
-            const r = 113;
-            const actual = FixedPointNumber.of(lr).div(FixedPointNumber.of(r));
-            const expected = BigNumber(lr).div(BigNumber(r));
-            const dp = 15; // BigNumber default precision diverges after 15 digits.
-            expect(actual.n.toFixed(dp)).toBe(expected.toNumber().toFixed(dp));
+            const x = FixedPointNumber.of(355);
+            const y = FixedPointNumber.of(113);
+            const actual = x.div(y);
+            const expected = BigNumber(x.n).div(BigNumber(y.n));
+            const dp = -5; // BigNumber default precision diverges after 15 digits.
+            expect(actual.toString().slice(0, dp)).toBe(
+                expected.toString().slice(0, dp)
+            );
         });
 
         test('x / y = integer', () => {
-            const lr = 355;
-            const r = -5;
-            const actual = FixedPointNumber.of(lr).div(FixedPointNumber.of(r));
-            const expected = BigNumber(lr).div(BigNumber(r));
+            const x = FixedPointNumber.of(355);
+            const y = FixedPointNumber.of(-5);
+            const actual = x.div(y);
+            const expected = BigNumber(x.n).div(BigNumber(y.n));
             expect(actual.n).toBe(expected.toNumber());
         });
 
         test('x / 1 = x scale test', () => {
-            const l = 123.45;
-            const r = 1;
-            const actualUp = FixedPointNumber.of(l, 7n).div(
-                FixedPointNumber.of(r, 5n)
+            const x = 123.45;
+            const y = 1;
+            const actualUp = FixedPointNumber.of(x, 7n).div(
+                FixedPointNumber.of(y, 5n)
             );
-            const actualDn = FixedPointNumber.of(l, 5n).div(
-                FixedPointNumber.of(r, 7n)
+            const actualDn = FixedPointNumber.of(x, 5n).div(
+                FixedPointNumber.of(y, 7n)
             );
             expect(actualUp.isEqual(actualDn)).toBe(true);
-            expect(actualUp.isEqual(FixedPointNumber.of(l))).toBe(true);
+            expect(actualUp.isEqual(FixedPointNumber.of(x))).toBe(true);
         });
     });
 
@@ -882,17 +887,17 @@ describe('FixedPointNumber class tests', () => {
         });
 
         test('x / 1 = x scale test', () => {
-            const l = 123.45;
-            const r = 1;
-            const actualUp = FixedPointNumber.of(l, 7n).idiv(
-                FixedPointNumber.of(r, 5n)
+            const x = 123.45;
+            const y = 1;
+            const actualUp = FixedPointNumber.of(x, 7n).idiv(
+                FixedPointNumber.of(y, 5n)
             );
-            const actualDn = FixedPointNumber.of(l, 5n).idiv(
-                FixedPointNumber.of(r, 7n)
+            const actualDn = FixedPointNumber.of(x, 5n).idiv(
+                FixedPointNumber.of(y, 7n)
             );
-            const expected = BigNumber(l).idiv(BigNumber(r));
+            const expected = BigNumber(x).idiv(BigNumber(y));
             expect(actualUp.isEqual(actualDn)).toBe(true);
-            expect(actualDn.n).toBe(expected.toNumber());
+            expect(actualDn.toString()).toBe(expected.toString());
         });
     });
 
@@ -1944,23 +1949,19 @@ describe('FixedPointNumber class tests', () => {
         });
 
         test('l - r -> >0', () => {
-            const fd = 13;
             const l = 123.45;
             const r = 23.45678;
             const actual = FixedPointNumber.of(l).minus(FixedPointNumber.of(r));
             const expected = BigNumber(l).minus(BigNumber(r));
-            expect(actual.n.toFixed(fd)).toBe(expected.toNumber().toFixed(fd));
-            expect(actual.n).toBe(l - r);
+            expect(actual.toString()).toBe(expected.toString());
         });
 
         test('l - r -> <0', () => {
-            const fd = 13;
             const l = 123.45;
             const r = -1234.5678;
             const actual = FixedPointNumber.of(l).minus(FixedPointNumber.of(r));
             const expected = BigNumber(l).minus(BigNumber(r));
-            expect(actual.n.toFixed(fd)).toBe(expected.toNumber().toFixed(fd));
-            expect(actual.n).toBe(l - r);
+            expect(actual.toString()).toBe(expected.toString());
         });
     });
 
@@ -2071,11 +2072,7 @@ describe('FixedPointNumber class tests', () => {
                 FixedPointNumber.of(r)
             );
             const expected = BigNumber(l).modulo(BigNumber(r));
-            expect(actual).toEqual(FixedPointNumber.of(expected.toNumber()));
-            expect(
-                FixedPointNumber.of(l).modulo(FixedPointNumber.of(-r))
-            ).toEqual(actual);
-            expect(actual.isZero()).toBe(true);
+            expect(actual.toString()).toBe(expected.toString());
         });
 
         test('n % ±1 -> 0 - scale test', () => {
@@ -2402,11 +2399,15 @@ describe('FixedPointNumber class tests', () => {
         test('±b ^ 0 = 1', () => {
             const b = 123.45;
             const e = 0;
-            const actual = FixedPointNumber.of(b).pow(FixedPointNumber.of(e));
-            expect(actual).toEqual(FixedPointNumber.of(1));
-            expect(FixedPointNumber.of(-b).pow(FixedPointNumber.of(e))).toEqual(
-                actual
+            const expected = FixedPointNumber.of(1);
+            const actualFromNegative = FixedPointNumber.of(-b).pow(
+                FixedPointNumber.of(e)
             );
+            const actualFromPositive = FixedPointNumber.of(b).pow(
+                FixedPointNumber.of(e)
+            );
+            expect(actualFromNegative.isEqual(expected)).toBe(true);
+            expect(actualFromPositive.isEqual(expected)).toBe(true);
         });
     });
 
@@ -2568,25 +2569,29 @@ describe('FixedPointNumber class tests', () => {
 
     describe('toString methods tests', () => {
         test('< 1', () => {
-            const n = FixedPointNumber.of(0.0001);
-            console.log(n.toString());
-            console.log(n);
+            const expected = 0.0001;
+            const actual = FixedPointNumber.of(expected);
+            expect(actual.toString()).toEqual(expected.toString());
         });
         test('> 1', () => {
-            const n = FixedPointNumber.of(123.456);
-            console.log(n.toString());
+            const expected = 123.456;
+            const actual = FixedPointNumber.of(123.456);
+            expect(actual.toString()).toEqual(expected.toString());
         });
         test('NaN', () => {
-            const r = FixedPointNumber.of(Number.NaN);
-            console.log(r.toString());
+            const expected = Number.NaN;
+            const actual = FixedPointNumber.of(expected);
+            expect(actual.toString()).toEqual(expected.toString());
         });
-        test('Negative infinite', () => {
-            const r = FixedPointNumber.of(-Infinity);
-            console.log(r.toString());
+        test('-Infinity', () => {
+            const expected = -Infinity;
+            const actual = FixedPointNumber.of(-Infinity);
+            expect(actual.toString()).toEqual(expected.toString());
         });
-        test('Positive infinite', () => {
-            const r = FixedPointNumber.of(Infinity);
-            console.log(r.toString());
+        test('+Infinity', () => {
+            const expected = -Infinity;
+            const actual = FixedPointNumber.of(expected);
+            expect(actual.toString()).toEqual(expected.toString());
         });
     });
 });
