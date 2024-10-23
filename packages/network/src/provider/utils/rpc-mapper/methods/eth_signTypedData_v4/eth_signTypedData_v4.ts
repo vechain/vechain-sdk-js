@@ -1,12 +1,12 @@
-import type { ThorClient } from '../../../../../thor-client';
-import type { VeChainProvider } from '../../../../providers/vechain-provider';
+import { Address, type vechain_sdk_core_ethers } from '@vechain/sdk-core';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
 import type { VeChainSigner } from '../../../../../signer/signers';
-import { Address, type vechain_sdk_core_ethers } from '@vechain/sdk-core';
+import type { ThorClient } from '../../../../../thor-client';
+import type { VeChainProvider } from '../../../../providers/vechain-provider';
 
 /**
  * RPC Method eth_signTypedDataV4 implementation

@@ -230,16 +230,16 @@ interface VeChainSigner {
     /**
      * The provider attached to this Signer (if any).
      */
-    provider: AvailableVeChainProviders | null;
+    provider?: AvailableVeChainProviders;
 
     /**
      *  Returns a new instance of this Signer connected to //provider// or detached
-     *  from any Provider if null.
+     *  from any Provider if undefined.
      *
      * @param provider - The provider to connect to
      * @returns a new instance of this Signer connected to //provider// or detached
      */
-    connect: (provider: AvailableVeChainProviders | null) => this;
+    connect: (provider: AvailableVeChainProviders) => this;
 
     /**
      * Get the address of the Signer.
@@ -373,8 +373,8 @@ interface VeChainSigner {
 }
 
 export {
-    type VeChainSigner,
     type AvailableVeChainProviders,
     type TransactionRequestInput,
-    type SignTypedDataOptions
+    type SignTypedDataOptions,
+    type VeChainSigner
 };

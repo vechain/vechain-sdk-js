@@ -43,14 +43,14 @@
     "@vechain/sdk-network": "1.0.0-beta.32",
     "commander": "^12.1.0",
     "cors": "^2.8.5",
-    "express": "^4.20.0"
+    "express": "^4.21.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
-    "@types/express": "^4.17.21",
-    "@types/node": "^22.5.3",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.7.9",
     "cross-env": "^7.0.3",
-    "testcontainers": "^10.13.1",
+    "testcontainers": "^10.13.2",
     "tsup": "^8.3.0",
     "typescript": "^5.6.3"
   }
