@@ -134,14 +134,14 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
 
     /**
      * It returns the address associated with the signer.
-     * @param {boolean} fromDelegator (Optional) If true, the provider will be the delegator.
+     * @param {boolean} fromDelegatorProvider (Optional) If true, the provider will be the delegator.
      * @returns The address associated with the signer.
      */
     public async getAddress(
-        fromDelegator: boolean | undefined = false
+        fromDelegatorProvider: boolean | undefined = false
     ): Promise<string> {
         try {
-            const kmsProvider = fromDelegator
+            const kmsProvider = fromDelegatorProvider
                 ? this.kmsVeChainDelegatorProvider
                 : this.kmsVeChainProvider;
             const publicKeyDecoded =
@@ -151,7 +151,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
             throw new SignerMethodError(
                 'KMSVeChainSigner.getAddress',
                 'The address could not be retrieved.',
-                { fromDelegator },
+                { fromDelegatorProvider },
                 error
             );
         }

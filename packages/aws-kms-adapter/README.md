@@ -191,7 +191,7 @@ import {
         thorClient,
         delegatorAwsClientParameters
     );
-    signerWithDelegator = new KMSVeChainSigner(
+    const signerWithDelegator = new KMSVeChainSigner(
         provider,
         {
             provider: delegatorProvider
@@ -233,7 +233,7 @@ import {
         thorClient,
         awsClientParameters
     );
-    signerWithDelegator = new KMSVeChainSigner(
+    const signerWithDelegator = new KMSVeChainSigner(
         provider,
         {
             url: 'https://sponsor-testnet.vechain.energy/by/705'
