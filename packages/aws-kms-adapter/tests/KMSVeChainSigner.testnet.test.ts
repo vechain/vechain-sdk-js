@@ -49,9 +49,8 @@ describe('KMSVeChainSigner - Testnet', () => {
             './aws-credentials.json'
         );
         let awsClientParameters: KMSClientParameters;
-        let delegatorAwsClientParameters: KMSClientParameters;
         try {
-            [awsClientParameters, delegatorAwsClientParameters] = JSON.parse(
+            [awsClientParameters] = JSON.parse(
                 fs.readFileSync(awsCredentialsPath, 'utf8')
             ) as KMSClientParameters[];
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -61,18 +60,12 @@ describe('KMSVeChainSigner - Testnet', () => {
                 __dirname,
                 './test-aws-credentials.json'
             );
-            [awsClientParameters, delegatorAwsClientParameters] = JSON.parse(
+            [awsClientParameters] = JSON.parse(
                 fs.readFileSync(testAwsCredentialsPath, 'utf8')
             ) as KMSClientParameters[];
         }
         thorClient = ThorClient.fromUrl(TESTNET_URL);
 
-        // Signer with delegator enabled
-        const delegatorProvider = new KMSVeChainProvider(
-            thorClient,
-            delegatorAwsClientParameters
-        );
-        expect(delegatorProvider).toBeInstanceOf(KMSVeChainProvider);
         signerWithDelegator = new KMSVeChainSigner(
             new KMSVeChainProvider(thorClient, awsClientParameters, true),
             {

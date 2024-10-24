@@ -151,7 +151,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
             throw new SignerMethodError(
                 'KMSVeChainSigner.getAddress',
                 'The address could not be retrieved.',
-                {},
+                { fromDelegator },
                 error
             );
         }

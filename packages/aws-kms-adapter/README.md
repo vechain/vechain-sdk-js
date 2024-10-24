@@ -152,3 +152,97 @@ import {
     // Returns the address related to the KMS key
     const address = await signer.getAddress();
 ```
+
+### Delegation (provider)
+
+You can also use delegation to sign your transactions. In this example the source of the delegation is a delegator which key is in KMS so requires a `KMSVeChainProvider`.
+
+```ts
+import { type KMSClientParameters, KMSVeChainProvider, KMSVeChainSigner } from '@vechain/sdk-aws-kms-adapter';
+import {
+    THOR_SOLO_URL,
+    ThorClient
+} from '@vechain/sdk-network';
+    ...
+    const awsClientParameters: KMSClientParameters = {
+        keyId: 'keyId',
+        region: 'region',
+        credentials: {
+            accessKeyId: 'accessKeyId',
+            secretAccessKey: 'secretAccessKey'
+        },
+        endpoint: 'localstackEndpoint'
+    };
+
+    const delegatorAwsClientParameters: KMSClientParameters = {
+        // Same format as awsClientParameters, changing values so we can connect
+        // to something different to LocalStack if we want (see examples above)
+    }
+    ...
+
+    const thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
+    const provider = new KMSVeChainProvider(
+        thorClient,
+        awsClientParameters
+    );
+
+    // Signer with delegator enabled
+    const delegatorProvider = new KMSVeChainProvider(
+        thorClient,
+        delegatorAwsClientParameters
+    );
+    signerWithDelegator = new KMSVeChainSigner(
+        provider,
+        {
+            provider: delegatorProvider
+        }
+    );
+
+    // Returns the address related to the origin KMS key
+    const address = await signerWithDelegator.getAddress();
+    // Returns the address related to the delegator KMS key
+    const address = await signerWithDelegator.getAddress(true);
+```
+
+### Delegation (url)
+
+You can also use delegation to sign your transactions. In this example the source of the delegation is a URL that returns the signature (for instance, `https://sponsor-testnet.vechain.energy/by/705`, more details on how to get yours [here](https://learn.vechain.energy/vechain.energy/FeeDelegation/Setup/)).
+
+```ts
+import { type KMSClientParameters, KMSVeChainProvider, KMSVeChainSigner } from '@vechain/sdk-aws-kms-adapter';
+import {
+    THOR_SOLO_URL,
+    ThorClient
+} from '@vechain/sdk-network';
+    ...
+    const awsClientParameters: KMSClientParameters = {
+        keyId: 'keyId',
+        region: 'region',
+        credentials: {
+            accessKeyId: 'accessKeyId',
+            secretAccessKey: 'secretAccessKey'
+        },
+        endpoint: 'localstackEndpoint'
+    };
+    ...
+
+    const thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
+
+    // Signer with delegator enabled
+    const provider = new KMSVeChainProvider(
+        thorClient,
+        awsClientParameters
+    );
+    signerWithDelegator = new KMSVeChainSigner(
+        provider,
+        {
+            url: 'https://sponsor-testnet.vechain.energy/by/705'
+        }
+    );
+
+    // Returns the address related to the origin KMS key
+    const address = await signerWithDelegator.getAddress();
+
+    // See /tests folder for more examples. This time we wont get the address
+    // of the delegator since there is no provider
+```
