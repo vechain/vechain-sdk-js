@@ -12,6 +12,7 @@ import {
 import { JSONRPCInvalidParams, SignerMethodError } from '@vechain/sdk-errors';
 import {
     type AvailableVeChainProviders,
+    DelegationHandler,
     RPC_METHODS,
     type TransactionRequestInput,
     VeChainAbstractSigner
@@ -22,8 +23,17 @@ import { KMSVeChainProvider } from './KMSVeChainProvider';
 
 class KMSVeChainSigner extends VeChainAbstractSigner {
     private readonly kmsVeChainProvider?: KMSVeChainProvider;
+    private readonly kmsVeChainDelegatorProvider?: KMSVeChainProvider;
+    private readonly kmsVeChainDelegatorUrl?: string;
 
-    public constructor(provider?: AvailableVeChainProviders) {
+    public constructor(
+        provider?: AvailableVeChainProviders,
+        delegator?: {
+            provider?: AvailableVeChainProviders;
+            url?: string;
+        }
+    ) {
+        // Origin provider
         super(provider);
         if (this.provider !== undefined) {
             if (!(this.provider instanceof KMSVeChainProvider)) {
@@ -34,6 +44,24 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
                 );
             }
             this.kmsVeChainProvider = this.provider;
+        }
+
+        // Delegator provider, if any
+        if (delegator !== undefined) {
+            if (
+                delegator.provider !== undefined &&
+                delegator.provider instanceof KMSVeChainProvider
+            ) {
+                this.kmsVeChainDelegatorProvider = delegator.provider;
+            } else if (delegator.url !== undefined) {
+                this.kmsVeChainDelegatorUrl = delegator.url;
+            } else {
+                throw new JSONRPCInvalidParams(
+                    'KMSVeChainSigner.constructor',
+                    'The delegator object is not well formed, either provider or url should be provided.',
+                    { delegator }
+                );
+            }
         }
     }
 
@@ -87,33 +115,43 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
 
     /**
      * Gets the DER-encoded public key from KMS and decodes it.
+     * @param {KMSVeChainProvider} kmsProvider (Optional) The provider to get the public key from.
      * @returns {Uint8Array} The decoded public key.
      */
-    private async getDecodedPublicKey(): Promise<Uint8Array> {
-        if (this.kmsVeChainProvider === undefined) {
+    private async getDecodedPublicKey(
+        kmsProvider: KMSVeChainProvider | undefined = this.kmsVeChainProvider
+    ): Promise<Uint8Array> {
+        if (kmsProvider === undefined) {
             throw new JSONRPCInvalidParams(
                 'KMSVeChainSigner.getDecodedPublicKey',
                 'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
                 {}
             );
         }
-        const publicKey = await this.kmsVeChainProvider.getPublicKey();
+        const publicKey = await kmsProvider.getPublicKey();
         return this.decodePublicKey(publicKey);
     }
 
     /**
      * It returns the address associated with the signer.
+     * @param {boolean} fromDelegatorProvider (Optional) If true, the provider will be the delegator.
      * @returns The address associated with the signer.
      */
-    public async getAddress(): Promise<string> {
+    public async getAddress(
+        fromDelegatorProvider: boolean | undefined = false
+    ): Promise<string> {
         try {
-            const publicKeyDecoded = await this.getDecodedPublicKey();
+            const kmsProvider = fromDelegatorProvider
+                ? this.kmsVeChainDelegatorProvider
+                : this.kmsVeChainProvider;
+            const publicKeyDecoded =
+                await this.getDecodedPublicKey(kmsProvider);
             return Address.ofPublicKey(publicKeyDecoded).toString();
         } catch (error) {
             throw new SignerMethodError(
                 'KMSVeChainSigner.getAddress',
                 'The address could not be retrieved.',
-                {},
+                { fromDelegatorProvider },
                 error
             );
         }
@@ -122,12 +160,14 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
     /**
      * It builds a VeChain signature from a bytes payload.
      * @param {Uint8Array} payload to sign.
+     * @param {KMSVeChainProvider} kmsProvider The provider to sign the payload.
      * @returns {Uint8Array} The signature following the VeChain format.
      */
     private async buildVeChainSignatureFromPayload(
-        payload: Uint8Array
+        payload: Uint8Array,
+        kmsProvider: KMSVeChainProvider | undefined = this.kmsVeChainProvider
     ): Promise<Uint8Array> {
-        if (this.kmsVeChainProvider === undefined) {
+        if (kmsProvider === undefined) {
             throw new JSONRPCInvalidParams(
                 'KMSVeChainSigner.buildVeChainSignatureFromPayload',
                 'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
@@ -136,7 +176,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         }
 
         // Sign the transaction hash
-        const signature = await this.kmsVeChainProvider.sign(payload);
+        const signature = await kmsProvider.sign(payload);
 
         // Build the VeChain signature using the r, s and v components
         const hexSignature = bytesToHex(signature);
@@ -145,7 +185,8 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
 
         const recoveryBit = await this.getRecoveryBit(
             decodedSignatureWithoutRecoveryBit,
-            payload
+            payload,
+            kmsProvider
         );
 
         const decodedSignature = concatBytes(
@@ -158,15 +199,17 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
 
     /**
      * Returns the recovery bit of a signature.
-     * @param decodedSignatureWithoutRecoveryBit Signature with the R and S components only.
-     * @param transactionHash Raw transaction hash.
+     * @param {SignatureType} decodedSignatureWithoutRecoveryBit Signature with the R and S components only.
+     * @param {Uint8Array} transactionHash Raw transaction hash.
+     * @param {KMSVeChainProvider} kmsProvider The provider to sign the payload.
      * @returns {number} The V component of the signature (either 0 or 1).
      */
     private async getRecoveryBit(
         decodedSignatureWithoutRecoveryBit: SignatureType,
-        transactionHash: Uint8Array
+        transactionHash: Uint8Array,
+        kmsProvider: KMSVeChainProvider
     ): Promise<number> {
-        const publicKey = await this.getDecodedPublicKey();
+        const publicKey = await this.getDecodedPublicKey(kmsProvider);
         const publicKeyHex = toHex(publicKey);
 
         for (let i = 0n; i < 2n; i++) {
@@ -191,6 +234,53 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
     }
 
     /**
+     * Concat the origin signature to the delegator signature if the delegator is set.
+     * @param {Transaction} transaction Transaction to sign.
+     * @returns Both signatures concatenated if the delegator is set, the origin signature otherwise.
+     */
+    private async concatSignatureIfDelegation(
+        transaction: Transaction
+    ): Promise<Uint8Array> {
+        // Get the transaction hash
+        const transactionHash = transaction.getTransactionHash().bytes;
+
+        // Sign the transaction hash using origin key
+        const originSignature =
+            await this.buildVeChainSignatureFromPayload(transactionHash);
+
+        // We try first in case there is a delegator provider
+        if (this.kmsVeChainDelegatorProvider !== undefined) {
+            const publicKeyDecoded = await this.getDecodedPublicKey();
+            const originAddress = Address.ofPublicKey(publicKeyDecoded);
+            const delegatedHash =
+                transaction.getTransactionHash(originAddress).bytes;
+            const delegatorSignature =
+                await this.buildVeChainSignatureFromPayload(
+                    delegatedHash,
+                    this.kmsVeChainDelegatorProvider
+                );
+            return concatBytes(originSignature, delegatorSignature);
+        } else if (
+            // If not, we try with the delegator URL
+            this.kmsVeChainDelegatorUrl !== undefined &&
+            this.provider !== undefined
+        ) {
+            const originAddress = await this.getAddress();
+            const delegatorSignature = await DelegationHandler({
+                delegatorUrl: this.kmsVeChainDelegatorUrl
+            }).getDelegationSignatureUsingUrl(
+                transaction,
+                originAddress,
+                this.provider.thorClient.httpClient
+            );
+
+            return concatBytes(originSignature, delegatorSignature);
+        }
+
+        return originSignature;
+    }
+
+    /**
      * It signs a transaction.
      * @param transactionToSign Transaction body to sign in plain format.
      * @returns {string} The signed transaction in hexadecimal format.
@@ -200,18 +290,18 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
     ): Promise<string> {
         try {
             // Populate the call, to get proper from and to address (compatible with multi-clause transactions)
-            const populatedTransaction =
+            const transactionBody =
                 await this.populateTransaction(transactionToSign);
 
-            // Get the transaction hash
-            const transactionHash =
-                Transaction.of(populatedTransaction).getTransactionHash().bytes;
+            // Get the transaction object
+            const transaction = Transaction.of(transactionBody);
 
-            const veChainSignature =
-                await this.buildVeChainSignatureFromPayload(transactionHash);
+            // Sign the transaction hash using delegation if needed
+            const signature =
+                await this.concatSignatureIfDelegation(transaction);
 
             return Hex.of(
-                Transaction.of(populatedTransaction, veChainSignature).encoded
+                Transaction.of(transactionBody, signature).encoded
             ).toString();
         } catch (error) {
             throw new SignerMethodError(

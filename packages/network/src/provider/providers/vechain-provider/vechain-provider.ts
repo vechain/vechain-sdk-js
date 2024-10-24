@@ -1,8 +1,5 @@
 import { HexInt } from '@vechain/sdk-core';
-import {
-    JSONRPCInvalidParams,
-    JSONRPCMethodNotFound
-} from '@vechain/sdk-errors';
+import { JSONRPCMethodNotFound } from '@vechain/sdk-errors';
 import { EventEmitter } from 'events';
 import { type VeChainSigner } from '../../../signer';
 import {
@@ -58,15 +55,6 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
         readonly enableDelegation: boolean = false
     ) {
         super();
-
-        // Throw an error if delegation is enabled but the delegator is not defined
-        if (enableDelegation && wallet?.delegator === undefined) {
-            throw new JSONRPCInvalidParams(
-                'VechainProvider constructor',
-                'Delegation is enabled but the delegator is not defined. Ensure that the delegator is defined and connected to the network.',
-                { wallet }
-            );
-        }
     }
 
     /**

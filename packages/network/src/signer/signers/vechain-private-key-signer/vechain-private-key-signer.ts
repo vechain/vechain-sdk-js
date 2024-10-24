@@ -271,7 +271,6 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
      *
      * @param unsignedTransactionBody - The unsigned transaction body to sign.
      * @param originPrivateKey - The private key of the origin account.
-     * @param  - (Optional) The private key of the delegator account.
      * @param thorClient - The ThorClient instance.
      * @param delegatorOptions - Optional parameters for the request. Includes the `delegatorUrl` and `delegatorPrivateKey` fields.
      *                  Only one of the following options can be specified: `delegatorUrl`, `delegatorPrivateKey`.

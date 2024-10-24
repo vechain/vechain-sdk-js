@@ -1,12 +1,9 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 
-import {
-    JSONRPCInvalidParams,
-    JSONRPCMethodNotFound
-} from '@vechain/sdk-errors';
+import { JSONRPCMethodNotFound } from '@vechain/sdk-errors';
+import { TESTNET_URL, ThorClient, VeChainProvider } from '../../../../src';
 import { providerMethodsTestCasesTestnet } from '../fixture';
 import { waitForMessage } from '../helpers';
-import { TESTNET_URL, ThorClient, VeChainProvider } from '../../../../src';
 
 /**
  *VeChain provider tests
@@ -109,16 +106,6 @@ describe('VeChain provider tests - testnet', () => {
                     params: [-1]
                 })
         ).rejects.toThrowError(JSONRPCMethodNotFound);
-    });
-
-    /**
-     * Invalid delegation
-     */
-    test('Should throw an error if delegation is enabled and delegator is not defined', () => {
-        expect(() => {
-            // eslint-disable-next-line no-new
-            new VeChainProvider(thorClient, undefined, true);
-        }).toThrowError(JSONRPCInvalidParams);
     });
 
     /**

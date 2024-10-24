@@ -50,8 +50,7 @@ describe('KMSVeChainSigner', () => {
         it('should break if asn1 decoding fails', async () => {
             const provider = new KMSVeChainProvider(
                 {} as unknown as ThorClient,
-                'keyId',
-                'region'
+                { keyId: 'keyId', region: 'region' }
             );
             jest.spyOn(provider, 'getPublicKey').mockResolvedValue(
                 Txt.of('publicKey').bytes
@@ -66,8 +65,7 @@ describe('KMSVeChainSigner', () => {
         it('should throw an error if there is an error in the body of the method', async () => {
             const provider = new KMSVeChainProvider(
                 {} as unknown as ThorClient,
-                'keyId',
-                'region'
+                { keyId: 'keyId', region: 'region' }
             );
             const signer = new KMSVeChainSigner(provider);
             await expect(
@@ -79,8 +77,7 @@ describe('KMSVeChainSigner', () => {
         it('should throw an error if there is an error in the body of the method', async () => {
             const provider = new KMSVeChainProvider(
                 {} as unknown as ThorClient,
-                'keyId',
-                'region'
+                { keyId: 'keyId', region: 'region' }
             );
             const signer = new KMSVeChainSigner(provider);
             await expect(
@@ -92,8 +89,7 @@ describe('KMSVeChainSigner', () => {
         it('should throw an error if there is an error in the body of the method', async () => {
             const provider = new KMSVeChainProvider(
                 {} as unknown as ThorClient,
-                'keyId',
-                'region'
+                { keyId: 'keyId', region: 'region' }
             );
             const signer = new KMSVeChainSigner(provider);
             await expect(
@@ -156,8 +152,7 @@ describe('KMSVeChainSigner', () => {
         it('should throw an error if there is an error in the body of the method', async () => {
             const provider = new KMSVeChainProvider(
                 {} as unknown as ThorClient,
-                'keyId',
-                'region'
+                { keyId: 'keyId', region: 'region' }
             );
             const signer = new KMSVeChainSigner(provider);
             await expect(
