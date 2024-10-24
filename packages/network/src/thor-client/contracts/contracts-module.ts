@@ -1,11 +1,11 @@
 import {
     ABIContract,
+    Address,
+    Clause,
     dataUtils,
     Hex,
-    Address,
-    VET,
     Units,
-    Clause,
+    VET,
     type ABIFunction
 } from '@vechain/sdk-core';
 import { type Abi } from 'abitype';
@@ -84,7 +84,7 @@ class ContractsModule {
         functionAbi: ABIFunction,
         functionData: unknown[],
         contractCallOptions?: ContractCallOptions
-    ): Promise<ContractCallResult | string> {
+    ): Promise<ContractCallResult> {
         // Simulate the transaction to get the result of the contract call
         const response = await this.thor.transactions.simulateTransaction(
             [
@@ -104,11 +104,27 @@ class ContractsModule {
              *
              * @link see [Error handling: Assert, Require, Revert and Exceptions](https://docs.soliditylang.org/en/latest/control-structures.html#error-handling-assert-require-revert-and-exceptions)
              */
-            return decodeRevertReason(response[0].data) ?? '';
+            const errorMessage = decodeRevertReason(response[0].data) ?? '';
+            return {
+                success: false,
+                result: {
+                    errorMessage
+                }
+            };
         } else {
             // Returning an array of values.
-            // The viem format is a single value/JSON object (ABIFunction#decodeResult)
-            return functionAbi.decodeOutputAsArray(Hex.of(response[0].data));
+            const encodedResult = Hex.of(response[0].data);
+            const objectValue = functionAbi.decodeResult(
+                encodedResult
+            ) as object;
+            const values = functionAbi.decodeOutputAsArray(encodedResult);
+            return {
+                success: true,
+                result: {
+                    objectValue,
+                    values
+                }
+            };
         }
     }
 
@@ -120,7 +136,7 @@ class ContractsModule {
     public async executeMultipleClausesCall(
         clauses: ContractClause[],
         options?: SimulateTransactionOptions
-    ): Promise<Array<ContractCallResult | string>> {
+    ): Promise<ContractCallResult[]> {
         // Simulate the transaction to get the result of the contract call
         const response = await this.thor.transactions.simulateTransaction(
             clauses.map((clause) => clause.clause),
@@ -128,9 +144,17 @@ class ContractsModule {
         );
         // Returning an array of values.
         // The viem format is a single value/JSON object (ABIFunction#decodeResult)
-        return response.map((res, index) =>
-            clauses[index].functionAbi.decodeOutputAsArray(Hex.of(res.data))
-        );
+        return response.map((res, index) => ({
+            success: true,
+            result: {
+                objectValue: clauses[index].functionAbi.decodeResult(
+                    Hex.of(res.data)
+                ) as object,
+                values: clauses[index].functionAbi.decodeOutputAsArray(
+                    Hex.of(res.data)
+                )
+            }
+        }));
     }
 
     /**

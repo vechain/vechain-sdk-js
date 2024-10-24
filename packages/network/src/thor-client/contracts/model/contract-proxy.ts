@@ -61,7 +61,7 @@ function getReadProxy<TAbi extends Abi>(
                 const revisionValue =
                     extractOptionsResult.clauseAdditionalOptions?.revision;
 
-                return (await contract.thor.contracts.executeCall(
+                return await contract.thor.contracts.executeCall(
                     contract.address,
                     contract.getFunctionAbi(prop),
                     extractOptionsResult.args,
@@ -75,7 +75,7 @@ function getReadProxy<TAbi extends Abi>(
                         revision: revisionValue,
                         includeABI: true
                     }
-                )) as ContractCallResult;
+                );
             };
         }
     });

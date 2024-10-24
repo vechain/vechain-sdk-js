@@ -43,7 +43,14 @@ type ContractCallOptions = SimulateTransactionOptions & ClauseOptions;
 /**
  * Represents the result of a contract call operation, encapsulating the output of the call.
  */
-type ContractCallResult = unknown[];
+interface ContractCallResult {
+    success: boolean;
+    result: {
+        objectValue?: object;
+        values?: unknown[];
+        errorMessage?: string;
+    };
+}
 
 /**
  * Represents a contract clause, which includes the clause and the corresponding function ABI.
