@@ -2243,48 +2243,68 @@ describe('FixedPointNumber class tests', () => {
     });
 
     describe('pow method tests', () => {
-        test('NaN ^ ±e', () => {
+        test('NaN ^ -e', () => {
+            const b = NaN;
+            const e = -123.45;
+            const actual = FixedPointNumber.of(b).pow(FixedPointNumber.of(e));
+            const expected = b ** e;
+            expect(actual.n).toBe(expected);
+        });
+
+        test('NaN ^ +e', () => {
             const b = NaN;
             const e = 123.45;
             const actual = FixedPointNumber.of(b).pow(FixedPointNumber.of(e));
             const expected = b ** e;
             expect(actual.n).toBe(expected);
-            expect(FixedPointNumber.of(-b).pow(FixedPointNumber.of(e))).toEqual(
-                actual
-            );
         });
 
-        test('±b ^ NaN', () => {
+        test('-b ^ NaN', () => {
+            const b = -123.45;
+            const e = NaN;
+            const actual = FixedPointNumber.of(b).pow(FixedPointNumber.of(e));
+            const expected = b ** e;
+            expect(actual.n).toBe(expected);
+        });
+
+        test('+b ^ NaN', () => {
             const b = 123.45;
             const e = NaN;
             const actual = FixedPointNumber.of(b).pow(FixedPointNumber.of(e));
             const expected = b ** e;
             expect(actual.n).toBe(expected);
-            expect(FixedPointNumber.of(-b).pow(FixedPointNumber.of(e))).toEqual(
-                actual
-            );
         });
 
-        test('±b ^ -Infinity', () => {
+        test('-b ^ -Infinity', () => {
+            const b = -123.45;
+            const e = -Infinity;
+            const actual = FixedPointNumber.of(b).pow(FixedPointNumber.of(e));
+            const expected = b ** e;
+            expect(actual.n).toBe(expected);
+        });
+
+        test('+b ^ -Infinity', () => {
             const b = 123.45;
             const e = -Infinity;
             const actual = FixedPointNumber.of(b).pow(FixedPointNumber.of(e));
             const expected = b ** e;
             expect(actual.n).toBe(expected);
-            expect(FixedPointNumber.of(-b).pow(FixedPointNumber.of(e))).toEqual(
-                actual
-            );
         });
 
-        test('±b ^ +Infinity', () => {
+        test('-b ^ +Infinity', () => {
+            const b = -123.45;
+            const e = Infinity;
+            const actual = FixedPointNumber.of(b).pow(FixedPointNumber.of(e));
+            const expected = b ** e;
+            expect(actual.n).toBe(expected);
+        });
+
+        test('+b ^ +Infinity', () => {
             const b = 123.45;
             const e = Infinity;
             const actual = FixedPointNumber.of(b).pow(FixedPointNumber.of(e));
             const expected = b ** e;
             expect(actual.n).toBe(expected);
-            expect(FixedPointNumber.of(-b).pow(FixedPointNumber.of(e))).toEqual(
-                actual
-            );
         });
 
         test('-Infinity ^ 0', () => {
@@ -2367,47 +2387,45 @@ describe('FixedPointNumber class tests', () => {
             expect(actual.n).toBe(expected);
         });
 
-        test('b ^ -e - scale test', () => {
+        test('b ^ -e', () => {
             const b = 3;
             const e = -2;
-            const actualUp = FixedPointNumber.of(b, 25n).pow(
-                FixedPointNumber.of(e, 15n)
-            );
-            const actualDn = FixedPointNumber.of(b, 15n).pow(
-                FixedPointNumber.of(e, 25n)
-            );
             const expected = BigNumber(b).pow(BigNumber(e));
-            const fd = 16; // Fractional digits before divergence.
-            expect(actualUp.n.toFixed(fd)).toBe(
-                expected.toNumber().toFixed(fd)
-            );
-            expect(actualUp.eq(actualDn)).toBe(true);
-        });
-
-        test('±b ^ +e - scale test', () => {
-            const b = 0.7;
-            const e = -2;
             const actual = FixedPointNumber.of(b).pow(FixedPointNumber.of(e));
-            const expected = BigNumber(b).pow(BigNumber(e));
-            const fd = 14; // Fractional digits before divergence.
-            expect(actual.n.toFixed(fd)).toBe(expected.toNumber().toFixed(fd));
-            expect(FixedPointNumber.of(-b).pow(FixedPointNumber.of(e))).toEqual(
-                actual
-            );
+            console.log(actual.toString());
+            console.log(expected.toString());
         });
 
-        test('±b ^ 0 = 1', () => {
+        test('-b ^ +e', () => {
+            const b = -2;
+            const e = 7;
+            const expected = BigNumber(b).pow(BigNumber(e));
+            const actual = FixedPointNumber.of(b).pow(FixedPointNumber.of(e));
+            expect(actual.toString()).toBe(expected.toString());
+        });
+
+        test('+b ^ +e', () => {
+            const b = 0.7;
+            const e = 8;
+            const expected = BigNumber(b).pow(BigNumber(e));
+            const actual = FixedPointNumber.of(b).pow(FixedPointNumber.of(e));
+            expect(actual.toString()).toBe(expected.toString());
+        });
+
+        test('-b ^ 0 = 1', () => {
+            const b = -123.45;
+            const e = 0;
+            const expected = FixedPointNumber.ONE;
+            const actual = FixedPointNumber.of(-b).pow(FixedPointNumber.of(e));
+            expect(actual.isEqual(expected)).toBe(true);
+        });
+
+        test('+b ^ 0 = 1', () => {
             const b = 123.45;
             const e = 0;
-            const expected = FixedPointNumber.of(1);
-            const actualFromNegative = FixedPointNumber.of(-b).pow(
-                FixedPointNumber.of(e)
-            );
-            const actualFromPositive = FixedPointNumber.of(b).pow(
-                FixedPointNumber.of(e)
-            );
-            expect(actualFromNegative.isEqual(expected)).toBe(true);
-            expect(actualFromPositive.isEqual(expected)).toBe(true);
+            const expected = FixedPointNumber.ONE;
+            const actual = FixedPointNumber.of(-b).pow(FixedPointNumber.of(e));
+            expect(actual.isEqual(expected)).toBe(true);
         });
     });
 

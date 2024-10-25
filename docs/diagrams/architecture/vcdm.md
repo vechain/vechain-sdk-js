@@ -69,6 +69,7 @@ classDiagram
         +bigint scaledValue
         +FixedPointNumber NaN$
         +FixedPointNumber NEGATIVE_INFINITY$
+        +FixedPointNumber ONE$
         +FixedPointNumber POSITIVE_INFINITY$
         +FixedPointNumber ZERO$
         +FixedPointNumber abs()
