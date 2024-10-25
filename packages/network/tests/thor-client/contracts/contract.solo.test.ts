@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { ABIContract, Address, HexUInt, type DeployParams } from '@vechain/sdk-core';
+import { ABIContract, Address, type DeployParams, HexUInt } from '@vechain/sdk-core';
 import {
     CannotFindTransaction,
     ContractDeploymentFailed,
@@ -144,7 +144,10 @@ describe('ThorClient - Contracts', () => {
         // Call the get function of the deployed contract to verify that the stored value is 100
         const result = await contract.read.get();
 
-        expect(result).toEqual([100n]);
+        expect(result).toEqual({
+            success: true,
+            result: { plain: 100n, array: [100n] }
+        });
 
         // Assertions
         expect(contract.deployTransactionReceipt?.reverted).toBe(false);
@@ -227,7 +230,10 @@ describe('ThorClient - Contracts', () => {
 
         const callFunctionGetResult = await contract.read.get();
 
-        expect(callFunctionGetResult).toEqual([BigInt(123)]);
+        expect(callFunctionGetResult).toEqual({
+            success: true,
+            result: { plain: 123n, array: [123n] }
+        });
     }, 10000);
 
     /**
@@ -241,7 +247,10 @@ describe('ThorClient - Contracts', () => {
         const contract = await factory.waitForDeployment();
 
         await (await contract.transact.set(123n)).wait();
-        expect(await contract.read.get()).toEqual([BigInt(123)]);
+        expect(await contract.read.get()).toEqual({
+            success: true,
+            result: { plain: 123n, array: [123n] }
+        });
 
         contract.setContractReadOptions({ caller: 'invalid address' });
 
@@ -258,7 +267,10 @@ describe('ThorClient - Contracts', () => {
         contract.clearContractTransactOptions();
 
         await (await contract.transact.set(22323n)).wait();
-        expect(await contract.read.get()).toEqual([BigInt(22323)]);
+        expect(await contract.read.get()).toEqual({
+            success: true,
+            result: { plain: 22323n, array: [22323n] }
+        });
     }, 15000);
 
     /**
@@ -290,7 +302,10 @@ describe('ThorClient - Contracts', () => {
 
         const callFunctionGetResult = await contract.read.get();
 
-        expect(callFunctionGetResult).toEqual([BigInt(123)]);
+        expect(callFunctionGetResult).toEqual({
+            success: true,
+            result: { plain: 123n, array: [123n] }
+        });
     }, 10000);
 
     /**
@@ -312,7 +327,10 @@ describe('ThorClient - Contracts', () => {
         // Call the get function of the loaded contract to verify that the stored value is 100
         let callFunctionGetResult = await loadedContract.read.get();
 
-        expect(callFunctionGetResult).toEqual([BigInt(100)]);
+        expect(callFunctionGetResult).toEqual({
+            success: true,
+            result: { plain: 100n, array: [100n] }
+        });
 
         // Set the private key of the caller for signing transactions
         loadedContract.setSigner(contract.getSigner() as VeChainSigner);
@@ -329,7 +347,10 @@ describe('ThorClient - Contracts', () => {
         callFunctionGetResult = await loadedContract.read.get();
 
         // Assertion: The value should be 123
-        expect(callFunctionGetResult).toEqual([BigInt(123)]);
+        expect(callFunctionGetResult).toEqual({
+            success: true,
+            result: { plain: 123n, array: [123n] }
+        });
     }, 10000);
 
     /**
@@ -429,7 +450,10 @@ describe('ThorClient - Contracts', () => {
             await deployedDepositContract.read.getBalance(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
             )
-        ).toEqual([BigInt(1000)]);
+        ).toEqual({
+            success: true,
+            result: { plain: 1000n, array: [1000n] }
+        });
     }, 10000);
 
     test('Deploy a contract that returns two values', async () => {
@@ -599,7 +623,7 @@ describe('ThorClient - Contracts', () => {
                     ),
                     params
                 );
-                expect(response).toBe(expected);
+                expect(response).toStrictEqual(expected);
             });
         }
     );
@@ -797,8 +821,14 @@ describe('ThorClient - Contracts', () => {
         test('Should return the base gas price of the Solo network', async () => {
             const baseGasPrice =
                 await thorSoloClient.contracts.getBaseGasPrice();
-            expect(baseGasPrice).toEqual([1000000000000000n]);
-            expect(baseGasPrice).toEqual([BigInt(10 ** 15)]); // 10^13 wei
+            expect(baseGasPrice).toEqual(            {
+                success: true,
+                result: { plain: 1000000000000000n, array: [1000000000000000n] }
+            });
+            expect(baseGasPrice).toEqual(            {
+                success: true,
+                result: { plain: BigInt(10 ** 15), array: [BigInt(10 ** 15)] }
+            }); // 10^13 wei
         });
     });
 });

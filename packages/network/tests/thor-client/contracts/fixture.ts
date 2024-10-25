@@ -404,7 +404,7 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the bool value false',
         functionName: 'boolData',
         params: [false],
-        expected: [false],
+        expected: { result: { array: [false], plain: false }, success: true },
         reverted: false,
         isReadOnly: true
     },
@@ -412,7 +412,7 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the bool value true',
         functionName: 'boolData',
         params: [true],
-        expected: [true],
+        expected: { result: { array: [true], plain: true }, success: true },
         reverted: false,
         isReadOnly: true
     },
@@ -420,7 +420,7 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the int value 1',
         functionName: 'intData',
         params: [1],
-        expected: [1n],
+        expected: { result: { array: [1n], plain: 1n }, success: true },
         reverted: false,
         isReadOnly: true
     },
@@ -428,7 +428,7 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the int value -1',
         functionName: 'intData',
         params: [-1],
-        expected: [-1n],
+        expected: { result: { array: [-1n], plain: -1n }, success: true },
         reverted: false,
         isReadOnly: true
     },
@@ -436,7 +436,7 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the int value 0',
         functionName: 'intData',
         params: [0],
-        expected: [0n],
+        expected: { result: { array: [0n], plain: 0n }, success: true },
         reverted: false,
         isReadOnly: true
     },
@@ -444,7 +444,7 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the uint value 0',
         functionName: 'uintData',
         params: [0],
-        expected: [0n],
+        expected: { result: { array: [0n], plain: 0n }, success: true },
         reverted: false,
         isReadOnly: true
     },
@@ -452,7 +452,7 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the uint value 1',
         functionName: 'uintData',
         params: [1],
-        expected: [1n],
+        expected: { result: { array: [1n], plain: 1n }, success: true },
         reverted: false,
         isReadOnly: true
     },
@@ -461,7 +461,13 @@ const testingContractTestCases: TestCase[] = [
             'should return the address value 0x0000000000000000000000000000000000000000',
         functionName: 'addressData',
         params: ['0x0000000000000000000000000000000000000000'],
-        expected: ['0x0000000000000000000000000000000000000000'],
+        expected: {
+            result: {
+                array: ['0x0000000000000000000000000000000000000000'],
+                plain: '0x0000000000000000000000000000000000000000'
+            },
+            success: true
+        },
         reverted: false,
         isReadOnly: true
     },
@@ -472,9 +478,15 @@ const testingContractTestCases: TestCase[] = [
         params: [
             '0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0'
         ],
-        expected: [
-            '0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0'
-        ],
+        expected: {
+            result: {
+                array: [
+                    '0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0'
+                ],
+                plain: '0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0'
+            },
+            success: true
+        },
         reverted: false,
         isReadOnly: true
     },
@@ -482,7 +494,7 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the string value "a"',
         functionName: 'stringData',
         params: ['a'],
-        expected: ['a'],
+        expected: { result: { array: ['a'], plain: 'a' }, success: true },
         reverted: false,
         isReadOnly: true
     },
@@ -490,7 +502,10 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the passed fixed array',
         functionName: 'fixedArrayData',
         params: [[123, 456, 789]],
-        expected: [[123n, 456n, 789n]],
+        expected: {
+            result: { array: [[123n, 456n, 789n]], plain: [123n, 456n, 789n] },
+            success: true
+        },
         reverted: false,
         isReadOnly: true
     },
@@ -498,7 +513,13 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the passed dynamic array',
         functionName: 'dynamicArrayData',
         params: [[123, 456, 789, 323, 123]],
-        expected: [[123n, 456n, 789n, 323n, 123n]],
+        expected: {
+            result: {
+                array: [[123n, 456n, 789n, 323n, 123n]],
+                plain: [123n, 456n, 789n, 323n, 123n]
+            },
+            success: true
+        },
         reverted: false,
         isReadOnly: true
     },
@@ -506,7 +527,13 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the passed struct',
         functionName: 'structData',
         params: [{ id: 10, name: 'test' }],
-        expected: [[10n, 'test']],
+        expected: {
+            result: {
+                array: [[10n, 'test']],
+                plain: { id: 10n, name: 'test' }
+            },
+            success: true
+        },
         reverted: false,
         isReadOnly: true
     },
@@ -514,7 +541,10 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the passed enum',
         functionName: 'enumData',
         params: [ExampleEnum.SMALL],
-        expected: [ExampleEnum.SMALL],
+        expected: {
+            result: { array: [ExampleEnum.SMALL], plain: ExampleEnum.SMALL },
+            success: true
+        },
         reverted: false,
         isReadOnly: true
     },
@@ -531,16 +561,31 @@ const testingContractTestCases: TestCase[] = [
             { id: 10, name: 'test' },
             ExampleEnum.SMALL
         ],
-        expected: [
-            1n,
-            '0x0000000000000000000000000000000000000000',
-            '0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0',
-            'a',
-            [123n, 456n, 789n],
-            [123n, 456n, 789n, 323n, 123n],
-            [10n, 'test'],
-            ExampleEnum.SMALL
-        ],
+        expected: {
+            result: {
+                array: [
+                    1n,
+                    '0x0000000000000000000000000000000000000000',
+                    '0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0',
+                    'a',
+                    [123n, 456n, 789n],
+                    [123n, 456n, 789n, 323n, 123n],
+                    [10n, 'test'],
+                    ExampleEnum.SMALL
+                ],
+                plain: [
+                    1n,
+                    '0x0000000000000000000000000000000000000000',
+                    '0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0',
+                    'a',
+                    [123n, 456n, 789n],
+                    [123n, 456n, 789n, 323n, 123n],
+                    { id: 10n, name: 'test' },
+                    0
+                ]
+            },
+            success: true
+        },
         reverted: false,
         isReadOnly: true
     },
@@ -548,7 +593,13 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the passed multiple int values',
         functionName: 'multipleIntData',
         params: [1, 222, 333, 287274, 390343843, 123223663],
-        expected: [1, 222, 333, 287274n, 390343843n, 123223663n],
+        expected: {
+            result: {
+                array: [1, 222, 333, 287274n, 390343843n, 123223663n],
+                plain: [1, 222, 333, 287274n, 390343843n, 123223663n]
+            },
+            success: true
+        },
         reverted: false,
         isReadOnly: true
     }
@@ -559,7 +610,10 @@ const testingContractNegativeTestCases: TestCase[] = [
         description: 'testRequireError() test',
         functionName: 'testRequireError',
         params: [8],
-        expected: 'Value must be greater than 10',
+        expected: {
+            result: { errorMessage: 'Value must be greater than 10' },
+            success: false
+        },
         reverted: true,
         isReadOnly: true
     },
@@ -567,7 +621,7 @@ const testingContractNegativeTestCases: TestCase[] = [
         description: 'testAssertError() test',
         functionName: 'testAssertError',
         params: [1],
-        expected: 'Panic(0x01)',
+        expected: { result: { errorMessage: 'Panic(0x01)' }, success: false },
         reverted: true,
         isReadOnly: true
     },
@@ -575,7 +629,10 @@ const testingContractNegativeTestCases: TestCase[] = [
         description: 'testRevertError() test',
         functionName: 'testRevertError',
         params: [4],
-        expected: 'Value must be at least 5',
+        expected: {
+            result: { errorMessage: 'Value must be at least 5' },
+            success: false
+        },
         reverted: true,
         isReadOnly: true
     },
@@ -583,7 +640,7 @@ const testingContractNegativeTestCases: TestCase[] = [
         description: 'testOverflowError() test',
         functionName: 'testOverflowError',
         params: [255],
-        expected: 'Panic(0x11)',
+        expected: { result: { errorMessage: 'Panic(0x11)' }, success: false },
         reverted: true,
         isReadOnly: true
     },
@@ -591,7 +648,7 @@ const testingContractNegativeTestCases: TestCase[] = [
         description: 'testInvalidOpcodeError() test',
         functionName: 'testInvalidOpcodeError',
         params: [],
-        expected: '',
+        expected: { result: { errorMessage: '' }, success: false },
         reverted: true,
         isReadOnly: true
     }
@@ -602,9 +659,15 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
         description: 'should return the blockID of the given block number',
         functionName: 'getBlockID',
         params: [1],
-        expected: [
-            '0x00000001fb5387f59d35a8e76dcce151cb229a3910ac5f4731ff55f7ca36a809'
-        ],
+        expected: {
+            result: {
+                array: [
+                    '0x00000001fb5387f59d35a8e76dcce151cb229a3910ac5f4731ff55f7ca36a809'
+                ],
+                plain: '0x00000001fb5387f59d35a8e76dcce151cb229a3910ac5f4731ff55f7ca36a809'
+            },
+            success: true
+        },
         reverted: false,
         isReadOnly: true
     },
@@ -613,7 +676,7 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
             'should return the block total score of the given block defined by the block number',
         functionName: 'getBlockTotalScore',
         params: [1],
-        expected: [1n],
+        expected: { result: { array: [1n], plain: 1n }, success: true },
         reverted: false,
         isReadOnly: true
     },
@@ -621,7 +684,10 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
         description: 'should return the block time of the given block number',
         functionName: 'getBlockTime',
         params: [1],
-        expected: [1702231120n],
+        expected: {
+            result: { array: [1702231120n], plain: 1702231120n },
+            success: true
+        },
         reverted: false,
         isReadOnly: true
     },
@@ -629,7 +695,13 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
         description: 'should return the block signer of the given block number',
         functionName: 'getBlockSigner',
         params: [1],
-        expected: ['0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa'],
+        expected: {
+            result: {
+                array: ['0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa'],
+                plain: '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa'
+            },
+            success: true
+        },
         reverted: false,
         isReadOnly: true
     },
@@ -637,7 +709,13 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
         description: 'should return the total supply of VET',
         functionName: 'getTotalSupply',
         params: [],
-        expected: [10000000000000000000000000000n],
+        expected: {
+            result: {
+                array: [10000000000000000000000000000n],
+                plain: 10000000000000000000000000000n
+            },
+            success: true
+        },
         reverted: false,
         isReadOnly: true
     },
@@ -646,7 +724,7 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
             'should return the `provedWork` of the current transaction',
         functionName: 'getTxProvedWork',
         params: [],
-        expected: [0n],
+        expected: { result: { array: [0n], plain: 0n }, success: true },
         reverted: false,
         isReadOnly: true
     },
@@ -655,9 +733,15 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
             'should return the transaction ID of the current transaction',
         functionName: 'getTxID',
         params: [],
-        expected: [
-            '0x0000000000000000000000000000000000000000000000000000000000000000'
-        ],
+        expected: {
+            result: {
+                array: [
+                    '0x0000000000000000000000000000000000000000000000000000000000000000'
+                ],
+                plain: '0x0000000000000000000000000000000000000000000000000000000000000000'
+            },
+            success: true
+        },
         reverted: false,
         isReadOnly: true
     },
@@ -665,7 +749,13 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
         description: 'should return the `blockRef` of the current transaction',
         functionName: 'getTxBlockRef',
         params: [],
-        expected: ['0x0000000000000000'],
+        expected: {
+            result: {
+                array: ['0x0000000000000000'],
+                plain: '0x0000000000000000'
+            },
+            success: true
+        },
         reverted: false,
         isReadOnly: true
     },
@@ -674,7 +764,7 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
             'should return the `expiration` of the current transaction',
         functionName: 'getTxExpiration',
         params: [],
-        expected: [0n],
+        expected: { result: { array: [0n], plain: 0n }, success: true },
         reverted: false,
         isReadOnly: true
     },
@@ -682,9 +772,15 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
         description: 'should return the data hashed using Blake2b256',
         functionName: 'calculateBlake2b256',
         params: ['0x'],
-        expected: [
-            '0x0e5751c026e543b2e8ab2eb06099daa1d1e5df47778f7787faab45cdf12fe3a8'
-        ],
+        expected: {
+            result: {
+                array: [
+                    '0x0e5751c026e543b2e8ab2eb06099daa1d1e5df47778f7787faab45cdf12fe3a8'
+                ],
+                plain: '0x0e5751c026e543b2e8ab2eb06099daa1d1e5df47778f7787faab45cdf12fe3a8'
+            },
+            success: true
+        },
         reverted: false,
         isReadOnly: true
     }
@@ -3724,12 +3820,12 @@ export {
     multipleClausesTestCases,
     OWNER_RESTRICTION_ABI,
     OWNER_RESTRICTION_BYTECODE,
+    sampleTwoValuesReturnAbi,
+    sampleTwoValuesReturnBytecode,
     testingContractEVMExtensionTestCases,
     testingContractNegativeTestCases,
     testingContractTestCases,
     TESTNET_DELEGATE_URL,
     xAllocationAddress,
-    xAllocationVotingGovernorABI,
-    sampleTwoValuesReturnAbi,
-    sampleTwoValuesReturnBytecode
+    xAllocationVotingGovernorABI
 };
