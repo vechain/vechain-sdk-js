@@ -5,7 +5,10 @@ import {
     Units,
     VET
 } from '@vechain/sdk-core';
-import { InvalidTransactionField } from '@vechain/sdk-errors';
+import {
+    ContractCallError,
+    InvalidTransactionField
+} from '@vechain/sdk-errors';
 import type {
     Abi,
     AbiEvent,
@@ -17,7 +20,7 @@ import type {
 import { type VeChainSigner } from '../../../signer';
 import { type FilterCriteria } from '../../logs';
 import { type SendTransactionResult } from '../../transactions/types';
-import { type ContractCallResult, type ContractClause } from '../types';
+import { type ContractClause } from '../types';
 import { type Contract } from './contract';
 import { ContractFilter } from './contract-filter';
 import {
@@ -48,7 +51,7 @@ function getReadProxy<TAbi extends Abi>(
                     ExtractAbiFunction<TAbi, 'balanceOf'>['inputs'],
                     'inputs'
                 >
-            ): Promise<ContractCallResult> => {
+            ): Promise<unknown[]> => {
                 // check if the clause comment is provided as an argument
 
                 const extractOptionsResult = extractAndRemoveAdditionalOptions(
@@ -61,21 +64,35 @@ function getReadProxy<TAbi extends Abi>(
                 const revisionValue =
                     extractOptionsResult.clauseAdditionalOptions?.revision;
 
-                return await contract.thor.contracts.executeCall(
-                    contract.address,
-                    contract.getFunctionAbi(prop),
-                    extractOptionsResult.args,
-                    {
-                        caller:
-                            contract.getSigner() !== undefined
-                                ? await contract.getSigner()?.getAddress()
-                                : undefined,
-                        ...contract.getContractReadOptions(),
-                        comment: clauseComment,
-                        revision: revisionValue,
-                        includeABI: true
-                    }
-                );
+                const functionAbi = contract.getFunctionAbi(prop);
+
+                const executeCallResult =
+                    await contract.thor.contracts.executeCall(
+                        contract.address,
+                        functionAbi,
+                        extractOptionsResult.args,
+                        {
+                            caller:
+                                contract.getSigner() !== undefined
+                                    ? await contract.getSigner()?.getAddress()
+                                    : undefined,
+                            ...contract.getContractReadOptions(),
+                            comment: clauseComment,
+                            revision: revisionValue,
+                            includeABI: true
+                        }
+                    );
+
+                if (!executeCallResult.success) {
+                    throw new ContractCallError(
+                        functionAbi.stringSignature,
+                        executeCallResult.result.errorMessage as string,
+                        {
+                            contractAddress: contract.address
+                        }
+                    );
+                }
+                return executeCallResult.result.array as unknown[];
             };
         }
     });

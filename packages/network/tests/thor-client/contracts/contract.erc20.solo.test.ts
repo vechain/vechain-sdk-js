@@ -131,13 +131,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         // Ensure that the transfer transaction was successful and the balance is as expected
         expect(transactionReceiptTransfer.reverted).toBe(false);
-        expect(balanceOfResult).toEqual({
-            success: true,
-            result: {
-                plain: 1000n,
-                array: [1000n]
-            }
-        });
+        expect(balanceOfResult).toEqual([1000n]);
     }, 10000); // Set a timeout of 10000ms for this test
 
     test('Execute ERC20 contract operations with comments', async () => {
@@ -174,13 +168,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         // Ensure that the transfer transaction was successful and the balance is as expected
         expect(transactionReceiptTransfer.reverted).toBe(false);
-        expect(balanceOfResult).toEqual({
-            success: true,
-            result: {
-                plain: 1000n,
-                array: [1000n]
-            }
-        });
+        expect(balanceOfResult).toEqual([1000n]);
     }, 10000); // Set a timeout of 10000ms for this test
 
     test('Execute ERC20 contract operations with revision', async () => {
@@ -217,13 +205,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         // Ensure that the transfer transaction was successful and the balance is as expected
         expect(transactionReceiptTransfer.reverted).toBe(false);
-        expect(balanceOfResult).toEqual({
-            success: true,
-            result: {
-                plain: 1000n,
-                array: [1000n]
-            }
-        });
+        expect(balanceOfResult).toEqual([1000n]);
     }, 10000);
 
     /**
@@ -287,13 +269,7 @@ describe('ThorClient - ERC20 Contracts', () => {
             await contract.read.balanceOf(
                 TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
             )
-        ).toEqual({
-            success: true,
-            result: {
-                plain: 1000n,
-                array: [1000n]
-            }
-        });
+        ).toEqual([1000n]);
     }, 10000);
 
     /**
@@ -484,12 +460,6 @@ describe('ThorClient - ERC20 Contracts', () => {
             await contract.read.balanceOf(
                 TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
             )
-        ).toEqual({
-            success: true,
-            result: {
-                plain: 1000n,
-                array: [1000n]
-            }
-        });
+        ).toEqual([1000n]);
     }, 30000);
 });
