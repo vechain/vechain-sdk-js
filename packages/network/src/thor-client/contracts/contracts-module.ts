@@ -114,7 +114,7 @@ class ContractsModule {
         } else {
             // Returning the decoded result both as plain and array.
             const encodedResult = Hex.of(response[0].data);
-            const plain = functionAbi.decodeResult(encodedResult) as object;
+            const plain = functionAbi.decodeResult(encodedResult);
             const array = functionAbi.decodeOutputAsArray(encodedResult);
             return {
                 success: true,
@@ -146,7 +146,7 @@ class ContractsModule {
             result: {
                 plain: clauses[index].functionAbi.decodeResult(
                     Hex.of(res.data)
-                ) as object,
+                ),
                 array: clauses[index].functionAbi.decodeOutputAsArray(
                     Hex.of(res.data)
                 )
