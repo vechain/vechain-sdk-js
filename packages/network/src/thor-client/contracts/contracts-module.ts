@@ -69,6 +69,41 @@ class ContractsModule {
     }
 
     /**
+     * Extracts the decoded contract call result from the response of a simulated transaction.
+     * @param {string} encodedData Data returned from the simulated transaction.
+     * @param {ABIFunction} functionAbi Function ABI of the contract function.
+     * @param {boolean} reverted Whether the transaction was reverted.
+     * @returns {ContractCallResult} An object containing the decoded contract call result.
+     */
+    private getContractCallResult(
+        encodedData: string,
+        functionAbi: ABIFunction,
+        reverted: boolean
+    ): ContractCallResult {
+        if (reverted) {
+            const errorMessage = decodeRevertReason(encodedData) ?? '';
+            return {
+                success: false,
+                result: {
+                    errorMessage
+                }
+            };
+        }
+
+        // Returning the decoded result both as plain and array.
+        const encodedResult = Hex.of(encodedData);
+        const plain = functionAbi.decodeResult(encodedResult);
+        const array = functionAbi.decodeOutputAsArray(encodedResult);
+        return {
+            success: true,
+            result: {
+                plain,
+                array
+            }
+        };
+    }
+
+    /**
      * Executes a read-only call to a smart contract function, simulating the transaction to obtain the result.
      *
      * @param contractAddress - The address of the smart contract to interact with.
@@ -97,39 +132,18 @@ class ContractsModule {
             contractCallOptions
         );
 
-        if (response[0].reverted) {
-            /**
-             * The decoded revert reason of the transaction.
-             * Solidity may revert with Error(string) or Panic(uint256).
-             *
-             * @link see [Error handling: Assert, Require, Revert and Exceptions](https://docs.soliditylang.org/en/latest/control-structures.html#error-handling-assert-require-revert-and-exceptions)
-             */
-            const errorMessage = decodeRevertReason(response[0].data) ?? '';
-            return {
-                success: false,
-                result: {
-                    errorMessage
-                }
-            };
-        } else {
-            // Returning the decoded result both as plain and array.
-            const encodedResult = Hex.of(response[0].data);
-            const plain = functionAbi.decodeResult(encodedResult);
-            const array = functionAbi.decodeOutputAsArray(encodedResult);
-            return {
-                success: true,
-                result: {
-                    plain,
-                    array
-                }
-            };
-        }
+        return this.getContractCallResult(
+            response[0].data,
+            functionAbi,
+            response[0].reverted
+        );
     }
 
     /**
      * Executes a read-only call to multiple smart contract functions, simulating the transaction to obtain the results.
      * @param clauses - An array of contract clauses to interact with the contract functions.
      * @param options - (Optional) Additional options for the contract call, such as the sender's address, gas limit, and gas price, which can affect the simulation's context.
+     * @returns A promise that resolves to an array of decoded outputs of the smart contract function calls, the format of which depends on the functions' return types.
      */
     public async executeMultipleClausesCall(
         clauses: ContractClause[],
@@ -141,17 +155,13 @@ class ContractsModule {
             options
         );
         // Returning the decoded results both as plain and array.
-        return response.map((res, index) => ({
-            success: true,
-            result: {
-                plain: clauses[index].functionAbi.decodeResult(
-                    Hex.of(res.data)
-                ),
-                array: clauses[index].functionAbi.decodeOutputAsArray(
-                    Hex.of(res.data)
-                )
-            }
-        }));
+        return response.map((res, index) =>
+            this.getContractCallResult(
+                res.data,
+                clauses[index].functionAbi,
+                res.reverted
+            )
+        );
     }
 
     /**
