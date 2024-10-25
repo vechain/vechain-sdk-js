@@ -51,7 +51,7 @@ const resolveNames = async (
         [names]
     );
 
-    const [addresses] = callGetAddresses.result.values as string[][];
+    const [addresses] = callGetAddresses.result.array as string[][];
 
     return addresses.map((address) => {
         // zero addresses are missing configuration entries
@@ -112,7 +112,7 @@ const lookupAddresses = async (
         [addresses]
     );
 
-    const [names] = callGetNames.result.values as string[][];
+    const [names] = callGetNames.result.array as string[][];
 
     return names.map((name) => {
         // empty strings indicate a missing entry

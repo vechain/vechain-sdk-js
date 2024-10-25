@@ -322,7 +322,13 @@ const erc721ContractTestCases: TestCase[] = [
             'should get the current NFT balance of the CONTRACT_MANAGER address',
         functionName: 'balanceOf',
         params: [TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
-        expected: [2n],
+        expected: {
+            success: true,
+            result: {
+                plain: 2n,
+                array: [2n]
+            }
+        },
         reverted: false,
         isReadOnly: true
     },
@@ -331,7 +337,13 @@ const erc721ContractTestCases: TestCase[] = [
             'should get the current NFT balance of the DELEGATOR address',
         functionName: 'balanceOf',
         params: [TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address],
-        expected: [1n],
+        expected: {
+            success: true,
+            result: {
+                plain: 1n,
+                array: [1n]
+            }
+        },
         reverted: false,
         isReadOnly: true
     },
@@ -360,7 +372,13 @@ const erc721ContractTestCases: TestCase[] = [
             'should get the current NFT balance of the CONTRACT_MANAGER address',
         functionName: 'balanceOf',
         params: [TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
-        expected: [1n],
+        expected: {
+            success: true,
+            result: {
+                plain: 1n,
+                array: [1n]
+            }
+        },
         reverted: false,
         isReadOnly: true
     },
@@ -369,7 +387,13 @@ const erc721ContractTestCases: TestCase[] = [
             'should get the current NFT balance of the DELEGATOR address',
         functionName: 'balanceOf',
         params: [TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address],
-        expected: [2n],
+        expected: {
+            success: true,
+            result: {
+                plain: 2n,
+                array: [2n]
+            }
+        },
         reverted: false,
         isReadOnly: true
     }

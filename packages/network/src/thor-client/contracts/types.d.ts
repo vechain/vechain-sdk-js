@@ -46,8 +46,8 @@ type ContractCallOptions = SimulateTransactionOptions & ClauseOptions;
 interface ContractCallResult {
     success: boolean;
     result: {
-        objectValue?: object;
-        values?: unknown[];
+        plain?: unknown; // Success result as a plain value (might be literal or object).
+        array?: unknown[]; // Success result as an array (values are the same as in plain).
         errorMessage?: string;
     };
 }

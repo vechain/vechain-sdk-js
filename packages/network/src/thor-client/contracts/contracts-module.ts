@@ -112,17 +112,15 @@ class ContractsModule {
                 }
             };
         } else {
-            // Returning an array of values.
+            // Returning the decoded result both as plain and array.
             const encodedResult = Hex.of(response[0].data);
-            const objectValue = functionAbi.decodeResult(
-                encodedResult
-            ) as object;
-            const values = functionAbi.decodeOutputAsArray(encodedResult);
+            const plain = functionAbi.decodeResult(encodedResult) as object;
+            const array = functionAbi.decodeOutputAsArray(encodedResult);
             return {
                 success: true,
                 result: {
-                    objectValue,
-                    values
+                    plain,
+                    array
                 }
             };
         }
@@ -142,15 +140,14 @@ class ContractsModule {
             clauses.map((clause) => clause.clause),
             options
         );
-        // Returning an array of values.
-        // The viem format is a single value/JSON object (ABIFunction#decodeResult)
+        // Returning the decoded results both as plain and array.
         return response.map((res, index) => ({
             success: true,
             result: {
-                objectValue: clauses[index].functionAbi.decodeResult(
+                plain: clauses[index].functionAbi.decodeResult(
                     Hex.of(res.data)
                 ) as object,
-                values: clauses[index].functionAbi.decodeOutputAsArray(
+                array: clauses[index].functionAbi.decodeOutputAsArray(
                     Hex.of(res.data)
                 )
             }
@@ -250,7 +247,7 @@ class ContractsModule {
      *
      * @returns The base gas price in wei.
      */
-    public async getBaseGasPrice(): Promise<unknown> {
+    public async getBaseGasPrice(): Promise<ContractCallResult> {
         return await this.executeCall(
             BUILT_IN_CONTRACTS.PARAMS_ADDRESS,
             ABIContract.ofAbi(BUILT_IN_CONTRACTS.PARAMS_ABI).getFunction('get'),
