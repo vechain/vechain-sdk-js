@@ -2433,6 +2433,49 @@ describe('FixedPointNumber class tests', () => {
             const actual = FixedPointNumber.of(-b).pow(FixedPointNumber.of(e));
             expect(actual.isEqual(expected)).toBe(true);
         });
+
+        // https://en.wikipedia.org/wiki/Compound_interest
+        test('compound interest - once per year', () => {
+            const P = 10000; // 10,000 $
+            const R = 0.15; // 15% interest rate
+            const N = 1; // interest accrued times per year
+            const T = 1; // 1 year of investment time
+            const jsA = interestWithNumberType(P, R, N, T);
+            console.log(
+                `JS number            => ${P} at ${R} accrued ${N} per year for ${T} years = ${jsA} `
+            );
+            const bnA = interestWithBigNumberType(P, R, N, T);
+            console.log(
+                `BigNumber            => ${P} at ${R} accrued ${N} per year for ${T} years = ${bnA} `
+            );
+            const fpA = interestWithFixedPointNumberType(P, R, N, T);
+            console.log(
+                `SDK FixedPointNumber => ${P} at ${R} accrued ${N} per year for ${T} years = ${fpA} `
+            );
+            expect(fpA.toString()).toBe(jsA.toString());
+            expect(fpA.toString()).toBe(bnA.toString());
+        });
+
+        test('compound interest - once per day', () => {
+            const P = 10000; // 10,000 $
+            const R = 0.15; // 15% interest rate
+            const N = 365; // interest accrued times per day
+            const T = 1; // 1 year of investment time
+            const jsA = interestWithNumberType(P, R, N, T);
+            console.log(
+                `JS number            => ${P} at ${R} accrued ${N} per year for ${T} years = ${jsA} `
+            );
+            const bnA = interestWithBigNumberType(P, R, N, T);
+            console.log(
+                `BigNumber            => ${P} at ${R} accrued ${N} per year for ${T} years = ${bnA} `
+            );
+            const fpA = interestWithFixedPointNumberType(P, R, N, T);
+            console.log(
+                `SDK FixedPointNumber => ${P} at ${R} accrued ${N} per year for ${T} years = ${fpA} `
+            );
+            expect(fpA.toString()).not.toBe(jsA.toString());
+            expect(fpA.toString()).not.toBe(bnA.toString());
+        });
     });
 
     describe('sqrt method tests', () => {
@@ -2619,3 +2662,38 @@ describe('FixedPointNumber class tests', () => {
         });
     });
 });
+
+function interestWithBigNumberType(
+    P: number,
+    r: number,
+    n: number,
+    t: number
+): BigNumber {
+    const _P = BigNumber(P);
+    const _r = BigNumber(r);
+    const _n = BigNumber(n);
+    const _t = BigNumber(t);
+    return BigNumber(1).plus(_r.div(n)).pow(_t.times(_n)).times(_P);
+}
+
+function interestWithFixedPointNumberType(
+    P: number,
+    r: number,
+    n: number,
+    t: number
+): FixedPointNumber {
+    const _P = FixedPointNumber.of(P);
+    const _r = FixedPointNumber.of(r);
+    const _n = FixedPointNumber.of(n);
+    const _t = FixedPointNumber.of(t);
+    return FixedPointNumber.ONE.plus(_r.div(_n)).pow(_t.times(_n)).times(_P);
+}
+
+function interestWithNumberType(
+    P: number,
+    r: number,
+    n: number,
+    t: number
+): number {
+    return (1 + r / n) ** (t * n) * P;
+}
