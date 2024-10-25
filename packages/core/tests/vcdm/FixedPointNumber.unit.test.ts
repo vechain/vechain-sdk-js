@@ -335,65 +335,71 @@ describe('FixedPointNumber class tests', () => {
     describe('Construction tests', () => {
         test('of NaN', () => {
             const n = NaN;
-            const fpn = FixedPointNumber.of(n);
-            expect(fpn).toBeInstanceOf(FixedPointNumber);
-            expect(fpn.toString()).toBe(n.toString());
+            const actual = FixedPointNumber.of(n);
+            expect(actual).toBeInstanceOf(FixedPointNumber);
+            expect(actual.toString()).toBe(n.toString());
         });
 
         test('of -Infinity', () => {
             const n = -Infinity;
-            const fpn = FixedPointNumber.of(n);
-            expect(fpn).toBeInstanceOf(FixedPointNumber);
-            expect(fpn.toString()).toBe(n.toString());
+            const actual = FixedPointNumber.of(n);
+            expect(actual).toBeInstanceOf(FixedPointNumber);
+            expect(actual.toString()).toBe(n.toString());
         });
 
         test('of +Infinity', () => {
             const n = Infinity;
-            const fpn = FixedPointNumber.of(n);
-            expect(fpn).toBeInstanceOf(FixedPointNumber);
-            expect(fpn.toString()).toBe(n.toString());
+            const actual = FixedPointNumber.of(n);
+            expect(actual).toBeInstanceOf(FixedPointNumber);
+            expect(actual.toString()).toBe(n.toString());
         });
 
-        test('of bigint', () => {
-            const bi = Infinity;
-            const fpn = FixedPointNumber.of(bi);
-            expect(fpn).toBeInstanceOf(FixedPointNumber);
-            expect(fpn.toString()).toBe(bi.toString());
+        test('of -bigint', () => {
+            const bi = -12345678901234567890n;
+            const actual = FixedPointNumber.of(bi);
+            expect(actual).toBeInstanceOf(FixedPointNumber);
+            expect(actual.toString()).toBe(bi.toString());
         });
 
-        test('of -n', () => {
-            const n = -123.0067;
-            const fpn = FixedPointNumber.of(n);
-            expect(fpn).toBeInstanceOf(FixedPointNumber);
-            expect(fpn.toString()).toBe(n.toString());
+        test('of +bigint', () => {
+            const bi = 12345678901234567890n;
+            const actual = FixedPointNumber.of(bi);
+            expect(actual).toBeInstanceOf(FixedPointNumber);
+            expect(actual.toString()).toBe(bi.toString());
+        });
+
+        test('of FixedPointNumber', () => {
+            const expected = FixedPointNumber.of(-123.45);
+            const actual = FixedPointNumber.of(expected);
+            expect(actual.isEqual(expected)).toBe(true);
         });
 
         test('of +n', () => {
             const n = 123.0067;
-            const fpn = FixedPointNumber.of(n);
-            expect(fpn).toBeInstanceOf(FixedPointNumber);
-            expect(fpn.toString()).toBe(n.toString());
+            const actual = FixedPointNumber.of(n);
+            expect(actual).toBeInstanceOf(FixedPointNumber);
+            expect(actual.toString()).toBe(n.toString());
         });
 
         test('of -n', () => {
             const n = -123.0067;
-            const fpn = FixedPointNumber.of(n);
-            expect(fpn).toBeInstanceOf(FixedPointNumber);
-            expect(fpn.toString()).toBe(n.toString());
+            const actual = FixedPointNumber.of(n);
+            expect(actual).toBeInstanceOf(FixedPointNumber);
+            expect(actual.toString()).toBe(n.toString());
         });
 
         test('of negative string', () => {
-            const n = -123.0067;
-            const fpn = FixedPointNumber.of(n.toString());
-            expect(fpn).toBeInstanceOf(FixedPointNumber);
-            expect(fpn.toString()).toBe(n.toString());
+            const n = '-123.0067';
+            const actual = FixedPointNumber.of(n.toString());
+            expect(actual).toBeInstanceOf(FixedPointNumber);
+            expect(actual.toString()).toBe(n.toString());
         });
 
         test('of positive string', () => {
             const exp = '+123.45';
-            const fpn = FixedPointNumber.of(exp);
-            expect(fpn).toBeInstanceOf(FixedPointNumber);
-            expect(fpn.n).toBe(Number(exp));
+            const actual = FixedPointNumber.of(exp);
+            expect(actual).toBeInstanceOf(FixedPointNumber);
+            expect(actual.n).toBe(Number(exp));
         });
 
         test('of an illegal expression throws exception', () => {
