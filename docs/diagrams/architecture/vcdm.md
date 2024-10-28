@@ -69,6 +69,7 @@ classDiagram
         +bigint scaledValue
         +FixedPointNumber NaN$
         +FixedPointNumber NEGATIVE_INFINITY$
+        +FixedPointNumber ONE$
         +FixedPointNumber POSITIVE_INFINITY$
         +FixedPointNumber ZERO$
         +FixedPointNumber abs()
@@ -96,7 +97,7 @@ classDiagram
         +FixedPointNumber minus(FixedPointNumber that)
         +FixedPointNumber modulo(FixedPointNumber that)
         +FixedPointNumber negated()
-        +FixedPointNumber of(bigint|number|string exp)$
+        +FixedPointNumber of(bigint|number|string|FixedPointNumber exp)$
         +FixedPointNumber plus(FixedPointNumber that)
         +FixedPointNumber pow(FixedPointNumber that)
         +FixedPointNumber sqrt()
