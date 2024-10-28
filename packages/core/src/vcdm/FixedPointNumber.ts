@@ -45,6 +45,11 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
     );
 
     /**
+     * Represents the one constant.
+     */
+    public static readonly ONE = FixedPointNumber.of(1n);
+
+    /**
      * The positive Infinite value.
      *
      * @remarks {@link fractionalDigits} and {@link scaledValue} not meaningful.
@@ -306,6 +311,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
             let fd = this.fractionalDigits;
             let sv = this.scaledValue;
             if (dp > fd) {
+                // Scale up.
                 sv *= FixedPointNumber.BASE ** (dp - fd);
                 fd = dp;
             } else {
@@ -773,10 +779,17 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * @throws {InvalidDataType} If `exp` is not a numeric expression.
      */
     public static of(
-        exp: bigint | number | string,
+        exp: bigint | number | string | FixedPointNumber,
         decimalPlaces: bigint = this.DEFAULT_FRACTIONAL_DECIMALS
     ): FixedPointNumber {
         try {
+            if (exp instanceof FixedPointNumber) {
+                return new FixedPointNumber(
+                    exp.fractionalDigits,
+                    exp.scaledValue,
+                    exp.edgeFlag
+                );
+            }
             if (Number.isNaN(exp))
                 return new FixedPointNumber(decimalPlaces, 0n, Number.NaN);
             if (exp === Number.NEGATIVE_INFINITY)
@@ -843,6 +856,10 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
     /**
      * Returns a FixedPointNumber whose value is the value of this FixedPointNumber raised to the power of `that` FixedPointNumber.
      *
+     * This method implements the
+     * [Exponentiation by Squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring)
+     * algorithm.
+     *
      * Limit cases
      * * NaN ^ e = NaN
      * * b ^ NaN = NaN
@@ -853,67 +870,40 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * * ±Infinite ^ +e = +Infinite
      *
      * @param {FixedPointNumber} that - The exponent as a fixed-point number.
-     * It can be negative, it can be not an integer value
-     * ([bignumber.js pow](https://mikemcl.github.io/bignumber.js/#pow)
-     * doesn't support not integer exponents).
+     * truncated to its integer component because **Exponentiation by Squaring** is not valid for rational exponents.
      * @return {FixedPointNumber} - The result of raising this fixed-point number to the power of the given exponent.
-     *
-     * @remarks The precision is the greater of the precision of the two operands.
-     * @remarks In fixed-precision math, the comparisons between powers of operands having different fractional
-     * precision can lead to differences.
      *
      * @see [bignumber.js exponentiatedBy](https://mikemcl.github.io/bignumber.js/#pow)
      */
     public pow(that: FixedPointNumber): FixedPointNumber {
+        // Limit cases
         if (this.isNaN() || that.isNaN()) return FixedPointNumber.NaN;
         if (this.isInfinite())
             return that.isZero()
-                ? FixedPointNumber.of(1)
+                ? FixedPointNumber.ONE
                 : that.isNegative()
                   ? FixedPointNumber.ZERO
                   : FixedPointNumber.POSITIVE_INFINITY;
         if (that.isNegativeInfinite()) return FixedPointNumber.ZERO;
-        if (that.isPositiveInfinite())
+        if (that.isPositiveInfinite()) {
             return FixedPointNumber.POSITIVE_INFINITY;
-        const fd = this.maxFractionalDigits(that, this.fractionalDigits); // Max common fractional decimals.
-        return new FixedPointNumber(
-            fd,
-            FixedPointNumber.pow(
-                fd,
-                this.dp(fd).scaledValue,
-                that.dp(fd).scaledValue
-            )
-        ).dp(this.fractionalDigits); // Minimize fractional decimals without precision loss.
-    }
-
-    /**
-     * Computes the power of a given base raised to a specified exponent.
-     *
-     * @param {bigint} fd - The scale factor for decimal precision.
-     * @param {bigint} base - The base number to be raised to the power.
-     * @param {bigint} exponent - The exponent to which the base should be raised.
-     * @return {bigint} The result of base raised to the power of exponent, scaled by the scale factor.
-     */
-    private static pow(fd: bigint, base: bigint, exponent: bigint): bigint {
-        const sf = FixedPointNumber.BASE ** fd; // Scale factor.
-        if (exponent < 0n) {
-            return FixedPointNumber.pow(
-                fd,
-                FixedPointNumber.div(fd, sf, base),
-                -exponent
-            ); // Recursive.
         }
-        if (exponent === 0n) {
-            return 1n * sf;
+        if (that.isZero()) return FixedPointNumber.ONE;
+        // Exponentiation by squaring works for natural exponent value.
+        let exponent = that.abs().bi;
+        let base = FixedPointNumber.of(this);
+        let result = FixedPointNumber.ONE;
+        while (exponent > 0n) {
+            // If the exponent is odd, multiply the result by the current base.
+            if (exponent % 2n === 1n) {
+                result = result.times(base);
+            }
+            // Square the base and halve the exponent.
+            base = base.times(base);
+            exponent = exponent / 2n;
         }
-        if (exponent === sf) {
-            return base;
-        }
-        return FixedPointNumber.pow(
-            fd,
-            this.mul(base, base, fd),
-            exponent - sf
-        ); // Recursive.
+        // If exponent is negative, convert the problem to positive exponent.
+        return that.isNegative() ? FixedPointNumber.ONE.div(result) : result;
     }
 
     /**
