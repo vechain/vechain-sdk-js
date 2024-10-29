@@ -28,7 +28,10 @@ interface ABIEventData {
  * Represents a function call in the Event ABI.
  * @extends ABIItem
  */
-class ABIEvent extends ABIItem {
+class ABIEvent<
+    TAbi extends ViemABI,
+    TEventName extends ContractEventName<TAbi>
+> extends ABIItem {
     private readonly abiEvent: AbiEvent;
     public constructor(signature: string);
     public constructor(signature: AbiEvent);
@@ -99,10 +102,9 @@ class ABIEvent extends ABIItem {
      * @returns Decoding results.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public decodeEventLog<
-        TAbi extends ViemABI,
-        TEventName extends ContractEventName<TAbi>
-    >(event: ABIEventData): DecodeEventLogReturnType<TAbi, TEventName> {
+    public decodeEventLog(
+        event: ABIEventData
+    ): DecodeEventLogReturnType<TAbi, TEventName> {
         try {
             return ABIEvent.parseLog([this.abiEvent] as ViemABI, event);
         } catch (error) {
@@ -127,7 +129,7 @@ class ABIEvent extends ABIItem {
             return [];
         }
 
-        return this.parseObjectValues(rawDecodedData.args);
+        return this.parseObjectValues(rawDecodedData.args as unknown as object);
     }
 
     /**

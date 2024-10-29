@@ -1,11 +1,11 @@
 import {
     ABIContract,
+    Address,
+    Clause,
     dataUtils,
     Hex,
-    Address,
-    VET,
     Units,
-    Clause,
+    VET,
     type ABIFunction
 } from '@vechain/sdk-core';
 import { type Abi } from 'abitype';
@@ -81,7 +81,7 @@ class ContractsModule {
      */
     public async executeCall(
         contractAddress: string,
-        functionAbi: ABIFunction,
+        functionAbi: ABIFunction<Abi, string>,
         functionData: unknown[],
         contractCallOptions?: ContractCallOptions
     ): Promise<ContractCallResult | string> {
@@ -149,7 +149,7 @@ class ContractsModule {
     public async executeTransaction(
         signer: VeChainSigner,
         contractAddress: string,
-        functionAbi: ABIFunction,
+        functionAbi: ABIFunction<Abi, string>,
         functionData: unknown[],
         options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {

@@ -1,3 +1,4 @@
+import { type Abi } from 'abitype';
 import type {
     SignTransactionOptions,
     SimulateTransactionOptions,
@@ -50,7 +51,7 @@ type ContractCallResult = unknown[];
  */
 interface ContractClause {
     clause: TransactionClause;
-    functionAbi: ABIFunction;
+    functionAbi: ABIFunction<Abi, string>;
 }
 
 export type {

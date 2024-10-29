@@ -3,7 +3,6 @@ import {
     InvalidAbiItem
 } from '@vechain/sdk-errors';
 import {
-    type Abi,
     type AbiFunction,
     type ContractFunctionName,
     decodeFunctionData,
@@ -11,6 +10,7 @@ import {
     decodeFunctionResult,
     type DecodeFunctionResultReturnType,
     encodeFunctionData,
+    type Abi as ViemABI,
     type Hex as ViemHex
 } from 'viem';
 import { Hex } from '../Hex';
@@ -20,7 +20,10 @@ import { ABIItem } from './ABIItem';
  * Represents a function call in the Function ABI.
  * @extends ABIItem
  */
-class ABIFunction extends ABIItem {
+class ABIFunction<
+    TAbi extends ViemABI,
+    TFunctionName extends ContractFunctionName<TAbi>
+> extends ABIItem {
     private readonly abiFunction: AbiFunction;
     public constructor(signature: string);
     public constructor(signature: AbiFunction);
@@ -57,10 +60,9 @@ class ABIFunction extends ABIItem {
      * @returns Decoding results.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public decodeData<
-        TAbi extends Abi,
-        TFunctionName extends ContractFunctionName<TAbi>
-    >(data: Hex): DecodeFunctionDataReturnType<TAbi, TFunctionName> {
+    public decodeData(
+        data: Hex
+    ): DecodeFunctionDataReturnType<TAbi, TFunctionName> {
         try {
             return decodeFunctionData({
                 abi: [this.abiFunction],
@@ -115,10 +117,9 @@ class ABIFunction extends ABIItem {
      *   console.log('Decoded Output:', decoded);
      * ```
      */
-    public decodeResult<
-        TAbi extends Abi,
-        TFunctionName extends ContractFunctionName<TAbi>
-    >(data: Hex): DecodeFunctionResultReturnType<TAbi, TFunctionName> {
+    public decodeResult(
+        data: Hex
+    ): DecodeFunctionResultReturnType<TAbi, TFunctionName> {
         try {
             const result = decodeFunctionResult({
                 abi: [this.abiFunction],

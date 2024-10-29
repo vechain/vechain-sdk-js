@@ -66,9 +66,9 @@ describe('Contract interface for ABI encoding/decoding', () => {
      * Test the error when getting a function ABI.
      */
     test('get a function ABI and throw an error', () => {
-        expect(() => contractAbi.getFunction('undefined')).toThrowError(
-            InvalidAbiItem
-        );
+        expect(() =>
+            contractAbi.getFunction('undefined' as unknown as 'setValue')
+        ).toThrowError(InvalidAbiItem);
     });
 
     /**
@@ -76,7 +76,10 @@ describe('Contract interface for ABI encoding/decoding', () => {
      */
     test('Fail to encode a contract function input', () => {
         expect(() =>
-            contractAbi.encodeFunctionInput('undefined', [123])
+            contractAbi.encodeFunctionInput(
+                'undefined' as unknown as 'setValue',
+                [123]
+            )
         ).toThrowError(InvalidAbiDataToEncodeOrDecode);
     });
 

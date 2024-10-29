@@ -1,5 +1,6 @@
 import { Hex, type ABIEvent } from '@vechain/sdk-core';
 import { InvalidAbiItem } from '@vechain/sdk-errors';
+import { type Abi } from 'viem';
 import { thorest } from '../../utils/thorest/thorest';
 import { type ThorClient } from '../thor-client';
 import {
@@ -153,8 +154,10 @@ class LogsModule {
      * @param eventAbis - An array of event ABI items.
      * @private Returns a map of unique ABI items.
      */
-    private removeDuplicatedAbis(eventAbis: ABIEvent[]): Map<string, ABIEvent> {
-        const uniqueEventAbis = new Map<string, ABIEvent>();
+    private removeDuplicatedAbis(
+        eventAbis: Array<ABIEvent<Abi, string>>
+    ): Map<string, ABIEvent<Abi, string>> {
+        const uniqueEventAbis = new Map<string, ABIEvent<Abi, string>>();
 
         eventAbis.forEach((obj) => {
             if (!uniqueEventAbis.has(obj.signatureHash)) {

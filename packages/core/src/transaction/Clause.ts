@@ -1,3 +1,5 @@
+import { InvalidDataType } from '@vechain/sdk-errors';
+import { type Abi } from 'viem';
 import { ERC721_ABI, VIP180_ABI } from '../utils';
 import {
     ABI,
@@ -11,10 +13,9 @@ import {
 } from '../vcdm';
 import { Hex } from '../vcdm/Hex';
 import { HexInt } from '../vcdm/HexInt';
-import { InvalidDataType } from '@vechain/sdk-errors';
+import type { ClauseOptions } from './ClauseOptions';
 import type { DeployParams } from './DeployParams';
 import type { TransactionClause } from './TransactionClause';
-import type { ClauseOptions } from './ClauseOptions';
 
 /**
  * This class represent a transaction clause.
@@ -130,7 +131,7 @@ class Clause implements TransactionClause {
      */
     public static callFunction(
         contractAddress: Address,
-        functionAbi: ABIFunction,
+        functionAbi: ABIFunction<Abi, string>,
         args: unknown[],
         amount: VET = VET.of(FixedPointNumber.ZERO),
         clauseOptions?: ClauseOptions
