@@ -122,13 +122,13 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
     public decodeFunctionInput<
         TFunctionName extends ContractFunctionName<TAbi>
     >(
-        functionName: string,
+        functionName: TFunctionName & string,
         encodedFunctionInput: Hex
     ): DecodeFunctionDataReturnType<TAbi, TFunctionName> {
         try {
             const functionAbiItem = getAbiItem({
                 abi: this.viemABI,
-                name: functionName
+                name: functionName as string
             });
             const functionAbi = new ABIFunction(functionAbiItem as AbiFunction);
 
@@ -161,13 +161,13 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
     public decodeFunctionOutput<
         TFunctionName extends ContractFunctionName<TAbi>
     >(
-        functionName: string,
+        functionName: TFunctionName & string,
         encodedFunctionOutput: Hex
     ): DecodeFunctionResultReturnType<TAbi, TFunctionName> {
         try {
             const functionAbiItem = getAbiItem({
                 abi: this.viemABI,
-                name: functionName
+                name: functionName as string
             });
             const functionAbi = new ABIFunction(functionAbiItem as AbiFunction);
 
@@ -218,13 +218,13 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
     public decodeEventLog<TEventName extends ContractEventName<TAbi>>(
-        eventName: string,
+        eventName: TEventName & string,
         eventToDecode: ABIEventData
     ): DecodeEventLogReturnType<TAbi, TEventName> {
         try {
             const eventAbiItem = getAbiItem({
                 abi: this.viemABI,
-                name: eventName
+                name: eventName as string
             });
             const eventAbi = new ABIEvent(eventAbiItem as AbiEvent);
             return eventAbi.decodeEventLog(eventToDecode);

@@ -85,11 +85,10 @@ describe('Contract interface for ABI encoding/decoding', () => {
      */
     test('decode a function ABI data', () => {
         const encodedData = contractAbi.encodeFunctionInput('setValue', [123]);
-        const functionInputDecoded =
-            contractAbi.decodeFunctionInput<'setValue'>(
-                'setValue',
-                encodedData
-            );
+        const functionInputDecoded = contractAbi.decodeFunctionInput(
+            'setValue',
+            encodedData
+        );
         expectType<ExpectedCustomFunctionType>(functionInputDecoded);
         const decodedData =
             functionInputDecoded.args !== null &&
@@ -329,7 +328,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
 
         expect(() =>
             contractStorageAbi.decodeFunctionOutput(
-                'invalidFunctionName',
+                'invalidFunctionName' as unknown as 'getValue',
                 Hex.of(encodedFunctionOutput)
             )
         ).toThrowError(InvalidAbiDataToEncodeOrDecode);
