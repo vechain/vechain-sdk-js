@@ -42,7 +42,7 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
      * @throws {InvalidAbiItem}
      */
     public getFunction<TFunctionName extends ContractFunctionName<TAbi>>(
-        name: TFunctionName & string
+        name: TFunctionName | string
     ): ABIFunction<TAbi, TFunctionName> {
         const functionAbiItem = getAbiItem({
             abi: this.viemABI,
@@ -70,7 +70,7 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
      * @throws {InvalidAbiItem}
      */
     public getEvent<TEventName extends ContractEventName<TAbi>>(
-        name: TEventName & string
+        name: TEventName | string
     ): ABIEvent<TAbi, TEventName> {
         const eventAbiItem = getAbiItem({
             abi: this.viemABI,
@@ -98,7 +98,7 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
      */
     public encodeFunctionInput<
         TFunctionName extends ContractFunctionName<TAbi>
-    >(functionName: TFunctionName & string, functionData?: unknown[]): Hex {
+    >(functionName: TFunctionName | string, functionData?: unknown[]): Hex {
         try {
             const functionAbiItem = getAbiItem({
                 abi: this.viemABI,
@@ -129,7 +129,7 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
     public decodeFunctionInput<
         TFunctionName extends ContractFunctionName<TAbi>
     >(
-        functionName: TFunctionName & string,
+        functionName: TFunctionName | string,
         encodedFunctionInput: Hex
     ): DecodeFunctionDataReturnType<TAbi, TFunctionName> {
         try {
@@ -170,7 +170,7 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
     public decodeFunctionOutput<
         TFunctionName extends ContractFunctionName<TAbi>
     >(
-        functionName: TFunctionName & string,
+        functionName: TFunctionName | string,
         encodedFunctionOutput: Hex
     ): DecodeFunctionResultReturnType<TAbi, TFunctionName> {
         try {
@@ -201,7 +201,7 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
     public encodeEventLog<TEventName extends ContractEventName<TAbi>>(
-        eventName: TEventName & string,
+        eventName: TEventName | string,
         eventArgs: unknown[]
     ): ABIEventData {
         try {
@@ -231,7 +231,7 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
     public decodeEventLog<TEventName extends ContractEventName<TAbi>>(
-        eventName: TEventName & string,
+        eventName: TEventName | string,
         eventToDecode: ABIEventData
     ): DecodeEventLogReturnType<TAbi, TEventName> {
         try {
