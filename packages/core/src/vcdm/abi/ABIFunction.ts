@@ -3,6 +3,7 @@ import {
     InvalidAbiItem
 } from '@vechain/sdk-errors';
 import {
+    type Abi,
     type AbiFunction,
     decodeFunctionData,
     type DecodeFunctionDataReturnType,
@@ -110,12 +111,16 @@ class ABIFunction extends ABIItem {
      *   console.log('Decoded Output:', decoded);
      * ```
      */
-    public decodeResult(data: Hex): DecodeFunctionResultReturnType {
+    public decodeResult<TAbi extends Abi>(
+        data: Hex
+    ): DecodeFunctionResultReturnType<TAbi, undefined> {
         try {
-            return decodeFunctionResult({
+            const result = decodeFunctionResult({
                 abi: [this.abiFunction],
                 data: data.toString() as ViemHex
             });
+
+            return result as DecodeFunctionResultReturnType<TAbi, undefined>;
         } catch (error) {
             throw new InvalidAbiDataToEncodeOrDecode(
                 'ABIFunction.decodeResult',

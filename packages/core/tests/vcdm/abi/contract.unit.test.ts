@@ -19,10 +19,10 @@ import {
  * @group unit/encode-decode
  */
 describe('Contract interface for ABI encoding/decoding', () => {
-    let contractAbi: ABIContract;
-    let contractAbiWithEvents: ABIContract;
-    let erc721Abi: ABIContract;
-    let contractStorageAbi: ABIContract;
+    let contractAbi: ABIContract<typeof contractABI>;
+    let contractAbiWithEvents: ABIContract<typeof contractABIWithEvents>;
+    let erc721Abi: ABIContract<typeof ERC721_ABI>;
+    let contractStorageAbi: ABIContract<typeof contractStorageABI>;
     beforeAll(() => {
         contractAbi = ABIContract.ofAbi(contractABI);
         contractAbiWithEvents = ABIContract.ofAbi(contractABIWithEvents);
