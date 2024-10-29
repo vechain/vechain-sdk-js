@@ -99,6 +99,12 @@ describe('Contract interface for ABI encoding/decoding', () => {
                 ? String(functionInputDecoded.args[0])
                 : '';
         expect(decodedData).toEqual('123');
+
+        const fuctionDataDecoded = contractAbi
+            .getFunction('setValue')
+            .decodeData(encodedData);
+
+        expectType<ExpectedCustomFunctionType>(fuctionDataDecoded);
     });
 
     /**

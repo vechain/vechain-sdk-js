@@ -21,8 +21,9 @@ import { ABIItem } from './ABIItem';
  * @extends ABIItem
  */
 class ABIFunction<
-    TAbi extends ViemABI,
-    TFunctionName extends ContractFunctionName<TAbi>
+    TAbi extends ViemABI = ViemABI,
+    TFunctionName extends
+        ContractFunctionName<TAbi> = ContractFunctionName<TAbi>
 > extends ABIItem {
     private readonly abiFunction: AbiFunction;
     public constructor(signature: string);

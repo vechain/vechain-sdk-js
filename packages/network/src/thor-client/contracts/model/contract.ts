@@ -196,7 +196,7 @@ class Contract<TAbi extends Abi> {
      * @throws {InvalidAbiItem}
      *
      */
-    public getFunctionAbi(prop: string | symbol): ABIFunction<Abi, string> {
+    public getFunctionAbi(prop: string | symbol): ABIFunction {
         return ABIContract.ofAbi(this.abi).getFunction(prop.toString());
     }
 
@@ -206,7 +206,7 @@ class Contract<TAbi extends Abi> {
      * @return The event ABI for the specified event name.
      * @throws {InvalidAbiItem}
      */
-    public getEventAbi(eventName: string | symbol): ABIEvent<Abi, string> {
+    public getEventAbi(eventName: string | symbol): ABIEvent {
         return ABIContract.ofAbi(this.abi).getEvent(eventName.toString());
     }
 }

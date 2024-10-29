@@ -81,7 +81,7 @@ class ContractsModule {
      */
     public async executeCall(
         contractAddress: string,
-        functionAbi: ABIFunction<Abi, string>,
+        functionAbi: ABIFunction,
         functionData: unknown[],
         contractCallOptions?: ContractCallOptions
     ): Promise<ContractCallResult | string> {
@@ -149,7 +149,7 @@ class ContractsModule {
     public async executeTransaction(
         signer: VeChainSigner,
         contractAddress: string,
-        functionAbi: ABIFunction<Abi, string>,
+        functionAbi: ABIFunction,
         functionData: unknown[],
         options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {

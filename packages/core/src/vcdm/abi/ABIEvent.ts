@@ -29,8 +29,8 @@ interface ABIEventData {
  * @extends ABIItem
  */
 class ABIEvent<
-    TAbi extends ViemABI,
-    TEventName extends ContractEventName<TAbi>
+    TAbi extends ViemABI = ViemABI,
+    TEventName extends ContractEventName<TAbi> = ContractEventName<TAbi>
 > extends ABIItem {
     private readonly abiEvent: AbiEvent;
     public constructor(signature: string);

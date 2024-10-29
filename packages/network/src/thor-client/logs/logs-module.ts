@@ -155,9 +155,9 @@ class LogsModule {
      * @private Returns a map of unique ABI items.
      */
     private removeDuplicatedAbis(
-        eventAbis: Array<ABIEvent<Abi, string>>
+        eventAbis: ABIEvent[]
     ): Map<string, ABIEvent<Abi, string>> {
-        const uniqueEventAbis = new Map<string, ABIEvent<Abi, string>>();
+        const uniqueEventAbis = new Map<string, ABIEvent>();
 
         eventAbis.forEach((obj) => {
             if (!uniqueEventAbis.has(obj.signatureHash)) {
