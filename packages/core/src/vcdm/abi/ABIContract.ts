@@ -3,10 +3,10 @@ import {
     InvalidAbiItem
 } from '@vechain/sdk-errors';
 import {
-    type ContractEventName,
     getAbiItem,
     type AbiEvent,
     type AbiFunction,
+    type ContractEventName,
     type DecodeEventLogReturnType,
     type DecodeFunctionDataReturnType,
     type DecodeFunctionResultReturnType,
@@ -18,11 +18,11 @@ import { ABIEvent, type ABIEventData } from './ABIEvent';
 import { ABIFunction } from './ABIFunction';
 
 class ABIContract<TAbi extends ViemABI> extends ABI {
-    private readonly abi: TAbi;
+    private readonly viemABI: ViemABI;
 
-    constructor(abi: TAbi) {
+    constructor(readonly abi: TAbi) {
         super();
-        this.abi = abi;
+        this.viemABI = abi as ViemABI;
     }
 
     /**
@@ -42,7 +42,7 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
      */
     public getFunction(name: string): ABIFunction {
         const functionAbiItem = getAbiItem({
-            abi: this.abi as ViemABI,
+            abi: this.viemABI,
             name
         });
         if (functionAbiItem === null || functionAbiItem === undefined) {
@@ -66,7 +66,7 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
      */
     public getEvent(name: string): ABIEvent {
         const eventAbiItem = getAbiItem({
-            abi: this.abi as ViemABI,
+            abi: this.viemABI,
             name
         });
         if (eventAbiItem === null || eventAbiItem === undefined) {
@@ -95,7 +95,7 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
     ): Hex {
         try {
             const functionAbiItem = getAbiItem({
-                abi: this.abi as ViemABI,
+                abi: this.viemABI,
                 name: functionName
             });
             const functionAbi = new ABIFunction(functionAbiItem as AbiFunction);
@@ -124,7 +124,7 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
     ): DecodeFunctionDataReturnType<TAbi> {
         try {
             const functionAbiItem = getAbiItem({
-                abi: this.abi as ViemABI,
+                abi: this.viemABI,
                 name: functionName
             });
             const functionAbi = new ABIFunction(functionAbiItem as AbiFunction);
@@ -161,7 +161,7 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
     ): DecodeFunctionResultReturnType<TAbi> {
         try {
             const functionAbiItem = getAbiItem({
-                abi: this.abi as ViemABI,
+                abi: this.viemABI,
                 name: functionName
             });
             const functionAbi = new ABIFunction(functionAbiItem as AbiFunction);
@@ -190,7 +190,7 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
     ): ABIEventData {
         try {
             const eventAbiItem = getAbiItem({
-                abi: this.abi as ViemABI,
+                abi: this.viemABI,
                 name: eventName
             });
             const eventAbi = new ABIEvent(eventAbiItem as AbiEvent);
@@ -218,7 +218,7 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
     ): DecodeEventLogReturnType<TAbi, TEventName> {
         try {
             const eventAbiItem = getAbiItem({
-                abi: this.abi as ViemABI,
+                abi: this.viemABI,
                 name: eventName
             });
             const eventAbi = new ABIEvent(eventAbiItem as AbiEvent);
