@@ -49,6 +49,7 @@
   },
   "devDependencies": {
     "bignumber.js": "^9.1.2",
-    "thor-devkit": "^2.0.9"
+    "thor-devkit": "^2.0.9",
+    "tsd": "^0.31.2"
   }
 }

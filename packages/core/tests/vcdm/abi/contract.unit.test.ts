@@ -5,12 +5,14 @@ import {
     InvalidDataType
 } from '@vechain/sdk-errors';
 import { fail } from 'assert';
+import { expectType } from 'tsd';
 import { type AbiEvent, encodeFunctionResult } from 'viem';
 import { ABIContract, ABIEvent, ABIItem, ERC721_ABI, Hex } from '../../../src';
 import {
     contractABI,
     contractABIWithEvents,
     contractStorageABI,
+    type ExpectedERC721EventType,
     ValueChangedEventData
 } from './fixture';
 
@@ -181,6 +183,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
             )
         ]);
 
+        expectType<ExpectedERC721EventType>(decodedEventLog);
         expect(decodedEventLog).toBeDefined();
         expect(decodedEventLog.eventName).toEqual('Transfer');
         expect(decodedEventLog.args).toBeDefined();
@@ -296,6 +299,9 @@ describe('Contract interface for ABI encoding/decoding', () => {
             functionName,
             Hex.of(encodedFunctionOutput)
         );
+
+        expectType<string>(decodedOutput);
+
         expect(decodedOutput).toBeDefined();
         expect(decodedOutput).toEqual(mockReturnValue);
 
