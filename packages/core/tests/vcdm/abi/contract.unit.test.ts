@@ -12,7 +12,8 @@ import {
     contractABI,
     contractABIWithEvents,
     contractStorageABI,
-    type ExpectedERC721EventType,
+    type ExpectedCustomFunctionType,
+    type ExpectedERC721TransferEventType,
     ValueChangedEventData
 } from './fixture';
 
@@ -84,10 +85,12 @@ describe('Contract interface for ABI encoding/decoding', () => {
      */
     test('decode a function ABI data', () => {
         const encodedData = contractAbi.encodeFunctionInput('setValue', [123]);
-        const functionInputDecoded = contractAbi.decodeFunctionInput(
-            'setValue',
-            encodedData
-        );
+        const functionInputDecoded =
+            contractAbi.decodeFunctionInput<'setValue'>(
+                'setValue',
+                encodedData
+            );
+        expectType<ExpectedCustomFunctionType>(functionInputDecoded);
         const decodedData =
             functionInputDecoded.args !== null &&
             functionInputDecoded.args !== undefined
@@ -183,7 +186,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
             )
         ]);
 
-        expectType<ExpectedERC721EventType>(decodedEventLog);
+        expectType<ExpectedERC721TransferEventType>(decodedEventLog);
         expect(decodedEventLog).toBeDefined();
         expect(decodedEventLog.eventName).toEqual('Transfer');
         expect(decodedEventLog.args).toBeDefined();

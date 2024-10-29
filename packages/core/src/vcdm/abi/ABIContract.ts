@@ -3,6 +3,7 @@ import {
     InvalidAbiItem
 } from '@vechain/sdk-errors';
 import {
+    type ContractFunctionName,
     getAbiItem,
     type AbiEvent,
     type AbiFunction,
@@ -118,10 +119,12 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
      * @returns {DecodeFunctionDataReturnType} an array of the decoded function data
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public decodeFunctionInput(
+    public decodeFunctionInput<
+        TFunctionName extends ContractFunctionName<TAbi>
+    >(
         functionName: string,
         encodedFunctionInput: Hex
-    ): DecodeFunctionDataReturnType<TAbi> {
+    ): DecodeFunctionDataReturnType<TAbi, TFunctionName> {
         try {
             const functionAbiItem = getAbiItem({
                 abi: this.viemABI,
@@ -155,10 +158,12 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
      * const decodedOutput = decodeFunctionOutput('getValue', encodedValue);
      *
      */
-    public decodeFunctionOutput(
+    public decodeFunctionOutput<
+        TFunctionName extends ContractFunctionName<TAbi>
+    >(
         functionName: string,
         encodedFunctionOutput: Hex
-    ): DecodeFunctionResultReturnType<TAbi> {
+    ): DecodeFunctionResultReturnType<TAbi, TFunctionName> {
         try {
             const functionAbiItem = getAbiItem({
                 abi: this.viemABI,
@@ -166,7 +171,7 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
             });
             const functionAbi = new ABIFunction(functionAbiItem as AbiFunction);
 
-            return functionAbi.decodeResult<TAbi>(encodedFunctionOutput);
+            return functionAbi.decodeResult(encodedFunctionOutput);
         } catch (error) {
             throw new InvalidAbiDataToEncodeOrDecode(
                 'ABIContract.decodeFunctionOutput()',

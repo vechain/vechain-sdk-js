@@ -5,6 +5,7 @@ import {
 import {
     type Abi,
     type AbiFunction,
+    type ContractFunctionName,
     decodeFunctionData,
     type DecodeFunctionDataReturnType,
     decodeFunctionResult,
@@ -56,7 +57,10 @@ class ABIFunction extends ABIItem {
      * @returns Decoding results.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public decodeData(data: Hex): DecodeFunctionDataReturnType {
+    public decodeData<
+        TAbi extends Abi,
+        TFunctionName extends ContractFunctionName<TAbi>
+    >(data: Hex): DecodeFunctionDataReturnType<TAbi, TFunctionName> {
         try {
             return decodeFunctionData({
                 abi: [this.abiFunction],
@@ -111,16 +115,20 @@ class ABIFunction extends ABIItem {
      *   console.log('Decoded Output:', decoded);
      * ```
      */
-    public decodeResult<TAbi extends Abi>(
-        data: Hex
-    ): DecodeFunctionResultReturnType<TAbi, undefined> {
+    public decodeResult<
+        TAbi extends Abi,
+        TFunctionName extends ContractFunctionName<TAbi>
+    >(data: Hex): DecodeFunctionResultReturnType<TAbi, TFunctionName> {
         try {
             const result = decodeFunctionResult({
                 abi: [this.abiFunction],
                 data: data.toString() as ViemHex
             });
 
-            return result as DecodeFunctionResultReturnType<TAbi, undefined>;
+            return result as DecodeFunctionResultReturnType<
+                TAbi,
+                TFunctionName
+            >;
         } catch (error) {
             throw new InvalidAbiDataToEncodeOrDecode(
                 'ABIFunction.decodeResult',

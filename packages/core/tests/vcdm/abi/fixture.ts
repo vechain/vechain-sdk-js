@@ -552,31 +552,19 @@ const ValueChangedEventData = {
     value: 100 // Replace with the actual balance value
 };
 
-type ExpectedERC721EventType =
-    | {
-          eventName: 'Approval';
-          args: {
-              owner: `0x${string}`;
-              approved: `0x${string}`;
-              tokenId: bigint;
-          };
-      }
-    | {
-          eventName: 'ApprovalForAll';
-          args: {
-              owner: `0x${string}`;
-              operator: `0x${string}`;
-              approved: boolean;
-          };
-      }
-    | {
-          eventName: 'Transfer';
-          args: {
-              from: `0x${string}`;
-              to: `0x${string}`;
-              tokenId: bigint;
-          };
-      };
+interface ExpectedERC721TransferEventType {
+    eventName: 'Transfer';
+    args: {
+        from: `0x${string}`;
+        to: `0x${string}`;
+        tokenId: bigint;
+    };
+}
+
+interface ExpectedCustomFunctionType {
+    args: readonly [bigint];
+    functionName: 'setValue';
+}
 
 export {
     contractABI,
@@ -590,5 +578,6 @@ export {
     simpleParametersDataForFunction2,
     topicsEventTestCases,
     ValueChangedEventData,
-    type ExpectedERC721EventType
+    type ExpectedCustomFunctionType,
+    type ExpectedERC721TransferEventType
 };
