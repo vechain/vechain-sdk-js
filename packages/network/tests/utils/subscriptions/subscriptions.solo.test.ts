@@ -6,8 +6,8 @@ import {
     Hex,
     HexUInt,
     Transaction,
-    Units,
-    type TransactionClause
+    type TransactionClause,
+    Units
 } from '@vechain/sdk-core';
 import { type AbiEvent } from 'abitype';
 import {
@@ -173,9 +173,7 @@ describe('Subscriptions Solo network tests', () => {
                                     )
                                 }
                             );
-                        const decodedLogValues = Object.values(
-                            decodedLog.args as unknown[]
-                        );
+                        const decodedLogValues = Object.values(decodedLog.args);
 
                         expect(decodedLogValues.length).toBe(4);
                         expect(decodedLogValues[2]).toBe(
