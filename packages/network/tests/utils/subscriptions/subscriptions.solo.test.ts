@@ -173,10 +173,9 @@ describe('Subscriptions Solo network tests', () => {
                                     )
                                 }
                             );
-                        const decodedLogValues = Object.values(decodedLog.args);
 
-                        expect(decodedLogValues.length).toBe(4);
-                        expect(decodedLogValues[2]).toBe(
+                        expect(Object.keys(decodedLog.args).length).toBe(4);
+                        expect(decodedLog.args.sender).toBe(
                             Address.checksum(
                                 HexUInt.of(
                                     TEST_ACCOUNTS.SUBSCRIPTION
