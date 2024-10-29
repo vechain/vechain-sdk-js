@@ -29,6 +29,7 @@ import {
 } from '../../fixture';
 // eslint-disable-next-line import/no-named-default
 import { default as NodeWebSocket } from 'isomorphic-ws';
+import { expectType } from 'tsd';
 
 const TIMEOUT = 15000; // 15-second timeout
 
@@ -174,6 +175,15 @@ describe('Subscriptions Solo network tests', () => {
                                 }
                             );
 
+                        expectType<{
+                            eventName: 'StateChanged';
+                            args: {
+                                newValue: bigint;
+                                oldValue: bigint;
+                                sender: string;
+                                timestamp: bigint;
+                            };
+                        }>(decodedLog);
                         expect(Object.keys(decodedLog.args).length).toBe(4);
                         expect(decodedLog.args.sender).toBe(
                             Address.checksum(
