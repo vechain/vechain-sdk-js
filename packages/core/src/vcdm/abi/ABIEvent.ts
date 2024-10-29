@@ -5,6 +5,7 @@ import {
 import { type AbiEventParameter } from 'abitype';
 import {
     type AbiEvent,
+    type ContractEventName,
     type DecodeEventLogReturnType,
     encodeEventTopics,
     type EncodeEventTopicsReturnType,
@@ -55,10 +56,13 @@ class ABIEvent extends ABIItem {
      * @returns Decoding results.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public static parseLog<TAbi extends ViemABI>(
+    public static parseLog<
+        TAbi extends ViemABI,
+        TEventName extends ContractEventName<TAbi>
+    >(
         abi: TAbi,
         eventData: ABIEventData
-    ): DecodeEventLogReturnType<TAbi, undefined> {
+    ): DecodeEventLogReturnType<TAbi, TEventName> {
         try {
             return viemDecodeEventLog({
                 abi,
@@ -95,9 +99,10 @@ class ABIEvent extends ABIItem {
      * @returns Decoding results.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public decodeEventLog<TAbi extends ViemABI>(
-        event: ABIEventData
-    ): DecodeEventLogReturnType<TAbi, undefined> {
+    public decodeEventLog<
+        TAbi extends ViemABI,
+        TEventName extends ContractEventName<TAbi>
+    >(event: ABIEventData): DecodeEventLogReturnType<TAbi, TEventName> {
         try {
             return ABIEvent.parseLog([this.abiEvent] as ViemABI, event);
         } catch (error) {

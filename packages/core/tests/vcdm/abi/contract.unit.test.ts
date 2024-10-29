@@ -168,7 +168,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
      * Test the decoding of an encoded event log from a contract transaction.
      */
     test('parse an event log and return decoded data', () => {
-        const decodedEventLog = erc721Abi.parseLog(Hex.of('0x'), [
+        const decodedEventLog = erc721Abi.parseLog<'Transfer'>(Hex.of('0x'), [
             Hex.of(
                 '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
             ),
@@ -190,14 +190,13 @@ describe('Contract interface for ABI encoding/decoding', () => {
         if (decodedEventLog.args === undefined) {
             fail('Decoded event log args are undefined');
         }
-        const argsValues = Object.values(decodedEventLog.args);
-        expect(argsValues[0]).toEqual(
+        expect(decodedEventLog.args.from).toEqual(
             '0x0000000000000000000000000000000000000000'
         );
-        expect(argsValues[1]).toEqual(
+        expect(decodedEventLog.args.to).toEqual(
             '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54'
         );
-        expect(argsValues[2]).toEqual(1n);
+        expect(decodedEventLog.args.tokenId).toEqual(1n);
     });
 
     /**

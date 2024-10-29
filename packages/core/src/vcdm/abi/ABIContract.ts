@@ -3,6 +3,7 @@ import {
     InvalidAbiItem
 } from '@vechain/sdk-errors';
 import {
+    type ContractEventName,
     getAbiItem,
     type AbiEvent,
     type AbiFunction,
@@ -211,10 +212,10 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
      * @returns {DecodeEventLogReturnType} The decoded data of the event log.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public decodeEventLog(
+    public decodeEventLog<TEventName extends ContractEventName<TAbi>>(
         eventName: string,
         eventToDecode: ABIEventData
-    ): DecodeEventLogReturnType<TAbi, undefined> {
+    ): DecodeEventLogReturnType<TAbi, TEventName> {
         try {
             const eventAbiItem = getAbiItem({
                 abi: this.abi as ViemABI,
@@ -245,12 +246,15 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
      * @returns {DecodeEventLogReturnType} - A log object representing the decoded log or null if decoding fails.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public parseLog(
+    public parseLog<TEventName extends ContractEventName<TAbi>>(
         data: Hex,
         topics: Hex[]
-    ): DecodeEventLogReturnType<TAbi, undefined> {
+    ): DecodeEventLogReturnType<TAbi, TEventName> {
         try {
-            return ABIEvent.parseLog(this.abi, { data, topics });
+            return ABIEvent.parseLog<TAbi, TEventName>(this.abi, {
+                data,
+                topics
+            });
         } catch (e) {
             throw new InvalidAbiDataToEncodeOrDecode(
                 'ABIContract.parseLog()',
