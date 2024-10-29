@@ -211,10 +211,10 @@ class ABIContract extends ABI {
      * @returns {DecodeEventLogReturnType} The decoded data of the event log.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public decodeEventLog(
+    public decodeEventLog<TAbi extends ViemABI>(
         eventName: string,
         eventToDecode: ABIEventData
-    ): DecodeEventLogReturnType {
+    ): DecodeEventLogReturnType<TAbi, undefined> {
         try {
             const eventAbiItem = getAbiItem({
                 abi: this.abi,
@@ -245,7 +245,10 @@ class ABIContract extends ABI {
      * @returns {DecodeEventLogReturnType} - A log object representing the decoded log or null if decoding fails.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public parseLog(data: Hex, topics: Hex[]): DecodeEventLogReturnType {
+    public parseLog<TAbi extends ViemABI>(
+        data: Hex,
+        topics: Hex[]
+    ): DecodeEventLogReturnType<TAbi, undefined> {
         try {
             return ABIEvent.parseLog(this.abi, { data, topics });
         } catch (e) {

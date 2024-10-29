@@ -55,10 +55,10 @@ class ABIEvent extends ABIItem {
      * @returns Decoding results.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public static parseLog(
-        abi: ViemABI,
+    public static parseLog<TAbi extends ViemABI>(
+        abi: TAbi,
         eventData: ABIEventData
-    ): DecodeEventLogReturnType {
+    ): DecodeEventLogReturnType<TAbi, undefined> {
         try {
             return viemDecodeEventLog({
                 abi,
@@ -95,9 +95,11 @@ class ABIEvent extends ABIItem {
      * @returns Decoding results.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public decodeEventLog(event: ABIEventData): DecodeEventLogReturnType {
+    public decodeEventLog<TAbi extends ViemABI>(
+        event: ABIEventData
+    ): DecodeEventLogReturnType<TAbi, undefined> {
         try {
-            return ABIEvent.parseLog([this.abiEvent], event);
+            return ABIEvent.parseLog([this.abiEvent] as ViemABI, event);
         } catch (error) {
             throw new InvalidAbiDataToEncodeOrDecode(
                 'ABIEvent.decodeEventLog',
