@@ -1,7 +1,6 @@
 /* --- Input options start --- */
 
 import { type ABIEvent } from '@vechain/sdk-core';
-import { type Abi } from 'viem';
 
 /**
  * Range interface for specifying a range of data.
@@ -43,7 +42,7 @@ interface PaginationOptions {
  */
 interface FilterCriteria {
     criteria: EventCriteria;
-    eventAbi: ABIEvent<Abi, string>;
+    eventAbi: ABIEvent;
 }
 
 /**
