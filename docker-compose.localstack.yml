@@ -27,7 +27,7 @@ services:
         - CMD
         - bash
         - -c
-        - $$(awslocal kms list-keys | jq '.Keys | length | . == 1') || exit 1; # There is 1 key at the moment
+        - $$(awslocal kms list-keys | jq '.Keys | length | . == 2') || exit 1; # There are 2 keys at the moment
       interval: 5s
       timeout: 20s
       start_period: 2s
