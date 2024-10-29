@@ -1,4 +1,3 @@
-import 'abitype';
 import type {
     SignTransactionOptions,
     SimulateTransactionOptions,
