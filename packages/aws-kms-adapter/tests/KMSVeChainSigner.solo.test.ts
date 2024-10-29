@@ -2,86 +2,32 @@ import {
     ABIContract,
     Address,
     Clause,
-    ERC20_ABI,
     HexUInt,
     Transaction,
-    VTHO_ADDRESS,
     type TransactionClause
 } from '@vechain/sdk-core';
-import {
-    ProviderInternalBaseWallet,
-    signerUtils,
-    THOR_SOLO_ACCOUNTS,
-    THOR_SOLO_URL,
-    ThorClient,
-    VeChainPrivateKeySigner,
-    VeChainProvider,
-    type TransactionReceipt
-} from '@vechain/sdk-network';
+import { signerUtils, THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
 import fs from 'fs';
 import path from 'path';
-import { KMSVeChainProvider, KMSVeChainSigner } from '../src';
+import {
+    type KMSClientParameters,
+    KMSVeChainProvider,
+    KMSVeChainSigner
+} from '../src';
 import {
     EIP712_CONTRACT,
     EIP712_FROM,
     EIP712_TO,
+    fundVTHO,
+    signTransactionTestCases as sendTransactionTestCases,
+    signTransactionTestCases,
     TESTING_CONTRACT_ABI,
-    TESTING_CONTRACT_ADDRESS
+    TESTING_CONTRACT_ADDRESS,
+    timeout
 } from './fixture';
-
-interface AwsClientParameters {
-    keyId: string;
-    region: string;
-    credentials: {
-        accessKeyId: string;
-        secretAccessKey: string;
-        sessionToken?: string;
-    };
-    endpoint: string;
-}
 
 // This variable should be replaced once this is clarified  https://github.com/localstack/localstack/issues/11678
 let expectedAddress: string;
-
-const fundVTHO = async (
-    thorClient: ThorClient,
-    kmsSigner: KMSVeChainSigner
-): Promise<void> => {
-    const signer = new VeChainPrivateKeySigner(
-        HexUInt.of(THOR_SOLO_ACCOUNTS[0].privateKey).bytes,
-        new VeChainProvider(
-            thorClient,
-            new ProviderInternalBaseWallet([]),
-            false
-        )
-    );
-    // Load the ERC20 contract
-    const contract = thorClient.contracts.load(VTHO_ADDRESS, ERC20_ABI, signer);
-
-    const receiverAddress = await kmsSigner.getAddress();
-    expectedAddress = receiverAddress;
-
-    const expectedVTHO = 200000000000000000000n;
-
-    // Execute a 'transfer' transaction on the deployed contract,
-    // transferring a specified amount of tokens
-    const transferResult = await contract.transact.transfer(
-        { value: 0, comment: 'Transferring tokens' },
-        receiverAddress,
-        expectedVTHO
-    );
-
-    // Wait for the transfer transaction to complete and obtain its receipt
-    const transactionReceiptTransfer =
-        (await transferResult.wait()) as TransactionReceipt;
-
-    // Verify that the transfer transaction did not revert
-    expect(transactionReceiptTransfer.reverted).toBe(false);
-
-    // Execute a 'balanceOf' call on the contract to check the balance of the receiver
-    const balanceOfResult = await contract.read.balanceOf(receiverAddress);
-    expect(balanceOfResult).toStrictEqual([expectedVTHO]);
-};
 
 /**
  * AWS KMS VeChain signer tests - solo
@@ -100,18 +46,24 @@ describe('KMSVeChainSigner - Thor Solo', () => {
     let signer: KMSVeChainSigner;
 
     /**
-     * Init thor client and provider before each test
+     * KMSVeChainSigner with delegator instance
+     */
+    let signerWithDelegator: KMSVeChainSigner;
+
+    /**
+     * Init thor client and provider before all tests
      */
     beforeAll(async () => {
         const awsCredentialsPath = path.resolve(
             __dirname,
             './aws-credentials.json'
         );
-        let awsClientParameters: AwsClientParameters;
+        let awsClientParameters: KMSClientParameters;
+        let delegatorAwsClientParameters: KMSClientParameters;
         try {
-            awsClientParameters = JSON.parse(
+            [awsClientParameters, delegatorAwsClientParameters] = JSON.parse(
                 fs.readFileSync(awsCredentialsPath, 'utf8')
-            ) as AwsClientParameters;
+            ) as KMSClientParameters[];
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             console.log('Loading test credentials');
@@ -119,23 +71,35 @@ describe('KMSVeChainSigner - Thor Solo', () => {
                 __dirname,
                 './test-aws-credentials.json'
             );
-            awsClientParameters = JSON.parse(
+            [awsClientParameters, delegatorAwsClientParameters] = JSON.parse(
                 fs.readFileSync(testAwsCredentialsPath, 'utf8')
-            ) as AwsClientParameters;
+            ) as KMSClientParameters[];
         }
         thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
-        const provider = new KMSVeChainProvider(
-            thorClient,
-            awsClientParameters.keyId,
-            awsClientParameters.region,
-            awsClientParameters.credentials,
-            awsClientParameters.endpoint
+
+        // Signer with delegator disabled
+        signer = new KMSVeChainSigner(
+            new KMSVeChainProvider(thorClient, awsClientParameters)
         );
-        expect(provider).toBeInstanceOf(KMSVeChainProvider);
-        signer = new KMSVeChainSigner(provider);
+        expectedAddress = await signer.getAddress();
         // This step should be removed once this is clarified  https://github.com/localstack/localstack/issues/11678
-        await fundVTHO(thorClient, signer);
-    });
+        await fundVTHO(thorClient, expectedAddress);
+
+        // Signer with delegator enabled
+        const delegatorProvider = new KMSVeChainProvider(
+            thorClient,
+            delegatorAwsClientParameters
+        );
+        expect(delegatorProvider).toBeInstanceOf(KMSVeChainProvider);
+        signerWithDelegator = new KMSVeChainSigner(
+            new KMSVeChainProvider(thorClient, awsClientParameters, true),
+            {
+                provider: delegatorProvider
+            }
+        );
+        // This step should be removed once this is clarified  https://github.com/localstack/localstack/issues/11678
+        await fundVTHO(thorClient, await signerWithDelegator.getAddress(true));
+    }, timeout);
 
     describe('getAddress', () => {
         test('should get the address from the public key', async () => {
@@ -148,99 +112,125 @@ describe('KMSVeChainSigner - Thor Solo', () => {
      * Test suite for signTransaction method
      */
     describe('signTransaction', () => {
-        test('should sign a transaction successfully', async () => {
-            const sampleClause = Clause.callFunction(
-                Address.of(TESTING_CONTRACT_ADDRESS),
-                ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction('deposit'),
-                [123]
-            ) as TransactionClause;
+        /**
+         * signTransaction test cases with different options
+         */
+        signTransactionTestCases.solo.correct.forEach(
+            ({ description, isDelegated, expected }) => {
+                test(
+                    description,
+                    async () => {
+                        const signTransactionSigner = isDelegated
+                            ? signerWithDelegator
+                            : signer;
+                        const sampleClause = Clause.callFunction(
+                            Address.of(TESTING_CONTRACT_ADDRESS),
+                            ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
+                                'deposit'
+                            ),
+                            [123]
+                        ) as TransactionClause;
 
-            const originAddress = await signer.getAddress();
+                        const originAddress =
+                            await signTransactionSigner.getAddress();
 
-            const gasResult = await thorClient.gas.estimateGas(
-                [sampleClause],
-                originAddress
-            );
+                        const gasResult = await thorClient.gas.estimateGas(
+                            [sampleClause],
+                            originAddress
+                        );
 
-            const txBody = await thorClient.transactions.buildTransactionBody(
-                [sampleClause],
-                gasResult.totalGas,
-                {
-                    isDelegated: false
-                }
-            );
+                        const txBody =
+                            await thorClient.transactions.buildTransactionBody(
+                                [sampleClause],
+                                gasResult.totalGas,
+                                {
+                                    isDelegated
+                                }
+                            );
 
-            const signedRawTx = await signer.signTransaction(
-                signerUtils.transactionBodyToTransactionRequestInput(
-                    txBody,
-                    originAddress
-                )
-            );
-            const signedTx = Transaction.decode(
-                HexUInt.of(signedRawTx.slice(2)).bytes,
-                true
-            );
+                        const signedRawTx =
+                            await signTransactionSigner.signTransaction(
+                                signerUtils.transactionBodyToTransactionRequestInput(
+                                    txBody,
+                                    originAddress
+                                )
+                            );
+                        const signedTx = Transaction.decode(
+                            HexUInt.of(signedRawTx.slice(2)).bytes,
+                            true
+                        );
 
-            expect(signedTx).toBeDefined();
-            const expectedBody = {
-                chainTag: 246,
-                clauses: [
-                    {
-                        data: '0xb6b55f25000000000000000000000000000000000000000000000000000000000000007b',
-                        to: '0xb2c20a6de401003a671659b10629eb82ff254fb8',
-                        value: 0
-                    }
-                ],
-                dependsOn: null,
-                expiration: 32,
-                gas: 57491,
-                gasPriceCoef: 0
-            };
-            expect(signedTx.body).toMatchObject(expectedBody);
-            expect(signedTx.origin.toString()).toBe(
-                Address.checksum(HexUInt.of(originAddress))
-            );
-            expect(signedTx.isDelegated).toBe(false);
-            expect(signedTx.isSigned).toBe(true);
-            expect(signedTx.signature).toBeDefined();
-        }, 8000);
+                        expect(signedTx).toBeDefined();
+                        expect(signedTx.body).toMatchObject(expected.body);
+                        expect(signedTx.origin.toString()).toBe(
+                            Address.checksum(HexUInt.of(originAddress))
+                        );
+                        expect(signedTx.isDelegated).toBe(isDelegated);
+                        expect(signedTx.isSigned).toBe(true);
+                        expect(signedTx.signature).toBeDefined();
+                    },
+                    timeout
+                );
+            }
+        );
     });
 
     /**
      * Test suite for sendTransaction method
      */
     describe('sendTransaction', () => {
-        test('should send a transaction successfully', async () => {
-            const sampleClause = Clause.callFunction(
-                Address.of(TESTING_CONTRACT_ADDRESS),
-                ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction('deposit'),
-                [123]
-            ) as TransactionClause;
+        /**
+         * sendTransaction test cases with different options
+         */
+        sendTransactionTestCases.solo.correct.forEach(
+            ({ description, isDelegated }) => {
+                test(
+                    description,
+                    async () => {
+                        const signTransactionSigner = isDelegated
+                            ? signerWithDelegator
+                            : signer;
+                        const sampleClause = Clause.callFunction(
+                            Address.of(TESTING_CONTRACT_ADDRESS),
+                            ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
+                                'deposit'
+                            ),
+                            [123]
+                        ) as TransactionClause;
 
-            const originAddress = await signer.getAddress();
+                        const originAddress =
+                            await signTransactionSigner.getAddress();
 
-            const gasResult = await thorClient.gas.estimateGas(
-                [sampleClause],
-                originAddress
-            );
+                        const gasResult = await thorClient.gas.estimateGas(
+                            [sampleClause],
+                            originAddress
+                        );
 
-            const txBody = await thorClient.transactions.buildTransactionBody(
-                [sampleClause],
-                gasResult.totalGas,
-                {
-                    isDelegated: false
-                }
-            );
+                        const txBody =
+                            await thorClient.transactions.buildTransactionBody(
+                                [sampleClause],
+                                gasResult.totalGas,
+                                {
+                                    isDelegated
+                                }
+                            );
 
-            const receipt = await signer.sendTransaction(
-                signerUtils.transactionBodyToTransactionRequestInput(
-                    txBody,
-                    originAddress
-                )
-            );
+                        const receipt =
+                            await signTransactionSigner.sendTransaction(
+                                signerUtils.transactionBodyToTransactionRequestInput(
+                                    txBody,
+                                    originAddress
+                                )
+                            );
 
-            expect(receipt.match(/^0x([A-Fa-f0-9]{64})$/)).toBeTruthy();
-        }, 8000);
+                        expect(
+                            receipt.match(/^0x([A-Fa-f0-9]{64})$/)
+                        ).toBeTruthy();
+                    },
+                    timeout
+                );
+            }
+        );
     });
 
     /**
