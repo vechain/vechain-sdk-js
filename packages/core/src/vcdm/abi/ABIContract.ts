@@ -256,7 +256,7 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
         topics: Hex[]
     ): DecodeEventLogReturnType<TAbi, TEventName> {
         try {
-            return ABIEvent.parseLog<TAbi, TEventName>(this.abi, {
+            return ABIEvent.parseLog(this.abi, {
                 data,
                 topics
             });
