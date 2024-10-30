@@ -42,14 +42,16 @@ const resolveNames = async (
     const resolveUtilsAddress = NetworkContracts[genesisBlock.id].resolveUtils;
 
     // use the resolveUtils to lookup names
-    const [addresses] = (await thorClient.contracts.executeCall(
+    const callGetAddresses = await thorClient.contracts.executeCall(
         resolveUtilsAddress,
         ABIItem.ofSignature(
             ABIFunction,
             'function getAddresses(string[] names) returns (address[] addresses)'
         ),
         [names]
-    )) as string[][];
+    );
+
+    const [addresses] = callGetAddresses.result.array as string[][];
 
     return addresses.map((address) => {
         // zero addresses are missing configuration entries
@@ -101,14 +103,16 @@ const lookupAddresses = async (
     const resolveUtilsAddress = NetworkContracts[genesisBlock.id].resolveUtils;
 
     // use the resolveUtils to lookup names
-    const [names] = (await thorClient.contracts.executeCall(
+    const callGetNames = await thorClient.contracts.executeCall(
         resolveUtilsAddress,
         ABIItem.ofSignature(
             ABIFunction,
             'function getNames(address[] addresses) returns (string[] names)'
         ),
         [addresses]
-    )) as string[][];
+    );
+
+    const [names] = callGetNames.result.array as string[][];
 
     return names.map((name) => {
         // empty strings indicate a missing entry
