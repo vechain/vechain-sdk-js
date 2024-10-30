@@ -15,5 +15,5 @@ jobs:
         secrets: inherit
 
     rpc-proxy-docker-publish:
-        uses: ./.github/workflows/rpc-proxy-docker-publish.yml
+        uses: ./.github/workflows/rpc-proxy.yml
         secrets: inherit
