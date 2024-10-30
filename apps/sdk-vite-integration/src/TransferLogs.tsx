@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { Transfer } from "./types";
 import { Address, FixedPointNumber, Units } from '@vechain/sdk-core';
-/*import {
+import {
+    CompressedBlockDetail,
+    FilterTransferLogsOptions,
     ThorClient,
-    type CompressedBlockDetail,
-    type FilterTransferLogsOptions
-} from '@vechain/sdk-network';*/
+    //type CompressedBlockDetail,
+    //type FilterTransferLogsOptions
+} from '@vechain/sdk-network';
+import { Link } from 'react-router-dom';
 
 /**
  * Reduce the size of a hex string
@@ -25,24 +28,24 @@ const TransferLogs = () => {
     // State to store the transfer history
     const [transfers, setTransfers] = useState<Transfer[]>([]);
 
-    // State to store the address
+    // // State to store the address
     const [address, setAddress] = useState<string>(
         '0xc3bE339D3D20abc1B731B320959A96A08D479583'
     );
 
-    // Url of the VeChain mainnet
+    // // Url of the VeChain mainnet
     const mainnetUrl = 'https://mainnet.vechain.org';
 
-    // Thor client instance
+    // // Thor client instance
     const thorClient = ThorClient.fromUrl(mainnetUrl);
 
-    // Explorer url
+    // // Explorer url
     const explorerUrl = 'https://explore.vechain.org';
 
-    /**
-     * Function to get the history for the provided address
-     * @param address The address to get the history for
-     */
+    // /**
+    //  * Function to get the history for the provided address
+    //  * @param address The address to get the history for
+    //  */
     async function getHistoryFor(address: string): Promise<void> {
         try {
             // Get the latest block
@@ -132,7 +135,7 @@ const TransferLogs = () => {
                                 </td>
                                 <td className="px-4 py-2">
                                     <Link
-                                        href={`${explorerUrl}/accounts/${transfer.from}`}
+                                        to={`${explorerUrl}/accounts/${transfer.from}`}
                                         target={'_blank'}
                                         className={
                                             'text-blue-500 hover:underline'
@@ -146,7 +149,7 @@ const TransferLogs = () => {
                                 </td>
                                 <td className="px-4 py-2">
                                     <Link
-                                        href={`${explorerUrl}/accounts/${transfer.to}`}
+                                        to={`${explorerUrl}/accounts/${transfer.to}`}
                                         target={'_blank'}
                                         className={
                                             'text-blue-500 hover:underline'
@@ -167,7 +170,7 @@ const TransferLogs = () => {
                                 </td>
                                 <td className="px-4 py-2">
                                     <Link
-                                        href={`${explorerUrl}/transactions/${transfer.meta.txID}`}
+                                        to={`${explorerUrl}/transactions/${transfer.meta.txID}`}
                                         target={'_blank'}
                                         className={
                                             'text-blue-500 hover:underline'
