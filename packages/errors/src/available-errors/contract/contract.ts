@@ -9,4 +9,12 @@ import { type ObjectErrorData } from '../types';
  */
 class ContractDeploymentFailed extends VechainSDKError<ObjectErrorData> {}
 
-export { ContractDeploymentFailed };
+/**
+ * Error when calling a read function on a contract.
+ *
+ * WHEN TO USE:
+ * * Error will be thrown when a read (call) operation fails.
+ */
+class ContractCallError extends VechainSDKError<ObjectErrorData> {}
+
+export { ContractCallError, ContractDeploymentFailed };

@@ -791,4 +791,10 @@ const totalSupply = await thorSoloClient.contracts.executeCall(
 // END_SNIPPET: EVMExtensionSnippet
 
 // Check the result
-expect(totalSupply).toStrictEqual([10000000000000000000000000000n]);
+expect(totalSupply).toStrictEqual({
+    result: {
+        array: [10000000000000000000000000000n],
+        plain: 10000000000000000000000000000n
+    },
+    success: true
+});
