@@ -6,8 +6,8 @@ import {
     Hex,
     HexUInt,
     Transaction,
-    Units,
-    type TransactionClause
+    type TransactionClause,
+    Units
 } from '@vechain/sdk-core';
 import { type AbiEvent } from 'abitype';
 import {
@@ -29,6 +29,7 @@ import {
 } from '../../fixture';
 // eslint-disable-next-line import/no-named-default
 import { default as NodeWebSocket } from 'isomorphic-ws';
+import { expectType } from 'tsd';
 
 const TIMEOUT = 15000; // 15-second timeout
 
@@ -173,12 +174,18 @@ describe('Subscriptions Solo network tests', () => {
                                     )
                                 }
                             );
-                        const decodedLogValues = Object.values(
-                            decodedLog.args as unknown[]
-                        );
 
-                        expect(decodedLogValues.length).toBe(4);
-                        expect(decodedLogValues[2]).toBe(
+                        expectType<{
+                            eventName: 'StateChanged';
+                            args: {
+                                newValue: bigint;
+                                oldValue: bigint;
+                                sender: string;
+                                timestamp: bigint;
+                            };
+                        }>(decodedLog);
+                        expect(Object.keys(decodedLog.args).length).toBe(4);
+                        expect(decodedLog.args.sender).toBe(
                             Address.checksum(
                                 HexUInt.of(
                                     TEST_ACCOUNTS.SUBSCRIPTION

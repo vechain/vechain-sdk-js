@@ -5,6 +5,7 @@ import {
 import { type AbiEventParameter } from 'abitype';
 import {
     type AbiEvent,
+    type ContractEventName,
     type DecodeEventLogReturnType,
     encodeEventTopics,
     type EncodeEventTopicsReturnType,
@@ -27,7 +28,10 @@ interface ABIEventData {
  * Represents a function call in the Event ABI.
  * @extends ABIItem
  */
-class ABIEvent extends ABIItem {
+class ABIEvent<
+    TAbi extends ViemABI = ViemABI,
+    TEventName extends ContractEventName<TAbi> = ContractEventName<TAbi>
+> extends ABIItem {
     private readonly abiEvent: AbiEvent;
     public constructor(signature: string);
     public constructor(signature: AbiEvent);
@@ -55,10 +59,13 @@ class ABIEvent extends ABIItem {
      * @returns Decoding results.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public static parseLog(
-        abi: ViemABI,
+    public static parseLog<
+        TAbi extends ViemABI,
+        TEventName extends ContractEventName<TAbi>
+    >(
+        abi: TAbi,
         eventData: ABIEventData
-    ): DecodeEventLogReturnType {
+    ): DecodeEventLogReturnType<TAbi, TEventName> {
         try {
             return viemDecodeEventLog({
                 abi,
@@ -95,9 +102,11 @@ class ABIEvent extends ABIItem {
      * @returns Decoding results.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public decodeEventLog(event: ABIEventData): DecodeEventLogReturnType {
+    public decodeEventLog(
+        event: ABIEventData
+    ): DecodeEventLogReturnType<TAbi, TEventName> {
         try {
-            return ABIEvent.parseLog([this.abiEvent], event);
+            return ABIEvent.parseLog([this.abiEvent] as ViemABI, event);
         } catch (error) {
             throw new InvalidAbiDataToEncodeOrDecode(
                 'ABIEvent.decodeEventLog',
@@ -120,7 +129,7 @@ class ABIEvent extends ABIItem {
             return [];
         }
 
-        return this.parseObjectValues(rawDecodedData.args);
+        return this.parseObjectValues(rawDecodedData.args as unknown as object);
     }
 
     /**
