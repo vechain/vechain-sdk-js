@@ -1,11 +1,11 @@
 import {
     ABIContract,
+    Address,
+    Clause,
     dataUtils,
     Hex,
-    Address,
-    VET,
     Units,
-    Clause,
+    VET,
     type ABIFunction
 } from '@vechain/sdk-core';
 import { type Abi } from 'abitype';
@@ -69,6 +69,41 @@ class ContractsModule {
     }
 
     /**
+     * Extracts the decoded contract call result from the response of a simulated transaction.
+     * @param {string} encodedData Data returned from the simulated transaction.
+     * @param {ABIFunction} functionAbi Function ABI of the contract function.
+     * @param {boolean} reverted Whether the transaction was reverted.
+     * @returns {ContractCallResult} An object containing the decoded contract call result.
+     */
+    private getContractCallResult(
+        encodedData: string,
+        functionAbi: ABIFunction,
+        reverted: boolean
+    ): ContractCallResult {
+        if (reverted) {
+            const errorMessage = decodeRevertReason(encodedData) ?? '';
+            return {
+                success: false,
+                result: {
+                    errorMessage
+                }
+            };
+        }
+
+        // Returning the decoded result both as plain and array.
+        const encodedResult = Hex.of(encodedData);
+        const plain = functionAbi.decodeResult(encodedResult);
+        const array = functionAbi.decodeOutputAsArray(encodedResult);
+        return {
+            success: true,
+            result: {
+                plain,
+                array
+            }
+        };
+    }
+
+    /**
      * Executes a read-only call to a smart contract function, simulating the transaction to obtain the result.
      *
      * @param contractAddress - The address of the smart contract to interact with.
@@ -84,7 +119,7 @@ class ContractsModule {
         functionAbi: ABIFunction,
         functionData: unknown[],
         contractCallOptions?: ContractCallOptions
-    ): Promise<ContractCallResult | string> {
+    ): Promise<ContractCallResult> {
         // Simulate the transaction to get the result of the contract call
         const response = await this.thor.transactions.simulateTransaction(
             [
@@ -97,39 +132,35 @@ class ContractsModule {
             contractCallOptions
         );
 
-        if (response[0].reverted) {
-            /**
-             * The decoded revert reason of the transaction.
-             * Solidity may revert with Error(string) or Panic(uint256).
-             *
-             * @link see [Error handling: Assert, Require, Revert and Exceptions](https://docs.soliditylang.org/en/latest/control-structures.html#error-handling-assert-require-revert-and-exceptions)
-             */
-            return decodeRevertReason(response[0].data) ?? '';
-        } else {
-            // Returning an array of values.
-            // The viem format is a single value/JSON object (ABIFunction#decodeResult)
-            return functionAbi.decodeOutputAsArray(Hex.of(response[0].data));
-        }
+        return this.getContractCallResult(
+            response[0].data,
+            functionAbi,
+            response[0].reverted
+        );
     }
 
     /**
      * Executes a read-only call to multiple smart contract functions, simulating the transaction to obtain the results.
      * @param clauses - An array of contract clauses to interact with the contract functions.
      * @param options - (Optional) Additional options for the contract call, such as the sender's address, gas limit, and gas price, which can affect the simulation's context.
+     * @returns A promise that resolves to an array of decoded outputs of the smart contract function calls, the format of which depends on the functions' return types.
      */
     public async executeMultipleClausesCall(
         clauses: ContractClause[],
         options?: SimulateTransactionOptions
-    ): Promise<Array<ContractCallResult | string>> {
+    ): Promise<ContractCallResult[]> {
         // Simulate the transaction to get the result of the contract call
         const response = await this.thor.transactions.simulateTransaction(
             clauses.map((clause) => clause.clause),
             options
         );
-        // Returning an array of values.
-        // The viem format is a single value/JSON object (ABIFunction#decodeResult)
+        // Returning the decoded results both as plain and array.
         return response.map((res, index) =>
-            clauses[index].functionAbi.decodeOutputAsArray(Hex.of(res.data))
+            this.getContractCallResult(
+                res.data,
+                clauses[index].functionAbi,
+                res.reverted
+            )
         );
     }
 
@@ -226,7 +257,7 @@ class ContractsModule {
      *
      * @returns The base gas price in wei.
      */
-    public async getBaseGasPrice(): Promise<unknown> {
+    public async getBaseGasPrice(): Promise<ContractCallResult> {
         return await this.executeCall(
             BUILT_IN_CONTRACTS.PARAMS_ADDRESS,
             ABIContract.ofAbi(BUILT_IN_CONTRACTS.PARAMS_ABI).getFunction('get'),

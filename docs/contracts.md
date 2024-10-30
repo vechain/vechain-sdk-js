@@ -149,10 +149,34 @@ const multipleClausesResult =
         contract.clause.decimals()
     ]);
 
-expect(multipleClausesResult[0]).toEqual([expectedBalance]);
-expect(multipleClausesResult[1]).toEqual(['SampleToken']);
-expect(multipleClausesResult[2]).toEqual(['ST']);
-expect(multipleClausesResult[3]).toEqual([18]);
+expect(multipleClausesResult[0]).toEqual({
+    success: true,
+    result: {
+        plain: expectedBalance,
+        array: [expectedBalance]
+    }
+});
+expect(multipleClausesResult[1]).toEqual({
+    success: true,
+    result: {
+        plain: 'SampleToken',
+        array: ['SampleToken']
+    }
+});
+expect(multipleClausesResult[2]).toEqual({
+    success: true,
+    result: {
+        plain: 'ST',
+        array: ['ST']
+    }
+});
+expect(multipleClausesResult[3]).toEqual({
+    success: true,
+    result: {
+        plain: 18,
+        array: [18]
+    }
+});
 ```
 
 > ⚠️ **Warning:**
