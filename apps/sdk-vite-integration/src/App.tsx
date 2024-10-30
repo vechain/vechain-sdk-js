@@ -3,6 +3,7 @@ import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import './App.css';
 import Hash from './Hash';
+import TransferLogs from './TransferLogs';
 
 function App() {
   return (
@@ -27,15 +28,22 @@ function App() {
               Hash
             </Link>
           </p>
+          <p>
+            <b>@vechain/sdk-network</b> integration example:{' '}
+            <Link
+              className="text-blue-500 hover:underline"
+              to='/transfer-logs'
+            >
+              Transfer logs
+            </Link>
+          </p>
         </div>
-        <p className="read-the-docs">
-          Click on the Vite and React logos to learn more
-        </p>
       </div>
-      
+
       {/* Define Routes */}
       <Routes>
         <Route path="/hash" element={<Hash />} />
+        <Route path="/transfer-logs" element={<TransferLogs />} />
       </Routes>
     </Router>
   );
