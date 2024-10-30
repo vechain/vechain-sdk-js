@@ -5,12 +5,15 @@ import {
     InvalidDataType
 } from '@vechain/sdk-errors';
 import { fail } from 'assert';
+import { expectType } from 'tsd';
 import { type AbiEvent, encodeFunctionResult } from 'viem';
 import { ABIContract, ABIEvent, ABIItem, ERC721_ABI, Hex } from '../../../src';
 import {
     contractABI,
     contractABIWithEvents,
     contractStorageABI,
+    type ExpectedCustomFunctionType,
+    type ExpectedERC721TransferEventType,
     ValueChangedEventData
 } from './fixture';
 
@@ -19,10 +22,10 @@ import {
  * @group unit/encode-decode
  */
 describe('Contract interface for ABI encoding/decoding', () => {
-    let contractAbi: ABIContract;
-    let contractAbiWithEvents: ABIContract;
-    let erc721Abi: ABIContract;
-    let contractStorageAbi: ABIContract;
+    let contractAbi: ABIContract<typeof contractABI>;
+    let contractAbiWithEvents: ABIContract<typeof contractABIWithEvents>;
+    let erc721Abi: ABIContract<typeof ERC721_ABI>;
+    let contractStorageAbi: ABIContract<typeof contractStorageABI>;
     beforeAll(() => {
         contractAbi = ABIContract.ofAbi(contractABI);
         contractAbiWithEvents = ABIContract.ofAbi(contractABIWithEvents);
@@ -63,9 +66,9 @@ describe('Contract interface for ABI encoding/decoding', () => {
      * Test the error when getting a function ABI.
      */
     test('get a function ABI and throw an error', () => {
-        expect(() => contractAbi.getFunction('undefined')).toThrowError(
-            InvalidAbiItem
-        );
+        expect(() =>
+            contractAbi.getFunction('undefined' as unknown as 'setValue')
+        ).toThrowError(InvalidAbiItem);
     });
 
     /**
@@ -73,7 +76,10 @@ describe('Contract interface for ABI encoding/decoding', () => {
      */
     test('Fail to encode a contract function input', () => {
         expect(() =>
-            contractAbi.encodeFunctionInput('undefined', [123])
+            contractAbi.encodeFunctionInput(
+                'undefined' as unknown as 'setValue',
+                [123]
+            )
         ).toThrowError(InvalidAbiDataToEncodeOrDecode);
     });
 
@@ -86,12 +92,19 @@ describe('Contract interface for ABI encoding/decoding', () => {
             'setValue',
             encodedData
         );
+        expectType<ExpectedCustomFunctionType>(functionInputDecoded);
         const decodedData =
             functionInputDecoded.args !== null &&
             functionInputDecoded.args !== undefined
                 ? String(functionInputDecoded.args[0])
                 : '';
         expect(decodedData).toEqual('123');
+
+        const fuctionDataDecoded = contractAbi
+            .getFunction('setValue')
+            .decodeData(encodedData);
+
+        expectType<ExpectedCustomFunctionType>(fuctionDataDecoded);
     });
 
     /**
@@ -166,7 +179,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
      * Test the decoding of an encoded event log from a contract transaction.
      */
     test('parse an event log and return decoded data', () => {
-        const decodedEventLog = erc721Abi.parseLog(Hex.of('0x'), [
+        const decodedEventLog = erc721Abi.parseLog<'Transfer'>(Hex.of('0x'), [
             Hex.of(
                 '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
             ),
@@ -181,20 +194,20 @@ describe('Contract interface for ABI encoding/decoding', () => {
             )
         ]);
 
+        expectType<ExpectedERC721TransferEventType>(decodedEventLog);
         expect(decodedEventLog).toBeDefined();
         expect(decodedEventLog.eventName).toEqual('Transfer');
         expect(decodedEventLog.args).toBeDefined();
         if (decodedEventLog.args === undefined) {
             fail('Decoded event log args are undefined');
         }
-        const argsValues = Object.values(decodedEventLog.args);
-        expect(argsValues[0]).toEqual(
+        expect(decodedEventLog.args.from).toEqual(
             '0x0000000000000000000000000000000000000000'
         );
-        expect(argsValues[1]).toEqual(
+        expect(decodedEventLog.args.to).toEqual(
             '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54'
         );
-        expect(argsValues[2]).toEqual(1n);
+        expect(decodedEventLog.args.tokenId).toEqual(1n);
     });
 
     /**
@@ -296,6 +309,9 @@ describe('Contract interface for ABI encoding/decoding', () => {
             functionName,
             Hex.of(encodedFunctionOutput)
         );
+
+        expectType<string>(decodedOutput);
+
         expect(decodedOutput).toBeDefined();
         expect(decodedOutput).toEqual(mockReturnValue);
 
@@ -321,7 +337,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
 
         expect(() =>
             contractStorageAbi.decodeFunctionOutput(
-                'invalidFunctionName',
+                'invalidFunctionName' as unknown as 'getValue',
                 Hex.of(encodedFunctionOutput)
             )
         ).toThrowError(InvalidAbiDataToEncodeOrDecode);
