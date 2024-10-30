@@ -48,7 +48,7 @@ jobs:
       - name: Run Trivy Scan
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: rpc-proxy-${{ github.sha }}
+          image-ref: sdk-rpc-proxy:latest
           format: 'table'
           ignore-unfixed: true
           exit-code: '1'
