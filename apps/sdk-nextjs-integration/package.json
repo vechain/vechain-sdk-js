@@ -17,7 +17,7 @@
     "@vechain/sdk-core": "1.0.0-beta.32",
     "@vechain/sdk-network": "1.0.0-beta.32",
     "install": "^0.13.0",
-    "next": "14.2.15",
+    "next": "15.0.2",
     "react": "^18",
     "react-dom": "^18"
   },
