@@ -1,4 +1,4 @@
-name: RPC Proxy - Vulnerability scan
+name: RPC Proxy - Docker build, scan and push
 
 on:
    workflow_call:
