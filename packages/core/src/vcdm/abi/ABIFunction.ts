@@ -4,11 +4,13 @@ import {
 } from '@vechain/sdk-errors';
 import {
     type AbiFunction,
+    type ContractFunctionName,
     decodeFunctionData,
     type DecodeFunctionDataReturnType,
     decodeFunctionResult,
     type DecodeFunctionResultReturnType,
     encodeFunctionData,
+    type Abi as ViemABI,
     type Hex as ViemHex
 } from 'viem';
 import { Hex } from '../Hex';
@@ -18,7 +20,11 @@ import { ABIItem } from './ABIItem';
  * Represents a function call in the Function ABI.
  * @extends ABIItem
  */
-class ABIFunction extends ABIItem {
+class ABIFunction<
+    TAbi extends ViemABI = ViemABI,
+    TFunctionName extends
+        ContractFunctionName<TAbi> = ContractFunctionName<TAbi>
+> extends ABIItem {
     private readonly abiFunction: AbiFunction;
     public constructor(signature: string);
     public constructor(signature: AbiFunction);
@@ -55,7 +61,9 @@ class ABIFunction extends ABIItem {
      * @returns Decoding results.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public decodeData(data: Hex): DecodeFunctionDataReturnType {
+    public decodeData(
+        data: Hex
+    ): DecodeFunctionDataReturnType<TAbi, TFunctionName> {
         try {
             return decodeFunctionData({
                 abi: [this.abiFunction],
@@ -110,12 +118,19 @@ class ABIFunction extends ABIItem {
      *   console.log('Decoded Output:', decoded);
      * ```
      */
-    public decodeResult(data: Hex): DecodeFunctionResultReturnType {
+    public decodeResult(
+        data: Hex
+    ): DecodeFunctionResultReturnType<TAbi, TFunctionName> {
         try {
-            return decodeFunctionResult({
+            const result = decodeFunctionResult({
                 abi: [this.abiFunction],
                 data: data.toString() as ViemHex
             });
+
+            return result as DecodeFunctionResultReturnType<
+                TAbi,
+                TFunctionName
+            >;
         } catch (error) {
             throw new InvalidAbiDataToEncodeOrDecode(
                 'ABIFunction.decodeResult',

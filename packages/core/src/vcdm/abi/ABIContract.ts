@@ -6,6 +6,8 @@ import {
     getAbiItem,
     type AbiEvent,
     type AbiFunction,
+    type ContractEventName,
+    type ContractFunctionName,
     type DecodeEventLogReturnType,
     type DecodeFunctionDataReturnType,
     type DecodeFunctionResultReturnType,
@@ -16,12 +18,12 @@ import { ABI } from './ABI';
 import { ABIEvent, type ABIEventData } from './ABIEvent';
 import { ABIFunction } from './ABIFunction';
 
-class ABIContract extends ABI {
-    private readonly abi: ViemABI;
+class ABIContract<TAbi extends ViemABI> extends ABI {
+    private readonly viemABI: ViemABI;
 
-    constructor(abi: ViemABI) {
+    constructor(readonly abi: TAbi) {
         super();
-        this.abi = abi;
+        this.viemABI = abi as ViemABI;
     }
 
     /**
@@ -29,7 +31,7 @@ class ABIContract extends ABI {
      * @param {ViemABI} abi representation of the contract.
      * @returns New instance of ABIContract.
      */
-    public static ofAbi(abi: ViemABI): ABIContract {
+    public static ofAbi<TAbi extends ViemABI>(abi: TAbi): ABIContract<TAbi> {
         return new ABIContract(abi);
     }
 
@@ -39,10 +41,12 @@ class ABIContract extends ABI {
      * @returns {ABIFunction} The function with the given name.
      * @throws {InvalidAbiItem}
      */
-    public getFunction(name: string): ABIFunction {
+    public getFunction<TFunctionName extends ContractFunctionName<TAbi>>(
+        name: TFunctionName | string
+    ): ABIFunction<TAbi, TFunctionName> {
         const functionAbiItem = getAbiItem({
-            abi: this.abi,
-            name
+            abi: this.viemABI,
+            name: name as string
         });
         if (functionAbiItem === null || functionAbiItem === undefined) {
             throw new InvalidAbiItem(
@@ -54,7 +58,9 @@ class ABIContract extends ABI {
                 }
             );
         }
-        return new ABIFunction(functionAbiItem as AbiFunction);
+        return new ABIFunction<TAbi, TFunctionName>(
+            functionAbiItem as AbiFunction
+        );
     }
 
     /**
@@ -63,10 +69,12 @@ class ABIContract extends ABI {
      * @returns {ABIEvent} The event with the given name.
      * @throws {InvalidAbiItem}
      */
-    public getEvent(name: string): ABIEvent {
+    public getEvent<TEventName extends ContractEventName<TAbi>>(
+        name: TEventName | string
+    ): ABIEvent<TAbi, TEventName> {
         const eventAbiItem = getAbiItem({
-            abi: this.abi,
-            name
+            abi: this.viemABI,
+            name: name as string
         });
         if (eventAbiItem === null || eventAbiItem === undefined) {
             throw new InvalidAbiItem(
@@ -78,7 +86,7 @@ class ABIContract extends ABI {
                 }
             );
         }
-        return new ABIEvent(eventAbiItem as AbiEvent);
+        return new ABIEvent<TAbi, TEventName>(eventAbiItem as AbiEvent);
     }
 
     /**
@@ -88,16 +96,17 @@ class ABIContract extends ABI {
      * @returns {Hex} The encoded data in hexadecimal that can be used to send a transaction.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public encodeFunctionInput(
-        functionName: string,
-        functionData?: unknown[]
-    ): Hex {
+    public encodeFunctionInput<
+        TFunctionName extends ContractFunctionName<TAbi>
+    >(functionName: TFunctionName | string, functionData?: unknown[]): Hex {
         try {
             const functionAbiItem = getAbiItem({
-                abi: this.abi,
-                name: functionName
+                abi: this.viemABI,
+                name: functionName as string
             });
-            const functionAbi = new ABIFunction(functionAbiItem as AbiFunction);
+            const functionAbi = new ABIFunction<TAbi, TFunctionName>(
+                functionAbiItem as AbiFunction
+            );
 
             return functionAbi.encodeData(functionData);
         } catch (error) {
@@ -117,16 +126,20 @@ class ABIContract extends ABI {
      * @returns {DecodeFunctionDataReturnType} an array of the decoded function data
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public decodeFunctionInput(
-        functionName: string,
+    public decodeFunctionInput<
+        TFunctionName extends ContractFunctionName<TAbi>
+    >(
+        functionName: TFunctionName | string,
         encodedFunctionInput: Hex
-    ): DecodeFunctionDataReturnType {
+    ): DecodeFunctionDataReturnType<TAbi, TFunctionName> {
         try {
             const functionAbiItem = getAbiItem({
-                abi: this.abi,
-                name: functionName
+                abi: this.viemABI,
+                name: functionName as string
             });
-            const functionAbi = new ABIFunction(functionAbiItem as AbiFunction);
+            const functionAbi = new ABIFunction<TAbi, TFunctionName>(
+                functionAbiItem as AbiFunction
+            );
 
             return functionAbi.decodeData(encodedFunctionInput);
         } catch (error) {
@@ -154,16 +167,20 @@ class ABIContract extends ABI {
      * const decodedOutput = decodeFunctionOutput('getValue', encodedValue);
      *
      */
-    public decodeFunctionOutput(
-        functionName: string,
+    public decodeFunctionOutput<
+        TFunctionName extends ContractFunctionName<TAbi>
+    >(
+        functionName: TFunctionName | string,
         encodedFunctionOutput: Hex
-    ): DecodeFunctionResultReturnType {
+    ): DecodeFunctionResultReturnType<TAbi, TFunctionName> {
         try {
             const functionAbiItem = getAbiItem({
-                abi: this.abi,
-                name: functionName
+                abi: this.viemABI,
+                name: functionName as string
             });
-            const functionAbi = new ABIFunction(functionAbiItem as AbiFunction);
+            const functionAbi = new ABIFunction<TAbi, TFunctionName>(
+                functionAbiItem as AbiFunction
+            );
 
             return functionAbi.decodeResult(encodedFunctionOutput);
         } catch (error) {
@@ -183,16 +200,18 @@ class ABIContract extends ABI {
      * @returns {ABIEventData} An object containing the encoded data and topics.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public encodeEventLog(
-        eventName: string,
+    public encodeEventLog<TEventName extends ContractEventName<TAbi>>(
+        eventName: TEventName | string,
         eventArgs: unknown[]
     ): ABIEventData {
         try {
             const eventAbiItem = getAbiItem({
-                abi: this.abi,
-                name: eventName
+                abi: this.viemABI,
+                name: eventName as string
             });
-            const eventAbi = new ABIEvent(eventAbiItem as AbiEvent);
+            const eventAbi = new ABIEvent<TAbi, TEventName>(
+                eventAbiItem as AbiEvent
+            );
             return eventAbi.encodeEventLog(eventArgs);
         } catch (error) {
             throw new InvalidAbiDataToEncodeOrDecode(
@@ -211,16 +230,18 @@ class ABIContract extends ABI {
      * @returns {DecodeEventLogReturnType} The decoded data of the event log.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public decodeEventLog(
-        eventName: string,
+    public decodeEventLog<TEventName extends ContractEventName<TAbi>>(
+        eventName: TEventName | string,
         eventToDecode: ABIEventData
-    ): DecodeEventLogReturnType {
+    ): DecodeEventLogReturnType<TAbi, TEventName> {
         try {
             const eventAbiItem = getAbiItem({
-                abi: this.abi,
-                name: eventName
+                abi: this.viemABI,
+                name: eventName as string
             });
-            const eventAbi = new ABIEvent(eventAbiItem as AbiEvent);
+            const eventAbi = new ABIEvent<TAbi, TEventName>(
+                eventAbiItem as AbiEvent
+            );
             return eventAbi.decodeEventLog(eventToDecode);
         } catch (error) {
             throw new InvalidAbiDataToEncodeOrDecode(
@@ -245,9 +266,15 @@ class ABIContract extends ABI {
      * @returns {DecodeEventLogReturnType} - A log object representing the decoded log or null if decoding fails.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public parseLog(data: Hex, topics: Hex[]): DecodeEventLogReturnType {
+    public parseLog<TEventName extends ContractEventName<TAbi>>(
+        data: Hex,
+        topics: Hex[]
+    ): DecodeEventLogReturnType<TAbi, TEventName> {
         try {
-            return ABIEvent.parseLog(this.abi, { data, topics });
+            return ABIEvent.parseLog(this.abi, {
+                data,
+                topics
+            });
         } catch (e) {
             throw new InvalidAbiDataToEncodeOrDecode(
                 'ABIContract.parseLog()',
@@ -272,7 +299,9 @@ class ABIContract extends ABI {
             return [];
         }
 
-        return this.parseObjectValues(eventLogDecoded.args);
+        return this.parseObjectValues(
+            eventLogDecoded.args as unknown as object
+        );
     }
 }
 
