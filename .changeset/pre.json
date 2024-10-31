@@ -3,9 +3,10 @@
   "tag": "beta",
   "initialVersions": {
     "docs": "1.0.0",
+    "@vechain/sdk-aws-kms-adapter": "1.0.0",
     "@vechain/sdk-core": "1.0.0",
     "@vechain/sdk-errors": "1.0.0",
-    "@vechain/ethers-adapter": "1.0.0",
+    "@vechain/sdk-ethers-adapter": "1.0.0",
     "@vechain/sdk-hardhat-plugin": "1.0.0",
     "@vechain/sdk-logging": "1.0.0",
     "@vechain/sdk-network": "1.0.0",
