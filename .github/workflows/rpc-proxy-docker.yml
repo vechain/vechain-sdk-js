@@ -55,7 +55,9 @@ jobs:
           exit-code: '1'
           vuln-type: os,library
           severity: CRITICAL,HIGH,MEDIUM
-          scanners: misconfig,vuln,secret       
+          scanners: misconfig,vuln,secret
+        env:
+          TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2
       
       - name: Build and push
         if: ${{ github.event_name != 'pull_request' }}
