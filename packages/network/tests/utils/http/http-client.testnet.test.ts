@@ -6,7 +6,8 @@ import { InvalidHTTPRequest, stringifyData } from '@vechain/sdk-errors';
 
 /**
  * Timeout for each test.
- * Overrides the default timeout of 5 seconds due to cases where the network request takes longer than 5 seconds.
+ * Overrides the default timeout of 50000 milliseconds
+ * due to cases where the network request takes longer than 5 seconds.
  */
 const TIMEOUT = 10000;
 

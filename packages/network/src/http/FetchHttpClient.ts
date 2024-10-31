@@ -4,15 +4,16 @@ import { type HttpParams } from './HttpParams';
 import { InvalidHTTPRequest } from '@vechain/sdk-errors';
 
 class FetchHttpClient implements HttpClient {
-    private static readonly GET = 'GET';
-
-    private static readonly POST = 'POST';
+    public static readonly DEFAULT_TIMEOUT = 30000;
 
     public readonly baseURL: string;
 
     public readonly timeout: number;
 
-    constructor(baseURL: string, timeout: number) {
+    constructor(
+        baseURL: string,
+        timeout: number = FetchHttpClient.DEFAULT_TIMEOUT
+    ) {
         this.baseURL = baseURL;
         this.timeout = timeout;
     }
@@ -34,7 +35,7 @@ class FetchHttpClient implements HttpClient {
                 });
             }
             const body =
-                method === HttpMethod.GET
+                method === HttpMethod.POST
                     ? JSON.stringify(params?.body)
                     : undefined;
             const abortController = new AbortController();
@@ -58,12 +59,9 @@ class FetchHttpClient implements HttpClient {
                 }
                 return await response.json();
             }
-            throw new Error(
-                `HTTP ${response.status} ${await response.text()}`,
-                {
-                    cause: response
-                }
-            );
+            throw new Error(`HTTP ${response.status} ${response.statusText}`, {
+                cause: response
+            });
         } catch (e) {
             throw new InvalidHTTPRequest(
                 'FetchHttpClient.http()',

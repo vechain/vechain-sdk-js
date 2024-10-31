@@ -1,6 +1,7 @@
 ```mermaid
 classDiagram
     class FetchHttpClient {
+        number DEFAULT_TIMEOUT$
         number timeout;
     }
     class HttpClient {
@@ -23,5 +24,7 @@ classDiagram
         Record~string, string~ query
         validateResponse(Record~string, string~ headers)
     }
-
+    HttpMethod o-- HttpClient
+    HttpParams *-- HttpClient
+    HttpClient <|.. FetchHttpClient
 ```
