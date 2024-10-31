@@ -48,7 +48,7 @@ jobs:
 
       - name: Split tags and get the first value for scanning
         id: split-tags
-        run: echo "::set-output name=first-tag::$(echo '${{ steps.meta.outputs.tags }}' | cut -d',' -f1)"
+        run: echo "first-tag=$(echo '${{ steps.meta.outputs.tags }}' | cut -d',' -f1)" >> $GITHUB_OUTPUT
       
       - name: Run Trivy Scan
         uses: aquasecurity/trivy-action@master
