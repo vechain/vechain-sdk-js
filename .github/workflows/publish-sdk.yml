@@ -88,3 +88,11 @@ jobs:
                 yarn publish
               env:
                 NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+            - name: Publish AWS KMS Adapter
+              run: |
+                cd packages/aws-kms-adapter
+                yarn version --no-git-tag-version --new-version ${{ github.ref_name }}
+                yarn publish
+              env:
+                NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
