@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { type HttpParams } from '../../../src';
+import { type _HttpParams } from '../../../src';
 import { testnetGenesisBlock } from './fixture';
 import { testAccount, testNetwork } from '../../fixture';
 import { InvalidHTTPRequest, stringifyData } from '@vechain/sdk-errors';
@@ -56,7 +56,7 @@ describe('Test HttpClient class on Testnet', () => {
     test(
         'Should validate response headers',
         async () => {
-            const customParams: HttpParams = {
+            const customParams: _HttpParams = {
                 query: {},
                 body: {},
                 headers: {
@@ -86,7 +86,7 @@ describe('Test HttpClient class on Testnet', () => {
      * Request params validation rejecting with an error
      */
     test('Should throw error for invalid header response', async () => {
-        const customParams: HttpParams = {
+        const customParams: _HttpParams = {
             query: {},
             body: {},
             headers: {

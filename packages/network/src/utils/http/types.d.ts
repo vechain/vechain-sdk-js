@@ -4,7 +4,7 @@
  * This interface specifies options for configuring an HTTP request, including query parameters,
  * request body, custom headers, and a function to validate response headers.
  */
-interface HttpParams {
+interface _HttpParams {
     /**
      * Query parameters to include in the request.
      */
@@ -40,14 +40,14 @@ interface HttpClientOptions {
 /**
  * Represents an HTTP client that provides methods for making HTTP requests.
  */
-interface IHttpClient {
+interface _IHttpClient {
     http: (
         method: 'GET' | 'POST',
         path: string,
-        params?: HttpParams
+        params?: _HttpParams
     ) => Promise<unknown>;
 
     baseURL: string;
 }
 
-export type { HttpParams, HttpClientOptions, IHttpClient };
+export type { _HttpParams, HttpClientOptions, _IHttpClient };

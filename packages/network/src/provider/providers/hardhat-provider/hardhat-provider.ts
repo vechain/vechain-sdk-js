@@ -10,7 +10,7 @@ import {
     type JsonRpcRequest,
     type JsonRpcResponse
 } from './types';
-import { HttpClient } from '../../../utils';
+import { _HttpClient } from '../../../utils';
 import { ThorClient } from '../../../thor-client';
 import { type ProviderInternalWallet } from '../../helpers';
 import { VeChainSDKLogger } from '@vechain/sdk-logging';
@@ -60,7 +60,7 @@ class HardhatVeChainProvider extends VeChainProvider {
     ) {
         // Initialize the provider with the network configuration.
         super(
-            new ThorClient(new HttpClient(nodeUrl)),
+            new ThorClient(new _HttpClient(nodeUrl)),
             walletToUse,
             enableDelegation
         );

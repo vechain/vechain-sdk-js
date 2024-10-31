@@ -9,7 +9,7 @@ import {
     NodesModule,
     TransactionsModule
 } from '.';
-import { HttpClient, type IHttpClient } from '../utils';
+import { _HttpClient, type _IHttpClient } from '../utils';
 
 /**
  * The `ThorClient` class serves as an interface to interact with the VeChainThor blockchain.
@@ -64,7 +64,7 @@ class ThorClient {
      * @param options - (Optional) Other optional parameters for polling and error handling.
      */
     constructor(
-        readonly httpClient: IHttpClient,
+        readonly httpClient: _IHttpClient,
         options?: BlocksModuleOptions
     ) {
         this.accounts = new AccountsModule(this);
@@ -88,7 +88,7 @@ class ThorClient {
         networkUrl: string,
         options?: BlocksModuleOptions
     ): ThorClient {
-        return new ThorClient(new HttpClient(networkUrl), options);
+        return new ThorClient(new _HttpClient(networkUrl), options);
     }
 
     /**

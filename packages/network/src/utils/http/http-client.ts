@@ -1,18 +1,18 @@
 import { DEFAULT_HTTP_TIMEOUT } from '../const/client/http-client';
 import {
     type HttpClientOptions,
-    type HttpParams,
-    type IHttpClient
+    type _HttpParams,
+    type _IHttpClient
 } from './types';
 import { InvalidHTTPRequest } from '@vechain/sdk-errors';
 
 /**
- * Represents a concrete implementation of the `IHttpClient` interface, providing methods for making HTTP requests.
+ * Represents a concrete implementation of the `HttpClient` interface, providing methods for making HTTP requests.
  *
  * This class leverages the Fetch API for handling HTTP requests and allows for interaction with HTTP services.
  * It is configured with a base URL and request timeout upon instantiation.
  */
-class HttpClient implements IHttpClient {
+class _HttpClient implements _IHttpClient {
     private readonly timeout: number;
 
     /**
@@ -40,7 +40,7 @@ class HttpClient implements IHttpClient {
     public async http(
         method: 'GET' | 'POST',
         path: string,
-        params?: HttpParams
+        params?: _HttpParams
     ): Promise<unknown> {
         let url: URL;
         try {
@@ -124,7 +124,7 @@ class HttpClient implements IHttpClient {
      * @param headers - The response headers.
      */
     private validateResponseHeader(
-        params?: HttpParams,
+        params?: _HttpParams,
         headers?: Record<string, string>
     ): void {
         if (params?.validateResponseHeader != null && headers != null) {
@@ -133,4 +133,4 @@ class HttpClient implements IHttpClient {
     }
 }
 
-export { HttpClient };
+export { _HttpClient };

@@ -4,7 +4,7 @@ import {
     type GetDelegationSignatureResult,
     type SignTransactionOptions
 } from '../types';
-import { type IHttpClient } from '../../../utils';
+import { type _IHttpClient } from '../../../utils';
 
 /**
  * Retrieves the signature of a delegation transaction from a delegator given the endpoint
@@ -23,7 +23,7 @@ const _getDelegationSignature = async (
     tx: Transaction,
     delegatorUrl: string,
     originAddress: string,
-    httpClient: IHttpClient
+    httpClient: _IHttpClient
 ): Promise<Uint8Array> => {
     const rawTx = Hex.of(tx.encoded).toString();
 
@@ -74,7 +74,7 @@ const DelegationHandler = (
     getDelegationSignatureUsingUrl: (
         tx: Transaction,
         originAddress: string,
-        httpClient: IHttpClient
+        httpClient: _IHttpClient
     ) => Promise<Uint8Array>;
 } => {
     // Check if delegator is undefined (null or undefined)
@@ -130,7 +130,7 @@ const DelegationHandler = (
         getDelegationSignatureUsingUrl: async (
             tx: Transaction,
             originAddress: string,
-            httpClient: IHttpClient
+            httpClient: _IHttpClient
         ): Promise<Uint8Array> => {
             // Cannot be delegated by private key
             if (!isDelegatedWithUrl) {

@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { InvalidHTTPRequest, stringifyData } from '@vechain/sdk-errors';
 import { fail } from 'assert';
-import { HttpClient, type HttpParams, THOR_SOLO_URL } from '../../../src';
+import { _HttpClient, type _HttpParams, THOR_SOLO_URL } from '../../../src';
 import { testAccount } from '../../fixture';
 import { ZERO_ADDRESS, zeroAddressAccountDetails } from './fixture';
 
@@ -11,7 +11,7 @@ import { ZERO_ADDRESS, zeroAddressAccountDetails } from './fixture';
  * @group integration/network
  */
 describe('Test HttpClient class on Solo node', () => {
-    const soloNetwork = new HttpClient(THOR_SOLO_URL);
+    const soloNetwork = new _HttpClient(THOR_SOLO_URL);
     /**
      * HTTP Request tests
      */
@@ -74,7 +74,7 @@ describe('Test HttpClient class on Solo node', () => {
      * Request params validation
      */
     test('Should validate response headers', async () => {
-        const customParams: HttpParams = {
+        const customParams: _HttpParams = {
             query: {},
             body: {},
             headers: {
@@ -100,7 +100,7 @@ describe('Test HttpClient class on Solo node', () => {
 
     test('Should timeout if request exceeds specified duration', async () => {
         const customTimeout = 100; // 100ms timeout
-        const soloNetwork = new HttpClient(THOR_SOLO_URL, {
+        const soloNetwork = new _HttpClient(THOR_SOLO_URL, {
             timeout: customTimeout
         });
 
