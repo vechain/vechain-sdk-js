@@ -49,7 +49,7 @@ jobs:
       - name: Run Trivy Scan
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: sdk-rpc-proxy:latest
+          image-ref: ${{ steps.meta.outputs.tags }}
           format: 'table'
           ignore-unfixed: true
           exit-code: '1'
@@ -61,9 +61,9 @@ jobs:
         if: ${{ github.event_name != 'pull_request' }}
         uses: docker/build-push-action@v6
         with:
-          platforms: linux/amd64,linux/arm64
           context: .
           file: docker/rpc-proxy/Dockerfile
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
