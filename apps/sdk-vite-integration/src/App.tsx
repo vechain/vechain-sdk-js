@@ -4,6 +4,7 @@ import viteLogo from '/vite.svg';
 import './App.css';
 import Hash from './Hash';
 import TransferLogs from './TransferLogs';
+import GetLastBlock from './GetLastBlock';
 
 function App() {
   return (
@@ -37,6 +38,15 @@ function App() {
               Transfer logs
             </Link>
           </p>
+          <p>
+            <b>@vechain/sdk-network</b> integration example:{' '}
+            <Link
+              className="text-blue-500 hover:underline"
+              to='/get-last-block'
+            >
+              Get Last Block
+            </Link>
+          </p>
         </div>
       </div>
 
@@ -44,6 +54,7 @@ function App() {
       <Routes>
         <Route path="/hash" element={<Hash />} />
         <Route path="/transfer-logs" element={<TransferLogs />} />
+        <Route path="/get-last-block" element={<GetLastBlock />} />
       </Routes>
     </Router>
   );
