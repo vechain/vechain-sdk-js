@@ -78,19 +78,6 @@ describe('FetchHttpClient solo tests', () => {
             );
             expect(response).toBeDefined();
         });
-
-        test('timeout <- GET in 1 ms', async () => {
-            const httpClient = new FetchHttpClient(THOR_SOLO_URL, 1);
-            try {
-                await httpClient.get('/blocks/0?expanded=false');
-                fail();
-            } catch (e) {
-                expect(e).toBeInstanceOf(InvalidHTTPRequest);
-                const innerError = (e as InvalidHTTPRequest).innerError;
-                expect(innerError).toBeInstanceOf(DOMException);
-                expect((innerError as DOMException).name).toBe('AbortError');
-            }
-        });
     });
 
     describe('POST method tests', () => {

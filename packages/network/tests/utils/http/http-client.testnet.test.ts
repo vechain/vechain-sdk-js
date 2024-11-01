@@ -3,11 +3,11 @@ import { type _HttpParams } from '../../../src';
 import { testnetGenesisBlock } from './fixture';
 import { testAccount, testNetwork } from '../../fixture';
 import { InvalidHTTPRequest, stringifyData } from '@vechain/sdk-errors';
+import { HttpMethod } from '../../../src/http';
 
 /**
  * Timeout for each test.
- * Overrides the default timeout of 50000 milliseconds
- * due to cases where the network request takes longer than 5 seconds.
+ * Overrides the default timeout of 5 seconds due to cases where the network request takes longer than 5 seconds.
  */
 const TIMEOUT = 10000;
 
@@ -25,7 +25,7 @@ describe('Test HttpClient class on Testnet', () => {
         async () => {
             // Perform an HTTP GET request using the HttpClient instance
             const response = await testNetwork.http(
-                'GET',
+                HttpMethod.GET,
                 '/blocks/0?expanded=false'
             );
 
@@ -45,7 +45,7 @@ describe('Test HttpClient class on Testnet', () => {
         async () => {
             // Assert that the HTTP request fails with an error
             await expect(
-                testNetwork.http('GET', '/error-test-path')
+                testNetwork.http(HttpMethod.GET, '/error-test-path')
             ).rejects.toThrowError(InvalidHTTPRequest);
         },
         TIMEOUT
@@ -72,7 +72,7 @@ describe('Test HttpClient class on Testnet', () => {
 
             // Make an actual HTTP GET request and pass the validateResponseHeaders function
             const response = await testNetwork.http(
-                'GET',
+                HttpMethod.GET,
                 '/accounts/' + testAccount,
                 customParams
             );
@@ -103,7 +103,11 @@ describe('Test HttpClient class on Testnet', () => {
         };
 
         await expect(
-            testNetwork.http('GET', '/accounts/' + testAccount, customParams)
+            testNetwork.http(
+                HttpMethod.GET,
+                '/accounts/' + testAccount,
+                customParams
+            )
         ).rejects.toThrowError(InvalidHTTPRequest);
     });
 });

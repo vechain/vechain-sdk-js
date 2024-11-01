@@ -12,6 +12,7 @@ import {
     type TracerName,
     type TransactionTraceTarget
 } from './types';
+import { HttpMethod } from '../../http';
 
 /** The `DebugModule` class encapsulates functionality to handle Debug
  * on the VeChainThor blockchain.
@@ -50,7 +51,7 @@ class DebugModule {
 
         // Send request
         return (await this.thor.httpClient.http(
-            'POST',
+            HttpMethod.POST,
             thorest.debug.post.TRACE_TRANSACTION_CLAUSE(),
             {
                 query: {},
@@ -122,7 +123,7 @@ class DebugModule {
 
         // Send request
         return (await this.thor.httpClient.http(
-            'POST',
+            HttpMethod.POST,
             thorest.debug.post.TRACE_CONTRACT_CALL(),
             {
                 query: {},
@@ -170,7 +171,7 @@ class DebugModule {
 
         // Send request
         return (await this.thor.httpClient.http(
-            'POST',
+            HttpMethod.POST,
             thorest.debug.post.RETRIEVE_STORAGE_RANGE(),
             {
                 query: {},

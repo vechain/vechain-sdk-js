@@ -3,6 +3,7 @@ import { InvalidDataType } from '@vechain/sdk-errors';
 import { type CompressedBlockDetail } from '../blocks';
 import { type ThorClient } from '../thor-client';
 import { type ConnectedPeer } from './types';
+import { HttpMethod } from '../../http';
 
 /**
  * The `NodesModule` class serves as a module for node-related functionality, for example, checking the health of a node.
@@ -21,7 +22,7 @@ class NodesModule {
      */
     public async getNodes(): Promise<ConnectedPeer[] | null> {
         return (await this.thor.httpClient.http(
-            'GET',
+            HttpMethod.GET,
             thorest.nodes.get.NODES()
         )) as ConnectedPeer[] | null;
     }

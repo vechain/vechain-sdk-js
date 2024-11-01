@@ -16,6 +16,7 @@ import {
     type ResponseStorage
 } from './types';
 import { type ThorClient } from '../thor-client';
+import { HttpMethod } from '../../http';
 
 /**
  * Represents detailed account information.
@@ -112,7 +113,7 @@ class AccountsModule {
 
         return new AccountDetail(
             (await this.thor.httpClient.http(
-                'GET',
+                HttpMethod.GET,
                 thorest.accounts.get.ACCOUNT_DETAIL(address),
                 {
                     query: buildQuery({ revision: options?.revision })
@@ -156,7 +157,7 @@ class AccountsModule {
         }
 
         const result = (await this.thor.httpClient.http(
-            'GET',
+            HttpMethod.GET,
             thorest.accounts.get.ACCOUNT_BYTECODE(address),
             {
                 query: buildQuery({ revision: options?.revision })
@@ -212,7 +213,7 @@ class AccountsModule {
         }
 
         const result = (await this.thor.httpClient.http(
-            'GET',
+            HttpMethod.GET,
             thorest.accounts.get.STORAGE_AT(address, position),
             {
                 query: buildQuery({ position, revision: options?.revision })

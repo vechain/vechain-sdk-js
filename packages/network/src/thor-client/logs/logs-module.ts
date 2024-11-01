@@ -1,4 +1,4 @@
-import { Hex, type ABIEvent } from '@vechain/sdk-core';
+import { type ABIEvent, Hex } from '@vechain/sdk-core';
 import { InvalidAbiItem } from '@vechain/sdk-errors';
 import { thorest } from '../../utils/thorest/thorest';
 import { type ThorClient } from '../thor-client';
@@ -9,6 +9,7 @@ import {
     type FilterTransferLogsOptions,
     type TransferLogs
 } from './types';
+import { HttpMethod } from '../../http';
 
 /**
  * The `LogsClient` class provides methods to interact with log-related endpoints
@@ -31,7 +32,7 @@ class LogsModule {
         filterOptions: FilterRawEventLogsOptions
     ): Promise<EventLogs[]> {
         return (await this.thor.httpClient.http(
-            'POST',
+            HttpMethod.POST,
             thorest.logs.post.EVENT_LOGS(),
             {
                 query: {},
@@ -175,7 +176,7 @@ class LogsModule {
         filterOptions: FilterTransferLogsOptions
     ): Promise<TransferLogs[]> {
         return (await this.thor.httpClient.http(
-            'POST',
+            HttpMethod.POST,
             thorest.logs.post.TRANSFER_LOGS(),
             {
                 query: {},

@@ -9,6 +9,7 @@ import {
 } from './types';
 import { Revision, type TransactionClause } from '@vechain/sdk-core';
 import { type ThorClient } from '../thor-client';
+import { HttpMethod } from '../../http';
 
 /** The `BlocksModule` class encapsulates functionality for interacting with blocks
  * on the VeChainThor blockchain.
@@ -94,7 +95,7 @@ class BlocksModule {
             );
         }
         return (await this.thor.httpClient.http(
-            'GET',
+            HttpMethod.GET,
             thorest.blocks.get.BLOCK_DETAIL(revision)
         )) as CompressedBlockDetail | null;
     }
@@ -123,7 +124,7 @@ class BlocksModule {
         }
 
         return (await this.thor.httpClient.http(
-            'GET',
+            HttpMethod.GET,
             thorest.blocks.get.BLOCK_DETAIL(revision),
             {
                 query: buildQuery({ expanded: true })
