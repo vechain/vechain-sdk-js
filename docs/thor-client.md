@@ -12,7 +12,7 @@ To initialize a Thor client, there are two straightforward methods. The first in
 
 ```typescript { name=initialize, category=example }
 // First way to initialize thor client
-const httpClient = new HttpClient(TESTNET_URL);
+const httpClient = new FetchHttpClient(TESTNET_URL);
 const thorClient = new ThorClient(httpClient);
 
 // Second way to initialize thor client
