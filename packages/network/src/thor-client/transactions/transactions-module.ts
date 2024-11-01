@@ -21,7 +21,7 @@ import {
 } from '../../utils';
 import { type ExpandedBlockDetail } from '../blocks';
 import { type CallNameReturnType } from '../debug';
-import { type ThorClient } from '../thor-client';
+import { type ThorClient } from '../ThorClient';
 import {
     type GetTransactionInputOptions,
     type GetTransactionReceiptInputOptions,

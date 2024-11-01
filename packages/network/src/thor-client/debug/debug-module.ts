@@ -1,7 +1,7 @@
 import { Address, Hex, ThorId } from '@vechain/sdk-core';
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { thorest } from '../../utils';
-import { type ThorClient } from '../thor-client';
+import { type ThorClient } from '../ThorClient';
 import {
     type ContractCallTraceContractTargetInput,
     type ContractCallTraceTransactionOptionsInput,

@@ -8,7 +8,7 @@ import {
     type WaitForBlockOptions
 } from './types';
 import { Revision, type TransactionClause } from '@vechain/sdk-core';
-import { type ThorClient } from '../thor-client';
+import { type ThorClient } from '../ThorClient';
 import { HttpMethod } from '../../http';
 
 /** The `BlocksModule` class encapsulates functionality for interacting with blocks

@@ -9,7 +9,7 @@ import {
     type ExtractAbiFunctionNames
 } from 'abitype';
 import { type VeChainSigner } from '../../../signer';
-import { type ThorClient } from '../../thor-client';
+import { type ThorClient } from '../../ThorClient';
 import type { TransactionReceipt } from '../../transactions/types';
 import type { ContractCallOptions, ContractTransactionOptions } from '../types';
 import {

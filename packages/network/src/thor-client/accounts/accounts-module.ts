@@ -15,7 +15,7 @@ import {
     type ResponseBytecode,
     type ResponseStorage
 } from './types';
-import { type ThorClient } from '../thor-client';
+import { type ThorClient } from '../ThorClient';
 import { HttpMethod } from '../../http';
 
 /**
