@@ -1,7 +1,7 @@
-import { type HttpClient } from './HttpClient';
 import { HttpMethod } from './HttpMethod';
-import { type HttpParams } from './HttpParams';
 import { InvalidHTTPRequest } from '@vechain/sdk-errors';
+import { type HttpClient } from './HttpClient';
+import { type HttpParams } from './HttpParams';
 
 /**
  * This class implements the HttpClient interface using the Fetch API.
