@@ -80,13 +80,12 @@ class FetchHttpClient implements HttpClient {
             const timeoutId = setTimeout(() => {
                 abortController.abort();
             }, this.timeout);
-            const request: RequestInit = {
+            const response = await fetch(url.toString(), {
                 method: method.toString(),
                 headers: params?.headers as HeadersInit,
                 body,
                 signal: abortController.signal
-            };
-            const response = await fetch(url.toString(), request);
+            });
             clearTimeout(timeoutId);
             if (response.ok) {
                 if (
