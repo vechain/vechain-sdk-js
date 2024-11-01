@@ -65,50 +65,54 @@ class FetchHttpClient implements HttpClient {
         path: string,
         params?: HttpParams
     ): Promise<unknown> {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => {
+            controller.abort();
+        }, this.timeout);
         try {
             const url = new URL(path, this.baseURL);
             if (params?.query != null) {
                 Object.entries(params.query).forEach(([key, value]) => {
-                    url.searchParams.append(key, value);
+                    url.searchParams.append(key, String(value));
                 });
             }
-            const body =
-                method === HttpMethod.POST
-                    ? JSON.stringify(params?.body)
-                    : undefined;
-            const abortController = new AbortController();
-            const timeoutId = setTimeout(() => {
-                abortController.abort();
-            }, this.timeout);
-            const response = await fetch(url.toString(), {
-                method: method.toString(),
+            const response = await fetch(url, {
+                method,
                 headers: params?.headers as HeadersInit,
-                body,
-                signal: abortController.signal
+                body:
+                    method !== HttpMethod.GET
+                        ? JSON.stringify(params?.body)
+                        : undefined,
+                signal: controller.signal
             });
-            clearTimeout(timeoutId);
             if (response.ok) {
+                const responseHeaders = Object.fromEntries(
+                    response.headers.entries()
+                );
                 if (
                     params?.validateResponseHeader != null &&
-                    params?.headers != null
+                    responseHeaders != null
                 ) {
-                    params.validateResponseHeader(params.headers);
+                    params.validateResponseHeader(responseHeaders);
                 }
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-return
                 return await response.json();
             }
             throw new Error(`HTTP ${response.status} ${response.statusText}`, {
                 cause: response
             });
-        } catch (e) {
+        } catch (error) {
             throw new InvalidHTTPRequest(
-                'FetchHttpClient.http()',
-                (e as Error).message,
+                'HttpClient.http()',
+                (error as Error).message,
                 {
-                    method: method.toString(),
+                    method,
                     url: `${this.baseURL}${path}`
                 },
-                e
+                error
             );
+        } finally {
+            clearTimeout(timeoutId);
         }
     }
 

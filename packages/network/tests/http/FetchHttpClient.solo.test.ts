@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { THOR_SOLO_URL } from '../../src';
+import { HttpMethod, THOR_SOLO_URL } from '../../src';
 import { FetchHttpClient, type HttpParams } from '../../src/http';
 import { InvalidHTTPRequest, stringifyData } from '@vechain/sdk-errors';
 import { fail } from 'assert';
@@ -100,5 +100,42 @@ describe('FetchHttpClient solo tests', () => {
                 expect(response.status).toBe(400);
             }
         });
+    });
+
+    /*
+     NOTE: This test alters `global` context, hence must be the last one.
+     */
+    test('timeout test - 100 ms', async () => {
+        const timeout = 100; // 100ms timeout
+        const httpClient = new FetchHttpClient(THOR_SOLO_URL, timeout);
+
+        // Create a mock server that delays response
+        const mockServer = jest.fn().mockImplementation(async () => {
+            return await new Promise((resolve) =>
+                setTimeout(() => {
+                    console.log('Mock server delaying response');
+                    resolve({
+                        ok: true,
+                        json: () => ({})
+                    });
+                }, timeout * 2)
+            ); // Delay longer than the timeout
+        });
+
+        global.fetch = mockServer as typeof fetch;
+
+        const start = Date.now();
+        await expect(
+            httpClient.http(HttpMethod.GET, `/accounts/${ACCOUNT_ZERO}`)
+        ).rejects.toThrow();
+        const end = Date.now();
+
+        // Check if the request was aborted close to the timeout time
+        expect(end - start).toBeGreaterThanOrEqual(timeout);
+        expect(end - start).toBeLessThan(timeout * 4); // Allow some margin for execution time
+
+        // // Verify that fetch was called
+        expect(mockServer).toHaveBeenCalled();
+        jest.clearAllMocks();
     });
 });

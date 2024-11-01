@@ -59,7 +59,6 @@ describe('FetchHttpClient testnet tests', () => {
                 await httpClient.get('/blocks/0?expanded=false');
                 fail();
             } catch (error) {
-                console.log(error);
                 expect(error).toBeInstanceOf(InvalidHTTPRequest);
                 const innerError = (error as InvalidHTTPRequest).innerError;
                 expect(innerError).toBeInstanceOf(DOMException);
