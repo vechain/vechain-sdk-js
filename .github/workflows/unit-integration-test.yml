@@ -55,6 +55,11 @@ jobs:
                   core, packages/core/junit.xml
                   network, packages/network/junit.xml
                   errors, packages/errors/junit.xml
+                  logging, packages/logging/junit.xml
+                  hardhat-plugin, packages/hardhat-plugin/junit.xml
+                  aws-kms-adapter, packages/aws-kms-adapter/junit.xml
+                  ethers-adapter, packages/ethers-adapter/junit.xml
+                  rpc-proxy, packages/rpc-proxy/junit.xml
 
             - name: Archive coverage
               if: matrix.node == 'lts/*'

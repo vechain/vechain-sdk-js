@@ -1,12 +1,24 @@
 {
   "name": "sdk-aws-kms-adapter",
-  "description": "This module implements the VeChain abstract signer so it is integrated with AWS KMS",
   "version": "1.0.0-beta.32",
+  "description": "This module implements the VeChain abstract signer so it is integrated with AWS KMS",
+  "author": "VeChain Foundation",
+  "license": "MIT",
+  "homepage": "https://github.com/vechain/vechain-sdk-js",
+  "repository": {
+    "type": "git",
+    "url": "github:vechain/vechain-sdk-js"
+  },
+  "keywords": [
+    "VeChain",
+    "AWS",
+    "KMS",
+    "adapter",
+    "signer"
+  ],
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "author": "VeChain Foundation",
-  "license": "MIT",
   "files": [
     "dist",
     "src",
