@@ -1,6 +1,6 @@
 import { describe, expect, jest, test } from '@jest/globals';
 import { THOR_SOLO_URL, ThorClient } from '../../../src';
-import { FetchHttpClient } from '../../../src/http';
+import { SimpleHttpClient } from '../../../src/http';
 
 /**
  * Blocks module tests with mocks.
@@ -12,7 +12,7 @@ describe('ThorClient - Blocks Module mock tests', () => {
         const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
 
         // Mock the getBlockCompressed method to return null
-        jest.spyOn(FetchHttpClient.prototype, 'http').mockResolvedValueOnce(
+        jest.spyOn(SimpleHttpClient.prototype, 'http').mockResolvedValueOnce(
             null
         );
 
@@ -25,7 +25,7 @@ describe('ThorClient - Blocks Module mock tests', () => {
         const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
 
         // Mock the getBlockExpanded method to return null
-        jest.spyOn(FetchHttpClient.prototype, 'http').mockResolvedValueOnce(
+        jest.spyOn(SimpleHttpClient.prototype, 'http').mockResolvedValueOnce(
             null
         );
 
