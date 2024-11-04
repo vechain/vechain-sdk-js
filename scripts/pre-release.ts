@@ -84,7 +84,7 @@ const preparePackages = async () => {
     const version = process.argv[2];
 
     // NOTE: Remote the beta tag from the version in the future
-    if (!version?.match(/^\d+\.\d+\.\d+(-beta\.\d+)?$/)) {
+    if (!version?.match(/^\d+\.\d+\.\d+(-rc\.\d+)?$/)) {
         console.error(
             `🚨 You must specify a semantic version as the first argument  🚨`
         );
