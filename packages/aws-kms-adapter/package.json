@@ -1,12 +1,24 @@
 {
   "name": "sdk-aws-kms-adapter",
-  "description": "This module implements the VeChain abstract signer so it is integrated with AWS KMS",
   "version": "1.0.0-beta.32",
+  "description": "This module implements the VeChain abstract signer so it is integrated with AWS KMS",
+  "author": "VeChain Foundation",
+  "license": "MIT",
+  "homepage": "https://github.com/vechain/vechain-sdk-js",
+  "repository": {
+    "type": "git",
+    "url": "github:vechain/vechain-sdk-js"
+  },
+  "keywords": [
+    "VeChain",
+    "AWS",
+    "KMS",
+    "adapter",
+    "signer"
+  ],
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "author": "VeChain Foundation",
-  "license": "MIT",
   "files": [
     "dist",
     "src",
@@ -22,11 +34,11 @@
     "stop-thor-solo": "echo 'Stopping thor solo node ...' && docker compose -f ../../docker-compose.thor.yml -f ../../docker-compose.localstack.yml --profile thor-solo down && echo 'Thor solo node and localstack stopped ...'",
     "test": "docker compose -f ../../docker-compose.localstack.yml up -d && sleep 10 && yarn test:all; ret=$?; docker compose -f ../../docker-compose.localstack.yml down; exit $ret",
     "test:all": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit",
-    "test:solo": "(yarn start-thor-solo && yarn test:all && yarn stop-thor-solo) || yarn stop-thor-solo",
+    "test:integration": "(yarn start-thor-solo && yarn test:all && yarn stop-thor-solo) || yarn stop-thor-solo",
     "test:unit": "rm -rf ./coverageUnit && UNIT=true jest --coverage --coverageDirectory=coverageUnit --group=unit"
   },
   "dependencies": {
-    "@aws-sdk/client-kms": "^3.529.1",
+    "@aws-sdk/client-kms": "^3.682.0",
     "@vechain/sdk-errors": "1.0.0-beta.32",
     "@vechain/sdk-network": "1.0.0-beta.32",
     "asn1js": "^3.0.5"

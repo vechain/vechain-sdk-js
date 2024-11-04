@@ -1,7 +1,8 @@
 ---
+"@vechain/sdk-aws-kms-adapter": patch
 "@vechain/sdk-core": patch
 "@vechain/sdk-errors": patch
-"@vechain/ethers-adapter": patch
+"@vechain/sdk-ethers-adapter": patch
 "@vechain/sdk-hardhat-plugin": patch
 "@vechain/sdk-logging": patch
 "@vechain/sdk-network": patch

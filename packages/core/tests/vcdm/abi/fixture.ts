@@ -552,6 +552,20 @@ const ValueChangedEventData = {
     value: 100 // Replace with the actual balance value
 };
 
+interface ExpectedERC721TransferEventType {
+    eventName: 'Transfer';
+    args: {
+        from: `0x${string}`;
+        to: `0x${string}`;
+        tokenId: bigint;
+    };
+}
+
+interface ExpectedCustomFunctionType {
+    args: readonly [bigint];
+    functionName: 'setValue';
+}
+
 export {
     contractABI,
     contractABIWithEvents,
@@ -563,5 +577,7 @@ export {
     invalidTopicsEventTestCases,
     simpleParametersDataForFunction2,
     topicsEventTestCases,
-    ValueChangedEventData
+    ValueChangedEventData,
+    type ExpectedCustomFunctionType,
+    type ExpectedERC721TransferEventType
 };

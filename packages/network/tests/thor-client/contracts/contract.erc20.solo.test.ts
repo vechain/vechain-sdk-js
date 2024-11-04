@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
+import { Address, ERC20_ABI, HexUInt } from '@vechain/sdk-core';
 import {
     ProviderInternalBaseWallet,
     THOR_SOLO_URL,
@@ -10,7 +11,6 @@ import {
 } from '../../../src';
 import { TEST_ACCOUNTS } from '../../fixture';
 import { erc20ContractBytecode } from './fixture';
-import { Address, ERC20_ABI, HexUInt } from '@vechain/sdk-core';
 
 /**
  * Tests for the ThorClient class, specifically focusing on ERC20 contract-related functionality.
@@ -131,7 +131,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         // Ensure that the transfer transaction was successful and the balance is as expected
         expect(transactionReceiptTransfer.reverted).toBe(false);
-        expect(balanceOfResult).toEqual([BigInt(1000)]);
+        expect(balanceOfResult).toEqual([1000n]);
     }, 10000); // Set a timeout of 10000ms for this test
 
     test('Execute ERC20 contract operations with comments', async () => {
@@ -168,7 +168,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         // Ensure that the transfer transaction was successful and the balance is as expected
         expect(transactionReceiptTransfer.reverted).toBe(false);
-        expect(balanceOfResult).toEqual([BigInt(1000)]);
+        expect(balanceOfResult).toEqual([1000n]);
     }, 10000); // Set a timeout of 10000ms for this test
 
     test('Execute ERC20 contract operations with revision', async () => {
@@ -205,7 +205,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         // Ensure that the transfer transaction was successful and the balance is as expected
         expect(transactionReceiptTransfer.reverted).toBe(false);
-        expect(balanceOfResult).toEqual([BigInt(1000)]);
+        expect(balanceOfResult).toEqual([1000n]);
     }, 10000);
 
     /**
@@ -269,7 +269,7 @@ describe('ThorClient - ERC20 Contracts', () => {
             await contract.read.balanceOf(
                 TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
             )
-        ).toEqual([BigInt(1000)]);
+        ).toEqual([1000n]);
     }, 10000);
 
     /**
@@ -294,9 +294,27 @@ describe('ThorClient - ERC20 Contracts', () => {
                 contract.clause.decimals()
             ]);
 
-        expect(contractRead[0]).toEqual(['SampleToken']);
-        expect(contractRead[1]).toEqual(['ST']);
-        expect(contractRead[2]).toEqual([18]);
+        expect(contractRead[0]).toEqual({
+            success: true,
+            result: {
+                plain: 'SampleToken',
+                array: ['SampleToken']
+            }
+        });
+        expect(contractRead[1]).toEqual({
+            success: true,
+            result: {
+                plain: 'ST',
+                array: ['ST']
+            }
+        });
+        expect(contractRead[2]).toEqual({
+            success: true,
+            result: {
+                plain: 18,
+                array: [18]
+            }
+        });
     }, 10000);
 
     /**
@@ -321,9 +339,27 @@ describe('ThorClient - ERC20 Contracts', () => {
                 contract.clause.decimals()
             ]);
 
-        expect(contractRead[0]).toEqual(['SampleToken']);
-        expect(contractRead[1]).toEqual(['ST']);
-        expect(contractRead[2]).toEqual([18]);
+        expect(contractRead[0]).toEqual({
+            success: true,
+            result: {
+                plain: 'SampleToken',
+                array: ['SampleToken']
+            }
+        });
+        expect(contractRead[1]).toEqual({
+            success: true,
+            result: {
+                plain: 'ST',
+                array: ['ST']
+            }
+        });
+        expect(contractRead[2]).toEqual({
+            success: true,
+            result: {
+                plain: 18,
+                array: [18]
+            }
+        });
     }, 10000);
 
     /**
@@ -377,9 +413,21 @@ describe('ThorClient - ERC20 Contracts', () => {
             ]
         );
 
-        expect(reads[0]).toEqual([BigInt(1000)]);
+        expect(reads[0]).toEqual({
+            success: true,
+            result: {
+                plain: 1000n,
+                array: [1000n]
+            }
+        });
 
-        expect(reads[1]).toEqual([BigInt(4000)]);
+        expect(reads[1]).toEqual({
+            success: true,
+            result: {
+                plain: 4000n,
+                array: [4000n]
+            }
+        });
     }, 10000);
 
     /**
@@ -412,6 +460,6 @@ describe('ThorClient - ERC20 Contracts', () => {
             await contract.read.balanceOf(
                 TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
             )
-        ).toEqual([BigInt(1000)]);
+        ).toEqual([1000n]);
     }, 30000);
 });
