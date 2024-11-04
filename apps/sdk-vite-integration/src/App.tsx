@@ -2,9 +2,9 @@ import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import './App.css';
-import Hash from './Hash';
-import TransferLogs from './TransferLogs';
-import GetLastBlock from './GetLastBlock';
+import Hash from './components/Hash';
+import TransferLogs from './components/TransferLogs';
+import GetLastBlock from './components/GetLastBlock';
 
 function App() {
   return (
