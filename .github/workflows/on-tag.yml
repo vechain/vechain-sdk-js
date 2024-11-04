@@ -1,0 +1,15 @@
+name: Jobs on tag
+
+on:
+    push:
+        tags:
+            - '*'
+
+jobs:
+    npm-publish:
+        uses: ./.github/workflows/publish-sdk.yml
+        secrets: inherit
+
+    rpc-proxy-docker-publish:
+        uses: ./.github/workflows/rpc-proxy.yml
+        secrets: inherit
