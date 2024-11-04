@@ -26,7 +26,7 @@ describe('RPC Mapper - debug_traceCall method tests testnet', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = ThorClient.fromUrl(TESTNET_URL);
+        thorClient = ThorClient.at(TESTNET_URL);
     });
 
     /**

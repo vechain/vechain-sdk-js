@@ -15,7 +15,7 @@ describe('ThorClient - Nodes Module', () => {
          *  client required accessing a node
          *  @internal
          */
-        const thorClient = ThorClient.fromUrl(TESTNET_URL);
+        const thorClient = ThorClient.at(TESTNET_URL);
         const peerNodes = await thorClient.nodes.getNodes();
 
         expect(peerNodes).toBeDefined();
@@ -27,7 +27,7 @@ describe('ThorClient - Nodes Module', () => {
          *  client required to access a node
          *  @internal
          */
-        const thorClient = ThorClient.fromUrl('http://www.google.ie');
+        const thorClient = ThorClient.at('http://www.google.ie');
 
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             InvalidHTTPRequest
@@ -35,12 +35,12 @@ describe('ThorClient - Nodes Module', () => {
     }, 5000);
 
     test('null or empty URL or blank URL', async () => {
-        let thorClient = ThorClient.fromUrl('');
+        let thorClient = ThorClient.at('');
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             InvalidHTTPRequest
         );
 
-        thorClient = ThorClient.fromUrl('   ');
+        thorClient = ThorClient.at('   ');
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             InvalidHTTPRequest
         );
@@ -51,7 +51,7 @@ describe('ThorClient - Nodes Module', () => {
          *  client required to access a node
          *  @internal
          */
-        const thorClient = ThorClient.fromUrl('INVALID_URL');
+        const thorClient = ThorClient.at('INVALID_URL');
 
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             InvalidHTTPRequest
@@ -59,19 +59,19 @@ describe('ThorClient - Nodes Module', () => {
     });
 
     test('valid and available synchronized node', async () => {
-        const thorClient = ThorClient.fromUrl('https://testnet.vechain.org/');
+        const thorClient = ThorClient.at('https://testnet.vechain.org/');
 
         const healthyNode = await thorClient.nodes.isHealthy();
         expect(healthyNode).toBe(true);
     }, 10000);
 
     test('null or empty URL or blank URL', async () => {
-        let thorClient = ThorClient.fromUrl('');
+        let thorClient = ThorClient.at('');
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             InvalidHTTPRequest
         );
 
-        thorClient = ThorClient.fromUrl('   ');
+        thorClient = ThorClient.at('   ');
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             InvalidHTTPRequest
         );

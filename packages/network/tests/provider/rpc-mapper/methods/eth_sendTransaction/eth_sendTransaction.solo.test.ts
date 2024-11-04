@@ -43,7 +43,7 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
+        thorClient = ThorClient.at(THOR_SOLO_URL);
 
         // Init provider
         provider = new VeChainProvider(

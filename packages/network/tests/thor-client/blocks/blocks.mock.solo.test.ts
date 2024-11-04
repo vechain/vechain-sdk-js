@@ -9,7 +9,7 @@ import { SimpleHttpClient } from '../../../src/http';
  */
 describe('ThorClient - Blocks Module mock tests', () => {
     test('getBlockCompressed should return null if null is returned from the api', async () => {
-        const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+        const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 
         // Mock the getBlockCompressed method to return null
         jest.spyOn(SimpleHttpClient.prototype, 'http').mockResolvedValueOnce(
@@ -22,7 +22,7 @@ describe('ThorClient - Blocks Module mock tests', () => {
     });
 
     test('getBlockExpanded should return null if null is returned from the api', async () => {
-        const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+        const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 
         // Mock the getBlockExpanded method to return null
         jest.spyOn(SimpleHttpClient.prototype, 'http').mockResolvedValueOnce(

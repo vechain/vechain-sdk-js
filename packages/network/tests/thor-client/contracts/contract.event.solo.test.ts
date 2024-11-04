@@ -31,7 +31,7 @@ describe('ThorClient - ERC20 Contracts', () => {
     let signer: VeChainSigner;
 
     beforeEach(() => {
-        thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+        thorSoloClient = ThorClient.at(THOR_SOLO_URL);
         signer = new VeChainPrivateKeySigner(
             HexUInt.of(
                 TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey

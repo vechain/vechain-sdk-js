@@ -49,7 +49,7 @@ describe('Subscriptions Solo network tests', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
+        thorClient = ThorClient.at(THOR_SOLO_URL);
         provider = new VeChainProvider(
             thorClient,
             THOR_SOLO_ACCOUNTS_BASE_WALLET,
@@ -215,7 +215,7 @@ describe('Subscriptions Solo network tests', () => {
                 ),
                 [1]
             ) as TransactionClause;
-            const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+            const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
             const gasResult = await thorSoloClient.gas.estimateGas(
                 [clause],
                 TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
@@ -310,7 +310,7 @@ describe('Subscriptions Solo network tests', () => {
             value: Units.parseEther('1').toString(),
             data: '0x'
         };
-        const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+        const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
         const gasResult = await thorSoloClient.gas.estimateGas(
             [clause],
             TEST_ACCOUNTS.SUBSCRIPTION.VET_TRANSFERS_SUBSCRIPTION.address

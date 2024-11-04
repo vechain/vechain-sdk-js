@@ -83,7 +83,7 @@ class ThorClient {
      * @param options - (Optional) Other optional parameters for polling and error handling.
      * @returns A new `ThorClient` instance.
      */
-    public static fromUrl(
+    public static at(
         networkUrl: string,
         options?: BlocksModuleOptions
     ): ThorClient {

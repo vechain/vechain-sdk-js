@@ -28,7 +28,7 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
+        thorClient = ThorClient.at(THOR_SOLO_URL);
     });
 
     /**

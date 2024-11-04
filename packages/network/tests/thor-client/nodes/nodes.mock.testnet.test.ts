@@ -24,7 +24,7 @@ describe('ThorClient - Nodes Module', () => {
     const URL = 'http://example.com';
 
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(URL);
+        thorClient = ThorClient.at(URL);
     });
 
     test('valid URL/node but Error is thrown by network provider', async () => {

@@ -47,7 +47,7 @@ describe('Tests of DelegationHandler helper function', () => {
                 }).getDelegationSignatureUsingUrl(
                     Transaction.of(TransactionFixture.delegated.body),
                     '0x',
-                    ThorClient.fromUrl(TESTNET_URL).httpClient
+                    ThorClient.at(TESTNET_URL).httpClient
                 );
             }).rejects.toThrowError(NotDelegatedTransaction);
         });

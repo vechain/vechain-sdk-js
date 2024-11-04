@@ -59,7 +59,7 @@ describe('ThorClient - Contracts', () => {
     let receiverSigner: VeChainSigner;
 
     beforeEach(() => {
-        thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+        thorSoloClient = ThorClient.at(THOR_SOLO_URL);
         signer = new VeChainPrivateKeySigner(
             HexUInt.of(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey

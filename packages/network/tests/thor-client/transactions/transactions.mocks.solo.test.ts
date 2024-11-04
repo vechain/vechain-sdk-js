@@ -11,7 +11,7 @@ import { InvalidTransactionField } from '@vechain/sdk-errors';
  */
 describe('buildTransactionBody with mocks', () => {
     test('Should throw error when genesis block is not found', async () => {
-        const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+        const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 
         // Mock the getBlock method to return null
         jest.spyOn(
@@ -33,7 +33,7 @@ describe('buildTransactionBody with mocks', () => {
     });
 
     test('Should throw error when get block is not found', async () => {
-        const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+        const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 
         // Mock the getBestBlock method to return null
         jest.spyOn(
@@ -55,7 +55,7 @@ describe('buildTransactionBody with mocks', () => {
     });
 
     test('Should succeed when options are set', async () => {
-        const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+        const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 
         const blockRef =
             (await thorSoloClient.blocks.getBestBlockRef()) as string;
