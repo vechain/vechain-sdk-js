@@ -1,7 +1,10 @@
 {
     "name": "vechain-sdk",
     "description": "The official JavaScript SDK for vechain",
-    "repository": "https://github.com/vechain/vechain-sdk.git",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/vechain/vechain-sdk.git"
+    },
     "author": "VeChain Foundation",
     "license": "MIT",
     "keywords": [
@@ -81,5 +84,5 @@
     "peerDependencies": {
         "hardhat": "^2.22.13"
     },
-    "version": "v1.22.22"
+    "version": "1.22.22"
 }
