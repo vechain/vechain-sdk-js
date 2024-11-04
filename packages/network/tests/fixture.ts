@@ -6,17 +6,17 @@ import {
     TESTNET_URL,
     THOR_SOLO_ACCOUNTS
 } from '../src';
-import { FetchHttpClient } from '../src/http';
+import { SimpleHttpClient } from '../src/http';
 
 /**
  * Main network instance fixture
  */
-const mainNetwork = new FetchHttpClient(MAINNET_URL);
+const mainNetwork = new SimpleHttpClient(MAINNET_URL);
 
 /**
  * Network instance fixture
  */
-const testNetwork = new FetchHttpClient(TESTNET_URL);
+const testNetwork = new SimpleHttpClient(TESTNET_URL);
 
 /**
  * Simple test account fixture

@@ -6,10 +6,10 @@ import { type HttpParams } from './HttpParams';
 /**
  * This class implements the HttpClient interface using the Fetch API.
  *
- * The FetchHttpClient allows making {@link HttpMethod} requests with timeout
+ * The SimpleHttpClient allows making {@link HttpMethod} requests with timeout
  * and base URL configuration.
  */
-class FetchHttpClient implements HttpClient {
+class SimpleHttpClient implements HttpClient {
     /**
      * Represent the default timeout duration for network requests in milliseconds.
      */
@@ -27,14 +27,14 @@ class FetchHttpClient implements HttpClient {
     public readonly timeout: number;
 
     /**
-     * Constructs an instance of FetchHttpClient with the given base URL and timeout period.
+     * Constructs an instance of SimpleHttpClient with the given base URL and timeout period.
      *
      * @param {string} baseURL - The base URL for the HTTP client.
-     * @param {number} [timeout=FetchHttpClient.DEFAULT_TIMEOUT] - The timeout period for requests in milliseconds.
+     * @param {number} [timeout=SimpleHttpClient.DEFAULT_TIMEOUT] - The timeout period for requests in milliseconds.
      */
     constructor(
         baseURL: string,
-        timeout: number = FetchHttpClient.DEFAULT_TIMEOUT
+        timeout: number = SimpleHttpClient.DEFAULT_TIMEOUT
     ) {
         this.baseURL = baseURL;
         this.timeout = timeout;
@@ -128,4 +128,4 @@ class FetchHttpClient implements HttpClient {
     }
 }
 
-export { FetchHttpClient };
+export { SimpleHttpClient };
