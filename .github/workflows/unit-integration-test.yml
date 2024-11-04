@@ -22,6 +22,9 @@ jobs:
 
             - name: Install & Patch packages
               run: yarn install
+            
+            - name: Install playwright dependencies (for sample Vite dApp tests)
+              run: yarn playwright install
 
             - name: Preliminary Stop of Thor solo node
               id: preliminary-stop-solo
