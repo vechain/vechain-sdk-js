@@ -12,65 +12,76 @@ import {
  */
 describe('Error package Available errors test - ABI', () => {
     /**
-     * InvalidAbiDataToEncodeOrDecode
+     * Helper function to test InvalidAbiDataToEncodeOrDecode
+     */
+    const testInvalidAbiDataToEncodeOrDecode = (innerError?: Error): void => {
+        expect(() => {
+            throw new InvalidAbiDataToEncodeOrDecode(
+                'method',
+                'message',
+                { data: 'data' },
+                innerError
+            );
+        }).toThrowError(VechainSDKError);
+    };
+
+    /**
+     * Test InvalidAbiDataToEncodeOrDecode
      */
     test('InvalidAbiDataToEncodeOrDecode', () => {
-        // Inner error
         [undefined, new Error('error')].forEach((innerError) => {
-            expect(() => {
-                throw new InvalidAbiDataToEncodeOrDecode(
-                    'method',
-                    'message',
-                    { data: 'data' },
-                    innerError
-                );
-            }).toThrowError(VechainSDKError);
+            testInvalidAbiDataToEncodeOrDecode(innerError);
         });
     });
 
     /**
-     * InvalidAbiItem
+     * Helper function to test InvalidAbiItem
+     */
+    const testInvalidAbiItem = (
+        data: { type: 'function' | 'event'; value: unknown },
+        innerError?: Error
+    ): void => {
+        expect(() => {
+            throw new InvalidAbiItem('method', 'message', data, innerError);
+        }).toThrowError(VechainSDKError);
+    };
+
+    /**
+     * Test InvalidAbiItem
      */
     test('InvalidAbiItem', () => {
-        // Inner error
         [undefined, new Error('error')].forEach((innerError) => {
-            // ABI item type
-            [
-                {
-                    type: 'function' as 'function' | 'event',
-                    value: 'abiItem' as unknown
-                },
-                {
-                    type: 'event' as 'function' | 'event',
-                    value: 'abiItem' as unknown
-                }
-            ].forEach((data) => {
-                expect(() => {
-                    throw new InvalidAbiItem(
-                        'method',
-                        'message',
-                        data,
-                        innerError
-                    );
-                }).toThrowError(VechainSDKError);
+            const abiItems = [
+                { type: 'function' as const, value: 'abiItem' }, // Correctly typed
+                { type: 'event' as const, value: 'abiItem' } // Correctly typed
+            ];
+
+            abiItems.forEach((data) => {
+                testInvalidAbiItem(data, innerError);
             });
         });
     });
 
     /**
-     * InvalidAbiSignatureFormat
+     * Helper function to test InvalidAbiSignatureFormat
+     */
+    const testInvalidAbiSignatureFormat = (innerError?: Error): void => {
+        expect(() => {
+            throw new InvalidAbiSignatureFormat(
+                'method',
+                'message',
+                { signatureFormat: 'signatureFormat' },
+                innerError
+            );
+        }).toThrowError(VechainSDKError);
+    };
+
+    /**
+     * Test InvalidAbiSignatureFormat
      */
     test('InvalidAbiSignatureFormat', () => {
-        // Inner error
         [undefined, new Error('error')].forEach((innerError) => {
-            expect(() => {
-                throw new InvalidAbiSignatureFormat(
-                    'method',
-                    'message',
-                    { signatureFormat: 'signatureFormat' },
-                    innerError
-                );
-            }).toThrowError(VechainSDKError);
+            testInvalidAbiSignatureFormat(innerError);
         });
     });
 });

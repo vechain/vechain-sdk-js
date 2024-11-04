@@ -1,7 +1,7 @@
 /**
  * Function to stringify data correctly.
  * Some data types like Error, Map, Set, etc. are not stringified correctly by JSON.stringify.
- * This function handles those cases and avoid circular references.
+ * This function handles those cases and avoids circular references.
  *
  * @param data - The data to be stringified.
  * @returns The stringified data.
@@ -67,11 +67,16 @@ function createErrorMessage<TErrorDataType>(
     inputData: TErrorDataType,
     innerError?: Error
 ): string {
+    const internalErrorMessage =
+        innerError?.message !== undefined
+            ? `\n-Internal error: \n\t${innerError.message}`
+            : '';
+
     return (
         `Method '${methodName}' failed.` +
         `\n-Reason: '${errorMessage}'` +
         `\n-Parameters: \n\t${stringifyData(inputData)}` +
-        `${innerError?.message !== undefined ? `\n-Internal error: \n\t${innerError.message}` : ''}`
+        internalErrorMessage
     );
 }
 
