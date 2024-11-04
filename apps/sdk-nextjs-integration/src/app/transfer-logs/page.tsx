@@ -103,51 +103,70 @@ export default function TransferLogs(): JSX.Element {
                     </thead>
                     <tbody>
                         {transfers.map((transfer) => (
-                            <tr key={transfer.meta.txID}> {/* Use txID as the unique key */}
+                            <tr key={transfer.meta.txID}>
+                                {' '}
+                                {/* Use txID as the unique key */}
                                 <td className="px-4 py-2">
-                                    <p data-testid={`timestamp-${transfer.meta.blockTimestamp}`}>
-                                        {new Date(transfer.meta.blockTimestamp * 1000).toISOString()}
+                                    <p
+                                        data-testid={`timestamp-${transfer.meta.blockTimestamp}`}
+                                    >
+                                        {new Date(
+                                            transfer.meta.blockTimestamp * 1000
+                                        ).toISOString()}
                                     </p>
                                 </td>
                                 <td className="px-4 py-2">
                                     <Link
                                         href={`${explorerUrl}/accounts/${transfer.from}`}
                                         target={'_blank'}
-                                        className={'text-blue-500 hover:underline'}
+                                        className={
+                                            'text-blue-500 hover:underline'
+                                        }
                                         data-testid={`transfer-from-${transfer.from.slice(2, 10)}`}
                                     >
-                                        <p>{reduceHexStringSize(transfer.from)}</p>
+                                        <p>
+                                            {reduceHexStringSize(transfer.from)}
+                                        </p>
                                     </Link>
                                 </td>
                                 <td className="px-4 py-2">
                                     <Link
                                         href={`${explorerUrl}/accounts/${transfer.to}`}
                                         target={'_blank'}
-                                        className={'text-blue-500 hover:underline'}
+                                        className={
+                                            'text-blue-500 hover:underline'
+                                        }
                                         data-testid={`transfer-to-${transfer.to.slice(2, 10)}`}
                                     >
                                         {reduceHexStringSize(transfer.to)}
                                     </Link>
                                 </td>
                                 <td className="px-4 py-2">
-                                    <p data-testid={`transfer-amount-${transfer.amount}`}>
-                                        {Units.formatEther(FixedPointNumber.of(transfer.amount))}
+                                    <p
+                                        data-testid={`transfer-amount-${transfer.amount}`}
+                                    >
+                                        {Units.formatEther(
+                                            FixedPointNumber.of(transfer.amount)
+                                        )}
                                     </p>
                                 </td>
                                 <td className="px-4 py-2">
                                     <Link
                                         href={`${explorerUrl}/transactions/${transfer.meta.txID}`}
                                         target={'_blank'}
-                                        className={'text-blue-500 hover:underline'}
+                                        className={
+                                            'text-blue-500 hover:underline'
+                                        }
                                         data-testid={`transaction-id-${transfer.meta.txID.slice(2, 10)}`}
                                     >
-                                        {reduceHexStringSize(transfer.meta.txID)}
+                                        {reduceHexStringSize(
+                                            transfer.meta.txID
+                                        )}
                                     </Link>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
-
                 </table>
             </div>
         </main>
