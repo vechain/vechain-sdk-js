@@ -4,8 +4,7 @@ on:
     workflow_call:
 
 jobs:
-    build:
-        name: Test RPC Proxy
+    test:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout repository
