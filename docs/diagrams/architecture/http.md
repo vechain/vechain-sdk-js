@@ -1,6 +1,6 @@
 ```mermaid
 classDiagram
-    class FetchHttpClient {
+    class SimpleHttpClient {
         number DEFAULT_TIMEOUT$
         number timeout;
     }
@@ -26,5 +26,5 @@ classDiagram
     }
     HttpMethod o-- HttpClient
     HttpParams *-- HttpClient
-    HttpClient <|.. FetchHttpClient
+    HttpClient <|.. SimpleHttpClient
 ```

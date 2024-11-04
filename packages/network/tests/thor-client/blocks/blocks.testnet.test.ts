@@ -8,7 +8,7 @@ import {
 } from './fixture';
 import { Poll, TESTNET_URL, ThorClient } from '../../../src';
 import { Address, BloomFilter, networkInfo } from '@vechain/sdk-core';
-import { FetchHttpClient } from '../../../src/http';
+import { SimpleHttpClient } from '../../../src/http';
 
 /**
  * Blocks Module integration tests
@@ -20,7 +20,7 @@ describe('ThorClient - Blocks Module', () => {
     let thorClient: ThorClient;
 
     beforeEach(() => {
-        thorClient = new ThorClient(new FetchHttpClient(TESTNET_URL), {
+        thorClient = new ThorClient(new SimpleHttpClient(TESTNET_URL), {
             isPollingEnabled: true
         });
     });

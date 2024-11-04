@@ -13,7 +13,7 @@ import {
 import { ThorClient } from '../../../thor-client';
 import { type ProviderInternalWallet } from '../../helpers';
 import { VeChainSDKLogger } from '@vechain/sdk-logging';
-import { FetchHttpClient } from '../../../http';
+import { SimpleHttpClient } from '../../../http';
 
 /**
  * This class is a wrapper for the VeChainProvider that Hardhat uses.
@@ -60,7 +60,7 @@ class HardhatVeChainProvider extends VeChainProvider {
     ) {
         // Initialize the provider with the network configuration.
         super(
-            new ThorClient(new FetchHttpClient(nodeUrl)),
+            new ThorClient(new SimpleHttpClient(nodeUrl)),
             walletToUse,
             enableDelegation
         );

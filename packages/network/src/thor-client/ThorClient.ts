@@ -9,7 +9,7 @@ import {
     NodesModule,
     TransactionsModule
 } from '.';
-import { FetchHttpClient, type HttpClient } from '../http';
+import { SimpleHttpClient, type HttpClient } from '../http';
 
 /**
  * The `ThorClient` class serves as an interface to interact with the VeChainThor blockchain.
@@ -87,7 +87,7 @@ class ThorClient {
         networkUrl: string,
         options?: BlocksModuleOptions
     ): ThorClient {
-        return new ThorClient(new FetchHttpClient(networkUrl), options);
+        return new ThorClient(new SimpleHttpClient(networkUrl), options);
     }
 
     /**
