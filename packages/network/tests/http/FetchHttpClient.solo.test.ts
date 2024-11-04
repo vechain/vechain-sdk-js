@@ -113,7 +113,6 @@ describe('FetchHttpClient solo tests', () => {
         const mockServer = jest.fn().mockImplementation(async () => {
             return await new Promise((resolve) =>
                 setTimeout(() => {
-                    console.log('Mock server delaying response');
                     resolve({
                         ok: true,
                         json: () => ({})

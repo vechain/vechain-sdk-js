@@ -52,8 +52,12 @@ describe('FetchHttpClient testnet tests', () => {
             TIMEOUT
         );
 
+        /*
+        NOTE: this test doesn't succeed in CI/CD.
+        Enable locally to challenge a real time-out calling testnet.
+         */
         // test('timeout <- GET in 1 ms', async () => {
-        //     const httpClient = new FetchHttpClient(TESTNET_URL, 1);
+        //     const httpClient = new FetchHttpClient(TESTNET_URL, 0);
         //     try {
         //         await httpClient.get('/blocks/0?expanded=false');
         //         fail();
