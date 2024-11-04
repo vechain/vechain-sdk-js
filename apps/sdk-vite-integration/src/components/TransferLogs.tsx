@@ -2,13 +2,11 @@ import { useEffect, useState } from "react";
 import { Address, FixedPointNumber, Units } from '@vechain/sdk-core';
 import {
     CompressedBlockDetail,
-    FilterTransferLogsOptions,
-    ThorClient,
-    //type CompressedBlockDetail,
-    //type FilterTransferLogsOptions
+    FilterTransferLogsOptions
 } from '@vechain/sdk-network';
 import { Link } from 'react-router-dom';
 import { Transfer } from "../types";
+import { explorerUrl, thorClient } from "../const";
 
 /**
  * Reduce the size of a hex string
@@ -32,15 +30,6 @@ const TransferLogs = () => {
     const [address, setAddress] = useState<string>(
         '0xc3bE339D3D20abc1B731B320959A96A08D479583'
     );
-
-    // // Url of the VeChain mainnet
-    const mainnetUrl = 'https://mainnet.vechain.org';
-
-    // // Thor client instance
-    const thorClient = ThorClient.fromUrl(mainnetUrl);
-
-    // // Explorer url
-    const explorerUrl = 'https://explore.vechain.org';
 
     // /**
     //  * Function to get the history for the provided address
