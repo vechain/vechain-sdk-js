@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Transfer } from "./types";
 import { Address, FixedPointNumber, Units } from '@vechain/sdk-core';
 import {
     CompressedBlockDetail,
@@ -9,6 +8,7 @@ import {
     //type FilterTransferLogsOptions
 } from '@vechain/sdk-network';
 import { Link } from 'react-router-dom';
+import { Transfer } from "../types";
 
 /**
  * Reduce the size of a hex string
