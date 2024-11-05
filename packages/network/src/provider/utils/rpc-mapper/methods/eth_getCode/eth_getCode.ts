@@ -7,6 +7,7 @@ import {
 import type { BlockQuantityInputRPC } from '../../types';
 import { getCorrectBlockNumberRPCToVeChain } from '../../../const';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
+import { Address } from '@vechain/sdk-core';
 
 /**
  * RPC Method eth_getCode implementation
@@ -42,7 +43,7 @@ const ethGetCode = async (
         const [address, block] = params as [string, BlockQuantityInputRPC];
 
         // Get the account details
-        return await thorClient.accounts.getBytecode(address, {
+        return await thorClient.accounts.getBytecode(Address.of(address), {
             revision: getCorrectBlockNumberRPCToVeChain(block)
         });
     } catch (e) {

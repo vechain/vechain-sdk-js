@@ -51,7 +51,7 @@ function startProxy(): void {
     console.log('[rpc-proxy]: Starting VeChain RPC Proxy');
 
     // Create all necessary objects to init Provider and Signer
-    const thorClient = ThorClient.fromUrl(config.url);
+    const thorClient = ThorClient.at(config.url);
     const wallet: ProviderInternalWallet = Array.isArray(config.accounts)
         ? new ProviderInternalBaseWallet(
               config.accounts.map((privateKey: string) => {

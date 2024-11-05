@@ -1,10 +1,10 @@
 ```mermaid
 classDiagram
-    class AccountDetail {
-        
-    }
     class AccountModule {
-        constructor(HttpClient httpClient)
+        AccountModule constructor(HttpClient httpClient)
+        Promise~AccountDetail~ getAccount(Address address, AccountInputOption options)
+        Promise~string~ getByteCode(Address address, AccountInputOption options)
+        Promise~string~ getStorageAt(Address address, ThorId position, AccountInputOptions options)
     }
     class HttpClient {
         <<interface>>
@@ -17,6 +17,7 @@ classDiagram
         ThorClient at(string url, BlockModuleOptions options)$
         destroy()
     }
+    AccountModule *-- ThorClient
     HttpClient o-- ThorClient
     
 ```

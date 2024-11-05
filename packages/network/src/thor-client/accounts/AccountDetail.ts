@@ -1,5 +1,5 @@
-import type { AccountData } from './types';
 import { FixedPointNumber, Units, VET, VTHO } from '@vechain/sdk-core';
+import type { AccountData } from './types';
 
 /**
  * Represents detailed account information.
@@ -47,3 +47,5 @@ class AccountDetail implements AccountData {
         this.hasCode = accountData.hasCode;
     }
 }
+
+export { AccountDetail };

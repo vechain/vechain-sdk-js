@@ -66,7 +66,7 @@ class ThorClient {
         readonly httpClient: HttpClient,
         options?: BlocksModuleOptions
     ) {
-        this.accounts = new AccountsModule(this);
+        this.accounts = new AccountsModule(httpClient);
         this.nodes = new NodesModule(this);
         this.blocks = new BlocksModule(this, options);
         this.logs = new LogsModule(this);
@@ -79,9 +79,9 @@ class ThorClient {
     /**
      * Creates a new `ThorClient` instance from a given URL.
      *
-     * @param networkUrl - The URL of the network to connect to.
-     * @param options - (Optional) Other optional parameters for polling and error handling.
-     * @returns A new `ThorClient` instance.
+     * @param {string} networkUrl - The URL of the network to connect to.
+     * @param {BlocksModuleOptions} [options] - Optional configuration settings for the Blocks module.
+     * @return {ThorClient} A ThorClient instance connected to the specified network URL.
      */
     public static at(
         networkUrl: string,
@@ -96,6 +96,22 @@ class ThorClient {
      */
     public destroy(): void {
         this.blocks.destroy();
+    }
+
+    /**
+     * Creates a ThorClient instance from a network URL.
+     *
+     * @param {string} networkUrl - The URL of the network to connect to.
+     * @param {BlocksModuleOptions} [options] - Optional configuration settings for the Blocks module.
+     * @return {ThorClient} A ThorClient instance connected to the specified network URL.
+     *
+     * @deprecated Use {@link ThorClient.at} instead.
+     */
+    public static fromUrl(
+        networkUrl: string,
+        options?: BlocksModuleOptions
+    ): ThorClient {
+        return ThorClient.at(networkUrl, options);
     }
 }
 

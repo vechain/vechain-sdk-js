@@ -1,4 +1,4 @@
-import { ThorId } from '@vechain/sdk-core';
+import { Address, ThorId } from '@vechain/sdk-core';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
 import { getCorrectBlockNumberRPCToVeChain } from '../../../const';
 import {
@@ -50,8 +50,8 @@ const ethGetStorageAt = async (
 
         // Get the account details
         return await thorClient.accounts.getStorageAt(
-            address,
-            ThorId.of(storagePosition).toString(),
+            Address.of(address),
+            ThorId.of(storagePosition),
             {
                 revision: getCorrectBlockNumberRPCToVeChain(block)
             }
