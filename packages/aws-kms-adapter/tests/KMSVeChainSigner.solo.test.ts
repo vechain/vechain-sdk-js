@@ -224,7 +224,7 @@ describe('KMSVeChainSigner - Thor Solo', () => {
                             );
 
                         expect(
-                            receipt.match(/^0x([A-Fa-f0-9]{64})$/)
+                            /^0x([A-Fa-f0-9]{64})$/.exec(receipt)
                         ).toBeTruthy();
                     },
                     timeout

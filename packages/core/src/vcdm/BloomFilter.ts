@@ -87,11 +87,13 @@ class BloomFilter implements VeChainDataModel<BloomFilter> {
      *                   returns zero if they are equal, and returns a positive number if the current instance is greater than the provided instance.
      */
     compareTo(that: BloomFilter): number {
-        return this.bi < that.bi
-            ? -1
-            : this.bi === that.bi
-              ? this.k - that.k
-              : 1;
+        if (this.bi < that.bi) {
+            return -1;
+        } else if (this.bi > that.bi) {
+            return 1;
+        } else {
+            return this.k - that.k;
+        }
     }
 
     /**
@@ -190,27 +192,34 @@ class BloomFilter implements VeChainDataModel<BloomFilter> {
      * @throws {InvalidOperation} If the length of the byte arrays are different.
      */
     public join(other: BloomFilter): BloomFilter {
-        if (this.k === other.k) {
-            if (this.bytes.length === other.bytes.length) {
-                return new BloomFilter(
-                    new Uint8Array(
-                        this.bytes.map(
-                            (byte, index) => byte | other.bytes[index]
-                        )
-                    ),
-                    this.k
-                );
-            }
+        if (this.k !== other.k) {
+            throw new InvalidOperation(
+                'BloomFilter.join',
+                'different k values',
+                {
+                    this: this,
+                    other
+                }
+            );
+        }
+
+        if (this.bytes.length !== other.bytes.length) {
             throw new InvalidOperation(
                 'BloomFilter.join',
                 'different length values',
-                { this: this, other }
+                {
+                    this: this,
+                    other
+                }
             );
         }
-        throw new InvalidOperation('BloomFilter.join', 'different k values', {
-            this: this,
-            other
-        });
+
+        const joinedBytes = new Uint8Array(this.bytes.length);
+        for (let index = 0; index < this.bytes.length; index++) {
+            joinedBytes[index] = this.bytes[index] | other.bytes[index];
+        }
+
+        return new BloomFilter(joinedBytes, this.k);
     }
 
     /**

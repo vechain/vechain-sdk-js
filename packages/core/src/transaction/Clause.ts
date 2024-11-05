@@ -167,7 +167,7 @@ class Clause implements TransactionClause {
         clauseOptions?: ClauseOptions
     ): Clause {
         const data =
-            deployParams !== null && deployParams !== undefined
+            deployParams != null && deployParams !== undefined
                 ? contractBytecode.digits +
                   ABI.of(deployParams.types, deployParams.values)
                       .toHex()

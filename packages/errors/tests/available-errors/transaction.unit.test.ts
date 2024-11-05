@@ -13,79 +13,116 @@ import {
  */
 describe('Error package Available errors test - Transaction', () => {
     /**
-     * UnavailableTransactionField
+     * Helper function to test UnavailableTransactionField
+     */
+    const testUnavailableTransactionField = (innerError?: Error): void => {
+        expect(() => {
+            throw new UnavailableTransactionField(
+                'method',
+                'message',
+                { fieldName: 'field' },
+                innerError
+            );
+        }).toThrowError(VechainSDKError);
+    };
+
+    /**
+     * Test UnavailableTransactionField
      */
     test('UnavailableTransactionField', () => {
-        // Inner error
         [undefined, new Error('error')].forEach((innerError) => {
-            expect(() => {
-                throw new UnavailableTransactionField(
-                    'method',
-                    'message',
-                    { fieldName: 'field' },
-                    innerError
-                );
-            }).toThrowError(VechainSDKError);
+            testUnavailableTransactionField(innerError);
         });
     });
 
     /**
-     * InvalidTransactionField
+     * Helper function to test InvalidTransactionField
+     */
+    const testInvalidTransactionField = (innerError?: Error): void => {
+        expect(() => {
+            throw new InvalidTransactionField(
+                'method',
+                'message',
+                {
+                    fieldName: 'field',
+                    fieldContent: 'invalid-field-content'
+                },
+                innerError
+            );
+        }).toThrowError(VechainSDKError);
+    };
+
+    /**
+     * Test InvalidTransactionField
      */
     test('InvalidTransactionField', () => {
-        // Inner error
         [undefined, new Error('error')].forEach((innerError) => {
-            expect(() => {
-                throw new InvalidTransactionField(
-                    'method',
-                    'message',
-                    {
-                        fieldName: 'field',
-                        fieldContent: 'invalid-field-content'
-                    },
-                    innerError
-                );
-            }).toThrowError(VechainSDKError);
+            testInvalidTransactionField(innerError);
         });
     });
 
     /**
-     * NotDelegatedTransaction
+     * Helper function to test NotDelegatedTransaction
+     */
+    const testNotDelegatedTransaction = (
+        innerError?: Error,
+        data?: { delegatorUrl: string }
+    ): void => {
+        expect(() => {
+            throw new NotDelegatedTransaction(
+                'method',
+                'message',
+                data,
+                innerError
+            );
+        }).toThrowError(VechainSDKError);
+    };
+
+    /**
+     * Test NotDelegatedTransaction
      */
     test('NotDelegatedTransaction', () => {
-        // Inner error
         [undefined, new Error('error')].forEach((innerError) => {
-            // Fragment type
-            [undefined, { delegatorUrl: 'url' }].forEach((data) => {
-                expect(() => {
-                    throw new NotDelegatedTransaction(
-                        'method',
-                        'message',
-                        data,
-                        innerError
-                    );
-                }).toThrowError(VechainSDKError);
+            // Use a valid object or explicitly check for undefined
+            const dataOptions: Array<{ delegatorUrl: string } | undefined> = [
+                { delegatorUrl: 'url' },
+                undefined
+            ];
+
+            dataOptions.forEach((dataItem) => {
+                // Explicit null check for dataItem
+                if (dataItem != null) {
+                    testNotDelegatedTransaction(innerError, dataItem);
+                } else {
+                    testNotDelegatedTransaction(innerError);
+                }
             });
         });
     });
 
     /**
-     * CannotFindTransaction
+     * Helper function to test CannotFindTransaction
+     */
+    const testCannotFindTransaction = (innerError?: Error): void => {
+        expect(() => {
+            throw new CannotFindTransaction(
+                'method',
+                'message',
+                {
+                    transactionHash: '0xhash',
+                    networkUrl: 'https://network.url'
+                },
+                innerError
+            );
+        }).toThrowError(VechainSDKError);
+    };
+
+    /**
+     * Test CannotFindTransaction
      */
     test('CannotFindTransaction', () => {
-        // Inner error
         [undefined, new Error('error')].forEach((innerError) => {
-            expect(() => {
-                throw new CannotFindTransaction(
-                    'method',
-                    'message',
-                    {
-                        transactionHash: '0xhash',
-                        networkUrl: 'https://network.url'
-                    },
-                    innerError
-                );
-            }).toThrowError(VechainSDKError);
+            testCannotFindTransaction(innerError);
         });
     });
 });

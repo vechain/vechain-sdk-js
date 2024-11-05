@@ -102,8 +102,10 @@ export default function TransferLogs(): JSX.Element {
                         </tr>
                     </thead>
                     <tbody>
-                        {transfers.map((transfer, index) => (
-                            <tr key={index}>
+                        {transfers.map((transfer) => (
+                            <tr key={transfer.meta.txID}>
+                                {' '}
+                                {/* Use txID as the unique key */}
                                 <td className="px-4 py-2">
                                     <p
                                         data-testid={`timestamp-${transfer.meta.blockTimestamp}`}

@@ -10,14 +10,15 @@
         "plugin:@typescript-eslint/recommended-requiring-type-checking",
         "plugin:prettier/recommended",
         "standard-with-typescript",
-        "prettier"
+        "prettier",
+        "plugin:sonarjs/recommended-legacy"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaVersion": "latest",
         "project": "./tsconfig.json"
     },
-    "plugins": ["@typescript-eslint","local-rules"],
+    "plugins": ["@typescript-eslint","local-rules","sonarjs"],
     "ignorePatterns": ["node_modules/", "dist/", "coverage/"],
     "rules": {
         "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
@@ -36,6 +37,13 @@
         "prettier/prettier": ["error", { "singleQuote": true, "trailingComma": "none", "tabWidth": 4 }],
         "no-warning-comments": "warn",
         "no-multi-str": "off",
-        "local-rules/disallow-buffer-from-alloc": "error"
+        "local-rules/disallow-buffer-from-alloc": "error",
+        "sonarjs/different-types-comparison": "off",
+        "sonarjs/no-ignored-exceptions": "off",
+        "sonarjs/no-nested-functions": "off",
+        "sonarjs/function-return-type": "off",
+        "sonarjs/no-nested-conditional": "off",
+        "sonarjs/cognitive-complexity": "off",
+        "sonarjs/new-cap": "off"
     }
 }
