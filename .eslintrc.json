@@ -10,7 +10,8 @@
         "plugin:@typescript-eslint/recommended-requiring-type-checking",
         "plugin:prettier/recommended",
         "standard-with-typescript",
-        "prettier"
+        "prettier",
+        "plugin:security/recommended-legacy"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
