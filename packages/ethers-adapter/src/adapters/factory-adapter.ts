@@ -40,7 +40,7 @@ function factoryAdapter<A extends unknown[], I>(
             );
 
         // @ts-expect-error this return type is required by the contract factory deploy method
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return, sonarjs/new-operator-misuse
         return new (vechain_sdk_core_ethers.BaseContract as unknown)(
             receipt?.outputs[0].contractAddress ?? '',
             this.interface,

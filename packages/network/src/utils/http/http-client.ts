@@ -84,9 +84,14 @@ class HttpClient implements IHttpClient {
 
             if (!response.ok) {
                 const message = await response.text();
+                const errorMessage =
+                    message !== ''
+                        ? `Request failed with status ${response.status} and message ${message.trimEnd()}`
+                        : 'Request failed';
+
                 throw new InvalidHTTPRequest(
                     'HttpClient.http()',
-                    `Request failed${message !== '' ? ` with status ${response.status} and message ${message.trimEnd()}` : ''}`,
+                    errorMessage,
                     {
                         method,
                         url: url.toString()

@@ -18,6 +18,7 @@ const toRandomAddress = Hex.random(20).toString();
 /**
  * `value` random BigInt
  */
+// eslint-disable-next-line sonarjs/pseudo-random
 const randomBigInt = BigInt(Math.floor(Math.random() * 1000));
 
 /**

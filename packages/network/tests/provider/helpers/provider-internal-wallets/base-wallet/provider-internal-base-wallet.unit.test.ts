@@ -58,6 +58,7 @@ describe('Base wallet tests', () => {
             // Get the addresses from the wallet
             const randomAccount =
                 accountsFixture[
+                    // eslint-disable-next-line sonarjs/pseudo-random
                     Math.floor(Math.random() * accountsFixture.length)
                 ];
 
@@ -88,6 +89,7 @@ describe('Base wallet tests', () => {
 
             // Random index
             const randomIndex = Math.floor(
+                // eslint-disable-next-line sonarjs/pseudo-random
                 Math.random() * accountsFixture.length
             );
 
