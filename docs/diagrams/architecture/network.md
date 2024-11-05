@@ -1,5 +1,16 @@
 ```mermaid
 classDiagram
+    class AccountData {
+        <<interface>>
+        string balance
+        string energy
+        boolean hasCode
+    }
+    class AccountDetail {
+        <<interface>>
+        VET vet
+        VTHO vtho
+    }
     class AccountInputOptions {
         <<interface>>
         Revision revision
@@ -8,7 +19,7 @@ classDiagram
         AccountModule constructor(HttpClient httpClient)
         Promise~AccountDetail~ getAccount(Address address, AccountInputOption options)
         Promise~HexUInt~ getByteCode(Address address, AccountInputOption options)
-        Promise~string~ getStorageAt(Address address, ThorId position, AccountInputOptions options)
+        Promise~HexUInt~ getStorageAt(Address address, ThorId position, AccountInputOptions options)
     }
     class HttpClient {
         <<interface>>
@@ -21,8 +32,8 @@ classDiagram
         ThorClient at(string url, BlockModuleOptions options)$
         destroy()
     }
+    AccountData <|-- AccountDetail
     AccountInputOptions o-- AccountModule
     AccountModule *-- ThorClient
     HttpClient o-- ThorClient
-
 ```

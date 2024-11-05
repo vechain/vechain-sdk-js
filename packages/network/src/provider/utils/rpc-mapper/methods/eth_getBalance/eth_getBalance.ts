@@ -7,7 +7,7 @@ import {
 import type { BlockQuantityInputRPC } from '../../types';
 import { getCorrectBlockNumberRPCToVeChain } from '../../../const';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
-import { Address } from '@vechain/sdk-core';
+import { Address, Revision } from '@vechain/sdk-core';
 
 /**
  * RPC Method eth_getBalance implementation
@@ -46,7 +46,7 @@ const ethGetBalance = async (
         const accountDetails = await thorClient.accounts.getAccount(
             Address.of(address),
             {
-                revision: getCorrectBlockNumberRPCToVeChain(block)
+                revision: Revision.of(getCorrectBlockNumberRPCToVeChain(block))
             }
         );
 

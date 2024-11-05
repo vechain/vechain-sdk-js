@@ -1,5 +1,5 @@
 import { FixedPointNumber, Units, VET, VTHO } from '@vechain/sdk-core';
-import type { AccountData } from './types';
+import { type AccountData } from './AccountData';
 
 /**
  * Represents detailed account information.

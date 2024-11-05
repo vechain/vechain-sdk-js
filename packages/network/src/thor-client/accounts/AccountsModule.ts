@@ -1,13 +1,9 @@
 import { AccountDetail } from './AccountDetail';
 import { buildQuery, thorest } from '../../utils';
+import { type AccountData } from './AccountData';
 import { type AccountInputOptions } from './AccountInputOptions';
 import { type Address, HexUInt, type ThorId } from '@vechain/sdk-core';
 import { type HttpClient } from '../../http';
-import {
-    type AccountData,
-    type ResponseBytecode,
-    type ResponseStorage
-} from './types';
 
 /**
  * The `AccountModule` class provides methods to interact with account-related endpoints
@@ -91,4 +87,26 @@ class AccountsModule {
     }
 }
 
-export { AccountDetail, AccountsModule };
+/**
+ * The bytecode of a smart contract.
+ * The bytecode is represented in hex string.
+ */
+interface ResponseBytecode {
+    /**
+     * Bytecode of the smart contract
+     */
+    code: string;
+}
+
+/**
+ * The storage data of a smart contract at the specified position.
+ * The storage data is represented in hex string.
+ */
+interface ResponseStorage {
+    /**
+     * Hex string of the storage data
+     */
+    value: string;
+}
+
+export { AccountsModule };
