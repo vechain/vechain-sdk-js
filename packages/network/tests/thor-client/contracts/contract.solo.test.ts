@@ -206,7 +206,7 @@ describe('ThorClient - Contracts', () => {
             await thorSoloClient.accounts.getBytecode(Address.of(contract.address));
 
         // Assertion: Compare with the expected deployed contract bytecode
-        expect(contractBytecodeResponse).toBe(deployedContractBytecode);
+        expect(`${contractBytecodeResponse}`).toBe(deployedContractBytecode);
     }, 10000);
 
     /**
