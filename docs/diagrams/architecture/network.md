@@ -1,9 +1,13 @@
 ```mermaid
 classDiagram
+    class AccountInputOptions {
+        <<interface>>
+        Revision revision
+    }
     class AccountModule {
         AccountModule constructor(HttpClient httpClient)
         Promise~AccountDetail~ getAccount(Address address, AccountInputOption options)
-        Promise~string~ getByteCode(Address address, AccountInputOption options)
+        Promise~HexUInt~ getByteCode(Address address, AccountInputOption options)
         Promise~string~ getStorageAt(Address address, ThorId position, AccountInputOptions options)
     }
     class HttpClient {
@@ -17,7 +21,8 @@ classDiagram
         ThorClient at(string url, BlockModuleOptions options)$
         destroy()
     }
+    AccountInputOptions o-- AccountModule
     AccountModule *-- ThorClient
     HttpClient o-- ThorClient
-    
+
 ```

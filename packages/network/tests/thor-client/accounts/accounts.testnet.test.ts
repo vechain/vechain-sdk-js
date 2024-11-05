@@ -11,6 +11,7 @@ import {
 } from './fixture';
 import { testAccount } from '../../fixture';
 import { TESTNET_URL, ThorClient } from '../../../src';
+import { Address, Revision, ThorId } from '@vechain/sdk-core';
 
 /**
  * ThorClient class tests
@@ -38,9 +39,12 @@ describe('ThorClient - Accounts Module', () => {
                     description,
                     async () => {
                         const accountDetails =
-                            await thorClient.accounts.getAccount(account, {
-                                revision
-                            });
+                            await thorClient.accounts.getAccount(
+                                Address.of(account),
+                                {
+                                    revision: Revision.of(revision)
+                                }
+                            );
                         expect(accountDetails).toEqual(expected);
                     },
                     3000
@@ -52,8 +56,9 @@ describe('ThorClient - Accounts Module', () => {
          * getAccount without revision (latest block)
          */
         test('get account without revision', async () => {
-            const accountDetails =
-                await thorClient.accounts.getAccount(testAccount);
+            const accountDetails = await thorClient.accounts.getAccount(
+                Address.of(testAccount)
+            );
             expect(accountDetails).toBeDefined();
             expect(accountDetails.balance).toBeDefined();
             expect(accountDetails.energy).toBeDefined();
@@ -70,9 +75,10 @@ describe('ThorClient - Accounts Module', () => {
                     description,
                     async () => {
                         await expect(
-                            thorClient.accounts.getAccount(address, {
-                                revision
-                            })
+                            thorClient.accounts.getAccount(
+                                Address.of(address),
+                                { revision: Revision.of(revision) }
+                            )
                         ).rejects.toThrowError(expectedError);
                     },
                     3000
@@ -94,8 +100,8 @@ describe('ThorClient - Accounts Module', () => {
                     description,
                     async () => {
                         const bytecode = await thorClient.accounts.getBytecode(
-                            address,
-                            { revision }
+                            Address.of(address),
+                            { revision: Revision.of(revision as string) }
                         );
                         expect(bytecode).toEqual(expected);
                     },
@@ -113,9 +119,12 @@ describe('ThorClient - Accounts Module', () => {
                     description,
                     async () => {
                         await expect(
-                            thorClient.accounts.getBytecode(address, {
-                                revision
-                            })
+                            thorClient.accounts.getBytecode(
+                                Address.of(address),
+                                {
+                                    revision: Revision.of(revision)
+                                }
+                            )
                         ).rejects.toThrowError(expectedError);
                     },
                     3000
@@ -133,8 +142,8 @@ describe('ThorClient - Accounts Module', () => {
          */
         test('Should get the storage data at the specified position of the smart contract', async () => {
             const storageData = await thorClient.accounts.getStorageAt(
-                testSmartContract,
-                testStoragePositionKey
+                Address.of(testSmartContract),
+                ThorId.of(testStoragePositionKey)
             );
 
             expect(storageData).toBeDefined();
@@ -146,9 +155,9 @@ describe('ThorClient - Accounts Module', () => {
          */
         test('Should get the storage data at the specified position of the smart contract with revision', async () => {
             const storageData = await thorClient.accounts.getStorageAt(
-                testSmartContract,
-                testStoragePositionKey,
-                { revision: '1' }
+                Address.of(testSmartContract),
+                ThorId.of(testStoragePositionKey),
+                { revision: Revision.of('1') }
             );
 
             expect(storageData).toBeDefined();
@@ -165,10 +174,10 @@ describe('ThorClient - Accounts Module', () => {
                     async () => {
                         await expect(
                             thorClient.accounts.getStorageAt(
-                                address,
-                                position,
+                                Address.of(address),
+                                ThorId.of(position),
                                 {
-                                    revision
+                                    revision: Revision.of(revision)
                                 }
                             )
                         ).rejects.toThrowError(expectedError);

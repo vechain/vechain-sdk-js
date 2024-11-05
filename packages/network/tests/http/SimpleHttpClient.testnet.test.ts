@@ -34,7 +34,7 @@ const GENESIS_BLOCK = {
 /**
  * Test SimpleHttpClient class.
  *
- * @group integration/network
+ * @group integration/network/http
  */
 describe('SimpleHttpClient testnet tests', () => {
     describe('GET method tests', () => {
