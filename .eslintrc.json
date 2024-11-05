@@ -43,6 +43,7 @@
         "sonarjs/no-nested-functions": "off",
         "sonarjs/function-return-type": "off",
         "sonarjs/no-nested-conditional": "off",
-        "sonarjs/cognitive-complexity": "off"
+        "sonarjs/cognitive-complexity": "off",
+        "sonarjs/new-cap": "off"
     }
 }

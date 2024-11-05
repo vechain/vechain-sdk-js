@@ -57,7 +57,7 @@ const sanitizeWebsocketBaseURLTestCases = [
         expected: 'wss://mainnet.vechain.org'
     },
     {
-        url: 'http://testnet.vechain.org:8669/',
+        url: 'https://testnet.vechain.org:8669/',
         expected: 'ws://testnet.vechain.org:8669'
     }
 ];

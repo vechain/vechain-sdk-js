@@ -173,6 +173,7 @@ function getFilterProxy<TAbi extends Abi>(
     return new Proxy(contract.filters, {
         get: (_target, prop) => {
             return (
+                // eslint-disable-next-line sonarjs/use-type-alias
                 args: Record<string, unknown> | unknown[] | undefined
             ): ContractFilter<TAbi> => {
                 const argsArray = extractArgsArray(
