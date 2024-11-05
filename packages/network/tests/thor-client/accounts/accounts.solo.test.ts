@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { TEST_ACCOUNTS, TESTING_CONTRACT_ADDRESS } from '../../fixture';
-import { VET, VTHO } from '@vechain/sdk-core';
+import { Address, VET, VTHO } from '@vechain/sdk-core';
 import { TESTING_CONTRACT_BYTECODE } from './fixture';
 import { THOR_SOLO_URL, ThorClient } from '../../../src';
 
@@ -30,7 +30,7 @@ describe('ThorClient - Accounts Module', () => {
         'Get account returns fixed VET balance and increased VTHO balance with block number increase',
         async () => {
             const accountBefore = await thorSoloClient.accounts.getAccount(
-                TEST_ACCOUNTS.ACCOUNT.SIMPLE_ACCOUNT.address
+                Address.of(TEST_ACCOUNTS.ACCOUNT.SIMPLE_ACCOUNT.address)
             );
 
             expect(accountBefore).toBeDefined();
@@ -60,7 +60,7 @@ describe('ThorClient - Accounts Module', () => {
             }
 
             const accountAfter = await thorSoloClient.accounts.getAccount(
-                TEST_ACCOUNTS.ACCOUNT.SIMPLE_ACCOUNT.address
+                Address.of(TEST_ACCOUNTS.ACCOUNT.SIMPLE_ACCOUNT.address)
             );
 
             expect(accountAfter).toBeDefined();
@@ -77,7 +77,7 @@ describe('ThorClient - Accounts Module', () => {
      */
     test("Should return TestingContract.sol contract's bytecode", async () => {
         const bytecode = await thorSoloClient.accounts.getBytecode(
-            TESTING_CONTRACT_ADDRESS
+            Address.of(TESTING_CONTRACT_ADDRESS)
         );
 
         expect(bytecode).toEqual(TESTING_CONTRACT_BYTECODE);
