@@ -126,7 +126,7 @@ const senderAccount = {
 };
 
 // 1 - Create thor client for solo network
-const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL, {
+const thorSoloClient = ThorClient.at(THOR_SOLO_URL, {
     isPollingEnabled: false
 });
 
@@ -313,7 +313,7 @@ Note - the result of a transaction might be different depending on the state(blo
 // And we demonstrate (1) how we can check the expected gas cost and (2) whether the transaction is successful
 
 // 1 - Create thor client for solo network
-const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 
 // 2(a) - create the transaction for a VET transfer
 const transaction1 = {
@@ -375,7 +375,7 @@ import { expect } from 'expect';
 // START_SNIPPET: FullFlowNoDelegatorSnippet
 
 // 1 - Create the thor client
-const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL, {
+const thorSoloClient = ThorClient.at(THOR_SOLO_URL, {
     isPollingEnabled: false
 });
 
@@ -461,7 +461,7 @@ import { expect } from 'expect';
 // START_SNIPPET: FullFlowDelegatorPrivateKeySnippet
 
 // 1 - Create the thor client
-const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL, {
+const thorSoloClient = ThorClient.at(THOR_SOLO_URL, {
     isPollingEnabled: false
 });
 
@@ -566,7 +566,7 @@ import { expect } from 'expect';
 // START_SNIPPET: FullFlowDelegatorUrlSnippet
 
 // 1 - Create the thor client
-const thorClient = ThorClient.fromUrl(TESTNET_URL, {
+const thorClient = ThorClient.at(TESTNET_URL, {
     isPollingEnabled: false
 });
 

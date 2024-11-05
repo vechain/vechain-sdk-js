@@ -30,7 +30,7 @@ To use the VeChain Provider in your project, follow these steps:
 Example:
 ```typescript { name=vechain-provider, category=example }
 // 1 - Create thor client for testnet
-const thorClient = ThorClient.fromUrl(TESTNET_URL);
+const thorClient = ThorClient.at(TESTNET_URL);
 
 // 2 - Init provider
 const provider = new VeChainProvider(thorClient);

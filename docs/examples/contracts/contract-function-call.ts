@@ -49,7 +49,7 @@ const clause = Clause.callFunction(
 
 // 1 - Build the thor client and load the contract
 
-const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 
 const contract = thorSoloClient.contracts.load(
     '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
