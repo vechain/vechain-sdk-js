@@ -101,10 +101,10 @@ const preparePackages = async () => {
     await exec('yarn build');
     console.log('\t- ✅  Built!');
 
-    // console.log(' Test:');
-    // console.log('\t- 🧪 Testing packages...');
-    // await exec('yarn test:solo');
-    // console.log('\t- ✅  Success!');
+    console.log(' Test:');
+    console.log('\t- 🧪 Testing packages...');
+    await exec('yarn test:solo');
+    console.log('\t- ✅  Success!');
 
     console.log(' Version:');
     console.log(`\t- 🏷 Updating package versions to ${version}...`);
