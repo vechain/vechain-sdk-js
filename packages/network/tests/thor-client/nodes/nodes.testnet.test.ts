@@ -27,7 +27,7 @@ describe('ThorClient - Nodes Module', () => {
          *  client required to access a node
          *  @internal
          */
-        const thorClient = ThorClient.at('http://www.google.ie');
+        const thorClient = ThorClient.at('https://www.google.ie');
 
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             InvalidHTTPRequest
