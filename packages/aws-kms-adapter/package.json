@@ -1,5 +1,5 @@
 {
-  "name": "sdk-aws-kms-adapter",
+  "name": "@vechain/sdk-aws-kms-adapter",
   "version": "1.0.0-rc.1",
   "description": "This module implements the VeChain abstract signer so it is integrated with AWS KMS",
   "author": "VeChain Foundation",
