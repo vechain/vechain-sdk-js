@@ -129,6 +129,8 @@ classDiagram
         +Quantity of(bigint|number exp)$
     }
     class Revision {
+        +Revision BEST$
+        +Revision FINALIZED$
         +boolean isValid(number|string value)$
         +Revision of(bigint|number|string|Uint8Array|Hex value)$
     }
