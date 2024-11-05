@@ -70,19 +70,6 @@ describe('vnsUtils', () => {
         });
     });
 
-    // describe('resolveNames([name])', () => {
-    //     test('Should use the correct resolveUtils based on the passed thor client', async () => {
-    //         const name = 'test-sdk.vet';
-    //         jest.spyOn(thorClient.contracts, 'executeCall');
-    //         await vnsUtils.resolveName(thorClient, name);
-    //         expect(thorClient.contracts.executeCall).toHaveBeenCalledWith(
-    //             '0xc403b8EA53F707d7d4de095f0A20bC491Cf2bc94',
-    //             'function getAddresses(string[] names) returns (address[] addresses)',
-    //             [name]
-    //         );
-    //     });
-    // });
-
     describe('lookupAddress(address)', () => {
         test('Should use lookupAddresses() to lookup the single address', async () => {
             jest.spyOn(vnsUtils, 'lookupAddresses');

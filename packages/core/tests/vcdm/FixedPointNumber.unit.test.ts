@@ -2442,17 +2442,8 @@ describe('FixedPointNumber class tests', () => {
             const N = 1; // interest accrued times per year
             const T = 1; // 1 year of investment time
             const jsA = interestWithNumberType(P, R, N, T);
-            // console.log(
-            //     `JS number            => ${P} at ${R} accrued ${N} per year for ${T} years = ${jsA} `
-            // );
             const bnA = interestWithBigNumberType(P, R, N, T);
-            // console.log(
-            //     `BigNumber            => ${P} at ${R} accrued ${N} per year for ${T} years = ${bnA} `
-            // );
             const fpA = interestWithFixedPointNumberType(P, R, N, T);
-            // console.log(
-            //     `SDK FixedPointNumber => ${P} at ${R} accrued ${N} per year for ${T} years = ${fpA} `
-            // );
             expect(fpA.toString()).toBe(jsA.toString());
             expect(fpA.toString()).toBe(bnA.toString());
         });
@@ -2463,17 +2454,8 @@ describe('FixedPointNumber class tests', () => {
             const N = 365; // interest accrued times per day
             const T = 1; // 1 year of investment time
             const jsA = interestWithNumberType(P, R, N, T);
-            // console.log(
-            //     `JS number            => ${P} at ${R} accrued ${N} per year for ${T} years = ${jsA} `
-            // );
             const bnA = interestWithBigNumberType(P, R, N, T);
-            // console.log(
-            //     `BigNumber            => ${P} at ${R} accrued ${N} per year for ${T} years = ${bnA} `
-            // );
             const fpA = interestWithFixedPointNumberType(P, R, N, T);
-            // console.log(
-            //     `SDK FixedPointNumber => ${P} at ${R} accrued ${N} per year for ${T} years = ${fpA} `
-            // );
             expect(fpA.toString()).not.toBe(jsA.toString());
             expect(fpA.toString()).not.toBe(bnA.toString());
         });
