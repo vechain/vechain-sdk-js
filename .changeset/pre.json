@@ -1,6 +1,6 @@
 {
-  "mode": "pre",
-  "tag": "beta",
+  "mode": "exit",
+  "tag": "latest",
   "initialVersions": {
     "docs": "1.0.0",
     "@vechain/sdk-aws-kms-adapter": "1.0.0",
