@@ -11,7 +11,8 @@
         "plugin:prettier/recommended",
         "standard-with-typescript",
         "prettier",
-        "plugin:sonarjs/recommended-legacy"
+        "plugin:sonarjs/recommended-legacy",
+        "plugin:security/recommended-legacy"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
