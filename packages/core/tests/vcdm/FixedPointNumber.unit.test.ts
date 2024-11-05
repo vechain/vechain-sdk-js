@@ -2126,6 +2126,7 @@ describe('FixedPointNumber class tests', () => {
 
         test('±n -> ±n', () => {
             const n = -123.45;
+            // eslint-disable-next-line sonarjs/no-incomplete-assertions
             expect(
                 FixedPointNumber.of(n)
                     .negated()
