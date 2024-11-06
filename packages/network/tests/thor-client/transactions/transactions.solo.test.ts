@@ -21,7 +21,7 @@ import { THOR_SOLO_URL, ThorClient } from '../../../src';
  */
 describe('ThorClient - Transactions Module', () => {
     // ThorClient instance for the Solo network
-    const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+    const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 
     /**
      * Test suite for sendTransaction method

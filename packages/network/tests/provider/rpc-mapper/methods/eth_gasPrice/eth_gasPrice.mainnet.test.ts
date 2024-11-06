@@ -22,7 +22,7 @@ describe('RPC Mapper - eth_gasPrice method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = ThorClient.fromUrl(MAINNET_URL);
+        thorClient = ThorClient.at(MAINNET_URL);
     });
 
     /**

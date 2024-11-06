@@ -13,7 +13,7 @@ import { expect } from 'expect';
 
 // 1 - Create thor client for testnet
 
-const thorClient = ThorClient.fromUrl(TESTNET_URL);
+const thorClient = ThorClient.at(TESTNET_URL);
 
 // 2 - Get current block
 
@@ -46,12 +46,12 @@ Here, we explore the approach to monitor balance changes after a transfer. Synch
 
 ```typescript { name=sync-poll-wait-balance-update, category=example }
 import { Poll, THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
-import { HexUInt, Transaction } from '@vechain/sdk-core';
+import { Address, HexUInt, Transaction } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
 // 1 - Create thor client for solo network
 
-const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 
 // 2- Init transaction
 
@@ -106,11 +106,11 @@ const raw = HexUInt.of(encoded).toString();
 // 3 - Get the sender and receiver balance before the transaction
 
 const senderBalanceBefore = (
-    await thorSoloClient.accounts.getAccount(sender.address)
+    await thorSoloClient.accounts.getAccount(Address.of(sender.address))
 ).balance;
 
 const receiverBalanceBefore = (
-    await thorSoloClient.accounts.getAccount(receiver.address)
+    await thorSoloClient.accounts.getAccount(Address.of(receiver.address))
 ).balance;
 
 console.log('Sender balance before:', senderBalanceBefore);
@@ -131,7 +131,8 @@ expect(HexUInt.isValid0x(sentTransaction.id)).toBe(true);
 // New balance of sender (wait until the balance is updated)
 const newBalanceSender = await Poll.SyncPoll(
     async () =>
-        (await thorSoloClient.accounts.getAccount(sender.address)).balance
+        (await thorSoloClient.accounts.getAccount(Address.of(sender.address)))
+            .balance
 ).waitUntil((newBalance) => {
     return newBalance !== senderBalanceBefore;
 });
@@ -139,7 +140,8 @@ const newBalanceSender = await Poll.SyncPoll(
 // New balance of receiver (wait until the balance is updated)
 const newBalanceReceiver = await Poll.SyncPoll(
     async () =>
-        (await thorSoloClient.accounts.getAccount(receiver.address)).balance
+        (await thorSoloClient.accounts.getAccount(Address.of(receiver.address)))
+            .balance
 ).waitUntil((newBalance) => {
     return newBalance !== receiverBalanceBefore;
 });
@@ -165,10 +167,11 @@ This example demonstrates the application of an asynchronous poll for tracking t
 ```typescript { name=event-poll-dapp, category=example }
 import { Poll, TESTNET_URL, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
+import { Address } from '@vechain/sdk-core';
 
 // 1 - Create thor client for testnet
 
-const thorClient = ThorClient.fromUrl(TESTNET_URL);
+const thorClient = ThorClient.at(TESTNET_URL);
 
 // 2 - Init accounts
 
@@ -181,7 +184,7 @@ const accounts = [
 
 for (const account of accounts) {
     const monitoringPoll = Poll.createEventPoll(
-        async () => await thorClient.accounts.getAccount(account),
+        async () => await thorClient.accounts.getAccount(Address.of(account)),
         1000
     )
         // Add listeners for start event

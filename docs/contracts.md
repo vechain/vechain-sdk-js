@@ -119,7 +119,7 @@ or you can load the contract using the thor client and then you can build the cl
 ```typescript { name=contract-function-call, category=example }
 // 1 - Build the thor client and load the contract
 
-const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 
 const contract = thorSoloClient.contracts.load(
     '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
@@ -206,7 +206,7 @@ You can specify revisions (`best` or `finalized`) for read functions, similar to
 VeChain supports delegated contract calls where fees are paid by the delegator.
 
 ```typescript { name=contract-delegation-erc20, category=example }
-const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 const provider = new VeChainProvider(
     thorSoloClient,
     new ProviderInternalBaseWallet([deployerAccount], {

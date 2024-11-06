@@ -8,7 +8,7 @@ const mainnetUrl = 'https://mainnet.vechain.org';
 /**
  * Thor client instance
  */
-const thorClient = ThorClient.fromUrl(mainnetUrl);
+const thorClient = ThorClient.at(mainnetUrl);
 
 /**
  * Explorer url

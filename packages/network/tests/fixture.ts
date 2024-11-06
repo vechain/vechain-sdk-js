@@ -1,22 +1,22 @@
 import { HexUInt, Secp256k1 } from '@vechain/sdk-core';
 import {
-    HttpClient,
     MAINNET_URL,
     ProviderInternalBaseWallet,
     type SignTransactionOptions,
     TESTNET_URL,
     THOR_SOLO_ACCOUNTS
 } from '../src';
+import { SimpleHttpClient } from '../src/http';
 
 /**
  * Main network instance fixture
  */
-const mainNetwork = new HttpClient(MAINNET_URL);
+const mainNetwork = new SimpleHttpClient(MAINNET_URL);
 
 /**
  * Network instance fixture
  */
-const testNetwork = new HttpClient(TESTNET_URL);
+const testNetwork = new SimpleHttpClient(TESTNET_URL);
 
 /**
  * Simple test account fixture

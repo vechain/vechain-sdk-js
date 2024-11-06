@@ -17,7 +17,7 @@ describe('ThorClient - Logs Module', () => {
     let thorClient: ThorClient;
 
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(TESTNET_URL);
+        thorClient = ThorClient.at(TESTNET_URL);
     });
 
     /**

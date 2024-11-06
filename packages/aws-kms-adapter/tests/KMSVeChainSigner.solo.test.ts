@@ -75,7 +75,7 @@ describe('KMSVeChainSigner - Thor Solo', () => {
                 fs.readFileSync(testAwsCredentialsPath, 'utf8')
             ) as KMSClientParameters[];
         }
-        thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
+        thorClient = ThorClient.at(THOR_SOLO_URL);
 
         // Signer with delegator disabled
         signer = new KMSVeChainSigner(

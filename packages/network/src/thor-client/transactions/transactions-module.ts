@@ -5,9 +5,9 @@ import {
     Revision,
     ThorId,
     Transaction,
-    vechain_sdk_core_ethers,
     type TransactionBody,
-    type TransactionClause
+    type TransactionClause,
+    vechain_sdk_core_ethers
 } from '@vechain/sdk-core';
 import { InvalidDataType, InvalidTransactionField } from '@vechain/sdk-errors';
 import { blocksFormatter, getTransactionIndexIntoBlock } from '../../provider';
@@ -21,7 +21,7 @@ import {
 } from '../../utils';
 import { type ExpandedBlockDetail } from '../blocks';
 import { type CallNameReturnType } from '../debug';
-import { type ThorClient } from '../thor-client';
+import { type ThorClient } from '../ThorClient';
 import {
     type GetTransactionInputOptions,
     type GetTransactionReceiptInputOptions,
@@ -35,6 +35,7 @@ import {
     type TransactionSimulationResult,
     type WaitForTransactionOptions
 } from './types';
+import { HttpMethod } from '../../http';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
@@ -77,7 +78,7 @@ class TransactionsModule {
             );
 
         return (await this.thor.httpClient.http(
-            'GET',
+            HttpMethod.GET,
             thorest.transactions.get.TRANSACTION(id),
             {
                 query: buildQuery({
@@ -119,7 +120,7 @@ class TransactionsModule {
             );
 
         return (await this.thor.httpClient.http(
-            'GET',
+            HttpMethod.GET,
             thorest.transactions.get.TRANSACTION(id),
             {
                 query: buildQuery({
@@ -162,7 +163,7 @@ class TransactionsModule {
             );
 
         return (await this.thor.httpClient.http(
-            'GET',
+            HttpMethod.GET,
             thorest.transactions.get.TRANSACTION_RECEIPT(id),
             {
                 query: buildQuery({ head: options?.head })
@@ -202,7 +203,7 @@ class TransactionsModule {
         }
 
         const transactionResult = (await this.thor.httpClient.http(
-            'POST',
+            HttpMethod.POST,
             thorest.transactions.post.TRANSACTION(),
             {
                 body: { raw }
@@ -420,7 +421,7 @@ class TransactionsModule {
         }
 
         return (await this.thor.httpClient.http(
-            'POST',
+            HttpMethod.POST,
             thorest.accounts.post.SIMULATE_TRANSACTION(revision),
             {
                 query: buildQuery({ revision }),

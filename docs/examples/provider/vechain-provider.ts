@@ -4,7 +4,7 @@ import { expect } from 'expect';
 // START_SNIPPET: VeChainProviderSnippet
 
 // 1 - Create thor client for testnet
-const thorClient = ThorClient.fromUrl(TESTNET_URL);
+const thorClient = ThorClient.at(TESTNET_URL);
 
 // 2 - Init provider
 const provider = new VeChainProvider(thorClient);

@@ -39,7 +39,7 @@ describe('VeChain base signer tests - solo', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
+        thorClient = ThorClient.at(THOR_SOLO_URL);
     });
 
     /**
