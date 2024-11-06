@@ -6,8 +6,9 @@ import {
     validExpandedBlockRevisions,
     waitForBlockTestCases
 } from './fixture';
-import { HttpClient, Poll, TESTNET_URL, ThorClient } from '../../../src';
+import { Poll, TESTNET_URL, ThorClient } from '../../../src';
 import { Address, BloomFilter, networkInfo } from '@vechain/sdk-core';
+import { SimpleHttpClient } from '../../../src/http';
 
 /**
  * Blocks Module integration tests
@@ -19,7 +20,7 @@ describe('ThorClient - Blocks Module', () => {
     let thorClient: ThorClient;
 
     beforeEach(() => {
-        thorClient = new ThorClient(new HttpClient(TESTNET_URL), {
+        thorClient = new ThorClient(new SimpleHttpClient(TESTNET_URL), {
             isPollingEnabled: true
         });
     });

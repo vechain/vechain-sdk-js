@@ -32,7 +32,7 @@ describe('RPC Mapper - eth_requestAccounts method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
+        thorClient = ThorClient.at(THOR_SOLO_URL);
 
         // Init provider
         provider = new VeChainProvider(
@@ -84,9 +84,7 @@ describe('RPC Mapper - eth_requestAccounts method tests', () => {
         test('eth_requestAccounts - Should throw error if wallet is given, but empty', async () => {
             // Error with empty wallet
             await expect(
-                RPCMethodsMap(thorClient, undefined)[
-                    RPC_METHODS.eth_requestAccounts
-                ]([])
+                RPCMethodsMap(thorClient)[RPC_METHODS.eth_requestAccounts]([])
             ).rejects.toThrowError(JSONRPCInvalidParams);
         });
     });

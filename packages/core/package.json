@@ -1,6 +1,6 @@
 {
   "name": "@vechain/sdk-core",
-  "version": "1.0.0-beta.32",
+  "version": "1.0.0-rc.1",
   "description": "This module is crafted for dApp development and various blockchain operations that seamlessly unfold offline",
   "author": "VeChain Foundation",
   "license": "MIT",
@@ -41,8 +41,8 @@
     "@noble/ciphers": "^1.0.0",
     "@scure/bip32": "^1.4.0",
     "@scure/bip39": "^1.4.0",
-    "@vechain/sdk-errors": "1.0.0-beta.32",
-    "@vechain/sdk-logging": "1.0.0-beta.32",
+    "@vechain/sdk-errors": "1.0.0-rc.1",
+    "@vechain/sdk-logging": "1.0.0-rc.1",
     "ethers": "6.13.4",
     "fast-json-stable-stringify": "^2.1.0",
     "viem": "^2.21.19"

@@ -14,7 +14,7 @@ import { stringifyData } from '@vechain/sdk-errors';
 // And we demonstrate (1) how we can check the expected gas cost and (2) whether the transaction is successful
 
 // 1 - Create thor client for solo network
-const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 
 // 2(a) - create the transaction for a VET transfer
 const transaction1 = {

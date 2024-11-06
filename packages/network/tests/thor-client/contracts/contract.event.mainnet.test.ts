@@ -12,7 +12,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         '0x6c977a18d427360e27c3fc2129a6942acd4ece2c8aaeaf4690034931dc5ba7f9';
 
     beforeEach(() => {
-        thorMainnetClient = ThorClient.fromUrl(MAINNET_URL);
+        thorMainnetClient = ThorClient.at(MAINNET_URL);
     });
 
     test('Should filter EVearn distribute rewards events', async () => {

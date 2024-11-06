@@ -45,7 +45,7 @@ describe('VeChain base signer tests', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(TESTNET_URL);
+        thorClient = ThorClient.at(TESTNET_URL);
         provider = new VeChainProvider(thorClient);
     });
 
@@ -251,7 +251,7 @@ describe('VeChain base signer tests', () => {
                     throw expectedErrorString;
                 })
                 .mockImplementationOnce(() => {
-                    // eslint-disable-next-line @typescript-eslint/only-throw-error
+                    // eslint-disable-next-line @typescript-eslint/only-throw-error, sonarjs/no-throw-literal
                     throw undefined;
                 });
             await expect(
@@ -314,7 +314,7 @@ describe('VeChain base signer tests', () => {
                     throw expectedErrorString;
                 })
                 .mockImplementationOnce(() => {
-                    // eslint-disable-next-line @typescript-eslint/only-throw-error
+                    // eslint-disable-next-line @typescript-eslint/only-throw-error, sonarjs/no-throw-literal
                     throw undefined;
                 });
             await expect(

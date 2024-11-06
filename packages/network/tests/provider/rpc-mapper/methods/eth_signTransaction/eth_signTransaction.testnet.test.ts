@@ -41,7 +41,7 @@ describe('RPC Mapper - eth_signTransaction method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = ThorClient.fromUrl(TESTNET_URL);
+        thorClient = ThorClient.at(TESTNET_URL);
 
         // Init provider
         // @NOTE: Since we are testing the signature, we can use SOLO accounts with testnet!

@@ -26,7 +26,7 @@ describe('RPC Mapper - eth_getBlockTransactionCountByHash method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = ThorClient.fromUrl(TESTNET_URL);
+        thorClient = ThorClient.at(TESTNET_URL);
     });
 
     /**

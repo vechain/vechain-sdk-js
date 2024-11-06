@@ -2,29 +2,29 @@ import { act, render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import TransferLogs from '@/app/transfer-logs/page';
 import userEvent from '@testing-library/user-event';
-import { CompressedBlockDetail } from '@vechain/sdk-network';
+import { type CompressedBlockDetail } from '@vechain/sdk-network';
 import { thorClient } from '@/const';
 
 // Create mock types
-type MockBlocksModule = {
+interface MockBlocksModule {
     getBestBlockCompressed: jest.Mock<Promise<CompressedBlockDetail | null>>;
-};
+}
 
-type MockLogsModule = {
+interface MockLogsModule {
     filterTransferLogs: jest.Mock<Promise<FilterTransferLogs[]>>;
-};
+}
 
 // Mock the thorClient
 jest.mock('../src/const', () => ({
     thorClient: {
         blocks: {
-            getBestBlockCompressed: jest.fn(),
+            getBestBlockCompressed: jest.fn()
         } as MockBlocksModule,
         logs: {
-            filterTransferLogs: jest.fn(),
-        } as MockLogsModule,
+            filterTransferLogs: jest.fn()
+        } as MockLogsModule
     },
-    explorerUrl: 'https://testnet.vechain.org',
+    explorerUrl: 'https://testnet.vechain.org'
 }));
 
 /**
@@ -38,7 +38,9 @@ describe('Transfer logs Page', () => {
         jest.clearAllMocks();
 
         // Mock getBestBlockCompressed
-        (thorClient.blocks.getBestBlockCompressed as jest.Mock).mockResolvedValue({
+        (
+            thorClient.blocks.getBestBlockCompressed as jest.Mock
+        ).mockResolvedValue({
             number: '123456',
             id: '0x0128380fc2a99149b2aa9056027d347c2da2ef7068f94245a45b1640ab35d89d',
             size: 17201,
@@ -55,7 +57,7 @@ describe('Transfer logs Page', () => {
                     blockTimestamp: 1624658220,
                     txID: '0xTransaction1'
                 }
-            },
+            }
             // Add more mock log entries as needed
         ]);
     });
@@ -80,7 +82,7 @@ describe('Transfer logs Page', () => {
         heading = await screen.findByTestId('title');
 
         await waitFor(() => {
-        expect(heading).toBeInTheDocument();
+            expect(heading).toBeInTheDocument();
         });
 
         // Get the content input

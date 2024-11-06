@@ -1,7 +1,7 @@
 {
   "name": "sdk-cloudflare-integration",
   "description": "An example app of how to integrate the VeChain SDK with Cloudflare Workers",
-  "version": "1.0.0-beta.32",
+  "version": "1.0.0-rc.1",
   "private": true,
   "author": "VeChain Foundation",
   "license": "MIT",
@@ -10,12 +10,12 @@
     "test": "vitest"
   },
   "devDependencies": {
-    "@cloudflare/vitest-pool-workers": "^0.5.21",
+    "@cloudflare/vitest-pool-workers": "^0.5.24",
     "@cloudflare/workers-types": "^4.20240725.0",
     "vitest": "2.1.4",
     "wrangler": "^3.72.3"
   },
   "dependencies": {
-    "@vechain/sdk-core": "1.0.0-beta.32"
+    "@vechain/sdk-core": "1.0.0-rc.1"
   }
 }

@@ -9,12 +9,11 @@ import {
     NodesModule,
     TransactionsModule
 } from '.';
-import { HttpClient, type IHttpClient } from '../utils';
+import { SimpleHttpClient, type HttpClient } from '../http';
 
 /**
  * The `ThorClient` class serves as an interface to interact with the VeChainThor blockchain.
  * It provides various methods.
- * Essentially, it can be considered a layer on top of the `ThorestClient`.
  */
 class ThorClient {
     /**
@@ -64,10 +63,10 @@ class ThorClient {
      * @param options - (Optional) Other optional parameters for polling and error handling.
      */
     constructor(
-        readonly httpClient: IHttpClient,
+        readonly httpClient: HttpClient,
         options?: BlocksModuleOptions
     ) {
-        this.accounts = new AccountsModule(this);
+        this.accounts = new AccountsModule(httpClient);
         this.nodes = new NodesModule(this);
         this.blocks = new BlocksModule(this, options);
         this.logs = new LogsModule(this);
@@ -80,15 +79,15 @@ class ThorClient {
     /**
      * Creates a new `ThorClient` instance from a given URL.
      *
-     * @param networkUrl - The URL of the network to connect to.
-     * @param options - (Optional) Other optional parameters for polling and error handling.
-     * @returns A new `ThorClient` instance.
+     * @param {string} networkUrl - The URL of the network to connect to.
+     * @param {BlocksModuleOptions} [options] - Optional configuration settings for the Blocks module.
+     * @return {ThorClient} A ThorClient instance connected to the specified network URL.
      */
-    public static fromUrl(
+    public static at(
         networkUrl: string,
         options?: BlocksModuleOptions
     ): ThorClient {
-        return new ThorClient(new HttpClient(networkUrl), options);
+        return new ThorClient(new SimpleHttpClient(networkUrl), options);
     }
 
     /**
@@ -97,6 +96,22 @@ class ThorClient {
      */
     public destroy(): void {
         this.blocks.destroy();
+    }
+
+    /**
+     * Creates a ThorClient instance from a network URL.
+     *
+     * @param {string} networkUrl - The URL of the network to connect to.
+     * @param {BlocksModuleOptions} [options] - Optional configuration settings for the Blocks module.
+     * @return {ThorClient} A ThorClient instance connected to the specified network URL.
+     *
+     * @deprecated Use {@link ThorClient.at} instead.
+     */
+    public static fromUrl(
+        networkUrl: string,
+        options?: BlocksModuleOptions
+    ): ThorClient {
+        return ThorClient.at(networkUrl, options);
     }
 }
 

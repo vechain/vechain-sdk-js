@@ -7,6 +7,8 @@ import {
 } from 'viem';
 import { ABI } from './ABI';
 
+type SignatureType = string | AbiFunction | AbiEvent;
+
 /**
  * Represents an ABI (Application Binary Interface) item.
  * @extends ABI
@@ -14,12 +16,13 @@ import { ABI } from './ABI';
 abstract class ABIItem extends ABI {
     public readonly signature: AbiFunction | AbiEvent;
     public readonly stringSignature: string;
+
     /**
      * ABIItem constructor from item (Event, Function...) signature.
      *
-     * @param {string | AbiFunction | AbiEvent} signature - The signature of the ABI item (Function, Event...).
+     * @param {SignatureType} signature - The signature of the ABI item (Function, Event...).
      **/
-    public constructor(signature: string | AbiFunction | AbiEvent) {
+    public constructor(signature: SignatureType) {
         super();
         switch (typeof signature) {
             case 'string':
@@ -55,14 +58,12 @@ abstract class ABIItem extends ABI {
     /**
      * Returns and instance of an ABIItem from a signature.
      * @param ABIItemConstructor ABIItem constructor.
-     * @param {string | AbiFunction | AbiEvent} signature Signature of the ABIIItem.
+     * @param {SignatureType} signature Signature of the ABIIItem.
      * @returns {T} An instance of the ABIItem.
      */
     public static ofSignature<T extends ABIItem>(
-        ABIItemConstructor: new (
-            signature: string | AbiFunction | AbiEvent
-        ) => T,
-        signature: string | AbiFunction | AbiEvent
+        ABIItemConstructor: new (signature: SignatureType) => T,
+        signature: SignatureType
     ): T {
         return new ABIItemConstructor(signature);
     }

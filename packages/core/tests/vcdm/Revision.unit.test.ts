@@ -90,6 +90,7 @@ describe('Revision class tests', () => {
                 const rev = Revision.of(value);
                 expect(rev).toBeInstanceOf(Revision);
                 expect(rev.toString()).toEqual(value);
+                expect(rev).toEqual(Revision.BEST);
             });
 
             test('Return a Revision instance for a valid `finalized`', () => {
@@ -97,6 +98,7 @@ describe('Revision class tests', () => {
                 const rev = Revision.of(value);
                 expect(rev).toBeInstanceOf(Revision);
                 expect(rev.toString()).toEqual(value);
+                expect(rev).toEqual(Revision.FINALIZED);
             });
 
             test('Return a Revision instance for a valid decimal value', () => {
