@@ -1,4 +1,4 @@
-import { Address, Hex, ThorId } from '@vechain/sdk-core';
+import { Address, Hex } from '@vechain/sdk-core';
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { thorest } from '../../utils';
 import { type HttpClient } from '../../http';

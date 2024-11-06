@@ -47,29 +47,6 @@ describe('ThorClient - Debug Module - Testnet', () => {
                 });
             }
         );
-
-        /**
-         * traceTransactionClause - negative cases
-         */
-        // traceTransactionClauseTestnetFixture.negativeCases.forEach(
-        //     (negativeTestCase) => {
-        //         test(negativeTestCase.testName, async () => {
-        //             await expect(
-        //                 thorClient.debug.traceTransactionClause(
-        //                     {
-        //                         target: {
-        //                             blockID: negativeTestCase.blockID,
-        //                             transaction: negativeTestCase.transaction,
-        //                             clauseIndex: negativeTestCase.clauseIndex
-        //                         },
-        //                         config: {}
-        //                     },
-        //                     'call'
-        //                 )
-        //             ).rejects.toThrow(negativeTestCase.expectedError);
-        //         });
-        //     }
-        // );
     });
 
     /**
@@ -153,29 +130,5 @@ describe('ThorClient - Debug Module - Testnet', () => {
                 });
             }
         );
-
-        /**
-         * retrieveStorageRange - negative cases
-         */
-        // retrieveStorageRangeTestnetFixture.negativeCases.forEach(
-        //     (negativeTestCase) => {
-        //         test(negativeTestCase.testName, async () => {
-        //             await expect(
-        //                 thorClient.debug.retrieveStorageRange({
-        //                     target: {
-        //                         blockID: negativeTestCase.blockID,
-        //                         transaction: negativeTestCase.transaction,
-        //                         clauseIndex: negativeTestCase.clauseIndex
-        //                     },
-        //                     options: {
-        //                         address: negativeTestCase.address,
-        //                         keyStart: negativeTestCase.keyStart,
-        //                         maxResult: negativeTestCase.maxResult
-        //                     }
-        //                 })
-        //             ).rejects.toThrow(negativeTestCase.expectedError);
-        //         });
-        //     }
-        // );
     });
 });
