@@ -1,11 +1,10 @@
-import { Address, Hex } from '@vechain/sdk-core';
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { thorest } from '../../utils';
+import { type ContractTraceTarget } from './ContractTraceTarget';
 import { type HttpClient } from '../../http';
 import { type TransactionTraceTarget } from './TransactionTraceTarget';
 import {
-    type ContractCallTraceContractTargetInput,
-    type ContractCallTraceTransactionOptionsInput,
+    type ContractTraceOptions,
     type RetrieveStorageRangeInputOptions,
     type RetrieveStorageRangeReturnType,
     type TracerConfig,
@@ -23,6 +22,48 @@ class DebugModule {
      * @param {HttpClient} httpClient - The HTTP client instance to be used for making requests.
      */
     constructor(readonly httpClient: HttpClient) {}
+
+    /**
+     * Traces a contract call using the specified target, options, and configuration.
+     *
+     * @param {Object} input - The input parameters for the contract call trace.
+     * @param {ContractTraceTarget} [input.target] - The target contract details.
+     * @param {ContractTraceOptions} [input.options] - Optional configuration for the contract trace.
+     * @param {TracerConfig<typeof name>} [input.config] - Configuration for the tracer.
+     * @param {TracerName} [name] - The name of the tracer to be used.
+     * @return {Promise<TraceReturnType<typeof name>>} A promise that resolves to the trace result.
+     */
+    public async traceContractCall(
+        input: {
+            target?: ContractTraceTarget;
+            options?: ContractTraceOptions;
+            config?: TracerConfig<typeof name>;
+        },
+        name?: TracerName
+    ): Promise<TraceReturnType<typeof name>> {
+        // Send request
+        return (await this.httpClient.post(
+            thorest.debug.post.TRACE_CONTRACT_CALL(),
+            {
+                query: {},
+                body: {
+                    to: input.target?.to?.toString(),
+                    data: input.target?.data?.toString(),
+                    value: input.target?.value?.toString(),
+                    name,
+                    gas: input.options?.gas,
+                    gasPrice: input.options?.gasPrice,
+                    caller: input.options?.caller,
+                    provedWork: input.options?.provedWork,
+                    gasPayer: input.options?.gasPayer,
+                    expiration: input.options?.expiration,
+                    blockRef: input.options?.blockRef,
+                    config: input.config
+                },
+                headers: {}
+            }
+        )) as TraceReturnType<typeof name>;
+    }
 
     /**
      * Traces a transaction clause based on the provided target and configuration.
@@ -55,87 +96,6 @@ class DebugModule {
                 body: {
                     target: parsedTarget,
                     name,
-                    config: input.config
-                },
-                headers: {}
-            }
-        )) as TraceReturnType<typeof name>;
-    }
-
-    /**
-     * Trace a contract call.
-     *
-     * This endpoint enables clients to create a tracer for a specific function call.
-     * You can customize the tracer using various options to suit your debugging requirements.
-     *
-     * @param input - The input for the trace contract call. It has:
-     * * contractInput - The contract call information.
-     * * config - The configuration of the tracer. It is specific to the name of the tracer.
-     * * transactionOptions - The transaction options.
-     * @param name - The name of the tracer to use. It determines Output and Input configuration.
-     * @returns The trace result.
-     * @throws{InvalidDataType}
-     */
-
-    public async traceContractCall(
-        input: {
-            contractInput?: ContractCallTraceContractTargetInput;
-            transactionOptions?: ContractCallTraceTransactionOptionsInput;
-            config?: TracerConfig<typeof name>;
-        },
-        name?: TracerName
-    ): Promise<TraceReturnType<typeof name>> {
-        // Validate contractInput
-        if (
-            input.contractInput?.to !== undefined &&
-            input.contractInput.to !== null &&
-            !Address.isValid(input.contractInput.to)
-        ) {
-            throw new InvalidDataType(
-                'DebugModule.traceContractCall()',
-                `Invalid address '${input.contractInput.to}' given as input for traceContractCall.`,
-                { address: input.contractInput.to }
-            );
-        }
-
-        if (
-            input.contractInput?.data !== undefined &&
-            !Hex.isValid(input.contractInput.data)
-        )
-            throw new InvalidDataType(
-                'DebugModule.traceContractCall()',
-                `Invalid data '${input.contractInput?.data}' given as input for traceContractCall.`,
-                { data: input.contractInput?.data }
-            );
-
-        if (
-            input.contractInput?.value !== undefined &&
-            !Hex.isValid0x(input.contractInput.value)
-        ) {
-            throw new InvalidDataType(
-                'DebugModule.traceContractCall()',
-                `Invalid value '${input.contractInput?.value}' given as input for traceContractCall.`,
-                { value: input.contractInput?.value }
-            );
-        }
-
-        // Send request
-        return (await this.httpClient.post(
-            thorest.debug.post.TRACE_CONTRACT_CALL(),
-            {
-                query: {},
-                body: {
-                    to: input.contractInput?.to,
-                    data: input.contractInput?.data,
-                    value: input.contractInput?.value,
-                    name,
-                    gas: input.transactionOptions?.gas,
-                    gasPrice: input.transactionOptions?.gasPrice,
-                    caller: input.transactionOptions?.caller,
-                    provedWork: input.transactionOptions?.provedWork,
-                    gasPayer: input.transactionOptions?.gasPayer,
-                    expiration: input.transactionOptions?.expiration,
-                    blockRef: input.transactionOptions?.blockRef,
                     config: input.config
                 },
                 headers: {}

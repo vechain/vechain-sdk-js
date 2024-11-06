@@ -133,32 +133,9 @@ type TraceReturnType<TraceNameType extends TracerName | undefined> =
                               : never;
 
 /**
- * Type for input for trace contract call - target contract.
- */
-interface ContractCallTraceContractTargetInput {
-    /**
-     * The recipient of the call. Null indicates contract deployment.
-     */
-    to?: string | null;
-
-    /**
-     * The input data for the contract call.
-     */
-    data?: string;
-
-    /**
-     * The amount of token to be transferred.
-     */
-    value?: string;
-}
-
-/**
  * Type for input for trace contract call - transaction options.
  */
-type ContractCallTraceTransactionOptionsInput = Omit<
-    SimulateTransactionOptions,
-    'revision'
->;
+type ContractTraceOptions = Omit<SimulateTransactionOptions, 'revision'>;
 
 /**
  * Type for input options
@@ -214,8 +191,7 @@ export {
     type TracerName,
     type TracerConfig,
     type TraceReturnType,
-    type ContractCallTraceContractTargetInput,
-    type ContractCallTraceTransactionOptionsInput,
+    type ContractTraceOptions,
     type RetrieveStorageRangeInputOptions,
     type RetrieveStorageRangeReturnType
 };

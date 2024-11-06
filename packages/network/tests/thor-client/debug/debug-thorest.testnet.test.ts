@@ -5,6 +5,7 @@ import {
     traceContractCallTestnetFixture,
     traceTransactionClauseTestnetFixture
 } from './fixture-thorest';
+import { Address, HexUInt, Units, VET } from '@vechain/sdk-core';
 
 /**
  * Debug endpoints tests on the Testnet network.
@@ -61,12 +62,22 @@ describe('ThorClient - Debug Module - Testnet', () => {
                 test(positiveTestCase.testName, async () => {
                     const result = await thorClient.debug.traceContractCall(
                         {
-                            contractInput: {
-                                to: positiveTestCase.to,
-                                data: positiveTestCase.data,
-                                value: positiveTestCase.value
+                            target: {
+                                to:
+                                    typeof positiveTestCase.to === 'string'
+                                        ? Address.of(positiveTestCase.to)
+                                        : null,
+                                data: HexUInt.of(positiveTestCase.data),
+                                value:
+                                    positiveTestCase.value === 'string'
+                                        ? VET.of(
+                                              HexUInt.of(positiveTestCase.value)
+                                                  .bi,
+                                              Units.wei
+                                          )
+                                        : undefined
                             },
-                            transactionOptions: {
+                            options: {
                                 caller: positiveTestCase.caller,
                                 gasPayer: positiveTestCase.gasPayer,
                                 expiration: positiveTestCase.expiration,
@@ -78,27 +89,6 @@ describe('ThorClient - Debug Module - Testnet', () => {
                         'call'
                     );
                     expect(result).toEqual(positiveTestCase.expected);
-                });
-            }
-        );
-
-        /**
-         * traceContractCall - negative cases
-         */
-        traceContractCallTestnetFixture.negativeCases.forEach(
-            (negativeTestCase) => {
-                test(negativeTestCase.testName, async () => {
-                    await expect(
-                        thorClient.debug.traceContractCall({
-                            contractInput: {
-                                to: negativeTestCase.to,
-                                data: negativeTestCase.data,
-                                value: negativeTestCase.value
-                            },
-                            transactionOptions: {},
-                            config: {}
-                        })
-                    ).rejects.toThrow(negativeTestCase.expectedError);
                 });
             }
         );

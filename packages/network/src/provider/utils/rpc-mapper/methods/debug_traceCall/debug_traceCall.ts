@@ -12,6 +12,7 @@ import { debugFormatter, type TracerReturnTypeRPC } from '../../../formatter';
 
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
 import { type TraceCallRPC, type TransactionObjectInput } from './types';
+import { Address, HexUInt } from '@vechain/sdk-core';
 
 /**
  * RPC Method debug_traceCall implementation
@@ -62,7 +63,7 @@ const debugTraceCall = async (
     try {
         const trace = (await thorClient.debug.traceContractCall(
             {
-                transactionOptions: {
+                options: {
                     caller: transactionOptions.from,
                     gas:
                         transactionOptions.gas !== undefined
@@ -70,9 +71,12 @@ const debugTraceCall = async (
                             : undefined,
                     gasPrice: transactionOptions.gasPrice
                 },
-                contractInput: {
-                    to: transactionOptions.to,
-                    data: transactionOptions.data
+                target: {
+                    to: Address.of(transactionOptions.to),
+                    data:
+                        typeof transactionOptions.data === 'string'
+                            ? HexUInt.of(transactionOptions.data)
+                            : undefined
                 },
                 config: tracerOptions.tracerConfig
             },

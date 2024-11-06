@@ -142,12 +142,12 @@ describe('ThorClient - Debug Module - Solo', () => {
                 // Debug the contract call
                 const result = await thorSoloClient.debug.traceContractCall(
                     {
-                        contractInput: {
+                        target: {
                             to: traceContractCallTestnetFixture.positiveCases[0]
                                 .to,
                             data: transfer1VTHOClause.data
                         },
-                        transactionOptions: {
+                        options: {
                             caller: txReceipt?.gasPayer as string,
                             gasPayer: txReceipt?.gasPayer as string
                         },

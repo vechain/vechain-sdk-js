@@ -18,7 +18,11 @@ const TIMEOUT = 5000;
 describe('DebugModule testnet tests', () => {
     const thorClient = ThorClient.at(TESTNET_URL);
 
-    describe('traceContractCall method tests', () => {});
+    describe('traceContractCall method tests', () => {
+        test('ok <- contract deployment', async () => {}, TIMEOUT);
+
+        test('ok <- token transfer', async () => {}, TIMEOUT);
+    });
 
     describe('traceTransactionClause method tests', () => {
         test(

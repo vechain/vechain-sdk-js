@@ -9,7 +9,7 @@ export interface TransactionTraceTarget {
      */
     blockID: ThorId;
     /**
-     * Transaction ID or Transaction index.
+     * Transaction index if `number`, else ID if `ThorId`.
      */
     transaction: number | ThorId;
     /**
