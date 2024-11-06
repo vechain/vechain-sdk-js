@@ -16,18 +16,22 @@ classDiagram
         Revision revision
     }
     class AccountsModule {
+        HttpClient httpClient
         AccountsModule constructor(HttpClient httpClient)
         Promise~AccountDetail~ getAccount(Address address, AccountInputOption options)
         Promise~HexUInt~ getByteCode(Address address, AccountInputOption options)
         Promise~HexUInt~ getStorageAt(Address address, ThorId position, AccountInputOptions options)
     }
     class BlocksModule {
+        HttpClient httpClient
         BlocksModule constructor(HttpClient httpClient)
     }
     class ContractsModule {
     }
     class DebugModule {
+        HttpClient httpClient
         DebugModule constructor(HttpClient httpClient)
+        
     }
     class GasModule {
     }
@@ -61,6 +65,8 @@ classDiagram
     DebugModule *-- TransactionsModule
     GasModule *-- ThorClient
     HttpClient o-- AccountsModule
+    HttpClient o-- BlocksModule
+    HttpClient o-- DebugModule
     HttpClient o-- ThorClient
     LogsModule *-- ThorClient
     NodesModule *-- ThorClient

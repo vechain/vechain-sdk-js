@@ -6,8 +6,8 @@ import { type Address, HexUInt, type ThorId } from '@vechain/sdk-core';
 import { type HttpClient } from '../../http';
 
 /**
- * The `AccountModule` class provides methods to interact with account-related endpoints
- * of the VeChainThor blockchain.
+ * The class provides methods to interact with account-related endpoints
+ * of the VeChain Thor blockchain.
  * It allows to retrieve details, bytecode, and storage data for a specific blockchain account.
  */
 class AccountsModule {

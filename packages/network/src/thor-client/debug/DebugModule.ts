@@ -1,7 +1,8 @@
 import { Address, Hex, ThorId } from '@vechain/sdk-core';
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { thorest } from '../../utils';
-import { type ThorClient } from '../ThorClient';
+import { type HttpClient } from '../../http';
+import { type TransactionTraceTarget } from './TransactionTraceTarget';
 import {
     type ContractCallTraceContractTargetInput,
     type ContractCallTraceTransactionOptionsInput,
@@ -9,20 +10,19 @@ import {
     type RetrieveStorageRangeReturnType,
     type TracerConfig,
     type TraceReturnType,
-    type TracerName,
-    type TransactionTraceTarget
+    type TracerName
 } from './types';
-import { HttpMethod } from '../../http';
 
-/** The `DebugModule` class encapsulates functionality to handle Debug
- * on the VeChainThor blockchain.
+/**
+ * The class provides methods to debug the VeChain Thor blockchain.
  */
 class DebugModule {
     /**
-     * Initializes a new instance of the `Thor` class.
-     * @param thor - The Thor instance used to interact with the VeChain blockchain API.
+     * Creates an instance of the class with a specified HTTP client.
+     *
+     * @param {HttpClient} httpClient - The HTTP client instance to be used for making requests.
      */
-    constructor(readonly thor: ThorClient) {}
+    constructor(readonly httpClient: HttpClient) {}
 
     /**
      * Trace transaction clause.
@@ -50,8 +50,7 @@ class DebugModule {
         const parsedTarget = `${input.target.blockID}/${input.target.transaction}/${input.target.clauseIndex}`;
 
         // Send request
-        return (await this.thor.httpClient.http(
-            HttpMethod.POST,
+        return (await this.httpClient.post(
             thorest.debug.post.TRACE_TRANSACTION_CLAUSE(),
             {
                 query: {},
@@ -122,8 +121,7 @@ class DebugModule {
         }
 
         // Send request
-        return (await this.thor.httpClient.http(
-            HttpMethod.POST,
+        return (await this.httpClient.post(
             thorest.debug.post.TRACE_CONTRACT_CALL(),
             {
                 query: {},
@@ -170,8 +168,7 @@ class DebugModule {
         const parsedTarget = `${input.target.blockID}/${input.target.transaction}/${input.target.clauseIndex}`;
 
         // Send request
-        return (await this.thor.httpClient.http(
-            HttpMethod.POST,
+        return (await this.httpClient.post(
             thorest.debug.post.RETRIEVE_STORAGE_RANGE(),
             {
                 query: {},

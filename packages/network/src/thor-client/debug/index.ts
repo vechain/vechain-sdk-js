@@ -1,3 +1,4 @@
 export type * from './types-by-name';
-export * from './debug-module';
+export * from './DebugModule';
 export type * from './types.d';
+export type * from './TransactionTraceTarget';

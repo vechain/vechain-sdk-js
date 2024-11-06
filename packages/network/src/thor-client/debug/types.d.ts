@@ -211,7 +211,6 @@ interface RetrieveStorageRangeReturnType {
 }
 
 export {
-    type TransactionTraceTarget,
     type TracerName,
     type TracerConfig,
     type TraceReturnType,
