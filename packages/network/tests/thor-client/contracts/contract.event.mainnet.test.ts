@@ -30,7 +30,7 @@ describe('ThorClient - Mainnet allocation events', () => {
             .RewardDistributed({
                 appId: EVEARN_APP_ID
             })
-            .get({ order: 'desc' });
+            .get({ order: 'desc', options: { offset: 0, limit: 1000 } });
 
         expect(events).toBeDefined();
         expect(events.length).toBeGreaterThan(0);

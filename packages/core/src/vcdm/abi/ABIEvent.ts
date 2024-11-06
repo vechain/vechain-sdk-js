@@ -181,10 +181,16 @@ class ABIEvent<
      * @returns Encoded topics array.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public encodeFilterTopics<TValue>(
-        valuesToEncode: TValue[]
+    public encodeFilterTopics(
+        valuesToEncode: Record<string, unknown> | unknown[] | undefined
     ): EncodeEventTopicsReturnType {
-        if (this.abiEvent.inputs.length < valuesToEncode.length) {
+        const valuesToEncodeLength = Array.isArray(valuesToEncode)
+            ? valuesToEncode.length
+            : Object.values(valuesToEncode ?? {}).length;
+        if (
+            this.abiEvent.inputs.filter((input) => input.indexed).length <
+            valuesToEncodeLength
+        ) {
             throw new InvalidAbiDataToEncodeOrDecode(
                 'ABIEvent.encodeEventLog',
                 'Encoding failed: Data format is invalid. Number of values to encode is greater than the inputs.',
@@ -214,8 +220,8 @@ class ABIEvent<
      * @returns Encoded topics array.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public encodeFilterTopicsNoNull<TValue>(
-        valuesToEncode: TValue[]
+    public encodeFilterTopicsNoNull(
+        valuesToEncode: Record<string, unknown> | unknown[] | undefined
     ): Array<string | undefined> {
         const encodedTopics = this.encodeFilterTopics(
             valuesToEncode
