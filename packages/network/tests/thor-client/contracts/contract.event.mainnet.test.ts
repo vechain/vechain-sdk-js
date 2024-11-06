@@ -4,7 +4,12 @@ import { MAINNET_URL, ThorClient } from '../../../src';
 import { B3TR, X2EarnRewardsPool } from '@vechain/vebetterdao-contracts';
 import { FixedPointNumber, Units } from '@vechain/sdk-core';
 
-describe('ThorClient - ERC20 Contracts', () => {
+/**
+ * Mainnet - Tests for the ThorClient class, focused on event-related functionality.
+ *
+ * @group integration/client/thor-client/contracts/event
+ */
+describe('ThorClient - Mainnet allocation events', () => {
     // ThorClient instance
     let thorMainnetClient: ThorClient;
 
@@ -17,7 +22,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
     test('Should filter EVearn distribute rewards events', async () => {
         const x2EarnRewardsPoolContract = thorMainnetClient.contracts.load(
-            X2EarnRewardsPool.address,
+            X2EarnRewardsPool.address.mainnet,
             X2EarnRewardsPool.abi
         );
 
@@ -33,7 +38,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
     test('Should filter EVearn distribute rewards events', async () => {
         const B3TRContract = thorMainnetClient.contracts.load(
-            B3TR.address,
+            B3TR.address.mainnet,
             B3TR.abi
         );
 

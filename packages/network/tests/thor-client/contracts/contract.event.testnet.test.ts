@@ -7,7 +7,12 @@ import {
     xAllocationVotingGovernorABI
 } from './fixture';
 
-describe('ThorClient - ERC20 Contracts', () => {
+/**
+ * Testnet - Tests for the ThorClient class, focused on event-related functionality.
+ *
+ * @group integration/client/thor-client/contracts/event
+ */
+describe('ThorClient - Testnet allocation events', () => {
     // ThorClient instance
     let thorTestnetClient: ThorClient;
 
