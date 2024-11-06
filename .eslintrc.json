@@ -45,6 +45,8 @@
         "sonarjs/function-return-type": "off",
         "sonarjs/no-nested-conditional": "off",
         "sonarjs/cognitive-complexity": "off",
-        "sonarjs/new-cap": "off"
+        "sonarjs/new-cap": "off",
+        "security/detect-object-injection": "off",
+        "security/detect-unsafe-regex": "off"
     }
 }
