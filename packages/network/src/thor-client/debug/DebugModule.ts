@@ -76,6 +76,7 @@ class DebugModule {
      * @returns The trace result.
      * @throws{InvalidDataType}
      */
+
     public async traceContractCall(
         input: {
             contractInput?: ContractCallTraceContractTargetInput;

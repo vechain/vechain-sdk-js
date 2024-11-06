@@ -18,6 +18,8 @@ const TIMEOUT = 5000;
 describe('DebugModule testnet tests', () => {
     const thorClient = ThorClient.at(TESTNET_URL);
 
+    describe('traceContractCall method tests', () => {});
+
     describe('traceTransactionClause method tests', () => {
         test(
             'InvalidDataType <- negative clause index',

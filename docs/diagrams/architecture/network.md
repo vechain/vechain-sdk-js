@@ -31,7 +31,7 @@ classDiagram
     class DebugModule {
         HttpClient httpClient
         DebugModule constructor(HttpClient httpClient)
-        
+        TraceReturnType~typeof name~ traceTransactionClause(input: TraceTransactionClauseInput, name: TracerName)
     }
     class GasModule {
     }
@@ -50,14 +50,26 @@ classDiagram
         ThorClient at(string url, BlockModuleOptions options)$
         destroy()
     }
+    class TraceTransactionClauseInput {
+        <<interface>>
+        TransactionTraceTarget target
+        TracerConfig~typeof name~ config
+    }
+    class TraceTransactionTarget {
+        <<interface>>
+        ThorId blockID
+        number|ThorId transaction
+        number clauseIndex
+    }
     class TransactionsModule {
     }
     AccountData <|-- AccountDetail
+    AccountDetail o-- AccountsModule
     AccountInputOptions o-- AccountsModule
     AccountsModule *-- ThorClient
     BlocksModule *-- GasModule
-    BlocksModule *-- ThorClient
     BlocksModule *-- NodesModule
+    BlocksModule *-- ThorClient
     BlocksModule *-- ThorClient
     BlocksModule *-- TransactionsModule
     ContractsModule *-- ThorClient
@@ -70,7 +82,9 @@ classDiagram
     HttpClient o-- ThorClient
     LogsModule *-- ThorClient
     NodesModule *-- ThorClient
-    TransactionsModule *-- GasModule
+    TraceTransactionClauseInput o-- DebugModule
+    TraceTransactionTarget *-- TraceTransactionClauseInput
     TransactionsModule *-- ContractsModule
+    TransactionsModule *-- GasModule
     TransactionsModule *-- ThorClient
 ```
