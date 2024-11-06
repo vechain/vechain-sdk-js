@@ -201,6 +201,47 @@ const toRandomAddress = generateRandomValidAddress();
 const randomBigInt = BigInt(Math.floor(Math.random() * 1000));
 
 /**
+ * RewardDistributed event
+ */
+const rewardDistributedEvent = {
+    anonymous: false,
+    inputs: [
+        {
+            indexed: false,
+            internalType: 'uint256',
+            name: 'amount',
+            type: 'uint256'
+        },
+        {
+            indexed: true,
+            internalType: 'bytes32',
+            name: 'appId',
+            type: 'bytes32'
+        },
+        {
+            indexed: true,
+            internalType: 'address',
+            name: 'receiver',
+            type: 'address'
+        },
+        {
+            indexed: false,
+            internalType: 'string',
+            name: 'proof',
+            type: 'string'
+        },
+        {
+            indexed: true,
+            internalType: 'address',
+            name: 'distributor',
+            type: 'address'
+        }
+    ],
+    name: 'RewardDistributed',
+    type: 'event'
+};
+
+/**
  * Event test cases for encoding topics
  */
 const topicsEventTestCases = [
@@ -331,43 +372,7 @@ const topicsEventTestCases = [
         ]
     },
     {
-        event: {
-            anonymous: false,
-            inputs: [
-                {
-                    indexed: false,
-                    internalType: 'uint256',
-                    name: 'amount',
-                    type: 'uint256'
-                },
-                {
-                    indexed: true,
-                    internalType: 'bytes32',
-                    name: 'appId',
-                    type: 'bytes32'
-                },
-                {
-                    indexed: true,
-                    internalType: 'address',
-                    name: 'receiver',
-                    type: 'address'
-                },
-                {
-                    indexed: false,
-                    internalType: 'string',
-                    name: 'proof',
-                    type: 'string'
-                },
-                {
-                    indexed: true,
-                    internalType: 'address',
-                    name: 'distributor',
-                    type: 'address'
-                }
-            ],
-            name: 'RewardDistributed',
-            type: 'event'
-        },
+        event: rewardDistributedEvent,
         valuesToEncode: {
             appId: '0x6c977a18d427360e27c3fc2129a6942acd4ece2c8aaeaf4690034931dc5ba7f9' // EVEarn
         },
@@ -417,43 +422,7 @@ const invalidTopicsEventTestCases = [
         expectedError: InvalidAbiDataToEncodeOrDecode
     },
     {
-        event: {
-            anonymous: false,
-            inputs: [
-                {
-                    indexed: false,
-                    internalType: 'uint256',
-                    name: 'amount',
-                    type: 'uint256'
-                },
-                {
-                    indexed: true,
-                    internalType: 'bytes32',
-                    name: 'appId',
-                    type: 'bytes32'
-                },
-                {
-                    indexed: true,
-                    internalType: 'address',
-                    name: 'receiver',
-                    type: 'address'
-                },
-                {
-                    indexed: false,
-                    internalType: 'string',
-                    name: 'proof',
-                    type: 'string'
-                },
-                {
-                    indexed: true,
-                    internalType: 'address',
-                    name: 'distributor',
-                    type: 'address'
-                }
-            ],
-            name: 'RewardDistributed',
-            type: 'event'
-        },
+        event: rewardDistributedEvent,
         valuesToEncode: [
             // Wrong parameters
             fromRandomAddress,
