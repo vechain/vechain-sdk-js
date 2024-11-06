@@ -115,7 +115,7 @@ const deployTestContractTransaction = (): Transaction => {
 };
 
 const seedVnsSolo = async (): Promise<void> => {
-    const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+    const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
     const tld = 'vet';
 
     let nonce = 0;
@@ -465,7 +465,7 @@ const seedVnsSolo = async (): Promise<void> => {
  * @returns A Promise that resolves when all transactions have been processed.
  */
 const seedThorSolo = async (): Promise<void> => {
-    const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+    const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 
     console.log(
         "Distributing balances to the first 10 accounts in the 'THOR_SOLO_ACCOUNTS' array:"

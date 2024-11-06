@@ -3,7 +3,7 @@ import { Transaction } from '@vechain/sdk-core';
 import { decodeRevertReason } from './helpers/decode-evm-error';
 import { type EstimateGasOptions, type EstimateGasResult } from './types';
 import { type SimulateTransactionClause } from '../transactions/types';
-import { type ThorClient } from '../thor-client';
+import { type ThorClient } from '../ThorClient';
 
 /**
  * The `GasModule` handles gas related operations and provides

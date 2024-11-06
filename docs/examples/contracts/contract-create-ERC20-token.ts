@@ -23,7 +23,7 @@ const deployerAccount: ProviderInternalWalletAccount = {
 
 // START_SNIPPET: CreateERC20TokenSnippet
 
-const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 const provider = new VeChainProvider(
     thorSoloClient,
     new ProviderInternalBaseWallet([deployerAccount])

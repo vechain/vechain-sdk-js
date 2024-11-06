@@ -24,7 +24,7 @@ describe('RPC Mapper - debug_traceBlockByNumber method mock tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = ThorClient.fromUrl(TESTNET_URL);
+        thorClient = ThorClient.at(TESTNET_URL);
     });
 
     /**

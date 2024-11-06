@@ -59,7 +59,7 @@ describe('ThorClient - Contracts', () => {
     let receiverSigner: VeChainSigner;
 
     beforeEach(() => {
-        thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+        thorSoloClient = ThorClient.at(THOR_SOLO_URL);
         signer = new VeChainPrivateKeySigner(
             HexUInt.of(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
@@ -203,10 +203,10 @@ describe('ThorClient - Contracts', () => {
 
         // Retrieve the bytecode of the deployed contract
         const contractBytecodeResponse =
-            await thorSoloClient.accounts.getBytecode(contract.address);
+            await thorSoloClient.accounts.getBytecode(Address.of(contract.address));
 
         // Assertion: Compare with the expected deployed contract bytecode
-        expect(contractBytecodeResponse).toBe(deployedContractBytecode);
+        expect(`${contractBytecodeResponse}`).toBe(deployedContractBytecode);
     }, 10000);
 
     /**

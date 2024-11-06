@@ -11,7 +11,8 @@
         "plugin:prettier/recommended",
         "standard-with-typescript",
         "prettier",
-        "plugin:sonarjs/recommended-legacy"
+        "plugin:sonarjs/recommended-legacy",
+        "plugin:security/recommended-legacy"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -44,6 +45,8 @@
         "sonarjs/function-return-type": "off",
         "sonarjs/no-nested-conditional": "off",
         "sonarjs/cognitive-complexity": "off",
-        "sonarjs/new-cap": "off"
+        "sonarjs/new-cap": "off",
+        "security/detect-object-injection": "off",
+        "security/detect-unsafe-regex": "off"
     }
 }

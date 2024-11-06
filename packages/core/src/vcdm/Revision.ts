@@ -80,6 +80,16 @@ class Revision extends Txt {
             });
         }
     }
+
+    /**
+     * Return the `best` revision instance.
+     */
+    public static readonly BEST: Revision = Revision.of('best');
+
+    /**
+     * Return the `finalized` revision instance.
+     */
+    public static readonly FINALIZED: Revision = Revision.of('finalized');
 }
 
 export { Revision };

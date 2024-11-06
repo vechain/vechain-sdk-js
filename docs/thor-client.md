@@ -12,11 +12,11 @@ To initialize a Thor client, there are two straightforward methods. The first in
 
 ```typescript { name=initialize, category=example }
 // First way to initialize thor client
-const httpClient = new HttpClient(TESTNET_URL);
+const httpClient = new SimpleHttpClient(TESTNET_URL);
 const thorClient = new ThorClient(httpClient);
 
 // Second way to initialize thor client
-const thorClient2 = ThorClient.fromUrl(TESTNET_URL);
+const thorClient2 = ThorClient.at(TESTNET_URL);
 ```
 
 ## Accounts
@@ -26,24 +26,23 @@ The Thor-client extends its functionality to provide seamless access to account-
 ```typescript { name=accounts, category=example }
 // 1 - Create thor client for testnet
 
-const thorClient = ThorClient.fromUrl(TESTNET_URL);
+const thorClient = ThorClient.at(TESTNET_URL);
 
 // 2 - Get account details
 
+const accountAddress = Address.of('0x5034aa590125b64023a0262112b98d72e3c8e40e');
+
 // Account details
-const accountDetails = await thorClient.accounts.getAccount(
-    '0x5034aa590125b64023a0262112b98d72e3c8e40e'
-);
+const accountDetails = await thorClient.accounts.getAccount(accountAddress);
 
 // Account code
-const accountCode = await thorClient.accounts.getBytecode(
-    '0x5034aa590125b64023a0262112b98d72e3c8e40e'
-);
+const accountCode = await thorClient.accounts.getBytecode(accountAddress);
 
 // Get account storage
+const position = ThorId.of(1);
 const accountStorage = await thorClient.accounts.getStorageAt(
-    '0x5034aa590125b64023a0262112b98d72e3c8e40e',
-    '0x0000000000000000000000000000000000000000000000000000000000000001'
+    accountAddress,
+    position
 );
 ```
 
@@ -70,7 +69,7 @@ The Thor-client facilitates easy interaction with blocks on the VeChainThor netw
 ```typescript { name=blocks, category=example }
 // 1 - Create thor client for testnet
 
-const thorClient = ThorClient.fromUrl(TESTNET_URL);
+const thorClient = ThorClient.at(TESTNET_URL);
 
 // 2 - Get block details
 
@@ -110,7 +109,7 @@ The Thor-client extends its capabilities to efficiently filter and retrieve even
 ```typescript { name=logs, category=example }
 // 1 - Create thor client for testnet
 
-const thorClient = ThorClient.fromUrl(TESTNET_URL);
+const thorClient = ThorClient.at(TESTNET_URL);
 
 // 2 - Filter event logs based on the provided criteria. (EXAMPLE 1)
 
@@ -189,7 +188,7 @@ The Thor-client allows developers to interact with nodes on the VeChainThor netw
 ```typescript { name=nodes, category=example }
 // 1 - Create thor client for testnet
 
-const thorClient = ThorClient.fromUrl(TESTNET_URL);
+const thorClient = ThorClient.at(TESTNET_URL);
 
 // 2 - Retrieves connected peers of a node
 
@@ -216,7 +215,7 @@ const senderAccount = {
 
 // 1 - Create thor client for solo network
 
-const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 
 // 2 - Get latest block
 
@@ -319,7 +318,7 @@ const delegateAccount = {
 
 // 1 - Create thor client for solo network
 
-const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 
 // 2 - Get latest block
 
@@ -396,7 +395,7 @@ The `gasPadding` option adds a safety margin to estimated gas costs. It allows d
 
 ```typescript { name=gas, category=example }
 // 1 - Create thor client for solo network
-const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 
 // 2- Init transaction
 

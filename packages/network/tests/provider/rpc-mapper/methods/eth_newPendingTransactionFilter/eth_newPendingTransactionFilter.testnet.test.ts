@@ -23,7 +23,7 @@ describe('RPC Mapper - eth_newPendingTransactionFilter method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = ThorClient.fromUrl(TESTNET_URL);
+        thorClient = ThorClient.at(TESTNET_URL);
     });
 
     /**

@@ -47,7 +47,7 @@ describe('ThorClient - ERC721 Contracts', () => {
      * blockchain transaction processing.
      */
     beforeAll(async () => {
-        thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+        thorSoloClient = ThorClient.at(THOR_SOLO_URL);
         signer = new VeChainPrivateKeySigner(
             HexUInt.of(
                 TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey

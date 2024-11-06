@@ -23,7 +23,7 @@ describe('Transactions module Testnet tests suite', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(TESTNET_URL);
+        thorClient = ThorClient.at(TESTNET_URL);
         provider = new VeChainProvider(
             thorClient,
             THOR_SOLO_ACCOUNTS_BASE_WALLET,
@@ -50,7 +50,7 @@ describe('Transactions module Testnet tests suite', () => {
                 test(
                     description,
                     async () => {
-                        const thorClient = ThorClient.fromUrl(TESTNET_URL);
+                        const thorClient = ThorClient.at(TESTNET_URL);
                         const gasResult = await thorClient.gas.estimateGas(
                             clauses,
                             '0x000000000000000000000000004d000000000000' // This address might not exist on testnet, thus the gasResult.reverted might be true

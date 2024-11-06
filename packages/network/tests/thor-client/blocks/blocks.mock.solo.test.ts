@@ -1,5 +1,6 @@
 import { describe, expect, jest, test } from '@jest/globals';
-import { HttpClient, THOR_SOLO_URL, ThorClient } from '../../../src';
+import { THOR_SOLO_URL, ThorClient } from '../../../src';
+import { SimpleHttpClient } from '../../../src/http';
 
 /**
  * Blocks module tests with mocks.
@@ -8,10 +9,12 @@ import { HttpClient, THOR_SOLO_URL, ThorClient } from '../../../src';
  */
 describe('ThorClient - Blocks Module mock tests', () => {
     test('getBlockCompressed should return null if null is returned from the api', async () => {
-        const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+        const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 
         // Mock the getBlockCompressed method to return null
-        jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce(null);
+        jest.spyOn(SimpleHttpClient.prototype, 'http').mockResolvedValueOnce(
+            null
+        );
 
         await expect(
             thorSoloClient.blocks.getBlockCompressed('best')
@@ -19,10 +22,12 @@ describe('ThorClient - Blocks Module mock tests', () => {
     });
 
     test('getBlockExpanded should return null if null is returned from the api', async () => {
-        const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+        const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 
         // Mock the getBlockExpanded method to return null
-        jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce(null);
+        jest.spyOn(SimpleHttpClient.prototype, 'http').mockResolvedValueOnce(
+            null
+        );
 
         await expect(
             thorSoloClient.blocks.getBlockExpanded('best')

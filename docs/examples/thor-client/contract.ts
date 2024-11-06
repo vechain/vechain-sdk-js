@@ -13,7 +13,7 @@ import { HexUInt, type DeployParams } from '@vechain/sdk-core';
 
 // 1 - Create thor client for solo network
 
-const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 
 // 2 - Deploy contract
 
