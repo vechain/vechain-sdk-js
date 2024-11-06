@@ -11,6 +11,7 @@ import {
     type TraceReturnType,
     type TracerName
 } from './types';
+import { HexUInt } from '@vechain/sdk-core';
 
 /**
  * The class provides methods to debug the VeChain Thor blockchain.
@@ -21,7 +22,8 @@ class DebugModule {
      *
      * @param {HttpClient} httpClient - The HTTP client instance to be used for making requests.
      */
-    constructor(readonly httpClient: HttpClient) {}
+    constructor(readonly httpClient: HttpClient) {
+    }
 
     /**
      * Traces a contract call using the specified target, options, and configuration.
@@ -49,7 +51,9 @@ class DebugModule {
                 body: {
                     to: input.target?.to?.toString(),
                     data: input.target?.data?.toString(),
-                    value: input.target?.value?.toString(),
+                    value: typeof input.target?.value?.wei === 'bigint'
+                        ? HexUInt.of(input.target.value.wei).toString()
+                        : undefined,
                     name,
                     gas: input.options?.gas,
                     gasPrice: input.options?.gasPrice,

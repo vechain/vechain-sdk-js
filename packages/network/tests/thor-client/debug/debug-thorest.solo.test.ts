@@ -10,6 +10,7 @@ import {
     traceContractCallTestnetFixture
 } from './fixture-thorest';
 import { transfer1VTHOClause } from '../transactions/fixture';
+import { Address, BlockId, HexUInt } from '@vechain/sdk-core';
 
 /**
  * Debug endpoints tests on the Solo network.
@@ -113,8 +114,12 @@ describe('ThorClient - Debug Module - Solo', () => {
                     await thorSoloClient.debug.traceTransactionClause(
                         {
                             target: {
-                                blockID: txReceipt?.meta.blockID as string,
-                                transaction: txReceipt?.meta.txID as string,
+                                blockID: BlockId.of(
+                                    txReceipt?.meta.blockID as string
+                                ),
+                                transaction: BlockId.of(
+                                    txReceipt?.meta.txID as string
+                                ),
                                 clauseIndex: 0
                             },
                             config: {}
@@ -143,9 +148,11 @@ describe('ThorClient - Debug Module - Solo', () => {
                 const result = await thorSoloClient.debug.traceContractCall(
                     {
                         target: {
-                            to: traceContractCallTestnetFixture.positiveCases[0]
-                                .to,
-                            data: transfer1VTHOClause.data
+                            to: Address.of(
+                                traceContractCallTestnetFixture.positiveCases[0]
+                                    .to
+                            ),
+                            data: HexUInt.of(transfer1VTHOClause.data)
                         },
                         options: {
                             caller: txReceipt?.gasPayer as string,

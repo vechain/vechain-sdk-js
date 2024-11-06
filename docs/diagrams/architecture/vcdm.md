@@ -1,8 +1,8 @@
 ```mermaid
 classDiagram
     class ABI {
-        +ABI of(string|AbiParameter[] types,unknown[] values)$
-        +ABI ofEncoded(string|AbiParameter[] types,string|Uint8Array[] dataEncoded)$
+        +ABI of(string|AbiParameter[] types, unknown[] values)$
+        +ABI ofEncoded(string|AbiParameter[] types, string|Uint8Array[] dataEncoded)$
         +unknown[] parseObjectValues(object obj)
         +ReturnType getFirstDecodedValue<ReturnType>(object obj)
         +Hex toHex()
@@ -33,7 +33,7 @@ classDiagram
         <<abstract>>
         +string signatureHash()
         +string format('json' | 'string' formatType)
-        +string ofSignature(new (signature: string) => T ABIItemConstructor, string signature)$
+        +string ofSignature(new(signature: string) => T ABIItemConstructor, string signature)$
     }
     class Account {
         #address: Address
@@ -48,6 +48,14 @@ classDiagram
     }
     class Blake2b256 {
         +Blake2b256 of(bigint|string|Uint8Array|Hex exp)$
+    }
+    class BlockId {
+        +boolean isValid0x(string exp)
+        +BlockId of(bigint|number|string|Uint8Array|HexInt exp)$
+    }
+    class BlockRef {
+        +boolean isValid0x(string exp)
+        +BlockRef of(bigint|number|string|Uint8Array|HexInt exp)$
     }
     class BloomFilter {
         +number k
@@ -140,8 +148,8 @@ classDiagram
         +Hex toHex()
         +RLP of(RLPInput data)$
         +RLP ofEncoded(Uint8Array encodedData)$
-        #packData(RLPValidObject obj,RLPProfile profile,string context)$
-        #unpackData(RLPInput packed,RLPProfile profile,string context)$
+        #packData(RLPValidObject obj, RLPProfile profile, string context)$
+        #unpackData(RLPInput packed, RLPProfile profile, string context)$
     }
     class RLPProfiler {
         +RLPValueType object
@@ -154,10 +162,6 @@ classDiagram
     class String
     class Txt {
         +Txt of(bigint|number|string|Uint8Array exp)$
-    }
-    class ThorId {
-        +boolean isValid0x(string exp)
-        +ThorID of(bigint|number|string|Uint8Array|HexInt exp)$
     }
     class Units {
         <<enumeration>>
@@ -175,12 +179,12 @@ classDiagram
     }
     class VeChainDataModel {
         <<interface>>
-      +bigint bi
-      +Uint8Array bytes
-      +number n
-      +number compareTo(~T~ that)
-      +boolean isEqual(~T~ that)
-      +boolean isNumber()
+        +bigint bi
+        +Uint8Array bytes
+        +number n
+        +number compareTo(~T~ that)
+        +boolean isEqual(~T~ that)
+        +boolean isNumber()
     }
     class VET {
         +Txt CODE$
@@ -196,8 +200,8 @@ classDiagram
     ABI <|-- ABIItem
     ABIItem <|-- ABIEvent
     ABIItem <|-- ABIFunction
-    Account "1" ..|> "1" Address : has
-    Account "1" ..|> "1" Currency : has
+    Account "1" ..|> "1" Address: has
+    Account "1" ..|> "1" Currency: has
     Account <|-- Contract
     Coin <|-- VET
     Coin <|-- VTHO
@@ -208,10 +212,11 @@ classDiagram
     HexInt <|-- HexUInt
     HexUInt <|-- Address
     HexUInt <|-- Blake2b256
+    HexUInt <|-- BlockId
+    HexUInt <|-- BlockRef
     HexUInt <|-- Keccak256
     HexUInt <|-- Quantity
     HexUInt <|-- Sha256
-    HexUInt <|-- ThorId
     RLP <|-- RLPProfiler
     String <|-- Txt
     Txt <|-- Revision
