@@ -138,7 +138,7 @@ class ABIEvent<
      * @returns {ABIEventData} Encoded data along with topics.
      * @remarks There is no equivalent to encodeEventLog in viem {@link https://viem.sh/docs/ethers-migration}. Discussion started here {@link https://github.com/wevm/viem/discussions/2676}.
      */
-    public encodeEventLog<TValue>(dataToEncode: TValue[]): ABIEventData {
+    public encodeEventLog(dataToEncode: unknown[]): ABIEventData {
         try {
             const topics = this.encodeFilterTopics(dataToEncode);
             const dataTypes: AbiEventParameter[] = [];
@@ -187,10 +187,7 @@ class ABIEvent<
         const valuesToEncodeLength = Array.isArray(valuesToEncode)
             ? valuesToEncode.length
             : Object.values(valuesToEncode ?? {}).length;
-        if (
-            this.abiEvent.inputs.filter((input) => input.indexed).length <
-            valuesToEncodeLength
-        ) {
+        if (this.abiEvent.inputs.length < valuesToEncodeLength) {
             throw new InvalidAbiDataToEncodeOrDecode(
                 'ABIEvent.encodeEventLog',
                 'Encoding failed: Data format is invalid. Number of values to encode is greater than the inputs.',
