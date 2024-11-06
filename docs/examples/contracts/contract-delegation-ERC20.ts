@@ -32,7 +32,7 @@ const delegatorAccount = {
 
 // START_SNIPPET: ERC20FunctionCallDelegatedSnippet
 
-const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 const provider = new VeChainProvider(
     thorSoloClient,
     new ProviderInternalBaseWallet([deployerAccount], {

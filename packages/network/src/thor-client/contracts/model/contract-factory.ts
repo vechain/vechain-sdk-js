@@ -11,7 +11,7 @@ import {
 } from '@vechain/sdk-errors';
 import { type Abi } from 'abitype';
 import { signerUtils, type VeChainSigner } from '../../../signer';
-import { type ThorClient } from '../../thor-client';
+import { type ThorClient } from '../../ThorClient';
 import { type SendTransactionResult } from '../../transactions/types';
 import type { ContractTransactionOptions } from '../types';
 import { Contract } from './contract';

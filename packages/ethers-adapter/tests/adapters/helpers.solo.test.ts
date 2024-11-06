@@ -25,7 +25,7 @@ describe('Helpers tests', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
+        thorClient = ThorClient.at(THOR_SOLO_URL);
         provider = new HardhatVeChainProvider(
             new ProviderInternalBaseWallet([]),
             THOR_SOLO_URL,

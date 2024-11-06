@@ -1,9 +1,4 @@
 /**
- * Default timeout for HTTP requests, in milliseconds.
- */
-const DEFAULT_HTTP_TIMEOUT = 30000;
-
-/**
  * HTTP regex.
  */
 const HTTP_REGEX: RegExp = /^http:\/\//;
@@ -13,4 +8,4 @@ const HTTP_REGEX: RegExp = /^http:\/\//;
  */
 const HTTPS_REGEX: RegExp = /^https:\/\//;
 
-export { DEFAULT_HTTP_TIMEOUT, HTTP_REGEX, HTTPS_REGEX };
+export { HTTP_REGEX, HTTPS_REGEX };

@@ -42,7 +42,7 @@ describe('VeChain base signer tests - testnet', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(TESTNET_URL);
+        thorClient = ThorClient.at(TESTNET_URL);
     });
 
     /**
@@ -117,7 +117,7 @@ describe('VeChain base signer tests - testnet', () => {
                 test(
                     description,
                     async () => {
-                        const thorClient = ThorClient.fromUrl(TESTNET_URL);
+                        const thorClient = ThorClient.at(TESTNET_URL);
 
                         const sampleClause = Clause.callFunction(
                             Address.of(TESTING_CONTRACT_ADDRESS),

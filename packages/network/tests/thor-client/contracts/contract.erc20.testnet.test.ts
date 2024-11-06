@@ -26,7 +26,7 @@ describe('ThorClient - ERC20 Contracts on testnet', () => {
     let providerWithDelegationEnabled: VeChainProvider;
 
     beforeEach(() => {
-        thorTestnetClient = ThorClient.fromUrl(TESTNET_URL);
+        thorTestnetClient = ThorClient.at(TESTNET_URL);
         // Create the provider (used in this case to sign the transaction with getSigner() method)
         providerWithDelegationEnabled = new VeChainProvider(
             // Thor client used by the provider

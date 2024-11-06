@@ -1,9 +1,10 @@
 import { Poll, TESTNET_URL, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
+import { Address } from '@vechain/sdk-core';
 
 // 1 - Create thor client for testnet
 
-const thorClient = ThorClient.fromUrl(TESTNET_URL);
+const thorClient = ThorClient.at(TESTNET_URL);
 
 // 2 - Init accounts
 
@@ -16,7 +17,7 @@ const accounts = [
 
 for (const account of accounts) {
     const monitoringPoll = Poll.createEventPoll(
-        async () => await thorClient.accounts.getAccount(account),
+        async () => await thorClient.accounts.getAccount(Address.of(account)),
         1000
     )
         // Add listeners for start event

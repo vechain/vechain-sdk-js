@@ -64,7 +64,7 @@ describe('KMSVeChainSigner - Testnet', () => {
                 fs.readFileSync(testAwsCredentialsPath, 'utf8')
             ) as KMSClientParameters[];
         }
-        thorClient = ThorClient.fromUrl(TESTNET_URL);
+        thorClient = ThorClient.at(TESTNET_URL);
 
         signerWithDelegator = new KMSVeChainSigner(
             new KMSVeChainProvider(thorClient, awsClientParameters, true),

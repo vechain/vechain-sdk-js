@@ -29,7 +29,7 @@ const delegateAccount = {
 
 // 1 - Create thor client for solo network
 
-const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 
 // 2 - Get latest block
 

@@ -18,7 +18,7 @@ import { expect } from 'expect';
 // START_SNIPPET: FullFlowDelegatorUrlSnippet
 
 // 1 - Create the thor client
-const thorClient = ThorClient.fromUrl(TESTNET_URL, {
+const thorClient = ThorClient.at(TESTNET_URL, {
     isPollingEnabled: false
 });
 

@@ -9,4 +9,4 @@ export * from './nodes';
 export * from './transactions';
 
 // Main client
-export * from './thor-client';
+export * from './ThorClient';
