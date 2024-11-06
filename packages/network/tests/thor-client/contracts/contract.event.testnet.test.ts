@@ -50,7 +50,7 @@ describe('ThorClient - Testnet allocation events', () => {
             });
 
         expect(xAllocationVotingEvents).toBeDefined();
-        expect(Array.from(xAllocationVotingEvents.keys()).length).toEqual(2);
+        expect(Array.from(xAllocationVotingEvents.keys()).length).toEqual(30);
         expect(xAllocationVotingEvents.length).toBeGreaterThan(0);
     }, 30000);
 
