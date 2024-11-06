@@ -5,7 +5,8 @@ import {
     blockWithOldTimeStamp
 } from './fixture';
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { HttpClient, ThorClient } from '../../../src';
+import { ThorClient } from '../../../src';
+import { SimpleHttpClient } from '../../../src/http';
 
 /**
  * Node integration tests
@@ -23,14 +24,16 @@ describe('ThorClient - Nodes Module', () => {
     const URL = 'http://example.com';
 
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(URL);
+        thorClient = ThorClient.at(URL);
     });
 
     test('valid URL/node but Error is thrown by network provider', async () => {
         // Mock an error on the HTTPClient
-        jest.spyOn(HttpClient.prototype, 'http').mockImplementation(() => {
-            throw new Error();
-        });
+        jest.spyOn(SimpleHttpClient.prototype, 'http').mockImplementation(
+            () => {
+                throw new Error();
+            }
+        );
 
         /**
          *  client required to access a node
@@ -42,14 +45,16 @@ describe('ThorClient - Nodes Module', () => {
 
     test('valid/available node but invalid block format', async () => {
         // Mock the response to force the JSON response to be null
-        jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce({});
+        jest.spyOn(SimpleHttpClient.prototype, 'http').mockResolvedValueOnce(
+            {}
+        );
 
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             InvalidDataType
         );
 
         // Mock the response to force the JSON response to not be an object
-        jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce({
+        jest.spyOn(SimpleHttpClient.prototype, 'http').mockResolvedValueOnce({
             invalidKey: 1
         });
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
@@ -57,7 +62,7 @@ describe('ThorClient - Nodes Module', () => {
         );
 
         // Mock the response to force the JSON response to have a timestamp non-existent
-        jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce(
+        jest.spyOn(SimpleHttpClient.prototype, 'http').mockResolvedValueOnce(
             blockWithMissingTimeStamp
         );
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
@@ -65,7 +70,7 @@ describe('ThorClient - Nodes Module', () => {
         );
 
         // Mock the response to force the JSON response to have a timestamp not a number
-        jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce(
+        jest.spyOn(SimpleHttpClient.prototype, 'http').mockResolvedValueOnce(
             blockWithInvalidTimeStampFormat
         );
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
@@ -75,7 +80,7 @@ describe('ThorClient - Nodes Module', () => {
 
     test('valid & available node but node is out of sync', async () => {
         // Mock the response to force the JSON response to be out of sync (i.e. > 30 seconds)
-        jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce(
+        jest.spyOn(SimpleHttpClient.prototype, 'http').mockResolvedValueOnce(
             blockWithOldTimeStamp
         );
 

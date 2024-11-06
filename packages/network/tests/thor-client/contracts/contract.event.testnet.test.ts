@@ -17,7 +17,7 @@ describe('ThorClient - Testnet allocation events', () => {
     let thorTestnetClient: ThorClient;
 
     beforeEach(() => {
-        thorTestnetClient = ThorClient.fromUrl(TESTNET_URL);
+        thorTestnetClient = ThorClient.at(TESTNET_URL);
     });
 
     test('Should filter x allocation events', async () => {

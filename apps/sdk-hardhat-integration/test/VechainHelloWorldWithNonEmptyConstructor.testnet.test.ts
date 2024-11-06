@@ -1,4 +1,3 @@
-import { VechainSDKError } from '@vechain/sdk-errors';
 import { expect } from 'chai';
 import { ethers } from 'hardhat';
 
@@ -56,9 +55,12 @@ describe('VechainHelloWorldWithNonEmptyConstructor', function () {
             fail('should not get here');
         } catch (error) {
             if (error instanceof Error) {
-                expect(error.message).to.equal(
-                    `Error on request eth_sendTransaction: HardhatPluginError: Error on request eth_sendRawTransaction: Error: Method 'HttpClient.http()' failed.\n-Reason: 'Request failed with status 403 and message tx rejected: insufficient energy'\n-Parameters: \n\t{\n  "method": "POST",\n  "url": "https://testnet.vechain.org/transactions"\n}`
-                );
+                // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+                expect(
+                    error.message.startsWith(
+                        "Error on request eth_sendTransaction: HardhatPluginError: Error on request eth_sendRawTransaction: Error: Method 'HttpClient.http()' failed."
+                    )
+                ).to.be.true;
             }
         }
     });

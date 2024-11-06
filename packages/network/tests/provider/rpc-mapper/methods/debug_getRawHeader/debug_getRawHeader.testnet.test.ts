@@ -23,7 +23,7 @@ describe('RPC Mapper - debug_getRawHeader method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = ThorClient.fromUrl(TESTNET_URL);
+        thorClient = ThorClient.at(TESTNET_URL);
     });
 
     /**

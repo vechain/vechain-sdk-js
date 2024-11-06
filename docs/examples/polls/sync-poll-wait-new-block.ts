@@ -3,7 +3,7 @@ import { expect } from 'expect';
 
 // 1 - Create thor client for testnet
 
-const thorClient = ThorClient.fromUrl(TESTNET_URL);
+const thorClient = ThorClient.at(TESTNET_URL);
 
 // 2 - Get current block
 

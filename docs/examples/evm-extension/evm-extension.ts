@@ -779,7 +779,7 @@ const TESTING_CONTRACT_ADDRESS: string =
 // START_SNIPPET: EVMExtensionSnippet
 
 // Create an instance of the ThorClient class
-const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 
 // Call the getTotalSupply function of the `TestingContract` smart contract
 const totalSupply = await thorSoloClient.contracts.executeCall(

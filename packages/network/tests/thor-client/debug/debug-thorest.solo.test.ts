@@ -81,7 +81,7 @@ describe('ThorClient - Debug Module - Solo', () => {
      * Make the transactions to debug before all tests
      */
     beforeAll(async () => {
-        thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+        thorSoloClient = ThorClient.at(THOR_SOLO_URL);
         for (const tracerAccount of tracersAccounts) {
             const txReceipt = await sendTransactionWithAccountIndex(
                 tracerAccount.senderAccountIndex,

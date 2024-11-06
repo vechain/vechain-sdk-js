@@ -16,7 +16,7 @@ describe('ThorClient - Debug Module - Testnet', () => {
     let thorClient: ThorClient;
 
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(TESTNET_URL);
+        thorClient = ThorClient.at(TESTNET_URL);
     });
 
     /**

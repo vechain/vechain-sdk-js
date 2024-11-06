@@ -270,7 +270,7 @@ const energyABI = [
     }
 ] as const;
 
-const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 
 // START_SNIPPET: RevertReasonSimulationSnippet
 

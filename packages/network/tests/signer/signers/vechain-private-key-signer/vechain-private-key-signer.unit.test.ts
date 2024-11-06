@@ -45,7 +45,7 @@ describe('VeChain base signer tests', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(TESTNET_URL);
+        thorClient = ThorClient.at(TESTNET_URL);
         provider = new VeChainProvider(thorClient);
     });
 
