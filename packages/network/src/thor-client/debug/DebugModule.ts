@@ -25,16 +25,16 @@ class DebugModule {
     constructor(readonly httpClient: HttpClient) {}
 
     /**
-     * Trace transaction clause.
+     * Traces a transaction clause based on the provided target and configuration.
      *
-     * This endpoint allows you to create a tracer for a specific clause.
      * Tracers are instrumental in monitoring and analyzing the execution flow within the EVM.
-     * You can customize the tracer using various options to tailor it to your specific debugging needs.
      *
-     * @param input - The input for the trace transaction clause. It has:
-     * * target - The target of the tracer. It is a combination of blockID, transaction (transaction ID or index into block), and clauseIndex.
-     * * config - The configuration of the tracer. It is specific to the name of the tracer.
-     * @param name - The name of the tracer to use. It determines Output and Input configuration.
+     * @param {Object} input - The input object containing the transaction trace target and optional tracer config.
+     * @param {TransactionTraceTarget} input.target - The target transaction details including block ID, transaction ID, and clause index.
+     * @param {TracerConfig<typeof name>} [input.config] - Optional tracer configuration settings.
+     * @param {TracerName} [name] - Optional name for the tracer.
+     * @return {Promise<TraceReturnType<typeof name>>} - The result of the trace operation.
+     * @throws {InvalidDataType} - If the `input.target.transaction`  or `input.target.clauseIndex` properties are invalid.
      */
     public async traceTransactionClause(
         input: {
@@ -45,10 +45,8 @@ class DebugModule {
     ): Promise<TraceReturnType<typeof name>> {
         // Validate target. If invalid, assert
         this.validateTarget(input.target, 'traceTransactionClause');
-
         // Parse target
         const parsedTarget = `${input.target.blockID}/${input.target.transaction}/${input.target.clauseIndex}`;
-
         // Send request
         return (await this.httpClient.post(
             thorest.debug.post.TRACE_TRANSACTION_CLAUSE(),
@@ -184,48 +182,35 @@ class DebugModule {
     }
 
     /**
-     * Validate target of traceTransactionClause and retrieveStorageRange.
+     * Validates the properties of a TransactionTraceTarget object.
      *
-     * @param target - Target of traceTransactionClause and retrieveStorageRange to validate.
-     * @param functionName - The name of the function.
-     * @throws{InvalidDataType}
-     * @private
+     * @param {TransactionTraceTarget} target - The target object containing transaction details to be validated.
+     * @param {string} functionName - The name of the function where this validation is invoked.
+     * @throws {InvalidDataType} If the transaction or clauseIndex properties in the target object are invalid.
      */
     private validateTarget(
         target: TransactionTraceTarget,
         functionName: string
     ): void {
-        // Validate target - blockID
-        if (!ThorId.isValid(target.blockID)) {
-            throw new InvalidDataType(
-                'DebugModule.validateTarget()',
-                `Invalid block ID '${target.blockID}' given as input for ${functionName}.`,
-                { blockId: target.blockID }
-            );
-        }
-
         // Validate target - transaction
-        if (typeof target.transaction === 'string') {
-            if (!ThorId.isValid(target.transaction))
+        if (typeof target.transaction === 'number') {
+            if (target.transaction < 0) {
                 throw new InvalidDataType(
                     'DebugModule.validateTarget()',
-                    `Invalid transaction id '${target.transaction}' given as input for ${functionName}.`,
-                    { transaction: target.transaction }
+                    `invalid transaction index '${target.transaction}' given as input for ${functionName}.`,
+                    {
+                        transaction: target.transaction,
+                        functionName
+                    }
                 );
-        } else if (target.transaction < 0) {
-            throw new InvalidDataType(
-                'DebugModule.validateTarget()',
-                `Invalid transaction index '${target.transaction}' given as input for ${functionName}.`,
-                { transaction: target.transaction }
-            );
+            }
         }
-
         // Validate target - clauseIndex
         if (target.clauseIndex < 0) {
             throw new InvalidDataType(
                 'DebugModule.validateTarget()',
-                `Invalid clause index '${target.clauseIndex}' given as input for ${functionName}.`,
-                { clauseIndex: target.clauseIndex }
+                `invalid clause index '${target.clauseIndex}' given as input for ${functionName}.`,
+                { clauseIndex: target.clauseIndex, functionName }
             );
         }
     }

@@ -535,7 +535,7 @@ class TransactionsModule {
             const debuggedClause = (await debugModule.traceTransactionClause(
                 {
                     target: {
-                        blockID: block.id,
+                        blockID: ThorId.of(block.id),
                         transaction: transactionIndex,
                         clauseIndex: transactionClauseIndex
                     },

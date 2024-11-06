@@ -1,3 +1,5 @@
+import { type ThorId } from '@vechain/sdk-core';
+
 /**
  * Type for target of TraceTransactionClause.
  */
@@ -5,11 +7,11 @@ export interface TransactionTraceTarget {
     /**
      * Block ID.
      */
-    blockID: string;
+    blockID: ThorId;
     /**
      * Transaction ID or Transaction index.
      */
-    transaction: number | string;
+    transaction: number | ThorId;
     /**
      * Clause index.
      */
