@@ -60,6 +60,7 @@ classDiagram
     DebugModule *-- ThorClient
     DebugModule *-- TransactionsModule
     GasModule *-- ThorClient
+    HttpClient o-- AccountsModule
     HttpClient o-- ThorClient
     LogsModule *-- ThorClient
     NodesModule *-- ThorClient
