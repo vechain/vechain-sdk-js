@@ -45,15 +45,11 @@ jobs:
           load: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-
-      - name: Split tags and get the first value for scanning
-        id: split-tags
-        run: echo "first-tag=$(echo '${{ steps.meta.outputs.tags }}' | cut -d',' -f1)" >> $GITHUB_OUTPUT
       
       - name: Run Trivy Scan
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ steps.split-tags.outputs.first-tag }}
+          image-ref: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
           format: 'table'
           ignore-unfixed: true
           exit-code: '1'
