@@ -11,7 +11,6 @@ import {
 } from '@vechain/sdk-errors';
 import type {
     Abi,
-    AbiEvent,
     AbiParametersToPrimitiveTypes,
     ExtractAbiEventNames,
     ExtractAbiFunction,
@@ -176,13 +175,7 @@ function getFilterProxy<TAbi extends Abi>(
                 // eslint-disable-next-line sonarjs/use-type-alias
                 args: Record<string, unknown> | unknown[] | undefined
             ): ContractFilter<TAbi> => {
-                const argsArray = extractArgsArray(
-                    args,
-                    contract,
-                    prop as string
-                );
-
-                const criteriaSet = buildCriteria(contract, prop, argsArray);
+                const criteriaSet = buildCriteria(contract, prop, args);
 
                 return new ContractFilter<TAbi>(contract, [criteriaSet]);
             };
@@ -254,13 +247,7 @@ function getCriteriaProxy<TAbi extends Abi>(
             return (
                 args: Record<string, unknown> | unknown[] | undefined
             ): FilterCriteria => {
-                const argsArray = extractArgsArray(
-                    args,
-                    contract,
-                    prop as string
-                );
-
-                return buildCriteria(contract, prop, argsArray);
+                return buildCriteria(contract, prop, args);
             };
         }
     });
@@ -276,7 +263,7 @@ function getCriteriaProxy<TAbi extends Abi>(
 function buildCriteria<TAbi extends Abi>(
     contract: Contract<TAbi>,
     prop: string | symbol,
-    args: unknown[]
+    args: Record<string, unknown> | unknown[] | undefined
 ): FilterCriteria {
     // Create the VeChain sdk event ABI
     const eventAbi = contract.getEventAbi(prop);
@@ -398,78 +385,6 @@ function isTransactionComment(obj: unknown): obj is ClauseAdditionalOptions {
  */
 function isRevision(obj: unknown): obj is ClauseAdditionalOptions {
     return (obj as ClauseAdditionalOptions).revision !== undefined;
-}
-
-// Function to extract argument names and types from the ABI
-function getEventArgsMap(abi: Abi, eventName: string): Record<string, string> {
-    const event = abi.find(
-        (item) => item.type === 'event' && item.name === eventName
-    ) as AbiEvent | undefined;
-
-    if (event == null) {
-        throw new Error(`Event with name ${eventName} not found in ABI`);
-    }
-
-    const argsMap: Record<string, string> = {};
-
-    event.inputs.forEach((input) => {
-        argsMap[input.name as string] = input.type;
-    });
-
-    return argsMap;
-}
-
-// Function to map an object to its corresponding fields in the event argument map
-function mapObjectToEventArgs(
-    obj: Record<string, unknown>,
-    eventArgsMap: Record<string, string>
-): Record<string, unknown> {
-    const mappedObject: Record<string, unknown> = {};
-
-    for (const [argName] of Object.entries(eventArgsMap)) {
-        if (Object.prototype.hasOwnProperty.call(obj, argName)) {
-            mappedObject[argName] = obj[argName];
-        } else {
-            mappedObject[argName] = undefined;
-        }
-    }
-
-    return mappedObject;
-}
-
-/**
- * Extracts the arguments as an array from the provided arguments object.
- * @param args - The arguments object to extract the arguments from.
- * @param contract - The contract instance to extract the event arguments for.
- * @param prop - The property name of the contract event.
- * @returns The arguments as an array.
- */
-function extractArgsArray<TAbi extends Abi>(
-    args: Record<string, unknown> | unknown[] | undefined,
-    contract: Contract<TAbi>,
-    prop: string
-): unknown[] {
-    if (args === undefined) {
-        return [];
-    }
-
-    let argsArray: unknown[] = [];
-
-    if (Array.isArray(args)) {
-        argsArray = args;
-    } else {
-        // extract the event arguments from the abi
-        const eventsArgsMap = getEventArgsMap(contract.abi, prop);
-
-        // map the args as input to the event arguments
-        const mappedObj = mapObjectToEventArgs(args, eventsArgsMap);
-
-        // turn the mapped args into an array
-        argsArray = Object.entries(mappedObj).map(([_key, value]) => {
-            return value;
-        });
-    }
-    return argsArray;
 }
 
 export {
