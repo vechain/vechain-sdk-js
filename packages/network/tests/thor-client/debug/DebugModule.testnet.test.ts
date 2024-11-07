@@ -1,4 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
+import { InvalidDataType } from '@vechain/sdk-errors';
 import {
     TESTNET_URL,
     ThorClient,
@@ -15,8 +16,6 @@ import {
     VET,
     VTHO
 } from '@vechain/sdk-core';
-import { InvalidDataType } from '@vechain/sdk-errors';
-import { traceContractCallTestnetFixture } from './fixture-thorest';
 
 const TIMEOUT = 5000;
 
@@ -287,8 +286,6 @@ describe('DebugModule testnet tests', () => {
         test(
             'ok <- token transfer',
             async () => {
-                const positiveTestCase =
-                    traceContractCallTestnetFixture.positiveCases[0];
                 const target = {
                     to: Address.of(
                         '0x0000000000000000000000000000456E65726779'
@@ -307,7 +304,7 @@ describe('DebugModule testnet tests', () => {
                     ).toString(),
                     expiration: 18,
                     blockRef: BlockRef.of('0x0101d05409d55cce').toString(),
-                    gas: positiveTestCase.gas
+                    gas: 0
                 };
                 const name = 'call';
                 const expected = {

@@ -2,11 +2,11 @@ import { InvalidDataType } from '@vechain/sdk-errors';
 import { thorest } from '../../utils';
 import { type ContractTraceTarget } from './ContractTraceTarget';
 import { type HttpClient } from '../../http';
+import { type RetrieveStorageRange } from './RetrieveStorageRange';
 import { type RetrieveStorageRangeOptions } from './RetrieveStorageRangeOptions';
 import { type TransactionTraceTarget } from './TransactionTraceTarget';
 import {
     type ContractTraceOptions,
-    type RetrieveStorageRangeReturnType,
     type TracerConfig,
     type TraceReturnType,
     type TracerName
@@ -34,14 +34,14 @@ class DebugModule {
      * @param {KeyStart} [input.options.keyStart] - The starting key for the storage range retrieval.
      * @param {number} [input.options.maxResult] - The maximum number of results to retrieve.
      *
-     * @return {Promise<RetrieveStorageRangeReturnType>} The storage range data for the specified target.
+     * @return {Promise<RetrieveStorageRange>} The storage range data for the specified target.
      *
      * @throws IllegalDataType If {@link TransactionTraceTarget} `input.target` has a negative `clauseIndex` or `transaction` property.
      */
     public async retrieveStorageRange(input: {
         target: TransactionTraceTarget;
         options?: RetrieveStorageRangeOptions;
-    }): Promise<RetrieveStorageRangeReturnType> {
+    }): Promise<RetrieveStorageRange> {
         // Validate target. If invalid, assert
         this.validateTarget(input.target, 'retrieveStorageRange');
 
@@ -61,7 +61,7 @@ class DebugModule {
                 },
                 headers: {}
             }
-        )) as RetrieveStorageRangeReturnType;
+        )) as RetrieveStorageRange;
     }
 
     /**

@@ -119,38 +119,9 @@ type TraceReturnType<TraceNameType extends TracerName | undefined> =
  */
 type ContractTraceOptions = Omit<SimulateTransactionOptions, 'revision'>;
 
-/**
- * Return type for retrieve storage range function
- */
-interface RetrieveStorageRangeReturnType {
-    /**
-     * The next key to be used for the next retrieve storage range call.
-     */
-    nextKey: string | null;
-
-    /**
-     * The data is non-nullable, but an empty object is returned if no data is found.
-     */
-    storage: Record<
-        string,
-        {
-            /**
-             * Storage key.
-             */
-            key: string;
-
-            /**
-             * Storage value.
-             */
-            value: string;
-        }
-    >;
-}
-
 export {
     type TracerName,
     type TracerConfig,
     type TraceReturnType,
-    type ContractTraceOptions,
-    type RetrieveStorageRangeReturnType
+    type ContractTraceOptions
 };

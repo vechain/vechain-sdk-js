@@ -1,4 +1,5 @@
 import { TESTNET_URL, ThorClient } from '@vechain/sdk-network';
+import { Address, HexUInt, VET } from '@vechain/sdk-core';
 
 // START_SNIPPET: DebugTraceContractCallSnippet
 
@@ -8,12 +9,14 @@ const thorClient = ThorClient.at(TESTNET_URL);
 // 2 - Trace the contract call.
 const result = await thorClient.debug.traceContractCall(
     {
-        contractInput: {
-            to: '0x0000000000000000000000000000456E65726779',
-            data: '0xa9059cbb0000000000000000000000000000000000000000000000000000456e65726779000000000000000000000000000000000000000000000004563918244f400000',
-            value: '0x0'
+        target: {
+            to: Address.of('0x0000000000000000000000000000456E65726779'),
+            data: HexUInt.of(
+                '0xa9059cbb0000000000000000000000000000000000000000000000000000456e65726779000000000000000000000000000000000000000000000004563918244f400000'
+            ),
+            value: VET.of(0)
         },
-        transactionOptions: {
+        options: {
             caller: '0x625fCe8dd8E2C05e82e77847F3da06AF6e55A7AF',
             gasPayer: '0x625fCe8dd8E2C05e82e77847F3da06AF6e55A7AF',
             expiration: 18,

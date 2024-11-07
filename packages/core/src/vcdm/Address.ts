@@ -50,7 +50,7 @@ class Address extends HexUInt {
     }
 
     /**
-     * Create ab Address instance from the given expression interpreted as an unsigned integer.
+     * Create an Address instance from the given expression interpreted as an unsigned integer.
      *
      * @param exp - The expression to convert. It can be of type bigint, number, string, Uint8Array, or HexUInt.
      *
