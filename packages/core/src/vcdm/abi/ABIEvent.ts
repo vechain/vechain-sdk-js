@@ -138,7 +138,7 @@ class ABIEvent<
      * @returns {ABIEventData} Encoded data along with topics.
      * @remarks There is no equivalent to encodeEventLog in viem {@link https://viem.sh/docs/ethers-migration}. Discussion started here {@link https://github.com/wevm/viem/discussions/2676}.
      */
-    public encodeEventLog<TValue>(dataToEncode: TValue[]): ABIEventData {
+    public encodeEventLog(dataToEncode: unknown[]): ABIEventData {
         try {
             const topics = this.encodeFilterTopics(dataToEncode);
             const dataTypes: AbiEventParameter[] = [];
@@ -181,10 +181,13 @@ class ABIEvent<
      * @returns Encoded topics array.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public encodeFilterTopics<TValue>(
-        valuesToEncode: TValue[]
+    public encodeFilterTopics(
+        valuesToEncode: Record<string, unknown> | unknown[] | undefined
     ): EncodeEventTopicsReturnType {
-        if (this.abiEvent.inputs.length < valuesToEncode.length) {
+        const valuesToEncodeLength = Array.isArray(valuesToEncode)
+            ? valuesToEncode.length
+            : Object.values(valuesToEncode ?? {}).length;
+        if (this.abiEvent.inputs.length < valuesToEncodeLength) {
             throw new InvalidAbiDataToEncodeOrDecode(
                 'ABIEvent.encodeEventLog',
                 'Encoding failed: Data format is invalid. Number of values to encode is greater than the inputs.',
@@ -214,8 +217,8 @@ class ABIEvent<
      * @returns Encoded topics array.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public encodeFilterTopicsNoNull<TValue>(
-        valuesToEncode: TValue[]
+    public encodeFilterTopicsNoNull(
+        valuesToEncode: Record<string, unknown> | unknown[] | undefined
     ): Array<string | undefined> {
         const encodedTopics = this.encodeFilterTopics(
             valuesToEncode

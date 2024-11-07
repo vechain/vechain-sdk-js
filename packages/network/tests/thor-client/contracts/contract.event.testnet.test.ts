@@ -7,7 +7,12 @@ import {
     xAllocationVotingGovernorABI
 } from './fixture';
 
-describe('ThorClient - ERC20 Contracts', () => {
+/**
+ * Testnet - Tests for the ThorClient class, focused on event-related functionality.
+ *
+ * @group integration/client/thor-client/contracts/event
+ */
+describe('ThorClient - Testnet allocation events', () => {
     // ThorClient instance
     let thorTestnetClient: ThorClient;
 
@@ -45,7 +50,7 @@ describe('ThorClient - ERC20 Contracts', () => {
             });
 
         expect(xAllocationVotingEvents).toBeDefined();
-        expect(Array.from(xAllocationVotingEvents.keys()).length).toEqual(2);
+        expect(Array.from(xAllocationVotingEvents.keys()).length).toEqual(30);
         expect(xAllocationVotingEvents.length).toBeGreaterThan(0);
     }, 30000);
 

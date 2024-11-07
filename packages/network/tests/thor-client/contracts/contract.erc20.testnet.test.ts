@@ -16,8 +16,6 @@ import { ERC20_ABI, HexUInt } from '@vechain/sdk-core';
 /**
  * Tests for the ThorClient class, specifically focusing on ERC20 contract-related functionality.
  *
- * @NOTE: This test suite runs on the solo network because it requires sending transactions.
- *
  * @group integration/client/thor-client/contracts/erc20
  */
 describe('ThorClient - ERC20 Contracts on testnet', () => {

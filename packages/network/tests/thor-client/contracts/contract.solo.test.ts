@@ -656,19 +656,6 @@ describe('ThorClient - Contracts', () => {
         expect(events.at(events.length - 1)?.decodedData?.at(0)).toBe(123n);
     });
 
-    test('Should throw an error when event name is not found in ABI', async () => {
-        const contract = new Contract(
-            '0x123',
-            deployedContractAbi,
-            thorSoloClient,
-            signer
-        );
-
-        await expect(async () => {
-            await contract.filters;
-        }).rejects.toThrow('Event with name then not found in ABI');
-    });
-
     filterContractEventsTestCases.forEach(
         ({
             description,

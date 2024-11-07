@@ -201,6 +201,47 @@ const toRandomAddress = generateRandomValidAddress();
 const randomBigInt = BigInt(Math.floor(Math.random() * 1000));
 
 /**
+ * RewardDistributed event
+ */
+const rewardDistributedEvent = {
+    anonymous: false,
+    inputs: [
+        {
+            indexed: false,
+            internalType: 'uint256',
+            name: 'amount',
+            type: 'uint256'
+        },
+        {
+            indexed: true,
+            internalType: 'bytes32',
+            name: 'appId',
+            type: 'bytes32'
+        },
+        {
+            indexed: true,
+            internalType: 'address',
+            name: 'receiver',
+            type: 'address'
+        },
+        {
+            indexed: false,
+            internalType: 'string',
+            name: 'proof',
+            type: 'string'
+        },
+        {
+            indexed: true,
+            internalType: 'address',
+            name: 'distributor',
+            type: 'address'
+        }
+    ],
+    name: 'RewardDistributed',
+    type: 'event'
+};
+
+/**
  * Event test cases for encoding topics
  */
 const topicsEventTestCases = [
@@ -329,6 +370,18 @@ const topicsEventTestCases = [
         expectedTopics: [
             '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
         ]
+    },
+    {
+        event: rewardDistributedEvent,
+        valuesToEncode: {
+            appId: '0x6c977a18d427360e27c3fc2129a6942acd4ece2c8aaeaf4690034931dc5ba7f9' // EVEarn
+        },
+        expectedTopics: [
+            '0x4811710b0c25cc7e05baf214b3a939cf893f1cbff4d0b219e680f069a4f204a2',
+            '0x6c977a18d427360e27c3fc2129a6942acd4ece2c8aaeaf4690034931dc5ba7f9',
+            undefined,
+            undefined
+        ]
     }
 ];
 
@@ -365,6 +418,18 @@ const invalidTopicsEventTestCases = [
             toRandomAddress,
             fromRandomAddress,
             toRandomAddress
+        ],
+        expectedError: InvalidAbiDataToEncodeOrDecode
+    },
+    {
+        event: rewardDistributedEvent,
+        valuesToEncode: [
+            // Wrong parameters
+            fromRandomAddress,
+            toRandomAddress,
+            fromRandomAddress,
+            toRandomAddress,
+            fromRandomAddress
         ],
         expectedError: InvalidAbiDataToEncodeOrDecode
     }
