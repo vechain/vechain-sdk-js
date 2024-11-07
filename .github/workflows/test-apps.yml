@@ -18,6 +18,9 @@ jobs:
  
             - name: Install packages
               run: yarn install
+
+            - name: Install playwright dependencies (for sample Vite dApp tests)
+              run: yarn playwright install
                 
             - name: Build packages
               run: yarn build
