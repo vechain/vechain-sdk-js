@@ -72,7 +72,10 @@ const debugTraceCall = async (
                     gasPrice: transactionOptions.gasPrice
                 },
                 target: {
-                    to: Address.of(transactionOptions.to),
+                    to:
+                        typeof transactionOptions.to === 'string'
+                            ? Address.of(transactionOptions.to)
+                            : transactionOptions.to,
                     data:
                         typeof transactionOptions.data === 'string'
                             ? HexUInt.of(transactionOptions.data)

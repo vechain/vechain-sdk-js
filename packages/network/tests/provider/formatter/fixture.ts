@@ -332,7 +332,7 @@ const transactionFixtures = [
             dependsOn: null,
             size: 709,
             meta: {
-                blockId:
+                blockID:
                     '0x010b7b5f0192003f70bf2a6a502221e075cb32d676e3443614d21003cc2ee440',
                 blockNumber: 17529695,
                 blockTimestamp: 1705328340
