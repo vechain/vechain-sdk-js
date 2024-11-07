@@ -23,24 +23,6 @@ import {
 import { type SimulateTransactionOptions } from '../transactions/types';
 
 /**
- * Type for target of TraceTransactionClause.
- */
-interface TransactionTraceTarget {
-    /**
-     * Block ID.
-     */
-    blockID: string;
-    /**
-     * Transaction ID or Transaction index.
-     */
-    transaction: number | string;
-    /**
-     * Clause index.
-     */
-    clauseIndex: number;
-}
-
-/**
  * TracerName is the name of the tracer to use.
  *
  * It determines Output and Input configuration.
@@ -138,28 +120,6 @@ type TraceReturnType<TraceNameType extends TracerName | undefined> =
 type ContractTraceOptions = Omit<SimulateTransactionOptions, 'revision'>;
 
 /**
- * Type for input options
- * for retrieve storage range function
- */
-interface RetrieveStorageRangeInputOptions {
-    /**
-     * The address of the contract/ account to be traced.
-     */
-    address?: string;
-
-    /**
-     * The start key of the storage range.
-     * Default is 0x0000000000000000000000000000000000000000000000000000000000000000.
-     */
-    keyStart?: string;
-
-    /**
-     * The maximum number of results to be returned. Default is 1000.
-     */
-    maxResult?: number;
-}
-
-/**
  * Return type for retrieve storage range function
  */
 interface RetrieveStorageRangeReturnType {
@@ -192,6 +152,5 @@ export {
     type TracerConfig,
     type TraceReturnType,
     type ContractTraceOptions,
-    type RetrieveStorageRangeInputOptions,
     type RetrieveStorageRangeReturnType
 };

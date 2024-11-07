@@ -114,7 +114,7 @@ describe('ThorClient - Debug Module - Solo', () => {
                     await thorSoloClient.debug.traceTransactionClause(
                         {
                             target: {
-                                blockID: BlockId.of(
+                                blockId: BlockId.of(
                                     txReceipt?.meta.blockID as string
                                 ),
                                 transaction: BlockId.of(

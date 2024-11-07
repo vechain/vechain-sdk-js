@@ -73,7 +73,7 @@ const debugTraceTransaction = async (
         const trace = (await thorClient.debug.traceTransactionClause(
             {
                 target: {
-                    blockID: ThorId.of(transactionReceipt?.blockHash as string),
+                    blockId: ThorId.of(transactionReceipt?.blockHash as string),
                     transaction: ThorId.of(
                         transactionReceipt?.transactionHash as string
                     ),

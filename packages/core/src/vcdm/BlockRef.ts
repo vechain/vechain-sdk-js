@@ -84,5 +84,4 @@ class BlockRef extends HexUInt {
     }
 }
 
-
 export { BlockRef };

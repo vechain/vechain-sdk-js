@@ -2,10 +2,10 @@ import { InvalidDataType } from '@vechain/sdk-errors';
 import { thorest } from '../../utils';
 import { type ContractTraceTarget } from './ContractTraceTarget';
 import { type HttpClient } from '../../http';
+import { type RetrieveStorageRangeOptions } from './RetrieveStorageRangeOptions';
 import { type TransactionTraceTarget } from './TransactionTraceTarget';
 import {
     type ContractTraceOptions,
-    type RetrieveStorageRangeInputOptions,
     type RetrieveStorageRangeReturnType,
     type TracerConfig,
     type TraceReturnType,
@@ -22,7 +22,46 @@ class DebugModule {
      *
      * @param {HttpClient} httpClient - The HTTP client instance to be used for making requests.
      */
-    constructor(readonly httpClient: HttpClient) {
+    constructor(readonly httpClient: HttpClient) {}
+
+    /**
+     * Retrieve the storage range for a specified transaction trace target.
+     *
+     * @param {Object} input - The input parameters.
+     * @param {TransactionTraceTarget} input.target - The transaction trace target containing the block ID, transaction, and clause index.
+     * @param {RetrieveStorageRangeOptions} [input.options] - Optional settings for the retrieval process.
+     * @param {Address} [input.options.address] - The address for which to retrieve the storage range.
+     * @param {KeyStart} [input.options.keyStart] - The starting key for the storage range retrieval.
+     * @param {number} [input.options.maxResult] - The maximum number of results to retrieve.
+     *
+     * @return {Promise<RetrieveStorageRangeReturnType>} The storage range data for the specified target.
+     *
+     * @throws IllegalDataType If {@link TransactionTraceTarget} `input.target` has a negative `clauseIndex` or `transaction` property.
+     */
+    public async retrieveStorageRange(input: {
+        target: TransactionTraceTarget;
+        options?: RetrieveStorageRangeOptions;
+    }): Promise<RetrieveStorageRangeReturnType> {
+        // Validate target. If invalid, assert
+        this.validateTarget(input.target, 'retrieveStorageRange');
+
+        // Parse target
+        const parsedTarget = `${input.target.blockId}/${input.target.transaction}/${input.target.clauseIndex}`;
+
+        // Send request
+        return (await this.httpClient.post(
+            thorest.debug.post.RETRIEVE_STORAGE_RANGE(),
+            {
+                query: {},
+                body: {
+                    target: parsedTarget,
+                    address: input.options?.address?.toString(),
+                    keyStart: input.options?.keyStart?.toString(),
+                    maxResult: input.options?.maxResult
+                },
+                headers: {}
+            }
+        )) as RetrieveStorageRangeReturnType;
     }
 
     /**
@@ -51,9 +90,10 @@ class DebugModule {
                 body: {
                     to: input.target?.to?.toString(),
                     data: input.target?.data?.toString(),
-                    value: typeof input.target?.value?.wei === 'bigint'
-                        ? HexUInt.of(input.target.value.wei).toString()
-                        : undefined,
+                    value:
+                        typeof input.target?.value?.wei === 'bigint'
+                            ? HexUInt.of(input.target.value.wei).toString()
+                            : undefined,
                     name,
                     gas: input.options?.gas,
                     gasPrice: input.options?.gasPrice,
@@ -91,7 +131,7 @@ class DebugModule {
         // Validate target. If invalid, assert
         this.validateTarget(input.target, 'traceTransactionClause');
         // Parse target
-        const parsedTarget = `${input.target.blockID}/${input.target.transaction}/${input.target.clauseIndex}`;
+        const parsedTarget = `${input.target.blockId}/${input.target.transaction}/${input.target.clauseIndex}`;
         // Send request
         return (await this.httpClient.post(
             thorest.debug.post.TRACE_TRANSACTION_CLAUSE(),
@@ -105,45 +145,6 @@ class DebugModule {
                 headers: {}
             }
         )) as TraceReturnType<typeof name>;
-    }
-
-    /**
-     * Retrieve the storage range.
-     *
-     * This endpoint enables clients to retrieve the storage range for the
-     * coordinates specified in the `input` parameter.
-     *
-     * @param input - the coordinates to retrieve the storage range. It has:
-     * * target - {@link TransactionTraceTarget} specifies `blockID`,
-     *           `transaction` address and `clauseIndex` number.
-     * * options - {@link RetrieveStorageRangeInputOptions} specified the
-     *           `address` if the contract or account to retrieve the
-     *           storage range for. Nullable.
-     */
-    public async retrieveStorageRange(input: {
-        target: TransactionTraceTarget;
-        options?: RetrieveStorageRangeInputOptions;
-    }): Promise<RetrieveStorageRangeReturnType> {
-        // Validate target. If invalid, assert
-        this.validateTarget(input.target, 'retrieveStorageRange');
-
-        // Parse target
-        const parsedTarget = `${input.target.blockID}/${input.target.transaction}/${input.target.clauseIndex}`;
-
-        // Send request
-        return (await this.httpClient.post(
-            thorest.debug.post.RETRIEVE_STORAGE_RANGE(),
-            {
-                query: {},
-                body: {
-                    target: parsedTarget,
-                    address: input.options?.address,
-                    keyStart: input.options?.keyStart,
-                    maxResult: input.options?.maxResult
-                },
-                headers: {}
-            }
-        )) as RetrieveStorageRangeReturnType;
     }
 
     /**

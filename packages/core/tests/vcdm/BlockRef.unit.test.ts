@@ -92,11 +92,15 @@ describe('BlockRef class tests.', () => {
 
     describe('isValid0x method tests', () => {
         test('Return false for no hex expression', () => {
-            expect(BlockRef.isValid0x(BlockRefFixture.invalid.noHex)).toBe(false);
+            expect(BlockRef.isValid0x(BlockRefFixture.invalid.noHex)).toBe(
+                false
+            );
         });
 
         test('Return false for short expression', () => {
-            expect(BlockRef.isValid0x(BlockRefFixture.invalid.short)).toBe(false);
+            expect(BlockRef.isValid0x(BlockRefFixture.invalid.short)).toBe(
+                false
+            );
         });
 
         test('Return true for valid `0x` prefixed expression', () => {
@@ -105,7 +109,9 @@ describe('BlockRef class tests.', () => {
 
         test('Return false for valid `not prefixed expression', () => {
             expect(
-                BlockRef.isValid0x(HexUInt.of(BlockRefFixture.valid.bytes).digits)
+                BlockRef.isValid0x(
+                    HexUInt.of(BlockRefFixture.valid.bytes).digits
+                )
             ).toBe(false);
         });
     });

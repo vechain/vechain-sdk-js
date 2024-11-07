@@ -88,7 +88,6 @@ class BlockId extends HexUInt {
  * This class is an alias of {@link BlockId} for back compatibility.
  */
 class ThorId extends BlockId {
-
     /**
      * Constructs an instance of the class with the specified block ID.
      *

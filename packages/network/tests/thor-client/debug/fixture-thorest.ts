@@ -10,7 +10,7 @@ import {
     transfer1VTHOClause,
     transferTransactionBodyValueAsNumber
 } from '../transactions/fixture';
-import { HexUInt, ThorId, Transaction } from '@vechain/sdk-core';
+import { HexUInt, BlockId, Transaction } from '@vechain/sdk-core';
 
 /**
  * Debug traceTransactionClause tests fixture testnet
@@ -27,10 +27,10 @@ const traceTransactionClauseTestnetFixture = {
         {
             testName:
                 'traceTransactionClause - transaction 1 with transaction ID',
-            blockID: ThorId.of(
+            blockID: BlockId.of(
                 '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f'
             ),
-            transaction: ThorId.of(
+            transaction: BlockId.of(
                 '0x2dbc8268a2dbf889abe828c0671cb9adce61f537aab8855480aff6967e0ed687'
             ),
             clauseIndex: 0,
@@ -48,7 +48,7 @@ const traceTransactionClauseTestnetFixture = {
         {
             testName:
                 'traceTransactionClause - transaction 1 with transaction  index into block',
-            blockID: ThorId.of(
+            blockID: BlockId.of(
                 '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f'
             ),
             transaction: 0,
@@ -67,10 +67,10 @@ const traceTransactionClauseTestnetFixture = {
         {
             testName:
                 'traceTransactionClause - transaction 2 with transaction ID',
-            blockID: ThorId.of(
+            blockID: BlockId.of(
                 '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f'
             ),
-            transaction: ThorId.of(
+            transaction: BlockId.of(
                 '0x05b31824569f2f2ec64c62c4e6396199f56ae872ff219288eb3293b4a36e7b0f'
             ),
             clauseIndex: 0,
@@ -88,7 +88,7 @@ const traceTransactionClauseTestnetFixture = {
         {
             testName:
                 'traceTransactionClause - transaction 2 with transaction index into block',
-            blockID: ThorId.of(
+            blockID: BlockId.of(
                 '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f'
             ),
             transaction: 1,
@@ -110,7 +110,7 @@ const traceTransactionClauseTestnetFixture = {
         {
             testName: 'traceTransactionClause - transaction 1 invalid block ID',
             blockID: 'INVALID',
-            transaction: ThorId.of(
+            transaction: BlockId.of(
                 '0x2dbc8268a2dbf889abe828c0671cb9adce61f537aab8855480aff6967e0ed687'
             ),
             clauseIndex: 0,
@@ -120,7 +120,7 @@ const traceTransactionClauseTestnetFixture = {
         {
             testName:
                 'traceTransactionClause - transaction 1 invalid transaction ID',
-            blockID: ThorId.of(
+            blockID: BlockId.of(
                 '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f'
             ),
             transaction: 'INVALID',
@@ -131,7 +131,7 @@ const traceTransactionClauseTestnetFixture = {
         {
             testName:
                 'traceTransactionClause - transaction 1 invalid transaction index',
-            blockID: ThorId.of(
+            blockID: BlockId.of(
                 '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f'
             ),
             transaction: -1,
@@ -142,7 +142,7 @@ const traceTransactionClauseTestnetFixture = {
         {
             testName:
                 'traceTransactionClause - transaction 1 invalid clause index',
-            blockID: ThorId.of(
+            blockID: BlockId.of(
                 '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f'
             ),
             transaction: 0,
@@ -265,10 +265,11 @@ const retrieveStorageRangeTestnetFixture = {
         {
             testName: 'retrieveStorageRange - VTHO contract transaction 0',
             address: '0x0000000000000000000000000000456E65726779',
-            keyStart:
-                '0x0000000000000000000000000000000000000000000000000000000000000000',
+            keyStart: BlockId.of(
+                '0x0000000000000000000000000000000000000000000000000000000000000000'
+            ),
             maxResult: 10,
-            blockID: ThorId.of(
+            blockID: BlockId.of(
                 '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f'
             ),
             transaction: 0,
@@ -337,7 +338,7 @@ const retrieveStorageRangeTestnetFixture = {
             keyStart:
                 '0x0000000000000000000000000000000000000000000000000000000000000000',
             maxResult: 10,
-            blockID: ThorId.of(
+            blockID: BlockId.of(
                 '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f'
             ),
             transaction: 1,
