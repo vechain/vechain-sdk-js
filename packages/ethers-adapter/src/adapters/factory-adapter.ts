@@ -1,6 +1,10 @@
 import { UnsupportedOperation } from '@vechain/sdk-errors';
 import type { HardhatVeChainProvider } from '@vechain/sdk-network';
-import type { BaseContract, ContractFactory, ContractMethodArgs } from 'ethers';
+import {
+    BaseContract,
+    type ContractFactory,
+    type ContractMethodArgs
+} from 'ethers';
 
 /**
  * Factory adapter for the VeChain hardhat plugin
