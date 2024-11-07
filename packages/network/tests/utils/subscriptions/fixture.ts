@@ -1,4 +1,5 @@
-import { Hex, vechain_sdk_core_ethers } from '@vechain/sdk-core';
+import { Hex } from '@vechain/sdk-core';
+import { EventFragment, hexlify, toBeHex, zeroPadValue } from 'ethers';
 import { TESTING_CONTRACT_ADDRESS } from '../../fixture';
 // eslint-disable-next-line import/no-named-default
 import { default as NodeWebSocket } from 'isomorphic-ws';
@@ -57,7 +58,7 @@ const getEventSubscriptionUrlTestCases = [
         )}&t2=0x000000000000000000000000${toRandomAddress.slice(2)}`
     },
     {
-        event: vechain_sdk_core_ethers.EventFragment.from({
+        event: EventFragment.from({
             anonymous: false,
             inputs: [
                 {
@@ -157,12 +158,7 @@ const getEventSubscriptionUrlTestCases = [
             // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
         )}&t2=0x000000000000000000000000${toRandomAddress.slice(
             2
-        )}&t3=${vechain_sdk_core_ethers.zeroPadValue(
-            vechain_sdk_core_ethers.hexlify(
-                vechain_sdk_core_ethers.toBeHex(randomBigInt)
-            ),
-            32
-        )}`
+        )}&t3=${zeroPadValue(hexlify(toBeHex(randomBigInt)), 32)}`
     },
     // WITH OPTIONS
     {
@@ -185,12 +181,7 @@ const getEventSubscriptionUrlTestCases = [
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
         expectedURL: `wss://testnet.vechain.org/subscriptions/event?addr=${TESTING_CONTRACT_ADDRESS}&t0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&t1=0x000000000000000000000000${fromRandomAddress.slice(
             2
-        )}&t3=${vechain_sdk_core_ethers.zeroPadValue(
-            vechain_sdk_core_ethers.hexlify(
-                vechain_sdk_core_ethers.toBeHex(randomBigInt)
-            ),
-            32
-        )}`
+        )}&t3=${zeroPadValue(hexlify(toBeHex(randomBigInt)), 32)}`
     },
     {
         event: 'event Swap(address indexed sender,uint amount0In,uint amount1In,uint amount0Out,uint amount1Out,address indexed to)',
@@ -315,10 +306,10 @@ async function testWebSocketConnection(url: string): Promise<boolean> {
 }
 
 export {
-    getEventSubscriptionUrlTestCases,
-    getBlockSubscriptionUrlTestCases,
-    getLegacyBeatSubscriptionUrlTestCases,
     getBeatSubscriptionUrlTestCases,
+    getBlockSubscriptionUrlTestCases,
+    getEventSubscriptionUrlTestCases,
+    getLegacyBeatSubscriptionUrlTestCases,
     getNewTransactionsSubscriptionUrlTestCases,
     getVETtransfersSubscriptionUrlTestCases,
     testWebSocketConnection

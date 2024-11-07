@@ -1,11 +1,11 @@
-import { JsonRpcApiProvider } from 'ethers';
-import { type HardhatVeChainProvider } from '../hardhat-provider/hardhat-provider';
+import { stringifyData } from '@vechain/sdk-errors';
 import {
+    JsonRpcApiProvider,
     type JsonRpcError,
     type JsonRpcPayload,
     type JsonRpcResult
-} from './types';
-import { stringifyData } from '@vechain/sdk-errors';
+} from 'ethers';
+import { type HardhatVeChainProvider } from '../hardhat-provider/hardhat-provider';
 
 /**
  * JSON RPC provider for ethers.
