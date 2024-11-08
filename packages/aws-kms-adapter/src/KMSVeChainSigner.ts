@@ -1,14 +1,7 @@
 import { bytesToHex, concatBytes } from '@noble/curves/abstract/utils';
 import { type SignatureType } from '@noble/curves/abstract/weierstrass';
 import { secp256k1 } from '@noble/curves/secp256k1';
-import {
-    Address,
-    Hex,
-    Keccak256,
-    Transaction,
-    Txt,
-    vechain_sdk_core_ethers
-} from '@vechain/sdk-core';
+import { Address, Hex, Keccak256, Transaction, Txt } from '@vechain/sdk-core';
 import { JSONRPCInvalidParams, SignerMethodError } from '@vechain/sdk-errors';
 import {
     type AvailableVeChainProviders,
@@ -18,6 +11,11 @@ import {
     VeChainAbstractSigner
 } from '@vechain/sdk-network';
 import { BitString, ObjectIdentifier, Sequence, verifySchema } from 'asn1js';
+import {
+    type TypedDataDomain,
+    TypedDataEncoder,
+    type TypedDataField
+} from 'ethers';
 import { recoverPublicKey, toHex } from 'viem';
 import { KMSVeChainProvider } from './KMSVeChainProvider';
 
@@ -383,23 +381,19 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
 
     /**
      * Signs a typed data returning the VeChain signature in hexadecimal format.
-     * @param {vechain_sdk_core_ethers.TypedDataDomain} domain to hash as typed data.
-     * @param {Record<string, vechain_sdk_core_ethers.TypedDataField[]>} types to hash as typed data.
+     * @param {TypedDataDomain} domain to hash as typed data.
+     * @param {Record<string, TypedDataField[]>} types to hash as typed data.
      * @param {Record<string, unknown>} value to hash as typed data.
      * @returns {string} The VeChain signature in hexadecimal format.
      */
     public async signTypedData(
-        domain: vechain_sdk_core_ethers.TypedDataDomain,
-        types: Record<string, vechain_sdk_core_ethers.TypedDataField[]>,
+        domain: TypedDataDomain,
+        types: Record<string, TypedDataField[]>,
         value: Record<string, unknown>
     ): Promise<string> {
         try {
             const payload = Hex.of(
-                vechain_sdk_core_ethers.TypedDataEncoder.hash(
-                    domain,
-                    types,
-                    value
-                )
+                TypedDataEncoder.hash(domain, types, value)
             ).bytes;
 
             return await this.signPayload(payload);

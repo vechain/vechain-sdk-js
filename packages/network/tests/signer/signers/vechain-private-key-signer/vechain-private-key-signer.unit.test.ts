@@ -6,14 +6,8 @@ import {
     jest,
     test
 } from '@jest/globals';
-import {
-    Address,
-    Hex,
-    HexUInt,
-    Secp256k1,
-    Txt,
-    vechain_sdk_core_ethers
-} from '@vechain/sdk-core';
+import { Address, Hex, HexUInt, Secp256k1, Txt } from '@vechain/sdk-core';
+import { Wallet } from 'ethers';
 import {
     TESTNET_URL,
     ThorClient,
@@ -264,9 +258,9 @@ describe('VeChain base signer tests', () => {
         });
 
         test('signMessage - ethers compatible - string', async () => {
-            const expected = await new vechain_sdk_core_ethers.Wallet(
-                EIP191_PRIVATE_KEY
-            ).signMessage(EIP191_MESSAGE);
+            const expected = await new Wallet(EIP191_PRIVATE_KEY).signMessage(
+                EIP191_MESSAGE
+            );
             const actual = await new VeChainPrivateKeySigner(
                 Hex.of(EIP191_PRIVATE_KEY).bytes,
                 provider
@@ -276,9 +270,9 @@ describe('VeChain base signer tests', () => {
 
         test('signMessage - ethers compatible - uint8array', async () => {
             const message = Txt.of(EIP191_MESSAGE).bytes;
-            const expected = await new vechain_sdk_core_ethers.Wallet(
-                EIP191_PRIVATE_KEY
-            ).signMessage(message);
+            const expected = await new Wallet(EIP191_PRIVATE_KEY).signMessage(
+                message
+            );
             const actual = await new VeChainPrivateKeySigner(
                 Hex.of(EIP191_PRIVATE_KEY).bytes,
                 provider
@@ -335,7 +329,7 @@ describe('VeChain base signer tests', () => {
         });
 
         test('signTypedData - ethers compatible', async () => {
-            const expected = await new vechain_sdk_core_ethers.Wallet(
+            const expected = await new Wallet(
                 eip712TestCases.valid.privateKey
             ).signTypedData(
                 eip712TestCases.valid.domain,

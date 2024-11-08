@@ -6,10 +6,11 @@ import {
     ThorId,
     Transaction,
     type TransactionBody,
-    type TransactionClause,
-    vechain_sdk_core_ethers
+    type TransactionClause
 } from '@vechain/sdk-core';
 import { InvalidDataType, InvalidTransactionField } from '@vechain/sdk-errors';
+import { ErrorFragment, Interface } from 'ethers';
+import { HttpMethod } from '../../http';
 import { blocksFormatter, getTransactionIndexIntoBlock } from '../../provider';
 import {
     buildQuery,
@@ -35,7 +36,6 @@ import {
     type TransactionSimulationResult,
     type WaitForTransactionOptions
 } from './types';
-import { HttpMethod } from '../../http';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
@@ -475,12 +475,12 @@ class TransactionsModule {
         }
         // Solidity error, an error fragment is provided, so decode the revert reason using solidity error
         else if (errorFragment !== undefined) {
-            const errorInterface = new vechain_sdk_core_ethers.Interface([
-                vechain_sdk_core_ethers.ErrorFragment.from(errorFragment)
+            const errorInterface = new Interface([
+                ErrorFragment.from(errorFragment)
             ]);
             return errorInterface
                 .decodeErrorResult(
-                    vechain_sdk_core_ethers.ErrorFragment.from(errorFragment),
+                    ErrorFragment.from(errorFragment),
                     encodedRevertReason
                 )
                 .toArray()[0] as string;
