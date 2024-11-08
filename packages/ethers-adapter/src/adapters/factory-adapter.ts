@@ -3,7 +3,8 @@ import type { HardhatVeChainProvider } from '@vechain/sdk-network';
 import {
     BaseContract,
     type ContractFactory,
-    type ContractMethodArgs
+    type ContractMethodArgs,
+    type ContractTransactionResponse
 } from 'ethers';
 
 /**
@@ -41,14 +42,14 @@ function factoryAdapter<A extends unknown[], I>(
                 sentTx.hash
             );
 
-        // @ts-expect-error this return type is required by the contract factory deploy method
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return, sonarjs/new-operator-misuse
-        return new (BaseContract as unknown)(
+        return new BaseContract(
             receipt?.outputs[0].contractAddress ?? '',
             this.interface,
             this.runner,
             sentTx
-        );
+        ) as BaseContract & {
+            deploymentTransaction: () => ContractTransactionResponse;
+        } & Omit<I, keyof BaseContract>;
     };
     return contractFactory;
 }
