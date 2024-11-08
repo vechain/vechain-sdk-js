@@ -1,20 +1,5 @@
 ```mermaid
 classDiagram
-    class AccountData {
-        <<interface>>
-        string balance
-        string energy
-        boolean hasCode
-    }
-    class AccountDetail {
-        <<interface>>
-        VET vet
-        VTHO vtho
-    }
-    class AccountInputOptions {
-        <<interface>>
-        Revision revision
-    }
     class AccountsModule {
         HttpClient httpClient
         AccountsModule constructor(HttpClient httpClient)
@@ -31,7 +16,9 @@ classDiagram
     class DebugModule {
         HttpClient httpClient
         DebugModule constructor(HttpClient httpClient)
-        TraceReturnType~typeof name~ traceTransactionClause(input: TraceTransactionClauseInput, name: TracerName)
+        Promise ~RetrieveStorageRange~ retrieveStorageRange(input: RetrieveStorageRangeInput)
+        Promise ~TraceReturnType~typeof name~~ traceContractCall(input: TraceContractCallInput, name: TracerName)
+        Promise~TraceReturnType~typeof name~~ traceTransactionClause(input: TraceTransactionClauseInput, name: TracerName)
     }
     class GasModule {
     }
@@ -45,10 +32,26 @@ classDiagram
     }
     class NodesModule {
     }
+    class RetrieveStorageRangeInput {
+        <<interface>>
+        TransactionTraceTarget target
+        RetrieveStorageRangeOptions options
+    }
+    class RetrieveStorageRange {
+        <<interface>>
+        string|null nextKey
+        Record~string, Record~string key, string value~~
+    }
     class ThorClient {
         AccountModule accounts;
         ThorClient at(string url, BlockModuleOptions options)$
         destroy()
+    }
+    class TraceContractCallInput {
+        <<interface>>
+        ContractTraceTarget target
+        ContractTraceOptions options
+        TracerConfig~typeof name~ config
     }
     class TraceTransactionClauseInput {
         <<interface>>
@@ -63,9 +66,6 @@ classDiagram
     }
     class TransactionsModule {
     }
-    AccountData <|-- AccountDetail
-    AccountDetail o-- AccountsModule
-    AccountInputOptions o-- AccountsModule
     AccountsModule *-- ThorClient
     BlocksModule *-- GasModule
     BlocksModule *-- NodesModule
@@ -82,7 +82,10 @@ classDiagram
     HttpClient o-- ThorClient
     LogsModule *-- ThorClient
     NodesModule *-- ThorClient
+    RetrieveStorageRangeInput o-- DebugModule
+    TraceContractCallInput o-- DebugModule
     TraceTransactionClauseInput o-- DebugModule
+    TraceTransactionTarget *-- RetrieveStorageRangeInput
     TraceTransactionTarget *-- TraceTransactionClauseInput
     TransactionsModule *-- ContractsModule
     TransactionsModule *-- GasModule
