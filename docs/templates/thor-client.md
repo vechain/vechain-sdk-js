@@ -84,7 +84,7 @@ The Thor-client allows developers to interact with nodes on the VeChainThor netw
 
 In this example, the code initializes a Thor client for the VeChainThor testnet network and utilizes the `getNodes` method to retrieve information about connected peers.
 
- - `getNodes(): Promise<ConnectedPeer | null>`
+ - `getNodes(): Promise<ConnectedPeer[]>`
 
 The `getNodes` method simplifies the process of obtaining details about connected peers of a node in the VeChainThor network. The method returns information about the connected peers, allowing developers to monitor and analyze the network's node connectivity.
 

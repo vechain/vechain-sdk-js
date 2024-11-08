@@ -11,7 +11,7 @@ import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
 const netPeerCount = async (thorClient: ThorClient): Promise<number> => {
     try {
         const peers = await thorClient.nodes.getNodes();
-        return peers !== null ? peers.length : 0;
+        return peers.length;
     } catch (e) {
         throw new JSONRPCInternalError(
             'net_peerCount()',
