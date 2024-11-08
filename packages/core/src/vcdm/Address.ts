@@ -17,6 +17,11 @@ import {
  */
 class Address extends HexUInt {
     /**
+     * The address is 20 bytes hence 40 digits long.
+     */
+    public static readonly DIGITS: number = 40;
+
+    /**
      * It checksums a given hexadecimal address.
      *
      * @param {HexUInt} huint - The HexUInt object representing the hexadecimal value.
@@ -46,13 +51,16 @@ class Address extends HexUInt {
      * @returns {boolean} true if the expression is a valid address, false otherwise
      */
     public static isValid(exp: string): boolean {
-        return Hex.isValid0x(exp) && exp.length === 42;
+        return Hex.isValid0x(exp) && exp.length === Address.DIGITS + 2;
     }
 
     /**
      * Create an Address instance from the given expression interpreted as an unsigned integer.
      *
-     * @param exp - The expression to convert. It can be of type bigint, number, string, Uint8Array, or HexUInt.
+     * @param exp - The expression to convert.
+     * It can be of type bigint, number, string, Uint8Array, or HexUInt.
+     * Not meaningful `0` digits on the left of the expression can be omitted,
+     * the returned address is always 20 bytes, 40 digits expression.
      *
      * @returns {Address} The converted hexadecimal unsigned integer.
      *
@@ -63,8 +71,9 @@ class Address extends HexUInt {
     ): Address {
         try {
             const huint = HexUInt.of(exp);
-            if (Address.isValid(huint.toString())) {
-                const addressChecksummed: string = Address.checksum(huint);
+            const pad = HexUInt.of(huint.digits.padStart(40, '0'));
+            if (Address.isValid(pad.toString())) {
+                const addressChecksummed: string = Address.checksum(pad);
                 return new Address(
                     Hex.POSITIVE,
                     '0x0', // When we normalize we return the checksummed address as digits

@@ -9,7 +9,7 @@ import { InvalidDataType } from '@vechain/sdk-errors';
  */
 class BlockId extends HexUInt {
     /**
-     * Number of digits to represent a Thor ID value.
+     * Number of digits to represent a Thor block ID value.
      *
      * @remarks The `0x` prefix is excluded.
      *
