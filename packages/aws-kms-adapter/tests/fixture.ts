@@ -1354,6 +1354,8 @@ const removeAddressFromFeeDelegationWhitelist = async (
     const whitelistTransactionReceipt =
         (await whitelistResult.wait()) as TransactionReceipt;
 
+    console.log('LLEGA2', whitelistTransactionReceipt);
+
     // Verify that the transfer transaction did not revert
     expect(whitelistTransactionReceipt.reverted).toBe(false);
 
