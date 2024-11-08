@@ -1,9 +1,9 @@
-import { NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS, thorest } from '../../utils';
 import { InvalidDataType } from '@vechain/sdk-errors';
+import { HttpMethod } from '../../http';
+import { NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS, thorest } from '../../utils';
 import { type CompressedBlockDetail } from '../blocks';
 import { type ThorClient } from '../ThorClient';
 import { type ConnectedPeer } from './types';
-import { HttpMethod } from '../../http';
 
 /**
  * The `NodesModule` class serves as a module for node-related functionality, for example, checking the health of a node.
@@ -20,11 +20,12 @@ class NodesModule {
      *
      * @returns A promise that resolves to the list of connected peers.
      */
-    public async getNodes(): Promise<ConnectedPeer[] | null> {
-        return (await this.thor.httpClient.http(
+    public async getNodes(): Promise<ConnectedPeer[]> {
+        const nodes = (await this.thor.httpClient.http(
             HttpMethod.GET,
             thorest.nodes.get.NODES()
         )) as ConnectedPeer[] | null;
+        return nodes ?? [];
     }
 
     /**
