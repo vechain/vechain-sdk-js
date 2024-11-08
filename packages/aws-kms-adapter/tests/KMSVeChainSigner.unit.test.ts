@@ -1,10 +1,11 @@
-import { Hex, Txt, type vechain_sdk_core_ethers } from '@vechain/sdk-core';
+import { Hex, Txt } from '@vechain/sdk-core';
 import { JSONRPCInvalidParams, SignerMethodError } from '@vechain/sdk-errors';
 import {
     VeChainProvider,
     type ThorClient,
     type TransactionRequestInput
 } from '@vechain/sdk-network';
+import { type TypedDataDomain, type TypedDataField } from 'ethers';
 import { KMSVeChainProvider, KMSVeChainSigner } from '../src';
 import { EIP712_CONTRACT, EIP712_FROM, EIP712_TO } from './fixture';
 jest.mock('asn1js', () => ({
@@ -157,11 +158,8 @@ describe('KMSVeChainSigner', () => {
             const signer = new KMSVeChainSigner(provider);
             await expect(
                 signer.signTypedData(
-                    {} as unknown as vechain_sdk_core_ethers.TypedDataDomain,
-                    {} as unknown as Record<
-                        string,
-                        vechain_sdk_core_ethers.TypedDataField[]
-                    >,
+                    {} as unknown as TypedDataDomain,
+                    {} as unknown as Record<string, TypedDataField[]>,
                     {} as unknown as Record<string, unknown>
                 )
             ).rejects.toThrow(SignerMethodError);

@@ -1,6 +1,10 @@
-import type { HardhatVeChainProvider } from '@vechain/sdk-network';
-import { vechain_sdk_core_ethers } from '@vechain/sdk-core';
 import { UnsupportedOperation } from '@vechain/sdk-errors';
+import type { HardhatVeChainProvider } from '@vechain/sdk-network';
+import {
+    BaseContract,
+    type ContractFactory,
+    type ContractMethodArgs
+} from 'ethers';
 
 /**
  * Factory adapter for the VeChain hardhat plugin
@@ -11,12 +15,10 @@ import { UnsupportedOperation } from '@vechain/sdk-errors';
  * @throws {UnsupportedOperation}
  */
 function factoryAdapter<A extends unknown[], I>(
-    contractFactory: vechain_sdk_core_ethers.ContractFactory<A, I>,
+    contractFactory: ContractFactory<A, I>,
     hardhatVeChainProvider: HardhatVeChainProvider
-): vechain_sdk_core_ethers.ContractFactory<A, I> {
-    contractFactory.deploy = async function (
-        ...args: vechain_sdk_core_ethers.ContractMethodArgs<A>
-    ) {
+): ContractFactory<A, I> {
+    contractFactory.deploy = async function (...args: ContractMethodArgs<A>) {
         const tx = await this.getDeployTransaction(...args);
 
         if (
@@ -41,7 +43,7 @@ function factoryAdapter<A extends unknown[], I>(
 
         // @ts-expect-error this return type is required by the contract factory deploy method
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return, sonarjs/new-operator-misuse
-        return new (vechain_sdk_core_ethers.BaseContract as unknown)(
+        return new (BaseContract as unknown)(
             receipt?.outputs[0].contractAddress ?? '',
             this.interface,
             this.runner,

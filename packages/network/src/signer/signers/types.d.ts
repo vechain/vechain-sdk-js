@@ -1,7 +1,5 @@
-import {
-    type TransactionClause,
-    type vechain_sdk_core_ethers
-} from '@vechain/sdk-core';
+import { type TransactionClause } from '@vechain/sdk-core';
+import { type AccessListish } from 'ethers';
 import {
     type HardhatVeChainProvider,
     type VeChainProvider
@@ -173,7 +171,7 @@ interface TransactionRequestInput {
      *  list are //warmed// by preloading them, so their initial cost to
      *  fetch is guaranteed, but then each additional access is cheaper.
      */
-    accessList?: null | vechain_sdk_core_ethers.AccessListish;
+    accessList?: null | AccessListish;
 
     /**
      *  A custom object, which can be passed along for network-specific
@@ -374,7 +372,7 @@ interface VeChainSigner {
 
 export {
     type AvailableVeChainProviders,
-    type TransactionRequestInput,
     type SignTypedDataOptions,
+    type TransactionRequestInput,
     type VeChainSigner
 };

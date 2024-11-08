@@ -1,17 +1,17 @@
-import { vechain_sdk_core_ethers } from '@vechain/sdk-core';
-import { type HardhatVeChainProvider } from '../hardhat-provider/hardhat-provider';
+import { stringifyData } from '@vechain/sdk-errors';
 import {
+    JsonRpcApiProvider,
     type JsonRpcError,
     type JsonRpcPayload,
     type JsonRpcResult
-} from './types';
-import { stringifyData } from '@vechain/sdk-errors';
+} from 'ethers';
+import { type HardhatVeChainProvider } from '../hardhat-provider/hardhat-provider';
 
 /**
  * JSON RPC provider for ethers.
  * Needed to customize ethers functionality into hardhat plugin.
  */
-class JSONRPCEthersProvider extends vechain_sdk_core_ethers.JsonRpcApiProvider {
+class JSONRPCEthersProvider extends JsonRpcApiProvider {
     /**
      * Instance of Hardhat VeChain provider to wrap
      */

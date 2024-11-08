@@ -5,13 +5,12 @@ import {
     ABIItem,
     Address,
     Clause,
+    HexUInt,
     networkInfo,
     Transaction,
     Units,
-    vechain_sdk_core_ethers,
     ZERO_ADDRESS,
-    type TransactionClause,
-    HexUInt
+    type TransactionClause
 } from '@vechain/sdk-core';
 import { stringifyData } from '@vechain/sdk-errors';
 import {
@@ -19,6 +18,7 @@ import {
     THOR_SOLO_ACCOUNTS,
     THOR_SOLO_URL
 } from '@vechain/sdk-network';
+import { id, namehash } from 'ethers';
 import { ThorClient } from '../src';
 import { TESTING_CONTRACT_BYTECODE } from './const';
 
@@ -149,7 +149,7 @@ const seedVnsSolo = async (): Promise<void> => {
             ),
             {
                 types: ['address', 'bytes32'],
-                values: [vnsRegistry, vechain_sdk_core_ethers.namehash(tld)]
+                values: [vnsRegistry, namehash(tld)]
             }
         );
         const tx = await thorSoloClient.transactions.sendTransaction(
@@ -208,7 +208,7 @@ const seedVnsSolo = async (): Promise<void> => {
                         ),
                         [
                             '0x0000000000000000000000000000000000000000000000000000000000000000',
-                            vechain_sdk_core_ethers.id(tld),
+                            ethers.id(tld),
                             vnsRegistrar
                         ]
                     ) as TransactionClause,
@@ -220,7 +220,7 @@ const seedVnsSolo = async (): Promise<void> => {
                         ),
                         [
                             '0x0000000000000000000000000000000000000000000000000000000000000000',
-                            vechain_sdk_core_ethers.id('reverse'),
+                            id('reverse'),
                             THOR_SOLO_ACCOUNTS[4].address
                         ]
                     ) as TransactionClause,
@@ -230,11 +230,7 @@ const seedVnsSolo = async (): Promise<void> => {
                             ABIFunction,
                             'function setSubnodeOwner(bytes32 node, bytes32 label, address owner)'
                         ),
-                        [
-                            vechain_sdk_core_ethers.namehash('reverse'),
-                            vechain_sdk_core_ethers.id('addr'),
-                            vnsReverseRegistrar
-                        ]
+                        [namehash('reverse'), id('addr'), vnsReverseRegistrar]
                     ) as TransactionClause
                 ]
             }).sign(HexUInt.of(THOR_SOLO_ACCOUNTS[4].privateKey).bytes)
@@ -340,7 +336,7 @@ const seedVnsSolo = async (): Promise<void> => {
                             ABIFunction,
                             'function register(bytes32 id, address owner)'
                         ),
-                        [vechain_sdk_core_ethers.id(name), address]
+                        [id(name), address]
                     ),
                     Clause.callFunction(
                         Address.of(vnsRegistry),
@@ -348,10 +344,7 @@ const seedVnsSolo = async (): Promise<void> => {
                             ABIFunction,
                             'function setResolver(bytes32 node, address resolver)'
                         ),
-                        [
-                            vechain_sdk_core_ethers.namehash(fullName),
-                            vnsPublicResolver
-                        ]
+                        [namehash(fullName), vnsPublicResolver]
                     ),
                     Clause.callFunction(
                         Address.of(vnsPublicResolver),
@@ -359,7 +352,7 @@ const seedVnsSolo = async (): Promise<void> => {
                             ABIFunction,
                             'function setAddr(bytes32 node, address addr)'
                         ),
-                        [vechain_sdk_core_ethers.namehash(fullName), address]
+                        [namehash(fullName), address]
                     ),
                     Clause.callFunction(
                         Address.of(vnsReverseRegistrar),
@@ -401,10 +394,8 @@ const seedVnsSolo = async (): Promise<void> => {
                             'function setSubnodeOwner(bytes32 node, bytes32 label, address owner)'
                         ),
                         [
-                            vechain_sdk_core_ethers.namehash(
-                                `${parentName}.${tld}`
-                            ),
-                            vechain_sdk_core_ethers.id(name),
+                            namehash(`${parentName}.${tld}`),
+                            id(name),
                             THOR_SOLO_ACCOUNTS[4].address
                         ]
                     ),
@@ -414,10 +405,7 @@ const seedVnsSolo = async (): Promise<void> => {
                             ABIFunction,
                             'function setResolver(bytes32 node, address resolver)'
                         ),
-                        [
-                            vechain_sdk_core_ethers.namehash(fullName),
-                            vnsPublicResolver
-                        ]
+                        [namehash(fullName), vnsPublicResolver]
                     ),
                     Clause.callFunction(
                         Address.of(vnsPublicResolver),
@@ -425,7 +413,7 @@ const seedVnsSolo = async (): Promise<void> => {
                             ABIFunction,
                             'function setAddr(bytes32 node, address addr)'
                         ),
-                        [vechain_sdk_core_ethers.namehash(fullName), address]
+                        [namehash(fullName), address]
                     )
                 ]
             }).sign(HexUInt.of(THOR_SOLO_ACCOUNTS[4].privateKey).bytes)

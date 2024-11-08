@@ -1,5 +1,5 @@
-import { type vechain_sdk_core_ethers } from '@vechain/sdk-core';
 import { type HardhatVeChainProvider } from '@vechain/sdk-network';
+import { type Contract } from 'ethers';
 import { helpers } from './helpers';
 
 /**
@@ -10,9 +10,9 @@ import { helpers } from './helpers';
  * @returns The adapted contract
  */
 const contractAdapter = (
-    contract: vechain_sdk_core_ethers.Contract,
+    contract: Contract,
     hardhatVeChainProvider: HardhatVeChainProvider
-): vechain_sdk_core_ethers.Contract => {
+): Contract => {
     contract.getAddress = async function getAddress(): Promise<string> {
         return await helpers.getContractAddress(
             contract.deploymentTransaction()?.hash ?? '',

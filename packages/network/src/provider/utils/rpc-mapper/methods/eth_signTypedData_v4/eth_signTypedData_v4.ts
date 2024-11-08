@@ -1,9 +1,10 @@
-import { Address, type vechain_sdk_core_ethers } from '@vechain/sdk-core';
+import { Address } from '@vechain/sdk-core';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
+import type { TypedDataDomain, TypedDataField } from 'ethers';
 import type { VeChainSigner } from '../../../../../signer/signers';
 import type { ThorClient } from '../../../../../thor-client';
 import type { VeChainProvider } from '../../../../providers/vechain-provider';
@@ -59,8 +60,8 @@ const ethSignTypedDataV4 = async (
         string,
         {
             primaryType: string;
-            domain: vechain_sdk_core_ethers.TypedDataDomain;
-            types: Record<string, vechain_sdk_core_ethers.TypedDataField[]>;
+            domain: TypedDataDomain;
+            types: Record<string, TypedDataField[]>;
             message: Record<string, unknown>;
         }
     ];
