@@ -40,6 +40,7 @@ classDiagram
         #balance: Currency
     }
     class Address {
+        +number DIGITS$
         +string checksum(HexUInt huint)$
         +boolean isValid(string exp)$
         +Address of(bigint|number|string|Uint8Array|HexUInt exp)$

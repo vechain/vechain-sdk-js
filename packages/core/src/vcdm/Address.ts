@@ -72,18 +72,12 @@ class Address extends HexUInt {
         try {
             const huint = HexUInt.of(exp);
             const pad = HexUInt.of(huint.digits.padStart(40, '0'));
-            if (Address.isValid(pad.toString())) {
-                const addressChecksummed: string = Address.checksum(pad);
-                return new Address(
-                    Hex.POSITIVE,
-                    '0x0', // When we normalize we return the checksummed address as digits
-                    () => addressChecksummed.substring(2)
-                );
-            } else {
-                throw new InvalidDataType('Address.of', 'not a valid address', {
-                    huint
-                });
-            }
+            const addressChecksummed: string = Address.checksum(pad);
+            return new Address(
+                Hex.POSITIVE,
+                '0x0', // When we normalize we return the checksummed address as digits
+                () => addressChecksummed.substring(2)
+            );
         } catch (error) {
             throw new InvalidDataType(
                 'Address.of',

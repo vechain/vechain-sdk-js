@@ -47,7 +47,7 @@ const invalidEthGetCodeTestCases = [
     },
     {
         description: 'Should throw error for invalid address',
-        params: ['0x123', 'latest'],
+        params: ['0xinvalid', 'latest'],
         expectedError: JSONRPCInternalError
     },
     {
