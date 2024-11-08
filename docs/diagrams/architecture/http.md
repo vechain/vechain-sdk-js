@@ -10,7 +10,6 @@ classDiagram
         Promise~unknown~ get(string path, HttpParams path)
         Promise~unknown~ http(HttpMethod method, string path, HttpParams path)
         Promise~unknown~ post(string path, HttpParams path)
-        
     }
     class HttpMethod {
         <<enum>>

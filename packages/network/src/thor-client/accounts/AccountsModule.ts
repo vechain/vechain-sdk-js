@@ -2,7 +2,7 @@ import { AccountDetail } from './AccountDetail';
 import { buildQuery, thorest } from '../../utils';
 import { type AccountData } from './AccountData';
 import { type AccountInputOptions } from './AccountInputOptions';
-import { type Address, HexUInt, type ThorId } from '@vechain/sdk-core';
+import { type Address, type BlockId, HexUInt } from '@vechain/sdk-core';
 import { type HttpClient } from '../../http';
 
 /**
@@ -70,7 +70,7 @@ class AccountsModule {
      */
     public async getStorageAt(
         address: Address,
-        position: ThorId,
+        position: BlockId,
         options?: AccountInputOptions
     ): Promise<HexUInt> {
         const pos = position.toString();
