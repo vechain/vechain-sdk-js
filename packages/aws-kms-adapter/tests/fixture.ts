@@ -1305,6 +1305,10 @@ const addAddressToFeeDelegationWhitelist = async (
     const whitelistTransactionReceipt =
         (await whitelistResult.wait()) as TransactionReceipt;
 
+    if (whitelistTransactionReceipt.reverted) {
+        console.log(whitelistTransactionReceipt);
+    }
+
     // Verify that the transfer transaction did not revert
     expect(whitelistTransactionReceipt.reverted).toBe(false);
 
