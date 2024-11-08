@@ -1305,8 +1305,6 @@ const addAddressToFeeDelegationWhitelist = async (
     const whitelistTransactionReceipt =
         (await whitelistResult.wait()) as TransactionReceipt;
 
-    console.log('LLEGA', whitelistTransactionReceipt);
-
     // Verify that the transfer transaction did not revert
     expect(whitelistTransactionReceipt.reverted).toBe(false);
 
@@ -1320,6 +1318,8 @@ const addAddressToFeeDelegationWhitelist = async (
     // Wait for the transfer transaction to complete and obtain its receipt
     const whitelistRecipientTransactionReceipt =
         (await whitelistRecipientResult.wait()) as TransactionReceipt;
+
+    console.log('LLEGA', whitelistRecipientTransactionReceipt);
 
     // Verify that the transfer transaction did not revert
     expect(whitelistRecipientTransactionReceipt.reverted).toBe(false);
@@ -1354,8 +1354,6 @@ const removeAddressFromFeeDelegationWhitelist = async (
     const whitelistTransactionReceipt =
         (await whitelistResult.wait()) as TransactionReceipt;
 
-    console.log('LLEGA2', whitelistTransactionReceipt);
-
     // Verify that the transfer transaction did not revert
     expect(whitelistTransactionReceipt.reverted).toBe(false);
 
@@ -1369,6 +1367,8 @@ const removeAddressFromFeeDelegationWhitelist = async (
     // Wait for the transfer transaction to complete and obtain its receipt
     const whitelistRecipientTransactionReceipt =
         (await whitelistRecipientResult.wait()) as TransactionReceipt;
+
+    console.log('LLEGA2', whitelistRecipientTransactionReceipt);
 
     // Verify that the transfer transaction did not revert
     expect(whitelistRecipientTransactionReceipt.reverted).toBe(false);
