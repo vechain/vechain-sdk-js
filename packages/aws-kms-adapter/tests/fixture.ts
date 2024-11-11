@@ -1318,11 +1318,15 @@ const addAddressToFeeDelegationWhitelist = async (
     );
 
     if (!simulatedTx.success) {
-        console.log(
-            'If this fails, it is because the recipient is already added',
-            simulatedTx.result.errorMessage
+        if (simulatedTx.result.errorMessage === 'not your token') {
+            console.log(
+                'If this fails, it is because the recipient is already added'
+            );
+            return;
+        }
+        fail(
+            `Error when simulating addAllowedRecipientFor: ${simulatedTx.result.errorMessage}`
         );
-        return;
     }
 
     const whitelistRecipientResult =
@@ -1334,8 +1338,6 @@ const addAddressToFeeDelegationWhitelist = async (
     // Wait for the transfer transaction to complete and obtain its receipt
     const whitelistRecipientTransactionReceipt =
         (await whitelistRecipientResult.wait()) as TransactionReceipt;
-
-    console.log('LLEGA', whitelistRecipientTransactionReceipt);
 
     // Verify that the transfer transaction did not revert
     expect(whitelistRecipientTransactionReceipt.reverted).toBe(false);
@@ -1383,8 +1385,6 @@ const removeAddressFromFeeDelegationWhitelist = async (
     // Wait for the transfer transaction to complete and obtain its receipt
     const whitelistRecipientTransactionReceipt =
         (await whitelistRecipientResult.wait()) as TransactionReceipt;
-
-    console.log('LLEGA2', whitelistRecipientTransactionReceipt);
 
     // Verify that the transfer transaction did not revert
     expect(whitelistRecipientTransactionReceipt.reverted).toBe(false);
