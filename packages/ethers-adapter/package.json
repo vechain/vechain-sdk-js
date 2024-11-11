@@ -1,6 +1,6 @@
 {
   "name": "@vechain/sdk-ethers-adapter",
-  "version": "1.0.0-rc.1",
+  "version": "1.0.0-rc.2",
   "description": "This module serves as a crucial bridge between the standard Ethereum tooling provided by Hardhat and the unique features of the VeChainThor blockchain",
   "author": "VeChain Foundation",
   "license": "MIT",
@@ -33,8 +33,8 @@
     "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit"
   },
   "dependencies": {
-    "@vechain/sdk-core": "1.0.0-rc.1",
-    "@vechain/sdk-errors": "1.0.0-rc.1",
-    "@vechain/sdk-network": "1.0.0-rc.1"
+    "@vechain/sdk-core": "1.0.0-rc.2",
+    "@vechain/sdk-errors": "1.0.0-rc.2",
+    "@vechain/sdk-network": "1.0.0-rc.2"
   }
 }

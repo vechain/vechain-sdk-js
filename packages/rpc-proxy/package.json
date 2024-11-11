@@ -1,6 +1,6 @@
 {
   "name": "@vechain/sdk-rpc-proxy",
-  "version": "1.0.0-rc.1",
+  "version": "1.0.0-rc.2",
   "description": "Proxy Thor's RESTful API to Eth JSON-RPC",
   "author": "VeChain Foundation",
   "license": "MIT",
@@ -39,8 +39,8 @@
     "test:browser": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit --config ./jest.config.browser.js"
   },
   "dependencies": {
-    "@vechain/sdk-logging": "1.0.0-rc.1",
-    "@vechain/sdk-network": "1.0.0-rc.1",
+    "@vechain/sdk-logging": "1.0.0-rc.2",
+    "@vechain/sdk-network": "1.0.0-rc.2",
     "commander": "^12.1.0",
     "cors": "^2.8.5",
     "express": "^4.21.1"
