@@ -1311,13 +1311,17 @@ const addAddressToFeeDelegationWhitelist = async (
     // Execute a 'addAllowedRecipientFor' transaction on the loaded contract
 
     // We simulate first due to concurrency issues when running tests
-    try {
-        await contract.read.allowedRecipientsFor(
-            TESTING_CONTRACT_ADDRESS,
-            705n
+    const simulatedTx = await contract.thor.contracts.executeCall(
+        contract.address,
+        contract.getFunctionAbi('addAllowedRecipientFor'),
+        [TESTING_CONTRACT_ADDRESS, 705n]
+    );
+
+    if (!simulatedTx.success) {
+        console.log(
+            'If this fails, it is because the recipient is already added',
+            simulatedTx.result.errorMessage
         );
-    } catch (e) {
-        console.log('If reverted, the recipient has been added already', e);
         return;
     }
 
