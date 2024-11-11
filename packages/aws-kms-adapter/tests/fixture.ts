@@ -1309,6 +1309,18 @@ const addAddressToFeeDelegationWhitelist = async (
     expect(whitelistTransactionReceipt.reverted).toBe(false);
 
     // Execute a 'addAllowedRecipientFor' transaction on the loaded contract
+
+    // We simulate first due to concurrency issues when running tests
+    try {
+        await contract.read.allowedRecipientsFor(
+            TESTING_CONTRACT_ADDRESS,
+            705n
+        );
+    } catch (e) {
+        console.log('If reverted, the recipient has been added already', e);
+        return;
+    }
+
     const whitelistRecipientResult =
         await contract.transact.addAllowedRecipientFor(
             TESTING_CONTRACT_ADDRESS,
