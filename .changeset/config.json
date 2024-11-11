@@ -12,6 +12,7 @@
     "sdk-cloudflare-integration",
     "sdk-hardhat-integration",
     "sdk-nextjs-integration",
-    "sdk-node-integration"
+    "sdk-node-integration",
+    "sdk-vite-integration"
   ]
 }
