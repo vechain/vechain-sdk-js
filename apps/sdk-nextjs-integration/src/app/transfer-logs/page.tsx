@@ -40,6 +40,7 @@ export default function TransferLogs(): JSX.Element {
                 range: {
                     unit: 'block',
                     from: 0,
+                    // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
                     to: (bestBlock as CompressedBlockDetail).number
                 }
             };

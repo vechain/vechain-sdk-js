@@ -325,7 +325,7 @@ describe('Args parser tests', () => {
                 // Throw the error
                 expect(() =>
                     parseAndGetFinalConfig(options, defaultConfiguration)
-                ).toThrowError(InvalidCommandLineArguments);
+                ).toThrow(InvalidCommandLineArguments);
             });
         });
 
@@ -349,7 +349,7 @@ describe('Args parser tests', () => {
                 // Throw the error
                 expect(() =>
                     parseAndGetFinalConfig(options, defaultConfiguration)
-                ).toThrowError(InvalidCommandLineArguments);
+                ).toThrow(InvalidCommandLineArguments);
             });
         });
 
@@ -387,7 +387,7 @@ describe('Args parser tests', () => {
                 // Throw the error
                 expect(() =>
                     parseAndGetFinalConfig(options, defaultConfiguration)
-                ).toThrowError(InvalidCommandLineArguments);
+                ).toThrow(InvalidCommandLineArguments);
             });
         });
 
@@ -587,7 +587,7 @@ describe('Args parser tests', () => {
                 // Throw the error
                 expect(() =>
                     parseAndGetFinalConfig(options, defaultConfiguration)
-                ).toThrowError(InvalidCommandLineArguments);
+                ).toThrow(InvalidCommandLineArguments);
             });
         });
 
@@ -652,7 +652,7 @@ describe('Args parser tests', () => {
                 // Throw the error
                 expect(() =>
                     parseAndGetFinalConfig(options, defaultConfiguration)
-                ).toThrowError(InvalidCommandLineArguments);
+                ).toThrow(InvalidCommandLineArguments);
             });
         });
 
@@ -676,7 +676,7 @@ describe('Args parser tests', () => {
                 // Throw the error
                 expect(() =>
                     parseAndGetFinalConfig(options, defaultConfiguration)
-                ).toThrowError(InvalidConfigurationFilePath);
+                ).toThrow(InvalidConfigurationFilePath);
             });
         });
     });

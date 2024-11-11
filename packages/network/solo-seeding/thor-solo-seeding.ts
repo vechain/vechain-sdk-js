@@ -208,6 +208,7 @@ const seedVnsSolo = async (): Promise<void> => {
                         ),
                         [
                             '0x0000000000000000000000000000000000000000000000000000000000000000',
+                            // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
                             ethers.id(tld),
                             vnsRegistrar
                         ]
