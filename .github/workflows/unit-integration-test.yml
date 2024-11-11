@@ -10,7 +10,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                node: [18, lts/*] #add 'latest' when turbo issue is solved
+                node: [18, lts/*, latest]
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
