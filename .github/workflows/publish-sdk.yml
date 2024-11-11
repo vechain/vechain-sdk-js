@@ -18,6 +18,9 @@ jobs:
                   registry-url: 'https://npm.pkg.github.com/'
             - run: yarn install
 
+            - name: Install playwright dependencies (for sample Vite dApp tests)
+              run: yarn playwright install
+
             - run: yarn build
 
             - name: Start Thor solo node
