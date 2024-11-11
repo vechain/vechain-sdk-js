@@ -17,7 +17,7 @@ const compat = new FlatCompat({
 });
 
 export default [{
-    ignores: ["**/node_modules/", "**/dist/", "**/coverage/", "**/coverageUnit/", "**/jest.config.*", "**/eslint.config.mjs"],
+    ignores: ["**/node_modules/", "**/dist/", "**/coverage/", "**/coverageUnit/", "**/jest.config.*", "**/eslint.config.mjs", "**/jest.browser-setup.js"],
 }, ...compat.extends(
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
@@ -86,5 +86,6 @@ export default [{
         "sonarjs/new-cap": "off",
         "security/detect-object-injection": "off",
         "security/detect-unsafe-regex": "off",
+        "sonarjs/sonar-no-unused-vars": "off"
     },
 }];
