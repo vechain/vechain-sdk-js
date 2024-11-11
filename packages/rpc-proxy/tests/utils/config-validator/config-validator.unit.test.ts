@@ -60,7 +60,7 @@ describe('Configuration file validator', () => {
         test('Should not be able to parse a file that does not exist', () => {
             expect(() => {
                 checkValidConfigurationFile('INVALID');
-            }).toThrowError(InvalidConfigurationFilePath);
+            }).toThrow(InvalidConfigurationFilePath);
         });
 
         /**
@@ -71,7 +71,7 @@ describe('Configuration file validator', () => {
                 checkValidConfigurationFile(
                     invalidJSONConfigurationFilePathFixture
                 );
-            }).toThrowError(InvalidConfigurationFile);
+            }).toThrow(InvalidConfigurationFile);
         });
 
         /**
@@ -87,7 +87,7 @@ describe('Configuration file validator', () => {
                 ].forEach((filePath) => {
                     expect(() => {
                         checkValidConfigurationFile(filePath);
-                    }).toThrowError(InvalidConfigurationFile);
+                    }).toThrow(InvalidConfigurationFile);
                 });
             });
 
@@ -100,7 +100,7 @@ describe('Configuration file validator', () => {
                 ].forEach((filePath) => {
                     expect(() => {
                         checkValidConfigurationFile(filePath);
-                    }).toThrowError(InvalidConfigurationFile);
+                    }).toThrow(InvalidConfigurationFile);
                 });
             });
 
@@ -113,7 +113,7 @@ describe('Configuration file validator', () => {
                 ].forEach((filePath) => {
                     expect(() => {
                         checkValidConfigurationFile(filePath);
-                    }).toThrowError(InvalidConfigurationFile);
+                    }).toThrow(InvalidConfigurationFile);
                 });
             });
 
@@ -126,7 +126,7 @@ describe('Configuration file validator', () => {
                 ].forEach((filePath) => {
                     expect(() => {
                         checkValidConfigurationFile(filePath);
-                    }).toThrowError(InvalidConfigurationFile);
+                    }).toThrow(InvalidConfigurationFile);
                 });
             });
 
@@ -139,7 +139,7 @@ describe('Configuration file validator', () => {
                 ].forEach((filePath) => {
                     expect(() => {
                         checkValidConfigurationFile(filePath);
-                    }).toThrowError(InvalidConfigurationFile);
+                    }).toThrow(InvalidConfigurationFile);
                 });
             });
 
@@ -152,7 +152,7 @@ describe('Configuration file validator', () => {
                 ].forEach((filePath) => {
                     expect(() => {
                         checkValidConfigurationFile(filePath);
-                    }).toThrowError(InvalidConfigurationFile);
+                    }).toThrow(InvalidConfigurationFile);
                 });
             });
         });
@@ -164,7 +164,7 @@ describe('Configuration file validator', () => {
             invalidSemanticConfigurationFilePathFixture.forEach((filePath) => {
                 expect(() => {
                     checkValidConfigurationFile(filePath);
-                }).toThrowError(InvalidConfigurationFile);
+                }).toThrow(InvalidConfigurationFile);
             });
         });
     });
