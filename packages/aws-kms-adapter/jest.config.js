@@ -8,6 +8,7 @@ module.exports = {
     coverageReporters: ['html', 'lcov', 'json'],
     runner: 'groups',
     reporters: ['default', 'jest-junit'],
+    coveragePathIgnorePatterns: ['/node_modules/', '/tests/'],
     workerThreads: true,
     coverageThreshold:
         isUnitTest !== 'true'
