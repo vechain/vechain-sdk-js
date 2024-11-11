@@ -1308,27 +1308,21 @@ const addAddressToFeeDelegationWhitelist = async (
     // Verify that the transfer transaction did not revert
     expect(whitelistTransactionReceipt.reverted).toBe(false);
 
-    // Execute a 'addAllowedRecipientFor' transaction on the loaded contract
+    const [[contractAddress]] = (await contract.read.allowedRecipientsFor(
+        705n
+    )) as readonly [ReadonlyArray<`0x${string}`>];
 
-    // We simulate first due to concurrency issues when running tests
-    const simulatedTx = await contract.thor.contracts.executeCall(
-        contract.address,
-        contract.getFunctionAbi('addAllowedRecipientFor'),
-        [TESTING_CONTRACT_ADDRESS, 705n]
-    );
-
-    if (!simulatedTx.success) {
-        if (simulatedTx.result.errorMessage === 'not your token') {
-            console.log(
-                'If this fails, it is because the recipient is already added'
-            );
-            return;
-        }
-        fail(
-            `Error when simulating addAllowedRecipientFor: ${simulatedTx.result.errorMessage}`
+    if (
+        contractAddress !== undefined &&
+        contractAddress.toLowerCase() === TESTING_CONTRACT_ADDRESS
+    ) {
+        console.log(
+            `Contract address ${contractAddress} is already an allowed recipient for`
         );
+        return;
     }
 
+    // Execute a 'addAllowedRecipientFor' transaction on the loaded contract
     const whitelistRecipientResult =
         await contract.transact.addAllowedRecipientFor(
             TESTING_CONTRACT_ADDRESS,
