@@ -3,7 +3,7 @@
     "tasks": {
         "build": {
             "dependsOn": ["^build"],
-            "outputs": ["dist/**"]
+            "outputs": []
         },
         "check:circular-dependencies": {},
         "test": {
