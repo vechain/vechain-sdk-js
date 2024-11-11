@@ -1313,7 +1313,7 @@ const addAddressToFeeDelegationWhitelist = async (
     )) as readonly [ReadonlyArray<`0x${string}`>];
 
     if (
-        contractAddress !== undefined &&
+        contractAddress != undefined &&
         contractAddress.toLowerCase() === TESTING_CONTRACT_ADDRESS
     ) {
         console.log(
