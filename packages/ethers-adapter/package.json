@@ -26,7 +26,7 @@
   ],
   "scripts": {
     "build": "rm -rf ./dist && tsup-node src/index.ts --format cjs,esm --dts",
-    "lint": "eslint --ext .ts src --ext .ts tests",
+    "lint": "eslint",
     "format": "prettier --write src/**/*.ts tests/**/*.ts",
     "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
     "test:integration": "rm -rf ./coverageIntegration && jest --coverage --coverageDirectory=coverageIntegration --group=integration",

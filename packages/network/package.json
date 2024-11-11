@@ -28,7 +28,7 @@
   "scripts": {
     "build": "rm -rf ./dist && tsup-node src/index.ts --format cjs,esm --dts",
     "check:circular-dependencies": "npx madge --json --circular --extensions ts src | jq '. | length' | awk '{if($1 > 11) exit 1}'",
-    "lint": "eslint --ext .ts src --ext .ts tests",
+    "lint": "eslint",
     "format": "prettier --write src/**/*.ts tests/**/*.ts solo-seeding/**/*.ts",
     "start-thor-solo": "echo 'Starting thor solo node ...' && docker compose -f ../../docker-compose.thor.yml up -d --wait && echo '\nThor solo node started ...'",
     "stop-thor-solo": "echo 'Stopping thor solo node ...' && docker compose -f ../../docker-compose.thor.yml down && echo 'Thor solo node stopped ...'",
