@@ -1,6 +1,6 @@
 {
   "name": "@vechain/sdk-network",
-  "version": "1.0.0-rc.1",
+  "version": "1.0.0-rc.2",
   "description": "This module serves as the standard interface connecting decentralized applications (dApps) and users to the VeChainThor blockchain",
   "author": "VeChain Foundation",
   "license": "MIT",
@@ -41,9 +41,9 @@
     "test:browser:solo": "(yarn start-thor-solo && yarn test:browser && yarn stop-thor-solo) || yarn stop-thor-solo"
   },
   "dependencies": {
-    "@vechain/sdk-core": "1.0.0-rc.1",
-    "@vechain/sdk-errors": "1.0.0-rc.1",
-    "@vechain/sdk-logging": "1.0.0-rc.1",
+    "@vechain/sdk-core": "1.0.0-rc.2",
+    "@vechain/sdk-errors": "1.0.0-rc.2",
+    "@vechain/sdk-logging": "1.0.0-rc.2",
     "@vechain/vebetterdao-contracts": "^4.0.0",
     "abitype": "^1.0.6",
     "isomorphic-ws": "^5.0.0",
