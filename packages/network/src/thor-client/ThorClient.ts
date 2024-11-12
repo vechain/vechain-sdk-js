@@ -76,7 +76,7 @@ class ThorClient {
             this.debug,
             this
         );
-        this.contracts = new ContractsModule(this);
+        this.contracts = new ContractsModule(this.transactions, this);
         this.gas = new GasModule(this.transactions);
     }
 

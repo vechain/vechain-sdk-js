@@ -24,16 +24,19 @@ import type {
     ContractClause,
     ContractTransactionOptions
 } from './types';
+import { type TransactionsModule } from '../transactions';
 
 /**
  * Represents a module for interacting with smart contracts on the blockchain.
  */
 class ContractsModule {
-    /**
-     * Initializes a new instance of the `Thor` class.
-     * @param thor - The Thor instance used to interact with the VeChain blockchain API.
-     */
-    constructor(readonly thor: ThorClient) {}
+    readonly transactionsModule: TransactionsModule;
+    readonly thor: ThorClient; // remove
+
+    constructor(transactionsModule: TransactionsModule, thor: ThorClient) {
+        this.transactionsModule = transactionsModule;
+        this.thor = thor;
+    }
 
     /**
      * Creates a new instance of `ContractFactory` configured with the specified ABI, bytecode, and signer.
@@ -121,7 +124,7 @@ class ContractsModule {
         contractCallOptions?: ContractCallOptions
     ): Promise<ContractCallResult> {
         // Simulate the transaction to get the result of the contract call
-        const response = await this.thor.transactions.simulateTransaction(
+        const response = await this.transactionsModule.simulateTransaction(
             [
                 {
                     to: contractAddress,
@@ -150,7 +153,7 @@ class ContractsModule {
         options?: SimulateTransactionOptions
     ): Promise<ContractCallResult[]> {
         // Simulate the transaction to get the result of the contract call
-        const response = await this.thor.transactions.simulateTransaction(
+        const response = await this.transactionsModule.simulateTransaction(
             clauses.map((clause) => clause.clause),
             options
         );
@@ -210,7 +213,7 @@ class ContractsModule {
         return {
             id,
             wait: async () =>
-                await this.thor.transactions.waitForTransaction(id)
+                await this.transactionsModule.waitForTransaction(id)
         };
     }
 
@@ -244,7 +247,7 @@ class ContractsModule {
         return {
             id,
             wait: async () =>
-                await this.thor.transactions.waitForTransaction(id)
+                await this.transactionsModule.waitForTransaction(id)
         };
     }
 
