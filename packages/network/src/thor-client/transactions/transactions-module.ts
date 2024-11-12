@@ -36,6 +36,8 @@ import {
     type WaitForTransactionOptions
 } from './types';
 import { type ThorClient } from '../ThorClient';
+import type { EstimateGasOptions, EstimateGasResult } from '../gas/types';
+import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
@@ -566,6 +568,83 @@ class TransactionsModule {
 
         // No revert reason found
         return null;
+    }
+
+    public async estimateGas(
+        clauses: SimulateTransactionClause[],
+        caller?: string,
+        options?: EstimateGasOptions
+    ): Promise<EstimateGasResult> {
+        // Clauses must be an array of clauses with at least one clause
+        if (clauses.length <= 0) {
+            throw new InvalidDataType(
+                'GasModule.estimateGas()',
+                'Invalid clauses. Clauses must be an array of clauses with at least one clause.',
+                { clauses, caller, options }
+            );
+        }
+
+        // gasPadding must be a number between (0, 1]
+        if (
+            options?.gasPadding !== undefined &&
+            (options.gasPadding <= 0 || options.gasPadding > 1)
+        ) {
+            throw new InvalidDataType(
+                'GasModule.estimateGas()',
+                'Invalid gasPadding. gasPadding must be a number between (0, 1].',
+                { gasPadding: options?.gasPadding }
+            );
+        }
+
+        // Simulate the transaction to get the simulations of each clause
+        const simulations = await this.simulateTransaction(clauses, {
+            caller,
+            ...options
+        });
+
+        // If any of the clauses reverted, then the transaction reverted
+        const isReverted = simulations.some((simulation) => {
+            return simulation.reverted;
+        });
+
+        // The intrinsic gas of the transaction
+        const intrinsicGas = Number(Transaction.intrinsicGas(clauses).wei);
+
+        // totalSimulatedGas represents the summation of all clauses' gasUsed
+        const totalSimulatedGas = simulations.reduce((sum, simulation) => {
+            return sum + simulation.gasUsed;
+        }, 0);
+
+        // The total gas of the transaction
+        // If the transaction involves contract interaction, a constant 15000 gas is added to the total gas
+        const totalGas =
+            (intrinsicGas +
+                (totalSimulatedGas !== 0 ? totalSimulatedGas + 15000 : 0)) *
+            (1 + (options?.gasPadding ?? 0)); // Add gasPadding if it is defined
+
+        return isReverted
+            ? {
+                  totalGas,
+                  reverted: true,
+                  revertReasons: simulations.map((simulation) => {
+                      /**
+                       * The decoded revert reason of the transaction.
+                       * Solidity may revert with Error(string) or Panic(uint256).
+                       *
+                       * @link see [Error handling: Assert, Require, Revert and Exceptions](https://docs.soliditylang.org/en/latest/control-structures.html#error-handling-assert-require-revert-and-exceptions)
+                       */
+                      return decodeRevertReason(simulation.data) ?? '';
+                  }),
+                  vmErrors: simulations.map((simulation) => {
+                      return simulation.vmError;
+                  })
+              }
+            : {
+                  totalGas,
+                  reverted: false,
+                  revertReasons: [],
+                  vmErrors: []
+              };
     }
 }
 
