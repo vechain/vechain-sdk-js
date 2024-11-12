@@ -86,6 +86,7 @@ export default [{
         "sonarjs/new-cap": "off",
         "security/detect-object-injection": "off",
         "security/detect-unsafe-regex": "off",
+        "security/detect-non-literal-fs-filename": "off",
         "sonarjs/sonar-no-unused-vars": "off",
         "sonarjs/sonar-no-fallthrough": "off"
     },
