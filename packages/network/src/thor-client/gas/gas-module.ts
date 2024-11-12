@@ -3,18 +3,18 @@ import { Transaction } from '@vechain/sdk-core';
 import { decodeRevertReason } from './helpers/decode-evm-error';
 import { type EstimateGasOptions, type EstimateGasResult } from './types';
 import { type SimulateTransactionClause } from '../transactions/types';
-import { type ThorClient } from '../ThorClient';
+import { type TransactionsModule } from '../transactions';
 
 /**
  * The `GasModule` handles gas related operations and provides
  * convenient methods for estimating the gas cost of a transaction.
  */
 class GasModule {
-    /**
-     * Initializes a new instance of the `Thor` class.
-     * @param thor - The Thor instance used to interact with the VeChain blockchain API.
-     */
-    constructor(readonly thor: ThorClient) {}
+    readonly transactionsModule: TransactionsModule;
+
+    constructor(transactionsModule: TransactionsModule) {
+        this.transactionsModule = transactionsModule;
+    }
 
     /**
      * Simulates a transaction and returns an object containing information regarding the gas used and whether the transaction reverted.
@@ -56,7 +56,7 @@ class GasModule {
         }
 
         // Simulate the transaction to get the simulations of each clause
-        const simulations = await this.thor.transactions.simulateTransaction(
+        const simulations = await this.transactionsModule.simulateTransaction(
             clauses,
             {
                 caller,
