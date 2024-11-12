@@ -8,8 +8,7 @@ import {
     type WaitForBlockOptions
 } from './types';
 import { Revision, type TransactionClause } from '@vechain/sdk-core';
-import { type ThorClient } from '../ThorClient';
-import { HttpMethod } from '../../http';
+import { type HttpClient, HttpMethod } from '../../http';
 
 /** The `BlocksModule` class encapsulates functionality for interacting with blocks
  * on the VeChainThor blockchain.
@@ -20,6 +19,8 @@ class BlocksModule {
      * @private
      */
     private headBlock: CompressedBlockDetail | null = null;
+
+    readonly httpClient: HttpClient;
 
     /**
      * Error handler for block-related errors.
@@ -37,12 +38,9 @@ class BlocksModule {
      * @param thor - The Thor instance used to interact with the VeChain blockchain API.
      * @param options - (Optional) Other optional parameters for polling and error handling.
      */
-    constructor(
-        readonly thor: ThorClient,
-        options?: BlocksModuleOptions
-    ) {
+    constructor(httpClient: HttpClient, options?: BlocksModuleOptions) {
+        this.httpClient = httpClient;
         this.onBlockError = options?.onBlockError;
-
         if (options?.isPollingEnabled === true) this.setupPolling();
     }
 
@@ -61,7 +59,7 @@ class BlocksModule {
      * */
     private setupPolling(): void {
         this.pollInstance = Poll.createEventPoll(
-            async () => await this.thor.blocks.getBestBlockCompressed(),
+            async () => await this.getBestBlockCompressed(),
             10000 // Poll every 10 seconds,
         )
             .onData((data) => {
@@ -94,7 +92,7 @@ class BlocksModule {
                 { revision }
             );
         }
-        return (await this.thor.httpClient.http(
+        return (await this.httpClient.http(
             HttpMethod.GET,
             thorest.blocks.get.BLOCK_DETAIL(revision)
         )) as CompressedBlockDetail | null;
@@ -123,7 +121,7 @@ class BlocksModule {
             );
         }
 
-        return (await this.thor.httpClient.http(
+        return (await this.httpClient.http(
             HttpMethod.GET,
             thorest.blocks.get.BLOCK_DETAIL(revision),
             {
