@@ -43,6 +43,7 @@
     "@scure/bip39": "^1.4.0",
     "@vechain/sdk-errors": "1.0.0-rc.2",
     "@vechain/sdk-logging": "1.0.0-rc.2",
+    "abitype": "^1.0.6",
     "ethers": "6.13.4",
     "fast-json-stable-stringify": "^2.1.0",
     "viem": "^2.21.19"
