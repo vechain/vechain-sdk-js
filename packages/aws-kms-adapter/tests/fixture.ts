@@ -1308,6 +1308,20 @@ const addAddressToFeeDelegationWhitelist = async (
     // Verify that the transfer transaction did not revert
     expect(whitelistTransactionReceipt.reverted).toBe(false);
 
+    const [[contractAddress]] = (await contract.read.allowedRecipientsFor(
+        705n
+    )) as readonly [ReadonlyArray<`0x${string}`>];
+
+    if (
+        contractAddress !== undefined &&
+        contractAddress.toLowerCase() === TESTING_CONTRACT_ADDRESS
+    ) {
+        console.log(
+            `Contract address ${contractAddress} is already an allowed recipient for`
+        );
+        return;
+    }
+
     // Execute a 'addAllowedRecipientFor' transaction on the loaded contract
     const whitelistRecipientResult =
         await contract.transact.addAllowedRecipientFor(
