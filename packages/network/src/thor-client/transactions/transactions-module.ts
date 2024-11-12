@@ -20,9 +20,8 @@ import {
     thorest,
     vnsUtils
 } from '../../utils';
-import { type ExpandedBlockDetail } from '../blocks';
-import { type CallNameReturnType } from '../debug';
-import { type ThorClient } from '../ThorClient';
+import { type BlocksModule, type ExpandedBlockDetail } from '../blocks';
+import { type CallNameReturnType, type DebugModule } from '../debug';
 import {
     type GetTransactionInputOptions,
     type GetTransactionReceiptInputOptions,
@@ -36,17 +35,27 @@ import {
     type TransactionSimulationResult,
     type WaitForTransactionOptions
 } from './types';
+import { type ThorClient } from '../ThorClient';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
  * convenient methods for sending transactions and waiting for transaction confirmation.
  */
 class TransactionsModule {
-    /**
-     * Initializes a new instance of the `Thor` class.
-     * @param thor - The Thor instance used to interact with the VeChain blockchain API.
-     */
-    constructor(readonly thor: ThorClient) {}
+    readonly blocksModule: BlocksModule;
+    readonly debugModule: DebugModule;
+
+    readonly thor: ThorClient; // remove
+
+    constructor(
+        blocksModule: BlocksModule,
+        debugModule: DebugModule,
+        thor: ThorClient
+    ) {
+        this.blocksModule = blocksModule;
+        this.debugModule = debugModule;
+        this.thor = thor;
+    }
 
     /**
      * Retrieves the details of a transaction.
@@ -77,7 +86,7 @@ class TransactionsModule {
                 { head: options?.head }
             );
 
-        return (await this.thor.httpClient.http(
+        return (await this.blocksModule.httpClient.http(
             HttpMethod.GET,
             thorest.transactions.get.TRANSACTION(id),
             {
@@ -119,7 +128,7 @@ class TransactionsModule {
                 { head: options?.head }
             );
 
-        return (await this.thor.httpClient.http(
+        return (await this.blocksModule.httpClient.http(
             HttpMethod.GET,
             thorest.transactions.get.TRANSACTION(id),
             {
@@ -162,7 +171,7 @@ class TransactionsModule {
                 { head: options?.head }
             );
 
-        return (await this.thor.httpClient.http(
+        return (await this.blocksModule.httpClient.http(
             HttpMethod.GET,
             thorest.transactions.get.TRANSACTION_RECEIPT(id),
             {
@@ -202,7 +211,7 @@ class TransactionsModule {
             );
         }
 
-        const transactionResult = (await this.thor.httpClient.http(
+        const transactionResult = (await this.blocksModule.httpClient.http(
             HttpMethod.POST,
             thorest.transactions.post.TRANSACTION(),
             {
@@ -265,8 +274,7 @@ class TransactionsModule {
         }
 
         return await Poll.SyncPoll(
-            async () =>
-                await this.thor.transactions.getTransactionReceipt(txID),
+            async () => await this.getTransactionReceipt(txID),
             {
                 requestIntervalInMilliseconds: options?.intervalMs,
                 maximumWaitingTimeInMilliseconds: options?.timeoutMs
@@ -298,7 +306,7 @@ class TransactionsModule {
         options?: TransactionBodyOptions
     ): Promise<TransactionBody> {
         // Get the genesis block to get the chainTag
-        const genesisBlock = await this.thor.blocks.getBlockCompressed(0);
+        const genesisBlock = await this.blocksModule.getBlockCompressed(0);
         if (genesisBlock === null)
             throw new InvalidTransactionField(
                 'TransactionsModule.buildTransactionBody()',
@@ -307,7 +315,7 @@ class TransactionsModule {
             );
 
         const blockRef =
-            options?.blockRef ?? (await this.thor.blocks.getBestBlockRef());
+            options?.blockRef ?? (await this.blocksModule.getBestBlockRef());
         if (blockRef === null)
             throw new InvalidTransactionField(
                 'TransactionsModule.buildTransactionBody()',
@@ -420,7 +428,7 @@ class TransactionsModule {
             );
         }
 
-        return (await this.thor.httpClient.http(
+        return (await this.blocksModule.httpClient.http(
             HttpMethod.POST,
             thorest.accounts.post.SIMULATE_TRANSACTION(revision),
             {
@@ -502,8 +510,8 @@ class TransactionsModule {
         errorFragment?: string
     ): Promise<string | null> {
         // 1 - Init Blocks and Debug modules
-        const blocksModule = this.thor.blocks;
-        const debugModule = this.thor.debug;
+        const blocksModule = this.blocksModule;
+        const debugModule = this.debugModule;
 
         // 2 - Get the transaction details
         const transaction = await this.getTransaction(transactionHash);
