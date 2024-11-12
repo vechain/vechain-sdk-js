@@ -35,6 +35,7 @@
   "dependencies": {
     "@vechain/sdk-core": "1.0.0-rc.2",
     "@vechain/sdk-errors": "1.0.0-rc.2",
-    "@vechain/sdk-network": "1.0.0-rc.2"
+    "@vechain/sdk-network": "1.0.0-rc.2",
+    "ethers": "6.13.4"
   }
 }
