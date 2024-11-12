@@ -69,8 +69,8 @@ class ThorClient {
         this.accounts = new AccountsModule(httpClient);
         this.debug = new DebugModule(httpClient);
         this.blocks = new BlocksModule(httpClient, options);
+        this.logs = new LogsModule(this.blocks);
         this.nodes = new NodesModule(this.blocks);
-        this.logs = new LogsModule(this);
         this.transactions = new TransactionsModule(this);
         this.contracts = new ContractsModule(this);
         this.gas = new GasModule(this);
