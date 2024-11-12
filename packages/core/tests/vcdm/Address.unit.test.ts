@@ -23,9 +23,13 @@ describe('Address class tests', () => {
             exp = '0xCFB79A9C950B78E14C43EFA621EBCF9660DBE01F';
             address = Address.of(exp);
             expect(address).toBeInstanceOf(Address);
+            exp = '0xcaffee';
+            address = Address.of(exp);
+            expect(address).toBeInstanceOf(Address);
+            expect(address.toString().length).toBe(Address.DIGITS + 2);
         });
         test('Throw an error if the passed argument is an invalid address', () => {
-            let exp = '-0xcaffee';
+            const exp = '-0xcaffee';
             try {
                 Address.of(exp);
                 fail('This should have thrown an error');
@@ -43,23 +47,6 @@ describe('Address class tests', () => {
                             `\n\tMethod 'HexUInt.of' failed.` +
                             `\n-Reason: 'not positive'` +
                             `\n-Parameters: \n\t{\n  "exp": "${exp}"\n}`
-                    );
-                }
-            }
-            exp = '0xcaffee';
-            try {
-                Address.of(exp);
-                fail('This should have thrown an error');
-            } catch (e) {
-                expect(e).toBeInstanceOf(InvalidDataType);
-                if (e instanceof InvalidDataType) {
-                    expect(e.message).toBe(
-                        `Method 'Address.of' failed.` +
-                            `\n-Reason: 'not a valid hexadecimal positive integer expression'` +
-                            `\n-Parameters: \n\t{\n  "exp": "0xcaffee"\n}` +
-                            `\n-Internal error: \n\tMethod 'Address.of' failed.` +
-                            `\n-Reason: 'not a valid address'` +
-                            `\n-Parameters: \n\t{\n  "huint": {\n    "digits": "caffee",\n    "sign": 1\n  }\n}`
                     );
                 }
             }

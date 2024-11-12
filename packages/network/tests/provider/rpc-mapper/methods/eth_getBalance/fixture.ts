@@ -56,7 +56,7 @@ const invalidEthGetBalanceTestCases = [
     },
     {
         description: 'Should throw error for invalid address',
-        params: ['0x123', 'latest'],
+        params: ['0x-123', 'latest'],
         expectedError: JSONRPCInternalError
     },
     {

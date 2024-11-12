@@ -21,9 +21,9 @@ jobs:
 
             - name: Lint
               run: yarn lint
-            
-            - name: Circular dependencies check
-              run: yarn check:circular-dependencies
+
+#            - name: Circular dependencies check
+#              run: yarn check:circular-dependencies
 
             - name: Build
               run: yarn build

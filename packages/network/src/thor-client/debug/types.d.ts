@@ -23,24 +23,6 @@ import {
 import { type SimulateTransactionOptions } from '../transactions/types';
 
 /**
- * Type for target of TraceTransactionClause.
- */
-interface TransactionTraceTarget {
-    /**
-     * Block ID.
-     */
-    blockID: string;
-    /**
-     * Transaction ID or Transaction index.
-     */
-    transaction: number | string;
-    /**
-     * Clause index.
-     */
-    clauseIndex: number;
-}
-
-/**
  * TracerName is the name of the tracer to use.
  *
  * It determines Output and Input configuration.
@@ -133,90 +115,13 @@ type TraceReturnType<TraceNameType extends TracerName | undefined> =
                               : never;
 
 /**
- * Type for input for trace contract call - target contract.
- */
-interface ContractCallTraceContractTargetInput {
-    /**
-     * The recipient of the call. Null indicates contract deployment.
-     */
-    to?: string | null;
-
-    /**
-     * The input data for the contract call.
-     */
-    data?: string;
-
-    /**
-     * The amount of token to be transferred.
-     */
-    value?: string;
-}
-
-/**
  * Type for input for trace contract call - transaction options.
  */
-type ContractCallTraceTransactionOptionsInput = Omit<
-    SimulateTransactionOptions,
-    'revision'
->;
-
-/**
- * Type for input options
- * for retrieve storage range function
- */
-interface RetrieveStorageRangeInputOptions {
-    /**
-     * The address of the contract/ account to be traced.
-     */
-    address?: string;
-
-    /**
-     * The start key of the storage range.
-     * Default is 0x0000000000000000000000000000000000000000000000000000000000000000.
-     */
-    keyStart?: string;
-
-    /**
-     * The maximum number of results to be returned. Default is 1000.
-     */
-    maxResult?: number;
-}
-
-/**
- * Return type for retrieve storage range function
- */
-interface RetrieveStorageRangeReturnType {
-    /**
-     * The next key to be used for the next retrieve storage range call.
-     */
-    nextKey: string | null;
-
-    /**
-     * The data is non-nullable, but an empty object is returned if no data is found.
-     */
-    storage: Record<
-        string,
-        {
-            /**
-             * Storage key.
-             */
-            key: string;
-
-            /**
-             * Storage value.
-             */
-            value: string;
-        }
-    >;
-}
+type ContractTraceOptions = Omit<SimulateTransactionOptions, 'revision'>;
 
 export {
-    type TransactionTraceTarget,
     type TracerName,
     type TracerConfig,
     type TraceReturnType,
-    type ContractCallTraceContractTargetInput,
-    type ContractCallTraceTransactionOptionsInput,
-    type RetrieveStorageRangeInputOptions,
-    type RetrieveStorageRangeReturnType
+    type ContractTraceOptions
 };
