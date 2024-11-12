@@ -46,6 +46,7 @@
     "@vechain/sdk-logging": "1.0.0-rc.2",
     "@vechain/vebetterdao-contracts": "^4.0.0",
     "abitype": "^1.0.6",
+    "ethers": "6.13.4",
     "isomorphic-ws": "^5.0.0",
     "viem": "^2.21.19",
     "ws": "^8.18.0"
