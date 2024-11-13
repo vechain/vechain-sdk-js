@@ -1,5 +1,6 @@
 import {
     ABI,
+    type ABIFunction,
     Hex,
     HexUInt,
     Revision,
@@ -38,6 +39,7 @@ import {
 import { type ThorClient } from '../ThorClient';
 import type { EstimateGasOptions, EstimateGasResult } from '../gas/types';
 import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
+import type { ContractCallOptions, ContractCallResult } from '../contracts';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
@@ -645,6 +647,59 @@ class TransactionsModule {
                   revertReasons: [],
                   vmErrors: []
               };
+    }
+
+    public async executeCall(
+        contractAddress: string,
+        functionAbi: ABIFunction,
+        functionData: unknown[],
+        contractCallOptions?: ContractCallOptions
+    ): Promise<ContractCallResult> {
+        // Simulate the transaction to get the result of the contract call
+        const response = await this.simulateTransaction(
+            [
+                {
+                    to: contractAddress,
+                    value: '0',
+                    data: functionAbi.encodeData(functionData).toString()
+                }
+            ],
+            contractCallOptions
+        );
+
+        return this.getContractCallResult(
+            response[0].data,
+            functionAbi,
+            response[0].reverted
+        );
+    }
+
+    private getContractCallResult(
+        encodedData: string,
+        functionAbi: ABIFunction,
+        reverted: boolean
+    ): ContractCallResult {
+        if (reverted) {
+            const errorMessage = decodeRevertReason(encodedData) ?? '';
+            return {
+                success: false,
+                result: {
+                    errorMessage
+                }
+            };
+        }
+
+        // Returning the decoded result both as plain and array.
+        const encodedResult = Hex.of(encodedData);
+        const plain = functionAbi.decodeResult(encodedResult);
+        const array = functionAbi.decodeOutputAsArray(encodedResult);
+        return {
+            success: true,
+            result: {
+                plain,
+                array
+            }
+        };
     }
 }
 

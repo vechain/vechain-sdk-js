@@ -123,22 +123,11 @@ class ContractsModule {
         functionData: unknown[],
         contractCallOptions?: ContractCallOptions
     ): Promise<ContractCallResult> {
-        // Simulate the transaction to get the result of the contract call
-        const response = await this.transactionsModule.simulateTransaction(
-            [
-                {
-                    to: contractAddress,
-                    value: '0',
-                    data: functionAbi.encodeData(functionData).toString()
-                }
-            ],
-            contractCallOptions
-        );
-
-        return this.getContractCallResult(
-            response[0].data,
+        return await this.transactionsModule.executeCall(
+            contractAddress,
             functionAbi,
-            response[0].reverted
+            functionData,
+            contractCallOptions
         );
     }
 
