@@ -1997,10 +1997,10 @@
     mime "^3.0.0"
     zod "^3.22.3"
 
-"@cloudflare/workers-types@^4.20240725.0":
-  version "4.20240925.0"
-  resolved "https://registry.yarnpkg.com/@cloudflare/workers-types/-/workers-types-4.20240925.0.tgz#6324d6c6abefe578665e3eb4340953afa6453ae7"
-  integrity sha512-KpqyRWvanEuXgBTKYFzRp4NsWOEcswxjsPRSre1zYQcODmc8PUrraVHQUmgvkJgv3FzB+vI9xm7J6oE4MmZHCA==
+"@cloudflare/workers-types@^4.20241112.0":
+  version "4.20241112.0"
+  resolved "https://registry.yarnpkg.com/@cloudflare/workers-types/-/workers-types-4.20241112.0.tgz#174f8ccbfe1cc2e07b86622f82b84698f62d14c7"
+  integrity sha512-Q4p9bAWZrX14bSCKY9to19xl0KMU7nsO5sJ2cTVspHoypsjPUMeQCsjHjmsO2C4Myo8/LPeDvmqFmkyNAPPYZw==
 
 "@commitlint/cli@^19.4.1":
   version "19.5.0"
