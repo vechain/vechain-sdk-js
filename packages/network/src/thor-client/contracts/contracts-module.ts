@@ -141,18 +141,9 @@ class ContractsModule {
         clauses: ContractClause[],
         options?: SimulateTransactionOptions
     ): Promise<ContractCallResult[]> {
-        // Simulate the transaction to get the result of the contract call
-        const response = await this.transactionsModule.simulateTransaction(
-            clauses.map((clause) => clause.clause),
+        return await this.transactionsModule.executeMultipleClausesCall(
+            clauses,
             options
-        );
-        // Returning the decoded results both as plain and array.
-        return response.map((res, index) =>
-            this.getContractCallResult(
-                res.data,
-                clauses[index].functionAbi,
-                res.reverted
-            )
         );
     }
 

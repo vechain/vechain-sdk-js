@@ -39,7 +39,11 @@ import {
 import { type ThorClient } from '../ThorClient';
 import type { EstimateGasOptions, EstimateGasResult } from '../gas/types';
 import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
-import type { ContractCallOptions, ContractCallResult } from '../contracts';
+import type {
+    ContractCallOptions,
+    ContractCallResult,
+    ContractClause
+} from '../contracts';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
@@ -671,6 +675,25 @@ class TransactionsModule {
             response[0].data,
             functionAbi,
             response[0].reverted
+        );
+    }
+
+    public async executeMultipleClausesCall(
+        clauses: ContractClause[],
+        options?: SimulateTransactionOptions
+    ): Promise<ContractCallResult[]> {
+        // Simulate the transaction to get the result of the contract call
+        const response = await this.simulateTransaction(
+            clauses.map((clause) => clause.clause),
+            options
+        );
+        // Returning the decoded results both as plain and array.
+        return response.map((res, index) =>
+            this.getContractCallResult(
+                res.data,
+                clauses[index].functionAbi,
+                res.reverted
+            )
         );
     }
 
