@@ -778,6 +778,14 @@ class TransactionsModule {
         );
     }
 
+    /**
+     * Decode the result of a contract call from the result of a simulated transaction.
+     *
+     * @param {string} encodedData - The encoded data received from the contract call.
+     * @param {ABIFunction} functionAbi - The ABI function definition used for decoding the result.
+     * @param {boolean} reverted - Indicates if the contract call reverted.
+     * @return {ContractCallResult} An object containing the success status and the decoded result.
+     */
     private getContractCallResult(
         encodedData: string,
         functionAbi: ABIFunction,

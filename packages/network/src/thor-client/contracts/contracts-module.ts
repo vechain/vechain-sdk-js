@@ -1,7 +1,6 @@
-import { Hex, type ABIFunction } from '@vechain/sdk-core';
+import { type ABIFunction } from '@vechain/sdk-core';
 import { type Abi } from 'abitype';
 import { type VeChainSigner } from '../../signer/signers/types';
-import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
 import {
     type SendTransactionResult,
     type SimulateTransactionOptions
@@ -56,41 +55,6 @@ class ContractsModule {
         signer?: VeChainSigner
     ): Contract<Tabi> {
         return new Contract<Tabi>(address, abi, this, signer);
-    }
-
-    /**
-     * Extracts the decoded contract call result from the response of a simulated transaction.
-     * @param {string} encodedData Data returned from the simulated transaction.
-     * @param {ABIFunction} functionAbi Function ABI of the contract function.
-     * @param {boolean} reverted Whether the transaction was reverted.
-     * @returns {ContractCallResult} An object containing the decoded contract call result.
-     */
-    private getContractCallResult(
-        encodedData: string,
-        functionAbi: ABIFunction,
-        reverted: boolean
-    ): ContractCallResult {
-        if (reverted) {
-            const errorMessage = decodeRevertReason(encodedData) ?? '';
-            return {
-                success: false,
-                result: {
-                    errorMessage
-                }
-            };
-        }
-
-        // Returning the decoded result both as plain and array.
-        const encodedResult = Hex.of(encodedData);
-        const plain = functionAbi.decodeResult(encodedResult);
-        const array = functionAbi.decodeOutputAsArray(encodedResult);
-        return {
-            success: true,
-            result: {
-                plain,
-                array
-            }
-        };
     }
 
     /**
