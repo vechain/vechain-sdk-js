@@ -52,6 +52,7 @@ import type {
     ContractTransactionOptions
 } from '../contracts';
 import type { VeChainSigner } from '../../signer';
+import { type LogsModule } from '../logs';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
@@ -60,10 +61,16 @@ import type { VeChainSigner } from '../../signer';
 class TransactionsModule {
     readonly blocksModule: BlocksModule;
     readonly debugModule: DebugModule;
+    readonly logsModule: LogsModule;
 
-    constructor(blocksModule: BlocksModule, debugModule: DebugModule) {
+    constructor(
+        blocksModule: BlocksModule,
+        debugModule: DebugModule,
+        logsModule: LogsModule
+    ) {
         this.blocksModule = blocksModule;
         this.debugModule = debugModule;
+        this.logsModule = logsModule;
     }
 
     /**

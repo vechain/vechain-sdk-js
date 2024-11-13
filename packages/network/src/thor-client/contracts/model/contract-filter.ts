@@ -43,14 +43,15 @@ class ContractFilter<TAbi extends Abi> {
             range: param?.range ?? {
                 unit: 'block',
                 from: 0,
-                to: (await this.contract.thor.blocks.getBestBlockCompressed())
-                    ?.number
+                to: (
+                    await this.contract.contractsModule.transactionsModule.blocksModule.getBestBlockCompressed()
+                )?.number
             },
             criteriaSet: this.criteriaSet,
             options: param?.options,
             order: param?.order ?? 'asc'
         };
-        return await this.contract.thor.logs.filterEventLogs(
+        return await this.contract.contractsModule.transactionsModule.logsModule.filterEventLogs(
             filterEventLogsOptions
         );
     }

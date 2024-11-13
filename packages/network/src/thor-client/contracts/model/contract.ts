@@ -33,7 +33,7 @@ import { type ContractsModule } from '../contracts-module';
  */
 class Contract<TAbi extends Abi> {
     readonly contractsModule: ContractsModule;
-    readonly thor: ThorClient;
+    // readonly thor: ThorClient;
     readonly address: string;
     readonly abi: Abi;
     private signer?: VeChainSigner;
@@ -98,7 +98,6 @@ class Contract<TAbi extends Abi> {
         transactionReceipt?: TransactionReceipt
     ) {
         this.abi = abi;
-        this.thor = thor;
         this.address = address;
         this.contractsModule = contractsModule;
         this.deployTransactionReceipt = transactionReceipt;
