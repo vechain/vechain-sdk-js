@@ -38,9 +38,11 @@ describe('vnsUtils', () => {
             jest.spyOn(vnsUtils, 'resolveNames');
             const name = 'test-sdk.vet';
             await vnsUtils.resolveName(thorClient, name);
-            expect(vnsUtils.resolveNames).toHaveBeenCalledWith(thorClient, [
-                name
-            ]);
+            expect(vnsUtils.resolveNames).toHaveBeenCalledWith(
+                thorClient.blocks,
+                thorClient.transactions,
+                [name]
+            );
         });
 
         test('Should return null if resolveNames() has invalid result', async () => {

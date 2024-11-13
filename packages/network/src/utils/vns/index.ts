@@ -1,5 +1,9 @@
 import { ABIFunction, ABIItem, Address, ZERO_ADDRESS } from '@vechain/sdk-core';
-import { type ThorClient } from '../../thor-client';
+import {
+    type BlocksModule,
+    type ThorClient,
+    type TransactionsModule
+} from '../../thor-client';
 import { NetworkContracts } from './addresses';
 
 /**
@@ -13,7 +17,11 @@ const resolveName = async (
     thorClient: ThorClient,
     name: string
 ): Promise<null | string> => {
-    const [address] = await vnsUtils.resolveNames(thorClient, [name]);
+    const [address] = await vnsUtils.resolveNames(
+        thorClient.blocks,
+        thorClient.transactions,
+        [name]
+    );
     return address ?? null;
 };
 
@@ -25,11 +33,12 @@ const resolveName = async (
  * @returns The list of the same size of names with the resolved address or null
  */
 const resolveNames = async (
-    thorClient: ThorClient,
+    blocksModule: BlocksModule,
+    transactionsModule: TransactionsModule,
     names: string[]
 ): Promise<Array<null | string>> => {
     // identify current chain
-    const genesisBlock = await thorClient.blocks.getGenesisBlock();
+    const genesisBlock = await blocksModule.getGenesisBlock();
 
     // verify configuration for chain exists
     if (
@@ -42,7 +51,7 @@ const resolveNames = async (
     const resolveUtilsAddress = NetworkContracts[genesisBlock.id].resolveUtils;
 
     // use the resolveUtils to lookup names
-    const callGetAddresses = await thorClient.contracts.executeCall(
+    const callGetAddresses = await transactionsModule.executeCall(
         resolveUtilsAddress,
         ABIItem.ofSignature(
             ABIFunction,

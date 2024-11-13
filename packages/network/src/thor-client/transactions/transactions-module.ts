@@ -43,7 +43,6 @@ import {
     type TransactionSimulationResult,
     type WaitForTransactionOptions
 } from './types';
-import { type ThorClient } from '../ThorClient';
 import type { EstimateGasOptions, EstimateGasResult } from '../gas/types';
 import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
 import type {
@@ -62,16 +61,9 @@ class TransactionsModule {
     readonly blocksModule: BlocksModule;
     readonly debugModule: DebugModule;
 
-    readonly thor: ThorClient; // remove
-
-    constructor(
-        blocksModule: BlocksModule,
-        debugModule: DebugModule,
-        thor: ThorClient
-    ) {
+    constructor(blocksModule: BlocksModule, debugModule: DebugModule) {
         this.blocksModule = blocksModule;
         this.debugModule = debugModule;
-        this.thor = thor;
     }
 
     /**
@@ -386,7 +378,11 @@ class TransactionsModule {
         }
 
         // resolve the names to addresses
-        const addresses = await vnsUtils.resolveNames(this.thor, nameList);
+        const addresses = await vnsUtils.resolveNames(
+            this.blocksModule,
+            this,
+            nameList
+        );
 
         // map unique names with resolved addresses
         addresses.forEach((address, index) => {
