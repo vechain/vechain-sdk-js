@@ -226,7 +226,6 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
     public comparedTo(that: FixedPointNumber): null | number {
         try {
             return this.compareTo(that);
-            //  eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
             return null;
         }
@@ -955,7 +954,6 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
                 this.fractionalDigits,
                 FixedPointNumber.sqr(this.scaledValue, this.fractionalDigits)
             );
-            //  eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
             return FixedPointNumber.NaN;
         }

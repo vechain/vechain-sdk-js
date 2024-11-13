@@ -130,7 +130,6 @@ class Hex implements VeChainDataModel<Hex> {
             // The sign is part of the IEEE 754 representation hence no need to consider `this.sign` property.
             return new DataView(this.bytes.buffer).getFloat64(0);
         }
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         throw new InvalidOperation('Hex.n', 'not an IEEE 754 float 64 number', {
             hex: this.toString()
         });

@@ -52,7 +52,6 @@ describe('Hardhat factory adapter tests', () => {
         const signer: Signer = new VoidSigner('0x');
 
         signer.sendTransaction = jest.fn(async (_tx) => {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
             return await ({} as unknown as Promise<TransactionResponse>);
         });
 

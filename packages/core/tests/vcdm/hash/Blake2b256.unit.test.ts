@@ -36,7 +36,6 @@ describe('Blake2b256 class tests', () => {
     });
 
     test('Return hash for no content', () => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         const hash = Blake2b256.of(NO_CONTENT);
         expect(hash.isEqual(NO_CONTENT_BLAKE2B256)).toBe(true);
     });

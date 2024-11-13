@@ -109,7 +109,6 @@ abstract class Coin implements Currency {
     isEqual(that: Currency): boolean {
         try {
             return this.compareTo(that) === 0;
-            //  eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
             return false;
         }

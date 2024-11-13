@@ -64,11 +64,7 @@ class Contract<TAbi extends Abi> {
         TAbi,
         ExtractAbiFunctionNames<TAbi>
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    > = {} as ContractFunctionClause<
-        TAbi,
-        ExtractAbiFunctionNames<TAbi>
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    >;
+    > = {} as ContractFunctionClause<TAbi, ExtractAbiFunctionNames<TAbi>>;
 
     public criteria: ContractFunctionCriteria<
         TAbi,

@@ -329,11 +329,9 @@ describe('Hardhat provider tests', () => {
         expect(results[1].method).toBe('eth_subscription');
 
         // @ts-expect-error - Asserting that log data is present
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(results[0].params.result.length).toBeGreaterThan(0);
 
         // @ts-expect-error - Asserting that log data is present
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(results[1].params.result.length).toBeGreaterThan(0);
     }, 30000);
 
