@@ -9,7 +9,6 @@ import {
     type ExtractAbiFunctionNames
 } from 'abitype';
 import { type VeChainSigner } from '../../../signer';
-import { type ThorClient } from '../../ThorClient';
 import type { TransactionReceipt } from '../../transactions/types';
 import type { ContractCallOptions, ContractTransactionOptions } from '../types';
 import {
@@ -93,7 +92,6 @@ class Contract<TAbi extends Abi> {
         address: string,
         abi: Abi,
         contractsModule: ContractsModule,
-        thor: ThorClient,
         signer?: VeChainSigner,
         transactionReceipt?: TransactionReceipt
     ) {

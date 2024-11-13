@@ -42,7 +42,7 @@ class ContractsModule {
         bytecode: string,
         signer: VeChainSigner
     ): ContractFactory<TAbi> {
-        return new ContractFactory<TAbi>(abi, bytecode, signer, this.thor);
+        return new ContractFactory<TAbi>(abi, bytecode, signer, this);
     }
 
     /**
@@ -58,7 +58,7 @@ class ContractsModule {
         abi: Tabi,
         signer?: VeChainSigner
     ): Contract<Tabi> {
-        return new Contract<Tabi>(address, abi, this, this.thor, signer);
+        return new Contract<Tabi>(address, abi, this, signer);
     }
 
     /**

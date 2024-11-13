@@ -11,10 +11,10 @@ import {
 } from '@vechain/sdk-errors';
 import { type Abi } from 'abitype';
 import { signerUtils, type VeChainSigner } from '../../../signer';
-import { type ThorClient } from '../../ThorClient';
 import { type SendTransactionResult } from '../../transactions/types';
 import type { ContractTransactionOptions } from '../types';
 import { Contract } from './contract';
+import { type ContractsModule } from '../contracts-module';
 
 /**
  * A factory class for deploying smart contracts to a blockchain using a ThorClient.
@@ -38,30 +38,32 @@ class ContractFactory<TAbi extends Abi> {
     /**
      * An instance of ThorClient to interact with the blockchain.
      */
-    private readonly thor: ThorClient;
+    // private readonly thor: ThorClient;
 
     /**
      * The result of the deployment transaction, undefined until a deployment is started.
      */
     private deployTransaction: SendTransactionResult | undefined;
 
+    readonly contractsModule: ContractsModule;
+
     /**
      * Initializes a new instance of the `ContractFactory` class.
      * @param abi The Application Binary Interface (ABI) of the contract, which defines the contract's methods and events.
      * @param bytecode The compiled bytecode of the contract, representing the contract's executable code.
      * @param signer The signer used for signing transactions during contract deployment, ensuring the deployer's identity.
-     * @param thor An instance of ThorClient to interact with the blockchain.
+     * @param contractsModule An instance of the module to interact with the blockchain.
      */
     constructor(
         abi: Abi,
         bytecode: string,
         signer: VeChainSigner,
-        thor: ThorClient
+        contractsModule: ContractsModule
     ) {
         this.abi = abi;
         this.bytecode = bytecode;
         this.signer = signer;
-        this.thor = thor;
+        this.contractsModule = contractsModule;
     }
 
     /**
@@ -92,16 +94,18 @@ class ContractFactory<TAbi extends Abi> {
         ) as TransactionClause;
 
         // Estimate the gas cost of the transaction
-        const gasResult = await this.thor.gas.estimateGas(
-            [deployContractClause],
-            await this.signer.getAddress()
-        );
+        const gasResult =
+            await this.contractsModule.transactionsModule.estimateGas(
+                [deployContractClause],
+                await this.signer.getAddress()
+            );
 
-        const txBody = await this.thor.transactions.buildTransactionBody(
-            [deployContractClause],
-            gasResult.totalGas,
-            options
-        );
+        const txBody =
+            await this.contractsModule.transactionsModule.buildTransactionBody(
+                [deployContractClause],
+                gasResult.totalGas,
+                options
+            );
 
         // Sign the transaction
         const signedTx = await this.signer.signTransaction(
@@ -112,9 +116,10 @@ class ContractFactory<TAbi extends Abi> {
         );
 
         // Send the signed transaction to the blockchain
-        this.deployTransaction = await this.thor.transactions.sendTransaction(
-            Transaction.decode(HexUInt.of(signedTx.slice(2)).bytes, true)
-        );
+        this.deployTransaction =
+            await this.contractsModule.transactionsModule.sendTransaction(
+                Transaction.decode(HexUInt.of(signedTx.slice(2)).bytes, true)
+            );
 
         return this;
     }
@@ -137,7 +142,9 @@ class ContractFactory<TAbi extends Abi> {
                 'ContractFactory.waitForDeployment()',
                 'Cannot find a contract deployment transaction',
                 {
-                    networkUrl: this.thor.httpClient.baseURL
+                    networkUrl:
+                        this.contractsModule.transactionsModule.blocksModule
+                            .httpClient.baseURL
                 }
             );
         }
@@ -163,8 +170,7 @@ class ContractFactory<TAbi extends Abi> {
         return new Contract<TAbi>(
             transactionReceipt?.outputs[0].contractAddress,
             this.abi,
-            this.thor.contracts,
-            this.thor,
+            this.contractsModule,
             this.signer,
             transactionReceipt
         );
