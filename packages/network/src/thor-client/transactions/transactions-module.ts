@@ -1,8 +1,10 @@
 import {
     ABI,
+    ABIContract,
     type ABIFunction,
     Address,
     Clause,
+    dataUtils,
     Hex,
     HexUInt,
     Revision,
@@ -19,6 +21,7 @@ import { HttpMethod } from '../../http';
 import { blocksFormatter, getTransactionIndexIntoBlock } from '../../provider';
 import {
     buildQuery,
+    BUILT_IN_CONTRACTS,
     ERROR_SELECTOR,
     PANIC_SELECTOR,
     Poll,
@@ -737,6 +740,39 @@ class TransactionsModule {
             id,
             wait: async () => await this.waitForTransaction(id)
         };
+    }
+
+    public async executeMultipleClausesTransaction(
+        clauses: ContractClause[],
+        signer: VeChainSigner,
+        options?: ContractTransactionOptions
+    ): Promise<SendTransactionResult> {
+        const id = await signer.sendTransaction({
+            clauses: clauses.map((clause) => clause.clause),
+            gas: options?.gas,
+            gasLimit: options?.gasLimit,
+            gasPrice: options?.gasPrice,
+            gasPriceCoef: options?.gasPriceCoef,
+            nonce: options?.nonce,
+            value: options?.value,
+            dependsOn: options?.dependsOn,
+            expiration: options?.expiration,
+            chainTag: options?.chainTag,
+            blockRef: options?.blockRef
+        });
+
+        return {
+            id,
+            wait: async () => await this.waitForTransaction(id)
+        };
+    }
+
+    public async getBaseGasPrice(): Promise<ContractCallResult> {
+        return await this.executeCall(
+            BUILT_IN_CONTRACTS.PARAMS_ADDRESS,
+            ABIContract.ofAbi(BUILT_IN_CONTRACTS.PARAMS_ABI).getFunction('get'),
+            [dataUtils.encodeBytes32String('base-gas-price', 'left')]
+        );
     }
 
     private getContractCallResult(

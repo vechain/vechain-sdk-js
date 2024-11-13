@@ -1,12 +1,6 @@
-import {
-    ABIContract,
-    dataUtils,
-    Hex,
-    type ABIFunction
-} from '@vechain/sdk-core';
+import { Hex, type ABIFunction } from '@vechain/sdk-core';
 import { type Abi } from 'abitype';
 import { type VeChainSigner } from '../../signer/signers/types';
-import { BUILT_IN_CONTRACTS } from '../../utils';
 import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
 import { type ThorClient } from '../ThorClient';
 import {
@@ -185,25 +179,11 @@ class ContractsModule {
         signer: VeChainSigner,
         options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {
-        const id = await signer.sendTransaction({
-            clauses: clauses.map((clause) => clause.clause),
-            gas: options?.gas,
-            gasLimit: options?.gasLimit,
-            gasPrice: options?.gasPrice,
-            gasPriceCoef: options?.gasPriceCoef,
-            nonce: options?.nonce,
-            value: options?.value,
-            dependsOn: options?.dependsOn,
-            expiration: options?.expiration,
-            chainTag: options?.chainTag,
-            blockRef: options?.blockRef
-        });
-
-        return {
-            id,
-            wait: async () =>
-                await this.transactionsModule.waitForTransaction(id)
-        };
+        return await this.transactionsModule.executeMultipleClausesTransaction(
+            clauses,
+            signer,
+            options
+        );
     }
 
     /**
@@ -216,11 +196,7 @@ class ContractsModule {
      * @returns The base gas price in wei.
      */
     public async getBaseGasPrice(): Promise<ContractCallResult> {
-        return await this.executeCall(
-            BUILT_IN_CONTRACTS.PARAMS_ADDRESS,
-            ABIContract.ofAbi(BUILT_IN_CONTRACTS.PARAMS_ABI).getFunction('get'),
-            [dataUtils.encodeBytes32String('base-gas-price', 'left')]
-        );
+        return await this.transactionsModule.getBaseGasPrice();
     }
 }
 
