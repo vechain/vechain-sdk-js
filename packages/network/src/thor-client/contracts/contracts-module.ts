@@ -58,7 +58,7 @@ class ContractsModule {
         abi: Tabi,
         signer?: VeChainSigner
     ): Contract<Tabi> {
-        return new Contract<Tabi>(address, abi, this.thor, signer);
+        return new Contract<Tabi>(address, abi, this, this.thor, signer);
     }
 
     /**

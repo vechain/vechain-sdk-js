@@ -163,6 +163,7 @@ class ContractFactory<TAbi extends Abi> {
         return new Contract<TAbi>(
             transactionReceipt?.outputs[0].contractAddress,
             this.abi,
+            this.thor.contracts,
             this.thor,
             this.signer,
             transactionReceipt
