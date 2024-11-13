@@ -560,7 +560,6 @@ function isValid(keystore: Keystore): boolean {
         ) {
             return true;
         }
-        //  eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {} // Return false if parsing fails.
     return false;
 }

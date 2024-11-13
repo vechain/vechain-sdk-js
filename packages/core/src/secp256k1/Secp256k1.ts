@@ -110,7 +110,6 @@ class Secp256k1 {
     public static async generatePrivateKey(): Promise<Uint8Array> {
         try {
             return nc_secp256k1.utils.randomPrivateKey();
-            //  eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
             // Generate an ECDSA key pair
             const cryptoKey = await global.crypto.subtle.generateKey(
@@ -203,7 +202,6 @@ class Secp256k1 {
     public static randomBytes(bytesLength?: number): Uint8Array {
         try {
             return nh_randomBytes(bytesLength);
-            //  eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
             return global.crypto.getRandomValues(
                 new Uint8Array(bytesLength ?? 32)

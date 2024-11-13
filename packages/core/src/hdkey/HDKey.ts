@@ -135,7 +135,6 @@ class HDKey extends s_bip32.HDKey {
                 return s_bip32.HDKey.fromExtendedKey(
                     base58.encode(expandedPrivateKey)
                 ) as HDKey;
-                //  eslint-disable-next-line @typescript-eslint/no-unused-vars
             } catch (e) {
                 throw new InvalidSecp256k1PrivateKey(
                     'HDNode.fromPrivateKey',

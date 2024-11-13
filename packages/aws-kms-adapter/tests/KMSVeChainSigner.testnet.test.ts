@@ -53,7 +53,6 @@ describe('KMSVeChainSigner - Testnet', () => {
             [awsClientParameters] = JSON.parse(
                 fs.readFileSync(awsCredentialsPath, 'utf8')
             ) as KMSClientParameters[];
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             console.log('Loading test credentials');
             const testAwsCredentialsPath = path.resolve(
