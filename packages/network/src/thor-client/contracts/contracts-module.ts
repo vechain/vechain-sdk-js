@@ -2,7 +2,6 @@ import { Hex, type ABIFunction } from '@vechain/sdk-core';
 import { type Abi } from 'abitype';
 import { type VeChainSigner } from '../../signer/signers/types';
 import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
-import { type ThorClient } from '../ThorClient';
 import {
     type SendTransactionResult,
     type SimulateTransactionOptions
@@ -21,11 +20,9 @@ import { type TransactionsModule } from '../transactions';
  */
 class ContractsModule {
     readonly transactionsModule: TransactionsModule;
-    readonly thor: ThorClient; // remove
 
-    constructor(transactionsModule: TransactionsModule, thor: ThorClient) {
+    constructor(transactionsModule: TransactionsModule) {
         this.transactionsModule = transactionsModule;
-        this.thor = thor;
     }
 
     /**
