@@ -1,13 +1,17 @@
 import {
     ABI,
     type ABIFunction,
+    Address,
+    Clause,
     Hex,
     HexUInt,
     Revision,
     ThorId,
     Transaction,
     type TransactionBody,
-    type TransactionClause
+    type TransactionClause,
+    Units,
+    VET
 } from '@vechain/sdk-core';
 import { InvalidDataType, InvalidTransactionField } from '@vechain/sdk-errors';
 import { ErrorFragment, Interface } from 'ethers';
@@ -42,8 +46,10 @@ import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
 import type {
     ContractCallOptions,
     ContractCallResult,
-    ContractClause
+    ContractClause,
+    ContractTransactionOptions
 } from '../contracts';
+import type { VeChainSigner } from '../../signer';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
@@ -695,6 +701,42 @@ class TransactionsModule {
                 res.reverted
             )
         );
+    }
+
+    public async executeTransaction(
+        signer: VeChainSigner,
+        contractAddress: string,
+        functionAbi: ABIFunction,
+        functionData: unknown[],
+        options?: ContractTransactionOptions
+    ): Promise<SendTransactionResult> {
+        // Sign the transaction
+        const id = await signer.sendTransaction({
+            clauses: [
+                // Build a clause to interact with the contract function
+                Clause.callFunction(
+                    Address.of(contractAddress),
+                    functionAbi,
+                    functionData,
+                    VET.of(options?.value ?? 0, Units.wei)
+                )
+            ],
+            gas: options?.gas,
+            gasLimit: options?.gasLimit,
+            gasPrice: options?.gasPrice,
+            gasPriceCoef: options?.gasPriceCoef,
+            nonce: options?.nonce,
+            value: options?.value,
+            dependsOn: options?.dependsOn,
+            expiration: options?.expiration,
+            chainTag: options?.chainTag,
+            blockRef: options?.blockRef
+        });
+
+        return {
+            id,
+            wait: async () => await this.waitForTransaction(id)
+        };
     }
 
     private getContractCallResult(

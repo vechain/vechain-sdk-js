@@ -1,11 +1,7 @@
 import {
     ABIContract,
-    Address,
-    Clause,
     dataUtils,
     Hex,
-    Units,
-    VET,
     type ABIFunction
 } from '@vechain/sdk-core';
 import { type Abi } from 'abitype';
@@ -167,34 +163,13 @@ class ContractsModule {
         functionData: unknown[],
         options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {
-        // Sign the transaction
-        const id = await signer.sendTransaction({
-            clauses: [
-                // Build a clause to interact with the contract function
-                Clause.callFunction(
-                    Address.of(contractAddress),
-                    functionAbi,
-                    functionData,
-                    VET.of(options?.value ?? 0, Units.wei)
-                )
-            ],
-            gas: options?.gas,
-            gasLimit: options?.gasLimit,
-            gasPrice: options?.gasPrice,
-            gasPriceCoef: options?.gasPriceCoef,
-            nonce: options?.nonce,
-            value: options?.value,
-            dependsOn: options?.dependsOn,
-            expiration: options?.expiration,
-            chainTag: options?.chainTag,
-            blockRef: options?.blockRef
-        });
-
-        return {
-            id,
-            wait: async () =>
-                await this.transactionsModule.waitForTransaction(id)
-        };
+        return await this.transactionsModule.executeTransaction(
+            signer,
+            contractAddress,
+            functionAbi,
+            functionData,
+            options
+        );
     }
 
     /**
