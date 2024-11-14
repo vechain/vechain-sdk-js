@@ -23,7 +23,6 @@ describe('Hardhat provider tests - testnet', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         provider = new HardhatVeChainProvider(
             new ProviderInternalBaseWallet([]),
             TESTNET_URL,

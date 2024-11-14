@@ -77,7 +77,6 @@ describe('ThorClient - Gas Module', () => {
                         thorSoloClient.gas.estimateGas(
                             clauses,
                             // Random address
-                            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-call
                             Hex.random(20).toString(),
                             options
                         )

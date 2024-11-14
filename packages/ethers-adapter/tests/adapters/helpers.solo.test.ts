@@ -48,7 +48,6 @@ describe('Helpers tests', () => {
 
         provider.thorClient.transactions.waitForTransaction = jest.fn(
             async (_txID: string, _options?: WaitForTransactionOptions) => {
-                // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
                 return await Promise.resolve(null);
             }
         );

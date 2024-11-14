@@ -74,6 +74,7 @@ const txBody = {
  */
 const txBodies = CLAUSES_VTHO.map((clause, index) => ({
     ...txBody,
+    // eslint-disable-next-line security/detect-object-injection
     clauses: [clause, CLAUSES_VET[index]]
 }));
 

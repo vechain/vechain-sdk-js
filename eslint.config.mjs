@@ -1,12 +1,12 @@
+import { FlatCompat } from "@eslint/eslintrc";
+import js from "@eslint/js";
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
+import tsParser from "@typescript-eslint/parser";
 import localRules from "eslint-plugin-local-rules";
 import sonarjs from "eslint-plugin-sonarjs";
 import globals from "globals";
-import tsParser from "@typescript-eslint/parser";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import js from "@eslint/js";
-import { FlatCompat } from "@eslint/eslintrc";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,7 +28,7 @@ export default [{
     "plugin:sonarjs/recommended-legacy",
     "plugin:security/recommended-legacy",
 ), {
-    files: ["src/**/*.ts", "tests/**/*.ts"],
+    files: ["**/src/**/*.ts", "**/tests/**/*.ts"],
     plugins: {
         "@typescript-eslint": typescriptEslint,
         "local-rules": localRules,
@@ -88,6 +88,12 @@ export default [{
         "security/detect-unsafe-regex": "off",
         "security/detect-non-literal-fs-filename": "off",
         "sonarjs/sonar-no-unused-vars": "off",
-        "sonarjs/sonar-no-fallthrough": "off"
-    },
+        "sonarjs/sonar-no-fallthrough": "off",
+        "import/no-extraneous-dependencies": ["error", {"devDependencies": false, "optionalDependencies": false, "peerDependencies": false}]
+    }
+}, {
+    files: ["**/tests/**/*.ts"],
+    rules: {
+        "import/no-extraneous-dependencies": "off",
+    }
 }];

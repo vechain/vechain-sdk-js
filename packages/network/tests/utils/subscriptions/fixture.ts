@@ -7,13 +7,11 @@ import { default as NodeWebSocket } from 'isomorphic-ws';
 /**
  * random address for `from` parameter
  */
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
 const fromRandomAddress = Hex.random(20).toString();
 
 /**
  * random address for `to` parameter
  */
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
 const toRandomAddress = Hex.random(20).toString();
 
 /**
@@ -51,10 +49,8 @@ const getEventSubscriptionUrlTestCases = [
         },
         valuesToEncode: [fromRandomAddress, toRandomAddress],
         options: {},
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
         expectedURL: `wss://testnet.vechain.org/subscriptions/event?t0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&t1=0x000000000000000000000000${fromRandomAddress.slice(
             2
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
         )}&t2=0x000000000000000000000000${toRandomAddress.slice(2)}`
     },
     {
@@ -82,37 +78,30 @@ const getEventSubscriptionUrlTestCases = [
         }),
         valuesToEncode: [fromRandomAddress, toRandomAddress],
         options: {},
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
         expectedURL: `wss://testnet.vechain.org/subscriptions/event?t0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&t1=0x000000000000000000000000${fromRandomAddress.slice(
             2
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
         )}&t2=0x000000000000000000000000${toRandomAddress.slice(2)}`
     },
     {
         event: 'event Transfer(address indexed, address indexed, uint256)',
         valuesToEncode: [fromRandomAddress, toRandomAddress],
         options: {},
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
         expectedURL: `wss://testnet.vechain.org/subscriptions/event?t0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&t1=0x000000000000000000000000${fromRandomAddress.slice(
             2
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
         )}&t2=0x000000000000000000000000${toRandomAddress.slice(2)}`
     },
     {
         event: 'event Transfer(address indexed from, address indexed to, uint256 value)',
         valuesToEncode: [fromRandomAddress, toRandomAddress],
         options: {},
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
         expectedURL: `wss://testnet.vechain.org/subscriptions/event?t0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&t1=0x000000000000000000000000${fromRandomAddress.slice(
             2
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
         )}&t2=0x000000000000000000000000${toRandomAddress.slice(2)}`
     },
     {
         event: 'event Transfer(address indexed from, address indexed to, uint256 value)',
         valuesToEncode: [fromRandomAddress], // Missing `to` parameter
         options: {},
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
         expectedURL: `wss://testnet.vechain.org/subscriptions/event?t0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&t1=0x000000000000000000000000${fromRandomAddress.slice(
             2
         )}`
@@ -121,7 +110,6 @@ const getEventSubscriptionUrlTestCases = [
         event: 'event Transfer(address indexed from, address indexed to, uint256 value)',
         valuesToEncode: [null, toRandomAddress], // Missing `from` parameter
         options: {},
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
         expectedURL: `wss://testnet.vechain.org/subscriptions/event?t0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&t2=0x000000000000000000000000${toRandomAddress.slice(
             2
         )}`
@@ -142,20 +130,16 @@ const getEventSubscriptionUrlTestCases = [
         event: 'event Approval(address indexed owner, address indexed spender, uint256 value)',
         valuesToEncode: [fromRandomAddress, toRandomAddress],
         options: {},
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
         expectedURL: `wss://testnet.vechain.org/subscriptions/event?t0=0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925&t1=0x000000000000000000000000${fromRandomAddress.slice(
             2
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call
         )}&t2=0x000000000000000000000000${toRandomAddress.slice(2)}`
     },
     {
         event: 'event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)',
         valuesToEncode: [fromRandomAddress, toRandomAddress, randomBigInt],
         options: {},
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
         expectedURL: `wss://testnet.vechain.org/subscriptions/event?t0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&t1=0x000000000000000000000000${fromRandomAddress.slice(
             2
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
         )}&t2=0x000000000000000000000000${toRandomAddress.slice(
             2
         )}&t3=${zeroPadValue(hexlify(toBeHex(randomBigInt)), 32)}`
@@ -167,7 +151,6 @@ const getEventSubscriptionUrlTestCases = [
         options: {
             address: TESTING_CONTRACT_ADDRESS
         },
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
         expectedURL: `wss://testnet.vechain.org/subscriptions/event?addr=${TESTING_CONTRACT_ADDRESS}&t0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&t2=0x000000000000000000000000${toRandomAddress.slice(
             2
         )}`
@@ -178,7 +161,6 @@ const getEventSubscriptionUrlTestCases = [
         options: {
             address: TESTING_CONTRACT_ADDRESS
         },
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
         expectedURL: `wss://testnet.vechain.org/subscriptions/event?addr=${TESTING_CONTRACT_ADDRESS}&t0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&t1=0x000000000000000000000000${fromRandomAddress.slice(
             2
         )}&t3=${zeroPadValue(hexlify(toBeHex(randomBigInt)), 32)}`
@@ -189,10 +171,8 @@ const getEventSubscriptionUrlTestCases = [
         options: {
             address: TESTING_CONTRACT_ADDRESS
         },
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
         expectedURL: `wss://testnet.vechain.org/subscriptions/event?addr=${TESTING_CONTRACT_ADDRESS}&t0=0xd78ad95fa46c994b6551d0da85fc275fe613ce37657fb8d5e3d130840159d822&t1=0x000000000000000000000000${fromRandomAddress.slice(
             2
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
         )}&t2=0x000000000000000000000000${toRandomAddress.slice(2)}`
     }
 ];
@@ -243,7 +223,6 @@ const getVETtransfersSubscriptionUrlTestCases = [
     },
     {
         options: {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             signerAddress: fromRandomAddress
         },
         expectedURL: `wss://testnet.vechain.org/subscriptions/transfer?txOrigin=${fromRandomAddress}`
@@ -251,16 +230,13 @@ const getVETtransfersSubscriptionUrlTestCases = [
 
     {
         options: {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             signerAddress: fromRandomAddress,
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             sender: fromRandomAddress
         },
         expectedURL: `wss://testnet.vechain.org/subscriptions/transfer?txOrigin=${fromRandomAddress}&sender=${fromRandomAddress}`
     },
     {
         options: {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             recipient: toRandomAddress
         },
         expectedURL: `wss://testnet.vechain.org/subscriptions/transfer?recipient=${toRandomAddress}`

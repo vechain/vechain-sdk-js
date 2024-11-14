@@ -78,7 +78,6 @@ async function decrypt(
             stringifyData(keystore),
             password
         )) as KeystoreAccount;
-        //  eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
         throw new InvalidKeystoreParams(
             'keystore.decrypt()',

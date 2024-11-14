@@ -237,7 +237,6 @@ describe('DebugModule testnet tests', () => {
         );
     });
 
-    // eslint-disable-next-line prettier/prettier
     describe('name = unigram, sender account index = 12', () => {
         const senderAccountIndex = 12;
         const tracerName = 'unigram';

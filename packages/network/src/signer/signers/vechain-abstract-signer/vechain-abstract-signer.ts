@@ -297,7 +297,6 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         }
 
         // Otherwise return a random number
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
         return Hex.random(6).toString();
     }
 

@@ -241,11 +241,10 @@ describe('VeChain base signer tests', () => {
             const expectedErrorString = 'not an error instance';
             jest.spyOn(Txt, 'of')
                 .mockImplementationOnce(() => {
-                    // eslint-disable-next-line @typescript-eslint/only-throw-error
                     throw expectedErrorString;
                 })
                 .mockImplementationOnce(() => {
-                    // eslint-disable-next-line @typescript-eslint/only-throw-error, sonarjs/no-throw-literal
+                    // eslint-disable-next-line sonarjs/no-throw-literal
                     throw undefined;
                 });
             await expect(
@@ -304,11 +303,10 @@ describe('VeChain base signer tests', () => {
             const expectedErrorString = 'not an error instance';
             jest.spyOn(Hex, 'of')
                 .mockImplementationOnce(() => {
-                    // eslint-disable-next-line @typescript-eslint/only-throw-error
                     throw expectedErrorString;
                 })
                 .mockImplementationOnce(() => {
-                    // eslint-disable-next-line @typescript-eslint/only-throw-error, sonarjs/no-throw-literal
+                    // eslint-disable-next-line sonarjs/no-throw-literal
                     throw undefined;
                 });
             await expect(
