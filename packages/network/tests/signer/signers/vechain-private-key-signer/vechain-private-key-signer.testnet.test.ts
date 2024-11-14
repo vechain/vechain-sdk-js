@@ -102,6 +102,32 @@ describe('VeChain base signer tests - testnet', () => {
                 }
             }
         }, 8000);
+
+
+        /**
+         * Should be able to request delegation URLs per transaction
+         */
+        test('Should be able to request delegation URLs per transaction', async () => {
+            for (const fixture of signTransactionTestCases.testnet.correct) {
+                if (fixture.isDelegated) {
+                    const signer = new VeChainPrivateKeySigner(
+                        HexUInt.of(fixture.origin.privateKey).bytes,
+                        new VeChainProvider(
+                            thorClient,
+                            THOR_SOLO_ACCOUNTS_BASE_WALLET,
+                            false
+                        )
+                    );
+
+                    // Sign the transaction
+                    const signedTransaction = await signer.signTransaction({
+                        from: fixture.origin.address,
+                        delegationUrl: fixture.options.delegatorUrl
+                    });
+
+                    expect(signedTransaction).toBeDefined();
+                }
+            }
     });
 
     /**

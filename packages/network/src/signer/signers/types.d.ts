@@ -104,6 +104,21 @@ interface TransactionRequestInput {
     chainTag?: number;
 
     /**
+     * The delegation URL to use to sponsor the transaction.
+     */
+    delegationUrl?: string;
+
+    /**
+     * A comment describing the transaction request.
+     */
+    comment?: string;
+
+    /**
+     * The required signer address for the transaction.
+     */
+    signer?: string;
+
+    /**
      * A reserved field intended for features use.
      *
      * In standard EVM transactions, this reserved field typically is not present.
