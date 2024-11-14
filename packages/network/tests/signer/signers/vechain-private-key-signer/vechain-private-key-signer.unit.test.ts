@@ -22,6 +22,7 @@ import {
     populateCallTestCases,
     populateCallTestCasesAccount
 } from './fixture';
+import { InvalidAbiEncodingTypeError } from 'viem';
 
 /**
  * VeChain base signer tests
@@ -293,7 +294,7 @@ describe('VeChain base signer tests', () => {
                     eip712TestCases.invalid.primaryType,
                     eip712TestCases.invalid.data
                 )
-            ).rejects.toThrowError(TypeError);
+            ).rejects.toThrowError(InvalidAbiEncodingTypeError);
         });
 
         test('signTypedData - exception when parsing to hex', async () => {
