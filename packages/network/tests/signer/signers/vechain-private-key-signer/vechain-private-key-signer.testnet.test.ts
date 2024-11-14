@@ -103,7 +103,6 @@ describe('VeChain base signer tests - testnet', () => {
             }
         }, 8000);
 
-
         /**
          * Should be able to request delegation URLs per transaction
          */
@@ -128,6 +127,7 @@ describe('VeChain base signer tests - testnet', () => {
                     expect(signedTransaction).toBeDefined();
                 }
             }
+        });
     });
 
     /**
