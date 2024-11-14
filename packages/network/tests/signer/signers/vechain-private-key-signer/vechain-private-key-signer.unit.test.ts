@@ -290,6 +290,7 @@ describe('VeChain base signer tests', () => {
                 signer.signTypedData(
                     eip712TestCases.invalid.domain,
                     eip712TestCases.invalid.types,
+                    eip712TestCases.invalid.primaryType,
                     eip712TestCases.invalid.data
                 )
             ).rejects.toThrowError(TypeError);
@@ -313,6 +314,7 @@ describe('VeChain base signer tests', () => {
                 signer.signTypedData(
                     eip712TestCases.valid.domain,
                     eip712TestCases.valid.types,
+                    eip712TestCases.valid.primaryType,
                     eip712TestCases.valid.data
                 )
             ).rejects.toThrowError(expectedErrorString);
@@ -321,6 +323,7 @@ describe('VeChain base signer tests', () => {
                 signer.signTypedData(
                     eip712TestCases.valid.domain,
                     eip712TestCases.valid.types,
+                    eip712TestCases.valid.primaryType,
                     eip712TestCases.valid.data
                 )
             ).rejects.toThrowError('Error while signing typed data');
@@ -341,6 +344,7 @@ describe('VeChain base signer tests', () => {
             ).signTypedData(
                 eip712TestCases.valid.domain,
                 eip712TestCases.valid.types,
+                eip712TestCases.valid.primaryType,
                 eip712TestCases.valid.data
             );
             expect(actual).toBe(expected);
