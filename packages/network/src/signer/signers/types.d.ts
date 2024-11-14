@@ -4,6 +4,7 @@ import {
     type HardhatVeChainProvider,
     type VeChainProvider
 } from '../../provider';
+import { type TypedDataDomain, type TypedDataParameter } from 'viem';
 
 /**
  * Available types for the VeChainProvider's
@@ -358,9 +359,10 @@ interface VeChainSigner {
      *  Signs the [[link-eip-712]] typed data.
      */
     signTypedData: (
-        domain: vechain_sdk_core_ethers.TypedDataDomain,
-        types: Record<string, vechain_sdk_core_ethers.TypedDataField[]>,
-        value: Record<string, unknown>,
+        domain: TypedDataDomain,
+        types: Record<string, TypedDataParameter[]>,
+        primaryType: string,
+        message: Record<string, unknown>,
         options?: SignTypedDataOptions
     ) => Promise<string>;
 
