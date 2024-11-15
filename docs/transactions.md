@@ -452,10 +452,6 @@ const txReceipt = await thorSoloClient.transactions.waitForTransaction(
 2. **Delegation with Private Key**: Here, we'll extend the previous example by incorporating fee delegation. The transaction sender will delegate the transaction fee payment to another entity (delegator), and we'll guide you through the steps of building, signing, and sending such a transaction.
 
 ```typescript { name=full-flow-delegator-private-key, category=example }
-import { expect } from 'expect';
-
-// START_SNIPPET: FullFlowDelegatorPrivateKeySnippet
-
 // 1 - Create the thor client
 const thorSoloClient = ThorClient.at(THOR_SOLO_URL, {
     isPollingEnabled: false
