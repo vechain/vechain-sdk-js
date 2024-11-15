@@ -90,17 +90,8 @@ class ContractsModule {
     }
 
     /**
-     * Executes a transaction to interact with a smart contract function.
-     *
-     * @param signer - The signer used for signing the transaction.
-     * @param contractAddress - The address of the smart contract.
-     * @param functionAbi - The function ABI, including the name and types of the function to be called, derived from the contract's ABI.
-     * @param functionData - The input data for the function.
-     * @param options - (Optional) An object containing options for the transaction body. Includes all options of the `buildTransactionBody` method
-     *                  besides `isDelegated`.
-     *                  @see {@link TransactionsModule.buildTransactionBody}
-     *
-     * @returns A promise resolving to a SendTransactionResult object.
+     * This method is going to be deprecated in the next release.
+     * Use {@link TransactionsModule.executeTransaction} instead.
      */
     public async executeTransaction(
         signer: VeChainSigner,

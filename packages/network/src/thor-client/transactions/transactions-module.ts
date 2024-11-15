@@ -741,6 +741,18 @@ class TransactionsModule {
         );
     }
 
+    /**
+     * Executes a transaction with a smart-contract on the VeChain blockchain.
+     *
+     * @param {VeChainSigner} signer - The signer instance to sign the transaction.
+     * @param {string} contractAddress - The address of the smart contract.
+     * @param {ABIFunction} functionAbi - The ABI of the contract function to be called.
+     * @param {unknown[]} functionData - The input parameters for the contract function.
+     * @param {ContractTransactionOptions} [options] - Optional transaction parameters.
+     * @return {Promise<SendTransactionResult>} - A promise that resolves to the result of the transaction.
+     *
+     * @see {@link TransactionsModule.buildTransactionBody}
+     */
     public async executeTransaction(
         signer: VeChainSigner,
         contractAddress: string,
