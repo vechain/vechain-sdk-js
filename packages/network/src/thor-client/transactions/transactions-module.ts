@@ -789,6 +789,14 @@ class TransactionsModule {
         };
     }
 
+    /**
+     * Executes a transaction with multiple clauses on the VeChain blockchain.
+     *
+     * @param {ContractClause[]} clauses - Array of contract clauses to be included in the transaction.
+     * @param {VeChainSigner} signer - A VeChain signer instance used to sign and send the transaction.
+     * @param {ContractTransactionOptions} [options] - Optional parameters to customize the transaction.
+     * @return {Promise<SendTransactionResult>} The result of the transaction, including transaction ID and a wait function.
+     */
     public async executeMultipleClausesTransaction(
         clauses: ContractClause[],
         signer: VeChainSigner,

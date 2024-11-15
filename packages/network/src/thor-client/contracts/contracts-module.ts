@@ -110,12 +110,8 @@ class ContractsModule {
     }
 
     /**
-     * Executes multiple contract clauses in a single transaction.
-     *
-     * @param {ContractClause[]} clauses - The list of contract clauses to be executed in the transaction.
-     * @param {VeChainSigner} signer - The signer responsible for signing and sending the transaction.
-     * @param {ContractTransactionOptions} [options] - Optional parameters for the transaction such as gas, gas limit, and nonce.
-     * @return {Promise<SendTransactionResult>} A promise that resolves to an object containing the transaction ID and a wait function to await the confirmation.
+     * This method is going to be deprected in the next release.
+     * Use {@link TransactionsModule.executeMultipleClausesTransaction} instead.
      */
     public async executeMultipleClausesTransaction(
         clauses: ContractClause[],
