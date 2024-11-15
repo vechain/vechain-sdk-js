@@ -553,10 +553,6 @@ const txReceipt = await thorSoloClient.transactions.waitForTransaction(
 3. **Delegation with URL**: This example will showcase the use of a delegation URL for fee delegation. The sender will specify a delegation URL in the `signTransaction` options, allowing a designated sponsor to pay the transaction fee. We'll cover the full process, from building clauses to verifying the transaction on-chain.
 
 ```typescript { name=full-flow-delegator-url, category=example }
-import { expect } from 'expect';
-
-// START_SNIPPET: FullFlowDelegatorUrlSnippet
-
 // 1 - Create the thor client
 const thorClient = ThorClient.at(TESTNET_URL, {
     isPollingEnabled: false
