@@ -76,10 +76,8 @@ class ContractsModule {
     }
 
     /**
-     * Executes a read-only call to multiple smart contract functions, simulating the transaction to obtain the results.
-     * @param clauses - An array of contract clauses to interact with the contract functions.
-     * @param options - (Optional) Additional options for the contract call, such as the sender's address, gas limit, and gas price, which can affect the simulation's context.
-     * @returns A promise that resolves to an array of decoded outputs of the smart contract function calls, the format of which depends on the functions' return types.
+     * This method is going to be deprecated in the next release.
+     * Use {@link TransactionsModule.executeMultipleClausesCall} next.
      */
     public async executeMultipleClausesCall(
         clauses: ContractClause[],

@@ -714,6 +714,14 @@ class TransactionsModule {
         );
     }
 
+    /**
+     * Executes and simulates multiple read-only smart-contract clause calls,
+     * simulating the transaction to obtain the results.
+     *
+     * @param {ContractClause[]} clauses - The array of contract clauses to be executed.
+     * @param {SimulateTransactionOptions} [options] - Optional simulation transaction settings.
+     * @return {Promise<ContractCallResult[]>} - The decoded results of the contract calls.
+     */
     public async executeMultipleClausesCall(
         clauses: ContractClause[],
         options?: SimulateTransactionOptions
