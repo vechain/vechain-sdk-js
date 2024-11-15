@@ -588,6 +588,17 @@ class TransactionsModule {
         return null;
     }
 
+    /**
+     * Estimates the amount of gas required to execute a set of transaction clauses.
+     *
+     * @param {SimulateTransactionClause[]} clauses - An array of clauses to be simulated. Must contain at least one clause.
+     * @param {string} [caller] - The address initiating the transaction. Optional.
+     * @param {EstimateGasOptions} [options] - Additional options for the estimation, including gas padding.
+     * @return {Promise<EstimateGasResult>} - The estimated gas result, including total gas required, whether the transaction reverted, revert reasons, and any VM errors.
+     * @throws {InvalidDataType} - If clauses array is empty or if gas padding is not within the range (0, 1].
+     *
+     * @see {@link TransactionsModule#simulateTransaction}
+     */
     public async estimateGas(
         clauses: SimulateTransactionClause[],
         caller?: string,
