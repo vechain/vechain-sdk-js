@@ -676,6 +676,19 @@ class TransactionsModule {
               };
     }
 
+    /**
+     * Executes a read-only call to a smart contract function, simulating the transaction to obtain the result.
+     *
+     * The method simulates a transaction using the provided parameters
+     * without submitting it to the blockchain, allowing read-only operations
+     * to be tested without incurring gas costs or modifying the blockchain state.
+     *
+     * @param {string} contractAddress - The address of the smart contract.
+     * @param {ABIFunction} functionAbi - The ABI definition of the smart contract function to be called.
+     * @param {unknown[]} functionData - The arguments to be passed to the smart contract function.
+     * @param {ContractCallOptions} [contractCallOptions] - Optional parameters for the contract call execution.
+     * @return {Promise<ContractCallResult>} The result of the contract call.
+     */
     public async executeCall(
         contractAddress: string,
         functionAbi: ABIFunction,

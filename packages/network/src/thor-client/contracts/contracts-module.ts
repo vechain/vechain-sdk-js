@@ -58,15 +58,8 @@ class ContractsModule {
     }
 
     /**
-     * Executes a read-only call to a smart contract function, simulating the transaction to obtain the result.
-     *
-     * @param contractAddress - The address of the smart contract to interact with.
-     * @param functionAbi - The function ABI, including the name and types of the function to be called, derived from the contract's ABI.
-     * @param functionData - An array of arguments to be passed to the smart contract function, corresponding to the function's parameters.
-     * @param contractCallOptions - (Optional) Additional options for the contract call, such as the sender's address, gas limit, and gas price, which can affect the simulation's context.
-     * @returns A promise that resolves to the decoded output of the smart contract function call, the format of which depends on the function's return types.
-     *
-     * The function simulates a transaction using the provided parameters without submitting it to the blockchain, allowing read-only operations to be tested without incurring gas costs or modifying the blockchain state.
+     * This method is going to be deprecated in next release.
+     * Use {@link TransactionsModule.executeCall} instead.
      */
     public async executeCall(
         contractAddress: string,
