@@ -370,10 +370,6 @@ In the following complete examples, we will explore the entire lifecycle of a Ve
 1. **No Delegation (Signing Only with an Origin Private Key)**: In this scenario, we'll demonstrate the basic process of creating a transaction, signing it with the origin private key, and sending it to the VeChainThor blockchain without involving fee delegation.
 
 ```typescript { name=full-flow-no-delegator, category=example }
-import { expect } from 'expect';
-
-// START_SNIPPET: FullFlowNoDelegatorSnippet
-
 // 1 - Create the thor client
 const thorSoloClient = ThorClient.at(THOR_SOLO_URL, {
     isPollingEnabled: false
