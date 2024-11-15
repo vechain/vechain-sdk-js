@@ -126,13 +126,8 @@ class ContractsModule {
     }
 
     /**
-     * Gets the base gas price in wei.
-     * The base gas price is the minimum gas price that can be used for a transaction.
-     * It is used to obtain the VTHO (energy) cost of a transaction.
-     *
-     * @link [Total Gas Price](https://docs.vechain.org/core-concepts/transactions/transaction-calculation#total-gas-price)
-     *
-     * @returns The base gas price in wei.
+     * This method is going to be deprecated in the next release.
+     * Use {@link TransactionsModule.getBaseGasPrice} instead.
      */
     public async getBaseGasPrice(): Promise<ContractCallResult> {
         return await this.transactionsModule.getBaseGasPrice();

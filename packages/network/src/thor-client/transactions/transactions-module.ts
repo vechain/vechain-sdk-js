@@ -822,6 +822,16 @@ class TransactionsModule {
         };
     }
 
+    /**
+     * Retrieves the base gas price from the blockchain parameters.
+     *
+     * This method sends a call to the blockchain parameters contract to fetch the current base gas price.
+     * The base gas price is the minimum gas price that can be used for a transaction.
+     * It is used to obtain the VTHO (energy) cost of a transaction.
+     * @link [Total Gas Price](https://docs.vechain.org/core-concepts/transactions/transaction-calculation#total-gas-price)
+     *
+     * @return {Promise<ContractCallResult>} A promise that resolves to the result of the contract call, containing the base gas price.
+     */
     public async getBaseGasPrice(): Promise<ContractCallResult> {
         return await this.executeCall(
             BUILT_IN_CONTRACTS.PARAMS_ADDRESS,
