@@ -36,7 +36,10 @@ class BlocksModule {
      * @param thor - The Thor instance used to interact with the VeChain blockchain API.
      * @param options - (Optional) Other optional parameters for polling and error handling.
      */
-    constructor(readonly httpClient: HttpClient, options?: BlocksModuleOptions) {
+    constructor(
+        readonly httpClient: HttpClient,
+        options?: BlocksModuleOptions
+    ) {
         this.onBlockError = options?.onBlockError;
         if (options?.isPollingEnabled === true) this.setupPolling();
     }

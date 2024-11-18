@@ -18,9 +18,7 @@ import { type TransactionsModule } from '../transactions';
  * Represents a module for interacting with smart contracts on the blockchain.
  */
 class ContractsModule {
-
-    constructor(readonly transactionsModule: TransactionsModule) {
-    }
+    constructor(readonly transactionsModule: TransactionsModule) {}
 
     /**
      * Creates a new instance of `ContractFactory` configured with the specified ABI, bytecode, and signer.
