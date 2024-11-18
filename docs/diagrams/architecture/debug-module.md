@@ -74,19 +74,19 @@ classDiagram
         number clauseIndex
         BlockId|number transaction
     }
-    ContractTraceTarget *-- TraceContractCallInput
-    ContractTraceOptions *-- TraceContractCallInput
+    ContractTraceTarget --* TraceContractCallInput
+    ContractTraceOptions --* TraceContractCallInput
     HttpClient o-- DebugModule
     RetrieveStorageRange <|.. DebugModule
-    RetrieveStorageRangeInput *-- DebugModule
-    RetrieveStorageRangeOptions *-- RetrieveStorageRangeInput
+    RetrieveStorageRangeInput --* DebugModule
+    RetrieveStorageRangeOptions --* RetrieveStorageRangeInput
     string <|-- TracerName
     SimulateTransactionOptions <|.. ContractTraceOptions
-    TraceContractCallInput *-- DebugModule
-    TraceTransactionClauseInput *-- DebugModule
-    TransactionTraceTarget *-- RetrieveStorageRangeInput
-    TracerConfig *-- TraceContractCallInput
-    TracerConfig *-- TraceTransactionClauseInput
+    TraceContractCallInput --* DebugModule
+    TraceTransactionClauseInput --* DebugModule
+    TransactionTraceTarget --* RetrieveStorageRangeInput
+    TracerConfig --* TraceContractCallInput
+    TracerConfig --* TraceTransactionClauseInput
     TracerName <|.. TracerConfig
     TracerName <|.. TraceReturnType
     TraceReturnType <|.. DebugModule

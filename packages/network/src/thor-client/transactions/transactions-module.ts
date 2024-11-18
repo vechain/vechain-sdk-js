@@ -1,12 +1,19 @@
 import {
     ABI,
+    ABIContract,
+    type ABIFunction,
+    Address,
+    Clause,
+    dataUtils,
     Hex,
     HexUInt,
     Revision,
     ThorId,
     Transaction,
     type TransactionBody,
-    type TransactionClause
+    type TransactionClause,
+    Units,
+    VET
 } from '@vechain/sdk-core';
 import { InvalidDataType, InvalidTransactionField } from '@vechain/sdk-errors';
 import { ErrorFragment, Interface } from 'ethers';
@@ -14,15 +21,15 @@ import { HttpMethod } from '../../http';
 import { blocksFormatter, getTransactionIndexIntoBlock } from '../../provider';
 import {
     buildQuery,
+    BUILT_IN_CONTRACTS,
     ERROR_SELECTOR,
     PANIC_SELECTOR,
     Poll,
     thorest,
     vnsUtils
 } from '../../utils';
-import { type ExpandedBlockDetail } from '../blocks';
-import { type CallNameReturnType } from '../debug';
-import { type ThorClient } from '../ThorClient';
+import { type BlocksModule, type ExpandedBlockDetail } from '../blocks';
+import { type CallNameReturnType, type DebugModule } from '../debug';
 import {
     type GetTransactionInputOptions,
     type GetTransactionReceiptInputOptions,
@@ -36,17 +43,35 @@ import {
     type TransactionSimulationResult,
     type WaitForTransactionOptions
 } from './types';
+import type { EstimateGasOptions, EstimateGasResult } from '../gas/types';
+import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
+import type {
+    ContractCallOptions,
+    ContractCallResult,
+    ContractClause,
+    ContractTransactionOptions
+} from '../contracts';
+import type { VeChainSigner } from '../../signer';
+import { type LogsModule } from '../logs';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
  * convenient methods for sending transactions and waiting for transaction confirmation.
  */
 class TransactionsModule {
-    /**
-     * Initializes a new instance of the `Thor` class.
-     * @param thor - The Thor instance used to interact with the VeChain blockchain API.
-     */
-    constructor(readonly thor: ThorClient) {}
+    readonly blocksModule: BlocksModule;
+    readonly debugModule: DebugModule;
+    readonly logsModule: LogsModule;
+
+    constructor(
+        blocksModule: BlocksModule,
+        debugModule: DebugModule,
+        logsModule: LogsModule
+    ) {
+        this.blocksModule = blocksModule;
+        this.debugModule = debugModule;
+        this.logsModule = logsModule;
+    }
 
     /**
      * Retrieves the details of a transaction.
@@ -77,7 +102,7 @@ class TransactionsModule {
                 { head: options?.head }
             );
 
-        return (await this.thor.httpClient.http(
+        return (await this.blocksModule.httpClient.http(
             HttpMethod.GET,
             thorest.transactions.get.TRANSACTION(id),
             {
@@ -119,7 +144,7 @@ class TransactionsModule {
                 { head: options?.head }
             );
 
-        return (await this.thor.httpClient.http(
+        return (await this.blocksModule.httpClient.http(
             HttpMethod.GET,
             thorest.transactions.get.TRANSACTION(id),
             {
@@ -162,7 +187,7 @@ class TransactionsModule {
                 { head: options?.head }
             );
 
-        return (await this.thor.httpClient.http(
+        return (await this.blocksModule.httpClient.http(
             HttpMethod.GET,
             thorest.transactions.get.TRANSACTION_RECEIPT(id),
             {
@@ -202,7 +227,7 @@ class TransactionsModule {
             );
         }
 
-        const transactionResult = (await this.thor.httpClient.http(
+        const transactionResult = (await this.blocksModule.httpClient.http(
             HttpMethod.POST,
             thorest.transactions.post.TRANSACTION(),
             {
@@ -265,8 +290,7 @@ class TransactionsModule {
         }
 
         return await Poll.SyncPoll(
-            async () =>
-                await this.thor.transactions.getTransactionReceipt(txID),
+            async () => await this.getTransactionReceipt(txID),
             {
                 requestIntervalInMilliseconds: options?.intervalMs,
                 maximumWaitingTimeInMilliseconds: options?.timeoutMs
@@ -298,7 +322,7 @@ class TransactionsModule {
         options?: TransactionBodyOptions
     ): Promise<TransactionBody> {
         // Get the genesis block to get the chainTag
-        const genesisBlock = await this.thor.blocks.getBlockCompressed(0);
+        const genesisBlock = await this.blocksModule.getBlockCompressed(0);
         if (genesisBlock === null)
             throw new InvalidTransactionField(
                 'TransactionsModule.buildTransactionBody()',
@@ -307,7 +331,7 @@ class TransactionsModule {
             );
 
         const blockRef =
-            options?.blockRef ?? (await this.thor.blocks.getBestBlockRef());
+            options?.blockRef ?? (await this.blocksModule.getBestBlockRef());
         if (blockRef === null)
             throw new InvalidTransactionField(
                 'TransactionsModule.buildTransactionBody()',
@@ -361,7 +385,11 @@ class TransactionsModule {
         }
 
         // resolve the names to addresses
-        const addresses = await vnsUtils.resolveNames(this.thor, nameList);
+        const addresses = await vnsUtils.resolveNames(
+            this.blocksModule,
+            this,
+            nameList
+        );
 
         // map unique names with resolved addresses
         addresses.forEach((address, index) => {
@@ -420,7 +448,7 @@ class TransactionsModule {
             );
         }
 
-        return (await this.thor.httpClient.http(
+        return (await this.blocksModule.httpClient.http(
             HttpMethod.POST,
             thorest.accounts.post.SIMULATE_TRANSACTION(revision),
             {
@@ -502,8 +530,8 @@ class TransactionsModule {
         errorFragment?: string
     ): Promise<string | null> {
         // 1 - Init Blocks and Debug modules
-        const blocksModule = this.thor.blocks;
-        const debugModule = this.thor.debug;
+        const blocksModule = this.blocksModule;
+        const debugModule = this.debugModule;
 
         // 2 - Get the transaction details
         const transaction = await this.getTransaction(transactionHash);
@@ -558,6 +586,294 @@ class TransactionsModule {
 
         // No revert reason found
         return null;
+    }
+
+    /**
+     * Estimates the amount of gas required to execute a set of transaction clauses.
+     *
+     * @param {SimulateTransactionClause[]} clauses - An array of clauses to be simulated. Must contain at least one clause.
+     * @param {string} [caller] - The address initiating the transaction. Optional.
+     * @param {EstimateGasOptions} [options] - Additional options for the estimation, including gas padding.
+     * @return {Promise<EstimateGasResult>} - The estimated gas result, including total gas required, whether the transaction reverted, revert reasons, and any VM errors.
+     * @throws {InvalidDataType} - If clauses array is empty or if gas padding is not within the range (0, 1].
+     *
+     * @see {@link TransactionsModule#simulateTransaction}
+     */
+    public async estimateGas(
+        clauses: SimulateTransactionClause[],
+        caller?: string,
+        options?: EstimateGasOptions
+    ): Promise<EstimateGasResult> {
+        // Clauses must be an array of clauses with at least one clause
+        if (clauses.length <= 0) {
+            throw new InvalidDataType(
+                'GasModule.estimateGas()',
+                'Invalid clauses. Clauses must be an array of clauses with at least one clause.',
+                { clauses, caller, options }
+            );
+        }
+
+        // gasPadding must be a number between (0, 1]
+        if (
+            options?.gasPadding !== undefined &&
+            (options.gasPadding <= 0 || options.gasPadding > 1)
+        ) {
+            throw new InvalidDataType(
+                'GasModule.estimateGas()',
+                'Invalid gasPadding. gasPadding must be a number between (0, 1].',
+                { gasPadding: options?.gasPadding }
+            );
+        }
+
+        // Simulate the transaction to get the simulations of each clause
+        const simulations = await this.simulateTransaction(clauses, {
+            caller,
+            ...options
+        });
+
+        // If any of the clauses reverted, then the transaction reverted
+        const isReverted = simulations.some((simulation) => {
+            return simulation.reverted;
+        });
+
+        // The intrinsic gas of the transaction
+        const intrinsicGas = Number(Transaction.intrinsicGas(clauses).wei);
+
+        // totalSimulatedGas represents the summation of all clauses' gasUsed
+        const totalSimulatedGas = simulations.reduce((sum, simulation) => {
+            return sum + simulation.gasUsed;
+        }, 0);
+
+        // The total gas of the transaction
+        // If the transaction involves contract interaction, a constant 15000 gas is added to the total gas
+        const totalGas =
+            (intrinsicGas +
+                (totalSimulatedGas !== 0 ? totalSimulatedGas + 15000 : 0)) *
+            (1 + (options?.gasPadding ?? 0)); // Add gasPadding if it is defined
+
+        return isReverted
+            ? {
+                  totalGas,
+                  reverted: true,
+                  revertReasons: simulations.map((simulation) => {
+                      /**
+                       * The decoded revert reason of the transaction.
+                       * Solidity may revert with Error(string) or Panic(uint256).
+                       *
+                       * @link see [Error handling: Assert, Require, Revert and Exceptions](https://docs.soliditylang.org/en/latest/control-structures.html#error-handling-assert-require-revert-and-exceptions)
+                       */
+                      return decodeRevertReason(simulation.data) ?? '';
+                  }),
+                  vmErrors: simulations.map((simulation) => {
+                      return simulation.vmError;
+                  })
+              }
+            : {
+                  totalGas,
+                  reverted: false,
+                  revertReasons: [],
+                  vmErrors: []
+              };
+    }
+
+    /**
+     * Executes a read-only call to a smart contract function, simulating the transaction to obtain the result.
+     *
+     * The method simulates a transaction using the provided parameters
+     * without submitting it to the blockchain, allowing read-only operations
+     * to be tested without incurring gas costs or modifying the blockchain state.
+     *
+     * @param {string} contractAddress - The address of the smart contract.
+     * @param {ABIFunction} functionAbi - The ABI definition of the smart contract function to be called.
+     * @param {unknown[]} functionData - The arguments to be passed to the smart contract function.
+     * @param {ContractCallOptions} [contractCallOptions] - Optional parameters for the contract call execution.
+     * @return {Promise<ContractCallResult>} The result of the contract call.
+     */
+    public async executeCall(
+        contractAddress: string,
+        functionAbi: ABIFunction,
+        functionData: unknown[],
+        contractCallOptions?: ContractCallOptions
+    ): Promise<ContractCallResult> {
+        // Simulate the transaction to get the result of the contract call
+        const response = await this.simulateTransaction(
+            [
+                {
+                    to: contractAddress,
+                    value: '0',
+                    data: functionAbi.encodeData(functionData).toString()
+                }
+            ],
+            contractCallOptions
+        );
+
+        return this.getContractCallResult(
+            response[0].data,
+            functionAbi,
+            response[0].reverted
+        );
+    }
+
+    /**
+     * Executes and simulates multiple read-only smart-contract clause calls,
+     * simulating the transaction to obtain the results.
+     *
+     * @param {ContractClause[]} clauses - The array of contract clauses to be executed.
+     * @param {SimulateTransactionOptions} [options] - Optional simulation transaction settings.
+     * @return {Promise<ContractCallResult[]>} - The decoded results of the contract calls.
+     */
+    public async executeMultipleClausesCall(
+        clauses: ContractClause[],
+        options?: SimulateTransactionOptions
+    ): Promise<ContractCallResult[]> {
+        // Simulate the transaction to get the result of the contract call
+        const response = await this.simulateTransaction(
+            clauses.map((clause) => clause.clause),
+            options
+        );
+        // Returning the decoded results both as plain and array.
+        return response.map((res, index) =>
+            this.getContractCallResult(
+                res.data,
+                clauses[index].functionAbi,
+                res.reverted
+            )
+        );
+    }
+
+    /**
+     * Executes a transaction with a smart-contract on the VeChain blockchain.
+     *
+     * @param {VeChainSigner} signer - The signer instance to sign the transaction.
+     * @param {string} contractAddress - The address of the smart contract.
+     * @param {ABIFunction} functionAbi - The ABI of the contract function to be called.
+     * @param {unknown[]} functionData - The input parameters for the contract function.
+     * @param {ContractTransactionOptions} [options] - Optional transaction parameters.
+     * @return {Promise<SendTransactionResult>} - A promise that resolves to the result of the transaction.
+     *
+     * @see {@link TransactionsModule.buildTransactionBody}
+     */
+    public async executeTransaction(
+        signer: VeChainSigner,
+        contractAddress: string,
+        functionAbi: ABIFunction,
+        functionData: unknown[],
+        options?: ContractTransactionOptions
+    ): Promise<SendTransactionResult> {
+        // Sign the transaction
+        const id = await signer.sendTransaction({
+            clauses: [
+                // Build a clause to interact with the contract function
+                Clause.callFunction(
+                    Address.of(contractAddress),
+                    functionAbi,
+                    functionData,
+                    VET.of(options?.value ?? 0, Units.wei)
+                )
+            ],
+            gas: options?.gas,
+            gasLimit: options?.gasLimit,
+            gasPrice: options?.gasPrice,
+            gasPriceCoef: options?.gasPriceCoef,
+            nonce: options?.nonce,
+            value: options?.value,
+            dependsOn: options?.dependsOn,
+            expiration: options?.expiration,
+            chainTag: options?.chainTag,
+            blockRef: options?.blockRef
+        });
+
+        return {
+            id,
+            wait: async () => await this.waitForTransaction(id)
+        };
+    }
+
+    /**
+     * Executes a transaction with multiple clauses on the VeChain blockchain.
+     *
+     * @param {ContractClause[]} clauses - Array of contract clauses to be included in the transaction.
+     * @param {VeChainSigner} signer - A VeChain signer instance used to sign and send the transaction.
+     * @param {ContractTransactionOptions} [options] - Optional parameters to customize the transaction.
+     * @return {Promise<SendTransactionResult>} The result of the transaction, including transaction ID and a wait function.
+     */
+    public async executeMultipleClausesTransaction(
+        clauses: ContractClause[],
+        signer: VeChainSigner,
+        options?: ContractTransactionOptions
+    ): Promise<SendTransactionResult> {
+        const id = await signer.sendTransaction({
+            clauses: clauses.map((clause) => clause.clause),
+            gas: options?.gas,
+            gasLimit: options?.gasLimit,
+            gasPrice: options?.gasPrice,
+            gasPriceCoef: options?.gasPriceCoef,
+            nonce: options?.nonce,
+            value: options?.value,
+            dependsOn: options?.dependsOn,
+            expiration: options?.expiration,
+            chainTag: options?.chainTag,
+            blockRef: options?.blockRef
+        });
+
+        return {
+            id,
+            wait: async () => await this.waitForTransaction(id)
+        };
+    }
+
+    /**
+     * Retrieves the base gas price from the blockchain parameters.
+     *
+     * This method sends a call to the blockchain parameters contract to fetch the current base gas price.
+     * The base gas price is the minimum gas price that can be used for a transaction.
+     * It is used to obtain the VTHO (energy) cost of a transaction.
+     * @link [Total Gas Price](https://docs.vechain.org/core-concepts/transactions/transaction-calculation#total-gas-price)
+     *
+     * @return {Promise<ContractCallResult>} A promise that resolves to the result of the contract call, containing the base gas price.
+     */
+    public async getBaseGasPrice(): Promise<ContractCallResult> {
+        return await this.executeCall(
+            BUILT_IN_CONTRACTS.PARAMS_ADDRESS,
+            ABIContract.ofAbi(BUILT_IN_CONTRACTS.PARAMS_ABI).getFunction('get'),
+            [dataUtils.encodeBytes32String('base-gas-price', 'left')]
+        );
+    }
+
+    /**
+     * Decode the result of a contract call from the result of a simulated transaction.
+     *
+     * @param {string} encodedData - The encoded data received from the contract call.
+     * @param {ABIFunction} functionAbi - The ABI function definition used for decoding the result.
+     * @param {boolean} reverted - Indicates if the contract call reverted.
+     * @return {ContractCallResult} An object containing the success status and the decoded result.
+     */
+    private getContractCallResult(
+        encodedData: string,
+        functionAbi: ABIFunction,
+        reverted: boolean
+    ): ContractCallResult {
+        if (reverted) {
+            const errorMessage = decodeRevertReason(encodedData) ?? '';
+            return {
+                success: false,
+                result: {
+                    errorMessage
+                }
+            };
+        }
+
+        // Returning the decoded result both as plain and array.
+        const encodedResult = Hex.of(encodedData);
+        const plain = functionAbi.decodeResult(encodedResult);
+        const array = functionAbi.decodeOutputAsArray(encodedResult);
+        return {
+            success: true,
+            result: {
+                plain,
+                array
+            }
+        };
     }
 }
 

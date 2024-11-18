@@ -41,12 +41,16 @@ describe('vnsUtils', () => {
                 return await Promise.reject(new Error('error'));
             });
             jest.spyOn(
-                thorClient.contracts,
+                thorClient.transactions,
                 'executeCall'
             ).mockImplementationOnce(executeCall);
 
             await expect(
-                vnsUtils.resolveNames(thorClient, names)
+                vnsUtils.resolveNames(
+                    thorClient.blocks,
+                    thorClient.transactions,
+                    names
+                )
             ).rejects.toThrow();
             expect(executeCall).toHaveBeenCalledWith(
                 '0xc403b8EA53F707d7d4de095f0A20bC491Cf2bc94',
@@ -65,9 +69,11 @@ describe('vnsUtils', () => {
                 'getGenesisBlock'
             ).mockResolvedValueOnce(null);
 
-            const addresses = await vnsUtils.resolveNames(thorClient, [
-                'test-sdk.vet'
-            ]);
+            const addresses = await vnsUtils.resolveNames(
+                thorClient.blocks,
+                thorClient.transactions,
+                ['test-sdk.vet']
+            );
             expect(addresses).toEqual([null]);
         });
 
@@ -98,9 +104,11 @@ describe('vnsUtils', () => {
                 transactions: []
             });
 
-            const addresses = await vnsUtils.resolveNames(thorClient, [
-                'test-sdk.vet'
-            ]);
+            const addresses = await vnsUtils.resolveNames(
+                thorClient.blocks,
+                thorClient.transactions,
+                ['test-sdk.vet']
+            );
             expect(addresses).toEqual([null]);
         });
     });

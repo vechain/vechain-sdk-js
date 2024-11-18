@@ -103,7 +103,7 @@ describe('ThorClient - Contracts', () => {
         const contract = new Contract(
             '0x123',
             deployedContractAbi,
-            thorSoloClient,
+            thorSoloClient.contracts,
             signer
         );
         expect(contract.address).toBeDefined();
@@ -118,7 +118,7 @@ describe('ThorClient - Contracts', () => {
         const contract = new Contract(
             '0x123',
             deployedContractAbi,
-            thorSoloClient,
+            thorSoloClient.contracts,
             signer
         );
         expect(contract.address).toBeDefined();
