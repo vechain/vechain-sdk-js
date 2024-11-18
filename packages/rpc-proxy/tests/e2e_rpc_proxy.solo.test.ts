@@ -516,7 +516,7 @@ describe('RPC Proxy endpoints', () => {
             console.log(response.data);
             expect(response.data).toHaveProperty('result');
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            expect(response.data.result).toStrictEqual({});
+            expect(response.data.result).toBeNull();
         });
 
         it('eth_getUncleByBlockNumberAndIndex method call', async () => {
@@ -532,7 +532,7 @@ describe('RPC Proxy endpoints', () => {
             console.log(response.data);
             expect(response.data).toHaveProperty('result');
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            expect(response.data.result).toStrictEqual({});
+            expect(response.data.result).toBeNull();
         });
 
         it('eth_requestAccounts method call', async () => {
