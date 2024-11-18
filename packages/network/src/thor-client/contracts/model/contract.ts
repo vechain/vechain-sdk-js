@@ -32,7 +32,6 @@ import { type ContractsModule } from '../contracts-module';
  */
 class Contract<TAbi extends Abi> {
     readonly contractsModule: ContractsModule;
-    // readonly thor: ThorClient;
     readonly address: string;
     readonly abi: Abi;
     private signer?: VeChainSigner;

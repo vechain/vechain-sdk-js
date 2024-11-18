@@ -36,11 +36,6 @@ class ContractFactory<TAbi extends Abi> {
     private readonly signer: VeChainSigner;
 
     /**
-     * An instance of ThorClient to interact with the blockchain.
-     */
-    // private readonly thor: ThorClient;
-
-    /**
      * The result of the deployment transaction, undefined until a deployment is started.
      */
     private deployTransaction: SendTransactionResult | undefined;
