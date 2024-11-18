@@ -45,6 +45,10 @@ jobs:
           load: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Create .trivyignore file
+        # "cross-spawn" is resolved as version 7.0.5 but Trivy keeps showing the error
+        run: echo "CVE-2024-21538" > .trivyignore
       
       - name: Run Trivy Scan
         uses: aquasecurity/trivy-action@master
@@ -56,6 +60,7 @@ jobs:
           vuln-type: os,library
           severity: CRITICAL,HIGH,MEDIUM
           scanners: misconfig,vuln,secret
+          trivyignores: .trivyignore
         env:
           # See https://github.com/aquasecurity/trivy/discussions/7538
           TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2
