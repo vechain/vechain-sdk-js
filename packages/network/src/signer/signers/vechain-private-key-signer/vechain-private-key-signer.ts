@@ -15,10 +15,10 @@ import {
     stringifyData
 } from '@vechain/sdk-errors';
 import {
+    hashTypedData,
     type TypedDataDomain,
-    TypedDataEncoder,
-    type TypedDataField
-} from 'ethers';
+    type TypedDataParameter
+} from 'viem';
 import { RPC_METHODS } from '../../../provider/utils/const/rpc-mapper/rpc-methods';
 import {
     DelegationHandler,
@@ -198,20 +198,22 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
      * albeit Ethereum Name Services are not resolved because he resolution depends on **ethers** provider implementation.
      *
      * @param {TypedDataDomain} domain - The domain parameters used for signing.
-     * @param {Record<string, TypedDataField[]>} types - The types used for signing.
-     * @param {Record<string, unknown>} value - The value data to be signed.
+     * @param {Record<string, TypedDataParameter[]>} types - The types used for signing.
+     * @param {string} primaryType - The primary type used for signing.
+     * @param {Record<string, unknown>} message - The value data to be signed.
      *
      * @return {Promise<string>} - A promise that resolves with the signature string.
      */
     async signTypedData(
         domain: TypedDataDomain,
-        types: Record<string, TypedDataField[]>,
-        value: Record<string, unknown>
+        types: Record<string, TypedDataParameter[]>,
+        primaryType: string,
+        message: Record<string, unknown>
     ): Promise<string> {
         return await new Promise((resolve, reject) => {
             try {
                 const hash = Hex.of(
-                    TypedDataEncoder.hash(domain, types, value)
+                    hashTypedData({ domain, types, primaryType, message })
                 ).bytes;
                 const sign = Secp256k1.sign(
                     hash,
