@@ -12,7 +12,7 @@ import {
     TESTNET_URL,
     ThorClient,
     VeChainProvider
-} from '@vechain/sdk-network'; // START_SNIPPET: FullFlowDelegatorUrlSnippet
+} from '@vechain/sdk-network';
 import { expect } from 'expect';
 
 // START_SNIPPET: FullFlowDelegatorUrlSnippet
