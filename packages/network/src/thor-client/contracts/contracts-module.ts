@@ -18,10 +18,8 @@ import { type TransactionsModule } from '../transactions';
  * Represents a module for interacting with smart contracts on the blockchain.
  */
 class ContractsModule {
-    readonly transactionsModule: TransactionsModule;
 
-    constructor(transactionsModule: TransactionsModule) {
-        this.transactionsModule = transactionsModule;
+    constructor(readonly transactionsModule: TransactionsModule) {
     }
 
     /**
