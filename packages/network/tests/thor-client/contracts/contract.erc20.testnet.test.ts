@@ -75,4 +75,49 @@ describe('ThorClient - ERC20 Contracts on testnet', () => {
 
         expect(txResult?.reverted).toBe(false);
     }, 30000);
+
+    /**
+     * Test transaction with url delegation per transaction.
+     */
+    test('transaction with url delegation per transaction', async () => {
+        const provider = new VeChainProvider(
+            // Thor client used by the provider
+            thorTestnetClient,
+
+            // Internal wallet used by the provider (needed to call the getSigner() method)
+            new ProviderInternalBaseWallet([
+                {
+                    privateKey: HexUInt.of(
+                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
+                    ).bytes,
+                    address:
+                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+                }
+            ]),
+            // Disable fee delegation at the provider level
+            true
+        );
+
+        const contract = thorTestnetClient.contracts.load(
+            ERC20_CONTRACT_ADDRESS_ON_TESTNET,
+            ERC20_ABI,
+            (await provider.getSigner(
+                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+            )) as VeChainSigner
+        );
+
+        const txResult = await (
+            await contract.transact.transfer(
+                // enable fee delegation at the transaction level
+                {
+                    delegationUrl: TESTNET_DELEGATE_URL
+                },
+                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
+                1000n
+            )
+        ).wait();
+
+        expect(txResult?.reverted).toBe(false);
+        expect(txResult?.gasPayer).not.toBe(txResult?.meta.txOrigin);
+    });
 });

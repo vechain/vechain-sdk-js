@@ -103,12 +103,21 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
             );
         }
 
+        let delegator = DelegationHandler(
+            await this.provider.wallet?.getDelegator()
+        ).delegatorOrNull();
+
+        // Override the delegator if the transaction has a delegation URL
+        if (transactionToSign.delegationUrl !== undefined) {
+            delegator = {
+                delegatorUrl: transactionToSign.delegationUrl
+            };
+        }
+
         // Sign the transaction
         return await this._signFlow(
             transactionToSign,
-            DelegationHandler(
-                await this.provider?.wallet?.getDelegator()
-            ).delegatorOrNull(),
+            delegator,
             this.provider.thorClient
         );
     }

@@ -69,41 +69,6 @@ class ContractsModule {
     }
 
     /**
-     * Extracts the decoded contract call result from the response of a simulated transaction.
-     * @param {string} encodedData Data returned from the simulated transaction.
-     * @param {ABIFunction} functionAbi Function ABI of the contract function.
-     * @param {boolean} reverted Whether the transaction was reverted.
-     * @returns {ContractCallResult} An object containing the decoded contract call result.
-     */
-    private getContractCallResult(
-        encodedData: string,
-        functionAbi: ABIFunction,
-        reverted: boolean
-    ): ContractCallResult {
-        if (reverted) {
-            const errorMessage = decodeRevertReason(encodedData) ?? '';
-            return {
-                success: false,
-                result: {
-                    errorMessage
-                }
-            };
-        }
-
-        // Returning the decoded result both as plain and array.
-        const encodedResult = Hex.of(encodedData);
-        const plain = functionAbi.decodeResult(encodedResult);
-        const array = functionAbi.decodeOutputAsArray(encodedResult);
-        return {
-            success: true,
-            result: {
-                plain,
-                array
-            }
-        };
-    }
-
-    /**
      * Executes a read-only call to a smart contract function, simulating the transaction to obtain the result.
      *
      * @param contractAddress - The address of the smart contract to interact with.
@@ -204,7 +169,10 @@ class ContractsModule {
             dependsOn: options?.dependsOn,
             expiration: options?.expiration,
             chainTag: options?.chainTag,
-            blockRef: options?.blockRef
+            blockRef: options?.blockRef,
+            delegationUrl: options?.delegationUrl,
+            comment: options?.comment,
+            signer: options?.signer
         });
 
         return {
@@ -238,7 +206,10 @@ class ContractsModule {
             dependsOn: options?.dependsOn,
             expiration: options?.expiration,
             chainTag: options?.chainTag,
-            blockRef: options?.blockRef
+            blockRef: options?.blockRef,
+            signer: options?.signer,
+            delegationUrl: options?.delegationUrl,
+            comment: options?.comment
         });
 
         return {
@@ -263,6 +234,41 @@ class ContractsModule {
             ABIContract.ofAbi(BUILT_IN_CONTRACTS.PARAMS_ABI).getFunction('get'),
             [dataUtils.encodeBytes32String('base-gas-price', 'left')]
         );
+    }
+
+    /**
+     * Extracts the decoded contract call result from the response of a simulated transaction.
+     * @param {string} encodedData Data returned from the simulated transaction.
+     * @param {ABIFunction} functionAbi Function ABI of the contract function.
+     * @param {boolean} reverted Whether the transaction was reverted.
+     * @returns {ContractCallResult} An object containing the decoded contract call result.
+     */
+    private getContractCallResult(
+        encodedData: string,
+        functionAbi: ABIFunction,
+        reverted: boolean
+    ): ContractCallResult {
+        if (reverted) {
+            const errorMessage = decodeRevertReason(encodedData) ?? '';
+            return {
+                success: false,
+                result: {
+                    errorMessage
+                }
+            };
+        }
+
+        // Returning the decoded result both as plain and array.
+        const encodedResult = Hex.of(encodedData);
+        const plain = functionAbi.decodeResult(encodedResult);
+        const array = functionAbi.decodeOutputAsArray(encodedResult);
+        return {
+            success: true,
+            result: {
+                plain,
+                array
+            }
+        };
     }
 }
 
