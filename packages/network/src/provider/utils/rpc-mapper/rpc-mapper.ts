@@ -281,13 +281,13 @@ const RPCMethodsMap = (
 
         [RPC_METHODS.eth_getUncleByBlockHashAndIndex]: async (
             params
-        ): Promise<object> => {
+        ): Promise<object | null> => {
             return await ethGetUncleByBlockHashAndIndex(params);
         },
 
         [RPC_METHODS.eth_getUncleByBlockNumberAndIndex]: async (
             params
-        ): Promise<object> => {
+        ): Promise<object | null> => {
             return await ethGetUncleByBlockNumberAndIndex(params);
         },
 

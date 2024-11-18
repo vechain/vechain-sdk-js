@@ -19,7 +19,7 @@ import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
  */
 const ethGetUncleByBlockNumberAndIndex = async (
     params: unknown[]
-): Promise<object> => {
+): Promise<object | null> => {
     // Input validation
     if (
         params.length !== 2 ||
@@ -32,7 +32,7 @@ const ethGetUncleByBlockNumberAndIndex = async (
             { params }
         );
 
-    return await Promise.resolve({});
+    return await Promise.resolve(null);
 };
 
 export { ethGetUncleByBlockNumberAndIndex };
