@@ -29,5 +29,5 @@ classDiagram
     AccountData <|-- AccountDetails
     AccountDetails <|.. AccountsModule
     AccountInputOptions o-- AccountsModule
-    HttpClient *-- AccountsModule
+    HttpClient o-- AccountsModule
 ```

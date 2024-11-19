@@ -9,7 +9,6 @@ import {
     type ExtractAbiFunctionNames
 } from 'abitype';
 import { type VeChainSigner } from '../../../signer';
-import { type ThorClient } from '../../ThorClient';
 import type { TransactionReceipt } from '../../transactions/types';
 import type { ContractCallOptions, ContractTransactionOptions } from '../types';
 import {
@@ -26,12 +25,13 @@ import {
     type ContractFunctionRead,
     type ContractFunctionTransact
 } from './types';
+import { type ContractsModule } from '../contracts-module';
 
 /**
  * A class representing a smart contract deployed on the blockchain.
  */
 class Contract<TAbi extends Abi> {
-    readonly thor: ThorClient;
+    readonly contractsModule: ContractsModule;
     readonly address: string;
     readonly abi: Abi;
     private signer?: VeChainSigner;
@@ -86,13 +86,13 @@ class Contract<TAbi extends Abi> {
     constructor(
         address: string,
         abi: Abi,
-        thor: ThorClient,
+        contractsModule: ContractsModule,
         signer?: VeChainSigner,
         transactionReceipt?: TransactionReceipt
     ) {
         this.abi = abi;
-        this.thor = thor;
         this.address = address;
+        this.contractsModule = contractsModule;
         this.deployTransactionReceipt = transactionReceipt;
         this.signer = signer;
         this.read = getReadProxy(this);

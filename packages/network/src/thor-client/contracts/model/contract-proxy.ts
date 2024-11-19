@@ -66,7 +66,7 @@ function getReadProxy<TAbi extends Abi>(
                 const functionAbi = contract.getFunctionAbi(prop);
 
                 const executeCallResult =
-                    await contract.thor.contracts.executeCall(
+                    await contract.contractsModule.executeCall(
                         contract.address,
                         functionAbi,
                         extractOptionsResult.args,
@@ -143,7 +143,7 @@ function getTransactProxy<TAbi extends Abi>(
 
                 args = extractAdditionalOptionsResult.args;
 
-                return await contract.thor.contracts.executeTransaction(
+                return await contract.contractsModule.executeTransaction(
                     contract.getSigner() as VeChainSigner,
                     contract.address,
                     contract.getFunctionAbi(prop),

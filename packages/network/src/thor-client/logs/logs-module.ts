@@ -1,7 +1,6 @@
 import { type ABIEvent, Hex } from '@vechain/sdk-core';
 import { InvalidAbiItem } from '@vechain/sdk-errors';
 import { thorest } from '../../utils/thorest/thorest';
-import { type ThorClient } from '../ThorClient';
 import {
     type EventLogs,
     type FilterEventLogsOptions,
@@ -10,17 +9,18 @@ import {
     type TransferLogs
 } from './types';
 import { HttpMethod } from '../../http';
+import { type BlocksModule } from '../blocks';
 
 /**
  * The `LogsClient` class provides methods to interact with log-related endpoints
  * of the VeChainThor blockchain. It allows filtering event and transfer logs.
  */
 class LogsModule {
-    /**
-     * Initializes a new instance of the `Thor` class.
-     * @param thor - The Thor instance used to interact with the VeChain blockchain API.
-     */
-    constructor(readonly thor: ThorClient) {}
+    readonly blocksModule: BlocksModule;
+
+    constructor(blocksModule: BlocksModule) {
+        this.blocksModule = blocksModule;
+    }
 
     /**
      * Filters event logs based on the provided criteria. Raw event logs are not decoded.
@@ -31,7 +31,7 @@ class LogsModule {
     public async filterRawEventLogs(
         filterOptions: FilterRawEventLogsOptions
     ): Promise<EventLogs[]> {
-        return (await this.thor.httpClient.http(
+        return (await this.blocksModule.httpClient.http(
             HttpMethod.POST,
             thorest.logs.post.EVENT_LOGS(),
             {
@@ -138,7 +138,7 @@ class LogsModule {
             range: filterOptions.range ?? {
                 unit: 'block',
                 from: 0,
-                to: (await this.thor.blocks.getBestBlockCompressed())?.number
+                to: (await this.blocksModule.getBestBlockCompressed())?.number
             },
             criteriaSet,
             options: filterOptions.options,
@@ -175,7 +175,7 @@ class LogsModule {
     public async filterTransferLogs(
         filterOptions: FilterTransferLogsOptions
     ): Promise<TransferLogs[]> {
-        return (await this.thor.httpClient.http(
+        return (await this.blocksModule.httpClient.http(
             HttpMethod.POST,
             thorest.logs.post.TRANSFER_LOGS(),
             {

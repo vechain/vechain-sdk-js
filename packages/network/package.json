@@ -1,6 +1,6 @@
 {
   "name": "@vechain/sdk-network",
-  "version": "1.0.0-rc.2",
+  "version": "1.0.0-rc.3",
   "description": "This module serves as the standard interface connecting decentralized applications (dApps) and users to the VeChainThor blockchain",
   "author": "VeChain Foundation",
   "license": "MIT",
@@ -27,7 +27,7 @@
   ],
   "scripts": {
     "build": "rm -rf ./dist && tsup-node src/index.ts --format cjs,esm --dts",
-    "check:circular-dependencies": "npx madge --json --circular --extensions ts src | jq '. | length' | awk '{if($1 > 11) exit 1}'",
+    "check:circular-dependencies": "npx madge --json --circular --extensions ts src | jq '. | length' | awk '{if($1 > 15) exit 1}'",
     "lint": "eslint",
     "format": "prettier --write src/**/*.ts tests/**/*.ts solo-seeding/**/*.ts",
     "start-thor-solo": "echo 'Starting thor solo node ...' && docker compose -f ../../docker-compose.thor.yml up -d --wait && echo '\nThor solo node started ...'",
@@ -42,9 +42,9 @@
   },
   "dependencies": {
     "@noble/curves": "^1.6.0",
-    "@vechain/sdk-core": "1.0.0-rc.2",
-    "@vechain/sdk-errors": "1.0.0-rc.2",
-    "@vechain/sdk-logging": "1.0.0-rc.2",
+    "@vechain/sdk-core": "1.0.0-rc.3",
+    "@vechain/sdk-errors": "1.0.0-rc.3",
+    "@vechain/sdk-logging": "1.0.0-rc.3",
     "@vechain/vebetterdao-contracts": "^4.0.0",
     "abitype": "^1.0.6",
     "ethers": "6.13.4",

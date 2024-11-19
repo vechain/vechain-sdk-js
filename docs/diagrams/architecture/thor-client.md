@@ -1,33 +1,50 @@
 ```mermaid
 classDiagram
-    namespace accounts-module {
-        class AccountsModule {
-            Promise~AccountDetail~ getAccount(Address address, AccountInputOptions options)
-            Promise~HexUInt~ getBytecode(Address adderess, AccountInputOptions options)
-            Promise~HexUInt~ getStorageAt(Address address, BlockId blockId, AccountInputOptions options)
-        }
+    namespace http {
+        class HttpClient
+    }
+    namespace account-module {
+        class AccountModule
+    }
+    namespace blocks-module {
+        class BlocksModule
+    }
+    namespace contracts-module {
+        class ContractsModule
     }
     namespace debug-module {
-        class DebugModule {
-            Promise~RetrieveStorageRange~ retrieveStorageRange(RetrieveStorageRangeInput input)
-            Promise~TraceReturnType~T~~ traceContractCall(TraceContractCallInput input, TracerName name)
-            Promise~TraceReturnType~T~~ traceTransactionClause(TraceTransactionClauseInput input, TracerName name)
-        }
+        class DebugModule
     }
-    namespace http {
-        class HttpClient {
-            <<interface>>
-        }
+    namespace gas-module {
+        class GasModule
     }
-    class ThorClient {
-        AccountsModule accounts
-        DebugModule debug
-        HttpClient httpClient
-        
+    namespace logs-module {
+        class LogsModule
     }
-    AccountsModule *-- ThorClient
-    DebugModule *-- ThorClient
-    HttpClient o-- AccountsModule
+    namespace nodes-module {
+        class NodesModule
+    }
+    namespace transactions-module {
+        class TransactionsModule
+    }
+    class ThorClient
+    AccountModule --* ThorClient
+    BlocksModule o-- LogsModule
+    BlocksModule o-- NodesModule
+    BlocksModule --* ThorClient
+    BlocksModule o-- TransactionsModule
+    ContractsModule --* ThorClient
+    DebugModule --* ThorClient
+    DebugModule o-- TransactionsModule
+    GasModule --* ThorClient
+    HttpClient o-- AccountModule
+    HttpClient o-- BlocksModule
     HttpClient o-- DebugModule
     HttpClient o-- ThorClient
+    LogsModule --* ThorClient
+    LogsModule o-- TransactionsModule
+    NodesModule --* ThorClient
+    TransactionsModule o-- ContractsModule
+    TransactionsModule o-- GasModule
+    TransactionsModule --* ThorClient
 ```
