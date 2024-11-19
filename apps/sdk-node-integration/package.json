@@ -1,7 +1,7 @@
 {
   "name": "sdk-node-integration",
   "description": "An example app of how to integrate the VeChain SDK with Node.js",
-  "version": "1.0.0-rc.2",
+  "version": "1.0.0-rc.3",
   "private": true,
   "main": "dist/index.js",
   "types": "src/index.ts",
@@ -13,7 +13,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@vechain/sdk-network": "1.0.0-rc.2"
+    "@vechain/sdk-network": "1.0.0-rc.3"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
