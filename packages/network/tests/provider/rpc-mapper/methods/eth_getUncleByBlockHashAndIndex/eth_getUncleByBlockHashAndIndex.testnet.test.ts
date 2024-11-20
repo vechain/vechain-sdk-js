@@ -41,7 +41,7 @@ describe('RPC Mapper - eth_getUncleByBlockHashAndIndex method tests', () => {
                 '0x0'
             ]);
 
-            expect(uncleBlock).toStrictEqual({});
+            expect(uncleBlock).toStrictEqual(null);
         });
     });
 

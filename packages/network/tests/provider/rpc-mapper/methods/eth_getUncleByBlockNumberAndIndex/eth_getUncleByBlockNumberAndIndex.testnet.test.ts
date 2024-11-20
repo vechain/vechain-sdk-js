@@ -38,7 +38,7 @@ describe('RPC Mapper - eth_getUncleByBlockNumberAndIndex method tests', () => {
                 RPC_METHODS.eth_getUncleByBlockNumberAndIndex
             ](['latest', '0x0']);
 
-            expect(uncleBlock).toStrictEqual({});
+            expect(uncleBlock).toStrictEqual(null);
         });
     });
 
