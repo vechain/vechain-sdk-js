@@ -289,7 +289,7 @@ class Hex implements VeChainDataModel<Hex> {
                 if (!this.isValid(exp)) {
                     throw new InvalidDataType(
                         'Hex.of',
-                        'not an hexadecimal expression',
+                        'not an hexadecimal string',
                         { exp }
                     );
                 }
