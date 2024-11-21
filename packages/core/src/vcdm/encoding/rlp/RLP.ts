@@ -13,10 +13,13 @@ class RLP implements VeChainDataModel<RLP> {
     protected constructor(data: RLPInput);
     protected constructor(data: Uint8Array);
     protected constructor(data: RLPInput | Uint8Array) {
-        this.decoded =
-            data instanceof Uint8Array ? EthereumjsRLP.decode(data) : data;
-        this.encoded =
-            data instanceof Uint8Array ? data : EthereumjsRLP.encode(data);
+        // ArrayBuffer.isView so we support https://github.com/vitest-dev/vitest/issues/5183
+        this.decoded = ArrayBuffer.isView(data)
+            ? EthereumjsRLP.decode(data)
+            : data;
+        this.encoded = ArrayBuffer.isView(data)
+            ? data
+            : EthereumjsRLP.encode(data);
     }
 
     /**
@@ -214,7 +217,8 @@ class RLP implements VeChainDataModel<RLP> {
 
         // ScalarKind: Direct decoding using the provided method.
         if (kind instanceof ScalarKind) {
-            if (!(packed instanceof Uint8Array)) {
+            // ArrayBuffer.isView so we support https://github.com/vitest-dev/vitest/issues/5183
+            if (!ArrayBuffer.isView(packed)) {
                 throw new InvalidRLP(
                     'RLP.unpackData()',
                     `Unpacking error: Expected data type is Uint8Array.`,

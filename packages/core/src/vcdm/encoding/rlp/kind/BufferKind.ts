@@ -17,7 +17,8 @@ class BufferKind extends ScalarKind {
      */
     public data(data: RLPInput, context: string): DataOutput {
         // Ensure that the data is indeed a Buffer before encoding.
-        if (!(data instanceof Uint8Array))
+        // ArrayBuffer.isView so we support https://github.com/vitest-dev/vitest/issues/5183
+        if (!ArrayBuffer.isView(data)) {
             throw new InvalidRLP(
                 'BufferKind.data()',
                 `Validation error: Expected a Uint8Array type in ${context}.`,
@@ -28,6 +29,7 @@ class BufferKind extends ScalarKind {
                     }
                 }
             );
+        }
 
         return {
             encode: () => data // Data is already a Buffer, so return as-is.
