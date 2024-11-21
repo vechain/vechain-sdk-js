@@ -1,7 +1,7 @@
-import { Txt } from './Txt';
-import { Hex } from './Hex';
 import { InvalidDataType } from '@vechain/sdk-errors';
+import { Hex } from './Hex';
 import { HexUInt } from './HexUInt';
+import { Txt } from './Txt';
 
 /**
  * Represents a revision for a Thor transaction or block.
@@ -62,10 +62,14 @@ class Revision extends Txt {
             let txt: string;
             if (value instanceof Hex) {
                 txt = value.bi.toString();
-            } else if (value instanceof Uint8Array) {
-                txt = Txt.of(value).toString();
-            } else {
+            } else if (
+                typeof value === 'bigint' ||
+                typeof value === 'number' ||
+                typeof value === 'string'
+            ) {
                 txt = `${value}`;
+            } else {
+                txt = Txt.of(value).toString();
             }
             if (Revision.isValid(txt)) {
                 return new Revision(txt);
