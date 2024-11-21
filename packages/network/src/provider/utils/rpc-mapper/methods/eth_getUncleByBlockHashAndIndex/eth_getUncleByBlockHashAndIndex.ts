@@ -19,7 +19,7 @@ import { ThorId } from '@vechain/sdk-core';
  */
 const ethGetUncleByBlockHashAndIndex = async (
     params: unknown[]
-): Promise<object> => {
+): Promise<object | null> => {
     // Input validation
     if (
         params.length !== 2 ||
@@ -33,7 +33,7 @@ const ethGetUncleByBlockHashAndIndex = async (
             { params }
         );
 
-    return await Promise.resolve({});
+    return await Promise.resolve(null);
 };
 
 export { ethGetUncleByBlockHashAndIndex };
