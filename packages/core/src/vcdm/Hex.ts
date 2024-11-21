@@ -302,10 +302,10 @@ class Hex implements VeChainDataModel<Hex> {
                     this.REGEX_HEX_PREFIX.test(exp) ? exp.slice(2) : exp
                 );
             }
-            // noinspection ExceptionCaughtLocallyJS
-            throw new InvalidDataType('Hex.of', 'not an hexadecimal string', {
-                exp
-            });
+            return new Hex(
+                this.POSITIVE,
+                nc_utils.bytesToHex(exp as unknown as Uint8Array)
+            );
         } catch (e) {
             throw new InvalidDataType(
                 'Hex.of',
