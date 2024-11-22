@@ -85,7 +85,12 @@ describe('Txt class tests', () => {
         });
 
         test('Different text encoding should result in equal bytes', () => {
-            expect(Txt.of(diacritic).bytes).toEqual(Txt.of(normal).bytes);
+            const expected = Txt.of(diacritic).bytes;
+            expect(expected).toEqual(Txt.of(normal).bytes);
+
+            // eslint rule test
+            // eslint-disable-next-line local-rules/disallow-instanceof-uint8array
+            expect(expected instanceof Uint8Array).toBe(true);
         });
     });
 });
