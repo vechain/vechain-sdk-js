@@ -135,12 +135,12 @@ class Txt extends String implements VeChainDataModel<Txt> {
      * @returns {Txt} - A new Txt instance.
      */
     public static of(exp: bigint | number | string | Uint8Array): Txt {
-        if (exp instanceof Uint8Array) {
-            return new Txt(Txt.DECODER.decode(exp));
+        if (typeof exp === 'string') {
+            return new Txt(exp);
         } else if (typeof exp === 'bigint' || typeof exp === 'number') {
             return new Txt(exp.toString());
         }
-        return new Txt(exp);
+        return new Txt(Txt.DECODER.decode(exp));
     }
 }
 

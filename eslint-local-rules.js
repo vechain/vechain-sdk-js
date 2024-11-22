@@ -40,5 +40,37 @@ module.exports = {
                 }
             };
         }
+    },
+    'disallow-instanceof-uint8array': {
+        meta: {
+            type: 'problem', // Define the rule type
+            docs: {
+                description: 'Disallow usage of instanceof Uint8Array',
+                category: 'Best Practices',
+                recommended: false
+            },
+            schema: [], // No options for this rule
+            messages: {
+                avoidInstanceOfUint8Array:
+                    'Please review if you can avoid using instanceof Uint8Array. If not, please use ArrayBuffer.isView instead.'
+            }
+        },
+        create(context) {
+            return {
+                BinaryExpression(node) {
+                    // Check if it's an instanceof expression
+                    if (
+                        node.operator === 'instanceof' &&
+                        node.right.type === 'Identifier' &&
+                        node.right.name === 'Uint8Array'
+                    ) {
+                        context.report({
+                            node,
+                            messageId: 'avoidInstanceOfUint8Array'
+                        });
+                    }
+                }
+            };
+        }
     }
 };

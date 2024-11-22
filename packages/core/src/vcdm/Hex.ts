@@ -267,9 +267,7 @@ class Hex implements VeChainDataModel<Hex> {
      */
     public static of(exp: bigint | number | string | Uint8Array): Hex {
         try {
-            if (exp instanceof Uint8Array) {
-                return new Hex(this.POSITIVE, nc_utils.bytesToHex(exp));
-            } else if (typeof exp === 'bigint') {
+            if (typeof exp === 'bigint') {
                 if (exp < 0n) {
                     return new Hex(
                         this.NEGATIVE,
@@ -287,8 +285,14 @@ class Hex implements VeChainDataModel<Hex> {
                     exp < 0 ? this.NEGATIVE : this.POSITIVE,
                     nc_utils.bytesToHex(new Uint8Array(dataView.buffer))
                 );
-            }
-            if (this.isValid(exp)) {
+            } else if (typeof exp === 'string') {
+                if (!this.isValid(exp)) {
+                    throw new InvalidDataType(
+                        'Hex.of',
+                        'not an hexadecimal string',
+                        { exp }
+                    );
+                }
                 if (exp.startsWith('-')) {
                     return new Hex(
                         this.NEGATIVE,
@@ -302,10 +306,7 @@ class Hex implements VeChainDataModel<Hex> {
                     this.REGEX_HEX_PREFIX.test(exp) ? exp.slice(2) : exp
                 );
             }
-            // noinspection ExceptionCaughtLocallyJS
-            throw new InvalidDataType('Hex.of', 'not an hexadecimal string', {
-                exp
-            });
+            return new Hex(this.POSITIVE, nc_utils.bytesToHex(exp));
         } catch (e) {
             throw new InvalidDataType(
                 'Hex.of',

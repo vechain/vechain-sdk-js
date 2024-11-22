@@ -77,6 +77,7 @@ export default [{
         "no-warning-comments": "warn",
         "no-multi-str": "off",
         "local-rules/disallow-buffer-from-alloc": "error",
+        "local-rules/disallow-instanceof-uint8array": "error",
         "sonarjs/different-types-comparison": "off",
         "sonarjs/no-ignored-exceptions": "off",
         "sonarjs/no-nested-functions": "off",
