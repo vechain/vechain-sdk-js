@@ -52,7 +52,9 @@ class SimpleHttpClient implements HttpClient {
      * Sends an HTTP GET request to the specified path with optional query parameters.
      *
      * @param {string} path - The endpoint path to which the HTTP GET request is sent.
-     * @param {HttpParams} [params] - Optional query parameters to include in the request.
+     * @param {HttpParams} [params] - Optional parameters for the request,
+     * including query parameters, headers, body, and response validation.
+     * {@link HttpParams.headers} override {@link SimpleHttpClient.headers}.
      * @return {Promise<unknown>} A promise that resolves with the response of the GET request.
      */
     public async get(path: string, params?: HttpParams): Promise<unknown> {
@@ -64,7 +66,9 @@ class SimpleHttpClient implements HttpClient {
      *
      * @param {HttpMethod} method - The HTTP method to use for the request (e.g., GET, POST).
      * @param {string} path - The URL path for the request.
-     * @param {HttpParams} [params] - Optional parameters for the request, including query parameters, headers, body, and response validation.
+     * @param {HttpParams} [params] - Optional parameters for the request,
+     * including query parameters, headers, body, and response validation.
+     * {@link HttpParams.headers} override {@link SimpleHttpClient.headers}.
      * @return {Promise<unknown>} A promise that resolves to the response of the HTTP request.
      * @throws {InvalidHTTPRequest} Throws an error if the HTTP request fails.
      */
@@ -134,7 +138,9 @@ class SimpleHttpClient implements HttpClient {
      * Makes an HTTP POST request to the specified path with optional parameters.
      *
      * @param {string} path - The endpoint to which the POST request is made.
-     * @param {HttpParams} [params] - An optional object containing query parameters or data to be sent with the request.
+     * @param {HttpParams} [params] - Optional parameters for the request,
+     * including query parameters, headers, body, and response validation.
+     * {@link HttpParams.headers} override {@link SimpleHttpClient.headers}.
      * @return {Promise<unknown>} A promise that resolves with the response from the server.
      */
     public async post(path: string, params?: HttpParams): Promise<unknown> {
