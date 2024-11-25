@@ -1,7 +1,11 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { MAINNET_URL, ThorClient } from '../../../src';
 
-import { B3TR, X2EarnRewardsPool } from '@vechain/vebetterdao-contracts';
+import {
+    B3TR,
+    X2EarnRewardsPool,
+    XAllocationVoting
+} from '@vechain/vebetterdao-contracts';
 import { FixedPointNumber, Units } from '@vechain/sdk-core';
 
 /**
@@ -35,6 +39,16 @@ describe('ThorClient - Mainnet allocation events', () => {
         expect(events).toBeDefined();
         expect(events.length).toBeGreaterThan(0);
     }, 30000);
+
+    test('test2', async () => {
+        const contract2 = thorMainnetClient.contracts.load(
+            XAllocationVoting.address.mainnet,
+            XAllocationVoting.abi
+        );
+
+        const currentRound = await contract2.read.currentRoundId();
+        expect(currentRound).toStrictEqual([22n]);
+    });
 
     test('Should filter EVearn distribute rewards events', async () => {
         const B3TRContract = thorMainnetClient.contracts.load(
