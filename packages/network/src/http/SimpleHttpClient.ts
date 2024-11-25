@@ -35,13 +35,13 @@ class SimpleHttpClient implements HttpClient {
      * if not overwritten by the {@link HttpParams} of the method sending the request.
      *
      * @param {string} baseURL - The base URL for HTTP requests.
-     * @param {number} [timeout=SimpleHttpClient.DEFAULT_TIMEOUT] - The timeout duration in milliseconds.
      * @param {HeadersInit} [headers=new Headers()] - The default headers for HTTP requests.
+     * @param {number} [timeout=SimpleHttpClient.DEFAULT_TIMEOUT] - The timeout duration in milliseconds.
      */
     constructor(
         baseURL: string,
-        timeout: number = SimpleHttpClient.DEFAULT_TIMEOUT,
-        headers: HeadersInit = new Headers()
+        headers: HeadersInit = new Headers(),
+        timeout: number = SimpleHttpClient.DEFAULT_TIMEOUT
     ) {
         this.baseURL = baseURL;
         this.timeout = timeout;
