@@ -20,6 +20,8 @@ class SimpleHttpClient implements HttpClient {
      */
     public readonly baseURL: string;
 
+    public readonly headers: HeadersInit;
+
     /**
      * Return the amount of time in milliseconds before a timeout occurs
      * when requesting with HTTP methods.
@@ -27,17 +29,23 @@ class SimpleHttpClient implements HttpClient {
     public readonly timeout: number;
 
     /**
-     * Constructs an instance of SimpleHttpClient with the given base URL and timeout period.
+     * Constructs an instance of SimpleHttpClient with the given base URL,
+     * timeout period and HTTP headers.
+     * The HTTP headers are used each time this client send a request to the URL,
+     * if not overwritten by the {@link HttpParams} of the method sending the request.
      *
-     * @param {string} baseURL - The base URL for the HTTP client.
-     * @param {number} [timeout=SimpleHttpClient.DEFAULT_TIMEOUT] - The timeout period for requests in milliseconds.
+     * @param {string} baseURL - The base URL for HTTP requests.
+     * @param {number} [timeout=SimpleHttpClient.DEFAULT_TIMEOUT] - The timeout duration in milliseconds.
+     * @param {HeadersInit} [headers=new Headers()] - The default headers for HTTP requests.
      */
     constructor(
         baseURL: string,
-        timeout: number = SimpleHttpClient.DEFAULT_TIMEOUT
+        timeout: number = SimpleHttpClient.DEFAULT_TIMEOUT,
+        headers: HeadersInit = new Headers()
     ) {
         this.baseURL = baseURL;
         this.timeout = timeout;
+        this.headers = headers;
     }
 
     /**
@@ -74,6 +82,12 @@ class SimpleHttpClient implements HttpClient {
             if (params?.query != null) {
                 Object.entries(params.query).forEach(([key, value]) => {
                     url.searchParams.append(key, String(value));
+                });
+            }
+            const headers = new Headers(this.headers);
+            if (params?.headers !== undefined && params?.headers != null) {
+                Object.entries(params.headers).forEach(([key, value]) => {
+                    headers.append(key, String(value));
                 });
             }
             const response = await fetch(url, {
