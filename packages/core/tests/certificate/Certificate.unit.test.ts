@@ -158,6 +158,33 @@ describe('Certificate class tests', () => {
         });
     });
 
+    describe('encode method tests', () => {
+        test('Return encoded certificate', () => {
+            expect(
+                Certificate.of(CertificateFixture)
+                    .sign(CertificateFixturePrivateKey)
+                    .encode()
+            ).toBeInstanceOf(Uint8Array);
+        });
+
+        test('Return encoded certificate without signature', () => {
+            // sign certificate
+            const signed = Certificate.of(CertificateFixture).sign(
+                CertificateFixturePrivateKey
+            );
+
+            // encode using public method
+            const encoded = signed.encode();
+
+            const decoded = new TextDecoder().decode(encoded);
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            const decodedJSON = JSON.parse(decoded);
+
+            // decoded should not have signature
+            expect(decodedJSON).not.toHaveProperty('signature');
+        });
+    });
+
     describe('isSigned method tests', () => {
         test('Return false if signature is not present', () => {
             expect(Certificate.of(CertificateFixture).isSigned()).toBe(false);
