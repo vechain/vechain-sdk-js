@@ -169,6 +169,22 @@ class Certificate implements CertificateData {
     }
 
     /**
+     * Encodes the current certificate instance into a Uint8Array representation.
+     *
+     * @remarks
+     * This method normalizes the content by:
+     * - Sorting the properties in ascending alphabetic order.
+     * - Delimiting key/value properties with `"` when serialized as JSON before encoding as bytes.
+     * - Ignoring any not meaningful blank characters.
+     * - Using the UTF-8 normalization form for canonical composition for byte encoding.
+     *
+     * @return {Uint8Array} The encoded Uint8Array representation of the current certificate instance.
+     */
+    public encode(): Uint8Array {
+        return Certificate.encode({ ...this, signature: undefined });
+    }
+
+    /**
      * Return `true` if the current instance has a signature.
      *
      * @return {boolean} `true` if the signature is a valid hexadecimal string,
