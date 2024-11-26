@@ -63,7 +63,9 @@ describe('SimpleHttpClient solo tests', () => {
                 query: {},
                 body: {},
                 headers: {
-                    'X-Custom-Header': 'custom-value'
+                    'X-Custom-Header': 'custom-value',
+                    'Cache-Control':
+                        'no-store, no-cache, max-age=0, must-revalidate, proxy-revalidate'
                 },
                 validateResponseHeader: function (
                     headers: Record<string, string>
@@ -107,7 +109,11 @@ describe('SimpleHttpClient solo tests', () => {
      */
     test('timeout test - 100 ms', async () => {
         const timeout = 100; // 100ms timeout
-        const httpClient = new SimpleHttpClient(THOR_SOLO_URL, timeout);
+        const httpClient = new SimpleHttpClient(
+            THOR_SOLO_URL,
+            new Headers(),
+            timeout
+        );
 
         // Create a mock server that delays response
         const mockServer = jest.fn().mockImplementation(async () => {

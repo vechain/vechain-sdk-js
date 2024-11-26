@@ -1,9 +1,5 @@
 ```mermaid
 classDiagram
-    class SimpleHttpClient {
-        number DEFAULT_TIMEOUT$
-        number timeout;
-    }
     class HttpClient {
         <<interface>>
         string baseUrl
@@ -22,6 +18,11 @@ classDiagram
         Record~string, string~ headers
         Record~string, string~ query
         validateResponse(Record~string, string~ headers)
+    }
+    class SimpleHttpClient {
+        number DEFAULT_TIMEOUT$
+        HeadersInit headers
+        number timeout
     }
     HttpMethod o-- HttpClient
     HttpParams *-- HttpClient
