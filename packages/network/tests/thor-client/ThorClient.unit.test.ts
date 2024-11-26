@@ -4,7 +4,7 @@ import { TESTNET_URL, ThorClient } from '../../src';
 /**
  * ThorClient module tests.
  *
- * @group integration/clients/thor-client
+ * @group unit/clients/thor-client
  */
 describe('ThorClient deprecated methods', () => {
     test('ok <- fromUrl', () => {
