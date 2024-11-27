@@ -70,6 +70,7 @@ classDiagram
     }
     
     HttpClient o-- ThorRequest
+    
     ThorRequest <|.. QuerySmartContractEvents
     ThorRequest <|.. QueryVETTransferEvents
     ThorResponse <|.. EventLogsResponse
