@@ -53,7 +53,7 @@
     "ws": "^8.18.0"
   },
   "devDependencies": {
-    "@types/ws": "^8.5.12",
+    "@types/ws": "^8.5.13",
     "jest-fetch-mock": "^3.0.3",
     "whatwg-fetch": "^3.6.20"
   }
