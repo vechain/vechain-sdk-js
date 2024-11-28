@@ -661,6 +661,23 @@ describe('Transaction class tests', () => {
         });
     });
 
+    describe('signAsDelegator method tests', () => {
+        test('signature <- delegator', () => {
+            const expected = Transaction.of(
+                TransactionFixture.delegated.body
+            ).signWithDelegator(SignerFix.privateKey, DelegatorFix.privateKey);
+            const signed = Transaction.of(
+                TransactionFixture.delegated.body
+            ).signForDelegator(SignerFix.privateKey);
+            const signer = Address.ofPrivateKey(SignerFix.privateKey);
+            const actual = signed.signAsDelegator(
+                signer,
+                DelegatorFix.privateKey
+            );
+            expect(actual.signature).toEqual(expected.signature);
+        });
+    });
+
     describe('signWithDelegator method tests', () => {
         test('signature <- delegated', () => {
             const actual = Transaction.of(

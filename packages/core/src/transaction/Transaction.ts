@@ -537,6 +537,28 @@ class Transaction {
         );
     }
 
+    public signAsDelegator(
+        signer: Address,
+        delegatorPrivateKey: Uint8Array
+    ): Transaction {
+        const delegatedHash = this.getTransactionHash(signer).bytes;
+        return new Transaction(
+            this.body,
+            nc_utils.concatBytes(
+                this.signature as Uint8Array,
+                Secp256k1.sign(delegatedHash, delegatorPrivateKey)
+            )
+        );
+    }
+
+    public signForDelegator(signerPrivateKey: Uint8Array): Transaction {
+        const transactionHash = this.getTransactionHash().bytes;
+        return new Transaction(
+            this.body,
+            Secp256k1.sign(transactionHash, signerPrivateKey)
+        );
+    }
+
     /**
      * Signs the transaction using both the signer and the delegator private keys.
      *
