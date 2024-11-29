@@ -22,13 +22,13 @@ const GetLastBlock = () => {
 
     return (
         <div>
-            <button onClick={fetchLastBlock}>
+            <button onClick={fetchLastBlock} data-testid="getlastblock">
                 Get Last Block
             </button>
             {block && (
                 <div>
                     <h3>Last Block Details:</h3>
-                    <pre>{JSON.stringify(block, null, 2)}</pre>
+                    <pre data-testid="last-block-details">{JSON.stringify(block, null, 2)}</pre>
                 </div>
             )}
         </div>

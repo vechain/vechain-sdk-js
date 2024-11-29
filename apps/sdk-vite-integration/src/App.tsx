@@ -22,7 +22,7 @@ function App() {
         <div className="card">
           <p>
             <b>@vechain/sdk-core</b> integration example:{' '}
-            <Link
+            <Link data-testid="hash-link"
               className="text-blue-500 hover:underline"
               to="/hash" // Change from href to to for React Router
             >
@@ -31,7 +31,7 @@ function App() {
           </p>
           <p>
             <b>@vechain/sdk-network</b> integration example:{' '}
-            <Link
+            <Link data-testid="transfers-link"
               className="text-blue-500 hover:underline"
               to='/transfer-logs'
             >
@@ -40,7 +40,7 @@ function App() {
           </p>
           <p>
             <b>@vechain/sdk-network</b> integration example:{' '}
-            <Link
+            <Link data-testid="latest-block-link"
               className="text-blue-500 hover:underline"
               to='/get-last-block'
             >
