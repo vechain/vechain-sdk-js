@@ -1,7 +1,7 @@
 {
   "name": "sdk-nextjs-integration",
   "description": "An example app of how to integrate the VeChain SDK with Next.js",
-  "version": "1.0.0-rc.3",
+  "version": "1.0.0-rc.4",
   "private": true,
   "author": "VeChain Foundation",
   "license": "MIT",
@@ -14,8 +14,8 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@vechain/sdk-core": "1.0.0-rc.3",
-    "@vechain/sdk-network": "1.0.0-rc.3",
+    "@vechain/sdk-core": "1.0.0-rc.4",
+    "@vechain/sdk-network": "1.0.0-rc.4",
     "install": "^0.13.0",
     "next": "15.0.2",
     "react": "^18",
