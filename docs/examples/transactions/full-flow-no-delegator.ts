@@ -12,7 +12,7 @@ import {
     THOR_SOLO_URL,
     ThorClient,
     VeChainProvider
-} from '@vechain/sdk-network';
+} from '@vechain/sdk-network'; // START_SNIPPET: FullFlowNoDelegatorSnippet
 import { expect } from 'expect';
 
 // START_SNIPPET: FullFlowNoDelegatorSnippet

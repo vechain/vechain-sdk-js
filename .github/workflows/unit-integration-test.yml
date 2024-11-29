@@ -76,8 +76,6 @@ jobs:
               if: always()  && github.ref == 'refs/heads/main' && (steps.unit-test.outcome == 'failure')
               uses: slackapi/slack-github-action@v2.0.0
               with:
-                webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
-                webhook-type: webhook-trigger
                 payload: |
                   {
                     "source": "GitHub",
@@ -85,5 +83,7 @@ jobs:
                     "branch": "${{ github.head_ref || github.ref_name }}",
                     "message": "unit tests failed, see run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   }
+              env:
+                SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
               
