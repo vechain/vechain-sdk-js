@@ -4,7 +4,7 @@ import {
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
-import type { TypedDataDomain, TypedDataParameter } from 'viem';
+import type { TypedDataDomain, TypedDataField } from 'ethers';
 import type { VeChainSigner } from '../../../../../signer/signers';
 import type { ThorClient } from '../../../../../thor-client';
 import type { VeChainProvider } from '../../../../providers/vechain-provider';
@@ -61,7 +61,7 @@ const ethSignTypedDataV4 = async (
         {
             primaryType: string;
             domain: TypedDataDomain;
-            types: Record<string, TypedDataParameter[]>;
+            types: Record<string, TypedDataField[]>;
             message: Record<string, unknown>;
         }
     ];
@@ -74,7 +74,6 @@ const ethSignTypedDataV4 = async (
         return await signer.signTypedData(
             typedData.domain,
             typedData.types,
-            typedData.primaryType,
             typedData.message
         );
     } catch (error) {

@@ -12,12 +12,11 @@ import {
 } from '@vechain/sdk-network';
 import { BitString, ObjectIdentifier, Sequence, verifySchema } from 'asn1js';
 import {
-    hashTypedData,
-    recoverPublicKey,
-    toHex,
     type TypedDataDomain,
-    type TypedDataParameter
-} from 'viem';
+    TypedDataEncoder,
+    type TypedDataField
+} from 'ethers';
+import { recoverPublicKey, toHex } from 'viem';
 import { KMSVeChainProvider } from './KMSVeChainProvider';
 
 class KMSVeChainSigner extends VeChainAbstractSigner {
@@ -389,13 +388,12 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
      */
     public async signTypedData(
         domain: TypedDataDomain,
-        types: Record<string, TypedDataParameter[]>,
-        primaryType: string,
-        message: Record<string, unknown>
+        types: Record<string, TypedDataField[]>,
+        value: Record<string, unknown>
     ): Promise<string> {
         try {
             const payload = Hex.of(
-                hashTypedData({ domain, types, primaryType, message })
+                TypedDataEncoder.hash(domain, types, value)
             ).bytes;
 
             return await this.signPayload(payload);
@@ -403,7 +401,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
             throw new SignerMethodError(
                 'KMSVeChainSigner.signTypedData',
                 'The typed data could not be signed.',
-                { domain, types, primaryType, message },
+                { domain, types, value },
                 error
             );
         }
