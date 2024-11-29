@@ -8,7 +8,7 @@ import {
     type TransactionClause
 } from '@vechain/sdk-core';
 import { InvalidDataType, JSONRPCInvalidParams } from '@vechain/sdk-errors';
-import { type TypedDataDomain, type TypedDataParameter } from 'viem';
+import { type TypedDataDomain, type TypedDataField } from 'ethers';
 import { RPC_METHODS } from '../../../provider/utils/const/rpc-mapper/rpc-methods';
 import { type TransactionSimulationResult } from '../../../thor-client';
 import { vnsUtils } from '../../../utils';
@@ -336,17 +336,15 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
      * Signs the [[link-eip-712]] typed data.
      *
      * @param {TypedDataDomain} domain - The domain parameters used for signing.
-     * @param {Record<string, TypedDataParameter[]>} types - The types used for signing.
-     * @param {string} primaryType - The primary type used for signing.
-     * @param {Record<string, unknown>} message - The message data to be signed.
+     * @param {Record<string, TypedDataField[]>} types - The types used for signing.
+     * @param {Record<string, unknown>} value - The message data to be signed.
      *
      * @return {Promise<string>} - A promise that resolves with the signature string.
      */
     abstract signTypedData(
         domain: TypedDataDomain,
-        types: Record<string, TypedDataParameter[]>,
-        primaryType: string,
-        message: Record<string, unknown>,
+        types: Record<string, TypedDataField[]>,
+        value: Record<string, unknown>,
         options?: SignTypedDataOptions
     ): Promise<string>;
 

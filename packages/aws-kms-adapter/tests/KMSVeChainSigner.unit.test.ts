@@ -5,7 +5,7 @@ import {
     type ThorClient,
     type TransactionRequestInput
 } from '@vechain/sdk-network';
-import { type TypedDataDomain, type TypedDataParameter } from 'viem';
+import { type TypedDataDomain, type TypedDataField } from 'ethers';
 import { KMSVeChainProvider, KMSVeChainSigner } from '../src';
 import { EIP712_CONTRACT, EIP712_FROM, EIP712_TO } from './fixture';
 jest.mock('asn1js', () => ({
@@ -136,7 +136,6 @@ describe('KMSVeChainSigner', () => {
                             }
                         ]
                     },
-                    'Mail',
                     {
                         from: {
                             name: 'Cow',
@@ -160,8 +159,7 @@ describe('KMSVeChainSigner', () => {
             await expect(
                 signer.signTypedData(
                     {} as unknown as TypedDataDomain,
-                    {} as unknown as Record<string, TypedDataParameter[]>,
-                    'primaryType',
+                    {} as unknown as Record<string, TypedDataField[]>,
                     {} as unknown as Record<string, unknown>
                 )
             ).rejects.toThrow(SignerMethodError);

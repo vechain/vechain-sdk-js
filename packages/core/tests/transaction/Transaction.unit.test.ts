@@ -661,6 +661,90 @@ describe('Transaction class tests', () => {
         });
     });
 
+    describe('signAsDelegator method tests', () => {
+        test('signature (complete) <- delegator', () => {
+            const expected = Transaction.of(
+                TransactionFixture.delegated.body
+            ).signWithDelegator(SignerFix.privateKey, DelegatorFix.privateKey);
+            const signed = Transaction.of(
+                TransactionFixture.delegated.body
+            ).signForDelegator(SignerFix.privateKey);
+            const signer = Address.ofPrivateKey(SignerFix.privateKey);
+            const actual = signed.signAsDelegator(
+                signer,
+                DelegatorFix.privateKey
+            );
+            expect(actual.signature).toEqual(expected.signature);
+        });
+
+        test('Throw <- undelegated', () => {
+            expect(() => {
+                Transaction.of(TransactionFixture.undelegated.body)
+                    .sign(SignerFix.privateKey)
+                    .signAsDelegator(
+                        Address.ofPrivateKey(SignerFix.privateKey),
+                        SignerFix.privateKey
+                    );
+            }).toThrowError(NotDelegatedTransaction);
+        });
+
+        test('Throw <- unsigned', () => {
+            expect(() => {
+                Transaction.of(
+                    TransactionFixture.delegated.body
+                ).signAsDelegator(
+                    Address.ofPrivateKey(SignerFix.privateKey),
+                    SignerFix.privateKey
+                );
+            }).toThrowError(InvalidTransactionField);
+        });
+
+        test('Throw <- invalid private keys - delegator', () => {
+            expect(() =>
+                Transaction.of(
+                    TransactionFixture.undelegated.body
+                ).signForDelegator(
+                    HexUInt.of('0xF00DBABE').bytes // https://en.wikipedia.org/wiki/Hexspeak
+                )
+            ).toThrowError(InvalidSecp256k1PrivateKey);
+        });
+    });
+
+    describe('signForDelegator method tests', () => {
+        test('signature (incomplete) <- signed', () => {
+            const expected = Transaction.of(
+                TransactionFixture.delegated.body
+            ).signWithDelegator(SignerFix.privateKey, DelegatorFix.privateKey);
+            const actual = Transaction.of(
+                TransactionFixture.delegated.body
+            ).signForDelegator(SignerFix.privateKey);
+            expect(actual.signature).toBeDefined(); // The signer's signature exists, but...
+            // ... the delegator signature is missing, hence...
+            expect(actual.isSigned).toBe(false); // ... the signature is incomplete.
+            expect(actual.signature).toEqual(
+                expected.signature?.slice(0, actual.signature?.length)
+            );
+        });
+
+        test('Throw <- undelegated', () => {
+            expect(() =>
+                Transaction.of(
+                    TransactionFixture.undelegated.body
+                ).signForDelegator(SignerFix.privateKey)
+            ).toThrowError(NotDelegatedTransaction);
+        });
+
+        test('Throw <- invalid private keys - signer', () => {
+            expect(() =>
+                Transaction.of(
+                    TransactionFixture.undelegated.body
+                ).signForDelegator(
+                    HexUInt.of('0xF00DBABE').bytes // https://en.wikipedia.org/wiki/Hexspeak
+                )
+            ).toThrowError(InvalidSecp256k1PrivateKey);
+        });
+    });
+
     describe('signWithDelegator method tests', () => {
         test('signature <- delegated', () => {
             const actual = Transaction.of(

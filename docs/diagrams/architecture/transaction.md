@@ -39,6 +39,8 @@ classDiagram
         +boolean isValidBody(TransactionBody body)$
         +Transaction of(TransactionBody: body, Uint8Array signature?)$
         +Transaction sign(Uint8Array signerPrivateKey)
+        +Transaction signAsDelegator(Address signed, Uint8Array delegatorPrivateKey)
+        +Transaction signForDelegator(Uint8Array signerPrivateKey)
         +Transaction signWithDelegator(Uint8Array signerPrivateKey, Uint8Array delegatorPrivateKey)
     }
     class TransactionBody {
