@@ -276,12 +276,18 @@ class Transaction {
     }
 
     /**
-     * Return `true` if the signature is defined, otherwise `false`.
+     * Return `true` if the signature is defined and complete, otherwise `false`.
      *
-     * @return {boolean} return `true` if the signature is defined, otherwise `false`.
+     * @return {boolean} return `true` if the signature is defined and complete, otherwise `false`.
+     *
+     * @remarks Any delegated transaction signed with {@link signForDelegator}
+     * but not yet signed with {@link signAsDelegator} is not signed.
      */
     public get isSigned(): boolean {
-        return this.signature !== undefined;
+        if (this.signature !== undefined) {
+            return Transaction.isSignatureValid(this.body, this.signature);
+        }
+        return false;
     }
 
     /**
@@ -538,6 +544,96 @@ class Transaction {
     }
 
     /**
+     * Signs a transaction as a delegator using the provided private key. This is applicable only if the transaction
+     * has been marked as delegated and already contains a signature that needs to be extended with a delegator signature.
+     *
+     * @param {Address} signer - The address of the signer for whom the transaction hash is generated.
+     * @param {Uint8Array} delegatorPrivateKey - The private key of the delegator. Must be a valid secp256k1 key.
+     *
+     * @return {Transaction} - A new transaction object with the delegator's signature appended.
+     *
+     * @throws {InvalidSecp256k1PrivateKey} If the provided delegator private key is not valid.
+     * @throws {InvalidTransactionField} If the transaction is unsigned or lacks a valid signature.
+     * @throws {NotDelegatedTransaction} If the transaction is not set as delegated.
+     *
+     * @remarks Security auditable method, depends on
+     * - {@link Secp256k1.isValidPrivateKey};
+     * - {@link Secp256k1.sign}.
+     */
+    public signAsDelegator(
+        signer: Address,
+        delegatorPrivateKey: Uint8Array
+    ): Transaction {
+        if (Secp256k1.isValidPrivateKey(delegatorPrivateKey)) {
+            if (this.isDelegated) {
+                if (this.signature !== undefined) {
+                    const delegatedHash = this.getTransactionHash(signer).bytes;
+                    return new Transaction(
+                        this.body,
+                        nc_utils.concatBytes(
+                            // Drop any previous delegator signature.
+                            this.signature.slice(0, Secp256k1.SIGNATURE_LENGTH),
+                            Secp256k1.sign(delegatedHash, delegatorPrivateKey)
+                        )
+                    );
+                }
+                throw new InvalidTransactionField(
+                    'Transaction.signAsDelegator',
+                    'unsigned transaction: use signForDelegator method',
+                    { fieldName: 'signature' }
+                );
+            }
+            throw new NotDelegatedTransaction(
+                'Transaction.signAsDelegator',
+                'not delegated transaction: use sign method',
+                undefined
+            );
+        }
+        throw new InvalidSecp256k1PrivateKey(
+            `Transaction.signAsDelegator`,
+            'invalid delegator private key: ensure it is a secp256k1 key',
+            undefined
+        );
+    }
+
+    /**
+     * Signs a delegated transaction using the provided signer's private key,
+     * call the {@link signAsDelegator} to complete the signature,
+     * before such call {@link isDelegated} returns `true` but
+     * {@link isSigned} returns `false`.
+     *
+     * @param signerPrivateKey The private key of the signer, represented as a Uint8Array. It must be a valid secp256k1 private key.
+     * @return A new Transaction object with the signature applied, if the transaction is delegated and the private key is valid.
+     * @throws NotDelegatedTransaction if the current transaction is not marked as delegated, instructing to use the regular sign method instead.
+     * @throws InvalidSecp256k1PrivateKey if the provided signerPrivateKey is not a valid secp256k1 private key.
+     *
+     * @remarks Security auditable method, depends on
+     * - {@link Secp256k1.isValidPrivateKey};
+     * - {@link Secp256k1.sign}.
+     */
+    public signForDelegator(signerPrivateKey: Uint8Array): Transaction {
+        if (Secp256k1.isValidPrivateKey(signerPrivateKey)) {
+            if (this.isDelegated) {
+                const transactionHash = this.getTransactionHash().bytes;
+                return new Transaction(
+                    this.body,
+                    Secp256k1.sign(transactionHash, signerPrivateKey)
+                );
+            }
+            throw new NotDelegatedTransaction(
+                'Transaction.signForDelegator',
+                'not delegated transaction: use sign method',
+                undefined
+            );
+        }
+        throw new InvalidSecp256k1PrivateKey(
+            `Transaction.signForDelegator`,
+            'invalid signer private key: ensure it is a secp256k1 key',
+            undefined
+        );
+    }
+
+    /**
      * Signs the transaction using both the signer and the delegator private keys.
      *
      * @param {Uint8Array} signerPrivateKey - The private key of the signer.
@@ -584,7 +680,7 @@ class Transaction {
             }
             throw new InvalidSecp256k1PrivateKey(
                 `Transaction.signWithDelegator`,
-                'invalid delegator private: ensure it is a secp256k1 key',
+                'invalid delegator private key: ensure it is a secp256k1 key',
                 undefined
             );
         }
