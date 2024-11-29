@@ -14,19 +14,19 @@ classDiagram
     }
     namespace Request {
         class SubscribeBeats {
-            query: SubscribeBeats_Query 
+            query: SubscribeBeats_Query
         }
         class SubscribeBeats_Query {
             pos: BlockID
         }
         class SubscribeBlocksCreation {
-            Blocks_Query query
+            query: SubscribeBlocksCreation_Query
         }
         class SubscribeBlocksCreation_Query {
-            TXID pos
+            pos: TXID
         }
         class SubscribeContractEvents {
-            Events_Query query
+            query: SubscribeContractEvents_Query
         }
         class SubscribeContractEvents_Query {
             addr: Address
@@ -37,15 +37,16 @@ classDiagram
             t3: HexUIn
         }
         class SubscribeBlockchainBeats {
+            query: SubscribeBlockchainBeats_Query
+        }
+        class SubscribeBlockchainBeats_Query {
+            pos: BlockID
         }
         class SubscribeTransactionsEvents {
-            body: SubscribeTransactionsEvents_Body 
-        }
-        class SubscribeTransactionsEvents_Body {
-            id: TXID
+            body: SubscribeTransactionsEvents_Body
         }
         class SubscribeVETTransfers {
-            quesry: SubscribeVETTransfer_Query 
+            query: SubscribeVETTransfer_Query
         }
         class SubscribeVETTransfer_Query {
             pos: BlockID
@@ -55,6 +56,15 @@ classDiagram
         }
     }
     namespace Response {
+        class SubscriptionBeatResponse {
+            obsolete: boolean
+            number: UInt
+            id: BlockID
+            parentID: BlockID
+            timestamp: bigint
+            txsFeature: UInt
+            bloom: BloomFilter
+        }
         class SubscriptionBeat2Response {
             gasLimit: VTHO
             obsolete: boolean
@@ -113,17 +123,21 @@ classDiagram
     ThorRequest <|.. SubscribeBlockchainBeats
     ThorRequest <|.. SubscribeTransactionsEvents
     ThorRequest <|.. SubscribeVETTransfers
+    ThorResponse <|.. SubscriptionBeatResponse
+    ThorResponse <|.. SubscriptionBeat2Response
     ThorResponse <|.. SubscriptionBlockResponse
     ThorResponse <|.. SubscriptionEventResponse
+    ThorResponse <|.. SubscriptionTransferResponse
     ThorRequest --* ThorResponse
     SubscribeBeats --* SubscribeBeats_Query
+    SubscribeBlockchainBeats --* SubscribeBlockchainBeats_Query
     SubscribeBlocksCreation --* SubscribeBlocksCreation_Query
     SubscribeContractEvents --* SubscribeContractEvents_Query
-    SubscribeTransactionsEvents --* SubscribeTransactionsEvents_Body 
     SubscriptionEventResponse --* LogMeta
-    SubscriptionTransferResponse --*LogMeta
+    SubscriptionTransferResponse --* LogMeta
     SubscribeVETTransfers --* SubscribeVETTransfer_Query
     SubscribeBeats <..> SubscriptionBeat2Response
+    SubscribeBlockchainBeats <..> SubscriptionBeatResponse
     SubscribeBlocksCreation <..> SubscriptionBlockResponse
     SubscribeContractEvents <..> SubscriptionEventResponse
     SubscribeVETTransfers <..> SubscriptionTransferResponse
