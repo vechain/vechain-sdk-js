@@ -3,11 +3,5 @@ import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  define: {
-    'process.env': {}
-  },
-  optimizeDeps: {
-    exclude: ['chromium-bidi', 'chromium-bidi/lib/cjs/cdp/CdpConnection', 'chromium-bidi/lib/cjs/bidiMapper/BidiMapper']
-  },
+  plugins: [react()]
 })

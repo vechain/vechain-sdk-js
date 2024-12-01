@@ -3,9 +3,6 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()] as ViteUserConfig["plugins"],
-  define: {
-    'process.env': JSON.stringify({})
-  },
   test: {
     environment: 'jsdom',
     browser: {
@@ -13,6 +10,7 @@ export default defineConfig({
       name: 'chromium',
       provider: 'playwright',
     },
-    exclude: ['chromium-bidi', 'chromium-bidi/lib/cjs/cdp/CdpConnection', 'chromium-bidi/lib/cjs/bidiMapper/BidiMapper'],
-  },
+    include: ['tests/*.spec.tsx'],
+    exclude: ['e2e/*.spec.ts'],
+  }
 })
