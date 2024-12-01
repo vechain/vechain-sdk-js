@@ -9,5 +9,6 @@ export default defineConfig({
       name: 'chromium',
       provider: 'playwright',
     },
+    exclude: ['chromium-bidi'],
   },
 })
