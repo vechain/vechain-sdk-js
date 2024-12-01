@@ -8,8 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest --config vitest.node.config.js",
-    "test:jsdom": "vitest --config vitest.jsdom.config.js",
+    "test": "vitest",
     "test:e2e": "playwright test"
   },
   "dependencies": {

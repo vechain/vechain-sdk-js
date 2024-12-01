@@ -46,3 +46,17 @@ jobs:
                       cd "../"
                     fi
                   done
+
+            - name: E2E Test for apps
+              run: |
+                # Absolute path to the 'sdk-vite-integration' directory
+                sdk_vite_integration_directory="$(pwd)/apps/sdk-vite-integration"
+
+                # LOG
+                echo "Running yarn in $sdk_vite_integration_directory"
+
+                # Navigate to the directory using absolute path
+                cd "$sdk_vite_integration_directory"
+
+                # Test
+                yarn test:e2e
