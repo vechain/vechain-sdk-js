@@ -5,6 +5,6 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
-    exclude: ['chromium-bidi']
+    exclude: ['chromium-bidi', 'chromium-bidi/lib/cjs/cdp/CdpConnection', 'chromium-bidi/lib/cjs/bidiMapper/BidiMapper']
   },
 })

@@ -10,6 +10,6 @@ export default defineConfig({
       name: 'chromium',
       provider: 'playwright',
     },
-    exclude: ['chromium-bidi'],
+    exclude: ['chromium-bidi', 'chromium-bidi/lib/cjs/cdp/CdpConnection', 'chromium-bidi/lib/cjs/bidiMapper/BidiMapper'],
   },
 })
