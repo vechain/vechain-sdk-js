@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
-test('Latest block example', async ({ page, baseURL }) => {
-    await page.goto(baseURL || 'http://localhost:5173');
+test('Latest block example', async ({ page }) => {
+    await page.goto("/");
 
     const latestBlockLink = page.getByTestId('latest-block-link');
 
@@ -21,5 +21,4 @@ test('Latest block example', async ({ page, baseURL }) => {
     await expect(lastBlockDetails).toBeVisible();
     await expect(lastBlockDetails).toContainText('number');
     await expect(lastBlockDetails).toContainText('id');
-
 });

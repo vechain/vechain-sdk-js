@@ -1,8 +1,13 @@
 import { test, expect } from '@playwright/test';
-import { Blake2b256, Keccak256, Sha256, Txt } from '@vechain/sdk-core';
+import {
+  Blake2b256,
+  Keccak256,
+  Sha256,
+  Txt
+} from '@vechain/sdk-core/dist/index.mjs';
 
-test('Hash example', async ({ page, baseURL }) => {
-  await page.goto(baseURL || 'http://localhost:5173');
+test('Hash example', async ({ page }) => {
+  await page.goto("/");
 
   const hashLink = page.getByTestId('hash-link');
 
@@ -40,5 +45,4 @@ test('Hash example', async ({ page, baseURL }) => {
   const expectedSha256Hash = Sha256.of(Txt.of(content).bytes)
   await expect(sha256Hash).toContainText('Sha256');
   await expect(sha256Hash).toContainText(expectedSha256Hash.toString());
-
 });

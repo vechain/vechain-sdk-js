@@ -1,4 +1,4 @@
-// playwright.config.js
+// playwright.config.ts
 import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
@@ -18,7 +18,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
 
   // Reporter to use, see https://playwright.dev/docs/test-reporters
-  reporter: 'list',
+  reporter: 'html',
 
   use: {
     // Base URL to use in actions like `await page.goto('/')`.
@@ -35,9 +35,10 @@ export default defineConfig({
     },
   ],
   // Run your local dev server before starting the tests.
-  webServer: {
-    command: 'yarn dev',
-    url: 'http://localhost:5173',
-    reuseExistingServer: !process.env.CI,
-  },
+  // webServer: {
+  //   command: 'yarn dev',
+  //   url: 'http://localhost:5173',
+  //   timeout: 120 * 1000,
+  //   reuseExistingServer: !process.env.CI,
+  // },
 });
