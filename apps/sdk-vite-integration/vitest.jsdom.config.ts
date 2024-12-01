@@ -3,6 +3,9 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()] as ViteUserConfig["plugins"],
+  define: {
+    'process.env': JSON.stringify({})
+  },
   test: {
     environment: 'jsdom',
     browser: {
