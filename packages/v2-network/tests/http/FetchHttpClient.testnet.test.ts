@@ -23,8 +23,9 @@ describe('FetchHttpClient testnet tests', () => {
     });
 
     test('x', async () => {
-        await new RetrieveConnectedPeers().askTo(
+        const r = await new RetrieveConnectedPeers().askTo(
             new FetchHttpClient(ThorNetworks.TESTNET)
         );
+        console.log(r);
     });
 });
