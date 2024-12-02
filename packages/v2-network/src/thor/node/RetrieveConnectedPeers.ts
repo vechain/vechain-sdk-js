@@ -1,7 +1,7 @@
-import { type HttpClient, type HttpPath } from '../../http';
-import { type ThorRequest } from '../ThorRequest';
 import { PeerResponse, type PeerResponseJSON } from './PeerResponse';
 import { type GetPeersResponse } from './GetPeersResponse';
+import { type HttpClient, type HttpPath } from '../../http';
+import { type ThorRequest } from '../ThorRequest';
 import { type ThorResponse } from '../ThorResponse';
 
 class RetrieveConnectedPeers

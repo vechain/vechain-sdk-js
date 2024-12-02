@@ -5,8 +5,8 @@ import {
     ThorNetworks
 } from '../../../src';
 
-describe('RetrieveConnectedPeers', () => {
-    test('GetPeersResponse <- askTo', async () => {
+describe('RetrieveConnectedPeers testnet tests', () => {
+    test('ok<GetPeersResponse> <- askTo', async () => {
         const r = await new RetrieveConnectedPeers().askTo(
             new FetchHttpClient(ThorNetworks.TESTNET)
         );
