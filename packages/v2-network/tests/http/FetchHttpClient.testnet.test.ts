@@ -1,6 +1,9 @@
 import { describe, test } from '@jest/globals';
-import { FetchHttpClient, RetrieveConnectedPeers } from '../../src';
-import { ThorNetworks } from '../../src/thor/ThorNetworks';
+import {
+    FetchHttpClient,
+    RetrieveConnectedPeers,
+    ThorNetworks
+} from '../../src';
 
 /**
  * Test FetchHttpClient class.
@@ -26,6 +29,6 @@ describe('FetchHttpClient testnet tests', () => {
         const r = await new RetrieveConnectedPeers().askTo(
             new FetchHttpClient(ThorNetworks.TESTNET)
         );
-        console.log(r);
+        console.log(JSON.stringify(r, null, 2));
     });
 });

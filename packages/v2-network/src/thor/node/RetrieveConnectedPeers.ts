@@ -1,38 +1,30 @@
 import { type HttpClient, type HttpPath } from '../../http';
 import { type ThorRequest } from '../ThorRequest';
-import { type PeerResponse } from './PeerResponse';
-import { BlockId, UInt } from '@vechain/sdk-core';
+import { PeerResponse, type PeerResponseJSON } from './PeerResponse';
 import { type GetPeersResponse } from './GetPeersResponse';
+import { type ThorResponse } from '../ThorResponse';
 
-class RetrieveConnectedPeers implements ThorRequest {
+class RetrieveConnectedPeers
+    implements ThorRequest<RetrieveConnectedPeers, GetPeersResponse>
+{
     public static readonly PATH: HttpPath = { path: '/node/network/peers' };
 
-    async askTo(httpClient: HttpClient): Promise<GetPeersResponse> {
+    async askTo(
+        httpClient: HttpClient
+    ): Promise<ThorResponse<RetrieveConnectedPeers, GetPeersResponse>> {
         const response = await httpClient.get(RetrieveConnectedPeers.PATH);
-        const responseBody: ResponseElement[] =
-            (await response.json()) as ResponseElement[];
-        return responseBody.map((responseElement) => {
-            return {
-                name: responseElement.name,
-                bestBlockID: BlockId.of(responseElement.bestBlockID),
-                totalScore: UInt.of(responseElement.totalScore),
-                peerID: responseElement.peerID,
-                netAddr: responseElement.netAddr,
-                inbound: responseElement.inbound,
-                duration: UInt.of(responseElement.duration)
-            } satisfies PeerResponse;
-        });
+        const responseBody: PeerResponseJSON[] =
+            (await response.json()) as PeerResponseJSON[];
+        const getPeersResponse: GetPeersResponse = responseBody.map(
+            (peerResponseJSON) => {
+                return new PeerResponse(peerResponseJSON);
+            }
+        );
+        return {
+            request: this,
+            response: getPeersResponse
+        };
     }
-}
-
-interface ResponseElement {
-    name: string;
-    bestBlockID: string;
-    totalScore: number;
-    peerID: string;
-    netAddr: string;
-    inbound: boolean;
-    duration: number;
 }
 
 export { RetrieveConnectedPeers };
