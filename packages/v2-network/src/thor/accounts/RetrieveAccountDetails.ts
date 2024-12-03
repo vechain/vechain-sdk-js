@@ -10,7 +10,7 @@ import { type Address } from '@vechain/sdk-core';
 class RetrieveAccountDetails
     implements ThorRequest<RetrieveAccountDetails, GetAccountResponse>
 {
-    public readonly path: RetrieveAccountDetailsPath;
+    readonly path: RetrieveAccountDetailsPath;
 
     constructor(path: RetrieveAccountDetailsPath) {
         this.path = path;
@@ -35,8 +35,6 @@ class RetrieveAccountDetails
 }
 
 class RetrieveAccountDetailsPath implements HttpPath {
-    static readonly PATH = '/accounts';
-
     readonly address: Address;
 
     constructor(address: Address) {
@@ -44,7 +42,7 @@ class RetrieveAccountDetailsPath implements HttpPath {
     }
 
     get path(): string {
-        return `${RetrieveAccountDetailsPath.PATH}/${this.address.toString()}`;
+        return `/accounts/${this.address}`;
     }
 }
 

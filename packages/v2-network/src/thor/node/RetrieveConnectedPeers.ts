@@ -7,7 +7,7 @@ import { type ThorResponse } from '../ThorResponse';
 class RetrieveConnectedPeers
     implements ThorRequest<RetrieveConnectedPeers, GetPeersResponse>
 {
-    public static readonly PATH: HttpPath = { path: '/node/network/peers' };
+    private static readonly PATH: HttpPath = { path: '/node/network/peers' };
 
     async askTo(
         httpClient: HttpClient

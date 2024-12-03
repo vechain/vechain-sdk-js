@@ -34,8 +34,6 @@ class RetrieveBlock
 }
 
 class RetrieveBlockPath implements HttpPath {
-    static readonly Path = '/blocks';
-
     readonly revision: Revision;
 
     constructor(revision: Revision) {
@@ -43,7 +41,7 @@ class RetrieveBlockPath implements HttpPath {
     }
 
     get path(): string {
-        return `${RetrieveBlockPath.Path}/${this.revision}`;
+        return `/blocks/${this.revision}`;
     }
 }
 

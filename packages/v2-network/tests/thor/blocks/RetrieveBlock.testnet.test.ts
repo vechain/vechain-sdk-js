@@ -3,7 +3,7 @@ import { FetchHttpClient, RetrieveBlock, ThorNetworks } from '../../../src';
 import { Revision } from '@vechain/sdk-core';
 
 describe('RetrieveBlock testnet tests', () => {
-    test('ok<RegularBlockResponse> <- askTo', async () => {
+    test('ok <- askTo', async () => {
         const r = await RetrieveBlock.of(Revision.BEST).askTo(
             new FetchHttpClient(ThorNetworks.TESTNET)
         );
