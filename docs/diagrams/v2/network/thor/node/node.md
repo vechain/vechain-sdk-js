@@ -2,7 +2,7 @@
 classDiagram
     class Array~PeerResponse~ {
     }
-    class GetPeersResponse{
+    class GetPeersResponse {
         <<interface>>
     }
     class PeerResponse {
@@ -13,23 +13,29 @@ classDiagram
         netAddr: string
         peerID: string
         totalScore: UInt
-        
     }
     class RetrieveConnectedPeers {
-        
     }
-    class ThorRequest~RetrieveConnectedPeers~ {
-        <<interface>>
-        askTo(httpClient: HttpClient Promise~ThorResponse~GetPeersResponse~~;
+    namespace http {
+        class HttpClient {
+            <<interface>>
+        }
     }
-    class ThorResponse~RetrieveConnectedPeers~ {
-        <<interface>>
-        request: ThorRequest~RequestClass~
-        response: GetPeersResponse
+    namespace thor {
+        class ThorRequest~RetrieveConnectedPeers~ {
+            <<interface>>
+            askTo(httpClient: HttpClient Promise~ThorResponse~GetPeersResponse~~;
+        }
+        class ThorResponse~RetrieveConnectedPeers~ {
+            <<interface>>
+            request: ThorRequest~RequestClass~
+            response: GetPeersResponse
+        }
     }
     Array~PeerResponse~ <|-- GetPeersResponse
+    GetPeersResponse *-- ThorResponse~RetrieveConnectedPeers~
+    HttpClient <-- ThorRequest~RetrieveConnectedPeers~
     PeerResponse o-- Array~PeerResponse~
     ThorRequest~RetrieveConnectedPeers~ <|.. RetrieveConnectedPeers
-    GetPeersResponse *-- ThorResponse~RetrieveConnectedPeers~
-    ThorResponse~RetrieveConnectedPeers~ --* ThorRequest
+    ThorResponse~RetrieveConnectedPeers~ --* ThorRequest~RetrieveConnectedPeers~
 ```
