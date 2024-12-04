@@ -31,10 +31,10 @@ jobs:
                 temp_dir="$(pwd)/apps/sdk-vite-integration"
 
                 # log where we are
-                echo "Running yarn in temp_dir"
+                echo "Running yarn in $temp_dir"
                 
                 # change directory
-                cd "temp_dir"
+                cd "$temp_dir"
 
                 # run e2e tests
                 yarn test:e2e
