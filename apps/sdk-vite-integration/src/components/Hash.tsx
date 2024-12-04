@@ -36,7 +36,7 @@ const Hash = () => {
         }
     }
 
-    // Update the history when the address changes
+    // Update hash when the content changes
     useEffect(() => {
         hashContent(contentToHash);
     }, [contentToHash]);

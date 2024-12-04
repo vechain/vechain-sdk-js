@@ -44,7 +44,7 @@ function App() {
               className="text-blue-500 hover:underline"
               to='/get-last-block'
             >
-              Get Last Block
+              Get last block
             </Link>
           </p>
         </div>

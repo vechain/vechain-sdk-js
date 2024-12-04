@@ -1,4 +1,4 @@
-name: Test apps examples
+name: E2E Tests for app examples
 
 on:
     workflow_call:
@@ -19,44 +19,36 @@ jobs:
             - name: Install packages
               run: yarn install
 
-            - name: Install playwright dependencies (for sample Vite dApp tests)
+            - name: Install playwright browsers
               run: yarn playwright install
                 
             - name: Build packages
               run: yarn build
 
-            - name: Test apps
+            - name: Run sdk-vite-integration E2E tests
               run: |
-                  # Absolute path to the 'apps' directory
-                  apps_directory="$(pwd)/apps"
-                  
-                  # Iterate over each folder in /apps
-                  for current_app_directory in "$apps_directory"/*; do
-                    if [ -d "$current_app_directory" ]; then
-                      # LOG
-                      echo "Running yarn in $current_app_directory"
-                  
-                      # Navigate to the directory using absolute path
-                      cd "$current_app_directory"
-                  
-                      # Test
-                      yarn test
-                  
-                      # Return to the original directory using absolute path
-                      cd "../"
-                    fi
-                  done
+                # set path
+                temp_dir="$(pwd)/apps/sdk-vite-integration"
 
-            - name: E2E Test for apps
+                # log where we are
+                echo "Running yarn in temp_dir"
+                
+                # change directory
+                cd "temp_dir"
+
+                # run e2e tests
+                yarn test:e2e
+
+            - name: Run sdk-nextjs-integration E2E tests
               run: |
-                # Absolute path to the 'sdk-vite-integration' directory
-                sdk_vite_integration_directory="$(pwd)/apps/sdk-vite-integration"
-
-                # LOG
-                echo "Running yarn in $sdk_vite_integration_directory"
-
-                # Navigate to the directory using absolute path
-                cd "$sdk_vite_integration_directory"
-
-                # Test
+                # set path
+                temp_dir="$(pwd)/apps/sdk-nextjs-integration"
+                
+                # log where we are
+                echo "Running yarn in $temp_dir"
+                
+                # change directory
+                cd "$temp_dir"
+                
+                # run e2e tests
                 yarn test:e2e

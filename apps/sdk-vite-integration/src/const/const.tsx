@@ -1,14 +1,9 @@
 import { ThorClient } from '@vechain/sdk-network';
 
 /**
- * Url of the VeChain mainnet
+ * Thor client instance, using mainnet URL
  */
-const mainnetUrl = 'https://mainnet.vechain.org';
-
-/**
- * Thor client instance
- */
-const thorClient = ThorClient.fromUrl(mainnetUrl);
+const thorClient = ThorClient.at('https://mainnet.vechain.org');
 
 /**
  * Explorer url

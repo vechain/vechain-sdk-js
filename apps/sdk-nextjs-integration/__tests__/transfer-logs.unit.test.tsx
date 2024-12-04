@@ -2,14 +2,9 @@ import { act, render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import TransferLogs from '@/app/transfer-logs/page';
 import userEvent from '@testing-library/user-event';
-import { type CompressedBlockDetail } from '@vechain/sdk-network';
 import { thorClient } from '@/const';
 
 // Create mock types
-interface MockBlocksModule {
-    getBestBlockCompressed: jest.Mock<Promise<CompressedBlockDetail | null>>;
-}
-
 interface MockLogsModule {
     filterTransferLogs: jest.Mock<Promise<FilterTransferLogs[]>>;
 }
@@ -17,9 +12,6 @@ interface MockLogsModule {
 // Mock the thorClient
 jest.mock('../src/const', () => ({
     thorClient: {
-        blocks: {
-            getBestBlockCompressed: jest.fn()
-        } as MockBlocksModule,
         logs: {
             filterTransferLogs: jest.fn()
         } as MockLogsModule
@@ -36,16 +28,6 @@ describe('Transfer logs Page', () => {
     beforeEach(() => {
         // Clear all mocks before each test
         jest.clearAllMocks();
-
-        // Mock getBestBlockCompressed
-        (
-            thorClient.blocks.getBestBlockCompressed as jest.Mock
-        ).mockResolvedValue({
-            number: '123456',
-            id: '0x0128380fc2a99149b2aa9056027d347c2da2ef7068f94245a45b1640ab35d89d',
-            size: 17201,
-            timestamp: 1724658220
-        });
 
         // Mock filterTransferLogs
         (thorClient.logs.filterTransferLogs as jest.Mock).mockResolvedValue([

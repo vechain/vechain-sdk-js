@@ -11,7 +11,6 @@ import { explorerUrl, thorClient } from "../const";
  * Reduce the size of a hex string
  *
  * @param hexString Hex string to reduce
- * @param size Size to reduce the hex string
  */
 function reduceHexStringSize(hexString: string): string {
     // Size to reduce the hex string
@@ -25,7 +24,7 @@ const TransferLogs = () => {
     // State to store the transfer history
     const [transfers, setTransfers] = useState<Transfer[]>([]);
 
-    // // State to store the address
+    // State to store the address
     const [address, setAddress] = useState<string>(
         '0xc3bE339D3D20abc1B731B320959A96A08D479583'
     );
@@ -33,10 +32,10 @@ const TransferLogs = () => {
     const [fromBlock, setFromBlock] = useState<number>(1);
     const [toBlock, setToBlock] = useState<number>(19251959);
 
-    // /**
-    //  * Function to get the history for the provided address
-    //  * @param address The address to get the history for
-    //  */
+    /**
+    * Function to get the history for the provided address
+    * @param address The address to get the history for
+    */
     async function getHistoryFor(address: string): Promise<void> {
         try {
             
