@@ -5,10 +5,7 @@ import { explorerUrl, thorClient } from '@/const';
 import { type Transfer } from '@/types';
 import { reduceHexStringSize } from '@/utils';
 import { Address, FixedPointNumber, Units } from '@vechain/sdk-core';
-import {
-    type CompressedBlockDetail,
-    type FilterTransferLogsOptions
-} from '@vechain/sdk-network';
+import { type FilterTransferLogsOptions } from '@vechain/sdk-network';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -21,15 +18,16 @@ export default function TransferLogs(): JSX.Element {
         '0xc3bE339D3D20abc1B731B320959A96A08D479583'
     );
 
+    // Add range for blocks
+    const [fromBlock, setFromBlock] = useState<number>(1);
+    const [toBlock, setToBlock] = useState<number>(19251959);
+
     /**
      * Function to get the history for the provided address
      * @param address The address to get the history for
      */
     async function getHistoryFor(address: string): Promise<void> {
         try {
-            // Get the latest block
-            const bestBlock = await thorClient.blocks.getBestBlockCompressed();
-
             // Filter options for the transfer logs
             const filterOptions: FilterTransferLogsOptions = {
                 criteriaSet: [
@@ -39,9 +37,8 @@ export default function TransferLogs(): JSX.Element {
                 order: 'desc', // Order logs by descending timestamp
                 range: {
                     unit: 'block',
-                    from: 0,
-                    // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
-                    to: (bestBlock as CompressedBlockDetail).number
+                    from: fromBlock,
+                    to: toBlock
                 }
             };
 
@@ -90,9 +87,35 @@ export default function TransferLogs(): JSX.Element {
                     className="block mx-auto w-full sm:max-w-md border-2 border-dark focus:border-purple-500 bg-transparent py-2 px-4 text-lg text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 outline-none rounded-md"
                     placeholder="0xc3bE339D3D20abc1B731B320959A96A08D479583"
                 />
+                <p className="my-5 text-lg leading-8 text-gray-600">
+                    fromBlock
+                </p>
+                <input
+                    type="number"
+                    name="fromblock"
+                    data-testid="fromblock"
+                    onChange={(e) => {
+                        setFromBlock(parseInt(e.target.value));
+                    }}
+                    value={fromBlock}
+                    className="block mx-auto w-full sm:max-w-md border-2 border-dark focus:border-purple-500 bg-transparent py-2 px-4 text-lg text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 outline-none rounded-md"
+                    placeholder="1"
+                />
+                <p className="my-5 text-lg leading-8 text-gray-600">toBlock</p>
+                <input
+                    type="number"
+                    name="toblock"
+                    data-testid="toblock"
+                    onChange={(e) => {
+                        setToBlock(parseInt(e.target.value));
+                    }}
+                    value={toBlock}
+                    className="block mx-auto w-full sm:max-w-md border-2 border-dark focus:border-purple-500 bg-transparent py-2 px-4 text-lg text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 outline-none rounded-md"
+                    placeholder="19251959"
+                />
             </div>
             <div className="table-container mx-auto max-w-4xl overflow-x-auto text-center justify-center flex flex-col">
-                <table className="table-auto">
+                <table className="table-auto" data-testid="logs-table">
                     <thead>
                         <tr>
                             <th className="px-4 py-2">Time</th>
@@ -105,7 +128,6 @@ export default function TransferLogs(): JSX.Element {
                     <tbody>
                         {transfers.map((transfer) => (
                             <tr key={transfer.meta.txID}>
-                                {' '}
                                 {/* Use txID as the unique key */}
                                 <td className="px-4 py-2">
                                     <p

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Address, FixedPointNumber, Units } from '@vechain/sdk-core';
 import {
-    CompressedBlockDetail,
     FilterTransferLogsOptions
 } from '@vechain/sdk-network';
 import { Link } from 'react-router-dom';
@@ -12,7 +11,6 @@ import { explorerUrl, thorClient } from "../const";
  * Reduce the size of a hex string
  *
  * @param hexString Hex string to reduce
- * @param size Size to reduce the hex string
  */
 function reduceHexStringSize(hexString: string): string {
     // Size to reduce the hex string
@@ -26,20 +24,21 @@ const TransferLogs = () => {
     // State to store the transfer history
     const [transfers, setTransfers] = useState<Transfer[]>([]);
 
-    // // State to store the address
+    // State to store the address
     const [address, setAddress] = useState<string>(
         '0xc3bE339D3D20abc1B731B320959A96A08D479583'
     );
 
-    // /**
-    //  * Function to get the history for the provided address
-    //  * @param address The address to get the history for
-    //  */
+    const [fromBlock, setFromBlock] = useState<number>(1);
+    const [toBlock, setToBlock] = useState<number>(19251959);
+
+    /**
+    * Function to get the history for the provided address
+    * @param address The address to get the history for
+    */
     async function getHistoryFor(address: string): Promise<void> {
         try {
-            // Get the latest block
-            const bestBlock = await thorClient.blocks.getBestBlockCompressed();
-
+            
             // Filter options for the transfer logs
             const filterOptions: FilterTransferLogsOptions = {
                 criteriaSet: [
@@ -49,8 +48,8 @@ const TransferLogs = () => {
                 order: 'desc', // Order logs by descending timestamp
                 range: {
                     unit: 'block',
-                    from: 0,
-                    to: (bestBlock as CompressedBlockDetail).number
+                    from: fromBlock,
+                    to: toBlock
                 }
             };
 
@@ -76,31 +75,77 @@ const TransferLogs = () => {
 
     // Update the history when the address changes
     useEffect(() => {
-        if (Address.isValid(address)) {
+        if (Address.isValid(address) && fromBlock) {
             void getHistoryFor(address);
         }
-    }, [address]);
+    }, [address, fromBlock, toBlock]);
 
     return (
         <main className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
             <div className="my-20 mx-auto max-w-2xl text-center">
                 <p className="my-5 text-lg leading-8 text-gray-600">
-                    Insert an address to get the transfer history
+                    Insert an address, fromBlock and ToBlock number to get the transfer logs
                 </p>
-                <input
-                    type="text"
-                    name="address"
-                    data-testid="address"
-                    onChange={(e) => {
-                        setAddress(e.target.value);
-                    }}
-                    value={address}
-                    className="block mx-auto w-full sm:max-w-md border-2 border-dark focus:border-purple-500 bg-transparent py-2 px-4 text-lg text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 outline-none rounded-md"
-                    placeholder="0xc3bE339D3D20abc1B731B320959A96A08D479583"
-                />
+                <div>
+                    <label
+                        htmlFor="address"
+                        className="block text-sm font-medium text-gray-700"
+                    >
+                    Address
+                    </label>
+                    <input
+                        type="text"
+                        name="address"
+                        data-testid="address"
+                        onChange={(e) => {
+                            setAddress(e.target.value);
+                        }}
+                        value={address}
+                        className="block mx-auto w-full sm:max-w-md border-2 border-dark focus:border-purple-500 bg-transparent py-2 px-4 text-lg text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 outline-none rounded-md"
+                        placeholder="0xc3bE339D3D20abc1B731B320959A96A08D479583"
+                    />
+                </div>
+                <div>
+                    <label
+                        htmlFor="fromblock"
+                        className="block text-sm font-medium text-gray-700"
+                    >
+                    FromBlock
+                    </label>
+                    <input
+                        type="number"
+                        name="fromblock"
+                        data-testid="fromblock"
+                        onChange={(e) => {
+                            setFromBlock(parseInt(e.target.value));
+                        }}
+                        value={fromBlock}
+                        className="block mx-auto w-full sm:max-w-md border-2 border-dark focus:border-purple-500 bg-transparent py-2 px-4 text-lg text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 outline-none rounded-md"
+                        placeholder="1"
+                    />
+                </div>
+                <div>
+                    <label
+                        htmlFor="Toblock"
+                        className="block text-sm font-medium text-gray-700"
+                    >
+                    ToBlock
+                    </label>
+                    <input
+                        type="number"
+                        name="toblock"
+                        data-testid="toblock"
+                        onChange={(e) => {
+                            setToBlock(parseInt(e.target.value));
+                        }}
+                        value={toBlock}
+                        className="block mx-auto w-full sm:max-w-md border-2 border-dark focus:border-purple-500 bg-transparent py-2 px-4 text-lg text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 outline-none rounded-md"
+                        placeholder="19251959"
+                    />
+                </div>
             </div>
             <div className="table-container mx-auto max-w-4xl overflow-x-auto text-center justify-center flex flex-col">
-                <table className="table-auto">
+                <table className="table-auto" data-testid="logs-table">
                     <thead>
                         <tr>
                             <th className="px-4 py-2">Time</th>

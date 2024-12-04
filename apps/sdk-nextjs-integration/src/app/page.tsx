@@ -29,6 +29,7 @@ export default function Home(): JSX.Element {
                         <Link
                             className="text-blue-500 hover:underline"
                             href={'/hash'}
+                            data-testid="hash-link"
                         >
                             Hash
                         </Link>
@@ -38,8 +39,19 @@ export default function Home(): JSX.Element {
                         <Link
                             className="text-blue-500 hover:underline"
                             href={'/transfer-logs'}
+                            data-testid="transfers-link"
                         >
                             Transfer logs
+                        </Link>
+                    </p>
+                    <p>
+                        <b>@vechain/sdk-network</b> integration example:{' '}
+                        <Link
+                            className="text-blue-500 hover:underline"
+                            href={'/get-last-block'}
+                            data-testid="latest-block-link"
+                        >
+                            Get last block
                         </Link>
                     </p>
                 </div>
