@@ -8,8 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest --config vitest.node.config.js",
-    "test:jsdom": "vitest --config vitest.jsdom.config.js"
+    "test": "vitest",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@vechain/sdk-core": "1.0.0-rc.4",
@@ -20,19 +20,19 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
+    "@playwright/test": "^1.49.0",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
-    "@vitest/browser": "^2.1.5",
+    "@vitest/browser": "^2.1.6",
     "eslint": "^9.13.0",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.14",
     "globals": "^15.11.0",
-    "playwright": "^1.48.2",
     "typescript": "~5.6.2",
     "typescript-eslint": "^8.10.0",
-    "vite": "^5.4.11",
-    "vitest": "^2.1.4",
+    "vite": "^6.0.2",
+    "vitest": "^2.1.6",
     "vitest-browser-react": "^0.0.3"
   }
 }
