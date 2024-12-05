@@ -12,6 +12,7 @@ export * from './HexInt';
 export * from './HexUInt';
 export * from './Int';
 export * from './Mnemonic';
+export * from './Nonce';
 export * from './Quantity';
 export * from './Revision';
 export * from './BlockId';

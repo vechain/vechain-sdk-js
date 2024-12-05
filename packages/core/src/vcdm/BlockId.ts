@@ -66,6 +66,7 @@ class BlockId extends HexUInt {
      * @throws {InvalidDataType} If the given expression is not a valid hexadecimal positive integer expression.
      */
     public static of(
+        // eslint-disable-next-line sonarjs/use-type-alias
         exp: bigint | number | string | Uint8Array | HexUInt
     ): BlockId {
         try {
@@ -107,4 +108,27 @@ class ThorId extends BlockId {
     }
 }
 
-export { BlockId, ThorId };
+/**
+ * This class is an alias of {@link TxId} for back compatibility.
+ */
+class TxId extends BlockId {
+    /**
+     * Constructs an instance of the class with the specified transaction ID.
+     *
+     * @param {TxId} blockId - The unique identifier for the block.
+     */
+    protected constructor(blockId: BlockId) {
+        super(blockId);
+    }
+
+    /**
+     * See {@link BlockId.of}.
+     */
+    public static of(
+        exp: bigint | number | string | Uint8Array | HexUInt
+    ): TxId {
+        return new TxId(BlockId.of(exp));
+    }
+}
+
+export { BlockId, ThorId, TxId };
