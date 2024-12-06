@@ -10,13 +10,13 @@ import { Revision } from '@vechain/sdk-core';
 describe('RetrieveBlock testnet tests', () => {
     test('ok <- askTo', async () => {
         const r = await RetrieveBlock.of(Revision.BEST).askTo(
-            new FetchHttpClient(ThorNetworks.TESTNET)
+            FetchHttpClient.at(ThorNetworks.TESTNET)
         );
         console.log(JSON.stringify(r, null, 2));
     });
 
     test('explore', async () => {
-        const httpClient = new FetchHttpClient(ThorNetworks.TESTNET);
+        const httpClient = FetchHttpClient.at(ThorNetworks.TESTNET);
         const lastBlockNumber = await getBestBlockNumber(httpClient);
         for (
             let blockNumber = 0;

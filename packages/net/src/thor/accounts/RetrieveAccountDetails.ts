@@ -19,7 +19,7 @@ class RetrieveAccountDetails
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveAccountDetails, GetAccountResponse>> {
-        const response = await httpClient.get(this.path);
+        const response = await httpClient.get(this.path, { query: '' });
         const responseBody = (await response.json()) as GetAccountResponseJSON;
         return {
             request: this,

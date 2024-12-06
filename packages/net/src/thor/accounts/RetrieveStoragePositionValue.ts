@@ -21,7 +21,7 @@ class RetrieveStoragePositionValue
     ): Promise<
         ThorResponse<RetrieveStoragePositionValue, StoragePositionValue>
     > {
-        const response = await httpClient.get(this.path);
+        const response = await httpClient.get(this.path, { query: '' });
         const responseBody =
             (await response.json()) as StoragePositionValueJSON;
         return {

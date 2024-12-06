@@ -19,7 +19,7 @@ class RetrieveContractBytecode
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveContractBytecode, ContractBytecode>> {
-        const response = await httpClient.get(this.path);
+        const response = await httpClient.get(this.path, { query: '' });
         const responseBody = (await response.json()) as ContractBytecodeJSON;
         return {
             request: this,

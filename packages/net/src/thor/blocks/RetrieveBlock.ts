@@ -19,7 +19,7 @@ class RetrieveBlock
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveBlock, RegularBlockResponse>> {
-        const response = await httpClient.get(this.path);
+        const response = await httpClient.get(this.path, { query: '' });
         const responseBody =
             (await response.json()) as RegularBlockResponseJSON;
         return {

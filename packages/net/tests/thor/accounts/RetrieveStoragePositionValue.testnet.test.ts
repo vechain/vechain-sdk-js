@@ -13,7 +13,7 @@ describe('RetrieveStoragePositionValue testnet tests', () => {
             BlockId.of(
                 '0x0000000000000000000000000000000000000000000000000000000000000001'
             )
-        ).askTo(new FetchHttpClient(ThorNetworks.TESTNET));
+        ).askTo(FetchHttpClient.at(ThorNetworks.TESTNET));
         console.log(JSON.stringify(r, null, 2));
     });
 });

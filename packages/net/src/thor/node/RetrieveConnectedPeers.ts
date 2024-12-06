@@ -12,7 +12,9 @@ class RetrieveConnectedPeers
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveConnectedPeers, GetPeersResponse>> {
-        const response = await httpClient.get(RetrieveConnectedPeers.PATH);
+        const response = await httpClient.get(RetrieveConnectedPeers.PATH, {
+            query: ''
+        });
         const responseBody: PeerResponseJSON[] =
             (await response.json()) as PeerResponseJSON[];
         const getPeersResponse: GetPeersResponse = responseBody.map(

@@ -8,7 +8,7 @@ import {
 describe('RetrieveConnectedPeers testnet tests', () => {
     test('ok <- askTo', async () => {
         const r = await new RetrieveConnectedPeers().askTo(
-            new FetchHttpClient(ThorNetworks.TESTNET)
+            FetchHttpClient.at(ThorNetworks.TESTNET)
         );
         console.log(JSON.stringify(r, null, 2));
     });
