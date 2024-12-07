@@ -4,7 +4,6 @@ import { type HttpQuery } from './HttpQuery';
 
 class FetchHttpClient implements HttpClient {
     private static readonly PATH_SEPARATOR = '/';
-    private static readonly QUERY_SEPARATOR = '?';
 
     public readonly baseURL: string;
 
@@ -45,6 +44,29 @@ class FetchHttpClient implements HttpClient {
             : httpPath.path;
         const request = new Request(
             `${this.baseURL}${FetchHttpClient.PATH_SEPARATOR}${path}${httpQuery.query}`
+        );
+        const response = await fetch(this.onRequest(request));
+        return this.onResponse(response);
+    }
+
+    async post(
+        httpPath: HttpPath = {
+            path: ''
+        },
+        httpQuery: HttpQuery = {
+            query: ''
+        },
+        body?: unknown
+    ): Promise<Response> {
+        const path = httpPath.path.startsWith(FetchHttpClient.PATH_SEPARATOR)
+            ? httpPath.path.substring(1)
+            : httpPath.path;
+        const request = new Request(
+            `${this.baseURL}${FetchHttpClient.PATH_SEPARATOR}${path}${httpQuery.query}`,
+            {
+                body: JSON.stringify(body),
+                method: 'POST'
+            }
         );
         const response = await fetch(this.onRequest(request));
         return this.onResponse(response);
