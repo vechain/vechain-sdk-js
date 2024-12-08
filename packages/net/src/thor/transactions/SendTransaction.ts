@@ -1,4 +1,4 @@
-import { TxId } from '@vechain/sdk-core';
+import { HexUInt, TxId } from '@vechain/sdk-core';
 import { type HttpClient, type HttpPath } from '../../http';
 import { type ThorRequest } from '../ThorRequest';
 import { type ThorResponse } from '../ThorResponse';
@@ -6,10 +6,10 @@ import { type ThorResponse } from '../ThorResponse';
 class SendTransaction implements ThorRequest<SendTransaction, TxId> {
     static readonly PATH: HttpPath = { path: '/transactions' };
 
-    readonly body: unknown;
+    readonly encoded: Uint8Array;
 
-    constructor(body: unknown) {
-        this.body = body;
+    constructor(encoded: Uint8Array) {
+        this.encoded = encoded;
     }
 
     async askTo(
@@ -18,18 +18,25 @@ class SendTransaction implements ThorRequest<SendTransaction, TxId> {
         const response = await httpClient.post(
             SendTransaction.PATH,
             { query: '' },
-            this.body
+            {
+                raw: HexUInt.of(this.encoded).toString()
+            }
         );
-        const responseBody = await response.text();
+        const responseBody =
+            (await response.json()) as SendTransactionResponseJSON;
         return {
             request: this,
-            response: TxId.of(responseBody)
+            response: TxId.of(responseBody.id)
         } satisfies ThorResponse<SendTransaction, TxId>;
     }
 
-    static of(body: unknown): SendTransaction {
-        return new SendTransaction(body);
+    static of(encoded: Uint8Array): SendTransaction {
+        return new SendTransaction(encoded);
     }
+}
+
+interface SendTransactionResponseJSON {
+    id: string;
 }
 
 export { SendTransaction };
