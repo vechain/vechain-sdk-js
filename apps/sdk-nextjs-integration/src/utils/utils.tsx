@@ -2,7 +2,6 @@
  * Reduce the size of a hex string
  *
  * @param hexString Hex string to reduce
- * @param size Size to reduce the hex string
  */
 function reduceHexStringSize(hexString: string): string {
     // Size to reduce the hex string
