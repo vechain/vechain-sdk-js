@@ -2,7 +2,6 @@ import { describe, expect } from '@jest/globals';
 import {
     InvalidDataType,
     InvalidSecp256k1PrivateKey,
-    InvalidSecp256k1Signature,
     InvalidTransactionField,
     NotDelegatedTransaction,
     UnavailableTransactionField
@@ -217,6 +216,30 @@ describe('Transaction class tests', () => {
                     true
                 );
             });
+
+            test('Transaction <- of delegated transactions simulating partial signed transmission between two different JS runtimes.', () => {
+                const signed = Transaction.of(
+                    TransactionFixture.delegated.body
+                ).signForDelegator(SignerFix.privateKey);
+
+                const reconstructed = Transaction.of(
+                    signed.body,
+                    signed.signature
+                );
+                expect(reconstructed.signature).toBeDefined();
+                expect(reconstructed.isDelegated).toBe(true);
+                expect(reconstructed.isSigned).toBe(false);
+
+                const signer = Address.ofPrivateKey(SignerFix.privateKey);
+                const actual = signed.signAsDelegator(
+                    signer,
+                    DelegatorFix.privateKey
+                );
+                expect(actual.isDelegated).toBe(true);
+                expect(actual.isSigned).toBe(true);
+                const expected = TransactionFixture.delegated.encodedSigned;
+                expect(actual.encoded).toEqual(expected);
+            });
         });
 
         describe('of signed transactions', () => {
@@ -305,15 +328,6 @@ describe('Transaction class tests', () => {
         });
 
         describe('Exceptions', () => {
-            test('Throw <- of invalid signature', () => {
-                expect(() =>
-                    Transaction.of(
-                        TransactionFixture.delegated.body,
-                        HexUInt.of('0xBAAAAAAD').bytes
-                    )
-                ).toThrowError(InvalidSecp256k1Signature);
-            });
-
             test('Throw <- of invalid body', () => {
                 expect(() =>
                     Transaction.of({
