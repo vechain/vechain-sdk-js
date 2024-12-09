@@ -2,7 +2,6 @@ import * as nc_utils from '@noble/curves/abstract/utils';
 import {
     InvalidDataType,
     InvalidSecp256k1PrivateKey,
-    InvalidSecp256k1Signature,
     InvalidTransactionField,
     NotDelegatedTransaction,
     UnavailableTransactionField
@@ -474,13 +473,11 @@ class Transaction {
     }
 
     /**
-     * Creates a new Transaction instance if the provided body and optional
-     * signature are valid.
+     * Creates a new Transaction instance if the provided body is valid.
      *
      * @param {TransactionBody} body - The transaction body to be validated.
-     * @param {Uint8Array} [signature] - Optional signature to be validated.
+     * @param {Uint8Array} [signature] - Optional signature.
      * @return {Transaction} A new Transaction instance if validation is successful.
-     * @throws {InvalidSecp256k1Signature} If the provided signature is invalid.
      * @throws {InvalidTransactionField} If the provided body is invalid.
      */
     public static of(
@@ -488,17 +485,7 @@ class Transaction {
         signature?: Uint8Array
     ): Transaction {
         if (Transaction.isValidBody(body)) {
-            if (
-                signature === undefined ||
-                Transaction.isSignatureValid(body, signature)
-            ) {
-                return new Transaction(body, signature);
-            }
-            throw new InvalidSecp256k1Signature(
-                'Transaction.of',
-                'invalid signature',
-                { signature }
-            );
+            return new Transaction(body, signature);
         }
         throw new InvalidTransactionField('Transaction.of', 'invalid body', {
             fieldName: 'body',
