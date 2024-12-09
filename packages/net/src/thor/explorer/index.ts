@@ -20,21 +20,21 @@ async function explore(): Promise<void> {
         const block = (
             await RetrieveBlock.of(Revision.of(blockNumber)).askTo(httpClient)
         ).response;
-        console.log(block.number, lastBlockNumber);
+        console.log(`BLOCK ${block.number} of ${lastBlockNumber}`);
         for (const txid of block.transactions) {
-            console.log(txid);
+            console.log(`TXID ${txid}`);
             const tx = (
                 await RetrieveTransactionByID.of(TxId.of(txid)).askTo(
                     httpClient
                 )
             ).response;
 
-            console.log(JSON.stringify(tx, null, 2));
+            console.log(`TX: ${JSON.stringify(tx, null, 2)}`);
         }
     }
 }
 
-console.log('explorer');
-void explore().then((r) => {
-    console.log(r);
+console.log('Thor Scanner...');
+void explore().then((_r) => {
+    console.log('End of all jobs.');
 });
