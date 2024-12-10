@@ -3,6 +3,7 @@ import {
     ProviderInternalBaseWallet,
     TESTNET_URL,
     ThorClient,
+    type TransactionReceipt,
     VeChainProvider,
     type VeChainSigner
 } from '../../../src';
@@ -11,7 +12,7 @@ import {
     ERC20_CONTRACT_ADDRESS_ON_TESTNET,
     TESTNET_DELEGATE_URL
 } from './fixture';
-import { ERC20_ABI, HexUInt } from '@vechain/sdk-core';
+import { ABIContract, ERC20_ABI, HexUInt } from '@vechain/sdk-core';
 
 /**
  * Tests for the ThorClient class, specifically focusing on ERC20 contract-related functionality.
@@ -80,44 +81,22 @@ describe('ThorClient - ERC20 Contracts on testnet', () => {
      * Test transaction with url delegation per transaction.
      */
     test('transaction with url delegation per transaction', async () => {
-        const provider = new VeChainProvider(
-            // Thor client used by the provider
-            thorTestnetClient,
-
-            // Internal wallet used by the provider (needed to call the getSigner() method)
-            new ProviderInternalBaseWallet([
-                {
-                    privateKey: HexUInt.of(
-                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
-                    ).bytes,
-                    address:
-                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
-                }
-            ]),
-            // Disable fee delegation at the provider level
-            true
-        );
-
-        const contract = thorTestnetClient.contracts.load(
-            ERC20_CONTRACT_ADDRESS_ON_TESTNET,
-            ERC20_ABI,
-            (await provider.getSigner(
+        const txResult = await thorTestnetClient.contracts.executeTransaction(
+            (await providerWithDelegationEnabled.getSigner(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
-            )) as VeChainSigner
+            )) as VeChainSigner,
+            ERC20_CONTRACT_ADDRESS_ON_TESTNET,
+            ABIContract.ofAbi(ERC20_ABI).getFunction('transfer'),
+            [TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address, 1000n],
+            {
+                comment: 'test comment',
+                delegationUrl: TESTNET_DELEGATE_URL
+            }
         );
 
-        const txResult = await (
-            await contract.transact.transfer(
-                // enable fee delegation at the transaction level
-                {
-                    delegationUrl: TESTNET_DELEGATE_URL
-                },
-                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
-                1000n
-            )
-        ).wait();
+        const result = (await txResult.wait()) as TransactionReceipt;
 
-        expect(txResult?.reverted).toBe(false);
-        expect(txResult?.gasPayer).not.toBe(txResult?.meta.txOrigin);
-    });
+        expect(result.reverted).toBeFalsy();
+        expect(result.gasPayer).not.toBe(result.meta.txOrigin);
+    }, 10000);
 });
