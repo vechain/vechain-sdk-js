@@ -98,5 +98,5 @@ describe('ThorClient - ERC20 Contracts on testnet', () => {
 
         expect(result.reverted).toBeFalsy();
         expect(result.gasPayer).not.toBe(result.meta.txOrigin);
-    }, 10000);
+    }, 30000);
 });
