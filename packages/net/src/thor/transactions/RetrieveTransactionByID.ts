@@ -66,7 +66,7 @@ class RetrieveTransactionByIDPath implements HttpPath {
 
 class RetrieveTransactionByIDQuery implements HttpQuery {
     readonly head: BlockId | null;
-    readonly pending;
+    readonly pending: boolean;
 
     constructor(head: BlockId | null, pending: boolean) {
         this.head = head;
