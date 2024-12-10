@@ -159,6 +159,16 @@ interface TransactionRequestInput {
      */
     gasPayer?: string;
 
+    /**
+     * The delegation URL to use to sponsor the transaction.
+     */
+    delegationUrl?: string;
+
+    /**
+     * A comment describing the transaction request.
+     */
+    comment?: string;
+
     // START: NOT SUPPORTED FIELDS in VeChain BUT added to take compatibility with ethers
 
     /**
