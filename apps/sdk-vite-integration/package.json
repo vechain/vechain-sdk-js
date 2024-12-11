@@ -1,7 +1,7 @@
 {
   "name": "sdk-vite-integration",
   "private": true,
-  "version": "1.0.0-rc.4",
+  "version": "1.0.0-rc.5",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,8 +12,8 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
-    "@vechain/sdk-core": "1.0.0-rc.4",
-    "@vechain/sdk-network": "1.0.0-rc.4",
+    "@vechain/sdk-core": "1.0.0-rc.5",
+    "@vechain/sdk-network": "1.0.0-rc.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.27.0"
@@ -27,7 +27,7 @@
     "@vitest/browser": "^2.1.6",
     "eslint": "^9.13.0",
     "eslint-plugin-react-hooks": "^5.0.0",
-    "eslint-plugin-react-refresh": "^0.4.14",
+    "eslint-plugin-react-refresh": "^0.4.16",
     "globals": "^15.11.0",
     "typescript": "~5.6.2",
     "vite": "^6.0.2",
