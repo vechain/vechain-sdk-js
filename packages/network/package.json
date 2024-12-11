@@ -41,7 +41,7 @@
     "test:browser:solo": "(yarn start-thor-solo && yarn test:browser && yarn stop-thor-solo) || yarn stop-thor-solo"
   },
   "dependencies": {
-    "@noble/curves": "^1.6.0",
+    "@noble/curves": "^1.7.0",
     "@vechain/sdk-core": "1.0.0-rc.5",
     "@vechain/sdk-errors": "1.0.0-rc.5",
     "@vechain/sdk-logging": "1.0.0-rc.5",
@@ -49,7 +49,7 @@
     "abitype": "^1.0.6",
     "ethers": "6.13.4",
     "isomorphic-ws": "^5.0.0",
-    "viem": "^2.21.45",
+    "viem": "^2.21.54",
     "ws": "^8.18.0"
   },
   "devDependencies": {
