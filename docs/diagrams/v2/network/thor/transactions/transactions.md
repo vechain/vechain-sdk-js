@@ -156,7 +156,7 @@ classDiagram
         path: RetrieveTransactionReceiptPath
         query: RetrieveTransactionReceiptQuery
         constructor(path: RetrieveTransactionReceiptPath, query: RetrieveTransactionReceiptQuery)
-        askTo(httpClient: HttpClient): Promise~ThorResponse~RetrieveTransactionReceipt, GetTxReceiptResponse~~
+        askTo(httpClient: HttpClient): Promise~ThorResponse~ RetrieveTransactionReceipt, GetTxReceiptResponse~~
         of(txId: TxId): RetrieveTransactionReceipt
         withHead(head: BlockId): RetrieveTransactionReceipt
     }
@@ -168,4 +168,40 @@ classDiagram
         head: BlockId|null;
         constructor(head: BlockId|null)
     }
+    class SendTransaction {
+        PATH: HttpPath
+        encoded: Uint8Array
+        askTo(httpClient: httpClient)
+        of(encoded: Uint8Array): SendTransaction
+    }
+    class SendTransactionResponseJSON {
+        id: string
+        <<interface>>
+    }
+    class Transfer {
+        sender: Address;
+        recipient: Address;
+        amount: VET;
+        constructor(json: TransferJSON)
+        toJSON(): TransferJSON
+    }
+    class TransferJSON {
+        <<interface>>
+        sender: string;
+        recipient: string;
+        amount: string;
+    }
+    class TxMeta {
+        blockID: BlockId;
+        blockNumber: UInt;
+        blockTimestamp: bigint;
+        constructor(json: TxMetaJSON)
+        toJSON(): TxMetaJSON
+    }
+    class TxMetaJSON {
+        <<interface>>
+        blockID: string;
+        blockNumber: number;
+        blockTimestamp: bigint;
+    } 
 ```
