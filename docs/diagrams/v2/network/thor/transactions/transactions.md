@@ -203,5 +203,41 @@ classDiagram
         blockID: string;
         blockNumber: number;
         blockTimestamp: bigint;
-    } 
+    }
+    class ThorRequest {
+        <<interface>>
+        askTo: (httpClient: HttpClient)
+    }
+    class HttpPath {
+        <<interface>>
+    }
+    class HttpQuery {
+        <<interface>>
+    }
+    RetrieveTransactionByIDPath ..|> HttpPath
+    RetrieveTransactionReceiptPath ..|> HttpPath
+    RetrieveTransactionByIDQuery ..|> HttpQuery
+    RetrieveTransactionReceiptQuery ..|> HttpQuery
+    ThorRequest <|.. RetrieveRawTransactionByID
+    ThorRequest <|.. RetrieveTransactionByID
+    ThorRequest <|.. RetrieveTransactionReceipt
+    ThorRequest <|.. SendTransaction
+    Receipt <|-- GetTxReceiptResponse
+    RetrieveTransactionByIDPath <|-- RetrieveRawTransactionByIDPath
+    RetrieveTransactionByIDQuery <|-- RetrieveRawTransactionByIDQuery
+    RetrieveRawTransactionByID --* RetrieveRawTransactionByIDPath
+    RetrieveRawTransactionByID --* RetrieveRawTransactionByIDQuery
+    RetrieveTransactionByID --* RetrieveTransactionByIDPath
+    RetrieveTransactionByID --* RetrieveRawTransactionByIDQuery
+    RetrieveTransactionReceipt --* RetrieveTransactionReceiptPath
+    RetrieveTransactionReceipt --* RetrieveTransactionReceiptQuery
+    GetRawTxResponse --* TxMeta
+    GetTxResponse --* Clause
+    GetTxResponse --* Nonce
+    GetTxResponse --* TxMeta
+    Receipt --* ReceiptOutput
+    ReceiptOutput --* Event
+    ReceiptOutput --* Transfer
+    Clause --> ClauseJSON
+    Event --> EventJSON
 ```
