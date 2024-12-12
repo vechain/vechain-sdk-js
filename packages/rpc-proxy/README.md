@@ -190,3 +190,56 @@ docker run -d -p 8545:8545 -v ./config.json:/app/config.json -t vechain-rpc-prox
 
 If you do not pass a config.json file, the default solo network standard configuration will be used. Make sure to
 provide your desired configuration file.
+
+## Supported methods
+
+The following RPC methods are supported via `sdk-rpc-proxy` in VeChain:
+
+ - debug_traceBlockByHash
+ - debug_traceBlockByNumber
+ - debug_traceCall
+ - debug_traceTransaction
+ - eth_accounts
+ - eth_blockNumber
+ - eth_call
+ - eth_chainId
+ - eth_coinbase
+ - eth_createAccessList
+ - eth_estimateGas
+ - eth_gasPrice
+ - eth_getBalance 
+ - eth_getBlockByHash
+ - eth_getBlockByNumber
+ - eth_getBlockReceipts
+ - eth_getBlockTransactionCountByHash
+ - eth_getBlockTransactionCountByNumber
+ - eth_getCode
+ - eth_getLogs
+ - eth_getStorageAt
+ - eth_getTransactionByBlockHashAndIndex
+ - eth_getTransactionByBlockNumberAndIndex
+ - eth_getTransactionByHash
+ - eth_getTransactionCount
+ - eth_getTransactionReceipt
+ - eth_getUncleByBlockHashAndIndex
+ - eth_getUncleByBlockNumberAndIndex
+ - eth_getUncleCountByBlockHash
+ - eth_getUncleCountByBlockNumber
+ - eth_requestAccounts
+ - eth_sendRawTransaction
+ - eth_sendTransaction
+ - eth_signTransaction
+ - eth_signTypedDataV4
+ - eth_subscribe
+ - eth_syncing
+ - eth_unsubscribe
+ - evm_mine
+ - net_listening
+ - net_peerCount
+ - net_version
+ - txpool_content
+ - txpool_contentFrom
+ - txpool_inspect
+ - txpool_status
+ - web3_clientVersion
+ - web3_sha3
