@@ -30,6 +30,16 @@ declare module 'viem/node_modules/abitype' {
 type ContractTransactionOptions = {
     value?: number;
     signTransactionOptions?: SignTransactionOptions;
+
+    /**
+     * The delegation URL to use to sponsor the transaction.
+     */
+    delegationUrl?: string;
+
+    /**
+     * A comment describing the transaction request.
+     */
+    comment?: string;
 } & TransactionBodyOptions &
     ClauseOptions;
 
