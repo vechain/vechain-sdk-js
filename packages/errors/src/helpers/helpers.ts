@@ -22,6 +22,9 @@ const stringifyData = (data: unknown): string => {
                 }
                 seen.add(value);
             }
+            if (typeof value === 'bigint') {
+                return value.toString() + 'n';
+            }
             return value;
         };
     };
