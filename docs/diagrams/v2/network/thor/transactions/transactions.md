@@ -32,7 +32,7 @@ classDiagram
         constructor(json: GetTawTxResponseJSON)
         toJSON() GetTawTxResponseJSON
     }
-    class GetTawTxResponseJSON {
+    class GetRawTxResponseJSON {
         <<interface>>
         raw: string;
         meta: TxMetaJSON
@@ -174,10 +174,6 @@ classDiagram
         askTo(httpClient: httpClient)
         of(encoded: Uint8Array): SendTransaction
     }
-    class SendTransactionResponseJSON {
-        id: string
-        <<interface>>
-    }
     class Transfer {
         sender: Address;
         recipient: Address;
@@ -214,8 +210,10 @@ classDiagram
     class HttpQuery {
         <<interface>>
     }
+    RetrieveRawTransactionByIDPath ..|> HttpPath
     RetrieveTransactionByIDPath ..|> HttpPath
     RetrieveTransactionReceiptPath ..|> HttpPath
+    RetrieveRawTransactionByIDQuery ..|> HttpQuery
     RetrieveTransactionByIDQuery ..|> HttpQuery
     RetrieveTransactionReceiptQuery ..|> HttpQuery
     ThorRequest <|.. RetrieveRawTransactionByID
@@ -225,6 +223,7 @@ classDiagram
     Receipt <|-- GetTxReceiptResponse
     RetrieveTransactionByIDPath <|-- RetrieveRawTransactionByIDPath
     RetrieveTransactionByIDQuery <|-- RetrieveRawTransactionByIDQuery
+    TxMeta <-- ReceiptMeta
     RetrieveRawTransactionByID --* RetrieveRawTransactionByIDPath
     RetrieveRawTransactionByID --* RetrieveRawTransactionByIDQuery
     RetrieveTransactionByID --* RetrieveTransactionByIDPath
@@ -232,12 +231,23 @@ classDiagram
     RetrieveTransactionReceipt --* RetrieveTransactionReceiptPath
     RetrieveTransactionReceipt --* RetrieveTransactionReceiptQuery
     GetRawTxResponse --* TxMeta
+    GetTxReceiptResponse --* ReceiptMeta
     GetTxResponse --* Clause
-    GetTxResponse --* Nonce
     GetTxResponse --* TxMeta
     Receipt --* ReceiptOutput
     ReceiptOutput --* Event
     ReceiptOutput --* Transfer
-    Clause --> ClauseJSON
-    Event --> EventJSON
+    ClauseJSON <-- Clause
+    EventJSON <-- Event
+    GetRawTxResponseJSON <-- GetRawTxResponse
+    GetTxReceiptResponseJSON <-- GetTxReceiptResponse
+    GetTxResponseJSON <-- GetTxResponse
+    ReceiptJSON <-- Receipt
+    ReceiptMetaJSON <-- ReceiptMeta
+    ReceiptOutputJSON <-- ReceiptOutput
+    TransferJSON <-- Transfer
+    TxMetaJSON <-- TxMeta
+    GetRawTxResponse <-- RetrieveRawTransactionByID
+    GetTxResponse <-- RetrieveTransactionByID
+    GetTxReceiptResponse <-- RetrieveTransactionReceipt
 ```
