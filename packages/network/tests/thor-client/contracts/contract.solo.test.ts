@@ -1,7 +1,12 @@
 /* eslint-disable */
 
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { ABIContract, Address, type DeployParams, HexUInt } from '@vechain/sdk-core';
+import {
+    ABIContract,
+    Address,
+    type DeployParams,
+    HexUInt
+} from '@vechain/sdk-core';
 import {
     CannotFindTransaction,
     ContractDeploymentFailed,
@@ -203,7 +208,9 @@ describe('ThorClient - Contracts', () => {
 
         // Retrieve the bytecode of the deployed contract
         const contractBytecodeResponse =
-            await thorSoloClient.accounts.getBytecode(Address.of(contract.address));
+            await thorSoloClient.accounts.getBytecode(
+                Address.of(contract.address)
+            );
 
         // Assertion: Compare with the expected deployed contract bytecode
         expect(`${contractBytecodeResponse}`).toBe(deployedContractBytecode);
@@ -486,9 +493,9 @@ describe('ThorClient - Contracts', () => {
             if (error instanceof Error) {
                 expect(error.message).toEqual(
                     `Method 'getSecretData()' failed.` +
-                    `\n-Reason: 'Not the contract owner'` +
-                    `\n-Parameters: \n\t` +
-                    `{\n  "contractAddress": "${deployedContract.address}"\n}`
+                        `\n-Reason: 'Not the contract owner'` +
+                        `\n-Parameters: \n\t` +
+                        `{\n  "contractAddress": "${deployedContract.address}"\n}`
                 );
             }
         }
@@ -796,11 +803,11 @@ describe('ThorClient - Contracts', () => {
         test('Should return the base gas price of the Solo network', async () => {
             const baseGasPrice =
                 await thorSoloClient.contracts.getBaseGasPrice();
-            expect(baseGasPrice).toEqual(            {
+            expect(baseGasPrice).toEqual({
                 success: true,
                 result: { plain: 1000000000000000n, array: [1000000000000000n] }
             });
-            expect(baseGasPrice).toEqual(            {
+            expect(baseGasPrice).toEqual({
                 success: true,
                 result: { plain: BigInt(10 ** 15), array: [BigInt(10 ** 15)] }
             }); // 10^13 wei
