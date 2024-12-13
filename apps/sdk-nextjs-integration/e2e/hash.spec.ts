@@ -18,7 +18,7 @@ test('Hash example', async ({ page }) => {
   await hashLink.click();
 
   // Enter content to hash
-  const content = "SDK is awesome!";
+  const content = "SDK is awesome! :)";
   const hashInput = page.getByTestId('contentToHash');
   await hashInput.clear();
   await hashInput.fill(content);
