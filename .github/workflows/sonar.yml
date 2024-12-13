@@ -36,7 +36,7 @@ jobs:
 
       - name: SonarCloud Quality Gate Check
         id: sonarqube-quality-gate-check
-        if: ${{ always() && steps.sonarcloud-scan.outputs.status == 'success' }}
+        if: ${{ always() && steps.sonarcloud-scan.conclusion == 'success' }}
         uses: sonarsource/sonarqube-quality-gate-action@master
         with:
           pollingTimeoutSec: 600
