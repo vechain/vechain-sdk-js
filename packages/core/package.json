@@ -1,6 +1,6 @@
 {
   "name": "@vechain/sdk-core",
-  "version": "1.0.0-rc.4",
+  "version": "1.0.0-rc.5",
   "description": "This module is crafted for dApp development and various blockchain operations that seamlessly unfold offline",
   "author": "VeChain Foundation",
   "license": "MIT",
@@ -39,17 +39,17 @@
   "dependencies": {
     "@ethereumjs/rlp": "^5.0.2",
     "@noble/ciphers": "^1.1.1",
-    "@noble/curves": "^1.6.0",
+    "@noble/curves": "^1.7.0",
     "@noble/hashes": "^1.5.0",
     "@scure/base": "^1.1.9",
     "@scure/bip32": "^1.4.0",
     "@scure/bip39": "^1.4.0",
-    "@vechain/sdk-errors": "1.0.0-rc.4",
-    "@vechain/sdk-logging": "1.0.0-rc.4",
+    "@vechain/sdk-errors": "1.0.0-rc.5",
+    "@vechain/sdk-logging": "1.0.0-rc.5",
     "abitype": "^1.0.6",
     "ethers": "6.13.4",
     "fast-json-stable-stringify": "^2.1.0",
-    "viem": "^2.21.45"
+    "viem": "^2.21.54"
   },
   "devDependencies": {
     "bignumber.js": "^9.1.2",

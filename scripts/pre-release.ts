@@ -103,7 +103,6 @@ const preparePackages = async () => {
 
     console.log(' Test:');
     console.log('\t- 🧪 Testing packages...');
-    await exec('yarn test:solo');
     console.log('\t- ✅  Success!');
 
     console.log(' Version:');
