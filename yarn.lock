@@ -5467,6 +5467,37 @@
     uuid "2.0.1"
     xmlhttprequest "1.8.0"
 
+"@vechain/sdk-core@1.0.0-rc.4":
+  version "1.0.0-rc.4"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-core/-/sdk-core-1.0.0-rc.4.tgz#926c820d81d27830384860df69378648fa3a952e"
+  integrity sha512-/qKeMny9mhiGZfQesaepP/EOH/F2tXcTq1OiDHBQwJs6wGVd1lj6RoyoSS+WsRIMG7AbzHeD+iLyqNcYKxBvTQ==
+  dependencies:
+    "@ethereumjs/rlp" "^5.0.2"
+    "@noble/ciphers" "^1.1.1"
+    "@noble/curves" "^1.6.0"
+    "@noble/hashes" "^1.5.0"
+    "@scure/base" "^1.1.9"
+    "@scure/bip32" "^1.4.0"
+    "@scure/bip39" "^1.4.0"
+    "@vechain/sdk-errors" "1.0.0-rc.4"
+    "@vechain/sdk-logging" "1.0.0-rc.4"
+    abitype "^1.0.6"
+    ethers "6.13.4"
+    fast-json-stable-stringify "^2.1.0"
+    viem "^2.21.45"
+
+"@vechain/sdk-errors@1.0.0-rc.4":
+  version "1.0.0-rc.4"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-errors/-/sdk-errors-1.0.0-rc.4.tgz#24cc9e9636e8ce7c4b45bde5b5ee883eba460561"
+  integrity sha512-XLczRbf6aMIxPLWEFqHsNae2vJ42blX8dK+TsPsIYIFCAAK8LHEHrHV5LCocJQS+BP+MgKH8sX+2O7FQdjHKiw==
+
+"@vechain/sdk-logging@1.0.0-rc.4":
+  version "1.0.0-rc.4"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-logging/-/sdk-logging-1.0.0-rc.4.tgz#803e46bdcf20dfe222329a771ad832ba84b5e3d6"
+  integrity sha512-C1TF367Fl/CTElASX+zvzcZpB5msczpOy1DFOTwkhVFbar08TgtfvsVdE1M/rg8B8Af0zd5M8FST7TCeDpw3uA==
+  dependencies:
+    "@vechain/sdk-errors" "1.0.0-rc.4"
+
 "@vechain/vebetterdao-contracts@^4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@vechain/vebetterdao-contracts/-/vebetterdao-contracts-4.0.0.tgz#a4ddd8de1b232002810bcee40b9617a5379d40d0"
@@ -14542,6 +14573,21 @@ vfile@^6.0.0:
   dependencies:
     "@types/unist" "^3.0.0"
     vfile-message "^4.0.0"
+
+viem@^2.21.45:
+  version "2.21.55"
+  resolved "https://registry.yarnpkg.com/viem/-/viem-2.21.55.tgz#a57ad31fcf2a0f6c011b1909f02c94421ec4f781"
+  integrity sha512-PgXew7C11cAuEtOSgRyQx2kJxEOPUwIwZA9dMglRByqJuFVA7wSGZZOOo/93iylAA8E15bEdqy9xulU3oKZ70Q==
+  dependencies:
+    "@noble/curves" "1.7.0"
+    "@noble/hashes" "1.6.1"
+    "@scure/bip32" "1.6.0"
+    "@scure/bip39" "1.5.0"
+    abitype "1.0.7"
+    isows "1.0.6"
+    ox "0.1.2"
+    webauthn-p256 "0.0.10"
+    ws "8.18.0"
 
 viem@^2.21.54:
   version "2.21.54"

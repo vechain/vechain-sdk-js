@@ -1,6 +1,10 @@
 import { Clause, type ClauseJSON } from './Clause';
 import { TxMeta, type TxMetaJSON } from './TxMeta';
-import { Address, BlockId, Nonce, TxId, UInt, VTHO } from '@vechain/sdk-core';
+import { Address, BlockId, VTHO } from '@vechain/sdk-core';
+
+import { Nonce } from '../../../../core/src/vcdm/Nonce';
+import { TxId } from '../../../../core/src/vcdm/BlockId';
+import { UInt } from '../../../../core/src/vcdm/UInt';
 
 class GetTxResponse {
     readonly id: TxId;

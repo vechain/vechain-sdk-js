@@ -1,4 +1,6 @@
-import { BlockId, UInt } from '@vechain/sdk-core';
+import { BlockId } from '@vechain/sdk-core';
+
+import { UInt } from '../../../../core/src/vcdm/UInt';
 
 interface PeerResponseJSON {
     name: string;
