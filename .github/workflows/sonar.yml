@@ -1,7 +1,7 @@
 name: Sonar Scan
 on:
   workflow_run:
-    workflows: [PR Checks, Main CI]
+    workflows: [ PR Checks, Main CI ]
     types:
       - completed
 
@@ -24,6 +24,7 @@ jobs:
           path: coverage
 
       - name: SonarCloud Scan
+        id: sonarcloud-scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -32,3 +33,15 @@ jobs:
           args: >
             -Dsonar.verbose=false
             -Dsonar.branch.name=${{ github.head_ref || github.ref_name }}
+
+      - name: SonarCloud Quality Gate Check
+        id: sonarqube-quality-gate-check
+        if: ${{ always() && steps.sonarcloud-scan.conclusion == 'success' }}
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        with:
+          pollingTimeoutSec: 600
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Quality Gate Status
+        run: echo "The Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
