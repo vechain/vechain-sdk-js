@@ -1,5 +1,5 @@
 import { describe, test } from '@jest/globals';
-import { TxId } from '@vechain/sdk-core';
+import { TxId } from '../../../../core';
 import {
     FetchHttpClient,
     RetrieveTransactionReceipt,
