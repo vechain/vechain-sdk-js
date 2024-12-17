@@ -35,8 +35,13 @@ interface EventLogResponseJSON {
     meta: LogMetaJSON;
 }
 
-interface EventLogsResponseJSON extends Array<EventLogsResponseJSON> {}
+interface EventLogsResponse extends Array<EventLogResponse> {}
 
-class EventLogsResponse extends Array<EventLogResponse> {}
+interface EventLogsResponseJSON extends Array<EventLogResponseJSON> {}
 
-export { EventLogResponse, type EventLogsResponseJSON, EventLogsResponse };
+export {
+    EventLogResponse,
+    type EventLogResponseJSON,
+    type EventLogsResponseJSON,
+    type EventLogsResponse
+};
