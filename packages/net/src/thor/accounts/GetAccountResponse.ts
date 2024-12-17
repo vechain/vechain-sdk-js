@@ -1,11 +1,5 @@
 import { Quantity, VET, VTHO } from '@vechain/sdk-core';
 
-interface GetAccountResponseJSON {
-    balance: string;
-    energy: string;
-    hasCode: boolean;
-}
-
 class GetAccountResponse {
     balance: VET;
     energy: VTHO;
@@ -24,6 +18,12 @@ class GetAccountResponse {
             hasCode: this.hasCode
         };
     }
+}
+
+interface GetAccountResponseJSON {
+    balance: string;
+    energy: string;
+    hasCode: boolean;
 }
 
 export { GetAccountResponse, type GetAccountResponseJSON };
