@@ -23,9 +23,7 @@ class TransferLogFilterRequest {
             (criteriaJSON) => new TransferCriteria(criteriaJSON)
         );
         this.order =
-            json.order === undefined
-                ? undefined
-                : (json.order satisfies LogSort);
+            json.order === undefined ? undefined : (json.order as LogSort);
     }
 
     toJSON(): TransferLogFilterRequestJSON {
@@ -42,7 +40,7 @@ interface TransferLogFilterRequestJSON {
     range?: FilterRangeJSON;
     options?: FilterOptionsJSON;
     criteriaSet?: TransferCriteriaJSON[];
-    order?: LogSort;
+    order?: string;
 }
 
 export { TransferLogFilterRequest, type TransferLogFilterRequestJSON };
