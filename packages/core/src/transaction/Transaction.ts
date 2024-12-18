@@ -169,13 +169,13 @@ class Transaction {
     // ********** GET COMPUTED PROPERTIES **********
 
     /**
-     * Get the delegator's address if the transaction is delegated.
+     * Get the gas payer's address if the transaction is delegated.
      *
      * If the transaction is delegated and a signature is available, this method recovers
-     * the delegator parameter from the signature and subsequently recovers the delegator's public key
-     * to derive the delegator's address.
+     * the gas payer parameter from the signature and subsequently recovers the gas payer's public key
+     * to derive the gas payer's address.
      *
-     * @return {Address} The address of the delegator.
+     * @return {Address} The address of the gas payer.
      * @throws {UnavailableTransactionField} If the transaction is delegated but the signature is missing.
      * @throws {NotDelegatedTransaction} If the transaction is not delegated.
      *
@@ -184,29 +184,29 @@ class Transaction {
      * - {@link Secp256k1.recover};
      * - {@link Transaction.getTransactionHash}.
      */
-    public get delegator(): Address {
+    public get gasPayer(): Address {
         if (this.isDelegated) {
             if (this.signature !== undefined) {
-                // Recover the delegator param from the signature
-                const delegator = this.signature.slice(
+                // Recover the gas payer param from the signature
+                const gasPayer = this.signature.slice(
                     Secp256k1.SIGNATURE_LENGTH,
                     this.signature.length
                 );
-                // Recover the delegator's public key.
-                const delegatorPublicKey = Secp256k1.recover(
+                // Recover the gas payer's public key.
+                const gasPayerPublicKey = Secp256k1.recover(
                     this.getTransactionHash(this.origin).bytes,
-                    delegator
+                    gasPayer
                 );
-                return Address.ofPublicKey(delegatorPublicKey);
+                return Address.ofPublicKey(gasPayerPublicKey);
             }
             throw new UnavailableTransactionField(
-                'Transaction.delegator()',
-                'missing delegator',
-                { fieldName: 'delegator' }
+                'Transaction.gasPayer()',
+                'missing gas payer signature',
+                { fieldName: 'gasPayer' }
             );
         }
         throw new NotDelegatedTransaction(
-            'Transaction.delegator()',
+            'Transaction.gasPayer()',
             'not delegated transaction',
             undefined
         );
@@ -279,8 +279,8 @@ class Transaction {
      *
      * @return {boolean} return `true` if the signature is defined and complete, otherwise `false`.
      *
-     * @remarks Any delegated transaction signed with {@link signForDelegator}
-     * but not yet signed with {@link signAsDelegator} is not signed.
+     * @remarks Any delegated transaction signed with {@link signAsSender}
+     * but not yet signed with {@link signAsGasPayer} is not signed.
      */
     public get isSigned(): boolean {
         if (this.signature !== undefined) {
@@ -531,15 +531,16 @@ class Transaction {
     }
 
     /**
-     * Signs a transaction as a delegator using the provided private key. This is applicable only if the transaction
-     * has been marked as delegated and already contains a signature that needs to be extended with a delegator signature.
+     * Signs a transaction as a gas payer using the provided private key. This is applicable only if the transaction
+     * has been marked as delegated and already contains the signature of the sender
+     * that needs to be extended with the gas payer's signature.
      *
-     * @param {Address} signer - The address of the signer for whom the transaction hash is generated.
-     * @param {Uint8Array} delegatorPrivateKey - The private key of the delegator. Must be a valid secp256k1 key.
+     * @param {Address} sender - The address of the sender for whom the transaction hash is generated.
+     * @param {Uint8Array} gasPayerPrivateKey - The private key of the gas payer. Must be a valid secp256k1 key.
      *
-     * @return {Transaction} - A new transaction object with the delegator's signature appended.
+     * @return {Transaction} - A new transaction object with the gas payer's signature appended.
      *
-     * @throws {InvalidSecp256k1PrivateKey} If the provided delegator private key is not valid.
+     * @throws {InvalidSecp256k1PrivateKey} If the provided gas payer private key is not valid.
      * @throws {InvalidTransactionField} If the transaction is unsigned or lacks a valid signature.
      * @throws {NotDelegatedTransaction} If the transaction is not set as delegated.
      *
@@ -547,87 +548,87 @@ class Transaction {
      * - {@link Secp256k1.isValidPrivateKey};
      * - {@link Secp256k1.sign}.
      */
-    public signAsDelegator(
-        signer: Address,
-        delegatorPrivateKey: Uint8Array
+    public signAsGasPayer(
+        sender: Address,
+        gasPayerPrivateKey: Uint8Array
     ): Transaction {
-        if (Secp256k1.isValidPrivateKey(delegatorPrivateKey)) {
+        if (Secp256k1.isValidPrivateKey(gasPayerPrivateKey)) {
             if (this.isDelegated) {
                 if (this.signature !== undefined) {
-                    const delegatedHash = this.getTransactionHash(signer).bytes;
+                    const senderHash = this.getTransactionHash(sender).bytes;
                     return new Transaction(
                         this.body,
                         nc_utils.concatBytes(
                             // Drop any previous delegator signature.
                             this.signature.slice(0, Secp256k1.SIGNATURE_LENGTH),
-                            Secp256k1.sign(delegatedHash, delegatorPrivateKey)
+                            Secp256k1.sign(senderHash, gasPayerPrivateKey)
                         )
                     );
                 }
                 throw new InvalidTransactionField(
-                    'Transaction.signAsDelegator',
+                    'Transaction.signAsGasPayer',
                     'unsigned transaction: use signForDelegator method',
                     { fieldName: 'signature' }
                 );
             }
             throw new NotDelegatedTransaction(
-                'Transaction.signAsDelegator',
+                'Transaction.signAsGasPayer',
                 'not delegated transaction: use sign method',
                 undefined
             );
         }
         throw new InvalidSecp256k1PrivateKey(
-            `Transaction.signAsDelegator`,
-            'invalid delegator private key: ensure it is a secp256k1 key',
+            `Transaction.signAsGasPayer`,
+            'invalid gas payer private key: ensure it is a secp256k1 key',
             undefined
         );
     }
 
     /**
-     * Signs a delegated transaction using the provided signer's private key,
-     * call the {@link signAsDelegator} to complete the signature,
+     * Signs a delegated transaction using the provided transaction sender's private key,
+     * call the {@link signAsGasPayer} to complete the signature,
      * before such call {@link isDelegated} returns `true` but
      * {@link isSigned} returns `false`.
      *
-     * @param signerPrivateKey The private key of the signer, represented as a Uint8Array. It must be a valid secp256k1 private key.
+     * @param senderPrivateKey The private key of the transaction sender, represented as a Uint8Array. It must be a valid secp256k1 private key.
      * @return A new Transaction object with the signature applied, if the transaction is delegated and the private key is valid.
      * @throws NotDelegatedTransaction if the current transaction is not marked as delegated, instructing to use the regular sign method instead.
-     * @throws InvalidSecp256k1PrivateKey if the provided signerPrivateKey is not a valid secp256k1 private key.
+     * @throws InvalidSecp256k1PrivateKey if the provided senderPrivateKey is not a valid secp256k1 private key.
      *
      * @remarks Security auditable method, depends on
      * - {@link Secp256k1.isValidPrivateKey};
      * - {@link Secp256k1.sign}.
      */
-    public signForDelegator(signerPrivateKey: Uint8Array): Transaction {
-        if (Secp256k1.isValidPrivateKey(signerPrivateKey)) {
+    public signAsSender(senderPrivateKey: Uint8Array): Transaction {
+        if (Secp256k1.isValidPrivateKey(senderPrivateKey)) {
             if (this.isDelegated) {
                 const transactionHash = this.getTransactionHash().bytes;
                 return new Transaction(
                     this.body,
-                    Secp256k1.sign(transactionHash, signerPrivateKey)
+                    Secp256k1.sign(transactionHash, senderPrivateKey)
                 );
             }
             throw new NotDelegatedTransaction(
-                'Transaction.signForDelegator',
+                'Transaction.signAsSender',
                 'not delegated transaction: use sign method',
                 undefined
             );
         }
         throw new InvalidSecp256k1PrivateKey(
-            `Transaction.signForDelegator`,
-            'invalid signer private key: ensure it is a secp256k1 key',
+            `Transaction.signAsSender`,
+            'invalid sender private key: ensure it is a secp256k1 key',
             undefined
         );
     }
 
     /**
-     * Signs the transaction using both the signer and the delegator private keys.
+     * Signs the transaction using both the transaction sender and the gas payer private keys.
      *
-     * @param {Uint8Array} signerPrivateKey - The private key of the signer.
-     * @param {Uint8Array} delegatorPrivateKey - The private key of the delegator.
+     * @param {Uint8Array} senderPrivateKey - The private key of the transaction sender.
+     * @param {Uint8Array} gasPayerPrivateKey - The private key of the gas payer.
      * @return {Transaction} A new transaction with the concatenated signatures
-     * of the signer and the delegator.
-     * @throws {InvalidSecp256k1PrivateKey} - If either the signer or delegator private key is invalid.
+     * of the transaction sender and the gas payer.
+     * @throws {InvalidSecp256k1PrivateKey} - If either the private key of the transaction sender or gas payer is invalid.
      * @throws {NotDelegatedTransaction} - If the transaction is not delegated.
      *
      * @remarks Security auditable method, depends on
@@ -635,45 +636,45 @@ class Transaction {
      * - {@link Secp256k1.isValidPrivateKey};
      * - {@link Secp256k1.sign}.
      */
-    public signWithDelegator(
-        signerPrivateKey: Uint8Array,
-        delegatorPrivateKey: Uint8Array
+    public signAsSenderAndGasPayer(
+        senderPrivateKey: Uint8Array,
+        gasPayerPrivateKey: Uint8Array
     ): Transaction {
-        // Check if the private key of the signer is valid.
-        if (Secp256k1.isValidPrivateKey(signerPrivateKey)) {
-            // Check if the private key of the delegator is valid.
-            if (Secp256k1.isValidPrivateKey(delegatorPrivateKey)) {
+        // Check if the private key of the sender is valid.
+        if (Secp256k1.isValidPrivateKey(senderPrivateKey)) {
+            // Check if the private key of the gas payer is valid.
+            if (Secp256k1.isValidPrivateKey(gasPayerPrivateKey)) {
                 if (this.isDelegated) {
-                    const transactionHash = this.getTransactionHash().bytes;
-                    const delegatedHash = this.getTransactionHash(
+                    const senderHash = this.getTransactionHash().bytes;
+                    const gasPayerHash = this.getTransactionHash(
                         Address.ofPublicKey(
-                            Secp256k1.derivePublicKey(signerPrivateKey)
+                            Secp256k1.derivePublicKey(senderPrivateKey)
                         )
                     ).bytes;
                     // Return new signed transaction
                     return Transaction.of(
                         this.body,
                         nc_utils.concatBytes(
-                            Secp256k1.sign(transactionHash, signerPrivateKey),
-                            Secp256k1.sign(delegatedHash, delegatorPrivateKey)
+                            Secp256k1.sign(senderHash, senderPrivateKey),
+                            Secp256k1.sign(gasPayerHash, gasPayerPrivateKey)
                         )
                     );
                 }
                 throw new NotDelegatedTransaction(
-                    'Transaction.signWithDelegator',
+                    'Transaction.signAsSenderAndGasPayer',
                     'not delegated transaction: use sign method',
                     undefined
                 );
             }
             throw new InvalidSecp256k1PrivateKey(
-                `Transaction.signWithDelegator`,
-                'invalid delegator private key: ensure it is a secp256k1 key',
+                `Transaction.signAsSenderAndGasPayer`,
+                'invalid gas payer private key: ensure it is a secp256k1 key',
                 undefined
             );
         }
         throw new InvalidSecp256k1PrivateKey(
-            `Transaction.signWithDelegator`,
-            'invalid signer private key: ensure it is a secp256k1 key',
+            `Transaction.signAsSenderAndGasPayer`,
+            'invalid sender private key: ensure it is a secp256k1 key',
             undefined
         );
     }
