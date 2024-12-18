@@ -1,29 +1,33 @@
 import { UInt } from '../../../../core/src';
 
 class FilterRange {
-    readonly unit: FilterRangeUnits | null;
-    readonly from: UInt | null;
-    readonly to: UInt | null;
+    readonly unit?: FilterRangeUnits;
+    readonly from?: UInt;
+    readonly to?: UInt;
 
     constructor(json: FilterRangeJSON) {
-        this.unit = json.unit === null ? null : (json.unit as FilterRangeUnits);
-        this.from = json.from === null ? null : UInt.of(json.from);
-        this.to = json.to === null ? null : UInt.of(json.to);
+        this.unit =
+            typeof json.unit === 'string'
+                ? (json.unit as FilterRangeUnits)
+                : undefined;
+        this.from =
+            typeof json.from === 'number' ? UInt.of(json.from) : undefined;
+        this.to = typeof json.to === 'number' ? UInt.of(json.to) : undefined;
     }
 
     toJSON(): FilterRangeJSON {
         return {
-            unit: this.unit === null ? null : this.unit.toString(),
-            from: this.from === null ? null : this.from.valueOf(),
-            to: this.to === null ? null : this.to.valueOf()
+            unit: this.unit?.toString(),
+            from: this.from?.valueOf(),
+            to: this.to?.valueOf()
         } satisfies FilterRangeJSON;
     }
 }
 
 interface FilterRangeJSON {
-    unit: string | null;
-    from: number | null;
-    to: number | null;
+    unit?: string;
+    from?: number;
+    to?: number;
 }
 
 enum FilterRangeUnits {

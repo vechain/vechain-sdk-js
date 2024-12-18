@@ -4,4 +4,7 @@ export * from './EventLogsResponse';
 export * from './FilterOptions';
 export * from './FilterRange';
 export * from './LogMeta';
+export * from './LogSort';
 export * from './QuerySmartContractEvents';
+export * from './TransferLogsResponse';
+export * from './TransferCriteria';

@@ -1,46 +1,48 @@
 import { FilterRange, type FilterRangeJSON } from './FilterRange';
-import { EventCriteria, type EventCriteriaJSON } from './EventCriteria';
 import { FilterOptions, type FilterOptionsJSON } from './FilterOptions';
 import { type LogSort } from './LogSort';
+import {
+    TransferCriteria,
+    type TransferCriteriaJSON
+} from './TransferCriteria';
 
-class EventLogFilterRequest {
+class TransferLogFilterRequest {
     readonly range?: FilterRange;
     readonly options?: FilterOptions;
-    readonly criteriaSet?: EventCriteria[];
+    readonly criteriaSet?: TransferCriteria[];
     readonly order?: LogSort;
 
-    constructor(json: EventLogFilterRequestJSON) {
+    constructor(json: TransferLogFilterRequestJSON) {
         this.range =
             json.range === undefined ? undefined : new FilterRange(json.range);
         this.options =
             json.options === undefined
                 ? undefined
                 : new FilterOptions(json.options);
-        this.criteriaSet =
-            json.criteriaSet === undefined
-                ? undefined
-                : json.criteriaSet.map(
-                      (criteriaJSON) => new EventCriteria(criteriaJSON)
-                  );
+        this.criteriaSet = json.criteriaSet?.map(
+            (criteriaJSON) => new TransferCriteria(criteriaJSON)
+        );
         this.order =
-            json.order === undefined ? undefined : (json.order as LogSort);
+            json.order === undefined
+                ? undefined
+                : (json.order satisfies LogSort);
     }
 
-    toJSON(): EventLogFilterRequestJSON {
+    toJSON(): TransferLogFilterRequestJSON {
         return {
             range: this.range?.toJSON(),
             options: this.options?.toJSON(),
             criteriaSet: this.criteriaSet?.map((criteria) => criteria.toJSON()),
-            order: this.order?.toString()
-        } satisfies EventLogFilterRequestJSON;
+            order: this.order
+        } satisfies TransferLogFilterRequestJSON;
     }
 }
 
-interface EventLogFilterRequestJSON {
+interface TransferLogFilterRequestJSON {
     range?: FilterRangeJSON;
     options?: FilterOptionsJSON;
-    criteriaSet?: EventCriteriaJSON[];
-    order?: string;
+    criteriaSet?: TransferCriteriaJSON[];
+    order?: LogSort;
 }
 
-export { EventLogFilterRequest, type EventLogFilterRequestJSON };
+export { TransferLogFilterRequest, type TransferLogFilterRequestJSON };

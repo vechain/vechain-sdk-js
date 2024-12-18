@@ -22,10 +22,7 @@ describe('QuerySmartContractEvents testnet tests', () => {
                 {
                     address: '0x0000000000000000000000000000456E65726779',
                     topic0: '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-                    topic1: '0x0000000000000000000000006d95e6dca01d109882fe1726a2fb9865fa41e7aa',
-                    topic2: null,
-                    topic3: null,
-                    topic4: null
+                    topic1: '0x0000000000000000000000006d95e6dca01d109882fe1726a2fb9865fa41e7aa'
                 }
             ],
             order: 'asc'

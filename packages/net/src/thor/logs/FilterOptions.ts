@@ -1,25 +1,26 @@
 import { UInt } from '../../../../core/src';
 
 class FilterOptions {
-    readonly limit: UInt | null;
-    readonly offset: UInt | null;
+    readonly limit?: UInt;
+    readonly offset?: UInt;
 
     constructor(json: FilterOptionsJSON) {
-        this.limit = json.limit === null ? null : UInt.of(json.limit);
-        this.offset = json.offset === null ? null : UInt.of(json.offset);
+        this.limit = json.limit === undefined ? undefined : UInt.of(json.limit);
+        this.offset =
+            json.offset === undefined ? undefined : UInt.of(json.offset);
     }
 
     toJSON(): FilterOptionsJSON {
         return {
-            limit: this.limit === null ? null : this.limit.valueOf(),
-            offset: this.offset === null ? null : this.offset.valueOf()
+            limit: this.limit?.valueOf(),
+            offset: this.offset?.valueOf()
         } satisfies FilterOptionsJSON;
     }
 }
 
 interface FilterOptionsJSON {
-    limit: number | null;
-    offset: number | null;
+    limit?: number;
+    offset?: number;
 }
 
 export { FilterOptions, type FilterOptionsJSON };
