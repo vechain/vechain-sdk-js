@@ -93,11 +93,19 @@ classDiagram
         txOrigin: string;
         clauseIndex: number;
     }
+    class QuerySmartContractEvents {
+        PATH$: HttpPath
+        request: EventLogFilterRequest
+        constructor(request: EventLogFilterRequest)
+        askTo(httpClient: HttpClient): Promise~ThorResponse~EventLogsResponse~~
+        of(request: EventLogFilterRequestJSON)$
+    }
     Array~EventLogResponse~ <|-- EventLogsResponse
     EventCriteriaJSON <-- EventCriteria
     EventLogFilterRequestJSON <-- EventLogFilterRequest
     EventLogResponse <-- Array~EventLogResponse~ 
     EventLogResponseJSON <-- EventLogResponse
+    EventLogsResponse <-- QuerySmartContractEvents
     FilterOptionsJSON <-- FilterOptions
     FilterRangeJSON <-- FilterRange
     LogMetaJSON <-- LogMeta
@@ -111,4 +119,5 @@ classDiagram
     EventLogResponse --* LogMeta
     EventLogResponseJSON --* LogMetaJSON
     FilterRange --* FilterRangeUnit
+    QuerySmartContractEvents --* EventLogFilterRequest
 ```
