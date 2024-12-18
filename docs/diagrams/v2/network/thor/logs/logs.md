@@ -120,4 +120,5 @@ classDiagram
     EventLogResponseJSON --* LogMetaJSON
     FilterRange --* FilterRangeUnit
     QuerySmartContractEvents --* EventLogFilterRequest
+    
 ```
