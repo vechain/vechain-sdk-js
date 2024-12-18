@@ -98,6 +98,13 @@ classDiagram
         askTo(httpClient: HttpClient): Promise~ThorResponse~EventLogsResponse~~
         of(request: EventLogFilterRequestJSON)$
     }
+    class QueryVETTransferEvents {
+        PATH$: HttpPath
+        request: TransferLogFilterRequest
+        constructor(request: TransferLogFilterRequest)
+        askTo(httpClient: HttpClient): Promise~ThorResponse~TransferLogsResponse~~
+        of(request: TransferLogFilterRequestJSON): QueryVETTransferEvents
+    }
     class TransferCriteria {
         txOrigin?: Address;
         sender?: Address;
@@ -133,6 +140,12 @@ classDiagram
         constructor(json: TransferLogResponseJSON)
         toJSON(): TransferLogResponseJSON
     }
+    class TransferLogResponseJSON {
+        sender: string;
+        recipient: string;
+        amount: string;
+        meta: LogMetaJSON;
+    }
     class TransferLogsResponse {
     }
     EventCriteriaJSON <-- EventCriteria
@@ -144,6 +157,8 @@ classDiagram
     LogMetaJSON <-- LogMeta
     TransferCriteriaJSON <-- TransferCriteria
     TransferLogFilterRequestJSON <-- TransferLogFilterRequest
+    TransferLogResponseJSON <-- TransferLogResponse
+    TransferLogsResponse <-- QueryVETTransferEvents
     EventLogResponse "*" o-- EventLogsResponse
     TransferLogResponse "*" o-- TransferLogsResponse
     EventLogFilterRequest --* FilterRange
@@ -157,9 +172,11 @@ classDiagram
     EventLogResponseJSON --* LogMetaJSON
     FilterRange --* FilterRangeUnit
     QuerySmartContractEvents --* EventLogFilterRequest
+    QueryVETTransferEvents  --* TransferLogFilterRequest
     TransferLogFilterRequest --* FilterRange
     TransferLogFilterRequest --* FilterOptions
     TransferLogFilterRequest --* "*" TransferCriteria
     TransferLogFilterRequest --* LogSort
     TransferLogResponse --* LogMeta
+    TransferLogResponseJSON --* LogMetaJSON
 ```
