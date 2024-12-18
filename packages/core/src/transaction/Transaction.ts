@@ -290,11 +290,11 @@ class Transaction {
     }
 
     /**
-     * Return the origin address of the transaction.
+     * Return the origin (also known as sender) address of the transaction.
      *
-     * The origin is determined by recovering the public key from the transaction's signature.
+     * The origin is determined by recovering the public key from the transaction's sender.
      *
-     * @return {Address} The address derived from the public key of the transaction's signer.
+     * @return {Address} The address derived from the public key of the transaction's sender.
      * @throws {UnavailableTransactionField} If the transaction is not signed, an exception is thrown indicating the absence of the origin field.
      *
      * @remarks Security auditable method, depends on
@@ -307,7 +307,7 @@ class Transaction {
                 // Get the origin public key.
                 Secp256k1.recover(
                     this.getTransactionHash().bytes,
-                    // Get the (r, s) of ECDSA digital signature without delegator params.
+                    // Get the (r, s) of ECDSA digital signature without gas payer params.
                     this.signature.slice(0, Secp256k1.SIGNATURE_LENGTH)
                 )
             );
@@ -375,22 +375,22 @@ class Transaction {
     }
 
     /**
-     * Computes the transaction hash, optionally incorporating a delegator's address.
+     * Computes the transaction hash, optionally incorporating a gas payer's address.
      *
-     * @param {Address} [delegator] - Optional delegator's address to include in the hash computation.
+     * @param {Address} [gasPayer] - Optional gas payer's address to include in the hash computation.
      * @return {Blake2b256} - The computed transaction hash.
      *
      * @remarks
-     * `delegator` is used to sign a transaction on behalf of another account.
+     * `gasPayer` is used to sign a transaction on behalf of another account.
      *
      * @remarks Security auditable method, depends on
      * - {@link Blake2b256.of}.
      */
-    public getTransactionHash(delegator?: Address): Blake2b256 {
+    public getTransactionHash(gasPayer?: Address): Blake2b256 {
         const txHash = Blake2b256.of(this.encode(false));
-        if (delegator !== undefined) {
+        if (gasPayer !== undefined) {
             return Blake2b256.of(
-                nc_utils.concatBytes(txHash.bytes, delegator.bytes)
+                nc_utils.concatBytes(txHash.bytes, gasPayer.bytes)
             );
         }
         return txHash;
@@ -494,9 +494,9 @@ class Transaction {
     }
 
     /**
-     * Signs the transaction using the provided private key.
+     * Signs the transaction using the provided private key of the transaction sender.
      *
-     * @param {Uint8Array} signerPrivateKey - The private key used to sign the transaction.
+     * @param {Uint8Array} senderPrivateKey - The private key used to sign the transaction.
      * @return {Transaction} The signed transaction.
      * @throws {InvalidTransactionField} If attempting to sign a delegated transaction.
      * @throws {InvalidSecp256k1PrivateKey} If the provided private key is not valid.
@@ -505,22 +505,22 @@ class Transaction {
      * - {@link Secp256k1.isValidPrivateKey};
      * - {@link Secp256k1.sign}.
      */
-    public sign(signerPrivateKey: Uint8Array): Transaction {
+    public sign(senderPrivateKey: Uint8Array): Transaction {
         // Check if the private key is valid.
-        if (Secp256k1.isValidPrivateKey(signerPrivateKey)) {
+        if (Secp256k1.isValidPrivateKey(senderPrivateKey)) {
             if (!this.isDelegated) {
                 // Sign transaction
                 const signature = Secp256k1.sign(
                     this.getTransactionHash().bytes,
-                    signerPrivateKey
+                    senderPrivateKey
                 );
                 // Return new signed transaction.
                 return Transaction.of(this.body, signature);
             }
             throw new InvalidTransactionField(
                 `Transaction.sign`,
-                'delegated transaction: use signWithDelegator method',
-                { fieldName: 'delegator', body: this.body }
+                'delegated transaction: use signAsSenderAndGasPayer method',
+                { fieldName: 'gasPayer', body: this.body }
             );
         }
         throw new InvalidSecp256k1PrivateKey(
@@ -532,7 +532,7 @@ class Transaction {
 
     /**
      * Signs a transaction as a gas payer using the provided private key. This is applicable only if the transaction
-     * has been marked as delegated and already contains the signature of the sender
+     * has been marked as delegated and already contains the signature of the transaction sender
      * that needs to be extended with the gas payer's signature.
      *
      * @param {Address} sender - The address of the sender for whom the transaction hash is generated.
@@ -559,7 +559,7 @@ class Transaction {
                     return new Transaction(
                         this.body,
                         nc_utils.concatBytes(
-                            // Drop any previous delegator signature.
+                            // Drop any previous gas payer signature.
                             this.signature.slice(0, Secp256k1.SIGNATURE_LENGTH),
                             Secp256k1.sign(senderHash, gasPayerPrivateKey)
                         )
@@ -567,7 +567,7 @@ class Transaction {
                 }
                 throw new InvalidTransactionField(
                     'Transaction.signAsGasPayer',
-                    'unsigned transaction: use signForDelegator method',
+                    'unsigned transaction: use signAsSender method',
                     { fieldName: 'signature' }
                 );
             }
