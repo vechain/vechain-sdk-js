@@ -7,6 +7,8 @@ classDiagram
         topic2?: ThorId
         topic3?: ThorId
         topic4?: ThorId
+        constructor(json: EventCriteriaJSON)
+        toJSON() EventCriteriaJSON
     }
     class EventCriteriaJSON {
         <<interface>>
@@ -22,6 +24,8 @@ classDiagram
         options?: FilterOptions
         criteriaSet?: EventCriteria[]
         order?: EventLogFilterRequestOrder
+        constructor(json: EventLogFilterRequestJSON)
+        toJSON() EventLogFilterRequestJSON
     }
     class EventLogFilterRequestJSON {
         <<interface>>
@@ -35,18 +39,24 @@ classDiagram
         readonly topics: ThorId[];
         readonly data: HexUInt;
         readonly meta: LogMeta;
+        constructor(json: EventLogResponseJSON)
+        toJSON() EventLogResponseJSON
     }
     class EventLogResponseJSON {
+        <<interface>>
         address: string;
         topics: string[];
         data: string;
         meta: LogMetaJSON;
     }
     class EventLogsResponse {
+        <<interface>>
     }
     class FilterOptions {
         limit?: UInt
         offset?: UInt
+        constructor(json: FilterOptionsJSON)
+        toJSON() FilterOptionsJSON
     }
     class FilterOptionsJSON {
         <<interface>>
@@ -57,6 +67,8 @@ classDiagram
         from?: UInt
         to?: UInt
         unit?: FilterRangeUnit
+        constructor(json: FilterRangeJSON)
+        toJSON() FilterRangeJSON
     }
     class FilterRangeJSON {
         <<interface>>
@@ -76,6 +88,8 @@ classDiagram
         txID: TxId;
         txOrigin: Address;
         clauseIndex: UInt;
+        constructor(json: LogMetaJSON)
+        toJSON() LogMetaJSON
     }
     class LogMetaJSON {
         <<interface>>
@@ -96,23 +110,24 @@ classDiagram
         request: EventLogFilterRequest
         constructor(request: EventLogFilterRequest)
         askTo(httpClient: HttpClient): Promise~ThorResponse~EventLogsResponse~~
-        of(request: EventLogFilterRequestJSON)$
+        of(request: EventLogFilterRequestJSON)$ QuerySmartContractEvents
     }
     class QueryVETTransferEvents {
         PATH$: HttpPath
         request: TransferLogFilterRequest
         constructor(request: TransferLogFilterRequest)
         askTo(httpClient: HttpClient): Promise~ThorResponse~TransferLogsResponse~~
-        of(request: TransferLogFilterRequestJSON): QueryVETTransferEvents
+        of(request: TransferLogFilterRequestJSON) QueryVETTransferEvents
     }
     class TransferCriteria {
         txOrigin?: Address;
         sender?: Address;
         recipient?: Address;
         constructor(json: TransferCriteriaJSON)
-        toJSON(): TransferCriteriaJSON
+        toJSON() TransferCriteriaJSON
     }
     class TransferCriteriaJSON {
+        <<interface>>
         txOrigin?: string;
         sender?: string;
         recipient?: string;
@@ -123,7 +138,7 @@ classDiagram
         criteriaSet?: TransferCriteria[]
         order?: LogSort
         constructor(json: TransferLogFilterRequestJSON)
-        toJSON(): TransferLogFilterRequestJSON
+        toJSON() TransferLogFilterRequestJSON
     }
     class TransferLogFilterRequestJSON {
         <<interface>>
@@ -138,15 +153,28 @@ classDiagram
         amount: VET
         meta: LogMeta
         constructor(json: TransferLogResponseJSON)
-        toJSON(): TransferLogResponseJSON
+        toJSON() TransferLogResponseJSON
     }
     class TransferLogResponseJSON {
+        <<interface>>
         sender: string;
         recipient: string;
         amount: string;
         meta: LogMetaJSON;
     }
     class TransferLogsResponse {
+        <<interface>>
+    }
+    namespace thor {
+        class ThorRequest {
+            <<interface>>
+            askTo: (httpClient: HttpClient) Promise~ThorResponse~ResponseClass~~
+        }
+        class ThorResponse {
+            <<interface>>
+            request: ~RequestClass~;
+            response: ~ResponseClass~;
+        }
     }
     EventCriteriaJSON <-- EventCriteria
     EventLogFilterRequestJSON <-- EventLogFilterRequest
@@ -159,6 +187,8 @@ classDiagram
     TransferLogFilterRequestJSON <-- TransferLogFilterRequest
     TransferLogResponseJSON <-- TransferLogResponse
     TransferLogsResponse <-- QueryVETTransferEvents
+    ThorRequest <|.. QuerySmartContractEvents
+    ThorRequest <|.. QueryVETTransferEvents
     EventLogResponse "*" o-- EventLogsResponse
     TransferLogResponse "*" o-- TransferLogsResponse
     EventLogFilterRequest --* FilterRange
