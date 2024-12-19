@@ -780,7 +780,9 @@ class TransactionsModule {
             dependsOn: options?.dependsOn,
             expiration: options?.expiration,
             chainTag: options?.chainTag,
-            blockRef: options?.blockRef
+            blockRef: options?.blockRef,
+            delegationUrl: options?.delegationUrl,
+            comment: options?.comment
         });
 
         return {
@@ -813,7 +815,9 @@ class TransactionsModule {
             dependsOn: options?.dependsOn,
             expiration: options?.expiration,
             chainTag: options?.chainTag,
-            blockRef: options?.blockRef
+            blockRef: options?.blockRef,
+            delegationUrl: options?.delegationUrl,
+            comment: options?.comment
         });
 
         return {
