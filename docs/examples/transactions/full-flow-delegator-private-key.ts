@@ -119,7 +119,7 @@ const txReceipt = await thorSoloClient.transactions.waitForTransaction(
 // Check the signed transaction
 expect(delegatedSigned.isSigned).toEqual(true);
 expect(delegatedSigned.isDelegated).toEqual(true);
-expect(delegatedSigned.delegator.toString()).toEqual(delegatorAccount.address);
+expect(delegatedSigned.gasPayer.toString()).toEqual(delegatorAccount.address);
 
 // Check the transaction receipt
 expect(txReceipt).toBeDefined();
