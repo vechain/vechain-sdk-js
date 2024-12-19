@@ -187,6 +187,10 @@ classDiagram
     TransferLogFilterRequestJSON <-- TransferLogFilterRequest
     TransferLogResponseJSON <-- TransferLogResponse
     TransferLogsResponse <-- QueryVETTransferEvents
+    ThorResponse <-- EventLogsResponse
+    ThorResponse <-- TransferLogResponse
+    ThorResponse <-- QuerySmartContractEvents
+    ThorResponse <-- QueryVETTransferEvents
     ThorRequest <|.. QuerySmartContractEvents
     ThorRequest <|.. QueryVETTransferEvents
     EventLogResponse "*" o-- EventLogsResponse
