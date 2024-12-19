@@ -1,11 +1,11 @@
 import { describe, test } from '@jest/globals';
 import {
     type PostDebugTracerCallRequestJSON,
-    TraceACall
+    TraceCall
 } from '../../../src/thor/debug';
 import { FetchHttpClient, ThorNetworks } from '../../../src';
 
-describe('RetrieveStorageRange testnet tests', () => {
+describe('TraceCall testnet tests', () => {
     test('ok <- askTo', async () => {
         const request = {
             value: '0x0',
@@ -20,7 +20,7 @@ describe('RetrieveStorageRange testnet tests', () => {
             blockRef: '0x00000000851caf3c',
             name: 'call'
         } satisfies PostDebugTracerCallRequestJSON;
-        const r = await TraceACall.of(request).askTo(
+        const r = await TraceCall.of(request).askTo(
             FetchHttpClient.at(ThorNetworks.TESTNET)
         );
         console.log(JSON.stringify(r, null, 2));
