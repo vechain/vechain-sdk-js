@@ -6,7 +6,7 @@ import {
 } from './PostDebugTracerCallRequest';
 import { type ThorResponse } from '../ThorResponse';
 
-class TraceACall implements ThorRequest<TraceACall, undefined> {
+class TraceCall implements ThorRequest<TraceCall, undefined> {
     static readonly PATH: HttpPath = { path: '/debug/tracers/call' };
 
     readonly request: PostDebugTracerCallRequest;
@@ -17,11 +17,9 @@ class TraceACall implements ThorRequest<TraceACall, undefined> {
 
     async askTo(
         httpClient: HttpClient
-    ): Promise<ThorResponse<TraceACall, undefined>> {
-        const R = this.request.toJSON();
-        console.log(R);
+    ): Promise<ThorResponse<TraceCall, undefined>> {
         const response = await httpClient.post(
-            TraceACall.PATH,
+            TraceCall.PATH,
             { query: '' },
             this.request.toJSON()
         );
@@ -32,9 +30,9 @@ class TraceACall implements ThorRequest<TraceACall, undefined> {
         };
     }
 
-    static of(request: PostDebugTracerCallRequestJSON): TraceACall {
-        return new TraceACall(new PostDebugTracerCallRequest(request));
+    static of(request: PostDebugTracerCallRequestJSON): TraceCall {
+        return new TraceCall(new PostDebugTracerCallRequest(request));
     }
 }
 
-export { TraceACall };
+export { TraceCall };
