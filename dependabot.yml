@@ -1,0 +1,17 @@
+version: 2
+updates:
+  # For the `main` branch
+  - package-ecosystem: "yarn"
+    directory: "/"     
+    schedule:
+      interval: "weekly"
+    target-branch: "main"
+    dependency-type: "all"
+
+  # For the `1.0.0` release branch
+  - package-ecosystem: "yarn"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    target-branch: "1.0.0"
+    dependency-type: "production"
