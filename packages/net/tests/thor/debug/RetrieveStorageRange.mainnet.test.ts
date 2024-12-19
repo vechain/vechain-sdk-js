@@ -5,7 +5,7 @@ import {
 } from '../../../src/thor/debug';
 import { FetchHttpClient, ThorNetworks } from '../../../src';
 
-describe('RetrieveStorageRange testnet tests', () => {
+describe('RetrieveStorageRange mainnet tests', () => {
     test('ok <- askTo', async () => {
         const request = {
             address: '0xd8ccdd85abdbf68dfec95f06c973e87b1b5a9997',

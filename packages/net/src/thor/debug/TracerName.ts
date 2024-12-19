@@ -1,95 +1,90 @@
-interface TracerName {
-    name: string;
-    toString: () => string;
+abstract class TracerName {
+    abstract toString: () => string;
 }
 
 class StructLogger implements TracerName {
-    name = 'structLogger';
-    toString: () => string = () => this.name;
+    static readonly NAME = 'structLogger';
+    toString: () => string = () => StructLogger.NAME;
 }
 
 class FourByte implements TracerName {
-    name = '4byte';
-    toString: () => string = () => this.name;
+    static readonly NAME = '4byte';
+    toString: () => string = () => FourByte.NAME;
 }
 
 class Call implements TracerName {
-    name = 'call';
-    toString: () => string = () => this.name;
+    static readonly NAME = 'call';
+    toString: () => string = () => Call.NAME;
 }
 
 class Noop implements TracerName {
-    name = 'noop';
-    toString: () => string = () => this.name;
+    static readonly NAME = 'noop';
+    toString: () => string = () => Noop.NAME;
 }
 
 class Prestate implements TracerName {
-    name = 'prestate';
-    toString: () => string = () => this.name;
+    static readonly NAME = 'prestate';
+    toString: () => string = () => Prestate.NAME;
 }
 
 class Unigram implements TracerName {
-    name = 'unigram';
-    toString: () => string = () => this.name;
+    static readonly NAME = 'unigram';
+    toString: () => string = () => Unigram.NAME;
 }
 
 class Bigram implements TracerName {
-    name = 'bigram';
-    toString: () => string = () => this.name;
+    static readonly NAME = 'bigram';
+    toString: () => string = () => Bigram.NAME;
 }
 
 class Trigram implements TracerName {
-    name = 'trigram';
-    toString: () => string = () => this.name;
+    static readonly NAME = 'trigram';
+    toString: () => string = () => Trigram.NAME;
 }
 
 class EvmDis implements TracerName {
-    name = 'evmdis';
-    toString: () => string = () => this.name;
+    static readonly NAME = 'evmdis';
+    toString: () => string = () => EvmDis.NAME;
 }
 
 class OpCount implements TracerName {
-    name = 'opcount';
-    toString: () => string = () => this.name;
+    static readonly NAME = 'opcount';
+    toString: () => string = () => OpCount.NAME;
 }
 
 class Null implements TracerName {
-    name = 'null';
-    toString: () => string = () => this.name;
+    static readonly NAME = 'null';
+    toString: () => string = () => Null.NAME;
 }
 
-class Tracer implements TracerName {
-    private static readonly NAMES: Map<string, TracerName> = new Map<
-        string,
-        TracerName
-    >()
-        .set(StructLogger.name, new StructLogger())
-        .set(FourByte.name, new FourByte())
-        .set(Call.name, new Call())
-        .set(Noop.name, new Noop())
-        .set(Prestate.name, new Prestate())
-        .set(Unigram.name, new Unigram())
-        .set(Bigram.name, new Bigram())
-        .set(Trigram.name, new Trigram())
-        .set(EvmDis.name, new EvmDis())
-        .set(OpCount.name, new OpCount())
-        .set(Null.name, new Null());
-
-    name: string;
-
-    protected constructor(name: string) {
-        this.name = name;
-    }
-
-    toString: () => string = () => this.name;
-
-    static of(name: string): Tracer {
-        const label = Tracer.NAMES.get(name);
-        if (label !== undefined) {
-            return new Tracer(label.name);
-        } else {
-            throw new Error(`Tracer ${name} not found.`);
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
+class Tracer {
+    static of(name: string): TracerName {
+        switch (name) {
+            case StructLogger.NAME:
+                return new StructLogger();
+            case FourByte.NAME:
+                return new FourByte();
+            case Call.NAME:
+                return new Call();
+            case Noop.NAME:
+                return new Noop();
+            case Prestate.NAME:
+                return new Prestate();
+            case Unigram.NAME:
+                return new Unigram();
+            case Bigram.NAME:
+                return new Bigram();
+            case Trigram.NAME:
+                return new Trigram();
+            case EvmDis.NAME:
+                return new EvmDis();
+            case OpCount.NAME:
+                return new OpCount();
+            case Null.NAME:
+                return new Null();
         }
+        throw new Error(`TracerName ${name} not found`);
     }
 }
 
