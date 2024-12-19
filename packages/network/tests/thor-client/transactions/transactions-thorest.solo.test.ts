@@ -82,7 +82,7 @@ describe('ThorClient - Transactions Module', () => {
 
                 const rawDelegatedSigned = Transaction.of(
                     delegatedTransactionBody
-                ).signWithDelegator(
+                ).signAsSenderAndGasPayer(
                     HexUInt.of(
                         TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
                     ).bytes,

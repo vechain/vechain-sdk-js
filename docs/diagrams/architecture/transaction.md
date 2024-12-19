@@ -25,23 +25,23 @@ classDiagram
     }
     class Transaction {
         +TransactionBody body
-        +Uint8Array signature?
-        +Address delegator
         +Uint8Array encoded
+        +Address gasPayer
         +Blake2b256 id
         +VTHO intrisicGas
         +boolean isDelegated
         +boolean isSigned
         +Address origin
+        +Uint8Array signature?
         +Transaction decode(Uint8Array rawTransaction, boolean isSigned)$
         +Blake2b256 getTransactionHash(Address delegator?)
         +VTHO intrinsicGas(TransactionClause[] clauses)$
         +boolean isValidBody(TransactionBody body)$
         +Transaction of(TransactionBody: body, Uint8Array signature?)$
-        +Transaction sign(Uint8Array signerPrivateKey)
-        +Transaction signAsDelegator(Address signed, Uint8Array delegatorPrivateKey)
-        +Transaction signForDelegator(Uint8Array signerPrivateKey)
-        +Transaction signWithDelegator(Uint8Array signerPrivateKey, Uint8Array delegatorPrivateKey)
+        +Transaction sign(Uint8Array senderPrivateKey)
+        +Transaction signAsGasPayer(Address sender, Uint8Array gasPayerPrivateKey)
+        +Transaction signAsSender(Uint8Array senderPrivateKey)
+        +Transaction signAsSenderAndGasPayer(Uint8Array senderPrivateKey, Uint8Array gasPayerPrivateKey)
     }
     class TransactionBody {
         <<interface>>

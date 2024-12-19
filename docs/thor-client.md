@@ -359,7 +359,7 @@ const delegatedTransactionBody = {
 
 const rawDelegatedSigned = Transaction.of(
     delegatedTransactionBody
-).signWithDelegator(
+).signAsSenderAndGasPayer(
     HexUInt.of(senderAccount.privateKey).bytes,
     HexUInt.of(delegateAccount.privateKey).bytes
 ).encoded;
