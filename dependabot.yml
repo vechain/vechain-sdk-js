@@ -14,4 +14,4 @@ updates:
     schedule:
       interval: "weekly"
     target-branch: "1.0.0"
-    dependency-type: "production"
+    dependency-type: "all"
