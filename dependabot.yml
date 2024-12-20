@@ -7,6 +7,8 @@ updates:
       interval: "weekly"
     target-branch: "main"
     dependency-type: "all"
+    pull-request-branch-name:
+      separator: "-"
 
   # For the `1.0.0` release branch
   - package-ecosystem: "npm"
@@ -15,3 +17,5 @@ updates:
       interval: "weekly"
     target-branch: "1.0.0"
     dependency-type: "all"
+    pull-request-branch-name:
+      separator: "-"
