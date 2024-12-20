@@ -172,7 +172,7 @@ const delegatorAddress = Address.ofPublicKey(nodeDelegate.publicKey).toString();
 
 // 6 - Sign transaction as sender and delegate
 
-const signedTransaction = Transaction.of(body).signWithDelegator(
+const signedTransaction = Transaction.of(body).signAsSenderAndGasPayer(
     HexUInt.of(senderAccount.privateKey).bytes,
     HexUInt.of(delegatorPrivateKey).bytes
 );
