@@ -300,7 +300,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         // Sign transaction with origin private key and delegator private key
         if (delegatorOptions?.delegatorPrivateKey !== undefined)
             return Hex.of(
-                Transaction.of(unsignedTransactionBody).signWithDelegator(
+                Transaction.of(unsignedTransactionBody).signAsSenderAndGasPayer(
                     originPrivateKey,
                     HexUInt.of(delegatorOptions?.delegatorPrivateKey).bytes
                 ).encoded
