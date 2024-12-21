@@ -7,7 +7,7 @@ import {
     VET,
     VTHO
 } from '@vechain/sdk-core';
-import { UInt } from '../../../../core';
+import { UInt } from '../../../../core/src';
 
 class PostDebugTracerCallRequest {
     readonly name?: TracerName;

@@ -1,5 +1,5 @@
 import { Address, ThorId } from '@vechain/sdk-core';
-import { UInt } from '../../../../core';
+import { UInt } from '../../../../core/src';
 
 class StorageRangeOption {
     readonly address: Address;
