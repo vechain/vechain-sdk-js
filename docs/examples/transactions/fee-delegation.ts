@@ -69,7 +69,7 @@ const delegatorAddress = Address.ofPublicKey(nodeDelegate.publicKey).toString();
 
 // 6 - Sign transaction as sender and delegate
 
-const signedTransaction = Transaction.of(body).signWithDelegator(
+const signedTransaction = Transaction.of(body).signAsSenderAndGasPayer(
     HexUInt.of(senderAccount.privateKey).bytes,
     HexUInt.of(delegatorPrivateKey).bytes
 );
@@ -85,4 +85,4 @@ const decodedTx = Transaction.decode(encodedRaw, true);
 // END_SNIPPET: FeeDelegationSnippet
 
 expect(decodedTx.isDelegated).toBeTruthy();
-expect(decodedTx.delegator.toString()).toBe(delegatorAddress);
+expect(decodedTx.gasPayer.toString()).toBe(delegatorAddress);
