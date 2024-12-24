@@ -3,7 +3,10 @@ import {
     MozillaWebSocketClient,
     type WebSocketListener
 } from '../../../src/ws';
-import { BlocksSubscription } from '../../../src/thor/subscriptions';
+import {
+    BlocksSubscription,
+    type SubscriptionBlockResponseJSON
+} from '../../../src/thor/subscriptions';
 
 describe('BlocksSubscription solo tests', () => {
     let subscription: BlocksSubscription;
@@ -17,7 +20,8 @@ describe('BlocksSubscription solo tests', () => {
         subscription
             .addMessageListener({
                 onMessage: (message) => {
-                    console.log(message.data);
+                    const data = message.data as SubscriptionBlockResponseJSON;
+                    console.log(JSON.stringify(data, null, 2));
                     done();
                 }
             } satisfies WebSocketListener<unknown>)
