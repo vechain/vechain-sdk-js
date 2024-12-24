@@ -44,7 +44,6 @@
     "@vechain/sdk-errors": "1.0.0-rc.5",
     "@vechain/sdk-network": "1.0.0-rc.5",
     "asn1js": "^3.0.5",
-    "ethers": "6.13.4",
-    "viem": "^2.21.54"
+    "viem": "^2.21.45"
   }
 }
