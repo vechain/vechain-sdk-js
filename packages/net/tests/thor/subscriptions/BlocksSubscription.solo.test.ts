@@ -21,9 +21,7 @@ describe('BlocksSubscription solo tests', () => {
                     done();
                 }
             } satisfies WebSocketListener<unknown>)
-            .open({
-                path: '/subscriptions/beat2'
-            });
+            .open();
     }, 30000);
 
     afterEach(() => {
