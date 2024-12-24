@@ -1,5 +1,5 @@
 import { type TransactionClause } from '@vechain/sdk-core';
-import { type AccessListish } from 'ethers';
+import { type TypedDataDomain, type TypedDataParameter } from 'viem';
 import {
     type HardhatVeChainProvider,
     type VeChainProvider
@@ -181,6 +181,7 @@ interface TransactionRequestInput {
      *  list are //warmed// by preloading them, so their initial cost to
      *  fetch is guaranteed, but then each additional access is cheaper.
      */
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     accessList?: null | AccessListish;
 
     /**
@@ -368,9 +369,10 @@ interface VeChainSigner {
      *  Signs the [[link-eip-712]] typed data.
      */
     signTypedData: (
-        domain: vechain_sdk_core_ethers.TypedDataDomain,
-        types: Record<string, vechain_sdk_core_ethers.TypedDataField[]>,
-        value: Record<string, unknown>,
+        domain: TypedDataDomain,
+        types: Record<string, TypedDataParameter[]>,
+        primaryType: string,
+        message: Record<string, unknown>,
         options?: SignTypedDataOptions
     ) => Promise<string>;
 
