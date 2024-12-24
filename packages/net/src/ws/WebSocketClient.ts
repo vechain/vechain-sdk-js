@@ -1,24 +1,16 @@
+import type { WebSocketListener } from './WebSocketListener';
+import { type HttpPath } from '../http';
+
 interface WebSocketClient {
-    open: (url: string) => WebSocketClient;
+    addMessageListener: (
+        listener: WebSocketListener<unknown>
+    ) => WebSocketClient;
+
+    get baseURL(): string;
 
     close: () => WebSocketClient;
+
+    open: (path: HttpPath) => WebSocketClient;
 }
 
 export { type WebSocketClient };
-
-/*
-
-WebSocketListener {
-  onMessage
-}
-
- BlockSubscription{
- PATH
- open()
- addListener()
- removeListener()
- close()
- }
-
-
- */
