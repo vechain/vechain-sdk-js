@@ -11,7 +11,7 @@ import {
 describe('BlocksSubscription solo tests', () => {
     let subscription: BlocksSubscription;
     beforeEach(() => {
-        subscription = new BlocksSubscription(
+        subscription = BlocksSubscription.at(
             new MozillaWebSocketClient('ws://localhost:8669')
         );
     });

@@ -1,9 +1,10 @@
-import { type HttpPath } from '../../http';
+import { type HttpPath, type HttpQuery } from '../../http';
 import { type WebSocketClient, type WebSocketListener } from '../../ws';
 import {
     SubscriptionBlockResponse,
     type SubscriptionBlockResponseJSON
 } from './SubscriptionBlockResponse';
+import { type BlockId } from '@vechain/sdk-core';
 
 class BlocksSubscription
     implements WebSocketClient, WebSocketListener<unknown>
@@ -14,10 +15,13 @@ class BlocksSubscription
         WebSocketListener<SubscriptionBlockResponse>
     > = [];
 
+    private readonly query: BlockSubscriptionQuery;
+
     private readonly wsc: WebSocketClient;
 
-    constructor(wsc: WebSocketClient) {
+    protected constructor(wsc: WebSocketClient, query: BlockSubscriptionQuery) {
         this.wsc = wsc;
+        this.query = query;
     }
 
     addMessageListener(
@@ -25,6 +29,17 @@ class BlocksSubscription
     ): this {
         this.messageListeners.push(listener);
         return this;
+    }
+
+    static at(wsc: WebSocketClient): BlocksSubscription {
+        return new BlocksSubscription(wsc, new BlockSubscriptionQuery());
+    }
+
+    atPos(pos: BlockId): BlocksSubscription {
+        return new BlocksSubscription(
+            this.wsc,
+            new BlockSubscriptionQuery(pos)
+        );
     }
 
     get baseURL(): string {
@@ -52,6 +67,18 @@ class BlocksSubscription
     open(path: HttpPath = BlocksSubscription.PATH): this {
         this.wsc.addMessageListener(this).open(path);
         return this;
+    }
+}
+
+class BlockSubscriptionQuery implements HttpQuery {
+    readonly pos?: BlockId;
+
+    constructor(pos?: BlockId) {
+        this.pos = pos;
+    }
+
+    get query(): string {
+        return this.pos === undefined ? '' : `?pos=${this.pos}`;
     }
 }
 
