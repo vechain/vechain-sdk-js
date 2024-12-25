@@ -4,10 +4,12 @@ classDiagram
         baseURL: string
         onRequest: OnRequest
         onResponse: OnResponse
+        at(baseURL: string, onRequest: OnRequest, onResponse: OnResponse) FetchHttpClient
     }
     class HttpClient {
         <<interface>>
         get(httpPath: HttpPath) Promise~Response~
+        post(httpPath: HttpPath, body?: unknown) Promise~Response~
     }
     class HttpPath {
         <<interface>>
@@ -23,6 +25,6 @@ classDiagram
     }
     HttpPath <-- HttpClient
     HttpClient <|.. FetchHttpClient
-    FetchHttpClient --* OnRequest
-    FetchHttpClient --* OnResponse
+    FetchHttpClient *--> OnRequest
+    FetchHttpClient *--> OnResponse
 ```

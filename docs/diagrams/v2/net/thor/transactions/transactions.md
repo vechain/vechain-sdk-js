@@ -224,19 +224,19 @@ classDiagram
     RetrieveTransactionByIDPath <|-- RetrieveRawTransactionByIDPath
     RetrieveTransactionByIDQuery <|-- RetrieveRawTransactionByIDQuery
     TxMeta <-- ReceiptMeta
-    RetrieveRawTransactionByID --* RetrieveRawTransactionByIDPath
-    RetrieveRawTransactionByID --* RetrieveRawTransactionByIDQuery
-    RetrieveTransactionByID --* RetrieveTransactionByIDPath
-    RetrieveTransactionByID --* RetrieveRawTransactionByIDQuery
-    RetrieveTransactionReceipt --* RetrieveTransactionReceiptPath
-    RetrieveTransactionReceipt --* RetrieveTransactionReceiptQuery
-    GetRawTxResponse --* TxMeta
-    GetTxReceiptResponse --* ReceiptMeta
-    GetTxResponse --* Clause
-    GetTxResponse --* TxMeta
-    Receipt --* ReceiptOutput
-    ReceiptOutput --* Event
-    ReceiptOutput --* Transfer
+    RetrieveRawTransactionByID *--> RetrieveRawTransactionByIDPath
+    RetrieveRawTransactionByID *--> RetrieveRawTransactionByIDQuery
+    RetrieveTransactionByID *--> RetrieveTransactionByIDPath
+    RetrieveTransactionByID *--> RetrieveRawTransactionByIDQuery
+    RetrieveTransactionReceipt *--> RetrieveTransactionReceiptPath
+    RetrieveTransactionReceipt *--> RetrieveTransactionReceiptQuery
+    GetRawTxResponse *--> TxMeta
+    GetTxReceiptResponse *--> ReceiptMeta
+    GetTxResponse *--> Clause
+    GetTxResponse *--> TxMeta
+    Receipt *--> ReceiptOutput
+    ReceiptOutput *--> Event
+    ReceiptOutput *--> Transfer
     ClauseJSON <-- Clause
     EventJSON <-- Event
     GetRawTxResponseJSON <-- GetRawTxResponse

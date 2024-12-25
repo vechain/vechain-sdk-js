@@ -37,5 +37,5 @@ classDiagram
     HttpClient <-- ThorRequest~RetrieveConnectedPeers~
     PeerResponse o-- Array~PeerResponse~
     ThorRequest~RetrieveConnectedPeers~ <|.. RetrieveConnectedPeers
-    ThorResponse~RetrieveConnectedPeers~ --* ThorRequest~RetrieveConnectedPeers~
+    ThorResponse~RetrieveConnectedPeers~ *--> ThorRequest~RetrieveConnectedPeers~
 ```

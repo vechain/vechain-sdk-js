@@ -71,7 +71,7 @@ classDiagram
         Address     recepient
         Address     sender
     }
-    Clause *-- InspectClauses
+    Clause <--* InspectClauses
     HttpClient o-- ThorRequest
     InspectClauses <|-- InspectedClauses 
     RetrieveContractByteCode <|-- ContractByteCode
@@ -83,10 +83,10 @@ classDiagram
     ThorRequest <|.. RetrieveStoragePositionValue
     
     AccountDetails ..|> ThorResponse
-    CallResult --* Event
-    CallResult --* Transfer
+    CallResult *--> Event
+    CallResult *--> Transfer
     ContractByteCode ..|> ThorResponse
     InspectedClauses  ..|> ThorResponse
-    InspectedClauses --* CallResult
+    InspectedClauses *--> CallResult
     StoragePositionValue ..|> ThorResponse
 ```

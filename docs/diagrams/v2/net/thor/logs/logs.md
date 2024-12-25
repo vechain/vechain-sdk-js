@@ -195,22 +195,22 @@ classDiagram
     ThorRequest <|.. QueryVETTransferEvents
     EventLogResponse "*" o-- EventLogsResponse
     TransferLogResponse "*" o-- TransferLogsResponse
-    EventLogFilterRequest --* FilterRange
-    EventLogFilterRequest --* FilterOptions
-    EventLogFilterRequest --* EventCriteria
-    EventLogFilterRequest --* LogSort
-    EventLogFilterRequestJSON --* FilterRangeJSON
-    EventLogFilterRequestJSON --* FilterOptionsJSON
-    EventLogFilterRequestJSON --* EventCriteriaJSON
-    EventLogResponse --* LogMeta
-    EventLogResponseJSON --* LogMetaJSON
-    FilterRange --* FilterRangeUnit
-    QuerySmartContractEvents --* EventLogFilterRequest
-    QueryVETTransferEvents  --* TransferLogFilterRequest
-    TransferLogFilterRequest --* FilterRange
-    TransferLogFilterRequest --* FilterOptions
-    TransferLogFilterRequest --* "*" TransferCriteria
-    TransferLogFilterRequest --* LogSort
-    TransferLogResponse --* LogMeta
-    TransferLogResponseJSON --* LogMetaJSON
+    EventLogFilterRequest *--> FilterRange
+    EventLogFilterRequest *--> FilterOptions
+    EventLogFilterRequest *--> EventCriteria
+    EventLogFilterRequest *--> LogSort
+    EventLogFilterRequestJSON *--> FilterRangeJSON
+    EventLogFilterRequestJSON *--> FilterOptionsJSON
+    EventLogFilterRequestJSON *--> EventCriteriaJSON
+    EventLogResponse *--> LogMeta
+    EventLogResponseJSON *--> LogMetaJSON
+    FilterRange *--> FilterRangeUnit
+    QuerySmartContractEvents *--> EventLogFilterRequest
+    QueryVETTransferEvents  *--> TransferLogFilterRequest
+    TransferLogFilterRequest *--> FilterRange
+    TransferLogFilterRequest *--> FilterOptions
+    TransferLogFilterRequest *--> "*" TransferCriteria
+    TransferLogFilterRequest *--> LogSort
+    TransferLogResponse *--> LogMeta
+    TransferLogResponseJSON *--> LogMetaJSON
 ```

@@ -14,5 +14,5 @@ classDiagram
         request: ThorRequest~RequestClass~
         response: ResponseClass
     }
-    ThorRequest <-- ThorResponse
+    ThorRequest <--* ThorResponse
 ```

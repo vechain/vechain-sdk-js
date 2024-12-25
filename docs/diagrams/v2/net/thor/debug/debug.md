@@ -127,9 +127,9 @@ classDiagram
     TracerName <|-- EvmDis
     TracerName <|-- OpCount
     TracerName <|-- Null
-    RetrieveStorageRange --* StorageRangeOptions
-    PostDebugTracerCallRequest --* TracerName
-    PostDebugTracerRequest --* TracerName
-    TraceCall --* PostDebugTracerCallRequest
-    TraceTransactionClause --* PostDebugTracerRequest
+    RetrieveStorageRange *--> StorageRangeOptions
+    PostDebugTracerCallRequest *--> TracerName
+    PostDebugTracerRequest *--> TracerName
+    TraceCall *--> PostDebugTracerCallRequest
+    TraceTransactionClause *--> PostDebugTracerRequest
 ```
