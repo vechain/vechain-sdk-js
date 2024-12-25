@@ -2,15 +2,15 @@ import { BlockId, HexUInt, Units, VTHO } from '@vechain/sdk-core';
 import { UInt } from '../../../../core';
 
 class SubscriptionBeat2Response {
-    gasLimit: VTHO;
-    obsolete: boolean;
-    number: UInt;
-    id: BlockId;
-    parentID: BlockId;
-    timestamp: UInt;
-    txsFeatures: UInt;
-    bloom: HexUInt;
-    k: UInt;
+    readonly gasLimit: VTHO;
+    readonly obsolete: boolean;
+    readonly number: UInt;
+    readonly id: BlockId;
+    readonly parentID: BlockId;
+    readonly timestamp: UInt;
+    readonly txsFeatures: UInt;
+    readonly bloom: HexUInt;
+    readonly k: UInt;
 
     constructor(json: SubscriptionBeat2ResponseJSON) {
         this.gasLimit = VTHO.of(json.gasLimit, Units.wei);
