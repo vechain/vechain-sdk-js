@@ -64,8 +64,10 @@ class BlocksSubscription
         });
     }
 
-    open(path: HttpPath = BlocksSubscription.PATH): this {
-        this.wsc.addMessageListener(this).open(path);
+    open(): this {
+        this.wsc
+            .addMessageListener(this)
+            .open({ path: BlocksSubscription.PATH.path + this.query.query });
         return this;
     }
 }

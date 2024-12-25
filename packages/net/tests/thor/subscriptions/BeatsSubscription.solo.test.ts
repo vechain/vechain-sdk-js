@@ -20,11 +20,11 @@ describe('BlocksSubscription solo tests', () => {
         subscription
             .addMessageListener({
                 onMessage: (message) => {
-                    const data = message.data as SubscriptionBeat2ResponseJSON;
+                    const data = message.data;
                     console.log(JSON.stringify(data, null, 2));
                     done();
                 }
-            } satisfies WebSocketListener<unknown>)
+            } satisfies WebSocketListener<SubscriptionBeat2ResponseJSON>)
             .open();
     }, 30000);
 

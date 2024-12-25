@@ -5,7 +5,7 @@ import {
 } from '../../../src/ws';
 import {
     BlocksSubscription,
-    type SubscriptionBlockResponseJSON
+    type SubscriptionBlockResponse
 } from '../../../src/thor/subscriptions';
 
 describe('BlocksSubscription solo tests', () => {
@@ -20,11 +20,11 @@ describe('BlocksSubscription solo tests', () => {
         subscription
             .addMessageListener({
                 onMessage: (message) => {
-                    const data = message.data as SubscriptionBlockResponseJSON;
+                    const data = message.data;
                     console.log(JSON.stringify(data, null, 2));
                     done();
                 }
-            } satisfies WebSocketListener<unknown>)
+            } satisfies WebSocketListener<SubscriptionBlockResponse>)
             .open();
     }, 30000);
 
