@@ -1,13 +1,16 @@
 import { type WebSocketClient, type WebSocketListener } from '../../ws';
 import type { HttpPath } from '../../http';
 import type { BlockId } from '@vechain/sdk-core';
-import { type SubscriptionBeat2ResponseJSON } from './SubscriptionBeat2Response';
+import {
+    SubscriptionBeat2Response,
+    type SubscriptionBeat2ResponseJSON
+} from './SubscriptionBeat2Response';
 
 class BeatsSubscription implements WebSocketClient, WebSocketListener<unknown> {
     static readonly PATH: HttpPath = { path: '/subscriptions/beat2' };
 
     private readonly messageListeners: Array<
-        WebSocketListener<SubscriptionBeat2ResponseJSON>
+        WebSocketListener<SubscriptionBeat2Response>
     > = [];
 
     private readonly query: BeatsSubscriptionQuery;
@@ -20,7 +23,7 @@ class BeatsSubscription implements WebSocketClient, WebSocketListener<unknown> {
     }
 
     addMessageListener(
-        listener: WebSocketListener<SubscriptionBeat2ResponseJSON>
+        listener: WebSocketListener<SubscriptionBeat2Response>
     ): this {
         this.messageListeners.push(listener);
         return this;
@@ -43,9 +46,9 @@ class BeatsSubscription implements WebSocketClient, WebSocketListener<unknown> {
         const json = JSON.parse(
             event.data as string
         ) as SubscriptionBeat2ResponseJSON;
-        const message = new MessageEvent<SubscriptionBeat2ResponseJSON>(
+        const message = new MessageEvent<SubscriptionBeat2Response>(
             event.type,
-            { data: json }
+            { data: new SubscriptionBeat2Response(json) }
         );
         this.messageListeners.forEach((listener) => {
             listener.onMessage(message);

@@ -5,7 +5,7 @@ import {
 } from '../../../src/ws';
 import {
     BeatsSubscription,
-    type SubscriptionBeat2ResponseJSON
+    type SubscriptionBeat2Response
 } from '../../../src/thor/subscriptions';
 
 describe('BlocksSubscription solo tests', () => {
@@ -24,7 +24,7 @@ describe('BlocksSubscription solo tests', () => {
                     console.log(JSON.stringify(data, null, 2));
                     done();
                 }
-            } satisfies WebSocketListener<SubscriptionBeat2ResponseJSON>)
+            } satisfies WebSocketListener<SubscriptionBeat2Response>)
             .open();
     }, 30000);
 

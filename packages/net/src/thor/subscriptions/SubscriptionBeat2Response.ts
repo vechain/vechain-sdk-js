@@ -23,6 +23,20 @@ class SubscriptionBeat2Response {
         this.bloom = HexUInt.of(json.bloom);
         this.k = UInt.of(json.k);
     }
+
+    toJSON(): SubscriptionBeat2ResponseJSON {
+        return {
+            gasLimit: Number(this.gasLimit.wei),
+            obsolete: this.obsolete,
+            number: this.number.valueOf(),
+            id: this.id.toString(),
+            parentID: this.parentID.toString(),
+            timestamp: this.timestamp.valueOf(),
+            txsFeatures: this.txsFeatures.valueOf(),
+            bloom: this.bloom.toString(),
+            k: this.k.valueOf()
+        } satisfies SubscriptionBeat2ResponseJSON;
+    }
 }
 
 interface SubscriptionBeat2ResponseJSON {
