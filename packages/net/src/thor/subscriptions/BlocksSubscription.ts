@@ -35,10 +35,10 @@ class BlocksSubscription
         return new BlocksSubscription(wsc, new BlockSubscriptionQuery());
     }
 
-    atPos(pos: BlockId): BlocksSubscription {
+    atPos(pos?: BlockId): BlocksSubscription {
         return new BlocksSubscription(
             this.wsc,
-            new BlockSubscriptionQuery(pos)
+            new BlockSubscriptionQuery(pos ?? this.query.pos)
         );
     }
 

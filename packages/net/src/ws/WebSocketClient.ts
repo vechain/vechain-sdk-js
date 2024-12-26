@@ -2,11 +2,11 @@ import type { WebSocketListener } from './WebSocketListener';
 import { type HttpPath } from '../http';
 
 interface WebSocketClient {
+    get baseURL(): string;
+
     addMessageListener: (
         listener: WebSocketListener<unknown>
     ) => WebSocketClient;
-
-    get baseURL(): string;
 
     close: () => WebSocketClient;
 

@@ -35,6 +35,20 @@ class EventsSubscription
         return new EventsSubscription(wsc, new EventsSubscriptionQuery());
     }
 
+    atPos(pos?: ThorId): EventsSubscription {
+        return new EventsSubscription(
+            this.wsc,
+            new EventsSubscriptionQuery(
+                this.query.addr,
+                pos ?? this.query.pos,
+                this.query.t0,
+                this.query.t1,
+                this.query.t2,
+                this.query.t3
+            )
+        );
+    }
+
     get baseURL(): string {
         return this.wsc.baseURL;
     }
@@ -62,6 +76,39 @@ class EventsSubscription
             .addMessageListener(this)
             .open({ path: EventsSubscription.PATH.path + this.query.query });
         return this;
+    }
+
+    withContractAddress(contractAddress?: Address): EventsSubscription {
+        return new EventsSubscription(
+            this.wsc,
+            new EventsSubscriptionQuery(
+                contractAddress ?? this.query.addr,
+                this.query.pos,
+                this.query.t0,
+                this.query.t1,
+                this.query.t2,
+                this.query.t3
+            )
+        );
+    }
+
+    withFilters(
+        t0?: ThorId,
+        t1?: ThorId,
+        t2?: ThorId,
+        t3?: ThorId
+    ): EventsSubscription {
+        return new EventsSubscription(
+            this.wsc,
+            new EventsSubscriptionQuery(
+                this.query.addr,
+                this.query.pos,
+                t0 ?? this.query.t0,
+                t1 ?? this.query.t1,
+                t2 ?? this.query.t2,
+                t3 ?? this.query.t3
+            )
+        );
     }
 }
 
