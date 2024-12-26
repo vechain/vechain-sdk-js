@@ -1,5 +1,25 @@
 ```mermaid
 classDiagram
+    namespace log {
+        class LogMeta {
+            blockID: BlockId
+            blockNumber: UInt
+            blockTimestamp: UInt
+            txID: TxId
+            txOrigin: Address
+            clauseIndex: UInt
+            constructor(json: LogMetaJSON) LogMeta
+            toJSON() LogMetaJSON
+        }
+        class LogMetaJSON {
+            blockID: string
+            blockNumber: number
+            blockTimestamp: number
+            txID: string
+            txOrigin: string
+            clauseIndex: number
+        }
+    }
     namespace ws {
         class WebSocketClient {
             <<interface>>
@@ -65,6 +85,57 @@ classDiagram
         constructor(json: SubscriptionBeat2ResponseJSON): SubscriptionBeat2Response
         toJSON() SubscriptionBeat2ResponseJSON
     }
+    class SubscriptionBeat2ResponseJSON {
+        <<interface>>
+        gasLimit: number
+        obsolete: boolean
+        number: number
+        id: string
+        parentID: string
+        timestamp: number
+        txsFeatures: number
+        bloom: string
+        k: number
+    }
+    class SubscriptionBlockResponse {
+        number: UInt
+        id: BlockId
+        size: UInt
+        parentID: BlockId
+        timestamp: UInt
+        gasLimit: VTHO
+        beneficiary: Address
+        gasUsed: VTHO
+        totalScore: UInt
+        txsRoot: ThorId
+        txsFeatures: UInt
+        stateRoot: ThorId
+        receiptsRoot: ThorId
+        com: boolean
+        signer: Address
+        obsolete: boolean
+        transactions: TxId[]
+    }
+    class SubscriptionBlockResponseJSON {
+        <<interface>>
+        number: number
+        id: string
+        size: number
+        parentID: string
+        timestamp: number
+        gasLimit: number
+        beneficiary: string
+        gasUsed: number
+        totalScore: number
+        txsRoot: string
+        txsFeatures: number
+        stateRoot: string
+        receiptsRoot: string
+        com: boolean
+        signer: string
+        obsolete: boolean
+        transactions: string[]
+    }
     class SubscriptionEventResponse {
         address: Address;
         topics: ThorId[];
@@ -73,6 +144,38 @@ classDiagram
         meta: LogMeta;
         constructor(json: SubscriptionEventResponseJSON) SubscriptionEventResponse
         toJSON() SubscriptionEventResponseJSON
+    }
+    class SubscriptionEventResponseJSON {
+        <<interface>>
+        address: string
+        topics: string[]
+        data: string
+        obsolete: boolean
+        meta: LogMetaJSON
+    }
+    class SubscriptionTransferResponse {
+        sender: Address
+        recipient: Address
+        amount: VET
+        obsolete: boolean
+        meta: LogMeta
+    }
+    class SubscriptionTransferResponseJSON {
+        <<interface>>
+        sender: string
+        recipient: string
+        amount: string
+        obsolete: boolean
+        meta: LogMetaJSON
+    }
+    class TXID {
+        id: ThorId
+        constructor(json: TXIDJSON): TXID
+        toJSON() TXIDJSON
+    }
+    class TXIDJSON {
+        <<interface>>
+        id: string
     }
     WebSocketClient <|.. BeatsSubscription
     WebSocketClient <|.. BlocksSubscription
@@ -85,5 +188,18 @@ classDiagram
     WebSocketListener <|.. NewTransactionSubscription
     WebSocketListener <|.. TransfersSubscription
     BeatsSubscription --> "onMessage" SubscriptionBeat2Response
+    BlocksSubscription --> "onMessage" SubscriptionBlockResponse
     EventsSubscription --> "onMessage" SubscriptionEventResponse
+    NewTransactionSubscription --> "onMessage" TXID
+    TransfersSubscription --> "onMessage" SubscriptionTransferResponse
+    SubscriptionEventResponse *--> LogMeta
+    SubscriptionEventResponseJSON *--> LogMetaJSON
+    SubscriptionTransferResponse *--> LogMeta
+    SubscriptionTransferResponseJSON *-- LogMetaJSON
+    LogMeta --> "new - toJSON" LogMetaJSON
+    SubscriptionBeat2Response --> "new - toJSON" SubscriptionBeat2ResponseJSON
+    SubscriptionBlockResponse --> "new - toJSON" SubscriptionBlockResponseJSON
+    SubscriptionEventResponse --> "new - toJSON" SubscriptionEventResponseJSON
+    SubscriptionTransferResponse --> "new - toJSON" SubscriptionTransferResponseJSON
+    TXID --> "new - toJSON" TXIDJSON
 ```
