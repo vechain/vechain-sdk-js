@@ -1,12 +1,12 @@
 ```mermaid
 classDiagram
     class MozillaWebSocketClient {
-        constructor(baseURL: string)
+        constructor(baseURL: string) MozillaWebSocketClient
     }
     class WebSocketClient {
         <<interface>>
         baseURL: string
-        addMessageListener(listener: WebSocketListener)
+        addMessageListener(listener: WebSocketListener~EventType~)
         close(): WebSocketClient
         open(path: HttpPath): WebSocketClient
     }
