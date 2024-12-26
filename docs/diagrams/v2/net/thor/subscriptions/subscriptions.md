@@ -27,10 +27,14 @@ classDiagram
             addMessageListener(listener: WebSocketListener)
             close(): WebSocketClient
             open(path: HttpPath): WebSocketClient
+            removeListener(listener: WebSocketListener): WebSocketClient
         }
         class WebSocketListener~EventType~ {
             <<interface>>
+            onClose(event: Event)
+            onError(event: Event)
             onMessage(event: MessageEvent~EventType~)
+            onOpen(event: Event)
         }
     }
     class BeatsSubscription {
@@ -39,6 +43,7 @@ classDiagram
         at(wsc: WebSocketClient) BeatsSubscription$
         close() BeatsSubscription
         open() BeatsSubscription
+        removeListener(listener: WebSocketListener~SubscriptionBeat2Response~) BeatsSubscription
     }
     class BlocksSubscription {
         PATH: HttpPath$
@@ -47,6 +52,7 @@ classDiagram
         atPos(pos?: BlockId)
         close() BlocksSubscription
         open() BlocksSubscription
+        removeListener(listener: WebSocketListener~SubscriptionBlockResponse~) BlocksSubscription
     }
     class EventsSubscription {
         PATH: HttpPath$
@@ -55,6 +61,7 @@ classDiagram
         atPos(pos?: ThorId) EventsSubscription
         close() EventsSubscription
         open() EventsSubscription
+        removeListener(listener: WebSocketListener~SubscriptionEventResponse~) EventsSubscription
         withContractAddress(contractAddress?: Address) EventsSubscription
         withFilters(t0?: ThorId?, t1?: ThorId, t2: ThorId, t3: ThorId) EventsSubscription
     }
@@ -71,6 +78,7 @@ classDiagram
         at(wsc: WebSocketClient) TransfersSubscription
         close() TransfersSubscription
         open() TransfersSubscription
+        removeListener(listener: WebSocketListener~SubscriptionTransferResponse~) TransfersSubscription
     }
     class SubscriptionBeat2Response {
         gasLimit: VTHO

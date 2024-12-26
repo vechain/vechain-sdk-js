@@ -7,14 +7,14 @@ class MozillaWebSocketClient implements WebSocketClient {
 
     private ws?: WebSocket;
 
-    private readonly messageListeners: Array<WebSocketListener<unknown>> = [];
+    private readonly listeners: Array<WebSocketListener<unknown>> = [];
 
     constructor(baseURL: string) {
         this.baseURL = baseURL;
     }
 
-    addMessageListener(listener: WebSocketListener<unknown>): this {
-        this.messageListeners.push(listener);
+    addListener(listener: WebSocketListener<unknown>): this {
+        this.listeners.push(listener);
         return this;
     }
 
@@ -27,11 +27,32 @@ class MozillaWebSocketClient implements WebSocketClient {
     open(path: HttpPath): this {
         this.close();
         this.ws = new WebSocket(this.baseURL + path.path);
-        this.ws.onmessage = (event: MessageEvent<unknown>) => {
-            this.messageListeners.forEach((listener) => {
-                listener.onMessage(event);
+        this.ws.onopen = (event: Event) => {
+            this.listeners.forEach((listener) => {
+                listener.onOpen?.(event);
             });
         };
+        this.ws.onerror = (event: Event) => {
+            this.listeners.forEach((listener) => {
+                listener.onError?.(event);
+            });
+        };
+        this.ws.onmessage = (event: MessageEvent<unknown>) => {
+            this.listeners.forEach((listener) => {
+                listener.onMessage?.(event);
+            });
+        };
+        this.ws.onclose = (event: CloseEvent) => {
+            this.listeners.forEach((listener) => {
+                listener.onClose?.(event);
+            });
+            this.ws = undefined;
+        };
+        return this;
+    }
+
+    removeListener(listener: WebSocketListener<unknown>): this {
+        this.listeners.splice(this.listeners.indexOf(listener), 1);
         return this;
     }
 }

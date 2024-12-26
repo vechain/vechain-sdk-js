@@ -18,7 +18,7 @@ describe('NewTransactionSubscription solo tests', () => {
 
     test('data <- open', (done) => {
         subscription
-            .addMessageListener({
+            .addListener({
                 onMessage: (message) => {
                     const data = message.data;
                     console.log(JSON.stringify(data, null, 2));

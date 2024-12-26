@@ -9,7 +9,7 @@ import {
 class BeatsSubscription implements WebSocketClient, WebSocketListener<unknown> {
     static readonly PATH: HttpPath = { path: '/subscriptions/beat2' };
 
-    private readonly messageListeners: Array<
+    private readonly listeners: Array<
         WebSocketListener<SubscriptionBeat2Response>
     > = [];
 
@@ -22,10 +22,8 @@ class BeatsSubscription implements WebSocketClient, WebSocketListener<unknown> {
         this.query = query;
     }
 
-    addMessageListener(
-        listener: WebSocketListener<SubscriptionBeat2Response>
-    ): this {
-        this.messageListeners.push(listener);
+    addListener(listener: WebSocketListener<SubscriptionBeat2Response>): this {
+        this.listeners.push(listener);
         return this;
     }
 
@@ -42,6 +40,18 @@ class BeatsSubscription implements WebSocketClient, WebSocketListener<unknown> {
         return this;
     }
 
+    onClose(event: Event): void {
+        this.listeners.forEach((listener) => {
+            listener.onClose(event);
+        });
+    }
+
+    onError(event: Event): void {
+        this.listeners.forEach((listener) => {
+            listener.onError(event);
+        });
+    }
+
     onMessage(event: MessageEvent<unknown>): void {
         const json = JSON.parse(
             event.data as string
@@ -50,15 +60,28 @@ class BeatsSubscription implements WebSocketClient, WebSocketListener<unknown> {
             event.type,
             { data: new SubscriptionBeat2Response(json) }
         );
-        this.messageListeners.forEach((listener) => {
+        this.listeners.forEach((listener) => {
             listener.onMessage(message);
+        });
+    }
+
+    onOpen(event: Event): void {
+        this.listeners.forEach((listener) => {
+            listener.onOpen(event);
         });
     }
 
     open(): this {
         this.wsc
-            .addMessageListener(this)
+            .addListener(this)
             .open({ path: BeatsSubscription.PATH.path + this.query.query });
+        return this;
+    }
+
+    removeListener(
+        listener: WebSocketListener<SubscriptionBeat2Response>
+    ): this {
+        this.listeners.splice(this.listeners.indexOf(listener), 1);
         return this;
     }
 }

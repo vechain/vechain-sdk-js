@@ -24,7 +24,7 @@ class TransfersSubscription
         this.query = query;
     }
 
-    addMessageListener(
+    addListener(
         listener: WebSocketListener<SubscriptionTransferResponse>
     ): this {
         this.messageListeners.push(listener);
@@ -59,7 +59,7 @@ class TransfersSubscription
 
     open(): this {
         this.wsc
-            .addMessageListener(this)
+            .addListener(this)
             .open({ path: TransfersSubscription.PATH.path + this.query.query });
         return this;
     }

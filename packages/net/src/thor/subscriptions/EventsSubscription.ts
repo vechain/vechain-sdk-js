@@ -8,7 +8,7 @@ class EventsSubscription
 {
     static readonly PATH: HttpPath = { path: '/subscriptions/event' };
 
-    private readonly messageListeners: Array<
+    private readonly listeners: Array<
         WebSocketListener<SubscriptionEventResponse>
     > = [];
 
@@ -24,10 +24,8 @@ class EventsSubscription
         this.query = query;
     }
 
-    addMessageListener(
-        listener: WebSocketListener<SubscriptionEventResponse>
-    ): this {
-        this.messageListeners.push(listener);
+    addListener(listener: WebSocketListener<SubscriptionEventResponse>): this {
+        this.listeners.push(listener);
         return this;
     }
 
@@ -58,6 +56,18 @@ class EventsSubscription
         return this;
     }
 
+    onClose(event: Event): void {
+        this.listeners.forEach((listener) => {
+            listener.onClose(event);
+        });
+    }
+
+    onError(event: Event): void {
+        this.listeners.forEach((listener) => {
+            listener.onError(event);
+        });
+    }
+
     onMessage(event: MessageEvent<unknown>): void {
         const json = JSON.parse(
             event.data as string
@@ -66,15 +76,28 @@ class EventsSubscription
             event.type,
             { data: json }
         );
-        this.messageListeners.forEach((listener) => {
+        this.listeners.forEach((listener) => {
             listener.onMessage(message);
+        });
+    }
+
+    onOpen(event: Event): void {
+        this.listeners.forEach((listener) => {
+            listener.onOpen(event);
         });
     }
 
     open(): this {
         this.wsc
-            .addMessageListener(this)
+            .addListener(this)
             .open({ path: EventsSubscription.PATH.path + this.query.query });
+        return this;
+    }
+
+    removeListener(
+        listener: WebSocketListener<SubscriptionEventResponse>
+    ): this {
+        this.listeners.splice(this.listeners.indexOf(listener), 1);
         return this;
     }
 

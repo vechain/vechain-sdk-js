@@ -7,7 +7,7 @@ class NewTransactionSubscription
 {
     static readonly PATH: HttpPath = { path: '/subscriptions/txpool' };
 
-    private readonly messageListeners: Array<WebSocketListener<TXID>> = [];
+    private readonly listeners: Array<WebSocketListener<TXID>> = [];
 
     private readonly wsc: WebSocketClient;
 
@@ -15,8 +15,8 @@ class NewTransactionSubscription
         this.wsc = wsc;
     }
 
-    addMessageListener(listener: WebSocketListener<TXID>): this {
-        this.messageListeners.push(listener);
+    addListener(listener: WebSocketListener<TXID>): this {
+        this.listeners.push(listener);
         return this;
     }
 
@@ -33,18 +33,41 @@ class NewTransactionSubscription
         return this;
     }
 
+    onClose(event: Event): void {
+        this.listeners.forEach((listener) => {
+            listener.onClose(event);
+        });
+    }
+
+    onError(event: Event): void {
+        this.listeners.forEach((listener) => {
+            listener.onError(event);
+        });
+    }
+
     onMessage(event: MessageEvent<unknown>): void {
         const json = JSON.parse(event.data as string) as TXIDJSON;
         const message = new MessageEvent<TXID>(event.type, {
             data: new TXID(json)
         });
-        this.messageListeners.forEach((listener) => {
+        this.listeners.forEach((listener) => {
             listener.onMessage(message);
         });
     }
 
+    onOpen(event: Event): void {
+        this.listeners.forEach((listener) => {
+            listener.onOpen(event);
+        });
+    }
+
     open(): this {
-        this.wsc.addMessageListener(this).open(NewTransactionSubscription.PATH);
+        this.wsc.addListener(this).open(NewTransactionSubscription.PATH);
+        return this;
+    }
+
+    removeListener(listener: WebSocketListener<TXID>): this {
+        this.listeners.splice(this.listeners.indexOf(listener), 1);
         return this;
     }
 }

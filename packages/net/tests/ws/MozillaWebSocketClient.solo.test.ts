@@ -9,7 +9,7 @@ describe('MozillaWebSocketClient solo tests', () => {
     });
 
     test('data <- open', (done) => {
-        wsc.addMessageListener({
+        wsc.addListener({
             onMessage: (message) => {
                 console.log(message.data);
                 done();
