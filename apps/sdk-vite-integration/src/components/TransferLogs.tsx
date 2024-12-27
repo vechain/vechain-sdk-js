@@ -78,7 +78,7 @@ const TransferLogs = () => {
         if (Address.isValid(address) && fromBlock) {
             void getHistoryFor(address);
         }
-    }, [address, fromBlock, toBlock]);
+    }, [address, fromBlock, toBlock, getHistoryFor]);
 
     return (
         <main className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
