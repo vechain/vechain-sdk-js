@@ -1,7 +1,5 @@
 import {
-    ExecuteCodeResponse,
-    type ExecuteCodeResponseJSON,
-    type ExecuteCodesResponse,
+    ExecuteCodesResponse,
     type ExecuteCodesResponseJSON
 } from './ExecuteCodesResponse';
 import { type ThorRequest } from '../ThorRequest';
@@ -39,10 +37,7 @@ class InspectClauses
             (await response.json()) as ExecuteCodesResponseJSON;
         return {
             request: this,
-            response: responseBody.map(
-                (json: ExecuteCodeResponseJSON): ExecuteCodeResponse =>
-                    new ExecuteCodeResponse(json)
-            )
+            response: new ExecuteCodesResponse(responseBody)
         };
     }
 

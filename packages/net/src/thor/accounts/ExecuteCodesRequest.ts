@@ -5,12 +5,12 @@ import { Address, BlockRef, Units, VTHO } from '@vechain/sdk-core';
 class ExecuteCodesRequest {
     readonly provedWork?: string;
     readonly gasPayer?: Address;
-    expiration?: UInt;
-    blockRef?: BlockRef;
-    clauses?: Clause[];
-    gas?: VTHO;
-    gasPrice?: VTHO;
-    caller?: Address;
+    readonly expiration?: UInt;
+    readonly blockRef?: BlockRef;
+    readonly clauses?: Clause[];
+    readonly gas?: VTHO;
+    readonly gasPrice?: VTHO;
+    readonly caller?: Address;
 
     constructor(json: ExecuteCodesRequestJSON) {
         this.provedWork = json.provedWork;

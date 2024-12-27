@@ -43,7 +43,23 @@ class ExecuteCodeResponse {
     }
 }
 
-class ExecuteCodesResponse extends Array<ExecuteCodeResponse> {}
+class ExecuteCodesResponse extends Array<ExecuteCodeResponse> {
+    constructor(json: ExecuteCodesResponseJSON) {
+        super(
+            ...json.map(
+                (json: ExecuteCodeResponseJSON): ExecuteCodeResponse =>
+                    new ExecuteCodeResponse(json)
+            )
+        );
+    }
+
+    toJSON(): ExecuteCodesResponseJSON {
+        return this.map(
+            (response: ExecuteCodeResponse): ExecuteCodeResponseJSON =>
+                response.toJSON()
+        ) as ExecuteCodesResponseJSON;
+    }
+}
 
 interface ExecuteCodeResponseJSON {
     data: string;

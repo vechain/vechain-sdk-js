@@ -23,7 +23,7 @@ classDiagram
         <<callback>>
         onResponse(response: Response) Response
     }
-    HttpPath <-- HttpClient
+    HttpPath <-- "get - post" HttpClient
     HttpClient <|.. FetchHttpClient
     FetchHttpClient *--> OnRequest
     FetchHttpClient *--> OnResponse
