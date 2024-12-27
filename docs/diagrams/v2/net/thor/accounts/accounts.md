@@ -45,6 +45,15 @@ classDiagram
             amount: string
         }
     }
+    class ContractBytecode {
+        code HexUInt
+        constructor(json ContractBytecodeJSON) ContractBytecode
+        toJSON() ContractBytecodeJSON
+    }
+    class ContractBytecodeJSON {
+        <<interface>>
+        code: string
+    }
     class ExecuteCodesRequest {
         provedWork?: string
         gasPayer?: Address
@@ -94,14 +103,17 @@ classDiagram
     class ExecuteCodesResponseJSON {
         <<interface>>
     }
-    class ContractBytecode {
-        code HexUInt
-        constructor(json ContractBytecodeJSON) ContractBytecode
-        toJSON() ContractBytecodeJSON
+    class GetAccountResponse {
+        balance: VET
+        energy: VTHO
+        hasCode: boolean
+        constructor(json: GetAccountResponseJSON) GetAccountResponse
     }
-    class ContractBytecodeJSON {
+    class GetAccountResponseJSON {
         <<interface>>
-        code: string
+        balance: string
+        energy: string
+        hasCode: boolean
     }
     Array <|.. ExecuteCodesResponse
     Array <|-- ExecuteCodesResponseJSON
@@ -111,6 +123,7 @@ classDiagram
     ExecuteCodesRequest --> "new - toJSON" ExecuteCodesRequestJSON
     ExecuteCodeResponse --> "new - toJSON" ExecuteCodeResponseJSON
     ExecuteCodesResponse --> "new - toJSON" ExecuteCodesResponseJSON
+    GetAccountResponse --> "new - toJSON" GetAccountResponseJSON
     Transfer --> "new - toJSON" TransferJSON
     ExecuteCodesRequest *--> Clause
     ExecuteCodesRequestJSON *--> ClauseJSON
