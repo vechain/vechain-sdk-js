@@ -1,6 +1,11 @@
 ```mermaid
 classDiagram
     namespace http {
+        class HttpClient {
+            <<interface>>
+            get(httpPath: HttpPath) Promise~Response~
+            post(httpPath: HttpPath, body?: unknown) Promise~Response~
+        }
         class HttpPath {
             <<interface>>
             path: string
@@ -190,15 +195,20 @@ classDiagram
     ExecuteCodesResponseJSON *--> "ExecuteCodeResponseJSON[]" ExecuteCodeResponseJSON
     GetAccountResponse --> "new - toJSON" GetAccountResponseJSON
     GetStorageResponse --> "new - toJSON" GetStorageResponseJSON
+    HttpPath <-- "get - post" HttpClient
     InspectClauses --> "askTo" ExecuteCodesResponse
+    InspectClauses --> "askTo" HttpClient
     RetrieveAccountDetails *--> RetrieveAccountDetailsPath
     RetrieveAccountDetails --> "askTo" GetAccountResponse
+    RetrieveAccountDetails --> "askTo" HttpClient
     RetrieveAccountDetailsPath ..|> HttpPath
     RetrieveContractBytecode *--> RetrieveContractBytecodePath
     RetrieveContractBytecode --> "askTo" ContractBytecode
+    RetrieveContractBytecode --> "askTo" HttpClient
     RetrieveContractBytecodePath ..|> HttpPath
     RetrieveStoragePositionValue *--> RetrieveStoragePositionValuePath
     RetrieveStoragePositionValue --> "askTo" GetStorageResponse
+    RetrieveStoragePositionValue --> "askTo" HttpClient
     RetrieveStoragePositionValuePath ..|> HttpPath
     ThorRequest <--* ThorResponse
     ThorRequest <|.. InspectClauses

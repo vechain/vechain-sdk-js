@@ -1,6 +1,11 @@
 ```mermaid
 classDiagram
     namespace http {
+        class HttpClient {
+            <<interface>>
+            get(httpPath: HttpPath) Promise~Response~
+            post(httpPath: HttpPath, body?: unknown) Promise~Response~
+        }
         class HttpPath {
             <<interface>>
             path: string
@@ -68,11 +73,13 @@ classDiagram
     class RetrieveBlockPath {
         revision: Revision
     }
-    RetrieveBlockPath --|> HttpPath
+    HttpPath <-- "get - post" HttpClient
     RegularBlockResponse --> "new - toJSON" RegularBlockResponseJSON
+    RetrieveBlock *--> RetrieveBlockPath
+    RetrieveBlock --> "askTo" HttpClient
+    RetrieveBlock --> "askTo" RegularBlockResponse
+    RetrieveBlockPath --|> HttpPath
+    ThorRequest <--* ThorResponse
     ThorRequest <|.. RetrieveBlock
     ThorResponse <-- "askTo" RetrieveBlock
-    RetrieveBlock --> "askTo" RegularBlockResponse
-    RetrieveBlock *--> RetrieveBlockPath
-    ThorRequest <--* ThorResponse
 ```
