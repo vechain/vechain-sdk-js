@@ -40,6 +40,6 @@ describe('RetrieveBlock testnet tests', () => {
         const r = await new RetrieveBlock(
             new RetrieveBlockPath(Revision.BEST)
         ).askTo(httpClient);
-        return r.response.number;
+        return r.response.number.valueOf();
     }
 });
