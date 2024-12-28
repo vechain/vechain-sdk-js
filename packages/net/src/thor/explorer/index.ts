@@ -26,9 +26,9 @@ async function explore(): Promise<void> {
         for (const txid of block.transactions) {
             console.log(`TXID ${txid}`);
             const tx = (
-                await RetrieveTransactionByID.of(TxId.of(txid)).askTo(
-                    httpClient
-                )
+                await RetrieveTransactionByID.of(
+                    TxId.of(txid.toString())
+                ).askTo(httpClient)
             ).response;
 
             console.log(`TX: ${JSON.stringify(tx, null, 2)}`);
