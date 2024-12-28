@@ -16,9 +16,9 @@ class InspectClauses
 {
     static readonly PATH: HttpPath = { path: '/accounts/*' };
 
-    readonly query: InspectClauseQuery;
+    private readonly query: InspectClauseQuery;
 
-    readonly request: ExecuteCodesRequest;
+    private readonly request: ExecuteCodesRequest;
 
     constructor(query: InspectClauseQuery, request: ExecuteCodesRequest) {
         this.query = query;
@@ -41,17 +41,17 @@ class InspectClauses
         };
     }
 
-    withRevision(revision: Revision = Revision.BEST): InspectClauses {
-        return new InspectClauses(
-            new InspectClauseQuery(revision),
-            this.request
-        );
-    }
-
     static of(request: ExecuteCodesRequestJSON): InspectClauses {
         return new InspectClauses(
             new InspectClauseQuery(Revision.BEST),
             new ExecuteCodesRequest(request)
+        );
+    }
+
+    withRevision(revision: Revision = Revision.BEST): InspectClauses {
+        return new InspectClauses(
+            new InspectClauseQuery(revision),
+            this.request
         );
     }
 }

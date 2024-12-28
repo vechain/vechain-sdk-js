@@ -2,13 +2,13 @@ import { type HttpClient, type HttpPath } from '../../http';
 import { type Address, type BlockId } from '@vechain/sdk-core';
 import { type ThorRequest } from '../ThorRequest';
 import {
-    StoragePositionValue,
-    type StoragePositionValueJSON
-} from './StoragePositionValue';
+    GetStorageResponse,
+    type GetStorageResponseJSON
+} from './GetStorageResponse';
 import { type ThorResponse } from '../ThorResponse';
 
 class RetrieveStoragePositionValue
-    implements ThorRequest<RetrieveStoragePositionValue, StoragePositionValue>
+    implements ThorRequest<RetrieveStoragePositionValue, GetStorageResponse>
 {
     readonly path: RetrieveStoragePositionValuePath;
 
@@ -18,15 +18,12 @@ class RetrieveStoragePositionValue
 
     async askTo(
         httpClient: HttpClient
-    ): Promise<
-        ThorResponse<RetrieveStoragePositionValue, StoragePositionValue>
-    > {
+    ): Promise<ThorResponse<RetrieveStoragePositionValue, GetStorageResponse>> {
         const response = await httpClient.get(this.path, { query: '' });
-        const responseBody =
-            (await response.json()) as StoragePositionValueJSON;
+        const responseBody = (await response.json()) as GetStorageResponseJSON;
         return {
             request: this,
-            response: new StoragePositionValue(responseBody)
+            response: new GetStorageResponse(responseBody)
         };
     }
 

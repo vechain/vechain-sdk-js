@@ -1,8 +1,25 @@
 ```mermaid
 classDiagram
+    namespace http {
+        class HttpPath {
+            <<interface>>
+            path: string
+        }
+    }
     namespace JS {
         class Array~Type~ {
             <<interface>>
+        }
+    }
+    namespace thor {
+        class ThorRequest~RequestClass~ {
+            <<interface>>
+            askTo(httpClient: HttpClient Promise~ThorResponse~ResponseClass~~;
+        }
+        class ThorResponse~ResponseClass~ {
+            <<interface>>
+            request: ThorRequest~RequestClass~
+            response: ResponseClass
         }
     }
     namespace transactions {
@@ -115,22 +132,82 @@ classDiagram
         energy: string
         hasCode: boolean
     }
-    Array <|.. ExecuteCodesResponse
-    Array <|-- ExecuteCodesResponseJSON
+    class GetStorageResponse {
+        value: ThorId
+        constructor(json: GetStorageResponseJSON) GetStorageResponse
+        toJSON() GetStorageResponseJSON
+    }
+    class GetStorageResponseJSON {
+        <<interface>>
+        value: string
+    }
+    class InspectClauses {
+        PATH: HttpPath$
+        askTo(httpClient: HttpClient) Promise~ThorResponse~ExecuteCodesResponse~~
+        of(request: ExecuteCodesRequestJSON) InspectClauses$
+        withRevision(revision: Revision) InspectClauses
+    }
+    class RetrieveAccountDetails {
+        path: RetrieveAccountDetailsPath
+        askTo(httpClient: HttpClient) Promise~ThorResponse~GetAccountResponse~~
+        of(address: Address) RetrieveAccountDetails$
+    }
+    class RetrieveAccountDetailsPath {
+        address: Address
+    }
+    class RetrieveContractBytecode {
+        path: RetrieveContractBytecodePath
+        askTo(httpClient: HttpClient) Promise~ThorResponse~ContractBytecode~~
+        of(address: Address) RetrieveContractBytecode
+    }
+    class RetrieveContractBytecodePath {
+        address: Address
+    }
+    class RetrieveStoragePositionValue {
+        path: RetrieveStoragePositionValuePath
+        askTo(httpClient: HttpClient) Promise~ThorResponse~GetStorageResponse~~
+        of(address: Address, key: BlockId) RetrieveStoragePositionValue$
+    }
+    class RetrieveStoragePositionValuePath {
+        address: Address
+        key: BlockId
+    }
     Clause --> "new - toJSON" ClauseJSON
     ContractBytecode --> "new - toJSON" ContractBytecodeJSON
     Event --> "new - toJSON" EventJSON
-    ExecuteCodesRequest --> "new - toJSON" ExecuteCodesRequestJSON
-    ExecuteCodeResponse --> "new - toJSON" ExecuteCodeResponseJSON
-    ExecuteCodesResponse --> "new - toJSON" ExecuteCodesResponseJSON
-    GetAccountResponse --> "new - toJSON" GetAccountResponseJSON
-    Transfer --> "new - toJSON" TransferJSON
-    ExecuteCodesRequest *--> Clause
-    ExecuteCodesRequestJSON *--> ClauseJSON
     ExecuteCodeResponse *--> Event
     ExecuteCodeResponse *--> Transfer
+    ExecuteCodeResponse --> "new - toJSON" ExecuteCodeResponseJSON
     ExecuteCodeResponseJSON *--> EventJSON
     ExecuteCodeResponseJSON *--> TransferJSON
+    ExecuteCodeResponseJSON --|> Array
+    ExecuteCodesRequest *--> Clause
+    ExecuteCodesRequest --> "new - toJSON" ExecuteCodesRequestJSON
+    ExecuteCodesRequestJSON *--> ClauseJSON
     ExecuteCodesResponse *--> "ExecuteCodeResponseJSON[]" ExecuteCodeResponse
+    ExecuteCodesResponse --> "new - toJSON" ExecuteCodesResponseJSON
+    ExecuteCodesResponse ..|> Array 
     ExecuteCodesResponseJSON *--> "ExecuteCodeResponseJSON[]" ExecuteCodeResponseJSON
+    GetAccountResponse --> "new - toJSON" GetAccountResponseJSON
+    GetStorageResponse --> "new - toJSON" GetStorageResponseJSON
+    InspectClauses --> "askTo" ExecuteCodesResponse
+    RetrieveAccountDetails *--> RetrieveAccountDetailsPath
+    RetrieveAccountDetails --> "askTo" GetAccountResponse
+    RetrieveAccountDetailsPath ..|> HttpPath
+    RetrieveContractBytecode *--> RetrieveContractBytecodePath
+    RetrieveContractBytecode --> "askTo" ContractBytecode
+    RetrieveContractBytecodePath ..|> HttpPath
+    RetrieveStoragePositionValue *--> RetrieveStoragePositionValuePath
+    RetrieveStoragePositionValue --> "askTo" GetStorageResponse
+    RetrieveStoragePositionValuePath ..|> HttpPath
+    ThorRequest <--* ThorResponse
+    ThorRequest <|.. InspectClauses
+    ThorRequest <|.. RetrieveAccountDetails
+    ThorRequest <|.. RetrieveContractBytecode
+    ThorRequest <|.. RetrieveStoragePositionValue
+    ThorResponse <-- "askTo" InspectClauses
+    ThorResponse <-- "askTo" RetrieveAccountDetails
+    ThorResponse <-- "askTo" RetrieveContractBytecode
+    ThorResponse <-- "askTo" RetrieveStoragePositionValue
+    Transfer --> "new - toJSON" TransferJSON
 ```
