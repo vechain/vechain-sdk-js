@@ -2,7 +2,7 @@ import { ThorId } from '@vechain/sdk-core';
 
 class StorageRange {
     readonly nextKey?: ThorId;
-    readonly storage: undefined;
+    readonly storage: unknown;
 
     constructor(json: StorageRangeJSON) {
         this.nextKey =
@@ -20,7 +20,7 @@ class StorageRange {
 
 interface StorageRangeJSON {
     nextKey?: string;
-    storage: undefined;
+    storage: unknown;
 }
 
 export { StorageRange, type StorageRangeJSON };

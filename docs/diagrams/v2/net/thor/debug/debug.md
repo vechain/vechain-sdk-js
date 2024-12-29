@@ -1,5 +1,53 @@
 ```mermaid
 classDiagram
+    namespace http {
+        class HttpClient {
+            <<interface>>
+            get(httpPath: HttpPath) Promise~Response~
+            post(httpPath: HttpPath, body?: unknown) Promise~Response~
+        }
+        class HttpPath {
+            <<interface>>
+            path: string
+        }
+    }
+    namespace JS {
+        class unknown {
+            <<type>>
+        }
+    }
+    namespace thor {
+        class ThorRequest~RequestClass~ {
+            <<interface>>
+            askTo(httpClient: HttpClient Promise~ThorResponse~ResponseClass~~
+        }
+        class ThorResponse~ResponseClass~ {
+            <<interface>>
+            request: ThorRequest~RequestClass~
+            response: ResponseClass
+        }
+    }
+    class Bigram {
+        NAME: string$
+    }
+    class Call {
+        NAME: string$
+    }
+    class EvmDis {
+        NAME: string$
+    }
+    class FourByte {
+        NAME: string$
+    }
+    class Noop {
+        NAME: string$
+    }
+    class Null {
+        NAME: string$
+    }
+    class OpCount {
+        NAME: string$
+    }
     class PostDebugTracerCallRequest {
         name?: TracerName
         config?: unknown
@@ -13,7 +61,7 @@ classDiagram
         gasPayer?: Address
         expiration?: UInt
         blockRef?: BlockRef
-        constructor(json: PostDebugTracerCallRequestJSON)
+        constructor(json: PostDebugTracerCallRequestJSON) PostDebugTracerCallRequest
         toJSON() PostDebugTracerCallRequestJSON
     }
     class PostDebugTracerCallRequestJSON {
@@ -35,7 +83,7 @@ classDiagram
         name?: TracerName
         config?: unknown
         target: string
-        constructor(json PostDebugTracerRequestJSON)
+        constructor(json: PostDebugTracerRequestJSON) PostDebugTracerRequest
         toJSON() PostDebugTracerRequestJSON
     }
     class PostDebugTracerRequestJSON {
@@ -44,31 +92,31 @@ classDiagram
         config?: unknown
         target: string
     }
+    class Presate {
+        NAME: string$
+    }
     class RetrieveStorageRange {
         PATH: HttpPath$
         request: StorageRangeOption
-        constructor(request: StorageRangeOption)
-        askTo(httpClient: HttpClient) Promise~ThorResponse~StorageRange~~
+        askTo(httpClient: HttpClient): Promise~ThorResponse~StorageRange~~
         of(request: StorageRangeOptionJSON) RetrieveStorageRange$
     }
     class StorageRange {
         nextKey?: ThorId
         storage: unknown
-        constructor(json StorageRangeJSON)
+        constructor(json: StorageRangeJSON) StorageRange
         toJSON() StorageRangeJSON
-       }
+    }
     class StorageRangeJSON {
         <<interface>>
         nextKey?: string
-        storage: string
+        storage: unknown
     }
-    class StorageRangeOptions {
+    class StorageRangeOption {
         address: Address
         keyStart?: ThorId
         maxResult?: UInt
         target: string
-        constructor(json: StorageRangeOptionJSON)
-        toJSON() StorageRangeOptionJSON
     }
     class StorageRangeOptionJSON {
         <<interface>>
@@ -77,59 +125,84 @@ classDiagram
         maxResult?: number
         target: string
     }
+    class StructLogger {
+        NAME: string$
+    }
     class TraceCall {
         PATH: HttpPath$
         request: PostDebugTracerCallRequest
-        constructor(request: request: PostDebugTracerCallRequest)
-        askTo(httpClient: HttpClient) Promise~ThorResponse~undefined~~
-        of(request: PostDebugTracerCallRequestJSON): TraceCall$
+        askTo(httpClient: HttpClient): Promise~ThorResponse~unknown~~
+        of(request: PostDebugTracerCallRequestJSON) TraceCall$
+    }
+    class Tracer {
+        of(name: string): TracerName$
+    }
+    class TracerName {
+        <<abstract>>
+        toString: string
     }
     class TraceTransactionClause {
         PATH: HttpPath$
         request: PostDebugTracerRequest
-        constructor(request: PostDebugTracerRequest)
-        askTo(httpClient: HttpClient) Promise~ThorResponse~unknown~
-        of(request: PostDebugTracerRequestJSON): TraceTransactionClause$
+        askTo(httpClient: HttpClient): Promise~ThorResponse~unknown~~
+        of(request: PostDebugTracerRequestJSON) TraceTransactionClause$
     }
-    class TracerName {
-        <<abstract>>
+    class Trigram {
+        NAME: string$
     }
-    namespace thor {
-        class ThorRequest {
-            <<interface>>
-            askTo: (httpClient: HttpClient) Promise~ThorResponse~ResponseClass~~
-        }
-        class ThorResponse {
-            <<interface>>
-            request: ~RequestClass~;
-            response: ~ResponseClass~;
-        }
+    class Unigram {
+        NAME: string$
     }
-    PostDebugTracerCallRequestJSON <-- PostDebugTracerCallRequest
-    PostDebugTracerRequestJSON <-- PostDebugTracerRequest
-    StorageRange <-- RetrieveStorageRange
-    StorageRangeJSON <-- StorageRange
-    StorageRangeOptionJSON <-- StorageRangeOptions
-    ThorResponse <-- RetrieveStorageRange
-    ThorResponse <-- TraceCall
-    ThorResponse <-- TraceTransactionClause
+    Bigram <-- "of" Tracer
+    Call <-- "of" Tracer
+    EvmDis <-- "of" Tracer
+    FourByte <-- "of" Tracer
+    HttpPath <-- "get - post" HttpClient
+    Noop <-- "of" Tracer
+    Null <-- "of" Tracer
+    OpCount <-- "of" Tracer
+    PostDebugTracerCallRequest *--> TracerName
+    PostDebugTracerCallRequest --> "new - toJSON" PostDebugTracerCallRequestJSON
+    PostDebugTracerRequest *--> TracerName
+    PostDebugTracerRequest --> "new - toJSON" PostDebugTracerRequestJSON
+    Presate <-- "of" Tracer
+    Prestate <-- "of" Tracer
+    RetrieveStorageRange *-- HttpPath
+    RetrieveStorageRange *-- StorageRangeOption
+    RetrieveStorageRange --> "askTo" HttpClient
+    RetrieveStorageRange --> "askTo" StorageRange
+    RetrieveStorageRange --> "of" StorageRangeOptionJSON
+    StorageRange --> "new - toJSON" StorageRangeJSON
+    StorageRangeOption --> "new - toJSON" StorageRangeOptionJSON
+    StructLogger <-- "of" Tracer
+    ThorRequest <--* ThorResponse
     ThorRequest <|.. RetrieveStorageRange
     ThorRequest <|.. TraceCall
     ThorRequest <|.. TraceTransactionClause
-    TracerName <|-- StructLogger
-    TracerName <|-- FourByte
-    TracerNname <|-- Call
-    TracerName <|-- Noop
-    TracerName <|-- Prestate
-    TracerName <|-- Unigram
-    TracerName <|-- Bigram
-    TracerName <|-- Trigram
-    TracerName <|-- EvmDis
-    TracerName <|-- OpCount
-    TracerName <|-- Null
-    RetrieveStorageRange *--> StorageRangeOptions
-    PostDebugTracerCallRequest *--> TracerName
-    PostDebugTracerRequest *--> TracerName
+    ThorResponse <-- "askTo" RetrieveStorageRange
+    ThorResponse <-- "askTo" TraceCall
+    TraceCall *--> HttpPath
     TraceCall *--> PostDebugTracerCallRequest
-    TraceTransactionClause *--> PostDebugTracerRequest
+    TraceCall --> "askTo" HttpClient
+    TraceCall --> "askTo" unknown
+    TraceCall --> "of" PostDebugTracerCallRequestJSON
+    TraceTransactionClause *--> HttpPath
+    TraceTransactionClause *--> PostDebugTracerCallRequest
+    TraceTransactionClause --> "askTo" HttpClient
+    TraceTransactionClause --> "askTo" unknown
+    TraceTransactionClause --> "of" PostDebugTracerRequestJSON
+    TracerName <|-- Bigram
+    TracerName <|-- Call
+    TracerName <|-- EvmDis
+    TracerName <|-- FourByte
+    TracerName <|-- Noop
+    TracerName <|-- Null
+    TracerName <|-- OpCount
+    TracerName <|-- Presate
+    TracerName <|-- Prestate
+    TracerName <|-- StructLogger
+    TracerName <|-- Trigram
+    TracerName <|-- Unigram
+    Trigram <-- "of" Tracer
+    Unigram <-- "of" Tracer
 ```

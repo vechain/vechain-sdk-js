@@ -2,57 +2,57 @@ abstract class TracerName {
     abstract toString: () => string;
 }
 
-class StructLogger implements TracerName {
+class StructLogger extends TracerName {
     static readonly NAME = 'structLogger';
     toString: () => string = () => StructLogger.NAME;
 }
 
-class FourByte implements TracerName {
+class FourByte extends TracerName {
     static readonly NAME = '4byte';
     toString: () => string = () => FourByte.NAME;
 }
 
-class Call implements TracerName {
+class Call extends TracerName {
     static readonly NAME = 'call';
     toString: () => string = () => Call.NAME;
 }
 
-class Noop implements TracerName {
+class Noop extends TracerName {
     static readonly NAME = 'noop';
     toString: () => string = () => Noop.NAME;
 }
 
-class Prestate implements TracerName {
+class Prestate extends TracerName {
     static readonly NAME = 'prestate';
     toString: () => string = () => Prestate.NAME;
 }
 
-class Unigram implements TracerName {
+class Unigram extends TracerName {
     static readonly NAME = 'unigram';
     toString: () => string = () => Unigram.NAME;
 }
 
-class Bigram implements TracerName {
+class Bigram extends TracerName {
     static readonly NAME = 'bigram';
     toString: () => string = () => Bigram.NAME;
 }
 
-class Trigram implements TracerName {
+class Trigram extends TracerName {
     static readonly NAME = 'trigram';
     toString: () => string = () => Trigram.NAME;
 }
 
-class EvmDis implements TracerName {
+class EvmDis extends TracerName {
     static readonly NAME = 'evmdis';
     toString: () => string = () => EvmDis.NAME;
 }
 
-class OpCount implements TracerName {
+class OpCount extends TracerName {
     static readonly NAME = 'opcount';
     toString: () => string = () => OpCount.NAME;
 }
 
-class Null implements TracerName {
+class Null extends TracerName {
     static readonly NAME = 'null';
     toString: () => string = () => Null.NAME;
 }
