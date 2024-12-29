@@ -78,7 +78,7 @@ classDiagram
     RetrieveBlock *--> RetrieveBlockPath
     RetrieveBlock --> "askTo" HttpClient
     RetrieveBlock --> "askTo" RegularBlockResponse
-    RetrieveBlockPath --|> HttpPath
+    RetrieveBlockPath ..|> HttpPath
     ThorRequest <--* ThorResponse
     ThorRequest <|.. RetrieveBlock
     ThorResponse <-- "askTo" RetrieveBlock
