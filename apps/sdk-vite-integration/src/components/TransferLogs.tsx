@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Address, FixedPointNumber, Units } from '@vechain/sdk-core';
 import {
     FilterTransferLogsOptions
@@ -36,9 +36,8 @@ const TransferLogs = () => {
     * Function to get the history for the provided address
     * @param address The address to get the history for
     */
-    async function getHistoryFor(address: string): Promise<void> {
+    const getHistoryFor = useCallback(async (address: string) => {
         try {
-            
             // Filter options for the transfer logs
             const filterOptions: FilterTransferLogsOptions = {
                 criteriaSet: [
@@ -54,31 +53,28 @@ const TransferLogs = () => {
             };
 
             // Get the transfer logs
-            const logs =
-                await thorClient.logs.filterTransferLogs(filterOptions);
+            const logs = await thorClient.logs.filterTransferLogs(filterOptions);
 
             // Map the logs to the transfer interface
-            const transfers = logs.map((log) => {
-                return {
-                    from: log.sender,
-                    to: log.recipient,
-                    amount: log.amount,
-                    meta: log.meta
-                };
-            });
+            const transfers = logs.map((log) => ({
+                from: log.sender,
+                to: log.recipient,
+                amount: log.amount,
+                meta: log.meta
+            }));
             setTransfers(transfers);
         } catch (error) {
             setTransfers([]);
-            console.log(error);
+            console.error(error);
         }
-    }
+    }, [fromBlock, toBlock]);
 
     // Update the history when the address changes
     useEffect(() => {
         if (Address.isValid(address) && fromBlock) {
             void getHistoryFor(address);
         }
-    }, [address, fromBlock, toBlock]);
+    }, [address, fromBlock, toBlock, getHistoryFor]);
 
     return (
         <main className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
@@ -91,7 +87,7 @@ const TransferLogs = () => {
                         htmlFor="address"
                         className="block text-sm font-medium text-gray-700"
                     >
-                    Address
+                        Address
                     </label>
                     <input
                         type="text"
@@ -110,7 +106,7 @@ const TransferLogs = () => {
                         htmlFor="fromblock"
                         className="block text-sm font-medium text-gray-700"
                     >
-                    FromBlock
+                        FromBlock
                     </label>
                     <input
                         type="number"
@@ -129,7 +125,7 @@ const TransferLogs = () => {
                         htmlFor="Toblock"
                         className="block text-sm font-medium text-gray-700"
                     >
-                    ToBlock
+                        ToBlock
                     </label>
                     <input
                         type="number"
