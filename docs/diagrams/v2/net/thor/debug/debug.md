@@ -1,5 +1,10 @@
 ```mermaid
 classDiagram
+    namespace JS {
+        class unknown {
+            <<type>>
+        }
+    }
     namespace http {
         class HttpClient {
             <<interface>>
@@ -9,11 +14,6 @@ classDiagram
         class HttpPath {
             <<interface>>
             path: string
-        }
-    }
-    namespace JS {
-        class unknown {
-            <<type>>
         }
     }
     namespace thor {
@@ -157,7 +157,10 @@ classDiagram
     Call <-- "of" Tracer
     EvmDis <-- "of" Tracer
     FourByte <-- "of" Tracer
-    HttpPath <-- "get - post" HttpClient
+    HttpClient --> "get - post" HttpPath
+    HttpPath <--* RetrieveStorageRange
+    HttpPath <--* TraceCall
+    HttpPath <--* TraceTransactionClause
     Noop <-- "of" Tracer
     Null <-- "of" Tracer
     OpCount <-- "of" Tracer
@@ -167,9 +170,7 @@ classDiagram
     PostDebugTracerRequest --> "new - toJSON" PostDebugTracerRequestJSON
     Presate <-- "of" Tracer
     Prestate <-- "of" Tracer
-    RetrieveStorageRange *-- HttpPath
-    RetrieveStorageRange *-- StorageRangeOption
-    RetrieveStorageRange --> "askTo" HttpClient
+    RetrieveStorageRange *--> StorageRangeOption
     RetrieveStorageRange --> "askTo" StorageRange
     RetrieveStorageRange --> "of" StorageRangeOptionJSON
     StorageRange --> "new - toJSON" StorageRangeJSON
@@ -181,14 +182,10 @@ classDiagram
     ThorRequest <|.. TraceTransactionClause
     ThorResponse <-- "askTo" RetrieveStorageRange
     ThorResponse <-- "askTo" TraceCall
-    TraceCall *--> HttpPath
     TraceCall *--> PostDebugTracerCallRequest
-    TraceCall --> "askTo" HttpClient
     TraceCall --> "askTo" unknown
     TraceCall --> "of" PostDebugTracerCallRequestJSON
-    TraceTransactionClause *--> HttpPath
     TraceTransactionClause *--> PostDebugTracerCallRequest
-    TraceTransactionClause --> "askTo" HttpClient
     TraceTransactionClause --> "askTo" unknown
     TraceTransactionClause --> "of" PostDebugTracerRequestJSON
     TracerName <|-- Bigram

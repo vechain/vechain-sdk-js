@@ -1,5 +1,32 @@
 ```mermaid
 classDiagram
+    namespace JS {
+        class Array~Type~ {
+            <<type>>
+        }
+    }
+    namespace http {
+        class HttpClient {
+            <<interface>>
+            get(httpPath: HttpPath) Promise~Response~
+            post(httpPath: HttpPath, body?: unknown) Promise~Response~
+        }
+        class HttpPath {
+            <<interface>>
+            path: string
+        }
+    }
+    namespace thor {
+        class ThorRequest~RequestClass~ {
+            <<interface>>
+            askTo(httpClient: HttpClient Promise~ThorResponse~ResponseClass~~
+        }
+        class ThorResponse~ResponseClass~ {
+            <<interface>>
+            request: ThorRequest~RequestClass~
+            response: ResponseClass
+        }
+    }
     class EventCriteria {
         address?: Address
         topic0?: ThorId
@@ -7,12 +34,12 @@ classDiagram
         topic2?: ThorId
         topic3?: ThorId
         topic4?: ThorId
-        constructor(json: EventCriteriaJSON)
+        constructor(json: EventCriteriaJSON) EventCriteria
         toJSON() EventCriteriaJSON
     }
     class EventCriteriaJSON {
         <<interface>>
-        address?: string;
+        address?: string
         topic0?: string
         topic1?: string
         topic2?: string
@@ -23,194 +50,182 @@ classDiagram
         range?: FilterRange
         options?: FilterOptions
         criteriaSet?: EventCriteria[]
-        order?: EventLogFilterRequestOrder
-        constructor(json: EventLogFilterRequestJSON)
+        order?: LogSort
+        constructor(json: EventLogFilterRequestJSON) EventLogFilterRequest
         toJSON() EventLogFilterRequestJSON
     }
     class EventLogFilterRequestJSON {
-        <<interface>>
         range?: FilterRangeJSON
         options?: FilterOptionsJSON
         criteriaSet?: EventCriteriaJSON[]
         order?: string
     }
     class EventLogResponse {
-        readonly address: Address;
-        readonly topics: ThorId[];
-        readonly data: HexUInt;
-        readonly meta: LogMeta;
-        constructor(json: EventLogResponseJSON)
+        address: Address
+        topics: ThorId[]
+        data: HexUInt
+        meta: LogMeta
+        constructor(json: EventLogResponseJSON) EventLogResponse
         toJSON() EventLogResponseJSON
     }
     class EventLogResponseJSON {
         <<interface>>
-        address: string;
-        topics: string[];
-        data: string;
-        meta: LogMetaJSON;
+        address: string
+        topics: string[]
+        data: string
+        meta: LogMetaJSON
     }
     class EventLogsResponse {
+        constructor(json: EventLogsResponseJSON) EventLogsResponse
+        toJSON() EventLogsResponseJSON
+    }
+    class EventLogsResponseJSON {
         <<interface>>
     }
     class FilterOptions {
         limit?: UInt
         offset?: UInt
-        constructor(json: FilterOptionsJSON)
+        constructor(json: FilterOptionsJSON) FilterOptions
         toJSON() FilterOptionsJSON
     }
     class FilterOptionsJSON {
-        <<interface>>
         limit?: number
         offset?: number
     }
-    class FilterRange {
-        from?: UInt
-        to?: UInt
-        unit?: FilterRangeUnit
-        constructor(json: FilterRangeJSON)
-        toJSON() FilterRangeJSON
-    }
-    class FilterRangeJSON {
-        <<interface>>
-        from?: number
-        to?: number
-        unit?: string
-    }
-    class FilterRangeUnit {
-        <<enum>>
-        block$
-        time$
-    }
     class LogMeta {
-        blockID: BlockId;
-        blockNumber: UInt;
-        blockTimestamp: UInt;
-        txID: TxId;
-        txOrigin: Address;
-        clauseIndex: UInt;
+        blockID: BlockId
+        blockNumber: UInt
+        blockTimestamp: UInt
+        txID: TxId
+        txOrigin: Address
+        clauseIndex: UInt
         constructor(json: LogMetaJSON)
         toJSON() LogMetaJSON
     }
     class LogMetaJSON {
         <<interface>>
-        blockID: string;
-        blockNumber: number;
-        blockTimestamp: number;
-        txID: string;
-        txOrigin: string;
-        clauseIndex: number;
+        blockID: string
+        blockNumber: number
+        blockTimestamp: number
+        txID: string
+        txOrigin: string
+        clauseIndex: number
     }
     class LogSort {
-        <<enum>>
-        asc$
-        desc$
+        <<enumeration>>
+        asc: string
+        desc: string
+    }
+    class FilterRange {
+        unit?: FilterRangeUnits
+        from?: UInt
+        to?: UInt
+        constructor(json: FilterRangeJSON) FilterRange
+        toJSON() FilterRangeJSON
+    }
+    class FilterRangeJSON {
+        unit?: string
+        from?: number
+        to?: number
+    }
+    class FilterRangeUnits {
+        <<enumeration>>
+        block = 'block',
+        time = 'time'
     }
     class QuerySmartContractEvents {
-        PATH$: HttpPath
+        PATH: HttpPath$
         request: EventLogFilterRequest
-        constructor(request: EventLogFilterRequest)
-        askTo(httpClient: HttpClient): Promise~ThorResponse~EventLogsResponse~~
-        of(request: EventLogFilterRequestJSON)$ QuerySmartContractEvents
+        constructor(request: EventLogFilterRequest) QuerySmartContractEvents
+        askTo(httpClient: HttpClient) Promise~ThorResponse~EventLogsResponse~~
+        static of(request: EventLogFilterRequestJSON) QuerySmartContractEvents$
     }
     class QueryVETTransferEvents {
-        PATH$: HttpPath
+        PATH: HttpPath$
         request: TransferLogFilterRequest
-        constructor(request: TransferLogFilterRequest)
-        askTo(httpClient: HttpClient): Promise~ThorResponse~TransferLogsResponse~~
-        of(request: TransferLogFilterRequestJSON) QueryVETTransferEvents
+        constructor(request: TransferLogFilterRequest) QueryVETTransferEvents
+        askTo(httpClient: HttpClient) Promise~ThorResponse~TransferLogsResponse~~
+        of(request: TransferLogFilterRequestJSON) QueryVETTransferEvents$
     }
     class TransferCriteria {
-        txOrigin?: Address;
-        sender?: Address;
-        recipient?: Address;
-        constructor(json: TransferCriteriaJSON)
+        txOrigin?: Address
+        sender?: Address
+        recipient?: Address
+        constructor(json: TransferCriteriaJSON) TransferCriteria
         toJSON() TransferCriteriaJSON
     }
     class TransferCriteriaJSON {
-        <<interface>>
-        txOrigin?: string;
-        sender?: string;
-        recipient?: string;
+        txOrigin?: string
+        sender?: string
+        recipient?: string
     }
     class TransferLogFilterRequest {
         range?: FilterRange
         options?: FilterOptions
         criteriaSet?: TransferCriteria[]
         order?: LogSort
-        constructor(json: TransferLogFilterRequestJSON)
+        constructor(json: TransferLogFilterRequestJSON) TransferLogFilterRequest
         toJSON() TransferLogFilterRequestJSON
     }
     class TransferLogFilterRequestJSON {
-        <<interface>>
         range?: FilterRangeJSON
         options?: FilterOptionsJSON
         criteriaSet?: TransferCriteriaJSON[]
-        order?: LogSort
+        order?: string
     }
     class TransferLogResponse {
         sender: Address
         recipient: Address
         amount: VET
         meta: LogMeta
-        constructor(json: TransferLogResponseJSON)
+        constructor(json: TransferLogResponseJSON) TransferLogResponse
         toJSON() TransferLogResponseJSON
     }
     class TransferLogResponseJSON {
-        <<interface>>
-        sender: string;
-        recipient: string;
-        amount: string;
-        meta: LogMetaJSON;
+        sender: string
+        recipient: string
+        amount: string
+        meta: LogMetaJSON
     }
-    class TransferLogsResponse {
-        <<interface>>
-    }
-    namespace thor {
-        class ThorRequest {
-            <<interface>>
-            askTo: (httpClient: HttpClient) Promise~ThorResponse~ResponseClass~~
-        }
-        class ThorResponse {
-            <<interface>>
-            request: ~RequestClass~;
-            response: ~ResponseClass~;
-        }
-    }
-    EventCriteriaJSON <-- EventCriteria
-    EventLogFilterRequestJSON <-- EventLogFilterRequest
-    EventLogResponseJSON <-- EventLogResponse
-    EventLogsResponse <-- QuerySmartContractEvents
-    FilterOptionsJSON <-- FilterOptions
-    FilterRangeJSON <-- FilterRange
-    LogMetaJSON <-- LogMeta
-    TransferCriteriaJSON <-- TransferCriteria
-    TransferLogFilterRequestJSON <-- TransferLogFilterRequest
-    TransferLogResponseJSON <-- TransferLogResponse
-    TransferLogsResponse <-- QueryVETTransferEvents
-    ThorResponse <-- EventLogsResponse
-    ThorResponse <-- TransferLogResponse
-    ThorResponse <-- QuerySmartContractEvents
-    ThorResponse <-- QueryVETTransferEvents
-    ThorRequest <|.. QuerySmartContractEvents
-    ThorRequest <|.. QueryVETTransferEvents
-    EventLogResponse "*" o-- EventLogsResponse
-    TransferLogResponse "*" o-- TransferLogsResponse
-    EventLogFilterRequest *--> FilterRange
-    EventLogFilterRequest *--> FilterOptions
+    EventCriteria --> "new - toJSON" EventCriteriaJSON
     EventLogFilterRequest *--> EventCriteria
     EventLogFilterRequest *--> LogSort
-    EventLogFilterRequestJSON *--> FilterRangeJSON
-    EventLogFilterRequestJSON *--> FilterOptionsJSON
+    EventLogFilterRequest --> "new - toJSON" EventLogFilterRequestJSON
     EventLogFilterRequestJSON *--> EventCriteriaJSON
     EventLogResponse *--> LogMeta
+    EventLogResponse --> "new - toJSON" EventLogResponseJSON
     EventLogResponseJSON *--> LogMetaJSON
-    FilterRange *--> FilterRangeUnit
+    EventLogsResponse *--> EventLogResponse
+    EventLogsResponse --|> Array
+    EventLogsResponseJSON *--> EventLogResponseJSON
+    EventLogsResponseJSON --|> Array
+    FilterOptions --> "new - toJSON" FilterOptionsJSON
+    FilterRange *--> FilterRangeUnits
+    FilterRange --> "new - toJSON" FilterRangeJSON
+    HttpClient --> "get - post" HttpPath
+    HttpPath <--* QuerySmartContractEvents
+    HttpPath <--* QueryVETTransferEvents
+    LogMeta --> "new - toJSON" LogMetaJSON
     QuerySmartContractEvents *--> EventLogFilterRequest
-    QueryVETTransferEvents  *--> TransferLogFilterRequest
-    TransferLogFilterRequest *--> FilterRange
+    QuerySmartContractEvents --> "askTo" EventLogsResponse
+    QueryVETTransferEvents *--> TransferLogFilterRequest
+    QueryVETTransferEvents --> "askTo" TransferLogsResponse
+    ThorRequest <--* ThorResponse
+    ThorRequest <|.. QuerySmartContractEvents
+    ThorRequest <|.. QueryVETTransferEvents
+    ThorResponse <-- "askTo" QuerySmartContractEvents
+    ThorResponse <-- "askTo" QueryVETTransferEvents
+    TransferCriteria --> "new - toJSON" TransferCriteriaJSON
     TransferLogFilterRequest *--> FilterOptions
-    TransferLogFilterRequest *--> "*" TransferCriteria
+    TransferLogFilterRequest *--> FilterRange
     TransferLogFilterRequest *--> LogSort
+    TransferLogFilterRequest *--> TransferCriteria
+    TransferLogFilterRequest --> "new - toJSON" TransferLogFilterRequestJSON
     TransferLogResponse *--> LogMeta
-    TransferLogResponseJSON *--> LogMetaJSON
+    TransferLogResponse --> "new - toJSON" TransferLogResponseJSON
+    TransferLogsResponse *--> TransferLogResponse
+    TransferLogsResponse --> "new - toJSON" TransferLogsResponseJSON
+    TransferLogsResponse --|> Array
+    TransferLogsResponseJSON *--> TransferLogResponseJSON
+    TransferLogsResponseJSON --|> Array
 ```

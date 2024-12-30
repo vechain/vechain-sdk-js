@@ -1,9 +1,9 @@
 import { Address } from '@vechain/sdk-core';
 
 class TransferCriteria {
-    txOrigin?: Address;
-    sender?: Address;
-    recipient?: Address;
+    readonly txOrigin?: Address;
+    readonly sender?: Address;
+    readonly recipient?: Address;
 
     constructor(json: TransferCriteriaJSON) {
         this.txOrigin =

@@ -1,5 +1,5 @@
 import { Address, ThorId, Units, VTHO } from '@vechain/sdk-core';
-import { UInt } from '../../../../core';
+import { UInt } from '../../../../core/src';
 
 class RegularBlockResponse {
     readonly number: UInt;

@@ -2,10 +2,10 @@ import { LogMeta, type LogMetaJSON } from './LogMeta';
 import { Address, HexUInt, Units, VET } from '@vechain/sdk-core';
 
 class TransferLogResponse {
-    sender: Address;
-    recipient: Address;
-    amount: VET;
-    meta: LogMeta;
+    readonly sender: Address;
+    readonly recipient: Address;
+    readonly amount: VET;
+    readonly meta: LogMeta;
 
     constructor(json: TransferLogResponseJSON) {
         this.sender = Address.of(json.sender);

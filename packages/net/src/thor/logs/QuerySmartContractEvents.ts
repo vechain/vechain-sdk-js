@@ -6,9 +6,7 @@ import {
 } from './EventLogFilterRequest';
 import type { ThorResponse } from '../ThorResponse';
 import {
-    EventLogResponse,
-    type EventLogResponseJSON,
-    type EventLogsResponse,
+    EventLogsResponse,
     type EventLogsResponseJSON
 } from './EventLogsResponse';
 
@@ -34,10 +32,7 @@ class QuerySmartContractEvents
         const responseBody = (await response.json()) as EventLogsResponseJSON;
         return {
             request: this,
-            response: responseBody.map(
-                (json: EventLogResponseJSON): EventLogResponse =>
-                    new EventLogResponse(json)
-            ) as EventLogsResponse
+            response: new EventLogsResponse(responseBody)
         };
     }
 

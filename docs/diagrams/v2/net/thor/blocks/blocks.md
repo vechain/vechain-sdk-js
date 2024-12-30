@@ -73,13 +73,12 @@ classDiagram
     class RetrieveBlockPath {
         revision: Revision
     }
-    HttpPath <-- "get - post" HttpClient
-    RegularBlockResponse --> "new - toJSON" RegularBlockResponseJSON
-    RetrieveBlock *--> RetrieveBlockPath
-    RetrieveBlock --> "askTo" HttpClient
-    RetrieveBlock --> "askTo" RegularBlockResponse
-    RetrieveBlockPath ..|> HttpPath
-    ThorRequest <--* ThorResponse
-    ThorRequest <|.. RetrieveBlock
     ThorResponse <-- "askTo" RetrieveBlock
+    ThorRequest <|.. RetrieveBlock
+    ThorRequest <--* ThorResponse
+    HttpPath <|.. RetrieveBlockPath
+    RetrieveBlock --> "askTo" RegularBlockResponse
+    RetrieveBlock *--> RetrieveBlockPath
+    RegularBlockResponse --> "new - toJSON" RegularBlockResponseJSON
+    HttpClient --> "get - post" HttpPath
 ```

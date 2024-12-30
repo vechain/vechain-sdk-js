@@ -35,7 +35,16 @@ interface EventLogResponseJSON {
     meta: LogMetaJSON;
 }
 
-interface EventLogsResponse extends Array<EventLogResponse> {}
+class EventLogsResponse extends Array<EventLogResponse> {
+    constructor(json: EventLogsResponseJSON) {
+        super(
+            ...json.map(
+                (response: EventLogResponseJSON): EventLogResponse =>
+                    new EventLogResponse(response)
+            )
+        );
+    }
+}
 
 interface EventLogsResponseJSON extends Array<EventLogResponseJSON> {}
 
@@ -43,5 +52,5 @@ export {
     EventLogResponse,
     type EventLogResponseJSON,
     type EventLogsResponseJSON,
-    type EventLogsResponse
+    EventLogsResponse
 };

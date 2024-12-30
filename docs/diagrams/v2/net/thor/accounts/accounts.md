@@ -1,5 +1,10 @@
 ```mermaid
 classDiagram
+    namespace JS {
+        class Array~Type~ {
+            <<type>>
+        }
+    }
     namespace http {
         class HttpClient {
             <<interface>>
@@ -9,11 +14,6 @@ classDiagram
         class HttpPath {
             <<interface>>
             path: string
-        }
-    }
-    namespace JS {
-        class Array~Type~ {
-            <<interface>>
         }
     }
     namespace thor {
@@ -191,25 +191,21 @@ classDiagram
     ExecuteCodesRequestJSON *--> ClauseJSON
     ExecuteCodesResponse *--> "ExecuteCodeResponseJSON[]" ExecuteCodeResponse
     ExecuteCodesResponse --> "new - toJSON" ExecuteCodesResponseJSON
-    ExecuteCodesResponse ..|> Array 
+    ExecuteCodesResponse --|> Array 
     ExecuteCodesResponseJSON *--> "ExecuteCodeResponseJSON[]" ExecuteCodeResponseJSON
     GetAccountResponse --> "new - toJSON" GetAccountResponseJSON
     GetStorageResponse --> "new - toJSON" GetStorageResponseJSON
-    HttpPath <-- "get - post" HttpClient
+    HttpClient --> "get - post" HttpPath
+    HttpPath <|.. RetrieveAccountDetailsPath
+    HttpPath <|.. RetrieveContractBytecodePath
+    HttpPath <|.. RetrieveStoragePositionValuePath
     InspectClauses --> "askTo" ExecuteCodesResponse
-    InspectClauses --> "askTo" HttpClient
     RetrieveAccountDetails *--> RetrieveAccountDetailsPath
     RetrieveAccountDetails --> "askTo" GetAccountResponse
-    RetrieveAccountDetails --> "askTo" HttpClient
-    RetrieveAccountDetailsPath ..|> HttpPath
     RetrieveContractBytecode *--> RetrieveContractBytecodePath
     RetrieveContractBytecode --> "askTo" ContractBytecode
-    RetrieveContractBytecode --> "askTo" HttpClient
-    RetrieveContractBytecodePath ..|> HttpPath
     RetrieveStoragePositionValue *--> RetrieveStoragePositionValuePath
     RetrieveStoragePositionValue --> "askTo" GetStorageResponse
-    RetrieveStoragePositionValue --> "askTo" HttpClient
-    RetrieveStoragePositionValuePath ..|> HttpPath
     ThorRequest <--* ThorResponse
     ThorRequest <|.. InspectClauses
     ThorRequest <|.. RetrieveAccountDetails
