@@ -54,7 +54,7 @@ classDiagram
         duration: number
     }
     class RetrieveConnectedPeers {
-        PATH: HttpPath
+        PATH: HttpPath$
         askTo(httpClient: HttpClient) Promise~ThorResponse~GetPeersResponse~~
     }
     GetPeersResponse *--> PeerStat
