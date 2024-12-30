@@ -299,6 +299,7 @@ describe('KMSVeChainSigner - Thor Solo', () => {
             const signature = await signer.signTypedData(
                 typedData.domain,
                 typedData.types,
+                typedData.primaryType,
                 typedData.data
             );
             expect(signature).toBeDefined();
