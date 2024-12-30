@@ -77,7 +77,6 @@ classDiagram
     }
     class EventLogsResponse {
         constructor(json: EventLogsResponseJSON) EventLogsResponse
-        toJSON() EventLogsResponseJSON
     }
     class EventLogsResponseJSON {
         <<interface>>
