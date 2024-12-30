@@ -1,3 +1,3 @@
 export * from './GetPeersResponse';
-export * from './PeerResponse';
+export * from './PeerStat';
 export * from './RetrieveConnectedPeers';

@@ -1,41 +1,69 @@
 ```mermaid
 classDiagram
-    class Array~PeerResponse~ {
-    }
-    class GetPeersResponse {
-        <<interface>>
-    }
-    class PeerResponse {
-        bestBlockID: BlockId
-        duration: UInt
-        inbound: boolean
-        name: string
-        netAddr: string
-        peerID: string
-        totalScore: UInt
-    }
-    class RetrieveConnectedPeers {
+    namespace JS {
+        class Array~Type~ {
+            <<type>>
+        }
     }
     namespace http {
         class HttpClient {
             <<interface>>
+            get(httpPath: HttpPath) Promise~Response~
+            post(httpPath: HttpPath, body?: unknown) Promise~Response~
+        }
+        class HttpPath {
+            <<interface>>
+            path: string
         }
     }
     namespace thor {
-        class ThorRequest~RetrieveConnectedPeers~ {
+        class ThorRequest~RequestClass~ {
             <<interface>>
-            askTo(httpClient: HttpClient Promise~ThorResponse~GetPeersResponse~~;
+            askTo(httpClient: HttpClient Promise~ThorResponse~ResponseClass~~
         }
-        class ThorResponse~RetrieveConnectedPeers~ {
+        class ThorResponse~ResponseClass~ {
             <<interface>>
             request: ThorRequest~RequestClass~
-            response: GetPeersResponse
+            response: ResponseClass
         }
     }
-    Array~PeerResponse~ <|-- GetPeersResponse
-    GetPeersResponse *-- ThorResponse~RetrieveConnectedPeers~
-    HttpClient <-- ThorRequest~RetrieveConnectedPeers~
-    PeerResponse o-- Array~PeerResponse~
-    ThorRequest~RetrieveConnectedPeers~ <|.. RetrieveConnectedPeers
-    ThorResponse~RetrieveConnectedPeers~ *--> ThorRequest~RetrieveConnectedPeers~
+    class GetPeersResponse {
+        constructor(json: GetPeersResponseJSON) GetPeersResponse
+    }
+    class GetPeersResponseJSON {
+        <<interface>>
+    }
+    class PeerStat {
+        name: string
+        bestBlockID: BlockId
+        totalScore: UInt
+        peerID: string
+        netAddr: string
+        inbound: boolean
+        duration: UInt
+        constructor(json: PeerStatJSON) PeerStat
+        toJSON() PeerStatJSON
+    }
+    class PeerStatJSON {
+        name: string
+        bestBlockID: string
+        totalScore: number
+        peerID: string
+        netAddr: string
+        inbound: boolean
+        duration: number
+    }
+    class RetrieveConnectedPeers {
+        PATH: HttpPath
+        askTo(httpClient: HttpClient) Promise~ThorResponse~GetPeersResponse~~
+    }
+    GetPeersResponse *--> PeerStat
+    GetPeersResponse --> "new - toJSON" GetPeersResponseJSON
+    GetPeersResponse --|> Array
+    GetPeersResponseJSON *--> PeerStatJSON
+    HttpPath <--* RetrieveConnectedPeers
+    PeerStat --> "new - toJSON" PeerStatJSON
+    RetrieveConnectedPeers --> "askTo" GetPeersResponse
+    ThorRequest <-- "askTo" RetrieveConnectedPeers
+    ThorResponse <|.. RetrieveConnectedPeers
 ```

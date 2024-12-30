@@ -2,17 +2,7 @@ import { BlockId } from '@vechain/sdk-core';
 
 import { UInt } from '../../../../core/src/vcdm/UInt';
 
-interface PeerResponseJSON {
-    name: string;
-    bestBlockID: string;
-    totalScore: number;
-    peerID: string;
-    netAddr: string;
-    inbound: boolean;
-    duration: number;
-}
-
-class PeerResponse {
+class PeerStat {
     readonly name: string;
     readonly bestBlockID: BlockId;
     readonly totalScore: UInt;
@@ -21,7 +11,7 @@ class PeerResponse {
     readonly inbound: boolean;
     readonly duration: UInt;
 
-    constructor(json: PeerResponseJSON) {
+    constructor(json: PeerStatJSON) {
         this.name = json.name;
         this.bestBlockID = BlockId.of(json.bestBlockID);
         this.totalScore = UInt.of(json.totalScore);
@@ -31,7 +21,7 @@ class PeerResponse {
         this.duration = UInt.of(json.duration);
     }
 
-    toJSON(): PeerResponseJSON {
+    toJSON(): PeerStatJSON {
         return {
             name: this.name,
             bestBlockID: this.bestBlockID.toString(),
@@ -44,4 +34,14 @@ class PeerResponse {
     }
 }
 
-export { PeerResponse, type PeerResponseJSON };
+interface PeerStatJSON {
+    name: string;
+    bestBlockID: string;
+    totalScore: number;
+    peerID: string;
+    netAddr: string;
+    inbound: boolean;
+    duration: number;
+}
+
+export { PeerStat, type PeerStatJSON };

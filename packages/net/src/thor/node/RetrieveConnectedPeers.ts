@@ -1,5 +1,7 @@
-import { PeerResponse, type PeerResponseJSON } from './PeerResponse';
-import { type GetPeersResponse } from './GetPeersResponse';
+import {
+    GetPeersResponse,
+    type GetPeersResponseJSON
+} from './GetPeersResponse';
 import { type HttpClient, type HttpPath } from '../../http';
 import { type ThorRequest } from '../ThorRequest';
 import { type ThorResponse } from '../ThorResponse';
@@ -15,16 +17,11 @@ class RetrieveConnectedPeers
         const response = await httpClient.get(RetrieveConnectedPeers.PATH, {
             query: ''
         });
-        const responseBody: PeerResponseJSON[] =
-            (await response.json()) as PeerResponseJSON[];
-        const getPeersResponse: GetPeersResponse = responseBody.map(
-            (peerResponseJSON) => {
-                return new PeerResponse(peerResponseJSON);
-            }
-        );
+        const responseBody: GetPeersResponseJSON =
+            (await response.json()) as GetPeersResponseJSON;
         return {
             request: this,
-            response: getPeersResponse
+            response: new GetPeersResponse(responseBody)
         };
     }
 }

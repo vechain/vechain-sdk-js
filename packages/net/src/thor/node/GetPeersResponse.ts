@@ -1,3 +1,11 @@
-import { type PeerResponse } from './PeerResponse';
+import { PeerStat, type PeerStatJSON } from './PeerStat';
 
-export interface GetPeersResponse extends Array<PeerResponse> {}
+class GetPeersResponse extends Array<PeerStat> {
+    constructor(json: GetPeersResponseJSON) {
+        super(...json.map((json: PeerStatJSON) => new PeerStat(json)));
+    }
+}
+
+interface GetPeersResponseJSON extends Array<PeerStatJSON> {}
+
+export { GetPeersResponse, type GetPeersResponseJSON };
