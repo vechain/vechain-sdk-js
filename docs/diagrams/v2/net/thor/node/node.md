@@ -62,6 +62,7 @@ classDiagram
     GetPeersResponse --|> Array
     GetPeersResponseJSON --|> Array
     GetPeersResponseJSON *--> PeerStatJSON
+    HttpClient --> "get - post" HttpPath
     HttpPath <--* RetrieveConnectedPeers
     PeerStat --> "new - toJSON" PeerStatJSON
     RetrieveConnectedPeers --> "askTo" GetPeersResponse
