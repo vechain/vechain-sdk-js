@@ -4,7 +4,7 @@ import { seedThorSolo, seedVnsSolo } from '../../solo-seeding';
 /**
  * Test suite for seeding thor solo
  *
- * @group seeding
+ * @group unit/seeding
  */
 describe('Seeding', () => {
     /**
