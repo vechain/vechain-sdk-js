@@ -37,7 +37,7 @@ describe('VechainHelloWorldWithNonEmptyConstructor', function () {
         expect(helloMessage).to.equal('Hello world from Vechain!');
     });
 
-    it('should break with an specific error due to insufficient VTHO', async function () {
+    it('should break with a specific error due to insufficient VTHO', async function () {
         const accountWithNoVTHO = await ethers.getSigner(
             '0xB381e7da548601B1CCB05C66d415b20baE40d828'
         );
