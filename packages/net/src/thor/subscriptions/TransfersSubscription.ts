@@ -4,11 +4,11 @@ import { type WebSocketClient, type WebSocketListener } from '../../ws';
 import { type SubscriptionTransferResponse } from './SubscriptionTransferResponse';
 
 class TransfersSubscription
-    implements WebSocketClient, WebSocketListener<unknown>
+    implements WebSocketClient, WebSocketListener<SubscriptionTransferResponse>
 {
     static readonly PATH: HttpPath = { path: '/subscriptions/transfer' };
 
-    private readonly messageListeners: Array<
+    private readonly listeners: Array<
         WebSocketListener<SubscriptionTransferResponse>
     > = [];
 
@@ -24,10 +24,25 @@ class TransfersSubscription
         this.query = query;
     }
 
-    addListener(
-        listener: WebSocketListener<SubscriptionTransferResponse>
-    ): this {
-        this.messageListeners.push(listener);
+    addListener(listener: WebSocketListener<unknown>): WebSocketClient {
+        this.listeners.push(listener);
+        return this;
+    }
+
+    close(): WebSocketClient {
+        this.wsc.close();
+        return this;
+    }
+
+    open(): WebSocketClient {
+        this.wsc.addListener(this).open({
+            path: TransfersSubscription.PATH.path + this.query.query
+        });
+        return this;
+    }
+
+    removeListener(listener: WebSocketListener<unknown>): WebSocketClient {
+        this.listeners.splice(this.listeners.indexOf(listener), 1);
         return this;
     }
 
@@ -39,9 +54,16 @@ class TransfersSubscription
         return this.wsc.baseURL;
     }
 
-    close(): this {
-        this.wsc.close();
-        return this;
+    onClose(event: Event): void {
+        this.listeners.forEach((listener) => {
+            listener.onClose(event);
+        });
+    }
+
+    onError(event: Event): void {
+        this.listeners.forEach((listener) => {
+            listener.onError(event);
+        });
     }
 
     onMessage(event: MessageEvent<unknown>): void {
@@ -52,16 +74,15 @@ class TransfersSubscription
             event.type,
             { data: json }
         );
-        this.messageListeners.forEach((listener) => {
+        this.listeners.forEach((listener) => {
             listener.onMessage(message);
         });
     }
 
-    open(): this {
-        this.wsc
-            .addListener(this)
-            .open({ path: TransfersSubscription.PATH.path + this.query.query });
-        return this;
+    onOpen(event: Event): void {
+        this.listeners.forEach((listener) => {
+            listener.onOpen(event);
+        });
     }
 }
 

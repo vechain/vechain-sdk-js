@@ -9,7 +9,7 @@ import { UInt } from '../../../../core/src/vcdm/UInt';
 class GetTxResponse {
     readonly id: TxId;
     readonly origin: Address;
-    readonly delegator: Address | null;
+    readonly delegator?: Address;
     readonly size: UInt;
     readonly chainTag: UInt;
     readonly blockRef: BlockId;
@@ -17,7 +17,7 @@ class GetTxResponse {
     readonly clauses: Clause[];
     readonly gasPriceCoef: UInt;
     readonly gas: VTHO;
-    readonly dependsOn: TxId | null;
+    readonly dependsOn?: TxId;
     readonly nonce: Nonce;
     readonly meta: TxMeta;
 
@@ -25,7 +25,9 @@ class GetTxResponse {
         this.id = TxId.of(json.id);
         this.origin = Address.of(json.origin);
         this.delegator =
-            json.delegator === null ? null : Address.of(json.delegator);
+            json.delegator !== undefined
+                ? Address.of(json.delegator)
+                : undefined;
         this.size = UInt.of(json.size);
         this.chainTag = UInt.of(json.chainTag);
         this.blockRef = BlockId.of(json.blockRef);
@@ -36,7 +38,7 @@ class GetTxResponse {
         this.gasPriceCoef = UInt.of(json.gasPriceCoef);
         this.gas = VTHO.of(json.gas);
         this.dependsOn =
-            json.dependsOn === null ? null : TxId.of(json.dependsOn);
+            json.dependsOn !== undefined ? TxId.of(json.dependsOn) : undefined;
         this.nonce = Nonce.of(json.nonce);
         this.meta = new TxMeta(json.meta);
     }
@@ -45,8 +47,7 @@ class GetTxResponse {
         return {
             id: this.id.toString(),
             origin: this.origin.toString(),
-            delegator:
-                this.delegator === null ? null : this.delegator.toString(),
+            delegator: this.delegator?.toString(),
             size: this.size.valueOf(),
             chainTag: this.chainTag.valueOf(),
             blockRef: this.blockRef.toString(),
@@ -54,8 +55,7 @@ class GetTxResponse {
             clauses: this.clauses.map((clause) => clause.toJSON()),
             gasPriceCoef: this.gasPriceCoef.valueOf(),
             gas: Number(this.gas.wei),
-            dependsOn:
-                this.dependsOn === null ? null : this.dependsOn.toString(),
+            dependsOn: this.dependsOn?.toString(),
             nonce: this.nonce.toString(),
             meta: this.meta.toJSON()
         } satisfies GetTxResponseJSON;
@@ -65,7 +65,7 @@ class GetTxResponse {
 interface GetTxResponseJSON {
     id: string;
     origin: string;
-    delegator: string | null;
+    delegator?: string;
     size: number;
     chainTag: number;
     blockRef: string;
@@ -73,7 +73,7 @@ interface GetTxResponseJSON {
     clauses: ClauseJSON[];
     gasPriceCoef: number;
     gas: number;
-    dependsOn: string | null;
+    dependsOn?: string;
     nonce: string;
     meta: TxMetaJSON;
 }

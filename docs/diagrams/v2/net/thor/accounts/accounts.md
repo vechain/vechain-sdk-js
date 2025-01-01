@@ -120,7 +120,6 @@ classDiagram
     }
     class ExecuteCodesResponse {
         constructor(json: ExecuteCodesResponseJSON) ExecuteCodesResponse
-        toJSON() ExecuteCodesResponseJSON
     }
     class ExecuteCodesResponseJSON {
         <<interface>>

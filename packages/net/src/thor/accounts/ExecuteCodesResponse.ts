@@ -52,13 +52,6 @@ class ExecuteCodesResponse extends Array<ExecuteCodeResponse> {
             )
         );
     }
-
-    toJSON(): ExecuteCodesResponseJSON {
-        return this.map(
-            (response: ExecuteCodeResponse): ExecuteCodeResponseJSON =>
-                response.toJSON()
-        ) as ExecuteCodesResponseJSON;
-    }
 }
 
 interface ExecuteCodeResponseJSON {

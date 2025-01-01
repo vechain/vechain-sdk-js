@@ -23,6 +23,15 @@ describe('BlocksSubscription solo tests', () => {
                     const data = message.data;
                     console.log(JSON.stringify(data, null, 2));
                     done();
+                },
+                onOpen: () => {
+                    console.log('WebSocket connection opened');
+                },
+                onClose: () => {
+                    console.log(`WebSocket connection closed`);
+                },
+                onError: (error) => {
+                    console.error('WebSocket encountered an error:', error);
                 }
             } satisfies WebSocketListener<SubscriptionBeat2Response>)
             .open();

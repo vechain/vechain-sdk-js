@@ -1,27 +1,47 @@
 ```mermaid
 classDiagram
+    namespace http {
+        class HttpClient {
+            <<interface>>
+            get(httpPath: HttpPath) Promise~Response~
+            post(httpPath: HttpPath, body?: unknown) Promise~Response~
+        }
+        class HttpPath {
+            <<interface>>
+            path: string
+        }
+    }
+    namespace thor {
+        class ThorRequest~RequestClass~ {
+            <<interface>>
+            askTo(httpClient: HttpClient Promise~ThorResponse~ResponseClass~~
+        }
+        class ThorResponse~ResponseClass~ {
+            <<interface>>
+            request: ThorRequest~RequestClass~
+            response: ResponseClass
+        }
+    }
     class Clause {
-        to: Address
+        to?: Address
         value: VET
         data: HexUInt
-        constructor(json: EventJSON)
-        toJSON() EventJSON
+        constructor(json: ClauseJSON) Clause
+        toJSON() ClauseJSON
     }
     class ClauseJSON {
-        <<interface>>
-        to: string
+        to?: string
         value: string
-        data string
+        data: string
     }
     class Event {
         address: Address
         topics: ThorId[]
-        data HexUInt
-        constructor(json: EventJSON)
+        data: HexUInt
+        constructor(json: EventJSON) Event
         toJSON() EventJSON
     }
     class EventJSON {
-        <<interface>>
         address: string
         topics: string[]
         data: string
@@ -29,18 +49,17 @@ classDiagram
     class GetRawTxResponse {
         raw: HexUInt
         meta: TxMeta
-        constructor(json: GetTawTxResponseJSON)
-        toJSON() GetTawTxResponseJSON
+        constructor(json: GetRawTxResponseJSON) GetRawTxResponse
+        toJSON() GetRawTxResponseJSON
     }
     class GetRawTxResponseJSON {
-        <<interface>>
-        raw: string;
+        raw: string
         meta: TxMetaJSON
     }
     class GetTxReceiptResponse {
         meta: ReceiptMeta
-        constructor(json: GetTxReceiptResponseJSON)
-        toJSON(): GetTxReceiptResponseJSON
+        constructor(json: GetTxReceiptResponseJSON) GetTxReceiptResponse
+        toJSON() GetTxReceiptResponseJSON
     }
     class GetTxReceiptResponseJSON {
         meta: ReceiptMetaJSON
@@ -48,7 +67,7 @@ classDiagram
     class GetTxResponse {
         id: TxId
         origin: Address
-        delegator: Address|null
+        delegator?: Address
         size: UInt
         chainTag: UInt
         blockRef: BlockId
@@ -56,17 +75,16 @@ classDiagram
         clauses: Clause[]
         gasPriceCoef: UInt
         gas: VTHO
-        dependsOn: TxId|null
+        dependsOn?: TxId
         nonce: Nonce
         meta: TxMeta
-        constructor(json: GetTxResponseJSON)
+        constructor(json: GetTxResponseJSON) GetTxResponse
         toJSON() GetTxResponseJSON
     }
     class GetTxResponseJSON {
-        <<interface>>
         id: string
         origin: string
-        delegator: string|null
+        delegator?: string
         size: number
         chainTag: number
         blockRef: string
@@ -74,9 +92,21 @@ classDiagram
         clauses: ClauseJSON[]
         gasPriceCoef: number
         gas: number
-        dependsOn: string|null
+        dependsOn?: string
         nonce: string
         meta: TxMetaJSON
+    }
+    class TxMeta {
+        blockID: BlockId
+        blockNumber: UInt
+        blockTimestamp: bigint
+        constructor(json: TxMetaJSON) TxMeta
+        toJSON() TxMetaJSON
+    }
+    class TxMetaJSON {
+        blockID: string
+        blockNumber: number
+        blockTimestamp: bigint
     }
     class Receipt {
         gasUsed: VTHO
@@ -85,26 +115,24 @@ classDiagram
         reward: VTHO
         reverted: boolean
         outputs: ReceiptOutput[]
-        constructor(json: ReceiptJSON)
+        constructor(json: ReceiptJSON) Receipt
         toJSON() ReceiptJSON
     }
     class ReceiptJSON {
-        <<interface>>
-        gasUsed: number;
-        gasPayer: string;
-        paid: string;
-        reward: string;
-        reverted: boolean;
-        outputs: ReceiptOutputJSON[];
+        gasUsed: number
+        gasPayer: string
+        paid: string
+        reward: string
+        reverted: boolean
+        outputs: ReceiptOutputJSON[]
     }
     class ReceiptMeta {
         txID: TxId
         txOrigin: Address
-        constructor(json: ReceiptMetaJSON)
+        constructor(json: ReceiptMetaJSON) ReceiptMeta
         toJSON() ReceiptMetaJSON
     }
     class ReceiptMetaJSON {
-        <<interface>>
         txID: string
         txOrigin: string
     }
@@ -112,142 +140,130 @@ classDiagram
         contractAddress: Address
         events: Event[]
         transfers: Transfer[]
-        constructor(json: ReceiptOutputJSON)
-        toJSON(): ReceiptOutputJSON
+        constructor(json: ReceiptOutputJSON) ReceiptOutput
+        toJSON() ReceiptOutputJSON
     }
     class ReceiptOutputJSON {
-        <<interface>>
         contractAddress: string
         events: EventJSON[]
         transfers: TransferJSON[]
     }
     class RetrieveRawTransactionByID {
-        path: RetrieveRawTransactionByIDPath;
-        query: RetrieveRawTransactionByIDQuery;
-        constructor(path: RetrieveRawTransactionByIDPath, query: RetrieveRawTransactionByIDQuery)
-        askTo(httpClient: HttpClient): Promise~ThorResponse~ RetrieveRawTransactionByID, GetRawTxResponse~~
-        of(txId: TxId) RetrieveRawTransactionByID
-        withHead(head: BlockId|null) RetrieveRawTransactionByID
-        withPending(pending: boolean) RetrieveRawTransactionByID
-    }
-    class RetrieveRawTransactionByIDPath {
-    }
-    class RetrieveRawTransactionByIDQuery {
-    }
-    class RetrieveTransactionByID {
-        path: RetrieveTransactionByIDPath
-        query: RetrieveTransactionByIDQuery
-        constructor(path: RetrieveTransactionByIDPath, query: RetrieveTransactionByIDQuery)
-        askTo(httpClient: HttpClient) Promise~ThorResponse~ RetrieveTransactionByID, GetTxResponse~~
-        of(txId: TxId) RetrieveTransactionByID
-        withHead(head: BlockId|null): RetrieveTransactionByID
-        withPending(pending: boolean): RetrieveTransactionByID
+        path: RetrieveRawTransactionByIDPath
+        query: RetrieveRawTransactionByIDQuery
+        askTo(httpClient: HttpClient) Promise~ThorResponse~
+        of(txId: TxId) RetrieveRawTransactionByID$
+        withHead(head?: BlockId) RetrieveTransactionByID$
+        withPending(pending: boolean) RetrieveTransactionByID$
     }
     class RetrieveTransactionByIDPath {
         txId: TxId
-        constructor(txId: TxId)
     }
     class RetrieveTransactionByIDQuery {
-        head: BlockId | null;
+        head?: BlockId
         pending: boolean
-        constructor(head: BlockId|null, pending: boolean) RetrieveTransactionByIDQuery
     }
     class RetrieveTransactionReceipt {
         path: RetrieveTransactionReceiptPath
         query: RetrieveTransactionReceiptQuery
-        constructor(path: RetrieveTransactionReceiptPath, query: RetrieveTransactionReceiptQuery)
-        askTo(httpClient: HttpClient): Promise~ThorResponse~ RetrieveTransactionReceipt, GetTxReceiptResponse~~
-        of(txId: TxId): RetrieveTransactionReceipt
-        withHead(head: BlockId): RetrieveTransactionReceipt
+        askTo(httpPath: HttpPath) Promise~ThorResponse~GetTxReceiptResponse~~
+        of(txId: TxId) RetrieveTransactionReceipt$
+        withHead(head?: BlockId) RetrieveTransactionReceipt
     }
     class RetrieveTransactionReceiptPath {
         txId: TxId
-        constructor(txId: TxId)
     }
     class RetrieveTransactionReceiptQuery {
-        head: BlockId|null;
-        constructor(head: BlockId|null)
+        head?: BlockId
     }
     class SendTransaction {
-        PATH: HttpPath
+        PATH: HttpPath$
         encoded: Uint8Array
-        askTo(httpClient: httpClient)
-        of(encoded: Uint8Array): SendTransaction
+        askTo(httpPath: HttpPath) Promise~ThorResponse~TXID~~
+        of(encoded: Uint8Array) SendTransaction$
     }
     class Transfer {
-        sender: Address;
-        recipient: Address;
-        amount: VET;
-        constructor(json: TransferJSON)
-        toJSON(): TransferJSON
+        sender: Address
+        recipient: Address
+        amount: VET
+        constructor(json: TransferJSON) Transfer
+        toJSON() TransferJSON
     }
     class TransferJSON {
+        sender: string
+        recipient: string
+        amount: string
+    }
+    class TXID {
+        id: ThorId
+        constructor(json: TXIDJSON): TXID
+        toJSON() TXIDJSON
+    }
+    class TXIDJSON {
         <<interface>>
-        sender: string;
-        recipient: string;
-        amount: string;
+        id: string
     }
     class TxMeta {
-        blockID: BlockId;
-        blockNumber: UInt;
-        blockTimestamp: bigint;
-        constructor(json: TxMetaJSON)
-        toJSON(): TxMetaJSON
+        blockID: BlockId
+        blockNumber: UInt
+        blockTimestamp: bigint
+        constructor(json: TxMetaJSON) TxMeta
+        toJSON() TxMetaJSON
     }
     class TxMetaJSON {
-        <<interface>>
-        blockID: string;
-        blockNumber: number;
-        blockTimestamp: bigint;
+        blockID: string
+        blockNumber: number
+        blockTimestamp: bigint
     }
-    class ThorRequest {
-        <<interface>>
-        askTo: (httpClient: HttpClient)
-    }
-    class HttpPath {
-        <<interface>>
-    }
-    class HttpQuery {
-        <<interface>>
-    }
-    RetrieveRawTransactionByIDPath ..|> HttpPath
-    RetrieveTransactionByIDPath ..|> HttpPath
-    RetrieveTransactionReceiptPath ..|> HttpPath
-    RetrieveRawTransactionByIDQuery ..|> HttpQuery
-    RetrieveTransactionByIDQuery ..|> HttpQuery
-    RetrieveTransactionReceiptQuery ..|> HttpQuery
+    Clause --> "new - toJSON" ClauseJSON
+    Event --> "new - toJSON" EventJSON
+    GetRawTxResponse *--> TxMeta
+    GetRawTxResponse --> "new - toJSON" GetRawTxResponseJSON
+    GetRawTxResponse <-- "askTo" RetrieveRawTransactionByID
+    GetRawTxResponseJSON *--> TxMetaJSON
+    GetTxReceiptResponse *--> ReceiptMeta
+    GetTxReceiptResponse --> "new - toJSON" GetTxReceiptResponseJSON
+    GetTxReceiptResponseJSON *--> ReceiptMetaJSON
+    GetTxResponse *--> "*" Clause
+    GetTxResponse --> "new - toJSON" GetTxResponseJSON
+    GetTxResponseJSON *--> "*" ClauseJSON
+    HttpPath <--* SendTransaction
+    HttpPath <|.. RetrieveTransactionByIDPath
+    HttpPath <|.. RetrieveTransactionReceiptPath
+    HttpQuery <|.. RetrieveTransactionByIDQuery
+    HttpQuery <|.. RetrieveTransactionReceiptQuery
+    Receipt *--> "*" ReceiptOutput
+    Receipt --> "new - toJSON" ReceiptJSON
+    Receipt <|-- GetTxReceiptResponse
+    ReceiptJSON *--> "*" ReceiptOutputJSON
+    ReceiptJSON <|-- GetTxReceiptResponseJSON
+    ReceiptMeta --> "new - toJSON" ReceiptMetaJSON
+    ReceiptOutput *--> "*" Event
+    ReceiptOutput *--> "*" Transfer
+    ReceiptOutput --> "new - toJSON" ReceiptOutputJSON
+    ReceiptOutputJSON *--> "*" EventJSON
+    ReceiptOutputJSON *--> "*" TransferJSON
+    RetrieveRawTransactionByID *--> RetrieveRawTransactionByIDPath
+    RetrieveRawTransactionByID *--> RetrieveRawTransactionByIDQuery
+    RetrieveRawTransactionByID --> "askTo" GetRawTxResponse
+    RetrieveTransactionByID --> "askTo" GetTxResponse
+    RetrieveTransactionByIDPath <|-- RetrieveRawTransactionByIDPath
+    RetrieveTransactionByIDQuery <|-- RetrieveRawTransactionByIDQuery
+    RetrieveTransactionReceipt *--> RetrieveTransactionReceiptPath
+    RetrieveTransactionReceipt *--> RetrieveTransactionReceiptQuery
+    RetrieveTransactionReceipt --> "askTo" GetTxReceiptResponse
+    SendTransaction --> "askTo" TXID
     ThorRequest <|.. RetrieveRawTransactionByID
     ThorRequest <|.. RetrieveTransactionByID
     ThorRequest <|.. RetrieveTransactionReceipt
     ThorRequest <|.. SendTransaction
-    Receipt <|-- GetTxReceiptResponse
-    RetrieveTransactionByIDPath <|-- RetrieveRawTransactionByIDPath
-    RetrieveTransactionByIDQuery <|-- RetrieveRawTransactionByIDQuery
-    TxMeta <-- ReceiptMeta
-    RetrieveRawTransactionByID *--> RetrieveRawTransactionByIDPath
-    RetrieveRawTransactionByID *--> RetrieveRawTransactionByIDQuery
-    RetrieveTransactionByID *--> RetrieveTransactionByIDPath
-    RetrieveTransactionByID *--> RetrieveRawTransactionByIDQuery
-    RetrieveTransactionReceipt *--> RetrieveTransactionReceiptPath
-    RetrieveTransactionReceipt *--> RetrieveTransactionReceiptQuery
-    GetRawTxResponse *--> TxMeta
-    GetTxReceiptResponse *--> ReceiptMeta
-    GetTxResponse *--> Clause
-    GetTxResponse *--> TxMeta
-    Receipt *--> ReceiptOutput
-    ReceiptOutput *--> Event
-    ReceiptOutput *--> Transfer
-    ClauseJSON <-- Clause
-    EventJSON <-- Event
-    GetRawTxResponseJSON <-- GetRawTxResponse
-    GetTxReceiptResponseJSON <-- GetTxReceiptResponse
-    GetTxResponseJSON <-- GetTxResponse
-    ReceiptJSON <-- Receipt
-    ReceiptMetaJSON <-- ReceiptMeta
-    ReceiptOutputJSON <-- ReceiptOutput
-    TransferJSON <-- Transfer
-    TxMetaJSON <-- TxMeta
-    GetRawTxResponse <-- RetrieveRawTransactionByID
-    GetTxResponse <-- RetrieveTransactionByID
-    GetTxReceiptResponse <-- RetrieveTransactionReceipt
+    ThorResponse <-- "askTo" RetrieveRawTransactionByID
+    ThorResponse <-- "askTo" RetrieveTransactionByID
+    ThorResponse <-- "askTo" RetrieveTransactionReceipt
+    ThorResponse <-- "askTo" SendTransaction
+    Transfer --> "new - toJSON" TransferJSON
+    TXID --> "new - toJSON" TXIDJSON
+    TxMeta --> "new - toJSON" TxMetaJSON
+    TxMeta <|-- ReceiptMeta
+    TxMetaJSON <|-- ReceiptMetaJSON
 ```

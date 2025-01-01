@@ -42,11 +42,11 @@ class RetrieveTransactionReceipt
     static of(txId: TxId): RetrieveTransactionReceipt {
         return new RetrieveTransactionReceipt(
             new RetrieveTransactionReceiptPath(txId),
-            new RetrieveTransactionReceiptQuery(null)
+            new RetrieveTransactionReceiptQuery(undefined)
         );
     }
 
-    withHead(head: BlockId | null = null): RetrieveTransactionReceipt {
+    withHead(head?: BlockId): RetrieveTransactionReceipt {
         return new RetrieveTransactionReceipt(
             this.path,
             new RetrieveTransactionReceiptQuery(head)
@@ -67,9 +67,9 @@ class RetrieveTransactionReceiptPath implements HttpPath {
 }
 
 class RetrieveTransactionReceiptQuery implements HttpQuery {
-    readonly head: BlockId | null;
+    readonly head?: BlockId;
 
-    constructor(head: BlockId | null) {
+    constructor(head: BlockId | undefined) {
         this.head = head;
     }
 

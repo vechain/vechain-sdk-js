@@ -7,4 +7,3 @@ export * from './SubscriptionBlockResponse';
 export * from './SubscriptionEventResponse';
 export * from './SubscriptionTransferResponse';
 export * from './TransfersSubscription';
-export * from './TXID';

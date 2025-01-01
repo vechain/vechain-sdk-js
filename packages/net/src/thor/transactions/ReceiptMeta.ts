@@ -4,8 +4,8 @@ import { Address } from '@vechain/sdk-core';
 import { TxId } from '../../../../core/src/vcdm/BlockId';
 
 class ReceiptMeta extends TxMeta {
-    txID: TxId;
-    txOrigin: Address;
+    readonly txID: TxId;
+    readonly txOrigin: Address;
 
     constructor(json: ReceiptMetaJSON) {
         super(json);

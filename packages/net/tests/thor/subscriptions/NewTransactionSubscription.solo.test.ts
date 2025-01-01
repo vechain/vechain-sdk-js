@@ -3,10 +3,8 @@ import {
     MozillaWebSocketClient,
     type WebSocketListener
 } from '../../../src/ws';
-import {
-    NewTransactionSubscription,
-    type TXID
-} from '../../../src/thor/subscriptions';
+import { NewTransactionSubscription } from '../../../src/thor/subscriptions';
+import { type TXID } from '../../../src';
 
 describe('NewTransactionSubscription solo tests', () => {
     let subscription: NewTransactionSubscription;
@@ -23,7 +21,10 @@ describe('NewTransactionSubscription solo tests', () => {
                     const data = message.data;
                     console.log(JSON.stringify(data, null, 2));
                     done();
-                }
+                },
+                onClose: () => {},
+                onError: () => {},
+                onOpen: () => {}
             } satisfies WebSocketListener<TXID>)
             .open();
     }, 30000);

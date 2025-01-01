@@ -20,6 +20,17 @@ classDiagram
             clauseIndex: number
         }
     }
+    namespace trasactions {
+        class TXID {
+            id: ThorId
+            constructor(json: TXIDJSON): TXID
+            toJSON() TXIDJSON
+        }
+        class TXIDJSON {
+            <<interface>>
+            id: string
+        }
+    }
     namespace ws {
         class WebSocketClient {
             <<interface>>
@@ -175,15 +186,6 @@ classDiagram
         amount: string
         obsolete: boolean
         meta: LogMetaJSON
-    }
-    class TXID {
-        id: ThorId
-        constructor(json: TXIDJSON): TXID
-        toJSON() TXIDJSON
-    }
-    class TXIDJSON {
-        <<interface>>
-        id: string
     }
     WebSocketClient <|.. BeatsSubscription
     WebSocketClient <|.. BlocksSubscription

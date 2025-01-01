@@ -2,10 +2,9 @@ import { HexUInt } from '@vechain/sdk-core';
 import { type HttpClient, type HttpPath } from '../../http';
 import { type ThorRequest } from '../ThorRequest';
 import { type ThorResponse } from '../ThorResponse';
+import { TXID, type TXIDJSON } from './TXID';
 
-import { TxId } from '../../../../core/src/vcdm/BlockId';
-
-class SendTransaction implements ThorRequest<SendTransaction, TxId> {
+class SendTransaction implements ThorRequest<SendTransaction, TXID> {
     static readonly PATH: HttpPath = { path: '/transactions' };
 
     readonly encoded: Uint8Array;
@@ -16,7 +15,7 @@ class SendTransaction implements ThorRequest<SendTransaction, TxId> {
 
     async askTo(
         httpClient: HttpClient
-    ): Promise<ThorResponse<SendTransaction, TxId>> {
+    ): Promise<ThorResponse<SendTransaction, TXID>> {
         const response = await httpClient.post(
             SendTransaction.PATH,
             { query: '' },
@@ -24,21 +23,16 @@ class SendTransaction implements ThorRequest<SendTransaction, TxId> {
                 raw: HexUInt.of(this.encoded).toString()
             }
         );
-        const responseBody =
-            (await response.json()) as SendTransactionResponseJSON;
+        const json = (await response.json()) as TXIDJSON;
         return {
             request: this,
-            response: TxId.of(responseBody.id)
-        } satisfies ThorResponse<SendTransaction, TxId>;
+            response: new TXID(json)
+        } satisfies ThorResponse<SendTransaction, TXID>;
     }
 
     static of(encoded: Uint8Array): SendTransaction {
         return new SendTransaction(encoded);
     }
-}
-
-interface SendTransactionResponseJSON {
-    id: string;
 }
 
 export { SendTransaction };

@@ -35,11 +35,11 @@ class RetrieveTransactionByID
     static of(txId: TxId): RetrieveTransactionByID {
         return new RetrieveTransactionByID(
             new RetrieveTransactionByIDPath(txId),
-            new RetrieveTransactionByIDQuery(null, false)
+            new RetrieveTransactionByIDQuery(undefined, false)
         );
     }
 
-    withHead(head: BlockId | null = null): RetrieveTransactionByID {
+    withHead(head?: BlockId): RetrieveTransactionByID {
         return new RetrieveTransactionByID(
             this.path,
             new RetrieveTransactionByIDQuery(head, this.query.pending)
@@ -67,16 +67,16 @@ class RetrieveTransactionByIDPath implements HttpPath {
 }
 
 class RetrieveTransactionByIDQuery implements HttpQuery {
-    readonly head: BlockId | null;
+    readonly head?: BlockId;
     readonly pending: boolean;
 
-    constructor(head: BlockId | null, pending: boolean) {
+    constructor(head: BlockId | undefined, pending: boolean) {
         this.head = head;
         this.pending = pending;
     }
 
     get query(): string {
-        const head = this.head === null ? '' : `${this.head}&`;
+        const head = this.head === undefined ? '' : `${this.head}&`;
         return `?${head}pending=${this.pending}&raw=false`;
     }
 }

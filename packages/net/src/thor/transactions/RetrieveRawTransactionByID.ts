@@ -42,11 +42,11 @@ class RetrieveRawTransactionByID
     static of(txId: TxId): RetrieveRawTransactionByID {
         return new RetrieveRawTransactionByID(
             new RetrieveRawTransactionByIDPath(txId),
-            new RetrieveRawTransactionByIDQuery(null, false)
+            new RetrieveRawTransactionByIDQuery(undefined, false)
         );
     }
 
-    withHead(head: BlockId | null = null): RetrieveRawTransactionByID {
+    withHead(head?: BlockId): RetrieveRawTransactionByID {
         return new RetrieveRawTransactionByID(
             this.path,
             new RetrieveRawTransactionByIDQuery(head, this.query.pending)
