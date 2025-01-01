@@ -24,24 +24,24 @@ class TransfersSubscription
         this.query = query;
     }
 
-    addListener(listener: WebSocketListener<unknown>): WebSocketClient {
+    addListener(listener: WebSocketListener<unknown>): this {
         this.listeners.push(listener);
         return this;
     }
 
-    close(): WebSocketClient {
+    close(): this {
         this.wsc.close();
         return this;
     }
 
-    open(): WebSocketClient {
+    open(): this {
         this.wsc.addListener(this).open({
             path: TransfersSubscription.PATH.path + this.query.query
         });
         return this;
     }
 
-    removeListener(listener: WebSocketListener<unknown>): WebSocketClient {
+    removeListener(listener: WebSocketListener<unknown>): this {
         this.listeners.splice(this.listeners.indexOf(listener), 1);
         return this;
     }

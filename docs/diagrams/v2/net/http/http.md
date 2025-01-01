@@ -8,12 +8,16 @@ classDiagram
     }
     class HttpClient {
         <<interface>>
-        get(httpPath: HttpPath) Promise~Response~
-        post(httpPath: HttpPath, body?: unknown) Promise~Response~
+        get(httpPath: HttpPath, httpQuery: HttpQuery) Promise~Response~
+        post(httpPath: HttpPath, httpQuery: HttpQuery, body?: unknown) Promise~Response~
     }
     class HttpPath {
         <<interface>>
         path: string
+    }
+    class HttpQuery {
+        <<interface>>
+        query(): string;
     }
     class OnRequest {
         <<callback>>
@@ -23,8 +27,9 @@ classDiagram
         <<callback>>
         onResponse(response: Response) Response
     }
-    HttpPath <-- "get - post" HttpClient
-    HttpClient <|.. FetchHttpClient
     FetchHttpClient *--> OnRequest
     FetchHttpClient *--> OnResponse
+    HttpClient <|.. FetchHttpClient
+    HttpPath <-- "get - post" HttpClient
+    HttpQuery <-- "get - post" HttpClient
 ```

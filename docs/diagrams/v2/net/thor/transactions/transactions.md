@@ -10,11 +10,18 @@ classDiagram
             <<interface>>
             path: string
         }
+        class HttpQuery {
+            <<interface>>
+            query(): string;
+        }
     }
     namespace thor {
         class ThorRequest~RequestClass~ {
             <<interface>>
             askTo(httpClient: HttpClient Promise~ThorResponse~ResponseClass~~
+            of(txId: TxId) RetrieveTransactionByID$
+            withHead(head?: BlockId) RetrieveTransactionByID
+            withPending(pending: boolean) RetrieveTransactionByID
         }
         class ThorResponse~ResponseClass~ {
             <<interface>>
@@ -23,14 +30,14 @@ classDiagram
         }
     }
     class Clause {
-        to?: Address
+        to?: Address | null
         value: VET
         data: HexUInt
         constructor(json: ClauseJSON) Clause
         toJSON() ClauseJSON
     }
     class ClauseJSON {
-        to?: string
+        to?: string | null
         value: string
         data: string
     }
@@ -155,6 +162,11 @@ classDiagram
         of(txId: TxId) RetrieveRawTransactionByID$
         withHead(head?: BlockId) RetrieveTransactionByID$
         withPending(pending: boolean) RetrieveTransactionByID$
+    }
+    class RetrieveTransactionByID {
+        path: RetrieveTransactionByIDPath
+        query: RetrieveTransactionByIDQuery
+        askTo(httpClient: HttpClient) Promise~ThorRespons~GetTxResponse~~
     }
     class RetrieveTransactionByIDPath {
         txId: TxId
