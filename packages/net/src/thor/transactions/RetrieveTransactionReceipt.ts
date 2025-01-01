@@ -74,7 +74,7 @@ class RetrieveTransactionReceiptQuery implements HttpQuery {
     }
 
     get query(): string {
-        return this.head === null ? '' : `${this.head}&`;
+        return this.head === undefined ? '' : `${this.head}&`;
     }
 }
 

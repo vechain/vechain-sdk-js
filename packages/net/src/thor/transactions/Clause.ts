@@ -6,14 +6,20 @@ class Clause {
     readonly data: HexUInt;
 
     constructor(json: ClauseJSON) {
-        this.to = json.to !== undefined ? Address.of(json.to) : undefined;
+        this.to =
+            json.to !== undefined && json.to != null
+                ? Address.of(json.to)
+                : undefined;
         this.value = VET.of(json.value);
         this.data = HexUInt.of(json.data);
     }
 
     toJSON(): ClauseJSON {
         return {
-            to: this.to?.toString(),
+            to:
+                this.to !== undefined && this.to !== null
+                    ? this.to.toString()
+                    : undefined,
             value: HexUInt.of(this.value.wei).toString(),
             data: this.data.toString()
         } satisfies ClauseJSON;
@@ -21,7 +27,7 @@ class Clause {
 }
 
 interface ClauseJSON {
-    to?: string;
+    to?: string | null;
     value: string;
     data: string;
 }

@@ -9,7 +9,7 @@ import { UInt } from '../../../../core/src/vcdm/UInt';
 class GetTxResponse {
     readonly id: TxId;
     readonly origin: Address;
-    readonly delegator?: Address;
+    readonly delegator: Address | null;
     readonly size: UInt;
     readonly chainTag: UInt;
     readonly blockRef: BlockId;
@@ -17,7 +17,7 @@ class GetTxResponse {
     readonly clauses: Clause[];
     readonly gasPriceCoef: UInt;
     readonly gas: VTHO;
-    readonly dependsOn?: TxId;
+    readonly dependsOn?: TxId | null;
     readonly nonce: Nonce;
     readonly meta: TxMeta;
 
@@ -25,9 +25,7 @@ class GetTxResponse {
         this.id = TxId.of(json.id);
         this.origin = Address.of(json.origin);
         this.delegator =
-            json.delegator !== undefined
-                ? Address.of(json.delegator)
-                : undefined;
+            json.delegator !== null ? Address.of(json.delegator) : null;
         this.size = UInt.of(json.size);
         this.chainTag = UInt.of(json.chainTag);
         this.blockRef = BlockId.of(json.blockRef);
@@ -38,7 +36,9 @@ class GetTxResponse {
         this.gasPriceCoef = UInt.of(json.gasPriceCoef);
         this.gas = VTHO.of(json.gas);
         this.dependsOn =
-            json.dependsOn !== undefined ? TxId.of(json.dependsOn) : undefined;
+            json.dependsOn !== undefined && json.dependsOn !== null
+                ? TxId.of(json.dependsOn)
+                : undefined;
         this.nonce = Nonce.of(json.nonce);
         this.meta = new TxMeta(json.meta);
     }
@@ -47,15 +47,19 @@ class GetTxResponse {
         return {
             id: this.id.toString(),
             origin: this.origin.toString(),
-            delegator: this.delegator?.toString(),
+            delegator:
+                this.delegator != null ? this.delegator.toString() : null,
             size: this.size.valueOf(),
             chainTag: this.chainTag.valueOf(),
             blockRef: this.blockRef.toString(),
             expiration: this.expiration.valueOf(),
-            clauses: this.clauses.map((clause) => clause.toJSON()),
+            clauses: this.clauses?.map((clause) => clause.toJSON()),
             gasPriceCoef: this.gasPriceCoef.valueOf(),
             gas: Number(this.gas.wei),
-            dependsOn: this.dependsOn?.toString(),
+            dependsOn:
+                this.dependsOn !== undefined && this.dependsOn !== null
+                    ? this.dependsOn.toString()
+                    : undefined,
             nonce: this.nonce.toString(),
             meta: this.meta.toJSON()
         } satisfies GetTxResponseJSON;
@@ -65,7 +69,7 @@ class GetTxResponse {
 interface GetTxResponseJSON {
     id: string;
     origin: string;
-    delegator?: string;
+    delegator: string | null; // The end point at https://mainnet.vechain.org/doc/stoplight-ui/#/schemas/GetTxResponse specifically returns `null`.
     size: number;
     chainTag: number;
     blockRef: string;
@@ -73,7 +77,7 @@ interface GetTxResponseJSON {
     clauses: ClauseJSON[];
     gasPriceCoef: number;
     gas: number;
-    dependsOn?: string;
+    dependsOn?: string | null;
     nonce: string;
     meta: TxMetaJSON;
 }

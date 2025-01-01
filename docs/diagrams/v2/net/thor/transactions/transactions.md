@@ -67,7 +67,7 @@ classDiagram
     class GetTxResponse {
         id: TxId
         origin: Address
-        delegator?: Address
+        delegator: Address | null
         size: UInt
         chainTag: UInt
         blockRef: BlockId
@@ -84,7 +84,7 @@ classDiagram
     class GetTxResponseJSON {
         id: string
         origin: string
-        delegator?: string
+        delegator: string | null
         size: number
         chainTag: number
         blockRef: string
