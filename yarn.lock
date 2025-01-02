@@ -1893,10 +1893,10 @@
     mime "^3.0.0"
     zod "^3.22.3"
 
-"@cloudflare/workers-types@^4.20241112.0":
-  version "4.20241112.0"
-  resolved "https://registry.yarnpkg.com/@cloudflare/workers-types/-/workers-types-4.20241112.0.tgz#174f8ccbfe1cc2e07b86622f82b84698f62d14c7"
-  integrity sha512-Q4p9bAWZrX14bSCKY9to19xl0KMU7nsO5sJ2cTVspHoypsjPUMeQCsjHjmsO2C4Myo8/LPeDvmqFmkyNAPPYZw==
+"@cloudflare/workers-types@^4.20241230.0":
+  version "4.20241230.0"
+  resolved "https://registry.yarnpkg.com/@cloudflare/workers-types/-/workers-types-4.20241230.0.tgz#75b40be5509fdb6568decf4bca71dd82f1e6fc38"
+  integrity sha512-dtLD4jY35Lb750cCVyO1i/eIfdZJg2Z0i+B1RYX6BVeRPlgaHx/H18ImKAkYmy0g09Ow8R2jZy3hIxMgXun0WQ==
 
 "@commitlint/cli@^19.6.1":
   version "19.6.1"
