@@ -19,7 +19,7 @@ import {
     type TypedDataDomain,
     type TypedDataParameter
 } from 'viem';
-import { RPC_METHODS } from '../../../provider';
+import { RPC_METHODS } from '../../../provider/utils/const/rpc-mapper/rpc-methods';
 import {
     DelegationHandler,
     type SignTransactionOptions,
@@ -29,7 +29,7 @@ import {
     type AvailableVeChainProviders,
     type TransactionRequestInput
 } from '../types';
-import { VeChainAbstractSigner } from '../vechain-abstract-signer';
+import { VeChainAbstractSigner } from '../vechain-abstract-signer/vechain-abstract-signer';
 
 /**
  * Basic VeChain signer with the private key.
