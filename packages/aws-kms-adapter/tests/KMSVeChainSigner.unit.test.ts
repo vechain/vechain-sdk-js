@@ -136,7 +136,6 @@ describe('KMSVeChainSigner', () => {
                             }
                         ]
                     },
-                    'Mail',
                     {
                         from: {
                             name: 'Cow',
@@ -147,7 +146,8 @@ describe('KMSVeChainSigner', () => {
                             wallet: EIP712_TO
                         },
                         contents: 'Hello, Bob!'
-                    }
+                    },
+                    'Mail'
                 )
             ).rejects.toThrow(SignerMethodError);
         });
@@ -161,8 +161,8 @@ describe('KMSVeChainSigner', () => {
                 signer.signTypedData(
                     {} as unknown as TypedDataDomain,
                     {} as unknown as Record<string, TypedDataParameter[]>,
-                    'primaryType',
-                    {} as unknown as Record<string, unknown>
+                    {} as unknown as Record<string, unknown>,
+                    'primaryType'
                 )
             ).rejects.toThrow(SignerMethodError);
         });
