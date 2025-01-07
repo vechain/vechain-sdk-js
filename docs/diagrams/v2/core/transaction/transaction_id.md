@@ -14,7 +14,7 @@ flowchart TD
         txHash_payer? -- yes --> txHash_encodePayer
         txHash_payer --> txHash_encodePayer
     end
-    subgraph id["Transaction.id()"]
+    subgraph tx_id["Transaction.id()"]
         id_hash[Blake2b256.of]
         id_origin[/origin/]
         id_txHash[[getTransactionHash]]
