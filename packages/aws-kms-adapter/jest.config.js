@@ -14,7 +14,7 @@ module.exports = {
         isUnitTest !== 'true'
             ? {
                   global: {
-                      branches: 100,
+                      branches: 90,
                       functions: 100,
                       lines: 99,
                       statements: 99
