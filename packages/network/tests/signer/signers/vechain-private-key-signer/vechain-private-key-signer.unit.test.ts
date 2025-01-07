@@ -291,8 +291,8 @@ describe('VeChain base signer tests', () => {
                 signer.signTypedData(
                     eip712TestCases.invalid.domain,
                     eip712TestCases.invalid.types,
-                    eip712TestCases.invalid.primaryType,
-                    eip712TestCases.invalid.data
+                    eip712TestCases.invalid.data,
+                    eip712TestCases.invalid.primaryType
                 )
             ).rejects.toThrowError(InvalidAbiEncodingTypeError);
         });
@@ -315,8 +315,8 @@ describe('VeChain base signer tests', () => {
                 signer.signTypedData(
                     eip712TestCases.valid.domain,
                     eip712TestCases.valid.types,
-                    eip712TestCases.valid.primaryType,
-                    eip712TestCases.valid.data
+                    eip712TestCases.valid.data,
+                    eip712TestCases.valid.primaryType
                 )
             ).rejects.toThrowError(expectedErrorString);
 
@@ -324,8 +324,8 @@ describe('VeChain base signer tests', () => {
                 signer.signTypedData(
                     eip712TestCases.valid.domain,
                     eip712TestCases.valid.types,
-                    eip712TestCases.valid.primaryType,
-                    eip712TestCases.valid.data
+                    eip712TestCases.valid.data,
+                    eip712TestCases.valid.primaryType
                 )
             ).rejects.toThrowError('Error while signing typed data');
         });
@@ -345,8 +345,8 @@ describe('VeChain base signer tests', () => {
             ).signTypedData(
                 eip712TestCases.valid.domain,
                 eip712TestCases.valid.types,
-                eip712TestCases.valid.primaryType,
-                eip712TestCases.valid.data
+                eip712TestCases.valid.data,
+                eip712TestCases.valid.primaryType
             );
             expect(actual).toBe(expected);
         });

@@ -345,8 +345,8 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
     abstract signTypedData(
         domain: TypedDataDomain,
         types: Record<string, TypedDataParameter[]>,
-        primaryType: string,
         message: Record<string, unknown>,
+        primaryType?: string,
         options?: SignTypedDataOptions
     ): Promise<string>;
 

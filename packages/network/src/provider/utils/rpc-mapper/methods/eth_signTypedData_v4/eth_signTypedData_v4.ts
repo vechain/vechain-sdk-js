@@ -74,8 +74,8 @@ const ethSignTypedDataV4 = async (
         return await signer.signTypedData(
             typedData.domain,
             typedData.types,
-            typedData.primaryType,
-            typedData.message
+            typedData.message,
+            typedData.primaryType
         );
     } catch (error) {
         throw new JSONRPCInternalError(

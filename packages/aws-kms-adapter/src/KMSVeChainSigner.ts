@@ -157,7 +157,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
     }
 
     /**
-     * It builds a VeChain signature from a bytes payload.
+     * It builds a VeChain signature from a bytes' payload.
      * @param {Uint8Array} payload to sign.
      * @param {KMSVeChainProvider} kmsProvider The provider to sign the payload.
      * @returns {Uint8Array} The signature following the VeChain format.
@@ -188,12 +188,10 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
             kmsProvider
         );
 
-        const decodedSignature = concatBytes(
+        return concatBytes(
             decodedSignatureWithoutRecoveryBit.toCompactRawBytes(),
             new Uint8Array([recoveryBit])
         );
-
-        return decodedSignature;
     }
 
     /**
@@ -314,7 +312,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
 
     /**
      * Submits a signed transaction to the network.
-     * @param transactionToSend Transaction to by signed and sent to the network.
+     * @param transactionToSend Transaction to be signed and sent to the network.
      * @returns {string} The transaction ID.
      */
     public async sendTransaction(
@@ -382,20 +380,31 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
 
     /**
      * Signs a typed data returning the VeChain signature in hexadecimal format.
-     * @param {TypedDataDomain} domain to hash as typed data.
-     * @param {Record<string, TypedDataField[]>} types to hash as typed data.
-     * @param {Record<string, unknown>} value to hash as typed data.
-     * @returns {string} The VeChain signature in hexadecimal format.
+     * @param {TypedDataDomain} domain - The domain parameters used for signing.
+     * @param {Record<string, TypedDataParameter[]>} types - The types used for signing.
+     * @param {string} primaryType - The primary type used for signing.
+     * @param {Record<string, unknown>} message - The message data to be signed.
      */
     public async signTypedData(
         domain: TypedDataDomain,
         types: Record<string, TypedDataParameter[]>,
-        primaryType: string,
-        message: Record<string, unknown>
+        message: Record<string, unknown>,
+        primaryType?: string
     ): Promise<string> {
         try {
+            // deduce the primary type if not provided
+            const primaryTypes = Object.keys(types).filter(
+                (n) => (types[n] as unknown as string[]).length === 0
+            );
+            const resolvedPrimaryType =
+                primaryType ?? (primaryTypes.length > 0 ? primaryTypes[0] : '');
             const payload = Hex.of(
-                hashTypedData({ domain, types, primaryType, message })
+                hashTypedData({
+                    domain,
+                    types,
+                    primaryType: resolvedPrimaryType,
+                    message
+                })
             ).bytes;
 
             return await this.signPayload(payload);
@@ -403,7 +412,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
             throw new SignerMethodError(
                 'KMSVeChainSigner.signTypedData',
                 'The typed data could not be signed.',
-                { domain, types, primaryType, message },
+                { domain, types, message, primaryType },
                 error
             );
         }

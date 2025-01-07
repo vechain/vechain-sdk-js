@@ -19,7 +19,7 @@ import {
     type TypedDataDomain,
     type TypedDataParameter
 } from 'viem';
-import { RPC_METHODS } from '../../../provider/utils/const/rpc-mapper/rpc-methods';
+import { RPC_METHODS } from '../../../provider';
 import {
     DelegationHandler,
     type SignTransactionOptions,
@@ -29,7 +29,7 @@ import {
     type AvailableVeChainProviders,
     type TransactionRequestInput
 } from '../types';
-import { VeChainAbstractSigner } from '../vechain-abstract-signer/vechain-abstract-signer';
+import { VeChainAbstractSigner } from '../vechain-abstract-signer';
 
 /**
  * Basic VeChain signer with the private key.
@@ -216,13 +216,25 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
     async signTypedData(
         domain: TypedDataDomain,
         types: Record<string, TypedDataParameter[]>,
-        primaryType: string,
-        message: Record<string, unknown>
+        message: Record<string, unknown>,
+        primaryType?: string
     ): Promise<string> {
         return await new Promise((resolve, reject) => {
             try {
+                // deduce the primary type if not provided
+                const primaryTypes = Object.keys(types).filter(
+                    (n) => (types[n] as unknown as string[]).length === 0
+                );
+                const resolvedPrimaryType =
+                    primaryType ??
+                    (primaryTypes.length > 0 ? primaryTypes[0] : '');
                 const hash = Hex.of(
-                    hashTypedData({ domain, types, primaryType, message })
+                    hashTypedData({
+                        domain,
+                        types,
+                        message,
+                        primaryType: resolvedPrimaryType
+                    })
                 ).bytes;
                 const sign = Secp256k1.sign(
                     hash,
