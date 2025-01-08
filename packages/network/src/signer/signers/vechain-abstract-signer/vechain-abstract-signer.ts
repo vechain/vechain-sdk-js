@@ -377,7 +377,6 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
     private deducePrimaryType(
         types: Record<string, TypedDataParameter[]>
     ): string {
-        // Link structs to their direct child structs
         const parents = new Map<string, string[]>();
 
         // Initialize parents map
