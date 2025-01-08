@@ -14,17 +14,15 @@ import {
     JSONRPCInvalidParams,
     SignerMethodError
 } from '@vechain/sdk-errors';
-import {
-    hashTypedData,
-    type TypedDataDomain,
-    type TypedDataParameter
-} from 'viem';
+import { hashTypedData } from 'viem';
 import { RPC_METHODS } from '../../../provider/utils/const/rpc-mapper/rpc-methods';
 import { type TransactionSimulationResult } from '../../../thor-client';
 import { vnsUtils } from '../../../utils';
 import {
     type AvailableVeChainProviders,
     type TransactionRequestInput,
+    type TypedDataDomain,
+    type TypedDataParameter,
     type VeChainSigner
 } from '../types';
 

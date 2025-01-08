@@ -3,9 +3,10 @@ import { JSONRPCInvalidParams, SignerMethodError } from '@vechain/sdk-errors';
 import {
     VeChainProvider,
     type ThorClient,
-    type TransactionRequestInput
+    type TransactionRequestInput,
+    type TypedDataDomain,
+    type TypedDataParameter
 } from '@vechain/sdk-network';
-import { type TypedDataDomain, type TypedDataParameter } from 'viem';
 import { KMSVeChainProvider, KMSVeChainSigner } from '../src';
 import { EIP712_CONTRACT, EIP712_FROM, EIP712_TO } from './fixture';
 jest.mock('asn1js', () => ({
