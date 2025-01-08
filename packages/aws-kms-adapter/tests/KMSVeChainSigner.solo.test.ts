@@ -314,6 +314,12 @@ describe('KMSVeChainSigner - Thor Solo', () => {
             expect(signatureWithoutPrimaryType).toBeDefined();
             // 64-bytes hex string
             expect(signatureWithoutPrimaryType).toMatch(/^0x[A-Fa-f0-9]{130}$/);
+
+            // Not checking directly the signatures since there is an issue in LocalStack:
+            // https://github.com/localstack/localstack/issues/11678
+            // Looks like, regardless the configuration, a new SECP256r1 key is generated
+            // meaning that the signature will be different every time.
+            // However both hashes have been checked and they match, + tests in the other implementation.
         });
     });
 });
