@@ -304,7 +304,16 @@ describe('KMSVeChainSigner - Thor Solo', () => {
             );
             expect(signature).toBeDefined();
             // 64-bytes hex string
-            expect(signature.length).toBe(132);
+            expect(signature).toMatch(/^0x[A-Fa-f0-9]{130}$/);
+
+            const signatureWithoutPrimaryType = await signer.signTypedData(
+                typedData.domain,
+                typedData.types,
+                typedData.data
+            );
+            expect(signatureWithoutPrimaryType).toBeDefined();
+            // 64-bytes hex string
+            expect(signatureWithoutPrimaryType).toMatch(/^0x[A-Fa-f0-9]{130}$/);
         });
     });
 });
