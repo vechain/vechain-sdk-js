@@ -170,6 +170,7 @@ concatenated with the transaction;s origin address.**
   * **Is the same algorithm implemented the in e SDK?**
   * **The algorithm in the protocol does consider the `taxPayer` address and signature in the computation of the id?**
 
+**According to our tests, Thor and SDK produce the same id for the same transaction!**
 ---
 
 ## ID Equality
