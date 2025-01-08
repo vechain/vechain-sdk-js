@@ -360,7 +360,7 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
             return await this.signPayload(payloadHashed);
         } catch (error) {
             throw new SignerMethodError(
-                'VeChainSigner.signMessage',
+                'VeChainAbstractSigner.signMessage',
                 'The message could not be signed.',
                 { message },
                 error
@@ -441,7 +441,7 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
             return await this.signPayload(payload);
         } catch (error) {
             throw new SignerMethodError(
-                'VeChainSigner.signTypedData',
+                'VeChainAbstractSigner.signTypedData',
                 'The typed data could not be signed.',
                 { domain, types, message, primaryType },
                 error

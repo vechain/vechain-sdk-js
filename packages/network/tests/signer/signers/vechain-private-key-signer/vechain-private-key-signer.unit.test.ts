@@ -8,6 +8,7 @@ import {
 } from '@jest/globals';
 import { Address, Hex, HexUInt, Secp256k1, Txt } from '@vechain/sdk-core';
 import { Wallet } from 'ethers';
+import { InvalidAbiEncodingTypeError } from 'viem';
 import {
     TESTNET_URL,
     ThorClient,
@@ -22,7 +23,6 @@ import {
     populateCallTestCases,
     populateCallTestCasesAccount
 } from './fixture';
-import { InvalidAbiEncodingTypeError } from 'viem';
 
 /**
  * VeChain base signer tests
@@ -254,7 +254,11 @@ describe('VeChain base signer tests', () => {
 
             await expect(
                 signer.signMessage(EIP191_MESSAGE)
-            ).rejects.toThrowError('Error while signing the message');
+            ).rejects.toThrowError(
+                `Method 'VeChainAbstractSigner.signMessage' failed.` +
+                    `\n-Reason: 'The message could not be signed.'` +
+                    `\n-Parameters: \n\t{\n  "message": "Hello world! - こんにちは世界 - 👋🗺️!"\n}`
+            );
         });
 
         test('signMessage - ethers compatible - string', async () => {
