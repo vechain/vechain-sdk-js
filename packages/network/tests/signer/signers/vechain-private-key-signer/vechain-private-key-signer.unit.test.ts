@@ -7,8 +7,8 @@ import {
     test
 } from '@jest/globals';
 import { Address, Hex, HexUInt, Secp256k1, Txt } from '@vechain/sdk-core';
+import { SignerMethodError } from '@vechain/sdk-errors';
 import { Wallet } from 'ethers';
-import { InvalidAbiEncodingTypeError } from 'viem';
 import {
     TESTNET_URL,
     ThorClient,
@@ -298,7 +298,7 @@ describe('VeChain base signer tests', () => {
                     eip712TestCases.invalid.data,
                     eip712TestCases.invalid.primaryType
                 )
-            ).rejects.toThrowError(InvalidAbiEncodingTypeError);
+            ).rejects.toThrowError(SignerMethodError);
         });
 
         test('signTypedData - exception when parsing to hex', async () => {
@@ -331,7 +331,7 @@ describe('VeChain base signer tests', () => {
                     eip712TestCases.valid.data,
                     eip712TestCases.valid.primaryType
                 )
-            ).rejects.toThrowError('Error while signing typed data');
+            ).rejects.toThrowError(SignerMethodError);
         });
 
         test('signTypedData - ethers compatible', async () => {
@@ -343,14 +343,21 @@ describe('VeChain base signer tests', () => {
                 eip712TestCases.valid.data
             );
             expect(expected).toBe(eip712TestCases.valid.signature);
-            const actual = await new VeChainPrivateKeySigner(
+            const privateKeySigner = new VeChainPrivateKeySigner(
                 Hex.of(eip712TestCases.valid.privateKey).bytes,
                 provider
-            ).signTypedData(
+            );
+            let actual = await privateKeySigner.signTypedData(
                 eip712TestCases.valid.domain,
                 eip712TestCases.valid.types,
                 eip712TestCases.valid.data,
                 eip712TestCases.valid.primaryType
+            );
+            expect(actual).toBe(expected);
+            actual = await privateKeySigner.signTypedData(
+                eip712TestCases.valid.domain,
+                eip712TestCases.valid.types,
+                eip712TestCases.valid.data
             );
             expect(actual).toBe(expected);
         });

@@ -8,14 +8,8 @@ import {
 } from '@vechain/sdk-core';
 import {
     InvalidSecp256k1PrivateKey,
-    JSONRPCInvalidParams,
-    stringifyData
+    JSONRPCInvalidParams
 } from '@vechain/sdk-errors';
-import {
-    hashTypedData,
-    type TypedDataDomain,
-    type TypedDataParameter
-} from 'viem';
 import { RPC_METHODS } from '../../../provider/utils/const/rpc-mapper/rpc-methods';
 import {
     DelegationHandler,
@@ -163,63 +157,6 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         // SCP256K1 encodes the recovery flag in the last byte. EIP-191 adds 27 to it.
         sign[sign.length - 1] += 27;
         return await Promise.resolve(Hex.of(sign).toString());
-    }
-
-    /**
-     * Signs the [[link-eip-712]] typed data.
-     *
-     * This function is a drop-in replacement for {@link ethers.BaseWallet.signTypedData} function,
-     * albeit Ethereum Name Services are not resolved because he resolution depends on **ethers** provider implementation.
-     *
-     * @param {TypedDataDomain} domain - The domain parameters used for signing.
-     * @param {Record<string, TypedDataParameter[]>} types - The types used for signing.
-     * @param {string} primaryType - The primary type used for signing.
-     * @param {Record<string, unknown>} message - The value data to be signed.
-     *
-     * @return {Promise<string>} - A promise that resolves with the signature string.
-     */
-    async signTypedData(
-        domain: TypedDataDomain,
-        types: Record<string, TypedDataParameter[]>,
-        message: Record<string, unknown>,
-        primaryType?: string
-    ): Promise<string> {
-        return await new Promise((resolve, reject) => {
-            try {
-                // deduce the primary type if not provided
-                const primaryTypes = Object.keys(types).filter(
-                    (n) => (types[n] as unknown as string[]).length === 0
-                );
-                const resolvedPrimaryType =
-                    primaryType ??
-                    (primaryTypes.length > 0 ? primaryTypes[0] : '');
-                const hash = Hex.of(
-                    hashTypedData({
-                        domain,
-                        types,
-                        message,
-                        primaryType: resolvedPrimaryType
-                    })
-                ).bytes;
-                const sign = Secp256k1.sign(
-                    hash,
-                    new Uint8Array(this.privateKey)
-                );
-                // SCP256K1 encodes the recovery flag in the last byte. EIP-712 adds 27 to it.
-                sign[sign.length - 1] += 27;
-                resolve(Hex.of(sign).toString());
-            } catch (e) {
-                const error =
-                    e instanceof Error
-                        ? e
-                        : new Error(
-                              e !== undefined
-                                  ? stringifyData(e)
-                                  : 'Error while signing typed data'
-                          );
-                reject(error);
-            }
-        });
     }
 
     /**
