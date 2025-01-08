@@ -347,19 +347,20 @@ describe('VeChain base signer tests', () => {
                 Hex.of(eip712TestCases.valid.privateKey).bytes,
                 provider
             );
-            let actual = await privateKeySigner.signTypedData(
+            const actual = await privateKeySigner.signTypedData(
                 eip712TestCases.valid.domain,
                 eip712TestCases.valid.types,
                 eip712TestCases.valid.data,
                 eip712TestCases.valid.primaryType
             );
             expect(actual).toBe(expected);
-            actual = await privateKeySigner.signTypedData(
-                eip712TestCases.valid.domain,
-                eip712TestCases.valid.types,
-                eip712TestCases.valid.data
-            );
-            expect(actual).toBe(expected);
+            const actualWithoutPrimaryType =
+                await privateKeySigner.signTypedData(
+                    eip712TestCases.valid.domain,
+                    eip712TestCases.valid.types,
+                    eip712TestCases.valid.data
+                );
+            expect(actualWithoutPrimaryType).toBe(expected);
         });
     });
 });
