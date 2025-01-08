@@ -29,7 +29,7 @@ flowchart TD
     start((Start))
     stop(((stop)))
     body[/TransactionBody/]
-    subgraph origin
+    subgraph origin["Transaction.origin()"]
         origin_txHash[["getTransactionHash()"]]
         origin_signature[\signature\]
         origin_recover[["Secp256k1.recover(txHash,signature)"]]
