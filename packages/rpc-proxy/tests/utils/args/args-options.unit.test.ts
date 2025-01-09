@@ -113,9 +113,9 @@ describe('Args options tests', () => {
                     'program',
                     '-m',
                     'expire pair material agent north ostrich fortune level cousin snow mixture nurse',
-                    '-mi',
+                    '--mnemonicInitialIndex',
                     '1',
-                    '-mc',
+                    '--mnemonicCount',
                     '2'
                 ]
             ].forEach((args) => {
@@ -161,13 +161,6 @@ describe('Args options tests', () => {
                     'program',
                     '--delegatorPrivateKey',
                     '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
-                ],
-                // Short syntax
-                [
-                    'path',
-                    'program',
-                    '-dp',
-                    '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
                 ]
             ].forEach((args) => {
                 const delegatorPrivateKeyOption = getOptionsFromCommandLine(
@@ -190,7 +183,7 @@ describe('Args options tests', () => {
                 // Normal syntax
                 ['path', 'program', '--delegatorUrl', 'http://localhost:8080'],
                 // Short syntax
-                ['path', 'program', '-du', 'http://localhost:8080']
+                ['path', 'program', '-d', 'http://localhost:8080']
             ].forEach((args) => {
                 const delegatorUrlOption = getOptionsFromCommandLine(
                     '1.0.0',
