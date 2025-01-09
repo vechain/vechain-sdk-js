@@ -4,8 +4,11 @@ import {
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
-import type { TypedDataDomain, TypedDataParameter } from 'viem';
-import type { VeChainSigner } from '../../../../../signer/signers';
+import type {
+    TypedDataDomain,
+    TypedDataParameter,
+    VeChainSigner
+} from '../../../../../signer/signers';
 import type { ThorClient } from '../../../../../thor-client';
 import type { VeChainProvider } from '../../../../providers/vechain-provider';
 

@@ -1,24 +1,15 @@
-import * as n_utils from '@noble/curves/abstract/utils';
 import {
     Address,
     Hex,
     HexUInt,
-    Keccak256,
     Secp256k1,
     Transaction,
-    type TransactionBody,
-    Txt
+    type TransactionBody
 } from '@vechain/sdk-core';
 import {
     InvalidSecp256k1PrivateKey,
-    JSONRPCInvalidParams,
-    stringifyData
+    JSONRPCInvalidParams
 } from '@vechain/sdk-errors';
-import {
-    hashTypedData,
-    type TypedDataDomain,
-    type TypedDataParameter
-} from 'viem';
 import { RPC_METHODS } from '../../../provider/utils/const/rpc-mapper/rpc-methods';
 import {
     DelegationHandler,
@@ -156,105 +147,16 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
     }
 
     /**
-     * Signs an [EIP-191](https://eips.ethereum.org/EIPS/eip-191) prefixed a personal message.
+     * Signs a payload.
      *
-     * This function is a drop-in replacement for {@link ethers.BaseWallet.signMessage} function.
-     *
-     * @param {string|Uint8Array} message - The message to be signed.
-     *                                      If the %%message%% is a string, it is signed as UTF-8 encoded bytes.
-     *                                      It is **not** interpreted as a [[BytesLike]];
-     *                                      so the string ``"0x1234"`` is signed as six characters, **not** two bytes.
+     * @param {Uint8Array} payload - The payload to be signed as a byte array
      * @return {Promise<string>} - A Promise that resolves to the signature as a string.
      */
-    async signMessage(message: string | Uint8Array): Promise<string> {
-        return await new Promise((resolve, reject) => {
-            try {
-                const body =
-                    typeof message === 'string'
-                        ? Txt.of(message).bytes
-                        : message;
-                const sign = Secp256k1.sign(
-                    Keccak256.of(
-                        n_utils.concatBytes(
-                            this.MESSAGE_PREFIX,
-                            Txt.of(body.length).bytes,
-                            body
-                        )
-                    ).bytes,
-                    new Uint8Array(this.privateKey)
-                );
-                // SCP256K1 encodes the recovery flag in the last byte. EIP-191 adds 27 to it.
-                sign[sign.length - 1] += 27;
-                resolve(Hex.of(sign).toString());
-            } catch (e) {
-                const error =
-                    e instanceof Error
-                        ? e
-                        : new Error(
-                              e !== undefined
-                                  ? stringifyData(e)
-                                  : 'Error while signing the message'
-                          );
-                reject(error);
-            }
-        });
-    }
-
-    /**
-     * Signs the [[link-eip-712]] typed data.
-     *
-     * This function is a drop-in replacement for {@link ethers.BaseWallet.signTypedData} function,
-     * albeit Ethereum Name Services are not resolved because he resolution depends on **ethers** provider implementation.
-     *
-     * @param {TypedDataDomain} domain - The domain parameters used for signing.
-     * @param {Record<string, TypedDataParameter[]>} types - The types used for signing.
-     * @param {string} primaryType - The primary type used for signing.
-     * @param {Record<string, unknown>} message - The value data to be signed.
-     *
-     * @return {Promise<string>} - A promise that resolves with the signature string.
-     */
-    async signTypedData(
-        domain: TypedDataDomain,
-        types: Record<string, TypedDataParameter[]>,
-        message: Record<string, unknown>,
-        primaryType?: string
-    ): Promise<string> {
-        return await new Promise((resolve, reject) => {
-            try {
-                // deduce the primary type if not provided
-                const primaryTypes = Object.keys(types).filter(
-                    (n) => (types[n] as unknown as string[]).length === 0
-                );
-                const resolvedPrimaryType =
-                    primaryType ??
-                    (primaryTypes.length > 0 ? primaryTypes[0] : '');
-                const hash = Hex.of(
-                    hashTypedData({
-                        domain,
-                        types,
-                        message,
-                        primaryType: resolvedPrimaryType
-                    })
-                ).bytes;
-                const sign = Secp256k1.sign(
-                    hash,
-                    new Uint8Array(this.privateKey)
-                );
-                // SCP256K1 encodes the recovery flag in the last byte. EIP-712 adds 27 to it.
-                sign[sign.length - 1] += 27;
-                resolve(Hex.of(sign).toString());
-            } catch (e) {
-                const error =
-                    e instanceof Error
-                        ? e
-                        : new Error(
-                              e !== undefined
-                                  ? stringifyData(e)
-                                  : 'Error while signing typed data'
-                          );
-                reject(error);
-            }
-        });
+    async signPayload(payload: Uint8Array): Promise<string> {
+        const sign = Secp256k1.sign(payload, new Uint8Array(this.privateKey));
+        // SCP256K1 encodes the recovery flag in the last byte. EIP-191 adds 27 to it.
+        sign[sign.length - 1] += 27;
+        return await Promise.resolve(Hex.of(sign).toString());
     }
 
     /**
