@@ -82,6 +82,10 @@ class SimpleHttpClient implements HttpClient {
             controller.abort();
         }, this.timeout);
         try {
+            // Remove leading slash from path
+            if (path.startsWith('/')) {
+                path = path.slice(1);
+            }
             const url = new URL(path, this.baseURL);
             if (params?.query != null) {
                 Object.entries(params.query).forEach(([key, value]) => {
