@@ -18,3 +18,11 @@ updates:
       day: "wednesday"
     pull-request-branch-name:
       separator: "-"
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+    target-branch: "1.0.0"
+    pull-request-branch-name:
+      separator: "-"

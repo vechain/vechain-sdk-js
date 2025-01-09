@@ -1,7 +1,7 @@
 import { bytesToHex, concatBytes } from '@noble/curves/abstract/utils';
 import { type SignatureType } from '@noble/curves/abstract/weierstrass';
 import { secp256k1 } from '@noble/curves/secp256k1';
-import { Address, Hex, Keccak256, Transaction, Txt } from '@vechain/sdk-core';
+import { Address, Hex, Transaction } from '@vechain/sdk-core';
 import { JSONRPCInvalidParams, SignerMethodError } from '@vechain/sdk-errors';
 import {
     type AvailableVeChainProviders,
@@ -11,13 +11,7 @@ import {
     VeChainAbstractSigner
 } from '@vechain/sdk-network';
 import { BitString, ObjectIdentifier, Sequence, verifySchema } from 'asn1js';
-import {
-    hashTypedData,
-    recoverPublicKey,
-    toHex,
-    type TypedDataDomain,
-    type TypedDataParameter
-} from 'viem';
+import { recoverPublicKey, toHex } from 'viem';
 import { KMSVeChainProvider } from './KMSVeChainProvider';
 
 class KMSVeChainSigner extends VeChainAbstractSigner {
@@ -157,7 +151,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
     }
 
     /**
-     * It builds a VeChain signature from a bytes payload.
+     * It builds a VeChain signature from a bytes' payload.
      * @param {Uint8Array} payload to sign.
      * @param {KMSVeChainProvider} kmsProvider The provider to sign the payload.
      * @returns {Uint8Array} The signature following the VeChain format.
@@ -188,12 +182,10 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
             kmsProvider
         );
 
-        const decodedSignature = concatBytes(
+        return concatBytes(
             decodedSignatureWithoutRecoveryBit.toCompactRawBytes(),
             new Uint8Array([recoveryBit])
         );
-
-        return decodedSignature;
     }
 
     /**
@@ -314,7 +306,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
 
     /**
      * Submits a signed transaction to the network.
-     * @param transactionToSend Transaction to by signed and sent to the network.
+     * @param transactionToSend Transaction to be signed and sent to the network.
      * @returns {string} The transaction ID.
      */
     public async sendTransaction(
@@ -345,68 +337,12 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
      * @param {Uint8Array} payload in bytes to sign.
      * @returns {string} The VeChain signature in hexadecimal format.
      */
-    private async signPayload(payload: Uint8Array): Promise<string> {
+    public async signPayload(payload: Uint8Array): Promise<string> {
         const veChainSignature =
             await this.buildVeChainSignatureFromPayload(payload);
         // SCP256K1 encodes the recovery flag in the last byte. EIP-191 adds 27 to it.
         veChainSignature[veChainSignature.length - 1] += 27;
         return Hex.of(veChainSignature).toString();
-    }
-
-    /**
-     * Signs a message returning the VeChain signature in hexadecimal format.
-     * @param {string | Uint8Array} message to sign.
-     * @returns {string} The VeChain signature in hexadecimal format.
-     */
-    public async signMessage(message: string | Uint8Array): Promise<string> {
-        try {
-            const payload =
-                typeof message === 'string' ? Txt.of(message).bytes : message;
-            const payloadHashed = Keccak256.of(
-                concatBytes(
-                    this.MESSAGE_PREFIX,
-                    Txt.of(payload.length).bytes,
-                    payload
-                )
-            ).bytes;
-            return await this.signPayload(payloadHashed);
-        } catch (error) {
-            throw new SignerMethodError(
-                'KMSVeChainSigner.signMessage',
-                'The message could not be signed.',
-                { message },
-                error
-            );
-        }
-    }
-
-    /**
-     * Signs a typed data returning the VeChain signature in hexadecimal format.
-     * @param {TypedDataDomain} domain to hash as typed data.
-     * @param {Record<string, TypedDataField[]>} types to hash as typed data.
-     * @param {Record<string, unknown>} value to hash as typed data.
-     * @returns {string} The VeChain signature in hexadecimal format.
-     */
-    public async signTypedData(
-        domain: TypedDataDomain,
-        types: Record<string, TypedDataParameter[]>,
-        primaryType: string,
-        message: Record<string, unknown>
-    ): Promise<string> {
-        try {
-            const payload = Hex.of(
-                hashTypedData({ domain, types, primaryType, message })
-            ).bytes;
-
-            return await this.signPayload(payload);
-        } catch (error) {
-            throw new SignerMethodError(
-                'KMSVeChainSigner.signTypedData',
-                'The typed data could not be signed.',
-                { domain, types, primaryType, message },
-                error
-            );
-        }
     }
 }
 
