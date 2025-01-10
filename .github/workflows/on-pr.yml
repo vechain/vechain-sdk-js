@@ -3,7 +3,11 @@ name: PR Checks
 on:
   pull_request:
     branches:
-      - main
+      - 'main'
+      - 'main-*'
+      - 'supported-*'
+      - 'feature-*'
+      - '1.0.0'
 
 jobs:
     doc-examples:
