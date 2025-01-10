@@ -2,7 +2,10 @@ name: Check for leaks in secrets
 on: 
     pull_request:
       branches:
-        - main
+        - 'main'
+        - 'main-*'
+        - 'supported-*'
+        - 'feature-*'
 
 permissions:
   contents: read # This is required for actions/checkout
