@@ -1,21 +1,28 @@
+import { concatBytes } from '@noble/curves/abstract/utils';
 import {
     Address,
     Clause,
     Hex,
     HexUInt,
+    Keccak256,
     Txt,
     type TransactionBody,
     type TransactionClause
 } from '@vechain/sdk-core';
-import { InvalidDataType, JSONRPCInvalidParams } from '@vechain/sdk-errors';
-import { type TypedDataDomain, type TypedDataParameter } from 'viem';
+import {
+    InvalidDataType,
+    JSONRPCInvalidParams,
+    SignerMethodError
+} from '@vechain/sdk-errors';
+import { hashTypedData } from 'viem';
 import { RPC_METHODS } from '../../../provider/utils/const/rpc-mapper/rpc-methods';
 import { type TransactionSimulationResult } from '../../../thor-client';
 import { vnsUtils } from '../../../utils';
 import {
     type AvailableVeChainProviders,
-    type SignTypedDataOptions,
     type TransactionRequestInput,
+    type TypedDataDomain,
+    type TypedDataParameter,
     type VeChainSigner
 } from '../types';
 
@@ -322,6 +329,13 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
     ): Promise<string>;
 
     /**
+     * Signs a bytes payload returning the VeChain signature in hexadecimal format.
+     * @param {Uint8Array} payload in bytes to sign.
+     * @returns {string} The VeChain signature in hexadecimal format.
+     */
+    abstract signPayload(payload: Uint8Array): Promise<string>;
+
+    /**
      * Signs an [[link-eip-191]] prefixed a personal message.
      *
      * @param {string|Uint8Array} message - The message to be signed.
@@ -330,25 +344,107 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
      *                                      so the string ``"0x1234"`` is signed as six characters, **not** two bytes.
      * @return {Promise<string>} - A Promise that resolves to the signature as a string.
      */
-    abstract signMessage(message: string | Uint8Array): Promise<string>;
+    public async signMessage(message: string | Uint8Array): Promise<string> {
+        try {
+            const payload =
+                typeof message === 'string' ? Txt.of(message).bytes : message;
+            const payloadHashed = Keccak256.of(
+                concatBytes(
+                    this.MESSAGE_PREFIX,
+                    Txt.of(payload.length).bytes,
+                    payload
+                )
+            ).bytes;
+            return await this.signPayload(payloadHashed);
+        } catch (error) {
+            throw new SignerMethodError(
+                'VeChainAbstractSigner.signMessage',
+                'The message could not be signed.',
+                { message },
+                error
+            );
+        }
+    }
+
+    /**
+     * Deduces the primary from the types if not given.
+     * The primary type will be the only type that is not used in any other type.
+     * @param {Record<string, TypedDataParameter[]>} types - The types used for EIP712.
+     * @returns {string} The primary type.
+     */
+    private deducePrimaryType(
+        types: Record<string, TypedDataParameter[]>
+    ): string {
+        const parents = new Map<string, string[]>();
+
+        // Initialize parents map
+        Object.keys(types).forEach((type) => {
+            parents.set(type, []);
+        });
+
+        // Populate parents map
+        for (const name in types) {
+            for (const field of types[name]) {
+                // In case the type is an array, we get its prefix
+                const type = field.type.split('[')[0];
+                if (parents.has(type)) {
+                    parents.get(type)?.push(name);
+                }
+            }
+        }
+
+        // Find primary types
+        const primaryTypes = Array.from(parents.keys()).filter(
+            (n) => parents.get(n)?.length === 0
+        );
+
+        if (primaryTypes.length !== 1) {
+            throw new SignerMethodError(
+                'VeChainAbstractSigner.deducePrimaryType',
+                'Ambiguous primary types or unused types.',
+                { primaryTypes: primaryTypes.join(', ') }
+            );
+        }
+
+        return primaryTypes[0];
+    }
 
     /**
      * Signs the [[link-eip-712]] typed data.
      *
      * @param {TypedDataDomain} domain - The domain parameters used for signing.
      * @param {Record<string, TypedDataParameter[]>} types - The types used for signing.
-     * @param {string} primaryType - The primary type used for signing.
      * @param {Record<string, unknown>} message - The message data to be signed.
+     * @param {string} primaryType - The primary type used for signing.
      *
      * @return {Promise<string>} - A promise that resolves with the signature string.
      */
-    abstract signTypedData(
+    public async signTypedData(
         domain: TypedDataDomain,
         types: Record<string, TypedDataParameter[]>,
-        primaryType: string,
         message: Record<string, unknown>,
-        options?: SignTypedDataOptions
-    ): Promise<string>;
+        primaryType?: string
+    ): Promise<string> {
+        try {
+            const payload = Hex.of(
+                hashTypedData({
+                    domain,
+                    types,
+                    primaryType: primaryType ?? this.deducePrimaryType(types), // Deduce the primary type if not provided
+                    message
+                })
+            ).bytes;
+
+            return await this.signPayload(payload);
+        } catch (error) {
+            throw new SignerMethodError(
+                'VeChainAbstractSigner.signTypedData',
+                'The typed data could not be signed.',
+                { domain, types, message, primaryType },
+                error
+            );
+        }
+    }
 
     /**
      * Use vet.domains to resolve name to address

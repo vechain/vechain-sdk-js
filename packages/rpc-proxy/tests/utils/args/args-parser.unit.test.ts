@@ -166,9 +166,9 @@ describe('Args parser tests', () => {
                     'program',
                     '-m',
                     'expire pair material agent north ostrich fortune level cousin snow mixture nurse',
-                    '-mi',
+                    '--mnemonicInitialIndex',
                     '1',
-                    '-mc',
+                    '--mnemonicCount',
                     '2'
                 ]
             ].forEach((args) => {
@@ -203,7 +203,7 @@ describe('Args parser tests', () => {
                     'path',
                     'program',
                     '-e',
-                    '-dp',
+                    '--delegatorPrivateKey',
                     '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
                 ]
             ].forEach((args) => {
@@ -233,20 +233,13 @@ describe('Args parser tests', () => {
                     '--delegatorPrivateKey',
                     '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
                 ],
-                // Short syntax
-                [
-                    'path',
-                    'program',
-                    '-dp',
-                    '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
-                ],
 
                 // Delegator URL
 
                 // Normal syntax
                 ['path', 'program', '--delegatorUrl', 'http://localhost:8080'],
                 // Short syntax
-                ['path', 'program', '-du', 'http://localhost:8080']
+                ['path', 'program', '-d', 'http://localhost:8080']
             ].forEach((args) => {
                 // Get options
                 const options = getOptionsFromCommandLine('1.0.0', args);
@@ -414,26 +407,7 @@ describe('Args parser tests', () => {
                     'program',
                     '-m',
                     'expire pair material agent north ostrich fortune level cousin snow mixture nurse',
-                    '-mi',
-                    '1'
-                ],
-
-                // Normal syntax
-                [
-                    'path',
-                    'program',
-                    '--mnemonic',
-                    'expire pair material agent north ostrich fortune level cousin snow mixture nurse',
                     '--mnemonicInitialIndex',
-                    '1'
-                ],
-                // Short syntax
-                [
-                    'path',
-                    'program',
-                    '-m',
-                    'expire pair material agent north ostrich fortune level cousin snow mixture nurse',
-                    '-mi',
                     '1'
                 ],
 
@@ -454,8 +428,6 @@ describe('Args parser tests', () => {
 
                 // Normal syntax
                 ['path', 'program', '--mnemonicInitialIndex', '1'],
-                // Short syntax
-                ['path', 'program', '-mi', '1'],
 
                 // Wrong format
 
@@ -471,7 +443,16 @@ describe('Args parser tests', () => {
                     '2'
                 ],
                 // Short syntax
-                ['path', 'program', '-m', 'INVALID', '-mi', '1', '-mc', '2'],
+                [
+                    'path',
+                    'program',
+                    '-m',
+                    'INVALID',
+                    '--mnemonicInitialIndex',
+                    '1',
+                    '--mnemonicCount',
+                    '2'
+                ],
 
                 // Normal syntax
                 [
@@ -490,9 +471,9 @@ describe('Args parser tests', () => {
                     'program',
                     '-m',
                     'expire pair material agent north ostrich fortune level cousin snow mixture nurse',
-                    '-mi',
+                    '--mnemonicInitialIndex',
                     '-1',
-                    '-mc',
+                    '--mnemonicCount',
                     '2'
                 ],
 
@@ -513,9 +494,9 @@ describe('Args parser tests', () => {
                     'program',
                     '-m',
                     'expire pair material agent north ostrich fortune level cousin snow mixture nurse',
-                    '-mi',
+                    '--mnemonicInitialIndex',
                     '1',
-                    '-mc',
+                    '--mnemonicCount',
                     '-2'
                 ],
 
@@ -533,7 +514,16 @@ describe('Args parser tests', () => {
                     '2'
                 ],
                 // Short syntax
-                ['path', 'program', '-m', '', '-mi', '1', '-mc', '2'],
+                [
+                    'path',
+                    'program',
+                    '-m',
+                    '',
+                    '--mnemonicInitialIndex',
+                    '1',
+                    '--mnemonicCount',
+                    '2'
+                ],
 
                 // Normal syntax
                 [
@@ -552,9 +542,9 @@ describe('Args parser tests', () => {
                     'program',
                     '-m',
                     'expire pair material agent north ostrich fortune level cousin snow mixture nurse',
-                    '-mi',
+                    '--mnemonicInitialIndex',
                     '',
-                    '-mc',
+                    '--mnemonicCount',
                     '2'
                 ],
 
@@ -575,9 +565,9 @@ describe('Args parser tests', () => {
                     'program',
                     '-m',
                     'expire pair material agent north ostrich fortune level cousin snow mixture nurse',
-                    '-mi',
+                    '--mnemonicInitialIndex',
                     '1',
-                    '-mc',
+                    '--mnemonicCount',
                     ''
                 ]
             ].forEach((args) => {
@@ -611,9 +601,9 @@ describe('Args parser tests', () => {
                 [
                     'path',
                     'program',
-                    '-dp',
+                    '--delegatorPrivateKey',
                     '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
-                    '-du',
+                    '-d',
                     'http://localhost:8080'
                 ],
 
@@ -621,25 +611,21 @@ describe('Args parser tests', () => {
 
                 // Normal syntax
                 ['path', 'program', '--delegatorPrivateKey', 'INVALID'],
-                // Short syntax
-                ['path', 'program', '-dp', 'INVALID'],
 
                 // Normal syntax
                 ['path', 'program', '--delegatorUrl', 'INVALID'],
                 // Short syntax
-                ['path', 'program', '-du', 'INVALID'],
+                ['path', 'program', '-d', 'INVALID'],
 
                 // Empty fields
 
                 // Normal syntax
                 ['path', 'program', '--delegatorPrivateKey', ''],
-                // Short syntax
-                ['path', 'program', '-dp', ''],
 
                 // Normal syntax
                 ['path', 'program', '--delegatorUrl', ''],
                 // Short syntax
-                ['path', 'program', '-du', ''],
+                ['path', 'program', '-d', ''],
 
                 // Enable delegation without the delegator
 

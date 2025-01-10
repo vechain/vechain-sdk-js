@@ -299,12 +299,27 @@ describe('KMSVeChainSigner - Thor Solo', () => {
             const signature = await signer.signTypedData(
                 typedData.domain,
                 typedData.types,
-                typedData.primaryType,
-                typedData.data
+                typedData.data,
+                typedData.primaryType
             );
             expect(signature).toBeDefined();
             // 64-bytes hex string
-            expect(signature.length).toBe(132);
+            expect(signature).toMatch(/^0x[A-Fa-f0-9]{130}$/);
+
+            const signatureWithoutPrimaryType = await signer.signTypedData(
+                typedData.domain,
+                typedData.types,
+                typedData.data
+            );
+            expect(signatureWithoutPrimaryType).toBeDefined();
+            // 64-bytes hex string
+            expect(signatureWithoutPrimaryType).toMatch(/^0x[A-Fa-f0-9]{130}$/);
+
+            // Not checking directly the signatures since there is an issue in LocalStack:
+            // https://github.com/localstack/localstack/issues/11678
+            // Looks like, regardless the configuration, a new SECP256r1 key is generated
+            // meaning that the signature will be different every time.
+            // However both hashes have been checked and they match, + tests in the other implementation.
         });
     });
 });

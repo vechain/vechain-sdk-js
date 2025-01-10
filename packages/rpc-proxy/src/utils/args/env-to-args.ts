@@ -33,9 +33,13 @@ function getArgsFromEnv(): string[] {
         getCliFieldFromEnv('-p', process.env.PORT, 'PORT'),
         getCliFieldFromEnv('-a', process.env.ACCOUNTS, 'ACCOUNTS'),
         getCliFieldFromEnv('-m', process.env.MNEMONIC, 'MNEMONIC'),
-        getCliFieldFromEnv('-mc', process.env.MNEMONIC_COUNT, 'MNEMONIC_COUNT'),
         getCliFieldFromEnv(
-            '-mi',
+            '--mnemonicCount',
+            process.env.MNEMONIC_COUNT,
+            'MNEMONIC_COUNT'
+        ),
+        getCliFieldFromEnv(
+            '--mnemonicInitialIndex',
             process.env.MNEMONIC_INITIAL_INDEX,
             'MNEMONIC_INITIAL_INDEX'
         ),
@@ -45,11 +49,11 @@ function getArgsFromEnv(): string[] {
             'ENABLE_DELEGATION'
         ),
         getCliFieldFromEnv(
-            '-dp',
+            '--delegatorPrivateKey',
             process.env.DELEGATOR_PRIVATE_KEY,
             'DELEGATOR_PRIVATE_KEY'
         ),
-        getCliFieldFromEnv('-du', process.env.DELEGATOR_URL, 'DELEGATOR_URL'),
+        getCliFieldFromEnv('-d', process.env.DELEGATOR_URL, 'DELEGATOR_URL'),
         getCliFieldFromEnv('-v', process.env.VERBOSE, 'VERBOSE'),
         getCliFieldFromEnv(
             '-c',

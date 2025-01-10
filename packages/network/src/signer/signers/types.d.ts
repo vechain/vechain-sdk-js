@@ -1,5 +1,8 @@
 import { type TransactionClause } from '@vechain/sdk-core';
-import { type TypedDataDomain, type TypedDataParameter } from 'viem';
+import type {
+    TypedDataDomain as viemTypedDataDomain,
+    TypedDataParameter as viemTypedDataParameter
+} from 'viem';
 import {
     type HardhatVeChainProvider,
     type VeChainProvider
@@ -12,6 +15,13 @@ import {
  * If you create a new provider, you need to add it here.
  */
 type AvailableVeChainProviders = VeChainProvider | HardhatVeChainProvider;
+
+/**
+ * EIP-712 types in case we change the provider (viem as of now)
+ */
+
+type TypedDataDomain = viemTypedDataDomain;
+type TypedDataParameter = viemTypedDataParameter;
 
 /**
  * Type for transaction input
@@ -371,8 +381,8 @@ interface VeChainSigner {
     signTypedData: (
         domain: TypedDataDomain,
         types: Record<string, TypedDataParameter[]>,
-        primaryType: string,
         message: Record<string, unknown>,
+        primaryType?: string,
         options?: SignTypedDataOptions
     ) => Promise<string>;
 
@@ -384,6 +394,8 @@ interface VeChainSigner {
 
 export {
     type AvailableVeChainProviders,
+    type TypedDataDomain,
+    type TypedDataParameter,
     type SignTypedDataOptions,
     type TransactionRequestInput,
     type VeChainSigner
