@@ -154,7 +154,7 @@ const ArgsValidatorAndGetter = {
                 'ArgsValidatorAndGetter.delegation()',
                 'Both delegator private key and delegator URL are provided. Only one can be provided',
                 {
-                    flag: '{-dp , --delegatorPrivateKey}, {-du , --delegatorUrl}',
+                    flag: '{--delegatorPrivateKey}, {-d , --delegatorUrl}',
                     value: `{value not provided for security reason} , {${options.delegatorUrl as string}}`
                 }
             );

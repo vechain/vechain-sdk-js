@@ -78,21 +78,21 @@ So you can run the rpc-proxy with:
     OR `npx rpc-proxy --accounts "7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158 8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158"`
 
 - `-m, --mnemonic <mnemonic>`: The mnemonic that the proxy server will use to sign transactions.
-- `-mc, --mnemonicCount <mnemonicCount>`: The number of accounts to derive from the mnemonic.
-- `-mi, --mnemonicInitialIndex <mnemonicInitialIndex>`: The index from which to start deriving accounts from the
+- `--mnemonicCount <mnemonicCount>`: The number of accounts to derive from the mnemonic.
+- `--mnemonicInitialIndex <mnemonicInitialIndex>`: The index from which to start deriving accounts from the
   mnemonic.
-    - -e.g.- `npx rpc-proxy -m "denial kitchen pet squirrel other broom bar gas better priority spoil cross" -mc 10 -mi 1`
+    - -e.g.- `npx rpc-proxy -m "denial kitchen pet squirrel other broom bar gas better priority spoil cross" --mnemonicCount 10 --mnemonicInitialIndex 1`
       OR `npx rpc-proxy --mnemonic "denial kitchen pet squirrel other broom bar gas better priority spoil cross" --mnemonicCount 10 --mnemonicInitialIndex 1`
     - **NOTE**: --mnemonic, --mnemonicCount, and --mnemonicInitialIndex MUST be used together.
 
 #### Use delegation
 
 - `-e, --enableDelegation`: Whether to enable delegation.
-- `-dp, --delegatorPrivateKey <delegatorPrivateKey>`: The private key of the delegator.
-- `-du, --delegatorUrl <delegatorUrl>`: The URL of the delegator.
-    - -e.g.- `npx rpc-proxy -e -dp 8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158`
+- `--delegatorPrivateKey <delegatorPrivateKey>`: The private key of the delegator.
+- `-d, --delegatorUrl <delegatorUrl>`: The URL of the delegator.
+    - -e.g.- `npx rpc-proxy -e --delegatorPrivateKey 8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158`
       OR `npx rpc-proxy --enableDelegation --delegatorPrivateKey 8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158`
-    - -e.g.- `npx rpc-proxy -e -du https://sponsor-testnet.vechain.energy/by/...`
+    - -e.g.- `npx rpc-proxy -e -d https://sponsor-testnet.vechain.energy/by/...`
       OR `npx rpc-proxy --enableDelegation --delegatorUrl https://sponsor-testnet.vechain.energy/by/...`
     - **NOTE**: --delegatorPrivateKey and --delegatorUrl are mutually exclusive.
     - **NOTE**: if --enableDelegation is used, --delegatorPrivateKey OR --delegatorUrl MUST be used.
