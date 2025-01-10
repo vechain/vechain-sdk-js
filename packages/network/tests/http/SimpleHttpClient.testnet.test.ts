@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { SimpleHttpClient } from '../../src/http';
+import { HttpMethod, SimpleHttpClient } from '../../src/http';
 import { TESTNET_URL } from '../../src';
 import { ZERO_ADDRESS } from '../fixture';
 import { stringifyData } from '@vechain/sdk-errors';
@@ -51,6 +51,18 @@ describe('SimpleHttpClient testnet tests', () => {
             },
             TIMEOUT
         );
+
+        test('Test http without leading slash', async () => {
+            const httpClient = new SimpleHttpClient(TESTNET_URL);
+            const resp = await httpClient.http(HttpMethod.GET, 'blocks/best');
+            expect(resp).toBeDefined();
+        });
+
+        test('Test http with leading slash', async () => {
+            const httpClient = new SimpleHttpClient(TESTNET_URL);
+            const resp = await httpClient.http(HttpMethod.GET, '/blocks/best');
+            expect(resp).toBeDefined();
+        });
 
         /*
         NOTE: this test doesn't succeed in CI/CD.
