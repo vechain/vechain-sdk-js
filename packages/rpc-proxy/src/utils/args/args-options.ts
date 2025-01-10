@@ -11,12 +11,12 @@ import { Command, Option, type OptionValues } from 'commander';
  * * Where accounts is a space separated list of private keys (e.g. "PK1 PK2 PK3 ...")
  *
  * rpc-proxy {-m|--mnemonic} <mnemonic> - Mnemonic to use for signing transactions
- * rpc-proxy {-mc|--mnemonicCount} <count> - Number of accounts to derive from the mnemonic
- * rpc-proxy {-mi|--mnemonicInitialIndex} <index> - Initial index to start deriving accounts from the mnemonic
+ * rpc-proxy {--mnemonicCount} <count> - Number of accounts to derive from the mnemonic
+ * rpc-proxy {--mnemonicInitialIndex} <index> - Initial index to start deriving accounts from the mnemonic
  *
  * rpc-proxy {-e|--enableDelegation} - Enable delegation
- * rpc-proxy {-dp|--delegatorPrivateKey} <delegatorPrivateKey> - Delegator private key
- * rpc-proxy {-du|--delegatorUrl} <delegatorUrl> - Delegator URL
+ * rpc-proxy {--delegatorPrivateKey} <delegatorPrivateKey> - Delegator private key
+ * rpc-proxy {-d|--delegatorUrl} <delegatorUrl> - Delegator URL
  *
  * rpc-proxy {-v|--verbose} - Enable verbose logging
  *
@@ -63,13 +63,13 @@ function getOptionsFromCommandLine(
         )
         .addOption(
             new Option(
-                '-mc, --mnemonicCount <count>',
+                '--mnemonicCount <count>',
                 'Number of accounts to derive from the mnemonic'
             )
         )
         .addOption(
             new Option(
-                '-mi, --mnemonicInitialIndex <index>',
+                '--mnemonicInitialIndex <index>',
                 'Initial index to start deriving accounts from the mnemonic'
             )
         )
@@ -80,14 +80,14 @@ function getOptionsFromCommandLine(
         // Delegator configuration (private key)
         .addOption(
             new Option(
-                '-dp, --delegatorPrivateKey <delegatorPrivateKey>',
+                '--delegatorPrivateKey <delegatorPrivateKey>',
                 'Delegator private key'
             )
         )
 
         // Delegator configuration (url)
         .addOption(
-            new Option('-du, --delegatorUrl <delegatorUrl>', 'Delegator URL')
+            new Option('-d, --delegatorUrl <delegatorUrl>', 'Delegator URL')
         )
 
         // Enable verbose logging

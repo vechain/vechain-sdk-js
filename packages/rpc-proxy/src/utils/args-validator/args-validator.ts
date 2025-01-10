@@ -226,7 +226,7 @@ const ArgsValidator = {
                     'ArgsValidator.mnemonicFields()',
                     'Invalid count provided. The parameter must be an integer',
                     {
-                        flag: '-mc , --mnemonicCount',
+                        flag: '--mnemonicCount',
                         value: String(mnemonicCount)
                     }
                 );
@@ -236,7 +236,7 @@ const ArgsValidator = {
                     'ArgsValidator.mnemonicFields()',
                     'Invalid initial index provided. The parameter must be an integer',
                     {
-                        flag: '-mi , --mnemonicInitialIndex',
+                        flag: '--mnemonicInitialIndex',
                         value: String(mnemonicInitialIndex)
                     }
                 );
@@ -266,7 +266,7 @@ const ArgsValidator = {
                 'ArgsValidator.delegatorPrivateKey()',
                 'An invalid delegator private key provided.',
                 {
-                    flag: '-dp , --delegatorPrivateKey',
+                    flag: '--delegatorPrivateKey',
                     value: 'Value will not be shown for security reasons'
                 }
             );
@@ -290,7 +290,7 @@ const ArgsValidator = {
                 'ArgsValidator.delegatorUrl()',
                 'Invalid delegator url provided. The parameter must be a valid url',
                 {
-                    flag: '-du , --delegatorUrl',
+                    flag: '-d , --delegatorUrl',
                     value: delegatorUrl
                 }
             );
