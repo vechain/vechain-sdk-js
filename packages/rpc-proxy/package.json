@@ -45,7 +45,7 @@
     "@vechain/sdk-network": "1.0.0-rc.4",
     "commander": "^12.1.0",
     "cors": "^2.8.5",
-    "express": "^4.21.1"
+    "express": "^4.21.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",

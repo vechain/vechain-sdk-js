@@ -99,7 +99,7 @@ describe('Address class tests', () => {
                         `Method 'Address.ofPublicKey' failed.` +
                             `\n-Reason: 'not a valid public key'` +
                             `\n-Parameters: \n\t{\n  "publicKey": "${publicKey}"\n}` +
-                            `\n-Internal error: \n\tinvalid Point, expected length of 33, or uncompressed 65, got 5`
+                            `\n-Internal error: \n\tPoint of length 5 was invalid. Expected 33 compressed bytes or 65 uncompressed bytes`
                     );
                 }
             }
