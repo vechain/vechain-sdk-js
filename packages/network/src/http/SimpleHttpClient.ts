@@ -65,7 +65,7 @@ class SimpleHttpClient implements HttpClient {
      * Executes an HTTP request with the specified method, path, and optional parameters.
      *
      * @param {HttpMethod} method - The HTTP method to use for the request (e.g., GET, POST).
-     * @param {string} path - The URL path for the request.
+     * @param {string} path - The URL path for the request. Leading slashes will be automatically removed.
      * @param {HttpParams} [params] - Optional parameters for the request,
      * including query parameters, headers, body, and response validation.
      * {@link HttpParams.headers} override {@link SimpleHttpClient.headers}.
