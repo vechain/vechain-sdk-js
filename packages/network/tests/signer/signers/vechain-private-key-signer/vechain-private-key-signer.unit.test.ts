@@ -361,6 +361,30 @@ describe('VeChain base signer tests', () => {
                     eip712TestCases.valid.data
                 );
             expect(actualWithoutPrimaryType).toBe(expected);
+            const actualWithStringChainId =
+                await privateKeySigner.signTypedData(
+                    {
+                        ...eip712TestCases.valid.domain,
+                        chainId:
+                            '1176455790972829965191905223412607679856028701100105089447013101863'
+                    },
+                    eip712TestCases.valid.types,
+                    eip712TestCases.valid.data,
+                    eip712TestCases.valid.primaryType
+                );
+            expect(actualWithStringChainId).toBe(expected);
+            const actualWithBigintChainId =
+                await privateKeySigner.signTypedData(
+                    {
+                        ...eip712TestCases.valid.domain,
+                        chainId:
+                            1176455790972829965191905223412607679856028701100105089447013101863n
+                    },
+                    eip712TestCases.valid.types,
+                    eip712TestCases.valid.data,
+                    eip712TestCases.valid.primaryType
+                );
+            expect(actualWithBigintChainId).toBe(expected);
         });
     });
 });
