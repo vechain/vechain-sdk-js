@@ -426,9 +426,16 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         primaryType?: string
     ): Promise<string> {
         try {
+            const parsedDomain = {
+                ...domain,
+                chainId:
+                    typeof domain.chainId === 'string'
+                        ? BigInt(domain.chainId)
+                        : domain.chainId
+            };
             const payload = Hex.of(
                 hashTypedData({
-                    domain,
+                    domain: parsedDomain,
                     types,
                     primaryType: primaryType ?? this.deducePrimaryType(types), // Deduce the primary type if not provided
                     message

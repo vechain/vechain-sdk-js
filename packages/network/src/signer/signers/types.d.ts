@@ -20,7 +20,10 @@ type AvailableVeChainProviders = VeChainProvider | HardhatVeChainProvider;
  * EIP-712 types in case we change the provider (viem as of now)
  */
 
-type TypedDataDomain = viemTypedDataDomain;
+type TypedDataDomain = Omit<viemTypedDataDomain, 'chainId'> & {
+    chainId: number | bigint | string | undefined;
+};
+
 type TypedDataParameter = viemTypedDataParameter;
 
 /**
