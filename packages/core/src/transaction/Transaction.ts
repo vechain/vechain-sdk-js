@@ -634,7 +634,7 @@ class Transaction {
      * @remarks Security auditable method, depends on
      * - {@link Address.ofPublicKey}
      * - {@link Secp256k1.isValidPrivateKey};
-     * - {@link Secp256k1.sign}.
+     * - {@link Secp256k1.sign}.l
      */
     public signAsSenderAndGasPayer(
         senderPrivateKey: Uint8Array,
