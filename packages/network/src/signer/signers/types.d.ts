@@ -1,7 +1,7 @@
 import { type TransactionClause } from '@vechain/sdk-core';
 import type {
-    TypedDataDomain as viemTypedDataDomain,
-    TypedDataParameter as viemTypedDataParameter
+    TypedDataDomain as ViemTypedDataDomain,
+    TypedDataParameter as ViemTypedDataParameter
 } from 'viem';
 import {
     type HardhatVeChainProvider,
@@ -20,11 +20,11 @@ type AvailableVeChainProviders = VeChainProvider | HardhatVeChainProvider;
  * EIP-712 types in case we change the provider (viem as of now)
  */
 
-type TypedDataDomain = Omit<viemTypedDataDomain, 'chainId'> & {
+type TypedDataDomain = Omit<ViemTypedDataDomain, 'chainId'> & {
     chainId: number | bigint | string | undefined;
 };
 
-type TypedDataParameter = viemTypedDataParameter;
+type TypedDataParameter = ViemTypedDataParameter;
 
 /**
  * Type for transaction input

@@ -14,7 +14,10 @@ import {
     JSONRPCInvalidParams,
     SignerMethodError
 } from '@vechain/sdk-errors';
-import { hashTypedData } from 'viem';
+import {
+    hashTypedData,
+    type TypedDataDomain as ViemTypedDataDomain
+} from 'viem';
 import { RPC_METHODS } from '../../../provider/utils/const/rpc-mapper/rpc-methods';
 import { type TransactionSimulationResult } from '../../../thor-client';
 import { vnsUtils } from '../../../utils';
@@ -410,6 +413,46 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
     }
 
     /**
+     * Viem does not check the type of the domain object on runtime at least in version 2.22.8
+     * @param obj unknown object to check if it is a ViemTypedDataDomain
+     * @returns true if the object is a ViemTypedDataDomain
+     */
+    private isViemTypedDataDomain(obj: unknown): obj is ViemTypedDataDomain {
+        if (typeof obj !== 'object' || obj === null) {
+            return false;
+        }
+
+        const expectedKeys = [
+            'name',
+            'version',
+            'chainId',
+            'verifyingContract',
+            'salt'
+        ];
+        const objKeys = Object.keys(obj);
+
+        // Check for unexpected keys
+        for (const key of objKeys) {
+            if (!expectedKeys.includes(key)) {
+                return false;
+            }
+        }
+
+        // salt and verifyingContract are dynamic types, should be checked by viem
+        const domain = obj as ViemTypedDataDomain;
+        return (
+            (typeof domain.name === 'undefined' ||
+                typeof domain.name === 'string') &&
+            (typeof domain.version === 'undefined' ||
+                typeof domain.version === 'string') &&
+            (typeof domain.chainId === 'undefined' ||
+                typeof domain.chainId === 'number' ||
+                typeof domain.chainId === 'bigint' ||
+                typeof domain.chainId === 'string')
+        );
+    }
+
+    /**
      * Signs the [[link-eip-712]] typed data.
      *
      * @param {TypedDataDomain} domain - The domain parameters used for signing.
@@ -426,13 +469,20 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         primaryType?: string
     ): Promise<string> {
         try {
-            const parsedDomain = {
+            const parsedDomain: ViemTypedDataDomain = {
                 ...domain,
                 chainId:
                     typeof domain.chainId === 'string'
                         ? BigInt(domain.chainId)
                         : domain.chainId
             };
+            if (!this.isViemTypedDataDomain(parsedDomain)) {
+                throw new SignerMethodError(
+                    'VeChainAbstractSigner.signTypedData',
+                    'The domain is not a valid object.',
+                    { domain }
+                );
+            }
             const payload = Hex.of(
                 hashTypedData({
                     domain: parsedDomain,
@@ -444,6 +494,9 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
 
             return await this.signPayload(payload);
         } catch (error) {
+            if (error instanceof SignerMethodError) {
+                throw error;
+            }
             throw new SignerMethodError(
                 'VeChainAbstractSigner.signTypedData',
                 'The typed data could not be signed.',
