@@ -10,11 +10,10 @@ import {
 } from '../../../../core/src';
 import { THOR_SOLO_URL, ThorClient } from '../../../../network/src';
 
-import * as nc_utils from '@noble/curves/abstract/utils';
 import { secp256k1 as nc_secp256k1 } from '@noble/curves/secp256k1';
 import { Secp256k1 } from '@vechain/sdk-core';
 
-describe('The Old Way', () => {
+describe('Solo Experiments', () => {
     const thorClient = ThorClient.at(THOR_SOLO_URL + '/', {
         isPollingEnabled: false
     });
@@ -35,36 +34,6 @@ describe('The Old Way', () => {
     };
     const OneVET = VET.of(1);
     const clauses = [Clause.transferVET(receiver.address, OneVET)];
-
-    test('Undelegated Tx', async () => {
-        const latestBlock = await thorClient.blocks.getBestBlockCompressed();
-        console.log(latestBlock);
-        const gasToPay = await thorClient.gas.estimateGas(
-            clauses,
-            sender.address.toString()
-        );
-        console.log(gasToPay);
-        const body: TransactionBody = {
-            chainTag: networkInfo.solo.chainTag,
-            blockRef: latestBlock?.id.slice(0, 18) ?? '0x0',
-            expiration: 0,
-            clauses,
-            gasPriceCoef: 0,
-            gas: gasToPay.totalGas,
-            dependsOn: null,
-            nonce: 1
-        };
-        const tx = Transaction.of(body).sign(sender.privateKey.bytes);
-        console.log(tx.signature?.length);
-        const txResult = await thorClient.transactions.sendRawTransaction(
-            HexUInt.of(tx.encoded).toString()
-        );
-        console.log(txResult);
-        const txReceipt = await thorClient.transactions.waitForTransaction(
-            tx.id.toString()
-        );
-        console.log(txReceipt);
-    }, 60000);
 
     test('Delegated Tx', async () => {
         const latestBlock = await thorClient.blocks.getBestBlockCompressed();
@@ -125,6 +94,7 @@ describe('The Old Way', () => {
             sender.privateKey.bytes,
             gasPayer.privateKey.bytes
         );
+        // KEEP IT
         // console.log(tx.signature?.length);
         // const txResult = await thorClient.transactions.sendRawTransaction(
         //     HexUInt.of(tx.encoded).toString()
@@ -144,10 +114,11 @@ describe('The Old Way', () => {
             }
         };
         const aTx = Transaction.of(aBody).signAsSender(sender.privateKey.bytes);
-        const sig = nc_utils.concatBytes(
-            aTx.signature as Uint8Array,
-            (tx.signature as Uint8Array).slice(65)
-        );
+        // KEEP IT
+        // const sig = nc_utils.concatBytes(
+        //     aTx.signature as Uint8Array,
+        //     (tx.signature as Uint8Array).slice(65)
+        // );
         const fTx = Transaction.of(aTx.body, tx.signature);
         const fTxResult = await thorClient.transactions.sendRawTransaction(
             HexUInt.of(fTx.encoded).toString()
@@ -161,10 +132,11 @@ describe('The Old Way', () => {
             clauses,
             sender.address.toString()
         );
-        const senderPublicKey = Secp256k1.derivePublicKey(
-            sender.privateKey.bytes,
-            false
-        );
+        // KEEP IT
+        // const senderPublicKey = Secp256k1.derivePublicKey(
+        //     sender.privateKey.bytes,
+        //     false
+        // );
         const gasPayerPublicKey = Secp256k1.derivePublicKey(
             gasPayer.privateKey.bytes,
             false
