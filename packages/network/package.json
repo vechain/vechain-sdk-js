@@ -49,7 +49,7 @@
     "abitype": "^1.0.8",
     "ethers": "6.13.5",
     "isomorphic-ws": "^5.0.0",
-    "viem": "^2.22.7",
+    "viem": "^2.22.8",
     "ws": "^8.18.0"
   },
   "devDependencies": {
