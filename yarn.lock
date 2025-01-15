@@ -1643,14 +1643,14 @@
     "@types/tough-cookie" "^4.0.5"
     tough-cookie "^4.1.4"
 
-"@changesets/apply-release-plan@^7.0.5":
-  version "7.0.5"
-  resolved "https://registry.yarnpkg.com/@changesets/apply-release-plan/-/apply-release-plan-7.0.5.tgz#3323c97afc08abc15e5136488f9c7cf1a864832e"
-  integrity sha512-1cWCk+ZshEkSVEZrm2fSj1Gz8sYvxgUL4Q78+1ZZqeqfuevPTPk033/yUZ3df8BKMohkqqHfzj0HOOrG0KtXTw==
+"@changesets/apply-release-plan@^7.0.7":
+  version "7.0.7"
+  resolved "https://registry.yarnpkg.com/@changesets/apply-release-plan/-/apply-release-plan-7.0.7.tgz#cabeaed77de07c6bd9878a9bc5ffd3ea7db7f7ff"
+  integrity sha512-qnPOcmmmnD0MfMg9DjU1/onORFyRpDXkMMl2IJg9mECY6RnxL3wN0TCCc92b2sXt1jt8DgjAUUsZYGUGTdYIXA==
   dependencies:
-    "@changesets/config" "^3.0.3"
+    "@changesets/config" "^3.0.5"
     "@changesets/get-version-range-type" "^0.4.0"
-    "@changesets/git" "^3.0.1"
+    "@changesets/git" "^3.0.2"
     "@changesets/should-skip-package" "^0.1.1"
     "@changesets/types" "^6.0.0"
     "@manypkg/get-packages" "^1.1.3"
@@ -1662,10 +1662,10 @@
     resolve-from "^5.0.0"
     semver "^7.5.3"
 
-"@changesets/assemble-release-plan@^6.0.4":
-  version "6.0.4"
-  resolved "https://registry.yarnpkg.com/@changesets/assemble-release-plan/-/assemble-release-plan-6.0.4.tgz#153d5154bb9f4162215ca69ad1c6e0886f686ccb"
-  integrity sha512-nqICnvmrwWj4w2x0fOhVj2QEGdlUuwVAwESrUo5HLzWMI1rE5SWfsr9ln+rDqWB6RQ2ZyaMZHUcU7/IRaUJS+Q==
+"@changesets/assemble-release-plan@^6.0.5":
+  version "6.0.5"
+  resolved "https://registry.yarnpkg.com/@changesets/assemble-release-plan/-/assemble-release-plan-6.0.5.tgz#d987b01c2d91c8b2f81eedd2df56ba355e4ce536"
+  integrity sha512-IgvBWLNKZd6k4t72MBTBK3nkygi0j3t3zdC1zrfusYo0KpdsvnDjrMM9vPnTCLCMlfNs55jRL4gIMybxa64FCQ==
   dependencies:
     "@changesets/errors" "^0.2.0"
     "@changesets/get-dependents-graph" "^2.1.2"
@@ -1681,29 +1681,29 @@
   dependencies:
     "@changesets/types" "^6.0.0"
 
-"@changesets/cli@^2.27.7":
-  version "2.27.9"
-  resolved "https://registry.yarnpkg.com/@changesets/cli/-/cli-2.27.9.tgz#7b58a4c9eaf95d81fe0d1386705ecefe94a20062"
-  integrity sha512-q42a/ZbDnxPpCb5Wkm6tMVIxgeI9C/bexntzTeCFBrQEdpisQqk8kCHllYZMDjYtEc1ZzumbMJAG8H0Z4rdvjg==
+"@changesets/cli@^2.27.11":
+  version "2.27.11"
+  resolved "https://registry.yarnpkg.com/@changesets/cli/-/cli-2.27.11.tgz#1d510044b350a7c78a8b55a0591637d7ad224469"
+  integrity sha512-1QislpE+nvJgSZZo9+Lj3Lno5pKBgN46dAV8IVxKJy9wX8AOrs9nn5pYVZuDpoxWJJCALmbfOsHkyxujgetQSg==
   dependencies:
-    "@changesets/apply-release-plan" "^7.0.5"
-    "@changesets/assemble-release-plan" "^6.0.4"
+    "@changesets/apply-release-plan" "^7.0.7"
+    "@changesets/assemble-release-plan" "^6.0.5"
     "@changesets/changelog-git" "^0.2.0"
-    "@changesets/config" "^3.0.3"
+    "@changesets/config" "^3.0.5"
     "@changesets/errors" "^0.2.0"
     "@changesets/get-dependents-graph" "^2.1.2"
-    "@changesets/get-release-plan" "^4.0.4"
-    "@changesets/git" "^3.0.1"
+    "@changesets/get-release-plan" "^4.0.6"
+    "@changesets/git" "^3.0.2"
     "@changesets/logger" "^0.1.1"
     "@changesets/pre" "^2.0.1"
-    "@changesets/read" "^0.6.1"
+    "@changesets/read" "^0.6.2"
     "@changesets/should-skip-package" "^0.1.1"
     "@changesets/types" "^6.0.0"
     "@changesets/write" "^0.3.2"
     "@manypkg/get-packages" "^1.1.3"
     ansi-colors "^4.1.3"
     ci-info "^3.7.0"
-    enquirer "^2.3.0"
+    enquirer "^2.4.1"
     external-editor "^3.1.0"
     fs-extra "^7.0.1"
     mri "^1.2.0"
@@ -1712,13 +1712,13 @@
     picocolors "^1.1.0"
     resolve-from "^5.0.0"
     semver "^7.5.3"
-    spawndamnit "^2.0.0"
+    spawndamnit "^3.0.1"
     term-size "^2.1.0"
 
-"@changesets/config@^3.0.3":
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/@changesets/config/-/config-3.0.3.tgz#19196558882b25c8aaf04941d4ac7e151f5a1b36"
-  integrity sha512-vqgQZMyIcuIpw9nqFIpTSNyc/wgm/Lu1zKN5vECy74u95Qx/Wa9g27HdgO4NkVAaq+BGA8wUc/qvbvVNs93n6A==
+"@changesets/config@^3.0.5":
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/@changesets/config/-/config-3.0.5.tgz#cb59e9f338a4b35d3266af8a32799cb940d54ee0"
+  integrity sha512-QyXLSSd10GquX7hY0Mt4yQFMEeqnO5z/XLpbIr4PAkNNoQNKwDyiSrx4yd749WddusH1v3OSiA0NRAYmH/APpQ==
   dependencies:
     "@changesets/errors" "^0.2.0"
     "@changesets/get-dependents-graph" "^2.1.2"
@@ -1726,7 +1726,7 @@
     "@changesets/types" "^6.0.0"
     "@manypkg/get-packages" "^1.1.3"
     fs-extra "^7.0.1"
-    micromatch "^4.0.2"
+    micromatch "^4.0.8"
 
 "@changesets/errors@^0.2.0":
   version "0.2.0"
@@ -1745,15 +1745,15 @@
     picocolors "^1.1.0"
     semver "^7.5.3"
 
-"@changesets/get-release-plan@^4.0.4":
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/@changesets/get-release-plan/-/get-release-plan-4.0.4.tgz#e7ef0d84d9079c69febb64f8018a18ac4b77ac90"
-  integrity sha512-SicG/S67JmPTrdcc9Vpu0wSQt7IiuN0dc8iR5VScnnTVPfIaLvKmEGRvIaF0kcn8u5ZqLbormZNTO77bCEvyWw==
+"@changesets/get-release-plan@^4.0.6":
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/@changesets/get-release-plan/-/get-release-plan-4.0.6.tgz#40d70c2524be51a70b7e1a778826854bb6c8562a"
+  integrity sha512-FHRwBkY7Eili04Y5YMOZb0ezQzKikTka4wL753vfUA5COSebt7KThqiuCN9BewE4/qFGgF/5t3AuzXx1/UAY4w==
   dependencies:
-    "@changesets/assemble-release-plan" "^6.0.4"
-    "@changesets/config" "^3.0.3"
+    "@changesets/assemble-release-plan" "^6.0.5"
+    "@changesets/config" "^3.0.5"
     "@changesets/pre" "^2.0.1"
-    "@changesets/read" "^0.6.1"
+    "@changesets/read" "^0.6.2"
     "@changesets/types" "^6.0.0"
     "@manypkg/get-packages" "^1.1.3"
 
@@ -1762,16 +1762,16 @@
   resolved "https://registry.yarnpkg.com/@changesets/get-version-range-type/-/get-version-range-type-0.4.0.tgz#429a90410eefef4368502c41c63413e291740bf5"
   integrity sha512-hwawtob9DryoGTpixy1D3ZXbGgJu1Rhr+ySH2PvTLHvkZuQ7sRT4oQwMh0hbqZH1weAooedEjRsbrWcGLCeyVQ==
 
-"@changesets/git@^3.0.1":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@changesets/git/-/git-3.0.1.tgz#4499a07d35d8e783cd56f8295fb7d4d70282701b"
-  integrity sha512-pdgHcYBLCPcLd82aRcuO0kxCDbw/yISlOtkmwmE8Odo1L6hSiZrBOsRl84eYG7DRCab/iHnOkWqExqc4wxk2LQ==
+"@changesets/git@^3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@changesets/git/-/git-3.0.2.tgz#669c700049dc3b8ba53f46de45f5c4b1e6ddea3b"
+  integrity sha512-r1/Kju9Y8OxRRdvna+nxpQIsMsRQn9dhhAZt94FLDeu0Hij2hnOozW8iqnHBgvu+KdnJppCveQwK4odwfw/aWQ==
   dependencies:
     "@changesets/errors" "^0.2.0"
     "@manypkg/get-packages" "^1.1.3"
     is-subdir "^1.1.1"
-    micromatch "^4.0.2"
-    spawndamnit "^2.0.0"
+    micromatch "^4.0.8"
+    spawndamnit "^3.0.1"
 
 "@changesets/logger@^0.1.1":
   version "0.1.1"
@@ -1798,12 +1798,12 @@
     "@manypkg/get-packages" "^1.1.3"
     fs-extra "^7.0.1"
 
-"@changesets/read@^0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@changesets/read/-/read-0.6.1.tgz#32c91d97e602861717696c49a09c23eb492810f6"
-  integrity sha512-jYMbyXQk3nwP25nRzQQGa1nKLY0KfoOV7VLgwucI0bUO8t8ZLCr6LZmgjXsiKuRDc+5A6doKPr9w2d+FEJ55zQ==
+"@changesets/read@^0.6.2":
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/@changesets/read/-/read-0.6.2.tgz#816cf75dd22a70e75ac279474e44be52fb3fb91b"
+  integrity sha512-wjfQpJvryY3zD61p8jR87mJdyx2FIhEcdXhKUqkja87toMrP/3jtg/Yg29upN+N4Ckf525/uvV7a4tzBlpk6gg==
   dependencies:
-    "@changesets/git" "^3.0.1"
+    "@changesets/git" "^3.0.2"
     "@changesets/logger" "^0.1.1"
     "@changesets/parse" "^0.4.0"
     "@changesets/types" "^6.0.0"
@@ -7069,7 +7069,7 @@ cross-fetch@^3.0.4:
   dependencies:
     node-fetch "^2.6.12"
 
-cross-spawn@^5.1.0, cross-spawn@^7.0.0, cross-spawn@^7.0.1, cross-spawn@^7.0.2, cross-spawn@^7.0.3, cross-spawn@^7.0.5:
+cross-spawn@^7.0.0, cross-spawn@^7.0.1, cross-spawn@^7.0.2, cross-spawn@^7.0.3, cross-spawn@^7.0.5:
   version "7.0.6"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-7.0.6.tgz#8a58fe78f00dcd70c370451759dfbfaf03e8ee9f"
   integrity sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==
@@ -7518,7 +7518,7 @@ enhanced-resolve@^5.15.0, enhanced-resolve@^5.17.1:
     graceful-fs "^4.2.4"
     tapable "^2.2.0"
 
-enquirer@^2.3.0:
+enquirer@^2.3.0, enquirer@^2.4.1:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/enquirer/-/enquirer-2.4.1.tgz#93334b3fbd74fc7097b224ab4a8fb7e40bf4ae56"
   integrity sha512-rRqJg/6gd538VHvR3PSrdRBb/1Vy2YfzHqzvbhGIQpDRKIa4FgV/54b5Q1xYSxOOwKvjXweS26E0Q+nAMwp2pQ==
@@ -10988,7 +10988,7 @@ micromark-util-types@^2.0.0:
   resolved "https://registry.yarnpkg.com/micromark-util-types/-/micromark-util-types-2.0.0.tgz#63b4b7ffeb35d3ecf50d1ca20e68fc7caa36d95e"
   integrity sha512-oNh6S2WMHWRZrmutsRmDDfkzKtxF+bc2VxLC9dvtrDIRFln627VsFP6fLMgTryGDljgLPjkrzQSDcPrjPyDJ5w==
 
-micromatch@^4.0.2, micromatch@^4.0.4, micromatch@^4.0.8:
+micromatch@^4.0.4, micromatch@^4.0.8:
   version "4.0.8"
   resolved "https://registry.yarnpkg.com/micromatch/-/micromatch-4.0.8.tgz#d66fa18f3a47076789320b9b1af32bd86d9fa202"
   integrity sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA==
@@ -13051,13 +13051,13 @@ spawn-wrap@^2.0.0:
     signal-exit "^3.0.2"
     which "^2.0.1"
 
-spawndamnit@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/spawndamnit/-/spawndamnit-2.0.0.tgz#9f762ac5c3476abb994b42ad592b5ad22bb4b0ad"
-  integrity sha512-j4JKEcncSjFlqIwU5L/rp2N5SIPsdxaRsIv678+TZxZ0SRDJTm8JrxJMjE/XuiEZNEir3S8l0Fa3Ke339WI4qA==
+spawndamnit@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/spawndamnit/-/spawndamnit-3.0.1.tgz#44410235d3dc4e21f8e4f740ae3266e4486c2aed"
+  integrity sha512-MmnduQUuHCoFckZoWnXsTg7JaiLBJrKFj9UI2MbRPGaJeVpsLcVBu6P/IGZovziM/YBsellCmsprgNA+w0CzVg==
   dependencies:
-    cross-spawn "^5.1.0"
-    signal-exit "^3.0.2"
+    cross-spawn "^7.0.5"
+    signal-exit "^4.0.1"
 
 spdx-correct@^3.0.0:
   version "3.2.0"
