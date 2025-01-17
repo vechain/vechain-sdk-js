@@ -20,7 +20,6 @@ class Nonce extends HexUInt {
     }
 
     public static of(
-        // eslint-disable-next-line sonarjs/use-type-alias
         exp: bigint | number | string | Uint8Array | HexUInt
     ): Nonce {
         try {

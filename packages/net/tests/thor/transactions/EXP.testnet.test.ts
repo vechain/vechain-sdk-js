@@ -1,4 +1,5 @@
 import { describe, test } from '@jest/globals';
+import { TESTNET_URL, ThorClient } from '../../../../network/src';
 import {
     Address,
     Clause,
@@ -7,8 +8,7 @@ import {
     Transaction,
     type TransactionBody,
     VET
-} from '../../../../core/src';
-import { TESTNET_URL, ThorClient } from '../../../../network/src';
+} from '@vechain/sdk-core';
 
 describe('Testnet Experiments', () => {
     const thorClient = ThorClient.at(TESTNET_URL + '/', {
@@ -43,18 +43,22 @@ describe('Testnet Experiments', () => {
         const body: TransactionBody = {
             chainTag: networkInfo.testnet.chainTag,
             blockRef: latestBlock?.id.slice(0, 18) ?? '0x0',
-            expiration: 0,
+            expiration: 32,
             clauses,
-            gasPriceCoef: 0,
+            gasPriceCoef: 128,
             gas: gasToPay.totalGas,
             dependsOn: null,
             // eslint-disable-next-line sonarjs/pseudo-random
-            nonce: Math.floor(1000000 * Math.random())
+            nonce: Math.floor(1000000 * Math.random()),
+            reserved: {
+                features: 1 // set the transaction to be delegated
+            }
         };
         const tx = Transaction.of(body).signAsSenderAndGasPayer(
             sender.privateKey.bytes,
             gasPayer.privateKey.bytes
         );
+        console.log('tx', tx);
         const txResult = await thorClient.transactions.sendRawTransaction(
             HexUInt.of(tx.encoded).toString()
         );

@@ -69,6 +69,10 @@ describe('Solo Experiments', () => {
             tx.id.toString()
         );
         console.log(txReceipt);
+        const txr = await thorClient.transactions.getTransaction(
+            tx.id.toString()
+        );
+        console.log(txr);
     }, 60000);
 
     test('NCC Tx', async () => {
