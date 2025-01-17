@@ -1,0 +1,13 @@
+name: "Task"
+description: Create a new ticket for a new task.
+title: "<title>"
+labels: []
+body:
+- type: textarea
+  id: summary
+  attributes:
+    label: "Summary"
+    description: Provide a brief explanation of the feature.
+    placeholder: Describe in a few lines what should be done.
+  validations:
+    required: false
