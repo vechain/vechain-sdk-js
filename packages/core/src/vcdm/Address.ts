@@ -115,7 +115,7 @@ class Address extends HexUInt {
             throw new InvalidDataType(
                 'Address.ofPrivateKey',
                 'not a valid private key',
-                { privateKey: `${privateKey}` },
+                { privateKey: 'private key is obfuscated' },
                 error
             );
         }
