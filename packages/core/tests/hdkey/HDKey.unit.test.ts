@@ -51,9 +51,10 @@ const HDKeyFixture = {
     correctValidationPaths: [
         HDKey.VET_DERIVATION_PATH,
         'm/0/1/2/3/4',
-        "m/0'/1'/2'/3'/4'",
-        "m/0'/1'/2'/3'/4",
-        "m/0'/1'/2/3'/4'"
+        "m/0'/1'/2'/3/4",
+        "m/44'/60'/0'/0/0",
+        "m/44'/60'/0'/0",
+        'm/0/1/2/3'
     ],
 
     /**
@@ -64,7 +65,9 @@ const HDKeyFixture = {
         'm/0/b',
         'incorrect',
         'inco/rre/01/ct',
-        '0/1/4/2/4/h'
+        '0/1/4/2/4/h',
+        '1/0/1',
+        "m/0'/1'/2/3'/4'"
     ]
 };
 
