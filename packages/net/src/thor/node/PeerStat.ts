@@ -7,6 +7,7 @@ class PeerStat {
     readonly bestBlockID: BlockId;
     readonly totalScore: UInt;
     readonly peerID: string;
+    // Should respect this format ^(?:[0-9]{1,3}\.){3}[0-9]{1,3}:[0-9]{1,5}$
     readonly netAddr: string;
     readonly inbound: boolean;
     readonly duration: UInt;
