@@ -129,3 +129,4 @@ expect(delegatedSigned.isDelegated).toEqual(true);
 expect(txReceipt).toBeDefined();
 expect(txReceipt?.gasUsed).toBe(gasResult.totalGas);
 expect(sendTransactionResult.id).toBe(txReceipt?.meta.txID);
+console.log(txReceipt);
