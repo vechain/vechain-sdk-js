@@ -234,24 +234,15 @@ class HDKey extends s_bip32.HDKey {
     }
 
     /**
-     * Checks if derivation path is valid.
+     * Checks if BIP32 derivation path is valid.
      *
      * @param derivationPath - Derivation path to check.
      *
      * @returns `true` if derivation path is valid, otherwise `false`.
      */
     public static isDerivationPathValid(derivationPath: string): boolean {
-        // Split derivation path into parts
-        const pathComponents = derivationPath.split('/');
-
-        // Check each component
-        for (let i = 0; i < pathComponents.length; i++) {
-            // If single component is not valid, return false
-            if (!this.isDerivationPathComponentValid(pathComponents[i], i))
-                return false;
-        }
-
-        return true;
+        const bip32Regex = /^m(\/\d+'?){3}(\/\d+){1,2}$/;
+        return bip32Regex.test(derivationPath);
     }
 }
 
