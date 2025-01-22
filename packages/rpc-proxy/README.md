@@ -190,3 +190,73 @@ docker run -d -p 8545:8545 -v ./config.json:/app/config.json -t vechain-rpc-prox
 
 If you do not pass a config.json file, the default solo network standard configuration will be used. Make sure to
 provide your desired configuration file.
+
+## JSON RPC Methods Support Status
+
+Below is the support status for JSON RPC methods in VeChain via `sdk-rpc-proxy`.
+
+| JSON RPC Method                          | Support Status      |
+|------------------------------------------|---------------------|
+| debug_traceBlockByHash                   | Fully Supported     |
+| debug_traceBlockByNumber                 | Fully Supported     |
+| debug_traceCall                          | Fully Supported     |
+| debug_traceTransaction                   | Fully Supported     |
+| eth_accounts                             | Fully Supported     |
+| eth_blockNumber                          | Fully Supported     |
+| eth_call                                 | Partially Supported |
+| eth_chainId                              | Fully Supported     |
+| eth_coinbase                             | Fully Supported     |
+| eth_createAccessList                     | Fully Supported     |
+| eth_estimateGas                          | Partially Supported |
+| eth_gasPrice                             | Fully Supported     |
+| eth_getBalance                           | Fully Supported     |
+| eth_getBlockByHash                       | Partially Supported |
+| eth_getBlockByNumber                     | Partially Supported |
+| eth_getBlockReceipts                     | Fully Supported     |
+| eth_getBlockTransactionCountByHash       | Fully Supported     |
+| eth_getBlockTransactionCountByNumber     | Fully Supported     |
+| eth_getCode                              | Fully Supported     |
+| eth_getLogs                              | Partially Supported |
+| eth_getStorageAt                         | Fully Supported     |
+| eth_getTransactionByBlockHashAndIndex    | Fully Supported     |
+| eth_getTransactionByBlockNumberAndIndex  | Fully Supported     |
+| eth_getTransactionByHash                 | Fully Supported     |
+| eth_getTransactionCount                  | Partially Supported |
+| eth_getTransactionReceipt                | Fully Supported     |
+| eth_getUncleByBlockHashAndIndex          | Partially Supported |
+| eth_getUncleByBlockNumberAndIndex        | Partially Supported |
+| eth_getUncleCountByBlockHash             | Partially Supported |
+| eth_getUncleCountByBlockNumber           | Partially Supported |
+| eth_requestAccounts                      | Fully Supported     |
+| eth_sendRawTransaction                   | Fully Supported     |
+| eth_sendTransaction                      | Fully Supported     |
+| eth_signTransaction                      | Fully Supported     |
+| eth_signTypedDataV4                      | Fully Supported     |
+| eth_subscribe                            | Fully Supported     |
+| eth_syncing                              | Partially Supported |
+| eth_unsubscribe                          | Fully Supported     |
+| evm_mine                                 | Fully Supported     |
+| net_listening                            | Fully Supported     |
+| net_peerCount                            | Fully Supported     |
+| net_version                              | Fully Supported     |
+| txpool_content                           | Partially Supported |
+| txpool_contentFrom                       | Partially Supported |
+| txpool_inspect                           | Partially Supported |
+| txpool_status                            | Partially Supported |
+| web3_clientVersion                       | Fully Supported     |
+| web3_sha3                                | Fully Supported     |
+| eth_getUncleByBlockHash                  | Not Supported       |
+| eth_getUncleByBlockNumber                | Not Supported       |
+| eth_newFilter                            | Not Supported       |
+| eth_newBlockFilter                       | Not Supported       |
+| eth_newPendingTransactionFilter          | Not Supported       |
+| eth_uninstallFilter                      | Not Supported       |
+| eth_getFilterChanges                     | Not Supported       |
+| eth_getFilterLogs                        | Not Supported       |
+| eth_getProof                             | Not Supported       |
+| txpool_inspectFrom                       | Not Supported       |
+
+### Notes
+- **Fully Supported**: The method is implemented and works as expected.
+- **Partially Supported**: The method is implemented but may have limitations or deviations from the Ethereum standard.
+- **Not Supported**: The method is not implemented or cannot be supported due to protocol constraints.
