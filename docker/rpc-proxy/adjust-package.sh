@@ -3,7 +3,9 @@
 # -----------------------------------------------------------------------------
 # Info:
 # - input: path to package.json
-# - output: package.json without devDependencies section
+# - output: 
+#     package.json without devDependencies section
+#     package.json without version selectors in dependencies
 # -----------------------------------------------------------------------------
 
 # Check if the input file is provided
