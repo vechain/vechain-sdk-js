@@ -17,6 +17,7 @@ COPY ./tsconfig.json ./tsconfig.json
 
 # Install all the dependencies and build the app
 RUN yarn install && yarn build
+RUN npm prune --production
 
 # Stage 2: Serve the app using node
 FROM node:20.17.0-alpine3.20 AS runner
