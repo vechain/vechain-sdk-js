@@ -14,9 +14,20 @@ COPY ./package.json ./package.json
 COPY ./turbo.json ./turbo.json
 COPY ./yarn.lock ./yarn.lock
 COPY ./tsconfig.json ./tsconfig.json
+COPY ./docker/rpc-proxy/adjust-package.sh ./adjust-package.sh
 
 # Install all the dependencies and build the app
 RUN yarn install && yarn build
+
+# Clean the package.json files for production
+RUN apk add --no-cache jq
+RUN chmod +x ./adjust-package.sh
+RUN /bin/sh ./adjust-package.sh ./packages/network/package.json
+RUN /bin/sh ./adjust-package.sh ./packages/core/package.json
+RUN /bin/sh ./adjust-package.sh ./packages/logging/package.json
+RUN /bin/sh ./adjust-package.sh ./packages/errors/package.json
+RUN /bin/sh ./adjust-package.sh ./packages/rpc-proxy/package.json
+RUN /bin/sh ./adjust-package.sh ./package.json
 
 # Stage 2: Serve the app using node
 FROM node:20.17.0-alpine3.20 AS runner
@@ -37,7 +48,6 @@ COPY --from=builder /app/packages/errors/dist /app/packages/errors/dist
 COPY --from=builder /app/packages/errors/package.json /app/packages/errors/package.json
 ## Just PROD dependencies
 COPY --from=builder /app/package.json /app/package.json
-COPY --from=builder /app/yarn.lock /app/yarn.lock
 WORKDIR /app
 RUN yarn workspace @vechain/sdk-rpc-proxy install --production --frozen-lockfile --ignore-scripts --prefer-offline \
     && yarn cache clean \

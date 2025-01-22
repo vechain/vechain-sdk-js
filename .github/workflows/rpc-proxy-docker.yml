@@ -48,10 +48,8 @@ jobs:
 
       - name: Create .trivyignore file
         # "cross-spawn" is resolved as version 7.0.5 but Trivy keeps showing the error
-        # CVE-2025-22150 : ignored
         run: |
           echo "CVE-2024-21538" > .trivyignore 
-          echo "CVE-2025-22150" >> .trivyignore
       
       - name: Run Trivy Scan
         uses: aquasecurity/trivy-action@master
