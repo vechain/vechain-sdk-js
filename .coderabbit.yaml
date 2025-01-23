@@ -33,7 +33,7 @@ reviews:
     ignore_title_keywords: []
     labels: []
     drafts: false
-    base_branches: [^feature-.*, 1.0.0]
+    base_branches: ["^feature-.*", "1.0.0"]
   finishing_touches:
     docstrings:
       enabled: true
