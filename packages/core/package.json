@@ -37,23 +37,18 @@
     "test:browser": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit --config ./jest.config.browser.js"
   },
   "dependencies": {
-    "@ethereumjs/rlp": "^5.0.2",
-    "@noble/ciphers": "^1.1.1",
-    "@noble/curves": "^1.6.0",
-    "@noble/hashes": "^1.5.0",
-    "@scure/base": "^1.1.9",
-    "@scure/bip32": "^1.4.0",
-    "@scure/bip39": "^1.4.0",
+    "@ethereumjs/rlp": "5.0.2",
+    "@noble/ciphers": "1.1.1",
+    "@noble/curves": "1.6.0",
+    "@noble/hashes": "1.5.0",
+    "@scure/base": "1.1.9",
+    "@scure/bip32": "1.4.0",
+    "@scure/bip39": "1.4.0",
     "@vechain/sdk-errors": "1.0.0-rc.6",
     "@vechain/sdk-logging": "1.0.0-rc.6",
-    "abitype": "^1.0.6",
+    "abitype": "1.0.6",
     "ethers": "6.13.4",
-    "fast-json-stable-stringify": "^2.1.0",
-    "viem": "^2.21.45"
-  },
-  "devDependencies": {
-    "bignumber.js": "^9.1.2",
-    "thor-devkit": "^2.0.9",
-    "tsd": "^0.31.2"
+    "fast-json-stable-stringify": "2.1.0",
+    "viem": "2.21.45"
   }
 }

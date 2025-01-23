@@ -38,13 +38,13 @@
     "test:unit": "rm -rf ./coverageUnit && UNIT=true jest --coverage --coverageDirectory=coverageUnit --group=unit"
   },
   "dependencies": {
-    "@aws-sdk/client-kms": "^3.723.0",
-    "@noble/curves": "^1.6.0",
+    "@aws-sdk/client-kms": "3.723.0",
+    "@noble/curves": "1.6.0",
     "@vechain/sdk-core": "1.0.0-rc.6",
     "@vechain/sdk-errors": "1.0.0-rc.6",
     "@vechain/sdk-network": "1.0.0-rc.6",
-    "asn1js": "^3.0.5",
+    "asn1js": "3.0.5",
     "ethers": "6.13.4",
-    "viem": "^2.21.45"
+    "viem": "2.21.45"
   }
 }
