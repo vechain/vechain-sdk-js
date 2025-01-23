@@ -151,9 +151,7 @@ class NetAddr implements VeChainDataModel<NetAddr> {
         const portNumber = Number(port);
 
         if (
-            ipParts.length !== 4 ||
-            ipParts.some((part) => part < 0 || part > 255) ||
-            portNumber < 0 ||
+            ipParts.some((part) => part > 255) ||
             portNumber > 65535
         ) {
             throw new InvalidDataType(
