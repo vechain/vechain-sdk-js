@@ -1,10 +1,10 @@
 import { describe, expect, test } from '@jest/globals';
-import { NetAddr } from '../../../src';
-import { InvalidDataType } from '@vechain/sdk-errors';
+import { NetAddr } from '../../../thorest/src';
+import { InvalidDataType, InvalidOperation } from '@vechain/sdk-errors';
 
 /**
  * Test NetAddr class.
- * @group unit/node
+ * @group unit/vcdm
  */
 describe('NetAddr class tests', () => {
     describe('Construction tests', () => {
@@ -91,6 +91,28 @@ describe('NetAddr class tests', () => {
             expect(() => NetAddr.of('192.168.1.1: 8080')).toThrow(
                 InvalidDataType
             );
+        });
+    });
+
+    describe('Method tests', () => {
+        test('compareTo method always throws an error', () => {
+            const addr1 = NetAddr.of('192.168.1.1:8080');
+            const addr2 = NetAddr.of('10.0.0.1:443');
+            expect(() => addr1.compareTo(addr2)).toThrow(InvalidOperation);
+        });
+
+        test('isEqual method tests', () => {
+            const addr1 = NetAddr.of('192.168.1.1:8080');
+            const addr2 = NetAddr.of('192.168.1.1:8080');
+            const addr3 = NetAddr.of('10.0.0.1:443');
+            expect(addr1.isEqual(addr2)).toBeTruthy();
+            expect(addr1.isEqual(addr3)).toBeFalsy();
+        });
+
+        test('bytes method returns correct byte array', () => {
+            const addr = NetAddr.of('192.168.1.1:8080');
+            const expectedBytes = new Uint8Array([192, 168, 1, 1, 31, 144]);
+            expect(addr.bytes).toEqual(expectedBytes);
         });
     });
 });

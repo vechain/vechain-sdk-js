@@ -178,6 +178,12 @@ classDiagram
         +FixedPointNumber parseEther(string: ether)$
         +FixedPointNumber parseUnit(string exp, Unit unit)$
     }
+    class NetAddr {
+        +[number,number,number,number] ipAddress
+        +number port
+        +NetAddr of(string exp)
+        +string toString() 
+    }
     class VeChainDataModel {
         <<interface>>
         +bigint bi
