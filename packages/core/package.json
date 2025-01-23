@@ -49,7 +49,7 @@
     "abitype": "^1.0.8",
     "ethers": "6.13.5",
     "fast-json-stable-stringify": "^2.1.0",
-    "viem": "^2.22.8"
+    "viem": "^2.22.11"
   },
   "devDependencies": {
     "bignumber.js": "^9.1.2",
