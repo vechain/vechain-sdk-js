@@ -150,10 +150,7 @@ class NetAddr implements VeChainDataModel<NetAddr> {
         const ipParts = ip.split('.').map(Number);
         const portNumber = Number(port);
 
-        if (
-            ipParts.some((part) => part > 255) ||
-            portNumber > 65535
-        ) {
+        if (ipParts.some((part) => part > 255) || portNumber > 65535) {
             throw new InvalidDataType(
                 'NetAddr.of',
                 'not a valid network address (IP:port) expression',
