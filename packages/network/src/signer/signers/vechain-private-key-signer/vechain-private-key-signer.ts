@@ -63,9 +63,9 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
     }
 
     /**
-     * Get the address of the Signer.
+     * Get the address checksum of the Signer.
      *
-     * @returns the address of the signer
+     * @returns the address checksum of the signer
      */
     async getAddress(): Promise<string> {
         return Address.checksum(
