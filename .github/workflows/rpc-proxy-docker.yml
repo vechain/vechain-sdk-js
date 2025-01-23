@@ -56,7 +56,6 @@ jobs:
           vuln-type: os,library
           severity: CRITICAL,HIGH,MEDIUM
           scanners: misconfig,vuln,secret
-          trivyignores: .trivyignore
         env:
           # See https://github.com/aquasecurity/trivy/discussions/7538
           TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2
