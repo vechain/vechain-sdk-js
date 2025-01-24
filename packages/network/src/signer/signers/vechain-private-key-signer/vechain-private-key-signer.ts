@@ -114,13 +114,14 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
     }
 
     /**
-     *  Sends %%transactionToSend%% to the Network. The ``signer.populateTransaction(transactionToSend)``
-     *  is called first to ensure all necessary properties for the
-     *  transaction to be valid have been populated first.
+     * Sends a transaction to the blockchain.
      *
-     *  @param transactionToSend - The transaction to send
-     *  @returns The transaction response
-     * @throws {JSONRPCInvalidParams}
+     * @param {TransactionRequestInput} transactionToSend - The transaction object to be sent.
+     * This includes all the necessary details such as `to`, `value`, `data`, `gasLimit`, etc.
+     * @return {Promise<string>} A promise that resolves to the transaction hash as a string
+     * once the transaction is successfully sent.
+     * @throws {JSONRPCInvalidParams} Throws an error if the provider is not attached
+     * to the signer, indicating the signer's inability to send the transaction.
      */
     async sendTransaction(
         transactionToSend: TransactionRequestInput
