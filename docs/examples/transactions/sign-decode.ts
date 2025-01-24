@@ -40,7 +40,7 @@ const body: TransactionBody = {
 };
 
 // Create private key
-const privateKey = await Secp256k1.generatePrivateKey();
+const privateKey = Secp256k1.generatePrivateKey();
 
 // 4 - Sign transaction
 

@@ -77,15 +77,15 @@ describe('Secp256k1 class tests', () => {
     });
 
     describe('generatePrivateKey', () => {
-        test('ok <- noble library', async () => {
-            const privateKey = await Secp256k1.generatePrivateKey();
+        test('ok <- noble library', () => {
+            const privateKey = Secp256k1.generatePrivateKey();
             // Length of private key should be 32 bytes
             expect(privateKey.length).toBe(32);
             // Private key should be valid
             expect(Secp256k1.isValidPrivateKey(privateKey)).toBe(true);
         });
 
-        test('error <- mock no hw support for cryptography', async () => {
+        test('error <- mock no hw support for cryptography', () => {
             jest.spyOn(Secp256k1, 'generatePrivateKey').mockImplementation(
                 () => {
                     throw new InvalidSecp256k1PrivateKey(
@@ -95,9 +95,9 @@ describe('Secp256k1 class tests', () => {
                     );
                 }
             );
-            await expect(
-                async () => await Secp256k1.generatePrivateKey()
-            ).rejects.toThrowError(InvalidSecp256k1PrivateKey);
+            expect(() => Secp256k1.generatePrivateKey()).toThrowError(
+                InvalidSecp256k1PrivateKey
+            );
         });
     });
 
