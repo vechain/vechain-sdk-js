@@ -284,7 +284,10 @@ class Transaction {
      */
     public get isSigned(): boolean {
         if (this.signature !== undefined) {
-            return Transaction.isSignatureValid(this.body, this.signature);
+            return Transaction.isSignatureLengthValid(
+                this.body,
+                this.signature
+            );
         }
         return false;
     }
@@ -856,13 +859,13 @@ class Transaction {
     }
 
     /**
-     * Return Returns true if the signature is valid, otherwise false.
+     * Validates the length of a given signature against the expected length.
      *
-     * @param {TransactionBody} body - The transaction body to be checked.
-     * @param {Uint8Array} signature - The signature to validate.
-     * @return {boolean} - Returns true if the signature is valid, otherwise false.
+     * @param {TransactionBody} body - The body of the transaction being validated.
+     * @param {Uint8Array} signature - The signature to verify the length of.
+     * @return {boolean} Returns true if the signature length matches the expected length, otherwise false.
      */
-    private static isSignatureValid(
+    private static isSignatureLengthValid(
         body: TransactionBody,
         signature: Uint8Array
     ): boolean {
