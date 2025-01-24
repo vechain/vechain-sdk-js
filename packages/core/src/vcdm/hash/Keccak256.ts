@@ -4,13 +4,13 @@ import { Hex } from '../Hex';
 import { HexUInt } from '../HexUInt';
 
 /**
- * Represents the result of an [SHA-3](https://en.wikipedia.org/wiki/SHA-3) [KECCAK 256](https://keccak.team/keccak.html) hash operation.
+ * Represents the result of an [KECCAK 256](https://keccak.team/keccak.html) hash operation.
  *
  * @extends HexUInt
  */
 class Keccak256 extends HexUInt {
     /**
-     * Generates the [SHA-3](https://en.wikipedia.org/wiki/SHA-3) [KECCAK 256](https://keccak.team/keccak.html) hash of the given input.
+     * Generates the [KECCAK 256](https://keccak.team/keccak.html) hash of the given input.
      *
      * @param {bigint | number | string | Uint8Array | Hex} exp - The input value to hash.
      *
