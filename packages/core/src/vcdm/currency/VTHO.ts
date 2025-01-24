@@ -1,16 +1,16 @@
-import { Coin } from './Coin';
 import { FixedPointNumber } from '../FixedPointNumber';
 import { Txt } from '../Txt';
 import { Units } from './Units';
+import { FungibleToken } from './FungibleToken';
 
 /**
  * Represents a
  * [VeChain VeThor](https://docs.vechain.org/introduction-to-vechain/dual-token-economic-model/vethor-vtho)
  * monetary amount.
  *
- * @extends Coin
+ * @extends FungibleToken
  */
-class VTHO extends Coin {
+class VTHO extends FungibleToken {
     /**
      * The code for VET is the sequence of Unicode
      * - U+1D64D - mathematical double strike capital letter 'V',
@@ -23,14 +23,7 @@ class VTHO extends Coin {
     /**
      * Wei fractional digits to express this value.
      */
-    private static readonly WEI_FD = 18n;
-
-    /**
-     * Represents this monetary amount in terms of {@link Units.wei}.
-     *
-     * @type {bigint}
-     */
-    public readonly wei: bigint = this.value.dp(VTHO.WEI_FD).scaledValue;
+    private static readonly VTHO_DECIMALS = 18n;
 
     /**
      * Create a new instance with the given `value`.
@@ -38,7 +31,7 @@ class VTHO extends Coin {
      * @param {FixedPointNumber} value The value to be used for initializing the instance.
      */
     protected constructor(value: FixedPointNumber) {
-        super(VTHO.CODE, value);
+        super(VTHO.CODE, value, VTHO.VTHO_DECIMALS);
     }
 
     /**
@@ -60,7 +53,9 @@ class VTHO extends Coin {
                 ? value
                 : FixedPointNumber.of(value);
         return new VTHO(
-            fpn.div(FixedPointNumber.of(10n ** (VTHO.WEI_FD - BigInt(unit))))
+            fpn.div(
+                FixedPointNumber.of(10n ** (VTHO.VTHO_DECIMALS - BigInt(unit)))
+            )
         );
     }
 }

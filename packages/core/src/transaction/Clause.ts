@@ -15,6 +15,7 @@ import { HexInt } from '../vcdm/HexInt';
 import type { ClauseOptions } from './ClauseOptions';
 import type { DeployParams } from './DeployParams';
 import type { TransactionClause } from './TransactionClause';
+import { type FungibleToken } from '../vcdm/currency/FungibleToken';
 
 /**
  * This class represent a transaction clause.
@@ -221,7 +222,7 @@ class Clause implements TransactionClause {
      *
      * @param {Address} tokenAddress - The address of the VIP180 token.
      * @param {Address} recipientAddress - The address of the recipient.
-     * @param {VTHO} amount - The amount of token to be transferred.
+     * @param {FungibleToken} amount - The amount of token to be transferred.
      * @param {ClauseOptions} [clauseOptions] - Optional clause settings.
      * @return {Clause} The clause to transfer VIP180 tokens as part of a transaction.
      * @throws {InvalidDataType} Throws an error if the amount is not a positive integer.
@@ -231,7 +232,7 @@ class Clause implements TransactionClause {
     public static transferToken(
         tokenAddress: Address,
         recipientAddress: Address,
-        amount: VTHO,
+        amount: FungibleToken,
         clauseOptions?: ClauseOptions
     ): Clause {
         if (amount.value.isFinite() && amount.value.isPositive()) {

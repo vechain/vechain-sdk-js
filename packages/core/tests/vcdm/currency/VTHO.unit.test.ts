@@ -24,4 +24,12 @@ describe('VTHO class tests', () => {
         ).toString();
         expect(actual).toEqual(expected);
     });
+
+    test('Wei value', () => {
+        const expected = FixedPointNumber.of(VTHOFixture.value).dp(
+            18n
+        ).scaledValue;
+        const actual = VTHO.of(FixedPointNumber.of(VTHOFixture.value)).wei;
+        expect(actual).toEqual(expected);
+    });
 });

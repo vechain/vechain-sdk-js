@@ -195,9 +195,9 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
 
     /**
      * Estimates the required gas required to execute //tx// on the Blockchain. This
-     * will be the expected amount a transaction will require
+     * will be the expected amount a transaction will need
      * to successfully run all the necessary computations and store the needed state
-     * that the transaction intends.
+     * for the transaction.
      *
      * @param transactionToEstimate - The transaction to estimate gas for
      * @returns the total estimated gas required
