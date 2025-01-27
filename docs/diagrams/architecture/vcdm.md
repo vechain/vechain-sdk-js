@@ -235,4 +235,5 @@ classDiagram
     VeChainDataModel <|.. Hex
     VeChainDataModel <|.. RLP
     VeChainDataModel <|.. Txt
+    VeChainDataModel <|.. NetAddr
 ```
