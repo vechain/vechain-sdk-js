@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
     "strict": true,
-    "module": "esnext",
-    "target": "esnext",
+    "module": "Node16",
+    "target": "ES2023",
     "lib": [
       "esnext"
     ],
-    "moduleResolution": "bundler",
+    "moduleResolution": "Node16",
     "noEmit": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,

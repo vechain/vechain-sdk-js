@@ -5,12 +5,12 @@
     "declaration": true,
     "declarationMap": true,
     "esModuleInterop": true,
-    "module": "ESNext",
+    "module": "Node16",
     "target": "ES2023",
     "forceConsistentCasingInFileNames": true,
     "inlineSources": false,
     "isolatedModules": true,
-    "moduleResolution": "node",
+    "moduleResolution": "Node16",
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "preserveWatchOutput": true,
@@ -22,7 +22,7 @@
   "ts-node": {
     // these options are overrides used only by ts-node
     "compilerOptions": {
-      "module": "commonjs"
+      "module": "Node16"
     }
   },
 }

@@ -2,8 +2,8 @@
   "compilerOptions": {
     "target": "ES2023",
     "lib": ["esnext", "dom"],
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
+    "module": "Node16",
+    "moduleResolution": "Node16",
     "jsx": "react-jsx",
     "types": ["@vitest/browser/providers/playwright"],
     "strict": true,
