@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-      "target": "ESNext",
+      "target": "ES2023",
       "module": "ESNext",
       "moduleResolution": "Node",
       "allowSyntheticDefaultImports": true,
@@ -9,7 +9,7 @@
     "compilerOptions": {
       "esModuleInterop": true,
       "module": "ESNext",
-      "target": "ESNext",
+      "target": "ES2023",
       "moduleResolution": "Node",
     },
     "esm": true
