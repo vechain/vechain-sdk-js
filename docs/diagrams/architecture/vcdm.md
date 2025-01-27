@@ -179,7 +179,7 @@ classDiagram
         +FixedPointNumber parseUnit(string exp, Unit unit)$
     }
     class NetAddr {
-        +[number,number,number,number] ipAddress
+        +Uint8Array ipAddress
         +number port
         +NetAddr of(string exp)
         +string toString() 

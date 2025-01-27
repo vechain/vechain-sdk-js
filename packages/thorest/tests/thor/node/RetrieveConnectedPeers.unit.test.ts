@@ -26,7 +26,7 @@ describe('RetrieveConnectedPeers unit tests', () => {
     test('ok <- askTo', async () => {
         const mockPeers = [
             {
-                name: 'thor/v1.0.0-6680b98-dev/linux/go1.10.3',
+                name: 'thor/v2.0.0-6680b98-dev/linux/go1.10.3',
                 bestBlockID:
                     '0x000087b3a4d4cdf1cc52d56b9704f4c18f020e1b48dbbf4a23d1ee4f1fa5ff94',
                 totalScore: 68497,
@@ -36,7 +36,7 @@ describe('RetrieveConnectedPeers unit tests', () => {
                 duration: 28
             },
             {
-                name: 'thor/v1.0.0-6680b98-dev/linux/go1.10.3',
+                name: 'thor/v2.0.0-6680b98-dev/linux/go1.10.3',
                 bestBlockID:
                     '0x000087b3a4d4cdf1cc52d56b9704f4c18f020e1b48dbbf4a23d1ee4f1fa5ff91',
                 totalScore: 68496,

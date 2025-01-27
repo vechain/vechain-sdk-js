@@ -356,8 +356,14 @@ function expandIPv6(compressedIP: string): string {
         segments = [...segments, ...(Array(zerosNeeded).fill('0') as string[])];
     } else if (ip.includes('::')) {
         const parts = ip.split('::');
-        const beforeDouble = parts[0] !== undefined && parts[0] !== '' ? parts[0].split(':') : [];
-        const afterDouble = parts[1] !== undefined && parts[1] !== '' ? parts[1].split(':') : [];
+        const beforeDouble =
+            parts[0] !== undefined && parts[0] !== ''
+                ? parts[0].split(':')
+                : [];
+        const afterDouble =
+            parts[1] !== undefined && parts[1] !== ''
+                ? parts[1].split(':')
+                : [];
         const zerosNeeded = 8 - (beforeDouble.length + afterDouble.length);
         if (zerosNeeded < 0) {
             throw new Error('Invalid IPv6 address: too many segments');
