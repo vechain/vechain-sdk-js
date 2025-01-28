@@ -12,6 +12,7 @@ import { Wallet } from 'ethers';
 import {
     TESTNET_URL,
     ThorClient,
+    type TypedDataDomain,
     VeChainPrivateKeySigner,
     VeChainProvider,
     vnsUtils
@@ -293,7 +294,7 @@ describe('VeChain base signer tests', () => {
             );
             await expect(
                 signer.signTypedData(
-                    eip712TestCases.invalid.domain,
+                    eip712TestCases.invalid.domain as TypedDataDomain,
                     eip712TestCases.invalid.types,
                     eip712TestCases.invalid.data,
                     eip712TestCases.invalid.primaryType
@@ -317,7 +318,7 @@ describe('VeChain base signer tests', () => {
                 });
             await expect(
                 signer.signTypedData(
-                    eip712TestCases.valid.domain,
+                    eip712TestCases.valid.domain as TypedDataDomain,
                     eip712TestCases.valid.types,
                     eip712TestCases.valid.data,
                     eip712TestCases.valid.primaryType
@@ -326,7 +327,7 @@ describe('VeChain base signer tests', () => {
 
             await expect(
                 signer.signTypedData(
-                    eip712TestCases.valid.domain,
+                    eip712TestCases.valid.domain as TypedDataDomain,
                     eip712TestCases.valid.types,
                     eip712TestCases.valid.data,
                     eip712TestCases.valid.primaryType
@@ -348,7 +349,7 @@ describe('VeChain base signer tests', () => {
                 provider
             );
             const actual = await privateKeySigner.signTypedData(
-                eip712TestCases.valid.domain,
+                eip712TestCases.valid.domain as TypedDataDomain,
                 eip712TestCases.valid.types,
                 eip712TestCases.valid.data,
                 eip712TestCases.valid.primaryType
@@ -356,7 +357,7 @@ describe('VeChain base signer tests', () => {
             expect(actual).toBe(expected);
             const actualWithoutPrimaryType =
                 await privateKeySigner.signTypedData(
-                    eip712TestCases.valid.domain,
+                    eip712TestCases.valid.domain as TypedDataDomain,
                     eip712TestCases.valid.types,
                     eip712TestCases.valid.data
                 );
@@ -378,7 +379,7 @@ describe('VeChain base signer tests', () => {
             const actualWithStringChainId =
                 await privateKeySigner.signTypedData(
                     {
-                        ...eip712TestCases.valid.domain,
+                        ...(eip712TestCases.valid.domain as TypedDataDomain),
                         chainId: vechainChainId
                     },
                     eip712TestCases.valid.types,
@@ -389,7 +390,7 @@ describe('VeChain base signer tests', () => {
             const actualWithBigintChainId =
                 await privateKeySigner.signTypedData(
                     {
-                        ...eip712TestCases.valid.domain,
+                        ...(eip712TestCases.valid.domain as TypedDataDomain),
                         chainId: BigInt(vechainChainId)
                     },
                     eip712TestCases.valid.types,
