@@ -1,6 +1,4 @@
-import { BlockId } from '@vechain/sdk-core';
-
-import { UInt } from '../../../../core/src/vcdm/UInt';
+import { BlockId, UInt } from '@vechain/sdk-core';
 
 class PeerStat {
     readonly name: string;

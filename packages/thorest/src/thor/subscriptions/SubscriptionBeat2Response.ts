@@ -1,5 +1,4 @@
-import { BlockId, HexUInt, Units, VTHO } from '@vechain/sdk-core';
-import { UInt } from '../../../../core';
+import { BlockId, HexUInt, UInt, Units, VTHO } from '@vechain/sdk-core';
 
 class SubscriptionBeat2Response {
     readonly gasLimit: VTHO;

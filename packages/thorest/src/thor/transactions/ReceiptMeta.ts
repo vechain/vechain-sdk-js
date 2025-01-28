@@ -1,7 +1,5 @@
 import { TxMeta, type TxMetaJSON } from './TxMeta';
-import { Address } from '@vechain/sdk-core';
-
-import { TxId } from '../../../../core/src/vcdm/BlockId';
+import { Address, TxId } from '@vechain/sdk-core';
 
 class ReceiptMeta extends TxMeta {
     readonly txID: TxId;
