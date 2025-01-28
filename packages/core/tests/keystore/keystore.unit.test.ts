@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
+    InvalidDataType,
     InvalidKeystore,
     InvalidKeystoreParams,
     InvalidSecp256k1PrivateKey,
@@ -60,7 +61,11 @@ import { encryptionPassword } from './fixture';
                         new TextEncoder().encode('wrong private key'),
                         encryptionPassword
                     )
-            ).rejects.toThrowError(InvalidSecp256k1PrivateKey);
+            ).rejects.toThrowError(
+                experimentalCryptography
+                    ? InvalidDataType
+                    : InvalidSecp256k1PrivateKey
+            );
         });
 
         /**
