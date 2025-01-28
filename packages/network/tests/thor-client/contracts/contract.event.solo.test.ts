@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { ERC20_ABI, HexUInt } from '@vechain/sdk-core';
+import { Address, ERC20_ABI, HexUInt } from '@vechain/sdk-core';
 import { InvalidAbiItem } from '@vechain/sdk-errors';
 import {
     THOR_SOLO_URL,
@@ -101,7 +101,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         const eventsWithAnArgsObject = await contract.filters
             .Transfer({
                 from: undefined,
-                to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+                to: `0x${Address.of(TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address).digits}`
             })
             .get();
 
@@ -476,7 +476,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         await (await contractEventExample.transact.setValue(3000n)).wait();
 
         const transferCriteria = contractERC20.criteria.Transfer({
-            to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+            to: `0x${Address.of(TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address).digits}`
         });
 
         const valueCriteria = contractEventExample.criteria.ValueSet();
@@ -537,7 +537,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         await (await contractEventExample.transact.setValue(3000n)).wait();
 
         const transferCriteria = contractERC20.criteria.Transfer({
-            to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+            to: `0x${Address.of(TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address).digits}`
         });
 
         const valueCriteria = contractEventExample.criteria.ValueSet();
