@@ -1,6 +1,6 @@
 {
     "name": "@vechain/sdk-thorest-api",
-    "version": "1.0.0-rc.6",
+    "version": "2.0.0-beta.1",
     "description": "This module connects decentralized applications (dApps) with the Thorest API.",
     "author": "VeChain Foundation",
     "license": "MIT",
