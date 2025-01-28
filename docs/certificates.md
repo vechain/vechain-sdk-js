@@ -47,7 +47,7 @@ It's important to note that certificates in the VeChainThor blockchain are self-
 ```typescript { name=sign_verify, category=example }
 // 1 - Generate a private key and address for the signer
 
-const privateKey = await Secp256k1.generatePrivateKey();
+const privateKey = Secp256k1.generatePrivateKey();
 const publicKey = Secp256k1.derivePublicKey(privateKey);
 const signerAddress = Address.ofPublicKey(publicKey).toString();
 
