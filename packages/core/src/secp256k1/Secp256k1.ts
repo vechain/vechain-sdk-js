@@ -94,41 +94,26 @@ class Secp256k1 {
     }
 
     /**
-     * Generates a new random private key.
-     * If an error occurs during generation using
-     * [nc_secp256k1](https://github.com/paulmillr/noble-secp256k1),
-     * an AES-GCM key is generated as a fallback in runtimes not supported
-     * by `nc_secp256k1`, if those support {@link {@link global.crypto}.
+     * Generates a new Secp256k1 private key using a secure random number generator.
      *
-     * @return {Promise<Uint8Array>} The generated private key as a Uint8Array.
+     * @return {Uint8Array} A Uint8Array representing the generated private key.
+     *                      This encoded private key is suitable for cryptographic operations.
+     * @throws {InvalidSecp256k1PrivateKey} Throws an error if private key generation fails if a secure random number
+     *                                      generator is not provided by the hosting operating system.
      *
      * @remarks Security auditable method, depends on
-     * * {@link global.crypto.subtle.exportKey};
-     * * {@link global.crypto.subtle.generateKey};
      * * [nc_secp256k1.utils.randomPrivateKey](https://github.com/paulmillr/noble-secp256k1).
      */
-    public static async generatePrivateKey(): Promise<Uint8Array> {
+    public static generatePrivateKey(): Uint8Array {
         try {
             return nc_secp256k1.utils.randomPrivateKey();
         } catch (e) {
-            // Generate an ECDSA key pair
-            const cryptoKey = await global.crypto.subtle.generateKey(
-                {
-                    name: 'AES-GCM',
-                    length: 256
-                },
-                true,
-                ['encrypt', 'decrypt']
+            throw new InvalidSecp256k1PrivateKey(
+                'Secp256k1.generatePrivateKey',
+                'Private key generation failed: ensure you have a secure random number generator available at runtime.',
+                undefined,
+                e
             );
-
-            // Export the private key to raw format
-            const rawKey = await global.crypto.subtle.exportKey(
-                'raw',
-                cryptoKey
-            );
-
-            // Convert the ArrayBuffer to Uint8Array
-            return new Uint8Array(rawKey);
         }
     }
 
@@ -192,20 +177,18 @@ class Secp256k1 {
      * {@link {@link global.crypto} is used as fall back togenerate
      * the random sequence.
      *
-     * @param {number} [bytesLength=32] - Optional. The number of random bytes to generate.
+     * @param {number} [bytesLength=32] - Optional. The number of random bytes to generate, 32 by default.
      * @return {Uint8Array} - A Uint8Array containing the random bytes.
      *
      * @remarks Security auditable method, depends on
-     *  * {@link global.crypto.getRandomValues};
+     * * {@link global.crypto.getRandomValues};
      * * [nh_randomBytes](https://github.com/paulmillr/noble-hashes).
      */
-    public static randomBytes(bytesLength?: number): Uint8Array {
+    public static randomBytes(bytesLength: number = 32): Uint8Array {
         try {
             return nh_randomBytes(bytesLength);
         } catch (e) {
-            return global.crypto.getRandomValues(
-                new Uint8Array(bytesLength ?? 32)
-            );
+            return global.crypto.getRandomValues(new Uint8Array(bytesLength));
         }
     }
 
