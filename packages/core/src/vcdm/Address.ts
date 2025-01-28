@@ -1,14 +1,10 @@
-import { Keccak256 } from './hash/Keccak256';
 import { HDKey } from '../hdkey/HDKey';
 import { Hex } from './Hex';
 import { HexUInt } from './HexUInt';
+import { InvalidDataType, InvalidHDKey } from '@vechain/sdk-errors';
+import { Keccak256 } from './hash/Keccak256';
 import { Secp256k1 } from '../secp256k1/Secp256k1';
 import { Txt } from './Txt';
-import {
-    InvalidDataType,
-    InvalidHDKey,
-    InvalidSecp256k1PrivateKey
-} from '@vechain/sdk-errors';
 
 /**
  * Represents a VeChain Address as unsigned integer.
@@ -89,29 +85,18 @@ class Address extends HexUInt {
     }
 
     /**
-     * Create an Address instance from the given private key.
+     * Generates an Address object from the given private key.
      *
-     * @param {Uint8Array} privateKey - The private key to convert.
-     *
-     * @param {boolean} [isCompressed=true] - The flag to indicate if the derived public key should be compressed.
-     *
-     * @returns {Address} The converted address.
-     *
-     * @remarks Security auditable method, depends on
-     * * {@link Secp256k1.derivePublicKey}.
+     * @param {Uint8Array} privateKey - The private key used to derive the corresponding address.
+     * @return {Address} The derived Address object.
+     * @throws {InvalidDataType} If the provided private key is invalid or cannot derive an address.
      */
-    public static ofPrivateKey(
-        privateKey: Uint8Array,
-        isCompressed: boolean = true
-    ): Address {
+    public static ofPrivateKey(privateKey: Uint8Array): Address {
         try {
             return Address.ofPublicKey(
-                Secp256k1.derivePublicKey(privateKey, isCompressed)
+                Secp256k1.derivePublicKey(privateKey, true)
             );
         } catch (error) {
-            if (error instanceof InvalidSecp256k1PrivateKey) {
-                throw error;
-            }
             throw new InvalidDataType(
                 'Address.ofPrivateKey',
                 'not a valid private key',
