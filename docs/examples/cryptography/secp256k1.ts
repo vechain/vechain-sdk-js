@@ -5,7 +5,7 @@ import { expect } from 'expect';
 
 // 1 - Generate a private key.
 
-const privateKey = await Secp256k1.generatePrivateKey();
+const privateKey = Secp256k1.generatePrivateKey();
 console.log('Private key:', Hex.of(privateKey).toString());
 // Private key: ...SOME_PRIVATE_KEY...
 

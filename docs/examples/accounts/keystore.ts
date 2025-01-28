@@ -5,7 +5,7 @@ import { expect } from 'expect';
 
 // 1 - Create private key using Secp256k1
 
-const privateKey = await Secp256k1.generatePrivateKey();
+const privateKey = Secp256k1.generatePrivateKey();
 
 // @NOTE you can use BIP 39 too!
 // const words = Mnemonic.of()
