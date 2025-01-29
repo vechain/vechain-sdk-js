@@ -1,7 +1,7 @@
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { IP_CONSTANTS, IP_REGEX } from '../const/ip';
 
-export function expandIPv6(compressedIP: string): string {
+function expandIPv6(compressedIP: string): string {
     const matches = IP_REGEX.IPV6_WITH_PORT.exec(compressedIP);
     if (matches === null) {
         throw new InvalidDataType(
@@ -96,3 +96,5 @@ function fillWithZeros(segments: string[], addZerosToStart: boolean): string[] {
     const zeros = Array(zerosNeeded).fill('0') as string[];
     return addZerosToStart ? [...zeros, ...segments] : [...segments, ...zeros];
 }
+
+export { expandIPv6 };
