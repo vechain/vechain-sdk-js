@@ -74,8 +74,7 @@ const clauses: TransactionClause[] = [
         Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'),
         VET.of(10000)
     ) as TransactionClause,
-    Clause.transferToken(
-        Address.of(VTHO_ADDRESS),
+    Clause.transferVTHOToken(
         Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'),
         VTHO.of(10000)
     ) as TransactionClause

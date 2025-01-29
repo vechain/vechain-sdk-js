@@ -77,7 +77,7 @@ class HardhatVeChainProvider extends VeChainProvider {
     }
 
     /**
-     * Overload off the send method
+     * Overload of the send method
      *
      * @param method - The method to call.
      * @param params - The parameters to pass to the method.
