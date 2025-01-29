@@ -51,7 +51,7 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
      * @param provider - The provider to connect to
      */
     protected constructor(provider?: AvailableVeChainProviders) {
-        // Store provider and delegator
+        // Store provider and gasPayer
         this.provider = provider;
     }
 

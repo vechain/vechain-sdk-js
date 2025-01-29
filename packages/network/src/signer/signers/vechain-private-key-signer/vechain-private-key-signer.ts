@@ -94,13 +94,13 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
             );
         }
 
-        let delegator = DelegationHandler(
+        let gasPayer = DelegationHandler(
             await this.provider.wallet?.getDelegator()
         ).delegatorOrNull();
 
-        // Override the delegator if the transaction has a delegation URL
+        // Override the gasPayer if the transaction has a delegation URL
         if (transactionToSign.delegationUrl !== undefined) {
-            delegator = {
+            gasPayer = {
                 delegatorUrl: transactionToSign.delegationUrl
             };
         }
@@ -108,7 +108,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         // Sign the transaction
         return await this._signFlow(
             transactionToSign,
-            delegator,
+            gasPayer,
             this.provider.thorClient
         );
     }
@@ -164,14 +164,14 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
      * Signs a transaction internal method
      *
      * @param transaction - The transaction to sign
-     * @param delegator - The delegator to use
+     * @param gasPayer - The gasPayer to use
      * @param thorClient - The ThorClient instance
      * @returns The fully signed transaction
      * @throws {InvalidSecp256k1PrivateKey, InvalidDataType}
      */
     async _signFlow(
         transaction: TransactionRequestInput,
-        delegator: SignTransactionOptions | null,
+        gasPayer: SignTransactionOptions | null,
         thorClient: ThorClient
     ): Promise<string> {
         // Populate the call, to get proper from and to address (compatible with multi-clause transactions)
@@ -179,12 +179,12 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
             await this.populateTransaction(transaction);
 
         // Sign the transaction
-        return delegator !== null
-            ? await this._signWithDelegator(
+        return gasPayer !== null
+            ? await this._signWithGasPayer(
                   populatedTransaction,
                   this.privateKey,
                   thorClient,
-                  delegator
+                  gasPayer
               )
             : Hex.of(
                   Transaction.of(populatedTransaction).sign(this.privateKey)
@@ -198,34 +198,34 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
      * @param unsignedTransactionBody - The unsigned transaction body to sign.
      * @param originPrivateKey - The private key of the origin account.
      * @param thorClient - The ThorClient instance.
-     * @param delegatorOptions - Optional parameters for the request. Includes the `delegatorUrl` and `delegatorPrivateKey` fields.
+     * @param gasPayerOptions - Optional parameters for the request. Includes the `delegatorUrl` and `delegatorPrivateKey` fields.
      *                  Only one of the following options can be specified: `delegatorUrl`, `delegatorPrivateKey`.
      * @returns A promise that resolves to the signed transaction.
      * @throws {NotDelegatedTransaction}
      */
-    private async _signWithDelegator(
+    private async _signWithGasPayer(
         unsignedTransactionBody: TransactionBody,
         originPrivateKey: Uint8Array,
         thorClient: ThorClient,
-        delegatorOptions?: SignTransactionOptions
+        gasPayerOptions?: SignTransactionOptions
     ): Promise<string> {
         // Address of the origin account
         const originAddress = Address.ofPrivateKey(originPrivateKey).toString();
 
         const unsignedTx = Transaction.of(unsignedTransactionBody);
 
-        // Sign transaction with origin private key and delegator private key
-        if (delegatorOptions?.delegatorPrivateKey !== undefined)
+        // Sign transaction with origin private key and gasPayer private key
+        if (gasPayerOptions?.delegatorPrivateKey !== undefined)
             return Hex.of(
                 Transaction.of(unsignedTransactionBody).signAsSenderAndGasPayer(
                     originPrivateKey,
-                    HexUInt.of(delegatorOptions?.delegatorPrivateKey).bytes
+                    HexUInt.of(gasPayerOptions?.delegatorPrivateKey).bytes
                 ).encoded
             ).toString();
 
-        // Otherwise, get the signature of the delegator from the delegator endpoint
-        const delegatorSignature = await DelegationHandler(
-            delegatorOptions
+        // Otherwise, get the signature of the gasPayer from the gasPayer endpoint
+        const gasPayerSignature = await DelegationHandler(
+            gasPayerOptions
         ).getDelegationSignatureUsingUrl(
             unsignedTx,
             originAddress,
@@ -240,10 +240,10 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
 
         // Sign the transaction with both signatures. Concat both signatures to get the final signature
         const signature = new Uint8Array(
-            originSignature.length + delegatorSignature.length
+            originSignature.length + gasPayerSignature.length
         );
         signature.set(originSignature);
-        signature.set(delegatorSignature, originSignature.length);
+        signature.set(gasPayerSignature, originSignature.length);
 
         // Return new signed transaction
         return Hex.of(
