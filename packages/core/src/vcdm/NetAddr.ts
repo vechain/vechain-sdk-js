@@ -1,11 +1,23 @@
 import { InvalidDataType, InvalidOperation } from '@vechain/sdk-errors';
 import { type VeChainDataModel } from './VeChainDataModel';
-import { IP_CONSTANTS, IP_REGEX, expandIPv6 } from '../utils';
 
 /**
  * Represents a network address with an IP address and port.
  */
 class NetAddr implements VeChainDataModel<NetAddr> {
+    static readonly IP_CONSTANTS = {
+        IPV4_LENGTH: 4,
+        IPV6_LENGTH: 16,
+        MAX_PORT: 65535,
+        IPV6_SEGMENTS: 8
+    } as const;
+
+    static readonly IP_REGEX = {
+        IPV4_PORT: /^(?:\d{1,3}\.){3}\d{1,3}:\d{1,5}$/,
+        IPV6_PORT: /^\[(([0-9a-fA-F]{0,4}:){1,7}[0-9a-fA-F]{0,4})\]:(\d{1,5})$/,
+        IPV6_WITH_PORT: /^\[(.*)\]:(\d+)$/,
+        HEX_SEGMENT: /^[0-9a-fA-F]{1,4}$/
+    } as const;
     /**
      * The IP address as a fixed-length Uint8Array.
      * IPv4: 4 bytes
@@ -22,7 +34,7 @@ class NetAddr implements VeChainDataModel<NetAddr> {
      * Creates a new instance of the NetAddr class.
      */
     protected constructor(value: string) {
-        if (IP_REGEX.IPV4_PORT.test(value)) {
+        if (NetAddr.IP_REGEX.IPV4_PORT.test(value)) {
             [this.ipAddress, this.port] = this.initializeIPv4(value);
         } else {
             [this.ipAddress, this.port] = this.initializeIPv6(value);
@@ -41,14 +53,14 @@ class NetAddr implements VeChainDataModel<NetAddr> {
             );
         }
 
-        const ipAddress = new Uint8Array(IP_CONSTANTS.IPV4_LENGTH);
+        const ipAddress = new Uint8Array(NetAddr.IP_CONSTANTS.IPV4_LENGTH);
         ipParts.forEach((octet, index) => (ipAddress[index] = octet));
         return [ipAddress, Number(port)];
     }
 
     private initializeIPv6(value: string): [Uint8Array, number] {
         const expandedIP = value.includes('::') ? expandIPv6(value) : value;
-        const match = IP_REGEX.IPV6_PORT.exec(expandedIP);
+        const match = NetAddr.IP_REGEX.IPV6_PORT.exec(expandedIP);
 
         if (match === null) {
             throw new InvalidDataType(
@@ -58,7 +70,7 @@ class NetAddr implements VeChainDataModel<NetAddr> {
             );
         }
 
-        if (Number(match[3]) > IP_CONSTANTS.MAX_PORT) {
+        if (Number(match[3]) > NetAddr.IP_CONSTANTS.MAX_PORT) {
             throw new InvalidDataType(
                 'NetAddr.of',
                 'Port number out of range',
@@ -141,7 +153,7 @@ class NetAddr implements VeChainDataModel<NetAddr> {
      * Returns a string representation of the network address with IPv6 compression.
      */
     toString(): string {
-        if (this.ipAddress.length === IP_CONSTANTS.IPV6_LENGTH) {
+        if (this.ipAddress.length === NetAddr.IP_CONSTANTS.IPV6_LENGTH) {
             return this.formatIPv6Address();
         }
         return this.formatIPv4Address();
@@ -217,7 +229,7 @@ class NetAddr implements VeChainDataModel<NetAddr> {
 
     private createIPv6Groups(): string[] {
         const groups: string[] = [];
-        for (let i = 0; i < IP_CONSTANTS.IPV6_LENGTH; i += 2) {
+        for (let i = 0; i < NetAddr.IP_CONSTANTS.IPV6_LENGTH; i += 2) {
             const hex = (
                 (this.ipAddress[i] << 8) |
                 this.ipAddress[i + 1]
@@ -282,6 +294,103 @@ class NetAddr implements VeChainDataModel<NetAddr> {
         const joinedParts = parts.join(':');
         return joinedParts.startsWith(':') ? ':' + joinedParts : joinedParts;
     }
+}
+
+function expandIPv6(compressedIP: string): string {
+    const matches = NetAddr.IP_REGEX.IPV6_WITH_PORT.exec(compressedIP);
+    if (matches === null) {
+        throw new InvalidDataType(
+            'IPv6Utils.expand',
+            'Invalid IPv6 address with port format',
+            { compressedIP }
+        );
+    }
+
+    const [, ip, port] = matches;
+    if (ip === '') {
+        throw new InvalidDataType('IPv6Utils.expand', 'Invalid IPv6 address', {
+            compressedIP
+        });
+    }
+
+    const doubleColonCount = (ip.match(/::/g) ?? []).length;
+    if (doubleColonCount > 1) {
+        throw new InvalidDataType(
+            'IPv6Utils.expand',
+            'Invalid IPv6 address: multiple :: not allowed',
+            { compressedIP }
+        );
+    }
+
+    return `[${processIPv6Segments(ip).join(':')}]:${port}`;
+}
+
+function processIPv6Segments(ip: string): string[] {
+    const segments = ip.split(':');
+
+    segments.forEach((segment) => {
+        if (segment !== '' && !NetAddr.IP_REGEX.HEX_SEGMENT.test(segment)) {
+            throw new InvalidDataType(
+                'IPv6Utils.processIPv6Segments',
+                'Invalid IPv6 address: invalid hex value',
+                { segment }
+            );
+        }
+    });
+
+    if (ip.startsWith('::')) {
+        return handleStartingDoubleColon(segments);
+    }
+    if (ip.endsWith('::')) {
+        return handleEndingDoubleColon(segments);
+    }
+    if (ip.includes('::')) {
+        return handleMiddleDoubleColon(ip);
+    }
+    if (segments.length !== NetAddr.IP_CONSTANTS.IPV6_SEGMENTS) {
+        throw new Error('Invalid IPv6 address: wrong number of segments');
+    }
+
+    return segments;
+}
+
+function handleStartingDoubleColon(segments: string[]): string[] {
+    segments = segments.filter((s) => s !== '');
+    return fillWithZeros(segments, true);
+}
+
+function handleEndingDoubleColon(segments: string[]): string[] {
+    segments = segments.filter((s) => s !== '');
+    return fillWithZeros(segments, false);
+}
+
+function handleMiddleDoubleColon(ip: string): string[] {
+    const [beforeDouble, afterDouble] = ip
+        .split('::')
+        .map((part) => (part !== '' ? part.split(':') : []));
+
+    const zerosNeeded =
+        NetAddr.IP_CONSTANTS.IPV6_SEGMENTS -
+        (beforeDouble.length + afterDouble.length);
+    if (zerosNeeded < 0) {
+        throw new Error('Invalid IPv6 address: too many segments');
+    }
+
+    return [
+        ...beforeDouble,
+        ...(Array(zerosNeeded).fill('0') as string[]),
+        ...afterDouble
+    ];
+}
+
+function fillWithZeros(segments: string[], addZerosToStart: boolean): string[] {
+    const zerosNeeded = NetAddr.IP_CONSTANTS.IPV6_SEGMENTS - segments.length;
+    if (zerosNeeded < 0) {
+        throw new Error('Invalid IPv6 address: too many segments');
+    }
+
+    const zeros = Array(zerosNeeded).fill('0') as string[];
+    return addZerosToStart ? [...zeros, ...segments] : [...segments, ...zeros];
 }
 
 export { NetAddr };
