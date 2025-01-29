@@ -17,13 +17,13 @@ import {
     VTHO
 } from '../../src';
 
-const DelegatorPrivateKeyFix = HexUInt.of(
+const GasPayerPrivateKeyFix = HexUInt.of(
     '40de805e918403683fb9a6081c3fba072cdc5c88232c62a9509165122488dab7'
 ).bytes;
 
-const DelegatorFix = {
-    privateKey: DelegatorPrivateKeyFix,
-    address: Address.ofPrivateKey(DelegatorPrivateKeyFix)
+const GasPayerFix = {
+    privateKey: GasPayerPrivateKeyFix,
+    address: Address.ofPrivateKey(GasPayerPrivateKeyFix)
 };
 
 const SignerPrivateKeyFix = HexUInt.of(
@@ -233,7 +233,7 @@ describe('Transaction class tests', () => {
                 const signer = Address.ofPrivateKey(SignerFix.privateKey);
                 const actual = signed.signAsGasPayer(
                     signer,
-                    DelegatorFix.privateKey
+                    GasPayerFix.privateKey
                 );
                 expect(actual.isDelegated).toBe(true);
                 expect(actual.isSigned).toBe(true);
@@ -276,7 +276,7 @@ describe('Transaction class tests', () => {
                     expected.body
                 ).signAsSenderAndGasPayer(
                     SignerFix.privateKey,
-                    DelegatorFix.privateKey
+                    GasPayerFix.privateKey
                 );
                 expect(actual).toBeInstanceOf(Transaction);
                 expect(actual.signature).toBeDefined();
@@ -291,9 +291,7 @@ describe('Transaction class tests', () => {
                         .isEqual(expected.transactionHash)
                 ).toBe(true);
                 expect(actual.origin.isEqual(SignerFix.address)).toBe(true);
-                expect(actual.gasPayer.isEqual(DelegatorFix.address)).toBe(
-                    true
-                );
+                expect(actual.gasPayer.isEqual(GasPayerFix.address)).toBe(true);
                 expect(actual.id.isEqual(expected.signedTransactionId)).toBe(
                     true
                 );
@@ -306,7 +304,7 @@ describe('Transaction class tests', () => {
                     expected.body
                 ).signAsSenderAndGasPayer(
                     SignerFix.privateKey,
-                    DelegatorFix.privateKey
+                    GasPayerFix.privateKey
                 );
                 expect(actual).toBeInstanceOf(Transaction);
                 expect(actual.signature).toBeDefined();
@@ -321,9 +319,7 @@ describe('Transaction class tests', () => {
                         .isEqual(expected.transactionHash)
                 ).toBe(true);
                 expect(actual.origin.isEqual(SignerFix.address)).toBe(true);
-                expect(actual.gasPayer.isEqual(DelegatorFix.address)).toBe(
-                    true
-                );
+                expect(actual.gasPayer.isEqual(GasPayerFix.address)).toBe(true);
                 expect(actual.id.isEqual(expected.signedTransactionId)).toBe(
                     true
                 );
@@ -425,9 +421,7 @@ describe('Transaction class tests', () => {
                 expect(actual.origin).toBeDefined();
                 expect(actual.origin.isEqual(SignerFix.address)).toBe(true);
                 expect(actual.gasPayer).toBeDefined();
-                expect(actual.gasPayer.isEqual(DelegatorFix.address)).toBe(
-                    true
-                );
+                expect(actual.gasPayer.isEqual(GasPayerFix.address)).toBe(true);
                 expect(actual.isDelegated).toBe(true);
                 expect(actual.id).toBeDefined();
                 expect(actual.isSigned).toBe(true);
@@ -477,9 +471,7 @@ describe('Transaction class tests', () => {
                 expect(actual.origin).toBeDefined();
                 expect(actual.origin.isEqual(SignerFix.address)).toBe(true);
                 expect(actual.gasPayer).toBeDefined();
-                expect(actual.gasPayer.isEqual(DelegatorFix.address)).toBe(
-                    true
-                );
+                expect(actual.gasPayer.isEqual(GasPayerFix.address)).toBe(true);
                 expect(actual.isDelegated).toBe(true);
                 expect(actual.id).toBeDefined();
                 expect(actual.isSigned).toBe(true);
@@ -685,7 +677,7 @@ describe('Transaction class tests', () => {
                 TransactionFixture.delegated.body
             ).signAsSenderAndGasPayer(
                 SignerFix.privateKey,
-                DelegatorFix.privateKey
+                GasPayerFix.privateKey
             );
             const signed = Transaction.of(
                 TransactionFixture.delegated.body
@@ -693,7 +685,7 @@ describe('Transaction class tests', () => {
             const signer = Address.ofPrivateKey(SignerFix.privateKey);
             const actual = signed.signAsGasPayer(
                 signer,
-                DelegatorFix.privateKey
+                GasPayerFix.privateKey
             );
             expect(actual.signature).toEqual(expected.signature);
         });
@@ -737,7 +729,7 @@ describe('Transaction class tests', () => {
                 TransactionFixture.delegated.body
             ).signAsSenderAndGasPayer(
                 SignerFix.privateKey,
-                DelegatorFix.privateKey
+                GasPayerFix.privateKey
             );
             const actual = Transaction.of(
                 TransactionFixture.delegated.body
@@ -775,7 +767,7 @@ describe('Transaction class tests', () => {
                 TransactionFixture.delegated.body
             ).signAsSenderAndGasPayer(
                 SignerFix.privateKey,
-                DelegatorFix.privateKey
+                GasPayerFix.privateKey
             );
             expect(actual.isDelegated).toBe(true);
             expect(actual.id).toBeDefined();
@@ -784,7 +776,7 @@ describe('Transaction class tests', () => {
                 Secp256k1.SIGNATURE_LENGTH * 2
             );
             expect(actual.origin.isEqual(SignerFix.address)).toBe(true);
-            expect(actual.gasPayer.isEqual(DelegatorFix.address)).toBe(true);
+            expect(actual.gasPayer.isEqual(GasPayerFix.address)).toBe(true);
         });
 
         test('Throw <- undelegated tx', () => {
@@ -793,7 +785,7 @@ describe('Transaction class tests', () => {
                     TransactionFixture.undelegated.body
                 ).signAsSenderAndGasPayer(
                     SignerFix.privateKey,
-                    DelegatorFix.privateKey
+                    GasPayerFix.privateKey
                 )
             ).toThrowError(NotDelegatedTransaction);
         });
@@ -804,7 +796,7 @@ describe('Transaction class tests', () => {
                     TransactionFixture.undelegated.body
                 ).signAsSenderAndGasPayer(
                     HexUInt.of('0xF00DBABE').bytes, // https://en.wikipedia.org/wiki/Hexspeak
-                    DelegatorFix.privateKey
+                    GasPayerFix.privateKey
                 )
             ).toThrowError(InvalidSecp256k1PrivateKey);
         });
