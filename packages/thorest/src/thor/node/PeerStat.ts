@@ -1,7 +1,5 @@
-import { BlockId } from '@vechain/sdk-core';
+import { BlockId, Hex, UInt } from '@vechain/sdk-core';
 
-import { UInt } from '../../../../core/src/vcdm/UInt';
-import { Hex } from '../../../../core/src/vcdm/Hex';
 import { NetAddr } from '@vechain/sdk-core/src/vcdm/NetAddr';
 
 /**
