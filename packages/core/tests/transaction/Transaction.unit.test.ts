@@ -701,7 +701,7 @@ describe('Transaction class tests', () => {
             }).toThrowError(NotDelegatedTransaction);
         });
 
-        test('Throw <- unsigned', () => {
+        test('Throw <- unsigned tx', () => {
             expect(() => {
                 Transaction.of(
                     TransactionFixture.delegated.body
