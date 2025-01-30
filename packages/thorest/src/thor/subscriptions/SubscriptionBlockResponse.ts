@@ -1,5 +1,12 @@
-import { UInt, type TxId } from '../../../../core';
-import { Address, BlockId, ThorId, Units, VTHO } from '@vechain/sdk-core';
+import {
+    Address,
+    BlockId,
+    ThorId,
+    type TxId,
+    UInt,
+    Units,
+    VTHO
+} from '@vechain/sdk-core';
 
 class SubscriptionBlockResponse {
     readonly number: UInt;

@@ -1,6 +1,6 @@
 import { describe, test } from '@jest/globals';
 
-import { THOR_SOLO_URL, ThorClient } from '../../../../network/';
+import { THOR_SOLO_URL, ThorClient } from '../../../../network/src';
 import {
     transfer1VTHOClause,
     transferTransactionBody

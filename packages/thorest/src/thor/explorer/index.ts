@@ -1,10 +1,8 @@
 import { FetchHttpClient } from '../../http';
 import { ThorNetworks } from '../ThorNetworks';
 import { RetrieveBlock, RetrieveBlockPath } from '../blocks';
-import { Revision } from '@vechain/sdk-core';
+import { Revision, TxId } from '@vechain/sdk-core';
 import { RetrieveTransactionByID } from '../transactions';
-
-import { TxId } from '../../../../core/src/vcdm/BlockId';
 
 async function getBestBlockNumber(
     httpClient: FetchHttpClient

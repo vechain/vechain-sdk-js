@@ -1,4 +1,4 @@
-import { UInt } from '../../../../core/src';
+import { UInt } from '@vechain/sdk-core';
 
 class FilterOptions {
     readonly limit?: UInt;
