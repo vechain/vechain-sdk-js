@@ -19,6 +19,13 @@ describe('HexUInt32 class tests', () => {
             expect(hexUInt32.toString()).toEqual(expectedHexUInt32);
         });
 
+        test('Checks if the provided expression is a valid 32 bytes unsigned hexadecimal value', () => {
+            const expression =
+                '0x0000000000000000000000000000000000000000000000000000000000caffee';
+
+            expect(HexUInt32.isValid(expression)).toBeTruthy();
+        });
+
         test('Throw an error if the provided argument is not an unsigned expression', () => {
             const exp = '-0xnotUnsigned';
             expect(() => HexUInt32.of(exp)).toThrow(InvalidDataType);

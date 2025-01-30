@@ -15,6 +15,26 @@ class HexUInt32 extends HexUInt {
     private static readonly BYTE_LENGTH = 32;
 
     /**
+     * Regular expression for matching 32 bytes hexadecimal strings.
+     * An empty input is represented as a empty digits.
+     *
+     * @type {RegExp}
+     */
+    private static readonly REGEX_HEXUINT32: RegExp = /^(0x)?[0-9a-f]{64}$/i;
+
+    /**
+     * Checks if the given string expression is a valid 32 bytes unsigned hexadecimal value.
+     *
+     * @param {string} exp - The string representation of a hexadecimal value.
+     *
+     * @return {boolean} - True if the expression is a valid 32 bytes unsigned hexadecimal value, case-insensitive,
+     * optionally prefixed with `0x`; false otherwise.
+     */
+    public static isValid(exp: string): boolean {
+        return HexUInt32.REGEX_HEXUINT32.test(exp);
+    }
+
+    /**
      * Ensures the hexadecimal string representation is 32 bytes long.
      * @param {string} hexString - The hexadecimal string to validate.
      * @returns {string} The 32 bytes long hexadecimal string.
