@@ -31,6 +31,7 @@ describe('HexUInt32 class tests', () => {
             const ofBytes = HexUInt32.of(Uint8Array.of(255));
             const ofHex = HexUInt32.of('0xff');
             const ofNumber = HexUInt32.of(255);
+            expect(ofBigInt.toString()).toHaveLength(66);
             expect(ofBigInt.isEqual(ofBytes)).toBeTruthy();
             expect(ofBytes.isEqual(ofHex)).toBeTruthy();
             expect(ofHex.isEqual(ofNumber)).toBeTruthy();
