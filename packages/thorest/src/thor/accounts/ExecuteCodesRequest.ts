@@ -1,6 +1,5 @@
 import { Clause, type ClauseJSON } from '../transactions';
-import { UInt } from '../../../../core/src';
-import { Address, BlockRef, Units, VTHO } from '@vechain/sdk-core';
+import { Address, BlockRef, UInt, Units, VTHO } from '@vechain/sdk-core';
 
 class ExecuteCodesRequest {
     readonly provedWork?: string;

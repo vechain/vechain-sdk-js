@@ -3,11 +3,11 @@ import {
     Address,
     type BlockRef,
     HexUInt,
+    UInt,
     Units,
     VET,
     VTHO
 } from '@vechain/sdk-core';
-import { UInt } from '../../../../core/src';
 
 class PostDebugTracerCallRequest {
     readonly name?: TracerName;

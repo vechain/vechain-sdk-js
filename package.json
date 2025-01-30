@@ -39,7 +39,7 @@
         "test:integration:solo": "(yarn start-thor-solo && yarn test:integration && yarn stop-thor-solo) || yarn stop-thor-solo",
         "test:examples": "turbo test:examples",
         "test:examples:solo": "(yarn start-thor-solo && yarn test:examples && yarn stop-thor-solo) || yarn stop-thor-solo",
-        "test": "turbo test --force --filter='packages/core' --filter='packages/thorest' && yarn merge-coverage",
+        "test": "turbo test --force --filter='@vechain/sdk-core' --filter='@vechain/sdk-thorest-api' && yarn merge-coverage",
         "test:browser": "turbo test:browser --force && yarn merge-coverage",
         "test:solo": "(yarn start-thor-solo && yarn test && yarn stop-thor-solo) || yarn stop-thor-solo",
         "test:browser:solo": "(yarn start-thor-solo && yarn test:browser && yarn stop-thor-solo) || yarn stop-thor-solo",
@@ -89,7 +89,8 @@
         "hardhat": "^2.22.15"
     },
     "resolutions": {
-        "cross-spawn": "^7.0.5"
+        "cross-spawn": "^7.0.5",
+        "undici": "^5.28.5"
     },
     "version": "1.22.22"
 }

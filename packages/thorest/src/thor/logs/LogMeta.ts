@@ -1,5 +1,4 @@
-import { Address, BlockId } from '@vechain/sdk-core';
-import { TxId, UInt } from '../../../../core/src/vcdm';
+import { Address, BlockId, TxId, UInt } from '@vechain/sdk-core';
 
 class LogMeta {
     readonly blockID: BlockId;
