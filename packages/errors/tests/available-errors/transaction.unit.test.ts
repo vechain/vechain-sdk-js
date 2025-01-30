@@ -66,7 +66,7 @@ describe('Error package Available errors test - Transaction', () => {
      */
     const testNotDelegatedTransaction = (
         innerError?: Error,
-        data?: { delegatorUrl: string }
+        data?: { gasPayerUrl: string }
     ): void => {
         expect(() => {
             throw new NotDelegatedTransaction(
@@ -84,8 +84,8 @@ describe('Error package Available errors test - Transaction', () => {
     test('NotDelegatedTransaction', () => {
         [undefined, new Error('error')].forEach((innerError) => {
             // Use a valid object or explicitly check for undefined
-            const dataOptions: Array<{ delegatorUrl: string } | undefined> = [
-                { delegatorUrl: 'url' },
+            const dataOptions: Array<{ gasPayerUrl: string } | undefined> = [
+                { gasPayerUrl: 'url' },
                 undefined
             ];
 

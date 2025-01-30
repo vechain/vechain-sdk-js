@@ -35,8 +35,8 @@ const senderAccount: {
     address: '0x571E3E1fBE342891778151f037967E107fb89bd0'
 };
 
-// Delegator account with private key
-const delegatorAccount = {
+// Gas-payer account with private key
+const gasPayerAccount = {
     URL: 'https://sponsor-testnet.vechain.energy/by/269'
 };
 
@@ -54,8 +54,9 @@ const providerWithDelegationEnabled = new VeChainProvider(
             }
         ],
         {
+            // The term `delegator` will be deprecated soon and renamed `gasPayer`.
             delegator: {
-                delegatorUrl: delegatorAccount.URL
+                delegatorUrl: gasPayerAccount.URL
             }
         }
     ),
@@ -123,7 +124,7 @@ const txReceipt = await thorClient.transactions.waitForTransaction(
 // Check the signed transaction
 expect(delegatedSigned.isSigned).toEqual(true);
 expect(delegatedSigned.isDelegated).toEqual(true);
-// expect(signedTx.delegator).toEqual(delegatorAccount.address); ---
+// expect(signedTx.delegator).toEqual(gasPayerAccount.address); ---
 
 // Check the transaction receipt
 expect(txReceipt).toBeDefined();

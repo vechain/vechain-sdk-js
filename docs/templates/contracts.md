@@ -70,6 +70,6 @@ You can specify revisions (`best` or `finalized`) for read functions, similar to
 
 ## Delegating a Contract Call
 
-VeChain supports delegated contract calls where fees are paid by the delegator.
+VeChain supports delegated contract calls where fees are paid by the gas-payer.
 
 [ERC20FunctionCallDelegatedSnippet](examples/contracts/contract-delegation-ERC20.ts)
