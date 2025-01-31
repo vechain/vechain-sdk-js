@@ -33,7 +33,7 @@ class BlocksModule {
 
     /**
      * Initializes a new instance of the `Thor` class.
-     * @param thor - The Thor instance used to interact with the VeChain blockchain API.
+     * @param httpClient - The Thor instance used to interact with the VeChain blockchain API.
      * @param options - (Optional) Other optional parameters for polling and error handling.
      */
     constructor(
@@ -306,7 +306,6 @@ class BlocksModule {
                         addresses.add(clause.to);
                     }
                 });
-                addresses.add(transaction.delegator);
                 addresses.add(transaction.gasPayer);
                 addresses.add(transaction.origin);
                 transaction.outputs.forEach((output) => {

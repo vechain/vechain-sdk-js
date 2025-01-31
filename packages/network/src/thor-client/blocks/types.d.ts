@@ -212,11 +212,6 @@ interface TransactionsExpandedBlockDetail {
     origin: string;
 
     /**
-     * Delegator associated with the transaction.
-     */
-    delegator: string;
-
-    /**
      * Nonce value for preventing replay attacks.
      */
     nonce: string;
