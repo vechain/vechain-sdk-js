@@ -5,7 +5,7 @@ import {
 } from '@vechain/sdk-network';
 import { Link } from 'react-router-dom';
 import { Transfer } from "../types/index.js";
-import { explorerUrl, thorClient } from "../const/index.js";
+import { explorerUrl, thorClient } from "../const/index.tsx";
 
 /**
  * Reduce the size of a hex string

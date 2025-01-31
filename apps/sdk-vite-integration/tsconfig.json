@@ -1,15 +1,16 @@
 {
   "compilerOptions": {
-    "target": "ES2023",
+    "allowImportingTsExtensions": true,
+    "declaration": true,
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
     "lib": ["esnext", "dom"],
     "module": "Node16",
     "moduleResolution": "Node16",
-    "jsx": "react-jsx",
-    "types": ["@vitest/browser/providers/playwright"],
-    "strict": true,
-    "declaration": true,
     "noEmit": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2023",
+    "types": ["@vitest/browser/providers/playwright"]
   }
 }
