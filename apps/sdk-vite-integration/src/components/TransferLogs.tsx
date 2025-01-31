@@ -4,7 +4,7 @@ import {
     FilterTransferLogsOptions
 } from '@vechain/sdk-network';
 import { Link } from 'react-router-dom';
-import { Transfer } from "../types/index.js";
+import { Transfer } from "../types/index.tsx";
 import { explorerUrl, thorClient } from "../const/index.tsx";
 
 /**
