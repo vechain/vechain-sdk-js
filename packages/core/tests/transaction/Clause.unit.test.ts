@@ -11,7 +11,8 @@ import {
     type ClauseOptions,
     type DeployParams,
     type TransactionClause,
-    ABIContract
+    ABIContract,
+    VTHO_ADDRESS
 } from '../../src';
 
 const ClauseFixture = {
@@ -195,20 +196,20 @@ describe('Clause class tests', () => {
         });
     });
 
-    describe('transferToken method tests', () => {
+    describe('transferVTHOToken method tests', () => {
         test('Return Clause <- 1 wei VTHO', () => {
             const expected = {
-                to: ClauseFixture.token.address.toString().toLowerCase(),
+                to: Address.of(VTHO_ADDRESS).toString().toLowerCase(),
                 value: `0x0`,
                 data: `0xa9059cbb000000000000000000000000${ClauseFixture.to
                     .toString()
                     .toLowerCase()
                     .slice(
                         2
-                    )}0000000000000000000000000000000000000000000000000000000000000001`
+                    )}0000000000000000000000000000000000000000000000000000000000000001`,
+                comment: 'Transfer VTHO'
             } satisfies TransactionClause;
-            const actual = Clause.transferToken(
-                ClauseFixture.token.address,
+            const actual = Clause.transferVTHOToken(
                 ClauseFixture.to,
                 VTHO.of(1, Units.wei)
             );
@@ -217,17 +218,17 @@ describe('Clause class tests', () => {
 
         test('Return Clause <- 100 wei VTHO', () => {
             const expected = {
-                to: ClauseFixture.token.address.toString().toLowerCase(),
+                to: Address.of(VTHO_ADDRESS).toString().toLowerCase(),
                 value: `0x0`,
                 data: `0xa9059cbb000000000000000000000000${ClauseFixture.to
                     .toString()
                     .toLowerCase()
                     .slice(
                         2
-                    )}0000000000000000000000000000000000000000000000000000000000000064`
+                    )}0000000000000000000000000000000000000000000000000000000000000064`,
+                comment: 'Transfer VTHO'
             } satisfies TransactionClause;
-            const actual = Clause.transferToken(
-                ClauseFixture.token.address,
+            const actual = Clause.transferVTHOToken(
                 ClauseFixture.to,
                 VTHO.of(0.1, Units.kwei)
             );
@@ -236,17 +237,17 @@ describe('Clause class tests', () => {
 
         test('Return Clause <- 1 VTHO', () => {
             const expected = {
-                to: ClauseFixture.token.address.toString().toLowerCase(),
+                to: Address.of(VTHO_ADDRESS).toString().toLowerCase(),
                 value: `0x0`,
                 data: `0xa9059cbb000000000000000000000000${ClauseFixture.to
                     .toString()
                     .toLowerCase()
                     .slice(
                         2
-                    )}0000000000000000000000000000000000000000000000000de0b6b3a7640000`
+                    )}0000000000000000000000000000000000000000000000000de0b6b3a7640000`,
+                comment: 'Transfer VTHO'
             } satisfies TransactionClause;
-            const actual = Clause.transferToken(
-                ClauseFixture.token.address,
+            const actual = Clause.transferVTHOToken(
                 ClauseFixture.to,
                 VTHO.of(1)
             );
@@ -255,17 +256,17 @@ describe('Clause class tests', () => {
 
         test('Return Clause <- 500000000 VTHO', () => {
             const expected = {
-                to: ClauseFixture.token.address.toString().toLowerCase(),
+                to: Address.of(VTHO_ADDRESS).toString().toLowerCase(),
                 value: `0x0`,
                 data: `0xa9059cbb000000000000000000000000${ClauseFixture.to
                     .toString()
                     .toLowerCase()
                     .slice(
                         2
-                    )}0000000000000000000000000000000000000000019d971e4fe8401e74000000`
+                    )}0000000000000000000000000000000000000000019d971e4fe8401e74000000`,
+                comment: 'Transfer VTHO'
             } satisfies TransactionClause;
-            const actual = Clause.transferToken(
-                ClauseFixture.token.address,
+            const actual = Clause.transferVTHOToken(
                 ClauseFixture.to,
                 VTHO.of(500000000n)
             );
@@ -274,31 +275,19 @@ describe('Clause class tests', () => {
 
         test('Throw error <- negative amount VTHO', () => {
             expect(() => {
-                Clause.transferToken(
-                    ClauseFixture.token.address,
-                    ClauseFixture.to,
-                    VTHO.of(-100)
-                );
+                Clause.transferVTHOToken(ClauseFixture.to, VTHO.of(-100));
             }).toThrow(InvalidDataType);
         });
 
         test('Throw <- infinite amount VTHO', () => {
             expect(() => {
-                Clause.transferToken(
-                    ClauseFixture.token.address,
-                    ClauseFixture.to,
-                    VTHO.of(Infinity)
-                );
+                Clause.transferVTHOToken(ClauseFixture.to, VTHO.of(Infinity));
             }).toThrow(InvalidDataType);
         });
 
         test('Throw <- NaN amount VTHO', () => {
             expect(() => {
-                Clause.transferToken(
-                    ClauseFixture.token.address,
-                    ClauseFixture.to,
-                    VTHO.of(NaN)
-                );
+                Clause.transferVTHOToken(ClauseFixture.to, VTHO.of(NaN));
             }).toThrow(InvalidDataType);
         });
     });

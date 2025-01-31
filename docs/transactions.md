@@ -74,8 +74,7 @@ const clauses: TransactionClause[] = [
         Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'),
         VET.of(10000)
     ) as TransactionClause,
-    Clause.transferToken(
-        Address.of(VTHO_ADDRESS),
+    Clause.transferVTHOToken(
         Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'),
         VTHO.of(10000)
     ) as TransactionClause
@@ -164,17 +163,17 @@ const body: TransactionBody = {
 // 4 - Create private keys of sender and delegate
 
 const nodeDelegate = HDKey.fromMnemonic(Mnemonic.of());
-const delegatorPrivateKey = nodeDelegate.privateKey;
+const gasPayerPrivateKey = nodeDelegate.privateKey;
 
 // 5 - Get address of delegate
 
-const delegatorAddress = Address.ofPublicKey(nodeDelegate.publicKey).toString();
+const gasPayerAddress = Address.ofPublicKey(nodeDelegate.publicKey).toString();
 
 // 6 - Sign transaction as sender and delegate
 
 const signedTransaction = Transaction.of(body).signAsSenderAndGasPayer(
     HexUInt.of(senderAccount.privateKey).bytes,
-    HexUInt.of(delegatorPrivateKey).bytes
+    HexUInt.of(gasPayerPrivateKey).bytes
 );
 
 // 7 - Encode transaction
@@ -464,8 +463,8 @@ const senderAccount: { privateKey: string; address: string } = {
     address: '0x7a28e7361fd10f4f058f9fefc77544349ecff5d6'
 };
 
-// Delegator account with private key
-const delegatorAccount: { privateKey: string; address: string } = {
+// Gas-payer account with private key
+const gasPayerAccount: { privateKey: string; address: string } = {
     privateKey:
         '521b7793c6eb27d137b617627c6b85d57c0aa303380e9ca4e30a30302fbc6676',
     address: '0x062F167A905C1484DE7e75B88EDC7439f82117DE'
@@ -485,8 +484,9 @@ const providerWithDelegationEnabled = new VeChainProvider(
             }
         ],
         {
+            // The term `delegator` will be deprecated soon and renamed `gasPayer`.
             delegator: {
-                delegatorPrivateKey: delegatorAccount.privateKey
+                delegatorPrivateKey: gasPayerAccount.privateKey
             }
         }
     ),
@@ -571,8 +571,8 @@ const senderAccount: {
     address: '0x571E3E1fBE342891778151f037967E107fb89bd0'
 };
 
-// Delegator account with private key
-const delegatorAccount = {
+// Gas-payer account with private key
+const gasPayerAccount = {
     URL: 'https://sponsor-testnet.vechain.energy/by/269'
 };
 
@@ -590,8 +590,9 @@ const providerWithDelegationEnabled = new VeChainProvider(
             }
         ],
         {
+            // The term `delegator` will be deprecated soon and renamed `gasPayer`.
             delegator: {
-                delegatorUrl: delegatorAccount.URL
+                delegatorUrl: gasPayerAccount.URL
             }
         }
     ),

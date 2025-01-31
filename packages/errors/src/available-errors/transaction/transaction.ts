@@ -30,7 +30,7 @@ class InvalidTransactionField extends VechainSDKError<
  * * Error will be thrown when the transaction is not delegated.
  */
 class NotDelegatedTransaction extends VechainSDKError<
-    undefined | { delegatorUrl: string }
+    undefined | { gasPayerUrl: string }
 > {}
 
 /**

@@ -1,4 +1,4 @@
-import { ERC20_ABI, Hex, HexUInt } from '@vechain/sdk-core';
+import { ERC20_ABI, HexUInt } from '@vechain/sdk-core';
 import {
     type Contract,
     ProviderInternalBaseWallet,
@@ -23,8 +23,8 @@ const deployerAccount: ProviderInternalWalletAccount = {
     address: '0xf02f557c753edf5fcdcbfe4c1c3a448b3cc84d54'
 };
 
-// Defining the delegator account, which has VTHO for transaction costs
-const delegatorAccount = {
+// Defining the gas-payer account, which has VTHO for transaction costs
+const gasPayerAccount = {
     privateKey:
         '521b7793c6eb27d137b617627c6b85d57c0aa303380e9ca4e30a30302fbc6676',
     address: '0x062F167A905C1484DE7e75B88EDC7439f82117DE'
@@ -36,15 +36,14 @@ const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 const provider = new VeChainProvider(
     thorSoloClient,
     new ProviderInternalBaseWallet([deployerAccount], {
+        // The term `delegator` will be deprecated soon and renamed `gasPayer`.
         delegator: {
-            delegatorPrivateKey: delegatorAccount.privateKey
+            delegatorPrivateKey: gasPayerAccount.privateKey
         }
     }),
     true
 );
-const signer = (await provider.getSigner(
-    deployerAccount.address
-)) as VeChainSigner;
+const signer = await provider.getSigner(deployerAccount.address);
 
 // Defining a function for deploying the ERC20 contract
 const setupERC20Contract = async (): Promise<Contract<typeof ERC20_ABI>> => {
@@ -71,8 +70,7 @@ const transferResult = await contract.transact.transfer(
 );
 
 // Wait for the transfer transaction to complete and obtain its receipt
-const transactionReceiptTransfer =
-    (await transferResult.wait()) as TransactionReceipt;
+const transactionReceiptTransfer = await transferResult.wait();
 
 // Asserting that the transaction has not been reverted
 expect(transactionReceiptTransfer.reverted).toEqual(false);
