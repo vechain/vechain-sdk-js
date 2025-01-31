@@ -1,6 +1,6 @@
 import { Blake2b256, Keccak256, Sha256, Txt } from '@vechain/sdk-core';
 import { useEffect, useState } from 'react';
-import { HashedContent } from '../types';
+import { HashedContent } from '../types/index.tsx';
 
 const Hash = () => {
     // State of content to hash

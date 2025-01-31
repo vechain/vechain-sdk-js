@@ -654,7 +654,7 @@ describe('ThorClient - Contracts', () => {
             .StateChanged({
                 newValue: undefined,
                 oldValue: undefined,
-                sender: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+                sender: `0x${Address.of(TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address).digits}`
             })
             .get();
 
