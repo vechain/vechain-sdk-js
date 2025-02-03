@@ -1,12 +1,11 @@
 import {
-    Address,
     BlockId,
-    ThorId,
-    type TxId,
+    TxId,
+    Address,
     UInt,
     Units,
     VTHO
-} from '@vechain/sdk-core';
+} from '@vechain/sdk-core/src';
 
 class SubscriptionBlockResponse {
     readonly number: UInt;
@@ -18,10 +17,10 @@ class SubscriptionBlockResponse {
     readonly beneficiary: Address;
     readonly gasUsed: VTHO;
     readonly totalScore: UInt;
-    readonly txsRoot: ThorId;
+    readonly txsRoot: BlockId;
     readonly txsFeatures: UInt;
-    readonly stateRoot: ThorId;
-    readonly receiptsRoot: ThorId;
+    readonly stateRoot: BlockId;
+    readonly receiptsRoot: BlockId;
     readonly com: boolean;
     readonly signer: Address;
     readonly obsolete: boolean;
@@ -37,15 +36,15 @@ class SubscriptionBlockResponse {
         this.beneficiary = Address.of(json.beneficiary);
         this.gasUsed = VTHO.of(json.gasUsed, Units.wei);
         this.totalScore = UInt.of(json.totalScore);
-        this.txsRoot = ThorId.of(json.txsRoot);
+        this.txsRoot = BlockId.of(json.txsRoot);
         this.txsFeatures = UInt.of(json.txsFeatures);
-        this.stateRoot = ThorId.of(json.stateRoot);
-        this.receiptsRoot = ThorId.of(json.receiptsRoot);
+        this.stateRoot = BlockId.of(json.stateRoot);
+        this.receiptsRoot = BlockId.of(json.receiptsRoot);
         this.com = json.com;
         this.signer = Address.of(json.signer);
         this.obsolete = json.obsolete;
         this.transactions = json.transactions.map(
-            (txId: string): TxId => ThorId.of(txId)
+            (txId: string): TxId => TxId.of(txId)
         );
     }
 
@@ -67,9 +66,7 @@ class SubscriptionBlockResponse {
             com: this.com,
             signer: this.signer.toString(),
             obsolete: this.obsolete,
-            transactions: this.transactions.map((txId: ThorId) =>
-                txId.toString()
-            )
+            transactions: this.transactions.map((txId: TxId) => txId.toString())
         } satisfies SubscriptionBlockResponseJSON;
     }
 }

@@ -1,20 +1,3 @@
-import {
-    ABI,
-    ABIContract,
-    type ABIFunction,
-    Address,
-    Clause,
-    dataUtils,
-    Hex,
-    HexUInt,
-    Revision,
-    ThorId,
-    Transaction,
-    type TransactionBody,
-    type TransactionClause,
-    Units,
-    VET
-} from '@vechain/sdk-core';
 import { InvalidDataType, InvalidTransactionField } from '@vechain/sdk-errors';
 import { ErrorFragment, Interface } from 'ethers';
 import { HttpMethod } from '../../http';
@@ -53,6 +36,23 @@ import type {
 } from '../contracts';
 import type { VeChainSigner } from '../../signer';
 import { type LogsModule } from '../logs';
+import {
+    ABI,
+    ABIContract,
+    type ABIFunction,
+    Address,
+    Clause,
+    dataUtils,
+    Hex,
+    HexUInt,
+    Revision,
+    Transaction,
+    type TransactionBody,
+    type TransactionClause,
+    Units,
+    VET
+} from '@vechain/sdk-core';
+import { TxId, BlockId } from '@vechain/sdk-core/src';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
@@ -86,7 +86,7 @@ class TransactionsModule {
         options?: GetTransactionInputOptions
     ): Promise<TransactionDetailNoRaw | null> {
         // Invalid transaction ID
-        if (!ThorId.isValid(id)) {
+        if (!TxId.isValid(id)) {
             throw new InvalidDataType(
                 'TransactionsModule.getTransaction()',
                 'Invalid transaction ID given as input. Input must be an hex string of length 64.',
@@ -95,7 +95,7 @@ class TransactionsModule {
         }
 
         // Invalid head
-        if (options?.head !== undefined && !ThorId.isValid(options.head))
+        if (options?.head !== undefined && !TxId.isValid(options.head))
             throw new InvalidDataType(
                 'TransactionsModule.getTransaction()',
                 'Invalid head given as input. Input must be an hex string of length 64.',
@@ -128,7 +128,7 @@ class TransactionsModule {
         options?: GetTransactionInputOptions
     ): Promise<TransactionDetailRaw | null> {
         // Invalid transaction ID
-        if (!ThorId.isValid(id)) {
+        if (!TxId.isValid(id)) {
             throw new InvalidDataType(
                 'TransactionsModule.getTransactionRaw()',
                 'Invalid transaction ID given as input. Input must be an hex string of length 64.',
@@ -137,7 +137,7 @@ class TransactionsModule {
         }
 
         // Invalid head
-        if (options?.head !== undefined && !ThorId.isValid(options.head))
+        if (options?.head !== undefined && !TxId.isValid(options.head))
             throw new InvalidDataType(
                 'TransactionsModule.getTransaction()',
                 'Invalid head given as input. Input must be an hex string of length 64.',
@@ -171,7 +171,7 @@ class TransactionsModule {
         options?: GetTransactionReceiptInputOptions
     ): Promise<TransactionReceipt | null> {
         // Invalid transaction ID
-        if (!ThorId.isValid(id)) {
+        if (!TxId.isValid(id)) {
             throw new InvalidDataType(
                 'TransactionsModule.getTransactionReceipt()',
                 'Invalid transaction ID given as input. Input must be an hex string of length 64.',
@@ -180,7 +180,7 @@ class TransactionsModule {
         }
 
         // Invalid head
-        if (options?.head !== undefined && !ThorId.isValid(options.head))
+        if (options?.head !== undefined && !TxId.isValid(options.head))
             throw new InvalidDataType(
                 'TransactionsModule.getTransaction()',
                 'Invalid head given as input. Input must be an hex string of length 64.',
@@ -281,7 +281,7 @@ class TransactionsModule {
         options?: WaitForTransactionOptions
     ): Promise<TransactionReceipt | null> {
         // Invalid transaction ID
-        if (!ThorId.isValid(txID)) {
+        if (!TxId.isValid(txID)) {
             throw new InvalidDataType(
                 'TransactionsModule.waitForTransaction()',
                 'Invalid transaction ID given as input. Input must be an hex string of length 64.',
@@ -563,7 +563,7 @@ class TransactionsModule {
             const debuggedClause = (await debugModule.traceTransactionClause(
                 {
                     target: {
-                        blockId: ThorId.of(block.id),
+                        blockId: BlockId.of(block.id),
                         transaction: transactionIndex,
                         clauseIndex: transactionClauseIndex
                     },

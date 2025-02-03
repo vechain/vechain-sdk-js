@@ -1,45 +1,52 @@
-import { Address, ThorId, UInt, Units, VTHO } from '@vechain/sdk-core';
+import {
+    BlockId,
+    TxId,
+    Address,
+    UInt,
+    Units,
+    VTHO
+} from '@vechain/sdk-core/src';
 
 class RegularBlockResponse {
     readonly number: UInt;
-    readonly id: ThorId;
+    readonly id: BlockId;
     readonly size: UInt;
-    readonly parentID: ThorId;
+    readonly parentID: BlockId;
     readonly timestamp: bigint;
     readonly gasLimit: VTHO;
     readonly beneficiary: Address;
     readonly gasUsed: VTHO;
     readonly totalScore: UInt;
-    readonly txsRoot: ThorId;
+    readonly txsRoot: BlockId;
     readonly txsFeatures: UInt;
-    readonly stateRoot: ThorId;
-    readonly receiptsRoot: ThorId;
+    readonly stateRoot: BlockId;
+    readonly receiptsRoot: BlockId;
     readonly com: boolean;
     readonly signer: Address;
     readonly isTrunk: boolean;
     readonly isFinalized: boolean;
-    readonly transactions: ThorId[];
+    readonly transactions: TxId[];
 
     constructor(json: RegularBlockResponseJSON) {
         this.number = UInt.of(json.number);
-        this.id = ThorId.of(json.id);
+        this.id = BlockId.of(json.id);
         this.size = UInt.of(json.size);
-        this.parentID = ThorId.of(json.parentID);
+        this.parentID = BlockId.of(json.parentID);
         this.timestamp = json.timestamp;
         this.gasLimit = VTHO.of(json.gasLimit, Units.wei);
         this.beneficiary = Address.of(json.beneficiary);
         this.gasUsed = VTHO.of(json.gasUsed, Units.wei);
         this.totalScore = UInt.of(json.totalScore);
-        this.txsRoot = ThorId.of(json.txsRoot);
+        this.txsRoot = BlockId.of(json.txsRoot);
         this.txsFeatures = UInt.of(json.txsFeatures);
-        this.stateRoot = ThorId.of(json.stateRoot);
+        this.stateRoot = BlockId.of(json.stateRoot);
         this.receiptsRoot = Address.of(json.receiptsRoot);
         this.com = json.com;
         this.signer = Address.of(json.signer);
         this.isTrunk = json.isTrunk;
         this.isFinalized = json.isFinalized;
         this.transactions = json.transactions.map(
-            (txId: string): ThorId => ThorId.of(txId)
+            (txId: string): TxId => TxId.of(txId)
         );
     }
 
@@ -62,9 +69,7 @@ class RegularBlockResponse {
             signer: this.signer.toString(),
             isTrunk: this.isTrunk,
             isFinalized: this.isFinalized,
-            transactions: this.transactions.map((txId: ThorId) =>
-                txId.toString()
-            )
+            transactions: this.transactions.map((txId: TxId) => txId.toString())
         } satisfies RegularBlockResponseJSON;
     }
 }

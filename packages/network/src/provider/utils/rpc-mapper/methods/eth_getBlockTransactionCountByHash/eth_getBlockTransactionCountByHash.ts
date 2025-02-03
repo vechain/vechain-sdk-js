@@ -1,8 +1,8 @@
 import type { ThorClient } from '../../../../../thor-client';
 import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
 import { ethGetBlockByHash } from '../eth_getBlockByHash';
-import { ThorId } from '@vechain/sdk-core';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
+import { BlockId } from '@vechain/sdk-core/src';
 
 /**
  * RPC Method eth_getBlockTransactionCountByHash implementation
@@ -23,7 +23,7 @@ const ethGetBlockTransactionCountByHash = async (
     if (
         params.length !== 1 ||
         typeof params[0] !== 'string' ||
-        !ThorId.isValid(params[0])
+        !BlockId.isValid(params[0])
     )
         throw new JSONRPCInvalidParams(
             'eth_getBlockTransactionCountByHash',

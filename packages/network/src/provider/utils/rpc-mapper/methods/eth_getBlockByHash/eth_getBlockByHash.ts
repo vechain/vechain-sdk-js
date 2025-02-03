@@ -1,4 +1,4 @@
-import { ThorId } from '@vechain/sdk-core';
+import { BlockId } from '@vechain/sdk-core/src';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
 import { ethGetBlockByNumber } from '../eth_getBlockByNumber';
 import {
@@ -29,7 +29,7 @@ const ethGetBlockByHash = async (
     if (
         params.length !== 2 ||
         typeof params[0] !== 'string' ||
-        !ThorId.isValid(params[0]) ||
+        !BlockId.isValid(params[0]) ||
         typeof params[1] !== 'boolean'
     )
         throw new JSONRPCInvalidParams(

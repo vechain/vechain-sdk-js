@@ -1,10 +1,10 @@
-import { ThorId } from '@vechain/sdk-core';
+import { TxId } from '@vechain/sdk-core/src';
 
 class TXID {
-    readonly id: ThorId;
+    readonly id: TxId;
 
     constructor(json: TXIDJSON) {
-        this.id = ThorId.of(json.id);
+        this.id = TxId.of(json.id);
     }
 
     toJSON(): TXIDJSON {

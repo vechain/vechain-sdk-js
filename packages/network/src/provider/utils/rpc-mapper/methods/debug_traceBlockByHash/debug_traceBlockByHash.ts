@@ -1,4 +1,3 @@
-import { ThorId } from '@vechain/sdk-core';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
@@ -11,6 +10,7 @@ import {
 } from '../debug_traceTransaction';
 import { ethGetBlockByHash } from '../eth_getBlockByHash';
 import { type TracerReturnTypeRPC } from '../../../formatter/debug/types';
+import { BlockId } from '@vechain/sdk-core/src';
 
 /**
  * RPC Method debug_traceBlockByHash implementation
@@ -41,7 +41,7 @@ const debugTraceBlockByHash = async (
     if (
         params.length !== 2 ||
         typeof params[0] !== 'string' ||
-        !ThorId.isValid(params[0]) ||
+        !BlockId.isValid(params[0]) ||
         typeof params[1] !== 'object'
     )
         throw new JSONRPCInvalidParams(

@@ -1,5 +1,5 @@
+import { BlockId } from '@vechain/sdk-core/src';
 import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
-import { ThorId } from '@vechain/sdk-core';
 
 /**
  * RPC Method eth_getUncleByBlockHashAndIndex implementation
@@ -24,7 +24,7 @@ const ethGetUncleByBlockHashAndIndex = async (
     if (
         params.length !== 2 ||
         typeof params[0] !== 'string' ||
-        !ThorId.isValid(params[0]) ||
+        !BlockId.isValid(params[0]) ||
         typeof params[1] !== 'string'
     )
         throw new JSONRPCInvalidParams(

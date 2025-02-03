@@ -1,4 +1,3 @@
-import { ThorId } from '@vechain/sdk-core';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
@@ -14,6 +13,7 @@ import {
     transactionsFormatter
 } from '../../../formatter';
 import { ethChainId } from '../eth_chainId';
+import { TxId } from '@vechain/sdk-core/src';
 
 /**
  * RPC Method eth_getTransactionReceipt implementation
@@ -40,7 +40,7 @@ const ethGetTransactionReceipt = async (
         );
 
     // Invalid transaction ID
-    if (!ThorId.isValid(params[0])) {
+    if (!TxId.isValid(params[0])) {
         throw new JSONRPCInvalidParams(
             'eth_getTransactionReceipt',
             'Invalid transaction ID given as input. Input must be an hex string of length 64.',
