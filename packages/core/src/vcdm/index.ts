@@ -16,6 +16,7 @@ export * from './Nonce';
 export * from './Quantity';
 export * from './Revision';
 export * from './BlockId';
+export * from './TxId';
 export * from './Txt';
 export * from './UInt';
 export type * from './VeChainDataModel';
