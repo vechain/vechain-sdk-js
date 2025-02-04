@@ -2,7 +2,7 @@ import { AccountDetail } from './AccountDetail';
 import { buildQuery, thorest } from '../../utils';
 import { type AccountData } from './AccountData';
 import { type AccountInputOptions } from './AccountInputOptions';
-import { type Address, type BlockId, HexUInt } from '@vechain/sdk-core';
+import { type Address, HexUInt, type StorageKey } from '@vechain/sdk-core/src';
 import { type HttpClient } from '../../http';
 
 /**
@@ -64,13 +64,13 @@ class AccountsModule {
      * Retrieves the storage value at the specified storage position for a given address.
      *
      * @param {Address} address - The address of the account whose storage value is to be retrieved.
-     * @param {ThorId} position - The position in the storage from where the value is to be retrieved.
+     * @param {StorageKey} position - The position in the storage from where the value is to be retrieved.
      * @param {AccountInputOptions} [options] - Optional parameters including revision for specifying the block number or ID to query against.
      * @return {Promise<HexUInt>} - A promise that resolves to the storage value as a string.
      */
     public async getStorageAt(
         address: Address,
-        position: BlockId,
+        position: StorageKey,
         options?: AccountInputOptions
     ): Promise<HexUInt> {
         const pos = position.toString();

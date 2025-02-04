@@ -1,9 +1,9 @@
 import { LogMeta, type LogMetaJSON } from '../logs';
-import { Address, HexUInt, ThorId } from '@vechain/sdk-core';
+import { Address, HexUInt, LogId } from '@vechain/sdk-core/src';
 
 class SubscriptionEventResponse {
     readonly address: Address;
-    readonly topics: ThorId[];
+    readonly topics: LogId[];
     readonly data: HexUInt;
     readonly obsolete: boolean;
     readonly meta: LogMeta;
@@ -11,7 +11,7 @@ class SubscriptionEventResponse {
     constructor(json: SubscriptionEventResponseJSON) {
         this.address = Address.of(json.address);
         this.topics = json.topics.map(
-            (topic: string): ThorId => ThorId.of(topic)
+            (topic: string): LogId => LogId.of(topic)
         );
         this.data = HexUInt.of(json.data);
         this.obsolete = json.obsolete;
@@ -21,9 +21,7 @@ class SubscriptionEventResponse {
     toJSON(): SubscriptionEventResponseJSON {
         return {
             address: this.address.toString(),
-            topics: this.topics.map((topic: ThorId): string =>
-                topic.toString()
-            ),
+            topics: this.topics.map((topic: LogId): string => topic.toString()),
             data: this.data.toString(),
             obsolete: this.obsolete,
             meta: this.meta.toJSON()
