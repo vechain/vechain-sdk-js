@@ -1,11 +1,4 @@
-import {
-    BlockId,
-    TxId,
-    Address,
-    UInt,
-    Units,
-    VTHO
-} from '@vechain/sdk-core/src';
+import { BlockId, TxId, Address, UInt, Units, VTHO } from '@vechain/sdk-core';
 
 class SubscriptionBlockResponse {
     readonly number: UInt;

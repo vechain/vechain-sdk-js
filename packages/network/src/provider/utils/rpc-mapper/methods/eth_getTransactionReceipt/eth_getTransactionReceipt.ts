@@ -13,7 +13,7 @@ import {
     transactionsFormatter
 } from '../../../formatter';
 import { ethChainId } from '../eth_chainId';
-import { TxId } from '@vechain/sdk-core/src';
+import { TxId } from '@vechain/sdk-core';
 
 /**
  * RPC Method eth_getTransactionReceipt implementation

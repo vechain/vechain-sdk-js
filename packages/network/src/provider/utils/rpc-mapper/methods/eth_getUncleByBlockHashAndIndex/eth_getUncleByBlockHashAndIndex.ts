@@ -1,4 +1,4 @@
-import { BlockId } from '@vechain/sdk-core/src';
+import { BlockId } from '@vechain/sdk-core';
 import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
 
 /**

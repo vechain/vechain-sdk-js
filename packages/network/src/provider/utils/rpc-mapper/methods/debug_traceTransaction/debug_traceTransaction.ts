@@ -13,7 +13,7 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
 import { debugFormatter, type TracerReturnTypeRPC } from '../../../formatter';
 import { ethGetTransactionReceipt } from '../eth_getTransactionReceipt';
 import { type TraceOptionsRPC } from './types';
-import { BlockId, TxId } from '@vechain/sdk-core/src';
+import { BlockId, TxId } from '@vechain/sdk-core';
 
 /**
  * RPC Method debug_traceTransaction implementation

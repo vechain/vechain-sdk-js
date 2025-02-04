@@ -10,7 +10,7 @@ import {
 } from '../debug_traceTransaction';
 import { ethGetBlockByHash } from '../eth_getBlockByHash';
 import { type TracerReturnTypeRPC } from '../../../formatter/debug/types';
-import { BlockId } from '@vechain/sdk-core/src';
+import { BlockId } from '@vechain/sdk-core';
 
 /**
  * RPC Method debug_traceBlockByHash implementation

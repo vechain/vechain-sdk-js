@@ -52,7 +52,7 @@ import {
     Units,
     VET
 } from '@vechain/sdk-core';
-import { TxId, BlockId } from '@vechain/sdk-core/src';
+import { TxId, BlockId } from '@vechain/sdk-core';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides

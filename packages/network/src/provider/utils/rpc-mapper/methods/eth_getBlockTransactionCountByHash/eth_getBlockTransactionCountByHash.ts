@@ -2,7 +2,7 @@ import type { ThorClient } from '../../../../../thor-client';
 import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
 import { ethGetBlockByHash } from '../eth_getBlockByHash';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
-import { BlockId } from '@vechain/sdk-core/src';
+import { BlockId } from '@vechain/sdk-core';
 
 /**
  * RPC Method eth_getBlockTransactionCountByHash implementation

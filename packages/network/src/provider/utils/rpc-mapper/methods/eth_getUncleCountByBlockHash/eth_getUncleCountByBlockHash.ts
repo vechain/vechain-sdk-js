@@ -1,6 +1,6 @@
 import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
-import { BlockId } from '@vechain/sdk-core/src';
+import { BlockId } from '@vechain/sdk-core';
 
 /**
  * RPC Method eth_getUncleCountByBlockHash implementation

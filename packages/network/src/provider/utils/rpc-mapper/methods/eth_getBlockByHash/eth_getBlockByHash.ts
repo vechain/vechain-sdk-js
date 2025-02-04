@@ -1,4 +1,4 @@
-import { BlockId } from '@vechain/sdk-core/src';
+import { BlockId } from '@vechain/sdk-core';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
 import { ethGetBlockByNumber } from '../eth_getBlockByNumber';
 import {

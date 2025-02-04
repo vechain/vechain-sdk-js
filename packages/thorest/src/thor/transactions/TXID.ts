@@ -1,4 +1,4 @@
-import { TxId } from '@vechain/sdk-core/src';
+import { TxId } from '@vechain/sdk-core';
 
 class TXID {
     readonly id: TxId;
