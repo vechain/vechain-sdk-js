@@ -1,6 +1,6 @@
 import { type CompressedBlockDetail } from "@vechain/sdk-network";
 import { useState } from "react";
-import { thorClient } from "../const";
+import { thorClient } from '../const/index.tsx';
 
 const GetLastBlock = () => {
     const [block, setBlock] = useState<CompressedBlockDetail | null>(null);

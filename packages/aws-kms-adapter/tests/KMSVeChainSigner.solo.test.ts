@@ -6,7 +6,12 @@ import {
     Transaction,
     type TransactionClause
 } from '@vechain/sdk-core';
-import { signerUtils, THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
+import {
+    signerUtils,
+    THOR_SOLO_URL,
+    ThorClient,
+    type TypedDataDomain
+} from '@vechain/sdk-network';
 import fs from 'fs';
 import path from 'path';
 import {
@@ -297,7 +302,7 @@ describe('KMSVeChainSigner - Thor Solo', () => {
                 }
             };
             const signature = await signer.signTypedData(
-                typedData.domain,
+                typedData.domain as TypedDataDomain,
                 typedData.types,
                 typedData.data,
                 typedData.primaryType
@@ -307,7 +312,7 @@ describe('KMSVeChainSigner - Thor Solo', () => {
             expect(signature).toMatch(/^0x[A-Fa-f0-9]{130}$/);
 
             const signatureWithoutPrimaryType = await signer.signTypedData(
-                typedData.domain,
+                typedData.domain as TypedDataDomain,
                 typedData.types,
                 typedData.data
             );
