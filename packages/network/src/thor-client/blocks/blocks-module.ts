@@ -306,7 +306,6 @@ class BlocksModule {
                         addresses.add(clause.to);
                     }
                 });
-                addresses.add(transaction.delegator);
                 addresses.add(transaction.gasPayer);
                 addresses.add(transaction.origin);
                 transaction.outputs.forEach((output) => {
