@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
     THOR_SOLO_ACCOUNTS_BASE_WALLET,
-    THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR
+    THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_GAS_PAYER
 } from '../../../../fixture';
 import {
     ProviderInternalBaseWallet,
@@ -55,7 +55,7 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
         // @NOTE due to the fact we are testing on thor-solo, we can delegate ONLY with a private key!
         providerWithDelegator = new VeChainProvider(
             thorClient,
-            THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR({
+            THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_GAS_PAYER({
                 gasPayerPrivateKey: delegatorPrivateKeyFixture
             }),
             true

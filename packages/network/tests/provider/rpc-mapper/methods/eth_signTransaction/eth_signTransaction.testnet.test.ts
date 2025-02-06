@@ -7,7 +7,7 @@ import {
 } from '../../../../../src';
 import {
     THOR_SOLO_ACCOUNTS_BASE_WALLET,
-    THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR
+    THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_GAS_PAYER
 } from '../../../../fixture';
 import {
     delegatorPrivateKeyFixture,
@@ -55,7 +55,7 @@ describe('RPC Mapper - eth_signTransaction method tests', () => {
         // @NOTE: Since we are testing the signature, we can use SOLO accounts with testnet!
         providerWithDelegator = new VeChainProvider(
             thorClient,
-            THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR({
+            THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_GAS_PAYER({
                 gasPayerPrivateKey: delegatorPrivateKeyFixture
             }),
             true

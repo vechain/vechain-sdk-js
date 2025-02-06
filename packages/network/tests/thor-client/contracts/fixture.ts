@@ -304,12 +304,12 @@ const erc721ContractTestCases: TestCase[] = [
         description:
             'should mint an NFT for the specific address of another user',
         functionName: 'mintItem',
-        params: [TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address],
+        params: [TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address],
         expected: [
             '0x0000000000000000000000000000000000000000',
             Address.checksum(
                 HexUInt.of(
-                    TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address.toLowerCase()
+                    TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address.toLowerCase()
                 )
             ),
             2n
@@ -336,7 +336,7 @@ const erc721ContractTestCases: TestCase[] = [
         description:
             'should get the current NFT balance of the GAS_PAYER address',
         functionName: 'balanceOf',
-        params: [TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address],
+        params: [TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address],
         expected: {
             success: true,
             result: {
@@ -352,7 +352,7 @@ const erc721ContractTestCases: TestCase[] = [
         functionName: 'transferFrom',
         params: [
             TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address,
-            TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
+            TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address,
             1n
         ],
         expected: [
@@ -360,7 +360,7 @@ const erc721ContractTestCases: TestCase[] = [
                 HexUInt.of(TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address)
             ),
             Address.checksum(
-                HexUInt.of(TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address)
+                HexUInt.of(TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address)
             ),
             1n
         ],
@@ -386,7 +386,7 @@ const erc721ContractTestCases: TestCase[] = [
         description:
             'should get the current NFT balance of the GAS_PAYER address',
         functionName: 'balanceOf',
-        params: [TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address],
+        params: [TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address],
         expected: {
             success: true,
             result: {

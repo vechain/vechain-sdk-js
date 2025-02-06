@@ -315,7 +315,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         await (
             await contract.transact.transfer(
-                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
+                TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address,
                 5000n
             )
         ).wait();
@@ -327,7 +327,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         const transferCriteriaDelegator = contract.criteria.Transfer([
             undefined,
-            TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
+            TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address
         ]);
 
         const events = await thorSoloClient.logs.filterEventLogs({
@@ -400,7 +400,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         await (
             await contract.transact.transfer(
-                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
+                TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address,
                 5000n
             )
         ).wait();
@@ -412,7 +412,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         const transferCriteriaDelegator = contract.criteria.Transfer([
             undefined,
-            TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
+            TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address
         ]);
 
         const events = await thorSoloClient.logs.filterEventLogs({

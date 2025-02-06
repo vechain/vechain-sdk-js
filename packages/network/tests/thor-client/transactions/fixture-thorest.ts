@@ -180,7 +180,7 @@ const sendTransactionErrors = {
                         data: '0x'
                     },
                     {
-                        to: TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
+                        to: TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address,
                         value: 1000000,
                         data: '0x'
                     }

@@ -87,7 +87,7 @@ const signTransactionTestCases = {
                 origin: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER,
                 options: {
                     gasPayerPrivateKey:
-                        TEST_ACCOUNTS.TRANSACTION.DELEGATOR.privateKey
+                        TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.privateKey
                 } satisfies SignTransactionOptions,
                 isDelegated: true,
                 expected: {
