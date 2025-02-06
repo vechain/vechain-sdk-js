@@ -161,7 +161,7 @@ abstract class AbstractProviderInternalWallet
     abstract getDelegator(): Promise<SignTransactionOptions | null>;
 
     /**
-     * SYNC Version of getDelegator()
+     * SYNC Version of getGasPayer()
      *
      * Get the options for signing a transaction with gasPayer (if any).
      *

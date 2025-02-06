@@ -7,7 +7,7 @@ const delegationHandlerFixture = [
     // NOT Empty gasPayer - gasPayerServiceUrl
     {
         testName:
-            'Should be able to use DelegationHandler with not empty delegator - delegatorUrl',
+            'Should be able to use DelegationHandler with not empty gasPayer - gasPayerServiceUrl',
         delegator: {
             gasPayerServiceUrl: 'http://localhost:8669'
         } satisfies SignTransactionOptions,
@@ -24,7 +24,7 @@ const delegationHandlerFixture = [
     // NOT Empty gasPayer - gasPayerPrivateKey
     {
         testName:
-            'Should be able to use DelegationHandler with not empty delegator - delegatorPrivateKey',
+            'Should be able to use DelegationHandler with not empty gasPayer - gasPayerPrivateKey',
         delegator: {
             gasPayerPrivateKey:
                 '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
@@ -44,7 +44,7 @@ const delegationHandlerFixture = [
     // NOT Empty gasPayer - gasPayerPrivateKey (with 0x in front of the private key)
     {
         testName:
-            'Should be able to use DelegationHandler with not empty delegator - delegatorPrivateKey',
+            'Should be able to use DelegationHandler with not empty gasPayer - gasPayerPrivateKey',
         delegator: {
             gasPayerPrivateKey:
                 '0x7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
@@ -64,7 +64,7 @@ const delegationHandlerFixture = [
     // Empty gasPayer - undefined
     {
         testName:
-            'Should be able to use DelegationHandler with empty delegator - undefined',
+            'Should be able to use DelegationHandler with empty gasPayer - undefined',
         expected: {
             isDelegated: false,
             delegatorOrUndefined: undefined,
@@ -74,7 +74,7 @@ const delegationHandlerFixture = [
     // Empty gasPayer - null
     {
         testName:
-            'Should be able to use DelegationHandler with empty delegator - null',
+            'Should be able to use DelegationHandler with empty gasPayer - null',
         delegator: null,
         expected: {
             isDelegated: false,

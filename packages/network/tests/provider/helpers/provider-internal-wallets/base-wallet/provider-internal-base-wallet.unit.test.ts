@@ -161,11 +161,11 @@ describe('Base wallet tests', () => {
     /**
      * Test 'getGasPayer' function.
      */
-    describe('getDelegator sync and async version', () => {
+    describe('getGasPayer sync and async version', () => {
         /**
          * Should be able to get the gasPayer options
          */
-        test('Should be able to get the delegator', async () => {
+        test('Should be able to get the gasPayer', async () => {
             // Initialize gasPayer
             const delegators: SignTransactionOptions[] = [
                 {
@@ -205,13 +205,13 @@ describe('Base wallet tests', () => {
         /**
          * Should get null if gasPayer is not set
          */
-        test('Should get null if delegator is not set', async () => {
+        test('Should get null if gasPayer is not set', async () => {
             // Initialize a wallet with the accounts
             const baseWalletWithoutDelegator = new ProviderInternalBaseWallet(
                 accountsFixture
             );
 
-            // Get the gasPayer from the wallet that has no delegator
+            // Get the gasPayer from the wallet that has no gasPayer
             const delegator = await baseWalletWithoutDelegator.getDelegator();
 
             expect(delegator).toBeNull();

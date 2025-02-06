@@ -117,7 +117,7 @@ const signTransactionTestCases = {
         incorrect: [
             {
                 description:
-                    "Should throw error when delegator's private key is invalid",
+                    "Should throw error when gasPayer's private key is invalid",
                 origin: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER,
                 options: {
                     gasPayerPrivateKey: 'INVALID_PRIVATE_KEY'
@@ -127,7 +127,7 @@ const signTransactionTestCases = {
             },
             {
                 description:
-                    "Should throw error when using delegator url on solo network due to no server providing the delegator's signature through an endpoint",
+                    "Should throw error when using gasPayer url on solo network due to no server providing the gasPayer's signature through an endpoint",
                 origin: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER,
                 options: {
                     gasPayerServiceUrl: 'https://example.com'
@@ -170,7 +170,7 @@ const signTransactionTestCases = {
         incorrect: [
             {
                 description:
-                    'Should NOT sign a transaction with delegation when no delegator is provided',
+                    'Should NOT sign a transaction with delegation when no gasPayer is provided',
                 origin: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER,
                 options: undefined,
                 isDelegated: true,

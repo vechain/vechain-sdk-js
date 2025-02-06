@@ -148,7 +148,7 @@ class HardhatVeChainProvider extends VeChainProvider {
                     messages: [
                         `params: ${stringifyData(args.params)}`,
                         `accounts: ${stringifyData(accounts)}`,
-                        `delegator: ${stringifyData(delegator)}`,
+                        `gasPayer: ${stringifyData(delegator)}`,
                         `url: ${this.thorClient.httpClient.baseURL}`
                     ]
                 });

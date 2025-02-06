@@ -334,7 +334,7 @@ const erc721ContractTestCases: TestCase[] = [
     },
     {
         description:
-            'should get the current NFT balance of the DELEGATOR address',
+            'should get the current NFT balance of the GAS_PAYER address',
         functionName: 'balanceOf',
         params: [TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address],
         expected: {
@@ -348,7 +348,7 @@ const erc721ContractTestCases: TestCase[] = [
         isReadOnly: true
     },
     {
-        description: 'should transfer the NFT to DELEGATOR address',
+        description: 'should transfer the NFT to GAS_PAYER address',
         functionName: 'transferFrom',
         params: [
             TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address,
@@ -384,7 +384,7 @@ const erc721ContractTestCases: TestCase[] = [
     },
     {
         description:
-            'should get the current NFT balance of the DELEGATOR address',
+            'should get the current NFT balance of the GAS_PAYER address',
         functionName: 'balanceOf',
         params: [TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address],
         expected: {

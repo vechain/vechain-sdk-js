@@ -46,9 +46,9 @@ const _getDelegationSignature = async (
     } catch (error) {
         throw new NotDelegatedTransaction(
             '_getDelegationSignature()',
-            'Delegation failed: Cannot get signature from delegator.',
+            'Delegation failed: Cannot get signature from gasPayerUrl.',
             {
-                gasPayerUrl: delegatorUrl
+                gasPayerServiceUrl: delegatorUrl
             },
             error
         );
@@ -136,7 +136,7 @@ const DelegationHandler = (
             if (!isDelegatedWithUrl) {
                 throw new NotDelegatedTransaction(
                     'DelegationHandler.getDelegationSignatureUsingUrl()',
-                    'Delegation with url failed: delegatorUrl is not defined.',
+                    'Delegation with url failed: gasPayerServiceUrl is not defined.',
                     undefined
                 );
             }
