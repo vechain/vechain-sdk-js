@@ -34,7 +34,7 @@ describe('RPC Mapper - eth_signTransaction method tests', () => {
      * Provider instance
      */
     let provider: VeChainProvider;
-    let providerWithDelegator: VeChainProvider;
+    let providerWithGasPayer: VeChainProvider;
 
     /**
      * Init thor client before each test
@@ -53,7 +53,7 @@ describe('RPC Mapper - eth_signTransaction method tests', () => {
         // Init provider with gasPayer
         // @NOTE due to the fact we are testing on thor-solo, we can delegate ONLY with a private key!
         // @NOTE: Since we are testing the signature, we can use SOLO accounts with testnet!
-        providerWithDelegator = new VeChainProvider(
+        providerWithGasPayer = new VeChainProvider(
             thorClient,
             THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_GAS_PAYER({
                 gasPayerPrivateKey: gasPayerPrivateKeyFixture
@@ -79,7 +79,7 @@ describe('RPC Mapper - eth_signTransaction method tests', () => {
                     for (const value of ['0x111', '0x222', '0x333']) {
                         // Get the provider to use depending on delegated or not
                         const providerToUse = delegated
-                            ? providerWithDelegator
+                            ? providerWithGasPayer
                             : provider;
 
                         // Send a transaction
