@@ -119,9 +119,9 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
         );
     }
 
-    // Check the delegator
+    // Check the gasPayer
     if (configFile.delegator !== undefined) {
-        // Both delegator private key and url are given
+        // Both gasPayer private key and url are given
         if (
             configFile.delegator.gasPayerPrivateKey !== undefined &&
             configFile.delegator.gasPayerServiceUrl !== undefined
@@ -135,7 +135,7 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
             );
         }
 
-        // Invalid delegator private key
+        // Invalid gasPayer private key
         if (
             configFile.delegator.gasPayerPrivateKey !== undefined &&
             !isValidDelegatorPrivateKey(configFile.delegator.gasPayerPrivateKey)
@@ -149,7 +149,7 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
             );
         }
 
-        // Invalid delegator url
+        // Invalid gasPayer url
         if (
             configFile.delegator.gasPayerServiceUrl !== undefined &&
             !isValidDelegatorUrl(configFile.delegator.gasPayerServiceUrl)
@@ -194,7 +194,7 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
 
     // NOTE: Here we know all the fields are valid. So we can check the semantics of the fields.
 
-    // Delegation cannot be enabled without a delegator
+    // Delegation cannot be enabled without a gasPayer
     if (
         (configFile.enableDelegation as boolean) &&
         configFile.delegator === undefined

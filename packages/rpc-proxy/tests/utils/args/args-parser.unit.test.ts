@@ -627,7 +627,7 @@ describe('Args parser tests', () => {
                 // Short syntax
                 ['path', 'program', '-d', ''],
 
-                // Enable delegation without the delegator
+                // Enable delegation without the gasPayer
 
                 // Normal syntax
                 ['path', 'program', '--enableDelegation']

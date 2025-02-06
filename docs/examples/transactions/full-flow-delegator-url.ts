@@ -54,7 +54,7 @@ const providerWithDelegationEnabled = new VeChainProvider(
             }
         ],
         {
-            // The term `delegator` will be deprecated soon and renamed `gasPayer`.
+            // The term `gasPayer` will be deprecated soon and renamed `gasPayer`.
             delegator: {
                 delegatorUrl: gasPayerAccount.URL
             }
@@ -124,7 +124,7 @@ const txReceipt = await thorClient.transactions.waitForTransaction(
 // Check the signed transaction
 expect(delegatedSigned.isSigned).toEqual(true);
 expect(delegatedSigned.isDelegated).toEqual(true);
-// expect(signedTx.delegator).toEqual(gasPayerAccount.address); ---
+// expect(signedTx.gasPayer).toEqual(gasPayerAccount.address); ---
 
 // Check the transaction receipt
 expect(txReceipt).toBeDefined();

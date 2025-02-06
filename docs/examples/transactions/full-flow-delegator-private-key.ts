@@ -50,7 +50,7 @@ const providerWithDelegationEnabled = new VeChainProvider(
             }
         ],
         {
-            // The term `delegator` will be deprecated soon and renamed `gasPayer`.
+            // The term `gasPayer` will be deprecated soon and renamed `gasPayer`.
             delegator: {
                 delegatorPrivateKey: gasPayerAccount.privateKey
             }

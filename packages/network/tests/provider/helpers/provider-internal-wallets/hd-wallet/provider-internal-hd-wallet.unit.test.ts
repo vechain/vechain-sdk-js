@@ -29,15 +29,15 @@ describe('ProviderInternalHDWallet wallet tests', () => {
                     hdNodeFixture.count,
                     hdNodeFixture.initialIndex,
                     hdNodeFixture.path,
-                    { gasPayer: hdNodeFixture.delegator }
+                    { gasPayer: hdNodeFixture.gasPayer }
                 );
 
                 const addresses = await hdWallet.getAddresses();
-                const delegator = await hdWallet.getGasPayer();
+                const gasPayer = await hdWallet.getGasPayer();
 
                 expect(addresses).toEqual(hdNodeFixture.expectedAddress);
-                expect(delegator).toEqual(
-                    DelegationHandler(delegator).gasPayerOrNull()
+                expect(gasPayer).toEqual(
+                    DelegationHandler(gasPayer).gasPayerOrNull()
                 );
             });
         });

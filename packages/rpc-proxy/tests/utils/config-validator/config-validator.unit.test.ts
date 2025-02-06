@@ -118,9 +118,9 @@ describe('Configuration file validator', () => {
             });
 
             /**
-             * Should not be able to parse a configuration file with invalid delegator
+             * Should not be able to parse a configuration file with invalid gasPayer
              */
-            test('Should not be able to parse a configuration file with invalid delegator', () => {
+            test('Should not be able to parse a configuration file with invalid gasPayer', () => {
                 invalidParametersConfigurationFilePathFixture[
                     'invalid-delegator'
                 ].forEach((filePath) => {

@@ -5,9 +5,7 @@ import {
     type ProviderInternalWalletAccount,
     THOR_SOLO_URL,
     ThorClient,
-    type TransactionReceipt,
-    VeChainProvider,
-    type VeChainSigner
+    VeChainProvider
 } from '@vechain/sdk-network';
 import { expect } from 'expect';
 
@@ -36,7 +34,7 @@ const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 const provider = new VeChainProvider(
     thorSoloClient,
     new ProviderInternalBaseWallet([deployerAccount], {
-        // The term `delegator` will be deprecated soon and renamed `gasPayer`.
+        // The term `gasPayer` will be deprecated soon and renamed `gasPayer`.
         delegator: {
             delegatorPrivateKey: gasPayerAccount.privateKey
         }

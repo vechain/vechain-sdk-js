@@ -11,7 +11,7 @@ const hdNodeFixtures = [
         path: HDKey.VET_DERIVATION_PATH,
         count: 5,
         initialIndex: 0,
-        delegator: {
+        gasPayer: {
             gasPayerPrivateKey:
                 '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
         } satisfies SignTransactionOptions,
@@ -28,7 +28,7 @@ const hdNodeFixtures = [
             'vivid any call mammal mosquito budget midnight expose spirit approve reject system',
         count: 1,
         initialIndex: 6,
-        delegator: {
+        gasPayer: {
             gasPayerServiceUrl: 'https://sponsor-testnet.vechain.energy/by/269'
         } satisfies SignTransactionOptions,
         expectedAddress: ['0x8ef651aC457C9bf5206EC3D2cbD4232Df0438607']
