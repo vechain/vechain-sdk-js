@@ -7,7 +7,7 @@
     "initialIndex": 0
   },
   "delegator": {
-    "delegatorPrivateKey": "INVALID"
+    "gasPayerPrivateKey": "INVALID"
   },
   "enableDelegation": false
 }

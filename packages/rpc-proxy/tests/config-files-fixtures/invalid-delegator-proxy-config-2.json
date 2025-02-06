@@ -7,7 +7,7 @@
     "initialIndex": 0
   },
   "delegator": {
-    "delegatorUrl": "INVALID"
+    "gasPayerServiceUrl": "INVALID"
   },
   "enableDelegation": false
 }
