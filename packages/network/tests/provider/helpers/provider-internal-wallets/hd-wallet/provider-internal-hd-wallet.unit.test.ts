@@ -37,7 +37,7 @@ describe('ProviderInternalHDWallet wallet tests', () => {
 
                 expect(addresses).toEqual(hdNodeFixture.expectedAddress);
                 expect(delegator).toEqual(
-                    DelegationHandler(delegator).delegatorOrNull()
+                    DelegationHandler(delegator).gasPayerOrNull()
                 );
             });
         });

@@ -23,10 +23,10 @@ describe('Tests of DelegationHandler helper function', () => {
         test(testName, () => {
             const delegationHandler = DelegationHandler(delegator);
             expect(delegationHandler.isDelegated()).toBe(expected.isDelegated);
-            expect(delegationHandler.delegatorOrUndefined()).toEqual(
+            expect(delegationHandler.gasPayerOrUndefined()).toEqual(
                 expected.delegatorOrUndefined
             );
-            expect(delegationHandler.delegatorOrNull()).toEqual(
+            expect(delegationHandler.gasPayerOrNull()).toEqual(
                 expected.delegatorOrNull
             );
         });

@@ -168,7 +168,7 @@ abstract class AbstractProviderInternalWallet
      * @returns The options for signing a transaction with gasPayer.
      */
     getGasPayerSync(): SignTransactionOptions | null {
-        return DelegationHandler(this.gasPayer).delegatorOrNull();
+        return DelegationHandler(this.gasPayer).gasPayerOrNull();
     }
 }
 

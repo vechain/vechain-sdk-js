@@ -21,7 +21,7 @@ import { type HttpClient, HttpMethod } from '../../../http';
  */
 const _getDelegationSignature = async (
     tx: Transaction,
-    delegatorUrl: string,
+    gasPayerServiceUrl: string,
     originAddress: string,
     httpClient: HttpClient
 ): Promise<Uint8Array> => {
@@ -38,9 +38,13 @@ const _getDelegationSignature = async (
     };
 
     try {
-        const response = (await httpClient.http(HttpMethod.POST, delegatorUrl, {
-            body: sponsorRequestBody
-        })) as GetDelegationSignatureResult;
+        const response = (await httpClient.http(
+            HttpMethod.POST,
+            gasPayerServiceUrl,
+            {
+                body: sponsorRequestBody
+            }
+        )) as GetDelegationSignatureResult;
 
         return HexUInt.of(response.signature.slice(2)).bytes;
     } catch (error) {
@@ -48,7 +52,7 @@ const _getDelegationSignature = async (
             '_getDelegationSignature()',
             'Delegation failed: Cannot get signature from gasPayerUrl.',
             {
-                gasPayerUrl: delegatorUrl
+                gasPayerUrl: gasPayerServiceUrl
             },
             error
         );
@@ -66,11 +70,11 @@ const _getDelegationSignature = async (
  * @param gasPayer - The gasPayer options.
  */
 const DelegationHandler = (
-    delegator?: SignTransactionOptions | null
+    gasPayer?: SignTransactionOptions | null
 ): {
     isDelegated: () => boolean;
-    delegatorOrUndefined: () => SignTransactionOptions | undefined;
-    delegatorOrNull: () => SignTransactionOptions | null;
+    gasPayerOrUndefined: () => SignTransactionOptions | undefined;
+    gasPayerOrNull: () => SignTransactionOptions | null;
     getDelegationSignatureUsingUrl: (
         tx: Transaction,
         originAddress: string,
@@ -78,15 +82,15 @@ const DelegationHandler = (
     ) => Promise<Uint8Array>;
 } => {
     // Check if gasPayer is undefined (null or undefined)
-    const delegatorIsUndefined = delegator === undefined || delegator === null;
+    const gasPayerIsUndefined = gasPayer === undefined || gasPayer === null;
 
     // Check if is delegated by url
     const isDelegatedWithUrl =
-        !delegatorIsUndefined && delegator?.gasPayerServiceUrl !== undefined;
+        !gasPayerIsUndefined && gasPayer?.gasPayerServiceUrl !== undefined;
 
     // Check if is delegated by private key
     const isDelegatedWithPrivateKey =
-        !delegatorIsUndefined && delegator?.gasPayerPrivateKey !== undefined;
+        !gasPayerIsUndefined && gasPayer?.gasPayerPrivateKey !== undefined;
 
     return {
         /**
@@ -103,8 +107,8 @@ const DelegationHandler = (
          *
          * @returns The gasPayer options or undefined.
          */
-        delegatorOrUndefined: (): SignTransactionOptions | undefined =>
-            delegatorIsUndefined ? undefined : delegator,
+        gasPayerOrUndefined: (): SignTransactionOptions | undefined =>
+            gasPayerIsUndefined ? undefined : gasPayer,
 
         /**
          * Get the gasPayer options or null.
@@ -112,8 +116,8 @@ const DelegationHandler = (
          *
          * @returns The gasPayer options or null.
          */
-        delegatorOrNull: (): SignTransactionOptions | null =>
-            delegatorIsUndefined ? null : delegator,
+        gasPayerOrNull: (): SignTransactionOptions | null =>
+            gasPayerIsUndefined ? null : gasPayer,
 
         /**
          * Retrieves the signature of a delegation transaction from a gasPayer given the endpoint
@@ -143,7 +147,7 @@ const DelegationHandler = (
 
             return await _getDelegationSignature(
                 tx,
-                delegator?.gasPayerServiceUrl,
+                gasPayer?.gasPayerServiceUrl,
                 originAddress,
                 httpClient
             );
