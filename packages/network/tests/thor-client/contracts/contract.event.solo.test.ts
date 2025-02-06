@@ -325,13 +325,13 @@ describe('ThorClient - ERC20 Contracts', () => {
             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
         ]);
 
-        const transferCriteriaDelegator = contract.criteria.Transfer([
+        const transferCriteriaGasPayer = contract.criteria.Transfer([
             undefined,
             TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address
         ]);
 
         const events = await thorSoloClient.logs.filterEventLogs({
-            criteriaSet: [transferCriteria, transferCriteriaDelegator]
+            criteriaSet: [transferCriteria, transferCriteriaGasPayer]
         });
 
         expect(
@@ -410,13 +410,13 @@ describe('ThorClient - ERC20 Contracts', () => {
             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
         ]);
 
-        const transferCriteriaDelegator = contract.criteria.Transfer([
+        const transferCriteriaGasPayer = contract.criteria.Transfer([
             undefined,
             TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address
         ]);
 
         const events = await thorSoloClient.logs.filterEventLogs({
-            criteriaSet: [transferCriteria, transferCriteriaDelegator]
+            criteriaSet: [transferCriteria, transferCriteriaGasPayer]
         });
 
         expect(events.map((x) => x.decodedData)).toEqual([
