@@ -42,7 +42,7 @@ describe('Tests of DelegationHandler helper function', () => {
         test('Should throw an error when get delegatorUrl if delegator url is not provided', async () => {
             await expect(async () => {
                 await DelegationHandler({
-                    delegatorPrivateKey:
+                    gasPayerPrivateKey:
                         '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
                 }).getDelegationSignatureUsingUrl(
                     Transaction.of(TransactionFixture.delegated.body),

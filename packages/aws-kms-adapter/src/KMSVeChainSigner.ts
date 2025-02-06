@@ -258,7 +258,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         ) {
             const originAddress = await this.getAddress();
             const delegatorSignature = await DelegationHandler({
-                delegatorUrl: this.kmsVeChainDelegatorUrl
+                gasPayerServiceUrl: this.kmsVeChainDelegatorUrl
             }).getDelegationSignatureUsingUrl(
                 transaction,
                 originAddress,

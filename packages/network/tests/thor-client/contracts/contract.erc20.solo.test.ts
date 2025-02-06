@@ -56,7 +56,7 @@ describe('ThorClient - ERC20 Contracts', () => {
                 ],
                 {
                     delegator: {
-                        delegatorPrivateKey:
+                        gasPayerPrivateKey:
                             TEST_ACCOUNTS.TRANSACTION.DELEGATOR.privateKey
                     }
                 }
@@ -225,7 +225,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         contract.setContractTransactOptions({
             signTransactionOptions: {
-                delegatorPrivateKey:
+                gasPayerPrivateKey:
                     TEST_ACCOUNTS.TRANSACTION.DELEGATOR.privateKey
             },
             isDelegated: true

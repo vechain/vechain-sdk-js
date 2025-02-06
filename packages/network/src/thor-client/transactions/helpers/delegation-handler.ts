@@ -82,11 +82,11 @@ const DelegationHandler = (
 
     // Check if is delegated by url
     const isDelegatedWithUrl =
-        !delegatorIsUndefined && delegator?.delegatorUrl !== undefined;
+        !delegatorIsUndefined && delegator?.gasPayerServiceUrl !== undefined;
 
     // Check if is delegated by private key
     const isDelegatedWithPrivateKey =
-        !delegatorIsUndefined && delegator?.delegatorPrivateKey !== undefined;
+        !delegatorIsUndefined && delegator?.gasPayerPrivateKey !== undefined;
 
     return {
         /**
@@ -143,7 +143,7 @@ const DelegationHandler = (
 
             return await _getDelegationSignature(
                 tx,
-                delegator?.delegatorUrl,
+                delegator?.gasPayerServiceUrl,
                 originAddress,
                 httpClient
             );

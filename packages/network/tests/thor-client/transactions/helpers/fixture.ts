@@ -9,15 +9,15 @@ const delegationHandlerFixture = [
         testName:
             'Should be able to use DelegationHandler with not empty delegator - delegatorUrl',
         delegator: {
-            delegatorUrl: 'http://localhost:8669'
+            gasPayerServiceUrl: 'http://localhost:8669'
         } satisfies SignTransactionOptions,
         expected: {
             isDelegated: true,
             delegatorOrUndefined: {
-                delegatorUrl: 'http://localhost:8669'
+                gasPayerServiceUrl: 'http://localhost:8669'
             } satisfies SignTransactionOptions,
             delegatorOrNull: {
-                delegatorUrl: 'http://localhost:8669'
+                gasPayerServiceUrl: 'http://localhost:8669'
             } satisfies SignTransactionOptions
         }
     },
@@ -26,17 +26,17 @@ const delegationHandlerFixture = [
         testName:
             'Should be able to use DelegationHandler with not empty delegator - delegatorPrivateKey',
         delegator: {
-            delegatorPrivateKey:
+            gasPayerPrivateKey:
                 '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
         } satisfies SignTransactionOptions,
         expected: {
             isDelegated: true,
             delegatorOrUndefined: {
-                delegatorPrivateKey:
+                gasPayerPrivateKey:
                     '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
             } satisfies SignTransactionOptions,
             delegatorOrNull: {
-                delegatorPrivateKey:
+                gasPayerPrivateKey:
                     '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
             } satisfies SignTransactionOptions
         }
@@ -46,17 +46,17 @@ const delegationHandlerFixture = [
         testName:
             'Should be able to use DelegationHandler with not empty delegator - delegatorPrivateKey',
         delegator: {
-            delegatorPrivateKey:
+            gasPayerPrivateKey:
                 '0x7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
         } satisfies SignTransactionOptions,
         expected: {
             isDelegated: true,
             delegatorOrUndefined: {
-                delegatorPrivateKey:
+                gasPayerPrivateKey:
                     '0x7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
             } satisfies SignTransactionOptions,
             delegatorOrNull: {
-                delegatorPrivateKey:
+                gasPayerPrivateKey:
                     '0x7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
             } satisfies SignTransactionOptions
         }

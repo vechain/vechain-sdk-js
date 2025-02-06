@@ -45,7 +45,7 @@ describe('ThorClient - ERC20 Contracts on testnet', () => {
                 ],
                 {
                     delegator: {
-                        delegatorUrl: TESTNET_DELEGATE_URL
+                        gasPayerServiceUrl: TESTNET_DELEGATE_URL
                     }
                 }
             ),

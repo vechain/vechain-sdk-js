@@ -121,7 +121,7 @@ describe('VeChain base signer tests - testnet', () => {
                     // Sign the transaction
                     const signedTransaction = await signer.signTransaction({
                         from: fixture.origin.address,
-                        delegationUrl: fixture.options.delegatorUrl
+                        delegationUrl: fixture.options.gasPayerServiceUrl
                     });
 
                     expect(signedTransaction).toBeDefined();

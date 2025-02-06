@@ -123,8 +123,8 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
     if (configFile.delegator !== undefined) {
         // Both delegator private key and url are given
         if (
-            configFile.delegator.delegatorPrivateKey !== undefined &&
-            configFile.delegator.delegatorUrl !== undefined
+            configFile.delegator.gasPayerPrivateKey !== undefined &&
+            configFile.delegator.gasPayerServiceUrl !== undefined
         ) {
             throw new InvalidConfigurationFile(
                 '_checkIfConfigurationFileHasCorrectStructure()',
@@ -137,10 +137,8 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
 
         // Invalid delegator private key
         if (
-            configFile.delegator.delegatorPrivateKey !== undefined &&
-            !isValidDelegatorPrivateKey(
-                configFile.delegator.delegatorPrivateKey
-            )
+            configFile.delegator.gasPayerPrivateKey !== undefined &&
+            !isValidDelegatorPrivateKey(configFile.delegator.gasPayerPrivateKey)
         ) {
             throw new InvalidConfigurationFile(
                 '_checkIfConfigurationFileHasCorrectStructure()',
@@ -153,8 +151,8 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
 
         // Invalid delegator url
         if (
-            configFile.delegator.delegatorUrl !== undefined &&
-            !isValidDelegatorUrl(configFile.delegator.delegatorUrl)
+            configFile.delegator.gasPayerServiceUrl !== undefined &&
+            !isValidDelegatorUrl(configFile.delegator.gasPayerServiceUrl)
         ) {
             throw new InvalidConfigurationFile(
                 '_checkIfConfigurationFileHasCorrectStructure()',

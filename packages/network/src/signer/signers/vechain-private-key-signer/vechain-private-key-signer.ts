@@ -101,7 +101,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         // Override the gasPayer if the transaction has a delegation URL
         if (transactionToSign.delegationUrl !== undefined) {
             gasPayer = {
-                delegatorUrl: transactionToSign.delegationUrl
+                gasPayerServiceUrl: transactionToSign.delegationUrl
             };
         }
 
@@ -215,11 +215,11 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         const unsignedTx = Transaction.of(unsignedTransactionBody);
 
         // Sign transaction with origin private key and gasPayer private key
-        if (gasPayerOptions?.delegatorPrivateKey !== undefined)
+        if (gasPayerOptions?.gasPayerPrivateKey !== undefined)
             return Hex.of(
                 Transaction.of(unsignedTransactionBody).signAsSenderAndGasPayer(
                     originPrivateKey,
-                    HexUInt.of(gasPayerOptions?.delegatorPrivateKey).bytes
+                    HexUInt.of(gasPayerOptions?.gasPayerPrivateKey).bytes
                 ).encoded
             ).toString();
 

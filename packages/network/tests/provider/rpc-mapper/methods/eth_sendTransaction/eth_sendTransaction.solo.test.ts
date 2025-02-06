@@ -56,7 +56,7 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
         providerWithDelegator = new VeChainProvider(
             thorClient,
             THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR({
-                delegatorPrivateKey: delegatorPrivateKeyFixture
+                gasPayerPrivateKey: delegatorPrivateKeyFixture
             }),
             true
         );

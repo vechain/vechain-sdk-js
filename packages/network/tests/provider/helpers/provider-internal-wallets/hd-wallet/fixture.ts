@@ -12,7 +12,7 @@ const hdNodeFixtures = [
         count: 5,
         initialIndex: 0,
         delegator: {
-            delegatorPrivateKey:
+            gasPayerPrivateKey:
                 '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
         } satisfies SignTransactionOptions,
         expectedAddress: [
@@ -29,7 +29,7 @@ const hdNodeFixtures = [
         count: 1,
         initialIndex: 6,
         delegator: {
-            delegatorUrl: 'https://sponsor-testnet.vechain.energy/by/269'
+            gasPayerServiceUrl: 'https://sponsor-testnet.vechain.energy/by/269'
         } satisfies SignTransactionOptions,
         expectedAddress: ['0x8ef651aC457C9bf5206EC3D2cbD4232Df0438607']
     },
