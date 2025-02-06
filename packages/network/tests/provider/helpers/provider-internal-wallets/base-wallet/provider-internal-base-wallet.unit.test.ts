@@ -167,7 +167,7 @@ describe('Base wallet tests', () => {
          */
         test('Should be able to get the gasPayer', async () => {
             // Initialize gasPayer
-            const delegators: SignTransactionOptions[] = [
+            const gasPayers: SignTransactionOptions[] = [
                 {
                     gasPayerPrivateKey: Hex.of(Secp256k1.generatePrivateKey())
                         .digits
@@ -178,27 +178,27 @@ describe('Base wallet tests', () => {
                 }
             ];
 
-            for (const delegator of delegators) {
+            for (const gasPayer of gasPayers) {
                 // Initialize a wallet with the accounts and gasPayer
-                const baseWalletWithDelegator = new ProviderInternalBaseWallet(
+                const baseWalletWithGasPayer = new ProviderInternalBaseWallet(
                     accountsFixture,
                     {
-                        gasPayer: delegator
+                        gasPayer: gasPayer
                     }
                 );
 
                 // Get the gasPayer from the wallet
-                const currentDelegator =
-                    await baseWalletWithDelegator.getGasPayer();
-                expect(currentDelegator).toEqual(delegator);
+                const currentGasPayer =
+                    await baseWalletWithGasPayer.getGasPayer();
+                expect(currentGasPayer).toEqual(gasPayer);
 
                 // Get the gasPayer from the wallet synchronously
-                const currentDelegatorSync =
-                    baseWalletWithDelegator.getGasPayerSync();
-                expect(currentDelegatorSync).toEqual(delegator);
+                const currentGasPayerSync =
+                    baseWalletWithGasPayer.getGasPayerSync();
+                expect(currentGasPayerSync).toEqual(gasPayer);
 
                 // Expect the gasPayer to be the same
-                expect(currentDelegator).toEqual(currentDelegatorSync);
+                expect(currentGasPayer).toEqual(currentGasPayerSync);
             }
         });
 
@@ -207,14 +207,14 @@ describe('Base wallet tests', () => {
          */
         test('Should get null if gasPayer is not set', async () => {
             // Initialize a wallet with the accounts
-            const baseWalletWithoutDelegator = new ProviderInternalBaseWallet(
+            const baseWalletWithoutGasPayer = new ProviderInternalBaseWallet(
                 accountsFixture
             );
 
             // Get the gasPayer from the wallet that has no gasPayer
-            const delegator = await baseWalletWithoutDelegator.getGasPayer();
+            const gasPayer = await baseWalletWithoutGasPayer.getGasPayer();
 
-            expect(delegator).toBeNull();
+            expect(gasPayer).toBeNull();
         });
     });
 });
