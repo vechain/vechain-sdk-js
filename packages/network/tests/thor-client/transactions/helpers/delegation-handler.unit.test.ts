@@ -19,15 +19,15 @@ describe('Tests of DelegationHandler helper function', () => {
      * - It's a method that uses the network.
      * - It's already tested in the integration tests of transactions-module.
      */
-    delegationHandlerFixture.forEach(({ testName, delegator, expected }) => {
+    delegationHandlerFixture.forEach(({ testName, gasPayer, expected }) => {
         test(testName, () => {
-            const delegationHandler = DelegationHandler(delegator);
+            const delegationHandler = DelegationHandler(gasPayer);
             expect(delegationHandler.isDelegated()).toBe(expected.isDelegated);
             expect(delegationHandler.gasPayerOrUndefined()).toEqual(
-                expected.delegatorOrUndefined
+                expected.gasPayerOrUndefined
             );
             expect(delegationHandler.gasPayerOrNull()).toEqual(
-                expected.delegatorOrNull
+                expected.gasPayerOrNull
             );
         });
     });

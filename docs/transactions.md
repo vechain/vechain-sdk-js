@@ -485,7 +485,7 @@ const providerWithDelegationEnabled = new VeChainProvider(
         ],
         {
             // The term `gasPayer` will be deprecated soon and renamed `gasPayer`.
-            delegator: {
+            gasPayer: {
                 delegatorPrivateKey: gasPayerAccount.privateKey
             }
         }
@@ -591,7 +591,7 @@ const providerWithDelegationEnabled = new VeChainProvider(
         ],
         {
             // The term `gasPayer` will be deprecated soon and renamed `gasPayer`.
-            delegator: {
+            gasPayer: {
                 delegatorUrl: gasPayerAccount.URL
             }
         }

@@ -8,15 +8,15 @@ const delegationHandlerFixture = [
     {
         testName:
             'Should be able to use DelegationHandler with not empty gasPayer - gasPayerServiceUrl',
-        delegator: {
+        gasPayer: {
             gasPayerServiceUrl: 'http://localhost:8669'
         } satisfies SignTransactionOptions,
         expected: {
             isDelegated: true,
-            delegatorOrUndefined: {
+            gasPayerOrUndefined: {
                 gasPayerServiceUrl: 'http://localhost:8669'
             } satisfies SignTransactionOptions,
-            delegatorOrNull: {
+            gasPayerOrNull: {
                 gasPayerServiceUrl: 'http://localhost:8669'
             } satisfies SignTransactionOptions
         }
@@ -25,17 +25,17 @@ const delegationHandlerFixture = [
     {
         testName:
             'Should be able to use DelegationHandler with not empty gasPayer - gasPayerPrivateKey',
-        delegator: {
+        gasPayer: {
             gasPayerPrivateKey:
                 '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
         } satisfies SignTransactionOptions,
         expected: {
             isDelegated: true,
-            delegatorOrUndefined: {
+            gasPayerOrUndefined: {
                 gasPayerPrivateKey:
                     '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
             } satisfies SignTransactionOptions,
-            delegatorOrNull: {
+            gasPayerOrNull: {
                 gasPayerPrivateKey:
                     '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
             } satisfies SignTransactionOptions
@@ -45,17 +45,17 @@ const delegationHandlerFixture = [
     {
         testName:
             'Should be able to use DelegationHandler with not empty gasPayer - gasPayerPrivateKey',
-        delegator: {
+        gasPayer: {
             gasPayerPrivateKey:
                 '0x7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
         } satisfies SignTransactionOptions,
         expected: {
             isDelegated: true,
-            delegatorOrUndefined: {
+            gasPayerOrUndefined: {
                 gasPayerPrivateKey:
                     '0x7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
             } satisfies SignTransactionOptions,
-            delegatorOrNull: {
+            gasPayerOrNull: {
                 gasPayerPrivateKey:
                     '0x7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
             } satisfies SignTransactionOptions
@@ -67,19 +67,19 @@ const delegationHandlerFixture = [
             'Should be able to use DelegationHandler with empty gasPayer - undefined',
         expected: {
             isDelegated: false,
-            delegatorOrUndefined: undefined,
-            delegatorOrNull: null
+            gasPayerOrUndefined: undefined,
+            gasPayerOrNull: null
         }
     },
     // Empty gasPayer - null
     {
         testName:
             'Should be able to use DelegationHandler with empty gasPayer - null',
-        delegator: null,
+        gasPayer: null,
         expected: {
             isDelegated: false,
-            delegatorOrUndefined: undefined,
-            delegatorOrNull: null
+            gasPayerOrUndefined: undefined,
+            gasPayerOrNull: null
         }
     }
 ];

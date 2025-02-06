@@ -210,7 +210,7 @@ const provider = new VeChainProvider(
     thorSoloClient,
     new ProviderInternalBaseWallet([deployerAccount], {
         // The term `gasPayer` will be deprecated soon and renamed `gasPayer`.
-        delegator: {
+        gasPayer: {
             delegatorPrivateKey: gasPayerAccount.privateKey
         }
     }),
