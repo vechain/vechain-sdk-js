@@ -10,7 +10,7 @@ import {
     THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_GAS_PAYER
 } from '../../../../fixture';
 import {
-    delegatorPrivateKeyFixture,
+    gasPayerPrivateKeyFixture,
     THOR_SOLO_ACCOUNTS_ETH_SEND_TRANSACTION_FIXTURE
 } from '../eth_sendTransaction/fixture';
 import { Hex } from '@vechain/sdk-core';
@@ -56,7 +56,7 @@ describe('RPC Mapper - eth_signTransaction method tests', () => {
         providerWithDelegator = new VeChainProvider(
             thorClient,
             THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_GAS_PAYER({
-                gasPayerPrivateKey: delegatorPrivateKeyFixture
+                gasPayerPrivateKey: gasPayerPrivateKeyFixture
             }),
             true
         );

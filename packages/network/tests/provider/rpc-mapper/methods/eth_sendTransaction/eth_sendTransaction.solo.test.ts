@@ -12,7 +12,7 @@ import {
     VeChainProvider
 } from '../../../../../src';
 import {
-    delegatorPrivateKeyFixture,
+    gasPayerPrivateKeyFixture,
     THOR_SOLO_ACCOUNTS_ETH_SEND_TRANSACTION_FIXTURE
 } from './fixture';
 import {
@@ -36,7 +36,7 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
      * Provider instance
      */
     let provider: VeChainProvider;
-    let providerWithDelegator: VeChainProvider;
+    let providerWithgasPayer: VeChainProvider;
 
     /**
      * Init thor client before each test
@@ -53,10 +53,10 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
 
         // Init provider with gasPayer
         // @NOTE due to the fact we are testing on thor-solo, we can delegate ONLY with a private key!
-        providerWithDelegator = new VeChainProvider(
+        providerWithgasPayer = new VeChainProvider(
             thorClient,
             THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_GAS_PAYER({
-                gasPayerPrivateKey: delegatorPrivateKeyFixture
+                gasPayerPrivateKey: gasPayerPrivateKeyFixture
             }),
             true
         );
@@ -74,7 +74,7 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
                 test(`eth_sendTransaction - Should be able to send a transaction with value ${value} - ${delegated ? 'delegated case' : 'not delegated case'}`, async () => {
                     // Get the provider to use depending on delegated or not
                     const providerToUse = delegated
-                        ? providerWithDelegator
+                        ? providerWithgasPayer
                         : provider;
 
                     // Get the balance of the sender and the receiver before sending the transaction
