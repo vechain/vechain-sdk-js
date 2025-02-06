@@ -183,7 +183,7 @@ describe('Base wallet tests', () => {
                 const baseWalletWithDelegator = new ProviderInternalBaseWallet(
                     accountsFixture,
                     {
-                        delegator
+                        gasPayer: delegator
                     }
                 );
 

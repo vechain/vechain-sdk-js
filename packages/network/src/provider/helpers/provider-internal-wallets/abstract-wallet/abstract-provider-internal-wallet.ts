@@ -39,11 +39,11 @@ abstract class AbstractProviderInternalWallet
     constructor(
         accounts: ProviderInternalWalletAccount[],
         options?: {
-            delegator?: SignTransactionOptions;
+            gasPayer?: SignTransactionOptions;
         }
     ) {
         this.accounts = accounts;
-        this.gasPayer = options?.delegator;
+        this.gasPayer = options?.gasPayer;
     }
 
     /**

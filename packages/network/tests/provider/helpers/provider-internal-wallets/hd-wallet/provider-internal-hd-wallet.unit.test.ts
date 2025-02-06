@@ -29,7 +29,7 @@ describe('ProviderInternalHDWallet wallet tests', () => {
                     hdNodeFixture.count,
                     hdNodeFixture.initialIndex,
                     hdNodeFixture.path,
-                    { delegator: hdNodeFixture.delegator }
+                    { gasPayer: hdNodeFixture.delegator }
                 );
 
                 const addresses = await hdWallet.getAddresses();

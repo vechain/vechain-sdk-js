@@ -173,7 +173,7 @@ describe('VeChain base signer tests - testnet', () => {
                             new VeChainProvider(
                                 thorClient,
                                 new ProviderInternalBaseWallet([], {
-                                    delegator: options
+                                    gasPayer: options
                                 }),
                                 isDelegated
                             )

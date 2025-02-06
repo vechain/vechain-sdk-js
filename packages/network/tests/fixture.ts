@@ -57,7 +57,7 @@ const THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR = (
             address: account.address
         })),
         {
-            delegator
+            gasPayer: delegator
         }
     );
 
