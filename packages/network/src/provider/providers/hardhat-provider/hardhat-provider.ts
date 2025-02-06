@@ -141,7 +141,7 @@ class HardhatVeChainProvider extends VeChainProvider {
                 ).getAddresses();
                 const delegator = await (
                     this.wallet as ProviderInternalWallet
-                ).getDelegator();
+                ).getGasPayer();
 
                 VeChainSDKLogger('log').log({
                     title: `Sending request - ${args.method}`,

@@ -189,12 +189,12 @@ describe('Base wallet tests', () => {
 
                 // Get the gasPayer from the wallet
                 const currentDelegator =
-                    await baseWalletWithDelegator.getDelegator();
+                    await baseWalletWithDelegator.getGasPayer();
                 expect(currentDelegator).toEqual(delegator);
 
                 // Get the gasPayer from the wallet synchronously
                 const currentDelegatorSync =
-                    baseWalletWithDelegator.getDelegatorSync();
+                    baseWalletWithDelegator.getGasPayerSync();
                 expect(currentDelegatorSync).toEqual(delegator);
 
                 // Expect the gasPayer to be the same
@@ -212,7 +212,7 @@ describe('Base wallet tests', () => {
             );
 
             // Get the gasPayer from the wallet that has no gasPayer
-            const delegator = await baseWalletWithoutDelegator.getDelegator();
+            const delegator = await baseWalletWithoutDelegator.getGasPayer();
 
             expect(delegator).toBeNull();
         });

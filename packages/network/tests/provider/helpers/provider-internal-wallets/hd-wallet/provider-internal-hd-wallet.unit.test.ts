@@ -33,7 +33,7 @@ describe('ProviderInternalHDWallet wallet tests', () => {
                 );
 
                 const addresses = await hdWallet.getAddresses();
-                const delegator = await hdWallet.getDelegator();
+                const delegator = await hdWallet.getGasPayer();
 
                 expect(addresses).toEqual(hdNodeFixture.expectedAddress);
                 expect(delegator).toEqual(

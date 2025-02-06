@@ -95,7 +95,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         }
 
         let gasPayer = DelegationHandler(
-            await this.provider.wallet?.getDelegator()
+            await this.provider.wallet?.getGasPayer()
         ).delegatorOrNull();
 
         // Override the gasPayer if the transaction has a delegation URL

@@ -28,7 +28,7 @@ abstract class AbstractProviderInternalWallet
     /**
      * Options for signing a transaction with gasPayer.
      */
-    readonly delegator?: SignTransactionOptions;
+    readonly gasPayer?: SignTransactionOptions;
 
     /**
      * Create a new wallet.
@@ -43,7 +43,7 @@ abstract class AbstractProviderInternalWallet
         }
     ) {
         this.accounts = accounts;
-        this.delegator = options?.delegator;
+        this.gasPayer = options?.delegator;
     }
 
     /**
@@ -158,7 +158,7 @@ abstract class AbstractProviderInternalWallet
      *
      * @returns The options for signing a transaction with gasPayer.
      */
-    abstract getDelegator(): Promise<SignTransactionOptions | null>;
+    abstract getGasPayer(): Promise<SignTransactionOptions | null>;
 
     /**
      * SYNC Version of getGasPayer()
@@ -167,8 +167,8 @@ abstract class AbstractProviderInternalWallet
      *
      * @returns The options for signing a transaction with gasPayer.
      */
-    getDelegatorSync(): SignTransactionOptions | null {
-        return DelegationHandler(this.delegator).delegatorOrNull();
+    getGasPayerSync(): SignTransactionOptions | null {
+        return DelegationHandler(this.gasPayer).delegatorOrNull();
     }
 }
 
