@@ -43,7 +43,7 @@ const THOR_SOLO_ACCOUNTS_BASE_WALLET: ProviderInternalBaseWallet =
     );
 
 /**
- * Test accounts into wallet fixture with delegator
+ * Test accounts into wallet fixture with gasPayer
  */
 const THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR = (
     delegator: SignTransactionOptions

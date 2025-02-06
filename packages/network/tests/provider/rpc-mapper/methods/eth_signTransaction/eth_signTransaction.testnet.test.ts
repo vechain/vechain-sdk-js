@@ -50,7 +50,7 @@ describe('RPC Mapper - eth_signTransaction method tests', () => {
             THOR_SOLO_ACCOUNTS_BASE_WALLET
         );
 
-        // Init provider with delegator
+        // Init provider with gasPayer
         // @NOTE due to the fact we are testing on thor-solo, we can delegate ONLY with a private key!
         // @NOTE: Since we are testing the signature, we can use SOLO accounts with testnet!
         providerWithDelegator = new VeChainProvider(
@@ -73,7 +73,7 @@ describe('RPC Mapper - eth_signTransaction method tests', () => {
         test(
             'Should be able to sign transactions',
             async () => {
-                // Sign with the delegator OR not
+                // Sign with the gasPayer OR not
                 for (const delegated of [true, false]) {
                     // Value field of the transaction objects to sign
                     for (const value of ['0x111', '0x222', '0x333']) {

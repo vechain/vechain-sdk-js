@@ -4,7 +4,7 @@ import { type SignTransactionOptions } from '../../../../src';
  * Fixtures for delegation handler
  */
 const delegationHandlerFixture = [
-    // NOT Empty delegator - delegatorUrl
+    // NOT Empty gasPayer - gasPayerServiceUrl
     {
         testName:
             'Should be able to use DelegationHandler with not empty delegator - delegatorUrl',
@@ -21,7 +21,7 @@ const delegationHandlerFixture = [
             } satisfies SignTransactionOptions
         }
     },
-    // NOT Empty delegator - delegatorPrivateKey
+    // NOT Empty gasPayer - gasPayerPrivateKey
     {
         testName:
             'Should be able to use DelegationHandler with not empty delegator - delegatorPrivateKey',
@@ -41,7 +41,7 @@ const delegationHandlerFixture = [
             } satisfies SignTransactionOptions
         }
     },
-    // NOT Empty delegator - delegatorPrivateKey (with 0x in front of the private key)
+    // NOT Empty gasPayer - gasPayerPrivateKey (with 0x in front of the private key)
     {
         testName:
             'Should be able to use DelegationHandler with not empty delegator - delegatorPrivateKey',
@@ -61,7 +61,7 @@ const delegationHandlerFixture = [
             } satisfies SignTransactionOptions
         }
     },
-    // Empty delegator - undefined
+    // Empty gasPayer - undefined
     {
         testName:
             'Should be able to use DelegationHandler with empty delegator - undefined',
@@ -71,7 +71,7 @@ const delegationHandlerFixture = [
             delegatorOrNull: null
         }
     },
-    // Empty delegator - null
+    // Empty gasPayer - null
     {
         testName:
             'Should be able to use DelegationHandler with empty delegator - null',

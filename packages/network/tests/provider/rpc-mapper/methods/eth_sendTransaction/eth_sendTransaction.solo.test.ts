@@ -51,7 +51,7 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
             THOR_SOLO_ACCOUNTS_BASE_WALLET
         );
 
-        // Init provider with delegator
+        // Init provider with gasPayer
         // @NOTE due to the fact we are testing on thor-solo, we can delegate ONLY with a private key!
         providerWithDelegator = new VeChainProvider(
             thorClient,

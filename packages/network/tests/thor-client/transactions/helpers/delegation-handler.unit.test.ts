@@ -37,7 +37,7 @@ describe('Tests of DelegationHandler helper function', () => {
      */
     describe('Negative tests cases', () => {
         /**
-         *Should throw an error when get delegatorUrl if delegator url is not provided.
+         *Should throw an error when get gasPayerServiceUrl if delegator url is not provided.
          */
         test('Should throw an error when get delegatorUrl if delegator url is not provided', async () => {
             await expect(async () => {

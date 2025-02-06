@@ -52,7 +52,7 @@ interface TestCaseTypedData {
 
 /**
  * SignTransaction test cases
- * Has both correct and incorrect for solo and an example of using delegatorUrl on testnet
+ * Has both correct and incorrect for solo and an example of using gasPayerServiceUrl on testnet
  */
 const signTransactionTestCases = {
     solo: {

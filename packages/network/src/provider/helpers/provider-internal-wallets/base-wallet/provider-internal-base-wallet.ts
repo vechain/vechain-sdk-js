@@ -52,9 +52,9 @@ class ProviderInternalBaseWallet extends AbstractProviderInternalWallet {
     }
 
     /**
-     * Get the options for signing a transaction with delegator (if any).
+     * Get the options for signing a transaction with gasPayer (if any).
      *
-     * @returns The options for signing a transaction with delegator.
+     * @returns The options for signing a transaction with gasPayer.
      */
     async getDelegator(): Promise<SignTransactionOptions | null> {
         return await Promise.resolve(this.getDelegatorSync());

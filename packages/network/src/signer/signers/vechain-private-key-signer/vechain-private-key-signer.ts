@@ -193,13 +193,13 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
     }
 
     /**
-     * Signs a transaction where the gas fee is paid by a delegator.
+     * Signs a transaction where the gas fee is paid by a gasPayer.
      *
      * @param unsignedTransactionBody - The unsigned transaction body to sign.
      * @param originPrivateKey - The private key of the origin account.
      * @param thorClient - The ThorClient instance.
-     * @param gasPayerOptions - Optional parameters for the request. Includes the `delegatorUrl` and `delegatorPrivateKey` fields.
-     *                  Only one of the following options can be specified: `delegatorUrl`, `delegatorPrivateKey`.
+     * @param gasPayerOptions - Optional parameters for the request. Includes the `gasPayerServiceUrl` and `gasPayerPrivateKey` fields.
+     *                  Only one of the following options can be specified: `gasPayerServiceUrl`, `gasPayerPrivateKey`.
      * @returns A promise that resolves to the signed transaction.
      * @throws {NotDelegatedTransaction}
      */
