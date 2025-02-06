@@ -178,6 +178,12 @@ classDiagram
         +FixedPointNumber parseEther(string: ether)$
         +FixedPointNumber parseUnit(string exp, Unit unit)$
     }
+    class NetAddr {
+        +Uint8Array ipAddress
+        +number port
+        +NetAddr of(string exp)
+        +string toString() 
+    }
     class VeChainDataModel {
         <<interface>>
         +bigint bi
@@ -229,4 +235,5 @@ classDiagram
     VeChainDataModel <|.. Hex
     VeChainDataModel <|.. RLP
     VeChainDataModel <|.. Txt
+    VeChainDataModel <|.. NetAddr
 ```

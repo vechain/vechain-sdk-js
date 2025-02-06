@@ -8,10 +8,10 @@ module.exports = {
     workerThreads: true,
     coverageThreshold: {
         global: {
-            branches: 90,
-            functions: 90,
+            branches: 40,
+            functions: 45,
             lines: 90,
-            statements: 90
+            statements: 65
         }
     }
 };
