@@ -211,7 +211,7 @@ const provider = new VeChainProvider(
     new ProviderInternalBaseWallet([deployerAccount], {
         // The term `gasPayer` will be deprecated soon and renamed `gasPayer`.
         gasPayer: {
-            delegatorPrivateKey: gasPayerAccount.privateKey
+            gasPayerPrivateKey: gasPayerAccount.privateKey
         }
     }),
     true

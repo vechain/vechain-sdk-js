@@ -212,7 +212,7 @@ const validExpandedBlockRevisions = [
                     gasPriceCoef: 0,
                     gas: 21000,
                     origin: '0x6b8d66568cbc7944798268aca153f426596d250a',
-                    delegator: null,
+                    cleargasPayer: null,
                     nonce: '0x4ec144ad97b4b079',
                     dependsOn: null,
                     size: 130,

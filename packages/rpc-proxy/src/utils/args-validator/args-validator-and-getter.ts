@@ -167,7 +167,7 @@ const ArgsValidatorAndGetter = {
         ) {
             return {
                 ...currentConfiguration,
-                gasPayer: {
+                delegator: {
                     gasPayerPrivateKey: ArgsValidator.delegatorPrivateKey(
                         options.delegatorPrivateKey as string
                     )
@@ -182,7 +182,7 @@ const ArgsValidatorAndGetter = {
         ) {
             return {
                 ...currentConfiguration,
-                gasPayer: {
+                delegator: {
                     gasPayerServiceUrl: ArgsValidator.delegatorUrl(
                         options.delegatorUrl as string
                     )
