@@ -243,7 +243,7 @@ interface TransactionDetailRaw {
 type TransactionDetailNoRaw = TransactionBody & {
     id: string;
     origin: string;
-    delegator: string | null;
+    gasPayer: string | null;
     size: number;
     meta: TransactionMetadata;
 };
