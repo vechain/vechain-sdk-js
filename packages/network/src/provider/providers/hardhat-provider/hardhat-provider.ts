@@ -139,7 +139,7 @@ class HardhatVeChainProvider extends VeChainProvider {
                 const accounts = await (
                     this.wallet as ProviderInternalWallet
                 ).getAddresses();
-                const delegator = await (
+                const gasPayer = await (
                     this.wallet as ProviderInternalWallet
                 ).getGasPayer();
 
@@ -148,7 +148,7 @@ class HardhatVeChainProvider extends VeChainProvider {
                     messages: [
                         `params: ${stringifyData(args.params)}`,
                         `accounts: ${stringifyData(accounts)}`,
-                        `gasPayer: ${stringifyData(delegator)}`,
+                        `gasPayer: ${stringifyData(gasPayer)}`,
                         `url: ${this.thorClient.httpClient.baseURL}`
                     ]
                 });
