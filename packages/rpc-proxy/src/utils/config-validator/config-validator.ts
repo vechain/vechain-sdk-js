@@ -152,7 +152,7 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
         // Invalid gasPayer url
         if (
             configFile.gasPayer.gasPayerServiceUrl !== undefined &&
-            !isValidDelegatorUrl(configFile.gasPayer.gasPayerServiceUrl)
+            !isValidGasPayerUrl(configFile.gasPayer.gasPayerServiceUrl)
         ) {
             throw new InvalidConfigurationFile(
                 '_checkIfConfigurationFileHasCorrectStructure()',
