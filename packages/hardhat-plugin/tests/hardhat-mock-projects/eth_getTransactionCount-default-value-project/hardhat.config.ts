@@ -29,7 +29,8 @@ const vechainTestNetwork: HttpNetworkConfig = {
     },
 
     // Custom parameters
-    delegator: { // TO BE RENAMED WHEN BNC REFACTORING DONE.
+    delegator: {
+        // TO BE RENAMED WHEN BNC REFACTORING DONE.
         gasPayerPrivateKey:
             'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5'
     },
