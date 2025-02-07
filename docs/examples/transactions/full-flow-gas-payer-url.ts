@@ -54,9 +54,8 @@ const providerWithDelegationEnabled = new VeChainProvider(
             }
         ],
         {
-            // The term `gasPayer` will be deprecated soon and renamed `gasPayer`.
-            delegator: {
-                delegatorUrl: gasPayerAccount.URL
+            gasPayer: {
+                gasPayerServiceUrl: gasPayerAccount.URL
             }
         }
     ),
