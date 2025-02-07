@@ -70,7 +70,7 @@ function startProxy(): void {
                   };
               }),
               {
-                  gasPayer: config.delegator
+                  gasPayer: config.gasPayer
               }
           )
         : new ProviderInternalHDWallet(
@@ -78,7 +78,7 @@ function startProxy(): void {
               config.accounts.count,
               config.accounts.initialIndex,
               HDKey.VET_DERIVATION_PATH,
-              { gasPayer: config.delegator }
+              { gasPayer: config.gasPayer }
           );
     const provider = new VeChainProvider(
         thorClient,

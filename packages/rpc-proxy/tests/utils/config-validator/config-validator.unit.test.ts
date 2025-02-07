@@ -28,6 +28,7 @@ describe('Configuration file validator', () => {
          */
         test('Should be able to parse valid configuration files', () => {
             correctConfigurationFilePathFixture.forEach((filePath) => {
+                console.log(filePath);
                 expect(() => {
                     checkValidConfigurationFile(filePath);
                 }).not.toThrow();
@@ -127,7 +128,7 @@ describe('Configuration file validator', () => {
                     console.log(filePath);
                     expect(() => {
                         checkValidConfigurationFile(filePath);
-                    }).toThrow(); // .toThrow(InvalidConfigurationFile);
+                    }).toThrow();
                 });
             });
 

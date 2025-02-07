@@ -120,11 +120,11 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
     }
 
     // Check the gasPayer
-    if (configFile.delegator !== undefined) {
+    if (configFile.gasPayer !== undefined) {
         // Both gasPayer private key and url are given
         if (
-            configFile.delegator.gasPayerPrivateKey !== undefined &&
-            configFile.delegator.gasPayerServiceUrl !== undefined
+            configFile.gasPayer.gasPayerPrivateKey !== undefined &&
+            configFile.gasPayer.gasPayerServiceUrl !== undefined
         ) {
             throw new InvalidConfigurationFile(
                 '_checkIfConfigurationFileHasCorrectStructure()',
@@ -137,8 +137,8 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
 
         // Invalid gasPayer private key
         if (
-            configFile.delegator.gasPayerPrivateKey !== undefined &&
-            !isValidDelegatorPrivateKey(configFile.delegator.gasPayerPrivateKey)
+            configFile.gasPayer.gasPayerPrivateKey !== undefined &&
+            !isValidDelegatorPrivateKey(configFile.gasPayer.gasPayerPrivateKey)
         ) {
             throw new InvalidConfigurationFile(
                 '_checkIfConfigurationFileHasCorrectStructure()',
@@ -151,8 +151,8 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
 
         // Invalid gasPayer url
         if (
-            configFile.delegator.gasPayerServiceUrl !== undefined &&
-            !isValidDelegatorUrl(configFile.delegator.gasPayerServiceUrl)
+            configFile.gasPayer.gasPayerServiceUrl !== undefined &&
+            !isValidDelegatorUrl(configFile.gasPayer.gasPayerServiceUrl)
         ) {
             throw new InvalidConfigurationFile(
                 '_checkIfConfigurationFileHasCorrectStructure()',
@@ -197,7 +197,7 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
     // Delegation cannot be enabled without a gasPayer
     if (
         (configFile.enableDelegation as boolean) &&
-        configFile.delegator === undefined
+        configFile.gasPayer === undefined
     ) {
         throw new InvalidConfigurationFile(
             '_checkIfConfigurationFileHasCorrectStructure()',

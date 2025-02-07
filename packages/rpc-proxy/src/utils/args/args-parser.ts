@@ -82,7 +82,7 @@ function parseAndGetFinalConfig(
         // Delegation cannot be enabled without a gasPayer
         if (
             (configuration.enableDelegation as boolean) &&
-            configuration.delegator === undefined
+            configuration.gasPayer === undefined
         ) {
             throw new InvalidCommandLineArguments(
                 '_checkIfConfigurationFileHasCorrectStructure()',

@@ -4,11 +4,11 @@ import {
     getOptionsFromCommandLine,
     parseAndGetFinalConfig
 } from '../../../src/utils';
-import { correctConfigurationFilePathFixture } from '../../fixture';
 import {
     InvalidCommandLineArguments,
     InvalidConfigurationFilePath
 } from '@vechain/sdk-errors';
+import { correctConfigurationFilePathFixture } from '../../fixture';
 
 /**
  * Args options tests
