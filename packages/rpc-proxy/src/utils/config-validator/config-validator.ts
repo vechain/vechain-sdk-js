@@ -138,7 +138,7 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
         // Invalid gasPayer private key
         if (
             configFile.gasPayer.gasPayerPrivateKey !== undefined &&
-            !isValidGasPayerPrivateKey(configFile.gasPayer.gasPayerPrivateKey)
+            !isValidDelegatorPrivateKey(configFile.gasPayer.gasPayerPrivateKey)
         ) {
             throw new InvalidConfigurationFile(
                 '_checkIfConfigurationFileHasCorrectStructure()',
@@ -152,7 +152,7 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
         // Invalid gasPayer url
         if (
             configFile.gasPayer.gasPayerServiceUrl !== undefined &&
-            !isValidGasPayerUrl(configFile.gasPayer.gasPayerServiceUrl)
+            !isValidDelegatorUrl(configFile.gasPayer.gasPayerServiceUrl)
         ) {
             throw new InvalidConfigurationFile(
                 '_checkIfConfigurationFileHasCorrectStructure()',
@@ -201,7 +201,7 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
     ) {
         throw new InvalidConfigurationFile(
             '_checkIfConfigurationFileHasCorrectStructure()',
-            `Invalid configuration file: ${absolutePath}. Delegator configuration must be removed when enableDelegation is false`,
+            `Invalid configuration file: ${absolutePath}. The gasPayer configuration must be removed when enableDelegation is false`,
             {
                 filePath
             }
