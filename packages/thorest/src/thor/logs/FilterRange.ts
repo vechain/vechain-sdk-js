@@ -1,6 +1,9 @@
 import { UInt } from '@vechain/sdk-core';
 
 class FilterRange {
+    /**
+        Defaults to 'block' at the API level if not set
+    **/
     readonly unit?: FilterRangeUnits;
     readonly from?: UInt;
     readonly to?: UInt;
