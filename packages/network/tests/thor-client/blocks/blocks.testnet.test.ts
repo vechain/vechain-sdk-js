@@ -226,36 +226,36 @@ describe('ThorClient - Blocks Module', () => {
         /**
          * getBlockCompressed tests with invalid revision block number or block id
          */
-        // invalidBlockRevisions.forEach(
-        //     ({ description, revision, expectedError }) => {
-        //         test(
-        //             description,
-        //             async () => {
-        //                 await expect(
-        //                     thorClient.blocks.getBlockCompressed(revision)
-        //                 ).rejects.toThrowError(expectedError);
-        //             },
-        //             5000
-        //         );
-        //     }
-        // );
+        invalidBlockRevisions.forEach(
+            ({ description, revision, expectedError }) => {
+                test(
+                    description,
+                    async () => {
+                        await expect(
+                            thorClient.blocks.getBlockCompressed(revision)
+                        ).rejects.toThrowError(expectedError);
+                    },
+                    5000
+                );
+            }
+        );
 
         /**
          * getBlockCompressed tests with invalid revision block number or block id
          */
-        // invalidBlockRevisions.forEach(
-        //     ({ description, revision, expectedError }) => {
-        //         test(
-        //             description,
-        //             async () => {
-        //                 await expect(
-        //                     thorClient.blocks.getBlockExpanded(revision)
-        //                 ).rejects.toThrowError(expectedError);
-        //             },
-        //             5000
-        //         );
-        //     }
-        // );
+        invalidBlockRevisions.forEach(
+            ({ description, revision, expectedError }) => {
+                test(
+                    description,
+                    async () => {
+                        await expect(
+                            thorClient.blocks.getBlockExpanded(revision)
+                        ).rejects.toThrowError(expectedError);
+                    },
+                    5000
+                );
+            }
+        );
 
         /**
          * getBestBlockCompressed test

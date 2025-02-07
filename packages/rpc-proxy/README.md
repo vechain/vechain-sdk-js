@@ -88,8 +88,8 @@ So you can run the rpc-proxy with:
 #### Use delegation
 
 - `-e, --enableDelegation`: Whether to enable delegation.
-- `--delegatorPrivateKey <delegatorPrivateKey>`: The private key of the gasPayer.
-- `-d, --delegatorUrl <delegatorUrl>`: The URL of the gasPayer.
+- `--delegatorPrivateKey <delegatorPrivateKey>`: The private key of the delegator.
+- `-d, --delegatorUrl <delegatorUrl>`: The URL of the delegator.
     - -e.g.- `npx rpc-proxy -e --delegatorPrivateKey 8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158`
       OR `npx rpc-proxy --enableDelegation --delegatorPrivateKey 8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158`
     - -e.g.- `npx rpc-proxy -e -d https://sponsor-testnet.vechain.energy/by/...`

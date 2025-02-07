@@ -128,7 +128,7 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
         ) {
             throw new InvalidConfigurationFile(
                 '_checkIfConfigurationFileHasCorrectStructure()',
-                `Invalid delegator configuration in configuration file: ${absolutePath}. Delegator configuration must contain either a private key or a URL, not both`,
+                `Invalid gasPayer configuration in configuration file: ${absolutePath}. The gasPayer configuration must contain either a private key or a URL, not both`,
                 {
                     filePath
                 }
