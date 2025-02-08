@@ -15,7 +15,7 @@ import {
 } from '@vechain/sdk-network';
 import { expect } from 'expect';
 
-// START_SNIPPET: FullFlowDelegatorUrlSnippet
+// START_SNIPPET: FullFlowGasPayerServiceUrlSnippet
 
 // 1 - Create the thor client
 const thorClient = ThorClient.at(TESTNET_URL, {
@@ -118,7 +118,7 @@ const txReceipt = await thorClient.transactions.waitForTransaction(
     sendTransactionResult.id
 );
 
-// END_SNIPPET: FullFlowDelegatorUrlSnippet
+// END_SNIPPET: FullFlowGasPayerServiceUrlSnippet
 
 // Check the signed transaction
 expect(delegatedSigned.isSigned).toEqual(true);
