@@ -293,7 +293,7 @@ const ArgsValidator = {
                 'ArgsValidator.gasPayerServiceUrl()',
                 'Invalid gasPayer url provided. The parameter must be a valid url',
                 {
-                    flag: '-d , --gasPayerServiceUrl',
+                    flag: '-s , --gasPayerServiceUrl',
                     value: gasPayerServiceUrl
                 }
             );

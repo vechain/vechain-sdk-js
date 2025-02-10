@@ -244,7 +244,7 @@ describe('Args parser tests', () => {
                     'http://localhost:8080'
                 ],
                 // Short syntax
-                ['path', 'program', '-d', 'http://localhost:8080']
+                ['path', 'program', '-s', 'http://localhost:8080']
             ].forEach((args) => {
                 // Get options
                 const options = getOptionsFromCommandLine('1.0.0', args);
@@ -608,7 +608,7 @@ describe('Args parser tests', () => {
                     'program',
                     '--gasPayerPrivateKey',
                     '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
-                    '-d',
+                    '-s',
                     'http://localhost:8080'
                 ],
 
@@ -620,7 +620,7 @@ describe('Args parser tests', () => {
                 // Normal syntax
                 ['path', 'program', '--gasPayerServiceUrl', 'INVALID'],
                 // Short syntax
-                ['path', 'program', '-d', 'INVALID'],
+                ['path', 'program', '-s', 'INVALID'],
 
                 // Empty fields
 
@@ -630,7 +630,7 @@ describe('Args parser tests', () => {
                 // Normal syntax
                 ['path', 'program', '--gasPayerServiceUrl', ''],
                 // Short syntax
-                ['path', 'program', '-d', ''],
+                ['path', 'program', '-s', ''],
 
                 // Enable delegation without the gasPayer
 

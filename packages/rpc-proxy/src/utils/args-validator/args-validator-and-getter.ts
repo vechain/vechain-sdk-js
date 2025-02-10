@@ -154,7 +154,7 @@ const ArgsValidatorAndGetter = {
                 'ArgsValidatorAndGetter.delegation()',
                 'Both gasPayer private key and gasPayer service URL are provided. Only one can be provided',
                 {
-                    flag: '{--gasPayerPrivateKey}, {-d , --gasPayerServiceUrl}',
+                    flag: '{--gasPayerPrivateKey}, {-s , --gasPayerServiceUrl}',
                     value: `{value not provided for security reason} , {${options.gasPayerServiceUrl as string}}`
                 }
             );

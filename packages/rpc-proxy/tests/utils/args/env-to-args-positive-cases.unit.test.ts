@@ -52,7 +52,7 @@ describe('Environment variables to command line arguments positive cases', () =>
                 'true',
                 '--gasPayerPrivateKey',
                 '0x1234567890abcdef',
-                '-d',
+                '-s',
                 'http://localhost:8669',
                 '-v',
                 'true',

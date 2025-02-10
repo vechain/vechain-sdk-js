@@ -188,7 +188,7 @@ describe('Args options tests', () => {
                     'http://localhost:8080'
                 ],
                 // Short syntax
-                ['path', 'program', '-d', 'http://localhost:8080']
+                ['path', 'program', '-s', 'http://localhost:8080']
             ].forEach((args) => {
                 const gasPayerServiceUrlOption = getOptionsFromCommandLine(
                     '1.0.0',

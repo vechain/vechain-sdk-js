@@ -54,7 +54,7 @@ function getArgsFromEnv(): string[] {
             'GAS_PAYER_PRIVATE_KEY'
         ),
         getCliFieldFromEnv(
-            '-d',
+            '-s',
             process.env.GAS_PAYER_SERVICE_URL,
             'GAS_PAYER_SERVICE_URL'
         ),

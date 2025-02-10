@@ -16,7 +16,7 @@ import { Command, Option, type OptionValues } from 'commander';
  *
  * rpc-proxy {-e|--enableDelegation} - Enable delegation
  * rpc-proxy {--gasPayerPrivateKey} <gasPayerPrivateKey> - The gasPayer private key
- * rpc-proxy {-d|--gasPayerServiceUrl} <gasPayerServiceUrl> - The gasPayer service URL
+ * rpc-proxy {-s|--gasPayerServiceUrl} <gasPayerServiceUrl> - The gasPayer service URL
  *
  * rpc-proxy {-v|--verbose} - Enable verbose logging
  *
@@ -88,7 +88,7 @@ function getOptionsFromCommandLine(
         // The gasPayer configuration (url)
         .addOption(
             new Option(
-                '-d, --gasPayerServiceUrl <gasPayerServiceUrl>',
+                '-s, --gasPayerServiceUrl <gasPayerServiceUrl>',
                 'The gasPayer service URL'
             )
         )
