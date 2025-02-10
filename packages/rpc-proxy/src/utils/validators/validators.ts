@@ -100,7 +100,7 @@ function isValidGasPayerServiceUrl(url: string): boolean {
  * @param privateKey - Private key to check
  * @returns True if the private key is valid, false otherwise
  */
-function isValidDelegatorPrivateKey(privateKey: string): boolean {
+function isValidGasPayerPrivateKey(privateKey: string): boolean {
     return isValidAccountsAsListOfPrivateKeys([privateKey]);
 }
 
@@ -113,5 +113,5 @@ export {
     isValidInitialIndex,
     isValidAccountsAsMnemonic,
     isValidGasPayerServiceUrl,
-    isValidDelegatorPrivateKey
+    isValidGasPayerPrivateKey
 };

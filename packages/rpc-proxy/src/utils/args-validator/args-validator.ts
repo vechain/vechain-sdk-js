@@ -3,7 +3,7 @@ import { checkValidConfigurationFile } from '../config-validator';
 import {
     isValidAccountsAsListOfPrivateKeys,
     isValidCount,
-    isValidDelegatorPrivateKey,
+    isValidGasPayerPrivateKey,
     isValidGasPayerServiceUrl,
     isValidMnemonic,
     isValidPort,
@@ -259,7 +259,7 @@ const ArgsValidator = {
      */
     delegatorPrivateKey: (delegatorPrivateKey: string): string => {
         if (
-            !isValidDelegatorPrivateKey(delegatorPrivateKey) ||
+            !isValidGasPayerPrivateKey(delegatorPrivateKey) ||
             delegatorPrivateKey === ''
         ) {
             throw new InvalidCommandLineArguments(

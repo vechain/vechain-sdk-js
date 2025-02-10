@@ -8,7 +8,7 @@ import type { Config } from '../../types';
 import {
     isValidAccountsAsListOfPrivateKeys,
     isValidAccountsAsMnemonic,
-    isValidDelegatorPrivateKey,
+    isValidGasPayerPrivateKey,
     isValidGasPayerServiceUrl,
     isValidPort,
     isValidUrl
@@ -138,7 +138,7 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
         // Invalid gasPayer private key
         if (
             configFile.gasPayer.gasPayerPrivateKey !== undefined &&
-            !isValidDelegatorPrivateKey(configFile.gasPayer.gasPayerPrivateKey)
+            !isValidGasPayerPrivateKey(configFile.gasPayer.gasPayerPrivateKey)
         ) {
             throw new InvalidConfigurationFile(
                 '_checkIfConfigurationFileHasCorrectStructure()',
