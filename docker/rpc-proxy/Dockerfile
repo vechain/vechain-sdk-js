@@ -17,6 +17,7 @@ COPY ./tsconfig.json ./tsconfig.json
 COPY ./docker/rpc-proxy/adjust-packages.sh ./adjust-packages.sh
 
 # Install all the dependencies and build the app
+RUN apk update && apk upgrade openssl
 RUN yarn install && yarn build
 
 # Clean the package.json files ready for production
@@ -47,7 +48,7 @@ COPY --from=builder /app/yarn.lock /app/yarn.lock
 WORKDIR /app
 RUN yarn workspace @vechain/sdk-rpc-proxy install --production --frozen-lockfile --ignore-scripts --prefer-offline \
     && yarn cache clean \
-    && adduser -D rpc-proxy-user 
+    && adduser -D rpc-proxy-user
 # Create a new user to run the app so we do not use root
 USER rpc-proxy-user
 
