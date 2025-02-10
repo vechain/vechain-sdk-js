@@ -252,21 +252,21 @@ const ArgsValidator = {
 
     /**
      * Delegate configuration
-     * Validate 'delegatorPrivateKey' configuration field.
+     * Validate 'gasPayerPrivateKey' configuration field.
      *
-     * @param delegatorPrivateKey Delegator private key to validate
+     * @param gasPayerPrivateKey Delegator private key to validate
      * @returns Delegator private key if provided AND valid, null otherwise
      */
-    delegatorPrivateKey: (delegatorPrivateKey: string): string => {
+    gasPayerPrivateKey: (gasPayerPrivateKey: string): string => {
         if (
-            !isValidGasPayerPrivateKey(delegatorPrivateKey) ||
-            delegatorPrivateKey === ''
+            !isValidGasPayerPrivateKey(gasPayerPrivateKey) ||
+            gasPayerPrivateKey === ''
         ) {
             throw new InvalidCommandLineArguments(
-                'ArgsValidator.delegatorPrivateKey()',
+                'ArgsValidator.gasPayerPrivateKey()',
                 'An invalid gasPayer private key provided.',
                 {
-                    flag: '--delegatorPrivateKey',
+                    flag: '--gasPayerPrivateKey',
                     value: 'Value will not be shown for security reasons'
                 }
             );
@@ -275,7 +275,7 @@ const ArgsValidator = {
             `[rpc-proxy]: Delegator private key provided with command line options`
         );
 
-        return delegatorPrivateKey;
+        return gasPayerPrivateKey;
     },
 
     /*
@@ -284,22 +284,25 @@ const ArgsValidator = {
      * @param delegatorUrl Delegator URL to validate
      * @returns Delegator URL if provided AND valid, null otherwise
      */
-    delegatorUrl: (delegatorUrl: string): string => {
-        if (!isValidGasPayerServiceUrl(delegatorUrl) || delegatorUrl === '') {
+    gasPayerServiceUrl: (gasPayerServiceUrl: string): string => {
+        if (
+            !isValidGasPayerServiceUrl(gasPayerServiceUrl) ||
+            gasPayerServiceUrl === ''
+        ) {
             throw new InvalidCommandLineArguments(
-                'ArgsValidator.delegatorUrl()',
+                'ArgsValidator.gasPayerServiceUrl()',
                 'Invalid gasPayer url provided. The parameter must be a valid url',
                 {
-                    flag: '-d , --delegatorUrl',
-                    value: delegatorUrl
+                    flag: '-d , --gasPayerServiceUrl',
+                    value: gasPayerServiceUrl
                 }
             );
         }
         console.log(
-            `[rpc-proxy]: Delegator url provided with command line options: ${delegatorUrl}`
+            `[rpc-proxy]: Delegator url provided with command line options: ${gasPayerServiceUrl}`
         );
 
-        return delegatorUrl;
+        return gasPayerServiceUrl;
     }
 };
 
