@@ -17,7 +17,6 @@ COPY ./tsconfig.json ./tsconfig.json
 COPY ./docker/rpc-proxy/adjust-packages.sh ./adjust-packages.sh
 
 # Install all the dependencies and build the app
-RUN apk update && apk upgrade openssl
 RUN yarn install && yarn build
 
 # Clean the package.json files ready for production
