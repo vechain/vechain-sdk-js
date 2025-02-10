@@ -4,7 +4,7 @@ import {
     isValidAccountsAsListOfPrivateKeys,
     isValidCount,
     isValidDelegatorPrivateKey,
-    isValidDelegatorUrl,
+    isValidGasPayerServiceUrl,
     isValidMnemonic,
     isValidPort,
     isValidUrl
@@ -285,7 +285,7 @@ const ArgsValidator = {
      * @returns Delegator URL if provided AND valid, null otherwise
      */
     delegatorUrl: (delegatorUrl: string): string => {
-        if (!isValidDelegatorUrl(delegatorUrl) || delegatorUrl === '') {
+        if (!isValidGasPayerServiceUrl(delegatorUrl) || delegatorUrl === '') {
             throw new InvalidCommandLineArguments(
                 'ArgsValidator.delegatorUrl()',
                 'Invalid gasPayer url provided. The parameter must be a valid url',

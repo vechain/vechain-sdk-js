@@ -9,7 +9,7 @@ import {
     isValidAccountsAsListOfPrivateKeys,
     isValidAccountsAsMnemonic,
     isValidDelegatorPrivateKey,
-    isValidDelegatorUrl,
+    isValidGasPayerServiceUrl,
     isValidPort,
     isValidUrl
 } from '../validators';
@@ -152,7 +152,7 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
         // Invalid gasPayer url
         if (
             configFile.gasPayer.gasPayerServiceUrl !== undefined &&
-            !isValidDelegatorUrl(configFile.gasPayer.gasPayerServiceUrl)
+            !isValidGasPayerServiceUrl(configFile.gasPayer.gasPayerServiceUrl)
         ) {
             throw new InvalidConfigurationFile(
                 '_checkIfConfigurationFileHasCorrectStructure()',

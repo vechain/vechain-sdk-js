@@ -91,7 +91,7 @@ function isValidAccountsAsMnemonic(account: {
  * @param url - URL to check
  * @returns True if the url is valid, false otherwise
  */
-function isValidDelegatorUrl(url: string): boolean {
+function isValidGasPayerServiceUrl(url: string): boolean {
     return isValidUrl(url);
 }
 
@@ -112,6 +112,6 @@ export {
     isValidCount,
     isValidInitialIndex,
     isValidAccountsAsMnemonic,
-    isValidDelegatorUrl,
+    isValidGasPayerServiceUrl,
     isValidDelegatorPrivateKey
 };
