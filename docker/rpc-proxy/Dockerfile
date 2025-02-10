@@ -1,5 +1,6 @@
 # Stage 1: Build the app
 FROM node:20.17-alpine3.20 AS builder
+RUN apk update && apk upgrade openssl
 
 # Set the working directory in the builder stage
 WORKDIR /app
