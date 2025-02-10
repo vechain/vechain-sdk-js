@@ -15,8 +15,8 @@ import { Command, Option, type OptionValues } from 'commander';
  * rpc-proxy {--mnemonicInitialIndex} <index> - Initial index to start deriving accounts from the mnemonic
  *
  * rpc-proxy {-e|--enableDelegation} - Enable delegation
- * rpc-proxy {--delegatorPrivateKey} <delegatorPrivateKey> - Delegator private key
- * rpc-proxy {-d|--delegatorUrl} <delegatorUrl> - Delegator URL
+ * rpc-proxy {--gasPayerPrivateKey} <gasPayerPrivateKey> - The gasPayer private key
+ * rpc-proxy {-d|--gasPayerServiceUrl} <gasPayerServiceUrl> - The gasPayer service URL
  *
  * rpc-proxy {-v|--verbose} - Enable verbose logging
  *
@@ -77,17 +77,20 @@ function getOptionsFromCommandLine(
         // Enable delegation boolean
         .addOption(new Option('-e, --enableDelegation', 'Enable delegation'))
 
-        // Delegator configuration (private key)
+        // The gasPayer configuration (private key)
         .addOption(
             new Option(
-                '--delegatorPrivateKey <delegatorPrivateKey>',
-                'Delegator private key'
+                '--gasPayerPrivateKey <gasPayerPrivateKey>',
+                'The gasPayer private key'
             )
         )
 
-        // Delegator configuration (url)
+        // The gasPayer configuration (url)
         .addOption(
-            new Option('-d, --delegatorUrl <delegatorUrl>', 'Delegator URL')
+            new Option(
+                '-d, --gasPayerServiceUrl <gasPayerServiceUrl>',
+                'The gasPayer service URL'
+            )
         )
 
         // Enable verbose logging

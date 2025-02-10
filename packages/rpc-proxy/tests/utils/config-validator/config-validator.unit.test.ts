@@ -123,7 +123,7 @@ describe('Configuration file validator', () => {
              */
             test('Should not be able to parse a configuration file with invalid gasPayer', () => {
                 invalidParametersConfigurationFilePathFixture[
-                    'invalid-delegator'
+                    'invalid-gasPayer'
                 ].forEach((filePath) => {
                     console.log(filePath);
                     expect(() => {

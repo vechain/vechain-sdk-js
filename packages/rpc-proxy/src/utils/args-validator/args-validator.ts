@@ -254,8 +254,8 @@ const ArgsValidator = {
      * Delegate configuration
      * Validate 'gasPayerPrivateKey' configuration field.
      *
-     * @param gasPayerPrivateKey Delegator private key to validate
-     * @returns Delegator private key if provided AND valid, null otherwise
+     * @param gasPayerPrivateKey The gasPayer private key to validate
+     * @returns The gasPayer private key if provided AND valid, null otherwise
      */
     gasPayerPrivateKey: (gasPayerPrivateKey: string): string => {
         if (
@@ -272,17 +272,17 @@ const ArgsValidator = {
             );
         }
         console.log(
-            `[rpc-proxy]: Delegator private key provided with command line options`
+            `[rpc-proxy]: The gasPayer private key provided with command line options`
         );
 
         return gasPayerPrivateKey;
     },
 
     /*
-     * Validate 'delgatorUrl' configuration field
+     * Validate 'gasPayerServiceUrl' configuration field
      *
-     * @param delegatorUrl Delegator URL to validate
-     * @returns Delegator URL if provided AND valid, null otherwise
+     * @param gasPayerServiceUrl The gasPayer service URL to validate
+     * @returns The gasPayer service URL if provided AND valid, null otherwise
      */
     gasPayerServiceUrl: (gasPayerServiceUrl: string): string => {
         if (
@@ -299,7 +299,7 @@ const ArgsValidator = {
             );
         }
         console.log(
-            `[rpc-proxy]: Delegator url provided with command line options: ${gasPayerServiceUrl}`
+            `[rpc-proxy]: The gasPayer service url provided with command line options: ${gasPayerServiceUrl}`
         );
 
         return gasPayerServiceUrl;
