@@ -71,7 +71,7 @@ describe('RPC Mapper - eth_call method tests', () => {
         /**
          * Test an invalid hexadecimal block number
          */
-        test('Should throw `JSONRPCInvalidParams` if the default block parameter is invalid block tag', async () => {
+        test('Should throw `JSONRPCInvalidParams` if the default block parameter is invalid block number hex', async () => {
             await expect(
                 RPCMethodsMap(thorClient)[RPC_METHODS.eth_call]([
                     {
