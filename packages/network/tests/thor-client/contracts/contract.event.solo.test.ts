@@ -315,7 +315,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         await (
             await contract.transact.transfer(
-                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
+                TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address,
                 5000n
             )
         ).wait();
@@ -325,13 +325,13 @@ describe('ThorClient - ERC20 Contracts', () => {
             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
         ]);
 
-        const transferCriteriaDelegator = contract.criteria.Transfer([
+        const transferCriteriaGasPayer = contract.criteria.Transfer([
             undefined,
-            TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
+            TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address
         ]);
 
         const events = await thorSoloClient.logs.filterEventLogs({
-            criteriaSet: [transferCriteria, transferCriteriaDelegator]
+            criteriaSet: [transferCriteria, transferCriteriaGasPayer]
         });
 
         expect(
@@ -400,7 +400,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         await (
             await contract.transact.transfer(
-                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
+                TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address,
                 5000n
             )
         ).wait();
@@ -410,13 +410,13 @@ describe('ThorClient - ERC20 Contracts', () => {
             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
         ]);
 
-        const transferCriteriaDelegator = contract.criteria.Transfer([
+        const transferCriteriaGasPayer = contract.criteria.Transfer([
             undefined,
-            TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
+            TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address
         ]);
 
         const events = await thorSoloClient.logs.filterEventLogs({
-            criteriaSet: [transferCriteria, transferCriteriaDelegator]
+            criteriaSet: [transferCriteria, transferCriteriaGasPayer]
         });
 
         expect(events.map((x) => x.decodedData)).toEqual([

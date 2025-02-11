@@ -63,7 +63,7 @@ const config: HardhatUserConfig = {
           passphrase: 'vechainthor'
       },
       debug: true,
-      delegator: undefined,
+      gasPayer: undefined,
       gas: 'auto',
       gasPrice: 'auto',
       gasMultiplier: 1,

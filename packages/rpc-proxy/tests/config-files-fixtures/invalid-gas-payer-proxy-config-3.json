@@ -6,8 +6,9 @@
     "count": 0,
     "initialIndex": 0
   },
-  "delegator": {
-    "delegatorPrivateKey": "INVALID"
+  "gasPayer": {
+    "gasPayerPrivateKey": "INVALID",
+    "gasPayerServiceUrl": "INVALID"
   },
   "enableDelegation": false
 }

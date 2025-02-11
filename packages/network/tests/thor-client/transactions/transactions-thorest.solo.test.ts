@@ -86,7 +86,7 @@ describe('ThorClient - Transactions Module', () => {
                     HexUInt.of(
                         TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
                     ).bytes,
-                    HexUInt.of(TEST_ACCOUNTS.TRANSACTION.DELEGATOR.privateKey)
+                    HexUInt.of(TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.privateKey)
                         .bytes
                 ).encoded;
 

@@ -35,7 +35,7 @@ export default {
         };
 
         // Create private key
-        const privateKey = await Secp256k1.generatePrivateKey();
+        const privateKey = Secp256k1.generatePrivateKey();
 
         // 4 - Sign transaction
         const signedTransaction = Transaction.of(body).sign(privateKey);

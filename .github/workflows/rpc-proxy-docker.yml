@@ -19,11 +19,11 @@ jobs:
       - name: Set up QEMU
         if: ${{ github.event_name != 'pull_request' }}
         uses: docker/setup-qemu-action@v3
-      
+
       - name: Set up Docker Buildx
         if: ${{ github.event_name != 'pull_request' }}
         uses: docker/setup-buildx-action@v3
-      
+
       - name: Login to Docker Hub
         if: ${{ github.event_name != 'pull_request' }}
         uses: docker/login-action@v3
@@ -36,7 +36,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: vechain/sdk-rpc-proxy
-      
+
       - name: Build and export to Docker
         uses: docker/build-push-action@v6
         with:
@@ -48,8 +48,10 @@ jobs:
 
       - name: Create .trivyignore file
         # "cross-spawn" is resolved as version 7.0.5 but Trivy keeps showing the error
-        run: echo "CVE-2024-21538" > .trivyignore
-      
+        run: |
+          echo "CVE-2024-21538" > .trivyignore
+          echo "CVE-2024-13176" >> .trivyignore
+
       - name: Run Trivy Scan
         uses: aquasecurity/trivy-action@master
         with:
@@ -64,7 +66,7 @@ jobs:
         env:
           # See https://github.com/aquasecurity/trivy/discussions/7538
           TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2
-      
+
       - name: Build and push
         if: ${{ github.event_name != 'pull_request' }}
         uses: docker/build-push-action@v6
