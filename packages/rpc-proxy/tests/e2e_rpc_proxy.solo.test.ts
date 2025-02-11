@@ -292,9 +292,7 @@ describe('RPC Proxy endpoints', () => {
             const response = await axios.post(RPC_PROXY_URL, {
                 jsonrpc: '2.0',
                 method: 'eth_getBlockReceipts',
-                params: [
-                    '0x0000000008602e7a995c747a3215b426c0c65709480b9e9ac57ad37c3f7d73de'
-                ],
+                params: ['0x0'],
                 id: 1
             });
 

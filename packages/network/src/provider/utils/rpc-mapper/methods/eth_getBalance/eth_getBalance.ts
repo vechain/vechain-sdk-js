@@ -4,10 +4,9 @@ import {
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
-import type { BlockQuantityInputRPC } from '../../types';
-import { getCorrectBlockNumberRPCToVeChain } from '../../../const';
+import { type DefaultBlock, DefaultBlockToRevision } from '../../../const';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
-import { Address, Revision } from '@vechain/sdk-core';
+import { Address } from '@vechain/sdk-core';
 
 /**
  * RPC Method eth_getBalance implementation
@@ -40,13 +39,13 @@ const ethGetBalance = async (
         );
 
     try {
-        const [address, block] = params as [string, BlockQuantityInputRPC];
+        const [address, block] = params as [string, DefaultBlock];
 
         // Get the account details
         const accountDetails = await thorClient.accounts.getAccount(
             Address.of(address),
             {
-                revision: Revision.of(getCorrectBlockNumberRPCToVeChain(block))
+                revision: DefaultBlockToRevision(block)
             }
         );
 

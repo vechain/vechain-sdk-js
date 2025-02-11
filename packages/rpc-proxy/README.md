@@ -260,3 +260,19 @@ Below is the support status for JSON RPC methods in VeChain via `sdk-rpc-proxy`.
 - **Fully Supported**: The method is implemented and works as expected.
 - **Partially Supported**: The method is implemented but may have limitations or deviations from the Ethereum standard.
 - **Not Supported**: The method is not implemented or cannot be supported due to protocol constraints.
+
+## RPC to VeChain Mappings
+
+The following mappings are performed by the RPC proxy
+
+| RPC Parameter                          | VeChain Parameter     |
+|----------------------------------------|-----------------------|
+| block hash                             | block id              |
+| latest block                           | best block            |
+| safe block                             | best block            |
+| finalized block                        | finalized block       |
+| pending block                          | best block            |
+| earliest block                         | block number 0        |
+
+
+

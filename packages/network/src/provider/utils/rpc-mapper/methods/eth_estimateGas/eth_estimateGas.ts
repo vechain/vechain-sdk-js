@@ -8,8 +8,7 @@ import {
     type SimulateTransactionClause,
     type ThorClient
 } from '../../../../../thor-client';
-import { getCorrectBlockNumberRPCToVeChain } from '../../../const';
-import { type BlockQuantityInputRPC } from '../../types';
+import { type DefaultBlock, DefaultBlockToRevision } from '../../../const';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
 
 /**
@@ -42,10 +41,11 @@ const ethEstimateGas = async (
         // NOTE: The standard requires block parameter.
         // Here it is ignored and can be added in the future compatibility reasons.
         // (INPUT CHECK TAKE CARE OF THIS)
-        const [inputOptions, revision] = params as [
+        const [inputOptions, defaultBlock] = params as [
             TransactionObjectInput,
-            BlockQuantityInputRPC?
+            DefaultBlock
         ];
+        const revision = DefaultBlockToRevision(defaultBlock);
 
         const estimatedGas = await thorClient.gas.estimateGas(
             [
@@ -57,10 +57,7 @@ const ethEstimateGas = async (
             ],
             inputOptions.from,
             {
-                revision:
-                    revision !== undefined
-                        ? getCorrectBlockNumberRPCToVeChain(revision)
-                        : undefined
+                revision: revision.toString()
             }
         );
 

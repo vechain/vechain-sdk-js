@@ -10,7 +10,7 @@ import {
 /**
  * RPC Mapper integration tests for 'eth_call' method with Solo Network and mocked functionality
  *
- * @group integration/rpc-mapper/methods/eth_call
+ * @group unit/rpc-mapper/methods/eth_call
  */
 describe('RPC Mapper - eth_call method tests', () => {
     /**
@@ -49,6 +49,38 @@ describe('RPC Mapper - eth_call method tests', () => {
                         data: '0x'
                     },
                     'latest'
+                ])
+            ).rejects.toThrowError(JSONRPCInternalError);
+        });
+        /**
+         * Test an invalid default block tag name
+         */
+        test('Should throw `JSONRPCInvalidParams` if the default block parameter is invalid block tag', async () => {
+            await expect(
+                RPCMethodsMap(thorClient)[RPC_METHODS.eth_call]([
+                    {
+                        from: '0x7487d912d03ab9de786278f679592b3730bdd540',
+                        to: '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
+                        value: '1000000000000000000',
+                        data: '0x'
+                    },
+                    'invalid'
+                ])
+            ).rejects.toThrowError(JSONRPCInternalError);
+        });
+        /**
+         * Test an invalid hexadecimal block number
+         */
+        test('Should throw `JSONRPCInvalidParams` if the default block parameter is invalid block tag', async () => {
+            await expect(
+                RPCMethodsMap(thorClient)[RPC_METHODS.eth_call]([
+                    {
+                        from: '0x7487d912d03ab9de786278f679592b3730bdd540',
+                        to: '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
+                        value: '1000000000000000000',
+                        data: '0x'
+                    },
+                    '0xinvalid'
                 ])
             ).rejects.toThrowError(JSONRPCInternalError);
         });

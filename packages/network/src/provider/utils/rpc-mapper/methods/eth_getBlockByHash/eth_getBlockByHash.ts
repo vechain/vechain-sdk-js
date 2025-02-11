@@ -1,13 +1,14 @@
 import { ThorId } from '@vechain/sdk-core';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
-import { ethGetBlockByNumber } from '../eth_getBlockByNumber';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
-import { type BlocksRPC } from '../../../formatter';
+import { blocksFormatter, type BlocksRPC } from '../../../formatter';
 import { type ThorClient } from '../../../../../thor-client';
+import { type DefaultBlock, DefaultBlockToRevision } from '../../../const';
+import { ethChainId } from '../eth_chainId';
 
 /**
  * RPC Method eth_getBlockByHash implementation
@@ -19,6 +20,7 @@ import { type ThorClient } from '../../../../../thor-client';
  *                 * params[0]: The block hash of block to get.
  *                 * params[1]: The transaction hydrated detail flag. If true, the block will contain the transaction details, otherwise it will only contain the transaction hashes.
  * @returns the block at the given block hash formatted to the RPC standard or null if the block does not exist.
+ * @note Ethereum block hash is passed to Thor as the block id.
  * @throws {JSONRPCInvalidParams, JSONRPCInternalError}
  */
 const ethGetBlockByHash = async (
@@ -39,8 +41,22 @@ const ethGetBlockByHash = async (
         );
 
     try {
-        // Return the block by number (in this case, the block hash is the block number)
-        return await ethGetBlockByNumber(thorClient, params);
+        const [blockHash, isTxDetail] = params as [string, boolean];
+
+        let chainId: string = '0x0';
+
+        // If the transaction detail flag is set, we need to get the chain id
+        if (isTxDetail) {
+            chainId = await ethChainId(thorClient);
+        }
+
+        const block = isTxDetail
+            ? await thorClient.blocks.getBlockExpanded(blockHash)
+            : await thorClient.blocks.getBlockCompressed(blockHash);
+
+        return block !== null
+            ? blocksFormatter.formatToRPCStandard(block, chainId)
+            : null;
     } catch (e) {
         throw new JSONRPCInternalError(
             'eth_getBlockByHash()',
