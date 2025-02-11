@@ -183,9 +183,10 @@ To run the RPC proxy as a Docker container, follow these steps:
 
 ``` bash
 cd ../..
-docker build -f docker/rpc-proxy/Dockerfile . -t vechain-rpc-proxy
-# We are assuming that the config.json file is placed at the same level as the project root
-docker run -d -p 8545:8545 -v ./config.json:/app/config.json -t vechain-rpc-proxy
+docker build -f docker/rpc-proxy/Dockerfile . -t vechain/sdk-rpc-proxy
+# To replace the default config file, update the config.json file and start a terminal from the folder in which the file is located. 
+# DISCLAIMER: Make sure you replace the default config file before using it for production software. By default, the docker will point to testnet and use a known mnemonic. 
+docker run -d -p 8545:8545 -v ./config.json:/app/packages/rpc-proxy/config.json -t vechain/sdk-rpc-proxy
 ```
 
 If you do not pass a config.json file, the default solo network standard configuration will be used. Make sure to
