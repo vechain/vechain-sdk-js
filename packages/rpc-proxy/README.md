@@ -269,7 +269,7 @@ The following mappings are performed by the RPC proxy
 |----------------------------------------|-----------------------|
 | block hash                             | block id              |
 | latest block                           | best block            |
-| safe block                             | best block            |
+| safe block                             | justified block       |
 | finalized block                        | finalized block       |
 | pending block                          | best block            |
 | earliest block                         | block number 0        |

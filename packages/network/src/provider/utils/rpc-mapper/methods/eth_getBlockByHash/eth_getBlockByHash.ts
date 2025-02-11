@@ -7,7 +7,6 @@ import {
 } from '@vechain/sdk-errors';
 import { blocksFormatter, type BlocksRPC } from '../../../formatter';
 import { type ThorClient } from '../../../../../thor-client';
-import { type DefaultBlock, DefaultBlockToRevision } from '../../../const';
 import { ethChainId } from '../eth_chainId';
 
 /**
