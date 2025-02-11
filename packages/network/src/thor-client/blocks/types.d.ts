@@ -212,9 +212,9 @@ interface TransactionsExpandedBlockDetail {
     origin: string;
 
     /**
-     * Delegator associated with the transaction.
+     * Gas payer of the transaction.
      */
-    delegator: string;
+    gasPayer: string;
 
     /**
      * Nonce value for preventing replay attacks.

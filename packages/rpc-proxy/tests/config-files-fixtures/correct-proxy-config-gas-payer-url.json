@@ -6,8 +6,8 @@
     "count": 10,
     "initialIndex": 0
   },
-  "delegator": {
-    "delegatorPrivateKey": "8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158"
+  "gasPayer": {
+    "delegatorUrl": "https://testnet.vechain.org"
   },
   "enableDelegation": false
 }

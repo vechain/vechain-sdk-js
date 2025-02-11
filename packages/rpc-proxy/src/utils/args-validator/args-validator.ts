@@ -264,7 +264,7 @@ const ArgsValidator = {
         ) {
             throw new InvalidCommandLineArguments(
                 'ArgsValidator.delegatorPrivateKey()',
-                'An invalid delegator private key provided.',
+                'An invalid gasPayer private key provided.',
                 {
                     flag: '--delegatorPrivateKey',
                     value: 'Value will not be shown for security reasons'
@@ -288,7 +288,7 @@ const ArgsValidator = {
         if (!isValidDelegatorUrl(delegatorUrl) || delegatorUrl === '') {
             throw new InvalidCommandLineArguments(
                 'ArgsValidator.delegatorUrl()',
-                'Invalid delegator url provided. The parameter must be a valid url',
+                'Invalid gasPayer url provided. The parameter must be a valid url',
                 {
                     flag: '-d , --delegatorUrl',
                     value: delegatorUrl

@@ -27,9 +27,9 @@ interface Config {
 
     /**
      *
-     * Delegator configuration
+     * Gas-payer configuration
      */
-    delegator?: SignTransactionOptions;
+    gasPayer?: SignTransactionOptions;
 
     /**
      * Enable verbose logging

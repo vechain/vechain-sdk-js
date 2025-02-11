@@ -287,7 +287,7 @@ class BlocksModule {
 
     /**
      * Retrieves all addresses involved in a given block. This includes beneficiary, signer, clauses,
-     * delegator, gas payer, origin, contract addresses, event addresses, and transfer recipients and senders.
+     * gas payer, origin, contract addresses, event addresses, and transfer recipients and senders.
      *
      * @param {ExpandedBlockDetail} block - The block object to extract addresses from.
      *
@@ -306,7 +306,6 @@ class BlocksModule {
                         addresses.add(clause.to);
                     }
                 });
-                addresses.add(transaction.delegator);
                 addresses.add(transaction.gasPayer);
                 addresses.add(transaction.origin);
                 transaction.outputs.forEach((output) => {
