@@ -1,7 +1,5 @@
 import {
-    TransferLogResponse,
-    type TransferLogResponseJSON,
-    type TransferLogsResponse,
+    TransferLogsResponse,
     type TransferLogsResponseJSON
 } from './TransferLogsResponse';
 import { type ThorRequest } from '../ThorRequest';
@@ -35,10 +33,7 @@ class QueryVETTransferEvents
             (await response.json()) as TransferLogsResponseJSON;
         return {
             request: this,
-            response: responseBody.map(
-                (json: TransferLogResponseJSON): TransferLogResponse =>
-                    new TransferLogResponse(json)
-            ) as TransferLogsResponse
+            response: new TransferLogsResponse(responseBody)
         };
     }
 
