@@ -12,13 +12,13 @@ class LogMeta {
 
     constructor(json: LogMetaJSON) {
         this.blockID = BlockId.of(json.blockID);
-        this.blockNumber = UInt.of(json.blockNumber);
-        this.blockTimestamp = UInt.of(json.blockTimestamp);
+        this.blockNumber = UInt.of(Number(json.blockNumber));
+        this.blockTimestamp = UInt.of(Number(json.blockTimestamp));
         this.txID = TxId.of(json.txID);
         this.txOrigin = Address.of(json.txOrigin);
-        this.clauseIndex = UInt.of(json.clauseIndex);
-        this.txIndex = UInt.of(json.txIndex);
-        this.logIndex = UInt.of(json.logIndex);
+        this.clauseIndex = UInt.of(Number(json.clauseIndex));
+        this.txIndex = UInt.of(Number(json.txIndex));
+        this.logIndex = UInt.of(Number(json.logIndex));
     }
 
     toJSON(): LogMetaJSON {

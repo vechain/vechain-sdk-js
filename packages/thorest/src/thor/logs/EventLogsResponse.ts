@@ -37,12 +37,28 @@ interface EventLogResponseJSON {
 
 class EventLogsResponse extends Array<EventLogResponse> {
     constructor(json: EventLogsResponseJSON) {
-        super(
-            ...json.map(
-                (response: EventLogResponseJSON): EventLogResponse =>
-                    new EventLogResponse(response)
-            )
-        );
+        super();
+        return Object.setPrototypeOf(
+            Array.from(json ?? [], (peerStat) => {
+                return new EventLogResponse(peerStat);
+            }),
+            EventLogsResponse.prototype
+        ) as EventLogsResponse;
+    }
+
+    /**
+     * Converts the EventLogsResponse instance to a JSON array
+     * @returns {EventLogsResponseJSON} An array of event logs in JSON format
+     */
+    toJSON(): EventLogsResponseJSON {
+        return this.map((response): EventLogResponseJSON => {
+            // Weirdly enough response seems to be of type EventLogResponseJSON
+            // instead of the expected EventLogResponse
+            const res = new EventLogResponse(
+                response as unknown as EventLogResponseJSON
+            );
+            return res.toJSON();
+        });
     }
 }
 
