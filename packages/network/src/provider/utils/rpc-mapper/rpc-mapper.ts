@@ -93,7 +93,10 @@ import {
     web3ClientVersion,
     web3Sha3
 } from './methods';
-import { type MethodHandlerType } from './types';
+
+type MethodHandlerType<TParams, TReturnType> = (
+    params: TParams[]
+) => Promise<TReturnType>;
 
 /**
  * Map of RPC methods to their implementations with the SDK.
