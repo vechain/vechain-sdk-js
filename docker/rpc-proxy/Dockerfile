@@ -3,8 +3,9 @@ FROM node:20.17-alpine3.20 AS builder
 
 # Update package list and upgrade OpenSSL
 RUN apk update && \
+    apk add --no-cache openssl && \
     apk upgrade --no-cache openssl && \
-    # Verify the OpenSSL version
+    # Verify OpenSSL installation
     openssl version && \
     # Clean up
     rm -rf /var/cache/apk/*
