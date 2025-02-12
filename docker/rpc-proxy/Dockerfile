@@ -1,6 +1,14 @@
 # Stage 1: Build the app
 FROM node:20.17-alpine3.20 AS builder
 
+# Update package list and upgrade OpenSSL
+RUN apk update && \
+    apk upgrade --no-cache openssl && \
+    # Verify the OpenSSL version
+    openssl version && \
+    # Clean up
+    rm -rf /var/cache/apk/*
+
 # Set the working directory in the builder stage
 WORKDIR /app
 
@@ -26,9 +34,6 @@ RUN /bin/sh ./adjust-packages.sh ./
 
 # Stage 2: Serve the app using node
 FROM node:20.17.0-alpine3.20 AS runner
-
-# Upgrade openssl
-RUN apk update && apk upgrade openssl
 
 # Copy only the built files and essential runtime files from the builder stage
 ## rpc-proxy
