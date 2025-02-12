@@ -45,9 +45,9 @@ describe('QuerySmartContractEvents unit tests', () => {
             order: 'asc'
         };
 
-        const mockResponse = new EventLogsResponse([
+        const mockResponse = [
             {
-                address: '0x6d95e6dca01d109882fe1726a2fb9865fa41e7aa',
+                address: '0x6d95E6dCa01D109882fe1726A2fb9865Fa41e7aA',
                 topics: [
                     '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'
                 ],
@@ -64,19 +64,15 @@ describe('QuerySmartContractEvents unit tests', () => {
                     txIndex: 10
                 }
             }
-        ] as EventLogsResponseJSON);
+        ] satisfies EventLogsResponseJSON;
 
-        const mockClient = mockHttpClient<EventLogsResponse>(mockResponse);
+        const mockClient = mockHttpClient<EventLogsResponseJSON>(mockResponse);
 
         const response =
             await QuerySmartContractEvents.of(request).askTo(mockClient);
-        expect(
-            JSON.stringify(
-                response.response.map((log) => {
-                    return log.toJSON();
-                })
-            )
-        ).toEqual(JSON.stringify(mockResponse));
+        expect(response.response.toJSON()).toMatchObject(
+            new EventLogsResponse(mockResponse).toJSON()
+        );
     });
 
     test('empty response <- askTo', async () => {
@@ -99,10 +95,10 @@ describe('QuerySmartContractEvents unit tests', () => {
             order: 'asc'
         };
 
-        const mockClient = mockHttpClient([] as unknown as EventLogsResponse);
+        const mockClient = mockHttpClient([]);
 
         const response =
             await QuerySmartContractEvents.of(request).askTo(mockClient);
-        expect(response.response.toJSON()).toEqual([]);
+        expect(response.response).toStrictEqual([]);
     });
 });

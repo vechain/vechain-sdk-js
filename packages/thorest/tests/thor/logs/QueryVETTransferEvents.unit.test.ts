@@ -47,36 +47,33 @@ describe('QueryVETTransferEvents unit tests', () => {
             order: 'asc'
         };
 
-        const mockResponse = new TransferLogsResponse([
+        const mockResponse = [
             {
                 sender: '0x6d95E6dCa01D109882fe1726A2fb9865Fa41e7aA',
                 recipient: '0x45429A2255e7248e57fce99E7239aED3f84B7a53',
-                amount: '1',
+                amount: '0x01',
                 meta: {
-                    blockID:
-                        '0x0000000000000000000000000000000000000000000000000000000000000000',
+                    clauseIndex: 10,
                     blockNumber: 17240365,
                     blockTimestamp: 1533267900,
                     txID: '0x0000000000000000000000000000000000000000000000000000000000000000',
                     txOrigin: '0xDb4027477B2a8fE4c83C6daFe7f86678bb1B8a8d',
-                    clauseIndex: 10,
-                    txIndex: 10,
-                    logIndex: 10
+                    blockID:
+                        '0x0000000000000000000000000000000000000000000000000000000000000000',
+                    logIndex: 10,
+                    txIndex: 10
                 }
             }
-        ] as TransferLogsResponseJSON);
+        ] satisfies TransferLogsResponseJSON;
 
-        const mockClient = mockHttpClient<TransferLogsResponse>(mockResponse);
+        const mockClient =
+            mockHttpClient<TransferLogsResponseJSON>(mockResponse);
 
         const response =
             await QueryVETTransferEvents.of(request).askTo(mockClient);
-        expect(
-            JSON.stringify(
-                response.response.map((log) => {
-                    return log.toJSON();
-                })
-            )
-        ).toEqual(JSON.stringify(mockResponse));
+        expect(response.response.toJSON()).toMatchObject(
+            new TransferLogsResponse(mockResponse).toJSON()
+        );
     });
 
     test('empty response <- askTo', async () => {

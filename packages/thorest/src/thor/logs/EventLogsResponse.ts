@@ -36,6 +36,15 @@ interface EventLogResponseJSON {
 }
 
 class EventLogsResponse extends Array<EventLogResponse> {
+    /**
+     * Creates a new TransferLogsResponse instance.
+     * Special constructor pattern required for Array inheritance.
+     * Array constructor is first called with a length parameter,
+     * so we need this pattern to properly handle array data instead.
+     *
+     * @param json - The JSON array containing transfer log data
+     * @returns A new EventLogsResponse instance containing EventLogResponse objects
+     */
     constructor(json: EventLogsResponseJSON) {
         super();
         return Object.setPrototypeOf(
@@ -52,12 +61,7 @@ class EventLogsResponse extends Array<EventLogResponse> {
      */
     toJSON(): EventLogsResponseJSON {
         return this.map((response): EventLogResponseJSON => {
-            // Weirdly enough response seems to be of type EventLogResponseJSON
-            // instead of the expected EventLogResponse
-            const res = new EventLogResponse(
-                response as unknown as EventLogResponseJSON
-            );
-            return res.toJSON();
+            return response.toJSON();
         });
     }
 }
@@ -67,6 +71,6 @@ interface EventLogsResponseJSON extends Array<EventLogResponseJSON> {}
 export {
     EventLogResponse,
     type EventLogResponseJSON,
-    type EventLogsResponseJSON,
-    EventLogsResponse
+    EventLogsResponse,
+    type EventLogsResponseJSON
 };

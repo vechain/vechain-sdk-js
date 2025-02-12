@@ -11,13 +11,7 @@ class TransferLogResponse {
         this.sender = Address.of(json.sender);
         this.recipient = Address.of(json.recipient);
         this.meta = new LogMeta(json.meta);
-        try {
-            this.amount = VET.of(HexUInt.of(json.amount).bi, Units.wei);
-        } catch (error) {
-            throw new Error(
-                `Invalid TransferLogResponseJSON ${json.amount} and ${typeof json.amount} `
-            );
-        }
+        this.amount = VET.of(HexUInt.of(json.amount).bi, Units.wei);
     }
 
     toJSON(): TransferLogResponseJSON {
@@ -63,10 +57,7 @@ class TransferLogsResponse extends Array<TransferLogResponse> {
      */
     toJSON(): TransferLogsResponseJSON {
         return this.map((response): TransferLogResponseJSON => {
-            const res = new TransferLogResponse(
-                response as unknown as TransferLogResponseJSON
-            );
-            return res.toJSON();
+            return response.toJSON();
         });
     }
 }
