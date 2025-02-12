@@ -26,7 +26,7 @@ const ethGetBlockTransactionCountByNumber = async (
             { params }
         );
 
-    const block = await ethGetBlockByNumber(thorClient, [params[0], false]);
+    const block = await ethGetBlockByNumber(thorClient, [params[0], true]);
     if (block !== null) return block.transactions.length;
     return 0;
 };

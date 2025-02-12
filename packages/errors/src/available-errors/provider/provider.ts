@@ -119,6 +119,14 @@ class JSONRPCInternalError extends JSONRPCProviderError {
 }
 
 /**
+ * Invalid default block.
+ *
+ * WHEN TO USE:
+ * * When converting default block to vechain revision
+ */
+class JSONRPCInvalidDefaultBlock extends VechainSDKError<string> {}
+
+/**
  * Server error.
  *
  * WHEN TO USE:
@@ -143,5 +151,6 @@ export {
     JSONRPCParseError,
     JSONRPCProviderError,
     JSONRPCServerError,
-    ProviderMethodError
+    ProviderMethodError,
+    JSONRPCInvalidDefaultBlock
 };

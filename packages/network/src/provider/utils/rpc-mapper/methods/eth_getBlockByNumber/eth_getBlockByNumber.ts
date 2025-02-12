@@ -5,7 +5,7 @@ import {
 } from '@vechain/sdk-errors';
 import { type ThorClient } from '../../../../../thor-client';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
-import { getCorrectBlockNumberRPCToVeChain } from '../../../const';
+import { type DefaultBlock, DefaultBlockToRevision } from '../../../const';
 import { blocksFormatter, type BlocksRPC } from '../../../formatter';
 import { ethChainId } from '../eth_chainId';
 
@@ -42,7 +42,8 @@ const ethGetBlockByNumber = async (
         );
 
     try {
-        const [blockNumber, isTxDetail] = params as [string, boolean];
+        const [blockNumber, isTxDetail] = params as [DefaultBlock, boolean];
+        const revision = DefaultBlockToRevision(blockNumber);
 
         let chainId: string = '0x0';
 
@@ -52,12 +53,8 @@ const ethGetBlockByNumber = async (
         }
 
         const block = isTxDetail
-            ? await thorClient.blocks.getBlockExpanded(
-                  getCorrectBlockNumberRPCToVeChain(blockNumber)
-              )
-            : await thorClient.blocks.getBlockCompressed(
-                  getCorrectBlockNumberRPCToVeChain(blockNumber)
-              );
+            ? await thorClient.blocks.getBlockExpanded(revision.toString())
+            : await thorClient.blocks.getBlockCompressed(revision.toString());
 
         return block !== null
             ? blocksFormatter.formatToRPCStandard(block, chainId)
