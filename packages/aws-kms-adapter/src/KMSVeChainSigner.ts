@@ -16,12 +16,12 @@ import { KMSVeChainProvider } from './KMSVeChainProvider';
 
 class KMSVeChainSigner extends VeChainAbstractSigner {
     private readonly kmsVeChainProvider?: KMSVeChainProvider;
-    private readonly kmsVeChainDelegatorProvider?: KMSVeChainProvider;
-    private readonly kmsVeChainDelegatorUrl?: string;
+    private readonly kmsVeChainGasPayerProvider?: KMSVeChainProvider;
+    private readonly kmsVeChainGasPayerServiceUrl?: string;
 
     public constructor(
         provider?: AvailableVeChainProviders,
-        delegator?: {
+        gasPayer?: {
             provider?: AvailableVeChainProviders;
             url?: string;
         }
@@ -39,20 +39,20 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
             this.kmsVeChainProvider = this.provider;
         }
 
-        // Delegator provider, if any
-        if (delegator !== undefined) {
+        // Gas-payer provider, if any
+        if (gasPayer !== undefined) {
             if (
-                delegator.provider !== undefined &&
-                delegator.provider instanceof KMSVeChainProvider
+                gasPayer.provider !== undefined &&
+                gasPayer.provider instanceof KMSVeChainProvider
             ) {
-                this.kmsVeChainDelegatorProvider = delegator.provider;
-            } else if (delegator.url !== undefined) {
-                this.kmsVeChainDelegatorUrl = delegator.url;
+                this.kmsVeChainGasPayerProvider = gasPayer.provider;
+            } else if (gasPayer.url !== undefined) {
+                this.kmsVeChainGasPayerServiceUrl = gasPayer.url;
             } else {
                 throw new JSONRPCInvalidParams(
                     'KMSVeChainSigner.constructor',
                     'The gasPayer object is not well formed, either provider or url should be provided.',
-                    { delegator }
+                    { gasPayer: gasPayer }
                 );
             }
         }
@@ -127,15 +127,15 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
 
     /**
      * It returns the address associated with the signer.
-     * @param {boolean} fromDelegatorProvider (Optional) If true, the provider will be the gasPayer.
+     * @param {boolean} fromGasPayerProvider (Optional) If true, the provider will be the gasPayer.
      * @returns The address associated with the signer.
      */
     public async getAddress(
-        fromDelegatorProvider: boolean | undefined = false
+        fromGasPayerProvider: boolean | undefined = false
     ): Promise<string> {
         try {
-            const kmsProvider = fromDelegatorProvider
-                ? this.kmsVeChainDelegatorProvider
+            const kmsProvider = fromGasPayerProvider
+                ? this.kmsVeChainGasPayerProvider
                 : this.kmsVeChainProvider;
             const publicKeyDecoded =
                 await this.getDecodedPublicKey(kmsProvider);
@@ -144,7 +144,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
             throw new SignerMethodError(
                 'KMSVeChainSigner.getAddress',
                 'The address could not be retrieved.',
-                { fromDelegatorProvider },
+                { fromGasPayerProvider: fromGasPayerProvider },
                 error
             );
         }
@@ -240,32 +240,32 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
             await this.buildVeChainSignatureFromPayload(transactionHash);
 
         // We try first in case there is a gasPayer provider
-        if (this.kmsVeChainDelegatorProvider !== undefined) {
+        if (this.kmsVeChainGasPayerProvider !== undefined) {
             const publicKeyDecoded = await this.getDecodedPublicKey();
             const originAddress = Address.ofPublicKey(publicKeyDecoded);
             const delegatedHash =
                 transaction.getTransactionHash(originAddress).bytes;
-            const delegatorSignature =
+            const gasPayerSignature =
                 await this.buildVeChainSignatureFromPayload(
                     delegatedHash,
-                    this.kmsVeChainDelegatorProvider
+                    this.kmsVeChainGasPayerProvider
                 );
-            return concatBytes(originSignature, delegatorSignature);
+            return concatBytes(originSignature, gasPayerSignature);
         } else if (
             // If not, we try with the gasPayer URL
-            this.kmsVeChainDelegatorUrl !== undefined &&
+            this.kmsVeChainGasPayerServiceUrl !== undefined &&
             this.provider !== undefined
         ) {
             const originAddress = await this.getAddress();
-            const delegatorSignature = await DelegationHandler({
-                gasPayerServiceUrl: this.kmsVeChainDelegatorUrl
+            const gasPayerSignature = await DelegationHandler({
+                gasPayerServiceUrl: this.kmsVeChainGasPayerServiceUrl
             }).getDelegationSignatureUsingUrl(
                 transaction,
                 originAddress,
                 this.provider.thorClient.httpClient
             );
 
-            return concatBytes(originSignature, delegatorSignature);
+            return concatBytes(originSignature, gasPayerSignature);
         }
 
         return originSignature;
