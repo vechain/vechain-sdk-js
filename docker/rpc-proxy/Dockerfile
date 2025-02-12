@@ -19,9 +19,6 @@ COPY ./docker/rpc-proxy/adjust-packages.sh ./adjust-packages.sh
 # Install all the dependencies and build the app
 RUN yarn install && yarn build
 
-# Upgrade openssl
-RUN apk update && apk upgrade openssl
-
 # Clean the package.json files ready for production
 RUN apk add --no-cache jq
 RUN chmod +x ./adjust-packages.sh
@@ -29,6 +26,9 @@ RUN /bin/sh ./adjust-packages.sh ./
 
 # Stage 2: Serve the app using node
 FROM node:20.17.0-alpine3.20 AS runner
+
+# Upgrade openssl
+RUN apk update && apk upgrade openssl
 
 # Copy only the built files and essential runtime files from the builder stage
 ## rpc-proxy
