@@ -5,8 +5,7 @@ import {
     TESTNET_URL,
     ThorClient
 } from '../../../../../src';
-import { ethGetBlockByHashTestCases } from '../eth_getBlockByHash/fixture';
-import { invalideEthGetBlockTransactionCountByHashTestCases } from './fixture';
+import { validTestCases, invalidTestCases } from './fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_getBlockTransactionCountByNumber' method
@@ -34,16 +33,16 @@ describe('RPC Mapper - eth_getBlockTransactionCountByNumber method tests', () =>
         /**
          * eth_getBlockTransactionCountByNumber RPC method positive test cases
          */
-        ethGetBlockByHashTestCases.forEach(
-            ({ description, params, expectedTransactionsLength }) => {
+        validTestCases.forEach(
+            ({ description, blockNumberHex, expectedTxCount }) => {
                 test(description, async () => {
                     // Call RPC function
                     const rpcCall = await RPCMethodsMap(thorClient)[
                         RPC_METHODS.eth_getBlockTransactionCountByNumber
-                    ]([params[0]]);
+                    ]([blockNumberHex]);
 
                     // Compare the result with the expected value
-                    expect(rpcCall).toStrictEqual(expectedTransactionsLength);
+                    expect(rpcCall).toStrictEqual(expectedTxCount);
                 });
             }
         );
@@ -56,18 +55,16 @@ describe('RPC Mapper - eth_getBlockTransactionCountByNumber method tests', () =>
         /**
          * Invalid eth_getBlockTransactionCountByNumber RPC method test cases
          */
-        invalideEthGetBlockTransactionCountByHashTestCases.forEach(
-            ({ description, params, expectedError }) => {
-                test(description, async () => {
-                    // Call RPC function
-                    await expect(
-                        async () =>
-                            await RPCMethodsMap(thorClient)[
-                                RPC_METHODS.eth_getBlockTransactionCountByNumber
-                            ](params)
-                    ).rejects.toThrowError(expectedError);
-                });
-            }
-        );
+        invalidTestCases.forEach(({ description, params, expectedError }) => {
+            test(description, async () => {
+                // Call RPC function
+                await expect(
+                    async () =>
+                        await RPCMethodsMap(thorClient)[
+                            RPC_METHODS.eth_getBlockTransactionCountByNumber
+                        ](params)
+                ).rejects.toThrowError(expectedError);
+            });
+        });
     });
 });

@@ -3,9 +3,8 @@ import {
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
-import { getCorrectBlockNumberRPCToVeChain } from '../../../const';
+import { type DefaultBlock, DefaultBlockToRevision } from '../../../const';
 import { type TransactionObjectInput } from './types';
-import { type BlockQuantityInputRPC } from '../../types';
 import {
     type SimulateTransactionClause,
     type SimulateTransactionOptions,
@@ -41,7 +40,7 @@ const ethCall = async (
     try {
         const [inputOptions, block] = params as [
             TransactionObjectInput,
-            BlockQuantityInputRPC
+            DefaultBlock
         ];
 
         // Simulate transaction
@@ -54,7 +53,7 @@ const ethCall = async (
                 } satisfies SimulateTransactionClause
             ],
             {
-                revision: getCorrectBlockNumberRPCToVeChain(block),
+                revision: DefaultBlockToRevision(block).toString(),
                 gas:
                     inputOptions.gas !== undefined
                         ? parseInt(inputOptions.gas, 16)
