@@ -276,4 +276,13 @@ The following mappings are performed by the RPC proxy
 | earliest block                         | block number 0        |
 
 
+## Transaction Coversions
+
+The method `eth_sendTransaction` requires the input to be a VeChain transaction object, not a Ethereum transaction object  
+This method signs the transaction using the configured PK, before passing it on to VeChain Thor
+
+For method `eth_sendRawTransaction` the signed encoded raw transaction parameter must be a vechain transaction object  
+This method cannot convert a signed Ethereum transaction to a signed VeChain transaction
+
+
 

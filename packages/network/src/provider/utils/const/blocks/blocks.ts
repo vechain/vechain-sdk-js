@@ -1,4 +1,5 @@
 import { HexUInt, Revision } from '@vechain/sdk-core';
+import { JSONRPCInvalidDefaultBlock } from '@vechain/sdk-errors';
 
 type DefaultBlock =
     | `0x${string}`
@@ -35,7 +36,13 @@ const DefaultBlockToRevision = (defaultBlock: DefaultBlock): Revision => {
     }
     // check if default block is a valid block tag
     if (!defaultBlockTags.includes(defaultBlock)) {
-        throw new Error(`Invalid block tag: ${defaultBlock}`);
+        const defaultBlockValue = defaultBlock.toString();
+        throw new JSONRPCInvalidDefaultBlock(
+            'DefaultBlockToRevision',
+            `Invalid default block: ${defaultBlockValue}`,
+            defaultBlockValue,
+            null
+        );
     }
     // map block tag to VeChainThor revision
     if (defaultBlock === 'earliest') {

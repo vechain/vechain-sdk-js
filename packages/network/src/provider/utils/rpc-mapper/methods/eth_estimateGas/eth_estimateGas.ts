@@ -30,7 +30,7 @@ const ethEstimateGas = async (
     params: unknown[]
 ): Promise<string> => {
     // Input validation
-    if (![1, 2].includes(params.length) || typeof params[0] !== 'object')
+    if (params.length !== 2 || typeof params[0] !== 'object')
         throw new JSONRPCInvalidParams(
             'eth_estimateGas',
             `Invalid input params for "eth_estimateGas" method. See ${RPC_DOCUMENTATION_URL} for details.`,

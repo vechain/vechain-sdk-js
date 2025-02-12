@@ -15,11 +15,6 @@ const ethGetBalanceTestCases = [
         expected: Quantity.of(Units.parseEther('500000000').bi).toString()
     },
     {
-        description: 'Should return correct balance of the test account',
-        params: [THOR_SOLO_ACCOUNTS[0].address, 'best'],
-        expected: Quantity.of(Units.parseEther('500000000').bi).toString()
-    },
-    {
         description:
             'Should return correct balance of the test account before seeding',
         params: [
