@@ -62,7 +62,7 @@ const createWalletFromHardhatNetworkConfig = (
                 }),
                 {
                     gasPayer: DelegationHandler(
-                        (networkConfig as HttpNetworkConfig).delegator
+                        (networkConfig as HttpNetworkConfig).gasPayer
                     ).gasPayerOrUndefined()
                 }
             );
@@ -76,7 +76,7 @@ const createWalletFromHardhatNetworkConfig = (
                 accountFromConfig.path,
                 {
                     gasPayer: DelegationHandler(
-                        (networkConfig as HttpNetworkConfig).delegator
+                        (networkConfig as HttpNetworkConfig).gasPayer
                     ).gasPayerOrUndefined()
                 }
             );
