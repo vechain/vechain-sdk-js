@@ -212,9 +212,22 @@ interface TransactionsExpandedBlockDetail {
     origin: string;
 
     /**
-     * Gas payer of the transaction.
+     * The address of the gas-payer of the transaction.
+     *
+     * **NOTE!**
+     *
+     * * The property name `delegator` is exposed by
+     *   [Tx](https://mainnet.vechain.org/doc/stoplight-ui/#/schemas/Tx)
+     *   response of the end-point
+     *   [Retrieve a block](https://mainnet.vechain.org/doc/stoplight-ui/#/paths/blocks-revision/get)
+     *   with query set as `?expanded=true`.
+     * * In the rest of the SDK the address of the sponsor of the transaction is exposed by properties named
+     *   `gasPayer`.
+     *   It's suggested to read as "delegated" the term written as "delegator".
+     * * This interface exposes the property {@link gasPayer} to express the address of the sponsor of the
+     *   transaction, either {@link origin} or {@link delegator}.
      */
-    gasPayer: string;
+    delegator: string;
 
     /**
      * Nonce value for preventing replay attacks.
