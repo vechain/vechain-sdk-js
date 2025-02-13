@@ -145,31 +145,31 @@ const ArgsValidatorAndGetter = {
     ): Config => {
         // Both delegation fields are provided - throw an error
         if (
-            options.delegatorPrivateKey !== undefined &&
-            options.delegatorUrl !== undefined &&
-            options.delegatorPrivateKey !== null &&
-            options.delegatorUrl !== null
+            options.gasPayerPrivateKey !== undefined &&
+            options.gasPayerServiceUrl !== undefined &&
+            options.gasPayerPrivateKey !== null &&
+            options.gasPayerServiceUrl !== null
         ) {
             throw new InvalidCommandLineArguments(
                 'ArgsValidatorAndGetter.delegation()',
-                'Both gasPayer private key and gasPayer URL are provided. Only one can be provided',
+                'Both gasPayer private key and gasPayer service URL are provided. Only one can be provided',
                 {
-                    flag: '{--delegatorPrivateKey}, {-d , --delegatorUrl}',
-                    value: `{value not provided for security reason} , {${options.delegatorUrl as string}}`
+                    flag: '{--gasPayerPrivateKey}, {-s , --gasPayerServiceUrl}',
+                    value: `{value not provided for security reason} , {${options.gasPayerServiceUrl as string}}`
                 }
             );
         }
 
         // Delegation is made with a private key
         if (
-            options.delegatorPrivateKey !== undefined &&
-            options.delegatorPrivateKey !== null
+            options.gasPayerPrivateKey !== undefined &&
+            options.gasPayerPrivateKey !== null
         ) {
             return {
                 ...currentConfiguration,
                 gasPayer: {
-                    gasPayerPrivateKey: ArgsValidator.delegatorPrivateKey(
-                        options.delegatorPrivateKey as string
+                    gasPayerPrivateKey: ArgsValidator.gasPayerPrivateKey(
+                        options.gasPayerPrivateKey as string
                     )
                 }
             };
@@ -177,14 +177,14 @@ const ArgsValidatorAndGetter = {
 
         // Delegation is made with a gasPayer URL
         if (
-            options.delegatorUrl !== undefined &&
-            options.delegatorUrl !== null
+            options.gasPayerServiceUrl !== undefined &&
+            options.gasPayerServiceUrl !== null
         ) {
             return {
                 ...currentConfiguration,
                 gasPayer: {
-                    gasPayerServiceUrl: ArgsValidator.delegatorUrl(
-                        options.delegatorUrl as string
+                    gasPayerServiceUrl: ArgsValidator.gasPayerServiceUrl(
+                        options.gasPayerServiceUrl as string
                     )
                 }
             };

@@ -38,9 +38,10 @@ const createWalletFromHardhatNetworkConfigPositiveCasesFixture = [
                 '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa157'
             ],
             delegator: {
-                delegatorPrivateKey:
+                gasPayerPrivateKey:
                     'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5',
-                delegatorUrl: 'https://sponsor-testnet.vechain.energy/by/269'
+                gasPayerServiceUrl:
+                    'https://sponsor-testnet.vechain.energy/by/269'
             }
         },
         expectedAddresses: [
@@ -73,9 +74,10 @@ const createWalletFromHardhatNetworkConfigPositiveCasesFixture = [
                 '0x7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa157'
             ],
             delegator: {
-                delegatorPrivateKey:
+                gasPayerPrivateKey:
                     'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5',
-                delegatorUrl: 'https://sponsor-testnet.vechain.energy/by/269'
+                gasPayerServiceUrl:
+                    'https://sponsor-testnet.vechain.energy/by/269'
             }
         },
         expectedAddresses: [
@@ -114,9 +116,10 @@ const createWalletFromHardhatNetworkConfigPositiveCasesFixture = [
                 initialIndex: 0
             },
             delegator: {
-                delegatorPrivateKey:
+                gasPayerPrivateKey:
                     'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5',
-                delegatorUrl: 'https://sponsor-testnet.vechain.energy/by/269'
+                gasPayerServiceUrl:
+                    'https://sponsor-testnet.vechain.energy/by/269'
             }
         },
         expectedAddresses: [

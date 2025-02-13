@@ -49,11 +49,15 @@ function getArgsFromEnv(): string[] {
             'ENABLE_DELEGATION'
         ),
         getCliFieldFromEnv(
-            '--delegatorPrivateKey',
-            process.env.DELEGATOR_PRIVATE_KEY,
-            'DELEGATOR_PRIVATE_KEY'
+            '--gasPayerPrivateKey',
+            process.env.GAS_PAYER_PRIVATE_KEY,
+            'GAS_PAYER_PRIVATE_KEY'
         ),
-        getCliFieldFromEnv('-d', process.env.DELEGATOR_URL, 'DELEGATOR_URL'),
+        getCliFieldFromEnv(
+            '-s',
+            process.env.GAS_PAYER_SERVICE_URL,
+            'GAS_PAYER_SERVICE_URL'
+        ),
         getCliFieldFromEnv('-v', process.env.VERBOSE, 'VERBOSE'),
         getCliFieldFromEnv(
             '-c',

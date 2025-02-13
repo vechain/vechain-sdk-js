@@ -195,7 +195,7 @@ describe('Args parser tests', () => {
                     'path',
                     'program',
                     '--enableDelegation',
-                    '--delegatorPrivateKey',
+                    '--gasPayerPrivateKey',
                     '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
                 ],
                 // Short syntax
@@ -203,7 +203,7 @@ describe('Args parser tests', () => {
                     'path',
                     'program',
                     '-e',
-                    '--delegatorPrivateKey',
+                    '--gasPayerPrivateKey',
                     '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
                 ]
             ].forEach((args) => {
@@ -220,26 +220,31 @@ describe('Args parser tests', () => {
         });
 
         /**
-         * Should be able to delegation options from command line arguments (delegatorPrivateKey and delegatorUrl fields) AND get the configuration
+         * Should be able to delegation options from command line arguments (gasPayerPrivateKey and gasPayerServiceUrl fields) AND get the configuration
          */
         test('Should be able to get the delegation options from command line arguments AND get the configuration', () => {
             [
-                // Delegator private key
+                // The gasPayer private key
 
                 // Normal syntax
                 [
                     'path',
                     'program',
-                    '--delegatorPrivateKey',
+                    '--gasPayerPrivateKey',
                     '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
                 ],
 
-                // Delegator URL
+                // The gasPayer service URL
 
                 // Normal syntax
-                ['path', 'program', '--delegatorUrl', 'http://localhost:8080'],
+                [
+                    'path',
+                    'program',
+                    '--gasPayerServiceUrl',
+                    'http://localhost:8080'
+                ],
                 // Short syntax
-                ['path', 'program', '-d', 'http://localhost:8080']
+                ['path', 'program', '-s', 'http://localhost:8080']
             ].forEach((args) => {
                 // Get options
                 const options = getOptionsFromCommandLine('1.0.0', args);
@@ -582,7 +587,7 @@ describe('Args parser tests', () => {
         });
 
         /**
-         * Should NOT be able to parse delegation options from command line arguments (delegatorPrivateKey and delegatorUrl fields) AND get the configuration
+         * Should NOT be able to parse delegation options from command line arguments (gasPayerPrivateKey and gasPayerServiceUrl fields) AND get the configuration
          */
         test('Should be NOT able to parse delegation options from command line arguments AND get the configuration', () => {
             [
@@ -592,40 +597,40 @@ describe('Args parser tests', () => {
                 [
                     'path',
                     'program',
-                    '--delegatorPrivateKey',
+                    '--gasPayerPrivateKey',
                     '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
-                    '--delegatorUrl',
+                    '--gasPayerServiceUrl',
                     'http://localhost:8080'
                 ],
                 // Short syntax
                 [
                     'path',
                     'program',
-                    '--delegatorPrivateKey',
+                    '--gasPayerPrivateKey',
                     '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
-                    '-d',
+                    '-s',
                     'http://localhost:8080'
                 ],
 
                 // Invalid fields
 
                 // Normal syntax
-                ['path', 'program', '--delegatorPrivateKey', 'INVALID'],
+                ['path', 'program', '--gasPayerPrivateKey', 'INVALID'],
 
                 // Normal syntax
-                ['path', 'program', '--delegatorUrl', 'INVALID'],
+                ['path', 'program', '--gasPayerServiceUrl', 'INVALID'],
                 // Short syntax
-                ['path', 'program', '-d', 'INVALID'],
+                ['path', 'program', '-s', 'INVALID'],
 
                 // Empty fields
 
                 // Normal syntax
-                ['path', 'program', '--delegatorPrivateKey', ''],
+                ['path', 'program', '--gasPayerPrivateKey', ''],
 
                 // Normal syntax
-                ['path', 'program', '--delegatorUrl', ''],
+                ['path', 'program', '--gasPayerServiceUrl', ''],
                 // Short syntax
-                ['path', 'program', '-d', ''],
+                ['path', 'program', '-s', ''],
 
                 // Enable delegation without the gasPayer
 
