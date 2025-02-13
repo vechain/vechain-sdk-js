@@ -61,7 +61,8 @@ const positiveCasesFixtures = [
         expected: '0x'
     },
     {
-        description: 'Sends 1 VET to the receiver. (using { blockNumber: 0 } )',
+        description:
+            'Sends 1 VET to the receiver. (using { blockNumber: 0x0 } )',
         input: [
             {
                 from: '0x7487d912d03ab9de786278f679592b3730bdd540',
@@ -69,24 +70,7 @@ const positiveCasesFixtures = [
                 value: '1000000000000000000',
                 data: '0x'
             },
-            {
-                blockNumber: 0
-            }
-        ],
-        expected: '0x'
-    },
-    {
-        description: 'Sends 1 VET to the receiver. (using { blockHash: 0x } )',
-        input: [
-            {
-                from: '0x7487d912d03ab9de786278f679592b3730bdd540',
-                to: '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
-                value: '1000000000000000000',
-                data: '0x'
-            },
-            {
-                blockHash: Hex.of(0).toString()
-            }
+            '0x0'
         ],
         expected: '0x'
     },

@@ -261,3 +261,28 @@ Below is the support status for JSON RPC methods in VeChain via `sdk-rpc-proxy`.
 - **Fully Supported**: The method is implemented and works as expected.
 - **Partially Supported**: The method is implemented but may have limitations or deviations from the Ethereum standard.
 - **Not Supported**: The method is not implemented or cannot be supported due to protocol constraints.
+
+## RPC to VeChain Mappings
+
+The following mappings are performed by the RPC proxy
+
+| RPC Parameter                          | VeChain Parameter     |
+|----------------------------------------|-----------------------|
+| block hash                             | block id              |
+| latest block                           | best block            |
+| safe block                             | justified block       |
+| finalized block                        | finalized block       |
+| pending block                          | best block            |
+| earliest block                         | block number 0        |
+
+
+## Transaction Coversions
+
+The method `eth_sendTransaction` requires the input to be a VeChain transaction object, not a Ethereum transaction object  
+This method signs the transaction using the configured PK, before passing it on to VeChain Thor
+
+For method `eth_sendRawTransaction` the signed encoded raw transaction parameter must be a vechain transaction object  
+This method cannot convert a signed Ethereum transaction to a signed VeChain transaction
+
+
+
