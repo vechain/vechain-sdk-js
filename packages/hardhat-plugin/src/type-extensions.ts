@@ -45,10 +45,10 @@ declare module 'hardhat/types/config' {
          * Delegate the transaction to a gasPayer.
          *
          * We can give following two optional parameters:
-         * - delegatorPrivateKey: string
-         * - delegatorUrl: string
+         * - gasPayerPrivateKey: string
+         * - gasPayerServiceUrl: string
          */
-        delegator?: SignTransactionOptions;
+        gasPayer?: SignTransactionOptions;
 
         /**
          * Debug mode enabled or not.

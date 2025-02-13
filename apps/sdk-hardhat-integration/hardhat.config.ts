@@ -76,7 +76,7 @@ const config: HardhatUserConfig = {
         /**
          * Testnet configuration - with gasPayer url
          */
-        vechain_testnet_delegator_url: {
+        vechain_testnet_gas_payer_url: {
             // Testnet
             url: 'https://testnet.vechain.org',
             accounts: {
@@ -103,7 +103,7 @@ const config: HardhatUserConfig = {
         /**
          * Testnet configuration - with gasPayer private key
          */
-        vechain_testnet_delegator_private_key: {
+        vechain_testnet_gas_payer_private_key: {
             // Testnet
             url: 'https://testnet.vechain.org',
             accounts: {
@@ -159,7 +159,7 @@ const config: HardhatUserConfig = {
                 initialIndex: 0
             },
             debug: true,
-            delegator: undefined,
+            gasPayer: undefined,
             gas: 'auto',
             gasPrice: 'auto',
             gasMultiplier: 1,
