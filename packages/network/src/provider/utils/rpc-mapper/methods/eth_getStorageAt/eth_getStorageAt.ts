@@ -1,12 +1,11 @@
-import { Address, Revision, ThorId } from '@vechain/sdk-core';
+import { Address, ThorId } from '@vechain/sdk-core';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
-import { getCorrectBlockNumberRPCToVeChain } from '../../../const';
+import { type DefaultBlock, DefaultBlockToRevision } from '../../../const';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
-import type { BlockQuantityInputRPC } from '../../types';
 import { type ThorClient } from '../../../../../thor-client';
 
 /**
@@ -45,7 +44,7 @@ const ethGetStorageAt = async (
         const [address, storagePosition, block] = params as [
             string,
             string,
-            BlockQuantityInputRPC
+            DefaultBlock
         ];
 
         // Get the account details
@@ -53,7 +52,7 @@ const ethGetStorageAt = async (
             Address.of(address),
             ThorId.of(storagePosition),
             {
-                revision: Revision.of(getCorrectBlockNumberRPCToVeChain(block))
+                revision: DefaultBlockToRevision(block)
             }
         );
         return storage.toString();

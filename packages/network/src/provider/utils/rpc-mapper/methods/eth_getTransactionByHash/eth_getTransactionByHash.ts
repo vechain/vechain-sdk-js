@@ -8,7 +8,7 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
 import { type TransactionRPC, transactionsFormatter } from '../../../formatter';
 import { getTransactionIndexIntoBlock } from '../../../helpers';
 import { ethChainId } from '../eth_chainId';
-import { ethGetBlockByNumber } from '../eth_getBlockByNumber';
+import { ethGetBlockByHash } from '../eth_getBlockByHash';
 
 /**
  * RPC Method eth_getTransactionByHash implementation
@@ -42,7 +42,7 @@ const ethGetTransactionByHash = async (
         if (tx === null) return null;
 
         // Get the block containing the transaction
-        const block = await ethGetBlockByNumber(thorClient, [
+        const block = await ethGetBlockByHash(thorClient, [
             tx.meta.blockID,
             false
         ]);

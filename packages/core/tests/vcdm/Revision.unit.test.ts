@@ -31,7 +31,7 @@ describe('Revision class tests', () => {
                 expect(Revision.isValid('123.57')).toBeFalsy();
             });
 
-            test('Return false for not numeric nor `best` nor `finalized` value', () => {
+            test('Return false for not numeric not a block tag', () => {
                 expect(Revision.isValid('ABadBabe')).toBeFalsy();
             });
 
@@ -53,6 +53,9 @@ describe('Revision class tests', () => {
 
             test('Return true for `finalized` value', () => {
                 expect(Revision.isValid('finalized')).toBeTruthy();
+            });
+            test('Return true for `next` value', () => {
+                expect(Revision.isValid('next')).toBeTruthy();
             });
         });
     });
