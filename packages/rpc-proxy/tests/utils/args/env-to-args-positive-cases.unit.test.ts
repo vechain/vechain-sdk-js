@@ -17,8 +17,8 @@ describe('Environment variables to command line arguments positive cases', () =>
         process.env.MNEMONIC_COUNT = '10';
         process.env.MNEMONIC_INITIAL_INDEX = '0';
         process.env.ENABLE_DELEGATION = 'true';
-        process.env.DELEGATOR_PRIVATE_KEY = '0x1234567890abcdef';
-        process.env.DELEGATOR_URL = 'http://localhost:8669';
+        process.env.GAS_PAYER_PRIVATE_KEY = '0x1234567890abcdef';
+        process.env.GAS_PAYER_SERVICE_URL = 'http://localhost:8669';
         process.env.VERBOSE = 'true';
         process.env.CONFIGURATION_FILE = 'config.json';
     });
@@ -44,15 +44,15 @@ describe('Environment variables to command line arguments positive cases', () =>
                 'some accounts',
                 '-m',
                 'some mnemonic',
-                '-mc',
+                '--mnemonicCount',
                 '10',
-                '-mi',
+                '--mnemonicInitialIndex',
                 '0',
                 '-e',
                 'true',
-                '-dp',
+                '--gasPayerPrivateKey',
                 '0x1234567890abcdef',
-                '-du',
+                '-s',
                 'http://localhost:8669',
                 '-v',
                 'true',

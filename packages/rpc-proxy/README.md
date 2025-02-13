@@ -78,24 +78,24 @@ So you can run the rpc-proxy with:
     OR `npx rpc-proxy --accounts "7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158 8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158"`
 
 - `-m, --mnemonic <mnemonic>`: The mnemonic that the proxy server will use to sign transactions.
-- `-mc, --mnemonicCount <mnemonicCount>`: The number of accounts to derive from the mnemonic.
-- `-mi, --mnemonicInitialIndex <mnemonicInitialIndex>`: The index from which to start deriving accounts from the
+- `--mnemonicCount <mnemonicCount>`: The number of accounts to derive from the mnemonic.
+- `--mnemonicInitialIndex <mnemonicInitialIndex>`: The index from which to start deriving accounts from the
   mnemonic.
-    - -e.g.- `npx rpc-proxy -m "denial kitchen pet squirrel other broom bar gas better priority spoil cross" -mc 10 -mi 1`
+    - -e.g.- `npx rpc-proxy -m "denial kitchen pet squirrel other broom bar gas better priority spoil cross" --mnemonicCount 10 --mnemonicInitialIndex 1`
       OR `npx rpc-proxy --mnemonic "denial kitchen pet squirrel other broom bar gas better priority spoil cross" --mnemonicCount 10 --mnemonicInitialIndex 1`
     - **NOTE**: --mnemonic, --mnemonicCount, and --mnemonicInitialIndex MUST be used together.
 
 #### Use delegation
 
 - `-e, --enableDelegation`: Whether to enable delegation.
-- `-dp, --delegatorPrivateKey <delegatorPrivateKey>`: The private key of the delegator.
-- `-du, --delegatorUrl <delegatorUrl>`: The URL of the delegator.
-    - -e.g.- `npx rpc-proxy -e -dp 8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158`
-      OR `npx rpc-proxy --enableDelegation --delegatorPrivateKey 8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158`
-    - -e.g.- `npx rpc-proxy -e -du https://sponsor-testnet.vechain.energy/by/...`
-      OR `npx rpc-proxy --enableDelegation --delegatorUrl https://sponsor-testnet.vechain.energy/by/...`
-    - **NOTE**: --delegatorPrivateKey and --delegatorUrl are mutually exclusive.
-    - **NOTE**: if --enableDelegation is used, --delegatorPrivateKey OR --delegatorUrl MUST be used.
+- `--gasPayerPrivateKey <gasPayerPrivateKey>`: The private key of the gasPayer.
+- `-s, --gasPayerServiceUrl <gasPayerServiceUrl>`: The URL of the gasPayer.
+    - -e.g.- `npx rpc-proxy -e --gasPayerPrivateKey 8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158`
+      OR `npx rpc-proxy --enableDelegation --gasPayerPrivateKey 8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158`
+    - -e.g.- `npx rpc-proxy -e -s https://sponsor-testnet.vechain.energy/by/...`
+      OR `npx rpc-proxy --enableDelegation --gasPayerServiceUrl https://sponsor-testnet.vechain.energy/by/...`
+    - **NOTE**: --gasPayerPrivateKey and --gasPayerServiceUrl are mutually exclusive.
+    - **NOTE**: if --enableDelegation is used, --gasPayerPrivateKey OR --gasPayerServiceUrl MUST be used.
 
 ## Configuration file
 
@@ -141,7 +141,7 @@ Simple thor solo configuration with accounts as a list of private keys:
 }
 ```
 
-Simple testnet configuration with a delegator private key:
+Simple testnet configuration with a gasPayer private key:
 
 ``` json
 {
@@ -152,14 +152,14 @@ Simple testnet configuration with a delegator private key:
     "count": 10,
     "initialIndex": 0
   },
-  "delegator": {
-    "delegatorPrivateKey": "8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158"
+  "gasPayer": {
+    "gasPayerPrivateKey": "8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158"
   },
   "enableDelegation": true
 }
 ```
 
-Simple testnet configuration with a delegator private url:
+Simple testnet configuration with a gasPayer private url:
 
 ``` json
 {
@@ -170,8 +170,8 @@ Simple testnet configuration with a delegator private url:
     "count": 10,
     "initialIndex": 0
   },
-  "delegator": {
-    "delegatorUrl": "https://sponsor-testnet.vechain.energy/by/..."
+  "gasPayer": {
+    "gasPayerServiceUrl": "https://sponsor-testnet.vechain.energy/by/..."
   },
   "enableDelegation": true
 }
@@ -183,9 +183,10 @@ To run the RPC proxy as a Docker container, follow these steps:
 
 ``` bash
 cd ../..
-docker build -f docker/rpc-proxy/Dockerfile . -t vechain-rpc-proxy
-# We are assuming that the config.json file is placed at the same level as the project root
-docker run -d -p 8545:8545 -v ./config.json:/app/config.json -t vechain-rpc-proxy
+docker build -f docker/rpc-proxy/Dockerfile . -t vechain/sdk-rpc-proxy
+# To replace the default config file, update the config.json file and start a terminal from the folder in which the file is located. 
+# DISCLAIMER: Make sure you replace the default config file before using it for production software. By default, the docker will point to testnet and use a known mnemonic. 
+docker run -d -p 8545:8545 -v ./config.json:/app/packages/rpc-proxy/config.json -t vechain/sdk-rpc-proxy
 ```
 
 If you do not pass a config.json file, the default solo network standard configuration will be used. Make sure to

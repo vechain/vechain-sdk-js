@@ -12,7 +12,7 @@ import { type HttpNetworkConfig } from 'hardhat/types';
  *
  * They have custom parameters:
  * - debug: whether to enable debug mode
- * - delegator: the delegator to use
+ * - gasPayer: the gasPayer to use
  * - enableDelegation: whether to enable fee delegation
  */
 const config: HardhatUserConfig = {
@@ -42,7 +42,7 @@ const config: HardhatUserConfig = {
                 '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
             ],
             debug: false,
-            delegator: undefined,
+            gasPayer: undefined,
             gas: 'auto',
             gasPrice: 'auto',
             gasMultiplier: 1,
@@ -65,7 +65,7 @@ const config: HardhatUserConfig = {
                 passphrase: 'vechainthor'
             },
             debug: true,
-            delegator: undefined,
+            gasPayer: undefined,
             gas: 'auto',
             gasPrice: 'auto',
             gasMultiplier: 1,
@@ -74,7 +74,7 @@ const config: HardhatUserConfig = {
         } satisfies HttpNetworkConfig,
 
         /**
-         * Testnet configuration - with delegator url
+         * Testnet configuration - with gasPayer url
          */
         vechain_testnet_delegator_url: {
             // Testnet
@@ -88,8 +88,9 @@ const config: HardhatUserConfig = {
                 passphrase: 'vechainthor'
             },
             debug: true,
-            delegator: {
-                delegatorUrl: 'https://sponsor-testnet.vechain.energy/by/269'
+            gasPayer: {
+                gasPayerServiceUrl:
+                    'https://sponsor-testnet.vechain.energy/by/269'
             },
             enableDelegation: true,
             gas: 'auto',
@@ -100,7 +101,7 @@ const config: HardhatUserConfig = {
         } satisfies HttpNetworkConfig,
 
         /**
-         * Testnet configuration - with delegator private key
+         * Testnet configuration - with gasPayer private key
          */
         vechain_testnet_delegator_private_key: {
             // Testnet
@@ -114,8 +115,8 @@ const config: HardhatUserConfig = {
                 passphrase: 'vechainthor'
             },
             debug: true,
-            delegator: {
-                delegatorPrivateKey:
+            gasPayer: {
+                gasPayerPrivateKey:
                     'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5'
             },
             enableDelegation: true,
@@ -137,7 +138,7 @@ const config: HardhatUserConfig = {
             ],
             debug: false,
             enableDelegation: false,
-            delegator: undefined,
+            gasPayer: undefined,
             gas: 'auto',
             gasPrice: 'auto',
             gasMultiplier: 1,
