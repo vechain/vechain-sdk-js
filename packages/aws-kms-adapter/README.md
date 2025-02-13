@@ -7,7 +7,7 @@ The AWS KMS Adapter for VeChain SDK provides a secure way to sign transactions u
 - **Secure Key Management**: Use AWS KMS to securely manage and protect your private keys.
 - **Transaction Signing**: Sign VeChain transactions using keys stored in AWS KMS.
 - **Integration with VeChain SDK**: Seamlessly integrate with the VeChain SDK for blockchain interactions.
-- **Sign and send transactions using a delegator key**: You can specify the key ID of a delegator key to leverage this VeChain feature for signing and sending transactions.
+- **Sign and send transactions using a gasPayer key**: You can specify the key ID of a gasPayer key to leverage this VeChain feature for signing and sending transactions.
 
 ## Installation
 
@@ -29,7 +29,7 @@ yarn test:integration
 
 To integrate this into your code, depending on how you plan to manage your AWS credentials, you can choose one of the following examples.
 
-Within this repo, you can create a credentials file called `aws-credentials.json` with your custom credentials under the `tests` folder in case you want to give it a try before integrating with your project. A valid format would be as follows (it is an array in case you want to include a delegator key, assumed to be the second one):
+Within this repo, you can create a credentials file called `aws-credentials.json` with your custom credentials under the `tests` folder in case you want to give it a try before integrating with your project. A valid format would be as follows (it is an array in case you want to include a gasPayer key, assumed to be the second one):
 
 ```json
 [
@@ -155,7 +155,7 @@ import {
 
 ### Delegation (provider)
 
-You can also use delegation to sign your transactions. In this example the source of the delegation is a delegator which key is in KMS so requires a `KMSVeChainProvider`.
+You can also use delegation to sign your transactions. In this example the source of the delegation is a gasPayer which key is in KMS so requires a `KMSVeChainProvider`.
 
 ```ts
 import { type KMSClientParameters, KMSVeChainProvider, KMSVeChainSigner } from '@vechain/sdk-aws-kms-adapter';
@@ -186,7 +186,7 @@ import {
         awsClientParameters
     );
 
-    // Signer with delegator enabled
+    // Signer with gasPayer enabled
     const delegatorProvider = new KMSVeChainProvider(
         thorClient,
         delegatorAwsClientParameters
@@ -200,7 +200,7 @@ import {
 
     // Returns the address related to the origin KMS key
     const address = await signerWithDelegator.getAddress();
-    // Returns the address related to the delegator KMS key
+    // Returns the address related to the gasPayer KMS key
     const address = await signerWithDelegator.getAddress(true);
 ```
 
@@ -228,7 +228,7 @@ import {
 
     const thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
 
-    // Signer with delegator enabled
+    // Signer with gasPayer enabled
     const provider = new KMSVeChainProvider(
         thorClient,
         awsClientParameters
@@ -244,5 +244,5 @@ import {
     const address = await signerWithDelegator.getAddress();
 
     // See /tests folder for more examples. This time we wont get the address
-    // of the delegator since there is no provider
+    // of the gasPayer since there is no provider
 ```

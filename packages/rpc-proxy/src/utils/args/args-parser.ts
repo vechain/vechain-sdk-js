@@ -70,7 +70,7 @@ function parseAndGetFinalConfig(
                 options.enableDelegation as boolean;
         }
 
-        // B.8 - Get and validate delegator private key field
+        // B.8 - Get and validate gasPayer private key field
         configuration = ArgsValidatorAndGetter.delegation(
             options,
             configuration
@@ -79,10 +79,10 @@ function parseAndGetFinalConfig(
         // C - Evaluate the semantic of the arguments.
         // NOTE: Here we know all the fields are valid. So we can check the semantics of the fields.
 
-        // Delegation cannot be enabled without a delegator
+        // Delegation cannot be enabled without a gasPayer
         if (
             (configuration.enableDelegation as boolean) &&
-            configuration.delegator === undefined
+            configuration.gasPayer === undefined
         ) {
             throw new InvalidCommandLineArguments(
                 '_checkIfConfigurationFileHasCorrectStructure()',

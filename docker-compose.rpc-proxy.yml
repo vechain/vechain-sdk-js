@@ -65,7 +65,7 @@ services:
 
   # Default configuration for the RPC proxy service
   rpc-proxy:
-    build: 
+    build:
       context: .
       dockerfile: docker/rpc-proxy/Dockerfile
     container_name: rpc-proxy
@@ -80,7 +80,7 @@ services:
 
   # 1. Example of a custom configuration file for the RPC proxy service
   rpc-proxy-custom-config-file:
-    build: 
+    build:
       context: .
       dockerfile: docker/rpc-proxy/Dockerfile
     environment:
@@ -95,7 +95,7 @@ services:
 
   # 2. Example of a custom parameters for the RPC proxy service
   rpc-proxy-custom-parameters:
-    build: 
+    build:
       context: .
       dockerfile: docker/rpc-proxy/Dockerfile
     environment:
@@ -110,7 +110,7 @@ services:
 
   # 3. Example of a custom accounts for the RPC proxy service
   rpc-proxy-custom-accounts:
-    build: 
+    build:
       context: .
       dockerfile: docker/rpc-proxy/Dockerfile
     environment:
@@ -125,7 +125,7 @@ services:
 
   # 3. Example of a custom mnemonic for the RPC proxy service
   rpc-proxy-custom-mnemonic:
-    build: 
+    build:
       context: .
       dockerfile: docker/rpc-proxy/Dockerfile
     environment:
@@ -142,7 +142,7 @@ services:
 
   # 4. Example of a custom delegation by private key for the RPC proxy service
   rpc-proxy-with-delegation-by-private-key:
-    build: 
+    build:
       context: .
       dockerfile: docker/rpc-proxy/Dockerfile
     environment:
@@ -161,7 +161,7 @@ services:
 
   # 5. Example of a custom delegation by url for the RPC proxy service
   rpc-proxy-with-delegation-by-url:
-    build: 
+    build:
       context: .
       dockerfile: docker/rpc-proxy/Dockerfile
     environment:

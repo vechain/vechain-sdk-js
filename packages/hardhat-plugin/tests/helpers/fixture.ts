@@ -14,7 +14,7 @@ const createWalletFromHardhatNetworkConfigPositiveCasesFixture = [
         expectedAddresses: []
     },
     {
-        test: 'Should return a wallet from an Array of private keys - no delegator',
+        test: 'Should return a wallet from an Array of private keys - no gasPayer',
         networkConfig: {
             url: 'https://testnet.vechain.org',
             chainId: 74,
@@ -29,7 +29,7 @@ const createWalletFromHardhatNetworkConfigPositiveCasesFixture = [
         ]
     },
     {
-        test: 'Should return a wallet from an Array of private keys - with delegator',
+        test: 'Should return a wallet from an Array of private keys - with gasPayer',
         networkConfig: {
             url: 'https://testnet.vechain.org',
             chainId: 74,
@@ -49,7 +49,7 @@ const createWalletFromHardhatNetworkConfigPositiveCasesFixture = [
         ]
     },
     {
-        test: 'Should return a wallet from an Array of private keys (with 0x prefix) - no delegator',
+        test: 'Should return a wallet from an Array of private keys (with 0x prefix) - no gasPayer',
         networkConfig: {
             url: 'https://testnet.vechain.org',
             chainId: 74,
@@ -64,7 +64,7 @@ const createWalletFromHardhatNetworkConfigPositiveCasesFixture = [
         ]
     },
     {
-        test: 'Should return a wallet from an Array of private keys (with 0x prefix) - with delegator',
+        test: 'Should return a wallet from an Array of private keys (with 0x prefix) - with gasPayer',
         networkConfig: {
             url: 'https://testnet.vechain.org',
             chainId: 74,
@@ -84,7 +84,7 @@ const createWalletFromHardhatNetworkConfigPositiveCasesFixture = [
         ]
     },
     {
-        test: 'Should return a wallet from an HDNode wallet - no delegator',
+        test: 'Should return a wallet from an HDNode wallet - no gasPayer',
         networkConfig: {
             url: 'https://testnet.vechain.org',
             chainId: 74,
@@ -102,7 +102,7 @@ const createWalletFromHardhatNetworkConfigPositiveCasesFixture = [
         ]
     },
     {
-        test: 'Should return a wallet from an HDNode wallet - with delegator',
+        test: 'Should return a wallet from an HDNode wallet - with gasPayer',
         networkConfig: {
             url: 'https://testnet.vechain.org',
             chainId: 74,

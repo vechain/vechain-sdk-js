@@ -82,7 +82,7 @@ describe('VeChain base signer tests - solo', () => {
                             new VeChainProvider(
                                 thorClient,
                                 new ProviderInternalBaseWallet([], {
-                                    delegator: options
+                                    gasPayer: options
                                 }),
                                 isDelegated
                             )
@@ -140,7 +140,7 @@ describe('VeChain base signer tests - solo', () => {
                             new VeChainProvider(
                                 thorClient,
                                 new ProviderInternalBaseWallet([], {
-                                    delegator: options
+                                    gasPayer: options
                                 }),
                                 true
                             )

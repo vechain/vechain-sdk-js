@@ -117,7 +117,14 @@ class KMSVeChainProvider extends VeChainProvider {
         }
 
         return signOutput.Signature;
+
+        return signOutput.Signature;
     }
+}
+
+export { KMSVeChainProvider, type KMSClientParameters };
+
+}
 }
 
 export { KMSVeChainProvider, type KMSClientParameters };

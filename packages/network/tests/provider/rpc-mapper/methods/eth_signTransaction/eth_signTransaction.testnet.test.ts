@@ -7,10 +7,10 @@ import {
 } from '../../../../../src';
 import {
     THOR_SOLO_ACCOUNTS_BASE_WALLET,
-    THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR
+    THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_GAS_PAYER
 } from '../../../../fixture';
 import {
-    delegatorPrivateKeyFixture,
+    gasPayerPrivateKeyFixture,
     THOR_SOLO_ACCOUNTS_ETH_SEND_TRANSACTION_FIXTURE
 } from '../eth_sendTransaction/fixture';
 import { Hex } from '@vechain/sdk-core';
@@ -34,7 +34,7 @@ describe('RPC Mapper - eth_signTransaction method tests', () => {
      * Provider instance
      */
     let provider: VeChainProvider;
-    let providerWithDelegator: VeChainProvider;
+    let providerWithGasPayer: VeChainProvider;
 
     /**
      * Init thor client before each test
@@ -50,13 +50,13 @@ describe('RPC Mapper - eth_signTransaction method tests', () => {
             THOR_SOLO_ACCOUNTS_BASE_WALLET
         );
 
-        // Init provider with delegator
+        // Init provider with gasPayer
         // @NOTE due to the fact we are testing on thor-solo, we can delegate ONLY with a private key!
         // @NOTE: Since we are testing the signature, we can use SOLO accounts with testnet!
-        providerWithDelegator = new VeChainProvider(
+        providerWithGasPayer = new VeChainProvider(
             thorClient,
-            THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR({
-                delegatorPrivateKey: delegatorPrivateKeyFixture
+            THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_GAS_PAYER({
+                gasPayerPrivateKey: gasPayerPrivateKeyFixture
             }),
             true
         );
@@ -73,13 +73,13 @@ describe('RPC Mapper - eth_signTransaction method tests', () => {
         test(
             'Should be able to sign transactions',
             async () => {
-                // Sign with the delegator OR not
+                // Sign with the gasPayer OR not
                 for (const delegated of [true, false]) {
                     // Value field of the transaction objects to sign
                     for (const value of ['0x111', '0x222', '0x333']) {
                         // Get the provider to use depending on delegated or not
                         const providerToUse = delegated
-                            ? providerWithDelegator
+                            ? providerWithGasPayer
                             : provider;
 
                         // Send a transaction

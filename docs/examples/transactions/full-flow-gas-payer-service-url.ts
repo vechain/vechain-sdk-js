@@ -15,7 +15,7 @@ import {
 } from '@vechain/sdk-network';
 import { expect } from 'expect';
 
-// START_SNIPPET: FullFlowDelegatorUrlSnippet
+// START_SNIPPET: FullFlowGasPayerServiceUrlSnippet
 
 // 1 - Create the thor client
 const thorClient = ThorClient.at(TESTNET_URL, {
@@ -54,9 +54,8 @@ const providerWithDelegationEnabled = new VeChainProvider(
             }
         ],
         {
-            // The term `delegator` will be deprecated soon and renamed `gasPayer`.
-            delegator: {
-                delegatorUrl: gasPayerAccount.URL
+            gasPayer: {
+                gasPayerServiceUrl: gasPayerAccount.URL
             }
         }
     ),
@@ -119,12 +118,12 @@ const txReceipt = await thorClient.transactions.waitForTransaction(
     sendTransactionResult.id
 );
 
-// END_SNIPPET: FullFlowDelegatorUrlSnippet
+// END_SNIPPET: FullFlowGasPayerServiceUrlSnippet
 
 // Check the signed transaction
 expect(delegatedSigned.isSigned).toEqual(true);
 expect(delegatedSigned.isDelegated).toEqual(true);
-// expect(signedTx.delegator).toEqual(gasPayerAccount.address); ---
+// expect(signedTx.gasPayer).toEqual(gasPayerAccount.address); ---
 
 // Check the transaction receipt
 expect(txReceipt).toBeDefined();

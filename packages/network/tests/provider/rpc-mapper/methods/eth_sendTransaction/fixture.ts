@@ -9,11 +9,11 @@ const THOR_SOLO_ACCOUNTS_ETH_SEND_TRANSACTION_FIXTURE = {
 };
 
 /**
- * Fixture for a delegator private key
+ * Fixture for a gasPayer private key
  */
-const delegatorPrivateKeyFixture = THOR_SOLO_ACCOUNTS[4].privateKey;
+const gasPayerPrivateKeyFixture = THOR_SOLO_ACCOUNTS[4].privateKey;
 
 export {
     THOR_SOLO_ACCOUNTS_ETH_SEND_TRANSACTION_FIXTURE,
-    delegatorPrivateKeyFixture
+    gasPayerPrivateKeyFixture
 };
