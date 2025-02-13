@@ -158,7 +158,7 @@ import {
 You can also use delegation to sign your transactions. In this example the source of the delegation is a gasPayer which key is in KMS so requires a `KMSVeChainProvider`.
 
 ```ts
-import {type KMSClientParameters, KMSVeChainProvider, KMSVeChainSigner} from '@vechain/sdk-aws-kms-adapter';
+import { type KMSClientParameters, KMSVeChainProvider, KMSVeChainSigner } from '@vechain/sdk-aws-kms-adapter';
 import {
     THOR_SOLO_URL,
     ThorClient
