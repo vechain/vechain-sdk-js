@@ -325,7 +325,7 @@ const transactionFixtures = [
             gasPriceCoef: 0,
             gas: 399535,
             origin: '0x8c59c63d6458c71b6ff88d57698437524a703084',
-            delegator: null,
+            gasPayer: null,
             nonce: '0x19b4782',
             dependsOn: null,
             size: 709,

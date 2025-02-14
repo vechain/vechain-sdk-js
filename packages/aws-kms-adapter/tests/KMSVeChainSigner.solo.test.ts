@@ -46,7 +46,7 @@ describe('KMSVeChainSigner - Thor Solo', () => {
     let signer: KMSVeChainSigner;
 
     /**
-     * KMSVeChainSigner with delegator instance
+     * KMSVeChainSigner with gasPayer instance
      */
     let signerWithDelegator: KMSVeChainSigner;
 
@@ -76,7 +76,7 @@ describe('KMSVeChainSigner - Thor Solo', () => {
         }
         thorClient = ThorClient.at(THOR_SOLO_URL);
 
-        // Signer with delegator disabled
+        // Signer with gasPayer disabled
         signer = new KMSVeChainSigner(
             new KMSVeChainProvider(thorClient, awsClientParameters)
         );
@@ -84,7 +84,7 @@ describe('KMSVeChainSigner - Thor Solo', () => {
         // This step should be removed once this is clarified  https://github.com/localstack/localstack/issues/11678
         await fundVTHO(thorClient, expectedAddress);
 
-        // Signer with delegator enabled
+        // Signer with gasPayer enabled
         const delegatorProvider = new KMSVeChainProvider(
             thorClient,
             delegatorAwsClientParameters

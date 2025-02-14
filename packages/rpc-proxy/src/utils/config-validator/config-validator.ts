@@ -119,28 +119,26 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
         );
     }
 
-    // Check the delegator
-    if (configFile.delegator !== undefined) {
-        // Both delegator private key and url are given
+    // Check the gasPayer
+    if (configFile.gasPayer !== undefined) {
+        // Both gasPayer private key and url are given
         if (
-            configFile.delegator.delegatorPrivateKey !== undefined &&
-            configFile.delegator.delegatorUrl !== undefined
+            configFile.gasPayer.gasPayerPrivateKey !== undefined &&
+            configFile.gasPayer.gasPayerServiceUrl !== undefined
         ) {
             throw new InvalidConfigurationFile(
                 '_checkIfConfigurationFileHasCorrectStructure()',
-                `Invalid delegator configuration in configuration file: ${absolutePath}. Delegator configuration must contain either a private key or a URL, not both`,
+                `Invalid gasPayer configuration in configuration file: ${absolutePath}. The gasPayer configuration must contain either a private key or a URL, not both`,
                 {
                     filePath
                 }
             );
         }
 
-        // Invalid delegator private key
+        // Invalid gasPayer private key
         if (
-            configFile.delegator.delegatorPrivateKey !== undefined &&
-            !isValidDelegatorPrivateKey(
-                configFile.delegator.delegatorPrivateKey
-            )
+            configFile.gasPayer.gasPayerPrivateKey !== undefined &&
+            !isValidDelegatorPrivateKey(configFile.gasPayer.gasPayerPrivateKey)
         ) {
             throw new InvalidConfigurationFile(
                 '_checkIfConfigurationFileHasCorrectStructure()',
@@ -151,10 +149,10 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
             );
         }
 
-        // Invalid delegator url
+        // Invalid gasPayer url
         if (
-            configFile.delegator.delegatorUrl !== undefined &&
-            !isValidDelegatorUrl(configFile.delegator.delegatorUrl)
+            configFile.gasPayer.gasPayerServiceUrl !== undefined &&
+            !isValidDelegatorUrl(configFile.gasPayer.gasPayerServiceUrl)
         ) {
             throw new InvalidConfigurationFile(
                 '_checkIfConfigurationFileHasCorrectStructure()',
@@ -196,14 +194,14 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
 
     // NOTE: Here we know all the fields are valid. So we can check the semantics of the fields.
 
-    // Delegation cannot be enabled without a delegator
+    // Delegation cannot be enabled without a gasPayer
     if (
         (configFile.enableDelegation as boolean) &&
-        configFile.delegator === undefined
+        configFile.gasPayer === undefined
     ) {
         throw new InvalidConfigurationFile(
             '_checkIfConfigurationFileHasCorrectStructure()',
-            `Invalid configuration file: ${absolutePath}. Delegator configuration must be removed when enableDelegation is false`,
+            `Invalid configuration file: ${absolutePath}. The gasPayer configuration must be removed when enableDelegation is false`,
             {
                 filePath
             }

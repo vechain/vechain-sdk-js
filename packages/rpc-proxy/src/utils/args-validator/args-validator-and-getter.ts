@@ -152,7 +152,7 @@ const ArgsValidatorAndGetter = {
         ) {
             throw new InvalidCommandLineArguments(
                 'ArgsValidatorAndGetter.delegation()',
-                'Both delegator private key and delegator URL are provided. Only one can be provided',
+                'Both gasPayer private key and gasPayer URL are provided. Only one can be provided',
                 {
                     flag: '{-dp , --delegatorPrivateKey}, {-du , --delegatorUrl}',
                     value: `{value not provided for security reason} , {${options.delegatorUrl as string}}`
@@ -167,23 +167,23 @@ const ArgsValidatorAndGetter = {
         ) {
             return {
                 ...currentConfiguration,
-                delegator: {
-                    delegatorPrivateKey: ArgsValidator.delegatorPrivateKey(
+                gasPayer: {
+                    gasPayerPrivateKey: ArgsValidator.delegatorPrivateKey(
                         options.delegatorPrivateKey as string
                     )
                 }
             };
         }
 
-        // Delegation is made with a delegator URL
+        // Delegation is made with a gasPayer URL
         if (
             options.delegatorUrl !== undefined &&
             options.delegatorUrl !== null
         ) {
             return {
                 ...currentConfiguration,
-                delegator: {
-                    delegatorUrl: ArgsValidator.delegatorUrl(
+                gasPayer: {
+                    gasPayerServiceUrl: ArgsValidator.delegatorUrl(
                         options.delegatorUrl as string
                     )
                 }

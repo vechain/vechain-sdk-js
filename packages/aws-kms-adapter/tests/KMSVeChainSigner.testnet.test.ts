@@ -36,7 +36,7 @@ describe('KMSVeChainSigner - Testnet', () => {
     let thorClient: ThorClient;
 
     /**
-     * KMSVeChainSigner with delegator instance
+     * KMSVeChainSigner with gasPayer instance
      */
     let signerWithDelegator: KMSVeChainSigner;
 

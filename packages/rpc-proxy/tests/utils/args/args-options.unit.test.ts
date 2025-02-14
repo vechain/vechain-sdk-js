@@ -151,9 +151,9 @@ describe('Args options tests', () => {
         });
 
         /**
-         * Should be able to parse the delegator private key option
+         * Should be able to parse the gasPayer private key option
          */
-        test('Should be able to parse the delegator private key option', () => {
+        test('Should be able to parse the gasPayer private key option', () => {
             [
                 // Normal syntax
                 [
@@ -183,9 +183,9 @@ describe('Args options tests', () => {
         });
 
         /**
-         * Should be able to parse the delegator URL option
+         * Should be able to parse the gasPayer URL option
          */
-        test('Should be able to parse the delegator URL option', () => {
+        test('Should be able to parse the gasPayer URL option', () => {
             [
                 // Normal syntax
                 ['path', 'program', '--delegatorUrl', 'http://localhost:8080'],

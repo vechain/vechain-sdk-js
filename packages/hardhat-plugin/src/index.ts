@@ -65,7 +65,7 @@ extendEnvironment((hre) => {
             title: 'You are operating on a non-vechain network',
             messages: [
                 'Ensure your hardhat config file has a network that:',
-                '\t1. Is a VeChain valid network (set url and optionally delegator parameter)',
+                '\t1. Is a VeChain valid network (set url and optionally gasPayer parameter)',
                 '\t2. Has the name of the network containing "vechain" (e.g. "vechain_mainnet", "vechain_testnet", "vechain_solo", ...)',
                 '',
                 'This is required to use the VeChain provider and its functions.',

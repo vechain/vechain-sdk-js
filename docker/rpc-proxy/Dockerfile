@@ -55,7 +55,7 @@ COPY --from=builder /app/package.json /app/package.json
 WORKDIR /app
 RUN yarn workspace @vechain/sdk-rpc-proxy install --production --frozen-lockfile --ignore-scripts --prefer-offline \
     && yarn cache clean \
-    && adduser -D rpc-proxy-user 
+    && adduser -D rpc-proxy-user
 # Create a new user to run the app so we do not use root
 USER rpc-proxy-user
 

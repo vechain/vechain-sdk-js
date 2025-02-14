@@ -27,7 +27,7 @@ describe('Provider Hardhat Helpers', () => {
                         fixture.networkConfig as HttpNetworkConfig
                     );
                     const addresses = await wallet.getAddresses();
-                    const delegator = await wallet.getDelegator();
+                    const delegator = await wallet.getGasPayer();
 
                     expect(addresses).toEqual(fixture.expectedAddresses);
                     expect(delegator).toEqual(

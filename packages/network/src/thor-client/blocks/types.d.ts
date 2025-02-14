@@ -212,6 +212,11 @@ interface TransactionsExpandedBlockDetail {
     origin: string;
 
     /**
+     * Gas payer of the transaction.
+     */
+    gasPayer: string;
+
+    /**
      * Nonce value for preventing replay attacks.
      */
     nonce: string;

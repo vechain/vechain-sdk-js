@@ -61,9 +61,9 @@ const createWalletFromHardhatNetworkConfig = (
                     };
                 }),
                 {
-                    delegator: DelegationHandler(
+                    gasPayer: DelegationHandler(
                         (networkConfig as HttpNetworkConfig).delegator
-                    ).delegatorOrUndefined()
+                    ).gasPayerOrUndefined()
                 }
             );
         }
@@ -75,9 +75,9 @@ const createWalletFromHardhatNetworkConfig = (
                 accountFromConfig.initialIndex,
                 accountFromConfig.path,
                 {
-                    delegator: DelegationHandler(
+                    gasPayer: DelegationHandler(
                         (networkConfig as HttpNetworkConfig).delegator
-                    ).delegatorOrUndefined()
+                    ).gasPayerOrUndefined()
                 }
             );
         }
