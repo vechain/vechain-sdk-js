@@ -48,7 +48,7 @@ describe('KMSVeChainSigner - Thor Solo', () => {
     /**
      * KMSVeChainSigner with gasPayer instance
      */
-    let signerWithDelegator: KMSVeChainSigner;
+    let signerWithGasPayer: KMSVeChainSigner;
 
     /**
      * Init thor client and provider before all tests
@@ -59,9 +59,9 @@ describe('KMSVeChainSigner - Thor Solo', () => {
             './aws-credentials.json'
         );
         let awsClientParameters: KMSClientParameters;
-        let delegatorAwsClientParameters: KMSClientParameters;
+        let gasPayerAwsClientParameters: KMSClientParameters;
         try {
-            [awsClientParameters, delegatorAwsClientParameters] = JSON.parse(
+            [awsClientParameters, gasPayerAwsClientParameters] = JSON.parse(
                 fs.readFileSync(awsCredentialsPath, 'utf8')
             ) as KMSClientParameters[];
         } catch (error) {
@@ -70,7 +70,7 @@ describe('KMSVeChainSigner - Thor Solo', () => {
                 __dirname,
                 './test-aws-credentials.json'
             );
-            [awsClientParameters, delegatorAwsClientParameters] = JSON.parse(
+            [awsClientParameters, gasPayerAwsClientParameters] = JSON.parse(
                 fs.readFileSync(testAwsCredentialsPath, 'utf8')
             ) as KMSClientParameters[];
         }
@@ -85,19 +85,19 @@ describe('KMSVeChainSigner - Thor Solo', () => {
         await fundVTHO(thorClient, expectedAddress);
 
         // Signer with gasPayer enabled
-        const delegatorProvider = new KMSVeChainProvider(
+        const gasPayerProvider = new KMSVeChainProvider(
             thorClient,
-            delegatorAwsClientParameters
+            gasPayerAwsClientParameters
         );
-        expect(delegatorProvider).toBeInstanceOf(KMSVeChainProvider);
-        signerWithDelegator = new KMSVeChainSigner(
+        expect(gasPayerProvider).toBeInstanceOf(KMSVeChainProvider);
+        signerWithGasPayer = new KMSVeChainSigner(
             new KMSVeChainProvider(thorClient, awsClientParameters, true),
             {
-                provider: delegatorProvider
+                provider: gasPayerProvider
             }
         );
         // This step should be removed once this is clarified  https://github.com/localstack/localstack/issues/11678
-        await fundVTHO(thorClient, await signerWithDelegator.getAddress(true));
+        await fundVTHO(thorClient, await signerWithGasPayer.getAddress(true));
     }, timeout);
 
     describe('getAddress', () => {
@@ -120,7 +120,7 @@ describe('KMSVeChainSigner - Thor Solo', () => {
                     description,
                     async () => {
                         const signTransactionSigner = isDelegated
-                            ? signerWithDelegator
+                            ? signerWithGasPayer
                             : signer;
                         const sampleClause = Clause.callFunction(
                             Address.of(TESTING_CONTRACT_ADDRESS),
@@ -187,7 +187,7 @@ describe('KMSVeChainSigner - Thor Solo', () => {
                     description,
                     async () => {
                         const signTransactionSigner = isDelegated
-                            ? signerWithDelegator
+                            ? signerWithGasPayer
                             : signer;
                         const sampleClause = Clause.callFunction(
                             Address.of(TESTING_CONTRACT_ADDRESS),
