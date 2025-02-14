@@ -44,8 +44,8 @@ describe('ThorClient - ERC20 Contracts on testnet', () => {
                     }
                 ],
                 {
-                    delegator: {
-                        delegatorUrl: TESTNET_DELEGATE_URL
+                    gasPayer: {
+                        gasPayerServiceUrl: TESTNET_DELEGATE_URL
                     }
                 }
             ),
@@ -69,7 +69,7 @@ describe('ThorClient - ERC20 Contracts on testnet', () => {
 
         const txResult = await (
             await contract.transact.transfer(
-                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
+                TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address,
                 1000n
             )
         ).wait();
@@ -87,7 +87,7 @@ describe('ThorClient - ERC20 Contracts on testnet', () => {
             )) as VeChainSigner,
             ERC20_CONTRACT_ADDRESS_ON_TESTNET,
             ABIContract.ofAbi(ERC20_ABI).getFunction('transfer'),
-            [TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address, 1000n],
+            [TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address, 1000n],
             {
                 comment: 'test comment',
                 delegationUrl: TESTNET_DELEGATE_URL

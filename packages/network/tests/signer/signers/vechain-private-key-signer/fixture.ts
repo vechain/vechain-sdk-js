@@ -52,7 +52,7 @@ interface TestCaseTypedData {
 
 /**
  * SignTransaction test cases
- * Has both correct and incorrect for solo and an example of using delegatorUrl on testnet
+ * Has both correct and incorrect for solo and an example of using gasPayerServiceUrl on testnet
  */
 const signTransactionTestCases = {
     solo: {
@@ -86,8 +86,8 @@ const signTransactionTestCases = {
                     'Should sign a transaction with private key delegation',
                 origin: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER,
                 options: {
-                    delegatorPrivateKey:
-                        TEST_ACCOUNTS.TRANSACTION.DELEGATOR.privateKey
+                    gasPayerPrivateKey:
+                        TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.privateKey
                 } satisfies SignTransactionOptions,
                 isDelegated: true,
                 expected: {
@@ -117,20 +117,20 @@ const signTransactionTestCases = {
         incorrect: [
             {
                 description:
-                    "Should throw error when delegator's private key is invalid",
+                    "Should throw error when gasPayer's private key is invalid",
                 origin: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER,
                 options: {
-                    delegatorPrivateKey: 'INVALID_PRIVATE_KEY'
+                    gasPayerPrivateKey: 'INVALID_PRIVATE_KEY'
                 } satisfies SignTransactionOptions,
                 isDelegated: true,
                 expectedError: InvalidDataType
             },
             {
                 description:
-                    "Should throw error when using delegator url on solo network due to no server providing the delegator's signature through an endpoint",
+                    "Should throw error when using gasPayer url on solo network due to no server providing the gasPayer's signature through an endpoint",
                 origin: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER,
                 options: {
-                    delegatorUrl: 'https://example.com'
+                    gasPayerServiceUrl: 'https://example.com'
                 } satisfies SignTransactionOptions,
                 isDelegated: true,
                 expectedError: NotDelegatedTransaction
@@ -143,7 +143,7 @@ const signTransactionTestCases = {
                 description: 'Should sign a transaction with delegation url',
                 origin: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER,
                 options: {
-                    delegatorUrl: TESTNET_DELEGATE_URL
+                    gasPayerServiceUrl: TESTNET_DELEGATE_URL
                 } satisfies SignTransactionOptions,
                 isDelegated: true,
                 expected: {
@@ -170,7 +170,7 @@ const signTransactionTestCases = {
         incorrect: [
             {
                 description:
-                    'Should NOT sign a transaction with delegation when no delegator is provided',
+                    'Should NOT sign a transaction with delegation when no gasPayer is provided',
                 origin: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER,
                 options: undefined,
                 isDelegated: true,

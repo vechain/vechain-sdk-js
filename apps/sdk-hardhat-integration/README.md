@@ -19,9 +19,9 @@ The `hardhat.config.js` is the main configuration file. By specifying the desire
 Note that:
 
 - The network name should contain `vechain`, otherwise, it may result in an error.
-- In the network configuration, two additional fields can be added: `delegator` and `useDebug`. These fields allow for more customization and control over the network settings, catering to specific project requirements and preferences.
+- In the network configuration, two additional fields can be added: `gasPayer` and `useDebug`. These fields allow for more customization and control over the network settings, catering to specific project requirements and preferences.
    - **Debug Mode**: The `debug` field enables or disables debug mode.
-   - **Delegator**: The `delegator` field allows you to delegate the transaction to a delegator. It supports two optional parameters:  - **Delegator**: The `delegator` field allows you to delegate the transaction to a delegator. It supports two optional parameters: `delegatorPrivateKey` and `delegatorUrl`.
+   - **Delegator**: The `gasPayer` field allows you to delegate the transaction to a gasPayer. It supports two optional parameters:  - **Delegator**: The `gasPayer` field allows you to delegate the transaction to a gasPayer. It supports two optional parameters: `delegatorPrivateKey` and `delegatorUrl`.
 - When configuring your Solidity compiler settings in hardhat.config.js, it's recommended to set the evmVersion to "Paris" for projects targeting the latest EVM functionalities. This setting ensures that the compiled bytecode is optimized for the most recent features and gas cost adjustments associated with the Paris EVM version. Using an EVM version other than "Paris" could potentially lead to issues with unsupported opcodes, especially if your contracts rely on newer EVM features introduced in or after the Paris update.
 
 This flexibility in the configuration file allows developers to tailor their development experience and adapt it to the requirements of their projects, ensuring a smooth and efficient development process.

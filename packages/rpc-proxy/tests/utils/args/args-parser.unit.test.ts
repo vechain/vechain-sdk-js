@@ -4,11 +4,11 @@ import {
     getOptionsFromCommandLine,
     parseAndGetFinalConfig
 } from '../../../src/utils';
-import { correctConfigurationFilePathFixture } from '../../fixture';
 import {
     InvalidCommandLineArguments,
     InvalidConfigurationFilePath
 } from '@vechain/sdk-errors';
+import { correctConfigurationFilePathFixture } from '../../fixture';
 
 /**
  * Args options tests
@@ -641,7 +641,7 @@ describe('Args parser tests', () => {
                 // Short syntax
                 ['path', 'program', '-du', ''],
 
-                // Enable delegation without the delegator
+                // Enable delegation without the gasPayer
 
                 // Normal syntax
                 ['path', 'program', '--enableDelegation']

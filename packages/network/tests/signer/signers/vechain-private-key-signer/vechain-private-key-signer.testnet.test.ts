@@ -23,7 +23,7 @@ import {
     TESTING_CONTRACT_ABI,
     TESTING_CONTRACT_ADDRESS,
     THOR_SOLO_ACCOUNTS_BASE_WALLET,
-    THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR
+    THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_GAS_PAYER
 } from '../../../fixture';
 import { signTransactionTestCases } from './fixture';
 
@@ -86,7 +86,7 @@ describe('VeChain base signer tests - testnet', () => {
                         HexUInt.of(fixture.origin.privateKey).bytes,
                         new VeChainProvider(
                             thorClient,
-                            THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR(
+                            THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_GAS_PAYER(
                                 fixture.options
                             ),
                             true
@@ -121,7 +121,7 @@ describe('VeChain base signer tests - testnet', () => {
                     // Sign the transaction
                     const signedTransaction = await signer.signTransaction({
                         from: fixture.origin.address,
-                        delegationUrl: fixture.options.delegatorUrl
+                        delegationUrl: fixture.options.gasPayerServiceUrl
                     });
 
                     expect(signedTransaction).toBeDefined();
@@ -173,7 +173,7 @@ describe('VeChain base signer tests - testnet', () => {
                             new VeChainProvider(
                                 thorClient,
                                 new ProviderInternalBaseWallet([], {
-                                    delegator: options
+                                    gasPayer: options
                                 }),
                                 isDelegated
                             )

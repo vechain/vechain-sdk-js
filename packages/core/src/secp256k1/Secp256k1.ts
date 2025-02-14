@@ -144,15 +144,18 @@ class Secp256k1 {
      * * [nc_secp256k1.utils.randomPrivateKey](https://github.com/paulmillr/noble-secp256k1).
      */
     public static async generatePrivateKey(): Promise<Uint8Array> {
-        return await new Promise<Uint8Array>((resolve) => {
+        return await new Promise<Uint8Array>((resolve, reject) => {
             try {
-                resolve(nc_secp256k1.utils.randomPrivateKey());
+                const privateKey = nc_secp256k1.utils.randomPrivateKey();
+                resolve(privateKey); // Resolve the promise with the generated private key
             } catch (e) {
-                throw new InvalidSecp256k1PrivateKey(
-                    'Secp256k1.generatePrivateKey',
-                    'Private key generation failed: ensure you have a secure random number generator available at runtime.',
-                    undefined,
-                    e
+                reject(
+                    new InvalidSecp256k1PrivateKey(
+                        'Secp256k1.generatePrivateKey',
+                        'Private key generation failed: ensure you have a secure random number generator available at runtime.',
+                        undefined,
+                        e
+                    )
                 );
             }
         });

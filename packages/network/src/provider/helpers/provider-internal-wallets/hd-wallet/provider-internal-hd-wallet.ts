@@ -30,7 +30,7 @@ class ProviderInternalHDWallet extends ProviderInternalBaseWallet {
      * @param count - Number of accounts to generate.
      * @param initialIndex - Initial index of the accounts to generate.
      * @param derivationPath - Derivation path of the wallet.
-     * @param options - Options for signing a transaction with delegator.
+     * @param options - Options for signing a transaction with gasPayer.
      */
     constructor(
         mnemonic: string[],
@@ -38,7 +38,7 @@ class ProviderInternalHDWallet extends ProviderInternalBaseWallet {
         initialIndex: number = 0,
         derivationPath: string = HDKey.VET_DERIVATION_PATH,
         options?: {
-            delegator?: SignTransactionOptions;
+            gasPayer?: SignTransactionOptions;
         }
     ) {
         // Initialize the base wallet with the generated accounts

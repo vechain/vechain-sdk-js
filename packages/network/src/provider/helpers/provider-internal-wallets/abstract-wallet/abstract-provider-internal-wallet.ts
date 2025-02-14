@@ -26,24 +26,24 @@ abstract class AbstractProviderInternalWallet
     readonly accounts: ProviderInternalWalletAccount[];
 
     /**
-     * Options for signing a transaction with delegator.
+     * Options for signing a transaction with gasPayer.
      */
-    readonly delegator?: SignTransactionOptions;
+    readonly gasPayer?: SignTransactionOptions;
 
     /**
      * Create a new wallet.
      *
      * @param accounts List of accounts in the wallet.
-     * @param options Optional options for signing a transaction with delegator.
+     * @param options Optional options for signing a transaction with gasPayer.
      */
     constructor(
         accounts: ProviderInternalWalletAccount[],
         options?: {
-            delegator?: SignTransactionOptions;
+            gasPayer?: SignTransactionOptions;
         }
     ) {
         this.accounts = accounts;
-        this.delegator = options?.delegator;
+        this.gasPayer = options?.gasPayer;
     }
 
     /**
@@ -154,21 +154,21 @@ abstract class AbstractProviderInternalWallet
     }
 
     /**
-     * Get the options for signing a transaction with delegator (if any).
+     * Get the options for signing a transaction with gasPayer (if any).
      *
-     * @returns The options for signing a transaction with delegator.
+     * @returns The options for signing a transaction with gasPayer.
      */
-    abstract getDelegator(): Promise<SignTransactionOptions | null>;
+    abstract getGasPayer(): Promise<SignTransactionOptions | null>;
 
     /**
-     * SYNC Version of getDelegator()
+     * SYNC Version of getGasPayer()
      *
-     * Get the options for signing a transaction with delegator (if any).
+     * Get the options for signing a transaction with gasPayer (if any).
      *
-     * @returns The options for signing a transaction with delegator.
+     * @returns The options for signing a transaction with gasPayer.
      */
-    getDelegatorSync(): SignTransactionOptions | null {
-        return DelegationHandler(this.delegator).delegatorOrNull();
+    getGasPayerSync(): SignTransactionOptions | null {
+        return DelegationHandler(this.gasPayer).gasPayerOrNull();
     }
 }
 

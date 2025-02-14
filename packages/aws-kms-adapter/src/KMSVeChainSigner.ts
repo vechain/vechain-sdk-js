@@ -56,7 +56,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
             } else {
                 throw new JSONRPCInvalidParams(
                     'KMSVeChainSigner.constructor',
-                    'The delegator object is not well formed, either provider or url should be provided.',
+                    'The gasPayer object is not well formed, either provider or url should be provided.',
                     { delegator }
                 );
             }
@@ -132,7 +132,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
 
     /**
      * It returns the address associated with the signer.
-     * @param {boolean} fromDelegatorProvider (Optional) If true, the provider will be the delegator.
+     * @param {boolean} fromDelegatorProvider (Optional) If true, the provider will be the gasPayer.
      * @returns The address associated with the signer.
      */
     public async getAddress(
@@ -232,9 +232,9 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
     }
 
     /**
-     * Concat the origin signature to the delegator signature if the delegator is set.
+     * Concat the origin signature to the gasPayer signature if the gasPayer is set.
      * @param {Transaction} transaction Transaction to sign.
-     * @returns Both signatures concatenated if the delegator is set, the origin signature otherwise.
+     * @returns Both signatures concatenated if the gasPayer is set, the origin signature otherwise.
      */
     private async concatSignatureIfDelegation(
         transaction: Transaction
@@ -246,7 +246,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         const originSignature =
             await this.buildVeChainSignatureFromPayload(transactionHash);
 
-        // We try first in case there is a delegator provider
+        // We try first in case there is a gasPayer provider
         if (this.kmsVeChainDelegatorProvider !== undefined) {
             const publicKeyDecoded = await this.getDecodedPublicKey();
             const originAddress = Address.ofPublicKey(publicKeyDecoded);
@@ -259,13 +259,13 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
                 );
             return concatBytes(originSignature, delegatorSignature);
         } else if (
-            // If not, we try with the delegator URL
+            // If not, we try with the gasPayer URL
             this.kmsVeChainDelegatorUrl !== undefined &&
             this.provider !== undefined
         ) {
             const originAddress = await this.getAddress();
             const delegatorSignature = await DelegationHandler({
-                delegatorUrl: this.kmsVeChainDelegatorUrl
+                gasPayerServiceUrl: this.kmsVeChainDelegatorUrl
             }).getDelegationSignatureUsingUrl(
                 transaction,
                 originAddress,

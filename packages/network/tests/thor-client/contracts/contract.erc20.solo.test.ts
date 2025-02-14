@@ -55,9 +55,9 @@ describe('ThorClient - ERC20 Contracts', () => {
                     }
                 ],
                 {
-                    delegator: {
-                        delegatorPrivateKey:
-                            TEST_ACCOUNTS.TRANSACTION.DELEGATOR.privateKey
+                    gasPayer: {
+                        gasPayerPrivateKey:
+                            TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.privateKey
                     }
                 }
             ),
@@ -225,15 +225,15 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         contract.setContractTransactOptions({
             signTransactionOptions: {
-                delegatorPrivateKey:
-                    TEST_ACCOUNTS.TRANSACTION.DELEGATOR.privateKey
+                gasPayerPrivateKey:
+                    TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.privateKey
             },
             isDelegated: true
         });
 
         await (
             await contract.transact.transfer(
-                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
+                TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address,
                 1000n
             )
         ).wait();
@@ -258,7 +258,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         const txResult = await (
             await contract.transact.transfer(
-                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
+                TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address,
                 1000n
             )
         ).wait();
@@ -267,7 +267,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         expect(
             await contract.read.balanceOf(
-                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
+                TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address
             )
         ).toEqual([1000n]);
     }, 10000);
@@ -388,12 +388,12 @@ describe('ThorClient - ERC20 Contracts', () => {
                     ),
                     contract.clause.transfer(
                         { comment: 'Transfer 1000 tokens' },
-                        TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
+                        TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address,
                         1000n
                     ),
                     contract.clause.transfer(
                         { comment: 'Transfer 3000 tokens' },
-                        TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
+                        TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address,
                         3000n
                     )
                 ],
@@ -408,7 +408,7 @@ describe('ThorClient - ERC20 Contracts', () => {
                     TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
                 ),
                 contract.clause.balanceOf(
-                    TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
+                    TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address
                 )
             ]
         );
@@ -449,7 +449,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         const txResult = await (
             await contract.transact.transfer(
-                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
+                TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address,
                 1000n
             )
         ).wait();
@@ -458,7 +458,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         expect(
             await contract.read.balanceOf(
-                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
+                TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address
             )
         ).toEqual([1000n]);
     }, 30000);

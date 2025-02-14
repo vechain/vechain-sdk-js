@@ -43,10 +43,10 @@ const THOR_SOLO_ACCOUNTS_BASE_WALLET: ProviderInternalBaseWallet =
     );
 
 /**
- * Test accounts into wallet fixture with delegator
+ * Test accounts into wallet fixture with gasPayer
  */
-const THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR = (
-    delegator: SignTransactionOptions
+const THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_GAS_PAYER = (
+    gasPayer: SignTransactionOptions
 ): ProviderInternalBaseWallet =>
     new ProviderInternalBaseWallet(
         THOR_SOLO_ACCOUNTS.map((account) => ({
@@ -57,7 +57,7 @@ const THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR = (
             address: account.address
         })),
         {
-            delegator
+            gasPayer: gasPayer
         }
     );
 
@@ -83,7 +83,7 @@ const TEST_ACCOUNTS = {
     TRANSACTION: {
         TRANSACTION_SENDER: THOR_SOLO_ACCOUNTS[1],
         TRANSACTION_RECEIVER: THOR_SOLO_ACCOUNTS[2],
-        DELEGATOR: THOR_SOLO_ACCOUNTS[3],
+        GAS_PAYER: THOR_SOLO_ACCOUNTS[3],
         CONTRACT_MANAGER: THOR_SOLO_ACCOUNTS[4]
     },
 
@@ -890,6 +890,6 @@ export {
     TESTNET_DELEGATE_URL,
     testNetwork,
     THOR_SOLO_ACCOUNTS_BASE_WALLET,
-    THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR,
+    THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_GAS_PAYER,
     ZERO_ADDRESS
 };

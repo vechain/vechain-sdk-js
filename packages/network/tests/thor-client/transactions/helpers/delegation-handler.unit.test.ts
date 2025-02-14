@@ -19,15 +19,15 @@ describe('Tests of DelegationHandler helper function', () => {
      * - It's a method that uses the network.
      * - It's already tested in the integration tests of transactions-module.
      */
-    delegationHandlerFixture.forEach(({ testName, delegator, expected }) => {
+    delegationHandlerFixture.forEach(({ testName, gasPayer, expected }) => {
         test(testName, () => {
-            const delegationHandler = DelegationHandler(delegator);
+            const delegationHandler = DelegationHandler(gasPayer);
             expect(delegationHandler.isDelegated()).toBe(expected.isDelegated);
-            expect(delegationHandler.delegatorOrUndefined()).toEqual(
-                expected.delegatorOrUndefined
+            expect(delegationHandler.gasPayerOrUndefined()).toEqual(
+                expected.gasPayerOrUndefined
             );
-            expect(delegationHandler.delegatorOrNull()).toEqual(
-                expected.delegatorOrNull
+            expect(delegationHandler.gasPayerOrNull()).toEqual(
+                expected.gasPayerOrNull
             );
         });
     });
@@ -37,12 +37,12 @@ describe('Tests of DelegationHandler helper function', () => {
      */
     describe('Negative tests cases', () => {
         /**
-         *Should throw an error when get delegatorUrl if delegator url is not provided.
+         *Should throw an error when get gasPayerServiceUrl if gasPayer url is not provided.
          */
-        test('Should throw an error when get delegatorUrl if delegator url is not provided', async () => {
+        test('Should throw an error when get gasPayerServiceUrl if gasPayer url is not provided', async () => {
             await expect(async () => {
                 await DelegationHandler({
-                    delegatorPrivateKey:
+                    gasPayerPrivateKey:
                         '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
                 }).getDelegationSignatureUsingUrl(
                     Transaction.of(TransactionFixture.delegated.body),

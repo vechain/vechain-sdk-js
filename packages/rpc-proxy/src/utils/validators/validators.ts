@@ -87,7 +87,7 @@ function isValidAccountsAsMnemonic(account: {
 }
 
 /**
- * Check if the delegator url is valid
+ * Check if the gasPayer url is valid
  * @param url - URL to check
  * @returns True if the url is valid, false otherwise
  */
@@ -96,7 +96,7 @@ function isValidDelegatorUrl(url: string): boolean {
 }
 
 /**
- * Check if the delegator private key is valid
+ * Check if the gasPayer private key is valid
  * @param privateKey - Private key to check
  * @returns True if the private key is valid, false otherwise
  */
