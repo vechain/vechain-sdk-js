@@ -86,9 +86,9 @@ function parseAndGetFinalConfig(
         ) {
             throw new InvalidCommandLineArguments(
                 '_checkIfConfigurationFileHasCorrectStructure()',
-                `Invalid configuration: Delegation cannot be enabled without a delegator`,
+                `Invalid configuration: Delegation cannot be enabled without a gasPayer`,
                 {
-                    flag: '--enableDelegation , --delegatorPrivateKey, --delegatorUrl',
+                    flag: '--enableDelegation , --gasPayerPrivateKey, --gasPayerServiceUrl',
                     value: `${options.enableDelegation}, Not provided, Not provided`
                 }
             );

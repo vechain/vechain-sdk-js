@@ -81,7 +81,7 @@ const invalidParametersConfigurationFilePathFixture = {
             'invalid-accounts-mnemonics-proxy-config-5.json'
         )
     ],
-    'invalid-delegator': [
+    'invalid-gasPayer': [
         path.join(
             _configFilesDirectory,
             'invalid-gas-payer-proxy-config-1.json'

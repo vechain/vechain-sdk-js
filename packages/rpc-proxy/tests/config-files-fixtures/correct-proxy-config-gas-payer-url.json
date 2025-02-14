@@ -7,7 +7,7 @@
     "initialIndex": 0
   },
   "gasPayer": {
-    "delegatorUrl": "https://testnet.vechain.org"
+    "gasPayerServiceUrl": "https://testnet.vechain.org"
   },
   "enableDelegation": false
 }

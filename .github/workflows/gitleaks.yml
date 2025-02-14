@@ -1,5 +1,5 @@
 name: Check for leaks in secrets
-on: 
+on:
     pull_request:
       branches:
         - 'main'
