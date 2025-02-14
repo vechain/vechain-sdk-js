@@ -153,7 +153,6 @@ const ArgsValidatorAndGetter = {
             throw new InvalidCommandLineArguments(
                 'ArgsValidatorAndGetter.delegation()',
                 'Both gasPayer private key and gasPayer service URL are provided. Only one can be provided',
-                'Both gasPayer private key and gasPayer URL are provided. Only one can be provided',
                 {
                     flag: '{--gasPayerPrivateKey}, {-s , --gasPayerServiceUrl}',
                     value: `{value not provided for security reason} , {${options.gasPayerServiceUrl as string}}`
