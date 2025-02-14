@@ -1,3 +1,4 @@
 465a9c6b265ec49015fd7ff641506905cb93811c:packages/aws-kms-adapter/tests/test-aws-credentials.json:generic-api-key:3
 465a9c6b265ec49015fd7ff641506905cb93811c:packages/aws-kms-adapter/tests/test-aws-credentials.json:generic-api-key:12
 fa35f6978cb476b3f05286181ea4583266bd9ae4:packages/rpc-proxy/tests/utils/args/env-to-args-positive-cases.unit.test.ts:generic-api-key:20
+fa35f6978cb476b3f05286181ea4583266bd9ae4:packages/rpc-proxy/tests/config-files-fixtures/correct-proxy-config-gas-payer-private-key.json:generic-api-key:10
