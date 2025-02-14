@@ -35,20 +35,20 @@ declare module 'hardhat/types/runtime' {
 /**
  * Hardhat config extension
  *
- * - Add `delegator` to `HttpNetworkConfig`
+ * - Add `gasPayer` to `HttpNetworkConfig`
  * - Add `debug` to `HttpNetworkConfig`
  * - Add `enableDelegation` to `HttpNetworkConfig`
  */
 declare module 'hardhat/types/config' {
     export interface HttpNetworkConfig {
         /**
-         * Delegate the transaction to a delegator.
+         * Delegate the transaction to a gasPayer.
          *
          * We can give following two optional parameters:
-         * - delegatorPrivateKey: string
-         * - delegatorUrl: string
+         * - gasPayerPrivateKey: string
+         * - gasPayerServiceUrl: string
          */
-        delegator?: SignTransactionOptions;
+        gasPayer?: SignTransactionOptions;
 
         /**
          * Debug mode enabled or not.

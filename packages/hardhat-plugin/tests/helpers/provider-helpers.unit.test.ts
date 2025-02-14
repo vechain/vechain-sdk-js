@@ -27,11 +27,10 @@ describe('Provider Hardhat Helpers', () => {
                         fixture.networkConfig as HttpNetworkConfig
                     );
                     const addresses = await wallet.getAddresses();
-                    const delegator = await wallet.getDelegator();
-
+                    const gasPayer = await wallet.getGasPayer();
                     expect(addresses).toEqual(fixture.expectedAddresses);
-                    expect(delegator).toEqual(
-                        fixture.networkConfig.delegator ?? null
+                    expect(gasPayer).toEqual(
+                        fixture.networkConfig.gasPayer ?? null
                     );
                 });
             }

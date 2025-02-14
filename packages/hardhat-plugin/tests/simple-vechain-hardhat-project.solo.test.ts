@@ -44,7 +44,7 @@ describe('Custom network configuration hardhat - testnet', () => {
             expect(hre.config.networks.vechain_testnet).toBeDefined();
             expect(
                 (hre.config.networks.vechain_testnet as HttpNetworkConfig)
-                    .delegator
+                    .gasPayer
             ).toBeDefined();
             expect(
                 (hre.config.networks.vechain_testnet as HttpNetworkConfig).debug
