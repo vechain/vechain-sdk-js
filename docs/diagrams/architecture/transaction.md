@@ -34,7 +34,7 @@ classDiagram
         +Address origin
         +Uint8Array signature?
         +Transaction decode(Uint8Array rawTransaction, boolean isSigned)$
-        +Blake2b256 getTransactionHash(Address delegator?)
+        +Blake2b256 getTransactionHash(Address gasPayer?)
         +VTHO intrinsicGas(TransactionClause[] clauses)$
         +boolean isValidBody(TransactionBody body)$
         +Transaction of(TransactionBody: body, Uint8Array signature?)$
