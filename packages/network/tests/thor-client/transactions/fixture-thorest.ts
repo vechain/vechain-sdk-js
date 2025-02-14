@@ -31,7 +31,7 @@ const transactionDetails = {
                 gasPriceCoef: 0,
                 gas: 41192,
                 origin: '0x2d4ed6b8abd00bc2ef0bdb2258a946c214d9d0af',
-                delegator: null, // TO BE REMOVED WHEN BNC REFACTORING DONE.
+                gasPayer: null, // TO BE REMOVED WHEN BNC REFACTORING DONE.
                 nonce: '0x76eed751cef0e52d',
                 dependsOn: null,
                 size: 130,
