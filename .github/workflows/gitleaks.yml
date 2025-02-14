@@ -1,5 +1,5 @@
 name: Check for leaks in secrets
-on: 
+on:
     pull_request:
       branches:
         - 'main'
@@ -24,4 +24,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE}}
-          GITLEAKS_CONFIG: .gitleaksignore
