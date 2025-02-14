@@ -11,12 +11,12 @@ import { Command, Option, type OptionValues } from 'commander';
  * * Where accounts is a space separated list of private keys (e.g. "PK1 PK2 PK3 ...")
  *
  * rpc-proxy {-m|--mnemonic} <mnemonic> - Mnemonic to use for signing transactions
- * rpc-proxy {-mc|--mnemonicCount} <count> - Number of accounts to derive from the mnemonic
- * rpc-proxy {-mi|--mnemonicInitialIndex} <index> - Initial index to start deriving accounts from the mnemonic
+ * rpc-proxy {--mnemonicCount} <count> - Number of accounts to derive from the mnemonic
+ * rpc-proxy {--mnemonicInitialIndex} <index> - Initial index to start deriving accounts from the mnemonic
  *
  * rpc-proxy {-e|--enableDelegation} - Enable delegation
- * rpc-proxy {-dp|--delegatorPrivateKey} <delegatorPrivateKey> - Delegator private key
- * rpc-proxy {-du|--delegatorUrl} <delegatorUrl> - Delegator URL
+ * rpc-proxy {--gasPayerPrivateKey} <gasPayerPrivateKey> - The gasPayer private key
+ * rpc-proxy {-s|--gasPayerServiceUrl} <gasPayerServiceUrl> - The gasPayer service URL
  *
  * rpc-proxy {-v|--verbose} - Enable verbose logging
  *
@@ -63,13 +63,13 @@ function getOptionsFromCommandLine(
         )
         .addOption(
             new Option(
-                '-mc, --mnemonicCount <count>',
+                '--mnemonicCount <count>',
                 'Number of accounts to derive from the mnemonic'
             )
         )
         .addOption(
             new Option(
-                '-mi, --mnemonicInitialIndex <index>',
+                '--mnemonicInitialIndex <index>',
                 'Initial index to start deriving accounts from the mnemonic'
             )
         )
@@ -77,17 +77,20 @@ function getOptionsFromCommandLine(
         // Enable delegation boolean
         .addOption(new Option('-e, --enableDelegation', 'Enable delegation'))
 
-        // Delegator configuration (private key)
+        // The gasPayer configuration (private key)
         .addOption(
             new Option(
-                '-dp, --delegatorPrivateKey <delegatorPrivateKey>',
-                'Delegator private key'
+                '--gasPayerPrivateKey <gasPayerPrivateKey>',
+                'The gasPayer private key'
             )
         )
 
-        // Delegator configuration (url)
+        // The gasPayer configuration (url)
         .addOption(
-            new Option('-du, --delegatorUrl <delegatorUrl>', 'Delegator URL')
+            new Option(
+                '-s, --gasPayerServiceUrl <gasPayerServiceUrl>',
+                'The gasPayer service URL'
+            )
         )
 
         // Enable verbose logging

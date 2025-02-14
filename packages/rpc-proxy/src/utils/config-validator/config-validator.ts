@@ -8,8 +8,8 @@ import type { Config } from '../../types';
 import {
     isValidAccountsAsListOfPrivateKeys,
     isValidAccountsAsMnemonic,
-    isValidDelegatorPrivateKey,
-    isValidDelegatorUrl,
+    isValidGasPayerPrivateKey,
+    isValidGasPayerServiceUrl,
     isValidPort,
     isValidUrl
 } from '../validators';
@@ -119,46 +119,44 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
         );
     }
 
-    // Check the delegator
-    if (configFile.delegator !== undefined) {
-        // Both delegator private key and url are given
+    // Check the gasPayer
+    if (configFile.gasPayer !== undefined) {
+        // Both gasPayer private key and url are given
         if (
-            configFile.delegator.delegatorPrivateKey !== undefined &&
-            configFile.delegator.delegatorUrl !== undefined
+            configFile.gasPayer.gasPayerPrivateKey !== undefined &&
+            configFile.gasPayer.gasPayerServiceUrl !== undefined
         ) {
             throw new InvalidConfigurationFile(
                 '_checkIfConfigurationFileHasCorrectStructure()',
-                `Invalid delegator configuration in configuration file: ${absolutePath}. Delegator configuration must contain either a private key or a URL, not both`,
+                `Invalid gasPayer configuration in configuration file: ${absolutePath}. The gasPayer configuration must contain either a private key or a URL, not both`,
                 {
                     filePath
                 }
             );
         }
 
-        // Invalid delegator private key
+        // Invalid gasPayer private key
         if (
-            configFile.delegator.delegatorPrivateKey !== undefined &&
-            !isValidDelegatorPrivateKey(
-                configFile.delegator.delegatorPrivateKey
-            )
+            configFile.gasPayer.gasPayerPrivateKey !== undefined &&
+            !isValidGasPayerPrivateKey(configFile.gasPayer.gasPayerPrivateKey)
         ) {
             throw new InvalidConfigurationFile(
                 '_checkIfConfigurationFileHasCorrectStructure()',
-                `Invalid delegator private key in configuration file: ${absolutePath}. Delegator private key must be a valid private key`,
+                `Invalid gasPayer private key in configuration file: ${absolutePath}. The gasPayer private key must be a valid private key`,
                 {
                     filePath
                 }
             );
         }
 
-        // Invalid delegator url
+        // Invalid gasPayer url
         if (
-            configFile.delegator.delegatorUrl !== undefined &&
-            !isValidDelegatorUrl(configFile.delegator.delegatorUrl)
+            configFile.gasPayer.gasPayerServiceUrl !== undefined &&
+            !isValidGasPayerServiceUrl(configFile.gasPayer.gasPayerServiceUrl)
         ) {
             throw new InvalidConfigurationFile(
                 '_checkIfConfigurationFileHasCorrectStructure()',
-                `Invalid delegator url in configuration file: ${absolutePath}. Delegator url must be a valid URL`,
+                `Invalid gasPayer service url in configuration file: ${absolutePath}. DThe gasPayer service url must be a valid URL`,
                 {
                     filePath
                 }
@@ -196,14 +194,14 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
 
     // NOTE: Here we know all the fields are valid. So we can check the semantics of the fields.
 
-    // Delegation cannot be enabled without a delegator
+    // Delegation cannot be enabled without a gasPayer
     if (
         (configFile.enableDelegation as boolean) &&
-        configFile.delegator === undefined
+        configFile.gasPayer === undefined
     ) {
         throw new InvalidConfigurationFile(
             '_checkIfConfigurationFileHasCorrectStructure()',
-            `Invalid configuration file: ${absolutePath}. Delegator configuration must be removed when enableDelegation is false`,
+            `Invalid configuration file: ${absolutePath}. The gasPayer configuration must be removed when enableDelegation is false`,
             {
                 filePath
             }

@@ -20,9 +20,9 @@ const correctConfigurationFilePathFixture = [
     ),
     path.join(
         _configFilesDirectory,
-        'correct-proxy-config-delegator-private-key.json'
+        'correct-proxy-config-gas-payer-private-key.json'
     ),
-    path.join(_configFilesDirectory, 'correct-proxy-config-delegator-url.json')
+    path.join(_configFilesDirectory, 'correct-proxy-config-gas-payer-url.json')
 ];
 
 /**
@@ -81,18 +81,18 @@ const invalidParametersConfigurationFilePathFixture = {
             'invalid-accounts-mnemonics-proxy-config-5.json'
         )
     ],
-    'invalid-delegator': [
+    'invalid-gasPayer': [
         path.join(
             _configFilesDirectory,
-            'invalid-delegator-proxy-config-1.json'
+            'invalid-gas-payer-proxy-config-1.json'
         ),
         path.join(
             _configFilesDirectory,
-            'invalid-delegator-proxy-config-2.json'
+            'invalid-gas-payer-proxy-config-2.json'
         ),
         path.join(
             _configFilesDirectory,
-            'invalid-delegator-proxy-config-3.json'
+            'invalid-gas-payer-proxy-config-3.json'
         )
     ],
     'invalid-verbose': [

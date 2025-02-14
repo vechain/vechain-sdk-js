@@ -113,9 +113,9 @@ describe('Args options tests', () => {
                     'program',
                     '-m',
                     'expire pair material agent north ostrich fortune level cousin snow mixture nurse',
-                    '-mi',
+                    '--mnemonicInitialIndex',
                     '1',
-                    '-mc',
+                    '--mnemonicCount',
                     '2'
                 ]
             ].forEach((args) => {
@@ -151,54 +151,52 @@ describe('Args options tests', () => {
         });
 
         /**
-         * Should be able to parse the delegator private key option
+         * Should be able to parse the gasPayer private key option
          */
-        test('Should be able to parse the delegator private key option', () => {
+        test('Should be able to parse the gasPayer private key option', () => {
             [
                 // Normal syntax
                 [
                     'path',
                     'program',
-                    '--delegatorPrivateKey',
-                    '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
-                ],
-                // Short syntax
-                [
-                    'path',
-                    'program',
-                    '-dp',
+                    '--gasPayerPrivateKey',
                     '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
                 ]
             ].forEach((args) => {
-                const delegatorPrivateKeyOption = getOptionsFromCommandLine(
+                const gasPayerPrivateKeyOption = getOptionsFromCommandLine(
                     '1.0.0',
                     args
                 );
 
-                expect(delegatorPrivateKeyOption).toBeDefined();
-                expect(delegatorPrivateKeyOption.delegatorPrivateKey).toBe(
+                expect(gasPayerPrivateKeyOption).toBeDefined();
+                expect(gasPayerPrivateKeyOption.gasPayerPrivateKey).toBe(
                     '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
                 );
             });
         });
 
         /**
-         * Should be able to parse the delegator URL option
+         * Should be able to parse the gasPayer URL option
          */
-        test('Should be able to parse the delegator URL option', () => {
+        test('Should be able to parse the gasPayer URL option', () => {
             [
                 // Normal syntax
-                ['path', 'program', '--delegatorUrl', 'http://localhost:8080'],
+                [
+                    'path',
+                    'program',
+                    '--gasPayerServiceUrl',
+                    'http://localhost:8080'
+                ],
                 // Short syntax
-                ['path', 'program', '-du', 'http://localhost:8080']
+                ['path', 'program', '-s', 'http://localhost:8080']
             ].forEach((args) => {
-                const delegatorUrlOption = getOptionsFromCommandLine(
+                const gasPayerServiceUrlOption = getOptionsFromCommandLine(
                     '1.0.0',
                     args
                 );
 
-                expect(delegatorUrlOption).toBeDefined();
-                expect(delegatorUrlOption.delegatorUrl).toBe(
+                expect(gasPayerServiceUrlOption).toBeDefined();
+                expect(gasPayerServiceUrlOption.gasPayerServiceUrl).toBe(
                     'http://localhost:8080'
                 );
             });

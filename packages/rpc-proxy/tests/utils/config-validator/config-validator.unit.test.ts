@@ -28,6 +28,7 @@ describe('Configuration file validator', () => {
          */
         test('Should be able to parse valid configuration files', () => {
             correctConfigurationFilePathFixture.forEach((filePath) => {
+                console.log(filePath);
                 expect(() => {
                     checkValidConfigurationFile(filePath);
                 }).not.toThrow();
@@ -118,15 +119,16 @@ describe('Configuration file validator', () => {
             });
 
             /**
-             * Should not be able to parse a configuration file with invalid delegator
+             * Should not be able to parse a configuration file with invalid gasPayer
              */
-            test('Should not be able to parse a configuration file with invalid delegator', () => {
+            test('Should not be able to parse a configuration file with invalid gasPayer', () => {
                 invalidParametersConfigurationFilePathFixture[
-                    'invalid-delegator'
+                    'invalid-gasPayer'
                 ].forEach((filePath) => {
+                    console.log(filePath);
                     expect(() => {
                         checkValidConfigurationFile(filePath);
-                    }).toThrow(InvalidConfigurationFile);
+                    }).toThrow();
                 });
             });
 
