@@ -91,7 +91,7 @@ function isValidAccountsAsMnemonic(account: {
  * @param url - URL to check
  * @returns True if the url is valid, false otherwise
  */
-function isValidDelegatorUrl(url: string): boolean {
+function isValidGasPayerServiceUrl(url: string): boolean {
     return isValidUrl(url);
 }
 
@@ -100,7 +100,7 @@ function isValidDelegatorUrl(url: string): boolean {
  * @param privateKey - Private key to check
  * @returns True if the private key is valid, false otherwise
  */
-function isValidDelegatorPrivateKey(privateKey: string): boolean {
+function isValidGasPayerPrivateKey(privateKey: string): boolean {
     return isValidAccountsAsListOfPrivateKeys([privateKey]);
 }
 
@@ -112,6 +112,6 @@ export {
     isValidCount,
     isValidInitialIndex,
     isValidAccountsAsMnemonic,
-    isValidDelegatorUrl,
-    isValidDelegatorPrivateKey
+    isValidGasPayerServiceUrl,
+    isValidGasPayerPrivateKey
 };

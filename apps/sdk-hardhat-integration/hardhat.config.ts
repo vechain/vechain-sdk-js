@@ -89,7 +89,8 @@ const config: HardhatUserConfig = {
             },
             debug: true,
             gasPayer: {
-                delegatorUrl: 'https://sponsor-testnet.vechain.energy/by/269'
+                gasPayerServiceUrl:
+                    'https://sponsor-testnet.vechain.energy/by/269'
             },
             enableDelegation: true,
             gas: 'auto',
@@ -115,7 +116,7 @@ const config: HardhatUserConfig = {
             },
             debug: true,
             gasPayer: {
-                delegatorPrivateKey:
+                gasPayerPrivateKey:
                     'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5'
             },
             enableDelegation: true,

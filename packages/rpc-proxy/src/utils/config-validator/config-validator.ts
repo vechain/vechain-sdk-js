@@ -8,8 +8,8 @@ import type { Config } from '../../types';
 import {
     isValidAccountsAsListOfPrivateKeys,
     isValidAccountsAsMnemonic,
-    isValidDelegatorPrivateKey,
-    isValidDelegatorUrl,
+    isValidGasPayerPrivateKey,
+    isValidGasPayerServiceUrl,
     isValidPort,
     isValidUrl
 } from '../validators';
@@ -138,11 +138,11 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
         // Invalid gasPayer private key
         if (
             configFile.gasPayer.gasPayerPrivateKey !== undefined &&
-            !isValidDelegatorPrivateKey(configFile.gasPayer.gasPayerPrivateKey)
+            !isValidGasPayerPrivateKey(configFile.gasPayer.gasPayerPrivateKey)
         ) {
             throw new InvalidConfigurationFile(
                 '_checkIfConfigurationFileHasCorrectStructure()',
-                `Invalid delegator private key in configuration file: ${absolutePath}. Delegator private key must be a valid private key`,
+                `Invalid gasPayer private key in configuration file: ${absolutePath}. The gasPayer private key must be a valid private key`,
                 {
                     filePath
                 }
@@ -152,11 +152,11 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
         // Invalid gasPayer url
         if (
             configFile.gasPayer.gasPayerServiceUrl !== undefined &&
-            !isValidDelegatorUrl(configFile.gasPayer.gasPayerServiceUrl)
+            !isValidGasPayerServiceUrl(configFile.gasPayer.gasPayerServiceUrl)
         ) {
             throw new InvalidConfigurationFile(
                 '_checkIfConfigurationFileHasCorrectStructure()',
-                `Invalid delegator url in configuration file: ${absolutePath}. Delegator url must be a valid URL`,
+                `Invalid gasPayer service url in configuration file: ${absolutePath}. DThe gasPayer service url must be a valid URL`,
                 {
                     filePath
                 }
