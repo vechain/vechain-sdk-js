@@ -94,68 +94,27 @@ class Secp256k1 {
     }
 
     /**
-     * Generates a new random private key.
-     * If an error occurs during generation using
-     * [nc_secp256k1](https://github.com/paulmillr/noble-secp256k1),
-     * an AES-GCM key is generated as a fallback in runtimes not supported
-     * by `nc_secp256k1`, if those support {@link {@link global.crypto}.
-     *
-     * @return {Promise<Uint8Array>} The generated private key as a Uint8Array.
-     *
-     * @remarks Security auditable method, depends on
-     * * {@link global.crypto.subtle.exportKey};
-     * * {@link global.crypto.subtle.generateKey};
-     * * [nc_secp256k1.utils.randomPrivateKey](https://github.com/paulmillr/noble-secp256k1).
-     */
-    public static async _generatePrivateKey(): Promise<Uint8Array> {
-        try {
-            return nc_secp256k1.utils.randomPrivateKey();
-        } catch (e) {
-            // Generate an ECDSA key pair
-            const cryptoKey = await global.crypto.subtle.generateKey(
-                {
-                    name: 'AES-GCM',
-                    length: 256
-                },
-                true,
-                ['encrypt', 'decrypt']
-            );
-
-            // Export the private key to raw format
-            const rawKey = await global.crypto.subtle.exportKey(
-                'raw',
-                cryptoKey
-            );
-
-            // Convert the ArrayBuffer to Uint8Array
-            return new Uint8Array(rawKey);
-        }
-    }
-
-    /**
      * Generates a new Secp256k1 private key using a secure random number generator.
      *
-     * @return {Promise<Uint8Array>} A promise that resolves to a Uint8Array representing the generated private key.
-     *                               This encoded private key is suitable for cryptographic operations.
+     * @return {Uint8Array} A Uint8Array representing the generated private key.
+     *                      This encoded private key is suitable for cryptographic operations.
      * @throws {InvalidSecp256k1PrivateKey} Throws an error if private key generation fails if a secure random number
      *                                      generator is not provided by the hosting operating system.
      *
      * @remarks Security auditable method, depends on
      * * [nc_secp256k1.utils.randomPrivateKey](https://github.com/paulmillr/noble-secp256k1).
      */
-    public static async generatePrivateKey(): Promise<Uint8Array> {
-        return await new Promise<Uint8Array>((resolve) => {
-            try {
-                resolve(nc_secp256k1.utils.randomPrivateKey());
-            } catch (e) {
-                throw new InvalidSecp256k1PrivateKey(
-                    'Secp256k1.generatePrivateKey',
-                    'Private key generation failed: ensure you have a secure random number generator available at runtime.',
-                    undefined,
-                    e
-                );
-            }
-        });
+    public static generatePrivateKey(): Uint8Array {
+        try {
+            return nc_secp256k1.utils.randomPrivateKey();
+        } catch (e) {
+            throw new InvalidSecp256k1PrivateKey(
+                'Secp256k1.generatePrivateKey',
+                'Private key generation failed: ensure you have a secure random number generator available at runtime.',
+                undefined,
+                e
+            );
+        }
     }
 
     /**

@@ -86,12 +86,7 @@ class SimpleHttpClient implements HttpClient {
             if (path.startsWith('/')) {
                 path = path.slice(1);
             }
-            // Add trailing slash from baseURL if not present
-            let baseURL = this.baseURL;
-            if (!this.baseURL.endsWith('/')) {
-                baseURL += '/';
-            }
-            const url = new URL(path, baseURL);
+            const url = new URL(path, this.baseURL);
             if (params?.query != null) {
                 Object.entries(params.query).forEach(([key, value]) => {
                     url.searchParams.append(key, String(value));

@@ -38,18 +38,18 @@
   },
   "dependencies": {
     "@ethereumjs/rlp": "^5.0.2",
-    "@noble/ciphers": "^1.1.1",
-    "@noble/curves": "^1.6.0",
+    "@noble/ciphers": "^1.2.1",
+    "@noble/curves": "^1.7.0",
     "@noble/hashes": "^1.5.0",
-    "@scure/base": "^1.1.9",
+    "@scure/base": "^1.2.1",
     "@scure/bip32": "^1.4.0",
     "@scure/bip39": "^1.5.1",
     "@vechain/sdk-errors": "1.0.0-rc.6",
     "@vechain/sdk-logging": "1.0.0-rc.6",
-    "abitype": "^1.0.6",
-    "ethers": "6.13.4",
+    "abitype": "^1.0.8",
+    "ethers": "6.13.5",
     "fast-json-stable-stringify": "^2.1.0",
-    "viem": "^2.21.45"
+    "viem": "^2.22.11"
   },
   "devDependencies": {
     "bignumber.js": "^9.1.2",

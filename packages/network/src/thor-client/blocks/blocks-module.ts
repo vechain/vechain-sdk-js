@@ -33,7 +33,7 @@ class BlocksModule {
 
     /**
      * Initializes a new instance of the `Thor` class.
-     * @param httpClient - The Thor instance used to interact with the VeChain blockchain API.
+     * @param thor - The Thor instance used to interact with the VeChain blockchain API.
      * @param options - (Optional) Other optional parameters for polling and error handling.
      */
     constructor(
@@ -287,7 +287,7 @@ class BlocksModule {
 
     /**
      * Retrieves all addresses involved in a given block. This includes beneficiary, signer, clauses,
-     * delegator, gas payer, origin, contract addresses, event addresses, and transfer recipients and senders.
+     * gas payer, origin, contract addresses, event addresses, and transfer recipients and senders.
      *
      * @param {ExpandedBlockDetail} block - The block object to extract addresses from.
      *

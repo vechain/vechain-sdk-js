@@ -91,8 +91,8 @@ interface TransactionBodyOptions {
  * Options for `signTransaction` method.
  */
 type SignTransactionOptions =
-    | { delegatorUrl: string; delegatorPrivateKey?: never }
-    | { delegatorPrivateKey: string; delegatorUrl?: never };
+    | { gasPayerServiceUrl: string; gasPayerPrivateKey?: never }
+    | { gasPayerPrivateKey: string; gasPayerServiceUrl?: never };
 
 /**
  * Input options for:
@@ -243,7 +243,7 @@ interface TransactionDetailRaw {
 type TransactionDetailNoRaw = TransactionBody & {
     id: string;
     origin: string;
-    delegator: string | null;
+    gasPayer: string | null;
     size: number;
     meta: TransactionMetadata;
 };

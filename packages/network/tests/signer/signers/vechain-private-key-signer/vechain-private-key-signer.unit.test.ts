@@ -7,10 +7,12 @@ import {
     test
 } from '@jest/globals';
 import { Address, Hex, HexUInt, Secp256k1, Txt } from '@vechain/sdk-core';
-import { type TypedDataDomain, Wallet } from 'ethers';
+import { SignerMethodError } from '@vechain/sdk-errors';
+import { Wallet } from 'ethers';
 import {
     TESTNET_URL,
     ThorClient,
+    type TypedDataDomain,
     VeChainPrivateKeySigner,
     VeChainProvider,
     vnsUtils
@@ -253,7 +255,11 @@ describe('VeChain base signer tests', () => {
 
             await expect(
                 signer.signMessage(EIP191_MESSAGE)
-            ).rejects.toThrowError();
+            ).rejects.toThrowError(
+                `Method 'VeChainAbstractSigner.signMessage' failed.` +
+                    `\n-Reason: 'The message could not be signed.'` +
+                    `\n-Parameters: \n\t{\n  "message": "Hello world! - こんにちは世界 - 👋🗺️!"\n}`
+            );
         });
 
         test('signMessage - ethers compatible - string', async () => {
@@ -288,11 +294,12 @@ describe('VeChain base signer tests', () => {
             );
             await expect(
                 signer.signTypedData(
-                    eip712TestCases.invalid.domain,
+                    eip712TestCases.invalid.domain as TypedDataDomain,
                     eip712TestCases.invalid.types,
-                    eip712TestCases.invalid.data
+                    eip712TestCases.invalid.data,
+                    eip712TestCases.invalid.primaryType
                 )
-            ).rejects.toThrowError();
+            ).rejects.toThrowError(SignerMethodError);
         });
 
         test('signTypedData - exception when parsing to hex', async () => {
@@ -311,19 +318,21 @@ describe('VeChain base signer tests', () => {
                 });
             await expect(
                 signer.signTypedData(
-                    eip712TestCases.valid.domain,
+                    eip712TestCases.valid.domain as TypedDataDomain,
                     eip712TestCases.valid.types,
-                    eip712TestCases.valid.data
+                    eip712TestCases.valid.data,
+                    eip712TestCases.valid.primaryType
                 )
             ).rejects.toThrowError(expectedErrorString);
 
             await expect(
                 signer.signTypedData(
-                    eip712TestCases.valid.domain,
+                    eip712TestCases.valid.domain as TypedDataDomain,
                     eip712TestCases.valid.types,
-                    eip712TestCases.valid.data
+                    eip712TestCases.valid.data,
+                    eip712TestCases.valid.primaryType
                 )
-            ).rejects.toThrowError();
+            ).rejects.toThrowError(SignerMethodError);
         });
 
         test('signTypedData - ethers compatible', async () => {
@@ -340,14 +349,15 @@ describe('VeChain base signer tests', () => {
                 provider
             );
             const actual = await privateKeySigner.signTypedData(
-                eip712TestCases.valid.domain,
+                eip712TestCases.valid.domain as TypedDataDomain,
                 eip712TestCases.valid.types,
-                eip712TestCases.valid.data
+                eip712TestCases.valid.data,
+                eip712TestCases.valid.primaryType
             );
             expect(actual).toBe(expected);
             const actualWithoutPrimaryType =
                 await privateKeySigner.signTypedData(
-                    eip712TestCases.valid.domain,
+                    eip712TestCases.valid.domain as TypedDataDomain,
                     eip712TestCases.valid.types,
                     eip712TestCases.valid.data
                 );
@@ -369,11 +379,12 @@ describe('VeChain base signer tests', () => {
             const actualWithStringChainId =
                 await privateKeySigner.signTypedData(
                     {
-                        ...eip712TestCases.valid.domain,
+                        ...(eip712TestCases.valid.domain as TypedDataDomain),
                         chainId: vechainChainId
                     },
                     eip712TestCases.valid.types,
-                    eip712TestCases.valid.data
+                    eip712TestCases.valid.data,
+                    eip712TestCases.valid.primaryType
                 );
             expect(actualWithStringChainId).toBe(expectedVeChain);
             const actualWithBigintChainId =
@@ -383,7 +394,8 @@ describe('VeChain base signer tests', () => {
                         chainId: BigInt(vechainChainId)
                     },
                     eip712TestCases.valid.types,
-                    eip712TestCases.valid.data
+                    eip712TestCases.valid.data,
+                    eip712TestCases.valid.primaryType
                 );
             expect(actualWithBigintChainId).toBe(expectedVeChain);
         });
