@@ -163,45 +163,46 @@ import {
     THOR_SOLO_URL,
     ThorClient
 } from '@vechain/sdk-network';
-    ...
-    const awsClientParameters: KMSClientParameters = {
-        keyId: 'keyId',
-        region: 'region',
-        credentials: {
-            accessKeyId: 'accessKeyId',
-            secretAccessKey: 'secretAccessKey'
-        },
-        endpoint: 'localstackEndpoint'
-    };
 
-    const delegatorAwsClientParameters: KMSClientParameters = {
-        // Same format as awsClientParameters, changing values so we can connect
-        // to something different to LocalStack if we want (see examples above)
+...
+const awsClientParameters: KMSClientParameters = {
+    keyId: 'keyId',
+    region: 'region',
+    credentials: {
+        accessKeyId: 'accessKeyId',
+        secretAccessKey: 'secretAccessKey'
+    },
+    endpoint: 'localstackEndpoint'
+};
+
+const gasPayerAwsClientParameters: KMSClientParameters = {
+    // Same format as awsClientParameters, changing values so we can connect
+    // to something different to LocalStack if we want (see examples above)
+}
+...
+
+const thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
+const provider = new KMSVeChainProvider(
+    thorClient,
+    awsClientParameters
+);
+
+// Signer with gasPayer enabled
+const gasPayerProvider = new KMSVeChainProvider(
+    thorClient,
+    gasPayerAwsClientParameters
+);
+const signerWithGasPayer = new KMSVeChainSigner(
+    provider,
+    {
+        provider: gasPayerProvider
     }
-    ...
+);
 
-    const thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
-    const provider = new KMSVeChainProvider(
-        thorClient,
-        awsClientParameters
-    );
-
-    // Signer with gasPayer enabled
-    const delegatorProvider = new KMSVeChainProvider(
-        thorClient,
-        delegatorAwsClientParameters
-    );
-    const signerWithDelegator = new KMSVeChainSigner(
-        provider,
-        {
-            provider: delegatorProvider
-        }
-    );
-
-    // Returns the address related to the origin KMS key
-    const address = await signerWithDelegator.getAddress();
-    // Returns the address related to the gasPayer KMS key
-    const address = await signerWithDelegator.getAddress(true);
+// Returns the address related to the origin KMS key
+const address = await signerWithGasPayer.getAddress();
+// Returns the address related to the gasPayer KMS key
+const address = await signerWithGasPayer.getAddress(true);
 ```
 
 ### Delegation (url)
@@ -233,7 +234,7 @@ import {
         thorClient,
         awsClientParameters
     );
-    const signerWithDelegator = new KMSVeChainSigner(
+    const signerWithGasPayer = new KMSVeChainSigner(
         provider,
         {
             url: 'https://sponsor-testnet.vechain.energy/by/705'
@@ -241,7 +242,7 @@ import {
     );
 
     // Returns the address related to the origin KMS key
-    const address = await signerWithDelegator.getAddress();
+    const address = await signerWithGasPayer.getAddress();
 
     // See /tests folder for more examples. This time we wont get the address
     // of the gasPayer since there is no provider

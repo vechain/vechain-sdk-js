@@ -38,7 +38,7 @@ describe('KMSVeChainSigner - Testnet', () => {
     /**
      * KMSVeChainSigner with gasPayer instance
      */
-    let signerWithDelegator: KMSVeChainSigner;
+    let signerWithGasPayer: KMSVeChainSigner;
 
     /**
      * Init thor client and provider before all tests
@@ -65,7 +65,7 @@ describe('KMSVeChainSigner - Testnet', () => {
         }
         thorClient = ThorClient.at(TESTNET_URL);
 
-        signerWithDelegator = new KMSVeChainSigner(
+        signerWithGasPayer = new KMSVeChainSigner(
             new KMSVeChainProvider(thorClient, awsClientParameters, true),
             {
                 url: TESTNET_DELEGATE_URL
@@ -74,14 +74,14 @@ describe('KMSVeChainSigner - Testnet', () => {
 
         await addAddressToFeeDelegationWhitelist(
             thorClient,
-            await signerWithDelegator.getAddress()
+            await signerWithGasPayer.getAddress()
         );
     }, 4 * timeout);
 
     afterAll(async () => {
         await removeAddressFromFeeDelegationWhitelist(
             thorClient,
-            await signerWithDelegator.getAddress()
+            await signerWithGasPayer.getAddress()
         );
     }, 4 * timeout);
 
@@ -112,7 +112,7 @@ describe('KMSVeChainSigner - Testnet', () => {
                         ) as TransactionClause;
 
                         const originAddress =
-                            await signerWithDelegator.getAddress();
+                            await signerWithGasPayer.getAddress();
 
                         const gasResult = await thorClient.gas.estimateGas(
                             [sampleClause],
@@ -129,7 +129,7 @@ describe('KMSVeChainSigner - Testnet', () => {
                             );
 
                         const signedRawTx =
-                            await signerWithDelegator.signTransaction(
+                            await signerWithGasPayer.signTransaction(
                                 signerUtils.transactionBodyToTransactionRequestInput(
                                     txBody,
                                     originAddress
