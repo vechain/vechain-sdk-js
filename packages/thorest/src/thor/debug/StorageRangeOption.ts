@@ -1,15 +1,17 @@
-import { Address, ThorId, UInt } from '@vechain/sdk-core';
+import { Address, StorageKey, UInt } from '@vechain/sdk-core/src';
 
 class StorageRangeOption {
     readonly address: Address;
-    readonly keyStart?: ThorId;
+    readonly keyStart?: StorageKey;
     readonly maxResult?: UInt;
     readonly target: string; // Path class?
 
     constructor(json: StorageRangeOptionJSON) {
         this.address = Address.of(json.address);
         this.keyStart =
-            json.keyStart === undefined ? undefined : ThorId.of(json.keyStart);
+            json.keyStart === undefined
+                ? undefined
+                : StorageKey.of(json.keyStart);
         this.maxResult =
             json.maxResult === undefined ? undefined : UInt.of(json.maxResult);
         this.target = json.target;

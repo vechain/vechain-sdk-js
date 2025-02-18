@@ -1,7 +1,11 @@
 import { type WebSocketClient, type WebSocketListener } from '../../ws';
 import { type SubscriptionEventResponse } from './SubscriptionEventResponse';
 import { type HttpPath, type HttpQuery } from '../../http';
-import { type Address, type ThorId } from '@vechain/sdk-core';
+import {
+    type LogId,
+    type Address,
+    type StorageKey
+} from '@vechain/sdk-core/src';
 
 class EventsSubscription
     implements WebSocketClient, WebSocketListener<SubscriptionEventResponse>
@@ -33,7 +37,7 @@ class EventsSubscription
         return new EventsSubscription(wsc, new EventsSubscriptionQuery());
     }
 
-    atPos(pos?: ThorId): EventsSubscription {
+    atPos(pos?: StorageKey): EventsSubscription {
         return new EventsSubscription(
             this.wsc,
             new EventsSubscriptionQuery(
@@ -116,10 +120,10 @@ class EventsSubscription
     }
 
     withFilters(
-        t0?: ThorId,
-        t1?: ThorId,
-        t2?: ThorId,
-        t3?: ThorId
+        t0?: LogId,
+        t1?: LogId,
+        t2?: LogId,
+        t3?: LogId
     ): EventsSubscription {
         return new EventsSubscription(
             this.wsc,
@@ -137,19 +141,19 @@ class EventsSubscription
 
 class EventsSubscriptionQuery implements HttpQuery {
     readonly addr?: Address;
-    readonly pos?: ThorId;
-    readonly t0?: ThorId;
-    readonly t1?: ThorId;
-    readonly t2?: ThorId;
-    readonly t3?: ThorId;
+    readonly pos?: StorageKey;
+    readonly t0?: LogId;
+    readonly t1?: LogId;
+    readonly t2?: LogId;
+    readonly t3?: LogId;
 
     constructor(
         addr?: Address,
-        pos?: ThorId,
-        t0?: ThorId,
-        t1?: ThorId,
-        t2?: ThorId,
-        t3?: ThorId
+        pos?: StorageKey,
+        t0?: LogId,
+        t1?: LogId,
+        t2?: LogId,
+        t3?: LogId
     ) {
         this.addr = addr;
         this.pos = pos;

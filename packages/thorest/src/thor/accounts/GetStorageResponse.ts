@@ -1,10 +1,10 @@
-import { ThorId } from '@vechain/sdk-core';
+import { StorageKey } from '@vechain/sdk-core/src';
 
 class GetStorageResponse {
-    readonly value: ThorId;
+    readonly value: StorageKey;
 
     constructor(json: GetStorageResponseJSON) {
-        this.value = ThorId.of(json.value);
+        this.value = StorageKey.of(json.value);
     }
 
     toJSON(): GetStorageResponseJSON {

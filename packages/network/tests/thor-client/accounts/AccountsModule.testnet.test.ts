@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { TESTNET_URL, ThorClient } from '../../../src';
-import { Address, HexUInt, Revision, ThorId } from '@vechain/sdk-core';
+import { StorageKey, Address, HexUInt, Revision } from '@vechain/sdk-core/src';
 
 const ACCOUNT_ADDRESS = Address.of(
     '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa'
@@ -34,7 +34,7 @@ const SMART_CONTRACT_ADDRESS = Address.of(
     '0xa540a1924dff8db10bcb3aba3183c0385f2ad285'
 );
 
-const SMART_CONTRACT_POSITION = ThorId.of(
+const SMART_CONTRACT_POSITION = StorageKey.of(
     '0x0000000000000000000000000000000000000000000000000000000000000001'
 );
 

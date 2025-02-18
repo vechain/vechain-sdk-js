@@ -1,12 +1,14 @@
-import { ThorId } from '@vechain/sdk-core';
+import { StorageKey } from '@vechain/sdk-core/src';
 
 class StorageRange {
-    readonly nextKey?: ThorId;
+    readonly nextKey?: StorageKey;
     readonly storage: unknown;
 
     constructor(json: StorageRangeJSON) {
         this.nextKey =
-            json.nextKey === undefined ? undefined : ThorId.of(json.nextKey);
+            json.nextKey === undefined
+                ? undefined
+                : StorageKey.of(json.nextKey);
         this.storage = json.storage;
     }
 

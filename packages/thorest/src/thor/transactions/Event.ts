@@ -1,14 +1,14 @@
-import { Address, HexUInt, ThorId } from '@vechain/sdk-core';
+import { Address, HexUInt, LogId } from '@vechain/sdk-core/src';
 
 class Event {
     readonly address: Address;
-    readonly topics: ThorId[];
+    readonly topics: LogId[];
     readonly data: HexUInt;
 
     constructor(json: EventJSON) {
         this.address = Address.of(json.address);
         this.topics = json.topics.map(
-            (topic: string): ThorId => ThorId.of(topic)
+            (topic: string): LogId => LogId.of(topic)
         );
         this.data = HexUInt.of(json.data);
     }
@@ -16,9 +16,7 @@ class Event {
     toJSON(): EventJSON {
         return {
             address: this.address.toString(),
-            topics: this.topics.map((topic: ThorId): string =>
-                topic.toString()
-            ),
+            topics: this.topics.map((topic: LogId): string => topic.toString()),
             data: this.data.toString()
         } satisfies EventJSON;
     }

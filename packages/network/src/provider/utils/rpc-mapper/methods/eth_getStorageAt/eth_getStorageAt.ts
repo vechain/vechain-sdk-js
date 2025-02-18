@@ -1,4 +1,3 @@
-import { Address, Revision, ThorId } from '@vechain/sdk-core';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
 import { getCorrectBlockNumberRPCToVeChain } from '../../../const';
 import {
@@ -8,6 +7,7 @@ import {
 } from '@vechain/sdk-errors';
 import type { BlockQuantityInputRPC } from '../../types';
 import { type ThorClient } from '../../../../../thor-client';
+import { StorageKey, Address, Revision } from '@vechain/sdk-core/src';
 
 /**
  * RPC Method eth_getStorageAt implementation
@@ -51,7 +51,7 @@ const ethGetStorageAt = async (
         // Get the account details
         const storage = await thorClient.accounts.getStorageAt(
             Address.of(address),
-            ThorId.of(storagePosition),
+            StorageKey.of(storagePosition),
             {
                 revision: Revision.of(getCorrectBlockNumberRPCToVeChain(block))
             }
