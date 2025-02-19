@@ -1,14 +1,46 @@
+import { Address, BlockId, ThorId, UInt, Units, VTHO } from '@vechain/sdk-core';
 import {
-    Address,
-    BlockId,
-    ThorId,
-    TxId,
-    UInt,
-    Units,
-    VTHO
-} from '@vechain/sdk-core';
+    GetTxResponse,
+    type GetTxResponseJSON,
+    Receipt,
+    type ReceiptJSON
+} from '../transactions';
 
-class RegularBlockResponse {
+class TransactionWithReceipt {
+    readonly transaction: Omit<GetTxResponse, 'meta'>;
+    readonly receipt: Receipt;
+
+    constructor(json: TransactionWithReceiptJSON) {
+        const transactionWithoutMeta = new GetTxResponse({
+            ...json,
+            meta: {
+                blockID: BlockId.of('0x' + '0'.repeat(64)).toString(),
+                blockNumber: 0,
+                blockTimestamp: 0n
+            }
+        });
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { meta, ...transactionWithoutMetaNoMeta } =
+            transactionWithoutMeta;
+        this.transaction = {
+            ...transactionWithoutMetaNoMeta,
+            toJSON: () => transactionWithoutMeta.toJSON()
+        } satisfies Omit<GetTxResponse, 'meta'>;
+        this.receipt = new Receipt(json);
+    }
+
+    toJSON(): TransactionWithReceiptJSON {
+        return {
+            ...this.transaction.toJSON(),
+            ...this.receipt.toJSON()
+        } satisfies TransactionWithReceiptJSON;
+    }
+}
+
+type TransactionWithReceiptJSON = Omit<GetTxResponseJSON, 'meta'> & ReceiptJSON;
+
+class ExpandedBlockResponse {
     readonly number: UInt;
     readonly id: BlockId;
     readonly size: UInt;
@@ -26,9 +58,9 @@ class RegularBlockResponse {
     readonly signer: Address;
     readonly isTrunk: boolean;
     readonly isFinalized: boolean;
-    readonly transactions: TxId[];
+    readonly transactions: TransactionWithReceipt[];
 
-    constructor(json: RegularBlockResponseJSON) {
+    constructor(json: ExpandedBlockResponseJSON) {
         this.number = UInt.of(json.number);
         this.id = BlockId.of(json.id);
         this.size = UInt.of(json.size);
@@ -47,11 +79,12 @@ class RegularBlockResponse {
         this.isTrunk = json.isTrunk;
         this.isFinalized = json.isFinalized;
         this.transactions = json.transactions.map(
-            (txId: string): TxId => TxId.of(txId)
+            (txId: TransactionWithReceiptJSON): TransactionWithReceipt =>
+                new TransactionWithReceipt(txId)
         );
     }
 
-    toJSON(): RegularBlockResponseJSON {
+    toJSON(): ExpandedBlockResponseJSON {
         return {
             number: this.number.valueOf(),
             id: this.id.toString(),
@@ -70,12 +103,14 @@ class RegularBlockResponse {
             signer: this.signer.toString(),
             isTrunk: this.isTrunk,
             isFinalized: this.isFinalized,
-            transactions: this.transactions.map((txId: TxId) => txId.toString())
-        } satisfies RegularBlockResponseJSON;
+            transactions: this.transactions.map((tx: TransactionWithReceipt) =>
+                tx.toJSON()
+            )
+        } satisfies ExpandedBlockResponseJSON;
     }
 }
 
-interface RegularBlockResponseJSON {
+interface ExpandedBlockResponseJSON {
     number: number;
     id: string;
     size: number;
@@ -93,7 +128,7 @@ interface RegularBlockResponseJSON {
     signer: string;
     isTrunk: boolean;
     isFinalized: boolean;
-    transactions: string[];
+    transactions: TransactionWithReceiptJSON[];
 }
 
-export { RegularBlockResponse, type RegularBlockResponseJSON };
+export { ExpandedBlockResponse, type ExpandedBlockResponseJSON };
