@@ -52,7 +52,7 @@ const ethEstimateGas = async (
                 {
                     to: inputOptions.to ?? null,
                     value: inputOptions.value ?? '0x0',
-                    data: inputOptions.data ?? '0x0'
+                    data: inputOptions.data ?? '0x'
                 } satisfies SimulateTransactionClause
             ],
             inputOptions.from,
@@ -62,7 +62,7 @@ const ethEstimateGas = async (
         );
 
         // Convert intrinsic gas to hex string and return
-        return await Promise.resolve('0x' + estimatedGas.totalGas.toString(16));
+        return '0x' + estimatedGas.totalGas.toString(16);
     } catch (e) {
         throw new JSONRPCInternalError(
             'eth_estimateGas()',
