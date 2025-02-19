@@ -94,45 +94,6 @@ class Secp256k1 {
     }
 
     /**
-     * Generates a new random private key.
-     * If an error occurs during generation using
-     * [nc_secp256k1](https://github.com/paulmillr/noble-secp256k1),
-     * an AES-GCM key is generated as a fallback in runtimes not supported
-     * by `nc_secp256k1`, if those support {@link {@link global.crypto}.
-     *
-     * @return {Promise<Uint8Array>} The generated private key as a Uint8Array.
-     *
-     * @remarks Security auditable method, depends on
-     * * {@link global.crypto.subtle.exportKey};
-     * * {@link global.crypto.subtle.generateKey};
-     * * [nc_secp256k1.utils.randomPrivateKey](https://github.com/paulmillr/noble-secp256k1).
-     */
-    public static async _generatePrivateKey(): Promise<Uint8Array> {
-        try {
-            return nc_secp256k1.utils.randomPrivateKey();
-        } catch (e) {
-            // Generate an ECDSA key pair
-            const cryptoKey = await global.crypto.subtle.generateKey(
-                {
-                    name: 'AES-GCM',
-                    length: 256
-                },
-                true,
-                ['encrypt', 'decrypt']
-            );
-
-            // Export the private key to raw format
-            const rawKey = await global.crypto.subtle.exportKey(
-                'raw',
-                cryptoKey
-            );
-
-            // Convert the ArrayBuffer to Uint8Array
-            return new Uint8Array(rawKey);
-        }
-    }
-
-    /**
      * Generates a new Secp256k1 private key using a secure random number generator.
      *
      * @return {Promise<Uint8Array>} A promise that resolves to a Uint8Array representing the generated private key.
