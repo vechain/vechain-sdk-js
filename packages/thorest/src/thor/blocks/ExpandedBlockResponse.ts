@@ -14,7 +14,7 @@ class TransactionWithReceipt {
         const transactionWithoutMeta = new GetTxResponse({
             ...json,
             meta: {
-                blockID: BlockId.of('0x' + '0'.repeat(64)).toString(),
+                blockID: BlockId.of(0).fit(64).toString(),
                 blockNumber: 0,
                 blockTimestamp: 0n
             }

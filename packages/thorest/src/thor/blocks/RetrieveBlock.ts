@@ -41,7 +41,7 @@ class RetrieveBlock implements ThorRequest<RetrieveBlock, ResponseType> {
     ): Promise<ThorResponse<RetrieveBlock, ResponseType>> {
         const response = await httpClient.get(this.path, this.query);
         switch (this.query.query) {
-            case 'expanded': {
+            case '?expanded=true': {
                 const expandedBlockResponse =
                     (await response.json()) as ExpandedBlockResponseJSON;
                 return {
@@ -49,7 +49,7 @@ class RetrieveBlock implements ThorRequest<RetrieveBlock, ResponseType> {
                     response: new ExpandedBlockResponse(expandedBlockResponse)
                 };
             }
-            case 'raw': {
+            case '?raw=true': {
                 const rawBlockResponse =
                     (await response.json()) as RawBlockResponseJSON;
                 return {
