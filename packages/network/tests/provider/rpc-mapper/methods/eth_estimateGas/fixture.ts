@@ -1,8 +1,4 @@
-import { Address, Clause, VET } from '@vechain/sdk-core';
-import {
-    JSONRPCInternalError,
-    JSONRPCInvalidParams
-} from '@vechain/sdk-errors';
+import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
 
 /**
  * Fixtures for positive cases
@@ -11,10 +7,11 @@ const positiveCasesFixtures = [
     {
         description: 'Simple transfer.',
         input: [
-            Clause.transferVET(
-                Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'),
-                VET.of(1000)
-            ),
+            {
+                from: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
+                to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
+                value: '0x1000'
+            },
             'latest'
         ],
         expected: '0x5208'
@@ -30,6 +27,17 @@ const positiveCasesFixtures = [
             'latest'
         ],
         expected: '0x45015'
+    },
+    {
+        description: 'Missing from parameter',
+        input: [
+            {
+                to: '0x7487d912d03ab9de786278f679592b3730bdd540',
+                value: '0x1000'
+            },
+            'latest'
+        ],
+        expected: '0x5208'
     }
 ];
 
@@ -41,16 +49,6 @@ const negativeCasesFixtures = [
         description: 'No parameter passed',
         input: [],
         expected: JSONRPCInvalidParams
-    },
-    {
-        description: 'Missing parameters',
-        input: [
-            {
-                to: '0x7487d912d03ab9de786278f679592b3730bdd540'
-            },
-            'latest'
-        ],
-        expected: JSONRPCInternalError
     },
     {
         description: 'Missing block reference',

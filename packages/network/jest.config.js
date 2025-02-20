@@ -1,6 +1,6 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 // Coverage threshold would apply to yarn test, not yarn test:unit
-const isUnitTest = process.env.UNIT;
+const applyCodeCoverageLimits = process.env.APPLYCODECOVLIMITS;
 
 module.exports = {
     preset: 'ts-jest',
@@ -10,7 +10,7 @@ module.exports = {
     reporters: ['default', 'jest-junit'],
     workerThreads: true,
     coverageThreshold:
-        isUnitTest !== 'true'
+        applyCodeCoverageLimits == 'true'
             ? {
                   global: {
                       branches: 98,
