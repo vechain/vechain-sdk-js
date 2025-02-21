@@ -10,7 +10,7 @@ import {
 let environment: StartedDockerComposeEnvironment;
 const RPC_PROXY_URL = `http://localhost:8545`;
 const genesisBlockId =
-    '0x0000000008602e7a995c747a3215b426c0c65709480b9e9ac57ad37c3f7d73de';
+    '0x0000000008602e7a995c747a3215b426c0c65709480b9e9ac57ad37c3f7d73de'; // custom genesis block id as solo is using a custom genesis file
 
 beforeAll(async () => {
     environment = await new DockerComposeEnvironment(
