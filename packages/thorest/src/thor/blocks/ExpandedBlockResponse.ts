@@ -5,12 +5,13 @@ import {
     Receipt,
     type ReceiptJSON
 } from '../transactions';
+import { type CommmonBlockResponseJSON } from './RegularBlockResponse';
 
-class TransactionWithReceipt {
+class TransactionWithOutputs {
     readonly transaction: Omit<GetTxResponse, 'meta'>;
     readonly receipt: Receipt;
 
-    constructor(json: TransactionWithReceiptJSON) {
+    constructor(json: TransactionWithOutputsJSON) {
         const transactionWithoutMeta = new GetTxResponse({
             ...json,
             meta: {
@@ -30,15 +31,15 @@ class TransactionWithReceipt {
         this.receipt = new Receipt(json);
     }
 
-    toJSON(): TransactionWithReceiptJSON {
+    toJSON(): TransactionWithOutputsJSON {
         return {
             ...this.transaction.toJSON(),
             ...this.receipt.toJSON()
-        } satisfies TransactionWithReceiptJSON;
+        } satisfies TransactionWithOutputsJSON;
     }
 }
 
-type TransactionWithReceiptJSON = Omit<GetTxResponseJSON, 'meta'> & ReceiptJSON;
+type TransactionWithOutputsJSON = Omit<GetTxResponseJSON, 'meta'> & ReceiptJSON;
 
 class ExpandedBlockResponse {
     readonly number: UInt;
@@ -58,7 +59,7 @@ class ExpandedBlockResponse {
     readonly signer: Address;
     readonly isTrunk: boolean;
     readonly isFinalized: boolean;
-    readonly transactions: TransactionWithReceipt[];
+    readonly transactions: TransactionWithOutputs[];
 
     constructor(json: ExpandedBlockResponseJSON) {
         this.number = UInt.of(json.number);
@@ -79,8 +80,8 @@ class ExpandedBlockResponse {
         this.isTrunk = json.isTrunk;
         this.isFinalized = json.isFinalized;
         this.transactions = json.transactions.map(
-            (txId: TransactionWithReceiptJSON): TransactionWithReceipt =>
-                new TransactionWithReceipt(txId)
+            (txId: TransactionWithOutputsJSON): TransactionWithOutputs =>
+                new TransactionWithOutputs(txId)
         );
     }
 
@@ -103,32 +104,15 @@ class ExpandedBlockResponse {
             signer: this.signer.toString(),
             isTrunk: this.isTrunk,
             isFinalized: this.isFinalized,
-            transactions: this.transactions.map((tx: TransactionWithReceipt) =>
+            transactions: this.transactions.map((tx: TransactionWithOutputs) =>
                 tx.toJSON()
             )
         } satisfies ExpandedBlockResponseJSON;
     }
 }
 
-interface ExpandedBlockResponseJSON {
-    number: number;
-    id: string;
-    size: number;
-    parentID: string;
-    timestamp: number;
-    gasLimit: number;
-    beneficiary: string;
-    gasUsed: number;
-    totalScore: number;
-    txsRoot: string;
-    txsFeatures: number;
-    stateRoot: string;
-    receiptsRoot: string;
-    com: boolean;
-    signer: string;
-    isTrunk: boolean;
-    isFinalized: boolean;
-    transactions: TransactionWithReceiptJSON[];
+interface ExpandedBlockResponseJSON extends CommmonBlockResponseJSON {
+    transactions: TransactionWithOutputsJSON[];
 }
 
 export { ExpandedBlockResponse, type ExpandedBlockResponseJSON };

@@ -75,7 +75,7 @@ class RegularBlockResponse {
     }
 }
 
-interface RegularBlockResponseJSON {
+interface CommmonBlockResponseJSON {
     number: number;
     id: string;
     size: number;
@@ -93,7 +93,14 @@ interface RegularBlockResponseJSON {
     signer: string;
     isTrunk: boolean;
     isFinalized: boolean;
+}
+
+interface RegularBlockResponseJSON extends CommmonBlockResponseJSON {
     transactions: string[];
 }
 
-export { RegularBlockResponse, type RegularBlockResponseJSON };
+export {
+    RegularBlockResponse,
+    type RegularBlockResponseJSON,
+    type CommmonBlockResponseJSON
+};

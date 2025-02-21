@@ -32,7 +32,7 @@ const mockHttpClient = <T>(response: T): FetchHttpClient => {
  * @group unit/block
  */
 describe('RetrieveBlock unit tests', () => {
-    test('ok <- askTo (expanded)', async () => {
+    test('should retrieve expanded block successfully', async () => {
         const mockExpandedBlock = {
             number: 123,
             id: '0x0000000000000000000000000000000000000000',
@@ -113,7 +113,7 @@ describe('RetrieveBlock unit tests', () => {
         );
     });
 
-    test('ok <- askTo (raw)', async () => {
+    test('should retrieve raw block successfully', async () => {
         const mockRawBlock: RawBlockResponseJSON = {
             raw: '0x123'
         } satisfies RawBlockResponseJSON;
@@ -127,7 +127,7 @@ describe('RetrieveBlock unit tests', () => {
         );
     });
 
-    test('ok <- askTo (regular)', async () => {
+    test('should retrieve regular block successfully', async () => {
         const mockRegularBlock = {
             number: 123,
             id: '0x0000000000000000000000000000000000000000',

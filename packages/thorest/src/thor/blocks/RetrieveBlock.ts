@@ -9,7 +9,7 @@ import { RawBlockResponse, type RawBlockResponseJSON } from './RawBlockReponse';
 import {
     RegularBlockResponse,
     type RegularBlockResponseJSON
-} from './RegularBlockResponse.';
+} from './RegularBlockResponse';
 import { type Revision } from '@vechain/sdk-core';
 
 type ResponseType =
