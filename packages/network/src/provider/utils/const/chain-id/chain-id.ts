@@ -1,7 +1,6 @@
 /**
- * Chain ID's
- *
- * @link [Chain IDs](https://chainlist.org/?search=vechain&testnets=true)
+ * Chain ID's this is the blockId of the genesis block
+ * Note the Solo block id here is the default - if using a custom genesis file this will be different
  */
 const CHAIN_ID = {
     MAINNET:
