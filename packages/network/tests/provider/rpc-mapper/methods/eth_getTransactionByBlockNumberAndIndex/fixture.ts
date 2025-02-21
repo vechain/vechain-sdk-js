@@ -17,7 +17,8 @@ const ethGetTransactionByBlockNumberAndIndexTestCases = [
             blockNumber: '0x10b7a6d',
             from: '0x7487d912d03ab9de786278f679592b3730bdd540',
             gas: '0xbd30',
-            chainId: '0x186aa',
+            chainId:
+                '0x000000000b2bce3c70bc649a02749e8687721b09ed2e15997f466536b20bb127',
             hash: '0x6994801b6f92f9a0a151ab4ac1c27d2dcf2ab61245b10ddf05504ae5384e759d',
             nonce: '0x176bbcbf79a3a672',
             transactionIndex: '0x1',
@@ -44,7 +45,8 @@ const ethGetTransactionByBlockNumberAndIndexTestCases = [
             blockHash:
                 '0x010b7a6d6f04407ac2f72e505ff83d49db8d01607f8af41f508b2ca7eca0d450',
             blockNumber: '0x10b7a6d',
-            chainId: '0x186aa',
+            chainId:
+                '0x000000000b2bce3c70bc649a02749e8687721b09ed2e15997f466536b20bb127',
             from: '0x7487d912d03ab9de786278f679592b3730bdd540',
             gas: '0x7436',
             gasPrice: '0x0',

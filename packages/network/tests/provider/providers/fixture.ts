@@ -25,7 +25,8 @@ const providerMethodsTestCasesTestnet = [
         description: 'Should be able to call eth_chainId',
         method: 'eth_chainId',
         params: [],
-        expected: '0x186aa'
+        expected:
+            '0x000000000b2bce3c70bc649a02749e8687721b09ed2e15997f466536b20bb127'
     },
     {
         description: `Should be able to call eth_getTransactionByHash with ${validTransactionHashTestnet} as the transaction hash`,

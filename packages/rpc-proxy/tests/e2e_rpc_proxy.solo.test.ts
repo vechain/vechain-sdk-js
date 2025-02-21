@@ -202,7 +202,9 @@ describe('RPC Proxy endpoints', () => {
             console.log(response.data);
             expect(response.data).toHaveProperty('result');
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            expect(response.data.result).toBe('0x186aa');
+            expect(response.data.result).toBe(
+                '0x000000000b2bce3c70bc649a02749e8687721b09ed2e15997f466536b20bb127'
+            );
         });
 
         it('eth_estimateGas method call', async () => {
@@ -765,7 +767,9 @@ describe('RPC Proxy endpoints', () => {
             console.log(response.data);
             expect(response.data).toHaveProperty('result');
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            expect(response.data.result).toBe('0x186aa');
+            expect(response.data.result).toBe(
+                '0x000000000b2bce3c70bc649a02749e8687721b09ed2e15997f466536b20bb127'
+            );
         });
 
         it('txpool_content method call', async () => {

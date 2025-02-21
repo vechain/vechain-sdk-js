@@ -38,7 +38,7 @@ describe('RPC Mapper - eth_chainId method tests solo', () => {
                 RPC_METHODS.eth_chainId
             ]([])) as string;
 
-            expect(rpcCallChainId).toBe(CHAIN_ID.TESTNET);
+            expect(rpcCallChainId).toBe(CHAIN_ID.SOLO);
         });
     });
 });
