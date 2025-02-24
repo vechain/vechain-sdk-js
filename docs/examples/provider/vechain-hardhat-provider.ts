@@ -1,4 +1,5 @@
 import {
+    CHAIN_ID,
     HardhatVeChainProvider,
     ProviderInternalBaseWallet,
     TESTNET_URL
@@ -21,4 +22,4 @@ const rpcCallChainId = await provider.request({
 
 // END_SNIPPET: VechainHardhatProviderSnippet
 
-expect(rpcCallChainId).toBe('0x186aa');
+expect(rpcCallChainId).toBe(CHAIN_ID.TESTNET);

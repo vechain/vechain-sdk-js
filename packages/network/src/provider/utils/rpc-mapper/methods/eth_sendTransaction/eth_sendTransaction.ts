@@ -70,17 +70,17 @@ const ethSendTransaction = async (
     // Input params
     const [transaction] = params as [TransactionObjectInput];
 
-    try {
-        // Check if the chainId in the transaction object if specified matches the chainId of the network
-        const chainId = await getCachedChainId(thorClient);
-        if (transaction.chainId != null && transaction.chainId !== chainId) {
-            throw new JSONRPCInvalidParams(
-                'eth_sendTransaction',
-                `ChainId in the transaction object does not match the chainId of the network. Expected: ${chainId}, Received: ${transaction.chainId}`,
-                { provider }
-            );
-        }
+    // Check if the chainId in the transaction object if specified matches the chainId of the network
+    const chainId = await getCachedChainId(thorClient);
+    if (transaction.chainId != null && transaction.chainId !== chainId) {
+        throw new JSONRPCInvalidParams(
+            'eth_sendTransaction',
+            `ChainId in the transaction object does not match the chainId of the network. Expected: ${chainId}, Received: ${transaction.chainId}`,
+            { chainId: transaction.chainId }
+        );
+    }
 
+    try {
         // Get the signer of the provider
         const signer = (await provider.getSigner(
             transaction.from

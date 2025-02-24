@@ -7,6 +7,9 @@ import {
     ThorClient
 } from '../../../../../src';
 
+const soloChainId =
+    '0x00000000c05a20fbca2bf6ae3affba6af4a74b800b585bf7a4988aba7aea69f6';
+
 /**
  * RPC Mapper integration tests for 'eth_chainId' method
  *
@@ -38,7 +41,7 @@ describe('RPC Mapper - eth_chainId method tests solo', () => {
                 RPC_METHODS.eth_chainId
             ]([])) as string;
 
-            expect(rpcCallChainId).toBe(CHAIN_ID.SOLO);
+            expect(rpcCallChainId).toBe(soloChainId);
         });
     });
 });
