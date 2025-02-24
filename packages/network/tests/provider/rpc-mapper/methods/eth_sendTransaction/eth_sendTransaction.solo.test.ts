@@ -302,5 +302,26 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
                     })
             ).rejects.toThrowError(JSONRPCInvalidParams);
         });
+
+        /**
+         * Negative case 5 - Chain Id mismatch
+         */
+        test('eth_sendTransaction - Should throw error if chainId does not match', async () => {
+            // Send a transaction with invalid chainId
+            await expect(
+                async () =>
+                    await provider.request({
+                        method: RPC_METHODS.eth_sendTransaction,
+                        params: [
+                            {
+                                from: THOR_SOLO_ACCOUNTS[1].address,
+                                to: THOR_SOLO_ACCOUNTS[2].address,
+                                value: '0x1',
+                                chainId: '0x123'
+                            }
+                        ]
+                    })
+            ).rejects.toThrowError(JSONRPCInvalidParams);
+        });
     });
 });

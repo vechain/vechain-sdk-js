@@ -6,6 +6,7 @@ import { type BaseTransactionObjectInput } from '../types';
 interface TransactionObjectInput extends BaseTransactionObjectInput {
     from: string;
     to?: string;
+    chainId?: string;
 }
 
 export type { TransactionObjectInput };

@@ -274,6 +274,7 @@ The following mappings are performed by the RPC proxy
 | finalized block                        | finalized block       |
 | pending block                          | best block            |
 | earliest block                         | block number 0        |
+| chainId                                | genesis block id      |
 
 
 ## Transaction Coversions
