@@ -1,16 +1,9 @@
 import { describe, test, expect } from '@jest/globals';
-import {
-    RetrieveBlock,
-    RetrieveBlockPath
-} from '../../../src/thor/blocks/RetrieveBlock';
 import { type FetchHttpClient } from '../../../src/http';
 import {
     ExpandedBlockResponse,
-    type RegularBlockResponseJSON,
-    type RawBlockResponseJSON,
     type ExpandedBlockResponseJSON,
-    RawBlockResponse,
-    RegularBlockResponse
+    RetrieveExpandedBlock
 } from '../../../src/thor/blocks';
 import { Revision } from '@vechain/sdk-core';
 
@@ -27,12 +20,12 @@ const mockHttpClient = <T>(response: T): FetchHttpClient => {
 };
 
 /**
- * VeChain block - unit
+ * VeChain expanded block - unit
  *
  * @group unit/block
  */
 describe('RetrieveBlock unit tests', () => {
-    test('should retrieve expanded block successfully', async () => {
+    test('should obtain expanded block successfully', async () => {
         const mockExpandedBlock = {
             number: 123,
             id: '0x0000000000000000000000000000000000000000',
@@ -104,56 +97,27 @@ describe('RetrieveBlock unit tests', () => {
             ]
         } satisfies ExpandedBlockResponseJSON;
 
-        const response = await new RetrieveBlock(
-            new RetrieveBlockPath(Revision.BEST),
-            'expanded'
-        ).askTo(mockHttpClient<ExpandedBlockResponseJSON>(mockExpandedBlock));
+        const response = await RetrieveExpandedBlock.of(Revision.BEST).askTo(
+            mockHttpClient<ExpandedBlockResponseJSON>(mockExpandedBlock)
+        );
         expect(response.response.toJSON()).toEqual(
             new ExpandedBlockResponse(mockExpandedBlock).toJSON()
         );
     });
 
-    test('should retrieve raw block successfully', async () => {
-        const mockRawBlock: RawBlockResponseJSON = {
-            raw: '0x123'
-        } satisfies RawBlockResponseJSON;
+    test('should fail to obtain expanded block with incomplete response', async () => {
+        const mockIncompleteExpandedBlock: Partial<ExpandedBlockResponseJSON> =
+            {
+                number: 123,
+                id: '0x0000000000000000000000000000000000000000'
+            };
 
-        const mockRawBlockResponse = await new RetrieveBlock(
-            new RetrieveBlockPath(Revision.BEST),
-            'raw'
-        ).askTo(mockHttpClient<RawBlockResponseJSON>(mockRawBlock));
-        expect(mockRawBlockResponse.response).toEqual(
-            new RawBlockResponse(mockRawBlock)
-        );
-    });
-
-    test('should retrieve regular block successfully', async () => {
-        const mockRegularBlock = {
-            number: 123,
-            id: '0x0000000000000000000000000000000000000000',
-            size: 456,
-            parentID: '0x0000000000000000000000000000000000000000',
-            timestamp: 789,
-            gasLimit: 1000,
-            beneficiary: '0x0000000000000000000000000000000000000000',
-            gasUsed: 500,
-            totalScore: 100,
-            txsRoot: '0x0000000000000000000000000000000000000000',
-            txsFeatures: 1,
-            stateRoot: '0x0000000000000000000000000000000000000000',
-            receiptsRoot: '0x0000000000000000000000000000000000000000',
-            com: true,
-            signer: '0x0000000000000000000000000000000000000000',
-            isTrunk: true,
-            isFinalized: true,
-            transactions: ['0x0000000000000000000000000000000000000000']
-        } satisfies RegularBlockResponseJSON;
-
-        const mockRegularBlockResponse = await new RetrieveBlock(
-            new RetrieveBlockPath(Revision.BEST)
-        ).askTo(mockHttpClient<RegularBlockResponseJSON>(mockRegularBlock));
-        expect(mockRegularBlockResponse.response).toEqual(
-            new RegularBlockResponse(mockRegularBlock)
-        );
+        await expect(
+            RetrieveExpandedBlock.of(Revision.BEST).askTo(
+                mockHttpClient<ExpandedBlockResponseJSON>(
+                    mockIncompleteExpandedBlock as ExpandedBlockResponseJSON
+                )
+            )
+        ).rejects.toThrow();
     });
 });

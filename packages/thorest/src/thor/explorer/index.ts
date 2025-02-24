@@ -1,20 +1,14 @@
 import { FetchHttpClient } from '../../http';
 import { ThorNetworks } from '../ThorNetworks';
-import {
-    type RegularBlockResponse,
-    RetrieveBlock,
-    RetrieveBlockPath
-} from '../blocks';
+import { RetrieveRegularBlock } from '../blocks';
 import { Revision, TxId } from '@vechain/sdk-core';
 import { RetrieveTransactionByID } from '../transactions';
 
 async function getBestBlockNumber(
     httpClient: FetchHttpClient
 ): Promise<number> {
-    const r = await new RetrieveBlock(
-        new RetrieveBlockPath(Revision.BEST)
-    ).askTo(httpClient);
-    return (r.response as RegularBlockResponse).number.valueOf();
+    const r = await RetrieveRegularBlock.of(Revision.BEST).askTo(httpClient);
+    return r.response.number.valueOf();
 }
 
 async function explore(): Promise<void> {
@@ -22,8 +16,10 @@ async function explore(): Promise<void> {
     const lastBlockNumber = await getBestBlockNumber(httpClient);
     for (let blockNumber = lastBlockNumber; blockNumber >= 0; blockNumber--) {
         const block = (
-            await RetrieveBlock.of(Revision.of(blockNumber)).askTo(httpClient)
-        ).response as RegularBlockResponse;
+            await RetrieveRegularBlock.of(Revision.of(blockNumber)).askTo(
+                httpClient
+            )
+        ).response;
         console.log(`BLOCK ${block.number} of ${lastBlockNumber}`);
         for (const txid of block.transactions) {
             console.log(`TXID ${txid}`);
