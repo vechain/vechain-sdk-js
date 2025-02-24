@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
-    CHAIN_ID,
     RPC_METHODS,
     RPCMethodsMap,
     THOR_SOLO_URL,
