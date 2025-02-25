@@ -90,7 +90,7 @@ class HardhatVeChainProvider extends VeChainProvider {
     }
 
     /**
-     * Overload off the sendAsync method.
+     * Overload of the sendAsync method.
      * It is the same of the send method, but with a callback.
      * Instead of returning the result, it calls the callback with the result.
      *
