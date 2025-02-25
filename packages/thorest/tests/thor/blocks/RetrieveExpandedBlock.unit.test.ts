@@ -119,7 +119,7 @@ describe('RetrieveBlock unit tests', () => {
                 )
             )
         ).rejects.toThrowError(
-            /Method 'UInt.of' failed.\\s*-Reason: 'not an unsigned integer expression'\\s*-Parameters:\\s*{\\s*"exp": "undefined"\\s*}/
+            /Method 'UInt.of' failed.\s*-Reason: 'not an unsigned integer expression'\s*-Parameters:\s*{\s*"exp": "undefined"\s*}/
         );
     });
 });

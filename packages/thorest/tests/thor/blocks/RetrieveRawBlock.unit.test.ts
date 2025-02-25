@@ -48,7 +48,7 @@ describe('RetrieveBlock unit tests', () => {
                 )
             )
         ).rejects.toThrowError(
-            /Method 'Hex.of' failed.\\s*-Reason: 'not an hexadecimal expression'\\s*-Parameters:\\s*{\\s*"exp": "undefined"\\s*}\\s*-Internal error:\\s*Uint8Array expected/
+            /Method 'Hex.of' failed.\s*-Reason: 'not an hexadecimal expression'\s*-Parameters:\s*{\s*"exp": "undefined"\s*}\s*-Internal error:\s*Uint8Array expected/
         );
     });
 });
