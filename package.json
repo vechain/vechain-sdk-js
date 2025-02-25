@@ -89,7 +89,8 @@
         "hardhat": "^2.22.15"
     },
     "resolutions": {
-        "cross-spawn": "^7.0.5"
+        "cross-spawn": "^7.0.5",
+        "elliptic": "^6.6.1"
     },
     "version": "1.22.22"
 }
