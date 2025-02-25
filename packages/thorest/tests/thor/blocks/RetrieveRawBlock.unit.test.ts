@@ -33,8 +33,8 @@ describe('RetrieveBlock unit tests', () => {
         const mockRawBlockResponse = await RetrieveRawBlock.of(
             Revision.BEST
         ).askTo(mockHttpClient<RawBlockResponseJSON>(mockRawBlock));
-        expect(mockRawBlockResponse.response).toEqual(
-            new RawBlockResponse(mockRawBlock)
+        expect(mockRawBlockResponse.response.toJSON()).toEqual(
+            new RawBlockResponse(mockRawBlock).toJSON()
         );
     });
 
@@ -47,6 +47,8 @@ describe('RetrieveBlock unit tests', () => {
                     mockIncompleteRawBlock as RawBlockResponseJSON
                 )
             )
-        ).rejects.toThrow();
+        ).rejects.toThrowError(
+            /Method 'Hex.of' failed.\\s*-Reason: 'not an hexadecimal expression'\\s*-Parameters:\\s*{\\s*"exp": "undefined"\\s*}\\s*-Internal error:\\s*Uint8Array expected/
+        );
     });
 });

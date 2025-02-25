@@ -50,8 +50,8 @@ describe('RetrieveBlock unit tests', () => {
         const mockRegularBlockResponse = await RetrieveRegularBlock.of(
             Revision.BEST
         ).askTo(mockHttpClient<RegularBlockResponseJSON>(mockRegularBlock));
-        expect(mockRegularBlockResponse.response).toEqual(
-            new RegularBlockResponse(mockRegularBlock)
+        expect(mockRegularBlockResponse.response.toJSON()).toEqual(
+            new RegularBlockResponse(mockRegularBlock).toJSON()
         );
     });
 
@@ -67,6 +67,8 @@ describe('RetrieveBlock unit tests', () => {
                     mockIncompleteRegularBlock as RegularBlockResponseJSON
                 )
             )
-        ).rejects.toThrow();
+        ).rejects.toThrowError(
+            /Method 'UInt.of' failed.\s*-Reason: 'not an unsigned integer expression'\s*-Parameters:\s*{\s*"exp": "undefined"\s*}/
+        );
     });
 });
