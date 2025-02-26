@@ -4,36 +4,36 @@ import { type ThorResponse } from '../ThorResponse';
 import {
     RegularBlockResponse,
     type RegularBlockResponseJSON
-} from './RegularBlockResponse.';
+} from './RegularBlockResponse';
 import { type Revision } from '@vechain/sdk-core';
 
-class RetrieveBlock
-    implements ThorRequest<RetrieveBlock, RegularBlockResponse>
+class RetrieveRegularBlock
+    implements ThorRequest<RetrieveRegularBlock, RegularBlockResponse>
 {
-    public readonly path: RetrieveBlockPath;
+    public readonly path: RetrieveRegularBlockPath;
 
-    constructor(path: RetrieveBlockPath) {
+    constructor(path: RetrieveRegularBlockPath) {
         this.path = path;
     }
 
     async askTo(
         httpClient: HttpClient
-    ): Promise<ThorResponse<RetrieveBlock, RegularBlockResponse>> {
+    ): Promise<ThorResponse<RetrieveRegularBlock, RegularBlockResponse>> {
         const response = await httpClient.get(this.path, { query: '' });
-        const responseBody =
+        const responseJSON =
             (await response.json()) as RegularBlockResponseJSON;
         return {
             request: this,
-            response: new RegularBlockResponse(responseBody)
+            response: new RegularBlockResponse(responseJSON)
         };
     }
 
-    static of(revision: Revision): RetrieveBlock {
-        return new RetrieveBlock(new RetrieveBlockPath(revision));
+    static of(revision: Revision): RetrieveRegularBlock {
+        return new RetrieveRegularBlock(new RetrieveRegularBlockPath(revision));
     }
 }
 
-class RetrieveBlockPath implements HttpPath {
+class RetrieveRegularBlockPath implements HttpPath {
     readonly revision: Revision;
 
     constructor(revision: Revision) {
@@ -45,4 +45,4 @@ class RetrieveBlockPath implements HttpPath {
     }
 }
 
-export { RetrieveBlock, RetrieveBlockPath };
+export { RetrieveRegularBlock, RetrieveRegularBlockPath };
