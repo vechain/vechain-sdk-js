@@ -20,7 +20,7 @@ class TransactionWithOutputs {
             meta: {
                 blockID: BlockId.of(0).fit(64).toString(),
                 blockNumber: 0,
-                blockTimestamp: 0n
+                blockTimestamp: 0
             }
         });
 
