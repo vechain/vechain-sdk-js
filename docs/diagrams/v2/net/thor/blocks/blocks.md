@@ -27,7 +27,7 @@ classDiagram
         id: ThorId
         size: UInt
         parentID: ThorId
-        timestamp: bigint
+        timestamp: UInt
         gasLimit: VTHO
         beneficiary: Address
         gasUsed: VTHO
@@ -50,7 +50,7 @@ classDiagram
         id: string
         size: number
         parentID: string
-        timestamp: bigint
+        timestamp: number
         gasLimit: number
         beneficiary: string
         gasUsed: number
