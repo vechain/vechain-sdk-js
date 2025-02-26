@@ -1,21 +1,6 @@
 import { describe, test } from '@jest/globals';
-import {
-    type FetchHttpClient,
-    type PeerStatJSON,
-    RetrieveConnectedPeers
-} from '../../../src';
-
-const mockHttpClient = <T>(response: T): FetchHttpClient => {
-    return {
-        get: jest.fn().mockImplementation(() => {
-            return {
-                json: jest.fn().mockImplementation(() => {
-                    return response;
-                })
-            };
-        })
-    } as unknown as FetchHttpClient;
-};
+import { type PeerStatJSON, RetrieveConnectedPeers } from '../../../src';
+import { mockHttpClient } from '../../utils/MockUnitTestClient';
 
 /**
  *VeChain node - unit
@@ -45,15 +30,15 @@ describe('RetrieveConnectedPeers unit tests', () => {
                 inbound: true,
                 duration: 37
             }
-        ];
+        ] satisfies PeerStatJSON[];
 
         const mockPeersResponse = await new RetrieveConnectedPeers().askTo(
-            mockHttpClient<PeerStatJSON[]>(mockPeers)
+            mockHttpClient(mockPeers, 'get')
         );
         expect(mockPeersResponse.response.toJSON()).toEqual(mockPeers);
 
         const emptyPeersResponse = await new RetrieveConnectedPeers().askTo(
-            mockHttpClient<PeerStatJSON[]>([])
+            mockHttpClient([], 'get')
         );
         expect(emptyPeersResponse.response.toJSON()).toEqual([]);
     });
