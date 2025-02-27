@@ -5,13 +5,13 @@ const mockHttpClient = <T>(
     httpMethod: 'get' | 'post'
 ): HttpClient => {
     return {
-        [httpMethod]: jest.fn().mockImplementation(() => {
+        [httpMethod]: () => {
             return {
-                json: jest.fn().mockImplementation(() => {
+                json: () => {
                     return response satisfies T;
-                })
+                }
             };
-        })
+        }
     } as unknown as HttpClient;
 };
 
