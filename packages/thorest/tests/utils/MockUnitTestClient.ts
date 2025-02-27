@@ -1,9 +1,9 @@
-import { type FetchHttpClient } from '../../src';
+import { type HttpClient } from '../../src';
 
 const mockHttpClient = <T>(
     response: T,
     httpMethod: 'get' | 'post'
-): FetchHttpClient => {
+): HttpClient => {
     return {
         [httpMethod]: jest.fn().mockImplementation(() => {
             return {
@@ -12,7 +12,7 @@ const mockHttpClient = <T>(
                 })
             };
         })
-    } as unknown as FetchHttpClient;
+    } as unknown as HttpClient;
 };
 
 export { mockHttpClient };
