@@ -1,23 +1,11 @@
 import { describe, test, expect } from '@jest/globals';
-import { type FetchHttpClient } from '../../../src/http';
 import {
     type RawBlockResponseJSON,
     RawBlockResponse,
     RetrieveRawBlock
 } from '../../../src/thor/blocks';
 import { Revision } from '@vechain/sdk-core';
-
-const mockHttpClient = <T>(response: T): FetchHttpClient => {
-    return {
-        get: jest.fn().mockImplementation(() => {
-            return {
-                json: jest.fn().mockImplementation(() => {
-                    return response;
-                })
-            };
-        })
-    } as unknown as FetchHttpClient;
-};
+import { mockHttpClient } from '../../utils/MockUnitTestClient';
 
 /**
  * VeChain raw block - unit
@@ -25,14 +13,14 @@ const mockHttpClient = <T>(response: T): FetchHttpClient => {
  * @group unit/block
  */
 describe('RetrieveBlock unit tests', () => {
-    test('should obtain raw block successfully', async () => {
+    test('should obtain raw block successfully 2', async () => {
         const mockRawBlock: RawBlockResponseJSON = {
             raw: '0x123'
         } satisfies RawBlockResponseJSON;
 
         const mockRawBlockResponse = await RetrieveRawBlock.of(
             Revision.BEST
-        ).askTo(mockHttpClient<RawBlockResponseJSON>(mockRawBlock));
+        ).askTo(mockHttpClient(mockRawBlock, 'get'));
         expect(mockRawBlockResponse.response.toJSON()).toEqual(
             new RawBlockResponse(mockRawBlock).toJSON()
         );
@@ -43,8 +31,9 @@ describe('RetrieveBlock unit tests', () => {
 
         await expect(
             RetrieveRawBlock.of(Revision.BEST).askTo(
-                mockHttpClient<RawBlockResponseJSON>(
-                    mockIncompleteRawBlock as RawBlockResponseJSON
+                mockHttpClient(
+                    mockIncompleteRawBlock as RawBlockResponseJSON,
+                    'get'
                 )
             )
         ).rejects.toThrowError(
