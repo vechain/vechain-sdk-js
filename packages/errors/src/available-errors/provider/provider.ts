@@ -143,11 +143,29 @@ class JSONRPCServerError extends JSONRPCProviderError {
     }
 }
 
+/**
+ * Method not implemented.
+ *
+ * WHEN TO USE:
+ * * When a method is implemented but not yet supported by the provider.
+ */
+class JSONRPCMethodNotImplemented extends JSONRPCProviderError {
+    constructor(
+        readonly methodName: string,
+        message: string,
+        data: ObjectErrorData,
+        readonly innerError?: unknown
+    ) {
+        super(methodName, -32004, message, data, innerError);
+    }
+}
+
 export {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     JSONRPCInvalidRequest,
     JSONRPCMethodNotFound,
+    JSONRPCMethodNotImplemented,
     JSONRPCParseError,
     JSONRPCProviderError,
     JSONRPCServerError,
