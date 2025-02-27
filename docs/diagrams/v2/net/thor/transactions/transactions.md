@@ -106,14 +106,14 @@ classDiagram
     class TxMeta {
         blockID: BlockId
         blockNumber: UInt
-        blockTimestamp: bigint
+        blockTimestamp: UInt
         constructor(json: TxMetaJSON) TxMeta
         toJSON() TxMetaJSON
     }
     class TxMetaJSON {
         blockID: string
         blockNumber: number
-        blockTimestamp: bigint
+        blockTimestamp: number
     }
     class Receipt {
         gasUsed: VTHO
@@ -218,14 +218,14 @@ classDiagram
     class TxMeta {
         blockID: BlockId
         blockNumber: UInt
-        blockTimestamp: bigint
+        blockTimestamp: UInt
         constructor(json: TxMetaJSON) TxMeta
         toJSON() TxMetaJSON
     }
     class TxMetaJSON {
         blockID: string
         blockNumber: number
-        blockTimestamp: bigint
+        blockTimestamp: number
     }
     Clause --> "new - toJSON" ClauseJSON
     Event --> "new - toJSON" EventJSON
