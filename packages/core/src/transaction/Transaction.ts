@@ -380,20 +380,20 @@ class Transaction {
     /**
      * Computes the transaction hash, optionally incorporating a gas payer's address.
      *
-     * @param {Address} [gasPayer] - Optional gas payer's address to include in the hash computation.
+     * @param {Address} [sender] - Optional transaction origin's address to include in the hash computation.
      * @return {Blake2b256} - The computed transaction hash.
      *
      * @remarks
-     * `gasPayer` is used to sign a transaction on behalf of another account.
+     * `sender` is used to sign a transaction on behalf of another account.
      *
      * @remarks Security auditable method, depends on
      * - {@link Blake2b256.of}.
      */
-    public getTransactionHash(gasPayer?: Address): Blake2b256 {
+    public getTransactionHash(sender?: Address): Blake2b256 {
         const txHash = Blake2b256.of(this.encode(false));
-        if (gasPayer !== undefined) {
+        if (sender !== undefined) {
             return Blake2b256.of(
-                nc_utils.concatBytes(txHash.bytes, gasPayer.bytes)
+                nc_utils.concatBytes(txHash.bytes, sender.bytes)
             );
         }
         return txHash;
