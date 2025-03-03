@@ -1,6 +1,14 @@
 import { Clause, type ClauseJSON } from './Clause';
 import { TxMeta, type TxMetaJSON } from './TxMeta';
-import { Address, BlockId, Nonce, TxId, UInt, VTHO } from '@vechain/sdk-core';
+import {
+    Address,
+    BlockId,
+    Nonce,
+    TxId,
+    UInt,
+    Units,
+    VTHO
+} from '@vechain/sdk-core';
 
 class GetTxResponse {
     readonly id: TxId;
@@ -30,7 +38,8 @@ class GetTxResponse {
             return new Clause(clauseJSON);
         });
         this.gasPriceCoef = UInt.of(json.gasPriceCoef);
-        this.gas = VTHO.of(json.gas);
+        // Each unit of gas is equal to 10^-5 VTHO
+        this.gas = VTHO.of(json.gas / 100_000, Units.ether);
         this.dependsOn =
             json.dependsOn !== undefined && json.dependsOn !== null
                 ? TxId.of(json.dependsOn)
@@ -51,7 +60,8 @@ class GetTxResponse {
             expiration: this.expiration.valueOf(),
             clauses: this.clauses?.map((clause) => clause.toJSON()),
             gasPriceCoef: this.gasPriceCoef.valueOf(),
-            gas: Number(this.gas.wei),
+            // We convert back to gas units
+            gas: parseInt(this.gas.n.toString()) * 100_000,
             dependsOn:
                 this.dependsOn !== undefined && this.dependsOn !== null
                     ? this.dependsOn.toString()

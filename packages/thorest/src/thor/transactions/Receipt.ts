@@ -10,7 +10,7 @@ class Receipt {
     readonly outputs: ReceiptOutput[];
 
     constructor(json: ReceiptJSON) {
-        this.gasUsed = VTHO.of(json.gasUsed);
+        this.gasUsed = VTHO.of(json.gasUsed, Units.wei);
         this.gasPayer = Address.of(json.gasPayer);
         this.paid = VTHO.of(Hex.of(json.paid).bi, Units.wei);
         this.reward = VTHO.of(Hex.of(json.reward).bi, Units.wei);
