@@ -45,7 +45,7 @@ describe('RetrieveTransactionByID unit tests', () => {
                 }
             ],
             gasPriceCoef: 0,
-            gas: 500000,
+            gas: 21000,
             origin: '0x7d8Bf18C7ce84B3e175B339C4cA93Aed1dD488Aa',
             nonce: '0x12345678',
             dependsOn: undefined,

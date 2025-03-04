@@ -38,8 +38,8 @@ class GetTxResponse {
             return new Clause(clauseJSON);
         });
         this.gasPriceCoef = UInt.of(json.gasPriceCoef);
-        // Each unit of gas is equal to 10^-5 VTHO
-        this.gas = VTHO.of(json.gas / 100_000, Units.ether);
+        // Each unit of gas is equal to 10^-5 VTHO (= 10^13 wei)
+        this.gas = VTHO.of(json.gas * Math.pow(10, 13), Units.wei);
         this.dependsOn =
             json.dependsOn !== undefined && json.dependsOn !== null
                 ? TxId.of(json.dependsOn)
@@ -61,7 +61,7 @@ class GetTxResponse {
             clauses: this.clauses?.map((clause) => clause.toJSON()),
             gasPriceCoef: this.gasPriceCoef.valueOf(),
             // We convert back to gas units
-            gas: parseInt(this.gas.n.toString()) * 100_000,
+            gas: parseInt((this.gas.n * Math.pow(10, 5)).toString()),
             dependsOn:
                 this.dependsOn !== undefined && this.dependsOn !== null
                     ? this.dependsOn.toString()
