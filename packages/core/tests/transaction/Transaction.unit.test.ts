@@ -701,17 +701,15 @@ describe('Transaction class tests', () => {
             }).toThrowError(NotDelegatedTransaction);
         });
 
-        test('signature (only of the gasPayer) <- unsigned tx', () => {
-            expect(
-                (
-                    Transaction.of(
-                        TransactionFixture.delegated.body
-                    ).signAsGasPayer(
-                        Address.ofPrivateKey(SignerFix.privateKey),
-                        SignerFix.privateKey
-                    ).signature as Uint8Array
-                ).length
-            ).toBe(65);
+        test('Throw <- unsigned tx', () => {
+            expect(() => {
+                Transaction.of(
+                    TransactionFixture.delegated.body
+                ).signAsGasPayer(
+                    Address.ofPrivateKey(SignerFix.privateKey),
+                    SignerFix.privateKey
+                );
+            }).toThrowError(InvalidTransactionField);
         });
 
         test('Throw <- invalid private keys - delegated tx', () => {
