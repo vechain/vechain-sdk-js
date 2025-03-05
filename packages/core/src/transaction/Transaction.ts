@@ -557,8 +557,8 @@ class Transaction {
     ): Transaction {
         if (Secp256k1.isValidPrivateKey(gasPayerPrivateKey)) {
             if (this.isDelegated) {
+                const senderHash = this.getTransactionHash(sender).bytes;
                 if (this.signature !== undefined) {
-                    const senderHash = this.getTransactionHash(sender).bytes;
                     return new Transaction(
                         this.body,
                         nc_utils.concatBytes(
@@ -567,12 +567,12 @@ class Transaction {
                             Secp256k1.sign(senderHash, gasPayerPrivateKey)
                         )
                     );
+                } else {
+                    return new Transaction(
+                        this.body,
+                        Secp256k1.sign(senderHash, gasPayerPrivateKey)
+                    );
                 }
-                throw new InvalidTransactionField(
-                    'Transaction.signAsGasPayer',
-                    'unsigned transaction: use signAsSender method',
-                    { fieldName: 'signature' }
-                );
             }
             throw new NotDelegatedTransaction(
                 'Transaction.signAsGasPayer',
