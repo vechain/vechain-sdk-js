@@ -11,8 +11,7 @@ export default [
                     from: [
                         "../core",
                         "../errors",
-                        "../logging",
-                        "../rpc-proxy",
+                        "../logging"
                     ],
 
                     message: "Please import using @vechain/sdk-<the-module>",

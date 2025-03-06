@@ -1,8 +1,0 @@
-{
-  "url": "https://testnet.vechain.org",
-  "port": 10,
-  "accounts": [
-    "INVALID_ACCOUNT"
-  ],
-  "enableDelegation": false
-}

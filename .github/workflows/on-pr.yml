@@ -33,10 +33,6 @@ jobs:
               id: stop-solo
               run: yarn stop-thor-solo
 
-    rpc-proxy:
-        uses: ./.github/workflows/rpc-proxy.yml
-        secrets: inherit
-
     install-build:
         uses: ./.github/workflows/build-lint.yml
         secrets: inherit

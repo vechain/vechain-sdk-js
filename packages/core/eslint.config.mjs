@@ -10,8 +10,7 @@ export default [
                     from: [
                         "../errors",
                         "../logging",
-                        "../network",
-                        "../rpc-proxy",
+                        "../network"
                     ],
                     message: "Please import using @vechain/sdk-<the-module>",
                 }],
