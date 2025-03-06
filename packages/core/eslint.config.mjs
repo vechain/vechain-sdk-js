@@ -8,7 +8,6 @@ export default [
                 zones: [{
                     target: "./src",
                     from: [
-                        "../aws-kms-adapter",
                         "../errors",
                         "../ethers-adapter",
                         "../hardhat-plugin",

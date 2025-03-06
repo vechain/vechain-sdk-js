@@ -9,7 +9,6 @@ export default [
                     target: "./src",
 
                     from: [
-                        "../aws-kms-adapter",
                         "../core",
                         "../errors",
                         "../hardhat-plugin",

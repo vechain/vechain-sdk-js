@@ -49,7 +49,7 @@ jobs:
                   yarn publish
               env:
                   NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-                  
+
             - name: Publish network
               run: |
                   cd packages/network
@@ -73,7 +73,7 @@ jobs:
                 yarn publish
               env:
                 NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-            
+
             - name: Publish RPC proxy
               run: |
                 cd packages/rpc-proxy
@@ -85,14 +85,6 @@ jobs:
             - name: Publish Ethers Adapter
               run: |
                 cd packages/ethers-adapter
-                yarn version --no-git-tag-version --new-version ${{ github.ref_name }}
-                yarn publish
-              env:
-                NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
-            - name: Publish AWS KMS Adapter
-              run: |
-                cd packages/aws-kms-adapter
                 yarn version --no-git-tag-version --new-version ${{ github.ref_name }}
                 yarn publish
               env:

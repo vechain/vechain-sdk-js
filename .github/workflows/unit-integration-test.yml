@@ -59,8 +59,7 @@ jobs:
                   network, packages/network/junit.xml
                   errors, packages/errors/junit.xml
                   logging, packages/logging/junit.xml
-                  hardhat-plugin, packages/hardhat-plugin/junit.xml
-                  aws-kms-adapter, packages/aws-kms-adapter/junit.xml
+                  hardhat-plugin, packages/hardhat-plugin/junit.xml                  
                   ethers-adapter, packages/ethers-adapter/junit.xml
                   rpc-proxy, packages/rpc-proxy/junit.xml
 
@@ -71,7 +70,7 @@ jobs:
                 name: coverage-results
                 path: |
                   packages/**/coverage/lcov.info
-            
+
             - name: Post unit test results to slack
               if: always()  && github.ref == 'refs/heads/main' && (steps.unit-test.outcome == 'failure')
               uses: slackapi/slack-github-action@v2.0.0
@@ -86,4 +85,3 @@ jobs:
                     "message": "unit tests failed, see run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   }
 
-              

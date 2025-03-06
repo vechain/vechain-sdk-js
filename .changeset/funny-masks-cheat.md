@@ -1,5 +1,4 @@
 ---
-"@vechain/sdk-aws-kms-adapter": patch
 "@vechain/sdk-core": patch
 "@vechain/sdk-errors": patch
 "@vechain/sdk-ethers-adapter": patch
