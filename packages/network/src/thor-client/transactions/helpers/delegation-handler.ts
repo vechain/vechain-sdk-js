@@ -48,7 +48,7 @@ const _getDelegationSignature = async (
             '_getDelegationSignature()',
             'Delegation failed: Cannot get signature from delegator.',
             {
-                gasPayerUrl: delegatorUrl
+                delegatorUrl
             },
             error
         );

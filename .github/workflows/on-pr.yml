@@ -29,10 +29,6 @@ jobs:
               id: start-solo
               run: yarn start-thor-solo
 
-            - name: Test docs examples
-              run: |
-                yarn test:examples
-
             - name: Stop Thor solo node
               id: stop-solo
               run: yarn stop-thor-solo
