@@ -9,8 +9,6 @@ export default [
                     target: "./src",
                     from: [
                         "../errors",
-                        "../ethers-adapter",
-                        "../hardhat-plugin",
                         "../logging",
                         "../network",
                         "../rpc-proxy",

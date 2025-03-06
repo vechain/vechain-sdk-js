@@ -11,8 +11,6 @@ export default [
                     from: [
                         "../core",
                         "../errors",
-                        "../ethers-adapter",
-                        "../hardhat-plugin",
                         "../logging",
                         "../network",
                     ],
