@@ -1,33 +1,75 @@
 class VeChainSDKError extends Error {
-    static override readonly name = 'VeChainSDKError';
+    /**
+     * Represents the software tag identifier expressing the **artifact and version coordinates**
+     * used for logging or debugging purposes.
+     *
+     * This constant value is used to facilitate filtering or grouping of log messages,
+     * helping developers to identify and trace operations or issues related to this specific SDK version in the application.
+     */
+    static readonly TAG = 'vechain-sdk-js:2.0';
 
+    /**
+     * Optional parameter to represent a set of key-value pairs representing the arguments originating the error.
+     *
+     * @param {Record<string, unknown>} [args] - A record object where keys are strings and values can be of any type.
+     */
     readonly args?: Record<string, unknown>;
 
     /**
-     * Full Qualified Name of the element throwing the error.
+     * Represents the underlying error or reason for an operation failure.
+     * Optional property that can provide additional context or details
+     * about the cause of an encountered issue.
+     */
+    override readonly cause?: Error;
+
+    /**
+     * Fully qualified name of the element throwing this error, represented as a string in hierarchical form.
+     *
+     * For error generated in a method of a class, the format is
+     *
+     * <pre>
+     * <file>!<class>.<method>
+     * </pre>
+     *
+     * This variable is used to store the full name of a resource,
+     * entity, or identifier, typically in a hierarchical or
+     * namespaced format. It may include elements such as
+     * namespaces, modules, classes, or methods concatenated
+     * together to form a unique identifier. The specific format
+     * and components depend on the context in which it is used.
      */
     readonly fqn: string;
 
     /**
-     * Software Artifact Tag: name and version.
+     * Represents the software tag identifier expressing the **software artifact and version coordinates**
      */
     readonly tag: string;
 
+    /**
+     * Constructs a new instance of the class.
+     *
+     * @param {string} fqn - The fully qualified name of the element throwing this error.
+     * @param {string} message - The error message to be used.
+     * @param {Record<string, unknown>} [args] - Optional arguments providing additional context or details.
+     * @param {Error} [cause] - Optional underlying cause of the error.
+     * @param {string} [tag] - An optional tag identifying the error, defaults to VeChainSDKError.TAG.
+     */
     constructor(
         fqn: string,
         message: string,
         args?: Record<string, unknown>,
         cause?: Error,
-        tag: string = 'vechain-sdk-js:2.0'
+        tag: string = VeChainSDKError.TAG
     ) {
         super(message, cause);
         this.args = args;
+        this.cause = cause;
         this.fqn = fqn;
         this.tag = tag;
     }
 
     toString(
-        joiner: string = ', ',
+        joiner: string = '\n\t',
         stringify: (obj: unknown) => string = (obj: unknown) =>
             JSON.stringify(obj)
     ): string {
@@ -39,16 +81,10 @@ class VeChainSDKError extends Error {
             txt.push(`args: ${stringify(this.args)}`);
         }
         if (this.cause !== undefined && this.cause !== null) {
-            txt.push(`cause: ${stringify(this.cause)}`);
+            txt.push(`cause: ${this.cause.toString()}`);
         }
         return txt.join(joiner);
     }
 }
 
-const err = new VeChainSDKError(
-    'packages/core/src/errors/VeChainSDKError.ts!28',
-    'invalid data type',
-    { data: 'invalid' },
-    new Error('invalid data type')
-);
-console.log(err.toString('\n\t'));
+export { VeChainSDKError };
