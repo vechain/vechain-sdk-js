@@ -70,7 +70,7 @@ describe('QuerySmartContractEvents unit tests', () => {
 
         const response =
             await QuerySmartContractEvents.of(request).askTo(mockClient);
-        expect(response.response.toJSON()).toMatchObject(
+        expect(response.response.toJSON()).toEqual(
             new EventLogsResponse(mockResponse).toJSON()
         );
     });

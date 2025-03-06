@@ -71,7 +71,7 @@ describe('QueryVETTransferEvents unit tests', () => {
 
         const response =
             await QueryVETTransferEvents.of(request).askTo(mockClient);
-        expect(response.response.toJSON()).toMatchObject(
+        expect(response.response.toJSON()).toEqual(
             new TransferLogsResponse(mockResponse).toJSON()
         );
     });
