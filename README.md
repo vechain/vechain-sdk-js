@@ -21,7 +21,6 @@
 
 Welcome to the VeChain SDK repository! Here's a breakdown of our organized structure:
 
-- `./apps`: Explore a suite of sample applications that demonstrate the versatility and power of our SDK in real-world scenarios. From Next.js to Node.js, HardHat, and CloudFlare, these examples serve as practical guides to kickstart your development journey.
 - `./docker`: Streamline your development and deployment with our comprehensive Docker configurations. This directory offers Dockerfile setups designed to create consistent, reproducible environments.
 - `./docs`: Your go-to destination for comprehensive documentation. Explore demonstrative examples showcasing the prowess of our SDK. Knowledge is power, and our docs are here to enlighten your path.
 - `./packages`: A hub for our monorepo packages, each serving a distinct purpose:
@@ -248,9 +247,6 @@ Projects based on [Next.js](https://nextjs.org/) need the root `tsconfig.json` f
 to define the runtime and the test framework to be compatible with the
 [ECMAScript 2020](https://262.ecma-international.org/11.0/)
 language specifications.
-
-An example of **Next.js** [tsconfig.json](apps/sdk-nextjs-integration/tsconfig.json) is available in
-the module [sdk-nextjs-integration](apps/sdk-nextjs-integration).
 
 **Next.js** caches data types when dependencies are installed and the project is built. To be sure
 the options defined in `tsconfig.json` are effective when changed,

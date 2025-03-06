@@ -36,11 +36,7 @@ jobs:
             - name: Stop Thor solo node
               id: stop-solo
               run: yarn stop-thor-solo
-    
-    test-apps:
-        uses: ./.github/workflows/test-apps.yml
-        secrets: inherit
-    
+
     rpc-proxy:
         uses: ./.github/workflows/rpc-proxy.yml
         secrets: inherit
@@ -56,5 +52,4 @@ jobs:
     unit-integration-test-browser:
       uses: ./.github/workflows/unit-integration-test-browser.yml
       secrets: inherit
-            
-    
+

@@ -18,8 +18,7 @@
     "private": true,
     "workspaces": [
         "packages/*",
-        "docs",
-        "apps/*"
+        "docs"
     ],
     "packageManager": "yarn@1.22.22",
     "scripts": {

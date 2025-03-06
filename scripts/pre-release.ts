@@ -53,31 +53,6 @@ const updatePackageVersions = (version: string): void => {
     }
 
     fs.writeFileSync(docsJsonPath, JSON.stringify(docsJson, null, 2));
-
-    // Update versions on sample apps
-    const appsPath = path.resolve(__dirname, '../apps');
-    const appPackages = fs.readdirSync(appsPath);
-
-    for (const app of appPackages) {
-        const appPath = path.resolve(appsPath, app);
-        const appPackageJsonPath = path.resolve(appPath, './package.json');
-        const appPackageJson = JSON.parse(
-            fs.readFileSync(appPackageJsonPath, 'utf8')
-        );
-        appPackageJson.version = version;
-        fs.writeFileSync(appPackageJsonPath, JSON.stringify(appPackageJson, null, 2));
-
-        for (const dep of Object.keys(appPackageJson.dependencies)) {
-            if (packageNames.includes(dep)) {
-                appPackageJson.dependencies[dep] = version;
-            }
-        }
-
-        fs.writeFileSync(
-            appPackageJsonPath,
-            JSON.stringify(appPackageJson, null, 2)
-        );
-    }
 };
 
 const preparePackages = async () => {
@@ -112,7 +87,9 @@ const preparePackages = async () => {
 
     console.log('\n______________________________________________________\n\n');
     console.log(' Publish:');
-    console.log(`\t- Run 'yarn changeset publish' to publish the packages, then release also on GitHub.`);
+    console.log(
+        `\t- Run 'yarn changeset publish' to publish the packages, then release also on GitHub.`
+    );
     console.log('\n______________________________________________________\n\n');
 };
 

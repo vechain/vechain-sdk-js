@@ -73,8 +73,3 @@ const config: HardhatUserConfig = {
   }
 };
 ```
-
-## Example
-
-For a comprehensive example of using the Hardhat plugin with the VeChain SDK, visit [`apps/sdk-hardhat-integration`](https://github.com/vechain/vechain-sdk-js/tree/main/apps/sdk-hardhat-integration). This directory contains a fully configured example that demonstrates how to integrate the VeChain SDK with Hardhat, providing a practical setup you can follow and replicate in your projects.
-
