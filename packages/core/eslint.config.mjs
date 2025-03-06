@@ -9,8 +9,7 @@ export default [
                     target: "./src",
                     from: [
                         "../errors",
-                        "../logging",
-                        "../network"
+                        "../logging"
                     ],
                     message: "Please import using @vechain/sdk-<the-module>",
                 }],

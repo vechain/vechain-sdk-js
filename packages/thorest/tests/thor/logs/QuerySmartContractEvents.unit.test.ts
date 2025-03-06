@@ -1,4 +1,4 @@
-import { describe, test } from '@jest/globals';
+import { describe, test, jest, expect } from '@jest/globals';
 import { QuerySmartContractEvents } from '../../../src/thor/logs/QuerySmartContractEvents';
 import { type EventLogFilterRequestJSON } from '../../../src/thor/logs/EventLogFilterRequest';
 import { type FetchHttpClient } from '../../../src';
@@ -64,7 +64,7 @@ describe('QuerySmartContractEvents unit tests', () => {
                     txIndex: 10
                 }
             }
-        ] satisfies EventLogsResponseJSON;
+        ] as unknown as EventLogsResponseJSON;
 
         const mockClient = mockHttpClient<EventLogsResponseJSON>(mockResponse);
 

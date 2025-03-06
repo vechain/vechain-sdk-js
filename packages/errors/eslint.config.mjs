@@ -10,8 +10,7 @@ export default [
 
                     from: [
                         "../core",
-                        "../logging",
-                        "../network"
+                        "../logging"
                     ],
 
                     message: "Please import using @vechain/sdk-<the-module>",

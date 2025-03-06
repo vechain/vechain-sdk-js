@@ -1,5 +1,5 @@
+import { describe, expect, test } from '@jest/globals';
 import { type Coin, FixedPointNumber, Txt, VET, VTHO } from '../../../src';
-import { expect } from '@jest/globals';
 import { InvalidDataType } from '@vechain/sdk-errors';
 
 const CoinFixure = {

@@ -1,4 +1,4 @@
-import { describe, test } from '@jest/globals';
+import { describe, expect, test, jest } from '@jest/globals';
 import { QueryVETTransferEvents } from '../../../src/thor/logs/QueryVETTransferEvents';
 import { type TransferLogFilterRequestJSON } from '../../../src/thor/logs/TransferLogFilterRequest';
 import { type FetchHttpClient } from '../../../src';
