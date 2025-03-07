@@ -1,4 +1,9 @@
-import { TESTNET_URL, ThorClient, VeChainProvider } from '@vechain/sdk-network';
+import {
+    CHAIN_ID,
+    TESTNET_URL,
+    ThorClient,
+    VeChainProvider
+} from '@vechain/sdk-network';
 import { expect } from 'expect';
 
 // START_SNIPPET: VeChainProviderSnippet
@@ -16,4 +21,4 @@ const rpcCallChainId = await provider.request({
 
 // END_SNIPPET: VeChainProviderSnippet
 
-expect(rpcCallChainId).toBe('0x186aa');
+expect(rpcCallChainId).toBe(CHAIN_ID.TESTNET);

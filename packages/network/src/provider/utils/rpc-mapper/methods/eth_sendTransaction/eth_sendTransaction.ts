@@ -8,6 +8,7 @@ import { type VeChainProvider } from '../../../../providers/vechain-provider';
 import { type TransactionObjectInput } from './types';
 import { type VeChainSigner } from '../../../../../signer';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
+import { getCachedChainId } from '../eth_chainId';
 
 /**
  * RPC Method eth_sendTransaction implementation
@@ -68,6 +69,16 @@ const ethSendTransaction = async (
 
     // Input params
     const [transaction] = params as [TransactionObjectInput];
+
+    // Check if the chainId in the transaction object if specified matches the chainId of the network
+    const chainId = await getCachedChainId(thorClient);
+    if (transaction.chainId != null && transaction.chainId !== chainId) {
+        throw new JSONRPCInvalidParams(
+            'eth_sendTransaction',
+            `ChainId in the transaction object does not match the chainId of the network. Expected: ${chainId}, Received: ${transaction.chainId}`,
+            { chainId: transaction.chainId }
+        );
+    }
 
     try {
         // Get the signer of the provider
