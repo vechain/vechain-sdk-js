@@ -60,7 +60,7 @@ jobs:
       - name: Run Trivy Scan
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
+          image-ref: vechain/sdk-rpc-proxy
           format: 'table'
           ignore-unfixed: true
           exit-code: '1'
