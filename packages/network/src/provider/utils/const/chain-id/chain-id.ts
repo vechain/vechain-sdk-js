@@ -1,4 +1,4 @@
-import { Hex, HexUInt } from '@vechain/sdk-core';
+import { HexUInt } from '@vechain/sdk-core';
 
 /**
  * Chain ID's this is the blockId of the genesis block
