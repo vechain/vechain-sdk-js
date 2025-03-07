@@ -39,7 +39,7 @@ services:
   # The Thor solo service
   thor-solo:
     container_name: thor-solo
-    image: ${THOR_IMAGE:-ghcr.io/vechain/thor:master-latest}
+    image: ${THOR_IMAGE:-ghcr.io/vechain/thor:latest}
     ports:
       - "8669:8669"
     command:

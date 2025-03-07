@@ -1,14 +1,16 @@
-import { Hex } from '@vechain/sdk-core';
+import { Hex, HexUInt } from '@vechain/sdk-core';
 import { type ThorClient } from '../../../../../thor-client';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
+import { chainTagToChainId } from '../../../const';
 
 // In-memory cache
-let cachedChainId: Hex | null = null;
-let cachedChainTag: Hex | null = null;
+let cachedChainId: HexUInt | null = null;
+let cachedChainTag: HexUInt | null = null;
+let cachedGenesisBlockId: Hex | null = null;
 
 /**
  * RPC Method eth_chainId implementation
@@ -41,9 +43,9 @@ const ethChainId = async (thorClient: ThorClient): Promise<string> => {
                 }
             );
         }
-        const genesisBlockId = Hex.of(genesisBlock.id);
-        cachedChainId = genesisBlockId;
-        cachedChainTag = Hex.of(genesisBlockId.bytes.slice(-2));
+        cachedGenesisBlockId = Hex.of(genesisBlock.id);
+        cachedChainTag = HexUInt.of(cachedGenesisBlockId.bytes.slice(-1));
+        cachedChainId = chainTagToChainId(cachedChainTag);
         return cachedChainId.toString();
     } catch (e) {
         throw new JSONRPCInternalError(
