@@ -43,8 +43,13 @@ jobs:
           context: .
           file: docker/rpc-proxy/Dockerfile
           load: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: "latest,v1.0.0"
+          labels: |
+            maintainer=vechain
+            description="RPC Proxy for vechain Thor"
+            build_timestamp=${{ github.event.after }}
+            source=https://github.com/vechain/vechain-sdk-js
+            commit_hash=${{ github.sha }}
 
       - name: Create .trivyignore file
         # "cross-spawn" is resolved as version 7.0.5 but Trivy keeps showing the error
