@@ -23,8 +23,7 @@ const blockWithTransactionsExpanded = {
             blockNumber: '0x10b7a6d',
             from: '0x7487d912d03ab9de786278f679592b3730bdd540',
             gas: '0x7436',
-            chainId:
-                '0x000000000b2bce3c70bc649a02749e8687721b09ed2e15997f466536b20bb127',
+            chainId: '0x186aa',
             hash: '0xd331443a31ef1f32e2c4510710e62561012de11ef404c35086629436e4d5dded',
             nonce: '0xb8314776ce0bf5df',
             transactionIndex: '0x0',
@@ -47,8 +46,7 @@ const blockWithTransactionsExpanded = {
             blockNumber: '0x10b7a6d',
             from: '0x7487d912d03ab9de786278f679592b3730bdd540',
             gas: '0xbd30',
-            chainId:
-                '0x000000000b2bce3c70bc649a02749e8687721b09ed2e15997f466536b20bb127',
+            chainId: '0x186aa',
             hash: '0x6994801b6f92f9a0a151ab4ac1c27d2dcf2ab61245b10ddf05504ae5384e759d',
             nonce: '0x176bbcbf79a3a672',
             transactionIndex: '0x1',
@@ -71,8 +69,7 @@ const blockWithTransactionsExpanded = {
             blockNumber: '0x10b7a6d',
             from: '0x7487d912d03ab9de786278f679592b3730bdd540',
             gas: '0xd14a',
-            chainId:
-                '0x000000000b2bce3c70bc649a02749e8687721b09ed2e15997f466536b20bb127',
+            chainId: '0x186aa',
             hash: '0xb476d1a43b8632c25a581465c944a1cb5dd99e48d41d326a250847a0a279afa5',
             nonce: '0x7022eb9454a648b9',
             transactionIndex: '0x2',
@@ -158,8 +155,7 @@ const validTransactionDetailTestnet = {
     blockNumber: '0x10b7b5f',
     from: '0x8c59c63d6458c71b6ff88d57698437524a703084',
     gas: '0x618af',
-    chainId:
-        '0x000000000b2bce3c70bc649a02749e8687721b09ed2e15997f466536b20bb127',
+    chainId: '0x186aa',
     hash: '0xb2e3f6e9782f462d797b72f9cbf5a4c38ca20cabcc1a091f9de6d3e6736c1f7c',
     nonce: '0x19b4782',
     transactionIndex: '0x0',

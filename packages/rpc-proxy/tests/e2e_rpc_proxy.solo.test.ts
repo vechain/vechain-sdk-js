@@ -9,8 +9,7 @@ import {
 
 let environment: StartedDockerComposeEnvironment;
 const RPC_PROXY_URL = `http://localhost:8545`;
-const genesisBlockId =
-    '0x0000000008602e7a995c747a3215b426c0c65709480b9e9ac57ad37c3f7d73de'; // custom genesis block id as solo is using a custom genesis file
+const genesisChainId = '0xde'; // custom genesis block id as solo is using a custom genesis file
 
 beforeAll(async () => {
     environment = await new DockerComposeEnvironment(
@@ -204,7 +203,7 @@ describe('RPC Proxy endpoints', () => {
             console.log(response.data);
             expect(response.data).toHaveProperty('result');
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            expect(response.data.result).toBe(genesisBlockId);
+            expect(response.data.result).toBe(genesisChainId);
         });
 
         it('eth_estimateGas method call', async () => {
@@ -767,7 +766,7 @@ describe('RPC Proxy endpoints', () => {
             console.log(response.data);
             expect(response.data).toHaveProperty('result');
             expect((response.data as { result: string }).result).toBe(
-                genesisBlockId
+                genesisChainId
             );
         });
 
