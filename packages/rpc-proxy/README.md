@@ -310,7 +310,7 @@ The method `eth_chainId` returns:
 * for solo or other custom networks it returns the _chainTag_ (the last byte of the genesis block id)
 
 
-### Transaction Coversions
+### Transaction Conversions
 
 The method `eth_sendTransaction` requires the input to be a VeChain transaction object, not a Ethereum transaction object  
 This method signs the transaction using the configured PK, before passing it on to VeChain Thor
