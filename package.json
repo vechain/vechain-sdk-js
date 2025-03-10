@@ -17,9 +17,7 @@
     ],
     "private": true,
     "workspaces": [
-        "packages/*",
-        "docs",
-        "apps/*"
+        "packages/*"
     ],
     "packageManager": "yarn@1.22.22",
     "scripts": {
@@ -29,7 +27,6 @@
         "build": "turbo build",
         "check:circular-dependencies": "turbo check:circular-dependencies",
         "pre-release": "ts-node scripts/pre-release.ts",
-        "test-rpc-proxy": "ts-node scripts/test-rpc-proxy.ts",
         "generate:apidocs": "typedoc --options typedoc.json --logLevel Error",
         "generate:apidocs-debug": "typedoc --options typedoc.json --logLevel Verbose --plugin typedoc-plugin-missing-exports --validation.notDocumented",
         "lint": "turbo lint",
@@ -39,11 +36,9 @@
         "test:integration:solo": "(yarn start-thor-solo && yarn test:integration && yarn stop-thor-solo) || yarn stop-thor-solo",
         "test:examples": "turbo test:examples",
         "test:examples:solo": "(yarn start-thor-solo && yarn test:examples && yarn stop-thor-solo) || yarn stop-thor-solo",
-        "test": "turbo test --force --filter='@vechain/sdk-core' --filter='@vechain/sdk-thorest-api' && yarn merge-coverage",
-        "test:browser": "turbo test:browser --force && yarn merge-coverage",
+        "test": "turbo test --force --filter='@vechain/sdk-core' --filter='@vechain/sdk-thorest-api'",
         "test:solo": "(yarn start-thor-solo && yarn test && yarn stop-thor-solo) || yarn stop-thor-solo",
         "test:browser:solo": "(yarn start-thor-solo && yarn test:browser && yarn stop-thor-solo) || yarn stop-thor-solo",
-        "merge-coverage": "ts-node scripts/merge-coverage.ts",
         "check:tests-naming": "ts-node scripts/check-tests-naming.ts"
     },
     "devDependencies": {

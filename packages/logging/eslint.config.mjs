@@ -9,13 +9,8 @@ export default [
                     target: "./src",
 
                     from: [
-                        "../aws-kms-adapter",
                         "../core",
-                        "../errors",
-                        "../ethers-adapter",
-                        "../hardhat-plugin",
-                        "../network",
-                        "../rpc-proxy",
+                        "../errors"
                     ],
 
                     message: "Please import using @vechain/sdk-<the-module>",

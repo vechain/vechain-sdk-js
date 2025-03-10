@@ -23,9 +23,6 @@ jobs:
             - name: Install & Patch packages
               run: yarn install
 
-            - name: Install playwright dependencies (for sample Vite dApp tests)
-              run: yarn playwright install
-
             - name: Preliminary Stop of Thor solo node
               id: preliminary-stop-solo
               run: yarn stop-thor-solo
@@ -55,14 +52,9 @@ jobs:
                 coverage-title: Coverage
                 coverage-summary-path: coverage/coverage-summary.json
                 multiple-junitxml-files: |
-                  core, packages/core/junit.xml
-                  network, packages/network/junit.xml
+                  core, packages/core/junit.xml                  
                   errors, packages/errors/junit.xml
-                  logging, packages/logging/junit.xml
-                  hardhat-plugin, packages/hardhat-plugin/junit.xml
-                  aws-kms-adapter, packages/aws-kms-adapter/junit.xml
-                  ethers-adapter, packages/ethers-adapter/junit.xml
-                  rpc-proxy, packages/rpc-proxy/junit.xml
+                  logging, packages/logging/junit.xml                                                                        
 
             - name: Archive coverage
               if: matrix.node == 'lts/*'
@@ -71,7 +63,7 @@ jobs:
                 name: coverage-results
                 path: |
                   packages/**/coverage/lcov.info
-            
+
             - name: Post unit test results to slack
               if: always()  && github.ref == 'refs/heads/main' && (steps.unit-test.outcome == 'failure')
               uses: slackapi/slack-github-action@v2.0.0
@@ -86,4 +78,3 @@ jobs:
                     "message": "unit tests failed, see run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   }
 
-              

@@ -1,4 +1,4 @@
-import { expect } from '@jest/globals';
+import { describe, expect, test } from '@jest/globals';
 import { FixedPointNumber, Txt } from '../../../src';
 import { VTHO } from '../../../src/vcdm/currency/VTHO';
 

@@ -1,6 +1,6 @@
 import { FixedPointNumber, Txt } from '../../../src';
 import { VET } from '../../../src/vcdm/currency/VET';
-import { expect } from '@jest/globals';
+import { describe, expect, test } from '@jest/globals';
 
 const VETFixture = {
     value: FixedPointNumber.of('123456789.012345678')

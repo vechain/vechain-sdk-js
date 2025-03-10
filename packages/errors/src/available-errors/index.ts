@@ -10,7 +10,6 @@ export * from './keystore';
 export * from './poll';
 export * from './provider';
 export * from './rlp';
-export * from './rpc-proxy';
 export * from './sdk-error';
 export * from './secp256k1';
 export * from './signer';
