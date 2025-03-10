@@ -5,7 +5,6 @@ on:
 
 jobs:
     test:
-      if: github.ref != 'refs/tags/*'
       uses: ./.github/workflows/rpc-proxy-test.yml
       secrets: inherit
     

@@ -8,108 +8,150 @@ The RPC Proxy is designed to bridge the gap between Thor's RESTful API and Ether
 interaction with the VeChainThor blockchain through RPC calls. It is particularly useful for integrating with tools such
 as the Remix IDE.
 
-## Installation
+The RPC Proxy can be optionally configured to:
 
-To install the RPC proxy, use the following command:
+* sign transactions for `eth_signTransaction` RPC method
+* use a vechain account for fee delegation
+
+## Useage
+
+The RPC proxy can be used in two different ways:
+
+* Executing directly via node package execute (npx)
+* Executing via Docker container
+
+Both ways of using can be configured via a configuration file or using command line options
+
+## Starting the Proxy 
+
+To install the RPC proxy for NPX useage, use the following command:
 
 ``` bash
 yarn add @vechain/sdk-rpc-proxy
 ```
 
-## Usage
-
-The RPC proxy is simple to use. To start it, run:
+To start the proxy, run:
 
 ``` bash
 npx rpc-proxy
 ```
 
-By default, the proxy is configured to be used with a solo node running on your local machine. There are two options if you want to change the default behavior, or use a custom configuration:
- - Create a config.json file and pass it to the command when launching the RPC Proxy.
- - Use CLI options.
-
-## Configuration file
-
-Run:
+To start the proxy with Docker:
 
 ``` bash
-npx rpc-proxy -c <json config file>
+docker run -d -p 8545:8545 -t vechain/sdk-rpc-proxy:<tag>
 ```
 
-Or:
+*By default*, the proxy is configured to be used with a solo node running on your local machine. 
+There are two options if you want to change the default behavior, or use a custom configuration:
+ - Create a `config.json` file and pass it to the command when launching the RPC Proxy
+ - Use CLI options
 
-``` bash
-npx rpc-proxy --configurationFile <json config file>
-```
 
 ## CLI Options
 
-With rpc-proxy, you can use the following CLI options.
-Cli options override the configuration file.
-So you can run the rpc-proxy with:
+The following CLI options exist.
+CLI options override any used configuration file.
 
-- a configuration file with the default values and override them with the cli options
-    - -e.g.- `npx rpc-proxy -p 8545 -v ...`
+| NPX CLI Option                          | Description                                             |
+|-----------------------------------------|---------------------------------------------------------|
+| -p (--port) <number>                    | port number for the service                             |
+| -c (--configurationFile) <filepath>     | path to configuration file                              |
+| -u (--url) <url>                        | url to vechain thor node                                |
+| -v (--verbose)                          | to turn on verbose logging                              |
+| -a (--accounts) <keys>                  | the private keys used to sign tx's                      |
+| -m (--mnemonic) <mnemonic>              | mnemonic to derive private keys to sign tx's with       |
+| -mc (--mnemonicCount) <number>          | the number of accounts to derive from the mnemonic      |
+| -mi (--mnemonicInitialIndex) <number>   | index to start deriving accounts from the mnemonic      |
+| -e (--enableDelegation)                 | turns on fee delegation for signed tx's                 |
+| --gasPayerPrivateKey <key>              | private key of the gas payer                            |
+| -s (--gasPayerServiceUrl) <url>         | fee delegation service url                              |
 
-- a custom configuration file and override some values with the cli options
-    - -e.g.- `npx rpc-proxy -c /path/of/custom-config.json -p 8545 -v ...`
 
-### Cli options list
+For docker based execution, CLI options are passed as environment variables.
 
-#### Give the configuration file
 
-- `-c, --configurationFile <config>`: The path to the configuration file.
-    - -e.g.- `npx rpc-proxy -c /path/of/custom-config.json` OR `rpc-proxy --configurationFile custom-config.json`
+| Docker ENV Variable                     | Description                                             |
+|-----------------------------------------|---------------------------------------------------------|
+| URL                                     | url to vechain thor node                                |
+| PORT                                    | internal port number for the service                    |
+| ACCOUNTS                                | private keys to sign transactions                       |
+| MNEMONIC                                | mnemonic to derive private keys to sign tx's with       |
+| MNEMONIC_COUNT                          | the number of accounts to derive from the mnemonic      |
+| MNEMONIC_INITIAL_INDEX                  | index to start deriving accounts from the mnemonic      |
+| ENABLE_DELEGATION                       | turns on fee delegation for signed tx's                 |
+| GAS_PAYER_PRIVATE_KEY                   | private key of the gas payer                            |
+| GAS_PAYER_SERVICE_URL                   | fee delegation service url                              |
+| CONFIGURATION_FILE                      | path to configuration file                              |
 
-- `-p, --port <port>`: The port on which the proxy server will run.
-    - -e.g.- `npx rpc-proxy -p 8545` OR `rpc-proxy --port 8545`
 
-- `-u, --url <url>`: The URL of the VeChainThor node.
-    - -e.g.- `npx rpc-proxy -u http://testnet.vechain.org` OR `rpc-proxy --url http://testnet.vechain.org`
+#### NPX CLI Examples:
 
-- `-v, --verbose`: Whether to enable verbose logging.
-    - -e.g.- `npx rpc-proxy -v` OR `rpc-proxy --verbose`
+- passing configuration file and port:
+    - `npx rpc-proxy -c /path/of/custom-config.json -p 8545 -v ...`
 
-#### Give the accounts
+- passing url of vechain thor node:
+    - `npx rpc-proxy -u http://testnet.vechain.org` OR `rpc-proxy --url http://testnet.vechain.org`
 
-- `-a, --accounts <accounts>`: The accounts (private keys) that the proxy server will use to sign transactions. It is a
-  space-separated list of private keys.
-    - -e.g.- `npx rpc-proxy -a "7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158 8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158"`
-    OR `npx rpc-proxy --accounts "7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158 8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158"`
+- enabling verbose logging:
+    - `npx rpc-proxy -v` OR `rpc-proxy --verbose`
 
-- `-m, --mnemonic <mnemonic>`: The mnemonic that the proxy server will use to sign transactions.
-- `-mc, --mnemonicCount <mnemonicCount>`: The number of accounts to derive from the mnemonic.
-- `-mi, --mnemonicInitialIndex <mnemonicInitialIndex>`: The index from which to start deriving accounts from the
-  mnemonic.
-    - -e.g.- `npx rpc-proxy -m "denial kitchen pet squirrel other broom bar gas better priority spoil cross" -mc 10 -mi 1`
-      OR `npx rpc-proxy --mnemonic "denial kitchen pet squirrel other broom bar gas better priority spoil cross" --mnemonicCount 10 --mnemonicInitialIndex 1`
+- specificying the accounts (private keys) to sign transactions. It is a space-separated list of private keys.
+    - `npx rpc-proxy -a "7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158 8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158"`
+    - `npx rpc-proxy --accounts "7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158 8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158"`
+
+- specifying the mnemonic to derive tx signing accounts from:
+    - `npx rpc-proxy -m "denial kitchen pet squirrel other broom bar gas better priority spoil cross" -mc 10 -mi 1`
+    - `npx rpc-proxy --mnemonic "denial kitchen pet squirrel other broom bar gas better priority spoil cross" --mnemonicCount 10 --mnemonicInitialIndex 1`
     - **NOTE**: --mnemonic, --mnemonicCount, and --mnemonicInitialIndex MUST be used together.
 
-#### Use delegation
-
-- `-e, --enableDelegation`: Whether to enable delegation.
-- `--gasPayerPrivateKey <gasPayerPrivateKey>`: The private key of the gasPayer.
-- `-s, --gasPayerServiceUrl <gasPayerServiceUrl>`: The URL of the gasPayer.
-    - -e.g.- `npx rpc-proxy -e --gasPayerPrivateKey 8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158`
-      OR `npx rpc-proxy --enableDelegation --gasPayerPrivateKey 8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158`
-    - -e.g.- `npx rpc-proxy -e -s https://sponsor-testnet.vechain.energy/by/...`
-      OR `npx rpc-proxy --enableDelegation --gasPayerServiceUrl https://sponsor-testnet.vechain.energy/by/...`
+- enabling fee delegation:
+    - `npx rpc-proxy -e -gk 8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158`
+    - `npx rpc-proxy --enableDelegation --gasPayerPrivateKey 8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158`
+    - `npx rpc-proxy -e -s https://sponsor-testnet.vechain.energy/by/...`
+    - `npx rpc-proxy --enableDelegation --gasPayerServiceUrl https://sponsor-testnet.vechain.energy/by/...`
     - **NOTE**: --gasPayerPrivateKey and --gasPayerServiceUrl are mutually exclusive.
-    - **NOTE**: if --enableDelegation is used, --gasPayerPrivateKey OR --gasPayerServiceUrl MUST be used.
+    - **NOTE**: if --enableDelegation is used, --gasPayerPrivateKey OR --gasPayerServiceUrl MUST be used also.
 
-## Configuration file
+
+#### Docker Run Examples
+
+- default configuration pointing to testnet nodes:
+  - `docker run -d -p 8545:8545 -e URL=https://testnet.vechain.org -t vechain/sdk-rpc-proxy:<tag>`
+
+- using a configuration file:
+  -  `docker run -d -p 8545:8545 -v ./rpc-proxy-testnet-config.json:/app/packages/rpc-proxy/config.json -e CONFIGURATION_FILE=/app/packages/rpc-proxy/config.json   -t vechain/sdk-rpc-proxy:<tag>`
+`
+
+
+## Configuration File
 
 The `config.json` file is used to configure the proxy server. It contains the following fields:
 
 - `url`: The URL of the VeChainThor node.
 - `port`: The port of the proxy server.
-- `accounts`: The accounts that the proxy server will use to sign transactions (can be a mnemonic or an array of private
-  keys).
+- `accounts`: The accounts that the proxy server will use to sign transactions (can be a mnemonic or an array of private keys).
 - `verbose`: Wheter to enable verbose logging.
 - `debug`: Whether to enable debug mode.
 - `enableDelegation`: Whether to enable delegation.
+- `gasPayer`: Specifies gasPayer private key or fee delegation service url
 
-### Example Configurations
+### Using Configuration file
+
+For NPX useage the configuration file is passed via the `-c` or `--configurationFile` command line parameter:
+
+``` bash
+npx rpc-proxy -c <json config file>
+npx rpc-proxy --configurationFile <json config file>
+```
+
+For Docker useage the configuration file is mounted as a volume, and the env variable CONFIGURATION_FILE is set to its location:
+
+``` bash
+docker run -d -p 8545:8545 -v ./rpc-proxy-testnet-config.json:/app/packages/rpc-proxy/config.json -e CONFIGURATION_FILE=/app/packages/rpc-proxy/config.json   -t vechain/sdk-rpc-proxy:<tag>
+```
+
+### Example Configuration Files
 
 Simple thor solo configuration with mnemonic:
 
@@ -177,22 +219,7 @@ Simple testnet configuration with a gasPayer private url:
 }
 ```
 
-# Run as Docker Container
-
-To run the RPC proxy as a Docker container, follow these steps:
-
-``` bash
-cd ../..
-docker build -f docker/rpc-proxy/Dockerfile . -t vechain/sdk-rpc-proxy
-# To replace the default config file, update the config.json file and start a terminal from the folder in which the file is located. 
-# DISCLAIMER: Make sure you replace the default config file before using it for production software. By default, the docker will point to testnet and use a known mnemonic. 
-docker run -d -p 8545:8545 -v ./config.json:/app/packages/rpc-proxy/config.json -t vechain/sdk-rpc-proxy
-```
-
-If you do not pass a config.json file, the default solo network standard configuration will be used. Make sure to
-provide your desired configuration file.
-
-## JSON RPC Methods Support Status
+## Appendix - JSON RPC Methods Support Status
 
 Below is the support status for JSON RPC methods in VeChain via `sdk-rpc-proxy`.
 
@@ -262,7 +289,7 @@ Below is the support status for JSON RPC methods in VeChain via `sdk-rpc-proxy`.
 - **Partially Supported**: The method is implemented but may have limitations or deviations from the Ethereum standard.
 - **Not Supported**: The method is not implemented or cannot be supported due to protocol constraints.
 
-## RPC to VeChain Mappings
+### RPC to VeChain Mappings
 
 The following mappings are performed by the RPC proxy
 
@@ -283,7 +310,7 @@ The method `eth_chainId` returns:
 * for solo or other custom networks it returns the _chainTag_ (the last byte of the genesis block id)
 
 
-## Transaction Coversions
+### Transaction Coversions
 
 The method `eth_sendTransaction` requires the input to be a VeChain transaction object, not a Ethereum transaction object  
 This method signs the transaction using the configured PK, before passing it on to VeChain Thor
