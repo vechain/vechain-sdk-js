@@ -1,5 +1,5 @@
 import { Clause, type ClauseJSON } from '../transactions';
-import { Address, BlockRef, UInt, Units, VTHO } from '@vechain/sdk-core';
+import { Address, BlockRef, Gas, UInt, Units, VTHO } from '@vechain/sdk-core';
 
 class ExecuteCodesRequest {
     readonly provedWork?: string;
@@ -7,7 +7,7 @@ class ExecuteCodesRequest {
     readonly expiration?: UInt;
     readonly blockRef?: BlockRef;
     readonly clauses?: Clause[];
-    readonly gas?: VTHO;
+    readonly gas?: Gas;
     readonly gasPrice?: VTHO;
     readonly caller?: Address;
 
@@ -29,8 +29,7 @@ class ExecuteCodesRequest {
                 : json.clauses.map(
                       (clauseJSON: ClauseJSON): Clause => new Clause(clauseJSON)
                   );
-        this.gas =
-            json.gas === undefined ? undefined : VTHO.of(json.gas, Units.wei);
+        this.gas = json.gas === undefined ? undefined : Gas.of(json.gas);
         this.gasPrice =
             json.gasPrice === undefined
                 ? undefined
@@ -46,7 +45,7 @@ class ExecuteCodesRequest {
             expiration: this.expiration?.valueOf(),
             blockRef: this.blockRef?.toString(),
             clauses: this.clauses?.map((clause: Clause) => clause.toJSON()),
-            gas: this.gas === undefined ? undefined : Number(this.gas.wei),
+            gas: this.gas === undefined ? undefined : this.gas.valueOf(),
             gasPrice:
                 this.gasPrice === undefined
                     ? undefined

@@ -1,11 +1,10 @@
 import {
     Address,
     BlockId,
+    Gas,
     ThorId,
     type TxId,
-    UInt,
-    Units,
-    VTHO
+    UInt
 } from '@vechain/sdk-core';
 
 class SubscriptionBlockResponse {
@@ -14,9 +13,9 @@ class SubscriptionBlockResponse {
     readonly size: UInt;
     readonly parentID: BlockId;
     readonly timestamp: UInt;
-    readonly gasLimit: VTHO;
+    readonly gasLimit: Gas;
     readonly beneficiary: Address;
-    readonly gasUsed: VTHO;
+    readonly gasUsed: Gas;
     readonly totalScore: UInt;
     readonly txsRoot: ThorId;
     readonly txsFeatures: UInt;
@@ -33,9 +32,9 @@ class SubscriptionBlockResponse {
         this.size = UInt.of(json.size);
         this.parentID = BlockId.of(json.parentID);
         this.timestamp = UInt.of(json.timestamp);
-        this.gasLimit = VTHO.of(json.gasLimit, Units.wei);
+        this.gasLimit = Gas.of(json.gasLimit);
         this.beneficiary = Address.of(json.beneficiary);
-        this.gasUsed = VTHO.of(json.gasUsed, Units.wei);
+        this.gasUsed = Gas.of(json.gasUsed);
         this.totalScore = UInt.of(json.totalScore);
         this.txsRoot = ThorId.of(json.txsRoot);
         this.txsFeatures = UInt.of(json.txsFeatures);
@@ -56,9 +55,9 @@ class SubscriptionBlockResponse {
             size: this.size.valueOf(),
             parentID: this.parentID.toString(),
             timestamp: this.timestamp.valueOf(),
-            gasLimit: Number(this.gasLimit.wei),
+            gasLimit: this.gasLimit.valueOf(),
             beneficiary: this.beneficiary.toString(),
-            gasUsed: Number(this.gasUsed.wei),
+            gasUsed: this.gasUsed.valueOf(),
             totalScore: this.totalScore.valueOf(),
             txsRoot: this.txsRoot.toString(),
             txsFeatures: this.txsFeatures.valueOf(),

@@ -2,6 +2,7 @@ import { Tracer, type TracerName } from './TracerName';
 import {
     Address,
     type BlockRef,
+    Gas,
     HexUInt,
     UInt,
     Units,
@@ -15,7 +16,7 @@ class PostDebugTracerCallRequest {
     readonly value: VET;
     readonly data: HexUInt;
     readonly to?: Address;
-    readonly gas?: VTHO;
+    readonly gas?: Gas;
     readonly gasPrice?: VTHO;
     readonly caller?: Address;
     readonly provedWork?: string;
@@ -29,8 +30,7 @@ class PostDebugTracerCallRequest {
         this.value = VET.of(json.value);
         this.data = HexUInt.of(json.data);
         this.to = json.to === undefined ? undefined : Address.of(json.to);
-        this.gas =
-            json.gas === undefined ? undefined : VTHO.of(json.gas, Units.wei);
+        this.gas = json.gas === undefined ? undefined : Gas.of(json.gas);
         this.gasPrice =
             json.gasPrice === undefined
                 ? undefined
@@ -53,7 +53,7 @@ class PostDebugTracerCallRequest {
             value: HexUInt.of(this.value.wei).toString(),
             data: this.data.toString(),
             to: this.to?.toString(),
-            gas: this.gas === undefined ? undefined : Number(this.gas.wei),
+            gas: this.gas === undefined ? undefined : this.gas.valueOf(),
             gasPrice:
                 this.gasPrice === undefined
                     ? undefined

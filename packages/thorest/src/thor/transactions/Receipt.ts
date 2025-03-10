@@ -1,8 +1,8 @@
 import { ReceiptOutput, type ReceiptOutputJSON } from './ReceiptOutput';
-import { Address, Hex, HexUInt, Units, VTHO } from '@vechain/sdk-core';
+import { Address, Gas, Hex, HexUInt, Units, VTHO } from '@vechain/sdk-core';
 
 class Receipt {
-    readonly gasUsed: VTHO;
+    readonly gasUsed: Gas;
     readonly gasPayer: Address;
     readonly paid: VTHO;
     readonly reward: VTHO;
@@ -10,7 +10,7 @@ class Receipt {
     readonly outputs: ReceiptOutput[];
 
     constructor(json: ReceiptJSON) {
-        this.gasUsed = VTHO.of(json.gasUsed);
+        this.gasUsed = Gas.of(json.gasUsed);
         this.gasPayer = Address.of(json.gasPayer);
         this.paid = VTHO.of(Hex.of(json.paid).bi, Units.wei);
         this.reward = VTHO.of(Hex.of(json.reward).bi, Units.wei);
@@ -20,7 +20,7 @@ class Receipt {
 
     toJSON(): ReceiptJSON {
         return {
-            gasUsed: Number(this.gasUsed.wei),
+            gasUsed: this.gasUsed.valueOf(),
             gasPayer: this.gasPayer.toString(),
             paid: HexUInt.of(this.paid.wei).toString(),
             reward: HexUInt.of(this.reward.wei).toString(),

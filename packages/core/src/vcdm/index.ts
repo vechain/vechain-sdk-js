@@ -6,6 +6,7 @@ export * from './BloomFilter';
 export * from './currency';
 export * from './encoding';
 export * from './FixedPointNumber';
+export * from './Gas';
 export * from './hash';
 export * from './Hex';
 export * from './HexInt';
