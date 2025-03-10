@@ -20,7 +20,7 @@ class Receipt {
 
     toJSON(): ReceiptJSON {
         return {
-            gasUsed: Number(this.gasUsed.n) * Math.pow(10, 5),
+            gasUsed: parseInt((this.gasUsed.n * Math.pow(10, 5)).toString()),
             gasPayer: this.gasPayer.toString(),
             paid: HexUInt.of(this.paid.wei).toString(),
             reward: HexUInt.of(this.reward.wei).toString(),
