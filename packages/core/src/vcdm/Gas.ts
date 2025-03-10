@@ -27,7 +27,7 @@ class Gas extends UInt {
      * 10^5 gas = 1 VTHO
      * 1 gas = 10^13 weiVTHO
      */
-    toVHO(): VTHO {
+    toVTHO(): VTHO {
         return VTHO.of(this.valueOf() ** Math.pow(10, 13), Units.wei);
     }
 }
