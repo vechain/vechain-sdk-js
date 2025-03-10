@@ -3,11 +3,17 @@ name: RPC Proxy - Docker build, scan and push
 on:
    workflow_call:
 
+env:
+  DOCKERFILE_LOCATION: "docker/rpc-proxy/Dockerfile"
+  DOCKER_IMAGE_NAME: "vechain/sdk-rpc-proxy"
+  DOCKER_IMAGE_VERSION: "v1.0.0"
+
 permissions:
   contents: read
   packages: write
   checks: write
   actions: read
+
 
 jobs:
   docker:
@@ -31,20 +37,19 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: vechain/sdk-rpc-proxy
-
       - name: Build and export to Docker
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: docker/rpc-proxy/Dockerfile
+          file: ${{ env.DOCKERFILE_LOCATION }}
           load: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: "${{ env.DOCKER_IMAGE_NAME }}:${{env.DOCKER_IMAGE_VERSION}}"
+          labels: |
+            maintainer=vechain
+            description="RPC Proxy for vechain Thor"
+            build_timestamp=${{ github.event.after }}
+            source=https://github.com/vechain/vechain-sdk-js
+            commit_hash=${{ github.sha }}
 
       - name: Create .trivyignore file
         # "cross-spawn" is resolved as version 7.0.5 but Trivy keeps showing the error
@@ -55,7 +60,7 @@ jobs:
       - name: Run Trivy Scan
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
+          image-ref: ${{env.DOCKER_IMAGE_NAME}}
           format: 'table'
           ignore-unfixed: true
           exit-code: '1'
@@ -72,8 +77,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: docker/rpc-proxy/Dockerfile
+          file: ${{env.DOCKERFILE_LOCATION}}
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: "${{ env.DOCKER_IMAGE_NAME }}:${{env.DOCKER_IMAGE_VERSION}}"
