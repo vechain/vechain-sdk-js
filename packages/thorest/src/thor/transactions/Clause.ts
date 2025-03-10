@@ -1,4 +1,4 @@
-import { Address, HexUInt, VET } from '@vechain/sdk-core';
+import { Address, HexUInt, Units, VET } from '@vechain/sdk-core';
 
 class Clause {
     readonly to?: Address;
@@ -10,7 +10,7 @@ class Clause {
             json.to !== undefined && json.to != null
                 ? Address.of(json.to)
                 : undefined;
-        this.value = VET.of(json.value);
+        this.value = VET.of(json.value, Units.wei);
         this.data = HexUInt.of(json.data);
     }
 
