@@ -61,7 +61,7 @@ class GetTxResponse {
             clauses: this.clauses?.map((clause) => clause.toJSON()),
             gasPriceCoef: this.gasPriceCoef.valueOf(),
             // We convert back to gas units
-            gas: parseInt((this.gas.n * Math.pow(10, 5)).toString()),
+            gas: Number(this.gas.n) * Math.pow(10, 5),
             dependsOn:
                 this.dependsOn !== undefined && this.dependsOn !== null
                     ? this.dependsOn.toString()
