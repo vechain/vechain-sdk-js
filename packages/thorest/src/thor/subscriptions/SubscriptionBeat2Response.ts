@@ -1,7 +1,7 @@
-import { BlockId, HexUInt, UInt, Units, VTHO } from '@vechain/sdk-core';
+import { BlockId, Gas, HexUInt, UInt } from '@vechain/sdk-core';
 
 class SubscriptionBeat2Response {
-    readonly gasLimit: VTHO;
+    readonly gasLimit: Gas;
     readonly obsolete: boolean;
     readonly number: UInt;
     readonly id: BlockId;
@@ -12,7 +12,7 @@ class SubscriptionBeat2Response {
     readonly k: UInt;
 
     constructor(json: SubscriptionBeat2ResponseJSON) {
-        this.gasLimit = VTHO.of(json.gasLimit, Units.wei);
+        this.gasLimit = Gas.of(json.gasLimit);
         this.obsolete = json.obsolete;
         this.number = UInt.of(json.number);
         this.id = BlockId.of(json.id);
@@ -25,7 +25,7 @@ class SubscriptionBeat2Response {
 
     toJSON(): SubscriptionBeat2ResponseJSON {
         return {
-            gasLimit: Number(this.gasLimit.wei),
+            gasLimit: this.gasLimit.valueOf(),
             obsolete: this.obsolete,
             number: this.number.valueOf(),
             id: this.id.toString(),
