@@ -1,7 +1,7 @@
 name: RPC Proxy - Docker build, scan and push
 
 on:
-   workflow_call:
+   workflow_dispatch:
 
 env:
   DOCKERFILE_LOCATION: "docker/rpc-proxy/Dockerfile"
