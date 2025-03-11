@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe } from '@jest/globals';
+import { afterEach, beforeEach, describe, test } from '@jest/globals';
 import { MozillaWebSocketClient } from '../../src/ws/MozillaWebSocketClient';
 import { type WebSocketListener } from '../../src/ws';
 

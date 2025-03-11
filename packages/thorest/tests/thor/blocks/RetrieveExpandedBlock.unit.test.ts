@@ -1,4 +1,4 @@
-import { describe, test, expect } from '@jest/globals';
+import { describe, jest, test, expect } from '@jest/globals';
 import { type FetchHttpClient } from '../../../src/http';
 import {
     ExpandedBlockResponse,

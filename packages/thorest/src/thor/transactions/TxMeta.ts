@@ -3,19 +3,19 @@ import { BlockId, UInt } from '@vechain/sdk-core';
 class TxMeta {
     readonly blockID: BlockId;
     readonly blockNumber: UInt;
-    readonly blockTimestamp: bigint;
+    readonly blockTimestamp: UInt;
 
     constructor(json: TxMetaJSON) {
         this.blockID = BlockId.of(json.blockID);
         this.blockNumber = UInt.of(json.blockNumber);
-        this.blockTimestamp = json.blockTimestamp;
+        this.blockTimestamp = UInt.of(json.blockTimestamp);
     }
 
     toJSON(): TxMetaJSON {
         return {
             blockID: this.blockID.toString(),
             blockNumber: this.blockNumber.valueOf(),
-            blockTimestamp: this.blockTimestamp
+            blockTimestamp: this.blockTimestamp.valueOf()
         } satisfies TxMetaJSON;
     }
 }
@@ -23,7 +23,7 @@ class TxMeta {
 interface TxMetaJSON {
     blockID: string;
     blockNumber: number;
-    blockTimestamp: bigint;
+    blockTimestamp: number;
 }
 
 export { TxMeta, type TxMetaJSON };
