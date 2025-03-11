@@ -1,7 +1,15 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 
-import { JSONRPCMethodNotFound } from '@vechain/sdk-errors';
-import { TESTNET_URL, ThorClient, VeChainProvider } from '../../../../src';
+import {
+    JSONRPCMethodNotFound,
+    JSONRPCMethodNotImplemented
+} from '@vechain/sdk-errors';
+import {
+    RPC_METHODS,
+    TESTNET_URL,
+    ThorClient,
+    VeChainProvider
+} from '../../../../src';
 import { providerMethodsTestCasesTestnet } from '../fixture';
 import { waitForMessage } from '../helpers';
 
@@ -116,5 +124,35 @@ describe('VeChain provider tests - testnet', () => {
             '0x0000000000000000000000000000456e65726779'
         );
         expect(nullSigner).toBeNull();
+    });
+
+    /**
+     * Method not implemented and method not found tests
+     */
+    describe('Method not implemented and method not found', () => {
+        /**
+         * Test for method in RPC_METHODS enum but not in RPCMethodsMap
+         */
+        test('Should throw JSONRPCMethodNotImplemented for method in enum but not in map', async () => {
+            // Assuming eth_getProof is in the enum but commented out in the map
+            await expect(
+                provider.request({
+                    method: RPC_METHODS.eth_getProof,
+                    params: []
+                })
+            ).rejects.toThrowError(JSONRPCMethodNotImplemented);
+        });
+
+        /**
+         * Test for method not in RPC_METHODS enum
+         */
+        test('Should throw JSONRPCMethodNotFound for method not in enum', async () => {
+            await expect(
+                provider.request({
+                    method: 'non_existent_method',
+                    params: []
+                })
+            ).rejects.toThrowError(JSONRPCMethodNotFound);
+        });
     });
 });

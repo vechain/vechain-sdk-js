@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
+import { JSONRPCMethodNotImplemented } from '@vechain/sdk-errors';
 import {
     RPC_METHODS,
-    RPCMethodsMap,
-    TESTNET_URL,
-    ThorClient
+    THOR_SOLO_URL,
+    ThorClient,
+    VeChainProvider
 } from '../../../../../src';
-import { VeChainSDKLogger } from '@vechain/sdk-logging';
 
 /**
  * RPC Mapper integration tests for 'eth_getProof' method
@@ -14,33 +14,31 @@ import { VeChainSDKLogger } from '@vechain/sdk-logging';
  */
 describe('RPC Mapper - eth_getProof method tests', () => {
     /**
-     * Thor client instance
+     * Thor client instance and provider
      */
     let thorClient: ThorClient;
+    let provider: VeChainProvider;
 
     /**
-     * Init thor client before each test
+     * Init thor client and provider before each test
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = ThorClient.at(TESTNET_URL);
+        thorClient = ThorClient.at(THOR_SOLO_URL);
+        provider = new VeChainProvider(thorClient);
     });
 
     /**
-     * eth_getProof RPC call tests - Positive cases
+     * eth_getProof RPC call tests - Not Implemented
      */
-    describe('eth_getProof - Positive cases', () => {
-        /**
-         * Positive case 1 - ... Description ...
-         */
-        test('eth_getProof - positive case 1', async () => {
-            const logSpy = jest.spyOn(VeChainSDKLogger('warning'), 'log');
-
-            // NOT IMPLEMENTED YET!
-            await RPCMethodsMap(thorClient)[RPC_METHODS.eth_getProof]([-1]);
-
-            expect(logSpy).toHaveBeenCalled();
-            logSpy.mockRestore();
+    describe('eth_getProof - Not Implemented', () => {
+        test('Should throw JSONRPCMethodNotImplemented error', async () => {
+            await expect(
+                provider.request({
+                    method: RPC_METHODS.eth_getProof,
+                    params: []
+                })
+            ).rejects.toThrowError(JSONRPCMethodNotImplemented);
         });
     });
 });

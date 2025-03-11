@@ -1,4 +1,4 @@
-import { VeChainSDKLogger } from '@vechain/sdk-logging';
+import { JSONRPCMethodNotImplemented } from '@vechain/sdk-errors';
 
 /**
  * RPC Method eth_getProof implementation
@@ -12,15 +12,14 @@ import { VeChainSDKLogger } from '@vechain/sdk-logging';
  * * params[1]: ...
  * * params[n]: ...
  */
-const ethGetProof = async (): Promise<'METHOD NOT IMPLEMENTED'> => {
-    // Not implemented yet
-    VeChainSDKLogger('warning').log({
-        title: 'eth_getProof',
-        messages: ['Method "eth_getProof" has not been implemented yet.']
-    });
-
-    // To avoid eslint error
-    return await Promise.resolve('METHOD NOT IMPLEMENTED');
+const ethGetProof = async (): Promise<JSONRPCMethodNotImplemented> => {
+    return await Promise.resolve(
+        new JSONRPCMethodNotImplemented(
+            'eth_getProof',
+            'Method "eth_getProof" has not been implemented yet.',
+            {}
+        )
+    );
 };
 
 export { ethGetProof };

@@ -51,7 +51,7 @@ import {
     ethGetFilterChanges,
     ethGetFilterLogs,
     ethGetLogs,
-    ethGetProof,
+    // ethGetProof,
     ethGetStorageAt,
     ethGetTransactionByBlockHashAndIndex,
     ethGetTransactionByBlockNumberAndIndex,
@@ -483,10 +483,9 @@ const RPCMethodsMap = (
             return await ethGetBlockReceipts(thorClient, params);
         },
 
-        [RPC_METHODS.eth_getProof]:
-            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
-                return await ethGetProof();
-            },
+        // [RPC_METHODS.eth_getProof]: async (): Promise<never> => {
+        //     return await ethGetProof();
+        // },
 
         [RPC_METHODS.eth_maxPriorityFeePerGas]:
             async (): Promise<'METHOD NOT IMPLEMENTED'> => {
@@ -548,5 +547,4 @@ const RPCMethodsMap = (
         }
     };
 };
-
 export { RPCMethodsMap };
