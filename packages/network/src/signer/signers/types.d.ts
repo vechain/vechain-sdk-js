@@ -191,6 +191,7 @@ interface TransactionRequestInput {
      *  list are //warmed// by preloading them, so their initial cost to
      *  fetch is guaranteed, but then each additional access is cheaper.
      */
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     accessList?: null | AccessListish;
 
     /**
