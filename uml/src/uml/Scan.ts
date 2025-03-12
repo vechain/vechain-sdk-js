@@ -10,7 +10,29 @@ function load(path: string): ts.SourceFile {
 
 function scan(node: ts.Node): void {
     ts.forEachChild(node, (node) => {
-        console.log(node);
+        if (ts.isClassDeclaration(node)) {
+            const name = node.name?.getText() ?? '<anonymous>';
+            console.log(`Class: ${name}`);
+            scan(node);
+        } else if (ts.isInterfaceDeclaration(node)) {
+            const name = node.name?.getText() ?? '<anonymous>';
+            console.log(`Interface: ${name}`);
+            scan(node);
+        } else if (ts.isEnumDeclaration(node)) {
+            const name = node.name?.getText() ?? '<anonymous>';
+            console.log(`Enum: ${name}`);
+            scan(node);
+        } else if (ts.isMethodSignature(node) || ts.isMethodDeclaration(node)) {
+            const name = node.name?.getText() ?? '<anonymous>';
+            console.log(`  - Method: ${name}`);
+            scan(node);
+        } else if (
+            ts.isPropertySignature(node) ||
+            ts.isPropertyDeclaration(node)
+        ) {
+            const name = node.name?.getText() ?? '<anonymous>';
+            console.log(`  - Property: ${name}`);
+        }
     });
 }
 

@@ -1,14 +1,22 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
+interface Interface0 {
+    method: (s: string) => string;
+}
+
 class Class0 {
     property: string = 'value';
 
-    method(): string {
+    method0(): string {
         return this.property;
     }
 }
 
-class Class1 {
+class Class1 implements Interface0 {
     class0: Class0 = new Class0();
+
+    method(s: string): string {
+        return s;
+    }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
