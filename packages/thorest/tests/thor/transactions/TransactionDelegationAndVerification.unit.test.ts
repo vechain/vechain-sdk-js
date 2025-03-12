@@ -4,15 +4,14 @@ import {
     Clause,
     HexUInt,
     networkInfo,
+    Secp256k1,
     Transaction,
     type TransactionBody,
     VET
 } from '@vechain/sdk-core';
-import {
-    type FetchHttpClient,
-    type HttpPath,
-    type HttpQuery
-} from '../../../src';
+import { type FetchHttpClient, type HttpPath } from '../../../src';
+
+import { secp256k1 as nc_secp256k1 } from '@noble/curves/secp256k1';
 
 const mockHttpClient = <T>(response: T): FetchHttpClient => {
     return {
@@ -110,7 +109,7 @@ describe('unit tests', () => {
             '/transactions' as unknown as HttpPath,
             {
                 query: HexUInt.of(tx.encoded).toString()
-            } as unknown as HttpQuery
+            }
         );
         expect(await txResult.json()).toEqual(mockTxResponse);
 
@@ -119,5 +118,74 @@ describe('unit tests', () => {
             '/transactions/receipt' as unknown as HttpPath
         );
         expect(await txReceipt.json()).toEqual(mockTxReceiptResponse);
+    });
+
+    test('verify signatures', () => {
+        const latestBlock = {
+            id: '0x0000000000000000000000000000000000000000000000000000000000000123'
+        };
+        const gasToPay = { totalGas: 21000 };
+        const gasPayerPublicKey = Secp256k1.derivePublicKey(
+            gasPayer.privateKey.bytes,
+            false
+        );
+        const txA = Transaction.of({
+            chainTag: networkInfo.solo.chainTag,
+            blockRef: latestBlock?.id.slice(0, 18) ?? '0x0',
+            expiration: 0,
+            clauses,
+            gasPriceCoef: 0,
+            gas: gasToPay.totalGas,
+            dependsOn: null,
+            nonce: 1,
+            reserved: {
+                features: 1 // set the transaction to be delegated
+            }
+        });
+        const as = txA.signAsSender(sender.privateKey.bytes);
+        const ap = as.signAsGasPayer(sender.address, gasPayer.privateKey.bytes);
+        const sigmaA = nc_secp256k1.Signature.fromCompact(
+            ap.signature?.slice(-65).slice(0, 64) as Uint8Array
+        );
+        const hashA = ap.getTransactionHash(sender.address).bytes;
+        const isVerifiedA = nc_secp256k1.verify(
+            sigmaA,
+            hashA,
+            gasPayerPublicKey
+        );
+        expect(isVerifiedA).toBe(true);
+
+        const txB = Transaction.of({
+            chainTag: networkInfo.solo.chainTag,
+            blockRef: latestBlock?.id.slice(0, 18) ?? '0x0',
+            expiration: 0,
+            clauses,
+            gasPriceCoef: 0,
+            gas: gasToPay.totalGas,
+            dependsOn: null,
+            nonce: 2,
+            reserved: {
+                features: 1 // set the transaction to be delegated
+            }
+        });
+        const bs = txB.signAsSender(sender.privateKey.bytes);
+        const bp = bs.signAsGasPayer(sender.address, gasPayer.privateKey.bytes);
+        const sigmaB = nc_secp256k1.Signature.fromCompact(
+            bp.signature?.slice(-65).slice(0, 64) as Uint8Array
+        );
+        const hashB = bp.getTransactionHash(sender.address).bytes;
+        const isVerifiedB = nc_secp256k1.verify(
+            sigmaB,
+            hashB,
+            gasPayerPublicKey
+        );
+        expect(isVerifiedB).toBe(true);
+
+        const isVerifiedForge = nc_secp256k1.verify(
+            sigmaA,
+            hashB,
+            gasPayerPublicKey
+        );
+        expect(isVerifiedForge).toBe(false);
     });
 });
