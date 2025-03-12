@@ -1,4 +1,4 @@
-import { describe, test } from '@jest/globals';
+import { describe, test, jest, expect } from '@jest/globals';
 import {
     type FetchHttpClient,
     type PeerStatJSON,
