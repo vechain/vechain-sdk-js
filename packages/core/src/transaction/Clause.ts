@@ -136,7 +136,10 @@ class Clause implements TransactionClause {
         amount: VET = VET.of(FixedPointNumber.ZERO),
         clauseOptions?: ClauseOptions
     ): Clause {
-        if (amount.value.isFinite() && amount.value.isPositive()) {
+        if (
+            amount.value.isFinite() &&
+            amount.value.gte(FixedPointNumber.ZERO)
+        ) {
             return new Clause(
                 contractAddress.toString().toLowerCase(),
                 Hex.PREFIX + amount.wei.toString(Hex.RADIX),

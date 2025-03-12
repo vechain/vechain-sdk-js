@@ -89,6 +89,22 @@ describe('Clause class tests', () => {
             expect(actual.data).toBeDefined();
         });
 
+        test('Return Clause <- VET value is zero', () => {
+            const actual = Clause.callFunction(
+                ClauseFixture.contract.address,
+                ABIContract.ofAbi(ClauseFixture.contract.abi).getFunction(
+                    'set'
+                ),
+                [1],
+                VET.of(0)
+            );
+            expect(actual.to).toBe(
+                ClauseFixture.contract.address.toString().toLowerCase()
+            );
+            expect(actual.amount().isZero()).toBe(true);
+            expect(actual.data).toBeDefined();
+        });
+
         test('Return Clause <- call function & comment', () => {
             const comment = 'Setting x = 1.';
             const actual = Clause.callFunction(
