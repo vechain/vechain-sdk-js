@@ -48,7 +48,7 @@ abstract class Token {
      * Otherwise, it falls back to the token's inherent `units`.
      * @param {number} displayDecimals Number of decimal places to round to
      */
-    public convertToHumanReadable(displayDecimals?: number): string {
+    public format(displayDecimals?: number): string {
         const divisor = 10n ** BigInt(this.units);
         const whole = this._value / divisor;
         const fraction = this._value % divisor;
