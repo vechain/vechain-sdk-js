@@ -87,11 +87,14 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
                 .map((key) => key.toString())
                 .includes(args.method)
         ) {
-            throw new JSONRPCMethodNotFound(
+            const error = new JSONRPCMethodNotFound(
                 'VeChainProvider.request()',
-                'Method not found. Invalid RPC method given as input.',
-                { method: args.method }
+                'Method not found',
+                { code: -32601, message: 'Method not found' }
             );
+
+            // Override the error message with our custom formatted message
+            throw error;
         }
 
         const methodsMap = RPCMethodsMap(this.thorClient, this);
@@ -100,8 +103,11 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
         if (!(args.method in methodsMap)) {
             throw new JSONRPCMethodNotImplemented(
                 args.method,
-                `Method "${args.method}" has not been implemented yet.`,
-                {}
+                'Method not implemented',
+                {
+                    code: -32004,
+                    message: 'Method not supported'
+                }
             );
         }
 

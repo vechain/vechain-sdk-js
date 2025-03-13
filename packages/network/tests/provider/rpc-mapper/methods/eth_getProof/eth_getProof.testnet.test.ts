@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, test } from '@jest/globals';
 import { JSONRPCMethodNotImplemented } from '@vechain/sdk-errors';
 import {
     RPC_METHODS,
-    THOR_SOLO_URL,
+    TESTNET_URL,
     ThorClient,
     VeChainProvider
 } from '../../../../../src';
@@ -24,7 +24,7 @@ describe('RPC Mapper - eth_getProof method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = ThorClient.at(THOR_SOLO_URL);
+        thorClient = ThorClient.at(TESTNET_URL);
         provider = new VeChainProvider(thorClient);
     });
 
@@ -32,6 +32,9 @@ describe('RPC Mapper - eth_getProof method tests', () => {
      * eth_getProof RPC call tests - Not Implemented
      */
     describe('eth_getProof - Not Implemented', () => {
+        /**
+         * Test that the method throws JSONRPCMethodNotImplemented when called via provider
+         */
         test('Should throw JSONRPCMethodNotImplemented error', async () => {
             await expect(
                 provider.request({

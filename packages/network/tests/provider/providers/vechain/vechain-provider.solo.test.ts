@@ -362,8 +362,8 @@ describe('VeChain provider tests - solo', () => {
             if (error instanceof JSONRPCMethodNotFound) {
                 expect(error.message).toBe(
                     `Method 'VeChainProvider.request()' failed.` +
-                        `\n-Reason: 'Method not found. Invalid RPC method given as input.'` +
-                        `\n-Parameters: \n\t{\n  "code": -32601,\n  "message": "Method not found. Invalid RPC method given as input.",\n  "data": {\n    "method": "INVALID_METHOD"\n  }\n}`
+                        `\n-Reason: 'Method not found'` +
+                        `\n-Parameters: \n\t{\n  "code": -32601,\n  "message": "Method not found",\n \n}`
                 );
             }
         }
