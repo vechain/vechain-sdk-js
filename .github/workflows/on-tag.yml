@@ -1,9 +1,7 @@
 name: Jobs on tag
 
 on:
-    push:
-        tags:
-            - '*'
+    workflow_dispatch:
 
 jobs:
     npm-publish:

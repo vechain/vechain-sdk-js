@@ -1,7 +1,7 @@
 name: RPC Proxy
 
 on:
-  workflow_call:
+  workflow_dispatch:
 
 jobs:
     test:
