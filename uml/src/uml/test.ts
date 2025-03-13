@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface Interface0 {
-    method: (s: string) => string;
+    method: (s: string) => string[];
 }
 
 class Class0 {
@@ -14,8 +14,8 @@ class Class0 {
 class Class1 implements Interface0 {
     class0: Class0 = new Class0();
 
-    method(s: string): string {
-        return s;
+    method(s: string): string[] {
+        return [s];
     }
 }
 

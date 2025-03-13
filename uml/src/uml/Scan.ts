@@ -24,14 +24,16 @@ function scan(node: ts.Node): void {
             scan(node);
         } else if (ts.isMethodSignature(node) || ts.isMethodDeclaration(node)) {
             const name = node.name?.getText() ?? '<anonymous>';
-            console.log(`  - Method: ${name}`);
+            const type = node.type?.getText() ?? '<any>';
+            console.log(`  - Method: ${name}: ${type}`);
             scan(node);
         } else if (
             ts.isPropertySignature(node) ||
             ts.isPropertyDeclaration(node)
         ) {
             const name = node.name?.getText() ?? '<anonymous>';
-            console.log(`  - Property: ${name}`);
+            const type = node.type?.getText() ?? '<any>';
+            console.log(`  - Property: ${name}: ${type}`);
         }
     });
 }
