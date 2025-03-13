@@ -1,5 +1,4 @@
 import { type Address } from '../Address';
-import { FixedPointNumber } from '../FixedPointNumber';
 import { type Units } from './Units';
 
 /**
@@ -53,15 +52,12 @@ abstract class Token {
         const divisor = 10n ** BigInt(this.units);
         const whole = this._value / divisor;
         const fraction = this._value % divisor;
-        const decimal =
+        const decimal = Number(`${whole}.${fraction}`);
+        const result =
             displayDecimals === undefined
-                ? FixedPointNumber.of(
-                      `${whole.toString()}.${fraction.toString()}`
-                  )
-                : FixedPointNumber.of(
-                      `${whole.toString()}.${fraction.toString()}`
-                  ).dp(displayDecimals);
-        return decimal.toString();
+                ? decimal.toString()
+                : decimal.toFixed(displayDecimals);
+        return result;
     }
 }
 
