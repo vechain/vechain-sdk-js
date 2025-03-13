@@ -1,4 +1,5 @@
 import { type Address } from '../Address';
+import { FixedPointNumber } from '../FixedPointNumber';
 import { type Units } from './Units';
 
 /**
@@ -49,11 +50,18 @@ abstract class Token {
      * @param {number} displayDecimals Number of decimal places to use
      */
     public convertToHumanReadable(displayDecimals?: number): string {
-        const decimalsToUse = displayDecimals ?? this.units;
-        const divisor = 10n ** BigInt(decimalsToUse);
+        const divisor = 10n ** BigInt(this.units);
         const whole = this._value / divisor;
         const fraction = this._value % divisor;
-        return `${whole.toString()}.${fraction.toString().padStart(decimalsToUse, '0')}`;
+        const decimal =
+            displayDecimals === undefined
+                ? FixedPointNumber.of(
+                      `${whole.toString()}.${fraction.toString()}`
+                  )
+                : FixedPointNumber.of(
+                      `${whole.toString()}.${fraction.toString()}`
+                  ).dp(displayDecimals);
+        return decimal.toString();
     }
 }
 
