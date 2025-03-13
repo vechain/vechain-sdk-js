@@ -1,6 +1,6 @@
 import { Hex } from './Hex';
 import { HexUInt } from './HexUInt';
-import { InvalidDataType } from '@vechain/sdk-errors';
+import { IllegalArgumentError } from '../errors';
 
 /**
  * The BlockRef class represents a Thor block ID value, which is a hexadecimal positive integer having 64 digits.
@@ -63,7 +63,7 @@ class BlockRef extends HexUInt {
      *
      * @returns {BlockRef} - A new BlockRef object created from the given expression.
      *
-     * @throws {InvalidDataType} If the given expression is not a valid hexadecimal positive integer expression.
+     * @throws {IllegalArgumentError} If the given expression is not a valid hexadecimal positive integer expression.
      */
     public static of(
         exp: bigint | number | string | Uint8Array | HexUInt
@@ -74,11 +74,11 @@ class BlockRef extends HexUInt {
             }
             return new BlockRef(HexUInt.of(exp));
         } catch (e) {
-            throw new InvalidDataType(
-                'BlockRef.of',
+            throw new IllegalArgumentError(
+                'BlockRef.of(exp: bigint | number | string | Uint8Array | HexUInt): BlockRef',
                 'not a BlockRef expression',
                 { exp: `${exp}` }, // Needed to serialize bigint values.
-                e
+                e instanceof Error ? e : undefined
             );
         }
     }

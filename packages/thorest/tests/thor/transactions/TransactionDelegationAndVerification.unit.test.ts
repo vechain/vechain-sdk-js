@@ -1,4 +1,4 @@
-import { describe, test } from '@jest/globals';
+import { describe, expect, jest, test } from '@jest/globals';
 import {
     Address,
     Clause,

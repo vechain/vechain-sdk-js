@@ -1,6 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { HexUInt, ThorId } from '../../src';
-import { InvalidDataType } from '@vechain/sdk-errors';
+import { HexUInt, IllegalArgumentError, ThorId } from '../../src';
 
 const ThorIdFixture = {
     invalid: {
@@ -62,11 +61,11 @@ describe('ThorId class tests.', () => {
         });
 
         test('Throw an error if the passed argument is a negative bigint', () => {
-            expect(() => ThorId.of(-1)).toThrow(InvalidDataType);
+            expect(() => ThorId.of(-1)).toThrow(IllegalArgumentError);
         });
 
         test('Throw an error if the passed argument is a negative number', () => {
-            expect(() => ThorId.of(-1n)).toThrow(InvalidDataType);
+            expect(() => ThorId.of(-1n)).toThrow(IllegalArgumentError);
         });
     });
 

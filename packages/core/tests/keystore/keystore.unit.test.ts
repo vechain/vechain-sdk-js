@@ -10,7 +10,8 @@ import {
     HexUInt,
     keystore,
     Secp256k1,
-    type Keystore
+    type Keystore,
+    IllegalArgumentError
 } from '../../src';
 import { encryptionPassword } from './fixture';
 
@@ -60,7 +61,11 @@ import { encryptionPassword } from './fixture';
                         new TextEncoder().encode('wrong private key'),
                         encryptionPassword
                     )
-            ).rejects.toThrowError(InvalidSecp256k1PrivateKey);
+            ).rejects.toThrowError(
+                experimentalCryptography
+                    ? IllegalArgumentError
+                    : InvalidSecp256k1PrivateKey
+            );
         });
 
         /**
