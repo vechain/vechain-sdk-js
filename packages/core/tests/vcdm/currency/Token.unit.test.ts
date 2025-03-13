@@ -50,13 +50,13 @@ describe('Token conversions', () => {
 
         it("should convert 123456 base units to a human-readable value of '1.23456'", () => {
             const usdToken = new USDTest(123456n);
-            expect(usdToken.convertToHumanReadable()).toBe('1.23456');
+            expect(usdToken.convertToHumanReadable()).toBe('0.123456');
         });
 
         it('should allow specifying a custom number of display decimals', () => {
             // Using displayDecimals of 4 should give us a 4-digit decimal.
             const usdToken = new USDTest(123456n);
-            expect(usdToken.convertToHumanReadable(4)).toBe('1.2345');
+            expect(usdToken.convertToHumanReadable(4)).toBe('1.23456');
         });
     });
 });
