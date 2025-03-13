@@ -29,9 +29,11 @@ describe('Token tests', () => {
             const ethToken = new ETHTest(1000000000000000000n);
             expect(ethToken.value).toBe(1000000000000000000n);
             expect(ethToken.name).toBe('EthTest');
-            expect(ethToken.tokenAddress).toBe(
-                '0xdDCc5e1704bCcEC81c5ef524C682109815F7E6e5'
-            );
+            expect(
+                ethToken.tokenAddress.isEqual(
+                    Address.of('0xdDCc5e1704bCcEC81c5ef524C682109815F7E6e5')
+                )
+            ).toBe(true);
         });
 
         it("should convert 1e18 base units to a human-readable value of '1.000000000000000000'", () => {
