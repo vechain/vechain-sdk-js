@@ -19,7 +19,13 @@ import {
     parseAndGetFinalConfig
 } from './utils';
 import { VeChainSDKLogger } from '@vechain/sdk-logging';
-import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
+import {
+    JSONRPCInternalError,
+    stringifyData,
+    JSONRPCMethodNotImplemented,
+    JSONRPCMethodNotFound,
+    JSONRPCInvalidParams
+} from '@vechain/sdk-errors';
 
 /**
  * Start the proxy function.
@@ -138,10 +144,34 @@ function startProxy(): void {
                         });
                     }
                 } catch (error) {
-                    // Push the error to the responses array
+                    // Format the error according to JSON-RPC 2.0 spec
+                    let errorObj = {
+                        code: -32603, // Default internal error code
+                        message: 'Internal error'
+                    };
+
+                    // Handle specific error types
+                    if (error instanceof JSONRPCMethodNotImplemented) {
+                        errorObj = {
+                            code: -32004,
+                            message: 'Method not supported'
+                        };
+                    } else if (error instanceof JSONRPCMethodNotFound) {
+                        errorObj = {
+                            code: -32601,
+                            message: 'Method not found'
+                        };
+                    } else if (error instanceof JSONRPCInvalidParams) {
+                        errorObj = {
+                            code: -32602,
+                            message: 'Invalid params'
+                        };
+                    }
+
+                    // Push the properly formatted error to the responses array
                     responses.push({
                         jsonrpc: '2.0',
-                        error,
+                        error: errorObj,
                         id: requestBody.id
                     });
 

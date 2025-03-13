@@ -1,46 +1,47 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
+import { JSONRPCMethodNotImplemented } from '@vechain/sdk-errors';
 import {
     RPC_METHODS,
-    RPCMethodsMap,
     TESTNET_URL,
-    ThorClient
+    ThorClient,
+    VeChainProvider
 } from '../../../../../src';
-import { VeChainSDKLogger } from '@vechain/sdk-logging';
 
 /**
- * RPC Mapper integration tests for 'eth_newFilter' method
+ * RPC Mapper integration tests for 'eth_newBlockFilter' method
  *
- * @group integration/rpc-mapper/methods/eth_newFilter
+ * @group integration/rpc-mapper/methods/eth_newBlockFilter
  */
-describe('RPC Mapper - eth_newFilter method tests', () => {
+describe('RPC Mapper - eth_newBlockFilter method tests', () => {
     /**
-     * Thor client instance
+     * Thor client instance and provider
      */
     let thorClient: ThorClient;
+    let provider: VeChainProvider;
 
     /**
-     * Init thor client before each test
+     * Init thor client and provider before each test
      */
     beforeEach(() => {
         // Init thor client
         thorClient = ThorClient.at(TESTNET_URL);
+        provider = new VeChainProvider(thorClient);
     });
 
     /**
-     * eth_newFilter RPC call tests - Positive cases
+     * eth_newBlockFilter RPC call tests - Not Implemented
      */
-    describe('eth_newFilter - Positive cases', () => {
+    describe('eth_newBlockFilter - Not Implemented', () => {
         /**
-         * Positive case 1 - ... Description ...
+         * Test that the method throws JSONRPCMethodNotImplemented when called via provider
          */
-        test('eth_newFilter - positive case 1', async () => {
-            const logSpy = jest.spyOn(VeChainSDKLogger('warning'), 'log');
-
-            // NOT IMPLEMENTED YET!
-            await RPCMethodsMap(thorClient)[RPC_METHODS.eth_newFilter]([-1]);
-
-            expect(logSpy).toHaveBeenCalled();
-            logSpy.mockRestore();
+        test('Should throw JSONRPCMethodNotImplemented error', async () => {
+            await expect(
+                provider.request({
+                    method: RPC_METHODS.eth_newBlockFilter,
+                    params: []
+                })
+            ).rejects.toThrowError(JSONRPCMethodNotImplemented);
         });
     });
 });

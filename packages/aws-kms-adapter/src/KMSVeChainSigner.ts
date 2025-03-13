@@ -52,7 +52,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
                 throw new JSONRPCInvalidParams(
                     'KMSVeChainSigner.constructor',
                     'The gasPayer object is not well formed, either provider or url should be provided.',
-                    { gasPayer: gasPayer }
+                    { gasPayer }
                 );
             }
         }
@@ -144,7 +144,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
             throw new SignerMethodError(
                 'KMSVeChainSigner.getAddress',
                 'The address could not be retrieved.',
-                { fromGasPayerProvider: fromGasPayerProvider },
+                { fromGasPayerProvider },
                 error
             );
         }

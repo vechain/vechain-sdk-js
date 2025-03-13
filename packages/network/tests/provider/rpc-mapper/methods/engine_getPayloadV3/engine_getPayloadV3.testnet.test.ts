@@ -1,48 +1,47 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
+import { JSONRPCMethodNotImplemented } from '@vechain/sdk-errors';
 import {
     RPC_METHODS,
-    RPCMethodsMap,
     TESTNET_URL,
-    ThorClient
+    ThorClient,
+    VeChainProvider
 } from '../../../../../src';
-import { VeChainSDKLogger } from '@vechain/sdk-logging';
 
 /**
- * RPC Mapper integration tests for 'engine_getPayloadV1' method
+ * RPC Mapper integration tests for 'engine_getPayloadV3' method
  *
- * @group integration/rpc-mapper/methods/engine_getPayloadV1
+ * @group integration/rpc-mapper/methods/engine_getPayloadV3
  */
-describe('RPC Mapper - engine_getPayloadV1 method tests', () => {
+describe('RPC Mapper - engine_getPayloadV3 method tests', () => {
     /**
-     * Thor client instance
+     * Thor client instance and provider
      */
     let thorClient: ThorClient;
+    let provider: VeChainProvider;
 
     /**
-     * Init thor client before each test
+     * Init thor client and provider before each test
      */
     beforeEach(() => {
         // Init thor client
         thorClient = ThorClient.at(TESTNET_URL);
+        provider = new VeChainProvider(thorClient);
     });
 
     /**
-     * eengine_getPayloadV1 RPC call tests - Positive cases
+     * engine_getPayloadV3 RPC call tests - Not Implemented
      */
-    describe('engine_getPayloadV1 - Positive cases', () => {
+    describe('engine_getPayloadV3 - Not Implemented', () => {
         /**
-         * Positive case 1 - ... Description ...
+         * Test that the method throws JSONRPCMethodNotImplemented when called via provider
          */
-        test('engine_getPayloadV1 - positive case 1', async () => {
-            const logSpy = jest.spyOn(VeChainSDKLogger('warning'), 'log');
-
-            // NOT IMPLEMENTED YET!
-            await RPCMethodsMap(thorClient)[RPC_METHODS.engine_getPayloadV3]([
-                -1
-            ]);
-
-            expect(logSpy).toHaveBeenCalled();
-            logSpy.mockRestore();
+        test('Should throw JSONRPCMethodNotImplemented error', async () => {
+            await expect(
+                provider.request({
+                    method: RPC_METHODS.engine_getPayloadV3,
+                    params: []
+                })
+            ).rejects.toThrowError(JSONRPCMethodNotImplemented);
         });
     });
 });
