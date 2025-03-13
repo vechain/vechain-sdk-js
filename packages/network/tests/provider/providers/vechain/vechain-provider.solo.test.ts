@@ -1,6 +1,9 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { ABIContract, Address, Clause, HexUInt } from '@vechain/sdk-core';
-import { JSONRPCMethodNotFound } from '@vechain/sdk-errors';
+import {
+    JSONRPCMethodNotFound,
+    JSONRPCMethodNotImplemented
+} from '@vechain/sdk-errors';
 import {
     ProviderInternalBaseWallet,
     type SubscriptionEvent,
@@ -360,11 +363,31 @@ describe('VeChain provider tests - solo', () => {
         } catch (error) {
             expect(error).toBeInstanceOf(JSONRPCMethodNotFound);
             if (error instanceof JSONRPCMethodNotFound) {
-                expect(error.message).toBe(
-                    `Method 'VeChainProvider.request()' failed.` +
-                        `\n-Reason: 'Method not found'` +
-                        `\n-Parameters: \n\t{\n  "code": -32601,\n  "message": "Method not found",\n \n}`
-                );
+                expect(error.data.code).toBe(-32601);
+                expect(error.data.message).toBe('Method not found');
+            }
+        }
+    });
+
+    /**
+     * Not implemented RPC method tests
+     */
+    test('Should throw an error when calling an invalid RPC method', async () => {
+        // Check if the provider is defined
+        expect(provider).toBeDefined();
+
+        // Call RPC function
+        try {
+            await provider.request({
+                method: 'eth_getProof',
+                params: [-1]
+            });
+            fail('Should throw an error');
+        } catch (error) {
+            expect(error).toBeInstanceOf(JSONRPCMethodNotImplemented);
+            if (error instanceof JSONRPCMethodNotImplemented) {
+                expect(error.data.code).toBe(-32004);
+                expect(error.data.message).toBe('Method not implemented');
             }
         }
     });
