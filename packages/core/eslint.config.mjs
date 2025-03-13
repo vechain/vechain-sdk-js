@@ -8,13 +8,8 @@ export default [
                 zones: [{
                     target: "./src",
                     from: [
-                        "../aws-kms-adapter",
                         "../errors",
-                        "../ethers-adapter",
-                        "../hardhat-plugin",
-                        "../logging",
-                        "../network",
-                        "../rpc-proxy",
+                        "../logging"
                     ],
                     message: "Please import using @vechain/sdk-<the-module>",
                 }],
