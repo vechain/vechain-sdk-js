@@ -54,9 +54,9 @@ describe('Token conversions', () => {
         });
 
         it('should allow specifying a custom number of display decimals', () => {
-            // Using displayDecimals of 4 should give us a 4-digit decimal.
+            // Using displayDecimals of 4 should give us a 4-digit rounded decimal.
             const usdToken = new USDTest(123456n);
-            expect(usdToken.convertToHumanReadable(4)).toBe('0.1234');
+            expect(usdToken.convertToHumanReadable(4)).toBe('0.1235');
         });
     });
 });

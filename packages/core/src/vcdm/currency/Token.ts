@@ -55,7 +55,7 @@ abstract class Token {
         const decimal = Number(`${whole}.${fraction}`);
         const result =
             displayDecimals === undefined
-                ? decimal.toString()
+                ? decimal.toFixed(this.units)
                 : decimal.toFixed(displayDecimals);
         return result;
     }
