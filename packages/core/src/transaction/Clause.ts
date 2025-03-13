@@ -266,7 +266,7 @@ class Clause implements TransactionClause {
         recipientAddress: Address,
         token: Token
     ): Clause {
-        if (token.value > 0) {
+        if (token.value >= 0) {
             return this.callFunction(
                 token.tokenAddress,
                 ABIContract.ofAbi(VIP180_ABI).getFunction(
