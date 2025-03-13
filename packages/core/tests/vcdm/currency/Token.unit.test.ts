@@ -23,11 +23,13 @@ class USDTest extends Token {
  * Test Token class.
  * @group unit/vcdm
  */
-describe('Token conversions', () => {
+describe('Token tests', () => {
     describe('ETHTest', () => {
         it("should convert 1e18 base units to a human-readable value of '1.000000000000000000'", () => {
             // 1 ETH in base units is 1e18
             const ethToken = new ETHTest(1000000000000000000n);
+            expect(ethToken.value).toBe(1000000000000000000n);
+            expect(ethToken.name).toBe('EthTest');
             expect(ethToken.convertToHumanReadable()).toBe(
                 '1.000000000000000000'
             );

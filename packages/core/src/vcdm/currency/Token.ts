@@ -44,9 +44,9 @@ abstract class Token {
 
     /**
      * Converts the base unit value to a human-readable string.
-     * If `displayDecimals` is provided, it uses that many decimals.
+     * If `displayDecimals` is provided the value is rounded to that number of decimals
      * Otherwise, it falls back to the token's inherent `units`.
-     * @param {number} displayDecimals Number of decimal places to use
+     * @param {number} displayDecimals Number of decimal places to round to
      */
     public convertToHumanReadable(displayDecimals?: number): string {
         const divisor = 10n ** BigInt(this.units);
