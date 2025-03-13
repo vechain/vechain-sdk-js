@@ -1,7 +1,7 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
-import { Blake2b256 } from './hash/Blake2b256';
+import { Blake2b256 } from './hash';
 import { Hex } from './Hex';
-import { InvalidDataType, InvalidOperation } from '@vechain/sdk-errors';
+import { IllegalArgumentError, UnsupportedOperationError } from '../errors';
 import { type VeChainDataModel } from './VeChainDataModel';
 
 /**
@@ -55,7 +55,7 @@ class BloomFilter implements VeChainDataModel<BloomFilter> {
      *
      * @returns {bigint} - The Bloom filter data structure represented as a {@link number} value.
      *
-     * @throws InvalidDataType if the data structure of the bloom filter can't be represented as a number
+     * @throws IllegalArgumentError if the data structure of the bloom filter can't be represented as a number
      * because underflow or overflow number safe integer range according
      * [IEEE 754 double precision 64 bits floating point format](https://en.wikipedia.org/wiki/Double-precision_floating-point_format).
      *
@@ -66,8 +66,8 @@ class BloomFilter implements VeChainDataModel<BloomFilter> {
         if (Number.MIN_SAFE_INTEGER <= bi && bi <= Number.MAX_SAFE_INTEGER) {
             return Number(bi);
         }
-        throw new InvalidDataType(
-            'BloomFilter.n',
+        throw new IllegalArgumentError(
+            '<BloomFilter>.n(): number',
             'not in the safe number range',
             {
                 bytes: this.bytes,
@@ -188,13 +188,13 @@ class BloomFilter implements VeChainDataModel<BloomFilter> {
      *          They keys made this and `other` filter may belong to the returned filter.
      *          Any key not part of the joined filter surely doesn't belong to the returned filter.
      *
-     * @throws {InvalidOperation} If the k values of the BloomFilters are different.
-     * @throws {InvalidOperation} If the length of the byte arrays are different.
+     * @throws {UnsupportedOperationError} If the k values of the BloomFilters are different.
+     * @throws {UnsupportedOperationError} If the length of the byte arrays are different.
      */
     public join(other: BloomFilter): BloomFilter {
         if (this.k !== other.k) {
-            throw new InvalidOperation(
-                'BloomFilter.join',
+            throw new UnsupportedOperationError(
+                '<BloomFilter>.join(other: BloomFilter): BloomFilter',
                 'different k values',
                 {
                     this: this,
@@ -204,8 +204,8 @@ class BloomFilter implements VeChainDataModel<BloomFilter> {
         }
 
         if (this.bytes.length !== other.bytes.length) {
-            throw new InvalidOperation(
-                'BloomFilter.join',
+            throw new UnsupportedOperationError(
+                '<BloomFilter>.join(other: BloomFilter): BloomFilter',
                 'different length values',
                 {
                     this: this,
