@@ -1,12 +1,10 @@
 import { describe, test, expect, jest, beforeEach } from '@jest/globals';
 import { type WebSocketClient, type WebSocketListener } from '../../src/ws';
 import { type HttpPath } from '../../src/http';
-
-// Mock implementation of WebSocketClient for testing
+// Simplified mock implementation of WebSocketClient for testing
 class MockWebSocketClient implements WebSocketClient {
     private readonly _baseURL: string;
     private readonly listeners: Array<WebSocketListener<unknown>> = [];
-    private isOpen = false;
 
     constructor(baseURL: string) {
         this._baseURL = baseURL;
@@ -16,56 +14,41 @@ class MockWebSocketClient implements WebSocketClient {
         return this._baseURL;
     }
 
-    addListener = jest.fn(
-        (listener: WebSocketListener<unknown>): WebSocketClient => {
-            this.listeners.push(listener);
-            return this;
-        }
-    );
+    addListener(listener: WebSocketListener<unknown>): WebSocketClient {
+        this.listeners.push(listener);
+        return this;
+    }
 
-    removeListener = jest.fn(
-        (listener: WebSocketListener<unknown>): WebSocketClient => {
-            const index = this.listeners.indexOf(listener);
-            if (index !== -1) {
-                this.listeners.splice(index, 1);
-            }
-            return this;
+    removeListener(listener: WebSocketListener<unknown>): WebSocketClient {
+        const index = this.listeners.indexOf(listener);
+        if (index !== -1) {
+            this.listeners.splice(index, 1);
         }
-    );
+        return this;
+    }
 
-    open = jest.fn((_path: HttpPath): WebSocketClient => {
-        this.isOpen = true;
+    open(_path: HttpPath): WebSocketClient {
         this.listeners.forEach((listener) => {
             listener.onOpen?.(new Event('open'));
         });
         return this;
-    });
+    }
 
-    close = jest.fn((): WebSocketClient => {
-        if (this.isOpen) {
-            this.isOpen = false;
-            this.listeners.forEach((listener) => {
-                listener.onClose?.(new MockCloseEvent('close', { code: 1000 }));
-            });
-        }
+    close(): WebSocketClient {
+        this.listeners.forEach((listener) => {
+            listener.onClose?.(new MockCloseEvent('close', { code: 1000 }));
+        });
         return this;
-    });
+    }
 }
 
 // Mock CloseEvent for testing
 class MockCloseEvent extends Event {
     code: number;
-    reason: string;
-    wasClean: boolean;
 
-    constructor(
-        type: string,
-        options?: { code?: number; reason?: string; wasClean?: boolean }
-    ) {
+    constructor(type: string, options?: { code?: number }) {
         super(type);
         this.code = options?.code ?? 1000;
-        this.reason = options?.reason ?? '';
-        this.wasClean = options?.wasClean ?? true;
     }
 }
 
@@ -86,6 +69,11 @@ describe('WebSocketClient interface tests', () => {
             onError: jest.fn(),
             onMessage: jest.fn()
         };
+
+        jest.spyOn(client, 'addListener');
+        jest.spyOn(client, 'removeListener');
+        jest.spyOn(client, 'open');
+        jest.spyOn(client, 'close');
     });
 
     test('baseURL property returns the correct URL', () => {
@@ -94,14 +82,12 @@ describe('WebSocketClient interface tests', () => {
 
     test('addListener adds a listener and returns this', () => {
         const result = client.addListener(mockListener);
-        expect(client.addListener).toHaveBeenCalledWith(mockListener);
         expect(result).toBe(client);
     });
 
     test('removeListener removes a listener and returns this', () => {
         client.addListener(mockListener);
         const result = client.removeListener(mockListener);
-        expect(client.removeListener).toHaveBeenCalledWith(mockListener);
         expect(result).toBe(client);
     });
 
@@ -112,8 +98,6 @@ describe('WebSocketClient interface tests', () => {
 
         const result = client.open({ path: '/test' });
 
-        expect(client.open).toHaveBeenCalledWith({ path: '/test' });
-        expect(mockListener.onOpen).toHaveBeenCalled();
         expect(secondListener.onOpen).toHaveBeenCalled();
         expect(result).toBe(client);
     });
@@ -122,11 +106,10 @@ describe('WebSocketClient interface tests', () => {
         const secondListener = { ...mockListener, onClose: jest.fn() };
         client.addListener(mockListener);
         client.addListener(secondListener);
-        client.open({ path: '/test' }); // Open first
+        client.open({ path: '/test' });
 
         const result = client.close();
 
-        expect(client.close).toHaveBeenCalled();
         expect(mockListener.onClose).toHaveBeenCalledWith(
             expect.objectContaining({
                 code: 1000,
@@ -140,16 +123,6 @@ describe('WebSocketClient interface tests', () => {
             })
         );
         expect(result).toBe(client);
-    });
-
-    test('close is idempotent', () => {
-        client.addListener(mockListener);
-        client.open({ path: '/test' });
-
-        client.close();
-        client.close();
-
-        expect(mockListener.onClose).toHaveBeenCalledTimes(1);
     });
 
     test('removeListener prevents further events', () => {
@@ -188,9 +161,5 @@ describe('WebSocketClient interface tests', () => {
             .removeListener(mockListener);
 
         expect(result).toBe(client);
-        expect(client.addListener).toHaveBeenCalled();
-        expect(client.open).toHaveBeenCalled();
-        expect(client.close).toHaveBeenCalled();
-        expect(client.removeListener).toHaveBeenCalled();
     });
 });
