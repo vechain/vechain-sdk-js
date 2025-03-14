@@ -2,11 +2,16 @@ import { describe, expect, test } from '@jest/globals';
 import {
     InvalidAbiDataToEncodeOrDecode,
     InvalidAbiItem,
-    InvalidDataType,
     stringifyData
 } from '@vechain/sdk-errors';
 import { type AbiEvent, type AbiFunction, parseAbiParameters } from 'viem';
-import { ABI, ABIEvent, ABIFunction, Hex } from '../../../src';
+import {
+    ABI,
+    ABIEvent,
+    ABIFunction,
+    Hex,
+    IllegalArgumentError
+} from '../../../src';
 import {
     encodedDecodedInvalidValues,
     encodedDecodedValues,
@@ -265,7 +270,7 @@ describe('Abi - Function & Event', () => {
 
             // Decode
             expect(() => myFunction.decodeData(Hex.of('INVALID'))).toThrowError(
-                InvalidDataType
+                IllegalArgumentError
             );
         });
     });
@@ -380,7 +385,7 @@ describe('Abi - Function & Event', () => {
                     data: Hex.of('INVALID'),
                     topics: [Hex.of('INVALID_1'), Hex.of('INVALID_2')]
                 })
-            ).toThrowError(InvalidDataType);
+            ).toThrowError(IllegalArgumentError);
         });
 
         /**

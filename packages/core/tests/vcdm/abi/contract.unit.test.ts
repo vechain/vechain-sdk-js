@@ -1,13 +1,19 @@
 import { beforeAll, describe, expect, test } from '@jest/globals';
 import {
     InvalidAbiDataToEncodeOrDecode,
-    InvalidAbiItem,
-    InvalidDataType
+    InvalidAbiItem
 } from '@vechain/sdk-errors';
 import { fail } from 'assert';
 import { expectType } from 'tsd';
 import { type AbiEvent, encodeFunctionResult } from 'viem';
-import { ABIContract, ABIEvent, ABIItem, ERC721_ABI, Hex } from '../../../src';
+import {
+    ABIContract,
+    ABIEvent,
+    ABIItem,
+    ERC721_ABI,
+    Hex,
+    IllegalArgumentError
+} from '../../../src';
 import {
     contractABI,
     contractABIWithEvents,
@@ -356,7 +362,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
                 'getValue',
                 Hex.of(encodedFunctionOutput.toString() + 'InvalidDataString')
             )
-        ).toThrowError(InvalidDataType);
+        ).toThrowError(IllegalArgumentError);
     });
 
     /**
