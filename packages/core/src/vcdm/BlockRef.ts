@@ -3,6 +3,11 @@ import { HexUInt } from './HexUInt';
 import { IllegalArgumentError } from '../errors';
 
 /**
+ * Full Qualified Path.
+ */
+const FQP = 'packages/core/src/vcdm/BlockRef.ts!';
+
+/**
  * The BlockRef class represents a Thor block ID value, which is a hexadecimal positive integer having 64 digits.
  *
  * @extends HexInt
@@ -75,7 +80,7 @@ class BlockRef extends HexUInt {
             return new BlockRef(HexUInt.of(exp));
         } catch (e) {
             throw new IllegalArgumentError(
-                'BlockRef.of(exp: bigint | number | string | Uint8Array | HexUInt): BlockRef',
+                `${FQP}BlockRef.of(exp: bigint | number | string | Uint8Array | HexUInt): BlockRef`,
                 'not a BlockRef expression',
                 { exp: `${exp}` }, // Needed to serialize bigint values.
                 e instanceof Error ? e : undefined

@@ -3,6 +3,11 @@ import { HexUInt } from './HexUInt';
 import { IllegalArgumentError } from '../errors';
 
 /**
+ * Full Qualified Path.
+ */
+const FQP = 'packages/core/src/vcdm/BlockId.ts!';
+
+/**
  * The BlockId class represents a Thor block ID value, which is a hexadecimal positive integer having 64 digits.
  *
  * @extends HexInt
@@ -76,7 +81,7 @@ class BlockId extends HexUInt {
             return new BlockId(HexUInt.of(exp));
         } catch (e) {
             throw new IllegalArgumentError(
-                'BlockId.of()',
+                `${FQP}BlockId.of(): BlockId`,
                 'not a BlockId expression',
                 { exp: `${exp}` }, // Needed to serialize bigint values.
                 e as Error

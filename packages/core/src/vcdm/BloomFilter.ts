@@ -5,6 +5,11 @@ import { IllegalArgumentError, UnsupportedOperationError } from '../errors';
 import { type VeChainDataModel } from './VeChainDataModel';
 
 /**
+ * Full Qualified Path
+ */
+const FQP = 'packages/core/src/vcdm/BloomFilter.ts!';
+
+/**
  * A [Bloom Filter](https://en.wikipedia.org/wiki/Bloom_filter)
  * is a space-efficient probabilistic data structure
  * that is used to test whether an element is a member of a set.
@@ -67,7 +72,7 @@ class BloomFilter implements VeChainDataModel<BloomFilter> {
             return Number(bi);
         }
         throw new IllegalArgumentError(
-            '<BloomFilter>.n(): number',
+            `${FQP}<BloomFilter>.n(): number`,
             'not in the safe number range',
             {
                 bytes: this.bytes,
@@ -194,7 +199,7 @@ class BloomFilter implements VeChainDataModel<BloomFilter> {
     public join(other: BloomFilter): BloomFilter {
         if (this.k !== other.k) {
             throw new UnsupportedOperationError(
-                '<BloomFilter>.join(other: BloomFilter): BloomFilter',
+                `${FQP}<BloomFilter>.join(other: BloomFilter): BloomFilter`,
                 'different k values',
                 {
                     this: this,
@@ -205,7 +210,7 @@ class BloomFilter implements VeChainDataModel<BloomFilter> {
 
         if (this.bytes.length !== other.bytes.length) {
             throw new UnsupportedOperationError(
-                '<BloomFilter>.join(other: BloomFilter): BloomFilter',
+                `${FQP}<BloomFilter>.join(other: BloomFilter): BloomFilter`,
                 'different length values',
                 {
                     this: this,

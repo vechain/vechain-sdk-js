@@ -8,6 +8,11 @@ import { Txt } from './Txt';
 import { InvalidHDKey } from '@vechain/sdk-errors'; // remove later
 
 /**
+ * Full Qualified Path.
+ */
+const FQP = 'packages/core/src/vcdm/Address.ts!';
+
+/**
  * Represents a VeChain Address as unsigned integer.
  *
  * @extends {HexUInt}
@@ -77,7 +82,7 @@ class Address extends HexUInt {
             );
         } catch (error) {
             throw new IllegalArgumentError(
-                'Address.of(exp: bigint | number | string | Uint8Array | HexUInt): Address',
+                `${FQP}Address.of(exp: bigint | number | string | Uint8Array | HexUInt): Address`,
                 'not a valid hexadecimal positive integer expression',
                 { exp: `${exp}` },
                 error instanceof Error ? error : undefined
@@ -109,7 +114,7 @@ class Address extends HexUInt {
             );
         } catch (error) {
             throw new IllegalArgumentError(
-                'Address.ofPrivateKey(privateKey: Uint8Array, isCompressed: boolean): Address',
+                `${FQP}Address.ofPrivateKey(privateKey: Uint8Array, isCompressed: boolean): Address`,
                 'not a valid private key',
                 { privateKey: `obfuscated`, isCompressed: `${isCompressed}` },
                 error instanceof Error ? error : undefined
@@ -136,7 +141,7 @@ class Address extends HexUInt {
             return Address.of(publicKeyHash.slice(12));
         } catch (error) {
             throw new IllegalArgumentError(
-                'Address.ofPublicKey(publicKey: Uint8Array): Address',
+                `${FQP}Address.ofPublicKey(publicKey: Uint8Array): Address`,
                 'not a valid public key',
                 { publicKey: `${publicKey}` },
                 error instanceof Error ? error : undefined
