@@ -1,5 +1,10 @@
 import { Hex } from './Hex';
-import { InvalidDataType } from '@vechain/sdk-errors';
+import { IllegalArgumentError, UnsupportedOperationError } from '../errors';
+
+/**
+ * Full Qualified Path
+ */
+const FQP = 'packages/core/src/vcdm/HexInt.ts!';
 
 /**
  * Represents a hexadecimal signed integer value.
@@ -14,7 +19,7 @@ class HexInt extends Hex {
      *
      * @return {number} The value of n.
      *
-     * @throws {InvalidDataType} If n is not within the safe number range, if the number representation of this
+     * @throws {UnsupportedOperation} If n is not within the safe number range, if the number representation of this
      * instance results approximated.
      *
      * @remarks This class makes equal instances created from the same value as number or as bigint.
@@ -24,10 +29,14 @@ class HexInt extends Hex {
         if (Number.MIN_SAFE_INTEGER <= bi && bi <= Number.MAX_SAFE_INTEGER) {
             return Number(bi);
         }
-        throw new InvalidDataType('HexInt.n', 'not in the safe number range', {
-            bi: `${bi}`,
-            hex: this.toString()
-        });
+        throw new UnsupportedOperationError(
+            `${FQP}<HexInt>.n(): number`,
+            'not in the safe number range',
+            {
+                bi: `${bi}`,
+                hex: this.toString()
+            }
+        );
     }
 
     /**
@@ -43,7 +52,7 @@ class HexInt extends Hex {
      *
      * @returns {HexInt} - The new HexInt object representing the given `exp`.
      *
-     * @throws {InvalidDataType} - If the given `exp` is not a valid hexadecimal integer expression,
+     * @throws {IllegalArgumentError} - If the given `exp` is not a valid hexadecimal integer expression,
      * if `exp` is a not integer number.
      *
      * @remarks This class makes equal instances created from the same value as number or as bigint.
@@ -59,20 +68,23 @@ class HexInt extends Hex {
                     return new HexInt(hex.sign, hex.digits);
                 }
                 // noinspection ExceptionCaughtLocallyJS
-                throw new InvalidDataType('HexInt.of', 'not an integer', {
-                    exp
-                });
+                throw new IllegalArgumentError(
+                    `${FQP}HexInt.of(exp: bigint | number | string | Uint8Array | Hex): HexInt`,
+                    'not an integer',
+                    {
+                        exp
+                    }
+                );
             }
             const hex = Hex.of(exp);
             return new HexInt(hex.sign, hex.digits);
         } catch (e) {
-            throw new InvalidDataType(
-                'HexInt.of',
+            throw new IllegalArgumentError(
+                `${FQP}HexInt.of(exp: bigint | number | string | Uint8Array | Hex): HexInt`,
                 'not an hexadecimal integer expression',
                 { exp: `${exp}`, e } // Needed to serialize bigint values.
             );
         }
     }
 }
-
 export { HexInt };
