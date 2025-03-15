@@ -1,10 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
-import {
-    InvalidDataType,
-    InvalidRLP,
-    stringifyData
-} from '@vechain/sdk-errors';
-import { Hex } from '../../../src';
+import { InvalidRLP, stringifyData } from '@vechain/sdk-errors';
+import { Hex, IllegalArgumentError } from '../../../src';
 import {
     assertCompactFixedHexBlobBuffer,
     assertFixedHexBlobKindBuffer,
@@ -51,7 +47,7 @@ describe('decodeBufferToHexWithLeadingZeros', () => {
     buffer[0] = 10;
     test('decodeBufferToHexWithLeadingZeros zero bytes', () => {
         expect(() => decodeBufferToHexWithLeadingZeros(buffer, 0)).toThrow(
-            InvalidDataType
+            IllegalArgumentError
         );
     });
     test('decodeBufferToHexWithLeadingZeros with bytes', () => {

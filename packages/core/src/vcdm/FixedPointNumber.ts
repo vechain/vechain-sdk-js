@@ -1,6 +1,11 @@
-import { InvalidDataType, InvalidOperation } from '@vechain/sdk-errors';
-import { type VeChainDataModel } from './VeChainDataModel';
+import { IllegalArgumentError, UnsupportedOperationError } from '../errors';
 import { Txt } from './Txt';
+import { type VeChainDataModel } from './VeChainDataModel';
+
+/**
+ * Full Qualified Path
+ */
+const FQP = 'packages/core/src/vcdm/FixedPointNumber.ts!';
 
 /**
  * Represents a fixed-point number for precision arithmetic.
@@ -107,7 +112,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      *
      * @return {bigint} the integer part of this FixedPointNumber value.
      *
-     * @throws {InvalidOperation} If the value is not finite.
+     * @throws {UnsupportedOperationError} If the value is not finite.
      */
     get bi(): bigint {
         if (this.isFinite()) {
@@ -116,8 +121,8 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
                 FixedPointNumber.BASE ** this.fractionalDigits
             );
         }
-        throw new InvalidOperation(
-            'FixedPointNumber.bi',
+        throw new UnsupportedOperationError(
+            `${FQP}<FixedPointNumber>.bi(): bigint`,
             'not finite value cannot cast to big integer',
             { this: this.toString() }
         );
@@ -183,14 +188,14 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * @param {FixedPointNumber} that - The instance to compare with this instance.
      * @return {number} Returns -1, 0, or 1 if this instance is less than, equal to, or greater
      * than the specified instance, respectively.
-     * @throw InvalidOperation If this or `that` FixedPointNumber is {@link NaN}.
+     * @throw {UnsupportedOperationError} If this or `that` FixedPointNumber is {@link NaN}.
      *
      * @see [bignumber.js comparedTo](https://mikemcl.github.io/bignumber.js/#cmp)
      */
     public compareTo(that: FixedPointNumber): number {
         if (this.isNaN() || that.isNaN())
-            throw new InvalidOperation(
-                'FixedPointNumber.compareTo',
+            throw new UnsupportedOperationError(
+                `${FQP}<FixedPointNumber>.compareTo(that: FixedPointNumber): number`,
                 'compare between NaN',
                 {
                     this: `${this}`,
@@ -302,7 +307,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * @param decimalPlaces The number of decimal places to adjust to,
      *                      it must be a positive value.
      * @return {FixedPointNumber} A new FixedPointNumber instance with the adjusted precision.
-     * @throws InvalidDataType if `decimalPlaces` is negative.
+     * @throws {IllegalArgumentError} if `decimalPlaces` is negative.
      */
     public dp(decimalPlaces: bigint | number): FixedPointNumber {
         const dp = BigInt(decimalPlaces);
@@ -322,8 +327,8 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
             }
             return new FixedPointNumber(fd, sv, this.edgeFlag);
         }
-        throw new InvalidDataType(
-            'FixedPointNumber.scale',
+        throw new IllegalArgumentError(
+            `${FQP}<FixedPointNumber>.scale(decimalPlaces: bigint | number): FixedPointNumber`,
             'negative `dp` arg',
             { dp: `${dp}` }
         );
@@ -775,7 +780,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      *
      * @return {FixedPointNumber} A new instance of FixedPointNumber with the given parameters.
      *
-     * @throws {InvalidDataType} If `exp` is not a numeric expression.
+     * @throws {IllegalArgumentError} If `exp` is not a numeric expression.
      */
     public static of(
         exp: bigint | number | string | FixedPointNumber,
@@ -808,11 +813,11 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
                 this.txtToSV(exp.toString(), decimalPlaces)
             );
         } catch (e) {
-            throw new InvalidDataType(
-                'FixedPointNumber.of',
+            throw new IllegalArgumentError(
+                `${FQP}FixedPointNumber.of(of(exp: bigint | number | string | FixedPointNumber, decimalPlaces: bigint): FixedPointNumber`,
                 'not a number',
                 { exp },
-                e
+                e instanceof Error ? e : undefined
             );
         }
     }
@@ -912,11 +917,15 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * @param {bigint} fd - The iteration factor determinant.
      * @return {bigint} The calculated square root of the input bigint value.
      *
-     * @throws {RangeError} If the input value is negative.
+     * @throws {IllegalArgumentError} If the input value is negative.
      */
     private static sqr(value: bigint, fd: bigint): bigint {
         if (value < 0n) {
-            throw new RangeError(`Value must be positive`);
+            throw new IllegalArgumentError(
+                `${FQP}FixedPointNumber.sqr(value: bigint, fd: bigint): bigint`,
+                `Value must be positive`,
+                { value: `${value}`, fd: `${fd}` }
+            );
         }
         const sf = fd * FixedPointNumber.BASE; // Scale Factor.
         let iteration = 0;

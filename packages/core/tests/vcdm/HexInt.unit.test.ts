@@ -1,6 +1,10 @@
 import { describe, expect, test } from '@jest/globals';
-import { Hex, HexInt } from '../../src';
-import { InvalidDataType } from '@vechain/sdk-errors';
+import {
+    Hex,
+    HexInt,
+    IllegalArgumentError,
+    UnsupportedOperationError
+} from '../../src';
 
 /**
  * Test HexInt class.
@@ -27,13 +31,13 @@ describe('HexInt class tests', () => {
         test('Throw an exception if this integer is beyond safe integer range - underflow', () => {
             const largeBigInt = BigInt(Number.MIN_SAFE_INTEGER) - BigInt(10);
             const hexIntInstance = HexInt.of(largeBigInt);
-            expect(() => hexIntInstance.n).toThrow(InvalidDataType);
+            expect(() => hexIntInstance.n).toThrow(UnsupportedOperationError);
         });
 
         test('Throw an exception if this integer is beyond safe integer range - overflow', () => {
             const largeBigInt = BigInt(Number.MAX_SAFE_INTEGER) + BigInt(10);
             const hexIntInstance = HexInt.of(largeBigInt);
-            expect(() => hexIntInstance.n).toThrow(InvalidDataType);
+            expect(() => hexIntInstance.n).toThrow(UnsupportedOperationError);
         });
     });
 
@@ -71,7 +75,7 @@ describe('HexInt class tests', () => {
 
         test('Throw an exception if the passed argument is not an integer number', () => {
             const exp = 123.57;
-            expect(() => HexInt.of(exp)).toThrow(InvalidDataType);
+            expect(() => HexInt.of(exp)).toThrow(IllegalArgumentError);
         });
     });
 

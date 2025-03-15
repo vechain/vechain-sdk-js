@@ -1,6 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { HexUInt } from '../../src';
-import { InvalidDataType } from '@vechain/sdk-errors';
+import { HexUInt, IllegalArgumentError } from '../../src';
 
 /**
  * Test HexUInt class.
@@ -16,7 +15,7 @@ describe('HexUInt class tests', () => {
 
         test('Throw an error if the passed argument is negative', () => {
             const exp = '-0xcaffee';
-            expect(() => HexUInt.of(exp)).toThrow(InvalidDataType);
+            expect(() => HexUInt.of(exp)).toThrow(IllegalArgumentError);
         });
     });
 

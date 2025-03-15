@@ -1,6 +1,11 @@
 import { Hex } from './Hex';
 import { HexUInt } from './HexUInt';
-import { InvalidDataType } from '@vechain/sdk-errors';
+import { IllegalArgumentError } from '../errors';
+
+/**
+ * Full Qualified Path.
+ */
+const FQP = 'packages/core/src/vcdm/BlockId.ts!';
 
 /**
  * The BlockId class represents a Thor block ID value, which is a hexadecimal positive integer having 64 digits.
@@ -63,7 +68,7 @@ class BlockId extends HexUInt {
      *
      * @returns {BlockId} - A new BlockId object created from the given expression.
      *
-     * @throws {InvalidDataType} If the given expression is not a valid hexadecimal positive integer expression.
+     * @throws {IllegalArgumentError} If the given expression is not a valid hexadecimal positive integer expression.
      */
     public static of(
         // eslint-disable-next-line sonarjs/use-type-alias
@@ -75,11 +80,11 @@ class BlockId extends HexUInt {
             }
             return new BlockId(HexUInt.of(exp));
         } catch (e) {
-            throw new InvalidDataType(
-                'BlockId.of',
+            throw new IllegalArgumentError(
+                `${FQP}BlockId.of(): BlockId`,
                 'not a BlockId expression',
                 { exp: `${exp}` }, // Needed to serialize bigint values.
-                e
+                e as Error
             );
         }
     }

@@ -1,6 +1,10 @@
 import { describe, expect, test } from '@jest/globals';
-import { Hex, Txt } from '../../src';
-import { InvalidDataType, InvalidOperation } from '@vechain/sdk-errors';
+import {
+    Hex,
+    IllegalArgumentError,
+    Txt,
+    UnsupportedOperationError
+} from '../../src';
 
 /**
  * Test Hex class.
@@ -43,7 +47,7 @@ describe('Hex class tests', () => {
         test('Throw an exception casting n from a not IEEE expression', () => {
             const exp = 12357n;
             const hex = Hex.of(exp);
-            expect(() => hex.n).toThrow(InvalidOperation);
+            expect(() => hex.n).toThrow(UnsupportedOperationError);
         });
 
         test('compareTo method tests - same signs', () => {
@@ -152,7 +156,7 @@ describe('Hex class tests', () => {
 
         test('Throw an exception if the passed argument is not an hexadecimal expression', () => {
             const exp = '0xTEA';
-            expect(() => Hex.of(exp)).toThrow(InvalidDataType);
+            expect(() => Hex.of(exp)).toThrow(IllegalArgumentError);
         });
     });
 
@@ -209,7 +213,7 @@ describe('Hex class tests', () => {
 
         test('Throw an exception cutting hex too short', () => {
             const hex = Hex.of('0xcaca0');
-            expect(() => hex.fit(4)).toThrow(InvalidDataType);
+            expect(() => hex.fit(4)).toThrow(IllegalArgumentError);
         });
     });
 
@@ -315,11 +319,11 @@ describe('Hex class tests', () => {
         });
 
         test('Throw an exception for zero bytes', () => {
-            expect(() => Hex.random(0)).toThrow(InvalidDataType);
+            expect(() => Hex.random(0)).toThrow(IllegalArgumentError);
         });
 
         test('Throw an exception with specified negative number of bytes', () => {
-            expect(() => Hex.random(0)).toThrow(InvalidDataType);
+            expect(() => Hex.random(0)).toThrow(IllegalArgumentError);
         });
     });
 });

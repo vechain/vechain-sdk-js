@@ -1,12 +1,8 @@
 import { describe, expect, test } from '@jest/globals';
 import {
-    InvalidHDKey,
-    InvalidHDKeyMnemonic,
-    InvalidSecp256k1PrivateKey
-} from '@vechain/sdk-errors';
-import {
     Address,
     HDKey,
+    IllegalArgumentError,
     Mnemonic,
     Secp256k1,
     ZERO_BYTES,
@@ -83,13 +79,13 @@ describe('HDKey class tests', () => {
                     HDKeyFixture.words,
                     HDKeyFixture.wrongDerivationPath
                 )
-            ).toThrowError(InvalidHDKey);
+            ).toThrowError(IllegalArgumentError);
         });
 
         test('fromMnemonic - invalid - word list', () => {
             expect(() =>
                 HDKey.fromMnemonic(HDKeyFixture.wrongWords)
-            ).toThrowError(InvalidHDKeyMnemonic);
+            ).toThrowError(IllegalArgumentError);
         });
 
         test('fromMnemonic - invalid - word list leak check', () => {
@@ -191,13 +187,13 @@ describe('HDKey class tests', () => {
         test('fromPrivateKey - invalid - chain code', () => {
             expect(() =>
                 HDKey.fromPrivateKey(ZERO_BYTES(32), ZERO_BYTES(31))
-            ).toThrowError(InvalidSecp256k1PrivateKey);
+            ).toThrowError(IllegalArgumentError);
         });
 
         test('fromPrivateKey - invalid - private key', () => {
             expect(() =>
                 HDKey.fromPrivateKey(ZERO_BYTES(31), ZERO_BYTES(32))
-            ).toThrowError(InvalidSecp256k1PrivateKey);
+            ).toThrowError(IllegalArgumentError);
         });
 
         test('fromPrivateKey - valid - address sequence', () => {
@@ -240,13 +236,13 @@ describe('HDKey class tests', () => {
         test('fromPublicKey - invalid - chain code', () => {
             expect(() =>
                 HDKey.fromPublicKey(ZERO_BYTES(32), ZERO_BYTES(31))
-            ).toThrowError(InvalidHDKey);
+            ).toThrowError(IllegalArgumentError);
         });
 
         test('fromPublicKey - invalid - public key', () => {
             expect(() =>
                 HDKey.fromPublicKey(ZERO_BYTES(31), ZERO_BYTES(32))
-            ).toThrowError(InvalidHDKey);
+            ).toThrowError(IllegalArgumentError);
         });
 
         test(`fromPublicKey - valid - address sequence, no private key`, () => {
