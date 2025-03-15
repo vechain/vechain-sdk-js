@@ -1,6 +1,11 @@
-import { InvalidDataType } from '@vechain/sdk-errors';
-import { type HexInt } from './HexInt';
 import { HexUInt } from './HexUInt';
+import { IllegalArgumentError } from '../errors';
+import { type HexInt } from './HexInt';
+
+/**
+ * Full Qualified Path
+ */
+const FQP = 'packages/core/src/vcdm/HexUInt32.ts!';
 
 /**
  * Represents a 32-byte hexadecimal unsigned integer.
@@ -49,7 +54,7 @@ class HexUInt32 extends HexUInt {
      * Creates a HexUInt32 instance with enforced 32 bytes length.
      * @param {bigint | number | string | Uint8Array | HexInt} exp - The expression to convert.
      * @returns {HexUInt32} The HexUInt32 object representing the given expression.
-     * @throws {InvalidDataType} If the value is not a valid 32-byte hex string.
+     * @throws {IllegalArgumentError} If the value is not a valid 32-byte hex string.
      */
     public static of(
         exp: bigint | number | string | Uint8Array | HexInt
@@ -61,11 +66,11 @@ class HexUInt32 extends HexUInt {
 
             return new HexUInt32(hexUInt.sign, hexDigits);
         } catch (e) {
-            throw new InvalidDataType(
-                'HexUInt32.of',
+            throw new IllegalArgumentError(
+                `${FQP}HexUInt32.of(exp: bigint | number | string | Uint8Array | HexInt): HexUInt32`,
                 'not a 32 bytes long hexadecimal positive integer expression',
                 { exp: `${exp}`, e },
-                e
+                e instanceof Error ? e : undefined
             );
         }
     }
