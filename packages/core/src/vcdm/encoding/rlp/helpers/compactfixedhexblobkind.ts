@@ -1,5 +1,10 @@
-import { InvalidRLP } from '@vechain/sdk-errors';
 import { Hex } from '../../../Hex';
+import { InvalidRLPEncodingError } from '../../../../errors';
+
+/**
+ * Full Qualified Path
+ */
+const FQP = 'vcdm.encoding.rlp.helpers.compactFixedHexBlobKind!';
 
 /**
  * Asserts that the provided buffer is of a specific length and does not contain leading zeros.
@@ -7,7 +12,7 @@ import { Hex } from '../../../Hex';
  * @param {Uint8Array} buffer - The buffer to validate.
  * @param {string} context - Descriptive context for error messages, usually representing the caller's identity.
  * @param {number} bytes - The expected maximum number of bytes that the buffer can contain.
- * @throws {InvalidRLP}
+ * @throws {InvalidRLPEncodingError} - If the operation fails.
  */
 const assertCompactFixedHexBlobBuffer = (
     buffer: Uint8Array,
@@ -15,8 +20,8 @@ const assertCompactFixedHexBlobBuffer = (
     bytes: number
 ): void => {
     if (buffer.length > bytes) {
-        throw new InvalidRLP(
-            'assertCompactFixedHexBlobBuffer()',
+        throw new InvalidRLPEncodingError(
+            `${FQP}assertCompactFixedHexBlobBuffer(buffer, context, bytes): void`,
             `Validation error: Buffer in ${context} must be at most ${bytes} bytes.`,
             {
                 context,
@@ -29,8 +34,8 @@ const assertCompactFixedHexBlobBuffer = (
     }
 
     if (buffer.length !== 0 && buffer[0] === 0) {
-        throw new InvalidRLP(
-            'assertCompactFixedHexBlobBuffer()',
+        throw new InvalidRLPEncodingError(
+            `${FQP}assertCompactFixedHexBlobBuffer(buffer, context, bytes): void`,
             `Validation error: Buffer in ${context} should not have leading zero bytes.`,
             {
                 context,

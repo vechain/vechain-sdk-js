@@ -1,6 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { InvalidRLP, stringifyData } from '@vechain/sdk-errors';
-import { Hex, IllegalArgumentError } from '../../../src';
+import { Hex, IllegalArgumentError, InvalidRLPEncodingError } from '../../../src';
 import {
     assertCompactFixedHexBlobBuffer,
     assertFixedHexBlobKindBuffer,
@@ -92,13 +91,13 @@ describe('NumericKind helpers', () => {
          * asserting that the function throws an error with a corresponding message.
          */
         invalidNumberTestCases.forEach(({ number, context }) => {
-            test(`should throw error when data is invalid ${stringifyData(
+            test(`should throw error when data is invalid ${JSON.stringify(
                 number
             )}`, () => {
                 expect(() => {
                     // @ts-expect-error - invalid input
                     validateNumericKindData(number, context);
-                }).toThrowError(InvalidRLP);
+                }).toThrowError(InvalidRLPEncodingError);
             });
         });
     });
@@ -136,7 +135,7 @@ describe('NumericKind helpers', () => {
                 test(`should throw error when buffer is invalid ${Hex.of(buffer).toString()}}`, () => {
                     expect(() => {
                         assertValidNumericKindBuffer(buffer, context, maxBytes);
-                    }).toThrowError(InvalidRLP);
+                    }).toThrowError(InvalidRLPEncodingError);
                 });
             }
         );
@@ -166,7 +165,7 @@ describe('HexBlobKind helpers', () => {
             test(`should throw error when data is invalid ${data}`, () => {
                 expect(() => {
                     assertValidHexBlobKindData(data, context);
-                }).toThrowError(InvalidRLP);
+                }).toThrowError(InvalidRLPEncodingError);
             });
         });
     });
@@ -198,7 +197,7 @@ describe('FixedHexBlobKind helpers', () => {
                 test(`should throw error when data is invalid ${data}`, () => {
                     expect(() => {
                         assertFixedHexBlobKindData(data, context, bytes);
-                    }).toThrowError(InvalidRLP);
+                    }).toThrowError(InvalidRLPEncodingError);
                 });
             }
         );
@@ -220,12 +219,12 @@ describe('FixedHexBlobKind helpers', () => {
 
         invalidFixedHexBlobKindBufferTestCases.forEach(
             ({ buffer, context, bytes }) => {
-                test(`should throw error when buffer is invalid ${stringifyData(
+                test(`should throw error when buffer is invalid ${JSON.stringify(
                     buffer
                 )}`, () => {
                     expect(() => {
                         assertFixedHexBlobKindBuffer(buffer, context, bytes);
-                    }).toThrowError(InvalidRLP);
+                    }).toThrowError(InvalidRLPEncodingError);
                 });
             }
         );
@@ -252,12 +251,12 @@ describe('CompactFixedHexBlobKind helpers', () => {
 
         invalidCompactFixedHexBlobKindBufferTestCases.forEach(
             ({ buffer, context, bytes }) => {
-                test(`should throw error when buffer is invalid ${stringifyData(
+                test(`should throw error when buffer is invalid ${JSON.stringify(
                     buffer
                 )}`, () => {
                     expect(() => {
                         assertCompactFixedHexBlobBuffer(buffer, context, bytes);
-                    }).toThrowError(InvalidRLP);
+                    }).toThrowError(InvalidRLPEncodingError);
                 });
             }
         );

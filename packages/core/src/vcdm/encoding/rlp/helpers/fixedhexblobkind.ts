@@ -1,4 +1,9 @@
-import { InvalidRLP } from '@vechain/sdk-errors';
+import { InvalidRLPEncodingError } from '../../../../errors';
+
+/**
+ * Full Qualified Path
+ */
+const FQP = 'vcdm.encoding.rlp.helpers.fixedHexBlobKind!';
 
 /**
  * Asserts that the data is a hex string of the correct length.
@@ -6,7 +11,7 @@ import { InvalidRLP } from '@vechain/sdk-errors';
  * @param data - The data to validate.
  * @param context - Descriptive context for error messages.
  * @param bytes - The expected number of bytes that the data can contain.
- * @throws {InvalidRLP}
+ * @throws {InvalidRLPEncodingError} - If the operation fails.
  */
 const assertFixedHexBlobKindData = (
     data: string,
@@ -14,8 +19,8 @@ const assertFixedHexBlobKindData = (
     bytes: number
 ): void => {
     if (data.length !== bytes * 2 + 2) {
-        throw new InvalidRLP(
-            'assertFixedHexBlobKindData()',
+        throw new InvalidRLPEncodingError(
+            `${FQP}assertFixedHexBlobKindData(data, context, bytes): void`,
             `Validation error: Hex string in ${context} must be exactly ${bytes} bytes in length.`,
             {
                 context,
@@ -34,7 +39,7 @@ const assertFixedHexBlobKindData = (
  * @param {Uint8Array} buffer The buffer to validate.
  * @param {string} context Descriptive context for error messages.
  * @param {number} bytes The expected number of bytes that the buffer can contain.
- * @throws {InvalidRLP}
+ * @throws {InvalidRLPEncodingError} - If the operation fails.
  */
 const assertFixedHexBlobKindBuffer = (
     buffer: Uint8Array,
@@ -42,8 +47,8 @@ const assertFixedHexBlobKindBuffer = (
     bytes: number
 ): void => {
     if (buffer.length !== bytes) {
-        throw new InvalidRLP(
-            'assertFixedHexBlobKindData()',
+        throw new InvalidRLPEncodingError(
+            `${FQP}assertFixedHexBlobKindBuffer(buffer, context, bytes): void`,
             `Validation error: Hex string in ${context} must be exactly ${bytes} bytes in length.`,
             {
                 context,
