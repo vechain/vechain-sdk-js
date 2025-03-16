@@ -1,5 +1,10 @@
 import { HexUInt } from './HexUInt';
-import { InvalidDataType } from '@vechain/sdk-errors';
+import { IllegalArgumentError } from '../errors';
+
+/**
+ * Full Qualified Path
+ */
+const FQP = 'packages/core/src/vcdm/Quantity.ts!';
 
 /**
  * Represents a hexadecimal numeric value compatible with the result of
@@ -38,11 +43,11 @@ class Quantity extends HexUInt {
                 cue === huint.digits.length ? '0' : huint.digits.slice(cue)
             );
         } catch (e) {
-            throw new InvalidDataType(
-                'Quantity.of',
+            throw new IllegalArgumentError(
+                `${FQP}Quantity.of(exp: bigint | number): Quantity`,
                 'not a Quantity expression',
                 { exp: `${exp}` }, // Needed to serialize bigint values.
-                e
+                e instanceof Error ? e : undefined
             );
         }
     }
