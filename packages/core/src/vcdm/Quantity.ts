@@ -29,7 +29,7 @@ class Quantity extends HexUInt {
      *
      * @returns {Quantity} - The new Quantity object.
      *
-     * @throws {InvalidDataType} - If the provided expression is not a positive integer value.
+     * @throws {IllegalArgumentError} - If the provided expression is not a positive integer value.
      */
     public static of(exp: bigint | number): Quantity {
         try {

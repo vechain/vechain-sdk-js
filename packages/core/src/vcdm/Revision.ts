@@ -1,7 +1,12 @@
-import { InvalidDataType } from '@vechain/sdk-errors';
 import { Hex } from './Hex';
 import { HexUInt } from './HexUInt';
 import { Txt } from './Txt';
+import { IllegalArgumentError } from '../errors';
+
+/**
+ * Full Qualified Path
+ */
+const FQP = 'packages/core/src/vcdm/Revision.ts!';
 
 /**
  * Represents a revision for a Thor transaction or block.
@@ -52,7 +57,7 @@ class Revision extends Txt {
      *
      * @returns {Revision} - The created Revision object.
      *
-     *  @throws {InvalidDataType} if the given value is not a valid revision: see {@link isValid}.
+     *  @throws {IllegalArgumentError} if the given value is not a valid revision: see {@link isValid}.
      *
      * @remarks The string representation of the revision is always expressed as a number in base 10.
      * @remarks The {@link Uint8Array} value is decoded as a string content: see {@link Txt.of}.
@@ -74,14 +79,22 @@ class Revision extends Txt {
             if (Revision.isValid(txt)) {
                 return new Revision(txt);
             }
-            throw new InvalidDataType('Revision.of', 'not a revision', {
-                value: `${value}`
-            });
+            throw new IllegalArgumentError(
+                `${FQP}Revision.of(value: bigint | number | string | Uint8Array | Hex): Revision`,
+                'not a revision',
+                {
+                    value: `${value}`
+                }
+            );
         } catch (e) {
-            throw new InvalidDataType('Revision.of', 'not a revision', {
-                value: `${value}`,
-                e
-            });
+            throw new IllegalArgumentError(
+                `${FQP}Revision.of(value: bigint | number | string | Uint8Array | Hex): Revision`,
+                'not a revision',
+                {
+                    value: `${value}`,
+                    e
+                }
+            );
         }
     }
 
