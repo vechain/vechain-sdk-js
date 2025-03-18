@@ -1,8 +1,4 @@
 import { beforeAll, describe, expect, test } from '@jest/globals';
-import {
-    InvalidAbiDataToEncodeOrDecode,
-    InvalidAbiItem
-} from '@vechain/sdk-errors';
 import { fail } from 'assert';
 import { expectType } from 'tsd';
 import { type AbiEvent, encodeFunctionResult } from 'viem';
@@ -10,9 +6,13 @@ import {
     ABIContract,
     ABIEvent,
     ABIItem,
+    AbiEventNotFoundError,
+    AbiFunctionNotFoundError,
     ERC721_ABI,
     Hex,
-    IllegalArgumentError
+    IllegalArgumentError,
+    InvalidAbiDecodingTypeError,
+    InvalidAbiEncodingTypeError
 } from '../../../src';
 import {
     contractABI,
@@ -74,7 +74,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
     test('get a function ABI and throw an error', () => {
         expect(() =>
             contractAbi.getFunction('undefined' as unknown as 'setValue')
-        ).toThrowError(InvalidAbiItem);
+        ).toThrowError(AbiFunctionNotFoundError);
     });
 
     /**
@@ -86,7 +86,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
                 'undefined' as unknown as 'setValue',
                 [123]
             )
-        ).toThrowError(InvalidAbiDataToEncodeOrDecode);
+        ).toThrowError(InvalidAbiEncodingTypeError);
     });
 
     /**
@@ -119,7 +119,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
     test('Fail to decode a contract function input', () => {
         expect(() =>
             contractAbi.decodeFunctionInput('setValue', Hex.of('0x123'))
-        ).toThrowError(InvalidAbiDataToEncodeOrDecode);
+        ).toThrowError(InvalidAbiDecodingTypeError);
     });
 
     /**
@@ -146,7 +146,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
      */
     test('get an event ABI and throw an error', () => {
         expect(() => contractAbi.getEvent('undefined')).toThrowError(
-            InvalidAbiItem
+            AbiEventNotFoundError
         );
     });
 
@@ -155,7 +155,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
      */
     test('Fail to encode a contract event log', () => {
         expect(() => contractAbi.encodeEventLog('undefined', [])).toThrowError(
-            InvalidAbiDataToEncodeOrDecode
+            InvalidAbiEncodingTypeError
         );
     });
 
@@ -268,7 +268,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
                     )
                 ]
             });
-        }).toThrowError(InvalidAbiDataToEncodeOrDecode);
+        }).toThrowError(InvalidAbiDecodingTypeError);
     });
 
     /**
@@ -284,7 +284,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
                 Hex.of('0x000000000000000000000000f02f557c753edf5fcdcbfe4c'),
                 Hex.of('0x00000000000000000000000000000000000000000001')
             ]);
-        }).toThrowError(InvalidAbiDataToEncodeOrDecode);
+        }).toThrowError(InvalidAbiDecodingTypeError);
     });
 
     /**
@@ -296,7 +296,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
                 data: Hex.of('0x123'),
                 topics: []
             })
-        ).toThrowError(InvalidAbiDataToEncodeOrDecode);
+        ).toThrowError(InvalidAbiDecodingTypeError);
     });
 
     /**
@@ -346,7 +346,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
                 'invalidFunctionName' as unknown as 'getValue',
                 Hex.of(encodedFunctionOutput)
             )
-        ).toThrowError(InvalidAbiDataToEncodeOrDecode);
+        ).toThrowError(InvalidAbiDecodingTypeError);
     });
 
     /**

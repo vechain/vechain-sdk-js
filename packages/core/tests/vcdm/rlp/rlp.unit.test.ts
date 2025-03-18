@@ -3,7 +3,7 @@ import { Hex } from '../../../src/vcdm/Hex';
 import {
     HexUInt,
     IllegalArgumentError,
-    InvalidRLPEncodingError
+    InvalidEncodingError
 } from '../../../src';
 import { RLP } from '../../../src/vcdm/encoding/rlp/RLP';
 import { RLPProfiler } from '../../../src/vcdm/encoding/rlp/RLPProfiler';
@@ -78,7 +78,7 @@ describe('RLP', () => {
             const number1 = Number.MIN_SAFE_INTEGER;
             expect(() => {
                 return RLP.of(number1).n;
-            }).toThrowError(InvalidRLPEncodingError);
+            }).toThrowError(InvalidEncodingError);
 
             const number2 = BigInt(Number.MAX_SAFE_INTEGER);
             expect(() => {
@@ -121,7 +121,7 @@ describe('RLP', () => {
                         expect(() => {
                             // @ts-expect-error - invalid input
                             kind.data(data, '').encode();
-                        }).toThrowError(InvalidRLPEncodingError);
+                        }).toThrowError(InvalidEncodingError);
                     });
                 }
             );
@@ -143,7 +143,7 @@ describe('RLP', () => {
                     test(description, () => {
                         expect(() => {
                             kind.buffer(data, '').decode();
-                        }).toThrowError(InvalidRLPEncodingError);
+                        }).toThrowError(InvalidEncodingError);
                     });
                 }
             );
@@ -172,7 +172,7 @@ describe('RLP', () => {
                         expect(() => {
                             // @ts-expect-error - invalid input
                             kind.data(data, '').encode();
-                        }).toThrowError(InvalidRLPEncodingError);
+                        }).toThrowError(InvalidEncodingError);
                     });
                 }
             );
@@ -213,7 +213,7 @@ describe('RLP', () => {
                         expect(() => {
                             // @ts-expect-error - invalid input
                             kind.data(data, '').encode();
-                        }).toThrowError(InvalidRLPEncodingError);
+                        }).toThrowError(InvalidEncodingError);
                     });
                 }
             );
@@ -237,7 +237,7 @@ describe('RLP', () => {
                         expect(() => {
                             // @ts-expect-error - invalid input
                             kind.buffer(data, '').decode();
-                        }).toThrowError(InvalidRLPEncodingError);
+                        }).toThrowError(InvalidEncodingError);
                     });
                 }
             );
@@ -397,7 +397,7 @@ describe('RLP', () => {
                     test(description, () => {
                         expect(() => {
                             RLPProfiler.ofObject(data, profile);
-                        }).toThrowError(InvalidRLPEncodingError);
+                        }).toThrowError(InvalidEncodingError);
                     });
                 }
             );
@@ -496,7 +496,7 @@ describe('RLP', () => {
                         expect(() => {
                             return RLPProfiler.ofObjectEncoded(data, profile)
                                 .object;
-                        }).toThrowError(InvalidRLPEncodingError);
+                        }).toThrowError(InvalidEncodingError);
                     });
                 }
             );

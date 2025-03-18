@@ -2,7 +2,7 @@ import { FixedPointNumber } from '../../../FixedPointNumber';
 import { Hex } from '../../../Hex';
 import { HexUInt } from '../../../HexUInt';
 import { type RLPInput } from '../types';
-import { InvalidRLPEncodingError } from '../../../../errors';
+import { InvalidEncodingError } from '../../../../errors';
 
 /**
  * Full Qualified Path
@@ -16,12 +16,12 @@ const FQP = 'vcdm.encoding.rlp.helpers.numericKind!';
  * @param context - A string representing the context in which this function is used,
  *                 to create meaningful error messages.
  * @returns The input data converted to a BigInt.
- * @throws {InvalidRLPEncodingError} - If the operation fails.
+ * @throws {InvalidEncodingError} - If the operation fails.
  */
 const validateNumericKindData = (data: RLPInput, context: string): bigint => {
     // Input data must be either a number or a string.
     if (typeof data !== 'number' && typeof data !== 'string') {
-        throw new InvalidRLPEncodingError(
+        throw new InvalidEncodingError(
             `${FQP}validateNumericKindData(data, context): bigint`,
             `Validation error: Input in ${context} must be a string or number.`,
             {
@@ -52,11 +52,11 @@ const validateNumericKindData = (data: RLPInput, context: string): bigint => {
  *
  * @param num - The number to be validated.
  * @param context - A string indicating the context, used for error messaging.
- * @throws {InvalidRLPEncodingError} - If the operation fails.
+ * @throws {InvalidEncodingError} - If the operation fails.
  */
 const _validateNumericKindNumber = (num: number, context: string): void => {
     if (!Number.isSafeInteger(num) || num < 0) {
-        throw new InvalidRLPEncodingError(
+        throw new InvalidEncodingError(
             '$(FQP)_validateNumericKindNumber(num, context): void',
             `Validation error: Number in ${context} must be a safe and non-negative integer.`,
             {
@@ -77,7 +77,7 @@ const _validateNumericKindNumber = (num: number, context: string): void => {
  *
  * @param str - A string expected to represent a non-negative integer.
  * @param context - A string indicating the context, for creating meaningful error messages.
- * @throws {InvalidRLPEncodingError} - If the operation fails.
+ * @throws {InvalidEncodingError} - If the operation fails.
  *
  * @private
  */
@@ -86,7 +86,7 @@ const _validateNumericKindString = (str: string, context: string): void => {
     const isDecimal = FixedPointNumber.isNaturalExpression(str);
     // Ensure the string is either a hex or decimal number.
     if (!isHexUInt && !isDecimal) {
-        throw new InvalidRLPEncodingError(
+        throw new InvalidEncodingError(
             `${FQP}validateNumericKindString(str, context): void`,
             `Validation error: String in ${context} must represent a non-negative integer in hex or decimal format.`,
             {
@@ -100,7 +100,7 @@ const _validateNumericKindString = (str: string, context: string): void => {
 
     // Ensure hex numbers are of a valid length.
     if (isHexUInt && str.length <= 2) {
-        throw new InvalidRLPEncodingError(
+        throw new InvalidEncodingError(
             `${FQP}validateNumericKindString(str, context): void`,
             `Validation error: Hex string number in ${context} must be of valid length.`,
             {
@@ -121,7 +121,7 @@ const _validateNumericKindString = (str: string, context: string): void => {
  * @param {string} context - A string providing context for error messages.
  * @param {number} maxBytes - [Optional] An integer representing the maximum allowed length
  *                   of the buffer. If provided, an error will be thrown if buf is longer.
- * @throws {InvalidRLPEncodingError} - If the operation fails.
+ * @throws {InvalidEncodingError} - If the operation fails.
  *
  * @private
  */
@@ -132,7 +132,7 @@ const assertValidNumericKindBuffer = (
 ): void => {
     // If maxBytes is defined, ensure buffer length is within bounds.
     if (maxBytes !== undefined && buf.length > maxBytes) {
-        throw new InvalidRLPEncodingError(
+        throw new InvalidEncodingError(
             `${FQP}assertValidNumericKindBuffer(buf, context, maxBytes): void`,
             `Validation error: Buffer in ${context} must be less than ${maxBytes} bytes.`,
             {
@@ -147,7 +147,7 @@ const assertValidNumericKindBuffer = (
 
     // Ensure the buffer does not have leading zeros, as it's not canonical in integer representation.
     if (buf[0] === 0) {
-        throw new InvalidRLPEncodingError(
+        throw new InvalidEncodingError(
             `${FQP}assertValidNumericKindBuffer(buf, context, maxBytes): void`,
             `Validation error: Buffer in ${context} must represent a canonical integer (no leading zeros).`,
             {
@@ -168,7 +168,7 @@ const assertValidNumericKindBuffer = (
  * @param {number | undefined} maxBytes - Maximum byte length allowed for the encoding. If undefined, no byte size limit is imposed.
  * @param {string} context - Contextual information for error messages.
  * @returns {Uint8Array} Encoded data.
- * @throws {InvalidRLPEncodingError} - If the operation fails.
+ * @throws {InvalidEncodingError} - If the operation fails.
  */
 const encodeBigIntToBuffer = (
     bi: bigint,
@@ -179,7 +179,7 @@ const encodeBigIntToBuffer = (
     const hex = Hex.of(bi).digits;
 
     if (maxBytes !== undefined && hex.length > maxBytes * 2) {
-        throw new InvalidRLPEncodingError(
+        throw new InvalidEncodingError(
             `${FQP}encodeBigIntToBuffer(bi, maxBytes, context): Uint8Array`,
             `Validation error: Encoded number in ${context} must fit within ${maxBytes} bytes.`,
             {

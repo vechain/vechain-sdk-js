@@ -1,7 +1,6 @@
 import { type Address } from '../Address';
 import { type Currency } from '../currency/Currency';
 import { type VeChainDataModel } from '../VeChainDataModel';
-import { UnsupportedOperation } from '@vechain/sdk-errors';
 import { UnsupportedOperationError } from '../../errors';
 
 /**

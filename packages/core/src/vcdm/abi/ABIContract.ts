@@ -1,8 +1,4 @@
 import {
-    InvalidAbiDataToEncodeOrDecode,
-    InvalidAbiItem
-} from '@vechain/sdk-errors';
-import {
     getAbiItem,
     type AbiEvent,
     type AbiFunction,
@@ -17,6 +13,17 @@ import { type Hex } from '../Hex';
 import { ABI } from './ABI';
 import { ABIEvent, type ABIEventData } from './ABIEvent';
 import { ABIFunction } from './ABIFunction';
+import {
+    AbiEventNotFoundError,
+    AbiFunctionNotFoundError,
+    InvalidAbiDecodingTypeError,
+    InvalidAbiEncodingTypeError
+} from '../../errors';
+
+/**
+ * Full Qualified Path
+ */
+const FQP = 'packages/core/src/vcdm/abi/ABIContract.ts!';
 
 class ABIContract<TAbi extends ViemABI> extends ABI {
     private readonly viemABI: ViemABI;
@@ -39,7 +46,7 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
      * Returns the function with the given name.
      * @param {string} name The function's name.
      * @returns {ABIFunction} The function with the given name.
-     * @throws {InvalidAbiItem}
+     * @throws {AbiFunctionNotFoundError} If the function is not found in this contract.
      */
     public getFunction<TFunctionName extends ContractFunctionName<TAbi>>(
         name: TFunctionName | string
@@ -49,8 +56,8 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
             name: name as string
         });
         if (functionAbiItem === null || functionAbiItem === undefined) {
-            throw new InvalidAbiItem(
-                'ABIContract.getFunction()',
+            throw new AbiFunctionNotFoundError(
+                `${FQP}<ABIContract>.getFunction(name: string): ABIFunction<TAbi, TFunctionName>`,
                 `Function '${name}' not found in contract ABI.`,
                 {
                     type: 'function',
@@ -67,7 +74,7 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
      * Returns the event with the given name.
      * @param {string} name The event's name.
      * @returns {ABIEvent} The event with the given name.
-     * @throws {InvalidAbiItem}
+     * @throws {AbiEventNotFoundError} If the event is not found in this contract.
      */
     public getEvent<TEventName extends ContractEventName<TAbi>>(
         name: TEventName | string
@@ -77,8 +84,8 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
             name: name as string
         });
         if (eventAbiItem === null || eventAbiItem === undefined) {
-            throw new InvalidAbiItem(
-                'ABIContract.getEvent()',
+            throw new AbiEventNotFoundError(
+                `${FQP}<ABIContract>.getEvent(name: string): ABIEvent<TAbi, TEventName>`,
                 `Function '${name}' not found in contract ABI.`,
                 {
                     type: 'event',
@@ -94,7 +101,7 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
      * @param {string} functionName The name of the function defined in the ABI.
      * @param {unknown[]} functionData The data to pass to the function.
      * @returns {Hex} The encoded data in hexadecimal that can be used to send a transaction.
-     * @throws {InvalidAbiDataToEncodeOrDecode}
+     * @throws {InvalidAbiEncodingTypeError} If encoding fails.
      */
     public encodeFunctionInput<
         TFunctionName extends ContractFunctionName<TAbi>
@@ -110,11 +117,11 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
 
             return functionAbi.encodeData(functionData);
         } catch (error) {
-            throw new InvalidAbiDataToEncodeOrDecode(
-                'ABIContract.encodeFunctionInput()',
+            throw new InvalidAbiEncodingTypeError(
+                `${FQP}<ABIContract>.encodeFunctionInput(functionName: string, functionData?: unknown[]): Hex`,
                 `Encoding failed: Data format is invalid. Function data does not match the expected format for ABI type encoding.`,
                 { functionName, functionData },
-                error
+                error instanceof Error ? error : undefined
             );
         }
     }
@@ -124,7 +131,7 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
      * @param {string} functionName The name of the function defined in the ABI.
      * @param {Hex} encodedFunctionInput The encoded function data.
      * @returns {DecodeFunctionDataReturnType} an array of the decoded function data
-     * @throws {InvalidAbiDataToEncodeOrDecode}
+     * @throws {InvalidAbiDecodingTypeError} If decoding fails.
      */
     public decodeFunctionInput<
         TFunctionName extends ContractFunctionName<TAbi>
@@ -143,11 +150,11 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
 
             return functionAbi.decodeData(encodedFunctionInput);
         } catch (error) {
-            throw new InvalidAbiDataToEncodeOrDecode(
-                'ABIContract.decodeFunctionInput()',
+            throw new InvalidAbiDecodingTypeError(
+                `${FQP}<ABIContract>.decodeFunctionInput(functionName: string, encodedFunctionInput: Hex): DecodeFunctionDataReturnType<TAbi, TFunctionName>`,
                 'Decoding failed: Data must be a valid hex string encoding a compliant ABI type.',
                 { functionName, encodedFunctionInput },
-                error
+                error instanceof Error ? error : undefined
             );
         }
     }
@@ -160,7 +167,7 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
      * @param {Hex} encodedFunctionOutput - The encoded output data from the contract function.
      * @returns {DecodeFunctionResultReturnType} - The decoded output, which provides a user-friendly way
      * to interact with the decoded data.
-     * @throws {InvalidAbiDataToEncodeOrDecode}
+     * @throws {InvalidAbiDecodingTypeError} - If decoding fails.
      *
      * @example
      * // Example of decoding output for a function called "getValue":
@@ -184,11 +191,11 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
 
             return functionAbi.decodeResult(encodedFunctionOutput);
         } catch (error) {
-            throw new InvalidAbiDataToEncodeOrDecode(
-                'ABIContract.decodeFunctionOutput()',
+            throw new InvalidAbiDecodingTypeError(
+                `${FQP}<ABIContract>.decodeFunctionOutput(functionName: string, encodedFunctionOutput: Hex): DecodeFunctionResultReturnType<TAbi, TFunctionName>`,
                 'Decoding failed: Data must be a valid hex string encoding a compliant ABI type.',
                 { functionName, encodedFunctionOutput },
-                error
+                error instanceof Error ? error : undefined
             );
         }
     }
@@ -198,7 +205,7 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
      * @param {string} eventName - The name of the event to be encoded.
      * @param {unknown[]} eventArgs - An array of data to be encoded in the event log.
      * @returns {ABIEventData} An object containing the encoded data and topics.
-     * @throws {InvalidAbiDataToEncodeOrDecode}
+     * @throws {InvalidAbiEncodingTypeError} If encoding fails.
      */
     public encodeEventLog<TEventName extends ContractEventName<TAbi>>(
         eventName: TEventName | string,
@@ -214,11 +221,11 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
             );
             return eventAbi.encodeEventLog(eventArgs);
         } catch (error) {
-            throw new InvalidAbiDataToEncodeOrDecode(
-                'ABIContract.encodeEventLog()',
+            throw new InvalidAbiEncodingTypeError(
+                '$(FQP)ABIContract.encodeEventLog(eventName: string, eventArgs: unknown[]): ABIEventData',
                 `Encoding failed: Data format is invalid. Event data does not match the expected format for ABI type encoding.`,
                 { eventName, dataToEncode: eventArgs },
-                error
+                error instanceof Error ? error : undefined
             );
         }
     }
@@ -228,7 +235,7 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
      * @param {string} eventName - The name of the event to be decoded.
      * @param {ABIEventData} eventToDecode - An object containing the data and topics to be decoded.
      * @returns {DecodeEventLogReturnType} The decoded data of the event log.
-     * @throws {InvalidAbiDataToEncodeOrDecode}
+     * @throws {InvalidAbiDecodingTypeError} - If decoding fails.
      */
     public decodeEventLog<TEventName extends ContractEventName<TAbi>>(
         eventName: TEventName | string,
@@ -244,11 +251,11 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
             );
             return eventAbi.decodeEventLog(eventToDecode);
         } catch (error) {
-            throw new InvalidAbiDataToEncodeOrDecode(
-                'ABIContract.encodeEventLog()',
+            throw new InvalidAbiDecodingTypeError(
+                `${FQP}<ABIContract>.decodeEventLog(eventName: string, eventToDecode: ABIEventData): DecodeEventLogReturnType<TAbi, TEventName>`,
                 `Encoding failed: Data format is invalid. Event data does not match the expected format for ABI type encoding.`,
                 { eventName, dataToDecode: eventToDecode },
-                error
+                error instanceof Error ? error : undefined
             );
         }
     }
@@ -264,7 +271,7 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
      * @param {Hex} data - The hexadecimal string of the data field in the log.
      * @param {Hex[]} topics - An array of hexadecimal strings representing the topics of the log.
      * @returns {DecodeEventLogReturnType} - A log object representing the decoded log or null if decoding fails.
-     * @throws {InvalidAbiDataToEncodeOrDecode}
+     * @throws {InvalidAbiDecodingTypeError} - If parsing fails decoding the log.
      */
     public parseLog<TEventName extends ContractEventName<TAbi>>(
         data: Hex,
@@ -276,11 +283,11 @@ class ABIContract<TAbi extends ViemABI> extends ABI {
                 topics
             });
         } catch (e) {
-            throw new InvalidAbiDataToEncodeOrDecode(
-                'ABIContract.parseLog()',
+            throw new InvalidAbiDecodingTypeError(
+                `${FQP}<ABIContract>.parseLog(data: Hex, topics: Hex[]): DecodeEventLogReturnType<TAbi, TEventName>`,
                 `Decoding failed: Data must be a valid hex string encoding a compliant ABI type.`,
                 { data, topics },
-                e
+                e instanceof Error ? e : undefined
             );
         }
     }

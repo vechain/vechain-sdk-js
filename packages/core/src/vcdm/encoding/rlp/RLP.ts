@@ -1,5 +1,5 @@
 import { Hex } from '../../Hex';
-import { IllegalArgumentError, InvalidRLPEncodingError } from '../../../errors';
+import { IllegalArgumentError, InvalidEncodingError } from '../../../errors';
 import { RLP as EthereumjsRLP } from '@ethereumjs/rlp';
 import { ScalarKind, type RLPProfile } from './kind/ScalarKind';
 import { bytesToNumberBE } from '@noble/ciphers/utils';
@@ -106,7 +106,7 @@ class RLP implements VeChainDataModel<RLP> {
         try {
             return new RLP(data);
         } catch (error) {
-            throw new InvalidRLPEncodingError(
+            throw new InvalidEncodingError(
                 `${FQP}RLP.of(data: RLPInput): RLP`,
                 `Error when creating an RLP instance for data ${
                     typeof data === 'object'
@@ -134,7 +134,7 @@ class RLP implements VeChainDataModel<RLP> {
         try {
             return new RLP(encodedData);
         } catch (error) {
-            throw new InvalidRLPEncodingError(
+            throw new InvalidEncodingError(
                 `${FQP}RLP.ofEncoded(encodedData: Uint8Array): RLP`,
                 `Error when creating an RLP instance for encoded data.`,
                 {
@@ -182,7 +182,7 @@ class RLP implements VeChainDataModel<RLP> {
 
         // Valid RLP array
         if (!Array.isArray(obj)) {
-            throw new InvalidRLPEncodingError(
+            throw new InvalidEncodingError(
                 `${FQP}RLP.packData(obj: RLPValidObject, profile: RLPProfile, context: string): RLPInput`,
                 `Validation error: Expected an array in ${context}.`,
                 {
@@ -232,7 +232,7 @@ class RLP implements VeChainDataModel<RLP> {
         if (kind instanceof ScalarKind) {
             // ArrayBuffer.isView so we support https://github.com/vitest-dev/vitest/issues/5183
             if (!ArrayBuffer.isView(packed)) {
-                throw new InvalidRLPEncodingError(
+                throw new InvalidEncodingError(
                     `${FQP}RLP.unpackData(packed: RLPInput, profile: RLPProfile, context: string): RLPValueType`,
                     `Unpacking error: Expected data type is Uint8Array.`,
                     {
@@ -253,7 +253,7 @@ class RLP implements VeChainDataModel<RLP> {
             const parts = packed;
 
             if (kind.length !== parts.length) {
-                throw new InvalidRLPEncodingError(
+                throw new InvalidEncodingError(
                     `${FQP}RLP.unpackData(packed: RLPInput, profile: RLPProfile, context: string): RLPValueType`,
                     `Unpacking error: Expected ${kind.length} items, but got ${parts.length}.`,
                     {
@@ -282,7 +282,7 @@ class RLP implements VeChainDataModel<RLP> {
 
         // Valid RLP array
         if (!Array.isArray(packed)) {
-            throw new InvalidRLPEncodingError(
+            throw new InvalidEncodingError(
                 `${FQP}RLP.unpackData(packed: RLPInput, profile: RLPProfile, context: string): RLPValueType`,
                 `Validation error: Expected an array in ${context}.`,
                 {

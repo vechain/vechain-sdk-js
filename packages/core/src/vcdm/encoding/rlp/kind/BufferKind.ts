@@ -1,6 +1,6 @@
 import { ScalarKind } from './ScalarKind';
 import { type BufferOutput, type DataOutput, type RLPInput } from '../types';
-import { InvalidRLPEncodingError } from '../../../../errors';
+import { InvalidEncodingError } from '../../../../errors';
 
 /**
  * Full Qualified Path
@@ -24,7 +24,7 @@ class BufferKind extends ScalarKind {
         // Ensure that the data is indeed a Buffer before encoding.
         // ArrayBuffer.isView so we support https://github.com/vitest-dev/vitest/issues/5183
         if (!ArrayBuffer.isView(data)) {
-            throw new InvalidRLPEncodingError(
+            throw new InvalidEncodingError(
                 `${FQP}<BufferKind>.data(data, context): DataOutput`,
                 `Validation error: Expected a Uint8Array type in ${context}.`,
                 {
