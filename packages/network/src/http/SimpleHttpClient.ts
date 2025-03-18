@@ -62,6 +62,21 @@ class SimpleHttpClient implements HttpClient {
     }
 
     /**
+     * Determines if specified url is valid
+     * @param {string} url Url to check
+     * @returns {boolean} if value
+     */
+    private isValidUrl(url: string): boolean {
+        try {
+            // eslint-disable-next-line no-new
+            new URL(url);
+            return true;
+        } catch {
+            return false;
+        }
+    }
+
+    /**
      * Executes an HTTP request with the specified method, path, and optional parameters.
      *
      * @param {HttpMethod} method - The HTTP method to use for the request (e.g., GET, POST).
@@ -134,11 +149,11 @@ class SimpleHttpClient implements HttpClient {
                 (error as Error).message,
                 {
                     method,
-                    url:
-                        this.baseURL === undefined ||
-                        this.baseURL.trim().length === 0
-                            ? path
-                            : new URL(path, this.baseURL).toString()
+                    url: !this.isValidUrl(this.baseURL)
+                        ? path
+                        : !this.isValidUrl(path)
+                          ? this.baseURL
+                          : new URL(path, this.baseURL).toString()
                 },
                 error
             );
