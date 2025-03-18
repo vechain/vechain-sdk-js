@@ -1,17 +1,13 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
-    InvalidKeystore,
-    InvalidKeystoreParams,
-    InvalidSecp256k1PrivateKey,
-    stringifyData
-} from '@vechain/sdk-errors';
-import {
     Address,
     HexUInt,
     keystore,
     Secp256k1,
     type Keystore,
-    IllegalArgumentError
+    IllegalArgumentError,
+    InvalidPrivateKeyError,
+    InvalidKeystoreError, InvalidPasswordError
 } from '../../src';
 import { encryptionPassword } from './fixture';
 
@@ -64,7 +60,7 @@ import { encryptionPassword } from './fixture';
             ).rejects.toThrowError(
                 experimentalCryptography
                     ? IllegalArgumentError
-                    : InvalidSecp256k1PrivateKey
+                    : InvalidPrivateKeyError
             );
         });
 
@@ -113,7 +109,7 @@ import { encryptionPassword } from './fixture';
                         myKeystore,
                         `WRONG_${encryptionPassword}`
                     )
-            ).rejects.toThrowError(InvalidKeystoreParams);
+            ).rejects.toThrowError(InvalidPasswordError);
         });
 
         /**
@@ -130,7 +126,7 @@ import { encryptionPassword } from './fixture';
             );
 
             // Verify keystore -> False
-            const invalidKeystore: string = stringifyData({
+            const invalidKeystore: string = JSON.stringify({
                 ...myKeystore,
                 version: 4
             });
@@ -142,11 +138,7 @@ import { encryptionPassword } from './fixture';
                         JSON.parse(invalidKeystore) as Keystore,
                         encryptionPassword
                     )
-            ).rejects.toThrowError(
-                experimentalCryptography
-                    ? InvalidKeystoreParams
-                    : InvalidKeystore
-            );
+            ).rejects.toThrowError(InvalidKeystoreError);
         });
 
         /**
@@ -166,7 +158,7 @@ import { encryptionPassword } from './fixture';
             expect(keystore.isValid(myKeystore)).toBe(true);
 
             // Verify keystore -> False
-            const invalidKeystore: string = stringifyData({
+            const invalidKeystore: string = JSON.stringify({
                 ...myKeystore,
                 version: 4
             });

@@ -28,7 +28,12 @@ class VeChainSDKError extends Error {
      * For error generated in a method of a class, the format is
      *
      * <pre>
-     * <file>!<class>.<method>
+     * <FQN> ::= <FQP>"!"[<object>"."]<function>
+     * <FQP> ::= Full Qualified Path of the file having the code described in the error
+     * <object> ::= <class>|"<"<instance>">"
+     * <Class> ::= Class definition for static functions.
+     * <instance> ::= Class instance for instance's functions.
+     * <method> :== Called function signature.
      * </pre>
      *
      * This variable is used to store the full name of a resource,
