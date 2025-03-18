@@ -1,3 +1,8 @@
+/**
+ * Class representing errors specific to the VeChain SDK.
+ * This class extends the native JavaScript `Error` object, providing additional
+ * context and utility functions for debugging and error handling within the SDK.
+ */
 class VeChainSDKError extends Error {
     /**
      * Represents the software tag identifier expressing the **artifact and version coordinates**
