@@ -135,7 +135,8 @@ class SimpleHttpClient implements HttpClient {
                 {
                     method,
                     url:
-                        this.baseURL === undefined
+                        this.baseURL === undefined ||
+                        this.baseURL.trim().length === 0
                             ? path
                             : new URL(path, this.baseURL).toString()
                 },
