@@ -151,9 +151,7 @@ class SimpleHttpClient implements HttpClient {
                     method,
                     url: !this.isValidUrl(this.baseURL)
                         ? path
-                        : !this.isValidUrl(path)
-                          ? this.baseURL
-                          : new URL(path, this.baseURL).toString()
+                        : new URL(path, this.baseURL).toString()
                 },
                 error
             );
