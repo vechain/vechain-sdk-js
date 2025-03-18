@@ -42,7 +42,8 @@ const _getDelegationSignature = async (
             HttpMethod.POST,
             gasPayerServiceUrl,
             {
-                body: sponsorRequestBody
+                body: sponsorRequestBody,
+                headers: { 'Content-Type': 'application/json' }
             }
         )) as GetDelegationSignatureResult;
 

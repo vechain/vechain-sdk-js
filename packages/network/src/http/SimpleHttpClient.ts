@@ -134,7 +134,7 @@ class SimpleHttpClient implements HttpClient {
                 (error as Error).message,
                 {
                     method,
-                    url: `${this.baseURL}${path}`
+                    url: new URL(path, this.baseURL).toString()
                 },
                 error
             );
