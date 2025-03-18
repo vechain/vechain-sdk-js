@@ -1,5 +1,8 @@
 import { HexInt } from '@vechain/sdk-core';
-import { JSONRPCMethodNotFound } from '@vechain/sdk-errors';
+import {
+    JSONRPCMethodNotFound,
+    JSONRPCMethodNotImplemented
+} from '@vechain/sdk-errors';
 import { EventEmitter } from 'events';
 import { type VeChainSigner } from '../../../signer';
 import {
@@ -84,17 +87,32 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
                 .map((key) => key.toString())
                 .includes(args.method)
         ) {
-            throw new JSONRPCMethodNotFound(
+            const error = new JSONRPCMethodNotFound(
                 'VeChainProvider.request()',
-                'Method not found. Invalid RPC method given as input.',
-                { method: args.method }
+                'Method not found',
+                { code: -32601, message: 'Method not found' }
+            );
+
+            // Override the error message with our custom formatted message
+            throw error;
+        }
+
+        const methodsMap = RPCMethodsMap(this.thorClient, this);
+
+        // If method is in enum but not in map, throw "not implemented"
+        if (!(args.method in methodsMap)) {
+            throw new JSONRPCMethodNotImplemented(
+                args.method,
+                'Method not implemented',
+                {
+                    code: -32004,
+                    message: 'Method not supported'
+                }
             );
         }
 
         // Get the method from the RPCMethodsMap and call it
-        return await RPCMethodsMap(this.thorClient, this)[args.method](
-            args.params as unknown[]
-        );
+        return await methodsMap[args.method](args.params as unknown[]);
     }
 
     /**

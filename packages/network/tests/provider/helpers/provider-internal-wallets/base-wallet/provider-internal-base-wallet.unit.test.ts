@@ -183,7 +183,7 @@ describe('Base wallet tests', () => {
                 const baseWalletWithGasPayer = new ProviderInternalBaseWallet(
                     accountsFixture,
                     {
-                        gasPayer: gasPayer
+                        gasPayer
                     }
                 );
 
