@@ -39,7 +39,6 @@
   },
   "dependencies": {
     "@vechain/sdk-core": "2.0.0-beta.1",
-    "@vechain/sdk-errors": "2.0.0-beta.1",
     "ws": "^8.18.0"
   },
   "devDependencies": {
