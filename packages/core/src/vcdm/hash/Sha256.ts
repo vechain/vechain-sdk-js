@@ -1,8 +1,7 @@
 import * as nh_sha256 from '@noble/hashes/sha256';
-import { InvalidOperation } from '@vechain/sdk-errors';
 import { Hex } from '../Hex';
 import { HexUInt } from '../HexUInt';
-import { IllegalArgumentError, UnsupportedOperationError } from '../../errors';
+import { IllegalArgumentError } from '../../errors';
 
 /**
  * Full Qualified Path

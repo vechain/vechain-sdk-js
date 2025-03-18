@@ -5,5 +5,6 @@ export * from './InvalidPasswordError';
 export * from './InvalidPrivateKeyError';
 export * from './InvalidRLPEncodingError';
 export * from './InvalidSignatureError';
+export * from './NoSuchElementError';
 export * from './UnsupportedOperationError';
 export * from './VeChainSDKError';
