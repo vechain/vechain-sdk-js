@@ -7,7 +7,8 @@ import {
     type Keystore,
     IllegalArgumentError,
     InvalidPrivateKeyError,
-    InvalidKeystoreError, InvalidPasswordError
+    InvalidKeystoreError,
+    InvalidPasswordError
 } from '../../src';
 import { encryptionPassword } from './fixture';
 

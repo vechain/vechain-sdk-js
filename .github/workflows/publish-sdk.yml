@@ -34,14 +34,6 @@ jobs:
               id: stop-solo
               run: yarn stop-thor-solo
 
-            - name: Publish errors
-              run: |
-                  cd packages/errors
-                  yarn version --no-git-tag-version --new-version ${{ github.ref_name }}
-                  yarn publish
-              env:
-                  NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
             - name: Publish core
               run: |
                   cd packages/core

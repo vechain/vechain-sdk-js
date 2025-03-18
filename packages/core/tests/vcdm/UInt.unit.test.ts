@@ -1,6 +1,10 @@
 import { describe, expect, test } from '@jest/globals';
 import { IllegalArgumentError, UInt } from '../../src';
 
+/**
+ * Test UInt class.
+ * @group unit/vcdm
+ */
 describe('UInt class', () => {
     describe('UInt.of', () => {
         test('should create an instance of UInt for a valid non-negative integer', () => {

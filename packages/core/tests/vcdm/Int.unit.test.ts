@@ -1,6 +1,10 @@
 import { describe, expect, test } from '@jest/globals';
 import { Int, IllegalArgumentError } from '../../src';
 
+/**
+ * Test Int class.
+ * @group unit/vcdm
+ */
 describe('Int', () => {
     describe('of', () => {
         test('should create an Int instance for a valid integer', () => {

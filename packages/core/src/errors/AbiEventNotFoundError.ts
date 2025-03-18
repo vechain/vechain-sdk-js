@@ -1,4 +1,4 @@
-import { VeChainSDKError} from './VeChainSDKError';
+import { VeChainSDKError } from './VeChainSDKError';
 
 class AbiEventNotFoundError extends VeChainSDKError {}
 
