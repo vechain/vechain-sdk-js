@@ -5,7 +5,6 @@ import { IllegalArgumentError } from '../errors';
 import { Keccak256 } from './hash';
 import { Secp256k1 } from '../secp256k1';
 import { Txt } from './Txt';
-import { InvalidHDKey } from '@vechain/sdk-errors'; // remove later
 
 /**
  * Full Qualified Path.
@@ -162,7 +161,7 @@ class Address extends HexUInt {
      * @param {string[]} mnemonic - Mnemonic used to generate the HD node.
      * @param {string} [path='m/0'] - The derivation path from the current node.
      * @return {Address} - The derived address.
-     * @throws {InvalidHDKey}
+     * @throws {IllegalArgumentError} - If the `path` is invalid.
      *
      * @remarks Security audit function
      * - {@link Address.ofPublicKey}
@@ -180,11 +179,11 @@ class Address extends HexUInt {
                 root.derive(path).publicKey as Uint8Array
             );
         } catch (error) {
-            throw new InvalidHDKey(
-                'mnemonic.deriveAddress()',
+            throw new IllegalArgumentError(
+                `${FQP}Address.ofMnemonic(mnemonic: string[], path: string): Address`,
                 'Invalid derivation path given as input.',
                 { derivationPath: path },
-                error
+                error instanceof Error ? error : undefined
             );
         }
     }
