@@ -134,7 +134,10 @@ class SimpleHttpClient implements HttpClient {
                 (error as Error).message,
                 {
                     method,
-                    url: new URL(path, this.baseURL).toString()
+                    url:
+                        this.baseURL === undefined
+                            ? path
+                            : new URL(path, this.baseURL).toString()
                 },
                 error
             );
