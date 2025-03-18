@@ -6,7 +6,10 @@ import {
     JSONRPCMethodNotFound,
     JSONRPCParseError,
     JSONRPCServerError,
-    VechainSDKError
+    VechainSDKError,
+    JSONRPCMethodNotImplemented,
+    JSONRPCInvalidDefaultBlock,
+    ProviderMethodError
 } from '../../src';
 
 /**
@@ -107,6 +110,57 @@ describe('Error package Available errors test - Provider', () => {
         [undefined, new Error('error')].forEach((innerError) => {
             expect(() => {
                 throw new JSONRPCServerError(
+                    'method',
+                    'message',
+                    { data: 'data' },
+                    innerError
+                );
+            }).toThrowError(VechainSDKError);
+        });
+    });
+
+    /**
+     * JSONRPCMethodNotImplemented
+     */
+    test('JSONRPCMethodNotImplemented', () => {
+        // Inner error
+        [undefined, new Error('error')].forEach((innerError) => {
+            expect(() => {
+                throw new JSONRPCMethodNotImplemented(
+                    'method',
+                    'message',
+                    { data: 'data' },
+                    innerError
+                );
+            }).toThrowError(VechainSDKError);
+        });
+    });
+
+    /**
+     * JSONRPCInvalidDefaultBlock
+     */
+    test('JSONRPCInvalidDefaultBlock', () => {
+        // Inner error
+        [undefined, new Error('error')].forEach((innerError) => {
+            expect(() => {
+                throw new JSONRPCInvalidDefaultBlock(
+                    'method',
+                    'message',
+                    'invalid block',
+                    innerError
+                );
+            }).toThrowError(VechainSDKError);
+        });
+    });
+
+    /**
+     * ProviderMethodError
+     */
+    test('ProviderMethodError', () => {
+        // Inner error
+        [undefined, new Error('error')].forEach((innerError) => {
+            expect(() => {
+                throw new ProviderMethodError(
                     'method',
                     'message',
                     { data: 'data' },
