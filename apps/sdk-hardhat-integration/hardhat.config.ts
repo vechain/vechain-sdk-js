@@ -1,8 +1,7 @@
 import { type HardhatUserConfig } from 'hardhat/config';
 import '@nomicfoundation/hardhat-toolbox';
 import '@vechain/sdk-hardhat-plugin';
-
-import { VET_DERIVATION_PATH } from '@vechain/sdk-core';
+import { HDKey } from '@vechain/sdk-core';
 import { type HttpNetworkConfig } from 'hardhat/types';
 
 /**
@@ -59,7 +58,7 @@ const config: HardhatUserConfig = {
             accounts: {
                 mnemonic:
                     'vivid any call mammal mosquito budget midnight expose spirit approve reject system',
-                path: VET_DERIVATION_PATH,
+                path: HDKey.VET_DERIVATION_PATH,
                 count: 3,
                 initialIndex: 0,
                 passphrase: 'vechainthor'
@@ -82,7 +81,7 @@ const config: HardhatUserConfig = {
             accounts: {
                 mnemonic:
                     'vivid any call mammal mosquito budget midnight expose spirit approve reject system',
-                path: VET_DERIVATION_PATH,
+                path: HDKey.VET_DERIVATION_PATH,
                 count: 3,
                 initialIndex: 0,
                 passphrase: 'vechainthor'
@@ -109,7 +108,7 @@ const config: HardhatUserConfig = {
             accounts: {
                 mnemonic:
                     'vivid any call mammal mosquito budget midnight expose spirit approve reject system',
-                path: VET_DERIVATION_PATH,
+                path: HDKey.VET_DERIVATION_PATH,
                 count: 3,
                 initialIndex: 0,
                 passphrase: 'vechainthor'
@@ -154,7 +153,7 @@ const config: HardhatUserConfig = {
             accounts: {
                 mnemonic:
                     'vivid any call mammal mosquito budget midnight expose spirit approve reject system',
-                path: VET_DERIVATION_PATH,
+                path: HDKey.VET_DERIVATION_PATH,
                 count: 3,
                 initialIndex: 0
             },
