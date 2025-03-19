@@ -1,3 +1,4 @@
+import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { Hex } from '../../Hex';
 import { IllegalArgumentError, InvalidEncodingError } from '../../../errors';
 import { RLP as EthereumjsRLP } from '@ethereumjs/rlp';
@@ -110,7 +111,7 @@ class RLP implements VeChainDataModel<RLP> {
                 `${FQP}RLP.of(data: RLPInput): RLP`,
                 `Error when creating an RLP instance for data ${
                     typeof data === 'object'
-                        ? JSON.stringify(data)
+                        ? fastJsonStableStringify(data)
                         : String(data)
                 }`,
                 {

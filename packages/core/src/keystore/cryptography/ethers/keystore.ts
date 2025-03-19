@@ -1,12 +1,13 @@
 /**
  * Implements the JSON Keystore v3 Wallet encryption, decryption, and validation functionality.
  */
-import { ethers } from 'ethers';
-import { Secp256k1 } from '../../../secp256k1';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { Address, HexUInt } from '../../../vcdm';
-import { type Keystore, type KeystoreAccount } from '../../types';
-import { SCRYPT_PARAMS } from './const';
 import { InvalidKeystoreError, InvalidPasswordError } from '../../../errors';
+import { SCRYPT_PARAMS } from './const';
+import { Secp256k1 } from '../../../secp256k1';
+import { ethers } from 'ethers';
+import { type Keystore, type KeystoreAccount } from '../../types';
 
 /**
  * Full Qualified Path
@@ -76,7 +77,7 @@ async function decrypt(
 
     try {
         return (await ethers.decryptKeystoreJson(
-            JSON.stringify(keystore),
+            fastJsonStableStringify(keystore),
             password
         )) as KeystoreAccount;
     } catch (e) {
@@ -98,7 +99,7 @@ async function decrypt(
  * @returns A boolean indicating whether the keystore is valid or not.
  */
 function isValid(keystore: Keystore): boolean {
-    return ethers.isKeystoreJson(JSON.stringify(keystore));
+    return ethers.isKeystoreJson(fastJsonStableStringify(keystore));
 }
 
 /**

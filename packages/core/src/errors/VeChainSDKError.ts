@@ -1,3 +1,5 @@
+import fastJsonStableStringify from 'fast-json-stable-stringify';
+
 /**
  * Class representing errors specific to the VeChain SDK.
  * This class extends the native JavaScript `Error` object, providing additional
@@ -81,7 +83,7 @@ class VeChainSDKError extends Error {
     toString(
         joiner: string = '\n\t',
         stringify: (obj: unknown) => string = (obj: unknown) =>
-            JSON.stringify(obj)
+            fastJsonStableStringify(obj)
     ): string {
         const txt = [
             `${this.constructor.name}: ${this.message}`,
