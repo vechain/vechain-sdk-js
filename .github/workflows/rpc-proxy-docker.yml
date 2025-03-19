@@ -6,7 +6,7 @@ on:
 env:
   DOCKERFILE_LOCATION: "docker/rpc-proxy/Dockerfile"
   DOCKER_IMAGE_NAME: "vechain/sdk-rpc-proxy"
-  DOCKER_IMAGE_VERSION: "v1.0.0"
+  DOCKER_IMAGE_VERSION: "v1.1.0"
 
 permissions:
   contents: read
