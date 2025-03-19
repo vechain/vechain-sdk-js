@@ -12,7 +12,8 @@ import {
     type DeployParams,
     type TransactionClause,
     ABIContract,
-    VTHO_ADDRESS
+    VTHO_ADDRESS,
+    Token
 } from '../../src';
 
 const ClauseFixture = {
@@ -67,6 +68,20 @@ const ClauseFixture = {
         address: Address.of('0x0000000000000000000000000000456e65726779')
     }
 };
+
+// Test token
+class ETHTest extends Token {
+    readonly tokenAddress: Address = Address.of(
+        '0xdDCc5e1704bCcEC81c5ef524C682109815F7E6e5'
+    );
+    // 18 decimals
+    readonly units: number = Units.wei;
+    readonly name = 'EthTest';
+    constructor(value: bigint, valueUnits?: Units) {
+        super(); // Pass a default value
+        this.initialize(value, valueUnits); // Call the initialization method
+    }
+}
 
 /**
  * Test Clause class.
@@ -366,6 +381,42 @@ describe('Clause class tests', () => {
             expect(() => {
                 Clause.transferVET(ClauseFixture.to, VET.of(-123.45));
             }).toThrow(InvalidDataType);
+        });
+    });
+
+    describe('transferToken method tests', () => {
+        test('Return Clause <- 1 eth Token', () => {
+            const token = new ETHTest(1n, Units.ether);
+            const expected = {
+                to: token.tokenAddress.toString().toLowerCase(),
+                value: `0x0`,
+                data: `0xa9059cbb000000000000000000000000${ClauseFixture.to
+                    .toString()
+                    .toLowerCase()
+                    .slice(
+                        2
+                    )}0000000000000000000000000000000000000000000000000de0b6b3a7640000`,
+                comment: 'Transfer EthTest'
+            } satisfies TransactionClause;
+            const actual = Clause.transferToken(ClauseFixture.to, token);
+            expect(actual).toEqual(expected);
+        });
+
+        test('Return Clause <- 100 wei Token', () => {
+            const token = new ETHTest(100n, Units.wei);
+            const expected = {
+                to: token.tokenAddress.toString().toLowerCase(),
+                value: `0x0`,
+                data: `0xa9059cbb000000000000000000000000${ClauseFixture.to
+                    .toString()
+                    .toLowerCase()
+                    .slice(
+                        2
+                    )}0000000000000000000000000000000000000000000000000000000000000064`,
+                comment: 'Transfer EthTest'
+            } satisfies TransactionClause;
+            const actual = Clause.transferToken(ClauseFixture.to, token);
+            expect(actual).toEqual(expected);
         });
     });
 });

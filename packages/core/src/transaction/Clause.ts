@@ -5,6 +5,7 @@ import {
     ABIContract,
     Address,
     FixedPointNumber,
+    type Token,
     VET,
     type ABIFunction,
     type HexUInt,
@@ -250,6 +251,36 @@ class Clause implements TransactionClause {
             'Clause.transferVTHOToken',
             'not positive integer amount',
             { amount: `${amount.value}` }
+        );
+    }
+
+    /**
+     * Return a new clause to transfer a generic VIP180/ERC20 Token
+     *
+     * @param {Address} recipientAddress - The address of the recipient.
+     * @param {Token} amount - The amount of token to be transferred.
+     * @return {Clause} The clause to transfer tokens as part of a transaction.
+     * @throws {InvalidDataType} Throws an error if the amount is not a positive integer.
+     */
+    public static transferToken(
+        recipientAddress: Address,
+        token: Token
+    ): Clause {
+        if (token.value >= 0) {
+            return this.callFunction(
+                token.tokenAddress,
+                ABIContract.ofAbi(VIP180_ABI).getFunction(
+                    Clause.TRANSFER_TOKEN_FUNCTION
+                ),
+                [recipientAddress.toString(), token.value],
+                undefined,
+                { comment: `Transfer ${token.name}` }
+            );
+        }
+        throw new InvalidDataType(
+            'Clause.transferToken',
+            'not positive integer amount',
+            { amount: `${token.value}` }
         );
     }
 
