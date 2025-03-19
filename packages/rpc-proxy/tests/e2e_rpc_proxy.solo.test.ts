@@ -920,9 +920,13 @@ describe('RPC Proxy endpoints', () => {
 
                 expect(response.status).toBe(200);
 
-                expect(response.data).toHaveProperty('result');
+                expect(response.data).toHaveProperty('error');
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                expect(response.data.result).toBe('METHOD NOT IMPLEMENTED');
+                expect(response.data.error.code).toBe(-32004);
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                expect(response.data.error.message).toBe(
+                    'Method not supported'
+                );
             });
         });
     });
@@ -940,13 +944,9 @@ describe('RPC Proxy endpoints', () => {
 
             expect(response.data).toHaveProperty('error');
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            expect(response.data.error.errorMessage).toBe(
-                'Method not found. Invalid RPC method given as input.'
-            );
+            expect(response.data.error.code).toBe(-32601);
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            expect(response.data.error.methodName).toBe(
-                'VeChainProvider.request()'
-            );
+            expect(response.data.error.message).toBe('Method not found');
         });
     });
 });

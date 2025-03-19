@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
+import { JSONRPCMethodNotImplemented } from '@vechain/sdk-errors';
 import {
     RPC_METHODS,
-    RPCMethodsMap,
     TESTNET_URL,
-    ThorClient
+    ThorClient,
+    VeChainProvider
 } from '../../../../../src';
-import { VeChainSDKLogger } from '@vechain/sdk-logging';
 
 /**
  * RPC Mapper integration tests for 'eth_uninstallFilter' method
@@ -14,35 +14,34 @@ import { VeChainSDKLogger } from '@vechain/sdk-logging';
  */
 describe('RPC Mapper - eth_uninstallFilter method tests', () => {
     /**
-     * Thor client instance
+     * Thor client instance and provider
      */
     let thorClient: ThorClient;
+    let provider: VeChainProvider;
 
     /**
-     * Init thor client before each test
+     * Init thor client and provider before each test
      */
     beforeEach(() => {
         // Init thor client
         thorClient = ThorClient.at(TESTNET_URL);
+        provider = new VeChainProvider(thorClient);
     });
 
     /**
-     * eth_uninstallFilter RPC call tests - Positive cases
+     * eth_uninstallFilter RPC call tests - Not Implemented
      */
-    describe('eth_uninstallFilter - Positive cases', () => {
+    describe('eth_uninstallFilter - Not Implemented', () => {
         /**
-         * Positive case 1 - ... Description ...
+         * Test that the method throws JSONRPCMethodNotImplemented when called via provider
          */
-        test('eth_uninstallFilter - positive case 1', async () => {
-            const logSpy = jest.spyOn(VeChainSDKLogger('warning'), 'log');
-
-            // NOT IMPLEMENTED YET!
-            await RPCMethodsMap(thorClient)[RPC_METHODS.eth_uninstallFilter]([
-                -1
-            ]);
-
-            expect(logSpy).toHaveBeenCalled();
-            logSpy.mockRestore();
+        test('Should throw JSONRPCMethodNotImplemented error', async () => {
+            await expect(
+                provider.request({
+                    method: RPC_METHODS.eth_uninstallFilter,
+                    params: []
+                })
+            ).rejects.toThrowError(JSONRPCMethodNotImplemented);
         });
     });
 });
