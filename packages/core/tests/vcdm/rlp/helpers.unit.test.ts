@@ -24,6 +24,7 @@ import {
     validHexBlobKindDataTestCases,
     validNumericBufferTestCases
 } from './helpers.fixture';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 /**
  * Test suite for BigInt helper functions
@@ -91,7 +92,7 @@ describe('NumericKind helpers', () => {
          * asserting that the function throws an error with a corresponding message.
          */
         invalidNumberTestCases.forEach(({ number, context }) => {
-            test(`should throw error when data is invalid ${JSON.stringify(
+            test(`should throw error when data is invalid ${fastJsonStableStringify(
                 number
             )}`, () => {
                 expect(() => {
@@ -219,7 +220,7 @@ describe('FixedHexBlobKind helpers', () => {
 
         invalidFixedHexBlobKindBufferTestCases.forEach(
             ({ buffer, context, bytes }) => {
-                test(`should throw error when buffer is invalid ${JSON.stringify(
+                test(`should throw error when buffer is invalid ${fastJsonStableStringify(
                     buffer
                 )}`, () => {
                     expect(() => {
@@ -251,7 +252,7 @@ describe('CompactFixedHexBlobKind helpers', () => {
 
         invalidCompactFixedHexBlobKindBufferTestCases.forEach(
             ({ buffer, context, bytes }) => {
-                test(`should throw error when buffer is invalid ${JSON.stringify(
+                test(`should throw error when buffer is invalid ${fastJsonStableStringify(
                     buffer
                 )}`, () => {
                     expect(() => {

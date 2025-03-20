@@ -50,7 +50,6 @@ async function encrypt(
         password,
         encryptOptions
     );
-
     return JSON.parse(keystoreJsonString) as Keystore;
 }
 

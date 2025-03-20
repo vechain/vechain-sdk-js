@@ -5,6 +5,7 @@ import {
 } from '../../../src/thor/debug';
 import { FetchHttpClient, ThorNetworks } from '../../../src';
 import log from 'loglevel';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 const logger = log.getLogger(
     'TEST:UNIT!packages/thorest/tests/thor/debug/TraceTransactionClause.mainnet.test.ts'
@@ -20,6 +21,6 @@ describe('TraceTransactionClause mainnet tests', () => {
         const r = await TraceTransactionClause.of(request).askTo(
             FetchHttpClient.at(ThorNetworks.MAINNET)
         );
-        logger.debug(JSON.stringify(r, null, 2));
+        logger.debug(fastJsonStableStringify(r));
     });
 });

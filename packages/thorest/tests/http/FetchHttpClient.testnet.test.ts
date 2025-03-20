@@ -1,6 +1,7 @@
 import { describe, test } from '@jest/globals';
 import { FetchHttpClient, ThorNetworks } from '../../src';
 import log from 'loglevel';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 const logger = log.getLogger(
     'TEST:UNIT!packages/thorest/tests/http/FetchHttpClient.testnet.test.ts'
@@ -24,7 +25,7 @@ describe('FetchHttpClient testnet tests', () => {
                 return response;
             }
         ).get();
-    });
+    }, 15000);
 
     test('ok <- post', async () => {
         const expected = {
@@ -42,6 +43,6 @@ describe('FetchHttpClient testnet tests', () => {
             }
         ).post({ path: '/post' }, { query: '' }, expected);
         const actual: unknown = await response.json();
-        logger.debug(JSON.stringify(actual, null, 2));
-    });
+        logger.debug(fastJsonStableStringify(actual));
+    }, 15000);
 });

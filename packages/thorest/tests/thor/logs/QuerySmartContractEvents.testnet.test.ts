@@ -6,6 +6,7 @@ import {
 } from '../../../src/thor/logs';
 import { FetchHttpClient, ThorNetworks } from '../../../src';
 import log from 'loglevel';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 const logger = log.getLogger(
     'TEST:UNIT!packages/thorest/tests/thor/logs/QuerySmartContractEvents.testnet.test.ts'
@@ -35,6 +36,6 @@ describe('QuerySmartContractEvents testnet tests', () => {
         const r = await QuerySmartContractEvents.of(request).askTo(
             FetchHttpClient.at(ThorNetworks.TESTNET)
         );
-        logger.debug(JSON.stringify(r, null, 2));
+        logger.debug(fastJsonStableStringify(r));
     });
 });

@@ -5,6 +5,7 @@ import {
 } from '../../../src/thor/debug';
 import { FetchHttpClient, ThorNetworks } from '../../../src';
 import log from 'loglevel';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 const logger = log.getLogger(
     'TEST:UNIT!packages/thorest/tests/thor/debug/TraceCall.testnet.test.ts'
@@ -28,6 +29,6 @@ describe('TraceCall testnet tests', () => {
         const r = await TraceCall.of(request).askTo(
             FetchHttpClient.at(ThorNetworks.TESTNET)
         );
-        logger.debug(JSON.stringify(r, null, 2));
+        logger.debug(fastJsonStableStringify(r));
     });
 });

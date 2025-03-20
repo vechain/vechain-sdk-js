@@ -6,6 +6,7 @@ import {
     ThorNetworks
 } from '../../../src';
 import log from 'loglevel';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 const logger = log.getLogger(
     'TEST:UNIT!packages/thorest/tests/thor/accounts/RetrieveStoragePositionValue.testnet.test.ts'
@@ -19,6 +20,6 @@ describe('RetrieveStoragePositionValue testnet tests', () => {
                 '0x0000000000000000000000000000000000000000000000000000000000000001'
             )
         ).askTo(FetchHttpClient.at(ThorNetworks.TESTNET));
-        logger.debug(JSON.stringify(r, null, 2));
+        logger.debug(fastJsonStableStringify(r));
     });
 });

@@ -11,6 +11,7 @@ import {
     InvalidPasswordError
 } from '../../src';
 import { encryptionPassword } from './fixture';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 /**
  * Keystore tests
@@ -127,7 +128,7 @@ import { encryptionPassword } from './fixture';
             );
 
             // Verify keystore -> False
-            const invalidKeystore: string = JSON.stringify({
+            const invalidKeystore: string = fastJsonStableStringify({
                 ...myKeystore,
                 version: 4
             });
@@ -159,7 +160,7 @@ import { encryptionPassword } from './fixture';
             expect(keystore.isValid(myKeystore)).toBe(true);
 
             // Verify keystore -> False
-            const invalidKeystore: string = JSON.stringify({
+            const invalidKeystore: string = fastJsonStableStringify({
                 ...myKeystore,
                 version: 4
             });

@@ -21,6 +21,7 @@ import {
     topicsEventTestCases
 } from './fixture';
 import log from 'loglevel';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 const logger = log.getLogger(
     'TEST:UNIT!packages/core/tests/vcdm/abi/abi.unit.test.ts'
@@ -401,7 +402,9 @@ describe('Abi - Function & Event', () => {
         topicsEventTestCases.forEach(
             ({ event, valuesToEncode, expectedTopics }) => {
                 test(`Encode Event topics - ${
-                    typeof event === 'string' ? event : JSON.stringify(event)
+                    typeof event === 'string'
+                        ? event
+                        : fastJsonStableStringify(event)
                 }`, () => {
                     const ev =
                         typeof event === 'string'
@@ -420,7 +423,7 @@ describe('Abi - Function & Event', () => {
          */
         invalidTopicsEventTestCases.forEach(
             ({ event, valuesToEncode, expectedError }) => {
-                test(`Encode Event topics - ${JSON.stringify(event)}`, () => {
+                test(`Encode Event topics - ${fastJsonStableStringify(event)}`, () => {
                     const ev =
                         typeof event === 'string'
                             ? new ABIEvent(event)

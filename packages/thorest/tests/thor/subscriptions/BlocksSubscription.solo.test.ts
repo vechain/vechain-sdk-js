@@ -8,6 +8,7 @@ import {
     type SubscriptionBlockResponse
 } from '../../../src/thor/subscriptions';
 import log from 'loglevel';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 const logger = log.getLogger(
     'TEST:UNIT!packages/thorest/tests/thor/subscriptions/BlocksSubscription.solo.test.ts'
@@ -26,7 +27,7 @@ describe('BlocksSubscription solo tests', () => {
             .addListener({
                 onMessage: (message) => {
                     const data = message.data;
-                    logger.debug(JSON.stringify(data, null, 2));
+                    logger.debug(fastJsonStableStringify(data));
                     done();
                 },
                 onOpen: () => {},
