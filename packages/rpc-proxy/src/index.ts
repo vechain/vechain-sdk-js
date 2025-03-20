@@ -100,6 +100,7 @@ function startProxy(): void {
     );
     app.use(express.json());
 
+    app.get('/healthcheck', handleHealthcheck);
     app.post('*', handleRequest);
     app.get('*', handleRequest);
 
@@ -108,6 +109,30 @@ function startProxy(): void {
     }).on('error', (err: Error) => {
         console.error(`[rpc-proxy]: Error starting proxy ${err.message}`);
     });
+
+    function handleHealthcheck(req: Request, res: Response): void {
+        void (async () => {
+            try {
+                await provider.request({
+                    method: 'eth_chainId',
+                    params: []
+                });
+                res.status(200);
+                res.json({ status: 'healthy' });
+            } catch (error) {
+                VeChainSDKLogger('error').log(
+                    new JSONRPCInternalError(
+                        'eth_chainId',
+                        'Error on healthcheck',
+                        {},
+                        error
+                    )
+                );
+                res.status(500);
+                res.json({ status: 'unhealthy' });
+            }
+        })();
+    }
 
     function handleRequest(req: Request, res: Response): void {
         void (async () => {
