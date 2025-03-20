@@ -11,6 +11,29 @@ import {
 import { Address, ThorId } from '@vechain/sdk-core';
 import { type LogMetaJSON } from '../../../src/thor/logs';
 
+const mockLogMeta = {
+    blockID:
+        '0x00003e9000000000000000000000000000000000000000000000000000000000',
+    blockNumber: 12345,
+    blockTimestamp: 1630000000,
+    txID: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+    txOrigin: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
+    clauseIndex: 0,
+    txIndex: 0,
+    logIndex: 0
+} satisfies LogMetaJSON;
+
+const mockEventData = {
+    address: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
+    topics: [
+        '0x0000000000000000000000000000000000000000000000000000000000000001',
+        '0x0000000000000000000000000000000000000000000000000000000000000002'
+    ],
+    data: '0x0000000000000000000000000000000000000000000000000000000000000003',
+    obsolete: false,
+    meta: mockLogMeta
+} satisfies SubscriptionEventResponseJSON;
+
 // Create a mock WebSocket instance that will be returned by the constructor
 const mockWebSocketInstance = {
     addEventListener: jest.fn(),
@@ -56,29 +79,6 @@ describe('EventsSubscription unit tests', () => {
     });
 
     test('should receive event data when subscribed', (done) => {
-        const mockLogMeta = {
-            blockID:
-                '0x00003e9000000000000000000000000000000000000000000000000000000000',
-            blockNumber: 12345,
-            blockTimestamp: 1630000000,
-            txID: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
-            txOrigin: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-            clauseIndex: 0,
-            txIndex: 0,
-            logIndex: 0
-        } satisfies LogMetaJSON;
-
-        const mockEventData = {
-            address: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-            topics: [
-                '0x0000000000000000000000000000000000000000000000000000000000000001',
-                '0x0000000000000000000000000000000000000000000000000000000000000002'
-            ],
-            data: '0x0000000000000000000000000000000000000000000000000000000000000003',
-            obsolete: false,
-            meta: mockLogMeta
-        } satisfies SubscriptionEventResponseJSON;
-
         const mockListener = {
             onMessage: jest.fn(
                 (event: MessageEvent<SubscriptionEventResponse>) => {
@@ -348,64 +348,44 @@ describe('EventsSubscription unit tests', () => {
     });
 
     test('should convert SubscriptionEventResponse to JSON', () => {
-        // Create mock JSON data
-        const mockLogMeta: LogMetaJSON = {
-            blockID:
-                '0x00003e9000000000000000000000000000000000000000000000000000000000',
-            blockNumber: 12345,
-            blockTimestamp: 1630000000,
-            txID: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
-            txOrigin: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-            clauseIndex: 0,
-            txIndex: 0,
-            logIndex: 0
-        };
-
-        const mockData: SubscriptionEventResponseJSON = {
-            address: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-            topics: [
-                '0x0000000000000000000000000000000000000000000000000000000000000001',
-                '0x0000000000000000000000000000000000000000000000000000000000000002'
-            ],
-            data: '0x0000000000000000000000000000000000000000000000000000000000000003',
-            obsolete: false,
-            meta: mockLogMeta
-        };
-
         // Create the response object
-        const response = new SubscriptionEventResponse(mockData);
+        const response = new SubscriptionEventResponse(mockEventData);
 
         // Convert back to JSON
         const jsonResult = response.toJSON();
 
         // Verify fields match (case-insensitive for addresses and hex strings)
         expect(jsonResult.address.toLowerCase()).toEqual(
-            mockData.address.toLowerCase()
+            mockEventData.address.toLowerCase()
         );
-        expect(jsonResult.topics.length).toEqual(mockData.topics.length);
+        expect(jsonResult.topics.length).toEqual(mockEventData.topics.length);
         expect(jsonResult.topics[0].toLowerCase()).toEqual(
-            mockData.topics[0].toLowerCase()
+            mockEventData.topics[0].toLowerCase()
         );
         expect(jsonResult.topics[1].toLowerCase()).toEqual(
-            mockData.topics[1].toLowerCase()
+            mockEventData.topics[1].toLowerCase()
         );
         expect(jsonResult.data.toLowerCase()).toEqual(
-            mockData.data.toLowerCase()
+            mockEventData.data.toLowerCase()
         );
-        expect(jsonResult.obsolete).toEqual(mockData.obsolete);
-        expect(jsonResult.meta.blockNumber).toEqual(mockData.meta.blockNumber);
+        expect(jsonResult.obsolete).toEqual(mockEventData.obsolete);
+        expect(jsonResult.meta.blockNumber).toEqual(
+            mockEventData.meta.blockNumber
+        );
         expect(jsonResult.meta.blockTimestamp).toEqual(
-            mockData.meta.blockTimestamp
+            mockEventData.meta.blockTimestamp
         );
-        expect(jsonResult.meta.clauseIndex).toEqual(mockData.meta.clauseIndex);
+        expect(jsonResult.meta.clauseIndex).toEqual(
+            mockEventData.meta.clauseIndex
+        );
         expect(jsonResult.meta.blockID.toLowerCase()).toEqual(
-            mockData.meta.blockID.toLowerCase()
+            mockEventData.meta.blockID.toLowerCase()
         );
         expect(jsonResult.meta.txID.toLowerCase()).toEqual(
-            mockData.meta.txID.toLowerCase()
+            mockEventData.meta.txID.toLowerCase()
         );
         expect(jsonResult.meta.txOrigin.toLowerCase()).toEqual(
-            mockData.meta.txOrigin.toLowerCase()
+            mockEventData.meta.txOrigin.toLowerCase()
         );
     });
 });
