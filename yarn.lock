@@ -3190,11 +3190,6 @@
     uuid "2.0.1"
     xmlhttprequest "1.8.0"
 
-"@vechain/sdk-errors@2.0.0-beta.1":
-  version "2.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-errors/-/sdk-errors-2.0.0-beta.1.tgz#959debbc911b35c6ccca6f022599feeda0aa413b"
-  integrity sha512-NKyUBHAnIVJNe8dLfJ858woVXQ+SZQjA9POFY8KjkOG+sYvZoMhIBUrIEjKNQYSpCQQhIUA4sOn/YYwMjOCwQg==
-
 JSONStream@^1.3.5:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/JSONStream/-/JSONStream-1.3.5.tgz#3208c1f08d3a4d99261ab64f92302bc15e111ca0"
