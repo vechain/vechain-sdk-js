@@ -136,11 +136,29 @@ class EventsSubscription
 }
 
 class EventsSubscriptionQuery implements HttpQuery {
+    /**
+     * The address of the contract that emits the event.
+     */
     readonly addr?: Address;
+    /**
+     * A saved block ID for resuming the subscription. If omitted, the best block ID is assumed.
+     */
     readonly pos?: ThorId;
+    /**
+     * The keccak256 hash representing the event signature
+     */
     readonly t0?: ThorId;
+    /**
+     * Filters events based on the 1st parameter in the event
+     */
     readonly t1?: ThorId;
+    /**
+     * Filters events based on the 2nd parameter in the event
+     */
     readonly t2?: ThorId;
+    /**
+     * Filters events based on the 3rd parameter in the event
+     */
     readonly t3?: ThorId;
 
     constructor(
