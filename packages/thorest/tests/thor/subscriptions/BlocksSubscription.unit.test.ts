@@ -5,10 +5,35 @@ import {
 } from '../../../src/ws';
 import {
     BlocksSubscription,
-    SubscriptionBlockResponse,
-    type SubscriptionBlockResponseJSON
+    SubscriptionBlockResponse
 } from '../../../src/thor/subscriptions';
 import { BlockId } from '@vechain/sdk-core';
+
+const mockBlockData = {
+    number: 12345,
+    id: '0x00003e9000000000000000000000000000000000000000000000000000000000',
+    size: 1000,
+    parentID:
+        '0x00003e8000000000000000000000000000000000000000000000000000000000',
+    timestamp: 1630000000,
+    gasLimit: 21000,
+    beneficiary: '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed',
+    gasUsed: 15000,
+    totalScore: 12345,
+    txsRoot:
+        '0x0000000000000000000000000000000000000000000000000000000000000000',
+    txsFeatures: 0,
+    stateRoot:
+        '0x0000000000000000000000000000000000000000000000000000000000000000',
+    receiptsRoot:
+        '0x0000000000000000000000000000000000000000000000000000000000000000',
+    com: false,
+    signer: '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed',
+    obsolete: false,
+    transactions: [
+        '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'
+    ]
+};
 
 // Create a mock WebSocket instance that will be returned by the constructor
 const mockWebSocketInstance = {
@@ -55,32 +80,6 @@ describe('BlocksSubscription unit tests', () => {
     });
 
     test('should receive block data when subscribed', (done) => {
-        const mockBlockData = {
-            number: 12345,
-            id: '0x00003e9000000000000000000000000000000000000000000000000000000000',
-            size: 1000,
-            parentID:
-                '0x00003e8000000000000000000000000000000000000000000000000000000000',
-            timestamp: 1630000000,
-            gasLimit: 21000,
-            beneficiary: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-            gasUsed: 15000,
-            totalScore: 12345,
-            txsRoot:
-                '0x0000000000000000000000000000000000000000000000000000000000000000',
-            txsFeatures: 0,
-            stateRoot:
-                '0x0000000000000000000000000000000000000000000000000000000000000000',
-            receiptsRoot:
-                '0x0000000000000000000000000000000000000000000000000000000000000000',
-            com: false,
-            signer: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-            obsolete: false,
-            transactions: [
-                '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'
-            ]
-        };
-
         const mockListener = {
             onMessage: jest.fn(
                 (event: MessageEvent<SubscriptionBlockResponse>) => {
@@ -226,31 +225,7 @@ describe('BlocksSubscription unit tests', () => {
     });
 
     test('should handle multiple message events', () => {
-        const mockBlockData1 = {
-            number: 12345,
-            id: '0x00003e9000000000000000000000000000000000000000000000000000000000',
-            size: 1000,
-            parentID:
-                '0x00003e8000000000000000000000000000000000000000000000000000000000',
-            timestamp: 1630000000,
-            gasLimit: 21000,
-            beneficiary: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-            gasUsed: 15000,
-            totalScore: 12345,
-            txsRoot:
-                '0x0000000000000000000000000000000000000000000000000000000000000000',
-            txsFeatures: 0,
-            stateRoot:
-                '0x0000000000000000000000000000000000000000000000000000000000000000',
-            receiptsRoot:
-                '0x0000000000000000000000000000000000000000000000000000000000000000',
-            com: false,
-            signer: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-            obsolete: false,
-            transactions: []
-        };
-
-        const mockBlockData2 = { ...mockBlockData1, number: 12346 };
+        const mockBlockData2 = { ...mockBlockData, number: 12346 };
 
         const mockListener = {
             onMessage: jest.fn(),
@@ -272,7 +247,7 @@ describe('BlocksSubscription unit tests', () => {
 
         // Simulate receiving first block data
         const mockMessage1 = new MessageEvent('message', {
-            data: JSON.stringify(mockBlockData1)
+            data: JSON.stringify(mockBlockData)
         });
 
         if (
@@ -334,40 +309,13 @@ describe('BlocksSubscription unit tests', () => {
     });
 
     test('should convert SubscriptionBlockResponse to JSON', () => {
-        // Create mock JSON data
-        const mockData = {
-            number: 12345,
-            id: '0x00003e9000000000000000000000000000000000000000000000000000000000',
-            size: 1000,
-            parentID:
-                '0x00003e8000000000000000000000000000000000000000000000000000000000',
-            timestamp: 1630000000,
-            gasLimit: 21000,
-            beneficiary: '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed',
-            gasUsed: 15000,
-            totalScore: 12345,
-            txsRoot:
-                '0x0000000000000000000000000000000000000000000000000000000000000000',
-            txsFeatures: 0,
-            stateRoot:
-                '0x0000000000000000000000000000000000000000000000000000000000000000',
-            receiptsRoot:
-                '0x0000000000000000000000000000000000000000000000000000000000000000',
-            com: false,
-            signer: '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed',
-            obsolete: false,
-            transactions: [
-                '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'
-            ]
-        } satisfies SubscriptionBlockResponseJSON;
-
         // Create the response object
-        const response = new SubscriptionBlockResponse(mockData);
+        const response = new SubscriptionBlockResponse(mockBlockData);
 
         // Convert back to JSON
         const jsonResult = response.toJSON();
 
         // Verify the result matches our original data
-        expect(jsonResult).toEqual(mockData);
+        expect(jsonResult).toEqual(mockBlockData);
     });
 });
