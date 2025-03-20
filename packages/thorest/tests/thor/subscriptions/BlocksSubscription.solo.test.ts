@@ -7,6 +7,11 @@ import {
     BlocksSubscription,
     type SubscriptionBlockResponse
 } from '../../../src/thor/subscriptions';
+import log from 'loglevel';
+
+const logger = log.getLogger(
+    'TEST:UNIT!packages/thorest/tests/thor/subscriptions/BlocksSubscription.solo.test.ts'
+);
 
 describe('BlocksSubscription solo tests', () => {
     let subscription: BlocksSubscription;
@@ -21,13 +26,13 @@ describe('BlocksSubscription solo tests', () => {
             .addListener({
                 onMessage: (message) => {
                     const data = message.data;
-                    console.log(JSON.stringify(data, null, 2));
+                    logger.debug(JSON.stringify(data, null, 2));
                     done();
                 },
                 onOpen: () => {},
                 onClose: () => {},
                 onError: (error) => {
-                    console.error('WebSocket error:', error);
+                    logger.error('WebSocket error:', error);
                 }
             } satisfies WebSocketListener<SubscriptionBlockResponse>)
             .open();

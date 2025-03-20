@@ -5,6 +5,11 @@ import {
     RetrieveTransactionByID,
     ThorNetworks
 } from '../../../src';
+import log from 'loglevel';
+
+const logger = log.getLogger(
+    'TEST:UNIT!packages/thorest/tests/thor/transactions/RetrieveTransactionByIID.testnet.test.ts'
+);
 
 describe('RetrieveTransactionByID testnet tests', () => {
     test('ok <- askTo', async () => {
@@ -13,6 +18,6 @@ describe('RetrieveTransactionByID testnet tests', () => {
         );
         const httpClient = FetchHttpClient.at(ThorNetworks.MAINNET);
         const r = await RetrieveTransactionByID.of(txId).askTo(httpClient);
-        console.log(JSON.stringify(r, null, 2));
+        logger.debug(JSON.stringify(r, null, 2));
     });
 });

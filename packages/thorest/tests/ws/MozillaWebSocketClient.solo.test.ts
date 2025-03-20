@@ -1,6 +1,10 @@
 import { afterEach, beforeEach, describe, test } from '@jest/globals';
 import { MozillaWebSocketClient } from '../../src/ws/MozillaWebSocketClient';
-import { type WebSocketListener } from '../../src/ws';
+import log from 'loglevel';
+
+const logger = log.getLogger(
+    'TEST:UNIT!packages/thorest/tests/ws/MozillaWebSocketClient.solo.test.ts'
+);
 
 describe('MozillaWebSocketClient solo tests', () => {
     let wsc: MozillaWebSocketClient;
@@ -10,11 +14,14 @@ describe('MozillaWebSocketClient solo tests', () => {
 
     test('data <- open', (done) => {
         wsc.addListener({
+            onClose: () => {},
+            onError: () => {},
             onMessage: (message) => {
-                console.log(message.data);
+                logger.debug(message.data);
                 done();
-            }
-        } satisfies WebSocketListener<unknown>).open({
+            },
+            onOpen: () => {}
+        }).open({
             path: '/subscriptions/beat2'
         });
     }, 30000);

@@ -4,6 +4,11 @@ import {
     type StorageRangeOptionJSON
 } from '../../../src/thor/debug';
 import { FetchHttpClient, ThorNetworks } from '../../../src';
+import log from 'loglevel';
+
+const logger = log.getLogger(
+    'TEST:UNIT!packages/thorest/tests/thor/debug/RetrieveStorageRange.mainnet.test.ts'
+);
 
 describe('RetrieveStorageRange mainnet tests', () => {
     test('ok <- askTo', async () => {
@@ -17,6 +22,6 @@ describe('RetrieveStorageRange mainnet tests', () => {
         const r = await RetrieveStorageRange.of(request).askTo(
             FetchHttpClient.at(ThorNetworks.MAINNET)
         );
-        console.log(JSON.stringify(r, null, 2));
+        logger.debug(JSON.stringify(r, null, 2));
     });
 });

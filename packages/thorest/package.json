@@ -43,6 +43,7 @@
   },
   "devDependencies": {
     "@types/ws": "^8.5.13",
+    "loglevel": "^1.9.2",
     "jest-fetch-mock": "^3.0.3",
     "whatwg-fetch": "^3.6.20"
   }

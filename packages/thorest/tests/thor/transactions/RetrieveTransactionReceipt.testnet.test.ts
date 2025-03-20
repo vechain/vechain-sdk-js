@@ -5,6 +5,11 @@ import {
     RetrieveTransactionReceipt,
     ThorNetworks
 } from '../../../src';
+import log from 'loglevel';
+
+const logger = log.getLogger(
+    'TEST:UNIT!packages/thorest/tests/thor/transactions/RetrieveTransactionReceipt.testnet.test.ts'
+);
 
 describe('RetrieveTransactionReceipt testnet tests', () => {
     test('ok <- askTo', async () => {
@@ -13,6 +18,6 @@ describe('RetrieveTransactionReceipt testnet tests', () => {
         );
         const httpClient = FetchHttpClient.at(ThorNetworks.MAINNET);
         const r = await RetrieveTransactionReceipt.of(txId).askTo(httpClient);
-        console.log(JSON.stringify(r, null, 2));
+        logger.debug(JSON.stringify(r, null, 2));
     });
 });

@@ -4,6 +4,11 @@ import {
     TraceTransactionClause
 } from '../../../src/thor/debug';
 import { FetchHttpClient, ThorNetworks } from '../../../src';
+import log from 'loglevel';
+
+const logger = log.getLogger(
+    'TEST:UNIT!packages/thorest/tests/thor/debug/TraceTransactionClause.mainnet.test.ts'
+);
 
 describe('TraceTransactionClause mainnet tests', () => {
     test('ok <- askTo', async () => {
@@ -15,6 +20,6 @@ describe('TraceTransactionClause mainnet tests', () => {
         const r = await TraceTransactionClause.of(request).askTo(
             FetchHttpClient.at(ThorNetworks.MAINNET)
         );
-        console.log(JSON.stringify(r, null, 2));
+        logger.debug(JSON.stringify(r, null, 2));
     });
 });

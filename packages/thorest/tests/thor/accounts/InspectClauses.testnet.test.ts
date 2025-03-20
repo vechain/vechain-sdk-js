@@ -5,6 +5,11 @@ import {
     InspectClauses,
     ThorNetworks
 } from '../../../src';
+import log from 'loglevel';
+
+const logger = log.getLogger(
+    'TEST:UNIT!packages/thorest/tests/thor/accounts/InspectClauses.testnet.test.ts'
+);
 
 describe('InspectClauses testnet tests', () => {
     test('ok <- askTo', async () => {
@@ -36,6 +41,6 @@ describe('InspectClauses testnet tests', () => {
         const r = await InspectClauses.of(request).askTo(
             FetchHttpClient.at(ThorNetworks.TESTNET)
         );
-        console.log(JSON.stringify(r, null, 2));
+        logger.debug(JSON.stringify(r, null, 2));
     });
 });

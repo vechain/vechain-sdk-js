@@ -20,6 +20,11 @@ import {
     simpleParametersDataForFunction2,
     topicsEventTestCases
 } from './fixture';
+import log from 'loglevel';
+
+const logger = log.getLogger(
+    'TEST:UNIT!packages/core/tests/vcdm/abi/abi.unit.test.ts'
+);
 
 /**
  * ABI tests - encode & decode
@@ -64,7 +69,7 @@ describe('Abi - encode & decode', () => {
                     encodedDecodedValue.value as unknown as unknown[]
                 );
             } catch (error) {
-                console.log(error);
+                logger.debug(error);
             }
             // ).toThrowError(AbiConstructorNotFoundError);
 

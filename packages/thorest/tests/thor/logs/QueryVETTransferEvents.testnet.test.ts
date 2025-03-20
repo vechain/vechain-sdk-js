@@ -2,6 +2,11 @@ import { describe, test } from '@jest/globals';
 import { type TransferLogFilterRequestJSON } from '../../../src/thor/logs/TransferLogFilterRequest';
 import { QueryVETTransferEvents } from '../../../src/thor/logs/QueryVETTransferEvents';
 import { FetchHttpClient, ThorNetworks } from '../../../src';
+import log from 'loglevel';
+
+const logger = log.getLogger(
+    'TEST:UNIT!packages/thorest/tests/thor/logs/QueryVETTransferEvents.testnet.test.ts'
+);
 
 describe('QueryVETTransferEvents testnet tests', () => {
     test('ok <- askTo', async () => {
@@ -27,6 +32,6 @@ describe('QueryVETTransferEvents testnet tests', () => {
         const r = await QueryVETTransferEvents.of(request).askTo(
             FetchHttpClient.at(ThorNetworks.TESTNET)
         );
-        console.log(JSON.stringify(r, null, 2));
+        logger.debug(JSON.stringify(r, null, 2));
     });
 });
