@@ -134,13 +134,40 @@ class EventsSubscription
         );
     }
 }
-
+/**
+ * A subscription to events emitted by smart contracts on the VeChain blockchain.
+ *
+ * This class allows subscribing to events from a specific contract address and filtering them based on:
+ * - Event signature (t0)
+ * - Up to 3 indexed parameters (t1, t2, t3)
+ * - Starting block position (pos)
+ *
+ * The subscription will receive real-time updates when matching events are emitted.
+ */
 class EventsSubscriptionQuery implements HttpQuery {
+    /**
+     * The address of the contract that emits the event.
+     */
     readonly addr?: Address;
+    /**
+     * A saved block ID for resuming the subscription. If omitted, the best block ID is assumed.
+     */
     readonly pos?: ThorId;
+    /**
+     * The keccak256 hash representing the event signature
+     */
     readonly t0?: ThorId;
+    /**
+     * Filters events based on the 1st parameter in the event
+     */
     readonly t1?: ThorId;
+    /**
+     * Filters events based on the 2nd parameter in the event
+     */
     readonly t2?: ThorId;
+    /**
+     * Filters events based on the 3rd parameter in the event
+     */
     readonly t3?: ThorId;
 
     constructor(
