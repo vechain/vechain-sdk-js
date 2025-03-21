@@ -2,9 +2,6 @@ node_modules
 packages/**/dist
 packages/**/.turbo
 packages/**/node_modules
-apps/**/dist
-apps/**/.turbo
-apps/**/node_modules
 docs/**/dist
 
 yarn-error.log
@@ -18,7 +15,6 @@ junit.xml
 .turbo
 
 # docs
-docs/build/*.md
 api-docs/
 index.html
 unit-tests.html

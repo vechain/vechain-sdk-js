@@ -24,8 +24,6 @@ The VeChain SDK Logging package provides features for logging, including:
 
 ## Usage
 
-Explore examples of how to use this package in real-world scenarios at [vechain SDK examples](https://github.com/vechain/vechain-sdk/tree/main/docs/examples).
-
 Feel free to leverage these resources and don't hesitate to reach out if you have any questions or need further assistance.
 
 Happy coding with the VeChain SDK!

@@ -1,4 +1,4 @@
-import { Address, BlockId, ThorId, UInt, Units, VTHO } from '@vechain/sdk-core';
+import { Address, BlockId, Gas, ThorId, UInt } from '@vechain/sdk-core';
 
 interface CommmonBlockResponseJSON {
     number: number;
@@ -26,10 +26,9 @@ class CommmonBlockResponse {
     readonly size: UInt;
     readonly parentID: BlockId;
     readonly timestamp: UInt;
-    // to do: use the Gas unit class when it will be available
-    readonly gasLimit: VTHO;
+    readonly gasLimit: Gas;
     readonly beneficiary: Address;
-    readonly gasUsed: VTHO;
+    readonly gasUsed: Gas;
     readonly totalScore: UInt;
     readonly txsRoot: ThorId;
     readonly txsFeatures: UInt;
@@ -46,9 +45,9 @@ class CommmonBlockResponse {
         this.size = UInt.of(json.size);
         this.parentID = BlockId.of(json.parentID);
         this.timestamp = UInt.of(json.timestamp);
-        this.gasLimit = VTHO.of(json.gasLimit, Units.wei);
+        this.gasLimit = Gas.of(json.gasLimit);
         this.beneficiary = Address.of(json.beneficiary);
-        this.gasUsed = VTHO.of(json.gasUsed, Units.wei);
+        this.gasUsed = Gas.of(json.gasUsed);
         this.totalScore = UInt.of(json.totalScore);
         this.txsRoot = ThorId.of(json.txsRoot);
         this.txsFeatures = UInt.of(json.txsFeatures);
@@ -67,9 +66,9 @@ class CommmonBlockResponse {
             size: this.size.valueOf(),
             parentID: this.parentID.toString(),
             timestamp: this.timestamp.valueOf(),
-            gasLimit: Number(this.gasLimit.wei),
+            gasLimit: this.gasLimit.valueOf(),
             beneficiary: this.beneficiary.toString(),
-            gasUsed: Number(this.gasUsed.wei),
+            gasUsed: this.gasUsed.valueOf(),
             totalScore: this.totalScore.valueOf(),
             txsRoot: this.txsRoot.toString(),
             txsFeatures: this.txsFeatures.valueOf(),

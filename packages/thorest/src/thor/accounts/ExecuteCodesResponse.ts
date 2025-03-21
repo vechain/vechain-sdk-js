@@ -4,13 +4,13 @@ import {
     Transfer,
     type TransferJSON
 } from '../transactions';
-import { HexUInt, VTHO } from '@vechain/sdk-core';
+import { HexUInt, Gas } from '@vechain/sdk-core';
 
 class ExecuteCodeResponse {
     readonly data: HexUInt;
     readonly events: Event[];
     readonly transfers: Transfer[];
-    readonly gasUsed: VTHO;
+    readonly gasUsed: Gas;
     readonly reverted: boolean;
     readonly vmError: string;
 
@@ -22,7 +22,7 @@ class ExecuteCodeResponse {
         this.transfers = json.transfers.map(
             (transferJSON: TransferJSON): Transfer => new Transfer(transferJSON)
         );
-        this.gasUsed = VTHO.of(json.gasUsed);
+        this.gasUsed = Gas.of(json.gasUsed);
         this.reverted = json.reverted;
         this.vmError = json.vmError;
     }
@@ -36,7 +36,7 @@ class ExecuteCodeResponse {
             transfers: this.transfers.map(
                 (transfer: Transfer): TransferJSON => transfer.toJSON()
             ),
-            gasUsed: Number(this.gasUsed.wei),
+            gasUsed: this.gasUsed.valueOf(),
             reverted: this.reverted,
             vmError: this.vmError
         } satisfies ExecuteCodeResponseJSON;
