@@ -1,4 +1,11 @@
-import { afterEach, beforeEach, describe, jest, test } from '@jest/globals';
+import {
+    afterEach,
+    beforeEach,
+    describe,
+    expect,
+    jest,
+    test
+} from '@jest/globals';
 import {
     MozillaWebSocketClient,
     type WebSocketListener

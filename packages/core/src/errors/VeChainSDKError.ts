@@ -1,3 +1,5 @@
+import pkg from '../../package.json';
+
 /**
  * Class representing errors specific to the VeChain SDK.
  * This class extends the native JavaScript `Error` object, providing additional
@@ -11,7 +13,7 @@ class VeChainSDKError extends Error {
      * This constant value is used to facilitate filtering or grouping of log messages,
      * helping developers to identify and trace operations or issues related to this specific SDK version in the application.
      */
-    static readonly TAG = 'vechain-sdk-js:2.0';
+    static readonly TAG = `vechain-sdk-js:${pkg.version}`;
 
     /**
      * Optional parameter to represent a set of key-value pairs representing the arguments originating the error.
