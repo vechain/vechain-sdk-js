@@ -1,5 +1,6 @@
 // Our core library
 export * from './certificate';
+export * from './errors';
 export * from './hdkey';
 export * from './keystore';
 export * from './secp256k1';

@@ -1,10 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import {
-    InvalidDataType,
-    InvalidRLP,
-    stringifyData
-} from '@vechain/sdk-errors';
-import { Hex } from '../../../src';
+import { Hex, IllegalArgumentError, InvalidEncodingError } from '../../../src';
 import {
     assertCompactFixedHexBlobBuffer,
     assertFixedHexBlobKindBuffer,
@@ -29,6 +24,7 @@ import {
     validHexBlobKindDataTestCases,
     validNumericBufferTestCases
 } from './helpers.fixture';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 /**
  * Test suite for BigInt helper functions
@@ -51,7 +47,7 @@ describe('decodeBufferToHexWithLeadingZeros', () => {
     buffer[0] = 10;
     test('decodeBufferToHexWithLeadingZeros zero bytes', () => {
         expect(() => decodeBufferToHexWithLeadingZeros(buffer, 0)).toThrow(
-            InvalidDataType
+            IllegalArgumentError
         );
     });
     test('decodeBufferToHexWithLeadingZeros with bytes', () => {
@@ -96,13 +92,13 @@ describe('NumericKind helpers', () => {
          * asserting that the function throws an error with a corresponding message.
          */
         invalidNumberTestCases.forEach(({ number, context }) => {
-            test(`should throw error when data is invalid ${stringifyData(
+            test(`should throw error when data is invalid ${fastJsonStableStringify(
                 number
             )}`, () => {
                 expect(() => {
                     // @ts-expect-error - invalid input
                     validateNumericKindData(number, context);
-                }).toThrowError(InvalidRLP);
+                }).toThrowError(InvalidEncodingError);
             });
         });
     });
@@ -140,7 +136,7 @@ describe('NumericKind helpers', () => {
                 test(`should throw error when buffer is invalid ${Hex.of(buffer).toString()}}`, () => {
                     expect(() => {
                         assertValidNumericKindBuffer(buffer, context, maxBytes);
-                    }).toThrowError(InvalidRLP);
+                    }).toThrowError(InvalidEncodingError);
                 });
             }
         );
@@ -170,7 +166,7 @@ describe('HexBlobKind helpers', () => {
             test(`should throw error when data is invalid ${data}`, () => {
                 expect(() => {
                     assertValidHexBlobKindData(data, context);
-                }).toThrowError(InvalidRLP);
+                }).toThrowError(InvalidEncodingError);
             });
         });
     });
@@ -202,7 +198,7 @@ describe('FixedHexBlobKind helpers', () => {
                 test(`should throw error when data is invalid ${data}`, () => {
                     expect(() => {
                         assertFixedHexBlobKindData(data, context, bytes);
-                    }).toThrowError(InvalidRLP);
+                    }).toThrowError(InvalidEncodingError);
                 });
             }
         );
@@ -224,12 +220,12 @@ describe('FixedHexBlobKind helpers', () => {
 
         invalidFixedHexBlobKindBufferTestCases.forEach(
             ({ buffer, context, bytes }) => {
-                test(`should throw error when buffer is invalid ${stringifyData(
+                test(`should throw error when buffer is invalid ${fastJsonStableStringify(
                     buffer
                 )}`, () => {
                     expect(() => {
                         assertFixedHexBlobKindBuffer(buffer, context, bytes);
-                    }).toThrowError(InvalidRLP);
+                    }).toThrowError(InvalidEncodingError);
                 });
             }
         );
@@ -256,12 +252,12 @@ describe('CompactFixedHexBlobKind helpers', () => {
 
         invalidCompactFixedHexBlobKindBufferTestCases.forEach(
             ({ buffer, context, bytes }) => {
-                test(`should throw error when buffer is invalid ${stringifyData(
+                test(`should throw error when buffer is invalid ${fastJsonStableStringify(
                     buffer
                 )}`, () => {
                     expect(() => {
                         assertCompactFixedHexBlobBuffer(buffer, context, bytes);
-                    }).toThrowError(InvalidRLP);
+                    }).toThrowError(InvalidEncodingError);
                 });
             }
         );

@@ -5,6 +5,12 @@ import {
     RetrieveRawTransactionByID,
     ThorNetworks
 } from '../../../src';
+import log from 'loglevel';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
+
+const logger = log.getLogger(
+    'TEST:UNIT!packages/thorest/tests/thor/transactions/RetrieveRawTransactionByIID.testnet.test.ts'
+);
 
 describe('RetrieveRawTransactionByID testnet tests', () => {
     test('ok <- askTo', async () => {
@@ -13,6 +19,6 @@ describe('RetrieveRawTransactionByID testnet tests', () => {
         );
         const httpClient = FetchHttpClient.at(ThorNetworks.MAINNET);
         const r = await RetrieveRawTransactionByID.of(txId).askTo(httpClient);
-        console.log(JSON.stringify(r, null, 2));
+        logger.debug(fastJsonStableStringify(r));
     });
 });

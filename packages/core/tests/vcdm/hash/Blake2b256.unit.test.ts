@@ -1,6 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { InvalidOperation } from '@vechain/sdk-errors';
-import { Blake2b256, Hex } from '../../../src';
+import { Blake2b256, Hex, IllegalArgumentError } from '../../../src';
 import { CONTENT, NO_CONTENT } from './fixture';
 
 // Hex on purpose because it must be equal to the returned HexUInt hash.
@@ -41,6 +40,6 @@ describe('Blake2b256 class tests', () => {
     });
 
     test('Throw an exception for illegal content', () => {
-        expect(() => Blake2b256.of('0xfoe')).toThrow(InvalidOperation);
+        expect(() => Blake2b256.of('0xfoe')).toThrow(IllegalArgumentError);
     });
 });

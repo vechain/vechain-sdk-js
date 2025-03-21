@@ -4,12 +4,18 @@
  * encryption, decryption, and validation functionality.
  */
 import * as n_utils from '@noble/curves/abstract/utils';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { Address, Hex, Keccak256 } from '../../../vcdm';
-import { InvalidKeystoreParams, stringifyData } from '@vechain/sdk-errors';
+import { InvalidKeystoreError, InvalidPasswordError } from '../../../errors';
 import { Secp256k1 } from '../../../secp256k1';
 import { ctr } from '@noble/ciphers/aes';
 import { scrypt } from '@noble/hashes/scrypt';
 import { type Keystore, type KeystoreAccount } from '../../types';
+
+/**
+ * Full Qualified Path
+ */
+const FQP = 'packages/core/src/keystore/cryptography/experimental/keystore.ts!';
 
 /**
  * The cryptographic algorithm used to store the private key in the
@@ -119,7 +125,7 @@ interface ScryptParams {
  *
  * @param {Keystore} keystore - The key store object.
  * @returns {ScryptParams} - The decryption key-derivation function parameters.
- * @throws {InvalidKeystoreParams}
+ * @throws {InvalidKeystoreError} If decoding fails.
  *
  * @see {decryptKeystore}
  * @see {encodeScryptParams}
@@ -131,19 +137,18 @@ function decodeScryptParams(keystore: Keystore): ScryptParams {
     const p: number = keystore.crypto.kdfparams.p;
     // Make sure N is a power of 2
     if (N <= 0 || (N & (N - 1)) !== 0)
-        throw new InvalidKeystoreParams(
-            '(EXPERIMENTAL) keystore.decodeScryptParams()',
+        throw new InvalidKeystoreError(
+            `${FQP}decodeScryptParams(keystore: Keystore): ScryptParams`,
             'Decryption failed: invalid  keystore.crypto.kdfparams.n parameter.',
             {
-                keystore,
-                N
+                keystore
             }
         );
 
     // Make sure r and p are positive
     if (r <= 0 || p <= 0)
-        throw new InvalidKeystoreParams(
-            '(EXPERIMENTAL) keystore.decodeScryptParams()',
+        throw new InvalidKeystoreError(
+            `${FQP}decodeScryptParams(keystore: Keystore): ScryptParams`,
             'Decryption failed: both keystore.crypto.kdfparams.r or keystore.crypto.kdfparams.p parameter must be > 0.',
             {
                 keystore,
@@ -154,8 +159,8 @@ function decodeScryptParams(keystore: Keystore): ScryptParams {
     const dkLen = keystore.crypto.kdfparams.dklen;
 
     if (dkLen !== KEYSTORE_CRYPTO_PARAMS_DKLEN)
-        throw new InvalidKeystoreParams(
-            '(EXPERIMENTAL) keystore.decodeScryptParams()',
+        throw new InvalidKeystoreError(
+            `${FQP}decodeScryptParams(keystore: Keystore): ScryptParams`,
             `Decryption failed: keystore.crypto.kdfparams.dklen parameter must be ${KEYSTORE_CRYPTO_PARAMS_DKLEN}`,
             {
                 keystore,
@@ -185,7 +190,7 @@ function decodeScryptParams(keystore: Keystore): ScryptParams {
  * - p: Parallelization parameter,
  * - r: Block size parameter.
  * @returns {ScryptParams} - The encoded scrypt parameters.
- * @throws {InvalidKeystoreParams}
+ * @throws {InvalidKeystoreError} - If encryption fails.
  *
  * @see {decodeScryptParams}
  * @see {encryptKeystore}
@@ -211,18 +216,17 @@ function encodeScryptParams(options: EncryptOptions): ScryptParams {
     }
 
     if (N <= 0 || (BigInt(N) & BigInt(N - 1)) !== BigInt(0))
-        throw new InvalidKeystoreParams(
-            '(EXPERIMENTAL) keystore.encodeScryptParams()',
+        throw new InvalidKeystoreError(
+            `${FQP}encodeScryptParams(options: EncryptOptions): ScryptParams`,
             'Encryption failed: invalid options.scrypt.N parameter.',
             {
-                options,
-                N
+                options
             }
         );
 
     if (r <= 0 || !Number.isSafeInteger(r))
-        throw new InvalidKeystoreParams(
-            '(EXPERIMENTAL) keystore.encodeScryptParams()',
+        throw new InvalidKeystoreError(
+            `${FQP}encodeScryptParams(options: EncryptOptions): ScryptParams`,
             'Encryption failed: invalid options.scrypt.r parameter.',
             {
                 options,
@@ -231,8 +235,8 @@ function encodeScryptParams(options: EncryptOptions): ScryptParams {
         );
 
     if (p <= 0 || !Number.isSafeInteger(p))
-        throw new InvalidKeystoreParams(
-            '(EXPERIMENTAL) keystore.encodeScryptParams()',
+        throw new InvalidKeystoreError(
+            `${FQP}encodeScryptParams(options: EncryptOptions): ScryptParams`,
             'Encryption failed: invalid options.scrypt.p parameter.',
             {
                 options,
@@ -317,7 +321,7 @@ function encrypt(privateKey: Uint8Array, password: Uint8Array): Keystore {
  * @param password - The password to use for encryption, the memory location is wiped after use.
  * @param options - Parameters used to configure the **AES** encryption of the private key and the **Scrypt** derivation key function.
  * @returns {Keystore} - The encrypted keystore object.
- * @throws {InvalidKeystoreParams}
+ * @throws {InvalidKeystoreError} - If encryption fails.
  *
  * @remarks **The private key must not be represented as string to avoid the
  * [Memory Dumping](https://github.com/paulmillr/noble-hashes?tab=readme-ov-file#memory-dumping)
@@ -342,20 +346,20 @@ function encryptKeystore(
         // Override initialization vector.
         const iv = options.iv ?? Secp256k1.randomBytes(16);
         if (iv.length !== 16)
-            throw new InvalidKeystoreParams(
-                '(EXPERIMENTAL) keystore.encryptKeystore()',
+            throw new InvalidKeystoreError(
+                `${FQP}encryptKeystore(privateKey: Uint8Array, password: Uint8Array, options: EncryptOptions): Keystore`,
                 'Encryption failed: invalid options.iv length.',
-                { iv }
+                { options }
             );
 
         // Override the uuid.
         const uuidRandom = options.uuid ?? Secp256k1.randomBytes(16);
 
         if (uuidRandom.length !== 16)
-            throw new InvalidKeystoreParams(
-                '(EXPERIMENTAL) keystore.encryptKeystore()',
+            throw new InvalidKeystoreError(
+                `${FQP}encryptKeystore(privateKey: Uint8Array, password: Uint8Array, options: EncryptOptions): Keystore`,
                 'Encryption failed: invalid options.uuid length.',
-                { uuidRandom }
+                { options }
             );
 
         // Message Authentication Code prefix.
@@ -458,7 +462,7 @@ function decrypt(keystore: Keystore, password: Uint8Array): KeystoreAccount {
  * @param {Keystore} keystore - The keystore object to decrypt.
  * @param {Uint8Array} password - The password used for decryption, wiped after use.
  * @return {KeystoreAccount} - The decrypted keystore account object.
- * @throws {InvalidKeystoreParams}
+ * @throws {InvalidKeystoreError} - If decryption fails.
  *
  * @see {decodeScryptParams}
  * @see {decrypt}
@@ -469,22 +473,22 @@ function decryptKeystore(
 ): KeystoreAccount {
     try {
         if (keystore.crypto.cipher.toLowerCase() !== KEYSTORE_CRYPTO_CIPHER)
-            throw new InvalidKeystoreParams(
-                '(EXPERIMENTAL) keystore.decryptKeystore()',
+            throw new InvalidKeystoreError(
+                `${FQP}decryptKeystore(keystore: Keystore, password: Uint8Array): KeystoreAccount`,
                 'Decryption failed: unsupported crypto cipher algorithm.',
                 { cipher: keystore.crypto.cipher.toLowerCase() }
             );
 
         if (keystore.crypto.kdf.toLowerCase() !== KEYSTORE_CRYPTO_KDF)
-            throw new InvalidKeystoreParams(
-                '(EXPERIMENTAL) keystore.decryptKeystore()',
+            throw new InvalidKeystoreError(
+                `${FQP}decryptKeystore(keystore: Keystore, password: Uint8Array): KeystoreAccount`,
                 'Decryption failed: unsupported crypto key derivation function.',
                 { keyDerivationFunction: keystore.crypto.kdf.toLowerCase() }
             );
 
         if (keystore.version !== KEYSTORE_VERSION)
-            throw new InvalidKeystoreParams(
-                '(EXPERIMENTAL) keystore.decryptKeystore()',
+            throw new InvalidKeystoreError(
+                `${FQP}decryptKeystore(keystore: Keystore, password: Uint8Array): KeystoreAccount`,
                 'Decryption failed: unsupported keystore version.',
                 { version: keystore.version }
             );
@@ -502,8 +506,8 @@ function decryptKeystore(
             Keccak256.of(n_utils.concatBytes(key.slice(16, 32), ciphertext))
                 .digits
         ) {
-            throw new InvalidKeystoreParams(
-                '(EXPERIMENTAL) keystore.decryptKeystore()',
+            throw new InvalidPasswordError(
+                `${FQP}decryptKeystore(keystore: Keystore, password: Uint8Array): KeystoreAccount`,
                 'Decryption failed: Invalid Password for the given keystore.',
                 // @NOTE: We are not exposing the password in the error data for security reasons.
                 {
@@ -520,8 +524,8 @@ function decryptKeystore(
             keystore.address !== '' &&
             address !== Address.checksum(Hex.of(keystore.address))
         ) {
-            throw new InvalidKeystoreParams(
-                '(EXPERIMENTAL) keystore.decryptKeystore()',
+            throw new InvalidKeystoreError(
+                `${FQP}decryptKeystore(keystore: Keystore, password: Uint8Array): KeystoreAccount`,
                 'Decryption failed: address/password mismatch.',
                 { keystoreAddress: keystore.address }
             );
@@ -552,7 +556,7 @@ function decryptKeystore(
  */
 function isValid(keystore: Keystore): boolean {
     try {
-        const copy = JSON.parse(stringifyData(keystore)) as Keystore;
+        const copy = JSON.parse(fastJsonStableStringify(keystore)) as Keystore;
         if (
             copy.crypto.cipher.toLowerCase() === KEYSTORE_CRYPTO_CIPHER &&
             copy.crypto.kdf.toLowerCase() === KEYSTORE_CRYPTO_KDF &&

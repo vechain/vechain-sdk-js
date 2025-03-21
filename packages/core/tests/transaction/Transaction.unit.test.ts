@@ -1,20 +1,17 @@
 import { describe, expect, test } from '@jest/globals';
 import {
-    InvalidDataType,
-    InvalidSecp256k1PrivateKey,
-    InvalidTransactionField,
-    NotDelegatedTransaction,
-    UnavailableTransactionField
-} from '@vechain/sdk-errors';
-import {
     Address,
     HexUInt,
+    IllegalArgumentError,
+    InvalidPrivateKeyError,
+    NoSuchElementError,
     Secp256k1,
     Transaction,
-    type TransactionBody,
-    type TransactionClause,
     Units,
-    VTHO
+    UnsupportedOperationError,
+    VTHO,
+    type TransactionBody,
+    type TransactionClause
 } from '../../src';
 
 const DelegatorPrivateKeyFix = HexUInt.of(
@@ -150,15 +147,9 @@ describe('Transaction class tests', () => {
                         .getTransactionHash()
                         .isEqual(TransactionFixture.undelegated.transactionHash)
                 ).toBe(true);
-                expect(() => actual.id).toThrowError(
-                    UnavailableTransactionField
-                );
-                expect(() => actual.origin).toThrowError(
-                    UnavailableTransactionField
-                );
-                expect(() => actual.gasPayer).toThrowError(
-                    NotDelegatedTransaction
-                );
+                expect(() => actual.id).toThrowError(NoSuchElementError);
+                expect(() => actual.origin).toThrowError(NoSuchElementError);
+                expect(() => actual.gasPayer).toThrowError(NoSuchElementError);
                 expect(actual.encoded).toEqual(expected.encodedUnsigned);
                 expect(actual.intrinsicGas.isEqual(expected.intrinsicGas)).toBe(
                     true
@@ -176,15 +167,9 @@ describe('Transaction class tests', () => {
                         .getTransactionHash()
                         .isEqual(expected.transactionHash)
                 ).toBe(true);
-                expect(() => actual.id).toThrowError(
-                    UnavailableTransactionField
-                );
-                expect(() => actual.origin).toThrowError(
-                    UnavailableTransactionField
-                );
-                expect(() => actual.gasPayer).toThrowError(
-                    UnavailableTransactionField
-                );
+                expect(() => actual.id).toThrowError(NoSuchElementError);
+                expect(() => actual.origin).toThrowError(NoSuchElementError);
+                expect(() => actual.gasPayer).toThrowError(NoSuchElementError);
                 expect(actual.encoded).toEqual(expected.encodedUnsigned);
                 expect(actual.intrinsicGas.isEqual(expected.intrinsicGas)).toBe(
                     true
@@ -202,15 +187,9 @@ describe('Transaction class tests', () => {
                         .getTransactionHash()
                         .isEqual(expected.transactionHash)
                 ).toBe(true);
-                expect(() => actual.id).toThrowError(
-                    UnavailableTransactionField
-                );
-                expect(() => actual.origin).toThrowError(
-                    UnavailableTransactionField
-                );
-                expect(() => actual.gasPayer).toThrowError(
-                    UnavailableTransactionField
-                );
+                expect(() => actual.id).toThrowError(NoSuchElementError);
+                expect(() => actual.origin).toThrowError(NoSuchElementError);
+                expect(() => actual.gasPayer).toThrowError(NoSuchElementError);
                 expect(actual.encoded).toEqual(expected.encodedUnsigned);
                 expect(actual.intrinsicGas.isEqual(expected.intrinsicGas)).toBe(
                     true
@@ -261,9 +240,7 @@ describe('Transaction class tests', () => {
                         .isEqual(expected.transactionHash)
                 ).toBe(true);
                 expect(actual.origin.isEqual(SignerFix.address)).toBe(true);
-                expect(() => actual.gasPayer).toThrowError(
-                    NotDelegatedTransaction
-                );
+                expect(() => actual.gasPayer).toThrowError(NoSuchElementError);
                 expect(actual.id.isEqual(expected.signedTransactionId)).toBe(
                     true
                 );
@@ -338,7 +315,7 @@ describe('Transaction class tests', () => {
                         ...TransactionFixture.delegated.body,
                         blockRef: '0xFEE1DEAD'
                     })
-                ).toThrowError(InvalidTransactionField);
+                ).toThrowError(IllegalArgumentError);
             });
         });
     });
@@ -354,16 +331,10 @@ describe('Transaction class tests', () => {
                 expect(actual).toBeInstanceOf(Transaction);
                 expect(actual.body).toEqual(expected.body);
                 expect(actual.signature).toBeUndefined();
-                expect(() => actual.origin).toThrowError(
-                    UnavailableTransactionField
-                );
-                expect(() => actual.gasPayer).toThrowError(
-                    NotDelegatedTransaction
-                );
+                expect(() => actual.origin).toThrowError(NoSuchElementError);
+                expect(() => actual.gasPayer).toThrowError(NoSuchElementError);
                 expect(actual.isDelegated).toBe(false);
-                expect(() => actual.id).toThrowError(
-                    UnavailableTransactionField
-                );
+                expect(() => actual.id).toThrowError(NoSuchElementError);
                 expect(actual.isSigned).toBe(false);
                 expect(actual.getTransactionHash()).toBeDefined();
                 expect(actual.encoded).toBeDefined();
@@ -377,9 +348,7 @@ describe('Transaction class tests', () => {
                 expect(actual.body).toEqual(expected.body);
                 expect(() => actual.signature).toBeDefined();
                 expect(actual.origin).toBeDefined();
-                expect(() => actual.gasPayer).toThrowError(
-                    NotDelegatedTransaction
-                );
+                expect(() => actual.gasPayer).toThrowError(NoSuchElementError);
                 expect(actual.isDelegated).toBe(false);
                 expect(actual.id).toBeDefined();
                 expect(actual.isSigned).toBe(true);
@@ -399,16 +368,10 @@ describe('Transaction class tests', () => {
                 expect(actual).toBeInstanceOf(Transaction);
                 expect(actual.body).toEqual(expected.body);
                 expect(actual.signature).toBeUndefined();
-                expect(() => actual.origin).toThrowError(
-                    UnavailableTransactionField
-                );
-                expect(() => actual.gasPayer).toThrowError(
-                    UnavailableTransactionField
-                );
+                expect(() => actual.origin).toThrowError(NoSuchElementError);
+                expect(() => actual.gasPayer).toThrowError(NoSuchElementError);
                 expect(actual.isDelegated).toBe(true);
-                expect(() => actual.id).toThrowError(
-                    UnavailableTransactionField
-                );
+                expect(() => actual.id).toThrowError(NoSuchElementError);
                 expect(actual.isSigned).toBe(false);
                 expect(actual.getTransactionHash()).toBeDefined();
                 expect(actual.getTransactionHash().bytes.length).toBe(32);
@@ -451,16 +414,10 @@ describe('Transaction class tests', () => {
                 expect(actual).toBeInstanceOf(Transaction);
                 expect(actual.body).toEqual(expected.body);
                 expect(actual.signature).toBeUndefined();
-                expect(() => actual.origin).toThrowError(
-                    UnavailableTransactionField
-                );
-                expect(() => actual.gasPayer).toThrowError(
-                    UnavailableTransactionField
-                );
+                expect(() => actual.origin).toThrowError(NoSuchElementError);
+                expect(() => actual.gasPayer).toThrowError(NoSuchElementError);
                 expect(actual.isDelegated).toBe(true);
-                expect(() => actual.id).toThrowError(
-                    UnavailableTransactionField
-                );
+                expect(() => actual.id).toThrowError(NoSuchElementError);
                 expect(actual.isSigned).toBe(false);
                 expect(actual.getTransactionHash()).toBeDefined();
                 expect(actual.getTransactionHash().bytes.length).toBe(32);
@@ -502,7 +459,7 @@ describe('Transaction class tests', () => {
                             .encodedUnsigned,
                         false
                     )
-                ).toThrowError(InvalidTransactionField);
+                ).toThrowError(NoSuchElementError);
             });
         });
     });
@@ -634,7 +591,7 @@ describe('Transaction class tests', () => {
                     }
                 ];
                 expect(() => Transaction.intrinsicGas(clauses)).toThrowError(
-                    InvalidDataType
+                    IllegalArgumentError
                 );
             });
 
@@ -647,7 +604,7 @@ describe('Transaction class tests', () => {
                     }
                 ];
                 expect(() => Transaction.intrinsicGas(clauses)).toThrowError(
-                    InvalidDataType
+                    IllegalArgumentError
                 );
             });
         });
@@ -667,7 +624,7 @@ describe('Transaction class tests', () => {
                 Transaction.of(TransactionFixture.delegated.body).sign(
                     SignerFix.privateKey
                 )
-            ).toThrowError(InvalidTransactionField);
+            ).toThrowError(UnsupportedOperationError);
         });
 
         test('Throw <- invalid private keys', () => {
@@ -675,7 +632,7 @@ describe('Transaction class tests', () => {
                 Transaction.of(TransactionFixture.undelegated.body).sign(
                     HexUInt.of('0xF00DBABE').bytes // https://en.wikipedia.org/wiki/Hexspeak
                 )
-            ).toThrowError(InvalidSecp256k1PrivateKey);
+            ).toThrowError(InvalidPrivateKeyError);
         });
     });
 
@@ -706,7 +663,7 @@ describe('Transaction class tests', () => {
                         Address.ofPrivateKey(SignerFix.privateKey),
                         SignerFix.privateKey
                     );
-            }).toThrowError(NotDelegatedTransaction);
+            }).toThrowError(UnsupportedOperationError);
         });
 
         test('Throw <- unsigned', () => {
@@ -717,7 +674,7 @@ describe('Transaction class tests', () => {
                     Address.ofPrivateKey(SignerFix.privateKey),
                     SignerFix.privateKey
                 );
-            }).toThrowError(InvalidTransactionField);
+            }).toThrowError(NoSuchElementError);
         });
 
         test('Throw <- invalid private keys - delegator', () => {
@@ -727,7 +684,7 @@ describe('Transaction class tests', () => {
                 ).signAsSender(
                     HexUInt.of('0xF00DBABE').bytes // https://en.wikipedia.org/wiki/Hexspeak
                 )
-            ).toThrowError(InvalidSecp256k1PrivateKey);
+            ).toThrowError(InvalidPrivateKeyError);
         });
     });
 
@@ -755,7 +712,7 @@ describe('Transaction class tests', () => {
                 Transaction.of(
                     TransactionFixture.undelegated.body
                 ).signAsSender(SignerFix.privateKey)
-            ).toThrowError(NotDelegatedTransaction);
+            ).toThrowError(UnsupportedOperationError);
         });
 
         test('Throw <- invalid private keys - signer', () => {
@@ -765,7 +722,7 @@ describe('Transaction class tests', () => {
                 ).signAsSender(
                     HexUInt.of('0xF00DBABE').bytes // https://en.wikipedia.org/wiki/Hexspeak
                 )
-            ).toThrowError(InvalidSecp256k1PrivateKey);
+            ).toThrowError(InvalidPrivateKeyError);
         });
     });
 
@@ -795,7 +752,7 @@ describe('Transaction class tests', () => {
                     SignerFix.privateKey,
                     DelegatorFix.privateKey
                 )
-            ).toThrowError(NotDelegatedTransaction);
+            ).toThrowError(UnsupportedOperationError);
         });
 
         test('Throw <- invalid private keys - signer', () => {
@@ -806,7 +763,7 @@ describe('Transaction class tests', () => {
                     HexUInt.of('0xF00DBABE').bytes, // https://en.wikipedia.org/wiki/Hexspeak
                     DelegatorFix.privateKey
                 )
-            ).toThrowError(InvalidSecp256k1PrivateKey);
+            ).toThrowError(InvalidPrivateKeyError);
         });
 
         test('Throw <- invalid private keys - delegator', () => {
@@ -817,7 +774,7 @@ describe('Transaction class tests', () => {
                     SignerFix.privateKey,
                     HexUInt.of('0xF00DBABE').bytes // https://en.wikipedia.org/wiki/Hexspeak
                 );
-            }).toThrowError(InvalidSecp256k1PrivateKey);
+            }).toThrowError(InvalidPrivateKeyError);
         });
     });
 });

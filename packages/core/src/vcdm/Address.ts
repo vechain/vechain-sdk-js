@@ -1,14 +1,15 @@
-import { Keccak256 } from './hash/Keccak256';
-import { HDKey } from '../hdkey/HDKey';
+import { HDKey } from '../hdkey';
 import { Hex } from './Hex';
 import { HexUInt } from './HexUInt';
-import { Secp256k1 } from '../secp256k1/Secp256k1';
+import { IllegalArgumentError } from '../errors';
+import { Keccak256 } from './hash';
+import { Secp256k1 } from '../secp256k1';
 import { Txt } from './Txt';
-import {
-    InvalidDataType,
-    InvalidHDKey,
-    InvalidSecp256k1PrivateKey
-} from '@vechain/sdk-errors';
+
+/**
+ * Full Qualified Path.
+ */
+const FQP = 'packages/core/src/vcdm/Address.ts!';
 
 /**
  * Represents a VeChain Address as unsigned integer.
@@ -64,7 +65,7 @@ class Address extends HexUInt {
      *
      * @returns {Address} The converted hexadecimal unsigned integer.
      *
-     * @throws {InvalidDataType} If the expression is not a valid hexadecimal positive integer expression.
+     * @throws {IllegalArgumentError} If the expression is not a valid hexadecimal positive integer expression.
      */
     public static of(
         exp: bigint | number | string | Uint8Array | HexUInt
@@ -79,11 +80,11 @@ class Address extends HexUInt {
                 () => addressChecksummed.substring(2)
             );
         } catch (error) {
-            throw new InvalidDataType(
-                'Address.of',
+            throw new IllegalArgumentError(
+                `${FQP}Address.of(exp: bigint | number | string | Uint8Array | HexUInt): Address`,
                 'not a valid hexadecimal positive integer expression',
                 { exp: `${exp}` },
-                error
+                error instanceof Error ? error : undefined
             );
         }
     }
@@ -97,6 +98,8 @@ class Address extends HexUInt {
      *
      * @returns {Address} The converted address.
      *
+     * @throws {IllegalArgumentError} If the `privateKey` is invalid.
+     *
      * @remarks Security auditable method, depends on
      * * {@link Secp256k1.derivePublicKey}.
      */
@@ -109,14 +112,11 @@ class Address extends HexUInt {
                 Secp256k1.derivePublicKey(privateKey, isCompressed)
             );
         } catch (error) {
-            if (error instanceof InvalidSecp256k1PrivateKey) {
-                throw error;
-            }
-            throw new InvalidDataType(
-                'Address.ofPrivateKey',
+            throw new IllegalArgumentError(
+                `${FQP}Address.ofPrivateKey(privateKey: Uint8Array, isCompressed: boolean): Address`,
                 'not a valid private key',
-                { privateKey: 'private key is obfuscated' },
-                error
+                { privateKey: `obfuscated`, isCompressed: `${isCompressed}` },
+                error instanceof Error ? error : undefined
             );
         }
     }
@@ -128,7 +128,7 @@ class Address extends HexUInt {
      *
      * @returns {Address} The converted address.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audit method, depends on
      * * {@link Secp256k1.inflatePublicKey}.
      */
     public static ofPublicKey(publicKey: Uint8Array): Address {
@@ -139,11 +139,11 @@ class Address extends HexUInt {
             ).bytes;
             return Address.of(publicKeyHash.slice(12));
         } catch (error) {
-            throw new InvalidDataType(
-                'Address.ofPublicKey',
+            throw new IllegalArgumentError(
+                `${FQP}Address.ofPublicKey(publicKey: Uint8Array): Address`,
                 'not a valid public key',
                 { publicKey: `${publicKey}` },
-                error
+                error instanceof Error ? error : undefined
             );
         }
     }
@@ -154,10 +154,6 @@ class Address extends HexUInt {
      * and a [BIP44 Derivation Path](https://github.com/satoshilabs/slips/blob/master/slip-0044.md)
      * as in the examples.
      *
-     * Secure audit function.
-     * - {@link bip32.HDKey}(https://github.com/paulmillr/scure-bip32)
-     * - {@link HDKey}
-     *
      * @example `m/0` (default)
      * @example `m/0/2`
      * @example `m/0/2/4/6`
@@ -165,7 +161,11 @@ class Address extends HexUInt {
      * @param {string[]} mnemonic - Mnemonic used to generate the HD node.
      * @param {string} [path='m/0'] - The derivation path from the current node.
      * @return {Address} - The derived address.
-     * @throws {InvalidHDKey}
+     * @throws {IllegalArgumentError} - If the `path` is invalid.
+     *
+     * @remarks Security audit function
+     * - {@link Address.ofPublicKey}
+     * - {@link bip32.HDKey}(https://github.com/paulmillr/scure-bip32)
      *
      */
     public static ofMnemonic(
@@ -179,11 +179,11 @@ class Address extends HexUInt {
                 root.derive(path).publicKey as Uint8Array
             );
         } catch (error) {
-            throw new InvalidHDKey(
-                'mnemonic.deriveAddress()',
+            throw new IllegalArgumentError(
+                `${FQP}Address.ofMnemonic(mnemonic: string[], path: string): Address`,
                 'Invalid derivation path given as input.',
                 { derivationPath: path },
-                error
+                error instanceof Error ? error : undefined
             );
         }
     }

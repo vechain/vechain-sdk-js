@@ -11,6 +11,7 @@ export * from './hash';
 export * from './Hex';
 export * from './HexInt';
 export * from './HexUInt';
+export * from './HexUInt32';
 export * from './Int';
 export * from './Mnemonic';
 export * from './Nonce';

@@ -1,5 +1,4 @@
-import { InvalidAbiDataToEncodeOrDecode } from '@vechain/sdk-errors';
-import { Address, HexUInt } from '../../../src';
+import { Address, HexUInt, InvalidAbiEncodingTypeError } from '../../../src';
 import { Hex } from '../../../src/vcdm/Hex';
 import { generateRandomValidAddress } from '../../fixture';
 
@@ -419,7 +418,7 @@ const invalidTopicsEventTestCases = [
             fromRandomAddress,
             toRandomAddress
         ],
-        expectedError: InvalidAbiDataToEncodeOrDecode
+        expectedError: InvalidAbiEncodingTypeError
     },
     {
         event: rewardDistributedEvent,
@@ -431,7 +430,7 @@ const invalidTopicsEventTestCases = [
             toRandomAddress,
             fromRandomAddress
         ],
-        expectedError: InvalidAbiDataToEncodeOrDecode
+        expectedError: InvalidAbiEncodingTypeError
     }
 ];
 

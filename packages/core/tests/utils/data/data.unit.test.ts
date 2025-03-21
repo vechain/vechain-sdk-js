@@ -6,7 +6,7 @@ import {
     invalidDecodeBytes32StringTestCases,
     invalidEncodeBytes32StringTestCases
 } from './fixture';
-import { stringifyData } from '@vechain/sdk-errors';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 /**
  * Hex data tests
@@ -21,7 +21,7 @@ describe('dataUtils', () => {
          * Test cases for decodeBytes32String function.
          */
         decodeBytes32StringTestCases.forEach(({ value, expected }) => {
-            test(`should return ${expected} for ${stringifyData(
+            test(`should return ${expected} for ${fastJsonStableStringify(
                 value
             )}`, () => {
                 expect(dataUtils.decodeBytes32String(value)).toBe(expected);
@@ -33,7 +33,7 @@ describe('dataUtils', () => {
          */
         invalidDecodeBytes32StringTestCases.forEach(
             ({ value, expectedError }) => {
-                test(`should throw for ${stringifyData(value)}`, () => {
+                test(`should throw for ${fastJsonStableStringify(value)}`, () => {
                     expect(() =>
                         dataUtils.decodeBytes32String(value)
                     ).toThrowError(expectedError);
@@ -51,7 +51,7 @@ describe('dataUtils', () => {
          */
         encodeBytes32StringTestCases.forEach(
             ({ value, zeroPadding, expected }) => {
-                test(`should return ${expected} for ${stringifyData(
+                test(`should return ${expected} for ${fastJsonStableStringify(
                     value
                 )}`, () => {
                     expect(
@@ -66,7 +66,7 @@ describe('dataUtils', () => {
          */
         invalidEncodeBytes32StringTestCases.forEach(
             ({ value, zeroPadding, expectedError }) => {
-                test(`should throw for ${stringifyData(value)}`, () => {
+                test(`should throw for ${fastJsonStableStringify(value)}`, () => {
                     expect(() =>
                         dataUtils.encodeBytes32String(value, zeroPadding)
                     ).toThrowError(expectedError);

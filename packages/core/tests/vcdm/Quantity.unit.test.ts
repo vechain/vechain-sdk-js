@@ -1,6 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { InvalidDataType } from '@vechain/sdk-errors';
-import { Hex, Quantity } from '../../src';
+import { Hex, IllegalArgumentError, Quantity } from '../../src';
 
 /**
  * Test Quantity class.
@@ -33,11 +32,11 @@ describe('Quantity class tests', () => {
         });
 
         test('Throw an error if the passed argument is negative bigint', () => {
-            expect(() => Quantity.of(-12357n)).toThrow(InvalidDataType);
+            expect(() => Quantity.of(-12357n)).toThrow(IllegalArgumentError);
         });
 
         test('Throw an error if the passed argument is negative number', () => {
-            expect(() => Quantity.of(-12357)).toThrow(InvalidDataType);
+            expect(() => Quantity.of(-12357)).toThrow(IllegalArgumentError);
         });
     });
 });

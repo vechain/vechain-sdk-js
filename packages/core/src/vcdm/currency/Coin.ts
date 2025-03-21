@@ -1,7 +1,12 @@
 import { type Currency } from './Currency';
 import { type FixedPointNumber } from '../FixedPointNumber';
 import { Txt } from '../Txt';
-import { InvalidDataType } from '@vechain/sdk-errors';
+import { IllegalArgumentError } from '../../errors';
+
+/**
+ * Full Qualified Path
+ */
+const FQP = 'packages/core/src/vcdm/currency/Coin.ts!';
 
 /**
  * Abstract class representing a coin, implementing the Currency interface.
@@ -94,10 +99,14 @@ abstract class Coin implements Currency {
         if (this.code.isEqual(that.code)) {
             return this.value.compareTo(that.value);
         }
-        throw new InvalidDataType('Coin.compareTo', 'not VET currency', {
-            // eslint-disable-next-line sonarjs/no-base-to-string, @typescript-eslint/no-base-to-string
-            that: `${that}` // Needed to serialize bigint value.
-        });
+        throw new IllegalArgumentError(
+            `${FQP}<Coin>.compareTo(that: Currency): number`,
+            'not VET currency',
+            {
+                // eslint-disable-next-line sonarjs/no-base-to-string, @typescript-eslint/no-base-to-string
+                that: `${that}` // Needed to serialize bigint value.
+            }
+        );
     }
 
     /**

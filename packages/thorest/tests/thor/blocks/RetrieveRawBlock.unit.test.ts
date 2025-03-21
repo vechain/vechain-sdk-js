@@ -1,11 +1,11 @@
 import { describe, test, expect, jest } from '@jest/globals';
-import { type FetchHttpClient } from '../../../src/http';
 import {
+    type FetchHttpClient,
     type RawBlockResponseJSON,
     RawBlockResponse,
     RetrieveRawBlock
-} from '../../../src/thor/blocks';
-import { Revision } from '@vechain/sdk-core';
+} from '../../../src';
+import { IllegalArgumentError, Revision } from '@vechain/sdk-core';
 
 const mockHttpClient = <T>(response: T): FetchHttpClient => {
     return {
@@ -47,8 +47,6 @@ describe('RetrieveBlock unit tests', () => {
                     mockIncompleteRawBlock as RawBlockResponseJSON
                 )
             )
-        ).rejects.toThrowError(
-            /Method 'Hex.of' failed.\s*-Reason: 'not an hexadecimal expression'\s*-Parameters:\s*{\s*"exp": "undefined"\s*}\s*-Internal error:\s*Uint8Array expected/
-        );
+        ).rejects.toThrowError(IllegalArgumentError);
     });
 });

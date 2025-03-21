@@ -1,11 +1,13 @@
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { Address, Blake2b256, HexUInt, Txt } from '../vcdm';
 import { Secp256k1 } from '../secp256k1';
-import {
-    CertificateSignatureMismatch,
-    InvalidDataType
-} from '@vechain/sdk-errors';
 import { type CertificateData } from './CertificateData';
+import { IllegalArgumentError, InvalidSignatureError } from '../errors';
+
+/**
+ * Full Qualified Path
+ */
+const FQP = 'packages/core/src/certificate/Certificate.ts!';
 
 /**
  * The Certificate class provides functionality to create, sign, and verify certificates.
@@ -102,9 +104,9 @@ class Certificate implements CertificateData {
      * @param {string|undefined} [signature] - The signature of the certificate;
      * optional parameter.
      *
-     * @throws {InvalidDataType} If timestamp is not a positive safe integer.
-     * @throws {InvalidDataType} If signer is not a valid address.
-     * @throws {InvalidDataType} If signature is invalid.
+     * @throws {IllegalArgumentError} If timestamp is not a positive safe integer.
+     * @throws {IllegalArgumentError} If signer is not a valid address.
+     * @throws {IllegalArgumentError} If signature is invalid.
      *
      * @remarks
      * The `signer` address is represented lowercase and `0x` prefixed.
@@ -130,22 +132,22 @@ class Certificate implements CertificateData {
                             ? HexUInt.of(signature).alignToBytes().toString()
                             : signature;
                 } catch (e) {
-                    throw new InvalidDataType(
-                        'Certificate.constructor',
+                    throw new IllegalArgumentError(
+                        `${FQP}Certificate.constructor(purpose: string, payload: { type: string; content: string }, domain: string, timestamp: number, signer: string, signature?: string)`,
                         'invalid signature',
                         { signature },
-                        e
+                        e instanceof Error ? e : undefined
                     );
                 }
             } else
-                throw new InvalidDataType(
-                    'Certificate.constructor',
+                throw new IllegalArgumentError(
+                    `${FQP}Certificate.constructor(purpose: string, payload: { type: string; content: string }, domain: string, timestamp: number, signer: string, signature?: string)`,
                     'signer is not an address',
                     { signer }
                 );
         } else
-            throw new InvalidDataType(
-                'Certificate.constructor',
+            throw new IllegalArgumentError(
+                `${FQP}Certificate.constructor(purpose: string, payload: { type: string; content: string }, domain: string, timestamp: number, signer: string, signature?: string)`,
                 'not positive safe integer timestamp',
                 { timestamp }
             );
@@ -202,7 +204,7 @@ class Certificate implements CertificateData {
      *
      * @param {CertificateData} data - The data required to create the Certificate.
      * @return {Certificate} A new Certificate instance.
-     * @throws {InvalidDataType} If the provided data is invalid:
+     * @throws {IllegalArgumentError} If the provided data is invalid:
      * - if timestamp is not a positive safe integer;
      * - if signer is not a valid address;
      * - if signature is an invalid hexadecimal expression.
@@ -224,43 +226,43 @@ class Certificate implements CertificateData {
                 data.signature
             );
         } catch (e) {
-            throw new InvalidDataType(
-                'Certificate.of',
+            throw new IllegalArgumentError(
+                `${FQP}Certificate.of(data: CertificateData): Certificate`,
                 'invalid certificate data',
                 { certifiable: data },
-                e
+                e instanceof Error ? e : undefined
             );
         }
     }
 
-    /**
-     * Signs the current object using a given private key.
-     *
-     * The {@link signature} is computed encoding this object according
-     * the following normalization rules:
-     * - the {@link signature} property is ignored, because its value
-     *   is the result of this method.
-     * - the properties are sorted in ascending alphabetic order;
-     * - the key/value properties are delimited with `"` when serialized as JSON
-     *   before to be encoded as bytes;
-     * - any not meaningful blank characters are ignored;
-     * - the JSON representation of this object is byte encoded using the UTF-8
-     *   [normalization form for canonical composition](https://en.wikipedia.org/wiki/Unicode_equivalence#Normal_forms).
-     *
-     * @param {Uint8Array} privateKey - The private key used for signing.
-     * @return {this} The current instance after signing.
-     *
-     * @throws {InvalidOperation} - If a hash error occurs.
-     * @throws {InvalidSecp256k1PrivateKey} - If the private key is not a valid 32-byte private key.
-     *
-     * @remarks Security auditable method, depends on
-     * * {@link Blake2b256.of};
-     * * {@link Secp256k1.sign}.
-     *
-     * @see encode
-     * @see verify
-     */
     public sign(privateKey: Uint8Array): this {
+        /**
+         * Signs the current object using a given private key.
+         *
+         * The {@link signature} is computed encoding this object according
+         * the following normalization rules:
+         * - the {@link signature} property is ignored, because its value
+         *   is the result of this method.
+         * - the properties are sorted in ascending alphabetic order;
+         * - the key/value properties are delimited with `"` when serialized as JSON
+         *   before to be encoded as bytes;
+         * - any not meaningful blank characters are ignored;
+         * - the JSON representation of this object is byte encoded using the UTF-8
+         *   [normalization form for canonical composition](https://en.wikipedia.org/wiki/Unicode_equivalence#Normal_forms).
+         *
+         * @param {Uint8Array} privateKey - The private key used for signing.
+         * @return {this} The current instance after signing.
+         *
+         * @throws {InvalidPrivateKeyError} - If the private key is not a valid 32-byte private key.
+         * @throws {UnsupportedOperationError} - If a hash error occurs.
+         *
+         * @remarks Security auditable method, depends on
+         * * {@link Blake2b256.of};
+         * * {@link Secp256k1.sign}.
+         *
+         * @see encode
+         * @see verify
+         */
         this.signature = undefined;
         this.signature = HexUInt.of(
             Secp256k1.sign(
@@ -274,7 +276,7 @@ class Certificate implements CertificateData {
     /**
      * Verifies the certificate by checking its signature.
      *
-     * @throws {CertificateSignatureMismatch} if the certificate
+     * @throws {InvalidSignatureError} if the certificate
      * - is not signed, or
      * - the signature does not match the signer's public key.
      *
@@ -288,8 +290,8 @@ class Certificate implements CertificateData {
      */
     public verify(): void {
         if (!this.isSigned())
-            throw new CertificateSignatureMismatch(
-                'Certificate.verify',
+            throw new InvalidSignatureError(
+                `${FQP}<Certificate>.verify(privateKey: Uint8Array): void`,
                 'signature missing',
                 { certificate: this }
             );
@@ -302,8 +304,8 @@ class Certificate implements CertificateData {
             )
         );
         if (signer.toString().toLowerCase() !== this.signer)
-            throw new CertificateSignatureMismatch(
-                'Certificate.verify',
+            throw new InvalidSignatureError(
+                `${FQP}<Certificate>.verify(privateKey: Uint8Array): void`,
                 "signature doesn't match with signer's public key",
                 { certificate: this }
             );

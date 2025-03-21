@@ -1,8 +1,13 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
-import { InvalidDataType } from '@vechain/sdk-errors';
 import { Hex } from '../../vcdm/Hex';
 import { Txt } from '../../vcdm/Txt';
 import { ZERO_BYTES } from '../const';
+import { IllegalArgumentError } from '../../errors';
+
+/**
+ * Full Qualified Path
+ */
+const FQP = 'packages/core/src/utils/data/data.ts!';
 
 /**
  * Decodes a hexadecimal string representing a bytes32 value into a string.
@@ -11,12 +16,12 @@ import { ZERO_BYTES } from '../const';
  *
  * @param {string} hex - The hexadecimal string to decode.
  * @returns {string} - The decoded string value.
- * @throws {InvalidDataType}
+ * @throws {IllegalArgumentError} - If `hex` is not a 64 digit hexadecimal expression.
  */
 const decodeBytes32String = (hex: string): string => {
     if (!Hex.isValid(hex) || Hex.of(hex).digits.length !== 64)
-        throw new InvalidDataType(
-            'dataUtils.decodeBytes32String()',
+        throw new IllegalArgumentError(
+            `${FQP}decodeBytes32String(hex: string): string`,
             `Failed to decode value ${hex} to string. Value is not a valid hex string or it is not 64 characters long`,
             { value: hex }
         );
@@ -45,7 +50,7 @@ const decodeBytes32String = (hex: string): string => {
  * @param {string} value - The value to encode.
  * @param {'left' | 'right'} [zeroPadding='left'] - The type of zero padding to apply.
  * @returns {string} The encoded bytes32 string is a hexadecimal expression prefixed with `0x.
- * @throws {InvalidDataType}
+ * @throws {IllegalArgumentError} - If the encoding fails.
  */
 const encodeBytes32String = (
     value: string,
@@ -56,8 +61,8 @@ const encodeBytes32String = (
         const valueInBytes = Txt.of(value).bytes;
 
         if (valueInBytes.length > 32) {
-            throw new InvalidDataType(
-                'dataUtils.encodeBytes32String()',
+            throw new IllegalArgumentError(
+                `${FQP}encodeBytes32String(value: string, zeroPadding?: 'left' | 'right'): string`,
                 `Failed to encode value ${value} to bytes32 string. Value exceeds 32 bytes.`,
                 { value }
             );
@@ -68,11 +73,11 @@ const encodeBytes32String = (
             ? Hex.of(nc_utils.concatBytes(pad, valueInBytes)).toString()
             : Hex.of(nc_utils.concatBytes(valueInBytes, pad)).toString();
     } catch (e) {
-        throw new InvalidDataType(
-            'dataUtils.encodeBytes32String()',
+        throw new IllegalArgumentError(
+            `${FQP}encodeBytes32String(value: string, zeroPadding?: 'left' | 'right'): string`,
             `Failed to encode value ${value} to bytes32 string.`,
             { value },
-            e
+            e instanceof Error ? e : undefined
         );
     }
 };

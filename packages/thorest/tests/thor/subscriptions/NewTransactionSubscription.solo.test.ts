@@ -5,6 +5,12 @@ import {
 } from '../../../src/ws';
 import { NewTransactionSubscription } from '../../../src/thor/subscriptions';
 import { type TXID } from '../../../src';
+import log from 'loglevel';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
+
+const logger = log.getLogger(
+    'TEST:UNIT!packages/thorest/tests/thor/subscriptions/NewTransactionSubscription.solo.test.ts'
+);
 
 describe('NewTransactionSubscription solo tests', () => {
     let subscription: NewTransactionSubscription;
@@ -19,7 +25,7 @@ describe('NewTransactionSubscription solo tests', () => {
             .addListener({
                 onMessage: (message) => {
                     const data = message.data;
-                    console.log(JSON.stringify(data, null, 2));
+                    logger.debug(fastJsonStableStringify(data));
                     done();
                 },
                 onClose: () => {},

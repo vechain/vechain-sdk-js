@@ -1,10 +1,10 @@
 import { describe, expect, test } from '@jest/globals';
-import { InvalidDataType } from '@vechain/sdk-errors';
 import {
     Address,
     Clause,
     ERC721_ABI,
     HexUInt,
+    IllegalArgumentError,
     Units,
     VET,
     VTHO,
@@ -279,7 +279,7 @@ describe('Clause class tests', () => {
                     ClauseFixture.to,
                     VTHO.of(-100)
                 );
-            }).toThrow(InvalidDataType);
+            }).toThrow(IllegalArgumentError);
         });
 
         test('Throw <- infinite amount VTHO', () => {
@@ -289,7 +289,7 @@ describe('Clause class tests', () => {
                     ClauseFixture.to,
                     VTHO.of(Infinity)
                 );
-            }).toThrow(InvalidDataType);
+            }).toThrow(IllegalArgumentError);
         });
 
         test('Throw <- NaN amount VTHO', () => {
@@ -299,7 +299,7 @@ describe('Clause class tests', () => {
                     ClauseFixture.to,
                     VTHO.of(NaN)
                 );
-            }).toThrow(InvalidDataType);
+            }).toThrow(IllegalArgumentError);
         });
     });
 
@@ -348,19 +348,19 @@ describe('Clause class tests', () => {
         test('Throw <- infinite amount VET', () => {
             expect(() => {
                 Clause.transferVET(ClauseFixture.to, VET.of(Infinity));
-            }).toThrow(InvalidDataType);
+            }).toThrow(IllegalArgumentError);
         });
 
         test('Throw <- NaN amount VET', () => {
             expect(() => {
                 Clause.transferVET(ClauseFixture.to, VET.of(NaN));
-            }).toThrow(InvalidDataType);
+            }).toThrow(IllegalArgumentError);
         });
 
         test('Throw <- negative amount VET', () => {
             expect(() => {
                 Clause.transferVET(ClauseFixture.to, VET.of(-123.45));
-            }).toThrow(InvalidDataType);
+            }).toThrow(IllegalArgumentError);
         });
     });
 });

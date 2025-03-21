@@ -1,7 +1,12 @@
-import { InvalidOperation } from '@vechain/sdk-errors';
 import { type Address } from '../Address';
 import { type Currency } from '../currency/Currency';
 import { type VeChainDataModel } from '../VeChainDataModel';
+import { UnsupportedOperationError } from '../../errors';
+
+/**
+ * Full Qualified Path
+ */
+const FQP = 'packages/core/src/vcdm/account/Account.ts!';
 
 type AccountType = 'EOA' | 'Contract';
 
@@ -33,45 +38,42 @@ class Account implements VeChainDataModel<Account> {
     /**
      * Throws an exception because the account cannot be represented as a big integer.
      * @returns {bigint} The BigInt representation of the account.
-     * @throws {InvalidOperation} The account cannot be represented as a bigint.
+     * @throws {UnsupportedOperation} The account cannot be represented as a bigint.
      * @override {@link VeChainDataModel#bi}
      * @remarks The conversion to BigInt is not supported for an account.
      */
     public get bi(): bigint {
-        throw new InvalidOperation(
-            'Account.bi',
-            'There is no big integer representation for an account.',
-            { data: '' }
+        throw new UnsupportedOperationError(
+            `${FQP}<Account>.bi: bigint`,
+            'There is no big integer representation for an account.'
         );
     }
 
     /**
      * Throws an exception because the account cannot be represented as a byte array.
      * @returns {Uint8Array} The byte array representation of the account.
-     * @throws {InvalidOperation} The account cannot be represented as a byte array.
+     * @throws {UnsupportedOperation} The account cannot be represented as a byte array.
      * @override {@link VeChainDataModel#bytes}
      * @remarks The conversion to byte array is not supported for an account.
      */
     public get bytes(): Uint8Array {
-        throw new InvalidOperation(
-            'Account.bytes',
-            'There is no bytes representation for an account.',
-            { data: '' }
+        throw new UnsupportedOperationError(
+            `${FQP}<Account>.bytes: Uint8Array`,
+            'There is no bytes representation for an account.'
         );
     }
 
     /**
      * Throws an exception because the account cannot be represented as a number.
      * @returns {bigint} The number representation of the account.
-     * @throws {InvalidOperation} The account cannot be represented as a number.
+     * @throws {UnsupportedOperation} The account cannot be represented as a number.
      * @override {@link VeChainDataModel#n}
      * @remarks The conversion to number is not supported for an account.
      */
     public get n(): number {
-        throw new InvalidOperation(
-            'Account.n',
-            'There is no number representation for an account.',
-            { data: '' }
+        throw new UnsupportedOperationError(
+            `${FQP}<Account>.n: number`,
+            'There is no number representation for an account.'
         );
     }
 

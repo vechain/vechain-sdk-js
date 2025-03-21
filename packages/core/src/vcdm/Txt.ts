@@ -1,5 +1,10 @@
-import { InvalidOperation } from '@vechain/sdk-errors';
 import { type VeChainDataModel } from './VeChainDataModel';
+import { UnsupportedOperationError } from '../errors';
+
+/**
+ * Full Qualified Path
+ */
+const FQP = 'packages/core/src/vcdm/Txt.ts!';
 
 /**
  * Represents a text string encoded according the *Normalization Form Canonical Composition*
@@ -57,11 +62,11 @@ class Txt extends String implements VeChainDataModel<Txt> {
         try {
             return BigInt(this.toString());
         } catch (e) {
-            throw new InvalidOperation(
-                'Txt.bi()',
+            throw new UnsupportedOperationError(
+                `${FQP}Txt.bi(): bigint`,
                 "Can't cast to big integer",
                 { txt: this.toString() },
-                e
+                e instanceof Error ? e : undefined
             );
         }
     }

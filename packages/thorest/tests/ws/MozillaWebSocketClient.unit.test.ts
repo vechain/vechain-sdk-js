@@ -1,6 +1,7 @@
 import { describe, test, expect, jest, beforeEach } from '@jest/globals';
 import { MozillaWebSocketClient } from '../../src/ws/MozillaWebSocketClient';
 import { type WebSocketListener } from '../../src/ws';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 // Mock CloseEvent since it's not available in the test environment
 class MockCloseEvent extends Event {
@@ -171,7 +172,10 @@ describe('MozillaWebSocketClient unit tests', () => {
 
         // Test JSON data
         const jsonMessage = new MessageEvent('message', {
-            data: JSON.stringify({ type: 'event', data: { value: 123 } })
+            data: fastJsonStableStringify({
+                type: 'event',
+                data: { value: 123 }
+            })
         });
         mockWebSocketInstance.onmessage?.(jsonMessage);
         expect(mockListener.onMessage).toHaveBeenCalledWith(jsonMessage);

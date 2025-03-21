@@ -14,3 +14,8 @@
 - **Test**: Execute `yarn test` to run all tests on the package.
 
 ## Usage
+
+### Logging
+
+The SDK uses [loglevel](https://github.com/pimterry/loglevel) to log messages,
+see **loglevel** documentation to customize how the applicatiuon using the SDK should log.

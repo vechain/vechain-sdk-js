@@ -1,6 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { InvalidDataType } from '@vechain/sdk-errors';
-import { Hex, Revision, Txt } from '../../src';
+import { Hex, IllegalArgumentError, Revision, Txt } from '../../src';
 
 /**
  * Test Revision class.
@@ -67,7 +66,9 @@ describe('Revision class tests', () => {
             });
 
             test('Throw an exception for an invalid value', () => {
-                expect(() => Revision.of(-12357n)).toThrow(InvalidDataType);
+                expect(() => Revision.of(-12357n)).toThrow(
+                    IllegalArgumentError
+                );
             });
         });
 
@@ -80,7 +81,7 @@ describe('Revision class tests', () => {
             });
 
             test('Throw an exception for an invalid value', () => {
-                expect(() => Revision.of(-12357)).toThrow(InvalidDataType);
+                expect(() => Revision.of(-12357)).toThrow(IllegalArgumentError);
             });
         });
 
@@ -116,7 +117,9 @@ describe('Revision class tests', () => {
             });
 
             test('Throw an exception for an invalid value', () => {
-                expect(() => Revision.of(`worst`)).toThrow(InvalidDataType);
+                expect(() => Revision.of(`worst`)).toThrow(
+                    IllegalArgumentError
+                );
             });
         });
 
@@ -128,7 +131,7 @@ describe('Revision class tests', () => {
 
             test('Throw an exception for an invalid value', () => {
                 expect(() => Revision.of(Hex.of('-0x0FF1CE'))).toThrow(
-                    InvalidDataType
+                    IllegalArgumentError
                 );
             });
         });
@@ -141,7 +144,7 @@ describe('Revision class tests', () => {
 
             test('Throw an exception for an invalid value', () => {
                 expect(() => Revision.of(Txt.of('worst').bytes)).toThrow(
-                    InvalidDataType
+                    IllegalArgumentError
                 );
             });
         });

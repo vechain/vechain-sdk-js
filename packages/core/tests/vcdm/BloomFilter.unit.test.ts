@@ -1,7 +1,13 @@
 import { describe, expect, test } from '@jest/globals';
 import * as nc_utils from '@noble/curves/abstract/utils';
-import { BloomFilter, Hex, HexUInt, Txt } from '../../src';
-import { InvalidDataType, InvalidOperation } from '@vechain/sdk-errors';
+import {
+    BloomFilter,
+    Hex,
+    HexUInt,
+    IllegalArgumentError,
+    Txt,
+    UnsupportedOperationError
+} from '../../src';
 
 const BloomFilterFixture = {
     emptySetBytes: Uint8Array.of(0, 0, 0, 0, 0, 0, 0, 0),
@@ -55,7 +61,7 @@ describe('BloomFilter class tests.', () => {
             expect(() => {
                 // eslint-disable-next-line @typescript-eslint/no-unused-expressions, sonarjs/no-unused-expressions
                 BloomFilter.of(...BloomFilterFixture.setA).build().n;
-            }).toThrow(InvalidDataType);
+            }).toThrow(IllegalArgumentError);
         });
 
         describe('compareTo method tests', () => {
@@ -240,7 +246,7 @@ describe('BloomFilter class tests.', () => {
             const bf2 = BloomFilter.of(...BloomFilterFixture.setA).build(16);
             expect(() => {
                 bf1.join(bf2);
-            }).toThrow(InvalidOperation);
+            }).toThrow(UnsupportedOperationError);
         });
 
         test('Throw an exception when length values are different', () => {
@@ -251,7 +257,7 @@ describe('BloomFilter class tests.', () => {
             const bf2 = BloomFilter.of(...BloomFilterFixture.setA).build(k, m2);
             expect(() => {
                 bf1.join(bf2);
-            }).toThrow(InvalidOperation);
+            }).toThrow(UnsupportedOperationError);
         });
     });
 

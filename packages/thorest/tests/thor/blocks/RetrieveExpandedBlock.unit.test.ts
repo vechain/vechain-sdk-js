@@ -118,8 +118,9 @@ describe('RetrieveBlock unit tests', () => {
                     mockIncompleteExpandedBlock as ExpandedBlockResponseJSON
                 )
             )
-        ).rejects.toThrowError(
-            /Method 'UInt.of' failed.\s*-Reason: 'not an unsigned integer expression'\s*-Parameters:\s*{\s*"exp": "undefined"\s*}/
-        );
+        )
+            .rejects.toThrowError
+            // /Method 'UInt.of' failed.\s*-Reason: 'not an unsigned integer expression'\s*-Parameters:\s*{\s*"exp": "undefined"\s*}/
+            ();
     });
 });

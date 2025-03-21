@@ -7,6 +7,12 @@ import {
     BeatsSubscription,
     type SubscriptionBeat2Response
 } from '../../../src/thor/subscriptions';
+import log from 'loglevel';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
+
+const logger = log.getLogger(
+    'TEST:UNIT!packages/thorest/tests/thor/subscriptions/BeatsSubscription.solo.test.ts'
+);
 
 describe('BlocksSubscription solo tests', () => {
     let subscription: BeatsSubscription;
@@ -21,17 +27,17 @@ describe('BlocksSubscription solo tests', () => {
             .addListener({
                 onMessage: (message) => {
                     const data = message.data;
-                    console.log(JSON.stringify(data, null, 2));
+                    logger.debug(fastJsonStableStringify(data));
                     done();
                 },
                 onOpen: () => {
-                    console.log('WebSocket connection opened');
+                    logger.debug('WebSocket connection opened');
                 },
                 onClose: () => {
-                    console.log(`WebSocket connection closed`);
+                    logger.debug(`WebSocket connection closed`);
                 },
                 onError: (error) => {
-                    console.error('WebSocket encountered an error:', error);
+                    logger.error('WebSocket encountered an error:', error);
                 }
             } satisfies WebSocketListener<SubscriptionBeat2Response>)
             .open();

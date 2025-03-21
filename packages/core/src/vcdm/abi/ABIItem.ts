@@ -6,6 +6,7 @@ import {
     type AbiFunction
 } from 'viem';
 import { ABI } from './ABI';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 type SignatureType = string | AbiFunction | AbiEvent;
 
@@ -75,7 +76,7 @@ abstract class ABIItem extends ABI {
      */
     public format(formatType: 'json' | 'string' = 'string'): string {
         return formatType === 'json'
-            ? JSON.stringify(this.signature)
+            ? fastJsonStableStringify(this.signature)
             : this.stringSignature;
     }
 

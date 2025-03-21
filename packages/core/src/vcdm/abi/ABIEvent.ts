@@ -1,7 +1,3 @@
-import {
-    InvalidAbiDataToEncodeOrDecode,
-    InvalidAbiItem
-} from '@vechain/sdk-errors';
 import { type AbiEventParameter } from 'abitype';
 import {
     type AbiEvent,
@@ -16,6 +12,11 @@ import {
 import { Hex } from '../Hex';
 import { ABI } from './ABI';
 import { ABIItem } from './ABIItem';
+import {
+    AbiConstructorNotFoundError,
+    InvalidAbiDecodingTypeError,
+    InvalidAbiEncodingTypeError
+} from '../../errors';
 
 type Topics = [] | [signature: ViemHex, ...args: ViemHex[]];
 
@@ -23,6 +24,11 @@ interface ABIEventData {
     data: Hex;
     topics: Array<null | Hex | Hex[]>;
 }
+
+/**
+ * Full Qualified Path
+ */
+const FQP = 'packages/core/src/vcdm/abi/ABIEvent.ts!';
 
 /**
  * Represents a function call in the Event ABI.
@@ -33,6 +39,7 @@ class ABIEvent<
     TEventName extends ContractEventName<TAbi> = ContractEventName<TAbi>
 > extends ABIItem {
     private readonly abiEvent: AbiEvent;
+
     public constructor(signature: string);
     public constructor(signature: AbiEvent);
     public constructor(signature: string | AbiEvent) {
@@ -40,14 +47,14 @@ class ABIEvent<
             super(signature);
             this.abiEvent = this.signature as AbiEvent;
         } catch (error) {
-            throw new InvalidAbiItem(
-                'ABIEvent constructor',
+            throw new AbiConstructorNotFoundError(
+                `${FQP}ABIEvent.constructor(signature: string | AbiEvent)`,
                 'Initialization failed: Cannot create Event ABI. Event format is invalid.',
                 {
                     type: 'event',
                     value: signature
                 },
-                error
+                error instanceof Error ? error : undefined
             );
         }
     }
@@ -57,7 +64,7 @@ class ABIEvent<
      *
      * @param abi - Event to decode.
      * @returns Decoding results.
-     * @throws {InvalidAbiDataToEncodeOrDecode}
+     * @throws {InvalidAbiDecodingTypeError}
      */
     public static parseLog<
         TAbi extends ViemABI,
@@ -80,8 +87,8 @@ class ABIEvent<
                 }) as Topics
             });
         } catch (error) {
-            throw new InvalidAbiDataToEncodeOrDecode(
-                'ABIEvent.parseLog',
+            throw new InvalidAbiDecodingTypeError(
+                `${FQP}ABIEvent.parseLog(abi: TAbi, eventData: ABIEventData): DecodeEventLogReturnType<TAbi, TEventName>`,
                 'Decoding failed: Data must be a valid hex string encoding a compliant ABI type.',
                 {
                     data: {
@@ -90,7 +97,7 @@ class ABIEvent<
                         topics: eventData.topics
                     }
                 },
-                error
+                error instanceof Error ? error : undefined
             );
         }
     }
@@ -100,7 +107,7 @@ class ABIEvent<
      *
      * @param event - Event to decode.
      * @returns Decoding results.
-     * @throws {InvalidAbiDataToEncodeOrDecode}
+     * @throws {InvalidAbiDecodingTypeError}
      */
     public decodeEventLog(
         event: ABIEventData
@@ -108,11 +115,11 @@ class ABIEvent<
         try {
             return ABIEvent.parseLog([this.abiEvent] as ViemABI, event);
         } catch (error) {
-            throw new InvalidAbiDataToEncodeOrDecode(
-                'ABIEvent.decodeEventLog',
+            throw new InvalidAbiDecodingTypeError(
+                `${FQP}<ABIEvent>.decodeEventLog(event: ABIEventData): DecodeEventLogReturnType<TAbi, TEventName>`,
                 'Decoding failed: Data must be a valid hex string encoding a compliant ABI type.',
                 { data: event },
-                error
+                error instanceof Error ? error : undefined
             );
         }
     }
@@ -136,6 +143,7 @@ class ABIEvent<
      * Encode event log data returning the encoded data and topics.
      * @param dataToEncode - Data to encode.
      * @returns {ABIEventData} Encoded data along with topics.
+     * @throws {InvalidAbiEncodingTypeError} - If the encoding fails.
      * @remarks There is no equivalent to encodeEventLog in viem {@link https://viem.sh/docs/ethers-migration}. Discussion started here {@link https://github.com/wevm/viem/discussions/2676}.
      */
     public encodeEventLog(dataToEncode: unknown[]): ABIEventData {
@@ -164,11 +172,11 @@ class ABIEvent<
                 })
             };
         } catch (error) {
-            throw new InvalidAbiDataToEncodeOrDecode(
-                'ABIEvent.encodeEventLog',
+            throw new InvalidAbiEncodingTypeError(
+                `${FQP}<ABIEvent>.encodeEventLog(dataToEncode: unknown[]): ABIEventData`,
                 'Encoding failed: Data format is invalid. Event data must be correctly formatted for ABI-compliant encoding.',
                 { dataToEncode },
-                error
+                error instanceof Error ? error : undefined
             );
         }
     }
@@ -179,7 +187,7 @@ class ABIEvent<
      * @param valuesToEncode - values to encode as topics. Non-indexed values are ignored.
      *                         Only the values of the indexed parameters are needed.
      * @returns Encoded topics array.
-     * @throws {InvalidAbiDataToEncodeOrDecode}
+     * @throws {InvalidAbiEncodingTypeError} - If the encoding fails.
      */
     public encodeFilterTopics(
         valuesToEncode: Record<string, unknown> | unknown[] | undefined
@@ -188,8 +196,8 @@ class ABIEvent<
             ? valuesToEncode.length
             : Object.values(valuesToEncode ?? {}).length;
         if (this.abiEvent.inputs.length < valuesToEncodeLength) {
-            throw new InvalidAbiDataToEncodeOrDecode(
-                'ABIEvent.encodeEventLog',
+            throw new InvalidAbiEncodingTypeError(
+                `${FQP}<ABIEvent>.encodeFilterTopics(valuesToEncode: Record<string, unknown> | unknown[] | undefined): EncodeEventTopicsReturnType`,
                 'Encoding failed: Data format is invalid. Number of values to encode is greater than the inputs.',
                 { valuesToEncode }
             );
@@ -201,11 +209,11 @@ class ABIEvent<
                 args: valuesToEncode
             });
         } catch (error) {
-            throw new InvalidAbiDataToEncodeOrDecode(
-                'ABIEvent.encodeEventLog',
+            throw new InvalidAbiEncodingTypeError(
+                `${FQP}<ABIEvent>.encodeFilterTopics(valuesToEncode: Record<string, unknown> | unknown[] | undefined): EncodeEventTopicsReturnType`,
                 'Encoding failed: Data format is invalid. Event topics values must be correctly formatted for ABI-compliant encoding.',
                 { valuesToEncode },
-                error
+                error instanceof Error ? error : undefined
             );
         }
     }

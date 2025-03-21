@@ -1,6 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { InvalidDataType } from '@vechain/sdk-errors';
-import { HexUInt32 } from '../../src/vcdm/HexUInt32';
+import { HexUInt32, IllegalArgumentError } from '../../src';
 
 /**
  * Test HexUInt32 class.
@@ -12,9 +11,7 @@ describe('HexUInt32 class tests', () => {
             const expression = '0xcaffee';
             const expectedHexUInt32 =
                 '0x0000000000000000000000000000000000000000000000000000000000caffee';
-
             const hexUInt32 = HexUInt32.of(expression);
-
             expect(hexUInt32).toBeInstanceOf(HexUInt32);
             expect(hexUInt32.toString()).toEqual(expectedHexUInt32);
         });
@@ -28,7 +25,7 @@ describe('HexUInt32 class tests', () => {
 
         test('Throw an error if the provided argument is not an unsigned expression', () => {
             const exp = '-0xnotUnsigned';
-            expect(() => HexUInt32.of(exp)).toThrow(InvalidDataType);
+            expect(() => HexUInt32.of(exp)).toThrow(IllegalArgumentError);
         });
     });
 

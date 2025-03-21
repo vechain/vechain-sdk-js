@@ -1,5 +1,10 @@
-import { InvalidDataType, InvalidOperation } from '@vechain/sdk-errors';
+import { IllegalArgumentError, UnsupportedOperationError } from '../errors';
 import { type VeChainDataModel } from './VeChainDataModel';
+
+/**
+ * Full Qualified Path
+ */
+const FQP = 'net.vechain.network.NetAddr!';
 
 /**
  * Represents a network address with an IP address and port.
@@ -46,8 +51,8 @@ class NetAddr implements VeChainDataModel<NetAddr> {
         const ipParts = ip.split('.').map(Number);
 
         if (ipParts.some((part) => part > 255) || Number(port) > 65535) {
-            throw new InvalidDataType(
-                'NetAddr.initializeIPv4',
+            throw new IllegalArgumentError(
+                `${FQP}<NetAddr>.initializeIPv4(value: string): [Uint8Array, number]`,
                 'not a valid network address (IP:port) expression',
                 { value }
             );
@@ -63,16 +68,16 @@ class NetAddr implements VeChainDataModel<NetAddr> {
         const match = NetAddr.IP_REGEX.IPV6_PORT.exec(expandedIP);
 
         if (match === null) {
-            throw new InvalidDataType(
-                'NetAddr.of',
+            throw new IllegalArgumentError(
+                `${FQP}<NetAddr>.initializeIPv6(value: string): [Uint8Array, number]`,
                 'Invalid IPv6 address format',
                 { value }
             );
         }
 
         if (Number(match[3]) > NetAddr.IP_CONSTANTS.MAX_PORT) {
-            throw new InvalidDataType(
-                'NetAddr.of',
+            throw new IllegalArgumentError(
+                `${FQP}<NetAddr>.initializeIPv6(value: string): [Uint8Array, number]`,
                 'Port number out of range',
                 { value }
             );
@@ -102,11 +107,11 @@ class NetAddr implements VeChainDataModel<NetAddr> {
     /**
      * Throws an error because there is no number representation for NetAddr.
      *
-     * @throws {InvalidOperation<NetAddr>} systematically.
+     * @throws {UnsupportedOperationError} systematically.
      */
     get n(): number {
-        throw new InvalidOperation(
-            'NetAddr.n',
+        throw new UnsupportedOperationError(
+            `${FQP}<NetAddr>.n(): number`,
             'There is no number representation for NetAdrr',
             {
                 hex: this.toString()
@@ -115,20 +120,33 @@ class NetAddr implements VeChainDataModel<NetAddr> {
     }
 
     /**
-     * Creates a new instance of the NetAddr class from a string expression.
+     * Creates a new NetAddr object from the provided network address (IP:port) expression string.
+     *
+     * @param {string} exp - The string representing a network address in the format 'IP:port'.
+     * @return {NetAddr} A new instance of NetAddr created from the provided expression.
+     * @throws {IllegalArgumentError} If the provided expression is not a valid network address.
      */
     static of(exp: string): NetAddr {
-        return new NetAddr(exp);
+        try {
+            return new NetAddr(exp);
+        } catch (error) {
+            throw new IllegalArgumentError(
+                `${FQP}NetAddr.of(exp: string): NetAddr`,
+                'not a valid network address (IP:port) expression',
+                { exp },
+                error instanceof Error ? error : undefined
+            );
+        }
     }
 
     /**
      * Throws an error because there is no big integer representation for NetAddr.
      *
-     * @throws {InvalidOperation<NetAddr>} systematically.
+     * @throws {UnsupportedOperationError} systematically.
      */
     get bi(): bigint {
-        throw new InvalidOperation(
-            'NetAddr.bi',
+        throw new UnsupportedOperationError(
+            `${FQP}<NetAddr>.bi(): bigint`,
             'There is no big integer representation for NetAddr',
             {
                 hex: this.toString()
@@ -139,13 +157,12 @@ class NetAddr implements VeChainDataModel<NetAddr> {
     /**
      * Throws an error because there is no comparison between network addresses.
      *
-     * @throws {InvalidOperation<NetAddr>} Systematically throws an error.
+     * @throws {UnsupportedOperation} Systematically throws an error.
      */
     compareTo(_that: NetAddr): number {
-        throw new InvalidOperation(
-            'NetAddr.compareTo',
-            'There is no comparison between network addresses',
-            { data: '' }
+        throw new UnsupportedOperationError(
+            `${FQP}<NetAddr>.compareTo(_that: NetAddr): number`,
+            'There is no comparison between network addresses'
         );
     }
 
@@ -197,8 +214,8 @@ class NetAddr implements VeChainDataModel<NetAddr> {
         const segments = address.split(':');
 
         if (segments.length !== 8) {
-            throw new InvalidDataType(
-                'NetAddr.parseUncompressedIPv6',
+            throw new IllegalArgumentError(
+                `${FQP}NetAddr.parseUncompressedIPv6(address: string): Uint8Array`,
                 'Invalid IPv6 address: must have exactly 8 segments',
                 { address }
             );
@@ -214,11 +231,8 @@ class NetAddr implements VeChainDataModel<NetAddr> {
                 bytes[i * 2 + 1] = value & 0xff; // Low byte
             }
         } catch (error) {
-            if (error instanceof InvalidDataType) {
-                throw error;
-            }
-            throw new InvalidDataType(
-                'NetAddr.parseUncompressedIPv6',
+            throw new IllegalArgumentError(
+                `${FQP}NetAddr.parseUncompressedIPv6(address: string): Uint8Array`,
                 'Invalid IPv6 address format',
                 { address }
             );
@@ -299,8 +313,8 @@ class NetAddr implements VeChainDataModel<NetAddr> {
 function expandIPv6(compressedIP: string): string {
     const matches = NetAddr.IP_REGEX.IPV6_WITH_PORT.exec(compressedIP);
     if (matches === null) {
-        throw new InvalidDataType(
-            'IPv6Utils.expand',
+        throw new IllegalArgumentError(
+            `${FQP}expandIPv6(compressedIP: string): string`,
             'Invalid IPv6 address with port format',
             { compressedIP }
         );
@@ -308,15 +322,19 @@ function expandIPv6(compressedIP: string): string {
 
     const [, ip, port] = matches;
     if (ip === '') {
-        throw new InvalidDataType('IPv6Utils.expand', 'Invalid IPv6 address', {
-            compressedIP
-        });
+        throw new IllegalArgumentError(
+            `${FQP}expandIPv6(compressedIP: string): string`,
+            'Invalid IPv6 address',
+            {
+                compressedIP
+            }
+        );
     }
 
     const doubleColonCount = (ip.match(/::/g) ?? []).length;
     if (doubleColonCount > 1) {
-        throw new InvalidDataType(
-            'IPv6Utils.expand',
+        throw new IllegalArgumentError(
+            `${FQP}expandIPv6(compressedIP: string): string`,
             'Invalid IPv6 address: multiple :: not allowed',
             { compressedIP }
         );
@@ -330,8 +348,8 @@ function processIPv6Segments(ip: string): string[] {
 
     segments.forEach((segment) => {
         if (segment !== '' && !NetAddr.IP_REGEX.HEX_SEGMENT.test(segment)) {
-            throw new InvalidDataType(
-                'IPv6Utils.processIPv6Segments',
+            throw new IllegalArgumentError(
+                `${FQP}processIPv6Segments(ip: string): string[]`,
                 'Invalid IPv6 address: invalid hex value',
                 { segment }
             );
