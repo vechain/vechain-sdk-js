@@ -1,16 +1,17 @@
+import * as nc_utils from '@noble/curves/abstract/utils';
 import * as s_bip32 from '@scure/bip32';
 import * as s_bip39 from '@scure/bip39';
-import * as nc_utils from '@noble/curves/abstract/utils';
-import { base58 } from '@scure/base';
 import { FixedPointNumber } from '../vcdm/FixedPointNumber';
-import { Sha256 } from '../vcdm/hash/Sha256';
 import { HexUInt } from '../vcdm/HexUInt';
-import { Secp256k1 } from '../secp256k1/Secp256k1';
-import {
-    InvalidHDKey,
-    InvalidHDKeyMnemonic,
-    InvalidSecp256k1PrivateKey
-} from '@vechain/sdk-errors';
+import { IllegalArgumentError } from '../errors';
+import { Secp256k1 } from '../secp256k1';
+import { Sha256 } from '../vcdm/hash/Sha256';
+import { base58 } from '@scure/base';
+
+/**
+ * Full Qualified Path
+ */
+const FQP = 'packages/core/src/hdkey/HDKey.ts!';
 
 /**
  * This class extends the
@@ -58,8 +59,7 @@ class HDKey extends s_bip32.HDKey {
      *
      * @return The derived child hierarchical deterministic key.
      *
-     * @throws {InvalidHDKey} If `path` is not valid to derive a node wallet.
-     * @throws {InvalidHDKeyMnemonic} If `words` is an invalid array mnemonic.
+     * @throws {IllegalArgumentError} If `words` or `path` are invalid.
      *
      * @remarks Security auditable method, depends on
      * * [s_bip32.HDKey.derive](https://github.com/paulmillr/scure-bip32);
@@ -77,21 +77,21 @@ class HDKey extends s_bip32.HDKey {
             );
         } catch (error) {
             // The error masks any mnemonic words leak.
-            throw new InvalidHDKeyMnemonic(
-                'HDNode.fromMnemonic',
+            throw new IllegalArgumentError(
+                `${FQP}HDNode.fromMnemonic(words: string[], path: string): HDKey`,
                 'Invalid mnemonic words given as input.',
                 undefined,
-                error
+                error instanceof Error ? error : undefined
             );
         }
         try {
             return master.derive(path) as HDKey;
         } catch (error) {
-            throw new InvalidHDKey(
-                'HDNode.fromMnemonic',
+            throw new IllegalArgumentError(
+                `${FQP}HDNode.fromMnemonic(words: string[], path: string): HDKey`,
                 'Invalid derivation path given as input.',
                 { derivationPath: path },
-                error
+                error instanceof Error ? error : undefined
             );
         }
     }
@@ -101,14 +101,13 @@ class HDKey extends s_bip32.HDKey {
      * [BIP32 Hierarchical Deterministic Key](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki)
      * from a private key and chain code.
      *
-     * @param {Uint8Array} - privateKey The private key.
-     * @param {Uint8Array} - chainCode The chain code.
+     * @param {privateKey} The private key.
+     * @param {chainCode} The chain code.
      *
      * @returns Returns the hierarchical deterministic key from `privateKey` and `chainCode`.
      *
-     * @throws {InvalidSecp256k1PrivateKey} If the `privateKey` is invalid.
+     * @throws {IllegalArgumentError} If the `privateKey` is invalid.
      *
-     * @remarks **This method wipes `privateKey`** for security reasons.
      * @remarks Security auditable method, depends on
      * * [base58.encode](https://github.com/paulmillr/scure-base);
      * * {@link Sha256};
@@ -136,20 +135,18 @@ class HDKey extends s_bip32.HDKey {
                     base58.encode(expandedPrivateKey)
                 ) as HDKey;
             } catch (e) {
-                throw new InvalidSecp256k1PrivateKey(
-                    'HDNode.fromPrivateKey',
-                    'Invalid private key path given as input.',
-                    undefined
+                throw new IllegalArgumentError(
+                    `${FQP}HDNode.fromPrivateKey(privateKey: Uint8Array, chainCode: Uint8Array): HDKey`,
+                    'Invalid private key path given as input.'
                 );
             }
         }
 
         // We reach this case if privateKey length is not exactly 32 bytes.
         privateKey.fill(0); // Clear the private key from memory, albeit it is invalid.
-        throw new InvalidSecp256k1PrivateKey(
-            'HDNode.fromPrivateKey()',
-            'Invalid private key path given as input. Length must be exactly 32 bytes.',
-            undefined
+        throw new IllegalArgumentError(
+            `${FQP}HDNode.fromPrivateKey(privateKey: Uint8Array, chainCode: Uint8Array): HDKey`,
+            'Invalid private key path given as input. Length must be exactly 32 bytes.'
         );
     }
 
@@ -163,7 +160,7 @@ class HDKey extends s_bip32.HDKey {
      *
      * @returns {HDKey} Returns the hierarchical deterministic key from `public` and `chainCode`.
      *
-     * @throws {InvalidHDKey} if the `publicKey` is invalid.
+     * @throws {IllegalArgumentError} if the `publicKey` is invalid.
      *
      * @remarks Security auditable method, depends on
      * * [base58.encode](https://github.com/paulmillr/scure-base);
@@ -191,18 +188,17 @@ class HDKey extends s_bip32.HDKey {
                     base58.encode(expandedPublicKey)
                 ) as HDKey;
             } catch (error) {
-                throw new InvalidHDKey(
-                    'HDNode.fromPublicKey()',
+                throw new IllegalArgumentError(
+                    `${FQP}HDNode.fromPublicKey(publicKey: Uint8Array, chainCode: Uint8Array): HDKey)`,
                     'Invalid public key path given as input.',
                     { publicKey },
-                    error
+                    error instanceof Error ? error : undefined
                 );
             }
         }
-
         // We reach this case if chainCode length is not exactly 32 bytes.
-        throw new InvalidHDKey(
-            'HDNode.fromPublicKey()',
+        throw new IllegalArgumentError(
+            `${FQP}HDNode.fromPublicKey(publicKey: Uint8Array, chainCode: Uint8Array): HDKey)`,
             'Invalid chain code given as input. Length must be exactly 32 bytes.',
             { chainCode }
         );

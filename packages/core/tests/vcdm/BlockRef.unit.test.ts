@@ -1,6 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { HexUInt, BlockRef } from '../../src';
-import { InvalidDataType } from '@vechain/sdk-errors';
+import { HexUInt, BlockRef, IllegalArgumentError } from '../../src';
 
 const BlockRefFixture = {
     invalid: {
@@ -62,11 +61,11 @@ describe('BlockRef class tests.', () => {
         });
 
         test('Throw an error if the passed argument is a negative bigint', () => {
-            expect(() => BlockRef.of(-1)).toThrow(InvalidDataType);
+            expect(() => BlockRef.of(-1)).toThrow(IllegalArgumentError);
         });
 
         test('Throw an error if the passed argument is a negative number', () => {
-            expect(() => BlockRef.of(-1n)).toThrow(InvalidDataType);
+            expect(() => BlockRef.of(-1n)).toThrow(IllegalArgumentError);
         });
     });
 

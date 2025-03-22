@@ -1,16 +1,17 @@
 /**
  * Implements the JSON Keystore v3 Wallet encryption, decryption, and validation functionality.
  */
-import {
-    InvalidKeystore,
-    InvalidKeystoreParams,
-    stringifyData
-} from '@vechain/sdk-errors';
 import { ethers } from 'ethers';
 import { Secp256k1 } from '../../../secp256k1';
 import { Address, HexUInt } from '../../../vcdm';
 import { type Keystore, type KeystoreAccount } from '../../types';
 import { SCRYPT_PARAMS } from './const';
+import { InvalidKeystoreError, InvalidPasswordError } from '../../../errors';
+
+/**
+ * Full Qualified Path
+ */
+const FQP = 'packages/core/src/keystore/cryptography/ethers/keystore.ts!';
 
 /**
  * Encrypts a given private key into a keystore format using the specified password.
@@ -58,7 +59,7 @@ async function encrypt(
  * @param keystore - The keystore containing the encrypted private key.
  * @param password - The password used to decrypt the keystore.
  * @returns A Promise that resolves to the decrypted KeystoreAccount or rejects if the keystore or password is invalid.
- * @throws {InvalidKeystore, InvalidKeystoreParams}
+ * @throws {InvalidKeystoreError, InvalidPasswordError}
  */
 async function decrypt(
     keystore: Keystore,
@@ -66,8 +67,8 @@ async function decrypt(
 ): Promise<KeystoreAccount> {
     // Invalid keystore
     if (!isValid(keystore)) {
-        throw new InvalidKeystore(
-            'keystore.decrypt()',
+        throw new InvalidKeystoreError(
+            `${FQP}decrypt(keystore: Keystore, password: string)`,
             'Invalid keystore. Ensure the keystore is properly formatted and contains the necessary data.',
             { keystore }
         );
@@ -75,12 +76,12 @@ async function decrypt(
 
     try {
         return (await ethers.decryptKeystoreJson(
-            stringifyData(keystore),
+            JSON.stringify(keystore),
             password
         )) as KeystoreAccount;
     } catch (e) {
-        throw new InvalidKeystoreParams(
-            'keystore.decrypt()',
+        throw new InvalidPasswordError(
+            `${FQP}decrypt(keystore: Keystore, password: string)`,
             'Decryption failed: Invalid Password for the given keystore.',
             // @NOTE: We are not exposing the password in the error data for security reasons.
             {
@@ -97,7 +98,7 @@ async function decrypt(
  * @returns A boolean indicating whether the keystore is valid or not.
  */
 function isValid(keystore: Keystore): boolean {
-    return ethers.isKeystoreJson(stringifyData(keystore));
+    return ethers.isKeystoreJson(JSON.stringify(keystore));
 }
 
 /**

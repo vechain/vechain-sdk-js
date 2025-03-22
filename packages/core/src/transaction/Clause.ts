@@ -1,4 +1,3 @@
-import { InvalidDataType } from '@vechain/sdk-errors';
 import { ERC721_ABI, VIP180_ABI } from '../utils';
 import {
     ABI,
@@ -15,6 +14,12 @@ import { HexInt } from '../vcdm/HexInt';
 import type { ClauseOptions } from './ClauseOptions';
 import type { DeployParams } from './DeployParams';
 import type { TransactionClause } from './TransactionClause';
+import { IllegalArgumentError } from '../errors';
+
+/**
+ * Full Qualified Path
+ */
+const FQP = 'packages/core/src/transaction/Clause.ts!';
 
 /**
  * This class represent a transaction clause.
@@ -126,7 +131,7 @@ class Clause implements TransactionClause {
      * @param {VET} [amount=VET.of(FixedPointNumber.ZERO)] - The amount of VET to be sent with the transaction calling the function.
      * @param {ClauseOptions} [clauseOptions] - Optional clause settings.
      * @return {Clause} A clause object to call the function in a transaction.
-     * @throws {InvalidDataType} Throws an error if the amount is not a finite positive value.
+     * @throws {IllegalArgumentError} Throws an error if the amount is not a finite positive value.
      */
     public static callFunction(
         contractAddress: Address,
@@ -146,8 +151,8 @@ class Clause implements TransactionClause {
                     : undefined
             );
         }
-        throw new InvalidDataType(
-            'Clause.callFunction',
+        throw new IllegalArgumentError(
+            `${FQP}Clause.callFunction(contractAddress: Address, functionAbi: ABIFunction, args: unknown[], amount: VET): Clause`,
             'not finite positive amount',
             { amount: `${amount.value}` }
         );
@@ -224,7 +229,7 @@ class Clause implements TransactionClause {
      * @param {VTHO} amount - The amount of token to be transferred.
      * @param {ClauseOptions} [clauseOptions] - Optional clause settings.
      * @return {Clause} The clause to transfer VIP180 tokens as part of a transaction.
-     * @throws {InvalidDataType} Throws an error if the amount is not a positive integer.
+     * @throws {IllegalArgumentError} Throws an error if the amount is not a positive integer.
      *
      * @see VTHO.transferTokenTo
      */
@@ -245,8 +250,8 @@ class Clause implements TransactionClause {
                 clauseOptions
             );
         }
-        throw new InvalidDataType(
-            'Clause.transferToken',
+        throw new IllegalArgumentError(
+            `${FQP}Clause.transferToken(tokenAddress: Address, recipientAddress: Address, amount: VTHO): Clause`,
             'not positive integer amount',
             { amount: `${amount.value}` }
         );
@@ -259,7 +264,7 @@ class Clause implements TransactionClause {
      * @param {VET} amount - The amount of VET to transfer.
      * @param {ClauseOptions} [clauseOptions] - Optional clause settings.
      * @return {Clause} - The clause object to transfer VET as part of a transaction.
-     * @throws {InvalidDataType} - If the amount is not a finite positive value.
+     * @throws {IllegalArgumentError} - If the amount is not a finite positive value.
      *
      * @see VET.transferTo
      */
@@ -276,8 +281,8 @@ class Clause implements TransactionClause {
                 clauseOptions?.comment
             );
         }
-        throw new InvalidDataType(
-            'Clause.transferVET',
+        throw new IllegalArgumentError(
+            `${FQP}Clause.transferVET(recipientAddress: Address, amount: VET): Clause`,
             'not finite positive amount',
             { amount: `${amount.value}` }
         );

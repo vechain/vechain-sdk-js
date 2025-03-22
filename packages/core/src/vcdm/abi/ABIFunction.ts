@@ -1,8 +1,4 @@
 import {
-    InvalidAbiDataToEncodeOrDecode,
-    InvalidAbiItem
-} from '@vechain/sdk-errors';
-import {
     type AbiFunction,
     type ContractFunctionName,
     decodeFunctionData,
@@ -15,6 +11,16 @@ import {
 } from 'viem';
 import { Hex } from '../Hex';
 import { ABIItem } from './ABIItem';
+import {
+    AbiConstructorNotFoundError,
+    InvalidAbiDecodingTypeError,
+    InvalidAbiEncodingTypeError
+} from '../../errors';
+
+/**
+ * Full Qualified Path
+ */
+const FQP = 'packages/core/src/vcdm/abi/ABIFunction.ts!';
 
 /**
  * Represents a function call in the Function ABI.
@@ -26,6 +32,7 @@ class ABIFunction<
         ContractFunctionName<TAbi> = ContractFunctionName<TAbi>
 > extends ABIItem {
     private readonly abiFunction: AbiFunction;
+
     public constructor(signature: string);
     public constructor(signature: AbiFunction);
     public constructor(signature: string | AbiFunction) {
@@ -33,14 +40,14 @@ class ABIFunction<
             super(signature);
             this.abiFunction = this.signature as AbiFunction;
         } catch (error) {
-            throw new InvalidAbiItem(
-                'ABIFunction constructor',
+            throw new AbiConstructorNotFoundError(
+                `${FQP}ABIFunction.constructor(signature: string | AbiFunction)`,
                 'Initialization failed: Cannot create Function ABI. Function format is invalid.',
                 {
                     type: 'function',
                     value: signature
                 },
-                error
+                error instanceof Error ? error : undefined
             );
         }
     }
@@ -59,7 +66,7 @@ class ABIFunction<
      *
      * @param {Hex} data - Data to decode.
      * @returns Decoding results.
-     * @throws {InvalidAbiDataToEncodeOrDecode}
+     * @throws {InvalidAbiDecodingTypeError} - If decoding fails.
      */
     public decodeData(
         data: Hex
@@ -70,11 +77,11 @@ class ABIFunction<
                 data: data.toString() as ViemHex
             });
         } catch (error) {
-            throw new InvalidAbiDataToEncodeOrDecode(
-                'ABIFunction.decodeData',
+            throw new InvalidAbiDecodingTypeError(
+                `${FQP}<ABIFunction>.decodeData(data: Hex): DecodeFunctionDataReturnType<TAbi, TFunctionName>`,
                 'Decoding failed: Data must be a valid hex string encoding a compliant ABI type.',
                 { data },
-                error
+                error instanceof Error ? error : undefined
             );
         }
     }
@@ -84,7 +91,7 @@ class ABIFunction<
      *
      * @param dataToEncode - Data to encode.
      * @returns {Hex} Encoded data.
-     * @throws {InvalidAbiDataToEncodeOrDecode}
+     * @throws {InvalidAbiEncodingTypeError}
      */
     public encodeData<TValue>(dataToEncode?: TValue[]): Hex {
         try {
@@ -95,11 +102,11 @@ class ABIFunction<
                 })
             );
         } catch (e) {
-            throw new InvalidAbiDataToEncodeOrDecode(
-                'ABIFunction.encodeData',
+            throw new InvalidAbiEncodingTypeError(
+                `${FQP}<ABIFunction>.encodeData(dataToEncode: TValue[]): Hex`,
                 'Encoding failed: Data format is invalid. Function data does not match the expected format for ABI type encoding.',
                 { dataToEncode },
-                e
+                e instanceof Error ? e : undefined
             );
         }
     }
@@ -110,7 +117,7 @@ class ABIFunction<
      *
      * @param {Hex} data - The data to be decoded, typically representing the output of a contract function call.
      * @returns {DecodeFunctionResultReturnType} An object containing the decoded data.
-     * @throws {InvalidAbiDataToEncodeOrDecode}
+     * @throws {InvalidAbiDecodingTypeError} If decoding fails.
      *
      * @example
      * ```typescript
@@ -132,11 +139,11 @@ class ABIFunction<
                 TFunctionName
             >;
         } catch (error) {
-            throw new InvalidAbiDataToEncodeOrDecode(
-                'ABIFunction.decodeResult',
+            throw new InvalidAbiDecodingTypeError(
+                `${FQP}<ABIFunction>.decodeResult(data: Hex): DecodeFunctionResultReturnType<TAbi, TFunctionName>`,
                 'Decoding failed: Data must be a valid hex string encoding a compliant ABI type.',
                 { data },
-                error
+                error instanceof Error ? error : undefined
             );
         }
     }
@@ -159,4 +166,5 @@ class ABIFunction<
         return [resultDecoded];
     }
 }
+
 export { ABIFunction };

@@ -2,16 +2,14 @@ import { describe, expect, test } from '@jest/globals';
 import {
     Address,
     Certificate,
+    Hex,
     HexUInt,
+    IllegalArgumentError,
+    InvalidPrivateKeyError,
+    InvalidSignatureError,
     Secp256k1,
-    type CertificateData,
-    Hex
+    type CertificateData
 } from '../../src';
-import {
-    CertificateSignatureMismatch,
-    InvalidDataType,
-    InvalidSecp256k1PrivateKey
-} from '@vechain/sdk-errors';
 import {
     blake2b256 as tdk_blake2b256,
     Certificate as tdk_certificate,
@@ -90,7 +88,7 @@ describe('Certificate class tests', () => {
                     ...CertificateFixture,
                     timestamp: -CertificateFixture.timestamp
                 });
-            }).toThrow(InvalidDataType);
+            }).toThrow(IllegalArgumentError);
         });
 
         test('Throw if fractional timestamp', () => {
@@ -99,7 +97,7 @@ describe('Certificate class tests', () => {
                     ...CertificateFixture,
                     timestamp: 123.45
                 });
-            }).toThrow(InvalidDataType);
+            }).toThrow(IllegalArgumentError);
         });
 
         test('Throw if not hexadecimal signer', () => {
@@ -108,7 +106,7 @@ describe('Certificate class tests', () => {
                     ...CertificateFixture,
                     signer: 'notahexadecimal'
                 });
-            }).toThrow(InvalidDataType);
+            }).toThrow(IllegalArgumentError);
         });
 
         test('Throw if long signer', () => {
@@ -117,7 +115,7 @@ describe('Certificate class tests', () => {
                     ...CertificateFixture,
                     signer: CertificateFixture.signer + '0'
                 });
-            }).toThrow(InvalidDataType);
+            }).toThrow(IllegalArgumentError);
         });
 
         test('Throw if short signer', () => {
@@ -129,7 +127,7 @@ describe('Certificate class tests', () => {
                         CertificateFixture.signer.length - 2
                     )
                 });
-            }).toThrow(InvalidDataType);
+            }).toThrow(IllegalArgumentError);
         });
 
         test('Throw if not hexadecimal signature', () => {
@@ -138,7 +136,7 @@ describe('Certificate class tests', () => {
                     ...CertificateFixture,
                     signature: 'notahexadecimal'
                 });
-            }).toThrow(InvalidDataType);
+            }).toThrow(IllegalArgumentError);
         });
 
         test('Return Certificate instance from unsigned data', () => {
@@ -205,7 +203,7 @@ describe('Certificate class tests', () => {
                 Certificate.of(CertificateFixture).sign(
                     HexUInt.of('c0ffee').bytes
                 );
-            }).toThrow(InvalidSecp256k1PrivateKey);
+            }).toThrow(InvalidPrivateKeyError);
         });
 
         test('Return signed certificate', () => {
@@ -289,7 +287,7 @@ describe('Certificate class tests', () => {
             });
             expect(() => {
                 tamper.verify();
-            }).toThrow(CertificateSignatureMismatch);
+            }).toThrow(InvalidSignatureError);
         });
 
         test('mismatch <- signature', () => {
@@ -297,14 +295,14 @@ describe('Certificate class tests', () => {
             const tamper = Certificate.of(CertificateFixture).sign(tamperKey);
             expect(() => {
                 tamper.verify();
-            }).toThrow(CertificateSignatureMismatch);
+            }).toThrow(InvalidSignatureError);
         });
 
         test('mismatch <- no signature', () => {
             const unsigned = Certificate.of(CertificateFixture);
             expect(() => {
                 unsigned.verify();
-            }).toThrow(CertificateSignatureMismatch);
+            }).toThrow(InvalidSignatureError);
         });
 
         test('mismatch <- tamper content', () => {
@@ -321,7 +319,7 @@ describe('Certificate class tests', () => {
             });
             expect(() => {
                 tamper.verify();
-            }).toThrow(CertificateSignatureMismatch);
+            }).toThrow(InvalidSignatureError);
         });
 
         test('thor-dev-kit compatible', () => {

@@ -1,12 +1,12 @@
 import { describe, expect, test } from '@jest/globals';
-import { InvalidHDKey } from '@vechain/sdk-errors';
+import { Hex } from '../../../src';
 import {
     Address,
+    IllegalArgumentError,
     Mnemonic,
     Secp256k1,
     type WordlistSizeType
 } from '../../../src';
-import { Hex } from '../../../src/vcdm/Hex';
 import {
     customRandomGeneratorWithXor,
     derivationPaths,
@@ -61,7 +61,7 @@ describe('Mnemonic', () => {
         test('toPrivateKey - wrong path', () => {
             expect(() =>
                 Mnemonic.toPrivateKey(words, wrongDerivationPath)
-            ).toThrowError(InvalidHDKey);
+            ).toThrowError(IllegalArgumentError);
         });
     });
 
