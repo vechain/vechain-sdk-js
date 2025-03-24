@@ -10,10 +10,6 @@ import {
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 
-const logger = log.getLogger(
-    'TEST:UNIT!packages/thorest/tests/thor/subscriptions/BeatsSubscription.solo.test.ts'
-);
-
 describe('BlocksSubscription solo tests', () => {
     let subscription: BeatsSubscription;
     beforeEach(() => {
@@ -27,17 +23,17 @@ describe('BlocksSubscription solo tests', () => {
             .addListener({
                 onMessage: (message) => {
                     const data = message.data;
-                    logger.debug(fastJsonStableStringify(data));
+                    log.debug(fastJsonStableStringify(data));
                     done();
                 },
                 onOpen: () => {
-                    logger.debug('WebSocket connection opened');
+                    log.debug('WebSocket connection opened');
                 },
                 onClose: () => {
-                    logger.debug(`WebSocket connection closed`);
+                    log.debug(`WebSocket connection closed`);
                 },
                 onError: (error) => {
-                    logger.error('WebSocket encountered an error:', error);
+                    log.error('WebSocket encountered an error:', error);
                 }
             } satisfies WebSocketListener<SubscriptionBeat2Response>)
             .open();

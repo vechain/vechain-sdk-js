@@ -8,10 +8,6 @@ import {
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 
-const logger = log.getLogger(
-    'TEST:UNIT!packages/thorest/tests/thor/transactions/RetrieveTransactionReceipt.testnet.test.ts'
-);
-
 describe('RetrieveTransactionReceipt testnet tests', () => {
     test('ok <- askTo', async () => {
         const txId = TxId.of(
@@ -19,6 +15,6 @@ describe('RetrieveTransactionReceipt testnet tests', () => {
         );
         const httpClient = FetchHttpClient.at(ThorNetworks.MAINNET);
         const r = await RetrieveTransactionReceipt.of(txId).askTo(httpClient);
-        logger.debug(fastJsonStableStringify(r));
+        log.debug(fastJsonStableStringify(r));
     });
 });

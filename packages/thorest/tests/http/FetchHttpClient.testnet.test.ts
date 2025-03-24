@@ -3,10 +3,6 @@ import { FetchHttpClient, ThorNetworks } from '../../src';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 
-const logger = log.getLogger(
-    'TEST:UNIT!packages/thorest/tests/http/FetchHttpClient.testnet.test.ts'
-);
-
 /**
  * Test FetchHttpClient class.
  *
@@ -17,11 +13,11 @@ describe('FetchHttpClient testnet tests', () => {
         await new FetchHttpClient(
             ThorNetworks.TESTNET,
             (request: Request) => {
-                logger.debug(request);
+                log.debug(request);
                 return request;
             },
             (response: Response) => {
-                logger.debug(response);
+                log.debug(response);
                 return response;
             }
         ).get();
@@ -34,15 +30,15 @@ describe('FetchHttpClient testnet tests', () => {
         const response = await new FetchHttpClient(
             'https://httpbin.org',
             (request: Request) => {
-                logger.debug(request);
+                log.debug(request);
                 return request;
             },
             (response: Response) => {
-                logger.debug(response);
+                log.debug(response);
                 return response;
             }
         ).post({ path: '/post' }, { query: '' }, expected);
         const actual: unknown = await response.json();
-        logger.debug(fastJsonStableStringify(actual));
+        log.debug(fastJsonStableStringify(actual));
     }, 15000);
 });

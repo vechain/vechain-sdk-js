@@ -8,10 +8,6 @@ import { type TXID } from '../../../src';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 
-const logger = log.getLogger(
-    'TEST:UNIT!packages/thorest/tests/thor/subscriptions/NewTransactionSubscription.solo.test.ts'
-);
-
 describe('NewTransactionSubscription solo tests', () => {
     let subscription: NewTransactionSubscription;
     beforeEach(() => {
@@ -25,7 +21,7 @@ describe('NewTransactionSubscription solo tests', () => {
             .addListener({
                 onMessage: (message) => {
                     const data = message.data;
-                    logger.debug(fastJsonStableStringify(data));
+                    log.debug(fastJsonStableStringify(data));
                     done();
                 },
                 onClose: () => {},

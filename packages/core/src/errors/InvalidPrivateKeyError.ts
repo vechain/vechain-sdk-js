@@ -11,8 +11,6 @@ import { VeChainSDKError } from './VeChainSDKError';
  * - When attempting to sign a transaction with an improperly formatted private key.
  * - When the private key fails validation checks during initialization.
  *
- * Extends:
- * - VeChainSDKError
  */
 class InvalidPrivateKeyError extends VeChainSDKError {}
 

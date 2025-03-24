@@ -5,10 +5,6 @@ import { FetchHttpClient, ThorNetworks } from '../../../src';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 
-const logger = log.getLogger(
-    'TEST:UNIT!packages/thorest/tests/thor/logs/QueryVETTransferEvents.testnet.test.ts'
-);
-
 describe('QueryVETTransferEvents testnet tests', () => {
     test('ok <- askTo', async () => {
         const request = {
@@ -33,6 +29,6 @@ describe('QueryVETTransferEvents testnet tests', () => {
         const r = await QueryVETTransferEvents.of(request).askTo(
             FetchHttpClient.at(ThorNetworks.TESTNET)
         );
-        logger.debug(fastJsonStableStringify(r));
+        log.debug(fastJsonStableStringify(r));
     });
 });
