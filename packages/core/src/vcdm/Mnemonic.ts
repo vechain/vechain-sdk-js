@@ -3,15 +3,15 @@ import {
     generateMnemonic,
     validateMnemonic
 } from '@scure/bip39';
-import { wordlist } from '@scure/bip39/wordlists/english';
-import {
-    InvalidDataType,
-    InvalidHDKey,
-    InvalidHDKeyMnemonic,
-    InvalidOperation
-} from '@vechain/sdk-errors';
 import { HDKey } from '../hdkey';
+import { IllegalArgumentError, UnsupportedOperationError } from '../errors';
 import { type VeChainDataModel } from './VeChainDataModel';
+import { wordlist } from '@scure/bip39/wordlists/english';
+
+/**
+ * Full Qualified Path
+ */
+const FQP = 'packages/core/src/vcdm/Mnemonic.ts!';
 
 /**
  * Type of the wordlist size.
@@ -42,15 +42,14 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
     /**
      * Throws an exception because the mnemonic cannot be represented as a big integer.
      * @returns {bigint} The BigInt representation of the mnemonic.
-     * @throws {InvalidOperation} The mnemonic cannot be represented as a bigint.
+     * @throws {UnsupportedOperationError} The mnemonic cannot be represented as a bigint.
      * @override {@link VeChainDataModel#bi}
      * @remark The conversion to BigInt is not supported for a mnemonic.
      */
     public get bi(): bigint {
-        throw new InvalidOperation(
-            'Mnemonic.bi',
-            'There is no big integer representation for a mnemonic.',
-            { data: '' }
+        throw new UnsupportedOperationError(
+            'Mnemonic.bi(): bigint',
+            'There is no big integer representation for a mnemonic.'
         );
     }
 
@@ -66,35 +65,41 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
     /**
      * Throws an exception because the mnemonic cannot be represented as a number.
      * @returns {bigint} The number representation of the mnemonic.
-     * @throws {InvalidOperation} The mnemonic cannot be represented as a number.
+     * @throws {UnsupportedOperationError} The mnemonic cannot be represented as a number.
      * @override {@link VeChainDataModel#n}
      * @remark The conversion to number is not supported for a mnemonic.
      */
     public get n(): number {
-        throw new InvalidOperation(
-            'Mnemonic.n',
-            'There is no number representation for a mnemonic.',
-            { data: '' }
+        throw new UnsupportedOperationError(
+            `${FQP}Mnemonic.n(): number`,
+            'There is no number representation for a mnemonic.'
         );
     }
 
     /**
+     * Compares the current instance of the Mnemonic object with another instance.
+     * This method is not supported as Mnemonic objects are not designed for comparison.
      *
-     * @param that - The mnemonic to compare with.
+     * @param _that The Mnemonic object to compare against the current instance.
+     * @throws Always throws an UnsupportedOperationError to indicate that comparison is not supported.
      */
     public compareTo(_that: Mnemonic): number {
-        throw new InvalidOperation(
-            'Mnemonic.compareTo',
-            'There is no comparison for a mnemonic since it is not stored in memory.',
-            { data: '' }
+        throw new UnsupportedOperationError(
+            `${FQP}Mnemonic.compareTo(_that: Mnemonic): number`,
+            'There is no comparison for a mnemonic since it is not stored in memory.'
         );
     }
 
+    /**
+     * Determines if the provided Mnemonic instance is equal to this instance.
+     *
+     * @param {Mnemonic} _that - The Mnemonic instance to compare with the current instance.
+     * @throws {UnsupportedOperationError} Thrown when the comparison operation is not supported.
+     */
     public isEqual(_that: Mnemonic): boolean {
-        throw new InvalidOperation(
-            'Mnemonic.isEqual',
-            'There is no comparison for a mnemonic since it is not stored in memory.',
-            { data: '' }
+        throw new UnsupportedOperationError(
+            `${FQP}Mnemonic.isEqual(_that: Mnemonic): boolean`,
+            'There is no comparison for a mnemonic since it is not stored in memory.'
         );
     }
 
@@ -105,7 +110,7 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
      *
      * @returns {number} The corresponding strength.
      *
-     * @throws {InvalidDataType} If the number of words is not valid.
+     * @throws {IllegalArgumentError} If the number of words is not valid.
      */
     private static wordsNoToStrength(numberOfWords: number): number {
         switch (numberOfWords) {
@@ -120,8 +125,8 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
             case 24:
                 return 256;
             default:
-                throw new InvalidDataType(
-                    'Mnemonic.wordsNoToStrength',
+                throw new IllegalArgumentError(
+                    `${FQP}Mnemonic.wordsNoToStrength(numberOfWords: number): number`,
                     'not a valid number of words',
                     { numberOfWords }
                 );
@@ -143,7 +148,7 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
      *
      * @returns {Uint8Array} - The derived private key as a Uint8Array.
      *
-     * @throws {InvalidHDKey}
+     * @throws {IllegalArgumentError} If the derivation `path` is invalid.
      *
      * @remarks Security auditable method, depends on
      * * {@link HDKey}.
@@ -158,11 +163,11 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
             // Derived from root, private key is always available.
             return root.derive(path).privateKey as Uint8Array;
         } catch (error) {
-            throw new InvalidHDKey(
-                'mnemonic.derivePrivateKey()',
+            throw new IllegalArgumentError(
+                `${FQP}<Mnemonic>.toPrivateKey(words: string[], path: string): Uint8Array`,
                 'Invalid derivation path given as input.',
                 { derivationPath: path },
-                error
+                error instanceof Error ? error : undefined
             );
         }
     }
@@ -177,7 +182,7 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
      *
      * @returns {Mnemonic} The generated mnemonic.
      *
-     * @throws {InvalidDataType} If the number of words is not valid.
+     * @throws {IllegalArgumentError} If the number of words is not valid.
      *
      * @remarks Security auditable method, depends on
      * * [entropyToMnemonic](https://github.com/paulmillr/scure-bip39);
@@ -203,11 +208,11 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
             }
             return generateMnemonic(wordlist, strength).split(' ');
         } catch (error) {
-            throw new InvalidHDKeyMnemonic(
-                'Mnemonic.of',
+            throw new IllegalArgumentError(
+                `${FQP}Mnemonic.of(wordlistSize: WordlistSizeType, randomGenerator?: (numberOfBytes: WordListRandomGeneratorSizeInBytes) => Uint8Array): Mnemonic`,
                 'error while generating mnemonic',
                 { wordlistSize },
-                error
+                error instanceof Error ? error : undefined
             );
         }
     }

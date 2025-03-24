@@ -1,6 +1,12 @@
 import { describe, expect, test } from '@jest/globals';
-import { type Coin, FixedPointNumber, Txt, VET, VTHO } from '../../../src';
-import { InvalidDataType } from '@vechain/sdk-errors';
+import {
+    type Coin,
+    FixedPointNumber,
+    IllegalArgumentError,
+    Txt,
+    VET,
+    VTHO
+} from '../../../src';
 
 const CoinFixure = {
     value: FixedPointNumber.of('1234567.89')
@@ -47,7 +53,7 @@ describe('Coin class tests', () => {
                 const vtho = VTHO.of(vet.value);
                 expect(() => {
                     vet.compareTo(vtho);
-                }).toThrow(InvalidDataType);
+                }).toThrow(IllegalArgumentError);
             });
         });
 

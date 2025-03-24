@@ -1,8 +1,4 @@
 import {
-    InvalidAbiDataToEncodeOrDecode,
-    InvalidOperation
-} from '@vechain/sdk-errors';
-import {
     decodeAbiParameters,
     encodeAbiParameters,
     parseAbiParameters,
@@ -10,6 +6,16 @@ import {
 } from 'viem';
 import { Hex } from '../Hex';
 import { type VeChainDataModel } from '../VeChainDataModel';
+import {
+    InvalidAbiDecodingTypeError,
+    InvalidAbiEncodingTypeError,
+    UnsupportedOperationError
+} from '../../errors';
+
+/**
+ * Full Qualified Path
+ */
+const FQP = 'packages/core/src/vcdm/abi/ABI.ts!';
 
 /**
  * Represents an ABI (Application Binary Interface).
@@ -18,6 +24,7 @@ import { type VeChainDataModel } from '../VeChainDataModel';
 class ABI implements VeChainDataModel<ABI> {
     private readonly types: readonly AbiParameter[];
     private readonly values: unknown[];
+
     /**
      * ABI constructor from types and values.
      *
@@ -69,13 +76,13 @@ class ABI implements VeChainDataModel<ABI> {
     /**
      * Throws an exception because the ABI cannot be represented as a big integer.
      * @returns {bigint} The BigInt representation of the ABI.
-     * @throws {InvalidOperation} The ABI cannot be represented as a bigint.
+     * @throws {UnsupportedOperationError} The ABI cannot be represented as a bigint.
      * @override {@link VeChainDataModel#bi}
      * @remark The conversion to BigInt is not supported for an ABI.
      */
     public get bi(): bigint {
-        throw new InvalidOperation(
-            'ABI.bi',
+        throw new UnsupportedOperationError(
+            `${FQP}<ABI>.bi: bigint`,
             'There is no big integer representation for an ABI.',
             { data: '' }
         );
@@ -94,13 +101,13 @@ class ABI implements VeChainDataModel<ABI> {
     /**
      * Throws an exception because the ABI cannot be represented as a number.
      * @returns {bigint} The number representation of the ABI.
-     * @throws {InvalidOperation} The mnemonic cannot be represented as a number.
+     * @throws {UnsupportedOperationError} The mnemonic cannot be represented as a number.
      * @override {@link VeChainDataModel#n}
      * @remark The conversion to number is not supported for an ABI.
      */
     public get n(): number {
-        throw new InvalidOperation(
-            'ABI.n',
+        throw new UnsupportedOperationError(
+            `${FQP}<ABI>.n: number`,
             'There is no number representation for an ABI.',
             { data: '' }
         );
@@ -111,19 +118,20 @@ class ABI implements VeChainDataModel<ABI> {
      * @param {string | AbiParameter[]} types ABI parameters representing the types of the values.
      * @param {unknown[]} values ABI values.
      * @returns {ABI} The ABI object with the given types and values.
+     * @throws {InvalidAbiEncodingTypeError} If the construction of the ABI instance fails.
      */
     public static of(types: string | AbiParameter[], values: unknown[]): ABI {
         try {
             return new ABI(types, values);
         } catch (error) {
-            throw new InvalidAbiDataToEncodeOrDecode(
-                'ABI.of',
+            throw new InvalidAbiEncodingTypeError(
+                `${FQP}ABI.of(types: string | AbiParameter[], values: unknown[])`,
                 'Types and values must be valid ABI parameters.',
                 {
                     types,
                     values
                 },
-                error
+                error instanceof Error ? error : undefined
             );
         }
     }
@@ -132,6 +140,7 @@ class ABI implements VeChainDataModel<ABI> {
      * Decodes the ABI values from the given ABI types and encoded data.
      * @param {string| AbiParameter[]} types The list of ABI types representing the types of the values to decode.
      * @param {Hex} dataEncoded The encoded data to decode.
+     * @throws {InvalidAbiDecodingTypeError} If decoding arguments to ABI failed.
      * @returns An ABI instance with the decoded values.
      */
     public static ofEncoded(
@@ -152,14 +161,14 @@ class ABI implements VeChainDataModel<ABI> {
             }
             return new ABI(types, [...values]);
         } catch (error) {
-            throw new InvalidAbiDataToEncodeOrDecode(
-                'ABI.of',
+            throw new InvalidAbiDecodingTypeError(
+                `${FQP}ABI.ofEncoded(types: string | AbiParameter[], dataEncoded: string | Uint8Array)`,
                 'Decoding failed: Data must be a valid ABI type with corresponding valid data.',
                 {
                     types,
                     data: dataEncoded
                 },
-                error
+                error instanceof Error ? error : undefined
             );
         }
     }
@@ -208,6 +217,7 @@ class ABI implements VeChainDataModel<ABI> {
     /**
      * Parses an ABI to its Hex representation.
      * @returns {Hex} The Hex representation of the ABI.
+     * @throws {InvalidAbiEncodingTypeError} If encoding to hexadecimal fails.
      */
     public toHex(): Hex {
         try {
@@ -217,14 +227,14 @@ class ABI implements VeChainDataModel<ABI> {
             );
             return Hex.of(abiParametersEncoded);
         } catch (error) {
-            throw new InvalidAbiDataToEncodeOrDecode(
+            throw new InvalidAbiEncodingTypeError(
                 'ABI.toHex',
                 'Encoding failed: Data must be a valid ABI type with corresponding valid data.',
                 {
                     types: this.types,
                     values: this.values
                 },
-                error
+                error instanceof Error ? error : undefined
             );
         }
     }

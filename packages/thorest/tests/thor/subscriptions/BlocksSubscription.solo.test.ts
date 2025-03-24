@@ -7,6 +7,8 @@ import {
     BlocksSubscription,
     type SubscriptionBlockResponse
 } from '../../../src/thor/subscriptions';
+import log from 'loglevel';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 describe('BlocksSubscription solo tests', () => {
     let subscription: BlocksSubscription;
@@ -21,13 +23,13 @@ describe('BlocksSubscription solo tests', () => {
             .addListener({
                 onMessage: (message) => {
                     const data = message.data;
-                    console.log(JSON.stringify(data, null, 2));
+                    log.debug(fastJsonStableStringify(data));
                     done();
                 },
                 onOpen: () => {},
                 onClose: () => {},
                 onError: (error) => {
-                    console.error('WebSocket error:', error);
+                    log.error('WebSocket error:', error);
                 }
             } satisfies WebSocketListener<SubscriptionBlockResponse>)
             .open();

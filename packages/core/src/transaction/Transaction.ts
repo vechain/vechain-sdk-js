@@ -1,11 +1,4 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
-import {
-    InvalidDataType,
-    InvalidSecp256k1PrivateKey,
-    InvalidTransactionField,
-    NotDelegatedTransaction,
-    UnavailableTransactionField
-} from '@vechain/sdk-errors';
 import { Secp256k1 } from '../secp256k1';
 import {
     Address,
@@ -25,6 +18,17 @@ import {
 import { Blake2b256 } from '../vcdm/hash/Blake2b256';
 import { type TransactionBody } from './TransactionBody';
 import type { TransactionClause } from './TransactionClause';
+import {
+    IllegalArgumentError,
+    InvalidPrivateKeyError,
+    NoSuchElementError,
+    UnsupportedOperationError
+} from '../errors';
+
+/**
+ * Full Qualified Path
+ */
+const FQP = 'packages/core/src/transaction/Transaction.ts!Transaction!';
 
 /**
  * Represents an immutable transaction entity.
@@ -176,8 +180,8 @@ class Transaction {
      * to derive the gas payer's address.
      *
      * @return {Address} The address of the gas payer.
-     * @throws {UnavailableTransactionField} If the transaction is delegated but the signature is missing.
-     * @throws {NotDelegatedTransaction} If the transaction is not delegated.
+     * @throws {NoSuchElementError} If the transaction is delegated but the signature is missing.
+     * @throws {NoSuchElementError} If the transaction is not delegated.
      *
      * @remarks Security auditable method, depends on
      * - {@link Address.ofPublicKey};
@@ -199,14 +203,14 @@ class Transaction {
                 );
                 return Address.ofPublicKey(gasPayerPublicKey);
             }
-            throw new UnavailableTransactionField(
-                'Transaction.gasPayer()',
+            throw new NoSuchElementError(
+                `${FQP}<Transaction>.gasPayer(): Address`,
                 'missing gas payer signature',
                 { fieldName: 'gasPayer' }
             );
         }
-        throw new NotDelegatedTransaction(
-            'Transaction.gasPayer()',
+        throw new NoSuchElementError(
+            `${FQP}<Transaction>.gasPayer(): Address`,
             'not delegated transaction',
             undefined
         );
@@ -234,7 +238,7 @@ class Transaction {
      *
      * @return {Blake2b256} The concatenated hash of the signature
      * and origin if the transaction is signed.
-     * @throws {UnavailableTransactionField} If the transaction is not signed.
+     * @throws {NoSuchElementError} If the transaction is not signed.
      *
      * @remarks Security auditable method, depends on
      * - {@link Blake2b256.of}
@@ -248,8 +252,8 @@ class Transaction {
                 )
             );
         }
-        throw new UnavailableTransactionField(
-            'Transaction.id()',
+        throw new NoSuchElementError(
+            `${FQP}<Transaction>.id(): Blake2b256`,
             'not signed transaction: id unavailable',
             { fieldName: 'id' }
         );
@@ -295,7 +299,7 @@ class Transaction {
      * The origin is determined by recovering the public key from the transaction's sender.
      *
      * @return {Address} The address derived from the public key of the transaction's sender.
-     * @throws {UnavailableTransactionField} If the transaction is not signed, an exception is thrown indicating the absence of the origin field.
+     * @throws {NoSuchElementError} If the transaction is not signed, an exception is thrown indicating the absence of the origin field.
      *
      * @remarks Security auditable method, depends on
      * - {@link Address.ofPublicKey};
@@ -312,8 +316,8 @@ class Transaction {
                 )
             );
         }
-        throw new UnavailableTransactionField(
-            'Transaction.origin()',
+        throw new NoSuchElementError(
+            `${FQP}<Transaction>.origin(): Address`,
             'not signed transaction, no origin',
             { fieldName: 'origin' }
         );
@@ -401,7 +405,7 @@ class Transaction {
      *
      * @param {TransactionClause[]} clauses - An array of transaction clauses to calculate the intrinsic gas for.
      * @return {VTHO} The total intrinsic gas required for the provided clauses.
-     * @throws {InvalidDataType} If clauses have invalid data as invalid addresses.
+     * @throws {IllegalArgumentError} If clauses have invalid data as invalid addresses.
      */
     public static intrinsicGas(clauses: TransactionClause[]): VTHO {
         if (clauses.length > 0) {
@@ -414,8 +418,8 @@ class Transaction {
                             !Address.isValid(clause.to) &&
                             !clause.to.includes('.')
                         )
-                            throw new InvalidDataType(
-                                'Transaction.intrinsicGas',
+                            throw new IllegalArgumentError(
+                                `${FQP}Transaction.intrinsicGas(clauses: TransactionClause[]): VTHO`,
                                 'invalid data type in clause: each `to` field must be a valid address.',
                                 { clause }
                             );
@@ -478,7 +482,7 @@ class Transaction {
      * @param {TransactionBody} body - The transaction body to be validated.
      * @param {Uint8Array} [signature] - Optional signature.
      * @return {Transaction} A new Transaction instance if validation is successful.
-     * @throws {InvalidTransactionField} If the provided body is invalid.
+     * @throws {IllegalArgumentError} If the provided body is invalid.
      */
     public static of(
         body: TransactionBody,
@@ -487,10 +491,14 @@ class Transaction {
         if (Transaction.isValidBody(body)) {
             return new Transaction(body, signature);
         }
-        throw new InvalidTransactionField('Transaction.of', 'invalid body', {
-            fieldName: 'body',
-            body
-        });
+        throw new IllegalArgumentError(
+            `${FQP}Transaction.of(body: TransactionBody, signature?: Uint8Array): Transaction`,
+            'invalid body',
+            {
+                fieldName: 'body',
+                body
+            }
+        );
     }
 
     /**
@@ -498,8 +506,8 @@ class Transaction {
      *
      * @param {Uint8Array} senderPrivateKey - The private key used to sign the transaction.
      * @return {Transaction} The signed transaction.
-     * @throws {InvalidTransactionField} If attempting to sign a delegated transaction.
-     * @throws {InvalidSecp256k1PrivateKey} If the provided private key is not valid.
+     * @throws {UnsupportedOperationError} If attempting to sign a delegated transaction.
+     * @throws {InvalidPrivateKeyError} If the provided private key is not valid.
      *
      * @remarks Security auditable method, depends on
      * - {@link Secp256k1.isValidPrivateKey};
@@ -517,14 +525,14 @@ class Transaction {
                 // Return new signed transaction.
                 return Transaction.of(this.body, signature);
             }
-            throw new InvalidTransactionField(
-                `Transaction.sign`,
+            throw new UnsupportedOperationError(
+                `${FQP}<Transaction>.sign(senderPrivateKey: Uint8Array): Transaction`,
                 'delegated transaction: use signAsSenderAndGasPayer method',
                 { fieldName: 'gasPayer', body: this.body }
             );
         }
-        throw new InvalidSecp256k1PrivateKey(
-            `Transaction.sign`,
+        throw new InvalidPrivateKeyError(
+            `${FQP}<Transaction>.sign(senderPrivateKey: Uint8Array): Transaction`,
             'invalid private key: ensure it is a secp256k1 key',
             undefined
         );
@@ -540,9 +548,9 @@ class Transaction {
      *
      * @return {Transaction} - A new transaction object with the gas payer's signature appended.
      *
-     * @throws {InvalidSecp256k1PrivateKey} If the provided gas payer private key is not valid.
-     * @throws {InvalidTransactionField} If the transaction is unsigned or lacks a valid signature.
-     * @throws {NotDelegatedTransaction} If the transaction is not set as delegated.
+     * @throws {InvalidPrivateKeyError} If the provided gas payer private key is not valid.
+     * @throws {NoSuchElementError} If the signature is missing for thsi delegated transaction.
+     * @throws {UnsupportedOperation} If the transaction isn't delegated.
      *
      * @remarks Security auditable method, depends on
      * - {@link Secp256k1.isValidPrivateKey};
@@ -565,22 +573,20 @@ class Transaction {
                         )
                     );
                 }
-                throw new InvalidTransactionField(
-                    'Transaction.signAsGasPayer',
+                throw new NoSuchElementError(
+                    `${FQP}<Transaction>.signAsGasPayer(sender: Address, gasPayerPrivateKey: Uint8Array): Transaction`,
                     'unsigned transaction: use signAsSender method',
                     { fieldName: 'signature' }
                 );
             }
-            throw new NotDelegatedTransaction(
-                'Transaction.signAsGasPayer',
-                'not delegated transaction: use sign method',
-                undefined
+            throw new UnsupportedOperationError(
+                `${FQP}<Transaction>.signAsGasPayer(sender: Address, gasPayerPrivateKey: Uint8Array): Transaction`,
+                'not delegated transaction: use sign method'
             );
         }
-        throw new InvalidSecp256k1PrivateKey(
-            `Transaction.signAsGasPayer`,
-            'invalid gas payer private key: ensure it is a secp256k1 key',
-            undefined
+        throw new InvalidPrivateKeyError(
+            `${FQP}<Transaction>.signAsGasPayer(sender: Address, gasPayerPrivateKey: Uint8Array): Transaction`,
+            'invalid gas payer private key: ensure it is a SECP256K1 key'
         );
     }
 
@@ -592,8 +598,8 @@ class Transaction {
      *
      * @param senderPrivateKey The private key of the transaction sender, represented as a Uint8Array. It must be a valid secp256k1 private key.
      * @return A new Transaction object with the signature applied, if the transaction is delegated and the private key is valid.
-     * @throws NotDelegatedTransaction if the current transaction is not marked as delegated, instructing to use the regular sign method instead.
-     * @throws InvalidSecp256k1PrivateKey if the provided senderPrivateKey is not a valid secp256k1 private key.
+     * @throws UnsupportedOperationError if the current transaction is not marked as delegated, instructing to use the regular sign method instead.
+     * @throws InvalidPrivateKeyError if the provided senderPrivateKey is not a valid secp256k1 private key.
      *
      * @remarks Security auditable method, depends on
      * - {@link Secp256k1.isValidPrivateKey};
@@ -608,14 +614,14 @@ class Transaction {
                     Secp256k1.sign(transactionHash, senderPrivateKey)
                 );
             }
-            throw new NotDelegatedTransaction(
-                'Transaction.signAsSender',
+            throw new UnsupportedOperationError(
+                `${FQP}<Transaction>.signAsSender(senderPrivateKey: Uint8Array): Transaction`,
                 'not delegated transaction: use sign method',
                 undefined
             );
         }
-        throw new InvalidSecp256k1PrivateKey(
-            `Transaction.signAsSender`,
+        throw new InvalidPrivateKeyError(
+            `${FQP}<Transaction>.signAsGasPayer(sender: Address, gasPayerPrivateKey: Uint8Array): Transaction`,
             'invalid sender private key: ensure it is a secp256k1 key',
             undefined
         );
@@ -629,7 +635,7 @@ class Transaction {
      * @return {Transaction} A new transaction with the concatenated signatures
      * of the transaction sender and the gas payer.
      * @throws {InvalidSecp256k1PrivateKey} - If either the private key of the transaction sender or gas payer is invalid.
-     * @throws {NotDelegatedTransaction} - If the transaction is not delegated.
+     * @throws {UnsupportedOperationError} - If the transaction is not delegated.
      *
      * @remarks Security auditable method, depends on
      * - {@link Address.ofPublicKey}
@@ -660,20 +666,20 @@ class Transaction {
                         )
                     );
                 }
-                throw new NotDelegatedTransaction(
-                    'Transaction.signAsSenderAndGasPayer',
+                throw new UnsupportedOperationError(
+                    `${FQP}Transaction.signAsSenderAndGasPayer(senderPrivateKey: Uint8Array, gasPayerPrivateKey: Uint8Array): Transaction`,
                     'not delegated transaction: use sign method',
                     undefined
                 );
             }
-            throw new InvalidSecp256k1PrivateKey(
-                `Transaction.signAsSenderAndGasPayer`,
+            throw new InvalidPrivateKeyError(
+                `${FQP}Transaction.signAsSenderAndGasPayer(senderPrivateKey: Uint8Array, gasPayerPrivateKey: Uint8Array): Transaction`,
                 'invalid gas payer private key: ensure it is a secp256k1 key',
                 undefined
             );
         }
-        throw new InvalidSecp256k1PrivateKey(
-            `Transaction.signAsSenderAndGasPayer`,
+        throw new InvalidPrivateKeyError(
+            `${FQP}Transaction.signAsSenderAndGasPayer(senderPrivateKey: Uint8Array, gasPayerPrivateKey: Uint8Array): Transaction`,
             'invalid sender private key: ensure it is a secp256k1 key',
             undefined
         );
@@ -686,15 +692,15 @@ class Transaction {
      *
      * @param {string} data - The hexadecimal string data for which the gas usage is computed.
      * @return {bigint} The total gas used for the provided data.
-     * @throws {InvalidDataType} If the data is not a valid hexadecimal string.
+     * @throws {IllegalArgumentError} If the data is not a valid hexadecimal string.
      *
      * @remarks gas value is expressed in {@link Units.wei} unit.
      */
     private static computeUsedGasFor(data: string): bigint {
         // Invalid data
         if (data !== '' && !Hex.isValid(data))
-            throw new InvalidDataType(
-                'calculateDataUsedGas()',
+            throw new IllegalArgumentError(
+                `${FQP}Transaction.computeUsedGasFor(data: string): bigint`,
                 `Invalid data type for gas calculation. Data should be a hexadecimal string.`,
                 { data }
             );
@@ -717,7 +723,7 @@ class Transaction {
      * @return {Object} An object containing the decoded features and any unused buffer data.
      * @return {number} [return.features] The decoded features from the reserved field.
      * @return {Buffer[]} [return.unused] An array of Buffer objects representing unused data, if any.
-     * @throws {InvalidTransactionField} Thrown if the reserved field is not properly trimmed.
+     * @throws {NoSuchElementError} Thrown if the reserved field is not properly trimmed.
      */
     private static decodeReservedField(reserved: Uint8Array[]): {
         features?: number;
@@ -737,8 +743,8 @@ class Transaction {
                   }
                 : { features: featuresField };
         }
-        throw new InvalidTransactionField(
-            'Transaction.decodeReservedField',
+        throw new NoSuchElementError(
+            `${FQP}Transaction.decodeReservedField(reserved: Buffer[]): { features?: number, unused?: Uint8Array[] }`,
             'invalid reserved field: fields in the `reserved` property must be properly trimmed',
             { fieldName: 'reserved', reserved }
         );
