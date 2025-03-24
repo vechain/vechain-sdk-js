@@ -7,7 +7,6 @@ import {
 import { Hex } from '../Hex';
 import { type VeChainDataModel } from '../VeChainDataModel';
 import {
-    AbiConstructorNotFoundError,
     InvalidAbiDecodingTypeError,
     InvalidAbiEncodingTypeError,
     UnsupportedOperationError
@@ -119,13 +118,13 @@ class ABI implements VeChainDataModel<ABI> {
      * @param {string | AbiParameter[]} types ABI parameters representing the types of the values.
      * @param {unknown[]} values ABI values.
      * @returns {ABI} The ABI object with the given types and values.
-     * @throws {AbiConstructorNotFoundError} If the construction of the ABI instance fails.
+     * @throws {InvalidAbiEncodingTypeError} If the construction of the ABI instance fails.
      */
     public static of(types: string | AbiParameter[], values: unknown[]): ABI {
         try {
             return new ABI(types, values);
         } catch (error) {
-            throw new AbiConstructorNotFoundError(
+            throw new InvalidAbiEncodingTypeError(
                 `${FQP}ABI.of(types: string | AbiParameter[], values: unknown[])`,
                 'Types and values must be valid ABI parameters.',
                 {
