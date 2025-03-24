@@ -2,11 +2,16 @@ import log from 'loglevel';
 import { Txt } from '../vcdm';
 import { keystoreEthers, keystoreExperimental } from './cryptography';
 import { type Keystore, type KeystoreAccount } from './types';
+import pkg from '../../package.json';
 
 /**
- * Artifact identifier and version.
+ * Represents the software tag identifier expressing the **artifact and version coordinates**
+ * used for logging or debugging purposes.
+ *
+ * This constant value is used to facilitate filtering or grouping of log messages,
+ * helping developers to identify and trace operations or issues related to this specific SDK version in the application.
  */
-const TAG = 'vechain-sdk-js:2.0';
+const TAG = `vechain-sdk-js:${pkg.version}`;
 
 /**
  * Full Qualified Path.
@@ -69,7 +74,7 @@ async function decrypt(
 ): Promise<KeystoreAccount> {
     if (EXPERIMENTAL_CRYPTOGRAPHY)
         logger.warn(
-            `${TAG}:${FQP}decrypy(keystore: Keystore, password: string): EXPERIMENTAL CRYPTOGRAPHY LIBRARY.`
+            `${TAG}:${FQP}decrypt(keystore: Keystore, password: string): EXPERIMENTAL CRYPTOGRAPHY LIBRARY.`
         );
     return EXPERIMENTAL_CRYPTOGRAPHY
         ? keystoreExperimental.decrypt(keystore, Txt.of(password).bytes)
