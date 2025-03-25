@@ -2,7 +2,7 @@ import { describe, test, expect } from '@jest/globals';
 import { HexUInt, Transaction } from '@vechain/sdk-core';
 import { type FetchHttpClient, SendTransaction, TXID } from '../../../src';
 
-// Define test fixtures locally
+// Define test fixtures locally due to broken imports
 const TEST_ACCOUNTS = {
     TRANSACTION: {
         TRANSACTION_SENDER: {

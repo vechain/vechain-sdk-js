@@ -4,9 +4,13 @@ enum ThorNetworks {
     TESTNET = 'https://testnet.vechain.org/'
 }
 
-// Add a helper method to convert to URL
 function toURL(network: ThorNetworks): URL {
     return new URL(network);
 }
 
-export { ThorNetworks, toURL };
+function isValidNetworkUrl(url: URL): boolean {
+    const urlString = url.toString();
+    return Object.values(ThorNetworks).includes(urlString as ThorNetworks);
+}
+
+export { ThorNetworks, toURL, isValidNetworkUrl };
