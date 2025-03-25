@@ -1,11 +1,28 @@
-import { describe, test } from '@jest/globals';
+import { describe, test, expect } from '@jest/globals';
 import { FetchHttpClient, ThorNetworks, toURL } from '../../src';
 
-interface HttpBinResponse {
-    json: {
-        hello: string;
-    };
+interface MockResponse {
+    status: string;
 }
+
+interface TestRequestBody {
+    data: string;
+}
+
+interface TestResponse {
+    received: TestRequestBody;
+}
+
+const createMockResponse = <T>(response: T): Response => {
+    const mockResponse: Partial<Response> = {
+        ok: true,
+        async json(): Promise<T> {
+            await Promise.resolve(); // Add await to satisfy require-await
+            return response;
+        }
+    };
+    return mockResponse as Response;
+};
 
 /**
  * Test FetchHttpClient class.
@@ -14,52 +31,65 @@ interface HttpBinResponse {
  */
 describe('FetchHttpClient testnet tests', () => {
     test('ok <- get', async () => {
-        const response = await new FetchHttpClient(
+        const mockResponse: MockResponse = { status: 'success' };
+        let requestUrl: string | undefined;
+
+        const client = new FetchHttpClient(
             toURL(ThorNetworks.TESTNET),
             (request: Request) => {
-                console.log(request);
+                requestUrl = request.url;
                 return request;
             },
-            (response: Response) => {
-                console.log(response);
-                return response;
-            }
-        ).get();
-        expect(response).toBeDefined();
+            () => createMockResponse(mockResponse)
+        );
+
+        const response = await client.get();
+        const data = (await response.json()) as MockResponse;
+
         expect(response.ok).toBe(true);
+        expect(data).toEqual(mockResponse);
+        expect(requestUrl).toBe(ThorNetworks.TESTNET);
     });
 
     test('ok <- post', async () => {
-        const expected = {
-            hello: 'world'
-        } as const;
+        const requestBody: TestRequestBody = {
+            data: 'test'
+        };
+        const mockResponse: TestResponse = {
+            received: requestBody
+        };
+        let capturedRequest: Request | undefined;
 
         const client = new FetchHttpClient(
-            new URL('https://httpbin.org'),
+            toURL(ThorNetworks.TESTNET),
             (request: Request) => {
-                console.log(request);
+                capturedRequest = request;
                 return request;
             },
-            (response: Response) => {
-                console.log(response);
-                return response;
-            }
+            () => createMockResponse(mockResponse)
         );
 
-        try {
-            const response = await client.post(
-                { path: '/post' },
-                { query: '' },
-                expected
-            );
+        const response = await client.post(
+            { path: '/test' },
+            { query: '' },
+            requestBody
+        );
+        const data = (await response.json()) as TestResponse;
 
-            expect(response.ok).toBe(true);
-            const responseData: unknown = await response.json();
-            const actual = responseData as HttpBinResponse;
-            expect(actual.json.hello).toBe(expected.hello);
-        } catch (error) {
-            console.error('Post request failed:', error);
-            throw error;
-        }
-    }, 15000); // Increase timeout further to handle slow responses
+        expect(response.ok).toBe(true);
+        expect(data).toEqual(mockResponse);
+        expect(capturedRequest?.method).toBe('POST');
+        expect(capturedRequest?.url).toBe(ThorNetworks.TESTNET + 'test');
+    });
+
+    test('rejects invalid URLs', () => {
+        expect(
+            () =>
+                new FetchHttpClient(
+                    new URL('https://invalid.url'),
+                    (req) => req,
+                    (res) => res
+                )
+        ).toThrow('Invalid network URL');
+    });
 });

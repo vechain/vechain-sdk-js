@@ -1,6 +1,7 @@
 import { type HttpClient } from './HttpClient';
 import { type HttpPath } from './HttpPath';
 import { type HttpQuery } from './HttpQuery';
+import { isValidNetworkUrl } from '../thor/ThorNetworks';
 
 class FetchHttpClient implements HttpClient {
     private static readonly PATH_SEPARATOR = '/';
@@ -16,6 +17,11 @@ class FetchHttpClient implements HttpClient {
         onRequest: (request: Request) => Request,
         onResponse: (response: Response) => Response
     ) {
+        if (!isValidNetworkUrl(baseURL)) {
+            throw new Error(
+                'Invalid network URL. Only ThorNetworks URLs are allowed.'
+            );
+        }
         if (!baseURL.pathname.endsWith(FetchHttpClient.PATH_SEPARATOR)) {
             baseURL.pathname += FetchHttpClient.PATH_SEPARATOR;
         }
