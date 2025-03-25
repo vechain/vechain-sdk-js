@@ -276,7 +276,7 @@ function encodeScryptParams(options: EncryptOptions): ScryptParams {
  * @param {Uint8Array} privateKey - The private key to encrypt, the memory location is wiped after use.
  * @param {Uint8Array} password - The password to use for encryption, the memory location is wiped after use.
  * @returns {Keystore} - The encrypted keystore object.
- * @throws {InvalidKeystoreParams}
+ * @throws {InvalidKeystoreError}
  *
  * @see {encryptKeystore}
  *
@@ -317,8 +317,8 @@ function encrypt(privateKey: Uint8Array, password: Uint8Array): Keystore {
  * - {@link Secp256k1.randomBytes}.
  * - [scrypt](https://github.com/paulmillr/noble-hashes/?tab=readme-ov-file#scrypt).
  *
- * @param privateKey - The private key to encrypt, the memory location is wiped after use.
- * @param password - The password to use for encryption, the memory location is wiped after use.
+ * @param privateKey - The private key to encrypt the keystore.
+ * @param password - The password to use for encryption.
  * @param options - Parameters used to configure the **AES** encryption of the private key and the **Scrypt** derivation key function.
  * @returns {Keystore} - The encrypted keystore object.
  * @throws {InvalidKeystoreError} - If encryption fails.
@@ -335,64 +335,58 @@ function encryptKeystore(
     password: Uint8Array,
     options: EncryptOptions
 ): Keystore {
-    try {
-        const kdf = encodeScryptParams(options);
-        const key = scrypt(password, kdf.salt, {
-            N: kdf.N,
-            r: kdf.r,
-            p: kdf.p,
-            dkLen: kdf.dkLen
-        });
-        // Override initialization vector.
-        const iv = options.iv ?? Secp256k1.randomBytes(16);
-        if (iv.length !== 16)
-            throw new InvalidKeystoreError(
-                `${FQP}encryptKeystore(privateKey: Uint8Array, password: Uint8Array, options: EncryptOptions): Keystore`,
-                'Encryption failed: invalid options.iv length.',
-                { options }
-            );
+    const kdf = encodeScryptParams(options);
+    const key = scrypt(password, kdf.salt, {
+        N: kdf.N,
+        r: kdf.r,
+        p: kdf.p,
+        dkLen: kdf.dkLen
+    });
+    // Override initialization vector.
+    const iv = options.iv ?? Secp256k1.randomBytes(16);
+    if (iv.length !== 16)
+        throw new InvalidKeystoreError(
+            `${FQP}encryptKeystore(privateKey: Uint8Array, password: Uint8Array, options: EncryptOptions): Keystore`,
+            'Encryption failed: invalid options.iv length.',
+            { options }
+        );
 
-        // Override the uuid.
-        const uuidRandom = options.uuid ?? Secp256k1.randomBytes(16);
+    // Override the uuid.
+    const uuidRandom = options.uuid ?? Secp256k1.randomBytes(16);
 
-        if (uuidRandom.length !== 16)
-            throw new InvalidKeystoreError(
-                `${FQP}encryptKeystore(privateKey: Uint8Array, password: Uint8Array, options: EncryptOptions): Keystore`,
-                'Encryption failed: invalid options.uuid length.',
-                { options }
-            );
+    if (uuidRandom.length !== 16)
+        throw new InvalidKeystoreError(
+            `${FQP}encryptKeystore(privateKey: Uint8Array, password: Uint8Array, options: EncryptOptions): Keystore`,
+            'Encryption failed: invalid options.uuid length.',
+            { options }
+        );
 
-        // Message Authentication Code prefix.
-        const macPrefix = key.slice(16, 32);
-        // Encrypt the private key: 32 bytes for the Web3 Secret Storage (derivedKey, macPrefix)
-        const ciphertext = ctr(key.slice(0, 16), iv).encrypt(privateKey);
-        return {
-            address: Address.ofPrivateKey(privateKey).toString(),
-            crypto: {
-                cipher: KEYSTORE_CRYPTO_CIPHER,
-                cipherparams: {
-                    iv: Hex.of(iv).digits
-                },
-                ciphertext: Hex.of(ciphertext).digits,
-                kdf: 'scrypt',
-                kdfparams: {
-                    dklen: KEYSTORE_CRYPTO_PARAMS_DKLEN,
-                    n: kdf.N,
-                    p: kdf.p,
-                    r: kdf.r,
-                    salt: Hex.of(kdf.salt).digits
-                },
-                // Compute the message authentication code, used to check the password.
-                mac: Keccak256.of(n_utils.concatBytes(macPrefix, ciphertext))
-                    .digits
+    // Message Authentication Code prefix.
+    const macPrefix = key.slice(16, 32);
+    // Encrypt the private key: 32 bytes for the Web3 Secret Storage (derivedKey, macPrefix)
+    const ciphertext = ctr(key.slice(0, 16), iv).encrypt(privateKey);
+    return {
+        address: Address.ofPrivateKey(privateKey).toString(),
+        crypto: {
+            cipher: KEYSTORE_CRYPTO_CIPHER,
+            cipherparams: {
+                iv: Hex.of(iv).digits
             },
-            id: uuidV4(uuidRandom),
-            version: KEYSTORE_VERSION
-        } satisfies Keystore;
-    } finally {
-        privateKey.fill(0); // Clear the private key from memory.
-        password.fill(0); // Clear the password from memory.
-    }
+            ciphertext: Hex.of(ciphertext).digits,
+            kdf: 'scrypt',
+            kdfparams: {
+                dklen: KEYSTORE_CRYPTO_PARAMS_DKLEN,
+                n: kdf.N,
+                p: kdf.p,
+                r: kdf.r,
+                salt: Hex.of(kdf.salt).digits
+            },
+            // Compute the message authentication code, used to check the password.
+            mac: Keccak256.of(n_utils.concatBytes(macPrefix, ciphertext)).digits
+        },
+        id: uuidV4(uuidRandom),
+        version: KEYSTORE_VERSION
+    } satisfies Keystore;
 }
 
 /**
@@ -459,8 +453,8 @@ function decrypt(keystore: Keystore, password: Uint8Array): KeystoreAccount {
  * - `password` wiped after use.
  * - [scrypt](https://github.com/paulmillr/noble-hashes/?tab=readme-ov-file#scrypt).
  *
- * @param {Keystore} keystore - The keystore object to decrypt.
- * @param {Uint8Array} password - The password used for decryption, wiped after use.
+ * @param {Keystore} keystore - The keystore object to decrypt the keystore.
+ * @param {Uint8Array} password - The password used for decryption.
  * @return {KeystoreAccount} - The decrypted keystore account object.
  * @throws {InvalidKeystoreError} - If decryption fails.
  *
@@ -471,73 +465,68 @@ function decryptKeystore(
     keystore: Keystore,
     password: Uint8Array
 ): KeystoreAccount {
-    try {
-        if (keystore.crypto.cipher.toLowerCase() !== KEYSTORE_CRYPTO_CIPHER)
-            throw new InvalidKeystoreError(
-                `${FQP}decryptKeystore(keystore: Keystore, password: Uint8Array): KeystoreAccount`,
-                'Decryption failed: unsupported crypto cipher algorithm.',
-                { cipher: keystore.crypto.cipher.toLowerCase() }
-            );
+    if (keystore.crypto.cipher.toLowerCase() !== KEYSTORE_CRYPTO_CIPHER)
+        throw new InvalidKeystoreError(
+            `${FQP}decryptKeystore(keystore: Keystore, password: Uint8Array): KeystoreAccount`,
+            'Decryption failed: unsupported crypto cipher algorithm.',
+            { cipher: keystore.crypto.cipher.toLowerCase() }
+        );
 
-        if (keystore.crypto.kdf.toLowerCase() !== KEYSTORE_CRYPTO_KDF)
-            throw new InvalidKeystoreError(
-                `${FQP}decryptKeystore(keystore: Keystore, password: Uint8Array): KeystoreAccount`,
-                'Decryption failed: unsupported crypto key derivation function.',
-                { keyDerivationFunction: keystore.crypto.kdf.toLowerCase() }
-            );
+    if (keystore.crypto.kdf.toLowerCase() !== KEYSTORE_CRYPTO_KDF)
+        throw new InvalidKeystoreError(
+            `${FQP}decryptKeystore(keystore: Keystore, password: Uint8Array): KeystoreAccount`,
+            'Decryption failed: unsupported crypto key derivation function.',
+            { keyDerivationFunction: keystore.crypto.kdf.toLowerCase() }
+        );
 
-        if (keystore.version !== KEYSTORE_VERSION)
-            throw new InvalidKeystoreError(
-                `${FQP}decryptKeystore(keystore: Keystore, password: Uint8Array): KeystoreAccount`,
-                'Decryption failed: unsupported keystore version.',
-                { version: keystore.version }
-            );
+    if (keystore.version !== KEYSTORE_VERSION)
+        throw new InvalidKeystoreError(
+            `${FQP}decryptKeystore(keystore: Keystore, password: Uint8Array): KeystoreAccount`,
+            'Decryption failed: unsupported keystore version.',
+            { version: keystore.version }
+        );
 
-        const kdf = decodeScryptParams(keystore);
-        const key = scrypt(password, kdf.salt, {
-            N: kdf.N,
-            r: kdf.r,
-            p: kdf.p,
-            dkLen: kdf.dkLen
-        });
-        const ciphertext = n_utils.hexToBytes(keystore.crypto.ciphertext);
-        if (
-            keystore.crypto.mac !==
-            Keccak256.of(n_utils.concatBytes(key.slice(16, 32), ciphertext))
-                .digits
-        ) {
-            throw new InvalidPasswordError(
-                `${FQP}decryptKeystore(keystore: Keystore, password: Uint8Array): KeystoreAccount`,
-                'Decryption failed: Invalid Password for the given keystore.',
-                // @NOTE: We are not exposing the password in the error data for security reasons.
-                {
-                    keystore
-                }
-            );
-        }
-        const privateKey = ctr(
-            key.slice(0, 16),
-            n_utils.hexToBytes(keystore.crypto.cipherparams.iv)
-        ).decrypt(ciphertext);
-        const address = Address.ofPrivateKey(privateKey).toString();
-        if (
-            keystore.address !== '' &&
-            address !== Address.checksum(Hex.of(keystore.address))
-        ) {
-            throw new InvalidKeystoreError(
-                `${FQP}decryptKeystore(keystore: Keystore, password: Uint8Array): KeystoreAccount`,
-                'Decryption failed: address/password mismatch.',
-                { keystoreAddress: keystore.address }
-            );
-        }
-        return {
-            address,
-            // @note: Convert the private key to a string to be compatible with ethers
-            privateKey: Hex.of(privateKey).toString()
-        } satisfies KeystoreAccount;
-    } finally {
-        password.fill(0); // Clear the password from memory.
+    const kdf = decodeScryptParams(keystore);
+    const key = scrypt(password, kdf.salt, {
+        N: kdf.N,
+        r: kdf.r,
+        p: kdf.p,
+        dkLen: kdf.dkLen
+    });
+    const ciphertext = n_utils.hexToBytes(keystore.crypto.ciphertext);
+    if (
+        keystore.crypto.mac !==
+        Keccak256.of(n_utils.concatBytes(key.slice(16, 32), ciphertext)).digits
+    ) {
+        throw new InvalidPasswordError(
+            `${FQP}decryptKeystore(keystore: Keystore, password: Uint8Array): KeystoreAccount`,
+            'Decryption failed: Invalid Password for the given keystore.',
+            // @NOTE: We are not exposing the password in the error data for security reasons.
+            {
+                keystore
+            }
+        );
     }
+    const privateKey = ctr(
+        key.slice(0, 16),
+        n_utils.hexToBytes(keystore.crypto.cipherparams.iv)
+    ).decrypt(ciphertext);
+    const address = Address.ofPrivateKey(privateKey).toString();
+    if (
+        keystore.address !== '' &&
+        address !== Address.checksum(Hex.of(keystore.address))
+    ) {
+        throw new InvalidKeystoreError(
+            `${FQP}decryptKeystore(keystore: Keystore, password: Uint8Array): KeystoreAccount`,
+            'Decryption failed: address/password mismatch.',
+            { keystoreAddress: keystore.address }
+        );
+    }
+    return {
+        address,
+        // @note: Convert the private key to a string to be compatible with ethers
+        privateKey: Hex.of(privateKey).toString()
+    } satisfies KeystoreAccount;
 }
 
 /**
