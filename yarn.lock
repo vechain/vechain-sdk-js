@@ -3190,11 +3190,6 @@
     uuid "2.0.1"
     xmlhttprequest "1.8.0"
 
-"@vechain/sdk-errors@2.0.0-beta.1":
-  version "2.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-errors/-/sdk-errors-2.0.0-beta.1.tgz#959debbc911b35c6ccca6f022599feeda0aa413b"
-  integrity sha512-NKyUBHAnIVJNe8dLfJ858woVXQ+SZQjA9POFY8KjkOG+sYvZoMhIBUrIEjKNQYSpCQQhIUA4sOn/YYwMjOCwQg==
-
 JSONStream@^1.3.5:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/JSONStream/-/JSONStream-1.3.5.tgz#3208c1f08d3a4d99261ab64f92302bc15e111ca0"
@@ -7005,6 +7000,11 @@ log-symbols@^4.0.0, log-symbols@^4.1.0:
   dependencies:
     chalk "^4.1.0"
     is-unicode-supported "^0.1.0"
+
+loglevel@^1.9.2:
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.9.2.tgz#c2e028d6c757720107df4e64508530db6621ba08"
+  integrity sha512-HgMmCqIJSAKqo68l0rS2AanEWfkxaZ5wNiEFb5ggm08lDs9Xl2KxBlX3PTcaD2chBM1gXAYf491/M2Rv8Jwayg==
 
 loose-envify@^1.4.0:
   version "1.4.0"

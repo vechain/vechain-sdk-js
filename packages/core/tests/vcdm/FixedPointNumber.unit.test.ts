@@ -1,4 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
+import log from 'loglevel';
 import { BigNumber } from 'bignumber.js';
 import {
     FixedPointNumber,
@@ -16,19 +17,19 @@ describe('FixedPointNumber class tests', () => {
         describe('get bi tests', () => {
             test('NaN throws exception', () => {
                 expect(() => {
-                    console.log(FixedPointNumber.NaN.bi);
+                    log.debug(FixedPointNumber.NaN.bi);
                 }).toThrow(UnsupportedOperationError);
             });
 
             test('-Infinity throws exception', () => {
                 expect(() => {
-                    console.log(FixedPointNumber.NEGATIVE_INFINITY.bi);
+                    log.debug(FixedPointNumber.NEGATIVE_INFINITY.bi);
                 }).toThrow(UnsupportedOperationError);
             });
 
             test('+Infinity throws exception', () => {
                 expect(() => {
-                    console.log(FixedPointNumber.POSITIVE_INFINITY.bi);
+                    log.debug(FixedPointNumber.POSITIVE_INFINITY.bi);
                 }).toThrow(UnsupportedOperationError);
             });
 
@@ -2405,8 +2406,7 @@ describe('FixedPointNumber class tests', () => {
             const e = -2;
             const expected = BigNumber(b).pow(BigNumber(e));
             const actual = FixedPointNumber.of(b).pow(FixedPointNumber.of(e));
-            console.log(actual.toString());
-            console.log(expected.toString());
+            expect(actual.toString()).toBe(expected.toString());
         });
 
         test('-b ^ +e', () => {

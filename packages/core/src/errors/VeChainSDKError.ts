@@ -1,3 +1,4 @@
+import fastJsonStableStringify from 'fast-json-stable-stringify';
 import pkg from '../../package.json';
 
 /**
@@ -83,7 +84,7 @@ class VeChainSDKError extends Error {
     toString(
         joiner: string = '\n\t',
         stringify: (obj: unknown) => string = (obj: unknown) =>
-            JSON.stringify(obj)
+            fastJsonStableStringify(obj)
     ): string {
         const txt = [
             `${this.constructor.name}: ${this.message}`,

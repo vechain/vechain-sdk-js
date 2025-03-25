@@ -4,6 +4,8 @@ import {
     TraceCall
 } from '../../../src/thor/debug';
 import { FetchHttpClient, ThorNetworks } from '../../../src';
+import log from 'loglevel';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 describe('TraceCall testnet tests', () => {
     test('ok <- askTo', async () => {
@@ -23,6 +25,6 @@ describe('TraceCall testnet tests', () => {
         const r = await TraceCall.of(request).askTo(
             FetchHttpClient.at(ThorNetworks.TESTNET)
         );
-        console.log(JSON.stringify(r, null, 2));
+        log.debug(fastJsonStableStringify(r));
     });
 });

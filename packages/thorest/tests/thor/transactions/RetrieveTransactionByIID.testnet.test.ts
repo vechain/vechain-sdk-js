@@ -5,6 +5,8 @@ import {
     RetrieveTransactionByID,
     ThorNetworks
 } from '../../../src';
+import log from 'loglevel';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 describe('RetrieveTransactionByID testnet tests', () => {
     test('ok <- askTo', async () => {
@@ -13,6 +15,6 @@ describe('RetrieveTransactionByID testnet tests', () => {
         );
         const httpClient = FetchHttpClient.at(ThorNetworks.MAINNET);
         const r = await RetrieveTransactionByID.of(txId).askTo(httpClient);
-        console.log(JSON.stringify(r, null, 2));
+        log.debug(fastJsonStableStringify(r));
     });
 });

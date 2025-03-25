@@ -1,5 +1,7 @@
 import { describe, test } from '@jest/globals';
 import { FetchHttpClient, ThorNetworks } from '../../src';
+import log from 'loglevel';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 /**
  * Test FetchHttpClient class.
@@ -11,15 +13,15 @@ describe('FetchHttpClient testnet tests', () => {
         await new FetchHttpClient(
             ThorNetworks.TESTNET,
             (request: Request) => {
-                console.log(request);
+                log.debug(request);
                 return request;
             },
             (response: Response) => {
-                console.log(response);
+                log.debug(response);
                 return response;
             }
         ).get();
-    });
+    }, 15000);
 
     test('ok <- post', async () => {
         const expected = {
@@ -28,15 +30,15 @@ describe('FetchHttpClient testnet tests', () => {
         const response = await new FetchHttpClient(
             'https://httpbin.org',
             (request: Request) => {
-                console.log(request);
+                log.debug(request);
                 return request;
             },
             (response: Response) => {
-                console.log(response);
+                log.debug(response);
                 return response;
             }
         ).post({ path: '/post' }, { query: '' }, expected);
         const actual: unknown = await response.json();
-        console.log(JSON.stringify(actual, null, 2));
-    });
+        log.debug(fastJsonStableStringify(actual));
+    }, 15000);
 });

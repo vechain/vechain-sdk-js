@@ -20,6 +20,7 @@ import {
     simpleParametersDataForFunction2,
     topicsEventTestCases
 } from './fixture';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 /**
  * ABI tests - encode & decode
@@ -57,16 +58,12 @@ describe('Abi - encode & decode', () => {
 
         // Encode and Decode - Errors
         encodedDecodedInvalidValues.forEach((encodedDecodedValue) => {
-            // expect(() =>
-            try {
+            expect(() =>
                 ABI.of(
                     encodedDecodedValue.type,
                     encodedDecodedValue.value as unknown as unknown[]
-                );
-            } catch (error) {
-                console.log(error);
-            }
-            // ).toThrowError(AbiConstructorNotFoundError);
+                ).toHex()
+            ).toThrowError(InvalidAbiEncodingTypeError);
 
             expect(() =>
                 ABI.ofEncoded(
@@ -396,7 +393,9 @@ describe('Abi - Function & Event', () => {
         topicsEventTestCases.forEach(
             ({ event, valuesToEncode, expectedTopics }) => {
                 test(`Encode Event topics - ${
-                    typeof event === 'string' ? event : JSON.stringify(event)
+                    typeof event === 'string'
+                        ? event
+                        : fastJsonStableStringify(event)
                 }`, () => {
                     const ev =
                         typeof event === 'string'
@@ -415,7 +414,7 @@ describe('Abi - Function & Event', () => {
          */
         invalidTopicsEventTestCases.forEach(
             ({ event, valuesToEncode, expectedError }) => {
-                test(`Encode Event topics - ${JSON.stringify(event)}`, () => {
+                test(`Encode Event topics - ${fastJsonStableStringify(event)}`, () => {
                     const ev =
                         typeof event === 'string'
                             ? new ABIEvent(event)

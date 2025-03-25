@@ -4,12 +4,13 @@
  * encryption, decryption, and validation functionality.
  */
 import * as n_utils from '@noble/curves/abstract/utils';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { Address, Hex, Keccak256 } from '../../../vcdm';
+import { InvalidKeystoreError, InvalidPasswordError } from '../../../errors';
 import { Secp256k1 } from '../../../secp256k1';
 import { ctr } from '@noble/ciphers/aes';
 import { scrypt } from '@noble/hashes/scrypt';
 import { type Keystore, type KeystoreAccount } from '../../types';
-import { InvalidKeystoreError, InvalidPasswordError } from '../../../errors';
 
 /**
  * Full Qualified Path
@@ -555,7 +556,7 @@ function decryptKeystore(
  */
 function isValid(keystore: Keystore): boolean {
     try {
-        const copy = JSON.parse(JSON.stringify(keystore)) as Keystore;
+        const copy = JSON.parse(fastJsonStableStringify(keystore)) as Keystore;
         if (
             copy.crypto.cipher.toLowerCase() === KEYSTORE_CRYPTO_CIPHER &&
             copy.crypto.kdf.toLowerCase() === KEYSTORE_CRYPTO_KDF &&

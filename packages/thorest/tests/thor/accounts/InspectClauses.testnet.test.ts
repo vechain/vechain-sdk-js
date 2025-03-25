@@ -5,6 +5,8 @@ import {
     InspectClauses,
     ThorNetworks
 } from '../../../src';
+import log from 'loglevel';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 describe('InspectClauses testnet tests', () => {
     test('ok <- askTo', async () => {
@@ -36,6 +38,6 @@ describe('InspectClauses testnet tests', () => {
         const r = await InspectClauses.of(request).askTo(
             FetchHttpClient.at(ThorNetworks.TESTNET)
         );
-        console.log(JSON.stringify(r, null, 2));
+        log.debug(fastJsonStableStringify(r));
     });
 });
