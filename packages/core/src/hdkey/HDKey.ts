@@ -6,7 +6,11 @@ import { FixedPointNumber } from '../vcdm/FixedPointNumber';
 import { Sha256 } from '../vcdm/hash/Sha256';
 import { HexUInt } from '../vcdm/HexUInt';
 import { Secp256k1 } from '../secp256k1/Secp256k1';
-import { InvalidHDKey, InvalidHDKeyMnemonic, InvalidSecp256k1PrivateKey } from '@vechain/sdk-errors';
+import {
+    InvalidHDKey,
+    InvalidHDKeyMnemonic,
+    InvalidSecp256k1PrivateKey
+} from '@vechain/sdk-errors';
 
 /**
  * This class extends the
