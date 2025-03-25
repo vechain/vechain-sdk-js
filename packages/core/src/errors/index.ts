@@ -1,4 +1,4 @@
-export * from './AbiConstructorNotFoundError';
+export { AbiConstructorNotFoundError } from './AbiConstructorNotFoundError';
 export * from './AbiEventNotFoundError';
 export * from './AbiFunctionNotFoundError';
 export * from './IllegalArgumentError';

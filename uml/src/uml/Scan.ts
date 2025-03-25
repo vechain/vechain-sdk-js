@@ -1,43 +1,62 @@
 import * as ts from 'typescript';
+import * as path_module from 'path';
 
-function load(path: string): ts.SourceFile {
-    const source = ts.sys.readFile(path);
+function load(parsedPath: path_module.ParsedPath): ts.SourceFile {
+    const fullPath = path_module.format(parsedPath);
+    const source = ts.sys.readFile(fullPath);
     if (source !== undefined) {
-        return ts.createSourceFile(path, source, ts.ScriptTarget.Latest, true);
+        return ts.createSourceFile(
+            fullPath,
+            source,
+            ts.ScriptTarget.Latest,
+            true
+        );
     }
-    throw new Error(`Unable to read file: ${path}`);
+    throw new Error(`Unable to read file: ${fullPath}`);
 }
 
 function scan(node: ts.Node): void {
-    ts.forEachChild(node, (node) => {
-        if (ts.isClassDeclaration(node)) {
-            const name = node.name?.getText() ?? '<anonymous>';
-            console.log(`Class: ${name}`);
-            scan(node);
-        } else if (ts.isInterfaceDeclaration(node)) {
-            const name = node.name?.getText() ?? '<anonymous>';
-            console.log(`Interface: ${name}`);
-            scan(node);
-        } else if (ts.isEnumDeclaration(node)) {
-            const name = node.name?.getText() ?? '<anonymous>';
-            console.log(`Enum: ${name}`);
-            scan(node);
-        } else if (ts.isMethodSignature(node) || ts.isMethodDeclaration(node)) {
-            const name = node.name?.getText() ?? '<anonymous>';
-            const type = node.type?.getText() ?? '<any>';
-            console.log(`  - Method: ${name}: ${type}`);
-            scan(node);
-        } else if (
-            ts.isPropertySignature(node) ||
-            ts.isPropertyDeclaration(node)
-        ) {
-            const name = node.name?.getText() ?? '<anonymous>';
-            const type = node.type?.getText() ?? '<any>';
-            console.log(`  - Property: ${name}: ${type}`);
+    node.forEachChild((child) => {
+        if (ts.isExportDeclaration(child)) {
+            scanExportDeclaration(child); // Detailed inspection
         }
+        // Recursively scan children nodes
+        // scan(child);
     });
 }
 
+function scanExportDeclaration(node: ts.ExportDeclaration): void {
+    const exportClause = node.exportClause;
+    const moduleSpecifier = (node.moduleSpecifier as ts.StringLiteral)?.text;
+    const currentPath = path_module.parse(node.getSourceFile().fileName);
+    if (exportClause != null && ts.isNamedExports(exportClause)) {
+        // For `export { ... } from 'module';`
+        exportClause.elements
+            .map(
+                (element) =>
+                    element.propertyName?.getText() ?? element.name.getText()
+            )
+            .forEach((name: string) => {
+                const nextPath = path_module.join(
+                    currentPath.dir,
+                    name + currentPath.ext
+                );
+                console.log(nextPath);
+            });
+    } else if (moduleSpecifier != null) {
+        const nextPath = path_module.join(
+            currentPath.dir,
+            moduleSpecifier + currentPath.ext
+        );
+        // For `export * from 'module';`
+        console.log(nextPath);
+    } else {
+        console.warn(
+            `Export declaration without explicit exports or module specifier`
+        );
+    }
+}
+
 // Example usage
-const path = './test.ts'; // Path to your TypeScript file
+const path = path_module.parse('../../../packages/core/src/errors/index.ts'); // Path to your TypeScript file
 scan(load(path));
