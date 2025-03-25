@@ -2,10 +2,6 @@ import { afterEach, beforeEach, describe, test } from '@jest/globals';
 import { MozillaWebSocketClient } from '../../src/ws/MozillaWebSocketClient';
 import log from 'loglevel';
 
-const logger = log.getLogger(
-    'TEST:UNIT!packages/thorest/tests/ws/MozillaWebSocketClient.solo.test.ts'
-);
-
 describe('MozillaWebSocketClient solo tests', () => {
     let wsc: MozillaWebSocketClient;
     beforeEach(() => {
@@ -17,7 +13,7 @@ describe('MozillaWebSocketClient solo tests', () => {
             onClose: () => {},
             onError: () => {},
             onMessage: (message) => {
-                logger.debug(message.data);
+                log.debug(message.data);
                 done();
             },
             onOpen: () => {}

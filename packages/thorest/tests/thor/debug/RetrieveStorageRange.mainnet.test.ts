@@ -7,10 +7,6 @@ import { FetchHttpClient, ThorNetworks } from '../../../src';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 
-const logger = log.getLogger(
-    'TEST:UNIT!packages/thorest/tests/thor/debug/RetrieveStorageRange.mainnet.test.ts'
-);
-
 describe('RetrieveStorageRange mainnet tests', () => {
     test('ok <- askTo', async () => {
         const request = {
@@ -23,6 +19,6 @@ describe('RetrieveStorageRange mainnet tests', () => {
         const r = await RetrieveStorageRange.of(request).askTo(
             FetchHttpClient.at(ThorNetworks.MAINNET)
         );
-        logger.debug(fastJsonStableStringify(r));
+        log.debug(fastJsonStableStringify(r));
     });
 });

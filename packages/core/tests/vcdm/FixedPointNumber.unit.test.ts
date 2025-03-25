@@ -8,10 +8,6 @@ import {
     UnsupportedOperationError
 } from '../../src';
 
-const logger = log.getLogger(
-    'TEST:UNIT!packages/core/tests/vcdm/FixedPointNumber.unit.test.ts'
-);
-
 /**
  * Test FixedPointNumber class.
  * @group unit/vcdm
@@ -21,19 +17,19 @@ describe('FixedPointNumber class tests', () => {
         describe('get bi tests', () => {
             test('NaN throws exception', () => {
                 expect(() => {
-                    logger.debug(FixedPointNumber.NaN.bi);
+                    log.debug(FixedPointNumber.NaN.bi);
                 }).toThrow(UnsupportedOperationError);
             });
 
             test('-Infinity throws exception', () => {
                 expect(() => {
-                    logger.debug(FixedPointNumber.NEGATIVE_INFINITY.bi);
+                    log.debug(FixedPointNumber.NEGATIVE_INFINITY.bi);
                 }).toThrow(UnsupportedOperationError);
             });
 
             test('+Infinity throws exception', () => {
                 expect(() => {
-                    logger.debug(FixedPointNumber.POSITIVE_INFINITY.bi);
+                    log.debug(FixedPointNumber.POSITIVE_INFINITY.bi);
                 }).toThrow(UnsupportedOperationError);
             });
 
@@ -2410,8 +2406,7 @@ describe('FixedPointNumber class tests', () => {
             const e = -2;
             const expected = BigNumber(b).pow(BigNumber(e));
             const actual = FixedPointNumber.of(b).pow(FixedPointNumber.of(e));
-            logger.debug(actual.toString());
-            logger.debug(expected.toString());
+            expect(actual.toString()).toBe(expected.toString());
         });
 
         test('-b ^ +e', () => {

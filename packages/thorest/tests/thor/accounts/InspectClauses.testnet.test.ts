@@ -8,10 +8,6 @@ import {
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 
-const logger = log.getLogger(
-    'TEST:UNIT!packages/thorest/tests/thor/accounts/InspectClauses.testnet.test.ts'
-);
-
 describe('InspectClauses testnet tests', () => {
     test('ok <- askTo', async () => {
         const request = {
@@ -42,6 +38,6 @@ describe('InspectClauses testnet tests', () => {
         const r = await InspectClauses.of(request).askTo(
             FetchHttpClient.at(ThorNetworks.TESTNET)
         );
-        logger.debug(fastJsonStableStringify(r));
+        log.debug(fastJsonStableStringify(r));
     });
 });

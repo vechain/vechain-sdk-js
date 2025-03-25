@@ -20,12 +20,7 @@ import {
     simpleParametersDataForFunction2,
     topicsEventTestCases
 } from './fixture';
-import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
-
-const logger = log.getLogger(
-    'TEST:UNIT!packages/core/tests/vcdm/abi/abi.unit.test.ts'
-);
 
 /**
  * ABI tests - encode & decode
@@ -63,16 +58,12 @@ describe('Abi - encode & decode', () => {
 
         // Encode and Decode - Errors
         encodedDecodedInvalidValues.forEach((encodedDecodedValue) => {
-            // expect(() =>
-            try {
+            expect(() =>
                 ABI.of(
                     encodedDecodedValue.type,
                     encodedDecodedValue.value as unknown as unknown[]
-                );
-            } catch (error) {
-                logger.debug(error);
-            }
-            // ).toThrowError(AbiConstructorNotFoundError);
+                ).toHex()
+            ).toThrowError(InvalidAbiEncodingTypeError);
 
             expect(() =>
                 ABI.ofEncoded(
