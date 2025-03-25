@@ -4,4 +4,9 @@ enum ThorNetworks {
     TESTNET = 'https://testnet.vechain.org/'
 }
 
-export { ThorNetworks };
+// Add a helper method to convert to URL
+function toURL(network: ThorNetworks): URL {
+    return new URL(network);
+}
+
+export { ThorNetworks, toURL };

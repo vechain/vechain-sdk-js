@@ -12,13 +12,14 @@ class FetchHttpClient implements HttpClient {
     private readonly onResponse: (response: Response) => Response;
 
     constructor(
-        baseURL: string,
+        baseURL: URL,
         onRequest: (request: Request) => Request,
         onResponse: (response: Response) => Response
     ) {
-        this.baseURL = baseURL.endsWith(FetchHttpClient.PATH_SEPARATOR)
-            ? baseURL.substring(0, baseURL.length - 1)
-            : baseURL;
+        if (!baseURL.pathname.endsWith(FetchHttpClient.PATH_SEPARATOR)) {
+            baseURL.pathname += FetchHttpClient.PATH_SEPARATOR;
+        }
+        this.baseURL = baseURL.toString();
         this.onRequest = onRequest;
         this.onResponse = onResponse;
     }
@@ -28,46 +29,39 @@ class FetchHttpClient implements HttpClient {
         onRequest: (request: Request) => Request = (request) => request,
         onResponse: (response: Response) => Response = (response) => response
     ): FetchHttpClient {
-        return new FetchHttpClient(baseURL, onRequest, onResponse);
+        return new FetchHttpClient(new URL(baseURL), onRequest, onResponse);
     }
 
     async get(
-        httpPath: HttpPath = {
-            path: ''
-        },
-        httpQuery: HttpQuery = {
-            query: ''
-        }
+        httpPath: HttpPath = { path: '' },
+        httpQuery: HttpQuery = { query: '' }
     ): Promise<Response> {
-        const path = httpPath.path.startsWith(FetchHttpClient.PATH_SEPARATOR)
-            ? httpPath.path.substring(1)
+        const url = new URL(this.baseURL);
+        url.pathname += httpPath.path.startsWith(FetchHttpClient.PATH_SEPARATOR)
+            ? httpPath.path.slice(1)
             : httpPath.path;
-        const request = new Request(
-            `${this.baseURL}${FetchHttpClient.PATH_SEPARATOR}${path}${httpQuery.query}`
-        );
+        url.search = httpQuery.query;
+
+        const request = new Request(url);
         const response = await fetch(this.onRequest(request));
         return this.onResponse(response);
     }
 
     async post(
-        httpPath: HttpPath = {
-            path: ''
-        },
-        httpQuery: HttpQuery = {
-            query: ''
-        },
+        httpPath: HttpPath = { path: '' },
+        httpQuery: HttpQuery = { query: '' },
         body?: unknown
     ): Promise<Response> {
-        const path = httpPath.path.startsWith(FetchHttpClient.PATH_SEPARATOR)
-            ? httpPath.path.substring(1)
+        const url = new URL(this.baseURL);
+        url.pathname += httpPath.path.startsWith(FetchHttpClient.PATH_SEPARATOR)
+            ? httpPath.path.slice(1)
             : httpPath.path;
-        const request = new Request(
-            `${this.baseURL}${FetchHttpClient.PATH_SEPARATOR}${path}${httpQuery.query}`,
-            {
-                body: JSON.stringify(body),
-                method: 'POST'
-            }
-        );
+        url.search = httpQuery.query;
+
+        const request = new Request(url, {
+            body: JSON.stringify(body),
+            method: 'POST'
+        });
         const response = await fetch(this.onRequest(request));
         return this.onResponse(response);
     }

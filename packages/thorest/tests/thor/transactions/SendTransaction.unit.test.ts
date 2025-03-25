@@ -1,8 +1,27 @@
-import { describe, test } from '@jest/globals';
-import { transferTransactionBody } from '../../../../network/tests/thor-client/transactions/fixture';
-import { TEST_ACCOUNTS } from '../../../../network/tests/fixture';
+import { describe, test, expect } from '@jest/globals';
 import { HexUInt, Transaction } from '@vechain/sdk-core';
 import { type FetchHttpClient, SendTransaction, TXID } from '../../../src';
+
+// Define test fixtures locally
+const TEST_ACCOUNTS = {
+    TRANSACTION: {
+        TRANSACTION_SENDER: {
+            privateKey:
+                '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'
+        }
+    }
+};
+
+const transferTransactionBody = {
+    chainTag: 1,
+    blockRef: '0x00000000aabbccdd',
+    expiration: 32,
+    clauses: [],
+    gasPriceCoef: 0,
+    gas: 21000,
+    dependsOn: null,
+    nonce: '0x1234'
+};
 
 const mockHttpClient = <T>(response: T): FetchHttpClient => {
     return {
