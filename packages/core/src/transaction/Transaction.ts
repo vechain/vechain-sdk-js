@@ -179,7 +179,7 @@ class Transaction {
      * @throws {UnavailableTransactionField} If the transaction is delegated but the signature is missing.
      * @throws {NotDelegatedTransaction} If the transaction is not delegated.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks  method, depends on
      * - {@link Address.ofPublicKey};
      * - {@link Secp256k1.recover};
      * - {@link Transaction.getTransactionHash}.
@@ -236,7 +236,7 @@ class Transaction {
      * and origin if the transaction is signed.
      * @throws {UnavailableTransactionField} If the transaction is not signed.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks  method, depends on
      * - {@link Blake2b256.of}
      */
     public get id(): Blake2b256 {
@@ -300,7 +300,7 @@ class Transaction {
      * @return {Address} The address derived from the public key of the transaction's sender.
      * @throws {UnavailableTransactionField} If the transaction is not signed, an exception is thrown indicating the absence of the origin field.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks  method, depends on
      * - {@link Address.ofPublicKey};
      * - {@link Secp256k1.recover}.
      */
@@ -386,7 +386,7 @@ class Transaction {
      * @remarks
      * `sender` is used to sign a transaction on behalf of another account.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks  method, depends on
      * - {@link Blake2b256.of}.
      */
     public getTransactionHash(sender?: Address): Blake2b256 {
@@ -504,7 +504,7 @@ class Transaction {
      * @throws {InvalidTransactionField} If attempting to sign a delegated transaction.
      * @throws {InvalidSecp256k1PrivateKey} If the provided private key is not valid.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks  method, depends on
      * - {@link Secp256k1.isValidPrivateKey};
      * - {@link Secp256k1.sign}.
      */
@@ -547,7 +547,7 @@ class Transaction {
      * @throws {InvalidTransactionField} If the transaction is unsigned or lacks a valid signature.
      * @throws {NotDelegatedTransaction} If the transaction is not set as delegated.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks  method, depends on
      * - {@link Secp256k1.isValidPrivateKey};
      * - {@link Secp256k1.sign}.
      */
@@ -598,7 +598,7 @@ class Transaction {
      * @throws NotDelegatedTransaction if the current transaction is not marked as delegated, instructing to use the regular sign method instead.
      * @throws InvalidSecp256k1PrivateKey if the provided senderPrivateKey is not a valid secp256k1 private key.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks  method, depends on
      * - {@link Secp256k1.isValidPrivateKey};
      * - {@link Secp256k1.sign}.
      */
@@ -634,7 +634,7 @@ class Transaction {
      * @throws {InvalidSecp256k1PrivateKey} - If either the private key of the transaction sender or gas payer is invalid.
      * @throws {NotDelegatedTransaction} - If the transaction is not delegated.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks  method, depends on
      * - {@link Address.ofPublicKey}
      * - {@link Secp256k1.isValidPrivateKey};
      * - {@link Secp256k1.sign}.

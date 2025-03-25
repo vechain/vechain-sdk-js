@@ -253,7 +253,7 @@ class Certificate implements CertificateData {
      * @throws {InvalidOperation} - If a hash error occurs.
      * @throws {InvalidSecp256k1PrivateKey} - If the private key is not a valid 32-byte private key.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks  method, depends on
      * * {@link Blake2b256.of};
      * * {@link Secp256k1.sign}.
      *
@@ -282,7 +282,7 @@ class Certificate implements CertificateData {
      * This method supports {@link signer}
      * [mixed-case checksum address encoding](https://eips.ethereum.org/EIPS/eip-55).
      *
-     * @remarks Security auditable method, depends on
+     * @remarks  method, depends on
      * * {@link Blake2b256.of};
      * * {@link Secp256k1.recover}.
      */

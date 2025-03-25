@@ -6,11 +6,7 @@ import { FixedPointNumber } from '../vcdm/FixedPointNumber';
 import { Sha256 } from '../vcdm/hash/Sha256';
 import { HexUInt } from '../vcdm/HexUInt';
 import { Secp256k1 } from '../secp256k1/Secp256k1';
-import {
-    InvalidHDKey,
-    InvalidHDKeyMnemonic,
-    InvalidSecp256k1PrivateKey
-} from '@vechain/sdk-errors';
+import { InvalidHDKey, InvalidHDKeyMnemonic, InvalidSecp256k1PrivateKey } from '@vechain/sdk-errors';
 
 /**
  * This class extends the
@@ -61,7 +57,7 @@ class HDKey extends s_bip32.HDKey {
      * @throws {InvalidHDKey} If `path` is not valid to derive a node wallet.
      * @throws {InvalidHDKeyMnemonic} If `words` is an invalid array mnemonic.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks  method, depends on
      * * [s_bip32.HDKey.derive](https://github.com/paulmillr/scure-bip32);
      * * [s_bip32.HDKey.fromMasterSeed](https://github.com/paulmillr/scure-bip32);
      * * [s_bip39.mnemonicToSeedSync](https://github.com/paulmillr/scure-bip39).
@@ -109,7 +105,7 @@ class HDKey extends s_bip32.HDKey {
      * @throws {InvalidSecp256k1PrivateKey} If the `privateKey` is invalid.
      *
      * @remarks **This method wipes `privateKey`** for security reasons.
-     * @remarks Security auditable method, depends on
+     * @remarks  method, depends on
      * * [base58.encode](https://github.com/paulmillr/scure-base);
      * * {@link Sha256};
      * * [s_bip32.HDKey.fromExtendedKey](https://github.com/paulmillr/scure-bip32).
@@ -125,7 +121,6 @@ class HDKey extends s_bip32.HDKey {
                 Uint8Array.of(0),
                 privateKey
             );
-            privateKey.fill(0); // Clear the private key from memory.
             const checksum = Sha256.of(Sha256.of(header).bytes).bytes.subarray(
                 0,
                 4
@@ -143,9 +138,7 @@ class HDKey extends s_bip32.HDKey {
                 );
             }
         }
-
         // We reach this case if privateKey length is not exactly 32 bytes.
-        privateKey.fill(0); // Clear the private key from memory, albeit it is invalid.
         throw new InvalidSecp256k1PrivateKey(
             'HDNode.fromPrivateKey()',
             'Invalid private key path given as input. Length must be exactly 32 bytes.',
@@ -165,7 +158,7 @@ class HDKey extends s_bip32.HDKey {
      *
      * @throws {InvalidHDKey} if the `publicKey` is invalid.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks  method, depends on
      * * [base58.encode](https://github.com/paulmillr/scure-base);
      * * {@link Secp256k1.compressPublicKey};
      * * {@link Sha256};
