@@ -333,7 +333,7 @@ class Hex implements VeChainDataModel<Hex> {
      * @throws {IllegalArgumentError} - If the bytes argument is not greater than 0.
      * @returns {Hex} - A randomly generated Hex value.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audit method, depends on
      * * [`nh_utils.randomBytes`](https://github.com/paulmillr/noble-hashes?tab=readme-ov-file#utils).
      */
     public static random(bytes: number): Hex {
