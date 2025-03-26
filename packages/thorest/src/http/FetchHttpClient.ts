@@ -1,3 +1,4 @@
+import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { type HttpClient } from './HttpClient';
 import { type HttpPath } from './HttpPath';
 import { type HttpQuery } from './HttpQuery';
@@ -65,7 +66,7 @@ class FetchHttpClient implements HttpClient {
         url.search = httpQuery.query;
 
         const request = new Request(url, {
-            body: JSON.stringify(body),
+            body: fastJsonStableStringify(body),
             method: 'POST'
         });
         const response = await fetch(this.onRequest(request));

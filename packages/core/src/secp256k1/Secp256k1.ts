@@ -1,12 +1,17 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
 import { HexUInt } from '../vcdm/HexUInt';
+import {
+    InvalidMessageHashError,
+    InvalidPrivateKeyError,
+    InvalidSignatureError
+} from '../errors';
 import { randomBytes as nh_randomBytes } from '@noble/hashes/utils';
 import { secp256k1 as nc_secp256k1 } from '@noble/curves/secp256k1';
-import {
-    InvalidSecp256k1MessageHash,
-    InvalidSecp256k1PrivateKey,
-    InvalidSecp256k1Signature
-} from '@vechain/sdk-errors';
+
+/**
+ * Full Qualified Path
+ */
+const FQP = 'packages/core/src/secp256k1/Secp256k1.ts!';
 
 /**
  * The Secp256k1 class provides cryptographic utilities for the
@@ -73,7 +78,7 @@ class Secp256k1 {
      * @param {Uint8Array} privateKey - The private key in Uint8Array format. Must be a valid 32-byte secp256k1 private key.
      * @param {boolean} [isCompressed=true] - Indicates whether the derived public key should be in compressed format.
      * @return {Uint8Array} The derived public key in Uint8Array format.
-     * @throws {InvalidSecp256k1PrivateKey} Throws an error if the provided private key is not valid.
+     * @throws {InvalidPrivateKeyError} Throws an error if the provided private key is not valid.
      *
      * @remarks Security auditable method, depends on
      * * [nc_secp256k1.getPublicKey](https://github.com/paulmillr/noble-secp256k1).
@@ -86,8 +91,8 @@ class Secp256k1 {
         if (Secp256k1.isValidPrivateKey(privateKey)) {
             return nc_secp256k1.getPublicKey(privateKey, isCompressed);
         }
-        throw new InvalidSecp256k1PrivateKey(
-            'Secp256k1.derivePublicKey',
+        throw new InvalidPrivateKeyError(
+            `${FQP}Secp256k1.derivePublicKey(privateKey: Uint8Array, isCompressed: boolean): Uint8Array`,
             'Invalid private key given as input. Ensure it is a valid 32-byte secp256k1 private key.',
             undefined
         );
@@ -215,8 +220,8 @@ class Secp256k1 {
      * @param {Uint8Array} messageHash - The 32-byte message hash to be verified.
      * @param {Uint8Array} sig - The 65-byte signature used for recovery, consisting of the compact signature and recovery byte.
      * @return {Uint8Array} The recovered public key in its raw bytes form.
-     * @throws {InvalidSecp256k1MessageHash} If the provided message hash is invalid.
-     * @throws {InvalidSecp256k1Signature} If the provided signature is not 65 bytes or contains an invalid recovery value.
+     * @throws {InvalidMessageHashError} If the provided message hash is invalid.
+     * @throws {InvalidSignatureError} If the provided signature is not 65 bytes or contains an invalid recovery value.
      *
      * @remarks Security auditable method, depends on
      * * [nc_secp256k1.Signature](https://github.com/paulmillr/noble-secp256k1).
@@ -229,22 +234,22 @@ class Secp256k1 {
     ): Uint8Array {
         // Check if the message hash is valid.
         if (!Secp256k1.isValidMessageHash(messageHash)) {
-            throw new InvalidSecp256k1MessageHash(
-                'Secp256k1.recover',
+            throw new InvalidMessageHashError(
+                `${FQP}Secp256k1.recover(messageHash: Uint8Array, sig: Uint8Array): Uint8Array`,
                 'Invalid message hash given as input. Ensure it is a valid 32-byte message hash.',
                 { messageHash }
             );
         }
         if (sig.length !== Secp256k1.SIGNATURE_LENGTH)
-            throw new InvalidSecp256k1Signature(
-                'Secp256k1.recover',
+            throw new InvalidSignatureError(
+                `${FQP}Secp256k1.recover(messageHash: Uint8Array, sig: Uint8Array): Uint8Array`,
                 'Invalid signature given as input. Length must be exactly 65 bytes.',
                 { signature: sig }
             );
         const recovery = sig[64];
         if (recovery !== 0 && recovery !== 1)
-            throw new InvalidSecp256k1Signature(
-                'Secp256k1.recover',
+            throw new InvalidSignatureError(
+                `${FQP}Secp256k1.recover(messageHash: Uint8Array, sig: Uint8Array): Uint8Array`,
                 'Invalid signature recovery value. Signature bytes at position 64 must be 0 or 1.',
                 { signature: sig, recovery }
             );
@@ -260,8 +265,8 @@ class Secp256k1 {
      * @param messageHash - A 32-byte message hash that needs to be signed.
      * @param privateKey - A 32-byte private key used for signing the message hash.
      * @return The signature of the message hash consisting of the r, s, and recovery values.
-     * @throws InvalidSecp256k1MessageHash if the message hash is not a valid 32-byte hash.
-     * @throws InvalidSecp256k1PrivateKey if the private key is not a valid 32-byte private key.
+     * @throws InvalidMessageHashError if the message hash is not a valid 32-byte hash.
+     * @throws InvalidPrivateKeyError if the private key is not a valid 32-byte private key.
      *
      * @remarks Security auditable method, depends on
      * * [nc_secp256k1.sign](https://github.com/paulmillr/noble-secp256k1).
@@ -275,16 +280,16 @@ class Secp256k1 {
     ): Uint8Array {
         // Check if the message hash is valid.
         if (!Secp256k1.isValidMessageHash(messageHash)) {
-            throw new InvalidSecp256k1MessageHash(
-                'Secp256k1.sign',
+            throw new InvalidMessageHashError(
+                `${FQP}Secp256k1.sign(messageHash: Uint8Array, privateKey: Uint8Array): Uint8Array`,
                 'Invalid message hash given as input. Ensure it is a valid 32-byte message hash.',
                 { messageHash }
             );
         }
         // Check if the private key is valid.
         if (!Secp256k1.isValidPrivateKey(privateKey)) {
-            throw new InvalidSecp256k1PrivateKey(
-                'Secp256k1.sign',
+            throw new InvalidPrivateKeyError(
+                `${FQP}Secp256k1.sign(messageHash: Uint8Array, privateKey: Uint8Array): Uint8Array`,
                 'Invalid private key given as input. Ensure it is a valid 32-byte secp256k1 private key.',
                 undefined
             );

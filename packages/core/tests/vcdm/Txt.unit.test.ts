@@ -1,7 +1,6 @@
-import { Txt } from '../../src';
-import { InvalidOperation } from '@vechain/sdk-errors';
-import { TextEncoder } from 'util';
 import { describe, expect, test } from '@jest/globals';
+import { TextEncoder } from 'util';
+import { Txt, UnsupportedOperationError } from '../../src';
 
 const TEXT_ENCODER = new TextEncoder();
 
@@ -13,7 +12,7 @@ describe('Txt class tests', () => {
     describe('VeChain Data Model tests', () => {
         test('bi getter should throw an error if a decimal value is cast to big integer', () => {
             const txt = Txt.of('12.3');
-            expect(() => txt.bi).toThrow(InvalidOperation);
+            expect(() => txt.bi).toThrow(UnsupportedOperationError);
         });
 
         test('bi getter should return a BigInt representation of the integer value', () => {

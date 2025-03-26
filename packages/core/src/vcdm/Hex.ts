@@ -1,7 +1,12 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
 import * as nh_utils from '@noble/hashes/utils';
-import { InvalidDataType, InvalidOperation } from '@vechain/sdk-errors';
+import { IllegalArgumentError, UnsupportedOperationError } from '../errors';
 import { type VeChainDataModel } from './VeChainDataModel';
+
+/**
+ * Full Qualified Path
+ */
+const FQP = 'packages/core/src/vcdm/Hex.ts!';
 
 /**
  * Represents a hexadecimal value expressed as
@@ -122,7 +127,7 @@ class Hex implements VeChainDataModel<Hex> {
      *
      * @return {number} The value of n.
      *
-     * @throws {InvalidOperation<Hex>} Throws an error if this instance doesn't represent
+     * @throws {UnsupportedOperationError} Throws an error if this instance doesn't represent
      * an [IEEE 754 double precision 64 bits floating point format](https://en.wikipedia.org/wiki/Double-precision_floating-point_format).
      */
     get n(): number {
@@ -130,9 +135,13 @@ class Hex implements VeChainDataModel<Hex> {
             // The sign is part of the IEEE 754 representation hence no need to consider `this.sign` property.
             return new DataView(this.bytes.buffer).getFloat64(0);
         }
-        throw new InvalidOperation('Hex.n', 'not an IEEE 754 float 64 number', {
-            hex: this.toString()
-        });
+        throw new UnsupportedOperationError(
+            `${FQP}<Hex>.n(): number`,
+            'not an IEEE 754 float 64 number',
+            {
+                this: this.toString()
+            }
+        );
     }
 
     /**
@@ -177,7 +186,7 @@ class Hex implements VeChainDataModel<Hex> {
      *
      * @returns {Hex} - A new Hex instance that represents the fitted Hex value.
      *
-     * @throws {InvalidDataType} - If the Hex value cannot be fit into the specified number of digits.
+     * @throws {IllegalArgumentError} - If the Hex value cannot be fit into the specified number of digits.
      */
     public fit(digits: number): Hex {
         if (digits < this.digits.length) {
@@ -192,8 +201,8 @@ class Hex implements VeChainDataModel<Hex> {
             if (this.digits.length - cue === digits) {
                 return new Hex(this.sign, this.digits.slice(cue));
             }
-            throw new InvalidDataType(
-                'Hex.fit',
+            throw new IllegalArgumentError(
+                `${FQP}<Hex>.fit(): Hex`,
                 `can't fit in ${digits} digits`,
                 { digits, hex: this }
             );
@@ -263,7 +272,7 @@ class Hex implements VeChainDataModel<Hex> {
      *
      * @returns {Hex} - A Hex instance representing the input value.
      *
-     * @throws {InvalidDataType} if the given `exp` can't be represented as a hexadecimal expression.
+     * @throws {IllegalArgumentError} if the given `exp` can't be represented as a hexadecimal expression.
      */
     public static of(exp: bigint | number | string | Uint8Array): Hex {
         try {
@@ -287,8 +296,8 @@ class Hex implements VeChainDataModel<Hex> {
                 );
             } else if (typeof exp === 'string') {
                 if (!this.isValid(exp)) {
-                    throw new InvalidDataType(
-                        'Hex.of',
+                    throw new IllegalArgumentError(
+                        `${FQP}Hex.of(exp: bigint | number | string | Uint8Array): Hex`,
                         'not an hexadecimal string',
                         { exp }
                     );
@@ -308,11 +317,11 @@ class Hex implements VeChainDataModel<Hex> {
             }
             return new Hex(this.POSITIVE, nc_utils.bytesToHex(exp));
         } catch (e) {
-            throw new InvalidDataType(
-                'Hex.of',
+            throw new IllegalArgumentError(
+                `${FQP}Hex.of(exp: bigint | number | string | Uint8Array): Hex`,
                 'not an hexadecimal expression',
                 { exp: `${exp}` }, // Needed to serialize bigint values.
-                e
+                e instanceof Error ? e : undefined
             );
         }
     }
@@ -321,7 +330,7 @@ class Hex implements VeChainDataModel<Hex> {
      * Generates a random Hex value of the given number of bytes length.
      *
      * @param {number} bytes - The number of bytes to generate.
-     * @throws {InvalidDataType} - If the bytes argument is not greater than 0.
+     * @throws {IllegalArgumentError} - If the bytes argument is not greater than 0.
      * @returns {Hex} - A randomly generated Hex value.
      *
      * @remarks Security auditable method, depends on
@@ -331,9 +340,13 @@ class Hex implements VeChainDataModel<Hex> {
         if (bytes > 0) {
             return Hex.of(nh_utils.randomBytes(bytes));
         }
-        throw new InvalidDataType('Hex.random', 'bytes argument not > 0', {
-            bytes
-        });
+        throw new IllegalArgumentError(
+            `${FQP}Hex.random(bytes: number): Hex`,
+            'bytes argument not > 0',
+            {
+                bytes
+            }
+        );
     }
 
     /**

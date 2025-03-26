@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
+import { IllegalArgumentError } from '../../src';
 import { NetAddr } from '../../../thorest/src';
-import { InvalidDataType } from '@vechain/sdk-errors';
 
 /**
  * Test NetAddr class.
@@ -51,49 +51,63 @@ describe('NetAddr class tests', () => {
         });
 
         test('Throw an exception if IPv4 octets are invalid', () => {
-            expect(() => NetAddr.of('256.1.2.3:8080')).toThrow(InvalidDataType);
-            expect(() => NetAddr.of('1.2.3.256:8080')).toThrow(InvalidDataType);
-            expect(() => NetAddr.of('-1.2.3.4:8080')).toThrow(InvalidDataType);
+            expect(() => NetAddr.of('256.1.2.3:8080')).toThrow(
+                IllegalArgumentError
+            );
+            expect(() => NetAddr.of('1.2.3.256:8080')).toThrow(
+                IllegalArgumentError
+            );
+            expect(() => NetAddr.of('-1.2.3.4:8080')).toThrow(
+                IllegalArgumentError
+            );
         });
 
         test('Throw an exception if IPv6 segments are invalid', () => {
             expect(() => NetAddr.of('[2001:db8::1::1]:8080')).toThrow(
-                InvalidDataType
+                IllegalArgumentError
             ); // Double ::
-            expect(() => NetAddr.of('[gggg::1]:8080')).toThrow(InvalidDataType); // Invalid hex
+            expect(() => NetAddr.of('[gggg::1]:8080')).toThrow(
+                IllegalArgumentError
+            ); // Invalid hex
             expect(() => NetAddr.of('[2001:db8:1]:8080')).toThrow(
-                InvalidDataType
+                IllegalArgumentError
             ); // Too few segments
         });
 
         test('Throw an exception if port is invalid', () => {
             expect(() => NetAddr.of('192.168.1.1:65536')).toThrow(
-                InvalidDataType
+                IllegalArgumentError
             );
             expect(() => NetAddr.of('[2001:db8::1]:65536')).toThrow(
-                InvalidDataType
+                IllegalArgumentError
             );
-            expect(() => NetAddr.of('192.168.1.1:-1')).toThrow(InvalidDataType);
+            expect(() => NetAddr.of('192.168.1.1:-1')).toThrow(
+                IllegalArgumentError
+            );
             expect(() => NetAddr.of('[2001:db8::1]:-1')).toThrow(
-                InvalidDataType
+                IllegalArgumentError
             );
         });
 
         test('Throw an exception if format is invalid', () => {
             // IPv4 invalid formats
-            expect(() => NetAddr.of('192.168.1:8080')).toThrow(InvalidDataType);
+            expect(() => NetAddr.of('192.168.1:8080')).toThrow(
+                IllegalArgumentError
+            );
             expect(() => NetAddr.of('192.168.1.1.1:8080')).toThrow(
-                InvalidDataType
+                IllegalArgumentError
             );
 
             // IPv6 invalid formats
             expect(() => NetAddr.of('2001:db8::1:8080')).toThrow(
-                InvalidDataType
+                IllegalArgumentError
             ); // Missing brackets
             expect(() => NetAddr.of('[2001:db8::1]8080')).toThrow(
-                InvalidDataType
+                IllegalArgumentError
             ); // Missing colon
-            expect(() => NetAddr.of('[2001:db8::1')).toThrow(InvalidDataType); // Missing closing bracket
+            expect(() => NetAddr.of('[2001:db8::1')).toThrow(
+                IllegalArgumentError
+            ); // Missing closing bracket
         });
     });
 
