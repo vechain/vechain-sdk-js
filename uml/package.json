@@ -29,6 +29,7 @@
     "format": "prettier --write src/**/*.ts tests/**/*.ts solo-seeding/**/*.ts"
   },
   "dependencies": {
+    "loglevel": "^1.9.2",
     "typescript": "^5.6.3"
   }
 }
