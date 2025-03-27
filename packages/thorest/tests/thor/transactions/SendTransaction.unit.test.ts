@@ -9,6 +9,27 @@ import {
 } from '@vechain/sdk-core/src';
 import { BUILT_IN_CONTRACTS } from './built-in';
 
+// Define test fixtures locally due to broken imports
+const TEST_ACCOUNTS = {
+    TRANSACTION: {
+        TRANSACTION_SENDER: {
+            privateKey:
+                '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'
+        }
+    }
+};
+
+const transferTransactionBody = {
+    chainTag: 1,
+    blockRef: '0x00000000aabbccdd',
+    expiration: 32,
+    clauses: [],
+    gasPriceCoef: 0,
+    gas: 21000,
+    dependsOn: null,
+    nonce: '0x1234'
+};
+
 const mockHttpClient = <T>(response: T): FetchHttpClient => {
     return {
         post: jest.fn().mockImplementation(() => {
