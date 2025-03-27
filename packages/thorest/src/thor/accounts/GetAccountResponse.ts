@@ -1,4 +1,4 @@
-import { Quantity, VET, VTHO } from '@vechain/sdk-core';
+import { Quantity, Units, VET, VTHO } from '@vechain/sdk-core';
 
 class GetAccountResponse {
     readonly balance: VET;
@@ -6,8 +6,8 @@ class GetAccountResponse {
     readonly hasCode: boolean;
 
     constructor(json: GetAccountResponseJSON) {
-        this.balance = VET.of(json.balance);
-        this.energy = VTHO.of(json.energy);
+        this.balance = VET.of(json.balance, Units.wei);
+        this.energy = VTHO.of(json.energy, Units.wei);
         this.hasCode = json.hasCode;
     }
 
