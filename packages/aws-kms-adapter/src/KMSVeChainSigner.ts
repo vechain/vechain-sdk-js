@@ -155,6 +155,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
      * @param {Uint8Array} payload to sign.
      * @param {KMSVeChainProvider} kmsProvider The provider to sign the payload.
      * @returns {Uint8Array} The signature following the VeChain format.
+     * @throws JSONRPCInvalidParams if `kmsProvider` is undefined.
      */
     private async buildVeChainSignatureFromPayload(
         payload: Uint8Array,
@@ -225,9 +226,13 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
     }
 
     /**
-     * Concat the origin signature to the gasPayer signature if the gasPayer is set.
-     * @param {Transaction} transaction Transaction to sign.
-     * @returns Both signatures concatenated if the gasPayer is set, the origin signature otherwise.
+     * Processes a transaction by signing its hash with the origin key and, if delegation is available,
+     * appends a gas payer's signature to the original signature.
+     *
+     * @param {Transaction} transaction - The transaction to be processed, provides the transaction hash and necessary details.
+     * @return {Promise<Uint8Array>} A Promise that resolves to a byte array containing the combined origin and gas payer signatures,
+     * or just the origin signature if no gas payer provider or service URL is available.
+     * @throws JSONRPCInvalidParams if {@link this.provider} is undefined.
      */
     private async concatSignatureIfDelegation(
         transaction: Transaction
@@ -253,8 +258,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
             return concatBytes(originSignature, gasPayerSignature);
         } else if (
             // If not, we try with the gasPayer URL
-            this.kmsVeChainGasPayerServiceUrl !== undefined &&
-            this.provider !== undefined
+            this.kmsVeChainGasPayerServiceUrl !== undefined
         ) {
             const originAddress = await this.getAddress();
             const gasPayerSignature = await DelegationHandler({
@@ -262,7 +266,9 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
             }).getDelegationSignatureUsingUrl(
                 transaction,
                 originAddress,
-                this.provider.thorClient.httpClient
+                // Calling `buildVeChainSignatureFromPayload(transactionHash)` above throws error is `this.provider` is undefined.
+                // eslint-disable-next-line  @typescript-eslint/no-non-null-assertion
+                this.provider!.thorClient.httpClient // Never undefined.
             );
 
             return concatBytes(originSignature, gasPayerSignature);
@@ -275,6 +281,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
      * It signs a transaction.
      * @param transactionToSign Transaction body to sign in plain format.
      * @returns {string} The signed transaction in hexadecimal format.
+     * @throws JSONRPCInvalidParams if {@link this.provider} is undefined.
      */
     public async signTransaction(
         transactionToSign: TransactionRequestInput
