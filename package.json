@@ -29,7 +29,6 @@
         "build": "turbo build",
         "check:circular-dependencies": "turbo check:circular-dependencies",
         "pre-release": "ts-node scripts/pre-release.ts",
-        "test-rpc-proxy": "ts-node scripts/test-rpc-proxy.ts",
         "generate:apidocs": "typedoc --options typedoc.json --logLevel Error",
         "generate:apidocs-debug": "typedoc --options typedoc.json --logLevel Verbose --plugin typedoc-plugin-missing-exports --validation.notDocumented",
         "lint": "turbo lint",
