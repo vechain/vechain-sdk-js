@@ -19,7 +19,7 @@ class PostDebugTracerCallRequest {
     readonly gas?: Gas;
     readonly gasPrice?: VTHO;
     readonly caller?: Address;
-    readonly provedWork?: string;
+    readonly provedWork?: UInt;
     readonly gasPayer?: Address;
     readonly expiration?: UInt;
     readonly blockRef?: BlockRef;
@@ -37,7 +37,10 @@ class PostDebugTracerCallRequest {
                 : VTHO.of(json.gasPrice, Units.wei);
         this.caller =
             json.caller === undefined ? undefined : Address.of(json.caller);
-        this.provedWork = json.provedWork;
+        this.provedWork =
+            json.provedWork === undefined
+                ? undefined
+                : UInt.of(Number(json.provedWork));
         this.gasPayer =
             json.gasPayer === undefined ? undefined : Address.of(json.gasPayer);
         this.expiration =
@@ -59,7 +62,7 @@ class PostDebugTracerCallRequest {
                     ? undefined
                     : this.gasPrice.wei?.toString(),
             caller: this.caller?.toString(),
-            provedWork: this.provedWork,
+            provedWork: this.provedWork?.valueOf().toString(),
             gasPayer: this.gasPayer?.toString(),
             expiration: this.expiration?.valueOf(),
             blockRef: this.blockRef?.toString()
