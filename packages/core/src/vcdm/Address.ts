@@ -113,7 +113,7 @@ class Address extends HexUInt {
      *
      * @returns {Address} The converted address.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks  method, depends on
      * * {@link Secp256k1.inflatePublicKey}.
      */
     public static ofPublicKey(publicKey: Uint8Array): Address {

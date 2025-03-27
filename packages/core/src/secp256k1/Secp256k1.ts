@@ -75,7 +75,7 @@ class Secp256k1 {
      * @return {Uint8Array} The derived public key in Uint8Array format.
      * @throws {InvalidSecp256k1PrivateKey} Throws an error if the provided private key is not valid.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks  method, depends on
      * * [nc_secp256k1.getPublicKey](https://github.com/paulmillr/noble-secp256k1).
      */
     public static derivePublicKey(
@@ -101,7 +101,7 @@ class Secp256k1 {
      * @throws {InvalidSecp256k1PrivateKey} Throws an error if private key generation fails if a secure random number
      *                                      generator is not provided by the hosting operating system.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks  method, depends on
      * * [nc_secp256k1.utils.randomPrivateKey](https://github.com/paulmillr/noble-secp256k1).
      */
     public static async generatePrivateKey(): Promise<Uint8Array> {
@@ -128,7 +128,7 @@ class Secp256k1 {
      * @param {Uint8Array} publicKey - The compressed public key to be inflated.
      * @return {Uint8Array} - The uncompressed public key.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks  method, depends on
      * * [nc_secp256k1.ProjectivePoint.fromAffine](https://github.com/paulmillr/noble-secp256k1);
      * * [nc_secp256k1.ProjectivePoint.fromHex](https://github.com/paulmillr/noble-secp256k1);
      * * [nc_secp256k1.ProjectivePoint.toAffine](https://github.com/paulmillr/noble-secp256k1).
@@ -168,7 +168,7 @@ class Secp256k1 {
      * @param {Uint8Array} privateKey - The private key to validate.
      * @return {boolean} `true` if the private key is valid, `false` otherwise.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks  method, depends on
      * * [nc_secp256k1.utils.isValidPrivateKey](https://github.com/paulmillr/noble-secp256k1).
      */
     public static isValidPrivateKey(privateKey: Uint8Array): boolean {
@@ -185,7 +185,7 @@ class Secp256k1 {
      * @param {number} [bytesLength=32] - Optional. The number of random bytes to generate, 32 by default.
      * @return {Uint8Array} - A Uint8Array containing the random bytes.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks  method, depends on
      * * {@link global.crypto.getRandomValues};
      * * [nh_randomBytes](https://github.com/paulmillr/noble-hashes).
      */
@@ -206,7 +206,7 @@ class Secp256k1 {
      * @throws {InvalidSecp256k1MessageHash} If the provided message hash is invalid.
      * @throws {InvalidSecp256k1Signature} If the provided signature is not 65 bytes or contains an invalid recovery value.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks  method, depends on
      * * [nc_secp256k1.Signature](https://github.com/paulmillr/noble-secp256k1).
      *
      * @see Secp256k1.isValidMessageHash
@@ -251,7 +251,7 @@ class Secp256k1 {
      * @throws InvalidSecp256k1MessageHash if the message hash is not a valid 32-byte hash.
      * @throws InvalidSecp256k1PrivateKey if the private key is not a valid 32-byte private key.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks  method, depends on
      * * [nc_secp256k1.sign](https://github.com/paulmillr/noble-secp256k1).
      *
      * @see Secp256k1.isValidMessageHash
