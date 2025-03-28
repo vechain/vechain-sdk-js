@@ -1,0 +1,13 @@
+---
+title: thorest_errors
+---
+classDiagram
+    namespace core_errors {
+        class VeChainSDKError {
+        }
+    }
+    class ThorestError {
+        status: number
+        constructor(fqn: string, message: string, args?: Record<string, unknown>, cause?: Error, status: number)
+    }
+    VeChainSDKError <|-- ThorestError

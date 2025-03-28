@@ -34,7 +34,7 @@ describe('FetchHttpClient testnet tests', () => {
         const mockResponse: MockResponse = { status: 'success' };
         let requestUrl: string | undefined;
 
-        const client = new FetchHttpClient(
+        const client = FetchHttpClient.at(
             toURL(ThorNetworks.TESTNET),
             (request: Request) => {
                 requestUrl = request.url;
@@ -60,7 +60,7 @@ describe('FetchHttpClient testnet tests', () => {
         };
         let capturedRequest: Request | undefined;
 
-        const client = new FetchHttpClient(
+        const client = FetchHttpClient.at(
             toURL(ThorNetworks.TESTNET),
             (request: Request) => {
                 capturedRequest = request;
@@ -83,13 +83,12 @@ describe('FetchHttpClient testnet tests', () => {
     });
 
     test('rejects invalid URLs', () => {
-        expect(
-            () =>
-                new FetchHttpClient(
-                    new URL('https://invalid.url'),
-                    (req) => req,
-                    (res) => res
-                )
+        expect(() =>
+            FetchHttpClient.at(
+                new URL('https://invalid.url'),
+                (req) => req,
+                (res) => res
+            )
         ).toThrow('Invalid network URL');
     }, 15000);
 });

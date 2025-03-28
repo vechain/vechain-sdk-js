@@ -4,6 +4,7 @@ export * from './ExecuteCodesResponse';
 export * from './GetAccountResponse';
 export * from './InspectClauses';
 export * from './RetrieveAccountDetails';
+export * from './RetrieveAccountDetailsError';
 export * from './RetrieveContractBytecode';
 export * from './RetrieveStoragePositionValue';
 export * from './GetStorageResponse';

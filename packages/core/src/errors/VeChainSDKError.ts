@@ -54,33 +54,32 @@ class VeChainSDKError extends Error {
     readonly fqn: string;
 
     /**
-     * Represents the software tag identifier expressing the **software artifact and version coordinates**
-     */
-    readonly tag: string;
-
-    /**
      * Constructs a new instance of the class.
      *
      * @param {string} fqn - The fully qualified name of the element throwing this error.
      * @param {string} message - The error message to be used.
      * @param {Record<string, unknown>} [args] - Optional arguments providing additional context or details.
      * @param {Error} [cause] - Optional underlying cause of the error.
-     * @param {string} [tag] - An optional tag identifying the error, defaults to VeChainSDKError.TAG.
      */
     constructor(
         fqn: string,
         message: string,
         args?: Record<string, unknown>,
-        cause?: Error,
-        tag: string = VeChainSDKError.TAG
+        cause?: Error
     ) {
         super(message, cause);
         this.args = args;
         this.cause = cause;
         this.fqn = fqn;
-        this.tag = tag;
     }
 
+    /**
+     * Converts the current object to a string representation.
+     *
+     * @param {string} [joiner='\n\t'] - The string used to join individual parts of the string representation.
+     * @param {function(unknown): string} [stringify=(obj) => fastJsonStableStringify(obj)] - A function to convert objects to their string representations.
+     * @return {string} The string representation of the object.
+     */
     toString(
         joiner: string = '\n\t',
         stringify: (obj: unknown) => string = (obj: unknown) =>
@@ -88,7 +87,7 @@ class VeChainSDKError extends Error {
     ): string {
         const txt = [
             `${this.constructor.name}: ${this.message}`,
-            `@${this.tag}:${this.fqn}`
+            `@${VeChainSDKError.TAG}:${this.fqn}`
         ];
         if (this.args !== undefined && this.args !== null) {
             txt.push(`args: ${stringify(this.args)}`);
