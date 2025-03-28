@@ -1,8 +1,6 @@
 services:
   thor-solo:
-    build:
-      context: .
-      dockerfile: docker/thor/Dockerfile
+    image: ghcr.io/vechain/thor:release-galactica-latest
     container_name: thor-solo
     user: root
     ports:

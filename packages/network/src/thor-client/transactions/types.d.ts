@@ -85,6 +85,16 @@ interface TransactionBodyOptions {
      * Every transaction with same chainTag, blockRef, ... must have different nonce.
      */
     nonce?: string | number;
+
+    /**
+     * The maximum fee per gas for the transaction.
+     */
+    maxFeePerGas?: string;
+
+    /**
+     * The maximum priority fee per gas for the transaction.
+     */
+    maxPriorityFeePerGas?: string;
 }
 
 /**
@@ -280,6 +290,14 @@ interface TransactionReceipt {
      * Data associated with the transaction e.g. blockID, blockNumber, txID
      */
     meta: TransactionMetadata;
+    /**
+     * The maximum fee per gas for the transaction.
+     */
+    maxFeePerGas?: string;
+    /**
+     * The maximum priority fee per gas for the transaction.
+     */
+    maxPriorityFeePerGas?: string;
 }
 
 /**

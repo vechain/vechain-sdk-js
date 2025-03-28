@@ -96,6 +96,14 @@ const TEST_ACCOUNTS = {
     }
 };
 
+const SOLO_GENESIS_ACCOUNTS = {
+    TRANSACTION: {
+        TRANSACTION_SENDER: THOR_SOLO_ACCOUNTS[11],
+        TRANSACTION_RECEIVERL: THOR_SOLO_ACCOUNTS[11],
+        GAS_PAYER: THOR_SOLO_ACCOUNTS[11]
+    }
+};
+
 /**
  * `TestingContract.sol` deployed contract address on thor-solo snapshot.
  */
@@ -891,5 +899,6 @@ export {
     testNetwork,
     THOR_SOLO_ACCOUNTS_BASE_WALLET,
     THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_GAS_PAYER,
-    ZERO_ADDRESS
+    ZERO_ADDRESS,
+    SOLO_GENESIS_ACCOUNTS
 };
