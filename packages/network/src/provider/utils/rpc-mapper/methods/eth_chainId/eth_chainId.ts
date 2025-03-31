@@ -44,7 +44,7 @@ const ethChainId = async (thorClient: ThorClient): Promise<string> => {
             );
         }
         cachedGenesisBlockId = Hex.of(genesisBlock.id);
-        cachedChainTag = HexUInt.of(cachedGenesisBlockId.bytes.slice(-1));
+        cachedChainTag = HexUInt.of(cachedGenesisBlockId.bytes.slice(-2));
         cachedChainId = chainTagToChainId(cachedChainTag);
         return cachedChainId.toString();
     } catch (e) {
