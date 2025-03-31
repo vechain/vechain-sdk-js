@@ -4,8 +4,8 @@ import { HexUInt } from '@vechain/sdk-core';
  * Chain ID is last 2 bytes of the blockId of the genesis block
  */
 const CHAIN_ID = {
-    MAINNET: '0x186a9',
-    TESTNET: '0x186aa',
+    MAINNET: '0x1b4a',
+    TESTNET: '0xb127',
     SOLO_DEFAULT: '0x73f6'
 };
 
