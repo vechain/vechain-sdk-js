@@ -4,7 +4,7 @@
 const CHAIN_ID = {
     MAINNET: '0x1b4a',
     TESTNET: '0xb127',
-    SOLO_DEFAULT: '0x73f6'
+    SOLO_DEFAULT: '0x69f6'
 };
 
 /**

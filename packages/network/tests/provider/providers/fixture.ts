@@ -8,7 +8,7 @@ import {
     TESTING_CONTRACT_ADDRESS,
     TESTING_CONTRACT_BYTECODE
 } from '../../fixture';
-import { THOR_SOLO_ACCOUNTS } from '../../../src';
+import { CHAIN_ID, THOR_SOLO_ACCOUNTS } from '../../../src';
 
 /**
  * Test cases for provider methods - Testnet
@@ -25,7 +25,7 @@ const providerMethodsTestCasesTestnet = [
         description: 'Should be able to call eth_chainId',
         method: 'eth_chainId',
         params: [],
-        expected: '0x186aa'
+        expected: CHAIN_ID.TESTNET
     },
     {
         description: `Should be able to call eth_getTransactionByHash with ${validTransactionHashTestnet} as the transaction hash`,
