@@ -1,14 +1,14 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { SOLO_GENESIS_ACCOUNTS } from '../../fixture';
-import { HexUInt, Transaction, Address, Secp256k1 } from '@vechain/sdk-core';
+import { HexUInt, Transaction } from '@vechain/sdk-core';
 import { THOR_SOLO_URL, ThorClient } from '../../../src';
 
 /**
- * ThorClient tests for Galactica dev network.
+ * ThorClient tests for dynamic fee transactions on solo network
  *
- * @group galactica
+ * @group galactica/integration/clients/thor-client/transactions
  */
-describe('ThorClient - Transactions Module', () => {
+describe('ThorClient - Transactions Module Dynamic Fees', () => {
     // ThorClient instance
     let thorSoloClient: ThorClient;
 
@@ -89,6 +89,9 @@ describe('ThorClient - Transactions Module', () => {
                 await thorSoloClient.transactions.getTransactionReceipt(
                     send.id
                 );
+            console.log('id', send.id);
+            console.log('transaction', transaction);
+            console.log('transactionReceipt', transactionReceipt);
 
             expect(transaction).toBeDefined();
             expect(transactionReceipt).toBeDefined();

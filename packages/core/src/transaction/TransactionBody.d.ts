@@ -1,7 +1,5 @@
 import { type TransactionClause } from './TransactionClause';
 
-type TransactionType = 'legacy' | 'eip1559';
-
 /**
  * Type for transaction body.
  */
@@ -100,4 +98,4 @@ interface TransactionBody {
     };
 }
 
-export type { TransactionBody, TransactionType };
+export type { TransactionBody };

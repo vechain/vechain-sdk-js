@@ -23,8 +23,9 @@ import {
     VTHO
 } from '../vcdm';
 import { Blake2b256 } from '../vcdm/hash/Blake2b256';
-import { type TransactionType, type TransactionBody } from './TransactionBody';
 import type { TransactionClause } from './TransactionClause';
+import { type TransactionType } from '../vcdm/TransactionType';
+import { type TransactionBody } from './TransactionBody';
 
 /**
  * Represents an immutable transaction entity.
