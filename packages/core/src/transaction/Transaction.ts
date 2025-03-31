@@ -122,9 +122,9 @@ class Transaction {
                 ]
             }
         },
-        { name: 'gas', kind: new NumericKind(8) },
-        { name: 'maxFeePerGas', kind: new NumericKind(32) },
         { name: 'maxPriorityFeePerGas', kind: new NumericKind(32) },
+        { name: 'maxFeePerGas', kind: new NumericKind(32) },
+        { name: 'gas', kind: new NumericKind(8) },
         { name: 'dependsOn', kind: new OptionalFixedHexBlobKind(32) },
         { name: 'nonce', kind: new NumericKind(8) },
         { name: 'reserved', kind: { item: new BufferKind() } }

@@ -119,4 +119,21 @@ const THOR_SOLO_ACCOUNTS: Array<{ privateKey: string; address: string }> = [
     }
 ];
 
-export { THOR_SOLO_ACCOUNTS };
+// Default genesis accounts for the Thor Solo
+const THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS: Array<{
+    privateKey: string;
+    address: string;
+}> = [
+    {
+        privateKey:
+            '0x99f0500549792796c14fed62011a51081dc5b5e68fe8bd8a13b86be829c4fd36',
+        address: '0xf077b491b355e64048ce21e3a6fc4751eeea77fa'
+    },
+    {
+        privateKey:
+            '0x7b067f53d350f1cf20ec13df416b7b73e88a1dc7331bc904b92108b1e76a08b1',
+        address: '0x435933c8064b4ae76be665428e0307ef2ccfbd68'
+    }
+];
+
+export { THOR_SOLO_ACCOUNTS, THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS };
