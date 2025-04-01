@@ -6,6 +6,10 @@ import {
 } from '../../src';
 import { InvalidTransactionType } from '@vechain/sdk-errors';
 
+/**
+ * Test TransactionType
+ * @group unit/transaction
+ */
 describe('TransactionType', () => {
     test('should be able to convert toTransactionType', () => {
         expect(toTransactionType(81)).toBe(TransactionType.EIP1559);
