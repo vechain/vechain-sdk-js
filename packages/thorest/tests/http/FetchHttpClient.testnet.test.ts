@@ -1,7 +1,5 @@
 import { describe, test, expect } from '@jest/globals';
 import { FetchHttpClient, ThorNetworks, toURL } from '../../src';
-import log from 'loglevel';
-import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 interface MockResponse {
     status: string;
@@ -52,7 +50,6 @@ describe('FetchHttpClient testnet tests', () => {
         expect(data).toEqual(mockResponse);
         expect(requestUrl).toBe(ThorNetworks.TESTNET);
     }, 15000);
-
 
     test('ok <- post', async () => {
         const requestBody: TestRequestBody = {
