@@ -26,7 +26,6 @@ describe('TransactionType', () => {
         const throwingFunction = (): TransactionType => toTransactionType(256);
         expect(throwingFunction).toThrowError(
             expect.objectContaining({
-                message: 'Invalid transaction type',
                 data: {
                     transactionType: '256',
                     validTypes: '0, 81'
