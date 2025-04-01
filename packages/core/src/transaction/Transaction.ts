@@ -24,7 +24,7 @@ import {
 } from '../vcdm';
 import { Blake2b256 } from '../vcdm/hash/Blake2b256';
 import type { TransactionClause } from './TransactionClause';
-import { type TransactionType } from '../vcdm/TransactionType';
+import { TransactionType } from './TransactionType';
 import { type TransactionBody } from './TransactionBody';
 
 /**
@@ -415,22 +415,22 @@ class Transaction {
     ): Transaction {
         // check prefix to get tx type
         const rawPrefix = rawTransaction[0];
-        let txType: TransactionType = 'legacy';
+        let txType: TransactionType = TransactionType.Legacy;
         if (rawPrefix === Transaction.EIP1559_TX_TYPE_PREFIX) {
-            txType = 'eip1559';
+            txType = TransactionType.EIP1559;
         }
 
         // Get correct decoder profiler
         const profile = isSigned
-            ? txType === 'legacy'
+            ? txType === TransactionType.Legacy
                 ? Transaction.RLP_SIGNED_LEGACY_TRANSACTION_PROFILE
                 : Transaction.RLP_SIGNED_EIP1559_TRANSACTION_PROFILE
-            : txType === 'legacy'
+            : txType === TransactionType.Legacy
               ? Transaction.RLP_UNSIGNED_LEGACY_TRANSACTION_PROFILE
               : Transaction.RLP_UNSIGNED_EIP1559_TRANSACTION_PROFILE;
 
         // if eip1559, remove prefix
-        if (txType === 'eip1559') {
+        if (txType === TransactionType.EIP1559) {
             rawTransaction = rawTransaction.slice(1);
         }
 
@@ -576,7 +576,7 @@ class Transaction {
 
         // validate eip1559 fields
         const isValidEip1559Fields =
-            type === 'eip1559' &&
+            type === TransactionType.EIP1559 &&
             body.maxFeePerGas !== undefined &&
             body.maxPriorityFeePerGas !== undefined &&
             ((typeof body.maxFeePerGas === 'string' &&
@@ -588,10 +588,10 @@ class Transaction {
 
         // validate legacy fields
         const isValidLegacyFields =
-            type === 'legacy' && body.gasPriceCoef !== undefined;
+            type === TransactionType.Legacy && body.gasPriceCoef !== undefined;
 
         // return true if the transaction body is valid
-        if (type === 'eip1559') {
+        if (type === TransactionType.EIP1559) {
             return isValidCommonFields && isValidEip1559Fields;
         }
         return isValidCommonFields && isValidLegacyFields;
@@ -606,8 +606,8 @@ class Transaction {
     private static getTransactionType(body: TransactionBody): TransactionType {
         return body.maxFeePerGas !== undefined &&
             body.maxPriorityFeePerGas !== undefined
-            ? 'eip1559'
-            : 'legacy';
+            ? TransactionType.EIP1559
+            : TransactionType.Legacy;
     }
 
     /**
@@ -916,7 +916,7 @@ class Transaction {
             isSigned
         );
         // add prefix if eip1559
-        if (this.transactionType === 'eip1559') {
+        if (this.transactionType === TransactionType.EIP1559) {
             return nc_utils.concatBytes(
                 Uint8Array.from([Transaction.EIP1559_TX_TYPE_PREFIX]),
                 encodedBody
@@ -946,7 +946,7 @@ class Transaction {
                     ...body,
                     signature: Uint8Array.from(this.signature as Uint8Array)
                 },
-                this.transactionType === 'eip1559'
+                this.transactionType === TransactionType.EIP1559
                     ? Transaction.RLP_SIGNED_EIP1559_TRANSACTION_PROFILE
                     : Transaction.RLP_SIGNED_LEGACY_TRANSACTION_PROFILE
             ).encoded;
@@ -954,7 +954,7 @@ class Transaction {
         // Encode transaction object - UNSIGNED
         return RLPProfiler.ofObject(
             body,
-            this.transactionType === 'eip1559'
+            this.transactionType === TransactionType.EIP1559
                 ? Transaction.RLP_UNSIGNED_EIP1559_TRANSACTION_PROFILE
                 : Transaction.RLP_UNSIGNED_LEGACY_TRANSACTION_PROFILE
         ).encoded;

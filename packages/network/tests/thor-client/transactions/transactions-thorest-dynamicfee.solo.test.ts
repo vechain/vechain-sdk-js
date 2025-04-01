@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { SOLO_GENESIS_ACCOUNTS } from '../../fixture';
-import { HexUInt, Transaction } from '@vechain/sdk-core';
+import {
+    fromTransactionType,
+    HexUInt,
+    Transaction,
+    TransactionType
+} from '@vechain/sdk-core';
 import { THOR_SOLO_URL, ThorClient } from '../../../src';
 
 /**
@@ -41,7 +46,7 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
                 SOLO_GENESIS_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
             );
 
-            // Create transactions
+            // Create transaction body
             const transactionBody = {
                 chainTag: 0xf6, // 0xf6 for Galactica dev network
                 blockRef:
@@ -74,6 +79,16 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
             expect(signedEncodedTx[0]).toBe(0x51);
             console.log('raw tx', HexUInt.of(signedEncodedTx).toString());
 
+            // decode transaction and check
+            const decodedTx = Transaction.decode(signedEncodedTx, true);
+            expect(decodedTx.transactionType).toBe('eip1559');
+            expect(decodedTx.body.maxFeePerGas).toBe(10000000000000);
+            expect(decodedTx.body.maxPriorityFeePerGas).toBe(1000000);
+            expect(decodedTx.body.chainTag).toBe(0xf6);
+            expect(decodedTx.body.blockRef).toBe(
+                latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0'
+            );
+
             // send raw transactions
             const send = await thorSoloClient.transactions.sendRawTransaction(
                 HexUInt.of(signedEncodedTx).toString()
@@ -82,19 +97,22 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
             expect(send).toHaveProperty('id');
             expect(HexUInt.isValid0x(send.id)).toBe(true);
 
-            // 3 - Get transaction AND transaction receipt
-            const transaction =
-                await thorSoloClient.transactions.getTransaction(send.id);
-            const transactionReceipt =
-                await thorSoloClient.transactions.getTransactionReceipt(
-                    send.id
-                );
-            console.log('id', send.id);
-            console.log('transaction', transaction);
-            console.log('transactionReceipt', transactionReceipt);
+            // wait for transaction to be mined and get receipt
+            const receipt =
+                await thorSoloClient.transactions.waitForTransaction(send.id);
+            expect(receipt).toBeDefined();
+            expect(receipt?.reverted).toBe(false);
+            expect(receipt?.gasUsed).toBeGreaterThan(0);
+            expect(receipt?.gasUsed).toBeLessThanOrEqual(gasResult.totalGas);
 
-            expect(transaction).toBeDefined();
-            expect(transactionReceipt).toBeDefined();
+            // Get transaction object from blockchain
+            const onChainTx = await thorSoloClient.transactions.getTransaction(
+                send.id
+            );
+            expect(onChainTx).toBeDefined();
+            expect(onChainTx?.type).toBe(
+                fromTransactionType(TransactionType.EIP1559)
+            );
         });
     });
 });

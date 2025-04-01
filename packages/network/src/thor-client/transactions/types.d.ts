@@ -256,6 +256,7 @@ type TransactionDetailNoRaw = TransactionBody & {
     gasPayer: string | null;
     size: number;
     meta: TransactionMetadata;
+    type: number;
 };
 
 /**
