@@ -16,8 +16,6 @@ services:
       - --verbosity=9
       - --persist
       - --api-enable-deprecated
-    
-
     healthcheck:
       # We run the health check using standard UNIX tools so we don't have to
       # install additional dependencies in the container.
