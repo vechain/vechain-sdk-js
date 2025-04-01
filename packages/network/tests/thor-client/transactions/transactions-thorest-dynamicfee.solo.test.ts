@@ -81,7 +81,7 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
 
             // decode transaction and check
             const decodedTx = Transaction.decode(signedEncodedTx, true);
-            expect(decodedTx.transactionType).toBe('eip1559');
+            expect(decodedTx.transactionType).toBe(TransactionType.EIP1559);
             expect(decodedTx.body.maxFeePerGas).toBe(10000000000000);
             expect(decodedTx.body.maxPriorityFeePerGas).toBe(1000000);
             expect(decodedTx.body.chainTag).toBe(0xf6);
