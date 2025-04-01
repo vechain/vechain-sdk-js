@@ -416,7 +416,7 @@ class Transaction {
         // check prefix to get tx type
         const rawPrefix = rawTransaction[0];
         let txType: TransactionType = TransactionType.Legacy;
-        if (rawPrefix === Transaction.EIP1559_TX_TYPE_PREFIX) {
+        if (Number(rawPrefix) === Transaction.EIP1559_TX_TYPE_PREFIX) {
             txType = TransactionType.EIP1559;
         }
 
