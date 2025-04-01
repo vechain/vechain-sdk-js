@@ -833,11 +833,19 @@ describe('Transaction class Legacy tests', () => {
 });
 
 describe('Transaction class EIP-1559 tests', () => {
-    test('encode/decode <- EIP-1559 tx', () => {
+    test('encode/decode <- unsignedEIP-1559 tx', () => {
         const tx = Transaction.of(TxEIP1559BodyFix);
         const encoded = tx.encoded;
         const decoded = Transaction.decode(encoded, false);
         expect(decoded).toEqual(tx);
+    });
+
+    test('encode/decode <- signed EIP-1559 tx', () => {
+        const tx = Transaction.of(TxEIP1559BodyFix).sign(SignerFix.privateKey);
+        const encoded = tx.encoded;
+        const decoded = Transaction.decode(encoded, true);
+        expect(decoded).toEqual(tx);
+        expect(decoded.isSigned).toBe(true);
     });
 });
 
