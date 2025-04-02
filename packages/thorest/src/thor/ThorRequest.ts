@@ -1,7 +1,7 @@
 import { type HttpClient } from '../http';
 import { type ThorResponse } from './ThorResponse';
 
-export interface ThorRequest<
+interface ThorRequest<
     RequestClass extends ThorRequest<RequestClass, ResponseClass>,
     ResponseClass
 > {
@@ -9,3 +9,5 @@ export interface ThorRequest<
         httpClient: HttpClient
     ) => Promise<ThorResponse<RequestClass, ResponseClass>>;
 }
+
+export { type ThorRequest };

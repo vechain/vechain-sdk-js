@@ -8,7 +8,7 @@ import { VeChainSDKError } from '@vechain/sdk-core';
  * with the Thor REST API. It includes additional information about the HTTP status code returned
  * from the Thor REST endpoint during an error response.
  */
-class ThorestError extends VeChainSDKError {
+class ThorError extends VeChainSDKError {
     /**
      * The [HTTP Status Code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status)
      * returned by the Thor REST end-point in case of error.
@@ -39,4 +39,4 @@ class ThorestError extends VeChainSDKError {
     }
 }
 
-export { ThorestError };
+export { ThorError };

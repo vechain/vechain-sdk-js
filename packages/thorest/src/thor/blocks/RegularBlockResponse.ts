@@ -1,29 +1,65 @@
-import { TxId } from '@vechain/sdk-core';
-import {
-    CommmonBlockResponse,
-    type CommmonBlockResponseJSON
-} from './CommonBlockResponse';
+import { IllegalArgumentError, TxId } from '@vechain/sdk-core';
+import { Block } from './Block';
+import { type RegularBlockResponseJSON } from './RegularBlockResponseJSON';
 
-class RegularBlockResponse extends CommmonBlockResponse {
+const FQN = 'packages/thorest/src/thor/blocks/Block.ts!';
+
+/**
+ * [RegularBlockResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/RegularBlockResponse)
+ */
+class RegularBlockResponse extends Block {
+    /**
+     * Whether the block is trunk (true) or not (false).
+     */
+    readonly isTrunk: boolean;
+
+    /**
+     * Whether the block has been finalized (true) or not (false).
+     */
+    readonly isFinalized: boolean;
+
+    /**
+     * An array of transaction IDs.
+     */
     readonly transactions: TxId[];
 
+    /**
+     * Constructs an instance of the class using the provided RegularBlockResponseJSON object.
+     *
+     * @param {RegularBlockResponseJSON} json - The JSON object containing data to construct the instance.
+     * @throws {IllegalArgumentError} Throws if the parsing of the provided JSON object fails.
+     */
     constructor(json: RegularBlockResponseJSON) {
-        super(json);
-        this.transactions = json.transactions.map(
-            (txId: string): TxId => TxId.of(txId)
-        );
+        try {
+            super(json);
+            this.isTrunk = json.isTrunk;
+            this.isFinalized = json.isFinalized;
+            this.transactions = json.transactions.map(
+                (txId: string): TxId => TxId.of(txId)
+            );
+        } catch (error) {
+            throw new IllegalArgumentError(
+                `${FQN}constructor(json: RegularBlockResponseJSON)`,
+                'Bad parse',
+                { json },
+                error instanceof Error ? error : undefined
+            );
+        }
     }
 
+    /**
+     * Converts the current instance of the object into a JSON representation.
+     *
+     * @return {RegularBlockResponseJSON} A JSON object containing the serialized representation of the instance, including properties such as `isTrunk`, `isFinalized`, and a list of `transactions` as strings.
+     */
     toJSON(): RegularBlockResponseJSON {
         return {
             ...super.toJSON(),
+            isTrunk: this.isTrunk,
+            isFinalized: this.isFinalized,
             transactions: this.transactions.map((txId) => txId.toString())
-        };
+        } satisfies RegularBlockResponseJSON;
     }
 }
 
-interface RegularBlockResponseJSON extends CommmonBlockResponseJSON {
-    transactions: string[];
-}
-
-export { RegularBlockResponse, type RegularBlockResponseJSON };
+export { RegularBlockResponse };

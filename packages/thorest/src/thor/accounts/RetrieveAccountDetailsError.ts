@@ -1,5 +1,5 @@
-import { ThorestError } from '../../errors';
+import { ThorError } from '../../errors';
 
-class RetrieveAccountDetailsError extends ThorestError {}
+class RetrieveAccountDetailsError extends ThorError {}
 
 export { RetrieveAccountDetailsError };

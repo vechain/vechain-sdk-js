@@ -6,8 +6,8 @@ classDiagram
         class VeChainSDKError {
         }
     }
-    class ThorestError {
-        status: number
-        constructor(fqn: string, message: string, args?: Record<string, unknown>, cause?: Error, status: number)
+    class ThorError {
+        number status
+        constructor(string fqn, string message, Record~string, unknown~ args?, Error cause?, number status)
     }
-    VeChainSDKError <|-- ThorestError
+    VeChainSDKError <|-- ThorError

@@ -1,1 +1,1 @@
-export * from './ThorestError';
+export * from './ThorError';

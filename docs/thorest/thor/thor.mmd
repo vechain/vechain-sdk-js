@@ -1,0 +1,29 @@
+---
+title: thorest_thor
+---
+classDiagram
+    class RequestClass {
+        <<generic>>
+    }
+    class ResponseClass {
+        <<generic>>
+    }
+    class ThorNetwork {
+        string MAINNET$
+        string SOLONET$
+        string TESTNET$
+    }
+    class ThorRequest~RequestClass; ResponseClass~ {
+        <<interface>>
+        Promise~ThorResponse~ askTo(httpClient: HttpClient)
+    }
+    class ThorResponse~RequestClass; ResponseClass~ {
+        <<interface>>
+        RequestClass request
+        ResponseClass response
+    }
+    class ThorResponse~RequestClass; ResponseClass~
+    ThorRequest <|.. RequestClass
+    ThorResponse --* RequestClass
+    ThorResponse --* ResponseClass
+

@@ -1,26 +1,26 @@
 import { describe, expect, test } from '@jest/globals';
-import { ThorestError } from '../../src/errors';
+import { ThorError } from '../../src/errors';
 import { VeChainSDKError } from '@vechain/sdk-core';
 
 describe('ThorestError', () => {
     describe('constructor', () => {
         test('ok <- default status', () => {
-            const error = new ThorestError('TestFQN', 'Test message');
-            expect(error).toBeInstanceOf(ThorestError);
+            const error = new ThorError('TestFQN', 'Test message');
+            expect(error).toBeInstanceOf(ThorError);
             expect(error.fqn).toBe('TestFQN');
             expect(error.message).toBe('Test message');
             expect(error.status).toBe(0);
         });
 
         test('ok <- set status', () => {
-            const error = new ThorestError(
+            const error = new ThorError(
                 'TestFQN',
                 'Test message',
                 undefined,
                 undefined,
                 404
             );
-            expect(error).toBeInstanceOf(ThorestError);
+            expect(error).toBeInstanceOf(ThorError);
             expect(error.fqn).toBe('TestFQN');
             expect(error.message).toBe('Test message');
             expect(error.status).toBe(404);
@@ -28,13 +28,13 @@ describe('ThorestError', () => {
 
         test('ok <- with arguments', () => {
             const args = { key: 'value' };
-            const error = new ThorestError('TestFQN', 'Test message', args);
+            const error = new ThorError('TestFQN', 'Test message', args);
             expect(error.args).toEqual(args);
         });
 
         test('ok <- with a cause', () => {
             const cause = new Error('Underlying error');
-            const error = new ThorestError(
+            const error = new ThorError(
                 'TestFQN',
                 'Test message',
                 undefined,
@@ -46,7 +46,7 @@ describe('ThorestError', () => {
 
     describe('inheritance', () => {
         test('should inherit from VeChainSDKError', () => {
-            const error = new ThorestError('TestFQN', 'Test message');
+            const error = new ThorError('TestFQN', 'Test message');
             expect(error).toBeInstanceOf(VeChainSDKError);
         });
     });

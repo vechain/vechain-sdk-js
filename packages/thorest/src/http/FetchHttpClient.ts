@@ -34,7 +34,7 @@ class FetchHttpClient implements HttpClient {
      * It is used to build full URLs for API requests by appending
      * specific endpoints or paths to this base address.
      */
-    public readonly baseURL: string;
+    public readonly baseURL: URL;
 
     /**
      * Defines a callback function that processes and potentially modifies a given Request object.
@@ -77,7 +77,7 @@ class FetchHttpClient implements HttpClient {
         if (!baseURL.pathname.endsWith(FetchHttpClient.PATH_SEPARATOR)) {
             baseURL.pathname += FetchHttpClient.PATH_SEPARATOR;
         }
-        this.baseURL = baseURL.toString();
+        this.baseURL = baseURL;
         this.onRequest = onRequest;
         this.onResponse = onResponse;
     }
@@ -90,19 +90,24 @@ class FetchHttpClient implements HttpClient {
      * @param {(response: Response) => Response} [onResponse] - An optional function to intercept and modify the incoming response.
      * @param {(url: URL) => boolean} [isValid=isValidNetworkUrl] - A function to validate the base URL. Defaults to `isValidNetworkUrl`.
      * @return {FetchHttpClient} A new instance of FetchHttpClient configured with the specified parameters.
+     * @throws IllegalArgumentError if `baseURL` is not a valid URL expression.
      */
     static at(
-        baseURL: URL,
+        baseURL: string,
         onRequest: (request: Request) => Request = (request) => request,
         onResponse: (response: Response) => Response = (response) => response,
         isValid: (url: URL) => boolean = isValidNetworkUrl
     ): FetchHttpClient {
-        return new FetchHttpClient(
-            new URL(baseURL),
-            onRequest,
-            onResponse,
-            isValid
-        );
+        try {
+            return new FetchHttpClient(
+                new URL(baseURL),
+                onRequest,
+                onResponse,
+                isValid
+            );
+        } catch (error) {
+            throw new IllegalArgumentError(FQP, 'Invalid URL.', { baseURL });
+        }
     }
 
     /**

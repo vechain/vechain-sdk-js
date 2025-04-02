@@ -1,8 +1,9 @@
-import { describe, test, expect, jest } from '@jest/globals';
+import { describe, expect, jest, test } from '@jest/globals';
 import {
     type FetchHttpClient,
     type RawBlockResponseJSON,
-    RawBlockResponse,
+    RawTx,
+    type RawTxJSON,
     RetrieveRawBlock
 } from '../../../src';
 import { IllegalArgumentError, Revision } from '@vechain/sdk-core';
@@ -26,15 +27,15 @@ const mockHttpClient = <T>(response: T): FetchHttpClient => {
  */
 describe('RetrieveBlock unit tests', () => {
     test('should obtain raw block successfully', async () => {
-        const mockRawBlock: RawBlockResponseJSON = {
+        const mockRawBlock: RawTxJSON = {
             raw: '0x123'
-        } satisfies RawBlockResponseJSON;
+        } satisfies RawTxJSON;
 
         const mockRawBlockResponse = await RetrieveRawBlock.of(
             Revision.BEST
         ).askTo(mockHttpClient<RawBlockResponseJSON>(mockRawBlock));
-        expect(mockRawBlockResponse.response.toJSON()).toEqual(
-            new RawBlockResponse(mockRawBlock).toJSON()
+        expect(mockRawBlockResponse.response?.toJSON()).toEqual(
+            new RawTx(mockRawBlock).toJSON()
         );
     });
 

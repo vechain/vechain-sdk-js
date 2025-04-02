@@ -1,6 +1,6 @@
 import { blake2b as nh_blake2b } from '@noble/hashes/blake2b';
 import { Hex } from '../Hex';
-import { HexUInt } from '../HexUInt';
+import { HexUInt32 } from '../HexUInt32';
 import { IllegalArgumentError } from '../../errors';
 
 /**
@@ -13,7 +13,7 @@ const FQP = 'packages/core/src/vcdm/hash/Blake2b256.ts!';
  *
  * @extends HexUInt
  */
-class Blake2b256 extends HexUInt {
+class Blake2b256 extends HexUInt32 {
     /**
      * Generates the [BLAKE](https://en.wikipedia.org/wiki/BLAKE_(hash_function)) [BLAKE2B 256](https://www.blake2.net/) hash of the given input.
      *
@@ -32,9 +32,9 @@ class Blake2b256 extends HexUInt {
         try {
             const hash = nh_blake2b
                 .create({ dkLen: 32 })
-                .update(HexUInt.of(exp).bytes)
+                .update(HexUInt32.of(exp).bytes)
                 .digest();
-            return new Blake2b256(Hex.POSITIVE, HexUInt.of(hash).digits);
+            return new Blake2b256(Hex.POSITIVE, HexUInt32.of(hash).digits);
         } catch (e) {
             throw new IllegalArgumentError(
                 `${FQP}Blake2b256.of(exp: bigint | number | string | Uint8Array | Hex): Blake2b256`,
