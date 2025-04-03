@@ -180,7 +180,7 @@ describe('RetrieveRegularBlock UNIT tests', () => {
         ).response;
         expect(response).toBeDefined();
         expect(response).toBeInstanceOf(RegularBlockResponse);
-        expect(response?.toJSON()).toEqual(expected);
+        expect(response).toEqual(new RegularBlockResponse(expected));
     });
 
     test('null <- block not found', async () => {

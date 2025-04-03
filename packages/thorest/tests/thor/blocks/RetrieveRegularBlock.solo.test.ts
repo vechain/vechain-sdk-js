@@ -33,29 +33,29 @@ describe('RetrieveRegularBlock SOLO tests', () => {
     test('ok <- block 1', async () => {
         const expected = {
             number: 1,
-            id: '0x00000001922786e4dc260d2c1bc5ae0ac217ce49a3171c970921436a446eb7c7',
+            id: '0x00000001eac0965c8940680a39950f91ea15c4eacae2c41b954fffd21ad447dc',
             size: 558,
             parentID:
                 '0x00000000c05a20fbca2bf6ae3affba6af4a74b800b585bf7a4988aba7aea69f6',
-            timestamp: 1743426529,
+            timestamp: 1743694068,
             gasLimit: 10000000000000,
-            beneficiary: '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa',
+            beneficiary: '0xf077b491b355e64048ce21e3a6fc4751eeea77fa',
             gasUsed: 44794,
-            baseFeePerGas: '0x9184e72a000',
             totalScore: 1,
             txsRoot:
-                '0xb554e10b358360a117495105e14fd20dd92bd95d74a37beb4cd56cbed5f34d35',
+                '0x5a873aadffe804027e25e5f8af14d0bda855fe7a2d5dd8a8a6243d7bc0991797',
             txsFeatures: 1,
             stateRoot:
-                '0xf3ff1d20688aa6035f8f2ad0e079bad84832aed08267320130f048a5157811ed',
+                '0x92f406093ab2618208f736ee05a60c0ea0f2b5fb35e30439d4c2214857e46fc3',
             receiptsRoot:
                 '0x7b4823bf3a69934d810599180473a870518fd72fbff09593605fa38d065c941d',
             com: false,
-            signer: '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa',
+            signer: '0xf077b491b355e64048ce21e3a6fc4751eeea77fa',
             isTrunk: true,
             isFinalized: false,
+            baseFeePerGas: '0x9184e72a000',
             transactions: [
-                '0x500029471f4ae29e0520ac8a4e3f97bba59fec770edeb3dd687c408634c42969'
+                '0x1b6e60a41461e3baf7510859510794394e5860ab6714d5aa1804b535a951371f'
             ]
         };
         const actual = (
@@ -63,7 +63,7 @@ describe('RetrieveRegularBlock SOLO tests', () => {
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toBeInstanceOf(RegularBlockResponse);
-        expect(actual?.toJSON()).toEqual(expected);
+        expect(actual).toEqual(new RegularBlockResponse(expected));
     });
 
     test('ok <- block BEST', async () => {
@@ -104,7 +104,7 @@ describe('RetrieveRegularBlock SOLO tests', () => {
         ).response;
         expect(response).toBeDefined();
         expect(response).toBeInstanceOf(RegularBlockResponse);
-        expect(response?.toJSON()).toEqual(expected);
+        expect(response).toEqual(new RegularBlockResponse(expected));
     });
 
     test('null <- block not found', async () => {

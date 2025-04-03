@@ -54,7 +54,8 @@ class RetrieveRawBlock implements ThorRequest<RetrieveRawBlock, RawTx | null> {
                 {
                     url: response.url
                 },
-                undefined
+                undefined,
+                response.status
             );
         }
     }

@@ -10,7 +10,7 @@ interface BlockJSON {
     gasLimit: number; // int
     beneficiary: string; // hex address
     gasUsed: number; // int
-    baseFeePerGas: string; // hex
+    baseFeePerGas?: string; // hex or null
     totalScore: number; // int
     txsRoot: string; // hex hash
     txsFeatures: number; // int

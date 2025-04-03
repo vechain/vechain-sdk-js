@@ -60,7 +60,7 @@ class Block {
     /**
      * The minimum amount of fee required to include a transaction in the current block.
      */
-    readonly baseFeePerGas: HexUInt;
+    readonly baseFeePerGas?: HexUInt;
 
     /**
      * The accumulated witness number of the chain branch headed by the block.
@@ -113,7 +113,10 @@ class Block {
             this.gasLimit = UInt.of(json.gasLimit);
             this.beneficiary = Address.of(json.beneficiary);
             this.gasUsed = UInt.of(json.gasUsed);
-            this.baseFeePerGas = HexUInt.of(json.baseFeePerGas);
+            this.baseFeePerGas =
+                json.baseFeePerGas !== undefined
+                    ? HexUInt.of(json.baseFeePerGas)
+                    : undefined;
             this.totalScore = UInt.of(json.totalScore);
             this.txsRoot = TxId.of(json.txsRoot);
             this.txsFeatures = UInt.of(json.txsFeatures);
@@ -146,7 +149,7 @@ class Block {
             gasLimit: this.gasLimit.valueOf(),
             beneficiary: this.beneficiary.toString(),
             gasUsed: this.gasUsed.valueOf(),
-            baseFeePerGas: this.baseFeePerGas.toString(),
+            baseFeePerGas: this.baseFeePerGas?.toString(),
             totalScore: this.totalScore.valueOf(),
             txsRoot: this.txsRoot.toString(),
             txsFeatures: this.txsFeatures.valueOf(),
