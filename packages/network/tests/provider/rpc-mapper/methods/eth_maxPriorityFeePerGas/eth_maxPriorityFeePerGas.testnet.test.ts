@@ -3,10 +3,9 @@ import {
     RPC_METHODS,
     TESTNET_URL,
     ThorClient,
-    VeChainProvider,
-    type ContractCallResult,
-    type CompressedBlockDetail
+    VeChainProvider
 } from '../../../../../src';
+import { JSONRPCInternalError } from '@vechain/sdk-errors';
 
 /**
  * RPC Mapper integration tests for 'eth_maxPriorityFeePerGas' method
@@ -19,8 +18,9 @@ describe('RPC Mapper - eth_maxPriorityFeePerGas method tests', () => {
      */
     let thorClient: ThorClient;
     let provider: VeChainProvider;
-    const mockBaseGasPrice = BigInt(1000000000); // 1 GWEI
-    const mockGasLimit = BigInt(1000000);
+    const mockPriorityFee = '0x9184e72a000'; // 100 Gwei
+    const mockLowPriorityFee = '0x3b9aca00'; // 1 Gwei
+    const mockHighPriorityFee = '0x174876e800'; // 1000 Gwei
 
     /**
      * Init thor client and provider before each test
@@ -29,133 +29,99 @@ describe('RPC Mapper - eth_maxPriorityFeePerGas method tests', () => {
         // Init thor client
         thorClient = ThorClient.at(TESTNET_URL);
         provider = new VeChainProvider(thorClient);
-
-        // Mock the getBaseGasPrice method with proper type
-        const mockGasPrice: ContractCallResult = {
-            result: { plain: mockBaseGasPrice },
-            success: true
-        };
-        jest.spyOn(thorClient.contracts, 'getBaseGasPrice').mockResolvedValue(
-            mockGasPrice
-        );
     });
 
-    const testCases = [
-        {
-            name: 'should return 1.1x base fee at low usage (below 70%)',
-            gasUsed: (mockGasLimit * BigInt(50)) / BigInt(100), // 50% usage
-            expectedMultiplier: 1.1
-        },
-        {
-            name: 'should return 1.2x base fee at moderate usage (70-90%)',
-            gasUsed: (mockGasLimit * BigInt(80)) / BigInt(100), // 80% usage
-            expectedMultiplier: 1.2
-        },
-        {
-            name: 'should return 1.5x base fee at high usage (above 90%)',
-            gasUsed: (mockGasLimit * BigInt(95)) / BigInt(100), // 95% usage
-            expectedMultiplier: 1.5
-        }
-    ];
+    test('should return priority fee from /fees/priority endpoint', async () => {
+        // Mock the HTTP response
+        jest.spyOn(thorClient.httpClient, 'get').mockResolvedValue({
+            maxPriorityFeePerGas: mockPriorityFee
+        });
 
-    testCases.forEach(({ name, gasUsed, expectedMultiplier }) => {
-        test(name, async () => {
-            // Mock the getBestBlockCompressed method with proper type
-            const mockBlock: CompressedBlockDetail = {
-                number: 0,
-                id: '0x0',
-                size: 0,
-                parentID: '0x0',
-                timestamp: 0,
-                gasLimit: Number(mockGasLimit),
-                beneficiary: '0x0',
-                gasUsed: Number(gasUsed),
-                totalScore: 0,
-                txsRoot: '0x0',
-                txsFeatures: 0,
-                stateRoot: '0x0',
-                receiptsRoot: '0x0',
-                com: false,
-                signer: '0x0',
-                isTrunk: true,
-                isFinalized: false,
-                transactions: []
-            };
-            jest.spyOn(
-                thorClient.blocks,
-                'getBestBlockCompressed'
-            ).mockResolvedValue(mockBlock);
+        const result = await provider.request({
+            method: RPC_METHODS.eth_maxPriorityFeePerGas,
+            params: []
+        });
 
-            const result = await provider.request({
+        expect(result).toBe(mockPriorityFee);
+    });
+
+    test('should handle low priority fee values', async () => {
+        // Mock the HTTP response with a low priority fee
+        jest.spyOn(thorClient.httpClient, 'get').mockResolvedValue({
+            maxPriorityFeePerGas: mockLowPriorityFee
+        });
+
+        const result = await provider.request({
+            method: RPC_METHODS.eth_maxPriorityFeePerGas,
+            params: []
+        });
+
+        expect(result).toBe(mockLowPriorityFee);
+    });
+
+    test('should handle high priority fee values', async () => {
+        // Mock the HTTP response with a high priority fee
+        jest.spyOn(thorClient.httpClient, 'get').mockResolvedValue({
+            maxPriorityFeePerGas: mockHighPriorityFee
+        });
+
+        const result = await provider.request({
+            method: RPC_METHODS.eth_maxPriorityFeePerGas,
+            params: []
+        });
+
+        expect(result).toBe(mockHighPriorityFee);
+    });
+
+    test('should handle empty response from /fees/priority endpoint', async () => {
+        // Mock the HTTP response with an empty object
+        jest.spyOn(thorClient.httpClient, 'get').mockResolvedValue({});
+
+        await expect(
+            provider.request({
                 method: RPC_METHODS.eth_maxPriorityFeePerGas,
                 params: []
-            });
-
-            const expectedFee =
-                (mockBaseGasPrice *
-                    BigInt(Math.floor(expectedMultiplier * 100))) /
-                BigInt(100);
-            expect(BigInt(result as string)).toBe(expectedFee);
-        });
+            })
+        ).rejects.toThrow(JSONRPCInternalError);
     });
 
-    test('should return minimum 1 VTHO when calculation results in lower value', async () => {
-        // Mock with very low base gas price
-        const mockLowGasPrice: ContractCallResult = {
-            result: { plain: BigInt(100) }
-        };
-        jest.spyOn(thorClient.contracts, 'getBaseGasPrice').mockResolvedValue(
-            mockLowGasPrice
+    test('should handle null response from /fees/priority endpoint', async () => {
+        // Mock the HTTP response with null
+        jest.spyOn(thorClient.httpClient, 'get').mockResolvedValue(null);
+
+        await expect(
+            provider.request({
+                method: RPC_METHODS.eth_maxPriorityFeePerGas,
+                params: []
+            })
+        ).rejects.toThrow(JSONRPCInternalError);
+    });
+
+    test('should handle network errors gracefully', async () => {
+        // Mock the HTTP response with a network error
+        jest.spyOn(thorClient.httpClient, 'get').mockRejectedValue(
+            new Error('Network error')
         );
 
-        const mockLowBlock: CompressedBlockDetail = {
-            number: 0,
-            id: '0x0',
-            size: 0,
-            parentID: '0x0',
-            timestamp: 0,
-            gasLimit: Number(mockGasLimit),
-            beneficiary: '0x0',
-            gasUsed: 0,
-            totalScore: 0,
-            txsRoot: '0x0',
-            txsFeatures: 0,
-            stateRoot: '0x0',
-            receiptsRoot: '0x0',
-            com: false,
-            signer: '0x0',
-            isTrunk: true,
-            isFinalized: false,
-            transactions: []
-        };
-        jest.spyOn(
-            thorClient.blocks,
-            'getBestBlockCompressed'
-        ).mockResolvedValue(mockLowBlock);
-
-        const result = await provider.request({
-            method: RPC_METHODS.eth_maxPriorityFeePerGas,
-            params: []
-        });
-
-        expect(BigInt(result as string)).toBeGreaterThanOrEqual(
-            BigInt(1000000000)
-        ); // Min 1 VTHO
+        await expect(
+            provider.request({
+                method: RPC_METHODS.eth_maxPriorityFeePerGas,
+                params: []
+            })
+        ).rejects.toThrow(JSONRPCInternalError);
     });
 
-    test('should handle missing block data gracefully', async () => {
-        jest.spyOn(
-            thorClient.blocks,
-            'getBestBlockCompressed'
-        ).mockResolvedValue(null);
-
-        const result = await provider.request({
-            method: RPC_METHODS.eth_maxPriorityFeePerGas,
-            params: []
+    test('should handle malformed response from /fees/priority endpoint', async () => {
+        // Mock the HTTP response with invalid data
+        jest.spyOn(thorClient.httpClient, 'get').mockResolvedValue({
+            invalidField: 'some value'
         });
 
-        // Should use low usage multiplier (1.1x) when block data is unavailable
-        const expectedFee = (mockBaseGasPrice * BigInt(110)) / BigInt(100);
-        expect(BigInt(result as string)).toBe(expectedFee);
+        await expect(
+            provider.request({
+                method: RPC_METHODS.eth_maxPriorityFeePerGas,
+                params: []
+            })
+        ).rejects.toThrow(JSONRPCInternalError);
     });
 });
