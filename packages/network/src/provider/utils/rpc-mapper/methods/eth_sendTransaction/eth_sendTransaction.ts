@@ -20,7 +20,6 @@ import { getCachedChainId } from '../eth_chainId';
  * The 'data' field of the transaction will be used as the contract initialization code.
  *
  * @NOTE: 'gasPrice' cannot be used together with 'maxPriorityFeePerGas' and 'maxFeePerGas'.
- * 'maxPriorityFeePerGas' and 'maxFeePerGas' are not supported in the current version.
  *
  * @param thorClient - The thor client instance to use.
  * @param params - The standard array of rpc call parameters.

@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { JSONRPCMethodNotImplemented } from '@vechain/sdk-errors';
 import {
     RPC_METHODS,
     TESTNET_URL,
@@ -28,20 +27,17 @@ describe('RPC Mapper - eth_feeHistory method tests', () => {
         provider = new VeChainProvider(thorClient);
     });
 
-    /**
-     * eth_feeHistory RPC call tests - Not Implemented
-     */
-    describe('eth_feeHistory - Not Implemented', () => {
-        /**
-         * Test that the method throws JSONRPCMethodNotImplemented when called via provider
-         */
-        test('Should throw JSONRPCMethodNotImplemented error', async () => {
-            await expect(
-                provider.request({
-                    method: RPC_METHODS.eth_feeHistory,
-                    params: []
-                })
-            ).rejects.toThrowError(JSONRPCMethodNotImplemented);
+    test('Should return empty fee history', async () => {
+        const result = await provider.request({
+            method: RPC_METHODS.eth_feeHistory,
+            params: [4, 'latest', [25, 75]]
+        });
+
+        expect(result).toEqual({
+            oldestBlock: '0x0',
+            baseFeePerGas: [],
+            gasUsedRatio: [],
+            reward: []
         });
     });
 });

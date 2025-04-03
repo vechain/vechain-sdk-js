@@ -57,6 +57,11 @@ import {
     web3ClientVersion,
     web3Sha3
 } from './methods';
+import { ethMaxPriorityFeePerGas } from './methods/eth_maxPriorityFeePerGas/eth_maxPriorityFeePerGas';
+import {
+    ethFeeHistory,
+    type FeeHistoryResponse
+} from './methods/eth_feeHistory/eth_feeHistory';
 
 type MethodHandlerType<TParams, TReturnType> = (
     params: TParams[]
@@ -330,6 +335,18 @@ const RPCMethodsMap = (
 
         [RPC_METHODS.eth_signTypedData_v4]: async (params): Promise<string> => {
             return await ethSignTypedDataV4(thorClient, params, provider);
+        },
+
+        [RPC_METHODS.eth_maxPriorityFeePerGas]: async (
+            params
+        ): Promise<string> => {
+            return await ethMaxPriorityFeePerGas(thorClient, params, provider);
+        },
+
+        [RPC_METHODS.eth_feeHistory]: async (
+            params
+        ): Promise<FeeHistoryResponse> => {
+            return await ethFeeHistory(thorClient, params, provider);
         }
     };
 };
