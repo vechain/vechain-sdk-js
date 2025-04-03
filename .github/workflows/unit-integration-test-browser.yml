@@ -27,6 +27,9 @@ jobs:
               id: preliminary-stop-solo
               run: yarn stop-thor-solo
 
+            - name: Build for solo setup
+              run: yarn build
+
             - name: Start Thor solo node
               id: start-solo
               run:  |
