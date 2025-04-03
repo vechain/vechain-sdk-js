@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { Blake2b256, Hex, HexUInt32, IllegalArgumentError } from '../../../src';
+import { Blake2b256, HexUInt32, IllegalArgumentError } from '../../../src';
 import { CONTENT, NO_CONTENT } from './fixture';
 
 // Hex on purpose because it must be equal to the returned HexUInt hash.
@@ -9,7 +9,7 @@ const CONTENT_BLAKE2B256 = HexUInt32.of(
 
 // Hex on purpose because it must be equal to the returned HexUInt hash.
 const NO_CONTENT_BLAKE2B256 = HexUInt32.of(
-    '0x0e5751c026e543b2e8ab2eb06099daa1d1e5df47778f7787faab45cdf12fe3a8'
+    '0x89eb0d6a8a691dae2cd15ed0369931ce0a949ecafa5c3f93f8121833646e15c3'
 );
 
 /**
@@ -36,7 +36,7 @@ describe('Blake2b256 class tests', () => {
 
     test('Return hash for no content', () => {
         const hash = Blake2b256.of(NO_CONTENT);
-        expect(hash.isEqual(NO_CONTENT_BLAKE2B256));
+        expect(hash.isEqual(NO_CONTENT_BLAKE2B256)).toBe(true);
     });
 
     test('Throw an exception for illegal content', () => {

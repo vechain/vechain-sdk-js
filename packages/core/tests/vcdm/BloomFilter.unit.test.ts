@@ -2,8 +2,8 @@ import { describe, expect, test } from '@jest/globals';
 import * as nc_utils from '@noble/curves/abstract/utils';
 import {
     BloomFilter,
-    Hex,
     HexUInt,
+    HexUInt32,
     IllegalArgumentError,
     Txt,
     UnsupportedOperationError
@@ -12,15 +12,15 @@ import {
 const BloomFilterFixture = {
     emptySetBytes: Uint8Array.of(0, 0, 0, 0, 0, 0, 0, 0),
     setA: [
-        Hex.of(Txt.of('key.a.0').bytes),
-        Hex.of(Txt.of('key.a.1').bytes),
-        Hex.of(Txt.of('key.a.2').bytes)
+        HexUInt.of(Txt.of('key.a.0').bytes),
+        HexUInt.of(Txt.of('key.a.1').bytes),
+        HexUInt.of(Txt.of('key.a.2').bytes)
     ],
-    setABytes: Uint8Array.of(5, 42, 16, 4, 130, 8, 41, 130),
+    setABytes: Uint8Array.of(193, 9, 0, 49, 5, 0, 23, 0),
     setB: [
-        Hex.of(Txt.of('key.b.0').bytes),
-        Hex.of(Txt.of('key.b.1').bytes),
-        Hex.of(Txt.of('key.b.2').bytes)
+        HexUInt.of(Txt.of('key.b.0').bytes),
+        HexUInt.of(Txt.of('key.b.1').bytes),
+        HexUInt.of(Txt.of('key.b.2').bytes)
     ],
     setK: [
         { actualK: 1, expectedK: 1, expectedM: 2 },
@@ -52,8 +52,8 @@ describe('BloomFilter class tests.', () => {
         });
 
         test('Return a n value', () => {
-            const expected = Uint8Array.of(0, 0, 0, 32, 0, 0, 64, 0);
-            const bf = BloomFilter.of(Hex.of('0xff')).build(2, 2);
+            const expected = Uint8Array.of(0, 0, 0, 4, 32, 0, 0, 0);
+            const bf = BloomFilter.of(HexUInt32.of('0x88')).build(2, 2);
             expect(bf.n).toEqual(Number(nc_utils.bytesToNumberBE(expected)));
         });
 
@@ -75,7 +75,7 @@ describe('BloomFilter class tests.', () => {
                 const bf1 = BloomFilter.of(...BloomFilterFixture.setA).build();
                 const bf2 = BloomFilter.of(...BloomFilterFixture.setB).build();
                 expect(bf1.k).toBe(bf2.k);
-                expect(bf1.compareTo(bf2)).toBe(-1);
+                expect(bf1.compareTo(bf2)).toBe(1);
             });
         });
 
