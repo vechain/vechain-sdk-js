@@ -82,6 +82,11 @@ interface BlockDetail {
     gasUsed: number;
 
     /**
+     * The minimum amount of fee required to include a transaction in the current block
+     */
+    baseFeePerGas?: string;
+
+    /**
      * Represents the Accumulated Witness Number (AWN) of the block.
      * It is used when selecting the trunk block in the VeChainThor consensus algorithm.
      *
