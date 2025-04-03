@@ -32,7 +32,8 @@ describe('RPC Mapper - eth_maxPriorityFeePerGas method tests', () => {
 
         // Mock the getBaseGasPrice method with proper type
         const mockGasPrice: ContractCallResult = {
-            result: { plain: mockBaseGasPrice }
+            result: { plain: mockBaseGasPrice },
+            success: true
         };
         jest.spyOn(thorClient.contracts, 'getBaseGasPrice').mockResolvedValue(
             mockGasPrice
