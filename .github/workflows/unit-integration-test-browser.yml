@@ -29,7 +29,9 @@ jobs:
 
             - name: Start Thor solo node
               id: start-solo
-              run: yarn start-thor-solo
+              run:  |
+                yarn start-thor-solo
+                yarn seed-thor-solo
 
             - name: Test
               id: unit-test
