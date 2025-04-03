@@ -1,5 +1,5 @@
-// SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.19;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.18;
 
 // Import the builtin contract to access extended EVM builtin functions
 import "./builtin-contracts/builtin.sol";
@@ -330,7 +330,7 @@ contract TestingContract {
     /// @notice Get the data hashed using Blake2b256
     /// @param _data The data to hash
     function calculateBlake2b256(bytes memory _data) public view returns (bytes32) {
-        return extension._blake2b256(_data);
+        return extension.blake2b256(_data);
     }
 
     // ------ VeChainThor EVM Extension functions End ------ //

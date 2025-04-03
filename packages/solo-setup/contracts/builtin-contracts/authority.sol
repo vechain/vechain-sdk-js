@@ -1,4 +1,5 @@
-pragma solidity 0.8.19;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.18;
 
 /// @title Authority is related to the POA(proof of authority) consensus mechanism.
 /// The Authority contract manages a list of candidates proposers who is responsible for packing transactions into a block.

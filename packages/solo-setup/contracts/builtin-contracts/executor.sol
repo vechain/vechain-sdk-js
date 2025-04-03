@@ -1,4 +1,5 @@
-pragma solidity 0.8.19;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.18;
 
 /// @title Executor represents core component for on-chain governance. 
 /// The on-chain governance params can be changed by the Executor through a voting.

@@ -8,7 +8,7 @@ import {
     TESTING_CONTRACT_ADDRESS,
     TESTING_CONTRACT_BYTECODE
 } from '../../fixture';
-import { THOR_SOLO_ACCOUNTS } from '../../../src';
+import { soloConfig, THOR_SOLO_SEEDED_ACCOUNTS } from '@vechain/sdk-solo-setup';
 
 /**
  * Test cases for provider methods - Testnet
@@ -43,8 +43,11 @@ const providerMethodsTestCasesSolo = [
         description:
             'Should be able to call eth_getBalance of an address with balance more than 0 VET',
         method: 'eth_getBalance',
-        params: [THOR_SOLO_ACCOUNTS[0].address, 'latest'],
-        expected: Quantity.of(Units.parseEther('500000000').bi).toString()
+        params: [THOR_SOLO_SEEDED_ACCOUNTS[7].address, 'latest'],
+        expected: Quantity.of(
+            Units.parseEther(soloConfig.THOR_SOLO_SEEDED_VET_AMOUNT.toString())
+                .bi
+        ).toString()
     },
     {
         description: 'Should be able to call eth_getCode of a smart contract',

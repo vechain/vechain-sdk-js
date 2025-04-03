@@ -1,10 +1,11 @@
 /**
- * All available Thor solo accounts for testing purposes.
- *
- * * Every account has 500000000 VET and at least 500000000 VTHO.
- * * Every account has a private key and an address. (both as hex string)
+ * Seeded Thor solo accounts for testing purposes.
+ * Every account has 10000 VET and 10000 VTHO.
  */
-const THOR_SOLO_ACCOUNTS: Array<{ privateKey: string; address: string }> = [
+const THOR_SOLO_SEEDED_ACCOUNTS: Array<{
+    privateKey: string;
+    address: string;
+}> = [
     /* ----------- NEW ACCOUNTS ----------- */
     /**
      * Each new account starts with
@@ -60,13 +61,14 @@ const THOR_SOLO_ACCOUNTS: Array<{ privateKey: string; address: string }> = [
         privateKey:
             'adc81265b0909dec70235ec973b1758e45ce5ce7cfe92eb96b79cd0ef07bc6bc',
         address: '0x3e3d79163b08502a086213cd09660721740443d7'
-    },
-    /* ----------- THOR SOLO GENESIS ACCOUNTS ----------- */
-    /**
-     * Each Thor Solo genesis account has
-     * - VET: 500000000
-     * - VTHO: at least 1365000000 (VTHO is not constant due to generation when having VET)
-     */
+    }
+];
+
+// Default genesis accounts for the Thor Solo
+const THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS: Array<{
+    privateKey: string;
+    address: string;
+}> = [
     {
         privateKey:
             '99f0500549792796c14fed62011a51081dc5b5e68fe8bd8a13b86be829c4fd36',
@@ -119,21 +121,14 @@ const THOR_SOLO_ACCOUNTS: Array<{ privateKey: string; address: string }> = [
     }
 ];
 
-// Default genesis accounts for the Thor Solo
-const THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS: Array<{
-    privateKey: string;
-    address: string;
-}> = [
-    {
-        privateKey:
-            '0x99f0500549792796c14fed62011a51081dc5b5e68fe8bd8a13b86be829c4fd36',
-        address: '0xf077b491b355e64048ce21e3a6fc4751eeea77fa'
-    },
-    {
-        privateKey:
-            '0x7b067f53d350f1cf20ec13df416b7b73e88a1dc7331bc904b92108b1e76a08b1',
-        address: '0x435933c8064b4ae76be665428e0307ef2ccfbd68'
-    }
+// Combine the seeded and default genesis accounts
+const THOR_SOLO_ALL_ACCOUNTS = [
+    ...THOR_SOLO_SEEDED_ACCOUNTS,
+    ...THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS
 ];
 
-export { THOR_SOLO_ACCOUNTS, THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS };
+export {
+    THOR_SOLO_ALL_ACCOUNTS,
+    THOR_SOLO_SEEDED_ACCOUNTS,
+    THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS
+};

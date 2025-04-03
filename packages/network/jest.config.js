@@ -9,6 +9,7 @@ module.exports = {
     runner: 'groups',
     reporters: ['default', 'jest-junit'],
     workerThreads: true,
+    maxWorkers: 5,
     coverageThreshold:
         applyCodeCoverageLimits == 'true'
             ? {

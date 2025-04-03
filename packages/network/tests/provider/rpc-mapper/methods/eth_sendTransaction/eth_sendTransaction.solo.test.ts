@@ -6,7 +6,6 @@ import {
 import {
     ProviderInternalBaseWallet,
     RPC_METHODS,
-    THOR_SOLO_ACCOUNTS,
     THOR_SOLO_URL,
     ThorClient,
     VeChainProvider
@@ -20,6 +19,7 @@ import {
     JSONRPCInvalidParams
 } from '@vechain/sdk-errors';
 import { HexUInt, Secp256k1 } from '@vechain/sdk-core';
+import { THOR_SOLO_ALL_ACCOUNTS } from '@vechain/sdk-solo-setup';
 
 /**
  * RPC Mapper integration tests for 'eth_sendTransaction' method
@@ -147,8 +147,8 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
          * Positive case 2 - Should be able to send a transaction with undefined value
          */
         test('eth_sendTransaction - Should be able to send a transaction with value undefined', async () => {
-            const from = THOR_SOLO_ACCOUNTS[18].address;
-            const to = THOR_SOLO_ACCOUNTS[19].address;
+            const from = THOR_SOLO_ALL_ACCOUNTS[1].address;
+            const to = THOR_SOLO_ALL_ACCOUNTS[2].address;
             // Get the balance of the sender and the receiver before sending the transaction
             const balanceSenderBefore = (await provider.request({
                 method: RPC_METHODS.eth_getBalance,
@@ -264,12 +264,14 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
                 thorClient,
                 new ProviderInternalBaseWallet([
                     {
-                        privateKey: HexUInt.of(THOR_SOLO_ACCOUNTS[0].privateKey)
-                            .bytes,
+                        privateKey: HexUInt.of(
+                            THOR_SOLO_ALL_ACCOUNTS[0].privateKey
+                        ).bytes,
                         publicKey: Secp256k1.derivePublicKey(
-                            HexUInt.of(THOR_SOLO_ACCOUNTS[0].privateKey).bytes
+                            HexUInt.of(THOR_SOLO_ALL_ACCOUNTS[0].privateKey)
+                                .bytes
                         ),
-                        address: THOR_SOLO_ACCOUNTS[0].address
+                        address: THOR_SOLO_ALL_ACCOUNTS[0].address
                     }
                 ])
             );
@@ -314,8 +316,8 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
                         method: RPC_METHODS.eth_sendTransaction,
                         params: [
                             {
-                                from: THOR_SOLO_ACCOUNTS[1].address,
-                                to: THOR_SOLO_ACCOUNTS[2].address,
+                                from: THOR_SOLO_ALL_ACCOUNTS[1].address,
+                                to: THOR_SOLO_ALL_ACCOUNTS[2].address,
                                 value: '0x1',
                                 chainId: '0x123'
                             }
