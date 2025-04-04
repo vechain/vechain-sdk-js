@@ -1,5 +1,6 @@
-import { Receipt, type ReceiptJSON } from './Receipt';
+import { Receipt } from './Receipt';
 import { ReceiptMeta, type ReceiptMetaJSON } from './ReceiptMeta';
+import { type ReceiptJSON } from './ReceiptJSON';
 
 class GetTxReceiptResponse extends Receipt {
     readonly meta: ReceiptMeta;

@@ -1,72 +1,46 @@
-import { BlockId } from '@vechain/sdk-core';
-import {
-    GetTxResponse,
-    type GetTxResponseJSON,
-    Receipt,
-    type ReceiptJSON
-} from '../transactions';
-import {
-    CommmonBlockResponse,
-    type CommmonBlockResponseJSON
-} from './CommonBlockResponse';
+import { Block } from './Block';
+import { Receipt, type ReceiptJSON } from '../transactions';
+import { type ExpandedBlockResponseJSON } from './ExpandedBlockResponseJSON';
+import { IllegalArgumentError } from '@vechain/sdk-core';
 
-class TransactionWithOutputs {
-    readonly transaction: Omit<GetTxResponse, 'meta'>;
-    readonly receipt: Receipt;
+const FQP = 'packages/thorest/src/thor/blocks/ExpandedBlockResponse.ts!';
 
-    constructor(json: TransactionWithOutputsJSON) {
-        const transactionWithoutMeta = new GetTxResponse({
-            ...json,
-            meta: {
-                blockID: BlockId.of(0).fit(64).toString(),
-                blockNumber: 0,
-                blockTimestamp: 0
-            }
-        });
+/**
+ * [ExpandedBlockResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/ExpandedBlockResponse).
+ */
+class ExpandedBlockResponse extends Block {
+    /**
+     * Whether the block is trunk (true) or not (false).
+     */
+    readonly isTrunk: boolean;
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { meta, ...transactionWithoutMetaNoMeta } =
-            transactionWithoutMeta;
-        this.transaction = {
-            ...transactionWithoutMetaNoMeta,
-            toJSON: () => transactionWithoutMeta.toJSON()
-        } satisfies Omit<GetTxResponse, 'meta'>;
-        this.receipt = new Receipt(json);
-    }
+    /**
+     * Whether the block has been finalized (true) or not (false).
+     */
+    readonly isFinalized: boolean;
 
-    toJSON(): TransactionWithOutputsJSON {
-        return {
-            ...this.transaction.toJSON(),
-            ...this.receipt.toJSON()
-        } satisfies TransactionWithOutputsJSON;
-    }
-}
-
-type TransactionWithOutputsJSON = Omit<GetTxResponseJSON, 'meta'> & ReceiptJSON;
-
-class ExpandedBlockResponse extends CommmonBlockResponse {
-    readonly transactions: TransactionWithOutputs[];
+    /**
+     * All included transactions, expanded, to include their receipts.
+     */
+    readonly transactions: Receipt[];
 
     constructor(json: ExpandedBlockResponseJSON) {
-        super(json);
-        this.transactions = json.transactions.map(
-            (txId: TransactionWithOutputsJSON): TransactionWithOutputs =>
-                new TransactionWithOutputs(txId)
-        );
-    }
-
-    toJSON(): ExpandedBlockResponseJSON {
-        return {
-            ...super.toJSON(),
-            transactions: this.transactions.map((tx: TransactionWithOutputs) =>
-                tx.toJSON()
-            )
-        };
+        try {
+            super(json);
+            this.isTrunk = json.isTrunk;
+            this.isFinalized = json.isFinalized;
+            this.transactions = json.transactions.map(
+                (transaction: ReceiptJSON): Receipt => new Receipt(transaction)
+            );
+        } catch (error) {
+            throw new IllegalArgumentError(
+                `${FQP}constructor(json: ExpandedBlockResponseJSON)`,
+                'Bad parse',
+                { json },
+                error instanceof Error ? error : undefined
+            );
+        }
     }
 }
 
-interface ExpandedBlockResponseJSON extends CommmonBlockResponseJSON {
-    transactions: TransactionWithOutputsJSON[];
-}
-
-export { ExpandedBlockResponse, type ExpandedBlockResponseJSON };
+export { ExpandedBlockResponse };

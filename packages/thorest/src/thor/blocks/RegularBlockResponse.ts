@@ -2,7 +2,10 @@ import { IllegalArgumentError, TxId } from '@vechain/sdk-core';
 import { Block } from './Block';
 import { type RegularBlockResponseJSON } from './RegularBlockResponseJSON';
 
-const FQN = 'packages/thorest/src/thor/blocks/Block.ts!';
+/**
+ * Full Qualified Path.
+ */
+const FQP = 'packages/thorest/src/thor/blocks/RegularBlockResponse.ts!';
 
 /**
  * [RegularBlockResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/RegularBlockResponse)
@@ -39,7 +42,7 @@ class RegularBlockResponse extends Block {
             );
         } catch (error) {
             throw new IllegalArgumentError(
-                `${FQN}constructor(json: RegularBlockResponseJSON)`,
+                `${FQP}constructor(json: RegularBlockResponseJSON)`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

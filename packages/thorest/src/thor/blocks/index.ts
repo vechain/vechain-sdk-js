@@ -1,5 +1,7 @@
 export * from './Block';
 export * from './BlockJSON';
+export * from './ExpandedBlockResponse';
+export * from './ExpandedBlockResponseJSON';
 export * from './RawTx';
 export * from './RawTxJSON';
 export * from './RegularBlockResponse';
@@ -7,5 +9,4 @@ export * from './RegularBlockResponseJSON';
 export * from './RetrieveRawBlock';
 export * from './RetrieveRegularBlock';
 
-export * from './RetrieveExpandedBlock';
-export * from './ExpandedBlockResponse';
+export * from './XBlockResponse';

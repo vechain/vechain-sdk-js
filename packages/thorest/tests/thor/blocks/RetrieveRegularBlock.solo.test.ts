@@ -67,11 +67,11 @@ describe('RetrieveRegularBlock SOLO tests', () => {
     });
 
     test('ok <- block BEST', async () => {
-        const response = (
+        const actual = (
             await RetrieveRegularBlock.of(Revision.of(1)).askTo(httpClient)
         ).response;
-        expect(response).toBeDefined();
-        expect(response).toBeInstanceOf(RegularBlockResponse);
+        expect(actual).toBeDefined();
+        expect(actual).toBeInstanceOf(RegularBlockResponse);
     });
 
     test('ok <- block FINALIZED', async () => {
@@ -99,20 +99,20 @@ describe('RetrieveRegularBlock SOLO tests', () => {
             isFinalized: true,
             transactions: []
         };
-        const response = (
+        const actual = (
             await RetrieveRegularBlock.of(Revision.FINALIZED).askTo(httpClient)
         ).response;
-        expect(response).toBeDefined();
-        expect(response).toBeInstanceOf(RegularBlockResponse);
-        expect(response).toEqual(new RegularBlockResponse(expected));
+        expect(actual).toBeDefined();
+        expect(actual).toBeInstanceOf(RegularBlockResponse);
+        expect(actual).toEqual(new RegularBlockResponse(expected));
     });
 
     test('null <- block not found', async () => {
-        const response = (
+        const actual = (
             await RetrieveRegularBlock.of(
                 Revision.of(Math.pow(2, 32) - 1) // Max block address value.
             ).askTo(httpClient)
         ).response;
-        expect(response).toBeNull();
+        expect(actual).toBeNull();
     });
 });

@@ -173,14 +173,14 @@ describe('RetrieveRegularBlock UNIT tests', () => {
             isFinalized: true,
             transactions: []
         };
-        const response = (
+        const actual = (
             await RetrieveRegularBlock.of(Revision.FINALIZED).askTo(
                 mockHttpClient<Response>(mockResponse(expected, status))
             )
         ).response;
-        expect(response).toBeDefined();
-        expect(response).toBeInstanceOf(RegularBlockResponse);
-        expect(response).toEqual(new RegularBlockResponse(expected));
+        expect(actual).toBeDefined();
+        expect(actual).toBeInstanceOf(RegularBlockResponse);
+        expect(actual).toEqual(new RegularBlockResponse(expected));
     });
 
     test('null <- block not found', async () => {
