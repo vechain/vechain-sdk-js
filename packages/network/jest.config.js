@@ -10,6 +10,10 @@ module.exports = {
     reporters: ['default', 'jest-junit'],
     workerThreads: true,
     maxWorkers: 5,
+    coveragePathIgnorePatterns: [
+        "/dist/",
+        "/tests/"
+    ],
     coverageThreshold:
         applyCodeCoverageLimits == 'true'
             ? {
