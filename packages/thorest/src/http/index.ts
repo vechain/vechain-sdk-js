@@ -1,4 +1,4 @@
 export * from './FetchHttpClient';
-export * from './HttpClient';
-export * from './HttpPath';
-export * from './HttpQuery';
+export type { HttpClient } from './HttpClient';
+export type { HttpPath } from './HttpPath';
+export type { HttpQuery } from './HttpQuery';
