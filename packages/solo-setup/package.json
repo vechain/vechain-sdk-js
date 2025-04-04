@@ -5,7 +5,6 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "yarn compile",
     "compile": "npx hardhat compile",
     "deploy-solo": "npx hardhat run scripts/deploy.ts --network vechain_solo",
     "solo-up": "make solo-up",
