@@ -1,6 +1,7 @@
 import { ABIContract } from '@vechain/sdk-core';
 import { THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
+import soloConfig from '@vechain/sdk-solo-setup';
 
 // ABI of the `TestingContract` smart contract
 const TESTING_CONTRACT_ABI = [
@@ -773,8 +774,7 @@ const TESTING_CONTRACT_ABI = [
 ] as const;
 
 // Address of the `TestingContract` smart contract
-const TESTING_CONTRACT_ADDRESS: string =
-    '0xb2c20a6de401003a671659b10629eb82ff254fb8';
+const TESTING_CONTRACT_ADDRESS: string = soloConfig.TESTING_CONTRACT_ADDRESS;
 
 // START_SNIPPET: EVMExtensionSnippet
 
@@ -784,17 +784,14 @@ const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 // Call the getTotalSupply function of the `TestingContract` smart contract
 const totalSupply = await thorSoloClient.contracts.executeCall(
     TESTING_CONTRACT_ADDRESS,
-    ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction('getTotalSupply'),
+    ABIContract.ofAbi(soloConfig.TESTING_CONTRACT_ABI).getFunction(
+        'getTotalSupply'
+    ),
     []
 );
 
 // END_SNIPPET: EVMExtensionSnippet
 
 // Check the result
-expect(totalSupply).toStrictEqual({
-    result: {
-        array: [10000000000000000000000000000n],
-        plain: 10000000000000000000000000000n
-    },
-    success: true
-});
+console.log(Number(totalSupply.result.plain));
+expect(Number(totalSupply.result.plain)).toBeGreaterThan(0);

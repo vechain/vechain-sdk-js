@@ -25,7 +25,9 @@ const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 // Call the getTotalSupply function of the `TestingContract` smart contract
 const totalSupply = await thorSoloClient.contracts.executeCall(
     TESTING_CONTRACT_ADDRESS,
-    ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction('getTotalSupply'),
+    ABIContract.ofAbi(soloConfig.TESTING_CONTRACT_ABI).getFunction(
+        'getTotalSupply'
+    ),
     []
 );
 ```
