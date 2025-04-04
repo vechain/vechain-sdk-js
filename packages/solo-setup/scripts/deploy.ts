@@ -3,8 +3,9 @@
 import { ethers } from 'hardhat';
 import { updateConfig } from '../config/updateConfig';
 import { getABI } from '../utils/abi';
-import { seedTestToken, seedVET, seedVTHO } from './transfer';
-import { getGenesisBlock } from './genesis';
+import { seedTestToken, seedVET, seedVTHO } from '../utils/transfer';
+import { getGenesisBlock } from '../utils/genesis';
+import { THOR_SOLO_SEEDED_ACCOUNTS } from '../config';
 
 /**
  * Main function to deploy:
@@ -34,9 +35,10 @@ async function main(): Promise<void> {
     const genesisBlock = await getGenesisBlock();
 
     // seed accounts with VET & VTHO & TestToken
-    const seedVetTxId = await seedVET();
-    const seedVthoTxId = await seedVTHO();
-    const seedTestTokenTxId = await seedTestToken();
+    const accounts = THOR_SOLO_SEEDED_ACCOUNTS;
+    const seedVetTxId = await seedVET(accounts);
+    const seedVthoTxId = await seedVTHO(accounts);
+    const seedTestTokenTxId = await seedTestToken(accounts);
     console.log(`VET seeded with txId: ${seedVetTxId}`);
     console.log(`VTHO seeded with txId: ${seedVthoTxId}`);
     console.log(`TestToken seeded with txId: ${seedTestTokenTxId}`);

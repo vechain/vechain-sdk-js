@@ -19,12 +19,12 @@ import {
     THOR_SOLO_SEEDED_VET_AMOUNT,
     THOR_SOLO_SEEDED_VTHO_AMOUNT
 } from '../config';
-
+import { type TestAccount } from '../funder/accounts';
 /**
  * Seeds VET to the seeded accounts.
  * Seeds from the first account in the default genesis accounts.
  */
-export const seedVET = async (): Promise<string> => {
+export const seedVET = async (accounts: TestAccount[]): Promise<string> => {
     try {
         const thorClient = ThorClient.at('http://localhost:8669');
         const latestBlock = await thorClient.blocks.getBestBlockCompressed();
@@ -32,7 +32,7 @@ export const seedVET = async (): Promise<string> => {
             THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS[0].privateKey
         ).bytes;
         const clauses: TransactionClause[] = [];
-        for (const account of THOR_SOLO_SEEDED_ACCOUNTS) {
+        for (const account of accounts) {
             const clause = Clause.transferVET(
                 Address.of(account.address),
                 VET.of(THOR_SOLO_SEEDED_VET_AMOUNT)
@@ -78,7 +78,7 @@ export const seedVET = async (): Promise<string> => {
  * Seeds VTHO to the seeded accounts.
  * Seeds from the first account in the default genesis accounts.
  */
-export const seedVTHO = async (): Promise<string> => {
+export const seedVTHO = async (accounts: TestAccount[]): Promise<string> => {
     try {
         const thorClient = ThorClient.at('http://localhost:8669');
         const latestBlock = await thorClient.blocks.getBestBlockCompressed();
@@ -86,7 +86,7 @@ export const seedVTHO = async (): Promise<string> => {
             THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS[0].privateKey
         ).bytes;
         const clauses: TransactionClause[] = [];
-        for (const account of THOR_SOLO_SEEDED_ACCOUNTS) {
+        for (const account of accounts) {
             const clause = Clause.transferVTHOToken(
                 Address.of(account.address),
                 VTHO.of(THOR_SOLO_SEEDED_VTHO_AMOUNT)
@@ -132,7 +132,9 @@ export const seedVTHO = async (): Promise<string> => {
  * Seeds TestToken to the seeded accounts.
  * Seeds from the first account in the default genesis accounts.
  */
-export const seedTestToken = async (): Promise<string> => {
+export const seedTestToken = async (
+    accounts: TestAccount[]
+): Promise<string> => {
     try {
         const thorClient = ThorClient.at('http://localhost:8669');
         const latestBlock = await thorClient.blocks.getBestBlockCompressed();
@@ -140,7 +142,7 @@ export const seedTestToken = async (): Promise<string> => {
             THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS[0].privateKey
         ).bytes;
         const clauses: TransactionClause[] = [];
-        for (const account of THOR_SOLO_SEEDED_ACCOUNTS) {
+        for (const account of accounts) {
             const clause = Clause.transferVTHOToken(
                 Address.of(account.address),
                 VTHO.of(THOR_SOLO_SEEDED_TEST_TOKEN_AMOUNT)
