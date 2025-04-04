@@ -1,14 +1,7 @@
 import { type ThorClient } from '../../../../../thor-client';
-import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
 import { type VeChainProvider } from '../../../../providers/vechain-provider';
 import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
-
-export interface FeeHistoryResponse {
-    oldestBlock: string;
-    baseFeePerGas: string[];
-    gasUsedRatio: string[];
-    reward?: string[][];
-}
+import { type FeeHistoryResponse } from '../../../../../thor-client/gas/types';
 
 /**
  * RPC Method eth_feeHistory implementation for Galactica hardfork
@@ -31,16 +24,28 @@ const ethFeeHistory = async (
     if (!Array.isArray(params) || params.length < 2) {
         throw new JSONRPCInvalidParams(
             'eth_feeHistory',
-            `Invalid input params for "eth_feeHistory" method. See ${RPC_DOCUMENTATION_URL} for details.`,
+            'Invalid input params for "eth_feeHistory" method.',
             { params }
         );
     }
 
-    return await Promise.resolve({
-        oldestBlock: '0x0',
-        baseFeePerGas: [],
-        gasUsedRatio: [],
-        reward: []
+    const blockCount = params[0];
+    const newestBlock = params[1];
+    const rewardPercentiles = params[2] as number[] | undefined;
+
+    // Validate newestBlock is a string or number
+    if (typeof newestBlock !== 'string' && typeof newestBlock !== 'number') {
+        throw new JSONRPCInvalidParams(
+            'eth_feeHistory',
+            'Invalid newestBlock parameter. Must be a string or number.',
+            { newestBlock }
+        );
+    }
+
+    return await thorClient.gas.getFeeHistory({
+        blockCount: Number(blockCount),
+        newestBlock,
+        rewardPercentiles
     });
 };
 

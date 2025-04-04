@@ -10,6 +10,26 @@ type EstimateGasOptions = Omit<SimulateTransactionOptions, 'caller'> & {
     gasPadding?: number;
 };
 
+/**
+ * Options for the getFeeHistory method
+ */
+interface FeeHistoryOptions {
+    /**
+     * Number of blocks in the requested range
+     */
+    blockCount: number;
+    
+    /**
+     * Highest block of the requested range
+     */
+    newestBlock: string | number;
+    
+    /**
+     * Optional array of percentiles to compute
+     */
+    rewardPercentiles?: number[];
+}
+
 /* --- Input options end --- */
 
 /* --- Responses Outputs start --- */
@@ -44,6 +64,47 @@ interface EstimateGasResult {
     vmErrors: string[];
 }
 
+/**
+ * Response from the /fees/priority endpoint
+ */
+interface FeesPriorityResponse {
+    /**
+     * The suggested priority fee per gas in wei (hex string)
+     */
+    maxPriorityFeePerGas: string;
+}
+
+/**
+ * Response from the eth_feeHistory method
+ */
+interface FeeHistoryResponse {
+    /**
+     * Lowest number block of the returned range
+     */
+    oldestBlock: string;
+    
+    /**
+     * An array of block base fee per gas
+     */
+    baseFeePerGas: string[];
+    
+    /**
+     * An array of block gas used ratio
+     */
+    gasUsedRatio: string[];
+    
+    /**
+     * An array of effective priority fee per gas data points from a single block
+     */
+    reward?: string[][];
+}
+
 /* --- Responses Outputs end --- */
 
-export type { EstimateGasResult, EstimateGasOptions };
+export type { 
+    EstimateGasResult, 
+    EstimateGasOptions, 
+    FeesPriorityResponse,
+    FeeHistoryResponse,
+    FeeHistoryOptions
+};

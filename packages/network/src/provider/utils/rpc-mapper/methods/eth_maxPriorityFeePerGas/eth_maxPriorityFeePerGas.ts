@@ -2,10 +2,6 @@ import { type ThorClient } from '../../../../../thor-client';
 import { type VeChainProvider } from '../../../../providers/vechain-provider';
 import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
 
-interface FeesPriorityResponse {
-    maxPriorityFeePerGas: string;
-}
-
 /**
  * RPC Method eth_maxPriorityFeePerGas implementation for Galactica hardfork
  * Returns the suggested priority fee per gas in wei.
@@ -24,37 +20,7 @@ const ethMaxPriorityFeePerGas = async (
     _provider?: VeChainProvider
 ): Promise<string> => {
     try {
-        const response = (await thorClient.httpClient.get(
-            '/fees/priority'
-        )) as FeesPriorityResponse;
-
-        // Validate response
-        if (
-            response === null ||
-            response === undefined ||
-            typeof response !== 'object'
-        ) {
-            throw new JSONRPCInternalError(
-                'eth_maxPriorityFeePerGas()',
-                'Invalid response format from /fees/priority endpoint',
-                { response }
-            );
-        }
-
-        if (
-            response.maxPriorityFeePerGas === undefined ||
-            response.maxPriorityFeePerGas === null ||
-            response.maxPriorityFeePerGas === '' ||
-            typeof response.maxPriorityFeePerGas !== 'string'
-        ) {
-            throw new JSONRPCInternalError(
-                'eth_maxPriorityFeePerGas()',
-                'Missing or invalid maxPriorityFeePerGas in response',
-                { response }
-            );
-        }
-
-        return response.maxPriorityFeePerGas;
+        return await thorClient.gas.getMaxPriorityFeePerGas();
     } catch (e) {
         if (e instanceof JSONRPCInternalError) {
             throw e;
