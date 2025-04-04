@@ -40,12 +40,18 @@ jobs:
                 yarn seed-thor-solo
 
             - name: Test
-              id: unit-test
+              if: steps.start-solo.outcome == 'success'
+              id: all-tests
               run: yarn test
 
             - name: Stop Thor solo node
+              if: steps.start-solo.outcome == 'success'
               id: stop-solo
               run: yarn stop-thor-solo
+
+            - name: Merge coverage
+              if: steps.start-solo.outcome == 'success'
+              run: yarn merge-coverage
 
             - name: Jest Coverage Comment
               if: matrix.node == 'lts/*'
@@ -70,7 +76,7 @@ jobs:
                   rpc-proxy, packages/rpc-proxy/junit.xml
 
             - name: Archive coverage
-              if: matrix.node == 'lts/*'
+              if: matrix.node == 'lts/*' && (steps.stop-solo.outcome == 'success')
               uses: actions/upload-artifact@v4.4.3
               with:
                 name: coverage-results
@@ -78,7 +84,7 @@ jobs:
                   packages/**/coverage/lcov.info
             
             - name: Post unit test results to slack
-              if: always()  && github.ref == 'refs/heads/main' && (steps.unit-test.outcome == 'failure')
+              if: always()  && github.ref == 'refs/heads/main' && (steps.all-tests.outcome == 'failure')
               uses: slackapi/slack-github-action@v2.0.0
               with:
                 webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
