@@ -9,7 +9,7 @@ const CONTENT_BLAKE2B256 = HexUInt32.of(
 
 // Hex on purpose because it must be equal to the returned HexUInt hash.
 const NO_CONTENT_BLAKE2B256 = HexUInt32.of(
-    '0x89eb0d6a8a691dae2cd15ed0369931ce0a949ecafa5c3f93f8121833646e15c3'
+    '0x0e5751c026e543b2e8ab2eb06099daa1d1e5df47778f7787faab45cdf12fe3a8'
 );
 
 /**
