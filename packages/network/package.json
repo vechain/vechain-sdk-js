@@ -48,17 +48,16 @@
     "@vechain/sdk-core": "1.1.0",
     "@vechain/sdk-errors": "1.1.0",
     "@vechain/sdk-logging": "1.1.0",
-    "@vechain/vebetterdao-contracts": "^4.0.0",
     "abitype": "^1.0.6",
     "ethers": "6.13.4",
-    "isomorphic-ws": "^5.0.0",
-    "viem": "^2.21.45",
-    "ws": "^8.18.0"
+    "viem": "^2.21.45"
   },
   "devDependencies": {
     "@types/ws": "^8.5.13",
+    "@vechain/sdk-solo-setup": "*",
+    "@vechain/vebetterdao-contracts": "^4.1.0",
     "jest-fetch-mock": "^3.0.3",
     "whatwg-fetch": "^3.6.20",
-    "@vechain/sdk-solo-setup": "*"
+    "ws": "^8.18.1"
   }
 }
