@@ -54,7 +54,7 @@ const ethFeeHistory = async (
 
     return await thorClient.gas.getFeeHistory({
         blockCount: blockCountNum,
-        newestBlock: newestBlock,
+        newestBlock,
         rewardPercentiles
     });
 };
