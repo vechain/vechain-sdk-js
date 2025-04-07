@@ -147,8 +147,8 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
          * Positive case 2 - Should be able to send a transaction with undefined value
          */
         test('eth_sendTransaction - Should be able to send a transaction with value undefined', async () => {
-            const from = THOR_SOLO_ALL_ACCOUNTS[3].address;
-            const to = THOR_SOLO_ALL_ACCOUNTS[4].address;
+            const from = THOR_SOLO_ALL_ACCOUNTS[8].address;
+            const to = THOR_SOLO_ALL_ACCOUNTS[9].address;
             // Get the balance of the sender and the receiver before sending the transaction
             const balanceSenderBefore = (await provider.request({
                 method: RPC_METHODS.eth_getBalance,
