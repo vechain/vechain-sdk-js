@@ -9,11 +9,10 @@ import { type SimulateTransactionClause } from '../transactions/types';
 import { type TransactionsModule } from '../transactions';
 import {
     JSONRPCInternalError,
-    JSONRPCInvalidParams,
+    InvalidDataType,
     stringifyData
 } from '@vechain/sdk-errors';
 import { type HttpClient } from '../../http';
-import { RPC_DOCUMENTATION_URL } from '../../utils';
 
 /**
  * The `GasModule` handles gas related operations and provides
@@ -66,7 +65,7 @@ class GasModule {
                 response === undefined ||
                 typeof response !== 'object'
             ) {
-                throw new JSONRPCInternalError(
+                throw new InvalidDataType(
                     'getMaxPriorityFeePerGas()',
                     'Invalid response format from /fees/priority endpoint',
                     { response }
@@ -79,7 +78,7 @@ class GasModule {
                 response.maxPriorityFeePerGas === '' ||
                 typeof response.maxPriorityFeePerGas !== 'string'
             ) {
-                throw new JSONRPCInternalError(
+                throw new InvalidDataType(
                     'getMaxPriorityFeePerGas()',
                     'Missing or invalid maxPriorityFeePerGas in response',
                     { response }
@@ -88,7 +87,7 @@ class GasModule {
 
             return response.maxPriorityFeePerGas;
         } catch (e) {
-            if (e instanceof JSONRPCInternalError) {
+            if (e instanceof InvalidDataType) {
                 throw e;
             }
             throw new JSONRPCInternalError(
@@ -107,7 +106,7 @@ class GasModule {
      *
      * @param options - The options for the fee history request
      * @returns Fee history for the returned block range
-     * @throws {JSONRPCInvalidParams}
+     * @throws {InvalidDataType}
      */
     public async getFeeHistory(
         options: FeeHistoryOptions
@@ -118,29 +117,64 @@ class GasModule {
             typeof options.blockCount !== 'number' ||
             options.blockCount <= 0
         ) {
-            throw new JSONRPCInvalidParams(
+            throw new InvalidDataType(
                 'getFeeHistory()',
-                `Invalid blockCount parameter. See ${RPC_DOCUMENTATION_URL} for details.`,
+                'Invalid blockCount parameter',
                 { options }
             );
         }
 
         if (options.newestBlock === null || options.newestBlock === undefined) {
-            throw new JSONRPCInvalidParams(
+            throw new InvalidDataType(
                 'getFeeHistory()',
-                `Missing newestBlock parameter. See ${RPC_DOCUMENTATION_URL} for details.`,
+                'Missing newestBlock parameter',
                 { options }
             );
         }
 
-        // For now, return a mock response
-        // In a real implementation, this would call the appropriate endpoint
-        return await Promise.resolve({
-            oldestBlock: '0x0',
-            baseFeePerGas: [],
-            gasUsedRatio: [],
-            reward: []
-        });
+        try {
+            const requestBody: Record<string, unknown> = {
+                blockCount: options.blockCount,
+                newestBlock: options.newestBlock
+            };
+
+            if (
+                options.rewardPercentiles !== undefined &&
+                options.rewardPercentiles !== null
+            ) {
+                requestBody.rewardPercentiles = options.rewardPercentiles;
+            }
+
+            const response = await this.httpClient.post('/fee_history', {
+                body: requestBody
+            });
+
+            if (
+                response === null ||
+                response === undefined ||
+                typeof response !== 'object'
+            ) {
+                throw new InvalidDataType(
+                    'getFeeHistory()',
+                    'Invalid response format from /fee_history endpoint',
+                    { response }
+                );
+            }
+
+            return response as FeeHistoryResponse;
+        } catch (e) {
+            if (e instanceof InvalidDataType) {
+                throw e;
+            }
+            throw new JSONRPCInternalError(
+                'getFeeHistory()',
+                'Method "getFeeHistory" failed.',
+                {
+                    url: this.httpClient.baseURL,
+                    innerError: stringifyData(e)
+                }
+            );
+        }
     }
 }
 
