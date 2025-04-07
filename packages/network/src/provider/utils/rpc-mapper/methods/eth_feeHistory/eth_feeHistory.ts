@@ -42,9 +42,19 @@ const ethFeeHistory = async (
         );
     }
 
+    // Validate blockCount is a valid number
+    const blockCountNum = Number(blockCount);
+    if (!Number.isFinite(blockCountNum) || blockCountNum <= 0) {
+        throw new JSONRPCInvalidParams(
+            'eth_feeHistory',
+            'blockCount must be a positive finite number.',
+            { blockCount, blockCountNum }
+        );
+    }
+
     return await thorClient.gas.getFeeHistory({
-        blockCount: Number(blockCount),
-        newestBlock,
+        blockCount: blockCountNum,
+        newestBlock: newestBlock,
         rewardPercentiles
     });
 };
