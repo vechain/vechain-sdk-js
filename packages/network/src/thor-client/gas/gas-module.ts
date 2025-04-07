@@ -1,7 +1,17 @@
-import { type EstimateGasOptions, type EstimateGasResult, type FeesPriorityResponse, type FeeHistoryResponse, type FeeHistoryOptions } from './types';
+import {
+    type EstimateGasOptions,
+    type EstimateGasResult,
+    type FeesPriorityResponse,
+    type FeeHistoryResponse,
+    type FeeHistoryOptions
+} from './types';
 import { type SimulateTransactionClause } from '../transactions/types';
 import { type TransactionsModule } from '../transactions';
-import { JSONRPCInternalError, JSONRPCInvalidParams, stringifyData } from '@vechain/sdk-errors';
+import {
+    JSONRPCInternalError,
+    JSONRPCInvalidParams,
+    stringifyData
+} from '@vechain/sdk-errors';
 import { type HttpClient } from '../../http';
 import { RPC_DOCUMENTATION_URL } from '../../utils';
 
@@ -13,7 +23,10 @@ class GasModule {
     readonly transactionsModule: TransactionsModule;
     readonly httpClient: HttpClient;
 
-    constructor(transactionsModule: TransactionsModule, httpClient: HttpClient) {
+    constructor(
+        transactionsModule: TransactionsModule,
+        httpClient: HttpClient
+    ) {
         this.transactionsModule = transactionsModule;
         this.httpClient = httpClient;
     }
@@ -91,13 +104,20 @@ class GasModule {
 
     /**
      * Returns fee history for the returned block range.
-     * 
+     *
      * @param options - The options for the fee history request
      * @returns Fee history for the returned block range
      * @throws {JSONRPCInvalidParams}
      */
-    public getFeeHistory(options: FeeHistoryOptions): Promise<FeeHistoryResponse> {
-        if (!options || typeof options.blockCount !== 'number' || options.blockCount <= 0) {
+    public async getFeeHistory(
+        options: FeeHistoryOptions
+    ): Promise<FeeHistoryResponse> {
+        if (
+            options === null ||
+            options === undefined ||
+            typeof options.blockCount !== 'number' ||
+            options.blockCount <= 0
+        ) {
             throw new JSONRPCInvalidParams(
                 'getFeeHistory()',
                 `Invalid blockCount parameter. See ${RPC_DOCUMENTATION_URL} for details.`,
@@ -105,7 +125,7 @@ class GasModule {
             );
         }
 
-        if (!options.newestBlock) {
+        if (options.newestBlock === null || options.newestBlock === undefined) {
             throw new JSONRPCInvalidParams(
                 'getFeeHistory()',
                 `Missing newestBlock parameter. See ${RPC_DOCUMENTATION_URL} for details.`,
@@ -115,7 +135,7 @@ class GasModule {
 
         // For now, return a mock response
         // In a real implementation, this would call the appropriate endpoint
-        return Promise.resolve({
+        return await Promise.resolve({
             oldestBlock: '0x0',
             baseFeePerGas: [],
             gasUsedRatio: [],

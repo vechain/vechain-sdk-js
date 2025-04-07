@@ -18,12 +18,12 @@ interface FeeHistoryOptions {
      * Number of blocks in the requested range
      */
     blockCount: number;
-    
+
     /**
      * Highest block of the requested range
      */
     newestBlock: string | number;
-    
+
     /**
      * Optional array of percentiles to compute
      */
@@ -82,17 +82,17 @@ interface FeeHistoryResponse {
      * Lowest number block of the returned range
      */
     oldestBlock: string;
-    
+
     /**
      * An array of block base fee per gas
      */
     baseFeePerGas: string[];
-    
+
     /**
      * An array of block gas used ratio
      */
     gasUsedRatio: string[];
-    
+
     /**
      * An array of effective priority fee per gas data points from a single block
      */
@@ -101,9 +101,9 @@ interface FeeHistoryResponse {
 
 /* --- Responses Outputs end --- */
 
-export type { 
-    EstimateGasResult, 
-    EstimateGasOptions, 
+export type {
+    EstimateGasResult,
+    EstimateGasOptions,
     FeesPriorityResponse,
     FeeHistoryResponse,
     FeeHistoryOptions
