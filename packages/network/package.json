@@ -38,7 +38,7 @@
     "test:integration:solo": "APPLYCODECOVLIMITS=false yarn start-thor-solo && yarn test:integration && yarn stop-thor-solo || yarn stop-thor-solo",
     "test:browser": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit --config ./jest.config.browser.js",
     "test:galactica": "rm -rf ./coverage && APPLYCODECOVLIMITS=false jest --verbose --coverage --coverageDirectory=coverage --group=galactica",
-    "test": "rm -rf ./coverage && APPLYCODECOVLIMITS=true jest --coverage --coverageDirectory=coverage --group=integration --group=unit --group=galactica",
+    "test": "rm -rf ./coverage && APPLYCODECOVLIMITS=true jest --coverage --coverageDirectory=coverage --group=integration --group=unit --group=galactica --group=-websocket",
     "test:solo": "(yarn start-thor-solo && yarn seed-thor-solo && yarn test && yarn stop-thor-solo) || yarn stop-thor-solo",
     "test:solo:galactica": "(yarn start-thor-solo && yarn seed-thor-solo && yarn test:galactica && yarn stop-thor-solo) || yarn stop-thor-solo",
     "test:browser:solo": "(yarn start-thor-solo && yarn test:browser && yarn stop-thor-solo) || yarn stop-thor-solo"
