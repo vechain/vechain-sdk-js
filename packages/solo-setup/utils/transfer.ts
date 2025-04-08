@@ -1,8 +1,5 @@
 import { ThorClient } from '@vechain/sdk-network';
-import {
-import {
-    THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS,
-} from '../config/accounts';
+import { THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS } from '../config/accounts';
 import {
     Address,
     Clause,
