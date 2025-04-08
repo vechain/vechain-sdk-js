@@ -1,6 +1,10 @@
 import { type ThorClient } from '../../../../../thor-client';
 import { type VeChainProvider } from '../../../../providers/vechain-provider';
-import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
+import {
+    JSONRPCInvalidParams,
+    JSONRPCInternalError,
+    stringifyData
+} from '@vechain/sdk-errors';
 import { type FeeHistoryResponse } from '../../../../../thor-client/gas/types';
 
 /**
@@ -14,7 +18,7 @@ import { type FeeHistoryResponse } from '../../../../../thor-client/gas/types';
  *                 * params[2]: rewardPercentiles - optional array of percentiles to compute
  * @param provider - The provider instance to use.
  * @returns Fee history for the returned block range
- * @throws {JSONRPCInvalidParams}
+ * @throws {JSONRPCInvalidParams} | {JSONRPCInternalError}
  */
 const ethFeeHistory = async (
     thorClient: ThorClient,
@@ -52,11 +56,25 @@ const ethFeeHistory = async (
         );
     }
 
-    return await thorClient.gas.getFeeHistory({
-        blockCount: blockCountNum,
-        newestBlock,
-        rewardPercentiles
-    });
+    try {
+        return await thorClient.gas.getFeeHistory({
+            blockCount: blockCountNum,
+            newestBlock,
+            rewardPercentiles
+        });
+    } catch (e) {
+        if (e instanceof JSONRPCInvalidParams) {
+            throw e;
+        }
+        throw new JSONRPCInternalError(
+            'eth_feeHistory()',
+            'Method "eth_feeHistory" failed.',
+            {
+                url: thorClient.httpClient.baseURL,
+                innerError: stringifyData(e)
+            }
+        );
+    }
 };
 
 export { ethFeeHistory };
