@@ -7,11 +7,7 @@ import {
 } from './types';
 import { type SimulateTransactionClause } from '../transactions/types';
 import { type TransactionsModule } from '../transactions';
-import {
-    JSONRPCInternalError,
-    InvalidDataType,
-    stringifyData
-} from '@vechain/sdk-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 import { type HttpClient } from '../../http';
 
 /**
@@ -51,54 +47,40 @@ class GasModule {
      * This is calculated based on the current base fee and network conditions.
      *
      * @returns Suggested priority fee per gas in wei (hex string)
-     * @throws {JSONRPCInternalError}
+     * @throws {InvalidDataType}
      */
     public async getMaxPriorityFeePerGas(): Promise<string> {
-        try {
-            const response = (await this.httpClient.get(
-                '/fees/priority'
-            )) as FeesPriorityResponse;
+        const response = (await this.httpClient.get(
+            '/fees/priority'
+        )) as FeesPriorityResponse;
 
-            // Validate response
-            if (
-                response === null ||
-                response === undefined ||
-                typeof response !== 'object'
-            ) {
-                throw new InvalidDataType(
-                    'getMaxPriorityFeePerGas()',
-                    'Invalid response format from /fees/priority endpoint',
-                    { response }
-                );
-            }
-
-            if (
-                response.maxPriorityFeePerGas === undefined ||
-                response.maxPriorityFeePerGas === null ||
-                response.maxPriorityFeePerGas === '' ||
-                typeof response.maxPriorityFeePerGas !== 'string'
-            ) {
-                throw new InvalidDataType(
-                    'getMaxPriorityFeePerGas()',
-                    'Missing or invalid maxPriorityFeePerGas in response',
-                    { response }
-                );
-            }
-
-            return response.maxPriorityFeePerGas;
-        } catch (e) {
-            if (e instanceof InvalidDataType) {
-                throw e;
-            }
-            throw new JSONRPCInternalError(
+        // Validate response
+        if (
+            response === null ||
+            response === undefined ||
+            typeof response !== 'object'
+        ) {
+            throw new InvalidDataType(
                 'getMaxPriorityFeePerGas()',
-                'Method "getMaxPriorityFeePerGas" failed.',
-                {
-                    url: this.httpClient.baseURL,
-                    innerError: stringifyData(e)
-                }
+                'Invalid response format from /fees/priority endpoint',
+                { response }
             );
         }
+
+        if (
+            response.maxPriorityFeePerGas === undefined ||
+            response.maxPriorityFeePerGas === null ||
+            response.maxPriorityFeePerGas === '' ||
+            typeof response.maxPriorityFeePerGas !== 'string'
+        ) {
+            throw new InvalidDataType(
+                'getMaxPriorityFeePerGas()',
+                'Missing or invalid maxPriorityFeePerGas in response',
+                { response }
+            );
+        }
+
+        return response.maxPriorityFeePerGas;
     }
 
     /**
@@ -132,49 +114,35 @@ class GasModule {
             );
         }
 
-        try {
-            const requestBody: Record<string, unknown> = {
-                blockCount: options.blockCount,
-                newestBlock: options.newestBlock
-            };
+        const requestBody: Record<string, unknown> = {
+            blockCount: options.blockCount,
+            newestBlock: options.newestBlock
+        };
 
-            if (
-                options.rewardPercentiles !== undefined &&
-                options.rewardPercentiles !== null
-            ) {
-                requestBody.rewardPercentiles = options.rewardPercentiles;
-            }
+        if (
+            options.rewardPercentiles !== undefined &&
+            options.rewardPercentiles !== null
+        ) {
+            requestBody.rewardPercentiles = options.rewardPercentiles;
+        }
 
-            const response = await this.httpClient.post('/fee_history', {
-                body: requestBody
-            });
+        const response = await this.httpClient.post('/fee_history', {
+            body: requestBody
+        });
 
-            if (
-                response === null ||
-                response === undefined ||
-                typeof response !== 'object'
-            ) {
-                throw new InvalidDataType(
-                    'getFeeHistory()',
-                    'Invalid response format from /fee_history endpoint',
-                    { response }
-                );
-            }
-
-            return response as FeeHistoryResponse;
-        } catch (e) {
-            if (e instanceof InvalidDataType) {
-                throw e;
-            }
-            throw new JSONRPCInternalError(
+        if (
+            response === null ||
+            response === undefined ||
+            typeof response !== 'object'
+        ) {
+            throw new InvalidDataType(
                 'getFeeHistory()',
-                'Method "getFeeHistory" failed.',
-                {
-                    url: this.httpClient.baseURL,
-                    innerError: stringifyData(e)
-                }
+                'Invalid response format from /fee_history endpoint',
+                { response }
             );
         }
+
+        return response as FeeHistoryResponse;
     }
 }
 
