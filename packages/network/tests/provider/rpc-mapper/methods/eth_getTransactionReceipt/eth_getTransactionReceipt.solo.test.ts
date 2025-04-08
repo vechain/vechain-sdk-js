@@ -8,7 +8,7 @@ import {
 import { getReceiptCorrectCasesSoloNetwork } from './fixture';
 
 // Remove blockHash and blockNumber fields from the object for comparison
-export function removeBlockNumAndHashFields(obj: unknown): unknown {
+function removeBlockNumAndHashFields(obj: unknown): unknown {
     if (Array.isArray(obj)) {
         return obj.map(removeBlockNumAndHashFields);
     } else if (typeof obj === 'object' && obj !== null) {
