@@ -8,9 +8,9 @@ import {
 import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
 
 /**
- * RPC Mapper integration tests for 'eth_feeHistory' method
+ * RPC Mapper unit tests for 'eth_feeHistory' method
  *
- * @group integration/rpc-mapper/methods/eth_feeHistory
+ * @group unit/rpc-mapper/methods/eth_feeHistory
  */
 describe('RPC Mapper - eth_feeHistory method tests', () => {
     /**

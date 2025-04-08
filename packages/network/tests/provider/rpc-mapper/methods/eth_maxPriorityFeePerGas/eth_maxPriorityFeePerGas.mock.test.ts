@@ -8,9 +8,9 @@ import {
 import { JSONRPCInternalError } from '@vechain/sdk-errors';
 
 /**
- * RPC Mapper integration tests for 'eth_maxPriorityFeePerGas' method
+ * RPC Mapper unit tests for 'eth_maxPriorityFeePerGas' method
  *
- * @group integration/rpc-mapper/methods/eth_maxPriorityFeePerGas
+ * @group unit/rpc-mapper/methods/eth_maxPriorityFeePerGas
  */
 describe('RPC Mapper - eth_maxPriorityFeePerGas method tests', () => {
     /**
