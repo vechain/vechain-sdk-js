@@ -177,6 +177,11 @@ interface TransactionsExpandedBlockDetail {
     id: string;
 
     /**
+     * Type of the transaction (ex: type 81).
+     */
+    type: string;
+
+    /**
      * Chain tag of the blockchain.
      */
     chainTag: string;
@@ -197,9 +202,19 @@ interface TransactionsExpandedBlockDetail {
     clauses: TransactionClause[];
 
     /**
+     * Maximum fee allowed by user for this transaction.
+     */
+    maxFeePerGas?: number;
+
+    /**
+     * Maximum priority fee allowed by user for this transaction.
+     */
+    maxPriorityFeePerGas?: number;
+
+    /**
      * Gas price coefficient for the transaction.
      */
-    gasPriceCoef: number;
+    gasPriceCoef?: number;
 
     /**
      * Gas limit for the transaction.
