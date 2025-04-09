@@ -543,15 +543,33 @@ class Transaction {
     }
 
     /**
-     * Return `true` if the transaction body is valid, `false` otherwise.
+     * Validates the transaction body's fields according to the transaction type.
      *
      * @param {TransactionBody} body - The transaction body to validate.
-     * @return {boolean} `true` if the transaction body is valid, `false` otherwise.
+     * @param {TransactionType} type - The transaction type to validate the body against.
+     * @return {boolean} True if the transaction body is valid for the given type.
      */
     public static isValidBody(
         body: TransactionBody,
         type: TransactionType
     ): boolean {
+        // Legacy transactions shouldn't have any EIP-1559 parameters
+        if (
+            type === TransactionType.Legacy &&
+            (body.maxFeePerGas !== undefined ||
+                body.maxPriorityFeePerGas !== undefined)
+        ) {
+            return false;
+        }
+
+        // EIP-1559 transactions shouldn't have legacy parameters
+        if (
+            type === TransactionType.EIP1559 &&
+            body.gasPriceCoef !== undefined
+        ) {
+            return false;
+        }
+
         // validate common fields
         const isValidCommonFields =
             // Chain tag
