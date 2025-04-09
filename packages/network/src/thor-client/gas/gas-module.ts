@@ -8,7 +8,9 @@ import {
 import { type SimulateTransactionClause } from '../transactions/types';
 import { type TransactionsModule } from '../transactions';
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { type HttpClient } from '../../http';
+import { HttpMethod, type HttpClient } from '../../http';
+import { Revision } from '@vechain/sdk-core';
+import { thorest } from '../../utils';
 
 /**
  * The `GasModule` handles gas related operations and provides
@@ -106,30 +108,26 @@ class GasModule {
             );
         }
 
-        if (options.newestBlock === null || options.newestBlock === undefined) {
+        if (
+            options.newestBlock !== null &&
+            options.newestBlock !== undefined &&
+            !Revision.isValid(options.newestBlock)
+        ) {
             throw new InvalidDataType(
                 'getFeeHistory()',
-                'Missing newestBlock parameter',
+                'Invalid revision. The revision must be a string representing a block number or block id (also "best" is accepted which represents the best block & "finalized" for the finalized block).',
                 { options }
             );
         }
 
-        const requestBody: Record<string, unknown> = {
-            blockCount: options.blockCount,
-            newestBlock: options.newestBlock
-        };
-
-        if (
-            options.rewardPercentiles !== undefined &&
-            options.rewardPercentiles !== null
-        ) {
-            requestBody.rewardPercentiles = options.rewardPercentiles;
-        }
-
-        const response = await this.httpClient.post('/fee_history', {
-            body: requestBody
-        });
-
+        const response = await this.httpClient.http(
+            HttpMethod.GET,
+            thorest.fees.get.FEES_HISTORY(
+                options.blockCount,
+                options.newestBlock,
+                options.rewardPercentiles
+            )
+        );
         if (
             response === null ||
             response === undefined ||

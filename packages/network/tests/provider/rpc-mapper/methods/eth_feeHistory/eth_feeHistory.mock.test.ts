@@ -34,51 +34,47 @@ describe('RPC Mapper - eth_feeHistory method tests', () => {
         // Init thor client
         thorClient = ThorClient.at(TESTNET_URL);
         provider = new VeChainProvider(thorClient);
-
-        // Mock the HTTP client's post method
-        jest.spyOn(thorClient.httpClient, 'post').mockResolvedValue(
-            mockFeeHistoryResponse
-        );
     });
 
-    test('Should return fee history from the API', async () => {
+    test('Should return fee history from the API with latest block', async () => {
+        const mock = jest
+            .spyOn(thorClient.gas, 'getFeeHistory')
+            .mockResolvedValue(mockFeeHistoryResponse);
         const result = await provider.request({
             method: RPC_METHODS.eth_feeHistory,
             params: [4, 'latest', [25, 75]]
         });
-
         expect(result).toEqual(mockFeeHistoryResponse);
-        expect(thorClient.httpClient.post).toHaveBeenCalledWith(
-            '/fee_history',
-            {
-                body: {
-                    blockCount: 4,
-                    newestBlock: 'latest',
-                    rewardPercentiles: [25, 75]
-                }
+        expect(mock).toHaveBeenCalledWith({
+            body: {
+                blockCount: 4,
+                newestBlock: 'best',
+                rewardPercentiles: [25, 75]
             }
-        );
+        });
     });
 
     test('Should handle missing rewardPercentiles parameter', async () => {
+        const mock = jest
+            .spyOn(thorClient.gas, 'getFeeHistory')
+            .mockResolvedValue(mockFeeHistoryResponse);
         const result = await provider.request({
             method: RPC_METHODS.eth_feeHistory,
             params: [4, 'latest']
         });
-
         expect(result).toEqual(mockFeeHistoryResponse);
-        expect(thorClient.httpClient.post).toHaveBeenCalledWith(
-            '/fee_history',
-            {
-                body: {
-                    blockCount: 4,
-                    newestBlock: 'latest'
-                }
+        expect(mock).toHaveBeenCalledWith({
+            body: {
+                blockCount: 4,
+                newestBlock: 'best'
             }
-        );
+        });
     });
 
     test('Should handle numeric block number', async () => {
+        jest.spyOn(thorClient.gas, 'getFeeHistory').mockResolvedValue(
+            mockFeeHistoryResponse
+        );
         const result = await provider.request({
             method: RPC_METHODS.eth_feeHistory,
             params: [4, 12345, [25, 75]]

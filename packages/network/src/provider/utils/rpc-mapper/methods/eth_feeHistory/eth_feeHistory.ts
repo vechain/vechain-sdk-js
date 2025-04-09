@@ -6,6 +6,7 @@ import {
     stringifyData
 } from '@vechain/sdk-errors';
 import { type FeeHistoryResponse } from '../../../../../thor-client/gas/types';
+import { type DefaultBlock, DefaultBlockToRevision } from '../../../const';
 
 /**
  * RPC Method eth_feeHistory implementation for Galactica hardfork
@@ -56,10 +57,13 @@ const ethFeeHistory = async (
         );
     }
 
+    // convert default block to revision
+    const revision = DefaultBlockToRevision(newestBlock as DefaultBlock);
+
     try {
         return await thorClient.gas.getFeeHistory({
             blockCount: blockCountNum,
-            newestBlock,
+            newestBlock: revision.toString(),
             rewardPercentiles
         });
     } catch (e) {
