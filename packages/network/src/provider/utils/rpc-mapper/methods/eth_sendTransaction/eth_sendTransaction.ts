@@ -42,7 +42,11 @@ const ethSendTransaction = async (
     provider?: VeChainProvider
 ): Promise<string> => {
     // Input validation
-    if (params.length !== 1 || typeof params[0] !== 'object')
+    if (
+        params === undefined ||
+        params.length !== 1 ||
+        typeof params[0] !== 'object'
+    )
         throw new JSONRPCInvalidParams(
             'eth_sendTransaction',
             `Invalid input params for "eth_sendTransaction" method. See ${RPC_DOCUMENTATION_URL} for details.`,
@@ -65,6 +69,11 @@ const ethSendTransaction = async (
             'From field is required in the transaction object.',
             { provider }
         );
+    }
+
+    // default value for value is 0x0
+    if ((params[0] as TransactionObjectInput).value === undefined) {
+        (params[0] as TransactionObjectInput).value = '0x0';
     }
 
     // Input params

@@ -196,6 +196,11 @@ describe('ThorClient - Transactions Module', () => {
         buildTransactionBodyClausesTestCases.forEach(
             ({ description, clauses, options, expected }) => {
                 test(description, async () => {
+                    // Skip test if expected.solo is undefined
+                    if (expected.solo === undefined) {
+                        return;
+                    }
+
                     const gasResult = await thorSoloClient.gas.estimateGas(
                         clauses,
                         TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
