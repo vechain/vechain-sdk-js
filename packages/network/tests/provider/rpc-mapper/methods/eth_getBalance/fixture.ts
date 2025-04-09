@@ -3,7 +3,10 @@ import {
     JSONRPCInternalError,
     JSONRPCInvalidParams
 } from '@vechain/sdk-errors';
-import { THOR_SOLO_ACCOUNTS } from '../../../../../src';
+import {
+    THOR_SOLO_SEEDED_ACCOUNTS,
+    THOR_SOLO_SEEDED_VET_AMOUNT
+} from '@vechain/sdk-solo-setup';
 
 /**
  * eth_getBalance RPC call tests - Positive cases
@@ -11,14 +14,16 @@ import { THOR_SOLO_ACCOUNTS } from '../../../../../src';
 const ethGetBalanceTestCases = [
     {
         description: 'Should return correct balance of the test account',
-        params: [THOR_SOLO_ACCOUNTS[0].address, 'latest'],
-        expected: Quantity.of(Units.parseEther('500000000').bi).toString()
+        params: [THOR_SOLO_SEEDED_ACCOUNTS[0].address, 'latest'],
+        expected: Quantity.of(
+            Units.parseEther(THOR_SOLO_SEEDED_VET_AMOUNT.toString()).bi
+        ).toString()
     },
     {
         description:
             'Should return correct balance of the test account before seeding',
         params: [
-            THOR_SOLO_ACCOUNTS[0].address,
+            THOR_SOLO_SEEDED_ACCOUNTS[0].address,
             Quantity.of(0).toString() // 0 is the genesis block
         ],
         expected: '0x0' // Expected balance is 0
@@ -35,7 +40,7 @@ const ethGetBalanceTestCases = [
     },
     {
         description: 'Should return error for block number not as hex string',
-        params: [THOR_SOLO_ACCOUNTS[0].address, '1'], // VeChainThor also supports block number as number instead of hex string
+        params: [THOR_SOLO_SEEDED_ACCOUNTS[0].address, '1'], // VeChainThor also supports block number as number instead of hex string
         expected: '0x0' // Expected balance is 0
     }
 ];
@@ -46,7 +51,7 @@ const ethGetBalanceTestCases = [
 const invalidEthGetBalanceTestCases = [
     {
         description: 'Should throw error for too many params',
-        params: [THOR_SOLO_ACCOUNTS[0].address, 'latest', 'latest'],
+        params: [THOR_SOLO_SEEDED_ACCOUNTS[0].address, 'latest', 'latest'],
         expectedError: JSONRPCInvalidParams
     },
     {
@@ -56,12 +61,12 @@ const invalidEthGetBalanceTestCases = [
     },
     {
         description: 'Should throw error for invalid block number',
-        params: [THOR_SOLO_ACCOUNTS[0].address, '0x123z'],
+        params: [THOR_SOLO_SEEDED_ACCOUNTS[0].address, '0x123z'],
         expectedError: JSONRPCInternalError
     },
     {
         description: 'Should throw error for too few params',
-        params: [THOR_SOLO_ACCOUNTS[0].address],
+        params: [THOR_SOLO_SEEDED_ACCOUNTS[0].address],
         expectedError: JSONRPCInvalidParams
     }
 ];

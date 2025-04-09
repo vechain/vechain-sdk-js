@@ -10,7 +10,6 @@ import {
 import {
     ProviderInternalBaseWallet,
     signerUtils,
-    THOR_SOLO_ACCOUNTS,
     THOR_SOLO_URL,
     ThorClient,
     VeChainPrivateKeySigner,
@@ -23,6 +22,7 @@ import {
 } from '../../../fixture';
 import { simulateTransaction } from '../../../thor-client/transactions/fixture-thorest';
 import { signTransactionTestCases } from './fixture';
+import { THOR_SOLO_SEEDED_ACCOUNTS } from '@vechain/sdk-solo-setup';
 
 /**
  *VeChain base signer tests - solo
@@ -171,7 +171,7 @@ describe('VeChain base signer tests - solo', () => {
          */
         test('call with no clauses transaction', async () => {
             const signer = new VeChainPrivateKeySigner(
-                HexUInt.of(THOR_SOLO_ACCOUNTS[0].privateKey).bytes,
+                HexUInt.of(THOR_SOLO_SEEDED_ACCOUNTS[0].privateKey).bytes,
                 new VeChainProvider(
                     thorClient,
                     new ProviderInternalBaseWallet([]),
@@ -231,7 +231,9 @@ describe('VeChain base signer tests - solo', () => {
             ({ testName, transaction, expected }) => {
                 test(testName, async () => {
                     const signer = new VeChainPrivateKeySigner(
-                        HexUInt.of(THOR_SOLO_ACCOUNTS[0].privateKey).bytes,
+                        HexUInt.of(
+                            THOR_SOLO_SEEDED_ACCOUNTS[0].privateKey
+                        ).bytes,
                         new VeChainProvider(
                             thorClient,
                             new ProviderInternalBaseWallet([]),
