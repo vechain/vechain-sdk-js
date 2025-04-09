@@ -46,11 +46,9 @@ describe('RPC Mapper - eth_feeHistory method tests', () => {
         });
         expect(result).toEqual(mockFeeHistoryResponse);
         expect(mock).toHaveBeenCalledWith({
-            body: {
-                blockCount: 4,
-                newestBlock: 'best',
-                rewardPercentiles: [25, 75]
-            }
+            blockCount: 4,
+            newestBlock: 'best',
+            rewardPercentiles: [25, 75]
         });
     });
 
@@ -64,33 +62,26 @@ describe('RPC Mapper - eth_feeHistory method tests', () => {
         });
         expect(result).toEqual(mockFeeHistoryResponse);
         expect(mock).toHaveBeenCalledWith({
-            body: {
-                blockCount: 4,
-                newestBlock: 'best'
-            }
+            blockCount: 4,
+            newestBlock: 'best'
         });
     });
 
     test('Should handle numeric block number', async () => {
-        jest.spyOn(thorClient.gas, 'getFeeHistory').mockResolvedValue(
-            mockFeeHistoryResponse
-        );
+        const mock = jest
+            .spyOn(thorClient.gas, 'getFeeHistory')
+            .mockResolvedValue(mockFeeHistoryResponse);
         const result = await provider.request({
             method: RPC_METHODS.eth_feeHistory,
             params: [4, 12345, [25, 75]]
         });
 
         expect(result).toEqual(mockFeeHistoryResponse);
-        expect(thorClient.httpClient.post).toHaveBeenCalledWith(
-            '/fee_history',
-            {
-                body: {
-                    blockCount: 4,
-                    newestBlock: 12345,
-                    rewardPercentiles: [25, 75]
-                }
-            }
-        );
+        expect(mock).toHaveBeenCalledWith({
+            blockCount: 4,
+            newestBlock: '12345',
+            rewardPercentiles: [25, 75]
+        });
     });
 
     test('Should throw error for invalid blockCount', async () => {
