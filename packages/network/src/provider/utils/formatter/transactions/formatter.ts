@@ -57,15 +57,23 @@ const _formatTransactionToRPC = (
                 ? Quantity.of(HexUInt.of(tx.clauses[0].value).bi).toString()
                 : '',
 
+        type: tx.type !== undefined ? Quantity.of(tx.type).toString() : '0x0',
+        maxFeePerGas:
+            tx.maxFeePerGas !== undefined && tx.maxFeePerGas !== null
+                ? Quantity.of(HexUInt.of(tx.maxFeePerGas).bi).toString()
+                : '0x0',
+        maxPriorityFeePerGas:
+            tx.maxPriorityFeePerGas !== undefined &&
+            tx.maxPriorityFeePerGas !== null
+                ? Quantity.of(HexUInt.of(tx.maxPriorityFeePerGas).bi).toString()
+                : '0x0',
+
         // Unsupported fields
         gasPrice: '0x0',
-        type: '0x0',
         v: '0x0',
         r: '0x0',
         s: '0x0',
         accessList: [],
-        maxFeePerGas: '0x0',
-        maxPriorityFeePerGas: '0x0',
         yParity: '0x0'
     };
 };

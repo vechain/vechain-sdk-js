@@ -51,14 +51,26 @@ interface TransactionRPC {
      */
     nonce: string;
 
+    /**
+     * The transaction type in number, currently 0(Legacy Transaction) and 81(DynamicFee Transaction) are supported.
+     */
+    type: string;
+
+    /**
+     * The maximum amount that can be spent to pay for base fee and priority fee expressed in hex.
+     */
+    maxFeePerGas: string;
+
+    /**
+     * The maximum amount that can be tipped to the validator expressed in hex.
+     */
+    maxPriorityFeePerGas: string;
+
     // incompatible fields
     r: string;
     s: string;
     v: string;
-    type: string;
     gasPrice: string;
-    maxFeePerGas: string;
-    maxPriorityFeePerGas: string;
     accessList: Array<{ address: string; storageKeys: string[] }>;
     yParity: string;
 }
