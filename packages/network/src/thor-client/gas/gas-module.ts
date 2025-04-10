@@ -99,6 +99,7 @@ class GasModule {
             options === null ||
             options === undefined ||
             typeof options.blockCount !== 'number' ||
+            !Number.isFinite(options.blockCount) ||
             options.blockCount <= 0
         ) {
             throw new InvalidDataType(
