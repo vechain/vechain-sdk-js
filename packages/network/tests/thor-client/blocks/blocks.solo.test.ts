@@ -20,17 +20,29 @@ describe('ThorClient - Blocks Module mock tests', () => {
         thorClient.destroy();
     });
 
-    test('OK <- getBlockCompressed(1)', async () => {
-        const block = await thorClient.blocks.getBlockCompressed(1); // Block 1 has transactions.
-        expect(block).toBeDefined();
-        expect(block?.baseFeePerGas).not.toBeNull();
-        expect(HexUInt.isValid0x(block?.baseFeePerGas as string)).toBeTruthy();
-    });
+    describe('GALACTICA - baseFeePerGas', () => {
+        test('OK <- getBlockCompressed(1)', async () => {
+            const block = await thorClient.blocks.getBlockCompressed(1); // Block 1 has transactions.
+            expect(block).toBeDefined();
+            expect(block?.baseFeePerGas).not.toBeNull();
+            expect(
+                HexUInt.isValid0x(block?.baseFeePerGas as string)
+            ).toBeTruthy();
+            expect(
+                HexUInt.of(block?.baseFeePerGas as string).bi
+            ).toBeGreaterThan(0n);
+        });
 
-    test('OK <- getBlockExpanded(1)', async () => {
-        const block = await thorClient.blocks.getBlockExpanded(1); // Block 1 has transactions.
-        expect(block).toBeDefined();
-        expect(block?.baseFeePerGas).not.toBeNull();
-        expect(HexUInt.isValid0x(block?.baseFeePerGas as string)).toBeTruthy();
+        test('OK <- getBlockExpanded(1)', async () => {
+            const block = await thorClient.blocks.getBlockExpanded(1); // Block 1 has transactions.
+            expect(block).toBeDefined();
+            expect(block?.baseFeePerGas).not.toBeNull();
+            expect(
+                HexUInt.isValid0x(block?.baseFeePerGas as string)
+            ).toBeTruthy();
+            expect(
+                HexUInt.of(block?.baseFeePerGas as string).bi
+            ).toBeGreaterThan(0n);
+        });
     });
 });

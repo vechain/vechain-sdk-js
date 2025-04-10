@@ -45,6 +45,7 @@ const formatToRPCStandard = (
         gasUsed: Quantity.of(block.gasUsed).toString(),
         transactions,
         miner: block.beneficiary,
+        baseFeePerGas: block.baseFeePerGas ?? '0x0',
 
         // Unsupported fields
         difficulty: '0x0',
@@ -54,7 +55,6 @@ const formatToRPCStandard = (
         nonce: HexUInt.of(ZERO_BYTES(8)).toString(),
         logsBloom: HexUInt.of(ZERO_BYTES(256)).toString(),
         extraData: '0x',
-        baseFeePerGas: '0x0',
         mixHash: HexUInt.of(ZERO_BYTES(32)).toString()
     };
 };
