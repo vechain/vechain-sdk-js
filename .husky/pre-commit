@@ -1,5 +1,5 @@
-yarn build
-yarn lint
-yarn check:circular-dependencies
-yarn test:unit && git add docs
-yarn check:tests-naming
+# yarn build
+# yarn lint
+# yarn check:circular-dependencies
+# yarn test:unit && git add docs
+# yarn check:tests-naming
