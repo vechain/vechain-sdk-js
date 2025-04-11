@@ -2,7 +2,7 @@ import { Hex } from '@vechain/sdk-core';
 import { EventFragment, hexlify, toBeHex, zeroPadValue } from 'ethers';
 import { TESTING_CONTRACT_ADDRESS } from '../../fixture';
 // eslint-disable-next-line import/no-named-default
-import { default as NodeWebSocket } from 'isomorphic-ws';
+import { default as NodeWebSocket } from 'ws';
 
 /**
  * random address for `from` parameter

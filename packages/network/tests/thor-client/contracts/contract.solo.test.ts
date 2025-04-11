@@ -40,6 +40,7 @@ import {
     testingContractNegativeTestCases,
     testingContractTestCases
 } from './fixture';
+import { soloConfig } from '@vechain/sdk-solo-setup';
 
 /**
  * Tests for the ThorClient class, specifically focusing on contract-related functionality.
@@ -798,12 +799,8 @@ describe('ThorClient - Contracts', () => {
                 await thorSoloClient.contracts.getBaseGasPrice();
             expect(baseGasPrice).toEqual(            {
                 success: true,
-                result: { plain: 1000000000000000n, array: [1000000000000000n] }
+                result: { plain: soloConfig.THOR_SOLO_DEFAULT_BASE_FEE_PER_GAS, array: [soloConfig.THOR_SOLO_DEFAULT_BASE_FEE_PER_GAS] }
             });
-            expect(baseGasPrice).toEqual(            {
-                success: true,
-                result: { plain: BigInt(10 ** 15), array: [BigInt(10 ** 15)] }
-            }); // 10^13 wei
         });
     });
 });
