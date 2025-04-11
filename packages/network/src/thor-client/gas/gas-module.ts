@@ -136,7 +136,7 @@ class GasModule {
         ) {
             throw new InvalidDataType(
                 'getFeeHistory()',
-                'Invalid response format from /fee_history endpoint',
+                'Invalid response format from /fees/history endpoint',
                 { response }
             );
         }
