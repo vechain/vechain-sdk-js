@@ -1,9 +1,6 @@
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { buildQuery, thorest } from '../../utils';
-import {
-    type ExpandedBlockDetail,
-    type TransactionsExpandedBlockDetail
-} from './types';
+import { type BlockDetail } from '../blocks/types';
 import { Revision } from '@vechain/sdk-core';
 import { type HttpClient, HttpMethod } from '../../http';
 
@@ -11,14 +8,10 @@ class GalacticaForkDetector {
     constructor(private readonly httpClient: HttpClient) {}
 
     /**
-     * Checks if the given block is Galactica-forked by inspecting its transactions.
+     * Checks if the given block is Galactica-forked by inspecting the block details.
      *
      * Criteria:
-     * - Transaction type is 0x51 (81).
-     * - Presence of any of:
-     *   - maxFeePerGas
-     *   - maxPriorityFeePerGas
-     *   - gasPriceCoef being undefined (i.e., optional)
+     * - baseFeePerGas is defined (indicating a possible Galactica fork).
      *
      * @param revision Block number or ID (e.g., 'best', 'finalized', or numeric).
      * @returns `true` if Galactica-forked, otherwise `false`.
@@ -39,17 +32,12 @@ class GalacticaForkDetector {
             {
                 query: buildQuery({ expanded: true })
             }
-        )) as ExpandedBlockDetail | null;
+        )) as BlockDetail | null;
 
         if (!block) return false;
-        return block.transactions.some((tx: TransactionsExpandedBlockDetail) => {
-            const hasEIP1559Fields =
-                (tx as any).maxFeePerGas !== undefined ||
-                (tx as any).maxPriorityFeePerGas !== undefined;
-            const gasPriceCoefIsOptional = tx.gasPriceCoef === undefined;
-        
-            return (hasEIP1559Fields || gasPriceCoefIsOptional);
-        });
+
+        // Check if baseFeePerGas is defined in the block details
+        return block.baseFeePerGas !== undefined;
     }
 }
 
