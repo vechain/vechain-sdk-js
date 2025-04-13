@@ -7,7 +7,7 @@ import { HexUInt } from '@vechain/sdk-core';
  *
  * @group integration/clients/thor-client/blocks
  */
-describe('ThorClient - Blocks Module mock tests', () => {
+describe('ThorClient - Blocks Module tests', () => {
     let thorClient: ThorClient;
 
     beforeEach(() => {
