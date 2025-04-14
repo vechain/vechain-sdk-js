@@ -36,7 +36,7 @@ class GalacticaForkDetector {
             }
         )) as BlockDetail | null;
 
-        if (!block) return false;
+        if (block === null) return false;
 
         return block.baseFeePerGas !== undefined;
     }
@@ -51,7 +51,7 @@ class GalacticaForkDetector {
     public async detectGalactica(
         revision: string | number = 'best'
     ): Promise<boolean> {
-        return this.isGalacticaForked(revision);
+        return await this.isGalacticaForked(revision);
     }
 }
 
