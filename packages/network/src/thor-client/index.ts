@@ -7,6 +7,7 @@ export * from './gas';
 export * from './logs';
 export * from './nodes';
 export * from './transactions';
+export { ForkDetector } from './checker/galacticaChecker';
 
 // Main client
 export * from './ThorClient';

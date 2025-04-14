@@ -6,5 +6,5 @@
     "[typescript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
-    "solidity.compileUsingRemoteVersion": "v0.8.20+commit.a1b79de6"
+    "solidity.compileUsingRemoteVersion": "v0.8.19+commit.7dd6d404"
 }
