@@ -24,9 +24,14 @@ import {
  * @param vechainType - The VeChain transaction type (0 or 87)
  * @returns The Ethereum transaction type as a hex string ('0x0' or '0x2')
  */
-const mapVeChainTypeToEthereumType = (vechainType: number): '0x0' | '0x2' => {
+const mapVeChainTypeToEthereumType = (
+    vechainType: number | undefined
+): '0x0' | '0x2' => {
+    // If vechainType is undefined, default to 0 (legacy)
+    const type = vechainType ?? 0;
+
     // Type 87 in VeChain corresponds to Type 2 (EIP-1559) in Ethereum
-    if (vechainType === 87) {
+    if (type === 87) {
         return '0x2';
     }
     // Default to legacy transaction type (0x0)

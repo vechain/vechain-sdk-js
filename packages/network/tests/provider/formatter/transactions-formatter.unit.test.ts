@@ -73,6 +73,32 @@ describe('Transactions formatter unit test', () => {
             testVeChainToEthereumTypeMapping(99, '0x0');
         });
 
+        test('Should default to legacy type (0x0) for undefined transaction type', () => {
+            // Create a minimal transaction mock without the type property
+            const mockTx: Partial<TransactionDetailNoRaw> = {
+                id: '0xb2e3f6e9782f462d797b72f9cbf5a4c38ca20cabcc1a091f9de6d3e6736c1f7c',
+                clauses: [],
+                origin: '0x8c59c63d6458c71b6ff88d57698437524a703084',
+                gas: 399535,
+                nonce: '0x19b4782',
+                meta: {
+                    blockID:
+                        '0x010b7b5f0192003f70bf2a6a502221e075cb32d676e3443614d21003cc2ee440',
+                    blockNumber: 17529695,
+                    blockTimestamp: 1705328340
+                }
+            };
+
+            const formattedTransaction =
+                transactionsFormatter.formatToRPCStandard(
+                    mockTx as TransactionDetailNoRaw,
+                    '0x0',
+                    0
+                );
+
+            expect(formattedTransaction.type).toBe('0x0');
+        });
+
         test('Should correctly map transaction type in transaction receipt for legacy transactions', () => {
             // Skip the transaction receipt tests for now (to fix build issues)
             // We'll check transaction type mapping separately
