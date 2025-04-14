@@ -62,6 +62,11 @@ interface BlockDetail {
     parentID: string;
 
     /**
+     * Identifier of the parent block.
+     */
+    baseFeePerGas?: string;
+
+    /**
      * Timestamp when the block was created.
      */
     timestamp: number;

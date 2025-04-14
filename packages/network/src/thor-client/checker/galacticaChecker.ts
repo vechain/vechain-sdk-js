@@ -38,9 +38,7 @@ class GalacticaForkDetector {
 
         if (!block) return false;
 
-        // Check if baseFeePerGas is defined in the block details
-        // Using a type assertion to access the property that might exist at runtime but isn't in the type definition
-        return (block as any).baseFeePerGas !== undefined;
+        return block.baseFeePerGas !== undefined;
     }
 
     /**
