@@ -4,7 +4,7 @@ import { type BlockDetail } from '../blocks/types';
 import { Revision } from '@vechain/sdk-core';
 import { type HttpClient, HttpMethod } from '../../http';
 
-class GalacticaForkDetector {
+class ForkDetector {
     constructor(private readonly httpClient: HttpClient) {}
 
     /**
@@ -55,4 +55,4 @@ class GalacticaForkDetector {
     }
 }
 
-export { GalacticaForkDetector };
+export { ForkDetector };
