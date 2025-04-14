@@ -17,7 +17,9 @@ class GalacticaForkDetector {
      * @returns `true` if Galactica-forked, otherwise `false`.
      * @throws {InvalidDataType} If the revision is invalid.
      */
-    public async isGalacticaForked(revision: string | number): Promise<boolean> {
+    public async isGalacticaForked(
+        revision: string | number
+    ): Promise<boolean> {
         if (!Revision.isValid(revision)) {
             throw new InvalidDataType(
                 'GalacticaForkDetector.isGalacticaForked()',
@@ -37,7 +39,21 @@ class GalacticaForkDetector {
         if (!block) return false;
 
         // Check if baseFeePerGas is defined in the block details
-        return block.baseFeePerGas !== undefined;
+        // Using a type assertion to access the property that might exist at runtime but isn't in the type definition
+        return (block as any).baseFeePerGas !== undefined;
+    }
+
+    /**
+     * Detects if the current network is on the Galactica fork by checking the best block.
+     * This is an alias for isGalacticaForked('best').
+     *
+     * @param {string | number} revision - Block number or ID (e.g., 'best', 'finalized', or numeric)
+     * @returns {Promise<boolean>} A promise that resolves to true if Galactica fork is detected, false otherwise.
+     */
+    public async detectGalactica(
+        revision: string | number = 'best'
+    ): Promise<boolean> {
+        return this.isGalacticaForked(revision);
     }
 }
 
