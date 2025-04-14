@@ -1,4 +1,5 @@
 yarn build
+yarn install
 yarn lint
 yarn check:circular-dependencies
 yarn test:unit && git add docs
