@@ -17,6 +17,23 @@ import {
 } from '../../../../thor-client';
 
 /**
+ * Maps VeChain transaction types to Ethereum transaction types.
+ * - VeChain Type 0 (legacy) maps to Ethereum Type 0 (legacy) -> '0x0'
+ * - VeChain Type 87 (dynamic fee) maps to Ethereum Type 2 (EIP-1559) -> '0x2'
+ *
+ * @param vechainType - The VeChain transaction type (0 or 87)
+ * @returns The Ethereum transaction type as a hex string ('0x0' or '0x2')
+ */
+const mapVeChainTypeToEthereumType = (vechainType: number): '0x0' | '0x2' => {
+    // Type 87 in VeChain corresponds to Type 2 (EIP-1559) in Ethereum
+    if (vechainType === 87) {
+        return '0x2';
+    }
+    // Default to legacy transaction type (0x0)
+    return '0x0';
+};
+
+/**
  * Output formatter for Transaction details.
  *
  * @param tx - The Transaction details to be formatted.
@@ -34,6 +51,9 @@ const _formatTransactionToRPC = (
     chainId: string,
     txIndex: number
 ): TransactionRPC => {
+    // Default to legacy transaction type if 'type' property doesn't exist
+    const txType = 'type' in tx ? tx.type : 0;
+
     return {
         // Supported fields
         blockHash,
@@ -59,7 +79,7 @@ const _formatTransactionToRPC = (
 
         // Unsupported fields
         gasPrice: '0x0',
-        type: '0x0',
+        type: mapVeChainTypeToEthereumType(txType),
         v: '0x0',
         r: '0x0',
         s: '0x0',
@@ -169,6 +189,9 @@ function formatTransactionReceiptToRPCStandard(
         });
     });
 
+    // Default to legacy transaction type if 'type' property doesn't exist
+    const txType = 'type' in transaction ? transaction.type : 0;
+
     return {
         blockHash: receipt.meta.blockID,
         blockNumber: Quantity.of(receipt.meta.blockNumber).toString(),
@@ -188,7 +211,7 @@ function formatTransactionReceiptToRPCStandard(
         logsBloom: Hex.of(ZERO_BYTES(256)).toString(),
         cumulativeGasUsed: '0x0',
         effectiveGasPrice: '0x0',
-        type: '0x0'
+        type: mapVeChainTypeToEthereumType(txType)
     };
 }
 
