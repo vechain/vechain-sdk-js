@@ -25,7 +25,7 @@ import {
     TEST_ACCOUNTS,
     TESTING_CONTRACT_ABI,
     TESTING_CONTRACT_ADDRESS,
-    THOR_SOLO_ACCOUNTS_BASE_WALLET
+    getUnusedBaseWallet
 } from '../../fixture';
 // eslint-disable-next-line import/no-named-default
 import { default as NodeWebSocket } from 'ws';
@@ -50,12 +50,9 @@ describe('Subscriptions Solo network tests', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
+        const testAccount = getUnusedBaseWallet();
         thorClient = ThorClient.at(THOR_SOLO_URL);
-        provider = new VeChainProvider(
-            thorClient,
-            THOR_SOLO_ACCOUNTS_BASE_WALLET,
-            false
-        );
+        provider = new VeChainProvider(thorClient, testAccount, false);
     });
 
     /**
@@ -173,7 +170,15 @@ describe('Subscriptions Solo network tests', () => {
                                         Hex.of(topic)
                                     )
                                 }
-                            );
+                            ) as {
+                                eventName: 'StateChanged';
+                                args: {
+                                    newValue: bigint;
+                                    oldValue: bigint;
+                                    sender: string;
+                                    timestamp: bigint;
+                                };
+                            };
 
                         expectType<{
                             eventName: 'StateChanged';

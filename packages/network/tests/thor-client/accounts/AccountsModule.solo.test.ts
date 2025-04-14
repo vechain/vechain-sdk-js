@@ -1,9 +1,9 @@
 import { describe, expect, test } from '@jest/globals';
 import { THOR_SOLO_URL, ThorClient } from '../../../src';
 import { Address, Hex } from '@vechain/sdk-core';
-import { soloConfig } from '@vechain/sdk-solo-setup';
+import { configData } from '@vechain/sdk-solo-setup';
 
-const CONTRACT_ADDRESS = soloConfig.TESTING_CONTRACT_ADDRESS;
+const CONTRACT_ADDRESS = configData.TESTING_CONTRACT_ADDRESS;
 
 /**
  * Prolong timeout due to block time which sometimes exceeds jest's default timeout of 5 seconds.
@@ -26,7 +26,7 @@ describe('AccountsModule solo tests', () => {
                     Address.of(CONTRACT_ADDRESS)
                 );
                 expect(
-                    actual.isEqual(Hex.of(soloConfig.TESTING_CONTRACT_BYTECODE))
+                    actual.isEqual(Hex.of(configData.TESTING_CONTRACT_BYTECODE))
                 ).toBe(true);
             },
             TIMEOUT

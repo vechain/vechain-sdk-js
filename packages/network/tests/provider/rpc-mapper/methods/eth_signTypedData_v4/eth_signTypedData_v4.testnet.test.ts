@@ -5,14 +5,13 @@ import {
     ThorClient,
     VeChainProvider
 } from '../../../../../src';
-import { THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../../../fixture';
+import { getUnusedAccount, getUnusedBaseWallet } from '../../../../fixture';
 import { Hex } from '@vechain/sdk-core';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams
 } from '@vechain/sdk-errors';
 import { eip712TestCases } from '../../../../signer/signers/vechain-private-key-signer/fixture';
-import { THOR_SOLO_SEEDED_ACCOUNTS } from '@vechain/sdk-solo-setup';
 
 /**
  * RPC Mapper integration tests for 'eth_signTypedData_v4' method
@@ -39,10 +38,7 @@ describe('RPC Mapper - eth_signTypedData_v4 method tests', () => {
 
         // Init provider
         // @NOTE: Since we are testing the signature, we can use SOLO accounts with testnet!
-        provider = new VeChainProvider(
-            thorClient,
-            THOR_SOLO_ACCOUNTS_BASE_WALLET
-        );
+        provider = new VeChainProvider(thorClient, getUnusedBaseWallet());
     });
 
     /**
@@ -56,7 +52,7 @@ describe('RPC Mapper - eth_signTypedData_v4 method tests', () => {
             const signedTransaction = (await provider.request({
                 method: RPC_METHODS.eth_signTypedData_v4,
                 params: [
-                    THOR_SOLO_SEEDED_ACCOUNTS[0].address,
+                    getUnusedAccount().address,
                     {
                         domain: eip712TestCases.valid.domain,
                         types: eip712TestCases.valid.types,
@@ -83,7 +79,7 @@ describe('RPC Mapper - eth_signTypedData_v4 method tests', () => {
                 provider.request({
                     method: RPC_METHODS.eth_signTypedData_v4,
                     params: [
-                        THOR_SOLO_SEEDED_ACCOUNTS[0].address,
+                        getUnusedAccount().address,
                         {
                             domain: 'INVALID',
                             types: eip712TestCases.valid.types,
@@ -107,7 +103,7 @@ describe('RPC Mapper - eth_signTypedData_v4 method tests', () => {
                 providerWithoutWallet.request({
                     method: RPC_METHODS.eth_signTypedData_v4,
                     params: [
-                        THOR_SOLO_SEEDED_ACCOUNTS[0].address,
+                        getUnusedAccount().address,
                         {
                             domain: eip712TestCases.valid.domain,
                             types: eip712TestCases.valid.types,
@@ -127,7 +123,7 @@ describe('RPC Mapper - eth_signTypedData_v4 method tests', () => {
             await expect(
                 provider.request({
                     method: RPC_METHODS.eth_signTypedData_v4,
-                    params: [THOR_SOLO_SEEDED_ACCOUNTS[0].address]
+                    params: [getUnusedAccount().address]
                 })
             ).rejects.toThrowError(JSONRPCInvalidParams);
         });

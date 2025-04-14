@@ -6,9 +6,10 @@ import {
 } from '../fixture';
 import {
     TESTING_CONTRACT_ADDRESS,
-    TESTING_CONTRACT_BYTECODE
+    TESTING_CONTRACT_BYTECODE,
+    getUnusedAccount
 } from '../../fixture';
-import { soloConfig, THOR_SOLO_SEEDED_ACCOUNTS } from '@vechain/sdk-solo-setup';
+import { soloConfig } from '@vechain/sdk-solo-setup';
 
 /**
  * Test cases for provider methods - Testnet
@@ -43,7 +44,7 @@ const providerMethodsTestCasesSolo = [
         description:
             'Should be able to call eth_getBalance of an address with balance more than 0 VET',
         method: 'eth_getBalance',
-        params: [THOR_SOLO_SEEDED_ACCOUNTS[7].address, 'latest'],
+        params: [getUnusedAccount().address, 'latest'],
         expected: Quantity.of(
             Units.parseEther(soloConfig.THOR_SOLO_SEEDED_VET_AMOUNT.toString())
                 .bi

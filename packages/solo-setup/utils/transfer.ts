@@ -17,6 +17,9 @@ import {
     THOR_SOLO_SEEDED_VTHO_AMOUNT
 } from '../config';
 import { type TestAccount } from '../funder/accounts';
+
+const genesisDeployerAccount = THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS[0];
+
 /**
  * Seeds VET to the seeded accounts.
  * Seeds from the first account in the default genesis accounts.
@@ -25,9 +28,7 @@ export const seedVET = async (accounts: TestAccount[]): Promise<string> => {
     try {
         const thorClient = ThorClient.at('http://localhost:8669');
         const latestBlock = await thorClient.blocks.getBestBlockCompressed();
-        const privateKey = HexUInt.of(
-            THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS[0].privateKey
-        ).bytes;
+        const privateKey = HexUInt.of(genesisDeployerAccount.privateKey).bytes;
         const clauses: TransactionClause[] = [];
         for (const account of accounts) {
             const clause = Clause.transferVET(
@@ -79,9 +80,7 @@ export const seedVTHO = async (accounts: TestAccount[]): Promise<string> => {
     try {
         const thorClient = ThorClient.at('http://localhost:8669');
         const latestBlock = await thorClient.blocks.getBestBlockCompressed();
-        const privateKey = HexUInt.of(
-            THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS[0].privateKey
-        ).bytes;
+        const privateKey = HexUInt.of(genesisDeployerAccount.privateKey).bytes;
         const clauses: TransactionClause[] = [];
         for (const account of accounts) {
             const clause = Clause.transferVTHOToken(
@@ -135,9 +134,7 @@ export const seedTestToken = async (
     try {
         const thorClient = ThorClient.at('http://localhost:8669');
         const latestBlock = await thorClient.blocks.getBestBlockCompressed();
-        const privateKey = HexUInt.of(
-            THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS[0].privateKey
-        ).bytes;
+        const privateKey = HexUInt.of(genesisDeployerAccount.privateKey).bytes;
         const clauses: TransactionClause[] = [];
         for (const account of accounts) {
             const clause = Clause.transferVTHOToken(

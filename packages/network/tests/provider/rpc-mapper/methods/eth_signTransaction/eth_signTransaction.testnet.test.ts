@@ -6,8 +6,8 @@ import {
     VeChainProvider
 } from '../../../../../src';
 import {
-    THOR_SOLO_ACCOUNTS_BASE_WALLET,
-    THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_GAS_PAYER
+    getUnusedBaseWallet,
+    getUnusedBaseWalletWithGasPayer
 } from '../../../../fixture';
 import {
     gasPayerPrivateKeyFixture,
@@ -45,17 +45,14 @@ describe('RPC Mapper - eth_signTransaction method tests', () => {
 
         // Init provider
         // @NOTE: Since we are testing the signature, we can use SOLO accounts with testnet!
-        provider = new VeChainProvider(
-            thorClient,
-            THOR_SOLO_ACCOUNTS_BASE_WALLET
-        );
+        provider = new VeChainProvider(thorClient, getUnusedBaseWallet());
 
         // Init provider with gasPayer
         // @NOTE due to the fact we are testing on thor-solo, we can delegate ONLY with a private key!
         // @NOTE: Since we are testing the signature, we can use SOLO accounts with testnet!
         providerWithGasPayer = new VeChainProvider(
             thorClient,
-            THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_GAS_PAYER({
+            getUnusedBaseWalletWithGasPayer({
                 gasPayerPrivateKey: gasPayerPrivateKeyFixture
             }),
             true

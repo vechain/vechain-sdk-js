@@ -7,7 +7,7 @@ import {
     ThorClient,
     VeChainProvider
 } from '../../../../../src';
-import { THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../../../fixture';
+import { getUnusedBaseWallet, getAllUsedAccounts } from '../../../../fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_accounts' method
@@ -35,7 +35,7 @@ describe('RPC Mapper - eth_accounts method tests', () => {
         // Init provider
         provider = new VeChainProvider(
             thorClient,
-            THOR_SOLO_ACCOUNTS_BASE_WALLET as ProviderInternalWallet
+            getUnusedBaseWallet() as ProviderInternalWallet
         );
     });
 
@@ -55,11 +55,7 @@ describe('RPC Mapper - eth_accounts method tests', () => {
 
             // Check if the accounts are the same
             expect(accounts.length).toBeGreaterThan(0);
-            expect(accounts).toEqual(
-                THOR_SOLO_ACCOUNTS_BASE_WALLET.accounts.map(
-                    (account) => account.address
-                )
-            );
+            expect(accounts).toEqual(getAllUsedAccounts());
         });
     });
 

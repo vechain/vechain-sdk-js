@@ -6,17 +6,27 @@ import {
     VeChainPrivateKeySigner,
     VeChainProvider
 } from '@vechain/sdk-network';
-import { soloConfig, THOR_SOLO_SEEDED_ACCOUNTS } from '@vechain/sdk-solo-setup';
+import {
+    configData,
+    AccountDispatcher,
+    type ThorSoloAccount
+} from '@vechain/sdk-solo-setup';
+
+const accountDispatcher = new AccountDispatcher();
+
+const getUnusedAccount = (): ThorSoloAccount => {
+    return accountDispatcher.getNextAccount();
+};
 
 const timeout = 8000; // 8 seconds
 
 /**
  * `TestingContract.sol` deployed contract address on thor-solo snapshot.
  */
-const SOLO_CONTRACT_ADDRESS: string = soloConfig.TESTING_CONTRACT_ADDRESS;
+const SOLO_CONTRACT_ADDRESS: string = configData.TESTING_CONTRACT_ADDRESS;
 const TESTNET_CONTRACT_ADDRESS: string =
     '0xb2c20a6de401003a671659b10629eb82ff254fb8';
-const TESTING_CONTRACT_ABI = soloConfig.TESTING_CONTRACT_ABI;
+const TESTING_CONTRACT_ABI = configData.TESTING_CONTRACT_ABI;
 
 // This is private for EIP-712 unit test case only. Dummy address.
 const EIP712_CONTRACT = '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC';
@@ -117,7 +127,7 @@ const fundVTHO = async (
     receiverAddress: string
 ): Promise<void> => {
     const signer = new VeChainPrivateKeySigner(
-        HexUInt.of(THOR_SOLO_SEEDED_ACCOUNTS[0].privateKey).bytes,
+        HexUInt.of(getUnusedAccount().privateKey).bytes,
         new VeChainProvider(
             thorClient,
             new ProviderInternalBaseWallet([]),
