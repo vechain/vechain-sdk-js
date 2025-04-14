@@ -28,7 +28,7 @@ import {
     THOR_SOLO_ACCOUNTS_BASE_WALLET
 } from '../../fixture';
 // eslint-disable-next-line import/no-named-default
-import { default as NodeWebSocket } from 'isomorphic-ws';
+import { default as NodeWebSocket } from 'ws';
 import { expectType } from 'tsd';
 
 const TIMEOUT = 15000; // 15-second timeout
@@ -36,6 +36,7 @@ const TIMEOUT = 15000; // 15-second timeout
 /**
  * Test suite for the Subscriptions utility methods for listening to events obtained through a websocket connection.
  *
+ * @group websocket
  * @group integration/utils/subscriptions
  */
 describe('Subscriptions Solo network tests', () => {

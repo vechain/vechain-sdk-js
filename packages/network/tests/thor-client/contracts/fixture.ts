@@ -7,6 +7,7 @@ import {
 import { type Abi } from 'abitype';
 import type { EventDisplayOrder, PaginationOptions, Range } from '../../../src';
 import { TEST_ACCOUNTS } from '../../fixture';
+import { soloConfig } from '@vechain/sdk-solo-setup';
 
 const contractBytecode: string =
     '0x608060405234801561001057600080fd5b506040516102063803806102068339818101604052810190610032919061007a565b80600081905550506100a7565b600080fd5b6000819050919050565b61005781610044565b811461006257600080fd5b50565b6000815190506100748161004e565b92915050565b6000602082840312156100905761008f61003f565b5b600061009e84828501610065565b91505092915050565b610150806100b66000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c806360fe47b11461003b5780636d4ce63c14610057575b600080fd5b610055600480360381019061005091906100c3565b610075565b005b61005f61007f565b60405161006c91906100ff565b60405180910390f35b8060008190555050565b60008054905090565b600080fd5b6000819050919050565b6100a08161008d565b81146100ab57600080fd5b50565b6000813590506100bd81610097565b92915050565b6000602082840312156100d9576100d8610088565b5b60006100e7848285016100ae565b91505092915050565b6100f98161008d565b82525050565b600060208201905061011460008301846100f0565b9291505056fea2646970667358221220785262acbf50fa50a7b4dc8d8087ca8904c7e6b847a13674503fdcbac903b67e64736f6c63430008170033';
@@ -658,13 +659,13 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
     {
         description: 'should return the blockID of the given block number',
         functionName: 'getBlockID',
-        params: [1],
+        params: [0],
         expected: {
             result: {
                 array: [
-                    '0x00000001fb5387f59d35a8e76dcce151cb229a3910ac5f4731ff55f7ca36a809'
+                    '0x00000000c05a20fbca2bf6ae3affba6af4a74b800b585bf7a4988aba7aea69f6'
                 ],
-                plain: '0x00000001fb5387f59d35a8e76dcce151cb229a3910ac5f4731ff55f7ca36a809'
+                plain: '0x00000000c05a20fbca2bf6ae3affba6af4a74b800b585bf7a4988aba7aea69f6'
             },
             success: true
         },
@@ -683,9 +684,12 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
     {
         description: 'should return the block time of the given block number',
         functionName: 'getBlockTime',
-        params: [1],
+        params: [0],
         expected: {
-            result: { array: [1702231120n], plain: 1702231120n },
+            result: {
+                array: [BigInt(soloConfig.SOLO_GENESIS_BLOCK.timestamp)],
+                plain: BigInt(soloConfig.SOLO_GENESIS_BLOCK.timestamp)
+            },
             success: true
         },
         reverted: false,
@@ -694,11 +698,11 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
     {
         description: 'should return the block signer of the given block number',
         functionName: 'getBlockSigner',
-        params: [1],
+        params: [0],
         expected: {
             result: {
-                array: ['0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa'],
-                plain: '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa'
+                array: [soloConfig.SOLO_GENESIS_BLOCK.signer],
+                plain: soloConfig.SOLO_GENESIS_BLOCK.signer
             },
             success: true
         },

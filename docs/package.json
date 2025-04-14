@@ -18,9 +18,11 @@
   },
   "dependencies": {
     "@vechain/sdk-core": "1.1.0",
-    "@vechain/sdk-network": "1.1.0"
+    "@vechain/sdk-network": "1.1.0",
+    "ws": "^8.18.1"
   },
   "devDependencies": {
+    "@vechain/sdk-solo-setup": "0.0.0",
     "expect": "^29.7.0",
     "ts-node-test": "^0.4.4",
     "typescript": "^5.6.3"
