@@ -53,6 +53,8 @@ import type {
 } from '../contracts';
 import type { VeChainSigner } from '../../signer';
 import { type LogsModule } from '../logs';
+import { type ForkDetector } from '../fork';
+import { type GasModule } from '../gas';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
@@ -62,15 +64,21 @@ class TransactionsModule {
     readonly blocksModule: BlocksModule;
     readonly debugModule: DebugModule;
     readonly logsModule: LogsModule;
+    readonly gasModule: GasModule;
+    readonly forkDetector: ForkDetector;
 
     constructor(
         blocksModule: BlocksModule,
         debugModule: DebugModule,
-        logsModule: LogsModule
+        logsModule: LogsModule,
+        gasModule: GasModule,
+        forkDetector: ForkDetector
     ) {
         this.blocksModule = blocksModule;
         this.debugModule = debugModule;
         this.logsModule = logsModule;
+        this.gasModule = gasModule;
+        this.forkDetector = forkDetector;
     }
 
     /**
@@ -342,6 +350,8 @@ class TransactionsModule {
         const chainTag =
             options?.chainTag ?? Number(`0x${genesisBlock.id.slice(64)}`);
 
+        const filledOptions = await this.fillDefaultBodyOptions(options);
+
         return {
             blockRef,
             chainTag,
@@ -349,11 +359,98 @@ class TransactionsModule {
             dependsOn: options?.dependsOn ?? null,
             expiration: options?.expiration ?? 32,
             gas,
-            gasPriceCoef: options?.gasPriceCoef ?? 0,
+            gasPriceCoef: filledOptions?.gasPriceCoef,
+            maxFeePerGas: filledOptions?.maxFeePerGas,
+            maxPriorityFeePerGas: filledOptions?.maxPriorityFeePerGas,
             nonce: options?.nonce ?? Hex.random(8).toString(),
             reserved:
                 options?.isDelegated === true ? { features: 1 } : undefined
         };
+    }
+
+    /**
+     * Fills the default body options for a transaction.
+     *
+     * @param options - The transaction body options to fill.
+     * @returns A promise that resolves to the filled transaction body options.
+     * @throws {InvalidDataType}
+     */
+    public async fillDefaultBodyOptions(
+        options?: TransactionBodyOptions
+    ): Promise<TransactionBodyOptions> {
+        if (options === undefined) {
+            options = {};
+        }
+        if (options.gasPriceCoef !== undefined) {
+            // user specified legacy fee type
+            options.maxFeePerGas = undefined;
+            options.maxPriorityFeePerGas = undefined;
+            return options;
+        }
+        if (
+            options.gasPriceCoef !== undefined &&
+            (options.maxFeePerGas !== undefined ||
+                options.maxPriorityFeePerGas !== undefined)
+        ) {
+            // user specified both legacy and dynamic fee type
+            throw new InvalidDataType(
+                'TransactionsModule.fillDefaultBodyOptions()',
+                'Invalid transaction body options. Cannot specify both legacy and dynamic fee type options.',
+                { options }
+            );
+        }
+        // check if fork happened
+        const galacticaHappened =
+            await this.forkDetector.isGalacticaForked('best');
+        if (
+            !galacticaHappened &&
+            (options.maxFeePerGas !== undefined ||
+                options.maxPriorityFeePerGas !== undefined)
+        ) {
+            // user has specified dynamic fee tx, but fork didn't happen yet
+            throw new InvalidDataType(
+                'TransactionsModule.fillDefaultBodyOptions()',
+                'Invalid transaction body options. Dynamic fee tx is not allowed before Galactica fork.',
+                { options }
+            );
+        }
+        if (!galacticaHappened && options.gasPriceCoef === undefined) {
+            // galactica hasn't happened yet, default is legacy fee
+            options.gasPriceCoef = 127;
+            return options;
+        }
+        if (
+            galacticaHappened &&
+            options.maxFeePerGas !== undefined &&
+            options.maxPriorityFeePerGas !== undefined
+        ) {
+            // galactica happened, user specified new fee type
+            return options;
+        }
+        // default to dynamic fee tx
+        options.gasPriceCoef = undefined;
+        options.maxPriorityFeePerGas =
+            await this.gasModule.getMaxPriorityFeePerGas();
+        const bestBlockBaseFeePerGas =
+            await this.blocksModule.getBestBlockBaseFeePerGas();
+        if (bestBlockBaseFeePerGas === null) {
+            throw new InvalidDataType(
+                'TransactionsModule.fillDefaultBodyOptions()',
+                'Invalid transaction body options. Unable to get best block base fee per gas.',
+                { options }
+            );
+        } else {
+            const biBestBlockBaseFeePerGas = HexUInt.of(
+                bestBlockBaseFeePerGas
+            ).bi;
+            const biMaxPriorityFeePerGas = HexUInt.of(
+                options.maxPriorityFeePerGas
+            ).bi;
+            const biMaxFeePerGas =
+                biBestBlockBaseFeePerGas + biMaxPriorityFeePerGas;
+            options.maxFeePerGas = HexUInt.of(biMaxFeePerGas).toString();
+        }
+        return options;
     }
 
     /**

@@ -36,7 +36,7 @@ describe('ThorClient - Transactions Module', () => {
                     await thorSoloClient.blocks.getBestBlockCompressed();
 
                 // Estimate the gas required for the transfer transaction
-                const gasResult = await thorSoloClient.gas.estimateGas(
+                const gasResult = await thorSoloClient.transactions.estimateGas(
                     testCase.transaction.clauses,
                     TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
                 );

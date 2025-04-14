@@ -41,7 +41,7 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
                 await thorSoloClient.blocks.getBestBlockCompressed();
 
             // Estimate the gas required for the transfer transaction
-            const gasResult = await thorSoloClient.gas.estimateGas(
+            const gasResult = await thorSoloClient.transactions.estimateGas(
                 clauses,
                 SOLO_GENESIS_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
             );

@@ -17,31 +17,10 @@ import { thorest } from '../../utils';
  * convenient methods for estimating the gas cost of a transaction.
  */
 class GasModule {
-    readonly transactionsModule: TransactionsModule;
     readonly httpClient: HttpClient;
 
-    constructor(
-        transactionsModule: TransactionsModule,
-        httpClient: HttpClient
-    ) {
-        this.transactionsModule = transactionsModule;
+    constructor(httpClient: HttpClient) {
         this.httpClient = httpClient;
-    }
-
-    /**
-     * This method is going to be deprecated in next release.
-     * Use {@link TransactionsModule.estimateGas} instead.
-     */
-    public async estimateGas(
-        clauses: SimulateTransactionClause[],
-        caller?: string,
-        options?: EstimateGasOptions
-    ): Promise<EstimateGasResult> {
-        return await this.transactionsModule.estimateGas(
-            clauses,
-            caller,
-            options
-        );
     }
 
     /**

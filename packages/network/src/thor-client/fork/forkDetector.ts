@@ -18,8 +18,11 @@ class ForkDetector {
      * @throws {InvalidDataType} If the revision is invalid.
      */
     public async isGalacticaForked(
-        revision: string | number
+        revision?: string | number
     ): Promise<boolean> {
+        if (revision === undefined) {
+            revision = 'best';
+        }
         if (!Revision.isValid(revision)) {
             throw new InvalidDataType(
                 'GalacticaForkDetector.isGalacticaForked()',

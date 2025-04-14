@@ -77,14 +77,16 @@ class ThorClient {
         this.blocks = new BlocksModule(httpClient, options);
         this.logs = new LogsModule(this.blocks);
         this.nodes = new NodesModule(this.blocks);
+        this.gas = new GasModule(this.httpClient);
+        this.forkDetector = new ForkDetector(this.httpClient);
         this.transactions = new TransactionsModule(
             this.blocks,
             this.debug,
-            this.logs
+            this.logs,
+            this.gas,
+            this.forkDetector
         );
         this.contracts = new ContractsModule(this.transactions);
-        this.gas = new GasModule(this.transactions, this.httpClient);
-        this.forkDetector = new ForkDetector(this.httpClient);
     }
 
     /**
