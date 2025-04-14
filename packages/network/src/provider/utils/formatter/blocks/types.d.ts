@@ -86,7 +86,7 @@ interface BlocksRPC extends BlockHeaderRPC {
     difficulty: string;
     totalDifficulty: string;
     uncles: string[];
-    baseFeePerGas: string;
+    baseFeePerGas?: string;
     mixHash: string;
 }
 
