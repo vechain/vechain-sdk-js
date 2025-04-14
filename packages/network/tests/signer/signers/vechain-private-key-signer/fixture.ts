@@ -2,11 +2,10 @@ import { Address, HexUInt, type TransactionClause } from '@vechain/sdk-core';
 import { InvalidDataType, NotDelegatedTransaction } from '@vechain/sdk-errors';
 import {
     type SignTransactionOptions,
-    THOR_SOLO_ACCOUNTS,
     type TransactionRequestInput
 } from '../../../../src';
 import { TEST_ACCOUNTS, TESTNET_DELEGATE_URL } from '../../../fixture';
-
+import { soloConfig, THOR_SOLO_SEEDED_ACCOUNTS } from '@vechain/sdk-solo-setup';
 /**
  * This interface clones the `TestCaseTypedDataDomain` interface in
  * [test-wallet.ts](https://github.com/ethers-io/ethers.js/blob/main/src.ts/_tests/test-wallet.ts)
@@ -70,13 +69,13 @@ const signTransactionTestCases = {
                         clauses: [
                             {
                                 data: '0xb6b55f25000000000000000000000000000000000000000000000000000000000000007b',
-                                to: '0xb2c20a6de401003a671659b10629eb82ff254fb8',
+                                to: soloConfig.TESTING_CONTRACT_ADDRESS,
                                 value: 0
                             }
                         ],
                         dependsOn: null,
                         expiration: 32,
-                        gas: 57491,
+                        gas: 57175,
                         gasPriceCoef: 0
                     }
                 }
@@ -96,13 +95,13 @@ const signTransactionTestCases = {
                         clauses: [
                             {
                                 data: '0xb6b55f25000000000000000000000000000000000000000000000000000000000000007b',
-                                to: '0xb2c20a6de401003a671659b10629eb82ff254fb8',
+                                to: soloConfig.TESTING_CONTRACT_ADDRESS,
                                 value: 0
                             }
                         ],
                         dependsOn: null,
                         expiration: 32,
-                        gas: 57491,
+                        gas: 57175,
                         gasPriceCoef: 0,
                         reserved: {
                             features: 1
@@ -152,7 +151,7 @@ const signTransactionTestCases = {
                         clauses: [
                             {
                                 data: '0x01cb08c5000000000000000000000000000000000000000000000000000000000000007b',
-                                to: '0xb2c20a6de401003a671659b10629eb82ff254fb8',
+                                to: soloConfig.TESTING_CONTRACT_ADDRESS,
                                 value: 0
                             }
                         ],
@@ -202,7 +201,7 @@ const signTransactionTestCases = {
 /**
  * Account to populate call test cases
  */
-const populateCallTestCasesAccount = THOR_SOLO_ACCOUNTS[0];
+const populateCallTestCasesAccount = THOR_SOLO_SEEDED_ACCOUNTS[0];
 
 /**
  * Test cases for populateCall function
@@ -291,13 +290,17 @@ const populateCallTestCases = {
             description:
                 'Should set from address from signer and have tx.to defined',
             transactionToPopulate: {
-                to: Address.checksum(HexUInt.of(THOR_SOLO_ACCOUNTS[1].address))
+                to: Address.checksum(
+                    HexUInt.of(THOR_SOLO_SEEDED_ACCOUNTS[1].address)
+                )
             } satisfies TransactionRequestInput,
             expected: {
                 from: Address.checksum(
                     HexUInt.of(populateCallTestCasesAccount.address)
                 ),
-                to: Address.checksum(HexUInt.of(THOR_SOLO_ACCOUNTS[1].address))
+                to: Address.checksum(
+                    HexUInt.of(THOR_SOLO_SEEDED_ACCOUNTS[1].address)
+                )
             } satisfies TransactionRequestInput
         }
     ],

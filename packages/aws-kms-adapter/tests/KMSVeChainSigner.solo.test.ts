@@ -22,7 +22,7 @@ import {
     signTransactionTestCases as sendTransactionTestCases,
     signTransactionTestCases,
     TESTING_CONTRACT_ABI,
-    TESTING_CONTRACT_ADDRESS,
+    SOLO_CONTRACT_ADDRESS,
     timeout
 } from './fixture';
 
@@ -123,7 +123,7 @@ describe('KMSVeChainSigner - Thor Solo', () => {
                             ? signerWithGasPayer
                             : signer;
                         const sampleClause = Clause.callFunction(
-                            Address.of(TESTING_CONTRACT_ADDRESS),
+                            Address.of(SOLO_CONTRACT_ADDRESS),
                             ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
                                 'deposit'
                             ),
@@ -190,7 +190,7 @@ describe('KMSVeChainSigner - Thor Solo', () => {
                             ? signerWithGasPayer
                             : signer;
                         const sampleClause = Clause.callFunction(
-                            Address.of(TESTING_CONTRACT_ADDRESS),
+                            Address.of(SOLO_CONTRACT_ADDRESS),
                             ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
                                 'deposit'
                             ),

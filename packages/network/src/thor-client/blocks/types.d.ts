@@ -82,6 +82,11 @@ interface BlockDetail {
     gasUsed: number;
 
     /**
+     * The minimum amount of fee required to include a transaction in the current block
+     */
+    baseFeePerGas?: string;
+
+    /**
      * Represents the Accumulated Witness Number (AWN) of the block.
      * It is used when selecting the trunk block in the VeChainThor consensus algorithm.
      *
@@ -181,6 +186,7 @@ interface TransactionsExpandedBlockDetail {
      */
     type?: string;
 
+
     /**
      * Chain tag of the blockchain.
      */
@@ -202,14 +208,16 @@ interface TransactionsExpandedBlockDetail {
     clauses: TransactionClause[];
 
     /**
-     * Maximum fee allowed by user for this transaction.
+     * The maximum amount that can be spent to pay for base fee and priority fee expressed in hex.
+     * This is an optional hexadecimal expression or null.
      */
-    maxFeePerGas?: number;
+    maxFeePerGas?: string | null;
 
     /**
-     * Maximum priority fee allowed by user for this transaction.
+     * The maximum amount that can be spent to pay for base fee and priority fee expressed in hex.
+     * This is an optional hexadecimal expression or null.
      */
-    maxPriorityFeePerGas?: number;
+    maxPriorityFeePerGas?: string | null;
 
     /**
      * Gas price coefficient for the transaction.
