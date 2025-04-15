@@ -206,7 +206,7 @@ const body: TransactionBody = {
     expiration: 32, // tx will expire after block #16772280 + 32
     clauses,
     gasPriceCoef: 0,
-    gas: HexUInt.of(Transaction.intrinsicGas(clauses).wei).toString(), // use thor.gas.estimateGas() for better estimation
+    gas: HexUInt.of(Transaction.intrinsicGas(clauses).wei).toString(), // use thor.transaction.estimateGas() for better estimation
     dependsOn: null,
     nonce: 1
 };
@@ -256,7 +256,7 @@ const txABody: TransactionBody = {
     expiration: 0,
     clauses: txAClauses,
     gasPriceCoef: 0,
-    gas: HexUInt.of(Transaction.intrinsicGas(txAClauses).wei).toString(), // use thor.gas.estimateGas() for better estimation
+    gas: HexUInt.of(Transaction.intrinsicGas(txAClauses).wei).toString(), // use thor.transactions.estimateGas() for better estimation
     dependsOn: null,
     nonce: 1
 };
@@ -270,7 +270,7 @@ const txBBody: TransactionBody = {
     expiration: 0,
     clauses: txBClauses,
     gasPriceCoef: 0,
-    gas: HexUInt.of(Transaction.intrinsicGas(txBClauses).wei).toString(), // use thor.gas.estimateGas() for better estimation
+    gas: HexUInt.of(Transaction.intrinsicGas(txBClauses).wei).toString(), // use thor.transactions.estimateGas() for better estimation
     dependsOn: null,
     nonce: 2
 };
@@ -412,7 +412,7 @@ const transaction = {
 };
 
 // 3 - Estimate gas
-const gasResult = await thorSoloClient.gas.estimateGas(
+const gasResult = await thorSoloClient.transactions.estimateGas(
     transaction.clauses,
     transaction.simulateTransactionOptions.caller
 );
