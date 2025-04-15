@@ -168,6 +168,18 @@ describe('KMSVeChainSigner - Thor Solo', () => {
                         expect(signedTx.isDelegated).toBe(isDelegated);
                         expect(signedTx.isSigned).toBe(true);
                         expect(signedTx.signature).toBeDefined();
+
+                        // dynamic fee default
+                        const galacticaForked =
+                            await thorClient.forkDetector.isGalacticaForked();
+                        if (galacticaForked) {
+                            expect(signedTx.body.maxFeePerGas).toBeDefined();
+                            expect(
+                                signedTx.body.maxPriorityFeePerGas
+                            ).toBeDefined();
+                        } else {
+                            expect(signedTx.body.gas).toBeDefined();
+                        }
                     },
                     timeout
                 );

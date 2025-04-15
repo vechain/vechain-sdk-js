@@ -139,7 +139,7 @@ const clauses: TransactionClause[] = [
 ];
 
 // Get gas estimate
-const gasResult = await thorSoloClient.gas.estimateGas(
+const gasResult = await thorSoloClient.transactions.estimateGas(
     clauses,
     senderAccount.address
 );
@@ -508,7 +508,7 @@ const transaction = {
 };
 
 // 3 - Estimate gas
-const gasResult = await thorSoloClient.gas.estimateGas(
+const gasResult = await thorSoloClient.transactions.estimateGas(
     transaction.clauses,
     transaction.simulateTransactionOptions.caller
 );
@@ -613,7 +613,7 @@ const transaction = {
 };
 
 // 3 - Estimate gas
-const gasResult = await thorClient.gas.estimateGas(
+const gasResult = await thorClient.transactions.estimateGas(
     transaction.clauses,
     senderAccount.address
 );
