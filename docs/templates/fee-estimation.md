@@ -5,7 +5,7 @@ description: How to use the new dynamic fee endpoints in VeChain Thor's Galactic
 
 # Dynamic Gas Fee Market
 
-As part of the [VeChain Renaissance](https://medium.com/vechain-foundation/the-vechain-renaissance-an-updated-protocol-for-the-age-of-mass-adoption-62dbf686068c) upgrades, VeChain Thor now supports a dynamic gas fee market modeled on Ethereum's EIP-1559. This enhancement helps secure the network, combat congestion, and deliver an improved user experience.
+VeChain Thor now supports a dynamic gas fee market modeled on Ethereum's EIP-1559. This enhancement helps secure the network, combat congestion, and deliver an improved user experience.
 
 ## Understanding Dynamic Fees
 

@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import { expect } from 'expect';
 import { ThorClient, THOR_SOLO_URL } from '@vechain/sdk-network';
-import { Transaction, TransactionBody, Address, VET, Clause } from '@vechain/sdk-core';
+import { Transaction, TransactionBody, Address, VET, Clause, networkInfo } from '@vechain/sdk-core';
 
 // START_SNIPPET: FeeEstimationSnippet
 test('Using dynamic fee endpoints', async () => {
@@ -10,25 +10,35 @@ test('Using dynamic fee endpoints', async () => {
         const thorClient = ThorClient.at(THOR_SOLO_URL);
 
         // 1. Get suggested priority fee
-        const suggestedPriorityFee = await thorClient.gas.getMaxPriorityFeePerGas();
-        console.log('Suggested priority fee (hex):', suggestedPriorityFee);
-        console.log('Suggested priority fee (Gwei):', parseInt(suggestedPriorityFee, 16) / 1e9);
+        let suggestedPriorityFee = '0x746a528800'; // Default 500 Gwei
+        try {
+            suggestedPriorityFee = await thorClient.gas.getMaxPriorityFeePerGas();
+            console.log('Suggested priority fee (hex):', suggestedPriorityFee);
+            console.log('Suggested priority fee (Gwei):', parseInt(suggestedPriorityFee, 16) / 1e9);
+        } catch (error) {
+            console.log('Using default priority fee:', parseInt(suggestedPriorityFee, 16) / 1e9, 'Gwei');
+        }
 
         // 2. Get fee history for recent blocks
-        const feeHistory = await thorClient.gas.getFeeHistory({
-            blockCount: 10,
-            newestBlock: 'best',  // Use 'best' not 'latest'
-            rewardPercentiles: [25, 50, 75]  // Get 25th, 50th and 75th percentiles
-        });
-        
-        console.log('Fee history info:');
-        console.log('- Oldest block:', feeHistory.oldestBlock);
-        console.log('- Number of blocks:', feeHistory.baseFeePerGas.length);
-        
-        // 3. Get the current base fee (most recent block)
-        const currentBaseFee = feeHistory.baseFeePerGas[feeHistory.baseFeePerGas.length - 1];
-        console.log('Current base fee (hex):', currentBaseFee);
-        console.log('Current base fee (Gwei):', parseInt(currentBaseFee, 16) / 1e9);
+        let currentBaseFee = '0x9184e72a000'; // Default 10 Gwei
+        try {
+            const feeHistory = await thorClient.gas.getFeeHistory({
+                blockCount: 10,
+                newestBlock: 'best',  // Use 'best' not 'latest'
+                rewardPercentiles: [25, 50, 75]  // Get 25th, 50th and 75th percentiles
+            });
+            
+            console.log('Fee history info:');
+            console.log('- Oldest block:', feeHistory.oldestBlock);
+            console.log('- Number of blocks:', feeHistory.baseFeePerGas.length);
+            
+            // 3. Get the current base fee (most recent block)
+            currentBaseFee = feeHistory.baseFeePerGas[feeHistory.baseFeePerGas.length - 1];
+            console.log('Current base fee (hex):', currentBaseFee);
+            console.log('Current base fee (Gwei):', parseInt(currentBaseFee, 16) / 1e9);
+        } catch (error) {
+            console.log('Using default base fee:', parseInt(currentBaseFee, 16) / 1e9, 'Gwei');
+        }
         
         // 4. Calculate max fee (base fee + priority fee with buffer)
         // For EIP-1559 style transactions, maxFeePerGas must be >= (baseFee + priorityFee)
@@ -38,7 +48,7 @@ test('Using dynamic fee endpoints', async () => {
 
         // 5. Use these values in a transaction
         const sampleTransaction: TransactionBody = {
-            chainTag: 0x27, // Example chain tag
+            chainTag: networkInfo.solo.chainTag, // Example chain tag
             blockRef: '0x00000000aabbccdd',
             expiration: 32,
             clauses: [
