@@ -314,9 +314,10 @@ class TransactionsModule {
      *
      * @param clauses - The clauses of the transaction.
      * @param gas - The gas to be used to perform the transaction.
-     * @param options - Optional parameters for the request. Includes the expiration, gasPriceCoef, dependsOn and isDelegated fields.
+     * @param options - Optional parameters for the request. Includes the expiration, gasPriceCoef, maxFeePErGas, maxPriorityFeePerGas, dependsOn and isDelegated fields.
      *                  If the `expiration` is not specified, the transaction will expire after 32 blocks.
-     *                  If the `gasPriceCoef` is not specified, the transaction will use the default gas price coef of 127.
+     *                  If the `gasPriceCoef` is not specified & galactica fork didn't happen yet, the transaction will use the default gas price coef of 0.
+     *                  If the `gasPriceCoef` is not specified & galactica fork happened, the transaction will use the default maxFeePerGas and maxPriorityFeePerGas.
      *                  If the `dependsOn is` not specified, the transaction will not depend on any other transaction.
      *                  If the `isDelegated` is not specified, the transaction will not be delegated.
      *
@@ -369,6 +370,30 @@ class TransactionsModule {
     }
 
     /**
+     * Fills the transaction body with the default options.
+     *
+     * @param body - The transaction body to fill.
+     * @returns A promise that resolves to the filled transaction body.
+     * @throws {InvalidDataType}
+     */
+    public async fillTransactionBody(
+        body: TransactionBody
+    ): Promise<TransactionBody> {
+        const extractedOptions: TransactionBodyOptions = {
+            maxFeePerGas: body.maxFeePerGas,
+            maxPriorityFeePerGas: body.maxPriorityFeePerGas,
+            gasPriceCoef: body.gasPriceCoef
+        };
+
+        const filledOptions =
+            await this.fillDefaultBodyOptions(extractedOptions);
+        return {
+            ...body,
+            ...filledOptions
+        };
+    }
+
+    /**
      * Fills the default body options for a transaction.
      *
      * @param options - The transaction body options to fill.
@@ -416,7 +441,7 @@ class TransactionsModule {
         }
         if (!galacticaHappened && options.gasPriceCoef === undefined) {
             // galactica hasn't happened yet, default is legacy fee
-            options.gasPriceCoef = 127;
+            options.gasPriceCoef = 0;
             return options;
         }
         if (
@@ -429,17 +454,22 @@ class TransactionsModule {
         }
         // default to dynamic fee tx
         options.gasPriceCoef = undefined;
+        // set maxPriorityFeePerGas if not specified already
         options.maxPriorityFeePerGas =
-            await this.gasModule.getMaxPriorityFeePerGas();
-        const bestBlockBaseFeePerGas =
-            await this.blocksModule.getBestBlockBaseFeePerGas();
-        if (bestBlockBaseFeePerGas === null) {
-            throw new InvalidDataType(
-                'TransactionsModule.fillDefaultBodyOptions()',
-                'Invalid transaction body options. Unable to get best block base fee per gas.',
-                { options }
-            );
-        } else {
+            options.maxPriorityFeePerGas ??
+            (await this.gasModule.getMaxPriorityFeePerGas());
+        // set maxFeePerGas if not specified already
+        if (options.maxFeePerGas === undefined) {
+            const bestBlockBaseFeePerGas =
+                await this.blocksModule.getBestBlockBaseFeePerGas();
+            if (bestBlockBaseFeePerGas === null) {
+                throw new InvalidDataType(
+                    'TransactionsModule.fillDefaultBodyOptions()',
+                    'Invalid transaction body options. Unable to get best block base fee per gas.',
+                    { options }
+                );
+            }
+            // compute maxFeePerGas
             const biBestBlockBaseFeePerGas = HexUInt.of(
                 bestBlockBaseFeePerGas
             ).bi;

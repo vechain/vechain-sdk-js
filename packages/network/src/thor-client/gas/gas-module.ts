@@ -1,12 +1,8 @@
 import {
-    type EstimateGasOptions,
-    type EstimateGasResult,
     type FeesPriorityResponse,
     type FeeHistoryResponse,
     type FeeHistoryOptions
 } from './types';
-import { type SimulateTransactionClause } from '../transactions/types';
-import { type TransactionsModule } from '../transactions';
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { HttpMethod, type HttpClient } from '../../http';
 import { Revision } from '@vechain/sdk-core';
