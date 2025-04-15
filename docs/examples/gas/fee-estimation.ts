@@ -1,0 +1,76 @@
+import { test } from 'node:test';
+import { expect } from 'expect';
+import { ThorClient, THOR_SOLO_URL } from '@vechain/sdk-network';
+import { Transaction, TransactionBody, Address, VET, Clause } from '@vechain/sdk-core';
+
+// START_SNIPPET: FeeEstimationSnippet
+test('Using dynamic fee endpoints', async () => {
+    try {
+        // Create thor client
+        const thorClient = ThorClient.at(THOR_SOLO_URL);
+
+        // 1. Get suggested priority fee
+        const suggestedPriorityFee = await thorClient.gas.getMaxPriorityFeePerGas();
+        console.log('Suggested priority fee (hex):', suggestedPriorityFee);
+        console.log('Suggested priority fee (Gwei):', parseInt(suggestedPriorityFee, 16) / 1e9);
+
+        // 2. Get fee history for recent blocks
+        const feeHistory = await thorClient.gas.getFeeHistory({
+            blockCount: 10,
+            newestBlock: 'best',  // Use 'best' not 'latest'
+            rewardPercentiles: [25, 50, 75]  // Get 25th, 50th and 75th percentiles
+        });
+        
+        console.log('Fee history info:');
+        console.log('- Oldest block:', feeHistory.oldestBlock);
+        console.log('- Number of blocks:', feeHistory.baseFeePerGas.length);
+        
+        // 3. Get the current base fee (most recent block)
+        const currentBaseFee = feeHistory.baseFeePerGas[feeHistory.baseFeePerGas.length - 1];
+        console.log('Current base fee (hex):', currentBaseFee);
+        console.log('Current base fee (Gwei):', parseInt(currentBaseFee, 16) / 1e9);
+        
+        // 4. Calculate max fee (base fee + priority fee with buffer)
+        // For EIP-1559 style transactions, maxFeePerGas must be >= (baseFee + priorityFee)
+        const maxFeePerGas = parseInt(currentBaseFee, 16) * 2 + parseInt(suggestedPriorityFee, 16);
+        console.log('Max fee per gas (wei):', maxFeePerGas);
+        console.log('Max fee per gas (Gwei):', maxFeePerGas / 1e9);
+
+        // 5. Use these values in a transaction
+        const sampleTransaction: TransactionBody = {
+            chainTag: 0x27, // Example chain tag
+            blockRef: '0x00000000aabbccdd',
+            expiration: 32,
+            clauses: [
+                Clause.transferVET(
+                    Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'),
+                    VET.of(10000)
+                )
+            ],
+            gas: 21000,
+            dependsOn: null,
+            nonce: 12345,
+            // The new dynamic fee parameters:
+            maxFeePerGas: maxFeePerGas,
+            maxPriorityFeePerGas: parseInt(suggestedPriorityFee, 16)
+        };
+
+        // 6. Create the transaction (would then sign and send in real usage)
+        const tx = Transaction.of(sampleTransaction);
+        
+        // Verify this is a dynamic fee (EIP-1559) transaction
+        console.log('Transaction type:', tx.transactionType); // Should be 'eip1559'
+        
+        // The maxFeePerGas and maxPriorityFeePerGas values are now part of the transaction
+        console.log('Transaction max fee per gas:', tx.body.maxFeePerGas);
+        console.log('Transaction max priority fee per gas:', tx.body.maxPriorityFeePerGas);
+        
+        // Ensure values are properly set
+        expect(tx.body.maxFeePerGas).toBe(maxFeePerGas);
+        expect(tx.body.maxPriorityFeePerGas).toBe(parseInt(suggestedPriorityFee, 16));
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+});
+// END_SNIPPET: FeeEstimationSnippet 
