@@ -12,7 +12,6 @@ export interface ConfigData {
     SEED_VTHO_TX_ID: string;
     SEED_TEST_TOKEN_TX_ID: string;
     TEST_TOKEN_ADDRESS: string;
-    [key: string]: any;
 }
 
 // Define the absolute path to config.json in the package root
@@ -20,14 +19,20 @@ const configPath = path.resolve(__dirname, '../config.json');
 
 const getConfigData = (): ConfigData => {
     try {
+        console.log(`Attempting to read config from: ${configPath}`);
         // Read using the absolute path
         const configJson = fs.readFileSync(configPath, 'utf8');
         const config = JSON.parse(configJson);
         return config as ConfigData;
     } catch (error) {
-        console.error(`Failed to read or parse config file at ${configPath}:`, error);
+        console.error(
+            `Failed to read or parse config file at ${configPath}:`,
+            error
+        );
         // Provide a more informative error if the file is missing or invalid
-        throw new Error(`Configuration file '${configPath}' not found or invalid. Ensure 'yarn solo-seed' has run successfully.`);
+        throw new Error(
+            `Configuration file '${configPath}' not found or invalid. Ensure 'yarn solo-seed' has run successfully.`
+        );
     }
 };
 
@@ -74,8 +79,10 @@ function setConfig(
         fs.writeFileSync(configPath, JSON.stringify(configObject, null, 2));
         console.log(`Created/updated config file at: ${configPath}`); // Log the absolute path
     } catch (error) {
-         console.error(`Failed to write config file at ${configPath}:`, error);
-         throw error; // Re-throw the error
+        console.error(`Failed to write config file at ${configPath}:`, error);
+        throw error; // Re-throw the error
     }
 }
+
+// Export both getConfigData and setConfig
 export { getConfigData, setConfig };
