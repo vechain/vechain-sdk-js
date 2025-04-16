@@ -1,9 +1,9 @@
 ---
-title: Dynamic Gas Fee Market
+title: Dynamic Fee Estimation
 description: How to use the new dynamic fee endpoints in VeChain Thor's Galactica upgrade
 ---
 
-# Dynamic Gas Fee Market
+# Dynamic Fee Estimation
 
 VeChain Thor now supports a dynamic gas fee market modeled on Ethereum's EIP-1559. This enhancement helps secure the network, combat congestion, and deliver an improved user experience.
 
