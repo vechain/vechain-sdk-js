@@ -1,7 +1,28 @@
-import { ThorClient, THOR_SOLO_URL } from '@vechain/sdk-network';
-import { Transaction, TransactionBody, Address, VET, Clause, networkInfo } from '@vechain/sdk-core';
+---
+title: Dynamic Fee Estimation in VeChain Thor
+description: How to use fee estimation endpoints introduced in the Galactica hardfork
+---
 
-// START_SNIPPET: FeeEstimationSnippet
+# Dynamic Fee Estimation
+
+The Galactica hardfork introduced dynamic gas fees to VeChain Thor, similar to Ethereum's EIP-1559 fee market. This guide explains how to use the new fee estimation endpoints to create transactions with appropriate fee parameters.
+
+## Fee Estimation Endpoints
+
+Two key endpoints are available for fee estimation:
+
+1. `getMaxPriorityFeePerGas()`: Returns the suggested priority fee based on recent network conditions
+2. `getFeeHistory()`: Returns historical fee data to help determine appropriate fee values
+
+## Example Usage
+
+This example demonstrates how to use these endpoints to retrieve current fee information and apply it to a transaction:
+
+```typescript { name=fee-estimation, category=example }
+import { ThorClient, THOR_SOLO_URL } from '@vechain/sdk-network';
+import { Transaction, Address, VET, Clause, networkInfo } from '@vechain/sdk-core';
+import type { TransactionBody } from '@vechain/sdk-core';
+
 // Create thor client
 const thorClient = ThorClient.at(THOR_SOLO_URL);
 
@@ -57,7 +78,7 @@ const sampleTransaction: TransactionBody = {
     dependsOn: null,
     nonce: 12345,
     // The new dynamic fee parameters:
-    maxFeePerGas: maxFeePerGas,
+    maxFeePerGas,
     maxPriorityFeePerGas: parseInt(suggestedPriorityFee, 16)
 };
 
@@ -70,4 +91,19 @@ console.log('Transaction type:', tx.transactionType); // Should be 'eip1559'
 // The maxFeePerGas and maxPriorityFeePerGas values are now part of the transaction
 console.log('Transaction max fee per gas:', tx.body.maxFeePerGas);
 console.log('Transaction max priority fee per gas:', tx.body.maxPriorityFeePerGas);
-// END_SNIPPET: FeeEstimationSnippet 
+```
+
+## Key Concepts
+
+- **Base Fee**: Network-determined fee that adjusts based on block space demand (retrieved from fee history)
+- **Priority Fee**: Additional fee that incentivizes validators to include your transaction
+- **Max Fee Per Gas**: The maximum total fee (base fee + priority fee) you're willing to pay
+
+## Best Practices
+
+- Always use `best` (not `latest`) as the parameter for the newest block in `getFeeHistory()`
+- The current base fee is the last element in the `baseFeePerGas` array from fee history
+- For max fee calculation, a common approach is `2 × baseFee + priorityFee` to allow for base fee fluctuations
+- Set appropriate priority fees based on transaction urgency
+
+For more detailed information about dynamic fee transactions, see the [Dynamic Fee Transactions guide](./dynamic-fee-transactions.md). 
