@@ -1,5 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
-import { FetchHttpClient, ThorNetworks, toURL } from '../../src';
+import { FetchHttpClient, ThorNetworks } from '../../src';
+import { IllegalArgumentError } from '@vechain/sdk-core';
 
 interface MockResponse {
     status: string;
@@ -35,7 +36,7 @@ describe('FetchHttpClient testnet tests', () => {
         let requestUrl: string | undefined;
 
         const client = FetchHttpClient.at(
-            toURL(ThorNetworks.TESTNET),
+            ThorNetworks.TESTNET,
             (request: Request) => {
                 requestUrl = request.url;
                 return request;
@@ -61,7 +62,7 @@ describe('FetchHttpClient testnet tests', () => {
         let capturedRequest: Request | undefined;
 
         const client = FetchHttpClient.at(
-            toURL(ThorNetworks.TESTNET),
+            ThorNetworks.TESTNET,
             (request: Request) => {
                 capturedRequest = request;
                 return request;
@@ -85,10 +86,10 @@ describe('FetchHttpClient testnet tests', () => {
     test('rejects invalid URLs', () => {
         expect(() =>
             FetchHttpClient.at(
-                new URL('https://invalid.url'),
+                'https://invalid.url',
                 (req) => req,
                 (res) => res
             )
-        ).toThrow('Invalid network URL');
+        ).toThrow(IllegalArgumentError);
     }, 15000);
 });
