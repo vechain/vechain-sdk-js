@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { type HttpClient, HttpMethod } from '../../../src/http';
 import { GasModule } from '../../../src/thor-client/gas/gas-module';
-import { type TransactionsModule } from '../../../src/thor-client/transactions';
 
 // Create a mock Revision validator
 const mockRevisionIsValid = jest.fn().mockImplementation((value) => {
@@ -14,17 +13,6 @@ const mockRevisionIsValid = jest.fn().mockImplementation((value) => {
         (typeof value === 'string' && value.startsWith('0x'))
     );
 });
-
-// Mock the TransactionsModule
-const mockTransactionsModule: Partial<TransactionsModule> = {
-    // @ts-expect-error - Mocking TransactionsModule's estimateGas function
-    estimateGas: jest.fn().mockResolvedValue({
-        totalGas: 0,
-        reverted: false,
-        revertReasons: [],
-        vmErrors: []
-    })
-};
 
 /**
  * Gas module unit tests with mocks.
@@ -53,8 +41,7 @@ describe('GasModule - Unit Tests', () => {
 
         // Create a new GasModule instance with the mock dependencies
         // For testing purposes, we need a type cast but need to follow linter rules
-        // @ts-expect-error - Using partial mock for testing
-        gasModule = new GasModule(mockTransactionsModule, mockHttpClient);
+        gasModule = new GasModule(mockHttpClient);
 
         // Mock internal methods of GasModule
         // @ts-expect-error - Accessing private property for testing

@@ -114,10 +114,11 @@ describe('KMSVeChainSigner - Testnet', () => {
                         const originAddress =
                             await signerWithGasPayer.getAddress();
 
-                        const gasResult = await thorClient.gas.estimateGas(
-                            [sampleClause],
-                            originAddress
-                        );
+                        const gasResult =
+                            await thorClient.transactions.estimateGas(
+                                [sampleClause],
+                                originAddress
+                            );
 
                         const txBody =
                             await thorClient.transactions.buildTransactionBody(

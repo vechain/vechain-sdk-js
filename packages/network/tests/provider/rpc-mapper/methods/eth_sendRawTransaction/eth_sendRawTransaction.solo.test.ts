@@ -62,7 +62,7 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
                 await thorClient.blocks.getBestBlockCompressed();
 
             // Estimate the gas required for the transfer transaction
-            const gasResult = await thorClient.gas.estimateGas(
+            const gasResult = await thorClient.transactions.estimateGas(
                 clauses,
                 actors.sender.address
             );
