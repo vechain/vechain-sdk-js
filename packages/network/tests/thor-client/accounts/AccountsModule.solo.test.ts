@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { THOR_SOLO_URL, ThorClient } from '../../../src';
 import { Address, Hex } from '@vechain/sdk-core';
-import { configData } from '@vechain/sdk-solo-setup';
+import { configData } from '../../fixture';
 
 const CONTRACT_ADDRESS = configData.TESTING_CONTRACT_ADDRESS;
 

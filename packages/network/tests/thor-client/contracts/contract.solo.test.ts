@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { ABIContract, Address, type DeployParams, HexUInt } from '@vechain/sdk-core';
+import { ABIContract, Address, DeployParams, HexUInt } from '@vechain/sdk-core';
 import {
     CannotFindTransaction,
     ContractDeploymentFailed,
@@ -40,7 +40,8 @@ import {
     testingContractNegativeTestCases,
     testingContractTestCases
 } from './fixture';
-import { soloConfig } from '@vechain/sdk-solo-setup';
+import { configData } from '../../fixture';
+import {THOR_SOLO_DEFAULT_BASE_FEE_PER_GAS} from '@vechain/sdk-solo-setup'
 
 /**
  * Tests for the ThorClient class, specifically focusing on contract-related functionality.
@@ -799,7 +800,7 @@ describe('ThorClient - Contracts', () => {
                 await thorSoloClient.contracts.getBaseGasPrice();
             expect(baseGasPrice).toEqual(            {
                 success: true,
-                result: { plain: soloConfig.THOR_SOLO_DEFAULT_BASE_FEE_PER_GAS, array: [soloConfig.THOR_SOLO_DEFAULT_BASE_FEE_PER_GAS] }
+                result: { plain: THOR_SOLO_DEFAULT_BASE_FEE_PER_GAS, array: [THOR_SOLO_DEFAULT_BASE_FEE_PER_GAS] }
             });
         });
     });

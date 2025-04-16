@@ -7,7 +7,7 @@ import {
     VeChainProvider
 } from '@vechain/sdk-network';
 import {
-    configData,
+    getConfigData,
     AccountDispatcher,
     type ThorSoloAccount
 } from '@vechain/sdk-solo-setup';
@@ -19,6 +19,8 @@ const getUnusedAccount = (): ThorSoloAccount => {
 };
 
 const timeout = 8000; // 8 seconds
+
+const configData = getConfigData();
 
 /**
  * `TestingContract.sol` deployed contract address on thor-solo snapshot.

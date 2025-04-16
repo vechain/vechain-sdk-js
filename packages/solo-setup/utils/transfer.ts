@@ -15,7 +15,7 @@ import {
     THOR_SOLO_SEEDED_TEST_TOKEN_AMOUNT,
     THOR_SOLO_SEEDED_VET_AMOUNT,
     THOR_SOLO_SEEDED_VTHO_AMOUNT
-} from '../config';
+} from '../config/constants';
 import { type TestAccount } from '../funder/accounts';
 
 const genesisDeployerAccount = THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS[0];

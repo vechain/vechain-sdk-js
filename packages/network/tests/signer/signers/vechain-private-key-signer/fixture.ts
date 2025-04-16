@@ -7,9 +7,9 @@ import {
 import {
     getUnusedAccount,
     TEST_ACCOUNTS,
-    TESTNET_DELEGATE_URL
+    TESTNET_DELEGATE_URL,
+    configData
 } from '../../../fixture';
-import { configData } from '@vechain/sdk-solo-setup';
 /**
  * This interface clones the `TestCaseTypedDataDomain` interface in
  * [test-wallet.ts](https://github.com/ethers-io/ethers.js/blob/main/src.ts/_tests/test-wallet.ts)

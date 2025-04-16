@@ -14,4 +14,4 @@ node_modules
 /coverage.json
 
 # config files
-*/config.json
+config.json

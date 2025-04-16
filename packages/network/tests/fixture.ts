@@ -8,8 +8,9 @@ import {
 import { SimpleHttpClient } from '../src/http';
 import {
     AccountDispatcher,
-    configData,
-    type ThorSoloAccount
+    getConfigData,
+    type ThorSoloAccount,
+    type ConfigData
 } from '@vechain/sdk-solo-setup';
 
 /**
@@ -31,6 +32,8 @@ const testAccount = '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa';
  * Zero address fixture
  */
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+
+export const configData: ConfigData = getConfigData();
 
 const accountDispatcher = new AccountDispatcher();
 

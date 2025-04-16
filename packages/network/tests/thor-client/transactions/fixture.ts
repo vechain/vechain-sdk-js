@@ -8,9 +8,9 @@ import { BUILT_IN_CONTRACTS } from '../../../src';
 import {
     TEST_ACCOUNTS,
     TESTING_CONTRACT_ABI,
-    TESTING_CONTRACT_ADDRESS
+    TESTING_CONTRACT_ADDRESS,
+    configData
 } from '../../fixture';
-import { configData } from '@vechain/sdk-solo-setup';
 
 /**
  * Some random transaction nonces to use into tests

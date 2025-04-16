@@ -35,11 +35,15 @@
     "seed-thor-solo": "yarn workspace @vechain/sdk-solo-setup solo-seed",
     "test:unit": "rm -rf ./coverageUnit && APPLYCODECOVLIMITS=false jest --coverage --coverageDirectory=coverageUnit --group=unit",
     "test:integration": "rm -rf ./coverageIntegration && APPLYCODECOVLIMITS=false jest --coverage --coverageDirectory=coverageIntegration --group=integration",
-    "test:integration:solo": "APPLYCODECOVLIMITS=false yarn start-thor-solo && yarn test:integration && yarn stop-thor-solo || yarn stop-thor-solo",
+    "test:integration:solo": "(APPLYCODECOVLIMITS=false yarn stop-thor-solo && yarn start-thor-solo && yarn seed-thor-solo && yarn test:integration && yarn stop-thor-solo) || yarn stop-thor-solo",
     "test:browser": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit --config ./jest.config.browser.js",
     "test:galactica": "rm -rf ./coverage && APPLYCODECOVLIMITS=false jest --verbose --coverage --coverageDirectory=coverage --group=galactica",
     "test": "rm -rf ./coverage && APPLYCODECOVLIMITS=true jest --coverage --coverageDirectory=coverage --group=integration --group=unit --group=galactica --group=-websocket",
+    "test:reduced-output": "SILENT=true rm -rf ./coverage && APPLYCODECOVLIMITS=true jest --coverage --coverageDirectory=coverage --group=integration --group=unit --group=galactica --group=-websocket",
+    "test:no-trace": "node scripts/run-tests-with-trace-suppression.js",
+    "test:solo:no-trace": "yarn start-thor-solo && yarn seed-thor-solo && yarn test:no-trace && (yarn stop-thor-solo || true)",
     "test:solo": "(yarn start-thor-solo && yarn seed-thor-solo && yarn test && yarn stop-thor-solo) || yarn stop-thor-solo",
+    "test:solo:reduced-output": "(yarn start-thor-solo && yarn seed-thor-solo && yarn test:reduced-output && yarn stop-thor-solo) || yarn stop-thor-solo",
     "test:solo:galactica": "(yarn start-thor-solo && yarn seed-thor-solo && yarn test:galactica && yarn stop-thor-solo) || yarn stop-thor-solo",
     "test:browser:solo": "(yarn start-thor-solo && yarn seed-thor-solo && yarn test:browser && yarn stop-thor-solo) || yarn stop-thor-solo"
   },
@@ -57,6 +61,7 @@
     "@vechain/sdk-solo-setup": "*",
     "@vechain/vebetterdao-contracts": "^4.1.0",
     "jest-fetch-mock": "^3.0.3",
+    "jest-silent-reporter": "^0.5.0",
     "whatwg-fetch": "^3.6.20",
     "ws": "^8.18.1"
   }

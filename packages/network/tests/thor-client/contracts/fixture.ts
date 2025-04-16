@@ -5,9 +5,13 @@ import {
     type DeployParams
 } from '@vechain/sdk-core';
 import { type Abi } from 'abitype';
-import type { EventDisplayOrder, PaginationOptions, Range } from '../../../src';
-import { TEST_ACCOUNTS } from '../../fixture';
-import { configData } from '@vechain/sdk-solo-setup';
+import type {
+    CompressedBlockDetail,
+    EventDisplayOrder,
+    PaginationOptions,
+    Range
+} from '../../../src';
+import { TEST_ACCOUNTS, configData } from '../../fixture';
 import { ERC721_BYTECODE } from '../../provider/providers/fixture';
 
 const contractBytecode: string =
@@ -619,7 +623,7 @@ const testingContractNegativeTestCases: TestCase[] = [
     {
         description: 'testAssertError() test',
         functionName: 'testAssertError',
-        params: [1],
+        params: [1n], // Changed from 1 to 1n to use BigInt
         expected: { result: { errorMessage: 'Panic(0x01)' }, success: false },
         reverted: true,
         isReadOnly: true
@@ -685,8 +689,16 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
         params: [0],
         expected: {
             result: {
-                array: [BigInt(configData.SOLO_GENESIS_BLOCK.timestamp)],
-                plain: BigInt(configData.SOLO_GENESIS_BLOCK.timestamp)
+                array: [
+                    BigInt(
+                        (configData.SOLO_GENESIS_BLOCK as CompressedBlockDetail)
+                            .timestamp
+                    )
+                ],
+                plain: BigInt(
+                    (configData.SOLO_GENESIS_BLOCK as CompressedBlockDetail)
+                        .timestamp
+                )
             },
             success: true
         },
@@ -699,8 +711,12 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
         params: [0],
         expected: {
             result: {
-                array: [configData.SOLO_GENESIS_BLOCK.signer],
-                plain: configData.SOLO_GENESIS_BLOCK.signer
+                array: [
+                    (configData.SOLO_GENESIS_BLOCK as CompressedBlockDetail)
+                        .signer
+                ],
+                plain: (configData.SOLO_GENESIS_BLOCK as CompressedBlockDetail)
+                    .signer
             },
             success: true
         },

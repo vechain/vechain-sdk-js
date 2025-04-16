@@ -1,5 +1,5 @@
 import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
-import { configData } from '@vechain/sdk-solo-setup';
+import { configData } from '../../../fixture';
 
 /**
  * Fixture for eth_getTransactionReceipt correct cases for solo network

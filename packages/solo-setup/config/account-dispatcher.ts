@@ -1,7 +1,8 @@
 import { ALL_ACCOUNTS } from './accounts';
 import { ThorSoloAccount } from './accounts';
 
-class AccountDispatcher {
+// Export the class directly rather than through a named export
+export class AccountDispatcher {
     nextAddressToDispatch: number = 0;
 
     constructor() {}
@@ -20,8 +21,5 @@ class AccountDispatcher {
     }
 }
 
-export {
-    // Re-exporting the ThorSoloAccount type for it to be used in the tests
-    type ThorSoloAccount,
-    AccountDispatcher
-};
+// Re-export the ThorSoloAccount type for it to be used in the tests
+export type { ThorSoloAccount };
