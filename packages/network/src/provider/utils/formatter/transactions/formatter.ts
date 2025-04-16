@@ -3,7 +3,14 @@ import {
     type TransactionReceiptRPC,
     type TransactionRPC
 } from './types';
-import { Hex, HexUInt, Quantity, ZERO_BYTES } from '@vechain/sdk-core';
+import {
+    Hex,
+    HexUInt,
+    Quantity,
+    ZERO_BYTES,
+    TransactionType,
+    fromTransactionType
+} from '@vechain/sdk-core';
 import {
     getNumberOfLogsAheadOfTransactionIntoBlockExpanded,
     getTransactionIndexIntoBlock
@@ -19,19 +26,25 @@ import {
 /**
  * Maps VeChain transaction types to Ethereum transaction types.
  * - VeChain Type 0 (legacy) maps to Ethereum Type 0 (legacy) -> '0x0'
- * - VeChain Type 87 (dynamic fee) maps to Ethereum Type 2 (EIP-1559) -> '0x2'
+ * - VeChain Type 81 (0x51, EIP1559) maps to Ethereum Type 2 (EIP-1559) -> '0x2'
  *
- * @param vechainType - The VeChain transaction type (0 or 87)
+ * @param vechainType - The VeChain transaction type (0 or 81)
  * @returns The Ethereum transaction type as a hex string ('0x0' or '0x2')
  */
 const mapVeChainTypeToEthereumType = (
-    vechainType: number | undefined
+    vechainType: number | undefined | null
 ): '0x0' | '0x2' => {
-    // If vechainType is undefined, default to 0 (legacy)
-    const type = vechainType ?? 0;
+    // If vechainType is undefined, null, or not a number, default to 0 (legacy)
+    if (
+        vechainType === undefined ||
+        vechainType === null ||
+        typeof vechainType !== 'number'
+    ) {
+        return '0x0';
+    }
 
-    // Type 87 in VeChain corresponds to Type 2 (EIP-1559) in Ethereum
-    if (type === 87) {
+    // Type 81 (EIP1559) in VeChain corresponds to Type 2 (EIP-1559) in Ethereum
+    if (vechainType === fromTransactionType(TransactionType.EIP1559)) {
         return '0x2';
     }
     // Default to legacy transaction type (0x0)
