@@ -83,7 +83,7 @@ interface BlocksRPC extends BlockHeaderRPC {
     /**
      * The base fee value.
      */
-    baseFeePerGas: string;
+    baseFeePerGas: string | undefined;
 
     /**
      * Unsupported fields

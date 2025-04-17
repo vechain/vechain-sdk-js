@@ -38,8 +38,14 @@ describe('RPC Mapper - eth_getBlockByNumber method tests', () => {
             ](['0x01', false]);
             expect(actual).toBeDefined();
             const block = actual as BlocksRPC;
-            expect(HexUInt.isValid0x(block.baseFeePerGas)).toBeTruthy();
-            expect(HexUInt.of(block.baseFeePerGas).bi).toBeGreaterThan(0n);
+            expect(block.baseFeePerGas).toBeDefined();
+            expect(block.baseFeePerGas).not.toBeNull();
+            expect(
+                HexUInt.isValid0x(block.baseFeePerGas as string)
+            ).toBeTruthy();
+            expect(
+                HexUInt.of(block.baseFeePerGas as string).bi
+            ).toBeGreaterThan(0n);
         });
 
         test('OK <- blocks/1?expanded=true', async () => {
@@ -48,17 +54,33 @@ describe('RPC Mapper - eth_getBlockByNumber method tests', () => {
             ](['0x01', true]);
             expect(actual).toBeDefined();
             const block = actual as BlocksRPC;
-            expect(HexUInt.isValid0x(block.baseFeePerGas)).toBeTruthy();
-            expect(HexUInt.of(block.baseFeePerGas).bi).toBeGreaterThan(0n);
+            expect(block.baseFeePerGas).toBeDefined();
+            expect(block.baseFeePerGas).not.toBeNull();
+            expect(
+                HexUInt.isValid0x(block.baseFeePerGas as string)
+            ).toBeTruthy();
+            expect(
+                HexUInt.of(block.baseFeePerGas as string).bi
+            ).toBeGreaterThan(0n);
             block.transactions.forEach((tx) => {
                 const transactionRPC = tx as TransactionRPC;
                 expect(HexUInt.isValid0x(transactionRPC.type)).toBeTruthy();
-                expect(
-                    HexUInt.isValid0x(transactionRPC.maxFeePerGas)
-                ).toBeTruthy();
-                expect(
-                    HexUInt.isValid0x(transactionRPC.maxPriorityFeePerGas)
-                ).toBeTruthy();
+                if (
+                    transactionRPC.maxFeePerGas !== undefined &&
+                    transactionRPC.maxFeePerGas !== null
+                ) {
+                    expect(
+                        HexUInt.isValid0x(transactionRPC.maxFeePerGas)
+                    ).toBeTruthy();
+                }
+                if (
+                    transactionRPC.maxPriorityFeePerGas !== undefined &&
+                    transactionRPC.maxPriorityFeePerGas !== null
+                ) {
+                    expect(
+                        HexUInt.isValid0x(transactionRPC.maxPriorityFeePerGas)
+                    ).toBeTruthy();
+                }
             });
             console.log(JSON.stringify(block, null, 2));
         });

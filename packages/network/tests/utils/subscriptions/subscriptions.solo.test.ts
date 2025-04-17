@@ -214,7 +214,7 @@ describe('Subscriptions Solo network tests', () => {
                 [1]
             ) as TransactionClause;
             const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
-            const gasResult = await thorSoloClient.gas.estimateGas(
+            const gasResult = await thorSoloClient.transactions.estimateGas(
                 [clause],
                 TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
             );
@@ -307,7 +307,7 @@ describe('Subscriptions Solo network tests', () => {
             data: '0x'
         };
         const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
-        const gasResult = await thorSoloClient.gas.estimateGas(
+        const gasResult = await thorSoloClient.transactions.estimateGas(
             [clause],
             TEST_ACCOUNTS.SUBSCRIPTION.VET_TRANSFERS_SUBSCRIPTION.address
         );

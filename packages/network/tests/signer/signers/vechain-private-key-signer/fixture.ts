@@ -75,8 +75,7 @@ const signTransactionTestCases = {
                         ],
                         dependsOn: null,
                         expiration: 32,
-                        gas: 57175,
-                        gasPriceCoef: 0
+                        gas: 57175
                     }
                 }
             },
@@ -102,7 +101,6 @@ const signTransactionTestCases = {
                         dependsOn: null,
                         expiration: 32,
                         gas: 57175,
-                        gasPriceCoef: 0,
                         reserved: {
                             features: 1
                         }

@@ -312,7 +312,7 @@ describe('VeChain provider tests - solo', () => {
             [TEST_ACCOUNT.address]
         );
 
-        const gas = await thorClient.gas.estimateGas([clauses]);
+        const gas = await thorClient.transactions.estimateGas([clauses]);
 
         await thorClient.contracts.executeTransaction(
             (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner,

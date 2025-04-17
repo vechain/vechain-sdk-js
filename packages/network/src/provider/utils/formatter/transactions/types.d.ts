@@ -59,12 +59,12 @@ interface TransactionRPC {
     /**
      * The maximum amount that can be spent to pay for base fee and priority fee expressed in hex.
      */
-    maxFeePerGas: string;
+    maxFeePerGas: string | undefined;
 
     /**
      * The maximum amount that can be tipped to the validator expressed in hex.
      */
-    maxPriorityFeePerGas: string;
+    maxPriorityFeePerGas: string | undefined;
 
     // incompatible fields
     r: string;

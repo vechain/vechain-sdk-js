@@ -42,7 +42,7 @@ const options = {
 };
 
 // Estimate gas
-const gasResult = await thorSoloClient.gas.estimateGas(
+const gasResult = await thorSoloClient.transactions.estimateGas(
     clauses,
     senderAccount.address,
     options

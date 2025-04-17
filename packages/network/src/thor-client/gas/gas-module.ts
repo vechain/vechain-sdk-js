@@ -1,12 +1,8 @@
 import {
-    type EstimateGasOptions,
-    type EstimateGasResult,
     type FeesPriorityResponse,
     type FeeHistoryResponse,
     type FeeHistoryOptions
 } from './types';
-import { type SimulateTransactionClause } from '../transactions/types';
-import { type TransactionsModule } from '../transactions';
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { HttpMethod, type HttpClient } from '../../http';
 import { Revision } from '@vechain/sdk-core';
@@ -17,31 +13,10 @@ import { thorest } from '../../utils';
  * convenient methods for estimating the gas cost of a transaction.
  */
 class GasModule {
-    readonly transactionsModule: TransactionsModule;
     readonly httpClient: HttpClient;
 
-    constructor(
-        transactionsModule: TransactionsModule,
-        httpClient: HttpClient
-    ) {
-        this.transactionsModule = transactionsModule;
+    constructor(httpClient: HttpClient) {
         this.httpClient = httpClient;
-    }
-
-    /**
-     * This method is going to be deprecated in next release.
-     * Use {@link TransactionsModule.estimateGas} instead.
-     */
-    public async estimateGas(
-        clauses: SimulateTransactionClause[],
-        caller?: string,
-        options?: EstimateGasOptions
-    ): Promise<EstimateGasResult> {
-        return await this.transactionsModule.estimateGas(
-            clauses,
-            caller,
-            options
-        );
     }
 
     /**
