@@ -2,8 +2,7 @@ import { HexUInt, Secp256k1 } from '@vechain/sdk-core';
 import {
     MAINNET_URL,
     ProviderInternalBaseWallet,
-    type SignTransactionOptions,
-    TESTNET_URL
+    type SignTransactionOptions
 } from '../src';
 import { SimpleHttpClient } from '../src/http';
 import {
@@ -16,16 +15,6 @@ import {
  * Main network instance fixture
  */
 const mainNetwork = new SimpleHttpClient(MAINNET_URL);
-
-/**
- * Network instance fixture
- */
-const testNetwork = new SimpleHttpClient(TESTNET_URL);
-
-/**
- * Simple test account fixture
- */
-const testAccount = '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa';
 
 /**
  * Zero address fixture
@@ -126,12 +115,10 @@ const TESTING_CONTRACT_ABI = soloConfig.TESTING_CONTRACT_ABI;
 export {
     mainNetwork,
     TEST_ACCOUNTS,
-    testAccount,
     TESTING_CONTRACT_ABI,
     TESTING_CONTRACT_ADDRESS,
     TESTING_CONTRACT_BYTECODE,
     TESTNET_DELEGATE_URL,
-    testNetwork,
     THOR_SOLO_ACCOUNTS_BASE_WALLET,
     THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_GAS_PAYER,
     ZERO_ADDRESS,

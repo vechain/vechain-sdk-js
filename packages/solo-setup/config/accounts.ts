@@ -118,6 +118,12 @@ const THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS: Array<{
         privateKey:
             '9d68178cdc934178cca0a0051f40ed46be153cf23cb1805b59cc612c0ad2bbe0',
         address: '0x865306084235bf804c8bba8a8d56890940ca8f0b'
+    },
+    {
+        // Used in docs/examples/transactions/dynamic-fee-tx.ts
+        privateKey:
+            '0x658c8a0db369c02797cb20c89c24e5bfb1598c2e7f99d3f9595a9e91b3d970fe',
+        address: '0xA92C535D0A04332ecF3dbB3F5F5609c242232F35'
     }
 ];
 
