@@ -60,7 +60,7 @@ try {
 // 5 - Get the estimated gas for the transaction
 let gasEstimate = 21000; // Default gas for simple transfers
 try {
-    const gasResult = await thorClient.gas.estimateGas(
+    const gasResult = await thorClient.transactions.estimateGas(
         clauses,
         senderAccount.address
     );
