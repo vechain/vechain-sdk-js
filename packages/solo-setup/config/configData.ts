@@ -19,7 +19,6 @@ const configPath = path.resolve(__dirname, '../config.json');
 
 const getConfigData = (): ConfigData => {
     try {
-        console.log(`Attempting to read config from: ${configPath}`);
         // Read using the absolute path
         const configJson = fs.readFileSync(configPath, 'utf8');
         const config = JSON.parse(configJson);

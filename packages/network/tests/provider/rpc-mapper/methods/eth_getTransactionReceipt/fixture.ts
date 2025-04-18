@@ -1,5 +1,7 @@
 import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
 import { configData } from '../../../fixture';
+import { THOR_SOLO_ACCOUNTS_TO_SEED } from '@vechain/sdk-solo-setup';
+import { Address } from '@vechain/sdk-core';
 
 /**
  * Fixture for eth_getTransactionReceipt correct cases for solo network
@@ -17,169 +19,26 @@ const getReceiptCorrectCasesSoloNetwork = [
             cumulativeGasUsed: '0x0',
             effectiveGasPrice: '0x0',
             from: '0xf077b491b355e64048ce21e3a6fc4751eeea77fa',
-            gasUsed: '0x4e7b4',
-            logs: [
-                {
+            gasUsed: '0xe8f8c',
+            logs: THOR_SOLO_ACCOUNTS_TO_SEED.map((account, index) => {
+                return {
                     address: '0x0000000000000000000000000000456e65726779',
                     blockHash:
                         '0x0000000682236126daf237f3863f2d0fb3d417c8cedb9b1ea746514f0ec1ded8',
                     blockNumber: '0x6',
                     data: '0x00000000000000000000000000000000000000000000021e19e0c9bab2400000',
-                    logIndex: '0x0',
+                    logIndex: '0x' + index.toString(16),
                     removed: false,
                     topics: [
                         '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
                         '0x000000000000000000000000f077b491b355e64048ce21e3a6fc4751eeea77fa',
-                        '0x0000000000000000000000003db469a79593dcc67f07de1869d6682fc1eaf535'
+                        '0x000000000000000000000000' +
+                            account.address.slice(2).toLowerCase()
                     ],
                     transactionHash: configData.SEED_TEST_TOKEN_TX_ID,
                     transactionIndex: '0x0'
-                },
-                {
-                    address: '0x0000000000000000000000000000456e65726779',
-                    blockHash:
-                        '0x0000000682236126daf237f3863f2d0fb3d417c8cedb9b1ea746514f0ec1ded8',
-                    blockNumber: '0x6',
-                    data: '0x00000000000000000000000000000000000000000000021e19e0c9bab2400000',
-                    logIndex: '0x1',
-                    removed: false,
-                    topics: [
-                        '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-                        '0x000000000000000000000000f077b491b355e64048ce21e3a6fc4751eeea77fa',
-                        '0x0000000000000000000000002669514f9fe96bc7301177ba774d3da8a06cace4'
-                    ],
-                    transactionHash: configData.SEED_TEST_TOKEN_TX_ID,
-                    transactionIndex: '0x0'
-                },
-                {
-                    address: '0x0000000000000000000000000000456e65726779',
-                    blockHash:
-                        '0x0000000682236126daf237f3863f2d0fb3d417c8cedb9b1ea746514f0ec1ded8',
-                    blockNumber: '0x6',
-                    data: '0x00000000000000000000000000000000000000000000021e19e0c9bab2400000',
-                    logIndex: '0x2',
-                    removed: false,
-                    topics: [
-                        '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-                        '0x000000000000000000000000f077b491b355e64048ce21e3a6fc4751eeea77fa',
-                        '0x0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c39'
-                    ],
-                    transactionHash: configData.SEED_TEST_TOKEN_TX_ID,
-                    transactionIndex: '0x0'
-                },
-                {
-                    address: '0x0000000000000000000000000000456e65726779',
-                    blockHash:
-                        '0x0000000682236126daf237f3863f2d0fb3d417c8cedb9b1ea746514f0ec1ded8',
-                    blockNumber: '0x6',
-                    data: '0x00000000000000000000000000000000000000000000021e19e0c9bab2400000',
-                    logIndex: '0x3',
-                    removed: false,
-                    topics: [
-                        '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-                        '0x000000000000000000000000f077b491b355e64048ce21e3a6fc4751eeea77fa',
-                        '0x00000000000000000000000088b2551c3ed42ca663796c10ce68c88a65f73fe2'
-                    ],
-                    transactionHash: configData.SEED_TEST_TOKEN_TX_ID,
-                    transactionIndex: '0x0'
-                },
-                {
-                    address: '0x0000000000000000000000000000456e65726779',
-                    blockHash:
-                        '0x0000000682236126daf237f3863f2d0fb3d417c8cedb9b1ea746514f0ec1ded8',
-                    blockNumber: '0x6',
-                    data: '0x00000000000000000000000000000000000000000000021e19e0c9bab2400000',
-                    logIndex: '0x4',
-                    removed: false,
-                    topics: [
-                        '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-                        '0x000000000000000000000000f077b491b355e64048ce21e3a6fc4751eeea77fa',
-                        '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54'
-                    ],
-                    transactionHash: configData.SEED_TEST_TOKEN_TX_ID,
-                    transactionIndex: '0x0'
-                },
-                {
-                    address: '0x0000000000000000000000000000456e65726779',
-                    blockHash:
-                        '0x0000000682236126daf237f3863f2d0fb3d417c8cedb9b1ea746514f0ec1ded8',
-                    blockNumber: '0x6',
-                    data: '0x00000000000000000000000000000000000000000000021e19e0c9bab2400000',
-                    logIndex: '0x5',
-                    removed: false,
-                    topics: [
-                        '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-                        '0x000000000000000000000000f077b491b355e64048ce21e3a6fc4751eeea77fa',
-                        '0x0000000000000000000000007a28e7361fd10f4f058f9fefc77544349ecff5d6'
-                    ],
-                    transactionHash: configData.SEED_TEST_TOKEN_TX_ID,
-                    transactionIndex: '0x0'
-                },
-                {
-                    address: '0x0000000000000000000000000000456e65726779',
-                    blockHash:
-                        '0x0000000682236126daf237f3863f2d0fb3d417c8cedb9b1ea746514f0ec1ded8',
-                    blockNumber: '0x6',
-                    data: '0x00000000000000000000000000000000000000000000021e19e0c9bab2400000',
-                    logIndex: '0x6',
-                    removed: false,
-                    topics: [
-                        '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-                        '0x000000000000000000000000f077b491b355e64048ce21e3a6fc4751eeea77fa',
-                        '0x000000000000000000000000b717b660cd51109334bd10b2c168986055f58c1a'
-                    ],
-                    transactionHash: configData.SEED_TEST_TOKEN_TX_ID,
-                    transactionIndex: '0x0'
-                },
-                {
-                    address: '0x0000000000000000000000000000456e65726779',
-                    blockHash:
-                        '0x0000000682236126daf237f3863f2d0fb3d417c8cedb9b1ea746514f0ec1ded8',
-                    blockNumber: '0x6',
-                    data: '0x00000000000000000000000000000000000000000000021e19e0c9bab2400000',
-                    logIndex: '0x7',
-                    removed: false,
-                    topics: [
-                        '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-                        '0x000000000000000000000000f077b491b355e64048ce21e3a6fc4751eeea77fa',
-                        '0x00000000000000000000000062226ae029dabcf90f3cb66f091919d2687d5257'
-                    ],
-                    transactionHash: configData.SEED_TEST_TOKEN_TX_ID,
-                    transactionIndex: '0x0'
-                },
-                {
-                    address: '0x0000000000000000000000000000456e65726779',
-                    blockHash:
-                        '0x0000000682236126daf237f3863f2d0fb3d417c8cedb9b1ea746514f0ec1ded8',
-                    blockNumber: '0x6',
-                    data: '0x00000000000000000000000000000000000000000000021e19e0c9bab2400000',
-                    logIndex: '0x8',
-                    removed: false,
-                    topics: [
-                        '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-                        '0x000000000000000000000000f077b491b355e64048ce21e3a6fc4751eeea77fa',
-                        '0x000000000000000000000000062f167a905c1484de7e75b88edc7439f82117de'
-                    ],
-                    transactionHash: configData.SEED_TEST_TOKEN_TX_ID,
-                    transactionIndex: '0x0'
-                },
-                {
-                    address: '0x0000000000000000000000000000456e65726779',
-                    blockHash:
-                        '0x0000000682236126daf237f3863f2d0fb3d417c8cedb9b1ea746514f0ec1ded8',
-                    blockNumber: '0x6',
-                    data: '0x00000000000000000000000000000000000000000000021e19e0c9bab2400000',
-                    logIndex: '0x9',
-                    removed: false,
-                    topics: [
-                        '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-                        '0x000000000000000000000000f077b491b355e64048ce21e3a6fc4751eeea77fa',
-                        '0x0000000000000000000000003e3d79163b08502a086213cd09660721740443d7'
-                    ],
-                    transactionHash: configData.SEED_TEST_TOKEN_TX_ID,
-                    transactionIndex: '0x0'
-                }
-            ],
+                };
+            }),
             logsBloom: '0x' + '0'.repeat(512),
             status: '0x1',
             to: '0x0000000000000000000000000000456e65726779',

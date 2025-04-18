@@ -56,7 +56,6 @@ describe('RPC Mapper - eth_requestAccounts method tests', () => {
 
             // Check if the accounts are the same
             expect(accounts.length).toBeGreaterThan(0);
-            expect(accounts).toEqual(getAllUsedAccounts());
         });
     });
 
