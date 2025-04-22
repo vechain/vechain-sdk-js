@@ -30,15 +30,39 @@ describe('RPC Mapper - eth_signTypedData_v4 method tests', () => {
     let provider: VeChainProvider;
 
     /**
+     * The account to use for testing
+     */
+    let testAccount: ReturnType<typeof getUnusedAccount>;
+
+    /**
+     * Wallet address to use for testing
+     */
+    let walletAddress: string;
+
+    /**
      * Init thor client before each test
      */
-    beforeEach(() => {
+    beforeEach(async () => {
+        // Get a test account
+        testAccount = getUnusedAccount();
+
         // Init thor client
         thorClient = ThorClient.at(TESTNET_URL);
 
         // Init provider
         // @NOTE: Since we are testing the signature, we can use SOLO accounts with testnet!
         provider = new VeChainProvider(thorClient, getUnusedBaseWallet());
+
+        // Verify wallet exists
+        expect(provider.wallet).toBeDefined();
+
+        // Get addresses from wallet
+        const addresses = await provider.wallet?.getAddresses();
+        expect(addresses).toBeDefined();
+        expect(addresses?.length).toBeGreaterThan(0);
+
+        // Store the first address for tests
+        walletAddress = addresses?.[0] as string;
     });
 
     /**
@@ -52,7 +76,7 @@ describe('RPC Mapper - eth_signTypedData_v4 method tests', () => {
             const signedTransaction = (await provider.request({
                 method: RPC_METHODS.eth_signTypedData_v4,
                 params: [
-                    getUnusedAccount().address,
+                    walletAddress,
                     {
                         domain: eip712TestCases.valid.domain,
                         types: eip712TestCases.valid.types,
@@ -79,7 +103,7 @@ describe('RPC Mapper - eth_signTypedData_v4 method tests', () => {
                 provider.request({
                     method: RPC_METHODS.eth_signTypedData_v4,
                     params: [
-                        getUnusedAccount().address,
+                        walletAddress,
                         {
                             domain: 'INVALID',
                             types: eip712TestCases.valid.types,
@@ -103,7 +127,7 @@ describe('RPC Mapper - eth_signTypedData_v4 method tests', () => {
                 providerWithoutWallet.request({
                     method: RPC_METHODS.eth_signTypedData_v4,
                     params: [
-                        getUnusedAccount().address,
+                        testAccount.address,
                         {
                             domain: eip712TestCases.valid.domain,
                             types: eip712TestCases.valid.types,
@@ -123,7 +147,7 @@ describe('RPC Mapper - eth_signTypedData_v4 method tests', () => {
             await expect(
                 provider.request({
                     method: RPC_METHODS.eth_signTypedData_v4,
-                    params: [getUnusedAccount().address]
+                    params: [walletAddress]
                 })
             ).rejects.toThrowError(JSONRPCInvalidParams);
         });
