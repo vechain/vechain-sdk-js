@@ -5,7 +5,7 @@ import { HexUInt } from '@vechain/sdk-core';
 /**
  * Blocks Module integration tests
  *
- * @group integration/clients/thor-client/blocks
+ * @group galactica/integration/clients/thor-client/blocks
  */
 describe('ThorClient - Blocks Module tests', () => {
     let thorClient: ThorClient;

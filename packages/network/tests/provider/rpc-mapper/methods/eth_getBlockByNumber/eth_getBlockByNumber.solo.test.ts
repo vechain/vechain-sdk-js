@@ -13,7 +13,7 @@ import { HexUInt } from '@vechain/sdk-core';
 /**
  * RPC Mapper integration tests for 'eth_getBlockByNumber' method
  *
- * @group integration/rpc-mapper/methods/eth_getBlockByNumber
+ * @group galactica/integration/rpc-mapper/methods/eth_getBlockByNumber
  */
 describe('RPC Mapper - eth_getBlockByNumber method tests', () => {
     /**
@@ -32,6 +32,25 @@ describe('RPC Mapper - eth_getBlockByNumber method tests', () => {
     });
 
     describe('GALACTICA - baseFeePerGas', () => {
+        test('OK <- blocks/0?expanded=false', async () => {
+            const actual = await RPCMethodsMap(thorClient)[
+                RPC_METHODS.eth_getBlockByNumber
+            ](['0x0', false]);
+            expect(actual).toBeDefined();
+            const block = actual as BlocksRPC;
+            expect(block.baseFeePerGas).toBeUndefined();
+        });
+
+        test('OK <- blocks/0?expanded=true', async () => {
+            const actual = await RPCMethodsMap(thorClient)[
+                RPC_METHODS.eth_getBlockByNumber
+            ](['0x0', true]);
+            expect(actual).toBeDefined();
+            const block = actual as BlocksRPC;
+            expect(block.baseFeePerGas).toBeUndefined();
+            expect(block.transactions.length).toBe(0);
+        });
+
         test('OK <- blocks/1?expanded=false', async () => {
             const actual = await RPCMethodsMap(thorClient)[
                 RPC_METHODS.eth_getBlockByNumber
