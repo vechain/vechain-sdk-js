@@ -453,8 +453,9 @@ class TransactionsModule {
         // default to dynamic fee tx
         options.gasPriceCoef = undefined;
         // set maxPriorityFeePerGas if not specified already
-        options.maxPriorityFeePerGas ??=
-            await this.gasModule.getMaxPriorityFeePerGas();
+        options.maxPriorityFeePerGas =
+            options.maxPriorityFeePerGas ??
+            (await this.gasModule.getMaxPriorityFeePerGas());
         // set maxFeePerGas if not specified already
         if (options.maxFeePerGas === undefined) {
             const bestBlockBaseFeePerGas =
