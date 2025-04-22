@@ -3,11 +3,11 @@ import { ABIContract, HexUInt } from '@vechain/sdk-core';
 import {
     HardhatVeChainProvider,
     ProviderInternalBaseWallet,
-    SubscriptionEvent,
+    type SubscriptionEvent,
     THOR_SOLO_URL,
     ThorClient,
-    VeChainProvider,
-    VeChainSigner
+    type VeChainProvider,
+    type VeChainSigner
 } from '../../../../src';
 import { providerMethodsTestCasesSolo, TEST_ACCOUNT } from '../fixture';
 import {

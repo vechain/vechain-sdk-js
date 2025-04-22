@@ -242,11 +242,10 @@ describe('VeChain base signer tests', () => {
             const expectedErrorString = 'not an error instance';
             jest.spyOn(Txt, 'of')
                 .mockImplementationOnce(() => {
-                    throw expectedErrorString;
+                    throw new Error(expectedErrorString);
                 })
                 .mockImplementationOnce(() => {
-                    // eslint-disable-next-line sonarjs/no-throw-literal
-                    throw undefined;
+                    throw new Error();
                 });
             await expect(
                 signer.signMessage(EIP191_MESSAGE)
@@ -309,11 +308,10 @@ describe('VeChain base signer tests', () => {
             const expectedErrorString = 'not an error instance';
             jest.spyOn(Hex, 'of')
                 .mockImplementationOnce(() => {
-                    throw expectedErrorString;
+                    throw new Error(expectedErrorString);
                 })
                 .mockImplementationOnce(() => {
-                    // eslint-disable-next-line sonarjs/no-throw-literal
-                    throw undefined;
+                    throw new Error();
                 });
             await expect(
                 signer.signTypedData(

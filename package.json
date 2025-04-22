@@ -38,7 +38,7 @@
         "test:integration": "turbo test:integration",
         "test:integration:solo": "(yarn start-thor-solo && yarn test:integration && yarn stop-thor-solo) || yarn stop-thor-solo",
         "test:examples": "turbo test:examples",
-        "test:examples:solo": "(yarn start-thor-solo && yarn test:examples && yarn stop-thor-solo) || yarn stop-thor-solo",
+        "test:examples:solo": "(yarn start-thor-solo && yarn seed-thor-solo && yarn test:examples && yarn stop-thor-solo) || yarn stop-thor-solo",
         "test": "CI=true turbo test --force --concurrency=1",
         "test:browser": "turbo test:browser --force && yarn merge-coverage",
         "test:solo": "(yarn start-thor-solo && yarn seed-thor-solo && yarn test && yarn stop-thor-solo) || yarn stop-thor-solo",

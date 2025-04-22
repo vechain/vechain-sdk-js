@@ -7,7 +7,7 @@ import {
     ThorClient,
     VeChainProvider
 } from '../../../../../src';
-import { getUnusedBaseWallet, getAllUsedAccounts } from '../../../../fixture';
+import { getUnusedBaseWallet } from '../../../../fixture';
 import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
 
 /**

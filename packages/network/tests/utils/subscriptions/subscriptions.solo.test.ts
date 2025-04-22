@@ -104,9 +104,9 @@ describe('Subscriptions Solo network tests', () => {
                     resolve(true);
                 };
 
-                ws.onerror = (error: Event) => {
+                ws.onerror = (_error: Event) => {
                     clearTimeout(timeout); // Clear the timeout in case of an error
-                    reject(error); // Reject the promise with the error
+                    reject(new Error('WebSocket error occurred')); // Reject with a generic error message
                 };
             });
         },
@@ -200,15 +200,15 @@ describe('Subscriptions Solo network tests', () => {
                         );
 
                         resolve(true); // Resolve the promise when a message is received
-                    } catch (error) {
-                        reject(error); // Reject the promise on error
+                    } catch {
+                        reject(new Error('Error processing WebSocket message')); // Use a generic error message
                     } finally {
                         ws.close(); // Ensure WebSocket is closed
                     }
                 };
 
-                ws.onerror = (error: Event) => {
-                    reject(error); // Reject the promise on WebSocket error
+                ws.onerror = (_error: Event) => {
+                    reject(new Error('WebSocket error occurred')); // Reject with a generic error message
                 };
             });
             const clause = Clause.callFunction(
@@ -219,7 +219,7 @@ describe('Subscriptions Solo network tests', () => {
                 [1]
             ) as TransactionClause;
             const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
-            const gasResult = await thorSoloClient.gas.estimateGas(
+            const gasResult = await thorSoloClient.transactions.estimateGas(
                 [clause],
                 TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
             );
@@ -293,15 +293,15 @@ describe('Subscriptions Solo network tests', () => {
                     );
 
                     resolve(true); // Resolve the promise when a message is received
-                } catch (error) {
-                    reject(error); // Reject the promise on error
+                } catch {
+                    reject(new Error('Error processing WebSocket message')); // Use a generic error message
                 } finally {
                     ws.close(); // Ensure WebSocket is closed
                 }
             };
 
-            ws.onerror = (error: Event) => {
-                reject(error); // Reject the promise on WebSocket error
+            ws.onerror = (_error: Event) => {
+                reject(new Error('WebSocket error occurred')); // Reject with a generic error message
             };
         });
 
@@ -312,7 +312,7 @@ describe('Subscriptions Solo network tests', () => {
             data: '0x'
         };
         const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
-        const gasResult = await thorSoloClient.gas.estimateGas(
+        const gasResult = await thorSoloClient.transactions.estimateGas(
             [clause],
             TEST_ACCOUNTS.SUBSCRIPTION.VET_TRANSFERS_SUBSCRIPTION.address
         );

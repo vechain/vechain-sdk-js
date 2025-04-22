@@ -168,7 +168,7 @@ const buildTransactionBodyClausesTestCases = [
     {
         description: 'Should build transaction body that transfers 1 VTHO',
         clauses: [transfer1VTHOClause],
-        options: {},
+        options: { gasPriceCoef: 0 },
         expected: {
             solo: {
                 chainTag: 246,

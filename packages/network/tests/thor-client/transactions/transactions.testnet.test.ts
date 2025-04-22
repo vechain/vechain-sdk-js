@@ -51,10 +51,11 @@ describe('Transactions module Testnet tests suite', () => {
                     description,
                     async () => {
                         const thorClient = ThorClient.at(TESTNET_URL);
-                        const gasResult = await thorClient.gas.estimateGas(
-                            clauses,
-                            '0x000000000000000000000000004d000000000000' // This address might not exist on testnet, thus the gasResult.reverted might be true
-                        );
+                        const gasResult =
+                            await thorClient.transactions.estimateGas(
+                                clauses,
+                                '0x000000000000000000000000004d000000000000' // This address might not exist on testnet, thus the gasResult.reverted might be true
+                            );
 
                         expect(gasResult.totalGas).toBe(expected.testnet.gas);
 

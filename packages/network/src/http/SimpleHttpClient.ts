@@ -137,7 +137,6 @@ class SimpleHttpClient implements HttpClient {
                 ) {
                     params.validateResponseHeader(responseHeaders);
                 }
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-return
                 return await response.json();
             }
             throw new Error(`HTTP ${response.status} ${response.statusText}`, {

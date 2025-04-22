@@ -463,7 +463,7 @@ const sendTransactionWithAccount = async (
     thorClient: ThorClient
 ): Promise<TransactionReceipt | null> => {
     // Estimate the gas required for the transfer transaction
-    const gasResult = await thorClient.gas.estimateGas(
+    const gasResult = await thorClient.transactions.estimateGas(
         [transfer1VTHOClause],
         account.address
     );

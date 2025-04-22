@@ -55,6 +55,8 @@ export default [{
             argsIgnorePattern: "^_",
         }],
 
+        "@typescript-eslint/lines-between-class-members": "off",
+
         "@typescript-eslint/explicit-function-return-type": "error",
         "@typescript-eslint/no-explicit-any": "error",
         "@typescript-eslint/no-non-null-assertion": "error",
@@ -66,7 +68,6 @@ export default [{
         "@typescript-eslint/restrict-template-expressions": "off",
         "@typescript-eslint/ban-types": "off",
         "@typescript-eslint/no-throw-literal": "off",
-        "@typescript-eslint/lines-between-class-members": "off",
 
         "prettier/prettier": ["error", {
             singleQuote: true,

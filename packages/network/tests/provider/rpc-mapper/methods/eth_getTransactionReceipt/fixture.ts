@@ -1,7 +1,6 @@
 import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
 import { configData } from '../../../fixture';
 import { THOR_SOLO_ACCOUNTS_TO_SEED } from '@vechain/sdk-solo-setup';
-import { Address } from '@vechain/sdk-core';
 
 /**
  * Fixture for eth_getTransactionReceipt correct cases for solo network
