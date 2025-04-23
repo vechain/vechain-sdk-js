@@ -1,12 +1,23 @@
 import {
     type FeesPriorityResponse,
     type FeeHistoryResponse,
-    type FeeHistoryOptions
+    type FeeHistoryOptions,
+    type EstimateGasOptions,
+    type EstimateGasResult
 } from './types';
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { HttpMethod, type HttpClient } from '../../http';
 import { Revision } from '@vechain/sdk-core';
 import { thorest } from '../../utils';
+import { type SimulateTransactionClause } from '../transactions';
+
+interface TransactionModuleInterface {
+    estimateGas: (
+        clauses: SimulateTransactionClause[],
+        caller?: string,
+        options?: EstimateGasOptions
+    ) => Promise<EstimateGasResult>;
+}
 
 /**
  * The `GasModule` handles gas related operations and provides
@@ -14,9 +25,54 @@ import { thorest } from '../../utils';
  */
 class GasModule {
     readonly httpClient: HttpClient;
+    protected transactionsModule: TransactionModuleInterface | null;
 
     constructor(httpClient: HttpClient) {
         this.httpClient = httpClient;
+        this.transactionsModule = null;
+    }
+
+    /**
+     * Sets the transactions module.
+     *
+     * @param transactionsModule - The transactions module to set.
+     */
+    public setTransactionsModule(
+        transactionsModule: TransactionModuleInterface
+    ): void {
+        this.transactionsModule = transactionsModule;
+    }
+
+    /**
+     * Simulates a transaction and returns an object containing information regarding the gas used and whether the transaction reverted.
+     *
+     * @note The caller option is suggested as estimation without this parameter may not be accurate.
+     *
+     * @param clauses - The clauses of the transaction to simulate.
+     * @param caller - The address of the account sending the transaction.
+     * @param options - Optional parameters for the request. Includes all options of the `simulateTransaction` method excluding the `caller` option.
+     *                  @see {@link TransactionsClient#simulateTransaction}
+     *                  Also, includes the `gasPadding` option which is a percentage of gas to add on top of the estimated gas. The value must be between (0, 1].
+     * @returns An object containing information regarding the gas used and whether the transaction reverted, together with the decoded revert reason and VM errors.
+     * @throws{InvalidDataType}
+     */
+    public async estimateGas(
+        clauses: SimulateTransactionClause[],
+        caller?: string,
+        options?: EstimateGasOptions
+    ): Promise<EstimateGasResult> {
+        if (this.transactionsModule == null) {
+            throw new InvalidDataType(
+                'estimateGas()',
+                'Transactions module not set',
+                {}
+            );
+        }
+        return await this.transactionsModule.estimateGas(
+            clauses,
+            caller,
+            options
+        );
     }
 
     /**
