@@ -9,7 +9,7 @@ import { InvalidDataType } from '@vechain/sdk-errors';
 import { HttpMethod, type HttpClient } from '../../http';
 import { Revision } from '@vechain/sdk-core';
 import { thorest } from '../../utils';
-import { type SimulateTransactionClause } from '../transactions';
+import { type SimulateTransactionClause } from '../transactions/types';
 
 interface TransactionModuleInterface {
     estimateGas: (
