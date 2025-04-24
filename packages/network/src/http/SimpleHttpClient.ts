@@ -103,7 +103,7 @@ class SimpleHttpClient implements HttpClient {
             }
             // Add trailing slash from baseURL if not present
             let baseURL = this.baseURL;
-            if (!this.baseURL.endsWith('/')) {
+            if (!baseURL.endsWith('/')) {
                 baseURL += '/';
             }
             const url = new URL(path, baseURL);
