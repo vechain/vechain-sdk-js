@@ -30,7 +30,7 @@ const ethEstimateGas = async (
     params: unknown[]
 ): Promise<string> => {
     // Input validation
-    if (params.length !== 2 || typeof params[0] !== 'object')
+    if (params.length < 1 || params.length > 2 || typeof params[0] !== 'object')
         throw new JSONRPCInvalidParams(
             'eth_estimateGas',
             `Invalid input params for "eth_estimateGas" method. See ${RPC_DOCUMENTATION_URL} for details.`,
@@ -38,6 +38,9 @@ const ethEstimateGas = async (
         );
 
     try {
+        if (params.length === 1) {
+            params.push('latest');
+        }
         // NOTE: The standard requires block parameter.
         // Here it is ignored and can be added in the future compatibility reasons.
         // (INPUT CHECK TAKE CARE OF THIS)
