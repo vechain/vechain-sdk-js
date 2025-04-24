@@ -29,7 +29,7 @@ const hdNodeFixtures = [
         count: 1,
         initialIndex: 6,
         gasPayer: {
-            gasPayerServiceUrl: 'https://sponsor-testnet.vechain.energy/by/269'
+            gasPayerServiceUrl: 'https://sponsor-testnet.vechain.energy/by/883'
         } satisfies SignTransactionOptions,
         expectedAddress: ['0x8ef651aC457C9bf5206EC3D2cbD4232Df0438607']
     },
