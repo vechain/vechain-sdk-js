@@ -604,10 +604,23 @@ class Transaction {
      * @return {TransactionType} The type of the transaction.
      */
     private static getTransactionType(body: TransactionBody): TransactionType {
-        return body.maxFeePerGas !== undefined &&
+        if (body.gasPriceCoef !== undefined) {
+            return TransactionType.Legacy;
+        }
+        if (
+            body.maxFeePerGas !== undefined &&
             body.maxPriorityFeePerGas !== undefined
-            ? TransactionType.EIP1559
-            : TransactionType.Legacy;
+        ) {
+            return TransactionType.EIP1559;
+        }
+        throw new InvalidTransactionField(
+            'Transaction.getTransactionType',
+            'invalid transaction body',
+            {
+                fieldName: 'body',
+                body
+            }
+        );
     }
 
     /**

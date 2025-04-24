@@ -7,7 +7,8 @@ import {
     GasModule,
     LogsModule,
     NodesModule,
-    TransactionsModule
+    TransactionsModule,
+    ForkDetector
 } from '.';
 import { SimpleHttpClient, type HttpClient } from '../http';
 
@@ -47,6 +48,11 @@ class ThorClient {
     public readonly contracts: ContractsModule;
 
     /**
+     * The 'GalacticaForkDetector' instance
+     */
+    public readonly forkDetector: ForkDetector;
+
+    /**
      * The `GasModule` instance
      */
     public readonly gas: GasModule;
@@ -71,13 +77,16 @@ class ThorClient {
         this.blocks = new BlocksModule(httpClient, options);
         this.logs = new LogsModule(this.blocks);
         this.nodes = new NodesModule(this.blocks);
+        this.gas = new GasModule(this.httpClient);
+        this.forkDetector = new ForkDetector(this.httpClient);
         this.transactions = new TransactionsModule(
             this.blocks,
             this.debug,
-            this.logs
+            this.logs,
+            this.gas,
+            this.forkDetector
         );
         this.contracts = new ContractsModule(this.transactions);
-        this.gas = new GasModule(this.transactions, this.httpClient);
     }
 
     /**

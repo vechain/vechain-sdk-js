@@ -78,7 +78,7 @@ const transaction = {
 };
 
 // 3 - Estimate gas
-const gasResult = await thorClient.gas.estimateGas(
+const gasResult = await thorClient.transactions.estimateGas(
     transaction.clauses,
     senderAccount.address
 );

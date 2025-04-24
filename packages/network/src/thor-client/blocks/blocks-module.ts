@@ -149,6 +149,17 @@ class BlocksModule {
     }
 
     /**
+     * Retrieves the base fee per gas of the best block.
+     *
+     * @returns A promise that resolves to the base fee per gas of the best block.
+     */
+    public async getBestBlockBaseFeePerGas(): Promise<string | null> {
+        const bestBlock = await this.getBestBlockCompressed();
+        if (bestBlock === null) return null;
+        return bestBlock.baseFeePerGas ?? null;
+    }
+
+    /**
      * Asynchronously retrieves a reference to the best block in the blockchain.
      *
      * This method first calls `getBestBlockCompressed()` to obtain the current best block. If no block is found (i.e., if `getBestBlockCompressed()` returns `null`),

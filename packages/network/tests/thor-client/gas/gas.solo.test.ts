@@ -29,11 +29,12 @@ describe('ThorClient - Gas Module', () => {
                 test(
                     description,
                     async () => {
-                        const result = await thorSoloClient.gas.estimateGas(
-                            clauses,
-                            caller,
-                            options
-                        );
+                        const result =
+                            await thorSoloClient.transactions.estimateGas(
+                                clauses,
+                                caller,
+                                options
+                            );
 
                         expect(result).toBeDefined();
                         expect(result).toStrictEqual(expected);
@@ -51,11 +52,12 @@ describe('ThorClient - Gas Module', () => {
                 test(
                     description,
                     async () => {
-                        const result = await thorSoloClient.gas.estimateGas(
-                            clauses,
-                            caller,
-                            options
-                        );
+                        const result =
+                            await thorSoloClient.transactions.estimateGas(
+                                clauses,
+                                caller,
+                                options
+                            );
 
                         expect(result).toBeDefined();
                         expect(result).toStrictEqual(expected);
@@ -74,7 +76,7 @@ describe('ThorClient - Gas Module', () => {
                     clauses
                 )}, options: ${stringifyData(options)}`, async () => {
                     await expect(
-                        thorSoloClient.gas.estimateGas(
+                        thorSoloClient.transactions.estimateGas(
                             clauses,
                             // Random address
                             Hex.random(20).toString(),

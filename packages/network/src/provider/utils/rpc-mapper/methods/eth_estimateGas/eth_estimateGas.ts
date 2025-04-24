@@ -50,7 +50,7 @@ const ethEstimateGas = async (
         ];
         const revision = DefaultBlockToRevision(defaultBlock);
 
-        const estimatedGas = await thorClient.gas.estimateGas(
+        const estimatedGas = await thorClient.transactions.estimateGas(
             [
                 {
                     to: inputOptions.to ?? null,
