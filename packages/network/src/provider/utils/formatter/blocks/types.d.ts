@@ -81,12 +81,17 @@ interface BlocksRPC extends BlockHeaderRPC {
     transactions: string[] | TransactionRPC[];
 
     /**
+     * The minimum amount of fee required to include a transaction in the current block
+     * Encoded as hex string format
+     */
+    baseFeePerGas: string;
+
+    /**
      * Unsupported fields
      */
     difficulty: string;
     totalDifficulty: string;
     uncles: string[];
-    baseFeePerGas: string;
     mixHash: string;
 }
 

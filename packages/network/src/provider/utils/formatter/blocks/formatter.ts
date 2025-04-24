@@ -54,7 +54,7 @@ const formatToRPCStandard = (
         nonce: HexUInt.of(ZERO_BYTES(8)).toString(),
         logsBloom: HexUInt.of(ZERO_BYTES(256)).toString(),
         extraData: '0x',
-        baseFeePerGas: '0x0',
+        baseFeePerGas: block.baseFeePerGas ?? '0x0',
         mixHash: HexUInt.of(ZERO_BYTES(32)).toString()
     };
 };
