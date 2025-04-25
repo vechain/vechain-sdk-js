@@ -57,7 +57,7 @@ const THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_GAS_PAYER = (
 /**
  * Delegate url fixture to test signing transactions with delegation by URL
  */
-const TESTNET_DELEGATE_URL = 'https://sponsor-testnet.vechain.energy/by/299';
+const TESTNET_DELEGATE_URL = 'https://sponsor-testnet.vechain.energy/by/883';
 
 /**
  * Test accounts fixture

@@ -1,4 +1,4 @@
-export const TESTING_CONTRACT_ADDRESS: string = '0x1d2cbbe7a82312721357ab08b8173aa8e655310d';
+export const TESTING_CONTRACT_ADDRESS: string = '0xb0b808b42f142d52064c7924c4482be2de7b56ff';
 export const TESTING_CONTRACT_ABI = [
   {
     "inputs": [
@@ -788,7 +788,7 @@ export const SOLO_GENESIS_BLOCK = {
   "isFinalized": true,
   "transactions": []
 };
-export const SEED_VET_TX_ID: string = '0x6b5f558405ca66fe426b8500761d0edf2310f25fbfa9349714d6857e59147a56';
-export const SEED_VTHO_TX_ID: string = '0xac7f39030d941fd3bcc97847bc70608f2ab438a3bb3a9fcbdcf06356780d1688';
-export const SEED_TEST_TOKEN_TX_ID: string = '0x788467ccddb6b94bbf46e12fbea09e894213f871245f1023f6d776468e6c2def';
-export const TEST_TOKEN_ADDRESS: string = '0x555e2b9390682d553b9449fa66776475b5cd0f66';
+export const SEED_VET_TX_ID: string = '0xa2ba915e3a36b0ffaa9d578187ac38e5097f9b7075b97d5b315bde7027ccbc4c';
+export const SEED_VTHO_TX_ID: string = '0xd2dbd267ef5717107c12fb2572e7359577b9bf982922a72b76363d89f2c44866';
+export const SEED_TEST_TOKEN_TX_ID: string = '0x1dd6eb4c141a650cae6ae484ca4cbd271ea9a34ce636e75319fe614af222ab44';
+export const TEST_TOKEN_ADDRESS: string = '0x37a955aa7ac71821f59d631f40889d310723e1a3';
