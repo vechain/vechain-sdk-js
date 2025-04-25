@@ -14,7 +14,8 @@ import {
     type TransactionBody,
     type TransactionClause,
     Units,
-    VTHO
+    VTHO,
+    ZERO_ADDRESS
 } from '../../src';
 
 const GasPayerPrivateKeyFix = HexUInt.of(
@@ -833,7 +834,7 @@ describe('Transaction class Legacy tests', () => {
 });
 
 describe('Transaction class EIP-1559 tests', () => {
-    test('encode/decode <- unsignedEIP-1559 tx', () => {
+    test('encode/decode <- unsigned EIP-1559 tx', () => {
         const tx = Transaction.of(TxEIP1559BodyFix);
         const encoded = tx.encoded;
         const decoded = Transaction.decode(encoded, false);
@@ -846,6 +847,56 @@ describe('Transaction class EIP-1559 tests', () => {
         const decoded = Transaction.decode(encoded, true);
         expect(decoded).toEqual(tx);
         expect(decoded.isSigned).toBe(true);
+    });
+
+    test('exception <- maxPriorityFeePerGas field not specified', () => {
+        const clauses = [
+            {
+                to: ZERO_ADDRESS,
+                value: 1,
+                data: '0x'
+            }
+        ];
+        // Create transaction body without maxPriorityFeePerGas
+        const transactionBodyWithoutMaxPriorityFeePerGas = {
+            chainTag: 0xf6,
+            blockRef: '0x1234567890',
+            latestBlock: '0x0',
+            expiration: 32,
+            clauses,
+            gas: 21000,
+            maxFeePerGas: 10000000000000,
+            dependsOn: null,
+            nonce: 12345677
+        };
+        expect(() =>
+            Transaction.of(transactionBodyWithoutMaxPriorityFeePerGas)
+        ).toThrowError(InvalidTransactionField);
+    });
+
+    test('exception <- maxFeePerGas field not specified', () => {
+        const clauses = [
+            {
+                to: ZERO_ADDRESS,
+                value: 1,
+                data: '0x'
+            }
+        ];
+        // Create transaction body without maxFeePerGas
+        const transactionBodyWithoutMaxPriorityFeePerGas = {
+            chainTag: 0xf6,
+            blockRef: '0x1234567890',
+            latestBlock: '0x0',
+            expiration: 32,
+            clauses,
+            gas: 21000,
+            maxPriorityFeePerGas: 10000000000000,
+            dependsOn: null,
+            nonce: 12345677
+        };
+        expect(() =>
+            Transaction.of(transactionBodyWithoutMaxPriorityFeePerGas)
+        ).toThrowError(InvalidTransactionField);
     });
 });
 

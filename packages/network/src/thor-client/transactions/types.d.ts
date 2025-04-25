@@ -89,12 +89,12 @@ interface TransactionBodyOptions {
     /**
      * The maximum fee per gas for the transaction.
      */
-    maxFeePerGas?: string;
+    maxFeePerGas?: string | number;
 
     /**
      * The maximum priority fee per gas for the transaction.
      */
-    maxPriorityFeePerGas?: string;
+    maxPriorityFeePerGas?: string | number;
 }
 
 /**

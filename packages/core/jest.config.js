@@ -6,6 +6,10 @@ module.exports = {
     runner: 'groups',
     reporters: ['default', 'jest-junit'],
     workerThreads: true,
+    coveragePathIgnorePatterns: [
+        "/dist/",
+        "/tests/"
+    ],
     coverageThreshold: {
         global: {
             branches: 94,

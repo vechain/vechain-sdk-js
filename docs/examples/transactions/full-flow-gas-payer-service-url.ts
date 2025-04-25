@@ -37,7 +37,7 @@ const senderAccount: {
 
 // Gas-payer account with private key
 const gasPayerAccount = {
-    URL: 'https://sponsor-testnet.vechain.energy/by/269'
+    URL: 'https://sponsor-testnet.vechain.energy/by/883'
 };
 
 // Create the provider (used in this case to sign the transaction with getSigner() method)
@@ -78,7 +78,7 @@ const transaction = {
 };
 
 // 3 - Estimate gas
-const gasResult = await thorClient.gas.estimateGas(
+const gasResult = await thorClient.transactions.estimateGas(
     transaction.clauses,
     senderAccount.address
 );

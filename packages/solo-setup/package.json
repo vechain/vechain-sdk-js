@@ -1,0 +1,32 @@
+{
+  "name": "@vechain/sdk-solo-setup",
+  "version": "0.0.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "compile": "npx hardhat compile",
+    "deploy-solo": "npx hardhat run scripts/deploy.ts --network vechain_solo",
+    "solo-up": "make solo-up",
+    "solo-down": "make solo-down",
+    "solo-seed": "yarn deploy-solo"
+  },
+  "peerDependencies": {
+    "@vechain/sdk-core": "*",
+    "@vechain/sdk-hardhat-plugin": "*",
+    "@vechain/sdk-logging": "*"
+  },
+  "dependencies": {
+    "hardhat": "^2.22.15"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "^3.0.8",
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@typechain/ethers-v6": "^0.5.0",
+    "@typechain/hardhat": "^9.0.0",
+    "@types/mocha": ">=10.0.9",
+    "ts-node": "^10.9.2",
+    "typechain": "^8.3.0",
+    "typescript": "^5.6.3"
+  }
+}

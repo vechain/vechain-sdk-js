@@ -28,7 +28,7 @@ import {
     THOR_SOLO_ACCOUNTS_BASE_WALLET
 } from '../../fixture';
 // eslint-disable-next-line import/no-named-default
-import { default as NodeWebSocket } from 'isomorphic-ws';
+import { default as NodeWebSocket } from 'ws';
 import { expectType } from 'tsd';
 
 const TIMEOUT = 15000; // 15-second timeout
@@ -36,6 +36,7 @@ const TIMEOUT = 15000; // 15-second timeout
 /**
  * Test suite for the Subscriptions utility methods for listening to events obtained through a websocket connection.
  *
+ * @group websocket
  * @group integration/utils/subscriptions
  */
 describe('Subscriptions Solo network tests', () => {
@@ -213,7 +214,7 @@ describe('Subscriptions Solo network tests', () => {
                 [1]
             ) as TransactionClause;
             const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
-            const gasResult = await thorSoloClient.gas.estimateGas(
+            const gasResult = await thorSoloClient.transactions.estimateGas(
                 [clause],
                 TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
             );
@@ -306,7 +307,7 @@ describe('Subscriptions Solo network tests', () => {
             data: '0x'
         };
         const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
-        const gasResult = await thorSoloClient.gas.estimateGas(
+        const gasResult = await thorSoloClient.transactions.estimateGas(
             [clause],
             TEST_ACCOUNTS.SUBSCRIPTION.VET_TRANSFERS_SUBSCRIPTION.address
         );

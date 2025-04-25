@@ -3,7 +3,14 @@ import {
     type TransactionReceiptRPC,
     type TransactionRPC
 } from './types';
-import { Hex, HexUInt, Quantity, ZERO_BYTES } from '@vechain/sdk-core';
+import {
+    Hex,
+    HexUInt,
+    Quantity,
+    ZERO_BYTES,
+    TransactionType,
+    fromTransactionType
+} from '@vechain/sdk-core';
 import {
     getNumberOfLogsAheadOfTransactionIntoBlockExpanded,
     getTransactionIndexIntoBlock
@@ -15,6 +22,34 @@ import {
     type TransactionReceipt,
     type TransactionsExpandedBlockDetail
 } from '../../../../thor-client';
+
+/**
+ * Maps VeChain transaction types to Ethereum transaction types.
+ * - VeChain Type 0 (legacy) maps to Ethereum Type 0 (legacy) -> '0x0'
+ * - VeChain Type 81 (0x51, EIP1559) maps to Ethereum Type 2 (EIP-1559) -> '0x2'
+ *
+ * @param vechainType - The VeChain transaction type (0 or 81)
+ * @returns The Ethereum transaction type as a hex string ('0x0' or '0x2')
+ */
+const mapVeChainTypeToEthereumType = (
+    vechainType: number | undefined | null
+): '0x0' | '0x2' => {
+    // If vechainType is undefined, null, or not a number, default to 0 (legacy)
+    if (
+        vechainType === undefined ||
+        vechainType === null ||
+        typeof vechainType !== 'number'
+    ) {
+        return '0x0';
+    }
+
+    // Type 81 (EIP1559) in VeChain corresponds to Type 2 (EIP-1559) in Ethereum
+    if (vechainType === fromTransactionType(TransactionType.EIP1559)) {
+        return '0x2';
+    }
+    // Default to legacy transaction type (0x0)
+    return '0x0';
+};
 
 /**
  * Output formatter for Transaction details.
@@ -34,6 +69,9 @@ const _formatTransactionToRPC = (
     chainId: string,
     txIndex: number
 ): TransactionRPC => {
+    // Default to legacy transaction type if 'type' property doesn't exist
+    const txType = 'type' in tx ? tx.type : 0;
+
     return {
         // Supported fields
         blockHash,
@@ -59,7 +97,7 @@ const _formatTransactionToRPC = (
 
         // Unsupported fields
         gasPrice: '0x0',
-        type: '0x0',
+        type: mapVeChainTypeToEthereumType(txType),
         v: '0x0',
         r: '0x0',
         s: '0x0',
@@ -169,6 +207,9 @@ function formatTransactionReceiptToRPCStandard(
         });
     });
 
+    // Default to legacy transaction type if 'type' property doesn't exist
+    const txType = 'type' in transaction ? transaction.type : 0;
+
     return {
         blockHash: receipt.meta.blockID,
         blockNumber: Quantity.of(receipt.meta.blockNumber).toString(),
@@ -188,7 +229,7 @@ function formatTransactionReceiptToRPCStandard(
         logsBloom: Hex.of(ZERO_BYTES(256)).toString(),
         cumulativeGasUsed: '0x0',
         effectiveGasPrice: '0x0',
-        type: '0x0'
+        type: mapVeChainTypeToEthereumType(txType)
     };
 }
 

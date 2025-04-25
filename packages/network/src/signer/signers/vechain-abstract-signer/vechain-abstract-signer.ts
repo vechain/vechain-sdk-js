@@ -221,7 +221,7 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         );
 
         // 3 - Estimate gas
-        const gasEstimation = await thorClient.gas.estimateGas(
+        const gasEstimation = await thorClient.transactions.estimateGas(
             populatedTransaction.clauses ??
                 this._buildClauses(populatedTransaction),
             populatedTransaction.from as string

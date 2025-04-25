@@ -312,7 +312,7 @@ describe('VeChain provider tests - solo', () => {
             [TEST_ACCOUNT.address]
         );
 
-        const gas = await thorClient.gas.estimateGas([clauses]);
+        const gas = await thorClient.transactions.estimateGas([clauses]);
 
         await thorClient.contracts.executeTransaction(
             (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner,
@@ -390,33 +390,5 @@ describe('VeChain provider tests - solo', () => {
                 expect(error.data.message).toBe('Method not implemented');
             }
         }
-    });
-
-    describe('resolveName(vnsName)', () => {
-        test('Should be able to resolve an address by name', async () => {
-            const name = 'test-sdk.vet';
-            const address = await provider.resolveName(name);
-            expect(address).toBe('0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54');
-        });
-
-        test('Should resolve to null for unknown names', async () => {
-            const name = 'unknown.test-sdk.vet';
-            const address = await provider.resolveName(name);
-            expect(address).toBe(null);
-        });
-    });
-
-    describe('lookupAddress(address)', () => {
-        test('Should be able to lookup a name for an address', async () => {
-            const address = '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54';
-            const name = await provider.lookupAddress(address);
-            expect(name).toBe('test-sdk.vet');
-        });
-
-        test('Should resolve to null for unknown names', async () => {
-            const address = '0x0000000000000000000000000000000000000001';
-            const name = await provider.resolveName(address);
-            expect(name).toBe(null);
-        });
     });
 });

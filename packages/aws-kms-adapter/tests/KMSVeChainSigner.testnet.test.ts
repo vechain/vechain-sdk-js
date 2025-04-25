@@ -19,7 +19,7 @@ import {
     removeAddressFromFeeDelegationWhitelist,
     signTransactionTestCases,
     TESTING_CONTRACT_ABI,
-    TESTING_CONTRACT_ADDRESS,
+    TESTNET_CONTRACT_ADDRESS,
     TESTNET_DELEGATE_URL,
     timeout
 } from './fixture';
@@ -104,7 +104,7 @@ describe('KMSVeChainSigner - Testnet', () => {
                     description,
                     async () => {
                         const sampleClause = Clause.callFunction(
-                            Address.of(TESTING_CONTRACT_ADDRESS),
+                            Address.of(TESTNET_CONTRACT_ADDRESS),
                             ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
                                 'deposit'
                             ),
@@ -114,10 +114,11 @@ describe('KMSVeChainSigner - Testnet', () => {
                         const originAddress =
                             await signerWithGasPayer.getAddress();
 
-                        const gasResult = await thorClient.gas.estimateGas(
-                            [sampleClause],
-                            originAddress
-                        );
+                        const gasResult =
+                            await thorClient.transactions.estimateGas(
+                                [sampleClause],
+                                originAddress
+                            );
 
                         const txBody =
                             await thorClient.transactions.buildTransactionBody(
