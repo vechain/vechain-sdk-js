@@ -1,5 +1,5 @@
 import { HttpMethod } from './HttpMethod';
-import { InvalidHTTPRequest } from '@vechain/sdk-errors';
+import { InvalidHTTPParams, InvalidHTTPRequest } from '@vechain/sdk-errors';
 import { type HttpClient } from './HttpClient';
 import { type HttpParams } from './HttpParams';
 
@@ -121,7 +121,7 @@ class SimpleHttpClient implements HttpClient {
                 });
             }
         } catch (error) {
-            throw new InvalidHTTPRequest(
+            throw new InvalidHTTPParams(
                 'HttpClient.http()',
                 (error as Error).message,
                 {
