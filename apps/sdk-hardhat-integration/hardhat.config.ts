@@ -89,7 +89,7 @@ const config: HardhatUserConfig = {
             debug: true,
             gasPayer: {
                 gasPayerServiceUrl:
-                    'https://sponsor-testnet.vechain.energy/by/269'
+                    'https://sponsor-testnet.vechain.energy/by/883'
             },
             enableDelegation: true,
             gas: 'auto',

@@ -1,5 +1,5 @@
 import { HttpMethod } from './HttpMethod';
-import { InvalidHTTPRequest } from '@vechain/sdk-errors';
+import { InvalidHTTPParams, InvalidHTTPRequest } from '@vechain/sdk-errors';
 import { type HttpClient } from './HttpClient';
 import { type HttpParams } from './HttpParams';
 
@@ -96,6 +96,8 @@ class SimpleHttpClient implements HttpClient {
         const timeoutId = setTimeout(() => {
             controller.abort();
         }, this.timeout);
+        // setup
+        let url: URL;
         try {
             // Remove leading slash from path
             if (path.startsWith('/')) {
@@ -106,7 +108,7 @@ class SimpleHttpClient implements HttpClient {
             if (!this.baseURL.endsWith('/')) {
                 baseURL += '/';
             }
-            const url = new URL(path, baseURL);
+            url = new URL(path, baseURL);
             if (params?.query != null) {
                 Object.entries(params.query).forEach(([key, value]) => {
                     url.searchParams.append(key, String(value));
@@ -118,6 +120,21 @@ class SimpleHttpClient implements HttpClient {
                     headers.append(key, String(value));
                 });
             }
+        } catch (error) {
+            throw new InvalidHTTPParams(
+                'HttpClient.http()',
+                (error as Error).message,
+                {
+                    method,
+                    url: !this.isValidUrl(this.baseURL)
+                        ? path
+                        : new URL(path, this.baseURL).toString()
+                },
+                error
+            );
+        }
+        // send request
+        try {
             const response = await fetch(url, {
                 method,
                 headers: params?.headers as HeadersInit,
@@ -140,9 +157,14 @@ class SimpleHttpClient implements HttpClient {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-return
                 return await response.json();
             }
-            throw new Error(`HTTP ${response.status} ${response.statusText}`, {
-                cause: response
-            });
+            // get error message from response
+            const errorMessage = await response.text();
+            throw new Error(
+                `HTTP ${response.status} ${response.statusText} ${errorMessage}`,
+                {
+                    cause: response
+                }
+            );
         } catch (error) {
             throw new InvalidHTTPRequest(
                 'HttpClient.http()',
