@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
-import { Hex, Txt } from '../../src';
 import { InvalidDataType, InvalidOperation } from '@vechain/sdk-errors';
+import { Hex, Txt } from '../../src';
 
 /**
  * Test Hex class.
@@ -128,6 +128,14 @@ describe('Hex class tests', () => {
             expect(hex).toBeInstanceOf(Hex);
             expect(hex.toString()).toEqual(expectedHexString);
             expect(hex.toString(true)).toEqual(expectedCompactHexString);
+
+            const expectedZeroHexString = '0x00000000000000000000000000000000';
+            const expectedCompactZeroHexString = '0x0';
+            const zeroHex = Hex.of(0);
+            expect(zeroHex.toString(true)).toEqual(
+                expectedCompactZeroHexString
+            );
+            expect(zeroHex.toString()).toEqual(expectedZeroHexString);
         });
 
         test('Return an Hex instance if the passed argument is string - negative value without 0x prefix', () => {
