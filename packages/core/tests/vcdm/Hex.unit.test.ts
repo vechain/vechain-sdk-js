@@ -120,7 +120,7 @@ describe('Hex class tests', () => {
             expect(hex.toString()).toEqual(exp.toLowerCase()); // Normalized from is lower case.
         });
 
-        test('Return a compact string representation of the object', () => {
+        test('Return a compact string representation of the Hex instance', () => {
             const exp = BigInt(10000000000000); // Base gas price for legacy transactions
             const expectedHexString = '0x09184e72a000';
             const expectedCompactHexString = '0x9184e72a000';
