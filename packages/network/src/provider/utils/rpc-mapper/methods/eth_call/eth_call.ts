@@ -64,7 +64,7 @@ const ethCall = async (
             } satisfies SimulateTransactionOptions
         );
 
-        if (simulatedTx.length === 0 || simulatedTx[0].reverted) {
+        if (simulatedTx[0].reverted) {
             throw new JSONRPCInternalError(
                 'eth_call()',
                 'Method "eth_call" failed when simulating the transaction.',
