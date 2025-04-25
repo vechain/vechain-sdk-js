@@ -15,7 +15,7 @@ const ethGasPrice = async (thorClient: ThorClient): Promise<string> => {
         const {
             result: { plain }
         } = await thorClient.contracts.getBaseGasPrice();
-        return HexUInt.of(plain as bigint).toString();
+        return HexUInt.of(plain as bigint).toString(true);
     }
 
     const maxPriorityFeePerGas = await thorClient.gas.getMaxPriorityFeePerGas();
@@ -23,7 +23,7 @@ const ethGasPrice = async (thorClient: ThorClient): Promise<string> => {
     const baseFee = HexUInt.of(baseFeePerGas).bi;
     const priority = HexUInt.of(maxPriorityFeePerGas).bi;
 
-    return HexUInt.of(baseFee + priority).toString();
+    return HexUInt.of(baseFee + priority).toString(true);
 };
 
 export { ethGasPrice };

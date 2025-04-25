@@ -339,10 +339,17 @@ class Hex implements VeChainDataModel<Hex> {
     /**
      * Returns a string representation of the object.
      *
+     * @param {boolean} compact - Whether to compact the string representation.
      * @return {string} The string representation of the object.
      */
-    public toString(): string {
-        return (this.sign < 0 ? '-0x' : '0x') + this.digits;
+    public toString(compact: boolean = false): string {
+        let digitsToString = this.digits;
+        if (compact) {
+            const stripped = digitsToString.replace(/^0+/, '');
+            digitsToString = stripped === '' ? '0' : stripped;
+        }
+
+        return (this.sign < 0 ? '-0x' : '0x') + digitsToString;
     }
 }
 

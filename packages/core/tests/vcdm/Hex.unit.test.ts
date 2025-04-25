@@ -120,6 +120,16 @@ describe('Hex class tests', () => {
             expect(hex.toString()).toEqual(exp.toLowerCase()); // Normalized from is lower case.
         });
 
+        test('Return a compact string representation of the object', () => {
+            const exp = BigInt(10000000000000);
+            const expectedHexString = '0x09184e72a000';
+            const expectedCompactHexString = '0x9184e72a000';
+            const hex = Hex.of(exp);
+            expect(hex).toBeInstanceOf(Hex);
+            expect(hex.toString()).toEqual(expectedHexString);
+            expect(hex.toString(true)).toEqual(expectedCompactHexString);
+        });
+
         test('Return an Hex instance if the passed argument is string - negative value without 0x prefix', () => {
             const exp = '-C0c0a';
             const hex = Hex.of(exp);
