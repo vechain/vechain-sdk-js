@@ -139,7 +139,7 @@ const clauses: TransactionClause[] = [
 ];
 
 // Get gas estimate
-const gasResult = await thorSoloClient.gas.estimateGas(
+const gasResult = await thorSoloClient.transactions.estimateGas(
     clauses,
     senderAccount.address
 );
@@ -206,7 +206,7 @@ const body: TransactionBody = {
     expiration: 32, // tx will expire after block #16772280 + 32
     clauses,
     gasPriceCoef: 0,
-    gas: HexUInt.of(Transaction.intrinsicGas(clauses).wei).toString(), // use thor.gas.estimateGas() for better estimation
+    gas: HexUInt.of(Transaction.intrinsicGas(clauses).wei).toString(), // use thor.transaction.estimateGas() for better estimation
     dependsOn: null,
     nonce: 1
 };
@@ -256,7 +256,7 @@ const txABody: TransactionBody = {
     expiration: 0,
     clauses: txAClauses,
     gasPriceCoef: 0,
-    gas: HexUInt.of(Transaction.intrinsicGas(txAClauses).wei).toString(), // use thor.gas.estimateGas() for better estimation
+    gas: HexUInt.of(Transaction.intrinsicGas(txAClauses).wei).toString(), // use thor.transactions.estimateGas() for better estimation
     dependsOn: null,
     nonce: 1
 };
@@ -270,7 +270,7 @@ const txBBody: TransactionBody = {
     expiration: 0,
     clauses: txBClauses,
     gasPriceCoef: 0,
-    gas: HexUInt.of(Transaction.intrinsicGas(txBClauses).wei).toString(), // use thor.gas.estimateGas() for better estimation
+    gas: HexUInt.of(Transaction.intrinsicGas(txBClauses).wei).toString(), // use thor.transactions.estimateGas() for better estimation
     dependsOn: null,
     nonce: 2
 };
@@ -412,7 +412,7 @@ const transaction = {
 };
 
 // 3 - Estimate gas
-const gasResult = await thorSoloClient.gas.estimateGas(
+const gasResult = await thorSoloClient.transactions.estimateGas(
     transaction.clauses,
     transaction.simulateTransactionOptions.caller
 );
@@ -508,7 +508,7 @@ const transaction = {
 };
 
 // 3 - Estimate gas
-const gasResult = await thorSoloClient.gas.estimateGas(
+const gasResult = await thorSoloClient.transactions.estimateGas(
     transaction.clauses,
     transaction.simulateTransactionOptions.caller
 );
@@ -572,7 +572,7 @@ const senderAccount: {
 
 // Gas-payer account with private key
 const gasPayerAccount = {
-    URL: 'https://sponsor-testnet.vechain.energy/by/269'
+    URL: 'https://sponsor-testnet.vechain.energy/by/883'
 };
 
 // Create the provider (used in this case to sign the transaction with getSigner() method)
@@ -613,7 +613,7 @@ const transaction = {
 };
 
 // 3 - Estimate gas
-const gasResult = await thorClient.gas.estimateGas(
+const gasResult = await thorClient.transactions.estimateGas(
     transaction.clauses,
     senderAccount.address
 );

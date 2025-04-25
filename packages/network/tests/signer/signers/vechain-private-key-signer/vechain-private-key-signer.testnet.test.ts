@@ -153,10 +153,11 @@ describe('VeChain base signer tests - testnet', () => {
                             [123]
                         ) as TransactionClause;
 
-                        const gasResult = await thorClient.gas.estimateGas(
-                            [sampleClause],
-                            origin.address
-                        );
+                        const gasResult =
+                            await thorClient.transactions.estimateGas(
+                                [sampleClause],
+                                origin.address
+                            );
 
                         const txBody =
                             await thorClient.transactions.buildTransactionBody(

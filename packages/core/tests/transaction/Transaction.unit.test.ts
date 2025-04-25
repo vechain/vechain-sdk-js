@@ -14,7 +14,8 @@ import {
     type TransactionBody,
     type TransactionClause,
     Units,
-    VTHO
+    VTHO,
+    ZERO_ADDRESS
 } from '../../src';
 
 const GasPayerPrivateKeyFix = HexUInt.of(
@@ -37,7 +38,8 @@ const SignerFix = {
 
 const IntrinsicGasFix = VTHO.of(37432n, Units.wei);
 
-const TxBodyFix: TransactionBody = {
+// Legacy transaction body
+const TxLegacyBodyFix: TransactionBody = {
     chainTag: 1,
     blockRef: '0x00000000aabbccdd',
     expiration: 32,
@@ -59,14 +61,22 @@ const TxBodyFix: TransactionBody = {
     nonce: 12345678
 };
 
-const TransactionFixture = {
+// EIP-1559 transaction body
+const TxEIP1559BodyFix: TransactionBody = {
+    ...TxLegacyBodyFix,
+    gasPriceCoef: undefined,
+    maxFeePerGas: 10000000000000,
+    maxPriorityFeePerGas: 1000000
+};
+
+const LegacyTransactionFixture = {
     invalidReservedFieldNotTrimmed: {
         encodedUnsigned: HexUInt.of(
             'f8560184aabbccdd20f840df947567d83b7b8d80addcb281a71d54fc7b3364ffed82271086000000606060df947567d83b7b8d80addcb281a71d54fc7b3364ffed824e208600000060606081808252088083bc614ec28080'
         ).bytes
     },
     undelegated: {
-        body: TxBodyFix,
+        body: TxLegacyBodyFix,
         transactionHash: HexUInt.of(
             '0x2a1c25ce0d66f45276a5f308b99bf410e2fc7d5b6ea37a49f2ab9f1da9446478'
         ),
@@ -83,7 +93,7 @@ const TransactionFixture = {
     },
     delegated: {
         body: {
-            ...TxBodyFix,
+            ...TxLegacyBodyFix,
             reserved: {
                 features: 1
             }
@@ -104,7 +114,7 @@ const TransactionFixture = {
     },
     delegatedWithUnusedFields: {
         body: {
-            ...TxBodyFix,
+            ...TxLegacyBodyFix,
             reserved: {
                 features: 1,
                 unused: [
@@ -135,11 +145,11 @@ const TransactionFixture = {
  * Test Transaction class.
  * @group unit/transaction
  */
-describe('Transaction class tests', () => {
+describe('Transaction class Legacy tests', () => {
     describe('Construction tests', () => {
         describe('of unsigned transactions', () => {
             test('Transaction <- of undelegated transactions', () => {
-                const expected = TransactionFixture.undelegated;
+                const expected = LegacyTransactionFixture.undelegated;
                 const actual = Transaction.of(expected.body);
                 expect(actual).toBeInstanceOf(Transaction);
                 expect(actual.signature).toBeUndefined();
@@ -148,7 +158,9 @@ describe('Transaction class tests', () => {
                 expect(
                     actual
                         .getTransactionHash()
-                        .isEqual(TransactionFixture.undelegated.transactionHash)
+                        .isEqual(
+                            LegacyTransactionFixture.undelegated.transactionHash
+                        )
                 ).toBe(true);
                 expect(() => actual.id).toThrowError(
                     UnavailableTransactionField
@@ -166,7 +178,7 @@ describe('Transaction class tests', () => {
             });
 
             test('Transaction <- of delegated transactions', () => {
-                const expected = TransactionFixture.delegated;
+                const expected = LegacyTransactionFixture.delegated;
                 const actual = Transaction.of(expected.body);
                 expect(actual).toBeInstanceOf(Transaction);
                 expect(actual.isSigned).toBe(false);
@@ -192,7 +204,8 @@ describe('Transaction class tests', () => {
             });
 
             test('Transaction <- of delegated transactions with unused fields', () => {
-                const expected = TransactionFixture.delegatedWithUnusedFields;
+                const expected =
+                    LegacyTransactionFixture.delegatedWithUnusedFields;
                 const actual = Transaction.of(expected.body);
                 expect(actual).toBeInstanceOf(Transaction);
                 expect(actual.isSigned).toBe(false);
@@ -219,7 +232,7 @@ describe('Transaction class tests', () => {
 
             test('Transaction <- of delegated transactions simulating partial signed transmission between two different JS runtimes.', () => {
                 const signed = Transaction.of(
-                    TransactionFixture.delegated.body
+                    LegacyTransactionFixture.delegated.body
                 ).signAsSender(SignerFix.privateKey);
 
                 const reconstructed = Transaction.of(
@@ -237,14 +250,15 @@ describe('Transaction class tests', () => {
                 );
                 expect(actual.isDelegated).toBe(true);
                 expect(actual.isSigned).toBe(true);
-                const expected = TransactionFixture.delegated.encodedSigned;
+                const expected =
+                    LegacyTransactionFixture.delegated.encodedSigned;
                 expect(actual.encoded).toEqual(expected);
             });
         });
 
         describe('of signed transactions', () => {
             test('Transaction <- of undelegated transactions', () => {
-                const expected = TransactionFixture.undelegated;
+                const expected = LegacyTransactionFixture.undelegated;
                 const actual = Transaction.of(expected.body).sign(
                     SignerFix.privateKey
                 );
@@ -271,7 +285,7 @@ describe('Transaction class tests', () => {
             });
 
             test('Transaction <- of delegated transactions', () => {
-                const expected = TransactionFixture.delegated;
+                const expected = LegacyTransactionFixture.delegated;
                 const actual = Transaction.of(
                     expected.body
                 ).signAsSenderAndGasPayer(
@@ -299,7 +313,8 @@ describe('Transaction class tests', () => {
             });
 
             test('Transaction <- of delegated transactions with unused fields', () => {
-                const expected = TransactionFixture.delegatedWithUnusedFields;
+                const expected =
+                    LegacyTransactionFixture.delegatedWithUnusedFields;
                 const actual = Transaction.of(
                     expected.body
                 ).signAsSenderAndGasPayer(
@@ -331,7 +346,7 @@ describe('Transaction class tests', () => {
             test('Throw <- of invalid body', () => {
                 expect(() =>
                     Transaction.of({
-                        ...TransactionFixture.delegated.body,
+                        ...LegacyTransactionFixture.delegated.body,
                         blockRef: '0xFEE1DEAD'
                     })
                 ).toThrowError(InvalidTransactionField);
@@ -342,7 +357,7 @@ describe('Transaction class tests', () => {
     describe('decode method tests', () => {
         describe('decode undelegated', () => {
             test('Transaction <- decode undelegated unsigned', () => {
-                const expected = TransactionFixture.undelegated;
+                const expected = LegacyTransactionFixture.undelegated;
                 const actual = Transaction.decode(
                     expected.encodedUnsigned,
                     false
@@ -367,7 +382,7 @@ describe('Transaction class tests', () => {
             });
 
             test('Transaction <- decode undelegated signed', () => {
-                const expected = TransactionFixture.undelegated;
+                const expected = LegacyTransactionFixture.undelegated;
                 const actual = Transaction.decode(expected.encodedSigned, true);
                 expect(actual).toBeInstanceOf(Transaction);
                 expect(actual.body).toEqual(expected.body);
@@ -387,7 +402,7 @@ describe('Transaction class tests', () => {
 
         describe('decode delegated', () => {
             test('Transaction <- decode delegated unsigned', () => {
-                const expected = TransactionFixture.delegated;
+                const expected = LegacyTransactionFixture.delegated;
                 const actual = Transaction.decode(
                     expected.encodedUnsigned,
                     false
@@ -413,7 +428,7 @@ describe('Transaction class tests', () => {
             });
 
             test('Transaction <- decode delegated signed', () => {
-                const expected = TransactionFixture.delegated;
+                const expected = LegacyTransactionFixture.delegated;
                 const actual = Transaction.decode(expected.encodedSigned, true);
                 expect(actual).toBeInstanceOf(Transaction);
                 expect(actual.body).toEqual(expected.body);
@@ -437,7 +452,8 @@ describe('Transaction class tests', () => {
 
         describe('decode delegated with unused fields', () => {
             test('Transaction <- decode delegates with unused fields unsigned', () => {
-                const expected = TransactionFixture.delegatedWithUnusedFields;
+                const expected =
+                    LegacyTransactionFixture.delegatedWithUnusedFields;
                 const actual = Transaction.decode(
                     expected.encodedUnsigned,
                     false
@@ -463,7 +479,8 @@ describe('Transaction class tests', () => {
             });
 
             test('Transaction <- decode delegates with unused fields signed', () => {
-                const expected = TransactionFixture.delegatedWithUnusedFields;
+                const expected =
+                    LegacyTransactionFixture.delegatedWithUnusedFields;
                 const actual = Transaction.decode(expected.encodedSigned, true);
                 expect(actual).toBeInstanceOf(Transaction);
                 expect(actual.body).toEqual(expected.body);
@@ -490,7 +507,7 @@ describe('Transaction class tests', () => {
                 // Not trimmed reserved field error
                 expect(() =>
                     Transaction.decode(
-                        TransactionFixture.invalidReservedFieldNotTrimmed
+                        LegacyTransactionFixture.invalidReservedFieldNotTrimmed
                             .encodedUnsigned,
                         false
                     )
@@ -648,7 +665,7 @@ describe('Transaction class tests', () => {
     describe('sign method tests', () => {
         test('signature <- undelegated tx', () => {
             const actual = Transaction.of(
-                TransactionFixture.undelegated.body
+                LegacyTransactionFixture.undelegated.body
             ).sign(SignerFix.privateKey);
             expect(actual.signature).toBeDefined();
             expect(actual.signature?.length).toBe(Secp256k1.SIGNATURE_LENGTH);
@@ -656,7 +673,7 @@ describe('Transaction class tests', () => {
 
         test('Throw <- delegated tx', () => {
             expect(() =>
-                Transaction.of(TransactionFixture.delegated.body).sign(
+                Transaction.of(LegacyTransactionFixture.delegated.body).sign(
                     SignerFix.privateKey
                 )
             ).toThrowError(InvalidTransactionField);
@@ -664,7 +681,7 @@ describe('Transaction class tests', () => {
 
         test('Throw <- invalid private keys', () => {
             expect(() =>
-                Transaction.of(TransactionFixture.undelegated.body).sign(
+                Transaction.of(LegacyTransactionFixture.undelegated.body).sign(
                     HexUInt.of('0xF00DBABE').bytes // https://en.wikipedia.org/wiki/Hexspeak
                 )
             ).toThrowError(InvalidSecp256k1PrivateKey);
@@ -674,13 +691,13 @@ describe('Transaction class tests', () => {
     describe('signAsGasPayer method tests', () => {
         test('signature (complete) <- delegated tx', () => {
             const expected = Transaction.of(
-                TransactionFixture.delegated.body
+                LegacyTransactionFixture.delegated.body
             ).signAsSenderAndGasPayer(
                 SignerFix.privateKey,
                 GasPayerFix.privateKey
             );
             const signed = Transaction.of(
-                TransactionFixture.delegated.body
+                LegacyTransactionFixture.delegated.body
             ).signAsSender(SignerFix.privateKey);
             const signer = Address.ofPrivateKey(SignerFix.privateKey);
             const actual = signed.signAsGasPayer(
@@ -692,7 +709,7 @@ describe('Transaction class tests', () => {
 
         test('Throw <- undelegated tx', () => {
             expect(() => {
-                Transaction.of(TransactionFixture.undelegated.body)
+                Transaction.of(LegacyTransactionFixture.undelegated.body)
                     .sign(SignerFix.privateKey)
                     .signAsGasPayer(
                         Address.ofPrivateKey(SignerFix.privateKey),
@@ -705,7 +722,7 @@ describe('Transaction class tests', () => {
             expect(
                 (
                     Transaction.of(
-                        TransactionFixture.delegated.body
+                        LegacyTransactionFixture.delegated.body
                     ).signAsGasPayer(
                         Address.ofPrivateKey(SignerFix.privateKey),
                         SignerFix.privateKey
@@ -717,7 +734,7 @@ describe('Transaction class tests', () => {
         test('Throw <- invalid private keys - delegated tx', () => {
             expect(() =>
                 Transaction.of(
-                    TransactionFixture.undelegated.body
+                    LegacyTransactionFixture.undelegated.body
                 ).signAsSender(
                     HexUInt.of('0xF00DBABE').bytes // https://en.wikipedia.org/wiki/Hexspeak
                 )
@@ -728,13 +745,13 @@ describe('Transaction class tests', () => {
     describe('signAsSender method tests', () => {
         test('signature (incomplete) <- signed', () => {
             const expected = Transaction.of(
-                TransactionFixture.delegated.body
+                LegacyTransactionFixture.delegated.body
             ).signAsSenderAndGasPayer(
                 SignerFix.privateKey,
                 GasPayerFix.privateKey
             );
             const actual = Transaction.of(
-                TransactionFixture.delegated.body
+                LegacyTransactionFixture.delegated.body
             ).signAsSender(SignerFix.privateKey);
             expect(actual.signature).toBeDefined(); // The signer's signature exists, but...
             // ... the gasPayer signature is missing, hence...
@@ -747,7 +764,7 @@ describe('Transaction class tests', () => {
         test('Throw <- undelegated tx', () => {
             expect(() =>
                 Transaction.of(
-                    TransactionFixture.undelegated.body
+                    LegacyTransactionFixture.undelegated.body
                 ).signAsSender(SignerFix.privateKey)
             ).toThrowError(NotDelegatedTransaction);
         });
@@ -755,7 +772,7 @@ describe('Transaction class tests', () => {
         test('Throw <- invalid private keys - signer', () => {
             expect(() =>
                 Transaction.of(
-                    TransactionFixture.undelegated.body
+                    LegacyTransactionFixture.undelegated.body
                 ).signAsSender(
                     HexUInt.of('0xF00DBABE').bytes // https://en.wikipedia.org/wiki/Hexspeak
                 )
@@ -766,7 +783,7 @@ describe('Transaction class tests', () => {
     describe('signAsSenderAndGasPayer method tests', () => {
         test('signature <- delegated tx', () => {
             const actual = Transaction.of(
-                TransactionFixture.delegated.body
+                LegacyTransactionFixture.delegated.body
             ).signAsSenderAndGasPayer(
                 SignerFix.privateKey,
                 GasPayerFix.privateKey
@@ -784,7 +801,7 @@ describe('Transaction class tests', () => {
         test('Throw <- undelegated tx', () => {
             expect(() =>
                 Transaction.of(
-                    TransactionFixture.undelegated.body
+                    LegacyTransactionFixture.undelegated.body
                 ).signAsSenderAndGasPayer(
                     SignerFix.privateKey,
                     GasPayerFix.privateKey
@@ -795,7 +812,7 @@ describe('Transaction class tests', () => {
         test('Throw <- invalid private keys - signer', () => {
             expect(() =>
                 Transaction.of(
-                    TransactionFixture.undelegated.body
+                    LegacyTransactionFixture.undelegated.body
                 ).signAsSenderAndGasPayer(
                     HexUInt.of('0xF00DBABE').bytes, // https://en.wikipedia.org/wiki/Hexspeak
                     GasPayerFix.privateKey
@@ -806,7 +823,7 @@ describe('Transaction class tests', () => {
         test('Throw <- invalid private keys - delegated tx', () => {
             expect(() => {
                 Transaction.of(
-                    TransactionFixture.undelegated.body
+                    LegacyTransactionFixture.undelegated.body
                 ).signAsSenderAndGasPayer(
                     SignerFix.privateKey,
                     HexUInt.of('0xF00DBABE').bytes // https://en.wikipedia.org/wiki/Hexspeak
@@ -816,4 +833,71 @@ describe('Transaction class tests', () => {
     });
 });
 
-export { TransactionFixture };
+describe('Transaction class EIP-1559 tests', () => {
+    test('encode/decode <- unsigned EIP-1559 tx', () => {
+        const tx = Transaction.of(TxEIP1559BodyFix);
+        const encoded = tx.encoded;
+        const decoded = Transaction.decode(encoded, false);
+        expect(decoded).toEqual(tx);
+    });
+
+    test('encode/decode <- signed EIP-1559 tx', () => {
+        const tx = Transaction.of(TxEIP1559BodyFix).sign(SignerFix.privateKey);
+        const encoded = tx.encoded;
+        const decoded = Transaction.decode(encoded, true);
+        expect(decoded).toEqual(tx);
+        expect(decoded.isSigned).toBe(true);
+    });
+
+    test('exception <- maxPriorityFeePerGas field not specified', () => {
+        const clauses = [
+            {
+                to: ZERO_ADDRESS,
+                value: 1,
+                data: '0x'
+            }
+        ];
+        // Create transaction body without maxPriorityFeePerGas
+        const transactionBodyWithoutMaxPriorityFeePerGas = {
+            chainTag: 0xf6,
+            blockRef: '0x1234567890',
+            latestBlock: '0x0',
+            expiration: 32,
+            clauses,
+            gas: 21000,
+            maxFeePerGas: 10000000000000,
+            dependsOn: null,
+            nonce: 12345677
+        };
+        expect(() =>
+            Transaction.of(transactionBodyWithoutMaxPriorityFeePerGas)
+        ).toThrowError(InvalidTransactionField);
+    });
+
+    test('exception <- maxFeePerGas field not specified', () => {
+        const clauses = [
+            {
+                to: ZERO_ADDRESS,
+                value: 1,
+                data: '0x'
+            }
+        ];
+        // Create transaction body without maxFeePerGas
+        const transactionBodyWithoutMaxPriorityFeePerGas = {
+            chainTag: 0xf6,
+            blockRef: '0x1234567890',
+            latestBlock: '0x0',
+            expiration: 32,
+            clauses,
+            gas: 21000,
+            maxPriorityFeePerGas: 10000000000000,
+            dependsOn: null,
+            nonce: 12345677
+        };
+        expect(() =>
+            Transaction.of(transactionBodyWithoutMaxPriorityFeePerGas)
+        ).toThrowError(InvalidTransactionField);
+    });
+});
+
+export { LegacyTransactionFixture as TransactionFixture };

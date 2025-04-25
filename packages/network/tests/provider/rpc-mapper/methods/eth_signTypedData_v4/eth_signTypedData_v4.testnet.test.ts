@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
     RPC_METHODS,
     TESTNET_URL,
-    THOR_SOLO_ACCOUNTS,
     ThorClient,
     VeChainProvider
 } from '../../../../../src';
@@ -13,6 +12,7 @@ import {
     JSONRPCInvalidParams
 } from '@vechain/sdk-errors';
 import { eip712TestCases } from '../../../../signer/signers/vechain-private-key-signer/fixture';
+import { THOR_SOLO_SEEDED_ACCOUNTS } from '@vechain/sdk-solo-setup';
 
 /**
  * RPC Mapper integration tests for 'eth_signTypedData_v4' method
@@ -56,7 +56,7 @@ describe('RPC Mapper - eth_signTypedData_v4 method tests', () => {
             const signedTransaction = (await provider.request({
                 method: RPC_METHODS.eth_signTypedData_v4,
                 params: [
-                    THOR_SOLO_ACCOUNTS[0].address,
+                    THOR_SOLO_SEEDED_ACCOUNTS[0].address,
                     {
                         domain: eip712TestCases.valid.domain,
                         types: eip712TestCases.valid.types,
@@ -64,6 +64,26 @@ describe('RPC Mapper - eth_signTypedData_v4 method tests', () => {
                         primaryType: eip712TestCases.valid.primaryType
                     }
                 ]
+            })) as string;
+
+            // Signed transaction should be a hex string
+            expect(Hex.isValid0x(signedTransaction)).toBe(true);
+        });
+
+        /**
+         * Should be able to sign a typed message with a JSON string as input
+         */
+        test('Should be able to sign a typed message with a JSON string as input', async () => {
+            const typedDataString = JSON.stringify({
+                domain: eip712TestCases.valid.domain,
+                types: eip712TestCases.valid.types,
+                message: eip712TestCases.valid.data,
+                primaryType: eip712TestCases.valid.primaryType
+            });
+
+            const signedTransaction = (await provider.request({
+                method: RPC_METHODS.eth_signTypedData_v4,
+                params: [THOR_SOLO_SEEDED_ACCOUNTS[0].address, typedDataString]
             })) as string;
 
             // Signed transaction should be a hex string
@@ -83,7 +103,7 @@ describe('RPC Mapper - eth_signTypedData_v4 method tests', () => {
                 provider.request({
                     method: RPC_METHODS.eth_signTypedData_v4,
                     params: [
-                        THOR_SOLO_ACCOUNTS[0].address,
+                        THOR_SOLO_SEEDED_ACCOUNTS[0].address,
                         {
                             domain: 'INVALID',
                             types: eip712TestCases.valid.types,
@@ -93,6 +113,21 @@ describe('RPC Mapper - eth_signTypedData_v4 method tests', () => {
                     ]
                 })
             ).rejects.toThrowError(JSONRPCInternalError);
+        });
+
+        /**
+         * Should be NOT able to sign with an invalid JSON string
+         */
+        test('Should be NOT able to sign with an invalid JSON string', async () => {
+            await expect(
+                provider.request({
+                    method: RPC_METHODS.eth_signTypedData_v4,
+                    params: [
+                        THOR_SOLO_SEEDED_ACCOUNTS[0].address,
+                        '{invalid json string'
+                    ]
+                })
+            ).rejects.toThrowError(JSONRPCInvalidParams);
         });
 
         /**
@@ -107,7 +142,7 @@ describe('RPC Mapper - eth_signTypedData_v4 method tests', () => {
                 providerWithoutWallet.request({
                     method: RPC_METHODS.eth_signTypedData_v4,
                     params: [
-                        THOR_SOLO_ACCOUNTS[0].address,
+                        THOR_SOLO_SEEDED_ACCOUNTS[0].address,
                         {
                             domain: eip712TestCases.valid.domain,
                             types: eip712TestCases.valid.types,
@@ -127,7 +162,7 @@ describe('RPC Mapper - eth_signTypedData_v4 method tests', () => {
             await expect(
                 provider.request({
                     method: RPC_METHODS.eth_signTypedData_v4,
-                    params: [THOR_SOLO_ACCOUNTS[0].address]
+                    params: [THOR_SOLO_SEEDED_ACCOUNTS[0].address]
                 })
             ).rejects.toThrowError(JSONRPCInvalidParams);
         });

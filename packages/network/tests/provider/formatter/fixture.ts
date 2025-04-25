@@ -323,6 +323,7 @@ const transactionFixtures = [
             chainTag: 39,
             blockRef: '0x010b7b5e57827fe3',
             expiration: 18,
+            type: 0,
             clauses: [],
             gasPriceCoef: 0,
             gas: 399535,

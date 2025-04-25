@@ -14,6 +14,8 @@ export * from './eth_blockNumber';
 export * from './eth_call';
 export * from './eth_chainId';
 export * from './eth_estimateGas';
+export * from './eth_feeHistory';
+export * from './eth_maxPriorityFeePerGas';
 export * from './eth_gasPrice';
 export * from './eth_getBalance';
 export * from './eth_getBlockByHash';
