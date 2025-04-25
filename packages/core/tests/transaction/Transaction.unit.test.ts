@@ -900,4 +900,81 @@ describe('Transaction class EIP-1559 tests', () => {
     });
 });
 
+describe('Transaction validation', () => {
+    test('Should reject transactions with both legacy and EIP-1559 parameters', () => {
+        // Create a transaction body with both parameter types
+        const mixedBody: TransactionBody = {
+            ...TxLegacyBodyFix,
+            maxFeePerGas: 10000000000000
+            // maxPriorityFeePerGas: 1000000
+        };
+
+        // Should throw InvalidTransactionField when using Transaction.of
+        expect(() => Transaction.of(mixedBody)).toThrow(
+            InvalidTransactionField
+        );
+    });
+});
+
+describe('Transaction parameter validation', () => {
+    test('Should accept valid legacy transactions', () => {
+        // Only legacy params
+        const legacyBody: TransactionBody = {
+            ...TxLegacyBodyFix
+        };
+
+        // Should not throw error
+        expect(() => Transaction.of(legacyBody)).not.toThrow();
+    });
+
+    test('Should accept valid EIP-1559 transactions', () => {
+        // Only EIP-1559 params
+        const eip1559Body: TransactionBody = {
+            ...TxEIP1559BodyFix
+        };
+
+        // Should not throw error
+        expect(() => Transaction.of(eip1559Body)).not.toThrow();
+    });
+
+    test('Should reject legacy transactions with maxFeePerGas', () => {
+        // Legacy with one EIP-1559 param
+        const mixedBody: TransactionBody = {
+            ...TxLegacyBodyFix,
+            maxFeePerGas: 10000000000000
+        };
+
+        // Should throw error
+        expect(() => Transaction.of(mixedBody)).toThrow(
+            InvalidTransactionField
+        );
+    });
+
+    test('Should reject legacy transactions with maxPriorityFeePerGas', () => {
+        // Legacy with the other EIP-1559 param
+        const mixedBody: TransactionBody = {
+            ...TxLegacyBodyFix,
+            maxPriorityFeePerGas: 1000000
+        };
+
+        // Should throw error
+        expect(() => Transaction.of(mixedBody)).toThrow(
+            InvalidTransactionField
+        );
+    });
+
+    test('Should reject EIP-1559 transactions with gasPriceCoef', () => {
+        // EIP-1559 with legacy param
+        const mixedBody: TransactionBody = {
+            ...TxEIP1559BodyFix,
+            gasPriceCoef: 128
+        };
+
+        // Should throw error
+        expect(() => Transaction.of(mixedBody)).toThrow(
+            InvalidTransactionField
+        );
+    });
+});
+
 export { LegacyTransactionFixture as TransactionFixture };
