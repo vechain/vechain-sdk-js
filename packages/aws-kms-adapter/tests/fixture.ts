@@ -150,7 +150,7 @@ const fundVTHO = async (
 /**
  * Delegate url fixture to test signing transactions with delegation by URL
  */
-const TESTNET_DELEGATE_URL = 'https://sponsor-testnet.vechain.energy/by/705';
+const TESTNET_DELEGATE_URL = 'https://sponsor-testnet.vechain.energy/by/883';
 
 const FEE_DELEGATION_ABI = [
     {
