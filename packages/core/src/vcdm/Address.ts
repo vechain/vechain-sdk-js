@@ -7,7 +7,7 @@ import { Secp256k1 } from '../secp256k1';
 import { Txt } from './Txt';
 
 /**
- * Full Qualified Path.
+ * Full-Qualified Path
  */
 const FQP = 'packages/core/src/vcdm/Address.ts!';
 

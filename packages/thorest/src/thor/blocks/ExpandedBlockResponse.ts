@@ -24,6 +24,12 @@ class ExpandedBlockResponse extends Block {
      */
     readonly transactions: Receipt[];
 
+    /**
+     * Initializes an instance of the class using the provided JSON object.
+     *
+     * @param {ExpandedBlockResponseJSON} json - The JSON object used to initialize the instance.
+     * @throws {IllegalArgumentError} Throws an error if the JSON object is invalid or if an error occurs during parsing.
+     */
     constructor(json: ExpandedBlockResponseJSON) {
         try {
             super(json);

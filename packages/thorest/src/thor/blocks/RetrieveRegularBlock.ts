@@ -7,7 +7,7 @@ import { type ThorRequest } from '../ThorRequest';
 import { type ThorResponse } from '../ThorResponse';
 
 /**
- * Full Qualified Path.
+ * Full-Qualified Path
  */
 const FQP = 'packages/thorest/src/thor/blocks/RetrieveRegularBlock.ts!';
 
@@ -17,12 +17,28 @@ const FQP = 'packages/thorest/src/thor/blocks/RetrieveRegularBlock.ts!';
 class RetrieveRegularBlock
     implements ThorRequest<RetrieveRegularBlock, RegularBlockResponse | null>
 {
+    /**
+     * Represents the HTTP path for this specific API endpoint.
+     */
     protected readonly path: HttpPath;
 
+    /**
+     * Constructs an instance of the class with the specified HTTP path.
+     *
+     * @param {HttpPath} path - The HTTP path to initialize the instance with.
+     */
     protected constructor(path: HttpPath) {
         this.path = path;
     }
 
+    /**
+     * Asynchronously fetches and processes a block response using the provided HTTP client.
+     *
+     * @param {HttpClient} httpClient - An HTTP client used to perform the request.
+     * @return {Promise<ThorResponse<RetrieveRegularBlock, RegularBlockResponse | null>>}
+     * Returns a promise that resolves to a ThorResponse containing the requested block.
+     * @throws RetrieveBlockError if the response is invalid or the request fails.
+     */
     async askTo(
         httpClient: HttpClient
     ): Promise<

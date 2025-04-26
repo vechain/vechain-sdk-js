@@ -7,7 +7,7 @@ import { type ThorRequest } from '../ThorRequest';
 import { type ThorResponse } from '../ThorResponse';
 
 /**
- * Full Qualified Path.
+ * Full-Qualified Path
  */
 const FQP = 'packages/thorest/src/thor/blocks/RetrieveRawBlock.ts!';
 

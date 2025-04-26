@@ -3,7 +3,7 @@ import { Block } from './Block';
 import { type RegularBlockResponseJSON } from './RegularBlockResponseJSON';
 
 /**
- * Full Qualified Path.
+ * Full-Qualified Path
  */
 const FQP = 'packages/thorest/src/thor/blocks/RegularBlockResponse.ts!';
 

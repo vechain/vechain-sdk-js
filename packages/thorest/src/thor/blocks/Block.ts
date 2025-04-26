@@ -9,7 +9,7 @@ import {
 import { type BlockJSON } from './BlockJSON';
 
 /**
- * Full Qualified Path.
+ * Full-Qualified Path
  */
 const FQP = 'packages/thorest/src/thor/blocks/Block.ts!';
 

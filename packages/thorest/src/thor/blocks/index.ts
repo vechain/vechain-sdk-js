@@ -8,5 +8,3 @@ export * from './RegularBlockResponse';
 export * from './RegularBlockResponseJSON';
 export * from './RetrieveRawBlock';
 export * from './RetrieveRegularBlock';
-
-export * from './XBlockResponse';

@@ -2,7 +2,7 @@ import { HexUInt, IllegalArgumentError } from '@vechain/sdk-core';
 import { type RawTxJSON } from './RawTxJSON';
 
 /**
- * Full Qualified Path.
+ * Full-Qualified Path
  */
 const FQP = 'packages/thorest/src/thor/blocks/RawTx.ts!';
 
