@@ -15,12 +15,28 @@ const FQP = 'packages/thorest/src/thor/blocks/RetrieveRawBlock.ts!';
  * [Retrieve a raw block](http://localhost:8669/doc/stoplight-ui/#/paths/blocks-revision/get)
  */
 class RetrieveRawBlock implements ThorRequest<RetrieveRawBlock, RawTx | null> {
+    /**
+     * Represents the HTTP path for this specific API endpoint.
+     */
     public readonly path: HttpPath;
 
+    /**
+     * Constructs an instance of the class with the specified HTTP path.
+     *
+     * @param {HttpPath} path - The HTTP path to initialize the instance with.
+     */
     constructor(path: HttpPath) {
         this.path = path;
     }
 
+    /**
+     * Asynchronously fetches and processes a block response using the provided HTTP client.
+     *
+     * @param {HttpClient} httpClient - An HTTP client used to perform the request.
+     * @return {Promise<ThorResponse<RetrieveRawBlock, RegularBlockResponse | null>>}
+     * Returns a promise that resolves to a ThorResponse containing the requested block.
+     * @throws RetrieveBlockError if the response is invalid or the request fails.
+     */
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveRawBlock, RawTx | null>> {
@@ -60,6 +76,12 @@ class RetrieveRawBlock implements ThorRequest<RetrieveRawBlock, RawTx | null> {
         }
     }
 
+    /**
+     * Creates an instance of RetrieveExpandedBlock using the provided revision.
+     *
+     * @param {Revision} revision - The revision object used to generate the block's path.
+     * @return {RetrieveRawBlock} A new instance of RetrieveExpandedBlock with the specified path.
+     */
     static of(revision: Revision): RetrieveRawBlock {
         return new RetrieveRawBlock({ path: `/blocks/${revision}` });
     }

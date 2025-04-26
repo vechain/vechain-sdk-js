@@ -82,6 +82,12 @@ class RetrieveRegularBlock
         }
     }
 
+    /**
+     * Creates an instance of RetrieveRegularBlock using the provided revision.
+     *
+     * @param {Revision} revision - The revision object used to generate the block's path.
+     * @return {RetrieveRegularBlock} A new instance of RetrieveRegularBlock with the specified path.
+     */
     static of(revision: Revision): RetrieveRegularBlock {
         return new RetrieveRegularBlock({ path: `/blocks/${revision}` });
     }

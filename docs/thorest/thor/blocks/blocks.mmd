@@ -29,6 +29,11 @@ classDiagram
         Address signer
         BlockJSON toJSON()
     }
+    class ExpandedBlockResponse {
+        boolean isTrunk
+        boolean isFinalized
+        Receipt[] transactions
+    }
     class RawTx {
         HexUInt raw
         RawTxJSON toJSON()
@@ -40,20 +45,34 @@ classDiagram
         TxId[]  transactions
         RegularBlockResponseJSON toJson()
     }
+    class RetrieveExpandedBlock {
+        ExpandedBlockResponse | null of(Revision revision)$
+        ThorResponse~RetrieveExpandedBlock, ExpandedBlockResponse|null~ askTo(HttpClient httpClient)
+    }
     class RetrieveRawBlock {
         RawTx|null of(Revision revision)$
         ThorRespone~RetrieveRawBlock, TxRaw|null~ astTo(HttpClient httpClient)
     }
     class RetrieveRegularBlock {
-        RetrieveRegularBlock|null of(Revision  revision)$
+        RetrieveRegularBlock|null of(Revision revision)$
         ThorResponse~RetrieveRegularBlock, RegularBlockResponse|null~ askTo(HttpClient httpClient)
     }
+    ThorError <|-- RetrieveBlockError
+    ThorRequest <|.. RetrieveExpandedBlock
     ThorRequest <|.. RetrieveRawBlock
     ThorRequest <|.. RetrieveRegularBlock
+    ExpandedBlockResponse --|> Block
     RegularBlockResponse --|> Block
-    RetrieveBlockError --|> ThorError
+%%    RetrieveBlockError --|> ThorError
+    RetrieveExpandedBlock "askTo" --> ExpandedBlockResponse
+%%    RetrieveExpandedBlock "throws" --> RetrieveBlockError
     RetrieveRawBlock "askTo" --> RawTx
-    RetrieveRawBlock "throws" --> RetrieveBlockError
+%%    RetrieveRawBlock "throws" --> RetrieveBlockError
     RetrieveRegularBlock "askTo" --> RegularBlockResponse
-    RetrieveRegularBlock  "throws" --> RetrieveBlockError
+%%    RetrieveRegularBlock "throws" --> RetrieveBlockError
+%%    RetrieveBlockError <-- "throws" RetrieveExpandedBlock
+%%    RetrieveBlockError <-- "throws" RetrieveRawBlock
+%%    RetrieveBlockError <-- "throws" RetrieveRegularBlock
+
+
 

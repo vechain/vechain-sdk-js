@@ -20,7 +20,7 @@ class ExpandedBlockResponse extends Block {
     readonly isFinalized: boolean;
 
     /**
-     * All included transactions, expanded, to include their receipts.
+     * All included transactions, expanded to include their receipts.
      */
     readonly transactions: Receipt[];
 
