@@ -60,8 +60,10 @@ class RegularBlockResponse extends Block {
             ...super.toJSON(),
             isTrunk: this.isTrunk,
             isFinalized: this.isFinalized,
-            transactions: this.transactions.map((txId) => txId.toString())
-        } satisfies RegularBlockResponseJSON;
+            transactions: this.transactions.map((txId: TxId): string =>
+                txId.toString()
+            )
+        };
     }
 }
 
