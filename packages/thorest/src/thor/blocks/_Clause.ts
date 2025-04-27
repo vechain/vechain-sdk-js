@@ -1,4 +1,4 @@
-import { Address, HexUInt, IllegalArgumentError, UInt } from '../../../../core/src';
+import { Address, HexUInt, IllegalArgumentError, Quantity } from '../../../../core/src';
 import { type _ClauseJSON } from './_ClauseJSON';
 
 /**
@@ -19,7 +19,7 @@ class _Clause {
     /**
      * The amount (wei) of VET to be transferred.
      */
-    readonly value: UInt;
+    readonly value: bigint;
 
     /**
      * The input data for the clause (in bytes).
@@ -35,7 +35,7 @@ class _Clause {
     constructor(json: _ClauseJSON) {
         try {
             this.to = json.to !== null ? Address.of(json.to) : undefined;
-            this.value = UInt.of(HexUInt.of(json.value).n);
+            this.value = HexUInt.of(json.value).bi;
             this.data = HexUInt.of(json.data);
         } catch (error) {
             throw new IllegalArgumentError(
@@ -55,7 +55,7 @@ class _Clause {
     toJSON(): _ClauseJSON {
         return {
             to: this.to !== undefined ? this.to.toString() : null,
-            value: HexUInt.of(this.value.valueOf()).toString(),
+            value: Quantity.of(this.value).toString(),
             data: this.data.toString()
         } satisfies _ClauseJSON;
     }

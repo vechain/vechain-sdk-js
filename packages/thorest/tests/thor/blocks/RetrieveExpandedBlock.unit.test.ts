@@ -154,6 +154,6 @@ describe('RetrieveExpandedBlock UNIT tests', () => {
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toBeInstanceOf(ExpandedBlockResponse);
-        expect(actual?.toJSON()).toEqual(expected);
+        expect(actual).toEqual(new ExpandedBlockResponse(expected));
     });
 });

@@ -1,4 +1,4 @@
-import { Address, BlockRef, HexUInt, IllegalArgumentError, TxId, UInt } from '../../../../core/src';
+import { Address, BlockRef, HexUInt, IllegalArgumentError, Nonce, Quantity, TxId, UInt } from '../../../../core/src';
 import { _Clause } from './_Clause';
 import { type _ClauseJSON } from './_ClauseJSON';
 import { type _OutputJSON } from './_OutputJSON';
@@ -8,7 +8,7 @@ import { _Output } from './_Output';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/thorest/src/thor/blocks/_Receipt.ts'; // todo: check once moved
+const FQP = 'packages/thorest/src/thor/blocks/_Receipt.ts!'; // todo: check once moved
 
 /**
  * [Receipt](http://localhost:8669/doc/stoplight-ui/#/schemas/Receipt)
@@ -86,9 +86,9 @@ class _Receipt {
     readonly dependsOn?: TxId;
 
     /**
-     * The transaction nonce is a 64-bit unsigned integer that is determined by the transaction sender.
+     * The transaction nonce is a 64-bit unsigned integer determined by the transaction sender.
      */
-    readonly nonce: UInt;
+    readonly nonce: Nonce;
 
     /**
      * The amount of gas used by the transaction.
@@ -102,13 +102,15 @@ class _Receipt {
 
     /**
      * The amount of energy (VTHO) in wei, used to pay for the gas.
+     * It can be outside the range of safe numbers, hence represented as bigint.
      */
-    readonly paid: UInt;
+    readonly paid: bigint;
 
     /**
      * The amount of energy (VTHO) in wei, paid to the block signer as a reward.
+     * It can be outside the range of safe numbers, hence represented as bigint.
      */
-    readonly reward: UInt;
+    readonly reward: bigint;
 
     /**
      * Indicates whether the transaction was reverted (true means reverted).
@@ -163,11 +165,11 @@ class _Receipt {
                 json.dependsOn !== undefined && json.dependsOn !== null
                     ? TxId.of(json.dependsOn)
                     : undefined;
-            this.nonce = UInt.of(HexUInt.of(json.nonce).n);
+            this.nonce = Nonce.of(json.nonce);
             this.gasUsed = UInt.of(json.gasUsed);
             this.gasPayer = Address.of(json.gasPayer);
-            this.paid = UInt.of(HexUInt.of(json.paid).n);
-            this.reward = UInt.of(HexUInt.of(json.reward).n);
+            this.paid = HexUInt.of(json.paid).bi;
+            this.reward = HexUInt.of(json.reward).bi;
             this.reverted = json.reverted;
             this.outputs = json.outputs.map(
                 (output: _OutputJSON): _Output => new _Output(output)
@@ -188,7 +190,7 @@ class _Receipt {
      * @return {_ReceiptJSON} The JSON object representing the current instance.
      */
     toJSON(): _ReceiptJSON {
-        return {
+        const json = {
             id: this.id.toString(),
             type: this.type !== undefined ? this.type.valueOf() : null,
             origin: this.origin.toString(),
@@ -205,23 +207,23 @@ class _Receipt {
                 this.gasPriceCoef !== undefined
                     ? this.gasPriceCoef.valueOf()
                     : null,
-            maxFeePerGas:
-                this.maxFeePerGas !== undefined
-                    ? HexUInt.of(this.maxFeePerGas.valueOf()).toString()
-                    : null,
             gas: this.gas.valueOf(),
             dependsOn:
                 this.dependsOn !== undefined ? this.dependsOn.toString() : null,
-            nonce: HexUInt.of(this.nonce.valueOf()).toString(),
+            nonce: this.nonce.toString(),
             gasUsed: this.gasUsed.valueOf(),
             gasPayer: this.gasPayer.toString(),
-            paid: HexUInt.of(this.paid.valueOf()).toString(),
-            reward: HexUInt.of(this.reward.valueOf()).toString(),
+            paid: Quantity.of(this.paid).toString(), // trim not significant zeros
+            reward: Quantity.of(this.reward).toString(), // trim not significant zeros
             reverted: this.reverted,
             outputs: this.outputs.map(
                 (output: _Output): _OutputJSON => output.toJSON()
             )
-        } satisfies _ReceiptJSON;
+        };
+        if (this.maxFeePerGas !== undefined) {
+            HexUInt.of(this.maxFeePerGas.valueOf()).toString();
+        }
+        return json satisfies _ReceiptJSON;
     }
 }
 

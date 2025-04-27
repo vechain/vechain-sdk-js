@@ -1,7 +1,8 @@
 import { Block } from './Block';
-import { Receipt, type ReceiptJSON } from '../transactions';
-import { type ExpandedBlockResponseJSON } from './ExpandedBlockResponseJSON';
 import { IllegalArgumentError } from '@vechain/sdk-core';
+import { _Receipt } from './_Receipt';
+import { type ExpandedBlockResponseJSON } from './ExpandedBlockResponseJSON';
+import { type _ReceiptJSON } from './_ReceiptJSON';
 
 const FQP = 'packages/thorest/src/thor/blocks/ExpandedBlockResponse.ts!';
 
@@ -22,7 +23,7 @@ class ExpandedBlockResponse extends Block {
     /**
      * All included transactions, expanded to include their receipts.
      */
-    readonly transactions: Receipt[];
+    readonly transactions: _Receipt[];
 
     /**
      * Initializes an instance of the class using the provided JSON object.
@@ -36,7 +37,8 @@ class ExpandedBlockResponse extends Block {
             this.isTrunk = json.isTrunk;
             this.isFinalized = json.isFinalized;
             this.transactions = json.transactions.map(
-                (transaction: ReceiptJSON): Receipt => new Receipt(transaction)
+                (transaction: _ReceiptJSON): _Receipt =>
+                    new _Receipt(transaction)
             );
         } catch (error) {
             throw new IllegalArgumentError(
@@ -46,6 +48,22 @@ class ExpandedBlockResponse extends Block {
                 error instanceof Error ? error : undefined
             );
         }
+    }
+
+    /**
+     * Converts the current instance of the class into a JSON representation.
+     *
+     * @return {ExpandedBlockResponseJSON} A JSON object containing the serialized representation of the current instance, including properties such as `isTrunk`, `isFinalized`, and a list of `transactions` as JSON objects.
+     */
+    toJSON(): ExpandedBlockResponseJSON {
+        return {
+            ...super.toJSON(),
+            isTrunk: this.isTrunk,
+            isFinalized: this.isFinalized,
+            transactions: this.transactions.map(
+                (transaction: _Receipt): _ReceiptJSON => transaction.toJSON()
+            )
+        };
     }
 }
 

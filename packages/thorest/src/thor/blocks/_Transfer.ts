@@ -4,7 +4,7 @@ import { type _TransferJSON } from './_TransferJSON';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/thorest/src/thor/blocks/_Transfer.ts'; // todo: check once moved
+const FQP = 'packages/thorest/src/thor/blocks/_Transfer.ts!'; // todo: check once moved
 
 /**
  * [Transfer](http://localhost:8669/doc/stoplight-ui/#/schemas/Transfer)

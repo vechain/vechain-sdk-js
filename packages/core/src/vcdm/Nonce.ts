@@ -11,6 +11,8 @@ const FQP = 'packages/core/src/vcdm/Nonce.ts!';
  * The Nonce class represents a hexadecimal unsigned integer with a fixed number of digits.
  * It extends the HexUInt class to provide specific constraints and validation for nonces.
  * This class is immutable and ensures the value adheres to the specified digit requirements.
+ *
+ * [Transaction Uniqueness](https://docs.vechain.org/core-concepts/transactions/meta-transaction-features/transaction-uniqueness)
  */
 class Nonce extends HexUInt {
     /**
@@ -22,7 +24,7 @@ class Nonce extends HexUInt {
      * @type {number}
      * @constant
      */
-    private static readonly DIGITS = 8;
+    private static readonly DIGITS = 16; // 8 bytes, 64 bits.
 
     /**
      * Protected constructor for initializing a Nonce object with a given HexUInt instance.
