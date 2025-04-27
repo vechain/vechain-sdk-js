@@ -143,7 +143,7 @@ describe('RetrieveRegularBlock SOLO tests', () => {
 
     test('ok <- block BEST', async () => {
         const actual = (
-            await RetrieveExpandedBlock.of(Revision.of(1)).askTo(httpClient)
+            await RetrieveExpandedBlock.of(Revision.BEST).askTo(httpClient)
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toBeInstanceOf(ExpandedBlockResponse);

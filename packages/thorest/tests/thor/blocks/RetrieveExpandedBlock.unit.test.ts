@@ -6,7 +6,8 @@ import {
     type ExpandedBlockResponseJSON,
     type HttpClient,
     RetrieveBlockError,
-    RetrieveExpandedBlock, RetrieveRegularBlock
+    RetrieveExpandedBlock,
+    RetrieveRegularBlock
 } from '../../../src';
 
 class InvalidRevision extends Revision {
@@ -74,6 +75,42 @@ describe('RetrieveExpandedBlock UNIT tests', () => {
             expect(error).toBeInstanceOf(RetrieveBlockError);
             expect((error as RetrieveBlockError).status).toBe(status);
         }
+    });
+
+    test('ok <- block 0', async () => {
+        const status = 200;
+        const expected = {
+            number: 0,
+            id: '0x00000000c05a20fbca2bf6ae3affba6af4a74b800b585bf7a4988aba7aea69f6',
+            size: 170,
+            parentID:
+                '0xffffffff00000000000000000000000000000000000000000000000000000000',
+            timestamp: 1526400000,
+            gasLimit: 10000000,
+            beneficiary: '0x0000000000000000000000000000000000000000',
+            gasUsed: 0,
+            totalScore: 0,
+            txsRoot:
+                '0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0',
+            txsFeatures: 0,
+            stateRoot:
+                '0x93de0ffb1f33bc0af053abc2a87c4af44594f5dcb1cb879dd823686a15d68550',
+            receiptsRoot:
+                '0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0',
+            com: false,
+            signer: '0x0000000000000000000000000000000000000000',
+            isTrunk: true,
+            isFinalized: true,
+            transactions: []
+        } satisfies ExpandedBlockResponseJSON;
+        const actual = (
+            await RetrieveExpandedBlock.of(Revision.of(0)).askTo(
+                mockHttpClient<Response>(mockResponse(expected, status))
+            )
+        ).response;
+        expect(actual).toBeDefined();
+        expect(actual).toBeInstanceOf(ExpandedBlockResponse);
+        expect(actual).toEqual(new ExpandedBlockResponse(expected));
     });
 
     test('ok <- block 1', async () => {
@@ -185,7 +222,7 @@ describe('RetrieveExpandedBlock UNIT tests', () => {
             transactions: []
         };
         const actual = (
-            await RetrieveExpandedBlock.of(Revision.of(1)).askTo(
+            await RetrieveExpandedBlock.of(Revision.BEST).askTo(
                 mockHttpClient<Response>(mockResponse(expected, status))
             )
         ).response;
@@ -221,7 +258,7 @@ describe('RetrieveExpandedBlock UNIT tests', () => {
             transactions: []
         };
         const actual = (
-            await RetrieveExpandedBlock.of(Revision.of(1)).askTo(
+            await RetrieveExpandedBlock.of(Revision.FINALIZED).askTo(
                 mockHttpClient<Response>(mockResponse(expected, status))
             )
         ).response;
