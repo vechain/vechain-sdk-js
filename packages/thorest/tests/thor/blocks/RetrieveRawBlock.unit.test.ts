@@ -70,13 +70,25 @@ describe('RetrieveBlock unit tests', () => {
         }
     });
 
+    test('ok <- block 0', async () => {
+        const status = 200;
+        const expected: RawTxJSON = {
+            raw: '0xf8a5a0ffffffff00000000000000000000000000000000000000000000000000000000845afb0400839896809400000000000000000000000000000000000000008080a045b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0a093de0ffb1f33bc0af053abc2a87c4af44594f5dcb1cb879dd823686a15d68550a045b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c080'
+        } satisfies RawTxJSON;
+
+        const actual = await RetrieveRawBlock.of(Revision.of(0)).askTo(
+            mockHttpClient<Response>(mockResponse<RawTxJSON>(expected, status))
+        );
+        expect(actual.response).toEqual(new RawTx(expected));
+    });
+
     test('ok <- block 1', async () => {
         const status = 200;
         const expected: RawTxJSON = {
-            raw: '0xf90169a000000000c05a20fbca2bf6ae3affba6af4a74b800b585bf7a4988aba7aea69f68467eea8f48609184e72a00094f077b491b355e64048ce21e3a6fc4751eeea77fa82aefa01e2a05a873aadffe804027e25e5f8af14d0bda855fe7a2d5dd8a8a6243d7bc099179701a092f406093ab2618208f736ee05a60c0ea0f2b5fb35e30439d4c2214857e46fc3a07b4823bf3a69934d810599180473a870518fd72fbff09593605fa38d065c941db892cb26e6fc3ea86abadd77b30ec0c9cdcc29c026373d564eb6115c115f90826c4d34a37e603ba5bb4d0624d09f63a34d298967a0e26dc258b92af1d1805f9e8aa401038fcdb55e197a2e5fc78218a8a27721a160741b3b8f1a0e40b8d619e44f238bac11efbf9c879da3247c604d560247a9ece6f6e09cf0252735d9bd90ff5f0d8dc23664e4a844fea3a7a1f7029e5d5499c2e9a093de0ffb1f33bc0af053abc2a87c4af44594f5dcb1cb879dd823686a15d68550808609184e72a000'
+            raw: '0xf90167a000000000c05a20fbca2bf6ae3affba6af4a74b800b585bf7a4988aba7aea69f684680d24808408f0d18094f077b491b355e64048ce21e3a6fc4751eeea77fa82aefa01e2a05e4859b2ecf88a48f3071067cd63f383081b613261fd3419aeefeb480d7614ba01a07f65d724154a90fd1c6a5295e773cb5850bf14c371b61ade71ca0b2a1f49317ba07b4823bf3a69934d810599180473a870518fd72fbff09593605fa38d065c941db8920244cd7bc3104689c5cd06b33609223a0eccfb2755a550eeb171eab52aa16d3410c70c78115410cbd7c0e86ddef81b890dda7c815caa2ce3a24168501872da3600038fcdb55e197a2e5fc78218a8a27721a160741b3b8f1a0e40b8d619e44f238bac11efbf9c879da3247c604d560247a9ece6f6e09cf0252735d9bd90ff5f0d8dc23664e4a844fea3a7a1f7029e5d5499c2e9a093de0ffb1f33bc0af053abc2a87c4af44594f5dcb1cb879dd823686a15d68550808609184e72a000'
         } satisfies RawTxJSON;
 
-        const actual = await RetrieveRawBlock.of(Revision.BEST).askTo(
+        const actual = await RetrieveRawBlock.of(Revision.of(1)).askTo(
             mockHttpClient<Response>(mockResponse<RawTxJSON>(expected, status))
         );
         expect(actual.response).toEqual(new RawTx(expected));
@@ -99,7 +111,7 @@ describe('RetrieveBlock unit tests', () => {
         const expected: RawTxJSON = {
             raw: '0xf8a5a0ffffffff00000000000000000000000000000000000000000000000000000000845afb0400839896809400000000000000000000000000000000000000008080a045b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0a093de0ffb1f33bc0af053abc2a87c4af44594f5dcb1cb879dd823686a15d68550a045b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c080'
         } satisfies RawTxJSON;
-        const actual = await RetrieveRawBlock.of(Revision.BEST).askTo(
+        const actual = await RetrieveRawBlock.of(Revision.FINALIZED).askTo(
             mockHttpClient<Response>(mockResponse<RawTxJSON>(expected, status))
         );
         expect(actual.response).toEqual(new RawTx(expected));

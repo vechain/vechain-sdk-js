@@ -76,33 +76,69 @@ describe('RetrieveRegularBlock UNIT tests', () => {
         }
     });
 
+    test('ok <- block 0', async () => {
+        const status = 200;
+        const expected = {
+            number: 0,
+            id: '0x00000000c05a20fbca2bf6ae3affba6af4a74b800b585bf7a4988aba7aea69f6',
+            size: 170,
+            parentID:
+                '0xffffffff00000000000000000000000000000000000000000000000000000000',
+            timestamp: 1526400000,
+            gasLimit: 10000000,
+            beneficiary: '0x0000000000000000000000000000000000000000',
+            gasUsed: 0,
+            totalScore: 0,
+            txsRoot:
+                '0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0',
+            txsFeatures: 0,
+            stateRoot:
+                '0x93de0ffb1f33bc0af053abc2a87c4af44594f5dcb1cb879dd823686a15d68550',
+            receiptsRoot:
+                '0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0',
+            com: false,
+            signer: '0x0000000000000000000000000000000000000000',
+            isTrunk: true,
+            isFinalized: true,
+            transactions: []
+        } satisfies RegularBlockResponseJSON;
+        const actual = (
+            await RetrieveRegularBlock.of(Revision.of(0)).askTo(
+                mockHttpClient<Response>(mockResponse(expected, status))
+            )
+        ).response;
+        expect(actual).toBeDefined();
+        expect(actual).toBeInstanceOf(RegularBlockResponse);
+        expect(actual).toEqual(new RegularBlockResponse(expected));
+    });
+
     test('ok <- block 1', async () => {
         const status = 200;
         const expected = {
             number: 1,
-            id: '0x00000001922786e4dc260d2c1bc5ae0ac217ce49a3171c970921436a446eb7c7',
-            size: 558,
+            id: '0x0000000133d1fd47b8f94239b86d89aa42f8c652a02e1298d3ffcb88dacfc865',
+            size: 556,
             parentID:
                 '0x00000000c05a20fbca2bf6ae3affba6af4a74b800b585bf7a4988aba7aea69f6',
-            timestamp: 1743426529,
-            gasLimit: 10000000000000,
-            beneficiary: '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa',
+            timestamp: 1745691776,
+            gasLimit: 150000000,
+            beneficiary: '0xf077b491b355e64048ce21e3a6fc4751eeea77fa',
             gasUsed: 44794,
-            baseFeePerGas: '0x9184e72a000',
             totalScore: 1,
             txsRoot:
-                '0xb554e10b358360a117495105e14fd20dd92bd95d74a37beb4cd56cbed5f34d35',
+                '0x5e4859b2ecf88a48f3071067cd63f383081b613261fd3419aeefeb480d7614ba',
             txsFeatures: 1,
             stateRoot:
-                '0xf3ff1d20688aa6035f8f2ad0e079bad84832aed08267320130f048a5157811ed',
+                '0x7f65d724154a90fd1c6a5295e773cb5850bf14c371b61ade71ca0b2a1f49317b',
             receiptsRoot:
                 '0x7b4823bf3a69934d810599180473a870518fd72fbff09593605fa38d065c941d',
             com: false,
-            signer: '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa',
+            signer: '0xf077b491b355e64048ce21e3a6fc4751eeea77fa',
             isTrunk: true,
             isFinalized: false,
+            baseFeePerGas: '0x9184e72a000',
             transactions: [
-                '0x500029471f4ae29e0520ac8a4e3f97bba59fec770edeb3dd687c408634c42969'
+                '0x9cea6e21fa8e829f04f527dd4bc2737c0c10ae1c290ce083232690a81c684d8d'
             ]
         } satisfies RegularBlockResponseJSON;
         const actual = (
@@ -112,39 +148,41 @@ describe('RetrieveRegularBlock UNIT tests', () => {
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toBeInstanceOf(RegularBlockResponse);
-        expect(actual?.toJSON()).toEqual(expected);
+        expect(actual).toEqual(new RegularBlockResponse(expected));
     });
 
     test('ok <- block BEST', async () => {
         const status = 200;
         const expected = {
-            number: 123,
-            id: '0x0000000000000000000000000000000000000000',
-            size: 456,
-            parentID: '0x0000000000000000000000000000000000000000',
-            timestamp: 789,
-            gasLimit: 1000,
-            beneficiary: '0x0000000000000000000000000000000000000000',
-            gasUsed: 500,
-            totalScore: 100,
-            txsRoot: '0x0000000000000000000000000000000000000000',
+            number: 1899,
+            id: '0x0000076b7f485e2b1e09bdbdeb62e9fe0c42f9b9269d07015bf8b0a72238af95',
+            size: 366,
+            parentID:
+                '0x0000076a4319867444bb92ce20b4ce068eb526269e1583baf8c390c223926197',
+            timestamp: 1745772860,
+            gasLimit: 150000000,
+            beneficiary: '0xf077b491b355e64048ce21e3a6fc4751eeea77fa',
+            gasUsed: 0,
+            totalScore: 1899,
+            txsRoot:
+                '0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0',
             txsFeatures: 1,
-            stateRoot: '0x0000000000000000000000000000000000000000',
-            receiptsRoot: '0x0000000000000000000000000000000000000000',
-            com: true,
-            signer: '0x0000000000000000000000000000000000000000',
+            stateRoot:
+                '0x921a9a23b453acebc662889d6bb3d427d73b022b9cdc6fcafe24fc4b6d5d3f31',
+            receiptsRoot:
+                '0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0',
+            com: false,
+            signer: '0xf077b491b355e64048ce21e3a6fc4751eeea77fa',
             isTrunk: true,
-            isFinalized: true,
-            transactions: ['0x0000000000000000000000000000000000000000'],
-            baseFeePerGas: '0x00'
+            isFinalized: false,
+            baseFeePerGas: '0x9184e72a000',
+            transactions: []
         } satisfies RegularBlockResponseJSON;
 
         const actual = await RetrieveRegularBlock.of(Revision.BEST).askTo(
             mockHttpClient<Response>(mockResponse(expected, status))
         );
-        expect(actual.response?.toJSON()).toEqual(
-            new RegularBlockResponse(expected).toJSON()
-        );
+        expect(actual.response).toEqual(new RegularBlockResponse(expected));
     });
 
     test('ok <- block FINALIZED', async () => {
