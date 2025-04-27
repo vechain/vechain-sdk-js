@@ -63,16 +63,10 @@ classDiagram
     ThorRequest <|.. RetrieveRegularBlock
     ExpandedBlockResponse --|> Block
     RegularBlockResponse --|> Block
-%%    RetrieveBlockError --|> ThorError
     RetrieveExpandedBlock "askTo" --> ExpandedBlockResponse
-%%    RetrieveExpandedBlock "throws" --> RetrieveBlockError
     RetrieveRawBlock "askTo" --> RawTx
-%%    RetrieveRawBlock "throws" --> RetrieveBlockError
     RetrieveRegularBlock "askTo" --> RegularBlockResponse
-%%    RetrieveRegularBlock "throws" --> RetrieveBlockError
-%%    RetrieveBlockError <-- "throws" RetrieveExpandedBlock
-%%    RetrieveBlockError <-- "throws" RetrieveRawBlock
-%%    RetrieveBlockError <-- "throws" RetrieveRegularBlock
+    RetrieveBlockError <-- "throws" ThorRequest
 
 
 
