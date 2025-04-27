@@ -6,5 +6,7 @@ export * from './RawTx';
 export * from './RawTxJSON';
 export * from './RegularBlockResponse';
 export * from './RegularBlockResponseJSON';
+export * from './RetrieveBlockError';
+export * from './RetrieveExpandedBlock';
 export * from './RetrieveRawBlock';
 export * from './RetrieveRegularBlock';

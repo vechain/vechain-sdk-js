@@ -4,10 +4,10 @@ import {
     FetchHttpClient,
     RawTx,
     type RawTxJSON,
+    RetrieveBlockError,
     RetrieveRawBlock,
     ThorNetworks
 } from '../../../src';
-import { RetrieveBlockError } from '../../../src/thor/blocks/RetrieveBlockError';
 
 class InvalidRevision extends Revision {
     constructor() {

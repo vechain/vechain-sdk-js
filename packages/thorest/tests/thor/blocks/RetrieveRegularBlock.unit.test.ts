@@ -1,13 +1,13 @@
 import fastJsonStableStringify from 'fast-json-stable-stringify';
-import { Revision } from '@vechain/sdk-core';
 import { describe, expect, jest, test } from '@jest/globals';
+import { Revision } from '@vechain/sdk-core';
 import {
     type HttpClient,
     RegularBlockResponse,
     type RegularBlockResponseJSON,
+    RetrieveBlockError,
     RetrieveRegularBlock
 } from '../../../src';
-import { RetrieveBlockError } from '../../../src/thor/blocks/RetrieveBlockError';
 
 class InvalidRevision extends Revision {
     constructor() {
@@ -56,7 +56,7 @@ describe('RetrieveRegularBlock UNIT tests', () => {
     });
 
     test('err <- incomplete block from Thor OK response', async () => {
-        const status = 200; // Thor answers OK but with an bad body.
+        const status = 200; // Thor answers OK but with a bad body.
         const incompleteBlock: Partial<RegularBlockResponseJSON> = {
             number: 123,
             id: '0x0000000000000000000000000000000000000000'
@@ -104,7 +104,7 @@ describe('RetrieveRegularBlock UNIT tests', () => {
             transactions: [
                 '0x500029471f4ae29e0520ac8a4e3f97bba59fec770edeb3dd687c408634c42969'
             ]
-        };
+        } satisfies RegularBlockResponseJSON;
         const actual = (
             await RetrieveRegularBlock.of(Revision.of(1)).askTo(
                 mockHttpClient<Response>(mockResponse(expected, status))

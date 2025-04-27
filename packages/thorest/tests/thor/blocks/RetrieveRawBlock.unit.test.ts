@@ -3,12 +3,11 @@ import {
     type HttpClient,
     RawTx,
     type RawTxJSON,
-    type RegularBlockResponseJSON,
+    RetrieveBlockError,
     RetrieveRawBlock
 } from '../../../src';
 import { Revision } from '@vechain/sdk-core';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
-import { RetrieveBlockError } from '../../../src/thor/blocks/RetrieveBlockError';
 
 class InvalidRevision extends Revision {
     constructor() {
@@ -57,18 +56,12 @@ describe('RetrieveBlock unit tests', () => {
     });
 
     test('err <- incomplete block from Thor OK response', async () => {
-        const status = 200; // Thor answers OK but with an bad body.
-        const incompleteBlock: Partial<RegularBlockResponseJSON> = {
-            number: 123,
-            id: '0x0000000000000000000000000000000000000000'
-        };
+        const status = 200; // Thor answers OK but with a bad body.
+        const incompleteBlock: Partial<RawTxJSON> = {};
         try {
             await RetrieveRawBlock.of(Revision.BEST).askTo(
                 mockHttpClient<Response>(
-                    mockResponse(
-                        incompleteBlock as RegularBlockResponseJSON,
-                        status
-                    )
+                    mockResponse(incompleteBlock as RawTxJSON, status)
                 )
             );
         } catch (error) {

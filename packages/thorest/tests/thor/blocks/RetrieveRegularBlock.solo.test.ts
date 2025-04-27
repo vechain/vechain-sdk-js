@@ -2,11 +2,11 @@ import { describe, expect, test } from '@jest/globals';
 import {
     FetchHttpClient,
     RegularBlockResponse,
+    RetrieveBlockError,
     RetrieveRegularBlock,
     ThorNetworks
 } from '../../../src';
 import { Revision } from '@vechain/sdk-core';
-import { RetrieveBlockError } from '../../../src/thor/blocks/RetrieveBlockError';
 
 class InvalidRevision extends Revision {
     constructor() {
