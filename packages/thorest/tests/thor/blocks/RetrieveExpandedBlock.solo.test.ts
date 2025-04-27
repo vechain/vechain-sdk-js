@@ -2,10 +2,8 @@ import { describe, expect, test } from '@jest/globals';
 import {
     ExpandedBlockResponse,
     FetchHttpClient,
-    RegularBlockResponse,
     RetrieveBlockError,
     RetrieveExpandedBlock,
-    RetrieveRegularBlock,
     ThorNetworks
 } from '../../../src';
 import { Revision } from '../../../../core/src';
@@ -141,6 +139,14 @@ describe('RetrieveRegularBlock SOLO tests', () => {
         expect(actual).toBeDefined();
         expect(actual).toBeInstanceOf(ExpandedBlockResponse);
         expect(actual).toEqual(new ExpandedBlockResponse(expected));
+    });
+
+    test('ok <- block BEST', async () => {
+        const actual = (
+            await RetrieveExpandedBlock.of(Revision.of(1)).askTo(httpClient)
+        ).response;
+        expect(actual).toBeDefined();
+        expect(actual).toBeInstanceOf(ExpandedBlockResponse);
     });
 
     test('ok <- block FINALIZED', async () => {
