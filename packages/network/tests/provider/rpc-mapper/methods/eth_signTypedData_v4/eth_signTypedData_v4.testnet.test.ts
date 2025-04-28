@@ -1,12 +1,13 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
+    ProviderInternalBaseWallet,
     RPC_METHODS,
     TESTNET_URL,
     ThorClient,
     VeChainProvider
 } from '../../../../../src';
 import { getUnusedAccount, getUnusedBaseWallet } from '../../../../fixture';
-import { Hex } from '@vechain/sdk-core';
+import { Hex, HexUInt, Secp256k1 } from '@vechain/sdk-core';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams
@@ -51,7 +52,18 @@ describe('RPC Mapper - eth_signTypedData_v4 method tests', () => {
 
         // Init provider
         // @NOTE: Since we are testing the signature, we can use SOLO accounts with testnet!
-        provider = new VeChainProvider(thorClient, getUnusedBaseWallet());
+        provider = new VeChainProvider(
+            thorClient,
+            new ProviderInternalBaseWallet([
+                {
+                    privateKey: HexUInt.of(testAccount.privateKey).bytes,
+                    publicKey: Secp256k1.derivePublicKey(
+                        HexUInt.of(testAccount.privateKey).bytes
+                    ),
+                    address: testAccount.address
+                }
+            ])
+        );
 
         // Verify wallet exists
         expect(provider.wallet).toBeDefined();
