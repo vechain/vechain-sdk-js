@@ -8,6 +8,7 @@ on:
         - 'supported-*'
         - 'feature-*'
         - '1.0.0'
+        - 'socket-hang-up-test'
 
 jobs:
     install-build:
