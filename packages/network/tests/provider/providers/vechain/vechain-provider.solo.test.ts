@@ -100,11 +100,15 @@ describe('VeChain provider tests - solo', () => {
         const messageReceived = new Promise((resolve) => {
             provider.on('message', (message) => {
                 resolve(message);
-                provider.destroy();
             });
         });
 
         const message = (await messageReceived) as SubscriptionEvent;
+
+        await provider.request({
+            method: 'eth_unsubscribe',
+            params: [subscriptionId]
+        });
 
         // Optionally, you can do assertions or other operations with the message
         expect(message).toBeDefined();
@@ -207,8 +211,10 @@ describe('VeChain provider tests - solo', () => {
 
         const message = await messageReceived;
 
-        // Clean up the subscription
-        provider.destroy();
+        await provider.request({
+            method: 'eth_unsubscribe',
+            params: [rpcCall]
+        });
 
         // Assertions to validate the received message
         expect(message).toBeDefined();
@@ -292,7 +298,6 @@ describe('VeChain provider tests - solo', () => {
             provider.on('message', (message: SubscriptionEvent) => {
                 results.push(message);
                 if (results.length >= 2) {
-                    provider.destroy();
                     resolve(results);
                 }
             });
@@ -324,6 +329,15 @@ describe('VeChain provider tests - solo', () => {
 
         results = (await eventPromise) as SubscriptionEvent[];
 
+        await provider.request({
+            method: 'eth_unsubscribe',
+            params: [erc20Subscription]
+        });
+
+        await provider.request({
+            method: 'eth_unsubscribe',
+            params: [erc721Subscription]
+        });
         // Assertions to validate the received log events
         expect(results).toBeDefined();
         expect(results.length).toBeGreaterThan(1);
