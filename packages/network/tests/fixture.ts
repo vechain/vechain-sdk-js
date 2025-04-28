@@ -81,7 +81,7 @@ const getUnusedBaseWalletWithGasPayer = (
 /**
  * Delegate url fixture to test signing transactions with delegation by URL
  */
-const TESTNET_DELEGATE_URL = 'https://sponsor-testnet.vechain.energy/by/299';
+const TESTNET_DELEGATE_URL = 'https://sponsor-testnet.vechain.energy/by/883';
 
 /**
  * Test accounts fixture

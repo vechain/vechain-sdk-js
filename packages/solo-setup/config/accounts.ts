@@ -218,6 +218,106 @@ const THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS: Array<{
         privateKey:
             '9d68178cdc934178cca0a0fd1f40ed46be153cf23cb1805b59cc612c0ad2bbe0',
         address: '0x865306084235bf804c8bba8a8d56890940ca8f0b'
+    },
+    {
+        privateKey:
+            'aa3c12b75e8c7d992040de6ff97a09559cf7de2bc455ea07010b20adcb0fec62',
+        address: '0x89D5C412c08679a284b149D35228a83b274a8486'
+    },
+    {
+        privateKey:
+            'a83bb5521dd7a5f4afaec3a1a38bb1187baf20fec29966849b1a7d54acd41c5f',
+        address: '0x45bB89198d5023240b34D482176c982Ba0985D80'
+    },
+    {
+        privateKey:
+            '599969b8800f2ebf29dfdbda9289e99b09d4dfa6ee500e5c711b215792016ed5',
+        address: '0x3710fF9FF4C7fb263c39Ed96D788151Cf88F987C'
+    },
+    {
+        privateKey:
+            '53da9696c9945d7718e1e3c534be61d9975acf01cad92b2e47364c419a6626bb',
+        address: '0x426d9F15ECbb59be81999D1DC06880cbFa02bda9'
+    },
+    {
+        privateKey:
+            '2ac2ed64c98e5ffddad1d7fa82e19c99155b2a9789dc050f4ebf5458ddf6b9a6',
+        address: '0x41055989aB587b9aCBDB7Ac81577e0249144Bfa0'
+    },
+    {
+        privateKey:
+            '357739d702d6f1cf8dbb276105f068165429776498fad4bb7348d56746f7e48e',
+        address: '0x5E04836DF99FA2D63992e01Ce7F0d702dFe63Dc3'
+    },
+    {
+        privateKey:
+            '28eb40bad6953dd405d63af8896c1101b522bcab5d7817b24e6cfb61ba7a4609',
+        address: '0xa996b54e88333F7D6252C171984CCCB3Cf730494'
+    },
+    {
+        privateKey:
+            '30b9fd2a8e7cc5bc8755afb5c3bbb5146ebef7a1120ded1fc20fa46509beebde',
+        address: '0x3A3bC8b8dA5049003A3a3a51138c0DA34B5471ba'
+    },
+    {
+        privateKey:
+            '74fc230d4f716cfc1412db39789c6fe9dc09d4c4af89049c81c8f19f11a1637f',
+        address: '0x4d7Edb29bfb3a64eAD68B1AeEB21Ef9eff7af8F0'
+    },
+    {
+        privateKey:
+            '784ac3eaebb120ce4833d8c6b16c996d2500c2a13db9bf435a8ac22923039dde',
+        address: '0xFdC39bA5126bceaA0B11A0a4D8Dfd18C1fbD8dfA'
+    },
+    {
+        privateKey:
+            '684c87e0be4b2bad262391a99f0be2865e4b470816d33344301fed4c1e9211f9',
+        address: '0x6C310F58e9B6Efc43392705FdBBbed1d691204eF'
+    },
+    {
+        privateKey:
+            '29b78acc9b5b54ab35fc0b39147ebe180ae9c941524b6a5b0a2249d12344b827',
+        address: '0xCfCaDaF427d9e7112220f9C180C777A1C0E93012'
+    },
+    {
+        privateKey:
+            '1002feaf1a3087630daa0c6dec4953c521f0ddc1bccd45826a8f6aa469ffb9ea',
+        address: '0xB4E3b2bD715b1529C76c79f827B6726D969cD895'
+    },
+    {
+        privateKey:
+            'd56a1d389c42c74ba47636cbd7aad031d3f9e115c7067f464b62ae37e319263e',
+        address: '0x62028705f5775e2B0c8c5347a6861493972b0CDc'
+    },
+    {
+        privateKey:
+            'c8165b45dad519ecf2e462e10fe6ab52f49fcd435a07da4dcb25e8e5d9429a5d',
+        address: '0x2AE21d812Af6B8434A7484A6C8092c273e2920a5'
+    },
+    {
+        privateKey:
+            '95d40aac1986bbc44c424db2be41a1f28ca1550344a55f7bd8dae257f1fb9340',
+        address: '0xE57A13a41756106F03dc9d80f255E9B8E4306997'
+    },
+    {
+        privateKey:
+            '40b2eead54cfc624679a3ff5b196e4016b9a4942b67844fc041c1029e12626e1',
+        address: '0x59e96c968b2daB63Add6711a4d58d7B7219E0779'
+    },
+    {
+        privateKey:
+            'b93b6576e5514e36394ed07b8e6ada752c63b21a2a91f98c2ea2a9c95a24da97',
+        address: '0x6F7C53286e6303bbafC2c3EF3Aa9302E938A264b'
+    },
+    {
+        privateKey:
+            'e17d7640ecd4abb1565f114a4c83e74871736c81bb486f4a9ddd943a8a69e376',
+        address: '0x9B865BB9CB726209cf145F2195da4BEF54D200d1'
+    },
+    {
+        privateKey:
+            '76227c448df1ea457fa23c697a72ad90cce96a1160f853aab729747b1b0614a2',
+        address: '0xc0724fC1F8B0414d6D55C0EE9fbeA199b9056AD9'
     }
 ];
 
