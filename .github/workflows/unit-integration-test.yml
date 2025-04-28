@@ -65,7 +65,7 @@ jobs:
                 fi
 
             - name: Stop Thor solo node
-              if: always() && steps.start-solo.outcome == 'success'
+              if: always()
               id: stop-solo
               run: yarn stop-thor-solo
 

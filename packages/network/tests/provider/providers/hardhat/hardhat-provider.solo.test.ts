@@ -98,7 +98,6 @@ describe('Hardhat provider tests', () => {
         const messageReceived = new Promise((resolve) => {
             provider.on('message', (message) => {
                 resolve(message);
-                provider.destroy();
             });
         });
 
@@ -110,6 +109,12 @@ describe('Hardhat provider tests', () => {
         expect(message.params).toBeDefined();
         expect(message.params.subscription).toBe(subscriptionId);
         expect(message.params.result).toBeDefined();
+
+        // Clean up subscription
+        await provider.request({
+            method: 'eth_unsubscribe',
+            params: [subscriptionId]
+        });
     }, 12000);
 
     /**
@@ -188,10 +193,11 @@ describe('Hardhat provider tests', () => {
         };
 
         // Call RPC function to subscribe to logs
-        const rpcCall = await provider.request({
+        const subscriptionId = await provider.request({
             method: 'eth_subscribe',
             params: ['logs', logsParams]
         });
+
         // Wait for the subscription to receive a message (log event)
         const messageReceived = waitForMessage(provider as VeChainProvider);
 
@@ -205,8 +211,11 @@ describe('Hardhat provider tests', () => {
 
         const message = await messageReceived;
 
-        // Clean up the subscription
-        provider.destroy();
+        // Clean up subscription
+        await provider.request({
+            method: 'eth_unsubscribe',
+            params: [subscriptionId]
+        });
 
         // Assertions to validate the received message
         expect(message).toBeDefined();
@@ -226,7 +235,7 @@ describe('Hardhat provider tests', () => {
         expect(message.params.result[0].data).toBeDefined();
 
         // Validate the RPC call was successful
-        expect(rpcCall).not.toBe('0x0');
+        expect(subscriptionId).not.toBe('0x0');
     }, 30000);
 
     /**
@@ -290,7 +299,6 @@ describe('Hardhat provider tests', () => {
             provider.on('message', (message: SubscriptionEvent) => {
                 results.push(message);
                 if (results.length >= 2) {
-                    provider.destroy();
                     resolve(results);
                 }
             });
@@ -312,6 +320,16 @@ describe('Hardhat provider tests', () => {
         );
 
         results = (await eventPromise) as SubscriptionEvent[];
+
+        // Clean up subscriptions
+        await provider.request({
+            method: 'eth_unsubscribe',
+            params: [erc20Subscription]
+        });
+        await provider.request({
+            method: 'eth_unsubscribe',
+            params: [erc721Subscription]
+        });
 
         // Assertions to validate the received log events
         expect(results).toBeDefined();
