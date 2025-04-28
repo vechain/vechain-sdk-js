@@ -95,13 +95,15 @@ describe('Hardhat provider tests', () => {
             params: ['newHeads']
         });
 
-        const messageReceived = new Promise((resolve) => {
-            provider.on('message', (message) => {
+        const messageReceived = new Promise<SubscriptionEvent>((resolve) => {
+            const messageHandler = (message: SubscriptionEvent): void => {
+                provider.removeListener('message', messageHandler);
                 resolve(message);
-            });
+            };
+            provider.on('message', messageHandler);
         });
 
-        const message = (await messageReceived) as SubscriptionEvent;
+        const message = await messageReceived;
 
         // Optionally, you can do assertions or other operations with the message
         expect(message).toBeDefined();
@@ -295,13 +297,15 @@ describe('Hardhat provider tests', () => {
 
         // Collect and assert log events
         let results: SubscriptionEvent[] = [];
-        const eventPromise = new Promise((resolve) => {
-            provider.on('message', (message: SubscriptionEvent) => {
+        const eventPromise = new Promise<SubscriptionEvent[]>((resolve) => {
+            const messageHandler = (message: SubscriptionEvent): void => {
                 results.push(message);
                 if (results.length >= 2) {
+                    provider.removeListener('message', messageHandler);
                     resolve(results);
                 }
-            });
+            };
+            provider.on('message', messageHandler);
         });
 
         // Execute transactions that should emit events
@@ -319,7 +323,7 @@ describe('Hardhat provider tests', () => {
             [TEST_ACCOUNT.address]
         );
 
-        results = (await eventPromise) as SubscriptionEvent[];
+        results = await eventPromise;
 
         // Clean up subscriptions
         await provider.request({
