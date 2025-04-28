@@ -92,14 +92,10 @@ class BlocksModule {
                 { revision }
             );
         }
-        const result = await this.httpClient.http(
+        return (await this.httpClient.http(
             HttpMethod.GET,
             thorest.blocks.get.BLOCK_DETAIL(revision)
-        );
-
-        console.log('result', result);
-
-        return result as CompressedBlockDetail | null;
+        )) as CompressedBlockDetail | null;
     }
 
     /**

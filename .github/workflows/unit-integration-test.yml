@@ -39,33 +39,13 @@ jobs:
                 yarn start-thor-solo
                 yarn seed-thor-solo
 
-            - name: Start Thor logs in background
-              run: |
-                docker logs -f thor > thor.logs 2>&1 &
-                echo $! > thor_logs_pid
-
             - name: Test
               if: steps.start-solo.outcome == 'success'
               id: all-tests
               run: yarn test
 
-            - name: Show Thor logs if tests failed
-              if: always() && steps.all-tests.outcome == 'failure'
-              run: |
-                echo "=== Thor Logs ==="
-                cat thor.logs
-                echo "=== End Thor Logs ==="
-
-            - name: Stop Thor logs
-              if: always()
-              run: |
-                if [ -f thor_logs_pid ]; then
-                  kill $(cat thor_logs_pid) || true
-                  rm thor_logs_pid
-                fi
-
             - name: Stop Thor solo node
-              if: always()
+              if: always() && steps.start-solo.outcome == 'success'
               id: stop-solo
               run: yarn stop-thor-solo
 

@@ -4,7 +4,6 @@ import {
     JSONRPCMethodNotFound,
     JSONRPCMethodNotImplemented
 } from '@vechain/sdk-errors';
-import { fail } from 'assert';
 import {
     ProviderInternalBaseWallet,
     type SubscriptionEvent,
@@ -14,7 +13,12 @@ import {
     type VeChainSigner
 } from '../../../../src';
 import { providerMethodsTestCasesSolo, TEST_ACCOUNT } from '../fixture';
-import { deployERC20Contract, deployERC721Contract } from '../helpers';
+import {
+    deployERC20Contract,
+    deployERC721Contract,
+    waitForMessage
+} from '../helpers';
+import { fail } from 'assert';
 
 /**
  *VeChain provider tests - Solo Network
@@ -93,20 +97,14 @@ describe('VeChain provider tests - solo', () => {
             params: ['newHeads']
         });
 
-        const messageReceived = new Promise<SubscriptionEvent>((resolve) => {
-            const messageHandler = (message: SubscriptionEvent): void => {
-                provider.removeListener('message', messageHandler);
+        const messageReceived = new Promise((resolve) => {
+            provider.on('message', (message) => {
                 resolve(message);
-            };
-            provider.on('message', messageHandler);
+                provider.destroy();
+            });
         });
 
-        const message = await messageReceived;
-
-        await provider.request({
-            method: 'eth_unsubscribe',
-            params: [subscriptionId]
-        });
+        const message = (await messageReceived) as SubscriptionEvent;
 
         // Optionally, you can do assertions or other operations with the message
         expect(message).toBeDefined();
@@ -196,15 +194,8 @@ describe('VeChain provider tests - solo', () => {
             method: 'eth_subscribe',
             params: ['logs', logsParams]
         });
-
         // Wait for the subscription to receive a message (log event)
-        const messageReceived = new Promise<SubscriptionEvent>((resolve) => {
-            const messageHandler = (message: SubscriptionEvent): void => {
-                provider.removeListener('message', messageHandler);
-                resolve(message);
-            };
-            provider.on('message', messageHandler);
-        });
+        const messageReceived = waitForMessage(provider);
 
         // Execute a contract transaction to generate a log event
         await thorClient.contracts.executeTransaction(
@@ -216,10 +207,8 @@ describe('VeChain provider tests - solo', () => {
 
         const message = await messageReceived;
 
-        await provider.request({
-            method: 'eth_unsubscribe',
-            params: [rpcCall]
-        });
+        // Clean up the subscription
+        provider.destroy();
 
         // Assertions to validate the received message
         expect(message).toBeDefined();
@@ -299,15 +288,14 @@ describe('VeChain provider tests - solo', () => {
 
         // Collect and assert log events
         let results: SubscriptionEvent[] = [];
-        const eventPromise = new Promise<SubscriptionEvent[]>((resolve) => {
-            const messageHandler = (message: SubscriptionEvent): void => {
+        const eventPromise = new Promise((resolve) => {
+            provider.on('message', (message: SubscriptionEvent) => {
                 results.push(message);
                 if (results.length >= 2) {
-                    provider.removeListener('message', messageHandler);
+                    provider.destroy();
                     resolve(results);
                 }
-            };
-            provider.on('message', messageHandler);
+            });
         });
 
         // Execute transactions that should emit events
@@ -334,17 +322,8 @@ describe('VeChain provider tests - solo', () => {
             { gas: gas.totalGas }
         );
 
-        results = await eventPromise;
+        results = (await eventPromise) as SubscriptionEvent[];
 
-        await provider.request({
-            method: 'eth_unsubscribe',
-            params: [erc20Subscription]
-        });
-
-        await provider.request({
-            method: 'eth_unsubscribe',
-            params: [erc721Subscription]
-        });
         // Assertions to validate the received log events
         expect(results).toBeDefined();
         expect(results.length).toBeGreaterThan(1);

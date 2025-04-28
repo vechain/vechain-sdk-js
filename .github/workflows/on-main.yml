@@ -8,12 +8,11 @@ on:
         - 'supported-*'
         - 'feature-*'
         - '1.0.0'
-        - 'socket-hang-up-test'
 
 jobs:
-    # install-build:
-    #     uses: ./.github/workflows/build-lint.yml
-    #     secrets: inherit
+    install-build:
+        uses: ./.github/workflows/build-lint.yml
+        secrets: inherit
     unit-integration-test:
         uses: ./.github/workflows/unit-integration-test.yml
         secrets: inherit
