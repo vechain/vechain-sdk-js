@@ -1,9 +1,5 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import {
-    getUnusedAccount,
-    getUnusedBaseWallet,
-    getUnusedBaseWalletWithGasPayer
-} from '../../../../fixture';
+import { getUnusedAccount } from '../../../../fixture';
 import {
     ProviderInternalBaseWallet,
     RPC_METHODS,
@@ -45,16 +41,44 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
         // Init thor client
         thorClient = ThorClient.at(THOR_SOLO_URL);
 
-        // Init provider
-        provider = new VeChainProvider(thorClient, getUnusedBaseWallet());
+        // Create wallet with the sender account that we'll use in the tests
+        const senderAccount =
+            THOR_SOLO_ACCOUNTS_ETH_SEND_TRANSACTION_FIXTURE.sender;
+
+        // Init provider with the same account used in the transactions
+        provider = new VeChainProvider(
+            thorClient,
+            new ProviderInternalBaseWallet([
+                {
+                    privateKey: HexUInt.of(senderAccount.privateKey).bytes,
+                    publicKey: Secp256k1.derivePublicKey(
+                        HexUInt.of(senderAccount.privateKey).bytes
+                    ),
+                    address: senderAccount.address
+                }
+            ])
+        );
 
         // Init provider with gasPayer
         // @NOTE due to the fact we are testing on thor-solo, we can delegate ONLY with a private key!
         providerWithgasPayer = new VeChainProvider(
             thorClient,
-            getUnusedBaseWalletWithGasPayer({
-                gasPayerPrivateKey: gasPayerPrivateKeyFixture
-            }),
+            new ProviderInternalBaseWallet(
+                [
+                    {
+                        privateKey: HexUInt.of(senderAccount.privateKey).bytes,
+                        publicKey: Secp256k1.derivePublicKey(
+                            HexUInt.of(senderAccount.privateKey).bytes
+                        ),
+                        address: senderAccount.address
+                    }
+                ],
+                {
+                    gasPayer: {
+                        gasPayerPrivateKey: gasPayerPrivateKeyFixture
+                    }
+                }
+            ),
             true
         );
     });
@@ -144,20 +168,37 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
          * Positive case 2 - Should be able to send a transaction with undefined value
          */
         test('eth_sendTransaction - Should be able to send a transaction with value undefined', async () => {
-            const from = getUnusedAccount().address;
+            // Create new accounts for this test
+            const fromAccount = getUnusedAccount();
+            const from = fromAccount.address;
             const to = getUnusedAccount().address;
+
+            // Create a specific provider with these accounts in its wallet
+            const testProvider = new VeChainProvider(
+                thorClient,
+                new ProviderInternalBaseWallet([
+                    {
+                        privateKey: HexUInt.of(fromAccount.privateKey).bytes,
+                        publicKey: Secp256k1.derivePublicKey(
+                            HexUInt.of(fromAccount.privateKey).bytes
+                        ),
+                        address: from
+                    }
+                ])
+            );
+
             // Get the balance of the sender and the receiver before sending the transaction
-            const balanceSenderBefore = (await provider.request({
+            const balanceSenderBefore = (await testProvider.request({
                 method: RPC_METHODS.eth_getBalance,
                 params: [from, 'latest']
             })) as string;
-            const balanceReceiverBefore = (await provider.request({
+            const balanceReceiverBefore = (await testProvider.request({
                 method: RPC_METHODS.eth_getBalance,
                 params: [to, 'latest']
             })) as string;
 
             // Send a transaction
-            const transaction = (await provider.request({
+            const transaction = (await testProvider.request({
                 method: RPC_METHODS.eth_sendTransaction,
                 params: [
                     {
@@ -173,11 +214,11 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
             expect(receipt).toBeDefined();
 
             // Get the balance of the sender and the receiver after sending the transaction
-            const balanceSenderAfter = (await provider.request({
+            const balanceSenderAfter = (await testProvider.request({
                 method: RPC_METHODS.eth_getBalance,
                 params: [from, 'latest']
             })) as string;
-            const balanceReceiverAfter = (await provider.request({
+            const balanceReceiverAfter = (await testProvider.request({
                 method: RPC_METHODS.eth_getBalance,
                 params: [to, 'latest']
             })) as string;
