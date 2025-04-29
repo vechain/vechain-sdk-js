@@ -7,7 +7,7 @@ import {
 import {
     TESTING_CONTRACT_ADDRESS,
     TESTING_CONTRACT_BYTECODE,
-    getUnusedAccount
+    TEST_ACCOUNTS
 } from '../../fixture';
 import { THOR_SOLO_SEEDED_VET_AMOUNT } from '@vechain/sdk-solo-setup';
 
@@ -44,7 +44,10 @@ const providerMethodsTestCasesSolo = [
         description:
             'Should be able to call eth_getBalance of an address with balance more than 0 VET',
         method: 'eth_getBalance',
-        params: [getUnusedAccount().address, 'latest'],
+        params: [
+            TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address,
+            'latest'
+        ],
         expected: Quantity.of(
             Units.parseEther(THOR_SOLO_SEEDED_VET_AMOUNT.toString()).bi
         ).toString()

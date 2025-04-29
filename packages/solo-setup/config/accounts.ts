@@ -19,6 +19,21 @@ const THOR_SOLO_ACCOUNTS_TO_SEED: Array<{
     },
     {
         privateKey:
+            '62183dac319418f40e47dec7b60f104d0d6a9e248860b005e8b6d36cf9e8f11a',
+        address: '0x9E4E0efb170070e35A6b76b683aEE91dd77805B3'
+    },
+    {
+        privateKey:
+            '605f80ed94fe3ae1261fbda6eb3a941367675de4980040e421abb316806de181',
+        address: '0x5804B0609fceDcaA9dE460B35315745d15eAC627'
+    },
+    {
+        privateKey:
+            'd12574629f65259c99837b27432df45c85c8c9c9c0d5111b79766cbe9b523507',
+        address: '0x77d06Fb005252Ff67F54623FcE721c88503c21a1'
+    },
+    {
+        privateKey:
             'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5',
         address: '0x2669514f9fe96bc7301177ba774d3da8a06cace4'
     },
@@ -146,21 +161,6 @@ const THOR_SOLO_ACCOUNTS_TO_SEED: Array<{
         privateKey:
             '461d5a5ac88f635001a030968d751a199d3f1a786f54f6712e20087fe783b0aa',
         address: '0x0D6925144803b331e09d2d60b2D2d670438D9977'
-    },
-    {
-        privateKey:
-            'd12574629f65259c99837b27432df45c85c8c9c9c0d5111b79766cbe9b523507',
-        address: '0x77d06Fb005252Ff67F54623FcE721c88503c21a1'
-    },
-    {
-        privateKey:
-            '605f80ed94fe3ae1261fbda6eb3a941367675de4980040e421abb316806de181',
-        address: '0x5804B0609fceDcaA9dE460B35315745d15eAC627'
-    },
-    {
-        privateKey:
-            '62183dac319418f40e47dec7b60f104d0d6a9e248860b005e8b6d36cf9e8f11a',
-        address: '0x9E4E0efb170070e35A6b76b683aEE91dd77805B3'
     }
 ];
 
@@ -318,6 +318,21 @@ const THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS: Array<{
         privateKey:
             '76227c448df1ea457fa23c697a72ad90cce96a1160f853aab729747b1b0614a2',
         address: '0xc0724fC1F8B0414d6D55C0EE9fbeA199b9056AD9'
+    },
+    {
+        privateKey:
+            '99d81d3cebc023b0352d41fd85d537ef8bd350d8a6fef0902f1e065da902878b',
+        address: '0x8609Bb9416D9F6Fe785524B1c7F6aB7DfE12e8d9'
+    },
+    {
+        privateKey:
+            '59a72ac758aa23c028bc1b3ddbe5dcc285df44ccba56d0e5145eda909c5b899a',
+        address: '0x00DD6BC0eb0a4551b95522CBa63b654e7D514703'
+    },
+    {
+        privateKey:
+            '124a4f57bf2bb8b9415349dfd5a841eed07ad9d68e5855d11d9abfcaa0dd1a7c',
+        address: '0x6381f8255bDddeB9C02c6A872Dc0eBcE1b569b67'
     }
 ];
 

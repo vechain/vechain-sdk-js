@@ -4,9 +4,9 @@ import {
     JSONRPCInvalidParams
 } from '@vechain/sdk-errors';
 import { THOR_SOLO_SEEDED_VET_AMOUNT } from '@vechain/sdk-solo-setup';
-import { getUnusedAccount } from '../../../../fixture';
+import { TEST_ACCOUNTS } from '../../../../fixture';
 
-const account = getUnusedAccount();
+const account = TEST_ACCOUNTS.ACCOUNT.NOT_MUTATED_BALANCE_ACCOUNT;
 
 /**
  * eth_getBalance RPC call tests - Positive cases

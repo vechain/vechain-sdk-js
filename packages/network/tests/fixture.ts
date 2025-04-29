@@ -89,6 +89,9 @@ const TESTNET_DELEGATE_URL = 'https://sponsor-testnet.vechain.energy/by/883';
 const TEST_ACCOUNTS: {
     ACCOUNT: {
         SIMPLE_ACCOUNT: ThorSoloAccount;
+        NOT_MUTATED_BALANCE_ACCOUNT: ThorSoloAccount;
+        DEBUG_TRACE_CALL_ACCOUNT: ThorSoloAccount;
+        DEBUG_TRACE_TRANSACTION_ACCOUNT: ThorSoloAccount;
     };
     TRANSACTION: {
         TRANSACTION_SENDER: ThorSoloAccount;
@@ -105,7 +108,10 @@ const TEST_ACCOUNTS: {
      * Accounts dedicated for testing account related operations.
      */
     ACCOUNT: {
-        SIMPLE_ACCOUNT: getUnusedAccount()
+        SIMPLE_ACCOUNT: getUnusedAccount(),
+        NOT_MUTATED_BALANCE_ACCOUNT: getUnusedAccount(),
+        DEBUG_TRACE_CALL_ACCOUNT: getUnusedAccount(),
+        DEBUG_TRACE_TRANSACTION_ACCOUNT: getUnusedAccount()
     },
 
     /**

@@ -6,7 +6,7 @@ import {
     ThorClient
 } from '../../../../../src';
 import { sendTransactionWithAccount } from '../../../../thor-client/debug/fixture-thorest';
-import { getUnusedAccount } from '../../../../fixture';
+import { TEST_ACCOUNTS } from '../../../../fixture';
 
 /**
  * RPC Mapper integration tests for 'debug_traceTransaction' method.
@@ -37,7 +37,7 @@ describe('RPC Mapper - debug_traceTransaction method tests - solo', () => {
          */
         test('debug_traceTransaction - prestate tracer', async () => {
             const txReceipt = await sendTransactionWithAccount(
-                getUnusedAccount(),
+                TEST_ACCOUNTS.ACCOUNT.DEBUG_TRACE_TRANSACTION_ACCOUNT,
                 thorClient
             );
 

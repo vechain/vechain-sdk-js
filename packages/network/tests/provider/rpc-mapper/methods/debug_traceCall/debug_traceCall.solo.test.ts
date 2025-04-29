@@ -10,7 +10,7 @@ import {
     traceContractCallTestnetFixture
 } from '../../../../thor-client/debug/fixture-thorest';
 import { transfer1VTHOClause } from '../../../../thor-client/transactions/fixture';
-import { getUnusedAccount } from '../../../../fixture';
+import { TEST_ACCOUNTS } from '../../../../fixture';
 
 /**
  * RPC Mapper integration tests for 'debug_traceCall' method on solo
@@ -41,7 +41,7 @@ describe('RPC Mapper - debug_traceCall method tests on solo', () => {
          */
         test('debug_traceCall - Should be able to trace a call with prestateTracer', async () => {
             const txReceipt = await sendTransactionWithAccount(
-                getUnusedAccount(),
+                TEST_ACCOUNTS.ACCOUNT.DEBUG_TRACE_CALL_ACCOUNT,
                 thorClient
             );
 
