@@ -5,7 +5,10 @@ import {
     ThorClient,
     VeChainProvider
 } from '../../../../../src';
-import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
+import {
+    JSONRPCInvalidParams,
+    JSONRPCMethodNotImplemented
+} from '@vechain/sdk-errors';
 
 /**
  * RPC Mapper unit tests for 'eth_feeHistory' method
@@ -34,6 +37,27 @@ describe('RPC Mapper - eth_feeHistory method tests', () => {
         // Init thor client
         thorClient = ThorClient.at(TESTNET_URL);
         provider = new VeChainProvider(thorClient);
+
+        // Mock Galactica fork detection to return true by default
+        jest.spyOn(
+            thorClient.forkDetector,
+            'detectGalactica'
+        ).mockResolvedValue(true);
+    });
+
+    test('Should throw a method not implemented error when Galactica fork is not active', async () => {
+        // Mock Galactica fork detection to return false
+        jest.spyOn(
+            thorClient.forkDetector,
+            'detectGalactica'
+        ).mockResolvedValue(false);
+
+        await expect(
+            provider.request({
+                method: RPC_METHODS.eth_feeHistory,
+                params: [4, 'latest', [25, 75]]
+            })
+        ).rejects.toThrow(JSONRPCMethodNotImplemented);
     });
 
     test('Should return fee history from the API with latest block', async () => {
