@@ -14,8 +14,7 @@ services:
       - --cache=1024 # megabytes of ram allocated to trie nodes cache
       - --api-allowed-tracers=all
       - --verbosity=9
-      # Persistence is disabled because it messes with the tests if enabled
-      # - --persist
+      - --persist
       - --api-enable-deprecated
       - --api-call-gas-limit=150000000 
       - --gas-limit=150000000

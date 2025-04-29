@@ -55,8 +55,6 @@ export default [{
             argsIgnorePattern: "^_",
         }],
 
-        "@typescript-eslint/lines-between-class-members": "off",
-
         "@typescript-eslint/explicit-function-return-type": "error",
         "@typescript-eslint/no-explicit-any": "error",
         "@typescript-eslint/no-non-null-assertion": "error",
@@ -68,6 +66,7 @@ export default [{
         "@typescript-eslint/restrict-template-expressions": "off",
         "@typescript-eslint/ban-types": "off",
         "@typescript-eslint/no-throw-literal": "off",
+        "@typescript-eslint/lines-between-class-members": "off",
 
         "prettier/prettier": ["error", {
             singleQuote: true,
@@ -91,8 +90,6 @@ export default [{
         "security/detect-non-literal-fs-filename": "off",
         "sonarjs/sonar-no-unused-vars": "off",
         "sonarjs/sonar-no-fallthrough": "off",
-        "sonarjs/no-empty-function": "off",
-        "sonarjs/no-unused-expressions": "off",
         "import/no-extraneous-dependencies": ["error", {"devDependencies": false, "optionalDependencies": false, "peerDependencies": false}]
     }
 }, {
