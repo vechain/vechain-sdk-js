@@ -1,12 +1,12 @@
-import { type ThorClient } from '../../../../../thor-client';
-import { type VeChainProvider } from '../../../../providers/vechain-provider';
 import {
-    JSONRPCInvalidParams,
     JSONRPCInternalError,
+    JSONRPCInvalidParams,
     JSONRPCMethodNotImplemented,
     stringifyData
 } from '@vechain/sdk-errors';
+import { type ThorClient } from '../../../../../thor-client';
 import { type FeeHistoryResponse } from '../../../../../thor-client/gas/types';
+import { type VeChainProvider } from '../../../../providers/vechain-provider';
 import { type DefaultBlock, DefaultBlockToRevision } from '../../../const';
 
 /**

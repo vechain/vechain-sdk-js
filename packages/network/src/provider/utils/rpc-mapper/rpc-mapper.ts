@@ -1,4 +1,5 @@
 import { type ThorClient } from '../../../thor-client';
+import { type FeeHistoryResponse } from '../../../thor-client/gas/types';
 import { type VeChainProvider } from '../../providers/vechain-provider';
 import { RPC_METHODS } from '../const/rpc-mapper/rpc-methods';
 import {
@@ -57,9 +58,8 @@ import {
     web3ClientVersion,
     web3Sha3
 } from './methods';
-import { ethMaxPriorityFeePerGas } from './methods/eth_maxPriorityFeePerGas/eth_maxPriorityFeePerGas';
 import { ethFeeHistory } from './methods/eth_feeHistory/eth_feeHistory';
-import { type FeeHistoryResponse } from '../../../thor-client/gas/types';
+import { ethMaxPriorityFeePerGas } from './methods/eth_maxPriorityFeePerGas/eth_maxPriorityFeePerGas';
 
 type MethodHandlerType<TParams, TReturnType> = (
     params: TParams[]

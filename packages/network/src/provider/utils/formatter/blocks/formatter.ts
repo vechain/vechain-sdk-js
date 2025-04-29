@@ -1,11 +1,11 @@
-import { type BlocksRPC } from './types';
 import { HexUInt, Quantity, ZERO_BYTES } from '@vechain/sdk-core';
-import { transactionsFormatter } from '../transactions';
 import {
     type CompressedBlockDetail,
     type ExpandedBlockDetail,
     type TransactionsExpandedBlockDetail
 } from '../../../../thor-client';
+import { transactionsFormatter } from '../transactions';
+import { type BlocksRPC } from './types';
 
 /**
  * Output formatter for block details.
@@ -54,7 +54,9 @@ const formatToRPCStandard = (
         nonce: HexUInt.of(ZERO_BYTES(8)).toString(),
         logsBloom: HexUInt.of(ZERO_BYTES(256)).toString(),
         extraData: '0x',
-        baseFeePerGas: '0x0',
+        ...(block.baseFeePerGas !== undefined
+            ? { baseFeePerGas: block.baseFeePerGas }
+            : {}),
         mixHash: HexUInt.of(ZERO_BYTES(32)).toString()
     };
 };
