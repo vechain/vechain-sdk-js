@@ -5,7 +5,10 @@ import {
     ThorClient,
     VeChainProvider
 } from '../../../../../src';
-import { JSONRPCInternalError } from '@vechain/sdk-errors';
+import {
+    JSONRPCInternalError,
+    JSONRPCMethodNotImplemented
+} from '@vechain/sdk-errors';
 
 /**
  * RPC Mapper unit tests for 'eth_maxPriorityFeePerGas' method
@@ -29,9 +32,15 @@ describe('RPC Mapper - eth_maxPriorityFeePerGas method tests', () => {
         // Init thor client
         thorClient = ThorClient.at(TESTNET_URL);
         provider = new VeChainProvider(thorClient);
+
+        // Mock Galactica fork detection to return true by default
+        jest.spyOn(
+            thorClient.forkDetector,
+            'detectGalactica'
+        ).mockResolvedValue(true);
     });
 
-    test('should return priority fee from /fees/priority endpoint', async () => {
+    test('should return priority fee from /fees/priority endpoint when Galactica fork is active', async () => {
         // Mock the HTTP response
         jest.spyOn(thorClient.httpClient, 'get').mockResolvedValue({
             maxPriorityFeePerGas: mockPriorityFee
@@ -43,6 +52,21 @@ describe('RPC Mapper - eth_maxPriorityFeePerGas method tests', () => {
         });
 
         expect(result).toBe(mockPriorityFee);
+    });
+
+    test('should throw a method not implemented error when Galactica fork is not active', async () => {
+        // Mock Galactica fork detection to return false
+        jest.spyOn(
+            thorClient.forkDetector,
+            'detectGalactica'
+        ).mockResolvedValue(false);
+
+        await expect(
+            provider.request({
+                method: RPC_METHODS.eth_maxPriorityFeePerGas,
+                params: []
+            })
+        ).rejects.toThrow(JSONRPCMethodNotImplemented);
     });
 
     test('should handle low priority fee values', async () => {

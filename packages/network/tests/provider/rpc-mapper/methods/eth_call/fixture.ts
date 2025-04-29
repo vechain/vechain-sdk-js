@@ -61,47 +61,6 @@ const positiveCasesFixtures = [
         expected: '0x'
     },
     {
-        description:
-            'Sends 1 VET to the receiver. (using { blockNumber: 0x0 } )',
-        input: [
-            {
-                from: '0x7487d912d03ab9de786278f679592b3730bdd540',
-                to: '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
-                value: '1000000000000000000',
-                data: '0x'
-            },
-            '0x0'
-        ],
-        expected: '0x'
-    },
-    {
-        description:
-            'Sends 1 VET to the receiver. (using 0x0 string blockHash)',
-        input: [
-            {
-                from: '0x7487d912d03ab9de786278f679592b3730bdd540',
-                to: '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
-                value: '1000000000000000000',
-                data: '0x'
-            },
-            Hex.of(0).toString()
-        ],
-        expected: '0x'
-    },
-    {
-        description: 'Sends 1 VET to the receiver. (earliest tag)',
-        input: [
-            {
-                from: '0x7487d912d03ab9de786278f679592b3730bdd540',
-                to: '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
-                value: '1000000000000000000',
-                data: '0x'
-            },
-            'earliest'
-        ],
-        expected: '0x'
-    },
-    {
         description: 'Send complex transaction object.',
         input: [
             {
@@ -149,6 +108,48 @@ const negativeCasesFixtures = [
                 from: '0x7487d912d03ab9de786278f679592b3730bdd540'
             },
             'latest'
+        ],
+        expected: JSONRPCInternalError
+    },
+    {
+        description:
+            'Fails to send 1 VET to the receiver since balace is 0. (using { blockNumber: 0x0 } )',
+        input: [
+            {
+                from: '0x7487d912d03ab9de786278f679592b3730bdd540',
+                to: '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
+                value: '1000000000000000000',
+                data: '0x'
+            },
+            '0x0'
+        ],
+        expected: JSONRPCInternalError
+    },
+    {
+        description:
+            'Fails to send 1 VET to the receiver since balace is 0. (using 0x0 string blockHash)',
+        input: [
+            {
+                from: '0x7487d912d03ab9de786278f679592b3730bdd540',
+                to: '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
+                value: '1000000000000000000',
+                data: '0x'
+            },
+            Hex.of(0).toString()
+        ],
+        expected: JSONRPCInternalError
+    },
+    {
+        description:
+            'Fails to send 1 VET to the receiver since balace is 0. (earliest tag)',
+        input: [
+            {
+                from: '0x7487d912d03ab9de786278f679592b3730bdd540',
+                to: '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
+                value: '1000000000000000000',
+                data: '0x'
+            },
+            'earliest'
         ],
         expected: JSONRPCInternalError
     }

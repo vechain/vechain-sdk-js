@@ -1,11 +1,12 @@
-import { type ThorClient } from '../../../../../thor-client';
-import { type VeChainProvider } from '../../../../providers/vechain-provider';
 import {
-    JSONRPCInvalidParams,
     JSONRPCInternalError,
+    JSONRPCInvalidParams,
+    JSONRPCMethodNotImplemented,
     stringifyData
 } from '@vechain/sdk-errors';
+import { type ThorClient } from '../../../../../thor-client';
 import { type FeeHistoryResponse } from '../../../../../thor-client/gas/types';
+import { type VeChainProvider } from '../../../../providers/vechain-provider';
 import { type DefaultBlock, DefaultBlockToRevision } from '../../../const';
 
 /**
@@ -19,7 +20,7 @@ import { type DefaultBlock, DefaultBlockToRevision } from '../../../const';
  *                 * params[2]: rewardPercentiles - optional array of percentiles to compute
  * @param provider - The provider instance to use.
  * @returns Fee history for the returned block range
- * @throws {JSONRPCInvalidParams} | {JSONRPCInternalError}
+ * @throws {JSONRPCInvalidParams} | {JSONRPCInternalError} | {JSONRPCMethodNotImplemented}
  */
 const ethFeeHistory = async (
     thorClient: ThorClient,
@@ -31,6 +32,16 @@ const ethFeeHistory = async (
             'eth_feeHistory',
             'Invalid input params for "eth_feeHistory" method.',
             { params }
+        );
+    }
+
+    // Check if Galactica hardfork has happened
+    const galacticaForked = await thorClient.forkDetector.detectGalactica();
+    if (!galacticaForked) {
+        throw new JSONRPCMethodNotImplemented(
+            'eth_feeHistory',
+            'Method "eth_feeHistory" is not available before Galactica hardfork.',
+            { url: thorClient.httpClient.baseURL }
         );
     }
 
