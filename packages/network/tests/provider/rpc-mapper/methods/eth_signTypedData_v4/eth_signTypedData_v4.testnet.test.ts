@@ -6,7 +6,7 @@ import {
     ThorClient,
     VeChainProvider
 } from '../../../../../src';
-import { getUnusedAccount, getUnusedBaseWallet } from '../../../../fixture';
+import { getUnusedAccount } from '../../../../fixture';
 import { Hex, HexUInt, Secp256k1 } from '@vechain/sdk-core';
 import {
     JSONRPCInternalError,
