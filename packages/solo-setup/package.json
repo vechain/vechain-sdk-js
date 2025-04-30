@@ -25,9 +25,7 @@
     "solo-seed": "yarn build && yarn deploy-solo"
   },
   "peerDependencies": {
-    "@vechain/sdk-core": "*",
-    "@vechain/sdk-hardhat-plugin": "*",
-    "@vechain/sdk-logging": "*"
+    "@vechain/sdk-hardhat-plugin": "*"
   },
   "dependencies": {
     "hardhat": "^2.22.15"

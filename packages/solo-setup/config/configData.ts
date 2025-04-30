@@ -1,6 +1,28 @@
-import { type CompressedBlockDetail } from '@vechain/sdk-network';
 import fs from 'fs';
 import path from 'path';
+
+
+type CompressedBlockDetail = {
+    id: string;
+    number: number;
+    size: number;
+    parentID: string;
+    timestamp: number;
+    gasLimit: number;
+    beneficiary: string;
+    gasUsed: number;
+    baseFeePerGas?: string;
+    totalScore: number;
+    txsRoot: string;
+    txsFeatures?: number;
+    stateRoot: string;
+    receiptsRoot: string;
+    signer: string;
+    com?: boolean;
+    isFinalized?: boolean;
+    isTrunk: boolean;
+    transactions: string[]
+}
 
 // Define the config structure type
 export interface ConfigData {
