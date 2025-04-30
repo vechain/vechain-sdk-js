@@ -19,6 +19,7 @@ import { InvalidDataType, InvalidTransactionField } from '@vechain/sdk-errors';
 import { ErrorFragment, Interface } from 'ethers';
 import { HttpMethod } from '../../http';
 import { blocksFormatter, getTransactionIndexIntoBlock } from '../../provider';
+import type { VeChainSigner } from '../../signer';
 import {
     buildQuery,
     BUILT_IN_CONTRACTS,
@@ -29,7 +30,18 @@ import {
     vnsUtils
 } from '../../utils';
 import { type BlocksModule, type ExpandedBlockDetail } from '../blocks';
+import type {
+    ContractCallOptions,
+    ContractCallResult,
+    ContractClause,
+    ContractTransactionOptions
+} from '../contracts';
 import { type CallNameReturnType, type DebugModule } from '../debug';
+import { type ForkDetector } from '../fork';
+import { type GasModule } from '../gas';
+import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
+import type { EstimateGasOptions, EstimateGasResult } from '../gas/types';
+import { type LogsModule } from '../logs';
 import {
     type GetTransactionInputOptions,
     type GetTransactionReceiptInputOptions,
@@ -43,18 +55,6 @@ import {
     type TransactionSimulationResult,
     type WaitForTransactionOptions
 } from './types';
-import type { EstimateGasOptions, EstimateGasResult } from '../gas/types';
-import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
-import type {
-    ContractCallOptions,
-    ContractCallResult,
-    ContractClause,
-    ContractTransactionOptions
-} from '../contracts';
-import type { VeChainSigner } from '../../signer';
-import { type LogsModule } from '../logs';
-import { type ForkDetector } from '../fork';
-import { type GasModule } from '../gas';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides

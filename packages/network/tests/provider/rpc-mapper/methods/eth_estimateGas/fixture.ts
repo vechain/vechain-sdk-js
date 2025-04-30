@@ -38,6 +38,16 @@ const positiveCasesFixtures = [
             'latest'
         ],
         expected: '0x5208'
+    },
+    {
+        description: 'Missing block reference',
+        input: [
+            {
+                to: '0x7487d912d03ab9de786278f679592b3730bdd540',
+                value: '0x1000'
+            }
+        ],
+        expected: '0x5208'
     }
 ];
 
@@ -48,16 +58,6 @@ const negativeCasesFixtures = [
     {
         description: 'No parameter passed',
         input: [],
-        expected: JSONRPCInvalidParams
-    },
-    {
-        description: 'Missing block reference',
-        input: [
-            {
-                from: '0x37cce5c8bd6141cbe8172b277faa65af5cc83c6a',
-                data: '0x'
-            }
-        ],
         expected: JSONRPCInvalidParams
     }
 ];
