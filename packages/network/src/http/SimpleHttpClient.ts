@@ -140,7 +140,14 @@ class SimpleHttpClient implements HttpClient {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-return
                 return await response.json();
             }
-            throw new Error(`HTTP ${response.status} ${response.statusText}`, {
+            let message = `HTTP ${response.status} ${response.statusText}`;
+            if (response.status >= 400 && response.status < 500) {
+                const text = await response.text();
+                if (text != null && text.length > 0) {
+                    message += `: ${text}`;
+                }
+            }
+            throw new Error(message, {
                 cause: response
             });
         } catch (error) {
