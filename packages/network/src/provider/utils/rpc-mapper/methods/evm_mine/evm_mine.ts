@@ -1,5 +1,6 @@
 import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
 import { type ThorClient } from '../../../../../thor-client';
+import { Poll } from '../../../../../utils';
 
 /**
  * RPC Method evm_mine implementation
@@ -7,20 +8,12 @@ import { type ThorClient } from '../../../../../thor-client';
  * @link [evm_mine](https://hardhat.org/hardhat-network/docs/explanation/mining-modes)
  *
  * @param thorClient - The thor client instance to use.
- * @param options - Additional options for polling
- * @param options.checkpointInterval - Interval to check finalized blocks
- * @param options.pollingInterval - Time interval between checks in milliseconds
  * @returns The new block or null if the block is not available.
  * @throws {JSONRPCInternalError}
  */
-const evmMine = async (
-    thorClient: ThorClient,
-    options: { checkpointInterval?: number; pollingInterval?: number } = {}
-): Promise<null> => {
-    const { checkpointInterval = 100, pollingInterval = 1000 } = options;
-
+const evmMine = async (thorClient: ThorClient): Promise<null> => {
     try {
-        const head = await thorClient.blocks.getBestBlockExpanded();
+        const head = await thorClient.blocks.getBestBlockCompressed();
         if (head === null) {
             throw new JSONRPCInternalError(
                 'evm_mine()',
@@ -31,42 +24,13 @@ const evmMine = async (
             );
         }
 
-        const sleep = async (ms: number): Promise<void> => {
-            await new Promise((resolve) => setTimeout(resolve, ms));
-        };
-
-        while (true) {
-            try {
-                const newHead = await thorClient.blocks.getBestBlockExpanded();
-
-                if (newHead === null) {
-                    await sleep(pollingInterval);
-                    continue;
-                }
-
-                if (newHead.id !== head.id && newHead.number >= head.number) {
-                    if (
-                        head.number === 0 ||
-                        (newHead.number + 1) % checkpointInterval === 0
-                    ) {
-                        try {
-                            await thorClient.blocks.getBestBlockExpanded();
-                        } catch {
-                            // Ignore errors
-                        }
-                    }
-
-                    return null;
-                }
-
-                await sleep(pollingInterval);
-            } catch (error) {
-                if (error instanceof JSONRPCInternalError) {
-                    throw error;
-                }
-                await sleep(pollingInterval);
+        await Poll.SyncPoll(() => thorClient.blocks.getHeadBlock()).waitUntil(
+            (result) => {
+                return result !== head;
             }
-        }
+        );
+
+        return null;
     } catch (e) {
         if (e instanceof JSONRPCInternalError) {
             throw e;

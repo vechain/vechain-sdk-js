@@ -81,7 +81,6 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
      * @throws {JSONRPCMethodNotFound}
      */
     public async request(args: EIP1193RequestArguments): Promise<unknown> {
-        console.log('LLEGA request', args.method);
         // Check if the method is supported
         if (
             !Object.values(RPC_METHODS)
