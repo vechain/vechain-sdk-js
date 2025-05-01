@@ -1,10 +1,10 @@
-import { type ThorClient } from '../../../../../thor-client';
+import { Hex } from '@vechain/sdk-core';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
-import { Hex } from '@vechain/sdk-core';
+import { type ThorClient } from '../../../../../thor-client';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
 
 /**
@@ -41,10 +41,20 @@ const ethSendRawTransaction = async (
     try {
         const [signedTransactionData] = params as [string];
 
+        console.log(
+            'ENTRA ethSendRawTransaction params',
+            signedTransactionData
+        );
+
         const sentTransaction =
             await thorClient.transactions.sendRawTransaction(
                 signedTransactionData
             );
+
+        console.log(
+            'ENTRA ethSendRawTransaction sentTransaction',
+            sentTransaction.id
+        );
 
         return sentTransaction.id;
     } catch (error) {

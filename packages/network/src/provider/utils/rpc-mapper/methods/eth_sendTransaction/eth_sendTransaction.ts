@@ -1,14 +1,14 @@
-import { type ThorClient } from '../../../../../thor-client';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
-import { type VeChainProvider } from '../../../../providers/vechain-provider';
-import { type TransactionObjectInput } from './types';
 import { type VeChainSigner } from '../../../../../signer';
+import { type ThorClient } from '../../../../../thor-client';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
+import { type VeChainProvider } from '../../../../providers/vechain-provider';
 import { getCachedChainId } from '../eth_chainId';
+import { type TransactionObjectInput } from './types';
 
 /**
  * RPC Method eth_sendTransaction implementation
@@ -94,8 +94,14 @@ const ethSendTransaction = async (
             transaction.from
         )) as VeChainSigner;
 
+        console.log('ENTRA ethSendTransaction parms', transaction);
+
+        const transactionId = await signer.sendTransaction(transaction);
+
+        console.log('ENTRA ethSendTransaction transaction id', transactionId);
+
         // Return the result
-        return await signer.sendTransaction(transaction);
+        return transactionId;
     } catch (error) {
         throw new JSONRPCInternalError(
             'eth_sendTransaction()',

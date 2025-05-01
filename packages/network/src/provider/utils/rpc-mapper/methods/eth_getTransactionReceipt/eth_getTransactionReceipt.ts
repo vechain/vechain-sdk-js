@@ -68,6 +68,11 @@ const ethGetTransactionReceipt = async (
             const transactionDetail =
                 await thorClient.transactions.getTransaction(hash);
 
+            console.log(
+                'ENTRA ethGetTransactionReceipt transactionDetail',
+                transactionDetail
+            );
+
             // Get the chain id
             const chainId = await ethChainId(thorClient);
 
