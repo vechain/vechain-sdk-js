@@ -39,8 +39,6 @@ const ethCall = async (
     }
 
     try {
-        console.log('ENTRA ethCall params', params);
-
         const [inputOptions, block] = params as [
             TransactionObjectInput,
             DefaultBlock
@@ -65,8 +63,6 @@ const ethCall = async (
                 caller: inputOptions.from
             } satisfies SimulateTransactionOptions
         );
-
-        console.log('ENTRA ethCall simulatedTx', simulatedTx);
 
         if (simulatedTx[0].reverted) {
             throw new JSONRPCInternalError(

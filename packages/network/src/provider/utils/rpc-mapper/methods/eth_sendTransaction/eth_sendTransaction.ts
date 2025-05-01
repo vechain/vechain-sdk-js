@@ -94,11 +94,7 @@ const ethSendTransaction = async (
             transaction.from
         )) as VeChainSigner;
 
-        console.log('ENTRA ethSendTransaction parms', transaction);
-
         const transactionId = await signer.sendTransaction(transaction);
-
-        console.log('ENTRA ethSendTransaction transaction id', transactionId);
 
         // Return the result
         return transactionId;

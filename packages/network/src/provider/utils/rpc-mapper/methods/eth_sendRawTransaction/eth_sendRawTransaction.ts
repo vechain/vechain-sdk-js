@@ -41,20 +41,10 @@ const ethSendRawTransaction = async (
     try {
         const [signedTransactionData] = params as [string];
 
-        console.log(
-            'ENTRA ethSendRawTransaction params',
-            signedTransactionData
-        );
-
         const sentTransaction =
             await thorClient.transactions.sendRawTransaction(
                 signedTransactionData
             );
-
-        console.log(
-            'ENTRA ethSendRawTransaction sentTransaction',
-            sentTransaction.id
-        );
 
         return sentTransaction.id;
     } catch (error) {
