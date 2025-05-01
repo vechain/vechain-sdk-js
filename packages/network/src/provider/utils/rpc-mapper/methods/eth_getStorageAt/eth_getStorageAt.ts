@@ -29,23 +29,23 @@ const ethGetStorageAt = async (
 ): Promise<string> => {
     // Input validation
     if (
-        params.length < 1 ||
-        params.length > 3 ||
+        params.length !== 3 ||
         typeof params[0] !== 'string' ||
-        typeof params[1] !== 'string' ||
-        (params.length === 3 &&
+        (typeof params[1] !== 'string' && typeof params[1] !== 'bigint') ||
+        (params[2] != null &&
             typeof params[2] !== 'object' &&
             typeof params[2] !== 'string')
-    )
+    ) {
         throw new JSONRPCInvalidParams(
             'eth_getStorageAt',
             `Invalid input params for "eth_getStorageAt" method. See ${RPC_DOCUMENTATION_URL} for details.`,
             { params }
         );
+    }
 
     try {
-        if (params.length === 2) {
-            params.push('latest');
+        if (params[2] == null) {
+            params[2] = 'latest';
         }
         const [address, storagePosition, block] = params as [
             string,
