@@ -37,7 +37,7 @@ describe('RPC Mapper - evm_mine method tests', () => {
             // Mock the getGenesisBlock method to return null
             jest.spyOn(
                 thorClient.blocks,
-                'getBestBlockExpanded'
+                'getBestBlockCompressed'
             ).mockRejectedValue(new Error());
 
             await expect(
