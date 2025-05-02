@@ -13,6 +13,7 @@ import { type AbiEvent } from 'abitype';
 import {
     type CompressedBlockDetail,
     type EventLogs,
+    ProviderInternalBaseWallet,
     signerUtils,
     subscriptions,
     THOR_SOLO_URL,
@@ -24,11 +25,10 @@ import {
 import {
     TEST_ACCOUNTS,
     TESTING_CONTRACT_ABI,
-    TESTING_CONTRACT_ADDRESS,
-    getUnusedBaseWallet
+    TESTING_CONTRACT_ADDRESS
 } from '../../fixture';
 // eslint-disable-next-line import/no-named-default
-import { default as NodeWebSocket } from 'ws';
+import { default as NodeWebSocket } from 'isomorphic-ws';
 import { expectType } from 'tsd';
 
 const TIMEOUT = 15000; // 15-second timeout
@@ -36,7 +36,6 @@ const TIMEOUT = 15000; // 15-second timeout
 /**
  * Test suite for the Subscriptions utility methods for listening to events obtained through a websocket connection.
  *
- * @group websocket
  * @group integration/utils/subscriptions
  */
 describe('Subscriptions Solo network tests', () => {
@@ -50,9 +49,29 @@ describe('Subscriptions Solo network tests', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        const testAccount = getUnusedBaseWallet();
         thorClient = ThorClient.at(THOR_SOLO_URL);
-        provider = new VeChainProvider(thorClient, testAccount, false);
+        provider = new VeChainProvider(
+            thorClient,
+            new ProviderInternalBaseWallet([
+                {
+                    address:
+                        TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address,
+                    privateKey: HexUInt.of(
+                        TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.privateKey
+                    ).bytes
+                },
+                {
+                    address:
+                        TEST_ACCOUNTS.SUBSCRIPTION.VET_TRANSFERS_SUBSCRIPTION
+                            .address,
+                    privateKey: HexUInt.of(
+                        TEST_ACCOUNTS.SUBSCRIPTION.VET_TRANSFERS_SUBSCRIPTION
+                            .privateKey
+                    ).bytes
+                }
+            ]),
+            false
+        );
     });
 
     /**
@@ -104,9 +123,9 @@ describe('Subscriptions Solo network tests', () => {
                     resolve(true);
                 };
 
-                ws.onerror = (_error: Event) => {
+                ws.onerror = (error: Event) => {
                     clearTimeout(timeout); // Clear the timeout in case of an error
-                    reject(new Error('WebSocket error occurred')); // Reject with a generic error message
+                    reject(error); // Reject the promise with the error
                 };
             });
         },
@@ -179,7 +198,6 @@ describe('Subscriptions Solo network tests', () => {
                                     timestamp: bigint;
                                 };
                             };
-
                         expectType<{
                             eventName: 'StateChanged';
                             args: {
@@ -200,15 +218,15 @@ describe('Subscriptions Solo network tests', () => {
                         );
 
                         resolve(true); // Resolve the promise when a message is received
-                    } catch {
-                        reject(new Error('Error processing WebSocket message')); // Use a generic error message
+                    } catch (error) {
+                        reject(error); // Reject the promise on error
                     } finally {
                         ws.close(); // Ensure WebSocket is closed
                     }
                 };
 
-                ws.onerror = (_error: Event) => {
-                    reject(new Error('WebSocket error occurred')); // Reject with a generic error message
+                ws.onerror = (error: Event) => {
+                    reject(error); // Reject the promise on WebSocket error
                 };
             });
             const clause = Clause.callFunction(
@@ -219,7 +237,7 @@ describe('Subscriptions Solo network tests', () => {
                 [1]
             ) as TransactionClause;
             const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
-            const gasResult = await thorSoloClient.transactions.estimateGas(
+            const gasResult = await thorSoloClient.gas.estimateGas(
                 [clause],
                 TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
             );
@@ -293,15 +311,15 @@ describe('Subscriptions Solo network tests', () => {
                     );
 
                     resolve(true); // Resolve the promise when a message is received
-                } catch {
-                    reject(new Error('Error processing WebSocket message')); // Use a generic error message
+                } catch (error) {
+                    reject(error); // Reject the promise on error
                 } finally {
                     ws.close(); // Ensure WebSocket is closed
                 }
             };
 
-            ws.onerror = (_error: Event) => {
-                reject(new Error('WebSocket error occurred')); // Reject with a generic error message
+            ws.onerror = (error: Event) => {
+                reject(error); // Reject the promise on WebSocket error
             };
         });
 
@@ -312,7 +330,7 @@ describe('Subscriptions Solo network tests', () => {
             data: '0x'
         };
         const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
-        const gasResult = await thorSoloClient.transactions.estimateGas(
+        const gasResult = await thorSoloClient.gas.estimateGas(
             [clause],
             TEST_ACCOUNTS.SUBSCRIPTION.VET_TRANSFERS_SUBSCRIPTION.address
         );
