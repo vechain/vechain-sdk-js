@@ -6,7 +6,7 @@
     "declarationMap": true,
     "esModuleInterop": true,
     "module": "Node16",
-    "target": "ES2022",
+    "target": "ES2023",
     "forceConsistentCasingInFileNames": true,
     "inlineSources": false,
     "isolatedModules": true,
