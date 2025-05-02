@@ -30,11 +30,6 @@ class Clause implements TransactionClause {
     private static readonly FORMAT_TYPE = 'json';
 
     /**
-     * Used internally to tag a transaction not tranferring token amount.
-     */
-    private static readonly NO_VALUE = Hex.PREFIX + '0';
-
-    /**
      * Used internally to tag a transaction without data.
      */
     private static readonly NO_DATA = Hex.PREFIX;
@@ -82,6 +77,11 @@ class Clause implements TransactionClause {
      * function of a smart contract.
      */
     readonly abi?: string;
+
+    /**
+     * Used publicly to tag a transaction not tranferring token amount.
+     */
+    public static readonly NO_VALUE = Hex.PREFIX + '0';
 
     /**
      * Creates an instance of the class.

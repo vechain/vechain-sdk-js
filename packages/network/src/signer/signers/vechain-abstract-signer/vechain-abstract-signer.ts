@@ -481,7 +481,15 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
             : // If 'to' address is not provided, it will be assumed that the transaction is a contract creation transaction.
               [
                   Clause.deployContract(
-                      HexUInt.of(transaction.data ?? 0)
+                      HexUInt.of(transaction.data ?? 0),
+                      undefined,
+                      {
+                          value:
+                              transaction.value !== undefined
+                                  ? HexUInt.of(transaction.value).toString(true)
+                                  : Clause.NO_VALUE,
+                          comment: transaction.comment
+                      }
                   ) as TransactionClause
               ];
     }
