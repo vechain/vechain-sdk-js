@@ -34,7 +34,7 @@
     "seed-thor-solo": "yarn workspace @vechain/sdk-solo-setup solo-seed",
     "test:unit": "rm -rf ./coverageUnit && UNIT=true jest --coverage --coverageDirectory=coverageUnit --group=unit",
     "test:integration": "rm -rf ./coverageIntegration && jest --coverage --coverageDirectory=coverageIntegration --group=integration",
-    "test": "rm -rf ./coverage && NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --coverage --coverageDirectory=coverage --group=integration --group=unit",
+    "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit",
     "test:solo": "(yarn start-thor-solo && yarn seed-thor-solo && yarn test && yarn stop-thor-solo) || yarn stop-thor-solo"
   },
   "dependencies": {
