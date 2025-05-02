@@ -54,7 +54,9 @@ extendEnvironment((hre) => {
     // 1.5 - Get the custom RPC Configuration
     const rpcConfiguration = networkConfig.rpcConfiguration;
     const ethGetTransactionCountMustReturn0 =
-        rpcConfiguration?.ethGetTransactionCountMustReturn0 ?? false;
+        rpcConfiguration?.ethGetTransactionCountMustReturn0 !== undefined
+            ? rpcConfiguration?.ethGetTransactionCountMustReturn0
+            : false;
 
     // 2 - Check if network is vechain
 
