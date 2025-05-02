@@ -154,7 +154,7 @@ class SimpleHttpClient implements HttpClient {
                 ) {
                     params.validateResponseHeader(responseHeaders);
                 }
-                return await response.json();
+                return (await response.json()) as unknown;
             }
             // get error message from response
             const errorMessage = await response.text();
