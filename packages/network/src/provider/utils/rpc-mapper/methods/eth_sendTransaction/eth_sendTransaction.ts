@@ -94,10 +94,8 @@ const ethSendTransaction = async (
             transaction.from
         )) as VeChainSigner;
 
-        const transactionId = await signer.sendTransaction(transaction);
-
         // Return the result
-        return transactionId;
+        return await signer.sendTransaction(transaction);
     } catch (error) {
         throw new JSONRPCInternalError(
             'eth_sendTransaction()',
