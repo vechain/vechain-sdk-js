@@ -485,9 +485,11 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
                       undefined,
                       {
                           value:
-                              transaction.value !== undefined
-                                  ? HexUInt.of(transaction.value).toString(true)
-                                  : Clause.NO_VALUE,
+                              transaction.value === undefined
+                                  ? transaction.value
+                                  : HexUInt.of(transaction.value).toString(
+                                        true
+                                    ),
                           comment: transaction.comment
                       }
                   ) as TransactionClause
