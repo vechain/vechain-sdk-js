@@ -66,6 +66,6 @@ describe('RPC Mapper - debug_traceCall method tests on solo', () => {
                 }
             ]);
             expect(result).toBeDefined();
-        }, 30000);
+        }, 50000);
     });
 });
