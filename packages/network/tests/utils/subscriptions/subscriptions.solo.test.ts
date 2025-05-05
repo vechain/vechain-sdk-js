@@ -125,7 +125,12 @@ describe('Subscriptions Solo network tests', () => {
 
                 ws.onerror = (error: Event) => {
                     clearTimeout(timeout); // Clear the timeout in case of an error
-                    reject(error); // Reject the promise with the error
+                    reject(
+                        new Error(
+                            'Error processing WebSocket message: ' +
+                                String(error)
+                        )
+                    );
                 };
             });
         },
@@ -219,14 +224,24 @@ describe('Subscriptions Solo network tests', () => {
 
                         resolve(true); // Resolve the promise when a message is received
                     } catch (error) {
-                        reject(error); // Reject the promise on error
+                        reject(
+                            new Error(
+                                'Error processing WebSocket message: ' +
+                                    String(error)
+                            )
+                        );
                     } finally {
                         ws.close(); // Ensure WebSocket is closed
                     }
                 };
 
                 ws.onerror = (error: Event) => {
-                    reject(error); // Reject the promise on WebSocket error
+                    reject(
+                        new Error(
+                            'Error processing WebSocket message: ' +
+                                String(error)
+                        )
+                    );
                 };
             });
             const clause = Clause.callFunction(
@@ -312,14 +327,23 @@ describe('Subscriptions Solo network tests', () => {
 
                     resolve(true); // Resolve the promise when a message is received
                 } catch (error) {
-                    reject(error); // Reject the promise on error
+                    reject(
+                        new Error(
+                            'Error processing WebSocket message: ' +
+                                String(error)
+                        )
+                    );
                 } finally {
                     ws.close(); // Ensure WebSocket is closed
                 }
             };
 
             ws.onerror = (error: Event) => {
-                reject(error); // Reject the promise on WebSocket error
+                reject(
+                    new Error(
+                        'Error processing WebSocket message: ' + String(error)
+                    )
+                );
             };
         });
 
