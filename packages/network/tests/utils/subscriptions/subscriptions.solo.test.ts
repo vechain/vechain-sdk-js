@@ -27,8 +27,7 @@ import {
     TESTING_CONTRACT_ABI,
     TESTING_CONTRACT_ADDRESS
 } from '../../fixture';
-// eslint-disable-next-line import/no-named-default
-import { default as NodeWebSocket } from 'isomorphic-ws';
+import NodeWebSocket from 'ws';
 import { expectType } from 'tsd';
 
 const TIMEOUT = 15000; // 15-second timeout
@@ -97,7 +96,6 @@ describe('Subscriptions Solo network tests', () => {
         // Node environment
         else {
             // Use a type assertion to declare that we know the object structure
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
             const ws = new NodeWebSocket(url) as {
                 addEventListener: (
                     event: string,
