@@ -97,6 +97,7 @@ describe('Subscriptions Solo network tests', () => {
         // Node environment
         else {
             // Use a type assertion to declare that we know the object structure
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
             const ws = new NodeWebSocket(url) as {
                 addEventListener: (
                     event: string,
