@@ -46,26 +46,90 @@ describe('Subscriptions Solo network tests', () => {
     let provider: VeChainProvider;
 
     /**
-     * Create a WebSocket connection
+     * Set up and manage a WebSocket connection in a type-safe way
+     * Uses two separate implementations for browser and Node environments
      */
-    const createWebSocket = (url: string): WebSocket | NodeWebSocket => {
-        if (typeof WebSocket !== 'undefined') {
-            return new WebSocket(url);
+    const setupWebSocketConnection = (
+        url: string,
+        handlers: {
+            onOpen?: () => void;
+            onMessage: (data: string) => void;
+            onError: (error: Error) => void;
         }
-        return new NodeWebSocket(url);
-    };
+    ): { closeConnection: () => void } => {
+        // Browser environment
+        if (typeof WebSocket !== 'undefined') {
+            const ws = new WebSocket(url);
 
-    /**
-     * Safely close a WebSocket connection
-     */
-    const safelyCloseWebSocket = (ws: WebSocket | NodeWebSocket): void => {
-        try {
-            if (ws.readyState !== 3) {
-                // 3 = CLOSED
-                ws.close();
-            }
-        } catch (e) {
-            console.error('Error closing WebSocket:', e);
+            ws.onopen = (): void => {
+                if (handlers.onOpen !== undefined && handlers.onOpen !== null) {
+                    handlers.onOpen();
+                }
+            };
+
+            ws.onmessage = (event: MessageEvent): void => {
+                const data =
+                    typeof event.data === 'string'
+                        ? event.data
+                        : JSON.stringify(event.data);
+                handlers.onMessage(data);
+            };
+
+            ws.onerror = (event: Event): void => {
+                handlers.onError(
+                    new Error(`WebSocket error: ${String(event)}`)
+                );
+            };
+
+            return {
+                closeConnection: (): void => {
+                    try {
+                        if (ws.readyState !== 3) {
+                            // 3 = CLOSED
+                            ws.close();
+                        }
+                    } catch (e) {
+                        console.error('Error closing WebSocket:', e);
+                    }
+                }
+            };
+        }
+        // Node environment
+        else {
+            const ws = new NodeWebSocket(url);
+
+            ws.on('open', () => {
+                if (handlers.onOpen !== undefined && handlers.onOpen !== null) {
+                    handlers.onOpen();
+                }
+            });
+
+            ws.on('message', (data: NodeWebSocket.Data) => {
+                const stringData =
+                    typeof data === 'string'
+                        ? data
+                        : data instanceof Buffer
+                          ? data.toString()
+                          : JSON.stringify(data);
+                handlers.onMessage(stringData);
+            });
+
+            ws.on('error', (error: Error) => {
+                handlers.onError(error);
+            });
+
+            return {
+                closeConnection: (): void => {
+                    try {
+                        if (ws.readyState !== 3) {
+                            // 3 = CLOSED
+                            ws.close();
+                        }
+                    } catch (e) {
+                        console.error('Error closing WebSocket:', e);
+                    }
+                }
+            };
         }
     };
 
@@ -110,48 +174,43 @@ describe('Subscriptions Solo network tests', () => {
         async () => {
             const wsURL = subscriptions.getBlockSubscriptionUrl(THOR_SOLO_URL);
 
-            // Create a WebSocket connection
-            const ws = createWebSocket(wsURL);
-
             await new Promise<boolean>((resolve, reject) => {
-                const timeout = setTimeout(() => {
-                    safelyCloseWebSocket(ws);
+                let timeoutId: NodeJS.Timeout | null = setTimeout(() => {
+                    if (connection !== undefined && connection !== null) {
+                        connection.closeConnection();
+                    }
                     reject(new Error('Timeout: No block received'));
-                }, TIMEOUT); // 15-second timeout
+                }, TIMEOUT);
 
-                ws.onopen = (): void => {
-                    console.log('WebSocket connection opened.');
-                };
+                // Set up WebSocket connection with handlers
+                const connection = setupWebSocketConnection(wsURL, {
+                    onOpen: () => {
+                        console.log('WebSocket connection opened.');
+                    },
+                    onMessage: (data: string) => {
+                        if (timeoutId !== undefined && timeoutId !== null) {
+                            clearTimeout(timeoutId);
+                            timeoutId = null;
+                        }
 
-                ws.onmessage = (event: MessageEvent): void => {
-                    clearTimeout(timeout); // Clear the timeout on receiving a message
-                    safelyCloseWebSocket(ws);
+                        expect(data).toBeDefined();
+                        expect(data).not.toBeNull();
 
-                    const data: string =
-                        typeof event.data === 'string'
-                            ? event.data
-                            : JSON.stringify(event.data);
-                    expect(data).toBeDefined(); // Basic assertion to ensure data is received
-                    expect(data).not.toBeNull(); // Basic assertion to ensure data is received
+                        const block = JSON.parse(data) as CompressedBlockDetail;
+                        expect(block.number).toBeGreaterThan(0);
 
-                    const block = JSON.parse(
-                        data.toString()
-                    ) as CompressedBlockDetail;
-
-                    expect(block.number).toBeGreaterThan(0); // Basic assertion to ensure the block number is valid
-
-                    resolve(true);
-                };
-
-                ws.onerror = (event: Event): void => {
-                    clearTimeout(timeout); // Clear the timeout in case of an error
-                    reject(
-                        new Error(
-                            'Error processing WebSocket message: ' +
-                                String(event)
-                        )
-                    );
-                };
+                        connection.closeConnection();
+                        resolve(true);
+                    },
+                    onError: (error: Error) => {
+                        if (timeoutId !== undefined && timeoutId !== null) {
+                            clearTimeout(timeoutId);
+                            timeoutId = null;
+                        }
+                        connection.closeConnection();
+                        reject(error);
+                    }
+                });
             });
         },
         TIMEOUT
@@ -182,34 +241,36 @@ describe('Subscriptions Solo network tests', () => {
                 ]
             );
 
-            // Create a WebSocket connection
-            const ws = createWebSocket(wsURL);
-
             // Set up a promise to handle WebSocket messages
             const waitForMessage = new Promise<boolean>((resolve, reject) => {
-                ws.onopen = (): void => {
-                    console.log('WebSocket connection opened.');
-                };
+                const connection = setupWebSocketConnection(wsURL, {
+                    onOpen: () => {
+                        console.log('WebSocket connection opened.');
+                    },
+                    onMessage: (data: string) => {
+                        try {
+                            const log = JSON.parse(data) as EventLogs;
+                            expect(log).toBeDefined();
 
-                ws.onmessage = (event: MessageEvent): void => {
-                    const data: string =
-                        typeof event.data === 'string'
-                            ? event.data
-                            : JSON.stringify(event.data);
-                    try {
-                        const log = JSON.parse(data) as EventLogs;
-                        expect(log).toBeDefined(); // Your assertion here
-
-                        const decodedLog =
-                            testingContractInterface.decodeEventLog(
-                                'StateChanged',
-                                {
-                                    data: Hex.of(log.data),
-                                    topics: log.topics.map((topic) =>
-                                        Hex.of(topic)
-                                    )
-                                }
-                            ) as {
+                            const decodedLog =
+                                testingContractInterface.decodeEventLog(
+                                    'StateChanged',
+                                    {
+                                        data: Hex.of(log.data),
+                                        topics: log.topics.map((topic) =>
+                                            Hex.of(topic)
+                                        )
+                                    }
+                                ) as {
+                                    eventName: 'StateChanged';
+                                    args: {
+                                        newValue: bigint;
+                                        oldValue: bigint;
+                                        sender: string;
+                                        timestamp: bigint;
+                                    };
+                                };
+                            expectType<{
                                 eventName: 'StateChanged';
                                 args: {
                                     newValue: bigint;
@@ -217,83 +278,82 @@ describe('Subscriptions Solo network tests', () => {
                                     sender: string;
                                     timestamp: bigint;
                                 };
-                            };
-                        expectType<{
-                            eventName: 'StateChanged';
-                            args: {
-                                newValue: bigint;
-                                oldValue: bigint;
-                                sender: string;
-                                timestamp: bigint;
-                            };
-                        }>(decodedLog);
-                        expect(Object.keys(decodedLog.args).length).toBe(4);
-                        expect(decodedLog.args.sender).toBe(
-                            Address.checksum(
-                                HexUInt.of(
-                                    TEST_ACCOUNTS.SUBSCRIPTION
-                                        .EVENT_SUBSCRIPTION.address
+                            }>(decodedLog);
+                            expect(Object.keys(decodedLog.args).length).toBe(4);
+                            expect(decodedLog.args.sender).toBe(
+                                Address.checksum(
+                                    HexUInt.of(
+                                        TEST_ACCOUNTS.SUBSCRIPTION
+                                            .EVENT_SUBSCRIPTION.address
+                                    )
                                 )
-                            )
-                        );
+                            );
 
-                        resolve(true); // Resolve the promise when a message is received
-                    } catch (error) {
-                        reject(
-                            new Error(
-                                'Error processing WebSocket message: ' +
-                                    String(error)
-                            )
-                        );
-                    } finally {
-                        safelyCloseWebSocket(ws);
+                            resolve(true);
+                        } catch (error) {
+                            reject(
+                                new Error(
+                                    `Error processing WebSocket message: ${String(error)}`
+                                )
+                            );
+                        } finally {
+                            connection.closeConnection();
+                        }
+                    },
+                    onError: (error: Error) => {
+                        connection.closeConnection();
+                        reject(error);
                     }
-                };
+                });
 
-                ws.onerror = (event: Event): void => {
-                    reject(
-                        new Error(
-                            'Error processing WebSocket message: ' +
-                                String(event)
+                // Trigger the smart contract function that emits the event
+                const triggerEvent = async (): Promise<void> => {
+                    const clause = Clause.callFunction(
+                        Address.of(TESTING_CONTRACT_ADDRESS),
+                        ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
+                            'setStateVariable'
+                        ),
+                        [1]
+                    ) as TransactionClause;
+                    const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
+                    const gasResult = await thorSoloClient.gas.estimateGas(
+                        [clause],
+                        TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
+                    );
+                    const txBody =
+                        await thorSoloClient.transactions.buildTransactionBody(
+                            [clause],
+                            gasResult.totalGas
+                        );
+
+                    // Create a signer to sign the transaction
+                    const signer = (await provider.getSigner(
+                        TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
+                    )) as VeChainPrivateKeySigner;
+
+                    // Get the raw transaction
+                    const raw = await signer.signTransaction(
+                        signerUtils.transactionBodyToTransactionRequestInput(
+                            txBody,
+                            TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION
+                                .address
                         )
                     );
+
+                    // Send the signed transaction to the blockchain
+                    await thorSoloClient.transactions.sendTransaction(
+                        Transaction.decode(HexUInt.of(raw.slice(2)).bytes, true)
+                    );
                 };
+
+                // Send the transaction to trigger the event
+                triggerEvent().catch((error) => {
+                    connection.closeConnection();
+                    reject(
+                        new Error(`Failed to trigger event: ${String(error)}`)
+                    );
+                });
             });
-            const clause = Clause.callFunction(
-                Address.of(TESTING_CONTRACT_ADDRESS),
-                ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
-                    'setStateVariable'
-                ),
-                [1]
-            ) as TransactionClause;
-            const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
-            const gasResult = await thorSoloClient.gas.estimateGas(
-                [clause],
-                TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
-            );
-            const txBody =
-                await thorSoloClient.transactions.buildTransactionBody(
-                    [clause],
-                    gasResult.totalGas
-                );
-
-            // Create a signer to sign the transaction
-            const signer = (await provider.getSigner(
-                TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
-            )) as VeChainPrivateKeySigner;
-
-            // Get the raw transaction
-            const raw = await signer.signTransaction(
-                signerUtils.transactionBodyToTransactionRequestInput(
-                    txBody,
-                    TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
-                )
-            );
-
-            // Send the signed transaction to the blockchain
-            await thorSoloClient.transactions.sendTransaction(
-                Transaction.decode(HexUInt.of(raw.slice(2)).bytes, true)
-            );
 
             // Wait for the WebSocket message or a timeout
             await expect(waitForMessage).resolves.toBe(true);
@@ -313,83 +373,84 @@ describe('Subscriptions Solo network tests', () => {
             }
         );
 
-        const ws = createWebSocket(wsURL);
-
         const waitForMessage = new Promise<boolean>((resolve, reject) => {
-            ws.onopen = (): void => {
-                console.log('WebSocket connection opened.');
-            };
+            const connection = setupWebSocketConnection(wsURL, {
+                onOpen: () => {
+                    console.log('WebSocket connection opened.');
+                },
+                onMessage: (data: string) => {
+                    try {
+                        const log = JSON.parse(data) as TransferLogs;
+                        expect(log).toBeDefined();
+                        expect(log.sender).toBe(
+                            TEST_ACCOUNTS.SUBSCRIPTION
+                                .VET_TRANSFERS_SUBSCRIPTION.address
+                        );
+                        resolve(true);
+                    } catch (error) {
+                        reject(
+                            new Error(
+                                `Error processing WebSocket message: ${String(error)}`
+                            )
+                        );
+                    } finally {
+                        connection.closeConnection();
+                    }
+                },
+                onError: (error: Error) => {
+                    connection.closeConnection();
+                    reject(error);
+                }
+            });
 
-            ws.onmessage = (event: MessageEvent): void => {
-                const data: string =
-                    typeof event.data === 'string'
-                        ? event.data
-                        : JSON.stringify(event.data);
-                try {
-                    const log = JSON.parse(data) as TransferLogs;
+            // Trigger VET transfer
+            const triggerTransfer = async (): Promise<void> => {
+                const clause: TransactionClause = {
+                    to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+                    value: Units.parseEther('1').toString(),
+                    data: '0x'
+                };
+                const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
+                const gasResult = await thorSoloClient.gas.estimateGas(
+                    [clause],
+                    TEST_ACCOUNTS.SUBSCRIPTION.VET_TRANSFERS_SUBSCRIPTION
+                        .address
+                );
+                const txBody =
+                    await thorSoloClient.transactions.buildTransactionBody(
+                        [clause],
+                        gasResult.totalGas
+                    );
 
-                    expect(log).toBeDefined(); // Your assertion here
+                // Create a signer to sign the transaction
+                const signer = (await provider.getSigner(
+                    TEST_ACCOUNTS.SUBSCRIPTION.VET_TRANSFERS_SUBSCRIPTION
+                        .address
+                )) as VeChainPrivateKeySigner;
 
-                    expect(log.sender).toBe(
+                // Get the raw transaction
+                const raw = await signer.signTransaction(
+                    signerUtils.transactionBodyToTransactionRequestInput(
+                        txBody,
                         TEST_ACCOUNTS.SUBSCRIPTION.VET_TRANSFERS_SUBSCRIPTION
                             .address
-                    );
-
-                    resolve(true); // Resolve the promise when a message is received
-                } catch (error) {
-                    reject(
-                        new Error(
-                            'Error processing WebSocket message: ' +
-                                String(error)
-                        )
-                    );
-                } finally {
-                    safelyCloseWebSocket(ws);
-                }
-            };
-
-            ws.onerror = (event: Event): void => {
-                reject(
-                    new Error(
-                        'Error processing WebSocket message: ' + String(event)
                     )
                 );
+
+                // Send the signed transaction to the blockchain
+                await thorSoloClient.transactions.sendTransaction(
+                    Transaction.decode(HexUInt.of(raw.slice(2)).bytes, true)
+                );
             };
+
+            // Send the transaction to trigger the transfer
+            triggerTransfer().catch((error) => {
+                connection.closeConnection();
+                reject(
+                    new Error(`Failed to trigger transfer: ${String(error)}`)
+                );
+            });
         });
-
-        // Trigger the smart contract function that emits the event
-        const clause: TransactionClause = {
-            to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-            value: Units.parseEther('1').toString(),
-            data: '0x'
-        };
-        const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
-        const gasResult = await thorSoloClient.gas.estimateGas(
-            [clause],
-            TEST_ACCOUNTS.SUBSCRIPTION.VET_TRANSFERS_SUBSCRIPTION.address
-        );
-        const txBody = await thorSoloClient.transactions.buildTransactionBody(
-            [clause],
-            gasResult.totalGas
-        );
-
-        // Create a signer to sign the transaction
-        const signer = (await provider.getSigner(
-            TEST_ACCOUNTS.SUBSCRIPTION.VET_TRANSFERS_SUBSCRIPTION.address
-        )) as VeChainPrivateKeySigner;
-
-        // Get the raw transaction
-        const raw = await signer.signTransaction(
-            signerUtils.transactionBodyToTransactionRequestInput(
-                txBody,
-                TEST_ACCOUNTS.SUBSCRIPTION.VET_TRANSFERS_SUBSCRIPTION.address
-            )
-        );
-
-        // Send the signed transaction to the blockchain
-        await thorSoloClient.transactions.sendTransaction(
-            Transaction.decode(HexUInt.of(raw.slice(2)).bytes, true)
-        );
 
         // Wait for the WebSocket message or a timeout
         await expect(waitForMessage).resolves.toBe(true);
