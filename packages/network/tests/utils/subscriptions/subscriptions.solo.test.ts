@@ -46,6 +46,30 @@ describe('Subscriptions Solo network tests', () => {
     let provider: VeChainProvider;
 
     /**
+     * Create a WebSocket connection
+     */
+    const createWebSocket = (url: string): WebSocket | NodeWebSocket => {
+        if (typeof WebSocket !== 'undefined') {
+            return new WebSocket(url);
+        }
+        return new NodeWebSocket(url);
+    };
+
+    /**
+     * Safely close a WebSocket connection
+     */
+    const safelyCloseWebSocket = (ws: WebSocket | NodeWebSocket): void => {
+        try {
+            if (ws.readyState !== 3) {
+                // 3 = CLOSED
+                ws.close();
+            }
+        } catch (e) {
+            console.error('Error closing WebSocket:', e);
+        }
+    };
+
+    /**
      * Init thor client and provider before each test
      */
     beforeEach(() => {
@@ -86,26 +110,22 @@ describe('Subscriptions Solo network tests', () => {
         async () => {
             const wsURL = subscriptions.getBlockSubscriptionUrl(THOR_SOLO_URL);
 
-            let ws: WebSocket | NodeWebSocket;
-            if (typeof WebSocket !== 'undefined') {
-                ws = new WebSocket(wsURL);
-            } else {
-                ws = new NodeWebSocket(wsURL);
-            }
+            // Create a WebSocket connection
+            const ws = createWebSocket(wsURL);
 
-            await new Promise((resolve, reject) => {
+            await new Promise<boolean>((resolve, reject) => {
                 const timeout = setTimeout(() => {
-                    ws.close();
+                    safelyCloseWebSocket(ws);
                     reject(new Error('Timeout: No block received'));
                 }, TIMEOUT); // 15-second timeout
 
-                ws.onopen = () => {
+                ws.onopen = (): void => {
                     console.log('WebSocket connection opened.');
                 };
 
-                ws.onmessage = (event: MessageEvent) => {
+                ws.onmessage = (event: MessageEvent): void => {
                     clearTimeout(timeout); // Clear the timeout on receiving a message
-                    ws.close(); // Close the WebSocket connection
+                    safelyCloseWebSocket(ws);
 
                     const data: string =
                         typeof event.data === 'string'
@@ -123,12 +143,12 @@ describe('Subscriptions Solo network tests', () => {
                     resolve(true);
                 };
 
-                ws.onerror = (error: Event) => {
+                ws.onerror = (event: Event): void => {
                     clearTimeout(timeout); // Clear the timeout in case of an error
                     reject(
                         new Error(
                             'Error processing WebSocket message: ' +
-                                String(error)
+                                String(event)
                         )
                     );
                 };
@@ -163,20 +183,15 @@ describe('Subscriptions Solo network tests', () => {
             );
 
             // Create a WebSocket connection
-            let ws: WebSocket | NodeWebSocket;
-            if (typeof WebSocket !== 'undefined') {
-                ws = new WebSocket(wsURL);
-            } else {
-                ws = new NodeWebSocket(wsURL);
-            }
+            const ws = createWebSocket(wsURL);
 
             // Set up a promise to handle WebSocket messages
-            const waitForMessage = new Promise((resolve, reject) => {
-                ws.onopen = () => {
+            const waitForMessage = new Promise<boolean>((resolve, reject) => {
+                ws.onopen = (): void => {
                     console.log('WebSocket connection opened.');
                 };
 
-                ws.onmessage = (event: MessageEvent) => {
+                ws.onmessage = (event: MessageEvent): void => {
                     const data: string =
                         typeof event.data === 'string'
                             ? event.data
@@ -231,15 +246,15 @@ describe('Subscriptions Solo network tests', () => {
                             )
                         );
                     } finally {
-                        ws.close(); // Ensure WebSocket is closed
+                        safelyCloseWebSocket(ws);
                     }
                 };
 
-                ws.onerror = (error: Event) => {
+                ws.onerror = (event: Event): void => {
                     reject(
                         new Error(
                             'Error processing WebSocket message: ' +
-                                String(error)
+                                String(event)
                         )
                     );
                 };
@@ -298,19 +313,14 @@ describe('Subscriptions Solo network tests', () => {
             }
         );
 
-        let ws: WebSocket | NodeWebSocket;
-        if (typeof WebSocket !== 'undefined') {
-            ws = new WebSocket(wsURL);
-        } else {
-            ws = new NodeWebSocket(wsURL);
-        }
+        const ws = createWebSocket(wsURL);
 
-        const waitForMessage = new Promise((resolve, reject) => {
-            ws.onopen = () => {
+        const waitForMessage = new Promise<boolean>((resolve, reject) => {
+            ws.onopen = (): void => {
                 console.log('WebSocket connection opened.');
             };
 
-            ws.onmessage = (event: MessageEvent) => {
+            ws.onmessage = (event: MessageEvent): void => {
                 const data: string =
                     typeof event.data === 'string'
                         ? event.data
@@ -334,14 +344,14 @@ describe('Subscriptions Solo network tests', () => {
                         )
                     );
                 } finally {
-                    ws.close(); // Ensure WebSocket is closed
+                    safelyCloseWebSocket(ws);
                 }
             };
 
-            ws.onerror = (error: Event) => {
+            ws.onerror = (event: Event): void => {
                 reject(
                     new Error(
-                        'Error processing WebSocket message: ' + String(error)
+                        'Error processing WebSocket message: ' + String(event)
                     )
                 );
             };
