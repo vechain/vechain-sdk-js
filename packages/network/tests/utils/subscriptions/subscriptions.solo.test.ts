@@ -96,32 +96,54 @@ describe('Subscriptions Solo network tests', () => {
         }
         // Node environment
         else {
-            const ws = new NodeWebSocket(url);
+            // Use a type assertion to declare that we know the object structure
+            const ws = new NodeWebSocket(url) as {
+                addEventListener: (
+                    event: string,
+                    listener: (event: { data: unknown }) => void
+                ) => void;
+                readyState: number;
+                close: () => void;
+            };
 
-            ws.on('open', () => {
+            // Use addEventListener which is available in both browser and node implementations
+            ws.addEventListener('open', () => {
                 if (handlers.onOpen !== undefined && handlers.onOpen !== null) {
                     handlers.onOpen();
                 }
             });
 
-            ws.on('message', (data: NodeWebSocket.Data) => {
-                const stringData =
-                    typeof data === 'string'
-                        ? data
-                        : data instanceof Buffer
-                          ? data.toString()
-                          : JSON.stringify(data);
+            ws.addEventListener('message', (event: { data: unknown }) => {
+                // Safely handle different data types
+                let stringData = '';
+                if (typeof event.data === 'string') {
+                    stringData = event.data;
+                } else if (
+                    typeof event.data === 'object' &&
+                    event.data !== null
+                ) {
+                    if (Buffer.isBuffer(event.data)) {
+                        stringData = event.data.toString();
+                    } else {
+                        stringData = JSON.stringify(event.data);
+                    }
+                }
                 handlers.onMessage(stringData);
             });
 
-            ws.on('error', (error: Error) => {
-                handlers.onError(error);
+            ws.addEventListener('error', (event) => {
+                handlers.onError(
+                    new Error(`WebSocket error: ${String(event)}`)
+                );
             });
 
             return {
                 closeConnection: (): void => {
                     try {
-                        if (ws.readyState !== 3) {
+                        if (
+                            typeof ws.readyState === 'number' &&
+                            ws.readyState !== 3
+                        ) {
                             // 3 = CLOSED
                             ws.close();
                         }
