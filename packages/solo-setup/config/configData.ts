@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 
-
 type CompressedBlockDetail = {
     id: string;
     number: number;
@@ -21,8 +20,8 @@ type CompressedBlockDetail = {
     com?: boolean;
     isFinalized?: boolean;
     isTrunk: boolean;
-    transactions: string[]
-}
+    transactions: string[];
+};
 
 // Define the config structure type
 export interface ConfigData {

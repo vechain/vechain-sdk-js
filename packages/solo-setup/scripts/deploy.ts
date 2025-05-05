@@ -15,20 +15,22 @@ import { THOR_SOLO_ACCOUNTS_TO_SEED } from '../config/accounts';
  * - Update config
  */
 async function main(): Promise<void> {
-    
     try {
         // Deploy the testing contract
         const testContract = await ethers.deployContract('TestingContract');
         await testContract.waitForDeployment();
-        let testContractAddress = await testContract.getAddress();
-        let testContractByteCode = await testContract.getDeployedCode() ?? '';
+        const testContractAddress = await testContract.getAddress();
+        const testContractByteCode =
+            (await testContract.getDeployedCode()) ?? '';
         console.log(
             `TestingContract deployed with address: ${testContractAddress}`
         );
         let testContractABI = getABI('TestingContract');
 
         // Deploy the testing token with initial supply of 1,000,000 tokens
-        const testToken = await ethers.deployContract('TestingToken', [1000000]);
+        const testToken = await ethers.deployContract('TestingToken', [
+            1000000
+        ]);
         await testToken.waitForDeployment();
         let testTokenAddress = await testToken.getAddress();
         console.log(`TestingToken deployed with address: ${testTokenAddress}`);
@@ -40,7 +42,9 @@ async function main(): Promise<void> {
             // Try to seed accounts with VET & VTHO & TestToken
             const seedVetTxId = await seedVET(THOR_SOLO_ACCOUNTS_TO_SEED);
             const seedVthoTxId = await seedVTHO(THOR_SOLO_ACCOUNTS_TO_SEED);
-            const seedTestTokenTxId = await seedTestToken(THOR_SOLO_ACCOUNTS_TO_SEED);
+            const seedTestTokenTxId = await seedTestToken(
+                THOR_SOLO_ACCOUNTS_TO_SEED
+            );
             console.log(`VET seeded with txId: ${seedVetTxId}`);
             console.log(`VTHO seeded with txId: ${seedVthoTxId}`);
             console.log(`TestToken seeded with txId: ${seedTestTokenTxId}`);
@@ -58,12 +62,18 @@ async function main(): Promise<void> {
             );
             console.log('Config updated');
         } catch (error) {
-            console.warn('Thor solo network might not be running. Skipping network operations.');
-            console.warn('Run with a live Thor solo network using solo-seed command for complete setup.');           
+            console.warn(
+                'Thor solo network might not be running. Skipping network operations.'
+            );
+            console.warn(
+                'Run with a live Thor solo network using solo-seed command for complete setup.'
+            );
         }
     } catch (error) {
         console.error('Failed to deploy contracts:', error);
-        console.warn('Build will continue, but config.json will not be updated.');
+        console.warn(
+            'Build will continue, but config.json will not be updated.'
+        );
     }
 }
 
