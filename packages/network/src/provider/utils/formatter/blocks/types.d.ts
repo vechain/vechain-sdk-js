@@ -81,9 +81,9 @@ interface BlocksRPC extends BlockHeaderRPC {
     transactions: string[] | TransactionRPC[];
 
     /**
-     * The base fee value.
+     * Base fee per gas in hex string format (since the Galactica fork)
      */
-    baseFeePerGas: string | undefined;
+    baseFeePerGas?: string;
 
     /**
      * Unsupported fields

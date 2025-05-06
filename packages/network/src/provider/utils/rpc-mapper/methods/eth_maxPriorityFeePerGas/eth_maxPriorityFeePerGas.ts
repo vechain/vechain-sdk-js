@@ -1,6 +1,10 @@
 import { type ThorClient } from '../../../../../thor-client';
 import { type VeChainProvider } from '../../../../providers/vechain-provider';
-import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
+import {
+    JSONRPCInternalError,
+    JSONRPCMethodNotImplemented,
+    stringifyData
+} from '@vechain/sdk-errors';
 
 /**
  * RPC Method eth_maxPriorityFeePerGas implementation for Galactica hardfork
@@ -12,7 +16,7 @@ import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
  * @param _params - The standard array of rpc call parameters.
  * @param _provider - The provider instance to use.
  * @returns Suggested priority fee per gas in wei (hex string)
- * @throws {JSONRPCInternalError}
+ * @throws {JSONRPCInternalError} | {JSONRPCMethodNotImplemented}
  */
 const ethMaxPriorityFeePerGas = async (
     thorClient: ThorClient,
@@ -20,9 +24,22 @@ const ethMaxPriorityFeePerGas = async (
     _provider?: VeChainProvider
 ): Promise<string> => {
     try {
+        // Check if Galactica hardfork has happened
+        const galacticaForked = await thorClient.forkDetector.detectGalactica();
+        if (!galacticaForked) {
+            throw new JSONRPCMethodNotImplemented(
+                'eth_maxPriorityFeePerGas',
+                'Method "eth_maxPriorityFeePerGas" is not available before Galactica hardfork.',
+                { url: thorClient.httpClient.baseURL }
+            );
+        }
+
         return await thorClient.gas.getMaxPriorityFeePerGas();
     } catch (e) {
-        if (e instanceof JSONRPCInternalError) {
+        if (
+            e instanceof JSONRPCInternalError ||
+            e instanceof JSONRPCMethodNotImplemented
+        ) {
             throw e;
         }
         throw new JSONRPCInternalError(
