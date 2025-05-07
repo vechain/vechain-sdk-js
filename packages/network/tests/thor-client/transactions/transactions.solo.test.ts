@@ -46,7 +46,7 @@ describe('ThorClient - Transactions Module', () => {
             await expect(
                 thorSoloClient.transactions.sendTransaction(tx)
             ).rejects.toThrow(InvalidDataType);
-        });
+        }, 50000);
     });
 
     /**

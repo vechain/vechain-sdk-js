@@ -4,8 +4,12 @@ import {
     type SignTransactionOptions,
     type TransactionRequestInput
 } from '../../../../src';
-import { TEST_ACCOUNTS, TESTNET_DELEGATE_URL } from '../../../fixture';
-import { soloConfig, THOR_SOLO_SEEDED_ACCOUNTS } from '@vechain/sdk-solo-setup';
+import {
+    getUnusedAccount,
+    TEST_ACCOUNTS,
+    TESTNET_DELEGATE_URL,
+    configData
+} from '../../../fixture';
 /**
  * This interface clones the `TestCaseTypedDataDomain` interface in
  * [test-wallet.ts](https://github.com/ethers-io/ethers.js/blob/main/src.ts/_tests/test-wallet.ts)
@@ -69,7 +73,7 @@ const signTransactionTestCases = {
                         clauses: [
                             {
                                 data: '0xb6b55f25000000000000000000000000000000000000000000000000000000000000007b',
-                                to: soloConfig.TESTING_CONTRACT_ADDRESS,
+                                to: configData.TESTING_CONTRACT_ADDRESS,
                                 value: 0
                             }
                         ],
@@ -94,7 +98,7 @@ const signTransactionTestCases = {
                         clauses: [
                             {
                                 data: '0xb6b55f25000000000000000000000000000000000000000000000000000000000000007b',
-                                to: soloConfig.TESTING_CONTRACT_ADDRESS,
+                                to: configData.TESTING_CONTRACT_ADDRESS,
                                 value: 0
                             }
                         ],
@@ -149,7 +153,7 @@ const signTransactionTestCases = {
                         clauses: [
                             {
                                 data: '0x01cb08c5000000000000000000000000000000000000000000000000000000000000007b',
-                                to: soloConfig.TESTING_CONTRACT_ADDRESS,
+                                to: configData.TESTING_CONTRACT_ADDRESS,
                                 value: 0
                             }
                         ],
@@ -199,7 +203,8 @@ const signTransactionTestCases = {
 /**
  * Account to populate call test cases
  */
-const populateCallTestCasesAccount = THOR_SOLO_SEEDED_ACCOUNTS[0];
+const populateCallTestCasesAccount = getUnusedAccount();
+const testAccount = getUnusedAccount();
 
 /**
  * Test cases for populateCall function
@@ -288,17 +293,13 @@ const populateCallTestCases = {
             description:
                 'Should set from address from signer and have tx.to defined',
             transactionToPopulate: {
-                to: Address.checksum(
-                    HexUInt.of(THOR_SOLO_SEEDED_ACCOUNTS[1].address)
-                )
+                to: Address.checksum(HexUInt.of(testAccount.address))
             } satisfies TransactionRequestInput,
             expected: {
                 from: Address.checksum(
                     HexUInt.of(populateCallTestCasesAccount.address)
                 ),
-                to: Address.checksum(
-                    HexUInt.of(THOR_SOLO_SEEDED_ACCOUNTS[1].address)
-                )
+                to: Address.checksum(HexUInt.of(testAccount.address))
             } satisfies TransactionRequestInput
         }
     ],

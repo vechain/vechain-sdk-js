@@ -20,10 +20,10 @@ import {
     VeChainProvider
 } from '../../../../src';
 import {
+    getUnusedBaseWallet,
+    getUnusedBaseWalletWithGasPayer,
     TESTING_CONTRACT_ABI,
-    TESTING_CONTRACT_ADDRESS,
-    THOR_SOLO_ACCOUNTS_BASE_WALLET,
-    THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_GAS_PAYER
+    TESTING_CONTRACT_ADDRESS
 } from '../../../fixture';
 import { signTransactionTestCases } from './fixture';
 
@@ -60,7 +60,7 @@ describe('VeChain base signer tests - testnet', () => {
                         HexUInt.of(fixture.origin.privateKey).bytes,
                         new VeChainProvider(
                             thorClient,
-                            THOR_SOLO_ACCOUNTS_BASE_WALLET,
+                            getUnusedBaseWallet(),
                             false
                         )
                     );
@@ -86,9 +86,7 @@ describe('VeChain base signer tests - testnet', () => {
                         HexUInt.of(fixture.origin.privateKey).bytes,
                         new VeChainProvider(
                             thorClient,
-                            THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_GAS_PAYER(
-                                fixture.options
-                            ),
+                            getUnusedBaseWalletWithGasPayer(fixture.options),
                             true
                         )
                     );
@@ -113,7 +111,7 @@ describe('VeChain base signer tests - testnet', () => {
                         HexUInt.of(fixture.origin.privateKey).bytes,
                         new VeChainProvider(
                             thorClient,
-                            THOR_SOLO_ACCOUNTS_BASE_WALLET,
+                            getUnusedBaseWallet(),
                             false
                         )
                     );
@@ -212,11 +210,7 @@ describe('VeChain base signer tests - testnet', () => {
                 HexUInt.of(
                     '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
                 ).bytes,
-                new VeChainProvider(
-                    thorClient,
-                    THOR_SOLO_ACCOUNTS_BASE_WALLET,
-                    false
-                )
+                new VeChainProvider(thorClient, getUnusedBaseWallet(), false)
             );
             const address = await signer.resolveName('test-sdk.vet');
             expect(address).toBe('0x105199a26b10e55300CB71B46c5B5e867b7dF427');
@@ -227,11 +221,7 @@ describe('VeChain base signer tests - testnet', () => {
                 HexUInt.of(
                     '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
                 ).bytes,
-                new VeChainProvider(
-                    thorClient,
-                    THOR_SOLO_ACCOUNTS_BASE_WALLET,
-                    false
-                )
+                new VeChainProvider(thorClient, getUnusedBaseWallet(), false)
             );
             const address = await signer.resolveName('unknown.test-sdk.vet');
             expect(address).toBe(null);

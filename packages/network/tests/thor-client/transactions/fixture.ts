@@ -8,9 +8,9 @@ import { BUILT_IN_CONTRACTS } from '../../../src';
 import {
     TEST_ACCOUNTS,
     TESTING_CONTRACT_ABI,
-    TESTING_CONTRACT_ADDRESS
+    TESTING_CONTRACT_ADDRESS,
+    configData
 } from '../../fixture';
-import { soloConfig } from '@vechain/sdk-solo-setup';
 
 /**
  * Some random transaction nonces to use into tests
@@ -247,7 +247,7 @@ const buildTransactionBodyClausesTestCases = [
                     },
                     {
                         data: '0xc7bce69d0000000000000000000000000000000000000000000000000000000000000000',
-                        to: soloConfig.TESTING_CONTRACT_ADDRESS,
+                        to: configData.TESTING_CONTRACT_ADDRESS,
                         value: '0'
                     },
                     {
@@ -278,7 +278,7 @@ const buildTransactionBodyClausesTestCases = [
                     },
                     {
                         data: '0xc7bce69d0000000000000000000000000000000000000000000000000000000000000000',
-                        to: soloConfig.TESTING_CONTRACT_ADDRESS,
+                        to: configData.TESTING_CONTRACT_ADDRESS,
                         value: '0'
                     },
                     {
