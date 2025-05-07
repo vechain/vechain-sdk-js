@@ -12,19 +12,25 @@ describe('FixedPointNumber class tests', () => {
         describe('get bi tests', () => {
             test('NaN throws exception', () => {
                 expect(() => {
-                    console.log(FixedPointNumber.NaN.bi);
+                    // Access the property to trigger the error
+                    const property = FixedPointNumber.NaN.bi;
+                    return property; // Return to avoid unused variable warning
                 }).toThrow(InvalidOperation);
             });
 
             test('-Infinity throws exception', () => {
                 expect(() => {
-                    console.log(FixedPointNumber.NEGATIVE_INFINITY.bi);
+                    // Access the property to trigger the error
+                    const property = FixedPointNumber.NEGATIVE_INFINITY.bi;
+                    return property; // Return to avoid unused variable warning
                 }).toThrow(InvalidOperation);
             });
 
             test('+Infinity throws exception', () => {
                 expect(() => {
-                    console.log(FixedPointNumber.POSITIVE_INFINITY.bi);
+                    // Access the property to trigger the error
+                    const property = FixedPointNumber.POSITIVE_INFINITY.bi;
+                    return property; // Return to avoid unused variable warning
                 }).toThrow(InvalidOperation);
             });
 
@@ -2397,10 +2403,12 @@ describe('FixedPointNumber class tests', () => {
         test('b ^ -e', () => {
             const b = 3;
             const e = -2;
-            const expected = BigNumber(b).pow(BigNumber(e));
-            const actual = FixedPointNumber.of(b).pow(FixedPointNumber.of(e));
-            console.log(actual.toString());
-            console.log(expected.toString());
+            // Convert to a string comparison to test that the calculation works correctly
+            const expected = BigNumber(b).pow(BigNumber(e)).toString();
+            const actual = FixedPointNumber.of(b)
+                .pow(FixedPointNumber.of(e))
+                .toString();
+            expect(actual).toBe(expected);
         });
 
         test('-b ^ +e', () => {
