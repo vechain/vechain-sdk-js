@@ -64,7 +64,7 @@ describe('KMSVeChainSigner - Thor Solo', () => {
             [awsClientParameters, gasPayerAwsClientParameters] = JSON.parse(
                 fs.readFileSync(awsCredentialsPath, 'utf8')
             ) as KMSClientParameters[];
-        } catch (error) {
+        } catch {
             console.log('Loading test credentials');
             const testAwsCredentialsPath = path.resolve(
                 __dirname,

@@ -33,15 +33,16 @@
     "start-thor-solo": "yarn workspace @vechain/sdk-solo-setup solo-up",
     "stop-thor-solo": "yarn workspace @vechain/sdk-solo-setup solo-down",
     "seed-thor-solo": "yarn workspace @vechain/sdk-solo-setup solo-seed",
+    "setup-thor-solo": "yarn start-thor-solo && yarn seed-thor-solo",
     "test:unit": "rm -rf ./coverageUnit && APPLYCODECOVLIMITS=false jest --coverage --coverageDirectory=coverageUnit --group=unit",
     "test:integration": "rm -rf ./coverageIntegration && APPLYCODECOVLIMITS=false jest --coverage --coverageDirectory=coverageIntegration --group=integration",
-    "test:integration:solo": "APPLYCODECOVLIMITS=false yarn start-thor-solo && yarn test:integration && yarn stop-thor-solo || yarn stop-thor-solo",
+    "test:integration:solo": "(APPLYCODECOVLIMITS=false yarn stop-thor-solo && yarn setup-thor-solo && yarn test:integration && yarn stop-thor-solo) || yarn stop-thor-solo",
     "test:browser": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit --config ./jest.config.browser.js",
     "test:galactica": "rm -rf ./coverage && APPLYCODECOVLIMITS=false jest --verbose --coverage --coverageDirectory=coverage --group=galactica",
     "test": "rm -rf ./coverage && APPLYCODECOVLIMITS=true jest --coverage --coverageDirectory=coverage --group=integration --group=unit --group=galactica --group=-websocket",
-    "test:solo": "(yarn start-thor-solo && yarn seed-thor-solo && yarn test && yarn stop-thor-solo) || yarn stop-thor-solo",
-    "test:solo:galactica": "(yarn start-thor-solo && yarn seed-thor-solo && yarn test:galactica && yarn stop-thor-solo) || yarn stop-thor-solo",
-    "test:browser:solo": "(yarn start-thor-solo && yarn seed-thor-solo && yarn test:browser && yarn stop-thor-solo) || yarn stop-thor-solo"
+    "test:solo": "(yarn setup-thor-solo && yarn test && yarn stop-thor-solo) || yarn stop-thor-solo",
+    "test:solo:galactica": "(yarn setup-thor-solo && yarn test:galactica && yarn stop-thor-solo) || yarn stop-thor-solo",
+    "test:browser:solo": "(yarn setup-thor-solo && yarn test:browser && yarn stop-thor-solo) || yarn stop-thor-solo"
   },
   "dependencies": {
     "@noble/curves": "^1.6.0",

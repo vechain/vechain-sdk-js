@@ -3,13 +3,26 @@
   "version": "0.0.0",
   "private": true,
   "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
+    "build": "rm -rf ./dist && tsup-node index.ts --dts --format cjs,esm --outDir dist && npx tsup-node scripts/deploy.ts --format cjs,esm --outDir dist",
+    "clean": "rm -rf dist node_modules && rm -rf ./dist",
+    "dev": "npm run build -- --watch",
     "compile": "npx hardhat compile",
-    "deploy-solo": "npx hardhat run scripts/deploy.ts --network vechain_solo",
+    "deploy-solo": "npx hardhat run dist/deploy.js --network vechain_solo",
     "solo-up": "make solo-up",
     "solo-down": "make solo-down",
-    "solo-seed": "yarn deploy-solo"
+    "solo-seed": "yarn build && yarn deploy-solo"
   },
   "peerDependencies": {
     "@vechain/sdk-core": "*",

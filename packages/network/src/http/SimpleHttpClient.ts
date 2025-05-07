@@ -154,8 +154,7 @@ class SimpleHttpClient implements HttpClient {
                 ) {
                     params.validateResponseHeader(responseHeaders);
                 }
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-                return await response.json();
+                return (await response.json()) as unknown;
             }
             // get error message from response
             const errorMessage = await response.text();
@@ -166,6 +165,7 @@ class SimpleHttpClient implements HttpClient {
                 }
             );
         } catch (error) {
+            console.log('socket error:', error);
             throw new InvalidHTTPRequest(
                 'HttpClient.http()',
                 (error as Error).message,

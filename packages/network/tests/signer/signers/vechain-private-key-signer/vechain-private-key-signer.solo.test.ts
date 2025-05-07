@@ -18,11 +18,11 @@ import {
 import {
     TEST_ACCOUNTS,
     TESTING_CONTRACT_ABI,
-    TESTING_CONTRACT_ADDRESS
+    TESTING_CONTRACT_ADDRESS,
+    getUnusedAccount
 } from '../../../fixture';
 import { simulateTransaction } from '../../../thor-client/transactions/fixture-thorest';
 import { signTransactionTestCases } from './fixture';
-import { THOR_SOLO_SEEDED_ACCOUNTS } from '@vechain/sdk-solo-setup';
 
 /**
  *VeChain base signer tests - solo
@@ -167,12 +167,14 @@ describe('VeChain base signer tests - solo', () => {
      * @note Take some test cases are the same as the signTransaction function
      */
     describe('call', () => {
+        const testAccount = getUnusedAccount();
+
         /**
          * Test call function without clauses
          */
         test('call with no clauses transaction', async () => {
             const signer = new VeChainPrivateKeySigner(
-                HexUInt.of(THOR_SOLO_SEEDED_ACCOUNTS[0].privateKey).bytes,
+                HexUInt.of(testAccount.privateKey).bytes,
                 new VeChainProvider(
                     thorClient,
                     new ProviderInternalBaseWallet([]),
@@ -232,9 +234,7 @@ describe('VeChain base signer tests - solo', () => {
             ({ testName, transaction, expected }) => {
                 test(testName, async () => {
                     const signer = new VeChainPrivateKeySigner(
-                        HexUInt.of(
-                            THOR_SOLO_SEEDED_ACCOUNTS[0].privateKey
-                        ).bytes,
+                        HexUInt.of(testAccount.privateKey).bytes,
                         new VeChainProvider(
                             thorClient,
                             new ProviderInternalBaseWallet([]),
