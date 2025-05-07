@@ -546,8 +546,6 @@ describe('ThorClient - ERC20 Contracts', () => {
             criteriaSet: [transferCriteria, valueCriteria]
         });
 
-        console.log(events);
-
         expect(events[0].map((x) => x.decodedData)).toEqual([
             [
                 '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',

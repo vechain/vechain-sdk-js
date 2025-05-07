@@ -269,12 +269,7 @@ async function testWebSocketConnection(url: string): Promise<boolean> {
         };
 
         ws.onclose = (event: CloseEvent) => {
-            if (event.wasClean) {
-                console.log(
-                    `Closed cleanly, code=${event.code} reason=${event.reason}`
-                );
-            } else {
-                console.log('Connection died');
+            if (!event.wasClean) {
                 reject(new Error('Connection closed unexpectedly'));
             }
         };

@@ -45,8 +45,6 @@ describe('RPC Mapper - debug_traceBlockByNumber method tests', () => {
                     RPC_METHODS.debug_traceBlockByNumber
                 ](debugTraceBlockByNumberFixtureElement.input.params);
 
-                console.log('traces', traces);
-
                 // Compare
                 expect(traces).toEqual(
                     debugTraceBlockByNumberFixtureElement.expected
