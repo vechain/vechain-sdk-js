@@ -252,25 +252,22 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      */
     public div(that: FixedPointNumber): FixedPointNumber {
         if (this.isNaN() || that.isNaN()) return FixedPointNumber.NaN;
-        if (this.isNegativeInfinite())
-            return that.isInfinite()
-                ? FixedPointNumber.NaN
-                : that.isPositive()
-                  ? FixedPointNumber.NEGATIVE_INFINITY
-                  : FixedPointNumber.POSITIVE_INFINITY;
-        if (this.isPositiveInfinite())
-            return that.isInfinite()
-                ? FixedPointNumber.NaN
-                : that.isPositive()
-                  ? FixedPointNumber.POSITIVE_INFINITY
-                  : FixedPointNumber.NEGATIVE_INFINITY;
+        if (this.isNegativeInfinite()) {
+            if (that.isInfinite()) return FixedPointNumber.NaN;
+            if (that.isPositive()) return FixedPointNumber.NEGATIVE_INFINITY;
+            return FixedPointNumber.POSITIVE_INFINITY;
+        }
+        if (this.isPositiveInfinite()) {
+            if (that.isInfinite()) return FixedPointNumber.NaN;
+            if (that.isPositive()) return FixedPointNumber.POSITIVE_INFINITY;
+            return FixedPointNumber.NEGATIVE_INFINITY;
+        }
         if (that.isInfinite()) return FixedPointNumber.ZERO;
-        if (that.isZero())
-            return this.isZero()
-                ? FixedPointNumber.NaN
-                : this.isNegative()
-                  ? FixedPointNumber.NEGATIVE_INFINITY
-                  : FixedPointNumber.POSITIVE_INFINITY;
+        if (that.isZero()) {
+            if (this.isZero()) return FixedPointNumber.NaN;
+            if (this.isNegative()) return FixedPointNumber.NEGATIVE_INFINITY;
+            return FixedPointNumber.POSITIVE_INFINITY;
+        }
         const fd = this.maxFractionalDigits(that, this.fractionalDigits); // Max common fractional decimals.
         return new FixedPointNumber(
             fd,
@@ -397,25 +394,22 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      */
     public idiv(that: FixedPointNumber): FixedPointNumber {
         if (this.isNaN() || that.isNaN()) return FixedPointNumber.NaN;
-        if (this.isNegativeInfinite())
-            return that.isInfinite()
-                ? FixedPointNumber.NaN
-                : that.isPositive()
-                  ? FixedPointNumber.NEGATIVE_INFINITY
-                  : FixedPointNumber.POSITIVE_INFINITY;
-        if (this.isPositiveInfinite())
-            return that.isInfinite()
-                ? FixedPointNumber.NaN
-                : that.isPositive()
-                  ? FixedPointNumber.POSITIVE_INFINITY
-                  : FixedPointNumber.NEGATIVE_INFINITY;
+        if (this.isNegativeInfinite()) {
+            if (that.isInfinite()) return FixedPointNumber.NaN;
+            if (that.isPositive()) return FixedPointNumber.NEGATIVE_INFINITY;
+            return FixedPointNumber.POSITIVE_INFINITY;
+        }
+        if (this.isPositiveInfinite()) {
+            if (that.isInfinite()) return FixedPointNumber.NaN;
+            if (that.isPositive()) return FixedPointNumber.POSITIVE_INFINITY;
+            return FixedPointNumber.NEGATIVE_INFINITY;
+        }
         if (that.isInfinite()) return FixedPointNumber.ZERO;
-        if (that.isZero())
-            return this.isZero()
-                ? FixedPointNumber.NaN
-                : this.isNegative()
-                  ? FixedPointNumber.NEGATIVE_INFINITY
-                  : FixedPointNumber.POSITIVE_INFINITY;
+        if (that.isZero()) {
+            if (this.isZero()) return FixedPointNumber.NaN;
+            if (this.isNegative()) return FixedPointNumber.NEGATIVE_INFINITY;
+            return FixedPointNumber.POSITIVE_INFINITY;
+        }
         const fd = this.maxFractionalDigits(that, this.fractionalDigits); // Max common fractional decimals.
         return new FixedPointNumber(
             fd,
@@ -648,13 +642,13 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * If the maximum fixed digits value is less than `minFixedDigits`, return `minFixedDigits`.
      *
      * @param {FixedPointNumber} that to evaluate if `that` has the maximum fixed digits value.
-     * @param {bigint} minFixedDigits Min value of returned value, {@link FixedPointNumber.DEFAULT_FRACTIONAL_DECIMALS} by default.
+     * @param {bigint} minFixedDigits Min value of returned value.
      *
      * @return the greater fixed digits value among `this`, `that` and `minFixedDigits`.
      */
     private maxFractionalDigits(
         that: FixedPointNumber,
-        minFixedDigits: bigint = FixedPointNumber.DEFAULT_FRACTIONAL_DECIMALS
+        minFixedDigits: bigint
     ): bigint {
         const fd =
             this.fractionalDigits < that.fractionalDigits
