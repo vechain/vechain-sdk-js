@@ -12,7 +12,6 @@ import {
     JSONRPCInvalidParams
 } from '@vechain/sdk-errors';
 import {
-    ProviderInternalBaseWallet,
     signerUtils,
     TESTNET_URL,
     ThorClient,
@@ -28,21 +27,34 @@ import {
 import { signTransactionTestCases } from './fixture';
 
 /**
+ * Helper function to conditionally run tests based on a condition
+ */
+const testIf = (condition: boolean, ...args: Parameters<typeof test>): void => {
+    if (condition) {
+        test(...args);
+    } else {
+        test.skip(...args);
+    }
+};
+
+/**
  *VeChain base signer tests - testnet
  *
- * @group integration/network/signers/vechain-base-signer-testnet
+ * @group integration/signers/vechain-base-signer-testnet
  */
 describe('VeChain base signer tests - testnet', () => {
     /**
      * ThorClient and provider instances
      */
     let thorClient: ThorClient;
+    let isGalacticaActive: boolean;
 
     /**
      * Init thor client and provider before each test
      */
-    beforeEach(() => {
+    beforeEach(async () => {
         thorClient = ThorClient.at(TESTNET_URL);
+        isGalacticaActive = await thorClient.forkDetector.detectGalactica();
     });
 
     /**
@@ -86,44 +98,49 @@ describe('VeChain base signer tests - testnet', () => {
         /**
          * EIP-1559 transaction tests (NOT delegated)
          */
-        test('Should be able to sign EIP-1559 transaction - NOT DELEGATED CASES', async () => {
-            for (const fixture of signTransactionTestCases.testnet.correct) {
-                if (
-                    !fixture.isDelegated &&
-                    fixture.description.includes('EIP-1559')
-                ) {
-                    // Init the signer
-                    const signer = new VeChainPrivateKeySigner(
-                        HexUInt.of(fixture.origin.privateKey).bytes,
-                        new VeChainProvider(
-                            thorClient,
-                            getUnusedBaseWallet(),
-                            false
-                        )
-                    );
+        testIf(
+            isGalacticaActive,
+            'Should be able to sign EIP-1559 transaction - NOT DELEGATED CASES',
+            async () => {
+                for (const fixture of signTransactionTestCases.testnet
+                    .correct) {
+                    if (
+                        !fixture.isDelegated &&
+                        fixture.description.includes('EIP-1559')
+                    ) {
+                        // Init the signer
+                        const signer = new VeChainPrivateKeySigner(
+                            HexUInt.of(fixture.origin.privateKey).bytes,
+                            new VeChainProvider(
+                                thorClient,
+                                getUnusedBaseWallet(),
+                                false
+                            )
+                        );
 
-                    // Prepare transaction input
-                    const txInput = {
-                        from: fixture.origin.address
-                    };
+                        // Prepare transaction input
+                        const txInput = {
+                            from: fixture.origin.address
+                        };
 
-                    // Add EIP-1559 parameters if present in fixture
-                    if (typeof fixture.params !== 'undefined') {
-                        Object.assign(txInput, {
-                            maxPriorityFeePerGas:
-                                fixture.params.maxPriorityFeePerGas,
-                            maxFeePerGas: fixture.params.maxFeePerGas
-                        });
+                        // Add EIP-1559 parameters if present in fixture
+                        if (typeof fixture.params !== 'undefined') {
+                            Object.assign(txInput, {
+                                maxPriorityFeePerGas:
+                                    fixture.params.maxPriorityFeePerGas,
+                                maxFeePerGas: fixture.params.maxFeePerGas
+                            });
+                        }
+
+                        // Sign the transaction
+                        const signedTransaction =
+                            await signer.signTransaction(txInput);
+
+                        expect(signedTransaction).toBeDefined();
                     }
-
-                    // Sign the transaction
-                    const signedTransaction =
-                        await signer.signTransaction(txInput);
-
-                    expect(signedTransaction).toBeDefined();
                 }
             }
-        });
+        );
 
         /**
          * Legacy transaction tests (delegated)
@@ -162,44 +179,50 @@ describe('VeChain base signer tests - testnet', () => {
         /**
          * EIP-1559 transaction tests (delegated)
          */
-        test('Should be able to sign EIP-1559 transaction - DELEGATED CASES', async () => {
-            for (const fixture of signTransactionTestCases.testnet.correct) {
-                if (
-                    fixture.isDelegated &&
-                    fixture.description.includes('EIP-1559')
-                ) {
-                    // Init the signer
-                    const signer = new VeChainPrivateKeySigner(
-                        HexUInt.of(fixture.origin.privateKey).bytes,
-                        new VeChainProvider(
-                            thorClient,
-                            getUnusedBaseWalletWithGasPayer(fixture.options),
-                            true
-                        )
-                    );
+        testIf(
+            isGalacticaActive,
+            'Should be able to sign EIP-1559 transaction - DELEGATED CASES',
+            async () => {
+                for (const fixture of signTransactionTestCases.testnet
+                    .correct) {
+                    if (
+                        fixture.isDelegated &&
+                        fixture.description.includes('EIP-1559')
+                    ) {
+                        // Init the signer
+                        const signer = new VeChainPrivateKeySigner(
+                            HexUInt.of(fixture.origin.privateKey).bytes,
+                            new VeChainProvider(
+                                thorClient,
+                                getUnusedBaseWallet(),
+                                true
+                            )
+                        );
 
-                    // Prepare transaction input
-                    const txInput = {
-                        from: fixture.origin.address
-                    };
+                        // Prepare transaction input
+                        const txInput = {
+                            from: fixture.origin.address
+                        };
 
-                    // Add EIP-1559 parameters if present in fixture
-                    if (typeof fixture.params !== 'undefined') {
-                        Object.assign(txInput, {
-                            maxPriorityFeePerGas:
-                                fixture.params.maxPriorityFeePerGas,
-                            maxFeePerGas: fixture.params.maxFeePerGas
-                        });
+                        // Add EIP-1559 parameters if present in fixture
+                        if (typeof fixture.params !== 'undefined') {
+                            Object.assign(txInput, {
+                                maxPriorityFeePerGas:
+                                    fixture.params.maxPriorityFeePerGas,
+                                maxFeePerGas: fixture.params.maxFeePerGas
+                            });
+                        }
+
+                        // Sign the transaction
+                        const signedTransaction =
+                            await signer.signTransaction(txInput);
+
+                        expect(signedTransaction).toBeDefined();
                     }
-
-                    // Sign the transaction
-                    const signedTransaction =
-                        await signer.signTransaction(txInput);
-
-                    expect(signedTransaction).toBeDefined();
                 }
-            }
-        }, 8000);
+            },
+            8000
+        );
 
         /**
          * Legacy transaction tests (delegation URL)
@@ -238,44 +261,49 @@ describe('VeChain base signer tests - testnet', () => {
         /**
          * EIP-1559 transaction tests (delegation URL)
          */
-        test('Should be able to request delegation URLs per EIP-1559 transaction', async () => {
-            for (const fixture of signTransactionTestCases.testnet.correct) {
-                if (
-                    fixture.isDelegated &&
-                    fixture.description.includes('EIP-1559')
-                ) {
-                    const signer = new VeChainPrivateKeySigner(
-                        HexUInt.of(fixture.origin.privateKey).bytes,
-                        new VeChainProvider(
-                            thorClient,
-                            getUnusedBaseWallet(),
-                            false
-                        )
-                    );
+        testIf(
+            isGalacticaActive,
+            'Should be able to request delegation URLs per EIP-1559 transaction',
+            async () => {
+                for (const fixture of signTransactionTestCases.testnet
+                    .correct) {
+                    if (
+                        fixture.isDelegated &&
+                        fixture.description.includes('EIP-1559')
+                    ) {
+                        const signer = new VeChainPrivateKeySigner(
+                            HexUInt.of(fixture.origin.privateKey).bytes,
+                            new VeChainProvider(
+                                thorClient,
+                                getUnusedBaseWallet(),
+                                false
+                            )
+                        );
 
-                    // Prepare transaction input
-                    const txInput = {
-                        from: fixture.origin.address,
-                        delegationUrl: fixture.options.gasPayerServiceUrl
-                    };
+                        // Prepare transaction input
+                        const txInput = {
+                            from: fixture.origin.address,
+                            delegationUrl: fixture.options.gasPayerServiceUrl
+                        };
 
-                    // Add EIP-1559 parameters if present in fixture
-                    if (typeof fixture.params !== 'undefined') {
-                        Object.assign(txInput, {
-                            maxPriorityFeePerGas:
-                                fixture.params.maxPriorityFeePerGas,
-                            maxFeePerGas: fixture.params.maxFeePerGas
-                        });
+                        // Add EIP-1559 parameters if present in fixture
+                        if (typeof fixture.params !== 'undefined') {
+                            Object.assign(txInput, {
+                                maxPriorityFeePerGas:
+                                    fixture.params.maxPriorityFeePerGas,
+                                maxFeePerGas: fixture.params.maxFeePerGas
+                            });
+                        }
+
+                        // Sign the transaction
+                        const signedTransaction =
+                            await signer.signTransaction(txInput);
+
+                        expect(signedTransaction).toBeDefined();
                     }
-
-                    // Sign the transaction
-                    const signedTransaction =
-                        await signer.signTransaction(txInput);
-
-                    expect(signedTransaction).toBeDefined();
                 }
             }
-        });
+        );
     });
 
     /**
@@ -335,9 +363,7 @@ describe('VeChain base signer tests - testnet', () => {
                             HexUInt.of(origin.privateKey).bytes,
                             new VeChainProvider(
                                 thorClient,
-                                new ProviderInternalBaseWallet([], {
-                                    gasPayer: options
-                                }),
+                                getUnusedBaseWalletWithGasPayer(options),
                                 isDelegated
                             )
                         );
@@ -386,7 +412,8 @@ describe('VeChain base signer tests - testnet', () => {
                 isDelegated,
                 expected
             } of eip1559TestCases) {
-                test(
+                testIf(
+                    isGalacticaActive,
                     description,
                     async () => {
                         const thorClient = ThorClient.at(TESTNET_URL);
@@ -419,9 +446,7 @@ describe('VeChain base signer tests - testnet', () => {
                             HexUInt.of(origin.privateKey).bytes,
                             new VeChainProvider(
                                 thorClient,
-                                new ProviderInternalBaseWallet([], {
-                                    gasPayer: options
-                                }),
+                                getUnusedBaseWalletWithGasPayer(options),
                                 isDelegated
                             )
                         );
@@ -461,163 +486,270 @@ describe('VeChain base signer tests - testnet', () => {
                 );
             }
         });
+
+        describe('Error cases - EIP-1559 transactions', () => {
+            const eip1559ErrorCases =
+                signTransactionTestCases.testnet.incorrect.filter((testCase) =>
+                    testCase.description.includes('EIP-1559')
+                );
+
+            for (const { description, origin, params } of eip1559ErrorCases) {
+                testIf(
+                    isGalacticaActive,
+                    description,
+                    async () => {
+                        const thorClient = ThorClient.at(TESTNET_URL);
+
+                        const sampleClause = Clause.callFunction(
+                            Address.of(TESTING_CONTRACT_ADDRESS),
+                            ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
+                                'setStateVariable'
+                            ),
+                            [123]
+                        ) as TransactionClause;
+
+                        const gasResult =
+                            await thorClient.transactions.estimateGas(
+                                [sampleClause],
+                                origin.address
+                            );
+
+                        const txBody =
+                            await thorClient.transactions.buildTransactionBody(
+                                [sampleClause],
+                                gasResult.totalGas,
+                                {
+                                    isDelegated: false
+                                }
+                            );
+
+                        // Get the signer and sign the transaction
+                        const signer = new VeChainPrivateKeySigner(
+                            HexUInt.of(origin.privateKey).bytes,
+                            new VeChainProvider(
+                                thorClient,
+                                getUnusedBaseWallet(),
+                                false
+                            )
+                        );
+
+                        const txInput =
+                            signerUtils.transactionBodyToTransactionRequestInput(
+                                txBody,
+                                origin.address
+                            );
+
+                        // Add EIP-1559 parameters
+                        if (typeof params !== 'undefined') {
+                            Object.assign(txInput, {
+                                maxPriorityFeePerGas:
+                                    params.maxPriorityFeePerGas,
+                                maxFeePerGas: params.maxFeePerGas
+                            });
+                        }
+
+                        const signedRawTx =
+                            await signer.signTransaction(txInput);
+                        const signedTx = Transaction.decode(
+                            HexUInt.of(signedRawTx.slice(2)).bytes,
+                            true
+                        );
+
+                        expect(signedTx).toBeDefined();
+                        expect(signedTx.isSigned).toBe(false);
+                        expect(signedTx.signature).toBeUndefined();
+                    },
+                    10000
+                );
+            }
+        });
     });
 
     /**
      * Test cases for gas fee parameters
      */
     describe('Gas fee parameters', () => {
-        test('Should sign transaction with maxPriorityFeePerGas parameter', async () => {
-            const thorClient = ThorClient.at(TESTNET_URL);
-            const account = signTransactionTestCases.testnet.correct[0].origin;
+        testIf(
+            isGalacticaActive,
+            'Should sign transaction with maxPriorityFeePerGas parameter',
+            async () => {
+                const thorClient = ThorClient.at(TESTNET_URL);
+                const account =
+                    signTransactionTestCases.testnet.correct[0].origin;
 
-            const sampleClause = Clause.callFunction(
-                Address.of(TESTING_CONTRACT_ADDRESS),
-                ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
-                    'setStateVariable'
-                ),
-                [123]
-            ) as TransactionClause;
+                const sampleClause = Clause.callFunction(
+                    Address.of(TESTING_CONTRACT_ADDRESS),
+                    ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
+                        'setStateVariable'
+                    ),
+                    [123]
+                ) as TransactionClause;
 
-            const gasResult = await thorClient.transactions.estimateGas(
-                [sampleClause],
-                account.address
-            );
-
-            const txBody = await thorClient.transactions.buildTransactionBody(
-                [sampleClause],
-                gasResult.totalGas,
-                {
-                    isDelegated: false
-                }
-            );
-
-            const signer = new VeChainPrivateKeySigner(
-                HexUInt.of(account.privateKey).bytes,
-                new VeChainProvider(thorClient, getUnusedBaseWallet(), false)
-            );
-
-            const maxPriorityFeePerGas = '0x1000';
-            const txInput = {
-                ...signerUtils.transactionBodyToTransactionRequestInput(
-                    txBody,
+                const gasResult = await thorClient.transactions.estimateGas(
+                    [sampleClause],
                     account.address
-                ),
-                maxPriorityFeePerGas
-            };
+                );
 
-            const signedRawTx = await signer.signTransaction(txInput);
-            const signedTx = Transaction.decode(
-                HexUInt.of(signedRawTx.slice(2)).bytes,
-                true
-            );
+                const txBody =
+                    await thorClient.transactions.buildTransactionBody(
+                        [sampleClause],
+                        gasResult.totalGas,
+                        {
+                            isDelegated: false
+                        }
+                    );
 
-            expect(signedTx).toBeDefined();
-            expect(signedTx.isSigned).toBe(true);
-            expect(signedTx.signature).toBeDefined();
-        });
+                const signer = new VeChainPrivateKeySigner(
+                    HexUInt.of(account.privateKey).bytes,
+                    new VeChainProvider(
+                        thorClient,
+                        getUnusedBaseWallet(),
+                        false
+                    )
+                );
 
-        test('Should sign transaction with maxFeePerGas parameter', async () => {
-            const thorClient = ThorClient.at(TESTNET_URL);
-            const account = signTransactionTestCases.testnet.correct[0].origin;
+                const maxPriorityFeePerGas = '0x1000';
+                const txInput = {
+                    ...signerUtils.transactionBodyToTransactionRequestInput(
+                        txBody,
+                        account.address
+                    ),
+                    maxPriorityFeePerGas
+                };
 
-            const sampleClause = Clause.callFunction(
-                Address.of(TESTING_CONTRACT_ADDRESS),
-                ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
-                    'setStateVariable'
-                ),
-                [123]
-            ) as TransactionClause;
+                const signedRawTx = await signer.signTransaction(txInput);
+                const signedTx = Transaction.decode(
+                    HexUInt.of(signedRawTx.slice(2)).bytes,
+                    true
+                );
 
-            const gasResult = await thorClient.transactions.estimateGas(
-                [sampleClause],
-                account.address
-            );
+                expect(signedTx).toBeDefined();
+                expect(signedTx.isSigned).toBe(true);
+                expect(signedTx.signature).toBeDefined();
+            }
+        );
 
-            const txBody = await thorClient.transactions.buildTransactionBody(
-                [sampleClause],
-                gasResult.totalGas,
-                {
-                    isDelegated: false
-                }
-            );
+        testIf(
+            isGalacticaActive,
+            'Should sign transaction with maxFeePerGas parameter',
+            async () => {
+                const thorClient = ThorClient.at(TESTNET_URL);
+                const account =
+                    signTransactionTestCases.testnet.correct[0].origin;
 
-            const signer = new VeChainPrivateKeySigner(
-                HexUInt.of(account.privateKey).bytes,
-                new VeChainProvider(thorClient, getUnusedBaseWallet(), false)
-            );
+                const sampleClause = Clause.callFunction(
+                    Address.of(TESTING_CONTRACT_ADDRESS),
+                    ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
+                        'setStateVariable'
+                    ),
+                    [123]
+                ) as TransactionClause;
 
-            const maxFeePerGas = '0x2000';
-            const txInput = {
-                ...signerUtils.transactionBodyToTransactionRequestInput(
-                    txBody,
+                const gasResult = await thorClient.transactions.estimateGas(
+                    [sampleClause],
                     account.address
-                ),
-                maxFeePerGas
-            };
+                );
 
-            const signedRawTx = await signer.signTransaction(txInput);
-            const signedTx = Transaction.decode(
-                HexUInt.of(signedRawTx.slice(2)).bytes,
-                true
-            );
+                const txBody =
+                    await thorClient.transactions.buildTransactionBody(
+                        [sampleClause],
+                        gasResult.totalGas,
+                        {
+                            isDelegated: false
+                        }
+                    );
 
-            expect(signedTx).toBeDefined();
-            expect(signedTx.isSigned).toBe(true);
-            expect(signedTx.signature).toBeDefined();
-        });
+                const signer = new VeChainPrivateKeySigner(
+                    HexUInt.of(account.privateKey).bytes,
+                    new VeChainProvider(
+                        thorClient,
+                        getUnusedBaseWallet(),
+                        false
+                    )
+                );
 
-        test('Should sign transaction with both maxPriorityFeePerGas and maxFeePerGas parameters', async () => {
-            const thorClient = ThorClient.at(TESTNET_URL);
-            const account = signTransactionTestCases.testnet.correct[0].origin;
+                const maxFeePerGas = '0x2000';
+                const txInput = {
+                    ...signerUtils.transactionBodyToTransactionRequestInput(
+                        txBody,
+                        account.address
+                    ),
+                    maxFeePerGas
+                };
 
-            const sampleClause = Clause.callFunction(
-                Address.of(TESTING_CONTRACT_ADDRESS),
-                ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
-                    'setStateVariable'
-                ),
-                [123]
-            ) as TransactionClause;
+                const signedRawTx = await signer.signTransaction(txInput);
+                const signedTx = Transaction.decode(
+                    HexUInt.of(signedRawTx.slice(2)).bytes,
+                    true
+                );
 
-            const gasResult = await thorClient.transactions.estimateGas(
-                [sampleClause],
-                account.address
-            );
+                expect(signedTx).toBeDefined();
+                expect(signedTx.isSigned).toBe(true);
+                expect(signedTx.signature).toBeDefined();
+            }
+        );
 
-            const txBody = await thorClient.transactions.buildTransactionBody(
-                [sampleClause],
-                gasResult.totalGas,
-                {
-                    isDelegated: false
-                }
-            );
+        testIf(
+            isGalacticaActive,
+            'Should sign transaction with both maxPriorityFeePerGas and maxFeePerGas parameters',
+            async () => {
+                const thorClient = ThorClient.at(TESTNET_URL);
+                const account =
+                    signTransactionTestCases.testnet.correct[0].origin;
 
-            const signer = new VeChainPrivateKeySigner(
-                HexUInt.of(account.privateKey).bytes,
-                new VeChainProvider(thorClient, getUnusedBaseWallet(), false)
-            );
+                const sampleClause = Clause.callFunction(
+                    Address.of(TESTING_CONTRACT_ADDRESS),
+                    ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
+                        'setStateVariable'
+                    ),
+                    [123]
+                ) as TransactionClause;
 
-            const maxPriorityFeePerGas = '0x1000';
-            const maxFeePerGas = '0x2000';
-            const txInput = {
-                ...signerUtils.transactionBodyToTransactionRequestInput(
-                    txBody,
+                const gasResult = await thorClient.transactions.estimateGas(
+                    [sampleClause],
                     account.address
-                ),
-                maxPriorityFeePerGas,
-                maxFeePerGas
-            };
+                );
 
-            const signedRawTx = await signer.signTransaction(txInput);
-            const signedTx = Transaction.decode(
-                HexUInt.of(signedRawTx.slice(2)).bytes,
-                true
-            );
+                const txBody =
+                    await thorClient.transactions.buildTransactionBody(
+                        [sampleClause],
+                        gasResult.totalGas,
+                        {
+                            isDelegated: false
+                        }
+                    );
 
-            expect(signedTx).toBeDefined();
-            expect(signedTx.isSigned).toBe(true);
-            expect(signedTx.signature).toBeDefined();
-        });
+                const signer = new VeChainPrivateKeySigner(
+                    HexUInt.of(account.privateKey).bytes,
+                    new VeChainProvider(
+                        thorClient,
+                        getUnusedBaseWallet(),
+                        false
+                    )
+                );
+
+                const maxPriorityFeePerGas = '0x1000';
+                const maxFeePerGas = '0x2000';
+                const txInput = {
+                    ...signerUtils.transactionBodyToTransactionRequestInput(
+                        txBody,
+                        account.address
+                    ),
+                    maxPriorityFeePerGas,
+                    maxFeePerGas
+                };
+
+                const signedRawTx = await signer.signTransaction(txInput);
+                const signedTx = Transaction.decode(
+                    HexUInt.of(signedRawTx.slice(2)).bytes,
+                    true
+                );
+
+                expect(signedTx).toBeDefined();
+                expect(signedTx.isSigned).toBe(true);
+                expect(signedTx.signature).toBeDefined();
+            }
+        );
     });
 
     describe('resolveName(name)', () => {

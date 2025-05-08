@@ -25,6 +25,17 @@ import { simulateTransaction } from '../../../thor-client/transactions/fixture-t
 import { signTransactionTestCases } from './fixture';
 
 /**
+ * Helper function to conditionally run tests based on a condition
+ */
+const testIf = (condition: boolean, ...args: Parameters<typeof test>): void => {
+    if (condition) {
+        test(...args);
+    } else {
+        test.skip(...args);
+    }
+};
+
+/**
  *VeChain base signer tests - solo
  *
  * @group integration/signers/vechain-base-signer-solo
@@ -34,12 +45,14 @@ describe('VeChain base signer tests - solo', () => {
      * ThorClient and provider instances
      */
     let thorClient: ThorClient;
+    let isGalacticaActive: boolean;
 
     /**
      * Init thor client and provider before each test
      */
-    beforeEach(() => {
+    beforeEach(async () => {
         thorClient = ThorClient.at(THOR_SOLO_URL);
+        isGalacticaActive = await thorClient.forkDetector.detectGalactica();
     });
 
     /**
@@ -146,7 +159,8 @@ describe('VeChain base signer tests - solo', () => {
                 isDelegated,
                 expected
             } of eip1559TestCases) {
-                test(
+                testIf(
+                    isGalacticaActive,
                     description,
                     async () => {
                         const sampleClause = Clause.callFunction(
@@ -291,7 +305,8 @@ describe('VeChain base signer tests - solo', () => {
                 params,
                 expectedError
             } of eip1559ErrorCases) {
-                test(
+                testIf(
+                    isGalacticaActive,
                     description,
                     async () => {
                         const sampleClause = Clause.callFunction(
@@ -488,58 +503,66 @@ describe('VeChain base signer tests - solo', () => {
             expect(signedTx.signature).toBeDefined();
         }, 8000);
 
-        test('perform a transaction with maxFeePerGas and maxPriorityFeePerGas', async () => {
-            const sampleClause = Clause.callFunction(
-                Address.of(TESTING_CONTRACT_ADDRESS),
-                ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction('deposit'),
-                [123]
-            ) as TransactionClause;
+        testIf(
+            isGalacticaActive,
+            'perform a transaction with maxFeePerGas and maxPriorityFeePerGas',
+            async () => {
+                const sampleClause = Clause.callFunction(
+                    Address.of(TESTING_CONTRACT_ADDRESS),
+                    ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
+                        'deposit'
+                    ),
+                    [123]
+                ) as TransactionClause;
 
-            const gasResult = await thorClient.transactions.estimateGas(
-                [sampleClause],
-                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
-            );
-
-            const txBody = await thorClient.transactions.buildTransactionBody(
-                [sampleClause],
-                gasResult.totalGas
-            );
-
-            // Add dynamic fee parameters - use numeric values directly
-            txBody.maxFeePerGas = 256; // Decimal value of 0x100
-            txBody.maxPriorityFeePerGas = 80; // Decimal value of 0x50
-
-            // Get the signer and sign the transaction
-            const signer = new VeChainPrivateKeySigner(
-                HexUInt.of(
-                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
-                ).bytes,
-                new VeChainProvider(thorClient)
-            );
-
-            const signedRawTx = await signer.signTransaction(
-                signerUtils.transactionBodyToTransactionRequestInput(
-                    txBody,
+                const gasResult = await thorClient.transactions.estimateGas(
+                    [sampleClause],
                     TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
-                )
-            );
-            const signedTx = Transaction.decode(
-                HexUInt.of(signedRawTx.slice(2)).bytes,
-                true
-            );
+                );
 
-            expect(signedTx).toBeDefined();
-            expect(signedTx.body.maxFeePerGas).toEqual(256);
-            expect(signedTx.body.maxPriorityFeePerGas).toEqual(80);
-            expect(signedTx.origin.toString()).toBe(
-                Address.checksum(
+                const txBody =
+                    await thorClient.transactions.buildTransactionBody(
+                        [sampleClause],
+                        gasResult.totalGas
+                    );
+
+                // Add dynamic fee parameters - use numeric values directly
+                txBody.maxFeePerGas = 256; // Decimal value of 0x100
+                txBody.maxPriorityFeePerGas = 80; // Decimal value of 0x50
+
+                // Get the signer and sign the transaction
+                const signer = new VeChainPrivateKeySigner(
                     HexUInt.of(
+                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
+                    ).bytes,
+                    new VeChainProvider(thorClient)
+                );
+
+                const signedRawTx = await signer.signTransaction(
+                    signerUtils.transactionBodyToTransactionRequestInput(
+                        txBody,
                         TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
                     )
-                )
-            );
-            expect(signedTx.isSigned).toBe(true);
-            expect(signedTx.signature).toBeDefined();
-        }, 8000);
+                );
+                const signedTx = Transaction.decode(
+                    HexUInt.of(signedRawTx.slice(2)).bytes,
+                    true
+                );
+
+                expect(signedTx).toBeDefined();
+                expect(signedTx.body.maxFeePerGas).toEqual(256);
+                expect(signedTx.body.maxPriorityFeePerGas).toEqual(80);
+                expect(signedTx.origin.toString()).toBe(
+                    Address.checksum(
+                        HexUInt.of(
+                            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+                        )
+                    )
+                );
+                expect(signedTx.isSigned).toBe(true);
+                expect(signedTx.signature).toBeDefined();
+            },
+            8000
+        );
     });
 });

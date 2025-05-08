@@ -27,7 +27,7 @@ import { type ContractFilter } from './contract-filter';
  *               are not specified, allowing for flexibility in function signatures.
  * @returns A value of type `T`, representing the result of the contract function execution.
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 type ContractFunctionSync<T = unknown, TABIFunction> = (
     ...args: [
         ...Partial<{ value: number; comment: string }>,
@@ -44,7 +44,7 @@ type ContractFunctionSync<T = unknown, TABIFunction> = (
  * This type represents a function that takes a variable number of arguments, which are partial
  * representations of the input parameters defined in the ABI for the event, and returns a value of type `T`.
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 type ContractEventSync<T = unknown, TABIEvent> = (
     ...args: Partial<
         AbiParametersToPrimitiveTypes<TABIEvent['inputs'], 'inputs'>
