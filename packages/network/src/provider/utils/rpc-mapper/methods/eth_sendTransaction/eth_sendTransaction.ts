@@ -1,14 +1,14 @@
-import { type ThorClient } from '../../../../../thor-client';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
-import { type VeChainProvider } from '../../../../providers/vechain-provider';
-import { type TransactionObjectInput } from './types';
 import { type VeChainSigner } from '../../../../../signer';
+import { type ThorClient } from '../../../../../thor-client';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
+import { type VeChainProvider } from '../../../../providers/vechain-provider';
 import { getCachedChainId } from '../eth_chainId';
+import { type TransactionObjectInput } from './types';
 
 /**
  * RPC Method eth_sendTransaction implementation

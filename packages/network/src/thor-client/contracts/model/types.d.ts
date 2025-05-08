@@ -1,21 +1,21 @@
-import type { ContractClause } from '../types';
-import type { SendTransactionResult } from '../../transactions/types';
-import { type ContractFilter } from './contract-filter';
-import type {
-    FilterCriteria,
-    Range,
-    PaginationOptions,
-    EventDisplayOrder
-} from '../../logs';
 import {
     type Abi,
-    type ExtractAbiFunctionNames,
-    type ExtractAbiFunction,
-    type AbiParametersToPrimitiveTypes,
     type AbiFunction,
-    type ExtractAbiEvent
+    type AbiParametersToPrimitiveTypes,
+    type ExtractAbiEvent,
+    type ExtractAbiFunction,
+    type ExtractAbiFunctionNames
 } from 'abitype';
 import { type GetEventArgs } from 'viem';
+import type {
+    EventDisplayOrder,
+    FilterCriteria,
+    PaginationOptions,
+    Range
+} from '../../logs';
+import type { SendTransactionResult } from '../../transactions/types';
+import type { ContractClause } from '../types';
+import { type ContractFilter } from './contract-filter';
 
 /**
  * Represents a generic contract function type that accepts an arbitrary number of arguments
@@ -185,7 +185,7 @@ type ContractFunctionCriteria<
  * Represents the amount of VET to transfer in a transaction.
  */
 interface TransactionValue {
-    value: number;
+    value: string;
 }
 
 /**
@@ -206,9 +206,9 @@ interface ClauseRevision {
  * Represents additional options for a transaction clause.
  */
 interface ClauseAdditionalOptions {
-    value: number | undefined;
-    comment: string | undefined;
-    revision: string | undefined;
+    value?: string;
+    comment?: string;
+    revision?: string;
 }
 
 /**
@@ -221,16 +221,16 @@ interface TransferFilterOptions {
 }
 
 export type {
-    ContractFunctionAsync,
-    ContractFunctionSync,
-    ContractFunctionRead,
-    ContractFunctionTransact,
-    ContractFunctionFilter,
-    ContractFunctionClause,
-    ContractFunctionCriteria,
-    TransactionValue,
+    ClauseAdditionalOptions,
     ClauseComment,
     ClauseRevision,
-    ClauseAdditionalOptions,
+    ContractFunctionAsync,
+    ContractFunctionClause,
+    ContractFunctionCriteria,
+    ContractFunctionFilter,
+    ContractFunctionRead,
+    ContractFunctionSync,
+    ContractFunctionTransact,
+    TransactionValue,
     TransferFilterOptions
 };
