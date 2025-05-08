@@ -403,9 +403,7 @@ class TransactionsModule {
     public async fillDefaultBodyOptions(
         options?: TransactionBodyOptions
     ): Promise<TransactionBodyOptions> {
-        if (options === undefined) {
-            options = {};
-        }
+        options ??= {};
         if (options.gasPriceCoef !== undefined) {
             // user specified legacy fee type
             options.maxFeePerGas = undefined;

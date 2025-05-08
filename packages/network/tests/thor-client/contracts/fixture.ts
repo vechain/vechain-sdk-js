@@ -5,9 +5,13 @@ import {
     type DeployParams
 } from '@vechain/sdk-core';
 import { type Abi } from 'abitype';
-import type { EventDisplayOrder, PaginationOptions, Range } from '../../../src';
-import { TEST_ACCOUNTS } from '../../fixture';
-import { soloConfig } from '@vechain/sdk-solo-setup';
+import type {
+    CompressedBlockDetail,
+    EventDisplayOrder,
+    PaginationOptions,
+    Range
+} from '../../../src';
+import { TEST_ACCOUNTS, configData } from '../../fixture';
 
 const contractBytecode: string =
     '0x608060405234801561001057600080fd5b506040516102063803806102068339818101604052810190610032919061007a565b80600081905550506100a7565b600080fd5b6000819050919050565b61005781610044565b811461006257600080fd5b50565b6000815190506100748161004e565b92915050565b6000602082840312156100905761008f61003f565b5b600061009e84828501610065565b91505092915050565b610150806100b66000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c806360fe47b11461003b5780636d4ce63c14610057575b600080fd5b610055600480360381019061005091906100c3565b610075565b005b61005f61007f565b60405161006c91906100ff565b60405180910390f35b8060008190555050565b60008054905090565b600080fd5b6000819050919050565b6100a08161008d565b81146100ab57600080fd5b50565b6000813590506100bd81610097565b92915050565b6000602082840312156100d9576100d8610088565b5b60006100e7848285016100ae565b91505092915050565b6100f98161008d565b82525050565b600060208201905061011460008301846100f0565b9291505056fea2646970667358221220785262acbf50fa50a7b4dc8d8087ca8904c7e6b847a13674503fdcbac903b67e64736f6c63430008170033';
@@ -621,7 +625,7 @@ const testingContractNegativeTestCases: TestCase[] = [
     {
         description: 'testAssertError() test',
         functionName: 'testAssertError',
-        params: [1],
+        params: [1n], // Changed from 1 to 1n to use BigInt
         expected: { result: { errorMessage: 'Panic(0x01)' }, success: false },
         reverted: true,
         isReadOnly: true
@@ -687,8 +691,16 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
         params: [0],
         expected: {
             result: {
-                array: [BigInt(soloConfig.SOLO_GENESIS_BLOCK.timestamp)],
-                plain: BigInt(soloConfig.SOLO_GENESIS_BLOCK.timestamp)
+                array: [
+                    BigInt(
+                        (configData.SOLO_GENESIS_BLOCK as CompressedBlockDetail)
+                            .timestamp
+                    )
+                ],
+                plain: BigInt(
+                    (configData.SOLO_GENESIS_BLOCK as CompressedBlockDetail)
+                        .timestamp
+                )
             },
             success: true
         },
@@ -701,8 +713,12 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
         params: [0],
         expected: {
             result: {
-                array: [soloConfig.SOLO_GENESIS_BLOCK.signer],
-                plain: soloConfig.SOLO_GENESIS_BLOCK.signer
+                array: [
+                    (configData.SOLO_GENESIS_BLOCK as CompressedBlockDetail)
+                        .signer
+                ],
+                plain: (configData.SOLO_GENESIS_BLOCK as CompressedBlockDetail)
+                    .signer
             },
             success: true
         },

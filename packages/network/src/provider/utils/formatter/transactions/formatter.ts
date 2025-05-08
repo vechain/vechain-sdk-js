@@ -88,8 +88,8 @@ const _formatTransactionToRPC = (
          * VeChain supports multiple clauses in one transaction, thus the actual data should be obtained by looking into each clause.
          * Due to the single clause limitation of Ethereum, we assume the first clause is the clause from which we obtain the data.
          */
-        input: tx.clauses[0]?.data !== undefined ? tx.clauses[0].data : '',
-        to: tx.clauses[0]?.to !== undefined ? tx.clauses[0].to : null,
+        input: tx.clauses[0]?.data ?? '',
+        to: tx.clauses[0]?.to ?? null,
         value:
             tx.clauses[0]?.value !== undefined
                 ? Quantity.of(HexUInt.of(tx.clauses[0].value).bi).toString()

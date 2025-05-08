@@ -10,7 +10,7 @@ import {
     THOR_SOLO_URL,
     ThorClient
 } from '../../../../../src';
-import { THOR_SOLO_SEEDED_ACCOUNTS } from '@vechain/sdk-solo-setup';
+import { getUnusedAccount } from '../../../../fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_sendRawTransaction' method
@@ -42,8 +42,8 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
             // 1 - Init sender and receiver
 
             const actors = {
-                sender: THOR_SOLO_SEEDED_ACCOUNTS[1],
-                receiver: THOR_SOLO_SEEDED_ACCOUNTS[2]
+                sender: getUnusedAccount(),
+                receiver: getUnusedAccount()
             };
 
             // 2- Init transaction
