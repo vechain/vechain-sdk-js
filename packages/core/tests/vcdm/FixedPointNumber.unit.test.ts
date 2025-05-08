@@ -600,6 +600,12 @@ describe('FixedPointNumber class tests', () => {
             const actual = FixedPointNumber.of(n).dp(fd);
             expect(actual.isEqual(expected)).toBe(true);
         });
+
+        test(' scale negative -> err', () => {
+            expect(() => {
+                FixedPointNumber.of(123.45).dp(-1n);
+            }).toThrow(InvalidDataType);
+        });
     });
 
     describe('div method tests', () => {
@@ -643,8 +649,8 @@ describe('FixedPointNumber class tests', () => {
         test('-Infinite / +n -> -Infinite', () => {
             expect(
                 FixedPointNumber.NEGATIVE_INFINITY.div(
-                    FixedPointNumber.of(-123.45)
-                ).isPositive()
+                    FixedPointNumber.of(123.45)
+                ).isNegativeInfinite()
             ).toBe(true);
         });
 
@@ -796,8 +802,8 @@ describe('FixedPointNumber class tests', () => {
         test('-Infinite / +n -> -Infinite', () => {
             expect(
                 FixedPointNumber.NEGATIVE_INFINITY.idiv(
-                    FixedPointNumber.of(-123.45)
-                ).isPositiveInfinite()
+                    FixedPointNumber.of(123.45)
+                ).isNegativeInfinite()
             ).toBe(true);
         });
 
@@ -2615,27 +2621,32 @@ describe('FixedPointNumber class tests', () => {
         test('< 1', () => {
             const expected = 0.0001;
             const actual = FixedPointNumber.of(expected);
-            expect(actual.n).toBeCloseTo(expected);
+            expect(actual.toString()).toEqual(expected.toString());
         });
         test('> 1', () => {
             const expected = 123.456;
             const actual = FixedPointNumber.of(123.456);
-            expect(actual.n).toBeCloseTo(expected);
+            expect(actual.toString()).toEqual(expected.toString());
         });
         test('NaN', () => {
             const expected = Number.NaN;
             const actual = FixedPointNumber.of(expected);
-            expect(actual.n).toBe(expected);
+            expect(actual.toString()).toEqual(expected.toString());
         });
         test('-Infinity', () => {
             const expected = -Infinity;
             const actual = FixedPointNumber.of(-Infinity);
-            expect(actual.n).toBeCloseTo(expected);
+            expect(actual.toString()).toEqual(expected.toString());
         });
         test('+Infinity', () => {
             const expected = -Infinity;
             const actual = FixedPointNumber.of(expected);
-            expect(actual.n).toBeCloseTo(expected);
+            expect(actual.toString()).toEqual(expected.toString());
+        });
+        test('no fractional digits', () => {
+            const expected = 123;
+            const actual = FixedPointNumber.of(expected, 0n);
+            expect(actual.toString()).toEqual(expected.toString());
         });
     });
 });
