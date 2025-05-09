@@ -1,8 +1,5 @@
-import {
-    entropyToMnemonic,
-    generateMnemonic,
-    validateMnemonic
-} from '@scure/bip39';
+import * as s_bip32 from '@scure/bip32';
+import * as s_bip39 from '@scure/bip39';
 import { wordlist } from '@scure/bip39/wordlists/english';
 import {
     InvalidDataType,
@@ -10,7 +7,6 @@ import {
     InvalidHDKeyMnemonic,
     InvalidOperation
 } from '@vechain/sdk-errors';
-import { HDKey } from '../hdkey';
 import { type VeChainDataModel } from './VeChainDataModel';
 
 /**
@@ -152,11 +148,13 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
         words: string[],
         path: string = 'm/0'
     ): Uint8Array {
-        const root = HDKey.fromMnemonic(words);
+        const master = s_bip32.HDKey.fromMasterSeed(
+            s_bip39.mnemonicToSeedSync(words.join(' ').toLowerCase())
+        );
         // Any exception involving mnemonic words is thrown before this point: words are not leaked next.
         try {
             // Derived from root, private key is always available.
-            return root.derive(path).privateKey as Uint8Array;
+            return master.derive(path).privateKey as Uint8Array;
         } catch (error) {
             throw new InvalidHDKey(
                 'mnemonic.derivePrivateKey()',
@@ -196,12 +194,11 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
             if (randomGenerator != null) {
                 const numberOfBytes = (strength /
                     8) as WordListRandomGeneratorSizeInBytes;
-                return entropyToMnemonic(
-                    randomGenerator(numberOfBytes),
-                    wordlist
-                ).split(' ');
+                return s_bip39
+                    .entropyToMnemonic(randomGenerator(numberOfBytes), wordlist)
+                    .split(' ');
             }
-            return generateMnemonic(wordlist, strength).split(' ');
+            return s_bip39.generateMnemonic(wordlist, strength).split(' ');
         } catch (error) {
             throw new InvalidHDKeyMnemonic(
                 'Mnemonic.of',
@@ -224,7 +221,7 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
      */
     public static isValid(words: string | string[]): boolean {
         const wordsToValidate = Array.isArray(words) ? words.join(' ') : words;
-        return validateMnemonic(wordsToValidate, wordlist);
+        return s_bip39.validateMnemonic(wordsToValidate, wordlist);
     }
 }
 

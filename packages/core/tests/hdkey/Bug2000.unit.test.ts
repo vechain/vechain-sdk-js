@@ -1,5 +1,5 @@
 import { describe } from '@jest/globals';
-import { HDKey, Hex } from '../../src';
+import { HDKey, Hex, Mnemonic } from '../../src';
 
 describe('bug 2000', () => {
     const mnemonics = [
@@ -34,6 +34,15 @@ describe('bug 2000', () => {
                 Hex.of(b.privateKey as Uint8Array).toString()
             );
             expect(a.privateKey).toEqual(b.privateKey);
+            const k = Mnemonic.toPrivateKey(mnemonics, path);
+            console.log(`K: ${i}: `, Hex.of(k).toString());
+            expect(a.privateKey).toEqual(k);
         }
+    });
+
+    test('root', () => {
+        const hdk = HDKey.fromMnemonic(mnemonics, derivationPath);
+        const k = Mnemonic.toPrivateKey(mnemonics, derivationPath);
+        expect(hdk.privateKey).toEqual(k);
     });
 });
