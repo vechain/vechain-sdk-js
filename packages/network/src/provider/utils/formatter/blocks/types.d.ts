@@ -85,7 +85,6 @@ interface BlocksRPC extends BlockHeaderRPC {
      */
     baseFeePerGas?: string;
 
-
     /**
      * Unsupported fields
      */

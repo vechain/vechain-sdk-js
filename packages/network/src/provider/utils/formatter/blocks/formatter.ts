@@ -45,7 +45,6 @@ const formatToRPCStandard = (
         gasUsed: Quantity.of(block.gasUsed).toString(),
         transactions,
         miner: block.beneficiary,
-        baseFeePerGas: block.baseFeePerGas,
 
         // Unsupported fields
         difficulty: '0x0',
