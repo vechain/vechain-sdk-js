@@ -185,7 +185,10 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
                 chainTag: populatedTransaction.chainTag ?? undefined,
                 dependsOn: populatedTransaction.dependsOn ?? undefined,
                 expiration: populatedTransaction.expiration,
-                gasPriceCoef: populatedTransaction.gasPriceCoef ?? undefined
+                gasPriceCoef: populatedTransaction.gasPriceCoef ?? undefined,
+                maxPriorityFeePerGas:
+                    populatedTransaction.maxPriorityFeePerGas ?? undefined,
+                maxFeePerGas: populatedTransaction.maxFeePerGas ?? undefined
             }
         );
     }
