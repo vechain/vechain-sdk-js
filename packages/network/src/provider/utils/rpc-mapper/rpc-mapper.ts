@@ -202,7 +202,14 @@ const RPCMethodsMap = (
             return await debugTraceCall(thorClient, params);
         },
 
-        [RPC_METHODS.evm_mine]: async (): Promise<BlocksRPC | null> => {
+        [RPC_METHODS.evm_increaseTime]: async (): Promise<null> => {
+            // @see https://docs.vechain.org/core-concepts/evm-compatibility/test-coverage/hardhat-specific/evm_increasetime
+            // VeChain does not support evm_increaseTime, so we use evm_mine instead
+            // This is a workaround to be able to use hardhat's evm_increaseTime
+            return await evmMine(thorClient);
+        },
+
+        [RPC_METHODS.evm_mine]: async (): Promise<null> => {
             return await evmMine(thorClient);
         },
 

@@ -1,21 +1,21 @@
-import type { ContractClause } from '../types';
-import type { SendTransactionResult } from '../../transactions/types';
-import { type ContractFilter } from './contract-filter';
-import type {
-    FilterCriteria,
-    Range,
-    PaginationOptions,
-    EventDisplayOrder
-} from '../../logs';
 import {
     type Abi,
-    type ExtractAbiFunctionNames,
-    type ExtractAbiFunction,
-    type AbiParametersToPrimitiveTypes,
     type AbiFunction,
-    type ExtractAbiEvent
+    type AbiParametersToPrimitiveTypes,
+    type ExtractAbiEvent,
+    type ExtractAbiFunction,
+    type ExtractAbiFunctionNames
 } from 'abitype';
 import { type GetEventArgs } from 'viem';
+import type {
+    EventDisplayOrder,
+    FilterCriteria,
+    PaginationOptions,
+    Range
+} from '../../logs';
+import type { SendTransactionResult } from '../../transactions/types';
+import type { ContractClause } from '../types';
+import { type ContractFilter } from './contract-filter';
 
 /**
  * Represents a generic contract function type that accepts an arbitrary number of arguments
@@ -27,7 +27,7 @@ import { type GetEventArgs } from 'viem';
  *               are not specified, allowing for flexibility in function signatures.
  * @returns A value of type `T`, representing the result of the contract function execution.
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 type ContractFunctionSync<T = unknown, TABIFunction> = (
     ...args: [
         ...Partial<{ value: number; comment: string }>,
@@ -44,7 +44,7 @@ type ContractFunctionSync<T = unknown, TABIFunction> = (
  * This type represents a function that takes a variable number of arguments, which are partial
  * representations of the input parameters defined in the ABI for the event, and returns a value of type `T`.
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 type ContractEventSync<T = unknown, TABIEvent> = (
     ...args: Partial<
         AbiParametersToPrimitiveTypes<TABIEvent['inputs'], 'inputs'>
@@ -185,7 +185,7 @@ type ContractFunctionCriteria<
  * Represents the amount of VET to transfer in a transaction.
  */
 interface TransactionValue {
-    value: number;
+    value: string;
 }
 
 /**
@@ -206,9 +206,9 @@ interface ClauseRevision {
  * Represents additional options for a transaction clause.
  */
 interface ClauseAdditionalOptions {
-    value: number | undefined;
-    comment: string | undefined;
-    revision: string | undefined;
+    value?: string;
+    comment?: string;
+    revision?: string;
 }
 
 /**
@@ -221,16 +221,16 @@ interface TransferFilterOptions {
 }
 
 export type {
-    ContractFunctionAsync,
-    ContractFunctionSync,
-    ContractFunctionRead,
-    ContractFunctionTransact,
-    ContractFunctionFilter,
-    ContractFunctionClause,
-    ContractFunctionCriteria,
-    TransactionValue,
+    ClauseAdditionalOptions,
     ClauseComment,
     ClauseRevision,
-    ClauseAdditionalOptions,
+    ContractFunctionAsync,
+    ContractFunctionClause,
+    ContractFunctionCriteria,
+    ContractFunctionFilter,
+    ContractFunctionRead,
+    ContractFunctionSync,
+    ContractFunctionTransact,
+    TransactionValue,
     TransferFilterOptions
 };
