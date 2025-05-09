@@ -1,23 +1,11 @@
-import { describe, test, expect, jest } from '@jest/globals';
+import { describe, test, expect } from '@jest/globals';
 import {
-    type FetchHttpClient,
     type RawBlockResponseJSON,
     RawBlockResponse,
     RetrieveRawBlock
 } from '../../../src';
 import { IllegalArgumentError, Revision } from '@vechain/sdk-core';
-
-const mockHttpClient = <T>(response: T): FetchHttpClient => {
-    return {
-        get: jest.fn().mockImplementation(() => {
-            return {
-                json: jest.fn().mockImplementation(() => {
-                    return response;
-                })
-            };
-        })
-    } as unknown as FetchHttpClient;
-};
+import { mockHttpClient } from '../../utils/MockUnitTestClient';
 
 /**
  * VeChain raw block - unit
@@ -32,7 +20,12 @@ describe('RetrieveBlock unit tests', () => {
 
         const mockRawBlockResponse = await RetrieveRawBlock.of(
             Revision.BEST
-        ).askTo(mockHttpClient<RawBlockResponseJSON>(mockRawBlock));
+        ).askTo(
+            mockHttpClient<RawBlockResponse>(
+                new RawBlockResponse(mockRawBlock),
+                'get'
+            )
+        );
         expect(mockRawBlockResponse.response.toJSON()).toEqual(
             new RawBlockResponse(mockRawBlock).toJSON()
         );
@@ -43,8 +36,11 @@ describe('RetrieveBlock unit tests', () => {
 
         await expect(
             RetrieveRawBlock.of(Revision.BEST).askTo(
-                mockHttpClient<RawBlockResponseJSON>(
-                    mockIncompleteRawBlock as RawBlockResponseJSON
+                mockHttpClient<RawBlockResponse>(
+                    new RawBlockResponse(
+                        mockIncompleteRawBlock as RawBlockResponseJSON
+                    ),
+                    'get'
                 )
             )
         ).rejects.toThrowError(IllegalArgumentError);

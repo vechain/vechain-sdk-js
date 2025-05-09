@@ -1,23 +1,11 @@
-import { describe, test, expect, jest } from '@jest/globals';
-import { type FetchHttpClient } from '../../../src/http';
+import { describe, test, expect } from '@jest/globals';
 import {
     RetrieveRegularBlock,
     type RegularBlockResponseJSON,
     RegularBlockResponse
 } from '../../../src/thor/blocks';
 import { Revision } from '@vechain/sdk-core';
-
-const mockHttpClient = <T>(response: T): FetchHttpClient => {
-    return {
-        get: jest.fn().mockImplementation(() => {
-            return {
-                json: jest.fn().mockImplementation(() => {
-                    return response;
-                })
-            };
-        })
-    } as unknown as FetchHttpClient;
-};
+import { mockHttpClient } from '../../utils/MockUnitTestClient';
 
 /**
  * VeChain regular block - unit
@@ -49,7 +37,9 @@ describe('RetrieveBlock unit tests', () => {
 
         const mockRegularBlockResponse = await RetrieveRegularBlock.of(
             Revision.BEST
-        ).askTo(mockHttpClient<RegularBlockResponseJSON>(mockRegularBlock));
+        ).askTo(
+            mockHttpClient<RegularBlockResponseJSON>(mockRegularBlock, 'get')
+        );
         expect(mockRegularBlockResponse.response.toJSON()).toEqual(
             new RegularBlockResponse(mockRegularBlock).toJSON()
         );
@@ -64,7 +54,8 @@ describe('RetrieveBlock unit tests', () => {
         await expect(
             RetrieveRegularBlock.of(Revision.BEST).askTo(
                 mockHttpClient<RegularBlockResponseJSON>(
-                    mockIncompleteRegularBlock as RegularBlockResponseJSON
+                    mockIncompleteRegularBlock as RegularBlockResponseJSON,
+                    'get'
                 )
             )
         )

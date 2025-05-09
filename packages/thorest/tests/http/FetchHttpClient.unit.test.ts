@@ -65,7 +65,7 @@ class MockRequest {
         // Add await for a dummy promise to satisfy require-await
         await Promise.resolve();
         if (this._body === null) return null;
-        return JSON.parse(this._body);
+        return JSON.parse(this._body) as unknown;
     }
 
     clone(): MockRequest {
