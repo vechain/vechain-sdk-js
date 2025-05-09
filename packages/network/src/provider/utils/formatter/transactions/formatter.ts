@@ -4,12 +4,12 @@ import {
     type TransactionRPC
 } from './types';
 import {
+    fromTransactionType,
     Hex,
     HexUInt,
     Quantity,
-    ZERO_BYTES,
     TransactionType,
-    fromTransactionType
+    ZERO_BYTES
 } from '@vechain/sdk-core';
 import {
     getNumberOfLogsAheadOfTransactionIntoBlockExpanded,
@@ -95,15 +95,23 @@ const _formatTransactionToRPC = (
                 ? Quantity.of(HexUInt.of(tx.clauses[0].value).bi).toString()
                 : '',
 
+        type: mapVeChainTypeToEthereumType(txType),
+        maxFeePerGas:
+            tx.maxFeePerGas !== undefined && tx.maxFeePerGas !== null
+                ? Quantity.of(HexUInt.of(tx.maxFeePerGas).bi).toString()
+                : undefined,
+        maxPriorityFeePerGas:
+            tx.maxPriorityFeePerGas !== undefined &&
+            tx.maxPriorityFeePerGas !== null
+                ? Quantity.of(HexUInt.of(tx.maxPriorityFeePerGas).bi).toString()
+                : undefined,
+
         // Unsupported fields
         gasPrice: '0x0',
-        type: mapVeChainTypeToEthereumType(txType),
         v: '0x0',
         r: '0x0',
         s: '0x0',
         accessList: [],
-        maxFeePerGas: '0x0',
-        maxPriorityFeePerGas: '0x0',
         yParity: '0x0'
     };
 };

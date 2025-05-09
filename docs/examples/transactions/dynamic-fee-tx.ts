@@ -15,8 +15,8 @@ import { THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
 // Sample account with private key
 const senderAccount = {
     privateKey:
-        'f9fc826b63a35413541d92d2bfb6661128cd5075fcdca583446d20c59994ba26',
-    address: '0x7a28e7361fd10f4f058f9fefc77544349ecff5d6'
+        '0x658c8a0db369c02797cb20c89c24e5bfb1598c2e7f99d3f9595a9e91b3d970fe',
+    address: '0xA92C535D0A04332ecF3dbB3F5F5609c242232F35'
 };
 
 // 1 - Create thor client for solo network
@@ -49,7 +49,7 @@ try {
         newestBlock: 'best',
         rewardPercentiles: [25, 50, 75]
     });
-    
+
     // Get the most recent base fee (last element in the array)
     baseFeePerGas = feeHistory.baseFeePerGas[feeHistory.baseFeePerGas.length - 1];
     console.log('Current base fee per gas:', baseFeePerGas);
@@ -60,7 +60,7 @@ try {
 // 5 - Get the estimated gas for the transaction
 let gasEstimate = 21000; // Default gas for simple transfers
 try {
-    const gasResult = await thorClient.gas.estimateGas(
+    const gasResult = await thorClient.transactions.estimateGas(
         clauses,
         senderAccount.address
     );
@@ -116,4 +116,4 @@ console.log('- Max priority fee per gas:', body.maxPriorityFeePerGas);
 
 // 12 - Wait for transaction confirmation and check receipt
 // const receipt = await thorClient.transactions.waitForTransaction(txResponse.id);
-// END_SNIPPET: DynamicFeeTransactionSnippet 
+// END_SNIPPET: DynamicFeeTransactionSnippet
