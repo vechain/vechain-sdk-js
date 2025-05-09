@@ -5,7 +5,8 @@ import {
     THOR_SOLO_URL,
     ThorClient
 } from '../../../../../src';
-import { sendTransactionWithAccountIndex } from '../../../../thor-client/debug/fixture-thorest';
+import { sendTransactionWithAccount } from '../../../../thor-client/debug/fixture-thorest';
+import { TEST_ACCOUNTS } from '../../../../fixture';
 
 /**
  * RPC Mapper integration tests for 'debug_traceTransaction' method.
@@ -35,8 +36,8 @@ describe('RPC Mapper - debug_traceTransaction method tests - solo', () => {
          * Positive cases - presetTracer
          */
         test('debug_traceTransaction - prestate tracer', async () => {
-            const txReceipt = await sendTransactionWithAccountIndex(
-                18,
+            const txReceipt = await sendTransactionWithAccount(
+                TEST_ACCOUNTS.ACCOUNT.DEBUG_TRACE_TRANSACTION_ACCOUNT,
                 thorClient
             );
 

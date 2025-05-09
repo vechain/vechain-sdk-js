@@ -1,7 +1,7 @@
-import { type HardhatUserConfig } from 'hardhat/config';
 import '@nomicfoundation/hardhat-toolbox';
-import '@vechain/sdk-hardhat-plugin';
 import { HDKey } from '@vechain/sdk-core';
+import '@vechain/sdk-hardhat-plugin';
+import { type HardhatUserConfig } from 'hardhat/config';
 import { type HttpNetworkConfig } from 'hardhat/types';
 
 /**
@@ -89,7 +89,7 @@ const config: HardhatUserConfig = {
             debug: true,
             gasPayer: {
                 gasPayerServiceUrl:
-                    'https://sponsor-testnet.vechain.energy/by/269'
+                    'https://sponsor-testnet.vechain.energy/by/883'
             },
             enableDelegation: true,
             gas: 'auto',
@@ -138,6 +138,26 @@ const config: HardhatUserConfig = {
             debug: false,
             enableDelegation: false,
             gasPayer: undefined,
+            gas: 'auto',
+            gasPrice: 'auto',
+            gasMultiplier: 1,
+            timeout: 20000,
+            httpHeaders: {}
+        } satisfies HttpNetworkConfig,
+
+        /**
+         * Galactica devnet configuration
+         */
+        vechain_galactica_devnet: {
+            // Galactica devnet
+            url: 'https://galactica.dev.node.vechain.org/',
+            accounts: {
+                mnemonic: process.env.GALACTICA_DEV_MNEMONIC ?? '',
+                path: HDKey.VET_DERIVATION_PATH,
+                count: 102, // 102 accounts since 101 have funds
+                initialIndex: 0,
+                passphrase: 'vechainthor'
+            },
             gas: 'auto',
             gasPrice: 'auto',
             gasMultiplier: 1,

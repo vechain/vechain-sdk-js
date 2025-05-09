@@ -5,10 +5,13 @@
             "dependsOn": ["^build"],
             "cache": false
         },
-        "check:circular-dependencies": {},
+        "check:circular-dependencies": {
+            "cache": false
+        },
         "test": {
             "outputs": ["coverage/**"],
-            "dependsOn": ["^build"]
+            "dependsOn": ["^build"],
+            "cache": false
         },
         "test:unit": {
             "outputs": ["coverage/**"],

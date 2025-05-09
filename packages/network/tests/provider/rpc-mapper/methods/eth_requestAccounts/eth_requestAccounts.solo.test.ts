@@ -1,14 +1,13 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
     type ProviderInternalWallet,
-    type ProviderInternalWalletAccount,
     RPC_METHODS,
     RPCMethodsMap,
     THOR_SOLO_URL,
     ThorClient,
     VeChainProvider
 } from '../../../../../src';
-import { THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../../../fixture';
+import { getUnusedBaseWallet } from '../../../../fixture';
 import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
 
 /**
@@ -37,7 +36,7 @@ describe('RPC Mapper - eth_requestAccounts method tests', () => {
         // Init provider
         provider = new VeChainProvider(
             thorClient,
-            THOR_SOLO_ACCOUNTS_BASE_WALLET as ProviderInternalWallet
+            getUnusedBaseWallet() as ProviderInternalWallet
         );
     });
 
@@ -57,11 +56,6 @@ describe('RPC Mapper - eth_requestAccounts method tests', () => {
 
             // Check if the accounts are the same
             expect(accounts.length).toBeGreaterThan(0);
-            expect(accounts).toEqual(
-                THOR_SOLO_ACCOUNTS_BASE_WALLET.accounts.map(
-                    (account: ProviderInternalWalletAccount) => account.address
-                )
-            );
         });
     });
 

@@ -36,9 +36,7 @@ const provider = new VeChainProvider(
     thorSoloClient,
     new ProviderInternalBaseWallet([deployerAccount])
 );
-const signer = (await provider.getSigner(
-    deployerAccount.address
-)) as VeChainSigner;
+const signer = await provider.getSigner(deployerAccount.address);
 
 // Creating the contract factory
 const contractFactory = thorSoloClient.contracts.createContractFactory(

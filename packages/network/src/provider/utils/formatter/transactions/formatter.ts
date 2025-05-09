@@ -4,12 +4,12 @@ import {
     type TransactionRPC
 } from './types';
 import {
+    fromTransactionType,
     Hex,
     HexUInt,
     Quantity,
-    ZERO_BYTES,
     TransactionType,
-    fromTransactionType
+    ZERO_BYTES
 } from '@vechain/sdk-core';
 import {
     getNumberOfLogsAheadOfTransactionIntoBlockExpanded,
@@ -88,22 +88,30 @@ const _formatTransactionToRPC = (
          * VeChain supports multiple clauses in one transaction, thus the actual data should be obtained by looking into each clause.
          * Due to the single clause limitation of Ethereum, we assume the first clause is the clause from which we obtain the data.
          */
-        input: tx.clauses[0]?.data !== undefined ? tx.clauses[0].data : '',
-        to: tx.clauses[0]?.to !== undefined ? tx.clauses[0].to : null,
+        input: tx.clauses[0]?.data ?? '',
+        to: tx.clauses[0]?.to ?? null,
         value:
             tx.clauses[0]?.value !== undefined
                 ? Quantity.of(HexUInt.of(tx.clauses[0].value).bi).toString()
                 : '',
 
+        type: mapVeChainTypeToEthereumType(txType),
+        maxFeePerGas:
+            tx.maxFeePerGas !== undefined && tx.maxFeePerGas !== null
+                ? Quantity.of(HexUInt.of(tx.maxFeePerGas).bi).toString()
+                : undefined,
+        maxPriorityFeePerGas:
+            tx.maxPriorityFeePerGas !== undefined &&
+            tx.maxPriorityFeePerGas !== null
+                ? Quantity.of(HexUInt.of(tx.maxPriorityFeePerGas).bi).toString()
+                : undefined,
+
         // Unsupported fields
         gasPrice: '0x0',
-        type: mapVeChainTypeToEthereumType(txType),
         v: '0x0',
         r: '0x0',
         s: '0x0',
         accessList: [],
-        maxFeePerGas: '0x0',
-        maxPriorityFeePerGas: '0x0',
         yParity: '0x0'
     };
 };

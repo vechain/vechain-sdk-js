@@ -1,7 +1,7 @@
 {
   "name": "sdk-hardhat-integration",
   "description": "An example app of how to use the @vechain/sdk-hardhat-plugin to interact with the VeChainThor blockchain",
-  "version": "1.2.0-rc.1",
+  "version": "1.2.0-rc.2",
   "private": true,
   "main": "index.js",
   "author": "VeChain Foundation",
@@ -9,6 +9,7 @@
   "scripts": {
     "compile": "npx hardhat compile",
     "test": "npx hardhat test --network vechain_testnet",
+    "test:galactica:devnet": "npx hardhat test --network vechain_galactica_devnet",
     "deploy-solo": "npx hardhat run scripts/deploy.ts --network vechain_solo",
     "deploy-testnet": "npx hardhat run scripts/deploy.ts --network vechain_testnet",
     "deploy-erc20": "npx hardhat run scripts/erc20/deploy.ts --network vechain_testnet",
@@ -18,9 +19,9 @@
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.2",
-    "@vechain/sdk-core": "1.2.0-rc.1",
-    "@vechain/sdk-hardhat-plugin": "1.2.0-rc.1",
-    "@vechain/sdk-logging": "1.2.0-rc.1"
+    "@vechain/sdk-core": "1.2.0-rc.2",
+    "@vechain/sdk-hardhat-plugin": "1.2.0-rc.2",
+    "@vechain/sdk-logging": "1.2.0-rc.2"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",

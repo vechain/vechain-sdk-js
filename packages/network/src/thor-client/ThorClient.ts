@@ -86,6 +86,7 @@ class ThorClient {
             this.gas,
             this.forkDetector
         );
+        this.gas.setTransactionsModule(this.transactions); // gas module requires transaction module
         this.contracts = new ContractsModule(this.transactions);
     }
 

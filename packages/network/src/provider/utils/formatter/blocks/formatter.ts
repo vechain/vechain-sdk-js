@@ -1,11 +1,11 @@
-import { type BlocksRPC } from './types';
 import { HexUInt, Quantity, ZERO_BYTES } from '@vechain/sdk-core';
-import { transactionsFormatter } from '../transactions';
 import {
     type CompressedBlockDetail,
     type ExpandedBlockDetail,
     type TransactionsExpandedBlockDetail
 } from '../../../../thor-client';
+import { transactionsFormatter } from '../transactions';
+import { type BlocksRPC } from './types';
 
 /**
  * Output formatter for block details.
@@ -45,6 +45,7 @@ const formatToRPCStandard = (
         gasUsed: Quantity.of(block.gasUsed).toString(),
         transactions,
         miner: block.beneficiary,
+        baseFeePerGas: block.baseFeePerGas,
 
         // Unsupported fields
         difficulty: '0x0',

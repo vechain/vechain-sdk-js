@@ -1,4 +1,5 @@
 import { type ThorClient } from '../../../thor-client';
+import { type FeeHistoryResponse } from '../../../thor-client/gas/types';
 import { type VeChainProvider } from '../../providers/vechain-provider';
 import { RPC_METHODS } from '../const/rpc-mapper/rpc-methods';
 import {
@@ -57,9 +58,8 @@ import {
     web3ClientVersion,
     web3Sha3
 } from './methods';
-import { ethMaxPriorityFeePerGas } from './methods/eth_maxPriorityFeePerGas/eth_maxPriorityFeePerGas';
 import { ethFeeHistory } from './methods/eth_feeHistory/eth_feeHistory';
-import { type FeeHistoryResponse } from '../../../thor-client/gas/types';
+import { ethMaxPriorityFeePerGas } from './methods/eth_maxPriorityFeePerGas/eth_maxPriorityFeePerGas';
 
 type MethodHandlerType<TParams, TReturnType> = (
     params: TParams[]
@@ -202,7 +202,14 @@ const RPCMethodsMap = (
             return await debugTraceCall(thorClient, params);
         },
 
-        [RPC_METHODS.evm_mine]: async (): Promise<BlocksRPC | null> => {
+        [RPC_METHODS.evm_increaseTime]: async (): Promise<null> => {
+            // @see https://docs.vechain.org/core-concepts/evm-compatibility/test-coverage/hardhat-specific/evm_increasetime
+            // VeChain does not support evm_increaseTime, so we use evm_mine instead
+            // This is a workaround to be able to use hardhat's evm_increaseTime
+            return await evmMine(thorClient);
+        },
+
+        [RPC_METHODS.evm_mine]: async (): Promise<null> => {
             return await evmMine(thorClient);
         },
 
