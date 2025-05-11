@@ -64,8 +64,8 @@ describe('AccountsModule solo tests', () => {
 
                 expect(later).toBeDefined();
                 expect(later.balance).toEqual(ahead.balance);
-                expect(Number(later.energy)).toBeGreaterThan(
-                    Number(ahead.energy)
+                expect(BigInt(later.energy)).toBeGreaterThan(
+                    BigInt(ahead.energy)
                 );
             },
             TIMEOUT
