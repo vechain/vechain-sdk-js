@@ -44,7 +44,7 @@ interface TransactionBody {
      * Basic is to prevent replay attack by make transaction unique.
      * Every transaction with same chainTag, blockRef, ... must have different nonce.
      */
-    nonce: string | number;
+    nonce: number;
 
     /**
      * A reserved field intended for features use.

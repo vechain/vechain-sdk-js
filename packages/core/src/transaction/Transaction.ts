@@ -525,7 +525,8 @@ class Transaction {
             // Depends on
             body.dependsOn !== undefined &&
             // Nonce
-            body.nonce !== undefined
+            body.nonce !== undefined &&
+            typeof body.nonce === 'number'
         );
     }
 

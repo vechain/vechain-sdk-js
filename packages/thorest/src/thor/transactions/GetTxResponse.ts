@@ -1,6 +1,6 @@
 import { Clause, type ClauseJSON } from './Clause';
 import { TxMeta, type TxMetaJSON } from './TxMeta';
-import { Address, BlockId, Gas, Nonce, TxId, UInt } from '@vechain/sdk-core';
+import { Address, BlockId, Gas, TxId, UInt } from '@vechain/sdk-core';
 
 class GetTxResponse {
     readonly id: TxId;
@@ -14,7 +14,7 @@ class GetTxResponse {
     readonly gasPriceCoef: UInt;
     readonly gas: Gas;
     readonly dependsOn?: TxId | null;
-    readonly nonce: Nonce;
+    readonly nonce: number;
     readonly meta: TxMeta;
 
     constructor(json: GetTxResponseJSON) {
@@ -35,7 +35,7 @@ class GetTxResponse {
             json.dependsOn !== undefined && json.dependsOn !== null
                 ? TxId.of(json.dependsOn)
                 : undefined;
-        this.nonce = Nonce.of(json.nonce);
+        this.nonce = json.nonce;
         this.meta = new TxMeta(json.meta);
     }
 
@@ -56,7 +56,7 @@ class GetTxResponse {
                 this.dependsOn !== undefined && this.dependsOn !== null
                     ? this.dependsOn.toString()
                     : undefined,
-            nonce: this.nonce.toString(),
+            nonce: this.nonce,
             meta: this.meta.toJSON()
         } satisfies GetTxResponseJSON;
     }
@@ -74,7 +74,7 @@ interface GetTxResponseJSON {
     gasPriceCoef: number;
     gas: number;
     dependsOn?: string | null;
-    nonce: string;
+    nonce: number;
     meta: TxMetaJSON;
 }
 
