@@ -1,9 +1,10 @@
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, jest, test } from '@jest/globals';
 import { Address, HexUInt } from '@vechain/sdk-core';
 import {
     RetrieveContractBytecode,
     RetrieveContractBytecodePath,
-    ContractBytecode
+    ContractBytecode,
+    type ContractBytecodeJSON
 } from '../../../src';
 import {
     mockHttpClient,
@@ -44,16 +45,18 @@ describe('RetrieveContractBytecode unit tests', () => {
                 code: '0x1234'
             };
 
-            const mockClient = mockHttpClient<ContractBytecode>(
-                new ContractBytecode(mockResponse),
+            const mockClient = mockHttpClient<ContractBytecodeJSON>(
+                mockResponse,
                 'get'
             );
 
             const request = RetrieveContractBytecode.of(address);
             const result = await request.askTo(mockClient);
 
-            expect(mockClient.get).toHaveBeenCalledWith(
-                (expect.any(RetrieveContractBytecodePath), { query: '' })
+            const getSpy = jest.spyOn(mockClient, 'get');
+            expect(getSpy).toHaveBeenCalledWith(
+                expect.any(RetrieveContractBytecodePath),
+                { query: '' }
             );
 
             expect(result.request).toBe(request);

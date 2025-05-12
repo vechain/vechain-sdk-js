@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { HexUInt, Transaction } from '@vechain/sdk-core';
-import { SendTransaction, TXID, type TXIDJSON } from '../../../src';
+import { SendTransaction, type TXIDJSON } from '../../../src';
 import {
     ABIContract,
     networkInfo,
@@ -62,7 +62,7 @@ describe('SendTransaction solo tests', () => {
         }).sign(
             HexUInt.of(TEST_ACCOUNTS_TRANSACTION_SENDER_PRIVATE_KEY).bytes
         ).encoded;
-        const mockClient = mockHttpClient<TXID>(new TXID(TXIDJSON), 'post');
+        const mockClient = mockHttpClient<TXIDJSON>(TXIDJSON, 'post');
         const response = await SendTransaction.of(tx).askTo(mockClient);
 
         expect(response.response.toJSON()).toEqual(TXIDJSON);

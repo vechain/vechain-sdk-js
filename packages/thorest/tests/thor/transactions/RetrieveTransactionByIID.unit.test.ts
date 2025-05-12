@@ -1,10 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { TxId } from '@vechain/sdk-core';
-import {
-    GetTxResponse,
-    type GetTxResponseJSON,
-    RetrieveTransactionByID
-} from '../../../src';
+import { type GetTxResponseJSON, RetrieveTransactionByID } from '../../../src';
 import { mockHttpClient } from '../../utils/MockUnitTestClient';
 
 /**
@@ -48,8 +44,8 @@ describe('RetrieveTransactionByID unit tests', () => {
             }
         } satisfies GetTxResponseJSON;
 
-        const mockClient = mockHttpClient<GetTxResponse>(
-            new GetTxResponse(mockResponse),
+        const mockClient = mockHttpClient<GetTxResponseJSON>(
+            mockResponse,
             'get'
         );
         const response =

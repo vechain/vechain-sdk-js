@@ -20,12 +20,7 @@ describe('RetrieveBlock unit tests', () => {
 
         const mockRawBlockResponse = await RetrieveRawBlock.of(
             Revision.BEST
-        ).askTo(
-            mockHttpClient<RawBlockResponse>(
-                new RawBlockResponse(mockRawBlock),
-                'get'
-            )
-        );
+        ).askTo(mockHttpClient<RawBlockResponseJSON>(mockRawBlock, 'get'));
         expect(mockRawBlockResponse.response.toJSON()).toEqual(
             new RawBlockResponse(mockRawBlock).toJSON()
         );
@@ -36,10 +31,8 @@ describe('RetrieveBlock unit tests', () => {
 
         await expect(
             RetrieveRawBlock.of(Revision.BEST).askTo(
-                mockHttpClient<RawBlockResponse>(
-                    new RawBlockResponse(
-                        mockIncompleteRawBlock as RawBlockResponseJSON
-                    ),
+                mockHttpClient<RawBlockResponseJSON>(
+                    mockIncompleteRawBlock as RawBlockResponseJSON,
                     'get'
                 )
             )

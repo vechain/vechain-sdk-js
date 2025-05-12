@@ -88,10 +88,7 @@ describe('InspectClauses unit tests', () => {
 
         // Execute the test
         const response = await InspectClauses.of(request).askTo(
-            mockHttpClient<ExecuteCodeResponse[]>(
-                mockResponse.map((r) => new ExecuteCodeResponse(r)),
-                'post'
-            )
+            mockHttpClient<ExecuteCodeResponseJSON[]>(mockResponse, 'post')
         );
 
         // Verify the response

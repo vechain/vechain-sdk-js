@@ -1,9 +1,5 @@
 import { describe, test, expect } from '@jest/globals';
-import {
-    type PeerStatJSON,
-    RetrieveConnectedPeers,
-    PeerStat
-} from '../../../src';
+import { type PeerStatJSON, RetrieveConnectedPeers } from '../../../src';
 import { mockHttpClient } from '../../utils/MockUnitTestClient';
 
 /**
@@ -37,18 +33,12 @@ describe('RetrieveConnectedPeers unit tests', () => {
         ] satisfies PeerStatJSON[];
 
         const mockPeersResponse = await new RetrieveConnectedPeers().askTo(
-            mockHttpClient<PeerStat[]>(
-                mockPeers.map((p) => new PeerStat(p)),
-                'get'
-            )
+            mockHttpClient<PeerStatJSON[]>(mockPeers, 'get')
         );
         expect(mockPeersResponse.response.toJSON()).toEqual(mockPeers);
 
         const emptyPeersResponse = await new RetrieveConnectedPeers().askTo(
-            mockHttpClient<PeerStat[]>(
-                [].map((p) => new PeerStat(p)),
-                'get'
-            )
+            mockHttpClient<PeerStatJSON[]>([], 'get')
         );
         expect(emptyPeersResponse.response.toJSON()).toEqual([]);
     });

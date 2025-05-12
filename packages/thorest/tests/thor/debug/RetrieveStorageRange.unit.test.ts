@@ -1,11 +1,10 @@
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, jest, test } from '@jest/globals';
 import { Address, ThorId, UInt } from '@vechain/sdk-core';
 import {
     RetrieveStorageRange,
-    StorageRange,
-    type StorageRangeJSON,
     StorageRangeOption,
-    type StorageRangeOptionJSON
+    type StorageRangeOptionJSON,
+    type StorageRangeJSON
 } from '../../../src/thor/debug';
 import {
     mockHttpClient,
@@ -102,16 +101,19 @@ describe('RetrieveStorageRange unit tests', () => {
                 }
             } satisfies StorageRangeJSON;
 
-            const mockClient = mockHttpClient<StorageRange>(
-                new StorageRange(mockResponse),
+            const mockClient = mockHttpClient<StorageRangeJSON>(
+                mockResponse,
                 'post'
             );
 
             const request = RetrieveStorageRange.of(requestJson);
             const result = await request.askTo(mockClient);
 
-            expect(mockClient.post).toHaveBeenCalledWith(
-                (RetrieveStorageRange.PATH, { query: '' }, requestJson)
+            const postSpy = jest.spyOn(mockClient, 'post');
+            expect(postSpy).toHaveBeenCalledWith(
+                RetrieveStorageRange.PATH,
+                { query: '' },
+                requestJson
             );
 
             expect(result.request).toBe(request);

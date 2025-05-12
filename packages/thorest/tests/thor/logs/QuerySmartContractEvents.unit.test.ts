@@ -54,8 +54,8 @@ describe('QuerySmartContractEvents unit tests', () => {
             }
         ] as unknown as EventLogsResponseJSON;
 
-        const mockClient = mockHttpClient<EventLogsResponse>(
-            new EventLogsResponse(mockResponse),
+        const mockClient = mockHttpClient<EventLogsResponseJSON>(
+            mockResponse,
             'post'
         );
 
@@ -86,10 +86,7 @@ describe('QuerySmartContractEvents unit tests', () => {
             order: 'asc'
         };
 
-        const mockClient = mockHttpClient<EventLogsResponse>(
-            new EventLogsResponse([]),
-            'post'
-        );
+        const mockClient = mockHttpClient<EventLogsResponseJSON>([], 'post');
 
         const response =
             await QuerySmartContractEvents.of(request).askTo(mockClient);

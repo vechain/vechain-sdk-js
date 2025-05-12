@@ -1,4 +1,4 @@
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, jest, test } from '@jest/globals';
 import {
     PostDebugTracerRequest,
     TraceTransactionClause,
@@ -85,8 +85,11 @@ describe('TraceTransactionClause unit tests', () => {
             const request = TraceTransactionClause.of(requestJson);
             const result = await request.askTo(mockClient);
 
-            expect(mockClient.post).toHaveBeenCalledWith(
-                (TraceTransactionClause.PATH, { query: '' }, requestJson)
+            const postSpy = jest.spyOn(mockClient, 'post');
+            expect(postSpy).toHaveBeenCalledWith(
+                TraceTransactionClause.PATH,
+                { query: '' },
+                requestJson
             );
 
             expect(result.request).toBe(request);

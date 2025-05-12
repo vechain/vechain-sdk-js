@@ -1,4 +1,4 @@
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, jest, test } from '@jest/globals';
 import {
     PostDebugTracerCallRequest,
     TraceCall,
@@ -219,8 +219,11 @@ describe('TraceCall unit tests', () => {
                 provedWork: undefined
             };
 
-            expect(mockClient.post).toHaveBeenCalledWith(
-                (TraceCall.PATH, { query: '' }, expectedRequestJson)
+            const postSpy = jest.spyOn(mockClient, 'post');
+            expect(postSpy).toHaveBeenCalledWith(
+                TraceCall.PATH,
+                { query: '' },
+                expectedRequestJson
             );
 
             expect(result.request).toBe(request);

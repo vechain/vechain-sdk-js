@@ -86,10 +86,7 @@ describe('RetrieveBlock unit tests', () => {
         } satisfies ExpandedBlockResponseJSON;
 
         const response = await RetrieveExpandedBlock.of(Revision.BEST).askTo(
-            mockHttpClient<ExpandedBlockResponse>(
-                new ExpandedBlockResponse(mockExpandedBlock),
-                'get'
-            )
+            mockHttpClient<ExpandedBlockResponseJSON>(mockExpandedBlock, 'get')
         );
         expect(response.response.toJSON()).toEqual(
             new ExpandedBlockResponse(mockExpandedBlock).toJSON()
@@ -105,10 +102,8 @@ describe('RetrieveBlock unit tests', () => {
 
         await expect(
             RetrieveExpandedBlock.of(Revision.BEST).askTo(
-                mockHttpClient<ExpandedBlockResponse>(
-                    new ExpandedBlockResponse(
-                        mockIncompleteExpandedBlock as ExpandedBlockResponseJSON
-                    ),
+                mockHttpClient<ExpandedBlockResponseJSON>(
+                    mockIncompleteExpandedBlock as ExpandedBlockResponseJSON,
                     'get'
                 )
             )

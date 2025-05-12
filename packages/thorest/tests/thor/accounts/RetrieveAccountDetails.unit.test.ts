@@ -1,8 +1,9 @@
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, jest, test } from '@jest/globals';
 import { Address, VET, VTHO } from '@vechain/sdk-core';
 import {
     RetrieveAccountDetails,
     RetrieveAccountDetailsPath,
+    type GetAccountResponseJSON,
     GetAccountResponse
 } from '../../../src';
 import {
@@ -47,15 +48,17 @@ describe('RetrieveAccountDetails unit tests', () => {
                 hasCode: true
             };
 
-            const mockClient = mockHttpClient<GetAccountResponse>(
-                new GetAccountResponse(mockResponse),
+            const mockClient = mockHttpClient<GetAccountResponseJSON>(
+                mockResponse,
                 'get'
             );
             const request = RetrieveAccountDetails.of(address);
             const result = await request.askTo(mockClient);
 
-            expect(mockClient.get).toHaveBeenCalledWith(
-                (expect.any(RetrieveAccountDetailsPath), { query: '' })
+            const getSpy = jest.spyOn(mockClient, 'get');
+            expect(getSpy).toHaveBeenCalledWith(
+                expect.any(RetrieveAccountDetailsPath),
+                { query: '' }
             );
 
             expect(result.request).toBe(request);

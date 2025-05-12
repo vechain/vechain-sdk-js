@@ -11,10 +11,8 @@ import {
 } from '@vechain/sdk-core';
 import {
     type GetTxReceiptResponseJSON,
-    TXID,
     type HttpPath,
-    type TXIDJSON,
-    GetTxReceiptResponse
+    type TXIDJSON
 } from '../../../src';
 import { mockHttpClient } from '../../utils/MockUnitTestClient';
 import { secp256k1 as nc_secp256k1 } from '@noble/curves/secp256k1';
@@ -92,10 +90,7 @@ describe('unit tests', () => {
             gasPayer.privateKey.bytes
         );
 
-        const mockClient = mockHttpClient<TXID>(
-            new TXID({ id: mockTxResponse.id }),
-            'post'
-        );
+        const mockClient = mockHttpClient<TXIDJSON>(mockTxResponse, 'post');
         const txResult = await mockClient.post(
             '/transactions' as unknown as HttpPath,
             {
@@ -104,8 +99,8 @@ describe('unit tests', () => {
         );
         expect(await txResult.json()).toEqual(mockTxResponse);
 
-        const mockReceiptClient = mockHttpClient<GetTxReceiptResponse>(
-            new GetTxReceiptResponse(mockTxReceiptResponse),
+        const mockReceiptClient = mockHttpClient<GetTxReceiptResponseJSON>(
+            mockTxReceiptResponse,
             'get'
         );
         const txReceipt = await mockReceiptClient.get(

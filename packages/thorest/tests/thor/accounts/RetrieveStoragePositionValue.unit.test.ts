@@ -1,9 +1,10 @@
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, jest, test } from '@jest/globals';
 import { Address, BlockId, ThorId } from '@vechain/sdk-core';
 import {
     RetrieveStoragePositionValue,
     RetrieveStoragePositionValuePath,
-    GetStorageResponse
+    GetStorageResponse,
+    type GetStorageResponseJSON
 } from '../../../src';
 import {
     mockHttpClient,
@@ -56,16 +57,18 @@ describe('RetrieveStoragePositionValue unit tests', () => {
                 value: '0x000000000000000000000000000000000000000000000000000000000000002a'
             };
 
-            const mockClient = mockHttpClient<GetStorageResponse>(
-                new GetStorageResponse(mockResponse),
+            const mockClient = mockHttpClient<GetStorageResponseJSON>(
+                mockResponse,
                 'get'
             );
 
             const request = RetrieveStoragePositionValue.of(address, key);
             const result = await request.askTo(mockClient);
 
-            expect(mockClient.get).toHaveBeenCalledWith(
-                (expect.any(RetrieveStoragePositionValuePath), { query: '' })
+            const getSpy = jest.spyOn(mockClient, 'get');
+            expect(getSpy).toHaveBeenCalledWith(
+                expect.any(RetrieveStoragePositionValuePath),
+                { query: '' }
             );
 
             expect(result.request).toBe(request);

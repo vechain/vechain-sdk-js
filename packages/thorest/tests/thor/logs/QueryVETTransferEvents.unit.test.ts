@@ -1,11 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { QueryVETTransferEvents } from '../../../src/thor/logs/QueryVETTransferEvents';
 import { type TransferLogFilterRequestJSON } from '../../../src/thor/logs/TransferLogFilterRequest';
-
-import {
-    TransferLogsResponse,
-    type TransferLogsResponseJSON
-} from '../../../src/thor/logs';
+import { type TransferLogsResponseJSON } from '../../../src/thor/logs';
 import { mockHttpClient } from '../../utils/MockUnitTestClient';
 
 /**
@@ -55,16 +51,14 @@ describe('QueryVETTransferEvents unit tests', () => {
             }
         ] satisfies TransferLogsResponseJSON;
 
-        const mockClient = mockHttpClient<TransferLogsResponse>(
-            new TransferLogsResponse(mockResponse),
+        const mockClient = mockHttpClient<TransferLogsResponseJSON>(
+            mockResponse,
             'post'
         );
 
         const response =
             await QueryVETTransferEvents.of(request).askTo(mockClient);
-        expect(response.response.toJSON()).toEqual(
-            new TransferLogsResponse(mockResponse).toJSON()
-        );
+        expect(response.response.toJSON()).toEqual(mockResponse);
     });
 
     test('empty response <- askTo', async () => {
@@ -88,10 +82,7 @@ describe('QueryVETTransferEvents unit tests', () => {
             order: 'asc'
         };
 
-        const mockClient = mockHttpClient<TransferLogsResponse>(
-            new TransferLogsResponse([]),
-            'post'
-        );
+        const mockClient = mockHttpClient<TransferLogsResponseJSON>([], 'post');
 
         const response =
             await QueryVETTransferEvents.of(request).askTo(mockClient);
