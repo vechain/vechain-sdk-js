@@ -8,6 +8,7 @@ import {
     InvalidOperation
 } from '@vechain/sdk-errors';
 import { type VeChainDataModel } from './VeChainDataModel';
+import { HDKey } from '../hdkey';
 
 /**
  * Type of the wordlist size.
@@ -75,8 +76,9 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
     }
 
     /**
+     * There is no comparison for a mnemonic.
      *
-     * @param that - The mnemonic to compare with.
+     * @throws {InvalidOperation} The mnemonic cannot be compared.
      */
     public compareTo(_that: Mnemonic): number {
         throw new InvalidOperation(
@@ -86,6 +88,11 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
         );
     }
 
+    /**
+     * There is no comparison for a mnemonic.
+     *
+     * @throws {InvalidOperation} The mnemonic cannot be compared.
+     */
     public isEqual(_that: Mnemonic): boolean {
         throw new InvalidOperation(
             'Mnemonic.isEqual',
@@ -146,7 +153,7 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
      */
     public static toPrivateKey(
         words: string[],
-        path: string = 'm/0'
+        path: string = HDKey.VET_DERIVATION_PATH
     ): Uint8Array {
         const master = s_bip32.HDKey.fromMasterSeed(
             s_bip39.mnemonicToSeedSync(words.join(' ').toLowerCase())
