@@ -36,9 +36,6 @@ describe('ThorClient - Testnet allocation events', () => {
         const emissionDistributedCriteria =
             emissionsContract.criteria.EmissionDistributed();
 
-        console.log('roundCreatedCriteria', roundCreatedCriteria);
-        console.log('emissionDistributedCriteria', emissionDistributedCriteria);
-
         const xAllocationVotingEvents =
             await thorTestnetClient.logs.filterEventLogs({
                 criteriaSet: [
