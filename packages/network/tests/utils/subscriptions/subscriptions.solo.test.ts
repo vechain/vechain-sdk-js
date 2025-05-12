@@ -87,9 +87,7 @@ describe('Subscriptions Solo network tests', () => {
                             // 3 = CLOSED
                             ws.close();
                         }
-                    } catch (e) {
-                        console.error('Error closing WebSocket:', e);
-                    }
+                    } catch {}
                 }
             };
         }
@@ -146,9 +144,7 @@ describe('Subscriptions Solo network tests', () => {
                             // 3 = CLOSED
                             ws.close();
                         }
-                    } catch (e) {
-                        console.error('Error closing WebSocket:', e);
-                    }
+                    } catch {}
                 }
             };
         }
@@ -205,9 +201,7 @@ describe('Subscriptions Solo network tests', () => {
 
                 // Set up WebSocket connection with handlers
                 const connection = setupWebSocketConnection(wsURL, {
-                    onOpen: () => {
-                        console.log('WebSocket connection opened.');
-                    },
+                    onOpen: () => {},
                     onMessage: (data: string) => {
                         if (timeoutId !== undefined && timeoutId !== null) {
                             clearTimeout(timeoutId);
@@ -265,9 +259,7 @@ describe('Subscriptions Solo network tests', () => {
             // Set up a promise to handle WebSocket messages
             const waitForMessage = new Promise<boolean>((resolve, reject) => {
                 const connection = setupWebSocketConnection(wsURL, {
-                    onOpen: () => {
-                        console.log('WebSocket connection opened.');
-                    },
+                    onOpen: () => {},
                     onMessage: (data: string) => {
                         try {
                             const log = JSON.parse(data) as EventLogs;
@@ -396,9 +388,7 @@ describe('Subscriptions Solo network tests', () => {
 
         const waitForMessage = new Promise<boolean>((resolve, reject) => {
             const connection = setupWebSocketConnection(wsURL, {
-                onOpen: () => {
-                    console.log('WebSocket connection opened.');
-                },
+                onOpen: () => {},
                 onMessage: (data: string) => {
                     try {
                         const log = JSON.parse(data) as TransferLogs;
