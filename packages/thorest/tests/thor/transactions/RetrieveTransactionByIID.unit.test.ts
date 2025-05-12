@@ -1,22 +1,7 @@
-import { describe, expect, jest, test } from '@jest/globals';
+import { describe, expect, test } from '@jest/globals';
 import { TxId } from '@vechain/sdk-core';
-import {
-    type FetchHttpClient,
-    type GetTxResponseJSON,
-    RetrieveTransactionByID
-} from '../../../src';
-
-const mockHttpClient = <T>(response: T): FetchHttpClient => {
-    return {
-        get: jest.fn().mockImplementation(() => {
-            return {
-                json: jest.fn().mockImplementation(() => {
-                    return response;
-                })
-            };
-        })
-    } as unknown as FetchHttpClient;
-};
+import { type GetTxResponseJSON, RetrieveTransactionByID } from '../../../src';
+import { mockHttpClient } from '../../utils/MockUnitTestClient';
 
 /**
  * VeChain transaction - unit
@@ -59,7 +44,10 @@ describe('RetrieveTransactionByID unit tests', () => {
             }
         } satisfies GetTxResponseJSON;
 
-        const mockClient = mockHttpClient(mockResponse);
+        const mockClient = mockHttpClient<GetTxResponseJSON>(
+            mockResponse,
+            'get'
+        );
         const response =
             await RetrieveTransactionByID.of(txId).askTo(mockClient);
         expect(response.response.toJSON()).toEqual(mockResponse);

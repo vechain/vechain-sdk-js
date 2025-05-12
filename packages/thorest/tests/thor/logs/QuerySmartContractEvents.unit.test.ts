@@ -1,23 +1,11 @@
-import { describe, test, jest, expect } from '@jest/globals';
+import { describe, test, expect } from '@jest/globals';
 import { QuerySmartContractEvents } from '../../../src/thor/logs/QuerySmartContractEvents';
 import { type EventLogFilterRequestJSON } from '../../../src/thor/logs/EventLogFilterRequest';
-import { type FetchHttpClient } from '../../../src';
 import {
     EventLogsResponse,
     type EventLogsResponseJSON
 } from '../../../src/thor/logs';
-
-const mockHttpClient = <T>(response: T): FetchHttpClient => {
-    return {
-        post: jest.fn().mockImplementation(() => {
-            return {
-                json: jest.fn().mockImplementation(() => {
-                    return response;
-                })
-            };
-        })
-    } as unknown as FetchHttpClient;
-};
+import { mockHttpClient } from '../../utils/MockUnitTestClient';
 
 /**
  *VeChain node - unit
@@ -66,7 +54,10 @@ describe('QuerySmartContractEvents unit tests', () => {
             }
         ] as unknown as EventLogsResponseJSON;
 
-        const mockClient = mockHttpClient<EventLogsResponseJSON>(mockResponse);
+        const mockClient = mockHttpClient<EventLogsResponseJSON>(
+            mockResponse,
+            'post'
+        );
 
         const response =
             await QuerySmartContractEvents.of(request).askTo(mockClient);
@@ -95,7 +86,7 @@ describe('QuerySmartContractEvents unit tests', () => {
             order: 'asc'
         };
 
-        const mockClient = mockHttpClient([]);
+        const mockClient = mockHttpClient<EventLogsResponseJSON>([], 'post');
 
         const response =
             await QuerySmartContractEvents.of(request).askTo(mockClient);

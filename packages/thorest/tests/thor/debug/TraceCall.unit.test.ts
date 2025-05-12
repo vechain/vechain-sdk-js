@@ -1,10 +1,9 @@
-import { describe, expect, test, jest } from '@jest/globals';
+import { describe, expect, jest, test } from '@jest/globals';
 import {
     PostDebugTracerCallRequest,
     TraceCall,
     type PostDebugTracerCallRequestJSON
 } from '../../../src/thor/debug';
-import { type HttpClient } from '../../../src/http';
 import {
     Address,
     Gas,
@@ -14,6 +13,10 @@ import {
     VET,
     VTHO
 } from '@vechain/sdk-core';
+import {
+    mockHttpClient,
+    mockHttpClientWithError
+} from '../../utils/MockUnitTestClient';
 
 /**
  * VeChain trace call - unit
@@ -191,23 +194,12 @@ describe('TraceCall unit tests', () => {
                 failed: false,
                 returnValue: '0x',
                 structLogs: []
-            };
+            } as unknown;
 
-            const mockHttpClient = {
-                post: jest.fn(async () => {
-                    return await Promise.resolve({
-                        json: async () => await Promise.resolve(mockResponse)
-                    });
-                }),
-                get: jest.fn(async () => {
-                    return await Promise.resolve({
-                        json: async () => await Promise.resolve({})
-                    });
-                })
-            } as unknown as HttpClient;
+            const mockClient = mockHttpClient<unknown>(mockResponse, 'post');
 
             const request = TraceCall.of(requestJson);
-            const result = await request.askTo(mockHttpClient);
+            const result = await request.askTo(mockClient);
 
             // Normalize the expected JSON to match the actual output format
             const expectedRequestJson = {
@@ -227,7 +219,8 @@ describe('TraceCall unit tests', () => {
                 provedWork: undefined
             };
 
-            expect(mockHttpClient.post).toHaveBeenCalledWith(
+            const postSpy = jest.spyOn(mockClient, 'post');
+            expect(postSpy).toHaveBeenCalledWith(
                 TraceCall.PATH,
                 { query: '' },
                 expectedRequestJson
@@ -244,21 +237,10 @@ describe('TraceCall unit tests', () => {
                 data: '0xa9059cbb0000000000000000000000000f872421dc479f3c11edd89512731814d0598db50000000000'
             };
 
-            const mockHttpClient = {
-                post: jest.fn(async () => {
-                    return await Promise.reject(new Error('Network error'));
-                }),
-                get: jest.fn(async () => {
-                    return await Promise.resolve({
-                        json: async () => await Promise.resolve({})
-                    });
-                })
-            } as unknown as HttpClient;
-
             const request = TraceCall.of(requestJson);
-            await expect(request.askTo(mockHttpClient)).rejects.toThrow(
-                'Network error'
-            );
+            await expect(
+                request.askTo(mockHttpClientWithError('Network error', 'post'))
+            ).rejects.toThrow('Network error');
         });
     });
 });

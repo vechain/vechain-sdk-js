@@ -1,11 +1,15 @@
-import { describe, expect, test, jest } from '@jest/globals';
+import { describe, expect, jest, test } from '@jest/globals';
 import { Address, VET, VTHO } from '@vechain/sdk-core';
 import {
     RetrieveAccountDetails,
     RetrieveAccountDetailsPath,
+    type GetAccountResponseJSON,
     GetAccountResponse
 } from '../../../src';
-import { type HttpClient } from '../../../src/http';
+import {
+    mockHttpClient,
+    mockHttpClientWithError
+} from '../../utils/MockUnitTestClient';
 
 /**
  * VeChain retrieve account details - unit
@@ -44,26 +48,15 @@ describe('RetrieveAccountDetails unit tests', () => {
                 hasCode: true
             };
 
-            const mockHttpClient = {
-                get: jest.fn(
-                    async () =>
-                        await Promise.resolve({
-                            json: async () =>
-                                await Promise.resolve(mockResponse)
-                        })
-                ),
-                post: jest.fn(
-                    async () =>
-                        await Promise.resolve({
-                            json: async () => await Promise.resolve({})
-                        })
-                )
-            } as unknown as HttpClient;
-
+            const mockClient = mockHttpClient<GetAccountResponseJSON>(
+                mockResponse,
+                'get'
+            );
             const request = RetrieveAccountDetails.of(address);
-            const result = await request.askTo(mockHttpClient);
+            const result = await request.askTo(mockClient);
 
-            expect(mockHttpClient.get).toHaveBeenCalledWith(
+            const getSpy = jest.spyOn(mockClient, 'get');
+            expect(getSpy).toHaveBeenCalledWith(
                 expect.any(RetrieveAccountDetailsPath),
                 { query: '' }
             );
@@ -82,20 +75,9 @@ describe('RetrieveAccountDetails unit tests', () => {
                 '0x0000000000000000000000000000456E65726779'
             );
 
-            const mockHttpClient = {
-                get: jest.fn(
-                    async () => await Promise.reject(new Error('Network error'))
-                ),
-                post: jest.fn(
-                    async () =>
-                        await Promise.resolve({
-                            json: async () => await Promise.resolve({})
-                        })
-                )
-            } as unknown as HttpClient;
-
+            const mockClient = mockHttpClientWithError('Network error', 'get');
             const request = RetrieveAccountDetails.of(address);
-            await expect(request.askTo(mockHttpClient)).rejects.toThrow(
+            await expect(request.askTo(mockClient)).rejects.toThrow(
                 'Network error'
             );
         });

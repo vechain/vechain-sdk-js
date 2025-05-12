@@ -1,21 +1,11 @@
-import { describe, expect, jest, test } from '@jest/globals';
+import { describe, expect, test } from '@jest/globals';
 import {
     type ExecuteCodesRequestJSON,
-    type FetchHttpClient,
     InspectClauses,
     type ExecuteCodeResponseJSON
 } from '../../../src';
 import { VET } from '@vechain/sdk-core';
-
-const mockHttpClient = <T>(response: T): FetchHttpClient => {
-    return {
-        post: jest.fn().mockImplementation(async () => {
-            return await Promise.resolve({
-                json: async () => await Promise.resolve(response)
-            });
-        })
-    } as unknown as FetchHttpClient;
-};
+import { mockHttpClient } from '../../utils/MockUnitTestClient';
 
 /**
  * VeChain inspect clauses - unit
@@ -97,7 +87,7 @@ describe('InspectClauses unit tests', () => {
 
         // Execute the test
         const response = await InspectClauses.of(request).askTo(
-            mockHttpClient(mockResponse)
+            mockHttpClient<ExecuteCodeResponseJSON[]>(mockResponse, 'post')
         );
 
         // Verify the response
@@ -167,7 +157,7 @@ describe('InspectClauses unit tests', () => {
 
         // Execute the test
         const response = await InspectClauses.of(request).askTo(
-            mockHttpClient(mockResponse)
+            mockHttpClient<ExecuteCodeResponseJSON[]>(mockResponse, 'post')
         );
 
         // Verify the response
@@ -188,12 +178,9 @@ describe('InspectClauses unit tests', () => {
             clauses: []
         } satisfies ExecuteCodesRequestJSON;
 
-        // Mock empty response
-        const mockResponse: ExecuteCodeResponseJSON[] = [];
-
         // Execute the test
         const response = await InspectClauses.of(request).askTo(
-            mockHttpClient(mockResponse)
+            mockHttpClient<ExecuteCodeResponseJSON[]>([], 'post')
         );
 
         // Verify the response
@@ -231,7 +218,7 @@ describe('InspectClauses unit tests', () => {
 
         // Execute the test
         const response = await InspectClauses.of(request).askTo(
-            mockHttpClient(mockResponse)
+            mockHttpClient<ExecuteCodeResponseJSON[]>(mockResponse, 'post')
         );
 
         // Verify the response

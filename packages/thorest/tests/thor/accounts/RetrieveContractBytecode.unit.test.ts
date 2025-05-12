@@ -1,12 +1,15 @@
-import { describe, expect, test, jest } from '@jest/globals';
+import { describe, expect, jest, test } from '@jest/globals';
 import { Address, HexUInt } from '@vechain/sdk-core';
 import {
     RetrieveContractBytecode,
     RetrieveContractBytecodePath,
-    ContractBytecode
+    ContractBytecode,
+    type ContractBytecodeJSON
 } from '../../../src';
-import { type HttpClient } from '../../../src/http';
-
+import {
+    mockHttpClient,
+    mockHttpClientWithError
+} from '../../utils/MockUnitTestClient';
 /**
  * VeChain retrieve contract bytecode - unit
  *
@@ -42,26 +45,16 @@ describe('RetrieveContractBytecode unit tests', () => {
                 code: '0x1234'
             };
 
-            const mockHttpClient = {
-                get: jest.fn(
-                    async () =>
-                        await Promise.resolve({
-                            json: async () =>
-                                await Promise.resolve(mockResponse)
-                        })
-                ),
-                post: jest.fn(
-                    async () =>
-                        await Promise.resolve({
-                            json: async () => await Promise.resolve({})
-                        })
-                )
-            } as unknown as HttpClient;
+            const mockClient = mockHttpClient<ContractBytecodeJSON>(
+                mockResponse,
+                'get'
+            );
 
             const request = RetrieveContractBytecode.of(address);
-            const result = await request.askTo(mockHttpClient);
+            const result = await request.askTo(mockClient);
 
-            expect(mockHttpClient.get).toHaveBeenCalledWith(
+            const getSpy = jest.spyOn(mockClient, 'get');
+            expect(getSpy).toHaveBeenCalledWith(
                 expect.any(RetrieveContractBytecodePath),
                 { query: '' }
             );
@@ -77,22 +70,10 @@ describe('RetrieveContractBytecode unit tests', () => {
                 '0x0000000000000000000000000000456E65726779'
             );
 
-            const mockHttpClient = {
-                get: jest.fn(
-                    async () => await Promise.reject(new Error('Network error'))
-                ),
-                post: jest.fn(
-                    async () =>
-                        await Promise.resolve({
-                            json: async () => await Promise.resolve({})
-                        })
-                )
-            } as unknown as HttpClient;
-
             const request = RetrieveContractBytecode.of(address);
-            await expect(request.askTo(mockHttpClient)).rejects.toThrow(
-                'Network error'
-            );
+            await expect(
+                request.askTo(mockHttpClientWithError('Network error', 'get'))
+            ).rejects.toThrow('Network error');
         });
     });
 });

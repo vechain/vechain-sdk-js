@@ -1,23 +1,11 @@
-import { describe, jest, test, expect } from '@jest/globals';
-import { type FetchHttpClient } from '../../../src/http';
+import { describe, test, expect } from '@jest/globals';
 import {
     ExpandedBlockResponse,
     type ExpandedBlockResponseJSON,
     RetrieveExpandedBlock
 } from '../../../src/thor/blocks';
 import { Revision } from '@vechain/sdk-core';
-
-const mockHttpClient = <T>(response: T): FetchHttpClient => {
-    return {
-        get: jest.fn().mockImplementation(() => {
-            return {
-                json: jest.fn().mockImplementation(() => {
-                    return response;
-                })
-            };
-        })
-    } as unknown as FetchHttpClient;
-};
+import { mockHttpClient } from '../../utils/MockUnitTestClient';
 
 /**
  * VeChain expanded block - unit
@@ -98,7 +86,7 @@ describe('RetrieveBlock unit tests', () => {
         } satisfies ExpandedBlockResponseJSON;
 
         const response = await RetrieveExpandedBlock.of(Revision.BEST).askTo(
-            mockHttpClient<ExpandedBlockResponseJSON>(mockExpandedBlock)
+            mockHttpClient<ExpandedBlockResponseJSON>(mockExpandedBlock, 'get')
         );
         expect(response.response.toJSON()).toEqual(
             new ExpandedBlockResponse(mockExpandedBlock).toJSON()
@@ -115,7 +103,8 @@ describe('RetrieveBlock unit tests', () => {
         await expect(
             RetrieveExpandedBlock.of(Revision.BEST).askTo(
                 mockHttpClient<ExpandedBlockResponseJSON>(
-                    mockIncompleteExpandedBlock as ExpandedBlockResponseJSON
+                    mockIncompleteExpandedBlock as ExpandedBlockResponseJSON,
+                    'get'
                 )
             )
         )

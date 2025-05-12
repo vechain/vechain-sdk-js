@@ -1,10 +1,13 @@
-import { describe, expect, test, jest } from '@jest/globals';
+import { describe, expect, jest, test } from '@jest/globals';
 import {
     PostDebugTracerRequest,
     TraceTransactionClause,
     type PostDebugTracerRequestJSON
 } from '../../../src/thor/debug';
-import { type HttpClient } from '../../../src/http';
+import {
+    mockHttpClient,
+    mockHttpClientWithError
+} from '../../utils/MockUnitTestClient';
 
 /**
  * VeChain trace transaction clause - unit
@@ -77,23 +80,13 @@ describe('TraceTransactionClause unit tests', () => {
                 structLogs: []
             };
 
-            const mockHttpClient = {
-                post: jest.fn(async () => {
-                    return await Promise.resolve({
-                        json: async () => await Promise.resolve(mockResponse)
-                    });
-                }),
-                get: jest.fn(async () => {
-                    return await Promise.resolve({
-                        json: async () => await Promise.resolve({})
-                    });
-                })
-            } as unknown as HttpClient;
+            const mockClient = mockHttpClient<unknown>(mockResponse, 'post');
 
             const request = TraceTransactionClause.of(requestJson);
-            const result = await request.askTo(mockHttpClient);
+            const result = await request.askTo(mockClient);
 
-            expect(mockHttpClient.post).toHaveBeenCalledWith(
+            const postSpy = jest.spyOn(mockClient, 'post');
+            expect(postSpy).toHaveBeenCalledWith(
                 TraceTransactionClause.PATH,
                 { query: '' },
                 requestJson
@@ -109,21 +102,10 @@ describe('TraceTransactionClause unit tests', () => {
                 target: '0x010709463c1f0c9aa66a31182fb36d1977d99bfb6526bae0564a0eac4006c31a/0/0'
             };
 
-            const mockHttpClient = {
-                post: jest.fn(async () => {
-                    return await Promise.reject(new Error('Network error'));
-                }),
-                get: jest.fn(async () => {
-                    return await Promise.resolve({
-                        json: async () => await Promise.resolve({})
-                    });
-                })
-            } as unknown as HttpClient;
-
             const request = TraceTransactionClause.of(requestJson);
-            await expect(request.askTo(mockHttpClient)).rejects.toThrow(
-                'Network error'
-            );
+            await expect(
+                request.askTo(mockHttpClientWithError('Network error', 'post'))
+            ).rejects.toThrow('Network error');
         });
     });
 });

@@ -1,12 +1,15 @@
-import { describe, expect, test, jest } from '@jest/globals';
+import { describe, expect, jest, test } from '@jest/globals';
 import { Address, BlockId, ThorId } from '@vechain/sdk-core';
 import {
     RetrieveStoragePositionValue,
     RetrieveStoragePositionValuePath,
-    GetStorageResponse
+    GetStorageResponse,
+    type GetStorageResponseJSON
 } from '../../../src';
-import { type HttpClient } from '../../../src/http';
-
+import {
+    mockHttpClient,
+    mockHttpClientWithError
+} from '../../utils/MockUnitTestClient';
 /**
  * VeChain retrieve storage position value - unit
  *
@@ -54,26 +57,16 @@ describe('RetrieveStoragePositionValue unit tests', () => {
                 value: '0x000000000000000000000000000000000000000000000000000000000000002a'
             };
 
-            const mockHttpClient = {
-                get: jest.fn(
-                    async () =>
-                        await Promise.resolve({
-                            json: async () =>
-                                await Promise.resolve(mockResponse)
-                        })
-                ),
-                post: jest.fn(
-                    async () =>
-                        await Promise.resolve({
-                            json: async () => await Promise.resolve({})
-                        })
-                )
-            } as unknown as HttpClient;
+            const mockClient = mockHttpClient<GetStorageResponseJSON>(
+                mockResponse,
+                'get'
+            );
 
             const request = RetrieveStoragePositionValue.of(address, key);
-            const result = await request.askTo(mockHttpClient);
+            const result = await request.askTo(mockClient);
 
-            expect(mockHttpClient.get).toHaveBeenCalledWith(
+            const getSpy = jest.spyOn(mockClient, 'get');
+            expect(getSpy).toHaveBeenCalledWith(
                 expect.any(RetrieveStoragePositionValuePath),
                 { query: '' }
             );
@@ -94,22 +87,10 @@ describe('RetrieveStoragePositionValue unit tests', () => {
                 '0x0000000000000000000000000000000000000000000000000000000000000001'
             );
 
-            const mockHttpClient = {
-                get: jest.fn(
-                    async () => await Promise.reject(new Error('Network error'))
-                ),
-                post: jest.fn(
-                    async () =>
-                        await Promise.resolve({
-                            json: async () => await Promise.resolve({})
-                        })
-                )
-            } as unknown as HttpClient;
-
             const request = RetrieveStoragePositionValue.of(address, key);
-            await expect(request.askTo(mockHttpClient)).rejects.toThrow(
-                'Network error'
-            );
+            await expect(
+                request.askTo(mockHttpClientWithError('Network error', 'get'))
+            ).rejects.toThrow('Network error');
         });
     });
 });

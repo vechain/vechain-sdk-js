@@ -1,6 +1,6 @@
-import { describe, expect, jest, test } from '@jest/globals';
+import { describe, expect, test } from '@jest/globals';
 import { HexUInt, Transaction } from '@vechain/sdk-core';
-import { type FetchHttpClient, SendTransaction, TXID } from '../../../src';
+import { SendTransaction, type TXIDJSON } from '../../../src';
 import {
     ABIContract,
     networkInfo,
@@ -8,18 +8,7 @@ import {
     Units
 } from '@vechain/sdk-core/src';
 import { BUILT_IN_CONTRACTS } from './built-in';
-
-const mockHttpClient = <T>(response: T): FetchHttpClient => {
-    return {
-        post: jest.fn().mockImplementation(() => {
-            return {
-                json: jest.fn().mockImplementation(() => {
-                    return response;
-                })
-            };
-        })
-    } as unknown as FetchHttpClient;
-};
+import { mockHttpClient } from '../../utils/MockUnitTestClient';
 
 /**
  * VeChain transaction - unit
@@ -60,19 +49,22 @@ describe('SendTransaction solo tests', () => {
             revertReasons: [],
             vmErrors: []
         };
+
+        const TXIDJSON = {
+            id: '0x0000000000000000000000000000000000000000000000000000000000000123'
+        } satisfies TXIDJSON;
+
         const tx = Transaction.of({
             ...transferTransactionBody,
             gas: gasResult.totalGas,
-            nonce: 10000000
+            nonce: 10000000,
+            gasPriceCoef: 128
         }).sign(
             HexUInt.of(TEST_ACCOUNTS_TRANSACTION_SENDER_PRIVATE_KEY).bytes
         ).encoded;
-        const response = await SendTransaction.of(tx).askTo(
-            mockHttpClient(new TXID({ id: '0x123' }))
-        );
+        const mockClient = mockHttpClient<TXIDJSON>(TXIDJSON, 'post');
+        const response = await SendTransaction.of(tx).askTo(mockClient);
 
-        expect(response.response.toJSON()).toEqual(
-            new TXID({ id: '0x123' }).toJSON()
-        );
+        expect(response.response.toJSON()).toEqual(TXIDJSON);
     });
 });
