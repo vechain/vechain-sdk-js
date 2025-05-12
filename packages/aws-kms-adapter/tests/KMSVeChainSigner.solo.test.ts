@@ -15,9 +15,6 @@ import {
     KMSVeChainSigner
 } from '../src';
 import {
-    EIP712_CONTRACT,
-    EIP712_FROM,
-    EIP712_TO,
     fundVTHO,
     signTransactionTestCases as sendTransactionTestCases,
     signTransactionTestCases,
@@ -25,7 +22,7 @@ import {
     SOLO_CONTRACT_ADDRESS,
     timeout
 } from './fixture';
-
+import { EIP712_CONTRACT, EIP712_FROM, EIP712_TO } from './dummy_data';
 // This variable should be replaced once this is clarified  https://github.com/localstack/localstack/issues/11678
 let expectedAddress: string;
 
