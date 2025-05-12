@@ -442,22 +442,19 @@ class TransactionsModule {
             options.gasPriceCoef = 0;
             return options;
         }
-        if (
-            galacticaHappened &&
-            options.maxFeePerGas !== undefined &&
-            options.maxPriorityFeePerGas !== undefined
-        ) {
-            // galactica happened, user specified new fee type
-            return options;
-        }
-        // default to dynamic fee tx
-        options.gasPriceCoef = undefined;
-        // set maxPriorityFeePerGas if not specified already
-        options.maxPriorityFeePerGas =
-            options.maxPriorityFeePerGas ??
-            (await this.gasModule.getMaxPriorityFeePerGas());
-        // set maxFeePerGas if not specified already
-        if (options.maxFeePerGas === undefined) {
+        if (galacticaHappened) {
+            // galactica happened, default to dynamic fee tx
+            options.gasPriceCoef = undefined;
+
+            // If user specified both values, use them as-is
+            if (
+                options.maxFeePerGas !== undefined &&
+                options.maxPriorityFeePerGas !== undefined
+            ) {
+                return options;
+            }
+
+            // Get network values for computation
             const bestBlockBaseFeePerGas =
                 await this.blocksModule.getBestBlockBaseFeePerGas();
             if (bestBlockBaseFeePerGas === null) {
@@ -467,16 +464,26 @@ class TransactionsModule {
                     { options }
                 );
             }
-            // compute maxFeePerGas
-            const biBestBlockBaseFeePerGas = HexUInt.of(
-                bestBlockBaseFeePerGas
-            ).bi;
-            const biMaxPriorityFeePerGas = HexUInt.of(
-                options.maxPriorityFeePerGas
-            ).bi;
-            const biMaxFeePerGas =
-                biBestBlockBaseFeePerGas + biMaxPriorityFeePerGas;
-            options.maxFeePerGas = HexUInt.of(biMaxFeePerGas).toString();
+
+            // Compute missing values
+            if (options.maxPriorityFeePerGas === undefined) {
+                options.maxPriorityFeePerGas =
+                    await this.gasModule.getMaxPriorityFeePerGas();
+            }
+
+            if (options.maxFeePerGas === undefined) {
+                const biBestBlockBaseFeePerGas = HexUInt.of(
+                    bestBlockBaseFeePerGas
+                ).bi;
+                const biMaxPriorityFeePerGas = HexUInt.of(
+                    options.maxPriorityFeePerGas
+                ).bi;
+                const biMaxFeePerGas =
+                    biBestBlockBaseFeePerGas + biMaxPriorityFeePerGas;
+                options.maxFeePerGas = HexUInt.of(biMaxFeePerGas).toString();
+            }
+
+            return options;
         }
         return options;
     }

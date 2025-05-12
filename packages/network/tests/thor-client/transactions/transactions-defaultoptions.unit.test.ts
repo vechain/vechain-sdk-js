@@ -142,6 +142,60 @@ describe('fillDefaultBodyOptions() unit tests', () => {
         expect(filledOptions.maxFeePerGas).toBe('0x50'); // computed
         expect(filledOptions.maxPriorityFeePerGas).toEqual('0x20'); // stays the same
     });
+
+    test('dynamic fee tx <- no fee parameters specified and fork has happened', async () => {
+        const client = ThorClient.at(TESTNET_URL);
+        jest.spyOn(client.forkDetector, 'isGalacticaForked').mockResolvedValue(
+            true
+        );
+        jest.spyOn(client.gas, 'getMaxPriorityFeePerGas').mockResolvedValue(
+            '0x1'
+        );
+        jest.spyOn(
+            client.blocks,
+            'getBestBlockBaseFeePerGas'
+        ).mockResolvedValue('0x30');
+        const options = {};
+        const filledOptions =
+            await client.transactions.fillDefaultBodyOptions(options);
+        expect(filledOptions.maxFeePerGas).toBe('0x31'); // computed (base fee + priority fee)
+        expect(filledOptions.maxPriorityFeePerGas).toEqual('0x1'); // computed
+        expect(filledOptions.gasPriceCoef).toBeUndefined();
+    });
+
+    test('exception <- getBestBlockBaseFeePerGas returns null', async () => {
+        const client = ThorClient.at(TESTNET_URL);
+        jest.spyOn(client.forkDetector, 'isGalacticaForked').mockResolvedValue(
+            true
+        );
+        jest.spyOn(client.gas, 'getMaxPriorityFeePerGas').mockResolvedValue(
+            '0x1'
+        );
+        jest.spyOn(
+            client.blocks,
+            'getBestBlockBaseFeePerGas'
+        ).mockResolvedValue(null);
+        const options = {};
+        await expect(
+            client.transactions.fillDefaultBodyOptions(options)
+        ).rejects.toThrow(InvalidDataType);
+    });
+
+    test('exception <- getMaxPriorityFeePerGas fails', async () => {
+        const client = ThorClient.at(TESTNET_URL);
+        jest.spyOn(client.forkDetector, 'isGalacticaForked').mockResolvedValue(
+            true
+        );
+        jest.spyOn(client.gas, 'getMaxPriorityFeePerGas').mockRejectedValue(
+            new Error('Network error')
+        );
+        const options = {};
+        await expect(
+            client.transactions.fillDefaultBodyOptions(options)
+        ).rejects.toThrow(
+            'Invalid transaction body options. Unable to get best block base fee per gas.'
+        );
+    });
 });
 
 describe('buildTransactionBody() unit tests', () => {
@@ -211,6 +265,10 @@ describe('buildTransactionBody() unit tests', () => {
         jest.spyOn(client.gas, 'getMaxPriorityFeePerGas').mockResolvedValue(
             '0x1'
         );
+        jest.spyOn(
+            client.blocks,
+            'getBestBlockBaseFeePerGas'
+        ).mockResolvedValue('0x30');
         const options = {
             maxFeePerGas: 1000000000000000000
         };
