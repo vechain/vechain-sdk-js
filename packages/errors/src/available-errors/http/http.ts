@@ -11,4 +11,15 @@ class InvalidHTTPRequest extends VechainSDKError<{
     url: string;
 }> {}
 
-export { InvalidHTTPRequest };
+/**
+ * Http invalid params error
+ *
+ * WHEN TO USE:
+ * * Error will be thrown when HTTP request params are invalid
+ */
+class InvalidHTTPParams extends VechainSDKError<{
+    method: string;
+    url: string;
+}> {}
+
+export { InvalidHTTPRequest, InvalidHTTPParams };

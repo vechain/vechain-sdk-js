@@ -192,7 +192,7 @@ class Secp256k1 {
     public static randomBytes(bytesLength: number = 32): Uint8Array {
         try {
             return nh_randomBytes(bytesLength);
-        } catch (e) {
+        } catch {
             return global.crypto.getRandomValues(new Uint8Array(bytesLength));
         }
     }

@@ -38,8 +38,9 @@ describe('VechainHelloWorldWithNonEmptyConstructor', function () {
     });
 
     it('should break with an specific error due to insufficient VTHO', async function () {
+        const signers = await ethers.getSigners();
         const accountWithNoVTHO = await ethers.getSigner(
-            '0xB381e7da548601B1CCB05C66d415b20baE40d828'
+            signers[signers.length - 1].address
         );
         const VechainHelloWorldWithNonEmptyConstructor =
             await ethers.getContractFactory(

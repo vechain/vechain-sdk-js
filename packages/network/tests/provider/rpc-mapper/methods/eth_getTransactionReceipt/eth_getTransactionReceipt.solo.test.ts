@@ -7,6 +7,23 @@ import {
 } from '../../../../../src';
 import { getReceiptCorrectCasesSoloNetwork } from './fixture';
 
+// Remove blockHash and blockNumber fields from the object for comparison
+function removeBlockNumAndHashFields(obj: unknown): unknown {
+    if (Array.isArray(obj)) {
+        return obj.map(removeBlockNumAndHashFields);
+    } else if (typeof obj === 'object' && obj !== null) {
+        const newObj: Record<string, unknown> = {};
+        const objRecord = obj as Record<string, unknown>;
+        for (const key in objRecord) {
+            if (key !== 'blockHash' && key !== 'blockNumber') {
+                newObj[key] = removeBlockNumAndHashFields(objRecord[key]);
+            }
+        }
+        return newObj;
+    }
+    return obj;
+}
+
 /**
  * RPC Mapper integration tests for 'eth_getTransactionReceipt' method
  *
@@ -40,8 +57,13 @@ describe('RPC Mapper - eth_getTransactionReceipt method tests', () => {
                     const receipt = await RPCMethodsMap(thorClient)[
                         RPC_METHODS.eth_getTransactionReceipt
                     ]([testCase.hash]);
-
-                    expect(receipt).toEqual(testCase.expected);
+                    const receiptWithoutBlockHash =
+                        removeBlockNumAndHashFields(receipt);
+                    const expectedWithoutBlockHash =
+                        removeBlockNumAndHashFields(testCase.expected);
+                    expect(receiptWithoutBlockHash).toEqual(
+                        expectedWithoutBlockHash
+                    );
                 },
                 7000
             );

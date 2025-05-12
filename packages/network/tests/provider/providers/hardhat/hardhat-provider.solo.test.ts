@@ -42,7 +42,7 @@ describe('Hardhat provider tests', () => {
             ]),
             THOR_SOLO_URL,
             (message: string, parent?: Error) => new Error(message, parent),
-            true
+            false
         );
     });
 

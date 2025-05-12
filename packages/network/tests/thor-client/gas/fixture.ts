@@ -165,7 +165,7 @@ const estimateGasTestCases = {
             expected: {
                 revertReasons: ['Panic(0x01)'], // 0x01: If you call assert with an argument that evaluates to false.
                 reverted: true,
-                totalGas: 37009,
+                totalGas: 36829,
                 vmErrors: ['execution reverted']
             }
         },
@@ -225,7 +225,7 @@ const estimateGasTestCases = {
             options: {},
             expected: {
                 reverted: false,
-                totalGas: 115954,
+                totalGas: 115768,
                 revertReasons: [],
                 vmErrors: []
             }

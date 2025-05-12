@@ -1,7 +1,6 @@
 import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
 import { type ThorClient } from '../../../../../thor-client';
-import { blocksFormatter, type BlocksRPC } from '../../../formatter';
-import { ethChainId } from '../eth_chainId';
+import { Poll } from '../../../../../utils';
 
 /**
  * RPC Method evm_mine implementation
@@ -12,23 +11,31 @@ import { ethChainId } from '../eth_chainId';
  * @returns The new block or null if the block is not available.
  * @throws {JSONRPCInternalError}
  */
-const evmMine = async (thorClient: ThorClient): Promise<BlocksRPC | null> => {
+const evmMine = async (thorClient: ThorClient): Promise<null> => {
     try {
-        // Get best block
-        const bestBlock = await thorClient.blocks.getBestBlockExpanded();
-        const newBlock =
-            bestBlock !== null
-                ? await thorClient.blocks.waitForBlockCompressed(
-                      bestBlock.number + 1
-                  )
-                : null;
+        const head = await thorClient.blocks.getBestBlockCompressed();
+        if (head === null) {
+            throw new JSONRPCInternalError(
+                'evm_mine()',
+                'Method "evm_mine" failed. No best block found.',
+                {
+                    url: thorClient.httpClient.baseURL
+                }
+            );
+        }
 
-        const chainId = await ethChainId(thorClient);
+        await Poll.SyncPoll(() => thorClient.blocks.getHeadBlock()).waitUntil(
+            (result) => {
+                return result !== head;
+            }
+        );
 
-        return newBlock !== null
-            ? blocksFormatter.formatToRPCStandard(newBlock, chainId)
-            : null;
+        return null;
     } catch (e) {
+        if (e instanceof JSONRPCInternalError) {
+            throw e;
+        }
+
         throw new JSONRPCInternalError(
             'evm_mine()',
             'Method "evm_mine" failed.',

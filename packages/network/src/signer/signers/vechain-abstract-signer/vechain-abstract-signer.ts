@@ -185,7 +185,10 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
                 chainTag: populatedTransaction.chainTag ?? undefined,
                 dependsOn: populatedTransaction.dependsOn ?? undefined,
                 expiration: populatedTransaction.expiration,
-                gasPriceCoef: populatedTransaction.gasPriceCoef ?? undefined
+                gasPriceCoef: populatedTransaction.gasPriceCoef ?? undefined,
+                maxPriorityFeePerGas:
+                    populatedTransaction.maxPriorityFeePerGas ?? undefined,
+                maxFeePerGas: populatedTransaction.maxFeePerGas ?? undefined
             }
         );
     }
@@ -221,7 +224,7 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         );
 
         // 3 - Estimate gas
-        const gasEstimation = await thorClient.gas.estimateGas(
+        const gasEstimation = await thorClient.transactions.estimateGas(
             populatedTransaction.clauses ??
                 this._buildClauses(populatedTransaction),
             populatedTransaction.from as string
@@ -481,7 +484,17 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
             : // If 'to' address is not provided, it will be assumed that the transaction is a contract creation transaction.
               [
                   Clause.deployContract(
-                      HexUInt.of(transaction.data ?? 0)
+                      HexUInt.of(transaction.data ?? 0),
+                      undefined,
+                      {
+                          value:
+                              transaction.value === undefined
+                                  ? transaction.value
+                                  : HexUInt.of(transaction.value).toString(
+                                        true
+                                    ),
+                          comment: transaction.comment
+                      }
                   ) as TransactionClause
               ];
     }

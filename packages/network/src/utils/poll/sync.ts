@@ -112,11 +112,7 @@ function SyncPoll<TReturnType>(
                     currentResult = await pollingFunction();
 
                     // 2 - Sleep for the interval (in a synchronous way)
-                    await sleep(
-                        options?.requestIntervalInMilliseconds !== undefined
-                            ? options.requestIntervalInMilliseconds
-                            : 1000
-                    );
+                    await sleep(options?.requestIntervalInMilliseconds ?? 1000);
 
                     // 3 - Increment the current iteration
                     currentIteration = currentIteration + 1;

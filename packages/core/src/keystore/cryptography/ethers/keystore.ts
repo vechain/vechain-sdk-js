@@ -78,7 +78,7 @@ async function decrypt(
             stringifyData(keystore),
             password
         )) as KeystoreAccount;
-    } catch (e) {
+    } catch {
         throw new InvalidKeystoreParams(
             'keystore.decrypt()',
             'Decryption failed: Invalid Password for the given keystore.',

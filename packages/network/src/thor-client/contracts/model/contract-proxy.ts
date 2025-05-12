@@ -151,7 +151,9 @@ function getTransactProxy<TAbi extends Abi>(
                     {
                         ...transactionOptions,
                         value:
-                            transactionOptions.value ?? transactionValue ?? 0,
+                            transactionOptions.value ??
+                            transactionValue ??
+                            '0x0',
                         comment: clauseComment,
                         includeABI: true
                     }

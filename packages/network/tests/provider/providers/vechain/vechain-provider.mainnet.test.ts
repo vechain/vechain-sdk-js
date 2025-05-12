@@ -79,4 +79,32 @@ describe('VeChain provider tests - mainnet', () => {
                 })
         ).rejects.toThrowError(JSONRPCMethodNotFound);
     });
+
+    describe('resolveName(vnsName)', () => {
+        test('Should be able to resolve an address by name', async () => {
+            const name = 'clayton.vet';
+            const address = await provider.resolveName(name);
+            expect(address).toBe('0xC12B77B4467e3eDD6b16C978B8387a6A3Af8E8d7');
+        });
+
+        test('Should resolve to null for unknown names', async () => {
+            const name = 'unknown.test-sdk.vet';
+            const address = await provider.resolveName(name);
+            expect(address).toBe(null);
+        });
+    });
+
+    describe('lookupAddress(address)', () => {
+        test('Should be able to lookup a name for an address', async () => {
+            const address = '0xC12B77B4467e3eDD6b16C978B8387a6A3Af8E8d7';
+            const name = await provider.lookupAddress(address);
+            expect(name).toBe('clayton.vet');
+        });
+
+        test('Should resolve to null for unknown names', async () => {
+            const address = '0x0000000000000000000000000000000000000001';
+            const name = await provider.resolveName(address);
+            expect(name).toBe(null);
+        });
+    });
 });

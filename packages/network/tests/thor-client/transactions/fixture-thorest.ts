@@ -338,7 +338,7 @@ const simulateTransaction = {
                              *
                              * @link see [thor/params.go](https://github.com/vechain/thor/blob/master/thor/params.go)
                              */
-                            data: '0x00000000000000000000000000000000000000000000000000038d7ea4c68000',
+                            data: '0x000000000000000000000000000000000000000000000000000009184e72a000',
                             events: [],
                             transfers: [],
                             gasUsed: 591,

@@ -197,6 +197,26 @@ const thorest = {
             TRACE_CONTRACT_CALL: (): string => `/debug/tracers/call`,
             RETRIEVE_STORAGE_RANGE: (): string => `/debug/storage-range`
         }
+    },
+
+    /**
+     * Fees related endpoints.
+     */
+    fees: {
+        get: {
+            FEES_HISTORY: (
+                blockCount: number,
+                newestBlock: string | number,
+                rewardPercentiles?: number[]
+            ): string => {
+                const queryParams = toQueryString({
+                    blockCount,
+                    newestBlock,
+                    rewardPercentiles: rewardPercentiles?.join(',')
+                });
+                return `/fees/history${queryParams}`;
+            }
+        }
     }
 };
 

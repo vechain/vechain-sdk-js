@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, test } from '@jest/globals';
 import { MAINNET_URL, ThorClient } from '../../../src';
 
 import { B3TR, X2EarnRewardsPool } from '@vechain/vebetterdao-contracts';
-import { FixedPointNumber, Units } from '@vechain/sdk-core';
 
 /**
  * Mainnet - Tests for the ThorClient class, focused on event-related functionality.
@@ -48,19 +47,6 @@ describe('ThorClient - Mainnet allocation events', () => {
             })
             .get({ order: 'desc', options: { offset: 0, limit: 1000 } });
 
-        let amount: bigint = 0n;
-
-        for (const event of events) {
-            if (event?.decodedData !== undefined) {
-                amount += event.decodedData[2] as bigint;
-            }
-        }
-
-        console.log(
-            'Total B3TR transferred:',
-            Units.formatEther(FixedPointNumber.of(amount))
-        );
         expect(events.length).toBeGreaterThan(0);
-        console.log(events[0]);
     }, 30000);
 });

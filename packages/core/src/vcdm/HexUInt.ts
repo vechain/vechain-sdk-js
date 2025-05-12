@@ -1,6 +1,6 @@
-import { HexInt } from './HexInt';
-import { Hex } from './Hex';
 import { InvalidDataType } from '@vechain/sdk-errors';
+import { Hex } from './Hex';
+import { HexInt } from './HexInt';
 
 /**
  * Represents a hexadecimal unsigned integer value.

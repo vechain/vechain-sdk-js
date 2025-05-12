@@ -109,7 +109,7 @@ abstract class Coin implements Currency {
     isEqual(that: Currency): boolean {
         try {
             return this.compareTo(that) === 0;
-        } catch (e) {
+        } catch {
             return false;
         }
     }

@@ -22,7 +22,8 @@ const allowedNames = [
     '.mock.testnet.test.ts',
     '.mock.mainnet.test.ts',
     '.mock.solo.test.ts',
-    '.mock.unit.test.ts'
+    '.mock.unit.test.ts',
+    '.mock.test.ts'
 ];
 
 /**

@@ -19,7 +19,7 @@ describe('buildTransactionBody with mocks', () => {
             'getBlockCompressed'
         ).mockResolvedValue(null);
 
-        const gas = await thorSoloClient.gas.estimateGas(
+        const gas = await thorSoloClient.transactions.estimateGas(
             [transferTransactionBody.clauses[0]],
             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
         );
@@ -41,7 +41,7 @@ describe('buildTransactionBody with mocks', () => {
             'getBestBlockCompressed'
         ).mockResolvedValue(null);
 
-        const gas = await thorSoloClient.gas.estimateGas(
+        const gas = await thorSoloClient.transactions.estimateGas(
             [transferTransactionBody.clauses[0]],
             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
         );
@@ -60,7 +60,7 @@ describe('buildTransactionBody with mocks', () => {
         const blockRef =
             (await thorSoloClient.blocks.getBestBlockRef()) as string;
 
-        const gas = await thorSoloClient.gas.estimateGas(
+        const gas = await thorSoloClient.transactions.estimateGas(
             [transferTransactionBody.clauses[0]],
             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
         );

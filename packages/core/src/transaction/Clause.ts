@@ -1,14 +1,15 @@
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { ERC721_ABI, VIP180_ABI } from '../utils';
+import { VTHO_ADDRESS } from '../utils/const/network';
 import {
     ABI,
     ABIContract,
     Address,
     FixedPointNumber,
-    type Token,
     VET,
     type ABIFunction,
     type HexUInt,
+    type Token,
     type VTHO
 } from '../vcdm';
 import { Hex } from '../vcdm/Hex';
@@ -16,7 +17,6 @@ import { HexInt } from '../vcdm/HexInt';
 import type { ClauseOptions } from './ClauseOptions';
 import type { DeployParams } from './DeployParams';
 import type { TransactionClause } from './TransactionClause';
-import { VTHO_ADDRESS } from '../utils/const/network';
 
 /**
  * This class represent a transaction clause.
@@ -28,11 +28,6 @@ class Clause implements TransactionClause {
      * Used internally in {@link Clause.callFunction}.
      */
     private static readonly FORMAT_TYPE = 'json';
-
-    /**
-     * Used internally to tag a transaction not tranferring token amount.
-     */
-    private static readonly NO_VALUE = Hex.PREFIX + '0';
 
     /**
      * Used internally to tag a transaction without data.
@@ -82,6 +77,11 @@ class Clause implements TransactionClause {
      * function of a smart contract.
      */
     readonly abi?: string;
+
+    /**
+     * Used publicly to tag a transaction not tranferring token amount.
+     */
+    public static readonly NO_VALUE = Hex.PREFIX + '0';
 
     /**
      * Creates an instance of the class.
@@ -181,7 +181,7 @@ class Clause implements TransactionClause {
                 : contractBytecode.digits;
         return new Clause(
             null,
-            Clause.NO_VALUE,
+            clauseOptions?.value ?? Clause.NO_VALUE,
             Hex.PREFIX + data,
             clauseOptions?.comment
         );

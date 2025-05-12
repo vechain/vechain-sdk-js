@@ -4,8 +4,7 @@ import {
     type ProviderInternalWalletAccount,
     THOR_SOLO_URL,
     ThorClient,
-    VeChainProvider,
-    type VeChainSigner
+    VeChainProvider
 } from '@vechain/sdk-network';
 import { expect } from 'expect';
 
@@ -28,9 +27,7 @@ const provider = new VeChainProvider(
     thorSoloClient,
     new ProviderInternalBaseWallet([deployerAccount])
 );
-const signer = (await provider.getSigner(
-    deployerAccount.address
-)) as VeChainSigner;
+const signer = await provider.getSigner(deployerAccount.address);
 
 // Creating the contract factory
 const contractFactory = thorSoloClient.contracts.createContractFactory(

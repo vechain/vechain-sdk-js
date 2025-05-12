@@ -83,7 +83,10 @@ const clauses = [
 ];
 
 // 2.3 - Calculate gas
-const gasResult = await thorSoloClient.gas.estimateGas(clauses, sender.address);
+const gasResult = await thorSoloClient.transactions.estimateGas(
+    clauses,
+    sender.address
+);
 
 // 2.4 - Create transactions
 const transactionBody = {

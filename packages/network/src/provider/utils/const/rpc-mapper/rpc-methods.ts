@@ -39,6 +39,7 @@ enum RPC_METHODS {
     debug_traceTransaction = 'debug_traceTransaction',
     debug_traceCall = 'debug_traceCall',
     evm_mine = 'evm_mine',
+    evm_increaseTime = 'evm_increaseTime', // Uses evm_mine under the hood, required for hardhat
     web3_sha3 = 'web3_sha3',
     net_peerCount = 'net_peerCount',
     net_listening = 'net_listening',

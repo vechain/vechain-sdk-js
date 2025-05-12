@@ -1,12 +1,12 @@
-import { type ThorClient } from '../../../../../thor-client';
+import { Address } from '@vechain/sdk-core';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
-import { type DefaultBlock, DefaultBlockToRevision } from '../../../const';
+import { type ThorClient } from '../../../../../thor-client';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
-import { Address } from '@vechain/sdk-core';
+import { type DefaultBlock, DefaultBlockToRevision } from '../../../const';
 
 /**
  * RPC Method eth_getCode implementation
@@ -48,6 +48,7 @@ const ethGetCode = async (
                 revision: DefaultBlockToRevision(block)
             }
         );
+
         return bytecode.toString();
     } catch (e) {
         throw new JSONRPCInternalError(

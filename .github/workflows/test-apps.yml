@@ -26,6 +26,8 @@ jobs:
               run: yarn build
 
             - name: Test apps
+              env:
+                GALACTICA_DEV_MNEMONIC: ${{ secrets.GALACTICA_DEV_MNEMONIC }}
               run: |
                   # Absolute path to the 'apps' directory
                   apps_directory="$(pwd)/apps"
@@ -33,6 +35,9 @@ jobs:
                   # Iterate over each folder in /apps
                   for current_app_directory in "$apps_directory"/*; do
                     if [ -d "$current_app_directory" ]; then
+                      # Get the directory name
+                      dir_name=$(basename "$current_app_directory")
+                      
                       # LOG
                       echo "Running yarn in $current_app_directory"
                   
@@ -41,6 +46,12 @@ jobs:
                   
                       # Test
                       yarn test
+                      
+                      # Galactica devnet test for sdk-hardhat-integration
+                      if [ "$dir_name" = "sdk-hardhat-integration" ]; then
+                        echo "Running additional galactica devnet tests"
+                        yarn test:galactica:devnet
+                      fi
                   
                       # Return to the original directory using absolute path
                       cd "../"
