@@ -2,8 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import {
     type ExecuteCodesRequestJSON,
     InspectClauses,
-    type ExecuteCodeResponseJSON,
-    ExecuteCodeResponse
+    type ExecuteCodeResponseJSON
 } from '../../../src';
 import { VET } from '@vechain/sdk-core';
 import { mockHttpClient } from '../../utils/MockUnitTestClient';
@@ -158,10 +157,7 @@ describe('InspectClauses unit tests', () => {
 
         // Execute the test
         const response = await InspectClauses.of(request).askTo(
-            mockHttpClient<ExecuteCodeResponse[]>(
-                mockResponse.map((r) => new ExecuteCodeResponse(r)),
-                'post'
-            )
+            mockHttpClient<ExecuteCodeResponseJSON[]>(mockResponse, 'post')
         );
 
         // Verify the response
@@ -184,7 +180,7 @@ describe('InspectClauses unit tests', () => {
 
         // Execute the test
         const response = await InspectClauses.of(request).askTo(
-            mockHttpClient<ExecuteCodeResponse[]>([], 'post')
+            mockHttpClient<ExecuteCodeResponseJSON[]>([], 'post')
         );
 
         // Verify the response
@@ -222,10 +218,7 @@ describe('InspectClauses unit tests', () => {
 
         // Execute the test
         const response = await InspectClauses.of(request).askTo(
-            mockHttpClient<ExecuteCodeResponse[]>(
-                mockResponse.map((r) => new ExecuteCodeResponse(r)),
-                'post'
-            )
+            mockHttpClient<ExecuteCodeResponseJSON[]>(mockResponse, 'post')
         );
 
         // Verify the response
