@@ -22,11 +22,7 @@ class ExecuteCodeResponse {
         this.transfers = json.transfers.map(
             (transferJSON: TransferJSON): Transfer => new Transfer(transferJSON)
         );
-        const gasUsedValue =
-            typeof json.gasUsed === 'number'
-                ? Math.floor(json.gasUsed)
-                : parseInt(String(json.gasUsed), 10);
-        this.gasUsed = Gas.of(gasUsedValue);
+        this.gasUsed = Gas.of(json.gasUsed);
         this.reverted = json.reverted;
         this.vmError = json.vmError;
     }
