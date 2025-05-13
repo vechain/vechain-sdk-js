@@ -21,8 +21,9 @@
     ],
     "packageManager": "yarn@1.22.22",
     "scripts": {
-        "start-thor-solo": "echo 'Starting thor solo node ...' && docker compose -f docker-compose.thor.yml up -d --wait && echo '\nThor solo node started ...'",
-        "stop-thor-solo": "echo 'Stopping thor solo node ...' && docker compose -f docker-compose.thor.yml down && echo 'Thor solo node stopped ...'",
+        "start-thor-solo": "yarn workspace @vechain/sdk-solo-setup solo-up",
+        "stop-thor-solo": "yarn workspace @vechain/sdk-solo-setup solo-down",
+        "seed-thor-solo": "yarn workspace @vechain/sdk-solo-setup solo-seed",
         "postinstall": "husky",
         "build": "turbo build",
         "check:circular-dependencies": "turbo check:circular-dependencies",
