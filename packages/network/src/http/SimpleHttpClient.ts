@@ -2,6 +2,7 @@ import { HttpMethod } from './HttpMethod';
 import { InvalidHTTPRequest } from '@vechain/sdk-errors';
 import { type HttpClient } from './HttpClient';
 import { type HttpParams } from './HttpParams';
+import { logRequest, logResponse, logError } from './trace-logger';
 
 /**
  * This class implements the HttpClient interface using the Fetch API.
@@ -96,29 +97,44 @@ class SimpleHttpClient implements HttpClient {
         const timeoutId = setTimeout(() => {
             controller.abort();
         }, this.timeout);
+
+        // Remove leading slash from path
+        if (path.startsWith('/')) {
+            path = path.slice(1);
+        }
+        // Add trailing slash from baseURL if not present
+        let baseURL = this.baseURL;
+        if (!this.baseURL.endsWith('/')) {
+            baseURL += '/';
+        }
+
+        const url = new URL(path, baseURL);
+        if (params?.query != null) {
+            Object.entries(params.query).forEach(([key, value]) => {
+                url.searchParams.append(key, String(value));
+            });
+        }
+
+        const headers = new Headers(this.headers);
+        if (params?.headers !== undefined && params?.headers != null) {
+            Object.entries(params.headers).forEach(([key, value]) => {
+                headers.append(key, String(value));
+            });
+        }
+
+        // Convert Headers to plain object for logging
+        const headerObj = Object.fromEntries(headers.entries());
+
+        // Log the request
+        const requestStartTime = logRequest(
+            method,
+            url.toString(),
+            headerObj,
+            method !== HttpMethod.GET ? params?.body : undefined
+        );
+
         try {
-            // Remove leading slash from path
-            if (path.startsWith('/')) {
-                path = path.slice(1);
-            }
-            // Add trailing slash from baseURL if not present
-            let baseURL = this.baseURL;
-            if (!this.baseURL.endsWith('/')) {
-                baseURL += '/';
-            }
-            const url = new URL(path, baseURL);
-            if (params?.query != null) {
-                Object.entries(params.query).forEach(([key, value]) => {
-                    url.searchParams.append(key, String(value));
-                });
-            }
-            const headers = new Headers(this.headers);
-            if (params?.headers !== undefined && params?.headers != null) {
-                Object.entries(params.headers).forEach(([key, value]) => {
-                    headers.append(key, String(value));
-                });
-            }
-            const response = await fetch(url, {
+            const response: Response = await fetch(url, {
                 method,
                 headers: params?.headers as HeadersInit,
                 body:
@@ -127,23 +143,42 @@ class SimpleHttpClient implements HttpClient {
                         : undefined,
                 signal: controller.signal
             });
+
+            const responseHeaders = Object.fromEntries(
+                response.headers.entries()
+            );
+
             if (response.ok) {
-                const responseHeaders = Object.fromEntries(
-                    response.headers.entries()
-                );
                 if (
                     params?.validateResponseHeader != null &&
                     responseHeaders != null
                 ) {
                     params.validateResponseHeader(responseHeaders);
                 }
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-                return await response.json();
+
+                // Parse response body
+                // Using explicit type annotation to handle the 'any' returned by response.json()
+                const responseBody: unknown = await response.json();
+
+                // Log the successful response
+                logResponse(
+                    requestStartTime,
+                    url.toString(),
+                    responseHeaders,
+                    responseBody
+                );
+
+                // Return the responseBody as unknown rather than 'any'
+                return responseBody;
             }
+
             throw new Error(`HTTP ${response.status} ${response.statusText}`, {
                 cause: response
             });
         } catch (error) {
+            // Log the error
+            logError(requestStartTime, url.toString(), method, error);
+
             throw new InvalidHTTPRequest(
                 'HttpClient.http()',
                 (error as Error).message,
