@@ -1,7 +1,3 @@
-import { getConfigData } from '@vechain/sdk-solo-setup';
-
-const configData = getConfigData();
-
 /**
  * Block with transactions expanded fixture
  */
@@ -178,7 +174,6 @@ const validTransactionDetailTestnet = {
 };
 
 export {
-    configData,
     blockWithTransactionsExpanded,
     blockWithTransactionsNotExpanded,
     validTransactionHashTestnet,
