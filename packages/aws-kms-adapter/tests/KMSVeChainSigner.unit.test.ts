@@ -8,7 +8,7 @@ import {
     type TypedDataParameter
 } from '@vechain/sdk-network';
 import { KMSVeChainProvider, KMSVeChainSigner } from '../src';
-import { EIP712_CONTRACT, EIP712_FROM, EIP712_TO } from './fixture';
+import { EIP712_CONTRACT, EIP712_FROM, EIP712_TO } from './dummy_data';
 jest.mock('asn1js', () => ({
     Sequence: jest.fn(),
     ObjectIdentifier: jest.fn(),
