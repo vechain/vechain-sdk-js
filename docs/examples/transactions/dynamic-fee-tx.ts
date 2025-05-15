@@ -27,15 +27,23 @@ if (!(await thorClient.forkDetector.isGalacticaForked('best'))) throw new Error(
 const clauses = [Clause.transferVET(Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'), VET.of(10000))];
 
 // 5 - Estimate gas and get default body options
-const gas = (await thorClient.gas.estimateGas(clauses, address)).totalGas;
-const defaults = await thorClient.transactions.fillDefaultBodyOptions();
+const gasResult = await thorClient.gas.estimateGas(clauses, address);
+const defaultBodyOptions = await thorClient.transactions.fillDefaultBodyOptions();
 
-// 6 - Build and sign transaction
-const txBody = await thorClient.transactions.buildTransactionBody(clauses, gas, defaults);
-const tx = Transaction.of(txBody).sign(privateKey);
+// 6 - Build transaction body
+const txBody = await thorClient.transactions.buildTransactionBody(
+  clauses,
+  gasResult.totalGas,
+  defaultBodyOptions
+);
 
-// 7 - Send transaction and wait for receipt
-const txId = (await thorClient.transactions.sendRawTransaction('0x' + Buffer.from(tx.encoded).toString('hex'))).id;
+// 7 - Sign transaction
+const txClass = Transaction.of(txBody);
+const txSigned = txClass.sign(privateKey);
+const encodedTx = '0x' + Buffer.from(txSigned.encoded).toString('hex');
+
+// 8 - Send transaction and wait for receipt
+const txId = (await thorClient.transactions.sendRawTransaction(encodedTx)).id;
 const receipt = await thorClient.transactions.waitForTransaction(txId);
 console.log('Receipt:', receipt);
 
