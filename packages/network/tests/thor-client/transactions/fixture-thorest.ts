@@ -41,7 +41,7 @@ const transactionDetails = {
                     blockNumber: 16942241,
                     blockTimestamp: 1699453780
                 },
-                type: '0'
+                type: 0
             }
         },
         {
