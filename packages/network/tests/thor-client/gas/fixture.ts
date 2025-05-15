@@ -289,6 +289,32 @@ const estimateGasTestCases = {
                 revertReasons: [],
                 vmErrors: []
             }
+        },
+        {
+            description:
+                'Should estimate gas cost correct and have an integer as gas, when gasPadding should add a decimal',
+            clauses: [
+                {
+                    to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+                    value: Units.parseEther('1').toString(),
+                    data: '0x'
+                },
+                {
+                    to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+                    value: Units.parseEther('1').toString(),
+                    data: '0x'
+                }
+            ],
+            caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address,
+            options: {
+                gasPadding: 0.113458 // 11.3458%
+            },
+            expected: {
+                reverted: false,
+                totalGas: 41198, // 37000 + 11.3458% = 41197.946
+                revertReasons: [],
+                vmErrors: []
+            }
         }
     ]
 };
