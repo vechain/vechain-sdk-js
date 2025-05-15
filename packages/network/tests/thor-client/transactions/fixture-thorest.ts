@@ -40,7 +40,8 @@ const transactionDetails = {
                         '0x010284a1fea0635a2e47dd21f8a1761406df1013e5f4af79e311d8a27373980d',
                     blockNumber: 16942241,
                     blockTimestamp: 1699453780
-                }
+                },
+                type: '0'
             }
         },
         {
