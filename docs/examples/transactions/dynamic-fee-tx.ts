@@ -90,8 +90,8 @@ const body: TransactionBody = {
     dependsOn: null,
     nonce: Math.floor(Math.random() * 1000000),
     // These fields make it a dynamic fee transaction
-    maxFeePerGas: parseInt(baseFeePerGas, 16) * 2 + parseInt(suggestedPriorityFee, 16),
-    maxPriorityFeePerGas: parseInt(suggestedPriorityFee, 16)
+    maxFeePerGas: (parseInt(baseFeePerGas, 16) + parseInt(suggestedPriorityFee, 16)).toString(),
+    maxPriorityFeePerGas: parseInt(suggestedPriorityFee, 16).toString()
 };
 
 // 8 - Create transaction and sign it
@@ -110,10 +110,12 @@ console.log('- Max fee per gas:', body.maxFeePerGas);
 console.log('- Max priority fee per gas:', body.maxPriorityFeePerGas);
 
 // 11 - Send the transaction (commented for example purposes)
-// const txResponse = await thorClient.transactions.sendRawTransaction(
-//     HexUInt.of(encodedRaw).toString()
-// );
+const txResponse = await thorClient.transactions.sendRawTransaction(
+    HexUInt.of(encodedRaw).toString()
+);
 
 // 12 - Wait for transaction confirmation and check receipt
 // const receipt = await thorClient.transactions.waitForTransaction(txResponse.id);
+// console.log('Transaction response:', txResponse);
+// console.log('Transaction receipt:', receipt);
 // END_SNIPPET: DynamicFeeTransactionSnippet

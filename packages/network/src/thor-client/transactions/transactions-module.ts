@@ -404,24 +404,27 @@ class TransactionsModule {
         options?: TransactionBodyOptions
     ): Promise<TransactionBodyOptions> {
         options ??= {};
-        if (options.gasPriceCoef !== undefined) {
-            // user specified legacy fee type
-            options.maxFeePerGas = undefined;
-            options.maxPriorityFeePerGas = undefined;
-            return options;
-        }
+
+        // Check for mixed fee parameters
         if (
             options.gasPriceCoef !== undefined &&
             (options.maxFeePerGas !== undefined ||
                 options.maxPriorityFeePerGas !== undefined)
         ) {
-            // user specified both legacy and dynamic fee type
             throw new InvalidDataType(
                 'TransactionsModule.fillDefaultBodyOptions()',
                 'Invalid transaction body options. Cannot specify both legacy and dynamic fee type options.',
                 { options }
             );
         }
+
+        // Handle legacy fee type
+        if (options.gasPriceCoef !== undefined) {
+            options.maxFeePerGas = undefined;
+            options.maxPriorityFeePerGas = undefined;
+            return options;
+        }
+
         // check if fork happened
         const galacticaHappened =
             await this.forkDetector.isGalacticaForked('best');

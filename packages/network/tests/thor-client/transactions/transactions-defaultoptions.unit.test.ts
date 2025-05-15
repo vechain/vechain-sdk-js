@@ -67,7 +67,7 @@ describe('fillDefaultBodyOptions() unit tests', () => {
         ).rejects.toThrow(InvalidDataType);
     });
 
-    test('legacy tx <- all options are specified and fork did not happen', async () => {
+    test('exception <- all options are specified and fork did not happen', async () => {
         const client = ThorClient.at(TESTNET_URL);
         jest.spyOn(client.forkDetector, 'isGalacticaForked').mockResolvedValue(
             false
@@ -77,14 +77,12 @@ describe('fillDefaultBodyOptions() unit tests', () => {
             maxFeePerGas: 1000000000000000000,
             maxPriorityFeePerGas: 1000000000000000000
         };
-        const filledOptions =
-            await client.transactions.fillDefaultBodyOptions(options);
-        expect(filledOptions.gasPriceCoef).toEqual(1.5);
-        expect(filledOptions.maxFeePerGas).toBeUndefined();
-        expect(filledOptions.maxPriorityFeePerGas).toBeUndefined();
+        await expect(
+            client.transactions.fillDefaultBodyOptions(options)
+        ).rejects.toThrow(InvalidDataType);
     });
 
-    test('legacy tx <- all options are specified and fork has happened', async () => {
+    test('exception <- all options are specified and fork has happened', async () => {
         const client = ThorClient.at(TESTNET_URL);
         jest.spyOn(client.forkDetector, 'isGalacticaForked').mockResolvedValue(
             true
@@ -94,11 +92,9 @@ describe('fillDefaultBodyOptions() unit tests', () => {
             maxFeePerGas: 1000000000000000000,
             maxPriorityFeePerGas: 1000000000000000000
         };
-        const filledOptions =
-            await client.transactions.fillDefaultBodyOptions(options);
-        expect(filledOptions.gasPriceCoef).toEqual(1.5);
-        expect(filledOptions.maxFeePerGas).toBeUndefined();
-        expect(filledOptions.maxPriorityFeePerGas).toBeUndefined();
+        await expect(
+            client.transactions.fillDefaultBodyOptions(options)
+        ).rejects.toThrow(InvalidDataType);
     });
 
     test('dynamic fee tx <- only maxFeePerGas is specified and fork has happened', async () => {
