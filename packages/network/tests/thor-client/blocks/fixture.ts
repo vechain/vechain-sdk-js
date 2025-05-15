@@ -216,6 +216,7 @@ const validExpandedBlockRevisions = [
                     nonce: '0x4ec144ad97b4b079',
                     dependsOn: null,
                     size: 130,
+                    type: 0,
                     gasUsed: 21000,
                     gasPayer: '0x6b8d66568cbc7944798268aca153f426596d250a',
                     paid: '0x2ea11e32ad50000',
