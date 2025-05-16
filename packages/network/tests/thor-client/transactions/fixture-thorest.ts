@@ -35,6 +35,7 @@ const transactionDetails = {
                 nonce: '0x76eed751cef0e52d',
                 dependsOn: null,
                 size: 130,
+                type: 0,
                 meta: {
                     blockID:
                         '0x010284a1fea0635a2e47dd21f8a1761406df1013e5f4af79e311d8a27373980d',
