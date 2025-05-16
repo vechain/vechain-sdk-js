@@ -1,22 +1,22 @@
 ---
-title: EIP-1559 Transaction Fee Mechanism (Galactica Hard Fork)
+title: Galactica Hard Fork: EIP-1559 Transaction Fee Mechanism
 description: Implementation of EIP-1559 transaction fee mechanism in VeChain Thor's Galactica hard fork
 ---
 
-# EIP-1559 Transaction Fee Mechanism
+# Galactica Hard Fork: EIP-1559 Transaction Fee Mechanism
 
 This guide explains the implementation of EIP-1559 transaction fee mechanism in VeChain Thor's Galactica hard fork. The implementation combines EIP-1559's base fee and priority fee model with VeChain's unique features.
 
 ## Introduction
 
-The Galactica upgrade introduces a dynamic fee system that:
+The Galactica hard fork introduces EIP-1559 transaction fee mechanism that:
 
 - Supports EIP-1559 style dynamic fee transactions
 - Provides accurate fee estimation through new RPC endpoints
 - Maintains backward compatibility with legacy transactions
 - Offers flexible fee control for different use cases
 
-## Understanding the Fee System
+## Understanding the Fee Mechanism
 
 ### Key Components
 
@@ -45,25 +45,19 @@ When creating a transaction, you can specify:
 
 ## Fee Estimation
 
-The Galactica upgrade introduces new RPC endpoints for accurate fee estimation:
+The Galactica hard fork introduces new RPC endpoints for accurate fee estimation:
 
 ### 1. Get Current Priority Fee
 
-```ts
-{{#include ../examples/gas/fee-estimation.ts:PriorityFeeSnippet}}
-```
+[PriorityFeeSnippet](examples/gas/fee-estimation.ts)
 
 ### 2. Get Fee History
 
-```ts
-{{#include ../examples/gas/fee-estimation.ts:FeeHistorySnippet}}
-```
+[FeeHistorySnippet](examples/gas/fee-estimation.ts)
 
 ### 3. Get Current Base Fee
 
-```ts
-{{#include ../examples/gas/fee-estimation.ts:BaseFeeSnippet}}
-```
+[BaseFeeSnippet](examples/gas/fee-estimation.ts)
 
 ## Creating Transactions
 
@@ -71,9 +65,7 @@ The Galactica upgrade introduces new RPC endpoints for accurate fee estimation:
 
 Let the SDK handle fee estimation:
 
-```ts
-{{#include ../examples/transactions/dynamic-fee-tx-default.ts:DynamicFeeTxDefaultSnippet}}
-```
+[DynamicFeeTxDefaultSnippet](examples/transactions/dynamic-fee-tx-default.ts)
 
 ### Custom Fee Cases
 
@@ -81,25 +73,19 @@ Let the SDK handle fee estimation:
 
 For faster transaction processing:
 
-```ts
-{{#include ../examples/transactions/dynamic-fee-tx-custom.ts:DynamicFeeTxPriorityOnlySnippet}}
-```
+[DynamicFeeTxPriorityOnlySnippet](examples/transactions/dynamic-fee-tx-custom.ts)
 
 #### Maximum Fee Only
 
 For cost control:
 
-```ts
-{{#include ../examples/transactions/dynamic-fee-tx-custom.ts:DynamicFeeTxMaxOnlySnippet}}
-```
+[DynamicFeeTxMaxOnlySnippet](examples/transactions/dynamic-fee-tx-custom.ts)
 
 #### Both Custom Fees
 
 For complete control:
 
-```ts
-{{#include ../examples/transactions/dynamic-fee-tx-custom.ts:DynamicFeeTxBothSnippet}}
-```
+[DynamicFeeTxBothSnippet](examples/transactions/dynamic-fee-tx-custom.ts)
 
 ## Best Practices
 
@@ -121,7 +107,7 @@ For complete control:
 - Monitor gas usage patterns
 - Use transaction simulation for gas estimation
 
-## Benefits of Galactica's Fee System
+## Benefits of Galactica's EIP-1559 Implementation
 
 - **Improved Predictability**: Better fee estimation
 - **Fee Stability**: Reduced volatility during congestion
@@ -132,10 +118,10 @@ For complete control:
 
 ## Migration Guide
 
-### From Legacy to Dynamic Fees
+### From Legacy to EIP-1559
 
 1. Update SDK to latest version
-2. Replace `gasPrice` with dynamic fee parameters
+2. Replace `gasPrice` with EIP-1559 parameters
 3. Use new fee estimation endpoints
 4. Test with small transactions first
 
@@ -143,4 +129,4 @@ For complete control:
 
 - Legacy transactions still supported
 - `gasPrice` parameter still valid
-- Automatic conversion to dynamic fees 
+- Automatic conversion to EIP-1559 parameters 

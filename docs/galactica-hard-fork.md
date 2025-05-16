@@ -1,22 +1,22 @@
 ---
-title: EIP-1559 Transaction Fee Mechanism (Galactica Hard Fork)
+title: Galactica Hard Fork: EIP-1559 Transaction Fee Mechanism
 description: Implementation of EIP-1559 transaction fee mechanism in VeChain Thor's Galactica hard fork
 ---
 
-# EIP-1559 Transaction Fee Mechanism
+# Galactica Hard Fork: EIP-1559 Transaction Fee Mechanism
 
 This guide explains the implementation of EIP-1559 transaction fee mechanism in VeChain Thor's Galactica hard fork. The implementation combines EIP-1559's base fee and priority fee model with VeChain's unique features.
 
 ## Introduction
 
-The Galactica upgrade introduces a dynamic fee system that:
+The Galactica hard fork introduces EIP-1559 transaction fee mechanism that:
 
 - Supports EIP-1559 style dynamic fee transactions
 - Provides accurate fee estimation through new RPC endpoints
 - Maintains backward compatibility with legacy transactions
 - Offers flexible fee control for different use cases
 
-## Understanding the Fee System
+## Understanding the Fee Mechanism
 
 ### Key Components
 
@@ -45,24 +45,24 @@ When creating a transaction, you can specify:
 
 ## Fee Estimation
 
-The Galactica upgrade introduces new RPC endpoints for accurate fee estimation:
+The Galactica hard fork introduces new RPC endpoints for accurate fee estimation:
 
 ### 1. Get Current Priority Fee
 
-```ts
-{{#include ../examples/gas/fee-estimation.ts:PriorityFeeSnippet}}
+```typescript { name=fee-estimation, category=example }
+Content not found between specified comments.
 ```
 
 ### 2. Get Fee History
 
-```ts
-{{#include ../examples/gas/fee-estimation.ts:FeeHistorySnippet}}
+```typescript { name=fee-estimation, category=example }
+Content not found between specified comments.
 ```
 
 ### 3. Get Current Base Fee
 
-```ts
-{{#include ../examples/gas/fee-estimation.ts:BaseFeeSnippet}}
+```typescript { name=fee-estimation, category=example }
+Content not found between specified comments.
 ```
 
 ## Creating Transactions
@@ -71,8 +71,39 @@ The Galactica upgrade introduces new RPC endpoints for accurate fee estimation:
 
 Let the SDK handle fee estimation:
 
-```ts
-{{#include ../examples/transactions/dynamic-fee-tx-default.ts:DynamicFeeTxDefaultSnippet}}
+```typescript { name=dynamic-fee-tx-default, category=example }
+// 1 - Create thor client for solo network
+const thorClient = ThorClient.at(THOR_SOLO_URL);
+
+// 2 - Derive account from mnemonic
+const mnemonic = 'denial kitchen pet squirrel other broom bar gas better priority spoil cross';
+const child = HDKey.fromMnemonic(mnemonic.split(' ')).deriveChild(0);
+const privateKey = child.privateKey;
+const address = Address.ofPublicKey(child.publicKey).toString();
+
+// 3 - Create transaction clauses
+const clauses = [Clause.transferVET(Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'), VET.of(10000))];
+
+// 4 - Estimate gas and get default body options
+const gasResult = await thorClient.gas.estimateGas(clauses, address);
+const defaultBodyOptions = await thorClient.transactions.fillDefaultBodyOptions();
+
+// 5 - Build transaction body with default fees
+const txBody = await thorClient.transactions.buildTransactionBody(
+    clauses,
+    gasResult.totalGas,
+    defaultBodyOptions
+);
+
+// 6 - Sign transaction
+const txClass = Transaction.of(txBody);
+const txSigned = txClass.sign(privateKey);
+const encodedTx = '0x' + Buffer.from(txSigned.encoded).toString('hex');
+
+// 7 - Send transaction and wait for receipt
+const txId = (await thorClient.transactions.sendRawTransaction(encodedTx)).id;
+const receipt = await thorClient.transactions.waitForTransaction(txId);
+console.log('Receipt:', receipt);
 ```
 
 ### Custom Fee Cases
@@ -81,24 +112,70 @@ Let the SDK handle fee estimation:
 
 For faster transaction processing:
 
-```ts
-{{#include ../examples/transactions/dynamic-fee-tx-custom.ts:DynamicFeeTxPriorityOnlySnippet}}
+```typescript { name=dynamic-fee-tx-custom, category=example }
+console.log('\nCase 1: Only maxPriorityFeePerGas');
+const priorityOnlyOptions = {
+    ...defaultBodyOptions,
+    maxPriorityFeePerGas: '0x746a528800'
+};
+const txBody1 = await thorClient.transactions.buildTransactionBody(
+    clauses,
+    gasResult.totalGas,
+    priorityOnlyOptions
+);
+const txClass1 = Transaction.of(txBody1);
+const txSigned1 = txClass1.sign(privateKey);
+const encodedTx1 = '0x' + Buffer.from(txSigned1.encoded).toString('hex');
+const txId1 = (await thorClient.transactions.sendRawTransaction(encodedTx1)).id;
+const receipt1 = await thorClient.transactions.waitForTransaction(txId1);
+console.log('Receipt:', receipt1);
 ```
 
 #### Maximum Fee Only
 
 For cost control:
 
-```ts
-{{#include ../examples/transactions/dynamic-fee-tx-custom.ts:DynamicFeeTxMaxOnlySnippet}}
+```typescript { name=dynamic-fee-tx-custom, category=example }
+console.log('\nCase 2: Only maxFeePerGas');
+const maxOnlyOptions = {
+    ...defaultBodyOptions,
+    maxFeePerGas: '0x098cb8c52800'
+};
+const txBody2 = await thorClient.transactions.buildTransactionBody(
+    clauses,
+    gasResult.totalGas,
+    maxOnlyOptions
+);
+const txClass2 = Transaction.of(txBody2);
+const txSigned2 = txClass2.sign(privateKey);
+const encodedTx2 = '0x' + Buffer.from(txSigned2.encoded).toString('hex');
+const txId2 = (await thorClient.transactions.sendRawTransaction(encodedTx2)).id;
+const receipt2 = await thorClient.transactions.waitForTransaction(txId2);
+console.log('Receipt:', receipt2);
 ```
 
 #### Both Custom Fees
 
 For complete control:
 
-```ts
-{{#include ../examples/transactions/dynamic-fee-tx-custom.ts:DynamicFeeTxBothSnippet}}
+```typescript { name=dynamic-fee-tx-custom, category=example }
+console.log('\nCase 3: Both maxPriorityFeePerGas and maxFeePerGas');
+const bothOptions = {
+    ...defaultBodyOptions,
+    maxPriorityFeePerGas: '0x746a528800',
+    maxFeePerGas: '0x098cb8c52800'
+};
+const txBody3 = await thorClient.transactions.buildTransactionBody(
+    clauses,
+    gasResult.totalGas,
+    bothOptions
+);
+const txClass3 = Transaction.of(txBody3);
+const txSigned3 = txClass3.sign(privateKey);
+const encodedTx3 = '0x' + Buffer.from(txSigned3.encoded).toString('hex');
+const txId3 = (await thorClient.transactions.sendRawTransaction(encodedTx3)).id;
+const receipt3 = await thorClient.transactions.waitForTransaction(txId3);
+console.log('Receipt:', receipt3);
 ```
 
 ## Best Practices
@@ -121,7 +198,7 @@ For complete control:
 - Monitor gas usage patterns
 - Use transaction simulation for gas estimation
 
-## Benefits of Galactica's Fee System
+## Benefits of Galactica's EIP-1559 Implementation
 
 - **Improved Predictability**: Better fee estimation
 - **Fee Stability**: Reduced volatility during congestion
@@ -132,10 +209,10 @@ For complete control:
 
 ## Migration Guide
 
-### From Legacy to Dynamic Fees
+### From Legacy to EIP-1559
 
 1. Update SDK to latest version
-2. Replace `gasPrice` with dynamic fee parameters
+2. Replace `gasPrice` with EIP-1559 parameters
 3. Use new fee estimation endpoints
 4. Test with small transactions first
 
@@ -143,4 +220,4 @@ For complete control:
 
 - Legacy transactions still supported
 - `gasPrice` parameter still valid
-- Automatic conversion to dynamic fees 
+- Automatic conversion to EIP-1559 parameters 
