@@ -1,5 +1,4 @@
 ---
-title: Galactica Hard Fork: EIP-1559 Transaction Fee Mechanism
 description: Implementation of EIP-1559 transaction fee mechanism in VeChain Thor's Galactica hard fork
 ---
 
