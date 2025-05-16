@@ -1,7 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { TESTNET_URL, ThorClient } from '../../../src';
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { SOLO_GENESIS_ACCOUNTS } from '../../fixture';
 
 /**
  * TransactionsModule.fillDefaultBodyOptions() unit tests.
@@ -149,8 +148,7 @@ describe('buildTransactionBody() unit tests', () => {
         // Vet transfer clause
         const clauses = [
             {
-                to: SOLO_GENESIS_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
-                    .address,
+                to: '0x0000000000000000000000000000000000000000',
                 value: 1,
                 data: '0x'
             }
@@ -172,8 +170,7 @@ describe('buildTransactionBody() unit tests', () => {
         // Vet transfer clause
         const clauses = [
             {
-                to: SOLO_GENESIS_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
-                    .address,
+                to: '0x0000000000000000000000000000000000000000',
                 value: 1,
                 data: '0x'
             }
@@ -198,8 +195,7 @@ describe('buildTransactionBody() unit tests', () => {
         // Vet transfer clause
         const clauses = [
             {
-                to: SOLO_GENESIS_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
-                    .address,
+                to: '0x0000000000000000000000000000000000000000',
                 value: 1,
                 data: '0x'
             }

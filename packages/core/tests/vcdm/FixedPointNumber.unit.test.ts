@@ -12,19 +12,25 @@ describe('FixedPointNumber class tests', () => {
         describe('get bi tests', () => {
             test('NaN throws exception', () => {
                 expect(() => {
-                    console.log(FixedPointNumber.NaN.bi);
+                    // Access the property to trigger the error
+                    const property = FixedPointNumber.NaN.bi;
+                    return property; // Return to avoid unused variable warning
                 }).toThrow(InvalidOperation);
             });
 
             test('-Infinity throws exception', () => {
                 expect(() => {
-                    console.log(FixedPointNumber.NEGATIVE_INFINITY.bi);
+                    // Access the property to trigger the error
+                    const property = FixedPointNumber.NEGATIVE_INFINITY.bi;
+                    return property; // Return to avoid unused variable warning
                 }).toThrow(InvalidOperation);
             });
 
             test('+Infinity throws exception', () => {
                 expect(() => {
-                    console.log(FixedPointNumber.POSITIVE_INFINITY.bi);
+                    // Access the property to trigger the error
+                    const property = FixedPointNumber.POSITIVE_INFINITY.bi;
+                    return property; // Return to avoid unused variable warning
                 }).toThrow(InvalidOperation);
             });
 

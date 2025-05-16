@@ -165,7 +165,6 @@ class SimpleHttpClient implements HttpClient {
                 }
             );
         } catch (error) {
-            console.log('socket error:', error);
             throw new InvalidHTTPRequest(
                 'HttpClient.http()',
                 (error as Error).message,

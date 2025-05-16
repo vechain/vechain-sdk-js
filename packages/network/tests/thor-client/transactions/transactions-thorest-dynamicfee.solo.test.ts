@@ -72,7 +72,6 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
 
         // check if raw transactions have valid prefix
         expect(signedEncodedTx[0]).toBe(0x51);
-        console.log('raw tx', HexUInt.of(signedEncodedTx).toString());
 
         // decode transaction and check
         const decodedTx = Transaction.decode(signedEncodedTx, true);
@@ -170,7 +169,6 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
 
         // check if raw transactions have valid prefix
         expect(signedEncodedTx[0]).toBe(0x51);
-        console.log('raw tx', HexUInt.of(signedEncodedTx).toString());
 
         // decode transaction and check
         const decodedTx = Transaction.decode(signedEncodedTx, true);

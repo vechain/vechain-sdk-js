@@ -1,5 +1,5 @@
 import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
-import { configData } from '../../../fixture';
+import { configData } from '../../../../fixture';
 import { THOR_SOLO_ACCOUNTS_TO_SEED } from '@vechain/sdk-solo-setup';
 
 /**

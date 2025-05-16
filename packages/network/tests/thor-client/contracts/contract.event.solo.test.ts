@@ -485,8 +485,6 @@ describe('ThorClient - ERC20 Contracts', () => {
             criteriaSet: [transferCriteria, valueCriteria]
         });
 
-        console.log(events);
-
         expect(events[0].decodedData).toEqual([
             '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
             '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
@@ -545,8 +543,6 @@ describe('ThorClient - ERC20 Contracts', () => {
         const events = await thorSoloClient.logs.filterGroupedEventLogs({
             criteriaSet: [transferCriteria, valueCriteria]
         });
-
-        console.log(events);
 
         expect(events[0].map((x) => x.decodedData)).toEqual([
             [

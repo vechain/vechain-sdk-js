@@ -30,15 +30,6 @@ const TESTNET_CONTRACT_ADDRESS: string =
     '0xb2c20a6de401003a671659b10629eb82ff254fb8';
 const TESTING_CONTRACT_ABI = configData.TESTING_CONTRACT_ABI;
 
-// This is private for EIP-712 unit test case only. Dummy address.
-const EIP712_CONTRACT = '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC';
-
-// This is private for EIP-712 unit test case only. Dummy address.
-const EIP712_FROM = '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826';
-
-// This is private for EIP-712 unit test case only. Dummy address.
-const EIP712_TO = '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB';
-
 /**
  * SignTransaction test cases
  * Has both correct and incorrect for solo and an example of using gasPayerServiceUrl on testnet
@@ -626,9 +617,6 @@ const removeAddressFromFeeDelegationWhitelist = async (
 
 export {
     addAddressToFeeDelegationWhitelist,
-    EIP712_CONTRACT,
-    EIP712_FROM,
-    EIP712_TO,
     fundVTHO,
     removeAddressFromFeeDelegationWhitelist,
     signTransactionTestCases,
