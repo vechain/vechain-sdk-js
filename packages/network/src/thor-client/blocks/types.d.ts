@@ -187,9 +187,10 @@ interface TransactionsExpandedBlockDetail {
     id: string;
 
     /**
-     * The transaction type of this receipt (is an integer value).
+     * Type of the transaction (ex: type 81).
      */
-    type?: number;
+    type?: string;
+
 
     /**
      * Chain tag of the blockchain.
@@ -226,7 +227,7 @@ interface TransactionsExpandedBlockDetail {
     /**
      * Gas price coefficient for the transaction.
      */
-    gasPriceCoef: number;
+    gasPriceCoef?: number;
 
     /**
      * Gas limit for the transaction.
