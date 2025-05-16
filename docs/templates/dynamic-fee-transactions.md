@@ -32,7 +32,7 @@ To create a dynamic fee transaction, you need to:
 Here's a complete example showing how to create and send a dynamic fee transaction:
 
 ```ts
-{{#include ../examples/transactions/dynamic-fee-tx.ts:DynamicFeeTransactionSnippet}}
+{{#include ../examples/transactions/dynamic-fee-tx.ts:DynamicFeeTxSnippet}}
 ```
 
 ## Breaking Down the Process

@@ -1,5 +1,5 @@
 import { ThorClient, THOR_SOLO_URL } from '@vechain/sdk-network';
-import { Transaction, Address, VET, Clause, HexUInt, HDKey } from '@vechain/sdk-core';
+import { Transaction, Address, VET, Clause, HexUInt, HDKey, networkInfo } from '@vechain/sdk-core';
 
 // START_SNIPPET: FeeEstimationSnippet
 
@@ -23,11 +23,19 @@ const clauses = [Clause.transferVET(Address.of('0x7567d83b7b8d80addcb281a71d54fc
 const gasResult = await thor.gas.estimateGas(clauses, address);
 const defaultBodyOptions = await thor.transactions.fillDefaultBodyOptions();
 
-// 6 - Build transaction body
+// 6 - Build transaction body with explicit values
 const txBody = await thor.transactions.buildTransactionBody(
   clauses,
   gasResult.totalGas,
-  defaultBodyOptions
+  {
+    chainTag: networkInfo.solo.chainTag,
+    blockRef: '0x0000000000000000',
+    expiration: 32,
+    gasPriceCoef: 128,
+    dependsOn: null,
+    nonce: 12345678,
+    ...defaultBodyOptions
+  }
 );
 
 // 7 - Sign transaction
