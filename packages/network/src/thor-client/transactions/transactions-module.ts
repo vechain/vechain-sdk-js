@@ -961,7 +961,7 @@ class TransactionsModule {
      *
      * @return {Promise<ContractCallResult>} A promise that resolves to the result of the contract call, containing the base gas price.
      */
-    public async getBaseGasPrice(): Promise<ContractCallResult> {
+    public async getLegacyBaseGasPrice(): Promise<ContractCallResult> {
         return await this.executeCall(
             BUILT_IN_CONTRACTS.PARAMS_ADDRESS,
             ABIContract.ofAbi(BUILT_IN_CONTRACTS.PARAMS_ABI).getFunction('get'),
