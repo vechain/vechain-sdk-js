@@ -115,13 +115,14 @@ class SimpleHttpClient implements HttpClient {
             });
         }
 
+        // Merge default client headers with request-specific headers,
+        // giving precedence to the latter.
         const headers = new Headers(this.headers);
-        if (params?.headers !== undefined && params?.headers != null) {
+        if (params?.headers) {
             Object.entries(params.headers).forEach(([key, value]) => {
-                headers.append(key, String(value));
+                headers.set(key, String(value)); // Override duplicates
             });
         }
-
         // Convert Headers to plain object for logging
         const headerObj = Object.fromEntries(headers.entries());
 
