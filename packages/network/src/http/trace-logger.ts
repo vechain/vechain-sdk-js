@@ -10,7 +10,10 @@
  */
 export const isTraceEnabled = (): boolean => {
     // Check environment variable - normalize to lowercase for case-insensitive comparison
-    const traceEnv = process.env.SDK_TRACE?.toLowerCase();
+    const traceEnv =
+        typeof process !== 'undefined' && process.env
+            ? process.env.SDK_TRACE?.toLowerCase()
+            : undefined;
     return traceEnv === 'true' || traceEnv === '1';
 };
 
