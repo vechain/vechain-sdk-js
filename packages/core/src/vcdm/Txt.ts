@@ -1,5 +1,5 @@
-import { type VeChainDataModel } from './VeChainDataModel';
-import { UnsupportedOperationError } from '../errors';
+import { UnsupportedOperationError } from '@errors';
+import { type VeChainDataModel } from '@vcdm';
 
 /**
  * Full Qualified Path

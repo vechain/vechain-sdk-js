@@ -2,9 +2,9 @@ import { afterEach, beforeEach, describe, test } from '@jest/globals';
 import {
     MozillaWebSocketClient,
     type WebSocketListener
-} from '../../../src/ws';
-import { NewTransactionSubscription } from '../../../src/thor/subscriptions';
-import { type TXID } from '../../../src';
+} from '@ws';
+import { NewTransactionSubscription } from '@thor/subscriptions';
+import { type TXID } from '@thor';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 

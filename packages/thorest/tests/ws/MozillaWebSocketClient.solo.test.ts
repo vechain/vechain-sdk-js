@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, test } from '@jest/globals';
-import { MozillaWebSocketClient } from '../../src/ws/MozillaWebSocketClient';
+import { MozillaWebSocketClient } from '@ws';
 import log from 'loglevel';
 
 describe('MozillaWebSocketClient solo tests', () => {

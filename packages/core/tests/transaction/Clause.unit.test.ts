@@ -1,18 +1,13 @@
 import { describe, expect, test } from '@jest/globals';
+import { Address, HexUInt, Units, VET, VTHO, ABIContract } from '@vcdm';
+import { IllegalArgumentError } from '@errors';
+import { ERC721_ABI } from '@utils';
 import {
-    Address,
     Clause,
-    ERC721_ABI,
-    HexUInt,
-    IllegalArgumentError,
-    Units,
-    VET,
-    VTHO,
     type ClauseOptions,
     type DeployParams,
-    type TransactionClause,
-    ABIContract
-} from '../../src';
+    type TransactionClause
+} from '@transaction';
 
 const ClauseFixture = {
     contract: {

@@ -1,5 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
-import { HexUInt, IllegalArgumentError, ThorId } from '../../src';
+import { HexUInt, ThorId } from '@vcdm';
+import { IllegalArgumentError } from '@errors';
 
 const ThorIdFixture = {
     invalid: {

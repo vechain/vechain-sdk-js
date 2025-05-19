@@ -1,11 +1,9 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
 import * as s_bip32 from '@scure/bip32';
 import * as s_bip39 from '@scure/bip39';
-import { FixedPointNumber } from '../vcdm/FixedPointNumber';
-import { HexUInt } from '../vcdm/HexUInt';
-import { IllegalArgumentError } from '../errors';
-import { Secp256k1 } from '../secp256k1';
-import { Sha256 } from '../vcdm/hash/Sha256';
+import { IllegalArgumentError } from '@errors';
+import { Secp256k1 } from '@secp256k1';
+import { Sha256, FixedPointNumber, HexUInt } from '@vcdm';
 import { base58 } from '@scure/base';
 
 /**

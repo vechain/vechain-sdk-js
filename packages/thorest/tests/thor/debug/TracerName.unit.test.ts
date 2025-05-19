@@ -12,7 +12,7 @@ import {
     Tracer,
     Trigram,
     Unigram
-} from '../../../src/thor/debug';
+} from '@thor';
 
 /**
  * VeChain tracer name - unit

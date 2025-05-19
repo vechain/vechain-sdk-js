@@ -3,7 +3,7 @@ import {
     PostDebugTracerRequest,
     TraceTransactionClause,
     type PostDebugTracerRequestJSON
-} from '../../../src/thor/debug';
+} from '@thor/debug';
 import {
     mockHttpClient,
     mockHttpClientWithError

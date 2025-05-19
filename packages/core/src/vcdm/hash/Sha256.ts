@@ -1,7 +1,6 @@
 import * as nh_sha256 from '@noble/hashes/sha256';
-import { Hex } from '../Hex';
-import { HexUInt } from '../HexUInt';
-import { IllegalArgumentError } from '../../errors';
+import { Hex, HexUInt } from '@vcdm';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full Qualified Path

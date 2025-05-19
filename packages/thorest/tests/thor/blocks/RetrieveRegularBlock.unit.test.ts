@@ -3,7 +3,7 @@ import {
     RetrieveRegularBlock,
     type RegularBlockResponseJSON,
     RegularBlockResponse
-} from '../../../src/thor/blocks';
+} from '@thor';
 import { Revision } from '@vechain/sdk-core';
 import { mockHttpClient } from '../../utils/MockUnitTestClient';
 

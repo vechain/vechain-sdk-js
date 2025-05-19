@@ -1,12 +1,12 @@
 import { describe, expect, test } from '@jest/globals';
 import { HexUInt, Transaction } from '@vechain/sdk-core';
-import { SendTransaction, type TXIDJSON } from '../../../src';
+import { SendTransaction, type TXIDJSON } from '@thor';
 import {
     ABIContract,
     networkInfo,
     type TransactionBody,
     Units
-} from '@vechain/sdk-core/src';
+} from '@vechain/sdk-core';
 import { BUILT_IN_CONTRACTS } from './built-in';
 import { mockHttpClient } from '../../utils/MockUnitTestClient';
 

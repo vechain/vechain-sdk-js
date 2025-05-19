@@ -1,5 +1,5 @@
 import { describe, test, expect } from '@jest/globals';
-import { type PeerStatJSON, RetrieveConnectedPeers } from '../../../src';
+import { type PeerStatJSON, RetrieveConnectedPeers } from '@thor';
 import { mockHttpClient } from '../../utils/MockUnitTestClient';
 
 /**

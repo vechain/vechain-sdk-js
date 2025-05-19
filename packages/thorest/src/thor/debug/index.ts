@@ -4,5 +4,6 @@ export * from './RetrieveStorageRange';
 export * from './StorageRange';
 export * from './StorageRangeOption';
 export * from './TraceCall';
+export * from './TargetPath';
 export * from './TracerName';
 export * from './TraceTransactionClause';

@@ -1,9 +1,7 @@
 import { describe, test } from '@jest/globals';
-import {
-    RetrieveStorageRange,
-    type StorageRangeOptionJSON
-} from '../../../src/thor/debug';
-import { FetchHttpClient, ThorNetworks } from '../../../src';
+import { RetrieveStorageRange, type StorageRangeOptionJSON } from '@thor/debug';
+import { FetchHttpClient } from '@http';
+import { ThorNetworks } from '@thor';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 

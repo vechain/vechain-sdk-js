@@ -1,5 +1,5 @@
-import { Address, HexUInt, InvalidAbiEncodingTypeError } from '../../../src';
-import { Hex } from '../../../src/vcdm/Hex';
+import { Address, Hex, HexUInt } from '@vcdm';
+import { InvalidAbiEncodingTypeError } from '@errors';
 import { generateRandomValidAddress } from '../../fixture';
 
 /**

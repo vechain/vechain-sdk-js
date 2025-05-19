@@ -6,8 +6,9 @@ import {
     beforeEach,
     afterAll
 } from '@jest/globals';
-import { FetchHttpClient, ThorNetworks, toURL } from '../../src';
-import * as ThorNetworksModule from '../../src/thor/ThorNetworks';
+import { ThorNetworks, toURL } from '@thor';
+import { FetchHttpClient } from '@http';
+import * as ThorNetworksModule from '@thor';
 
 // Mock Headers class since it's not available in Node.js environment
 class MockHeaders {

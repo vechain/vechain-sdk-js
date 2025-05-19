@@ -1,11 +1,11 @@
 import { describe, expect, test } from '@jest/globals';
 import {
-    FetchHttpClient,
     RetrieveRawBlock,
     RetrieveExpandedBlock,
     RetrieveRegularBlock,
     ThorNetworks
-} from '../../../src';
+} from '@thor';
+import { FetchHttpClient } from '@http';
 import { Revision } from '@vechain/sdk-core';
 
 describe('RetrieveBlock testnet tests', () => {

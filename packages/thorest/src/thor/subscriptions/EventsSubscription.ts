@@ -1,6 +1,6 @@
-import { type WebSocketClient, type WebSocketListener } from '../../ws';
-import { type SubscriptionEventResponse } from './SubscriptionEventResponse';
-import { type HttpPath, type HttpQuery } from '../../http';
+import { type WebSocketClient, type WebSocketListener } from '@ws';
+import { type SubscriptionEventResponse } from '@thor/subscriptions';
+import { type HttpPath, type HttpQuery } from '@http';
 import { type Address, type ThorId } from '@vechain/sdk-core';
 
 class EventsSubscription

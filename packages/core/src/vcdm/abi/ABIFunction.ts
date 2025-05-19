@@ -9,13 +9,12 @@ import {
     type Abi as ViemABI,
     type Hex as ViemHex
 } from 'viem';
-import { Hex } from '../Hex';
-import { ABIItem } from './ABIItem';
+import { Hex, ABIItem } from '@vcdm';
 import {
     AbiConstructorNotFoundError,
     InvalidAbiDecodingTypeError,
     InvalidAbiEncodingTypeError
-} from '../../errors';
+} from '@errors';
 
 /**
  * Full Qualified Path

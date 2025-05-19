@@ -1,7 +1,5 @@
-import { type Currency } from './Currency';
-import { type FixedPointNumber } from '../FixedPointNumber';
-import { Txt } from '../Txt';
-import { IllegalArgumentError } from '../../errors';
+import { type Currency, type FixedPointNumber, Txt } from '@vcdm';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full Qualified Path

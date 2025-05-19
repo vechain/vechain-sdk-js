@@ -1,6 +1,6 @@
 import { ScalarKind } from './ScalarKind';
-import { type BufferOutput, type DataOutput, type RLPInput } from '../types';
-import { InvalidEncodingError } from '../../../../errors';
+import { type BufferOutput, type DataOutput, type RLPInput } from '@vcdm';
+import { InvalidEncodingError } from '@errors';
 
 /**
  * Full Qualified Path

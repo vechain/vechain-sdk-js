@@ -1,7 +1,5 @@
-import { VTHO } from './currency/VTHO';
-import { Units } from './currency/Units';
-import { UInt } from './UInt';
-import { IllegalArgumentError } from '../errors';
+import { VTHO, Units, UInt } from '@vcdm';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full Qualified Path

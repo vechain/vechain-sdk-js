@@ -1,9 +1,8 @@
 import fastJsonStableStringify from 'fast-json-stable-stringify';
-import { type HttpClient } from './HttpClient';
-import { type HttpPath } from './HttpPath';
-import { type HttpQuery } from './HttpQuery';
-import { isValidNetworkUrl } from '../thor/ThorNetworks';
 import { IllegalArgumentError } from '@vechain/sdk-core';
+
+import { type HttpQuery, type HttpPath, type HttpClient } from '@http';
+import { isValidNetworkUrl } from '../index';
 
 const FQP = 'packages/thorest/http/FetchHttpClient.ts';
 

@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { TargetPath } from '../../../src/thor/debug/TargetPath';
+import { TargetPath } from '@thor/debug';
 import { Hex, IllegalArgumentError } from '@vechain/sdk-core';
 
 /**

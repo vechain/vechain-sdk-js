@@ -1,7 +1,10 @@
 import { describe, test } from '@jest/globals';
-import { type TransferLogFilterRequestJSON } from '../../../src/thor/logs/TransferLogFilterRequest';
-import { QueryVETTransferEvents } from '../../../src/thor/logs/QueryVETTransferEvents';
-import { FetchHttpClient, ThorNetworks } from '../../../src';
+import {
+    type TransferLogFilterRequestJSON,
+    QueryVETTransferEvents
+} from '@thor/logs';
+import { FetchHttpClient } from '@http';
+import { ThorNetworks } from '@thor';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 

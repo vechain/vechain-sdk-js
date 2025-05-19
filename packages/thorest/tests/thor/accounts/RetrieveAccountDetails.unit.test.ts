@@ -5,7 +5,7 @@ import {
     RetrieveAccountDetailsPath,
     type GetAccountResponseJSON,
     GetAccountResponse
-} from '../../../src';
+} from '@thor';
 import {
     mockHttpClient,
     mockHttpClientWithError

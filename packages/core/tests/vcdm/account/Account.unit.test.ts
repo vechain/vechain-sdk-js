@@ -1,6 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { Address, FixedPointNumber, Mnemonic, Account } from '../../../src';
-import { VET } from '../../../src/vcdm/currency/VET';
+import { Address, FixedPointNumber, Mnemonic, Account, VET } from '@vcdm';
 
 /**
  * Test Account class.

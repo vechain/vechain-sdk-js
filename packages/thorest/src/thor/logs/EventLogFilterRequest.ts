@@ -1,7 +1,12 @@
-import { FilterRange, type FilterRangeJSON } from './FilterRange';
-import { EventCriteria, type EventCriteriaJSON } from './EventCriteria';
-import { FilterOptions, type FilterOptionsJSON } from './FilterOptions';
-import { type LogSort } from './LogSort';
+import {
+    type LogSort,
+    FilterOptions,
+    type FilterOptionsJSON,
+    EventCriteria,
+    type EventCriteriaJSON,
+    FilterRange,
+    type FilterRangeJSON
+} from '@thor/logs';
 
 class EventLogFilterRequest {
     readonly range?: FilterRange;

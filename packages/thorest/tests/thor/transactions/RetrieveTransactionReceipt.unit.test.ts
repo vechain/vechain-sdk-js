@@ -3,7 +3,7 @@ import { TxId } from '@vechain/sdk-core';
 import {
     type GetTxReceiptResponseJSON,
     RetrieveTransactionReceipt
-} from '../../../src';
+} from '@thor';
 import { mockHttpClient } from '../../utils/MockUnitTestClient';
 
 /**

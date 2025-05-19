@@ -1,10 +1,7 @@
-import { HDKey } from '../hdkey';
-import { Hex } from './Hex';
-import { HexUInt } from './HexUInt';
-import { IllegalArgumentError } from '../errors';
-import { Keccak256 } from './hash';
-import { Secp256k1 } from '../secp256k1';
-import { Txt } from './Txt';
+import { HDKey } from '@hdkey';
+import { IllegalArgumentError } from '@errors';
+import { Secp256k1 } from '@secp256k1';
+import { Txt, Hex, HexUInt, Keccak256 } from '@vcdm';
 
 /**
  * Full Qualified Path.

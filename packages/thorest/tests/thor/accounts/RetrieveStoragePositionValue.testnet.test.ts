@@ -1,10 +1,10 @@
 import { describe, test } from '@jest/globals';
 import { Address, BlockId } from '@vechain/sdk-core';
 import {
-    FetchHttpClient,
     RetrieveStoragePositionValue,
     ThorNetworks
-} from '../../../src';
+} from '@thor';
+import { FetchHttpClient } from '@http';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 

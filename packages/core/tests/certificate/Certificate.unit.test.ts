@@ -1,15 +1,12 @@
 import { describe, expect, test } from '@jest/globals';
+import { Address, Hex, HexUInt } from '@vcdm';
+import { type CertificateData, Certificate } from '@certificate';
 import {
-    Address,
-    Certificate,
-    Hex,
-    HexUInt,
     IllegalArgumentError,
     InvalidPrivateKeyError,
-    InvalidSignatureError,
-    Secp256k1,
-    type CertificateData
-} from '../../src';
+    InvalidSignatureError
+} from '@errors';
+import { Secp256k1 } from '@secp256k1';
 import {
     blake2b256 as tdk_blake2b256,
     Certificate as tdk_certificate,

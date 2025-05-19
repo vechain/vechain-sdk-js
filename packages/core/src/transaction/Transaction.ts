@@ -1,7 +1,8 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
-import { Secp256k1 } from '../secp256k1';
+import { Secp256k1 } from '@secp256k1';
 import {
     Address,
+    Blake2b256,
     BufferKind,
     CompactFixedHexBlobKind,
     Hex,
@@ -14,16 +15,15 @@ import {
     type RLPValidObject,
     Units,
     VTHO
-} from '../vcdm';
-import { Blake2b256 } from '../vcdm/hash/Blake2b256';
-import { type TransactionBody } from './TransactionBody';
-import type { TransactionClause } from './TransactionClause';
+} from '@vcdm';
+import { type TransactionBody } from '@transaction';
+import type { TransactionClause } from '@transaction';
 import {
     IllegalArgumentError,
     InvalidPrivateKeyError,
     NoSuchElementError,
     UnsupportedOperationError
-} from '../errors';
+} from '@errors';
 
 /**
  * Full Qualified Path

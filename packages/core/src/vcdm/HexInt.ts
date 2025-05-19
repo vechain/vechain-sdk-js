@@ -1,5 +1,5 @@
-import { Hex } from './Hex';
-import { IllegalArgumentError, UnsupportedOperationError } from '../errors';
+import { Hex } from '@vcdm';
+import { IllegalArgumentError, UnsupportedOperationError } from '@errors';
 
 /**
  * Full Qualified Path

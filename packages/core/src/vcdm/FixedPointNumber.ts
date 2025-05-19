@@ -1,6 +1,5 @@
-import { IllegalArgumentError, UnsupportedOperationError } from '../errors';
-import { Txt } from './Txt';
-import { type VeChainDataModel } from './VeChainDataModel';
+import { IllegalArgumentError, UnsupportedOperationError } from '@errors';
+import { Txt, type VeChainDataModel  } from '@vcdm';
 
 /**
  * Full Qualified Path

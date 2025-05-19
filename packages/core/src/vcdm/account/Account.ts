@@ -1,7 +1,5 @@
-import { type Address } from '../Address';
-import { type Currency } from '../currency/Currency';
-import { type VeChainDataModel } from '../VeChainDataModel';
-import { UnsupportedOperationError } from '../../errors';
+import { type Address, type VeChainDataModel, type Currency } from '@vcdm';
+import { UnsupportedOperationError } from '@errors';
 
 /**
  * Full Qualified Path

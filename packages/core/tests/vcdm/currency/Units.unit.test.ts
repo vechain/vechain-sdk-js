@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { formatEther, formatUnits, parseEther, parseUnits } from 'viem';
-import { FixedPointNumber, Units } from '../../../src';
+import { FixedPointNumber, Units } from '@vcdm';
 
 const UnitsFixture = {
     oneWei: 1n,

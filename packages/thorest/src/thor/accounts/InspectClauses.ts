@@ -1,14 +1,11 @@
+import { type HttpClient, type HttpPath, type HttpQuery } from '@http';
 import {
     ExecuteCodesResponse,
-    type ExecuteCodesResponseJSON
-} from './ExecuteCodesResponse';
-import { type ThorRequest } from '../ThorRequest';
-import { type HttpClient, type HttpPath, type HttpQuery } from '../../http';
-import { type ThorResponse } from '../ThorResponse';
-import {
+    type ExecuteCodesResponseJSON,
     ExecuteCodesRequest,
     type ExecuteCodesRequestJSON
-} from './ExecuteCodesRequest';
+} from '@thor/accounts';
+import { type ThorRequest, type ThorResponse } from '../utils';
 import { Revision } from '@vechain/sdk-core';
 
 class InspectClauses

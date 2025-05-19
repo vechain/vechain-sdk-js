@@ -9,16 +9,14 @@ import {
     type DecodeFunctionResultReturnType,
     type Abi as ViemABI
 } from 'viem';
-import { type Hex } from '../Hex';
-import { ABI } from './ABI';
-import { ABIEvent, type ABIEventData } from './ABIEvent';
-import { ABIFunction } from './ABIFunction';
+import { ABIFunction, ABIEvent, ABI, type Hex, type ABIEventData }from '@vcdm'
 import {
     AbiEventNotFoundError,
     AbiFunctionNotFoundError,
     InvalidAbiDecodingTypeError,
     InvalidAbiEncodingTypeError
-} from '../../errors';
+} from '@errors';
+
 
 /**
  * Full Qualified Path

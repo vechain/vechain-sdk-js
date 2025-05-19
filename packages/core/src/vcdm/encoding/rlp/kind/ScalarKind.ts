@@ -3,7 +3,7 @@ import {
     type DataOutput,
     type RLPInput,
     type RLPValidObject
-} from '../types';
+} from '@vcdm';
 
 /* ------- RLP Profile Types ------- */
 /**

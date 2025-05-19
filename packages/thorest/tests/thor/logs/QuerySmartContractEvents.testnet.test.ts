@@ -3,8 +3,9 @@ import { describe, test } from '@jest/globals';
 import {
     type EventLogFilterRequestJSON,
     QuerySmartContractEvents
-} from '../../../src/thor/logs';
-import { FetchHttpClient, ThorNetworks } from '../../../src';
+} from '@thor/logs';
+import { FetchHttpClient } from '@http';
+import { ThorNetworks } from '@thor';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 

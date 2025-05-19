@@ -1,4 +1,5 @@
-import { Hex, Secp256k1 } from '../src';
+import { Hex } from '@vcdm';
+import { Secp256k1 } from '@secp256k1';
 
 /**
  * Generates a random valid address

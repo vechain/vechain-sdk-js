@@ -6,14 +6,17 @@ import {
     ABIContract,
     ABIEvent,
     ABIItem,
+    Hex,
+    
+} from '@vcdm';
+import { ERC721_ABI } from '@utils';
+import {
     AbiEventNotFoundError,
     AbiFunctionNotFoundError,
-    ERC721_ABI,
-    Hex,
     IllegalArgumentError,
     InvalidAbiDecodingTypeError,
     InvalidAbiEncodingTypeError
-} from '../../../src';
+} from '@errors';
 import {
     contractABI,
     contractABIWithEvents,

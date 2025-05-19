@@ -1,10 +1,12 @@
-import { FilterRange, type FilterRangeJSON } from './FilterRange';
-import { FilterOptions, type FilterOptionsJSON } from './FilterOptions';
-import { type LogSort } from './LogSort';
 import {
+    FilterRange,
+    type FilterRangeJSON,
+    FilterOptions,
+    type FilterOptionsJSON,
+    type LogSort,
     TransferCriteria,
     type TransferCriteriaJSON
-} from './TransferCriteria';
+} from '@thor/logs';
 
 class TransferLogFilterRequest {
     readonly range?: FilterRange;

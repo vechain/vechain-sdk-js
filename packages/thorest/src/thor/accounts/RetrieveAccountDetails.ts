@@ -1,10 +1,9 @@
-import { type HttpClient, type HttpPath } from '../../http';
-import { type ThorRequest } from '../ThorRequest';
-import { type ThorResponse } from '../ThorResponse';
+import { type HttpClient, type HttpPath } from '@http';
 import {
     GetAccountResponse,
     type GetAccountResponseJSON
-} from './GetAccountResponse';
+} from '@thor/accounts';
+import { type ThorRequest, type ThorResponse } from '../utils';
 import { type Address } from '@vechain/sdk-core';
 
 class RetrieveAccountDetails

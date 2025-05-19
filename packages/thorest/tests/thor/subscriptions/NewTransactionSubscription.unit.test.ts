@@ -9,9 +9,9 @@ import {
 import {
     MozillaWebSocketClient,
     type WebSocketListener
-} from '../../../src/ws';
-import { NewTransactionSubscription } from '../../../src/thor/subscriptions';
-import { type TXID } from '../../../src';
+} from '@ws';
+import { NewTransactionSubscription } from '@thor/subscriptions';
+import { type TXID } from '@thor';
 
 global.WebSocket = jest.fn(() => ({
     addEventListener: jest.fn(),

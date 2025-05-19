@@ -6,5 +6,7 @@ export * from './FilterRange';
 export * from './LogMeta';
 export * from './LogSort';
 export * from './QuerySmartContractEvents';
+export * from './QueryVETTransferEvents';
 export * from './TransferLogsResponse';
+export * from './TransferLogFilterRequest';
 export * from './TransferCriteria';

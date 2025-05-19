@@ -1,7 +1,6 @@
 import { blake2b as nh_blake2b } from '@noble/hashes/blake2b';
-import { Hex } from '../Hex';
-import { HexUInt } from '../HexUInt';
-import { IllegalArgumentError } from '../../errors';
+import { Hex, HexUInt } from '@vcdm';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full Qualified Path

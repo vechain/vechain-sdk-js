@@ -2,11 +2,11 @@ import { afterEach, beforeEach, describe, test } from '@jest/globals';
 import {
     MozillaWebSocketClient,
     type WebSocketListener
-} from '../../../src/ws';
+} from '@ws';
 import {
     BeatsSubscription,
     type SubscriptionBeat2Response
-} from '../../../src/thor/subscriptions';
+} from '@thor/subscriptions';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 

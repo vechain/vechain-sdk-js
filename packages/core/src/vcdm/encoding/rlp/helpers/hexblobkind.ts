@@ -1,6 +1,5 @@
-import { Hex } from '../../../Hex';
-import { type RLPInput } from '../types';
-import { InvalidEncodingError } from '../../../../errors';
+import { Hex, type RLPInput  } from '@vcdm';
+import { InvalidEncodingError } from '@errors';
 
 /**
  * Full Qualified Path

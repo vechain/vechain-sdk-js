@@ -1,8 +1,8 @@
-import { Hex } from '../../../../Hex';
-import { HexUInt } from '../../../../HexUInt';
-import { assertValidHexBlobKindData } from '../../helpers';
-import { type BufferOutput, type DataOutput, type RLPInput } from '../../types';
-import { ScalarKind } from '../ScalarKind';
+import { Hex } from '@vcdm';
+import { HexUInt } from '@vcdm';
+import { assertValidHexBlobKindData } from '@vcdm';
+import { type BufferOutput, type DataOutput, type RLPInput } from '@vcdm';
+import { ScalarKind } from '@vcdm';
 
 /**
  * Represents a scalar kind with hex blob functionality.

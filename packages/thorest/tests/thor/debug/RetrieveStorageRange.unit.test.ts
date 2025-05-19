@@ -5,7 +5,7 @@ import {
     StorageRangeOption,
     type StorageRangeOptionJSON,
     type StorageRangeJSON
-} from '../../../src/thor/debug';
+} from '@thor/debug';
 import {
     mockHttpClient,
     mockHttpClientWithError

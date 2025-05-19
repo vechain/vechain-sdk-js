@@ -1,4 +1,4 @@
-import { IllegalArgumentError } from '../../../src';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Valid hex strings.

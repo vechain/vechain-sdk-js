@@ -1,5 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
-import { Hex, IllegalArgumentError, Quantity } from '../../src';
+import { Hex, Quantity } from '@vcdm';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Test Quantity class.

@@ -1,11 +1,11 @@
 import fastJsonStableStringify from 'fast-json-stable-stringify';
-import { Hex } from '../../Hex';
-import { IllegalArgumentError, InvalidEncodingError } from '../../../errors';
+import { Hex } from '@vcdm';
+import { IllegalArgumentError, InvalidEncodingError } from '@errors';
 import { RLP as EthereumjsRLP } from '@ethereumjs/rlp';
 import { ScalarKind, type RLPProfile } from './kind/ScalarKind';
 import { bytesToNumberBE } from '@noble/ciphers/utils';
 import { type RLPInput, type RLPValidObject, type RLPValueType } from './types';
-import { type VeChainDataModel } from '../../VeChainDataModel';
+import { type VeChainDataModel } from '@vcdm';
 
 /**
  * Full Qualified Path

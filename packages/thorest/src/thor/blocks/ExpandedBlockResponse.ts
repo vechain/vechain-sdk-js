@@ -1,14 +1,14 @@
 import { BlockId } from '@vechain/sdk-core';
 import {
+    CommmonBlockResponse,
+    type CommmonBlockResponseJSON
+} from '@thor/blocks';
+import {
     GetTxResponse,
     type GetTxResponseJSON,
     Receipt,
     type ReceiptJSON
-} from '../transactions';
-import {
-    CommmonBlockResponse,
-    type CommmonBlockResponseJSON
-} from './CommonBlockResponse';
+} from '@thor/transactions';
 
 class TransactionWithOutputs {
     readonly transaction: Omit<GetTxResponse, 'meta'>;

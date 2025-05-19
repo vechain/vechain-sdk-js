@@ -18,7 +18,7 @@
   ],
   "main": "dist/index.js",
   "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "types": "",
   "files": [
     "dist",
     "src",
@@ -27,7 +27,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "rm -rf ./dist && tsup-node src/index.ts --format cjs,esm --dts --sourcemap",
+    "build": "node build.js",
     "check:circular-dependencies": "npx madge --circular --extensions ts src",
     "lint": "eslint",
     "format": "prettier --write src/**/*.ts tests/**/*.ts",

@@ -1,12 +1,7 @@
-import {
-    ContractBytecode,
-    type ContractBytecodeJSON
-} from './ContractBytecode';
-import { type ThorRequest } from '../ThorRequest';
-import { type HttpClient, type HttpPath } from '../../http';
+import { type HttpClient, type HttpPath } from '@http';
 import type { Address } from '@vechain/sdk-core';
-import { type ThorResponse } from '../ThorResponse';
-
+import { ContractBytecode, type ContractBytecodeJSON } from '@thor/accounts';
+import { type ThorRequest, type ThorResponse } from '../utils';
 class RetrieveContractBytecode
     implements ThorRequest<RetrieveContractBytecode, ContractBytecode>
 {

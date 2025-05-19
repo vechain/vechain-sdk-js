@@ -14,6 +14,8 @@ export * from './HexUInt';
 export * from './HexUInt32';
 export * from './Int';
 export * from './Mnemonic';
+export * from './NetAddr';
+export * from './Nonce';
 export * from './Quantity';
 export * from './Revision';
 export * from './BlockId';

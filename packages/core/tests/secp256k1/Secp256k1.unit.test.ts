@@ -1,12 +1,12 @@
 import { describe, expect, test } from '@jest/globals';
+import { HexUInt } from '@vcdm';
 import {
-    HexUInt,
     InvalidMessageHashError,
     InvalidPrivateKeyError,
-    InvalidSignatureError,
-    Secp256k1,
-    ZERO_BYTES
-} from '../../src';
+    InvalidSignatureError
+} from '@errors';
+import { Secp256k1 } from '@secp256k1';
+import { ZERO_BYTES } from '@utils';
 import {
     invalidMessageHashes,
     messageHashBuffer,

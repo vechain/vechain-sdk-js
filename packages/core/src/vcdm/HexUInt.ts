@@ -1,6 +1,5 @@
-import { Hex } from './Hex';
-import { HexInt } from './HexInt';
-import { IllegalArgumentError } from '../errors';
+import { Hex, HexInt } from '@vcdm';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full Qualified Path

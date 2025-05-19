@@ -1,4 +1,4 @@
-import { FixedPointNumber } from '../FixedPointNumber';
+import { FixedPointNumber } from '@vcdm';
 
 /**
  * Enumeration representing units (i.e. order of magnitude)

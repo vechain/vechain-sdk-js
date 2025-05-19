@@ -5,7 +5,7 @@ import {
     RetrieveContractBytecodePath,
     ContractBytecode,
     type ContractBytecodeJSON
-} from '../../../src';
+} from '@thor';
 import {
     mockHttpClient,
     mockHttpClientWithError
