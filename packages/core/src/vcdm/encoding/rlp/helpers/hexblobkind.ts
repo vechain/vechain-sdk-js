@@ -1,4 +1,5 @@
-import { Hex, type RLPInput  } from '@vcdm';
+import { Hex } from '../../../Hex';
+import { type RLPInput } from '../types';
 import { InvalidEncodingError } from '@errors';
 
 /**

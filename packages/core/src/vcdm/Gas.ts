@@ -1,4 +1,5 @@
-import { VTHO, Units, UInt } from '@vcdm';
+import { VTHO, Units } from './currency';
+import { UInt } from './UInt';
 import { IllegalArgumentError } from '@errors';
 
 /**

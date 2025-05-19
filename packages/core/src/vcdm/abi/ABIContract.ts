@@ -9,7 +9,9 @@ import {
     type DecodeFunctionResultReturnType,
     type Abi as ViemABI
 } from 'viem';
-import { ABIFunction, ABIEvent, ABI, type Hex, type ABIEventData }from '@vcdm'
+import { ABI } from './ABI';
+import { ABIFunction, ABIEvent, type ABIEventData } from '.';
+import { Hex } from '@vcdm';
 import {
     AbiEventNotFoundError,
     AbiFunctionNotFoundError,

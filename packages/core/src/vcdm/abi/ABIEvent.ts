@@ -14,7 +14,10 @@ import {
     InvalidAbiDecodingTypeError,
     InvalidAbiEncodingTypeError
 } from '@errors';
-import { Hex, ABI, ABIItem } from '@vcdm';
+import { ABIItem } from './ABIItem';
+import { Hex } from '@vcdm';
+import { ABI } from './ABI';
+
 type Topics = [] | [signature: ViemHex, ...args: ViemHex[]];
 
 interface ABIEventData {

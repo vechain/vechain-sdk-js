@@ -23,7 +23,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "node build.js",
+    "build": "rm -rf ./dist && tsup-node src/index.ts --format cjs,esm --dts --sourcemap",
     "check:circular-dependencies": "npx madge --json --circular --extensions ts src | jq '. | length' | awk '{if($1 > 15) exit 1}'",
     "lint": "eslint",
     "format": "prettier --write src/**/*.ts tests/**/*.ts solo-seeding/**/*.ts",

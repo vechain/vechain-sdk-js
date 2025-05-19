@@ -1,5 +1,6 @@
 import { keccak_256 as nh_keccak_256 } from '@noble/hashes/sha3';
-import { Hex, HexUInt } from '@vcdm';
+import { Hex } from '../Hex';
+import { HexUInt } from '../HexUInt';
 import { IllegalArgumentError } from '@errors';
 
 /**

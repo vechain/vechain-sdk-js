@@ -17,36 +17,11 @@
     "skipLibCheck": true,
     "strict": true,
     "strictNullChecks": true,
-    "resolveJsonModule": true,
-    "paths": {
-      // Thorest aliases
-      "@http": ["./packages/thorest/src/http"],
-      "@thor/accounts": ["./packages/thorest/src/thor/accounts"],
-      "@thor/blocks": ["./packages/thorest/src/thor/blocks"],
-      "@thor/debug": ["./packages/thorest/src/thor/debug"],
-      "@thor/logs": ["./packages/thorest/src/thor/logs"],
-      "@thor/node": ["./packages/thorest/src/thor/node"],
-      "@thor/subscriptions": ["./packages/thorest/src/thor/subscriptions"],
-      "@thor/transactions": ["./packages/thorest/src/thor/transactions"],
-      "@thor/utils": ["./packages/thorest/src/thor/utils"],
-      "@ws": ["./packages/thorest/src/ws"],
-      // Core aliases
-      "@vcdm": ["./packages/core/src/vcdm"],
-      "@errors": ["./packages/core/src/errors"],
-      "@certificate": ["./packages/core/src/certificate"],
-      "@transaction": ["./packages/core/src/transaction"],
-      "@hdkey": ["./packages/core/src/hdkey"],
-      "@keystore": ["./packages/core/src/keystore"],
-      "@cryptography": ["./packages/core/src/keystore/cryptography"],
-      "@secp256k1": ["./packages/core/src/secp256k1"],
-      "@utils": ["./packages/core/src/utils"]
-
-    }
+    "resolveJsonModule": true
   },
   "include": ["packages/**/*"],
   "exclude": ["node_modules"],
   "ts-node": {
-    // these options are overrides used only by ts-node
     "compilerOptions": {
       "module": "commonjs"
     }

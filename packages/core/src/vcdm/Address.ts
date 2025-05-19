@@ -1,7 +1,8 @@
 import { HDKey } from '@hdkey';
 import { IllegalArgumentError } from '@errors';
 import { Secp256k1 } from '@secp256k1';
-import { Txt, Hex, HexUInt, Keccak256 } from '@vcdm';
+import { Txt, Hex, Keccak256 } from '@vcdm';
+import { HexUInt } from './HexUInt';
 
 /**
  * Full Qualified Path.

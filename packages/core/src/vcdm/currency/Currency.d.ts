@@ -1,4 +1,6 @@
-import { type FixedPointNumber, type Txt, type VeChainDataModel } from '@vcdm';
+import { type FixedPointNumber } from '../FixedPointNumber';
+import { type Txt } from '../Txt';
+import { type VeChainDataModel } from '../VeChainDataModel';
 
 /**
  * Interface representing the properties for currency implementation

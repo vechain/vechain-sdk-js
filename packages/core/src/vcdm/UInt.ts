@@ -1,4 +1,4 @@
-import { Int } from '@vcdm';
+import { Int } from './Int';
 import { IllegalArgumentError } from '@errors';
 
 /**

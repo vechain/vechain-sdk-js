@@ -1,4 +1,6 @@
-import { Coin, FixedPointNumber, Txt, Units } from '@vcdm';
+import { FixedPointNumber, Units } from '@vcdm';
+import { Coin } from './Coin';
+import { Txt } from '../Txt';
 
 /**
  * Represents a

@@ -1,4 +1,5 @@
-import { Hex, HexUInt } from '@vcdm';
+import { Hex } from '@vcdm';
+import { HexUInt } from './HexUInt';
 import { IllegalArgumentError } from '@errors';
 
 /**

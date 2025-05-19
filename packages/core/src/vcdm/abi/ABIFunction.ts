@@ -9,7 +9,8 @@ import {
     type Abi as ViemABI,
     type Hex as ViemHex
 } from 'viem';
-import { Hex, ABIItem } from '@vcdm';
+import { Hex } from '@vcdm';
+import { ABIItem } from './ABIItem';
 import {
     AbiConstructorNotFoundError,
     InvalidAbiDecodingTypeError,

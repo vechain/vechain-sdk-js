@@ -27,7 +27,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "node build.js",
+    "build": "rm -rf ./dist && tsup-node src/index.ts --format cjs,esm --dts --sourcemap",
     "check:circular-dependencies": "npx madge --circular --extensions ts src",
     "lint": "eslint",
     "format": "prettier --write src/**/*.ts tests/**/*.ts",

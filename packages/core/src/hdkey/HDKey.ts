@@ -3,7 +3,8 @@ import * as s_bip32 from '@scure/bip32';
 import * as s_bip39 from '@scure/bip39';
 import { IllegalArgumentError } from '@errors';
 import { Secp256k1 } from '@secp256k1';
-import { Sha256, FixedPointNumber, HexUInt } from '@vcdm';
+import { Sha256, FixedPointNumber } from '@vcdm';
+import { HexUInt } from '../vcdm/HexUInt';
 import { base58 } from '@scure/base';
 
 /**
@@ -24,16 +25,18 @@ class HDKey extends s_bip32.HDKey {
     /**
      * Prefix for extended private key
      */
-    public static readonly EXTENDED_PRIVATE_KEY_PREFIX = HexUInt.of(
-        '0488ade4000000000000000000'
-    ).bytes;
+    public static readonly EXTENDED_PRIVATE_KEY_PREFIX = new Uint8Array([
+        0x04, 0x88, 0xad, 0xe4, 0x00, 0x00, 0x00, 0x00, 
+        0x00, 0x00, 0x00, 0x00, 0x00
+    ]); 
 
     /**
      * Prefix for extended public key
      */
-    public static readonly EXTENDED_PUBLIC_KEY_PREFIX = HexUInt.of(
-        '0488b21e000000000000000000'
-    ).bytes;
+    public static readonly EXTENDED_PUBLIC_KEY_PREFIX = new Uint8Array([
+        0x04, 0x88, 0xb2, 0x1e, 0x00, 0x00, 0x00, 0x00, 
+        0x00, 0x00, 0x00, 0x00, 0x00
+    ]);
 
     /**
      * Default VET derivation path.

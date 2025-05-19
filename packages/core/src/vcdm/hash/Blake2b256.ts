@@ -1,5 +1,6 @@
 import { blake2b as nh_blake2b } from '@noble/hashes/blake2b';
-import { Hex, HexUInt } from '@vcdm';
+import { Hex } from '../Hex';
+import { HexUInt } from '../HexUInt';
 import { IllegalArgumentError } from '@errors';
 
 /**

@@ -1,4 +1,4 @@
-import { Hex } from '@vcdm';
+import { Hex } from './Hex';
 import { IllegalArgumentError, UnsupportedOperationError } from '@errors';
 
 /**
