@@ -771,11 +771,11 @@ class TransactionsModule {
 
         // The total gas of the transaction
         // If the transaction involves contract interaction, a constant 15000 gas is added to the total gas
-        const totalGas =
+        const totalGas = Math.ceil(
             (intrinsicGas +
                 (totalSimulatedGas !== 0 ? totalSimulatedGas + 15000 : 0)) *
-            (1 + (options?.gasPadding ?? 0)); // Add gasPadding if it is defined
-
+                (1 + (options?.gasPadding ?? 0))
+        ); // Add gasPadding if it is defined
         return isReverted
             ? {
                   totalGas,
@@ -965,7 +965,7 @@ class TransactionsModule {
      *
      * @return {Promise<ContractCallResult>} A promise that resolves to the result of the contract call, containing the base gas price.
      */
-    public async getBaseGasPrice(): Promise<ContractCallResult> {
+    public async getLegacyBaseGasPrice(): Promise<ContractCallResult> {
         return await this.executeCall(
             BUILT_IN_CONTRACTS.PARAMS_ADDRESS,
             ABIContract.ofAbi(BUILT_IN_CONTRACTS.PARAMS_ABI).getFunction('get'),

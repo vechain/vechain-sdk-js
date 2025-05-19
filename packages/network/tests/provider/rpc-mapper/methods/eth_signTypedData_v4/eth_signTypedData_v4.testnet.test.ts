@@ -12,7 +12,7 @@ import {
     JSONRPCInternalError,
     JSONRPCInvalidParams
 } from '@vechain/sdk-errors';
-import { eip712TestCases } from '../../../../signer/signers/vechain-private-key-signer/fixture';
+import { eip712TestCases } from '../../../../signer/signers/vechain-private-key-signer/fixture-unit';
 
 /**
  * RPC Mapper integration tests for 'eth_signTypedData_v4' method

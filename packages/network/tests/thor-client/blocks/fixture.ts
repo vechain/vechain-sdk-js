@@ -200,6 +200,7 @@ const validExpandedBlockRevisions = [
                 {
                     id: '0x42720d768659aabff05c456acdd4e1f5c5672740a3728fbc0681117e4868167f',
                     chainTag: 39,
+                    type: 0,
                     blockRef: '0x01038ee704383133',
                     expiration: 2000,
                     clauses: [

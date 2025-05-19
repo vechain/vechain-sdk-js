@@ -62,11 +62,6 @@ interface BlockDetail {
     parentID: string;
 
     /**
-     * Identifier of the parent block.
-     */
-    baseFeePerGas?: string;
-
-    /**
      * Timestamp when the block was created.
      */
     timestamp: number;
@@ -135,7 +130,7 @@ interface BlockDetail {
     isFinalized?: boolean;
 
     /**
-     * Since there is no computational competition in PoA, the “longest chain” rule does not apply.
+     * Since there is no computational competition in PoA, the "longest chain" rule does not apply.
      * Instead, we consider the better branch as the one witnessed by more AMs (Authority Master nodes).
      *
      * @link see [VeChainThor Trunk](https://docs.vechain.org/introduction-to-vechain/about-the-vechain-blockchain/consensus-deep-dive#meta-transaction-features-3)
@@ -187,7 +182,7 @@ interface TransactionsExpandedBlockDetail {
     id: string;
 
     /**
-     * The transaction type of this receipt (is an integer value).
+     * Type of the transaction (ex: type 81).
      */
     type?: number;
 
@@ -226,7 +221,7 @@ interface TransactionsExpandedBlockDetail {
     /**
      * Gas price coefficient for the transaction.
      */
-    gasPriceCoef: number;
+    gasPriceCoef?: number;
 
     /**
      * Gas limit for the transaction.

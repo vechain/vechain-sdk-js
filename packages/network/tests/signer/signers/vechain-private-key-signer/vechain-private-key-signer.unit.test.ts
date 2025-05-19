@@ -22,7 +22,7 @@ import {
     eip712TestCases,
     populateCallTestCases,
     populateCallTestCasesAccount
-} from './fixture';
+} from './fixture-unit';
 
 /**
  * VeChain base signer tests

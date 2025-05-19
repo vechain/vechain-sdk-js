@@ -13,7 +13,7 @@ const ethGasPrice = async (thorClient: ThorClient): Promise<string> => {
     if (!galacticaForked) {
         const {
             result: { plain }
-        } = await thorClient.contracts.getBaseGasPrice();
+        } = await thorClient.contracts.getLegacyBaseGasPrice();
         return HexUInt.of(plain as bigint).toString(true);
     }
 
