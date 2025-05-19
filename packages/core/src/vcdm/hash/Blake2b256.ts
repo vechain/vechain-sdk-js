@@ -23,7 +23,7 @@ class Blake2b256 extends HexUInt {
      *
      * @throws {IllegalArgumentError} - If a hash error occurs.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audit method, depends on
      * * [`nh_blake2b.create(...).update(...).digest(...)`](https://github.com/paulmillr/noble-hashes#sha3-fips-shake-keccak).
      */
     public static of(
