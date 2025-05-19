@@ -184,8 +184,7 @@ interface TransactionsExpandedBlockDetail {
     /**
      * Type of the transaction (ex: type 81).
      */
-    type?: string;
-
+    type?: number;
 
     /**
      * Chain tag of the blockchain.
