@@ -781,11 +781,11 @@ class TransactionsModule {
 
         // The total gas of the transaction
         // If the transaction involves contract interaction, a constant 15000 gas is added to the total gas
-        const totalGas =
+        const totalGas = Math.ceil(
             (intrinsicGas +
                 (totalSimulatedGas !== 0 ? totalSimulatedGas + 15000 : 0)) *
-            (1 + (options?.gasPadding ?? 0)); // Add gasPadding if it is defined
-
+                (1 + (options?.gasPadding ?? 0))
+        ); // Add gasPadding if it is defined
         return isReverted
             ? {
                   totalGas,
