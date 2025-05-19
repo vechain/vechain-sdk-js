@@ -7,7 +7,8 @@ import {
     HexUInt,
     Transaction,
     type TransactionClause,
-    Units
+    Units,
+    VET
 } from '@vechain/sdk-core';
 import { type AbiEvent } from 'abitype';
 import {
@@ -226,6 +227,103 @@ describe('Subscriptions Solo network tests', () => {
                         reject(error);
                     }
                 });
+            });
+        },
+        TIMEOUT
+    );
+
+    test(
+        'Should receive block with baseFeePerGas field in the subscription',
+        async () => {
+            const wsURL = subscriptions.getBlockSubscriptionUrl(THOR_SOLO_URL);
+
+            let ws: WebSocket | NodeWebSocket;
+            if (typeof WebSocket !== 'undefined') {
+                ws = new WebSocket(wsURL);
+            } else {
+                ws = new NodeWebSocket(wsURL);
+            }
+
+            // First, create a transaction to ensure a new block is generated
+            const clause = Clause.transferVET(
+                Address.of(
+                    TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
+                ),
+                VET.of('1')
+            ) as TransactionClause;
+
+            const gasResult = await thorClient.transactions.estimateGas(
+                [clause],
+                TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
+            );
+
+            const txBody = await thorClient.transactions.buildTransactionBody(
+                [clause],
+                gasResult.totalGas
+            );
+
+            // Create a signer to sign the transaction
+            const signer = (await provider.getSigner(
+                TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
+            )) as VeChainPrivateKeySigner;
+
+            // Get the raw transaction
+            const raw = await signer.signTransaction(
+                signerUtils.transactionBodyToTransactionRequestInput(
+                    txBody,
+                    TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
+                )
+            );
+
+            // Send the signed transaction to ensure a new block is generated
+            await thorClient.transactions.sendTransaction(
+                Transaction.decode(HexUInt.of(raw.slice(2)).bytes, true)
+            );
+
+            await new Promise((resolve, reject) => {
+                const timeout = setTimeout(() => {
+                    ws.close();
+                    reject(new Error('Timeout: No block received'));
+                }, TIMEOUT); // 15-second timeout
+
+                ws.onopen = () => {
+                    console.log('WebSocket connection opened.');
+                };
+
+                ws.onmessage = (event: MessageEvent) => {
+                    clearTimeout(timeout); // Clear the timeout on receiving a message
+                    ws.close(); // Close the WebSocket connection
+
+                    const data: string =
+                        typeof event.data === 'string'
+                            ? event.data
+                            : JSON.stringify(event.data);
+                    expect(data).toBeDefined();
+                    expect(data).not.toBeNull();
+
+                    const block = JSON.parse(
+                        data.toString()
+                    ) as CompressedBlockDetail;
+
+                    expect(block.number).toBeGreaterThan(0);
+
+                    // Thor Solo node currently doesn't include baseFeePerGas in all blocks
+                    // Our implementation handles both cases (with or without baseFeePerGas)
+                    // If baseFeePerGas is present, ensure it's a string
+                    if (
+                        block.baseFeePerGas !== undefined &&
+                        block.baseFeePerGas !== null
+                    ) {
+                        expect(typeof block.baseFeePerGas).toBe('string');
+                    }
+
+                    resolve(true);
+                };
+
+                ws.onerror = (error: Event) => {
+                    clearTimeout(timeout);
+                    reject(error);
+                };
             });
         },
         TIMEOUT

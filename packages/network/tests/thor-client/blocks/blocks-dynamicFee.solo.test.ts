@@ -117,7 +117,7 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
                 SOLO_GENESIS_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address.toLowerCase()
             );
             expect(txInBlock.clauses[0].value).toBe('0x1');
-            expect(txInBlock.gas).toBe(`0x${gasResult.totalGas.toString(16)}`);
+            expect(txInBlock.gas).toBe(gasResult.totalGas);
             expect(txInBlock.maxFeePerGas).toBe('0x9184e72a000'); // 10000000000000
             expect(txInBlock.maxPriorityFeePerGas).toBe('0xf4240'); // 1000000
             expect(txInBlock.nonce).toBe('0xbc614d'); // 12345677 in hex
