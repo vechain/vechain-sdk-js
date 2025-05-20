@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { type FetchHttpClient } from '../../src';
+import { type FetchHttpClient } from '@http';
 
 const mockHttpClient = <T>(
     response: T,

@@ -1,12 +1,9 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
-import {
-    MozillaWebSocketClient,
-    type WebSocketListener
-} from '../../../src/ws';
+import { MozillaWebSocketClient, type WebSocketListener } from '@ws';
 import {
     BlocksSubscription,
     SubscriptionBlockResponse
-} from '../../../src/thor/subscriptions';
+} from '@thor/subscriptions';
 import { BlockId } from '@vechain/sdk-core';
 
 const mockBlockData = {

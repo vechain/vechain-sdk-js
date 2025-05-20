@@ -1,5 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
-import { Blake2b256, Hex, IllegalArgumentError } from '../../../src';
+import { Blake2b256, Hex } from '@vcdm';
+import { IllegalArgumentError } from '@errors';
 import { CONTENT, NO_CONTENT } from './fixture';
 
 // Hex on purpose because it must be equal to the returned HexUInt hash.

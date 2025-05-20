@@ -1,7 +1,7 @@
-import { type HttpPath, type HttpQuery } from '../../http';
+import { type HttpPath, type HttpQuery } from '@http';
 import { type Address, type BlockId } from '@vechain/sdk-core';
-import { type WebSocketClient, type WebSocketListener } from '../../ws';
-import { type SubscriptionTransferResponse } from './SubscriptionTransferResponse';
+import { type WebSocketClient, type WebSocketListener } from '@ws';
+import { type SubscriptionTransferResponse } from '@thor/subscriptions';
 
 class TransfersSubscription
     implements WebSocketClient, WebSocketListener<SubscriptionTransferResponse>

@@ -9,11 +9,8 @@ import {
     type TransactionBody,
     VET
 } from '@vechain/sdk-core';
-import {
-    type GetTxReceiptResponseJSON,
-    type HttpPath,
-    type TXIDJSON
-} from '../../../src';
+import { type GetTxReceiptResponseJSON, type TXIDJSON } from '@thor';
+import { type HttpPath } from '@http';
 import { mockHttpClient } from '../../utils/MockUnitTestClient';
 import { secp256k1 as nc_secp256k1 } from '@noble/curves/secp256k1';
 

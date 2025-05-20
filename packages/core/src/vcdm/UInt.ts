@@ -1,5 +1,5 @@
 import { Int } from './Int';
-import { IllegalArgumentError } from '../errors';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full Qualified Path

@@ -1,10 +1,10 @@
 import { describe, test } from '@jest/globals';
 import {
     type ExecuteCodesRequestJSON,
-    FetchHttpClient,
     InspectClauses,
     ThorNetworks
-} from '../../../src';
+} from '@thor';
+import { FetchHttpClient } from '@http';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 

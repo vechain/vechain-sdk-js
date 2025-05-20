@@ -6,8 +6,25 @@ import {
     beforeEach,
     afterAll
 } from '@jest/globals';
-import { FetchHttpClient, ThorNetworks, toURL } from '../../src';
-import * as ThorNetworksModule from '../../src/thor/ThorNetworks';
+import { ThorNetworks, toURL, isValidNetworkUrl } from '@thor';
+import { FetchHttpClient } from '@http';
+
+// Define module interface explicitly instead of using import() type
+interface ThorModule {
+    ThorNetworks: typeof ThorNetworks;
+    toURL: typeof toURL;
+    isValidNetworkUrl: typeof isValidNetworkUrl;
+}
+
+// Mock the thor module
+jest.mock('@thor', () => {
+    const actualModule = jest.requireActual<ThorModule>('@thor');
+    return {
+        ThorNetworks: actualModule.ThorNetworks,
+        toURL: actualModule.toURL,
+        isValidNetworkUrl: jest.fn().mockImplementation(() => true)
+    };
+});
 
 // Mock Headers class since it's not available in Node.js environment
 class MockHeaders {
@@ -84,11 +101,6 @@ const originalFetch = global.fetch;
 // Create a typed mock fetch function and install it
 const mockFetch = jest.fn() as unknown as typeof fetch;
 global.fetch = mockFetch;
-
-// Mock the isValidNetworkUrl function to always return true for tests
-jest.spyOn(ThorNetworksModule, 'isValidNetworkUrl').mockImplementation(
-    () => true
-);
 
 interface MockResponse {
     status: string;
@@ -177,16 +189,10 @@ describe('FetchHttpClient unit tests', () => {
     beforeEach(() => {
         // Reset mock between tests
         (mockFetch as jest.Mock).mockReset();
-
-        // Make sure our validator mock returns true
-        jest.spyOn(ThorNetworksModule, 'isValidNetworkUrl').mockImplementation(
-            () => true
-        );
     });
 
     afterAll(() => {
         // Restore mocks
-        jest.restoreAllMocks();
         global.fetch = originalFetch;
     });
 
@@ -219,10 +225,12 @@ describe('FetchHttpClient unit tests', () => {
         });
 
         test('should reject invalid URLs', () => {
-            jest.spyOn(
-                ThorNetworksModule,
-                'isValidNetworkUrl'
-            ).mockImplementation(() => false);
+            // Temporarily change the mock implementation for this test
+            const mockedIsValidNetworkUrl =
+                isValidNetworkUrl as jest.MockedFunction<
+                    typeof isValidNetworkUrl
+                >;
+            mockedIsValidNetworkUrl.mockImplementationOnce(() => false);
 
             expect(() => {
                 const client = new FetchHttpClient(

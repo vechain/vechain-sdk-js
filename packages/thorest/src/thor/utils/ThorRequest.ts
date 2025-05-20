@@ -1,4 +1,4 @@
-import { type HttpClient } from '../http';
+import { type HttpClient } from '@http';
 import { type ThorResponse } from './ThorResponse';
 
 export interface ThorRequest<

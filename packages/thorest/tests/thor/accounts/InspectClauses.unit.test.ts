@@ -3,7 +3,7 @@ import {
     type ExecuteCodesRequestJSON,
     InspectClauses,
     type ExecuteCodeResponseJSON
-} from '../../../src';
+} from '@thor';
 import { VET } from '@vechain/sdk-core';
 import { mockHttpClient } from '../../utils/MockUnitTestClient';
 

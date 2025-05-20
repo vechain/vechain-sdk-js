@@ -1,14 +1,11 @@
-import {
-    TransferLogsResponse,
-    type TransferLogsResponseJSON
-} from './TransferLogsResponse';
-import { type ThorRequest } from '../ThorRequest';
-import type { HttpClient, HttpPath } from '../../http';
+import { type HttpClient, type HttpPath } from '@http';
 import {
     TransferLogFilterRequest,
-    type TransferLogFilterRequestJSON
-} from './TransferLogFilterRequest';
-import { type ThorResponse } from '../ThorResponse';
+    type TransferLogFilterRequestJSON,
+    TransferLogsResponse,
+    type TransferLogsResponseJSON
+} from '@thor/logs';
+import { type ThorRequest, type ThorResponse } from '../utils';
 
 class QueryVETTransferEvents
     implements ThorRequest<QueryVETTransferEvents, TransferLogsResponse>

@@ -1,7 +1,6 @@
-import { type HttpClient, type HttpPath } from '../../http';
-import { type ThorRequest } from '../ThorRequest';
-import { type ThorResponse } from '../ThorResponse';
-import { RawBlockResponse, type RawBlockResponseJSON } from './RawBlockReponse';
+import { type HttpClient, type HttpPath } from '@http';
+import { RawBlockResponse, type RawBlockResponseJSON } from '@thor/blocks';
+import { type ThorRequest, type ThorResponse } from '../utils';
 import { type Revision } from '@vechain/sdk-core';
 
 class RetrieveRawBlock

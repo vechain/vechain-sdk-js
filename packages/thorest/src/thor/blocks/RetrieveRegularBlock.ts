@@ -1,10 +1,9 @@
-import { type HttpClient, type HttpPath } from '../../http';
-import { type ThorRequest } from '../ThorRequest';
-import { type ThorResponse } from '../ThorResponse';
+import { type HttpClient, type HttpPath } from '@http';
 import {
     RegularBlockResponse,
     type RegularBlockResponseJSON
-} from './RegularBlockResponse';
+} from '@thor/blocks';
+import { type ThorRequest, type ThorResponse } from '../utils';
 import { type Revision } from '@vechain/sdk-core';
 
 class RetrieveRegularBlock

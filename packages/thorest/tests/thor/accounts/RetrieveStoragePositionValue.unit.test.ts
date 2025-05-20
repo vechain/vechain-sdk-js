@@ -5,7 +5,7 @@ import {
     RetrieveStoragePositionValuePath,
     GetStorageResponse,
     type GetStorageResponseJSON
-} from '../../../src';
+} from '@thor';
 import {
     mockHttpClient,
     mockHttpClientWithError

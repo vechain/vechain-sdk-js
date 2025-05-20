@@ -1,13 +1,10 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
-import {
-    MozillaWebSocketClient,
-    type WebSocketListener
-} from '../../../src/ws';
+import { MozillaWebSocketClient, type WebSocketListener } from '@ws';
 import {
     BeatsSubscription,
     SubscriptionBeat2Response,
     type SubscriptionBeat2ResponseJSON
-} from '../../../src/thor/subscriptions';
+} from '@thor/subscriptions';
 
 const mockBeatData = {
     gasLimit: 21000,

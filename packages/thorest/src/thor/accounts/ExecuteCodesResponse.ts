@@ -3,7 +3,7 @@ import {
     type EventJSON,
     Transfer,
     type TransferJSON
-} from '../transactions';
+} from '@thor/transactions';
 import { HexUInt, Gas } from '@vechain/sdk-core';
 
 class ExecuteCodeResponse {

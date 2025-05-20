@@ -1,6 +1,5 @@
 import { describe, test, expect, jest, beforeEach } from '@jest/globals';
-import { MozillaWebSocketClient } from '../../src/ws/MozillaWebSocketClient';
-import { type WebSocketListener } from '../../src/ws';
+import { type WebSocketListener, MozillaWebSocketClient } from '@ws';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 // Mock CloseEvent since it's not available in the test environment

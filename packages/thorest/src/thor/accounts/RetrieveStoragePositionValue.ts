@@ -1,11 +1,10 @@
-import { type HttpClient, type HttpPath } from '../../http';
+import { type HttpClient, type HttpPath } from '@http';
 import { type Address, type BlockId } from '@vechain/sdk-core';
-import { type ThorRequest } from '../ThorRequest';
 import {
     GetStorageResponse,
     type GetStorageResponseJSON
-} from './GetStorageResponse';
-import { type ThorResponse } from '../ThorResponse';
+} from '@thor/accounts';
+import { type ThorRequest, type ThorResponse } from '../utils';
 
 class RetrieveStoragePositionValue
     implements ThorRequest<RetrieveStoragePositionValue, GetStorageResponse>

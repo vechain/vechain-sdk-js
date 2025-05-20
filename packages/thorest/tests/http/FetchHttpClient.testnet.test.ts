@@ -1,5 +1,6 @@
 import { describe, test, expect } from '@jest/globals';
-import { FetchHttpClient, ThorNetworks, toURL } from '../../src';
+import { FetchHttpClient } from '@http';
+import { ThorNetworks, toURL } from '@thor';
 
 interface MockResponse {
     status: string;

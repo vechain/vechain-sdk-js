@@ -1,4 +1,4 @@
-import { InvalidEncodingError } from '../../../../errors';
+import { InvalidEncodingError } from '@errors';
 
 /**
  * Full Qualified Path

@@ -1,4 +1,4 @@
-import { LogMeta, type LogMetaJSON } from './LogMeta';
+import { LogMeta, type LogMetaJSON } from '@thor/logs';
 import { Address, HexUInt, ThorId } from '@vechain/sdk-core';
 
 class EventLogResponse {

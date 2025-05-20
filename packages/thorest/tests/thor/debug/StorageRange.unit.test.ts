@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { StorageRange, type StorageRangeJSON } from '../../../src/thor/debug';
+import { StorageRange, type StorageRangeJSON } from '@thor/debug';
 import { ThorId } from '@vechain/sdk-core';
 
 /**

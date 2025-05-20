@@ -1,4 +1,4 @@
-import { Tracer, type TracerName } from './TracerName';
+import { Tracer, type TracerName } from '@thor/debug';
 import {
     Address,
     type BlockRef,

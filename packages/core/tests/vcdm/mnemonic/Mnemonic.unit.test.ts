@@ -1,12 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
-import { Hex } from '../../../src';
-import {
-    Address,
-    IllegalArgumentError,
-    Mnemonic,
-    Secp256k1,
-    type WordlistSizeType
-} from '../../../src';
+import { Address, Hex, Mnemonic, type WordlistSizeType } from '@vcdm';
+import { IllegalArgumentError } from '@errors';
+import { Secp256k1 } from '@secp256k1';
 import {
     customRandomGeneratorWithXor,
     derivationPaths,

@@ -1,10 +1,7 @@
 import { describe, test } from '@jest/globals';
-import { TxId } from '../../../../core';
-import {
-    FetchHttpClient,
-    RetrieveTransactionByID,
-    ThorNetworks
-} from '../../../src';
+import { TxId } from '@vechain/sdk-core';
+import { RetrieveTransactionByID, ThorNetworks } from '@thor';
+import { FetchHttpClient } from '@http';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 

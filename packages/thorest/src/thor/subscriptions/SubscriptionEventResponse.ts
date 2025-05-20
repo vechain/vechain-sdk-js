@@ -1,4 +1,4 @@
-import { LogMeta, type LogMetaJSON } from '../logs';
+import { LogMeta, type LogMetaJSON } from '@thor/logs';
 import { Address, HexUInt, ThorId } from '@vechain/sdk-core';
 
 class SubscriptionEventResponse {

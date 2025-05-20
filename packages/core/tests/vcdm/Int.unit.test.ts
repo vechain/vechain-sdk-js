@@ -1,5 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
-import { Int, IllegalArgumentError } from '../../src';
+import { Int } from '@vcdm';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Test Int class.

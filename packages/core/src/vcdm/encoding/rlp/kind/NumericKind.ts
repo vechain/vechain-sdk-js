@@ -3,9 +3,11 @@ import {
     assertValidNumericKindBuffer,
     decodeBufferToNumberOrHex,
     encodeBigIntToBuffer,
-    validateNumericKindData
-} from '../helpers';
-import { type BufferOutput, type DataOutput, type RLPInput } from '../types';
+    validateNumericKindData,
+    type BufferOutput,
+    type DataOutput,
+    type RLPInput
+} from '@vcdm';
 
 /**
  * Represents a scalar kind with numeric functionality.

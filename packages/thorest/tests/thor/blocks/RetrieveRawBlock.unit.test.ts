@@ -3,7 +3,7 @@ import {
     type RawBlockResponseJSON,
     RawBlockResponse,
     RetrieveRawBlock
-} from '../../../src';
+} from '@thor';
 import { IllegalArgumentError, Revision } from '@vechain/sdk-core';
 import { mockHttpClient } from '../../utils/MockUnitTestClient';
 

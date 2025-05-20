@@ -1,4 +1,4 @@
-import { Clause, type ClauseJSON } from '../transactions';
+import { Clause, type ClauseJSON } from '@thor/transactions';
 import { Address, BlockRef, Gas, UInt, Units, VTHO } from '@vechain/sdk-core';
 
 class ExecuteCodesRequest {

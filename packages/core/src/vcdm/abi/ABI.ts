@@ -4,13 +4,12 @@ import {
     parseAbiParameters,
     type AbiParameter
 } from 'viem';
-import { Hex } from '../Hex';
-import { type VeChainDataModel } from '../VeChainDataModel';
+import { Hex, type VeChainDataModel } from '@vcdm';
 import {
     InvalidAbiDecodingTypeError,
     InvalidAbiEncodingTypeError,
     UnsupportedOperationError
-} from '../../errors';
+} from '@errors';
 
 /**
  * Full Qualified Path

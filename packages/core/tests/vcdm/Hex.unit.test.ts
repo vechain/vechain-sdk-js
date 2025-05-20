@@ -1,10 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
-import {
-    Hex,
-    IllegalArgumentError,
-    Txt,
-    UnsupportedOperationError
-} from '../../src';
+import { Hex, Txt } from '@vcdm';
+import { IllegalArgumentError, UnsupportedOperationError } from '@errors';
 
 /**
  * Test Hex class.

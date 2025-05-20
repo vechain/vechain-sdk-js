@@ -3,7 +3,7 @@ import {
     PostDebugTracerCallRequest,
     TraceCall,
     type PostDebugTracerCallRequestJSON
-} from '../../../src/thor/debug';
+} from '@thor/debug';
 import {
     Address,
     Gas,

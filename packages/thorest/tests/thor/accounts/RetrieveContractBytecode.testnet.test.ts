@@ -1,10 +1,7 @@
 import { describe, test } from '@jest/globals';
 import { Address } from '@vechain/sdk-core';
-import {
-    RetrieveContractBytecode,
-    FetchHttpClient,
-    ThorNetworks
-} from '../../../src';
+import { RetrieveContractBytecode, ThorNetworks } from '@thor';
+import { FetchHttpClient } from '@http';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 

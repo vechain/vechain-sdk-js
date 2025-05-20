@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { TxId } from '@vechain/sdk-core';
-import { type GetTxResponseJSON, RetrieveTransactionByID } from '../../../src';
+import { type GetTxResponseJSON, RetrieveTransactionByID } from '@thor';
 import { mockHttpClient } from '../../utils/MockUnitTestClient';
 
 /**

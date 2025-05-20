@@ -2,7 +2,7 @@ import { TxId } from '@vechain/sdk-core';
 import {
     CommmonBlockResponse,
     type CommmonBlockResponseJSON
-} from './CommonBlockResponse';
+} from '@thor/blocks';
 
 class RegularBlockResponse extends CommmonBlockResponse {
     readonly transactions: TxId[];

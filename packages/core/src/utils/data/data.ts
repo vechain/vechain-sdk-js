@@ -1,8 +1,7 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
-import { Hex } from '../../vcdm/Hex';
-import { Txt } from '../../vcdm/Txt';
-import { ZERO_BYTES } from '../const';
-import { IllegalArgumentError } from '../../errors';
+import { Hex, Txt } from '@vcdm';
+import { ZERO_BYTES } from '@utils';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full Qualified Path

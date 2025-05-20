@@ -1,8 +1,7 @@
 import { type TxId, type BlockId } from '@vechain/sdk-core';
-import { type HttpClient, type HttpPath, type HttpQuery } from '../../http';
-import { GetTxResponse, type GetTxResponseJSON } from './GetTxResponse';
-import { type ThorRequest } from '../ThorRequest';
-import { type ThorResponse } from '../ThorResponse';
+import { type HttpClient, type HttpPath, type HttpQuery } from '@http';
+import { GetTxResponse, type GetTxResponseJSON } from '@thor/transactions';
+import { type ThorRequest, type ThorResponse } from '../utils';
 
 class RetrieveTransactionByID
     implements ThorRequest<RetrieveTransactionByID, GetTxResponse>

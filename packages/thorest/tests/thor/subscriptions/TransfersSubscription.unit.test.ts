@@ -1,15 +1,12 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
-import {
-    MozillaWebSocketClient,
-    type WebSocketListener
-} from '../../../src/ws';
+import { MozillaWebSocketClient, type WebSocketListener } from '@ws';
 import {
     TransfersSubscription,
     SubscriptionTransferResponse,
     type SubscriptionTransferJSON
-} from '../../../src/thor/subscriptions';
+} from '@thor/subscriptions';
 import { Address, BlockId } from '@vechain/sdk-core';
-import type { LogMetaJSON } from '../../../src/thor/logs';
+import type { LogMetaJSON } from '@thor/logs';
 
 // Create a mock WebSocket instance that will be returned by the constructor
 const mockWebSocketInstance = {

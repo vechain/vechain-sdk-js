@@ -1,11 +1,10 @@
-import type { HttpClient, HttpPath } from '../../http';
-import { type ThorRequest } from '../ThorRequest';
+import type { HttpClient, HttpPath } from '@http';
 import {
     StorageRangeOption,
-    type StorageRangeOptionJSON
-} from './StorageRangeOption';
-import { type ThorResponse } from '../ThorResponse';
-import { type StorageRange } from './StorageRange';
+    type StorageRangeOptionJSON,
+    type StorageRange
+} from '@thor/debug';
+import { type ThorRequest, type ThorResponse } from '../utils';
 
 class RetrieveStorageRange
     implements ThorRequest<RetrieveStorageRange, StorageRange>

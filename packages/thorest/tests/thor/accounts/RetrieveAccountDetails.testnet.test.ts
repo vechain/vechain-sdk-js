@@ -1,9 +1,6 @@
 import { describe, test } from '@jest/globals';
-import {
-    FetchHttpClient,
-    RetrieveAccountDetails,
-    ThorNetworks
-} from '../../../src';
+import { RetrieveAccountDetails, ThorNetworks } from '@thor';
+import { FetchHttpClient } from '@http';
 import { Address } from '@vechain/sdk-core';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';

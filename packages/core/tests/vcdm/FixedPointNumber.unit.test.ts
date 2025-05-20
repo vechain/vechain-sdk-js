@@ -3,10 +3,9 @@ import log from 'loglevel';
 import { BigNumber } from 'bignumber.js';
 import {
     FixedPointNumber,
-    IllegalArgumentError,
     Txt,
-    UnsupportedOperationError
-} from '../../src';
+} from '@vcdm';
+import { IllegalArgumentError, UnsupportedOperationError } from '@errors';
 
 /**
  * Test FixedPointNumber class.

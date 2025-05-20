@@ -1,8 +1,7 @@
 import { HexUInt } from '@vechain/sdk-core';
-import { type HttpClient, type HttpPath } from '../../http';
-import { type ThorRequest } from '../ThorRequest';
-import { type ThorResponse } from '../ThorResponse';
-import { TXID, type TXIDJSON } from './TXID';
+import { type HttpClient, type HttpPath } from '@http';
+import { TXID, type TXIDJSON } from '@thor/transactions';
+import { type ThorRequest, type ThorResponse } from '../utils';
 
 class SendTransaction implements ThorRequest<SendTransaction, TXID> {
     static readonly PATH: HttpPath = { path: '/transactions' };

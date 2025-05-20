@@ -3,7 +3,7 @@ import {
     ExpandedBlockResponse,
     type ExpandedBlockResponseJSON,
     RetrieveExpandedBlock
-} from '../../../src/thor/blocks';
+} from '@thor';
 import { Revision } from '@vechain/sdk-core';
 import { mockHttpClient } from '../../utils/MockUnitTestClient';
 

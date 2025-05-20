@@ -1,7 +1,9 @@
 import { describe, expect, test } from '@jest/globals';
-import { QueryVETTransferEvents } from '../../../src/thor/logs/QueryVETTransferEvents';
-import { type TransferLogFilterRequestJSON } from '../../../src/thor/logs/TransferLogFilterRequest';
-import { type TransferLogsResponseJSON } from '../../../src/thor/logs';
+import {
+    QueryVETTransferEvents,
+    type TransferLogFilterRequestJSON,
+    type TransferLogsResponseJSON
+} from '@thor/logs';
 import { mockHttpClient } from '../../utils/MockUnitTestClient';
 
 /**

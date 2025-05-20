@@ -1,7 +1,5 @@
-import {
-    Secp256k1,
-    type WordListRandomGeneratorSizeInBytes
-} from '../../../src';
+import { type WordListRandomGeneratorSizeInBytes } from '@vcdm';
+import { Secp256k1 } from '@secp256k1';
 
 /**
  * Mnemonic words fixture.

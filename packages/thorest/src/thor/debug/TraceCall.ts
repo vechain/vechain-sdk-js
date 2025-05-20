@@ -1,10 +1,9 @@
-import { type ThorRequest } from '../ThorRequest';
-import { type HttpClient, type HttpPath } from '../../http';
+import { type HttpClient, type HttpPath } from '@http';
 import {
     PostDebugTracerCallRequest,
     type PostDebugTracerCallRequestJSON
-} from './PostDebugTracerCallRequest';
-import { type ThorResponse } from '../ThorResponse';
+} from '@thor/debug';
+import { type ThorRequest, type ThorResponse } from '../utils';
 
 class TraceCall implements ThorRequest<TraceCall, undefined> {
     static readonly PATH: HttpPath = { path: '/debug/tracers/call' };

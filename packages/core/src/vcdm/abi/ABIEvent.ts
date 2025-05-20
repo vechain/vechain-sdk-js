@@ -9,14 +9,14 @@ import {
     decodeEventLog as viemDecodeEventLog,
     type Hex as ViemHex
 } from 'viem';
-import { Hex } from '../Hex';
-import { ABI } from './ABI';
-import { ABIItem } from './ABIItem';
 import {
     AbiConstructorNotFoundError,
     InvalidAbiDecodingTypeError,
     InvalidAbiEncodingTypeError
-} from '../../errors';
+} from '@errors';
+import { ABIItem } from './ABIItem';
+import { Hex } from '@vcdm';
+import { ABI } from './ABI';
 
 type Topics = [] | [signature: ViemHex, ...args: ViemHex[]];
 

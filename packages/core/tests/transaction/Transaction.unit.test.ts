@@ -1,18 +1,17 @@
 import { describe, expect, test } from '@jest/globals';
+import { Address, HexUInt, Units, VTHO } from '@vcdm';
+import { Secp256k1 } from '@secp256k1';
 import {
-    Address,
-    HexUInt,
+    Transaction,
+    type TransactionBody,
+    type TransactionClause
+} from '@transaction';
+import {
     IllegalArgumentError,
     InvalidPrivateKeyError,
     NoSuchElementError,
-    Secp256k1,
-    Transaction,
-    Units,
-    UnsupportedOperationError,
-    VTHO,
-    type TransactionBody,
-    type TransactionClause
-} from '../../src';
+    UnsupportedOperationError
+} from '@errors';
 
 const DelegatorPrivateKeyFix = HexUInt.of(
     '40de805e918403683fb9a6081c3fba072cdc5c88232c62a9509165122488dab7'

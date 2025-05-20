@@ -1,15 +1,12 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
-import {
-    MozillaWebSocketClient,
-    type WebSocketListener
-} from '../../../src/ws';
+import { MozillaWebSocketClient, type WebSocketListener } from '@ws';
 import {
     EventsSubscription,
     SubscriptionEventResponse,
     type SubscriptionEventResponseJSON
-} from '../../../src/thor/subscriptions';
+} from '@thor/subscriptions';
 import { Address, ThorId } from '@vechain/sdk-core';
-import { type LogMetaJSON } from '../../../src/thor/logs';
+import { type LogMetaJSON } from '@thor/logs';
 
 const mockLogMeta = {
     blockID:

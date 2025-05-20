@@ -3,9 +3,9 @@ import {
     generateMnemonic,
     validateMnemonic
 } from '@scure/bip39';
-import { HDKey } from '../hdkey';
-import { IllegalArgumentError, UnsupportedOperationError } from '../errors';
-import { type VeChainDataModel } from './VeChainDataModel';
+import { HDKey } from '@hdkey';
+import { IllegalArgumentError, UnsupportedOperationError } from '@errors';
+import { type VeChainDataModel } from '@vcdm';
 import { wordlist } from '@scure/bip39/wordlists/english';
 
 /**

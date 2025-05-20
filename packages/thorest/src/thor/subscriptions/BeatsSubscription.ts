@@ -1,10 +1,10 @@
-import { type WebSocketClient, type WebSocketListener } from '../../ws';
-import type { HttpPath } from '../../http';
+import { type WebSocketClient, type WebSocketListener } from '@ws';
+import type { HttpPath } from '@http';
 import type { BlockId } from '@vechain/sdk-core';
 import {
     SubscriptionBeat2Response,
     type SubscriptionBeat2ResponseJSON
-} from './SubscriptionBeat2Response';
+} from '@thor/subscriptions';
 
 class BeatsSubscription implements WebSocketClient, WebSocketListener<unknown> {
     static readonly PATH: HttpPath = { path: '/subscriptions/beat2' };

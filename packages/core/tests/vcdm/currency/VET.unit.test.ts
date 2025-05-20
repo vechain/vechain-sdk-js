@@ -1,5 +1,4 @@
-import { FixedPointNumber, Txt } from '../../../src';
-import { VET } from '../../../src/vcdm/currency/VET';
+import { FixedPointNumber, Txt, VET } from '@vcdm';
 import { describe, expect, test } from '@jest/globals';
 
 const VETFixture = {

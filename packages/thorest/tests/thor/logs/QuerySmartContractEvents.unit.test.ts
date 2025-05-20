@@ -1,10 +1,10 @@
 import { describe, test, expect } from '@jest/globals';
-import { QuerySmartContractEvents } from '../../../src/thor/logs/QuerySmartContractEvents';
-import { type EventLogFilterRequestJSON } from '../../../src/thor/logs/EventLogFilterRequest';
 import {
+    type EventLogFilterRequestJSON,
+    QuerySmartContractEvents,
     EventLogsResponse,
     type EventLogsResponseJSON
-} from '../../../src/thor/logs';
+} from '@thor/logs';
 import { mockHttpClient } from '../../utils/MockUnitTestClient';
 
 /**

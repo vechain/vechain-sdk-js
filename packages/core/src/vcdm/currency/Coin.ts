@@ -1,7 +1,7 @@
 import { type Currency } from './Currency';
 import { type FixedPointNumber } from '../FixedPointNumber';
 import { Txt } from '../Txt';
-import { IllegalArgumentError } from '../../errors';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full Qualified Path

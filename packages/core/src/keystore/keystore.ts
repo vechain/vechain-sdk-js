@@ -1,7 +1,7 @@
 import log from 'loglevel';
-import { Txt } from '../vcdm';
-import { keystoreEthers, keystoreExperimental } from './cryptography';
-import { type Keystore, type KeystoreAccount } from './types';
+import { Txt } from '@vcdm';
+import { keystoreEthers, keystoreExperimental } from '@keystore/cryptography';
+import { type Keystore, type KeystoreAccount } from '@keystore';
 import pkg from '../../package.json';
 
 /**

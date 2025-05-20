@@ -1,14 +1,11 @@
-import { type ThorRequest } from '../ThorRequest';
-import type { HttpClient, HttpPath } from '../../http';
+import { type HttpClient, type HttpPath } from '@http';
 import {
     EventLogFilterRequest,
-    type EventLogFilterRequestJSON
-} from './EventLogFilterRequest';
-import type { ThorResponse } from '../ThorResponse';
-import {
+    type EventLogFilterRequestJSON,
     EventLogsResponse,
     type EventLogsResponseJSON
-} from './EventLogsResponse';
+} from '@thor/logs';
+import { type ThorRequest, type ThorResponse } from '../utils';
 
 class QuerySmartContractEvents
     implements ThorRequest<QuerySmartContractEvents, EventLogsResponse>
