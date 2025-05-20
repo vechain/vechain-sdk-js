@@ -18,7 +18,7 @@ describe('ThorClient - Gas Module', () => {
      * Validates the base gas price of the Testnet.
      */
     test('Should return the base gas price of the Testnet', async () => {
-        const baseGasPrice = await thorClient.contracts.getBaseGasPrice();
+        const baseGasPrice = await thorClient.contracts.getLegacyBaseGasPrice();
         const expected = {
             success: true,
             result: {

@@ -123,10 +123,10 @@ class ContractsModule {
 
     /**
      * This method is going to be deprecated in the next release.
-     * Use {@link TransactionsModule.getBaseGasPrice} instead.
+     * Use {@link TransactionsModule.getLegacyBaseGasPrice} instead.
      */
-    public async getBaseGasPrice(): Promise<ContractCallResult> {
-        return await this.transactionsModule.getBaseGasPrice();
+    public async getLegacyBaseGasPrice(): Promise<ContractCallResult> {
+        return await this.transactionsModule.getLegacyBaseGasPrice();
     }
 }
 

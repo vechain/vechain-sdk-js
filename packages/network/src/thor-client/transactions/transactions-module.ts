@@ -910,6 +910,8 @@ class TransactionsModule {
             gasLimit: options?.gasLimit,
             gasPrice: options?.gasPrice,
             gasPriceCoef: options?.gasPriceCoef,
+            maxFeePerGas: options?.maxFeePerGas,
+            maxPriorityFeePerGas: options?.maxPriorityFeePerGas,
             nonce: options?.nonce,
             value: options?.value,
             dependsOn: options?.dependsOn,
@@ -945,6 +947,8 @@ class TransactionsModule {
             gasLimit: options?.gasLimit,
             gasPrice: options?.gasPrice,
             gasPriceCoef: options?.gasPriceCoef,
+            maxFeePerGas: options?.maxFeePerGas,
+            maxPriorityFeePerGas: options?.maxPriorityFeePerGas,
             nonce: options?.nonce,
             value: options?.value,
             dependsOn: options?.dependsOn,
@@ -971,7 +975,7 @@ class TransactionsModule {
      *
      * @return {Promise<ContractCallResult>} A promise that resolves to the result of the contract call, containing the base gas price.
      */
-    public async getBaseGasPrice(): Promise<ContractCallResult> {
+    public async getLegacyBaseGasPrice(): Promise<ContractCallResult> {
         return await this.executeCall(
             BUILT_IN_CONTRACTS.PARAMS_ADDRESS,
             ABIContract.ofAbi(BUILT_IN_CONTRACTS.PARAMS_ABI).getFunction('get'),
