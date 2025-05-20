@@ -103,19 +103,16 @@ class Address extends HexUInt {
      * @remarks Security auditable method, depends on
      * * {@link Secp256k1.derivePublicKey}.
      */
-    public static ofPrivateKey(
-        privateKey: Uint8Array,
-        isCompressed: boolean = true
-    ): Address {
+    public static ofPrivateKey(privateKey: Uint8Array): Address {
         try {
             return Address.ofPublicKey(
-                Secp256k1.derivePublicKey(privateKey, isCompressed)
+                Secp256k1.derivePublicKey(privateKey, true)
             );
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}Address.ofPrivateKey(privateKey: Uint8Array, isCompressed: boolean): Address`,
                 'not a valid private key',
-                { privateKey: `obfuscated`, isCompressed: `${isCompressed}` },
+                { privateKey: `obfuscated`, isCompressed: true },
                 error instanceof Error ? error : undefined
             );
         }
@@ -128,7 +125,7 @@ class Address extends HexUInt {
      *
      * @returns {Address} The converted address.
      *
-     * @remarks Security audit method, depends on
+     * @remarks Security auditable method, depends on
      * * {@link Secp256k1.inflatePublicKey}.
      */
     public static ofPublicKey(publicKey: Uint8Array): Address {
@@ -154,6 +151,10 @@ class Address extends HexUInt {
      * and a [BIP44 Derivation Path](https://github.com/satoshilabs/slips/blob/master/slip-0044.md)
      * as in the examples.
      *
+     * Secure audit function.
+     * - {@link bip32.HDKey}(https://github.com/paulmillr/scure-bip32)
+     * - {@link HDKey}
+     *
      * @example `m/0` (default)
      * @example `m/0/2`
      * @example `m/0/2/4/6`
@@ -162,11 +163,6 @@ class Address extends HexUInt {
      * @param {string} [path='m/0'] - The derivation path from the current node.
      * @return {Address} - The derived address.
      * @throws {IllegalArgumentError} - If the `path` is invalid.
-     *
-     * @remarks Security audit function
-     * - {@link Address.ofPublicKey}
-     * - {@link bip32.HDKey}(https://github.com/paulmillr/scure-bip32)
-     *
      */
     public static ofMnemonic(
         mnemonic: string[],
