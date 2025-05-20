@@ -9,12 +9,16 @@ import {
 import { ThorNetworks, toURL, isValidNetworkUrl } from '@thor';
 import { FetchHttpClient } from '@http';
 
+// Define module interface explicitly instead of using import() type
+interface ThorModule {
+    ThorNetworks: typeof ThorNetworks;
+    toURL: typeof toURL;
+    isValidNetworkUrl: typeof isValidNetworkUrl;
+}
+
 // Mock the thor module
 jest.mock('@thor', () => {
-    const actualModule = jest.requireActual('@thor') as {
-        ThorNetworks: typeof ThorNetworks;
-        toURL: typeof toURL;
-    };
+    const actualModule = jest.requireActual<ThorModule>('@thor');
     return {
         ThorNetworks: actualModule.ThorNetworks,
         toURL: actualModule.toURL,
