@@ -1,8 +1,5 @@
 import { describe, test } from '@jest/globals';
-import {
-    type PostDebugTracerCallRequestJSON,
-    TraceCall
-} from '@thor/debug';
+import { type PostDebugTracerCallRequestJSON, TraceCall } from '@thor/debug';
 import { FetchHttpClient } from '@http';
 import { ThorNetworks } from '@thor';
 import log from 'loglevel';

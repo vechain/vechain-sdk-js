@@ -1,8 +1,5 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
-import {
-    MozillaWebSocketClient,
-    type WebSocketListener
-} from '@ws';
+import { MozillaWebSocketClient, type WebSocketListener } from '@ws';
 import {
     TransfersSubscription,
     SubscriptionTransferResponse,

@@ -14,7 +14,14 @@ module.exports = {
     runner: 'groups',
     reporters: ['default', 'jest-junit'],
     workerThreads: true,
-    moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths ),
+    moduleNameMapper: {
+        '@thor/(.*)': '<rootDir>/src/thor/$1',
+        '@thor': '<rootDir>/src/thor',
+        '@ws/(.*)': '<rootDir>/src/ws/$1',
+        '@ws': '<rootDir>/src/ws',
+        '@http/(.*)': '<rootDir>/src/http/$1',
+        '@http': '<rootDir>/src/http'
+    },
     coverageThreshold:
         isUnitTest !== 'true'
             ? {

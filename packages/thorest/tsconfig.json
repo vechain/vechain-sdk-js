@@ -3,7 +3,15 @@
   "compilerOptions": {
       "outDir": "./dist",
       "allowSyntheticDefaultImports": true,
-      "esModuleInterop": true
+      "esModuleInterop": true,
+      "paths": {
+          "@thor": ["./src/thor"],
+          "@thor/*": ["./src/thor/*"],
+          "@ws": ["./src/ws"],
+          "@ws/*": ["./src/ws/*"],
+          "@http": ["./src/http"],
+          "@http/*": ["./src/http/*"]
+      }
   },
   "include": [
       "./src/**/*.ts",

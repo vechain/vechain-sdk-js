@@ -1,6 +1,6 @@
 import { BlockId, Hex, UInt } from '@vechain/sdk-core';
 
-import { NetAddr } from '@vcdm';
+import { NetAddr } from './NetAddr';
 
 /**
  * Represents statistics for a peer in the network

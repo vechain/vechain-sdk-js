@@ -1,8 +1,5 @@
 import { describe, test } from '@jest/globals';
-import {
-    RetrieveConnectedPeers,
-    ThorNetworks
-} from '@thor';
+import { RetrieveConnectedPeers, ThorNetworks } from '@thor';
 import { FetchHttpClient } from '@http';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';

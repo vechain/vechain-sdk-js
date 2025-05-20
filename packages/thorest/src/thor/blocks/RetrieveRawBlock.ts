@@ -1,8 +1,5 @@
 import { type HttpClient, type HttpPath } from '@http';
-import {
-    RawBlockResponse,
-    type RawBlockResponseJSON
-} from '@thor/blocks';
+import { RawBlockResponse, type RawBlockResponseJSON } from '@thor/blocks';
 import { type ThorRequest, type ThorResponse } from '../utils';
 import { type Revision } from '@vechain/sdk-core';
 

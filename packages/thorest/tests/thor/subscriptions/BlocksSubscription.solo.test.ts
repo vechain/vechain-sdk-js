@@ -1,8 +1,5 @@
 import { afterEach, beforeEach, describe, test } from '@jest/globals';
-import {
-    MozillaWebSocketClient,
-    type WebSocketListener
-} from '@ws';
+import { MozillaWebSocketClient, type WebSocketListener } from '@ws';
 import {
     BlocksSubscription,
     type SubscriptionBlockResponse

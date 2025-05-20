@@ -1,6 +1,6 @@
 import { describe, test, expect } from '@jest/globals';
 import {
-    EventLogFilterRequestJSON,
+    type EventLogFilterRequestJSON,
     QuerySmartContractEvents,
     EventLogsResponse,
     type EventLogsResponseJSON

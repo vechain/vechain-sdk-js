@@ -1,8 +1,5 @@
 import { describe, test } from '@jest/globals';
-import {
-    RetrieveAccountDetails,
-    ThorNetworks
-} from '@thor';
+import { RetrieveAccountDetails, ThorNetworks } from '@thor';
 import { FetchHttpClient } from '@http';
 import { Address } from '@vechain/sdk-core';
 import log from 'loglevel';

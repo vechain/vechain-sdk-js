@@ -1,4 +1,4 @@
-import { WebSocketClient, type WebSocketListener } from '@ws';
+import { type WebSocketClient, type WebSocketListener } from '@ws';
 import { type HttpPath } from '@http';
 
 class MozillaWebSocketClient implements WebSocketClient {

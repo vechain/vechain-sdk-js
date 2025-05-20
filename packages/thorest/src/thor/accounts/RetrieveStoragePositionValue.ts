@@ -2,7 +2,7 @@ import { type HttpClient, type HttpPath } from '@http';
 import { type Address, type BlockId } from '@vechain/sdk-core';
 import {
     GetStorageResponse,
-    GetStorageResponseJSON
+    type GetStorageResponseJSON
 } from '@thor/accounts';
 import { type ThorRequest, type ThorResponse } from '../utils';
 

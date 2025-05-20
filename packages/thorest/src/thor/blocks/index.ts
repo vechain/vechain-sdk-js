@@ -1,4 +1,4 @@
-export * from './CommonBlockResponse'
+export * from './CommonBlockResponse';
 export * from './RetrieveRawBlock';
 export * from './RetrieveRegularBlock';
 export * from './RetrieveExpandedBlock';
