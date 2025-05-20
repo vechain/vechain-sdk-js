@@ -41,7 +41,7 @@ import {
     testingContractTestCases
 } from './fixture';
 import { configData } from '../../fixture';
-import {THOR_SOLO_DEFAULT_BASE_FEE_PER_GAS} from '@vechain/sdk-solo-setup'
+import { THOR_SOLO_DEFAULT_BASE_FEE_PER_GAS } from '@vechain/sdk-solo-setup';
 
 /**
  * Tests for the ThorClient class, specifically focusing on contract-related functionality.
@@ -205,7 +205,9 @@ describe('ThorClient - Contracts', () => {
 
         // Retrieve the bytecode of the deployed contract
         const contractBytecodeResponse =
-            await thorSoloClient.accounts.getBytecode(Address.of(contract.address));
+            await thorSoloClient.accounts.getBytecode(
+                Address.of(contract.address)
+            );
 
         // Assertion: Compare with the expected deployed contract bytecode
         expect(`${contractBytecodeResponse}`).toBe(deployedContractBytecode);
@@ -488,9 +490,9 @@ describe('ThorClient - Contracts', () => {
             if (error instanceof Error) {
                 expect(error.message).toEqual(
                     `Method 'getSecretData()' failed.` +
-                    `\n-Reason: 'Not the contract owner'` +
-                    `\n-Parameters: \n\t` +
-                    `{\n  "contractAddress": "${deployedContract.address}"\n}`
+                        `\n-Reason: 'Not the contract owner'` +
+                        `\n-Parameters: \n\t` +
+                        `{\n  "contractAddress": "${deployedContract.address}"\n}`
                 );
             }
         }
@@ -792,15 +794,18 @@ describe('ThorClient - Contracts', () => {
     });
 
     /**
-     * Test suite for 'getBaseGasPrice' method
+     * Test suite for 'getLegacyBaseGasPrice' method
      */
-    describe('getBaseGasPrice', () => {
+    describe('getLegacyBaseGasPrice', () => {
         test('Should return the base gas price of the Solo network', async () => {
             const baseGasPrice =
-                await thorSoloClient.contracts.getBaseGasPrice();
-            expect(baseGasPrice).toEqual(            {
+                await thorSoloClient.contracts.getLegacyBaseGasPrice();
+            expect(baseGasPrice).toEqual({
                 success: true,
-                result: { plain: THOR_SOLO_DEFAULT_BASE_FEE_PER_GAS, array: [THOR_SOLO_DEFAULT_BASE_FEE_PER_GAS] }
+                result: {
+                    plain: THOR_SOLO_DEFAULT_BASE_FEE_PER_GAS,
+                    array: [THOR_SOLO_DEFAULT_BASE_FEE_PER_GAS]
+                }
             });
         });
     });
