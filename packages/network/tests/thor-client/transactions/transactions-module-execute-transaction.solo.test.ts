@@ -30,7 +30,7 @@ describe('ThorClient - Transactions Module Execute Transaction', () => {
 
     beforeAll(async () => {
         thorSoloClient = ThorClient.at(THOR_SOLO_URL);
-        accountDispatcher = new AccountDispatcher();
+        accountDispatcher = AccountDispatcher.getInstance();
         wallet = new ProviderInternalBaseWallet([
             {
                 address: accountDispatcher.getNextAccount().address,

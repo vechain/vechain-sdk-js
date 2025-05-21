@@ -30,7 +30,7 @@ describe('ThorClient - Transactions Module Execute Call', () => {
 
     beforeAll(() => {
         thorSoloClient = ThorClient.at(THOR_SOLO_URL);
-        accountDispatcher = new AccountDispatcher();
+        accountDispatcher = AccountDispatcher.getInstance();
         account = accountDispatcher.getNextAccount();
     });
 
