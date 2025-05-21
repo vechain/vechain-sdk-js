@@ -1,6 +1,6 @@
 {
   "name": "@vechain/sdk-aws-kms-adapter",
-  "version": "1.2.0-rc.2",
+  "version": "1.2.0-rc.3",
   "description": "This module implements the VeChain abstract signer so it is integrated with AWS KMS",
   "author": "VeChain Foundation",
   "license": "MIT",
@@ -43,9 +43,9 @@
   "dependencies": {
     "@aws-sdk/client-kms": "^3.723.0",
     "@noble/curves": "^1.6.0",
-    "@vechain/sdk-core": "1.2.0-rc.2",
-    "@vechain/sdk-errors": "1.2.0-rc.2",
-    "@vechain/sdk-network": "1.2.0-rc.2",
+    "@vechain/sdk-core": "1.2.0-rc.3",
+    "@vechain/sdk-errors": "1.2.0-rc.3",
+    "@vechain/sdk-network": "1.2.0-rc.3",
     "asn1js": "^3.0.5",
     "ethers": "6.13.4",
     "viem": "^2.21.45"
