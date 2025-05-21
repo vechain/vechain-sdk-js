@@ -55,7 +55,7 @@
   },
   "devDependencies": {
     "@types/ws": "^8.5.13",
-    "@vechain/sdk-solo-setup": "*",
+    "@vechain/sdk-solo-setup": "1.2.0-rc.3",
     "@vechain/vebetterdao-contracts": "^4.1.0",
     "jest-fetch-mock": "^3.0.3",
     "whatwg-fetch": "^3.6.20",
