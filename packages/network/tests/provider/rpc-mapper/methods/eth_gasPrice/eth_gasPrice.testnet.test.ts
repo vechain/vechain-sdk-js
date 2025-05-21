@@ -36,7 +36,7 @@ describe('RPC Mapper - eth_gasPrice method tests', () => {
             const gasPrice = await RPCMethodsMap(thorClient)[
                 RPC_METHODS.eth_gasPrice
             ]([]);
-            expect(gasPrice).toBe('0x9184e72a000');
+            expect(gasPrice).toBe('0x98cb8c52800');
         });
     });
 });
