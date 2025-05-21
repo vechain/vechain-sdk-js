@@ -145,7 +145,7 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
      *
      * @throws {InvalidHDKey}
      *
-     * @remarks Security auditable method, depends on
+     * @remarks  method, depends on
      * * {@link HDKey}.
      */
     public static toPrivateKey(
@@ -179,7 +179,7 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
      *
      * @throws {InvalidDataType} If the number of words is not valid.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks  method, depends on
      * * [entropyToMnemonic](https://github.com/paulmillr/scure-bip39);
      * * [generateMnemonic](https://github.com/paulmillr/scure-bip39);
      * * `randomGenerator` - **Must provide a cryptographic secure source of entropy
@@ -219,7 +219,7 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
      *
      * @returns {boolean} true if the words are valid, false otherwise.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks  method, depends on
      * * [validateMnemonic](https://github.com/paulmillr/scure-bip39).
      */
     public static isValid(words: string | string[]): boolean {
