@@ -19,11 +19,15 @@ jobs:
             - name: Setup Node
               uses: actions/setup-node@v4
               with:
-                node-version: lts/*
+                  node-version: lts/*
+                  cache: 'yarn'
+
+            - name: Install packages
+              run: yarn install
+
             - name: Build SDK
               run:  |
                 rm -rf ./**/node_modules/
-                yarn install
                 yarn build
 
             - name: Start Thor solo node
