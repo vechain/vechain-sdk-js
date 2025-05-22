@@ -51,6 +51,6 @@
     "viem": "^2.21.45"
   },
   "devDependencies": {
-    "@vechain/sdk-solo-setup": "*"
+    "@vechain/sdk-solo-setup": "1.2.0-rc.3"
   }
 }

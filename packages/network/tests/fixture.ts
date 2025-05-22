@@ -35,7 +35,7 @@ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export const configData: ConfigData = getConfigData();
 
-const accountDispatcher = new AccountDispatcher();
+const accountDispatcher = AccountDispatcher.getInstance();
 
 const getUnusedAccount = (): ThorSoloAccount => {
     return accountDispatcher.getNextAccount();

@@ -26,7 +26,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "rm -rf ./dist && tsup-node src/index.ts --format cjs,esm --dts",
+    "build": "rm -rf ./dist && tsup-node src/index.ts --format cjs,esm --dts --sourcemap",
     "check:circular-dependencies": "npx madge --json --circular --extensions ts src | jq '. | length' | awk '{if($1 > 15) exit 1}'",
     "lint": "eslint",
     "format": "prettier --write src/**/*.ts tests/**/*.ts solo-seeding/**/*.ts",
@@ -55,7 +55,7 @@
   },
   "devDependencies": {
     "@types/ws": "^8.5.13",
-    "@vechain/sdk-solo-setup": "*",
+    "@vechain/sdk-solo-setup": "1.2.0-rc.3",
     "@vechain/vebetterdao-contracts": "^4.1.0",
     "jest-fetch-mock": "^3.0.3",
     "whatwg-fetch": "^3.6.20",
