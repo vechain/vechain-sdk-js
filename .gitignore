@@ -13,6 +13,7 @@ coverage*
 junit.xml
 
 **/.DS_Store
+**/yarn.lock
 
 # Turborepo
 .turbo
