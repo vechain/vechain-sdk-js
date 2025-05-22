@@ -5,7 +5,6 @@ import {
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
-import { chainTagToChainId } from '../../../const';
 
 // In-memory cache
 let cachedChainId: HexUInt | null = null;
@@ -45,7 +44,7 @@ const ethChainId = async (thorClient: ThorClient): Promise<string> => {
         }
         cachedGenesisBlockId = Hex.of(genesisBlock.id);
         cachedChainTag = HexUInt.of(cachedGenesisBlockId.bytes.slice(-1));
-        cachedChainId = chainTagToChainId(cachedChainTag);
+        cachedChainId = HexUInt.of(cachedGenesisBlockId.bytes.slice(-2));
         return cachedChainId.toString();
     } catch (e) {
         throw new JSONRPCInternalError(

@@ -6,7 +6,7 @@ import {
     ThorClient
 } from '../../../../../src';
 
-const soloChainId = '0xf6';
+const soloChainId = '0x69f6';
 
 /**
  * RPC Mapper integration tests for 'eth_chainId' method
