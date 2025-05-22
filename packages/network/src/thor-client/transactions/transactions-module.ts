@@ -452,25 +452,33 @@ class TransactionsModule {
         }
         // default to dynamic fee tx
         options.gasPriceCoef = undefined;
+
+        // Get best block base fee per gas
+        const bestBlockBaseFeePerGas =
+            await this.blocksModule.getBestBlockBaseFeePerGas();
+        if (bestBlockBaseFeePerGas === null) {
+            throw new InvalidDataType(
+                'TransactionsModule.fillDefaultBodyOptions()',
+                'Invalid transaction body options. Unable to get best block base fee per gas.',
+                { options }
+            );
+        }
+        const biBestBlockBaseFeePerGas = HexUInt.of(bestBlockBaseFeePerGas).bi;
+
         // set maxPriorityFeePerGas if not specified already
-        options.maxPriorityFeePerGas =
-            options.maxPriorityFeePerGas ??
-            (await this.gasModule.getMaxPriorityFeePerGas());
+        if (options.maxPriorityFeePerGas === undefined) {
+            // Calculate maxPriorityFeePerGas based on fee history (75th percentile)
+            // and the HIGH speed threshold (min(0.046*baseFee, 75_percentile))
+            const defaultMaxPriorityFeePerGas =
+                await this.calculateDefaultMaxPriorityFeePerGas(
+                    biBestBlockBaseFeePerGas
+                );
+            options.maxPriorityFeePerGas = defaultMaxPriorityFeePerGas;
+        }
+
         // set maxFeePerGas if not specified already
         if (options.maxFeePerGas === undefined) {
-            const bestBlockBaseFeePerGas =
-                await this.blocksModule.getBestBlockBaseFeePerGas();
-            if (bestBlockBaseFeePerGas === null) {
-                throw new InvalidDataType(
-                    'TransactionsModule.fillDefaultBodyOptions()',
-                    'Invalid transaction body options. Unable to get best block base fee per gas.',
-                    { options }
-                );
-            }
             // compute maxFeePerGas
-            const biBestBlockBaseFeePerGas = HexUInt.of(
-                bestBlockBaseFeePerGas
-            ).bi;
             const biMaxPriorityFeePerGas = HexUInt.of(
                 options.maxPriorityFeePerGas
             ).bi;
@@ -479,6 +487,78 @@ class TransactionsModule {
             options.maxFeePerGas = HexUInt.of(biMaxFeePerGas).toString();
         }
         return options;
+    }
+
+    /**
+     * Calculates the default max priority fee per gas based on the current base fee
+     * and historical 75th percentile rewards.
+     *
+     * Uses the FAST (HIGH) speed threshold: min(0.046*baseFee, 75_percentile)
+     *
+     * @param baseFee - The current base fee per gas
+     * @returns A promise that resolves to the default max priority fee per gas as a hex string
+     */
+    private async calculateDefaultMaxPriorityFeePerGas(
+        baseFee: bigint
+    ): Promise<string> {
+        // Get fee history for recent blocks
+        const feeHistory = await this.gasModule.getFeeHistory({
+            blockCount: 10,
+            newestBlock: 'best',
+            rewardPercentiles: [25, 50, 75] // Get 25th, 50th and 75th percentiles
+        });
+
+        // Get the 75th percentile reward from the most recent block
+        let percentile75: bigint;
+
+        if (
+            feeHistory.reward !== null &&
+            feeHistory.reward !== undefined &&
+            feeHistory.reward.length > 0
+        ) {
+            const latestBlockRewards =
+                feeHistory.reward[feeHistory.reward.length - 1];
+            const equalRewardsOnLastBlock =
+                new Set(latestBlockRewards).size === 3;
+
+            // If rewards are equal in the last block, use the first one (75th percentile)
+            // Otherwise, calculate the average of 75th percentiles across blocks
+            if (equalRewardsOnLastBlock) {
+                percentile75 = HexUInt.of(latestBlockRewards[2]).bi; // 75th percentile at index 2
+            } else {
+                // Calculate average of 75th percentiles across blocks
+                let sum = 0n;
+                let count = 0;
+
+                for (const blockRewards of feeHistory.reward) {
+                    if (
+                        blockRewards.length !== null &&
+                        blockRewards.length > 2 &&
+                        blockRewards[2] !== null &&
+                        blockRewards[2] !== undefined
+                    ) {
+                        sum += HexUInt.of(blockRewards[2]).bi;
+                        count++;
+                    }
+                }
+
+                percentile75 = count > 0 ? sum / BigInt(count) : 0n;
+            }
+        } else {
+            // Fallback to getMaxPriorityFeePerGas if fee history is not available
+            percentile75 = HexUInt.of(
+                await this.gasModule.getMaxPriorityFeePerGas()
+            ).bi;
+        }
+
+        // Calculate 4.6% of base fee (HIGH speed threshold)
+        const baseFeeCap = (baseFee * 46n) / 1000n; // 0.046 * baseFee
+
+        // Use the minimum of the two values
+        const priorityFee =
+            baseFeeCap < percentile75 ? baseFeeCap : percentile75;
+
+        return HexUInt.of(priorityFee).toString();
     }
 
     /**
