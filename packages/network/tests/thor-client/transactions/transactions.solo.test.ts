@@ -50,6 +50,52 @@ describe('ThorClient - Transactions Module', () => {
     });
 
     /**
+     * Test suite for fillDefaultBodyOptions with real transactions
+     */
+    describe('fillDefaultBodyOptions', () => {
+        test('creates a real transaction with default options', async () => {
+            // Create a simple VET transfer clause
+            const clauses = [
+                {
+                    to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+                    value: 1,
+                    data: '0x'
+                }
+            ];
+
+            // Build transaction body with default options
+            const txBody =
+                await thorSoloClient.transactions.buildTransactionBody(
+                    clauses,
+                    21000
+                );
+
+            // Verify the transaction body has the required fields
+            expect(txBody).toBeDefined();
+            expect(txBody.clauses).toEqual(clauses);
+            expect(txBody.gas).toBe(21000);
+            expect(txBody.chainTag).toBeDefined();
+            expect(txBody.blockRef).toBeDefined();
+            expect(txBody.expiration).toBeDefined();
+            expect(txBody.nonce).toBeDefined();
+            expect(txBody.dependsOn).toBeDefined();
+
+            // Check fee-related fields based on fork status
+            const isForked =
+                await thorSoloClient.forkDetector.isGalacticaForked('best');
+            if (isForked) {
+                expect(txBody.maxFeePerGas).toBeDefined();
+                expect(txBody.maxPriorityFeePerGas).toBeDefined();
+                expect(txBody.gasPriceCoef).toBeUndefined();
+            } else {
+                expect(txBody.gasPriceCoef).toBeDefined();
+                expect(txBody.maxFeePerGas).toBeUndefined();
+                expect(txBody.maxPriorityFeePerGas).toBeUndefined();
+            }
+        });
+    });
+
+    /**
      * Test suite for waitForTransaction method
      */
     describe('waitForTransaction', () => {
