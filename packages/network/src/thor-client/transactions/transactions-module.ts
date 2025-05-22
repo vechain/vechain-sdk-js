@@ -437,7 +437,11 @@ class TransactionsModule {
                 { options }
             );
         }
-        if (!galacticaHappened && options.gasPriceCoef === undefined) {
+        if (
+            !galacticaHappened &&
+            (options.gasPriceCoef === undefined ||
+                options.gasPriceCoef === null)
+        ) {
             // galactica hasn't happened yet, default is legacy fee
             options.gasPriceCoef = 0;
             return options;
@@ -456,7 +460,10 @@ class TransactionsModule {
         // Get best block base fee per gas
         const bestBlockBaseFeePerGas =
             await this.blocksModule.getBestBlockBaseFeePerGas();
-        if (bestBlockBaseFeePerGas === null) {
+        if (
+            bestBlockBaseFeePerGas === null ||
+            bestBlockBaseFeePerGas === undefined
+        ) {
             throw new InvalidDataType(
                 'TransactionsModule.fillDefaultBodyOptions()',
                 'Invalid transaction body options. Unable to get best block base fee per gas.',
@@ -466,7 +473,10 @@ class TransactionsModule {
         const biBestBlockBaseFeePerGas = HexUInt.of(bestBlockBaseFeePerGas).bi;
 
         // set maxPriorityFeePerGas if not specified already
-        if (options.maxPriorityFeePerGas === undefined) {
+        if (
+            options.maxPriorityFeePerGas === undefined ||
+            options.maxPriorityFeePerGas === null
+        ) {
             // Calculate maxPriorityFeePerGas based on fee history (75th percentile)
             // and the HIGH speed threshold (min(0.046*baseFee, 75_percentile))
             const defaultMaxPriorityFeePerGas =
@@ -477,7 +487,10 @@ class TransactionsModule {
         }
 
         // set maxFeePerGas if not specified already
-        if (options.maxFeePerGas === undefined) {
+        if (
+            options.maxFeePerGas === undefined ||
+            options.maxFeePerGas === null
+        ) {
             // compute maxFeePerGas
             const biMaxPriorityFeePerGas = HexUInt.of(
                 options.maxPriorityFeePerGas
