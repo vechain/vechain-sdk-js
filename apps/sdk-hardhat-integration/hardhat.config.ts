@@ -18,7 +18,7 @@ const config: HardhatUserConfig = {
     solidity: {
         compilers: [
             {
-                version: '0.8.20', // Specify the first Solidity version
+                version: '0.8.19', // Specify the first Solidity version
                 settings: {
                     // Additional compiler settings for this version
                     optimizer: {
