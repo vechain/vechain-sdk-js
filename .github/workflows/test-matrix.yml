@@ -1,0 +1,71 @@
+name: Test Matrix
+
+on:
+  workflow_call:
+
+jobs:
+  test:
+    name: ${{ matrix.test-group }} tests
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        test-group: [unit, integration, browser]
+        node: [lts/*]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'yarn'
+
+      - name: Install packages
+        run: yarn install
+
+      - name: Install playwright dependencies
+        if: matrix.test-group == 'browser'
+        run: yarn playwright install
+
+      - name: Start Thor solo node
+        if: matrix.test-group == 'integration'
+        id: start-solo
+        run: |
+          yarn start-thor-solo
+          yarn seed-thor-solo
+
+      - name: Run tests
+        id: run-tests
+        run: |
+          if [ "${{ matrix.test-group }}" = "unit" ]; then
+            yarn test:unit
+          elif [ "${{ matrix.test-group }}" = "integration" ]; then
+            yarn test:integration:solo
+          elif [ "${{ matrix.test-group }}" = "browser" ]; then
+            yarn test:browser:solo
+          fi
+
+      - name: Stop Thor solo node
+        if: always() && matrix.test-group == 'integration'
+        run: yarn stop-thor-solo
+
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ matrix.test-group }}
+          path: |
+            packages/**/coverage/lcov.info
+            coverage/lcov.info
+
+      - name: Upload test results
+        if: always() && matrix.test-group == 'browser'
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.test-group }}
+          path: |
+            test-results/
+            playwright-report/ 
