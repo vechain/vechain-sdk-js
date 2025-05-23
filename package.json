@@ -21,7 +21,7 @@
         "docs",
         "apps/*"
     ],
-    "packageManager": "yarn@1.22.22",
+    "packageManager": "yarn@4.9.1",
     "scripts": {
         "start-thor-solo": "yarn workspace @vechain/sdk-solo-setup solo-up",
         "stop-thor-solo": "yarn workspace @vechain/sdk-solo-setup solo-down",
@@ -75,9 +75,10 @@
         "jest-junit": "^16.0.0",
         "jest-runner": "^29.7.0",
         "jest-runner-groups": "^2.2.0",
-        "nyc": "^17.1.0",
+        "nyc": "^15.1.0",
         "prettier": "^3.4.2",
         "ts-jest": "^29.2.5",
+        "ts-node": "^10.9.2",
         "tsup": "^8.3.0",
         "turbo": "^2.3.0",
         "typedoc": "^0.26.8",

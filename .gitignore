@@ -1,3 +1,18 @@
+# Dependencies
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# Zero-install - if you want to commit the yarn cache
+#!.yarn/cache
+
+# If you want to ignore the Zero-install cache
+.yarn/cache
+.pnp.*
+
 node_modules
 packages/**/dist
 packages/**/.turbo

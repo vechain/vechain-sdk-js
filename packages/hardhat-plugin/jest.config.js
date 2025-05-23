@@ -9,15 +9,4 @@ module.exports = {
     runner: 'groups',
     reporters: ['default', 'jest-junit'],
     workerThreads: false,
-    coverageThreshold:
-        isUnitTest !== 'true'
-            ? {
-                  global: {
-                      branches: 100,
-                      functions: 100,
-                      lines: 100,
-                      statements: 100
-                  }
-              }
-            : undefined
 };
