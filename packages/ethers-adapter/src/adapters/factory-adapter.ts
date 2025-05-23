@@ -6,6 +6,7 @@ import {
     type ContractMethodArgs,
     type ContractTransactionResponse
 } from 'ethers';
+import { adaptTransaction } from './transaction-adapter';
 
 /**
  * Factory adapter for the VeChain hardhat plugin
@@ -35,7 +36,9 @@ function factoryAdapter<A extends unknown[], I>(
             );
         }
 
-        const sentTx = await this.runner.sendTransaction(tx);
+        // Adapt the transaction to VeChain format
+        const adaptedTx = await adaptTransaction(tx, hardhatVeChainProvider);
+        const sentTx = await this.runner.sendTransaction(adaptedTx);
 
         const receipt =
             await hardhatVeChainProvider.thorClient.transactions.waitForTransaction(
