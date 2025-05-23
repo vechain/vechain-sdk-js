@@ -9,6 +9,76 @@ export interface VeChainTransactionRequest extends TransactionRequest {
 }
 
 /**
+ * Calculates the default max priority fee per gas based on the current base fee
+ * and historical 75th percentile rewards.
+ *
+ * Uses the FAST (HIGH) speed threshold: min(0.046*baseFee, 75_percentile)
+ *
+ * @param provider - The hardhatVeChain provider
+ * @param baseFee - The current base fee per gas
+ * @returns A promise that resolves to the default max priority fee per gas as a bigint
+ */
+async function calculateDefaultMaxPriorityFeePerGas(
+    provider: HardhatVeChainProvider,
+    baseFee: bigint
+): Promise<bigint> {
+    // Get fee history for recent blocks
+    const feeHistory = await provider.thorClient.gas.getFeeHistory({
+        blockCount: 10,
+        newestBlock: 'best',
+        rewardPercentiles: [25, 50, 75] // Get 25th, 50th and 75th percentiles
+    });
+
+    // Get the 75th percentile reward from the most recent block
+    let percentile75: bigint;
+
+    if (
+        feeHistory.reward !== null &&
+        feeHistory.reward !== undefined &&
+        feeHistory.reward.length > 0
+    ) {
+        const latestBlockRewards =
+            feeHistory.reward[feeHistory.reward.length - 1];
+        const equalRewardsOnLastBlock = new Set(latestBlockRewards).size === 3;
+
+        // If rewards are equal in the last block, use the first one (75th percentile)
+        // Otherwise, calculate the average of 75th percentiles across blocks
+        if (equalRewardsOnLastBlock) {
+            percentile75 = BigInt(latestBlockRewards[2]); // 75th percentile at index 2
+        } else {
+            // Calculate average of 75th percentiles across blocks
+            let sum = 0n;
+            let count = 0;
+
+            for (const blockRewards of feeHistory.reward) {
+                if (
+                    blockRewards.length !== null &&
+                    blockRewards.length > 2 &&
+                    blockRewards[2] !== null &&
+                    blockRewards[2] !== undefined
+                ) {
+                    sum += BigInt(blockRewards[2]);
+                    count++;
+                }
+            }
+
+            percentile75 = count > 0 ? sum / BigInt(count) : 0n;
+        }
+    } else {
+        // Fallback to getMaxPriorityFeePerGas if fee history is not available
+        percentile75 = BigInt(
+            await provider.thorClient.gas.getMaxPriorityFeePerGas()
+        );
+    }
+
+    // Calculate 4.6% of base fee (HIGH speed threshold)
+    const baseFeeCap = (baseFee * 46n) / 1000n; // 0.046 * baseFee
+
+    // Use the minimum of the two values
+    return baseFeeCap < percentile75 ? baseFeeCap : percentile75;
+}
+
+/**
  * Adapts an ethers transaction request to a VeChain transaction request
  * Handles both legacy (gasPriceCoef) and Galactica fork (maxFeePerGas, maxPriorityFeePerGas) transaction types
  *
@@ -59,18 +129,19 @@ export async function adaptTransaction(
             throw new Error('Unable to get best block base fee per gas');
         }
 
-        // Calculate maxPriorityFeePerGas based on fee history
-        const maxPriorityFeePerGas =
-            await hardhatVeChainProvider.thorClient.gas.getMaxPriorityFeePerGas();
+        const baseFee = BigInt(bestBlockBaseFeePerGas);
+        const maxPriorityFeePerGas = await calculateDefaultMaxPriorityFeePerGas(
+            hardhatVeChainProvider,
+            baseFee
+        );
 
         // Calculate maxFeePerGas as baseFee + maxPriorityFeePerGas
-        const maxFeePerGas =
-            BigInt(bestBlockBaseFeePerGas) + BigInt(maxPriorityFeePerGas);
+        const maxFeePerGas = baseFee + maxPriorityFeePerGas;
 
         return {
             ...tx,
             maxFeePerGas,
-            maxPriorityFeePerGas: BigInt(maxPriorityFeePerGas),
+            maxPriorityFeePerGas,
             gasPriceCoef: undefined
         };
     }
