@@ -42,8 +42,8 @@ jobs:
             - name: Install packages
               run: yarn install
 
-            - name: Install playwright dependencies (for sample Vite dApp tests)
-              run: yarn playwright install
+            - name: Install Playwright browsers
+              run: yarn workspace sdk-vite-integration dlx playwright install --with-deps chromium
                 
             - name: Build packages
               run: yarn build
