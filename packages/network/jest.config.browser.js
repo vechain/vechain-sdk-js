@@ -1,6 +1,6 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
-    maxWorkers: 2,
+    maxWorkers: 1,
     preset: 'ts-jest',
     testEnvironment: '../../customEnv.js',
     setupFiles: ['./jest.browser-setup.js'],

@@ -21,7 +21,7 @@
         "docs",
         "apps/*"
     ],
-    "packageManager": "yarn@1.22.22",
+    "packageManager": "yarn@4.9.1",
     "scripts": {
         "start-thor-solo": "yarn workspace @vechain/sdk-solo-setup solo-up",
         "stop-thor-solo": "yarn workspace @vechain/sdk-solo-setup solo-down",

@@ -19,7 +19,29 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: ${{ matrix.node }}
-                  cache: 'yarn'
+
+            - name: Enable Corepack
+              run: corepack enable
+
+            - name: Setup Yarn
+              run: corepack prepare yarn@4.9.1 --activate
+
+            - name: Get yarn cache directory path
+              id: yarn-cache-dir-path
+              run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+
+            - name: Cache Yarn dependencies
+              uses: actions/cache@v4
+              id: yarn-cache
+              with:
+                  path: |
+                      ${{ steps.yarn-cache-dir-path.outputs.dir }}
+                      .yarn/cache
+                      .yarn/unplugged
+                      .yarn/install-state.gz
+                  key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+                  restore-keys: |
+                      ${{ runner.os }}-yarn-
 
             - name: Install packages
               run: yarn install
@@ -77,7 +99,7 @@ jobs:
                   rpc-proxy, packages/rpc-proxy/junit.xml
 
             - name: Archive coverage
-              if: always() &&matrix.node == 'lts/*' && (steps.stop-solo.outcome == 'success')
+              if: always() && matrix.node == 'lts/*' && (steps.stop-solo.outcome == 'success')
               uses: actions/upload-artifact@v4.4.3
               with:
                 name: coverage-results
