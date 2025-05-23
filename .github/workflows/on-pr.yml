@@ -19,22 +19,23 @@ jobs:
             - name: Setup Node
               uses: actions/setup-node@v4
               with:
-                node-version: lts/*
+                  node-version: lts/*
+                  cache: 'yarn'
+
+            - name: Install packages
+              run: yarn install
+
             - name: Build SDK
-              run:  |
-                rm -rf ./**/node_modules/
-                yarn install
-                yarn build
+              run: yarn build
 
             - name: Start Thor solo node
               id: start-solo
-              run:  |
+              run: |
                 yarn start-thor-solo
                 yarn seed-thor-solo
 
             - name: Test docs examples
-              run: |
-                yarn test:examples
+              run: yarn test:examples
 
             - name: Stop Thor solo node
               id: stop-solo
@@ -48,12 +49,6 @@ jobs:
         uses: ./.github/workflows/build-lint.yml
         secrets: inherit
 
-    unit-integration-test:
-        uses: ./.github/workflows/unit-integration-test.yml
+    test-matrix:
+        uses: ./.github/workflows/test-matrix.yml
         secrets: inherit
-
-    unit-integration-test-browser:
-      uses: ./.github/workflows/unit-integration-test-browser.yml
-      secrets: inherit
-            
-    

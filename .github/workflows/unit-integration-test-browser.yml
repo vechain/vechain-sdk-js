@@ -19,8 +19,9 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: ${{ matrix.node }}
+                  cache: 'yarn'
 
-            - name: Install & Patch packages
+            - name: Install packages
               run: yarn install
 
             - name: Preliminary Stop of Thor solo node
@@ -32,7 +33,7 @@ jobs:
 
             - name: Start Thor solo node
               id: start-solo
-              run:  |
+              run: |
                 yarn start-thor-solo
                 yarn seed-thor-solo
 

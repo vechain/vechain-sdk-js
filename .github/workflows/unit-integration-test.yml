@@ -19,8 +19,9 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: ${{ matrix.node }}
+                  cache: 'yarn'
 
-            - name: Install & Patch packages
+            - name: Install packages
               run: yarn install
 
             - name: Install playwright dependencies (for sample Vite dApp tests)
@@ -35,7 +36,7 @@ jobs:
 
             - name: Start Thor solo node
               id: start-solo
-              run:  |
+              run: |
                 yarn start-thor-solo
                 yarn seed-thor-solo
 
@@ -96,5 +97,3 @@ jobs:
                     "branch": "${{ github.head_ref || github.ref_name }}",
                     "message": "unit tests failed, see run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   }
-
-              
