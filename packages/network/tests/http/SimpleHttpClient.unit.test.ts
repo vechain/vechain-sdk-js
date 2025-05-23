@@ -2,6 +2,11 @@ import { describe, expect } from '@jest/globals';
 import { InvalidHTTPRequest } from '@vechain/sdk-errors';
 import { SimpleHttpClient } from '../../src';
 
+/**
+ * Test SimpleHttpClient class.
+ *
+ * @group unit/http/client
+ */
 describe('SimpleHttpClient unit tests', () => {
     beforeEach(() => {
         jest.resetAllMocks();
