@@ -19317,6 +19317,7 @@ __metadata:
     nyc: "npm:^15.1.0"
     prettier: "npm:^3.4.2"
     ts-jest: "npm:^29.2.5"
+    ts-node: "npm:^10.9.2"
     tsup: "npm:^8.3.0"
     turbo: "npm:^2.3.0"
     typedoc: "npm:^0.26.8"
