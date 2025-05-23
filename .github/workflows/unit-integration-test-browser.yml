@@ -46,10 +46,6 @@ jobs:
             - name: Install packages
               run: yarn install
 
-            - name: Install Playwright
-              working-directory: apps/sdk-vite-integration
-              run: yarn dlx playwright install --with-deps chromium
-
             - name: Preliminary Stop of Thor solo node
               id: preliminary-stop-solo
               run: yarn stop-thor-solo
