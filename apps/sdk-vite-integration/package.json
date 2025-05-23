@@ -8,8 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest --config vitest.node.config.js",
-    "test:jsdom": "vitest --config vitest.jsdom.config.js"
+    "test": "vitest --config vitest.node.config.ts"
   },
   "dependencies": {
     "@vechain/sdk-core": "1.2.0-rc.3",
@@ -20,6 +19,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",
+    "@playwright/test": "^1.51.1",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
