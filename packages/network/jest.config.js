@@ -8,7 +8,7 @@ module.exports = {
     coverageReporters: ['html', 'lcov', 'json'],
     runner: 'groups',
     reporters: ['default', 'jest-junit'],
-    maxWorkers: 2,
+    maxWorkers: 3,
     coveragePathIgnorePatterns: [
         "/dist/",
         "/tests/"
