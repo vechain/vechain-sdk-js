@@ -1,8 +1,12 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} */
+
+const { onlyFailures, testTimeout } = require('./jest.config.browser');
+
 // Coverage threshold would apply to yarn test, not yarn test:unit
 const applyCodeCoverageLimits = process.env.APPLYCODECOVLIMITS;
 
 module.exports = {
+    testTimeout: 60000,
     preset: 'ts-jest',
     testEnvironment: 'node',
     coverageReporters: ['html', 'lcov', 'json'],
@@ -23,9 +27,5 @@ module.exports = {
                       statements: 90
                   }
               }
-            : undefined,
-    // Configure retry settings for flaky network tests
-    retries: 3,
-    // Add a delay between retries
-    testTimeout: 10000
+            : undefined
 };

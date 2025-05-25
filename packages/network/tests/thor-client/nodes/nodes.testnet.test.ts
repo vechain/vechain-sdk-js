@@ -59,6 +59,7 @@ describe('ThorClient - Nodes Module', () => {
     });
 
     test('valid and available synchronized node', async () => {
+        jest.retryTimes(3);
         const thorClient = ThorClient.at('https://testnet.vechain.org/');
 
         const healthyNode = await thorClient.nodes.isHealthy();

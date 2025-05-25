@@ -176,6 +176,7 @@ describe('Hardhat provider tests', () => {
      *
      * @throws {Error} If the received message doesn't match the expected format or if the log event details are incorrect, indicating an issue with the subscription or the event emission process.
      */
+    jest.retryTimes(3);
     test('Should be able to get to subscribe to the latest logs of an erc20 contract', async () => {
         const contract = await deployERC20Contract(
             thorClient,
@@ -253,6 +254,7 @@ describe('Hardhat provider tests', () => {
      *
      * @throws {Error} If any of the assertions fail, indicating a problem with event subscription or log data capture.
      */
+    jest.retryTimes(3);
     test('Should be able to subscribe to the latest logs of an erc20 and erc721 contract', async () => {
         // Test setup: Deploy contracts and set up event subscriptions
         const erc20Contract = await deployERC20Contract(

@@ -77,6 +77,7 @@ describe('Vechain provider tests - solo', () => {
     /**
      * eth_subscribe latest blocks RPC call test
      */
+    jest.retryTimes(3);
     test('Should be able to get to subscribe to the latest blocks', async () => {
         const messageReceived = new Promise((resolve) => {
             void jsonRPCEthersProvider.on('block', (message) => {

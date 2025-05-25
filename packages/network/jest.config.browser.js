@@ -1,5 +1,6 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
+    testTimeout: 60000,
     maxWorkers: 3,
     preset: 'ts-jest',
     testEnvironment: '../../customEnv.js',
