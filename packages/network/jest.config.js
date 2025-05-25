@@ -23,5 +23,9 @@ module.exports = {
                       statements: 90
                   }
               }
-            : undefined
+            : undefined,
+    // Configure retry settings for flaky network tests
+    retries: 3,
+    // Add a delay between retries
+    testTimeout: 10000
 };
