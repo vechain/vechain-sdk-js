@@ -43,8 +43,10 @@ jobs:
               run: yarn install
 
             - name: Install Playwright browsers
-              run: yarn workspace sdk-vite-integration dlx playwright install --with-deps chromium
-                
+              run: |
+                yarn workspace sdk-vite-integration playwright install chromium
+                yarn workspace sdk-vite-integration playwright install chromium-headless-shell
+
             - name: Build packages
               run: yarn build
 

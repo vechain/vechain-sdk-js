@@ -46,6 +46,11 @@ jobs:
             - name: Install packages
               run: yarn install
 
+            - name: Install Playwright browsers
+              run: |
+                yarn workspace sdk-vite-integration playwright install chromium
+                yarn workspace sdk-vite-integration playwright install chromium-headless-shell
+
             - name: Preliminary Stop of Thor solo node
               id: preliminary-stop-solo
               run: yarn stop-thor-solo
