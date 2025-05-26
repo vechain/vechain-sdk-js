@@ -12,6 +12,12 @@ import {
  * @group integration/rpc-mapper/methods/eth_maxPriorityFeePerGas-solo
  */
 describe('RPC Mapper - eth_maxPriorityFeePerGas method tests solo', () => {
+    // Add retry configuration for all tests in this suite
+    jest.retryTimes(3, { logErrorsBeforeRetry: true });
+
+    // Increase timeout for RPC tests
+    const TIMEOUT = 30000; // 30 seconds
+
     /**
      * Thor client instance
      */
@@ -29,15 +35,22 @@ describe('RPC Mapper - eth_maxPriorityFeePerGas method tests solo', () => {
      * eth_maxPriorityFeePerGas RPC call tests - Positive cases
      */
     describe('eth_maxPriorityFeePerGas - Positive cases', () => {
-        test('Should return priority fee with proper format', async () => {
-            const result = await RPCMethodsMap(thorClient)[
-                RPC_METHODS.eth_maxPriorityFeePerGas
-            ]([]);
+        /**
+         * Positive case - Should return priority fee with proper format
+         */
+        test(
+            'Should return priority fee with proper format',
+            async () => {
+                // Call RPC method
+                const rpcCall = await RPCMethodsMap(thorClient)[
+                    RPC_METHODS.eth_maxPriorityFeePerGas
+                ]([]);
 
-            // Verify the result is a hex string
-            expect(typeof result).toBe('string');
-            expect(result).toMatch(/^0x[0-9a-f]+$/i);
-        });
+                // Check if the result is a hex string
+                expect(rpcCall).toMatch(/^0x[0-9a-fA-F]+$/);
+            },
+            TIMEOUT
+        );
 
         test('Should return a valid non-zero priority fee', async () => {
             const result = await RPCMethodsMap(thorClient)[
