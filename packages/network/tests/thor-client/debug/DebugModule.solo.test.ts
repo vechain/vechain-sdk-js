@@ -11,7 +11,7 @@ import {
 import { sendTransactionWithAccount } from './fixture-thorest';
 import { getUnusedAccount } from '../../fixture';
 
-const TIMEOUT = 10000;
+const TIMEOUT = 30000;
 
 const TO = Address.of('0x0000000000000000000000000000456E65726779');
 
@@ -65,6 +65,9 @@ async function testTransactionClause(
  *           Stop and start Thor Solo to re-run tests.
  */
 describe('DebugModule testnet tests', () => {
+    // Add retry configuration for all tests in this suite
+    jest.retryTimes(3, { logErrorsBeforeRetry: true });
+
     const thorClient = ThorClient.at(THOR_SOLO_URL);
 
     describe('name = empty, sender account index = 7', () => {

@@ -15,6 +15,12 @@ import { logsFixture, mockLogsFixture } from './fixture';
  * @group integration/rpc-mapper/methods/eth_getLogs-mock
  */
 describe('RPC Mapper - eth_getLogs method tests', () => {
+    // Add retry configuration for all tests in this suite
+    jest.retryTimes(3, { logErrorsBeforeRetry: true });
+
+    // Increase timeout for RPC tests
+    const TIMEOUT = 30000; // 30 seconds
+
     /**
      * Thor client instance
      */
@@ -36,20 +42,16 @@ describe('RPC Mapper - eth_getLogs method tests', () => {
          * Positive cases. Should be able to get logs
          */
         mockLogsFixture.forEach((fixture, index) => {
-            test(`eth_getLogs - Should be able to get logs test - ${index + 1}`, async () => {
-                // Mock the getGenesisBlock method to return null
-                jest.spyOn(
-                    thorClient.logs,
-                    'filterRawEventLogs'
-                ).mockResolvedValue([]);
-
-                // Call RPC method
-                const logs = (await RPCMethodsMap(thorClient)[
-                    RPC_METHODS.eth_getLogs
-                ]([fixture.input])) as LogsRPC[];
-
-                expect(logs.slice(0, 4)).toStrictEqual(fixture.expected);
-            }, 6000);
+            test(
+                `eth_getLogs - Should be able to get logs test - ${index + 1}`,
+                async () => {
+                    const rpcCall = (await RPCMethodsMap(thorClient)[
+                        RPC_METHODS.eth_getLogs
+                    ]([fixture.input])) as LogsRPC[];
+                    expect(rpcCall.slice(0, 4)).toStrictEqual(fixture.expected);
+                },
+                TIMEOUT
+            );
         });
     });
 

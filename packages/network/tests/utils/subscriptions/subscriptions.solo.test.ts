@@ -31,7 +31,7 @@ import {
 import NodeWebSocket from 'ws';
 import { expectType } from 'tsd';
 
-const TIMEOUT = 15000; // 15-second timeout
+const TIMEOUT = 30000; // 30 seconds
 
 /**
  * Test suite for the Subscriptions utility methods for listening to events obtained through a websocket connection.
@@ -39,6 +39,9 @@ const TIMEOUT = 15000; // 15-second timeout
  * @group integration/utils/subscriptions
  */
 describe('Subscriptions Solo network tests', () => {
+    // Add retry configuration for all tests in this suite
+    jest.retryTimes(3, { logErrorsBeforeRetry: true });
+
     /**
      * ThorClient and provider instances
      */

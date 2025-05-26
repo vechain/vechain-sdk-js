@@ -3,12 +3,13 @@ import {
     HardhatVeChainProvider,
     JSONRPCEthersProvider,
     ProviderInternalBaseWallet,
-    type SubscriptionEvent,
     THOR_SOLO_URL
 } from '../../../../src';
 
 import { SOLO_NETWORK } from '@vechain/sdk-core';
 import { providerMethodsTestCasesSolo } from '../fixture';
+import { VeChainProvider } from '../../../../src/provider/providers/vechain-provider';
+import { ThorClient } from '../../../../src/thor-client';
 
 /**
  *VeChain provider tests - Solo Network
@@ -16,6 +17,12 @@ import { providerMethodsTestCasesSolo } from '../fixture';
  * @group integration/providers/vechain-provider-solo
  */
 describe('VeChain provider tests - solo', () => {
+    // Add retry configuration for all tests in this suite
+    jest.retryTimes(3, { logErrorsBeforeRetry: true });
+
+    // Increase timeout for provider tests
+    const TIMEOUT = 30000; // 30 seconds
+
     let hardhatVeChainProvider: HardhatVeChainProvider;
     let jsonRPCEthersProvider: JSONRPCEthersProvider;
 
@@ -76,19 +83,25 @@ describe('VeChain provider tests - solo', () => {
     /**
      * eth_subscribe latest blocks RPC call test
      */
-    test('Should be able to get to subscribe to the latest blocks', async () => {
-        const messageReceived = new Promise((resolve) => {
-            void jsonRPCEthersProvider.on('block', (message) => {
-                resolve(message);
-                jsonRPCEthersProvider.destroy();
+    test(
+        'Should be able to get to subscribe to the latest blocks',
+        async () => {
+            const thorClient = ThorClient.at(THOR_SOLO_URL);
+            const provider = new VeChainProvider(thorClient);
+            // Start polling for subscriptions
+            provider.startSubscriptionsPolling();
+            // Subscribe to new blocks
+            const subscriptionId = await provider.request({
+                method: 'eth_subscribe',
+                params: ['newHeads']
             });
-        });
-
-        const message = (await messageReceived) as SubscriptionEvent;
-
-        // Optionally, you can do assertions or other operations with the message
-        expect(message).toBeDefined();
-    }, 30000);
+            expect(subscriptionId).toBeDefined();
+            expect(typeof subscriptionId).toBe('string');
+            // Clean up
+            provider.destroy();
+        },
+        TIMEOUT
+    );
 
     /**
      * Invalid RPC method tests

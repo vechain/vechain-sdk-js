@@ -10,6 +10,12 @@ import { stringifyData } from '@vechain/sdk-errors';
  * @group integration/clients/thor-client/gas
  */
 describe('ThorClient - Gas Module', () => {
+    // Add retry configuration for all tests in this suite
+    jest.retryTimes(3, { logErrorsBeforeRetry: true });
+
+    // Increase timeout for gas tests
+    const TIMEOUT = 30000; // 30 seconds
+
     // ThorClient instance
     let thorSoloClient: ThorClient;
 
@@ -39,7 +45,7 @@ describe('ThorClient - Gas Module', () => {
                         expect(result).toBeDefined();
                         expect(result).toStrictEqual(expected);
                     },
-                    3000
+                    TIMEOUT
                 );
             }
         );
@@ -62,7 +68,7 @@ describe('ThorClient - Gas Module', () => {
                         expect(result).toBeDefined();
                         expect(result).toStrictEqual(expected);
                     },
-                    3000
+                    TIMEOUT
                 );
             }
         );

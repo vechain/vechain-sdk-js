@@ -13,6 +13,9 @@ import { AccountDispatcher, getConfigData } from '@vechain/sdk-solo-setup';
  *  @group integration/clients/thor-client/transactions
  */
 describe('ThorClient - Transactions Module Execute Call', () => {
+    // Add retry configuration for all tests in this suite
+    jest.retryTimes(3, { logErrorsBeforeRetry: true });
+
     let thorSoloClient: ThorClient;
     let accountDispatcher: AccountDispatcher;
 

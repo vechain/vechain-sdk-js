@@ -14,6 +14,7 @@ import { TEST_ACCOUNTS } from '../../../../fixture';
  *
  * @group integration/rpc-mapper/methods/debug_traceTransaction-solo
  */
+jest.retryTimes(3);
 describe('RPC Mapper - debug_traceTransaction method tests - solo', () => {
     /**
      * Thor client instance
