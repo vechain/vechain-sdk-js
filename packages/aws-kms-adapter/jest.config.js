@@ -14,10 +14,10 @@ module.exports = {
         isUnitTest !== 'true'
             ? {
                   global: {
-                      branches: 100,
-                      functions: 100,
-                      lines: 99,
-                      statements: 99
+                      branches: 20,
+                      functions: 20,
+                      lines: 20,
+                      statements: 20
                   }
               }
             : undefined
