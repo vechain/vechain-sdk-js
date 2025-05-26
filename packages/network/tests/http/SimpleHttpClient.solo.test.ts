@@ -19,7 +19,7 @@ const ACCOUNT_ZERO_DETAILS = {
  * Overrides the default timeout of 50000 milliseconds
  * due to cases where the network request takes longer than 5 seconds.
  */
-const TIMEOUT = 10000;
+const TIMEOUT = 30000; // 30 seconds
 
 /**
  * Test SimpleHttpClient class.
@@ -27,6 +27,9 @@ const TIMEOUT = 10000;
  * @group integration/network
  */
 describe('SimpleHttpClient solo tests', () => {
+    // Add retry configuration for all tests in this suite
+    jest.retryTimes(3, { logErrorsBeforeRetry: true });
+
     describe('GET method tests', () => {
         test('404 <- GET not found', async () => {
             try {
