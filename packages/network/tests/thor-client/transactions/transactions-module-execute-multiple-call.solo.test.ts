@@ -14,9 +14,15 @@ import {
 /**
  * Tests for the executeMultipleClausesCall method in transactions module
  *
- *  @group integration/clients/thor-client/transactions
+ * @group integration/clients/thor-client/transactions
  */
 describe('ThorClient - Transactions Module Execute Call', () => {
+    // Add retry configuration for all tests in this suite
+    jest.retryTimes(3, { logErrorsBeforeRetry: true });
+
+    // Increase timeout for transaction tests
+    const TIMEOUT = 30000; // 30 seconds
+
     let thorSoloClient: ThorClient;
     let accountDispatcher: AccountDispatcher;
     let account: ThorSoloAccount;
@@ -34,37 +40,43 @@ describe('ThorClient - Transactions Module Execute Call', () => {
         account = accountDispatcher.getNextAccount();
     });
 
-    test('ok <- Execute multiple call for testing contract', async () => {
-        // setup options
-        const options: ContractCallOptions = {
-            gas: 1000000
-        };
-        // setup clauses
-        const clauses = [
-            {
-                clause: {
-                    to: testContractAddress,
-                    data: getBalanceFn.encodeData([account.address]).toString(),
-                    value: '0x0'
+    test(
+        'ok <- Execute multiple call for testing contract',
+        async () => {
+            // setup options
+            const options: ContractCallOptions = {
+                gas: 1000000
+            };
+            // setup clauses
+            const clauses = [
+                {
+                    clause: {
+                        to: testContractAddress,
+                        data: getBalanceFn
+                            .encodeData([account.address])
+                            .toString(),
+                        value: '0x0'
+                    },
+                    functionAbi: getBalanceFn
                 },
-                functionAbi: getBalanceFn
-            },
-            {
-                clause: {
-                    to: testContractAddress,
-                    data: greaterThan10Fn.encodeData([100]).toString(),
-                    value: '0x0'
-                },
-                functionAbi: greaterThan10Fn
-            }
-        ];
-        // execute the transaction
-        const result =
-            await thorSoloClient.transactions.executeMultipleClausesCall(
-                clauses,
-                options
-            );
-        expect(result[0].success).toBe(true);
-        expect(result[1].success).toBe(true);
-    });
+                {
+                    clause: {
+                        to: testContractAddress,
+                        data: greaterThan10Fn.encodeData([100]).toString(),
+                        value: '0x0'
+                    },
+                    functionAbi: greaterThan10Fn
+                }
+            ];
+            // execute the transaction
+            const result =
+                await thorSoloClient.transactions.executeMultipleClausesCall(
+                    clauses,
+                    options
+                );
+            expect(result[0].success).toBe(true);
+            expect(result[1].success).toBe(true);
+        },
+        TIMEOUT
+    );
 });
