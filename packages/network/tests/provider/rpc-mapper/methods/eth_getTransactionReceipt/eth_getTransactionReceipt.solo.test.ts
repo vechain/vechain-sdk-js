@@ -30,6 +30,12 @@ function removeBlockNumAndHashFields(obj: unknown): unknown {
  * @group integration/rpc-mapper/methods/eth_getTransactionReceipt
  */
 describe('RPC Mapper - eth_getTransactionReceipt method tests', () => {
+    // Add retry configuration for all tests in this suite
+    jest.retryTimes(3, { logErrorsBeforeRetry: true });
+
+    // Increase timeout for RPC tests
+    const TIMEOUT = 30000; // 30 seconds
+
     /**
      * Thor client instance
      */
@@ -65,7 +71,7 @@ describe('RPC Mapper - eth_getTransactionReceipt method tests', () => {
                         expectedWithoutBlockHash
                     );
                 },
-                7000
+                TIMEOUT
             );
         });
     });

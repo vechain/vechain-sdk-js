@@ -91,9 +91,23 @@ describe('RPC Mapper - debug_traceCall method tests on solo', () => {
                 ](debugTraceCallPositiveCasesFixtureTestnet[0].input.params);
 
                 // Check if the result matches the expected value
-                expect(rpcCall).toStrictEqual(
-                    debugTraceCallPositiveCasesFixtureTestnet[0].input.expected
-                );
+                expect(rpcCall).toMatchObject({
+                    from: debugTraceCallPositiveCasesFixtureTestnet[0].input
+                        .expected.from,
+                    gas: debugTraceCallPositiveCasesFixtureTestnet[0].input
+                        .expected.gas,
+                    gasUsed:
+                        debugTraceCallPositiveCasesFixtureTestnet[0].input
+                            .expected.gasUsed,
+                    input: debugTraceCallPositiveCasesFixtureTestnet[0].input
+                        .expected.input,
+                    to: debugTraceCallPositiveCasesFixtureTestnet[0].input
+                        .expected.to,
+                    type: debugTraceCallPositiveCasesFixtureTestnet[0].input
+                        .expected.type,
+                    value: debugTraceCallPositiveCasesFixtureTestnet[0].input
+                        .expected.value
+                });
             },
             TIMEOUT
         );

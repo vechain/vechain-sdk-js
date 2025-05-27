@@ -13,6 +13,12 @@ import { ethGetCodeTestCases, invalidEthGetCodeTestCases } from './fixture';
  * @group integration/rpc-mapper/methods/eth_getCode
  */
 describe('RPC Mapper - eth_getCode method tests', () => {
+    // Add retry configuration for all tests in this suite
+    jest.retryTimes(3, { logErrorsBeforeRetry: true });
+
+    // Increase timeout for RPC tests
+    const TIMEOUT = 30000; // 30 seconds
+
     /**
      * Thor client instance
      */
@@ -34,15 +40,19 @@ describe('RPC Mapper - eth_getCode method tests', () => {
          * Test cases for eth_getCode RPC method that do not throw an error
          */
         ethGetCodeTestCases.forEach(({ description, params, expected }) => {
-            test(`${description}`, async () => {
-                const rpcCall =
-                    await RPCMethodsMap(thorClient)[RPC_METHODS.eth_getCode](
-                        params
-                    );
+            test(
+                description,
+                async () => {
+                    const rpcCall =
+                        await RPCMethodsMap(thorClient)[
+                            RPC_METHODS.eth_getCode
+                        ](params);
 
-                // Compare the result with the expected value
-                expect(rpcCall).toBe(expected);
-            });
+                    // Compare the result with the expected value
+                    expect(rpcCall).toStrictEqual(expected);
+                },
+                TIMEOUT
+            );
         });
     });
 

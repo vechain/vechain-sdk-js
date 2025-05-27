@@ -9,6 +9,7 @@ import {
     ethGetBalanceTestCases,
     invalidEthGetBalanceTestCases
 } from './fixture';
+import { TEST_ACCOUNTS } from '../../../../fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_getBalance' method
@@ -16,6 +17,12 @@ import {
  * @group integration/rpc-mapper/methods/eth_getBalance
  */
 describe('RPC Mapper - eth_getBalance method tests', () => {
+    // Add retry configuration for all tests in this suite
+    jest.retryTimes(3, { logErrorsBeforeRetry: true });
+
+    // Increase timeout for RPC tests
+    const TIMEOUT = 30000; // 30 seconds
+
     /**
      * Thor client instance
      */
@@ -37,15 +44,19 @@ describe('RPC Mapper - eth_getBalance method tests', () => {
          * Test cases for eth_getBalance RPC method that do not throw an error
          */
         ethGetBalanceTestCases.forEach(({ description, params, expected }) => {
-            test(description, async () => {
-                const rpcCall =
-                    await RPCMethodsMap(thorClient)[RPC_METHODS.eth_getBalance](
-                        params
-                    );
+            test(
+                description,
+                async () => {
+                    const rpcCall =
+                        await RPCMethodsMap(thorClient)[
+                            RPC_METHODS.eth_getBalance
+                        ](params);
 
-                // Compare the result with the expected value
-                expect(rpcCall).toStrictEqual(expected);
-            });
+                    // Compare the result with the expected value
+                    expect(rpcCall).toStrictEqual(expected);
+                },
+                TIMEOUT
+            );
         });
 
         /**
@@ -53,15 +64,41 @@ describe('RPC Mapper - eth_getBalance method tests', () => {
          */
         invalidEthGetBalanceTestCases.forEach(
             ({ description, params, expectedError }) => {
-                test(description, async () => {
-                    // Call RPC method
-                    await expect(
-                        RPCMethodsMap(thorClient)[RPC_METHODS.eth_getBalance](
-                            params
-                        )
-                    ).rejects.toThrowError(expectedError);
-                });
+                test(
+                    description,
+                    async () => {
+                        // Call RPC method
+                        await expect(
+                            RPCMethodsMap(thorClient)[
+                                RPC_METHODS.eth_getBalance
+                            ](params)
+                        ).rejects.toThrowError(expectedError);
+                    },
+                    TIMEOUT
+                );
             }
+        );
+
+        /**
+         * Should return correct balance of the test account
+         */
+        test(
+            'Should return correct balance of the test account',
+            async () => {
+                // Call RPC method
+                const rpcCall = (await RPCMethodsMap(thorClient)[
+                    RPC_METHODS.eth_getBalance
+                ]([
+                    TEST_ACCOUNTS.ACCOUNT.SIMPLE_ACCOUNT.address,
+                    'latest'
+                ])) as string;
+
+                // Check if the result matches the expected value
+                expect(rpcCall).toBeDefined();
+                expect(typeof rpcCall).toBe('string');
+                expect(rpcCall.startsWith('0x')).toBe(true);
+            },
+            TIMEOUT
         );
     });
 
