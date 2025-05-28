@@ -1,5 +1,5 @@
 import { ThorClient, THOR_SOLO_URL } from '@vechain/sdk-network';
-import { Transaction, Address, VET, Clause, HexUInt, HDKey, networkInfo } from '@vechain/sdk-core';
+import { Transaction, Address, VET, Clause, HDKey, networkInfo } from '@vechain/sdk-core';
 
 // START_SNIPPET: FeeEstimationSnippet
 
@@ -9,10 +9,8 @@ const thor = ThorClient.at(THOR_SOLO_URL);
 // 2 - Derive account from mnemonic
 const mnemonic = 'denial kitchen pet squirrel other broom bar gas better priority spoil cross';
 const child = HDKey.fromMnemonic(mnemonic.split(' ')).deriveChild(0);
-if (!child.privateKey || !child.publicKey) throw new Error('Key derivation failed');
-const privateKey = HexUInt.of(Array.from(child.privateKey).map(b => b.toString(16).padStart(2, '0')).join('')).bytes;
-const address = Address.ofPublicKey(child.publicKey as Uint8Array).toString();
-
+const privateKey = child.privateKey;
+const address = Address.ofPublicKey(child.publicKey).toString();
 
 // 3 - Create transaction clauses
 const clauses = [Clause.transferVET(Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'), VET.of(10000))];
