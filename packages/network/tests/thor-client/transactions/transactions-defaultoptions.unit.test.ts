@@ -101,20 +101,36 @@ describe('fillDefaultBodyOptions() unit tests', () => {
         jest.spyOn(client.forkDetector, 'isGalacticaForked').mockResolvedValue(
             true
         );
+
+        // Mock getFeeHistory to return a fee history with reward = 0x1
+        jest.spyOn(client.gas, 'getFeeHistory').mockResolvedValue({
+            oldestBlock: '0x1',
+            baseFeePerGas: ['0x1', '0x2', '0x3'],
+            gasUsedRatio: ['0.5', '0.6', '0.7'],
+            reward: [
+                ['0x0', '0x0', '0x1'],
+                ['0x0', '0x0', '0x1'],
+                ['0x0', '0x0', '0x1']
+            ]
+        });
+
+        // Mock getMaxPriorityFeePerGas for fallback
         jest.spyOn(client.gas, 'getMaxPriorityFeePerGas').mockResolvedValue(
             '0x1'
         );
+
         jest.spyOn(
             client.blocks,
             'getBestBlockBaseFeePerGas'
         ).mockResolvedValue('0x99');
+
         const options = {
             maxFeePerGas: '0x10'
         };
         const filledOptions =
             await client.transactions.fillDefaultBodyOptions(options);
         expect(filledOptions.maxFeePerGas).toBe('0x10'); // stays the same
-        expect(filledOptions.maxPriorityFeePerGas).toEqual('0x1'); // computed
+        expect(filledOptions.maxPriorityFeePerGas).toEqual('0x01'); // computed with leading zero
     });
 
     test('dynamic fee tx <- only maxPriorityFeePerGas is specified and fork has happened', async () => {
@@ -122,13 +138,17 @@ describe('fillDefaultBodyOptions() unit tests', () => {
         jest.spyOn(client.forkDetector, 'isGalacticaForked').mockResolvedValue(
             true
         );
+
+        // We don't need to mock getFeeHistory here because maxPriorityFeePerGas is already specified
         jest.spyOn(client.gas, 'getMaxPriorityFeePerGas').mockResolvedValue(
             '0x1'
         );
+
         jest.spyOn(
             client.blocks,
             'getBestBlockBaseFeePerGas'
         ).mockResolvedValue('0x30');
+
         const options = {
             maxPriorityFeePerGas: '0x20'
         };
@@ -254,13 +274,30 @@ describe('buildTransactionBody() unit tests', () => {
         jest.spyOn(client.forkDetector, 'isGalacticaForked').mockResolvedValue(
             true
         );
+
+        // Mock getFeeHistory to return a fee history with reward = 0x1
+        jest.spyOn(client.gas, 'getFeeHistory').mockResolvedValue({
+            oldestBlock: '0x1',
+            baseFeePerGas: ['0x1', '0x2', '0x3'],
+            gasUsedRatio: ['0.5', '0.6', '0.7'],
+            reward: [
+                ['0x0', '0x0', '0x1'],
+                ['0x0', '0x0', '0x1'],
+                ['0x0', '0x0', '0x1']
+            ]
+        });
+
+        // Mock getMaxPriorityFeePerGas for fallback
         jest.spyOn(client.gas, 'getMaxPriorityFeePerGas').mockResolvedValue(
             '0x1'
         );
+
+        // Mock getBestBlockBaseFeePerGas to ensure the 75th percentile (0x1) is lower than 4.6% of base fee
         jest.spyOn(
             client.blocks,
             'getBestBlockBaseFeePerGas'
-        ).mockResolvedValue('0x30');
+        ).mockResolvedValue('0x99');
+
         const options = {
             maxFeePerGas: 1000000000000000000
         };
@@ -270,6 +307,6 @@ describe('buildTransactionBody() unit tests', () => {
             options
         );
         expect(txBody.maxFeePerGas).toBe(1000000000000000000);
-        expect(txBody.maxPriorityFeePerGas).toBe('0x1');
+        expect(txBody.maxPriorityFeePerGas).toBe('0x01'); // with leading zero
     });
 });
