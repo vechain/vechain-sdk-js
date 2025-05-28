@@ -106,9 +106,7 @@ describe('ThorClient - Transactions Module Execute Transaction', () => {
         // setup options
         const options: ContractTransactionOptions = {
             gas: 1000000,
-            gasPriceCoef: 0,
-            maxFeePerGas: 10000000000000,
-            maxPriorityFeePerGas: 100
+            gasPriceCoef: 0
         };
         // execute the transaction
         const tx = await thorSoloClient.transactions.executeTransaction(
@@ -122,5 +120,26 @@ describe('ThorClient - Transactions Module Execute Transaction', () => {
         const receipt = await tx.wait();
         // assert the transaction was successful
         expect(receipt?.reverted).toBe(false);
+    });
+
+    test('should throw if both legacy and EIP-1559 options are provided', async () => {
+        // setup options
+        const options: ContractTransactionOptions = {
+            gas: 1000000,
+            gasPriceCoef: 0,
+            maxFeePerGas: 10000000000000,
+            maxPriorityFeePerGas: 100
+        };
+        await expect(
+            thorSoloClient.transactions.executeTransaction(
+                signer,
+                testContractAddress,
+                depositFn,
+                [1],
+                options
+            )
+        ).rejects.toThrow(
+            'Invalid transaction body options. Cannot specify both legacy and dynamic fee type options.'
+        );
     });
 });

@@ -123,9 +123,7 @@ describe('ThorClient - Transactions Module Execute multiple clauses', () => {
         // setup options
         const options: ContractTransactionOptions = {
             gas: 1000000,
-            gasPriceCoef: 0,
-            maxFeePerGas: 10000000000000,
-            maxPriorityFeePerGas: 100
+            gasPriceCoef: 0
         };
         // execute the transaction
         const tx =
@@ -138,5 +136,24 @@ describe('ThorClient - Transactions Module Execute multiple clauses', () => {
         const receipt = await tx.wait();
         // assert the transaction was successful
         expect(receipt?.reverted).toBe(false);
+    });
+
+    test('should throw if both legacy and EIP-1559 options are provided', async () => {
+        // setup options
+        const options: ContractTransactionOptions = {
+            gas: 1000000,
+            gasPriceCoef: 0,
+            maxFeePerGas: 10000000000000,
+            maxPriorityFeePerGas: 100
+        };
+        await expect(
+            thorSoloClient.transactions.executeMultipleClausesTransaction(
+                clauses,
+                signer,
+                options
+            )
+        ).rejects.toThrow(
+            'Invalid transaction body options. Cannot specify both legacy and dynamic fee type options.'
+        );
     });
 });
