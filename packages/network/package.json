@@ -1,6 +1,6 @@
 {
   "name": "@vechain/sdk-network",
-  "version": "1.2.0-rc.2",
+  "version": "1.2.0-rc.3",
   "description": "This module serves as the standard interface connecting decentralized applications (dApps) and users to the VeChainThor blockchain",
   "author": "VeChain Foundation",
   "license": "MIT",
@@ -26,7 +26,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "rm -rf ./dist && tsup-node src/index.ts --format cjs,esm --dts",
+    "build": "rm -rf ./dist && tsup-node src/index.ts --format cjs,esm --dts --sourcemap",
     "check:circular-dependencies": "npx madge --json --circular --extensions ts src | jq '. | length' | awk '{if($1 > 15) exit 1}'",
     "lint": "eslint",
     "format": "prettier --write src/**/*.ts tests/**/*.ts solo-seeding/**/*.ts",
@@ -46,16 +46,16 @@
   },
   "dependencies": {
     "@noble/curves": "^1.6.0",
-    "@vechain/sdk-core": "1.2.0-rc.2",
-    "@vechain/sdk-errors": "1.2.0-rc.2",
-    "@vechain/sdk-logging": "1.2.0-rc.2",
+    "@vechain/sdk-core": "1.2.0-rc.3",
+    "@vechain/sdk-errors": "1.2.0-rc.3",
+    "@vechain/sdk-logging": "1.2.0-rc.3",
     "abitype": "^1.0.6",
     "ethers": "6.13.4",
     "viem": "^2.21.45"
   },
   "devDependencies": {
     "@types/ws": "^8.5.13",
-    "@vechain/sdk-solo-setup": "*",
+    "@vechain/sdk-solo-setup": "1.2.0-rc.3",
     "@vechain/vebetterdao-contracts": "^4.1.0",
     "jest-fetch-mock": "^3.0.3",
     "whatwg-fetch": "^3.6.20",
