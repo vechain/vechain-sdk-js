@@ -11,7 +11,7 @@ const maxPriorityFee = await thor.gas.getMaxPriorityFeePerGas();
 
 // START_SNIPPET: FeeHistorySnippet
 // Query the recent fee history
-const feeHistory = await thor.gas.getFeeHistory({ blockCount: 10, newestBlock: 'latest' });
+const feeHistory = await thor.gas.getFeeHistory({ blockCount: 10, newestBlock: 'best' });
 // END_SNIPPET: FeeHistorySnippet
 
 // START_SNIPPET: BaseFeeSnippet

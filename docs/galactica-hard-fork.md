@@ -57,7 +57,7 @@ const maxPriorityFee = await thor.gas.getMaxPriorityFeePerGas();
 
 ```typescript { name=fee-estimation, category=example }
 // Query the recent fee history
-const feeHistory = await thor.gas.getFeeHistory({ blockCount: 10, newestBlock: 'latest' });
+const feeHistory = await thor.gas.getFeeHistory({ blockCount: 10, newestBlock: 'best' });
 ```
 
 ### 3. Get Current Base Fee
