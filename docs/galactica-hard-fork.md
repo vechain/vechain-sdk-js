@@ -49,19 +49,22 @@ The Galactica hard fork introduces new RPC endpoints for accurate fee estimation
 ### 1. Get Current Priority Fee
 
 ```typescript { name=fee-estimation, category=example }
-Content not found between specified comments.
+// Query the current max priority fee per gas
+const maxPriorityFee = await thor.gas.getMaxPriorityFeePerGas();
 ```
 
 ### 2. Get Fee History
 
 ```typescript { name=fee-estimation, category=example }
-Content not found between specified comments.
+// Query the recent fee history
+const feeHistory = await thor.gas.getFeeHistory({ blockCount: 10, newestBlock: 'latest' });
 ```
 
 ### 3. Get Current Base Fee
 
 ```typescript { name=fee-estimation, category=example }
-Content not found between specified comments.
+// Query the current base fee per gas
+const baseFee = await thor.blocks.getBestBlockBaseFeePerGas();
 ```
 
 ## Creating Transactions
@@ -184,6 +187,36 @@ console.log('Receipt:', receipt3);
 - Use `getMaxPriorityFeePerGas()` for current network conditions
 - Monitor `getFeeHistory()` for fee trends
 - Consider block utilization when setting fees
+
+```typescript { name=fee-estimation, category=example }
+// 3. Estimate gas and get default body options
+const gasResult = await thor.gas.estimateGas(clauses, address);
+const defaultBodyOptions = await thor.transactions.fillDefaultBodyOptions();
+
+// 4. Build transaction body with explicit values
+const txBody = await thor.transactions.buildTransactionBody(
+  clauses,
+  gasResult.totalGas,
+  {
+    chainTag: networkInfo.solo.chainTag,
+    blockRef: '0x0000000000000000',
+    expiration: 32,
+    gasPriceCoef: 128,
+    dependsOn: null,
+    nonce: 12345678,
+    ...defaultBodyOptions
+  }
+);
+
+// 5. Sign transaction
+const txClass = Transaction.of(txBody);
+const txSigned = txClass.sign(privateKey);
+const encodedTx = '0x' + Buffer.from(txSigned.encoded).toString('hex');
+
+// 6. Send transaction and wait for receipt
+const txId = (await thor.transactions.sendRawTransaction(encodedTx)).id;
+const receipt = await thor.transactions.waitForTransaction(txId);
+```
 
 ### 2. Fee Setting
 

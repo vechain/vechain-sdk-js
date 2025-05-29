@@ -94,6 +94,8 @@ For complete control:
 - Monitor `getFeeHistory()` for fee trends
 - Consider block utilization when setting fees
 
+[FeeEstimationSnippet](examples/gas/fee-estimation.ts)
+
 ### 2. Fee Setting
 
 - Set `maxFeePerGas` to at least 2× base fee + priority fee
