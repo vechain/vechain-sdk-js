@@ -1,0 +1,72 @@
+---
+title: thorest_thor_blocks
+---
+classDiagram
+    namespace thorest {
+        class ThorRequest {
+            <<interface>>
+        }
+    }
+    namespace thorest_errors {
+        class ThorError
+    }
+    class Block {
+        UInt number
+        BlockId id
+        UInt size
+        BlockId parentID
+        UInt timestamp
+        UInt gasLimit
+        Address beneficiary
+        UInt gasUsed
+        HexUInt stringbaseFeePerGas
+        UInt totalScore
+        TxId txsRoot
+        UInt txsFeatures
+        TxId stateRoot
+        TXId receiptsRoot
+        boolean com
+        Address signer
+        BlockJSON toJSON()
+    }
+    class ExpandedBlockResponse {
+        boolean isTrunk
+        boolean isFinalized
+        Receipt[] transactions
+    }
+    class RawTx {
+        HexUInt raw
+        RawTxJSON toJSON()
+    }
+    class RetrieveBlockError
+    class RegularBlockResponse {
+        boolean isTrunk
+        boolean isFinalized
+        TxId[]  transactions
+        RegularBlockResponseJSON toJson()
+    }
+    class RetrieveExpandedBlock {
+        ExpandedBlockResponse | null of(Revision revision)$
+        ThorResponse~RetrieveExpandedBlock, ExpandedBlockResponse|null~ askTo(HttpClient httpClient)
+    }
+    class RetrieveRawBlock {
+        RawTx|null of(Revision revision)$
+        ThorRespone~RetrieveRawBlock, TxRaw|null~ astTo(HttpClient httpClient)
+    }
+    class RetrieveRegularBlock {
+        RetrieveRegularBlock|null of(Revision revision)$
+        ThorResponse~RetrieveRegularBlock, RegularBlockResponse|null~ askTo(HttpClient httpClient)
+    }
+    ThorError <|-- RetrieveBlockError
+    ThorRequest <|.. RetrieveExpandedBlock
+    ThorRequest <|.. RetrieveRawBlock
+    ThorRequest <|.. RetrieveRegularBlock
+    ExpandedBlockResponse --|> Block
+    RegularBlockResponse --|> Block
+    RetrieveExpandedBlock "askTo" --> ExpandedBlockResponse
+    RetrieveRawBlock "askTo" --> RawTx
+    RetrieveRegularBlock "askTo" --> RegularBlockResponse
+    RetrieveBlockError <-- "throws" ThorRequest
+
+
+
