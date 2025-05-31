@@ -1,5 +1,6 @@
-import { Address, HexUInt, IllegalArgumentError } from '@vechain/sdk-core/src';
-import { type _EventJSON } from './_EventJSON';
+import { Address, HexUInt, IllegalArgumentError } from '@vechain/sdk-core';
+import { XEventJSON } from '@thor/blocks/XEventJSON';
+
 
 /**
  * Full-Qualified Path
@@ -10,7 +11,7 @@ const FQP = 'packages/thorest/src/thor/blocks/_Event.ts!'; // todo: check once m
  * [Event](http://localhost:8669/doc/stoplight-ui/#/schemas/Event)
  */
 // eslint-disable-next-line sonarjs/class-name
-class _Event {
+class XEvent {
     /**
      * he address of the contract that produces the event (bytes20).
      */
@@ -29,10 +30,10 @@ class _Event {
     /**
      * Constructs an instance of the class using the provided _EventJSON object.
      *
-     * @param {_EventJSON} json - The JSON object containing the required fields to initialize the instance.
+     * @param {XEventJSON} json - The JSON object containing the required fields to initialize the instance.
      * @throws {IllegalArgumentError} Throws an error if the JSON object cannot be parsed or contains invalid values.
      */
-    constructor(json: _EventJSON) {
+    constructor(json: XEventJSON) {
         try {
             this.address = Address.of(json.address);
             this.topics = json.topics.map(
@@ -52,17 +53,17 @@ class _Event {
     /**
      * Converts the current instance of the class into a _EventJSON representation.
      *
-     * @return {_EventJSON} The JSON object representing the current instance.
+     * @return {XEventJSON} The JSON object representing the current instance.
      */
-    toJSON(): _EventJSON {
+    toJSON(): XEventJSON {
         return {
             address: this.address.toString(),
             topics: this.topics.map((topic: HexUInt): string =>
                 topic.toString()
             ),
             data: this.data.toString()
-        } satisfies _EventJSON;
+        } satisfies XEventJSON;
     }
 }
 
-export { _Event };
+export { XEvent };

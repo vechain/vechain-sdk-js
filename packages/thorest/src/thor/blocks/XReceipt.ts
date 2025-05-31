@@ -6,12 +6,12 @@ import {
     Quantity,
     TxId,
     UInt
-} from '@vechain/sdk-core/src';
-import { _Clause } from './_Clause';
-import { type _ClauseJSON } from './_ClauseJSON';
-import { type _OutputJSON } from './_OutputJSON';
-import { type _ReceiptJSON } from './_ReceiptJSON';
-import { _Output } from './_Output';
+} from '@vechain/sdk-core';
+import { XClause } from '@thor/blocks/XClause';
+import { XOutput } from '@thor/blocks/XOutput';
+import { type XReceiptJSON } from '@thor/blocks/XReceiptJSON';
+import { type XClauseJSON } from './XClauseJSON';
+import { type XOutputJSON } from '@thor/blocks/XOutputJSON';
 
 /**
  * Full-Qualified Path
@@ -21,8 +21,8 @@ const FQP = 'packages/thorest/src/thor/blocks/_Receipt.ts!'; // todo: check once
 /**
  * [Receipt](http://localhost:8669/doc/stoplight-ui/#/schemas/Receipt)
  */
-// eslint-disable-next-line sonarjs/class-name
-class _Receipt {
+
+class XReceipt {
     /**
      * The transaction identifier.
      */
@@ -66,7 +66,7 @@ class _Receipt {
     /**
      * An array of clauses that are executed by the transaction.
      */
-    readonly clauses: _Clause[];
+    readonly clauses: XClause[];
 
     /**
      * The coefficient used to calculate the final gas price of the transaction.
@@ -128,15 +128,15 @@ class _Receipt {
     /**
      * An array of outputs produced by the transaction.
      */
-    readonly outputs: _Output[];
+    readonly outputs: XOutput[];
 
     /**
      * Constructs an instance of the class using the provided _TransferJSON object.
      *
-     * @param {_ReceiptJSON} json - The JSON object containing the required fields to initialize the instance.
+     * @param {XReceiptJSON} json - The JSON object containing the required fields to initialize the instance.
      * @throws {IllegalArgumentError} Throws an error if the JSON object cannot be parsed or contains invalid values.
      */
-    constructor(json: _ReceiptJSON) {
+    constructor(json: XReceiptJSON) {
         try {
             this.id = TxId.of(json.id);
             this.type =
@@ -153,7 +153,7 @@ class _Receipt {
             this.blockRef = BlockRef.of(json.blockRef);
             this.expiration = UInt.of(json.expiration);
             this.clauses = json.clauses.map(
-                (clause: _ClauseJSON): _Clause => new _Clause(clause)
+                (clause: XClauseJSON): XClause => new XClause(clause)
             );
             this.gasPriceCoef =
                 json.gasPriceCoef !== undefined && json.gasPriceCoef !== null
@@ -180,7 +180,7 @@ class _Receipt {
             this.reward = HexUInt.of(json.reward).bi;
             this.reverted = json.reverted;
             this.outputs = json.outputs.map(
-                (output: _OutputJSON): _Output => new _Output(output)
+                (output: XOutputJSON): XOutput => new XOutput(output)
             );
         } catch (error) {
             throw new IllegalArgumentError(
@@ -195,11 +195,10 @@ class _Receipt {
     /**
      * Converts the current instance of the class into a _ReceiptJSON representation.
      *
-     * @return {_ReceiptJSON} The JSON object representing the current instance.
+     * @return {XReceiptJSON} The JSON object representing the current instance.
      */
-    toJSON(): _ReceiptJSON {
+    toJSON(): XReceiptJSON {
         const json = {
-            // eslint-disable-next-line @typescript-eslint/no-base-to-string,sonarjs/no-base-to-string
             id: this.id.toString(),
             type: this.type !== undefined ? this.type.valueOf() : null,
             origin: this.origin.toString(),
@@ -210,7 +209,7 @@ class _Receipt {
             blockRef: this.blockRef.toString(),
             expiration: this.expiration.valueOf(),
             clauses: this.clauses.map(
-                (clause: _Clause): _ClauseJSON => clause.toJSON()
+                (clause: XClause): XClauseJSON => clause.toJSON()
             ),
             gasPriceCoef:
                 this.gasPriceCoef !== undefined
@@ -218,25 +217,24 @@ class _Receipt {
                     : null,
             gas: this.gas.valueOf(),
             dependsOn:
-                // eslint-disable-next-line @typescript-eslint/no-base-to-string,sonarjs/no-base-to-string
                 this.dependsOn !== undefined ? this.dependsOn.toString() : null,
             nonce: this.nonce.toString(),
             gasUsed: this.gasUsed.valueOf(),
             gasPayer: this.gasPayer.toString(),
-            // eslint-disable-next-line @typescript-eslint/no-base-to-string,sonarjs/no-base-to-string
+
             paid: Quantity.of(this.paid).toString(), // trim not significant zeros
-            // eslint-disable-next-line @typescript-eslint/no-base-to-string,sonarjs/no-base-to-string
+
             reward: Quantity.of(this.reward).toString(), // trim not significant zeros
             reverted: this.reverted,
             outputs: this.outputs.map(
-                (output: _Output): _OutputJSON => output.toJSON()
+                (output: XOutput): XOutputJSON => output.toJSON()
             )
         };
         if (this.maxFeePerGas !== undefined) {
             HexUInt.of(this.maxFeePerGas.valueOf()).toString();
         }
-        return json satisfies _ReceiptJSON;
+        return json satisfies XReceiptJSON;
     }
 }
 
-export { _Receipt };
+export { XReceipt };

@@ -1,9 +1,9 @@
-import { Address, IllegalArgumentError } from '@vechain/sdk-core/src';
-import { _Event } from './_Event';
-import { _Transfer } from './_Transfer';
-import { type _OutputJSON } from './_OutputJSON';
-import { type _EventJSON } from './_EventJSON';
-import { type _TransferJSON } from './_TransferJSON';
+import { Address, IllegalArgumentError } from '@vechain/sdk-core';
+import { XEvent } from '@thor/blocks/XEvent';
+import { XTransfer } from '@thor/blocks/XTransfer';
+import { type XOutputJSON } from '@thor/blocks/XOutputJSON';
+import { type XEventJSON } from '@thor/blocks/XEventJSON';
+import { type XTransferJSON } from '@thor/blocks/XTransferJSON';
 
 /**
  * Full-Qualified Path
@@ -13,7 +13,7 @@ const FQP = 'packages/thorest/src/thor/blocks/_Output.ts!'; // todo: check once 
 /**
  * [Receipt.outputs](http://localhost:8669/doc/stoplight-ui/#/schemas/Receipt)
  */
-class _Output {
+class XOutput {
     /**
      * The address of the deployed contract, if the corresponding clause is a contract deployment clause.
      */
@@ -22,30 +22,30 @@ class _Output {
     /**
      * An array of events emitted by the corresponding clause.
      */
-    readonly events: _Event[];
+    readonly events: XEvent[];
 
     /**
      * An array of transfers made by the corresponding clause.
      */
-    readonly transfers: _Transfer[];
+    readonly transfers: XTransfer[];
 
     /**
      * Constructs an instance of the class using the provided _OutputJSON object.
      *
-     * @param {_OutputJSON} json - The JSON object containing the required fields to initialize the instance.
+     * @param {XOutputJSON} json - The JSON object containing the required fields to initialize the instance.
      * @throws {IllegalArgumentError} Throws an error if the JSON object cannot be parsed or contains invalid values.
      */
-    constructor(json: _OutputJSON) {
+    constructor(json: XOutputJSON) {
         try {
             this.contractAddress =
                 json.contractAddress !== null
                     ? Address.of(json.contractAddress)
                     : undefined;
             this.events = json.events.map(
-                (event: _EventJSON): _Event => new _Event(event)
+                (event: XEventJSON): XEvent => new XEvent(event)
             );
             this.transfers = json.transfers.map(
-                (transfer: _TransferJSON): _Transfer => new _Transfer(transfer)
+                (transfer: XTransferJSON): XTransfer => new XTransfer(transfer)
             );
         } catch (error) {
             throw new IllegalArgumentError(
@@ -60,22 +60,22 @@ class _Output {
     /**
      * Converts the current instance of the class into a _OutputJSON representation.
      *
-     * @return {_OutputJSON} The JSON object representing the current instance.
+     * @return {XOutputJSON} The JSON object representing the current instance.
      */
-    toJSON(): _OutputJSON {
+    toJSON(): XOutputJSON {
         return {
             contractAddress:
                 this.contractAddress !== undefined
                     ? this.contractAddress.toString()
                     : null,
             events: this.events.map(
-                (event: _Event): _EventJSON => event.toJSON()
+                (event: XEvent): XEventJSON => event.toJSON()
             ),
             transfers: this.transfers.map(
-                (transfer: _Transfer): _TransferJSON => transfer.toJSON()
+                (transfer: XTransfer): XTransferJSON => transfer.toJSON()
             )
-        } satisfies _OutputJSON;
+        } satisfies XOutputJSON;
     }
 }
 
-export { _Output };
+export { XOutput };

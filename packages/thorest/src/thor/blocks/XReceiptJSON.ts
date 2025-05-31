@@ -1,11 +1,11 @@
-import { type _ClauseJSON } from './_ClauseJSON';
-import { type _OutputJSON } from './_OutputJSON';
+import { type XClauseJSON } from '@thor/blocks/XClauseJSON';
+import { type XOutputJSON } from '@thor/blocks/XOutputJSON';
 
 /**
  * [Receipt](http://localhost:8669/doc/stoplight-ui/#/schemas/Receipt)
  */
-// eslint-disable-next-line sonarjs/class-name
-interface _ReceiptJSON {
+
+interface XReceiptJSON {
     id: string; // tx id
     type?: number | null; // int
     origin: string; // hex address;
@@ -14,7 +14,7 @@ interface _ReceiptJSON {
     chainTag: number; // int
     blockRef: string; // hex
     expiration: number; // int
-    clauses: _ClauseJSON[];
+    clauses: XClauseJSON[];
     gasPriceCoef?: number | null; // int or null
     maxFeePerGas?: string | null; // her or null
     maxPriorityFeePerGas?: string | null; // hex or null
@@ -26,7 +26,7 @@ interface _ReceiptJSON {
     paid: string; // hex
     reward: string; // hex;
     reverted: boolean;
-    outputs: _OutputJSON[];
+    outputs: XOutputJSON[];
 }
 
-export { type _ReceiptJSON };
+export { type XReceiptJSON };

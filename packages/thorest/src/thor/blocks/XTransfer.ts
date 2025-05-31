@@ -3,8 +3,8 @@ import {
     HexUInt,
     IllegalArgumentError,
     UInt
-} from '@vechain/sdk-core/src';
-import { type _TransferJSON } from './_TransferJSON';
+} from '@vechain/sdk-core';
+import { type XTransferJSON } from '@thor';
 
 /**
  * Full-Qualified Path
@@ -14,8 +14,8 @@ const FQP = 'packages/thorest/src/thor/blocks/_Transfer.ts!'; // todo: check onc
 /**
  * [Transfer](http://localhost:8669/doc/stoplight-ui/#/schemas/Transfer)
  */
-// eslint-disable-next-line sonarjs/class-name
-class _Transfer {
+
+class XTransfer {
     /**
      * he address that sent the VET.
      */
@@ -34,10 +34,10 @@ class _Transfer {
     /**
      * Constructs an instance of the class using the provided _TransferJSON object.
      *
-     * @param {_TransferJSON} json - The JSON object containing the required fields to initialize the instance.
+     * @param {XTransferJSON} json - The JSON object containing the required fields to initialize the instance.
      * @throws {IllegalArgumentError} Throws an error if the JSON object cannot be parsed or contains invalid values.
      */
-    constructor(json: _TransferJSON) {
+    constructor(json: XTransferJSON) {
         try {
             this.sender = Address.of(json.sender);
             this.recipient = Address.of(json.recipient);
@@ -55,15 +55,15 @@ class _Transfer {
     /**
      * Converts the current instance of the class into a _TransferJSON representation.
      *
-     * @return {_TransferJSON} The JSON object representing the current instance.
+     * @return {XTransferJSON} The JSON object representing the current instance.
      */
-    toJSON(): _TransferJSON {
+    toJSON(): XTransferJSON {
         return {
             sender: this.sender.toString(),
             recipient: this.recipient.toString(),
             amount: HexUInt.of(this.amount.valueOf()).toString()
-        } satisfies _TransferJSON;
+        } satisfies XTransferJSON;
     }
 }
 
-export { _Transfer };
+export { XTransfer };

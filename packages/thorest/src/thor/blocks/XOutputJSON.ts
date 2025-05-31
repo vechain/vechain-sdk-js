@@ -1,13 +1,13 @@
-import { type _EventJSON } from './_EventJSON';
-import { type _TransferJSON } from './_TransferJSON';
+import { type XEventJSON } from '@thor/blocks/XEventJSON';
+import { type XTransferJSON } from '@thor/blocks/XTransferJSON';
 
 /**
  *
  */
-interface _OutputJSON {
+interface XOutputJSON {
     contractAddress: string | null; // hex address
-    events: _EventJSON[];
-    transfers: _TransferJSON[];
+    events: XEventJSON[];
+    transfers: XTransferJSON[];
 }
 
-export { type _OutputJSON };
+export { type XOutputJSON };
