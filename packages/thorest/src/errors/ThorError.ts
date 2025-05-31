@@ -1,4 +1,4 @@
-import { VeChainSDKError } from '@vechain/sdk-core';
+import { VeChainSDKError } from '@vechain/sdk-core/src';
 
 /**
  * Represents an error originating from the Thor REST API.

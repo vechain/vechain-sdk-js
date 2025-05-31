@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { FetchHttpClient, ThorNetworks } from '../../src';
-import { IllegalArgumentError } from '@vechain/sdk-core';
+import { IllegalArgumentError } from '@vechain/sdk-core/src';
 
 interface MockResponse {
     status: string;
