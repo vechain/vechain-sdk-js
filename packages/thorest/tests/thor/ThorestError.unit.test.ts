@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
-import { ThorError } from '../../src/thor/errors';
-import { VeChainSDKError } from '@vechain/sdk-core/src';
+import { ThorError } from '@thor';
+import { VeChainSDKError } from '@vechain/sdk-core';
 
 describe('ThorestError', () => {
     describe('constructor', () => {
