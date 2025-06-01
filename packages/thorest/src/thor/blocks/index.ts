@@ -8,6 +8,7 @@ export * from './RegularBlockResponse';
 export * from './RegularBlockResponseJSON';
 export * from './RetrieveExpandedBlock';
 export * from './RetrieveRawBlock';
+export * from './RetrieveRegularBlock';
 export * from './XClause';
 export * from './XClauseJSON';
 export * from './XEvent';
