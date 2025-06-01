@@ -1,0 +1,71 @@
+import { Block } from '@thor/blocks/Block';
+import { IllegalArgumentError, TxId } from '@vechain/sdk-core';
+import { type RegularBlockResponseJSON } from '@thor/blocks/RegularBlockResponseJSON';
+
+/**
+ * Full-Qualified Path
+ */
+const FQP = 'packages/thorest/src/thor/blocks/RegularBlockResponse.ts!';
+
+/**
+ * [RegularBlockResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/RegularBlockResponse)
+ */
+class RegularBlockResponse extends Block {
+    /**
+     * Whether the block is trunk (true) or not (false).
+     */
+    readonly isTrunk: boolean;
+
+    /**
+     * Whether the block has been finalized (true) or not (false).
+     */
+    readonly isFinalized: boolean;
+
+    /**
+     * An array of transaction IDs.
+     */
+    readonly transactions: TxId[];
+
+    /**
+     * Constructs an instance of the class using the provided RegularBlockResponseJSON object.
+     *
+     * @param {RegularBlockResponseJSON} json - The JSON object containing data to construct the instance.
+     * @throws {IllegalArgumentError} Throws if the parsing of the provided JSON object fails.
+     */
+    constructor(json: RegularBlockResponseJSON) {
+        try {
+            super(json);
+            this.isTrunk = json.isTrunk;
+            this.isFinalized = json.isFinalized;
+            this.transactions = json.transactions.map(
+                (txId: string): TxId => TxId.of(txId)
+            );
+        } catch (error) {
+            throw new IllegalArgumentError(
+                `${FQP}constructor(json: RegularBlockResponseJSON)`,
+                'Bad parse',
+                { json },
+                error instanceof Error ? error : undefined
+            );
+        }
+    }
+
+    /**
+     * Converts the current instance of the object into a JSON representation.
+     *
+     * @return {RegularBlockResponseJSON} A JSON object containing the serialized representation of the instance, including properties such as `isTrunk`, `isFinalized`, and a list of `transactions` as strings.
+     */
+    toJSON(): RegularBlockResponseJSON {
+        return {
+            ...super.toJSON(),
+            isTrunk: this.isTrunk,
+            isFinalized: this.isFinalized,
+            transactions: this.transactions.map((txId: TxId): string =>
+                // eslint-disable-next-line @typescript-eslint/no-base-to-string,sonarjs/no-base-to-string
+                txId.toString()
+            )
+        };
+    }
+}
+
+export { RegularBlockResponse };
