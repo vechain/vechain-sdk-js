@@ -1,4 +1,4 @@
-import { ThorError } from '../../errors/ThorError';
+import { ThorError } from '@thor/ThorError';
 
 class RetrieveBlockError extends ThorError {}
 
