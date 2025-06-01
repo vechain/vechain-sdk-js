@@ -1,5 +1,7 @@
 export * from './Block';
 export * from './BlockJSON';
+export * from './ExpandedBlockResponse';
+export * from './ExpandedBlockResponseJSON';
 export * from './XClause';
 export * from './XClauseJSON';
 export * from './XEvent';
