@@ -6,6 +6,7 @@ export * from './RawTx';
 export * from './RawTxJSON';
 export * from './RegularBlockResponse';
 export * from './RegularBlockResponseJSON';
+export * from './RetrieveRawBlock';
 export * from './XClause';
 export * from './XClauseJSON';
 export * from './XEvent';
