@@ -38,7 +38,6 @@ classDiagram
         HexUInt raw
         RawTxJSON toJSON()
     }
-    class RetrieveBlockError
     class RegularBlockResponse {
         boolean isTrunk
         boolean isFinalized
@@ -57,7 +56,6 @@ classDiagram
         RetrieveRegularBlock|null of(Revision revision)$
         ThorResponse~RetrieveRegularBlock, RegularBlockResponse|null~ askTo(HttpClient httpClient)
     }
-    ThorError <|-- RetrieveBlockError
     ThorRequest <|.. RetrieveExpandedBlock
     ThorRequest <|.. RetrieveRawBlock
     ThorRequest <|.. RetrieveRegularBlock
@@ -66,7 +64,7 @@ classDiagram
     RetrieveExpandedBlock "askTo" --> ExpandedBlockResponse
     RetrieveRawBlock "askTo" --> RawTx
     RetrieveRegularBlock "askTo" --> RegularBlockResponse
-    RetrieveBlockError <-- "throws" ThorRequest
+    ThorError <-- "throws" ThorRequest
 
 
 
