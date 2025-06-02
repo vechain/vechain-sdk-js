@@ -8,7 +8,7 @@ import { type XTransferJSON } from '@thor/blocks/XTransferJSON';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/thorest/src/thor/blocks/_Output.ts!'; // todo: check once moved
+const FQP = 'packages/thorest/src/thor/blocks/XOutput.ts!'; // todo: check once moved
 
 /**
  * [Receipt.outputs](http://localhost:8669/doc/stoplight-ui/#/schemas/Receipt)

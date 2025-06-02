@@ -16,7 +16,7 @@ import { type XOutputJSON } from '@thor/blocks/XOutputJSON';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/thorest/src/thor/blocks/_Receipt.ts!'; // todo: check once moved
+const FQP = 'packages/thorest/src/thor/blocks/XReceipt.ts!'; // todo: check once moved
 
 /**
  * [Receipt](http://localhost:8669/doc/stoplight-ui/#/schemas/Receipt)

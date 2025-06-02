@@ -9,7 +9,7 @@ import { type XClauseJSON } from '@thor/blocks/XClauseJSON';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/thorest/src/thor/blocks/_Clause.ts';
+const FQP = 'packages/thorest/src/thor/blocks/XClause.ts';
 
 /**
  * [Clause](http://localhost:8669/doc/stoplight-ui/#/schemas/Clause)

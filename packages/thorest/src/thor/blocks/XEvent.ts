@@ -5,7 +5,7 @@ import { XEventJSON } from '@thor/blocks/XEventJSON';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/thorest/src/thor/blocks/_Event.ts!'; // todo: check once moved
+const FQP = 'packages/thorest/src/thor/blocks/XEvent.ts!'; // todo: check once moved
 
 /**
  * [Event](http://localhost:8669/doc/stoplight-ui/#/schemas/Event)
