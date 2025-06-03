@@ -1,14 +1,16 @@
 import {
-    Event,
+    type Event,
     type EventJSON,
     Transfer,
-    type TransferJSON
-} from '@thor/transactions';
-import { HexUInt, Gas } from '@vechain/sdk-core';
+    type TransferJSON,
+    XEvent,
+    type XEventJSON
+} from '@thor';
+import { Gas, HexUInt } from '@vechain/sdk-core';
 
 class ExecuteCodeResponse {
     readonly data: HexUInt;
-    readonly events: Event[];
+    readonly events: XEvent[];
     readonly transfers: Transfer[];
     readonly gasUsed: Gas;
     readonly reverted: boolean;
@@ -17,7 +19,7 @@ class ExecuteCodeResponse {
     constructor(json: ExecuteCodeResponseJSON) {
         this.data = HexUInt.of(json.data);
         this.events = json.events.map(
-            (eventJSON: EventJSON): Event => new Event(eventJSON)
+            (eventJSON: XEventJSON): XEvent => new XEvent(eventJSON)
         );
         this.transfers = json.transfers.map(
             (transferJSON: TransferJSON): Transfer => new Transfer(transferJSON)
