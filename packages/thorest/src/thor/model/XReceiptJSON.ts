@@ -1,4 +1,4 @@
-import { type XClauseJSON } from '@thor/model/XClauseJSON';
+import { type ClauseJSON } from '@thor/model/ClauseJSON';
 import { type XOutputJSON } from '@thor/model/XOutputJSON';
 
 /**
@@ -14,7 +14,7 @@ interface XReceiptJSON {
     chainTag: number; // int
     blockRef: string; // hex
     expiration: number; // int
-    clauses: XClauseJSON[];
+    clauses: ClauseJSON[];
     gasPriceCoef?: number | null; // int or null
     maxFeePerGas?: string | null; // her or null
     maxPriorityFeePerGas?: string | null; // hex or null

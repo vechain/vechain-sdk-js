@@ -10,7 +10,7 @@ import {
 import { Clause } from '@thor/model/Clause';
 import { XOutput } from '@thor/model/XOutput';
 import { type XReceiptJSON } from '@thor/model/XReceiptJSON';
-import { type XClauseJSON } from './XClauseJSON';
+import { type ClauseJSON } from './ClauseJSON';
 import { type XOutputJSON } from '@thor/model/XOutputJSON';
 
 /**
@@ -153,7 +153,7 @@ class XReceipt {
             this.blockRef = BlockRef.of(json.blockRef);
             this.expiration = UInt.of(json.expiration);
             this.clauses = json.clauses.map(
-                (clause: XClauseJSON): Clause => new Clause(clause)
+                (clause: ClauseJSON): Clause => new Clause(clause)
             );
             this.gasPriceCoef =
                 json.gasPriceCoef !== undefined && json.gasPriceCoef !== null
@@ -209,7 +209,7 @@ class XReceipt {
             blockRef: this.blockRef.toString(),
             expiration: this.expiration.valueOf(),
             clauses: this.clauses.map(
-                (clause: Clause): XClauseJSON => clause.toJSON()
+                (clause: Clause): ClauseJSON => clause.toJSON()
             ),
             gasPriceCoef:
                 this.gasPriceCoef !== undefined

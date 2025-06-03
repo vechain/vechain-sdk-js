@@ -1,5 +1,5 @@
 export * from './Clause';
-export * from './XClauseJSON';
+export * from './ClauseJSON';
 export * from './XEvent';
 export * from './XEventJSON';
 export * from './XOutput';

@@ -1,0 +1,11 @@
+---
+title: thorest_thor_model
+---
+classDiagram
+    class Clause {
+        Address|null: to
+        bigint: value
+        HexUIntL data
+        constructor(ClauseJSON: json)
+        ClauseJSON toJSON()
+    }
