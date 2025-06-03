@@ -25,7 +25,7 @@ describe('RetrieveTransactionByID unit tests', () => {
                     to: '0x7d8Bf18C7ce84B3e175B339C4cA93Aed1dD488Aa',
                     // We are adding a leading zero to the value because of how VCDM's
                     // Hex is parsing and because we need an even number of hex-digits in other places
-                    value: '0x05ec3db77eba739400',
+                    value: '0x5ec3db77eba739400',
                     data: '0x'
                 }
             ],

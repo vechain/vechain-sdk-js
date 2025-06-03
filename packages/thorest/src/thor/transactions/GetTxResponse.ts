@@ -1,4 +1,4 @@
-import { Clause, type ClauseJSON } from './Clause';
+import { XClause, type XClauseJSON } from '@thor';
 import { TxMeta, type TxMetaJSON } from './TxMeta';
 import { Address, BlockId, Gas, HexUInt, TxId, UInt } from '@vechain/sdk-core';
 
@@ -10,7 +10,7 @@ class GetTxResponse {
     readonly chainTag: UInt;
     readonly blockRef: BlockId;
     readonly expiration: UInt;
-    readonly clauses: Clause[];
+    readonly clauses: XClause[];
     readonly gasPriceCoef: UInt;
     readonly gas: Gas;
     readonly dependsOn?: TxId | null;
@@ -26,8 +26,8 @@ class GetTxResponse {
         this.chainTag = UInt.of(json.chainTag);
         this.blockRef = BlockId.of(json.blockRef);
         this.expiration = UInt.of(json.expiration);
-        this.clauses = json.clauses.map((clauseJSON: ClauseJSON) => {
-            return new Clause(clauseJSON);
+        this.clauses = json.clauses.map((clauseJSON: XClauseJSON) => {
+            return new XClause(clauseJSON);
         });
         this.gasPriceCoef = UInt.of(json.gasPriceCoef);
         this.gas = Gas.of(json.gas);
@@ -49,7 +49,9 @@ class GetTxResponse {
             chainTag: this.chainTag.valueOf(),
             blockRef: this.blockRef.toString(),
             expiration: this.expiration.valueOf(),
-            clauses: this.clauses?.map((clause) => clause.toJSON()),
+            clauses: this.clauses?.map(
+                (clause: XClause): XClauseJSON => clause.toJSON()
+            ),
             gasPriceCoef: this.gasPriceCoef.valueOf(),
             gas: this.gas.valueOf(),
             dependsOn:
@@ -70,7 +72,7 @@ interface GetTxResponseJSON {
     chainTag: number;
     blockRef: string;
     expiration: number;
-    clauses: ClauseJSON[];
+    clauses: XClauseJSON[];
     gasPriceCoef: number;
     gas: number;
     dependsOn?: string | null;

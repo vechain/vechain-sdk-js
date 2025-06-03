@@ -1,4 +1,3 @@
-export * from './Clause';
 export * from './Event';
 export * from './GetRawTxResponse';
 export * from './GetTxResponse';
