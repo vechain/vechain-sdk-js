@@ -9,13 +9,13 @@ import { type XClauseJSON } from '@thor/model/XClauseJSON';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/thorest/src/thor/blocks/XClause.ts';
+const FQP = 'packages/thorest/src/thor/blocks/Clause.ts';
 
 /**
  * [Clause](http://localhost:8669/doc/stoplight-ui/#/schemas/Clause)
  */
 
-class XClause {
+class Clause {
     /**
      * The address that sent the VET.
      */
@@ -67,4 +67,4 @@ class XClause {
     }
 }
 
-export { XClause };
+export { Clause };

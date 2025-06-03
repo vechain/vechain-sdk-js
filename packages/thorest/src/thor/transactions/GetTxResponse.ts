@@ -1,4 +1,4 @@
-import { XClause, type XClauseJSON } from '@thor';
+import { Clause, type XClauseJSON } from '@thor';
 import { TxMeta, type TxMetaJSON } from './TxMeta';
 import { Address, BlockId, Gas, HexUInt, TxId, UInt } from '@vechain/sdk-core';
 
@@ -10,7 +10,7 @@ class GetTxResponse {
     readonly chainTag: UInt;
     readonly blockRef: BlockId;
     readonly expiration: UInt;
-    readonly clauses: XClause[];
+    readonly clauses: Clause[];
     readonly gasPriceCoef: UInt;
     readonly gas: Gas;
     readonly dependsOn?: TxId | null;
@@ -27,7 +27,7 @@ class GetTxResponse {
         this.blockRef = BlockId.of(json.blockRef);
         this.expiration = UInt.of(json.expiration);
         this.clauses = json.clauses.map((clauseJSON: XClauseJSON) => {
-            return new XClause(clauseJSON);
+            return new Clause(clauseJSON);
         });
         this.gasPriceCoef = UInt.of(json.gasPriceCoef);
         this.gas = Gas.of(json.gas);
@@ -50,7 +50,7 @@ class GetTxResponse {
             blockRef: this.blockRef.toString(),
             expiration: this.expiration.valueOf(),
             clauses: this.clauses?.map(
-                (clause: XClause): XClauseJSON => clause.toJSON()
+                (clause: Clause): XClauseJSON => clause.toJSON()
             ),
             gasPriceCoef: this.gasPriceCoef.valueOf(),
             gas: this.gas.valueOf(),

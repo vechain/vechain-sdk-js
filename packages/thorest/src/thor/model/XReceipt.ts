@@ -7,7 +7,7 @@ import {
     TxId,
     UInt
 } from '@vechain/sdk-core';
-import { XClause } from '@thor/model/XClause';
+import { Clause } from '@thor/model/Clause';
 import { XOutput } from '@thor/model/XOutput';
 import { type XReceiptJSON } from '@thor/model/XReceiptJSON';
 import { type XClauseJSON } from './XClauseJSON';
@@ -66,7 +66,7 @@ class XReceipt {
     /**
      * An array of clauses that are executed by the transaction.
      */
-    readonly clauses: XClause[];
+    readonly clauses: Clause[];
 
     /**
      * The coefficient used to calculate the final gas price of the transaction.
@@ -153,7 +153,7 @@ class XReceipt {
             this.blockRef = BlockRef.of(json.blockRef);
             this.expiration = UInt.of(json.expiration);
             this.clauses = json.clauses.map(
-                (clause: XClauseJSON): XClause => new XClause(clause)
+                (clause: XClauseJSON): Clause => new Clause(clause)
             );
             this.gasPriceCoef =
                 json.gasPriceCoef !== undefined && json.gasPriceCoef !== null
@@ -209,7 +209,7 @@ class XReceipt {
             blockRef: this.blockRef.toString(),
             expiration: this.expiration.valueOf(),
             clauses: this.clauses.map(
-                (clause: XClause): XClauseJSON => clause.toJSON()
+                (clause: Clause): XClauseJSON => clause.toJSON()
             ),
             gasPriceCoef:
                 this.gasPriceCoef !== undefined

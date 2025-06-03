@@ -1,4 +1,4 @@
-export * from './XClause';
+export * from './Clause';
 export * from './XClauseJSON';
 export * from './XEvent';
 export * from './XEventJSON';
