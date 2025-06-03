@@ -9,7 +9,7 @@ import { type ClauseJSON } from '@thor/model/ClauseJSON';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/thorest/src/thor/blocks/Clause.ts';
+const FQP = 'packages/thorest/src/thor/blocks/Clause.ts!';
 
 /**
  * [Clause](http://localhost:8669/doc/stoplight-ui/#/schemas/Clause)

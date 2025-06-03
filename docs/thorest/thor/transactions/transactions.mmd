@@ -8,6 +8,11 @@ classDiagram
         constructor(GetRawTxResponseJSON json)
         GetRawTxResponseJSON toJSON()
     }
+    class GetTxReceiptResponse {
+        ReceiptMeta meta
+        constructor(GetTxReceiptResponseJSON json)
+        GetTxReceiptResponseJSON toJSON()
+    }
     class ReceiptMeta {
         TxId txID
         Address: txOrigin
@@ -21,4 +26,5 @@ classDiagram
         constructor(TxMetaJSON json)
         TxMetaJSON toJSON()
     }
+    Receipt <|-- GetTxReceiptResponse
     TXMeta <|-- ReceiptMeta

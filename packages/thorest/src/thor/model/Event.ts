@@ -4,7 +4,7 @@ import { type EventJSON } from '@thor/model/EventJSON';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/thorest/src/thor/blocks/XEvent.ts';
+const FQP = 'packages/thorest/src/thor/blocks/XEvent.ts!';
 
 /**
  * [Event](http://localhost:8669/doc/stoplight-ui/#/schemas/Event)

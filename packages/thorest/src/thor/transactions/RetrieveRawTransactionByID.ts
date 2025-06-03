@@ -4,11 +4,12 @@ import {
     RetrieveTransactionByIDPath,
     RetrieveTransactionByIDQuery
 } from './RetrieveTransactionByID';
+import { GetRawTxResponse } from './GetRawTxResponse';
 import {
-    GetRawTxResponse,
-    type GetRawTxResponseJSON
-} from './GetRawTxResponse';
-import { type ThorRequest, type ThorResponse } from '@thor';
+    type GetRawTxResponseJSON,
+    type ThorRequest,
+    type ThorResponse
+} from '@thor';
 
 class RetrieveRawTransactionByID
     implements ThorRequest<RetrieveRawTransactionByID, GetRawTxResponse>

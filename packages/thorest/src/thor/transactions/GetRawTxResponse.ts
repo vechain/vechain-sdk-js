@@ -4,7 +4,7 @@ import { type GetRawTxResponseJSON, TxMeta } from '@thor';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/thorest/src/thor/transactions/GetRawTxResponse.ts';
+const FQP = 'packages/thorest/src/thor/transactions/GetRawTxResponse.ts!';
 
 /**
  * [GetRawTxResponse](http://localhost:8669/doc/stoplight-ui/#/paths/transactions-id/get)
