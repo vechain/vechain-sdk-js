@@ -1,5 +1,5 @@
 import { Address, HexUInt, IllegalArgumentError } from '@vechain/sdk-core';
-import { type XEventJSON } from '@thor/model/XEventJSON';
+import { type EventJSON } from '@thor/model/EventJSON';
 
 /**
  * Full-Qualified Path
@@ -10,9 +10,9 @@ const FQP = 'packages/thorest/src/thor/blocks/XEvent.ts';
  * [Event](http://localhost:8669/doc/stoplight-ui/#/schemas/Event)
  */
 
-class XEvent {
+class Event {
     /**
-     * he address of the contract that produces the event (bytes20).
+     * The address of the contract that produces the event (bytes20).
      */
     readonly address: Address;
 
@@ -29,10 +29,10 @@ class XEvent {
     /**
      * Constructs an instance of the class using the provided EventJSON object.
      *
-     * @param {XEventJSON} json - The JSON object containing the required fields to initialize the instance.
+     * @param {EventJSON} json - The JSON object containing the required fields to initialize the instance.
      * @throws {IllegalArgumentError} Throws an error if the JSON object cannot be parsed or contains invalid values.
      */
-    constructor(json: XEventJSON) {
+    constructor(json: EventJSON) {
         try {
             this.address = Address.of(json.address);
             this.topics = json.topics.map(
@@ -52,17 +52,17 @@ class XEvent {
     /**
      * Converts the current instance of the class into an EventJSON representation.
      *
-     * @return {XEventJSON} The JSON object representing the current instance.
+     * @return {EventJSON} The JSON object representing the current instance.
      */
-    toJSON(): XEventJSON {
+    toJSON(): EventJSON {
         return {
             address: this.address.toString(),
             topics: this.topics.map((topic: HexUInt): string =>
                 topic.toString()
             ),
             data: this.data.toString()
-        } satisfies XEventJSON;
+        } satisfies EventJSON;
     }
 }
 
-export { XEvent };
+export { Event };

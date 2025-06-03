@@ -1,4 +1,4 @@
-import { type XEventJSON } from '@thor/model/XEventJSON';
+import { type EventJSON } from '@thor/model/EventJSON';
 import { type XTransferJSON } from '@thor/model/XTransferJSON';
 
 /**
@@ -6,7 +6,7 @@ import { type XTransferJSON } from '@thor/model/XTransferJSON';
  */
 interface XOutputJSON {
     contractAddress: string | null; // hex address
-    events: XEventJSON[];
+    events: EventJSON[];
     transfers: XTransferJSON[];
 }
 

@@ -1,8 +1,8 @@
 import { Address, IllegalArgumentError } from '@vechain/sdk-core';
-import { XEvent } from '@thor/model/XEvent';
+import { Event } from '@thor/model/Event';
 import { XTransfer } from '@thor/model/XTransfer';
 import { type XOutputJSON } from '@thor/model/XOutputJSON';
-import { type XEventJSON } from '@thor/model/XEventJSON';
+import { type EventJSON } from '@thor/model/EventJSON';
 import { type XTransferJSON } from '@thor/model/XTransferJSON';
 
 /**
@@ -22,7 +22,7 @@ class XOutput {
     /**
      * An array of events emitted by the corresponding clause.
      */
-    readonly events: XEvent[];
+    readonly events: Event[];
 
     /**
      * An array of transfers made by the corresponding clause.
@@ -42,7 +42,7 @@ class XOutput {
                     ? Address.of(json.contractAddress)
                     : undefined;
             this.events = json.events.map(
-                (event: XEventJSON): XEvent => new XEvent(event)
+                (event: EventJSON): Event => new Event(event)
             );
             this.transfers = json.transfers.map(
                 (transfer: XTransferJSON): XTransfer => new XTransfer(transfer)
@@ -69,7 +69,7 @@ class XOutput {
                     ? this.contractAddress.toString()
                     : null,
             events: this.events.map(
-                (event: XEvent): XEventJSON => event.toJSON()
+                (event: Event): EventJSON => event.toJSON()
             ),
             transfers: this.transfers.map(
                 (transfer: XTransfer): XTransferJSON => transfer.toJSON()
