@@ -1,0 +1,16 @@
+---
+title: thorest_thor_account
+---
+classDiagram
+    namespace thorest {
+        class ThorRequest
+    }
+    namespace thorest_errors {
+        class ThorestError
+    }
+    class RetrieveAccountDetails {
+    }
+    class RetrieveAccountDetailsError {
+    }
+    ThorRequest <|.. RetrieveAccountDetails
+    ThorestError <|-- RetrieveAccountDetailsError

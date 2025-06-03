@@ -6,3 +6,6 @@ export * from './node';
 export * from './transactions';
 export * from './subscriptions';
 export * from './utils';
+export * from './ThorError';
+export * from './ThorRequest';
+export * from './ThorResponse';

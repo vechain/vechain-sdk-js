@@ -1,0 +1,40 @@
+---
+title: thorest_thor
+---
+classDiagram
+    namespace core_errors {
+        class VeChainSDKError {
+        }
+    }
+    class RequestClass {
+        <<generic>>
+    }
+    class ResponseClass {
+        <<generic>>
+    }
+    class ThorError {
+        number status
+        constructor(string fqn, string message, Record~string, unknown~ args?, Error cause?, number status)
+    }
+    namespace utils {
+        class ThorNetwork {
+            string MAINNET$
+            string SOLONET$
+            string TESTNET$
+        }
+    }
+    class ThorRequest~RequestClass; ResponseClass~ {
+        <<interface>>
+        Promise~ThorResponse~ askTo(HttpClient httpClient)
+    }
+    class ThorResponse~RequestClass; ResponseClass~ {
+        <<interface>>
+        RequestClass request
+        ResponseClass response
+    }
+    class ThorResponse~RequestClass; ResponseClass~
+    RequestClass --> ThorRequest
+    ThorResponse --* RequestClass
+    ThorResponse --* ResponseClass
+    VeChainSDKError <|-- ThorError
+
