@@ -1,4 +1,5 @@
 export * from './GetRawTxResponse';
+export * from './GetRawTxResponseJSON';
 export * from './GetTxResponse';
 export * from './GetTxReceiptResponse';
 export * from './Receipt';
