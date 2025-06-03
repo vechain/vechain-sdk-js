@@ -4,7 +4,7 @@ import {
     GetTxReceiptResponse,
     type GetTxReceiptResponseJSON
 } from '@thor/transactions';
-import { type ThorRequest, type ThorResponse } from '../utils';
+import { type ThorRequest, type ThorResponse } from '@thor';
 
 class RetrieveTransactionReceipt
     implements ThorRequest<RetrieveTransactionReceipt, GetTxReceiptResponse>

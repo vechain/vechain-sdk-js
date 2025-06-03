@@ -5,7 +5,7 @@ import {
     EventLogsResponse,
     type EventLogsResponseJSON
 } from '@thor/logs';
-import { type ThorRequest, type ThorResponse } from '../utils';
+import { type ThorRequest, type ThorResponse } from '@thor';
 
 class QuerySmartContractEvents
     implements ThorRequest<QuerySmartContractEvents, EventLogsResponse>

@@ -8,7 +8,7 @@ import {
     GetRawTxResponse,
     type GetRawTxResponseJSON
 } from './GetRawTxResponse';
-import { type ThorRequest, type ThorResponse } from '../utils';
+import { type ThorRequest, type ThorResponse } from '@thor';
 
 class RetrieveRawTransactionByID
     implements ThorRequest<RetrieveRawTransactionByID, GetRawTxResponse>

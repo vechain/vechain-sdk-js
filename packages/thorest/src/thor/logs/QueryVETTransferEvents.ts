@@ -5,7 +5,7 @@ import {
     TransferLogsResponse,
     type TransferLogsResponseJSON
 } from '@thor/logs';
-import { type ThorRequest, type ThorResponse } from '../utils';
+import { type ThorRequest, type ThorResponse } from '@thor';
 
 class QueryVETTransferEvents
     implements ThorRequest<QueryVETTransferEvents, TransferLogsResponse>
