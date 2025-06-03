@@ -1,11 +1,4 @@
-import {
-    type Event,
-    type EventJSON,
-    Transfer,
-    type TransferJSON,
-    XEvent,
-    type XEventJSON
-} from '@thor';
+import { Transfer, type TransferJSON, XEvent, type XEventJSON } from '@thor';
 import { Gas, HexUInt } from '@vechain/sdk-core';
 
 class ExecuteCodeResponse {
@@ -33,7 +26,7 @@ class ExecuteCodeResponse {
         return {
             data: this.data.toString(),
             events: this.events.map(
-                (event: Event): EventJSON => event.toJSON()
+                (event: XEvent): XEventJSON => event.toJSON()
             ),
             transfers: this.transfers.map(
                 (transfer: Transfer): TransferJSON => transfer.toJSON()
@@ -58,7 +51,7 @@ class ExecuteCodesResponse extends Array<ExecuteCodeResponse> {
 
 interface ExecuteCodeResponseJSON {
     data: string;
-    events: EventJSON[];
+    events: XEventJSON[];
     transfers: TransferJSON[];
     gasUsed: number;
     reverted: boolean;

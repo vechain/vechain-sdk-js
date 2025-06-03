@@ -1,16 +1,56 @@
-import { BlockId, UInt } from '@vechain/sdk-core';
+import { BlockId, IllegalArgumentError, UInt } from '@vechain/sdk-core';
+import { type TxMetaJSON } from '@thor';
 
+/**
+ * Full-Qualified Path
+ */
+const FQP = 'packages/thorest/src/thor/transactions/TxMeta.ts';
+
+/**
+ * [TxMeta](http://localhost:8669/doc/stoplight-ui/#/schemas/TxMeta)
+ */
 class TxMeta {
+    /**
+     * The block identifier in which the transaction was included.
+     */
     readonly blockID: BlockId;
+
+    /**
+     * The block number (height) of the block in which the transaction was included.
+     */
     readonly blockNumber: UInt;
+
+    /**
+     * The UNIX timestamp of the block in which the transaction was included.
+     */
     readonly blockTimestamp: UInt;
 
+    /**
+     * Constructs an instance of the class using the provided TxMetaJSON object.
+     *
+     * @param {TxMetaJSON} json - The JSON object containing the transaction metadata.
+     * @throws {IllegalArgumentError} If the provided JSON object cannot be parsed or is invalid.
+     */
     constructor(json: TxMetaJSON) {
-        this.blockID = BlockId.of(json.blockID);
-        this.blockNumber = UInt.of(json.blockNumber);
-        this.blockTimestamp = UInt.of(json.blockTimestamp);
+        try {
+            this.blockID = BlockId.of(json.blockID);
+            this.blockNumber = UInt.of(json.blockNumber);
+            this.blockTimestamp = UInt.of(json.blockTimestamp);
+        } catch (error) {
+            throw new IllegalArgumentError(
+                `${FQP}constructor(json: ClauseJSON)`,
+                'Bad parse',
+                { json },
+                error instanceof Error ? error : undefined
+            );
+        }
     }
 
+    /**
+     * Converts the current instance of the class into a TxMetaJSON representation.
+     *
+     * @return {TxMetaJSON} The JSON object representing the current instance.
+     */
     toJSON(): TxMetaJSON {
         return {
             blockID: this.blockID.toString(),
@@ -20,10 +60,5 @@ class TxMeta {
     }
 }
 
-interface TxMetaJSON {
-    blockID: string;
-    blockNumber: number;
-    blockTimestamp: number;
-}
 
-export { TxMeta, type TxMetaJSON };
+export { TxMeta };

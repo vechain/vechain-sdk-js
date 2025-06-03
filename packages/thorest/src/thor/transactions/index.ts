@@ -11,3 +11,4 @@ export * from './SendTransaction';
 export * from './TXID';
 export * from './Transfer';
 export * from './TxMeta';
+export * from './TxMetaJSON';

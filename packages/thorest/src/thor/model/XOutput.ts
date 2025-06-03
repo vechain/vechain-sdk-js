@@ -30,7 +30,7 @@ class XOutput {
     readonly transfers: XTransfer[];
 
     /**
-     * Constructs an instance of the class using the provided _OutputJSON object.
+     * Constructs an instance of the class using the provided OutputJSON object.
      *
      * @param {XOutputJSON} json - The JSON object containing the required fields to initialize the instance.
      * @throws {IllegalArgumentError} Throws an error if the JSON object cannot be parsed or contains invalid values.
@@ -49,7 +49,7 @@ class XOutput {
             );
         } catch (error) {
             throw new IllegalArgumentError(
-                `${FQP}constructor(json: _OutputJSON)`,
+                `${FQP}constructor(json: OutputJSON)`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined
@@ -58,7 +58,7 @@ class XOutput {
     }
 
     /**
-     * Converts the current instance of the class into a _OutputJSON representation.
+     * Converts the current instance of the class into a OutputJSON representation.
      *
      * @return {XOutputJSON} The JSON object representing the current instance.
      */

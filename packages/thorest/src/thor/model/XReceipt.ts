@@ -131,7 +131,7 @@ class XReceipt {
     readonly outputs: XOutput[];
 
     /**
-     * Constructs an instance of the class using the provided _TransferJSON object.
+     * Constructs an instance of the class using the provided TransferJSON object.
      *
      * @param {XReceiptJSON} json - The JSON object containing the required fields to initialize the instance.
      * @throws {IllegalArgumentError} Throws an error if the JSON object cannot be parsed or contains invalid values.
@@ -184,7 +184,7 @@ class XReceipt {
             );
         } catch (error) {
             throw new IllegalArgumentError(
-                `${FQP}constructor(json: _ReceiptJSON)`,
+                `${FQP}constructor(json: ReceiptJSON)`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined
@@ -193,7 +193,7 @@ class XReceipt {
     }
 
     /**
-     * Converts the current instance of the class into a _ReceiptJSON representation.
+     * Converts the current instance of the class into a ReceiptJSON representation.
      *
      * @return {XReceiptJSON} The JSON object representing the current instance.
      */

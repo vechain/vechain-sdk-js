@@ -1,9 +1,4 @@
-import {
-    Address,
-    HexUInt,
-    IllegalArgumentError,
-    Quantity
-} from '@vechain/sdk-core';
+import { Address, HexUInt, IllegalArgumentError, Quantity } from '@vechain/sdk-core';
 import { type ClauseJSON } from '@thor/model/ClauseJSON';
 
 /**
@@ -32,10 +27,10 @@ class Clause {
     readonly data: HexUInt;
 
     /**
-     * Constructs an instance of the class using the provided _ClauseJSON object.
+     * Constructs an instance of the class using the provided ClauseJSON object.
      *
      * @param {ClauseJSON} json - The JSON object containing the required fields to initialize the instance.
-     * @throws {IllegalArgumentError} Throws an error if the JSON object cannot be parsed or contains invalid values.
+     * @throws {IllegalArgumentError} If the JSON object cannot be parsed or contains invalid values.
      */
     constructor(json: ClauseJSON) {
         try {
@@ -44,7 +39,7 @@ class Clause {
             this.data = HexUInt.of(json.data);
         } catch (error) {
             throw new IllegalArgumentError(
-                `${FQP}constructor(json: _ClauseJSON)`,
+                `${FQP}constructor(json: ClauseJSON)`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined
@@ -53,9 +48,9 @@ class Clause {
     }
 
     /**
-     * Converts the current instance of the class into a _ClauseJSON representation.
+     * Converts the current instance of the class into a ClauseJSON representation.
      *
-     * @return {_ClauseJSON} The JSON object representing the current instance.
+     * @return {ClauseJSON} The JSON object representing the current instance.
      */
     toJSON(): ClauseJSON {
         return {

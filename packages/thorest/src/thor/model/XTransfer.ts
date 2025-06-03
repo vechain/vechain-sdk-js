@@ -32,7 +32,7 @@ class XTransfer {
     readonly amount: UInt;
 
     /**
-     * Constructs an instance of the class using the provided _TransferJSON object.
+     * Constructs an instance of the class using the provided TransferJSON object.
      *
      * @param {XTransferJSON} json - The JSON object containing the required fields to initialize the instance.
      * @throws {IllegalArgumentError} Throws an error if the JSON object cannot be parsed or contains invalid values.
@@ -44,7 +44,7 @@ class XTransfer {
             this.amount = UInt.of(HexUInt.of(json.amount).n);
         } catch (error) {
             throw new IllegalArgumentError(
-                `${FQP}constructor(json: _TransferJSON)`,
+                `${FQP}constructor(json: TransferJSON)`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined
@@ -53,7 +53,7 @@ class XTransfer {
     }
 
     /**
-     * Converts the current instance of the class into a _TransferJSON representation.
+     * Converts the current instance of the class into a TransferJSON representation.
      *
      * @return {XTransferJSON} The JSON object representing the current instance.
      */

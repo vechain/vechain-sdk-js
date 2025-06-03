@@ -28,7 +28,7 @@ class XEvent {
     readonly data: HexUInt;
 
     /**
-     * Constructs an instance of the class using the provided _EventJSON object.
+     * Constructs an instance of the class using the provided EventJSON object.
      *
      * @param {XEventJSON} json - The JSON object containing the required fields to initialize the instance.
      * @throws {IllegalArgumentError} Throws an error if the JSON object cannot be parsed or contains invalid values.
@@ -42,7 +42,7 @@ class XEvent {
             this.data = HexUInt.of(json.data);
         } catch (error) {
             throw new IllegalArgumentError(
-                `${FQP}constructor(json: _EventJSON)`,
+                `${FQP}constructor(json: EventJSON)`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined
@@ -51,7 +51,7 @@ class XEvent {
     }
 
     /**
-     * Converts the current instance of the class into a _EventJSON representation.
+     * Converts the current instance of the class into an EventJSON representation.
      *
      * @return {XEventJSON} The JSON object representing the current instance.
      */
