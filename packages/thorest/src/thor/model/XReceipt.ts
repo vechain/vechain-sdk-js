@@ -7,11 +7,11 @@ import {
     TxId,
     UInt
 } from '@vechain/sdk-core';
-import { XClause } from '@thor/blocks/XClause';
-import { XOutput } from '@thor/blocks/XOutput';
-import { type XReceiptJSON } from '@thor/blocks/XReceiptJSON';
+import { XClause } from '@thor/model/XClause';
+import { XOutput } from '@thor/model/XOutput';
+import { type XReceiptJSON } from '@thor/model/XReceiptJSON';
 import { type XClauseJSON } from './XClauseJSON';
-import { type XOutputJSON } from '@thor/blocks/XOutputJSON';
+import { type XOutputJSON } from '@thor/model/XOutputJSON';
 
 /**
  * Full-Qualified Path

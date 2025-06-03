@@ -4,7 +4,7 @@ import {
     IllegalArgumentError,
     Quantity
 } from '@vechain/sdk-core';
-import { type XClauseJSON } from '@thor/blocks/XClauseJSON';
+import { type XClauseJSON } from '@thor/model/XClauseJSON';
 
 /**
  * Full-Qualified Path

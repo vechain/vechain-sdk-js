@@ -1,5 +1,5 @@
-import { type XClauseJSON } from '@thor/blocks/XClauseJSON';
-import { type XOutputJSON } from '@thor/blocks/XOutputJSON';
+import { type XClauseJSON } from '@thor/model/XClauseJSON';
+import { type XOutputJSON } from '@thor/model/XOutputJSON';
 
 /**
  * [Receipt](http://localhost:8669/doc/stoplight-ui/#/schemas/Receipt)

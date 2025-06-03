@@ -1,5 +1,5 @@
 import { Address, HexUInt, IllegalArgumentError } from '@vechain/sdk-core';
-import { XEventJSON } from '@thor/blocks/XEventJSON';
+import { XEventJSON } from '@thor/model/XEventJSON';
 
 
 /**

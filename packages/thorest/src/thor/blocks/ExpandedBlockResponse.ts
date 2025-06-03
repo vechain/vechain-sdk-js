@@ -1,7 +1,7 @@
 import { Block } from '@thor/blocks/Block';
 import { type ExpandedBlockResponseJSON } from '@thor/blocks/ExpandedBlockResponseJSON';
-import { XReceipt } from '@thor/blocks/XReceipt';
-import { type XReceiptJSON } from '@thor/blocks/XReceiptJSON';
+import { XReceipt } from '@thor/model/XReceipt';
+import { type XReceiptJSON } from '@thor/model/XReceiptJSON';
 import { IllegalArgumentError } from '@vechain/sdk-core';
 
 /**

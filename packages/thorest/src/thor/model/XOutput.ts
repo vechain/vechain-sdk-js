@@ -1,9 +1,9 @@
 import { Address, IllegalArgumentError } from '@vechain/sdk-core';
-import { XEvent } from '@thor/blocks/XEvent';
-import { XTransfer } from '@thor/blocks/XTransfer';
-import { type XOutputJSON } from '@thor/blocks/XOutputJSON';
-import { type XEventJSON } from '@thor/blocks/XEventJSON';
-import { type XTransferJSON } from '@thor/blocks/XTransferJSON';
+import { XEvent } from '@thor/model/XEvent';
+import { XTransfer } from '@thor/model/XTransfer';
+import { type XOutputJSON } from '@thor/model/XOutputJSON';
+import { type XEventJSON } from '@thor/model/XEventJSON';
+import { type XTransferJSON } from '@thor/model/XTransferJSON';
 
 /**
  * Full-Qualified Path

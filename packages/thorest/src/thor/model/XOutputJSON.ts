@@ -1,5 +1,5 @@
-import { type XEventJSON } from '@thor/blocks/XEventJSON';
-import { type XTransferJSON } from '@thor/blocks/XTransferJSON';
+import { type XEventJSON } from '@thor/model/XEventJSON';
+import { type XTransferJSON } from '@thor/model/XTransferJSON';
 
 /**
  *
