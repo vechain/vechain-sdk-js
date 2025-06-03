@@ -1,4 +1,3 @@
-export * from './Event';
 export * from './GetRawTxResponse';
 export * from './GetTxResponse';
 export * from './GetTxReceiptResponse';

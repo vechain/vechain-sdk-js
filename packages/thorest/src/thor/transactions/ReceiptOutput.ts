@@ -1,16 +1,16 @@
-import { Event, type EventJSON } from './Event';
 import { Transfer, type TransferJSON } from './Transfer';
 import { Address } from '@vechain/sdk-core';
+import { XEvent, type XEventJSON } from '@thor/model';
 
 class ReceiptOutput {
     readonly contractAddress: Address;
-    readonly events: Event[];
+    readonly events: XEvent[];
     readonly transfers: Transfer[];
 
     constructor(json: ReceiptOutputJSON) {
         this.contractAddress = Address.of(json.contractAddress);
         this.events = json.events.map(
-            (eventJSON): Event => new Event(eventJSON)
+            (eventJSON): XEvent => new XEvent(eventJSON)
         );
         this.transfers = json.transfers.map(
             (transferJSON): Transfer => new Transfer(transferJSON)
@@ -20,7 +20,7 @@ class ReceiptOutput {
     toJSON(): ReceiptOutputJSON {
         return {
             contractAddress: this.contractAddress.toString(),
-            events: this.events.map((event): EventJSON => event.toJSON()),
+            events: this.events.map((event): XEventJSON => event.toJSON()),
             transfers: this.transfers.map(
                 (transfer): TransferJSON => transfer.toJSON()
             )
@@ -30,7 +30,7 @@ class ReceiptOutput {
 
 interface ReceiptOutputJSON {
     contractAddress: string;
-    events: EventJSON[];
+    events: XEventJSON[];
     transfers: TransferJSON[];
 }
 

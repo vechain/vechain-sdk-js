@@ -9,3 +9,10 @@ classDiagram
         constructor(ClauseJSON: json)
         ClauseJSON toJSON()
     }
+    class Event {
+        Address: address
+        HexUInt[]: topics
+        HexUInt: data
+        constructor(EventJSON event)
+        EventJSON toJSON()
+    }
