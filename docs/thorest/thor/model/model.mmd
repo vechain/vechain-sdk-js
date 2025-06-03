@@ -3,16 +3,16 @@ title: thorest_thor_model
 ---
 classDiagram
     class Clause {
-        Address|null: to
-        bigint: value
+        Address|null to
+        bigint value
         HexUIntL data
         constructor(ClauseJSON: json)
         ClauseJSON toJSON()
     }
     class Event {
-        Address: address
-        HexUInt[]: topics
-        HexUInt: data
+        Address address
+        HexUInt[] topics
+        HexUInt data
         constructor(EventJSON event)
         EventJSON toJSON()
     }

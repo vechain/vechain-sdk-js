@@ -1,5 +1,4 @@
-import { Clause, type ClauseJSON } from '@thor';
-import { TxMeta, type TxMetaJSON } from './TxMeta';
+import { Clause, type ClauseJSON, TxMeta, type TxMetaJSON } from '@thor';
 import { Address, BlockId, Gas, HexUInt, TxId, UInt } from '@vechain/sdk-core';
 
 class GetTxResponse {

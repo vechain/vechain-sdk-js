@@ -1,16 +1,15 @@
 import { Address, HexUInt, IllegalArgumentError } from '@vechain/sdk-core';
-import { XEventJSON } from '@thor/model/XEventJSON';
-
+import { type XEventJSON } from '@thor/model/XEventJSON';
 
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/thorest/src/thor/blocks/XEvent.ts!'; // todo: check once moved
+const FQP = 'packages/thorest/src/thor/blocks/XEvent.ts';
 
 /**
  * [Event](http://localhost:8669/doc/stoplight-ui/#/schemas/Event)
  */
-// eslint-disable-next-line sonarjs/class-name
+
 class XEvent {
     /**
      * he address of the contract that produces the event (bytes20).

@@ -1,4 +1,9 @@
-import { Address, HexUInt, IllegalArgumentError, Quantity } from '@vechain/sdk-core';
+import {
+    Address,
+    HexUInt,
+    IllegalArgumentError,
+    Quantity
+} from '@vechain/sdk-core';
 import { type ClauseJSON } from '@thor/model/ClauseJSON';
 
 /**
@@ -55,7 +60,7 @@ class Clause {
     toJSON(): ClauseJSON {
         return {
             to: this.to !== undefined ? this.to.toString() : null,
-            // eslint-disable-next-line @typescript-eslint/no-base-to-string,sonarjs/no-base-to-string
+
             value: Quantity.of(this.value).toString(),
             data: this.data.toString()
         } satisfies ClauseJSON;

@@ -12,6 +12,8 @@ const FQP = 'packages/thorest/src/thor/transactions/TxMeta.ts';
 class TxMeta {
     /**
      * The block identifier in which the transaction was included.
+     *
+     * Match pattern: ^0x[0-9a-f]{64}$
      */
     readonly blockID: BlockId;
 
@@ -59,6 +61,5 @@ class TxMeta {
         } satisfies TxMetaJSON;
     }
 }
-
 
 export { TxMeta };

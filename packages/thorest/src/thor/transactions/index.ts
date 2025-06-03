@@ -3,6 +3,7 @@ export * from './GetTxResponse';
 export * from './GetTxReceiptResponse';
 export * from './Receipt';
 export * from './ReceiptMeta';
+export * from './ReceiptMetaJSON';
 export * from './ReceiptOutput';
 export * from './RetrieveRawTransactionByID';
 export * from './RetrieveTransactionByID';

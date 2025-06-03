@@ -1,5 +1,5 @@
 import { HexUInt } from '@vechain/sdk-core';
-import { TxMeta, type TxMetaJSON } from './TxMeta';
+import { TxMeta, type TxMetaJSON } from '@thor';
 
 class GetRawTxResponse {
     readonly raw: HexUInt;
