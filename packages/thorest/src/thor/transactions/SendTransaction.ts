@@ -1,9 +1,9 @@
 import { HexUInt } from '@vechain/sdk-core';
 import { type HttpClient, type HttpPath } from '@http';
 import {
+    TXID,
     type ThorRequest,
     type ThorResponse,
-    TXID,
     type TXIDJSON
 } from '@thor';
 

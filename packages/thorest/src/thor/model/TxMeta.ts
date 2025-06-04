@@ -28,7 +28,7 @@ class TxMeta {
     readonly blockTimestamp: UInt;
 
     /**
-     * Constructs an instance of the class using the provided TxMetaJSON object.
+     * Constructs an instance of the class using the provided JSON object.
      *
      * @param {TxMetaJSON} json - The JSON object containing the transaction metadata.
      * @throws {IllegalArgumentError} If the provided JSON object cannot be parsed or is invalid.

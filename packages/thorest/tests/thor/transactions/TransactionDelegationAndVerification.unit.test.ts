@@ -52,7 +52,8 @@ describe('unit tests', () => {
             id: '0x0000000000000000000000000000000000000000000000000000000000000456'
         } satisfies TXIDJSON;
         const mockTxReceiptResponse = {
-            gasUsed: 21000,
+            type: null,
+            gasUsed: '21000',
             gasPayer: gasPayer.address.toString(),
             paid: '0x0',
             reward: '0x0',

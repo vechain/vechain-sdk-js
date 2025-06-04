@@ -1,4 +1,4 @@
-import { HexUInt, IllegalArgumentError } from '@vechain/sdk-core';
+import { type Hex, HexUInt, IllegalArgumentError } from '@vechain/sdk-core';
 import { type GetRawTxResponseJSON, TxMeta } from '@thor';
 
 /**
@@ -15,7 +15,7 @@ class GetRawTxResponse {
      *
      * Match pattern: ^0x[0-9a-f]*$
      */
-    readonly raw: HexUInt;
+    readonly raw: Hex;
 
     /**
      * Transaction metadata such as block number, block timestamp, etc.

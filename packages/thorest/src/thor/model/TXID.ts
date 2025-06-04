@@ -13,7 +13,7 @@ class TXID {
     readonly id: Hex;
 
     /**
-     * Constructs an instance of the class using the provided TXIDJSON object.
+     * Constructs an instance of the class using the provided JSON object.
      * @param json The JSON object containing the required fields to initialize the instance.
      * @throws {IllegalArgumentError} If the JSON object cannot be parsed or contains invalid values.
      */

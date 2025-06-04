@@ -17,8 +17,7 @@ describe('RetrieveTransactionByID unit tests', () => {
         const mockResponse = {
             id: '0xb6b5b47a5eee8b14e5222ac1bb957c0bbdc3d489850b033e3e544d9ca0cef934',
             chainTag: 39,
-            blockRef:
-                '0x0000000000000000000000000000000000000000000000000000000000000000',
+            blockRef: '0x0000000000000000000000000000000000000000000000000000000000000000',
             expiration: 32,
             clauses: [
                 {
@@ -29,19 +28,21 @@ describe('RetrieveTransactionByID unit tests', () => {
                     data: '0x'
                 }
             ],
-            gasPriceCoef: 0,
-            gas: 21000,
+            gasPriceCoef: '0',
+            gas: '21000',
             origin: '0x7d8Bf18C7ce84B3e175B339C4cA93Aed1dD488Aa',
             nonce: '0xbc614e',
-            dependsOn: undefined,
+            dependsOn: null,
             delegator: null,
             size: 128,
             meta: {
-                blockID:
-                    '0x0000000000000000000000000000000000000000000000000000000000000000',
+                blockID: '0x0000000000000000000000000000000000000000000000000000000000000000',
                 blockNumber: 1,
                 blockTimestamp: 1000000
-            }
+            },
+            type: 0,
+            maxFeePerGas: null,
+            maxPriorityFeePerGas: null
         } satisfies GetTxResponseJSON;
 
         const mockClient = mockHttpClient<GetTxResponseJSON>(

@@ -2,18 +2,39 @@
 title: thorest_thor_model
 ---
 classDiagram
-    namespace thor_model {
-        class Receipt
-    }
     class GetRawTxResponse {
-        HexUInt raw
+        Hex raw
         TxMeta meta
         constructor(GetRawTxResponseJSON json)
         GetRawTxResponseJSON toJSON()
     }
     class GetTxReceiptResponse {
+        numer|null type
+        bigint gasUsed
+        Address address
+        bigint paid
+        bigint reward
+        boolean reverted
+        Output[] outputs
         ReceiptMeta meta
-        constructor(GetTxReceiptResponseJSON json)
-        GetTxReceiptResponseJSON toJSON()
     }
-    Receipt <|-- GetTxReceiptResponse
+    class GetTxResponse {
+        Hex id
+        number type
+        Address origin
+        Address delegator
+        number size
+        number chainTag
+        Hex blockRef
+        number expiration
+        Clause[] clause
+        bigint|null gasPriceCoef
+        bigint|null maxFeePerGas
+        bigint|null maxPriorityFeePerGas
+        bigint gas
+        Hex|null dependsOn
+        number nonce
+        TxMeta txMeta
+        constructor(GetTxResponseJSON json)
+        GetTxResponseJSON toJSON()
+    }

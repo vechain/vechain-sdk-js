@@ -33,7 +33,7 @@ class Clause {
     readonly data: Hex;
 
     /**
-     * Constructs an instance of the class using the provided ClauseJSON object.
+     * Constructs an instance of the class using the provided JSON object.
      *
      * @param {ClauseJSON} json - The JSON object containing the required fields to initialize the instance.
      * @throws {IllegalArgumentError} If the JSON object cannot be parsed or contains invalid values.

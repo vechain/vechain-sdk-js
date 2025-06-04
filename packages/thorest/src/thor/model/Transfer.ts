@@ -32,7 +32,7 @@ class Transfer {
     readonly amount: bigint;
 
     /**
-     * Constructs an instance of the class using the provided TransferJSON object.
+     * Constructs an instance of the class using the provided JSON object.
      *
      * @param {TransferJSON} json - The JSON object containing the required fields to initialize the instance.
      * @throws {IllegalArgumentError} Throws an error if the JSON object cannot be parsed or contains invalid values.

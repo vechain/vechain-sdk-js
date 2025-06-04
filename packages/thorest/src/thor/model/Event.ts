@@ -32,7 +32,7 @@ class Event {
     readonly data: HexUInt;
 
     /**
-     * Constructs an instance of the class using the provided EventJSON object.
+     * Constructs an instance of the class using the provided JSON object.
      *
      * @param {EventJSON} json - The JSON object containing the required fields to initialize the instance.
      * @throws {IllegalArgumentError} Throws an error if the JSON object cannot be parsed or contains invalid values.

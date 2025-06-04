@@ -58,7 +58,7 @@ class Output {
     }
 
     /**
-     * Converts the current instance of the class into an OutputJSON representation.
+     * Converts the current instance of the class into a JSON representation.
      *
      * @return {OutputJSON} The JSON object representing the current instance.
      */

@@ -26,7 +26,7 @@ class ReceiptMeta extends TxMeta {
     readonly txOrigin: Address;
 
     /**
-     * Constructs a new instance of the class using data from a given ReceiptMetaJSON object.
+     * Constructs a new instance of the class using data from a given JSON object.
      *
      * @param {ReceiptMetaJSON} json - The ReceiptMetaJSON object containing data for the instance.
      * @throws {IllegalArgumentError} If the provided JSON object cannot be parsed or is invalid.

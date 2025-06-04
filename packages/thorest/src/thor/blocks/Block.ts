@@ -98,7 +98,7 @@ class Block {
     readonly signer: Address; // hex address
 
     /**
-     * Constructs a new instance of the class by parsing the provided BlockJSON object.
+     * Constructs a new instance of the class by parsing the provided JSON object.
      *
      * @param {BlockJSON} json - The JSON object containing block data.
      * @throws {IllegalArgumentError} If the parsing of the JSON object fails.

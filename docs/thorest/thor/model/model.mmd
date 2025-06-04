@@ -24,22 +24,8 @@ classDiagram
         OutputJSON toJSON()
     }
     class Receipt {
-        Hex id
         UInt type
-        UInt chainTag
-        Address origin
-        Address delegator
-        UInt size
-        BlockRef blockRef
-        UInt expiration
-        Clause[] clauses
-        UInt gasPriceCoef
-        UInt maxFeePerGas
-        UInt maxPriorityFeePerGas
-        UInt gas
-        Hex dependsOn
-        UInt nonce
-        UInt gasUsed
+        bigint gasUsed
         Address gasPayer
         bigint paid
         bigint reward

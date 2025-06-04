@@ -27,7 +27,7 @@ class RegularBlockResponse extends Block {
     readonly transactions: TxId[];
 
     /**
-     * Constructs an instance of the class using the provided RegularBlockResponseJSON object.
+     * Constructs an instance of the class using the provided JSON object.
      *
      * @param {RegularBlockResponseJSON} json - The JSON object containing data to construct the instance.
      * @throws {IllegalArgumentError} Throws if the parsing of the provided JSON object fails.

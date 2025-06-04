@@ -1,6 +1,9 @@
 import { describe, expect, test } from '@jest/globals';
 import { TxId } from '@vechain/sdk-core';
-import { type GetTxReceiptResponseJSON, RetrieveTransactionReceipt } from '@thor';
+import {
+    RetrieveTransactionReceipt,
+    type GetTxReceiptResponseJSON
+} from '@thor';
 import { mockHttpClient } from '../../utils/MockUnitTestClient';
 
 /**
@@ -16,7 +19,7 @@ describe('RetrieveTransactionReceipt unit tests', () => {
 
         const mockResponse = {
             type: null,
-            gasUsed: 2100,
+            gasUsed: '2100',
             gasPayer: '0x7d8Bf18C7ce84B3e175B339C4cA93Aed1dD488Aa',
             paid: '0x1234567890',
             reward: '0x987654321',
@@ -37,19 +40,7 @@ describe('RetrieveTransactionReceipt unit tests', () => {
                     events: [],
                     transfers: []
                 }
-            ],
-            id: '0x0000000000000000000000000000000000000000000000000000000000000000',
-            origin: '0x0000000000000000000000000000000000000000',
-            size: 0,
-            chainTag: 0,
-            blockRef: '0x0000000000000000',
-            expiration: 0,
-            clauses: [],
-            gas: 0,
-            nonce: '0',
-            delegator: null,
-            dependsOn: null,
-            gasPriceCoef: null
+            ]
         } satisfies GetTxReceiptResponseJSON;
 
         const mockClient = mockHttpClient<GetTxReceiptResponseJSON>(
