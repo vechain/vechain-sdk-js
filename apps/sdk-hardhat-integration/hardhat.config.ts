@@ -18,14 +18,23 @@ const config: HardhatUserConfig = {
     solidity: {
         compilers: [
             {
-                version: '0.8.19', // Specify the first Solidity version
+                version: '0.8.19',
                 settings: {
-                    // Additional compiler settings for this version
                     optimizer: {
                         enabled: true,
                         runs: 200
                     },
-                    evmVersion: 'paris'
+                    evmVersion: 'paris'  // For pre-galactica networks
+                }
+            },
+            {
+                version: '0.8.20',
+                settings: {
+                    optimizer: {
+                        enabled: true,
+                        runs: 200
+                    },
+                    evmVersion: 'shanghai'  // For post-galactica networks
                 }
             }
         ]
