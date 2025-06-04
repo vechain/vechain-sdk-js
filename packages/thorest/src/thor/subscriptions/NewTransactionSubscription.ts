@@ -1,6 +1,6 @@
 import { type WebSocketClient, type WebSocketListener } from '@ws';
 import type { HttpPath } from '@http';
-import { TXID, TXIDJSON } from '@thor/model/TXID';
+import { TXID, type TXIDJSON } from '@thor';
 
 class NewTransactionSubscription
     implements WebSocketClient, WebSocketListener<TXID>

@@ -8,3 +8,7 @@ export * from './Receipt';
 export * from './ReceiptJSON';
 export * from './TransferJSON';
 export * from './TransferJSON';
+export * from './TXID';
+export * from './TXIDJSON';
+export * from './TxMeta';
+export * from './TxMetaJSON';

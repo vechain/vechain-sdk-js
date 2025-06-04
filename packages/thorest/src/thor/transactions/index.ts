@@ -10,5 +10,5 @@ export * from './RetrieveRawTransactionByID';
 export * from './RetrieveTransactionByID';
 export * from './RetrieveTransactionReceipt';
 export * from './SendTransaction';
-export * from './TxMeta';
-export * from './TxMetaJSON';
+export * from '../model/TxMeta';
+export * from '../model/TxMetaJSON';

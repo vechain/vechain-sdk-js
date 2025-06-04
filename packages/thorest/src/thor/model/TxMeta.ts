@@ -4,7 +4,7 @@ import { type TxMetaJSON } from '@thor';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/thorest/src/thor/transactions/TxMeta.ts!';
+const FQP = 'packages/thorest/src/thor/model/TxMeta.ts!';
 
 /**
  * [TxMeta](http://localhost:8669/doc/stoplight-ui/#/schemas/TxMeta)

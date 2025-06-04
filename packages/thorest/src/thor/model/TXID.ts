@@ -1,5 +1,5 @@
+import { type TXIDJSON } from '@thor';
 import { IllegalArgumentError, TxId as TransactionId } from '@vechain/sdk-core';
-import { type TXIDJSON } from './TXJSON';
 
 /**
  * Full-Qualified Path
@@ -42,4 +42,4 @@ class TXID {
     }
 }
 
-export { TXID, type TXIDJSON };
+export { TXID };
