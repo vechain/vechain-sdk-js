@@ -48,3 +48,10 @@ classDiagram
         constructor(ReceiptJSON json)
         ReceiptJSON toJSON()
     }
+    class Transfer {
+        Address sender
+        Address recipient
+        UInt amount
+        constructor(TransferJSON json)
+        TransferJSON toJSON()
+    }
