@@ -9,7 +9,7 @@ import { type XTransferJSON } from '@thor';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/thorest/src/thor/blocks/XTransfer.ts!'; // todo: check once moved
+const FQP = 'packages/thorest/src/thor/blocks/XTransfer.ts!';
 
 /**
  * [Transfer](http://localhost:8669/doc/stoplight-ui/#/schemas/Transfer)
@@ -17,7 +17,7 @@ const FQP = 'packages/thorest/src/thor/blocks/XTransfer.ts!'; // todo: check onc
 
 class XTransfer {
     /**
-     * he address that sent the VET.
+     * The address that sent the VET.
      */
     readonly sender: Address;
 
