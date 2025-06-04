@@ -8,15 +8,15 @@ import {
     UInt
 } from '@vechain/sdk-core';
 import { Clause } from '@thor/model/Clause';
-import { XOutput } from '@thor/model/XOutput';
+import { Output } from '@thor/model/Output';
 import { type ReceiptJSON } from '@thor/model/ReceiptJSON';
 import { type ClauseJSON } from './ClauseJSON';
-import { type XOutputJSON } from '@thor/model/XOutputJSON';
+import { type OutputJSON } from '@thor/model/OutputJSON';
 
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/thorest/src/thor/blocks/XReceipt.ts!'; // todo: check once moved
+const FQP = 'packages/thorest/src/thor/model/Receipt.ts!';
 
 /**
  * [Receipt](http://localhost:8669/doc/stoplight-ui/#/schemas/Receipt)
@@ -128,7 +128,7 @@ class Receipt {
     /**
      * An array of outputs produced by the transaction.
      */
-    readonly outputs: XOutput[];
+    readonly outputs: Output[];
 
     /**
      * Constructs an instance of the class using the provided TransferJSON object.
@@ -180,7 +180,7 @@ class Receipt {
             this.reward = HexUInt.of(json.reward).bi;
             this.reverted = json.reverted;
             this.outputs = json.outputs.map(
-                (output: XOutputJSON): XOutput => new XOutput(output)
+                (output: OutputJSON): Output => new Output(output)
             );
         } catch (error) {
             throw new IllegalArgumentError(
@@ -227,7 +227,7 @@ class Receipt {
             reward: Quantity.of(this.reward).toString(), // trim not significant zeros
             reverted: this.reverted,
             outputs: this.outputs.map(
-                (output: XOutput): XOutputJSON => output.toJSON()
+                (output: Output): OutputJSON => output.toJSON()
             )
         };
         if (this.maxFeePerGas !== undefined) {

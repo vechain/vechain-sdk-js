@@ -16,6 +16,13 @@ classDiagram
         constructor(EventJSON event)
         EventJSON toJSON()
     }
+    class Output {
+        Address contractAddress
+        Event[] events
+        Transfer[] transfers
+        contructor(OutputJSON json)
+        OutputJSON toJSON()
+    }
     class Receipt {
         TxId id
         UInt type

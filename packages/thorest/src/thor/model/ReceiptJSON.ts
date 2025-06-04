@@ -1,5 +1,5 @@
 import { type ClauseJSON } from '@thor/model/ClauseJSON';
-import { type XOutputJSON } from '@thor/model/XOutputJSON';
+import { type OutputJSON } from '@thor/model/OutputJSON';
 
 /**
  * [Receipt](http://localhost:8669/doc/stoplight-ui/#/schemas/Receipt)
@@ -26,7 +26,7 @@ interface ReceiptJSON {
     paid: string; // hex
     reward: string; // hex;
     reverted: boolean;
-    outputs: XOutputJSON[];
+    outputs: OutputJSON[];
 }
 
 export { type ReceiptJSON };

@@ -1,19 +1,19 @@
 import { Address, IllegalArgumentError } from '@vechain/sdk-core';
 import { Event } from '@thor/model/Event';
 import { XTransfer } from '@thor/model/XTransfer';
-import { type XOutputJSON } from '@thor/model/XOutputJSON';
+import { type OutputJSON } from '@thor/model/OutputJSON';
 import { type EventJSON } from '@thor/model/EventJSON';
 import { type XTransferJSON } from '@thor/model/XTransferJSON';
 
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/thorest/src/thor/blocks/XOutput.ts!'; // todo: check once moved
+const FQP = 'packages/thorest/src/thor/model/Output.ts!';
 
 /**
  * [Receipt.outputs](http://localhost:8669/doc/stoplight-ui/#/schemas/Receipt)
  */
-class XOutput {
+class Output {
     /**
      * The address of the deployed contract, if the corresponding clause is a contract deployment clause.
      */
@@ -32,10 +32,10 @@ class XOutput {
     /**
      * Constructs an instance of the class using the provided OutputJSON object.
      *
-     * @param {XOutputJSON} json - The JSON object containing the required fields to initialize the instance.
+     * @param {OutputJSON} json - The JSON object containing the required fields to initialize the instance.
      * @throws {IllegalArgumentError} Throws an error if the JSON object cannot be parsed or contains invalid values.
      */
-    constructor(json: XOutputJSON) {
+    constructor(json: OutputJSON) {
         try {
             this.contractAddress =
                 json.contractAddress !== null
@@ -60,9 +60,9 @@ class XOutput {
     /**
      * Converts the current instance of the class into a OutputJSON representation.
      *
-     * @return {XOutputJSON} The JSON object representing the current instance.
+     * @return {OutputJSON} The JSON object representing the current instance.
      */
-    toJSON(): XOutputJSON {
+    toJSON(): OutputJSON {
         return {
             contractAddress:
                 this.contractAddress !== undefined
@@ -74,8 +74,8 @@ class XOutput {
             transfers: this.transfers.map(
                 (transfer: XTransfer): XTransferJSON => transfer.toJSON()
             )
-        } satisfies XOutputJSON;
+        } satisfies OutputJSON;
     }
 }
 
-export { XOutput };
+export { Output };

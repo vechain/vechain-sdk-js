@@ -4,10 +4,10 @@ import { type XTransferJSON } from '@thor/model/XTransferJSON';
 /**
  *
  */
-interface XOutputJSON {
+interface OutputJSON {
     contractAddress: string | null; // hex address
     events: EventJSON[];
     transfers: XTransferJSON[];
 }
 
-export { type XOutputJSON };
+export { type OutputJSON };
