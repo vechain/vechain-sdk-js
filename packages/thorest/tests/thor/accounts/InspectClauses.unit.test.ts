@@ -1,6 +1,10 @@
 import { describe, expect, test } from '@jest/globals';
-import { type ExecuteCodeResponseJSON, type ExecuteCodesRequestJSON, InspectClauses } from '@thor';
-import { VET } from '@vechain/sdk-core';
+import {
+    type ExecuteCodeResponseJSON,
+    type ExecuteCodesRequestJSON,
+    InspectClauses
+} from '@thor';
+import { HexUInt, VET } from '@vechain/sdk-core';
 import { mockHttpClient } from '../../utils/MockUnitTestClient';
 
 /**
@@ -114,8 +118,8 @@ describe('InspectClauses unit tests', () => {
         // Second clause (VET transfer)
         expect(outputs[1].reverted).toBe(false);
         expect(outputs[1].transfers).toHaveLength(1);
-        const expectedAmount = VET.of(mockResponse[1].transfers[0].amount);
-        expect(outputs[1].transfers[0].amount.wei).toBe(expectedAmount.wei);
+        const expectedAmount = HexUInt.of(outputs[1].transfers[0].amount).bi;
+        expect(outputs[1].transfers[0].amount).toBe(expectedAmount);
 
         // Third clause (contract deployment)
         expect(outputs[2].reverted).toBe(false);

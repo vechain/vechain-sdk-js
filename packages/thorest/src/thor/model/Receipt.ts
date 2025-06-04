@@ -1,11 +1,11 @@
 import {
     Address,
     BlockRef,
-    HexUInt,
+    HexUInt32,
     IllegalArgumentError,
     Quantity,
-    TxId,
-    UInt
+    UInt,
+    type Hex, HexUInt
 } from '@vechain/sdk-core';
 import { Clause } from '@thor/model/Clause';
 import { Output } from '@thor/model/Output';
@@ -26,7 +26,7 @@ class Receipt {
     /**
      * The transaction identifier.
      */
-    readonly id: TxId;
+    readonly id: Hex;
 
     /**
      * The transaction type of this receipt
@@ -91,7 +91,7 @@ class Receipt {
     /**
      *  The transaction ID that this transaction depends on.
      */
-    readonly dependsOn?: TxId;
+    readonly dependsOn?: Hex;
 
     /**
      * The transaction nonce is a 64-bit unsigned integer determined by the transaction sender.
@@ -138,7 +138,7 @@ class Receipt {
      */
     constructor(json: ReceiptJSON) {
         try {
-            this.id = TxId.of(json.id);
+            this.id = HexUInt32.of(json.id);
             this.type =
                 json.type !== undefined && json.type !== null
                     ? UInt.of(json.type)
@@ -171,7 +171,7 @@ class Receipt {
             this.gas = UInt.of(json.gas);
             this.dependsOn =
                 json.dependsOn !== undefined && json.dependsOn !== null
-                    ? TxId.of(json.dependsOn)
+                    ? HexUInt32.of(json.dependsOn)
                     : undefined;
             this.nonce = UInt.of(Number(json.nonce));
             this.gasUsed = UInt.of(json.gasUsed);

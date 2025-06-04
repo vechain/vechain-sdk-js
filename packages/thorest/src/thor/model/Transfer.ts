@@ -29,7 +29,7 @@ class Transfer {
     /**
      * The amount of VET transferred in wei.
      */
-    readonly amount: UInt;
+    readonly amount: bigint;
 
     /**
      * Constructs an instance of the class using the provided TransferJSON object.
@@ -41,7 +41,7 @@ class Transfer {
         try {
             this.sender = Address.of(json.sender);
             this.recipient = Address.of(json.recipient);
-            this.amount = UInt.of(HexUInt.of(json.amount).n);
+            this.amount = HexUInt.of(json.amount).bi;
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: TransferJSON)`,
@@ -61,7 +61,7 @@ class Transfer {
         return {
             sender: this.sender.toString(),
             recipient: this.recipient.toString(),
-            amount: HexUInt.of(this.amount.valueOf()).toString()
+            amount: HexUInt.of(this.amount).toString()
         } satisfies TransferJSON;
     }
 }

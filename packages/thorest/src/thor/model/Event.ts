@@ -1,4 +1,9 @@
-import { Address, HexUInt, IllegalArgumentError } from '@vechain/sdk-core';
+import {
+    Address,
+    HexUInt,
+    IllegalArgumentError,
+    type Hex
+} from '@vechain/sdk-core';
 import { type EventJSON } from '@thor/model/EventJSON';
 
 /**
@@ -19,7 +24,7 @@ class Event {
     /**
      * Topics are indexed parameters to an event. The first topic is always the event signature.
      */
-    readonly topics: HexUInt[];
+    readonly topics: Hex[];
 
     /**
      * The data associated with the event.

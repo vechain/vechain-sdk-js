@@ -5,14 +5,14 @@ classDiagram
     class Clause {
         Address|null to
         bigint value
-        HexUIntL data
+        Hex data
         constructor(ClauseJSON: json)
         ClauseJSON toJSON()
     }
     class Event {
         Address address
-        HexUInt[] topics
-        HexUInt data
+        Hex[] topics
+        Hex data
         constructor(EventJSON event)
         EventJSON toJSON()
     }
@@ -24,7 +24,7 @@ classDiagram
         OutputJSON toJSON()
     }
     class Receipt {
-        TxId id
+        Hex id
         UInt type
         UInt chainTag
         Address origin
@@ -37,7 +37,7 @@ classDiagram
         UInt maxFeePerGas
         UInt maxPriorityFeePerGas
         UInt gas
-        TxId dependsOn
+        Hex dependsOn
         UInt nonce
         UInt gasUsed
         Address gasPayer
@@ -49,7 +49,7 @@ classDiagram
         ReceiptJSON toJSON()
     }
     class ReceiptMeta {
-        TxId txID
+        Hex txID
         Address txOrigin
         constructor(ReceiptMetaJSON json)
         ReceiptMetaJSON toJSON()
@@ -57,12 +57,12 @@ classDiagram
     class Transfer {
         Address sender
         Address recipient
-        UInt amount
+        bigint amount
         constructor(TransferJSON json)
         TransferJSON toJSON()
     }
     class TXID {
-        TxId id
+        Hex id
         constructor(TXIDJSON json)
         TXIDJSON toJSON()
     }

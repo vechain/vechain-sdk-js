@@ -1,5 +1,5 @@
 import { type TXIDJSON } from '@thor';
-import { IllegalArgumentError, TxId as TransactionId } from '@vechain/sdk-core';
+import { type Hex, HexUInt32, IllegalArgumentError } from '@vechain/sdk-core';
 
 /**
  * Full-Qualified Path
@@ -10,7 +10,7 @@ const FQP = 'packages/thorest/src/thor/model/TXID.ts!';
  * [TXID](http://localhost:8669/doc/stoplight-ui/#/schemas/TXID)
  */
 class TXID {
-    readonly id: TransactionId;
+    readonly id: Hex;
 
     /**
      * Constructs an instance of the class using the provided TXIDJSON object.
@@ -19,7 +19,7 @@ class TXID {
      */
     constructor(json: TXIDJSON) {
         try {
-            this.id = TransactionId.of(json.id);
+            this.id = HexUInt32.of(json.id);
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: TXIDJSON)`,

@@ -2,7 +2,8 @@ import {
     Address,
     HexUInt,
     IllegalArgumentError,
-    Quantity
+    Quantity,
+    type Hex
 } from '@vechain/sdk-core';
 import { type ClauseJSON } from '@thor/model/ClauseJSON';
 
@@ -29,7 +30,7 @@ class Clause {
     /**
      * The input data for the clause (in bytes).
      */
-    readonly data: HexUInt;
+    readonly data: Hex;
 
     /**
      * Constructs an instance of the class using the provided ClauseJSON object.

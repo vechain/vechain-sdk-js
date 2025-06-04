@@ -2,6 +2,9 @@
 title: thorest_thor_model
 ---
 classDiagram
+    namespace thor_model {
+        class Receipt
+    }
     class GetRawTxResponse {
         HexUInt raw
         TxMeta meta
@@ -13,18 +16,4 @@ classDiagram
         constructor(GetTxReceiptResponseJSON json)
         GetTxReceiptResponseJSON toJSON()
     }
-    class ReceiptMeta {
-        TxId txID
-        Address: txOrigin
-        constructor(ReceiptMetaJSON json)
-        ReceiptMeta toJSON()
-    }
-    class TxMeta {
-        BlockId blockID
-        UInt blockNumber
-        UInt blockTimestamp
-        constructor(TxMetaJSON json)
-        TxMetaJSON toJSON()
-    }
     Receipt <|-- GetTxReceiptResponse
-    TXMeta <|-- ReceiptMeta
