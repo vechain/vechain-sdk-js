@@ -157,7 +157,7 @@ class SimpleHttpClient implements HttpClient {
                 return (await response.json()) as unknown;
             }
             // get error message from response
-            const errorMessage = await response.text();
+            const errorMessage = await response.clone().text();
             throw new Error(
                 `HTTP ${response.status} ${response.statusText} ${errorMessage}`,
                 {

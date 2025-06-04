@@ -1,7 +1,7 @@
 {
   "name": "sdk-cloudflare-integration",
   "description": "An example app of how to integrate the VeChain SDK with Cloudflare Workers",
-  "version": "1.2.0-rc.2",
+  "version": "1.2.0-rc.3",
   "private": true,
   "author": "VeChain Foundation",
   "license": "MIT",
@@ -16,6 +16,6 @@
     "wrangler": "^3.72.3"
   },
   "dependencies": {
-    "@vechain/sdk-core": "1.2.0-rc.2"
+    "@vechain/sdk-core": "1.2.0-rc.3"
   }
 }

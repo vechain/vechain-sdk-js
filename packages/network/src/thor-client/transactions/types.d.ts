@@ -302,6 +302,26 @@ interface TransactionReceipt {
 }
 
 /**
+ * [Event](http://localhost:8669/doc/stoplight-ui/#/schemas/Event)
+ */
+interface TransactionSimulationEvent {
+    /**
+     * The address of the contract that emitted the event.
+     */
+    address: string;
+
+    /**
+     * Topics are indexed parameters to an event. The first topic is always the event signature.
+     */
+    topics: string[];
+
+    /**
+     * The data associated with the event.
+     */
+    data: string;
+}
+
+/**
  * Type for transaction call simulation result.
  */
 interface TransactionSimulationResult {
@@ -312,7 +332,7 @@ interface TransactionSimulationResult {
     /**
      * Events emitted from the transaction simulation
      */
-    events: Event[];
+    events: TransactionSimulationEvent[];
     /**
      * Transfers that occur from the transaction simulation
      */
@@ -334,17 +354,18 @@ interface TransactionSimulationResult {
 /* --- Responses Outputs end --- */
 
 export type {
-    WaitForTransactionOptions,
-    TransactionBodyOptions,
-    SignTransactionOptions,
     GetDelegationSignatureResult,
-    SendTransactionResult,
     GetTransactionInputOptions,
     GetTransactionReceiptInputOptions,
-    TransactionReceipt,
-    TransactionSimulationResult,
+    SendTransactionResult,
+    SignTransactionOptions,
     SimulateTransactionClause,
     SimulateTransactionOptions,
+    TransactionBodyOptions,
+    TransactionDetailNoRaw,
     TransactionDetailRaw,
-    TransactionDetailNoRaw
+    TransactionReceipt,
+    TransactionSimulationEvent,
+    TransactionSimulationResult,
+    WaitForTransactionOptions
 };
