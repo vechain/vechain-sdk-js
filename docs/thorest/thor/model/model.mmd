@@ -48,6 +48,12 @@ classDiagram
         constructor(ReceiptJSON json)
         ReceiptJSON toJSON()
     }
+    class ReceiptMeta {
+        TxId txID
+        Address txOrigin
+        constructor(ReceiptMetaJSON json)
+        ReceiptMetaJSON toJSON()
+    }
     class Transfer {
         Address sender
         Address recipient
@@ -67,3 +73,4 @@ classDiagram
         constructor(TxMetaJSON)
         TxMetaJSON toJSON()
     }
+    TxMeta <|-- ReceiptMeta

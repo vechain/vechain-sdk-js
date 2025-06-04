@@ -1,6 +1,6 @@
 import { Address, IllegalArgumentError, TxId } from '@vechain/sdk-core';
 import { TxMeta } from '@thor/model/TxMeta';
-import { type ReceiptMetaJSON } from '@thor/transactions/ReceiptMetaJSON';
+import { type ReceiptMetaJSON } from '@thor/model/ReceiptMetaJSON';
 
 /**
  * Full-Qualified Path

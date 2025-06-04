@@ -6,6 +6,8 @@ export * from './Output';
 export * from './OutputJSON';
 export * from './Receipt';
 export * from './ReceiptJSON';
+export * from './ReceiptMeta';
+export * from './ReceiptMetaJSON';
 export * from './TransferJSON';
 export * from './TransferJSON';
 export * from './TXID';
