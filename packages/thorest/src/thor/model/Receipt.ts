@@ -9,7 +9,7 @@ import {
 } from '@vechain/sdk-core';
 import { Clause } from '@thor/model/Clause';
 import { XOutput } from '@thor/model/XOutput';
-import { type XReceiptJSON } from '@thor/model/XReceiptJSON';
+import { type ReceiptJSON } from '@thor/model/ReceiptJSON';
 import { type ClauseJSON } from './ClauseJSON';
 import { type XOutputJSON } from '@thor/model/XOutputJSON';
 
@@ -22,7 +22,7 @@ const FQP = 'packages/thorest/src/thor/blocks/XReceipt.ts!'; // todo: check once
  * [Receipt](http://localhost:8669/doc/stoplight-ui/#/schemas/Receipt)
  */
 
-class XReceipt {
+class Receipt {
     /**
      * The transaction identifier.
      */
@@ -133,10 +133,10 @@ class XReceipt {
     /**
      * Constructs an instance of the class using the provided TransferJSON object.
      *
-     * @param {XReceiptJSON} json - The JSON object containing the required fields to initialize the instance.
+     * @param {ReceiptJSON} json - The JSON object containing the required fields to initialize the instance.
      * @throws {IllegalArgumentError} Throws an error if the JSON object cannot be parsed or contains invalid values.
      */
-    constructor(json: XReceiptJSON) {
+    constructor(json: ReceiptJSON) {
         try {
             this.id = TxId.of(json.id);
             this.type =
@@ -195,9 +195,9 @@ class XReceipt {
     /**
      * Converts the current instance of the class into a ReceiptJSON representation.
      *
-     * @return {XReceiptJSON} The JSON object representing the current instance.
+     * @return {ReceiptJSON} The JSON object representing the current instance.
      */
-    toJSON(): XReceiptJSON {
+    toJSON(): ReceiptJSON {
         const json = {
             id: this.id.toString(),
             type: this.type !== undefined ? this.type.valueOf() : null,
@@ -233,8 +233,8 @@ class XReceipt {
         if (this.maxFeePerGas !== undefined) {
             HexUInt.of(this.maxFeePerGas.valueOf()).toString();
         }
-        return json satisfies XReceiptJSON;
+        return json satisfies ReceiptJSON;
     }
 }
 
-export { XReceipt };
+export { Receipt };

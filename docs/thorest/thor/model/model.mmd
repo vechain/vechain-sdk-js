@@ -16,3 +16,28 @@ classDiagram
         constructor(EventJSON event)
         EventJSON toJSON()
     }
+    class Receipt {
+        TxId id
+        UInt type
+        UInt chainTag
+        Address origin
+        Address delegator
+        UInt size
+        BlockRef blockRef
+        UInt expiration
+        Clause[] clauses
+        UInt gasPriceCoef
+        UInt maxFeePerGas
+        UInt maxPriorityFeePerGas
+        UInt gas
+        TxId dependsOn
+        UInt nonce
+        UInt gasUsed
+        Address gasPayer
+        bigint paid
+        bigint reward
+        boolean reverted
+        Output[] outputs
+        constructor(ReceiptJSON json)
+        ReceiptJSON toJSON()
+    }

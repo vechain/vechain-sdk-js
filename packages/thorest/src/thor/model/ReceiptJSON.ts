@@ -5,7 +5,7 @@ import { type XOutputJSON } from '@thor/model/XOutputJSON';
  * [Receipt](http://localhost:8669/doc/stoplight-ui/#/schemas/Receipt)
  */
 
-interface XReceiptJSON {
+interface ReceiptJSON {
     id: string; // tx id
     type?: number | null; // int
     origin: string; // hex address;
@@ -29,4 +29,4 @@ interface XReceiptJSON {
     outputs: XOutputJSON[];
 }
 
-export { type XReceiptJSON };
+export { type ReceiptJSON };

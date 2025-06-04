@@ -3,7 +3,6 @@ export * from './GetRawTxResponseJSON';
 export * from './GetTxReceiptResponse';
 export * from './GetTxReceiptResponseJSON';
 export * from './GetTxResponse';
-export * from './Receipt';
 export * from './ReceiptMeta';
 export * from './ReceiptMetaJSON';
 export * from './ReceiptOutput';
