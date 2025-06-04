@@ -1,6 +1,6 @@
-import { Transfer, type TransferJSON } from './Transfer';
 import { Address } from '@vechain/sdk-core';
-import { Event, type EventJSON } from '@thor/model';
+import { Transfer } from '@thor/model/Transfer';
+import { Event, type EventJSON, type TransferJSON } from '@thor/model';
 
 class ReceiptOutput {
     readonly contractAddress: Address;

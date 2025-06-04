@@ -1,9 +1,9 @@
 import { Address, IllegalArgumentError } from '@vechain/sdk-core';
 import { Event } from '@thor/model/Event';
-import { XTransfer } from '@thor/model/XTransfer';
+import { Transfer } from '@thor/model/Transfer';
 import { type OutputJSON } from '@thor/model/OutputJSON';
 import { type EventJSON } from '@thor/model/EventJSON';
-import { type XTransferJSON } from '@thor/model/XTransferJSON';
+import { type TransferJSON } from '@thor/model/TransferJSON';
 
 /**
  * Full-Qualified Path
@@ -27,7 +27,7 @@ class Output {
     /**
      * An array of transfers made by the corresponding clause.
      */
-    readonly transfers: XTransfer[];
+    readonly transfers: Transfer[];
 
     /**
      * Constructs an instance of the class using the provided OutputJSON object.
@@ -45,7 +45,7 @@ class Output {
                 (event: EventJSON): Event => new Event(event)
             );
             this.transfers = json.transfers.map(
-                (transfer: XTransferJSON): XTransfer => new XTransfer(transfer)
+                (transfer: TransferJSON): Transfer => new Transfer(transfer)
             );
         } catch (error) {
             throw new IllegalArgumentError(
@@ -72,7 +72,7 @@ class Output {
                 (event: Event): EventJSON => event.toJSON()
             ),
             transfers: this.transfers.map(
-                (transfer: XTransfer): XTransferJSON => transfer.toJSON()
+                (transfer: Transfer): TransferJSON => transfer.toJSON()
             )
         } satisfies OutputJSON;
     }

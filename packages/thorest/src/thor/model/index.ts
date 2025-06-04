@@ -6,5 +6,5 @@ export * from './Output';
 export * from './OutputJSON';
 export * from './Receipt';
 export * from './ReceiptJSON';
-export * from './XTransferJSON';
-export * from './XTransferJSON';
+export * from './TransferJSON';
+export * from './TransferJSON';

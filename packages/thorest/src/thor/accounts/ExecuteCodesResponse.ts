@@ -1,5 +1,6 @@
-import { Transfer, type TransferJSON, Event, type EventJSON } from '@thor';
 import { Gas, HexUInt } from '@vechain/sdk-core';
+import { Transfer } from '@thor/model/Transfer';
+import { Event, type EventJSON, type TransferJSON } from '@thor/model';
 
 class ExecuteCodeResponse {
     readonly data: HexUInt;
@@ -15,7 +16,8 @@ class ExecuteCodeResponse {
             (eventJSON: EventJSON): Event => new Event(eventJSON)
         );
         this.transfers = json.transfers.map(
-            (transferJSON: TransferJSON): Transfer => new Transfer(transferJSON)
+            (transferJSON: TransferJSON): Transfer =>
+                new Transfer(transferJSON)
         );
         this.gasUsed = Gas.of(json.gasUsed);
         this.reverted = json.reverted;
