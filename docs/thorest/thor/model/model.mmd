@@ -60,3 +60,10 @@ classDiagram
         constructor(TXIDJSON json)
         TXIDJSON toJSON()
     }
+    class TxMeta {
+        BlockId blockID;
+        UInt blockNumber;
+        UInt blockTimeStamp;
+        constructor(TxMetaJSON)
+        TxMetaJSON toJSON()
+    }
