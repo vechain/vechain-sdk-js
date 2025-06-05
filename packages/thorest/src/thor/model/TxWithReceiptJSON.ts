@@ -8,7 +8,7 @@ import { type OutputJSON, type TxJSON } from '@thor';
  * and
  * [Receipt](http://localhost:8669/doc/stoplight-ui/#/schemas/Receipt)
  */
-interface TxAndReceiptJSON extends TxJSON {
+interface TxWithReceiptJSON extends TxJSON {
     type: number | null; // int
     gasUsed: number; // int
     gasPayer: string; // address ^0x[0-9a-f]{40}$
@@ -18,4 +18,4 @@ interface TxAndReceiptJSON extends TxJSON {
     outputs: OutputJSON[];
 }
 
-export { type TxAndReceiptJSON };
+export { type TxWithReceiptJSON };

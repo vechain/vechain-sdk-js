@@ -2,6 +2,18 @@
 title: thorest_thor_model
 ---
 classDiagram
+    namespace thorest {
+        class ThorRequest {
+            <<interface>>
+        }
+    }
+    namespace thorest_errors {
+        class ThorError
+    }
+    namespace thorest_model {
+        class TXID
+        class Tx
+    }
     class GetRawTxResponse {
         Hex raw
         TxMeta meta
@@ -19,22 +31,15 @@ classDiagram
         ReceiptMeta meta
     }
     class GetTxResponse {
-        Hex id
-        number type
-        Address origin
-        Address delegator
-        number size
-        number chainTag
-        Hex blockRef
-        number expiration
-        Clause[] clause
-        bigint|null gasPriceCoef
-        bigint|null maxFeePerGas
-        bigint|null maxPriorityFeePerGas
-        bigint gas
-        Hex|null dependsOn
-        number nonce
         TxMeta txMeta
         constructor(GetTxResponseJSON json)
         GetTxResponseJSON toJSON()
     }
+    class SendTransaction {
+        SendTransaction of(Uint8Array encoded)$
+        ThorResponse~SendTransaction, TXID~ askTo(HttpClient httpClient)
+    }
+    ThorRequest <|.. SendTransaction
+    Tx <|-- GetTxResponse
+    SendTransaction "askTo" --> TXID
+    ThorError <-- "throws" ThorRequest

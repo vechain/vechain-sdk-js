@@ -5,7 +5,7 @@ import { type ClauseJSON } from '@thor';
  */
 interface TxJSON {
     id: string; // hex ^0x[0-9a-f]{64}$
-    type: number; // int
+    type: number | null; // int
     origin: string; // address ^0x[0-9a-f]{40}$
     delegator: string | null; // address ^0x[0-9a-f]{40}$
     size: number; // int

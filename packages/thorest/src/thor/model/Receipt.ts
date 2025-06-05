@@ -22,7 +22,7 @@ class Receipt {
     /**
      * The transaction type of this receipt
      */
-    readonly type: UInt | null;
+    readonly type: number | null;
 
     /**
      * The amount of gas used by the transaction.
@@ -62,7 +62,8 @@ class Receipt {
      */
     constructor(json: ReceiptJSON) {
         try {
-            this.type = json.type !== null ? UInt.of(json.type) : null;
+            this.type =
+                json.type !== null ? UInt.of(json.type).valueOf() : null;
             this.gasUsed = BigInt(json.gasUsed);
             this.gasPayer = Address.of(json.gasPayer);
             this.paid = HexUInt.of(json.paid).bi;

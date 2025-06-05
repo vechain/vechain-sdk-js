@@ -152,8 +152,10 @@ describe('RetrieveExpandedBlock UNIT tests', () => {
                             data: '0x273f4940000000000000000000000000000000000000626173652d6761732d7072696365000000000000000000000000000000000000000000000000000009184e72a000'
                         }
                     ],
-                    gasPriceCoef: 0,
-                    gas: 1000000,
+                    gasPriceCoef: '0',
+                    maxFeePerGas: null,
+                    maxPriorityFeePerGas: null,
+                    gas: '1000000',
                     origin: '0xf077b491b355e64048ce21e3a6fc4751eeea77fa',
                     delegator: null,
                     nonce: '0x129145c3dbbc135e',

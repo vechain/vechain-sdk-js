@@ -51,7 +51,7 @@ class Hex implements VeChainDataModel<Hex> {
 
     /**
      * Regular expression for matching hexadecimal strings.
-     * An empty input is represented as a empty digits.
+     * An empty input is represented as an empty digit.
      *
      * @type {RegExp}
      */

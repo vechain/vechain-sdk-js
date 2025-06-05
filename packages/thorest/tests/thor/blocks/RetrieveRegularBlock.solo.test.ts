@@ -68,29 +68,29 @@ describe('RetrieveRegularBlock SOLO tests', () => {
     test('ok <- block 1', async () => {
         const expected = {
             number: 1,
-            id: '0x00000001a3252b0b1f994fc9a9bc72aea96fb7e034cbf0052422c26a995a72ed',
+            id: '0x00000001f1004c8577b37346e5c10fd7c3c2e815873e78fd93951796d657490e',
             size: 556,
             parentID:
                 '0x00000000c05a20fbca2bf6ae3affba6af4a74b800b585bf7a4988aba7aea69f6',
-            timestamp: 1746001943,
+            timestamp: 1749111592,
             gasLimit: 150000000,
-            beneficiary: '0xf077b491b355e64048ce21e3a6fc4751eeea77fa',
+            beneficiary: '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa',
             gasUsed: 44794,
+            baseFeePerGas: '0x9184e72a000',
             totalScore: 1,
             txsRoot:
-                '0x9e4a087f9d5e5263f7fef7bb86e7a2252a4b99abb47496b89105f8efc8ec44e7',
+                '0x1ce949fe76f56a916cdfcc08c5d4160d411fea03aa9516fd556f4fc751fe3d66',
             txsFeatures: 1,
             stateRoot:
-                '0xfe16328dd40592c86a4610ba93016156c2f5a1c14a54c1b84c97fd687eb64b70',
+                '0x6c775cbd6adc039fd6768e3f53ac2f81fcfd1981683111029d49da0de75e5b57',
             receiptsRoot:
                 '0x7b4823bf3a69934d810599180473a870518fd72fbff09593605fa38d065c941d',
             com: false,
-            signer: '0xf077b491b355e64048ce21e3a6fc4751eeea77fa',
+            signer: '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa',
             isTrunk: true,
             isFinalized: false,
-            baseFeePerGas: '0x9184e72a000',
             transactions: [
-                '0xda74337f4c5ab50dbd34624df2de7a1f5f6ebe9408aa511632e43af6a0be5f07'
+                '0xaf6bc27b82452cbfd9b701402b9a794150a7e9413a754f36b197cea3c9cfed88'
             ]
         } satisfies RegularBlockResponseJSON;
         const actual = (

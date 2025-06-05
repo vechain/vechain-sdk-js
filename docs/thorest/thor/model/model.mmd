@@ -24,7 +24,7 @@ classDiagram
         OutputJSON toJSON()
     }
     class Receipt {
-        UInt type
+        number|null type
         bigint gasUsed
         Address gasPayer
         bigint paid
@@ -52,6 +52,24 @@ classDiagram
         constructor(TXIDJSON json)
         TXIDJSON toJSON()
     }
+    class Tx {
+        Hex id
+        number|null type|
+        Address origin
+        Address|null delegator
+        size number
+        chainTag number
+        Hex blockRef
+        number expiration
+        Clause[] clauses
+        bigint|null maxFeePerGas
+        bigint|null maxPriorityFeePerGas
+        bigint gas
+        Hex|null dependsOn
+        bigint nonce
+        constructor(json TxJSON)
+        TxJSON toJSON()
+    }
     class TxMeta {
         BlockId blockID;
         UInt blockNumber;
@@ -59,4 +77,8 @@ classDiagram
         constructor(TxMetaJSON)
         TxMetaJSON toJSON()
     }
+    class TxWithReceipt {
+    }
+    Receipt <|-- TxWithReceipt
+    Tx <|-- TxWithReceipt
     TxMeta <|-- ReceiptMeta

@@ -1,4 +1,5 @@
-import { type BlockJSON, type ReceiptJSON } from '@thor';
+import { type TxWithReceiptJSON } from '@thor';
+import { type BlockJSON } from '@thor/blocks/BlockJSON';
 
 /**
  * [ExpandedBlockResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/ExpandedBlockResponse)
@@ -6,7 +7,7 @@ import { type BlockJSON, type ReceiptJSON } from '@thor';
 interface ExpandedBlockResponseJSON extends BlockJSON {
     readonly isTrunk: boolean; // boolean
     readonly isFinalized: boolean; // boolean
-    readonly transactions: ReceiptJSON[]; // Receipt[]
+    readonly transactions: TxWithReceiptJSON[]; // Receipt[]
 }
 
 export { type ExpandedBlockResponseJSON };

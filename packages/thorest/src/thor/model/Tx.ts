@@ -7,8 +7,8 @@ import {
     IllegalArgumentError,
     UInt
 } from '@vechain/sdk-core';
-import { Clause, type ClauseJSON } from '@thor/model';
-import { type TxJSON } from '@thor/transactions/TxJSON';
+import { Clause, type ClauseJSON } from '@thor';
+import { type TxJSON } from '@thor/model/TxJSON';
 
 /**
  * Full-Qualified Path
@@ -29,7 +29,7 @@ class Tx {
     /**
      * The transaction type in number, currently 0(Legacy Transaction) and 81(DynamicFee Transaction) are supported.
      */
-    readonly type: number; // int
+    readonly type: number | null; // int
 
     /**
      * The address of the origin account.
@@ -100,7 +100,7 @@ class Tx {
     /**
      * The transaction nonce is a 64-bit unsigned integer that is determined by the transaction sender.
      */
-    readonly nonce: number; // hex int
+    readonly nonce: bigint; // hex int
 
     /**
      * Constructs an instance of the class using the provided JSON object.
@@ -111,13 +111,14 @@ class Tx {
     constructor(json: TxJSON) {
         try {
             this.id = HexUInt32.of(json.id);
-            this.type = UInt.of(json.type).valueOf();
+            this.type =
+                json.type === null ? null : UInt.of(json.type).valueOf();
             this.origin = Address.of(json.origin);
             this.delegator =
                 json.delegator !== null ? Address.of(json.delegator) : null;
             this.size = UInt.of(json.size).valueOf();
             this.chainTag = UInt.of(json.chainTag).valueOf();
-            this.blockRef = HexUInt32.of(json.blockRef);
+            this.blockRef = HexUInt.of(json.blockRef);
             this.expiration = UInt.of(json.expiration).valueOf();
             this.clauses = json.clauses.map(
                 (clause: ClauseJSON): Clause => new Clause(clause)
@@ -138,7 +139,7 @@ class Tx {
             this.gas = BigInt(json.gas);
             this.dependsOn =
                 json.dependsOn !== null ? HexUInt32.of(json.dependsOn) : null;
-            this.nonce = HexUInt.of(json.nonce).n;
+            this.nonce = HexUInt.of(json.nonce).bi;
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: TxJSON)`,

@@ -1,20 +1,44 @@
-import { type TxId, type BlockId } from '@vechain/sdk-core';
+import { type Hex, HexUInt32 } from '@vechain/sdk-core';
 import { type HttpClient, type HttpPath, type HttpQuery } from '@http';
 import {
     GetTxReceiptResponse,
+    ThorError,
     type GetTxReceiptResponseJSON,
     type ThorRequest,
     type ThorResponse
 } from '@thor';
 
+/**
+ * Full-Qualified Path
+ */
+const FQP = 'packages/thorest/src/thor/transactions/SendTransaction.ts!';
+
+/**
+ * [Retrieve transaction receipt](http://localhost:8669/doc/stoplight-ui/#/paths/transactions-id--receipt/get)
+ *
+ * This endpoint allows you to retrieve the receipt of a transaction identified by its ID.
+ * If the transaction is not found, the response will be `null`.
+ */
 class RetrieveTransactionReceipt
     implements ThorRequest<RetrieveTransactionReceipt, GetTxReceiptResponse>
 {
-    readonly path: RetrieveTransactionReceiptPath;
+    /**
+     * Represents the HTTP path configuration for a specific API endpoint.
+     */
+    protected readonly path: RetrieveTransactionReceiptPath;
 
-    readonly query: RetrieveTransactionReceiptQuery;
+    /**
+     * Represents the HHTP query configuration for a specific API endpoint.
+     */
+    protected readonly query: RetrieveTransactionReceiptQuery;
 
-    constructor(
+    /**
+     * Constructs a new instance of the class with the specified path and query parameters.
+     *
+     * @param {RetrieveTransactionReceiptPath} path - The object containing path parameters required for the operation.
+     * @param {RetrieveTransactionReceiptQuery} query - The object containing query parameters required for the operation.
+     */
+    protected constructor(
         path: RetrieveTransactionReceiptPath,
         query: RetrieveTransactionReceiptQuery
     ) {
@@ -22,62 +46,166 @@ class RetrieveTransactionReceipt
         this.query = query;
     }
 
+    /**
+     * Asynchronously fetches and processes a transaction receiptusing the provided HTTP client.
+     *
+     * @param {HttpClient} httpClient - An HTTP client used to perform the request.
+     * @return {Promise<ThorResponse<RetrieveRawBlock, GetTxReceiptResponse>>}
+     * Returns a promise that resolves to a ThorResponse containing the requested transaction receipt.
+     * @throws ThorError if the response is invalid or the request fails.
+     */
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveTransactionReceipt, GetTxReceiptResponse>> {
+        const fqp = `${FQP}askTo(httpClient: HttpClient: Promise<ThorResponse<RetrieveTransactionReceipt, GetTxReceiptResponse>>`;
         const response = await httpClient.get(this.path, this.query);
-        const responseBody =
-            (await response.json()) as GetTxReceiptResponseJSON;
-        return {
-            request: this,
-            response: new GetTxReceiptResponse(responseBody)
-        } satisfies ThorResponse<
-            RetrieveTransactionReceipt,
-            GetTxReceiptResponse
-        >;
+        if (!response.ok) {
+            const responseBody =
+                (await response.json()) as GetTxReceiptResponseJSON;
+            try {
+                return {
+                    request: this,
+                    response: new GetTxReceiptResponse(responseBody)
+                } satisfies ThorResponse<
+                    RetrieveTransactionReceipt,
+                    GetTxReceiptResponse
+                >;
+            } catch (error) {
+                throw new ThorError(
+                    fqp,
+                    'Bad response.',
+                    {
+                        url: response.url,
+                        body: responseBody
+                    },
+                    error instanceof Error ? error : undefined,
+                    response.status
+                );
+            }
+        } else {
+            throw new ThorError(
+                fqp,
+                await response.text(),
+                {
+                    url: response.url
+                },
+                undefined,
+                response.status
+            );
+        }
     }
 
-    static of(txId: TxId): RetrieveTransactionReceipt {
-        return new RetrieveTransactionReceipt(
-            new RetrieveTransactionReceiptPath(txId),
-            new RetrieveTransactionReceiptQuery(undefined)
-        );
+    /**
+     * Creates a new instance of RetrieveTransactionReceipt using the provided transaction ID.
+     *
+     * @param {Hex} txId - The transaction ID used to retrieve the transaction receipt.
+     * @return {RetrieveTransactionReceipt} A new instance of RetrieveTransactionReceipt initialized with the given transaction ID.
+     * @throws ThorError If the `txId` expression is not a valid transaction identifier.
+     */
+    static of(txId: Hex): RetrieveTransactionReceipt {
+        try {
+            return new RetrieveTransactionReceipt(
+                new RetrieveTransactionReceiptPath(HexUInt32.of(txId)),
+                new RetrieveTransactionReceiptQuery(undefined)
+            );
+        } catch (error) {
+            throw new ThorError(
+                `${FQP}of(txId: Hex): RetrieveTransactionReceipt`,
+                'Invalid transaction ID.',
+                {
+                    txId
+                },
+                error instanceof Error ? error : undefined
+            );
+        }
     }
 
-    withHead(head?: BlockId): RetrieveTransactionReceipt {
-        return new RetrieveTransactionReceipt(
-            this.path,
-            new RetrieveTransactionReceiptQuery(head)
-        );
+    /**
+     * Sets the ID of the `head` block parameter for the `RetrieveTransactionReceipt`.
+     *
+     * @param {Hex} [head] - An optional hexadecimal value representing the ID of the head block. Best-block is assumed if omitted.
+     * @return {RetrieveTransactionReceipt} A new instance of `RetrieveTransactionReceipt` configured with the specified ID of the head block.
+     * @throws {ThorError} If an invalid `head` value is provided.
+     */
+    withHead(head?: Hex): RetrieveTransactionReceipt {
+        try {
+            return new RetrieveTransactionReceipt(
+                this.path,
+                new RetrieveTransactionReceiptQuery(
+                    head === undefined ? undefined : HexUInt32.of(head)
+                )
+            );
+        } catch (error) {
+            throw new ThorError(
+                `${FQP}withHead(head?: Hex): RetrieveTransactionReceipt`,
+                'Invalid head value.',
+                {
+                    head
+                },
+                error instanceof Error ? error : undefined
+            );
+        }
     }
 }
 
+/**
+ * Represents a path to retrieve the transaction receipt for a given transaction ID.
+ * Implements the `HttpPath` interface to provide a structured URL path.
+ * This class is immutable and ensures the transaction ID is passed during instantiation.
+ */
 class RetrieveTransactionReceiptPath implements HttpPath {
-    readonly txId: TxId;
+    /**
+     * Represents a transaction identifier.
+     */
+    readonly txId: HexUInt32;
 
-    constructor(txId: TxId) {
+    /**
+     * Constructs an instance of the class with the specified transaction ID.
+     *
+     * @param {HexUInt32} txId - The transaction ID as a hexadecimal unsigned 32-bit integer.
+     */
+    constructor(txId: HexUInt32) {
         this.txId = txId;
     }
 
+    /**
+     * Retrieves the API path for the transaction receipt based on the transaction ID.
+     *
+     * @return {string} The path to the transaction receipt endpoint.
+     */
     get path(): string {
         return `/transactions/${this.txId}/receipt`;
     }
 }
 
+/**
+ * Represents a query for retrieving a transaction receipt specifying the id of the block head.
+ */
 class RetrieveTransactionReceiptQuery implements HttpQuery {
-    readonly head?: BlockId;
+    /**
+     * Represents the id of the block head.
+     */
+    readonly head?: HexUInt32;
 
-    constructor(head: BlockId | undefined) {
+    /**
+     * Constructs an instance of the class.
+     *
+     * @param {HexUInt32} [head] - An optional hexadecimal unsigned 32-bit integer identifying the ID of the head block.
+     * The best block is assumed if omitted.
+     */
+    constructor(head?: HexUInt32) {
         this.head = head;
     }
 
+    /**
+     * Retrieves the current query string. Returns an empty string if the head is undefined,
+     * otherwise returns the head concatenated with an ampersand.
+     *
+     * @return {string} The constructed query string or an empty string if the head is undefined.
+     */
     get query(): string {
         return this.head === undefined ? '' : `${this.head}&`;
     }
 }
 
-export {
-    RetrieveTransactionReceipt,
-    RetrieveTransactionReceiptPath,
-    RetrieveTransactionReceiptQuery
-};
+export { RetrieveTransactionReceipt };
