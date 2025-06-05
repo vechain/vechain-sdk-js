@@ -1,6 +1,6 @@
 {
   "name": "@vechain/sdk-hardhat-plugin",
-  "version": "1.2.0-rc.3",
+  "version": "1.2.0",
   "description": "This module allows to create smart contracts and interact with them using the VeChain SDK and Hardhat",
   "author": "VeChain Foundation",
   "license": "MIT",
@@ -39,11 +39,11 @@
   },
   "dependencies": {
     "@nomicfoundation/hardhat-ethers": "^3.0.8",
-    "@vechain/sdk-core": "1.2.0-rc.3",
-    "@vechain/sdk-errors": "1.2.0-rc.3",
-    "@vechain/sdk-ethers-adapter": "1.2.0-rc.3",
-    "@vechain/sdk-logging": "1.2.0-rc.3",
-    "@vechain/sdk-network": "1.2.0-rc.3",
+    "@vechain/sdk-core": "1.2.0",
+    "@vechain/sdk-errors": "1.2.0",
+    "@vechain/sdk-ethers-adapter": "1.2.0",
+    "@vechain/sdk-logging": "1.2.0",
+    "@vechain/sdk-network": "1.2.0",
     "ethers": "6.13.4",
     "hardhat": "^2.22.15"
   }
