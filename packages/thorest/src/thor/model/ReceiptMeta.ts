@@ -1,4 +1,8 @@
-import { Address, IllegalArgumentError, TxId } from '@vechain/sdk-core';
+import {
+    Address, Hex,
+    HexUInt32,
+    IllegalArgumentError
+} from '@vechain/sdk-core';
 import { TxMeta } from '@thor/model/TxMeta';
 import { type ReceiptMetaJSON } from '@thor/model/ReceiptMetaJSON';
 
@@ -16,7 +20,7 @@ class ReceiptMeta extends TxMeta {
      *
      * Match pattern: ^0x[0-9a-f]{64}$
      */
-    readonly txID: TxId;
+    readonly txID: Hex;
 
     /**
      * The account from which the transaction was sent.
@@ -34,7 +38,7 @@ class ReceiptMeta extends TxMeta {
     constructor(json: ReceiptMetaJSON) {
         try {
             super(json);
-            this.txID = TxId.of(json.txID);
+            this.txID = HexUInt32.of(json.txID);
             this.txOrigin = Address.of(json.txOrigin);
         } catch (error) {
             throw new IllegalArgumentError(

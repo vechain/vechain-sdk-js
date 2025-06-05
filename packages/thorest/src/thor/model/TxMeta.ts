@@ -1,4 +1,9 @@
-import { BlockId, IllegalArgumentError, UInt } from '@vechain/sdk-core';
+import {
+    type Hex,
+    HexUInt32,
+    IllegalArgumentError,
+    UInt
+} from '@vechain/sdk-core';
 import { type TxMetaJSON } from '@thor';
 
 /**
@@ -15,7 +20,7 @@ class TxMeta {
      *
      * Match pattern: ^0x[0-9a-f]{64}$
      */
-    readonly blockID: BlockId;
+    readonly blockID: Hex;
 
     /**
      * The block number (height) of the block in which the transaction was included.
@@ -35,7 +40,7 @@ class TxMeta {
      */
     constructor(json: TxMetaJSON) {
         try {
-            this.blockID = BlockId.of(json.blockID);
+            this.blockID = HexUInt32.of(json.blockID);
             this.blockNumber = UInt.of(json.blockNumber);
             this.blockTimestamp = UInt.of(json.blockTimestamp);
         } catch (error) {
