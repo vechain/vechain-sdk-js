@@ -1,27 +1,22 @@
 import { type TxId, type BlockId } from '@vechain/sdk-core';
 import { type HttpClient } from '@http';
-import {
-    RetrieveTransactionByIDPath,
-    RetrieveTransactionByIDQuery
-} from './RetrieveTransactionByID';
 import { GetRawTxResponse } from './GetRawTxResponse';
 import {
     type GetRawTxResponseJSON,
     type ThorRequest,
     type ThorResponse
 } from '@thor';
+import { RetrieveTransactionPath } from '@thor/transactions/RetrieveTransactionPath';
+import { RetrieveTransactionQuery } from '@thor/transactions/RetrieveTransactionQuery';
 
 class RetrieveRawTransactionByID
     implements ThorRequest<RetrieveRawTransactionByID, GetRawTxResponse>
 {
-    readonly path: RetrieveRawTransactionByIDPath;
+    readonly path: RetrieveTransactionPath;
 
-    readonly query: RetrieveRawTransactionByIDQuery;
+    readonly query: Query;
 
-    constructor(
-        path: RetrieveRawTransactionByIDPath,
-        query: RetrieveRawTransactionByIDQuery
-    ) {
+    constructor(path: RetrieveTransactionPath, query: Query) {
         this.path = path;
         this.query = query;
     }
@@ -39,37 +34,31 @@ class RetrieveRawTransactionByID
 
     static of(txId: TxId): RetrieveRawTransactionByID {
         return new RetrieveRawTransactionByID(
-            new RetrieveRawTransactionByIDPath(txId),
-            new RetrieveRawTransactionByIDQuery(undefined, false)
+            new RetrieveTransactionPath(txId),
+            new Query(undefined, false)
         );
     }
 
     withHead(head?: BlockId): RetrieveRawTransactionByID {
         return new RetrieveRawTransactionByID(
             this.path,
-            new RetrieveRawTransactionByIDQuery(head, this.query.pending)
+            new Query(head, this.query.pending)
         );
     }
 
     withPending(pending: boolean = true): RetrieveRawTransactionByID {
         return new RetrieveRawTransactionByID(
             this.path,
-            new RetrieveRawTransactionByIDQuery(this.query.head, pending)
+            new Query(this.query.head, pending)
         );
     }
 }
 
-class RetrieveRawTransactionByIDPath extends RetrieveTransactionByIDPath {}
-
-class RetrieveRawTransactionByIDQuery extends RetrieveTransactionByIDQuery {
+class Query extends RetrieveTransactionQuery {
     get query(): string {
         const head = this.head === undefined ? '' : `${this.head}&`;
         return `?${head}pending=${this.pending}&raw=true`;
     }
 }
 
-export {
-    RetrieveRawTransactionByID,
-    RetrieveRawTransactionByIDPath,
-    RetrieveRawTransactionByIDQuery
-};
+export { RetrieveRawTransactionByID };

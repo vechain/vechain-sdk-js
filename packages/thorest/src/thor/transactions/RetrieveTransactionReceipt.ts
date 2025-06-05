@@ -26,23 +26,20 @@ class RetrieveTransactionReceipt
     /**
      * Represents the HTTP path configuration for a specific API endpoint.
      */
-    protected readonly path: RetrieveTransactionReceiptPath;
+    protected readonly path: Path;
 
     /**
-     * Represents the HHTP query configuration for a specific API endpoint.
+     * Represents the HTTP query configuration for a specific API endpoint.
      */
-    protected readonly query: RetrieveTransactionReceiptQuery;
+    protected readonly query: Query;
 
     /**
      * Constructs a new instance of the class with the specified path and query parameters.
      *
-     * @param {RetrieveTransactionReceiptPath} path - The object containing path parameters required for the operation.
-     * @param {RetrieveTransactionReceiptQuery} query - The object containing query parameters required for the operation.
+     * @param {Path} path - The object containing path parameters required for the operation.
+     * @param {Query} query - The object containing query parameters required for the operation.
      */
-    protected constructor(
-        path: RetrieveTransactionReceiptPath,
-        query: RetrieveTransactionReceiptQuery
-    ) {
+    protected constructor(path: Path, query: Query) {
         this.path = path;
         this.query = query;
     }
@@ -106,8 +103,8 @@ class RetrieveTransactionReceipt
     static of(txId: Hex): RetrieveTransactionReceipt {
         try {
             return new RetrieveTransactionReceipt(
-                new RetrieveTransactionReceiptPath(HexUInt32.of(txId)),
-                new RetrieveTransactionReceiptQuery(undefined)
+                new Path(HexUInt32.of(txId)),
+                new Query(undefined)
             );
         } catch (error) {
             throw new ThorError(
@@ -132,9 +129,7 @@ class RetrieveTransactionReceipt
         try {
             return new RetrieveTransactionReceipt(
                 this.path,
-                new RetrieveTransactionReceiptQuery(
-                    head === undefined ? undefined : HexUInt32.of(head)
-                )
+                new Query(head === undefined ? undefined : HexUInt32.of(head))
             );
         } catch (error) {
             throw new ThorError(
@@ -154,7 +149,7 @@ class RetrieveTransactionReceipt
  * Implements the `HttpPath` interface to provide a structured URL path.
  * This class is immutable and ensures the transaction ID is passed during instantiation.
  */
-class RetrieveTransactionReceiptPath implements HttpPath {
+class Path implements HttpPath {
     /**
      * Represents a transaction identifier.
      */
@@ -182,7 +177,7 @@ class RetrieveTransactionReceiptPath implements HttpPath {
 /**
  * Represents a query for retrieving a transaction receipt specifying the id of the block head.
  */
-class RetrieveTransactionReceiptQuery implements HttpQuery {
+class Query implements HttpQuery {
     /**
      * Represents the id of the block head.
      */

@@ -1,18 +1,48 @@
-import { type TxId, type BlockId } from '@vechain/sdk-core';
-import { type HttpClient, type HttpPath, type HttpQuery } from '@http';
-import { GetTxResponse, type GetTxResponseJSON } from '@thor/transactions';
-import { type ThorRequest, type ThorResponse } from '@thor';
+import { type BlockId, type Hex, HexUInt32 } from '@vechain/sdk-core';
+import { type HttpClient } from '@http';
+import { RetrieveTransactionPath } from '@thor/transactions/RetrieveTransactionPath';
+import { RetrieveTransactionQuery } from '@thor/transactions/RetrieveTransactionQuery';
+import {
+    GetTxResponse,
+    type GetTxResponseJSON,
+    ThorError,
+    type ThorRequest,
+    type ThorResponse
+} from '@thor';
 
+/**
+ * Full-Qualified Path
+ */
+const FQP = 'packages/thorest/src/thor/transactions/SendTransaction.ts!';
+
+/**
+ * [Retrieve a transaction by ID](http://localhost:8669/doc/stoplight-ui/#/paths/transactions-id/get)
+ *
+ * This endpoint allows you to retrieve a transaction identified by its ID.
+ */
 class RetrieveTransactionByID
-    implements ThorRequest<RetrieveTransactionByID, GetTxResponse>
+    implements ThorRequest<RetrieveTransactionByID, GetTxResponse | null>
 {
-    readonly path: RetrieveTransactionByIDPath;
+    /**
+     * Represents the HTTP path configuration for a specific API endpoint.
+     */
+    protected readonly path: RetrieveTransactionPath;
 
-    readonly query: RetrieveTransactionByIDQuery;
+    /**
+     * Represents the HTTP query configuration for a specific API endpoint.
+     */
+    protected readonly query: RetrieveTransactionQuery;
 
-    constructor(
-        path: RetrieveTransactionByIDPath,
-        query: RetrieveTransactionByIDQuery
+    /**
+     * Constructs an instance of the class with the specified path and query parameters.
+     *
+     * @param {RetrieveTransactionPath} path - The object containing the path parameters required to retrieve the transaction by ID.
+     * @param {RetrieveTransactionQuery} query - The object containing the query parameters for retrieving transaction details.
+     * @return {void}
+     */
+    protected constructor(
+        path: RetrieveTransactionPath,
+        query: RetrieveTransactionQuery
     ) {
         this.path = path;
         this.query = query;
@@ -20,66 +50,116 @@ class RetrieveTransactionByID
 
     async askTo(
         httpClient: HttpClient
-    ): Promise<ThorResponse<RetrieveTransactionByID, GetTxResponse>> {
+    ): Promise<ThorResponse<RetrieveTransactionByID, GetTxResponse | null>> {
+        const fqp = `${FQP}askTo(httpClient: HttpClient: Promise<ThorResponse<RetrieveTransactionByID, GetTxResponse|null>>`;
         const response = await httpClient.get(this.path, this.query);
-        const responseBody = (await response.json()) as GetTxResponseJSON;
-        return {
-            request: this,
-            response: new GetTxResponse(responseBody)
-        };
+        if (response.ok) {
+            const json = (await response.json()) as GetTxResponseJSON | null;
+            try {
+                return {
+                    request: this,
+                    response: json === null ? null : new GetTxResponse(json)
+                };
+            } catch (error) {
+                throw new ThorError(
+                    fqp,
+                    'Bad response.',
+                    {
+                        url: response.url,
+                        body: json
+                    },
+                    error instanceof Error ? error : undefined,
+                    response.status
+                );
+            }
+        } else {
+            throw new ThorError(
+                fqp,
+                await response.text(),
+                {
+                    url: response.url
+                },
+                undefined,
+                response.status
+            );
+        }
     }
 
-    static of(txId: TxId): RetrieveTransactionByID {
-        return new RetrieveTransactionByID(
-            new RetrieveTransactionByIDPath(txId),
-            new RetrieveTransactionByIDQuery(undefined, false)
-        );
+    /**
+     * Creates an instance of RetrieveTransactionByID with the specified transaction ID.
+     *
+     * @param {Hex} txId - The transaction ID to retrieve the transaction details for.
+     * @return {RetrieveTransactionByID} A new instance of RetrieveTransactionByID configured with the specified transaction ID.
+     * @throws ThorError If a `txId` value is provided.
+     */
+    static of(txId: Hex): RetrieveTransactionByID {
+        try {
+            return new RetrieveTransactionByID(
+                new RetrieveTransactionPath(HexUInt32.of(txId)),
+                new RetrieveTransactionQuery(undefined, false)
+            );
+        } catch (error) {
+            throw new ThorError(
+                `${FQP}of(txId: Hex): RetrieveTransactionByID`,
+                'Invalid transaction ID.',
+                {
+                    txId
+                },
+                error instanceof Error ? error : undefined
+            );
+        }
     }
 
+    /**
+     * Sets the head block identifier for the transaction retrieval.
+     *
+     * @param {BlockId} [head] - The block identifier representing the head block to retrieve the transaction from. Optional.
+     * @return {RetrieveTransactionByID} A new instance of RetrieveTransactionByID with the specified head block identifier.
+     * Best-block is assumed if omitted.
+     * @throws {ThorError} If an invalid `head` value is provided.
+     */
     withHead(head?: BlockId): RetrieveTransactionByID {
-        return new RetrieveTransactionByID(
-            this.path,
-            new RetrieveTransactionByIDQuery(head, this.query.pending)
-        );
+        try {
+            return new RetrieveTransactionByID(
+                this.path,
+                new RetrieveTransactionQuery(head, this.query.pending)
+            );
+        } catch (error) {
+            throw new ThorError(
+                `${FQP}withHead(head?: BlockId): RetrieveTransactionByID`,
+                'Invalid head value.',
+                {
+                    head
+                },
+                error instanceof Error ? error : undefined
+            );
+        }
     }
 
+    /**
+     * Updates the pending status of the RetrieveTransactionByID query.
+     *
+     * @param {boolean} [pending=true] - A boolean value indicating whether to mark the transaction as pending.
+     * @return {RetrieveTransactionByID} A new instance of RetrieveTransactionByID with the updated pending status.
+     * @throws {ThorError} If an invalid pending value is provided or an error occurs during instantiation.
+     */
     withPending(pending: boolean = true): RetrieveTransactionByID {
-        return new RetrieveTransactionByID(
-            this.path,
-            new RetrieveTransactionByIDQuery(this.query.head, pending)
-        );
+        try {
+            return new RetrieveTransactionByID(
+                this.path,
+                new RetrieveTransactionQuery(this.query.head, pending)
+            );
+        } catch (error) {
+            throw new ThorError(
+                `${FQP}withPending(pending: boolean): RetrieveTransactionByID`,
+                'Invalid pending value.',
+                {
+                    pending
+                },
+                error instanceof Error ? error : undefined
+            );
+        }
     }
 }
 
-class RetrieveTransactionByIDPath implements HttpPath {
-    readonly txId: TxId;
-
-    constructor(txId: TxId) {
-        this.txId = txId;
-    }
-
-    get path(): string {
-        return `/transactions/${this.txId}`;
-    }
-}
-
-class RetrieveTransactionByIDQuery implements HttpQuery {
-    readonly head?: BlockId;
-    readonly pending: boolean;
-
-    constructor(head: BlockId | undefined, pending: boolean) {
-        this.head = head;
-        this.pending = pending;
-    }
-
-    get query(): string {
-        const head = this.head === undefined ? '' : `${this.head}&`;
-        return `?${head}pending=${this.pending}&raw=false`;
-    }
-}
-
-export {
-    RetrieveTransactionByID,
-    RetrieveTransactionByIDPath,
-    RetrieveTransactionByIDQuery
-};
+export { RetrieveTransactionByID };
