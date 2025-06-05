@@ -1,4 +1,4 @@
-import { ERC20_ABI, HexUInt, Mnemonic, VTHO_ADDRESS } from '@vechain/sdk-core';
+import { ERC20_ABI, HexUInt, VTHO_ADDRESS } from '@vechain/sdk-core';
 import {
     ProviderInternalBaseWallet,
     type ThorClient,
