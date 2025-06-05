@@ -1,4 +1,4 @@
-import { type BlockId, type Hex, HexUInt32 } from '@vechain/sdk-core';
+import { type Hex, HexUInt32 } from '@vechain/sdk-core';
 import { type HttpClient } from '@http';
 import { RetrieveTransactionPath } from '@thor/transactions/RetrieveTransactionPath';
 import { RetrieveTransactionQuery } from '@thor/transactions/RetrieveTransactionQuery';
@@ -118,11 +118,14 @@ class RetrieveTransactionByID
      * Best-block is assumed if omitted.
      * @throws {ThorError} If an invalid `head` value is provided.
      */
-    withHead(head?: BlockId): RetrieveTransactionByID {
+    withHead(head?: Hex): RetrieveTransactionByID {
         try {
             return new RetrieveTransactionByID(
                 this.path,
-                new RetrieveTransactionQuery(head, this.query.pending)
+                new RetrieveTransactionQuery(
+                    head === undefined ? undefined : HexUInt32.of(head),
+                    this.query.pending
+                )
             );
         } catch (error) {
             throw new ThorError(

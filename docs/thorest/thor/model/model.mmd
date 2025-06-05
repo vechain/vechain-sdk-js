@@ -78,6 +78,7 @@ classDiagram
         TxMetaJSON toJSON()
     }
     class TxWithReceipt {
+        TxWithReceiptJSON toJSON()
     }
     Receipt <|-- TxWithReceipt
     Tx <|-- TxWithReceipt

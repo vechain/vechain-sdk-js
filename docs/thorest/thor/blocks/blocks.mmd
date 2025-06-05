@@ -33,6 +33,7 @@ classDiagram
         boolean isTrunk
         boolean isFinalized
         TXWithReceipt[] transactions
+        ExpandedBlockResponseJSON toJSON()
     }
     class RawTx {
         HexUInt raw
@@ -42,7 +43,7 @@ classDiagram
         boolean isTrunk
         boolean isFinalized
         TxId[]  transactions
-        RegularBlockResponseJSON toJson()
+        RegularBlockResponseJSON toJSON()
     }
     class RetrieveExpandedBlock {
         ExpandedBlockResponse | null of(Revision revision)$

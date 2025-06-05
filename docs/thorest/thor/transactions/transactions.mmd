@@ -17,7 +17,6 @@ classDiagram
     class GetRawTxResponse {
         Hex raw
         TxMeta meta
-        constructor(GetRawTxResponseJSON json)
         GetRawTxResponseJSON toJSON()
     }
     class GetTxReceiptResponse {
@@ -29,11 +28,17 @@ classDiagram
         boolean reverted
         Output[] outputs
         ReceiptMeta meta
+        GetTxReceiptResponseJSON toJSON()
     }
     class GetTxResponse {
         TxMeta txMeta
-        constructor(GetTxResponseJSON json)
         GetTxResponseJSON toJSON()
+    }
+    class RetrieveTransactionByID {
+        ThorResponse~RetrieveTransactionReceipt, GetTxResponse|null~ askTo(HttpClient httpClient)
+        RetrieveTransactionByID of(Hex txId)$
+        RetrieveTransactionByID withHead(Hex blockId)
+        RetrieveTransactionByID witthPending(pending: boolean)
     }
     class RetrieveTransactionReceipt {
         ThorResponse~RetrieveTransactionReceipt, GetTxReceiptResponse|null~ askTo(HttpClient httpClient)
@@ -43,9 +48,11 @@ classDiagram
         ThorResponse~SendTransaction, TXID~ askTo(HttpClient httpClient)
         SendTransaction of(Uint8Array encoded)$
     }
+    ThorRequest <|.. RetrieveTransactionByID
     ThorRequest <|.. RetrieveTransactionReceipt
     ThorRequest <|.. SendTransaction
-    Tx <|-- GetTxResponse
+    GetTxResponse --|> Tx
+    RetrieveTransactionByID "askTo" --> GetTxResponse
     RetrieveTransactionReceipt "askTo" --> GetTxReceiptResponse
     SendTransaction "askTo" --> TXID
     ThorError <-- "throws" ThorRequest
