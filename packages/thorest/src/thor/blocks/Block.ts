@@ -1,10 +1,10 @@
 import {
     Address,
-    BlockId,
     HexUInt,
+    HexUInt32,
     IllegalArgumentError,
-    TxId,
-    UInt
+    UInt,
+    type Hex
 } from '@vechain/sdk-core';
 import { type BlockJSON } from '@thor/blocks/BlockJSON';
 
@@ -25,7 +25,7 @@ class Block {
     /**
      * The block identifier.
      */
-    readonly id: BlockId;
+    readonly id: Hex;
 
     /**
      * The RLP encoded block size in bytes.
@@ -35,7 +35,7 @@ class Block {
     /**
      * The parent block identifier.
      */
-    readonly parentID: BlockId;
+    readonly parentID: Hex;
 
     /**
      * The UNIX timestamp of the block.
@@ -70,7 +70,7 @@ class Block {
     /**
      * The root hash of transactions in the block.
      */
-    readonly txsRoot: TxId; // check
+    readonly txsRoot: Hex; // check
 
     /**
      * The supported transaction features bitset.
@@ -80,12 +80,12 @@ class Block {
     /**
      * The root hash for the global state after applying changes in this block.
      */
-    readonly stateRoot: TxId; // check
+    readonly stateRoot: Hex; // check
 
     /**
      * The hash of the transaction receipts trie.
      */
-    readonly receiptsRoot: TxId; // check
+    readonly receiptsRoot: Hex; // check
 
     /**
      * Whether the block signer voted COM(Commit) in BFT.
@@ -106,9 +106,9 @@ class Block {
     constructor(json: BlockJSON) {
         try {
             this.number = UInt.of(json.number);
-            this.id = BlockId.of(json.id);
+            this.id = HexUInt32.of(json.id);
             this.size = UInt.of(json.size);
-            this.parentID = BlockId.of(json.parentID);
+            this.parentID = HexUInt.of(json.parentID);
             this.timestamp = UInt.of(json.timestamp);
             this.gasLimit = UInt.of(json.gasLimit);
             this.beneficiary = Address.of(json.beneficiary);
@@ -118,10 +118,10 @@ class Block {
                     ? HexUInt.of(json.baseFeePerGas)
                     : undefined;
             this.totalScore = UInt.of(json.totalScore);
-            this.txsRoot = TxId.of(json.txsRoot);
+            this.txsRoot = HexUInt32.of(json.txsRoot);
             this.txsFeatures = UInt.of(json.txsFeatures);
-            this.stateRoot = TxId.of(json.stateRoot);
-            this.receiptsRoot = TxId.of(json.receiptsRoot);
+            this.stateRoot = HexUInt32.of(json.stateRoot);
+            this.receiptsRoot = HexUInt32.of(json.receiptsRoot);
             this.com = json.com;
             this.signer = Address.of(json.signer);
         } catch (error) {

@@ -1,5 +1,5 @@
 import { Block } from '@thor/blocks/Block';
-import { IllegalArgumentError, TxId } from '@vechain/sdk-core';
+import { type Hex, HexUInt32, IllegalArgumentError } from '@vechain/sdk-core';
 import { type RegularBlockResponseJSON } from '@thor/blocks/RegularBlockResponseJSON';
 
 /**
@@ -24,7 +24,7 @@ class RegularBlockResponse extends Block {
     /**
      * An array of transaction IDs.
      */
-    readonly transactions: TxId[];
+    readonly transactions: Hex[];
 
     /**
      * Constructs an instance of the class using the provided JSON object.
@@ -38,7 +38,7 @@ class RegularBlockResponse extends Block {
             this.isTrunk = json.isTrunk;
             this.isFinalized = json.isFinalized;
             this.transactions = json.transactions.map(
-                (txId: string): TxId => TxId.of(txId)
+                (txId: string): Hex => HexUInt32.of(txId)
             );
         } catch (error) {
             throw new IllegalArgumentError(
@@ -60,8 +60,7 @@ class RegularBlockResponse extends Block {
             ...super.toJSON(),
             isTrunk: this.isTrunk,
             isFinalized: this.isFinalized,
-            transactions: this.transactions.map((txId: TxId): string =>
-                // eslint-disable-next-line @typescript-eslint/no-base-to-string,sonarjs/no-base-to-string
+            transactions: this.transactions.map((txId: Hex): string =>
                 txId.toString()
             )
         };
