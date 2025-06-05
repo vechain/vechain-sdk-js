@@ -8,11 +8,24 @@ import { type TransactionRequestInput } from '../types';
  * @param from - The address of the sender
  *
  * @returns The transaction request input
+ * @throws Error if nonce is negative
  */
 function transactionBodyToTransactionRequestInput(
     transactionBody: TransactionBody,
     from: string
 ): TransactionRequestInput {
+    // Validate that nonce is not negative
+    if (transactionBody.nonce !== undefined) {
+        const nonceValue =
+            typeof transactionBody.nonce === 'string'
+                ? parseInt(transactionBody.nonce, 10)
+                : transactionBody.nonce;
+
+        if (nonceValue < 0) {
+            throw new Error('Transaction nonce must be a positive number');
+        }
+    }
+
     return {
         from,
         chainTag: transactionBody.chainTag,
