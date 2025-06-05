@@ -11,12 +11,12 @@ import {
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/thorest/src/thor/transactions/SendTransaction.ts!';
+const FQP = 'packages/thorest/src/thor/transactions/RetrieveTransactionByID.ts!';
 
 /**
  * [Retrieve transaction receipt](http://localhost:8669/doc/stoplight-ui/#/paths/transactions-id--receipt/get)
  *
- * This endpoint allows you to retrieve the receipt of a transaction identified by its ID.
+ * This request to Thor endpoint allows you to retrieve the receipt of a transaction identified by its ID.
  * If the transaction is not found, the response will be `null`.
  */
 class RetrieveTransactionReceipt

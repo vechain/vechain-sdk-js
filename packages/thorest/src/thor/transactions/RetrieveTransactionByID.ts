@@ -13,12 +13,12 @@ import {
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/thorest/src/thor/transactions/SendTransaction.ts!';
+const FQP = 'packages/thorest/src/thor/transactions/RetrieveTransactionByID.ts!';
 
 /**
  * [Retrieve a transaction by ID](http://localhost:8669/doc/stoplight-ui/#/paths/transactions-id/get)
  *
- * This endpoint allows you to retrieve a transaction identified by its ID.
+ * This request to Thor endpoint allows you to retrieve a transaction identified by its ID.
  */
 class RetrieveTransactionByID
     implements ThorRequest<RetrieveTransactionByID, GetTxResponse | null>
@@ -48,6 +48,14 @@ class RetrieveTransactionByID
         this.query = query;
     }
 
+    /**
+     * Sends a request to retrieve transaction information using the provided HttpClient.
+     *
+     * @param {HttpClient} httpClient - The HTTP client used to send the request.
+     * @return {Promise<ThorResponse<RetrieveTransactionByID, GetTxResponse | null>>}
+     * A promise that resolves to a ThorResponse object containing the transaction details or null if unavailable.
+     * @throws {ThorError} Throws a ThorError in case of an invalid or unsuccessful response.
+     */
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveTransactionByID, GetTxResponse | null>> {
