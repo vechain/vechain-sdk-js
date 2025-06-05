@@ -146,26 +146,6 @@ const config: HardhatUserConfig = {
         } satisfies HttpNetworkConfig,
 
         /**
-         * Galactica devnet configuration
-         */
-        vechain_galactica_devnet: {
-            // Galactica devnet
-            url: 'https://galactica.dev.node.vechain.org/',
-            accounts: {
-                mnemonic: process.env.GALACTICA_DEV_MNEMONIC ?? '',
-                path: HDKey.VET_DERIVATION_PATH,
-                count: 102, // 102 accounts since 101 have funds
-                initialIndex: 0,
-                passphrase: 'vechainthor'
-            },
-            gas: 'auto',
-            gasPrice: 'auto',
-            gasMultiplier: 1,
-            timeout: 20000,
-            httpHeaders: {}
-        } satisfies HttpNetworkConfig,
-
-        /**
          * Default hardhat network configuration
          */
         hardhat: {
