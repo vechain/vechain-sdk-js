@@ -15,8 +15,6 @@ import {
     KMSVeChainSigner
 } from '../src';
 import {
-    addAddressToFeeDelegationWhitelist,
-    removeAddressFromFeeDelegationWhitelist,
     signTransactionTestCases,
     TESTING_CONTRACT_ABI,
     TESTNET_CONTRACT_ADDRESS,
@@ -43,7 +41,7 @@ describe('KMSVeChainSigner - Testnet', () => {
     /**
      * Init thor client and provider before all tests
      */
-    beforeAll(async () => {
+    beforeAll(() => {
         const awsCredentialsPath = path.resolve(
             __dirname,
             './aws-credentials.json'
@@ -70,18 +68,6 @@ describe('KMSVeChainSigner - Testnet', () => {
             {
                 url: TESTNET_DELEGATE_URL
             }
-        );
-
-        await addAddressToFeeDelegationWhitelist(
-            thorClient,
-            await signerWithGasPayer.getAddress()
-        );
-    }, 4 * timeout);
-
-    afterAll(async () => {
-        await removeAddressFromFeeDelegationWhitelist(
-            thorClient,
-            await signerWithGasPayer.getAddress()
         );
     }, 4 * timeout);
 
