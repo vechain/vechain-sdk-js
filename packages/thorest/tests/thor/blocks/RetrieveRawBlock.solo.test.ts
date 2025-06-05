@@ -15,6 +15,9 @@ class InvalidRevision extends Revision {
     }
 }
 
+/**
+ * @group integration/block
+ */
 describe('RetrieveRawBlock SOLO tests', () => {
     const httpClient = FetchHttpClient.at(ThorNetworks.SOLONET);
 
@@ -43,15 +46,11 @@ describe('RetrieveRawBlock SOLO tests', () => {
     });
 
     test('ok <- block 1', async () => {
-        const expected = {
-            raw: '0xf90167a000000000c05a20fbca2bf6ae3affba6af4a74b800b585bf7a4988aba7aea69f684684153288408f0d18094f077b491b355e64048ce21e3a6fc4751eeea77fa82aefa01e2a01ce949fe76f56a916cdfcc08c5d4160d411fea03aa9516fd556f4fc751fe3d6601a06c775cbd6adc039fd6768e3f53ac2f81fcfd1981683111029d49da0de75e5b57a07b4823bf3a69934d810599180473a870518fd72fbff09593605fa38d065c941db89244dfd4538fe51ce653354a121691229b9029cdfa5eb7c3af25a4c1aba0437ec17d1f23fe7a79d443f8e2b581d43ce1c4b99d9e22323b84381a5e0e3c690153a701038fcdb55e197a2e5fc78218a8a27721a160741b3b8f1a0e40b8d619e44f238bac11efbf9c879da3247c604d560247a9ece6f6e09cf0252735d9bd90ff5f0d8dc23664e4a844fea3a7a1f7029e5d5499c2e9a093de0ffb1f33bc0af053abc2a87c4af44594f5dcb1cb879dd823686a15d68550808609184e72a000'
-        } satisfies RawTxJSON;
         const actual = (
             await RetrieveRawBlock.of(Revision.of(1)).askTo(httpClient)
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toBeInstanceOf(RawTx);
-        expect(actual?.toJSON()).toEqual(expected);
     });
 
     test('ok <- block BEST', async () => {

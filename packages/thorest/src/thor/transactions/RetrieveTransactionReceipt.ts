@@ -2,8 +2,8 @@ import { type Hex, HexUInt32 } from '@vechain/sdk-core';
 import { type HttpClient, type HttpPath, type HttpQuery } from '@http';
 import {
     GetTxReceiptResponse,
-    ThorError,
     type GetTxReceiptResponseJSON,
+    ThorError,
     type ThorRequest,
     type ThorResponse
 } from '@thor';
@@ -20,7 +20,8 @@ const FQP = 'packages/thorest/src/thor/transactions/SendTransaction.ts!';
  * If the transaction is not found, the response will be `null`.
  */
 class RetrieveTransactionReceipt
-    implements ThorRequest<RetrieveTransactionReceipt, GetTxReceiptResponse>
+    implements
+        ThorRequest<RetrieveTransactionReceipt, GetTxReceiptResponse | null>
 {
     /**
      * Represents the HTTP path configuration for a specific API endpoint.
@@ -56,27 +57,27 @@ class RetrieveTransactionReceipt
      */
     async askTo(
         httpClient: HttpClient
-    ): Promise<ThorResponse<RetrieveTransactionReceipt, GetTxReceiptResponse>> {
-        const fqp = `${FQP}askTo(httpClient: HttpClient: Promise<ThorResponse<RetrieveTransactionReceipt, GetTxReceiptResponse>>`;
+    ): Promise<
+        ThorResponse<RetrieveTransactionReceipt, GetTxReceiptResponse | null>
+    > {
+        const fqp = `${FQP}askTo(httpClient: HttpClient: Promise<ThorResponse<RetrieveTransactionReceipt, GetTxReceiptResponse|null>>`;
         const response = await httpClient.get(this.path, this.query);
-        if (!response.ok) {
-            const responseBody =
-                (await response.json()) as GetTxReceiptResponseJSON;
+        if (response.ok) {
+            const json =
+                (await response.json()) as GetTxReceiptResponseJSON | null;
             try {
                 return {
                     request: this,
-                    response: new GetTxReceiptResponse(responseBody)
-                } satisfies ThorResponse<
-                    RetrieveTransactionReceipt,
-                    GetTxReceiptResponse
-                >;
+                    response:
+                        json === null ? null : new GetTxReceiptResponse(json)
+                };
             } catch (error) {
                 throw new ThorError(
                     fqp,
                     'Bad response.',
                     {
                         url: response.url,
-                        body: responseBody
+                        body: json
                     },
                     error instanceof Error ? error : undefined,
                     response.status

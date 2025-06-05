@@ -35,11 +35,17 @@ classDiagram
         constructor(GetTxResponseJSON json)
         GetTxResponseJSON toJSON()
     }
-    class SendTransaction {
-        SendTransaction of(Uint8Array encoded)$
-        ThorResponse~SendTransaction, TXID~ askTo(HttpClient httpClient)
+    class RetrieveTransactionReceipt {
+        ThorResponse~RetrieveTransactionReceipt, GetTxReceiptResponse|null~ askTo(HttpClient httpClient)
+        RetrieveTransactionReceipt of(Hex txId)$
     }
+    class SendTransaction {
+        ThorResponse~SendTransaction, TXID~ askTo(HttpClient httpClient)
+        SendTransaction of(Uint8Array encoded)$
+    }
+    ThorRequest <|.. RetrieveTransactionReceipt
     ThorRequest <|.. SendTransaction
     Tx <|-- GetTxResponse
+    RetrieveTransactionReceipt "askTo" --> GetTxReceiptResponse
     SendTransaction "askTo" --> TXID
     ThorError <-- "throws" ThorRequest

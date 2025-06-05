@@ -32,8 +32,6 @@ const mockResponse = <T>(body: T, status: number): Response => {
 };
 
 /**
- * VeChain regular block - unit
- *
  * @group unit/block
  */
 describe('RetrieveRegularBlock UNIT tests', () => {

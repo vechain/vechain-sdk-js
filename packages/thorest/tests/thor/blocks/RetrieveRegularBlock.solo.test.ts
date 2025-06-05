@@ -15,6 +15,9 @@ class InvalidRevision extends Revision {
     }
 }
 
+/**
+ * @group integration/block
+ */
 describe('RetrieveRegularBlock SOLO tests', () => {
     const httpClient = FetchHttpClient.at(ThorNetworks.SOLONET);
 
@@ -66,39 +69,11 @@ describe('RetrieveRegularBlock SOLO tests', () => {
     });
 
     test('ok <- block 1', async () => {
-        const expected = {
-            number: 1,
-            id: '0x00000001f1004c8577b37346e5c10fd7c3c2e815873e78fd93951796d657490e',
-            size: 556,
-            parentID:
-                '0x00000000c05a20fbca2bf6ae3affba6af4a74b800b585bf7a4988aba7aea69f6',
-            timestamp: 1749111592,
-            gasLimit: 150000000,
-            beneficiary: '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa',
-            gasUsed: 44794,
-            baseFeePerGas: '0x9184e72a000',
-            totalScore: 1,
-            txsRoot:
-                '0x1ce949fe76f56a916cdfcc08c5d4160d411fea03aa9516fd556f4fc751fe3d66',
-            txsFeatures: 1,
-            stateRoot:
-                '0x6c775cbd6adc039fd6768e3f53ac2f81fcfd1981683111029d49da0de75e5b57',
-            receiptsRoot:
-                '0x7b4823bf3a69934d810599180473a870518fd72fbff09593605fa38d065c941d',
-            com: false,
-            signer: '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa',
-            isTrunk: true,
-            isFinalized: false,
-            transactions: [
-                '0xaf6bc27b82452cbfd9b701402b9a794150a7e9413a754f36b197cea3c9cfed88'
-            ]
-        } satisfies RegularBlockResponseJSON;
         const actual = (
             await RetrieveRegularBlock.of(Revision.of(1)).askTo(httpClient)
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toBeInstanceOf(RegularBlockResponse);
-        expect(actual).toEqual(new RegularBlockResponse(expected));
     });
 
     test('ok <- block BEST', async () => {

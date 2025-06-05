@@ -27,8 +27,6 @@ const mockResponse = <T>(body: T, status: number): Response => {
 };
 
 /**
- * VeChain raw block - unit
- *
  * @group unit/block
  */
 describe('RetrieveBlock unit tests', () => {
