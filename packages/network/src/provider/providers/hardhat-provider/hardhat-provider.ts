@@ -1,19 +1,19 @@
-import { VeChainProvider } from '../vechain-provider/vechain-provider';
-import type { EIP1193RequestArguments } from '../../eip1193';
 import {
     JSONRPCInternalError,
     stringifyData,
     VechainSDKError
 } from '@vechain/sdk-errors';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
+import { SimpleHttpClient } from '../../../http';
+import { ThorClient } from '../../../thor-client';
+import type { EIP1193RequestArguments } from '../../eip1193';
+import { type ProviderInternalWallet } from '../../helpers';
+import { VeChainProvider } from '../vechain-provider/vechain-provider';
 import {
     type BuildHardhatErrorFunction,
     type JsonRpcRequest,
     type JsonRpcResponse
 } from './types';
-import { ThorClient } from '../../../thor-client';
-import { type ProviderInternalWallet } from '../../helpers';
-import { VeChainSDKLogger } from '@vechain/sdk-logging';
-import { SimpleHttpClient } from '../../../http';
 
 /**
  * This class is a wrapper for the VeChainProvider that Hardhat uses.
@@ -186,6 +186,14 @@ class HardhatVeChainProvider extends VeChainProvider {
 
             if (error instanceof VechainSDKError) {
                 // Throw the error
+                // eth_call is a special case, @nomiclabs/truffle-contract uses this error to revert the transaction
+                // @NOTE: Review whether makes sense to handle this case in a different way (error message per RPC method?)
+                if (args.method === 'eth_call') {
+                    throw this.buildHardhatErrorFunctionCallback(
+                        'revert',
+                        error
+                    );
+                }
                 throw this.buildHardhatErrorFunctionCallback(
                     `Error on request ${args.method}: ${error.innerError}`,
                     error

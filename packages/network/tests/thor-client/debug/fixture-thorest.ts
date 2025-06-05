@@ -1,17 +1,13 @@
 import { InvalidDataType } from '@vechain/sdk-errors';
 
-import {
-    THOR_SOLO_ACCOUNTS,
-    type ThorClient,
-    type TransactionReceipt
-} from '../../../src';
+import { type ThorClient, type TransactionReceipt } from '../../../src';
 import {
     transactionNonces,
     transfer1VTHOClause,
     transferTransactionBodyValueAsNumber
 } from '../transactions/fixture';
 import { HexUInt, BlockId, Transaction } from '@vechain/sdk-core';
-
+import { type ThorSoloAccount } from '@vechain/sdk-solo-setup';
 /**
  * Debug traceTransactionClause tests fixture testnet
  *
@@ -462,14 +458,14 @@ const retrieveStorageRangeTestnetFixture = {
  * @param thorClient The ThorClient instance
  * @returns The transaction receipt
  */
-const sendTransactionWithAccountIndex = async (
-    senderIndex: number,
+const sendTransactionWithAccount = async (
+    account: ThorSoloAccount,
     thorClient: ThorClient
 ): Promise<TransactionReceipt | null> => {
     // Estimate the gas required for the transfer transaction
-    const gasResult = await thorClient.gas.estimateGas(
+    const gasResult = await thorClient.transactions.estimateGas(
         [transfer1VTHOClause],
-        THOR_SOLO_ACCOUNTS[senderIndex].address
+        account.address
     );
 
     // Create the signed transfer transaction
@@ -478,7 +474,7 @@ const sendTransactionWithAccountIndex = async (
         gas: gasResult.totalGas,
         nonce: transactionNonces
             .sendTransactionWithANumberAsValueInTransactionBody[0]
-    }).sign(HexUInt.of(THOR_SOLO_ACCOUNTS[senderIndex].privateKey).bytes);
+    }).sign(HexUInt.of(account.privateKey).bytes);
 
     // Send the transaction and obtain the transaction ID
     const sendTransactionResult =
@@ -492,5 +488,5 @@ export {
     traceTransactionClauseTestnetFixture,
     traceContractCallTestnetFixture,
     retrieveStorageRangeTestnetFixture,
-    sendTransactionWithAccountIndex
+    sendTransactionWithAccount
 };

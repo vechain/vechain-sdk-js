@@ -203,13 +203,13 @@ interface TransactionRequestInput {
     /**
      *  The [[link-eip-1559]] maximum priority fee to pay per gas.
      */
-    maxPriorityFeePerGas?: string;
+    maxPriorityFeePerGas?: string | number;
 
     /**
      *  The [[link-eip-1559]] maximum total fee to pay per gas. The actual
      *  value used is protocol enforced to be the block's base fee.
      */
-    maxFeePerGas?: string;
+    maxFeePerGas?: string | number;
 
     /**
      *  The transaction type.

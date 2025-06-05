@@ -36,7 +36,9 @@ function transactionBodyToTransactionRequestInput(
         gas: transactionBody.gas,
         dependsOn: transactionBody.dependsOn ?? undefined,
         nonce: transactionBody.nonce,
-        reserved: transactionBody.reserved
+        reserved: transactionBody.reserved,
+        maxPriorityFeePerGas: transactionBody.maxPriorityFeePerGas ?? undefined,
+        maxFeePerGas: transactionBody.maxFeePerGas ?? undefined
     } satisfies TransactionRequestInput;
 }
 

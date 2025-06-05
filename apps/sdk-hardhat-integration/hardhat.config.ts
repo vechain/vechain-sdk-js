@@ -1,7 +1,7 @@
-import { type HardhatUserConfig } from 'hardhat/config';
 import '@nomicfoundation/hardhat-toolbox';
-import '@vechain/sdk-hardhat-plugin';
 import { HDKey } from '@vechain/sdk-core';
+import '@vechain/sdk-hardhat-plugin';
+import { type HardhatUserConfig } from 'hardhat/config';
 import { type HttpNetworkConfig } from 'hardhat/types';
 
 /**
@@ -89,7 +89,7 @@ const config: HardhatUserConfig = {
             debug: true,
             gasPayer: {
                 gasPayerServiceUrl:
-                    'https://sponsor-testnet.vechain.energy/by/269'
+                    'https://sponsor-testnet.vechain.energy/by/883'
             },
             enableDelegation: true,
             gas: 'auto',

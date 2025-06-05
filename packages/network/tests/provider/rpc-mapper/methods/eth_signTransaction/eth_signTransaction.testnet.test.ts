@@ -3,17 +3,15 @@ import {
     RPC_METHODS,
     TESTNET_URL,
     ThorClient,
-    VeChainProvider
+    VeChainProvider,
+    ProviderInternalBaseWallet
 } from '../../../../../src';
-import {
-    THOR_SOLO_ACCOUNTS_BASE_WALLET,
-    THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_GAS_PAYER
-} from '../../../../fixture';
+import { getUnusedAccount } from '../../../../fixture';
 import {
     gasPayerPrivateKeyFixture,
     THOR_SOLO_ACCOUNTS_ETH_SEND_TRANSACTION_FIXTURE
 } from '../eth_sendTransaction/fixture';
-import { Hex } from '@vechain/sdk-core';
+import { Hex, Secp256k1, HexUInt } from '@vechain/sdk-core';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams
@@ -36,6 +34,9 @@ describe('RPC Mapper - eth_signTransaction method tests', () => {
     let provider: VeChainProvider;
     let providerWithGasPayer: VeChainProvider;
 
+    // Get an unused account, we will use the same account for the sender and the gas payer
+    const unusedAccount = getUnusedAccount();
+
     /**
      * Init thor client before each test
      */
@@ -43,21 +44,42 @@ describe('RPC Mapper - eth_signTransaction method tests', () => {
         // Init thor client
         thorClient = ThorClient.at(TESTNET_URL);
 
-        // Init provider
-        // @NOTE: Since we are testing the signature, we can use SOLO accounts with testnet!
-        provider = new VeChainProvider(
-            thorClient,
-            THOR_SOLO_ACCOUNTS_BASE_WALLET
+        // Create a wallet with the sender account from the fixture
+        const senderWallet = new ProviderInternalBaseWallet([
+            {
+                privateKey: HexUInt.of(unusedAccount.privateKey).bytes,
+                publicKey: Secp256k1.derivePublicKey(
+                    HexUInt.of(unusedAccount.privateKey).bytes
+                ),
+                address: unusedAccount.address
+            }
+        ]);
+
+        // Init provider with the sender account
+        provider = new VeChainProvider(thorClient, senderWallet);
+
+        // Create a wallet with gas payer for the sender account
+        const senderWalletWithGasPayer = new ProviderInternalBaseWallet(
+            [
+                {
+                    privateKey: HexUInt.of(unusedAccount.privateKey).bytes,
+                    publicKey: Secp256k1.derivePublicKey(
+                        HexUInt.of(unusedAccount.privateKey).bytes
+                    ),
+                    address: unusedAccount.address
+                }
+            ],
+            {
+                gasPayer: {
+                    gasPayerPrivateKey: gasPayerPrivateKeyFixture
+                }
+            }
         );
 
         // Init provider with gasPayer
-        // @NOTE due to the fact we are testing on thor-solo, we can delegate ONLY with a private key!
-        // @NOTE: Since we are testing the signature, we can use SOLO accounts with testnet!
         providerWithGasPayer = new VeChainProvider(
             thorClient,
-            THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_GAS_PAYER({
-                gasPayerPrivateKey: gasPayerPrivateKeyFixture
-            }),
+            senderWalletWithGasPayer,
             true
         );
     });
@@ -87,8 +109,7 @@ describe('RPC Mapper - eth_signTransaction method tests', () => {
                             method: RPC_METHODS.eth_signTransaction,
                             params: [
                                 {
-                                    from: THOR_SOLO_ACCOUNTS_ETH_SEND_TRANSACTION_FIXTURE
-                                        .sender.address,
+                                    from: unusedAccount.address,
                                     to: THOR_SOLO_ACCOUNTS_ETH_SEND_TRANSACTION_FIXTURE
                                         .receiver.address,
                                     value

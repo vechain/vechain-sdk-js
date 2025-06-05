@@ -1,12 +1,12 @@
 import { Address, ThorId } from '@vechain/sdk-core';
-import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
-import { type DefaultBlock, DefaultBlockToRevision } from '../../../const';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
 import { type ThorClient } from '../../../../../thor-client';
+import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
+import { type DefaultBlock, DefaultBlockToRevision } from '../../../const';
 
 /**
  * RPC Method eth_getStorageAt implementation
@@ -31,16 +31,22 @@ const ethGetStorageAt = async (
     if (
         params.length !== 3 ||
         typeof params[0] !== 'string' ||
-        typeof params[1] !== 'string' ||
-        (typeof params[2] !== 'object' && typeof params[2] !== 'string')
-    )
+        (typeof params[1] !== 'string' && typeof params[1] !== 'bigint') ||
+        (params[2] != null &&
+            typeof params[2] !== 'object' &&
+            typeof params[2] !== 'string')
+    ) {
         throw new JSONRPCInvalidParams(
             'eth_getStorageAt',
             `Invalid input params for "eth_getStorageAt" method. See ${RPC_DOCUMENTATION_URL} for details.`,
             { params }
         );
+    }
 
     try {
+        if (params[2] == null) {
+            params[2] = 'latest';
+        }
         const [address, storagePosition, block] = params as [
             string,
             string,
