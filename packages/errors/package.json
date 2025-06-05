@@ -1,6 +1,6 @@
 {
   "name": "@vechain/sdk-errors",
-  "version": "1.2.0-rc.3",
+  "version": "1.2.0",
   "description": "This module is dedicated to managing and customizing errors within the VeChain SDK",
   "author": "VeChain Foundation",
   "license": "MIT",
