@@ -13,7 +13,8 @@ import {
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/thorest/src/thor/transactions/RetrieveTransactionByID.ts!';
+const FQP =
+    'packages/thorest/src/thor/transactions/RetrieveTransactionByID.ts!';
 
 /**
  * [Retrieve a transaction by ID](http://localhost:8669/doc/stoplight-ui/#/paths/transactions-id/get)
