@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
-import { TxId } from '@vechain/sdk-core';
-import { RetrieveRawTransactionByID, type GetRawTxResponseJSON } from '@thor';
+import { Revision, TxId } from '@vechain/sdk-core';
+import { type GetRawTxResponseJSON, RetrieveRawTransactionByID, RetrieveRegularBlock } from '@thor';
 import { mockHttpClient } from '../../utils/MockUnitTestClient';
 
 /**
@@ -9,6 +9,8 @@ import { mockHttpClient } from '../../utils/MockUnitTestClient';
  * @group unit/transaction
  */
 describe('RetrieveRawTransactionByID unit tests', () => {
+
+
     test('ok <- askTo', async () => {
         const txId = TxId.of(
             '0xb6b5b47a5eee8b14e5222ac1bb957c0bbdc3d489850b033e3e544d9ca0cef934'

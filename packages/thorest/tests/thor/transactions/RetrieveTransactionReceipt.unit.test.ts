@@ -1,6 +1,11 @@
 import { describe, expect, jest, test } from '@jest/globals';
 import { HexUInt32 } from '@vechain/sdk-core';
-import { GetTxReceiptResponse, type GetTxReceiptResponseJSON, RetrieveTransactionReceipt, ThorError } from '@thor';
+import {
+    GetTxReceiptResponse,
+    type GetTxReceiptResponseJSON,
+    RetrieveTransactionReceipt,
+    ThorError
+} from '@thor';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import type { HttpClient } from '@http';
 
@@ -23,7 +28,7 @@ const mockResponse = <T>(body: T, status: number): Response => {
 /**
  * @group integration/transactions
  */
-describe('RetrieveTransactionReceipt SOLO tests', () => {
+describe('RetrieveTransactionReceipt UNIT tests', () => {
     // You can't build an invalid Hex expression from the SDK,
     // hence the behavior of Thor rejecting an ill-formed tx is mocked.
     test('err: <- bad tx id', async () => {
@@ -135,6 +140,7 @@ describe('RetrieveTransactionReceipt SOLO tests', () => {
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toBeInstanceOf(GetTxReceiptResponse);
+        expect(actual?.toJSON()).toEqual(expected);
     });
 
     test('null <- tx not found', async () => {

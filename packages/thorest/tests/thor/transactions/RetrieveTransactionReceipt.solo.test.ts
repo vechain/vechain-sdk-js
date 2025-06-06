@@ -1,8 +1,10 @@
-import { expect, test } from '@jest/globals';
+import { beforeAll, expect, test } from '@jest/globals';
 import { FetchHttpClient } from '@http';
-import { HexUInt32 } from '@vechain/sdk-core';
+import { Hex, HexUInt32, Revision } from '@vechain/sdk-core';
 import {
     GetTxReceiptResponse,
+    type RegularBlockResponse,
+    RetrieveRegularBlock,
     RetrieveTransactionReceipt,
     ThorNetworks
 } from '@thor';
@@ -13,27 +15,33 @@ import {
 describe('RetrieveTransactionReceipt SOLO tests', () => {
     const httpClient = FetchHttpClient.at(ThorNetworks.SOLONET);
 
+    let block: RegularBlockResponse | null;
+
+    let txId: Hex | undefined;
+
+    // The first block has a first transaction.
+    beforeAll(async () => {
+        block = (
+            await RetrieveRegularBlock.of(Revision.of(1)).askTo(httpClient)
+        ).response;
+        txId = block?.transactions?.at(0);
+    });
+
     test('ok <- tx id found', async () => {
-        const txId = HexUInt32.of(
-            '0x49144f58b7e5c0341573d68d3d69922ac017983ba07229d5c545b65a386759f1'
-        );
+        expect(txId).toBeInstanceOf(Hex);
         const actual = (
-            await RetrieveTransactionReceipt.of(txId).askTo(httpClient)
+            await RetrieveTransactionReceipt.of(txId as Hex).askTo(httpClient)
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toBeInstanceOf(GetTxReceiptResponse);
     });
 
     test('ok <- tx id and head', async () => {
-        const txId = HexUInt32.of(
-            '0xa3b9c5083393e18f8cdef04639e657ddd33a0063315f8b8383753a6d3b80996a'
-        );
-        const head = HexUInt32.of(
-            '0x000000015e6a01cfad0b4ad70e93d4c3e0672d045eaff79cea9bd68d6d98d6ed'
-        );
+        expect(block?.id).toBeInstanceOf(Hex);
+        expect(txId).toBeInstanceOf(Hex);
         const actual = (
-            await RetrieveTransactionReceipt.of(txId)
-                .withHead(head)
+            await RetrieveTransactionReceipt.of(txId as Hex)
+                .withHead(block?.id as Hex)
                 .askTo(httpClient)
         ).response;
         expect(actual).toBeDefined();

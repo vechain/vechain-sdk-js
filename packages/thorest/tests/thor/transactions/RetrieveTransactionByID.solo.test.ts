@@ -1,77 +1,84 @@
-import { describe, test, expect } from '@jest/globals';
-import {
-    FetchHttpClient,
-    RetrieveExpandedBlock,
-    RetrieveTransactionByID,
-    SendTransaction,
-    ThorNetworks
-} from '../../../src';
-import {
-    Address,
-    Clause,
-    HexUInt,
-    Revision,
-    SOLO_NETWORK,
-    Transaction,
-    type TransactionBody,
-    VET
-} from '@vechain/sdk-core';
-import { TEST_ACCOUNTS } from '../../fixture';
-
 /**
- * VeChain transaction - solo
- *
- * @group solo/transaction
+ * @group integration/transactions
  */
-describe('RetrieveTransactionByID solo tests', () => {
-    const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } =
-        TEST_ACCOUNTS.TRANSACTION;
+import { Hex, HexUInt32, Revision } from '@vechain/sdk-core';
+import {
+    GetTxResponse,
+    type RegularBlockResponse,
+    RetrieveRegularBlock,
+    RetrieveTransactionByID,
+    ThorNetworks
+} from '@thor';
+import { FetchHttpClient } from '@http';
+import { beforeAll, expect } from '@jest/globals';
 
-    test('send and retrieve transaction', async () => {
-        const httpClient = FetchHttpClient.at(ThorNetworks.SOLONET);
+describe('RetrieveTransactionByID SOLO tests', () => {
+    const httpClient = FetchHttpClient.at(ThorNetworks.SOLONET);
 
-        const transferClause = Clause.transferVET(
-            Address.of(TRANSACTION_RECEIVER.address),
-            VET.of(1)
-        );
+    let block: RegularBlockResponse | null;
 
-        const latestBlock = (
-            await RetrieveExpandedBlock.of(Revision.BEST).askTo(httpClient)
+    let txId: Hex | undefined;
+
+    // The first block has a first transaction.
+    beforeAll(async () => {
+        block = (
+            await RetrieveRegularBlock.of(Revision.of(1)).askTo(httpClient)
         ).response;
+        txId = block?.transactions?.at(0);
+    });
 
-        const txBody: TransactionBody = {
-            chainTag: SOLO_NETWORK.chainTag,
-            blockRef:
-                latestBlock !== null
-                    ? latestBlock.id.toString().slice(0, 18)
-                    : '0x0',
-            expiration: 32,
-            clauses: [transferClause],
-            gasPriceCoef: 0,
-            gas: 100000,
-            dependsOn: null,
-            nonce: 8
-        };
+    test('ok <- tx id', async () => {
+        expect(txId).toBeInstanceOf(Hex);
+        const actual = (
+            await RetrieveTransactionByID.of(txId as Hex).askTo(httpClient)
+        ).response;
+        expect(actual).toBeDefined();
+        expect(actual).toBeInstanceOf(GetTxResponse);
+    });
 
-        const signedTx = Transaction.of(txBody).sign(
-            HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
+    test('ok <- tx id and head', async () => {
+        expect(block?.id).toBeInstanceOf(Hex);
+        expect(txId).toBeInstanceOf(Hex);
+        const actual = (
+            await RetrieveTransactionByID.of(txId as Hex)
+                .withHead(block?.id as Hex)
+                .askTo(httpClient)
+        ).response;
+        expect(actual).toBeDefined();
+        expect(actual).toBeInstanceOf(GetTxResponse);
+    });
+
+    test('ok <- tx id and pending', async () => {
+        expect(txId).toBeInstanceOf(Hex);
+        const actual = (
+            await RetrieveTransactionByID.of(txId as Hex)
+                .withPending(true)
+                .askTo(httpClient)
+        ).response;
+        expect(actual).toBeDefined();
+        expect(actual).toBeInstanceOf(GetTxResponse);
+    });
+
+    test('ok <- tx id and head and pending', async () => {
+        expect(block?.id).toBeInstanceOf(Hex);
+        expect(txId).toBeInstanceOf(Hex);
+        const actual = (
+            await RetrieveTransactionByID.of(txId as Hex)
+                .withHead(block?.id as Hex)
+                .withPending(true)
+                .askTo(httpClient)
+        ).response;
+        expect(actual).toBeDefined();
+        expect(actual).toBeInstanceOf(GetTxResponse);
+    });
+
+    test('null <- tx not found', async () => {
+        const txId = HexUInt32.of(
+            '0x0000000000000000000000000000000000000000000000000000000000000000'
         );
-
-        const sendResponse = await SendTransaction.of(signedTx.encoded).askTo(
-            httpClient
-        );
-
-        const txId = sendResponse.response.id;
-
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-
-        const retrieveResponse =
-            await RetrieveTransactionByID.of(txId).askTo(httpClient);
-
-        const transaction = retrieveResponse.response;
-        const transactionJson = retrieveResponse.response?.toJSON();
-
-        expect(transaction?.nonce).toEqual(8);
-        expect(transactionJson?.nonce).toEqual('0x08');
+        const actual = (
+            await RetrieveTransactionByID.of(txId).askTo(httpClient)
+        ).response;
+        expect(actual).toBeNull();
     });
 });
