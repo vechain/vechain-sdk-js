@@ -71,7 +71,7 @@ describe('RetrieveTransactionByID solo tests', () => {
         const transaction = retrieveResponse.response;
         const transactionJson = retrieveResponse.response?.toJSON();
 
-        expect(transaction?.nonce).toEqual(8);
+        expect(transaction?.nonce).toEqual(8n);
         expect(transactionJson?.nonce).toEqual('0x08');
     });
 });

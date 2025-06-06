@@ -28,6 +28,9 @@ const mockResponse = <T>(body: T, status: number): Response => {
     return new Response(fastJsonStableStringify(body), init);
 };
 
+/**
+ * @group unit/transactions
+ */
 describe('RetrieveTransactionByID UNIT tests', () => {
     test('err <- bad tx id', async () => {
         const status = 400;

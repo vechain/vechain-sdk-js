@@ -60,7 +60,7 @@ class RetrieveRawTransactionByID
     > {
         const fqp = `${FQP}askTo(httpClient: HttpClient: Promise<ThorResponse<RetrieveRawTransactionByID, GetRawTxResponse|null>>`;
         const response = await httpClient.get(this.path, this.query);
-        if (!response.ok) {
+        if (response.ok) {
             const json = (await response.json()) as GetRawTxResponseJSON | null;
             try {
                 return {

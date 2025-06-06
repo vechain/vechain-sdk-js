@@ -1,5 +1,5 @@
 import { describe, expect, jest, test } from '@jest/globals';
-import { HexUInt32 } from '@vechain/sdk-core';
+import { Hex, HexUInt32 } from '@vechain/sdk-core';
 import {
     GetTxReceiptResponse,
     type GetTxReceiptResponseJSON,
@@ -26,7 +26,7 @@ const mockResponse = <T>(body: T, status: number): Response => {
 };
 
 /**
- * @group integration/transactions
+ * @group unit/transactions
  */
 describe('RetrieveTransactionReceipt UNIT tests', () => {
     // You can't build an invalid Hex expression from the SDK,
@@ -80,13 +80,10 @@ describe('RetrieveTransactionReceipt UNIT tests', () => {
                 txOrigin: '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa'
             }
         } satisfies GetTxReceiptResponseJSON;
-        const txId = HexUInt32.of(
-            '0x49144f58b7e5c0341573d68d3d69922ac017983ba07229d5c545b65a386759f1'
-        );
         const actual = (
-            await RetrieveTransactionReceipt.of(txId).askTo(
-                mockHttpClient(mockResponse(expected, 200))
-            )
+            await RetrieveTransactionReceipt.of(
+                Hex.of(expected.meta.txID)
+            ).askTo(mockHttpClient(mockResponse(expected, 200)))
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toBeInstanceOf(GetTxReceiptResponse);
@@ -127,15 +124,9 @@ describe('RetrieveTransactionReceipt UNIT tests', () => {
                 txOrigin: '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa'
             }
         } satisfies GetTxReceiptResponseJSON;
-        const txId = HexUInt32.of(
-            '0xa3b9c5083393e18f8cdef04639e657ddd33a0063315f8b8383753a6d3b80996a'
-        );
-        const head = HexUInt32.of(
-            '0x000000015e6a01cfad0b4ad70e93d4c3e0672d045eaff79cea9bd68d6d98d6ed'
-        );
         const actual = (
-            await RetrieveTransactionReceipt.of(txId)
-                .withHead(head)
+            await RetrieveTransactionReceipt.of(Hex.of(expected.meta.txID))
+                .withHead(Hex.of(expected.meta.blockID))
                 .askTo(mockHttpClient(mockResponse(expected, 200)))
         ).response;
         expect(actual).toBeDefined();
