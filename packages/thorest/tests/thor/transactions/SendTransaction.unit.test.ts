@@ -45,6 +45,8 @@ const mockResponse = <T>(body: T, status: number): Response => {
     return new Response(fastJsonStableStringify(body), init);
 };
 
+const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
+
 /**
  * @group unit/transactions
  */
@@ -85,7 +87,7 @@ describe('RetrieveTransactionReceipt SOLO tests', () => {
         ).response;
         expect(latestBlock).toBeDefined();
         const transferClause = Clause.transferVET(
-            Address.of(TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address),
+            Address.of(TRANSACTION_RECEIVER.address),
             VET.of(1)
         );
         const expectedTxBody: TransactionBody = {
@@ -102,8 +104,7 @@ describe('RetrieveTransactionReceipt SOLO tests', () => {
             nonce: 8
         };
         const signedTx = Transaction.of(expectedTxBody).sign(
-            HexUInt.of(TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey)
-                .bytes
+            HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
         );
         const actualTXID = (
             await SendTransaction.of(signedTx.encoded).askTo(

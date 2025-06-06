@@ -20,27 +20,31 @@ import {
     type TransactionBody,
     VET
 } from '@vechain/sdk-core';
-import { TEST_ACCOUNTS } from '../../fixture';
-import { expect } from '@jest/globals';
+import { expect, test } from '@jest/globals';
 
 /**
  * @group integration/transactions
  */
 describe('RetrieveTransactionReceipt SOLO tests', () => {
-    const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } =
-        TEST_ACCOUNTS.TRANSACTION;
-
     const httpClient = FetchHttpClient.at(ThorNetworks.SOLONET);
 
+    // TO BE FIXED: DYNAMIC ACCOUNT IS NOT SEEDED YET WHEN THIS TESTS RUNS IN SOLO
+    const toAddress = '0x435933c8064b4ae76be665428e0307ef2ccfbd68'; // THIS SOLO DEFAULT ACCOUNT[1]
+
+    // TO BE FIXED: DYNAMIC ACCOUNT IS NOT SEEDED YET WHEN THIS TESTS RUNS IN SOLO
+    const fromKey =
+        '99f0500549792796c14fed62011a51081dc5b5e68fe8bd8a13b86be829c4fd36'; // THIS SOLO DEFAULT ACCOUNT[1]
+
     test('ok <- transfer VET', async () => {
+        const transferClause = Clause.transferVET(
+            Address.of(toAddress),
+            VET.of(1)
+        );
+
         const latestBlock = (
             await RetrieveExpandedBlock.of(Revision.BEST).askTo(httpClient)
         ).response;
-        expect(latestBlock).toBeDefined();
-        const transferClause = Clause.transferVET(
-            Address.of(TRANSACTION_RECEIVER.address),
-            VET.of(1)
-        );
+
         const expectedTxBody: TransactionBody = {
             chainTag: SOLO_NETWORK.chainTag,
             blockRef:
@@ -54,20 +58,25 @@ describe('RetrieveTransactionReceipt SOLO tests', () => {
             dependsOn: null,
             nonce: 8
         };
+
         const signedTx = Transaction.of(expectedTxBody).sign(
-            HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
+            HexUInt.of(fromKey).bytes
         );
+
         const actualTXID = (
             await SendTransaction.of(signedTx.encoded).askTo(httpClient)
         ).response;
         expect(actualTXID).toBeDefined();
         expect(actualTXID).toBeInstanceOf(TXID);
+
         await new Promise((resolve) => setTimeout(resolve, 3000));
+
         const actualTx = (
             await RetrieveTransactionByID.of(actualTXID.id).askTo(httpClient)
         ).response;
         expect(actualTx).toBeDefined();
         expect(actualTx).toBeInstanceOf(GetTxResponse);
+
         expect(actualTx?.nonce).toEqual(BigInt(expectedTxBody.nonce));
     });
 });
