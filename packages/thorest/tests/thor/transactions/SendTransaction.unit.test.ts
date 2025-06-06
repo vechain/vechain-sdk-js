@@ -50,7 +50,7 @@ const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
 /**
  * @group unit/transactions
  */
-describe('RetrieveTransactionReceipt SOLO tests', () => {
+describe('RetrieveTransactionReceipt UNIT tests', () => {
     test('ok <- transfer VET', async () => {
         const expectedBlock = {
             number: 88,
