@@ -3,7 +3,7 @@ import {
     GetAccountResponse,
     type GetAccountResponseJSON
 } from '@thor/accounts';
-import { type ThorRequest, type ThorResponse } from '../utils';
+import { type ThorRequest, type ThorResponse } from '@thor';
 import { type Address } from '@vechain/sdk-core';
 
 class RetrieveAccountDetails

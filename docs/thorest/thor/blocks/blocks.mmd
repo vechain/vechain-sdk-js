@@ -12,18 +12,18 @@ classDiagram
     }
     class Block {
         UInt number
-        BlockId id
+        Hex id
         UInt size
-        BlockId parentID
+        Hex parentID
         UInt timestamp
         UInt gasLimit
         Address beneficiary
         UInt gasUsed
         HexUInt stringbaseFeePerGas
         UInt totalScore
-        TxId txsRoot
+        Hex txsRoot
         UInt txsFeatures
-        TxId stateRoot
+        Hex stateRoot
         TXId receiptsRoot
         boolean com
         Address signer
@@ -32,7 +32,8 @@ classDiagram
     class ExpandedBlockResponse {
         boolean isTrunk
         boolean isFinalized
-        Receipt[] transactions
+        TXWithReceipt[] transactions
+        ExpandedBlockResponseJSON toJSON()
     }
     class RawTx {
         HexUInt raw
@@ -41,8 +42,8 @@ classDiagram
     class RegularBlockResponse {
         boolean isTrunk
         boolean isFinalized
-        TxId[]  transactions
-        RegularBlockResponseJSON toJson()
+        Hex[]  transactions
+        RegularBlockResponseJSON toJSON()
     }
     class RetrieveExpandedBlock {
         ExpandedBlockResponse | null of(Revision revision)$

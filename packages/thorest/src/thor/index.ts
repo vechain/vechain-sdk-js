@@ -2,6 +2,7 @@ export * from './accounts';
 export * from './blocks';
 export * from './debug';
 export * from './logs';
+export * from './model';
 export * from './node';
 export * from './transactions';
 export * from './subscriptions';

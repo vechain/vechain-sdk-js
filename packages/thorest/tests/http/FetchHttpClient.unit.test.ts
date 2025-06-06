@@ -1,12 +1,12 @@
 import {
+    afterAll,
+    beforeEach,
     describe,
-    test,
     expect,
     jest,
-    beforeEach,
-    afterAll
+    test
 } from '@jest/globals';
-import { ThorNetworks, toURL, isValidNetworkUrl } from '@thor';
+import { isValidNetworkUrl, ThorNetworks, toURL } from '@thor';
 import { FetchHttpClient } from '@http';
 
 // Define module interface explicitly instead of using import() type
@@ -265,7 +265,6 @@ describe('FetchHttpClient unit tests', () => {
                 MockRequest as unknown as RequestConstructor,
                 mockFetch
             );
-
             // We can't easily test private properties, but we can test
             // that the client is created correctly
             expect(client).toBeInstanceOf(FetchHttpClient);

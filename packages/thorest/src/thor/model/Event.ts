@@ -1,26 +1,30 @@
-import { Address, HexUInt, IllegalArgumentError } from '@vechain/sdk-core';
-import { XEventJSON } from '@thor/blocks/XEventJSON';
-
+import {
+    Address,
+    HexUInt,
+    IllegalArgumentError,
+    type Hex
+} from '@vechain/sdk-core';
+import { type EventJSON } from '@thor/model/EventJSON';
 
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/thorest/src/thor/blocks/XEvent.ts!'; // todo: check once moved
+const FQP = 'packages/thorest/src/thor/blocks/XEvent.ts!';
 
 /**
  * [Event](http://localhost:8669/doc/stoplight-ui/#/schemas/Event)
  */
-// eslint-disable-next-line sonarjs/class-name
-class XEvent {
+
+class Event {
     /**
-     * he address of the contract that produces the event (bytes20).
+     * The address of the contract that produces the event (bytes20).
      */
     readonly address: Address;
 
     /**
      * Topics are indexed parameters to an event. The first topic is always the event signature.
      */
-    readonly topics: HexUInt[];
+    readonly topics: Hex[];
 
     /**
      * The data associated with the event.
@@ -28,12 +32,12 @@ class XEvent {
     readonly data: HexUInt;
 
     /**
-     * Constructs an instance of the class using the provided _EventJSON object.
+     * Constructs an instance of the class using the provided JSON object.
      *
-     * @param {XEventJSON} json - The JSON object containing the required fields to initialize the instance.
+     * @param {EventJSON} json - The JSON object containing the required fields to initialize the instance.
      * @throws {IllegalArgumentError} Throws an error if the JSON object cannot be parsed or contains invalid values.
      */
-    constructor(json: XEventJSON) {
+    constructor(json: EventJSON) {
         try {
             this.address = Address.of(json.address);
             this.topics = json.topics.map(
@@ -42,7 +46,7 @@ class XEvent {
             this.data = HexUInt.of(json.data);
         } catch (error) {
             throw new IllegalArgumentError(
-                `${FQP}constructor(json: _EventJSON)`,
+                `${FQP}constructor(json: EventJSON)`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined
@@ -51,19 +55,19 @@ class XEvent {
     }
 
     /**
-     * Converts the current instance of the class into a _EventJSON representation.
+     * Converts the current instance of the class into an EventJSON representation.
      *
-     * @return {XEventJSON} The JSON object representing the current instance.
+     * @return {EventJSON} The JSON object representing the current instance.
      */
-    toJSON(): XEventJSON {
+    toJSON(): EventJSON {
         return {
             address: this.address.toString(),
             topics: this.topics.map((topic: HexUInt): string =>
                 topic.toString()
             ),
             data: this.data.toString()
-        } satisfies XEventJSON;
+        } satisfies EventJSON;
     }
 }
 
-export { XEvent };
+export { Event };

@@ -3,7 +3,7 @@ import {
     PostDebugTracerRequest,
     type PostDebugTracerRequestJSON
 } from '@thor/debug';
-import { type ThorRequest, type ThorResponse } from '../utils';
+import { type ThorRequest, type ThorResponse } from '@thor';
 
 class TraceTransactionClause
     implements ThorRequest<TraceTransactionClause, unknown>

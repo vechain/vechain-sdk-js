@@ -1,0 +1,85 @@
+---
+title: thorest_thor_model
+---
+classDiagram
+    class Clause {
+        Address|null to
+        bigint value
+        Hex data
+        constructor(ClauseJSON: json)
+        ClauseJSON toJSON()
+    }
+    class Event {
+        Address address
+        Hex[] topics
+        Hex data
+        constructor(EventJSON event)
+        EventJSON toJSON()
+    }
+    class Output {
+        Address contractAddress
+        Event[] events
+        Transfer[] transfers
+        contructor(OutputJSON json)
+        OutputJSON toJSON()
+    }
+    class Receipt {
+        number|null type
+        bigint gasUsed
+        Address gasPayer
+        bigint paid
+        bigint reward
+        boolean reverted
+        Output[] outputs
+        constructor(ReceiptJSON json)
+        ReceiptJSON toJSON()
+    }
+    class ReceiptMeta {
+        Hex txID
+        Address txOrigin
+        constructor(ReceiptMetaJSON json)
+        ReceiptMetaJSON toJSON()
+    }
+    class Transfer {
+        Address sender
+        Address recipient
+        bigint amount
+        constructor(TransferJSON json)
+        TransferJSON toJSON()
+    }
+    class TXID {
+        Hex id
+        constructor(TXIDJSON json)
+        TXIDJSON toJSON()
+    }
+    class Tx {
+        Hex id
+        number|null type|
+        Address origin
+        Address|null delegator
+        size number
+        chainTag number
+        Hex blockRef
+        number expiration
+        Clause[] clauses
+        bigint|null maxFeePerGas
+        bigint|null maxPriorityFeePerGas
+        bigint gas
+        Hex|null dependsOn
+        bigint nonce
+        constructor(json TxJSON)
+        TxJSON toJSON()
+    }
+    class TxMeta {
+        Hex Hex;
+        UInt blockNumber;
+        UInt blockTimeStamp;
+        constructor(TxMetaJSON)
+        TxMetaJSON toJSON()
+    }
+    class TxWithReceipt {
+        TxWithReceiptJSON toJSON()
+    }
+    Receipt <|-- TxWithReceipt
+    Tx <|-- TxWithReceipt
+    TxMeta <|-- ReceiptMeta

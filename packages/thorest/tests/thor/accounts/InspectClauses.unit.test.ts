@@ -1,10 +1,10 @@
 import { describe, expect, test } from '@jest/globals';
 import {
+    type ExecuteCodeResponseJSON,
     type ExecuteCodesRequestJSON,
-    InspectClauses,
-    type ExecuteCodeResponseJSON
+    InspectClauses
 } from '@thor';
-import { VET } from '@vechain/sdk-core';
+import { HexUInt, VET } from '@vechain/sdk-core';
 import { mockHttpClient } from '../../utils/MockUnitTestClient';
 
 /**
@@ -35,6 +35,7 @@ describe('InspectClauses unit tests', () => {
                     data: '0x'
                 },
                 {
+                    to: null,
                     value: '0x0',
                     data: '0x6080604052348015600f57600080fd5b50609f8061001e6000396000f300608060405260043610603f576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680631820cabb146044575b600080fd5b348015604f57600080fd5b506056606c565b6040518082815260200191505060405180910390f35b62015180815600a165627a7a723058200ac7475da248e2fc26c057319e296e90c24d5f8b9bf956fb3b77545642cad3b10029'
                 }
@@ -117,8 +118,8 @@ describe('InspectClauses unit tests', () => {
         // Second clause (VET transfer)
         expect(outputs[1].reverted).toBe(false);
         expect(outputs[1].transfers).toHaveLength(1);
-        const expectedAmount = VET.of(mockResponse[1].transfers[0].amount);
-        expect(outputs[1].transfers[0].amount.wei).toBe(expectedAmount.wei);
+        const expectedAmount = HexUInt.of(outputs[1].transfers[0].amount).bi;
+        expect(outputs[1].transfers[0].amount).toBe(expectedAmount);
 
         // Third clause (contract deployment)
         expect(outputs[2].reverted).toBe(false);

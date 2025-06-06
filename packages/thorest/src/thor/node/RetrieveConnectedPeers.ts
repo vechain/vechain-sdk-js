@@ -1,6 +1,6 @@
 import { GetPeersResponse, type GetPeersResponseJSON } from '@thor/node';
 import { type HttpClient, type HttpPath } from '@http';
-import { type ThorRequest, type ThorResponse } from '../utils';
+import { type ThorRequest, type ThorResponse } from '@thor';
 /**
  * Represents a request to retrieve information about connected peers in the network.
  * Implements ThorRequest interface for handling peer information retrieval.

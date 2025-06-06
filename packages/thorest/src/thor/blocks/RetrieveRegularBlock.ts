@@ -15,6 +15,9 @@ const FQP = 'packages/thorest/src/thor/blocks/RetrieveRegularBlock.ts!';
 
 /**
  * [Retrieve a regular block](http://localhost:8669/doc/stoplight-ui/#/paths/blocks-revision/get)
+ *
+ * Retrieve information about a block identified by its revision.
+ * If the provided revision is not found, the response will be `null`.
  */
 class RetrieveRegularBlock
     implements ThorRequest<RetrieveRegularBlock, RegularBlockResponse | null>
@@ -39,7 +42,7 @@ class RetrieveRegularBlock
      * @param {HttpClient} httpClient - An HTTP client used to perform the request.
      * @return {Promise<ThorResponse<RetrieveRegularBlock, RegularBlockResponse | null>>}
      * Returns a promise that resolves to a ThorResponse containing the requested block.
-     * @throws RetrieveBlockError if the response is invalid or the request fails.
+     * @throws ThorError if the response is invalid or the request fails.
      */
     async askTo(
         httpClient: HttpClient

@@ -69,9 +69,9 @@ describe('RetrieveTransactionByID solo tests', () => {
             await RetrieveTransactionByID.of(txId).askTo(httpClient);
 
         const transaction = retrieveResponse.response;
-        const transactionJson = retrieveResponse.response.toJSON();
+        const transactionJson = retrieveResponse.response?.toJSON();
 
-        expect(transaction.nonce).toEqual(8);
-        expect(transactionJson.nonce).toEqual('0x08');
+        expect(transaction?.nonce).toEqual(8);
+        expect(transactionJson?.nonce).toEqual('0x08');
     });
 });

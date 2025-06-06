@@ -1,4 +1,4 @@
-import { Clause, type ClauseJSON } from '@thor/transactions';
+import { Clause, type ClauseJSON } from '@thor';
 import { Address, BlockRef, Gas, UInt, Units, VTHO } from '@vechain/sdk-core';
 
 class ExecuteCodesRequest {
@@ -27,7 +27,8 @@ class ExecuteCodesRequest {
             json.clauses === undefined
                 ? undefined
                 : json.clauses.map(
-                      (clauseJSON: ClauseJSON): Clause => new Clause(clauseJSON)
+                      (clauseJSON: ClauseJSON): Clause =>
+                          new Clause(clauseJSON)
                   );
         this.gas = json.gas === undefined ? undefined : Gas.of(json.gas);
         this.gasPrice =

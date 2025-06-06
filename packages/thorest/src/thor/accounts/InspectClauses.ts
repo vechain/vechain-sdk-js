@@ -5,7 +5,7 @@ import {
     ExecuteCodesRequest,
     type ExecuteCodesRequestJSON
 } from '@thor/accounts';
-import { type ThorRequest, type ThorResponse } from '../utils';
+import { type ThorRequest, type ThorResponse } from '@thor';
 import { Revision } from '@vechain/sdk-core';
 
 class InspectClauses

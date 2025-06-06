@@ -1,74 +1,171 @@
-import { type TxId, type BlockId } from '@vechain/sdk-core';
+import { type Hex, HexUInt32 } from '@vechain/sdk-core';
 import { type HttpClient } from '@http';
-import {
-    RetrieveTransactionByIDPath,
-    RetrieveTransactionByIDQuery
-} from './RetrieveTransactionByID';
+import { RetrieveTransactionQuery } from '@thor/transactions/RetrieveTransactionQuery';
+import { RetrieveTransactionPath } from '@thor/transactions/RetrieveTransactionPath';
 import {
     GetRawTxResponse,
-    type GetRawTxResponseJSON
-} from './GetRawTxResponse';
-import { type ThorRequest, type ThorResponse } from '../utils';
+    type GetRawTxResponseJSON,
+    ThorError,
+    type ThorRequest,
+    type ThorResponse
+} from '@thor';
 
+/**
+ * Full-Qualified Path
+ */
+const FQP = 'packages/thorest/src/thor/transactions/SendTransaction.ts!';
+
+/**
+ * [Retrieve a transaction by ID](http://localhost:8669/doc/stoplight-ui/#/paths/transactions-id/get).
+ *
+ * This request to Thor endpoint allows you to retrieve a transaction in its raw hexadecimal form, identified by its ID.
+ */
 class RetrieveRawTransactionByID
-    implements ThorRequest<RetrieveRawTransactionByID, GetRawTxResponse>
+    implements ThorRequest<RetrieveRawTransactionByID, GetRawTxResponse | null>
 {
-    readonly path: RetrieveRawTransactionByIDPath;
+    /**
+     * Represents the HTTP path configuration for a specific API endpoint.
+     */
+    readonly path: RetrieveTransactionPath;
 
-    readonly query: RetrieveRawTransactionByIDQuery;
+    /**
+     * Represents the HTTP query configuration for a specific API endpoint.
+     */
+    readonly query: Query;
 
-    constructor(
-        path: RetrieveRawTransactionByIDPath,
-        query: RetrieveRawTransactionByIDQuery
-    ) {
+    /**
+     * Constructs a new instance of the class.
+     *
+     * @param {RetrieveTransactionPath} path - The path object used to retrieve the transaction.
+     * @param {Query} query - The query parameters associated with the transaction retrieval.
+     * @return {void} Does not return a value.
+     */
+    constructor(path: RetrieveTransactionPath, query: Query) {
         this.path = path;
         this.query = query;
     }
 
+    /**
+     * Sends a request to retrieve a raw transaction by its ID using the provided HTTP client.
+     *
+     * @param {HttpClient} httpClient - The HTTP client used to send the request.
+     * @return {Promise<ThorResponse<RetrieveRawTransactionByID, GetRawTxResponse | null>>}
+     * A promise that resolves with the ThorResponse object containing the requested raw transaction, or null if the response is not valid.
+     * @throws {ThorError} Throws a ThorError in case of an invalid or unsuccessful response.
+     */
     async askTo(
         httpClient: HttpClient
-    ): Promise<ThorResponse<RetrieveRawTransactionByID, GetRawTxResponse>> {
+    ): Promise<
+        ThorResponse<RetrieveRawTransactionByID, GetRawTxResponse | null>
+    > {
+        const fqp = `${FQP}askTo(httpClient: HttpClient: Promise<ThorResponse<RetrieveRawTransactionByID, GetRawTxResponse|null>>`;
         const response = await httpClient.get(this.path, this.query);
-        const responseBody = (await response.json()) as GetRawTxResponseJSON;
-        return {
-            request: this,
-            response: new GetRawTxResponse(responseBody)
-        };
+        if (!response.ok) {
+            const json = (await response.json()) as GetRawTxResponseJSON | null;
+            try {
+                return {
+                    request: this,
+                    response: json === null ? null : new GetRawTxResponse(json)
+                };
+            } catch (error) {
+                throw new ThorError(
+                    fqp,
+                    'Bad response.',
+                    {
+                        url: response.url,
+                        body: json
+                    },
+                    error instanceof Error ? error : undefined,
+                    response.status
+                );
+            }
+        } else {
+            throw new ThorError(
+                fqp,
+                await response.text(),
+                {
+                    url: response.url
+                },
+                undefined,
+                response.status
+            );
+        }
     }
 
-    static of(txId: TxId): RetrieveRawTransactionByID {
-        return new RetrieveRawTransactionByID(
-            new RetrieveRawTransactionByIDPath(txId),
-            new RetrieveRawTransactionByIDQuery(undefined, false)
-        );
+    /**
+     * Creates an instance of RetrieveRawTransactionByID using the provided transaction ID.
+     *
+     * @param {Hex} txId - The hexadecimal transaction ID used to retrieve the raw transaction.
+     * @return {RetrieveRawTransactionByID} An instance of RetrieveRawTransactionByID created using the given transaction ID.
+     * @throws {ThorError} If the transaction ID is invalid or an error occurs during processing.
+     */
+    static of(txId: Hex): RetrieveRawTransactionByID {
+        try {
+            return new RetrieveRawTransactionByID(
+                new RetrieveTransactionPath(HexUInt32.of(txId)),
+                new Query(undefined, false)
+            );
+        } catch (error) {
+            throw new ThorError(
+                `${FQP}of(txId: Hex): RetrieveRawTransactionByID`,
+                'Invalid transaction ID.',
+                {
+                    txId
+                },
+                error instanceof Error ? error : undefined
+            );
+        }
     }
 
-    withHead(head?: BlockId): RetrieveRawTransactionByID {
-        return new RetrieveRawTransactionByID(
-            this.path,
-            new RetrieveRawTransactionByIDQuery(head, this.query.pending)
-        );
+    /**
+     * Updates the query with a specific head value and returns a new instance of RetrieveRawTransactionByID.
+     *
+     * @param {Hex} [head] - The head value to use for querying. Optional.
+     * @return {RetrieveRawTransactionByID} - A new instance of RetrieveRawTransactionByID with the updated query.
+     * @throws {ThorError} - Throws an error if the `head` value is invalid.
+     */
+    withHead(head?: Hex): RetrieveRawTransactionByID {
+        try {
+            return new RetrieveRawTransactionByID(
+                this.path,
+                new Query(head, this.query.pending)
+            );
+        } catch (error) {
+            throw new ThorError(
+                `${FQP}withHead(head?: Hex): RetrieveRawTransactionByID`,
+                'Invalid head value.',
+                {
+                    head
+                },
+                error instanceof Error ? error : undefined
+            );
+        }
     }
 
+    /**
+     *
+     * Configures the current transaction query to include or exclude unconfirmed transactions (pending status).
+     *
+     * @param {boolean} [pending=true] - A boolean value indicating whether to include unconfirmed transactions. Defaults to true.
+     * @return {RetrieveRawTransactionByID} An instance of RetrieveRawTransactionByID with the updated query configuration.
+     */
     withPending(pending: boolean = true): RetrieveRawTransactionByID {
         return new RetrieveRawTransactionByID(
             this.path,
-            new RetrieveRawTransactionByIDQuery(this.query.head, pending)
+            new Query(this.query.head, pending)
         );
     }
 }
 
-class RetrieveRawTransactionByIDPath extends RetrieveTransactionByIDPath {}
-
-class RetrieveRawTransactionByIDQuery extends RetrieveTransactionByIDQuery {
+/**
+ * The Query class extends the RetrieveTransactionQuery class to construct
+ * a query string for fetching transactions based on specific parameters.
+ */
+class Query extends RetrieveTransactionQuery {
     get query(): string {
         const head = this.head === undefined ? '' : `${this.head}&`;
         return `?${head}pending=${this.pending}&raw=true`;
     }
 }
 
-export {
-    RetrieveRawTransactionByID,
-    RetrieveRawTransactionByIDPath,
-    RetrieveRawTransactionByIDQuery
-};
+export { RetrieveRawTransactionByID };

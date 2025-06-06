@@ -1,8 +1,10 @@
-import { Block } from '@thor/blocks/Block';
-import { type ExpandedBlockResponseJSON } from '@thor/blocks/ExpandedBlockResponseJSON';
-import { XReceipt } from '@thor/blocks/XReceipt';
-import { type XReceiptJSON } from '@thor/blocks/XReceiptJSON';
+import {
+    type ExpandedBlockResponseJSON,
+    TxWithReceipt,
+    type TxWithReceiptJSON
+} from '@thor';
 import { IllegalArgumentError } from '@vechain/sdk-core';
+import { Block } from '@thor/blocks/Block';
 
 /**
  * Full-Qualified Path
@@ -23,7 +25,7 @@ class ExpandedBlockResponse extends Block {
     /**
      * All included transactions, expanded to include their receipts.
      */
-    readonly transactions: XReceipt[];
+    readonly transactions: TxWithReceipt[];
 
     /**
      * Initializes an instance of the class using the provided JSON object.
@@ -37,8 +39,8 @@ class ExpandedBlockResponse extends Block {
             this.isTrunk = json.isTrunk;
             this.isFinalized = json.isFinalized;
             this.transactions = json.transactions.map(
-                (transaction: XReceiptJSON): XReceipt =>
-                    new XReceipt(transaction)
+                (transaction: TxWithReceiptJSON): TxWithReceipt =>
+                    new TxWithReceipt(transaction)
             );
         } catch (error) {
             throw new IllegalArgumentError(
@@ -61,7 +63,8 @@ class ExpandedBlockResponse extends Block {
             isTrunk: this.isTrunk,
             isFinalized: this.isFinalized,
             transactions: this.transactions.map(
-                (transaction: XReceipt): XReceiptJSON => transaction.toJSON()
+                (transaction: TxWithReceipt): TxWithReceiptJSON =>
+                    transaction.toJSON()
             )
         };
     }
