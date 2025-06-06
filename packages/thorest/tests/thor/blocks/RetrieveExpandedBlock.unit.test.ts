@@ -34,7 +34,7 @@ const mockResponse = <T>(body: T, status: number): Response => {
 /**
  * VeChain expanded block - unit
  *
- * @group unit/block
+ * @group unit/blocks
  */
 describe('RetrieveExpandedBlock UNIT tests', () => {
     test('err: <- bad revision', async () => {
@@ -86,9 +86,9 @@ describe('RetrieveExpandedBlock UNIT tests', () => {
             parentID:
                 '0xffffffff00000000000000000000000000000000000000000000000000000000',
             timestamp: 1526400000,
-            gasLimit: 10000000,
+            gasLimit: '10000000',
             beneficiary: '0x0000000000000000000000000000000000000000',
-            gasUsed: 0,
+            gasUsed: '0',
             totalScore: 0,
             txsRoot:
                 '0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0',
@@ -122,9 +122,9 @@ describe('RetrieveExpandedBlock UNIT tests', () => {
             parentID:
                 '0x00000000c05a20fbca2bf6ae3affba6af4a74b800b585bf7a4988aba7aea69f6',
             timestamp: 1746001943,
-            gasLimit: 150000000,
+            gasLimit: '150000000',
             beneficiary: '0xf077b491b355e64048ce21e3a6fc4751eeea77fa',
-            gasUsed: 44794,
+            gasUsed: '44794',
             totalScore: 1,
             txsRoot:
                 '0x9e4a087f9d5e5263f7fef7bb86e7a2252a4b99abb47496b89105f8efc8ec44e7',
@@ -205,9 +205,9 @@ describe('RetrieveExpandedBlock UNIT tests', () => {
             parentID:
                 '0x0000063a57f49442603c62b1008b18e5257a510bd8a2ed657037cb1f5698800b',
             timestamp: 1745769810,
-            gasLimit: 150000000,
+            gasLimit: '150000000',
             beneficiary: '0xf077b491b355e64048ce21e3a6fc4751eeea77fa',
-            gasUsed: 0,
+            gasUsed: '0',
             totalScore: 1595,
             txsRoot:
                 '0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0',
@@ -222,7 +222,7 @@ describe('RetrieveExpandedBlock UNIT tests', () => {
             isFinalized: false,
             baseFeePerGas: '0x9184e72a000',
             transactions: []
-        };
+        } satisfies ExpandedBlockResponseJSON;
         const actual = (
             await RetrieveExpandedBlock.of(Revision.BEST).askTo(
                 mockHttpClient<Response>(mockResponse(expected, status))
@@ -242,9 +242,9 @@ describe('RetrieveExpandedBlock UNIT tests', () => {
             parentID:
                 '0xffffffff00000000000000000000000000000000000000000000000000000000',
             timestamp: 1526400000,
-            gasLimit: 10000000,
+            gasLimit: '10000000',
             beneficiary: '0x0000000000000000000000000000000000000000',
-            gasUsed: 0,
+            gasUsed: '0',
             totalScore: 0,
             txsRoot:
                 '0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0',
@@ -258,7 +258,7 @@ describe('RetrieveExpandedBlock UNIT tests', () => {
             isTrunk: true,
             isFinalized: true,
             transactions: []
-        };
+        } satisfies ExpandedBlockResponseJSON;
         const actual = (
             await RetrieveExpandedBlock.of(Revision.FINALIZED).askTo(
                 mockHttpClient<Response>(mockResponse(expected, status))

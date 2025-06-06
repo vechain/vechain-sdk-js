@@ -16,7 +16,7 @@ class InvalidRevision extends Revision {
 }
 
 /**
- * @group integration/block
+ * @group integration/blocks
  */
 describe('RetrieveRegularBlock SOLO tests', () => {
     const httpClient = FetchHttpClient.at(ThorNetworks.SOLONET);
@@ -43,9 +43,9 @@ describe('RetrieveRegularBlock SOLO tests', () => {
             parentID:
                 '0xffffffff00000000000000000000000000000000000000000000000000000000',
             timestamp: 1526400000,
-            gasLimit: 10000000,
+            gasLimit: '10000000',
             beneficiary: '0x0000000000000000000000000000000000000000',
-            gasUsed: 0,
+            gasUsed: '0',
             totalScore: 0,
             txsRoot:
                 '0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0',
@@ -92,9 +92,9 @@ describe('RetrieveRegularBlock SOLO tests', () => {
             parentID:
                 '0xffffffff00000000000000000000000000000000000000000000000000000000',
             timestamp: 1526400000,
-            gasLimit: 10000000,
+            gasLimit: '10000000',
             beneficiary: '0x0000000000000000000000000000000000000000',
-            gasUsed: 0,
+            gasUsed: '0',
             totalScore: 0,
             txsRoot:
                 '0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0',
@@ -108,7 +108,7 @@ describe('RetrieveRegularBlock SOLO tests', () => {
             isTrunk: true,
             isFinalized: true,
             transactions: []
-        };
+        } satisfies ExpandedBlockResponseJSON;
         const actual = (
             await RetrieveExpandedBlock.of(Revision.FINALIZED).askTo(httpClient)
         ).response;

@@ -20,7 +20,7 @@ class Block {
     /**
      * The block number (height).
      */
-    readonly number: UInt;
+    readonly number: number;
 
     /**
      * The block identifier.
@@ -30,7 +30,7 @@ class Block {
     /**
      * The RLP encoded block size in bytes.
      */
-    readonly size: UInt;
+    readonly size: number;
 
     /**
      * The parent block identifier.
@@ -40,12 +40,12 @@ class Block {
     /**
      * The UNIX timestamp of the block.
      */
-    readonly timestamp: UInt;
+    readonly timestamp: number;
 
     /**
      * The maximum amount of gas that all transactions inside the block are allowed to consume.
      */
-    readonly gasLimit: UInt;
+    readonly gasLimit: bigint;
 
     /**
      * The address assigned by the block proposer to receive the reward (in VTHO).
@@ -55,17 +55,17 @@ class Block {
     /**
      * The actual amount of gas used within the block.
      */
-    readonly gasUsed: UInt;
+    readonly gasUsed: bigint;
 
     /**
      * The minimum amount of fee required to include a transaction in the current block.
      */
-    readonly baseFeePerGas?: HexUInt;
+    readonly baseFeePerGas?: bigint;
 
     /**
      * The accumulated witness number of the chain branch headed by the block.
      */
-    readonly totalScore: UInt;
+    readonly totalScore: number;
 
     /**
      * The root hash of transactions in the block.
@@ -75,7 +75,7 @@ class Block {
     /**
      * The supported transaction features bitset.
      */
-    readonly txsFeatures: UInt;
+    readonly txsFeatures: number;
 
     /**
      * The root hash for the global state after applying changes in this block.
@@ -105,21 +105,21 @@ class Block {
      */
     constructor(json: BlockJSON) {
         try {
-            this.number = UInt.of(json.number);
+            this.number = UInt.of(json.number).valueOf();
             this.id = HexUInt32.of(json.id);
-            this.size = UInt.of(json.size);
+            this.size = UInt.of(json.size).valueOf();
             this.parentID = HexUInt.of(json.parentID);
-            this.timestamp = UInt.of(json.timestamp);
-            this.gasLimit = UInt.of(json.gasLimit);
+            this.timestamp = UInt.of(json.timestamp).valueOf();
+            this.gasLimit = BigInt(json.gasLimit);
             this.beneficiary = Address.of(json.beneficiary);
-            this.gasUsed = UInt.of(json.gasUsed);
+            this.gasUsed = BigInt(json.gasUsed);
             this.baseFeePerGas =
                 json.baseFeePerGas !== undefined
-                    ? HexUInt.of(json.baseFeePerGas)
+                    ? HexUInt.of(json.baseFeePerGas).bi
                     : undefined;
-            this.totalScore = UInt.of(json.totalScore);
+            this.totalScore = UInt.of(json.totalScore).valueOf();
             this.txsRoot = HexUInt32.of(json.txsRoot);
-            this.txsFeatures = UInt.of(json.txsFeatures);
+            this.txsFeatures = UInt.of(json.txsFeatures).valueOf();
             this.stateRoot = HexUInt32.of(json.stateRoot);
             this.receiptsRoot = HexUInt32.of(json.receiptsRoot);
             this.com = json.com;
@@ -148,9 +148,9 @@ class Block {
 
             parentID: this.parentID.toString(),
             timestamp: this.timestamp.valueOf(),
-            gasLimit: this.gasLimit.valueOf(),
+            gasLimit: this.gasLimit.toString(),
             beneficiary: this.beneficiary.toString(),
-            gasUsed: this.gasUsed.valueOf(),
+            gasUsed: this.gasUsed.toString(),
             baseFeePerGas: this.baseFeePerGas?.toString(),
             totalScore: this.totalScore.valueOf(),
 

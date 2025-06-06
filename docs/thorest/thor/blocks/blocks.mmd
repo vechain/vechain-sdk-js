@@ -11,20 +11,20 @@ classDiagram
         class ThorError
     }
     class Block {
-        UInt number
+        number number
         Hex id
-        UInt size
+        number size
         Hex parentID
-        UInt timestamp
-        UInt gasLimit
+        number timestamp
+        bigint gasLimit
         Address beneficiary
-        UInt gasUsed
-        HexUInt stringbaseFeePerGas
-        UInt totalScore
+        bigint gasUsed
+        bigint baseFeePerGas
+        number totalScore
         Hex txsRoot
-        UInt txsFeatures
+        number txsFeatures
         Hex stateRoot
-        TXId receiptsRoot
+        Hex receiptsRoot
         boolean com
         Address signer
         BlockJSON toJSON()

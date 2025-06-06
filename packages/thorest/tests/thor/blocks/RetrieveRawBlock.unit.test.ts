@@ -27,7 +27,7 @@ const mockResponse = <T>(body: T, status: number): Response => {
 };
 
 /**
- * @group unit/block
+ * @group unit/blocks
  */
 describe('RetrieveBlock unit tests', () => {
     test('err: <- bad revision', async () => {
