@@ -1,11 +1,6 @@
 import { describe, expect, jest, test } from '@jest/globals';
 import { HexUInt32 } from '@vechain/sdk-core';
-import {
-    GetTxReceiptResponse,
-    type GetTxReceiptResponseJSON,
-    RetrieveTransactionReceipt,
-    ThorError
-} from '@thor';
+import { GetTxReceiptResponse, type GetTxReceiptResponseJSON, RetrieveTransactionReceipt, ThorError } from '@thor';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import type { HttpClient } from '@http';
 
@@ -46,7 +41,7 @@ describe('RetrieveTransactionReceipt SOLO tests', () => {
         }
     });
 
-    test('ok <- tx found', async () => {
+    test('ok <- tx id', async () => {
         const expected = {
             type: null,
             gasUsed: '44794',
@@ -91,6 +86,55 @@ describe('RetrieveTransactionReceipt SOLO tests', () => {
         expect(actual).toBeDefined();
         expect(actual).toBeInstanceOf(GetTxReceiptResponse);
         expect(actual?.toJSON()).toEqual(expected);
+    });
+
+    test('ok <- tx id and head', async () => {
+        const expected = {
+            type: null,
+            gasUsed: '44794',
+            gasPayer: '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa',
+            paid: '0x26da441abd4d90000',
+            reward: '0x2676cda9d5028c000',
+            reverted: false,
+            outputs: [
+                {
+                    contractAddress: null,
+                    events: [
+                        {
+                            address:
+                                '0x0000000000000000000000000000506172616D73',
+                            topics: [
+                                '0x28e3246f80515f5c1ed987b133ef2f193439b25acba6a5e69f219e896fc9d179',
+                                '0x000000000000000000000000000000000000626173652d6761732d7072696365'
+                            ],
+                            data: '0x000000000000000000000000000000000000000000000000000009184e72a000'
+                        }
+                    ],
+                    transfers: []
+                }
+            ],
+            meta: {
+                blockID:
+                    '0x000000015e6a01cfad0b4ad70e93d4c3e0672d045eaff79cea9bd68d6d98d6ed',
+                blockNumber: 1,
+                blockTimestamp: 1749206514,
+                txID: '0xa3b9c5083393e18f8cdef04639e657ddd33a0063315f8b8383753a6d3b80996a',
+                txOrigin: '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa'
+            }
+        } satisfies GetTxReceiptResponseJSON;
+        const txId = HexUInt32.of(
+            '0xa3b9c5083393e18f8cdef04639e657ddd33a0063315f8b8383753a6d3b80996a'
+        );
+        const head = HexUInt32.of(
+            '0x000000015e6a01cfad0b4ad70e93d4c3e0672d045eaff79cea9bd68d6d98d6ed'
+        );
+        const actual = (
+            await RetrieveTransactionReceipt.of(txId)
+                .withHead(head)
+                .askTo(mockHttpClient(mockResponse(expected, 200)))
+        ).response;
+        expect(actual).toBeDefined();
+        expect(actual).toBeInstanceOf(GetTxReceiptResponse);
     });
 
     test('null <- tx not found', async () => {
