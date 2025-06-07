@@ -7,9 +7,9 @@ interface BlockJSON {
     size: number; // int
     parentID: string; // hex
     timestamp: number; // int unix epoch
-    gasLimit: number; // int
+    gasLimit: string; // big int
     beneficiary: string; // hex address
-    gasUsed: number; // int
+    gasUsed: string; // big int
     baseFeePerGas?: string; // hex or null
     totalScore: number; // int
     txsRoot: string; // hex hash

@@ -59,9 +59,9 @@ describe('RetrieveTransactionReceipt UNIT tests', () => {
             parentID:
                 '0x000000577127e6426fbe5a303755ba64c167f173bb4e9b60156a62bced1551d8',
             timestamp: 1749224420,
-            gasLimit: 150000000,
+            gasLimit: '150000000',
             beneficiary: '0xf077b491b355e64048ce21e3a6fc4751eeea77fa',
-            gasUsed: 0,
+            gasUsed: '0',
             totalScore: 88,
             txsRoot:
                 '0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0',

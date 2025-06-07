@@ -32,7 +32,7 @@ const mockResponse = <T>(body: T, status: number): Response => {
 };
 
 /**
- * @group unit/block
+ * @group unit/blocks
  */
 describe('RetrieveRegularBlock UNIT tests', () => {
     test('err: <- bad revision', async () => {
@@ -84,9 +84,9 @@ describe('RetrieveRegularBlock UNIT tests', () => {
             parentID:
                 '0xffffffff00000000000000000000000000000000000000000000000000000000',
             timestamp: 1526400000,
-            gasLimit: 10000000,
+            gasLimit: '10000000',
             beneficiary: '0x0000000000000000000000000000000000000000',
-            gasUsed: 0,
+            gasUsed: '0',
             totalScore: 0,
             txsRoot:
                 '0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0',
@@ -120,9 +120,9 @@ describe('RetrieveRegularBlock UNIT tests', () => {
             parentID:
                 '0x00000000c05a20fbca2bf6ae3affba6af4a74b800b585bf7a4988aba7aea69f6',
             timestamp: 1745691776,
-            gasLimit: 150000000,
+            gasLimit: '150000000',
             beneficiary: '0xf077b491b355e64048ce21e3a6fc4751eeea77fa',
-            gasUsed: 44794,
+            gasUsed: '44794',
             totalScore: 1,
             txsRoot:
                 '0x5e4859b2ecf88a48f3071067cd63f383081b613261fd3419aeefeb480d7614ba',
@@ -159,9 +159,9 @@ describe('RetrieveRegularBlock UNIT tests', () => {
             parentID:
                 '0x0000076a4319867444bb92ce20b4ce068eb526269e1583baf8c390c223926197',
             timestamp: 1745772860,
-            gasLimit: 150000000,
+            gasLimit: '150000000',
             beneficiary: '0xf077b491b355e64048ce21e3a6fc4751eeea77fa',
-            gasUsed: 0,
+            gasUsed: '0',
             totalScore: 1899,
             txsRoot:
                 '0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0',
@@ -193,9 +193,9 @@ describe('RetrieveRegularBlock UNIT tests', () => {
             parentID:
                 '0xffffffff00000000000000000000000000000000000000000000000000000000',
             timestamp: 1526400000,
-            gasLimit: 10000000,
+            gasLimit: '10000000',
             beneficiary: '0x0000000000000000000000000000000000000000',
-            gasUsed: 0,
+            gasUsed: '0',
             totalScore: 0,
             txsRoot:
                 '0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0',
@@ -209,7 +209,7 @@ describe('RetrieveRegularBlock UNIT tests', () => {
             isTrunk: true,
             isFinalized: true,
             transactions: []
-        };
+        } satisfies RegularBlockResponseJSON;
         const actual = (
             await RetrieveRegularBlock.of(Revision.FINALIZED).askTo(
                 mockHttpClient<Response>(mockResponse(expected, status))
