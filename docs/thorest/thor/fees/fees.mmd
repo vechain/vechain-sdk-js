@@ -1,0 +1,23 @@
+---
+title: thorest_thor_fees
+---
+classDiagram
+    namespace thorest {
+        class ThorRequest {
+            <<interface>>
+        }
+    }
+    namespace thorest_errors {
+        class ThorError
+    }
+    class GetFeesPriorityResponse {
+        bigint maxPriorityFeePerGas
+        GetFeesPriorityResponseJSON toJSON()
+    }
+    class SuggestPriorityFee {
+        ThorResponse~SuggestPriorityFee, GetFeesPriorityResponse~ askTo(HttpClient httpClient)
+        SuggestPriorityFee of()$
+    }
+    ThorRequest <|.. SuggestPriorityFee
+    SuggestPriorityFee "askTo" --> GetFeesPriorityResponse
+    ThorError <-- "throws" ThorRequest

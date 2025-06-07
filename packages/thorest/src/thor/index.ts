@@ -1,6 +1,7 @@
 export * from './accounts';
 export * from './blocks';
 export * from './debug';
+export * from './fees';
 export * from './logs';
 export * from './model';
 export * from './node';
