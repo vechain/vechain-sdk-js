@@ -6,7 +6,7 @@ import {
     type ThorResponse
 } from '@thor';
 import { type HttpClient, type HttpPath, type HttpQuery } from '@http';
-import { Revision, UInt } from '@vechain/sdk-core';
+import { Hex, HexUInt32, Revision } from '@vechain/sdk-core';
 
 /**
  * Full-Qualified Path
@@ -17,12 +17,11 @@ const FQP = 'packages/thorest/src/thor/fees/RetrieveHistoricaFeeData.ts!';
  * [Retrieve historical fee data](http://localhost:8669/doc/stoplight-ui/#/paths/fees-history/get)
  */
 class RetrieveHistoricalFeeData
-    implements ThorRequest<RetrieveHistoricalFeeData, GetFeesHistoryResponse>
-{
+    implements ThorRequest<RetrieveHistoricalFeeData, GetFeesHistoryResponse> {
     /**
      * Represents the API endpoint or resource path used for priority-fee-related operations.
      */
-    protected static readonly PATH: HttpPath = { path: '/fees/priority' };
+    protected static readonly PATH: HttpPath = { path: '/fees/history' };
 
     /**
      * Represents the HTTP query configuration for a specific API endpoint.
@@ -97,7 +96,7 @@ class RetrieveHistoricalFeeData
     static of(blockCount: number): RetrieveHistoricalFeeData {
         try {
             return new RetrieveHistoricalFeeData(
-                new Query(UInt.of(blockCount), Revision.BEST, [])
+                new Query(blockCount, Revision.BEST, [])
             );
         } catch (error) {
             throw new ThorError(
@@ -120,7 +119,7 @@ class RetrieveHistoricalFeeData
      * @throws {ThorError} If the provided newest block is invalid.
      */
     withNewestBlock(
-        newestBlock: Revision = Revision.BEST
+        newestBlock: Hex | Revision = Revision.BEST
     ): RetrieveHistoricalFeeData {
         try {
             return new RetrieveHistoricalFeeData(
@@ -185,12 +184,12 @@ class Query implements HttpQuery {
     /**
      * The number of blocks to be returned.
      */
-    readonly blockCount: UInt;
+    readonly blockCount: number;
 
     /**
      * Specify either best, justified, finalized, next, a block number or block ID.
      */
-    readonly newestBlock: Revision;
+    readonly newestBlock: HexUInt32 | Revision;
 
     /**
      * The percentiles of the rewards to be returned.
@@ -206,8 +205,8 @@ class Query implements HttpQuery {
      * @return {void}
      */
     constructor(
-        blockCount: UInt,
-        newestBlock: Revision,
+        blockCount: number,
+        newestBlock: HexUInt32 | Revision,
         rewardPercentiles: number[]
     ) {
         this.blockCount = blockCount;
@@ -221,8 +220,11 @@ class Query implements HttpQuery {
      * @return {string} The constructed query string.
      */
     get query(): string {
-        const rewardPercentiles = this.rewardPercentiles.join(',');
-        return `?blockCount${this.blockCount}&newestBlock${this.newestBlock}&rewardPercentiles${rewardPercentiles}`;
+        const rewardPercentiles =
+            this.rewardPercentiles.length > 0
+                ? `&rewardPercentiles=${this.rewardPercentiles.join(',')}`
+                : '';
+        return `?blockCount=${this.blockCount}&newestBlock=${this.newestBlock}${rewardPercentiles}`;
     }
 }
 

@@ -1,4 +1,4 @@
-import { type Hex, HexUInt, HexUInt32 } from '@vechain/sdk-core';
+import { type Hex, HexUInt, HexUInt32, Quantity } from '@vechain/sdk-core';
 import { type GetFeesHistoryResponseJSON } from '@thor';
 
 /**
@@ -50,12 +50,17 @@ class GetFeesHistoryResponse {
         return {
             oldestBlock: HexUInt32.of(this.oldestBlock).toString(),
             baseFeePerGas: this.baseFeePerGas.map((fee: bigint): string =>
-                HexUInt.of(fee).toString()
+                Quantity.of(fee).toString()
             ),
             gasUsedRatio: this.gasUsedRatio,
-            reward: this.reward.map((reward: bigint[]): string[] =>
-                reward.map((r: bigint): string => HexUInt.of(r).toString())
-            )
+            reward:
+                this.reward.length > 0
+                    ? this.reward.map((reward: bigint[]): string[] =>
+                          reward.map((r: bigint): string =>
+                              Quantity.of(r).toString()
+                          )
+                      )
+                    : undefined
         };
     }
 }

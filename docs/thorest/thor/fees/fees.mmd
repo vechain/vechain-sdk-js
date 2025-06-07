@@ -28,7 +28,7 @@ classDiagram
     class SuggestPriorityFee {
         ThorResponse~SuggestPriorityFee, GetFeesPriorityResponse~ askTo(HttpClient httpClient)
         SuggestPriorityFee of(number: blockCount)$
-        withNewestBlock(Revision revision)
+        withNewestBlock(Hex|Revision revision)
         withRewardPercentiles(number[] rewardPercentiles)
     }
     ThorRequest <|.. RetrieveHistoricalFeeData

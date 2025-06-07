@@ -73,5 +73,6 @@ describe('SuggestPriorityFee UNIT tests', () => {
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toBeInstanceOf(GetFeesPriorityResponse);
+        expect(actual?.toJSON()).toEqual(expected);
     });
 });
