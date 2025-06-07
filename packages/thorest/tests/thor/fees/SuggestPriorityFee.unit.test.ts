@@ -31,7 +31,7 @@ describe('SuggestPriorityFee UNIT tests', () => {
     test('err <- server error', async () => {
         const status = 500;
         const expected = {
-            maxPriorityFeePerGas: '0xBAAAAAAD'
+            maxPriorityFeePerGas: '0xDEAD'
         } satisfies GetFeesPriorityResponseJSON;
         try {
             await SuggestPriorityFee.of().askTo(
