@@ -21,12 +21,11 @@ class GetPeersResponse extends Array<PeerStat> {
      * so we need this pattern to properly handle array data instead.
      *
      * @param json - The JSON array containing peer statistics data
-     * @returns A new GetPeersResponse instance containing PeerStat objects
      * @throws IllegalArgumentError If there is a problem parsing the provided JSON object.
      */
     constructor(json: GetPeersResponseJSON) {
+        super();
         try {
-            super();
             return Object.setPrototypeOf(
                 Array.from(json ?? [], (peerStat) => {
                     return new PeerStat(peerStat);
@@ -48,7 +47,9 @@ class GetPeersResponse extends Array<PeerStat> {
      * @returns {GetPeersResponseJSON} An array of peer statistics in JSON format
      */
     toJSON(): GetPeersResponseJSON {
-        return this.map((peerStat: PeerStat) => peerStat.toJSON());
+        return this.map((peerStat: PeerStat) =>
+            peerStat.toJSON()
+        ) satisfies GetPeersResponseJSON;
     }
 }
 

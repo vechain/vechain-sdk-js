@@ -25,6 +25,12 @@ class RetrieveConnectedPeers
     private static readonly PATH: HttpPath = { path: '/node/network/peers' };
 
     /**
+     * Protected class constructor to initialize the class.
+     * This constructor is not accessible outside the containing class or its subclasses.
+     */
+    protected constructor() {}
+
+    /**
      * Sends a request to retrieve connected peers.
      *
      * @param {HttpClient} httpClient - The HTTP client used to perform the request.

@@ -24,8 +24,6 @@ const mockResponse = <T>(body: T, status: number): Response => {
 };
 
 /**
- * VeChain node - unit
- *
  * @group unit/node
  */
 describe('RetrieveConnectedPeers unit tests', () => {
@@ -53,7 +51,7 @@ describe('RetrieveConnectedPeers unit tests', () => {
             }
         ] satisfies PeerStatJSON[];
 
-        const mockPeersResponse = await new RetrieveConnectedPeers().askTo(
+        const mockPeersResponse = await RetrieveConnectedPeers.of().askTo(
             mockHttpClient(mockResponse(mockPeers, 200))
         );
         expect(mockPeersResponse.response).not.toBeNull();
@@ -61,7 +59,7 @@ describe('RetrieveConnectedPeers unit tests', () => {
             (mockPeersResponse.response as GetPeersResponse).toJSON()
         ).toEqual(mockPeers);
 
-        const emptyPeersResponse = await new RetrieveConnectedPeers().askTo(
+        const emptyPeersResponse = await RetrieveConnectedPeers.of().askTo(
             mockHttpClient(mockResponse([], 200))
         );
         expect(emptyPeersResponse.response).not.toBeNull();

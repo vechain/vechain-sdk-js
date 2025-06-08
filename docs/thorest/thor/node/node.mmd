@@ -2,6 +2,9 @@
 title: thorest_thor_fees
 ---
 classDiagram
+    namespace core_vcdm {
+        class Hex
+    }
     namespace thorest {
         class ThorRequest {
             <<interface>>
@@ -10,8 +13,15 @@ classDiagram
     namespace thorest_errors {
         class ThorError
     }
+    namespace thorest_model {
+        class Tx
+    }
     class GetPeersResponse {
         GetPeersResponseJSON toJSON()
+    }
+    class GetTxPoolStatus {
+        GetTxPoolStatus of()$
+        ThorResponse~GetTxPoolStatus, Status~askTo(HttpClient httpClient)
     }
     class PeerStat {
         string name
@@ -25,9 +35,23 @@ classDiagram
     }
     class RetrieveConnectedPeers {
         RetrieveConnectedPeers of()$
-        ThorResponse~RetrieveConnectedPeers, GetPeersResponse~ askTo(HttpClient httpClient)
+        ThorResponse~RetrieveConnectedPeers, GetPeersResponse|null~ askTo(HttpClient httpClient)
     }
-    GetPeersResponse --|> PeerStat
+    class Status {
+        number total
+        StatusJSON toJSON()
+    }
+    class TransactionIDs {
+        TransactionIDsJSON toJSON()
+    }
+    class Transactions {
+        TransactionsJSON toJSON()
+    }
+    GetPeersResponse "array" --|> PeerStat
+    Transactions "array" --|> Tx
+    TransactionIDs "array" --|> Hex
+    ThorRequest <|.. GetTxPoolStatus
     ThorRequest <|.. RetrieveConnectedPeers
+    GetTxPoolStatus "askTo" --> Status
     RetrieveConnectedPeers "askTo" --> GetPeersResponse
     ThorError <-- "throws" ThorRequest
