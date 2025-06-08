@@ -1,6 +1,14 @@
-import { PeerStat, type PeerStatJSON } from './PeerStat';
+import { type GetPeersResponseJSON, PeerStat } from '@thor';
+import { IllegalArgumentError } from '@vechain/sdk-core';
 
 /**
+ * Full-Qualified-Path
+ */
+const FQP = 'packages/thorest/src/thor/node/GetPeersResponse.ts!';
+
+/**
+ * [GetPeersResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/GetPeersResponse)
+ *
  * Represents a response containing an array of PeerStat objects.
  * Extends the native Array class to provide specialized handling of PeerStat objects.
  * @extends Array<PeerStat>
@@ -14,15 +22,25 @@ class GetPeersResponse extends Array<PeerStat> {
      *
      * @param json - The JSON array containing peer statistics data
      * @returns A new GetPeersResponse instance containing PeerStat objects
+     * @throws IllegalArgumentError If there is a problem parsing the provided JSON object.
      */
     constructor(json: GetPeersResponseJSON) {
-        super();
-        return Object.setPrototypeOf(
-            Array.from(json ?? [], (peerStat) => {
-                return new PeerStat(peerStat);
-            }),
-            GetPeersResponse.prototype
-        ) as GetPeersResponse;
+        try {
+            super();
+            return Object.setPrototypeOf(
+                Array.from(json ?? [], (peerStat) => {
+                    return new PeerStat(peerStat);
+                }),
+                GetPeersResponse.prototype
+            ) as GetPeersResponse;
+        } catch (error) {
+            throw new IllegalArgumentError(
+                `${FQP}constructor(json: GetPeerResponseJSON)`,
+                'Bad parse',
+                { json },
+                error instanceof Error ? error : undefined
+            );
+        }
     }
 
     /**
@@ -34,11 +52,4 @@ class GetPeersResponse extends Array<PeerStat> {
     }
 }
 
-/**
- * Interface representing the JSON structure of the peers response.
- * Extends the native Array type to contain PeerStatJSON objects.
- * @extends Array<PeerStatJSON>
- */
-interface GetPeersResponseJSON extends Array<PeerStatJSON> {}
-
-export { GetPeersResponse, type GetPeersResponseJSON };
+export { GetPeersResponse };

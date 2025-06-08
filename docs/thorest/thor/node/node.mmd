@@ -10,29 +10,24 @@ classDiagram
     namespace thorest_errors {
         class ThorError
     }
-    class GetFeesHistoryResponse {
-        Hex oldestBlock
-        bigint[] baseFeePerGas
-        number[] gasUsedRatio
-        bigint[][] reward
-        GetFeesHistoryResponseJSON toJSON()
+    class GetPeersResponse {
+        GetPeersResponseJSON toJSON()
     }
-    class GetFeesPriorityResponse {
-        bigint maxPriorityFeePerGas
-        GetFeesPriorityResponseJSON toJSON()
+    class PeerStat {
+        string name
+        Hex bestBlockID
+        number totalScore
+        Hex peerID
+        NetAddr netAddr
+        boolean inbound
+        number duration
+        PeerStatJSON toJSON()
     }
-    class RetrieveHistoricalFeeData {
-        ThorResponse~RetrieveHistoricalFeeData, GetFeesHistoryResponse>~ askTo(HttpClient httpClient)
-        RetrieveHistoricalFeeData of
+    class RetrieveConnectedPeers {
+        RetrieveConnectedPeers of()$
+        ThorResponse~RetrieveConnectedPeers, GetPeersResponse~ askTo(HttpClient httpClient)
     }
-    class SuggestPriorityFee {
-        ThorResponse~SuggestPriorityFee, GetFeesPriorityResponse~ askTo(HttpClient httpClient)
-        SuggestPriorityFee of(number: blockCount)$
-        withNewestBlock(Hex|Revision revision)
-        withRewardPercentiles(number[] rewardPercentiles)
-    }
-    ThorRequest <|.. RetrieveHistoricalFeeData
-    ThorRequest <|.. SuggestPriorityFee
-    RetrieveHistoricalFeeData "askTo" --> GetFeesHistoryResponse
-    SuggestPriorityFee "askTo" --> GetFeesPriorityResponse
+    GetPeersResponse --|> PeerStat
+    ThorRequest <|.. RetrieveConnectedPeers
+    RetrieveConnectedPeers "askTo" --> GetPeersResponse
     ThorError <-- "throws" ThorRequest

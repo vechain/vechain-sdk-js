@@ -60,7 +60,7 @@ class RetrieveTransactionByID
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveTransactionByID, GetTxResponse | null>> {
-        const fqp = `${FQP}askTo(httpClient: HttpClient: Promise<ThorResponse<RetrieveTransactionByID, GetTxResponse|null>>`;
+        const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveTransactionByID, GetTxResponse|null>>`;
         const response = await httpClient.get(this.path, this.query);
         if (response.ok) {
             const json = (await response.json()) as GetTxResponseJSON | null;

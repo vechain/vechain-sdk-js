@@ -45,7 +45,7 @@ class RetrieveRawBlock implements ThorRequest<RetrieveRawBlock, RawTx | null> {
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveRawBlock, RawTx | null>> {
-        const fqp = `${FQP}askTo(httpClient: HttpClient: Promise<ThorResponse<RetrieveRawBlock, TxRaw | null>>`;
+        const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveRawBlock, TxRaw | null>>`;
         const response = await httpClient.get(this.path, {
             query: '?raw=true'
         });

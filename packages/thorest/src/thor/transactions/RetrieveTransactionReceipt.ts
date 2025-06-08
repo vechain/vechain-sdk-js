@@ -58,7 +58,7 @@ class RetrieveTransactionReceipt
     ): Promise<
         ThorResponse<RetrieveTransactionReceipt, GetTxReceiptResponse | null>
     > {
-        const fqp = `${FQP}askTo(httpClient: HttpClient: Promise<ThorResponse<RetrieveTransactionReceipt, GetTxReceiptResponse|null>>`;
+        const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveTransactionReceipt, GetTxReceiptResponse|null>>`;
         const response = await httpClient.get(this.path, this.query);
         if (response.ok) {
             const json =

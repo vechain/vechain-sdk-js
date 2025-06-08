@@ -6,7 +6,7 @@ import {
     type ThorResponse
 } from '@thor';
 import { type HttpClient, type HttpPath, type HttpQuery } from '@http';
-import { Hex, HexUInt32, Revision } from '@vechain/sdk-core';
+import { type Hex, type HexUInt32, Revision } from '@vechain/sdk-core';
 
 /**
  * Full-Qualified Path
@@ -17,7 +17,8 @@ const FQP = 'packages/thorest/src/thor/fees/RetrieveHistoricaFeeData.ts!';
  * [Retrieve historical fee data](http://localhost:8669/doc/stoplight-ui/#/paths/fees-history/get)
  */
 class RetrieveHistoricalFeeData
-    implements ThorRequest<RetrieveHistoricalFeeData, GetFeesHistoryResponse> {
+    implements ThorRequest<RetrieveHistoricalFeeData, GetFeesHistoryResponse>
+{
     /**
      * Represents the API endpoint or resource path used for priority-fee-related operations.
      */

@@ -1,9 +1,30 @@
-import { describe, test, expect } from '@jest/globals';
-import { type PeerStatJSON, RetrieveConnectedPeers } from '@thor';
-import { mockHttpClient } from '../../utils/MockUnitTestClient';
+import { describe, expect, jest, test } from '@jest/globals';
+import {
+    type GetPeersResponse,
+    type PeerStatJSON,
+    RetrieveConnectedPeers
+} from '@thor';
+import type { HttpClient } from '@http';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
+
+const mockHttpClient = <T>(response: T): HttpClient => {
+    return {
+        get: jest.fn().mockReturnValue(response)
+    } as unknown as HttpClient;
+};
+
+const mockResponse = <T>(body: T, status: number): Response => {
+    const init: ResponseInit = {
+        status,
+        headers: new Headers({
+            'Content-Type': 'application/json'
+        })
+    };
+    return new Response(fastJsonStableStringify(body), init);
+};
 
 /**
- *VeChain node - unit
+ * VeChain node - unit
  *
  * @group unit/node
  */
@@ -33,13 +54,19 @@ describe('RetrieveConnectedPeers unit tests', () => {
         ] satisfies PeerStatJSON[];
 
         const mockPeersResponse = await new RetrieveConnectedPeers().askTo(
-            mockHttpClient<PeerStatJSON[]>(mockPeers, 'get')
+            mockHttpClient(mockResponse(mockPeers, 200))
         );
-        expect(mockPeersResponse.response.toJSON()).toEqual(mockPeers);
+        expect(mockPeersResponse.response).not.toBeNull();
+        expect(
+            (mockPeersResponse.response as GetPeersResponse).toJSON()
+        ).toEqual(mockPeers);
 
         const emptyPeersResponse = await new RetrieveConnectedPeers().askTo(
-            mockHttpClient<PeerStatJSON[]>([], 'get')
+            mockHttpClient(mockResponse([], 200))
         );
-        expect(emptyPeersResponse.response.toJSON()).toEqual([]);
+        expect(emptyPeersResponse.response).not.toBeNull();
+        expect(
+            (emptyPeersResponse.response as GetPeersResponse).toJSON()
+        ).toEqual([]);
     });
 });
