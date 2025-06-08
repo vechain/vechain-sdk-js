@@ -1,19 +1,25 @@
-import { describe, expect, test } from '@jest/globals';
-import { Status, ThorError, ThorNetworks } from '@thor';
+import {
+    RetrieveTransactionsFromTransactionPool,
+    ThorError,
+    ThorNetworks,
+    TransactionsIDs
+} from '@thor';
 import { FetchHttpClient } from '@http';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
-import { GetTxPoolStatus } from '@thor/node/GetTxPoolStatus';
+import { expect } from '@jest/globals';
 
-describe('GetTxPoolStatus TESTNET tests', () => {
-    test('ok|disabled <- askTo', async () => {
+describe('RetrieveTransactionsFromTransactionPool TESTNET tests', () => {
+    test('ok <- askTo', async () => {
         try {
-            const actual = await GetTxPoolStatus.of().askTo(
-                FetchHttpClient.at(ThorNetworks.TESTNET)
-            );
+            const actual = (
+                await RetrieveTransactionsFromTransactionPool.of().askTo(
+                    FetchHttpClient.at(ThorNetworks.TESTNET)
+                )
+            ).response;
             log.debug(fastJsonStableStringify(actual));
             expect(actual).toBeDefined();
-            expect(actual).toBeInstanceOf(Status);
+            expect(actual).toBeInstanceOf(TransactionsIDs);
         } catch (error) {
             // Endpoint is disabled
             expect(error).toBeInstanceOf(ThorError);

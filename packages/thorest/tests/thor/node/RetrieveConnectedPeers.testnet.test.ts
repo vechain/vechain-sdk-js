@@ -6,9 +6,11 @@ import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 describe('RetrieveConnectedPeers TESTNET tests', () => {
     test('ok <- askTo', async () => {
-        const r = await RetrieveConnectedPeers.of().askTo(
-            FetchHttpClient.at(ThorNetworks.TESTNET)
-        );
-        log.debug(fastJsonStableStringify(r));
+        const actual = (
+            await RetrieveConnectedPeers.of().askTo(
+                FetchHttpClient.at(ThorNetworks.TESTNET)
+            )
+        ).response;
+        log.debug(fastJsonStableStringify(actual));
     });
 });

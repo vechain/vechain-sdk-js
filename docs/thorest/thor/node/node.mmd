@@ -37,6 +37,14 @@ classDiagram
         RetrieveConnectedPeers of()$
         ThorResponse~RetrieveConnectedPeers, GetPeersResponse|null~ askTo(HttpClient httpClient)
     }
+    class RetrieveExpandedTransactionsFromTransactionPool {
+        ThorResponse~RetrieveExpandedTransactionsFromTransactionPool, Transactions~ askTo(HttpClient httpClient)
+        RetrieveExpandedTransactionsFromTransactionPool of(Address address)$
+    }
+    class RetrieveTransactionsFromTransactionPool {
+        ThorRespose~RetrieveTransactionsFromTransactionPool, TransactionIDs~ askTo(HttpClient httpClient)
+        RetrieveTransactionsFromTransactionPool of(Address address)$
+    }
     class Status {
         number total
         StatusJSON toJSON()
@@ -52,6 +60,10 @@ classDiagram
     TransactionIDs "array" --|> Hex
     ThorRequest <|.. GetTxPoolStatus
     ThorRequest <|.. RetrieveConnectedPeers
+    ThorRequest <|.. RetrieveExpandedTransactionsFromTransactionPool
+    ThorRequest <|.. RetrieveTransactionsFromTransactionPool
     GetTxPoolStatus "askTo" --> Status
     RetrieveConnectedPeers "askTo" --> GetPeersResponse
+    RetrieveExpandedTransactionsFromTransactionPool "askTo" --> Transactions
+    RetrieveTransactionsFromTransactionPool "askTo" --> TransactionIDs
     ThorError <-- "throws" ThorRequest

@@ -3,6 +3,8 @@ export * from './GetPeersResponseJSON';
 export * from './PeerStat';
 export * from './PeerStatJSON';
 export * from './RetrieveConnectedPeers';
+export * from './RetrieveExpandedTransactionsFromTransactionPool';
+export * from './RetrieveTransactionsFromTransactionPool';
 export * from './Status';
 export * from './StatusJSON';
 export * from './Transactions';

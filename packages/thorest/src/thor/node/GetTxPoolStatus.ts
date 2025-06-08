@@ -1,11 +1,5 @@
 import { type HttpClient, type HttpPath } from '@http';
-import {
-    Status,
-    type StatusJSON,
-    ThorError,
-    type ThorRequest,
-    type ThorResponse
-} from '@thor';
+import { Status, type StatusJSON, ThorError, type ThorRequest, type ThorResponse } from '@thor';
 
 /**
  * Full-Qualified-Path
@@ -25,7 +19,8 @@ class GetTxPoolStatus implements ThorRequest<GetTxPoolStatus, Status> {
      * Protected class constructor to initialize the class.
      * This constructor is not accessible outside the containing class or its subclasses.
      */
-    protected constructor() {}
+    protected constructor() {
+    }
 
     /**
      * Sends a request to retrieve transaction pool status and handles the response.
@@ -36,16 +31,29 @@ class GetTxPoolStatus implements ThorRequest<GetTxPoolStatus, Status> {
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<GetTxPoolStatus, Status>> {
-        const fqp = `${FQP}askTo(httpClient: HttpClient)`;
+        const fqp = `${FQP}askTo(httpClient: HttpClient)<Promise<ThorResponse<GetTxPoolStatus, Status>> >`;
         const response = await httpClient.get(GetTxPoolStatus.PATH, {
             query: ''
         });
         if (response.ok) {
-            const json = (await response.json()) as StatusJSON;
-            return {
-                request: this,
-                response: new Status(json)
-            };
+            try {
+                const json = (await response.json()) as StatusJSON;
+                return {
+                    request: this,
+                    response: new Status(json)
+                };
+            } catch (error) {
+                throw new ThorError(
+                    fqp,
+                    'Bad response.',
+                    {
+                        url: response.url,
+                        body: await response.text()
+                    },
+                    error instanceof Error ? error : undefined,
+                    response.status
+                );
+            }
         } else {
             throw new ThorError(
                 fqp,

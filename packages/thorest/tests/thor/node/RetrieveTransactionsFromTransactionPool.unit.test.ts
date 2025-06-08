@@ -1,8 +1,10 @@
-import { describe, expect, jest, test } from '@jest/globals';
-import { GetTxPoolStatus } from '@thor/node/GetTxPoolStatus';
-import { type HttpClient } from '@http';
-import { Status, type StatusJSON } from '@thor';
+import {
+    RetrieveTransactionsFromTransactionPool, TransactionsIDs,
+    type TransactionsIDsJSON
+} from '@thor';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
+import { expect, jest } from '@jest/globals';
+import type { HttpClient } from '@http';
 
 const mockHttpClient = <T>(response: T): HttpClient => {
     return {
@@ -23,18 +25,18 @@ const mockResponse = <T>(body: T, status: number): Response => {
 /**
  * @group unit/node
  */
-describe('GetTxPoolStatus UNIT tests', () => {
+describe('RetrieveTransactionsFromTransactionPool UNIT tests', () => {
     test('ok <- askTo', async () => {
-        const expected = {
-            total: 42
-        } satisfies StatusJSON;
+        const expected = [
+            '0x284bba50ef777889ff1a367ed0b38d5e5626714477c40de38d71cedd6f9fa477',
+            '0x4de71f2d588aa8a1ea00fe8312d92966da424d9939a511fc0be81e65fad52af8'
+        ] satisfies TransactionsIDsJSON;
         const actual = (
-            await GetTxPoolStatus.of().askTo(
+            await RetrieveTransactionsFromTransactionPool.of().askTo(
                 mockHttpClient(mockResponse(expected, 200))
             )
         ).response;
         expect(actual).toBeDefined();
-        expect(actual).toBeInstanceOf(Status);
-        expect(actual?.toJSON()).toEqual(expected);
+        expect(actual).toEqual(new TransactionsIDs(expected));
     });
 });
