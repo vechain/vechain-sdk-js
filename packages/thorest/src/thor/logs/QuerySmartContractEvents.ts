@@ -1,11 +1,12 @@
-import { type HttpClient, type HttpPath } from '@http';
 import {
-    EventLogFilterRequest,
+    type ThorRequest,
+    type ThorResponse,
+    type EventLogsResponseJSON,
     type EventLogFilterRequestJSON,
     EventLogsResponse,
-    type EventLogsResponseJSON
-} from '@thor/logs';
-import { type ThorRequest, type ThorResponse } from '@thor';
+    EventLogFilterRequest
+} from '@thor';
+import { type HttpClient, type HttpPath } from '@http';
 
 class QuerySmartContractEvents
     implements ThorRequest<QuerySmartContractEvents, EventLogsResponse>
@@ -26,10 +27,10 @@ class QuerySmartContractEvents
             { query: '' },
             this.request.toJSON()
         );
-        const responseBody = (await response.json()) as EventLogsResponseJSON;
+        const json = (await response.json()) as EventLogsResponseJSON;
         return {
             request: this,
-            response: new EventLogsResponse(responseBody)
+            response: new EventLogsResponse(json)
         };
     }
 

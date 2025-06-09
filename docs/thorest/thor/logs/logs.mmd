@@ -1,0 +1,96 @@
+---
+title: thorest_thor_logs
+---
+classDiagram
+    namespace thorest {
+        class ThorRequest {
+            <<interface>>
+        }
+    }
+    namespace thorest_errors {
+        class ThorError
+    }
+    class EventCriteria {
+        Address address
+        Hex topic0
+        Hex topic1
+        Hex topic2
+        Hex topic3
+        Hex topic4
+        EventCriteriaJSON toJSON()
+    }
+    class EventLogFilterRequest {
+        FilterRange range;
+        FilterOptions: options;
+        EventCriteria[] criteriaSet:
+        LogSort: order;
+        EventLogFilterRequestJSON toJSON()
+    }
+    class EventLogResponse {
+        Address address
+        Hex[] topics
+        Hex data
+        LogMeta meta
+        EventLogsResponseJSON toJSON()
+    }
+    class EventLogsResponse {
+        EventLogsResponseJSON toJSON()
+    }
+    class FilterOptions {
+        number limit
+        number offset
+        boolean includeIndexes
+        FilterOptionsJSON toJSON()
+    }
+    class FilterRange {
+        FilterRangeUnits unit
+        number from
+        number to
+        FilterRangeJSON toJSON()
+    }
+    class FilterRangeUnit {
+        <<enum>>
+        block
+        time
+    }
+    class LogMeta {
+        Hex blockID
+        number blockNumber
+        number blockTimestamp
+        Hex txID
+        Address txOrigin
+        number clauseIndex
+        number txIndex
+        number logIndex
+        LogMetaJSON toJSON()
+    }
+    class LogSort {
+        <<enum>>
+        asc
+        desc
+    }
+    class TransferCriteria {
+        FilterRange range
+        FilterOptions options
+        TransferCriteria[] criteriaSet
+        TransferCriteriaJSON toJSON()
+    }
+    class TransferLogFilterRequest {
+        FilterRange range
+        FilterOptions options
+        TransferCriteria[] criteriaSet
+        LogSort order
+        TransferLogFilterRequestJSON toJSON()
+    }
+    class TransferLogResponse {
+        Address sender
+        Address receipient
+        bigint amount
+        LogMeta meta
+        TransferLogResponseJSON toJSON()
+    }
+    class TransferLogsResponse {
+        TransferLogsResponseJSON toJSON()
+    }
+    EventLogsResponse "array" --|> EventLogResponse
+    TransferLogsResponse "array" --|> TransferLogResponse
