@@ -1,4 +1,9 @@
-import { Address, HexUInt, IllegalArgumentError } from '@vechain/sdk-core';
+import {
+    Address,
+    HexUInt,
+    IllegalArgumentError,
+    Quantity
+} from '@vechain/sdk-core';
 import { LogMeta, type TransferLogResponseJSON } from '@thor';
 
 /**
@@ -10,7 +15,6 @@ const FQP = 'packages/thorest/src/thor/logs/TransferLogResponse.ts!';
  * [TransferLogResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/TransferLogsResponse)
  */
 class TransferLogResponse {
-
     /**
      * The address that sent the VET.
      */
@@ -63,7 +67,7 @@ class TransferLogResponse {
         return {
             sender: this.sender.toString(),
             recipient: this.recipient.toString(),
-            amount: HexUInt.of(this.amount).toString(),
+            amount: Quantity.of(this.amount).toString(),
             meta: this.meta.toJSON()
         } satisfies TransferLogResponseJSON;
     }

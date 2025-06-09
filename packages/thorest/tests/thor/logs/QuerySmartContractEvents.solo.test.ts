@@ -8,7 +8,7 @@ import {
 import { FetchHttpClient } from '@http';
 
 /**
- * group integration/logsyarn stop-thor-solo
+ * group integration/logs
  */
 describe('QuerySmartContractEvents SOLO tests', () => {
     const httpClient = FetchHttpClient.at(ThorNetworks.SOLONET);
