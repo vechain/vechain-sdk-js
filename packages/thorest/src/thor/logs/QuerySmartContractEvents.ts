@@ -56,7 +56,7 @@ class QuerySmartContractEvents
             { query: '' },
             this.request.toJSON()
         );
-        if (!response.ok) {
+        if (response.ok) {
             const json = (await response.json()) as EventLogsResponseJSON;
             try {
                 return {
