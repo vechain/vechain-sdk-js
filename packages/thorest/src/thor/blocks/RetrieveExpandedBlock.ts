@@ -49,7 +49,7 @@ class RetrieveExpandedBlock
     ): Promise<
         ThorResponse<RetrieveExpandedBlock, ExpandedBlockResponse | null>
     > {
-        const fqp = `${FQP}askTo(httpClient: HttpClient: Promise<ThorResponse<RetrieveExpandedBlock, ExpandedBlockResponse>>`;
+        const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveExpandedBlock, ExpandedBlockResponse>>`;
         const response = await httpClient.get(this.path, {
             query: '?expanded=true&raw=false'
         });

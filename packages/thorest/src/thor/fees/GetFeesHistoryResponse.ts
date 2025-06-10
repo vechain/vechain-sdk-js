@@ -1,5 +1,16 @@
-import { type Hex, HexUInt, HexUInt32, Quantity } from '@vechain/sdk-core';
+import {
+    type Hex,
+    HexUInt,
+    HexUInt32,
+    IllegalArgumentError,
+    Quantity
+} from '@vechain/sdk-core';
 import { type GetFeesHistoryResponseJSON } from '@thor';
+
+/**
+ * Full-Qualified Path
+ */
+const FQP = 'packages/thorest/src/thor/fees/GetFeesHistoryResponse.ts!';
 
 /**
  * [GetFeesHistoryResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/GetFeesHistoryResponse)
@@ -26,18 +37,34 @@ class GetFeesHistoryResponse {
      */
     readonly reward: bigint[][];
 
+    /**
+     * Constructs an instance of the class using the provided JSON data.
+     *
+     * @param {GetFeesHistoryResponseJSON} json - The JSON object containing fee history response data.
+     * @return {void} Initializes the instance properties such as `oldestBlock`, `baseFeePerGas`, `gasUsedRatio`, and `reward` from the parsed JSON data.
+     * @throws {IllegalArgumentError} Throws an error if the JSON parsing fails or is invalid.
+     */
     constructor(json: GetFeesHistoryResponseJSON) {
-        this.oldestBlock = HexUInt32.of(json.oldestBlock);
-        this.baseFeePerGas = json.baseFeePerGas.map(
-            (fee: string): bigint => HexUInt.of(fee).bi
-        );
-        this.gasUsedRatio = json.gasUsedRatio;
-        this.reward =
-            json.reward === undefined
-                ? []
-                : json.reward.map((reward: string[]): bigint[] =>
-                      reward.map((r: string): bigint => HexUInt.of(r).bi)
-                  );
+        try {
+            this.oldestBlock = HexUInt32.of(json.oldestBlock);
+            this.baseFeePerGas = json.baseFeePerGas.map(
+                (fee: string): bigint => HexUInt.of(fee).bi
+            );
+            this.gasUsedRatio = json.gasUsedRatio;
+            this.reward =
+                json.reward === undefined
+                    ? []
+                    : json.reward.map((reward: string[]): bigint[] =>
+                          reward.map((r: string): bigint => HexUInt.of(r).bi)
+                      );
+        } catch (error) {
+            throw new IllegalArgumentError(
+                `${FQP}constructor(json: GetFeesHistoryResponseJSON)`,
+                'Bad parse',
+                { json },
+                error instanceof Error ? error : undefined
+            );
+        }
     }
 
     /**

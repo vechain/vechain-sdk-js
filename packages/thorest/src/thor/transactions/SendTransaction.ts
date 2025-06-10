@@ -51,7 +51,7 @@ class SendTransaction implements ThorRequest<SendTransaction, TXID> {
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<SendTransaction, TXID>> {
-        const fqp = `${FQP}askTo(httpClient: HttpClient: Promise<ThorResponse<SendTransaction, TXID>>`;
+        const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<SendTransaction, TXID>>`;
         const response = await httpClient.post(
             SendTransaction.PATH,
             { query: '' },

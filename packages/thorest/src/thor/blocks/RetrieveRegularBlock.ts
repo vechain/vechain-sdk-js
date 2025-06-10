@@ -49,7 +49,7 @@ class RetrieveRegularBlock
     ): Promise<
         ThorResponse<RetrieveRegularBlock, RegularBlockResponse | null>
     > {
-        const fqp = `${FQP}askTo(httpClient: HttpClient: Promise<ThorResponse<RetrieveRegularBlock, RegularBlockResponse | null>>`;
+        const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveRegularBlock, RegularBlockResponse | null>>`;
         const response = await httpClient.get(this.path, {
             query: '?raw=false'
         });
