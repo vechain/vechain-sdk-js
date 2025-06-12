@@ -20,10 +20,10 @@ classDiagram
         EventCriteriaJSON toJSON()
     }
     class EventLogFilterRequest {
-        FilterRange range;
-        FilterOptions: options;
-        EventCriteria[] criteriaSet:
-        LogSort: order;
+        FilterRange range
+        FilterOptions options
+        EventCriteria[] criteriaSet
+        LogSort order
         EventLogFilterRequestJSON toJSON()
     }
     class EventLogResponse {
