@@ -4,8 +4,7 @@ import {
     HexUInt,
     HexUInt32,
     IllegalArgumentError,
-    type Hex,
-    type ThorId
+    type Hex
 } from '@vechain/sdk-core';
 
 /**
@@ -70,7 +69,7 @@ class EventLogResponse {
     toJSON(): EventLogResponseJSON {
         return {
             address: this.address.toString(),
-            topics: this.topics.map((topic: ThorId): string =>
+            topics: this.topics.map((topic: HexUInt32): string =>
                 topic.toString()
             ),
             data: this.data.toString(),
