@@ -1,7 +1,7 @@
 import {
     TransferLogResponse,
-    TransferLogResponseJSON,
-    TransferLogsResponseJSON
+    type TransferLogResponseJSON,
+    type TransferLogsResponseJSON
 } from '@thor/logs';
 import { IllegalArgumentError } from '@vechain/sdk-core';
 
