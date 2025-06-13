@@ -1,34 +1,70 @@
-import { Address } from '@vechain/sdk-core';
+import { Address, IllegalArgumentError } from '@vechain/sdk-core';
+import { type TransferCriteriaJSON } from '@thor';
 
+/**
+ * Full-Qualified-Path
+ */
+const FQP = 'packages/thorest/src/thor/logs/TransferCriteria.ts!';
+
+/**
+ * [TransferCriteria](http://localhost:8669/doc/stoplight-ui/#/schemas/TransferCriteria)
+ */
 class TransferCriteria {
-    readonly txOrigin?: Address;
-    readonly sender?: Address;
-    readonly recipient?: Address;
+    /**
+     * The address from which the transaction was sent.
+     */
+    readonly txOrigin: Address | null;
 
+    /**
+     * The address that sent the VET.
+     */
+    readonly sender: Address | null;
+
+    /**
+     * The address that received the VET.
+     */
+    readonly recipient: Address | null;
+
+    /**
+     * Constructs a new instance of the class using the provided TransferCriteriaJSON object.
+     *
+     * @param {TransferCriteriaJSON} json - The input object containing transfer criteria details. It may contain the properties `txOrigin`, `sender`, and `recipient`.
+     * @throws {IllegalArgumentError}  If the provided JSON object contains invalid or unparsable data.
+     */
     constructor(json: TransferCriteriaJSON) {
-        this.txOrigin =
-            json.txOrigin === undefined ? undefined : Address.of(json.txOrigin);
-        this.sender =
-            json.sender === undefined ? undefined : Address.of(json.sender);
-        this.recipient =
-            json.recipient === undefined
-                ? undefined
-                : Address.of(json.recipient);
+        try {
+            this.txOrigin =
+                json.txOrigin === undefined ? null : Address.of(json.txOrigin);
+            this.sender =
+                json.sender === undefined ? null : Address.of(json.sender);
+            this.recipient =
+                json.recipient === undefined
+                    ? null
+                    : Address.of(json.recipient);
+        } catch (error) {
+            throw new IllegalArgumentError(
+                `${FQP}constructor(json: TransferCriteriaJSON)`,
+                'Bad parse',
+                { json },
+                error instanceof Error ? error : undefined
+            );
+        }
     }
 
+    /**
+     * Converts the current TransferCriteria instance into a JSON serializable object.
+     *
+     * @return {TransferCriteriaJSON} A JSON representation of the TransferCriteria object.
+     */
     toJSON(): TransferCriteriaJSON {
         return {
-            txOrigin: this.txOrigin?.toString(),
-            sender: this.sender?.toString(),
-            recipient: this.recipient?.toString()
+            txOrigin:
+                this.txOrigin === null ? undefined : this.txOrigin.toString(),
+            sender: this.sender === null ? undefined : this.sender.toString(),
+            recipient:
+                this.recipient === null ? undefined : this.recipient.toString()
         } satisfies TransferCriteriaJSON;
     }
 }
 
-interface TransferCriteriaJSON {
-    txOrigin?: string;
-    sender?: string;
-    recipient?: string;
-}
-
-export { TransferCriteria, type TransferCriteriaJSON };
+export { TransferCriteria };
