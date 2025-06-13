@@ -76,8 +76,7 @@ class LogMeta {
             this.logIndex = UInt.of(json.logIndex).valueOf();
         } catch (error) {
             throw new IllegalArgumentError(
--                `${FQP}constructor(json: FilterOptionsJSON)`,
-+                `${FQP}constructor(json: LogMetaJSON)`,
+                `${FQP}constructor(json: LogMetaJSON)`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined
