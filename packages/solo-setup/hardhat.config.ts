@@ -10,7 +10,7 @@ const config: HardhatUserConfig = {
 module.exports = {
     solidity: {
         version: '0.8.20',
-        evmVersion: 'paris',
+        evmVersion: 'shanghai',
         settings: {
             optimizer: {
                 enabled: true,
