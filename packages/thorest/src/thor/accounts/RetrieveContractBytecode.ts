@@ -1,7 +1,13 @@
 import { type HttpClient, type HttpPath } from '@http';
 import type { Address } from '@vechain/sdk-core';
 import { ContractBytecode, type ContractBytecodeJSON } from '@thor/accounts';
-import { type ThorRequest, type ThorResponse } from '@thor';
+import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
+
+/**
+ * Full-Qualified Path
+ */
+const FQP = 'packages/thorest/src/thor/accounts/RetrieveContractBytecode.ts!';
+
 class RetrieveContractBytecode
     implements ThorRequest<RetrieveContractBytecode, ContractBytecode>
 {
@@ -14,12 +20,37 @@ class RetrieveContractBytecode
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveContractBytecode, ContractBytecode>> {
+        const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveContractBytecode, ContractBytecode>>`;
         const response = await httpClient.get(this.path, { query: '' });
-        const responseBody = (await response.json()) as ContractBytecodeJSON;
-        return {
-            request: this,
-            response: new ContractBytecode(responseBody)
-        };
+        if (response.ok) {
+            const json = (await response.json()) as ContractBytecodeJSON;
+            try {
+                return {
+                    request: this,
+                    response: new ContractBytecode(json)
+                };
+            } catch (error) {
+                throw new ThorError(
+                    fqp,
+                    'Bad response.',
+                    {
+                        url: response.url,
+                        body: json
+                    },
+                    error instanceof Error ? error : undefined,
+                    response.status
+                );
+            }
+        }
+        throw new ThorError(
+            fqp,
+            'Bad response.',
+            {
+                url: response.url
+            },
+            undefined,
+            response.status
+        );
     }
 
     static of(address: Address): RetrieveContractBytecode {

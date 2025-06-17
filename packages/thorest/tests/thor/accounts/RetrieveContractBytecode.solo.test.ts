@@ -5,11 +5,15 @@ import { FetchHttpClient } from '@http';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 
+/**
+ * VeChain retrieve contract bytecode - solo
+ * @group integration/accounts
+ */
 describe('RetrieveContractBytecode testnet tests', () => {
     test('ok <- askTo', async () => {
         const r = await RetrieveContractBytecode.of(
             Address.of('0x0000000000000000000000000000456E65726779')
-        ).askTo(FetchHttpClient.at(ThorNetworks.TESTNET));
+        ).askTo(FetchHttpClient.at(ThorNetworks.SOLONET));
         log.debug(fastJsonStableStringify(r));
     });
 });

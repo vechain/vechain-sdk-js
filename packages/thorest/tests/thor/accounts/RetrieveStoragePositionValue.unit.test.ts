@@ -3,13 +3,13 @@ import { Address, BlockId, ThorId } from '@vechain/sdk-core';
 import {
     RetrieveStoragePositionValue,
     RetrieveStoragePositionValuePath,
-    GetStorageResponse,
-    type GetStorageResponseJSON
+    GetStorageResponse
 } from '@thor';
 import {
     mockHttpClient,
     mockHttpClientWithError
 } from '../../utils/MockUnitTestClient';
+import { GetStorageResponseJSON } from '@thor';
 /**
  * VeChain retrieve storage position value - unit
  *

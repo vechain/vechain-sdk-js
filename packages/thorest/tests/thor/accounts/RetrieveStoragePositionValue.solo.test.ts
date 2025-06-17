@@ -5,6 +5,10 @@ import { FetchHttpClient } from '@http';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 
+/**
+ * VeChain retrieve storage position value - solo
+ * @group integration/accounts
+ */
 describe('RetrieveStoragePositionValue testnet tests', () => {
     test('ok <- askTo', async () => {
         const r = await RetrieveStoragePositionValue.of(
@@ -12,7 +16,7 @@ describe('RetrieveStoragePositionValue testnet tests', () => {
             BlockId.of(
                 '0x0000000000000000000000000000000000000000000000000000000000000001'
             )
-        ).askTo(FetchHttpClient.at(ThorNetworks.TESTNET));
+        ).askTo(FetchHttpClient.at(ThorNetworks.SOLONET));
         log.debug(fastJsonStableStringify(r));
     });
 });

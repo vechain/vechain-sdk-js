@@ -1,12 +1,14 @@
 import { type HttpClient, type HttpPath, type HttpQuery } from '@http';
-import {
-    ExecuteCodesResponse,
-    type ExecuteCodesResponseJSON,
-    ExecuteCodesRequest,
-    type ExecuteCodesRequestJSON
-} from '@thor/accounts';
-import { type ThorRequest, type ThorResponse } from '@thor';
+import { ExecuteCodesResponse, ExecuteCodesRequest } from '@thor/accounts';
+import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
 import { Revision } from '@vechain/sdk-core';
+import { ExecuteCodesResponseJSON } from './ExecuteCodesResponseJSON';
+import { ExecuteCodesRequestJSON } from './ExecuteCodesRequestJSON';
+
+/**
+ * Full-Qualified Path
+ */
+const FQP = 'packages/thorest/src/thor/accounts/InspectClauses.ts!';
 
 class InspectClauses
     implements ThorRequest<InspectClauses, ExecuteCodesResponse>
@@ -25,17 +27,41 @@ class InspectClauses
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<InspectClauses, ExecuteCodesResponse>> {
+        const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<InspectClauses, ExecuteCodesResponse>>`;
         const response = await httpClient.post(
             InspectClauses.PATH,
             this.query,
             this.request.toJSON()
         );
-        const responseBody =
-            (await response.json()) as ExecuteCodesResponseJSON;
-        return {
-            request: this,
-            response: new ExecuteCodesResponse(responseBody)
-        };
+        if (response.ok) {
+            const json = (await response.json()) as ExecuteCodesResponseJSON;
+            try {
+                return {
+                    request: this,
+                    response: new ExecuteCodesResponse(json)
+                };
+            } catch (error) {
+                throw new ThorError(
+                    fqp,
+                    'Bad response.',
+                    {
+                        url: response.url,
+                        body: json
+                    },
+                    error instanceof Error ? error : undefined,
+                    response.status
+                );
+            }
+        }
+        throw new ThorError(
+            fqp,
+            'Bad response.',
+            {
+                url: response.url
+            },
+            undefined,
+            response.status
+        );
     }
 
     static of(request: ExecuteCodesRequestJSON): InspectClauses {

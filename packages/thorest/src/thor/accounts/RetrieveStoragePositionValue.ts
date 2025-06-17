@@ -1,10 +1,14 @@
 import { type HttpClient, type HttpPath } from '@http';
 import { type Address, type BlockId } from '@vechain/sdk-core';
-import {
-    GetStorageResponse,
-    type GetStorageResponseJSON
-} from '@thor/accounts';
-import { type ThorRequest, type ThorResponse } from '@thor';
+import { GetStorageResponse } from './GetStorageResponse';
+import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
+import { type GetStorageResponseJSON } from './GetStorageResponseJSON';
+
+/**
+ * Full-Qualified Path
+ */
+const FQP =
+    'packages/thorest/src/thor/accounts/RetrieveStoragePositionValue.ts!';
 
 class RetrieveStoragePositionValue
     implements ThorRequest<RetrieveStoragePositionValue, GetStorageResponse>
@@ -18,12 +22,37 @@ class RetrieveStoragePositionValue
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveStoragePositionValue, GetStorageResponse>> {
+        const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveStoragePositionValue, GetStorageResponse>>`;
         const response = await httpClient.get(this.path, { query: '' });
-        const responseBody = (await response.json()) as GetStorageResponseJSON;
-        return {
-            request: this,
-            response: new GetStorageResponse(responseBody)
-        };
+        if (response.ok) {
+            const json = (await response.json()) as GetStorageResponseJSON;
+            try {
+                return {
+                    request: this,
+                    response: new GetStorageResponse(json)
+                };
+            } catch (error) {
+                throw new ThorError(
+                    fqp,
+                    'Bad response.',
+                    {
+                        url: response.url,
+                        body: json
+                    },
+                    error instanceof Error ? error : undefined,
+                    response.status
+                );
+            }
+        }
+        throw new ThorError(
+            fqp,
+            'Bad response.',
+            {
+                url: response.url
+            },
+            undefined,
+            response.status
+        );
     }
 
     static of(address: Address, key: BlockId): RetrieveStoragePositionValue {

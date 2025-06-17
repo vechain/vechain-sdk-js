@@ -1,6 +1,13 @@
-import { Gas, HexUInt } from '@vechain/sdk-core';
+import { Gas, HexUInt, IllegalArgumentError } from '@vechain/sdk-core';
 import { Transfer } from '@thor/model/Transfer';
 import { Event, type EventJSON, type TransferJSON } from '@thor/model';
+import { ExecuteCodeResponseJSON } from './ExecuteCodeResponseJSON';
+import { ExecuteCodesResponseJSON } from './ExecuteCodesResponseJSON';
+
+/**
+ * Full-Qualified Path
+ */
+const FQP = 'packages/thorest/src/thor/accounts/ExecuteCodesResponse.ts!';
 
 class ExecuteCodeResponse {
     readonly data: HexUInt;
@@ -11,7 +18,8 @@ class ExecuteCodeResponse {
     readonly vmError: string;
 
     constructor(json: ExecuteCodeResponseJSON) {
-        this.data = HexUInt.of(json.data);
+        try {
+            this.data = HexUInt.of(json.data);
         this.events = json.events.map(
             (eventJSON: EventJSON): Event => new Event(eventJSON)
         );
@@ -22,6 +30,14 @@ class ExecuteCodeResponse {
         this.gasUsed = Gas.of(json.gasUsed);
         this.reverted = json.reverted;
         this.vmError = json.vmError;
+        } catch (error) {
+            throw new IllegalArgumentError(
+                `${FQP}constructor(json: ExecuteCodeResponseJSON)`,
+                'Bad parse',
+                { json },
+                error instanceof Error ? error : undefined
+            );
+        }
     }
 
     toJSON(): ExecuteCodeResponseJSON {
@@ -51,20 +67,7 @@ class ExecuteCodesResponse extends Array<ExecuteCodeResponse> {
     }
 }
 
-interface ExecuteCodeResponseJSON {
-    data: string;
-    events: EventJSON[];
-    transfers: TransferJSON[];
-    gasUsed: number;
-    reverted: boolean;
-    vmError: string;
-}
-
-interface ExecuteCodesResponseJSON extends Array<ExecuteCodeResponseJSON> {}
-
 export {
     ExecuteCodeResponse,
-    ExecuteCodesResponse,
-    type ExecuteCodeResponseJSON,
-    type ExecuteCodesResponseJSON
+    ExecuteCodesResponse
 };

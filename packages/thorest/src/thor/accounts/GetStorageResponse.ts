@@ -1,10 +1,25 @@
-import { ThorId } from '@vechain/sdk-core';
+import { GetStorageResponseJSON } from './GetStorageResponseJSON';
+import { IllegalArgumentError, ThorId } from '@vechain/sdk-core';
+
+/**
+ * Full-Qualified Path
+ */
+const FQP = 'packages/thorest/src/thor/accounts/GetStorageResponse.ts!';
 
 class GetStorageResponse {
     readonly value: ThorId;
 
     constructor(json: GetStorageResponseJSON) {
-        this.value = ThorId.of(json.value);
+        try {
+            this.value = ThorId.of(json.value);
+        } catch (error) {
+            throw new IllegalArgumentError(
+                `${FQP}constructor(json: GetStorageResponseJSON)`,
+                'Bad parse',
+                { json },
+                error instanceof Error ? error : undefined
+            );
+        }
     }
 
     toJSON(): GetStorageResponseJSON {
@@ -14,8 +29,4 @@ class GetStorageResponse {
     }
 }
 
-interface GetStorageResponseJSON {
-    value: string;
-}
-
-export { GetStorageResponse, type GetStorageResponseJSON };
+export { GetStorageResponse };

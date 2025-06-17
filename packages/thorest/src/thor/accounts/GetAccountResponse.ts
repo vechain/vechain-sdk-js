@@ -1,4 +1,16 @@
-import { Quantity, Units, VET, VTHO } from '@vechain/sdk-core';
+import {
+    IllegalArgumentError,
+    Quantity,
+    Units,
+    VET,
+    VTHO
+} from '@vechain/sdk-core';
+import { GetAccountResponseJSON } from './GetAccountResponseJSON';
+
+/**
+ * Full-Qualified Path
+ */
+const FQP = 'packages/thorest/src/thor/accounts/GetAccountResponse.ts!';
 
 class GetAccountResponse {
     readonly balance: VET;
@@ -6,9 +18,18 @@ class GetAccountResponse {
     readonly hasCode: boolean;
 
     constructor(json: GetAccountResponseJSON) {
-        this.balance = VET.of(json.balance, Units.wei);
-        this.energy = VTHO.of(json.energy, Units.wei);
-        this.hasCode = json.hasCode;
+        try {
+            this.balance = VET.of(json.balance, Units.wei);
+            this.energy = VTHO.of(json.energy, Units.wei);
+            this.hasCode = json.hasCode;
+        } catch (error) {
+            throw new IllegalArgumentError(
+                `${FQP}constructor(json: GetAccountResponseJSON)`,
+                'Bad parse',
+                { json },
+                error instanceof Error ? error : undefined
+            );
+        }
     }
 
     toJSON(): GetAccountResponseJSON {
@@ -20,10 +41,4 @@ class GetAccountResponse {
     }
 }
 
-interface GetAccountResponseJSON {
-    balance: string;
-    energy: string;
-    hasCode: boolean;
-}
-
-export { GetAccountResponse, type GetAccountResponseJSON };
+export { GetAccountResponse };

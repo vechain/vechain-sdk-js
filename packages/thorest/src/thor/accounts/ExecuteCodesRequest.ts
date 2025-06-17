@@ -1,5 +1,19 @@
 import { Clause, type ClauseJSON } from '@thor';
-import { Address, BlockRef, Gas, UInt, Units, VTHO } from '@vechain/sdk-core';
+import {
+    Address,
+    BlockRef,
+    Gas,
+    IllegalArgumentError,
+    UInt,
+    Units,
+    VTHO
+} from '@vechain/sdk-core';
+import { ExecuteCodesRequestJSON } from './ExecuteCodesRequestJSON';
+
+/**
+ * Full-Qualified Path
+ */
+const FQP = 'packages/thorest/src/thor/accounts/ExecuteCodesRequest.ts!';
 
 class ExecuteCodesRequest {
     readonly provedWork?: string;
@@ -12,31 +26,42 @@ class ExecuteCodesRequest {
     readonly caller?: Address;
 
     constructor(json: ExecuteCodesRequestJSON) {
-        this.provedWork = json.provedWork;
-        this.gasPayer =
-            json.gasPayer === undefined ? undefined : Address.of(json.gasPayer);
-        this.expiration =
-            json.expiration === undefined
-                ? undefined
-                : UInt.of(json.expiration);
-        this.blockRef =
-            json.blockRef === undefined
-                ? undefined
-                : BlockRef.of(json.blockRef);
-        this.clauses =
-            json.clauses === undefined
-                ? undefined
-                : json.clauses.map(
-                      (clauseJSON: ClauseJSON): Clause =>
-                          new Clause(clauseJSON)
-                  );
-        this.gas = json.gas === undefined ? undefined : Gas.of(json.gas);
-        this.gasPrice =
-            json.gasPrice === undefined
-                ? undefined
-                : VTHO.of(json.gasPrice, Units.wei);
-        this.caller =
-            json.caller === undefined ? undefined : Address.of(json.caller);
+        try {
+            this.provedWork = json.provedWork;
+            this.gasPayer =
+                json.gasPayer === undefined
+                    ? undefined
+                    : Address.of(json.gasPayer);
+            this.expiration =
+                json.expiration === undefined
+                    ? undefined
+                    : UInt.of(json.expiration);
+            this.blockRef =
+                json.blockRef === undefined
+                    ? undefined
+                    : BlockRef.of(json.blockRef);
+            this.clauses =
+                json.clauses === undefined
+                    ? undefined
+                    : json.clauses.map(
+                          (clauseJSON: ClauseJSON): Clause =>
+                              new Clause(clauseJSON)
+                      );
+            this.gas = json.gas === undefined ? undefined : Gas.of(json.gas);
+            this.gasPrice =
+                json.gasPrice === undefined
+                    ? undefined
+                    : VTHO.of(json.gasPrice, Units.wei);
+            this.caller =
+                json.caller === undefined ? undefined : Address.of(json.caller);
+        } catch (error) {
+            throw new IllegalArgumentError(
+                `${FQP}constructor(json: ExecuteCodesRequestJSON)`,
+                'Bad parse',
+                { json },
+                error instanceof Error ? error : undefined
+            );
+        }
     }
 
     toJSON(): ExecuteCodesRequestJSON {
@@ -56,15 +81,4 @@ class ExecuteCodesRequest {
     }
 }
 
-class ExecuteCodesRequestJSON {
-    provedWork?: string;
-    gasPayer?: string;
-    expiration?: number;
-    blockRef?: string;
-    clauses?: ClauseJSON[];
-    gas?: number;
-    gasPrice?: string;
-    caller?: string;
-}
-
-export { ExecuteCodesRequest, type ExecuteCodesRequestJSON };
+export { ExecuteCodesRequest };

@@ -1,14 +1,18 @@
 import { describe, test } from '@jest/globals';
 import {
-    type ExecuteCodesRequestJSON,
     InspectClauses,
     ThorNetworks
 } from '@thor';
 import { FetchHttpClient } from '@http';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
+import { ExecuteCodesRequestJSON } from '@thor';
 
-describe('InspectClauses testnet tests', () => {
+/**
+ * VeChain inspect clauses - solo
+ * @group integration/accounts
+ */
+describe('InspectClauses solo tests', () => {
     test('ok <- askTo', async () => {
         const request = {
             gas: 50000,
@@ -37,7 +41,7 @@ describe('InspectClauses testnet tests', () => {
             ]
         } satisfies ExecuteCodesRequestJSON;
         const r = await InspectClauses.of(request).askTo(
-            FetchHttpClient.at(ThorNetworks.TESTNET)
+            FetchHttpClient.at(ThorNetworks.SOLONET)
         );
         log.debug(fastJsonStableStringify(r));
     });
