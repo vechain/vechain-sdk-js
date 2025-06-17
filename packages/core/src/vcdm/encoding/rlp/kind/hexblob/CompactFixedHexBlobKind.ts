@@ -2,7 +2,9 @@ import { Hex } from '@vcdm';
 import {
     assertCompactFixedHexBlobBuffer,
     encodeCompactFixedHexBlob,
-    type BufferOutput, type DataOutput, type RLPInput
+    type BufferOutput,
+    type DataOutput,
+    type RLPInput
 } from '@vcdm';
 import { FixedHexBlobKind } from './FixedHexBlobKind';
 
