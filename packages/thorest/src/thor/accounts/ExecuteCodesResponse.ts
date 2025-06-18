@@ -1,4 +1,4 @@
-import { Gas, HexUInt, IllegalArgumentError } from '@vechain/sdk-core';
+import { HexUInt, IllegalArgumentError } from '@vechain/sdk-core';
 import { Transfer } from '@thor/model/Transfer';
 import { Event, type EventJSON, type TransferJSON } from '@thor/model';
 import { ExecuteCodeResponseJSON } from './ExecuteCodeResponseJSON';
@@ -13,23 +13,23 @@ class ExecuteCodeResponse {
     readonly data: HexUInt;
     readonly events: Event[];
     readonly transfers: Transfer[];
-    readonly gasUsed: Gas;
+    readonly gasUsed: bigint;
     readonly reverted: boolean;
     readonly vmError: string;
 
     constructor(json: ExecuteCodeResponseJSON) {
         try {
             this.data = HexUInt.of(json.data);
-        this.events = json.events.map(
-            (eventJSON: EventJSON): Event => new Event(eventJSON)
-        );
-        this.transfers = json.transfers.map(
-            (transferJSON: TransferJSON): Transfer =>
-                new Transfer(transferJSON)
-        );
-        this.gasUsed = Gas.of(json.gasUsed);
-        this.reverted = json.reverted;
-        this.vmError = json.vmError;
+            this.events = json.events.map(
+                (eventJSON: EventJSON): Event => new Event(eventJSON)
+            );
+            this.transfers = json.transfers.map(
+                (transferJSON: TransferJSON): Transfer =>
+                    new Transfer(transferJSON)
+            );
+            this.gasUsed = BigInt(json.gasUsed);
+            this.reverted = json.reverted;
+            this.vmError = json.vmError;
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: ExecuteCodeResponseJSON)`,
@@ -49,7 +49,7 @@ class ExecuteCodeResponse {
             transfers: this.transfers.map(
                 (transfer: Transfer): TransferJSON => transfer.toJSON()
             ),
-            gasUsed: this.gasUsed.valueOf(),
+            gasUsed: Number(this.gasUsed),
             reverted: this.reverted,
             vmError: this.vmError
         } satisfies ExecuteCodeResponseJSON;
@@ -67,7 +67,4 @@ class ExecuteCodesResponse extends Array<ExecuteCodeResponse> {
     }
 }
 
-export {
-    ExecuteCodeResponse,
-    ExecuteCodesResponse
-};
+export { ExecuteCodeResponse, ExecuteCodesResponse };

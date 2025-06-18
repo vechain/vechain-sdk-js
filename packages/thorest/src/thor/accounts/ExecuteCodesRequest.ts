@@ -2,11 +2,8 @@ import { Clause, type ClauseJSON } from '@thor';
 import {
     Address,
     BlockRef,
-    Gas,
     IllegalArgumentError,
-    UInt,
-    Units,
-    VTHO
+    UInt
 } from '@vechain/sdk-core';
 import { ExecuteCodesRequestJSON } from './ExecuteCodesRequestJSON';
 
@@ -21,8 +18,8 @@ class ExecuteCodesRequest {
     readonly expiration?: UInt;
     readonly blockRef?: BlockRef;
     readonly clauses?: Clause[];
-    readonly gas?: Gas;
-    readonly gasPrice?: VTHO;
+    readonly gas?: bigint;
+    readonly gasPrice?: bigint;
     readonly caller?: Address;
 
     constructor(json: ExecuteCodesRequestJSON) {
@@ -47,11 +44,8 @@ class ExecuteCodesRequest {
                           (clauseJSON: ClauseJSON): Clause =>
                               new Clause(clauseJSON)
                       );
-            this.gas = json.gas === undefined ? undefined : Gas.of(json.gas);
-            this.gasPrice =
-                json.gasPrice === undefined
-                    ? undefined
-                    : VTHO.of(json.gasPrice, Units.wei);
+            this.gas = json.gas === undefined ? undefined : BigInt(json.gas);
+            this.gasPrice = json.gasPrice === undefined ? undefined : BigInt(json.gasPrice);
             this.caller =
                 json.caller === undefined ? undefined : Address.of(json.caller);
         } catch (error) {
@@ -71,11 +65,8 @@ class ExecuteCodesRequest {
             expiration: this.expiration?.valueOf(),
             blockRef: this.blockRef?.toString(),
             clauses: this.clauses?.map((clause: Clause) => clause.toJSON()),
-            gas: this.gas === undefined ? undefined : this.gas.valueOf(),
-            gasPrice:
-                this.gasPrice === undefined
-                    ? undefined
-                    : this.gasPrice.wei.toString(),
+            gas: this.gas === undefined ? undefined : Number(this.gas),
+            gasPrice: this.gasPrice === undefined ? undefined : this.gasPrice.toString(),
             caller: this.caller?.toString()
         } satisfies ExecuteCodesRequestJSON;
     }

@@ -1,9 +1,7 @@
 import {
+    Hex,
     IllegalArgumentError,
     Quantity,
-    Units,
-    VET,
-    VTHO
 } from '@vechain/sdk-core';
 import { GetAccountResponseJSON } from './GetAccountResponseJSON';
 
@@ -13,14 +11,14 @@ import { GetAccountResponseJSON } from './GetAccountResponseJSON';
 const FQP = 'packages/thorest/src/thor/accounts/GetAccountResponse.ts!';
 
 class GetAccountResponse {
-    readonly balance: VET;
-    readonly energy: VTHO;
+    readonly balance: bigint;
+    readonly energy: bigint;
     readonly hasCode: boolean;
 
     constructor(json: GetAccountResponseJSON) {
         try {
-            this.balance = VET.of(json.balance, Units.wei);
-            this.energy = VTHO.of(json.energy, Units.wei);
+            this.balance = Hex.of(json.balance).bi;
+            this.energy = Hex.of(json.energy).bi;
             this.hasCode = json.hasCode;
         } catch (error) {
             throw new IllegalArgumentError(
@@ -34,8 +32,8 @@ class GetAccountResponse {
 
     toJSON(): GetAccountResponseJSON {
         return {
-            balance: Quantity.of(this.balance.wei).toString(),
-            energy: Quantity.of(this.energy.wei).toString(),
+            balance: Quantity.of(this.balance).toString(),
+            energy: Quantity.of(this.energy).toString(),
             hasCode: this.hasCode
         };
     }

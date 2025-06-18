@@ -63,11 +63,9 @@ describe('RetrieveAccountDetails unit tests', () => {
 
             expect(result.request).toBe(request);
             expect(result.response).toBeInstanceOf(GetAccountResponse);
-            expect(result.response.balance).toBeInstanceOf(VET);
-            expect(result.response.energy).toBeInstanceOf(VTHO);
             expect(result.response.hasCode).toBe(true);
-            expect(result.response.balance.wei.toString(16)).toBe('1234');
-            expect(result.response.energy.wei.toString(16)).toBe('5678');
+            expect(result.response.balance.toString(16)).toBe('1234');
+            expect(result.response.energy.toString(16)).toBe('5678');
         });
 
         test('askTo() handles error response', async () => {

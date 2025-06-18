@@ -6,10 +6,9 @@ import {
 import { FetchHttpClient } from '@http';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
-import { ExecuteCodesRequestJSON } from '@thor';
+import { ExecuteCodesRequestJSON } from '@thor/accounts/ExecuteCodesRequestJSON';
 
 /**
- * VeChain inspect clauses - solo
  * @group integration/accounts
  */
 describe('InspectClauses solo tests', () => {
