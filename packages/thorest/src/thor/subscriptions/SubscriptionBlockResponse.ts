@@ -2,10 +2,14 @@ import {
     Address,
     BlockId,
     Gas,
+    IllegalArgumentError,
     ThorId,
     type TxId,
     UInt
 } from '@vechain/sdk-core';
+import { type SubscriptionBlockResponseJSON } from './SubscriptionBlockResponseJSON';
+
+const FQP = 'packages/thorest/src/thor/subscriptions/SubscriptionBlockResponse.ts!';
 
 class SubscriptionBlockResponse {
     readonly number: UInt;
@@ -27,7 +31,8 @@ class SubscriptionBlockResponse {
     readonly transactions: TxId[];
 
     constructor(json: SubscriptionBlockResponseJSON) {
-        this.number = UInt.of(json.number);
+        try {
+            this.number = UInt.of(json.number);
         this.id = BlockId.of(json.id);
         this.size = UInt.of(json.size);
         this.parentID = BlockId.of(json.parentID);
@@ -46,6 +51,14 @@ class SubscriptionBlockResponse {
         this.transactions = json.transactions.map(
             (txId: string): TxId => ThorId.of(txId)
         );
+        } catch (error) {
+            throw new IllegalArgumentError(
+                `${FQP}constructor(json: SubscriptionBlockResponseJSON)`,
+                'Bad parse',
+                { json },
+                error instanceof Error ? error : undefined
+            );
+        }
     }
 
     toJSON(): SubscriptionBlockResponseJSON {
@@ -73,24 +86,6 @@ class SubscriptionBlockResponse {
     }
 }
 
-interface SubscriptionBlockResponseJSON {
-    number: number;
-    id: string;
-    size: number;
-    parentID: string;
-    timestamp: number;
-    gasLimit: number;
-    beneficiary: string;
-    gasUsed: number;
-    totalScore: number;
-    txsRoot: string;
-    txsFeatures: number;
-    stateRoot: string;
-    receiptsRoot: string;
-    com: boolean;
-    signer: string;
-    obsolete: boolean;
-    transactions: string[];
-}
 
-export { SubscriptionBlockResponse, type SubscriptionBlockResponseJSON };
+
+export { SubscriptionBlockResponse};

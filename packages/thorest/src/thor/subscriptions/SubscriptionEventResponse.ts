@@ -1,5 +1,8 @@
-import { LogMeta, type LogMetaJSON } from '@thor/logs';
-import { Address, HexUInt, ThorId } from '@vechain/sdk-core';
+import { LogMeta } from '@thor/logs';
+import { Address, HexUInt, IllegalArgumentError, ThorId } from '@vechain/sdk-core';
+import { type SubscriptionEventResponseJSON } from './SubscriptionEventResponseJSON';
+
+const FQP = 'packages/thorest/src/thor/subscriptions/SubscriptionEventResponse.ts!';
 
 class SubscriptionEventResponse {
     readonly address: Address;
@@ -9,13 +12,22 @@ class SubscriptionEventResponse {
     readonly meta: LogMeta;
 
     constructor(json: SubscriptionEventResponseJSON) {
-        this.address = Address.of(json.address);
+        try {
+            this.address = Address.of(json.address);
         this.topics = json.topics.map(
             (topic: string): ThorId => ThorId.of(topic)
         );
         this.data = HexUInt.of(json.data);
         this.obsolete = json.obsolete;
         this.meta = new LogMeta(json.meta);
+        } catch (error) {
+            throw new IllegalArgumentError(
+                `${FQP}constructor(json: SubscriptionEventResponseJSON)`,
+                'Bad parse',
+                { json },
+                error instanceof Error ? error : undefined
+            );
+        }
     }
 
     toJSON(): SubscriptionEventResponseJSON {
@@ -31,12 +43,6 @@ class SubscriptionEventResponse {
     }
 }
 
-interface SubscriptionEventResponseJSON {
-    address: string;
-    topics: string[];
-    data: string;
-    obsolete: boolean;
-    meta: LogMetaJSON;
-}
 
-export { SubscriptionEventResponse, type SubscriptionEventResponseJSON };
+
+export { SubscriptionEventResponse };
