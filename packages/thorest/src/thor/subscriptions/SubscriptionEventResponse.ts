@@ -1,8 +1,14 @@
 import { LogMeta } from '@thor/logs';
-import { Address, HexUInt, IllegalArgumentError, ThorId } from '@vechain/sdk-core';
+import {
+    Address,
+    HexUInt,
+    IllegalArgumentError,
+    ThorId
+} from '@vechain/sdk-core';
 import { type SubscriptionEventResponseJSON } from './SubscriptionEventResponseJSON';
 
-const FQP = 'packages/thorest/src/thor/subscriptions/SubscriptionEventResponse.ts!';
+const FQP =
+    'packages/thorest/src/thor/subscriptions/SubscriptionEventResponse.ts!';
 
 class SubscriptionEventResponse {
     readonly address: Address;
@@ -14,12 +20,12 @@ class SubscriptionEventResponse {
     constructor(json: SubscriptionEventResponseJSON) {
         try {
             this.address = Address.of(json.address);
-        this.topics = json.topics.map(
-            (topic: string): ThorId => ThorId.of(topic)
-        );
-        this.data = HexUInt.of(json.data);
-        this.obsolete = json.obsolete;
-        this.meta = new LogMeta(json.meta);
+            this.topics = json.topics.map(
+                (topic: string): ThorId => ThorId.of(topic)
+            );
+            this.data = HexUInt.of(json.data);
+            this.obsolete = json.obsolete;
+            this.meta = new LogMeta(json.meta);
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: SubscriptionEventResponseJSON)`,
@@ -42,7 +48,5 @@ class SubscriptionEventResponse {
         };
     }
 }
-
-
 
 export { SubscriptionEventResponse };

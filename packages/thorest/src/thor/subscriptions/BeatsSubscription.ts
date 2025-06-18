@@ -1,9 +1,7 @@
 import { type WebSocketClient, type WebSocketListener } from '@ws';
 import type { HttpPath } from '@http';
 import type { BlockId } from '@vechain/sdk-core';
-import {
-    SubscriptionBeat2Response
-} from '@thor/subscriptions';
+import { SubscriptionBeat2Response } from '@thor/subscriptions';
 import { type SubscriptionBeat2ResponseJSON } from './SubscriptionBeat2ResponseJSON';
 
 class BeatsSubscription implements WebSocketClient, WebSocketListener<unknown> {

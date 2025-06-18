@@ -1,8 +1,6 @@
 import { type HttpPath, type HttpQuery } from '@http';
 import { type WebSocketClient, type WebSocketListener } from '@ws';
-import {
-    SubscriptionBlockResponse
-} from '@thor/subscriptions';
+import { SubscriptionBlockResponse } from '@thor/subscriptions';
 import { type BlockId } from '@vechain/sdk-core';
 import { type SubscriptionBlockResponseJSON } from './SubscriptionBlockResponseJSON';
 

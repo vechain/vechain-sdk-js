@@ -1,6 +1,5 @@
 import {
     BlockId,
-    Gas,
     HexUInt,
     IllegalArgumentError,
     UInt
@@ -11,7 +10,7 @@ const FQP =
     'packages/thorest/src/thor/subscriptions/SubscriptionBeat2Response.ts!';
 
 class SubscriptionBeat2Response {
-    readonly gasLimit: Gas;
+    readonly gasLimit: bigint;
     readonly obsolete: boolean;
     readonly number: UInt;
     readonly id: BlockId;
@@ -23,7 +22,7 @@ class SubscriptionBeat2Response {
 
     constructor(json: SubscriptionBeat2ResponseJSON) {
         try {
-            this.gasLimit = Gas.of(json.gasLimit);
+            this.gasLimit = BigInt(json.gasLimit);
             this.obsolete = json.obsolete;
             this.number = UInt.of(json.number);
             this.id = BlockId.of(json.id);
@@ -44,7 +43,7 @@ class SubscriptionBeat2Response {
 
     toJSON(): SubscriptionBeat2ResponseJSON {
         return {
-            gasLimit: this.gasLimit.valueOf(),
+            gasLimit: Number(this.gasLimit),
             obsolete: this.obsolete,
             number: this.number.valueOf(),
             id: this.id.toString(),

@@ -1,11 +1,5 @@
 import { LogMeta } from '@thor/logs';
-import {
-    Address,
-    HexUInt,
-    IllegalArgumentError,
-    Units,
-    VET
-} from '@vechain/sdk-core';
+import { Address, HexUInt, IllegalArgumentError } from '@vechain/sdk-core';
 import { type SubscriptionTransferResponseJSON } from './SubscriptionTransferResponseJSON';
 
 const FQP =
@@ -14,7 +8,7 @@ const FQP =
 class SubscriptionTransferResponse {
     readonly sender: Address;
     readonly recipient: Address;
-    readonly amount: VET;
+    readonly amount: bigint;
     readonly obsolete: boolean;
     readonly meta: LogMeta;
 
@@ -22,7 +16,7 @@ class SubscriptionTransferResponse {
         try {
             this.sender = Address.of(json.sender);
             this.recipient = Address.of(json.recipient);
-            this.amount = VET.of(HexUInt.of(json.amount).bi, Units.wei);
+            this.amount = HexUInt.of(json.amount).bi;
             this.obsolete = json.obsolete;
             this.meta = new LogMeta(json.meta);
         } catch (error) {
@@ -39,7 +33,7 @@ class SubscriptionTransferResponse {
         return {
             sender: this.sender.toString(),
             recipient: this.recipient.toString(),
-            amount: HexUInt.of(this.amount.wei).toString(),
+            amount: HexUInt.of(this.amount).toString(),
             obsolete: this.obsolete,
             meta: this.meta.toJSON()
         } satisfies SubscriptionTransferResponseJSON;
