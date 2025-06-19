@@ -1,0 +1,177 @@
+---
+title: thorest_thor_subscriptions
+---
+classDiagram
+    namespace thorest_ws {
+        class WebSocketClient {
+            <<interface>>
+            string baseURL
+            addListener(WebSocketListener~T~) WebSocketClient
+            close() WebSocketClient
+            open(HttpPath) WebSocketClient
+            removeListener(WebSocketListener~T~) WebSocketClient
+        }
+        class WebSocketListener~T~ {
+            <<interface>>
+            onClose(Event) void
+            onError(Event) void
+            onMessage(MessageEvent~T~) void
+            onOpen(Event) void
+        }
+    }
+    namespace thorest_errors {
+        class ThorError
+    }
+    class BeatsSubscription {
+        HttpPath PATH$
+        WebSocketListener~SubscriptionBeat2Response~[] listeners
+        BeatsSubscriptionQuery query
+        WebSocketClient wsc
+        BeatsSubscription at(WebSocketClient wsc)$
+        addListener(WebSocketListener~SubscriptionBeat2Response~) BeatsSubscription
+        close() BeatsSubscription
+        open() BeatsSubscription
+        removeListener(WebSocketListener~SubscriptionBeat2Response~) BeatsSubscription
+    }
+    class BlocksSubscription {
+        HttpPath PATH$
+        WebSocketListener~SubscriptionBlockResponse~[] listeners
+        BlockSubscriptionQuery query
+        WebSocketClient wsc
+        BlocksSubscription at(WebSocketClient wsc)$
+        BlocksSubscription atPos(BlockId pos)
+        addListener(WebSocketListener~SubscriptionBlockResponse~) BlocksSubscription
+        close() BlocksSubscription
+        open() BlocksSubscription
+        removeListener(WebSocketListener~SubscriptionBlockResponse~) BlocksSubscription
+    }
+    class EventsSubscription {
+        HttpPath PATH$
+        WebSocketListener~SubscriptionEventResponse~[] listeners
+        EventsSubscriptionQuery query
+        WebSocketClient wsc
+        EventsSubscription at(WebSocketClient wsc)$
+        EventsSubscription atPos(ThorId pos)
+        EventsSubscription withContractAddress(Address contractAddress)
+        EventsSubscription withFilters(ThorId t0, ThorId t1, ThorId t2, ThorId t3)
+        addListener(WebSocketListener~SubscriptionEventResponse~) EventsSubscription
+        close() EventsSubscription
+        open() EventsSubscription
+        removeListener(WebSocketListener~SubscriptionEventResponse~) EventsSubscription
+    }
+    class TransfersSubscription {
+        HttpPath PATH$
+        WebSocketListener~SubscriptionTransferResponse~[] listeners
+        TransfersSubscriptionQuery query
+        WebSocketClient wsc
+        TransfersSubscription at(WebSocketClient wsc)$
+        addListener(WebSocketListener~SubscriptionTransferResponse~) TransfersSubscription
+        close() TransfersSubscription
+        open() TransfersSubscription
+        removeListener(WebSocketListener~SubscriptionTransferResponse~) TransfersSubscription
+    }
+    class NewTransactionSubscription {
+        HttpPath PATH$
+        WebSocketListener~TXID~[] listeners
+        WebSocketClient wsc
+        NewTransactionSubscription at(WebSocketClient wsc)$
+        addListener(WebSocketListener~TXID~) NewTransactionSubscription
+        close() NewTransactionSubscription
+        open() NewTransactionSubscription
+        removeListener(WebSocketListener~TXID~) NewTransactionSubscription
+    }
+    class SubscriptionBeat2Response {
+        bigint gasLimit
+        boolean obsolete
+        UInt number
+        BlockId id
+        BlockId parentID
+        UInt timestamp
+        UInt txsFeatures
+        HexUInt bloom
+        UInt k
+        SubscriptionBeat2ResponseJSON toJSON()
+    }
+    class SubscriptionBlockResponse {
+        UInt number
+        BlockId id
+        UInt size
+        BlockId parentID
+        UInt timestamp
+        bigint gasLimit
+        Address beneficiary
+        bigint gasUsed
+        UInt totalScore
+        ThorId txsRoot
+        UInt txsFeatures
+        ThorId stateRoot
+        ThorId receiptsRoot
+        boolean com
+        Address signer
+        boolean obsolete
+        TxId[] transactions
+        SubscriptionBlockResponseJSON toJSON()
+    }
+    class SubscriptionEventResponse {
+        Address address
+        ThorId[] topics
+        HexUInt data
+        boolean obsolete
+        LogMeta meta
+        SubscriptionEventResponseJSON toJSON()
+    }
+    class SubscriptionTransferResponse {
+        Address sender
+        Address recipient
+        bigint amount
+        boolean obsolete
+        LogMeta meta
+        SubscriptionTransferResponseJSON toJSON()
+    }
+    class BeatsSubscriptionQuery {
+        BlockId pos
+        string query
+    }
+    class BlockSubscriptionQuery {
+        BlockId pos
+        string query
+    }
+    class EventsSubscriptionQuery {
+        Address addr
+        ThorId pos
+        ThorId t0
+        ThorId t1
+        ThorId t2
+        ThorId t3
+        string query
+    }
+    class TransfersSubscriptionQuery {
+        BlockId pos
+        Address recipient
+        Address sender
+        Address txOrigin
+        string query
+    }
+    WebSocketClient <|.. BeatsSubscription
+    WebSocketClient <|.. BlocksSubscription
+    WebSocketClient <|.. EventsSubscription
+    WebSocketClient <|.. TransfersSubscription
+    WebSocketClient <|.. NewTransactionSubscription
+    WebSocketListener <|.. BeatsSubscription
+    WebSocketListener <|.. BlocksSubscription
+    WebSocketListener <|.. EventsSubscription
+    WebSocketListener <|.. TransfersSubscription
+    WebSocketListener <|.. NewTransactionSubscription
+    BeatsSubscription --> SubscriptionBeat2Response : "receives"
+    BlocksSubscription --> SubscriptionBlockResponse : "receives"
+    EventsSubscription --> SubscriptionEventResponse : "receives"
+    TransfersSubscription --> SubscriptionTransferResponse : "receives"
+    BeatsSubscription --> BeatsSubscriptionQuery : "uses"
+    BlocksSubscription --> BlockSubscriptionQuery : "uses"
+    EventsSubscription --> EventsSubscriptionQuery : "uses"
+    TransfersSubscription --> TransfersSubscriptionQuery : "uses"
+    ThorError <-- "throws" BeatsSubscription
+    ThorError <-- "throws" BlocksSubscription
+    ThorError <-- "throws" EventsSubscription
+    ThorError <-- "throws" TransfersSubscription
+    ThorError <-- "throws" NewTransactionSubscription
