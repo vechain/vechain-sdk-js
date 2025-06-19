@@ -9,14 +9,48 @@ import { ExecuteCodesResponseJSON } from './ExecuteCodesResponseJSON';
  */
 const FQP = 'packages/thorest/src/thor/accounts/ExecuteCodesResponse.ts!';
 
+/**
+ * Execute Code Response
+ *
+ * Represents a single code execution response.
+ */
 class ExecuteCodeResponse {
+    /**
+     * The data of the response.
+     */
     readonly data: HexUInt;
+
+    /**
+     * The events of the response.
+     */
     readonly events: Event[];
+
+    /**
+     * The transfers of the response.
+     */
     readonly transfers: Transfer[];
+
+    /**
+     * The gas used of the response.
+     */
     readonly gasUsed: bigint;
+
+    /**
+     * The reverted of the response.
+     */
     readonly reverted: boolean;
+
+    /**
+     * The VM error of the response.
+     */
     readonly vmError: string;
 
+    /**
+     * Constructs a new instance of the class by parsing the provided JSON object.
+     *
+     * @param {ExecuteCodeResponseJSON} json - The JSON object containing execute code response data.
+     * @throws {IllegalArgumentError} If the parsing of the JSON object fails.
+     */
     constructor(json: ExecuteCodeResponseJSON) {
         try {
             this.data = HexUInt.of(json.data);
@@ -40,6 +74,11 @@ class ExecuteCodeResponse {
         }
     }
 
+    /**
+     * Converts the current execute code response data into a JSON representation.
+     *
+     * @returns {ExecuteCodeResponseJSON} A JSON object containing the execute code response data.
+     */
     toJSON(): ExecuteCodeResponseJSON {
         return {
             data: this.data.toString(),
@@ -56,7 +95,17 @@ class ExecuteCodeResponse {
     }
 }
 
+/**
+ * Execute Codes Response
+ *
+ * Represents a collection of execute code responses.
+ */
 class ExecuteCodesResponse extends Array<ExecuteCodeResponse> {
+    /**
+     * Constructs a new instance of the class by parsing the provided JSON array.
+     *
+     * @param {ExecuteCodesResponseJSON} json - The JSON array containing execute code response data.
+     */
     constructor(json: ExecuteCodesResponseJSON) {
         super(
             ...json.map(

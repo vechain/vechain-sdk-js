@@ -10,11 +10,33 @@ import { GetAccountResponseJSON } from './GetAccountResponseJSON';
  */
 const FQP = 'packages/thorest/src/thor/accounts/GetAccountResponse.ts!';
 
+/**
+ * Get Account Response
+ *
+ * Represents an account response containing balance, energy and code information.
+ */
 class GetAccountResponse {
+    /**
+     * The balance of the account.
+     */
     readonly balance: bigint;
+    
+    /**
+     * The energy of the account.
+     */
     readonly energy: bigint;
+    
+    /**
+     * Whether the account has code.
+     */
     readonly hasCode: boolean;
 
+    /**
+     * Constructs a new instance of the class by parsing the provided JSON object.
+     *
+     * @param {GetAccountResponseJSON} json - The JSON object containing account response data.
+     * @throws {IllegalArgumentError} If the parsing of the JSON object fails.
+     */
     constructor(json: GetAccountResponseJSON) {
         try {
             this.balance = Hex.of(json.balance).bi;
@@ -30,6 +52,11 @@ class GetAccountResponse {
         }
     }
 
+    /**
+     * Converts the current account response data into a JSON representation.
+     *
+     * @returns {GetAccountResponseJSON} A JSON object containing the account response data.
+     */
     toJSON(): GetAccountResponseJSON {
         return {
             balance: Quantity.of(this.balance).toString(),

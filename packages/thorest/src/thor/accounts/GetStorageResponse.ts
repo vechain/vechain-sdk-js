@@ -6,9 +6,23 @@ import { IllegalArgumentError, ThorId } from '@vechain/sdk-core';
  */
 const FQP = 'packages/thorest/src/thor/accounts/GetStorageResponse.ts!';
 
+/**
+ * Get Storage Response
+ *
+ * Represents a storage response containing the value at a storage position.
+ */
 class GetStorageResponse {
+    /**
+     * The value at the storage position.
+     */
     readonly value: ThorId;
 
+    /**
+     * Constructs a new instance of the class by parsing the provided JSON object.
+     *
+     * @param {GetStorageResponseJSON} json - The JSON object containing storage response data.
+     * @throws {IllegalArgumentError} If the parsing of the JSON object fails.
+     */
     constructor(json: GetStorageResponseJSON) {
         try {
             this.value = ThorId.of(json.value);
@@ -22,6 +36,11 @@ class GetStorageResponse {
         }
     }
 
+    /**
+     * Converts the current storage response data into a JSON representation.
+     *
+     * @returns {GetStorageResponseJSON} A JSON object containing the storage response data.
+     */
     toJSON(): GetStorageResponseJSON {
         return {
             value: this.value.toString()

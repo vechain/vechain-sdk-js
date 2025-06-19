@@ -12,16 +12,58 @@ import { ExecuteCodesRequestJSON } from './ExecuteCodesRequestJSON';
  */
 const FQP = 'packages/thorest/src/thor/accounts/ExecuteCodesRequest.ts!';
 
+/**
+ * Execute Codes Request
+ *
+ * Represents a request for executing codes.
+ */
 class ExecuteCodesRequest {
+    /**
+     * The proved work of the request.
+     */
     readonly provedWork?: string;
+
+    /**
+     * The gas payer of the request.
+     */
     readonly gasPayer?: Address;
+
+    /**
+     * The expiration of the request.
+     */
     readonly expiration?: UInt;
+
+    /**
+     * The block reference of the request.
+     */
     readonly blockRef?: BlockRef;
+
+    /**
+     * The clauses of the request.
+     */
     readonly clauses?: Clause[];
+
+    /**
+     * The gas of the request.
+     */
     readonly gas?: bigint;
+
+    /**
+     * The gas price of the request.
+     */
     readonly gasPrice?: bigint;
+
+    /**
+     * The caller of the request.
+     */
     readonly caller?: Address;
 
+    /**
+     * Constructs a new instance of the class by parsing the provided JSON object.
+     *
+     * @param {ExecuteCodesRequestJSON} json - The JSON object containing execute codes request data.
+     * @throws {IllegalArgumentError} If the parsing of the JSON object fails.
+     */
     constructor(json: ExecuteCodesRequestJSON) {
         try {
             this.provedWork = json.provedWork;
@@ -58,6 +100,11 @@ class ExecuteCodesRequest {
         }
     }
 
+    /**
+     * Converts the current execute codes request data into a JSON representation.
+     *
+     * @returns {ExecuteCodesRequestJSON} A JSON object containing the execute codes request data.
+     */
     toJSON(): ExecuteCodesRequestJSON {
         return {
             provedWork: this.provedWork,
