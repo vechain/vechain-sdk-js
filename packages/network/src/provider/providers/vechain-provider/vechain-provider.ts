@@ -267,12 +267,21 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
             };
         });
 
-        // Wait for all log fetch operations to complete and return an array of SubscriptionEvent objects
-        const subscriptionEvents = await Promise.all(promises);
-        // Filter out empty results
-        return subscriptionEvents.filter(
-            (event) => event.params.result.length > 0
-        );
+        try {
+            // Wait for all log fetch operations to complete and return an array of SubscriptionEvent objects
+            const subscriptionEvents = await Promise.all(promises);
+            // Filter out empty results
+            return subscriptionEvents.filter(
+                (event) => event.params.result.length > 0
+            );
+        } catch (error) {
+            // If any log fetch fails, log the error but return empty array to keep polling alive
+            console.warn(
+                'VeChainProvider: Failed to fetch logs for one or more subscriptions, will retry on next poll:',
+                error
+            );
+            return [];
+        }
     }
 
     /**
@@ -286,17 +295,27 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
 
         // Proceed only if there are active log subscriptions or a new heads subscription is present
         if (this.isThereActiveSubscriptions()) {
-            // Get the best (latest) block available instead of trying to fetch a specific block number
-            const bestBlock =
-                await this.thorClient.blocks.getBestBlockCompressed();
+            try {
+                // Get the best (latest) block available instead of trying to fetch a specific block number
+                const bestBlock =
+                    await this.thorClient.blocks.getBestBlockCompressed();
 
-            // Check if we have a newer block than what we've already processed
-            if (
-                bestBlock !== undefined &&
-                bestBlock !== null &&
-                bestBlock.number >= this.subscriptionManager.currentBlockNumber
-            ) {
-                result = bestBlock; // Set the fetched block as the result
+                // Check if we have a newer block than what we've already processed
+                if (
+                    bestBlock !== undefined &&
+                    bestBlock !== null &&
+                    bestBlock.number >=
+                        this.subscriptionManager.currentBlockNumber
+                ) {
+                    result = bestBlock; // Set the fetched block as the result
+                }
+            } catch (error) {
+                // Log the error but don't let it crash the polling
+                console.warn(
+                    'VeChainProvider: Failed to fetch current block, will retry on next poll:',
+                    error
+                );
+                return null;
             }
         }
 
