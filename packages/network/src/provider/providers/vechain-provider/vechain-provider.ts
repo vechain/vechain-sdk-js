@@ -133,26 +133,40 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
                 const currentBlock = await this.getCurrentBlock();
 
                 if (currentBlock !== null) {
+                    // Only process if this is a new block we haven't processed yet
                     if (
-                        this.subscriptionManager.newHeadsSubscription !==
-                        undefined
+                        currentBlock.number >=
+                        this.subscriptionManager.currentBlockNumber
                     ) {
-                        data.push({
-                            method: 'eth_subscription',
-                            params: {
-                                subscription:
-                                    this.subscriptionManager
-                                        .newHeadsSubscription.subscriptionId,
-                                result: currentBlock
-                            }
-                        });
-                    }
-                    if (this.subscriptionManager.logSubscriptions.size > 0) {
-                        const logs = await this.getLogsRPC();
-                        data.push(...logs);
-                    }
+                        if (
+                            this.subscriptionManager.newHeadsSubscription !==
+                            undefined
+                        ) {
+                            data.push({
+                                method: 'eth_subscription',
+                                params: {
+                                    subscription:
+                                        this.subscriptionManager
+                                            .newHeadsSubscription
+                                            .subscriptionId,
+                                    result: currentBlock
+                                }
+                            });
+                        }
+                        if (
+                            this.subscriptionManager.logSubscriptions.size > 0
+                        ) {
+                            const logs = await this.getLogsRPC(
+                                currentBlock.number
+                            );
+                            data.push(...logs);
+                        }
 
-                    this.subscriptionManager.currentBlockNumber++;
+                        // Update currentBlockNumber to the next block we should look for
+                        // This ensures we don't process the same block multiple times
+                        this.subscriptionManager.currentBlockNumber =
+                            currentBlock.number + 1;
+                    }
                 }
                 return data;
             }, POLLING_INTERVAL).onData(
@@ -218,18 +232,23 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
      * logs for all active subscriptions, typically in response to a new block being mined or
      * at regular intervals to keep subscription data up to date.
      *
+     * @param currentBlockNumber - The current block number to fetch logs for
      * @returns {Promise<SubscriptionEvent[]>} A promise that resolves to an array of `SubscriptionEvent`
      * objects, each containing the subscription ID and the corresponding logs fetched for that
      * subscription. The promise resolves to an empty array if there are no active log subscriptions.
      */
-    private async getLogsRPC(): Promise<SubscriptionEvent[]> {
+    private async getLogsRPC(
+        currentBlockNumber?: number
+    ): Promise<SubscriptionEvent[]> {
+        // Use the provided block number or fall back to the subscription manager's current block number
+        const blockNumber =
+            currentBlockNumber ?? this.subscriptionManager.currentBlockNumber;
+
         // Convert the logSubscriptions Map to an array of promises, each promise corresponds to a log fetch operation
         const promises = Array.from(
             this.subscriptionManager.logSubscriptions.entries()
         ).map(async ([subscriptionId, subscriptionDetails]) => {
-            const currentBlock = HexInt.of(
-                this.subscriptionManager.currentBlockNumber
-            ).toString();
+            const currentBlock = HexInt.of(blockNumber).toString();
             // Construct filter options for the Ethereum logs query based on the subscription details
             const filterOptions: FilterOptions = {
                 address: subscriptionDetails.options?.address, // Contract address to filter the logs by
@@ -267,14 +286,17 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
 
         // Proceed only if there are active log subscriptions or a new heads subscription is present
         if (this.isThereActiveSubscriptions()) {
-            // Fetch the block details for the current block number
-            const block = await this.thorClient.blocks.getBlockCompressed(
-                this.subscriptionManager.currentBlockNumber
-            );
+            // Get the best (latest) block available instead of trying to fetch a specific block number
+            const bestBlock =
+                await this.thorClient.blocks.getBestBlockCompressed();
 
-            // If the block is successfully fetched (not undefined or null), update the result.
-            if (block !== undefined && block !== null) {
-                result = block; // Set the fetched block as the result
+            // Check if we have a newer block than what we've already processed
+            if (
+                bestBlock !== undefined &&
+                bestBlock !== null &&
+                bestBlock.number >= this.subscriptionManager.currentBlockNumber
+            ) {
+                result = bestBlock; // Set the fetched block as the result
             }
         }
 
