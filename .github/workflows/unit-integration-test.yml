@@ -53,7 +53,7 @@ jobs:
               if: always() && steps.save-logs.outcome == 'success'
               uses: actions/upload-artifact@v4.4.3
               with:
-                name: thor-solo-logs-node-${{ matrix.node }}
+                name: thor-solo-logs-${{ matrix.node == 'lts/*' && 'node-lts' || format('node-{0}', matrix.node) }}
                 path: packages/solo-setup/logs/
                 retention-days: 7
 
