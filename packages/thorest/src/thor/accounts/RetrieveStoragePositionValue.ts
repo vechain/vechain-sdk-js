@@ -10,15 +10,36 @@ import { type GetStorageResponseJSON } from './GetStorageResponseJSON';
 const FQP =
     'packages/thorest/src/thor/accounts/RetrieveStoragePositionValue.ts!';
 
+/**
+ * [Retrieve a storage position value](http://localhost:8669/doc/stoplight-ui/#/paths/accounts-address--storage--key/get)
+ *
+ * Retrieve the value of a storage position identified by its address and key.
+ */
 class RetrieveStoragePositionValue
     implements ThorRequest<RetrieveStoragePositionValue, GetStorageResponse>
 {
+    /**
+     * Represents the HTTP path for this specific API endpoint.
+     */
     readonly path: RetrieveStoragePositionValuePath;
 
+    /**
+     * Constructs an instance of the class with the specified HTTP path.
+     *
+     * @param {HttpPath} path - The HTTP path to initialize the instance with.
+     */
     constructor(path: RetrieveStoragePositionValuePath) {
         this.path = path;
     }
 
+    /**
+     * Asynchronously fetches and processes a block response using the provided HTTP client.
+     *
+     * @param {HttpClient} httpClient - An HTTP client used to perform the request.
+     * @return {Promise<ThorResponse<RetrieveStoragePositionValue, GetStorageResponse>>}
+     * Returns a promise that resolves to a ThorResponse containing the requested block.
+     * @throws ThorError if the response is invalid or the request fails.
+     */
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveStoragePositionValue, GetStorageResponse>> {
@@ -55,6 +76,13 @@ class RetrieveStoragePositionValue
         );
     }
 
+    /**
+     * Creates an instance of RetrieveStoragePositionValue using the provided address and key.
+     *
+     * @param {Address} address - The address used to generate the storage position value's path.
+     * @param {BlockId} key - The key used to generate the storage position value's path.
+     * @return {RetrieveStoragePositionValue} A new instance of RetrieveStoragePositionValue with the specified path.
+     */
     static of(address: Address, key: BlockId): RetrieveStoragePositionValue {
         return new RetrieveStoragePositionValue(
             new RetrieveStoragePositionValuePath(address, key)

@@ -8,15 +8,36 @@ import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
  */
 const FQP = 'packages/thorest/src/thor/accounts/RetrieveContractBytecode.ts!';
 
+/**
+ * [Retrieve a contract bytecode](http://localhost:8669/doc/stoplight-ui/#/paths/accounts-address--code/get)
+ *
+ * Retrieve the bytecode of a contract identified by its address.
+ */
 class RetrieveContractBytecode
     implements ThorRequest<RetrieveContractBytecode, ContractBytecode>
 {
+    /**
+     * Represents the HTTP path for this specific API endpoint.
+     */
     readonly path: RetrieveContractBytecodePath;
 
+    /**
+     * Constructs an instance of the class with the specified HTTP path.
+     *
+     * @param {HttpPath} path - The HTTP path to initialize the instance with.
+     */
     constructor(path: RetrieveContractBytecodePath) {
         this.path = path;
     }
 
+    /**
+     * Asynchronously fetches and processes a block response using the provided HTTP client.
+     *
+     * @param {HttpClient} httpClient - An HTTP client used to perform the request.
+     * @return {Promise<ThorResponse<RetrieveContractBytecode, ContractBytecode>>}
+     * Returns a promise that resolves to a ThorResponse containing the requested block.
+     * @throws ThorError if the response is invalid or the request fails.
+     */
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveContractBytecode, ContractBytecode>> {
@@ -53,6 +74,12 @@ class RetrieveContractBytecode
         );
     }
 
+    /**
+     * Creates an instance of RetrieveContractBytecode using the provided address.
+     *
+     * @param {Address} address - The address used to generate the contract bytecode's path.
+     * @return {RetrieveContractBytecode} A new instance of RetrieveContractBytecode with the specified path.
+     */
     static of(address: Address): RetrieveContractBytecode {
         return new RetrieveContractBytecode(
             new RetrieveContractBytecodePath(address)

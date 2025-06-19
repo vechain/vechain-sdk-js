@@ -9,15 +9,36 @@ import { GetAccountResponseJSON } from './GetAccountResponseJSON';
  */
 const FQP = 'packages/thorest/src/thor/accounts/RetrieveAccountDetails.ts!';
 
+/**
+ * [Retrieve account details](http://localhost:8669/doc/stoplight-ui/#/paths/accounts-address/get)
+ *
+ * Retrieve the details of an account identified by its address.
+ */
 class RetrieveAccountDetails
     implements ThorRequest<RetrieveAccountDetails, GetAccountResponse>
 {
+    /**
+     * Represents the HTTP path for this specific API endpoint.
+     */
     readonly path: RetrieveAccountDetailsPath;
 
+     /**
+     * Constructs an instance of the class with the specified HTTP path.
+     *
+     * @param {HttpPath} path - The HTTP path to initialize the instance with.
+     */
     constructor(path: RetrieveAccountDetailsPath) {
         this.path = path;
     }
 
+    /**
+     * Asynchronously fetches and processes a block response using the provided HTTP client.
+     *
+     * @param {HttpClient} httpClient - An HTTP client used to perform the request.
+     * @return {Promise<ThorResponse<RetrieveAccountDetails, GetAccountResponse>>}
+     * Returns a promise that resolves to a ThorResponse containing the requested block.
+     * @throws ThorError if the response is invalid or the request fails.
+     */
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveAccountDetails, GetAccountResponse>> {
