@@ -2,16 +2,49 @@ import { LogMeta } from '@thor/logs';
 import { Address, HexUInt, IllegalArgumentError } from '@vechain/sdk-core';
 import { type SubscriptionTransferResponseJSON } from './SubscriptionTransferResponseJSON';
 
+/**
+ * Full-Qualified Path
+ */
 const FQP =
     'packages/thorest/src/thor/subscriptions/SubscriptionTransferResponse.ts!';
 
+/**
+ * [SubscriptionTransferResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/SubscriptionTransferResponse)
+ *
+ * Represents a transfer response from a subscription.
+ */
 class SubscriptionTransferResponse {
+    /**
+     * The sender address of the transfer.
+     */
     readonly sender: Address;
+
+    /**
+     * The recipient address of the transfer.
+     */
     readonly recipient: Address;
+
+    /**
+     * The amount of the transfer.
+     */
     readonly amount: bigint;
+
+    /**
+     * Whether the transfer is obsolete.
+     */
     readonly obsolete: boolean;
+
+    /**
+     * The log metadata associated with the transfer.
+     */
     readonly meta: LogMeta;
 
+    /**
+     * Constructs a new instance of the class by parsing the provided JSON object.
+     *
+     * @param {SubscriptionTransferResponseJSON} json - The JSON object containing transfer response data.
+     * @throws {IllegalArgumentError} If the parsing of the JSON object fails.
+     */
     constructor(json: SubscriptionTransferResponseJSON) {
         try {
             this.sender = Address.of(json.sender);
@@ -29,6 +62,11 @@ class SubscriptionTransferResponse {
         }
     }
 
+    /**
+     * Converts the current transfer response data into a JSON representation.
+     *
+     * @returns {SubscriptionTransferResponseJSON} A JSON object containing the transfer response data.
+     */
     toJSON(): SubscriptionTransferResponseJSON {
         return {
             sender: this.sender.toString(),

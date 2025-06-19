@@ -8,27 +8,109 @@ import {
 } from '@vechain/sdk-core';
 import { type SubscriptionBlockResponseJSON } from './SubscriptionBlockResponseJSON';
 
+/**
+ * Full-Qualified Path
+ */
 const FQP = 'packages/thorest/src/thor/subscriptions/SubscriptionBlockResponse.ts!';
 
+/**
+ * [SubscriptionBlockResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/SubscriptionBlockResponse)
+ *
+ * Represents a block response from a subscription.
+ * 
+ */
 class SubscriptionBlockResponse {
+    /**
+     * The block number (height).
+     */
     readonly number: UInt;
+    
+    /**
+     * The block identifier.
+     */
     readonly id: BlockId;
+    
+    /**
+     * The RLP encoded block size in bytes.
+     */
     readonly size: UInt;
+    
+    /**
+     * The parent block identifier.
+     */
     readonly parentID: BlockId;
+    
+    /**
+     * The UNIX timestamp of the block.
+     */
     readonly timestamp: UInt;
+    
+    /**
+     * The maximum amount of gas that all transactions inside the block are allowed to consume.
+     */
     readonly gasLimit: bigint;
+    
+    /**
+     * The address assigned by the block proposer to receive the reward (in VTHO).
+     */
     readonly beneficiary: Address;
+    
+    /**
+     * The actual amount of gas used within the block.
+     */
     readonly gasUsed: bigint;
+    
+    /**
+     * The accumulated witness number of the chain branch headed by the block.
+     */
     readonly totalScore: UInt;
+    
+    /**
+     * The root hash of transactions in the block.
+     */
     readonly txsRoot: ThorId;
+    
+    /**
+     * The supported transaction features bitset.
+     */
     readonly txsFeatures: UInt;
+    
+    /**
+     * The root hash for the global state after applying changes in this block.
+     */
     readonly stateRoot: ThorId;
+    
+    /**
+     * The hash of the transaction receipts trie.
+     */
     readonly receiptsRoot: ThorId;
+    
+    /**
+     * Whether the block signer voted COM(Commit) in BFT.
+     */
     readonly com: boolean;
+    
+    /**
+     * The address of the block signer.
+     */
     readonly signer: Address;
+    
+    /**
+     * Whether the block is obsolete.
+     */
     readonly obsolete: boolean;
+    
+    /**
+     * The list of transaction identifiers in the block.
+     */
     readonly transactions: TxId[];
 
+    /**
+     * Constructs a new instance of the class by parsing the provided JSON object.
+     *
+     * @param {SubscriptionBlockResponseJSON} json - The JSON object containing block response data.
+     * @throws {IllegalArgumentError} If the parsing of the JSON object fails.
+     */
     constructor(json: SubscriptionBlockResponseJSON) {
         try {
             this.number = UInt.of(json.number);
@@ -60,6 +142,11 @@ class SubscriptionBlockResponse {
         }
     }
 
+    /**
+     * Converts the current block response data into a JSON representation.
+     *
+     * @returns {SubscriptionBlockResponseJSON} A JSON object containing the block response data.
+     */
     toJSON(): SubscriptionBlockResponseJSON {
         return {
             number: this.number.valueOf(),
@@ -84,7 +171,5 @@ class SubscriptionBlockResponse {
         } satisfies SubscriptionBlockResponseJSON;
     }
 }
-
-
 
 export { SubscriptionBlockResponse};
