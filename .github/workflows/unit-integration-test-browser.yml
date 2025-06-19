@@ -40,6 +40,20 @@ jobs:
               id: unit-test
               run: yarn test:browser
 
+            - name: Save Thor solo logs
+              if: always() && steps.start-solo.outcome == 'success'
+              id: save-logs
+              run: yarn save-thor-solo-logs
+
+            - name: Upload Thor solo logs
+              if: always() && steps.save-logs.outcome == 'success'
+              uses: actions/upload-artifact@v4.4.3
+              with:
+                name: thor-solo-logs-browser-node-${{ matrix.node }}
+                path: packages/solo-setup/logs/
+                retention-days: 7
+
             - name: Stop Thor solo node
+              if: always() && steps.start-solo.outcome == 'success'
               id: stop-solo
               run: yarn stop-thor-solo

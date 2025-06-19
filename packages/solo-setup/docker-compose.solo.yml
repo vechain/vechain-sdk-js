@@ -5,6 +5,15 @@ services:
     user: root
     ports:
       - 8669:8669
+    logging:
+      driver: json-file
+      options:
+        max-size: "100m"
+        max-file: "3"
+        tag: "thor-solo"
+    volumes:
+      - ./data:/data/thor
+      - ./logs:/var/log/thor
     command:
       - solo
       - --on-demand # create new block when there is pending transaction
