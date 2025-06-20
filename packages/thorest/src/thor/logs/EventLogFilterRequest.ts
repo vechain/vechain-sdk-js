@@ -1,36 +1,83 @@
 import {
-    type LogSort,
-    FilterOptions,
-    type FilterOptionsJSON,
     EventCriteria,
-    type EventCriteriaJSON,
+    type EventLogFilterRequestJSON,
+    FilterOptions,
     FilterRange,
-    type FilterRangeJSON
-} from '@thor/logs';
+    LogSort
+} from '@thor';
+import { IllegalArgumentError } from '@vechain/sdk-core';
 
+/**
+ * Full-Qualified-Path
+ */
+const FQP = 'packages/thorest/src/thor/logs/EventLogFilterRequest.ts!';
+
+/**
+ * [EventLogFilterRequest](EventLogFilterRequest)
+ */
 class EventLogFilterRequest {
-    readonly range?: FilterRange;
-    readonly options?: FilterOptions;
-    readonly criteriaSet?: EventCriteria[];
-    readonly order?: LogSort;
+    /**
+     * Defines the range for filtering. Setting values to null indicates the entire range.
+     */
+    readonly range: FilterRange | null;
 
+    /**
+     * Include these parameters to receive filtered results in a paged format.
+     */
+    readonly options: FilterOptions | null;
+
+    /**
+     * Criteria to filter events. All fields are joined with the AND operator.
+     */
+    readonly criteriaSet: EventCriteria[] | null;
+
+    /**
+     * Specifies the order of the results. Use `asc` for ascending order, and `desc` for descending order.S
+     */
+    readonly order: LogSort | null;
+
+    /**
+     * Constructs an instance of the class with the given filter criteria represented as a JSON object.
+     *
+     * @param {EventLogFilterRequestJSON} json - The JSON object containing filter criteria.
+     * Each property in the JSON object is parsed and converted to its respective type.
+     * @throws {IllegalArgumentError} Thrown when the provided JSON object contains invalid or unparsable data.
+     */
     constructor(json: EventLogFilterRequestJSON) {
-        this.range =
-            json.range === undefined ? undefined : new FilterRange(json.range);
-        this.options =
-            json.options === undefined
-                ? undefined
-                : new FilterOptions(json.options);
-        this.criteriaSet =
-            json.criteriaSet === undefined
-                ? undefined
-                : json.criteriaSet.map(
-                      (criteriaJSON) => new EventCriteria(criteriaJSON)
-                  );
-        this.order =
-            json.order === undefined ? undefined : (json.order as LogSort);
+        try {
+            this.range =
+                json.range === undefined ? null : new FilterRange(json.range);
+            this.options =
+                json.options === undefined
+                    ? null
+                    : new FilterOptions(json.options);
+            this.criteriaSet =
+                json.criteriaSet === undefined
+                    ? null
+                    : json.criteriaSet.map(
+                          (criteriaJSON) => new EventCriteria(criteriaJSON)
+                      );
+            this.order =
+                json.order === undefined
+                    ? null
+                    : Object.values(LogSort).includes(json.order as LogSort)
+                      ? (json.order as LogSort)
+                      : null;
+        } catch (error) {
+            throw new IllegalArgumentError(
+                `${FQP}constructor(json: EventLogFilterRequestJSON)`,
+                'Bad parse',
+                { json },
+                error instanceof Error ? error : undefined
+            );
+        }
     }
 
+    /**
+     * Converts the current EventLogFilterRequest instance into a JSON representation.
+     *
+     * @return {EventLogFilterRequestJSON} The JSON object representing the current EventLogFilterRequest instance.
+     */
     toJSON(): EventLogFilterRequestJSON {
         return {
             range: this.range?.toJSON(),
@@ -41,11 +88,4 @@ class EventLogFilterRequest {
     }
 }
 
-interface EventLogFilterRequestJSON {
-    range?: FilterRangeJSON;
-    options?: FilterOptionsJSON;
-    criteriaSet?: EventCriteriaJSON[];
-    order?: string;
-}
-
-export { EventLogFilterRequest, type EventLogFilterRequestJSON };
+export { EventLogFilterRequest };
