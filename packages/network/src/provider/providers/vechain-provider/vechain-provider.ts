@@ -33,7 +33,7 @@ import {
 class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
     public readonly subscriptionManager: SubscriptionManager = {
         logSubscriptions: new Map(),
-        currentBlockNumber: 0
+        currentBlockNumber: -1
     };
 
     /**
@@ -133,11 +133,22 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
                 const currentBlock = await this.getCurrentBlock();
 
                 if (currentBlock !== null) {
-                    // Only process if this is a new block we haven't processed yet
-                    if (
-                        currentBlock.number >=
-                        this.subscriptionManager.currentBlockNumber
+                    // Initialize currentBlockNumber if it's -1 (first time)
+                    if (this.subscriptionManager.currentBlockNumber === -1) {
+                        this.subscriptionManager.currentBlockNumber =
+                            currentBlock.number;
+                    }
+
+                    // Process all blocks from currentBlockNumber up to and including currentBlock.number
+                    for (
+                        let blockNumber =
+                            this.subscriptionManager.currentBlockNumber;
+                        blockNumber <= currentBlock.number;
+                        blockNumber++
                     ) {
+                        const data: SubscriptionEvent[] = [];
+
+                        // Emit newHeads event if subscribed
                         if (
                             this.subscriptionManager.newHeadsSubscription !==
                             undefined
@@ -153,19 +164,26 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
                                 }
                             });
                         }
+
+                        // Get logs for all log subscriptions
                         if (
                             this.subscriptionManager.logSubscriptions.size > 0
                         ) {
-                            const logs = await this.getLogsRPC(
-                                currentBlock.number
-                            );
+                            const logs = await this.getLogsRPC(blockNumber);
                             data.push(...logs);
                         }
 
                         // Update currentBlockNumber to the next block we should look for
                         // This ensures we don't process the same block multiple times
                         this.subscriptionManager.currentBlockNumber =
-                            currentBlock.number + 1;
+                            blockNumber + 1;
+
+                        // Emit all events for this block
+                        if (data.length > 0) {
+                            data.forEach((event) => {
+                                this.emit('message', event);
+                            });
+                        }
                     }
                 }
                 return data;
@@ -248,40 +266,32 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
         const promises = Array.from(
             this.subscriptionManager.logSubscriptions.entries()
         ).map(async ([subscriptionId, subscriptionDetails]) => {
-            const currentBlock = HexInt.of(blockNumber).toString();
-            // Construct filter options for the Ethereum logs query based on the subscription details
+            const currentBlock = HexInt.of(blockNumber);
+
             const filterOptions: FilterOptions = {
-                address: subscriptionDetails.options?.address, // Contract address to filter the logs by
-                fromBlock: currentBlock,
-                toBlock: currentBlock,
-                topics: subscriptionDetails.options?.topics // Topics to filter the logs by
+                address: subscriptionDetails.options?.address,
+                fromBlock: currentBlock.toString(),
+                toBlock: currentBlock.toString(),
+                topics: subscriptionDetails.options?.topics
             };
 
-            // Fetch logs based on the filter options and construct a SubscriptionEvent object
+            const logs = await ethGetLogs(this.thorClient, [filterOptions]);
+
             return {
                 method: 'eth_subscription',
                 params: {
-                    subscription: subscriptionId, // Subscription ID
-                    result: await ethGetLogs(this.thorClient, [filterOptions]) // The actual log data fetched from Ethereum node
+                    subscription: subscriptionId,
+                    result: logs
                 }
             };
         });
 
-        try {
-            // Wait for all log fetch operations to complete and return an array of SubscriptionEvent objects
-            const subscriptionEvents = await Promise.all(promises);
-            // Filter out empty results
-            return subscriptionEvents.filter(
-                (event) => event.params.result.length > 0
-            );
-        } catch (error) {
-            // If any log fetch fails, log the error but return empty array to keep polling alive
-            console.warn(
-                'VeChainProvider: Failed to fetch logs for one or more subscriptions, will retry on next poll:',
-                error
-            );
-            return [];
-        }
+        const subscriptionEvents = await Promise.all(promises);
+
+        // Filter out empty results
+        return subscriptionEvents.filter(
+            (event) => event.params.result.length > 0
+        );
     }
 
     /**
@@ -315,6 +325,8 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
                     'VeChainProvider: Failed to fetch current block, will retry on next poll:',
                     error
                 );
+                // Add a small delay to prevent overwhelming the Thor node during heavy load
+                await new Promise((resolve) => setTimeout(resolve, 1000));
                 return null;
             }
         }

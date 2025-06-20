@@ -12,8 +12,16 @@ import {
 export async function waitForMessage(
     provider: VeChainProvider
 ): Promise<SubscriptionEvent> {
-    return await new Promise((resolve) => {
+    return await new Promise((resolve, reject) => {
+        const timeout = setTimeout(
+            () => {
+                reject(new Error('Timeout waiting for subscription message'));
+            },
+            process.env.CI === 'true' ? 45000 : 30000
+        ); // Longer timeout in CI
+
         provider.on('message', (message) => {
+            clearTimeout(timeout);
             resolve(message as SubscriptionEvent);
             provider.destroy();
         });

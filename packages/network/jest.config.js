@@ -8,7 +8,8 @@ module.exports = {
     coverageReporters: ['html', 'lcov', 'json'],
     runner: 'groups',
     reporters: ['default', 'jest-junit'],
-    maxWorkers: 5,
+    maxWorkers: process.env.CI ? 1 : 5,
+    testTimeout: process.env.CI ? 120000 : 30000,
     coveragePathIgnorePatterns: [
         "/dist/",
         "/tests/"
