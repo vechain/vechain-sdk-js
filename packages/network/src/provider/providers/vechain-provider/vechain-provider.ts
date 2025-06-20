@@ -304,11 +304,15 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
             const bestBlock =
                 await this.thorClient.blocks.getBestBlockCompressed();
 
-            // Check if we have a newer block than what we've already processed
+            // If we have a valid block and either:
+            // 1. We're in initial state (currentBlockNumber === -1), or
+            // 2. We have a newer block than what we've already processed
             if (
                 bestBlock !== undefined &&
                 bestBlock !== null &&
-                bestBlock.number >= this.subscriptionManager.currentBlockNumber
+                (this.subscriptionManager.currentBlockNumber === -1 ||
+                    bestBlock.number >=
+                        this.subscriptionManager.currentBlockNumber)
             ) {
                 result = bestBlock; // Set the fetched block as the result
             }

@@ -1,4 +1,11 @@
-import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
+import {
+    afterEach,
+    beforeEach,
+    describe,
+    expect,
+    test,
+    afterAll
+} from '@jest/globals';
 import { ABIContract, Address, Clause, HexUInt } from '@vechain/sdk-core';
 import {
     JSONRPCMethodNotFound,
@@ -52,7 +59,17 @@ describe('VeChain provider tests - solo', () => {
      * Destroy thor client and provider after each test
      */
     afterEach(() => {
+        // Remove all event listeners
+        provider.removeAllListeners();
         provider.destroy();
+    });
+
+    /**
+     * Global cleanup to ensure all resources are released
+     */
+    afterAll(() => {
+        // Force cleanup of any remaining timers/intervals
+        jest.clearAllTimers();
     });
 
     /**
@@ -142,6 +159,7 @@ describe('VeChain provider tests - solo', () => {
         expect(
             provider.subscriptionManager.newHeadsSubscription?.subscriptionId
         ).toBeUndefined();
+        provider.destroy();
     });
 
     /**
@@ -330,6 +348,8 @@ describe('VeChain provider tests - solo', () => {
                         console.log(
                             'Timeout reached - no subscription events received'
                         );
+                        // Clean up event listener on timeout
+                        provider.removeAllListeners('message');
                         reject(
                             new Error('Timeout waiting for subscription events')
                         );
@@ -337,22 +357,49 @@ describe('VeChain provider tests - solo', () => {
                     process.env.CI === 'true' ? 60000 : 30000
                 ); // Longer timeout in CI
 
-                provider.on('message', (message: SubscriptionEvent) => {
+                const messageHandler = (message: SubscriptionEvent): void => {
+                    const subId = message.params?.subscription;
+                    const logData = JSON.stringify(
+                        message.params?.result,
+                        null,
+                        2
+                    );
+                    const blockNumbers = Array.isArray(message.params?.result)
+                        ? message.params.result.map(
+                              (log: { blockNumber: string }) => log.blockNumber
+                          )
+                        : [];
                     console.log(
-                        'Received subscription message:',
-                        message.method,
-                        message.params?.subscription
+                        '[EVENT]',
+                        'subscription:',
+                        subId,
+                        'blockNumbers:',
+                        blockNumbers,
+                        'logData:',
+                        logData
                     );
                     results.push(message);
-                    if (results.length >= 2) {
+
+                    // Check if we have received events from both subscriptions
+                    const erc20Events = results.filter(
+                        (x) => x.params.subscription === erc20Subscription
+                    );
+                    const erc721Events = results.filter(
+                        (x) => x.params.subscription === erc721Subscription
+                    );
+
+                    if (erc20Events.length > 0 && erc721Events.length > 0) {
                         console.log(
-                            'Received both expected events, resolving...'
+                            'Received events from both subscriptions, resolving...'
                         );
                         clearTimeout(timeout);
-                        provider.destroy();
+                        // Remove the specific event listener
+                        provider.off('message', messageHandler);
                         resolve(results);
                     }
-                });
+                };
+
+                provider.on('message', messageHandler);
             });
 
             console.log('Executing ERC20 transfer transaction...');
@@ -393,6 +440,9 @@ describe('VeChain provider tests - solo', () => {
             console.log('Waiting for subscription events...');
             results = (await eventPromise) as SubscriptionEvent[];
             console.log('Received events:', results.length);
+
+            // Clean up the provider after the test
+            provider.destroy();
 
             // Assertions to validate the received log events
             expect(results).toBeDefined();
