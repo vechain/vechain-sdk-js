@@ -7,7 +7,7 @@ import { Hex, IllegalArgumentError } from '@vechain/sdk-core';
  *
  * @group unit/debug
  */
-describe('TargetPath unit tests', () => {
+describe('TargetPath UNIT tests', () => {
     describe('static isValid()', () => {
         test('should validate correct format with txId and clauseIndex', () => {
             const path =

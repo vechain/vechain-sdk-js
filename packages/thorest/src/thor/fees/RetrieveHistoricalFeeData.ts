@@ -6,7 +6,7 @@ import {
     type ThorResponse
 } from '@thor';
 import { type HttpClient, type HttpPath, type HttpQuery } from '@http';
-import { type Hex, type HexUInt32, Revision } from '@vechain/sdk-core';
+import { type Hex, type HexUInt32, IllegalArgumentError, Revision } from '@vechain/sdk-core';
 
 /**
  * Full-Qualified Path
@@ -93,7 +93,7 @@ class RetrieveHistoricalFeeData
      *
      * @param {number} blockCount - The number of blocks to be retrieved for historical fee data.
      * @return {RetrieveHistoricalFeeData} An instance of `RetrieveHistoricaFeeData` initialized with the specified block count.
-     * @throws {ThorError} If an error occurs if `blockCount` is not a positive integer.
+     * @throws {IllegalArgumentError} If an error occurs if `blockCount` is not a positive integer.
      */
     static of(blockCount: number): RetrieveHistoricalFeeData {
         try {
@@ -101,7 +101,7 @@ class RetrieveHistoricalFeeData
                 new Query(blockCount, Revision.BEST, [])
             );
         } catch (error) {
-            throw new ThorError(
+            throw new IllegalArgumentError(
                 `${FQP}of(blockCount: number): RetrieveHistoricaFeeData`,
                 'Invalid blockCount.',
                 {

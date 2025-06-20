@@ -11,7 +11,7 @@ describe('TraceCall testnet tests', () => {
             value: '0x0',
             to: '0x0000000000000000000000000000456E65726779',
             data: '0xa9059cbb0000000000000000000000000f872421dc479f3c11edd89512731814d0598db50000000000',
-            gas: 50000,
+            gas: '50000',
             gasPrice: '1000000000000000',
             caller: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
             provedWork: '1000',

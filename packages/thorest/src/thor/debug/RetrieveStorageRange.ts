@@ -1,10 +1,7 @@
 import type { HttpClient, HttpPath } from '@http';
-import {
-    StorageRangeOption,
-    type StorageRangeOptionJSON,
-    type StorageRange
-} from '@thor/debug';
+import { StorageRange, type StorageRangeJSON, StorageRangeOption, type StorageRangeOptionJSON } from '@thor/debug';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
+import { IllegalArgumentError } from '@vechain/sdk-core';
 
 /**
  * Full-Qualified-Path
@@ -15,8 +12,7 @@ const FQP = 'packages/thorest/src/thor/debug/RetrieveStorageRange.ts';
  * [Retrieve storage range](http://localhost:8669/doc/stoplight-ui/#/paths/debug-storage-range/post)
  */
 class RetrieveStorageRange
-    implements ThorRequest<RetrieveStorageRange, StorageRange>
-{
+    implements ThorRequest<RetrieveStorageRange, StorageRange> {
     /**
      * Represents an HTTP path configuration for a specific endpoint.
      */
@@ -58,11 +54,11 @@ class RetrieveStorageRange
             this.request.toJSON()
         );
         if (response.ok) {
-            const json = (await response.json()) as StorageRange;
+            const json = (await response.json()) as StorageRangeJSON;
             try {
                 return {
                     request: this,
-                    response: json
+                    response: new StorageRange(json)
                 };
             } catch (error) {
                 throw new ThorError(
@@ -94,9 +90,21 @@ class RetrieveStorageRange
      *
      * @param {StorageRangeOptionJSON} request - The storage range option configuration in JSON format.
      * @return {RetrieveStorageRange} A new instance of RetrieveStorageRange initialized with the given storage range options.
+     * @throws {IllegalArgumentError} If the request can't be parsed.
      */
     static of(request: StorageRangeOptionJSON): RetrieveStorageRange {
-        return new RetrieveStorageRange(new StorageRangeOption(request));
+        try {
+            return new RetrieveStorageRange(new StorageRangeOption(request));
+        } catch (error) {
+            throw new IllegalArgumentError(
+                `${FQP}of(request: StorageRangeOptionJSON): RetrieveStorageRange`,
+                'Invalid request',
+                {
+                    request
+                },
+                error instanceof Error ? error : undefined
+            );
+        }
     }
 }
 
