@@ -299,35 +299,27 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
         // Initialize the result to null, indicating no block found initially
         let result: CompressedBlockDetail | null = null;
 
-        // Proceed only if there are active log subscriptions or a new heads subscription is present
-        if (this.isThereActiveSubscriptions()) {
-            try {
-                // Get the best (latest) block available instead of trying to fetch a specific block number
-                const bestBlock =
-                    await this.thorClient.blocks.getBestBlockCompressed();
+        try {
+            // Get the best (latest) block available instead of trying to fetch a specific block number
+            const bestBlock =
+                await this.thorClient.blocks.getBestBlockCompressed();
 
-                // Check if we have a newer block than what we've already processed
-                if (
-                    bestBlock !== undefined &&
-                    bestBlock !== null &&
-                    bestBlock.number >=
-                        this.subscriptionManager.currentBlockNumber
-                ) {
-                    result = bestBlock; // Set the fetched block as the result
-                }
-            } catch (error) {
-                // Log the error but don't let it crash the polling
-                console.warn(
-                    'VeChainProvider: Failed to fetch current block, will retry on next poll:',
-                    error
-                );
-                // Add a small delay to prevent overwhelming the Thor node during heavy load
-                await new Promise((resolve) => setTimeout(resolve, 1000));
-                return null;
+            // Check if we have a newer block than what we've already processed
+            if (
+                bestBlock !== undefined &&
+                bestBlock !== null &&
+                bestBlock.number >= this.subscriptionManager.currentBlockNumber
+            ) {
+                result = bestBlock; // Set the fetched block as the result
             }
+        } catch (error) {
+            // Log the error but don't let it crash the polling
+            console.warn(
+                'VeChainProvider: Failed to get current block, will retry on next poll:',
+                error
+            );
         }
 
-        // Return the fetched block details or null if no block was fetched
         return result;
     }
 
