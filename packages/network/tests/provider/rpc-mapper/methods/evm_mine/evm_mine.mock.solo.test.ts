@@ -34,11 +34,11 @@ describe('RPC Mapper - evm_mine method tests', () => {
          * Test case that mocks an error thrown by the getBestBlock method
          */
         test('Should throw `JSONRPCInternalError` if an error occurs while retrieving the block number', async () => {
-            // Mock the getGenesisBlock method to return null
+            // Mock the getBestBlockCompressed method to throw an error
             jest.spyOn(
                 thorClient.blocks,
                 'getBestBlockCompressed'
-            ).mockRejectedValue(new Error());
+            ).mockRejectedValue(new Error('Connection failed'));
 
             await expect(
                 RPCMethodsMap(thorClient)[RPC_METHODS.evm_mine]([])

@@ -1,4 +1,11 @@
-import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
+import {
+    afterEach,
+    beforeEach,
+    describe,
+    expect,
+    test,
+    afterAll
+} from '@jest/globals';
 import { ABIContract, HexUInt } from '@vechain/sdk-core';
 import {
     HardhatVeChainProvider,
@@ -50,7 +57,17 @@ describe('Hardhat provider tests', () => {
      * Destroy thor client and provider after each test
      */
     afterEach(() => {
+        // Remove all event listeners
+        provider.removeAllListeners();
         provider.destroy();
+    });
+
+    /**
+     * Global cleanup to ensure all resources are released
+     */
+    afterAll(() => {
+        // Force cleanup of any remaining timers/intervals
+        jest.clearAllTimers();
     });
 
     /**
@@ -315,6 +332,8 @@ describe('Hardhat provider tests', () => {
             const eventPromise = new Promise((resolve, reject) => {
                 const timeout = setTimeout(
                     () => {
+                        // Clean up event listener on timeout
+                        provider.removeAllListeners('message');
                         reject(
                             new Error('Timeout waiting for subscription events')
                         );
@@ -322,14 +341,18 @@ describe('Hardhat provider tests', () => {
                     process.env.CI === 'true' ? 60000 : 30000
                 ); // Longer timeout in CI
 
-                provider.on('message', (message: SubscriptionEvent) => {
+                const messageHandler = (message: SubscriptionEvent): void => {
                     results.push(message);
                     if (results.length >= 2) {
                         clearTimeout(timeout);
+                        // Remove the specific event listener
+                        provider.off('message', messageHandler);
                         provider.destroy();
                         resolve(results);
                     }
-                });
+                };
+
+                provider.on('message', messageHandler);
             });
 
             // Execute transactions that should emit events with delays between them
