@@ -128,7 +128,7 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
         let result = false;
         if (this.pollInstance === undefined) {
             this.pollInstance = Poll.createEventPoll(async () => {
-                const data: SubscriptionEvent[] = [];
+                const allEvents: SubscriptionEvent[] = [];
 
                 const currentBlock = await this.getCurrentBlock();
 
@@ -146,14 +146,14 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
                         blockNumber <= currentBlock.number;
                         blockNumber++
                     ) {
-                        const data: SubscriptionEvent[] = [];
+                        const blockEvents: SubscriptionEvent[] = [];
 
                         // Emit newHeads event if subscribed
                         if (
                             this.subscriptionManager.newHeadsSubscription !==
                             undefined
                         ) {
-                            data.push({
+                            blockEvents.push({
                                 method: 'eth_subscription',
                                 params: {
                                     subscription:
@@ -170,7 +170,7 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
                             this.subscriptionManager.logSubscriptions.size > 0
                         ) {
                             const logs = await this.getLogsRPC(blockNumber);
-                            data.push(...logs);
+                            blockEvents.push(...logs);
                         }
 
                         // Update currentBlockNumber to the next block we should look for
@@ -178,15 +178,11 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
                         this.subscriptionManager.currentBlockNumber =
                             blockNumber + 1;
 
-                        // Emit all events for this block
-                        if (data.length > 0) {
-                            data.forEach((event) => {
-                                this.emit('message', event);
-                            });
-                        }
+                        // Add all events from this block to the total collection
+                        allEvents.push(...blockEvents);
                     }
                 }
-                return data;
+                return allEvents;
             }, POLLING_INTERVAL).onData(
                 (subscriptionEvents: SubscriptionEvent[]) => {
                     subscriptionEvents.forEach((event) => {
