@@ -1,0 +1,90 @@
+---
+title: thorest_thor_debug
+---
+classDiagram
+    namespace thorest {
+        class ThorRequest {
+            <<interface>>
+        }
+    }
+    namespace thorest_errors {
+        class ThorError
+    }
+    class PostDebugTracerCallRequest {
+        TracerName name
+        unknown config
+        bigint value
+        Hex data
+        Address to
+        bigint gas
+        bigint gasPrice
+        Address caller
+        number provedWork
+        Address gasPayer
+        number expiration
+        Hex blockRef
+    }
+    class PostDebugTracerRequest {
+        TracerName name
+        unknown config
+        Hex target
+        PosetDebugTracerRequest toJSON()
+    }
+    class RetrieveStorageRange {
+        ThorResponse~RetrieveStorageRange, StorageRange~ askTo(HttpClient httpClient)
+        RetrieveStorageRange of(StorageRangeOptionJSON request)$
+    }
+    class StorageRangeOption {
+        Address address
+        Hex keyStart
+        number maxResult
+        TargetPath target
+        StorageRangeOptionJSON toJSON()
+    }
+    class StorageRange {
+        Hex nextKey
+        unknown storage
+        StorageRangeJSON toJSON()
+    }
+    class TargetPath {
+        string txId
+        Hex txIdAsHex
+        string|undefined blockRef
+        number clauseIndex
+        TargetPath fromTxIdAndClause(string txId, number clauseIndex)$
+        TargetPath fromTxIdBlockRefAndClause(string txId, string|number blockRef, number clauseIndex)
+        boolean isValid(string value)$
+        TargetPath of(string|TargetPath value)$
+        string toJSON()
+        string toString()
+
+    }
+    class TraceCall {
+        ThorResponse~TraceCall, undefined~ askTo(HttpClient httpClient)
+        TraceCall of(PostDebugTracerCallRequestJSON request)$
+    }
+    class TracerName {
+        <<enumeration>>
+        bigram
+        call
+        evmdis
+        fourbyte
+        noop
+        null
+        opcount
+        prestate
+        structLogger
+        trigram
+        unigram
+    }
+    class TraceTransactionClause {
+        ThorResponse~TraceTransactionClause, unknown~ askTo(HttpClient httpClient)
+        TraceTransactionClause of(PostDebugTracerRequestJSON request)$
+    }
+    ThorRequest <|.. RetrieveStorageRange
+    ThorRequest <|.. TraceCall
+    ThorRequest <|.. TraceTransactionClause
+    RetrieveStorageRange "askTo" --> StorageRange
+    TraceCall "askTo" --> unknown
+    TraceTransactionClause "askTo" --> unknown
+    ThorError <-- "throws" ThorRequest

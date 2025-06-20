@@ -33,7 +33,6 @@ class RetrieveHistoricalFeeData
      * Constructs a new instance of the class.
      *
      * @param {Query} query - The query object used to initialize the instance.
-     * @return {void} This constructor does not return a value.
      */
     protected constructor(query: Query) {
         this.query = query;
@@ -43,7 +42,9 @@ class RetrieveHistoricalFeeData
      * Send a request to retrieve historical fee data.
      *
      * @param {HttpClient} httpClient - The HTTP client used to send the request.
-     * @return {Promise<ThorResponse<RetrieveHistoricalFeeData, GetFeesHistoryResponse>>} A promise that resolves with the response containing the historical fee data or rejects with an error.
+     * @return {Promise<ThorResponse<RetrieveHistoricalFeeData, GetFeesHistoryResponse>>} A promise that resolves
+     * with the response containing the historical fee data or rejects with an error.
+     * @throws {ThorError} If there is an error while processing the response or if the response status is not OK.
      */
     async askTo(
         httpClient: HttpClient
