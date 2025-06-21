@@ -7,7 +7,7 @@ interface PostDebugTracerCallRequestJSON {
     value: string; // hex
     data: string; // hex
     to?: string; // address
-    gas?: string; // integer or null
+    gas?: number; // integer or null
     gasPrice?: string; // hex or null
     caller?: string; // address or null
     provedWork?: string; // numeric string or null

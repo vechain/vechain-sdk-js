@@ -1,6 +1,6 @@
-import { type TracerName } from '@thor/debug';
+import { TargetPath, type TracerName } from '@thor/debug';
 import { type PostDebugTracerRequestJSON } from '@thor/debug/PostDebugTracerRequestJSON';
-import { type Hex, HexUInt32, IllegalArgumentError } from '@vechain/sdk-core';
+import { IllegalArgumentError } from '@vechain/sdk-core';
 
 /**
  * Full-Qualified-Path
@@ -24,7 +24,7 @@ class PostDebugTracerRequest {
     /**
      * The unified path of the target to be traced. Currently, only the clause is supported
      */
-    readonly target: Hex;
+    readonly target: TargetPath;
 
     /**
      * Constructs an instance of the object using the provided JSON input.
@@ -39,7 +39,7 @@ class PostDebugTracerRequest {
                     ? (json.name as TracerName)
                     : null;
             this.config = json.config;
-            this.target = HexUInt32.of(json.target);
+            this.target = TargetPath.of(json.target);
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: PostDebugTracerRequestJSON)`,

@@ -1,11 +1,11 @@
 import { describe, expect, test } from '@jest/globals';
-import { Address, Hex, ThorId, UInt } from '@vechain/sdk-core';
+import { Address, Hex } from '@vechain/sdk-core';
 import { StorageRangeOption, type StorageRangeOptionJSON } from '@thor';
 
 /**
  * @group unit/debug
  */
-describe('StorageRangeOption', () => {
+describe('StorageRangeOption UNIT tests', () => {
     test('constructs with all fields', () => {
         const expected: StorageRangeOptionJSON = {
             address: '0xD8CCDD85abDbF68DFEc95f06c973e87B1b5A9997',

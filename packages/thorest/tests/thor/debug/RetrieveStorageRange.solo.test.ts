@@ -6,12 +6,12 @@ import { ThorError, ThorNetworks } from '@thor';
 /**
  * @group integration/debug
  */
-describe('RetrieveStorageRange UNIT tests', () => {
+describe('RetrieveStorageRange SOLO tests', () => {
     const httpClient = FetchHttpClient.at(ThorNetworks.SOLONET);
 
     test('err <- not implemented in solo', async () => {
         const status = 500;
-        const request: StorageRangeOptionJSON = {
+        const request = {
             address: '0xd8ccdd85abdbf68dfec95f06c973e87b1b5a9997',
             keyStart:
                 '0x0000000000000000000000000000000000000000000000000000000000000000',
@@ -27,6 +27,4 @@ describe('RetrieveStorageRange UNIT tests', () => {
             expect((error as ThorError).status).toBe(status);
         }
     });
-
-
 });

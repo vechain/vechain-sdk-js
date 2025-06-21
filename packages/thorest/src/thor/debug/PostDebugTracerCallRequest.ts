@@ -1,14 +1,5 @@
-import {
-    type PostDebugTracerCallRequestJSON,
-    type TracerName
-} from '@thor/debug';
-import {
-    Address,
-    type Hex,
-    HexUInt,
-    IllegalArgumentError,
-    UInt
-} from '@vechain/sdk-core';
+import { type PostDebugTracerCallRequestJSON, type TracerName } from '@thor/debug';
+import { Address, type Hex, HexUInt, IllegalArgumentError, Quantity, UInt } from '@vechain/sdk-core';
 
 /**
  * Full-Qualified-Path
@@ -91,7 +82,7 @@ class PostDebugTracerCallRequest {
                 json.name !== undefined && json.name !== null
                     ? (json.name as TracerName)
                     : null;
-            this.config = json.config;
+            this.config = json.config ?? null;
             this.value = BigInt(json.value);
             this.data = HexUInt.of(json.data);
             this.to =
@@ -145,14 +136,12 @@ class PostDebugTracerCallRequest {
         return {
             name: this.name?.toString(),
             config: this.config,
-            value: HexUInt.of(this.value).toString(),
+            value: Quantity.of(this.value).toString(),
             data: this.data.toString(),
             to: this.to?.toString(),
-            gas: this.gas !== null ? this.gas.toString() : undefined,
+            gas: this.gas !== null ? Number(this.gas) : undefined,
             gasPrice:
-                this.gasPrice !== null
-                    ? HexUInt.of(this.gasPrice).toString()
-                    : undefined,
+                this.gasPrice !== null ? this.gasPrice.toString() : undefined,
             caller: this.caller !== null ? this.caller.toString() : undefined,
             provedWork:
                 this.provedWork !== null

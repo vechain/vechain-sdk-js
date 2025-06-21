@@ -1,9 +1,14 @@
-import { type HttpClient, type HttpPath } from '@http';
+import { type HttpClient, type HttpPath, type HttpQuery } from '@http';
 import {
     PostDebugTracerCallRequest,
     type PostDebugTracerCallRequestJSON
 } from '@thor/debug';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
+import {
+    type HexUInt32,
+    IllegalArgumentError,
+    Revision
+} from '@vechain/sdk-core';
 
 /**
  * Full-Qualified-Path
@@ -20,6 +25,11 @@ class TraceCall implements ThorRequest<TraceCall, unknown> {
     protected static readonly PATH: HttpPath = { path: '/debug/tracers/call' };
 
     /**
+     * Represents the HTTP query configuration for a specific API endpoint.
+     */
+    protected readonly query: Query;
+
+    /**
      * Represents a request for logging or tracing debug information within a system.
      */
     protected readonly request: PostDebugTracerCallRequest;
@@ -27,9 +37,12 @@ class TraceCall implements ThorRequest<TraceCall, unknown> {
     /**
      * Constructs an instance of the class with the given request.
      *
-     * @param {PostDebugTracerCallRequest} request - The request parameter used to initialize the instance.
+     * @param {Query} query - The query part of the path to the end point.
+     * @param {PostDebugTracerCallRequest} request - The request parameter used to initialize the instance
+     * is the body of the POST http call.
      */
-    protected constructor(request: PostDebugTracerCallRequest) {
+    protected constructor(query: Query, request: PostDebugTracerCallRequest) {
+        this.query = query;
         this.request = request;
     }
 
@@ -46,10 +59,10 @@ class TraceCall implements ThorRequest<TraceCall, unknown> {
         const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<TraceCall, undefined>>`;
         const response = await httpClient.post(
             TraceCall.PATH,
-            { query: '' },
+            this.query,
             this.request.toJSON()
         );
-        if (!response.ok) {
+        if (response.ok) {
             const json: unknown = await response.json();
             return {
                 request: this,
@@ -73,13 +86,16 @@ class TraceCall implements ThorRequest<TraceCall, unknown> {
      *
      * @param {PostDebugTracerCallRequestJSON} request - The JSON representation of a PostDebugTracerCallRequest.
      * @return {TraceCall} A new instance of TraceCall initialized with the provided request.
-     * @throws {ThorError} If the request is invalid or an error occurs during initialization.
+     * @throws {IllegalArgumentError} If the request is invalid or an error occurs during initialization.
      */
     static of(request: PostDebugTracerCallRequestJSON): TraceCall {
         try {
-            return new TraceCall(new PostDebugTracerCallRequest(request));
+            return new TraceCall(
+                new Query(Revision.BEST),
+                new PostDebugTracerCallRequest(request)
+            );
         } catch (error) {
-            throw new ThorError(
+            throw new IllegalArgumentError(
                 `${FQP}of(request: PostDebugTracerCallRequestJSON): TraceCall`,
                 'Invalid request',
                 {
@@ -88,6 +104,47 @@ class TraceCall implements ThorRequest<TraceCall, unknown> {
                 error instanceof Error ? error : undefined
             );
         }
+    }
+
+    /**
+     * Creates a new instance of `TraceCall` with the specified revision.
+     *
+     * @param {HexUInt32 | Revision} revision - The revision to associate with the `TraceCall`. Can either be a hexadecimal unsigned 32-bit integer or a `Revision` object.
+     * @return {TraceCall} A new `TraceCall` instance initialized with the provided revision and the existing request.
+     */
+    withRevison(revision: HexUInt32 | Revision): TraceCall {
+        return new TraceCall(new Query(revision), this.request);
+    }
+}
+
+/**
+ * Class representing a Query that implements the HttpQuery interface.
+ * This class constructs a query string based on a given revision.
+ */
+class Query implements HttpQuery {
+    /**
+     * Represents a revision identifier that can be either a hex-encoded unsigned 32-bit integer
+     * or a `Revision` object. This type is used for tracking or specifying a version or state
+     * of an item within a version control or similar system.
+     */
+    readonly revision: HexUInt32 | Revision;
+
+    /**
+     * Initializes a new instance of the class with the specified revision.
+     *
+     * @param {HexUInt32 | Revision} revision - The revision value to be set. Can either be a HexUInt32 or a Revision object.
+     */
+    constructor(revision: HexUInt32 | Revision) {
+        this.revision = revision;
+    }
+
+    /**
+     * Constructs and returns a query string based on the current revision.
+     *
+     * @return {string} The query string formatted with the revision value.
+     */
+    get query(): string {
+        return `?revision=${this.revision.toString()}`;
     }
 }
 

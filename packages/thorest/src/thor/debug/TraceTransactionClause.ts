@@ -4,6 +4,7 @@ import {
     type PostDebugTracerRequestJSON
 } from '@thor/debug';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
+import { IllegalArgumentError } from '@vechain/sdk-core';
 
 /**
  * Full-Qualified-Path
@@ -52,7 +53,7 @@ class TraceTransactionClause
             { query: '' },
             this.request.toJSON()
         );
-        if (!response.ok) {
+        if (response.ok) {
             const json: unknown = await response.json();
             return {
                 request: this,
@@ -76,7 +77,7 @@ class TraceTransactionClause
      *
      * @param {PostDebugTracerRequestJSON} request - The JSON object representing the debug tracer request.
      * @return {TraceTransactionClause} A new instance of `TraceTransactionClause` created with the given request.
-     * @throws {ThorError} Throws an error if the request is invalid or an error occurs during instantiation.
+     * @throws {IllegalArgumentError} If the request is invalid or an error occurs during instantiation.
      */
     static of(request: PostDebugTracerRequestJSON): TraceTransactionClause {
         try {
@@ -84,7 +85,7 @@ class TraceTransactionClause
                 new PostDebugTracerRequest(request)
             );
         } catch (error) {
-            throw new ThorError(
+            throw new IllegalArgumentError(
                 `${FQP}of(request: PostDebugTracerRequestJSON): TraceTransactionClause`,
                 'Invalid request',
                 {

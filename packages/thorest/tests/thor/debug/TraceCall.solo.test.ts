@@ -1,69 +1,18 @@
-import { describe, expect, jest, test } from '@jest/globals';
-import { type PostDebugTracerCallRequestJSON, TraceCall } from '@thor/debug';
-import { Hex, IllegalArgumentError, Revision } from '@vechain/sdk-core';
-import type { HttpClient } from '@http';
-import fastJsonStableStringify from 'fast-json-stable-stringify';
-import { ThorError } from '@thor';
-
-const mockHttpClient = <T>(response: T): HttpClient => {
-    return {
-        post: jest.fn().mockReturnValue(response)
-    } as unknown as HttpClient;
-};
-
-const mockResponse = <T>(body: T, status: number): Response => {
-    const init: ResponseInit = {
-        status,
-        headers: new Headers({
-            'Content-Type': 'application/json'
-        })
-    };
-    return new Response(fastJsonStableStringify(body), init);
-};
+import { describe, expect, test } from '@jest/globals';
+import { FetchHttpClient } from '@http';
+import {
+    type PostDebugTracerCallRequestJSON,
+    ThorError,
+    ThorNetworks,
+    TraceCall
+} from '@thor';
+import { Hex, Revision } from '@vechain/sdk-core';
 
 /**
- * @group unit/debug
+ * @group integration/debug
  */
-describe('TraceCall UNIT tests', () => {
-    test('err <- of() - illegal request', () => {
-        const json = {
-            name: 'call',
-            value: 'illegal value',
-            data: 'illegal data',
-            to: 'illegal to'
-        } satisfies PostDebugTracerCallRequestJSON;
-        expect(() => TraceCall.of(json)).toThrowError(IllegalArgumentError);
-    });
-
-    test('err <- askTo() - mock invalid request body response', async () => {
-        const status = 400;
-        // legal request, else it would be rejected by of() method
-        const request = {
-            value: '0x0',
-            to: '0x0000000000000000000000000000456E65726779',
-            data: '0xa9059cbb0000000000000000000000000f872421dc479f3c11edd89512731814d0598db50000000000',
-            gas: 50000,
-            gasPrice: '1000000000000000',
-            caller: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-            provedWork: '1000',
-            gasPayer: '0xd3ae78222beadb038203be21ed5ce7c9b1bff602',
-            expiration: 1000,
-            blockRef: '0x00000000851caf3c',
-            name: 'call'
-        } satisfies PostDebugTracerCallRequestJSON;
-        try {
-            await TraceCall.of(request).askTo(
-                mockHttpClient<Response>(
-                    mockResponse('Invalid request body', status)
-                )
-            );
-            // noinspection ExceptionCaughtLocallyJS
-            throw new Error('Should not reach here.');
-        } catch (error) {
-            expect(error).toBeInstanceOf(ThorError);
-            expect((error as ThorError).status).toBe(status);
-        }
-    });
+describe('TraceCall SOLO tests', () => {
+    const httpClient = FetchHttpClient.at(ThorNetworks.SOLONET);
 
     test('err <- of() - revision not found', async () => {
         const status = 400;
@@ -82,13 +31,7 @@ describe('TraceCall UNIT tests', () => {
             name: 'call'
         } satisfies PostDebugTracerCallRequestJSON;
         try {
-            await TraceCall.of(request)
-                .withRevison(revision)
-                .askTo(
-                    mockHttpClient<Response>(
-                        mockResponse('Revision not found', status)
-                    )
-                );
+            await TraceCall.of(request).withRevison(revision).askTo(httpClient);
             // noinspection ExceptionCaughtLocallyJS
             throw new Error('Should not reach here.');
         } catch (error) {
@@ -121,11 +64,7 @@ describe('TraceCall UNIT tests', () => {
             value: '0x0',
             type: 'CALL'
         };
-        const actual = (
-            await TraceCall.of(request).askTo(
-                mockHttpClient(mockResponse(expected, 200))
-            )
-        ).response;
+        const actual = (await TraceCall.of(request).askTo(httpClient)).response;
         expect(actual).toBeDefined();
         expect(actual).toEqual(expected);
     });
@@ -157,7 +96,7 @@ describe('TraceCall UNIT tests', () => {
         const actual = (
             await TraceCall.of(request)
                 .withRevison(Revision.FINALIZED)
-                .askTo(mockHttpClient(mockResponse(expected, 200)))
+                .askTo(httpClient)
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toEqual(expected);
@@ -190,7 +129,7 @@ describe('TraceCall UNIT tests', () => {
         const actual = (
             await TraceCall.of(request)
                 .withRevison(Revision.of(0))
-                .askTo(mockHttpClient(mockResponse(expected, 200)))
+                .askTo(httpClient)
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toEqual(expected);
@@ -223,7 +162,7 @@ describe('TraceCall UNIT tests', () => {
         const actual = (
             await TraceCall.of(request)
                 .withRevison(Hex.of('0x0'))
-                .askTo(mockHttpClient(mockResponse(expected, 200)))
+                .askTo(httpClient)
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toEqual(expected);

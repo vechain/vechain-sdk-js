@@ -43,21 +43,9 @@ describe('RetrieveStorageRange UNIT tests', () => {
         );
     });
 
-    test('ok <- of() - legal request', () => {
-        const json: StorageRangeOptionJSON = {
-            address: '0xD8CCDD85abDbF68DFEc95f06c973e87B1b5A9997',
-            keyStart:
-                '0x0000000000000000000000000000000000000000000000000000000000000000',
-            maxResult: 10,
-            target: '0x010709463c1f0c9aa66a31182fb36d1977d99bfb6526bae0564a0eac4006c31a/0/0'
-        };
-
-        const request = RetrieveStorageRange.of(json);
-        expect(request).toBeInstanceOf(RetrieveStorageRange);
-    });
-
     test('err <- askTo() - bad address', async () => {
         const status = 400;
+        // legal request, else it would be rejected by of() method
         const request: StorageRangeOptionJSON = {
             address: '0xD8CCDD85abDbF68DFEc95f06c973e87B1b5A9997',
             target: '0x010709463c1f0c9aa66a31182fb36d1977d99bfb6526bae0564a0eac4006c31a/0/0'

@@ -27,7 +27,7 @@ classDiagram
     class PostDebugTracerRequest {
         TracerName name
         unknown config
-        Hex target
+        TargetPath target
         PosetDebugTracerRequest toJSON()
     }
     class RetrieveStorageRange {
@@ -62,6 +62,7 @@ classDiagram
     class TraceCall {
         ThorResponse~TraceCall, undefined~ askTo(HttpClient httpClient)
         TraceCall of(PostDebugTracerCallRequestJSON request)$
+        TraceCall withRevision(revision Revision)
     }
     class TracerName {
         <<enumeration>>
