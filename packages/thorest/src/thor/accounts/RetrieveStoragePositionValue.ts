@@ -21,14 +21,14 @@ class RetrieveStoragePositionValue
     /**
      * Represents the HTTP path for this specific API endpoint.
      */
-    readonly path: RetrieveStoragePositionValuePath;
+    private readonly path: RetrieveStoragePositionValuePath;
 
     /**
      * Constructs an instance of the class with the specified HTTP path.
      *
      * @param {HttpPath} path - The HTTP path to initialize the instance with.
      */
-    constructor(path: RetrieveStoragePositionValuePath) {
+    protected constructor(path: RetrieveStoragePositionValuePath) {
         this.path = path;
     }
 
@@ -90,16 +90,38 @@ class RetrieveStoragePositionValue
     }
 }
 
+/**
+ * Retrieve Storage Position Value Path
+ *
+ * Represents the path for retrieving the value of a storage position.
+ */
 class RetrieveStoragePositionValuePath implements HttpPath {
+    /**
+     * Represents the address of the storage position.
+     */
     readonly address: Address;
 
+    /**
+     * Represents the key of the storage position.
+     */
     readonly key: BlockId;
 
+    /**
+     * Constructs an instance of the class with the specified address and key.
+     *
+     * @param {Address} address - The address used to generate the storage position value's path.
+     * @param {BlockId} key - The key used to generate the storage position value's path.
+     */
     constructor(address: Address, key: BlockId) {
         this.address = address;
         this.key = key;
     }
 
+    /**
+     * Returns the path for retrieving the value of a storage position.
+     *
+     * @returns {string} The path for retrieving the value of a storage position.
+     */
     get path(): string {
         return `/accounts/${this.address}/storage/${this.key}`;
     }

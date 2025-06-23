@@ -11,9 +11,9 @@ import { ExecuteCodesRequestJSON } from './ExecuteCodesRequestJSON';
 const FQP = 'packages/thorest/src/thor/accounts/InspectClauses.ts!';
 
 /**
- Inspect the clauses of a contract identified by its address.
- 
- API endpoint: `POST /accounts/*`
+ * Inspect the clauses of a contract identified by its address.
+ *
+ * API endpoint: `POST /accounts/*`
  */
 /// Documentation: http://localhost:8669/doc/stoplight-ui/#/paths/accounts-*/post/
 class InspectClauses
@@ -22,7 +22,7 @@ class InspectClauses
     /**
      * Represents the HTTP path for this specific API endpoint.
      */
-    static readonly PATH: HttpPath = { path: '/accounts/*' };
+    private static readonly PATH: HttpPath = { path: '/accounts/*' };
 
     /**
      * Represents the HTTP query for this specific API endpoint.
@@ -37,7 +37,7 @@ class InspectClauses
     /**
      * Constructs an instance of the class with the specified HTTP path and request.
      */
-    constructor(query: InspectClauseQuery, request: ExecuteCodesRequest) {
+    protected constructor(query: InspectClauseQuery, request: ExecuteCodesRequest) {
         this.query = query;
         this.request = request;
     }
@@ -117,13 +117,29 @@ class InspectClauses
     }
 }
 
+/**
+ * Inspect Clause Query
+ *
+ * Represents a query for inspecting clauses.
+ */
 class InspectClauseQuery implements HttpQuery {
-    readonly revision: Revision;
+    /**
+     * Represents the revision of the query.
+     */
+    private readonly revision: Revision;
 
+    /**
+     * Constructs an instance of the class with the specified revision.
+     */
     constructor(revision: Revision) {
         this.revision = revision;
     }
 
+    /**
+     * Returns the query string for the revision.
+     *
+     * @returns {string} The query string for the revision.
+     */
     get query(): string {
         return `?revision=${this.revision}`;
     }

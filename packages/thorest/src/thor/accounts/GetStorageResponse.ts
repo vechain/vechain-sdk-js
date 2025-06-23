@@ -9,6 +9,8 @@ const FQP = 'packages/thorest/src/thor/accounts/GetStorageResponse.ts!';
 /**
  * Get Storage Response
  *
+ * [GetStorageResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/GetStorageResponse)
+ *
  * Represents a storage response containing the value at a storage position.
  */
 class GetStorageResponse {

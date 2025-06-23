@@ -20,14 +20,14 @@ class RetrieveAccountDetails
     /**
      * Represents the HTTP path for this specific API endpoint.
      */
-    readonly path: RetrieveAccountDetailsPath;
+    private readonly path: RetrieveAccountDetailsPath;
 
      /**
      * Constructs an instance of the class with the specified HTTP path.
      *
      * @param {HttpPath} path - The HTTP path to initialize the instance with.
      */
-    constructor(path: RetrieveAccountDetailsPath) {
+    protected constructor(path: RetrieveAccountDetailsPath) {
         this.path = path;
     }
 

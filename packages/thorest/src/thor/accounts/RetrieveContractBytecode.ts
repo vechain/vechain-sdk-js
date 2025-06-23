@@ -19,14 +19,14 @@ class RetrieveContractBytecode
     /**
      * Represents the HTTP path for this specific API endpoint.
      */
-    readonly path: RetrieveContractBytecodePath;
+    private readonly path: RetrieveContractBytecodePath;
 
     /**
      * Constructs an instance of the class with the specified HTTP path.
      *
      * @param {HttpPath} path - The HTTP path to initialize the instance with.
      */
-    constructor(path: RetrieveContractBytecodePath) {
+    protected constructor(path: RetrieveContractBytecodePath) {
         this.path = path;
     }
 
@@ -87,13 +87,29 @@ class RetrieveContractBytecode
     }
 }
 
+/**
+ * Retrieve Contract Bytecode Path
+ *
+ * Represents the path for retrieving the bytecode of a contract.
+ */
 class RetrieveContractBytecodePath implements HttpPath {
+    /**
+     * Represents the address of the contract.
+     */
     readonly address: Address;
 
+    /**
+     * Constructs an instance of the class with the specified address.
+     */
     constructor(address: Address) {
         this.address = address;
     }
 
+    /**
+     * Returns the path for retrieving the bytecode of a contract.
+     *
+     * @returns {string} The path for retrieving the bytecode of a contract.
+     */
     get path(): string {
         return `/accounts/${this.address}/code`;
     }

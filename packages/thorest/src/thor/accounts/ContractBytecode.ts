@@ -1,4 +1,4 @@
-import { HexUInt, IllegalArgumentError } from '@vechain/sdk-core';
+import { Hex, HexUInt, IllegalArgumentError } from '@vechain/sdk-core';
 import { type ContractBytecodeJSON } from './ContractBytecodeJSON';
 
 /**
@@ -7,13 +7,15 @@ import { type ContractBytecodeJSON } from './ContractBytecodeJSON';
 const FQP = 'packages/thorest/src/thor/accounts/ContractBytecode.ts!';
 
 /**
- * [ContractBytecode](http://localhost:8669/doc/stoplight-ui/#/schemas/ContractBytecode)
+ * Contract Bytecode
+ *
+ * Represents the bytecode of a contract.
  */
 class ContractBytecode {
     /**
-     * The bytecode of the contract.
+     * The contract bytecode.
      */
-    readonly code: HexUInt;
+    readonly code: Hex;
 
     /**
      * Constructs a new instance of the class.

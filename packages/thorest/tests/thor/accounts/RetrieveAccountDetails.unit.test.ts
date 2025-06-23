@@ -34,8 +34,14 @@ describe('RetrieveAccountDetails unit tests', () => {
             );
             const request = RetrieveAccountDetails.of(address);
             expect(request).toBeInstanceOf(RetrieveAccountDetails);
-            expect(request.path).toBeInstanceOf(RetrieveAccountDetailsPath);
-            expect(request.path.address).toBe(address);
+            expect(
+                (request as unknown as { path: RetrieveAccountDetailsPath })
+                    .path
+            ).toBeInstanceOf(RetrieveAccountDetailsPath);
+            expect(
+                (request as unknown as { path: RetrieveAccountDetailsPath })
+                    .path.address
+            ).toBe(address);
         });
 
         test('askTo() processes response correctly', async () => {

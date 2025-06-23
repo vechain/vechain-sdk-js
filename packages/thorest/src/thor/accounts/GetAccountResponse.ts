@@ -14,6 +14,8 @@ const FQP = 'packages/thorest/src/thor/accounts/GetAccountResponse.ts!';
  * Get Account Response
  *
  * Represents an account response containing balance, energy and code information.
+ * 
+ * [GetAccountResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/GetAccountResponse)
  */
 class GetAccountResponse {
     /**

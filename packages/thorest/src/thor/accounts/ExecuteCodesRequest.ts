@@ -16,47 +16,49 @@ const FQP = 'packages/thorest/src/thor/accounts/ExecuteCodesRequest.ts!';
  * Execute Codes Request
  *
  * Represents a request for executing codes.
+ * 
+ * [ExecuteCodesRequest](http://localhost:8669/doc/stoplight-ui/#/schemas/ExecuteCodesRequest)
  */
 class ExecuteCodesRequest {
     /**
      * The proved work of the request.
      */
-    readonly provedWork?: string;
+    readonly provedWork: string | null;
 
     /**
      * The gas payer of the request.
      */
-    readonly gasPayer?: Address;
+    readonly gasPayer: Address | null;
 
     /**
      * The expiration of the request.
      */
-    readonly expiration?: UInt;
+    readonly expiration: UInt | null;
 
     /**
      * The block reference of the request.
      */
-    readonly blockRef?: BlockRef;
+    readonly blockRef: BlockRef | null;
 
     /**
      * The clauses of the request.
      */
-    readonly clauses?: Clause[];
+    readonly clauses: Clause[] | null;
 
     /**
      * The gas of the request.
      */
-    readonly gas?: bigint;
+    readonly gas: bigint | null;
 
     /**
      * The gas price of the request.
      */
-    readonly gasPrice?: bigint;
+    readonly gasPrice: bigint | null;
 
     /**
      * The caller of the request.
      */
-    readonly caller?: Address;
+    readonly caller: Address | null;
 
     /**
      * Constructs a new instance of the class by parsing the provided JSON object.
@@ -66,30 +68,18 @@ class ExecuteCodesRequest {
      */
     constructor(json: ExecuteCodesRequestJSON) {
         try {
-            this.provedWork = json.provedWork;
-            this.gasPayer =
-                json.gasPayer === undefined
-                    ? undefined
-                    : Address.of(json.gasPayer);
-            this.expiration =
-                json.expiration === undefined
-                    ? undefined
-                    : UInt.of(json.expiration);
-            this.blockRef =
-                json.blockRef === undefined
-                    ? undefined
-                    : BlockRef.of(json.blockRef);
-            this.clauses =
-                json.clauses === undefined
-                    ? undefined
-                    : json.clauses.map(
-                          (clauseJSON: ClauseJSON): Clause =>
-                              new Clause(clauseJSON)
-                      );
-            this.gas = json.gas === undefined ? undefined : BigInt(json.gas);
-            this.gasPrice = json.gasPrice === undefined ? undefined : BigInt(json.gasPrice);
-            this.caller =
-                json.caller === undefined ? undefined : Address.of(json.caller);
+            this.provedWork = json.provedWork ? json.provedWork : null;
+            this.gasPayer = json.gasPayer ? Address.of(json.gasPayer) : null;
+            this.expiration = json.expiration ? UInt.of(json.expiration) : null;
+            this.blockRef = json.blockRef ? BlockRef.of(json.blockRef) : null;
+            this.clauses = json.clauses
+                ? json.clauses.map(
+                      (clauseJSON: ClauseJSON): Clause => new Clause(clauseJSON)
+                  )
+                : null;
+            this.gas = json.gas ? BigInt(json.gas) : null;
+            this.gasPrice = json.gasPrice ? BigInt(json.gasPrice) : null;
+            this.caller = json.caller ? Address.of(json.caller) : null;
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: ExecuteCodesRequestJSON)`,
@@ -107,13 +97,13 @@ class ExecuteCodesRequest {
      */
     toJSON(): ExecuteCodesRequestJSON {
         return {
-            provedWork: this.provedWork,
+            provedWork: this.provedWork || undefined,
             gasPayer: this.gasPayer?.toString(),
             expiration: this.expiration?.valueOf(),
             blockRef: this.blockRef?.toString(),
             clauses: this.clauses?.map((clause: Clause) => clause.toJSON()),
-            gas: this.gas === undefined ? undefined : Number(this.gas),
-            gasPrice: this.gasPrice === undefined ? undefined : this.gasPrice.toString(),
+            gas: this.gas ? Number(this.gas) : undefined,
+            gasPrice: this.gasPrice ? this.gasPrice.toString() : undefined,
             caller: this.caller?.toString()
         } satisfies ExecuteCodesRequestJSON;
     }
