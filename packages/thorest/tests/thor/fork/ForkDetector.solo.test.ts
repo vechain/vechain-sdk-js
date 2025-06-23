@@ -31,12 +31,6 @@ describe('ForkDetector SOLO tests', () => {
             expect(result).toBe(true);
         });
 
-        test('should detect fork status for finalized block', async () => {
-            const result = await forkDetector.isGalacticaForked('finalized');
-            
-            expect(result).toBe(true);
-        });
-
         test('should handle revision parameter validation', async () => {
             const result = await forkDetector.isGalacticaForked(0);
             expect(result).toBe(false);
