@@ -57,7 +57,10 @@ const maxPriorityFee = await thor.gas.getMaxPriorityFeePerGas();
 
 ```typescript { name=fee-estimation, category=example }
 // Query the recent fee history
-const feeHistory = await thor.gas.getFeeHistory({ blockCount: 10, newestBlock: 'best' });
+const feeHistory = await thor.gas.getFeeHistory({
+    blockCount: 10,
+    newestBlock: 'best'
+});
 ```
 
 ### 3. Get Current Base Fee
@@ -195,17 +198,17 @@ const defaultBodyOptions = await thor.transactions.fillDefaultBodyOptions();
 
 // 4. Build transaction body with explicit values
 const txBody = await thor.transactions.buildTransactionBody(
-  clauses,
-  gasResult.totalGas,
-  {
-    chainTag: networkInfo.solo.chainTag,
-    blockRef: '0x0000000000000000',
-    expiration: 32,
-    gasPriceCoef: 128,
-    dependsOn: null,
-    nonce: 12345678,
-    ...defaultBodyOptions
-  }
+    clauses,
+    gasResult.totalGas,
+    {
+        chainTag: networkInfo.solo.chainTag,
+        blockRef: '0x0000000000000000',
+        expiration: 32,
+        gasPriceCoef: 128,
+        dependsOn: null,
+        nonce: 12345678,
+        ...defaultBodyOptions
+    }
 );
 
 // 5. Sign transaction
