@@ -58,7 +58,7 @@ const config: HardhatUserConfig = {
             accounts: {
                 mnemonic:
                     'vivid any call mammal mosquito budget midnight expose spirit approve reject system',
-                path: HDKey.VET_DERIVATION_PATH,
+                path: "m/44'/818'/0'/0",
                 count: 3,
                 initialIndex: 0,
                 passphrase: 'vechainthor'
@@ -81,7 +81,7 @@ const config: HardhatUserConfig = {
             accounts: {
                 mnemonic:
                     'vivid any call mammal mosquito budget midnight expose spirit approve reject system',
-                path: HDKey.VET_DERIVATION_PATH,
+                path: "m/44'/818'/0'/0",
                 count: 3,
                 initialIndex: 0,
                 passphrase: 'vechainthor'
@@ -108,7 +108,7 @@ const config: HardhatUserConfig = {
             accounts: {
                 mnemonic:
                     'vivid any call mammal mosquito budget midnight expose spirit approve reject system',
-                path: HDKey.VET_DERIVATION_PATH,
+                path: "m/44'/818'/0'/0",
                 count: 3,
                 initialIndex: 0,
                 passphrase: 'vechainthor'
@@ -153,7 +153,7 @@ const config: HardhatUserConfig = {
             accounts: {
                 mnemonic:
                     'vivid any call mammal mosquito budget midnight expose spirit approve reject system',
-                path: HDKey.VET_DERIVATION_PATH,
+                path: "m/44'/818'/0'/0/0",
                 count: 3,
                 initialIndex: 0
             },
