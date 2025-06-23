@@ -43,7 +43,7 @@ class HDKey extends s_bip32.HDKey {
      * [SLIP-0044 : Registered coin types for BIP-0044](https://github.com/satoshilabs/slips/blob/master/slip-0044.md)
      * for more info.
      */
-    public static readonly VET_DERIVATION_PATH = "m/44'/818'/0'/0";
+    public static readonly VET_DERIVATION_PATH = "m/44'/818'/0'/0/0";
 
     /**
      * Creates a

@@ -1,4 +1,3 @@
-import { HDKey } from '@vechain/sdk-core';
 import { type SignTransactionOptions } from '../../../../../src';
 
 /**
@@ -8,7 +7,7 @@ const hdNodeFixtures = [
     {
         mnemonic:
             'vivid any call mammal mosquito budget midnight expose spirit approve reject system',
-        path: HDKey.VET_DERIVATION_PATH,
+        path: "m/44'/818'/0'/0",
         count: 5,
         initialIndex: 0,
         gasPayer: {
@@ -31,12 +30,12 @@ const hdNodeFixtures = [
         gasPayer: {
             gasPayerServiceUrl: 'https://sponsor-testnet.vechain.energy/by/883'
         } satisfies SignTransactionOptions,
-        expectedAddress: ['0x8ef651aC457C9bf5206EC3D2cbD4232Df0438607']
+        expectedAddress: ['0xe1d42EE9d48461ADCe47C01a7985868BFfE73556']
     },
     {
         mnemonic:
             'vivid any call mammal mosquito budget midnight expose spirit approve reject system',
-        expectedAddress: ['0x783DE01F06b4F2a068A7b3Bb6ff3db821A08f8c1']
+        expectedAddress: ['0x79193D354fEed00Bcc3Bc09921Bdd3339008f148']
     }
 ];
 

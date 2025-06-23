@@ -111,7 +111,10 @@ describe('HDKey class tests', () => {
         });
 
         test('fromMnemonic - valid - address sequence', () => {
-            const root = HDKey.fromMnemonic(HDKeyFixture.words);
+            const root = HDKey.fromMnemonic(
+                HDKeyFixture.words,
+                "m/44'/818'/0'/0"
+            );
             for (let i = 0; i < 5; i++) {
                 const child = root.deriveChild(i);
                 expect(child.publicKey).toBeDefined();
@@ -201,7 +204,10 @@ describe('HDKey class tests', () => {
         });
 
         test('fromPrivateKey - valid - address sequence', () => {
-            const root = HDKey.fromMnemonic(HDKeyFixture.words);
+            const root = HDKey.fromMnemonic(
+                HDKeyFixture.words,
+                "m/44'/818'/0'/0"
+            );
             expect(root.privateKey).toBeDefined();
             expect(root.chainCode).toBeDefined();
             const extendedRoot = HDKey.fromPrivateKey(
@@ -250,7 +256,10 @@ describe('HDKey class tests', () => {
         });
 
         test(`fromPublicKey - valid - address sequence, no private key`, () => {
-            const root = HDKey.fromMnemonic(HDKeyFixture.words);
+            const root = HDKey.fromMnemonic(
+                HDKeyFixture.words,
+                "m/44'/818'/0'/0"
+            );
             expect(root.publicKey).toBeDefined();
             expect(root.chainCode).toBeDefined();
             const extendedRoot = HDKey.fromPublicKey(
