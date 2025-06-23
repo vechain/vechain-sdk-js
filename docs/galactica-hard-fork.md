@@ -214,7 +214,7 @@ const txBody = await thor.transactions.buildTransactionBody(
 // 5. Sign transaction
 const txClass = Transaction.of(txBody);
 const txSigned = txClass.sign(privateKey);
-const encodedTx = '0x' + Buffer.from(txSigned.encoded).toString('hex');
+const encodedTx = Hex.of(txSigned.encoded).toString();
 
 // 6. Send transaction and wait for receipt
 const txId = (await thor.transactions.sendRawTransaction(encodedTx)).id;
