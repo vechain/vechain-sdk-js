@@ -3,19 +3,27 @@ import {
     Clause,
     Transaction,
     VET,
-    HDKey
+    HDKey,
+    Hex
 } from '@vechain/sdk-core';
 import { THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
 
 // Common setup code
 const thorClient = ThorClient.at(THOR_SOLO_URL);
-const mnemonic = 'denial kitchen pet squirrel other broom bar gas better priority spoil cross';
-const child = HDKey.fromMnemonic(mnemonic.split(' ')).deriveChild(0);
-const privateKey = child.privateKey;
-const address = Address.ofPublicKey(child.publicKey).toString();
-const clauses = [Clause.transferVET(Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'), VET.of(10000))];
+const mnemonic =
+    'denial kitchen pet squirrel other broom bar gas better priority spoil cross';
+const hdKey = HDKey.fromMnemonic(mnemonic.split(' '));
+const privateKey = hdKey.privateKey;
+const address = Address.ofPublicKey(hdKey.publicKey).toString();
+const clauses = [
+    Clause.transferVET(
+        Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'),
+        VET.of(10000)
+    )
+];
 const gasResult = await thorClient.gas.estimateGas(clauses, address);
-const defaultBodyOptions = await thorClient.transactions.fillDefaultBodyOptions();
+const defaultBodyOptions =
+    await thorClient.transactions.fillDefaultBodyOptions();
 
 // START_SNIPPET: DynamicFeeTxPriorityOnlySnippet
 console.log('\nCase 1: Only maxPriorityFeePerGas');
@@ -30,7 +38,7 @@ const txBody1 = await thorClient.transactions.buildTransactionBody(
 );
 const txClass1 = Transaction.of(txBody1);
 const txSigned1 = txClass1.sign(privateKey);
-const encodedTx1 = '0x' + Buffer.from(txSigned1.encoded).toString('hex');
+const encodedTx1 = Hex.of(txSigned1.encoded).toString();
 const txId1 = (await thorClient.transactions.sendRawTransaction(encodedTx1)).id;
 const receipt1 = await thorClient.transactions.waitForTransaction(txId1);
 console.log('Receipt:', receipt1);
@@ -49,7 +57,7 @@ const txBody2 = await thorClient.transactions.buildTransactionBody(
 );
 const txClass2 = Transaction.of(txBody2);
 const txSigned2 = txClass2.sign(privateKey);
-const encodedTx2 = '0x' + Buffer.from(txSigned2.encoded).toString('hex');
+const encodedTx2 = Hex.of(txSigned2.encoded).toString();
 const txId2 = (await thorClient.transactions.sendRawTransaction(encodedTx2)).id;
 const receipt2 = await thorClient.transactions.waitForTransaction(txId2);
 console.log('Receipt:', receipt2);
@@ -73,4 +81,4 @@ const encodedTx3 = '0x' + Buffer.from(txSigned3.encoded).toString('hex');
 const txId3 = (await thorClient.transactions.sendRawTransaction(encodedTx3)).id;
 const receipt3 = await thorClient.transactions.waitForTransaction(txId3);
 console.log('Receipt:', receipt3);
-// END_SNIPPET: DynamicFeeTxBothSnippet 
+// END_SNIPPET: DynamicFeeTxBothSnippet
