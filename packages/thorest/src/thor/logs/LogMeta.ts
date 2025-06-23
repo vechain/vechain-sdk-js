@@ -1,26 +1,94 @@
-import { Address, BlockId, TxId, UInt } from '@vechain/sdk-core';
+import {
+    Address,
+    HexUInt32,
+    IllegalArgumentError,
+    UInt,
+    type Hex
+} from '@vechain/sdk-core';
+import { type LogMetaJSON } from '@thor';
 
+/**
+ * Full-Qualified-Path
+ */
+const FQP = 'packages/thorest/src/thor/logs/LogMeta.ts!';
+
+/**
+ * [LogMeta](http://localhost:8669/doc/stoplight-ui/#/schemas/LogMeta)
+ */
 class LogMeta {
-    readonly blockID: BlockId;
-    readonly blockNumber: UInt;
-    readonly blockTimestamp: UInt;
-    readonly txID: TxId;
-    readonly txOrigin: Address;
-    readonly clauseIndex: UInt;
-    readonly txIndex: UInt;
-    readonly logIndex: UInt;
+    /**
+     * The block identifier in which the log was included.
+     */
+    readonly blockID: Hex;
 
+    /**
+     * The block number (height) of the block in which the log was included.
+     */
+    readonly blockNumber: number;
+
+    /**
+     * The UNIX timestamp of the block in which the log was included.
+     */
+    readonly blockTimestamp: number;
+
+    /**
+     * The transaction identifier, from which the log was generated.
+     */
+    readonly txID: Hex;
+
+    /**
+     * The account from which the transaction was sent.
+     */
+    readonly txOrigin: Address;
+
+    /**
+     * The index of the clause in the transaction, from which the log was generated.
+     */
+    readonly clauseIndex: number;
+
+    /**
+     * The index of the transaction in the block, from which the log was generated.
+     */
+    readonly txIndex: number;
+
+    /**
+     * The index of the log in the receipt's outputs.
+     * This is an overall index among all clauses.
+     */
+    readonly logIndex: number;
+
+    /**
+     * Constructs an instance of the log meta-data represented as a JSON object.
+     *
+     * @param {FilterOptionsJSON} json - The JSON object containing filter options.
+     * Each property in the JSON object is parsed and converted to its respective type.
+     * @throws {IllegalArgumentError} If the provided JSON object contains invalid or unparsable data.
+     */
     constructor(json: LogMetaJSON) {
-        this.blockID = BlockId.of(json.blockID);
-        this.blockNumber = UInt.of(Number(json.blockNumber));
-        this.blockTimestamp = UInt.of(Number(json.blockTimestamp));
-        this.txID = TxId.of(json.txID);
-        this.txOrigin = Address.of(json.txOrigin);
-        this.clauseIndex = UInt.of(Number(json.clauseIndex));
-        this.txIndex = UInt.of(Number(json.txIndex));
-        this.logIndex = UInt.of(Number(json.logIndex));
+        try {
+            this.blockID = HexUInt32.of(json.blockID);
+            this.blockNumber = UInt.of(json.blockNumber).valueOf();
+            this.blockTimestamp = UInt.of(json.blockTimestamp).valueOf();
+            this.txID = HexUInt32.of(json.txID);
+            this.txOrigin = Address.of(json.txOrigin);
+            this.clauseIndex = UInt.of(json.clauseIndex).valueOf();
+            this.txIndex = UInt.of(json.txIndex).valueOf();
+            this.logIndex = UInt.of(json.logIndex).valueOf();
+        } catch (error) {
+            throw new IllegalArgumentError(
+                `${FQP}constructor(json: LogMetaJSON)`,
+                'Bad parse',
+                { json },
+                error instanceof Error ? error : undefined
+            );
+        }
     }
 
+    /**
+     * Converts the current LogMeta instance into a JSON representation.
+     *
+     * @return {LogMetaJSON} The JSON object representing the current LogMeta instance.
+     */
     toJSON(): LogMetaJSON {
         return {
             blockID: this.blockID.toString(),
@@ -35,15 +103,4 @@ class LogMeta {
     }
 }
 
-interface LogMetaJSON {
-    blockID: string;
-    blockNumber: number;
-    blockTimestamp: number;
-    txID: string;
-    txOrigin: string;
-    clauseIndex: number;
-    txIndex: number;
-    logIndex: number;
-}
-
-export { LogMeta, type LogMetaJSON };
+export { LogMeta };
