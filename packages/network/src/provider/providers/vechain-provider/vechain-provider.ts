@@ -33,7 +33,7 @@ import {
 class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
     public readonly subscriptionManager: SubscriptionManager = {
         logSubscriptions: new Map(),
-        currentBlockNumber: -1
+        currentBlockNumber: 0
     };
 
     /**
@@ -128,61 +128,33 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
         let result = false;
         if (this.pollInstance === undefined) {
             this.pollInstance = Poll.createEventPoll(async () => {
-                const allEvents: SubscriptionEvent[] = [];
+                const data: SubscriptionEvent[] = [];
 
                 const currentBlock = await this.getCurrentBlock();
 
                 if (currentBlock !== null) {
-                    // Initialize currentBlockNumber if it's -1 (first time)
-                    if (this.subscriptionManager.currentBlockNumber === -1) {
-                        this.subscriptionManager.currentBlockNumber =
-                            currentBlock.number;
-                    }
-
-                    // Process all blocks from currentBlockNumber up to and including currentBlock.number
-                    for (
-                        let blockNumber =
-                            this.subscriptionManager.currentBlockNumber;
-                        blockNumber <= currentBlock.number;
-                        blockNumber++
+                    if (
+                        this.subscriptionManager.newHeadsSubscription !==
+                        undefined
                     ) {
-                        const blockEvents: SubscriptionEvent[] = [];
-
-                        // Emit newHeads event if subscribed
-                        if (
-                            this.subscriptionManager.newHeadsSubscription !==
-                            undefined
-                        ) {
-                            blockEvents.push({
-                                method: 'eth_subscription',
-                                params: {
-                                    subscription:
-                                        this.subscriptionManager
-                                            .newHeadsSubscription
-                                            .subscriptionId,
-                                    result: currentBlock
-                                }
-                            });
-                        }
-
-                        // Get logs for all log subscriptions
-                        if (
-                            this.subscriptionManager.logSubscriptions.size > 0
-                        ) {
-                            const logs = await this.getLogsRPC(blockNumber);
-                            blockEvents.push(...logs);
-                        }
-
-                        // Update currentBlockNumber to the next block we should look for
-                        // This ensures we don't process the same block multiple times
-                        this.subscriptionManager.currentBlockNumber =
-                            blockNumber + 1;
-
-                        // Add all events from this block to the total collection
-                        allEvents.push(...blockEvents);
+                        data.push({
+                            method: 'eth_subscription',
+                            params: {
+                                subscription:
+                                    this.subscriptionManager
+                                        .newHeadsSubscription.subscriptionId,
+                                result: currentBlock
+                            }
+                        });
                     }
+                    if (this.subscriptionManager.logSubscriptions.size > 0) {
+                        const logs = await this.getLogsRPC();
+                        data.push(...logs);
+                    }
+
+                    this.subscriptionManager.currentBlockNumber++;
                 }
-                return allEvents;
+                return data;
             }, POLLING_INTERVAL).onData(
                 (subscriptionEvents: SubscriptionEvent[]) => {
                     subscriptionEvents.forEach((event) => {
@@ -246,44 +218,38 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
      * logs for all active subscriptions, typically in response to a new block being mined or
      * at regular intervals to keep subscription data up to date.
      *
-     * @param currentBlockNumber - The current block number to fetch logs for
      * @returns {Promise<SubscriptionEvent[]>} A promise that resolves to an array of `SubscriptionEvent`
      * objects, each containing the subscription ID and the corresponding logs fetched for that
      * subscription. The promise resolves to an empty array if there are no active log subscriptions.
      */
-    private async getLogsRPC(
-        currentBlockNumber?: number
-    ): Promise<SubscriptionEvent[]> {
-        // Use the provided block number or fall back to the subscription manager's current block number
-        const blockNumber =
-            currentBlockNumber ?? this.subscriptionManager.currentBlockNumber;
-
+    private async getLogsRPC(): Promise<SubscriptionEvent[]> {
         // Convert the logSubscriptions Map to an array of promises, each promise corresponds to a log fetch operation
         const promises = Array.from(
             this.subscriptionManager.logSubscriptions.entries()
         ).map(async ([subscriptionId, subscriptionDetails]) => {
-            const currentBlock = HexInt.of(blockNumber);
-
+            const currentBlock = HexInt.of(
+                this.subscriptionManager.currentBlockNumber
+            ).toString();
+            // Construct filter options for the Ethereum logs query based on the subscription details
             const filterOptions: FilterOptions = {
-                address: subscriptionDetails.options?.address,
-                fromBlock: currentBlock.toString(),
-                toBlock: currentBlock.toString(),
-                topics: subscriptionDetails.options?.topics
+                address: subscriptionDetails.options?.address, // Contract address to filter the logs by
+                fromBlock: currentBlock,
+                toBlock: currentBlock,
+                topics: subscriptionDetails.options?.topics // Topics to filter the logs by
             };
 
-            const logs = await ethGetLogs(this.thorClient, [filterOptions]);
-
+            // Fetch logs based on the filter options and construct a SubscriptionEvent object
             return {
                 method: 'eth_subscription',
                 params: {
-                    subscription: subscriptionId,
-                    result: logs
+                    subscription: subscriptionId, // Subscription ID
+                    result: await ethGetLogs(this.thorClient, [filterOptions]) // The actual log data fetched from Ethereum node
                 }
             };
         });
 
+        // Wait for all log fetch operations to complete and return an array of SubscriptionEvent objects
         const subscriptionEvents = await Promise.all(promises);
-
         // Filter out empty results
         return subscriptionEvents.filter(
             (event) => event.params.result.length > 0
@@ -299,31 +265,20 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
         // Initialize the result to null, indicating no block found initially
         let result: CompressedBlockDetail | null = null;
 
-        try {
-            // Get the best (latest) block available instead of trying to fetch a specific block number
-            const bestBlock =
-                await this.thorClient.blocks.getBestBlockCompressed();
-
-            // If we have a valid block and either:
-            // 1. We're in initial state (currentBlockNumber === -1), or
-            // 2. We have a newer block than what we've already processed
-            if (
-                bestBlock !== undefined &&
-                bestBlock !== null &&
-                (this.subscriptionManager.currentBlockNumber === -1 ||
-                    bestBlock.number >=
-                        this.subscriptionManager.currentBlockNumber)
-            ) {
-                result = bestBlock; // Set the fetched block as the result
-            }
-        } catch (error) {
-            // Log the error but don't let it crash the polling
-            console.warn(
-                'VeChainProvider: Failed to get current block, will retry on next poll:',
-                error
+        // Proceed only if there are active log subscriptions or a new heads subscription is present
+        if (this.isThereActiveSubscriptions()) {
+            // Fetch the block details for the current block number
+            const block = await this.thorClient.blocks.getBlockCompressed(
+                this.subscriptionManager.currentBlockNumber
             );
+
+            // If the block is successfully fetched (not undefined or null), update the result.
+            if (block !== undefined && block !== null) {
+                result = block; // Set the fetched block as the result
+            }
         }
 
+        // Return the fetched block details or null if no block was fetched
         return result;
     }
 
