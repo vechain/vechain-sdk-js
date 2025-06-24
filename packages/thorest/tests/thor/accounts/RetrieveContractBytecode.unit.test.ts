@@ -33,8 +33,14 @@ describe('RetrieveContractBytecode unit tests', () => {
             );
             const request = RetrieveContractBytecode.of(address);
             expect(request).toBeInstanceOf(RetrieveContractBytecode);
-            expect(request.path).toBeInstanceOf(RetrieveContractBytecodePath);
-            expect(request.path.address).toBe(address);
+            expect(
+                (request as unknown as { path: RetrieveContractBytecodePath })
+                    .path
+            ).toBeInstanceOf(RetrieveContractBytecodePath);
+            expect(
+                (request as unknown as { path: RetrieveContractBytecodePath })
+                    .path.address
+            ).toBe(address);
         });
 
         test('askTo() processes response correctly', async () => {

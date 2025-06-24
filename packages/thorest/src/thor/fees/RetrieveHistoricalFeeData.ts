@@ -161,7 +161,7 @@ class RetrieveHistoricalFeeData
                 new Query(
                     this.query.blockCount,
                     this.query.newestBlock,
-                    rewardPercentiles.toSorted((a, b) => a - b)
+                    rewardPercentiles.slice().sort((a, b) => a - b)
                 )
             );
         } catch (error) {
