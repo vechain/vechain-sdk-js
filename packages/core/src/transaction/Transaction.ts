@@ -16,8 +16,7 @@ import {
     Units,
     VTHO
 } from '@vcdm';
-import { type TransactionBody } from '@transaction';
-import type { TransactionClause } from '@transaction';
+import type { TransactionClause, TransactionBody } from '@transaction';
 import {
     IllegalArgumentError,
     InvalidPrivateKeyError,

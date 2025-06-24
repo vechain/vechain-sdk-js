@@ -1,7 +1,6 @@
 import {
-    RetrieveTransactionsFromTransactionPool, Transactions,
-    TransactionsIDs,
-    type TransactionsIDsJSON,
+    RetrieveTransactionsFromTransactionPool,
+    Transactions,
     type TransactionsJSON,
     type TxJSON
 } from '@thor';

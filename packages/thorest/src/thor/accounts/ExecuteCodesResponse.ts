@@ -16,8 +16,7 @@ class ExecuteCodeResponse {
             (eventJSON: EventJSON): Event => new Event(eventJSON)
         );
         this.transfers = json.transfers.map(
-            (transferJSON: TransferJSON): Transfer =>
-                new Transfer(transferJSON)
+            (transferJSON: TransferJSON): Transfer => new Transfer(transferJSON)
         );
         this.gasUsed = Gas.of(json.gasUsed);
         this.reverted = json.reverted;

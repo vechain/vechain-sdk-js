@@ -27,8 +27,7 @@ class ExecuteCodesRequest {
             json.clauses === undefined
                 ? undefined
                 : json.clauses.map(
-                      (clauseJSON: ClauseJSON): Clause =>
-                          new Clause(clauseJSON)
+                      (clauseJSON: ClauseJSON): Clause => new Clause(clauseJSON)
                   );
         this.gas = json.gas === undefined ? undefined : Gas.of(json.gas);
         this.gasPrice =

@@ -11,14 +11,13 @@ import {
 } from 'viem';
 import { ABI } from './ABI';
 import { ABIFunction, ABIEvent, type ABIEventData } from '.';
-import { Hex } from '@vcdm';
+import { type Hex } from '@vcdm';
 import {
     AbiEventNotFoundError,
     AbiFunctionNotFoundError,
     InvalidAbiDecodingTypeError,
     InvalidAbiEncodingTypeError
 } from '@errors';
-
 
 /**
  * Full Qualified Path

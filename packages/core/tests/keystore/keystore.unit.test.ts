@@ -7,7 +7,7 @@ import {
     InvalidPasswordError
 } from '@errors';
 import { Secp256k1 } from '@secp256k1';
-import { Keystore, keystore } from '@keystore';
+import { type Keystore, keystore } from '@keystore';
 import { encryptionPassword } from './fixture';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 

@@ -1,9 +1,4 @@
-import {
-    Address,
-    HexUInt,
-    IllegalArgumentError,
-    UInt
-} from '@vechain/sdk-core';
+import { Address, HexUInt, IllegalArgumentError } from '@vechain/sdk-core';
 import { type TransferJSON } from '@thor';
 
 /**

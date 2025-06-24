@@ -20,14 +20,14 @@ describe('ForkDetector SOLO tests', () => {
     describe('isGalacticaForked', () => {
         test('should detect fork status for genesis block (block 0)', async () => {
             const result = await forkDetector.isGalacticaForked(0);
-            
+
             // Genesis block should not have Galactica fork features
             expect(result).toBe(false);
         });
 
         test('should detect fork status for best block', async () => {
             const result = await forkDetector.isGalacticaForked('best');
-            
+
             expect(result).toBe(true);
         });
 
@@ -37,19 +37,21 @@ describe('ForkDetector SOLO tests', () => {
         });
 
         test('should throw InvalidDataType for invalid revision', async () => {
-            await expect(forkDetector.isGalacticaForked('invalid-revision'))
-                .rejects.toThrow(InvalidDataType);
+            await expect(
+                forkDetector.isGalacticaForked('invalid-revision')
+            ).rejects.toThrow(InvalidDataType);
         });
 
         test('should use default (best)revision when undefined', async () => {
             const result = await forkDetector.isGalacticaForked();
-            
+
             expect(result).toBe(true);
         });
 
         test('should handle different revisions independently', async () => {
             const bestResult = await forkDetector.isGalacticaForked('best');
-            const finalizedResult = await forkDetector.isGalacticaForked('finalized');
+            const finalizedResult =
+                await forkDetector.isGalacticaForked('finalized');
             const block0Result = await forkDetector.isGalacticaForked(0);
 
             // All should return boolean values
@@ -62,10 +64,10 @@ describe('ForkDetector SOLO tests', () => {
     describe('detectGalactica', () => {
         test('should work as alias for isGalacticaForked with default revision', async () => {
             const directResult = await forkDetector.isGalacticaForked('best');
-            
+
             // Clear cache to ensure fresh call
             forkDetector.clearCache();
-            
+
             const aliasResult = await forkDetector.detectGalactica();
 
             expect(aliasResult).toBe(directResult);
@@ -73,13 +75,13 @@ describe('ForkDetector SOLO tests', () => {
 
         test('should accept custom revision parameter', async () => {
             const result = await forkDetector.detectGalactica('finalized');
-            
+
             expect(typeof result).toBe('boolean');
         });
 
         test('should work with numeric revision', async () => {
             const result = await forkDetector.detectGalactica(0);
-            
+
             expect(typeof result).toBe('boolean');
         });
     });
@@ -88,13 +90,13 @@ describe('ForkDetector SOLO tests', () => {
         test('should reset cache and allow fresh network calls', async () => {
             // First call to populate cache
             await forkDetector.isGalacticaForked('best');
-            
+
             // Clear cache
             forkDetector.clearCache();
-            
+
             // Second call should work correctly (making fresh network request)
             const result = await forkDetector.isGalacticaForked('best');
-            
+
             expect(typeof result).toBe('boolean');
         });
     });
@@ -122,7 +124,7 @@ describe('ForkDetector SOLO tests', () => {
             ]);
 
             // All should return boolean values
-            results.forEach(result => {
+            results.forEach((result) => {
                 expect(typeof result).toBe('boolean');
             });
         });
@@ -142,14 +144,17 @@ describe('ForkDetector SOLO tests', () => {
     describe('network resilience', () => {
         test('should handle network timeouts gracefully', async () => {
             // This test ensures the detector doesn't hang indefinitely
-            const timeoutPromise = new Promise((_, reject) => {
-                setTimeout(() => reject(new Error('Test timeout')), 10000); // 10 second timeout
+            const timeoutPromise = new Promise((_resolve, reject) => {
+                setTimeout(() => {
+                    reject(new Error('Test timeout'));
+                }, 10000); // 10 second timeout
             });
 
             const detectorPromise = forkDetector.isGalacticaForked('best');
 
-            await expect(Promise.race([detectorPromise, timeoutPromise]))
-                .resolves.toEqual(expect.any(Boolean));
+            await expect(
+                Promise.race([detectorPromise, timeoutPromise])
+            ).resolves.toEqual(expect.any(Boolean));
         }, 15000); // Allow up to 15 seconds for this test
     });
-}); 
+});

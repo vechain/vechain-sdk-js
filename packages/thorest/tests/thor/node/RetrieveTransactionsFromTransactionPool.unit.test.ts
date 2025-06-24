@@ -1,5 +1,6 @@
 import {
-    RetrieveTransactionsFromTransactionPool, TransactionsIDs,
+    RetrieveTransactionsFromTransactionPool,
+    TransactionsIDs,
     type TransactionsIDsJSON
 } from '@thor';
 import fastJsonStableStringify from 'fast-json-stable-stringify';

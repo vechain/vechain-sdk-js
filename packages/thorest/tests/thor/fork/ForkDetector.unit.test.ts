@@ -1,7 +1,10 @@
-import { describe, expect, jest, test, beforeEach } from '@jest/globals';
+import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { ForkDetector } from '@thor/fork/forkDetector';
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { mockHttpClient, mockHttpClientWithError } from '../../utils/MockUnitTestClient';
+import {
+    mockHttpClient,
+    mockHttpClientWithError
+} from '../../utils/MockUnitTestClient';
 
 /**
  * @group unit/fork
@@ -53,17 +56,19 @@ describe('ForkDetector unit tests', () => {
             const client = mockHttpClient({ baseFeePerGas: undefined }, 'get');
             const detector = new ForkDetector(client);
 
-            await expect(detector.isGalacticaForked('invalid-revision'))
-                .rejects.toThrow(InvalidDataType);
+            await expect(
+                detector.isGalacticaForked('invalid-revision')
+            ).rejects.toThrow(InvalidDataType);
         });
 
         test('should use "best" as default revision', async () => {
             const client = mockHttpClient({ baseFeePerGas: undefined }, 'get');
+            const getSpy = jest.spyOn(client, 'get');
             const detector = new ForkDetector(client);
 
             await detector.isGalacticaForked();
 
-            expect(client.get).toHaveBeenCalledWith(
+            expect(getSpy).toHaveBeenCalledWith(
                 { path: '/blocks/best' },
                 { query: '' }
             );
@@ -71,12 +76,13 @@ describe('ForkDetector unit tests', () => {
 
         test('should work with numeric revision', async () => {
             const client = mockHttpClient({ baseFeePerGas: '0x1' }, 'get');
+            const getSpy = jest.spyOn(client, 'get');
             const detector = new ForkDetector(client);
 
             const result = await detector.isGalacticaForked(123456);
 
             expect(result).toBe(true);
-            expect(client.get).toHaveBeenCalledWith(
+            expect(getSpy).toHaveBeenCalledWith(
                 { path: '/blocks/123456' },
                 { query: '' }
             );
@@ -84,30 +90,38 @@ describe('ForkDetector unit tests', () => {
 
         test('should cache positive results', async () => {
             const client = mockHttpClient({ baseFeePerGas: '0x1' }, 'get');
+            const getSpy = jest.spyOn(client, 'get');
             const detector = new ForkDetector(client);
 
             await detector.isGalacticaForked('best');
             await detector.isGalacticaForked('best');
 
-            expect(client.get).toHaveBeenCalledTimes(1);
+            expect(getSpy).toHaveBeenCalledTimes(1);
         });
 
         test('should cache negative results temporarily', async () => {
             const client = mockHttpClient({ baseFeePerGas: undefined }, 'get');
+            const getSpy = jest.spyOn(client, 'get');
             const detector = new ForkDetector(client);
 
             await detector.isGalacticaForked('best');
             await detector.isGalacticaForked('best');
 
-            expect(client.get).toHaveBeenCalledTimes(1);
+            expect(getSpy).toHaveBeenCalledTimes(1);
         });
 
         test('should handle HTTP errors gracefully', async () => {
             const client = mockHttpClientWithError('Network error', 'get');
             const detector = new ForkDetector(client);
+            const isGalacticaForkedSpy = jest.spyOn(
+                detector,
+                'isGalacticaForked'
+            );
 
-            await expect(detector.isGalacticaForked('best'))
-                .rejects.toThrow('Network error');
+            await expect(detector.isGalacticaForked('best')).rejects.toThrow(
+                'Network error'
+            );
+            expect(isGalacticaForkedSpy).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -123,12 +137,13 @@ describe('ForkDetector unit tests', () => {
 
         test('should accept custom revision', async () => {
             const client = mockHttpClient({ baseFeePerGas: undefined }, 'get');
+            const getSpy = jest.spyOn(client, 'get');
             const detector = new ForkDetector(client);
 
             const result = await detector.detectGalactica('finalized');
 
             expect(result).toBe(false);
-            expect(client.get).toHaveBeenCalledWith(
+            expect(getSpy).toHaveBeenCalledWith(
                 { path: '/blocks/finalized' },
                 { query: '' }
             );
@@ -138,13 +153,14 @@ describe('ForkDetector unit tests', () => {
     describe('clearCache', () => {
         test('should clear cache and allow fresh requests', async () => {
             const client = mockHttpClient({ baseFeePerGas: '0x1' }, 'get');
+            const getSpy = jest.spyOn(client, 'get');
             const detector = new ForkDetector(client);
 
             await detector.isGalacticaForked('best');
             detector.clearCache();
             await detector.isGalacticaForked('best');
 
-            expect(client.get).toHaveBeenCalledTimes(2);
+            expect(getSpy).toHaveBeenCalledTimes(2);
         });
     });
-}); 
+});

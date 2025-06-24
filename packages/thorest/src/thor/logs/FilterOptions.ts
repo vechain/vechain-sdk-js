@@ -34,7 +34,9 @@ class FilterOptions {
             this.limit =
                 json.limit === undefined ? null : UInt.of(json.limit).valueOf();
             this.offset =
-                json.offset === undefined ? null : UInt.of(json.offset).valueOf();
+                json.offset === undefined
+                    ? null
+                    : UInt.of(json.offset).valueOf();
             this.includeIndexes = json.includeIndexes ?? null;
         } catch (error) {
             throw new IllegalArgumentError(
