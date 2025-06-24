@@ -3,10 +3,10 @@ import { MozillaWebSocketClient, type WebSocketListener } from '@ws';
 import {
     TransfersSubscription,
     SubscriptionTransferResponse,
-    type SubscriptionTransferJSON
 } from '@thor/subscriptions';
 import { Address, BlockId } from '@vechain/sdk-core';
 import type { LogMetaJSON } from '@thor/logs';
+import { type SubscriptionTransferResponseJSON } from '@thor/subscriptions';
 
 // Create a mock WebSocket instance that will be returned by the constructor
 const mockWebSocketInstance = {
@@ -169,7 +169,7 @@ describe('TransfersSubscription unit tests', () => {
             amount: '0x0de0b6b3a7640000', // 1 ETH in wei
             obsolete: false,
             meta: mockLogMeta
-        } satisfies SubscriptionTransferJSON;
+        } satisfies SubscriptionTransferResponseJSON;
 
         const mockListener = {
             onMessage: jest.fn(
@@ -413,7 +413,7 @@ describe('TransfersSubscription unit tests', () => {
             logIndex: 0
         };
 
-        const mockData: SubscriptionTransferJSON = {
+        const mockData: SubscriptionTransferResponseJSON = {
             sender: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
             recipient: '0x9567d83b7b8d80addcb281a71d54fc7b3364ffed',
             amount: '0x0de0b6b3a7640000', // 1 ETH in wei
