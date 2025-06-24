@@ -3,6 +3,8 @@
 const applyCodeCoverageLimits = process.env.APPLYCODECOVLIMITS;
 
 module.exports = {
+    globalSetup: '<rootDir>/jest.global-setup.js',
+    globalTeardown: '<rootDir>/jest.global-setup.js',
     preset: 'ts-jest',
     testEnvironment: 'node',
     coverageReporters: ['html', 'lcov', 'json'],
