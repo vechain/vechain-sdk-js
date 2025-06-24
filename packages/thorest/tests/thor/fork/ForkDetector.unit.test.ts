@@ -1,6 +1,6 @@
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { ForkDetector } from '@thor/fork/forkDetector';
-import { InvalidDataType } from '@vechain/sdk-errors';
+import { IllegalArgumentError } from '@vechain/sdk-core';
 import {
     mockHttpClient,
     mockHttpClientWithError
@@ -52,13 +52,13 @@ describe('ForkDetector unit tests', () => {
             expect(result).toBe(false);
         });
 
-        test('should throw InvalidDataType for invalid revision', async () => {
+        test('should throw IllegalArgumentError for invalid revision', async () => {
             const client = mockHttpClient({ baseFeePerGas: undefined }, 'get');
             const detector = new ForkDetector(client);
 
             await expect(
                 detector.isGalacticaForked('invalid-revision')
-            ).rejects.toThrow(InvalidDataType);
+            ).rejects.toThrow(IllegalArgumentError);
         });
 
         test('should use "best" as default revision', async () => {

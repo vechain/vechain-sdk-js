@@ -10,7 +10,8 @@ import {
     type Abi as ViemABI
 } from 'viem';
 import { ABI } from './ABI';
-import { ABIFunction, ABIEvent, type ABIEventData } from '.';
+import { ABIFunction } from './ABIFunction';
+import { ABIEvent, type ABIEventData } from './ABIEvent';
 import { type Hex } from '@vcdm';
 import {
     AbiEventNotFoundError,

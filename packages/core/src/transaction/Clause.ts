@@ -11,10 +11,10 @@ import {
     type HexUInt,
     type VTHO
 } from '@vcdm';
-import type {
-    ClauseOptions,
-    DeployParams,
-    TransactionClause
+import {
+    type ClauseOptions,
+    type DeployParams,
+    type TransactionClause
 } from '@transaction';
 import { IllegalArgumentError } from '@errors';
 
