@@ -26,11 +26,11 @@ services:
       - --persist
       - --api-enable-deprecated
       - --api-call-gas-limit=150000000 
-      - --gas-limit=150000000
+      - --gas-limit: 150000000
     healthcheck:
       # We run the health check using standard UNIX tools so we don't have to
       # install additional dependencies in the container.
-      test: wget -O- http://localhost:8669/blocks/1
+      test: wget -O- http://127.0.0.1:8669/blocks/1
       interval: 5s
       timeout: 20s
       retries: 10

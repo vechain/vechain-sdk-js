@@ -6,7 +6,7 @@ import { type CompressedBlockDetail, ThorClient } from '@vechain/sdk-network';
  */
 export const getGenesisBlock = async (): Promise<CompressedBlockDetail> => {
     try {
-        const thorClient = ThorClient.at('http://localhost:8669');
+        const thorClient = ThorClient.at('http://127.0.0.1:8669');
         const genesisBlock = await thorClient.blocks.getGenesisBlock();
         if (genesisBlock === null) {
             throw new Error('Genesis block not found');
