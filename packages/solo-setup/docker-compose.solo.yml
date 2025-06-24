@@ -27,6 +27,7 @@ services:
       - --api-enable-deprecated
       - --api-call-gas-limit=150000000 
       - --gas-limit=150000000
+      - --api-timeout=120000
     healthcheck:
       # We run the health check using standard UNIX tools so we don't have to
       # install additional dependencies in the container.
