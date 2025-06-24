@@ -1,35 +1,14 @@
-import { LogMeta, type LogMetaJSON } from '@thor/logs';
-import { Address, HexUInt, Units, VET } from '@vechain/sdk-core';
+import {
+    TransferLogResponse,
+    type TransferLogResponseJSON,
+    type TransferLogsResponseJSON
+} from '@thor/logs';
+import { IllegalArgumentError } from '@vechain/sdk-core';
 
-class TransferLogResponse {
-    readonly sender: Address;
-    readonly recipient: Address;
-    readonly amount: VET;
-    readonly meta: LogMeta;
-
-    constructor(json: TransferLogResponseJSON) {
-        this.sender = Address.of(json.sender);
-        this.recipient = Address.of(json.recipient);
-        this.meta = new LogMeta(json.meta);
-        this.amount = VET.of(HexUInt.of(json.amount).bi, Units.wei);
-    }
-
-    toJSON(): TransferLogResponseJSON {
-        return {
-            sender: this.sender.toString(),
-            recipient: this.recipient.toString(),
-            amount: HexUInt.of(this.amount.wei).toString(),
-            meta: this.meta.toJSON()
-        } satisfies TransferLogResponseJSON;
-    }
-}
-
-interface TransferLogResponseJSON {
-    sender: string;
-    recipient: string;
-    amount: string;
-    meta: LogMetaJSON;
-}
+/**
+ * Full-Qualified-Path
+ */
+const FQP = 'packages/thorest/src/thor/logs/TransferLogsResponse.ts!';
 
 class TransferLogsResponse extends Array<TransferLogResponse> {
     /**
@@ -40,15 +19,25 @@ class TransferLogsResponse extends Array<TransferLogResponse> {
      *
      * @param json - The JSON array containing transfer log data
      * @returns A new TransferLogsResponse instance containing TransferLogResponse objects
+     * @throws IllegalArgumentError If the provided JSON object contains invalid or unparsable data.
      */
     constructor(json: TransferLogsResponseJSON) {
         super();
-        return Object.setPrototypeOf(
-            Array.from(json ?? [], (peerStat) => {
-                return new TransferLogResponse(peerStat);
-            }),
-            TransferLogsResponse.prototype
-        ) as TransferLogsResponse;
+        try {
+            return Object.setPrototypeOf(
+                Array.from(json ?? [], (peerStat) => {
+                    return new TransferLogResponse(peerStat);
+                }),
+                TransferLogsResponse.prototype
+            ) as TransferLogsResponse;
+        } catch(error) {
+            throw new IllegalArgumentError(
+                `${FQP}constructor(json: TransferLogsResponseJSON)`,
+                'Bad parse',
+                { json },
+                error instanceof Error ? error : undefined
+            );
+        }
     }
 
     /**
@@ -62,11 +51,4 @@ class TransferLogsResponse extends Array<TransferLogResponse> {
     }
 }
 
-interface TransferLogsResponseJSON extends Array<TransferLogResponseJSON> {}
-
-export {
-    TransferLogResponse,
-    type TransferLogResponseJSON,
-    TransferLogsResponse,
-    type TransferLogsResponseJSON
-};
+export { TransferLogsResponse };

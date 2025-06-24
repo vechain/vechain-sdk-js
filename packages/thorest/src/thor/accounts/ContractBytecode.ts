@@ -1,16 +1,45 @@
-import { HexUInt } from '@vechain/sdk-core';
+import { Hex, HexUInt, IllegalArgumentError } from '@vechain/sdk-core';
+import { type ContractBytecodeJSON } from './ContractBytecodeJSON';
 
-interface ContractBytecodeJSON {
-    code: string;
-}
+/**
+ * Full-Qualified Path
+ */
+const FQP = 'packages/thorest/src/thor/accounts/ContractBytecode.ts!';
 
+/**
+ * Contract Bytecode
+ *
+ * Represents the bytecode of a contract.
+ */
 class ContractBytecode {
-    readonly code: HexUInt;
+    /**
+     * The contract bytecode.
+     */
+    readonly code: Hex;
 
+    /**
+     * Constructs a new instance of the class.
+     *
+     * @param {ContractBytecodeJSON} json - The JSON object to initialize the instance with.
+     */
     constructor(json: ContractBytecodeJSON) {
-        this.code = HexUInt.of(json.code);
+        try {
+            this.code = HexUInt.of(json.code);
+        } catch (error) {
+            throw new IllegalArgumentError(
+                `${FQP}constructor(json: ContractBytecodeJSON)`,
+                'Bad parse',
+                { json },
+                error instanceof Error ? error : undefined
+            );
+        }
     }
 
+    /**
+     * Converts the instance to a JSON object.
+     *
+     * @return {ContractBytecodeJSON} - The JSON object.
+     */
     toJSON(): ContractBytecodeJSON {
         return {
             code: this.code.toString()
@@ -18,4 +47,4 @@ class ContractBytecode {
     }
 }
 
-export { ContractBytecode, type ContractBytecodeJSON };
+export { ContractBytecode };

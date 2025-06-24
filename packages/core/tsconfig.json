@@ -9,6 +9,7 @@
   },
   "include": [
     "./src/**/*.ts",
-    "./tests/**/*.ts"
+    "./tests/**/*.ts",
+    "./tsup.config.ts"
   ]
 }
