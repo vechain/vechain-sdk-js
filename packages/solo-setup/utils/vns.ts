@@ -20,7 +20,7 @@ import { ethers } from 'hardhat';
  * https://github.com/ifavo/vechain-sdk-js/blob/fdb4522795fc94750bcb19f98a0c04ffaa499b0f/packages/network/solo-seeding/thor-solo-seeding.ts
  */
 export const seedVnsSolo = async (): Promise<void> => {
-    const thorSoloClient = ThorClient.at('http://127.0.0.1:8669');
+    const thorSoloClient = ThorClient.at('localhost:8669');
 
     const tld = 'test';
     const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
