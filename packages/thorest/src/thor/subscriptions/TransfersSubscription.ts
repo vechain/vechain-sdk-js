@@ -173,17 +173,17 @@ class TransfersSubscriptionQuery implements HttpQuery {
      * The block position to start from.
      */
     readonly pos?: BlockId;
-    
+
     /**
      * The recipient address to filter by.
      */
     readonly recipient?: Address;
-    
+
     /**
      * The sender address to filter by.
      */
     readonly sender?: Address;
-    
+
     /**
      * The transaction origin address to filter by.
      */

@@ -1,6 +1,12 @@
 import { type WebSocketClient, type WebSocketListener } from '@ws';
 import type { HttpPath } from '@http';
-import { TXID, type TXIDJSON } from '@thor';
+import { ThorError, TXID, type TXIDJSON } from '@thor';
+
+/**
+ * Full-Qualified Path
+ */
+const FQP =
+    'packages/thorest/src/thor/subscriptions/NewTransactionSubscription.ts!';
 
 /**
  * [Retrieve a subscription to the new transactions endpoint](http://localhost:8669/doc/stoplight-ui/#/paths/subscriptions-txpool/get)
@@ -16,7 +22,7 @@ class NewTransactionSubscription
     /**
      * Represents the path for this specific API endpoint.
      */
-    static readonly PATH: HttpPath = { path: '/subscriptions/txpool' };
+    private static readonly PATH: HttpPath = { path: '/subscriptions/txpool' };
 
     /**
      * Represents the listeners for this specific API endpoint.
@@ -106,9 +112,21 @@ class NewTransactionSubscription
      */
     onMessage(event: MessageEvent<unknown>): void {
         const json = JSON.parse(event.data as string) as TXIDJSON;
-        const message = new MessageEvent<TXID>(event.type, {
-            data: new TXID(json)
-        });
+        let message;
+        try {
+            message = new MessageEvent<TXID>(event.type, {
+                data: new TXID(json)
+            });
+        } catch (error) {
+            throw new ThorError(
+                `${FQP}onMessage(event: MessageEvent<unknown>): void`,
+                'Invalid JSON.',
+                {
+                    body: json
+                },
+                error instanceof Error ? error : undefined
+            );
+        }
         this.listeners.forEach((listener) => {
             listener.onMessage(message);
         });

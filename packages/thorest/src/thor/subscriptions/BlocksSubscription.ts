@@ -1,8 +1,16 @@
 import { type HttpPath, type HttpQuery } from '@http';
 import { type WebSocketClient, type WebSocketListener } from '@ws';
-import { SubscriptionBlockResponse } from '@thor/subscriptions';
+import {
+    SubscriptionBlockResponse,
+    type SubscriptionBlockResponseJSON
+} from '@thor/subscriptions';
 import { type BlockId } from '@vechain/sdk-core';
-import { type SubscriptionBlockResponseJSON } from './SubscriptionBlockResponseJSON';
+import { ThorError } from '@thor';
+
+/**
+ * Full-Qualified Path
+ */
+const FQP = 'packages/thorest/src/thor/subscriptions/BlocksSubscription.ts!';
 
 /**
  * [Retrieve a subscription to the blocks endpoint](http://localhost:8669/doc/stoplight-ui/#/paths/subscriptions-block/get)
@@ -18,7 +26,7 @@ class BlocksSubscription
     /**
      * Represents the path for this specific API endpoint.
      */
-    static readonly PATH: HttpPath = { path: '/subscriptions/block' };
+    private static readonly PATH: HttpPath = { path: '/subscriptions/block' };
 
     /**
      * Represents the listeners for this specific API endpoint.
@@ -127,15 +135,28 @@ class BlocksSubscription
      * Handles the message event.
      *
      * @param {MessageEvent<unknown>} event - The event to handle.
+     *
+     * @throws {ThorError} - If the JSON is invalid.
      */
     onMessage(event: MessageEvent<unknown>): void {
         const json = JSON.parse(
             event.data as string
         ) as SubscriptionBlockResponseJSON;
-        const message = new MessageEvent<SubscriptionBlockResponse>(
-            event.type,
-            { data: new SubscriptionBlockResponse(json) }
-        );
+        let message;
+        try {
+            message = new MessageEvent<SubscriptionBlockResponse>(event.type, {
+                data: new SubscriptionBlockResponse(json)
+            });
+        } catch (error) {
+            throw new ThorError(
+                `${FQP}onMessage(event: MessageEvent<unknown>): void`,
+                'Invalid JSON.',
+                {
+                    body: json
+                },
+                error instanceof Error ? error : undefined
+            );
+        }
         this.listeners.forEach((listener) => {
             listener.onMessage(message);
         });
@@ -178,13 +199,29 @@ class BlocksSubscription
     }
 }
 
+/**
+ * Represents the query for the blocks subscription.
+ */
 class BlockSubscriptionQuery implements HttpQuery {
+    /**
+     * Represents the position for the blocks subscription.
+     */
     readonly pos?: BlockId;
 
+    /**
+     * Constructs an instance of the class with the specified position.
+     *
+     * @param {BlockId} pos - The position to initialize the instance with.
+     */
     constructor(pos?: BlockId) {
         this.pos = pos;
     }
 
+    /**
+     * Gets the query for the blocks subscription.
+     *
+     * @return {string} - The query for the blocks subscription.
+     */
     get query(): string {
         return this.pos === undefined ? '' : `?pos=${this.pos}`;
     }

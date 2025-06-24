@@ -1,6 +1,6 @@
 import { LogMeta } from '@thor/logs';
 import { Address, HexUInt, IllegalArgumentError } from '@vechain/sdk-core';
-import { type SubscriptionTransferResponseJSON } from './SubscriptionTransferResponseJSON';
+import { type SubscriptionTransferResponseJSON } from '@thor/subscriptions';
 
 /**
  * Full-Qualified Path

@@ -2,6 +2,12 @@ import { type WebSocketClient, type WebSocketListener } from '@ws';
 import { type SubscriptionEventResponse } from '@thor/subscriptions';
 import { type HttpPath, type HttpQuery } from '@http';
 import { type Address, type ThorId } from '@vechain/sdk-core';
+import { ThorError } from '@thor';
+
+/**
+ * Full-Qualified Path
+ */
+const FQP = 'packages/thorest/src/thor/subscriptions/EventsSubscription.ts!';
 
 /**
  * [Retrieve a subscription to the events endpoint](http://localhost:8669/doc/stoplight-ui/#/paths/subscriptions-event/get)
@@ -17,7 +23,7 @@ class EventsSubscription
     /**
      * Represents the path for this specific API endpoint.
      */
-    static readonly PATH: HttpPath = { path: '/subscriptions/event' };
+    private static readonly PATH: HttpPath = { path: '/subscriptions/event' };
 
     /**
      * Represents the listeners for this specific API endpoint.
@@ -136,15 +142,28 @@ class EventsSubscription
      * Handles the message event.
      *
      * @param {MessageEvent<unknown>} event - The event to handle.
+     *
+     * @throws {ThorError} - If the JSON is invalid.
      */
     onMessage(event: MessageEvent<unknown>): void {
         const json = JSON.parse(
             event.data as string
         ) as SubscriptionEventResponse;
-        const message = new MessageEvent<SubscriptionEventResponse>(
-            event.type,
-            { data: json }
-        );
+        let message;
+        try {
+            message = new MessageEvent<SubscriptionEventResponse>(event.type, {
+                data: json
+            });
+        } catch (error) {
+            throw new ThorError(
+                `${FQP}onMessage(event: MessageEvent<unknown>): void`,
+                'Invalid JSON.',
+                {
+                    body: json
+                },
+                error instanceof Error ? error : undefined
+            );
+        }
         this.listeners.forEach((listener) => {
             listener.onMessage(message);
         });
@@ -271,6 +290,16 @@ class EventsSubscriptionQuery implements HttpQuery {
      */
     readonly t3?: ThorId;
 
+    /**
+     * Constructs an instance of the class with the specified filters.
+     *
+     * @param {Address} addr - The address of the contract that emits the event.
+     * @param {ThorId} pos - A saved block ID for resuming the subscription. If omitted, the best block ID is assumed.
+     * @param {ThorId} t0 - The keccak256 hash representing the event signature
+     * @param {ThorId} t1 - The filter for the 1st parameter in the event
+     * @param {ThorId} t2 - The filter for the 2nd parameter in the event
+     * @param {ThorId} t3 - The filter for the 3rd parameter in the event
+     */
     constructor(
         addr?: Address,
         pos?: ThorId,
@@ -287,6 +316,11 @@ class EventsSubscriptionQuery implements HttpQuery {
         this.t3 = t3;
     }
 
+    /**
+     * Gets the query for the events subscription.
+     *
+     * @return {string} - The query for the events subscription.
+     */
     get query(): string {
         let query = '';
         if (this.addr !== undefined) {

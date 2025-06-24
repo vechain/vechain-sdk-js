@@ -1,8 +1,16 @@
 import { type WebSocketClient, type WebSocketListener } from '@ws';
 import type { HttpPath } from '@http';
 import type { BlockId } from '@vechain/sdk-core';
-import { SubscriptionBeat2Response } from '@thor/subscriptions';
-import { type SubscriptionBeat2ResponseJSON } from './SubscriptionBeat2ResponseJSON';
+import {
+    SubscriptionBeat2Response,
+    type SubscriptionBeat2ResponseJSON
+} from '@thor/subscriptions';
+import { ThorError } from '@thor';
+
+/**
+ * Full-Qualified Path
+ */
+const FQP = 'packages/thorest/src/thor/subscriptions/BeatsSubscription.ts!';
 
 /**
  * [Retrieve a subscription to the beats endpoint](http://localhost:8669/doc/stoplight-ui/#/paths/subscriptions-beat2/get)
@@ -16,7 +24,7 @@ class BeatsSubscription implements WebSocketClient, WebSocketListener<unknown> {
     /**
      * Represents the path for this specific API endpoint.
      */
-    static readonly PATH: HttpPath = { path: '/subscriptions/beat2' };
+    private static readonly PATH: HttpPath = { path: '/subscriptions/beat2' };
 
     /**
      * Represents the listeners for this specific API endpoint.
@@ -112,15 +120,28 @@ class BeatsSubscription implements WebSocketClient, WebSocketListener<unknown> {
      * Handles the message event.
      *
      * @param {MessageEvent<unknown>} event - The event to handle.
+     *
+     * @throws {ThorError} - If the JSON is invalid.
      */
     onMessage(event: MessageEvent<unknown>): void {
         const json = JSON.parse(
             event.data as string
         ) as SubscriptionBeat2ResponseJSON;
-        const message = new MessageEvent<SubscriptionBeat2Response>(
-            event.type,
-            { data: new SubscriptionBeat2Response(json) }
-        );
+        let message;
+        try {
+            message = new MessageEvent<SubscriptionBeat2Response>(event.type, {
+                data: new SubscriptionBeat2Response(json)
+            });
+        } catch (error) {
+            throw new ThorError(
+                `${FQP}onMessage(event: MessageEvent<unknown>): void`,
+                'Invalid JSON.',
+                {
+                    body: json
+                },
+                error instanceof Error ? error : undefined
+            );
+        }
         this.listeners.forEach((listener) => {
             listener.onMessage(message);
         });
@@ -163,13 +184,29 @@ class BeatsSubscription implements WebSocketClient, WebSocketListener<unknown> {
     }
 }
 
+/**
+ * Represents the query for the beats subscription.
+ */
 class BeatsSubscriptionQuery {
+    /**
+     * Represents the position for the beats subscription.
+     */
     readonly pos?: BlockId;
 
+    /**
+     * Constructs an instance of the class with the specified position.
+     *
+     * @param {BlockId} pos - The position to initialize the instance with.
+     */
     constructor(pos?: BlockId) {
         this.pos = pos;
     }
 
+    /**
+     * Gets the query for the beats subscription.
+     *
+     * @return {string} - The query for the beats subscription.
+     */
     get query(): string {
         return this.pos === undefined ? '' : `?pos=${this.pos}`;
     }

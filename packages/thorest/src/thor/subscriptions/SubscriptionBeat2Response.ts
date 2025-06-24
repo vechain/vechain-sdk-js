@@ -4,7 +4,7 @@ import {
     IllegalArgumentError,
     UInt
 } from '@vechain/sdk-core';
-import { SubscriptionBeat2ResponseJSON } from './SubscriptionBeat2ResponseJSON';
+import { type SubscriptionBeat2ResponseJSON } from '@thor/subscriptions';
 
 /**
  * Full-Qualified Path

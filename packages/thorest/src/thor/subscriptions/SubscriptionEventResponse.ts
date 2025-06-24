@@ -5,7 +5,7 @@ import {
     IllegalArgumentError,
     ThorId
 } from '@vechain/sdk-core';
-import { type SubscriptionEventResponseJSON } from './SubscriptionEventResponseJSON';
+import { type SubscriptionEventResponseJSON } from '@thor/subscriptions';
 
 /**
  * Full-Qualified Path
