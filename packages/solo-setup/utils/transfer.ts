@@ -26,7 +26,7 @@ const genesisDeployerAccount = THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS[0];
  */
 export const seedVET = async (accounts: TestAccount[]): Promise<string> => {
     try {
-        const thorClient = ThorClient.at('localhost:8669');
+        const thorClient = ThorClient.at('http://localhost:8669');
         const latestBlock = await thorClient.blocks.getBestBlockCompressed();
         const privateKey = HexUInt.of(genesisDeployerAccount.privateKey).bytes;
         const clauses: TransactionClause[] = [];
@@ -78,7 +78,7 @@ export const seedVET = async (accounts: TestAccount[]): Promise<string> => {
  */
 export const seedVTHO = async (accounts: TestAccount[]): Promise<string> => {
     try {
-        const thorClient = ThorClient.at('localhost:8669');
+        const thorClient = ThorClient.at('http://localhost:8669');
         const latestBlock = await thorClient.blocks.getBestBlockCompressed();
         const privateKey = HexUInt.of(genesisDeployerAccount.privateKey).bytes;
         const clauses: TransactionClause[] = [];
@@ -132,7 +132,7 @@ export const seedTestToken = async (
     accounts: TestAccount[]
 ): Promise<string> => {
     try {
-        const thorClient = ThorClient.at('localhost:8669');
+        const thorClient = ThorClient.at('http://localhost:8669');
         const latestBlock = await thorClient.blocks.getBestBlockCompressed();
         const privateKey = HexUInt.of(genesisDeployerAccount.privateKey).bytes;
         const clauses: TransactionClause[] = [];
