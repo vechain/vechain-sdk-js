@@ -1,5 +1,5 @@
 /**
- * [PostDebugTracerCallRe](http://localhost:8669/doc/stoplight-ui/#/schemas/PostDebugTracerCallRequest)
+ * [PostDebugTracerCallRequest](http://localhost:8669/doc/stoplight-ui/#/schemas/PostDebugTracerCallRequest)
  */
 interface PostDebugTracerCallRequestJSON {
     name?: string; // string or null

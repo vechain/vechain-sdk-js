@@ -35,7 +35,7 @@ class StorageRangeOption {
     /**
      * The unified path of the transaction clause.
      */
-    readonly target: TargetPath; // Path class?
+    readonly target: TargetPath;
 
     /**
      * Constructs an instance of the class using the provided JSON object.
