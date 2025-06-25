@@ -3,13 +3,13 @@ import { Address, BlockId, ThorId } from '@vechain/sdk-core';
 import {
     RetrieveStoragePositionValue,
     RetrieveStoragePositionValuePath,
-    GetStorageResponse,
-    type GetStorageResponseJSON
+    GetStorageResponse
 } from '@thor';
 import {
     mockHttpClient,
     mockHttpClientWithError
 } from '../../utils/MockUnitTestClient';
+import { GetStorageResponseJSON } from '@thor';
 /**
  * VeChain retrieve storage position value - unit
  *
@@ -39,11 +39,18 @@ describe('RetrieveStoragePositionValue unit tests', () => {
             );
             const request = RetrieveStoragePositionValue.of(address, key);
             expect(request).toBeInstanceOf(RetrieveStoragePositionValue);
-            expect(request.path).toBeInstanceOf(
-                RetrieveStoragePositionValuePath
-            );
-            expect(request.path.address).toBe(address);
-            expect(request.path.key).toBe(key);
+            expect(
+                (request as unknown as { path: RetrieveStoragePositionValuePath })
+                    .path
+            ).toBeInstanceOf(RetrieveStoragePositionValuePath);
+            expect(
+                (request as unknown as { path: RetrieveStoragePositionValuePath })
+                    .path.address
+            ).toBe(address);
+            expect(
+                (request as unknown as { path: RetrieveStoragePositionValuePath })
+                    .path.key
+            ).toBe(key);
         });
 
         test('askTo() processes response correctly', async () => {

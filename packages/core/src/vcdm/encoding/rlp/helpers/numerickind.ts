@@ -1,7 +1,4 @@
-import { FixedPointNumber } from '@vcdm';
-import { Hex } from '@vcdm';
-import { HexUInt } from '@vcdm';
-import { type RLPInput } from '@vcdm';
+import { FixedPointNumber, Hex, HexUInt, type RLPInput } from '@vcdm';
 import { InvalidEncodingError } from '@errors';
 
 /**

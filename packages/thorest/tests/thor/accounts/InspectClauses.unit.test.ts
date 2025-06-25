@@ -4,7 +4,7 @@ import {
     type ExecuteCodesRequestJSON,
     InspectClauses
 } from '@thor';
-import { HexUInt, VET } from '@vechain/sdk-core';
+import { HexUInt } from '@vechain/sdk-core';
 import { mockHttpClient } from '../../utils/MockUnitTestClient';
 
 /**
@@ -99,7 +99,7 @@ describe('InspectClauses unit tests', () => {
             mockResponse[0].events[0].address
         );
         expect(response.response[0].gasUsed.valueOf()).toBe(
-            mockResponse[0].gasUsed
+            BigInt(mockResponse[0].gasUsed)
         );
         expect(response.response[0].reverted).toBe(mockResponse[0].reverted);
         expect(response.response[0].vmError).toBe(mockResponse[0].vmError);
@@ -109,7 +109,7 @@ describe('InspectClauses unit tests', () => {
 
         // First clause (token transfer)
         expect(outputs[0].reverted).toBe(false);
-        expect(outputs[0].gasUsed.valueOf()).toBe(23809);
+        expect(outputs[0].gasUsed.valueOf()).toBe(BigInt(23809));
         expect(outputs[0].events).toHaveLength(1);
         expect(outputs[0].events[0].address.toString()).toBe(
             '0x0000000000000000000000000000456E65726779'
@@ -123,7 +123,7 @@ describe('InspectClauses unit tests', () => {
 
         // Third clause (contract deployment)
         expect(outputs[2].reverted).toBe(false);
-        expect(outputs[2].gasUsed.valueOf()).toBe(67533);
+        expect(outputs[2].gasUsed.valueOf()).toBe(BigInt(67533));
         expect(outputs[2].events).toHaveLength(0);
         expect(outputs[2].transfers).toHaveLength(0);
     });
@@ -226,6 +226,6 @@ describe('InspectClauses unit tests', () => {
         const output = response.response[0];
         expect(output.reverted).toBe(true);
         expect(output.vmError).toBe('out of gas');
-        expect(output.gasUsed.valueOf()).toBe(1);
+        expect(output.gasUsed.valueOf()).toBe(BigInt(1));
     });
 });

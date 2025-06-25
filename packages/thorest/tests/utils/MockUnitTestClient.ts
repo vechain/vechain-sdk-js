@@ -3,12 +3,19 @@ import { type FetchHttpClient } from '@http';
 
 const mockHttpClient = <T>(
     response: T,
-    httpMethod: 'get' | 'post'
+    httpMethod: 'get' | 'post',
+    ok: boolean = true,
+    status: number = 200
 ): FetchHttpClient => {
     return {
         [httpMethod]: jest.fn().mockImplementation(async () => {
             return await Promise.resolve({
-                json: async () => await Promise.resolve(response satisfies T)
+                ok,
+                status,
+                statusText: ok ? 'OK' : 'Bad Request',
+                url: 'http://mock-url',
+                json: async () => await Promise.resolve(response satisfies T),
+                text: async () => await Promise.resolve(JSON.stringify(response))
             });
         })
     } as unknown as FetchHttpClient;

@@ -1,14 +1,16 @@
-import { describe, test } from '@jest/globals';
-import {
-    type ExecuteCodesRequestJSON,
-    InspectClauses,
-    ThorNetworks
-} from '@thor';
+import { describe, expect, test } from '@jest/globals';
+import { InspectClauses, ThorNetworks } from '@thor';
 import { FetchHttpClient } from '@http';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
+import { ExecuteCodesRequestJSON } from '@thor/accounts/ExecuteCodesRequestJSON';
 
-describe('InspectClauses testnet tests', () => {
+/**
+ * VeChain inspect clauses - solo
+ *
+ * @group integration/accounts
+ */
+describe('InspectClauses solo tests', () => {
     test('ok <- askTo', async () => {
         const request = {
             gas: 50000,
@@ -36,9 +38,17 @@ describe('InspectClauses testnet tests', () => {
                 }
             ]
         } satisfies ExecuteCodesRequestJSON;
-        const r = await InspectClauses.of(request).askTo(
-            FetchHttpClient.at(ThorNetworks.TESTNET)
+        const response = (
+            await InspectClauses.of(request).askTo(
+                FetchHttpClient.at(ThorNetworks.SOLONET)
+            )
+        ).response;
+        expect(response.length).toBe(1);
+        expect(response[0].data.toString()).toBe(
+            '0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001d6275696c74696e3a20696e73756666696369656e742062616c616e6365000000'
         );
-        log.debug(fastJsonStableStringify(r));
+        expect(response[0].gasUsed).toBe(1071n);
+        expect(response[0].reverted).toBe(true);
+        expect(response[0].vmError).toBe('execution reverted');
     });
 });
