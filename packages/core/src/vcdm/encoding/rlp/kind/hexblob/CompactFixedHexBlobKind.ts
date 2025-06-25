@@ -1,9 +1,11 @@
-import { Hex } from '../../../../Hex';
+import { Hex } from '@vcdm';
 import {
     assertCompactFixedHexBlobBuffer,
-    encodeCompactFixedHexBlob
-} from '../../helpers';
-import { type BufferOutput, type DataOutput, type RLPInput } from '../../types';
+    encodeCompactFixedHexBlob,
+    type BufferOutput,
+    type DataOutput,
+    type RLPInput
+} from '@vcdm';
 import { FixedHexBlobKind } from './FixedHexBlobKind';
 
 /**

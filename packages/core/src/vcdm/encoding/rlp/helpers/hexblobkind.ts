@@ -1,6 +1,6 @@
 import { Hex } from '../../../Hex';
 import { type RLPInput } from '../types';
-import { InvalidEncodingError } from '../../../../errors';
+import { InvalidEncodingError } from '@errors';
 
 /**
  * Full Qualified Path

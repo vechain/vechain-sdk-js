@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { Hex, IllegalArgumentError, InvalidEncodingError } from '../../../src';
+import { IllegalArgumentError, InvalidEncodingError } from '@errors';
 import {
     assertCompactFixedHexBlobBuffer,
     assertFixedHexBlobKindBuffer,
@@ -8,8 +8,9 @@ import {
     assertValidNumericKindBuffer,
     decodeBufferToHexWithLeadingZeros,
     encodeBigIntToBuffer,
+    Hex,
     validateNumericKindData
-} from '../../../src/vcdm/encoding';
+} from '@vcdm';
 import {
     invalidCompactFixedHexBlobKindBufferTestCases,
     invalidFixedHexBlobKindBufferTestCases,

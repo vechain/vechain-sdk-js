@@ -1,7 +1,6 @@
 import { Hex } from './Hex';
-import { HexUInt } from './HexUInt';
 import { Txt } from './Txt';
-import { IllegalArgumentError } from '../errors';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full Qualified Path
@@ -25,7 +24,8 @@ class Revision extends Txt {
      *
      * @type {RegExp}
      */
-    private static readonly REGEX_DECIMAL_REVISION = /^(best|finalized|\d+)$/;
+    private static readonly VALID_REVISION_REGEX =
+        /^(best|finalized|next|justified|0x[a-fA-F0-9]+|\d+)$/;
 
     /**
      * Determines if the given value is valid.
@@ -38,14 +38,20 @@ class Revision extends Txt {
      * @param {bigint | number | string | Hex | Txt} value - The value to be validated.
      * @returns {boolean} - Returns `true` if the value is valid, `false` otherwise.
      */
-    public static isValid(value: number | string): boolean {
+    public static isValid(value: bigint | number | string | Hex): boolean {
         if (typeof value === 'number') {
             return Number.isInteger(value) && value >= 0;
         }
-        return (
-            HexUInt.isValid0x(value) ||
-            Revision.REGEX_DECIMAL_REVISION.test(value)
-        );
+
+        if (typeof value === 'bigint') {
+            return value >= BigInt(0);
+        }
+
+        if (value instanceof Hex) {
+            return Revision.isValid(value.bi);
+        }
+
+        return Revision.VALID_REVISION_REGEX.test(value);
     }
 
     /**
@@ -107,6 +113,22 @@ class Revision extends Txt {
      * Return the `finalized` revision instance.
      */
     public static readonly FINALIZED: Revision = Revision.of('finalized');
+
+    /**
+
+     * Return the `next` revision instance.
+
+     */
+
+    public static readonly NEXT: Revision = Revision.of('next');
+
+    /**
+
+     * Return the `justified` revision instance.
+
+     */
+
+    public static readonly JUSTIFIED: Revision = Revision.of('justified');
 }
 
 export { Revision };

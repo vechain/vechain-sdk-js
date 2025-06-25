@@ -1,25 +1,29 @@
-import { describe, test, jest, expect } from '@jest/globals';
+import { describe, expect, jest, test } from '@jest/globals';
 import {
-    type FetchHttpClient,
+    type GetPeersResponse,
     type PeerStatJSON,
     RetrieveConnectedPeers
-} from '../../../src';
+} from '@thor';
+import type { HttpClient } from '@http';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
 
-const mockHttpClient = <T>(response: T): FetchHttpClient => {
+const mockHttpClient = <T>(response: T): HttpClient => {
     return {
-        get: jest.fn().mockImplementation(() => {
-            return {
-                json: jest.fn().mockImplementation(() => {
-                    return response;
-                })
-            };
+        get: jest.fn().mockReturnValue(response)
+    } as unknown as HttpClient;
+};
+
+const mockResponse = <T>(body: T, status: number): Response => {
+    const init: ResponseInit = {
+        status,
+        headers: new Headers({
+            'Content-Type': 'application/json'
         })
-    } as unknown as FetchHttpClient;
+    };
+    return new Response(fastJsonStableStringify(body), init);
 };
 
 /**
- *VeChain node - unit
- *
  * @group unit/node
  */
 describe('RetrieveConnectedPeers unit tests', () => {
@@ -45,16 +49,22 @@ describe('RetrieveConnectedPeers unit tests', () => {
                 inbound: true,
                 duration: 37
             }
-        ];
+        ] satisfies PeerStatJSON[];
 
-        const mockPeersResponse = await new RetrieveConnectedPeers().askTo(
-            mockHttpClient<PeerStatJSON[]>(mockPeers)
+        const mockPeersResponse = await RetrieveConnectedPeers.of().askTo(
+            mockHttpClient(mockResponse(mockPeers, 200))
         );
-        expect(mockPeersResponse.response.toJSON()).toEqual(mockPeers);
+        expect(mockPeersResponse.response).not.toBeNull();
+        expect(
+            (mockPeersResponse.response as GetPeersResponse).toJSON()
+        ).toEqual(mockPeers);
 
-        const emptyPeersResponse = await new RetrieveConnectedPeers().askTo(
-            mockHttpClient<PeerStatJSON[]>([])
+        const emptyPeersResponse = await RetrieveConnectedPeers.of().askTo(
+            mockHttpClient(mockResponse([], 200))
         );
-        expect(emptyPeersResponse.response.toJSON()).toEqual([]);
+        expect(emptyPeersResponse.response).not.toBeNull();
+        expect(
+            (emptyPeersResponse.response as GetPeersResponse).toJSON()
+        ).toEqual([]);
     });
 });

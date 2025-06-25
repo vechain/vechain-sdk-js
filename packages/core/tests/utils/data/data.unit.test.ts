@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { dataUtils } from '../../../src';
+import { dataUtils } from '@utils';
 import {
     decodeBytes32StringTestCases,
     encodeBytes32StringTestCases,

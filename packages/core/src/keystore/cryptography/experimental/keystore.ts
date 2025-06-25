@@ -5,12 +5,12 @@
  */
 import * as n_utils from '@noble/curves/abstract/utils';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
-import { Address, Hex, Keccak256 } from '../../../vcdm';
-import { InvalidKeystoreError, InvalidPasswordError } from '../../../errors';
-import { Secp256k1 } from '../../../secp256k1';
+import { Address, Hex, Keccak256 } from '@vcdm';
+import { InvalidKeystoreError, InvalidPasswordError } from '@errors';
+import { Secp256k1 } from '@secp256k1';
 import { ctr } from '@noble/ciphers/aes';
 import { scrypt } from '@noble/hashes/scrypt';
-import { type Keystore, type KeystoreAccount } from '../../types';
+import { type Keystore, type KeystoreAccount } from '@keystore';
 
 /**
  * Full Qualified Path

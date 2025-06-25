@@ -1,4 +1,4 @@
-import { type BufferOutput, type DataOutput, type RLPInput } from '../../types';
+import { type BufferOutput, type DataOutput, type RLPInput } from '@vcdm';
 import { FixedHexBlobKind } from './FixedHexBlobKind';
 
 /**

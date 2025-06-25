@@ -1,5 +1,5 @@
-import { Hex } from '../../../Hex';
-import { InvalidEncodingError } from '../../../../errors';
+import { Hex } from '@vcdm';
+import { InvalidEncodingError } from '@errors';
 
 /**
  * Full Qualified Path

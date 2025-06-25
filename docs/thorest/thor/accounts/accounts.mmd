@@ -1,0 +1,124 @@
+---
+title: thorest_thor_account
+---
+classDiagram
+    namespace thorest {
+        class ThorRequest {
+            <<interface>>
+        }
+    }
+    namespace thorest_http {
+        class HttpClient {
+            <<interface>>
+        }
+        class HttpPath {
+            <<interface>>
+            string path
+        }
+        class HttpQuery {
+            <<interface>>
+            string query
+        }
+    }
+    namespace thorest_errors {
+        class ThorError
+    }
+    class RetrieveAccountDetails {
+        RetrieveAccountDetailsPath path
+        RetrieveAccountDetails of(Address address)$
+        ThorResponse~RetrieveAccountDetails, GetAccountResponse~ askTo(HttpClient httpClient)
+    }
+    class RetrieveContractBytecode {
+        RetrieveContractBytecodePath path
+        RetrieveContractBytecode of(Address address)$
+        ThorResponse~RetrieveContractBytecode, ContractBytecode~ askTo(HttpClient httpClient)
+    }
+    class RetrieveStoragePositionValue {
+        RetrieveStoragePositionValuePath path
+        RetrieveStoragePositionValue of(Address address, BlockId key)$
+        ThorResponse~RetrieveStoragePositionValue, GetStorageResponse~ askTo(HttpClient httpClient)
+    }
+    class InspectClauses {
+        HttpPath PATH$
+        InspectClauseQuery query
+        ExecuteCodesRequest request
+        InspectClauses of(ExecuteCodesRequestJSON request)$
+        InspectClauses withRevision(Revision revision)
+        ThorResponse~InspectClauses, ExecuteCodesResponse~ askTo(HttpClient httpClient)
+    }
+    class GetAccountResponse {
+        bigint balance
+        bigint energy
+        boolean hasCode
+        GetAccountResponseJSON toJSON()
+    }
+    class ContractBytecode {
+        HexUInt code
+        ContractBytecodeJSON toJSON()
+    }
+    class GetStorageResponse {
+        ThorId value
+        GetStorageResponseJSON toJSON()
+    }
+    class ExecuteCodesResponse {
+        ExecuteCodeResponse[] items
+    }
+    class ExecuteCodeResponse {
+        HexUInt data
+        Event[] events
+        Transfer[] transfers
+        bigint gasUsed
+        boolean reverted
+        string vmError
+        ExecuteCodeResponseJSON toJSON()
+    }
+    class ExecuteCodesRequest {
+        string provedWork
+        Address gasPayer
+        UInt expiration
+        BlockRef blockRef
+        Clause[] clauses
+        bigint gas
+        bigint gasPrice
+        Address caller
+        ExecuteCodesRequestJSON toJSON()
+    }
+    class RetrieveAccountDetailsPath {
+        Address address
+        string path
+    }
+    class RetrieveContractBytecodePath {
+        Address address
+        string path
+    }
+    class RetrieveStoragePositionValuePath {
+        Address address
+        BlockId key
+        string path
+    }
+    class InspectClauseQuery {
+        Revision revision
+        string query
+    }
+    ThorRequest <|.. RetrieveAccountDetails
+    ThorRequest <|.. RetrieveContractBytecode
+    ThorRequest <|.. RetrieveStoragePositionValue
+    ThorRequest <|.. InspectClauses
+    HttpPath <|.. RetrieveAccountDetailsPath
+    HttpPath <|.. RetrieveContractBytecodePath
+    HttpPath <|.. RetrieveStoragePositionValuePath
+    HttpQuery <|.. InspectClauseQuery
+    RetrieveAccountDetails --> GetAccountResponse : "returns"
+    RetrieveContractBytecode --> ContractBytecode : "returns"
+    RetrieveStoragePositionValue --> GetStorageResponse : "returns"
+    InspectClauses --> ExecuteCodesResponse : "returns"
+    ExecuteCodesResponse --> ExecuteCodeResponse : "contains"
+    RetrieveAccountDetails --> RetrieveAccountDetailsPath : "uses"
+    RetrieveContractBytecode --> RetrieveContractBytecodePath : "uses"
+    RetrieveStoragePositionValue --> RetrieveStoragePositionValuePath : "uses"
+    InspectClauses --> InspectClauseQuery : "uses"
+    InspectClauses --> ExecuteCodesRequest : "uses"
+    ThorError <-- "throws" RetrieveAccountDetails
+    ThorError <-- "throws" RetrieveContractBytecode
+    ThorError <-- "throws" RetrieveStoragePositionValue
+    ThorError <-- "throws" InspectClauses

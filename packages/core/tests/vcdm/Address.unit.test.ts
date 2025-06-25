@@ -1,4 +1,5 @@
-import { Address, IllegalArgumentError } from '../../src';
+import { Address } from '@vcdm';
+import { IllegalArgumentError } from '@errors';
 import { describe, expect, test } from '@jest/globals';
 import { fail } from 'assert';
 import { hexToBytes } from '@noble/ciphers/utils';

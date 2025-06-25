@@ -1,6 +1,5 @@
-import { type WebSocketClient } from './WebSocketClient';
-import { type WebSocketListener } from './WebSocketListener';
-import { type HttpPath } from '../http';
+import { type WebSocketClient, type WebSocketListener } from '@ws';
+import { type HttpPath } from '@http';
 
 class MozillaWebSocketClient implements WebSocketClient {
     readonly baseURL: string;

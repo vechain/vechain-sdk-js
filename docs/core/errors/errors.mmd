@@ -1,0 +1,19 @@
+---
+title: core_errors
+---
+classDiagram
+    namespace JS {
+        class Error {
+            <<interface>>
+            cause?: Error
+            message: string
+        }
+    }
+    class VeChainSDKError {
+        args?: Record~string, unknown~
+        fqn: string
+        constructor(fqn: string, message: string, args? Record~string, unknown~, cuase?: Error)
+        toString(joiner: string, stringify: (obj: unknown) => string) string
+    }
+    Error <|..VeChainSDKError
+

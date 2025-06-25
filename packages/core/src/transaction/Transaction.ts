@@ -1,7 +1,8 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
-import { Secp256k1 } from '../secp256k1';
+import { Secp256k1 } from '@secp256k1';
 import {
     Address,
+    Blake2b256,
     BufferKind,
     CompactFixedHexBlobKind,
     Hex,
@@ -14,16 +15,14 @@ import {
     type RLPValidObject,
     Units,
     VTHO
-} from '../vcdm';
-import { Blake2b256 } from '../vcdm/hash/Blake2b256';
-import { type TransactionBody } from './TransactionBody';
-import type { TransactionClause } from './TransactionClause';
+} from '@vcdm';
+import { type TransactionBody, type TransactionClause } from '@transaction';
 import {
     IllegalArgumentError,
     InvalidPrivateKeyError,
     NoSuchElementError,
     UnsupportedOperationError
-} from '../errors';
+} from '@errors';
 
 /**
  * Full Qualified Path
@@ -156,8 +155,33 @@ class Transaction {
 
     /**
      * It represents the signature of the transaction content.
+     * If delegated, both signature are concatenated with the sender signature first.
      */
-    public readonly signature?: Uint8Array;
+    public get signature(): Uint8Array | undefined {
+        if (this.senderSignature === undefined) {
+            return undefined;
+        }
+        if (
+            this.isDelegated !== undefined &&
+            this.gasPayerSignature !== undefined
+        ) {
+            return nc_utils.concatBytes(
+                this.senderSignature,
+                this.gasPayerSignature
+            );
+        }
+        return this.senderSignature;
+    }
+
+    /**
+     * It represents the signature of the transaction content by the sender
+     */
+    public readonly senderSignature?: Uint8Array;
+
+    /**
+     * It represents the signature of the transaction content by the gas payer
+     */
+    public readonly gasPayerSignature?: Uint8Array;
 
     /**
      * Creates a new instance of the class with the specified transaction body and optional signature.
@@ -165,9 +189,14 @@ class Transaction {
      * @param {TransactionBody} body The transaction body to be used.
      * @param {Uint8Array} [signature] The optional signature for the transaction.
      */
-    protected constructor(body: TransactionBody, signature?: Uint8Array) {
+    protected constructor(
+        body: TransactionBody,
+        senderSignature?: Uint8Array,
+        gasPayerSignature?: Uint8Array
+    ) {
         this.body = body;
-        this.signature = signature;
+        this.senderSignature = senderSignature;
+        this.gasPayerSignature = gasPayerSignature;
     }
 
     // ********** GET COMPUTED PROPERTIES **********
@@ -190,16 +219,11 @@ class Transaction {
      */
     public get gasPayer(): Address {
         if (this.isDelegated) {
-            if (this.signature !== undefined) {
-                // Recover the gas payer param from the signature
-                const gasPayer = this.signature.slice(
-                    Secp256k1.SIGNATURE_LENGTH,
-                    this.signature.length
-                );
+            if (this.gasPayerSignature !== undefined) {
                 // Recover the gas payer's public key.
                 const gasPayerPublicKey = Secp256k1.recover(
                     this.getTransactionHash(this.origin).bytes,
-                    gasPayer
+                    this.gasPayerSignature
                 );
                 return Address.ofPublicKey(gasPayerPublicKey);
             }
@@ -287,8 +311,12 @@ class Transaction {
      * but not yet signed with {@link signAsGasPayer} is not signed.
      */
     public get isSigned(): boolean {
-        if (this.signature !== undefined) {
-            return Transaction.isSignatureValid(this.body, this.signature);
+        if (this.senderSignature !== undefined) {
+            return Transaction.isSignatureValid(
+                this.body,
+                this.senderSignature,
+                this.gasPayerSignature
+            );
         }
         return false;
     }
@@ -306,13 +334,13 @@ class Transaction {
      * - {@link Secp256k1.recover}.
      */
     public get origin(): Address {
-        if (this.signature !== undefined) {
+        if (this.senderSignature !== undefined) {
             return Address.ofPublicKey(
                 // Get the origin public key.
                 Secp256k1.recover(
                     this.getTransactionHash().bytes,
                     // Get the (r, s) of ECDSA digital signature without gas payer params.
-                    this.signature.slice(0, Secp256k1.SIGNATURE_LENGTH)
+                    this.senderSignature
                 )
             );
         }
@@ -370,12 +398,36 @@ class Transaction {
                   }
                 : bodyWithoutReservedField;
         // Return decoded transaction (with signature or not)
-        return decodedRLPBody.signature !== undefined
-            ? Transaction.of(
-                  correctTransactionBody,
-                  decodedRLPBody.signature as Uint8Array
-              )
-            : Transaction.of(correctTransactionBody);
+        if (decodedRLPBody.signature !== undefined) {
+            const decodedSignature = decodedRLPBody.signature as Uint8Array;
+            if (decodedSignature.length === Secp256k1.SIGNATURE_LENGTH * 2) {
+                if (Transaction.isDelegated(correctTransactionBody)) {
+                    return Transaction.of(
+                        correctTransactionBody,
+                        decodedSignature.slice(0, Secp256k1.SIGNATURE_LENGTH),
+                        decodedSignature.slice(
+                            Secp256k1.SIGNATURE_LENGTH,
+                            Secp256k1.SIGNATURE_LENGTH * 2
+                        )
+                    );
+                } else {
+                    throw new IllegalArgumentError(
+                        `${FQP}Transaction.decode(rawTransaction: Uint8Array, isSigned: boolean): Transaction`,
+                        'invalid signature length',
+                        undefined
+                    );
+                }
+            } else if (decodedSignature.length === Secp256k1.SIGNATURE_LENGTH) {
+                return Transaction.of(correctTransactionBody, decodedSignature);
+            } else {
+                throw new IllegalArgumentError(
+                    `${FQP}Transaction.decode(rawTransaction: Uint8Array, isSigned: boolean): Transaction`,
+                    'invalid signature length',
+                    undefined
+                );
+            }
+        }
+        return Transaction.of(correctTransactionBody);
     }
 
     /**
@@ -472,7 +524,8 @@ class Transaction {
             // Depends on
             body.dependsOn !== undefined &&
             // Nonce
-            body.nonce !== undefined
+            body.nonce !== undefined &&
+            typeof body.nonce === 'number'
         );
     }
 
@@ -486,10 +539,34 @@ class Transaction {
      */
     public static of(
         body: TransactionBody,
-        signature?: Uint8Array
+        senderSignature?: Uint8Array,
+        gasPayerSignature?: Uint8Array
     ): Transaction {
         if (Transaction.isValidBody(body)) {
-            return new Transaction(body, signature);
+            // Verify that if present the signature are of the correct length
+            // And, if the transaction is not delegated that there is not any gas payer signature
+            if (
+                Transaction.isDelegated(body)
+                    ? gasPayerSignature === undefined ||
+                      gasPayerSignature.length === Secp256k1.SIGNATURE_LENGTH
+                    : gasPayerSignature === undefined &&
+                      (senderSignature === undefined ||
+                          senderSignature.length === Secp256k1.SIGNATURE_LENGTH)
+            ) {
+                return new Transaction(
+                    body,
+                    senderSignature,
+                    gasPayerSignature
+                );
+            }
+            throw new IllegalArgumentError(
+                `${FQP}Transaction.of(body: TransactionBody, signature?: Uint8Array): Transaction`,
+                'invalid signature',
+                {
+                    fieldName: 'signature',
+                    signature: senderSignature
+                }
+            );
         }
         throw new IllegalArgumentError(
             `${FQP}Transaction.of(body: TransactionBody, signature?: Uint8Array): Transaction`,
@@ -523,7 +600,11 @@ class Transaction {
                     senderPrivateKey
                 );
                 // Return new signed transaction.
-                return Transaction.of(this.body, signature);
+                return Transaction.of(
+                    this.body,
+                    signature,
+                    this.gasPayerSignature
+                );
             }
             throw new UnsupportedOperationError(
                 `${FQP}<Transaction>.sign(senderPrivateKey: Uint8Array): Transaction`,
@@ -562,15 +643,12 @@ class Transaction {
     ): Transaction {
         if (Secp256k1.isValidPrivateKey(gasPayerPrivateKey)) {
             if (this.isDelegated) {
-                if (this.signature !== undefined) {
+                if (this.senderSignature !== undefined) {
                     const senderHash = this.getTransactionHash(sender).bytes;
                     return new Transaction(
                         this.body,
-                        nc_utils.concatBytes(
-                            // Drop any previous gas payer signature.
-                            this.signature.slice(0, Secp256k1.SIGNATURE_LENGTH),
-                            Secp256k1.sign(senderHash, gasPayerPrivateKey)
-                        )
+                        this.senderSignature,
+                        Secp256k1.sign(senderHash, gasPayerPrivateKey)
                     );
                 }
                 throw new NoSuchElementError(
@@ -594,7 +672,8 @@ class Transaction {
      * Signs a delegated transaction using the provided transaction sender's private key,
      * call the {@link signAsGasPayer} to complete the signature,
      * before such call {@link isDelegated} returns `true` but
-     * {@link isSigned} returns `false`.
+     * {@link isSigned} returns `false`. This method will void gas payer signature if it was set already.
+     * If you don't want to void it, use {@link sign} or {@link signAsSenderAndGasPayer} instead.
      *
      * @param senderPrivateKey The private key of the transaction sender, represented as a Uint8Array. It must be a valid secp256k1 private key.
      * @return A new Transaction object with the signature applied, if the transaction is delegated and the private key is valid.
@@ -660,10 +739,8 @@ class Transaction {
                     // Return new signed transaction
                     return Transaction.of(
                         this.body,
-                        nc_utils.concatBytes(
-                            Secp256k1.sign(senderHash, senderPrivateKey),
-                            Secp256k1.sign(gasPayerHash, gasPayerPrivateKey)
-                        )
+                        Secp256k1.sign(senderHash, senderPrivateKey),
+                        Secp256k1.sign(gasPayerHash, gasPayerPrivateKey)
                     );
                 }
                 throw new UnsupportedOperationError(
@@ -870,14 +947,19 @@ class Transaction {
      */
     private static isSignatureValid(
         body: TransactionBody,
-        signature: Uint8Array
+        senderSignature: Uint8Array,
+        gasPayerSignature: Uint8Array | undefined
     ): boolean {
-        // Verify signature length
-        const expectedSignatureLength = this.isDelegated(body)
-            ? Secp256k1.SIGNATURE_LENGTH * 2
-            : Secp256k1.SIGNATURE_LENGTH;
-
-        return signature.length === expectedSignatureLength;
+        if (this.isDelegated(body)) {
+            if (gasPayerSignature !== undefined) {
+                return (
+                    senderSignature.length === Secp256k1.SIGNATURE_LENGTH &&
+                    gasPayerSignature.length === Secp256k1.SIGNATURE_LENGTH
+                );
+            }
+            return false;
+        }
+        return senderSignature.length === Secp256k1.SIGNATURE_LENGTH;
     }
 }
 

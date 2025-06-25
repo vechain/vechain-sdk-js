@@ -1,12 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
-import {
-    type Coin,
-    FixedPointNumber,
-    IllegalArgumentError,
-    Txt,
-    VET,
-    VTHO
-} from '../../../src';
+import { type Coin, FixedPointNumber, Txt, VET, VTHO } from '@vcdm';
+import { IllegalArgumentError } from '@errors';
 
 const CoinFixure = {
     value: FixedPointNumber.of('1234567.89')

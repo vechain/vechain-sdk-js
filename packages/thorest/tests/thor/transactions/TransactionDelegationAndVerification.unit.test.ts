@@ -1,4 +1,4 @@
-import { describe, expect, jest, test } from '@jest/globals';
+import { describe, expect, test } from '@jest/globals';
 import {
     Address,
     Clause,
@@ -9,28 +9,10 @@ import {
     type TransactionBody,
     VET
 } from '@vechain/sdk-core';
-import { type FetchHttpClient, type HttpPath } from '../../../src';
-
+import { type GetTxReceiptResponseJSON, type TXIDJSON } from '@thor';
+import { type HttpPath } from '@http';
+import { mockHttpClient } from '../../utils/MockUnitTestClient';
 import { secp256k1 as nc_secp256k1 } from '@noble/curves/secp256k1';
-
-const mockHttpClient = <T>(response: T): FetchHttpClient => {
-    return {
-        post: jest.fn().mockImplementation(() => {
-            return {
-                json: jest.fn().mockImplementation(() => {
-                    return response;
-                })
-            };
-        }),
-        get: jest.fn().mockImplementation(() => {
-            return {
-                json: jest.fn().mockImplementation(() => {
-                    return response;
-                })
-            };
-        })
-    } as unknown as FetchHttpClient;
-};
 
 /**
  * VeChain transaction - unit
@@ -68,9 +50,10 @@ describe('unit tests', () => {
         };
         const mockTxResponse = {
             id: '0x0000000000000000000000000000000000000000000000000000000000000456'
-        };
+        } satisfies TXIDJSON;
         const mockTxReceiptResponse = {
-            gasUsed: 21000,
+            type: null,
+            gasUsed: '21000',
             gasPayer: gasPayer.address.toString(),
             paid: '0x0',
             reward: '0x0',
@@ -82,8 +65,9 @@ describe('unit tests', () => {
                 blockTimestamp: 1000000,
                 txID: '0x0000000000000000000000000000000000000000000000000000000000000456',
                 txOrigin: sender.address.toString()
-            }
-        };
+            },
+            outputs: []
+        } satisfies GetTxReceiptResponseJSON;
 
         const body: TransactionBody = {
             chainTag: networkInfo.solo.chainTag,
@@ -104,7 +88,7 @@ describe('unit tests', () => {
             gasPayer.privateKey.bytes
         );
 
-        const mockClient = mockHttpClient(mockTxResponse);
+        const mockClient = mockHttpClient<TXIDJSON>(mockTxResponse, 'post');
         const txResult = await mockClient.post(
             '/transactions' as unknown as HttpPath,
             {
@@ -113,9 +97,15 @@ describe('unit tests', () => {
         );
         expect(await txResult.json()).toEqual(mockTxResponse);
 
-        const mockReceiptClient = mockHttpClient(mockTxReceiptResponse);
+        const mockReceiptClient = mockHttpClient<GetTxReceiptResponseJSON>(
+            mockTxReceiptResponse,
+            'get'
+        );
         const txReceipt = await mockReceiptClient.get(
-            '/transactions/receipt' as unknown as HttpPath
+            '/transactions/receipt' as unknown as HttpPath,
+            {
+                query: mockTxResponse.id
+            }
         );
         expect(await txReceipt.json()).toEqual(mockTxReceiptResponse);
     });

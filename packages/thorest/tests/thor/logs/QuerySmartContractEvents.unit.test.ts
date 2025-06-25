@@ -1,31 +1,53 @@
-import { describe, test, jest, expect } from '@jest/globals';
-import { QuerySmartContractEvents } from '../../../src/thor/logs/QuerySmartContractEvents';
-import { type EventLogFilterRequestJSON } from '../../../src/thor/logs/EventLogFilterRequest';
-import { type FetchHttpClient } from '../../../src';
 import {
+    type EventLogFilterRequestJSON,
     EventLogsResponse,
-    type EventLogsResponseJSON
-} from '../../../src/thor/logs';
+    type EventLogsResponseJSON,
+    QuerySmartContractEvents,
+    ThorError
+} from '@thor';
+import { expect, jest } from '@jest/globals';
+import type { HttpClient } from '@http';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
 
-const mockHttpClient = <T>(response: T): FetchHttpClient => {
+
+const mockHttpClient = <T>(response: T): HttpClient => {
     return {
-        post: jest.fn().mockImplementation(() => {
-            return {
-                json: jest.fn().mockImplementation(() => {
-                    return response;
-                })
-            };
+        post: jest.fn().mockReturnValue(response)
+    } as unknown as HttpClient;
+};
+
+const mockResponse = <T>(body: T, status: number): Response => {
+    const init: ResponseInit = {
+        status,
+        headers: new Headers({
+            'Content-Type': 'application/json'
         })
-    } as unknown as FetchHttpClient;
+    };
+    return new Response(fastJsonStableStringify(body), init);
 };
 
 /**
- *VeChain node - unit
- *
- * @group unit/logs
+ * group unit/logs
  */
-describe('QuerySmartContractEvents unit tests', () => {
-    test('ok <- askTo', async () => {
+describe('QuerySmartContractEvents UNIT tests', () => {
+    test('err <- askTo - invalid request', async () => {
+        const status = 400;
+        // Pretend the request is invalid albeit not possible to build an invalid request from the SDK.
+        const request: EventLogFilterRequestJSON =
+            {} satisfies EventLogFilterRequestJSON;
+        try {
+            await QuerySmartContractEvents.of(request).askTo(
+                mockHttpClient(mockResponse({}, status))
+            );
+            // noinspection ExceptionCaughtLocallyJS
+            throw new Error('Should not reach here.');
+        } catch (error) {
+            expect(error).toBeInstanceOf(ThorError);
+            expect((error as ThorError).status).toBe(status);
+        }
+    });
+
+    test('ok <- askTo - not empty', async () => {
         const request: EventLogFilterRequestJSON = {
             range: {
                 unit: 'block',
@@ -39,66 +61,61 @@ describe('QuerySmartContractEvents unit tests', () => {
             },
             criteriaSet: [
                 {
-                    address: '0x6d95e6dca01d109882fe1726a2fb9865fa41e7aa'
+                    address: '0x0000000000000000000000000000456E65726779',
+                    topic0: '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+                    topic1: '0x0000000000000000000000006d95e6dca01d109882fe1726a2fb9865fa41e7aa'
                 }
             ],
             order: 'asc'
-        };
-
-        const mockResponse = [
+        } satisfies EventLogFilterRequestJSON;
+        const expected = [
             {
-                address: '0x6d95E6dCa01D109882fe1726A2fb9865Fa41e7aA',
+                address: '0x0000000000000000000000000000456E65726779',
                 topics: [
-                    '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'
+                    '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+                    '0x000000000000000000000000435933c8064b4ae76be665428e0307ef2ccfbd68'
                 ],
-                data: '0x00',
+                data: '0x4de71f2d588aa8a1ea00fe8312d92966da424d9939a511fc0be81e65fad52af8',
                 meta: {
-                    clauseIndex: 10,
-                    blockNumber: 10,
-                    blockTimestamp: 10,
-                    txID: '0x0000000000000000000000000000000000000000000000000000000000000000',
-                    txOrigin: '0x0000000000000000000000000000000000000000',
                     blockID:
-                        '0x0000000000000000000000000000000000000000000000000000000000000000',
-                    logIndex: 10,
-                    txIndex: 10
+                        '0x0004f6cc88bb4626a92907718e82f255b8fa511453a78e8797eb8cea3393b215',
+                    blockNumber: 325324,
+                    blockTimestamp: 1533267900,
+                    txID: '0x284bba50ef777889ff1a367ed0b38d5e5626714477c40de38d71cedd6f9fa477',
+                    txOrigin: '0xDb4027477B2a8fE4c83C6daFe7f86678bb1B8a8d',
+                    clauseIndex: 0,
+                    txIndex: 1,
+                    logIndex: 1
                 }
             }
-        ] as unknown as EventLogsResponseJSON;
-
-        const mockClient = mockHttpClient<EventLogsResponseJSON>(mockResponse);
-
-        const response =
-            await QuerySmartContractEvents.of(request).askTo(mockClient);
-        expect(response.response.toJSON()).toEqual(
-            new EventLogsResponse(mockResponse).toJSON()
-        );
+        ] satisfies EventLogsResponseJSON;
+        const actual = (
+            await QuerySmartContractEvents.of(request).askTo(
+                mockHttpClient(mockResponse(expected, 200))
+            )
+        ).response;
+        expect(actual).toBeDefined();
+        expect(actual).toBeInstanceOf(EventLogsResponse);
+        expect(actual.toJSON()).toEqual(expected);
     });
 
-    test('empty response <- askTo', async () => {
+    test('ok <- askTo -  empty', async () => {
         const request: EventLogFilterRequestJSON = {
             range: {
                 unit: 'block',
-                from: 17240365,
-                to: 17289864
+                from: 0,
+                to: 0
             },
-            options: {
-                offset: 0,
-                limit: 100
-            },
-            criteriaSet: [
-                {
-                    address: '0x6d95e6dca01d109882fe1726a2fb9865fa41e7aa',
-                    topic0: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'
-                }
-            ],
-            order: 'asc'
-        };
-
-        const mockClient = mockHttpClient([]);
-
-        const response =
-            await QuerySmartContractEvents.of(request).askTo(mockClient);
-        expect(response.response).toStrictEqual([]);
+            options: {}
+        } satisfies EventLogFilterRequestJSON;
+        const expected = [] satisfies EventLogsResponseJSON;
+        const actual = (
+            await QuerySmartContractEvents.of(request).askTo(
+                mockHttpClient(mockResponse(expected, 200))
+            )
+        ).response;
+        expect(actual).toBeDefined();
+        expect(actual).toBeInstanceOf(EventLogsResponse);
+        expect(actual.length).toEqual(0);
     });
 });

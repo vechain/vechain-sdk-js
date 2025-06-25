@@ -1,8 +1,8 @@
 import fastJsonStableStringify from 'fast-json-stable-stringify';
-import { Address, Blake2b256, HexUInt, Txt } from '../vcdm';
-import { Secp256k1 } from '../secp256k1';
+import { Address, Blake2b256, HexUInt, Txt } from '@vcdm';
+import { Secp256k1 } from '@secp256k1';
 import { type CertificateData } from './CertificateData';
-import { IllegalArgumentError, InvalidSignatureError } from '../errors';
+import { IllegalArgumentError, InvalidSignatureError } from '@errors';
 
 /**
  * Full Qualified Path

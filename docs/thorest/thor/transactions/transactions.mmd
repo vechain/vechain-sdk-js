@@ -1,0 +1,66 @@
+---
+title: thorest_thor_transactions
+---
+classDiagram
+    namespace thorest {
+        class ThorRequest {
+            <<interface>>
+        }
+    }
+    namespace thorest_errors {
+        class ThorError
+    }
+    namespace thorest_model {
+        class TXID
+        class Tx
+    }
+    class GetRawTxResponse {
+        Hex raw
+        TxMeta meta
+        GetRawTxResponseJSON toJSON()
+    }
+    class GetTxReceiptResponse {
+        numer|null type
+        bigint gasUsed
+        Address address
+        bigint paid
+        bigint reward
+        boolean reverted
+        Output[] outputs
+        ReceiptMeta meta
+        GetTxReceiptResponseJSON toJSON()
+    }
+    class GetTxResponse {
+        TxMeta txMeta
+        GetTxResponseJSON toJSON()
+    }
+    class RetrieveRawTransactionByID {
+        ThorResponse~RetrieveRawTransactionByID, GetRawTxResponse|null~ askTo(HttpClient httpClient)
+        RetrieveRawTransactionByID of(txId: Hex)$
+        RetrieveRawTransactionByID withHead(Hex head)
+        RetrieveRawTransactionByID withPending(boolean pending)
+    }
+    class RetrieveTransactionByID {
+        ThorResponse~RetrieveTransactionReceipt, GetTxResponse|null~ askTo(HttpClient httpClient)
+        RetrieveTransactionByID of(Hex txId)$
+        RetrieveTransactionByID withHead(Hex blockId)
+        RetrieveTransactionByID witthPending(pending: boolean)
+    }
+    class RetrieveTransactionReceipt {
+        ThorResponse~RetrieveTransactionReceipt, GetTxReceiptResponse|null~ askTo(HttpClient httpClient)
+        RetrieveTransactionReceipt of(Hex txId)$
+    }
+    class SendTransaction {
+        ThorResponse~SendTransaction, TXID~ askTo(HttpClient httpClient)
+        SendTransaction of(Uint8Array encoded)$
+    }
+    ThorRequest <|.. RetrieveRawTransactionByID
+    ThorRequest <|.. RetrieveTransactionByID
+    ThorRequest <|.. RetrieveTransactionReceipt
+    ThorRequest <|.. SendTransaction
+    GetTxResponse --|> Tx
+    RetrieveRawTransactionByID "askTo" --> GetRawTxResponse
+    RetrieveTransactionByID "askTo" --> GetTxResponse
+    RetrieveTransactionReceipt "askTo" --> GetTxReceiptResponse
+    SendTransaction "askTo" --> TXID
+    ThorError <-- "throws" ThorRequest

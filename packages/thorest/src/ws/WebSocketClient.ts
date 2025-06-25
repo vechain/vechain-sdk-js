@@ -1,5 +1,5 @@
-import type { WebSocketListener } from './WebSocketListener';
-import { type HttpPath } from '../http';
+import { type HttpPath } from '@http';
+import type { WebSocketListener } from '@ws';
 
 interface WebSocketClient {
     get baseURL(): string;

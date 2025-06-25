@@ -1,13 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import * as nc_utils from '@noble/curves/abstract/utils';
-import {
-    BloomFilter,
-    Hex,
-    HexUInt,
-    IllegalArgumentError,
-    Txt,
-    UnsupportedOperationError
-} from '../../src';
+import { BloomFilter, Hex, HexUInt, Txt } from '@vcdm';
+import { IllegalArgumentError, UnsupportedOperationError } from '@errors';
 
 const BloomFilterFixture = {
     emptySetBytes: Uint8Array.of(0, 0, 0, 0, 0, 0, 0, 0),

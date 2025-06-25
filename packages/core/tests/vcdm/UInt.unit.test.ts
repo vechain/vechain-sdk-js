@@ -1,5 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
-import { IllegalArgumentError, UInt } from '../../src';
+import { UInt } from '@vcdm';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Test UInt class.

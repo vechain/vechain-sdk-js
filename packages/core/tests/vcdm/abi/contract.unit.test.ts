@@ -2,18 +2,15 @@ import { beforeAll, describe, expect, test } from '@jest/globals';
 import { fail } from 'assert';
 import { expectType } from 'tsd';
 import { type AbiEvent, encodeFunctionResult } from 'viem';
+import { ABIContract, ABIEvent, ABIItem, Hex } from '@vcdm';
+import { ERC721_ABI } from '@utils';
 import {
-    ABIContract,
-    ABIEvent,
-    ABIItem,
     AbiEventNotFoundError,
     AbiFunctionNotFoundError,
-    ERC721_ABI,
-    Hex,
     IllegalArgumentError,
     InvalidAbiDecodingTypeError,
     InvalidAbiEncodingTypeError
-} from '../../../src';
+} from '@errors';
 import {
     contractABI,
     contractABIWithEvents,

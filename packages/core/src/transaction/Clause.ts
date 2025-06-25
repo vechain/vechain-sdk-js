@@ -1,20 +1,22 @@
-import { ERC721_ABI, VIP180_ABI } from '../utils';
+import { ERC721_ABI, VIP180_ABI } from '@utils';
 import {
     ABI,
     ABIContract,
     FixedPointNumber,
     VET,
+    Hex,
+    HexInt,
     type ABIFunction,
     type Address,
     type HexUInt,
     type VTHO
-} from '../vcdm';
-import { Hex } from '../vcdm/Hex';
-import { HexInt } from '../vcdm/HexInt';
-import type { ClauseOptions } from './ClauseOptions';
-import type { DeployParams } from './DeployParams';
-import type { TransactionClause } from './TransactionClause';
-import { IllegalArgumentError } from '../errors';
+} from '@vcdm';
+import {
+    type ClauseOptions,
+    type DeployParams,
+    type TransactionClause
+} from '@transaction';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full Qualified Path

@@ -1,7 +1,7 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
 import * as nh_utils from '@noble/hashes/utils';
-import { IllegalArgumentError, UnsupportedOperationError } from '../errors';
-import { type VeChainDataModel } from './VeChainDataModel';
+import { IllegalArgumentError, UnsupportedOperationError } from '@errors';
+import { type VeChainDataModel } from '@vcdm';
 
 /**
  * Full Qualified Path
@@ -51,7 +51,7 @@ class Hex implements VeChainDataModel<Hex> {
 
     /**
      * Regular expression for matching hexadecimal strings.
-     * An empty input is represented as a empty digits.
+     * An empty input is represented as an empty digit.
      *
      * @type {RegExp}
      */

@@ -1,8 +1,5 @@
-import { FixedPointNumber } from '../../../FixedPointNumber';
-import { Hex } from '../../../Hex';
-import { HexUInt } from '../../../HexUInt';
-import { type RLPInput } from '../types';
-import { InvalidEncodingError } from '../../../../errors';
+import { FixedPointNumber, Hex, HexUInt, type RLPInput } from '@vcdm';
+import { InvalidEncodingError } from '@errors';
 
 /**
  * Full Qualified Path

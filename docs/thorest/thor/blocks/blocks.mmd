@@ -1,0 +1,71 @@
+---
+title: thorest_thor_blocks
+---
+classDiagram
+    namespace thorest {
+        class ThorRequest {
+            <<interface>>
+        }
+    }
+    namespace thorest_errors {
+        class ThorError
+    }
+    class Block {
+        number number
+        Hex id
+        number size
+        Hex parentID
+        number timestamp
+        bigint gasLimit
+        Address beneficiary
+        bigint gasUsed
+        bigint baseFeePerGas
+        number totalScore
+        Hex txsRoot
+        number txsFeatures
+        Hex stateRoot
+        Hex receiptsRoot
+        boolean com
+        Address signer
+        BlockJSON toJSON()
+    }
+    class ExpandedBlockResponse {
+        boolean isTrunk
+        boolean isFinalized
+        TXWithReceipt[] transactions
+        ExpandedBlockResponseJSON toJSON()
+    }
+    class RawTx {
+        HexUInt raw
+        RawTxJSON toJSON()
+    }
+    class RegularBlockResponse {
+        boolean isTrunk
+        boolean isFinalized
+        Hex[]  transactions
+        RegularBlockResponseJSON toJSON()
+    }
+    class RetrieveExpandedBlock {
+        ExpandedBlockResponse | null of(Revision revision)$
+        ThorResponse~RetrieveExpandedBlock, ExpandedBlockResponse|null~ askTo(HttpClient httpClient)
+    }
+    class RetrieveRawBlock {
+        RawTx|null of(Revision revision)$
+        ThorRespone~RetrieveRawBlock, TxRaw|null~ astTo(HttpClient httpClient)
+    }
+    class RetrieveRegularBlock {
+        RetrieveRegularBlock|null of(Revision revision)$
+        ThorResponse~RetrieveRegularBlock, RegularBlockResponse|null~ askTo(HttpClient httpClient)
+    }
+    ThorRequest <|.. RetrieveExpandedBlock
+    ThorRequest <|.. RetrieveRawBlock
+    ThorRequest <|.. RetrieveRegularBlock
+    ExpandedBlockResponse --|> Block
+    RegularBlockResponse --|> Block
+    RetrieveExpandedBlock "askTo" --> ExpandedBlockResponse
+    RetrieveRawBlock "askTo" --> RawTx
+    RetrieveRegularBlock "askTo" --> RegularBlockResponse
+    ThorError <-- "throws" ThorRequest
+
+
+

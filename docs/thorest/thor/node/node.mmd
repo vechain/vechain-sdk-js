@@ -1,0 +1,69 @@
+---
+title: thorest_thor_fees
+---
+classDiagram
+    namespace core_vcdm {
+        class Hex
+    }
+    namespace thorest {
+        class ThorRequest {
+            <<interface>>
+        }
+    }
+    namespace thorest_errors {
+        class ThorError
+    }
+    namespace thorest_model {
+        class Tx
+    }
+    class GetPeersResponse {
+        GetPeersResponseJSON toJSON()
+    }
+    class GetTxPoolStatus {
+        GetTxPoolStatus of()$
+        ThorResponse~GetTxPoolStatus, Status~askTo(HttpClient httpClient)
+    }
+    class PeerStat {
+        string name
+        Hex bestBlockID
+        number totalScore
+        Hex peerID
+        NetAddr netAddr
+        boolean inbound
+        number duration
+        PeerStatJSON toJSON()
+    }
+    class RetrieveConnectedPeers {
+        RetrieveConnectedPeers of()$
+        ThorResponse~RetrieveConnectedPeers, GetPeersResponse|null~ askTo(HttpClient httpClient)
+    }
+    class RetrieveExpandedTransactionsFromTransactionPool {
+        ThorResponse~RetrieveExpandedTransactionsFromTransactionPool, Transactions~ askTo(HttpClient httpClient)
+        RetrieveExpandedTransactionsFromTransactionPool of(Address address)$
+    }
+    class RetrieveTransactionsFromTransactionPool {
+        ThorRespose~RetrieveTransactionsFromTransactionPool, TransactionIDs~ askTo(HttpClient httpClient)
+        RetrieveTransactionsFromTransactionPool of(Address address)$
+    }
+    class Status {
+        number total
+        StatusJSON toJSON()
+    }
+    class TransactionIDs {
+        TransactionIDsJSON toJSON()
+    }
+    class Transactions {
+        TransactionsJSON toJSON()
+    }
+    GetPeersResponse "array" --|> PeerStat
+    Transactions "array" --|> Tx
+    TransactionIDs "array" --|> Hex
+    ThorRequest <|.. GetTxPoolStatus
+    ThorRequest <|.. RetrieveConnectedPeers
+    ThorRequest <|.. RetrieveExpandedTransactionsFromTransactionPool
+    ThorRequest <|.. RetrieveTransactionsFromTransactionPool
+    GetTxPoolStatus "askTo" --> Status
+    RetrieveConnectedPeers "askTo" --> GetPeersResponse
+    RetrieveExpandedTransactionsFromTransactionPool "askTo" --> Transactions
+    RetrieveTransactionsFromTransactionPool "askTo" --> TransactionIDs
+    ThorError <-- "throws" ThorRequest

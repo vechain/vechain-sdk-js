@@ -1,8 +1,6 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
-import { Blake2b256 } from './hash';
-import { Hex } from './Hex';
-import { IllegalArgumentError, UnsupportedOperationError } from '../errors';
-import { type VeChainDataModel } from './VeChainDataModel';
+import { Blake2b256, Hex, type VeChainDataModel } from '@vcdm';
+import { IllegalArgumentError, UnsupportedOperationError } from '@errors';
 
 /**
  * Full Qualified Path

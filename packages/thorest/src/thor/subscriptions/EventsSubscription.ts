@@ -1,21 +1,53 @@
-import { type WebSocketClient, type WebSocketListener } from '../../ws';
-import { type SubscriptionEventResponse } from './SubscriptionEventResponse';
-import { type HttpPath, type HttpQuery } from '../../http';
+import { type WebSocketClient, type WebSocketListener } from '@ws';
+import { type SubscriptionEventResponse } from '@thor/subscriptions';
+import { type HttpPath, type HttpQuery } from '@http';
 import { type Address, type ThorId } from '@vechain/sdk-core';
+import { ThorError } from '@thor';
 
+/**
+ * Full-Qualified Path
+ */
+const FQP = 'packages/thorest/src/thor/subscriptions/EventsSubscription.ts!';
+
+/**
+ * [Retrieve a subscription to the events endpoint](http://localhost:8669/doc/stoplight-ui/#/paths/subscriptions-event/get)
+ *
+ * Retrieve a subscription to the events endpoint.
+ *
+ * The subscription will be closed when the client disconnects.
+ *
+ */
 class EventsSubscription
     implements WebSocketClient, WebSocketListener<SubscriptionEventResponse>
 {
-    static readonly PATH: HttpPath = { path: '/subscriptions/event' };
+    /**
+     * Represents the path for this specific API endpoint.
+     */
+    private static readonly PATH: HttpPath = { path: '/subscriptions/event' };
 
+    /**
+     * Represents the listeners for this specific API endpoint.
+     */
     private readonly listeners: Array<
         WebSocketListener<SubscriptionEventResponse>
     > = [];
 
+    /**
+     * Represents the query for this specific API endpoint.
+     */
     private readonly query: EventsSubscriptionQuery;
 
+    /**
+     * Represents the WebSocket client for this specific API endpoint.
+     */
     private readonly wsc: WebSocketClient;
 
+    /**
+     * Constructs an instance of the class with the specified WebSocket client and query.
+     *
+     * @param {WebSocketClient} wsc - The WebSocket client to initialize the instance with.
+     * @param {EventsSubscriptionQuery} query - The query to initialize the instance with.
+     */
     protected constructor(
         wsc: WebSocketClient,
         query: EventsSubscriptionQuery
@@ -24,15 +56,33 @@ class EventsSubscription
         this.query = query;
     }
 
+    /**
+     * Adds a listener to the WebSocket client.
+     *
+     * @param {WebSocketListener<SubscriptionEventResponse>} listener - The listener to add.
+     * @return {this} - The instance of the class.
+     */
     addListener(listener: WebSocketListener<SubscriptionEventResponse>): this {
         this.listeners.push(listener);
         return this;
     }
 
+    /**
+     * Creates a new instance of the class with the specified WebSocket client.
+     *
+     * @param {WebSocketClient} wsc - The WebSocket client to initialize the instance with.
+     * @return {EventsSubscription} - The instance of the class.
+     */
     static at(wsc: WebSocketClient): EventsSubscription {
         return new EventsSubscription(wsc, new EventsSubscriptionQuery());
     }
 
+    /**
+     * Creates a new instance of the class with the specified WebSocket client and query.
+     *
+     * @param {WebSocketClient} wsc - The WebSocket client to initialize the instance with.
+     * @param {EventsSubscriptionQuery} query - The query to initialize the instance with.
+     */
     atPos(pos?: ThorId): EventsSubscription {
         return new EventsSubscription(
             this.wsc,
@@ -47,46 +97,94 @@ class EventsSubscription
         );
     }
 
+    /**
+     * Gets the base URL for the WebSocket client.
+     *
+     * @return {string} - The base URL for the WebSocket client.
+     */
     get baseURL(): string {
         return this.wsc.baseURL;
     }
 
+    /**
+     * Closes the WebSocket client.
+     *
+     * @return {this} - The instance of the class.
+     */
     close(): this {
         this.wsc.close();
         return this;
     }
 
+    /**
+     * Handles the close event.
+     *
+     * @param {Event} event - The event to handle.
+     */
     onClose(event: Event): void {
         this.listeners.forEach((listener) => {
             listener.onClose(event);
         });
     }
 
+    /**
+     * Handles the error event.
+     *
+     * @param {Event} event - The event to handle.
+     */
     onError(event: Event): void {
         this.listeners.forEach((listener) => {
             listener.onError(event);
         });
     }
 
+    /**
+     * Handles the message event.
+     *
+     * @param {MessageEvent<unknown>} event - The event to handle.
+     *
+     * @throws {ThorError} - If the JSON is invalid.
+     */
     onMessage(event: MessageEvent<unknown>): void {
         const json = JSON.parse(
             event.data as string
         ) as SubscriptionEventResponse;
-        const message = new MessageEvent<SubscriptionEventResponse>(
-            event.type,
-            { data: json }
-        );
+        let message;
+        try {
+            message = new MessageEvent<SubscriptionEventResponse>(event.type, {
+                data: json
+            });
+        } catch (error) {
+            throw new ThorError(
+                `${FQP}onMessage(event: MessageEvent<unknown>): void`,
+                'Invalid JSON.',
+                {
+                    body: json
+                },
+                error instanceof Error ? error : undefined
+            );
+        }
         this.listeners.forEach((listener) => {
             listener.onMessage(message);
         });
     }
 
+    /**
+     * Handles the open event.
+     *
+     * @param {Event} event - The event to handle.
+     */
     onOpen(event: Event): void {
         this.listeners.forEach((listener) => {
             listener.onOpen(event);
         });
     }
 
+    /**
+     * Opens the WebSocket client.
+     *
+     * @return {this} - The instance of the class.
+     */
     open(): this {
         this.wsc
             .addListener(this)
@@ -94,6 +192,12 @@ class EventsSubscription
         return this;
     }
 
+    /**
+     * Removes a listener from the WebSocket client.
+     *
+     * @param {WebSocketListener<SubscriptionEventResponse>} listener - The listener to remove.
+     * @return {this} - The instance of the class.
+     */
     removeListener(
         listener: WebSocketListener<SubscriptionEventResponse>
     ): this {
@@ -101,6 +205,12 @@ class EventsSubscription
         return this;
     }
 
+    /**
+     * Creates a new instance of the class with the specified contract address.
+     *
+     * @param {Address} contractAddress - The contract address to initialize the instance with.
+     * @return {EventsSubscription} - The instance of the class.
+     */
     withContractAddress(contractAddress?: Address): EventsSubscription {
         return new EventsSubscription(
             this.wsc,
@@ -115,6 +225,15 @@ class EventsSubscription
         );
     }
 
+    /**
+     * Creates a new instance of the class with the specified filters.
+     *
+     * @param {ThorId} t0 - The filter for the 1st parameter.
+     * @param {ThorId} t1 - The filter for the 2nd parameter.
+     * @param {ThorId} t2 - The filter for the 3rd parameter.
+     * @param {ThorId} t3 - The filter for the 4th parameter.
+     * @return {EventsSubscription} - The instance of the class.
+     */
     withFilters(
         t0?: ThorId,
         t1?: ThorId,
@@ -134,6 +253,7 @@ class EventsSubscription
         );
     }
 }
+
 /**
  * A subscription to events emitted by smart contracts on the VeChain blockchain.
  *
@@ -170,6 +290,16 @@ class EventsSubscriptionQuery implements HttpQuery {
      */
     readonly t3?: ThorId;
 
+    /**
+     * Constructs an instance of the class with the specified filters.
+     *
+     * @param {Address} addr - The address of the contract that emits the event.
+     * @param {ThorId} pos - A saved block ID for resuming the subscription. If omitted, the best block ID is assumed.
+     * @param {ThorId} t0 - The keccak256 hash representing the event signature
+     * @param {ThorId} t1 - The filter for the 1st parameter in the event
+     * @param {ThorId} t2 - The filter for the 2nd parameter in the event
+     * @param {ThorId} t3 - The filter for the 3rd parameter in the event
+     */
     constructor(
         addr?: Address,
         pos?: ThorId,
@@ -186,6 +316,11 @@ class EventsSubscriptionQuery implements HttpQuery {
         this.t3 = t3;
     }
 
+    /**
+     * Gets the query for the events subscription.
+     *
+     * @return {string} - The query for the events subscription.
+     */
     get query(): string {
         let query = '';
         if (this.addr !== undefined) {

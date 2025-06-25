@@ -1,15 +1,12 @@
 import { describe, expect, test } from '@jest/globals';
 import { type AbiEvent, type AbiFunction, parseAbiParameters } from 'viem';
+import { ABI, ABIEvent, ABIFunction, Hex } from '@vcdm';
 import {
-    ABI,
-    ABIEvent,
-    ABIFunction,
     AbiConstructorNotFoundError,
-    Hex,
     IllegalArgumentError,
     InvalidAbiDecodingTypeError,
     InvalidAbiEncodingTypeError
-} from '../../../src';
+} from '@errors';
 import {
     encodedDecodedInvalidValues,
     encodedDecodedValues,

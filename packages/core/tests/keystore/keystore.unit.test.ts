@@ -1,15 +1,13 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
+import { Address, HexUInt } from '@vcdm';
 import {
-    Address,
-    HexUInt,
-    keystore,
-    Secp256k1,
-    type Keystore,
     IllegalArgumentError,
     InvalidPrivateKeyError,
     InvalidKeystoreError,
     InvalidPasswordError
-} from '../../src';
+} from '@errors';
+import { Secp256k1 } from '@secp256k1';
+import { type Keystore, keystore } from '@keystore';
 import { encryptionPassword } from './fixture';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 

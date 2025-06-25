@@ -1,8 +1,10 @@
 import {
     assertFixedHexBlobKindBuffer,
-    assertFixedHexBlobKindData
-} from '../../helpers';
-import { type BufferOutput, type DataOutput, type RLPInput } from '../../types';
+    assertFixedHexBlobKindData,
+    type BufferOutput,
+    type DataOutput,
+    type RLPInput
+} from '@vcdm';
 import { HexBlobKind } from './HexBlobKind';
 
 /**

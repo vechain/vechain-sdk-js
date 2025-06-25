@@ -1,8 +1,21 @@
-import { BlockId, Hex, UInt } from '@vechain/sdk-core';
-
-import { NetAddr } from '@vechain/sdk-core/src/vcdm/NetAddr';
+import {
+    Hex,
+    HexUInt32,
+    IllegalArgumentError,
+    NetAddr,
+    UInt
+} from '@vechain/sdk-core';
+import { type PeerStatJSON } from '@thor';
 
 /**
+ * Full-Qualified Path
+ */
+
+const FQP = 'packages/thorest/src/thor/node/PeerStat.ts!';
+
+/**
+ * [PeerStats](http://localhost:8669/doc/stoplight-ui/#/schemas/PeerStats)
+ *
  * Represents statistics for a peer in the network
  */
 class PeerStat {
@@ -10,10 +23,10 @@ class PeerStat {
     readonly name: string;
 
     /** The ID of the best block known to the peer */
-    readonly bestBlockID: BlockId;
+    readonly bestBlockID: Hex;
 
     /** The total score of the peer */
-    readonly totalScore: UInt;
+    readonly totalScore: number;
 
     /** The unique identifier of the peer in hexadecimal format */
     readonly peerID: Hex;
@@ -25,20 +38,31 @@ class PeerStat {
     readonly inbound: boolean;
 
     /** The duration of the peer connection */
-    readonly duration: UInt;
+    readonly duration: number;
 
     /**
-     * Creates a new PeerStat instance
-     * @param json - The JSON object containing peer statistics
+     * Constructs a new instance of the class using the given PeerStatJSON object.
+     *
+     * @param {PeerStatJSON} json - The JSON object containing the peer's statistics and details.
+     * @throws {IllegalArgumentError} If there is a problem parsing the provided JSON object.
      */
     constructor(json: PeerStatJSON) {
-        this.name = json.name;
-        this.bestBlockID = BlockId.of(json.bestBlockID);
-        this.totalScore = UInt.of(json.totalScore);
-        this.peerID = Hex.of(json.peerID);
-        this.netAddr = NetAddr.of(json.netAddr);
-        this.inbound = json.inbound;
-        this.duration = UInt.of(json.duration);
+        try {
+            this.name = json.name;
+            this.bestBlockID = HexUInt32.of(json.bestBlockID);
+            this.totalScore = UInt.of(json.totalScore).valueOf();
+            this.peerID = Hex.of(json.peerID);
+            this.netAddr = NetAddr.of(json.netAddr);
+            this.inbound = json.inbound;
+            this.duration = UInt.of(json.duration).valueOf();
+        } catch (error) {
+            throw new IllegalArgumentError(
+                `${FQP}constructor(json: PeerStatJSON)`,
+                'Bad parse',
+                { json },
+                error instanceof Error ? error : undefined
+            );
+        }
     }
 
     /**
@@ -49,39 +73,13 @@ class PeerStat {
         return {
             name: this.name,
             bestBlockID: this.bestBlockID.toString(),
-            totalScore: this.totalScore.valueOf(),
+            totalScore: this.totalScore,
             peerID: this.peerID.toString(),
             netAddr: this.netAddr.toString(),
             inbound: this.inbound,
-            duration: this.duration.valueOf()
+            duration: this.duration
         };
     }
 }
 
-/**
- * Interface representing the JSON structure of peer statistics
- */
-interface PeerStatJSON {
-    /** The name identifier of the peer */
-    name: string;
-
-    /** The ID of the best block known to the peer as a string */
-    bestBlockID: string;
-
-    /** The total score of the peer as a number */
-    totalScore: number;
-
-    /** The peer ID in string format */
-    peerID: string;
-
-    /** The network address as a string */
-    netAddr: string;
-
-    /** Indicates whether the peer connection is inbound */
-    inbound: boolean;
-
-    /** The duration of the peer connection as a number */
-    duration: number;
-}
-
-export { PeerStat, type PeerStatJSON };
+export { PeerStat };

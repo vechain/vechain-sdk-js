@@ -1,81 +1,50 @@
-import { Clause, type ClauseJSON } from './Clause';
-import { TxMeta, type TxMetaJSON } from './TxMeta';
-import { Address, BlockId, Gas, Nonce, TxId, UInt } from '@vechain/sdk-core';
+import { IllegalArgumentError } from '@vechain/sdk-core';
+import { type GetTxResponseJSON, TxMeta } from '@thor';
+import { Tx } from '@thor/model/Tx';
 
-class GetTxResponse {
-    readonly id: TxId;
-    readonly origin: Address;
-    readonly delegator: Address | null;
-    readonly size: UInt;
-    readonly chainTag: UInt;
-    readonly blockRef: BlockId;
-    readonly expiration: UInt;
-    readonly clauses: Clause[];
-    readonly gasPriceCoef: UInt;
-    readonly gas: Gas;
-    readonly dependsOn?: TxId | null;
-    readonly nonce: Nonce;
-    readonly meta: TxMeta;
+/**
+ * Full-Qualified Path
+ */
+const FQP = 'packages/thorest/src/thor/transactions/GetTxResponse.ts!';
 
+class GetTxResponse extends Tx {
+
+    /**
+     * Transaction metadata such as block number, block timestamp, etc.
+     */
+    meta: TxMeta;
+
+    /**
+     * Constructs an instance of the class using the provided JSON object.
+     *
+     * @param {GetTxResponseJSON} json - The JSON object containing raw transaction data and metadata.
+     * @throws {IllegalArgumentError} If the input JSON cannot be parsed correctly.
+     */
     constructor(json: GetTxResponseJSON) {
-        this.id = TxId.of(json.id);
-        this.origin = Address.of(json.origin);
-        this.delegator =
-            json.delegator !== null ? Address.of(json.delegator) : null;
-        this.size = UInt.of(json.size);
-        this.chainTag = UInt.of(json.chainTag);
-        this.blockRef = BlockId.of(json.blockRef);
-        this.expiration = UInt.of(json.expiration);
-        this.clauses = json.clauses.map((clauseJSON: ClauseJSON) => {
-            return new Clause(clauseJSON);
-        });
-        this.gasPriceCoef = UInt.of(json.gasPriceCoef);
-        this.gas = Gas.of(json.gas);
-        this.dependsOn =
-            json.dependsOn !== undefined && json.dependsOn !== null
-                ? TxId.of(json.dependsOn)
-                : undefined;
-        this.nonce = Nonce.of(json.nonce);
-        this.meta = new TxMeta(json.meta);
+        try {
+            super(json);
+            this.meta = new TxMeta(json.meta);
+        } catch (error) {
+            throw new IllegalArgumentError(
+                `${FQP}constructor(json: GetTxResponseJSON)`,
+                'Bad parse',
+                { json },
+                error instanceof Error ? error : undefined
+            );
+        }
     }
 
+    /**
+     * Converts the current transaction object to its JSON representation.
+     *
+     * @return {GetTxResponseJSON} The JSON representation of the transaction object.
+     */
     toJSON(): GetTxResponseJSON {
         return {
-            id: this.id.toString(),
-            origin: this.origin.toString(),
-            delegator:
-                this.delegator != null ? this.delegator.toString() : null,
-            size: this.size.valueOf(),
-            chainTag: this.chainTag.valueOf(),
-            blockRef: this.blockRef.toString(),
-            expiration: this.expiration.valueOf(),
-            clauses: this.clauses?.map((clause) => clause.toJSON()),
-            gasPriceCoef: this.gasPriceCoef.valueOf(),
-            gas: this.gas.valueOf(),
-            dependsOn:
-                this.dependsOn !== undefined && this.dependsOn !== null
-                    ? this.dependsOn.toString()
-                    : undefined,
-            nonce: this.nonce.toString(),
+            ...super.toJSON(),
             meta: this.meta.toJSON()
         } satisfies GetTxResponseJSON;
     }
 }
 
-interface GetTxResponseJSON {
-    id: string;
-    origin: string;
-    delegator: string | null; // The end point at https://mainnet.vechain.org/doc/stoplight-ui/#/schemas/GetTxResponse specifically returns `null`.
-    size: number;
-    chainTag: number;
-    blockRef: string;
-    expiration: number;
-    clauses: ClauseJSON[];
-    gasPriceCoef: number;
-    gas: number;
-    dependsOn?: string | null;
-    nonce: string;
-    meta: TxMetaJSON;
-}
-
-export { GetTxResponse, type GetTxResponseJSON };
+export { GetTxResponse };

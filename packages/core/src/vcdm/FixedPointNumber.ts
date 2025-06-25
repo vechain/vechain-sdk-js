@@ -1,6 +1,5 @@
-import { IllegalArgumentError, UnsupportedOperationError } from '../errors';
-import { Txt } from './Txt';
-import { type VeChainDataModel } from './VeChainDataModel';
+import { IllegalArgumentError, UnsupportedOperationError } from '@errors';
+import { Txt, type VeChainDataModel } from '@vcdm';
 
 /**
  * Full Qualified Path
@@ -224,7 +223,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * -1, 0, or 1 if this instance is less than, equal to, or greater
      * than the specified instance, respectively.
      *
-     * @remarks This method uses internally {@link compareTo} wrapping the {@link InvalidOperation} exception
+     * @remarks This method uses internally {@link compareTo} wrapping the {@link UnsupportedOperationError} exception
      * when comparing between {@link NaN} values to behave according the
      * [[bignumber.js comparedTo](https://mikemcl.github.io/bignumber.js/#cmp)] rules.
      */
@@ -257,25 +256,22 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      */
     public div(that: FixedPointNumber): FixedPointNumber {
         if (this.isNaN() || that.isNaN()) return FixedPointNumber.NaN;
-        if (this.isNegativeInfinite())
-            return that.isInfinite()
-                ? FixedPointNumber.NaN
-                : that.isPositive()
-                  ? FixedPointNumber.NEGATIVE_INFINITY
-                  : FixedPointNumber.POSITIVE_INFINITY;
-        if (this.isPositiveInfinite())
-            return that.isInfinite()
-                ? FixedPointNumber.NaN
-                : that.isPositive()
-                  ? FixedPointNumber.POSITIVE_INFINITY
-                  : FixedPointNumber.NEGATIVE_INFINITY;
+        if (this.isNegativeInfinite()) {
+            if (that.isInfinite()) return FixedPointNumber.NaN;
+            if (that.isPositive()) return FixedPointNumber.NEGATIVE_INFINITY;
+            return FixedPointNumber.POSITIVE_INFINITY;
+        }
+        if (this.isPositiveInfinite()) {
+            if (that.isInfinite()) return FixedPointNumber.NaN;
+            if (that.isPositive()) return FixedPointNumber.POSITIVE_INFINITY;
+            return FixedPointNumber.NEGATIVE_INFINITY;
+        }
         if (that.isInfinite()) return FixedPointNumber.ZERO;
-        if (that.isZero())
-            return this.isZero()
-                ? FixedPointNumber.NaN
-                : this.isNegative()
-                  ? FixedPointNumber.NEGATIVE_INFINITY
-                  : FixedPointNumber.POSITIVE_INFINITY;
+        if (that.isZero()) {
+            if (this.isZero()) return FixedPointNumber.NaN;
+            if (this.isNegative()) return FixedPointNumber.NEGATIVE_INFINITY;
+            return FixedPointNumber.POSITIVE_INFINITY;
+        }
         const fd = this.maxFractionalDigits(that, this.fractionalDigits); // Max common fractional decimals.
         return new FixedPointNumber(
             fd,
@@ -402,25 +398,22 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      */
     public idiv(that: FixedPointNumber): FixedPointNumber {
         if (this.isNaN() || that.isNaN()) return FixedPointNumber.NaN;
-        if (this.isNegativeInfinite())
-            return that.isInfinite()
-                ? FixedPointNumber.NaN
-                : that.isPositive()
-                  ? FixedPointNumber.NEGATIVE_INFINITY
-                  : FixedPointNumber.POSITIVE_INFINITY;
-        if (this.isPositiveInfinite())
-            return that.isInfinite()
-                ? FixedPointNumber.NaN
-                : that.isPositive()
-                  ? FixedPointNumber.POSITIVE_INFINITY
-                  : FixedPointNumber.NEGATIVE_INFINITY;
+        if (this.isNegativeInfinite()) {
+            if (that.isInfinite()) return FixedPointNumber.NaN;
+            if (that.isPositive()) return FixedPointNumber.NEGATIVE_INFINITY;
+            return FixedPointNumber.POSITIVE_INFINITY;
+        }
+        if (this.isPositiveInfinite()) {
+            if (that.isInfinite()) return FixedPointNumber.NaN;
+            if (that.isPositive()) return FixedPointNumber.POSITIVE_INFINITY;
+            return FixedPointNumber.NEGATIVE_INFINITY;
+        }
         if (that.isInfinite()) return FixedPointNumber.ZERO;
-        if (that.isZero())
-            return this.isZero()
-                ? FixedPointNumber.NaN
-                : this.isNegative()
-                  ? FixedPointNumber.NEGATIVE_INFINITY
-                  : FixedPointNumber.POSITIVE_INFINITY;
+        if (that.isZero()) {
+            if (this.isZero()) return FixedPointNumber.NaN;
+            if (this.isNegative()) return FixedPointNumber.NEGATIVE_INFINITY;
+            return FixedPointNumber.POSITIVE_INFINITY;
+        }
         const fd = this.maxFractionalDigits(that, this.fractionalDigits); // Max common fractional decimals.
         return new FixedPointNumber(
             fd,
@@ -653,13 +646,13 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
      * If the maximum fixed digits value is less than `minFixedDigits`, return `minFixedDigits`.
      *
      * @param {FixedPointNumber} that to evaluate if `that` has the maximum fixed digits value.
-     * @param {bigint} minFixedDigits Min value of returned value, {@link FixedPointNumber.DEFAULT_FRACTIONAL_DECIMALS} by default.
+     * @param {bigint} minFixedDigits Min value of returned value.
      *
      * @return the greater fixed digits value among `this`, `that` and `minFixedDigits`.
      */
     private maxFractionalDigits(
         that: FixedPointNumber,
-        minFixedDigits: bigint = FixedPointNumber.DEFAULT_FRACTIONAL_DECIMALS
+        minFixedDigits: bigint
     ): bigint {
         const fd =
             this.fractionalDigits < that.fractionalDigits
@@ -963,7 +956,7 @@ class FixedPointNumber implements VeChainDataModel<FixedPointNumber> {
                 this.fractionalDigits,
                 FixedPointNumber.sqr(this.scaledValue, this.fractionalDigits)
             );
-        } catch (e) {
+        } catch {
             return FixedPointNumber.NaN;
         }
     }
