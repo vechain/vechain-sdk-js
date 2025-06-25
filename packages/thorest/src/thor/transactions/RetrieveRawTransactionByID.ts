@@ -1,4 +1,4 @@
-import { type Hex, HexUInt32 } from '@vechain/sdk-core';
+import { type Hex, HexUInt32, IllegalArgumentError } from '@vechain/sdk-core';
 import { type HttpClient } from '@http';
 import { RetrieveTransactionQuery } from '@thor/transactions/RetrieveTransactionQuery';
 import { RetrieveTransactionPath } from '@thor/transactions/RetrieveTransactionPath';
@@ -97,7 +97,7 @@ class RetrieveRawTransactionByID
      *
      * @param {Hex} txId - The hexadecimal transaction ID used to retrieve the raw transaction.
      * @return {RetrieveRawTransactionByID} An instance of RetrieveRawTransactionByID created using the given transaction ID.
-     * @throws {ThorError} If the transaction ID is invalid or an error occurs during processing.
+     * @throws {IllegalArgumentError} If the transaction ID is invalid or an error occurs during processing.
      */
     static of(txId: Hex): RetrieveRawTransactionByID {
         try {
@@ -106,7 +106,7 @@ class RetrieveRawTransactionByID
                 new Query(undefined, false)
             );
         } catch (error) {
-            throw new ThorError(
+            throw new IllegalArgumentError(
                 `${FQP}of(txId: Hex): RetrieveRawTransactionByID`,
                 'Invalid transaction ID.',
                 {
