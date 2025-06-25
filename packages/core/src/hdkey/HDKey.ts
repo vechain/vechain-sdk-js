@@ -61,7 +61,7 @@ class HDKey extends s_bip32.HDKey {
      *
      * @throws {IllegalArgumentError} If `words` or `path` are invalid.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audit method, depends on
      * * [s_bip32.HDKey.derive](https://github.com/paulmillr/scure-bip32);
      * * [s_bip32.HDKey.fromMasterSeed](https://github.com/paulmillr/scure-bip32);
      * * [s_bip39.mnemonicToSeedSync](https://github.com/paulmillr/scure-bip39).
@@ -124,7 +124,6 @@ class HDKey extends s_bip32.HDKey {
                 Uint8Array.of(0),
                 privateKey
             );
-            privateKey.fill(0); // Clear the private key from memory.
             const checksum = Sha256.of(Sha256.of(header).bytes).bytes.subarray(
                 0,
                 4
@@ -141,9 +140,7 @@ class HDKey extends s_bip32.HDKey {
                 );
             }
         }
-
         // We reach this case if privateKey length is not exactly 32 bytes.
-        privateKey.fill(0); // Clear the private key from memory, albeit it is invalid.
         throw new IllegalArgumentError(
             `${FQP}HDNode.fromPrivateKey(privateKey: Uint8Array, chainCode: Uint8Array): HDKey`,
             'Invalid private key path given as input. Length must be exactly 32 bytes.'
@@ -162,7 +159,7 @@ class HDKey extends s_bip32.HDKey {
      *
      * @throws {IllegalArgumentError} if the `publicKey` is invalid.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audit method, depends on
      * * [base58.encode](https://github.com/paulmillr/scure-base);
      * * {@link Secp256k1.compressPublicKey};
      * * {@link Sha256};
@@ -201,31 +198,6 @@ class HDKey extends s_bip32.HDKey {
             `${FQP}HDNode.fromPublicKey(publicKey: Uint8Array, chainCode: Uint8Array): HDKey)`,
             'Invalid chain code given as input. Length must be exactly 32 bytes.',
             { chainCode }
-        );
-    }
-
-    /**
-     * Checks if derivation path single component is valid
-     *
-     * @param component - Derivation path single component to check
-     * @param index - Derivation path single component index
-     *
-     * @returns `true`` if derivation path single component is valid, otherwise `false`.
-     *
-     */
-    private static isDerivationPathComponentValid(
-        component: string,
-        index: number
-    ): boolean {
-        // Zero component can be "m" or "number" or "number'", other components can be only "number" or "number'"
-        return (
-            // m
-            (index === 0 ? component === 'm' : false) ||
-            // "number"
-            FixedPointNumber.isNaturalExpression(component) ||
-            // "number'"
-            (FixedPointNumber.isNaturalExpression(component.slice(0, -1)) &&
-                component.endsWith("'"))
         );
     }
 
