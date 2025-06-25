@@ -6,7 +6,7 @@ on:
 jobs:
     build:
         name: Build & Lint
-        runs-on: macos-13
+        runs-on: ubuntu-latest
         strategy:
             fail-fast: false
             matrix:
