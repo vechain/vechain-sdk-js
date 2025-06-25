@@ -13,7 +13,7 @@ class SimpleHttpClient implements HttpClient {
     /**
      * Represent the default timeout duration for network requests in milliseconds.
      */
-    public static readonly DEFAULT_TIMEOUT = 10000;
+    public static readonly DEFAULT_TIMEOUT = 5000;
 
     /**
      * Return the root URL for the API endpoints.
