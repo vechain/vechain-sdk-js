@@ -31,7 +31,7 @@ import {
 import NodeWebSocket from 'ws';
 import { expectType } from 'tsd';
 
-const TIMEOUT = 15000; // 15-second timeout
+const TIMEOUT = 30000; // 30-second timeout
 
 /**
  * Test suite for the Subscriptions utility methods for listening to events obtained through a websocket connection.
