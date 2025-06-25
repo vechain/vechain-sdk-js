@@ -4,7 +4,8 @@ import {
     RPC_METHODS,
     RPCMethodsMap,
     THOR_SOLO_URL,
-    ThorClient
+    ThorClient,
+    type SimpleHttpClient
 } from '../../../../../src';
 
 /**
@@ -17,13 +18,24 @@ describe('RPC Mapper - evm_mine method tests', () => {
      * Thor client instance
      */
     let thorClient: ThorClient;
+    let mockHttpClient: jest.Mocked<SimpleHttpClient>;
 
     /**
      * Init thor client before each test
      */
     beforeEach(() => {
-        // Init thor client
-        thorClient = ThorClient.at(THOR_SOLO_URL);
+        // Create a mock HTTP client
+        mockHttpClient = {
+            baseURL: THOR_SOLO_URL,
+            headers: new Headers(),
+            timeout: 10000,
+            get: jest.fn(),
+            post: jest.fn(),
+            http: jest.fn()
+        } as unknown as jest.Mocked<SimpleHttpClient>;
+
+        // Create thor client with mock HTTP client
+        thorClient = new ThorClient(mockHttpClient);
     });
 
     /**
@@ -34,11 +46,10 @@ describe('RPC Mapper - evm_mine method tests', () => {
          * Test case that mocks an error thrown by the getBestBlock method
          */
         test('Should throw `JSONRPCInternalError` if an error occurs while retrieving the block number', async () => {
-            // Mock the getBestBlockCompressed method to throw an error
-            jest.spyOn(
-                thorClient.blocks,
-                'getBestBlockCompressed'
-            ).mockRejectedValue(new Error('Connection failed'));
+            // Mock the HTTP client to throw an error
+            mockHttpClient.http.mockRejectedValue(
+                new Error('Connection failed')
+            );
 
             await expect(
                 RPCMethodsMap(thorClient)[RPC_METHODS.evm_mine]([])
@@ -49,27 +60,22 @@ describe('RPC Mapper - evm_mine method tests', () => {
          * Test case that mocks an error thrown by the waitForBlockCompressed method
          */
         test('Should throw `JSONRPCInternalError` if an error occurs while waiting for the new block', async () => {
-            // Mock the waitForBlockCompressed method to return null
-            jest.spyOn(
-                thorClient.blocks,
-                'waitForBlockCompressed'
-            ).mockResolvedValue(null);
+            // Mock the HTTP client to return a block first, then throw an error
+            mockHttpClient.http
+                .mockResolvedValueOnce({ number: 1 }) // First call succeeds
+                .mockRejectedValueOnce(new Error('Connection failed')); // Second call fails
 
-            const newBlock = await RPCMethodsMap(thorClient)[
-                RPC_METHODS.evm_mine
-            ]([]);
-            expect(newBlock).toBeNull();
+            await expect(
+                RPCMethodsMap(thorClient)[RPC_METHODS.evm_mine]([])
+            ).rejects.toThrowError(JSONRPCInternalError);
         });
 
         /**
          * Should return null if the best block is null
          */
         test('Should return null if the best block is null', async () => {
-            // Mock the getBestBlock method to return null
-            jest.spyOn(
-                thorClient.blocks,
-                'getBestBlockExpanded'
-            ).mockResolvedValue(null);
+            // Mock the HTTP client to return null
+            mockHttpClient.http.mockResolvedValue(null);
 
             const newBlock = await RPCMethodsMap(thorClient)[
                 RPC_METHODS.evm_mine
