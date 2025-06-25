@@ -5,7 +5,7 @@ import {
     VET,
     Clause,
     HDKey,
-    networkInfo, Hex
+    networkInfo
 } from '@vechain/sdk-core';
 
 // Shared client instance for all examples
@@ -33,15 +33,15 @@ const baseFee = await thor.blocks.getBestBlockBaseFeePerGas();
 // 1. Derive account from mnemonic
 const mnemonic =
     'denial kitchen pet squirrel other broom bar gas better priority spoil cross';
-const hdKey = HDKey.fromMnemonic(mnemonic.split(' '));
-const privateKey = hdKey.privateKey;
-const address = Address.ofPublicKey(hdKey.publicKey).toString();
+const child = HDKey.fromMnemonic(mnemonic.split(' ')).deriveChild(0);
+const privateKey = child.privateKey;
+const address = Address.ofPublicKey(child.publicKey).toString();
 
 // 2. Create transaction clauses
 const clauses = [
     Clause.transferVET(
         Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'),
-        VET.of(10)
+        VET.of(10000)
     )
 ];
 
@@ -68,7 +68,7 @@ const txBody = await thor.transactions.buildTransactionBody(
 // 5. Sign transaction
 const txClass = Transaction.of(txBody);
 const txSigned = txClass.sign(privateKey);
-const encodedTx = Hex.of(txSigned.encoded).toString();
+const encodedTx = '0x' + Buffer.from(txSigned.encoded).toString('hex');
 
 // 6. Send transaction and wait for receipt
 const txId = (await thor.transactions.sendRawTransaction(encodedTx)).id;

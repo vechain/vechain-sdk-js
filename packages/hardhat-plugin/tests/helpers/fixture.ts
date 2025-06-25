@@ -99,8 +99,8 @@ const createWalletFromHardhatNetworkConfigPositiveCasesFixture = [
             }
         },
         expectedAddresses: [
-            '0x79193D354fEed00Bcc3Bc09921Bdd3339008f148',
-            '0x70E758F9320cC06b5a38f93aF24131A71f9CFd6e'
+            '0x783DE01F06b4F2a068A7b3Bb6ff3db821A08f8c1',
+            '0x2406180BCa83983d40191Febc6d939C62152B71b'
         ]
     },
     {
@@ -123,8 +123,8 @@ const createWalletFromHardhatNetworkConfigPositiveCasesFixture = [
             }
         },
         expectedAddresses: [
-            '0x79193D354fEed00Bcc3Bc09921Bdd3339008f148',
-            '0x70E758F9320cC06b5a38f93aF24131A71f9CFd6e'
+            '0x783DE01F06b4F2a068A7b3Bb6ff3db821A08f8c1',
+            '0x2406180BCa83983d40191Febc6d939C62152B71b'
         ]
     }
 ];

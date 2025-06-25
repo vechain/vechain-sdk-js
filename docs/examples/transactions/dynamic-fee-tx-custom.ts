@@ -1,20 +1,13 @@
-import {
-    Address,
-    Clause,
-    Transaction,
-    VET,
-    HDKey,
-    Hex
-} from '@vechain/sdk-core';
+import { Address, Clause, Transaction, VET, HDKey } from '@vechain/sdk-core';
 import { THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
 
 // Common setup code
 const thorClient = ThorClient.at(THOR_SOLO_URL);
 const mnemonic =
     'denial kitchen pet squirrel other broom bar gas better priority spoil cross';
-const hdKey = HDKey.fromMnemonic(mnemonic.split(' '));
-const privateKey = hdKey.privateKey;
-const address = Address.ofPublicKey(hdKey.publicKey).toString();
+const child = HDKey.fromMnemonic(mnemonic.split(' ')).deriveChild(0);
+const privateKey = child.privateKey;
+const address = Address.ofPublicKey(child.publicKey).toString();
 const clauses = [
     Clause.transferVET(
         Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'),
@@ -38,7 +31,7 @@ const txBody1 = await thorClient.transactions.buildTransactionBody(
 );
 const txClass1 = Transaction.of(txBody1);
 const txSigned1 = txClass1.sign(privateKey);
-const encodedTx1 = Hex.of(txSigned1.encoded).toString();
+const encodedTx1 = '0x' + Buffer.from(txSigned1.encoded).toString('hex');
 const txId1 = (await thorClient.transactions.sendRawTransaction(encodedTx1)).id;
 const receipt1 = await thorClient.transactions.waitForTransaction(txId1);
 console.log('Receipt:', receipt1);
@@ -57,7 +50,7 @@ const txBody2 = await thorClient.transactions.buildTransactionBody(
 );
 const txClass2 = Transaction.of(txBody2);
 const txSigned2 = txClass2.sign(privateKey);
-const encodedTx2 = Hex.of(txSigned2.encoded).toString();
+const encodedTx2 = '0x' + Buffer.from(txSigned2.encoded).toString('hex');
 const txId2 = (await thorClient.transactions.sendRawTransaction(encodedTx2)).id;
 const receipt2 = await thorClient.transactions.waitForTransaction(txId2);
 console.log('Receipt:', receipt2);
