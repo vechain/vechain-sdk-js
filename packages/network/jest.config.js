@@ -15,6 +15,8 @@ module.exports = {
     // Add cleanup options to prevent hanging
     forceExit: true,
     detectOpenHandles: true,
+    testTimeout: 120000,
+    setupTimeout: 120000,
     coveragePathIgnorePatterns: [
         "/dist/",
         "/tests/"
