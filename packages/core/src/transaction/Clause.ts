@@ -6,6 +6,7 @@ import {
     ABIContract,
     Address,
     FixedPointNumber,
+    Units,
     VET,
     type ABIFunction,
     type HexUInt,
@@ -255,7 +256,7 @@ class Clause implements TransactionClause {
     }
 
     /**
-     * Return a new clause to transfer a generic VIP180/ERC20 Token
+     * Return a new clause to transfer a generic ERC20 Token
      *
      * @param {Address} recipientAddress - The address of the recipient.
      * @param {Token} amount - The amount of token to be transferred.
@@ -267,12 +268,17 @@ class Clause implements TransactionClause {
         token: Token
     ): Clause {
         if (token.value >= 0) {
+            const tokenValueWei = Units.convertUnits(
+                FixedPointNumber.of(token.value),
+                token.units,
+                Units.wei
+            );
             return this.callFunction(
                 token.tokenAddress,
                 ABIContract.ofAbi(VIP180_ABI).getFunction(
                     Clause.TRANSFER_TOKEN_FUNCTION
                 ),
-                [recipientAddress.toString(), token.value],
+                [recipientAddress.toString(), tokenValueWei],
                 undefined,
                 { comment: `Transfer ${token.name}` }
             );
