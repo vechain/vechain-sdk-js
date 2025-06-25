@@ -20,14 +20,14 @@ services:
       - --api-addr=0.0.0.0:8669 # Enable remote connections
       - --api-cors=* # comma separated list of domains to accept cross-origin requests to API
       - --txpool-limit-per-account=256 # limit txpool size per account
-      - --cache=4096 # megabytes of ram allocated to trie nodes cache
+      - --cache=2048 # megabytes of ram allocated to trie nodes cache
       - --api-allowed-tracers=all
       - --verbosity=9
       - --persist
       - --api-enable-deprecated
       - --api-call-gas-limit=150000000 
       - --gas-limit=150000000
-      - --api-timeout=120000
+      - --api-timeout=240000
     healthcheck:
       # We run the health check using standard UNIX tools so we don't have to
       # install additional dependencies in the container.
