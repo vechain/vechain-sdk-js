@@ -60,6 +60,7 @@ describe('Subscriptions Solo network tests', () => {
         // Browser environment
         if (typeof WebSocket !== 'undefined') {
             const ws = new WebSocket(url);
+            let errorHandled = false;
 
             ws.onopen = (): void => {
                 if (handlers.onOpen !== undefined && handlers.onOpen !== null) {
@@ -76,9 +77,12 @@ describe('Subscriptions Solo network tests', () => {
             };
 
             ws.onerror = (event: Event): void => {
-                handlers.onError(
-                    new Error(`WebSocket error: ${String(event)}`)
-                );
+                if (!errorHandled) {
+                    errorHandled = true;
+                    handlers.onError(
+                        new Error(`WebSocket error: ${String(event)}`)
+                    );
+                }
             };
 
             return {
@@ -103,6 +107,7 @@ describe('Subscriptions Solo network tests', () => {
                 readyState: number;
                 close: () => void;
             };
+            let errorHandled = false;
 
             // Use addEventListener which is available in both browser and node implementations
             ws.addEventListener('open', () => {
@@ -130,9 +135,12 @@ describe('Subscriptions Solo network tests', () => {
             });
 
             ws.addEventListener('error', (event) => {
-                handlers.onError(
-                    new Error(`WebSocket error: ${String(event)}`)
-                );
+                if (!errorHandled) {
+                    errorHandled = true;
+                    handlers.onError(
+                        new Error(`WebSocket error: ${String(event)}`)
+                    );
+                }
             });
 
             return {
