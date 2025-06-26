@@ -273,7 +273,7 @@ class Clause implements TransactionClause {
                 token.units,
                 Units.wei
             );
-            return this.callFunction(
+            return Clause.callFunction(
                 token.tokenAddress,
                 ABIContract.ofAbi(VIP180_ABI).getFunction(
                     Clause.TRANSFER_TOKEN_FUNCTION
