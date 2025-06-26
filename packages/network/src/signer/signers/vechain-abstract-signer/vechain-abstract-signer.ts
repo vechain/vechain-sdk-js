@@ -429,31 +429,31 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         message: Record<string, unknown>,
         primaryType?: string
     ): Promise<string> {
-        const viemDomain: viemTypedDataDomain = {
-            chainId: undefined,
-            name: domain.name,
-            salt: domain.salt,
-            verifyingContract: domain.verifyingContract,
-            version: domain.version
-        };
-        // convert chainId
-        if (domain.chainId !== undefined) {
-            if (
-                typeof domain.chainId === 'string' ||
-                typeof domain.chainId === 'number'
-            ) {
-                viemDomain.chainId = BigInt(domain.chainId);
-            } else if (typeof domain.chainId === 'bigint') {
-                viemDomain.chainId = domain.chainId;
-            } else {
-                throw new InvalidDataType(
-                    'VeChainAbstractSigner.signTypedData',
-                    'Invalid chainId type.',
-                    { chainId: domain.chainId }
-                );
-            }
-        }
         try {
+            const viemDomain: viemTypedDataDomain = {
+                chainId: undefined,
+                name: domain.name,
+                salt: domain.salt,
+                verifyingContract: domain.verifyingContract,
+                version: domain.version
+            };
+            // convert chainId
+            if (domain.chainId !== undefined) {
+                if (
+                    typeof domain.chainId === 'string' ||
+                    typeof domain.chainId === 'number'
+                ) {
+                    viemDomain.chainId = BigInt(domain.chainId);
+                } else if (typeof domain.chainId === 'bigint') {
+                    viemDomain.chainId = domain.chainId;
+                } else {
+                    throw new InvalidDataType(
+                        'VeChainAbstractSigner.signTypedData',
+                        'Invalid chainId type.',
+                        { chainId: domain.chainId }
+                    );
+                }
+            }
             const payload = Hex.of(
                 hashTypedData({
                     domain: viemDomain,
