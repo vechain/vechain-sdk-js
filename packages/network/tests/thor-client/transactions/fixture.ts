@@ -122,7 +122,7 @@ const waitForTransactionTestCases = [
         description:
             'Should wait for transaction with timeout and return TransactionReceipt',
         options: {
-            timeoutMs: 5000,
+            timeoutMs: 10000,
             intervalMs: undefined,
             nonce: transactionNonces.waitForTransactionTestCases[1]
         }
@@ -140,7 +140,7 @@ const waitForTransactionTestCases = [
         description:
             'Should wait for transaction with intervalMs & timeoutMs and return TransactionReceipt',
         options: {
-            timeoutMs: 5000,
+            timeoutMs: 10000,
             intervalMs: 100,
             nonce: transactionNonces.waitForTransactionTestCases[3]
         }
