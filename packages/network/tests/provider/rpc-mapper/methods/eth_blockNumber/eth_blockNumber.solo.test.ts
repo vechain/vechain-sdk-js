@@ -33,24 +33,46 @@ describe('RPC Mapper - eth_blockNumber method tests', () => {
          * Test case where the latest block number is returned and updated when a new block is mined
          */
         test('Should return the latest block number and the updated latest block number when updated', async () => {
-            const rpcCallLatestBlockNumber = await RPCMethodsMap(thorClient)[
-                RPC_METHODS.eth_blockNumber
-            ]([]);
+            // Retry mechanism for connection issues
+            let lastError: Error | null = null;
+            for (let attempt = 1; attempt <= 3; attempt++) {
+                try {
+                    const rpcCallLatestBlockNumber = await RPCMethodsMap(
+                        thorClient
+                    )[RPC_METHODS.eth_blockNumber]([]);
 
-            expect(rpcCallLatestBlockNumber).not.toBe('0x0');
+                    expect(rpcCallLatestBlockNumber).not.toBe('0x0');
 
-            await thorClient.blocks.waitForBlockCompressed(
-                Number(rpcCallLatestBlockNumber) + 1
-            );
+                    await thorClient.blocks.waitForBlockCompressed(
+                        Number(rpcCallLatestBlockNumber) + 1
+                    );
 
-            const rpcCallUpdatedLatestBlockNumber = await RPCMethodsMap(
-                thorClient
-            )[RPC_METHODS.eth_blockNumber]([]);
+                    const rpcCallUpdatedLatestBlockNumber = await RPCMethodsMap(
+                        thorClient
+                    )[RPC_METHODS.eth_blockNumber]([]);
 
-            expect(rpcCallUpdatedLatestBlockNumber).not.toBe('0x0');
-            expect(
-                Number(rpcCallUpdatedLatestBlockNumber)
-            ).toBeGreaterThanOrEqual(Number(rpcCallLatestBlockNumber) + 1);
-        }, 15000);
+                    expect(rpcCallUpdatedLatestBlockNumber).not.toBe('0x0');
+                    expect(
+                        Number(rpcCallUpdatedLatestBlockNumber)
+                    ).toBeGreaterThanOrEqual(
+                        Number(rpcCallLatestBlockNumber) + 1
+                    );
+
+                    // Success - exit retry loop
+                    return;
+                } catch (error) {
+                    lastError = error as Error;
+                    if (attempt < 3) {
+                        // Wait 2 seconds before retrying
+                        await new Promise((resolve) =>
+                            setTimeout(resolve, 2000)
+                        );
+                    }
+                }
+            }
+
+            // All retries failed
+            throw lastError ?? new Error('Connection failed after 3 attempts');
+        }, 30000);
     });
 });

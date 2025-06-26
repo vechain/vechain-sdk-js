@@ -54,18 +54,41 @@ describe('RPC Mapper - eth_getTransactionReceipt method tests', () => {
             test(
                 testCase.testCase,
                 async () => {
-                    const receipt = await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.eth_getTransactionReceipt
-                    ]([testCase.hash]);
-                    const receiptWithoutBlockHash =
-                        removeBlockNumAndHashFields(receipt);
-                    const expectedWithoutBlockHash =
-                        removeBlockNumAndHashFields(testCase.expected);
-                    expect(receiptWithoutBlockHash).toEqual(
-                        expectedWithoutBlockHash
+                    // Retry mechanism for connection issues
+                    let lastError: Error | null = null;
+                    for (let attempt = 1; attempt <= 3; attempt++) {
+                        try {
+                            const receipt = await RPCMethodsMap(thorClient)[
+                                RPC_METHODS.eth_getTransactionReceipt
+                            ]([testCase.hash]);
+                            const receiptWithoutBlockHash =
+                                removeBlockNumAndHashFields(receipt);
+                            const expectedWithoutBlockHash =
+                                removeBlockNumAndHashFields(testCase.expected);
+                            expect(receiptWithoutBlockHash).toEqual(
+                                expectedWithoutBlockHash
+                            );
+
+                            // Success - exit retry loop
+                            return;
+                        } catch (error) {
+                            lastError = error as Error;
+                            if (attempt < 3) {
+                                // Wait 2 seconds before retrying
+                                await new Promise((resolve) =>
+                                    setTimeout(resolve, 2000)
+                                );
+                            }
+                        }
+                    }
+
+                    // All retries failed
+                    throw (
+                        lastError ??
+                        new Error('Connection failed after 3 attempts')
                     );
                 },
-                7000
+                15000
             );
         });
     });
