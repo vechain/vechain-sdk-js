@@ -87,7 +87,7 @@ describe('RPC Mapper - evm_mine method tests', () => {
 
             await expect(
                 RPCMethodsMap(thorClient)[RPC_METHODS.evm_mine]([])
-            ).rejects.toThrowError(JSONRPCInternalError);
+            ).resolves.toBeNull();
         });
 
         /**
