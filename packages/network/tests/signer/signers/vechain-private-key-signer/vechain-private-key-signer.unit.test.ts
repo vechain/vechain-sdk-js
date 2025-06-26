@@ -434,6 +434,17 @@ describe('VeChain base signer tests', () => {
                 Hex.of(eip712TestCases.valid.privateKey).bytes,
                 provider
             );
+            const expected = await new Wallet(
+                eip712TestCases.valid.privateKey
+            ).signTypedData(
+                {
+                    ...eip712TestCases.valid.domain,
+                    chainId:
+                        '0x00000000851caf3cfdb6e899cf5958bfb1ac3413d346d43539627e6be7ec1b4a'
+                },
+                eip712TestCases.valid.types,
+                eip712TestCases.valid.data
+            );
             const actual = await privateKeySigner.signTypedData(
                 {
                     ...eip712TestCases.valid.domain,
@@ -444,7 +455,7 @@ describe('VeChain base signer tests', () => {
                 eip712TestCases.valid.data,
                 eip712TestCases.valid.primaryType
             );
-            expect(Hex.isValid(actual)).toBe(true);
+            expect(Hex.of(actual).isEqual(Hex.of(expected))).toBe(true);
         });
     });
 });
