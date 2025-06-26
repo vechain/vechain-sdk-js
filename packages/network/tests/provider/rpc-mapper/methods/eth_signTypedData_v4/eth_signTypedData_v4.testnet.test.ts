@@ -144,7 +144,7 @@ describe('RPC Mapper - eth_signTypedData_v4 method tests', () => {
                         }
                     ]
                 })
-            ).rejects.toThrowError(JSONRPCInternalError);
+            ).rejects.toThrowError(JSONRPCInvalidParams);
         });
 
         /**
