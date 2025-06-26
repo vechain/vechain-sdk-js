@@ -8,10 +8,7 @@ import {
 } from '../../../../../src';
 import { getUnusedAccount } from '../../../../fixture';
 import { Hex, HexUInt, Secp256k1 } from '@vechain/sdk-core';
-import {
-    JSONRPCInternalError,
-    JSONRPCInvalidParams
-} from '@vechain/sdk-errors';
+import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
 import { eip712TestCases } from '../../../../signer/signers/vechain-private-key-signer/fixture-unit';
 
 /**
