@@ -439,11 +439,9 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         // convert chainId
         if (domain.chainId !== undefined) {
             if (
-                typeof domain.chainId === 'string' &&
-                domain.chainId.startsWith('0x')
+                typeof domain.chainId === 'string' ||
+                typeof domain.chainId === 'number'
             ) {
-                viemDomain.chainId = BigInt(domain.chainId);
-            } else if (typeof domain.chainId === 'number') {
                 viemDomain.chainId = BigInt(domain.chainId);
             } else if (typeof domain.chainId === 'bigint') {
                 viemDomain.chainId = domain.chainId;
