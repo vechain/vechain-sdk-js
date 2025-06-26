@@ -39,6 +39,26 @@ describe('RPC Mapper - evm_mine method tests', () => {
     });
 
     /**
+     * evm_mine RPC call tests - Positive cases
+     */
+    describe('evm_mine - Positive cases', () => {
+        /**
+         * Test case that verifies successful evm_mine call returns null
+         */
+        test('Should return null when evm_mine succeeds', async () => {
+            // Mock the HTTP client to return a block, then a different block (simulating mining)
+            mockHttpClient.http
+                .mockResolvedValueOnce({ number: 1 }) // First call returns block 1
+                .mockResolvedValueOnce({ number: 2 }); // Second call returns block 2 (new block mined)
+
+            const result = await RPCMethodsMap(thorClient)[
+                RPC_METHODS.evm_mine
+            ]([]);
+            expect(result).toBeNull();
+        });
+    });
+
+    /**
      * evm_mine RPC call tests - Negative cases
      */
     describe('evm_mine - Negative cases', () => {
@@ -71,16 +91,15 @@ describe('RPC Mapper - evm_mine method tests', () => {
         });
 
         /**
-         * Should return null if the best block is null
+         * Should throw JSONRPCInternalError if the best block is null
          */
-        test('Should return null if the best block is null', async () => {
-            // Mock the HTTP client to return null
+        test('Should throw JSONRPCInternalError if the best block is null', async () => {
+            // Mock the HTTP client to return null (no best block found)
             mockHttpClient.http.mockResolvedValue(null);
 
-            const newBlock = await RPCMethodsMap(thorClient)[
-                RPC_METHODS.evm_mine
-            ]([]);
-            expect(newBlock).toBeNull();
+            await expect(
+                RPCMethodsMap(thorClient)[RPC_METHODS.evm_mine]([])
+            ).rejects.toThrowError(JSONRPCInternalError);
         });
     });
 });

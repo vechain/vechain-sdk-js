@@ -20,6 +20,9 @@ jobs:
               with:
                   node-version: ${{ matrix.node }}
 
+            - name: Ulimit info
+              run: ulimit -a
+
             - name: Install & Patch packages
               run: yarn install
 
