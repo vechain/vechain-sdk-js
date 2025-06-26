@@ -19,6 +19,14 @@ import type { DeployParams } from './DeployParams';
 import type { TransactionClause } from './TransactionClause';
 
 /**
+ * Represents a contract clause, which includes the clause and the corresponding function ABI.
+ */
+interface ContractClause {
+    clause: TransactionClause;
+    functionAbi: ABIFunction;
+}
+
+/**
  * This class represent a transaction clause.
  *
  * @extends {TransactionClause}
@@ -222,11 +230,9 @@ class Clause implements TransactionClause {
     /**
      * Return a new clause to transfers the specified amount of VTHO
      *
-     * @param {Address} tokenAddress - The address of the VIP180 token.
      * @param {Address} recipientAddress - The address of the recipient.
      * @param {VTHO} amount - The amount of token to be transferred.
-     * @param {ClauseOptions} [clauseOptions] - Optional clause settings.
-     * @return {Clause} The clause to transfer VIP180 tokens as part of a transaction.
+     * @return {ContractClause} The contract clause to transfer VTHO tokens as part of a transaction.
      * @throws {InvalidDataType} Throws an error if the amount is not a positive integer.
      *
      * @see VTHO.transferTokenTo
@@ -234,18 +240,24 @@ class Clause implements TransactionClause {
     public static transferVTHOToken(
         recipientAddress: Address,
         amount: VTHO
-    ): Clause {
+    ): ContractClause {
         if (amount.value.isFinite() && amount.value.isPositive()) {
             const vthoAddress = Address.of(VTHO_ADDRESS);
-            return this.callFunction(
+            const functionAbi = ABIContract.ofAbi(VIP180_ABI).getFunction(
+                Clause.TRANSFER_TOKEN_FUNCTION
+            );
+            const clause = this.callFunction(
                 vthoAddress,
-                ABIContract.ofAbi(VIP180_ABI).getFunction(
-                    Clause.TRANSFER_TOKEN_FUNCTION
-                ),
+                functionAbi,
                 [recipientAddress.toString(), amount.wei],
                 undefined,
                 { comment: 'Transfer VTHO' }
             );
+
+            return {
+                clause,
+                functionAbi
+            };
         }
         throw new InvalidDataType(
             'Clause.transferVTHOToken',
@@ -316,4 +328,4 @@ class Clause implements TransactionClause {
     }
 }
 
-export { Clause };
+export { Clause, type ContractClause };

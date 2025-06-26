@@ -244,11 +244,15 @@ describe('Clause class tests', () => {
                 ClauseFixture.to,
                 VTHO.of(1, Units.wei)
             );
-            expect(actual).toEqual(expected);
+            expect(actual.clause).toEqual(expected);
+            expect(actual.functionAbi).toBeDefined();
+            expect(actual.functionAbi.stringSignature).toBe(
+                'transfer(address,uint256)'
+            );
         });
 
         test('Return Clause <- 100 wei VTHO', () => {
-            const expected = {
+            const expectedClause = {
                 to: Address.of(VTHO_ADDRESS).toString().toLowerCase(),
                 value: `0x0`,
                 data: `0xa9059cbb000000000000000000000000${ClauseFixture.to
@@ -263,11 +267,15 @@ describe('Clause class tests', () => {
                 ClauseFixture.to,
                 VTHO.of(0.1, Units.kwei)
             );
-            expect(actual).toEqual(expected);
+            expect(actual.clause).toEqual(expectedClause);
+            expect(actual.functionAbi).toBeDefined();
+            expect(actual.functionAbi.stringSignature).toBe(
+                'transfer(address,uint256)'
+            );
         });
 
         test('Return Clause <- 1 VTHO', () => {
-            const expected = {
+            const expectedClause = {
                 to: Address.of(VTHO_ADDRESS).toString().toLowerCase(),
                 value: `0x0`,
                 data: `0xa9059cbb000000000000000000000000${ClauseFixture.to
@@ -282,11 +290,15 @@ describe('Clause class tests', () => {
                 ClauseFixture.to,
                 VTHO.of(1)
             );
-            expect(actual).toEqual(expected);
+            expect(actual.clause).toEqual(expectedClause);
+            expect(actual.functionAbi).toBeDefined();
+            expect(actual.functionAbi.stringSignature).toBe(
+                'transfer(address,uint256)'
+            );
         });
 
         test('Return Clause <- 500000000 VTHO', () => {
-            const expected = {
+            const expectedClause = {
                 to: Address.of(VTHO_ADDRESS).toString().toLowerCase(),
                 value: `0x0`,
                 data: `0xa9059cbb000000000000000000000000${ClauseFixture.to
@@ -301,7 +313,11 @@ describe('Clause class tests', () => {
                 ClauseFixture.to,
                 VTHO.of(500000000n)
             );
-            expect(actual).toEqual(expected);
+            expect(actual.clause).toEqual(expectedClause);
+            expect(actual.functionAbi).toBeDefined();
+            expect(actual.functionAbi.stringSignature).toBe(
+                'transfer(address,uint256)'
+            );
         });
 
         test('Throw error <- negative amount VTHO', () => {
