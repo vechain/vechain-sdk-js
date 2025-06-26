@@ -25,6 +25,7 @@ import {
     type TypedDataParameter,
     type VeChainSigner
 } from '../types';
+import type { TypedDataDomain as viemTypedDataDomain } from 'viem';
 
 /**
  * Abstract VeChain signer.
@@ -428,10 +429,22 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         message: Record<string, unknown>,
         primaryType?: string
     ): Promise<string> {
+        // convert chainId if String and Hex to BigInt
+        if (typeof domain.chainId === 'string') {
+            domain.chainId = BigInt(domain.chainId.slice(2));
+        }
+        // convert TypedDataDomain to viemTypedDataDomain
+        const viemDomain: viemTypedDataDomain = {
+            chainId: domain.chainId,
+            name: domain.name,
+            salt: domain.salt,
+            verifyingContract: domain.verifyingContract,
+            version: domain.version
+        };
         try {
             const payload = Hex.of(
                 hashTypedData({
-                    domain,
+                    domain: viemDomain,
                     types,
                     primaryType: primaryType ?? this.deducePrimaryType(types), // Deduce the primary type if not provided
                     message
