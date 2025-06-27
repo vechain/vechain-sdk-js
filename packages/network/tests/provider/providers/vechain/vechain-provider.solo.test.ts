@@ -19,6 +19,7 @@ import {
     waitForMessage
 } from '../helpers';
 import { fail } from 'assert';
+import { retryOperation } from '../../../test-utils';
 
 /**
  *VeChain provider tests - Solo Network
@@ -62,10 +63,13 @@ describe('VeChain provider tests - solo', () => {
         ({ description, method, params, expected }) => {
             test(description, async () => {
                 // Call RPC function
-                const rpcCall = await provider.request({
-                    method,
-                    params
-                });
+                const rpcCall = await retryOperation(
+                    async () =>
+                        await provider.request({
+                            method,
+                            params
+                        })
+                );
 
                 // Compare the result with the expected value
                 expect(rpcCall).toStrictEqual(expected);
@@ -78,10 +82,13 @@ describe('VeChain provider tests - solo', () => {
      */
     test('Should be able to get the latest block number', async () => {
         // Call RPC function
-        const rpcCall = await provider.request({
-            method: 'eth_blockNumber',
-            params: []
-        });
+        const rpcCall = await retryOperation(
+            async () =>
+                await provider.request({
+                    method: 'eth_blockNumber',
+                    params: []
+                })
+        );
 
         // Compare the result with the expected value
         expect(rpcCall).not.toBe('0x0');
@@ -92,10 +99,13 @@ describe('VeChain provider tests - solo', () => {
      */
     test('Should be able to get to subscribe to the latest blocks', async () => {
         // Call RPC function
-        const subscriptionId = await provider.request({
-            method: 'eth_subscribe',
-            params: ['newHeads']
-        });
+        const subscriptionId = await retryOperation(
+            async () =>
+                await provider.request({
+                    method: 'eth_subscribe',
+                    params: ['newHeads']
+                })
+        );
 
         const messageReceived = new Promise((resolve) => {
             provider.on('message', (message) => {
@@ -120,10 +130,13 @@ describe('VeChain provider tests - solo', () => {
     test('Should be able to get to subscribe to the latest blocks and then unsubscribe', async () => {
         expect(provider.getPollInstance()).toBeUndefined();
         // Call RPC function
-        const subscriptionId = await provider.request({
-            method: 'eth_subscribe',
-            params: ['newHeads']
-        });
+        const subscriptionId = await retryOperation(
+            async () =>
+                await provider.request({
+                    method: 'eth_subscribe',
+                    params: ['newHeads']
+                })
+        );
 
         expect(provider.getPollInstance()).toBeDefined();
 
@@ -132,10 +145,13 @@ describe('VeChain provider tests - solo', () => {
             provider.subscriptionManager.newHeadsSubscription?.subscriptionId
         ).toBe(subscriptionId);
 
-        await provider.request({
-            method: 'eth_unsubscribe',
-            params: [subscriptionId]
-        });
+        await retryOperation(
+            async () =>
+                await provider.request({
+                    method: 'eth_unsubscribe',
+                    params: [subscriptionId]
+                })
+        );
 
         expect(provider.getPollInstance()).toBeUndefined();
 
@@ -190,10 +206,13 @@ describe('VeChain provider tests - solo', () => {
         };
 
         // Call RPC function to subscribe to logs
-        const rpcCall = await provider.request({
-            method: 'eth_subscribe',
-            params: ['logs', logsParams]
-        });
+        const rpcCall = await retryOperation(
+            async () =>
+                await provider.request({
+                    method: 'eth_subscribe',
+                    params: ['logs', logsParams]
+                })
+        );
         // Wait for the subscription to receive a message (log event)
         const messageReceived = waitForMessage(provider);
 
@@ -284,15 +303,21 @@ describe('VeChain provider tests - solo', () => {
                     topics: []
                 };
 
-                const erc20Subscription = await provider.request({
-                    method: 'eth_subscribe',
-                    params: ['logs', erc20logsParams]
-                });
+                const erc20Subscription = await retryOperation(
+                    async () =>
+                        await provider.request({
+                            method: 'eth_subscribe',
+                            params: ['logs', erc20logsParams]
+                        })
+                );
 
-                const erc721Subscription = await provider.request({
-                    method: 'eth_subscribe',
-                    params: ['logs', erc721logsParams]
-                });
+                const erc721Subscription = await retryOperation(
+                    async () =>
+                        await provider.request({
+                            method: 'eth_subscribe',
+                            params: ['logs', erc721logsParams]
+                        })
+                );
 
                 // Collect and assert log events
                 let results: SubscriptionEvent[] = [];

@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, test } from '@jest/globals';
 import { SOLO_GENESIS_ACCOUNTS } from '../../fixture';
 import { HexUInt, Transaction } from '@vechain/sdk-core';
 import { THOR_SOLO_URL, ThorClient } from '../../../src';
+import { retryOperation } from '../../test-utils';
 
 /**
  * ThorClient tests for dynamic fee transactions on solo network
@@ -30,12 +31,17 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
                 }
             ];
 
-            const latestBlock =
-                await thorSoloClient.blocks.getBestBlockCompressed();
+            const latestBlock = await retryOperation(
+                async () => await thorSoloClient.blocks.getBestBlockCompressed()
+            );
 
-            const gasResult = await thorSoloClient.gas.estimateGas(
-                clauses,
-                SOLO_GENESIS_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+            const gasResult = await retryOperation(
+                async () =>
+                    await thorSoloClient.gas.estimateGas(
+                        clauses,
+                        SOLO_GENESIS_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
+                            .address
+                    )
             );
 
             const transactionBody = {
@@ -60,14 +66,21 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
             );
             const signedEncodedTx = signedTx.encoded;
 
-            const send = await thorSoloClient.transactions.sendRawTransaction(
-                HexUInt.of(signedEncodedTx).toString()
+            const send = await retryOperation(
+                async () =>
+                    await thorSoloClient.transactions.sendRawTransaction(
+                        HexUInt.of(signedEncodedTx).toString()
+                    )
             );
             expect(send).toBeDefined();
             expect(send).toHaveProperty('id');
 
-            const receipt =
-                await thorSoloClient.transactions.waitForTransaction(send.id);
+            const receipt = await retryOperation(
+                async () =>
+                    await thorSoloClient.transactions.waitForTransaction(
+                        send.id
+                    )
+            );
             expect(receipt).toBeDefined();
             expect(receipt?.reverted).toBe(false);
 
@@ -75,8 +88,11 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
             const blockID = receipt?.meta.blockID;
             expect(blockID).toBeDefined(); // This already guarantees it's not undefined
 
-            const expandedBlock = await thorSoloClient.blocks.getBlockExpanded(
-                blockID as string
+            const expandedBlock = await retryOperation(
+                async () =>
+                    await thorSoloClient.blocks.getBlockExpanded(
+                        blockID as string
+                    )
             );
             expect(expandedBlock).not.toBeNull();
             expect(Array.isArray(expandedBlock?.transactions)).toBe(true);
