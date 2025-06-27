@@ -6,6 +6,7 @@ import {
     type ExtractAbiFunction,
     type ExtractAbiFunctionNames
 } from 'abitype';
+import { type ContractClause } from '@vechain/sdk-core';
 import { type GetEventArgs } from 'viem';
 import type {
     EventDisplayOrder,
@@ -14,7 +15,6 @@ import type {
     Range
 } from '../../logs';
 import type { SendTransactionResult } from '../../transactions/types';
-import type { ContractClause } from '../types';
 import { type ContractFilter } from './contract-filter';
 
 /**

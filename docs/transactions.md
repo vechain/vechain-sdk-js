@@ -77,7 +77,7 @@ const clauses: TransactionClause[] = [
     Clause.transferVTHOToken(
         Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'),
         VTHO.of(10000)
-    ) as TransactionClause
+    ).clause as TransactionClause
 ];
 
 // 2 - Calculate intrinsic gas of both clauses
