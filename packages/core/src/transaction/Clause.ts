@@ -211,8 +211,8 @@ class Clause implements TransactionClause {
         recipientAddress: Address,
         tokenId: HexUInt,
         clauseOptions?: ClauseOptions
-    ): Clause {
-        return Clause.callFunction(
+    ): ContractClause {
+        const clause = Clause.callFunction(
             contractAddress,
             ABIContract.ofAbi(ERC721_ABI).getFunction(
                 Clause.TRANSFER_NFT_FUNCTION
@@ -225,6 +225,13 @@ class Clause implements TransactionClause {
             undefined,
             clauseOptions
         );
+
+        return {
+            clause,
+            functionAbi: ABIContract.ofAbi(ERC721_ABI).getFunction(
+                Clause.TRANSFER_NFT_FUNCTION
+            )
+        };
     }
 
     /**
@@ -271,15 +278,15 @@ class Clause implements TransactionClause {
      *
      * @param {Address} recipientAddress - The address of the recipient.
      * @param {Token} amount - The amount of token to be transferred.
-     * @return {Clause} The clause to transfer tokens as part of a transaction.
+     * @return {ContractClause} The contract clause to transfer tokens as part of a transaction.
      * @throws {InvalidDataType} Throws an error if the amount is not a positive integer.
      */
     public static transferToken(
         recipientAddress: Address,
         token: Token
-    ): Clause {
+    ): ContractClause {
         if (token.value >= 0) {
-            return this.callFunction(
+            const clause = this.callFunction(
                 token.tokenAddress,
                 ABIContract.ofAbi(VIP180_ABI).getFunction(
                     Clause.TRANSFER_TOKEN_FUNCTION
@@ -288,6 +295,13 @@ class Clause implements TransactionClause {
                 undefined,
                 { comment: `Transfer ${token.name}` }
             );
+
+            return {
+                clause,
+                functionAbi: ABIContract.ofAbi(VIP180_ABI).getFunction(
+                    Clause.TRANSFER_TOKEN_FUNCTION
+                )
+            };
         }
         throw new InvalidDataType(
             'Clause.transferToken',

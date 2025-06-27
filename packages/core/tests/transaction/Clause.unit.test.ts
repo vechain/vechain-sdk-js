@@ -415,7 +415,7 @@ describe('Clause class tests', () => {
                 comment: 'Transfer EthTest'
             } satisfies TransactionClause;
             const actual = Clause.transferToken(ClauseFixture.to, token);
-            expect(actual).toEqual(expected);
+            expect(actual.clause).toEqual(expected);
         });
 
         test('Return Clause <- 100 wei Token', () => {
@@ -432,7 +432,7 @@ describe('Clause class tests', () => {
                 comment: 'Transfer EthTest'
             } satisfies TransactionClause;
             const actual = Clause.transferToken(ClauseFixture.to, token);
-            expect(actual).toEqual(expected);
+            expect(actual.clause).toEqual(expected);
         });
     });
 });
