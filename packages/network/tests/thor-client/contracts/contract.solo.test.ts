@@ -42,6 +42,7 @@ import {
 } from './fixture';
 import { configData } from '../../fixture';
 import { THOR_SOLO_DEFAULT_BASE_FEE_PER_GAS } from '@vechain/sdk-solo-setup';
+import { retryOperation } from '../../test-utils';
 
 /**
  * Tests for the ThorClient class, specifically focusing on contract-related functionality.
@@ -135,7 +136,9 @@ describe('ThorClient - Contracts', () => {
         const response = await createExampleContractFactory();
 
         // Poll until the transaction receipt is available
-        const contract = await response.waitForDeployment();
+        const contract = await retryOperation(async () =>
+            response.waitForDeployment()
+        );
 
         expect(contract.address).toBeDefined();
         expect(contract.abi).toBeDefined();
@@ -145,7 +148,7 @@ describe('ThorClient - Contracts', () => {
         const contractAddress = contract.address;
 
         // Call the get function of the deployed contract to verify that the stored value is 100
-        const result = await contract.read.get();
+        const result = await retryOperation(async () => contract.read.get());
 
         expect(result).toEqual([100n]);
 
@@ -171,9 +174,9 @@ describe('ThorClient - Contracts', () => {
         contractFactory = await contractFactory.startDeployment();
 
         // Wait for the deployment to complete and obtain the contract instance
-        await expect(contractFactory.waitForDeployment()).rejects.toThrow(
-            ContractDeploymentFailed
-        );
+        await expect(
+            retryOperation(async () => contractFactory.waitForDeployment())
+        ).rejects.toThrow(ContractDeploymentFailed);
     }, 10000);
 
     /**
@@ -188,9 +191,9 @@ describe('ThorClient - Contracts', () => {
         );
 
         // Waiting for a deployment that has not started
-        await expect(contractFactory.waitForDeployment()).rejects.toThrow(
-            CannotFindTransaction
-        );
+        await expect(
+            retryOperation(async () => contractFactory.waitForDeployment())
+        ).rejects.toThrow(CannotFindTransaction);
     }, 10000);
 
     /**
@@ -201,13 +204,14 @@ describe('ThorClient - Contracts', () => {
         const factory = await createExampleContractFactory();
 
         // Wait for the deployment to complete and obtain the contract instance
-        const contract = await factory.waitForDeployment();
+        const contract = await retryOperation(async () =>
+            factory.waitForDeployment()
+        );
 
         // Retrieve the bytecode of the deployed contract
-        const contractBytecodeResponse =
-            await thorSoloClient.accounts.getBytecode(
-                Address.of(contract.address)
-            );
+        const contractBytecodeResponse = await retryOperation(async () =>
+            thorSoloClient.accounts.getBytecode(Address.of(contract.address))
+        );
 
         // Assertion: Compare with the expected deployed contract bytecode
         expect(`${contractBytecodeResponse}`).toBe(deployedContractBytecode);
@@ -221,16 +225,22 @@ describe('ThorClient - Contracts', () => {
         const factory = await createExampleContractFactory();
 
         // Wait for the deployment to complete and obtain the contract instance
-        const contract = await factory.waitForDeployment();
+        const contract = await retryOperation(async () =>
+            factory.waitForDeployment()
+        );
 
-        const callFunctionSetResponse = await contract.transact.set(123n);
+        const callFunctionSetResponse = await retryOperation(async () =>
+            contract.transact.set(123n)
+        );
 
         const transactionReceiptCallSetContract =
             (await callFunctionSetResponse.wait()) as TransactionReceipt;
 
         expect(transactionReceiptCallSetContract.reverted).toBe(false);
 
-        const callFunctionGetResult = await contract.read.get();
+        const callFunctionGetResult = await retryOperation(async () =>
+            contract.read.get()
+        );
 
         expect(callFunctionGetResult).toEqual([123n]);
     }, 10000);

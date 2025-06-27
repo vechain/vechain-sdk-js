@@ -10,6 +10,7 @@ import {
 } from '../../../src';
 import { ABIContract, Hex } from '@vechain/sdk-core';
 import { AccountDispatcher, getConfigData } from '@vechain/sdk-solo-setup';
+import { retryOperation } from '../../test-utils';
 
 /**
  * Tests for the executeMultipleClausesTransaction method in transactions module
@@ -69,13 +70,15 @@ describe('ThorClient - Transactions Module Execute multiple clauses', () => {
             gas: 1000000,
             gasPriceCoef: 0
         };
-        // execute the transaction
-        const tx =
-            await thorSoloClient.transactions.executeMultipleClausesTransaction(
-                clauses,
-                signer,
-                options
-            );
+        // execute the transaction with retry logic
+        const tx = await retryOperation(
+            async () =>
+                await thorSoloClient.transactions.executeMultipleClausesTransaction(
+                    clauses,
+                    signer,
+                    options
+                )
+        );
         // wait for the transaction to be mined
         const receipt = await tx.wait();
         // assert the transaction was successful
@@ -88,13 +91,15 @@ describe('ThorClient - Transactions Module Execute multiple clauses', () => {
             maxFeePerGas: 10000000000000,
             maxPriorityFeePerGas: 100
         };
-        // execute the transaction
-        const tx =
-            await thorSoloClient.transactions.executeMultipleClausesTransaction(
-                clauses,
-                signer,
-                options
-            );
+        // execute the transaction with retry logic
+        const tx = await retryOperation(
+            async () =>
+                await thorSoloClient.transactions.executeMultipleClausesTransaction(
+                    clauses,
+                    signer,
+                    options
+                )
+        );
         // wait for the transaction to be mined
         const receipt = await tx.wait();
         // assert the transaction was successful
@@ -106,13 +111,15 @@ describe('ThorClient - Transactions Module Execute multiple clauses', () => {
         const options: ContractTransactionOptions = {
             gas: 1000000
         };
-        // execute the transaction
-        const tx =
-            await thorSoloClient.transactions.executeMultipleClausesTransaction(
-                clauses,
-                signer,
-                options
-            );
+        // execute the transaction with retry logic
+        const tx = await retryOperation(
+            async () =>
+                await thorSoloClient.transactions.executeMultipleClausesTransaction(
+                    clauses,
+                    signer,
+                    options
+                )
+        );
         // wait for the transaction to be mined
         const receipt = await tx.wait();
         // assert the transaction was successful
@@ -127,13 +134,15 @@ describe('ThorClient - Transactions Module Execute multiple clauses', () => {
             maxFeePerGas: 10000000000000,
             maxPriorityFeePerGas: 100
         };
-        // execute the transaction
-        const tx =
-            await thorSoloClient.transactions.executeMultipleClausesTransaction(
-                clauses,
-                signer,
-                options
-            );
+        // execute the transaction with retry logic
+        const tx = await retryOperation(
+            async () =>
+                await thorSoloClient.transactions.executeMultipleClausesTransaction(
+                    clauses,
+                    signer,
+                    options
+                )
+        );
         // wait for the transaction to be mined
         const receipt = await tx.wait();
         // assert the transaction was successful

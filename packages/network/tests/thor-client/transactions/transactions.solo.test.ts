@@ -13,6 +13,7 @@ import { TEST_ACCOUNTS } from '../../fixture';
 import { HexUInt, Transaction } from '@vechain/sdk-core';
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { THOR_SOLO_URL, ThorClient } from '../../../src';
+import { retryOperation } from '../../test-utils';
 
 /**
  * Transactions module tests.
@@ -30,9 +31,12 @@ describe('ThorClient - Transactions Module', () => {
     describe('sendTransaction', () => {
         test("Should throw error if transaction isn't signed", async () => {
             // Estimate the gas required for the transfer transaction
-            const gasResult = await thorSoloClient.transactions.estimateGas(
-                [transfer1VTHOClause],
-                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+            const gasResult = await retryOperation(
+                async () =>
+                    await thorSoloClient.transactions.estimateGas(
+                        [transfer1VTHOClause],
+                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+                    )
             );
 
             // Create the unsigned transfer transaction
@@ -61,11 +65,14 @@ describe('ThorClient - Transactions Module', () => {
                 description,
                 async () => {
                     // Estimate the gas required for the transfer transaction
-                    const gasResult =
-                        await thorSoloClient.transactions.estimateGas(
-                            [transfer1VTHOClause],
-                            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
-                        );
+                    const gasResult = await retryOperation(
+                        async () =>
+                            await thorSoloClient.transactions.estimateGas(
+                                [transfer1VTHOClause],
+                                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
+                                    .address
+                            )
+                    );
 
                     // Create the signed transfer transaction
                     const tx = Transaction.of({
@@ -109,9 +116,12 @@ describe('ThorClient - Transactions Module', () => {
          */
         test('test a send transaction with a number as value in transaction body ', async () => {
             // Estimate the gas required for the transfer transaction
-            const gasResult = await thorSoloClient.transactions.estimateGas(
-                [transfer1VTHOClause],
-                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+            const gasResult = await retryOperation(
+                async () =>
+                    await thorSoloClient.transactions.estimateGas(
+                        [transfer1VTHOClause],
+                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+                    )
             );
 
             // Create the signed transfer transaction
@@ -149,12 +159,14 @@ describe('ThorClient - Transactions Module', () => {
                     description,
                     async () => {
                         // Estimate the gas required for the transfer transaction
-                        const gasResult =
-                            await thorSoloClient.transactions.estimateGas(
-                                [transfer1VTHOClause],
-                                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
-                                    .address
-                            );
+                        const gasResult = await retryOperation(
+                            async () =>
+                                await thorSoloClient.transactions.estimateGas(
+                                    [transfer1VTHOClause],
+                                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
+                                        .address
+                                )
+                        );
 
                         // Create the signed transfer transaction
                         const tx = Transaction.of({
@@ -204,11 +216,14 @@ describe('ThorClient - Transactions Module', () => {
                         return;
                     }
 
-                    const gasResult =
-                        await thorSoloClient.transactions.estimateGas(
-                            clauses,
-                            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
-                        );
+                    const gasResult = await retryOperation(
+                        async () =>
+                            await thorSoloClient.transactions.estimateGas(
+                                clauses,
+                                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
+                                    .address
+                            )
+                    );
 
                     expect(gasResult.totalGas).toBe(expected.solo.gas);
 
