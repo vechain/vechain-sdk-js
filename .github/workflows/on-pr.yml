@@ -9,6 +9,10 @@ on:
       - 'feature-*'
       - '1.0.0'
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
     doc-examples:
         name: Execute doc examples
