@@ -9,6 +9,7 @@ import {
 } from '../../../../../src';
 import { JSONRPCInternalError } from '@vechain/sdk-errors';
 import { logsFixture, mockLogsFixture } from './fixture';
+import { retryOperation } from '../../../../test-utils';
 
 /**
  * RPC Mapper integration tests for 'eth_getLogs' method
@@ -53,9 +54,12 @@ describe('RPC Mapper - eth_getLogs method tests', () => {
                 mockHttpClient.http.mockResolvedValue([]);
 
                 // Call RPC method
-                const logs = (await RPCMethodsMap(thorClient)[
-                    RPC_METHODS.eth_getLogs
-                ]([fixture.input])) as LogsRPC[];
+                const logs = (await retryOperation(
+                    async () =>
+                        await RPCMethodsMap(thorClient)[
+                            RPC_METHODS.eth_getLogs
+                        ]([fixture.input])
+                )) as LogsRPC[];
 
                 expect(logs.slice(0, 4)).toStrictEqual(fixture.expected);
             }, 6000);
@@ -78,9 +82,12 @@ describe('RPC Mapper - eth_getLogs method tests', () => {
             await expect(
                 async () =>
                     // Call RPC method
-                    (await RPCMethodsMap(thorClient)[RPC_METHODS.eth_getLogs]([
-                        logsFixture[0].input
-                    ])) as LogsRPC[]
+                    (await retryOperation(
+                        async () =>
+                            await RPCMethodsMap(thorClient)[
+                                RPC_METHODS.eth_getLogs
+                            ]([logsFixture[0].input])
+                    )) as LogsRPC[]
             ).rejects.toThrowError(JSONRPCInternalError);
         });
     });

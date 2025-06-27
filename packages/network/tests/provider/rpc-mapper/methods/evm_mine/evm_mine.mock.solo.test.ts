@@ -7,6 +7,7 @@ import {
     ThorClient,
     type SimpleHttpClient
 } from '../../../../../src';
+import { retryOperation } from '../../../../test-utils';
 
 /**
  * RPC Mapper integration tests for 'evm_mine' method with Solo Network and mocked functionality
@@ -51,9 +52,10 @@ describe('RPC Mapper - evm_mine method tests', () => {
                 .mockResolvedValueOnce({ number: 1 }) // First call returns block 1
                 .mockResolvedValueOnce({ number: 2 }); // Second call returns block 2 (new block mined)
 
-            const result = await RPCMethodsMap(thorClient)[
-                RPC_METHODS.evm_mine
-            ]([]);
+            const result = await retryOperation(
+                async () =>
+                    await RPCMethodsMap(thorClient)[RPC_METHODS.evm_mine]([])
+            );
             expect(result).toBeNull();
         });
     });
@@ -72,7 +74,12 @@ describe('RPC Mapper - evm_mine method tests', () => {
             );
 
             await expect(
-                RPCMethodsMap(thorClient)[RPC_METHODS.evm_mine]([])
+                retryOperation(
+                    async () =>
+                        await RPCMethodsMap(thorClient)[RPC_METHODS.evm_mine](
+                            []
+                        )
+                )
             ).rejects.toThrowError(JSONRPCInternalError);
         });
 
@@ -86,7 +93,12 @@ describe('RPC Mapper - evm_mine method tests', () => {
                 .mockRejectedValueOnce(new Error('Connection failed')); // Second call fails
 
             await expect(
-                RPCMethodsMap(thorClient)[RPC_METHODS.evm_mine]([])
+                retryOperation(
+                    async () =>
+                        await RPCMethodsMap(thorClient)[RPC_METHODS.evm_mine](
+                            []
+                        )
+                )
             ).resolves.toBeNull();
         });
 
@@ -98,7 +110,12 @@ describe('RPC Mapper - evm_mine method tests', () => {
             mockHttpClient.http.mockResolvedValue(null);
 
             await expect(
-                RPCMethodsMap(thorClient)[RPC_METHODS.evm_mine]([])
+                retryOperation(
+                    async () =>
+                        await RPCMethodsMap(thorClient)[RPC_METHODS.evm_mine](
+                            []
+                        )
+                )
             ).rejects.toThrowError(JSONRPCInternalError);
         });
     });

@@ -6,6 +6,7 @@ import {
     THOR_SOLO_URL,
     ThorClient
 } from '../../../../../src';
+import { retryOperation } from '../../../../test-utils';
 
 /**
  * RPC Mapper integration tests for 'eth_chainId' method
@@ -40,7 +41,12 @@ describe('RPC Mapper - eth_chainId method tests mock on solo', () => {
             );
 
             await expect(
-                RPCMethodsMap(thorClient)[RPC_METHODS.eth_chainId]([])
+                retryOperation(
+                    async () =>
+                        await RPCMethodsMap(thorClient)[
+                            RPC_METHODS.eth_chainId
+                        ]([])
+                )
             ).rejects.toThrowError(JSONRPCInternalError);
         });
 
@@ -54,7 +60,12 @@ describe('RPC Mapper - eth_chainId method tests mock on solo', () => {
             );
 
             await expect(
-                RPCMethodsMap(thorClient)[RPC_METHODS.eth_chainId]([])
+                retryOperation(
+                    async () =>
+                        await RPCMethodsMap(thorClient)[
+                            RPC_METHODS.eth_chainId
+                        ]([])
+                )
             ).rejects.toThrowError(JSONRPCInternalError);
         });
     });
