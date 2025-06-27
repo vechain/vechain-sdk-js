@@ -223,7 +223,7 @@ describe('Clause class tests', () => {
                 ClauseFixture.to,
                 HexUInt.of(0)
             );
-            expect(actual).toEqual(expected);
+            expect(actual.clause).toEqual(expected);
         });
     });
 
