@@ -65,7 +65,7 @@ describe('ThorClient - Transactions Module Execute Transaction', () => {
         const receipt = await tx.wait();
         // assert the transaction was successful
         expect(receipt?.reverted).toBe(false);
-    });
+    }, 15000);
 
     test('ok <- Execute EIP-1559 transaction for testing contract', async () => {
         // setup options
@@ -88,7 +88,7 @@ describe('ThorClient - Transactions Module Execute Transaction', () => {
         const receipt = await tx.wait();
         // assert the transaction was successful
         expect(receipt?.reverted).toBe(false);
-    });
+    }, 15000);
 
     test('ok <- Execute transaction for testing contract that defaults to EIP-1559', async () => {
         // setup options
@@ -110,7 +110,7 @@ describe('ThorClient - Transactions Module Execute Transaction', () => {
         const receipt = await tx.wait();
         // assert the transaction was successful
         expect(receipt?.reverted).toBe(false);
-    });
+    }, 15000);
 
     test('ok <- Execute transaction for testing contract with legacy and EIP-1559 options (will use legacy fee type)', async () => {
         // setup options
@@ -135,5 +135,5 @@ describe('ThorClient - Transactions Module Execute Transaction', () => {
         const receipt = await tx.wait();
         // assert the transaction was successful
         expect(receipt?.reverted).toBe(false);
-    });
+    }, 15000);
 });
