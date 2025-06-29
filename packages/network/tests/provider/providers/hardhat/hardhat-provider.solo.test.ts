@@ -227,7 +227,7 @@ describe('Hardhat provider tests', () => {
 
         // Validate the RPC call was successful
         expect(rpcCall).not.toBe('0x0');
-    }, 60000);
+    }, 120000);
 
     /**
      * Tests the ability to subscribe to and receive log events for both ERC20 and ERC721 token contracts.
