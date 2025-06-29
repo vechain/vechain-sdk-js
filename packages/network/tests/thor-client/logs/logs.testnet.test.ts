@@ -6,6 +6,7 @@ import {
     expectedFilterTransferLogs
 } from './fixture';
 import { TESTNET_URL, ThorClient } from '../../../src';
+import { retryOperation } from '../../test-utils';
 
 /**
  * ThorClient class tests
@@ -24,19 +25,22 @@ describe('ThorClient - Logs Module', () => {
      * filterGroupedEventLogs tests
      */
     test('filterEventLogs', async () => {
-        const eventLogs =
-            await thorClient.logs.filterRawEventLogs(argFilterEventLogs);
+        const eventLogs = await retryOperation(async () => {
+            return await thorClient.logs.filterRawEventLogs(argFilterEventLogs);
+        });
         expect(eventLogs).toEqual(expectedFilterEventLogs);
-    }, 3000);
+    }, 15000);
 
     /**
      * filterTransferLogs tests
      */
     test('filterTransferLogs', async () => {
-        const transferLogs = await thorClient.logs.filterTransferLogs(
-            argFilterTransferLogs
-        );
+        const transferLogs = await retryOperation(async () => {
+            return await thorClient.logs.filterTransferLogs(
+                argFilterTransferLogs
+            );
+        });
         //
         expect(transferLogs).toEqual(expectedFilterTransferLogs);
-    }, 3000);
+    }, 15000);
 });

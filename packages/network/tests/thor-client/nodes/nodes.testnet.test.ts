@@ -1,6 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { InvalidHTTPParams, InvalidHTTPRequest } from '@vechain/sdk-errors';
 import { TESTNET_URL, ThorClient } from '../../../src';
+import { retryOperation } from '../../test-utils';
 
 /**
  * Node integration tests
@@ -16,11 +17,13 @@ describe('ThorClient - Nodes Module', () => {
          *  @internal
          */
         const thorClient = ThorClient.at(TESTNET_URL);
-        const peerNodes = await thorClient.nodes.getNodes();
+        const peerNodes = await retryOperation(async () => {
+            return await thorClient.nodes.getNodes();
+        });
 
         expect(peerNodes).toBeDefined();
         expect(Array.isArray(peerNodes)).toBe(true);
-    }, 3000);
+    }, 15000);
 
     test('valid URL but inaccessible VeChain node', async () => {
         /**
