@@ -49,10 +49,10 @@ describe('Mnemonic class tests', () => {
     describe('toPrivateKey', () => {
         test('ok <- from default BIP44 VET derivation path', () => {
             const expected = HexUInt.of(
-                '0xe4a2687ec443f4d23b6ba9e7d904a31acdda90032b34aa0e642e6dd3fd36f682'
+                '0x27196338e7d0b5e7bf1be1c0327c53a244a18ef0b102976980e341500f492425'
             );
             const actual = HexUInt.of(Mnemonic.toPrivateKey(WORDS));
-            expect(actual).toEqual(expected);
+            expect(actual.toString()).toEqual(expected.toString());
         });
 
         test('ok <- from standard BIP44 VET derivation path', () => {

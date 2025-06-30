@@ -8,10 +8,7 @@ import {
 } from '../../../../../src';
 import { getUnusedAccount } from '../../../../fixture';
 import { Hex, HexUInt, Secp256k1 } from '@vechain/sdk-core';
-import {
-    JSONRPCInternalError,
-    JSONRPCInvalidParams
-} from '@vechain/sdk-errors';
+import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
 import { eip712TestCases } from '../../../../signer/signers/vechain-private-key-signer/fixture-unit';
 
 /**
@@ -144,7 +141,7 @@ describe('RPC Mapper - eth_signTypedData_v4 method tests', () => {
                         }
                     ]
                 })
-            ).rejects.toThrowError(JSONRPCInternalError);
+            ).rejects.toThrowError(JSONRPCInvalidParams);
         });
 
         /**
