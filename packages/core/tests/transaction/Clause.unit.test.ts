@@ -434,5 +434,22 @@ describe('Clause class tests', () => {
             const actual = Clause.transferToken(ClauseFixture.to, token);
             expect(actual.clause).toEqual(expected);
         });
+
+        test('Return Clause <- 1 wei Token', () => {
+            const token = new ETHTest(1n, Units.wei);
+            const expected = {
+                to: token.tokenAddress.toString().toLowerCase(),
+                value: `0x0`,
+                data: `0xa9059cbb000000000000000000000000${ClauseFixture.to
+                    .toString()
+                    .toLowerCase()
+                    .slice(
+                        2
+                    )}0000000000000000000000000000000000000000000000000000000000000001`,
+                comment: 'Transfer EthTest'
+            } satisfies TransactionClause;
+            const actual = Clause.transferToken(ClauseFixture.to, token);
+            expect(actual).toEqual(expected);
+        });
     });
 });
