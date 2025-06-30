@@ -7,9 +7,9 @@ import { ThorId } from '@vechain/sdk-core';
  *
  * @group unit/debug
  */
-describe('StorageRange unit tests', () => {
+describe('StorageRange UNIT tests', () => {
     test('constructs with all fields', () => {
-        const json: StorageRangeJSON = {
+        const expected: StorageRangeJSON = {
             nextKey: '0x0000000000000000000000000000456e65726779',
             storage: {
                 '0x0000000000000000000000000000000000000000000000000000000000000001':
@@ -17,30 +17,30 @@ describe('StorageRange unit tests', () => {
             }
         };
 
-        const range = new StorageRange(json);
+        const range = new StorageRange(expected);
         expect(range.nextKey).toEqual(
-            json.nextKey !== undefined && json.nextKey !== ''
-                ? ThorId.of(json.nextKey)
+            expected.nextKey !== undefined && expected.nextKey !== ''
+                ? ThorId.of(expected.nextKey)
                 : undefined
         );
-        expect(range.storage).toEqual(json.storage);
+        expect(range.storage).toEqual(expected.storage);
     });
 
     test('constructs without nextKey', () => {
-        const json: StorageRangeJSON = {
+        const expected: StorageRangeJSON = {
             storage: {
                 '0x0000000000000000000000000000000000000000000000000000000000000001':
                     '0x0000000000000000000000000000000000000000000000000000000000000002'
             }
         };
 
-        const range = new StorageRange(json);
-        expect(range.nextKey).toBeUndefined();
-        expect(range.storage).toEqual(json.storage);
+        const range = new StorageRange(expected);
+        expect(range.nextKey).toBeNull();
+        expect(range.storage).toEqual(expected.storage);
     });
 
     test('toJSON returns correct format with all fields', () => {
-        const json: StorageRangeJSON = {
+        const expected: StorageRangeJSON = {
             nextKey: '0x0000000000000000000000000000456e65726779',
             storage: {
                 '0x0000000000000000000000000000000000000000000000000000000000000001':
@@ -48,15 +48,15 @@ describe('StorageRange unit tests', () => {
             }
         };
 
-        const range = new StorageRange(json);
+        const range = new StorageRange(expected);
         const serialized = range.toJSON();
 
         // Use the normalized ThorId string in the expected output
         const expectedJson = {
-            ...json,
+            ...expected,
             nextKey:
-                json.nextKey !== undefined && json.nextKey !== ''
-                    ? ThorId.of(json.nextKey).toString()
+                expected.nextKey !== undefined && expected.nextKey !== ''
+                    ? ThorId.of(expected.nextKey).toString()
                     : undefined
         };
 
@@ -64,16 +64,16 @@ describe('StorageRange unit tests', () => {
     });
 
     test('toJSON returns correct format without nextKey', () => {
-        const json: StorageRangeJSON = {
+        const expected: StorageRangeJSON = {
             storage: {
                 '0x0000000000000000000000000000000000000000000000000000000000000001':
                     '0x0000000000000000000000000000000000000000000000000000000000000002'
             }
         };
 
-        const range = new StorageRange(json);
+        const range = new StorageRange(expected);
         const serialized = range.toJSON();
-        expect(serialized).toEqual(json);
+        expect(serialized).toEqual(expected);
     });
 
     test('handles different storage types', () => {

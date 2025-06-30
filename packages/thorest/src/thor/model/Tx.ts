@@ -27,7 +27,7 @@ class Tx {
     readonly id: Hex;
 
     /**
-     * The transaction type in number, currently 0(Legacy Transaction) and 81(DynamicFee Transaction) are supported.
+     * id
      */
     readonly type: number | null; // int
 

@@ -1,4 +1,4 @@
-import { type Hex, HexUInt32 } from '@vechain/sdk-core';
+import { type Hex, HexUInt32, IllegalArgumentError } from '@vechain/sdk-core';
 import { type HttpClient, type HttpPath, type HttpQuery } from '@http';
 import {
     GetTxReceiptResponse,
@@ -99,7 +99,7 @@ class RetrieveTransactionReceipt
      *
      * @param {Hex} txId - The transaction ID used to retrieve the transaction receipt.
      * @return {RetrieveTransactionReceipt} A new instance of RetrieveTransactionReceipt initialized with the given transaction ID.
-     * @throws ThorError If the `txId` expression is not a valid transaction identifier.
+     * @throws {IllegalArgumentError} If the `txId` expression is not a valid transaction identifier.
      */
     static of(txId: Hex): RetrieveTransactionReceipt {
         try {
@@ -108,7 +108,7 @@ class RetrieveTransactionReceipt
                 new Query(undefined)
             );
         } catch (error) {
-            throw new ThorError(
+            throw new IllegalArgumentError(
                 `${FQP}of(txId: Hex): RetrieveTransactionReceipt`,
                 'Invalid transaction ID.',
                 {

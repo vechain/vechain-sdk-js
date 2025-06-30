@@ -6,7 +6,7 @@ import {
     type ThorResponse
 } from '@thor';
 import { type HttpClient, type HttpPath, type HttpQuery } from '@http';
-import { type Hex, type HexUInt32, Revision } from '@vechain/sdk-core';
+import { type Hex, type HexUInt32, IllegalArgumentError, Revision } from '@vechain/sdk-core';
 
 /**
  * Full-Qualified Path
@@ -33,7 +33,6 @@ class RetrieveHistoricalFeeData
      * Constructs a new instance of the class.
      *
      * @param {Query} query - The query object used to initialize the instance.
-     * @return {void} This constructor does not return a value.
      */
     protected constructor(query: Query) {
         this.query = query;
@@ -43,7 +42,9 @@ class RetrieveHistoricalFeeData
      * Send a request to retrieve historical fee data.
      *
      * @param {HttpClient} httpClient - The HTTP client used to send the request.
-     * @return {Promise<ThorResponse<RetrieveHistoricalFeeData, GetFeesHistoryResponse>>} A promise that resolves with the response containing the historical fee data or rejects with an error.
+     * @return {Promise<ThorResponse<RetrieveHistoricalFeeData, GetFeesHistoryResponse>>} A promise that resolves
+     * with the response containing the historical fee data or rejects with an error.
+     * @throws {ThorError} If there is an error while processing the response or if the response status is not OK.
      */
     async askTo(
         httpClient: HttpClient
@@ -92,7 +93,7 @@ class RetrieveHistoricalFeeData
      *
      * @param {number} blockCount - The number of blocks to be retrieved for historical fee data.
      * @return {RetrieveHistoricalFeeData} An instance of `RetrieveHistoricaFeeData` initialized with the specified block count.
-     * @throws {ThorError} If an error occurs if `blockCount` is not a positive integer.
+     * @throws {IllegalArgumentError} If an error occurs if `blockCount` is not a positive integer.
      */
     static of(blockCount: number): RetrieveHistoricalFeeData {
         try {
@@ -100,7 +101,7 @@ class RetrieveHistoricalFeeData
                 new Query(blockCount, Revision.BEST, [])
             );
         } catch (error) {
-            throw new ThorError(
+            throw new IllegalArgumentError(
                 `${FQP}of(blockCount: number): RetrieveHistoricaFeeData`,
                 'Invalid blockCount.',
                 {

@@ -1,31 +1,103 @@
-import { BlockId, Gas, HexUInt, UInt } from '@vechain/sdk-core';
+import {
+    BlockId,
+    HexUInt,
+    IllegalArgumentError,
+    UInt
+} from '@vechain/sdk-core';
+import { type SubscriptionBeat2ResponseJSON } from '@thor/subscriptions';
 
+/**
+ * Full-Qualified Path
+ */
+const FQP =
+    'packages/thorest/src/thor/subscriptions/SubscriptionBeat2Response.ts!';
+
+/**
+ * [SubscriptionBeat2Response](http://localhost:8669/doc/stoplight-ui/#/schemas/SubscriptionBeat2Response)
+ *
+ * Represents a beat2 response from a subscription.
+ */
 class SubscriptionBeat2Response {
-    readonly gasLimit: Gas;
+    /**
+     * The maximum amount of gas that all transactions inside the block are allowed to consume.
+     */
+    readonly gasLimit: bigint;
+
+    /**
+     * Whether the beat is obsolete.
+     */
     readonly obsolete: boolean;
+
+    /**
+     * The block number (height).
+     */
     readonly number: UInt;
+
+    /**
+     * The block identifier.
+     */
     readonly id: BlockId;
+
+    /**
+     * The parent block identifier.
+     */
     readonly parentID: BlockId;
+
+    /**
+     * The UNIX timestamp of the block.
+     */
     readonly timestamp: UInt;
+
+    /**
+     * The supported transaction features bitset.
+     */
     readonly txsFeatures: UInt;
+
+    /**
+     * The bloom filter for the block.
+     */
     readonly bloom: HexUInt;
+
+    /**
+     * The k value for the block.
+     */
     readonly k: UInt;
 
+    /**
+     * Constructs a new instance of the class by parsing the provided JSON object.
+     *
+     * @param {SubscriptionBeat2ResponseJSON} json - The JSON object containing beat2 response data.
+     * @throws {IllegalArgumentError} If the parsing of the JSON object fails.
+     */
     constructor(json: SubscriptionBeat2ResponseJSON) {
-        this.gasLimit = Gas.of(json.gasLimit);
-        this.obsolete = json.obsolete;
-        this.number = UInt.of(json.number);
-        this.id = BlockId.of(json.id);
-        this.parentID = BlockId.of(json.parentID);
-        this.timestamp = UInt.of(json.timestamp);
-        this.txsFeatures = UInt.of(json.txsFeatures);
-        this.bloom = HexUInt.of(json.bloom);
-        this.k = UInt.of(json.k);
+        try {
+            this.gasLimit = BigInt(json.gasLimit);
+            this.obsolete = json.obsolete;
+            this.number = UInt.of(json.number);
+            this.id = BlockId.of(json.id);
+            this.parentID = BlockId.of(json.parentID);
+            this.timestamp = UInt.of(json.timestamp);
+            this.txsFeatures = UInt.of(json.txsFeatures);
+            this.bloom = HexUInt.of(json.bloom);
+            this.k = UInt.of(json.k);
+        } catch (error) {
+            throw new IllegalArgumentError(
+                `${FQP}constructor(json: SubscriptionBeat2ResponseJSON)`,
+                'Bad parse',
+                { json },
+                error instanceof Error ? error : undefined
+            );
+        }
     }
 
+    /**
+     * Converts the current beat2 response data into a JSON representation.
+     *
+     * @returns {SubscriptionBeat2ResponseJSON} A JSON object containing the beat2 response data.
+     */
     toJSON(): SubscriptionBeat2ResponseJSON {
         return {
-            gasLimit: this.gasLimit.valueOf(),
+            gasLimit: Number(this.gasLimit),
             obsolete: this.obsolete,
             number: this.number.valueOf(),
             id: this.id.toString(),
@@ -38,16 +110,4 @@ class SubscriptionBeat2Response {
     }
 }
 
-interface SubscriptionBeat2ResponseJSON {
-    gasLimit: number;
-    obsolete: boolean;
-    number: number;
-    id: string;
-    parentID: string;
-    timestamp: number;
-    txsFeatures: number;
-    bloom: string;
-    k: number;
-}
-
-export { SubscriptionBeat2Response, type SubscriptionBeat2ResponseJSON };
+export { SubscriptionBeat2Response };
