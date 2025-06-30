@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "@vechain/sdk-core": "2.0.0-beta.1",
+    "@vechain/sdk-solo-setup": "2.0.0-beta.1",
     "fast-json-stable-stringify": "^2.1.0",
     "ws": "^8.18.0"
   },
