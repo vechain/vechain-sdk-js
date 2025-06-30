@@ -57,7 +57,10 @@ const maxPriorityFee = await thor.gas.getMaxPriorityFeePerGas();
 
 ```typescript { name=fee-estimation, category=example }
 // Query the recent fee history
-const feeHistory = await thor.gas.getFeeHistory({ blockCount: 10, newestBlock: 'best' });
+const feeHistory = await thor.gas.getFeeHistory({
+    blockCount: 10,
+    newestBlock: 'best'
+});
 ```
 
 ### 3. Get Current Base Fee
@@ -78,17 +81,24 @@ Let the SDK handle fee estimation:
 const thorClient = ThorClient.at(THOR_SOLO_URL);
 
 // 2 - Derive account from mnemonic
-const mnemonic = 'denial kitchen pet squirrel other broom bar gas better priority spoil cross';
+const mnemonic =
+    'denial kitchen pet squirrel other broom bar gas better priority spoil cross';
 const child = HDKey.fromMnemonic(mnemonic.split(' ')).deriveChild(0);
 const privateKey = child.privateKey;
 const address = Address.ofPublicKey(child.publicKey).toString();
 
 // 3 - Create transaction clauses
-const clauses = [Clause.transferVET(Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'), VET.of(10000))];
+const clauses = [
+    Clause.transferVET(
+        Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'),
+        VET.of(10000)
+    )
+];
 
 // 4 - Estimate gas and get default body options
 const gasResult = await thorClient.gas.estimateGas(clauses, address);
-const defaultBodyOptions = await thorClient.transactions.fillDefaultBodyOptions();
+const defaultBodyOptions =
+    await thorClient.transactions.fillDefaultBodyOptions();
 
 // 5 - Build transaction body with default fees
 const txBody = await thorClient.transactions.buildTransactionBody(
@@ -195,17 +205,17 @@ const defaultBodyOptions = await thor.transactions.fillDefaultBodyOptions();
 
 // 4. Build transaction body with explicit values
 const txBody = await thor.transactions.buildTransactionBody(
-  clauses,
-  gasResult.totalGas,
-  {
-    chainTag: networkInfo.solo.chainTag,
-    blockRef: '0x0000000000000000',
-    expiration: 32,
-    gasPriceCoef: 128,
-    dependsOn: null,
-    nonce: 12345678,
-    ...defaultBodyOptions
-  }
+    clauses,
+    gasResult.totalGas,
+    {
+        chainTag: networkInfo.solo.chainTag,
+        blockRef: '0x0000000000000000',
+        expiration: 32,
+        gasPriceCoef: 128,
+        dependsOn: null,
+        nonce: 12345678,
+        ...defaultBodyOptions
+    }
 );
 
 // 5. Sign transaction

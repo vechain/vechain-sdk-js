@@ -133,34 +133,25 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
 
     // Legacy method, probably should be part of a Private Key class (ofMnemonic) #1122
     /**
-     * Derives a private key from a given list of
-     * [BIP39 Mnemonic Words](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
-     * and a derivation path as in the examples.
+     * Derives a private key for the given mnemonic words and derivation path.
      *
-     * @example `m/0` (default)
-     * @example `m/0/2`
-     * @example `m/0/2/4/6`
+     * @param {string[]} words - An array of mnemonic words used to generate the private key.
+     * @param {string} [path=HDKey.VET_DERIVATION_PATH+'/0'] - The BIP32 derivation path to derive the private key.
+     * @return {Uint8Array} The derived private key as a Uint8Array.
+     * @throws {InvalidHDKey} If the provided derivation path is invalid.
      *
-     * @param {string[]} words - The set of words used for mnemonic generation.
-     * @param {string} [path='m/0'] - The derivation path from the current node.
-     *
-     * @returns {Uint8Array} - The derived private key as a Uint8Array.
-     *
-     * @throws {InvalidHDKey}
-     *
-     * @remarks Security auditable method, depends on
-     * * {@link HDKey}.
+     * @remarks Security auditable method, depends on {@link HDKey}.
      */
     public static toPrivateKey(
         words: string[],
-        path: string = HDKey.VET_DERIVATION_PATH
+        path: string = HDKey.VET_DERIVATION_PATH + '/0'
     ): Uint8Array {
         const master = s_bip32.HDKey.fromMasterSeed(
             s_bip39.mnemonicToSeedSync(words.join(' ').toLowerCase())
         );
         // Any exception involving mnemonic words is thrown before this point: words are not leaked next.
         try {
-            // Derived from root, private key is always available.
+            // Derived from root, a private key is always available.
             return master.derive(path).privateKey as Uint8Array;
         } catch (error) {
             throw new InvalidHDKey(
