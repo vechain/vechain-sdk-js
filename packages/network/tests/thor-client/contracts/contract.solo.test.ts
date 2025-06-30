@@ -137,7 +137,9 @@ describe('ThorClient - Contracts', () => {
 
         // Poll until the transaction receipt is available
         const contract = await retryOperation(async () =>
-            response.waitForDeployment()
+            await response.waitForDeployment(),
+            5, // maxAttempts
+            2000 // baseDelay
         );
 
         expect(contract.address).toBeDefined();
@@ -155,7 +157,6 @@ describe('ThorClient - Contracts', () => {
         // Assertions
         expect(contract.deployTransactionReceipt?.reverted).toBe(false);
         expect(contract.deployTransactionReceipt?.outputs).toHaveLength(1);
-        expect(contractAddress).not.toBeNull();
         expect(Address.isValid(contractAddress)).toBe(true);
     }, 10000);
 

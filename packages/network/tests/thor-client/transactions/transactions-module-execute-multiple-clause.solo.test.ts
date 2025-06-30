@@ -77,7 +77,9 @@ describe('ThorClient - Transactions Module Execute multiple clauses', () => {
                     clauses,
                     signer,
                     options
-                )
+                ),
+            5, // maxAttempts
+            2000 // baseDelay
         );
         // wait for the transaction to be mined
         const receipt = await tx.wait();
@@ -98,7 +100,9 @@ describe('ThorClient - Transactions Module Execute multiple clauses', () => {
                     clauses,
                     signer,
                     options
-                )
+                ),
+            5, // maxAttempts
+            2000 // baseDelay
         );
         // wait for the transaction to be mined
         const receipt = await tx.wait();
@@ -118,7 +122,9 @@ describe('ThorClient - Transactions Module Execute multiple clauses', () => {
                     clauses,
                     signer,
                     options
-                )
+                ),
+            5, // maxAttempts
+            2000 // baseDelay
         );
         // wait for the transaction to be mined
         const receipt = await tx.wait();
@@ -141,7 +147,9 @@ describe('ThorClient - Transactions Module Execute multiple clauses', () => {
                     clauses,
                     signer,
                     options
-                )
+                ),
+            5, // maxAttempts
+            2000 // baseDelay
         );
         // wait for the transaction to be mined
         const receipt = await tx.wait();

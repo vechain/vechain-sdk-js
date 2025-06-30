@@ -59,7 +59,9 @@ describe('ThorClient - Transactions Module Execute Transaction', () => {
                     depositFn,
                     [1],
                     options
-                )
+                ),
+            5, // maxAttempts
+            2000 // baseDelay
         );
         // wait for the transaction to be mined
         const receipt = await tx.wait();
@@ -82,7 +84,9 @@ describe('ThorClient - Transactions Module Execute Transaction', () => {
                     depositFn,
                     [1],
                     options
-                )
+                ),
+            5, // maxAttempts
+            2000 // baseDelay
         );
         // wait for the transaction to be mined
         const receipt = await tx.wait();
@@ -104,7 +108,9 @@ describe('ThorClient - Transactions Module Execute Transaction', () => {
                     depositFn,
                     [1],
                     options
-                )
+                ),
+            5, // maxAttempts
+            2000 // baseDelay
         );
         // wait for the transaction to be mined
         const receipt = await tx.wait();
@@ -129,7 +135,9 @@ describe('ThorClient - Transactions Module Execute Transaction', () => {
                     depositFn,
                     [1],
                     options
-                )
+                ),
+            5, // maxAttempts
+            2000 // baseDelay
         );
         // wait for the transaction to be mined
         const receipt = await tx.wait();
