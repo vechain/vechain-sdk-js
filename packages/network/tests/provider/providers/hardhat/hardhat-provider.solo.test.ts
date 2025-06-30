@@ -9,7 +9,8 @@ import {
     type VeChainProvider,
     type VeChainSigner
 } from '../../../../src';
-import { providerMethodsTestCasesSolo, TEST_ACCOUNT } from '../fixture';
+import { providerMethodsTestCasesSolo } from '../fixture';
+import { TEST_ACCOUNTS } from '../../../fixture';
 import {
     deployERC20Contract,
     deployERC721Contract,
@@ -27,17 +28,25 @@ describe('Hardhat provider tests', () => {
      */
     let thorClient: ThorClient;
     let provider: HardhatVeChainProvider;
+    let fundedAccount: { privateKey: string; address: string };
 
     /**
      * Init thor client and provider before each test
      */
     beforeEach(() => {
+        // Use a funded account from TEST_ACCOUNTS
+        const account = TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION;
+        fundedAccount = {
+            privateKey: account.privateKey,
+            address: account.address
+        };
+
         thorClient = ThorClient.at(THOR_SOLO_URL);
         provider = new HardhatVeChainProvider(
             new ProviderInternalBaseWallet([
                 {
-                    privateKey: HexUInt.of(TEST_ACCOUNT.privateKey).bytes,
-                    address: TEST_ACCOUNT.address
+                    privateKey: HexUInt.of(fundedAccount.privateKey).bytes,
+                    address: fundedAccount.address
                 }
             ]),
             THOR_SOLO_URL,
@@ -177,56 +186,97 @@ describe('Hardhat provider tests', () => {
      * @throws {Error} If the received message doesn't match the expected format or if the log event details are incorrect, indicating an issue with the subscription or the event emission process.
      */
     test('Should be able to get to subscribe to the latest logs of an erc20 contract', async () => {
-        const contract = await deployERC20Contract(
-            thorClient,
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner
-        );
+        try {
+            console.log('Starting ERC20 contract deployment...');
+            const contract = await deployERC20Contract(
+                thorClient,
+                (await provider.getSigner(
+                    fundedAccount.address
+                )) as VeChainSigner
+            );
+            console.log(
+                'ERC20 contract deployed successfully at:',
+                contract.address
+            );
 
-        const logsParams = {
-            address: [contract.address],
-            topics: []
-        };
+            const logsParams = {
+                address: [contract.address],
+                topics: []
+            };
 
-        // Call RPC function to subscribe to logs
-        const rpcCall = await provider.request({
-            method: 'eth_subscribe',
-            params: ['logs', logsParams]
-        });
-        // Wait for the subscription to receive a message (log event)
-        const messageReceived = waitForMessage(provider as VeChainProvider);
+            // Call RPC function to subscribe to logs
+            console.log('Setting up log subscription...');
+            const rpcCall = await provider.request({
+                method: 'eth_subscribe',
+                params: ['logs', logsParams]
+            });
+            console.log('Subscription created:', rpcCall);
 
-        // Execute a contract transaction to generate a log event
-        await thorClient.contracts.executeTransaction(
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner,
-            contract.address,
-            ABIContract.ofAbi(contract.abi).getFunction('transfer'),
-            [TEST_ACCOUNT.address, 100]
-        );
+            // Wait for the subscription to receive a message (log event)
+            const messageReceived = waitForMessage(provider as VeChainProvider);
 
-        const message = await messageReceived;
+            // Execute a contract transaction to generate a log event
+            console.log('Executing transfer transaction...');
+            await thorClient.contracts.executeTransaction(
+                (await provider.getSigner(
+                    fundedAccount.address
+                )) as VeChainSigner,
+                contract.address,
+                ABIContract.ofAbi(contract.abi).getFunction('transfer'),
+                [fundedAccount.address, 100]
+            );
+            console.log('Transfer transaction executed');
 
-        // Clean up the subscription
-        provider.destroy();
+            const message = await messageReceived;
+            console.log('Received subscription message');
 
-        // Assertions to validate the received message
-        expect(message).toBeDefined();
-        expect(message.method).toBeDefined();
-        expect(message.params).toBeDefined();
+            // Clean up the subscription
+            provider.destroy();
 
-        // @ts-expect-error - Asserting that the log event contains the expected contract address
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        expect(message.params.result[0].address).toBe(contract.address);
+            // Assertions to validate the received message
+            expect(message).toBeDefined();
+            expect(message.method).toBeDefined();
+            expect(message.params).toBeDefined();
 
-        // @ts-expect-error - Asserting that the log event contains defined topics
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        expect(message.params.result[0].topics).toBeDefined();
+            // @ts-expect-error - Asserting that the log event contains the expected contract address
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            expect(message.params.result[0].address).toBe(contract.address);
 
-        // @ts-expect-error - Asserting that the log event contains data
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        expect(message.params.result[0].data).toBeDefined();
+            // @ts-expect-error - Asserting that the log event contains defined topics
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            expect(message.params.result[0].topics).toBeDefined();
 
-        // Validate the RPC call was successful
-        expect(rpcCall).not.toBe('0x0');
+            // @ts-expect-error - Asserting that the log event contains data
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            expect(message.params.result[0].data).toBeDefined();
+
+            // Validate the RPC call was successful
+            expect(rpcCall).not.toBe('0x0');
+            console.log('Test completed successfully');
+        } catch (error) {
+            console.error('Test failed with error:', error);
+            console.error('Error details:', {
+                message: error instanceof Error ? error.message : String(error),
+                stack: error instanceof Error ? error.stack : undefined,
+                name: error instanceof Error ? error.name : undefined
+            });
+
+            // Check if it's an insufficient energy error
+            if (
+                error instanceof Error &&
+                error.message.includes('insufficient energy')
+            ) {
+                console.error(
+                    'This is an insufficient energy error. The test account needs to be funded with VET.'
+                );
+                console.error('Test account address:', fundedAccount.address);
+                console.error(
+                    'Please ensure the solo node is running and the test account has sufficient VET for contract deployment.'
+                );
+            }
+
+            throw error; // Re-throw to fail the test properly
+        }
     }, 120000);
 
     /**
@@ -254,85 +304,142 @@ describe('Hardhat provider tests', () => {
      * @throws {Error} If any of the assertions fail, indicating a problem with event subscription or log data capture.
      */
     test('Should be able to subscribe to the latest logs of an erc20 and erc721 contract', async () => {
-        // Test setup: Deploy contracts and set up event subscriptions
-        const erc20Contract = await deployERC20Contract(
-            thorClient,
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner
-        );
-        const erc721Contract = await deployERC721Contract(
-            thorClient,
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner
-        );
+        try {
+            // Test setup: Deploy contracts and set up event subscriptions
+            console.log('Starting contract deployment...');
+            const erc20Contract = await deployERC20Contract(
+                thorClient,
+                (await provider.getSigner(
+                    fundedAccount.address
+                )) as VeChainSigner
+            );
+            console.log(
+                'ERC20 contract deployed successfully at:',
+                erc20Contract.address
+            );
 
-        const erc20logsParams = {
-            address: [erc20Contract.address],
-            topics: []
-        };
+            const erc721Contract = await deployERC721Contract(
+                thorClient,
+                (await provider.getSigner(
+                    fundedAccount.address
+                )) as VeChainSigner
+            );
+            console.log(
+                'ERC721 contract deployed successfully at:',
+                erc721Contract.address
+            );
 
-        const erc721logsParams = {
-            address: [erc721Contract.address],
-            topics: []
-        };
+            const erc20logsParams = {
+                address: [erc20Contract.address],
+                topics: []
+            };
 
-        const erc20Subscription = await provider.request({
-            method: 'eth_subscribe',
-            params: ['logs', erc20logsParams]
-        });
+            const erc721logsParams = {
+                address: [erc721Contract.address],
+                topics: []
+            };
 
-        const erc721Subscription = await provider.request({
-            method: 'eth_subscribe',
-            params: ['logs', erc721logsParams]
-        });
-
-        // Collect and assert log events
-        let results: SubscriptionEvent[] = [];
-        const eventPromise = new Promise((resolve) => {
-            provider.on('message', (message: SubscriptionEvent) => {
-                results.push(message);
-                if (results.length >= 2) {
-                    provider.destroy();
-                    resolve(results);
-                }
+            console.log('Setting up subscriptions...');
+            const erc20Subscription = await provider.request({
+                method: 'eth_subscribe',
+                params: ['logs', erc20logsParams]
             });
-        });
 
-        // Execute transactions that should emit events
-        await thorClient.contracts.executeTransaction(
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner,
-            erc20Contract.address,
-            ABIContract.ofAbi(erc20Contract.abi).getFunction('transfer'),
-            [TEST_ACCOUNT.address, 100]
-        );
+            const erc721Subscription = await provider.request({
+                method: 'eth_subscribe',
+                params: ['logs', erc721logsParams]
+            });
 
-        await thorClient.contracts.executeTransaction(
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner,
-            erc721Contract.address,
-            ABIContract.ofAbi(erc721Contract.abi).getFunction('mintItem'),
-            [TEST_ACCOUNT.address]
-        );
+            console.log('Subscriptions created:', {
+                erc20Subscription,
+                erc721Subscription
+            });
 
-        results = (await eventPromise) as SubscriptionEvent[];
+            // Collect and assert log events
+            let results: SubscriptionEvent[] = [];
+            const eventPromise = new Promise((resolve) => {
+                provider.on('message', (message: SubscriptionEvent) => {
+                    results.push(message);
+                    if (results.length >= 2) {
+                        provider.destroy();
+                        resolve(results);
+                    }
+                });
+            });
 
-        // Assertions to validate the received log events
-        expect(results).toBeDefined();
-        expect(results.length).toBeGreaterThan(1);
-        expect(
-            results.filter((x) => x.params.subscription === erc20Subscription)
-                .length
-        ).toBeGreaterThan(0);
-        expect(
-            results.filter((x) => x.params.subscription === erc721Subscription)
-                .length
-        ).toBeGreaterThan(0);
+            console.log('Executing transactions to generate events...');
+            // Execute transactions that should emit events
+            await thorClient.contracts.executeTransaction(
+                (await provider.getSigner(
+                    fundedAccount.address
+                )) as VeChainSigner,
+                erc20Contract.address,
+                ABIContract.ofAbi(erc20Contract.abi).getFunction('transfer'),
+                [fundedAccount.address, 100]
+            );
+            console.log('ERC20 transfer transaction executed');
 
-        expect(results[0].method).toBe('eth_subscription');
-        expect(results[1].method).toBe('eth_subscription');
+            await thorClient.contracts.executeTransaction(
+                (await provider.getSigner(
+                    fundedAccount.address
+                )) as VeChainSigner,
+                erc721Contract.address,
+                ABIContract.ofAbi(erc721Contract.abi).getFunction('mintItem'),
+                [fundedAccount.address]
+            );
+            console.log('ERC721 mint transaction executed');
 
-        // @ts-expect-error - Asserting that log data is present
-        expect(results[0].params.result.length).toBeGreaterThan(0);
+            results = (await eventPromise) as SubscriptionEvent[];
+            console.log('Received events:', results.length);
 
-        // @ts-expect-error - Asserting that log data is present
-        expect(results[1].params.result.length).toBeGreaterThan(0);
+            // Assertions to validate the received log events
+            expect(results).toBeDefined();
+            expect(results.length).toBeGreaterThan(1);
+            expect(
+                results.filter(
+                    (x) => x.params.subscription === erc20Subscription
+                ).length
+            ).toBeGreaterThan(0);
+            expect(
+                results.filter(
+                    (x) => x.params.subscription === erc721Subscription
+                ).length
+            ).toBeGreaterThan(0);
+
+            expect(results[0].method).toBe('eth_subscription');
+            expect(results[1].method).toBe('eth_subscription');
+
+            // @ts-expect-error - Asserting that log data is present
+            expect(results[0].params.result.length).toBeGreaterThan(0);
+
+            // @ts-expect-error - Asserting that log data is present
+            expect(results[1].params.result.length).toBeGreaterThan(0);
+
+            console.log('Test completed successfully');
+        } catch (error) {
+            console.error('Test failed with error:', error);
+            console.error('Error details:', {
+                message: error instanceof Error ? error.message : String(error),
+                stack: error instanceof Error ? error.stack : undefined,
+                name: error instanceof Error ? error.name : undefined
+            });
+
+            // Check if it's an insufficient energy error
+            if (
+                error instanceof Error &&
+                error.message.includes('insufficient energy')
+            ) {
+                console.error(
+                    'This is an insufficient energy error. The test account needs to be funded with VET.'
+                );
+                console.error('Test account address:', fundedAccount.address);
+                console.error(
+                    'Please ensure the solo node is running and the test account has sufficient VET for contract deployment.'
+                );
+            }
+
+            throw error; // Re-throw to fail the test properly
+        }
     }, 120000);
 
     /**

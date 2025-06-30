@@ -12,7 +12,8 @@ import {
     VeChainProvider,
     type VeChainSigner
 } from '../../../../src';
-import { providerMethodsTestCasesSolo, TEST_ACCOUNT } from '../fixture';
+import { providerMethodsTestCasesSolo } from '../fixture';
+import { TEST_ACCOUNTS } from '../../../fixture';
 import {
     deployERC20Contract,
     deployERC721Contract,
@@ -57,8 +58,11 @@ describe('VeChain provider tests - solo', () => {
             thorClient,
             new ProviderInternalBaseWallet([
                 {
-                    privateKey: HexUInt.of(TEST_ACCOUNT.privateKey).bytes,
-                    address: TEST_ACCOUNT.address
+                    privateKey: HexUInt.of(
+                        TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.privateKey
+                    ).bytes,
+                    address:
+                        TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
                 }
             ])
         );
@@ -214,7 +218,9 @@ describe('VeChain provider tests - solo', () => {
     test('Should be able to get to subscribe to the latest logs of an erc20 contract', async () => {
         const contract = await deployERC20Contract(
             thorClient,
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner
+            (await provider.getSigner(
+                TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
+            )) as VeChainSigner
         );
 
         const logsParams = {
@@ -235,10 +241,12 @@ describe('VeChain provider tests - solo', () => {
 
         // Execute a contract transaction to generate a log event
         await thorClient.contracts.executeTransaction(
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner,
+            (await provider.getSigner(
+                TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
+            )) as VeChainSigner,
             contract.address,
             ABIContract.ofAbi(contract.abi).getFunction('transfer'),
-            [TEST_ACCOUNT.address, 100]
+            [TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address, 100]
         );
 
         const message = await messageReceived;
@@ -303,13 +311,13 @@ describe('VeChain provider tests - solo', () => {
                 const erc20Contract = await deployERC20Contract(
                     thorClient,
                     (await provider.getSigner(
-                        TEST_ACCOUNT.address
+                        TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
                     )) as VeChainSigner
                 );
                 const erc721Contract = await deployERC721Contract(
                     thorClient,
                     (await provider.getSigner(
-                        TEST_ACCOUNT.address
+                        TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
                     )) as VeChainSigner
                 );
 
@@ -354,13 +362,13 @@ describe('VeChain provider tests - solo', () => {
                 // Execute transactions that should emit events
                 await thorClient.contracts.executeTransaction(
                     (await provider.getSigner(
-                        TEST_ACCOUNT.address
+                        TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
                     )) as VeChainSigner,
                     erc20Contract.address,
                     ABIContract.ofAbi(erc20Contract.abi).getFunction(
                         'transfer'
                     ),
-                    [TEST_ACCOUNT.address, 100]
+                    [TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address, 100]
                 );
 
                 const clauses = Clause.callFunction(
@@ -368,7 +376,7 @@ describe('VeChain provider tests - solo', () => {
                     ABIContract.ofAbi(erc721Contract.abi).getFunction(
                         'mintItem'
                     ),
-                    [TEST_ACCOUNT.address]
+                    [TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address]
                 );
 
                 const gas = await thorClient.transactions.estimateGas([
@@ -377,13 +385,13 @@ describe('VeChain provider tests - solo', () => {
 
                 await thorClient.contracts.executeTransaction(
                     (await provider.getSigner(
-                        TEST_ACCOUNT.address
+                        TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
                     )) as VeChainSigner,
                     erc721Contract.address,
                     ABIContract.ofAbi(erc721Contract.abi).getFunction(
                         'mintItem'
                     ),
-                    [TEST_ACCOUNT.address],
+                    [TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address],
                     { gas: gas.totalGas }
                 );
 
