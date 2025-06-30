@@ -27,7 +27,8 @@
   "peerDependencies": {
     "@vechain/sdk-core": "*",
     "@vechain/sdk-hardhat-plugin": "*",
-    "@vechain/sdk-logging": "*"
+    "@vechain/sdk-logging": "*",
+    "@vechain/sdk-thorest-api": "*"
   },
   "dependencies": {
     "@vechain/sdk-hardhat-plugin": "^1.2.0-rc.2",
