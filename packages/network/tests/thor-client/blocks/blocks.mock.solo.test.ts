@@ -38,7 +38,7 @@ describe('ThorClient - Blocks Module mock tests', () => {
     test('getBlockCompressed', async () => {
         const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
         const block = await retryOperation(async () => {
-            return await thorSoloClient.blocks.getBlockCompressed('latest');
+            return await thorSoloClient.blocks.getBlockCompressed('best');
         });
         expect(block).toBeDefined();
     }, 15000);
