@@ -1,6 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
 import {
-    type ContractClause,
     type ContractTransactionOptions,
     ProviderInternalBaseWallet,
     THOR_SOLO_URL,
@@ -8,7 +7,15 @@ import {
     VeChainProvider,
     type VeChainSigner
 } from '../../../src';
-import { ABIContract, Hex } from '@vechain/sdk-core';
+import {
+    ABIContract,
+    Address,
+    Clause,
+    Hex,
+    VTHO,
+    Units,
+    type ContractClause
+} from '@vechain/sdk-core';
 import { AccountDispatcher, getConfigData } from '@vechain/sdk-solo-setup';
 import { retryOperation } from '../../test-utils';
 
@@ -109,6 +116,36 @@ describe('ThorClient - Transactions Module Execute multiple clauses', () => {
         // assert the transaction was successful
         expect(receipt?.reverted).toBe(false);
     }, 30000);
+
+    test('ok <- Execute EIP-1559 transaction using clauses built with transferVTHOToken', async () => {
+        // setup options
+        const options: ContractTransactionOptions = {
+            maxFeePerGas: 10000000000000,
+            maxPriorityFeePerGas: 100
+        };
+
+        const vthoTransferClauses = [
+            Clause.transferVTHOToken(
+                Address.of(testContractAddress),
+                VTHO.of(100, Units.wei)
+            ),
+            Clause.transferVTHOToken(
+                Address.of(testContractAddress),
+                VTHO.of(200, Units.wei)
+            )
+        ];
+        // execute the transaction
+        const tx =
+            await thorSoloClient.transactions.executeMultipleClausesTransaction(
+                vthoTransferClauses,
+                signer,
+                options
+            );
+        // wait for the transaction to be mined
+        const receipt = await tx.wait();
+        // assert the transaction was successful
+        expect(receipt?.reverted).toBe(false);
+    });
 
     test('ok <- Execute transaction for testing contract that defaults to EIP-1559', async () => {
         // setup options
