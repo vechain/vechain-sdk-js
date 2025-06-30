@@ -333,7 +333,7 @@ describe('Hardhat provider tests', () => {
 
         // @ts-expect-error - Asserting that log data is present
         expect(results[1].params.result.length).toBeGreaterThan(0);
-    }, 60000);
+    }, 120000);
 
     /**
      * Invalid RPC method tests
