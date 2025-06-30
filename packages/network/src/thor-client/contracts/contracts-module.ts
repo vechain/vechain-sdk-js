@@ -1,4 +1,4 @@
-import { type ABIFunction } from '@vechain/sdk-core';
+import { type ABIFunction, type ContractClause } from '@vechain/sdk-core';
 import { type Abi } from 'abitype';
 import { type VeChainSigner } from '../../signer/signers/types';
 import {
@@ -9,7 +9,6 @@ import { Contract, ContractFactory } from './model';
 import type {
     ContractCallOptions,
     ContractCallResult,
-    ContractClause,
     ContractTransactionOptions
 } from './types';
 import { type TransactionsModule } from '../transactions';
