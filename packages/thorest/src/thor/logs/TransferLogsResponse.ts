@@ -30,7 +30,7 @@ class TransferLogsResponse extends Array<TransferLogResponse> {
                 }),
                 TransferLogsResponse.prototype
             ) as TransferLogsResponse;
-        } catch(error) {
+        } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: TransferLogsResponseJSON)`,
                 'Bad parse',

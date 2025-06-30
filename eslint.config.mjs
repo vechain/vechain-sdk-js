@@ -74,6 +74,17 @@ export default [{
             tabWidth: 4,
         }],
 
+        // Spacing and blank line rules to catch formatting issues
+        "no-multiple-empty-lines": ["error", { 
+            max: 1,
+            maxEOF: 1,
+            maxBOF: 0
+        }],
+        "no-trailing-spaces": "error",
+        "eol-last": ["error", "always"],
+        "no-irregular-whitespace": "error",
+        "no-mixed-spaces-and-tabs": "error",
+
         "no-warning-comments": "warn",
         "no-multi-str": "off",
         "local-rules/disallow-buffer-from-alloc": "error",

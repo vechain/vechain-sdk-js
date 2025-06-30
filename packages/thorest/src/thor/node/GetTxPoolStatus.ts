@@ -1,5 +1,11 @@
 import { type HttpClient, type HttpPath } from '@http';
-import { Status, type StatusJSON, ThorError, type ThorRequest, type ThorResponse } from '@thor';
+import {
+    Status,
+    type StatusJSON,
+    ThorError,
+    type ThorRequest,
+    type ThorResponse
+} from '@thor';
 
 /**
  * Full-Qualified-Path
@@ -19,8 +25,7 @@ class GetTxPoolStatus implements ThorRequest<GetTxPoolStatus, Status> {
      * Protected class constructor to initialize the class.
      * This constructor is not accessible outside the containing class or its subclasses.
      */
-    protected constructor() {
-    }
+    protected constructor() {}
 
     /**
      * Sends a request to retrieve transaction pool status and handles the response.

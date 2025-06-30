@@ -16,7 +16,8 @@ const FQP = 'packages/thorest/src/thor/logs/QueryVETTransferEvents.ts!';
  * [Query VET transfer events](http://localhost:8669/doc/stoplight-ui/#/paths/logs-transfer/post)
  */
 class QueryVETTransferEvents
-    implements ThorRequest<QueryVETTransferEvents, TransferLogsResponse> {
+    implements ThorRequest<QueryVETTransferEvents, TransferLogsResponse>
+{
     /**
      * Represents the HTTP path configuration used to define a specific route.
      */

@@ -2,8 +2,10 @@ import { type HttpClient, type HttpPath, type HttpQuery } from '@http';
 import { ExecuteCodesResponse, ExecuteCodesRequest } from '@thor/accounts';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
 import { Revision } from '@vechain/sdk-core';
-import { ExecuteCodesResponseJSON } from './ExecuteCodesResponseJSON';
-import { ExecuteCodesRequestJSON } from './ExecuteCodesRequestJSON';
+import {
+    type ExecuteCodesResponseJSON,
+    type ExecuteCodesRequestJSON
+} from '@thor/accounts';
 
 /**
  * Full-Qualified Path
@@ -37,7 +39,10 @@ class InspectClauses
     /**
      * Constructs an instance of the class with the specified HTTP path and request.
      */
-    protected constructor(query: InspectClauseQuery, request: ExecuteCodesRequest) {
+    protected constructor(
+        query: InspectClauseQuery,
+        request: ExecuteCodesRequest
+    ) {
         this.query = query;
         this.request = request;
     }

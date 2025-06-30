@@ -1,6 +1,8 @@
-import { InvalidDataType } from '@vechain/sdk-errors';
-import { Revision } from '@vechain/sdk-core';
-import { HttpClient } from '@http';
+import { IllegalArgumentError, Revision } from '@vechain/sdk-core';
+import { type HttpClient } from '@http';
+import { type BlockJSON } from '@thor/blocks';
+
+const FQP = 'packages/thorest/src/thor/fork/forkDetector.ts!';
 
 // In-memory cache for fork detection results
 interface CacheEntry {
@@ -24,7 +26,7 @@ class ForkDetector {
      *
      * @param revision Block number or ID (e.g., 'best', 'finalized', or numeric).
      * @returns `true` if Galactica-forked, otherwise `false`.
-     * @throws {InvalidDataType} If the revision is invalid.
+     * @throws {IllegalArgumentError} If the revision is invalid.
      */
     public async isGalacticaForked(
         revision?: string | number
@@ -39,10 +41,10 @@ class ForkDetector {
             revision = 'best';
         }
         if (!Revision.isValid(revision)) {
-            throw new InvalidDataType(
-                'GalacticaForkDetector.isGalacticaForked()',
+            throw new IllegalArgumentError(
+                `${FQP}isGalacticaForked(revision?: string | number)`,
                 'Invalid revision. Must be a valid block number or ID.',
-                { revision }
+                { revision: revision.toString() }
             );
         }
 
@@ -67,10 +69,10 @@ class ForkDetector {
         }
 
         // If cache miss or expired negative result, make the request
-        const block = (await this.httpClient.get(
+        const block = await this.httpClient.get(
             { path: `/blocks/${revision}` },
             { query: '' }
-        ));
+        );
 
         if (block === null) {
             // Cache the negative result with TTL
@@ -81,8 +83,8 @@ class ForkDetector {
             return false;
         }
 
-        const blockData = await block.json();
-        
+        const blockData = (await block.json()) as BlockJSON;
+
         if (blockData === null) {
             // Cache the negative result with TTL
             galacticaForkCache.set(revisionKey, {

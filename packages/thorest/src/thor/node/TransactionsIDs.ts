@@ -10,7 +10,6 @@ const FQP = 'packages/thorest/src/thor/node/TransactionsIDs.ts!';
  * [TransactionsIDs](http://localhost:8669/doc/stoplight-ui/#/schemas/TransactionsIDs)
  */
 class TransactionsIDs extends Array<Hex> {
-
     /**
      * Constructs a new instance of the TransactionsIDs class.
      *

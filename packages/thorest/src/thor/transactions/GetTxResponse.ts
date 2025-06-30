@@ -8,7 +8,6 @@ import { Tx } from '@thor/model/Tx';
 const FQP = 'packages/thorest/src/thor/transactions/GetTxResponse.ts!';
 
 class GetTxResponse extends Tx {
-
     /**
      * Transaction metadata such as block number, block timestamp, etc.
      */

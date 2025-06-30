@@ -29,7 +29,7 @@
   "scripts": {
     "build": "rm -rf ./dist && tsup-node src/index.ts --format cjs,esm --dts --sourcemap",
     "check:circular-dependencies": "npx madge --circular --extensions ts src",
-    "lint": "eslint",
+    "lint": "eslint \"src/**/*.ts\" \"tests/**/*.ts\"",
     "format": "prettier --write src/**/*.ts tests/**/*.ts",
     "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
     "test:integration": "rm -rf ./coverageIntegration && jest --coverage --coverageDirectory=coverageIntegration --group=integration",

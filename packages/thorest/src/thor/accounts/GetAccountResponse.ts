@@ -1,9 +1,5 @@
-import {
-    Hex,
-    IllegalArgumentError,
-    Quantity,
-} from '@vechain/sdk-core';
-import { GetAccountResponseJSON } from './GetAccountResponseJSON';
+import { Hex, IllegalArgumentError, Quantity } from '@vechain/sdk-core';
+import { type GetAccountResponseJSON } from './GetAccountResponseJSON';
 
 /**
  * Full-Qualified Path
@@ -14,7 +10,7 @@ const FQP = 'packages/thorest/src/thor/accounts/GetAccountResponse.ts!';
  * Get Account Response
  *
  * Represents an account response containing balance, energy and code information.
- * 
+ *
  * [GetAccountResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/GetAccountResponse)
  */
 class GetAccountResponse {
@@ -22,12 +18,12 @@ class GetAccountResponse {
      * The balance of the account.
      */
     readonly balance: bigint;
-    
+
     /**
      * The energy of the account.
      */
     readonly energy: bigint;
-    
+
     /**
      * Whether the account has code.
      */
