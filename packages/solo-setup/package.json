@@ -12,7 +12,8 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "types"
   ],
   "scripts": {
     "build": "rm -rf ./dist && tsup-node index.ts --format cjs,esm --dts --outDir dist && npx tsup-node scripts/deploy.ts --format cjs,esm --outDir dist",
