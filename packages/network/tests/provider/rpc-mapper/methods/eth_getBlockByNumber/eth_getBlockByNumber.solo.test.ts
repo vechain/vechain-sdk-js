@@ -9,6 +9,7 @@ import {
     type TransactionRPC
 } from '../../../../../src';
 import { HexUInt } from '@vechain/sdk-core';
+import { retryOperation } from '../../../../test-utils';
 
 /**
  * RPC Mapper integration tests for 'eth_getBlockByNumber' method
@@ -103,5 +104,14 @@ describe('RPC Mapper - eth_getBlockByNumber method tests', () => {
             });
             console.log(JSON.stringify(block, null, 2));
         });
+
+        test('eth_getBlockByNumber', async () => {
+            const block = await retryOperation(async () => {
+                return await RPCMethodsMap(thorClient)[
+                    RPC_METHODS.eth_getBlockByNumber
+                ](['latest', false]);
+            });
+            expect(block).toBeDefined();
+        }, 15000);
     });
 });

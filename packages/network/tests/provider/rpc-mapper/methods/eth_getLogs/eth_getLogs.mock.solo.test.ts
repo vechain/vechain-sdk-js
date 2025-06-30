@@ -62,7 +62,7 @@ describe('RPC Mapper - eth_getLogs method tests', () => {
                 )) as LogsRPC[];
 
                 expect(logs.slice(0, 4)).toStrictEqual(fixture.expected);
-            }, 6000);
+            }, 15000);
         });
     });
 

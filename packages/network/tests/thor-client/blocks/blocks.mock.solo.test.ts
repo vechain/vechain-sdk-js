@@ -1,6 +1,7 @@
 import { describe, expect, jest, test } from '@jest/globals';
 import { THOR_SOLO_URL, ThorClient } from '../../../src';
 import { SimpleHttpClient } from '../../../src/http';
+import { retryOperation } from '../../test-utils';
 
 /**
  * Blocks module tests with mocks.
@@ -33,4 +34,12 @@ describe('ThorClient - Blocks Module mock tests', () => {
             thorSoloClient.blocks.getBlockExpanded('best')
         ).resolves.toBeNull();
     });
+
+    test('getBlockCompressed', async () => {
+        const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
+        const block = await retryOperation(async () => {
+            return await thorSoloClient.blocks.getBlockCompressed('latest');
+        });
+        expect(block).toBeDefined();
+    }, 15000);
 });

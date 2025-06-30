@@ -250,4 +250,14 @@ describe('ThorClient - Transactions Module', () => {
             }
         );
     });
+
+    test('estimateGas', async () => {
+        const gasResult = await retryOperation(async () => {
+            return await thorSoloClient.transactions.estimateGas(
+                [transfer1VTHOClause],
+                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+            );
+        });
+        expect(gasResult).toBeDefined();
+    }, 15000);
 });

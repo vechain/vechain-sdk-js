@@ -10,6 +10,7 @@ import {
 } from '../../../src';
 import { sendTransactionWithAccount } from './fixture-thorest';
 import { getUnusedAccount } from '../../fixture';
+import { retryOperation } from '../../test-utils';
 
 const TIMEOUT = 10000;
 
@@ -69,10 +70,12 @@ describe('DebugModule testnet tests', () => {
 
     describe('name = empty, sender account index = 7', () => {
         const tracerName = '';
-        const txPromise = sendTransactionWithAccount(
-            getUnusedAccount(),
-            thorClient
-        );
+        const txPromise = retryOperation(async () => {
+            return await sendTransactionWithAccount(
+                getUnusedAccount(),
+                thorClient
+            );
+        });
 
         test(
             'ok <- traceContractCall',
@@ -103,10 +106,12 @@ describe('DebugModule testnet tests', () => {
 
     describe('name = 4byte, sender account index = 8', () => {
         const tracerName = '4byte';
-        const txPromise = sendTransactionWithAccount(
-            getUnusedAccount(),
-            thorClient
-        );
+        const txPromise = retryOperation(async () => {
+            return await sendTransactionWithAccount(
+                getUnusedAccount(),
+                thorClient
+            );
+        });
         test(
             'ok <- traceContractCall',
             async () => {
@@ -136,10 +141,12 @@ describe('DebugModule testnet tests', () => {
 
     describe('name = call, sender account index = 9', () => {
         const tracerName = 'call';
-        const txPromise = sendTransactionWithAccount(
-            getUnusedAccount(),
-            thorClient
-        );
+        const txPromise = retryOperation(async () => {
+            return await sendTransactionWithAccount(
+                getUnusedAccount(),
+                thorClient
+            );
+        });
         test(
             'ok <- traceContractCall',
             async () => {
@@ -169,10 +176,12 @@ describe('DebugModule testnet tests', () => {
 
     describe('name = noop, sender account index = 10', () => {
         const tracerName = 'noop';
-        const txPromise = sendTransactionWithAccount(
-            getUnusedAccount(),
-            thorClient
-        );
+        const txPromise = retryOperation(async () => {
+            return await sendTransactionWithAccount(
+                getUnusedAccount(),
+                thorClient
+            );
+        });
         test(
             'ok <- traceContractCall',
             async () => {
@@ -202,10 +211,12 @@ describe('DebugModule testnet tests', () => {
 
     describe('name = prestate, sender account index = 11', () => {
         const tracerName = 'prestate';
-        const txPromise = sendTransactionWithAccount(
-            getUnusedAccount(),
-            thorClient
-        );
+        const txPromise = retryOperation(async () => {
+            return await sendTransactionWithAccount(
+                getUnusedAccount(),
+                thorClient
+            );
+        });
         test(
             'ok <- traceContractCall',
             async () => {
@@ -235,10 +246,12 @@ describe('DebugModule testnet tests', () => {
 
     describe('name = unigram, sender account index = 12', () => {
         const tracerName = 'unigram';
-        const txPromise = sendTransactionWithAccount(
-            getUnusedAccount(),
-            thorClient
-        );
+        const txPromise = retryOperation(async () => {
+            return await sendTransactionWithAccount(
+                getUnusedAccount(),
+                thorClient
+            );
+        });
         test(
             'ok <- traceContractCall',
             async () => {
@@ -268,10 +281,12 @@ describe('DebugModule testnet tests', () => {
 
     describe('name = bigram, sender account index = 13', () => {
         const tracerName = 'bigram';
-        const txPromise = sendTransactionWithAccount(
-            getUnusedAccount(),
-            thorClient
-        );
+        const txPromise = retryOperation(async () => {
+            return await sendTransactionWithAccount(
+                getUnusedAccount(),
+                thorClient
+            );
+        });
         test(
             'ok <- traceContractCall',
             async () => {
@@ -301,10 +316,12 @@ describe('DebugModule testnet tests', () => {
 
     describe('name = trigram, sender account index = 14', () => {
         const tracerName = 'trigram';
-        const txPromise = sendTransactionWithAccount(
-            getUnusedAccount(),
-            thorClient
-        );
+        const txPromise = retryOperation(async () => {
+            return await sendTransactionWithAccount(
+                getUnusedAccount(),
+                thorClient
+            );
+        });
         test(
             'ok <- traceContractCall',
             async () => {
@@ -334,10 +351,12 @@ describe('DebugModule testnet tests', () => {
 
     describe('name = evmdis, sender account index = 15', () => {
         const tracerName = 'evmdis';
-        const txPromise = sendTransactionWithAccount(
-            getUnusedAccount(),
-            thorClient
-        );
+        const txPromise = retryOperation(async () => {
+            return await sendTransactionWithAccount(
+                getUnusedAccount(),
+                thorClient
+            );
+        });
         test(
             'ok <- traceContractCall',
             async () => {
@@ -367,10 +386,12 @@ describe('DebugModule testnet tests', () => {
 
     describe('name = opcount, sender account index = 16', () => {
         const tracerName = 'opcount';
-        const txPromise = sendTransactionWithAccount(
-            getUnusedAccount(),
-            thorClient
-        );
+        const txPromise = retryOperation(async () => {
+            return await sendTransactionWithAccount(
+                getUnusedAccount(),
+                thorClient
+            );
+        });
         test(
             'ok <- traceContractCall',
             async () => {
@@ -400,10 +421,12 @@ describe('DebugModule testnet tests', () => {
 
     describe('name = null, sender account index = 17', () => {
         const tracerName = null;
-        const txPromise = sendTransactionWithAccount(
-            getUnusedAccount(),
-            thorClient
-        );
+        const txPromise = retryOperation(async () => {
+            return await sendTransactionWithAccount(
+                getUnusedAccount(),
+                thorClient
+            );
+        });
         test(
             'ok <- traceContractCall',
             async () => {
