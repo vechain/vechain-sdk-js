@@ -21,12 +21,13 @@ describe('Custom network configuration hardhat - testnet', () => {
      */
     let hre: HardhatRuntimeEnvironment;
 
-    beforeEach(async function () {
+    beforeEach(function () {
         // Set hardhat context
         setHardhatContext('simple-vechain-hardhat-project');
 
-        // Load hardhat environment
-        hre = await import('hardhat');
+        // Load hardhat environment using require instead of dynamic import
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        hre = require('hardhat') as HardhatRuntimeEnvironment;
     });
 
     afterEach(function () {

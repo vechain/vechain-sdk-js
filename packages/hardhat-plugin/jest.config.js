@@ -23,20 +23,12 @@ module.exports = {
                   }
               }
             : undefined,
-    // Add experimental-vm-modules support for dynamic imports
-    globals: {
-        'ts-jest': {
-            useESM: false
-        }
-    },
-    extensionsToTreatAsEsm: [],
+    // Fix ts-jest configuration to use transform instead of deprecated globals
     transform: {
         '^.+\\.ts$': ['ts-jest', {
             useESM: false
         }]
     },
     // Enable experimental-vm-modules for dynamic imports
-    testEnvironmentOptions: {
-        nodeOptions: ['--experimental-vm-modules']
-    }
+    extensionsToTreatAsEsm: []
 };

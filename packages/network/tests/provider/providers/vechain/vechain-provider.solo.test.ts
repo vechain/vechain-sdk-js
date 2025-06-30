@@ -22,6 +22,21 @@ import { fail } from 'assert';
 import { retryOperation } from '../../../test-utils';
 
 /**
+ * Health check function to ensure Thor solo node is ready
+ */
+const waitForThorSoloReady = async (thorClient: ThorClient): Promise<void> => {
+    for (let i = 0; i < 10; i++) {
+        try {
+            await thorClient.blocks.getBestBlockCompressed();
+            return; // Success
+        } catch (error) {
+            if (i === 9) throw error; // Last attempt
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+        }
+    }
+};
+
+/**
  *VeChain provider tests - Solo Network
  *
  * @group integration/providers/vechain-provider-solo
@@ -36,7 +51,7 @@ describe('VeChain provider tests - solo', () => {
     /**
      * Init thor client and provider before each test
      */
-    beforeEach(() => {
+    beforeEach(async () => {
         thorClient = ThorClient.at(THOR_SOLO_URL);
         provider = new VeChainProvider(
             thorClient,
@@ -47,6 +62,8 @@ describe('VeChain provider tests - solo', () => {
                 }
             ])
         );
+        // Wait for Thor solo node to be ready
+        await waitForThorSoloReady(thorClient);
     });
 
     /**
@@ -277,8 +294,11 @@ describe('VeChain provider tests - solo', () => {
     test('Should be able to subscribe to the latest logs of an erc20 and erc721 contract', async () => {
         // Retry mechanism for connection issues
         let lastError: Error | null = null;
-        for (let attempt = 1; attempt <= 3; attempt++) {
+        for (let attempt = 1; attempt <= 5; attempt++) {
             try {
+                // Wait for Thor solo node to be ready
+                await new Promise((resolve) => setTimeout(resolve, 2000));
+
                 // Test setup: Deploy contracts and set up event subscriptions
                 const erc20Contract = await deployERC20Contract(
                     thorClient,
@@ -396,16 +416,17 @@ describe('VeChain provider tests - solo', () => {
                 return;
             } catch (error) {
                 lastError = error as Error;
-                if (attempt < 3) {
-                    // Wait 5 seconds before retrying (longer for complex test)
-                    await new Promise((resolve) => setTimeout(resolve, 5000));
+                console.log(`Attempt ${attempt} failed:`, error);
+                if (attempt < 5) {
+                    // Wait longer between retries for complex test
+                    await new Promise((resolve) => setTimeout(resolve, 10000));
                 }
             }
         }
 
         // All retries failed
-        throw lastError ?? new Error('Connection failed after 3 attempts');
-    }, 60000);
+        throw lastError ?? new Error('Connection failed after 5 attempts');
+    }, 120000);
 
     /**
      * Invalid RPC method tests
