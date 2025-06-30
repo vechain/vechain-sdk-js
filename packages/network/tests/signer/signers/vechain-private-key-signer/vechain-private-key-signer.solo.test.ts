@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-selector-parameter */
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
     ABIContract,

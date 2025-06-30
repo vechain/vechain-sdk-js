@@ -73,14 +73,16 @@ describe('Subscriptions Solo network tests', () => {
                     typeof event.data === 'string'
                         ? event.data
                         : JSON.stringify(event.data);
-                handlers.onMessage(data);
+                handlers.onMessage(String(data));
             };
 
             ws.onerror = (event: Event): void => {
                 if (!errorHandled) {
                     errorHandled = true;
                     handlers.onError(
-                        new Error(`WebSocket error: ${String(event)}`)
+                        new Error(
+                            `WebSocket error: ${event instanceof Error ? event.message : 'Unknown error'}`
+                        )
                     );
                 }
             };
@@ -92,7 +94,9 @@ describe('Subscriptions Solo network tests', () => {
                             // 3 = CLOSED
                             ws.close();
                         }
-                    } catch {}
+                    } catch {
+                        /* ignore error on close */
+                    }
                 }
             };
         }
@@ -138,7 +142,9 @@ describe('Subscriptions Solo network tests', () => {
                 if (!errorHandled) {
                     errorHandled = true;
                     handlers.onError(
-                        new Error(`WebSocket error: ${String(event)}`)
+                        new Error(
+                            `WebSocket error: ${event instanceof Error ? event.message : 'Unknown error'}`
+                        )
                     );
                 }
             });
@@ -153,7 +159,9 @@ describe('Subscriptions Solo network tests', () => {
                             // 3 = CLOSED
                             ws.close();
                         }
-                    } catch {}
+                    } catch {
+                        /* ignore error on close */
+                    }
                 }
             };
         }
@@ -331,11 +339,11 @@ describe('Subscriptions Solo network tests', () => {
                     reject(new Error('Timeout: No block received'));
                 }, TIMEOUT); // 15-second timeout
 
-                ws.onopen = () => {
+                ws.onopen = (): void => {
                     console.log('WebSocket connection opened.');
                 };
 
-                ws.onmessage = (event: MessageEvent) => {
+                ws.onmessage = (event: MessageEvent): void => {
                     clearTimeout(timeout); // Clear the timeout on receiving a message
                     ws.close(); // Close the WebSocket connection
 
@@ -365,9 +373,17 @@ describe('Subscriptions Solo network tests', () => {
                     resolve(true);
                 };
 
-                ws.onerror = (error: Event) => {
+                ws.onerror = (error: Event): void => {
                     clearTimeout(timeout);
-                    reject(error);
+                    reject(
+                        error instanceof Error
+                            ? error
+                            : new Error(
+                                  error instanceof Error
+                                      ? error.message
+                                      : 'Unknown error'
+                              )
+                    );
                 };
             });
         },
@@ -449,7 +465,7 @@ describe('Subscriptions Solo network tests', () => {
                         } catch (error) {
                             reject(
                                 new Error(
-                                    `Error processing WebSocket message: ${String(error)}`
+                                    `Error processing WebSocket message: ${error instanceof Error ? error.message : 'Unknown error'}`
                                 )
                             );
                         } finally {
@@ -506,7 +522,9 @@ describe('Subscriptions Solo network tests', () => {
                 triggerEvent().catch((error) => {
                     connection.closeConnection();
                     reject(
-                        new Error(`Failed to trigger event: ${String(error)}`)
+                        new Error(
+                            `Failed to trigger event: ${error instanceof Error ? error.message : 'Unknown error'}`
+                        )
                     );
                 });
             });
@@ -544,7 +562,7 @@ describe('Subscriptions Solo network tests', () => {
                     } catch (error) {
                         reject(
                             new Error(
-                                `Error processing WebSocket message: ${String(error)}`
+                                `Error processing WebSocket message: ${error instanceof Error ? error.message : 'Unknown error'}`
                             )
                         );
                     } finally {
@@ -601,7 +619,9 @@ describe('Subscriptions Solo network tests', () => {
             triggerTransfer().catch((error) => {
                 connection.closeConnection();
                 reject(
-                    new Error(`Failed to trigger transfer: ${String(error)}`)
+                    new Error(
+                        `Failed to trigger transfer: ${error instanceof Error ? error.message : 'Unknown error'}`
+                    )
                 );
             });
         });

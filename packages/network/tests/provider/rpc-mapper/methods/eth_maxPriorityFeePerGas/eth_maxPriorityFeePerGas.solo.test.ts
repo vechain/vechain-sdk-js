@@ -57,11 +57,11 @@ describe('RPC Mapper - eth_maxPriorityFeePerGas method tests solo', () => {
                 }
 
                 // If it's not a connection error or we've exhausted attempts, throw
-                throw error;
+                throw error instanceof Error ? error : new Error(String(error));
             }
         }
 
-        throw lastError;
+        throw lastError ?? new Error('Unknown error');
     };
 
     /**

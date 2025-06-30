@@ -45,6 +45,7 @@ type ContractFunctionSync<T = unknown, TABIFunction> = (
  * representations of the input parameters defined in the ABI for the event, and returns a value of type `T`.
  */
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type ContractEventSync<T = unknown, TABIEvent> = (
     ...args: Partial<
         AbiParametersToPrimitiveTypes<TABIEvent['inputs'], 'inputs'>

@@ -51,7 +51,7 @@ const retryOperation = async <T>(
 
             // If it's not a connection error or this is the last attempt, throw
             if (!isConnectionError || attempt === maxAttempts) {
-                throw lastError;
+                throw lastError ?? new Error('Unknown error');
             }
 
             // Wait before retrying with exponential backoff
@@ -61,7 +61,7 @@ const retryOperation = async <T>(
     }
 
     // This should never be reached, but TypeScript requires it
-    throw lastError;
+    throw lastError ?? new Error('Unknown error');
 };
 
 export { advanceTimersByTimeAndTick, retryOperation };

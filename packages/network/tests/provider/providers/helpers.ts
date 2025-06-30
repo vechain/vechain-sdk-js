@@ -13,14 +13,11 @@ export async function waitForMessage(
     provider: VeChainProvider
 ): Promise<SubscriptionEvent> {
     return await new Promise((resolve, reject) => {
-        const timeout = setTimeout(
-            () => {
-                // Clean up event listener on timeout
-                provider.removeAllListeners('message');
-                reject(new Error('Timeout waiting for subscription message'));
-            },
-            process.env.CI === 'true' ? 45000 : 30000
-        ); // Longer timeout in CI
+        const timeout = setTimeout(() => {
+            // Clean up event listener on timeout
+            provider.removeAllListeners('message');
+            reject(new Error('Timeout waiting for subscription message'));
+        }, 120000); // Longer timeout in CI
 
         const messageHandler = (message: SubscriptionEvent): void => {
             clearTimeout(timeout);

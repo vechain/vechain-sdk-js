@@ -560,7 +560,9 @@ function isValid(keystore: Keystore): boolean {
         ) {
             return true;
         }
-    } catch {} // Return false if parsing fails.
+    } catch {
+        // intentionally left empty to return false if parsing fails
+    } // Return false if parsing fails.
     return false;
 }
 

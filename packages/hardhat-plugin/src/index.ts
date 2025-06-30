@@ -54,9 +54,7 @@ extendEnvironment((hre) => {
     // 1.5 - Get the custom RPC Configuration
     const rpcConfiguration = networkConfig.rpcConfiguration;
     const ethGetTransactionCountMustReturn0 =
-        rpcConfiguration?.ethGetTransactionCountMustReturn0 !== undefined
-            ? rpcConfiguration?.ethGetTransactionCountMustReturn0
-            : false;
+        rpcConfiguration?.ethGetTransactionCountMustReturn0 ?? false;
 
     // 2 - Check if network is vechain
 
@@ -114,6 +112,7 @@ extendEnvironment((hre) => {
 
         return {
             ...ethers,
+            // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
             deployContract: async (...args: unknown[]) => {
                 const deployContractBound = deployContract.bind(null, hre);
                 // @ts-expect-error args types depend on the function signature
@@ -122,6 +121,7 @@ extendEnvironment((hre) => {
                 );
             },
 
+            // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
             getContractFactory: async (...args: unknown[]) => {
                 const contractFactoryBound = getContractFactory.bind(null, hre);
                 // @ts-expect-error args types depend on the function signature
@@ -151,7 +151,7 @@ extendEnvironment((hre) => {
                 );
             },
 
-            getImpersonatedSigner: (_address: string) => {
+            getImpersonatedSigner: (_address: string): never => {
                 throw new VechainSDKError(
                     'getImpersonatedSigner()',
                     'Method not implemented.',
@@ -166,8 +166,8 @@ extendEnvironment((hre) => {
             getContractAt: getContractAt.bind(null, hre),
 
             // Signer
-            getSigner: async (address: string) => await getSigner(hre, address),
-            getSigners: async () => await getSigners(hre),
+            getSigner: async (address: string) => await getSigner(hre, address), // eslint-disable-line @typescript-eslint/explicit-function-return-type
+            getSigners: async () => await getSigners(hre), // eslint-disable-line @typescript-eslint/explicit-function-return-type
             provider: vechainNewHardhatProvider
         };
     });

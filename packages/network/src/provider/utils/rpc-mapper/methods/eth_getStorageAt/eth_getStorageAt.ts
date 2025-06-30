@@ -44,9 +44,7 @@ const ethGetStorageAt = async (
     }
 
     try {
-        if (params[2] == null) {
-            params[2] = 'latest';
-        }
+        params[2] ??= 'latest';
         const [address, storagePosition, block] = params as [
             string,
             string,

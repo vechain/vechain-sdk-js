@@ -232,10 +232,10 @@ class EventPoll<TReturnType> extends EventEmitter {
         void this._intervalLoop().then(() => {
             // Create an interval
             this.intervalId = setInterval(() => {
-                void (async () => {
+                void (async (): Promise<void> => {
                     try {
                         await this._intervalLoop();
-                    } catch (e) {
+                    } catch {
                         this.stopListen();
                         await this._intervalLoop();
                     }
