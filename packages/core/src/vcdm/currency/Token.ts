@@ -41,7 +41,7 @@ abstract class Token {
      * @param valueUnits Units for the token value
      */
     protected initialize(value: bigint, valueUnits?: Units): undefined {
-        // eslint-disable-next-line typescript-eslint/prefer-nullish-coalescing
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         if (valueUnits === undefined) {
             valueUnits = this.units;
         }
