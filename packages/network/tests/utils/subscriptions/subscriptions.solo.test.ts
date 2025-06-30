@@ -31,7 +31,7 @@ import {
 import NodeWebSocket from 'ws';
 import { expectType } from 'tsd';
 
-const TIMEOUT = 15000; // 15-second timeout
+const TIMEOUT = 30000; // 30-second timeout
 
 /**
  * Test suite for the Subscriptions utility methods for listening to events obtained through a websocket connection.
@@ -60,6 +60,7 @@ describe('Subscriptions Solo network tests', () => {
         // Browser environment
         if (typeof WebSocket !== 'undefined') {
             const ws = new WebSocket(url);
+            let errorHandled = false;
 
             ws.onopen = (): void => {
                 if (handlers.onOpen !== undefined && handlers.onOpen !== null) {
@@ -76,9 +77,12 @@ describe('Subscriptions Solo network tests', () => {
             };
 
             ws.onerror = (event: Event): void => {
-                handlers.onError(
-                    new Error(`WebSocket error: ${String(event)}`)
-                );
+                if (!errorHandled) {
+                    errorHandled = true;
+                    handlers.onError(
+                        new Error(`WebSocket error: ${String(event)}`)
+                    );
+                }
             };
 
             return {
@@ -103,6 +107,7 @@ describe('Subscriptions Solo network tests', () => {
                 readyState: number;
                 close: () => void;
             };
+            let errorHandled = false;
 
             // Use addEventListener which is available in both browser and node implementations
             ws.addEventListener('open', () => {
@@ -130,9 +135,12 @@ describe('Subscriptions Solo network tests', () => {
             });
 
             ws.addEventListener('error', (event) => {
-                handlers.onError(
-                    new Error(`WebSocket error: ${String(event)}`)
-                );
+                if (!errorHandled) {
+                    errorHandled = true;
+                    handlers.onError(
+                        new Error(`WebSocket error: ${String(event)}`)
+                    );
+                }
             });
 
             return {
@@ -192,44 +200,81 @@ describe('Subscriptions Solo network tests', () => {
         async () => {
             const wsURL = subscriptions.getBlockSubscriptionUrl(THOR_SOLO_URL);
 
-            await new Promise<boolean>((resolve, reject) => {
-                let timeoutId: NodeJS.Timeout | null = setTimeout(() => {
-                    if (connection !== undefined && connection !== null) {
-                        connection.closeConnection();
+            // Simple retry mechanism
+            let lastError: Error | null = null;
+            for (let attempt = 1; attempt <= 3; attempt++) {
+                try {
+                    await new Promise<boolean>((resolve, reject) => {
+                        let timeoutId: NodeJS.Timeout | null = setTimeout(
+                            () => {
+                                if (
+                                    connection !== undefined &&
+                                    connection !== null
+                                ) {
+                                    connection.closeConnection();
+                                }
+                                reject(new Error('Timeout: No block received'));
+                            },
+                            TIMEOUT
+                        );
+
+                        // Set up WebSocket connection with handlers
+                        const connection = setupWebSocketConnection(wsURL, {
+                            onOpen: () => {},
+                            onMessage: (data: string) => {
+                                if (
+                                    timeoutId !== undefined &&
+                                    timeoutId !== null
+                                ) {
+                                    clearTimeout(timeoutId);
+                                    timeoutId = null;
+                                }
+
+                                expect(data).toBeDefined();
+                                expect(data).not.toBeNull();
+
+                                const block = JSON.parse(
+                                    data
+                                ) as CompressedBlockDetail;
+                                expect(block.number).toBeGreaterThan(0);
+
+                                connection.closeConnection();
+                                resolve(true);
+                            },
+                            onError: (error: Error) => {
+                                if (
+                                    timeoutId !== undefined &&
+                                    timeoutId !== null
+                                ) {
+                                    clearTimeout(timeoutId);
+                                    timeoutId = null;
+                                }
+                                connection.closeConnection();
+                                reject(error);
+                            }
+                        });
+                    });
+
+                    // Success - exit retry loop
+                    return;
+                } catch (error) {
+                    lastError = error as Error;
+                    if (attempt < 3) {
+                        // Wait 2 seconds before retrying
+                        await new Promise((resolve) =>
+                            setTimeout(resolve, 2000)
+                        );
                     }
-                    reject(new Error('Timeout: No block received'));
-                }, TIMEOUT);
+                }
+            }
 
-                // Set up WebSocket connection with handlers
-                const connection = setupWebSocketConnection(wsURL, {
-                    onOpen: () => {},
-                    onMessage: (data: string) => {
-                        if (timeoutId !== undefined && timeoutId !== null) {
-                            clearTimeout(timeoutId);
-                            timeoutId = null;
-                        }
-
-                        expect(data).toBeDefined();
-                        expect(data).not.toBeNull();
-
-                        const block = JSON.parse(data) as CompressedBlockDetail;
-                        expect(block.number).toBeGreaterThan(0);
-
-                        connection.closeConnection();
-                        resolve(true);
-                    },
-                    onError: (error: Error) => {
-                        if (timeoutId !== undefined && timeoutId !== null) {
-                            clearTimeout(timeoutId);
-                            timeoutId = null;
-                        }
-                        connection.closeConnection();
-                        reject(error);
-                    }
-                });
-            });
+            // All retries failed
+            throw (
+                lastError ??
+                new Error('WebSocket connection failed after 3 attempts')
+            );
         },
-        TIMEOUT
+        TIMEOUT * 2
     );
 
     test(

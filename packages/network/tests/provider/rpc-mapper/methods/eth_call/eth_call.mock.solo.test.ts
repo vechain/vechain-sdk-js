@@ -6,6 +6,7 @@ import {
     THOR_SOLO_URL,
     ThorClient
 } from '../../../../../src';
+import { retryOperation } from '../../../../test-utils';
 
 /**
  * RPC Mapper integration tests for 'eth_call' method with Solo Network and mocked functionality
@@ -41,15 +42,19 @@ describe('RPC Mapper - eth_call method tests', () => {
             ).mockRejectedValue(new Error());
 
             await expect(
-                RPCMethodsMap(thorClient)[RPC_METHODS.eth_call]([
-                    {
-                        from: '0x7487d912d03ab9de786278f679592b3730bdd540',
-                        to: '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
-                        value: '1000000000000000000',
-                        data: '0x'
-                    },
-                    'latest'
-                ])
+                retryOperation(async () => {
+                    return await RPCMethodsMap(thorClient)[
+                        RPC_METHODS.eth_call
+                    ]([
+                        {
+                            from: '0x7487d912d03ab9de786278f679592b3730bdd540',
+                            to: '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
+                            value: '1000000000000000000',
+                            data: '0x'
+                        },
+                        'latest'
+                    ]);
+                })
             ).rejects.toThrowError(JSONRPCInternalError);
         });
         /**
@@ -57,15 +62,19 @@ describe('RPC Mapper - eth_call method tests', () => {
          */
         test('Should throw `JSONRPCInvalidParams` if the default block parameter is invalid block tag', async () => {
             await expect(
-                RPCMethodsMap(thorClient)[RPC_METHODS.eth_call]([
-                    {
-                        from: '0x7487d912d03ab9de786278f679592b3730bdd540',
-                        to: '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
-                        value: '1000000000000000000',
-                        data: '0x'
-                    },
-                    'invalid'
-                ])
+                retryOperation(async () => {
+                    return await RPCMethodsMap(thorClient)[
+                        RPC_METHODS.eth_call
+                    ]([
+                        {
+                            from: '0x7487d912d03ab9de786278f679592b3730bdd540',
+                            to: '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
+                            value: '1000000000000000000',
+                            data: '0x'
+                        },
+                        'invalid'
+                    ]);
+                })
             ).rejects.toThrowError(JSONRPCInternalError);
         });
         /**
@@ -73,15 +82,19 @@ describe('RPC Mapper - eth_call method tests', () => {
          */
         test('Should throw `JSONRPCInvalidParams` if the default block parameter is invalid block number hex', async () => {
             await expect(
-                RPCMethodsMap(thorClient)[RPC_METHODS.eth_call]([
-                    {
-                        from: '0x7487d912d03ab9de786278f679592b3730bdd540',
-                        to: '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
-                        value: '1000000000000000000',
-                        data: '0x'
-                    },
-                    '0xinvalid'
-                ])
+                retryOperation(async () => {
+                    return await RPCMethodsMap(thorClient)[
+                        RPC_METHODS.eth_call
+                    ]([
+                        {
+                            from: '0x7487d912d03ab9de786278f679592b3730bdd540',
+                            to: '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
+                            value: '1000000000000000000',
+                            data: '0x'
+                        },
+                        '0xinvalid'
+                    ]);
+                })
             ).rejects.toThrowError(JSONRPCInternalError);
         });
     });

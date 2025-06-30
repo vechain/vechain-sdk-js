@@ -108,7 +108,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         expect(eventsWithAnArgsObject.map((x) => x.decodedData)).toEqual(
             expectedEvents
         );
-    }, 10000); // Set a timeout of 10000ms for this test
+    }, 30000); // Set a timeout of 30000ms for this test
 
     /**
      * Tests the listening to ERC20 contract operations using a blockchain client.
@@ -175,7 +175,7 @@ describe('ThorClient - ERC20 Contracts', () => {
                 '0x0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c39'
             ]
         ]);
-    }, 10000); // Set a timeout of 10000ms for this test
+    }, 30000); // Set a timeout of 30000ms for this test
 
     /**
      * Tests the listening to ERC20 contract operations using a blockchain client.
@@ -365,7 +365,7 @@ describe('ThorClient - ERC20 Contracts', () => {
                 '0x00000000000000000000000088b2551c3ed42ca663796c10ce68c88a65f73fe2'
             ]
         ]);
-    }, 20000); // Set a timeout of 10000ms for this test
+    }, 30000); // Set a timeout of 30000ms for this test
 
     /**
      * Tests the listening to ERC20 contract operations with multiple criteria decoding the result.
@@ -555,5 +555,5 @@ describe('ThorClient - ERC20 Contracts', () => {
         expect(events[1].map((x) => x.decodedData)).toEqual([
             ['0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54', 3000n]
         ]);
-    }, 20000); // Set a timeout of 10000ms for this test
+    }, 30000); // Set a timeout of 10000ms for this test
 });

@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect } from '@jest/globals';
 import { SimpleHttpClient, THOR_SOLO_URL, ThorClient } from '../../../src';
 import { HexUInt } from '@vechain/sdk-core';
+import { retryOperation } from '../../test-utils';
 
 /**
  * Blocks Module integration tests
@@ -44,5 +45,12 @@ describe('ThorClient - Blocks Module tests', () => {
                 HexUInt.of(block?.baseFeePerGas as string).bi
             ).toBeGreaterThan(0n);
         });
+
+        test('getBestBlockCompressed', async () => {
+            const blockDetails = await retryOperation(async () => {
+                return await thorClient.blocks.getBestBlockCompressed();
+            });
+            expect(blockDetails).toBeDefined();
+        }, 15000);
     });
 });

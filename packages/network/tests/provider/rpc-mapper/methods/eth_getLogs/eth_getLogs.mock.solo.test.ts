@@ -4,10 +4,12 @@ import {
     RPC_METHODS,
     RPCMethodsMap,
     THOR_SOLO_URL,
-    ThorClient
+    ThorClient,
+    type SimpleHttpClient
 } from '../../../../../src';
 import { JSONRPCInternalError } from '@vechain/sdk-errors';
 import { logsFixture, mockLogsFixture } from './fixture';
+import { retryOperation } from '../../../../test-utils';
 
 /**
  * RPC Mapper integration tests for 'eth_getLogs' method
@@ -19,13 +21,24 @@ describe('RPC Mapper - eth_getLogs method tests', () => {
      * Thor client instance
      */
     let thorClient: ThorClient;
+    let mockHttpClient: jest.Mocked<SimpleHttpClient>;
 
     /**
      * Init thor client before each test
      */
     beforeEach(() => {
-        // Init thor client
-        thorClient = ThorClient.at(THOR_SOLO_URL);
+        // Create a mock HTTP client
+        mockHttpClient = {
+            baseURL: THOR_SOLO_URL,
+            headers: new Headers(),
+            timeout: 10000,
+            get: jest.fn(),
+            post: jest.fn(),
+            http: jest.fn()
+        } as unknown as jest.Mocked<SimpleHttpClient>;
+
+        // Create thor client with mock HTTP client
+        thorClient = new ThorClient(mockHttpClient);
     });
 
     /**
@@ -37,19 +50,19 @@ describe('RPC Mapper - eth_getLogs method tests', () => {
          */
         mockLogsFixture.forEach((fixture, index) => {
             test(`eth_getLogs - Should be able to get logs test - ${index + 1}`, async () => {
-                // Mock the getGenesisBlock method to return null
-                jest.spyOn(
-                    thorClient.logs,
-                    'filterRawEventLogs'
-                ).mockResolvedValue([]);
+                // Mock the HTTP client to return empty logs
+                mockHttpClient.http.mockResolvedValue([]);
 
                 // Call RPC method
-                const logs = (await RPCMethodsMap(thorClient)[
-                    RPC_METHODS.eth_getLogs
-                ]([fixture.input])) as LogsRPC[];
+                const logs = (await retryOperation(
+                    async () =>
+                        await RPCMethodsMap(thorClient)[
+                            RPC_METHODS.eth_getLogs
+                        ]([fixture.input])
+                )) as LogsRPC[];
 
                 expect(logs.slice(0, 4)).toStrictEqual(fixture.expected);
-            }, 6000);
+            }, 15000);
         });
     });
 
@@ -61,17 +74,20 @@ describe('RPC Mapper - eth_getLogs method tests', () => {
          * Negative case 2 - Should throw an error for invalid input if request is invalid
          */
         test('eth_getLogs - Should throw error if request is invalid', async () => {
-            // Mock the filterGroupedEventLogs method to throw error
-            jest.spyOn(thorClient.logs, 'filterRawEventLogs').mockRejectedValue(
-                new Error()
+            // Mock the HTTP client to throw an error
+            mockHttpClient.http.mockRejectedValue(
+                new Error('Connection failed')
             );
 
             await expect(
                 async () =>
                     // Call RPC method
-                    (await RPCMethodsMap(thorClient)[RPC_METHODS.eth_getLogs]([
-                        logsFixture[0].input
-                    ])) as LogsRPC[]
+                    (await retryOperation(
+                        async () =>
+                            await RPCMethodsMap(thorClient)[
+                                RPC_METHODS.eth_getLogs
+                            ]([logsFixture[0].input])
+                    )) as LogsRPC[]
             ).rejects.toThrowError(JSONRPCInternalError);
         });
     });

@@ -11,6 +11,7 @@ import {
     ThorClient
 } from '../../../../../src';
 import { getUnusedAccount } from '../../../../fixture';
+import { retryOperation } from '../../../../test-utils';
 
 /**
  * RPC Mapper integration tests for 'eth_sendRawTransaction' method
@@ -58,13 +59,17 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
             ];
 
             // Get latest block
-            const latestBlock =
-                await thorClient.blocks.getBestBlockCompressed();
+            const latestBlock = await retryOperation(
+                async () => await thorClient.blocks.getBestBlockCompressed()
+            );
 
             // Estimate the gas required for the transfer transaction
-            const gasResult = await thorClient.transactions.estimateGas(
-                clauses,
-                actors.sender.address
+            const gasResult = await retryOperation(
+                async () =>
+                    await thorClient.transactions.estimateGas(
+                        clauses,
+                        actors.sender.address
+                    )
             );
 
             // Create transactions
@@ -90,9 +95,12 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
 
             // 3 - Send raw transaction
 
-            const result = (await RPCMethodsMap(thorClient)[
-                RPC_METHODS.eth_sendRawTransaction
-            ]([raw])) as string;
+            const result = (await retryOperation(
+                async () =>
+                    await RPCMethodsMap(thorClient)[
+                        RPC_METHODS.eth_sendRawTransaction
+                    ]([raw])
+            )) as string;
 
             expect(result).toBe(signedTransaction.id.toString());
         });

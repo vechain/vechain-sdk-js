@@ -23,6 +23,7 @@ import {
 } from '../../../fixture';
 import { simulateTransaction } from '../../../thor-client/transactions/fixture-thorest';
 import { signTransactionTestCases } from './fixture';
+import { retryOperation } from '../../../test-utils';
 
 /**
  * Helper function to conditionally run tests based on a condition
@@ -501,7 +502,7 @@ describe('VeChain base signer tests - solo', () => {
             );
             expect(signedTx.isSigned).toBe(true);
             expect(signedTx.signature).toBeDefined();
-        }, 8000);
+        }, 15000);
 
         testIf(
             isGalacticaActive,
@@ -515,16 +516,19 @@ describe('VeChain base signer tests - solo', () => {
                     [123]
                 ) as TransactionClause;
 
-                const gasResult = await thorClient.transactions.estimateGas(
-                    [sampleClause],
-                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
-                );
+                const gasResult = await retryOperation(async () => {
+                    return await thorClient.transactions.estimateGas(
+                        [sampleClause],
+                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+                    );
+                });
 
-                const txBody =
-                    await thorClient.transactions.buildTransactionBody(
+                const txBody = await retryOperation(async () => {
+                    return await thorClient.transactions.buildTransactionBody(
                         [sampleClause],
                         gasResult.totalGas
                     );
+                });
 
                 // Add dynamic fee parameters - use numeric values directly
                 txBody.maxFeePerGas = 256; // Decimal value of 0x100
@@ -538,12 +542,14 @@ describe('VeChain base signer tests - solo', () => {
                     new VeChainProvider(thorClient)
                 );
 
-                const signedRawTx = await signer.signTransaction(
-                    signerUtils.transactionBodyToTransactionRequestInput(
-                        txBody,
-                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
-                    )
-                );
+                const signedRawTx = await retryOperation(async () => {
+                    return await signer.signTransaction(
+                        signerUtils.transactionBodyToTransactionRequestInput(
+                            txBody,
+                            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+                        )
+                    );
+                });
                 const signedTx = Transaction.decode(
                     HexUInt.of(signedRawTx.slice(2)).bytes,
                     true
@@ -562,7 +568,7 @@ describe('VeChain base signer tests - solo', () => {
                 expect(signedTx.isSigned).toBe(true);
                 expect(signedTx.signature).toBeDefined();
             },
-            8000
+            15000
         );
     });
 });

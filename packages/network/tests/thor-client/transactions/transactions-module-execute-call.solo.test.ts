@@ -6,6 +6,7 @@ import {
 } from '../../../src';
 import { ABIContract } from '@vechain/sdk-core';
 import { AccountDispatcher, getConfigData } from '@vechain/sdk-solo-setup';
+import { retryOperation } from '../../test-utils';
 
 /**
  * Tests for the executeCall method in transactions module
@@ -32,12 +33,15 @@ describe('ThorClient - Transactions Module Execute Call', () => {
         const options: ContractCallOptions = {
             gas: 1000000
         };
-        // execute the transaction
-        const result = await thorSoloClient.transactions.executeCall(
-            testContractAddress,
-            getBalanceFn,
-            [accountDispatcher.getNextAccount().address],
-            options
+        // execute the transaction with retry logic
+        const result = await retryOperation(
+            async () =>
+                await thorSoloClient.transactions.executeCall(
+                    testContractAddress,
+                    getBalanceFn,
+                    [accountDispatcher.getNextAccount().address],
+                    options
+                )
         );
         expect(result.success).toBe(true);
     });

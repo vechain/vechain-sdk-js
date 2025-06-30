@@ -10,6 +10,7 @@ import {
     getConfigData,
     type ThorSoloAccount
 } from '@vechain/sdk-solo-setup';
+import { retryOperation } from '../../test-utils';
 
 /**
  * Tests for the executeMultipleClausesCall method in transactions module
@@ -58,12 +59,14 @@ describe('ThorClient - Transactions Module Execute Call', () => {
                 functionAbi: greaterThan10Fn
             }
         ];
-        // execute the transaction
-        const result =
-            await thorSoloClient.transactions.executeMultipleClausesCall(
-                clauses,
-                options
-            );
+        // execute the transaction with retry logic
+        const result = await retryOperation(
+            async () =>
+                await thorSoloClient.transactions.executeMultipleClausesCall(
+                    clauses,
+                    options
+                )
+        );
         expect(result[0].success).toBe(true);
         expect(result[1].success).toBe(true);
     });

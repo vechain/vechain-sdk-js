@@ -42,7 +42,7 @@ const vechainTestNetwork: HttpNetworkConfig = {
  */
 const vechainSoloNetwork = {
     // Thor solo network
-    url: 'http://localhost:8669',
+    url: 'http://127.0.0.1:8669',
     accounts: [
         '99f0500549792796c14fed62011a51081dc5b5e68fe8bd8a13b86be829c4fd36' // private key of 1st solo account
     ],

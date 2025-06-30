@@ -11,6 +11,7 @@ import {
 } from '../../../src';
 import { TEST_ACCOUNTS } from '../../fixture';
 import { erc721ContractBytecode, erc721ContractTestCases } from './fixture';
+import { retryOperation } from '../../test-utils';
 
 /**
  * Tests for the ERC721 Contract, specifically focusing on NFT contract-related functionality.
@@ -88,25 +89,30 @@ describe('ThorClient - ERC721 Contracts', () => {
                 async () => {
                     let response;
                     if (isReadOnly) {
-                        response = await thorSoloClient.contracts.executeCall(
-                            contractAddress,
-                            ABIContract.ofAbi(ERC721_ABI).getFunction(
-                                functionName
-                            ),
-                            params
+                        response = await retryOperation(
+                            async () =>
+                                await thorSoloClient.contracts.executeCall(
+                                    contractAddress,
+                                    ABIContract.ofAbi(ERC721_ABI).getFunction(
+                                        functionName
+                                    ),
+                                    params
+                                )
                         );
                         expect(response).toBeDefined();
                         expect(response).toEqual(expected);
                     } else {
-                        response =
-                            await thorSoloClient.contracts.executeTransaction(
-                                signer,
-                                contractAddress,
-                                ABIContract.ofAbi(ERC721_ABI).getFunction(
-                                    functionName
-                                ),
-                                params
-                            );
+                        response = await retryOperation(
+                            async () =>
+                                await thorSoloClient.contracts.executeTransaction(
+                                    signer,
+                                    contractAddress,
+                                    ABIContract.ofAbi(ERC721_ABI).getFunction(
+                                        functionName
+                                    ),
+                                    params
+                                )
+                        );
 
                         const result = await response.wait();
 

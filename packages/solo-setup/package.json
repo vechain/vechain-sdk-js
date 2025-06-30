@@ -22,7 +22,8 @@
     "deploy-solo": "npx hardhat run dist/deploy.js --network vechain_solo",
     "solo-up": "make solo-up",
     "solo-down": "make solo-down",
-    "solo-seed": "yarn build && yarn deploy-solo"
+    "solo-seed": "yarn build && yarn deploy-solo",
+    "solo-logs-save": "mkdir -p logs && docker logs thor-solo > logs/thor-solo-$(date +%Y%m%d-%H%M%S).log 2>&1"
   },
   "peerDependencies": {
     "@vechain/sdk-core": "*",

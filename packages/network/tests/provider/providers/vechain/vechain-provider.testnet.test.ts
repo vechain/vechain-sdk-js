@@ -1,4 +1,11 @@
-import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
+import {
+    afterEach,
+    beforeEach,
+    describe,
+    expect,
+    test,
+    afterAll
+} from '@jest/globals';
 
 import {
     JSONRPCMethodNotFound,
@@ -37,7 +44,17 @@ describe('VeChain provider tests - testnet', () => {
      * Destroy thor client and provider after each test
      */
     afterEach(() => {
+        // Remove all event listeners
+        provider.removeAllListeners();
         provider.destroy();
+    });
+
+    /**
+     * Global cleanup to ensure all resources are released
+     */
+    afterAll(() => {
+        // Force cleanup of any remaining timers/intervals
+        jest.clearAllTimers();
     });
 
     /**

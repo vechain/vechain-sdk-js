@@ -31,7 +31,7 @@ describe('GasModule - Unit Tests', () => {
         // Create a mock HTTP client with properly typed functions
 
         mockHttpClient = {
-            baseURL: 'http://localhost:8669',
+            baseURL: 'http://127.0.0.1:8669',
             http: jest.fn().mockReturnValue(Promise.resolve({})),
             get: jest.fn().mockReturnValue(Promise.resolve({})),
             post: jest.fn().mockReturnValue(Promise.resolve({})),

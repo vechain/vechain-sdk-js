@@ -302,7 +302,7 @@ interface TransactionReceipt {
 }
 
 /**
- * [Event](http://localhost:8669/doc/stoplight-ui/#/schemas/Event)
+ * [Event](http://127.0.0.1:8669/doc/stoplight-ui/#/schemas/Event)
  */
 interface TransactionSimulationEvent {
     /**

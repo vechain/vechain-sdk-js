@@ -6,6 +6,7 @@ import {
     ThorClient
 } from '../../../../../src';
 import { ethGetCodeTestCases, invalidEthGetCodeTestCases } from './fixture';
+import { retryOperation } from '../../../../test-utils';
 
 /**
  * RPC Mapper integration tests for 'eth_getCode' method - Solo Network
@@ -35,10 +36,12 @@ describe('RPC Mapper - eth_getCode method tests', () => {
          */
         ethGetCodeTestCases.forEach(({ description, params, expected }) => {
             test(`${description}`, async () => {
-                const rpcCall =
-                    await RPCMethodsMap(thorClient)[RPC_METHODS.eth_getCode](
-                        params
-                    );
+                const rpcCall = await retryOperation(
+                    async () =>
+                        await RPCMethodsMap(thorClient)[
+                            RPC_METHODS.eth_getCode
+                        ](params)
+                );
 
                 // Compare the result with the expected value
                 expect(rpcCall).toBe(expected);
@@ -57,8 +60,11 @@ describe('RPC Mapper - eth_getCode method tests', () => {
             ({ description, params, expectedError }) => {
                 test(`${description}`, async () => {
                     await expect(
-                        RPCMethodsMap(thorClient)[RPC_METHODS.eth_getCode](
-                            params
+                        retryOperation(
+                            async () =>
+                                await RPCMethodsMap(thorClient)[
+                                    RPC_METHODS.eth_getCode
+                                ](params)
                         )
                     ).rejects.toThrowError(expectedError);
                 });

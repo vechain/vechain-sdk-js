@@ -7,6 +7,7 @@ import {
     TransactionType
 } from '@vechain/sdk-core';
 import { THOR_SOLO_URL, ThorClient } from '../../../src';
+import { retryOperation } from '../../test-utils';
 
 /**
  * ThorClient tests for dynamic fee transactions on solo network
@@ -33,13 +34,17 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
         ];
 
         // Get latest block
-        const latestBlock =
-            await thorSoloClient.blocks.getBestBlockCompressed();
+        const latestBlock = await retryOperation(
+            async () => await thorSoloClient.blocks.getBestBlockCompressed()
+        );
 
         // Estimate the gas required for the transfer transaction
-        const gasResult = await thorSoloClient.transactions.estimateGas(
-            clauses,
-            SOLO_GENESIS_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+        const gasResult = await retryOperation(
+            async () =>
+                await thorSoloClient.transactions.estimateGas(
+                    clauses,
+                    SOLO_GENESIS_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+                )
         );
 
         // Create transaction body
@@ -84,16 +89,20 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
         );
 
         // send raw transactions
-        const send = await thorSoloClient.transactions.sendRawTransaction(
-            HexUInt.of(signedEncodedTx).toString()
+        const send = await retryOperation(
+            async () =>
+                await thorSoloClient.transactions.sendRawTransaction(
+                    HexUInt.of(signedEncodedTx).toString()
+                )
         );
         expect(send).toBeDefined();
         expect(send).toHaveProperty('id');
         expect(HexUInt.isValid0x(send.id)).toBe(true);
 
         // wait for transaction to be mined and get receipt
-        const receipt = await thorSoloClient.transactions.waitForTransaction(
-            send.id
+        const receipt = await retryOperation(
+            async () =>
+                await thorSoloClient.transactions.waitForTransaction(send.id)
         );
         expect(receipt).toBeDefined();
         expect(receipt?.reverted).toBe(false);
@@ -101,8 +110,9 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
         expect(receipt?.gasUsed).toBeLessThanOrEqual(gasResult.totalGas);
 
         // Get transaction object from blockchain
-        const onChainTx = await thorSoloClient.transactions.getTransaction(
-            send.id
+        const onChainTx = await retryOperation(
+            async () =>
+                await thorSoloClient.transactions.getTransaction(send.id)
         );
         expect(onChainTx).toBeDefined();
         expect(onChainTx?.type).toBe(
@@ -124,13 +134,17 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
         ];
 
         // Get latest block
-        const latestBlock =
-            await thorSoloClient.blocks.getBestBlockCompressed();
+        const latestBlock = await retryOperation(
+            async () => await thorSoloClient.blocks.getBestBlockCompressed()
+        );
 
         // Estimate the gas required for the transfer transaction
-        const gasResult = await thorSoloClient.transactions.estimateGas(
-            clauses,
-            SOLO_GENESIS_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+        const gasResult = await retryOperation(
+            async () =>
+                await thorSoloClient.transactions.estimateGas(
+                    clauses,
+                    SOLO_GENESIS_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+                )
         );
 
         // Create transaction body
@@ -181,16 +195,20 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
         );
 
         // send raw transactions
-        const send = await thorSoloClient.transactions.sendRawTransaction(
-            HexUInt.of(signedEncodedTx).toString()
+        const send = await retryOperation(
+            async () =>
+                await thorSoloClient.transactions.sendRawTransaction(
+                    HexUInt.of(signedEncodedTx).toString()
+                )
         );
         expect(send).toBeDefined();
         expect(send).toHaveProperty('id');
         expect(HexUInt.isValid0x(send.id)).toBe(true);
 
         // wait for transaction to be mined and get receipt
-        const receipt = await thorSoloClient.transactions.waitForTransaction(
-            send.id
+        const receipt = await retryOperation(
+            async () =>
+                await thorSoloClient.transactions.waitForTransaction(send.id)
         );
         expect(receipt).toBeDefined();
         expect(receipt?.reverted).toBe(false);
@@ -198,8 +216,9 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
         expect(receipt?.gasUsed).toBeLessThanOrEqual(gasResult.totalGas);
 
         // Get transaction object from blockchain
-        const onChainTx = await thorSoloClient.transactions.getTransaction(
-            send.id
+        const onChainTx = await retryOperation(
+            async () =>
+                await thorSoloClient.transactions.getTransaction(send.id)
         );
         expect(onChainTx).toBeDefined();
         expect(onChainTx?.type).toBe(

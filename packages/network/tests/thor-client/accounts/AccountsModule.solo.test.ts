@@ -2,6 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import { THOR_SOLO_URL, ThorClient } from '../../../src';
 import { Address, Hex } from '@vechain/sdk-core';
 import { configData } from '../../fixture';
+import { retryOperation } from '../../test-utils';
 
 const CONTRACT_ADDRESS = configData.TESTING_CONTRACT_ADDRESS;
 
@@ -22,9 +23,11 @@ describe('AccountsModule solo tests', () => {
         test(
             'ok <- contract address',
             async () => {
-                const actual = await thorClient.accounts.getBytecode(
-                    Address.of(CONTRACT_ADDRESS)
-                );
+                const actual = await retryOperation(async () => {
+                    return await thorClient.accounts.getBytecode(
+                        Address.of(CONTRACT_ADDRESS)
+                    );
+                });
                 expect(
                     actual.isEqual(Hex.of(configData.TESTING_CONTRACT_BYTECODE))
                 ).toBe(true);

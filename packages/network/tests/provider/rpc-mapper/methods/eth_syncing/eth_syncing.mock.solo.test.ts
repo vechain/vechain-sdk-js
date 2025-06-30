@@ -10,6 +10,7 @@ import {
     mockedNotOutOfSyncBestBlockFixture,
     mockedOutOfSyncBestBlockFixture
 } from './fixture';
+import { retryOperation } from '../../../../test-utils';
 
 /**
  * RPC Mapper integration tests for 'eth_syncing' method with Solo Network and mocked functionality
@@ -44,9 +45,10 @@ describe('RPC Mapper - eth_syncing method tests', () => {
                 'getBestBlockCompressed'
             ).mockResolvedValue(mockedNotOutOfSyncBestBlockFixture);
 
-            const status = await RPCMethodsMap(thorClient)[
-                RPC_METHODS.eth_syncing
-            ]([]);
+            const status = await retryOperation(
+                async () =>
+                    await RPCMethodsMap(thorClient)[RPC_METHODS.eth_syncing]([])
+            );
             expect(status).toBe(false);
         });
 
@@ -60,9 +62,10 @@ describe('RPC Mapper - eth_syncing method tests', () => {
                 'getBestBlockCompressed'
             ).mockResolvedValue(mockedOutOfSyncBestBlockFixture);
 
-            const status = await RPCMethodsMap(thorClient)[
-                RPC_METHODS.eth_syncing
-            ]([]);
+            const status = await retryOperation(
+                async () =>
+                    await RPCMethodsMap(thorClient)[RPC_METHODS.eth_syncing]([])
+            );
             expect(status).not.toBe(false);
             expect(status).toHaveProperty('currentBlock');
             expect(status).toHaveProperty('highestBlock');
@@ -89,7 +92,12 @@ describe('RPC Mapper - eth_syncing method tests', () => {
                 ).mockRejectedValue(new Error());
 
                 await expect(
-                    RPCMethodsMap(thorClient)[RPC_METHODS.eth_syncing]([])
+                    retryOperation(
+                        async () =>
+                            await RPCMethodsMap(thorClient)[
+                                RPC_METHODS.eth_syncing
+                            ]([])
+                    )
                 ).rejects.toThrowError(JSONRPCInternalError);
             });
 
@@ -104,7 +112,12 @@ describe('RPC Mapper - eth_syncing method tests', () => {
                 ).mockRejectedValue(new Error());
 
                 await expect(
-                    RPCMethodsMap(thorClient)[RPC_METHODS.eth_syncing]([])
+                    retryOperation(
+                        async () =>
+                            await RPCMethodsMap(thorClient)[
+                                RPC_METHODS.eth_syncing
+                            ]([])
+                    )
                 ).rejects.toThrowError(JSONRPCInternalError);
             });
 
@@ -128,9 +141,12 @@ describe('RPC Mapper - eth_syncing method tests', () => {
                         'getGenesisBlock'
                     ).mockResolvedValue(null);
 
-                    const status = (await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.eth_syncing
-                    ]([])) as string;
+                    const status = (await retryOperation(
+                        async () =>
+                            await RPCMethodsMap(thorClient)[
+                                RPC_METHODS.eth_syncing
+                            ]([])
+                    )) as string;
 
                     expect(status).not.toBe(false);
                 });

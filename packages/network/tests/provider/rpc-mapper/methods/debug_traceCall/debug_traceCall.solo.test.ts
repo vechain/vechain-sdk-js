@@ -11,6 +11,7 @@ import {
 } from '../../../../thor-client/debug/fixture-thorest';
 import { transfer1VTHOClause } from '../../../../thor-client/transactions/fixture';
 import { TEST_ACCOUNTS } from '../../../../fixture';
+import { retryOperation } from '../../../../test-utils';
 
 /**
  * RPC Mapper integration tests for 'debug_traceCall' method on solo
@@ -45,26 +46,30 @@ describe('RPC Mapper - debug_traceCall method tests on solo', () => {
                 thorClient
             );
 
-            const result = await RPCMethodsMap(thorClient)[
-                RPC_METHODS.debug_traceCall
-            ]([
-                {
-                    from: txReceipt?.meta.txOrigin,
-                    // VTHO contract address
-                    to: traceContractCallTestnetFixture.positiveCases[0].to,
-                    value: '0x0',
-                    // Transfer 1 VTHO clause
-                    data: transfer1VTHOClause.data,
-                    gas: '0x0'
-                },
-                'latest',
-                {
-                    tracer: 'prestateTracer',
-                    tracerConfig: {
-                        onlyTopCall: true
-                    }
-                }
-            ]);
+            const result = await retryOperation(
+                async () =>
+                    await RPCMethodsMap(thorClient)[
+                        RPC_METHODS.debug_traceCall
+                    ]([
+                        {
+                            from: txReceipt?.meta.txOrigin,
+                            // VTHO contract address
+                            to: traceContractCallTestnetFixture.positiveCases[0]
+                                .to,
+                            value: '0x0',
+                            // Transfer 1 VTHO clause
+                            data: transfer1VTHOClause.data,
+                            gas: '0x0'
+                        },
+                        'latest',
+                        {
+                            tracer: 'prestateTracer',
+                            tracerConfig: {
+                                onlyTopCall: true
+                            }
+                        }
+                    ])
+            );
             expect(result).toBeDefined();
         }, 50000);
     });

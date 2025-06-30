@@ -6,6 +6,7 @@ import {
     THOR_SOLO_URL,
     ThorClient
 } from '../../../../../src';
+import { retryOperation } from '../../../../test-utils';
 
 /**
  * RPC Mapper integration tests for 'eth_blockNumber' method with Solo Network and mocked functionality
@@ -61,5 +62,22 @@ describe('RPC Mapper - eth_blockNumber method tests', () => {
 
             expect(rpcCallChainId).toBe('0x0');
         });
+    });
+
+    /**
+     * eth_blockNumber RPC call tests - Positive cases
+     */
+    describe('eth_blockNumber - Positive cases', () => {
+        /**
+         * Test case that returns the latest block number
+         */
+        test('Should return the latest block number', async () => {
+            const result = await retryOperation(async () => {
+                return await RPCMethodsMap(thorClient)[
+                    RPC_METHODS.eth_blockNumber
+                ]([]);
+            });
+            expect(result).toBeDefined();
+        }, 15000);
     });
 });
