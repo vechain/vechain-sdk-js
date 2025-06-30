@@ -60,6 +60,7 @@ abstract class Token {
      * @returns Wei value conversion
      */
     private convertToWei(value: bigint, valueUnits?: Units): bigint {
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         const convertUnits = valueUnits ?? this.units;
         const diffUnits = BigInt(convertUnits);
         const baseValue = value * 10n ** diffUnits;
