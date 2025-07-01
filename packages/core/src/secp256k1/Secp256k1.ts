@@ -18,9 +18,6 @@ import {
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 class Secp256k1 {
     /**
-    * ...rest of class...
-    */
-}
      * This value is used to identify compressed public key.
      */
     private static readonly COMPRESSED_PREFIX = 2;
