@@ -40,11 +40,7 @@ abstract class Token {
      * @param value Token value
      * @param valueUnits Units for the token value
      */
-    protected initialize(value: bigint, valueUnits?: Units): undefined {
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        if (valueUnits === undefined) {
-            valueUnits = this.units;
-        }
+    protected initialize(value: bigint, valueUnits: Units = this.units): void {
         const valueWei = Units.convertUnits(
             FixedPointNumber.of(value),
             valueUnits,

@@ -16,6 +16,7 @@ export async function waitForMessage(
         const timeout = setTimeout(() => {
             // Clean up event listener on timeout
             provider.removeAllListeners('message');
+            provider.destroy();
             reject(new Error('Timeout waiting for subscription message'));
         }, 120000); // Longer timeout in CI
 

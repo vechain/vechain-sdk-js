@@ -11,7 +11,6 @@ module.exports = {
     runner: 'groups',
     reporters: ['default', 'jest-junit'],
     maxWorkers: process.env.CI ? 1 : 5,
-    testTimeout: process.env.CI ? 120000 : 30000,
     // Add cleanup options to prevent hanging
     forceExit: true,
     detectOpenHandles: true,
