@@ -14,7 +14,6 @@ const FQP = 'packages/thorest/src/thor/logs/EventLogsResponse.ts!';
  * [EventLogFilterRequest](http://localhost:8669/doc/stoplight-ui/#/schemas/EventLogFilterRequest) element.
  */
 class EventLogsResponse extends Array<EventLogResponse> {
-
     /**
      * Creates a new TransferLogsResponse instance.
      * Special constructor pattern required for Array inheritance.

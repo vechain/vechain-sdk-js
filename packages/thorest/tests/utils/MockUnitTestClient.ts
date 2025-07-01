@@ -13,9 +13,10 @@ const mockHttpClient = <T>(
                 ok,
                 status,
                 statusText: ok ? 'OK' : 'Bad Request',
-                url: 'http://mock-url',
+                url: 'https://mock-url',
                 json: async () => await Promise.resolve(response satisfies T),
-                text: async () => await Promise.resolve(JSON.stringify(response))
+                text: async () =>
+                    await Promise.resolve(JSON.stringify(response))
             });
         })
     } as unknown as FetchHttpClient;

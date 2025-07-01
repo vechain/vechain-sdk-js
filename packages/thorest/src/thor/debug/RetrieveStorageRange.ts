@@ -1,5 +1,10 @@
 import type { HttpClient, HttpPath } from '@http';
-import { StorageRange, type StorageRangeJSON, StorageRangeOption, type StorageRangeOptionJSON } from '@thor/debug';
+import {
+    StorageRange,
+    type StorageRangeJSON,
+    StorageRangeOption,
+    type StorageRangeOptionJSON
+} from '@thor/debug';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
 import { IllegalArgumentError } from '@vechain/sdk-core';
 
@@ -12,7 +17,8 @@ const FQP = 'packages/thorest/src/thor/debug/RetrieveStorageRange.ts';
  * [Retrieve storage range](http://localhost:8669/doc/stoplight-ui/#/paths/debug-storage-range/post)
  */
 class RetrieveStorageRange
-    implements ThorRequest<RetrieveStorageRange, StorageRange> {
+    implements ThorRequest<RetrieveStorageRange, StorageRange>
+{
     /**
      * Represents an HTTP path configuration for a specific endpoint.
      */

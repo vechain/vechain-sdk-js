@@ -1,4 +1,4 @@
-import { GetStorageResponseJSON } from './GetStorageResponseJSON';
+import { type GetStorageResponseJSON } from './GetStorageResponseJSON';
 import { IllegalArgumentError, ThorId } from '@vechain/sdk-core';
 
 /**

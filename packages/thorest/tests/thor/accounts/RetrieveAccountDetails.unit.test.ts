@@ -1,5 +1,5 @@
 import { describe, expect, jest, test } from '@jest/globals';
-import { Address, VET, VTHO } from '@vechain/sdk-core';
+import { Address } from '@vechain/sdk-core';
 import {
     RetrieveAccountDetails,
     RetrieveAccountDetailsPath,

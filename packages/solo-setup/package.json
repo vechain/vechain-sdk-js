@@ -1,10 +1,10 @@
 {
   "name": "@vechain/sdk-solo-setup",
-  "version": "0.0.0",
+  "version": "2.0.0-beta.1",
   "private": true,
   "main": "dist/index.js",
   "module": "dist/index.mjs",
-  "types": "",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "require": "./dist/index.js",
@@ -12,10 +12,11 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "types"
   ],
   "scripts": {
-    "build": "rm -rf ./dist && tsup-node index.ts --format cjs,esm --outDir dist && npx tsup-node scripts/deploy.ts --format cjs,esm --outDir dist",
+    "build": "rm -rf ./dist && tsup-node index.ts --format cjs,esm --dts --outDir dist && npx tsup-node scripts/deploy.ts --format cjs,esm --outDir dist",
     "clean": "rm -rf dist node_modules && rm -rf ./dist",
     "dev": "npm run build -- --watch",
     "compile": "npx hardhat compile",
@@ -27,7 +28,8 @@
   "peerDependencies": {
     "@vechain/sdk-core": "*",
     "@vechain/sdk-hardhat-plugin": "*",
-    "@vechain/sdk-logging": "*"
+    "@vechain/sdk-logging": "*",
+    "@vechain/sdk-thorest-api": "*"
   },
   "dependencies": {
     "@vechain/sdk-hardhat-plugin": "^1.2.0-rc.2",

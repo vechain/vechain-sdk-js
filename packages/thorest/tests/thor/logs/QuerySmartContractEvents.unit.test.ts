@@ -9,7 +9,6 @@ import { expect, jest } from '@jest/globals';
 import type { HttpClient } from '@http';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 
-
 const mockHttpClient = <T>(response: T): HttpClient => {
     return {
         post: jest.fn().mockReturnValue(response)

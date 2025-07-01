@@ -1,0 +1,48 @@
+name: Unit tests for browser
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+    build:
+        name: Build & Lint
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                node: [18, lts/*, latest]
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ matrix.node }}
+
+            - name: Install & Patch packages
+              run: yarn install
+
+            - name: Preliminary Stop of Thor solo node
+              id: preliminary-stop-solo
+              run: yarn stop-thor-solo
+
+            - name: Build for solo setup
+              run: yarn build
+
+            - name: Start Thor solo node
+              id: start-solo
+              run:  |
+                yarn start-thor-solo
+                yarn seed-thor-solo
+
+            - name: Test
+              id: unit-test
+              run: yarn test:browser
+
+            - name: Stop Thor solo node
+              id: stop-solo
+              run: yarn stop-thor-solo

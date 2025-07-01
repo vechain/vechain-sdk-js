@@ -24,4 +24,3 @@ export * from './TransferLogResponse';
 export * from './TransferLogResponseJSON';
 export * from './TransferLogsResponse';
 export * from './TransferLogsResponseJSON';
-

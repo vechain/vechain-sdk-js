@@ -1,9 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { InspectClauses, ThorNetworks } from '@thor';
 import { FetchHttpClient } from '@http';
-import log from 'loglevel';
-import fastJsonStableStringify from 'fast-json-stable-stringify';
-import { ExecuteCodesRequestJSON } from '@thor/accounts/ExecuteCodesRequestJSON';
+import { type ExecuteCodesRequestJSON } from '@thor/accounts/ExecuteCodesRequestJSON';
 
 /**
  * VeChain inspect clauses - solo

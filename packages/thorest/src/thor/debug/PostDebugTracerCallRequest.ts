@@ -1,5 +1,15 @@
-import { type PostDebugTracerCallRequestJSON, type TracerName } from '@thor/debug';
-import { Address, type Hex, HexUInt, IllegalArgumentError, Quantity, UInt } from '@vechain/sdk-core';
+import {
+    type PostDebugTracerCallRequestJSON,
+    type TracerName
+} from '@thor/debug';
+import {
+    Address,
+    type Hex,
+    HexUInt,
+    IllegalArgumentError,
+    Quantity,
+    UInt
+} from '@vechain/sdk-core';
 
 /**
  * Full-Qualified-Path

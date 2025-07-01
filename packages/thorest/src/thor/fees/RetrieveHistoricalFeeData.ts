@@ -6,7 +6,12 @@ import {
     type ThorResponse
 } from '@thor';
 import { type HttpClient, type HttpPath, type HttpQuery } from '@http';
-import { type Hex, type HexUInt32, IllegalArgumentError, Revision } from '@vechain/sdk-core';
+import {
+    type Hex,
+    type HexUInt32,
+    IllegalArgumentError,
+    Revision
+} from '@vechain/sdk-core';
 
 /**
  * Full-Qualified Path
