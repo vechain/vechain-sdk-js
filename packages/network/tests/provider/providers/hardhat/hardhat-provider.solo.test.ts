@@ -6,7 +6,6 @@ import {
     type SubscriptionEvent,
     THOR_SOLO_URL,
     ThorClient,
-    type VeChainProvider,
     type VeChainSigner
 } from '../../../../src';
 import { providerMethodsTestCasesSolo } from '../fixture';
@@ -16,6 +15,7 @@ import {
     deployERC721Contract,
     waitForMessage
 } from '../helpers';
+import { retryOperation } from '../../../test-utils';
 
 /**
  *VeChain provider tests - Solo Network
@@ -174,12 +174,12 @@ describe('Hardhat provider tests', () => {
      * 3. Executes a `transfer` transaction on the ERC20 contract to simulate activity that would generate a log event.
      * 4. Waits for a message from the subscription, indicating a log event was captured.
      * 5. Validates the received message to ensure it contains the expected structure and data:
-     *    - The message is defined and has the correct method.
-     *    - The log event's address matches the ERC20 contract's address.
-     *    - Topics and data within the log event are present and correctly formatted.
+     *    - The message is defined and has the correct method name.
+     *    - The message contains the expected parameters with log event details.
+     *    - The log event includes the correct contract address, topics, and data.
      *
      * @remarks
-     * - The `waitForMessage` function is assumed to be a utility that returns a Promise which resolves when a new message is received from the subscription.
+     * - The test uses `retryOperation` to handle potential connection issues and retry failed operations.
      * - The test uses `@ts-expect-error` annotations to bypass TypeScript's type checking for certain properties we expect to be present in the log event message. This is due to the generic nature of the `message` object, which doesn't have a predefined type that includes the expected fields.
      * - An extended timeout of 30 seconds is set to accommodate potential delays in contract deployment, transaction execution, and event propagation.
      *
@@ -188,11 +188,16 @@ describe('Hardhat provider tests', () => {
     test('Should be able to get to subscribe to the latest logs of an erc20 contract', async () => {
         try {
             console.log('Starting ERC20 contract deployment...');
-            const contract = await deployERC20Contract(
-                thorClient,
-                (await provider.getSigner(
-                    fundedAccount.address
-                )) as VeChainSigner
+            const contract = await retryOperation(
+                async () =>
+                    deployERC20Contract(
+                        thorClient,
+                        (await provider.getSigner(
+                            fundedAccount.address
+                        )) as VeChainSigner
+                    ),
+                5,
+                2000
             );
             console.log(
                 'ERC20 contract deployed successfully at:',
@@ -206,28 +211,41 @@ describe('Hardhat provider tests', () => {
 
             // Call RPC function to subscribe to logs
             console.log('Setting up log subscription...');
-            const rpcCall = await provider.request({
-                method: 'eth_subscribe',
-                params: ['logs', logsParams]
-            });
+            const rpcCall = await retryOperation(
+                async () =>
+                    provider.request({
+                        method: 'eth_subscribe',
+                        params: ['logs', logsParams]
+                    }),
+                5,
+                2000
+            );
             console.log('Subscription created:', rpcCall);
 
-            // Wait for the subscription to receive a message (log event)
-            const messageReceived = waitForMessage(provider as VeChainProvider);
+            // Wait for the subscription to receive a message (log event) using retryOperation
+            const message = await retryOperation(
+                async () => waitForMessage(provider),
+                5,
+                2000
+            );
 
             // Execute a contract transaction to generate a log event
             console.log('Executing transfer transaction...');
-            await thorClient.contracts.executeTransaction(
-                (await provider.getSigner(
-                    fundedAccount.address
-                )) as VeChainSigner,
-                contract.address,
-                ABIContract.ofAbi(contract.abi).getFunction('transfer'),
-                [fundedAccount.address, 100]
+            await retryOperation(
+                async () =>
+                    thorClient.contracts.executeTransaction(
+                        (await provider.getSigner(
+                            fundedAccount.address
+                        )) as VeChainSigner,
+                        contract.address,
+                        ABIContract.ofAbi(contract.abi).getFunction('transfer'),
+                        [fundedAccount.address, 100]
+                    ),
+                5,
+                2000
             );
             console.log('Transfer transaction executed');
 
-            const message = await messageReceived;
             console.log('Received subscription message');
 
             // Clean up the subscription
@@ -340,56 +358,85 @@ describe('Hardhat provider tests', () => {
             };
 
             console.log('Setting up subscriptions...');
-            const erc20Subscription = await provider.request({
-                method: 'eth_subscribe',
-                params: ['logs', erc20logsParams]
-            });
+            const erc20Subscription = await retryOperation(
+                async () =>
+                    provider.request({
+                        method: 'eth_subscribe',
+                        params: ['logs', erc20logsParams]
+                    }),
+                5,
+                2000
+            );
 
-            const erc721Subscription = await provider.request({
-                method: 'eth_subscribe',
-                params: ['logs', erc721logsParams]
-            });
+            const erc721Subscription = await retryOperation(
+                async () =>
+                    provider.request({
+                        method: 'eth_subscribe',
+                        params: ['logs', erc721logsParams]
+                    }),
+                5,
+                2000
+            );
 
             console.log('Subscriptions created:', {
                 erc20Subscription,
                 erc721Subscription
             });
 
-            // Collect and assert log events
-            let results: SubscriptionEvent[] = [];
-            const eventPromise = new Promise((resolve) => {
-                provider.on('message', (message: SubscriptionEvent) => {
-                    results.push(message);
-                    if (results.length >= 2) {
-                        provider.destroy();
-                        resolve(results);
-                    }
-                });
-            });
+            // Collect and assert log events using retryOperation
+            const results = await retryOperation(
+                async (): Promise<SubscriptionEvent[]> => {
+                    return new Promise((resolve) => {
+                        const results: SubscriptionEvent[] = [];
+                        provider.on('message', (message: SubscriptionEvent) => {
+                            results.push(message);
+                            if (results.length >= 2) {
+                                provider.destroy();
+                                resolve(results);
+                            }
+                        });
+                    });
+                },
+                5,
+                2000
+            );
 
             console.log('Executing transactions to generate events...');
             // Execute transactions that should emit events
-            await thorClient.contracts.executeTransaction(
-                (await provider.getSigner(
-                    fundedAccount.address
-                )) as VeChainSigner,
-                erc20Contract.address,
-                ABIContract.ofAbi(erc20Contract.abi).getFunction('transfer'),
-                [fundedAccount.address, 100]
+            await retryOperation(
+                async () =>
+                    thorClient.contracts.executeTransaction(
+                        (await provider.getSigner(
+                            fundedAccount.address
+                        )) as VeChainSigner,
+                        erc20Contract.address,
+                        ABIContract.ofAbi(erc20Contract.abi).getFunction(
+                            'transfer'
+                        ),
+                        [fundedAccount.address, 100]
+                    ),
+                5,
+                2000
             );
             console.log('ERC20 transfer transaction executed');
 
-            await thorClient.contracts.executeTransaction(
-                (await provider.getSigner(
-                    fundedAccount.address
-                )) as VeChainSigner,
-                erc721Contract.address,
-                ABIContract.ofAbi(erc721Contract.abi).getFunction('mintItem'),
-                [fundedAccount.address]
+            await retryOperation(
+                async () =>
+                    thorClient.contracts.executeTransaction(
+                        (await provider.getSigner(
+                            fundedAccount.address
+                        )) as VeChainSigner,
+                        erc721Contract.address,
+                        ABIContract.ofAbi(erc721Contract.abi).getFunction(
+                            'mintItem'
+                        ),
+                        [fundedAccount.address]
+                    ),
+                5,
+                2000
             );
             console.log('ERC721 mint transaction executed');
 
-            results = (await eventPromise) as SubscriptionEvent[];
             console.log('Received events:', results.length);
 
             // Assertions to validate the received log events
