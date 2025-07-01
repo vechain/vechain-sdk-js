@@ -15,9 +15,12 @@ import {
  * including compressing and inflating public keys,
  * generating private keys, and validating message hashes and private keys.
  */
-
+/* eslint-disable @typescript-eslint/no-extraneous-class */
 class Secp256k1 {
     /**
+    * ...rest of class...
+    */
+}
      * This value is used to identify compressed public key.
      */
     private static readonly COMPRESSED_PREFIX = 2;
