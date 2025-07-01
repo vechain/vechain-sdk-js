@@ -235,9 +235,17 @@ class EventPoll<TReturnType> extends EventEmitter {
                 void (async (): Promise<void> => {
                     try {
                         await this._intervalLoop();
-                    } catch {
-                        this.stopListen();
-                        await this._intervalLoop();
+                    } catch (error) {
+                        // Log the error for debugging
+                        console.error('EventPoll interval error:', error);
+
+                        // If we should stop on error, stop listening permanently
+                        if (this.hasToStopOnError) {
+                            this.stopListen();
+                        } else {
+                            // If we shouldn't stop on error, continue with the next iteration
+                            // The error is already handled within _intervalLoop
+                        }
                     }
                 })();
             }, this.requestIntervalInMilliseconds);
