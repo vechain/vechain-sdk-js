@@ -52,7 +52,7 @@ jobs:
                 coverage-title: Coverage
                 coverage-summary-path: coverage/coverage-summary.json
                 multiple-junitxml-files: |
-                  core, packages/core/junit.xml                  
+                  core, packages/sdk/junit.xml                  
                   logging, packages/logging/junit.xml                                                                        
 
             - name: Archive coverage

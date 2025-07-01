@@ -4,7 +4,7 @@ import { type ContractBytecodeJSON } from './ContractBytecodeJSON';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/thorest/src/thor/accounts/ContractBytecode.ts!';
+const FQP = 'packages/core/src/thor/accounts/ContractBytecode.ts!';
 
 /**
  * Contract Bytecode

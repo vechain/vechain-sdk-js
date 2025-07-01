@@ -4,7 +4,7 @@ import { IllegalArgumentError } from '@vechain/sdk-core';
 import { type HttpQuery, type HttpPath, type HttpClient } from '@http';
 import { isValidNetworkUrl } from '../index';
 
-const FQP = 'packages/thorest/http/FetchHttpClient.ts';
+const FQP = 'packages/core/http/FetchHttpClient.ts';
 
 // Types for dependency injection
 type RequestConstructor = typeof Request;

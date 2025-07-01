@@ -4,7 +4,7 @@ import { IllegalArgumentError, ThorId } from '@vechain/sdk-core';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/thorest/src/thor/accounts/GetStorageResponse.ts!';
+const FQP = 'packages/core/src/thor/accounts/GetStorageResponse.ts!';
 
 /**
  * Get Storage Response

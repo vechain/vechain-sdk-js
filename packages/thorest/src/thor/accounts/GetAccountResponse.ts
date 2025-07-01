@@ -4,7 +4,7 @@ import { type GetAccountResponseJSON } from './GetAccountResponseJSON';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/thorest/src/thor/accounts/GetAccountResponse.ts!';
+const FQP = 'packages/core/src/thor/accounts/GetAccountResponse.ts!';
 
 /**
  * Get Account Response

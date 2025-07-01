@@ -2,7 +2,7 @@ import { IllegalArgumentError, Revision } from '@vechain/sdk-core';
 import { type HttpClient } from '@http';
 import { type BlockJSON } from '@thor/blocks';
 
-const FQP = 'packages/thorest/src/thor/fork/forkDetector.ts!';
+const FQP = 'packages/core/src/thor/fork/forkDetector.ts!';
 
 // In-memory cache for fork detection results
 interface CacheEntry {

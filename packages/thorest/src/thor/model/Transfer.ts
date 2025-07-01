@@ -4,7 +4,7 @@ import { type TransferJSON } from '@thor';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/thorest/src/thor/model/Transfer.ts!';
+const FQP = 'packages/core/src/thor/model/Transfer.ts!';
 
 /**
  * [Transfer](http://localhost:8669/doc/stoplight-ui/#/schemas/Transfer)

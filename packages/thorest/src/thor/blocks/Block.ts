@@ -11,7 +11,7 @@ import { type BlockJSON } from '@thor/blocks/BlockJSON';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/thorest/src/thor/blocks/Block.ts!';
+const FQP = 'packages/core/src/thor/blocks/Block.ts!';
 
 /**
  * [Block](http://localhost:8669/doc/stoplight-ui/#/schemas/Block)
