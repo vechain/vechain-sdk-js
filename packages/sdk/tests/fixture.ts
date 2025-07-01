@@ -3,7 +3,7 @@ import { Secp256k1 } from '@secp256k1';
 import {
     AccountDispatcher,
     type ThorSoloAccount
-} from '@vechain/sdk-core-solo-setup';
+} from '@vechain/sdk-solo-setup';
 
 /**
  * Generates a random valid address

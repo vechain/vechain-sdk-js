@@ -21,9 +21,9 @@
     ],
     "packageManager": "yarn@1.22.22",
     "scripts": {
-        "start-thor-solo": "yarn workspace @vechain/sdk-core-solo-setup solo-up",
-        "stop-thor-solo": "yarn workspace @vechain/sdk-core-solo-setup solo-down",
-        "seed-thor-solo": "yarn workspace @vechain/sdk-core-solo-setup solo-seed",
+        "start-thor-solo": "yarn workspace @vechain/sdk-solo-setup solo-up",
+        "stop-thor-solo": "yarn workspace @vechain/sdk-solo-setup solo-down",
+        "seed-thor-solo": "yarn workspace @vechain/sdk-solo-setup solo-seed",
         "postinstall": "husky",
         "build": "turbo build",
         "check:circular-dependencies": "turbo check:circular-dependencies",

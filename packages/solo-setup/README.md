@@ -4,7 +4,7 @@ This package provides a complete local development environment for VeChain Thor 
 
 ## Overview
 
-The `@vechain/sdk-core-solo-setup` package offers:
+The `@vechain/sdk-solo-setup` package offers:
 
 - A dockerized Thor node running in "solo" mode for local development
 - Pre-configured test accounts with automated funding
@@ -23,9 +23,9 @@ The `@vechain/sdk-core-solo-setup` package offers:
 This package is part of the VeChain JavaScript SDK. If you're working within the SDK monorepo, it's already included. Otherwise, you can add it to your project:
 
 ```bash
-yarn add @vechain/sdk-core-solo-setup
+yarn add @vechain/sdk-solo-setup
 # or
-npm install @vechain/sdk-core-solo-setup
+npm install @vechain/sdk-solo-setup
 ```
 
 ## Usage
@@ -105,7 +105,7 @@ import {
     AccountDispatcher,
     getConfigData,
     THOR_SOLO_DEFAULT_MNEMONIC
-} from '@vechain/sdk-core-solo-setup';
+} from '@vechain/sdk-solo-setup';
 
 // Get the next available account
 const dispatcher = new AccountDispatcher();
