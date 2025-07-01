@@ -1,8 +1,10 @@
-import { Hex, HexUInt, IllegalArgumentError } from '@vechain/sdk-core';
+import { type Hex, HexUInt, IllegalArgumentError } from '@vechain/sdk-core';
 import { Transfer } from '@thor/model/Transfer';
 import { Event, type EventJSON, type TransferJSON } from '@thor/model';
-import { ExecuteCodeResponseJSON } from './ExecuteCodeResponseJSON';
-import { ExecuteCodesResponseJSON } from './ExecuteCodesResponseJSON';
+import {
+    type ExecuteCodeResponseJSON,
+    type ExecuteCodesResponseJSON
+} from '@thor/accounts';
 
 /**
  * Full-Qualified Path
@@ -13,7 +15,7 @@ const FQP = 'packages/thorest/src/thor/accounts/ExecuteCodesResponse.ts!';
  * Execute Code Response
  *
  * Represents a single code execution response.
- * 
+ *
  * [ExecuteCodesResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/ExecuteCodesResponse)
  */
 class ExecuteCodeResponse {

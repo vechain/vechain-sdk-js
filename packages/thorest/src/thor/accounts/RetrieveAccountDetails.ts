@@ -2,7 +2,7 @@ import { type HttpClient, type HttpPath } from '@http';
 import { GetAccountResponse } from '@thor/accounts';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
 import { type Address } from '@vechain/sdk-core';
-import { GetAccountResponseJSON } from './GetAccountResponseJSON';
+import { type GetAccountResponseJSON } from './GetAccountResponseJSON';
 
 /**
  * Full-Qualified Path
@@ -22,7 +22,7 @@ class RetrieveAccountDetails
      */
     private readonly path: RetrieveAccountDetailsPath;
 
-     /**
+    /**
      * Constructs an instance of the class with the specified HTTP path.
      *
      * @param {HttpPath} path - The HTTP path to initialize the instance with.

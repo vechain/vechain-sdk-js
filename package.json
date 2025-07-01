@@ -38,8 +38,10 @@
         "test:examples": "turbo test:examples",
         "test:examples:solo": "(yarn start-thor-solo && yarn test:examples && yarn stop-thor-solo) || yarn stop-thor-solo",
         "test": "turbo test --force --filter='@vechain/sdk-core' --filter='@vechain/sdk-thorest-api'",
+        "test:browser": "turbo test:browser --force && yarn merge-coverage",
         "test:solo": "(yarn start-thor-solo && yarn seed-thor-solo && yarn test && yarn stop-thor-solo) || yarn stop-thor-solo",
         "test:browser:solo": "(yarn start-thor-solo && yarn seed-thor-solo && yarn test:browser && yarn stop-thor-solo) || yarn stop-thor-solo",
+        "merge-coverage": "ts-node scripts/merge-coverage.ts",
         "check:tests-naming": "ts-node scripts/check-tests-naming.ts"
     },
     "devDependencies": {
