@@ -47,7 +47,9 @@ const retryOperation = async <T>(
                 errorMessage.includes('socket hang up') ||
                 errorMessage.includes('ECONNRESET') ||
                 errorMessage.includes('connect ETIMEDOUT') ||
-                errorMessage.includes('request failed');
+                errorMessage.includes('request failed') ||
+                errorMessage.includes('UND_ERR_SOCKET') ||
+                errorMessage.includes('fetch failed');
 
             // If it's not a connection error or this is the last attempt, throw
             if (!isConnectionError || attempt === maxAttempts) {
