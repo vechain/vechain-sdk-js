@@ -89,6 +89,7 @@ export default [{
         "security/detect-non-literal-fs-filename": "off",
         "sonarjs/sonar-no-unused-vars": "off",
         "sonarjs/sonar-no-fallthrough": "off",
+        "sonarjs/deprecation": "off",
         "import/no-extraneous-dependencies": ["error", {"devDependencies": false, "optionalDependencies": false, "peerDependencies": false}],
     }
 }, {
