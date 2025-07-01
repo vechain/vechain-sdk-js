@@ -6,7 +6,6 @@ import {
     UInt
 } from '@vechain/sdk-core';
 import { ExecuteCodesRequestJSON } from '../response/ExecuteCodesRequestJSON';
-
 /**
  * Full-Qualified Path
  */
