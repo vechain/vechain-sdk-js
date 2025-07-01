@@ -3,6 +3,9 @@ name: Unit tests for browser
 on:
   workflow_call:
 
+permissions:
+  contents: read
+
 jobs:
     build:
         name: Build & Lint
