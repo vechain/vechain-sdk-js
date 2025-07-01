@@ -1,5 +1,9 @@
-import { Revision } from "@vechain/sdk-core";
-import { RegularBlockResponse, FetchHttpClient, RetrieveRegularBlock } from "@vechain/sdk-thorest-api";
+import { Revision } from '@vechain/sdk-core';
+import {
+    RegularBlockResponse,
+    FetchHttpClient,
+    RetrieveRegularBlock
+} from '@vechain/sdk-core-thorest-api';
 
 /**
  * Get the genesis block from the ThorClient
@@ -8,7 +12,9 @@ import { RegularBlockResponse, FetchHttpClient, RetrieveRegularBlock } from "@ve
 export const getGenesisBlock = async (): Promise<RegularBlockResponse> => {
     try {
         const thorClient = FetchHttpClient.at('http://localhost:8669');
-        const genesisBlock = (await RetrieveRegularBlock.of(Revision.of(0)).askTo(thorClient)).response;
+        const genesisBlock = (
+            await RetrieveRegularBlock.of(Revision.of(0)).askTo(thorClient)
+        ).response;
         if (genesisBlock === null) {
             throw new Error('Genesis block not found');
         }

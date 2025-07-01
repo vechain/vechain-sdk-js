@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "paths": {
+      "@*": ["./src/*"],
+      "@thor": ["./src/thor"],
+      "@thor/*": ["./src/thor/*"],
+      "@ws": ["./src/ws"],
+      "@ws/*": ["./src/ws/*"],
+      "@http": ["./src/http"],
+      "@http/*": ["./src/http/*"]
+    }
+  },
+  "include": [
+    "./src/**/*.ts",
+    "./tests/**/*.ts",
+    "./tsup.config.ts"
+  ]
+}

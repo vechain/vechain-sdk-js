@@ -18,7 +18,7 @@ export default [
                         "../rpc-proxy",
                     ],
 
-                    message: "Please import using @vechain/sdk-<the-module>",
+                    message: "Please import using @vechain/sdk-core-<the-module>",
                 }],
             }],
         },

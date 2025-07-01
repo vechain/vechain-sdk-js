@@ -1,4 +1,4 @@
-import { ThorClient } from '@vechain/sdk-network';
+import { ThorClient } from '@vechain/sdk-core-network';
 import {
     ABIContract,
     Address,

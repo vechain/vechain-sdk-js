@@ -1,7 +1,7 @@
 import { type HardhatUserConfig } from 'hardhat/config';
 import { type HttpNetworkConfig } from 'hardhat/types';
 import '@nomicfoundation/hardhat-ethers';
-import '@vechain/sdk-hardhat-plugin';
+import '@vechain/sdk-core-hardhat-plugin';
 
 const config: HardhatUserConfig = {
     solidity: '0.8.20'

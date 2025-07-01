@@ -1,5 +1,5 @@
 {
-  "name": "@vechain/sdk-solo-setup",
+  "name": "@vechain/sdk-core-solo-setup",
   "version": "0.0.0",
   "private": true,
   "main": "dist/index.js",
@@ -26,11 +26,11 @@
   },
   "peerDependencies": {
     "@vechain/sdk-core": "*",
-    "@vechain/sdk-hardhat-plugin": "*",
-    "@vechain/sdk-logging": "*"
+    "@vechain/sdk-core-hardhat-plugin": "*",
+    "@vechain/sdk-core-logging": "*"
   },
   "dependencies": {
-    "@vechain/sdk-hardhat-plugin": "^1.2.0-rc.2",
+    "@vechain/sdk-core-hardhat-plugin": "^1.2.0-rc.2",
     "hardhat": "^2.22.15"
   },
   "devDependencies": {
