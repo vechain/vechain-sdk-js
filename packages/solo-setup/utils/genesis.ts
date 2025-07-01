@@ -3,7 +3,7 @@ import {
     RegularBlockResponse,
     FetchHttpClient,
     RetrieveRegularBlock
-} from '@vechain/sdk-core-thorest-api';
+} from '@vechain/sdk-thorest-api';
 
 /**
  * Get the genesis block from the ThorClient

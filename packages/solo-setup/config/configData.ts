@@ -1,4 +1,4 @@
-import { RegularBlockResponse } from '@vechain/sdk-core-thorest-api';
+import { RegularBlockResponse } from '@vechain/sdk-thorest-api';
 import fs from 'fs';
 import path from 'path';
 

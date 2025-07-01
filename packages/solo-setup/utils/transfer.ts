@@ -23,7 +23,7 @@ import {
     RetrieveExpandedBlock,
     RetrieveTransactionByID,
     SendTransaction
-} from '@vechain/sdk-core-thorest-api';
+} from '@vechain/sdk-thorest-api';
 
 const genesisDeployerAccount = THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS[0];
 
