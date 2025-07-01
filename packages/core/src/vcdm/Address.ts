@@ -98,7 +98,7 @@ class Address extends HexUInt {
      *
      * @throws {IllegalArgumentError} If the `privateKey` is invalid.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audit method, depends on
      * * {@link Secp256k1.derivePublicKey}.
      */
     public static ofPrivateKey(privateKey: Uint8Array): Address {
