@@ -182,7 +182,7 @@ const RPCMethodsMap = (
             return await ethSubscribe(thorClient, params, provider);
         },
 
-        [RPC_METHODS.eth_unsubscribe]: async (params) => {
+        [RPC_METHODS.eth_unsubscribe]: async (params): Promise<boolean> => {
             return await ethUnsubscribe(params, provider);
         },
 

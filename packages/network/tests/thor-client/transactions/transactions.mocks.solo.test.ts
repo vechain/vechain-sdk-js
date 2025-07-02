@@ -3,6 +3,7 @@ import { THOR_SOLO_URL, ThorClient } from '../../../src';
 import { transactionNonces, transferTransactionBody } from './fixture';
 import { TEST_ACCOUNTS } from '../../fixture';
 import { InvalidTransactionField } from '@vechain/sdk-errors';
+import { retryOperation } from '../../test-utils';
 
 /**
  * Transactions module tests with mocks.
@@ -19,9 +20,12 @@ describe('buildTransactionBody with mocks', () => {
             'getBlockCompressed'
         ).mockResolvedValue(null);
 
-        const gas = await thorSoloClient.transactions.estimateGas(
-            [transferTransactionBody.clauses[0]],
-            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+        const gas = await retryOperation(
+            async () =>
+                await thorSoloClient.transactions.estimateGas(
+                    [transferTransactionBody.clauses[0]],
+                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+                )
         );
 
         await expect(
@@ -41,9 +45,12 @@ describe('buildTransactionBody with mocks', () => {
             'getBestBlockCompressed'
         ).mockResolvedValue(null);
 
-        const gas = await thorSoloClient.transactions.estimateGas(
-            [transferTransactionBody.clauses[0]],
-            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+        const gas = await retryOperation(
+            async () =>
+                await thorSoloClient.transactions.estimateGas(
+                    [transferTransactionBody.clauses[0]],
+                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+                )
         );
 
         await expect(
@@ -60,9 +67,12 @@ describe('buildTransactionBody with mocks', () => {
         const blockRef =
             (await thorSoloClient.blocks.getBestBlockRef()) as string;
 
-        const gas = await thorSoloClient.transactions.estimateGas(
-            [transferTransactionBody.clauses[0]],
-            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+        const gas = await retryOperation(
+            async () =>
+                await thorSoloClient.transactions.estimateGas(
+                    [transferTransactionBody.clauses[0]],
+                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+                )
         );
 
         const options = {

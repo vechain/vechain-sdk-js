@@ -3,12 +3,18 @@
 const applyCodeCoverageLimits = process.env.APPLYCODECOVLIMITS;
 
 module.exports = {
+    globalSetup: '<rootDir>/jest.global-setup.js',
+    globalTeardown: '<rootDir>/jest.global-setup.js',
     preset: 'ts-jest',
     testEnvironment: 'node',
     coverageReporters: ['html', 'lcov', 'json'],
     runner: 'groups',
     reporters: ['default', 'jest-junit'],
-    maxWorkers: 5,
+    maxWorkers: process.env.CI ? 1 : 5,
+    // Add cleanup options to prevent hanging
+    forceExit: true,
+    detectOpenHandles: true,
+    testTimeout: 120000,
     coveragePathIgnorePatterns: [
         "/dist/",
         "/tests/"

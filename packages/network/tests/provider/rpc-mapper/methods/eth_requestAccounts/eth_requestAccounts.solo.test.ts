@@ -9,6 +9,7 @@ import {
 } from '../../../../../src';
 import { getUnusedBaseWallet } from '../../../../fixture';
 import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
+import { retryOperation } from '../../../../test-utils';
 
 /**
  * RPC Mapper integration tests for 'eth_requestAccounts' method
@@ -49,10 +50,13 @@ describe('RPC Mapper - eth_requestAccounts method tests', () => {
          */
         test('eth_requestAccounts - Should be able to get addresses from a NON-empty wallet', async () => {
             // Get accounts - Instead of using RPCMethodsMap, we can use provider directly
-            const accounts = (await provider.request({
-                method: RPC_METHODS.eth_requestAccounts,
-                params: []
-            })) as string[];
+            const accounts = (await retryOperation(
+                async () =>
+                    await provider.request({
+                        method: RPC_METHODS.eth_requestAccounts,
+                        params: []
+                    })
+            )) as string[];
 
             // Check if the accounts are the same
             expect(accounts.length).toBeGreaterThan(0);
@@ -68,7 +72,12 @@ describe('RPC Mapper - eth_requestAccounts method tests', () => {
          */
         test('eth_requestAccounts - Should throw error if wallet is not given', async () => {
             await expect(
-                RPCMethodsMap(thorClient)[RPC_METHODS.eth_requestAccounts]([])
+                retryOperation(
+                    async () =>
+                        await RPCMethodsMap(thorClient)[
+                            RPC_METHODS.eth_requestAccounts
+                        ]([])
+                )
             ).rejects.toThrowError(JSONRPCInvalidParams);
         });
 
@@ -78,7 +87,12 @@ describe('RPC Mapper - eth_requestAccounts method tests', () => {
         test('eth_requestAccounts - Should throw error if wallet is given, but empty', async () => {
             // Error with empty wallet
             await expect(
-                RPCMethodsMap(thorClient)[RPC_METHODS.eth_requestAccounts]([])
+                retryOperation(
+                    async () =>
+                        await RPCMethodsMap(thorClient)[
+                            RPC_METHODS.eth_requestAccounts
+                        ]([])
+                )
             ).rejects.toThrowError(JSONRPCInvalidParams);
         });
     });

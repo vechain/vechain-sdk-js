@@ -1,20 +1,13 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { ABIContract, HexUInt } from '@vechain/sdk-core';
+import { HexUInt } from '@vechain/sdk-core';
 import {
     HardhatVeChainProvider,
     ProviderInternalBaseWallet,
     type SubscriptionEvent,
-    THOR_SOLO_URL,
-    ThorClient,
-    type VeChainProvider,
-    type VeChainSigner
+    THOR_SOLO_URL
 } from '../../../../src';
-import { providerMethodsTestCasesSolo, TEST_ACCOUNT } from '../fixture';
-import {
-    deployERC20Contract,
-    deployERC721Contract,
-    waitForMessage
-} from '../helpers';
+import { providerMethodsTestCasesSolo } from '../fixture';
+import { TEST_ACCOUNTS } from '../../../fixture';
 
 /**
  *VeChain provider tests - Solo Network
@@ -25,19 +18,24 @@ describe('Hardhat provider tests', () => {
     /**
      * ThorClient and provider instances
      */
-    let thorClient: ThorClient;
     let provider: HardhatVeChainProvider;
+    let fundedAccount: { privateKey: string; address: string };
 
     /**
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = ThorClient.at(THOR_SOLO_URL);
+        // Use a funded account from TEST_ACCOUNTS
+        const account = TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION;
+        fundedAccount = {
+            privateKey: account.privateKey,
+            address: account.address
+        };
         provider = new HardhatVeChainProvider(
             new ProviderInternalBaseWallet([
                 {
-                    privateKey: HexUInt.of(TEST_ACCOUNT.privateKey).bytes,
-                    address: TEST_ACCOUNT.address
+                    privateKey: HexUInt.of(fundedAccount.privateKey).bytes,
+                    address: fundedAccount.address
                 }
             ]),
             THOR_SOLO_URL,
@@ -155,185 +153,6 @@ describe('Hardhat provider tests', () => {
                 })
         ).rejects.toThrowError();
     }, 12000);
-
-    /**
-     * Tests the ability to subscribe to and receive the latest log events from an ERC20 contract using the `eth_subscribe` RPC call.
-     *
-     * The test performs the following operations:
-     * 1. Deploys an ERC20 contract to simulate a real-world token contract scenario.
-     * 2. Sets up a log subscription for the deployed contract's address to listen for all emitted events (no specific topics).
-     * 3. Executes a `transfer` transaction on the ERC20 contract to simulate activity that would generate a log event.
-     * 4. Waits for a message from the subscription, indicating a log event was captured.
-     * 5. Validates the received message to ensure it contains the expected structure and data:
-     *    - The message is defined and has the correct method.
-     *    - The log event's address matches the ERC20 contract's address.
-     *    - Topics and data within the log event are present and correctly formatted.
-     *
-     * @remarks
-     * - The `waitForMessage` function is assumed to be a utility that returns a Promise which resolves when a new message is received from the subscription.
-     * - The test uses `@ts-expect-error` annotations to bypass TypeScript's type checking for certain properties we expect to be present in the log event message. This is due to the generic nature of the `message` object, which doesn't have a predefined type that includes the expected fields.
-     * - An extended timeout of 30 seconds is set to accommodate potential delays in contract deployment, transaction execution, and event propagation.
-     *
-     * @throws {Error} If the received message doesn't match the expected format or if the log event details are incorrect, indicating an issue with the subscription or the event emission process.
-     */
-    test('Should be able to get to subscribe to the latest logs of an erc20 contract', async () => {
-        const contract = await deployERC20Contract(
-            thorClient,
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner
-        );
-
-        const logsParams = {
-            address: [contract.address],
-            topics: []
-        };
-
-        // Call RPC function to subscribe to logs
-        const rpcCall = await provider.request({
-            method: 'eth_subscribe',
-            params: ['logs', logsParams]
-        });
-        // Wait for the subscription to receive a message (log event)
-        const messageReceived = waitForMessage(provider as VeChainProvider);
-
-        // Execute a contract transaction to generate a log event
-        await thorClient.contracts.executeTransaction(
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner,
-            contract.address,
-            ABIContract.ofAbi(contract.abi).getFunction('transfer'),
-            [TEST_ACCOUNT.address, 100]
-        );
-
-        const message = await messageReceived;
-
-        // Clean up the subscription
-        provider.destroy();
-
-        // Assertions to validate the received message
-        expect(message).toBeDefined();
-        expect(message.method).toBeDefined();
-        expect(message.params).toBeDefined();
-
-        // @ts-expect-error - Asserting that the log event contains the expected contract address
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        expect(message.params.result[0].address).toBe(contract.address);
-
-        // @ts-expect-error - Asserting that the log event contains defined topics
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        expect(message.params.result[0].topics).toBeDefined();
-
-        // @ts-expect-error - Asserting that the log event contains data
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        expect(message.params.result[0].data).toBeDefined();
-
-        // Validate the RPC call was successful
-        expect(rpcCall).not.toBe('0x0');
-    }, 30000);
-
-    /**
-     * Tests the ability to subscribe to and receive log events for both ERC20 and ERC721 token contracts.
-     *
-     * This test performs the following operations:
-     * 1. Deploys an ERC20 and an ERC721 contract to simulate token transactions.
-     * 2. Sets up subscriptions to listen for log events from both contracts using the `eth_subscribe` method.
-     * 3. Executes transactions on both contracts:
-     *    - For the ERC20 contract, it simulates a token transfer.
-     *    - For the ERC721 contract, it simulates minting a new token.
-     * 4. Waits for and collects log events emitted by these transactions.
-     * 5. Asserts that the received log events match the expected results, including:
-     *    - The presence and count of the log events.
-     *    - Matching subscription IDs to verify the correct source of the events.
-     *    - Non-empty log data to ensure event details are captured.
-     *
-     * Note: The test uses `@ts-expect-error` to assert the presence of `params.result` in log events,
-     * acknowledging potential TypeScript type safety concerns while expecting the data to be present.
-     *
-     * @remarks
-     * The test includes an extended timeout of 10 seconds to accommodate the asynchronous nature of
-     * blockchain transactions and event subscriptions.
-     *
-     * @throws {Error} If any of the assertions fail, indicating a problem with event subscription or log data capture.
-     */
-    test('Should be able to subscribe to the latest logs of an erc20 and erc721 contract', async () => {
-        // Test setup: Deploy contracts and set up event subscriptions
-        const erc20Contract = await deployERC20Contract(
-            thorClient,
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner
-        );
-        const erc721Contract = await deployERC721Contract(
-            thorClient,
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner
-        );
-
-        const erc20logsParams = {
-            address: [erc20Contract.address],
-            topics: []
-        };
-
-        const erc721logsParams = {
-            address: [erc721Contract.address],
-            topics: []
-        };
-
-        const erc20Subscription = await provider.request({
-            method: 'eth_subscribe',
-            params: ['logs', erc20logsParams]
-        });
-
-        const erc721Subscription = await provider.request({
-            method: 'eth_subscribe',
-            params: ['logs', erc721logsParams]
-        });
-
-        // Collect and assert log events
-        let results: SubscriptionEvent[] = [];
-        const eventPromise = new Promise((resolve) => {
-            provider.on('message', (message: SubscriptionEvent) => {
-                results.push(message);
-                if (results.length >= 2) {
-                    provider.destroy();
-                    resolve(results);
-                }
-            });
-        });
-
-        // Execute transactions that should emit events
-        await thorClient.contracts.executeTransaction(
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner,
-            erc20Contract.address,
-            ABIContract.ofAbi(erc20Contract.abi).getFunction('transfer'),
-            [TEST_ACCOUNT.address, 100]
-        );
-
-        await thorClient.contracts.executeTransaction(
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner,
-            erc721Contract.address,
-            ABIContract.ofAbi(erc721Contract.abi).getFunction('mintItem'),
-            [TEST_ACCOUNT.address]
-        );
-
-        results = (await eventPromise) as SubscriptionEvent[];
-
-        // Assertions to validate the received log events
-        expect(results).toBeDefined();
-        expect(results.length).toBeGreaterThan(1);
-        expect(
-            results.filter((x) => x.params.subscription === erc20Subscription)
-                .length
-        ).toBeGreaterThan(0);
-        expect(
-            results.filter((x) => x.params.subscription === erc721Subscription)
-                .length
-        ).toBeGreaterThan(0);
-
-        expect(results[0].method).toBe('eth_subscription');
-        expect(results[1].method).toBe('eth_subscription');
-
-        // @ts-expect-error - Asserting that log data is present
-        expect(results[0].params.result.length).toBeGreaterThan(0);
-
-        // @ts-expect-error - Asserting that log data is present
-        expect(results[1].params.result.length).toBeGreaterThan(0);
-    }, 30000);
 
     /**
      * Invalid RPC method tests

@@ -47,7 +47,7 @@
     "@vechain/sdk-errors": "2.0.0",
     "@vechain/sdk-logging": "2.0.0",
     "abitype": "^1.0.6",
-    "ethers": "6.13.4",
+    "ethers": "^6.14.0",
     "fast-json-stable-stringify": "^2.1.0",
     "viem": "^2.21.45"
   },

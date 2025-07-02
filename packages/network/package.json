@@ -50,8 +50,8 @@
     "@vechain/sdk-errors": "2.0.0",
     "@vechain/sdk-logging": "2.0.0",
     "abitype": "1.0.8",
-    "ethers": "6.13.4",
-    "viem": "^2.21.54"
+    "viem": "^2.21.54",
+    "ethers": "^6.14.0"
   },
   "devDependencies": {
     "@types/ws": "^8.5.13",

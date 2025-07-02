@@ -8,7 +8,10 @@ module.exports = {
     coverageReporters: ['html', 'lcov', 'json'],
     runner: 'groups',
     reporters: ['default', 'jest-junit'],
-    workerThreads: false,
+    coveragePathIgnorePatterns: [
+        "/dist/",
+        "/tests/"
+    ],
     coverageThreshold:
         isUnitTest !== 'true'
             ? {
@@ -19,5 +22,13 @@ module.exports = {
                       statements: 100
                   }
               }
-            : undefined
+            : undefined,
+    // Fix ts-jest configuration to use transform instead of deprecated globals
+    transform: {
+        '^.+\\.ts$': ['ts-jest', {
+            useESM: false
+        }]
+    },
+    // Enable experimental-vm-modules for dynamic imports
+    extensionsToTreatAsEsm: []
 };

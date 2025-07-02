@@ -13,7 +13,7 @@ class SimpleHttpClient implements HttpClient {
     /**
      * Represent the default timeout duration for network requests in milliseconds.
      */
-    public static readonly DEFAULT_TIMEOUT = 30000;
+    public static readonly DEFAULT_TIMEOUT = 10000;
 
     /**
      * Return the root URL for the API endpoints.
@@ -68,7 +68,6 @@ class SimpleHttpClient implements HttpClient {
      */
     private isValidUrl(url: string): boolean {
         try {
-            // eslint-disable-next-line no-new
             new URL(url);
             return true;
         } catch {
