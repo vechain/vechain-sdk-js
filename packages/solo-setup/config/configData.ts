@@ -1,6 +1,6 @@
 import { RegularBlockResponse } from '@vechain/sdk-thorest-api';
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 
 // Define the config structure type
 export interface ConfigData {
@@ -14,57 +14,54 @@ export interface ConfigData {
     TEST_TOKEN_ADDRESS: string;
 }
 
-// Define the absolute path to config.json in the package root
-const configPath = path.resolve(__dirname, '../config.json');
+// Get the config file path in the current working directory
+const getConfigPath = (): string => {
+    // Use the original working directory passed from the CLI, or fall back to current working directory
+    const targetDir = process.env.SOLO_SETUP_ORIGINAL_CWD || process.cwd();
+    return path.join(targetDir, 'config.json');
+};
 
+/**
+ * Get configuration data from the JSON file
+ */
 const getConfigData = (): ConfigData => {
-    try {
-        // Read using the absolute path
-        const configJson = fs.readFileSync(configPath, 'utf8');
-        const config = JSON.parse(configJson);
-        return config as ConfigData;
-    } catch (error) {
-        console.error(
-            `Failed to read or parse config file at ${configPath}:`,
-            error
-        );
-        // Provide a more informative error if the file is missing or invalid
+    const configPath = getConfigPath();
+
+    if (!fs.existsSync(configPath)) {
         throw new Error(
-            `Configuration file '${configPath}' not found or invalid. Ensure 'yarn solo-seed' has run successfully.`
+            'Configuration file not found. Please run "solo-setup seed" to deploy contracts and generate configuration.'
+        );
+    }
+
+    try {
+        const configContent = fs.readFileSync(configPath, 'utf8');
+        return JSON.parse(configContent);
+    } catch (error) {
+        throw new Error(
+            `Failed to read configuration file: ${error instanceof Error ? error.message : 'Unknown error'}`
         );
     }
 };
 
 /**
- * Writes configuration to config.json file
+ * Set/update configuration data by writing to JSON file
  */
-// eslint-disable-next-line sonarjs/sonar-max-params
 function setConfig(
     address: string,
     abi: string | any[], // Allow abi as string or parsed array
-    bytecode: string | null,
+    bytecode: string,
     genesisBlock: RegularBlockResponse,
     seedVetTxId: string,
     seedVthoTxId: string,
     testTokenAddress: string,
     seedTestTokenTxId: string
 ): void {
-    // configPath is defined above using absolute path
-
-    if (!bytecode) {
-        // Use empty string instead of throwing an error
-        bytecode = '';
-        console.warn('Bytecode is null or empty, using empty string');
-    }
-
-    // Parse ABI if it's a string
     const parsedAbi = typeof abi === 'string' ? JSON.parse(abi) : abi;
 
-    // Create a JSON object with all the configuration values
-    const configObject = {
+    const configData: ConfigData = {
         TESTING_CONTRACT_ADDRESS: address,
         TESTING_CONTRACT_ABI: parsedAbi,
-        TESTING_CONTRACT_BYTECODE: bytecode,
+        TESTING_CONTRACT_BYTECODE: bytecode || '',
         SOLO_GENESIS_BLOCK: genesisBlock,
         SEED_VET_TX_ID: seedVetTxId,
         SEED_VTHO_TX_ID: seedVthoTxId,
@@ -72,16 +69,17 @@ function setConfig(
         TEST_TOKEN_ADDRESS: testTokenAddress
     };
 
-    console.log(`[setConfig] Writing config to absolute path: ${configPath}`);
+    const configPath = getConfigPath();
+
     try {
-        // Write the config file using the absolute path
-        fs.writeFileSync(configPath, JSON.stringify(configObject, null, 2));
-        console.log(`Created/updated config file at: ${configPath}`); // Log the absolute path
+        fs.writeFileSync(configPath, JSON.stringify(configData, null, 2));
+        console.log(`Configuration saved to ${configPath}`);
     } catch (error) {
-        console.error(`Failed to write config file at ${configPath}:`, error);
-        throw error; // Re-throw the error
+        throw new Error(
+            `Failed to write configuration file: ${error instanceof Error ? error.message : 'Unknown error'}`
+        );
     }
 }
 
-// Export both getConfigData and setConfig
+// Export both functions
 export { getConfigData, setConfig };

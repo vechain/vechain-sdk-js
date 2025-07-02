@@ -3,9 +3,17 @@ import { ThorSoloAccount } from './accounts';
 
 // Export the class directly rather than through a named export
 export class AccountDispatcher {
+    private static instance: AccountDispatcher;
     nextAddressToDispatch: number = 0;
 
-    constructor() {}
+    private constructor() {}
+
+    public static getInstance(): AccountDispatcher {
+        if (!AccountDispatcher.instance) {
+            AccountDispatcher.instance = new AccountDispatcher();
+        }
+        return AccountDispatcher.instance;
+    }
 
     getNextAccount(): ThorSoloAccount {
         if (this.nextAddressToDispatch >= ALL_ACCOUNTS.length) {
