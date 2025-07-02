@@ -1,7 +1,8 @@
 import { Address, type Hex, HexInt, HexUInt, HexUInt32, UInt } from '@vcdm';
-import { Clause, type ClauseJSON } from '@thor';
+import { Clause } from '@thor';
+import { type ClauseJSON } from '../../json/ClauseJSON';
 import { IllegalArgumentError } from '@errors';
-import { type TxJSON } from './TxJSON';
+import { type TxJSON } from '../json/TxJSON';
 
 /**
  * Full-Qualified Path

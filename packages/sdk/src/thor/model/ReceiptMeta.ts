@@ -1,6 +1,8 @@
-import { Address, Hex, HexUInt32, IllegalArgumentError } from '@vcdm';
-import { TxMeta } from '@thor/model/TxMeta';
-import { type ReceiptMetaJSON } from '@thor/model/ReceiptMetaJSON';
+import { Address, Hex, HexUInt32 } from '@vcdm';
+
+import { IllegalArgumentError } from '@errors';
+import { TxMeta } from '../transactions/model/TxMeta';
+import { type ReceiptMetaJSON } from '@thor/json/ReceiptMetaJSON';
 
 /**
  * Full-Qualified Path
