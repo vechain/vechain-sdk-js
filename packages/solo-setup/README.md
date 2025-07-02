@@ -178,8 +178,7 @@ Two contracts are deployed by default:
 
 ```typescript
 import { 
-  getConfigData,
-  AccountDispatcher
+  getConfigData
 } from '@vechain/sdk-solo-setup';
 
 // Get configuration from config.json
@@ -207,29 +206,6 @@ import { AccountDispatcher } from '@vechain/sdk-solo-setup';
 const dispatcher = AccountDispatcher().getInstance();
 const account = dispatcher.getNextAccount();
 console.log(`Using account: ${account.address}`);
-```
-
-### Contract Interaction Example
-
-```typescript
-import { getConfigData } from '@vechain/sdk-solo-setup';
-import { ethers } from 'ethers';
-
-// Load configuration
-const config = getConfigData();
-
-// Connect to Thor node
-const provider = new ethers.JsonRpcProvider('http://localhost:8669');
-
-// Create contract instance
-const testingContract = new ethers.Contract(
-    config.TESTING_CONTRACT_ADDRESS,
-    config.TESTING_CONTRACT_ABI,
-    provider
-);
-
-// Interact with the contract
-const result = await testingContract.someMethod();
 ```
 
 ## Configuration Structure
