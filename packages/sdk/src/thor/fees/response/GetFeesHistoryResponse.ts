@@ -5,7 +5,7 @@ import { IllegalArgumentError } from '@errors';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/core/src/thor/fees/GetFeesHistoryResponse.ts!';
+const FQP = 'packages/sdk/src/thor/fees/GetFeesHistoryResponse.ts!';
 
 /**
  * [GetFeesHistoryResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/GetFeesHistoryResponse)

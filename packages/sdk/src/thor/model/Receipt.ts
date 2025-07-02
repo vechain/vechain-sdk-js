@@ -6,7 +6,7 @@ import { IllegalArgumentError } from '@errors';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/core/src/thor/model/Receipt.ts!';
+const FQP = 'packages/sdk/src/thor/model/Receipt.ts!';
 
 /**
  * [Receipt](http://localhost:8669/doc/stoplight-ui/#/schemas/Receipt)

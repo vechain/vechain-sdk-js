@@ -5,7 +5,7 @@ import { IllegalArgumentError } from '@errors';
 /**
  * Full-Qualified-Path
  */
-const FQP = 'packages/core/src/thor/node/Status.ts!';
+const FQP = 'packages/sdk/src/thor/node/Status.ts!';
 
 /**
  * [Status](http://localhost:8669/doc/stoplight-ui/#/schemas/Status)

@@ -6,7 +6,7 @@ import { IllegalArgumentError } from '@errors';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/core/src/thor/model/TxWithReceipt.ts!';
+const FQP = 'packages/sdk/src/thor/model/TxWithReceipt.ts!';
 
 /**
  * Type of the property

@@ -11,7 +11,7 @@ import {
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/core/src/thor/transactions/SendTransaction.ts!';
+const FQP = 'packages/sdk/src/thor/transactions/SendTransaction.ts!';
 
 /**
  * [Send a transaction](http://localhost:8669/doc/stoplight-ui/#/paths/transactions/post)

@@ -9,7 +9,7 @@ import { ExecuteCodesResponseJSON } from './ExecuteCodesResponseJSON';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/core/src/thor/accounts/ExecuteCodesResponse.ts!';
+const FQP = 'packages/sdk/src/thor/accounts/ExecuteCodesResponse.ts!';
 
 /**
  * Execute Code Response

@@ -7,7 +7,7 @@ import { type GetStorageResponseJSON } from './GetStorageResponseJSON';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/core/src/thor/accounts/RetrieveStoragePositionValue.ts!';
+const FQP = 'packages/sdk/src/thor/accounts/RetrieveStoragePositionValue.ts!';
 
 /**
  * [Retrieve a storage position value](http://localhost:8669/doc/stoplight-ui/#/paths/accounts-address--storage--key/get)

@@ -8,7 +8,7 @@ import { ExecuteCodesRequestJSON } from '../response/ExecuteCodesRequestJSON';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/core/src/thor/accounts/InspectClauses.ts!';
+const FQP = 'packages/sdk/src/thor/accounts/InspectClauses.ts!';
 
 /**
  * Inspect the clauses of a contract identified by its address.

@@ -10,7 +10,7 @@ import { ThorError } from '@thor';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/core/src/thor/subscriptions/BeatsSubscription.ts!';
+const FQP = 'packages/sdk/src/thor/subscriptions/BeatsSubscription.ts!';
 
 /**
  * [Retrieve a subscription to the beats endpoint](http://localhost:8669/doc/stoplight-ui/#/paths/subscriptions-beat2/get)

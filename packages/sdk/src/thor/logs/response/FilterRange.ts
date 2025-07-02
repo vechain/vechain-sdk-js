@@ -5,7 +5,7 @@ import { IllegalArgumentError } from '@errors';
 /**
  * Full-Qualified-Path
  */
-const FQP = 'packages/core/src/thor/logs/FilterRange.ts!';
+const FQP = 'packages/sdk/src/thor/logs/FilterRange.ts!';
 
 /**
  * [FilterRange](http://localhost:8669/doc/stoplight-ui/#/schemas/FilterRange)

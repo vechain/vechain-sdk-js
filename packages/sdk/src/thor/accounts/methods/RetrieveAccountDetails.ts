@@ -7,7 +7,7 @@ import { GetAccountResponseJSON } from '../response/GetAccountResponseJSON';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/core/src/thor/accounts/RetrieveAccountDetails.ts!';
+const FQP = 'packages/sdk/src/thor/accounts/RetrieveAccountDetails.ts!';
 
 /**
  * [Retrieve account details](http://localhost:8669/doc/stoplight-ui/#/paths/accounts-address/get)

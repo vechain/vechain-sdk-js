@@ -6,7 +6,7 @@ import { IllegalArgumentError } from '@errors';
  * Full-Qualified Path
  */
 
-const FQP = 'packages/core/src/thor/node/PeerStat.ts!';
+const FQP = 'packages/sdk/src/thor/node/PeerStat.ts!';
 
 /**
  * [PeerStats](http://localhost:8669/doc/stoplight-ui/#/schemas/PeerStats)

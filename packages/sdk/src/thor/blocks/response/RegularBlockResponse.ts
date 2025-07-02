@@ -5,7 +5,7 @@ import { IllegalArgumentError } from '@errors';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/core/src/thor/blocks/RegularBlockResponse.ts!';
+const FQP = 'packages/sdk/src/thor/blocks/RegularBlockResponse.ts!';
 
 /**
  * [RegularBlockResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/RegularBlockResponse)

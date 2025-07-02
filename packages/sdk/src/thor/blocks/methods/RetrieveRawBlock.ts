@@ -11,7 +11,7 @@ import { type Revision } from '@vcdm';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/core/src/thor/blocks/RetrieveRawBlock.ts!';
+const FQP = 'packages/sdk/src/thor/blocks/RetrieveRawBlock.ts!';
 
 /**
  * [Retrieve a raw block](http://localhost:8669/doc/stoplight-ui/#/paths/blocks-revision/get)

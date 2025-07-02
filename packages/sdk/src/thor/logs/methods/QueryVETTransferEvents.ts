@@ -10,7 +10,7 @@ import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
 /**
  * Full-Qualified-Path
  */
-const FQP = 'packages/core/src/thor/logs/QueryVETTransferEvents.ts!';
+const FQP = 'packages/sdk/src/thor/logs/QueryVETTransferEvents.ts!';
 
 /**
  * [Query VET transfer events](http://localhost:8669/doc/stoplight-ui/#/paths/logs-transfer/post)

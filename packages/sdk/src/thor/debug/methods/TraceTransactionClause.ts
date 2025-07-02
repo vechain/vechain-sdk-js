@@ -7,7 +7,7 @@ import { IllegalArgumentError } from '@errors';
 /**
  * Full-Qualified-Path
  */
-const FQP = 'packages/core/src/thor/debug/TraceTransactionClause.ts!';
+const FQP = 'packages/sdk/src/thor/debug/TraceTransactionClause.ts!';
 
 /**
  * [Trace a transaction clause](http://localhost:8669/doc/stoplight-ui/#/paths/debug-tracers/post)

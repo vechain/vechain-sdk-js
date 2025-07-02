@@ -7,7 +7,7 @@ import { IllegalArgumentError } from '@errors';
 /**
  * Full-Qualified-Path
  */
-const FQP = 'packages/core/src/thor/debug/PostDebugTracerCallRequest.ts!';
+const FQP = 'packages/sdk/src/thor/debug/PostDebugTracerCallRequest.ts!';
 
 /**
  * [PostDebugTracerCallRe](http://localhost:8669/doc/stoplight-ui/#/schemas/PostDebugTracerCallRequest)

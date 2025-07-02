@@ -8,7 +8,7 @@ import { IllegalArgumentError } from '@errors';
 /**
  * Full-Qualified-Path
  */
-const FQP = 'packages/core/src/thor/logs/TransferLogsResponse.ts!';
+const FQP = 'packages/sdk/src/thor/logs/TransferLogsResponse.ts!';
 
 class TransferLogsResponse extends Array<TransferLogResponse> {
     /**

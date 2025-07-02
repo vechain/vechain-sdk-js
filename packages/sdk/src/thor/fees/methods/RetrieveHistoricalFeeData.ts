@@ -12,7 +12,7 @@ import { IllegalArgumentError } from '@errors';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/core/src/thor/fees/RetrieveHistoricaFeeData.ts!';
+const FQP = 'packages/sdk/src/thor/fees/RetrieveHistoricaFeeData.ts!';
 
 /**
  * [Retrieve historical fee data](http://localhost:8669/doc/stoplight-ui/#/paths/fees-history/get)

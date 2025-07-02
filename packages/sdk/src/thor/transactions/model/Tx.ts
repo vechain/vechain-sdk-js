@@ -7,7 +7,7 @@ import { type TxJSON } from '../json/TxJSON';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/core/src/thor/transactions/Tx.ts!';
+const FQP = 'packages/sdk/src/thor/transactions/Tx.ts!';
 
 /**
  * [Tx](http://localhost:8669/doc/stoplight-ui/#/schemas/Tx)

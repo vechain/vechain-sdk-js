@@ -10,7 +10,7 @@ import { ThorError } from '@thor';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/core/src/thor/subscriptions/BlocksSubscription.ts!';
+const FQP = 'packages/sdk/src/thor/subscriptions/BlocksSubscription.ts!';
 
 /**
  * [Retrieve a subscription to the blocks endpoint](http://localhost:8669/doc/stoplight-ui/#/paths/subscriptions-block/get)

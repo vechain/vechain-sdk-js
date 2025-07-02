@@ -12,7 +12,7 @@ import { type HttpClient, type HttpPath } from '@http';
 /**
  * Full-Qualified-Path
  */
-const FQP = 'packages/core/src/thor/logs/QuerySmartContractEvents.ts!';
+const FQP = 'packages/sdk/src/thor/logs/QuerySmartContractEvents.ts!';
 
 /**
  * [Query smart contract events](http://localhost:8669/doc/stoplight-ui/#/paths/logs-event/post)

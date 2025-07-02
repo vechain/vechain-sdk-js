@@ -6,7 +6,7 @@ import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/core/src/thor/accounts/RetrieveContractBytecode.ts!';
+const FQP = 'packages/sdk/src/thor/accounts/RetrieveContractBytecode.ts!';
 
 /**
  * [Retrieve a contract bytecode](http://localhost:8669/doc/stoplight-ui/#/paths/accounts-address--code/get)

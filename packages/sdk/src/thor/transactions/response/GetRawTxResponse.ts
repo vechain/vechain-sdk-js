@@ -6,7 +6,7 @@ import { IllegalArgumentError } from '@errors';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/core/src/thor/transactions/GetRawTxResponse.ts!';
+const FQP = 'packages/sdk/src/thor/transactions/GetRawTxResponse.ts!';
 
 /**
  * [GetRawTxResponse](http://localhost:8669/doc/stoplight-ui/#/paths/transactions-id/get)

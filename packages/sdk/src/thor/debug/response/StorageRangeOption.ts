@@ -6,7 +6,7 @@ import { IllegalArgumentError } from '@errors';
 /**
  * Full-Qualified-Path
  */
-const FQP = 'packages/core/src/thor/debug/StorageRangeOption.ts!';
+const FQP = 'packages/sdk/src/thor/debug/StorageRangeOption.ts!';
 
 /**
  * [StorageRangeOption](http://localhost:8669/doc/stoplight-ui/#/schemas/StorageRangeOption)
