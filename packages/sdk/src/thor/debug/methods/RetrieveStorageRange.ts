@@ -1,12 +1,8 @@
 import type { HttpClient, HttpPath } from '@http';
-import {
-    StorageRange,
-    type StorageRangeJSON,
-    StorageRangeOption,
-    type StorageRangeOptionJSON
-} from '@thor/debug';
+import { StorageRange, StorageRangeOption } from '@thor/debug';
+import { type StorageRangeJSON, type StorageRangeOptionJSON } from '@/json';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
-import { IllegalArgumentError } from '@vcdm';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified-Path

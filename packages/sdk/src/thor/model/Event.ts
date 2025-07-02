@@ -1,5 +1,6 @@
-import { Address, HexUInt, IllegalArgumentError, type Hex } from '@vcdm';
-import { type EventJSON } from '@thor/model/EventJSON';
+import { Address, HexUInt, type Hex } from '@vcdm';
+import { type EventJSON } from '@/json';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified Path

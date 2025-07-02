@@ -1,5 +1,6 @@
-import { type Hex, HexUInt32, IllegalArgumentError, UInt } from '@vcdm';
-import { type TxMetaJSON } from '@thor';
+import { type Hex, HexUInt32, UInt } from '@vcdm';
+import { type TxMetaJSON } from '@thor/json';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified Path

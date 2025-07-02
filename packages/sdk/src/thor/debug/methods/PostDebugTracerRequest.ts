@@ -1,6 +1,6 @@
 import { TargetPath, type TracerName } from '@thor/debug';
-import { type PostDebugTracerRequestJSON } from '@thor/debug/PostDebugTracerRequestJSON';
-import { IllegalArgumentError } from '@vcdm';
+import { type PostDebugTracerRequestJSON } from '@/json';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified-Path

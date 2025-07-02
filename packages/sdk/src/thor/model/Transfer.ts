@@ -1,5 +1,6 @@
-import { Address, HexUInt, IllegalArgumentError, UInt } from '@vcdm';
-import { type TransferJSON } from '@thor';
+import { Address, HexUInt, UInt } from '@vcdm';
+import { type TransferJSON } from '@/json';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified Path

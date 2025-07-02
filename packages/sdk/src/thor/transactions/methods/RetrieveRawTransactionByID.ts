@@ -1,4 +1,4 @@
-import { type Hex, HexUInt32, IllegalArgumentError } from '@vcdm';
+import { type Hex, HexUInt32 } from '@vcdm';
 import { type HttpClient } from '@http';
 import { RetrieveTransactionQuery } from '@thor/transactions/methods/RetrieveTransactionQuery';
 import { RetrieveTransactionPath } from '@thor/transactions/methods/RetrieveTransactionPath';
@@ -9,6 +9,7 @@ import {
     type ThorRequest,
     type ThorResponse
 } from '@thor';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified Path

@@ -1,5 +1,6 @@
-import { type TXIDJSON } from '@thor';
-import { type Hex, HexUInt32, IllegalArgumentError } from '@vcdm';
+import { type TXIDJSON } from '@thor/json';
+import { type Hex, HexUInt32 } from '@vcdm';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified Path

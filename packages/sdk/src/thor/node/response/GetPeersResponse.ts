@@ -1,5 +1,6 @@
-import { type GetPeersResponseJSON, PeerStat } from '@thor';
-import { IllegalArgumentError } from '@vcdm';
+import { PeerStat } from '@thor/model';
+import { type GetPeersResponseJSON } from '@thor/json';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified-Path

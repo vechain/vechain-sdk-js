@@ -1,6 +1,7 @@
-import { IllegalArgumentError } from '@vcdm';
-import { type GetTxResponseJSON, TxMeta } from '@thor';
-import { Tx } from '@thor/model/Tx';
+import { TxMeta } from '@thor';
+import { type GetTxResponseJSON } from '@thor/json';
+import { Tx } from '@thor/model';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified Path

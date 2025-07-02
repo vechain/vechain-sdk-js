@@ -1,6 +1,7 @@
 import { LogMeta } from '@thor/logs';
-import { Address, HexUInt, IllegalArgumentError } from '@vcdm';
+import { Address, HexUInt } from '@vcdm';
 import { type SubscriptionTransferResponseJSON } from '@thor/subscriptions';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified Path

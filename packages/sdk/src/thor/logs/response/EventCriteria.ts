@@ -1,5 +1,6 @@
-import { Address, type Hex, HexUInt32, IllegalArgumentError } from '@vcdm';
+import { Address, type Hex, HexUInt32 } from '@vcdm';
 import { type EventCriteriaJSON } from '@thor';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified-Path

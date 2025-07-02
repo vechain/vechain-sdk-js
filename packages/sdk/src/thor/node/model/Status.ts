@@ -1,5 +1,6 @@
-import { IllegalArgumentError, UInt } from '@vcdm';
-import { type StatusJSON } from '@thor';
+import { UInt } from '@vcdm';
+import { type StatusJSON } from '@thor/json';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified-Path

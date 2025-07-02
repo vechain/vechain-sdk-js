@@ -1,5 +1,6 @@
 import { GetStorageResponseJSON } from './GetStorageResponseJSON';
-import { IllegalArgumentError, ThorId } from '@vcdm';
+import { ThorId } from '@vcdm';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified Path

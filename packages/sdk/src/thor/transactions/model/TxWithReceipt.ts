@@ -1,6 +1,7 @@
-import { Address, HexUInt, IllegalArgumentError, Quantity } from '@vcdm';
-import { Output, type OutputJSON, type TxWithReceiptJSON } from '@thor';
-import { Tx } from '@thor/model/Tx';
+import { Address, HexUInt, Quantity } from '@vcdm';
+import { type OutputJSON, type TxWithReceiptJSON } from '@thor/json';
+import { Tx, Output } from '@thor/model';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified Path

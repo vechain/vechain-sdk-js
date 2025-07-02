@@ -1,7 +1,7 @@
-import { Block } from '@thor/blocks/Block';
-import { type Hex, HexUInt32, IllegalArgumentError } from '@vcdm';
-import { type RegularBlockResponseJSON } from '@thor/blocks/RegularBlockResponseJSON';
-
+import { Block } from '@/types';
+import { type Hex, HexUInt32 } from '@vcdm';
+import { type RegularBlockResponseJSON } from '@/json';
+import { IllegalArgumentError } from '@errors';
 /**
  * Full-Qualified Path
  */

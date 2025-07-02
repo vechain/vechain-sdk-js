@@ -1,4 +1,5 @@
-import { Hex, IllegalArgumentError } from '@vcdm';
+import { Hex } from '@vcdm';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full Qualified Path

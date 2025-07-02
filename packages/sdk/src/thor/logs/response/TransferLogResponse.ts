@@ -1,5 +1,6 @@
-import { Address, HexUInt, IllegalArgumentError, Quantity } from '@vcdm';
+import { Address, HexUInt, Quantity } from '@vcdm';
 import { LogMeta, type TransferLogResponseJSON } from '@thor';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified-Path

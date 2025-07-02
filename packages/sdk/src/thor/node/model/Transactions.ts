@@ -1,6 +1,7 @@
-import { Tx, type TxJSON } from '@thor/model';
-import { type TransactionsJSON } from '@thor/node/TransactionsJSON';
-import { IllegalArgumentError } from '@vcdm';
+import { Tx } from '@thor/model';
+import { type TxJSON } from '@/json';
+import { type TransactionsJSON } from '@thor/json';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified-Path

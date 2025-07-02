@@ -1,5 +1,6 @@
-import { Hex, HexUInt32, IllegalArgumentError, NetAddr, UInt } from '@vcdm';
-import { type PeerStatJSON } from '@thor';
+import { Hex, HexUInt32, NetAddr, UInt } from '@vcdm';
+import { type PeerStatJSON } from '@thor/json';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified Path

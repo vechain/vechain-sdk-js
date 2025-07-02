@@ -1,5 +1,6 @@
-import { Address, IllegalArgumentError } from '@vcdm';
+import { Address } from '@vcdm';
 import { type TransferCriteriaJSON } from '@thor';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified-Path

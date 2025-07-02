@@ -1,10 +1,8 @@
 import { type HttpClient, type HttpPath } from '@http';
-import {
-    PostDebugTracerRequest,
-    type PostDebugTracerRequestJSON
-} from '@thor/debug';
+import { PostDebugTracerRequest } from '@thor/debug';
+import { type PostDebugTracerRequestJSON } from '@/json';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
-import { IllegalArgumentError } from '@vcdm';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified-Path

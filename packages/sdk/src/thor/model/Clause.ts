@@ -1,11 +1,6 @@
-import {
-    Address,
-    HexUInt,
-    IllegalArgumentError,
-    Quantity,
-    type Hex
-} from '@vcdm';
-import { type ClauseJSON } from '@thor/model/ClauseJSON';
+import { Address, HexUInt, Quantity, type Hex } from '@vcdm';
+import { type ClauseJSON } from '@/json';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified Path

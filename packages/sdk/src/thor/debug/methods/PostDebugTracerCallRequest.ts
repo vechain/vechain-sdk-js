@@ -1,15 +1,8 @@
-import {
-    type PostDebugTracerCallRequestJSON,
-    type TracerName
-} from '@thor/debug';
-import {
-    Address,
-    type Hex,
-    HexUInt,
-    IllegalArgumentError,
-    Quantity,
-    UInt
-} from '@vcdm';
+import { type TracerName } from '@thor/debug';
+import { type PostDebugTracerCallRequestJSON } from '@thor/json';
+
+import { Address, type Hex, HexUInt, Quantity, UInt } from '@vcdm';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified-Path

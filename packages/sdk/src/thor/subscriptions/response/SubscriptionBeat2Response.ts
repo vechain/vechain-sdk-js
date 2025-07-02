@@ -1,5 +1,6 @@
-import { BlockId, HexUInt, IllegalArgumentError, UInt } from '@vcdm';
+import { BlockId, HexUInt, UInt } from '@vcdm';
 import { type SubscriptionBeat2ResponseJSON } from '@thor/subscriptions';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified Path

@@ -1,15 +1,16 @@
+import { TxWithReceipt } from '@thor/transactions/model';
 import {
     type ExpandedBlockResponseJSON,
-    TxWithReceipt,
-    type TxWithReceiptJSON
-} from '@thor';
-import { IllegalArgumentError } from '@vcdm';
-import { Block } from '@thor/blocks/Block';
+    type TxWithReceiptJSON,
+    type BlockJSON
+} from '@/json';
+import { Block } from '@/types';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/core/src/thor/blocks/ExpandedBlockResponse.ts!';
+const FQP = 'packages/sdk/src/thor/blocks/ExpandedBlockResponse.ts!';
 
 class ExpandedBlockResponse extends Block {
     /**

@@ -1,5 +1,6 @@
-import { IllegalArgumentError, UInt } from '@vcdm';
+import { UInt } from '@vcdm';
 import { type FilterOptionsJSON } from '@thor';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified-Path(http://localhost:8669/doc/stoplight-ui/#/schemas/FilterOptions)

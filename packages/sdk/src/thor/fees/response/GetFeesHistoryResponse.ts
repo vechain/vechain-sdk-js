@@ -1,11 +1,6 @@
-import {
-    type Hex,
-    HexUInt,
-    HexUInt32,
-    IllegalArgumentError,
-    Quantity
-} from '@vcdm';
+import { type Hex, HexUInt, HexUInt32, Quantity } from '@vcdm';
 import { type GetFeesHistoryResponseJSON } from '@thor';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified Path

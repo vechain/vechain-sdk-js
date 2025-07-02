@@ -1,5 +1,6 @@
-import { IllegalArgumentError, UInt } from '@vcdm';
+import { UInt } from '@vcdm';
 import { type FilterRangeUnits, type FilterRangeJSON } from '@thor';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified-Path

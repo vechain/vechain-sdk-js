@@ -1,12 +1,7 @@
-import {
-    Address,
-    type Hex,
-    HexUInt32,
-    IllegalArgumentError,
-    UInt
-} from '@vcdm';
-import { type StorageRangeOptionJSON } from '@thor/debug/StorageRangeOptionJSON';
-import { TargetPath } from '@thor/debug/TargetPath';
+import { Address, type Hex, HexUInt32, UInt } from '@vcdm';
+import { type StorageRangeOptionJSON } from '@/json';
+import { TargetPath } from '@thor/debug/response';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified-Path

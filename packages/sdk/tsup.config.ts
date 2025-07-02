@@ -21,6 +21,7 @@ export default defineConfig({
             '@thor/accounts': resolve(__dirname, './src/thor/accounts'),
             '@thor/blocks': resolve(__dirname, './src/thor/blocks'),
             '@thor/debug': resolve(__dirname, './src/thor/debug'),
+            '@sdk': resolve(__dirname, './src'),
             '@thor/logs': resolve(__dirname, './src/thor/logs'),
             '@thor/node': resolve(__dirname, './src/thor/node'),
             '@thor/subscriptions': resolve(

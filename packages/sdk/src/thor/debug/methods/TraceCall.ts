@@ -1,10 +1,9 @@
 import { type HttpClient, type HttpPath, type HttpQuery } from '@http';
-import {
-    PostDebugTracerCallRequest,
-    type PostDebugTracerCallRequestJSON
-} from '@thor/debug';
+import { PostDebugTracerCallRequest } from '@thor/debug';
+import { type PostDebugTracerCallRequestJSON } from '@/json';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
-import { type HexUInt32, IllegalArgumentError, Revision } from '@vcdm';
+import { type HexUInt32, Revision } from '@vcdm';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified-Path

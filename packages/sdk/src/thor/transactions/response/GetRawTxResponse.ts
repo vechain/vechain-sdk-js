@@ -1,5 +1,7 @@
-import { type Hex, HexUInt, IllegalArgumentError } from '@vcdm';
-import { type GetRawTxResponseJSON, TxMeta } from '@thor';
+import { type Hex, HexUInt } from '@vcdm';
+import { type GetRawTxResponseJSON } from '@thor/json';
+import { TxMeta } from '@thor';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified Path

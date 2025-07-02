@@ -5,7 +5,7 @@ import {
     TransferCriteria,
     type TransferLogFilterRequestJSON
 } from '@thor/logs';
-import { IllegalArgumentError } from '@vcdm';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified-Path

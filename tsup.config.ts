@@ -10,6 +10,7 @@ export default defineConfig({
         options.alias = {
             '@vcdm': resolve(__dirname, './packages/sdk/src/vcdm'),
             '@errors': resolve(__dirname, './packages/sdk/src/errors'),
+            '@sdk': resolve(__dirname, './packages/sdk'),
             '@certificate': resolve(
                 __dirname,
                 './packages/sdk/src/certificate'

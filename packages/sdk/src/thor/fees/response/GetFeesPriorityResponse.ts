@@ -1,5 +1,6 @@
-import { HexUInt, IllegalArgumentError } from '@vcdm';
+import { HexUInt } from '@vcdm';
 import { type GetFeesPriorityResponseJSON } from '@thor';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified Path

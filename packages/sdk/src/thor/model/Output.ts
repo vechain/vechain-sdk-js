@@ -1,9 +1,8 @@
-import { Address, IllegalArgumentError } from '@vcdm';
+import { Address } from '@vcdm';
 import { Event } from '@thor/model/Event';
 import { Transfer } from '@thor/model/Transfer';
-import { type OutputJSON } from '@thor/model/OutputJSON';
-import { type EventJSON } from '@thor/model/EventJSON';
-import { type TransferJSON } from '@thor/model/TransferJSON';
+import { type OutputJSON, type EventJSON, type TransferJSON } from '@/json';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified Path

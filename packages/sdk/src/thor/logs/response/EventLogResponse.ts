@@ -1,11 +1,6 @@
 import { type EventLogResponseJSON, LogMeta } from '@thor';
-import {
-    Address,
-    HexUInt,
-    HexUInt32,
-    IllegalArgumentError,
-    type Hex
-} from '@vcdm';
+import { Address, HexUInt, HexUInt32, type Hex } from '@vcdm';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified-Path

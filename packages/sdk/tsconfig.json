@@ -4,6 +4,7 @@
     "outDir": "./dist",
     "paths": {
       "@*": ["./src/*"],
+      "@sdk": ["./src/*"],
       "@thor": ["./src/thor"],
       "@thor/*": ["./src/thor/*"],
       "@ws": ["./src/ws"],

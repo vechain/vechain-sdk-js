@@ -1,5 +1,6 @@
-import { Hex, IllegalArgumentError, Quantity } from '@vcdm';
+import { Hex, Quantity } from '@vcdm';
 import { GetAccountResponseJSON } from './GetAccountResponseJSON';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified Path

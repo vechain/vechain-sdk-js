@@ -1,11 +1,6 @@
-import {
-    Address,
-    HexUInt32,
-    IllegalArgumentError,
-    UInt,
-    type Hex
-} from '@vcdm';
+import { Address, HexUInt32, UInt, type Hex } from '@vcdm';
 import { type LogMetaJSON } from '@thor';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified-Path

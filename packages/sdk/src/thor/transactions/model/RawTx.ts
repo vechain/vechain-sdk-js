@@ -1,5 +1,6 @@
-import { HexUInt, IllegalArgumentError } from '@vcdm';
-import { type RawTxJSON } from '@thor/blocks/RawTxJSON';
+import { HexUInt } from '@vcdm';
+import { type RawTxJSON } from '@/json';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified Path

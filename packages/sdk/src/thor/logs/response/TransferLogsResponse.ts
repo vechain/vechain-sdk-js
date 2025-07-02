@@ -3,7 +3,7 @@ import {
     type TransferLogResponseJSON,
     type TransferLogsResponseJSON
 } from '@thor/logs';
-import { IllegalArgumentError } from '@vcdm';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified-Path

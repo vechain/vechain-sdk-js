@@ -1,5 +1,6 @@
-import { type Hex, HexUInt32, IllegalArgumentError } from '@vcdm';
-import { type StorageRangeJSON } from '@thor/debug/StorageRangeJSON';
+import { type Hex, HexUInt32 } from '@vcdm';
+import { type StorageRangeJSON } from '@/json';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified-Path

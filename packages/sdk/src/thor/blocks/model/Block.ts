@@ -1,12 +1,6 @@
-import {
-    Address,
-    HexUInt,
-    HexUInt32,
-    IllegalArgumentError,
-    UInt,
-    type Hex
-} from '@vcdm';
-import { type BlockJSON } from './BlockJSON';
+import { Address, HexUInt, HexUInt32, UInt, type Hex } from '@vcdm';
+import { type BlockJSON } from '../json';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified Path

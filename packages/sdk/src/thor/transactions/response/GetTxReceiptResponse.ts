@@ -1,10 +1,8 @@
-import { Address, HexUInt, IllegalArgumentError, Quantity, UInt } from '@vcdm';
-import {
-    type GetTxReceiptResponseJSON,
-    Output,
-    type OutputJSON,
-    ReceiptMeta
-} from '@thor';
+import { Address, HexUInt, Quantity, UInt } from '@vcdm';
+import { Output, ReceiptMeta } from '@thor';
+
+import { type GetTxReceiptResponseJSON, type OutputJSON } from '@thor/json';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified Path

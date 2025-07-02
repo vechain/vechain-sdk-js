@@ -1,12 +1,6 @@
-import {
-    Address,
-    BlockId,
-    IllegalArgumentError,
-    ThorId,
-    type TxId,
-    UInt
-} from '@vcdm';
+import { Address, BlockId, ThorId, type TxId, UInt } from '@vcdm';
 import { type SubscriptionBlockResponseJSON } from '@thor/subscriptions';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified Path

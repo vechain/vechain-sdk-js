@@ -6,12 +6,8 @@ import {
     type ThorResponse
 } from '@thor';
 import { type HttpClient, type HttpPath, type HttpQuery } from '@http';
-import {
-    type Hex,
-    type HexUInt32,
-    IllegalArgumentError,
-    Revision
-} from '@vcdm';
+import { type Hex, type HexUInt32, Revision } from '@vcdm';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified Path

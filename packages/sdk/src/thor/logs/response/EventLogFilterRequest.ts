@@ -5,7 +5,7 @@ import {
     FilterRange,
     LogSort
 } from '@thor';
-import { IllegalArgumentError } from '@vcdm';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified-Path

@@ -1,6 +1,8 @@
-import { Hex, HexUInt, IllegalArgumentError } from '@vcdm';
+import { Hex, HexUInt } from '@vcdm';
 import { Transfer } from '@thor/model/Transfer';
-import { Event, type EventJSON, type TransferJSON } from '@thor/model';
+import { type EventJSON, type TransferJSON } from '@thor/json';
+import { Event } from '@thor/model';
+import { IllegalArgumentError } from '@errors';
 import { ExecuteCodeResponseJSON } from './ExecuteCodeResponseJSON';
 import { ExecuteCodesResponseJSON } from './ExecuteCodesResponseJSON';
 

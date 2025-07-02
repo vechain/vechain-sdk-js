@@ -6,3 +6,7 @@ export * from './ReceiptMeta';
 export * from './ReceiptMetaJSON';
 export * from './TransferJSON';
 export * from './TransferJSON';
+export * from '../transactions/json';
+export * from '../blocks/json';
+export * from '../debug/json';
+export * from '../node/json';
