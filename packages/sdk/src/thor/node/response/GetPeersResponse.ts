@@ -1,5 +1,5 @@
 import { type GetPeersResponseJSON, PeerStat } from '@thor';
-import { IllegalArgumentError } from '@vechain/sdk-core';
+import { IllegalArgumentError } from '@vcdm';
 
 /**
  * Full-Qualified-Path

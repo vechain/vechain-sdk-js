@@ -3,7 +3,7 @@ import {
     type TransferLogResponseJSON,
     type TransferLogsResponseJSON
 } from '@thor/logs';
-import { IllegalArgumentError } from '@vechain/sdk-core';
+import { IllegalArgumentError } from '@vcdm';
 
 /**
  * Full-Qualified-Path

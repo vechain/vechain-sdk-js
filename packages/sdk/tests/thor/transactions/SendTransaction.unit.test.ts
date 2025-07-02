@@ -18,7 +18,7 @@ import {
     Transaction,
     type TransactionBody,
     VET
-} from '@vechain/sdk-core';
+} from '@vcdm';
 import { TEST_ACCOUNTS } from '../../fixture';
 import { expect, jest } from '@jest/globals';
 import fastJsonStableStringify from 'fast-json-stable-stringify';

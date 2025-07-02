@@ -7,7 +7,7 @@ import {
     RetrieveHistoricalFeeData,
     ThorError
 } from '@thor';
-import { HexUInt32, Revision } from '@vechain/sdk-core';
+import { HexUInt32, Revision } from '@vcdm';
 
 const mockHttpClient = <T>(response: T): HttpClient => {
     return {

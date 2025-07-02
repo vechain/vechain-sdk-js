@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { StorageRange, type StorageRangeJSON } from '@thor/debug';
-import { ThorId } from '@vechain/sdk-core';
+import { ThorId } from '@vcdm';
 
 /**
  * VeChain storage range - unit

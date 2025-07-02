@@ -4,7 +4,7 @@ import {
     BlocksSubscription,
     SubscriptionBlockResponse
 } from '@thor/subscriptions';
-import { BlockId } from '@vechain/sdk-core';
+import { BlockId } from '@vcdm';
 
 const mockBlockData = {
     number: 12345,

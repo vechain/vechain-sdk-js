@@ -1,10 +1,4 @@
-import {
-    Address,
-    HexUInt,
-    IllegalArgumentError,
-    Quantity,
-    UInt
-} from '@vechain/sdk-core';
+import { Address, HexUInt, IllegalArgumentError, Quantity, UInt } from '@vcdm';
 import { Output } from '@thor/model/Output';
 import { type ReceiptJSON } from '@thor/model/ReceiptJSON';
 import { type OutputJSON } from '@thor/model/OutputJSON';

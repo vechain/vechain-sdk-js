@@ -6,7 +6,7 @@ import {
     type ThorResponse
 } from '@thor';
 import { type HttpClient, type HttpPath } from '@http';
-import { type Revision } from '@vechain/sdk-core';
+import { type Revision } from '@vcdm';
 
 /**
  * Full-Qualified Path

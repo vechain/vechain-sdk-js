@@ -8,7 +8,7 @@ import {
     Transaction,
     type TransactionBody,
     VET
-} from '@vechain/sdk-core';
+} from '@vcdm';
 import { type GetTxReceiptResponseJSON, type TXIDJSON } from '@thor';
 import { type HttpPath } from '@http';
 import { mockHttpClient } from '../../utils/MockUnitTestClient';

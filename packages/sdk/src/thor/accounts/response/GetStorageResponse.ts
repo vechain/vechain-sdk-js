@@ -1,5 +1,5 @@
 import { GetStorageResponseJSON } from './GetStorageResponseJSON';
-import { IllegalArgumentError, ThorId } from '@vechain/sdk-core';
+import { IllegalArgumentError, ThorId } from '@vcdm';
 
 /**
  * Full-Qualified Path

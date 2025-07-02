@@ -1,5 +1,5 @@
 import { describe, expect, jest, test } from '@jest/globals';
-import { IllegalArgumentError } from '@vechain/sdk-core';
+import { IllegalArgumentError } from '@vcdm';
 import {
     RetrieveStorageRange,
     StorageRange,

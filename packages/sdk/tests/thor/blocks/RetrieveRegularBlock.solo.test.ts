@@ -1,6 +1,6 @@
 import { expect } from '@jest/globals';
 import { FetchHttpClient } from '@http';
-import { Revision } from '@vechain/sdk-core';
+import { Revision } from '@vcdm';
 import {
     RegularBlockResponse,
     type RegularBlockResponseJSON,

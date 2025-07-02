@@ -1,5 +1,5 @@
 import { describe, expect, jest, test } from '@jest/globals';
-import { Hex, HexUInt32 } from '@vechain/sdk-core';
+import { Hex, HexUInt32 } from '@vcdm';
 import {
     GetTxReceiptResponse,
     type GetTxReceiptResponseJSON,

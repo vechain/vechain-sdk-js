@@ -1,5 +1,5 @@
 import { type TXIDJSON } from '@thor';
-import { type Hex, HexUInt32, IllegalArgumentError } from '@vechain/sdk-core';
+import { type Hex, HexUInt32, IllegalArgumentError } from '@vcdm';
 
 /**
  * Full-Qualified Path

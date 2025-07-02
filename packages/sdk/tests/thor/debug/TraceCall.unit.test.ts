@@ -1,6 +1,6 @@
 import { describe, expect, jest, test } from '@jest/globals';
 import { type PostDebugTracerCallRequestJSON, TraceCall } from '@thor/debug';
-import { Hex, IllegalArgumentError, Revision } from '@vechain/sdk-core';
+import { Hex, IllegalArgumentError, Revision } from '@vcdm';
 import type { HttpClient } from '@http';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { ThorError } from '@thor';

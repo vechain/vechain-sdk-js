@@ -1,5 +1,5 @@
 import { describe, expect, jest, test } from '@jest/globals';
-import { Address, BlockId, ThorId } from '@vechain/sdk-core';
+import { Address, BlockId, ThorId } from '@vcdm';
 import {
     RetrieveStoragePositionValue,
     RetrieveStoragePositionValuePath,

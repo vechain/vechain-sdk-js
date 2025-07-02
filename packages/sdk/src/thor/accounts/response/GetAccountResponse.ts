@@ -1,4 +1,4 @@
-import { Hex, IllegalArgumentError, Quantity } from '@vechain/sdk-core';
+import { Hex, IllegalArgumentError, Quantity } from '@vcdm';
 import { GetAccountResponseJSON } from './GetAccountResponseJSON';
 
 /**

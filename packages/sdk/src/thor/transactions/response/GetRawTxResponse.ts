@@ -1,4 +1,4 @@
-import { type Hex, HexUInt, IllegalArgumentError } from '@vechain/sdk-core';
+import { type Hex, HexUInt, IllegalArgumentError } from '@vcdm';
 import { type GetRawTxResponseJSON, TxMeta } from '@thor';
 
 /**

@@ -4,7 +4,7 @@ import {
     type ExecuteCodesRequestJSON,
     InspectClauses
 } from '@thor';
-import { HexUInt } from '@vechain/sdk-core';
+import { HexUInt } from '@vcdm';
 import { mockHttpClient } from '../../utils/MockUnitTestClient';
 
 /**

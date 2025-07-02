@@ -4,7 +4,7 @@ import {
     SubscriptionBlockResponse,
     type SubscriptionBlockResponseJSON
 } from '@thor/subscriptions';
-import { type BlockId } from '@vechain/sdk-core';
+import { type BlockId } from '@vcdm';
 import { ThorError } from '@thor';
 
 /**

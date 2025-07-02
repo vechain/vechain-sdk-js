@@ -1,6 +1,6 @@
 import { TargetPath, type TracerName } from '@thor/debug';
 import { type PostDebugTracerRequestJSON } from '@thor/debug/PostDebugTracerRequestJSON';
-import { IllegalArgumentError } from '@vechain/sdk-core';
+import { IllegalArgumentError } from '@vcdm';
 
 /**
  * Full-Qualified-Path

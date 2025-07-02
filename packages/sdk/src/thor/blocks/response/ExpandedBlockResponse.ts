@@ -3,7 +3,7 @@ import {
     TxWithReceipt,
     type TxWithReceiptJSON
 } from '@thor';
-import { IllegalArgumentError } from '@vechain/sdk-core';
+import { IllegalArgumentError } from '@vcdm';
 import { Block } from '@thor/blocks/Block';
 
 /**

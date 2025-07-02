@@ -1,10 +1,5 @@
 import { LogMeta } from '@thor/logs';
-import {
-    Address,
-    HexUInt,
-    IllegalArgumentError,
-    ThorId
-} from '@vechain/sdk-core';
+import { Address, HexUInt, IllegalArgumentError, ThorId } from '@vcdm';
 import { type SubscriptionEventResponseJSON } from '@thor/subscriptions';
 
 /**

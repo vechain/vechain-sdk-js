@@ -4,7 +4,7 @@ import {
     TransfersSubscription,
     SubscriptionTransferResponse
 } from '@thor/subscriptions';
-import { Address, BlockId } from '@vechain/sdk-core';
+import { Address, BlockId } from '@vcdm';
 import type { LogMetaJSON } from '@thor/logs';
 import { type SubscriptionTransferResponseJSON } from '@thor/subscriptions';
 

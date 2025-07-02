@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { Address, BlockId } from '@vechain/sdk-core';
+import { Address, BlockId } from '@vcdm';
 import { RetrieveStoragePositionValue, ThorNetworks } from '@thor';
 import { FetchHttpClient } from '@http';
 import log from 'loglevel';

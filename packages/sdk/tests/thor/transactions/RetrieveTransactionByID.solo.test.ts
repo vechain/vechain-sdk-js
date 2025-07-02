@@ -1,7 +1,7 @@
 /**
  * @group integration/transactions
  */
-import { Hex, HexUInt32, Revision } from '@vechain/sdk-core';
+import { Hex, HexUInt32, Revision } from '@vcdm';
 import {
     GetTxResponse,
     type RegularBlockResponse,

@@ -6,7 +6,7 @@ import {
     ThorNetworks,
     TraceCall
 } from '@thor';
-import { Hex, Revision } from '@vechain/sdk-core';
+import { Hex, Revision } from '@vcdm';
 
 /**
  * @group integration/debug

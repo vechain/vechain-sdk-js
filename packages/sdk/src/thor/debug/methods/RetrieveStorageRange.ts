@@ -6,7 +6,7 @@ import {
     type StorageRangeOptionJSON
 } from '@thor/debug';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
-import { IllegalArgumentError } from '@vechain/sdk-core';
+import { IllegalArgumentError } from '@vcdm';
 
 /**
  * Full-Qualified-Path

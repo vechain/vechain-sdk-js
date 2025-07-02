@@ -1,5 +1,5 @@
 import { type HttpPath, type HttpQuery } from '@http';
-import { type Address, type BlockId } from '@vechain/sdk-core';
+import { type Address, type BlockId } from '@vcdm';
 import { type WebSocketClient, type WebSocketListener } from '@ws';
 import { type SubscriptionTransferResponse } from '@thor/subscriptions';
 

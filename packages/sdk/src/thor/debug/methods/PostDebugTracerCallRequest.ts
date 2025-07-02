@@ -9,7 +9,7 @@ import {
     IllegalArgumentError,
     Quantity,
     UInt
-} from '@vechain/sdk-core';
+} from '@vcdm';
 
 /**
  * Full-Qualified-Path

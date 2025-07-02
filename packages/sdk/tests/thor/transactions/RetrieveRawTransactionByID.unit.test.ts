@@ -1,7 +1,7 @@
 /**
  * @group unit/transactions
  */
-import { HexUInt32 } from '@vechain/sdk-core';
+import { HexUInt32 } from '@vcdm';
 import {
     GetRawTxResponse,
     type GetRawTxResponseJSON,

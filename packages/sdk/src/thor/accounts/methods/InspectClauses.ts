@@ -1,9 +1,9 @@
 import { type HttpClient, type HttpPath, type HttpQuery } from '@http';
 import { ExecuteCodesResponse, ExecuteCodesRequest } from '@thor/accounts';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
-import { Revision } from '@vechain/sdk-core';
-import { ExecuteCodesResponseJSON } from './ExecuteCodesResponseJSON';
-import { ExecuteCodesRequestJSON } from './ExecuteCodesRequestJSON';
+import { Revision } from '@vcdm';
+import { ExecuteCodesResponseJSON } from '../response/ExecuteCodesResponseJSON';
+import { ExecuteCodesRequestJSON } from '../response/ExecuteCodesRequestJSON';
 
 /**
  * Full-Qualified Path

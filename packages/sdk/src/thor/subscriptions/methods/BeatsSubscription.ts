@@ -1,6 +1,6 @@
 import { type WebSocketClient, type WebSocketListener } from '@ws';
 import type { HttpPath } from '@http';
-import type { BlockId } from '@vechain/sdk-core';
+import type { BlockId } from '@vcdm';
 import {
     SubscriptionBeat2Response,
     type SubscriptionBeat2ResponseJSON

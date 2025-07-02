@@ -4,7 +4,7 @@ import {
     HexUInt32,
     IllegalArgumentError,
     Quantity
-} from '@vechain/sdk-core';
+} from '@vcdm';
 import { type GetFeesHistoryResponseJSON } from '@thor';
 
 /**

@@ -1,4 +1,4 @@
-import { IllegalArgumentError } from '@vechain/sdk-core';
+import { IllegalArgumentError } from '@vcdm';
 import { type GetTxResponseJSON, TxMeta } from '@thor';
 import { Tx } from '@thor/model/Tx';
 

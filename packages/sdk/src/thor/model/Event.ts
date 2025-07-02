@@ -1,9 +1,4 @@
-import {
-    Address,
-    HexUInt,
-    IllegalArgumentError,
-    type Hex
-} from '@vechain/sdk-core';
+import { Address, HexUInt, IllegalArgumentError, type Hex } from '@vcdm';
 import { type EventJSON } from '@thor/model/EventJSON';
 
 /**

@@ -1,4 +1,4 @@
-import { type Hex, HexUInt32, IllegalArgumentError } from '@vechain/sdk-core';
+import { type Hex, HexUInt32, IllegalArgumentError } from '@vcdm';
 import { type HttpClient } from '@http';
 import { RetrieveTransactionPath } from '@thor/transactions/methods/RetrieveTransactionPath';
 import { RetrieveTransactionQuery } from '@thor/transactions/methods/RetrieveTransactionQuery';

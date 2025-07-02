@@ -1,4 +1,4 @@
-import { Hex, HexUInt, IllegalArgumentError } from '@vechain/sdk-core';
+import { Hex, HexUInt, IllegalArgumentError } from '@vcdm';
 import { type ContractBytecodeJSON } from './ContractBytecodeJSON';
 
 /**

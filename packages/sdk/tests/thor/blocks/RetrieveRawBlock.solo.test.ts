@@ -1,4 +1,4 @@
-import { Revision } from '@vechain/sdk-core';
+import { Revision } from '@vcdm';
 import { FetchHttpClient } from '@http';
 import {
     RawTx,

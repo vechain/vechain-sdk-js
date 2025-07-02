@@ -1,8 +1,8 @@
 import { type HttpClient, type HttpPath } from '@http';
 import { GetAccountResponse } from '@thor/accounts';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
-import { type Address } from '@vechain/sdk-core';
-import { GetAccountResponseJSON } from './GetAccountResponseJSON';
+import { type Address } from '@vcdm';
+import { GetAccountResponseJSON } from '../response/GetAccountResponseJSON';
 
 /**
  * Full-Qualified Path

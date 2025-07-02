@@ -1,4 +1,4 @@
-import { Address, IllegalArgumentError } from '@vechain/sdk-core';
+import { Address, IllegalArgumentError } from '@vcdm';
 import { Event } from '@thor/model/Event';
 import { Transfer } from '@thor/model/Transfer';
 import { type OutputJSON } from '@thor/model/OutputJSON';

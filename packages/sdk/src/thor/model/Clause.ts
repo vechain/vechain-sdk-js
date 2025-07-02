@@ -4,7 +4,7 @@ import {
     IllegalArgumentError,
     Quantity,
     type Hex
-} from '@vechain/sdk-core';
+} from '@vcdm';
 import { type ClauseJSON } from '@thor/model/ClauseJSON';
 
 /**

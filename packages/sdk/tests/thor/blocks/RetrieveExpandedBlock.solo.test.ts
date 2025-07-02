@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { Revision } from '@vechain/sdk-core';
+import { Revision } from '@vcdm';
 import { FetchHttpClient } from '@http';
 import {
     ExpandedBlockResponse,

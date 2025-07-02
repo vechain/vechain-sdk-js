@@ -19,7 +19,7 @@ import {
     Transaction,
     type TransactionBody,
     VET
-} from '@vechain/sdk-core';
+} from '@vcdm';
 import { expect, test } from '@jest/globals';
 
 /**

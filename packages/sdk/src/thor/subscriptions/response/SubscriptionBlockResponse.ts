@@ -5,7 +5,7 @@ import {
     ThorId,
     type TxId,
     UInt
-} from '@vechain/sdk-core';
+} from '@vcdm';
 import { type SubscriptionBlockResponseJSON } from '@thor/subscriptions';
 
 /**

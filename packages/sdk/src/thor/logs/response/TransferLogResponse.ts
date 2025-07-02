@@ -1,9 +1,4 @@
-import {
-    Address,
-    HexUInt,
-    IllegalArgumentError,
-    Quantity
-} from '@vechain/sdk-core';
+import { Address, HexUInt, IllegalArgumentError, Quantity } from '@vcdm';
 import { LogMeta, type TransferLogResponseJSON } from '@thor';
 
 /**

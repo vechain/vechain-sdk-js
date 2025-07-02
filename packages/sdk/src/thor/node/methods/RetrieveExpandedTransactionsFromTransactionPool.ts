@@ -1,5 +1,5 @@
 import type { HttpClient, HttpPath, HttpQuery } from '@http';
-import type { Address } from '@vechain/sdk-core';
+import type { Address } from '@vcdm';
 import {
     Transactions,
     ThorError,

@@ -1,4 +1,4 @@
-import { Address, IllegalArgumentError } from '@vechain/sdk-core';
+import { Address, IllegalArgumentError } from '@vcdm';
 import { type TransferCriteriaJSON } from '@thor';
 
 /**

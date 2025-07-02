@@ -11,7 +11,7 @@ import {
     type HexUInt32,
     IllegalArgumentError,
     Revision
-} from '@vechain/sdk-core';
+} from '@vcdm';
 
 /**
  * Full-Qualified Path

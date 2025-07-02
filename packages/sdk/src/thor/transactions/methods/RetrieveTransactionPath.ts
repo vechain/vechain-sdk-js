@@ -1,4 +1,4 @@
-import { type HexUInt32 } from '@vechain/sdk-core';
+import { type HexUInt32 } from '@vcdm';
 import { type HttpPath } from '@http';
 
 /**

@@ -1,6 +1,6 @@
 import { Tx, type TxJSON } from '@thor/model';
 import { type TransactionsJSON } from '@thor/node/TransactionsJSON';
-import { IllegalArgumentError } from '@vechain/sdk-core';
+import { IllegalArgumentError } from '@vcdm';
 
 /**
  * Full-Qualified-Path

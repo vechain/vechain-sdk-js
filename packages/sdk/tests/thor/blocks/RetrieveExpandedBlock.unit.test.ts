@@ -1,5 +1,5 @@
 import { expect, jest } from '@jest/globals';
-import { Revision } from '@vechain/sdk-core';
+import { Revision } from '@vcdm';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import {
     ExpandedBlockResponse,

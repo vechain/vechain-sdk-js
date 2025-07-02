@@ -1,9 +1,4 @@
-import {
-    Address,
-    Hex,
-    HexUInt32,
-    IllegalArgumentError
-} from '@vechain/sdk-core';
+import { Address, Hex, HexUInt32, IllegalArgumentError } from '@vcdm';
 import { TxMeta } from '@thor/model/TxMeta';
 import { type ReceiptMetaJSON } from '@thor/model/ReceiptMetaJSON';
 

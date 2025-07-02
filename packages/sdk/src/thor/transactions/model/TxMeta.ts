@@ -1,9 +1,4 @@
-import {
-    type Hex,
-    HexUInt32,
-    IllegalArgumentError,
-    UInt
-} from '@vechain/sdk-core';
+import { type Hex, HexUInt32, IllegalArgumentError, UInt } from '@vcdm';
 import { type TxMetaJSON } from '@thor';
 
 /**

@@ -1,4 +1,4 @@
-import { HexUInt, IllegalArgumentError } from '@vechain/sdk-core';
+import { HexUInt, IllegalArgumentError } from '@vcdm';
 import { type GetFeesPriorityResponseJSON } from '@thor';
 
 /**

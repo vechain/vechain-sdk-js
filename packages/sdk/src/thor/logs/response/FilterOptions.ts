@@ -1,4 +1,4 @@
-import { IllegalArgumentError, UInt } from '@vechain/sdk-core';
+import { IllegalArgumentError, UInt } from '@vcdm';
 import { type FilterOptionsJSON } from '@thor';
 
 /**

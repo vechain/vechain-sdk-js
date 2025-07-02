@@ -1,9 +1,4 @@
-import {
-    Address,
-    type Hex,
-    HexUInt32,
-    IllegalArgumentError
-} from '@vechain/sdk-core';
+import { Address, type Hex, HexUInt32, IllegalArgumentError } from '@vcdm';
 import { type EventCriteriaJSON } from '@thor';
 
 /**

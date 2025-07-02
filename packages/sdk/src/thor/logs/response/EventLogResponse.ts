@@ -5,7 +5,7 @@ import {
     HexUInt32,
     IllegalArgumentError,
     type Hex
-} from '@vechain/sdk-core';
+} from '@vcdm';
 
 /**
  * Full-Qualified-Path

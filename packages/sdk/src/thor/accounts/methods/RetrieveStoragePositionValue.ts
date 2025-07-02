@@ -1,5 +1,5 @@
 import { type HttpClient, type HttpPath } from '@http';
-import { type Address, type BlockId } from '@vechain/sdk-core';
+import { type Address, type BlockId } from '@vcdm';
 import { GetStorageResponse } from './GetStorageResponse';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
 import { type GetStorageResponseJSON } from './GetStorageResponseJSON';

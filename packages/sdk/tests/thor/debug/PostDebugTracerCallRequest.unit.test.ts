@@ -2,12 +2,7 @@
  * @group unit/debug
  */
 import { expect, test } from '@jest/globals';
-import {
-    Address,
-    HexUInt,
-    IllegalArgumentError,
-    UInt
-} from '@vechain/sdk-core';
+import { Address, HexUInt, IllegalArgumentError, UInt } from '@vcdm';
 import {
     PostDebugTracerCallRequest,
     type PostDebugTracerCallRequestJSON

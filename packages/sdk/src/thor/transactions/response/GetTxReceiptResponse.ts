@@ -1,10 +1,4 @@
-import {
-    Address,
-    HexUInt,
-    IllegalArgumentError,
-    Quantity,
-    UInt
-} from '@vechain/sdk-core';
+import { Address, HexUInt, IllegalArgumentError, Quantity, UInt } from '@vcdm';
 import {
     type GetTxReceiptResponseJSON,
     Output,

@@ -1,4 +1,4 @@
-import { Hex, IllegalArgumentError } from '@vechain/sdk-core';
+import { Hex, IllegalArgumentError } from '@vcdm';
 
 /**
  * Full Qualified Path

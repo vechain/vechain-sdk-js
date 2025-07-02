@@ -1,4 +1,4 @@
-import { type Hex, HexUInt32, IllegalArgumentError } from '@vechain/sdk-core';
+import { type Hex, HexUInt32, IllegalArgumentError } from '@vcdm';
 import { type TransactionsIDsJSON } from '@thor';
 
 /**

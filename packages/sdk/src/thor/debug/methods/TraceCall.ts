@@ -4,11 +4,7 @@ import {
     type PostDebugTracerCallRequestJSON
 } from '@thor/debug';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
-import {
-    type HexUInt32,
-    IllegalArgumentError,
-    Revision
-} from '@vechain/sdk-core';
+import { type HexUInt32, IllegalArgumentError, Revision } from '@vcdm';
 
 /**
  * Full-Qualified-Path

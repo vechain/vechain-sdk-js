@@ -4,7 +4,7 @@ import {
     HexUInt32,
     IllegalArgumentError,
     UInt
-} from '@vechain/sdk-core';
+} from '@vcdm';
 import { type StorageRangeOptionJSON } from '@thor/debug/StorageRangeOptionJSON';
 import { TargetPath } from '@thor/debug/TargetPath';
 

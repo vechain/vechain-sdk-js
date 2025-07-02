@@ -1,13 +1,6 @@
-import {
-    Address,
-    type Hex,
-    HexInt,
-    HexUInt,
-    HexUInt32,
-    IllegalArgumentError,
-    UInt
-} from '@vechain/sdk-core';
+import { Address, type Hex, HexInt, HexUInt, HexUInt32, UInt } from '@vcdm';
 import { Clause, type ClauseJSON } from '@thor';
+import { IllegalArgumentError } from '@errors';
 import { type TxJSON } from './TxJSON';
 
 /**

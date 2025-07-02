@@ -1,10 +1,4 @@
-import {
-    Hex,
-    HexUInt32,
-    IllegalArgumentError,
-    NetAddr,
-    UInt
-} from '@vechain/sdk-core';
+import { Hex, HexUInt32, IllegalArgumentError, NetAddr, UInt } from '@vcdm';
 import { type PeerStatJSON } from '@thor';
 
 /**

@@ -4,7 +4,7 @@ import {
     IllegalArgumentError,
     UInt,
     type Hex
-} from '@vechain/sdk-core';
+} from '@vcdm';
 import { type LogMetaJSON } from '@thor';
 
 /**

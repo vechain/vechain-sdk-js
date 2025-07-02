@@ -1,5 +1,5 @@
 import { type HttpClient, type HttpPath } from '@http';
-import type { Address } from '@vechain/sdk-core';
+import type { Address } from '@vcdm';
 import { ContractBytecode, type ContractBytecodeJSON } from '@thor/accounts';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
 

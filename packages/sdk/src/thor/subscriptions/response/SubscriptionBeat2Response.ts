@@ -1,9 +1,4 @@
-import {
-    BlockId,
-    HexUInt,
-    IllegalArgumentError,
-    UInt
-} from '@vechain/sdk-core';
+import { BlockId, HexUInt, IllegalArgumentError, UInt } from '@vcdm';
 import { type SubscriptionBeat2ResponseJSON } from '@thor/subscriptions';
 
 /**

@@ -1,4 +1,4 @@
-import { HexUInt } from '@vechain/sdk-core';
+import { HexUInt } from '@vcdm';
 import { type HttpClient, type HttpPath } from '@http';
 import {
     ThorError,

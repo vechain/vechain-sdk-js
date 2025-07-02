@@ -1,7 +1,7 @@
 import { type WebSocketClient, type WebSocketListener } from '@ws';
 import { type SubscriptionEventResponse } from '@thor/subscriptions';
 import { type HttpPath, type HttpQuery } from '@http';
-import { type Address, type ThorId } from '@vechain/sdk-core';
+import { type Address, type ThorId } from '@vcdm';
 import { ThorError } from '@thor';
 
 /**

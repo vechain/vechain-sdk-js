@@ -1,5 +1,5 @@
 import { describe, expect, jest, test } from '@jest/globals';
-import { Address, HexUInt } from '@vechain/sdk-core';
+import { Address, HexUInt } from '@vcdm';
 import {
     RetrieveContractBytecode,
     RetrieveContractBytecodePath,

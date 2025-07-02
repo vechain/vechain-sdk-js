@@ -1,5 +1,5 @@
 import { type HttpQuery } from '@http';
-import { type HexUInt32 } from '@vechain/sdk-core';
+import { type HexUInt32 } from '@vcdm';
 
 /**
  * Represents a query to retrieve a transaction by its ID, still pending or not.

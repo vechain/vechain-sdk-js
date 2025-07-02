@@ -1,5 +1,5 @@
 import { InvalidDataType } from '@vechain/sdk-core-errors';
-import { Revision } from '@vechain/sdk-core';
+import { Revision } from '@vcdm';
 import { HttpClient } from '@http';
 
 // In-memory cache for fork detection results

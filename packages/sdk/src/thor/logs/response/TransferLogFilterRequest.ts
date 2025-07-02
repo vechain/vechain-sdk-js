@@ -5,7 +5,7 @@ import {
     TransferCriteria,
     type TransferLogFilterRequestJSON
 } from '@thor/logs';
-import { IllegalArgumentError } from '@vechain/sdk-core';
+import { IllegalArgumentError } from '@vcdm';
 
 /**
  * Full-Qualified-Path

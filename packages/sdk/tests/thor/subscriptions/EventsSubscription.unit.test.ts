@@ -4,7 +4,7 @@ import {
     EventsSubscription,
     SubscriptionEventResponse
 } from '@thor/subscriptions';
-import { Address, ThorId } from '@vechain/sdk-core';
+import { Address, ThorId } from '@vcdm';
 import { type LogMetaJSON } from '@thor/logs';
 import { type SubscriptionEventResponseJSON } from '@thor/subscriptions';
 
