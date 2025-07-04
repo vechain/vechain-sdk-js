@@ -10,16 +10,10 @@ import {
     ThorNetworks,
     TXID
 } from '@thor';
-import {
-    Address,
-    Clause,
-    HexUInt,
-    Revision,
-    SOLO_NETWORK,
-    Transaction,
-    type TransactionBody,
-    VET
-} from '@vcdm';
+import { Address, HexUInt, Revision, VET } from '@vcdm';
+import { ClauseBuilder } from '@thor';
+import { Transaction, type TransactionBody } from '@thor/model';
+import { SOLO_NETWORK } from '@utils';
 import { expect, test } from '@jest/globals';
 
 /**
@@ -36,7 +30,7 @@ describe('RetrieveTransactionReceipt SOLO tests', () => {
         '99f0500549792796c14fed62011a51081dc5b5e68fe8bd8a13b86be829c4fd36'; // THIS SOLO DEFAULT ACCOUNT[1]
 
     test('ok <- transfer VET', async () => {
-        const transferClause = Clause.transferVET(
+        const transferClause = ClauseBuilder.transferVET(
             Address.of(toAddress),
             VET.of(1)
         );

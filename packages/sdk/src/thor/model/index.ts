@@ -1,4 +1,4 @@
-export * from './Clause';
+export * from './ClauseType';
 export * from './Event';
 export * from './Output';
 export * from './Receipt';

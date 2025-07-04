@@ -1,4 +1,4 @@
-import { InvalidDataType } from '@vechain/sdk-core-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 import { Revision } from '@vcdm';
 import { HttpClient } from '@http';
 

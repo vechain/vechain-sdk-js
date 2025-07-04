@@ -2,23 +2,13 @@
  * @group integration/transactions
  */
 import { type HttpClient } from '@http';
-import {
-    type RegularBlockResponseJSON,
-    RetrieveExpandedBlock,
-    SendTransaction,
-    TXID,
-    type TXIDJSON
-} from '@thor';
-import {
-    Address,
-    Clause,
-    HexUInt,
-    Revision,
-    SOLO_NETWORK,
-    Transaction,
-    type TransactionBody,
-    VET
-} from '@vcdm';
+import { RetrieveExpandedBlock, SendTransaction, TXID } from '@thor';
+import { type RegularBlockResponseJSON, type TXIDJSON } from '@thor/json';
+import { Address, HexUInt, Revision, VET } from '@vcdm';
+import { ClauseBuilder } from '@thor';
+import { Transaction, type TransactionBody } from '@thor/model';
+import { SOLO_NETWORK } from '@utils';
+
 import { TEST_ACCOUNTS } from '../../fixture';
 import { expect, jest } from '@jest/globals';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
@@ -86,7 +76,7 @@ describe('RetrieveTransactionReceipt UNIT tests', () => {
             )
         ).response;
         expect(latestBlock).toBeDefined();
-        const transferClause = Clause.transferVET(
+        const transferClause = ClauseBuilder.transferVET(
             Address.of(TRANSACTION_RECEIVER.address),
             VET.of(1)
         );

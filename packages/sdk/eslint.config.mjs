@@ -11,7 +11,7 @@ export default [
                         "../errors",
                         "../logging"
                     ],
-                    message: "Please import using @vechain/sdk-core-<the-module>",
+                    message: "Please import using @vechain/sdk-<the-module>",
                 }],
             }],
         },

@@ -1,4 +1,4 @@
-# @vechain/sdk-core
+# @vechain/sdk
 
 ## Introduction
 

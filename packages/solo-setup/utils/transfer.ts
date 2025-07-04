@@ -10,7 +10,7 @@ import {
     VET,
     VTHO,
     VTHO_ADDRESS
-} from '@vechain/sdk-core';
+} from '@vechain/sdk';
 import {
     THOR_SOLO_CHAIN_TAG,
     THOR_SOLO_SEEDED_TEST_TOKEN_AMOUNT,
@@ -35,9 +35,7 @@ export const seedVET = async (accounts: TestAccount[]): Promise<string> => {
     try {
         const thorClient = FetchHttpClient.at('http://localhost:8669');
         const latestBlock = (
-            await RetrieveExpandedBlock.of(Revision.of(0)).askTo(
-                thorClient
-            )
+            await RetrieveExpandedBlock.of(Revision.of(0)).askTo(thorClient)
         ).response;
         const privateKey = HexUInt.of(genesisDeployerAccount.privateKey).bytes;
         const clauses: TransactionClause[] = [];
@@ -64,9 +62,7 @@ export const seedVET = async (accounts: TestAccount[]): Promise<string> => {
 
         const encodedSignedTx = Transaction.of(txBody).sign(privateKey).encoded;
         const sendResult = (
-            await SendTransaction.of(encodedSignedTx).askTo(
-                thorClient
-            )
+            await SendTransaction.of(encodedSignedTx).askTo(thorClient)
         ).response.id;
         console.log(
             `Accounts seeded with ${THOR_SOLO_SEEDED_VET_AMOUNT} VET, tx id: ${sendResult.toString()}`
@@ -89,9 +85,7 @@ export const seedVTHO = async (accounts: TestAccount[]): Promise<string> => {
     try {
         const thorClient = FetchHttpClient.at('http://localhost:8669');
         const latestBlock = (
-            await RetrieveExpandedBlock.of(Revision.of(0)).askTo(
-                thorClient
-            )
+            await RetrieveExpandedBlock.of(Revision.of(0)).askTo(thorClient)
         ).response;
         const privateKey = HexUInt.of(genesisDeployerAccount.privateKey).bytes;
         const clauses: TransactionClause[] = [];
@@ -118,9 +112,7 @@ export const seedVTHO = async (accounts: TestAccount[]): Promise<string> => {
         };
         const encodedSignedTx = Transaction.of(txBody).sign(privateKey).encoded;
         const sendResult = (
-            await SendTransaction.of(encodedSignedTx).askTo(
-                thorClient
-            )
+            await SendTransaction.of(encodedSignedTx).askTo(thorClient)
         ).response.id;
         console.log(
             `Accounts seeded with ${THOR_SOLO_SEEDED_VTHO_AMOUNT} VTHO, tx id: ${sendResult.toString()}`
@@ -145,9 +137,7 @@ export const seedTestToken = async (
     try {
         const thorClient = FetchHttpClient.at('http://localhost:8669');
         const latestBlock = (
-            await RetrieveExpandedBlock.of(Revision.of(0)).askTo(
-                thorClient
-            )
+            await RetrieveExpandedBlock.of(Revision.of(0)).askTo(thorClient)
         ).response;
         const privateKey = HexUInt.of(genesisDeployerAccount.privateKey).bytes;
         const clauses: TransactionClause[] = [];
@@ -174,9 +164,7 @@ export const seedTestToken = async (
         };
         const encodedSignedTx = Transaction.of(txBody).sign(privateKey).encoded;
         const sendResult = (
-            await SendTransaction.of(encodedSignedTx).askTo(
-                thorClient
-            )
+            await SendTransaction.of(encodedSignedTx).askTo(thorClient)
         ).response.id;
         console.log(
             `Accounts seeded with ${THOR_SOLO_SEEDED_TEST_TOKEN_AMOUNT} TestToken, tx id: ${sendResult.toString()}`

@@ -3,3 +3,7 @@ export * from './TXID';
 export * from './Tx';
 export * from './TxMeta';
 export * from './TxWithReceipt';
+export * from './Transaction';
+export * from './TransactionBody';
+export * from './TransactionClause';
+export * from './ClauseBuilder';

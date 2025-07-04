@@ -2,12 +2,8 @@
  * @group unit/transactions
  */
 import { HexUInt32 } from '@vcdm';
-import {
-    GetRawTxResponse,
-    type GetRawTxResponseJSON,
-    RetrieveRawTransactionByID,
-    ThorError
-} from '@thor';
+import { GetRawTxResponse, RetrieveRawTransactionByID, ThorError } from '@thor';
+import { type GetRawTxResponseJSON } from '@thor/json';
 import type { HttpClient } from '@http';
 import { expect, jest } from '@jest/globals';
 import fastJsonStableStringify from 'fast-json-stable-stringify';

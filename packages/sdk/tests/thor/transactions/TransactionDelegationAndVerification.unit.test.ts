@@ -1,15 +1,10 @@
 import { describe, expect, test } from '@jest/globals';
-import {
-    Address,
-    Clause,
-    HexUInt,
-    networkInfo,
-    Secp256k1,
-    Transaction,
-    type TransactionBody,
-    VET
-} from '@vcdm';
-import { type GetTxReceiptResponseJSON, type TXIDJSON } from '@thor';
+import { Address, HexUInt, VET } from '@vcdm';
+import { ClauseBuilder } from '@thor';
+import { networkInfo } from '@utils';
+import { Secp256k1 } from '@secp256k1';
+import { Transaction, type TransactionBody } from '@thor';
+import { type GetTxReceiptResponseJSON, type TXIDJSON } from '@thor/json';
 import { type HttpPath } from '@http';
 import { mockHttpClient } from '../../utils/MockUnitTestClient';
 import { secp256k1 as nc_secp256k1 } from '@noble/curves/secp256k1';
@@ -36,7 +31,7 @@ describe('unit tests', () => {
         address: Address.of('0x88b2551c3ed42ca663796c10ce68c88a65f73fe2')
     };
     const OneVET = VET.of(1);
-    const clauses = [Clause.transferVET(receiver.address, OneVET)];
+    const clauses = [ClauseBuilder.transferVET(receiver.address, OneVET)];
 
     test('Delegated Tx', async () => {
         const mockBlockResponse = {

@@ -2,10 +2,10 @@ import { describe, expect, jest, test } from '@jest/globals';
 import { Hex, HexUInt32 } from '@vcdm';
 import {
     GetTxReceiptResponse,
-    type GetTxReceiptResponseJSON,
     RetrieveTransactionReceipt,
     ThorError
 } from '@thor';
+import { type GetTxReceiptResponseJSON } from '@thor/json';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import type { HttpClient } from '@http';
 

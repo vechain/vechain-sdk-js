@@ -7,7 +7,7 @@ import {
     networkInfo,
     Transaction,
     type TransactionBody
-} from '@vechain/sdk-core';
+} from '@vechain/sdk';
 import {
     ALL_ACCOUNTS,
     THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS

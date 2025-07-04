@@ -2,7 +2,7 @@ import { describe, expect, test, beforeEach } from '@jest/globals';
 import { ForkDetector } from '@thor/fork/forkDetector';
 import { FetchHttpClient } from '@http';
 import { ThorNetworks } from '@thor';
-import { InvalidDataType } from '@vechain/sdk-core-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 
 /**
  * @group integration/fork
