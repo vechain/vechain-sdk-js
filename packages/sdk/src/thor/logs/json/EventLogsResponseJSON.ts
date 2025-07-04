@@ -1,4 +1,4 @@
-import type { EventLogResponseJSON } from '@thor/logs/EventLogResponseJSON';
+import type { EventLogResponseJSON } from './EventLogResponseJSON';
 
 /**
  * [EventLogFilterRequest](http://localhost:8669/doc/stoplight-ui/#/schemas/EventLogFilterRequest)

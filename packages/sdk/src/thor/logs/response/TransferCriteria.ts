@@ -1,5 +1,5 @@
 import { Address } from '@vcdm';
-import { type TransferCriteriaJSON } from '@thor';
+import { type TransferCriteriaJSON } from '@thor/json';
 import { IllegalArgumentError } from '@errors';
 
 /**

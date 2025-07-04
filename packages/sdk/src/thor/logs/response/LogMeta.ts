@@ -1,5 +1,5 @@
 import { Address, HexUInt32, UInt, type Hex } from '@vcdm';
-import { type LogMetaJSON } from '@thor';
+import { type LogMetaJSON } from '@thor/json';
 import { IllegalArgumentError } from '@errors';
 
 /**

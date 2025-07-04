@@ -1,6 +1,7 @@
 import { type WebSocketClient, type WebSocketListener } from '@ws';
 import type { HttpPath } from '@http';
-import { ThorError, TXID, type TXIDJSON } from '@thor';
+import { ThorError, TXID } from '@thor';
+import { type TXIDJSON } from '@thor/json';
 
 /**
  * Full-Qualified Path

@@ -1,10 +1,9 @@
 import { type HttpClient, type HttpPath } from '@http';
+import { TransferLogFilterRequest, TransferLogsResponse } from '@thor/logs';
 import {
-    TransferLogFilterRequest,
-    type TransferLogFilterRequestJSON,
-    TransferLogsResponse,
-    type TransferLogsResponseJSON
-} from '@thor/logs';
+    type TransferLogsResponseJSON,
+    type TransferLogFilterRequestJSON
+} from '@thor/json';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
 
 /**

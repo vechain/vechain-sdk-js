@@ -1,5 +1,4 @@
-import { type TxWithReceiptJSON } from '@thor';
-import { type BlockJSON } from '@thor/blocks/BlockJSON';
+import { type TxWithReceiptJSON, type BlockJSON } from '@thor/json';
 
 /**
  * [ExpandedBlockResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/ExpandedBlockResponse)

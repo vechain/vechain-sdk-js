@@ -1,5 +1,4 @@
-import { type EventJSON } from '@thor/model/EventJSON';
-import { type TransferJSON } from '@thor/model/TransferJSON';
+import { type EventJSON, type TransferJSON } from '@thor/json';
 
 /**
  *

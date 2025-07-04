@@ -1,12 +1,7 @@
 import { HexUInt } from '@vcdm';
 import { type HttpClient, type HttpPath } from '@http';
-import {
-    ThorError,
-    type ThorRequest,
-    type ThorResponse,
-    TXID,
-    type TXIDJSON
-} from '@thor';
+import { ThorError, type ThorRequest, type ThorResponse, TXID } from '@thor';
+import { type TXIDJSON } from '@thor/json';
 
 /**
  * Full-Qualified Path

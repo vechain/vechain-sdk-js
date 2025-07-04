@@ -1,4 +1,4 @@
-import type { LogMetaJSON } from '@thor/logs/LogMetaJSON';
+import type { LogMetaJSON } from '@thor/json';
 interface TransferLogResponseJSON {
     sender: string;
     recipient: string;

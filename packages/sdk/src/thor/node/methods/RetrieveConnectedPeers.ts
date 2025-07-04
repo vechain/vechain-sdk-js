@@ -1,4 +1,5 @@
-import { GetPeersResponse, type GetPeersResponseJSON } from '@thor/node';
+import { GetPeersResponse } from '@thor/node';
+import { type GetPeersResponseJSON } from '@thor/json';
 import { type HttpClient, type HttpPath } from '@http';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
 

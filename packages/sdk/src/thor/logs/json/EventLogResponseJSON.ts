@@ -1,4 +1,4 @@
-import type { LogMetaJSON } from '@thor';
+import type { LogMetaJSON } from '@thor/json';
 
 /**
  * [EventLogFilterRequest](http://localhost:8669/doc/stoplight-ui/#/schemas/EventLogResponse) element.

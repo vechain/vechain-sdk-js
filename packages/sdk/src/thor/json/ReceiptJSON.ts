@@ -1,7 +1,7 @@
 /**
  * [Receipt](http://localhost:8669/doc/stoplight-ui/#/schemas/Receipt)
  */
-import { type OutputJSON } from '@thor';
+import { type OutputJSON } from '@thor/json';
 
 interface ReceiptJSON {
     type: number | null; // int

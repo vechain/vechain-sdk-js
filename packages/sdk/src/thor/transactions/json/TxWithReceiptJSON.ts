@@ -1,4 +1,4 @@
-import { type OutputJSON, type TxJSON } from '@thor';
+import { type OutputJSON, type TxJSON } from '@thor/json';
 
 /**
  * Type of the property

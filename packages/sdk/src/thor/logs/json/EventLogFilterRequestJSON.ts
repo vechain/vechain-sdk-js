@@ -2,7 +2,7 @@ import type {
     EventCriteriaJSON,
     FilterOptionsJSON,
     FilterRangeJSON
-} from '@thor';
+} from '@thor/json';
 
 /**
  * [EventLogFilterRequest](EventLogFilterRequest)

@@ -1,4 +1,4 @@
-import { type LogMetaJSON } from '@thor/logs';
+import { type LogMetaJSON } from '@thor/json';
 
 /**
  * [SubscriptionTransferResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/SubscriptionTransferResponse)

@@ -1,9 +1,9 @@
 import { describe, expect, test } from '@jest/globals';
+import { InspectClauses } from '@thor';
 import {
     type ExecuteCodeResponseJSON,
-    type ExecuteCodesRequestJSON,
-    InspectClauses
-} from '@thor';
+    type ExecuteCodesRequestJSON
+} from '@thor/json';
 import { HexUInt } from '@vcdm';
 import { mockHttpClient } from '../../utils/MockUnitTestClient';
 

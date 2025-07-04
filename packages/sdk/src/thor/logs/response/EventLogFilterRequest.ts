@@ -1,10 +1,5 @@
-import {
-    EventCriteria,
-    type EventLogFilterRequestJSON,
-    FilterOptions,
-    FilterRange,
-    LogSort
-} from '@thor';
+import { EventCriteria, FilterOptions, FilterRange, LogSort } from '@thor';
+import { type EventLogFilterRequestJSON } from '@thor/json';
 import { IllegalArgumentError } from '@errors';
 
 /**

@@ -1,6 +1,7 @@
 import { type HttpClient, type HttpPath } from '@http';
 import type { Address } from '@vcdm';
-import { ContractBytecode, type ContractBytecodeJSON } from '@thor/accounts';
+import { type ContractBytecodeJSON } from '@thor/json';
+import { ContractBytecode } from '@thor';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
 
 /**

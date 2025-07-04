@@ -1,5 +1,5 @@
 import { UInt } from '@vcdm';
-import { type FilterOptionsJSON } from '@thor';
+import { type FilterOptionsJSON } from '@thor/json';
 import { IllegalArgumentError } from '@errors';
 
 /**

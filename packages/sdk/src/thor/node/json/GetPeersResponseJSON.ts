@@ -1,4 +1,4 @@
-import type { PeerStatJSON } from '@thor';
+import type { PeerStatJSON } from '@thor/json';
 
 /**
  * [GetPeersResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/GetPeersResponse)

@@ -1,10 +1,10 @@
 import {
     RegularBlockResponse,
-    type RegularBlockResponseJSON,
     ThorError,
     type ThorRequest,
     type ThorResponse
 } from '@thor';
+import { type RegularBlockResponseJSON } from '@thor/json';
 import { type HttpClient, type HttpPath } from '@http';
 import { type Revision } from '@vcdm';
 

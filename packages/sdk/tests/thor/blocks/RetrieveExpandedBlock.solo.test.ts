@@ -3,11 +3,11 @@ import { Revision } from '@vcdm';
 import { FetchHttpClient } from '@http';
 import {
     ExpandedBlockResponse,
-    type ExpandedBlockResponseJSON,
     RetrieveExpandedBlock,
     ThorError,
     ThorNetworks
 } from '@thor';
+import { type ExpandedBlockResponseJSON } from '@thor/json';
 
 class InvalidRevision extends Revision {
     constructor() {

@@ -1,4 +1,4 @@
-import type { TxMetaJSON } from '@thor';
+import type { TxMetaJSON } from '@thor/json';
 
 /**
  * [ReceiptMeta](http://localhost:8669/doc/stoplight-ui/#/schemas/ReceiptMeta)

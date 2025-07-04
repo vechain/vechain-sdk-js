@@ -1,5 +1,6 @@
 import { Address, HexUInt, Quantity } from '@vcdm';
-import { LogMeta, type TransferLogResponseJSON } from '@thor';
+import { LogMeta } from '@thor';
+import { type TransferLogResponseJSON } from '@thor/json';
 import { IllegalArgumentError } from '@errors';
 
 /**

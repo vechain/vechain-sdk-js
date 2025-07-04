@@ -4,9 +4,9 @@ import {
     ThorError,
     type ThorRequest,
     type ThorResponse,
-    TransactionsIDs,
-    type TransactionsIDsJSON
+    TransactionsIDs
 } from '@thor';
+import { type TransactionsIDsJSON } from '@thor/json';
 
 /**
  * Full-Qualified-Path

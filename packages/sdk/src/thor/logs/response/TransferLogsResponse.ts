@@ -1,8 +1,8 @@
+import { TransferLogResponse } from '@thor/logs';
 import {
-    TransferLogResponse,
     type TransferLogResponseJSON,
     type TransferLogsResponseJSON
-} from '@thor/logs';
+} from '@thor/json';
 import { IllegalArgumentError } from '@errors';
 
 /**

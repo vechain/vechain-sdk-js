@@ -1,4 +1,4 @@
-import { type BlockJSON } from '@thor/blocks/BlockJSON';
+import { type BlockJSON } from '@thor/json';
 
 /**
  * [RegularBlockResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/RegularBlockResponse)

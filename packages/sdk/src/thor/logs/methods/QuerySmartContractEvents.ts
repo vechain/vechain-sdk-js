@@ -1,12 +1,14 @@
 import {
     EventLogFilterRequest,
-    type EventLogFilterRequestJSON,
     EventLogsResponse,
-    type EventLogsResponseJSON,
     ThorError,
     type ThorRequest,
     type ThorResponse
 } from '@thor';
+import {
+    type EventLogsResponseJSON,
+    type EventLogFilterRequestJSON
+} from '@thor/json';
 import { type HttpClient, type HttpPath } from '@http';
 
 /**

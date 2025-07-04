@@ -1,11 +1,6 @@
 import { type HttpClient, type HttpPath } from '@http';
-import {
-    Status,
-    type StatusJSON,
-    ThorError,
-    type ThorRequest,
-    type ThorResponse
-} from '@thor';
+import { Status, ThorError, type ThorRequest, type ThorResponse } from '@thor';
+import { type StatusJSON } from '@thor/json';
 
 /**
  * Full-Qualified-Path

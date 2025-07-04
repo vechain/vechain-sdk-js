@@ -3,9 +3,9 @@ import { Address, HexUInt } from '@vcdm';
 import {
     RetrieveContractBytecode,
     RetrieveContractBytecodePath,
-    ContractBytecode,
-    type ContractBytecodeJSON
+    ContractBytecode
 } from '@thor';
+import { type ContractBytecodeJSON } from '@thor/json';
 import {
     mockHttpClient,
     mockHttpClientWithError

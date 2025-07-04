@@ -3,11 +3,11 @@ import { FetchHttpClient } from '@http';
 import { Revision } from '@vcdm';
 import {
     RegularBlockResponse,
-    type RegularBlockResponseJSON,
     RetrieveRegularBlock,
     ThorError,
     ThorNetworks
 } from '@thor';
+import { type RegularBlockResponseJSON } from '@thor/json';
 
 class InvalidRevision extends Revision {
     constructor() {

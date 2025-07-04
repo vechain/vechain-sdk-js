@@ -1,9 +1,5 @@
-import {
-    RawTx,
-    type RawTxJSON,
-    type ThorRequest,
-    type ThorResponse
-} from '@thor';
+import { RawTx, type ThorRequest, type ThorResponse } from '@thor';
+import { type RawTxJSON } from '@thor/json';
 import { ThorError } from '@thor/ThorError';
 import { type HttpClient, type HttpPath } from '@http';
 import { type Revision } from '@vcdm';

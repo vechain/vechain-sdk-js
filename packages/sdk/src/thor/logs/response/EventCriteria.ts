@@ -1,5 +1,5 @@
 import { Address, type Hex, HexUInt32 } from '@vcdm';
-import { type EventCriteriaJSON } from '@thor';
+import { type EventCriteriaJSON } from '@thor/json';
 import { IllegalArgumentError } from '@errors';
 
 /**

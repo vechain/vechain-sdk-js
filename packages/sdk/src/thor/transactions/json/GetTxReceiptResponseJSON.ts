@@ -1,4 +1,4 @@
-import { type OutputJSON, type ReceiptMetaJSON } from '@thor/model';
+import { type OutputJSON, type ReceiptMetaJSON } from '@thor/json';
 
 /**
  * [GetTxReceiptResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/GetTxReceiptResponse)

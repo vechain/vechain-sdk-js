@@ -3,9 +3,9 @@ import { Address, VET, VTHO } from '@vcdm';
 import {
     RetrieveAccountDetails,
     RetrieveAccountDetailsPath,
-    type GetAccountResponseJSON,
     GetAccountResponse
 } from '@thor';
+import { type GetAccountResponseJSON } from '@thor/json';
 import {
     mockHttpClient,
     mockHttpClientWithError

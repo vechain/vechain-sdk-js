@@ -2,7 +2,7 @@ import type {
     FilterOptionsJSON,
     FilterRangeJSON,
     TransferCriteriaJSON
-} from '@thor';
+} from '@thor/json';
 
 interface TransferLogFilterRequestJSON {
     range?: FilterRangeJSON;

@@ -1,4 +1,4 @@
-import { type TxJSON } from '@thor';
+import { type TxJSON } from '@thor/json';
 
 /**
  * [Transactions](http://localhost:8669/doc/stoplight-ui/#/schemas/Transactions)

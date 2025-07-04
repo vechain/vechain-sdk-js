@@ -1,8 +1,8 @@
+import { EventLogResponse } from '@thor';
 import {
-    EventLogResponse,
     type EventLogResponseJSON,
     type EventLogsResponseJSON
-} from '@thor';
+} from '@thor/json';
 import { IllegalArgumentError } from '@errors';
 
 /**

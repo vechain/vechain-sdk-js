@@ -1,13 +1,9 @@
 import { expect, jest } from '@jest/globals';
 import { Revision } from '@vcdm';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
-import {
-    ExpandedBlockResponse,
-    type ExpandedBlockResponseJSON,
-    RetrieveExpandedBlock,
-    ThorError
-} from '@thor';
+import { ExpandedBlockResponse, RetrieveExpandedBlock, ThorError } from '@thor';
 import { type HttpClient } from '@http';
+import { type ExpandedBlockResponseJSON } from '@thor/json';
 
 class InvalidRevision extends Revision {
     constructor() {

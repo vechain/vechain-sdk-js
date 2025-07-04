@@ -2,9 +2,9 @@ import {
     FilterOptions,
     FilterRange,
     type LogSort,
-    TransferCriteria,
-    type TransferLogFilterRequestJSON
+    TransferCriteria
 } from '@thor/logs';
+import { type TransferLogFilterRequestJSON } from '@thor/json';
 import { IllegalArgumentError } from '@errors';
 
 /**

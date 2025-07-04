@@ -1,4 +1,4 @@
-import type { TxJSON, TxMetaJSON } from '@thor';
+import type { TxJSON, TxMetaJSON } from '@thor/json';
 
 /**
  * [GetTxResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/GetTxResponse)

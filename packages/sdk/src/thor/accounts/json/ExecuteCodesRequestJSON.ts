@@ -1,4 +1,4 @@
-import { type ClauseJSON } from '@thor';
+import { type ClauseJSON } from '@thor/json';
 
 /**
  * [ExecuteCodesRequest](http://localhost:8669/doc/stoplight-ui/#/schemas/ExecuteCodesRequest)
