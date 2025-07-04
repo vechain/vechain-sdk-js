@@ -3,7 +3,7 @@ import {
     type ThorSoloAccount
 } from '@vechain/sdk-solo-setup';
 
-const dispatcher = new AccountDispatcher();
+const dispatcher = AccountDispatcher.getInstance();
 const getUnusedAccount = (): ThorSoloAccount => dispatcher.getNextAccount();
 
 /**
