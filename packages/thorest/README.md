@@ -1,1 +1,0 @@
-# @vechain/sdk-thorest-api
