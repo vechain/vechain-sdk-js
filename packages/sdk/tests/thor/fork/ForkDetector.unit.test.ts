@@ -1,5 +1,5 @@
 import { describe, expect, jest, test, beforeEach } from '@jest/globals';
-import { ForkDetector } from '@thor/fork/forkDetector';
+import { ForkDetector } from '@thor/fork/methods/forkDetector';
 import { InvalidDataType } from '@vechain/sdk-errors';
 import {
     mockHttpClient,

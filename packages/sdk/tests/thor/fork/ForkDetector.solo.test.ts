@@ -1,5 +1,5 @@
 import { describe, expect, test, beforeEach } from '@jest/globals';
-import { ForkDetector } from '@thor/fork/forkDetector';
+import { ForkDetector } from '@thor/fork/methods/forkDetector';
 import { FetchHttpClient } from '@http';
 import { ThorNetworks } from '@thor';
 import { InvalidDataType } from '@vechain/sdk-errors';
