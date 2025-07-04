@@ -2,7 +2,7 @@ import { type ClauseJSON } from '../../json';
 import { Clause } from '@thor';
 import { Address, BlockRef, UInt } from '@vcdm';
 import { IllegalArgumentError } from '@errors';
-import { ExecuteCodesRequestJSON } from '../response/ExecuteCodesRequestJSON';
+import { ExecuteCodesRequestJSON } from '../json';
 /**
  * Full-Qualified Path
  */

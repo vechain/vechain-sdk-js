@@ -4,11 +4,11 @@ import { RetrieveTransactionPath } from '@thor/transactions/methods/RetrieveTran
 import { RetrieveTransactionQuery } from '@thor/transactions/methods/RetrieveTransactionQuery';
 import {
     GetTxResponse,
-    type GetTxResponseJSON,
     ThorError,
     type ThorRequest,
     type ThorResponse
 } from '@thor';
+import { type GetTxResponseJSON } from '@/json';
 import { IllegalArgumentError } from '@errors';
 
 /**

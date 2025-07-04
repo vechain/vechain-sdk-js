@@ -1,5 +1,5 @@
 import { Hex, Quantity } from '@vcdm';
-import { GetAccountResponseJSON } from './GetAccountResponseJSON';
+import { GetAccountResponseJSON } from '../json';
 import { IllegalArgumentError } from '@errors';
 
 /**

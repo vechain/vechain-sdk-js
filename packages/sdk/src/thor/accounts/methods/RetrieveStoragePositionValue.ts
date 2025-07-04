@@ -1,8 +1,8 @@
 import { type HttpClient, type HttpPath } from '@http';
 import { type Address, type BlockId } from '@vcdm';
-import { GetStorageResponse } from './GetStorageResponse';
+import { GetStorageResponse } from '../response';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
-import { type GetStorageResponseJSON } from './GetStorageResponseJSON';
+import { type GetStorageResponseJSON } from '@thor/json';
 
 /**
  * Full-Qualified Path

@@ -10,3 +10,4 @@ export * from '../transactions/json';
 export * from '../blocks/json';
 export * from '../debug/json';
 export * from '../node/json';
+export * from '../accounts/json';

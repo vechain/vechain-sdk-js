@@ -2,8 +2,8 @@ import { type HttpClient, type HttpPath, type HttpQuery } from '@http';
 import { ExecuteCodesResponse, ExecuteCodesRequest } from '@thor/accounts';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
 import { Revision } from '@vcdm';
-import { ExecuteCodesResponseJSON } from '../response/ExecuteCodesResponseJSON';
-import { ExecuteCodesRequestJSON } from '../response/ExecuteCodesRequestJSON';
+import { ExecuteCodesResponseJSON } from '../json';
+import { ExecuteCodesRequestJSON } from '../json';
 
 /**
  * Full-Qualified Path

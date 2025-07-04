@@ -1,10 +1,12 @@
 import { TxWithReceipt } from '@thor/transactions/model';
+
 import {
     type ExpandedBlockResponseJSON,
     type TxWithReceiptJSON,
     type BlockJSON
 } from '@/json';
 import { Block } from '@/types';
+
 import { IllegalArgumentError } from '@errors';
 
 /**

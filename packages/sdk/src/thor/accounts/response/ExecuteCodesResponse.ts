@@ -3,8 +3,8 @@ import { Transfer } from '@thor/model/Transfer';
 import { type EventJSON, type TransferJSON } from '@thor/json';
 import { Event } from '@thor/model';
 import { IllegalArgumentError } from '@errors';
-import { ExecuteCodeResponseJSON } from './ExecuteCodeResponseJSON';
-import { ExecuteCodesResponseJSON } from './ExecuteCodesResponseJSON';
+import { ExecuteCodeResponseJSON } from '../json';
+import { ExecuteCodesResponseJSON } from '../json';
 
 /**
  * Full-Qualified Path

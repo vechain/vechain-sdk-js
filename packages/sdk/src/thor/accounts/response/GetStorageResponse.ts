@@ -1,4 +1,4 @@
-import { GetStorageResponseJSON } from './GetStorageResponseJSON';
+import { GetStorageResponseJSON } from '../json';
 import { ThorId } from '@vcdm';
 import { IllegalArgumentError } from '@errors';
 

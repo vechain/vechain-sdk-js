@@ -3,7 +3,7 @@ import { InspectClauses, ThorNetworks } from '@thor';
 import { FetchHttpClient } from '@http';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
-import { ExecuteCodesRequestJSON } from '@thor/accounts/ExecuteCodesRequestJSON';
+import { ExecuteCodesRequestJSON } from '@/json';
 
 /**
  * VeChain inspect clauses - solo

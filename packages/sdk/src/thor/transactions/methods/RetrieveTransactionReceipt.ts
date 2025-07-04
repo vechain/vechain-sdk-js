@@ -2,11 +2,11 @@ import { type Hex, HexUInt32 } from '@vcdm';
 import { type HttpClient, type HttpPath, type HttpQuery } from '@http';
 import {
     GetTxReceiptResponse,
-    type GetTxReceiptResponseJSON,
     ThorError,
     type ThorRequest,
     type ThorResponse
 } from '@thor';
+import { type GetTxReceiptResponseJSON } from '@/json';
 import { IllegalArgumentError } from '@errors';
 
 /**

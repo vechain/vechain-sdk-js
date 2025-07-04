@@ -1,5 +1,5 @@
 import { Hex, HexUInt } from '@vcdm';
-import { type ContractBytecodeJSON } from './ContractBytecodeJSON';
+import { type ContractBytecodeJSON } from '../json';
 import { IllegalArgumentError } from '@errors';
 /**
  * Full-Qualified Path

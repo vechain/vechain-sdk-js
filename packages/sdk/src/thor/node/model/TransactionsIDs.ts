@@ -1,5 +1,6 @@
-import { type Hex, HexUInt32, IllegalArgumentError } from '@vcdm';
-import { type TransactionsIDsJSON } from '@thor';
+import { type Hex, HexUInt32 } from '@vcdm';
+import { type TransactionsIDsJSON } from '@/json';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified-Path
