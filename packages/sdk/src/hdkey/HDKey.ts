@@ -3,7 +3,7 @@ import * as s_bip32 from '@scure/bip32';
 import * as s_bip39 from '@scure/bip39';
 import { IllegalArgumentError } from '@errors';
 import { Secp256k1 } from '@secp256k1';
-import { Sha256, FixedPointNumber } from '@vcdm';
+import { Sha256 } from '@vcdm';
 import { base58 } from '@scure/base';
 
 /**
@@ -53,8 +53,9 @@ class HDKey extends s_bip32.HDKey {
      * [BIP39 Mnemonic Words](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
      * and the given derivation path.
      *
-     * @param {string[]} words - An array of words representing the mnemonic.
+     * @param {string[]} words - An array of 12-24 words representing the mnemonic.
      * @param {string} path - The derivation path to derive the child node.
+     * @param {string} passphrase – That will additionally protect the key.
      * Default value is {@link VET_DERIVATION_PATH}.
      *
      * @return The derived child hierarchical deterministic key.
@@ -68,12 +69,16 @@ class HDKey extends s_bip32.HDKey {
      */
     public static fromMnemonic(
         words: string[],
-        path: string = this.VET_DERIVATION_PATH
+        path: string = this.VET_DERIVATION_PATH,
+        passphrase?: string
     ): HDKey {
         let master: s_bip32.HDKey;
         try {
             master = s_bip32.HDKey.fromMasterSeed(
-                s_bip39.mnemonicToSeedSync(words.join(' ').toLowerCase())
+                s_bip39.mnemonicToSeedSync(
+                    words.join(' ').toLowerCase(),
+                    passphrase
+                )
             );
         } catch (error) {
             // The error masks any mnemonic words leak.
@@ -101,8 +106,8 @@ class HDKey extends s_bip32.HDKey {
      * [BIP32 Hierarchical Deterministic Key](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki)
      * from a private key and chain code.
      *
-     * @param {privateKey} The private key.
-     * @param {chainCode} The chain code.
+     * @param {Uint8Array} privateKey The private key.
+     * @param {Uint8Array} chainCode The chain code.
      *
      * @returns Returns the hierarchical deterministic key from `privateKey` and `chainCode`.
      *
@@ -201,31 +206,6 @@ class HDKey extends s_bip32.HDKey {
             `${FQP}HDNode.fromPublicKey(publicKey: Uint8Array, chainCode: Uint8Array): HDKey)`,
             'Invalid chain code given as input. Length must be exactly 32 bytes.',
             { chainCode }
-        );
-    }
-
-    /**
-     * Checks if derivation path single component is valid
-     *
-     * @param component - Derivation path single component to check
-     * @param index - Derivation path single component index
-     *
-     * @returns `true`` if derivation path single component is valid, otherwise `false`.
-     *
-     */
-    private static isDerivationPathComponentValid(
-        component: string,
-        index: number
-    ): boolean {
-        // Zero component can be "m" or "number" or "number'", other components can be only "number" or "number'"
-        return (
-            // m
-            (index === 0 ? component === 'm' : false) ||
-            // "number"
-            FixedPointNumber.isNaturalExpression(component) ||
-            // "number'"
-            (FixedPointNumber.isNaturalExpression(component.slice(0, -1)) &&
-                component.endsWith("'"))
         );
     }
 
