@@ -235,40 +235,36 @@ class Certificate implements CertificateData {
         }
     }
 
+    /**
+     * Signs the current object using a given private key.
+     *
+     * The {@link signature} is computed encoding this object according
+     * the following normalization rules:
+     * - the {@link signature} property is ignored, because its value
+     *   is the result of this method.
+     * - the properties are sorted in ascending alphabetic order;
+     * - the key/value properties are delimited with `"` when serialized as JSON
+     *   before to be encoded as bytes;
+     * - any not meaningful blank characters are ignored;
+     * - the JSON representation of this object is byte encoded using the UTF-8
+     *   [normalization form for canonical composition](https://en.wikipedia.org/wiki/Unicode_equivalence#Normal_forms).
+     *
+     * @param {Uint8Array} privateKey - The private key used for signing.
+     * @return {this} The current instance after signing.
+     *
+     * @throws {InvalidPrivateKeyError} - If the private key is not a valid 32-byte private key.
+     * @throws {UnsupportedOperationError} - If a hash error occurs.
+     *
+     * @remarks Security audited method, depends on
+     * * {@link Blake2b256.of};
+     * * {@link Secp256k1.sign}.
+     *
+     * @see encode
+     * @see verify
+     */
     public sign(privateKey: Uint8Array): this {
-        /**
-         * Signs the current object using a given private key.
-         *
-         * The {@link signature} is computed encoding this object according
-         * the following normalization rules:
-         * - the {@link signature} property is ignored, because its value
-         *   is the result of this method.
-         * - the properties are sorted in ascending alphabetic order;
-         * - the key/value properties are delimited with `"` when serialized as JSON
-         *   before to be encoded as bytes;
-         * - any not meaningful blank characters are ignored;
-         * - the JSON representation of this object is byte encoded using the UTF-8
-         *   [normalization form for canonical composition](https://en.wikipedia.org/wiki/Unicode_equivalence#Normal_forms).
-         *
-         * @param {Uint8Array} privateKey - The private key used for signing.
-         * @return {this} The current instance after signing.
-         *
-         * @throws {InvalidPrivateKeyError} - If the private key is not a valid 32-byte private key.
-         * @throws {UnsupportedOperationError} - If a hash error occurs.
-         *
-         * @remarks Security auditable method, depends on
-         * * {@link Blake2b256.of};
-         * * {@link Secp256k1.sign}.
-         *
-         * @see encode
-         * @see verify
-         */
-        this.signature = undefined;
         this.signature = HexUInt.of(
-            Secp256k1.sign(
-                Blake2b256.of(Certificate.encode(this)).bytes,
-                privateKey
-            )
+            Secp256k1.sign(Blake2b256.of(this.encode()).bytes, privateKey)
         ).toString();
         return this;
     }
@@ -284,7 +280,7 @@ class Certificate implements CertificateData {
      * This method supports {@link signer}
      * [mixed-case checksum address encoding](https://eips.ethereum.org/EIPS/eip-55).
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      * * {@link Blake2b256.of};
      * * {@link Secp256k1.recover}.
      */
@@ -297,9 +293,7 @@ class Certificate implements CertificateData {
             );
         const signer = Address.ofPublicKey(
             Secp256k1.recover(
-                Blake2b256.of(
-                    Certificate.encode({ ...this, signature: undefined })
-                ).bytes,
+                Blake2b256.of(this.encode()).bytes,
                 HexUInt.of(this.signature as string).bytes
             )
         );
