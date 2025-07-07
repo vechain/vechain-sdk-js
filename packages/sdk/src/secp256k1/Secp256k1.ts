@@ -1,6 +1,7 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
 import { HexUInt } from '@vcdm';
 import {
+    IllegalArgumentError,
     InvalidMessageHashError,
     InvalidPrivateKeyError,
     InvalidSignatureError
@@ -28,6 +29,11 @@ class Secp256k1 {
     private static readonly COMPRESSED_PREFIX = 2;
 
     /**
+     * The length, in bytes, of a compressed public key.
+     */
+    private static readonly COMPRESSED_PUBLIC_KEY_LENGTH = 33;
+
+    /**
      * Represents the fixed length of the cryptographic signature.
      * The value is set to 65, which is the size in bytes
      * required for a 520-bit signature.
@@ -37,9 +43,14 @@ class Secp256k1 {
     public static readonly SIGNATURE_LENGTH = 65;
 
     /**
-     * This value is used to identify uncompressed public key.
+     * This value is used to identify an uncompressed public key.
      */
-    private static readonly UNCOMPRESS_PREFIX = 4;
+    private static readonly UNCOMPRESSED_PREFIX = 4;
+
+    /**
+     * Represents the length of an uncompressed public key in bytes.
+     */
+    private static readonly UNCOMPRESSED_PUBLIC_KEY_LENGTH = 65;
 
     /**
      * Defines the required length for a valid hash.
@@ -56,7 +67,7 @@ class Secp256k1 {
      */
     public static compressPublicKey(publicKey: Uint8Array): Uint8Array {
         const prefix = publicKey.at(0);
-        if (prefix === Secp256k1.UNCOMPRESS_PREFIX) {
+        if (prefix === Secp256k1.UNCOMPRESSED_PREFIX) {
             // To compress.
             const x = publicKey.slice(1, 33);
             const y = publicKey.slice(33, 65);
@@ -142,6 +153,7 @@ class Secp256k1 {
      *
      * @param {Uint8Array} publicKey - The compressed public key to be inflated.
      * @return {Uint8Array} - The uncompressed public key.
+     * @throws {IllegalArgumentError} - If the `publicKey` is invalid.
      *
      * @remarks Security auditable method, depends on
      * * [nc_secp256k1.ProjectivePoint.fromAffine](https://github.com/paulmillr/noble-secp256k1);
@@ -152,19 +164,27 @@ class Secp256k1 {
      */
     public static inflatePublicKey(publicKey: Uint8Array): Uint8Array {
         const prefix = publicKey.at(0);
-        if (prefix !== Secp256k1.UNCOMPRESS_PREFIX) {
+        if (
+            prefix !== Secp256k1.UNCOMPRESSED_PREFIX &&
+            publicKey.length === Secp256k1.COMPRESSED_PUBLIC_KEY_LENGTH
+        ) {
             // To inflate.
             const x = publicKey.slice(0, 33);
-            const p = nc_secp256k1.ProjectivePoint.fromAffine(
-                nc_secp256k1.ProjectivePoint.fromHex(
-                    HexUInt.of(x).digits
-                ).toAffine()
+            const p = nc_secp256k1.Point.fromAffine(
+                nc_secp256k1.Point.fromHex(HexUInt.of(x).digits).toAffine()
             );
-            return p.toRawBytes(false);
-        } else {
+            return p.toBytes(false);
+        } else if (
+            publicKey.length === Secp256k1.UNCOMPRESSED_PUBLIC_KEY_LENGTH
+        ) {
             // Inflated.
             return publicKey;
         }
+        throw new IllegalArgumentError(
+            `${FQP}Secp256k1.inflatePublicKey(publicKey: Uint8Array): Uint8Array`,
+            'Invalid public key length.',
+            { publicKey }
+        );
     }
 
     /**

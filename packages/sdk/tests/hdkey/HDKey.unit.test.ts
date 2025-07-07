@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { Address, Mnemonic, type WordlistSizeType } from '@vcdm';
+import { Address, HexUInt, Mnemonic, type WordlistSizeType } from '@vcdm';
 
 import { IllegalArgumentError } from '@errors';
 import { Secp256k1 } from '@secp256k1';
@@ -70,7 +70,7 @@ const HDKeyFixture = {
  */
 describe('HDKey class tests', () => {
     describe('fromMnemonic method tests', () => {
-        test('fromMnemonic - invalid - path', () => {
+        test('err <- invalid path', () => {
             expect(() =>
                 HDKey.fromMnemonic(
                     HDKeyFixture.words,
@@ -79,13 +79,13 @@ describe('HDKey class tests', () => {
             ).toThrowError(IllegalArgumentError);
         });
 
-        test('fromMnemonic - invalid - word list', () => {
+        test('err <-  invalid word list', () => {
             expect(() =>
                 HDKey.fromMnemonic(HDKeyFixture.wrongWords)
             ).toThrowError(IllegalArgumentError);
         });
 
-        test('fromMnemonic - invalid - word list leak check', () => {
+        test('err <- invalid word list leak check', () => {
             const words =
                 'denial pet squirrel other broom bar gas better priority spoil cross'.split(
                     ' '
@@ -103,7 +103,7 @@ describe('HDKey class tests', () => {
             }
         });
 
-        test('fromMnemonic - valid - address sequence', () => {
+        test('ok <- valid address sequence', () => {
             const root = HDKey.fromMnemonic(HDKeyFixture.words);
             for (let i = 0; i < 5; i++) {
                 const child = root.deriveChild(i);
@@ -117,7 +117,7 @@ describe('HDKey class tests', () => {
             }
         });
 
-        test('fromMnemonic - valid - public key sequence', () => {
+        test('ok <- valid public key sequence', () => {
             const root = HDKey.fromMnemonic(HDKeyFixture.words);
             for (let i = 0; i < 5; i++) {
                 const child = root.deriveChild(i);
@@ -128,7 +128,7 @@ describe('HDKey class tests', () => {
             }
         });
 
-        test('fromMnemonic - valid - word list - case insensitive', () => {
+        test('ok <- valid word list - case insensitive', () => {
             const reference = HDKey.fromMnemonic(HDKeyFixture.words);
             expect(reference.publicKey).toBeDefined();
             const lowercase = HDKey.fromMnemonic(
@@ -159,7 +159,7 @@ describe('HDKey class tests', () => {
             );
         });
 
-        test('fromMnemonic - valid - word list - multiple lengths', () => {
+        test('ok <- valid word list - multiple lengths', () => {
             new Array<WordlistSizeType>(12, 15, 18, 21, 24).forEach(
                 (length: WordlistSizeType) => {
                     const hdKey = HDKey.fromMnemonic(Mnemonic.of(length));
@@ -178,22 +178,48 @@ describe('HDKey class tests', () => {
                 }
             );
         });
+
+        test('ok <- valid word list and passphrase', () => {
+            // Fixtures from https://github.com/paulmillr/scure-bip39/blob/main/test/bip39.test.ts
+            const words =
+                'koala óxido urbe crudo momia idioma boina rostro títere dilema himno víspera'.split(
+                    ' '
+                );
+            const passphrase = 'passphrase';
+            const expected = HexUInt.of(
+                '0x02e1c6f0a9aa09a9dc68e5f1fcb6b6d8880aca752b7ed94332207c7438855163bd'
+            ).bytes;
+            const hdkey = HDKey.fromMnemonic(
+                words,
+                HDKey.VET_DERIVATION_PATH,
+                passphrase
+            );
+            expect(hdkey.privateKey).toBeInstanceOf(Uint8Array);
+            expect(
+                Secp256k1.isValidPrivateKey(hdkey.privateKey as Uint8Array)
+            ).toBe(true);
+            expect(hdkey.publicKey).toBeInstanceOf(Uint8Array);
+            expect(hdkey.publicKey).toEqual(expected);
+            expect(hdkey.publicKey).not.toEqual(
+                HDKey.fromMnemonic(words, HDKey.VET_DERIVATION_PATH).publicKey
+            );
+        });
     });
 
     describe('fromPrivateKey method tests', () => {
-        test('fromPrivateKey - invalid - chain code', () => {
+        test('err <- invalid chain code', () => {
             expect(() =>
                 HDKey.fromPrivateKey(ZERO_BYTES(32), ZERO_BYTES(31))
             ).toThrowError(IllegalArgumentError);
         });
 
-        test('fromPrivateKey - invalid - private key', () => {
+        test('err <- invalid private key', () => {
             expect(() =>
                 HDKey.fromPrivateKey(ZERO_BYTES(31), ZERO_BYTES(32))
             ).toThrowError(IllegalArgumentError);
         });
 
-        test('fromPrivateKey - valid - address sequence', () => {
+        test('ok <- valid address sequence', () => {
             const root = HDKey.fromMnemonic(HDKeyFixture.words);
             expect(root.privateKey).toBeDefined();
             expect(root.chainCode).toBeDefined();
@@ -211,7 +237,7 @@ describe('HDKey class tests', () => {
             }
         });
 
-        test('fromPrivateKey - valid - public key sequence', () => {
+        test('ok <- valid public key sequence', () => {
             const root = HDKey.fromMnemonic(HDKeyFixture.words);
             expect(root.privateKey).toBeDefined();
             expect(root.chainCode).toBeDefined();
@@ -230,19 +256,19 @@ describe('HDKey class tests', () => {
     });
 
     describe('fromPublicKey', () => {
-        test('fromPublicKey - invalid - chain code', () => {
+        test('err <- invalid chain code', () => {
             expect(() =>
                 HDKey.fromPublicKey(ZERO_BYTES(32), ZERO_BYTES(31))
             ).toThrowError(IllegalArgumentError);
         });
 
-        test('fromPublicKey - invalid - public key', () => {
+        test('err <- invalid public key', () => {
             expect(() =>
                 HDKey.fromPublicKey(ZERO_BYTES(31), ZERO_BYTES(32))
             ).toThrowError(IllegalArgumentError);
         });
 
-        test(`fromPublicKey - valid - address sequence, no private key`, () => {
+        test(`ok <- valid address sequence, no private key`, () => {
             const root = HDKey.fromMnemonic(HDKeyFixture.words);
             expect(root.publicKey).toBeDefined();
             expect(root.chainCode).toBeDefined();
@@ -264,13 +290,13 @@ describe('HDKey class tests', () => {
     });
 
     describe('isDerivationPathValid method tests', () => {
-        test('isDerivationPathValid -> false', () => {
+        test('false <- isDerivationPathValid', () => {
             HDKeyFixture.incorrectValidationPaths.forEach((path) => {
                 expect(HDKey.isDerivationPathValid(path)).toEqual(false);
             });
         });
 
-        test('isDerivationPath -> true', () => {
+        test('true <- isDerivationPath', () => {
             HDKeyFixture.correctValidationPaths.forEach((path) => {
                 expect(HDKey.isDerivationPathValid(path)).toEqual(true);
             });
