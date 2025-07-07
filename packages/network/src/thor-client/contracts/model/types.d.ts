@@ -64,11 +64,11 @@ type ContractEventSync<T = unknown, TABIEvent> = (
  */
 type ContractFunctionAsync<T, TABIFunction extends AbiFunction> = (
     ...args: [
-        ...AbiParametersToPrimitiveTypes<TABIFunction['inputs'], 'inputs'>,
         ...(
             | [Partial<{ value: number; revision: string; comment: string }>]
             | []
-        )
+        ),
+        ...AbiParametersToPrimitiveTypes<TABIFunction['inputs'], 'inputs'>
     ]
 ) => Promise<T>;
 
