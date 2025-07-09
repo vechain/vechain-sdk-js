@@ -260,6 +260,37 @@ class Clause implements TransactionClause {
     }
 
     /**
+     * Return a new clause to transfers VTHO to a specified recipient address.
+     *
+     * @param {Address} recipientAddress - The address of the recipient.
+     * @param {VTHO} amount - The amount of VTHO to transfer.
+     * @param {ClauseOptions} [clauseOptions] - Optional clause settings.
+     * @return {Clause} - The clause object to transfer VTHO as part of a transaction.
+     * @throws {IllegalArgumentError} - If the amount is not a finite positive value.
+     *
+     * @see VTHO.transferTo
+     */
+    public static transferVTHOToken(
+        recipientAddress: Address,
+        amount: VTHO,
+        clauseOptions?: ClauseOptions
+    ): Clause {
+        if (amount.value.isFinite() && amount.value.isPositive()) {
+            return new Clause(
+                recipientAddress.toString().toLowerCase(),
+                Hex.PREFIX + amount.wei.toString(Hex.RADIX),
+                Clause.NO_DATA,
+                clauseOptions?.comment
+            );
+        }
+        throw new IllegalArgumentError(
+            `${FQP}Clause.transferVTHOToken(recipientAddress: Address, amount: VTHO): Clause`,
+            'not finite positive amount',
+            { amount: `${amount.value}` }
+        );
+    }
+
+    /**
      * Return a new clause to transfers VET to a specified recipient address.
      *
      * @param {Address} recipientAddress - The address of the recipient.
