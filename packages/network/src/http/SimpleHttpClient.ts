@@ -108,7 +108,10 @@ class SimpleHttpClient implements HttpClient {
             baseURL += '/';
         }
 
-        const url = new URL(path, baseURL);
+        // Check if path is already a fully qualified URL
+        const url = path.match(/^https?:\/\//)
+            ? new URL(path)
+            : new URL(path, baseURL);
         if (params?.query != null) {
             Object.entries(params.query).forEach(([key, value]) => {
                 url.searchParams.append(key, String(value));
