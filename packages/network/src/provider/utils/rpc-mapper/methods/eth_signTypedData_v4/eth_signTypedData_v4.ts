@@ -70,12 +70,29 @@ const ethSignTypedDataV4 = async (
     // Parse typedData if it's a string
     if (typeof params[1] === 'string') {
         try {
-            typedData = JSON.parse(params[1]) as {
+            const parsed = JSON.parse(params[1]) as {
                 primaryType: string;
                 domain: TypedDataDomain;
                 types: Record<string, TypedDataParameter[]>;
                 message: Record<string, unknown>;
             };
+            const isObject =
+                typeof parsed === 'object' &&
+                parsed !== null &&
+                !Array.isArray(parsed);
+            const hasFields =
+                'primaryType' in parsed &&
+                'domain' in parsed &&
+                'types' in parsed &&
+                'message' in parsed;
+            if (!isObject || !hasFields) {
+                throw new JSONRPCInvalidParams(
+                    'eth_signTypedDataV4',
+                    'Invalid typedData structure',
+                    { params }
+                );
+            }
+            typedData = parsed;
         } catch (error) {
             throw new JSONRPCInvalidParams(
                 'eth_signTypedData_v4',
@@ -86,6 +103,14 @@ const ethSignTypedDataV4 = async (
         }
     } else {
         typedData = params[1] as typeof typedData;
+    }
+    // check domain is an object
+    if (typeof typedData.domain !== 'object' || typedData.domain === null) {
+        throw new JSONRPCInvalidParams(
+            'eth_signTypedDataV4',
+            'Invalid typedData structure',
+            { params }
+        );
     }
 
     try {

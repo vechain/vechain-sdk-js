@@ -65,7 +65,7 @@ class BlocksModule {
             .onData((data) => {
                 this.headBlock = data;
             })
-            .onError(this.onBlockError ?? (() => {}));
+            .onError(this.onBlockError ?? ((): void => {}));
 
         this.pollInstance.startListen();
     }

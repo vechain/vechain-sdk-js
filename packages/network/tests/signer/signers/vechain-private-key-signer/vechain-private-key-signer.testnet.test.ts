@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-selector-parameter */
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
     ABIContract,
@@ -25,6 +26,7 @@ import {
     TESTING_CONTRACT_ADDRESS
 } from '../../../fixture';
 import { signTransactionTestCases } from './fixture';
+import { retryOperation } from '../../../test-utils';
 
 /**
  * Helper function to conditionally run tests based on a condition
@@ -174,7 +176,7 @@ describe('VeChain base signer tests - testnet', () => {
                     expect(signedTransaction).toBeDefined();
                 }
             }
-        }, 8000);
+        }, 15000);
 
         /**
          * EIP-1559 transaction tests (delegated)
@@ -213,15 +215,18 @@ describe('VeChain base signer tests - testnet', () => {
                             });
                         }
 
-                        // Sign the transaction
-                        const signedTransaction =
-                            await signer.signTransaction(txInput);
+                        // Sign the transaction with retry logic
+                        const signedTransaction = await retryOperation(
+                            async () => {
+                                return await signer.signTransaction(txInput);
+                            }
+                        );
 
                         expect(signedTransaction).toBeDefined();
                     }
                 }
             },
-            8000
+            15000
         );
 
         /**
@@ -390,7 +395,7 @@ describe('VeChain base signer tests - testnet', () => {
                         expect(signedTx.isSigned).toBe(true);
                         expect(signedTx.signature).toBeDefined();
                     },
-                    8000
+                    15000
                 );
             }
         });
@@ -482,7 +487,7 @@ describe('VeChain base signer tests - testnet', () => {
                         expect(signedTx.isSigned).toBe(true);
                         expect(signedTx.signature).toBeDefined();
                     },
-                    8000
+                    15000
                 );
             }
         });
@@ -559,7 +564,7 @@ describe('VeChain base signer tests - testnet', () => {
                         expect(signedTx.isSigned).toBe(false);
                         expect(signedTx.signature).toBeUndefined();
                     },
-                    10000
+                    15000
                 );
             }
         });

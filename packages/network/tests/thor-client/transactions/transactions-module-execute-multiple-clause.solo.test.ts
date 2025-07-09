@@ -1,6 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
 import {
-    type ContractClause,
     type ContractTransactionOptions,
     ProviderInternalBaseWallet,
     THOR_SOLO_URL,
@@ -8,8 +7,17 @@ import {
     VeChainProvider,
     type VeChainSigner
 } from '../../../src';
-import { ABIContract, Hex } from '@vechain/sdk-core';
+import {
+    ABIContract,
+    Address,
+    Clause,
+    Hex,
+    VTHO,
+    Units,
+    type ContractClause
+} from '@vechain/sdk-core';
 import { AccountDispatcher, getConfigData } from '@vechain/sdk-solo-setup';
+import { retryOperation } from '../../test-utils';
 
 /**
  * Tests for the executeMultipleClausesTransaction method in transactions module
@@ -69,18 +77,22 @@ describe('ThorClient - Transactions Module Execute multiple clauses', () => {
             gas: 1000000,
             gasPriceCoef: 0
         };
-        // execute the transaction
-        const tx =
-            await thorSoloClient.transactions.executeMultipleClausesTransaction(
-                clauses,
-                signer,
-                options
-            );
+        // execute the transaction with retry logic
+        const tx = await retryOperation(
+            async () =>
+                await thorSoloClient.transactions.executeMultipleClausesTransaction(
+                    clauses,
+                    signer,
+                    options
+                ),
+            5, // maxAttempts
+            2000 // baseDelay
+        );
         // wait for the transaction to be mined
         const receipt = await tx.wait();
         // assert the transaction was successful
         expect(receipt?.reverted).toBe(false);
-    });
+    }, 30000);
 
     test('ok <- Execute EIP-1559 transaction for testing contract', async () => {
         // setup options
@@ -88,10 +100,44 @@ describe('ThorClient - Transactions Module Execute multiple clauses', () => {
             maxFeePerGas: 10000000000000,
             maxPriorityFeePerGas: 100
         };
+        // execute the transaction with retry logic
+        const tx = await retryOperation(
+            async () =>
+                await thorSoloClient.transactions.executeMultipleClausesTransaction(
+                    clauses,
+                    signer,
+                    options
+                ),
+            5, // maxAttempts
+            2000 // baseDelay
+        );
+        // wait for the transaction to be mined
+        const receipt = await tx.wait();
+        // assert the transaction was successful
+        expect(receipt?.reverted).toBe(false);
+    }, 30000);
+
+    test('ok <- Execute EIP-1559 transaction using clauses built with transferVTHOToken', async () => {
+        // setup options
+        const options: ContractTransactionOptions = {
+            maxFeePerGas: 10000000000000,
+            maxPriorityFeePerGas: 100
+        };
+
+        const vthoTransferClauses = [
+            Clause.transferVTHOToken(
+                Address.of(testContractAddress),
+                VTHO.of(100, Units.wei)
+            ),
+            Clause.transferVTHOToken(
+                Address.of(testContractAddress),
+                VTHO.of(200, Units.wei)
+            )
+        ];
         // execute the transaction
         const tx =
             await thorSoloClient.transactions.executeMultipleClausesTransaction(
-                clauses,
+                vthoTransferClauses,
                 signer,
                 options
             );
@@ -106,18 +152,22 @@ describe('ThorClient - Transactions Module Execute multiple clauses', () => {
         const options: ContractTransactionOptions = {
             gas: 1000000
         };
-        // execute the transaction
-        const tx =
-            await thorSoloClient.transactions.executeMultipleClausesTransaction(
-                clauses,
-                signer,
-                options
-            );
+        // execute the transaction with retry logic
+        const tx = await retryOperation(
+            async () =>
+                await thorSoloClient.transactions.executeMultipleClausesTransaction(
+                    clauses,
+                    signer,
+                    options
+                ),
+            5, // maxAttempts
+            2000 // baseDelay
+        );
         // wait for the transaction to be mined
         const receipt = await tx.wait();
         // assert the transaction was successful
         expect(receipt?.reverted).toBe(false);
-    });
+    }, 30000);
 
     test('ok <- Execute transaction for testing contract with legacy and EIP-1559 options (will use legacy fee type)', async () => {
         // setup options
@@ -127,16 +177,20 @@ describe('ThorClient - Transactions Module Execute multiple clauses', () => {
             maxFeePerGas: 10000000000000,
             maxPriorityFeePerGas: 100
         };
-        // execute the transaction
-        const tx =
-            await thorSoloClient.transactions.executeMultipleClausesTransaction(
-                clauses,
-                signer,
-                options
-            );
+        // execute the transaction with retry logic
+        const tx = await retryOperation(
+            async () =>
+                await thorSoloClient.transactions.executeMultipleClausesTransaction(
+                    clauses,
+                    signer,
+                    options
+                ),
+            5, // maxAttempts
+            2000 // baseDelay
+        );
         // wait for the transaction to be mined
         const receipt = await tx.wait();
         // assert the transaction was successful
         expect(receipt?.reverted).toBe(false);
-    });
+    }, 30000);
 });

@@ -4,6 +4,7 @@ import {
     type ABIFunction,
     Address,
     Clause,
+    type ContractClause,
     dataUtils,
     Hex,
     HexUInt,
@@ -33,7 +34,6 @@ import { type BlocksModule, type ExpandedBlockDetail } from '../blocks';
 import type {
     ContractCallOptions,
     ContractCallResult,
-    ContractClause,
     ContractTransactionOptions
 } from '../contracts';
 import { type CallNameReturnType, type DebugModule } from '../debug';

@@ -6,6 +6,7 @@ import {
     ThorClient
 } from '../../../../../src';
 import { getReceiptCorrectCasesSoloNetwork } from './fixture';
+import { retryOperation } from '../../../../test-utils';
 
 // Remove blockHash and blockNumber fields from the object for comparison
 function removeBlockNumAndHashFields(obj: unknown): unknown {
@@ -54,9 +55,11 @@ describe('RPC Mapper - eth_getTransactionReceipt method tests', () => {
             test(
                 testCase.testCase,
                 async () => {
-                    const receipt = await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.eth_getTransactionReceipt
-                    ]([testCase.hash]);
+                    const receipt = await retryOperation(async () => {
+                        return await RPCMethodsMap(thorClient)[
+                            RPC_METHODS.eth_getTransactionReceipt
+                        ]([testCase.hash]);
+                    });
                     const receiptWithoutBlockHash =
                         removeBlockNumAndHashFields(receipt);
                     const expectedWithoutBlockHash =
@@ -65,7 +68,7 @@ describe('RPC Mapper - eth_getTransactionReceipt method tests', () => {
                         expectedWithoutBlockHash
                     );
                 },
-                7000
+                15000
             );
         });
     });

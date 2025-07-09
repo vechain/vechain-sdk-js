@@ -9,15 +9,15 @@ const delegationHandlerFixture = [
         testName:
             'Should be able to use DelegationHandler with not empty gasPayer - gasPayerServiceUrl',
         gasPayer: {
-            gasPayerServiceUrl: 'http://localhost:8669'
+            gasPayerServiceUrl: 'http://127.0.0.1:8669'
         } satisfies SignTransactionOptions,
         expected: {
             isDelegated: true,
             gasPayerOrUndefined: {
-                gasPayerServiceUrl: 'http://localhost:8669'
+                gasPayerServiceUrl: 'http://127.0.0.1:8669'
             } satisfies SignTransactionOptions,
             gasPayerOrNull: {
-                gasPayerServiceUrl: 'http://localhost:8669'
+                gasPayerServiceUrl: 'http://127.0.0.1:8669'
             } satisfies SignTransactionOptions
         }
     },

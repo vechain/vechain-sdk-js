@@ -83,11 +83,11 @@ export const seedVTHO = async (accounts: TestAccount[]): Promise<string> => {
         const privateKey = HexUInt.of(genesisDeployerAccount.privateKey).bytes;
         const clauses: TransactionClause[] = [];
         for (const account of accounts) {
-            const clause = Clause.transferVTHOToken(
+            const contractClause = Clause.transferVTHOToken(
                 Address.of(account.address),
                 VTHO.of(THOR_SOLO_SEEDED_VTHO_AMOUNT)
             );
-            clauses.push(clause);
+            clauses.push(contractClause.clause);
         }
         const txBody: TransactionBody = {
             chainTag: THOR_SOLO_CHAIN_TAG,
@@ -137,11 +137,11 @@ export const seedTestToken = async (
         const privateKey = HexUInt.of(genesisDeployerAccount.privateKey).bytes;
         const clauses: TransactionClause[] = [];
         for (const account of accounts) {
-            const clause = Clause.transferVTHOToken(
+            const contractClause = Clause.transferVTHOToken(
                 Address.of(account.address),
                 VTHO.of(THOR_SOLO_SEEDED_TEST_TOKEN_AMOUNT)
             );
-            clauses.push(clause);
+            clauses.push(contractClause.clause);
         }
         const txBody: TransactionBody = {
             chainTag: THOR_SOLO_CHAIN_TAG,

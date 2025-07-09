@@ -8,3 +8,4 @@ module.exports = {
     reporters: ['default', 'jest-junit'],
     workerThreads: true
 };
+

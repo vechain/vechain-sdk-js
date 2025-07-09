@@ -25,7 +25,7 @@ const vechainTestNetwork: HttpNetworkConfig = {
         path: HDKey.VET_DERIVATION_PATH,
         count: 3,
         initialIndex: 0,
-        passphrase: 'VeChainThor'
+        passphrase: 'VeChainThor' // eslint-disable-line sonarjs/no-hardcoded-passwords
     },
 
     // Custom parameters

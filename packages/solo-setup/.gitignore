@@ -15,3 +15,7 @@ node_modules
 
 # config files
 config.json
+
+# Docker logs and data
+/logs
+/data
