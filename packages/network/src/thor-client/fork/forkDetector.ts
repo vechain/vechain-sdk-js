@@ -37,9 +37,7 @@ class ForkDetector {
             return true;
         }
 
-        if (revision === undefined) {
-            revision = 'best';
-        }
+        revision ??= 'best';
         if (!Revision.isValid(revision)) {
             throw new InvalidDataType(
                 'GalacticaForkDetector.isGalacticaForked()',

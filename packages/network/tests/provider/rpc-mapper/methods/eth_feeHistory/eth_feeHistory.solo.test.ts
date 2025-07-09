@@ -6,6 +6,7 @@ import {
     ThorClient
 } from '../../../../../src';
 import { type FeeHistoryResponse } from '../../../../../src/thor-client/gas/types';
+import { retryOperation } from '../../../../test-utils';
 
 /**
  * RPC Mapper integration tests for 'eth_feeHistory' method on Solo network
@@ -31,9 +32,11 @@ describe('RPC Mapper - eth_feeHistory method tests solo', () => {
      */
     describe('eth_feeHistory - Positive cases', () => {
         test('Should return fee history with the correct structure', async () => {
-            const result = (await RPCMethodsMap(thorClient)[
-                RPC_METHODS.eth_feeHistory
-            ]([4, 'latest', [25, 75]])) as FeeHistoryResponse;
+            const result = await retryOperation(async () => {
+                return (await RPCMethodsMap(thorClient)[
+                    RPC_METHODS.eth_feeHistory
+                ]([4, 'latest', [25, 75]])) as FeeHistoryResponse;
+            });
 
             // Verify result is an object with expected properties
             expect(typeof result).toBe('object');

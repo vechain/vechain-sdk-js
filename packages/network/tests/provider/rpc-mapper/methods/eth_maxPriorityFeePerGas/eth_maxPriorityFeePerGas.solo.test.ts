@@ -26,13 +26,55 @@ describe('RPC Mapper - eth_maxPriorityFeePerGas method tests solo', () => {
     });
 
     /**
+     * Helper function to retry RPC calls with exponential backoff
+     */
+    const retryRPCCall = async (
+        rpcMethod: () => Promise<unknown>,
+        maxAttempts = 3
+    ): Promise<unknown> => {
+        let lastError: Error | undefined;
+
+        for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+            try {
+                return await rpcMethod();
+            } catch (error) {
+                lastError = error as Error;
+
+                // Check if it's a connection error
+                const errorMessage =
+                    error instanceof Error ? error.message : String(error);
+                const isConnectionError =
+                    errorMessage.includes('socket hang up') ||
+                    errorMessage.includes('ECONNRESET') ||
+                    errorMessage.includes('connection reset') ||
+                    errorMessage.includes('network error');
+
+                if (isConnectionError && attempt < maxAttempts) {
+                    // Wait with exponential backoff: 1s, 2s, 4s
+                    const delay = Math.pow(2, attempt - 1) * 1000;
+                    await new Promise((resolve) => setTimeout(resolve, delay));
+                    continue;
+                }
+
+                // If it's not a connection error or we've exhausted attempts, throw
+                throw error instanceof Error ? error : new Error(String(error));
+            }
+        }
+
+        throw lastError ?? new Error('Unknown error');
+    };
+
+    /**
      * eth_maxPriorityFeePerGas RPC call tests - Positive cases
      */
     describe('eth_maxPriorityFeePerGas - Positive cases', () => {
         test('Should return priority fee with proper format', async () => {
-            const result = await RPCMethodsMap(thorClient)[
-                RPC_METHODS.eth_maxPriorityFeePerGas
-            ]([]);
+            const result = await retryRPCCall(
+                async () =>
+                    await RPCMethodsMap(thorClient)[
+                        RPC_METHODS.eth_maxPriorityFeePerGas
+                    ]([])
+            );
 
             // Verify the result is a hex string
             expect(typeof result).toBe('string');
@@ -40,9 +82,12 @@ describe('RPC Mapper - eth_maxPriorityFeePerGas method tests solo', () => {
         });
 
         test('Should return a valid non-zero priority fee', async () => {
-            const result = await RPCMethodsMap(thorClient)[
-                RPC_METHODS.eth_maxPriorityFeePerGas
-            ]([]);
+            const result = await retryRPCCall(
+                async () =>
+                    await RPCMethodsMap(thorClient)[
+                        RPC_METHODS.eth_maxPriorityFeePerGas
+                    ]([])
+            );
 
             // Convert hex to number
             const priorityFee = parseInt(result as string, 16);
@@ -53,13 +98,19 @@ describe('RPC Mapper - eth_maxPriorityFeePerGas method tests solo', () => {
 
         test('Should ignore any parameters passed', async () => {
             // Call with various parameters - they should all be ignored
-            const result1 = await RPCMethodsMap(thorClient)[
-                RPC_METHODS.eth_maxPriorityFeePerGas
-            ](['some', 'random', 'params']);
+            const result1 = await retryRPCCall(
+                async () =>
+                    await RPCMethodsMap(thorClient)[
+                        RPC_METHODS.eth_maxPriorityFeePerGas
+                    ](['some', 'random', 'params'])
+            );
 
-            const result2 = await RPCMethodsMap(thorClient)[
-                RPC_METHODS.eth_maxPriorityFeePerGas
-            ]([123]);
+            const result2 = await retryRPCCall(
+                async () =>
+                    await RPCMethodsMap(thorClient)[
+                        RPC_METHODS.eth_maxPriorityFeePerGas
+                    ]([123])
+            );
 
             // Both should return valid hex strings
             expect(typeof result1).toBe('string');
@@ -75,13 +126,19 @@ describe('RPC Mapper - eth_maxPriorityFeePerGas method tests solo', () => {
     describe('eth_maxPriorityFeePerGas - Edge cases', () => {
         test('Should handle consecutive calls with consistent format', async () => {
             // Make multiple calls in succession
-            const result1 = await RPCMethodsMap(thorClient)[
-                RPC_METHODS.eth_maxPriorityFeePerGas
-            ]([]);
+            const result1 = await retryRPCCall(
+                async () =>
+                    await RPCMethodsMap(thorClient)[
+                        RPC_METHODS.eth_maxPriorityFeePerGas
+                    ]([])
+            );
 
-            const result2 = await RPCMethodsMap(thorClient)[
-                RPC_METHODS.eth_maxPriorityFeePerGas
-            ]([]);
+            const result2 = await retryRPCCall(
+                async () =>
+                    await RPCMethodsMap(thorClient)[
+                        RPC_METHODS.eth_maxPriorityFeePerGas
+                    ]([])
+            );
 
             // Both should be valid hex strings
             expect(result1).toMatch(/^0x[0-9a-f]+$/i);
@@ -92,9 +149,12 @@ describe('RPC Mapper - eth_maxPriorityFeePerGas method tests solo', () => {
         });
 
         test('Should return fee that can be converted to BigInt', async () => {
-            const result = await RPCMethodsMap(thorClient)[
-                RPC_METHODS.eth_maxPriorityFeePerGas
-            ]([]);
+            const result = await retryRPCCall(
+                async () =>
+                    await RPCMethodsMap(thorClient)[
+                        RPC_METHODS.eth_maxPriorityFeePerGas
+                    ]([])
+            );
 
             // Should be able to convert to BigInt without errors
             expect(() => {

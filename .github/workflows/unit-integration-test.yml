@@ -6,7 +6,7 @@ on:
 jobs:
     build:
         name: Build & Lint
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-22.04
         strategy:
             fail-fast: false
             matrix:
@@ -19,6 +19,9 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: ${{ matrix.node }}
+
+            - name: Ulimit info
+              run: ulimit -a
 
             - name: Install & Patch packages
               run: yarn install
@@ -43,6 +46,19 @@ jobs:
               if: steps.start-solo.outcome == 'success'
               id: all-tests
               run: yarn test
+
+            - name: Save Thor solo logs
+              if: always() && steps.start-solo.outcome == 'success'
+              id: save-logs
+              run: yarn save-thor-solo-logs
+
+            - name: Upload Thor solo logs
+              if: always() && steps.save-logs.outcome == 'success'
+              uses: actions/upload-artifact@v4.4.3
+              with:
+                name: thor-solo-logs-${{ matrix.node == 'lts/*' && 'node-lts' || format('node-{0}', matrix.node) }}
+                path: packages/solo-setup/logs/
+                retention-days: 7
 
             - name: Stop Thor solo node
               if: always() && steps.start-solo.outcome == 'success'
