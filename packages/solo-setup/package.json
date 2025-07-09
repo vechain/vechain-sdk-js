@@ -1,10 +1,13 @@
 {
   "name": "@vechain/sdk-solo-setup",
   "version": "2.0.0-beta.1",
-  "private": true,
+  "description": "VeChain Thor solo blockchain development environment CLI",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "bin": {
+    "solo-setup": "./bin/cli.js"
+  },
   "exports": {
     ".": {
       "require": "./dist/index.js",
@@ -13,7 +16,22 @@
   },
   "files": [
     "dist",
-    "types"
+    "types",
+    "bin",
+    "docker-compose.solo.yml",
+    "hardhat.config.ts",
+    "contracts",
+    "cache",
+    "artifacts",
+    "config.json"
+  ],
+  "keywords": [
+    "vechain",
+    "thor",
+    "blockchain",
+    "development",
+    "cli",
+    "solo"
   ],
   "scripts": {
     "build": "rm -rf ./dist && tsup-node index.ts --format cjs,esm --dts --outDir dist && npx tsup-node scripts/deploy.ts --format cjs,esm --outDir dist",

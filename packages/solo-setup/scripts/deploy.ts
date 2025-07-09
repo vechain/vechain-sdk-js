@@ -12,7 +12,7 @@ import { THOR_SOLO_ACCOUNTS_TO_SEED } from '../config/accounts';
  * - TestingContract
  * - Seed VET & VTHO
  * - Generate genesis block info
- * - Update config
+ * - Generate config.json file
  */
 async function main(): Promise<void> {
     try {
@@ -25,55 +25,51 @@ async function main(): Promise<void> {
         console.log(
             `TestingContract deployed with address: ${testContractAddress}`
         );
-        let testContractABI = getABI('TestingContract');
+        const testContractABI = getABI('TestingContract');
 
         // Deploy the testing token with initial supply of 1,000,000 tokens
         const testToken = await ethers.deployContract('TestingToken', [
             1000000
         ]);
         await testToken.waitForDeployment();
-        let testTokenAddress = await testToken.getAddress();
+        const testTokenAddress = await testToken.getAddress();
         console.log(`TestingToken deployed with address: ${testTokenAddress}`);
 
-        try {
-            // Try to get genesis block details
-            const genesisBlock = await getGenesisBlock();
+        // Initialize variables for network operations
+        const genesisBlock = await getGenesisBlock();
 
-            // Try to seed accounts with VET & VTHO & TestToken
-            const seedVetTxId = await seedVET(THOR_SOLO_ACCOUNTS_TO_SEED);
-            const seedVthoTxId = await seedVTHO(THOR_SOLO_ACCOUNTS_TO_SEED);
-            const seedTestTokenTxId = await seedTestToken(
-                THOR_SOLO_ACCOUNTS_TO_SEED
-            );
-            console.log(`VET seeded with txId: ${seedVetTxId}`);
-            console.log(`VTHO seeded with txId: ${seedVthoTxId}`);
-            console.log(`TestToken seeded with txId: ${seedTestTokenTxId}`);
+        // Try network operations (seeding)
+        const seedVetTxId = await seedVET(THOR_SOLO_ACCOUNTS_TO_SEED);
+        const seedVthoTxId = await seedVTHO(THOR_SOLO_ACCOUNTS_TO_SEED);
+        const seedTestTokenTxId = await seedTestToken(THOR_SOLO_ACCOUNTS_TO_SEED);
+        
+        // Always create config.json file with available data
+        console.log('Saving configuration to config.json...');
+        setConfig(
+            testContractAddress,
+            testContractABI,
+            testContractByteCode,
+            genesisBlock,
+            seedVetTxId,
+            seedVthoTxId,
+            testTokenAddress,
+            seedTestTokenTxId
+        );
 
-            // Update config
-            setConfig(
-                testContractAddress,
-                testContractABI,
-                testContractByteCode,
-                genesisBlock,
-                seedVetTxId,
-                seedVthoTxId,
-                testTokenAddress,
-                seedTestTokenTxId
-            );
-            console.log('Config updated');
-        } catch (error) {
+        // Success summary
+        console.log('Deployment completed successfully!');
+        console.log(`TestingContract: ${testContractAddress}`);
+        console.log(`TestingToken: ${testTokenAddress}`);
+        if (seedVetTxId) {
+            console.log('Account seeding completed');
+        } else {
             console.warn(
-                'Thor solo network might not be running. Skipping network operations.'
-            );
-            console.warn(
-                'Run with a live Thor solo network using solo-seed command for complete setup.'
+                `Account seeding didn't take place`
             );
         }
     } catch (error) {
         console.error('Failed to deploy contracts:', error);
-        console.warn(
-            'Build will continue, but config.json will not be updated.'
-        );
+        throw error;
     }
 }
 
