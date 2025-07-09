@@ -1,6 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { HexUInt } from '@vcdm';
 import {
+    IllegalArgumentError,
     InvalidMessageHashError,
     InvalidPrivateKeyError,
     InvalidSignatureError
@@ -25,13 +26,13 @@ import {
 describe('Secp256k1 class tests', () => {
     const invalid = new TextEncoder().encode('some_invalid_stuff');
     describe('Secp256k1 - compressPublicKey', () => {
-        test('Secp256k1 - compressPublicKey - from compressed', () => {
+        test('ok <- compressPublicKey - from compressed', () => {
             expect(
                 Secp256k1.compressPublicKey(publicKeyCompressed)
             ).toStrictEqual(publicKeyCompressed);
         });
 
-        test('Secp256k1 - compressPublicKey - from uncompressed', () => {
+        test('ok <- compressPublicKey - from uncompressed', () => {
             expect(
                 Secp256k1.compressPublicKey(publicKeyUncompressed)
             ).toStrictEqual(publicKeyCompressed);
@@ -39,19 +40,19 @@ describe('Secp256k1 class tests', () => {
     });
 
     describe('Secp256k1 - derivePublicKey', () => {
-        test('Secp256k1 - derivePublicKey - compressed', () => {
+        test('ok <- derivePublicKey - compressed', () => {
             expect(Secp256k1.derivePublicKey(privateKey)).toStrictEqual(
                 Secp256k1.compressPublicKey(publicKeyUncompressed)
             );
         });
 
-        test('Secp256k1 - derivePublicKey - uncompressed', () => {
+        test('ok <- derivePublicKey - uncompressed', () => {
             expect(Secp256k1.derivePublicKey(privateKey, false)).toStrictEqual(
                 publicKeyUncompressed
             );
         });
 
-        test('Secp256k1 - derivePublicKey - error', () => {
+        test('err <- derivePublicKey - error', () => {
             expect(() =>
                 Secp256k1.derivePublicKey(ZERO_BYTES(32))
             ).toThrowError(InvalidPrivateKeyError);
@@ -59,9 +60,9 @@ describe('Secp256k1 class tests', () => {
     });
 
     describe('Secp256k1 - generatePublicKey', () => {
-        test('Secp256k1 - generatePrivateKey', async () => {
+        test('ok <- generatePrivateKey', async () => {
             const randomPrivateKey = await Secp256k1.generatePrivateKey();
-            // Length of private key should be 32 bytes
+            // The length of the private key should be 32 bytes
             expect(randomPrivateKey.length).toBe(32);
             // Private key should be valid
             expect(Secp256k1.isValidPrivateKey(randomPrivateKey)).toBe(true);
@@ -69,13 +70,32 @@ describe('Secp256k1 class tests', () => {
     });
 
     describe('Secp256k1 - inflatePublicKey', () => {
-        test('Secp256k1 - inflatePublicKey - compressed', () => {
+        test('err <- inflatePublicKey - compressed', () => {
+            expect(() =>
+                Secp256k1.inflatePublicKey(
+                    publicKeyCompressed.slice(0, publicKeyCompressed.length - 1)
+                )
+            ).toThrowError(IllegalArgumentError);
+        });
+
+        test('err <- inflatePublicKey - uncompressed', () => {
+            expect(() =>
+                Secp256k1.inflatePublicKey(
+                    publicKeyUncompressed.slice(
+                        0,
+                        publicKeyUncompressed.length - 1
+                    )
+                )
+            ).toThrowError(IllegalArgumentError);
+        });
+
+        test('ok <- inflatePublicKey - compressed', () => {
             expect(
                 Secp256k1.inflatePublicKey(publicKeyCompressed)
             ).toStrictEqual(publicKeyUncompressed);
         });
 
-        test('Secp256k1 - inflatePublicKey - uncompressed', () => {
+        test('ok <- inflatePublicKey - uncompressed', () => {
             expect(
                 Secp256k1.inflatePublicKey(publicKeyUncompressed)
             ).toStrictEqual(publicKeyUncompressed);
@@ -83,13 +103,13 @@ describe('Secp256k1 class tests', () => {
     });
 
     describe('Secp256k1 - isValidMessageHash', () => {
-        test('Secp256k1 - isValidMessageHash - true', () => {
+        test('true <- isValidMessageHash', () => {
             validMessageHashes.forEach((messageHash: Uint8Array) => {
                 expect(Secp256k1.isValidMessageHash(messageHash)).toBe(true);
             });
         });
 
-        test('Secp256k1 - isValidMessageHash - false', () => {
+        test('false <- isValidMessageHash', () => {
             invalidMessageHashes.forEach((messageHash: Uint8Array) => {
                 expect(Secp256k1.isValidMessageHash(messageHash)).toBe(false);
             });
@@ -97,13 +117,13 @@ describe('Secp256k1 class tests', () => {
     });
 
     describe('Secp256k1 - isValidPrivateKey', () => {
-        test('Secp256k1 - isValidPrivateKey - true', () => {
+        test('true <- isValidPrivateKey', () => {
             validPrivateKeys.forEach((privateKey: Uint8Array) => {
                 expect(Secp256k1.isValidPrivateKey(privateKey)).toBe(true);
             });
         });
 
-        test('Secp256k1 - isValidPrivateKey - false', () => {
+        test('false <- isValidPrivateKey', () => {
             validPrivateKeys.forEach((privateKey: Uint8Array) => {
                 expect(Secp256k1.isValidPrivateKey(privateKey)).toBe(true);
             });
@@ -111,19 +131,19 @@ describe('Secp256k1 class tests', () => {
     });
 
     describe('Secp256k1 - sign', () => {
-        test('Secp256k1 - sign - success', () => {
+        test('ok <- sign', () => {
             expect(Secp256k1.sign(messageHashBuffer, privateKey)).toStrictEqual(
                 signature
             );
         });
 
-        test('Secp256k1 - sign - failure - invalid message hash', () => {
+        test('err <- sign - invalid message hash', () => {
             expect(() => Secp256k1.sign(invalid, privateKey)).toThrowError(
                 InvalidMessageHashError
             );
         });
 
-        test('Secp256k1 - sign - failure - invalid private key', () => {
+        test('err <- sign - invalid private key', () => {
             expect(() =>
                 Secp256k1.sign(
                     messageHashBuffer,
@@ -136,42 +156,42 @@ describe('Secp256k1 class tests', () => {
     });
 
     describe('Secp256k1 - randomBytes', () => {
-        test('Secp256k1 - randomBytes - without parameters', () => {
+        test('ok <- randomBytes - without parameters', () => {
             const result = Secp256k1.randomBytes();
             expect(result.length).toBeGreaterThan(0);
         });
 
-        test('Secp256k1 - randomBytes - with param', () => {
+        test('ok <- randomBytes - with param', () => {
             const result = Secp256k1.randomBytes(16);
             expect(result.length).toBe(16);
         });
 
-        test('Secp256k1 - randomBytes - with param', () => {
+        test('ok <- randomBytes - with param', () => {
             expect(() => Secp256k1.randomBytes(28)).toBeDefined();
         });
     });
 
     describe('Secp256k1 - recover', () => {
-        test('Secp256k1 - recover - success', () => {
+        test('ok <- recover', () => {
             expect(
                 Secp256k1.recover(messageHashBuffer, signature)
             ).toStrictEqual(publicKeyUncompressed);
         });
 
-        test('Secp256k1 - recover - invalid message hash', () => {
+        test('err <- recover - invalid message hash', () => {
             expect(() => Secp256k1.recover(invalid, signature)).toThrowError(
                 InvalidMessageHashError
             );
         });
 
-        test('Secp256k1 - recover - invalid signature', () => {
+        test('err <- recover - invalid signature', () => {
             // Invalid signature
             expect(() =>
                 Secp256k1.recover(messageHashBuffer, invalid)
             ).toThrowError(InvalidSignatureError);
         });
 
-        test('Secp256k1 - recover - failure', () => {
+        test('err <- recover - failure', () => {
             // Invalid signature recovery
             const invalidSignatureRecovery = new Uint8Array(signature);
             invalidSignatureRecovery[64] = 8;

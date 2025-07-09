@@ -5,12 +5,12 @@ import { Txt, Hex, Keccak256 } from '@vcdm';
 import { HexUInt } from './HexUInt';
 
 /**
- * Full Qualified Path.
+ * Full-Qualified Path.
  */
 const FQP = 'packages/sdk/src/vcdm/Address.ts!';
 
 /**
- * Represents a VeChain Address as unsigned integer.
+ * Represents a VeChain Address as an unsigned integer.
  *
  * @extends {HexUInt}
  */
@@ -91,8 +91,6 @@ class Address extends HexUInt {
      * Create an Address instance from the given private key.
      *
      * @param {Uint8Array} privateKey - The private key to convert.
-     *
-     * @param {boolean} [isCompressed=true] - The flag to indicate if the derived public key should be compressed.
      *
      * @returns {Address} The converted address.
      *

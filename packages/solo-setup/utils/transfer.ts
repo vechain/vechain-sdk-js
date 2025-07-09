@@ -1,7 +1,7 @@
 import { THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS } from '../config/accounts';
 import {
     Address,
-    Clause,
+    ClauseBuilder,
     HexUInt,
     Revision,
     Transaction,
@@ -40,7 +40,7 @@ export const seedVET = async (accounts: TestAccount[]): Promise<string> => {
         const privateKey = HexUInt.of(genesisDeployerAccount.privateKey).bytes;
         const clauses: TransactionClause[] = [];
         for (const account of accounts) {
-            const clause = Clause.transferVET(
+            const clause = ClauseBuilder.transferVET(
                 Address.of(account.address),
                 VET.of(THOR_SOLO_SEEDED_VET_AMOUNT)
             );
@@ -90,7 +90,7 @@ export const seedVTHO = async (accounts: TestAccount[]): Promise<string> => {
         const privateKey = HexUInt.of(genesisDeployerAccount.privateKey).bytes;
         const clauses: TransactionClause[] = [];
         for (const account of accounts) {
-            const clause = Clause.transferToken(
+            const clause = ClauseBuilder.transferToken(
                 Address.of(VTHO_ADDRESS),
                 Address.of(account.address),
                 VTHO.of(THOR_SOLO_SEEDED_VTHO_AMOUNT)
@@ -142,7 +142,7 @@ export const seedTestToken = async (
         const privateKey = HexUInt.of(genesisDeployerAccount.privateKey).bytes;
         const clauses: TransactionClause[] = [];
         for (const account of accounts) {
-            const clause = Clause.transferToken(
+            const clause = ClauseBuilder.transferToken(
                 Address.of(VTHO_ADDRESS),
                 Address.of(account.address),
                 VTHO.of(THOR_SOLO_SEEDED_TEST_TOKEN_AMOUNT)
