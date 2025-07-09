@@ -20,7 +20,9 @@ type AvailableVeChainProviders = VeChainProvider | HardhatVeChainProvider;
  * EIP-712 types in case we change the provider (viem as of now)
  */
 
-type TypedDataDomain = viemTypedDataDomain;
+type TypedDataDomain = Omit<viemTypedDataDomain, 'chainId'> & {
+    chainId?: number | bigint | string;
+};
 type TypedDataParameter = viemTypedDataParameter;
 
 /**
@@ -203,13 +205,13 @@ interface TransactionRequestInput {
     /**
      *  The [[link-eip-1559]] maximum priority fee to pay per gas.
      */
-    maxPriorityFeePerGas?: string;
+    maxPriorityFeePerGas?: string | number;
 
     /**
      *  The [[link-eip-1559]] maximum total fee to pay per gas. The actual
      *  value used is protocol enforced to be the block's base fee.
      */
-    maxFeePerGas?: string;
+    maxFeePerGas?: string | number;
 
     /**
      *  The transaction type.

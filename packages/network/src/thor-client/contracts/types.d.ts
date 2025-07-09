@@ -4,11 +4,7 @@ import type {
     TransactionBodyOptions
 } from '../transactions/types';
 
-import type {
-    ABIFunction,
-    ClauseOptions,
-    TransactionClause
-} from '@vechain/sdk-core';
+import type { ClauseOptions } from '@vechain/sdk-core';
 
 declare module 'abitype' {
     export interface Register {
@@ -28,18 +24,12 @@ declare module 'viem/node_modules/abitype' {
  * Defines the options for executing a contract transaction.
  */
 type ContractTransactionOptions = {
-    value?: number;
     signTransactionOptions?: SignTransactionOptions;
 
     /**
      * The delegation URL to use to sponsor the transaction.
      */
     delegationUrl?: string;
-
-    /**
-     * A comment describing the transaction request.
-     */
-    comment?: string;
 } & TransactionBodyOptions &
     ClauseOptions;
 
@@ -62,17 +52,8 @@ interface ContractCallResult {
     };
 }
 
-/**
- * Represents a contract clause, which includes the clause and the corresponding function ABI.
- */
-interface ContractClause {
-    clause: TransactionClause;
-    functionAbi: ABIFunction;
-}
-
 export type {
     ContractCallOptions,
     ContractCallResult,
-    ContractClause,
     ContractTransactionOptions
 };

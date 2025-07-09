@@ -41,7 +41,6 @@ class Contract<TAbi extends Abi> {
     public read: ContractFunctionRead<
         TAbi,
         ExtractAbiFunctionNames<TAbi, 'pure' | 'view'>
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     > = {} as ContractFunctionRead<
         TAbi,
         ExtractAbiFunctionNames<TAbi, 'pure' | 'view'>
@@ -50,26 +49,20 @@ class Contract<TAbi extends Abi> {
     public transact: ContractFunctionTransact<
         TAbi,
         ExtractAbiFunctionNames<TAbi, 'payable' | 'nonpayable'>
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     > = {} as ContractFunctionTransact<
         TAbi,
         ExtractAbiFunctionNames<TAbi, 'payable' | 'nonpayable'>
     >;
 
     public filters: ContractFunctionFilter<TAbi, ExtractAbiEventNames<TAbi>> =
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         {} as ContractFunctionFilter<TAbi, ExtractAbiEventNames<TAbi>>;
 
-    public clause: ContractFunctionClause<
-        TAbi,
-        ExtractAbiFunctionNames<TAbi>
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    > = {} as ContractFunctionClause<TAbi, ExtractAbiFunctionNames<TAbi>>;
+    public clause: ContractFunctionClause<TAbi, ExtractAbiFunctionNames<TAbi>> =
+        {} as ContractFunctionClause<TAbi, ExtractAbiFunctionNames<TAbi>>;
 
     public criteria: ContractFunctionCriteria<
         TAbi,
         ExtractAbiEventNames<TAbi>
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     > = {} as ContractFunctionCriteria<TAbi, ExtractAbiEventNames<TAbi>>;
 
     private contractCallOptions: ContractCallOptions = {};

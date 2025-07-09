@@ -65,7 +65,7 @@ class BlocksModule {
             .onData((data) => {
                 this.headBlock = data;
             })
-            .onError(this.onBlockError ?? (() => {}));
+            .onError(this.onBlockError ?? ((): void => {}));
 
         this.pollInstance.startListen();
     }
@@ -146,6 +146,17 @@ class BlocksModule {
      */
     public async getBestBlockExpanded(): Promise<ExpandedBlockDetail | null> {
         return await this.getBlockExpanded('best');
+    }
+
+    /**
+     * Retrieves the base fee per gas of the best block.
+     *
+     * @returns A promise that resolves to the base fee per gas of the best block.
+     */
+    public async getBestBlockBaseFeePerGas(): Promise<string | null> {
+        const bestBlock = await this.getBestBlockCompressed();
+        if (bestBlock === null) return null;
+        return bestBlock.baseFeePerGas ?? null;
     }
 
     /**

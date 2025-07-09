@@ -37,7 +37,6 @@ describe('Helpers tests', () => {
     test('Should get the contract address', async () => {
         provider.thorClient.transactions.waitForTransaction = jest.fn(
             async (_txID: string, _options?: WaitForTransactionOptions) => {
-                // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
                 return await Promise.resolve({
                     outputs: [{ contractAddress: 'sampleAddress' }]
                 } as TransactionReceipt);

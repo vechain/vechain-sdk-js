@@ -1,5 +1,5 @@
 import { HttpMethod } from './HttpMethod';
-import { InvalidHTTPRequest } from '@vechain/sdk-errors';
+import { InvalidHTTPParams, InvalidHTTPRequest } from '@vechain/sdk-errors';
 import { type HttpClient } from './HttpClient';
 import { type HttpParams } from './HttpParams';
 import { logRequest, logResponse, logError } from './trace-logger';
@@ -14,7 +14,7 @@ class SimpleHttpClient implements HttpClient {
     /**
      * Represent the default timeout duration for network requests in milliseconds.
      */
-    public static readonly DEFAULT_TIMEOUT = 30000;
+    public static readonly DEFAULT_TIMEOUT = 10000;
 
     /**
      * Return the root URL for the API endpoints.
@@ -69,7 +69,6 @@ class SimpleHttpClient implements HttpClient {
      */
     private isValidUrl(url: string): boolean {
         try {
-            // eslint-disable-next-line no-new
             new URL(url);
             return true;
         } catch {
@@ -98,18 +97,18 @@ class SimpleHttpClient implements HttpClient {
             controller.abort();
         }, this.timeout);
 
-        // Remove leading slash from path
-        if (path.startsWith('/')) {
-            path = path.slice(1);
-        }
-        // Add trailing slash from baseURL if not present
-        let baseURL = this.baseURL;
-        if (!this.baseURL.endsWith('/')) {
-            baseURL += '/';
-        }
-
-        // Check if path is already a fully qualified URL
-        const url = path.match(/^https?:\/\//)
+        try {
+            // Remove leading slash from path
+            if (path.startsWith('/')) {
+                path = path.slice(1);
+            }
+            // Add trailing slash from baseURL if not present
+            let baseURL = this.baseURL;
+            if (!baseURL.endsWith('/')) {
+                baseURL += '/';
+            }
+                    // Check if path is already a fully qualified URL
+        const url: URL = path.match(/^https?:\/\//)
             ? new URL(path)
             : new URL(path, baseURL);
         if (params?.query != null) {
@@ -117,28 +116,46 @@ class SimpleHttpClient implements HttpClient {
                 url.searchParams.append(key, String(value));
             });
         }
-
-        // Merge default client headers with request-specific headers,
-        // giving precedence to the latter.
-        const headers = new Headers(this.headers);
-        if (params?.headers) {
-            Object.entries(params.headers).forEach(([key, value]) => {
-                headers.set(key, String(value)); // Override duplicates
-            });
-        }
-        // Convert Headers to plain object for logging
+            if (params?.query != null) {
+                Object.entries(params.query).forEach(([key, value]) => {
+                    url.searchParams.append(key, String(value));
+                });
+            }
+            const headers = new Headers(this.headers);
+            if (params?.headers !== undefined && params?.headers != null) {
+                Object.entries(params.headers).forEach(([key, value]) => {
+                    headers.append(key, String(value));
+                });
+            }
+          
+                  // Convert Headers to plain object for logging
         const headerObj = Object.fromEntries(headers.entries());
-
-        // Log the request
+          
+                  // Log the request
         const requestStartTime = logRequest(
             method,
             url.toString(),
             headerObj,
             method !== HttpMethod.GET ? params?.body : undefined
         );
-
+          
+        } catch (error) {
+            throw new InvalidHTTPParams(
+                'HttpClient.http()',
+                (error as Error).message,
+                {
+                    method,
+                    url: !this.isValidUrl(this.baseURL)
+                        ? path
+                        : new URL(path, this.baseURL).toString()
+                },
+                error
+            );
+        }
+        // send request
         try {
-            const response: Response = await fetch(url, {
+            const response = await fetch(url, {
+
                 method,
                 headers: params?.headers as HeadersInit,
                 body:
@@ -179,6 +196,7 @@ class SimpleHttpClient implements HttpClient {
             throw new Error(`HTTP ${response.status} ${response.statusText}`, {
                 cause: response
             });
+
         } catch (error) {
             // Log the error
             logError(requestStartTime, url.toString(), method, error);

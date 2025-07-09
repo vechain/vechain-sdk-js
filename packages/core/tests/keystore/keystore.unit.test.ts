@@ -14,6 +14,7 @@ import {
     type Keystore
 } from '../../src';
 import { encryptionPassword } from './fixture';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
 
 /**
  * Keystore tests
@@ -21,6 +22,19 @@ import { encryptionPassword } from './fixture';
  */
 [true, false].forEach((experimentalCryptography) => {
     describe(`Keystore - ${experimentalCryptography ? 'EXPERIMENTAL' : 'NOT EXPERIMENTAL'} cryptography`, () => {
+        beforeAll(() => {
+            // Silence all loggers without affecting spy functionality
+            jest.spyOn(VeChainSDKLogger('log'), 'log').mockImplementation(
+                () => {}
+            );
+            jest.spyOn(VeChainSDKLogger('error'), 'log').mockImplementation(
+                () => {}
+            );
+            jest.spyOn(VeChainSDKLogger('warning'), 'log').mockImplementation(
+                () => {}
+            );
+        });
+
         /**
          * Set experimental cryptography
          */

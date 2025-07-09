@@ -63,22 +63,5 @@ describe('SimpleHttpClient testnet tests', () => {
             const resp = await httpClient.http(HttpMethod.GET, '/blocks/best');
             expect(resp).toBeDefined();
         });
-
-        /*
-        NOTE: this test doesn't succeed in CI/CD.
-        Enable locally to challenge a real time-out calling testnet.
-         */
-        // test('timeout <- GET in 1 ms', async () => {
-        //     const httpClient = new SimpleHttpClient(TESTNET_URL, 0);
-        //     try {
-        //         await httpClient.get('/blocks/0?expanded=false');
-        //         fail();
-        //     } catch (error) {
-        //         expect(error).toBeInstanceOf(InvalidHTTPRequest);
-        //         const innerError = (error as InvalidHTTPRequest).innerError;
-        //         expect(innerError).toBeInstanceOf(DOMException);
-        //         expect((innerError as DOMException).name).toBe('AbortError');
-        //     }
-        // });
     });
 });

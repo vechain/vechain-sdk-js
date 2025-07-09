@@ -85,6 +85,16 @@ interface TransactionBodyOptions {
      * Every transaction with same chainTag, blockRef, ... must have different nonce.
      */
     nonce?: string | number;
+
+    /**
+     * The maximum fee per gas for the transaction.
+     */
+    maxFeePerGas?: string | number;
+
+    /**
+     * The maximum priority fee per gas for the transaction.
+     */
+    maxPriorityFeePerGas?: string | number;
 }
 
 /**
@@ -246,6 +256,7 @@ type TransactionDetailNoRaw = TransactionBody & {
     gasPayer: string | null;
     size: number;
     meta: TransactionMetadata;
+    type: number;
 };
 
 /**
@@ -280,6 +291,34 @@ interface TransactionReceipt {
      * Data associated with the transaction e.g. blockID, blockNumber, txID
      */
     meta: TransactionMetadata;
+    /**
+     * The maximum fee per gas for the transaction.
+     */
+    maxFeePerGas?: string;
+    /**
+     * The maximum priority fee per gas for the transaction.
+     */
+    maxPriorityFeePerGas?: string;
+}
+
+/**
+ * [Event](http://127.0.0.1:8669/doc/stoplight-ui/#/schemas/Event)
+ */
+interface TransactionSimulationEvent {
+    /**
+     * The address of the contract that emitted the event.
+     */
+    address: string;
+
+    /**
+     * Topics are indexed parameters to an event. The first topic is always the event signature.
+     */
+    topics: string[];
+
+    /**
+     * The data associated with the event.
+     */
+    data: string;
 }
 
 /**
@@ -293,7 +332,7 @@ interface TransactionSimulationResult {
     /**
      * Events emitted from the transaction simulation
      */
-    events: Event[];
+    events: TransactionSimulationEvent[];
     /**
      * Transfers that occur from the transaction simulation
      */
@@ -315,17 +354,18 @@ interface TransactionSimulationResult {
 /* --- Responses Outputs end --- */
 
 export type {
-    WaitForTransactionOptions,
-    TransactionBodyOptions,
-    SignTransactionOptions,
     GetDelegationSignatureResult,
-    SendTransactionResult,
     GetTransactionInputOptions,
     GetTransactionReceiptInputOptions,
-    TransactionReceipt,
-    TransactionSimulationResult,
+    SendTransactionResult,
+    SignTransactionOptions,
     SimulateTransactionClause,
     SimulateTransactionOptions,
+    TransactionBodyOptions,
+    TransactionDetailNoRaw,
     TransactionDetailRaw,
-    TransactionDetailNoRaw
+    TransactionReceipt,
+    TransactionSimulationEvent,
+    TransactionSimulationResult,
+    WaitForTransactionOptions
 };

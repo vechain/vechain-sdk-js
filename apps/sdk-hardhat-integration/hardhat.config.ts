@@ -1,7 +1,7 @@
-import { type HardhatUserConfig } from 'hardhat/config';
 import '@nomicfoundation/hardhat-toolbox';
-import '@vechain/sdk-hardhat-plugin';
 import { HDKey } from '@vechain/sdk-core';
+import '@vechain/sdk-hardhat-plugin';
+import { type HardhatUserConfig } from 'hardhat/config';
 import { type HttpNetworkConfig } from 'hardhat/types';
 
 /**
@@ -89,7 +89,7 @@ const config: HardhatUserConfig = {
             debug: true,
             gasPayer: {
                 gasPayerServiceUrl:
-                    'https://sponsor-testnet.vechain.energy/by/269'
+                    'https://sponsor-testnet.vechain.energy/by/883'
             },
             enableDelegation: true,
             gas: 'auto',
@@ -131,7 +131,7 @@ const config: HardhatUserConfig = {
          */
         vechain_solo: {
             // Thor solo network
-            url: 'http://localhost:8669',
+            url: 'http://127.0.0.1:8669',
             accounts: [
                 '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
             ],

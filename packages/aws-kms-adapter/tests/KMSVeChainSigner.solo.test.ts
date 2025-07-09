@@ -15,17 +15,14 @@ import {
     KMSVeChainSigner
 } from '../src';
 import {
-    EIP712_CONTRACT,
-    EIP712_FROM,
-    EIP712_TO,
     fundVTHO,
     signTransactionTestCases as sendTransactionTestCases,
     signTransactionTestCases,
     TESTING_CONTRACT_ABI,
-    TESTING_CONTRACT_ADDRESS,
+    SOLO_CONTRACT_ADDRESS,
     timeout
 } from './fixture';
-
+import { EIP712_CONTRACT, EIP712_FROM, EIP712_TO } from './dummy_data';
 // This variable should be replaced once this is clarified  https://github.com/localstack/localstack/issues/11678
 let expectedAddress: string;
 
@@ -64,7 +61,7 @@ describe('KMSVeChainSigner - Thor Solo', () => {
             [awsClientParameters, gasPayerAwsClientParameters] = JSON.parse(
                 fs.readFileSync(awsCredentialsPath, 'utf8')
             ) as KMSClientParameters[];
-        } catch (error) {
+        } catch {
             console.log('Loading test credentials');
             const testAwsCredentialsPath = path.resolve(
                 __dirname,
@@ -123,7 +120,7 @@ describe('KMSVeChainSigner - Thor Solo', () => {
                             ? signerWithGasPayer
                             : signer;
                         const sampleClause = Clause.callFunction(
-                            Address.of(TESTING_CONTRACT_ADDRESS),
+                            Address.of(SOLO_CONTRACT_ADDRESS),
                             ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
                                 'deposit'
                             ),
@@ -133,10 +130,11 @@ describe('KMSVeChainSigner - Thor Solo', () => {
                         const originAddress =
                             await signTransactionSigner.getAddress();
 
-                        const gasResult = await thorClient.gas.estimateGas(
-                            [sampleClause],
-                            originAddress
-                        );
+                        const gasResult =
+                            await thorClient.transactions.estimateGas(
+                                [sampleClause],
+                                originAddress
+                            );
 
                         const txBody =
                             await thorClient.transactions.buildTransactionBody(
@@ -167,6 +165,18 @@ describe('KMSVeChainSigner - Thor Solo', () => {
                         expect(signedTx.isDelegated).toBe(isDelegated);
                         expect(signedTx.isSigned).toBe(true);
                         expect(signedTx.signature).toBeDefined();
+
+                        // dynamic fee default
+                        const galacticaForked =
+                            await thorClient.forkDetector.isGalacticaForked();
+                        if (galacticaForked) {
+                            expect(signedTx.body.maxFeePerGas).toBeDefined();
+                            expect(
+                                signedTx.body.maxPriorityFeePerGas
+                            ).toBeDefined();
+                        } else {
+                            expect(signedTx.body.gas).toBeDefined();
+                        }
                     },
                     timeout
                 );
@@ -190,7 +200,7 @@ describe('KMSVeChainSigner - Thor Solo', () => {
                             ? signerWithGasPayer
                             : signer;
                         const sampleClause = Clause.callFunction(
-                            Address.of(TESTING_CONTRACT_ADDRESS),
+                            Address.of(SOLO_CONTRACT_ADDRESS),
                             ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
                                 'deposit'
                             ),
@@ -200,10 +210,11 @@ describe('KMSVeChainSigner - Thor Solo', () => {
                         const originAddress =
                             await signTransactionSigner.getAddress();
 
-                        const gasResult = await thorClient.gas.estimateGas(
-                            [sampleClause],
-                            originAddress
-                        );
+                        const gasResult =
+                            await thorClient.transactions.estimateGas(
+                                [sampleClause],
+                                originAddress
+                            );
 
                         const txBody =
                             await thorClient.transactions.buildTransactionBody(

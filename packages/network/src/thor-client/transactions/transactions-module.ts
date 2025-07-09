@@ -4,6 +4,7 @@ import {
     type ABIFunction,
     Address,
     Clause,
+    type ContractClause,
     dataUtils,
     Hex,
     HexUInt,
@@ -19,6 +20,7 @@ import { InvalidDataType, InvalidTransactionField } from '@vechain/sdk-errors';
 import { ErrorFragment, Interface } from 'ethers';
 import { HttpMethod } from '../../http';
 import { blocksFormatter, getTransactionIndexIntoBlock } from '../../provider';
+import type { VeChainSigner } from '../../signer';
 import {
     buildQuery,
     BUILT_IN_CONTRACTS,
@@ -29,7 +31,17 @@ import {
     vnsUtils
 } from '../../utils';
 import { type BlocksModule, type ExpandedBlockDetail } from '../blocks';
+import type {
+    ContractCallOptions,
+    ContractCallResult,
+    ContractTransactionOptions
+} from '../contracts';
 import { type CallNameReturnType, type DebugModule } from '../debug';
+import { type ForkDetector } from '../fork';
+import { type GasModule } from '../gas';
+import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
+import type { EstimateGasOptions, EstimateGasResult } from '../gas/types';
+import { type LogsModule } from '../logs';
 import {
     type GetTransactionInputOptions,
     type GetTransactionReceiptInputOptions,
@@ -43,16 +55,6 @@ import {
     type TransactionSimulationResult,
     type WaitForTransactionOptions
 } from './types';
-import type { EstimateGasOptions, EstimateGasResult } from '../gas/types';
-import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
-import type {
-    ContractCallOptions,
-    ContractCallResult,
-    ContractClause,
-    ContractTransactionOptions
-} from '../contracts';
-import type { VeChainSigner } from '../../signer';
-import { type LogsModule } from '../logs';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
@@ -62,15 +64,21 @@ class TransactionsModule {
     readonly blocksModule: BlocksModule;
     readonly debugModule: DebugModule;
     readonly logsModule: LogsModule;
+    readonly gasModule: GasModule;
+    readonly forkDetector: ForkDetector;
 
     constructor(
         blocksModule: BlocksModule,
         debugModule: DebugModule,
-        logsModule: LogsModule
+        logsModule: LogsModule,
+        gasModule: GasModule,
+        forkDetector: ForkDetector
     ) {
         this.blocksModule = blocksModule;
         this.debugModule = debugModule;
         this.logsModule = logsModule;
+        this.gasModule = gasModule;
+        this.forkDetector = forkDetector;
     }
 
     /**
@@ -306,9 +314,10 @@ class TransactionsModule {
      *
      * @param clauses - The clauses of the transaction.
      * @param gas - The gas to be used to perform the transaction.
-     * @param options - Optional parameters for the request. Includes the expiration, gasPriceCoef, dependsOn and isDelegated fields.
+     * @param options - Optional parameters for the request. Includes the expiration, gasPriceCoef, maxFeePErGas, maxPriorityFeePerGas, dependsOn and isDelegated fields.
      *                  If the `expiration` is not specified, the transaction will expire after 32 blocks.
-     *                  If the `gasPriceCoef` is not specified, the transaction will use the default gas price coef of 127.
+     *                  If the `gasPriceCoef` is not specified & galactica fork didn't happen yet, the transaction will use the default gas price coef of 0.
+     *                  If the `gasPriceCoef` is not specified & galactica fork happened, the transaction will use the default maxFeePerGas and maxPriorityFeePerGas.
      *                  If the `dependsOn is` not specified, the transaction will not depend on any other transaction.
      *                  If the `isDelegated` is not specified, the transaction will not be delegated.
      *
@@ -342,6 +351,8 @@ class TransactionsModule {
         const chainTag =
             options?.chainTag ?? Number(`0x${genesisBlock.id.slice(64)}`);
 
+        const filledOptions = await this.fillDefaultBodyOptions(options);
+
         return {
             blockRef,
             chainTag,
@@ -349,11 +360,218 @@ class TransactionsModule {
             dependsOn: options?.dependsOn ?? null,
             expiration: options?.expiration ?? 32,
             gas,
-            gasPriceCoef: options?.gasPriceCoef ?? 0,
+            gasPriceCoef: filledOptions?.gasPriceCoef,
+            maxFeePerGas: filledOptions?.maxFeePerGas,
+            maxPriorityFeePerGas: filledOptions?.maxPriorityFeePerGas,
             nonce: options?.nonce ?? Hex.random(8).toString(),
             reserved:
                 options?.isDelegated === true ? { features: 1 } : undefined
         };
+    }
+
+    /**
+     * Fills the transaction body with the default options.
+     *
+     * @param body - The transaction body to fill.
+     * @returns A promise that resolves to the filled transaction body.
+     * @throws {InvalidDataType}
+     */
+    public async fillTransactionBody(
+        body: TransactionBody
+    ): Promise<TransactionBody> {
+        const extractedOptions: TransactionBodyOptions = {
+            maxFeePerGas: body.maxFeePerGas,
+            maxPriorityFeePerGas: body.maxPriorityFeePerGas,
+            gasPriceCoef: body.gasPriceCoef
+        };
+
+        const filledOptions =
+            await this.fillDefaultBodyOptions(extractedOptions);
+        return {
+            ...body,
+            ...filledOptions
+        };
+    }
+
+    /**
+     * Fills the default body options for a transaction.
+     *
+     * @param options - The transaction body options to fill.
+     * @returns A promise that resolves to the filled transaction body options.
+     * @throws {InvalidDataType}
+     */
+    public async fillDefaultBodyOptions(
+        options?: TransactionBodyOptions
+    ): Promise<TransactionBodyOptions> {
+        options ??= {};
+        if (options.gasPriceCoef !== undefined) {
+            // user specified legacy fee type
+            options.maxFeePerGas = undefined;
+            options.maxPriorityFeePerGas = undefined;
+            return options;
+        }
+        if (
+            options.gasPriceCoef !== undefined &&
+            (options.maxFeePerGas !== undefined ||
+                options.maxPriorityFeePerGas !== undefined)
+        ) {
+            // user specified both legacy and dynamic fee type
+            throw new InvalidDataType(
+                'TransactionsModule.fillDefaultBodyOptions()',
+                'Invalid transaction body options. Cannot specify both legacy and dynamic fee type options.',
+                { options }
+            );
+        }
+        // check if fork happened
+        const galacticaHappened =
+            await this.forkDetector.isGalacticaForked('best');
+        if (
+            !galacticaHappened &&
+            (options.maxFeePerGas !== undefined ||
+                options.maxPriorityFeePerGas !== undefined)
+        ) {
+            // user has specified dynamic fee tx, but fork didn't happen yet
+            throw new InvalidDataType(
+                'TransactionsModule.fillDefaultBodyOptions()',
+                'Invalid transaction body options. Dynamic fee tx is not allowed before Galactica fork.',
+                { options }
+            );
+        }
+        if (
+            !galacticaHappened &&
+            (options.gasPriceCoef === undefined ||
+                options.gasPriceCoef === null)
+        ) {
+            // galactica hasn't happened yet, default is legacy fee
+            options.gasPriceCoef = 0;
+            return options;
+        }
+        if (
+            galacticaHappened &&
+            options.maxFeePerGas !== undefined &&
+            options.maxPriorityFeePerGas !== undefined
+        ) {
+            // galactica happened, user specified new fee type
+            return options;
+        }
+        // default to dynamic fee tx
+        options.gasPriceCoef = undefined;
+
+        // Get best block base fee per gas
+        const bestBlockBaseFeePerGas =
+            await this.blocksModule.getBestBlockBaseFeePerGas();
+        if (
+            bestBlockBaseFeePerGas === null ||
+            bestBlockBaseFeePerGas === undefined
+        ) {
+            throw new InvalidDataType(
+                'TransactionsModule.fillDefaultBodyOptions()',
+                'Invalid transaction body options. Unable to get best block base fee per gas.',
+                { options }
+            );
+        }
+        const biBestBlockBaseFeePerGas = HexUInt.of(bestBlockBaseFeePerGas).bi;
+
+        // set maxPriorityFeePerGas if not specified already
+        if (
+            options.maxPriorityFeePerGas === undefined ||
+            options.maxPriorityFeePerGas === null
+        ) {
+            // Calculate maxPriorityFeePerGas based on fee history (75th percentile)
+            // and the HIGH speed threshold (min(0.046*baseFee, 75_percentile))
+            const defaultMaxPriorityFeePerGas =
+                await this.calculateDefaultMaxPriorityFeePerGas(
+                    biBestBlockBaseFeePerGas
+                );
+            options.maxPriorityFeePerGas = defaultMaxPriorityFeePerGas;
+        }
+
+        // set maxFeePerGas if not specified already
+        if (
+            options.maxFeePerGas === undefined ||
+            options.maxFeePerGas === null
+        ) {
+            // compute maxFeePerGas
+            const biMaxPriorityFeePerGas = HexUInt.of(
+                options.maxPriorityFeePerGas
+            ).bi;
+            const biMaxFeePerGas =
+                biBestBlockBaseFeePerGas + biMaxPriorityFeePerGas;
+            options.maxFeePerGas = HexUInt.of(biMaxFeePerGas).toString();
+        }
+        return options;
+    }
+
+    /**
+     * Calculates the default max priority fee per gas based on the current base fee
+     * and historical 75th percentile rewards.
+     *
+     * Uses the FAST (HIGH) speed threshold: min(0.046*baseFee, 75_percentile)
+     *
+     * @param baseFee - The current base fee per gas
+     * @returns A promise that resolves to the default max priority fee per gas as a hex string
+     */
+    private async calculateDefaultMaxPriorityFeePerGas(
+        baseFee: bigint
+    ): Promise<string> {
+        // Get fee history for recent blocks
+        const feeHistory = await this.gasModule.getFeeHistory({
+            blockCount: 10,
+            newestBlock: 'best',
+            rewardPercentiles: [25, 50, 75] // Get 25th, 50th and 75th percentiles
+        });
+
+        // Get the 75th percentile reward from the most recent block
+        let percentile75: bigint;
+
+        if (
+            feeHistory.reward !== null &&
+            feeHistory.reward !== undefined &&
+            feeHistory.reward.length > 0
+        ) {
+            const latestBlockRewards =
+                feeHistory.reward[feeHistory.reward.length - 1];
+            const equalRewardsOnLastBlock =
+                new Set(latestBlockRewards).size === 3;
+
+            // If rewards are equal in the last block, use the first one (75th percentile)
+            // Otherwise, calculate the average of 75th percentiles across blocks
+            if (equalRewardsOnLastBlock) {
+                percentile75 = HexUInt.of(latestBlockRewards[2]).bi; // 75th percentile at index 2
+            } else {
+                // Calculate average of 75th percentiles across blocks
+                let sum = 0n;
+                let count = 0;
+
+                for (const blockRewards of feeHistory.reward) {
+                    if (
+                        blockRewards.length !== null &&
+                        blockRewards.length > 2 &&
+                        blockRewards[2] !== null &&
+                        blockRewards[2] !== undefined
+                    ) {
+                        sum += HexUInt.of(blockRewards[2]).bi;
+                        count++;
+                    }
+                }
+
+                percentile75 = count > 0 ? sum / BigInt(count) : 0n;
+            }
+        } else {
+            // Fallback to getMaxPriorityFeePerGas if fee history is not available
+            percentile75 = HexUInt.of(
+                await this.gasModule.getMaxPriorityFeePerGas()
+            ).bi;
+        }
+
+        // Calculate 4.6% of base fee (HIGH speed threshold)
+        const baseFeeCap = (baseFee * 46n) / 1000n; // 0.046 * baseFee
+
+        // Use the minimum of the two values
+        const priorityFee =
+            baseFeeCap < percentile75 ? baseFeeCap : percentile75;
+
+        return HexUInt.of(priorityFee).toString();
     }
 
     /**
@@ -646,11 +864,11 @@ class TransactionsModule {
 
         // The total gas of the transaction
         // If the transaction involves contract interaction, a constant 15000 gas is added to the total gas
-        const totalGas =
+        const totalGas = Math.ceil(
             (intrinsicGas +
                 (totalSimulatedGas !== 0 ? totalSimulatedGas + 15000 : 0)) *
-            (1 + (options?.gasPadding ?? 0)); // Add gasPadding if it is defined
-
+                (1 + (options?.gasPadding ?? 0))
+        ); // Add gasPadding if it is defined
         return isReverted
             ? {
                   totalGas,
@@ -775,6 +993,8 @@ class TransactionsModule {
             gasLimit: options?.gasLimit,
             gasPrice: options?.gasPrice,
             gasPriceCoef: options?.gasPriceCoef,
+            maxFeePerGas: options?.maxFeePerGas,
+            maxPriorityFeePerGas: options?.maxPriorityFeePerGas,
             nonce: options?.nonce,
             value: options?.value,
             dependsOn: options?.dependsOn,
@@ -810,6 +1030,8 @@ class TransactionsModule {
             gasLimit: options?.gasLimit,
             gasPrice: options?.gasPrice,
             gasPriceCoef: options?.gasPriceCoef,
+            maxFeePerGas: options?.maxFeePerGas,
+            maxPriorityFeePerGas: options?.maxPriorityFeePerGas,
             nonce: options?.nonce,
             value: options?.value,
             dependsOn: options?.dependsOn,
@@ -836,7 +1058,7 @@ class TransactionsModule {
      *
      * @return {Promise<ContractCallResult>} A promise that resolves to the result of the contract call, containing the base gas price.
      */
-    public async getBaseGasPrice(): Promise<ContractCallResult> {
+    public async getLegacyBaseGasPrice(): Promise<ContractCallResult> {
         return await this.executeCall(
             BUILT_IN_CONTRACTS.PARAMS_ADDRESS,
             ABIContract.ofAbi(BUILT_IN_CONTRACTS.PARAMS_ABI).getFunction('get'),

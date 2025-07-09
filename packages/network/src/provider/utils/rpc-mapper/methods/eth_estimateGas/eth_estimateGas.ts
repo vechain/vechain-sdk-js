@@ -1,15 +1,16 @@
+import { HexUInt } from '@vechain/sdk-core';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
-import { type TransactionObjectInput } from './types';
 import {
     type SimulateTransactionClause,
     type ThorClient
 } from '../../../../../thor-client';
-import { type DefaultBlock, DefaultBlockToRevision } from '../../../const';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
+import { type DefaultBlock, DefaultBlockToRevision } from '../../../const';
+import { type TransactionObjectInput } from './types';
 
 /**
  * RPC Method eth_estimateGas implementation
@@ -30,7 +31,7 @@ const ethEstimateGas = async (
     params: unknown[]
 ): Promise<string> => {
     // Input validation
-    if (params.length !== 2 || typeof params[0] !== 'object')
+    if (params.length < 1 || params.length > 2 || typeof params[0] !== 'object')
         throw new JSONRPCInvalidParams(
             'eth_estimateGas',
             `Invalid input params for "eth_estimateGas" method. See ${RPC_DOCUMENTATION_URL} for details.`,
@@ -38,6 +39,9 @@ const ethEstimateGas = async (
         );
 
     try {
+        if (params.length === 1) {
+            params.push('latest');
+        }
         // NOTE: The standard requires block parameter.
         // Here it is ignored and can be added in the future compatibility reasons.
         // (INPUT CHECK TAKE CARE OF THIS)
@@ -47,7 +51,7 @@ const ethEstimateGas = async (
         ];
         const revision = DefaultBlockToRevision(defaultBlock);
 
-        const estimatedGas = await thorClient.gas.estimateGas(
+        const estimatedGas = await thorClient.transactions.estimateGas(
             [
                 {
                     to: inputOptions.to ?? null,
@@ -62,7 +66,7 @@ const ethEstimateGas = async (
         );
 
         // Convert intrinsic gas to hex string and return
-        return '0x' + estimatedGas.totalGas.toString(16);
+        return HexUInt.of(estimatedGas.totalGas).toString(true);
     } catch (e) {
         throw new JSONRPCInternalError(
             'eth_estimateGas()',

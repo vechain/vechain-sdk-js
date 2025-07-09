@@ -1,4 +1,11 @@
-import { beforeEach, describe, expect, jest, test } from '@jest/globals';
+import {
+    beforeAll,
+    beforeEach,
+    describe,
+    expect,
+    jest,
+    test
+} from '@jest/globals';
 
 import { VeChainSDKLogger } from '@vechain/sdk-logging';
 import {
@@ -19,6 +26,20 @@ describe('Hardhat provider tests', () => {
     let providerInDebugMode: HardhatVeChainProvider;
 
     /**
+     * Setup global log mocks before all tests
+     */
+    beforeAll(() => {
+        // Silence all loggers without affecting spy functionality
+        jest.spyOn(VeChainSDKLogger('log'), 'log').mockImplementation(() => {});
+        jest.spyOn(VeChainSDKLogger('error'), 'log').mockImplementation(
+            () => {}
+        );
+        jest.spyOn(VeChainSDKLogger('warning'), 'log').mockImplementation(
+            () => {}
+        );
+    });
+
+    /**
      * Init thor client and provider before each test
      */
     beforeEach(() => {
@@ -34,8 +55,11 @@ describe('Hardhat provider tests', () => {
      * Test debug mode.
      */
     test('Should be able to enable debug mode', async () => {
-        // Spy on VeChainSDKLogger
+        // Spy on VeChainSDKLogger without changing implementation (already mocked)
         const logSpy = jest.spyOn(VeChainSDKLogger('log'), 'log');
+
+        // Clear previous calls to ensure clean test
+        logSpy.mockClear();
 
         // Call an RPC function (e.g., eth_blockNumber)
         await providerInDebugMode.request({
@@ -44,7 +68,6 @@ describe('Hardhat provider tests', () => {
         });
 
         expect(logSpy).toHaveBeenCalled();
-        logSpy.mockRestore();
     });
 
     /**
@@ -55,8 +78,11 @@ describe('Hardhat provider tests', () => {
      * Test debug mode errors in send function.
      */
     test('Should be able to log errors in debug mode - send function', async () => {
-        // Spy on VeChainSDKLogger
+        // Spy on VeChainSDKLogger without changing implementation (already mocked)
         const logSpy = jest.spyOn(VeChainSDKLogger('error'), 'log');
+
+        // Clear previous calls to ensure clean test
+        logSpy.mockClear();
 
         // Error during call
         await expect(
@@ -64,6 +90,5 @@ describe('Hardhat provider tests', () => {
         ).rejects.toThrowError();
 
         expect(logSpy).toHaveBeenCalled();
-        logSpy.mockRestore();
     });
 });

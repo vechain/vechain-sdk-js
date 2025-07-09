@@ -1,6 +1,7 @@
 import {
     Address,
     Clause,
+    type ContractClause,
     type TransactionClause,
     Units,
     VET
@@ -19,7 +20,6 @@ import type {
 import { type VeChainSigner } from '../../../signer';
 import { type FilterCriteria } from '../../logs';
 import { type SendTransactionResult } from '../../transactions/types';
-import { type ContractClause } from '../types';
 import { type Contract } from './contract';
 import { ContractFilter } from './contract-filter';
 import {
@@ -151,7 +151,9 @@ function getTransactProxy<TAbi extends Abi>(
                     {
                         ...transactionOptions,
                         value:
-                            transactionOptions.value ?? transactionValue ?? 0,
+                            transactionOptions.value ??
+                            transactionValue ??
+                            '0x0',
                         comment: clauseComment,
                         includeABI: true
                     }

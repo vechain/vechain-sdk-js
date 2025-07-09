@@ -6,7 +6,8 @@ classDiagram
         +Clause deployContract(HexUInt contractBytecode, DeployParams deployParams?, ClauseOptions clauseOptions?)
         +Clause transferNFT(Address contractAddress, Address senderAddress, Address recipientAddress, HexUInt tokenId, ClauseOptions clauseOptions?)
         +Clause transferToken(Address tokenAddress, Address: senderAddress, VTHO amount, ClauseOptions clauseOptions?)
-        +Cluase transferVET(Address recipientAddress, VET amount, ClauseOptions clauseOptions?)
+        +Clause transferVTHOToken(Address tokenAddress, Address: senderAddress, Token token, ClauseOptions clauseOptions?)
+        +Clause transferVET(Address recipientAddress, VET amount, ClauseOptions clauseOptions?)
     }
     class ClauseOption{
         <<interface>>

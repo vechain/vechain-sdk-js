@@ -1,6 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
-import { InvalidHTTPRequest } from '@vechain/sdk-errors';
+import { InvalidHTTPParams, InvalidHTTPRequest } from '@vechain/sdk-errors';
 import { TESTNET_URL, ThorClient } from '../../../src';
+import { retryOperation } from '../../test-utils';
 
 /**
  * Node integration tests
@@ -16,11 +17,13 @@ describe('ThorClient - Nodes Module', () => {
          *  @internal
          */
         const thorClient = ThorClient.at(TESTNET_URL);
-        const peerNodes = await thorClient.nodes.getNodes();
+        const peerNodes = await retryOperation(async () => {
+            return await thorClient.nodes.getNodes();
+        });
 
         expect(peerNodes).toBeDefined();
         expect(Array.isArray(peerNodes)).toBe(true);
-    }, 3000);
+    }, 15000);
 
     test('valid URL but inaccessible VeChain node', async () => {
         /**
@@ -37,12 +40,12 @@ describe('ThorClient - Nodes Module', () => {
     test('null or empty URL or blank URL', async () => {
         let thorClient = ThorClient.at('');
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
-            InvalidHTTPRequest
+            InvalidHTTPParams
         );
 
         thorClient = ThorClient.at('   ');
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
-            InvalidHTTPRequest
+            InvalidHTTPParams
         );
     });
 
@@ -54,7 +57,7 @@ describe('ThorClient - Nodes Module', () => {
         const thorClient = ThorClient.at('INVALID_URL');
 
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
-            InvalidHTTPRequest
+            InvalidHTTPParams
         );
     });
 
@@ -68,12 +71,12 @@ describe('ThorClient - Nodes Module', () => {
     test('null or empty URL or blank URL', async () => {
         let thorClient = ThorClient.at('');
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
-            InvalidHTTPRequest
+            InvalidHTTPParams
         );
 
         thorClient = ThorClient.at('   ');
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
-            InvalidHTTPRequest
+            InvalidHTTPParams
         );
     });
 });
