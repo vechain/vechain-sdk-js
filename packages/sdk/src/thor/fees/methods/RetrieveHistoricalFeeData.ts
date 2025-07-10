@@ -231,4 +231,4 @@ class Query implements HttpQuery {
     }
 }
 
-export { RetrieveHistoricalFeeData };
+export { RetrieveHistoricalFeeData, Query };
