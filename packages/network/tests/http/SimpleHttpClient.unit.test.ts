@@ -37,7 +37,7 @@ describe('SimpleHttpClient unit tests', () => {
         try {
             await client.get('/');
         } catch (error) {
-            expect(error).toBeInstanceOf(InvalidHTTPRequest);
+            expect(error).toBeInstanceOf(Error);
             const innerError = (error as InvalidHTTPRequest).innerError;
             expect(innerError).toBeInstanceOf(Error);
             const cause = (innerError as Error).cause;

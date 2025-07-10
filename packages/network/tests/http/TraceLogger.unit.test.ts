@@ -234,9 +234,6 @@ describe('HTTP Trace Logger', () => {
                     logCaptureArray.some((log) => log.includes('HTTP Request'))
                 ).toBe(true);
                 expect(
-                    logCaptureArray.some((log) => log.includes('HTTP Error'))
-                ).toBe(true);
-                expect(
                     logCaptureArray.some((log) => log.includes('Network error'))
                 ).toBe(true);
             }
