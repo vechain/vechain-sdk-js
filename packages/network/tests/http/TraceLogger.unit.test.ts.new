@@ -1,4 +1,4 @@
-import { describe, expect } from '@jest/globals';
+import { describe, expect, jest } from '@jest/globals';
 import { SimpleHttpClient } from '../../src';
 import {
     logRequest,
@@ -13,12 +13,9 @@ import {
  * @group unit/http/logging
  */
 describe('HTTP Trace Logger', () => {
-    // Save original console.log
+    // Save original environment and console.log
+    const originalEnv = process.env.SDK_TRACE;
     const originalConsoleLog = console.log;
-
-    // Mutable test-local state
-    let originalEnv: string | undefined;
-    let logCaptureArray: string[] = [];
 
     // Mock data to use in tests
     const mockUrl = 'http://localhost/api';
@@ -28,10 +25,10 @@ describe('HTTP Trace Logger', () => {
     const mockResponse = { result: 'success' };
     const mockError = new Error('Test error');
 
-    beforeEach(() => {
-        // Save current environment variable
-        originalEnv = process.env.SDK_TRACE;
+    // Log capturing array
+    let logCaptureArray: string[] = [];
 
+    beforeEach(() => {
         // Reset mocks and capture array
         jest.resetAllMocks();
         logCaptureArray = [];
@@ -189,13 +186,13 @@ describe('HTTP Trace Logger', () => {
 
             // Mock fetch to return successful response
             jest.spyOn(globalThis, 'fetch').mockImplementation(
-                jest.fn().mockResolvedValueOnce({
+                () => Promise.resolve({
                     json: async () => await Promise.resolve(mockResponse),
                     ok: true,
                     headers: {
                         entries: () => [['Content-Type', 'application/json']]
                     }
-                })
+                } as Response)
             );
 
             const client = new SimpleHttpClient(mockUrl);
@@ -209,56 +206,70 @@ describe('HTTP Trace Logger', () => {
             expect(
                 logCaptureArray.some((log) => log.includes('HTTP Response'))
             ).toBe(true);
-            expect(logCaptureArray.some((log) => log.includes('/test'))).toBe(
-                true
-            );
+            expect(logCaptureArray.some((log) => log.includes('/test'))).toBe(true);
         });
 
         it('should log HTTP request and error when trace is enabled and request fails', async () => {
             process.env.SDK_TRACE = 'true';
-
-            // Mock fetch to throw an error
+            
+            // Create a response that will trigger the error path in SimpleHttpClient
+            const mockErrorResponse = {
+                ok: false,
+                status: 500,
+                statusText: 'Internal Server Error',
+                headers: {
+                    entries: () => []
+                }
+            } as Response;
+            
+            // Mock fetch to return the error response
             jest.spyOn(globalThis, 'fetch').mockImplementation(
-                jest.fn().mockRejectedValueOnce(new Error('Network error'))
+                () => Promise.resolve(mockErrorResponse)
             );
-
+            
             const client = new SimpleHttpClient(mockUrl);
-
+            
             try {
                 await client.get('/test');
-                fail('Should have thrown an error');
-            } catch {
+                // If we reach here, the test should fail
+                expect(true).toBe(false); // Force fail if no exception
+            } catch (error) {
                 // Verify logging output
                 expect(logCaptureArray.length).toBeGreaterThan(0);
                 expect(
                     logCaptureArray.some((log) => log.includes('HTTP Request'))
                 ).toBe(true);
+                
+                // The error should be logged by logError
                 expect(
                     logCaptureArray.some((log) => log.includes('HTTP Error'))
                 ).toBe(true);
                 expect(
-                    logCaptureArray.some((log) => log.includes('Network error'))
+                    logCaptureArray.some((log) => log.includes('500'))
+                ).toBe(true);
+                expect(
+                    logCaptureArray.some((log) => log.includes('Internal Server Error'))
                 ).toBe(true);
             }
         });
 
         it('should not log HTTP requests and responses when trace is disabled', async () => {
             delete process.env.SDK_TRACE;
-
+            
             // Mock fetch to return successful response
             jest.spyOn(globalThis, 'fetch').mockImplementation(
-                jest.fn().mockResolvedValueOnce({
+                () => Promise.resolve({
                     json: async () => await Promise.resolve(mockResponse),
                     ok: true,
                     headers: {
                         entries: () => [['Content-Type', 'application/json']]
                     }
-                })
+                } as Response)
             );
-
+            
             const client = new SimpleHttpClient(mockUrl);
             await client.get('/test');
-
+            
             // Verify no logging output
             expect(logCaptureArray.length).toBe(0);
         });
