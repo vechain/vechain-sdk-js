@@ -16,13 +16,13 @@ import {
     Units,
     VTHO
 } from '@vcdm';
-import { type TransactionBody, type TransactionClause } from '@transaction';
 import {
     IllegalArgumentError,
     InvalidPrivateKeyError,
     NoSuchElementError,
     UnsupportedOperationError
 } from '@errors';
+import { type TransactionBody, type TransactionClause } from '@thor';
 
 /**
  * Full Qualified Path
