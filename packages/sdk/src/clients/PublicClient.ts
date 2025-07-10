@@ -96,9 +96,7 @@ class PublicClient {
         ).atPos(pos);
     }
 
-    public async watchBlockNumber(
-        revision: bigint | number | string | Uint8Array | Hex = 'best' // viem specific
-    ) {
+    public async watchBlockNumber() {
         return await BlocksSubscription.at(
             new MozillaWebSocketClient(
                 `ws://${FetchHttpClient.at(this.httpClient)}`
