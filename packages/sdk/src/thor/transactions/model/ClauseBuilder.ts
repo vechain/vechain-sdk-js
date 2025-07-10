@@ -15,7 +15,7 @@ import {
     type ClauseOptions,
     type DeployParams,
     type TransactionClause
-} from '@transaction';
+} from '@thor';
 import { IllegalArgumentError } from '@errors';
 
 /**

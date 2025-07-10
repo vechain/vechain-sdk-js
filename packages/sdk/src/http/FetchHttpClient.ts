@@ -4,12 +4,13 @@ import { IllegalArgumentError } from '../errors/IllegalArgumentError';
 import { type HttpQuery, type HttpPath, type HttpClient } from '@http';
 import { isValidNetworkUrl } from '../index';
 
-const FQP = 'packages/core/http/FetchHttpClient.ts';
+const FQP = 'packages/core/http/FetchHttpClient.ts'; // FIX path
 
 // Types for dependency injection
 type RequestConstructor = typeof Request;
 type FetchFunction = typeof fetch;
 
+// FIX JSdoc
 class FetchHttpClient implements HttpClient {
     private static readonly PATH_SEPARATOR = '/';
 
