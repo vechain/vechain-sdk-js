@@ -9,12 +9,8 @@
  * Checks if trace logging is enabled via environment variable
  */
 export const isTraceEnabled = (): boolean => {
-    // Check environment variable - normalize to lowercase for case-insensitive comparison
-    const traceEnv =
-        typeof process !== 'undefined' && process.env
-            ? process.env.SDK_TRACE?.toLowerCase()
-            : undefined;
-    return traceEnv === 'true' || traceEnv === '1';
+    const value = process?.env?.SDK_TRACE?.toLowerCase();
+    return value === 'true' || value === '1';
 };
 
 /**
