@@ -22,6 +22,8 @@ module.exports = {
         '^@hdkey/(.*)$': '<rootDir>/src/hdkey/$1',
         '^@keystore$': '<rootDir>/src/keystore',
         '^@keystore/(.*)$': '<rootDir>/src/keystore/$1',
+        '@clients/(.*)': '<rootDir>/src/clients/$1',
+        '@clients': '<rootDir>/src/clients',
         '@thor/(.*)': '<rootDir>/src/thor/$1',
         '@thor': '<rootDir>/src/thor',
         '@ws/(.*)': '<rootDir>/src/ws/$1',

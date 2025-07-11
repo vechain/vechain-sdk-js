@@ -4,13 +4,15 @@
     "outDir": "./dist",
     "paths": {
       "@*": ["./src/*"],
+      "@clients": ["./src/clients"],
+      "@clients/*": ["./src/clients/*"],
+      "@http": ["./src/http"],
+      "@http/*": ["./src/http/*"],
       "@sdk": ["./src/*"],
       "@thor": ["./src/thor"],
       "@thor/*": ["./src/thor/*"],
       "@ws": ["./src/ws"],
-      "@ws/*": ["./src/ws/*"],
-      "@http": ["./src/http"],
-      "@http/*": ["./src/http/*"]
+      "@ws/*": ["./src/ws/*"]
     }
   },
   "include": [

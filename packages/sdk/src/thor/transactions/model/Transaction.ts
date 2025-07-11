@@ -835,7 +835,7 @@ class Transaction {
      *
      * @see encoded
      */
-    private encode(isSigned: boolean): Uint8Array {
+    public encode(isSigned: boolean): Uint8Array {
         // Encode transaction body with RLP
         return this.encodeBodyField(
             {
