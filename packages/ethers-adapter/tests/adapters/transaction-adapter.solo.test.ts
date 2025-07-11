@@ -299,31 +299,6 @@ describe('Transaction adapter tests', () => {
         });
     });
 
-    test('Should prioritize dynamic fee parameters over gasPrice (pre-Galactica)', async () => {
-        jest.spyOn(
-            provider.thorClient.forkDetector,
-            'isGalacticaForked'
-        ).mockResolvedValueOnce(false);
-
-        const tx: TransactionRequest = {
-            to: '0x123',
-            gasPrice: 150,
-            maxFeePerGas: 300n,
-            maxPriorityFeePerGas: 150n
-        };
-
-        const adaptedTx = await adaptTransaction(tx, provider);
-
-        // Dynamic fee parameters should take precedence over gasPrice
-        expect(adaptedTx).toEqual({
-            to: '0x123',
-            gasPriceCoef: undefined,
-            gasPrice: undefined,
-            maxFeePerGas: 300n,
-            maxPriorityFeePerGas: 150n
-        });
-    });
-
     test('Should prioritize dynamic fee parameters over gasPrice with different values', async () => {
         jest.spyOn(
             provider.thorClient.forkDetector,
@@ -435,6 +410,109 @@ describe('Transaction adapter tests', () => {
             gasPrice: undefined,
             maxFeePerGas: 2000n,
             maxPriorityFeePerGas: 1000n
+        });
+    });
+
+    test('Should throw error for maxPriorityFeePerGas + gasPrice without maxFeePerGas', async () => {
+        jest.spyOn(
+            provider.thorClient.forkDetector,
+            'isGalacticaForked'
+        ).mockResolvedValueOnce(true);
+
+        const tx: TransactionRequest = {
+            to: '0x123',
+            maxPriorityFeePerGas: 50n,
+            gasPrice: 100
+        };
+
+        await expect(adaptTransaction(tx, provider)).rejects.toThrow(
+            'Invalid parameter combination: maxPriorityFeePerGas and gasPrice cannot be used together without maxFeePerGas'
+        );
+    });
+
+    test('Should throw error for maxFeePerGas + gasPrice without maxPriorityFeePerGas', async () => {
+        jest.spyOn(
+            provider.thorClient.forkDetector,
+            'isGalacticaForked'
+        ).mockResolvedValueOnce(true);
+
+        const tx: TransactionRequest = {
+            to: '0x123',
+            maxFeePerGas: 200n,
+            gasPrice: 100
+        };
+
+        await expect(adaptTransaction(tx, provider)).rejects.toThrow(
+            'Invalid parameter combination: maxFeePerGas and gasPrice cannot be used together without maxPriorityFeePerGas'
+        );
+    });
+
+    test('Should use only maxFeePerGas and maxPriorityFeePerGas when all three parameters are provided', async () => {
+        jest.spyOn(
+            provider.thorClient.forkDetector,
+            'isGalacticaForked'
+        ).mockResolvedValueOnce(true);
+
+        const tx: TransactionRequest = {
+            to: '0x123',
+            maxFeePerGas: 200n,
+            maxPriorityFeePerGas: 50n,
+            gasPrice: 100
+        };
+
+        const adaptedTx = await adaptTransaction(tx, provider);
+
+        expect(adaptedTx).toEqual({
+            to: '0x123',
+            maxFeePerGas: 200n,
+            maxPriorityFeePerGas: 50n,
+            gasPriceCoef: undefined,
+            gasPrice: undefined
+        });
+    });
+
+    test('Should use maxFeePerGas and maxPriorityFeePerGas when both are provided', async () => {
+        jest.spyOn(
+            provider.thorClient.forkDetector,
+            'isGalacticaForked'
+        ).mockResolvedValueOnce(true);
+
+        const tx: TransactionRequest = {
+            to: '0x123',
+            maxFeePerGas: 200n,
+            maxPriorityFeePerGas: 50n
+        };
+
+        const adaptedTx = await adaptTransaction(tx, provider);
+
+        expect(adaptedTx).toEqual({
+            to: '0x123',
+            maxFeePerGas: 200n,
+            maxPriorityFeePerGas: 50n,
+            gasPriceCoef: undefined,
+            gasPrice: undefined
+        });
+    });
+
+    test('Should use gasPrice for legacy transaction when only gasPrice is provided', async () => {
+        jest.spyOn(
+            provider.thorClient.forkDetector,
+            'isGalacticaForked'
+        ).mockResolvedValueOnce(true);
+
+        const tx: TransactionRequest = {
+            to: '0x123',
+            gasPrice: 100
+        };
+
+        const adaptedTx = await adaptTransaction(tx, provider);
+
+        expect(adaptedTx).toEqual({
+            to: '0x123',
+            gasPriceCoef: 100,
+            gasPrice: undefined,
+            maxFeePerGas: undefined,
+            maxPriorityFeePerGas: undefined
         });
     });
 });

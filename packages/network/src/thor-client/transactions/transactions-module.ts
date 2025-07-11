@@ -404,37 +404,56 @@ class TransactionsModule {
         options?: TransactionBodyOptions
     ): Promise<TransactionBodyOptions> {
         options ??= {};
-        // Check if both dynamic fee parameters are specified (they take precedence)
-        if (
-            options.maxFeePerGas !== undefined &&
-            options.maxPriorityFeePerGas !== undefined
-        ) {
-            // Dynamic fee parameters take precedence over legacy parameters
-            options.gasPriceCoef = undefined;
-            // Continue with dynamic fee processing below
-        } else if (options.gasPriceCoef !== undefined) {
-            // Only legacy fee parameter is specified
-            options.maxFeePerGas = undefined;
-            options.maxPriorityFeePerGas = undefined;
-            return options;
-        } else if (
-            options.maxFeePerGas !== undefined ||
-            options.maxPriorityFeePerGas !== undefined
-        ) {
-            // Only one dynamic fee parameter is specified - this is an error
+
+        // Check for invalid parameter combinations first
+        const hasMaxFeePerGas = options.maxFeePerGas !== undefined;
+        const hasMaxPriorityFeePerGas =
+            options.maxPriorityFeePerGas !== undefined;
+        const hasGasPriceCoef = options.gasPriceCoef !== undefined;
+
+        // Case 3: maxPriorityFeePerGas + gasPriceCoef (error)
+        if (hasMaxPriorityFeePerGas && hasGasPriceCoef && !hasMaxFeePerGas) {
             throw new InvalidDataType(
                 'TransactionsModule.fillDefaultBodyOptions()',
-                'Invalid transaction body options. Both maxFeePerGas and maxPriorityFeePerGas must be specified for dynamic fee transactions.',
+                'Invalid parameter combination: maxPriorityFeePerGas and gasPriceCoef cannot be used together without maxFeePerGas.',
                 { options }
             );
         }
+
+        // Case 4: maxFeePerGas + gasPriceCoef (error)
+        if (hasMaxFeePerGas && hasGasPriceCoef && !hasMaxPriorityFeePerGas) {
+            throw new InvalidDataType(
+                'TransactionsModule.fillDefaultBodyOptions()',
+                'Invalid parameter combination: maxFeePerGas and gasPriceCoef cannot be used together without maxPriorityFeePerGas.',
+                { options }
+            );
+        }
+
+        // Case 1: maxPriorityFeePerGas + maxFeePerGas + gasPriceCoef (only 1 and 2 are used)
+        if (hasMaxPriorityFeePerGas && hasMaxFeePerGas && hasGasPriceCoef) {
+            options.gasPriceCoef = undefined;
+            // Continue with dynamic fee processing below
+        } else if (hasMaxPriorityFeePerGas && hasMaxFeePerGas) {
+            // Case 2: maxPriorityFeePerGas + maxFeePerGas (1 and 2 are used)
+            options.gasPriceCoef = undefined;
+            // Continue with dynamic fee processing below
+        } else if (
+            hasGasPriceCoef &&
+            !hasMaxPriorityFeePerGas &&
+            !hasMaxFeePerGas
+        ) {
+            // Case 5: gasPriceCoef only (3 is used - legacy transaction)
+            options.maxFeePerGas = undefined;
+            options.maxPriorityFeePerGas = undefined;
+            return options;
+        }
+
         // check if fork happened
         const galacticaHappened =
             await this.forkDetector.isGalacticaForked('best');
         if (
             !galacticaHappened &&
-            (options.maxFeePerGas !== undefined ||
-                options.maxPriorityFeePerGas !== undefined)
+            (hasMaxFeePerGas || hasMaxPriorityFeePerGas)
         ) {
             // user has specified dynamic fee tx, but fork didn't happen yet
             throw new InvalidDataType(
@@ -443,20 +462,12 @@ class TransactionsModule {
                 { options }
             );
         }
-        if (
-            !galacticaHappened &&
-            (options.gasPriceCoef === undefined ||
-                options.gasPriceCoef === null)
-        ) {
+        if (!galacticaHappened && !hasGasPriceCoef) {
             // galactica hasn't happened yet, default is legacy fee
             options.gasPriceCoef = 0;
             return options;
         }
-        if (
-            galacticaHappened &&
-            options.maxFeePerGas !== undefined &&
-            options.maxPriorityFeePerGas !== undefined
-        ) {
+        if (galacticaHappened && hasMaxFeePerGas && hasMaxPriorityFeePerGas) {
             // galactica happened, user specified new fee type
             return options;
         }
