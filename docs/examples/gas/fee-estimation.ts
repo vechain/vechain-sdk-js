@@ -41,7 +41,7 @@ const address = Address.ofPublicKey(child.publicKey).toString();
 const clauses = [
     Clause.transferVET(
         Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'),
-        VET.of(10000)
+        VET.of(10)
     )
 ];
 

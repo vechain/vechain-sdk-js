@@ -326,7 +326,7 @@ class TransactionsModule {
      * @throws an error if the genesis block or the latest block cannot be retrieved.
      */
     public async buildTransactionBody(
-        clauses: TransactionClause[],
+        clauses: TransactionClause[] | Clause[] | ContractClause['clause'],
         gas: number,
         options?: TransactionBodyOptions
     ): Promise<TransactionBody> {
@@ -353,10 +353,24 @@ class TransactionsModule {
 
         const filledOptions = await this.fillDefaultBodyOptions(options);
 
+        // Process clauses - handle ContractClause type properly
+        let processedClauses: TransactionClause[];
+
+        if (Array.isArray(clauses)) {
+            // This is a TransactionClause[] or Clause[]
+            processedClauses = clauses as TransactionClause[];
+        } else if ('clause' in clauses && 'functionAbi' in clauses) {
+            // Single ContractClause
+            processedClauses = [(clauses as ContractClause).clause];
+        } else {
+            // Single TransactionClause or Clause
+            processedClauses = [clauses];
+        }
+
         return {
             blockRef,
             chainTag,
-            clauses: await this.resolveNamesInClauses(clauses),
+            clauses: await this.resolveNamesInClauses(processedClauses),
             dependsOn: options?.dependsOn ?? null,
             expiration: options?.expiration ?? 32,
             gas,
