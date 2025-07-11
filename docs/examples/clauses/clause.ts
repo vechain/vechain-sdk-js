@@ -5,8 +5,7 @@ import {
     VET,
     Clause,
     HDKey,
-    networkInfo,
-    ABIContract
+    networkInfo
 } from '@vechain/sdk-core';
 
 // Shared client instance for all examples

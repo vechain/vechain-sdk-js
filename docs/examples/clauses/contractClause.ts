@@ -2,14 +2,10 @@ import { ThorClient, THOR_SOLO_URL } from '@vechain/sdk-network';
 import {
     Transaction,
     Address,
-    VET,
-    Clause,
     HDKey,
     networkInfo,
-    ABIContract,
     Token,
     Units,
-    TransactionClause,
     ContractClause
 } from '@vechain/sdk-core';
 
