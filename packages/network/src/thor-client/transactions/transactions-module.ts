@@ -358,7 +358,7 @@ class TransactionsModule {
 
         if (Array.isArray(clauses)) {
             // This is a TransactionClause[] or Clause[] - convert to TransactionClause[]
-            processedClauses = clauses.map(clause => ({
+            processedClauses = clauses.map((clause) => ({
                 to: clause.to,
                 data: clause.data,
                 value: clause.value
@@ -368,11 +368,13 @@ class TransactionsModule {
             processedClauses = [(clauses as ContractClause).clause];
         } else {
             // Single TransactionClause or Clause
-            processedClauses = [{
-                to: clauses.to,
-                data: clauses.data,
-                value: clauses.value
-            }];
+            processedClauses = [
+                {
+                    to: clauses.to,
+                    data: clauses.data,
+                    value: clauses.value
+                }
+            ];
         }
 
         return {
