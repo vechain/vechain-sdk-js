@@ -20,6 +20,9 @@ const signTransactionTestCases = {
                 description:
                     'Should sign a transaction without delegation (legacy)',
                 origin: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER,
+                params: {
+                    gasPriceCoef: 0
+                },
                 isDelegated: false,
                 expected: {
                     body: {
@@ -67,6 +70,9 @@ const signTransactionTestCases = {
                 description:
                     'Should sign a transaction with private key delegation (legacy)',
                 origin: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER,
+                params: {
+                    gasPriceCoef: 0
+                },
                 options: {
                     gasPayerPrivateKey:
                         TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.privateKey
@@ -185,6 +191,9 @@ const signTransactionTestCases = {
                 description:
                     'Should sign a transaction with delegation url (legacy)',
                 origin: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER,
+                params: {
+                    gasPriceCoef: 0
+                },
                 options: {
                     gasPayerServiceUrl: TESTNET_DELEGATE_URL
                 } satisfies SignTransactionOptions,

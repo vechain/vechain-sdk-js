@@ -329,6 +329,7 @@ describe('VeChain base signer tests - testnet', () => {
                 description,
                 origin,
                 options,
+                params,
                 isDelegated,
                 expected
             } of legacyTestCases) {
@@ -356,12 +357,12 @@ describe('VeChain base signer tests - testnet', () => {
                                 [sampleClause],
                                 gasResult.totalGas,
                                 {
-                                    isDelegated
+                                    isDelegated,
+                                    ...(params && {
+                                        gasPriceCoef: params.gasPriceCoef
+                                    })
                                 }
                             );
-
-                        // Ensure legacy transactions use gasPriceCoef
-                        txBody.gasPriceCoef = 0;
 
                         // Get the signer and sign the transaction
                         const signer = new VeChainPrivateKeySigner(
