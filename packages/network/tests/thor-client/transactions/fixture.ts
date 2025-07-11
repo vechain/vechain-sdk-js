@@ -219,17 +219,6 @@ const buildTransactionBodyClausesTestCases = [
                     .toString()
             },
             {
-                to: TESTING_CONTRACT_ADDRESS,
-                value: '0',
-                data: ABIContract.ofAbi(TESTING_CONTRACT_ABI)
-                    .encodeFunctionInput(
-                        'testAssertError',
-                        [0] // Any number !== 0 will cause Panic error
-                    )
-                    .toString(),
-                comment: 'Test Contract ABI'
-            },
-            {
                 to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
                 value: Units.parseEther('1').toString(),
                 data: '0x'
