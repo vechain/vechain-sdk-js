@@ -1,7 +1,3 @@
-/**
- * @group integration/transactions
- */
-import { type HttpClient } from '@http';
 import { RetrieveExpandedBlock, SendTransaction, TXID } from '@thor';
 import { type RegularBlockResponseJSON, type TXIDJSON } from '@thor/json';
 import { Address, HexUInt, Revision, VET } from '@vcdm';
@@ -10,30 +6,8 @@ import { Transaction, type TransactionBody } from '@thor/model';
 import { SOLO_NETWORK } from '@utils';
 
 import { TEST_ACCOUNTS } from '../../fixture';
-import { expect, jest } from '@jest/globals';
-import fastJsonStableStringify from 'fast-json-stable-stringify';
-
-const mockHttpClientGET = <T>(response: T): HttpClient => {
-    return {
-        get: jest.fn().mockReturnValue(response)
-    } as unknown as HttpClient;
-};
-
-const mockHttpClientPOST = <T>(response: T): HttpClient => {
-    return {
-        post: jest.fn().mockReturnValue(response)
-    } as unknown as HttpClient;
-};
-
-const mockResponse = <T>(body: T, status: number): Response => {
-    const init: ResponseInit = {
-        status,
-        headers: new Headers({
-            'Content-Type': 'application/json'
-        })
-    };
-    return new Response(fastJsonStableStringify(body), init);
-};
+import { expect } from '@jest/globals';
+import { mockHttpClient } from '../../utils/MockHttpClient';
 
 const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
 
@@ -72,7 +46,7 @@ describe('RetrieveTransactionReceipt UNIT tests', () => {
         } satisfies TXIDJSON;
         const latestBlock = (
             await RetrieveExpandedBlock.of(Revision.BEST).askTo(
-                mockHttpClientGET(mockResponse(expectedBlock, 200))
+                mockHttpClient(expectedBlock, 'get', true, 200)
             )
         ).response;
         expect(latestBlock).toBeDefined();
@@ -98,7 +72,7 @@ describe('RetrieveTransactionReceipt UNIT tests', () => {
         );
         const actualTXID = (
             await SendTransaction.of(signedTx.encoded).askTo(
-                mockHttpClientPOST(mockResponse(expectedTXID, 200))
+                mockHttpClient(expectedTXID, 'post', true, 200)
             )
         ).response;
         expect(actualTXID).toBeDefined();

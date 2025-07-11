@@ -1,10 +1,10 @@
-import { describe, expect, jest, test, beforeEach } from '@jest/globals';
+import { describe, expect, test, beforeEach } from '@jest/globals';
 import { ForkDetector } from '@thor/fork/methods/forkDetector';
-import { InvalidDataType } from '@vechain/sdk-errors';
 import {
     mockHttpClient,
     mockHttpClientWithError
-} from '../../utils/MockUnitTestClient';
+} from '../../utils/MockHttpClient';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * @group unit/fork
@@ -52,13 +52,13 @@ describe('ForkDetector unit tests', () => {
             expect(result).toBe(false);
         });
 
-        test('should throw InvalidDataType for invalid revision', async () => {
+        test('should throw IllegalArgumentError for invalid revision', async () => {
             const client = mockHttpClient({ baseFeePerGas: undefined }, 'get');
             const detector = new ForkDetector(client);
 
             await expect(
                 detector.isGalacticaForked('invalid-revision')
-            ).rejects.toThrow(InvalidDataType);
+            ).rejects.toThrow(IllegalArgumentError);
         });
 
         test('should use "best" as default revision', async () => {
@@ -111,7 +111,7 @@ describe('ForkDetector unit tests', () => {
             const detector = new ForkDetector(client);
 
             await expect(detector.isGalacticaForked('best')).rejects.toThrow(
-                'Network error'
+                'Network error: failed to get block details and no cached result found'
             );
         });
     });

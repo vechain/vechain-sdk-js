@@ -105,7 +105,7 @@ namespace Units {
      * in {@link Units.ether}.
      * @return The equivalent value in {@link Units.wei}.
      *
-     * @throws {InvalidDataType} If `exp` is not a numeric expression.
+     * @throws {IllegalArgumentError} If `exp` is not a numeric expression.
      *
      * @remarks The term `ether` refers to the order of magnitude 10E18,
      * not to the `ETH` cryptocurrency.
@@ -125,7 +125,7 @@ namespace Units {
      * @param {Units} unit - The order of magnitude to use to parse the `exp`
      * representation.
      *
-     * @throws {InvalidDataType} If `exp` is not a numeric expression.
+     * @throws {IllegalArgumentError} If `exp` is not a numeric expression.
      *
      * @remarks The term `ether` refers to the order of magnitude 10E18,
      * not to the `ETH` cryptocurrency.

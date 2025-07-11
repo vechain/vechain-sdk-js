@@ -1,6 +1,7 @@
-import { InvalidDataType } from '@vechain/sdk-errors';
 import { Revision } from '@vcdm';
 import { HttpClient } from '@http';
+import { ThorError } from '@thor';
+import { IllegalArgumentError } from '@errors';
 
 // In-memory cache for fork detection results
 interface CacheEntry {
@@ -24,7 +25,7 @@ class ForkDetector {
      *
      * @param revision Block number or ID (e.g., 'best', 'finalized', or numeric).
      * @returns `true` if Galactica-forked, otherwise `false`.
-     * @throws {InvalidDataType} If the revision is invalid.
+     * @throws {IllegalArgumentError} If the revision is invalid.
      */
     public async isGalacticaForked(
         revision?: string | number
@@ -39,7 +40,7 @@ class ForkDetector {
             revision = 'best';
         }
         if (!Revision.isValid(revision)) {
-            throw new InvalidDataType(
+            throw new IllegalArgumentError(
                 'GalacticaForkDetector.isGalacticaForked()',
                 'Invalid revision. Must be a valid block number or ID.',
                 { revision }
@@ -67,12 +68,23 @@ class ForkDetector {
         }
 
         // If cache miss or expired negative result, make the request
-        const block = await this.httpClient.get(
+        const response = await this.httpClient.get(
             { path: `/blocks/${revision}` },
             { query: '' }
         );
 
-        if (block === null) {
+        // We already checked the cache so no need to check it again here
+        if (!response.ok) {
+            throw new ThorError(
+                'ForkDetector.isGalacticaForked()',
+                'Network error: failed to get block details and no cached result found',
+                { revision },
+                undefined,
+                response.status
+            );
+        }
+
+        if (response === null) {
             // Cache the negative result with TTL
             galacticaForkCache.set(revisionKey, {
                 result: false,
@@ -81,7 +93,7 @@ class ForkDetector {
             return false;
         }
 
-        const blockData = await block.json();
+        const blockData = await response.json();
 
         if (blockData === null) {
             // Cache the negative result with TTL

@@ -6,24 +6,10 @@ import {
     ThorError
 } from '@thor';
 import { type GetTxReceiptResponseJSON } from '@thor/json';
-import fastJsonStableStringify from 'fast-json-stable-stringify';
-import type { HttpClient } from '@http';
-
-const mockHttpClient = <T>(response: T): HttpClient => {
-    return {
-        get: jest.fn().mockReturnValue(response)
-    } as unknown as HttpClient;
-};
-
-const mockResponse = <T>(body: T, status: number): Response => {
-    const init: ResponseInit = {
-        status,
-        headers: new Headers({
-            'Content-Type': 'application/json'
-        })
-    };
-    return new Response(fastJsonStableStringify(body), init);
-};
+import {
+    mockHttpClient,
+    mockHttpClientWithError
+} from '../../utils/MockHttpClient';
 
 /**
  * @group unit/transactions
@@ -36,7 +22,7 @@ describe('RetrieveTransactionReceipt UNIT tests', () => {
         const txId = HexUInt32.of('0xDEADBEEF');
         try {
             await RetrieveTransactionReceipt.of(txId).askTo(
-                mockHttpClient(mockResponse('id: invalid length', status))
+                mockHttpClientWithError('id: invalid length', 'get')
             );
             // noinspection ExceptionCaughtLocallyJS
             throw new Error('Should not reach here.');
@@ -83,7 +69,7 @@ describe('RetrieveTransactionReceipt UNIT tests', () => {
         const actual = (
             await RetrieveTransactionReceipt.of(
                 Hex.of(expected.meta.txID)
-            ).askTo(mockHttpClient(mockResponse(expected, 200)))
+            ).askTo(mockHttpClient(expected, 'get', true, 200))
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toBeInstanceOf(GetTxReceiptResponse);
@@ -127,7 +113,7 @@ describe('RetrieveTransactionReceipt UNIT tests', () => {
         const actual = (
             await RetrieveTransactionReceipt.of(Hex.of(expected.meta.txID))
                 .withHead(Hex.of(expected.meta.blockID))
-                .askTo(mockHttpClient(mockResponse(expected, 200)))
+                .askTo(mockHttpClient(expected, 'get', true, 200))
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toBeInstanceOf(GetTxReceiptResponse);
@@ -140,7 +126,7 @@ describe('RetrieveTransactionReceipt UNIT tests', () => {
         );
         const actual = (
             await RetrieveTransactionReceipt.of(txId).askTo(
-                mockHttpClient(mockResponse(null, 200))
+                mockHttpClient(null, 'get', true, 200)
             )
         ).response;
         expect(actual).toBeNull();

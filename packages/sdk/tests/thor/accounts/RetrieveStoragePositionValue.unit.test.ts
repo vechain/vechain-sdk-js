@@ -3,12 +3,13 @@ import { Address, BlockId, ThorId } from '@vcdm';
 import {
     RetrieveStoragePositionValue,
     RetrieveStoragePositionValuePath,
-    GetStorageResponse
+    GetStorageResponse,
+    ThorError
 } from '@thor';
 import {
     mockHttpClient,
     mockHttpClientWithError
-} from '../../utils/MockUnitTestClient';
+} from '../../utils/MockHttpClient';
 import { GetStorageResponseJSON } from '@thor/json';
 /**
  * VeChain retrieve storage position value - unit
@@ -104,9 +105,27 @@ describe('RetrieveStoragePositionValue unit tests', () => {
             );
 
             const request = RetrieveStoragePositionValue.of(address, key);
-            await expect(
-                request.askTo(mockHttpClientWithError('Network error', 'get'))
-            ).rejects.toThrow('Network error');
+            const mockClient = mockHttpClientWithError('Network error', 'get');
+
+            try {
+                await request.askTo(mockClient);
+                // Triggers the catch block
+                expect(true).toBe(false);
+            } catch (error) {
+                expect(error).toBeInstanceOf(ThorError);
+                const thorError = error as ThorError;
+
+                expect(thorError.message).toBe('Bad response.');
+                expect(thorError.fqn).toBe(
+                    'packages/sdk/src/thor/accounts/RetrieveStoragePositionValue.ts!askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveStoragePositionValue, GetStorageResponse>>'
+                );
+                expect(thorError.status).toBe(400);
+                expect(thorError.args).toEqual({
+                    url: expect.any(String)
+                });
+                expect(thorError.cause).toBeUndefined();
+                expect(thorError).toBeInstanceOf(Error);
+            }
         });
     });
 });

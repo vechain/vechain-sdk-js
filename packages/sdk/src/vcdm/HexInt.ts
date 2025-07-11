@@ -45,7 +45,7 @@ class HexInt extends Hex {
      * @param {bigint | number | string | Uint8Array | Hex} exp - The expression to be interpreted as an integer:
      * * bigint is always representable in hexadecimal base notation;
      * * number is converted to a bigint then represented in hexadecimal base notation;
-     *   it throws {@link InvalidDataType} if not an integer value;
+     *   it throws {@link IllegalArgumentError} if not an integer value;
      * * string is parsed as the hexadecimal expression of a bigint value, optionally tagged with `0x`;
      * * Uint8Array is interpreted as the sequence of bytes expressing a bigint value;
      * * {@link Hex} is interpreted as expressing a bigint value.
