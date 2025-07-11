@@ -363,9 +363,6 @@ class TransactionsModule {
                 data: clause.data,
                 value: clause.value
             }));
-        } else if ('clause' in clauses && 'functionAbi' in clauses) {
-            // Single ContractClause
-            processedClauses = [(clauses as ContractClause).clause];
         } else {
             // Single TransactionClause or Clause
             processedClauses = [
