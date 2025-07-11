@@ -96,6 +96,36 @@ export async function adaptTransaction(
             'best'
         );
 
+    // Check if both dynamic fee parameters are specified (they take precedence)
+    if (
+        tx.maxFeePerGas !== undefined &&
+        tx.maxPriorityFeePerGas !== undefined
+    ) {
+        // Dynamic fee parameters take precedence over legacy parameters
+        return {
+            ...tx,
+            gasPriceCoef: undefined,
+            gasPrice: undefined
+        };
+    } else if (tx.gasPrice !== undefined) {
+        // Only legacy fee parameter is specified
+        return {
+            ...tx,
+            gasPriceCoef: Number(tx.gasPrice),
+            gasPrice: undefined,
+            maxFeePerGas: undefined,
+            maxPriorityFeePerGas: undefined
+        };
+    } else if (
+        tx.maxFeePerGas !== undefined ||
+        tx.maxPriorityFeePerGas !== undefined
+    ) {
+        // Only one dynamic fee parameter is specified - this is an error
+        throw new Error(
+            'Both maxFeePerGas and maxPriorityFeePerGas must be specified for dynamic fee transactions'
+        );
+    }
+
     // If maxFeePerGas or maxPriorityFeePerGas is set, ensure Galactica fork has happened
     if (
         !galacticaHappened &&
@@ -143,15 +173,6 @@ export async function adaptTransaction(
             maxFeePerGas,
             maxPriorityFeePerGas,
             gasPriceCoef: undefined
-        };
-    }
-
-    // For legacy transactions (pre-Galactica), convert gasPrice to gasPriceCoef
-    if (!galacticaHappened && tx.gasPrice !== undefined) {
-        return {
-            ...tx,
-            gasPriceCoef: Number(tx.gasPrice),
-            gasPrice: undefined
         };
     }
 

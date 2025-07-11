@@ -66,7 +66,7 @@ describe('fillDefaultBodyOptions() unit tests', () => {
         ).rejects.toThrow(InvalidDataType);
     });
 
-    test('legacy tx <- all options are specified and fork did not happen', async () => {
+    test('dynamic fee tx <- all options are specified and fork did not happen (dynamic fees take precedence)', async () => {
         const client = ThorClient.at(TESTNET_URL);
         jest.spyOn(client.forkDetector, 'isGalacticaForked').mockResolvedValue(
             false
@@ -78,12 +78,13 @@ describe('fillDefaultBodyOptions() unit tests', () => {
         };
         const filledOptions =
             await client.transactions.fillDefaultBodyOptions(options);
-        expect(filledOptions.gasPriceCoef).toEqual(1.5);
-        expect(filledOptions.maxFeePerGas).toBeUndefined();
-        expect(filledOptions.maxPriorityFeePerGas).toBeUndefined();
+        // Dynamic fee parameters take precedence over legacy parameters
+        expect(filledOptions.gasPriceCoef).toBeUndefined();
+        expect(filledOptions.maxFeePerGas).toEqual(1000000000000000000);
+        expect(filledOptions.maxPriorityFeePerGas).toEqual(1000000000000000000);
     });
 
-    test('legacy tx <- all options are specified and fork has happened', async () => {
+    test('dynamic fee tx <- all options are specified and fork has happened (dynamic fees take precedence)', async () => {
         const client = ThorClient.at(TESTNET_URL);
         jest.spyOn(client.forkDetector, 'isGalacticaForked').mockResolvedValue(
             true
@@ -95,9 +96,10 @@ describe('fillDefaultBodyOptions() unit tests', () => {
         };
         const filledOptions =
             await client.transactions.fillDefaultBodyOptions(options);
-        expect(filledOptions.gasPriceCoef).toEqual(1.5);
-        expect(filledOptions.maxFeePerGas).toBeUndefined();
-        expect(filledOptions.maxPriorityFeePerGas).toBeUndefined();
+        // Dynamic fee parameters take precedence over legacy parameters
+        expect(filledOptions.gasPriceCoef).toBeUndefined();
+        expect(filledOptions.maxFeePerGas).toEqual(1000000000000000000);
+        expect(filledOptions.maxPriorityFeePerGas).toEqual(1000000000000000000);
     });
 
     test('dynamic fee tx <- only maxFeePerGas is specified and fork has happened', async () => {
@@ -160,6 +162,122 @@ describe('fillDefaultBodyOptions() unit tests', () => {
             await client.transactions.fillDefaultBodyOptions(options);
         expect(filledOptions.maxFeePerGas).toBe('0x50'); // computed
         expect(filledOptions.maxPriorityFeePerGas).toEqual('0x20'); // stays the same
+    });
+
+    test('dynamic fee tx <- dynamic fee parameters take precedence over gasPriceCoef when both specified (pre-Galactica)', async () => {
+        const client = ThorClient.at(TESTNET_URL);
+        jest.spyOn(client.forkDetector, 'isGalacticaForked').mockResolvedValue(
+            false
+        );
+        const options = {
+            gasPriceCoef: 2.5,
+            maxFeePerGas: 1000000000000000000,
+            maxPriorityFeePerGas: 1000000000000000000
+        };
+        const filledOptions =
+            await client.transactions.fillDefaultBodyOptions(options);
+        // Dynamic fee parameters take precedence over legacy parameters
+        expect(filledOptions.gasPriceCoef).toBeUndefined();
+        expect(filledOptions.maxFeePerGas).toEqual(1000000000000000000);
+        expect(filledOptions.maxPriorityFeePerGas).toEqual(1000000000000000000);
+    });
+
+    test('dynamic fee tx <- dynamic fee parameters take precedence over gasPriceCoef when both specified (post-Galactica)', async () => {
+        const client = ThorClient.at(TESTNET_URL);
+        jest.spyOn(client.forkDetector, 'isGalacticaForked').mockResolvedValue(
+            true
+        );
+        const options = {
+            gasPriceCoef: 3.0,
+            maxFeePerGas: 2000000000000000000,
+            maxPriorityFeePerGas: 500000000000000000
+        };
+        const filledOptions =
+            await client.transactions.fillDefaultBodyOptions(options);
+        // Dynamic fee parameters take precedence over legacy parameters
+        expect(filledOptions.gasPriceCoef).toBeUndefined();
+        expect(filledOptions.maxFeePerGas).toEqual(2000000000000000000);
+        expect(filledOptions.maxPriorityFeePerGas).toEqual(500000000000000000);
+    });
+
+    test('dynamic fee tx <- dynamic fee parameters take precedence over gasPriceCoef with hex values', async () => {
+        const client = ThorClient.at(TESTNET_URL);
+        jest.spyOn(client.forkDetector, 'isGalacticaForked').mockResolvedValue(
+            true
+        );
+        const options = {
+            gasPriceCoef: 1.75,
+            maxFeePerGas: '0x1000',
+            maxPriorityFeePerGas: '0x500'
+        };
+        const filledOptions =
+            await client.transactions.fillDefaultBodyOptions(options);
+        // Dynamic fee parameters take precedence over legacy parameters
+        expect(filledOptions.gasPriceCoef).toBeUndefined();
+        expect(filledOptions.maxFeePerGas).toEqual('0x1000');
+        expect(filledOptions.maxPriorityFeePerGas).toEqual('0x500');
+    });
+
+    test('error <- only maxFeePerGas is specified (incomplete dynamic fee)', async () => {
+        const client = ThorClient.at(TESTNET_URL);
+        jest.spyOn(client.forkDetector, 'isGalacticaForked').mockResolvedValue(
+            true
+        );
+        const options = {
+            maxFeePerGas: 1000000000000000000
+        };
+        await expect(
+            client.transactions.fillDefaultBodyOptions(options)
+        ).rejects.toThrow(
+            'Both maxFeePerGas and maxPriorityFeePerGas must be specified for dynamic fee transactions'
+        );
+    });
+
+    test('error <- only maxPriorityFeePerGas is specified (incomplete dynamic fee)', async () => {
+        const client = ThorClient.at(TESTNET_URL);
+        jest.spyOn(client.forkDetector, 'isGalacticaForked').mockResolvedValue(
+            true
+        );
+        const options = {
+            maxPriorityFeePerGas: 1000000000000000000
+        };
+        await expect(
+            client.transactions.fillDefaultBodyOptions(options)
+        ).rejects.toThrow(
+            'Both maxFeePerGas and maxPriorityFeePerGas must be specified for dynamic fee transactions'
+        );
+    });
+
+    test('error <- maxFeePerGas and gasPriceCoef specified (incomplete dynamic fee)', async () => {
+        const client = ThorClient.at(TESTNET_URL);
+        jest.spyOn(client.forkDetector, 'isGalacticaForked').mockResolvedValue(
+            true
+        );
+        const options = {
+            maxFeePerGas: 1000000000000000000,
+            gasPriceCoef: 1.5
+        };
+        await expect(
+            client.transactions.fillDefaultBodyOptions(options)
+        ).rejects.toThrow(
+            'Both maxFeePerGas and maxPriorityFeePerGas must be specified for dynamic fee transactions'
+        );
+    });
+
+    test('error <- maxPriorityFeePerGas and gasPriceCoef specified (incomplete dynamic fee)', async () => {
+        const client = ThorClient.at(TESTNET_URL);
+        jest.spyOn(client.forkDetector, 'isGalacticaForked').mockResolvedValue(
+            true
+        );
+        const options = {
+            maxPriorityFeePerGas: 1000000000000000000,
+            gasPriceCoef: 1.5
+        };
+        await expect(
+            client.transactions.fillDefaultBodyOptions(options)
+        ).rejects.toThrow(
+            'Both maxFeePerGas and maxPriorityFeePerGas must be specified for dynamic fee transactions'
+        );
     });
 });
 
@@ -258,5 +376,61 @@ describe('buildTransactionBody() unit tests', () => {
         );
         expect(txBody.maxFeePerGas).toBe(1000000000000000000);
         expect(txBody.maxPriorityFeePerGas).toBe('0x01'); // with leading zero
+    });
+
+    test('legacy tx <- gasPriceCoef prioritizes over dynamic fee parameters in buildTransactionBody (pre-Galactica)', async () => {
+        // Vet transfer clause
+        const clauses = [
+            {
+                to: '0x0000000000000000000000000000000000000000',
+                value: 1,
+                data: '0x'
+            }
+        ];
+        const client = ThorClient.at(TESTNET_URL);
+        jest.spyOn(client.forkDetector, 'isGalacticaForked').mockResolvedValue(
+            false
+        );
+        const options = {
+            gasPriceCoef: 2.0,
+            maxFeePerGas: 1500000000000000000,
+            maxPriorityFeePerGas: 750000000000000000
+        };
+        const txBody = await client.transactions.buildTransactionBody(
+            clauses,
+            1000,
+            options
+        );
+        expect(txBody.gasPriceCoef).toEqual(2.0);
+        expect(txBody.maxFeePerGas).toBeUndefined();
+        expect(txBody.maxPriorityFeePerGas).toBeUndefined();
+    });
+
+    test('legacy tx <- gasPriceCoef prioritizes over dynamic fee parameters in buildTransactionBody (post-Galactica)', async () => {
+        // Vet transfer clause
+        const clauses = [
+            {
+                to: '0x0000000000000000000000000000000000000000',
+                value: 1,
+                data: '0x'
+            }
+        ];
+        const client = ThorClient.at(TESTNET_URL);
+        jest.spyOn(client.forkDetector, 'isGalacticaForked').mockResolvedValue(
+            true
+        );
+        const options = {
+            gasPriceCoef: 1.25,
+            maxFeePerGas: 3000000000000000000,
+            maxPriorityFeePerGas: 1000000000000000000
+        };
+        const txBody = await client.transactions.buildTransactionBody(
+            clauses,
+            1000,
+            options
+        );
+        expect(txBody.gasPriceCoef).toEqual(1.25);
+        expect(txBody.maxFeePerGas).toBeUndefined();
+        expect(txBody.maxPriorityFeePerGas).toBeUndefined();
     });
 });

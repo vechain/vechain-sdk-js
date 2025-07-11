@@ -404,21 +404,27 @@ class TransactionsModule {
         options?: TransactionBodyOptions
     ): Promise<TransactionBodyOptions> {
         options ??= {};
-        if (options.gasPriceCoef !== undefined) {
-            // user specified legacy fee type
+        // Check if both dynamic fee parameters are specified (they take precedence)
+        if (
+            options.maxFeePerGas !== undefined &&
+            options.maxPriorityFeePerGas !== undefined
+        ) {
+            // Dynamic fee parameters take precedence over legacy parameters
+            options.gasPriceCoef = undefined;
+            // Continue with dynamic fee processing below
+        } else if (options.gasPriceCoef !== undefined) {
+            // Only legacy fee parameter is specified
             options.maxFeePerGas = undefined;
             options.maxPriorityFeePerGas = undefined;
             return options;
-        }
-        if (
-            options.gasPriceCoef !== undefined &&
-            (options.maxFeePerGas !== undefined ||
-                options.maxPriorityFeePerGas !== undefined)
+        } else if (
+            options.maxFeePerGas !== undefined ||
+            options.maxPriorityFeePerGas !== undefined
         ) {
-            // user specified both legacy and dynamic fee type
+            // Only one dynamic fee parameter is specified - this is an error
             throw new InvalidDataType(
                 'TransactionsModule.fillDefaultBodyOptions()',
-                'Invalid transaction body options. Cannot specify both legacy and dynamic fee type options.',
+                'Invalid transaction body options. Both maxFeePerGas and maxPriorityFeePerGas must be specified for dynamic fee transactions.',
                 { options }
             );
         }
