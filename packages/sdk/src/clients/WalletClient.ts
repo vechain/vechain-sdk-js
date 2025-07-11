@@ -1,7 +1,7 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
 import { type Account } from 'viem';
 import { type ThorNetworks, Transaction } from '@thor';
-import { Address, type Hex, HexUInt } from '@vcdm';
+import { Address, Blake2b256, type Hex, HexUInt } from '@vcdm';
 import { UnsupportedOperationError } from '@errors';
 
 const FQP = 'packages/sdk/src/clients/WalletClient.ts!';
@@ -58,7 +58,26 @@ class WalletClient {
 
     public async signTransaction(tx: Transaction): Promise<Hex> {
         if (this.account !== null) {
-            const txHash = tx.getTransactionHash().bytes;
+            const encodedTx = tx.encodeBodyField(
+                {
+                    // Existing body and the optional `reserved` field if present.
+                    ...tx.body,
+                    /*
+                     * The `body.clauses` property is already an array,
+                     * albeit TypeScript realize; hence cast is needed
+                     * otherwise encodeObject will throw an error.
+                     */
+                    clauses: tx.body.clauses as Array<{
+                        to: string | null;
+                        value: string | number;
+                        data: string;
+                    }>,
+                    // New reserved field.
+                    reserved: tx.encodeReservedField()
+                },
+                false
+            );
+            const txHash = Blake2b256.of(encodedTx).bytes;
             const signature = await WalletClient.signHash(txHash, this.account);
             return HexUInt.of(Transaction.of(tx.body, signature).encode(true));
         }
