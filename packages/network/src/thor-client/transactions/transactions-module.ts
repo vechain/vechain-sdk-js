@@ -353,18 +353,26 @@ class TransactionsModule {
 
         const filledOptions = await this.fillDefaultBodyOptions(options);
 
-        // Process clauses - handle ContractClause type properly
+        // Process clauses - handle different clause types properly
         let processedClauses: TransactionClause[];
 
         if (Array.isArray(clauses)) {
-            // This is a TransactionClause[] or Clause[]
-            processedClauses = clauses as TransactionClause[];
+            // This is a TransactionClause[] or Clause[] - convert to TransactionClause[]
+            processedClauses = clauses.map(clause => ({
+                to: clause.to,
+                data: clause.data,
+                value: clause.value
+            }));
         } else if ('clause' in clauses && 'functionAbi' in clauses) {
             // Single ContractClause
             processedClauses = [(clauses as ContractClause).clause];
         } else {
             // Single TransactionClause or Clause
-            processedClauses = [clauses];
+            processedClauses = [{
+                to: clauses.to,
+                data: clauses.data,
+                value: clauses.value
+            }];
         }
 
         return {
