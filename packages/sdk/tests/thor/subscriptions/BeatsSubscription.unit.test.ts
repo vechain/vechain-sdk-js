@@ -5,6 +5,10 @@ import {
     SubscriptionBeat2Response
 } from '@thor/subscriptions';
 import { type SubscriptionBeat2ResponseJSON } from '@thor/subscriptions';
+import {
+    mockWebSocketInstance,
+    mockWebSocketConstructor
+} from '../../utils/MockWSClient';
 
 const mockBeatData = {
     gasLimit: 21000,
@@ -18,26 +22,6 @@ const mockBeatData = {
     bloom: '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
     k: 0
 } satisfies SubscriptionBeat2ResponseJSON;
-
-// Create a mock WebSocket instance that will be returned by the constructor
-const mockWebSocketInstance = {
-    addEventListener: jest.fn(),
-    removeEventListener: jest.fn(),
-    send: jest.fn(),
-    close: jest.fn(),
-    onopen: null as ((event: Event) => void) | null,
-    onclose: null as ((event: CloseEvent) => void) | null,
-    onerror: null as ((event: Event) => void) | null,
-    onmessage: null as ((event: MessageEvent) => void) | null
-};
-
-// Mock WebSocket constructor to return our instance
-const mockWebSocketConstructor = jest
-    .fn()
-    .mockImplementation(() => mockWebSocketInstance);
-
-// Set up global WebSocket
-global.WebSocket = mockWebSocketConstructor as unknown as typeof WebSocket;
 
 /**
  * VeChain beats subscription - unit

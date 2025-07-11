@@ -4,25 +4,11 @@
 import { Hex, HexUInt32 } from '@vcdm';
 import { GetTxResponse, RetrieveTransactionByID, ThorError } from '@thor';
 import { type GetTxResponseJSON } from '@thor/json';
-import type { HttpClient } from '@http';
-import { expect, jest } from '@jest/globals';
-import fastJsonStableStringify from 'fast-json-stable-stringify';
-
-const mockHttpClient = <T>(response: T): HttpClient => {
-    return {
-        get: jest.fn().mockReturnValue(response)
-    } as unknown as HttpClient;
-};
-
-const mockResponse = <T>(body: T, status: number): Response => {
-    const init: ResponseInit = {
-        status,
-        headers: new Headers({
-            'Content-Type': 'application/json'
-        })
-    };
-    return new Response(fastJsonStableStringify(body), init);
-};
+import { expect } from '@jest/globals';
+import {
+    mockHttpClient,
+    mockHttpClientWithError
+} from '../../utils/MockHttpClient';
 
 /**
  * @group unit/transactions
@@ -33,7 +19,7 @@ describe('RetrieveTransactionByID UNIT tests', () => {
         const txId = HexUInt32.of('0xDEADBEEF');
         try {
             await RetrieveTransactionByID.of(txId).askTo(
-                mockHttpClient(mockResponse('id: invalid length', status))
+                mockHttpClientWithError('id: invalid length', 'get')
             );
             // noinspection ExceptionCaughtLocallyJS
             throw new Error('Should not reach here.');
@@ -52,9 +38,7 @@ describe('RetrieveTransactionByID UNIT tests', () => {
         try {
             await RetrieveTransactionByID.of(txId)
                 .withHead(head)
-                .askTo(
-                    mockHttpClient(mockResponse('head: invalid length', status))
-                );
+                .askTo(mockHttpClientWithError('head: invalid length', 'get'));
             // noinspection ExceptionCaughtLocallyJS
             throw new Error('Should not reach here.');
         } catch (error) {
@@ -95,7 +79,7 @@ describe('RetrieveTransactionByID UNIT tests', () => {
         } satisfies GetTxResponseJSON;
         const actual = (
             await RetrieveTransactionByID.of(Hex.of(expected.id)).askTo(
-                mockHttpClient(mockResponse(expected, 200))
+                mockHttpClient(expected, 'get', true, 200)
             )
         ).response;
         expect(actual).toBeDefined();
@@ -136,7 +120,7 @@ describe('RetrieveTransactionByID UNIT tests', () => {
         const actual = (
             await RetrieveTransactionByID.of(Hex.of(expected.id))
                 .withHead(Hex.of(expected.meta.blockID))
-                .askTo(mockHttpClient(mockResponse(expected, 200)))
+                .askTo(mockHttpClient(expected, 'get', true, 200))
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toBeInstanceOf(GetTxResponse);
@@ -176,7 +160,7 @@ describe('RetrieveTransactionByID UNIT tests', () => {
         const actual = (
             await RetrieveTransactionByID.of(Hex.of(expected.id))
                 .withPending(false)
-                .askTo(mockHttpClient(mockResponse(expected, 200)))
+                .askTo(mockHttpClient(expected, 'get', true, 200))
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toBeInstanceOf(GetTxResponse);
@@ -217,7 +201,7 @@ describe('RetrieveTransactionByID UNIT tests', () => {
             await RetrieveTransactionByID.of(Hex.of(expected.id))
                 .withHead(Hex.of(expected.meta.blockID))
                 .withPending(false)
-                .askTo(mockHttpClient(mockResponse(expected, 200)))
+                .askTo(mockHttpClient(expected, 'get', true, 200))
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toBeInstanceOf(GetTxResponse);
@@ -230,7 +214,7 @@ describe('RetrieveTransactionByID UNIT tests', () => {
         );
         const actual = (
             await RetrieveTransactionByID.of(txId).askTo(
-                mockHttpClient(mockResponse(null, 200))
+                mockHttpClient(null, 'get', true, 200)
             )
         ).response;
         expect(actual).toBeNull();

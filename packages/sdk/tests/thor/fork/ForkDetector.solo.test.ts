@@ -2,7 +2,7 @@ import { describe, expect, test, beforeEach } from '@jest/globals';
 import { ForkDetector } from '@thor/fork/methods/forkDetector';
 import { FetchHttpClient } from '@http';
 import { ThorNetworks } from '@thor';
-import { InvalidDataType } from '@vechain/sdk-errors';
+import { IllegalArgumentError } from '@errors';
 
 /**
  * @group integration/fork
@@ -36,10 +36,10 @@ describe('ForkDetector SOLO tests', () => {
             expect(result).toBe(false);
         });
 
-        test('should throw InvalidDataType for invalid revision', async () => {
+        test('should throw IllegalArgumentError for invalid revision', async () => {
             await expect(
                 forkDetector.isGalacticaForked('invalid-revision')
-            ).rejects.toThrow(InvalidDataType);
+            ).rejects.toThrow(IllegalArgumentError);
         });
 
         test('should use default (best)revision when undefined', async () => {

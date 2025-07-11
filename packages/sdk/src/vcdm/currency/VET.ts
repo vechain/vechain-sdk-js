@@ -47,7 +47,7 @@ class VET extends Coin {
      *                     Defaults to {@link Units.ether} if not provided.
      * @return {VET} A new VET instance with the provided value and unit.
      *
-     * @throws {InvalidDataType} If `value` is not a numeric expression.
+     * @throws {IllegalArgumentError} If `value` is not a numeric expression.
      */
     public static of(
         value: bigint | number | string | FixedPointNumber,

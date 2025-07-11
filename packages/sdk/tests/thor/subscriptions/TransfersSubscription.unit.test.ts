@@ -5,28 +5,12 @@ import {
     SubscriptionTransferResponse
 } from '@thor/subscriptions';
 import { Address, BlockId } from '@vcdm';
-import type { LogMetaJSON } from '@thor/logs';
+import { LogMetaJSON } from '@json';
 import { type SubscriptionTransferResponseJSON } from '@thor/subscriptions';
-
-// Create a mock WebSocket instance that will be returned by the constructor
-const mockWebSocketInstance = {
-    addEventListener: jest.fn(),
-    removeEventListener: jest.fn(),
-    send: jest.fn(),
-    close: jest.fn(),
-    onopen: null as ((event: Event) => void) | null,
-    onclose: null as ((event: CloseEvent) => void) | null,
-    onerror: null as ((event: Event) => void) | null,
-    onmessage: null as ((event: MessageEvent) => void) | null
-};
-
-// Mock WebSocket constructor to return our instance
-const mockWebSocketConstructor = jest
-    .fn()
-    .mockImplementation(() => mockWebSocketInstance);
-
-// Set up global WebSocket
-global.WebSocket = mockWebSocketConstructor as unknown as typeof WebSocket;
+import {
+    mockWebSocketInstance,
+    mockWebSocketConstructor
+} from '../../utils/MockWSClient';
 
 // Factory functions for creating TransfersSubscription instances with different parameters
 // This avoids using reflection and provides a cleaner test approach

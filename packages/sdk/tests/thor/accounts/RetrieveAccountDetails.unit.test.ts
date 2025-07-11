@@ -3,13 +3,14 @@ import { Address, VET, VTHO } from '@vcdm';
 import {
     RetrieveAccountDetails,
     RetrieveAccountDetailsPath,
-    GetAccountResponse
+    GetAccountResponse,
+    ThorError
 } from '@thor';
 import { type GetAccountResponseJSON } from '@thor/json';
 import {
     mockHttpClient,
     mockHttpClientWithError
-} from '../../utils/MockUnitTestClient';
+} from '../../utils/MockHttpClient';
 
 /**
  * VeChain retrieve account details - unit
@@ -81,9 +82,26 @@ describe('RetrieveAccountDetails unit tests', () => {
 
             const mockClient = mockHttpClientWithError('Network error', 'get');
             const request = RetrieveAccountDetails.of(address);
-            await expect(request.askTo(mockClient)).rejects.toThrow(
-                'Network error'
-            );
+
+            try {
+                await request.askTo(mockClient);
+                // Triggers the catch block
+                expect(true).toBe(false);
+            } catch (error) {
+                expect(error).toBeInstanceOf(ThorError);
+                const thorError = error as ThorError;
+
+                expect(thorError.message).toBe('Bad response.');
+                expect(thorError.fqn).toBe(
+                    'packages/sdk/src/thor/accounts/RetrieveAccountDetails.ts!askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveAccountDetails, GetAccountResponse>>'
+                );
+                expect(thorError.status).toBe(400);
+                expect(thorError.args).toEqual({
+                    url: expect.any(String)
+                });
+                expect(thorError.cause).toBeUndefined();
+                expect(thorError).toBeInstanceOf(Error);
+            }
         });
     });
 });
