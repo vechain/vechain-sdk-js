@@ -149,9 +149,10 @@ class Address extends HexUInt {
      * and a [BIP44 Derivation Path](https://github.com/satoshilabs/slips/blob/master/slip-0044.md)
      * as in the examples.
      *
-     * Secure audit function.
+     * Secure audited function.
      * - {@link bip32.HDKey}(https://github.com/paulmillr/scure-bip32)
      * - {@link HDKey}
+     * - Follow links for additional security notes.
      *
      * @example `m/0` (default)
      * @example `m/0/2`
