@@ -314,6 +314,7 @@ class Secp256k1 {
      *
      * @remarks Security audited method, depends on
      * * [nc_secp256k1.sign](https://github.com/paulmillr/noble-secp256k1).
+     * * [nc_utils.concatBytes](https://github.com/paulmillr/noble-curves?tab=readme-ov-file#utils-useful-utilities)
      * * The above dependency implementations are sensitive to [timing attack](https://en.wikipedia.org/wiki/Timing_attack)
      *   and should be not used in the context where such risk is a concern:
      *   read the [Security](https://github.com/paulmillr/noble-hashes/blob/main/README.md#security) note.

@@ -119,6 +119,7 @@ class HDKey extends s_bip32.HDKey {
      *
      * @remarks Security audited method, depends on
      * * [base58.encode](https://github.com/paulmillr/scure-base);
+     * * [nc_utils.concatBytes](https://github.com/paulmillr/noble-curves?tab=readme-ov-file#utils-useful-utilities)
      * * [s_bip32.HDKey.fromExtendedKey](https://github.com/paulmillr/scure-bip32).
      * * {@link Sha256};
      * * The above dependency implementations are sensitive to [timing attack](https://en.wikipedia.org/wiki/Timing_attack)
@@ -177,9 +178,10 @@ class HDKey extends s_bip32.HDKey {
      *
      * @remarks Security audited method, depends on
      * * [base58.encode](https://github.com/paulmillr/scure-base);
+     * * [nc_utils.concatBytes](https://github.com/paulmillr/noble-curves?tab=readme-ov-file#utils-useful-utilities)
+     * * [HDKey.fromExtendedKey](https://github.com/paulmillr/scure-bip32).
      * * {@link Secp256k1.compressPublicKey};
      * * {@link Sha256};
-     * * [HDKey.fromExtendedKey](https://github.com/paulmillr/scure-bip32).
      * * The above dependency implementations are sensitive to [timing attack](https://en.wikipedia.org/wiki/Timing_attack)
      *   and should be not used in the context where such risk is a concern:
      *   read the [Security](https://github.com/paulmillr/noble-hashes/blob/main/README.md#security) note.
