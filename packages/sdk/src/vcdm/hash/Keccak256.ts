@@ -23,7 +23,7 @@ class Keccak256 extends HexUInt {
      *
      * @throws {IllegalArgumentError} - If a hash error occurs.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      * * [`nh_keccak_256`](https://github.com/paulmillr/noble-hashes#sha3-fips-shake-keccak).
      */
     public static of(

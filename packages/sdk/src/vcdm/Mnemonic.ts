@@ -150,7 +150,7 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
      *
      * @throws {IllegalArgumentError} If the derivation `path` is invalid.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      * * {@link HDKey}.
      */
     public static toPrivateKey(
@@ -228,7 +228,7 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
      *
      * @returns {boolean} true if the words are valid, false otherwise.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      * * [validateMnemonic](https://github.com/paulmillr/scure-bip39).
      */
     public static isValid(words: string | string[]): boolean {

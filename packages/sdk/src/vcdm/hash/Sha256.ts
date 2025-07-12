@@ -24,7 +24,7 @@ class Sha256 extends HexUInt {
      *
      * @throws {IllegalArgumentError} - If a hash error occurs.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      * * [`nh_sha256.sha256`](https://github.com/paulmillr/noble-hashes#sha2-sha256-sha384-sha512-and-others).
      */
     public static of(exp: bigint | number | string | Uint8Array): Sha256 {
