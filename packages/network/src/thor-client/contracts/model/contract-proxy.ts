@@ -35,8 +35,8 @@ import {
 } from './types';
 
 /**
- * Creates a Proxy object for reading contract state, allowing for the dynamic invocation of contract read operations.
- * @param contract - The contract instance to create the read proxy for.
+ * Creates a Proxy object for reading contract functions, allowing for the dynamic invocation of contract read operations.
+ * @param contract - The contract instance
  * @returns A Proxy that intercepts calls to read contract functions, automatically handling the invocation with the configured options.
  */
 function getReadProxy<TAbi extends Abi>(
@@ -91,7 +91,9 @@ function getReadProxy<TAbi extends Abi>(
                         }
                     );
                 }
-                return executeCallResult.result.array as unknown[];
+
+                // Return the properly typed result based on the function's outputs
+                return executeCallResult.result.array ?? [];
             };
         }
     });
