@@ -66,6 +66,9 @@ class HDKey extends s_bip32.HDKey {
      * * [s_bip32.HDKey.derive](https://github.com/paulmillr/scure-bip32);
      * * [s_bip32.HDKey.fromMasterSeed](https://github.com/paulmillr/scure-bip32);
      * * [s_bip39.mnemonicToSeedSync](https://github.com/paulmillr/scure-bip39).
+     * * The above implemeentations are sensitive to [timing attack](https://en.wikipedia.org/wiki/Timing_attack)
+     *   and should be not used in context where such risk is a concern:
+     *   read the [Security](https://github.com/paulmillr/noble-hashes/blob/main/README.md#security) note.
      */
     public static fromMnemonic(
         words: string[],
