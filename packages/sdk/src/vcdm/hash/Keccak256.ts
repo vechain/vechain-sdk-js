@@ -23,8 +23,12 @@ class Keccak256 extends HexUInt {
      *
      * @throws {IllegalArgumentError} - If a hash error occurs.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      * * [`nh_keccak_256`](https://github.com/paulmillr/noble-hashes#sha3-fips-shake-keccak).
+     * * The above dependency implementation is sensitive to [timing attack](https://en.wikipedia.org/wiki/Timing_attack)
+     *   and should be not used in the context where such risk is a concern:
+     *   read the [Security](https://github.com/paulmillr/noble-hashes/blob/main/README.md#security) note.
+     * * Follow links for additional security notes.
      */
     public static of(
         exp: bigint | number | string | Uint8Array | Hex

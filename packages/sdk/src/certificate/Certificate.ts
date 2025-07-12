@@ -258,6 +258,7 @@ class Certificate implements CertificateData {
      * @remarks Security audited method, depends on
      * * {@link Blake2b256.of};
      * * {@link Secp256k1.sign}.
+     * * Follow links for additional security notes.
      *
      * @see encode
      * @see verify
@@ -283,6 +284,7 @@ class Certificate implements CertificateData {
      * @remarks Security audited method, depends on
      * * {@link Blake2b256.of};
      * * {@link Secp256k1.recover}.
+     * * Follow links for additional security notes.
      */
     public verify(): void {
         if (!this.isSigned())

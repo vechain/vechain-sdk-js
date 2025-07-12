@@ -2,7 +2,7 @@ import { Hex, HexUInt } from '@vcdm';
 import { IllegalArgumentError } from '@errors';
 
 /**
- * Full Qualified Path.
+ * Full-Qualified Path.
  */
 const FQP = 'packages/sdk/src/vcdm/BlockId.ts!';
 

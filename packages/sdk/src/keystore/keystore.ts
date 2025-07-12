@@ -14,7 +14,7 @@ import pkg from '../../package.json';
 const TAG = `vechain-sdk-js:${pkg.version}`;
 
 /**
- * Full Qualified Path.
+ * Full-Qualified Path.
  */
 const FQP = 'packages/sdk/src/keystore/keystore.ts!';
 

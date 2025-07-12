@@ -212,10 +212,11 @@ class Transaction {
      * @throws {NoSuchElementError} If the transaction is delegated but the signature is missing.
      * @throws {NoSuchElementError} If the transaction is not delegated.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      * - {@link Address.ofPublicKey};
      * - {@link Secp256k1.recover};
      * - {@link Transaction.getTransactionHash}.
+     * - Follow links for additional security notes.
      */
     public get gasPayer(): Address {
         if (this.isDelegated) {
@@ -264,8 +265,9 @@ class Transaction {
      * and origin if the transaction is signed.
      * @throws {NoSuchElementError} If the transaction is not signed.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      * - {@link Blake2b256.of}
+     * - Follow links for additional security notes.
      */
     public get id(): Blake2b256 {
         if (this.isSigned) {
@@ -329,9 +331,10 @@ class Transaction {
      * @return {Address} The address derived from the public key of the transaction's sender.
      * @throws {NoSuchElementError} If the transaction is not signed, an exception is thrown indicating the absence of the origin field.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      * - {@link Address.ofPublicKey};
      * - {@link Secp256k1.recover}.
+     * - Follow links for additional security notes.
      */
     public get origin(): Address {
         if (this.senderSignature !== undefined) {
@@ -439,8 +442,9 @@ class Transaction {
      * @remarks
      * `gasPayer` is used to sign a transaction on behalf of another account.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      * - {@link Blake2b256.of}.
+     * - Follow links for additional security notes.
      */
     public getTransactionHash(gasPayer?: Address): Blake2b256 {
         const txHash = Blake2b256.of(this.encode(false));
@@ -586,9 +590,10 @@ class Transaction {
      * @throws {UnsupportedOperationError} If attempting to sign a delegated transaction.
      * @throws {InvalidPrivateKeyError} If the provided private key is not valid.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      * - {@link Secp256k1.isValidPrivateKey};
      * - {@link Secp256k1.sign}.
+     * - Follow links for additional security notes.
      */
     public sign(senderPrivateKey: Uint8Array): Transaction {
         // Check if the private key is valid.
@@ -633,9 +638,10 @@ class Transaction {
      * @throws {NoSuchElementError} If the signature is missing for thsi delegated transaction.
      * @throws {UnsupportedOperation} If the transaction isn't delegated.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      * - {@link Secp256k1.isValidPrivateKey};
      * - {@link Secp256k1.sign}.
+     * - Follow links for additional security notes.
      */
     public signAsGasPayer(
         sender: Address,
@@ -680,9 +686,10 @@ class Transaction {
      * @throws UnsupportedOperationError if the current transaction is not marked as delegated, instructing to use the regular sign method instead.
      * @throws InvalidPrivateKeyError if the provided senderPrivateKey is not a valid secp256k1 private key.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      * - {@link Secp256k1.isValidPrivateKey};
      * - {@link Secp256k1.sign}.
+     * - Follow links for additional security notes.
      */
     public signAsSender(senderPrivateKey: Uint8Array): Transaction {
         if (Secp256k1.isValidPrivateKey(senderPrivateKey)) {
@@ -716,10 +723,11 @@ class Transaction {
      * @throws {InvalidSecp256k1PrivateKey} - If either the private key of the transaction sender or gas payer is invalid.
      * @throws {UnsupportedOperationError} - If the transaction is not delegated.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      * - {@link Address.ofPublicKey}
      * - {@link Secp256k1.isValidPrivateKey};
-     * - {@link Secp256k1.sign}.l
+     * - {@link Secp256k1.sign}.
+     * - Follow links for additional security notes.
      */
     public signAsSenderAndGasPayer(
         senderPrivateKey: Uint8Array,
