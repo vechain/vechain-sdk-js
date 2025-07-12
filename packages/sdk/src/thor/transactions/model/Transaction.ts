@@ -216,6 +216,7 @@ class Transaction {
      * - {@link Address.ofPublicKey};
      * - {@link Secp256k1.recover};
      * - {@link Transaction.getTransactionHash}.
+     * - Follow links for additional security notes.
      */
     public get gasPayer(): Address {
         if (this.isDelegated) {
@@ -266,6 +267,7 @@ class Transaction {
      *
      * @remarks Security audited method, depends on
      * - {@link Blake2b256.of}
+     * - Follow links for additional security notes.
      */
     public get id(): Blake2b256 {
         if (this.isSigned) {
@@ -332,6 +334,7 @@ class Transaction {
      * @remarks Security audited method, depends on
      * - {@link Address.ofPublicKey};
      * - {@link Secp256k1.recover}.
+     * - Follow links for additional security notes.
      */
     public get origin(): Address {
         if (this.senderSignature !== undefined) {
@@ -441,6 +444,7 @@ class Transaction {
      *
      * @remarks Security audited method, depends on
      * - {@link Blake2b256.of}.
+     * - Follow links for additional security notes.
      */
     public getTransactionHash(gasPayer?: Address): Blake2b256 {
         const txHash = Blake2b256.of(this.encode(false));
@@ -589,6 +593,7 @@ class Transaction {
      * @remarks Security audited method, depends on
      * - {@link Secp256k1.isValidPrivateKey};
      * - {@link Secp256k1.sign}.
+     * - Follow links for additional security notes.
      */
     public sign(senderPrivateKey: Uint8Array): Transaction {
         // Check if the private key is valid.
@@ -636,6 +641,7 @@ class Transaction {
      * @remarks Security audited method, depends on
      * - {@link Secp256k1.isValidPrivateKey};
      * - {@link Secp256k1.sign}.
+     * - Follow links for additional security notes.
      */
     public signAsGasPayer(
         sender: Address,
@@ -683,6 +689,7 @@ class Transaction {
      * @remarks Security audited method, depends on
      * - {@link Secp256k1.isValidPrivateKey};
      * - {@link Secp256k1.sign}.
+     * - Follow links for additional security notes.
      */
     public signAsSender(senderPrivateKey: Uint8Array): Transaction {
         if (Secp256k1.isValidPrivateKey(senderPrivateKey)) {
@@ -719,7 +726,8 @@ class Transaction {
      * @remarks Security audited method, depends on
      * - {@link Address.ofPublicKey}
      * - {@link Secp256k1.isValidPrivateKey};
-     * - {@link Secp256k1.sign}.l
+     * - {@link Secp256k1.sign}.
+     * - Follow links for additional security notes.
      */
     public signAsSenderAndGasPayer(
         senderPrivateKey: Uint8Array,

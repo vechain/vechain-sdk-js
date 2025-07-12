@@ -98,6 +98,7 @@ class Address extends HexUInt {
      *
      * @remarks Security audited method, depends on
      * * {@link Secp256k1.derivePublicKey}.
+     * * Follow links for additional security notes.
      */
     public static ofPrivateKey(privateKey: Uint8Array): Address {
         try {
@@ -123,6 +124,7 @@ class Address extends HexUInt {
      *
      * @remarks Security audited method, depends on
      * * {@link Secp256k1.inflatePublicKey}.
+     * * Follow links for additional security notes.
      */
     public static ofPublicKey(publicKey: Uint8Array): Address {
         try {

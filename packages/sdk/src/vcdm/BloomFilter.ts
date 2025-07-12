@@ -120,6 +120,7 @@ class BloomFilter implements VeChainDataModel<BloomFilter> {
      * @remarks False positive matches are possible, but false negatives are not.
      * @remarks Security audited method, depends on
      * * {@link hash}.
+     * * Follow links for additional security notes.
      */
     public contains(key: Hex | Uint8Array): boolean {
         return distribute(
@@ -236,6 +237,7 @@ class BloomFilter implements VeChainDataModel<BloomFilter> {
      *
      * @remarks Security audited method, depends on
      * * {@link BloomFilterBuilder.add}.
+     * * Follow links for additional security notes.
      */
     public static of(...keys: Hex[] | Uint8Array[]): BloomFilterBuilder {
         const builder = new BloomFilterBuilder();
@@ -276,6 +278,7 @@ class BloomFilterBuilder {
      *
      * @remarks Security audited method, depends on
      * * {@link hash}.
+     * * Follow links for additional security notes.
      */
     public add(...keys: Hex[] | Uint8Array[]): this {
         for (const key of keys) {
@@ -375,6 +378,7 @@ function distribute(
  *
  * @remarks Security audited method, depends on
  * * {@link Blake2b256.of}.
+ * * Follow links for additional security notes.
  */
 function hash(key: Uint8Array): number {
     return Number(

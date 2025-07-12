@@ -93,6 +93,10 @@ class Secp256k1 {
      *
      * @remarks Security audited method, depends on
      * * [nc_secp256k1.getPublicKey](https://github.com/paulmillr/noble-secp256k1).
+     * * The above dependency implementation is sensitive to [timing attack](https://en.wikipedia.org/wiki/Timing_attack)
+     *   and should be not used in the context where such risk is a concern:
+     *   read the [Security](https://github.com/paulmillr/noble-hashes/blob/main/README.md#security) note.
+     * * Follow links for additional security notes.
      */
     public static derivePublicKey(
         privateKey: Uint8Array,
@@ -122,6 +126,10 @@ class Secp256k1 {
      * * {@link global.crypto.subtle.exportKey};
      * * {@link global.crypto.subtle.generateKey};
      * * [nc_secp256k1.utils.randomPrivateKey](https://github.com/paulmillr/noble-secp256k1).
+     * * The above dependency implementations are sensitive to [timing attack](https://en.wikipedia.org/wiki/Timing_attack)
+     *   and should be not used in the context where such risk is a concern:
+     *   read the [Security](https://github.com/paulmillr/noble-hashes/blob/main/README.md#security) note.
+     * * Follow links for additional security notes.
      */
     public static async generatePrivateKey(): Promise<Uint8Array> {
         try {
@@ -159,6 +167,10 @@ class Secp256k1 {
      * * [nc_secp256k1.ProjectivePoint.fromAffine](https://github.com/paulmillr/noble-secp256k1);
      * * [nc_secp256k1.ProjectivePoint.fromHex](https://github.com/paulmillr/noble-secp256k1);
      * * [nc_secp256k1.ProjectivePoint.toAffine](https://github.com/paulmillr/noble-secp256k1).
+     * * The above dependency implementations are sensitive to [timing attack](https://en.wikipedia.org/wiki/Timing_attack)
+     *   and should be not used in the context where such risk is a concern:
+     *   read the [Security](https://github.com/paulmillr/noble-hashes/blob/main/README.md#security) note.
+     * * Follow links for additional security notes.
      *
      * @see Secp256K1.compressPublicKey
      */
@@ -205,6 +217,10 @@ class Secp256k1 {
      *
      * @remarks Security audited method, depends on
      * * [nc_secp256k1.utils.isValidPrivateKey](https://github.com/paulmillr/noble-secp256k1).
+     * * The above dependency implementation is sensitive to [timing attack](https://en.wikipedia.org/wiki/Timing_attack)
+     *   and should be not used in the context where such risk is a concern:
+     *   read the [Security](https://github.com/paulmillr/noble-hashes/blob/main/README.md#security) note.
+     * * Follow links for additional security notes.
      */
     public static isValidPrivateKey(privateKey: Uint8Array): boolean {
         return nc_secp256k1.utils.isValidPrivateKey(privateKey);
@@ -223,6 +239,10 @@ class Secp256k1 {
      * @remarks Security audited method, depends on
      *  * {@link global.crypto.getRandomValues};
      * * [nh_randomBytes](https://github.com/paulmillr/noble-hashes).
+     * * The above dependency implementations are sensitive to [timing attack](https://en.wikipedia.org/wiki/Timing_attack)
+     *   and should be not used in the context where such risk is a concern:
+     *   read the [Security](https://github.com/paulmillr/noble-hashes/blob/main/README.md#security) note.
+     * * Follow links for additional security notes.
      */
     public static randomBytes(bytesLength?: number): Uint8Array {
         try {
@@ -245,6 +265,10 @@ class Secp256k1 {
      *
      * @remarks Security audited method, depends on
      * * [nc_secp256k1.Signature](https://github.com/paulmillr/noble-secp256k1).
+     * * The above dependency implementation is sensitive to [timing attack](https://en.wikipedia.org/wiki/Timing_attack)
+     *   and should be not used in the context where such risk is a concern:
+     *   read the [Security](https://github.com/paulmillr/noble-hashes/blob/main/README.md#security) note.
+     * * Follow links for additional security notes.
      *
      * @see Secp256k1.isValidMessageHash
      */
@@ -290,6 +314,10 @@ class Secp256k1 {
      *
      * @remarks Security audited method, depends on
      * * [nc_secp256k1.sign](https://github.com/paulmillr/noble-secp256k1).
+     * * The above dependency implementations are sensitive to [timing attack](https://en.wikipedia.org/wiki/Timing_attack)
+     *   and should be not used in the context where such risk is a concern:
+     *   read the [Security](https://github.com/paulmillr/noble-hashes/blob/main/README.md#security) note.
+     * * Follow links for additional security notes.
      *
      * @see Secp256k1.isValidMessageHash
      * @see Secp256k1.isValidPrivateKey

@@ -335,6 +335,10 @@ class Hex implements VeChainDataModel<Hex> {
      *
      * @remarks Security audited method, depends on
      * * [`nh_utils.randomBytes`](https://github.com/paulmillr/noble-hashes?tab=readme-ov-file#utils).
+     * * The above dependency implementations are sensitive to [timing attack](https://en.wikipedia.org/wiki/Timing_attack)
+     *   and should be not used in the context where such risk is a concern:
+     *   read the [Security](https://github.com/paulmillr/noble-hashes/blob/main/README.md#security) note.
+     * * Follow links for additional security notes.
      */
     public static random(bytes: number): Hex {
         if (bytes > 0) {
