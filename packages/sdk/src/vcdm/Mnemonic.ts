@@ -15,7 +15,7 @@ const FQP = 'packages/sdk/src/vcdm/Mnemonic.ts!';
 
 /**
  * Type of the wordlist size.
- * Every 4 bytes produce 3 words.
+ * Every 4 bytes it produces 3 words.
  */
 type WordlistSizeType = 12 | 15 | 18 | 21 | 24;
 
@@ -178,16 +178,20 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
      * phrase using the specified wordlist size and random generator.
      *
      * @param {WordlistSizeType} wordlistSize - The number of words to generate the mnemonic.
-     * @param {function} [randomGenerator] - The random generator function used to generate the entropy.
+     * @param {function( wordlistSize WordListRandomGeneratorSizeInBytes): Uint8Array} [randomGenerator] - An optional function that generates random bytes.
+     * The function receives the required number of bytes as an argument;
+     * the legal values are 12 (default), 15, 18, 21, 24.
+     * The function returns a Uint8Array.
+     * @returns {string[]} - An array of strings representing the mnemonic word list.
+     * @throws {IllegalArgumentError} If the number of words is not valid,
+     * or the `randomGenerator` function throws an exception,
+     * or if the mnemonic generation process fails.
      *
-     * @returns {Mnemonic} The generated mnemonic.
-     *
-     * @throws {IllegalArgumentError} If the number of words is not valid.
-     *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      * * [entropyToMnemonic](https://github.com/paulmillr/scure-bip39);
      * * [generateMnemonic](https://github.com/paulmillr/scure-bip39);
      * * `randomGenerator` - **Must provide a cryptographic secure source of entropy
+     *    and throw an exception in case of error,
      *    else any secure audit certification related with this software is invalid.**
      */
     public static of(
