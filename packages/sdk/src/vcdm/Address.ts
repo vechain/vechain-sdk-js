@@ -96,8 +96,9 @@ class Address extends HexUInt {
      *
      * @throws {IllegalArgumentError} If the `privateKey` is invalid.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      * * {@link Secp256k1.derivePublicKey}.
+     * * Follow links for additional security notes.
      */
     public static ofPrivateKey(privateKey: Uint8Array): Address {
         try {
@@ -121,8 +122,9 @@ class Address extends HexUInt {
      *
      * @returns {Address} The converted address.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      * * {@link Secp256k1.inflatePublicKey}.
+     * * Follow links for additional security notes.
      */
     public static ofPublicKey(publicKey: Uint8Array): Address {
         try {
@@ -147,9 +149,10 @@ class Address extends HexUInt {
      * and a [BIP44 Derivation Path](https://github.com/satoshilabs/slips/blob/master/slip-0044.md)
      * as in the examples.
      *
-     * Secure audit function.
+     * Secure audited function.
      * - {@link bip32.HDKey}(https://github.com/paulmillr/scure-bip32)
      * - {@link HDKey}
+     * - Follow links for additional security notes.
      *
      * @example `m/0` (default)
      * @example `m/0/2`

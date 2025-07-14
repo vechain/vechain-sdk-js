@@ -91,8 +91,12 @@ class Secp256k1 {
      * @return {Uint8Array} The derived public key in Uint8Array format.
      * @throws {InvalidPrivateKeyError} Throws an error if the provided private key is not valid.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      * * [nc_secp256k1.getPublicKey](https://github.com/paulmillr/noble-secp256k1).
+     * * The above dependency implementation is sensitive to [timing attack](https://en.wikipedia.org/wiki/Timing_attack)
+     *   and should be not used in the context where such risk is a concern:
+     *   read the [Security](https://github.com/paulmillr/noble-hashes/blob/main/README.md#security) note.
+     * * Follow links for additional security notes.
      */
     public static derivePublicKey(
         privateKey: Uint8Array,
@@ -118,10 +122,14 @@ class Secp256k1 {
      *
      * @return {Promise<Uint8Array>} The generated private key as a Uint8Array.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      * * {@link global.crypto.subtle.exportKey};
      * * {@link global.crypto.subtle.generateKey};
      * * [nc_secp256k1.utils.randomPrivateKey](https://github.com/paulmillr/noble-secp256k1).
+     * * The above dependency implementations are sensitive to [timing attack](https://en.wikipedia.org/wiki/Timing_attack)
+     *   and should be not used in the context where such risk is a concern:
+     *   read the [Security](https://github.com/paulmillr/noble-hashes/blob/main/README.md#security) note.
+     * * Follow links for additional security notes.
      */
     public static async generatePrivateKey(): Promise<Uint8Array> {
         try {
@@ -155,10 +163,14 @@ class Secp256k1 {
      * @return {Uint8Array} - The uncompressed public key.
      * @throws {IllegalArgumentError} - If the `publicKey` is invalid.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      * * [nc_secp256k1.ProjectivePoint.fromAffine](https://github.com/paulmillr/noble-secp256k1);
      * * [nc_secp256k1.ProjectivePoint.fromHex](https://github.com/paulmillr/noble-secp256k1);
      * * [nc_secp256k1.ProjectivePoint.toAffine](https://github.com/paulmillr/noble-secp256k1).
+     * * The above dependency implementations are sensitive to [timing attack](https://en.wikipedia.org/wiki/Timing_attack)
+     *   and should be not used in the context where such risk is a concern:
+     *   read the [Security](https://github.com/paulmillr/noble-hashes/blob/main/README.md#security) note.
+     * * Follow links for additional security notes.
      *
      * @see Secp256K1.compressPublicKey
      */
@@ -203,8 +215,12 @@ class Secp256k1 {
      * @param {Uint8Array} privateKey - The private key to validate.
      * @return {boolean} `true` if the private key is valid, `false` otherwise.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      * * [nc_secp256k1.utils.isValidPrivateKey](https://github.com/paulmillr/noble-secp256k1).
+     * * The above dependency implementation is sensitive to [timing attack](https://en.wikipedia.org/wiki/Timing_attack)
+     *   and should be not used in the context where such risk is a concern:
+     *   read the [Security](https://github.com/paulmillr/noble-hashes/blob/main/README.md#security) note.
+     * * Follow links for additional security notes.
      */
     public static isValidPrivateKey(privateKey: Uint8Array): boolean {
         return nc_secp256k1.utils.isValidPrivateKey(privateKey);
@@ -220,9 +236,13 @@ class Secp256k1 {
      * @param {number} [bytesLength=32] - Optional. The number of random bytes to generate.
      * @return {Uint8Array} - A Uint8Array containing the random bytes.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      *  * {@link global.crypto.getRandomValues};
      * * [nh_randomBytes](https://github.com/paulmillr/noble-hashes).
+     * * The above dependency implementations are sensitive to [timing attack](https://en.wikipedia.org/wiki/Timing_attack)
+     *   and should be not used in the context where such risk is a concern:
+     *   read the [Security](https://github.com/paulmillr/noble-hashes/blob/main/README.md#security) note.
+     * * Follow links for additional security notes.
      */
     public static randomBytes(bytesLength?: number): Uint8Array {
         try {
@@ -243,8 +263,12 @@ class Secp256k1 {
      * @throws {InvalidMessageHashError} If the provided message hash is invalid.
      * @throws {InvalidSignatureError} If the provided signature is not 65 bytes or contains an invalid recovery value.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      * * [nc_secp256k1.Signature](https://github.com/paulmillr/noble-secp256k1).
+     * * The above dependency implementation is sensitive to [timing attack](https://en.wikipedia.org/wiki/Timing_attack)
+     *   and should be not used in the context where such risk is a concern:
+     *   read the [Security](https://github.com/paulmillr/noble-hashes/blob/main/README.md#security) note.
+     * * Follow links for additional security notes.
      *
      * @see Secp256k1.isValidMessageHash
      */
@@ -288,8 +312,13 @@ class Secp256k1 {
      * @throws InvalidMessageHashError if the message hash is not a valid 32-byte hash.
      * @throws InvalidPrivateKeyError if the private key is not a valid 32-byte private key.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      * * [nc_secp256k1.sign](https://github.com/paulmillr/noble-secp256k1).
+     * * [nc_utils.concatBytes](https://github.com/paulmillr/noble-curves?tab=readme-ov-file#utils-useful-utilities)
+     * * The above dependency implementations are sensitive to [timing attack](https://en.wikipedia.org/wiki/Timing_attack)
+     *   and should be not used in the context where such risk is a concern:
+     *   read the [Security](https://github.com/paulmillr/noble-hashes/blob/main/README.md#security) note.
+     * * Follow links for additional security notes.
      *
      * @see Secp256k1.isValidMessageHash
      * @see Secp256k1.isValidPrivateKey
