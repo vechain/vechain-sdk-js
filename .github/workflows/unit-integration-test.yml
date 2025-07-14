@@ -101,7 +101,7 @@ jobs:
             
             - name: Post unit test results to slack
               if: always() && github.ref == 'refs/heads/main' && (steps.all-tests.outcome == 'failure')
-              uses: slackapi/slack-github-action@v2.0.0
+              uses: slackapi/slack-github-action@v2.1.1
               with:
                 webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
                 webhook-type: webhook-trigger
