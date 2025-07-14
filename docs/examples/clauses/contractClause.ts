@@ -8,22 +8,10 @@ import {
     Units,
     ContractClause
 } from '@vechain/sdk-core';
-
+import { ETHTest } from '../utils/index.js';
 // Shared client instance for all examples
 const thor = ThorClient.at(THOR_SOLO_URL);
 
-class ETHTest extends Token {
-    readonly tokenAddress: Address = Address.of(
-        '0xdDCc5e1704bCcEC81c5ef524C682109815F7E6e5'
-    );
-    // 18 decimals
-    readonly units: number = Units.wei;
-    readonly name = 'EthTest';
-    constructor(value: bigint, valueUnits?: Units) {
-        super(); // Pass a default value
-        this.initialize(value, valueUnits); // Call the initialization method
-    }
-}
 const token = new ETHTest(1n, Units.wei);
 
 // Full transaction fee estimation and sending example
@@ -50,6 +38,16 @@ const clause = [
         comment: 'Transfer EthTest'
     } satisfies ContractClause['clause']
 ];
+
+// Manual encoding breakdown:
+// 0xa9059cbb = transfer(address,uint256) function selector
+// Next 32 bytes = recipient address (padded)
+// Last 32 bytes = amount (1 wei)
+
+// ERC20 transfer function call encoding:
+// 0xa9059cbb = keccak256("transfer(address,uint256)")[0:4]
+// 000000000000000000000000051815fdc271780de69dd8959329b27d6604469e = recipient (32 bytes)
+// 0000000000000000000000000000000000000000000000000000000000000001 = amount (32 bytes)
 
 // START_SNIPPET: FeeEstimationSnippet
 // 3. Estimate gas and get default body options

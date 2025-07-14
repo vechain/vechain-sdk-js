@@ -8,21 +8,9 @@ import {
     Units,
     TransactionClause
 } from '@vechain/sdk-core';
+import { ETHTest } from '../utils/index.js';
 
 const thor = ThorClient.at(THOR_SOLO_URL);
-
-class ETHTest extends Token {
-    readonly tokenAddress: Address = Address.of(
-        '0xdDCc5e1704bCcEC81c5ef524C682109815F7E6e5'
-    );
-    // 18 decimals
-    readonly units: number = Units.wei;
-    readonly name = 'EthTest';
-    constructor(value: bigint, valueUnits?: Units) {
-        super(); // Pass a default value
-        this.initialize(value, valueUnits); // Call the initialization method
-    }
-}
 
 // Full transaction fee estimation and sending example
 // 1. Derive account from mnemonic
