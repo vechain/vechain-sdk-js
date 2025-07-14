@@ -150,8 +150,9 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
      *
      * @throws {IllegalArgumentError} If the derivation `path` is invalid.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      * * {@link HDKey}.
+     * * Follow links for additional security notes.
      */
     public static toPrivateKey(
         words: string[],
@@ -193,6 +194,10 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
      * * `randomGenerator` - **Must provide a cryptographic secure source of entropy
      *    and throw an exception in case of error,
      *    else any secure audit certification related with this software is invalid.**
+     * * The above dependency implementations are sensitive to [timing attack](https://en.wikipedia.org/wiki/Timing_attack)
+     *   and should be not used in the context where such risk is a concern:
+     *   read the [Security](https://github.com/paulmillr/noble-hashes/blob/main/README.md#security) note.
+     * * Follow links for additional security notes.
      */
     public static of(
         wordlistSize: WordlistSizeType = 12,
@@ -228,8 +233,12 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
      *
      * @returns {boolean} true if the words are valid, false otherwise.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      * * [validateMnemonic](https://github.com/paulmillr/scure-bip39).
+     * * The above dependency implementation is sensitive to [timing attack](https://en.wikipedia.org/wiki/Timing_attack)
+     *   and should be not used in the context where such risk is a concern:
+     *   read the [Security](https://github.com/paulmillr/noble-hashes/blob/main/README.md#security) note.
+     * * Follow links for additional security notes.
      */
     public static isValid(words: string | string[]): boolean {
         const wordsToValidate = Array.isArray(words) ? words.join(' ') : words;

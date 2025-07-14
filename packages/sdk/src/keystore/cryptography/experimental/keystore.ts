@@ -268,7 +268,7 @@ function encodeScryptParams(options: EncryptOptions): ScryptParams {
  * The [Key Derivation Function](https://en.wikipedia.org/wiki/Key_derivation_function)
  * algorithm is [Scrypt](https://en.wikipedia.org/wiki/Scrypt).
  *
- * Secure audit function.
+ * Secure audited function.
  * - {@link encryptKeystore}.
  * - `password` wiped after use.
  * - `privateKey` wiped after use.
@@ -308,7 +308,7 @@ function encrypt(privateKey: Uint8Array, password: Uint8Array): Keystore {
  * The [Key Derivation Function](https://en.wikipedia.org/wiki/Key_derivation_function)
  * algorithm is [Scrypt](https://en.wikipedia.org/wiki/Scrypt).
  *
- * Secure audit function.
+ * Secure audited function.
  * - [ctr](https://github.com/paulmillr/noble-ciphers?tab=readme-ov-file#aes).
  * - {@link Keccak256.of}
  * - `password` wiped after use.
@@ -417,7 +417,7 @@ function encryptKeystore(
  * algorithm should be [Scrypt](https://en.wikipedia.org/wiki/Scrypt),
  * any different KDF function not supported.
  *
- * Secure audit function.
+ * Secure audited function.
  * - {@link decryptKeystore}
  *
  * @param {Keystore} keystore - The keystore object to decrypt.
@@ -453,7 +453,7 @@ function decrypt(keystore: Keystore, password: Uint8Array): KeystoreAccount {
  * algorithm should be [Scrypt](https://en.wikipedia.org/wiki/Scrypt),
  * any different KDF function not supported.
  *
- * Secure audit function.
+ * Secure audited function.
  * - {@link Address.ofPrivateKey}
  * - [ctr](https://github.com/paulmillr/noble-ciphers?tab=readme-ov-file#aes).
  * - `password` wiped after use.

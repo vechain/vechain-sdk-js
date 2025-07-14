@@ -118,8 +118,9 @@ class BloomFilter implements VeChainDataModel<BloomFilter> {
      * @return {boolean} Returns true if this Bloom filter may contain the key, otherwise returns false.
      *
      * @remarks False positive matches are possible, but false negatives are not.
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      * * {@link hash}.
+     * * Follow links for additional security notes.
      */
     public contains(key: Hex | Uint8Array): boolean {
         return distribute(
@@ -234,8 +235,9 @@ class BloomFilter implements VeChainDataModel<BloomFilter> {
      *
      * @returns {BloomFilterBuilder} - A new instance of BloomFilterBuilder with the specified keys added.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      * * {@link BloomFilterBuilder.add}.
+     * * Follow links for additional security notes.
      */
     public static of(...keys: Hex[] | Uint8Array[]): BloomFilterBuilder {
         const builder = new BloomFilterBuilder();
@@ -274,8 +276,9 @@ class BloomFilterBuilder {
      * @return {this} - Returns this {@link BloomFilterBuilder} instance, the {@link this.hashMap} is updated to
      * map the keys presence in the filter data structure.
      *
-     * @remarks Security auditable method, depends on
+     * @remarks Security audited method, depends on
      * * {@link hash}.
+     * * Follow links for additional security notes.
      */
     public add(...keys: Hex[] | Uint8Array[]): this {
         for (const key of keys) {
@@ -373,8 +376,9 @@ function distribute(
  *
  * @return {number} The computed hash value as a number.
  *
- * @remarks Security auditable method, depends on
+ * @remarks Security audited method, depends on
  * * {@link Blake2b256.of}.
+ * * Follow links for additional security notes.
  */
 function hash(key: Uint8Array): number {
     return Number(
