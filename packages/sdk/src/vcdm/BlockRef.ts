@@ -3,7 +3,7 @@ import { HexUInt } from './HexUInt';
 import { IllegalArgumentError } from '@errors';
 
 /**
- * Full Qualified Path.
+ * Full-Qualified Path.
  */
 const FQP = 'packages/sdk/src/vcdm/BlockRef.ts!';
 
