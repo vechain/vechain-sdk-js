@@ -3,13 +3,14 @@ import { Address, HexUInt } from '@vcdm';
 import {
     RetrieveContractBytecode,
     RetrieveContractBytecodePath,
-    ContractBytecode
+    ContractBytecode,
+    ThorError
 } from '@thor';
 import { type ContractBytecodeJSON } from '@thor/json';
 import {
     mockHttpClient,
     mockHttpClientWithError
-} from '../../utils/MockUnitTestClient';
+} from '../../utils/MockHttpClient';
 /**
  * VeChain retrieve contract bytecode - unit
  *
@@ -77,9 +78,27 @@ describe('RetrieveContractBytecode unit tests', () => {
             );
 
             const request = RetrieveContractBytecode.of(address);
-            await expect(
-                request.askTo(mockHttpClientWithError('Network error', 'get'))
-            ).rejects.toThrow('Network error');
+            const mockClient = mockHttpClientWithError('Network error', 'get');
+
+            try {
+                await request.askTo(mockClient);
+                // Triggers the catch block
+                expect(true).toBe(false);
+            } catch (error) {
+                expect(error).toBeInstanceOf(ThorError);
+                const thorError = error as ThorError;
+
+                expect(thorError.message).toBe('Bad response.');
+                expect(thorError.fqn).toBe(
+                    'packages/sdk/src/thor/accounts/RetrieveContractBytecode.ts!askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveContractBytecode, ContractBytecode>>'
+                );
+                expect(thorError.status).toBe(400);
+                expect(thorError.args).toEqual({
+                    url: expect.any(String)
+                });
+                expect(thorError.cause).toBeUndefined();
+                expect(thorError).toBeInstanceOf(Error);
+            }
         });
     });
 });

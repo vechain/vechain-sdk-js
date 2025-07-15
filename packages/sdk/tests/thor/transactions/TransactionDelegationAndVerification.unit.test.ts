@@ -6,7 +6,7 @@ import { Secp256k1 } from '@secp256k1';
 import { Transaction, type TransactionBody } from '@thor';
 import { type GetTxReceiptResponseJSON, type TXIDJSON } from '@thor/json';
 import { type HttpPath } from '@http';
-import { mockHttpClient } from '../../utils/MockUnitTestClient';
+import { mockHttpClient } from '../../utils/MockHttpClient';
 import { secp256k1 as nc_secp256k1 } from '@noble/curves/secp256k1';
 
 /**

@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
 import { type FetchHttpClient } from '@http';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 const mockHttpClient = <T>(
     response: T,
@@ -15,7 +16,8 @@ const mockHttpClient = <T>(
                 statusText: ok ? 'OK' : 'Bad Request',
                 url: 'http://mock-url',
                 json: async () => await Promise.resolve(response satisfies T),
-                text: async () => await Promise.resolve(JSON.stringify(response))
+                text: async () =>
+                    await Promise.resolve(JSON.stringify(response))
             });
         })
     } as unknown as FetchHttpClient;
@@ -27,7 +29,12 @@ const mockHttpClientWithError = (
 ): FetchHttpClient => {
     return {
         [httpMethod]: jest.fn(
-            async () => await Promise.reject(new Error(error))
+            async () =>
+                await Promise.resolve(
+                    new Response(fastJsonStableStringify(error), {
+                        status: 400
+                    })
+                )
         )
     } as unknown as FetchHttpClient;
 };

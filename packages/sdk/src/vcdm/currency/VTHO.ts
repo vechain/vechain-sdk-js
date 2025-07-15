@@ -48,7 +48,7 @@ class VTHO extends Coin {
      *                       Defaults to {@link Units.ether} if not provided.
      * @return {VTHO} A new VTHO instance with the provided value and unit.
      *
-     * @throws {InvalidDataType} If `value` is not a numeric expression.
+     * @throws {IllegalArgumentError} If `value` is not a numeric expression.
      */
     public static of(
         value: bigint | number | string | FixedPointNumber,

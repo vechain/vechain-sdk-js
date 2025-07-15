@@ -93,7 +93,7 @@ abstract class Coin implements Currency {
      * @param {Currency} that - The Currency object to be compared.
      * @return {number} A negative integer, zero, or a positive integer as this Currency
      *     is less than, equal to, or greater than the specified Currency.
-     * @throws {InvalidDataType} If the currency codes do not match.
+     * @throws {IllegalArgumentError} If the currency codes do not match.
      */
     compareTo(that: Currency): number {
         if (this.code.isEqual(that.code)) {
