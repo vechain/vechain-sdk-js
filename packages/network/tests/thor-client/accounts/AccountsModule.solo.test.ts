@@ -19,20 +19,17 @@ const TIMEOUT = 20000;
 describe('AccountsModule solo tests', () => {
     const thorClient = ThorClient.at(THOR_SOLO_URL);
 
-    describe('getByteCode method tests', () => {
-        test(
-            'ok <- contract address',
-            async () => {
-                const actual = await retryOperation(async () => {
-                    return await thorClient.accounts.getBytecode(
-                        Address.of(CONTRACT_ADDRESS)
-                    );
-                });
-                expect(
-                    actual.isEqual(Hex.of(configData.TESTING_CONTRACT_BYTECODE))
-                ).toBe(true);
-            },
-            TIMEOUT
-        );
-    });
+    test(
+        'ok <- contract address',
+        async () => {
+            const expected = Hex.of(configData.TESTING_CONTRACT_BYTECODE);
+            const actual = await retryOperation(async () => {
+                return await thorClient.accounts.getBytecode(
+                    Address.of(CONTRACT_ADDRESS)
+                );
+            });
+            expect(actual).toEqual(expected);
+        },
+        TIMEOUT
+    );
 });
