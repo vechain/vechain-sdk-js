@@ -40,14 +40,20 @@ const ethGetBlockReceipts = async (
 
     try {
         // Initialize the block number from the params
-        const [blockNumber] = params as [string];
+        const [blockIdentifier] = params as [string];
 
         let block: BlocksRPC | null = null;
 
-        if (HexUInt.isValid(blockNumber) && blockNumber.length == 66) {
-            block = await ethGetBlockByHash(thorClient, [blockNumber, true]);
+        if (HexUInt.isValid(blockIdentifier) && blockIdentifier.length === 66) {
+            block = await ethGetBlockByHash(thorClient, [
+                blockIdentifier,
+                true
+            ]);
         } else {
-            block = await ethGetBlockByNumber(thorClient, [blockNumber, true]);
+            block = await ethGetBlockByNumber(thorClient, [
+                blockIdentifier,
+                true
+            ]);
         }
 
         // Return the block receipts

@@ -53,13 +53,11 @@ describe('RPC Mapper - eth_getBlockReceipts method tests', () => {
         /**
          * Should retrieve receipts for specific block hash 0x015395abb2644d21d6f15c9e2b616a190e1a9d01259ba895d6f99ece4f99e2f0
          */
-        test('Should retrieve receipts for specific block hash 0x015395abb2644d21d6f15c9e2b616a190e1a9d01259ba895d6f99ece4f99e2f0', async () => {
-            const blockNumber =
-                '0x015395abb2644d21d6f15c9e2b616a190e1a9d01259ba895d6f99ece4f99e2f0';
-            // Call RPC function
+        test('Should retrieve receipts for specific block hash', async () => {
+            const blockHash = blockHashReceiptsFixture.blockHash;
             const rpcCall = await RPCMethodsMap(thorClient)[
                 RPC_METHODS.eth_getBlockReceipts
-            ]([blockNumber]);
+            ]([blockHash]);
 
             // Compare the result with the expected value
             expect(rpcCall).toBeDefined();
