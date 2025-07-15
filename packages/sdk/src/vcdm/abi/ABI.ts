@@ -91,7 +91,7 @@ class ABI implements VeChainDataModel<ABI> {
      * Encodes the values according to the specified ABI types when creating the ABI instance.
      *
      * @returns The ABI-encoded bytes representing the given values.
-     * @throws {InvalidAbiDataToEncodeOrDecode, InvalidDataType}
+     * @throws {InvalidAbiDataToEncodeOrDecode, IllegalArgumentError}
      */
     public get bytes(): Uint8Array {
         return this.toHex().bytes;
