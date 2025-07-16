@@ -32,6 +32,51 @@ import { type ExecuteCodesRequestJSON } from '@json';
 import { type EventLogFilterRequestJSON } from '@thor/logs/json';
 import { MozillaWebSocketClient, type WebSocketListener } from '@ws';
 
+/**
+ * Filter types for viem compatibility.
+ */
+type Filter = EventFilter | BlockFilter | PendingTransactionFilter;
+
+/**
+ * Event filter type for viem compatibility.
+ */
+interface EventFilter {
+    /** Unique identifier for the filter */
+    id: string;
+    /** Type of filter */
+    type: 'event';
+    /** The filter request to be used with QuerySmartContractEvents */
+    request: EventLogFilterRequestJSON;
+}
+
+/**
+ * Block filter type for viem compatibility.
+ */
+interface BlockFilter {
+    /** Unique identifier for the filter */
+    id: string;
+    /** Type of filter */
+    type: 'block';
+    /** The last processed block number */
+    lastBlockProcessed?: number;
+    /** Subscription instance */
+    subscription?: BlocksSubscription;
+}
+
+/**
+ * Pending transaction filter type for viem compatibility.
+ */
+interface PendingTransactionFilter {
+    /** Unique identifier for the filter */
+    id: string;
+    /** Type of filter */
+    type: 'transaction';
+    /** List of processed transaction IDs */
+    processedTxIds: Set<string>;
+    /** Subscription instance */
+    subscription?: NewTransactionSubscription;
+}
+
 interface PublicClientConfig {
     chain: ThorNetworks;
 }
@@ -708,53 +753,6 @@ class PublicClient {
             `Unknown filter type: ${(filter as { type: string }).type}`
         );
     }
-}
-
-// Interfaces are moved to the top of the file to fix lint errors
-
-/**
- * Filter types for viem compatibility.
- */
-type Filter = EventFilter | BlockFilter | PendingTransactionFilter;
-
-/**
- * Event filter type for viem compatibility.
- */
-interface EventFilter {
-    /** Unique identifier for the filter */
-    id: string;
-    /** Type of filter */
-    type: 'event';
-    /** The filter request to be used with QuerySmartContractEvents */
-    request: EventLogFilterRequestJSON;
-}
-
-/**
- * Block filter type for viem compatibility.
- */
-interface BlockFilter {
-    /** Unique identifier for the filter */
-    id: string;
-    /** Type of filter */
-    type: 'block';
-    /** The last processed block number */
-    lastBlockProcessed?: number;
-    /** Subscription instance */
-    subscription?: BlocksSubscription;
-}
-
-/**
- * Pending transaction filter type for viem compatibility.
- */
-interface PendingTransactionFilter {
-    /** Unique identifier for the filter */
-    id: string;
-    /** Type of filter */
-    type: 'transaction';
-    /** List of processed transaction IDs */
-    processedTxIds: Set<string>;
-    /** Subscription instance */
-    subscription?: NewTransactionSubscription;
 }
 
 export { PublicClient, createPublicClient };
