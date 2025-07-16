@@ -2,7 +2,6 @@ export * from './abi';
 export * from './account';
 export * from './Address';
 export * from './BlockRef';
-export * from './BloomFilter';
 export * from './currency';
 export * from './encoding';
 export * from './FixedPointNumber';
