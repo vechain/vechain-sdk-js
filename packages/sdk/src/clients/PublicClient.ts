@@ -31,6 +31,8 @@ import {
 import { type ExecuteCodesRequestJSON } from '@json';
 import { type EventLogFilterRequestJSON } from '@thor/logs/json';
 import { MozillaWebSocketClient, type WebSocketListener } from '@ws';
+import { Blake2b256, Address as VeChainAddress, HexUInt } from '@vcdm';
+import { Secp256k1 } from '@secp256k1';
 
 /**
  * Filter types for viem compatibility.
@@ -752,6 +754,132 @@ class PublicClient {
         throw new Error(
             `Unknown filter type: ${(filter as { type: string }).type}`
         );
+    }
+
+    /**
+     * Verify a message was signed by the provided address
+     * Follows viem API pattern: https://viem.sh/docs/actions/public/verifyMessage
+     *
+     * @param params - Parameters for the verification
+     * @param params.address - The address that supposedly signed the message
+     * @param params.message - The message that was signed
+     * @param params.signature - The signature to verify
+     * @returns Boolean indicating if the signature is valid
+     */
+    public verifyMessage(params: {
+        address: Address;
+        message: string;
+        signature: string;
+    }): boolean {
+        const { address, message, signature } = params;
+
+        try {
+            // Convert message to bytes
+            const messageBytes = new TextEncoder().encode(message);
+
+            // Hash the message with Blake2b256 (VeChain's preferred hash function)
+            const hashedMessage = Blake2b256.of(messageBytes).bytes;
+
+            // Parse the signature - use HexUInt instead of Buffer.from
+            const signatureBytes = VeChainAddress.isValid(signature)
+                ? VeChainAddress.of(signature).bytes
+                : signature.startsWith('0x')
+                  ? HexUInt.of(signature).bytes
+                  : HexUInt.of(`0x${signature}`).bytes;
+
+            // Recover the signer's address from the signature and message hash
+            const recoveredPublicKey = Secp256k1.recover(
+                hashedMessage,
+                signatureBytes
+            );
+
+            // Derive address from the public key
+            const recoveredAddress =
+                VeChainAddress.ofPublicKey(recoveredPublicKey).toString();
+
+            // Check if the recovered address matches the provided address
+            return (
+                recoveredAddress.toLowerCase() === String(address).toLowerCase()
+            );
+        } catch (error) {
+            // If any step fails, the signature is invalid
+            return false;
+        }
+    }
+
+    /**
+     * Verify a typed data structure was signed by the provided address
+     * Follows viem API pattern: https://viem.sh/docs/actions/public/verifyTypedData
+     *
+     * @param params - Parameters for the verification
+     * @param params.address - The address that supposedly signed the typed data
+     * @param params.domain - The domain data
+     * @param params.types - The type definitions
+     * @param params.primaryType - The primary type name
+     * @param params.message - The message object containing the typed data
+     * @param params.signature - The signature to verify
+     * @returns Boolean indicating if the signature is valid
+     */
+    public verifyTypedData(params: {
+        address: Address;
+        domain: {
+            name?: string;
+            version?: string;
+            chainId?: number | bigint;
+            verifyingContract?: Address;
+            salt?: string | Uint8Array;
+        };
+        primaryType: string;
+        // The types parameter is required for API compatibility with viem
+        // but is not used in our current implementation
+        types: Record<string, Array<{ name: string; type: string }>>;
+        message: Record<string, unknown>;
+        signature: string;
+    }): boolean {
+        const { address, domain, primaryType, message, signature } = params;
+
+        try {
+            // For VeChain compatibility, create a certificate-like structured object
+            const typedDataObj = {
+                purpose: primaryType, // Map to Certificate's purpose
+                payload: {
+                    type: 'EIP-712', // Standard type for structured data
+                    content: JSON.stringify(message) // Content as JSON string
+                },
+                domain: domain.name ?? '', // Use domain name or empty string
+                timestamp: Date.now() // Current timestamp (not used for verification)
+            };
+
+            // Serialize the data
+            const serializedData = JSON.stringify(typedDataObj);
+            const dataBytes = new TextEncoder().encode(serializedData);
+
+            // Hash the serialized data
+            const hashedData = Blake2b256.of(dataBytes).bytes;
+
+            // Parse the signature
+            const signatureBytes = VeChainAddress.isValid(signature)
+                ? VeChainAddress.of(signature).bytes
+                : signature.startsWith('0x')
+                  ? HexUInt.of(signature).bytes
+                  : HexUInt.of(`0x${signature}`).bytes;
+
+            // Recover the signer's address
+            const recoveredPublicKey = Secp256k1.recover(
+                hashedData,
+                signatureBytes
+            );
+            const recoveredAddress =
+                VeChainAddress.ofPublicKey(recoveredPublicKey).toString();
+
+            // Check if the recovered address matches the provided address
+            return (
+                recoveredAddress.toLowerCase() === String(address).toLowerCase()
+            );
+        } catch (error) {
+            // If any step fails, the signature is invalid
+            return false;
+        }
     }
 }
 
