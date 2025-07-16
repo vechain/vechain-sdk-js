@@ -14,6 +14,7 @@ export default [
                     message: "Please import using @vechain/sdk-<the-module>",
                 }],
             }],
+            "sonarjs/cognitive-complexity": ["error", 20],
         },
     },
 ];

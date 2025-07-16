@@ -1,8 +1,9 @@
 import {
-    Address,
+    type Address,
     FetchHttpClient,
     SendTransaction,
-    ThorNetworks
+    type ThorNetworks,
+    type TXID
 } from '@index';
 import { PublicClient } from './PublicClient';
 
@@ -14,11 +15,12 @@ class WalletClient extends PublicClient {
         this.account = account; // viem specific
     }
 
-    public async sendTransaction(encodedTx: Uint8Array) {
+    public async sendTransaction(encodedTx: Uint8Array): Promise<TXID> {
         // viem specific
-        return await SendTransaction.of(encodedTx).askTo(
+        const data = await SendTransaction.of(encodedTx).askTo(
             FetchHttpClient.at(this.httpClient)
         );
+        return data.response;
     }
 }
 
