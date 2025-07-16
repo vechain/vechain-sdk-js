@@ -1,11 +1,16 @@
 import {
-    Address,
-    BlockId,
+    type Address,
+    type BlockId,
     BlocksSubscription,
+    type ExecuteCodesResponse,
+    type ExpandedBlockResponse,
     FetchHttpClient,
-    Hex,
+    type GetFeesHistoryResponse,
+    type GetFeesPriorityResponse,
+    type Hex,
     InspectClauses,
-    Query,
+    type RawTx,
+    type RegularBlockResponse,
     RetrieveAccountDetails,
     RetrieveExpandedBlock,
     RetrieveHistoricalFeeData,
@@ -13,9 +18,9 @@ import {
     RetrieveRegularBlock,
     Revision,
     SuggestPriorityFee,
-    ThorNetworks
+    type ThorNetworks
 } from '@index';
-import { ExecuteCodesRequestJSON } from '@json';
+import { type ExecuteCodesRequestJSON } from '@json';
 import { MozillaWebSocketClient } from '@ws';
 
 interface PublicClientConfig {
@@ -28,6 +33,9 @@ enum BlockReponseType {
     regular = 'regular' // vechain specific
 }
 
+// Revision type for viem
+type BlockRevision = bigint | number | string | Uint8Array | Hex;
+
 function createPublicClient(params: PublicClientConfig): PublicClient {
     return new PublicClient(params.chain);
 }
@@ -39,7 +47,7 @@ class PublicClient {
         this.httpClient = httpClient; // viem specific
     }
 
-    public async getBalance(address: Address) {
+    public async getBalance(address: Address): Promise<bigint> {
         const accountDetails = await RetrieveAccountDetails.of(address).askTo(
             FetchHttpClient.at(this.httpClient)
         );
@@ -48,38 +56,40 @@ class PublicClient {
     }
 
     public async getBlock(
-        revision: bigint | number | string | Uint8Array | Hex = 'best', // viem specific
+        revision: BlockRevision = 'best', // viem specific
         type: BlockReponseType = BlockReponseType.regular // vechain specific
-    ) {
-        if (type == BlockReponseType.expanded) {
-            return await RetrieveExpandedBlock.of(Revision.of(revision)).askTo(
+    ): Promise<ExpandedBlockResponse | RawTx | RegularBlockResponse | null> {
+        if (type === BlockReponseType.expanded) {
+            const data = await RetrieveExpandedBlock.of(
+                Revision.of(revision)
+            ).askTo(FetchHttpClient.at(this.httpClient));
+            return data.response;
+        } else if (type === BlockReponseType.raw) {
+            const data = await RetrieveRawBlock.of(Revision.of(revision)).askTo(
                 FetchHttpClient.at(this.httpClient)
             );
-        } else if (type == BlockReponseType.raw) {
-            return await RetrieveRawBlock.of(Revision.of(revision)).askTo(
-                FetchHttpClient.at(this.httpClient)
-            );
+            return data.response;
         } else {
-            return await RetrieveRegularBlock.of(Revision.of(revision)).askTo(
-                FetchHttpClient.at(this.httpClient)
-            );
+            const data = await RetrieveRegularBlock.of(
+                Revision.of(revision)
+            ).askTo(FetchHttpClient.at(this.httpClient));
+            return data.response;
         }
     }
 
     public async getBlockNumber(
-        revision: bigint | number | string | Uint8Array | Hex = 'best' // viem specific
-    ) {
+        revision: BlockRevision = 'best' // viem specific
+    ): Promise<number | undefined> {
         const selectedBlock = await RetrieveRegularBlock.of(
             Revision.of(revision)
         ).askTo(FetchHttpClient.at(this.httpClient));
         const blockNumber = selectedBlock?.response?.number;
-
         return blockNumber;
     }
 
     public async getBlockTransactionCount(
-        revision: bigint | number | string | Uint8Array | Hex = 'best' // viem specific
-    ) {
+        revision: BlockRevision = 'best' // viem specific
+    ): Promise<number | undefined> {
         const selectedBlock = await RetrieveRegularBlock.of(
             Revision.of(revision)
         ).askTo(FetchHttpClient.at(this.httpClient));
@@ -88,23 +98,25 @@ class PublicClient {
         return trxCount;
     }
 
-    public async watchBlocks(pos: BlockId) {
-        return await BlocksSubscription.at(
+    public watchBlocks(pos: BlockId): BlocksSubscription {
+        return BlocksSubscription.at(
             new MozillaWebSocketClient(
-                `ws://${FetchHttpClient.at(this.httpClient)}`
+                `ws://${FetchHttpClient.at(this.httpClient).baseURL}`
             )
         ).atPos(pos);
     }
 
-    public async watchBlockNumber() {
-        return await BlocksSubscription.at(
+    public watchBlockNumber(): BlocksSubscription {
+        return BlocksSubscription.at(
             new MozillaWebSocketClient(
-                `ws://${FetchHttpClient.at(this.httpClient)}`
+                `ws://${FetchHttpClient.at(this.httpClient).baseURL}`
             )
         );
     }
 
-    public async simulateCalls(request: ExecuteCodesRequestJSON) {
+    public async simulateCalls(
+        request: ExecuteCodesRequestJSON
+    ): Promise<ExecuteCodesResponse> {
         // this and call are the same because ETH doesn't support multi-call and they have explicit functions for this.
         // viem specific
         const inspectClause = await InspectClauses.of(request).askTo(
@@ -114,7 +126,10 @@ class PublicClient {
         return clause;
     }
 
-    public async call(request: ExecuteCodesRequestJSON) {
+    // eslint-disable-next-line sonarjs/no-identical-functions
+    public async call(
+        request: ExecuteCodesRequestJSON
+    ): Promise<ExecuteCodesResponse> {
         // viem specific
         const inspectClause = await InspectClauses.of(request).askTo(
             FetchHttpClient.at(this.httpClient)
@@ -123,14 +138,17 @@ class PublicClient {
         return clause;
     }
 
-    public async getFeeHistory(blockCount: number) {
+    public async getFeeHistory(
+        blockCount: number
+    ): Promise<GetFeesHistoryResponse> {
         // viem specific
-        return await RetrieveHistoricalFeeData.of(blockCount).askTo(
+        const data = await RetrieveHistoricalFeeData.of(blockCount).askTo(
             FetchHttpClient.at(this.httpClient)
         );
+        return data.response;
     }
 
-    public async getGasPrice() {
+    public async getGasPrice(): Promise<bigint[]> {
         // viem specific
         const lastBlock = await RetrieveHistoricalFeeData.of(1).askTo(
             FetchHttpClient.at(this.httpClient)
@@ -139,7 +157,7 @@ class PublicClient {
         return lastBaseFeePerGas;
     }
 
-    public async estimateFeePerGas() {
+    public async estimateFeePerGas(): Promise<bigint | undefined> {
         // viem specific
         const lastRevision = await RetrieveRegularBlock.of(Revision.BEST).askTo(
             FetchHttpClient.at(this.httpClient)
@@ -148,7 +166,9 @@ class PublicClient {
         return lastBaseFeePerGas;
     }
 
-    public async estimateGas(request: ExecuteCodesRequestJSON) {
+    public async estimateGas(
+        request: ExecuteCodesRequestJSON
+    ): Promise<ExecuteCodesResponse> {
         // viem specific
         const inspectClause = await InspectClauses.of(request).askTo(
             FetchHttpClient.at(this.httpClient)
@@ -157,11 +177,12 @@ class PublicClient {
         return gasUsedArray;
     }
 
-    public async estimateMaxPriorityFeePerGas() {
+    public async estimateMaxPriorityFeePerGas(): Promise<GetFeesPriorityResponse> {
         // viem specific
-        return await SuggestPriorityFee.of().askTo(
+        const data = await SuggestPriorityFee.of().askTo(
             FetchHttpClient.at(this.httpClient)
         );
+        return data.response;
     }
 }
 
