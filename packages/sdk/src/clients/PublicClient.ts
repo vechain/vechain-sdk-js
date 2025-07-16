@@ -1,14 +1,17 @@
 import {
     type Address,
     type BlockId,
+    type BeatsSubscription,
     BlocksSubscription,
     type ExecuteCodesResponse,
     type ExpandedBlockResponse,
+    EventsSubscription,
     FetchHttpClient,
     type GetFeesHistoryResponse,
     type GetFeesPriorityResponse,
     type Hex,
     InspectClauses,
+    type NewTransactionSubscription,
     type RawTx,
     type RegularBlockResponse,
     RetrieveAccountDetails,
@@ -18,10 +21,13 @@ import {
     RetrieveRegularBlock,
     Revision,
     SuggestPriorityFee,
-    type ThorNetworks
+    type SubscriptionEventResponse,
+    type ThorId,
+    type ThorNetworks,
+    type TransfersSubscription
 } from '@index';
 import { type ExecuteCodesRequestJSON } from '@json';
-import { MozillaWebSocketClient } from '@ws';
+import { MozillaWebSocketClient, type WebSocketListener } from '@ws';
 
 interface PublicClientConfig {
     chain: ThorNetworks;
@@ -183,6 +189,102 @@ class PublicClient {
             FetchHttpClient.at(this.httpClient)
         );
         return data.response;
+    }
+
+    public async getChainId(): Promise<Hex | undefined> {
+        const data = await RetrieveRegularBlock.of(Revision.of(0)).askTo(
+            FetchHttpClient.at(this.httpClient)
+        );
+        return data.response?.id;
+    }
+
+    public uninstallFilter(
+        subscription:
+            | BeatsSubscription
+            | BlocksSubscription
+            | EventsSubscription
+            | NewTransactionSubscription
+            | TransfersSubscription
+    ): void {
+        subscription.close();
+    }
+
+    /**
+     * Watches and returns emitted Event Logs based on the provided filter parameters.
+     * Similar to viem's watchEvent but using EventsSubscription.
+     *
+     * @param {object} params - The parameters for watching events.
+     * @param {function} params.onLogs - Callback function that receives event logs (maps to onMessage).
+     * @param {function} [params.onError] - Optional callback for handling errors.
+     * @param {Address} [params.address] - Optional contract address to filter events.
+     * @param {ThorId} [params.event] - Optional event signature (t0) to filter events.
+     * @param {ThorId[]} [params.args] - Optional indexed event parameters to filter (t1, t2, t3).
+     * @param {BlockId} [params.fromBlock] - Optional starting block position.
+     * @returns {Function} A function that when called, uninstalls the filter.
+     */
+    public watchEvent(params: {
+        onLogs: (logs: SubscriptionEventResponse[]) => void;
+        onError?: (error: Error) => void;
+        address?: Address;
+        event?: ThorId; // t0 - event signature
+        args?: ThorId[]; // t1, t2, t3 - indexed parameters
+        fromBlock?: BlockId; // pos - starting block position
+    }): () => void {
+        const { onLogs, onError, address, event, args, fromBlock } = params;
+
+        // Create WebSocket client
+        const webSocketClient = new MozillaWebSocketClient(
+            `ws://${FetchHttpClient.at(this.httpClient).baseURL}`
+        );
+
+        // Create subscription
+        let subscription = EventsSubscription.at(webSocketClient);
+
+        // Apply filters if provided
+        if (address != null) {
+            subscription = subscription.withContractAddress(address);
+        }
+
+        if (fromBlock != null) {
+            subscription = subscription.atPos(fromBlock);
+        }
+
+        if (event != null || (args != null && args.length > 0)) {
+            subscription = subscription.withFilters(
+                event, // t0 - event signature
+                args?.[0], // t1 - first indexed param
+                args?.[1], // t2 - second indexed param
+                args?.[2] // t3 - third indexed param
+            );
+        }
+
+        // Create listener to map onMessage to onLogs
+        const listener: WebSocketListener<SubscriptionEventResponse> = {
+            onMessage: (event: MessageEvent<SubscriptionEventResponse>) => {
+                if (event.data != null) {
+                    // Map onMessage to onLogs by wrapping the response in an array
+                    // as viem's API expects an array of logs
+                    onLogs([event.data]);
+                }
+            },
+            onError: (event: Event) => {
+                if (onError != null && event instanceof Error) {
+                    onError(event);
+                } else if (onError != null) {
+                    onError(new Error('Unknown WebSocket error'));
+                }
+            },
+            onClose: () => {},
+            onOpen: () => {}
+        };
+
+        // Add listener and open connection
+        subscription.addListener(listener).open();
+
+        // Return unsubscribe function
+        return () => {
+            this.uninstallFilter(subscription);
+        };
     }
 }
 
