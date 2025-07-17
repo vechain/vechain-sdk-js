@@ -331,6 +331,7 @@ describe('VeChain provider tests - solo', () => {
                     topics: []
                 };
 
+                // Create subscriptions and wait for them to be established
                 const erc20Subscription = await retryOperation(
                     async () =>
                         await provider.request({
@@ -347,12 +348,38 @@ describe('VeChain provider tests - solo', () => {
                         })
                 );
 
+                // Wait a bit for subscriptions to be fully established
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+
                 // Collect and assert log events
                 let results: SubscriptionEvent[] = [];
+                let erc20EventReceived = false;
+                let erc721EventReceived = false;
+
                 const eventPromise = new Promise((resolve) => {
+                    const timeout = setTimeout(() => {
+                        provider.destroy();
+                        resolve(results);
+                    }, 30000); // 30 second timeout
+
                     provider.on('message', (message: SubscriptionEvent) => {
                         results.push(message);
-                        if (results.length >= 2) {
+
+                        // Check if we received events for both subscriptions
+                        if (
+                            message.params?.subscription === erc20Subscription
+                        ) {
+                            erc20EventReceived = true;
+                        }
+                        if (
+                            message.params?.subscription === erc721Subscription
+                        ) {
+                            erc721EventReceived = true;
+                        }
+
+                        // Resolve when we have both events or timeout
+                        if (erc20EventReceived && erc721EventReceived) {
+                            clearTimeout(timeout);
                             provider.destroy();
                             resolve(results);
                         }
@@ -360,7 +387,7 @@ describe('VeChain provider tests - solo', () => {
                 });
 
                 // Execute transactions that should emit events
-                await thorClient.contracts.executeTransaction(
+                const erc20Tx = await thorClient.contracts.executeTransaction(
                     (await provider.getSigner(
                         TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
                     )) as VeChainSigner,
@@ -370,6 +397,9 @@ describe('VeChain provider tests - solo', () => {
                     ),
                     [TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address, 100]
                 );
+
+                // Wait for first transaction to be mined
+                await erc20Tx.wait();
 
                 const clauses = Clause.callFunction(
                     Address.of(erc721Contract.address),
@@ -383,7 +413,7 @@ describe('VeChain provider tests - solo', () => {
                     clauses
                 ]);
 
-                await thorClient.contracts.executeTransaction(
+                const erc721Tx = await thorClient.contracts.executeTransaction(
                     (await provider.getSigner(
                         TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
                     )) as VeChainSigner,
@@ -394,6 +424,9 @@ describe('VeChain provider tests - solo', () => {
                     [TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address],
                     { gas: gas.totalGas }
                 );
+
+                // Wait for second transaction to be mined
+                await erc721Tx.wait();
 
                 results = (await eventPromise) as SubscriptionEvent[];
 

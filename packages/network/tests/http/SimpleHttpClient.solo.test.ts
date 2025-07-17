@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { HttpMethod, THOR_SOLO_URL } from '../../src';
 import { SimpleHttpClient, type HttpParams } from '../../src/http';
-import { InvalidHTTPParams, stringifyData } from '@vechain/sdk-errors';
+import { InvalidHTTPRequest, stringifyData } from '@vechain/sdk-errors';
 import { fail } from 'assert';
 
 const ACCOUNT_SOLO_1 = '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa';
@@ -34,8 +34,8 @@ describe('SimpleHttpClient solo tests', () => {
                 await httpClient.get(`/invalid/path`);
                 fail();
             } catch (error) {
-                expect(error).toBeInstanceOf(InvalidHTTPParams);
-                const innerError = (error as InvalidHTTPParams).innerError;
+                expect(error).toBeInstanceOf(InvalidHTTPRequest);
+                const innerError = (error as InvalidHTTPRequest).innerError;
                 expect(innerError).toBeInstanceOf(Error);
                 const cause = (innerError as Error).cause;
                 if (
@@ -99,8 +99,8 @@ describe('SimpleHttpClient solo tests', () => {
                 });
                 fail();
             } catch (error) {
-                expect(error).toBeInstanceOf(InvalidHTTPParams);
-                const innerError = (error as InvalidHTTPParams).innerError;
+                expect(error).toBeInstanceOf(InvalidHTTPRequest);
+                const innerError = (error as InvalidHTTPRequest).innerError;
                 expect(innerError).toBeInstanceOf(Error);
                 const cause = (innerError as Error).cause;
                 if (
