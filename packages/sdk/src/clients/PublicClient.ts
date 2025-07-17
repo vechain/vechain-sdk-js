@@ -241,11 +241,12 @@ class PublicClient {
         return data.response;
     }
 
-    public async getChainId(): Promise<Hex | undefined> {
+    public async getChainId(): Promise<bigint | undefined> {
         const data = await RetrieveRegularBlock.of(Revision.of(0)).askTo(
             FetchHttpClient.at(this.httpClient)
         );
-        return data.response?.id;
+        const res = data?.response?.id;
+        return res != null ? res.bi : undefined;
     }
 
     public uninstallFilter(
