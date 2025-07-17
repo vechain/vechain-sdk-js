@@ -1,3 +1,4 @@
+import { type HttpOptions } from './HttpOptions';
 import { type HttpPath } from './HttpPath';
 import { type HttpQuery } from './HttpQuery';
 
@@ -9,4 +10,6 @@ export interface HttpClient {
         httpQuery: HttpQuery,
         body?: unknown
     ) => Promise<Response>;
+
+    options: HttpOptions;
 }
