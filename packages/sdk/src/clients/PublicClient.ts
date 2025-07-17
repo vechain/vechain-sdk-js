@@ -33,6 +33,11 @@ import { type EventLogFilterRequestJSON } from '@thor/logs/json';
 import { MozillaWebSocketClient, type WebSocketListener } from '@ws';
 import { Blake2b256, Address as VeChainAddress, HexUInt } from '@vcdm';
 import { Secp256k1 } from '@secp256k1';
+import {
+    handleAddressFilter,
+    handleEventArgs,
+    prepareBlockRange
+} from '@utils/filter-utils';
 
 /**
  * Filter types for viem compatibility.
@@ -241,12 +246,15 @@ class PublicClient {
         return data.response;
     }
 
-    public async getChainId(): Promise<bigint | undefined> {
+    public async getChainId(): Promise<bigint> {
         const data = await RetrieveRegularBlock.of(Revision.of(0)).askTo(
             FetchHttpClient.at(this.httpClient)
         );
         const res = data?.response?.id;
-        return res != null ? res.bi : undefined;
+        if (res == null) {
+            throw new Error('Chain ID could not be retrieved');
+        }
+        return res.bi;
     }
 
     public uninstallFilter(
@@ -260,19 +268,6 @@ class PublicClient {
         subscription.close();
     }
 
-    /**
-     * Watches and returns emitted Event Logs based on the provided filter parameters.
-     * Similar to viem's watchEvent but using EventsSubscription.
-     *
-     * @param {object} params - The parameters for watching events.
-     * @param {function} params.onLogs - Callback function that receives event logs (maps to onMessage).
-     * @param {function} [params.onError] - Optional callback for handling errors.
-     * @param {Address} [params.address] - Optional contract address to filter events.
-     * @param {ThorId} [params.event] - Optional event signature (t0) to filter events.
-     * @param {ThorId[]} [params.args] - Optional indexed event parameters to filter (t1, t2, t3).
-     * @param {BlockId} [params.fromBlock] - Optional starting block position.
-     * @returns {Function} A function that when called, uninstalls the filter.
-     */
     public watchEvent(params: {
         onLogs: (logs: SubscriptionEventResponse[]) => void;
         onError?: (error: Error) => void;
@@ -338,127 +333,6 @@ class PublicClient {
         };
     }
 
-    /**
-     * Gets event logs that match the provided filter parameters.
-     * Follows the viem API pattern for getLogs.
-     *
-     * @see {@link https://viem.sh/docs/actions/public/getLogs}
-     *
-     * @param {object} params - Filter parameters
-     * @param {Address} [params.address] - Contract address or array of addresses
-     * @param {ThorId[]} [params.topics] - Array of topic filters (event signature, indexed params)
-     * @param {BlockRevision | number | string} [params.fromBlock] - Block to start searching from
-     * @param {BlockRevision | number | string} [params.toBlock] - Block to search to
-     * @returns {Promise<EventLogResponse[]>} Array of event logs
-     */
-    /**
-     * Helper method to convert BlockRevision to a number value if possible
-     * @param blockRevision Block revision to convert
-     * @returns Number value or undefined if conversion not possible
-     */
-    private convertBlockRevisionToNumber(
-        blockRevision: BlockRevision
-    ): number | undefined {
-        if (typeof blockRevision === 'bigint') {
-            return Number(blockRevision);
-        }
-
-        if (typeof blockRevision === 'number') {
-            return blockRevision;
-        }
-
-        if (
-            typeof blockRevision === 'string' &&
-            blockRevision !== 'latest' &&
-            blockRevision !== 'pending' &&
-            blockRevision !== 'earliest'
-        ) {
-            return parseInt(blockRevision, 16);
-        }
-
-        return undefined;
-    }
-
-    /**
-     * Helper method to handle address filtering
-     * @param address Single address or array of addresses
-     * @returns Address string in VeChain format
-     */
-    private handleAddressFilter(
-        address: Address | Address[] | undefined
-    ): string | undefined {
-        if (address === undefined) {
-            return undefined;
-        }
-
-        if (Array.isArray(address) && address.length > 0) {
-            // For multiple addresses, we currently take the first one
-            // VeChain API limitations require us to simplify for now
-            return String(address[0]);
-        }
-
-        return String(address);
-    }
-
-    /**
-     * Helper method to handle event arguments (indexed parameters)
-     * @param args Array of indexed parameters
-     * @returns Record of topic keys and values
-     */
-    private handleEventArgs(args?: ThorId[]): Record<string, string> {
-        const topicValues: Record<string, string> = {};
-
-        if (args == null || args.length === 0) {
-            return topicValues;
-        }
-
-        // Map args to VeChain topic format (topic1, topic2, topic3)
-        args.forEach((arg, index) => {
-            if (arg !== null && index < 3) {
-                // VeChain supports up to 3 indexed params
-                const topicKey = `topic${index + 1}`; // +1 because index starts at 0, but topics at 1
-                topicValues[topicKey] = String(arg);
-            }
-        });
-
-        return topicValues;
-    }
-
-    /**
-     * Helper method to prepare a block range filter
-     * @param fromBlock Starting block revision
-     * @param toBlock Ending block revision
-     * @returns Range object for the filter request
-     */
-    private prepareBlockRange(
-        fromBlock?: BlockRevision,
-        toBlock?: BlockRevision
-    ): Record<string, string | number> {
-        const range: Record<string, string | number> = {};
-
-        // Handle fromBlock
-        const fromValue =
-            fromBlock !== undefined
-                ? this.convertBlockRevisionToNumber(fromBlock)
-                : undefined;
-        if (fromValue !== undefined) {
-            range.from = fromValue;
-            range.unit = 'block';
-        }
-
-        // Handle toBlock
-        const toValue =
-            toBlock !== undefined
-                ? this.convertBlockRevisionToNumber(toBlock)
-                : undefined;
-        if (toValue !== undefined) {
-            range.to = toValue;
-            range.unit = 'block';
-        }
-
-        return range;
-    }
-
     public async getLogs(params: {
         address?: Address | Address[];
         topics?: Array<ThorId | null>;
@@ -471,7 +345,7 @@ class PublicClient {
         const criteria: Record<string, string> = {};
 
         // Handle address (single or array)
-        const addressFilter = this.handleAddressFilter(address);
+        const addressFilter = handleAddressFilter(address);
         if (addressFilter != null) {
             criteria.address = addressFilter;
         }
@@ -487,28 +361,7 @@ class PublicClient {
             });
         }
 
-        // Prepare range filter if fromBlock or toBlock is provided
-        const range: Record<string, string | number> = {};
-
-        // Handle fromBlock
-        const fromValue =
-            fromBlock !== undefined
-                ? this.convertBlockRevisionToNumber(fromBlock)
-                : undefined;
-        if (fromValue !== undefined) {
-            range.from = fromValue;
-            range.unit = 'block';
-        }
-
-        // Handle toBlock
-        const toValue =
-            toBlock !== undefined
-                ? this.convertBlockRevisionToNumber(toBlock)
-                : undefined;
-        if (toValue !== undefined) {
-            range.to = toValue;
-            range.unit = 'block';
-        }
+        const range = prepareBlockRange(fromBlock, toBlock);
 
         // Construct the filter request
         const request: EventLogFilterRequestJSON = {
@@ -527,21 +380,7 @@ class PublicClient {
 
         return response.response;
     }
-    /**
-     * Creates an event filter according to the viem API pattern.
-     * The filter can be used later to retrieve logs with getFilterLogs.
-     *
-     * @see {@link https://viem.sh/docs/actions/public/createEventFilter}
-     *
-     * @param {object} [params] - Filter parameters (optional)
-     * @param {Address} [params.address] - Contract address or array of addresses
-     * @param {ThorId} [params.event] - Event signature
-     * @param {ThorId[]} [params.args] - Array of indexed event parameters
-     * @param {BlockRevision} [params.fromBlock] - Block to start filtering from
-     * @param {BlockRevision} [params.toBlock] - Block to filter to
-     * @returns {Promise<EventFilter>} A filter object that can be used with getFilterLogs
-     */
-    // Not actually async but keeping the signature for API consistency
+
     public createEventFilter(params?: {
         address?: Address | Address[];
         event?: ThorId;
@@ -558,7 +397,7 @@ class PublicClient {
         const criteria: Record<string, string> = {};
 
         // Handle address (single or array)
-        const addressFilter = this.handleAddressFilter(address);
+        const addressFilter = handleAddressFilter(address);
         if (addressFilter != null) {
             criteria.address = addressFilter;
         }
@@ -569,11 +408,11 @@ class PublicClient {
         }
 
         // Handle indexed parameters (topic1, topic2, topic3)
-        const topicValues = this.handleEventArgs(args);
+        const topicValues = handleEventArgs(args);
         Object.assign(criteria, topicValues);
 
         // Prepare range filter if fromBlock or toBlock is provided
-        const range = this.prepareBlockRange(fromBlock, toBlock);
+        const range = prepareBlockRange(fromBlock, toBlock);
 
         // Construct the filter request
         const filterRequest: EventLogFilterRequestJSON = {
@@ -595,16 +434,6 @@ class PublicClient {
         return filter;
     }
 
-    /**
-     * Gets event logs from a previously created filter.
-     * Follows the viem API pattern for getFilterLogs.
-     *
-     * @see {@link https://viem.sh/docs/actions/public/getFilterLogs}
-     *
-     * @param {object} params - Filter parameters
-     * @param {EventFilter} params.filter - Filter created with createEventFilter
-     * @returns {Promise<EventLogResponse[]>} Array of event logs
-     */
     public async getFilterLogs(params: {
         filter: Filter;
     }): Promise<EventLogResponse[]> {
@@ -622,14 +451,6 @@ class PublicClient {
         return response.response;
     }
 
-    /**
-     * Creates a block filter according to the viem API pattern.
-     * The filter can be used to retrieve new blocks since the filter was created.
-     *
-     * @see {@link https://viem.sh/docs/actions/public/createBlockFilter}
-     *
-     * @returns {Promise<BlockFilter>} A filter object that can be used with getFilterChanges
-     */
     public async createBlockFilter(): Promise<BlockFilter> {
         // Create a unique ID for this filter using timestamp to avoid Math.random security issues
         const filterId = `0x${(Date.now() % 0xffffffff).toString(16).padStart(8, '0')}`;
@@ -647,15 +468,6 @@ class PublicClient {
         return filter;
     }
 
-    /**
-     * Creates a filter for pending transactions according to the viem API pattern.
-     * The filter can be used to retrieve new pending transactions since the filter was created.
-     *
-     * @see {@link https://viem.sh/docs/actions/public/createPendingTransactionFilter}
-     *
-     * @returns {Promise<PendingTransactionFilter>} A filter object that can be used with getFilterChanges
-     */
-    // Not actually async but keeping the signature for API consistency
     public createPendingTransactionFilter(): PendingTransactionFilter {
         // Create a unique ID for this filter using timestamp to avoid Math.random security issues
         const filterId = `0x${(Date.now() % 0xffffffff).toString(16).padStart(8, '0')}`;
@@ -670,16 +482,6 @@ class PublicClient {
         return filter;
     }
 
-    /**
-     * Gets changes (new logs/blocks/transactions) that have occurred since the filter was created or last called.
-     * Follows the viem API pattern for getFilterChanges.
-     *
-     * @see {@link https://viem.sh/docs/actions/public/getFilterChanges}
-     *
-     * @param {object} params - Filter parameters
-     * @param {Filter} params.filter - Filter created with one of the createFilter methods
-     * @returns {Promise<any[]>} Array of changes (logs, block hashes, or transaction hashes)
-     */
     public async getFilterChanges(params: {
         filter: Filter;
     }): Promise<Array<EventLogResponse | string>> {
@@ -757,16 +559,6 @@ class PublicClient {
         );
     }
 
-    /**
-     * Verify a message was signed by the provided address
-     * Follows viem API pattern: https://viem.sh/docs/actions/public/verifyMessage
-     *
-     * @param params - Parameters for the verification
-     * @param params.address - The address that supposedly signed the message
-     * @param params.message - The message that was signed
-     * @param params.signature - The signature to verify
-     * @returns Boolean indicating if the signature is valid
-     */
     public verifyMessage(params: {
         address: Address;
         message: string;
@@ -808,19 +600,6 @@ class PublicClient {
         }
     }
 
-    /**
-     * Verify a typed data structure was signed by the provided address
-     * Follows viem API pattern: https://viem.sh/docs/actions/public/verifyTypedData
-     *
-     * @param params - Parameters for the verification
-     * @param params.address - The address that supposedly signed the typed data
-     * @param params.domain - The domain data
-     * @param params.types - The type definitions
-     * @param params.primaryType - The primary type name
-     * @param params.message - The message object containing the typed data
-     * @param params.signature - The signature to verify
-     * @returns Boolean indicating if the signature is valid
-     */
     public verifyTypedData(params: {
         address: Address;
         domain: {
