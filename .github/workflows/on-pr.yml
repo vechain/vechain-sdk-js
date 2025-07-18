@@ -7,41 +7,11 @@ on:
       - 'main-*'
       - 'supported-*'
       - 'feature-*'
+      - 'sdk-*'
 
 jobs:
-    doc-examples:
-        name: Execute doc examples
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v4
-            - name: Setup Node
-              uses: actions/setup-node@v4
-              with:
-                node-version: lts/*
-            - name: Build SDK
-              run:  |
-                rm -rf ./**/node_modules/
-                yarn install
-                yarn build
-
-            - name: Start Thor solo node
-              id: start-solo
-              run: yarn start-thor-solo
-
-            - name: Stop Thor solo node
-              id: stop-solo
-              run: yarn stop-thor-solo
-
-    install-build:
+    build-lint:
         uses: ./.github/workflows/build-lint.yml
         secrets: inherit
 
-    unit-integration-test:
-        uses: ./.github/workflows/unit-integration-test.yml
-        secrets: inherit
-
-    unit-integration-test-browser:
-      uses: ./.github/workflows/unit-integration-test-browser.yml
-      secrets: inherit
 

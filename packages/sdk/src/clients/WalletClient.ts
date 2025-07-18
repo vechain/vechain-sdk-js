@@ -14,7 +14,6 @@ class WalletClient {
     private readonly account: Account | null;
 
     constructor(httpClient: ThorNetworks, account: Account | null) {
-        // super(httpClient);
         this.account = account;
     }
 
