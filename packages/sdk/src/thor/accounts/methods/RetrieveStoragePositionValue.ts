@@ -1,6 +1,6 @@
 import { type HttpClient, type HttpPath } from '@http';
-import { type Address, type BlockId } from '@vcdm';
-import { GetStorageResponse } from '../response';
+import { type Address, type Hex } from '@vcdm';
+import { GetStorageResponse } from '@thor';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
 import { type GetStorageResponseJSON } from '@thor/json';
 
@@ -79,10 +79,10 @@ class RetrieveStoragePositionValue
      * Creates an instance of RetrieveStoragePositionValue using the provided address and key.
      *
      * @param {Address} address - The address used to generate the storage position value's path.
-     * @param {BlockId} key - The key used to generate the storage position value's path.
+     * @param {Hex} key - The key used to generate the storage position value's path.
      * @return {RetrieveStoragePositionValue} A new instance of RetrieveStoragePositionValue with the specified path.
      */
-    static of(address: Address, key: BlockId): RetrieveStoragePositionValue {
+    static of(address: Address, key: Hex): RetrieveStoragePositionValue {
         return new RetrieveStoragePositionValue(
             new RetrieveStoragePositionValuePath(address, key)
         );
@@ -103,15 +103,15 @@ class RetrieveStoragePositionValuePath implements HttpPath {
     /**
      * Represents the key of the storage position.
      */
-    readonly key: BlockId;
+    readonly key: Hex;
 
     /**
      * Constructs an instance of the class with the specified address and key.
      *
      * @param {Address} address - The address used to generate the storage position value's path.
-     * @param {BlockId} key - The key used to generate the storage position value's path.
+     * @param {Hex} key - The key used to generate the storage position value's path.
      */
-    constructor(address: Address, key: BlockId) {
+    constructor(address: Address, key: Hex) {
         this.address = address;
         this.key = key;
     }

@@ -1,4 +1,4 @@
-import { Address, BlockId, type Hex, HexUInt32, UInt } from '@vcdm';
+import { Address, type Hex, HexUInt32, UInt } from '@vcdm';
 import { type SubscriptionBlockResponseJSON } from '@thor/subscriptions';
 import { IllegalArgumentError } from '@errors';
 
@@ -23,7 +23,7 @@ class SubscriptionBlockResponse {
     /**
      * The block identifier.
      */
-    readonly id: BlockId;
+    readonly id: Hex;
 
     /**
      * The RLP encoded block size in bytes.
@@ -33,7 +33,7 @@ class SubscriptionBlockResponse {
     /**
      * The parent block identifier.
      */
-    readonly parentID: BlockId;
+    readonly parentID: Hex;
 
     /**
      * The UNIX timestamp of the block.
@@ -109,9 +109,9 @@ class SubscriptionBlockResponse {
     constructor(json: SubscriptionBlockResponseJSON) {
         try {
             this.number = UInt.of(json.number);
-            this.id = BlockId.of(json.id);
+            this.id = HexUInt32.of(json.id);
             this.size = UInt.of(json.size);
-            this.parentID = BlockId.of(json.parentID);
+            this.parentID = HexUInt32.of(json.parentID);
             this.timestamp = UInt.of(json.timestamp);
             this.gasLimit = BigInt(json.gasLimit);
             this.beneficiary = Address.of(json.beneficiary);

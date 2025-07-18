@@ -1,4 +1,4 @@
-import { BlockId, HexUInt, UInt } from '@vcdm';
+import { Hex, HexUInt, HexUInt32, UInt } from '@vcdm';
 import { type SubscriptionBeat2ResponseJSON } from '@thor/subscriptions';
 import { IllegalArgumentError } from '@errors';
 
@@ -32,12 +32,12 @@ class SubscriptionBeat2Response {
     /**
      * The block identifier.
      */
-    readonly id: BlockId;
+    readonly id: Hex;
 
     /**
      * The parent block identifier.
      */
-    readonly parentID: BlockId;
+    readonly parentID: Hex;
 
     /**
      * The UNIX timestamp of the block.
@@ -70,8 +70,8 @@ class SubscriptionBeat2Response {
             this.gasLimit = BigInt(json.gasLimit);
             this.obsolete = json.obsolete;
             this.number = UInt.of(json.number);
-            this.id = BlockId.of(json.id);
-            this.parentID = BlockId.of(json.parentID);
+            this.id = HexUInt32.of(json.id);
+            this.parentID = HexUInt32.of(json.parentID);
             this.timestamp = UInt.of(json.timestamp);
             this.txsFeatures = UInt.of(json.txsFeatures);
             this.bloom = HexUInt.of(json.bloom);

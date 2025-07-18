@@ -39,7 +39,7 @@ classDiagram
         BlockSubscriptionQuery query
         WebSocketClient wsc
         BlocksSubscription at(WebSocketClient wsc)$
-        BlocksSubscription atPos(BlockId pos)
+        BlocksSubscription atPos(Hex pos)
         addListener(WebSocketListener~SubscriptionBlockResponse~) BlocksSubscription
         close() BlocksSubscription
         open() BlocksSubscription
@@ -84,8 +84,8 @@ classDiagram
         bigint gasLimit
         boolean obsolete
         UInt number
-        BlockId id
-        BlockId parentID
+        Hex id
+        Hex parentID
         UInt timestamp
         UInt txsFeatures
         HexUInt bloom
@@ -94,9 +94,9 @@ classDiagram
     }
     class SubscriptionBlockResponse {
         UInt number
-        BlockId id
+        Hex id
         UInt size
-        BlockId parentID
+        Hex parentID
         UInt timestamp
         bigint gasLimit
         Address beneficiary
@@ -129,11 +129,11 @@ classDiagram
         SubscriptionTransferResponseJSON toJSON()
     }
     class BeatsSubscriptionQuery {
-        BlockId pos
+        Hex pos
         string query
     }
     class BlockSubscriptionQuery {
-        BlockId pos
+        Hex pos
         string query
     }
     class EventsSubscriptionQuery {
@@ -146,7 +146,7 @@ classDiagram
         string query
     }
     class TransfersSubscriptionQuery {
-        BlockId pos
+        Hex pos
         Address recipient
         Address sender
         Address txOrigin

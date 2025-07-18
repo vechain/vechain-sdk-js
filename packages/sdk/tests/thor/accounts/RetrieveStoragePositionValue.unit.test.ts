@@ -1,5 +1,5 @@
 import { describe, expect, jest, test } from '@jest/globals';
-import { Address, BlockId, Hex } from '@vcdm';
+import { Address, Hex, HexUInt32 } from '@vcdm';
 import {
     RetrieveStoragePositionValue,
     RetrieveStoragePositionValuePath,
@@ -22,7 +22,7 @@ describe('RetrieveStoragePositionValue unit tests', () => {
             const address = Address.of(
                 '0x93Ae8aab337E58A6978E166f8132F59652cA6C56'
             );
-            const key = BlockId.of(
+            const key = HexUInt32.of(
                 '0x0000000000000000000000000000000000000000000000000000000000000001'
             );
             const path = new RetrieveStoragePositionValuePath(address, key);
@@ -35,7 +35,7 @@ describe('RetrieveStoragePositionValue unit tests', () => {
             const address = Address.of(
                 '0x93Ae8aab337E58A6978E166f8132F59652cA6C56'
             );
-            const key = BlockId.of(
+            const key = HexUInt32.of(
                 '0x0000000000000000000000000000000000000000000000000000000000000001'
             );
             const request = RetrieveStoragePositionValue.of(address, key);
@@ -67,7 +67,7 @@ describe('RetrieveStoragePositionValue unit tests', () => {
             const address = Address.of(
                 '0x93Ae8aab337E58A6978E166f8132F59652cA6C56'
             );
-            const key = BlockId.of(
+            const key = HexUInt32.of(
                 '0x0000000000000000000000000000000000000000000000000000000000000001'
             );
             const mockResponse = {
@@ -100,7 +100,7 @@ describe('RetrieveStoragePositionValue unit tests', () => {
             const address = Address.of(
                 '0x93Ae8aab337E58A6978E166f8132F59652cA6C56'
             );
-            const key = BlockId.of(
+            const key = HexUInt32.of(
                 '0x0000000000000000000000000000000000000000000000000000000000000001'
             );
 

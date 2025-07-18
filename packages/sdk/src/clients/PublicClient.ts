@@ -1,6 +1,5 @@
 import {
     type Address,
-    type BlockId,
     BlocksSubscription,
     type ExecuteCodesResponse,
     type ExpandedBlockResponse,
@@ -98,7 +97,7 @@ class PublicClient {
         return trxCount;
     }
 
-    public watchBlocks(pos: BlockId): BlocksSubscription {
+    public watchBlocks(pos: Hex): BlocksSubscription {
         return BlocksSubscription.at(
             new MozillaWebSocketClient(
                 `ws://${FetchHttpClient.at(this.httpClient).baseURL}`

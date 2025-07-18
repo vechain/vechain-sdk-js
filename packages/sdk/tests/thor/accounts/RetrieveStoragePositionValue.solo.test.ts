@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { Address, BlockId } from '@vcdm';
+import { Address, HexUInt32 } from '@vcdm';
 import { RetrieveStoragePositionValue, ThorNetworks } from '@thor';
 import { FetchHttpClient } from '@http';
 
@@ -13,7 +13,7 @@ describe('RetrieveStoragePositionValue testnet tests', () => {
         const response = (
             await RetrieveStoragePositionValue.of(
                 Address.of('0x93Ae8aab337E58A6978E166f8132F59652cA6C56'),
-                BlockId.of(
+                HexUInt32.of(
                     '0x0000000000000000000000000000000000000000000000000000000000000001'
                 )
             ).askTo(FetchHttpClient.at(ThorNetworks.SOLONET))
