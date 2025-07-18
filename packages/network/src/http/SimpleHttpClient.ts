@@ -112,23 +112,25 @@ class SimpleHttpClient implements HttpClient {
                 baseURL += '/';
             }
             // Check if path is already a fully qualified URL
-            let url: URL;
-
             if (/^https?:\/\//.exec(path)) {
                 url = new URL(path);
             } else {
                 url = new URL(path, baseURL);
             }
 
-            if (params?.query) {
+            if (params?.query && url !== undefined) {
                 Object.entries(params.query).forEach(([key, value]) => {
-                    url.searchParams.append(key, String(value));
+                    (url as URL).searchParams.append(key, String(value));
                 });
             }
 
-            if (params?.query !== undefined && params?.query != null) {
+            if (
+                params?.query !== undefined &&
+                params?.query != null &&
+                url !== undefined
+            ) {
                 Object.entries(params.query).forEach(([key, value]) => {
-                    url.searchParams.append(key, String(value));
+                    (url as URL).searchParams.append(key, String(value));
                 });
             }
 
