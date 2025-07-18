@@ -1,4 +1,4 @@
-import { Address, BlockId, ThorId, type TxId, UInt } from '@vcdm';
+import { Address, BlockId, type Hex, HexUInt32, type TxId, UInt } from '@vcdm';
 import { type SubscriptionBlockResponseJSON } from '@thor/subscriptions';
 import { IllegalArgumentError } from '@errors';
 
@@ -63,7 +63,7 @@ class SubscriptionBlockResponse {
     /**
      * The root hash of transactions in the block.
      */
-    readonly txsRoot: ThorId;
+    readonly txsRoot: Hex;
 
     /**
      * The supported transaction features bitset.
@@ -73,12 +73,12 @@ class SubscriptionBlockResponse {
     /**
      * The root hash for the global state after applying changes in this block.
      */
-    readonly stateRoot: ThorId;
+    readonly stateRoot: Hex;
 
     /**
      * The hash of the transaction receipts trie.
      */
-    readonly receiptsRoot: ThorId;
+    readonly receiptsRoot: Hex;
 
     /**
      * Whether the block signer voted COM(Commit) in BFT.
@@ -98,7 +98,7 @@ class SubscriptionBlockResponse {
     /**
      * The list of transaction identifiers in the block.
      */
-    readonly transactions: TxId[];
+    readonly transactions: Hex[];
 
     /**
      * Constructs a new instance of the class by parsing the provided JSON object.
@@ -117,15 +117,15 @@ class SubscriptionBlockResponse {
             this.beneficiary = Address.of(json.beneficiary);
             this.gasUsed = BigInt(json.gasUsed);
             this.totalScore = UInt.of(json.totalScore);
-            this.txsRoot = ThorId.of(json.txsRoot);
+            this.txsRoot = HexUInt32.of(json.txsRoot);
             this.txsFeatures = UInt.of(json.txsFeatures);
-            this.stateRoot = ThorId.of(json.stateRoot);
-            this.receiptsRoot = ThorId.of(json.receiptsRoot);
+            this.stateRoot = HexUInt32.of(json.stateRoot);
+            this.receiptsRoot = HexUInt32.of(json.receiptsRoot);
             this.com = json.com;
             this.signer = Address.of(json.signer);
             this.obsolete = json.obsolete;
             this.transactions = json.transactions.map(
-                (txId: string): TxId => ThorId.of(txId)
+                (txId: string): TxId => HexUInt32.of(txId)
             );
         } catch (error) {
             throw new IllegalArgumentError(
@@ -160,9 +160,7 @@ class SubscriptionBlockResponse {
             com: this.com,
             signer: this.signer.toString(),
             obsolete: this.obsolete,
-            transactions: this.transactions.map((txId: ThorId) =>
-                txId.toString()
-            )
+            transactions: this.transactions.map((txId: Hex) => txId.toString())
         } satisfies SubscriptionBlockResponseJSON;
     }
 }

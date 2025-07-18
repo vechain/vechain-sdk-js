@@ -1,7 +1,7 @@
 import { type WebSocketClient, type WebSocketListener } from '@ws';
 import { type SubscriptionEventResponse } from '@thor/subscriptions';
 import { type HttpPath, type HttpQuery } from '@http';
-import { type Address, type ThorId } from '@vcdm';
+import { type Address, type Hex } from '@vcdm';
 import { ThorError } from '@thor';
 
 /**
@@ -83,7 +83,7 @@ class EventsSubscription
      * @param {WebSocketClient} wsc - The WebSocket client to initialize the instance with.
      * @param {EventsSubscriptionQuery} query - The query to initialize the instance with.
      */
-    atPos(pos?: ThorId): EventsSubscription {
+    atPos(pos?: Hex): EventsSubscription {
         return new EventsSubscription(
             this.wsc,
             new EventsSubscriptionQuery(
@@ -228,18 +228,13 @@ class EventsSubscription
     /**
      * Creates a new instance of the class with the specified filters.
      *
-     * @param {ThorId} t0 - The filter for the 1st parameter.
-     * @param {ThorId} t1 - The filter for the 2nd parameter.
-     * @param {ThorId} t2 - The filter for the 3rd parameter.
-     * @param {ThorId} t3 - The filter for the 4th parameter.
+     * @param {Hex} t0 - The filter for the 1st parameter.
+     * @param {Hex} t1 - The filter for the 2nd parameter.
+     * @param {Hex} t2 - The filter for the 3rd parameter.
+     * @param {Hex} t3 - The filter for the 4th parameter.
      * @return {EventsSubscription} - The instance of the class.
      */
-    withFilters(
-        t0?: ThorId,
-        t1?: ThorId,
-        t2?: ThorId,
-        t3?: ThorId
-    ): EventsSubscription {
+    withFilters(t0?: Hex, t1?: Hex, t2?: Hex, t3?: Hex): EventsSubscription {
         return new EventsSubscription(
             this.wsc,
             new EventsSubscriptionQuery(
@@ -272,41 +267,41 @@ class EventsSubscriptionQuery implements HttpQuery {
     /**
      * A saved block ID for resuming the subscription. If omitted, the best block ID is assumed.
      */
-    readonly pos?: ThorId;
+    readonly pos?: Hex;
     /**
      * The keccak256 hash representing the event signature
      */
-    readonly t0?: ThorId;
+    readonly t0?: Hex;
     /**
      * Filters events based on the 1st parameter in the event
      */
-    readonly t1?: ThorId;
+    readonly t1?: Hex;
     /**
      * Filters events based on the 2nd parameter in the event
      */
-    readonly t2?: ThorId;
+    readonly t2?: Hex;
     /**
      * Filters events based on the 3rd parameter in the event
      */
-    readonly t3?: ThorId;
+    readonly t3?: Hex;
 
     /**
      * Constructs an instance of the class with the specified filters.
      *
      * @param {Address} addr - The address of the contract that emits the event.
-     * @param {ThorId} pos - A saved block ID for resuming the subscription. If omitted, the best block ID is assumed.
-     * @param {ThorId} t0 - The keccak256 hash representing the event signature
-     * @param {ThorId} t1 - The filter for the 1st parameter in the event
-     * @param {ThorId} t2 - The filter for the 2nd parameter in the event
-     * @param {ThorId} t3 - The filter for the 3rd parameter in the event
+     * @param {Hex} pos - A saved block ID for resuming the subscription. If omitted, the best block ID is assumed.
+     * @param {Hex} t0 - The keccak256 hash representing the event signature
+     * @param {Hex} t1 - The filter for the 1st parameter in the event
+     * @param {Hex} t2 - The filter for the 2nd parameter in the event
+     * @param {Hex} t3 - The filter for the 3rd parameter in the event
      */
     constructor(
         addr?: Address,
-        pos?: ThorId,
-        t0?: ThorId,
-        t1?: ThorId,
-        t2?: ThorId,
-        t3?: ThorId
+        pos?: Hex,
+        t0?: Hex,
+        t1?: Hex,
+        t2?: Hex,
+        t3?: Hex
     ) {
         this.addr = addr;
         this.pos = pos;

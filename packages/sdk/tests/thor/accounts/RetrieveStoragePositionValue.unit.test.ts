@@ -1,5 +1,5 @@
 import { describe, expect, jest, test } from '@jest/globals';
-import { Address, BlockId, ThorId } from '@vcdm';
+import { Address, BlockId, Hex } from '@vcdm';
 import {
     RetrieveStoragePositionValue,
     RetrieveStoragePositionValuePath,
@@ -10,7 +10,7 @@ import {
     mockHttpClient,
     mockHttpClientWithError
 } from '../../utils/MockHttpClient';
-import { GetStorageResponseJSON } from '@thor/json';
+import { type GetStorageResponseJSON } from '@thor/json';
 /**
  * VeChain retrieve storage position value - unit
  *
@@ -90,7 +90,7 @@ describe('RetrieveStoragePositionValue unit tests', () => {
 
             expect(result.request).toBe(request);
             expect(result.response).toBeInstanceOf(GetStorageResponse);
-            expect(result.response.value).toBeInstanceOf(ThorId);
+            expect(result.response.value).toBeInstanceOf(Hex);
             expect(result.response.value.toString()).toBe(
                 '0x000000000000000000000000000000000000000000000000000000000000002a'
             );

@@ -51,9 +51,9 @@ classDiagram
         EventsSubscriptionQuery query
         WebSocketClient wsc
         EventsSubscription at(WebSocketClient wsc)$
-        EventsSubscription atPos(ThorId pos)
+        EventsSubscription atPos(Hex pos)
         EventsSubscription withContractAddress(Address contractAddress)
-        EventsSubscription withFilters(ThorId t0, ThorId t1, ThorId t2, ThorId t3)
+        EventsSubscription withFilters(Hex t0, Hex t1, Hex t2, Hex t3)
         addListener(WebSocketListener~SubscriptionEventResponse~) EventsSubscription
         close() EventsSubscription
         open() EventsSubscription
@@ -102,10 +102,10 @@ classDiagram
         Address beneficiary
         bigint gasUsed
         UInt totalScore
-        ThorId txsRoot
+        Hex txsRoot
         UInt txsFeatures
-        ThorId stateRoot
-        ThorId receiptsRoot
+        Hex stateRoot
+        Hex receiptsRoot
         boolean com
         Address signer
         boolean obsolete
@@ -114,8 +114,8 @@ classDiagram
     }
     class SubscriptionEventResponse {
         Address address
-        ThorId[] topics
-        HexUInt data
+        Hex[] topics
+        Hex data
         boolean obsolete
         LogMeta meta
         SubscriptionEventResponseJSON toJSON()
@@ -138,11 +138,11 @@ classDiagram
     }
     class EventsSubscriptionQuery {
         Address addr
-        ThorId pos
-        ThorId t0
-        ThorId t1
-        ThorId t2
-        ThorId t3
+        Hex pos
+        Hex t0
+        Hex t1
+        Hex t2
+        Hex t3
         string query
     }
     class TransfersSubscriptionQuery {
