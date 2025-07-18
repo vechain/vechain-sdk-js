@@ -1,5 +1,5 @@
 import { type HttpPath, type HttpQuery } from '@http';
-import { type Address, type BlockId } from '@vcdm';
+import { type Address, type Hex } from '@vcdm';
 import { type WebSocketClient, type WebSocketListener } from '@ws';
 import { type SubscriptionTransferResponse } from '@thor/subscriptions';
 
@@ -172,7 +172,7 @@ class TransfersSubscriptionQuery implements HttpQuery {
     /**
      * The block position to start from.
      */
-    readonly pos?: BlockId;
+    readonly pos?: Hex;
 
     /**
      * The recipient address to filter by.
@@ -192,13 +192,13 @@ class TransfersSubscriptionQuery implements HttpQuery {
     /**
      * Constructs a new query instance with the specified parameters.
      *
-     * @param {BlockId} pos - The block position to start from.
+     * @param {Hex} pos - The block position to start from.
      * @param {Address} recipient - The recipient address to filter by.
      * @param {Address} sender - The sender address to filter by.
      * @param {Address} txOrigin - The transaction origin address to filter by.
      */
     constructor(
-        pos?: BlockId,
+        pos?: Hex,
         recipient?: Address,
         sender?: Address,
         txOrigin?: Address

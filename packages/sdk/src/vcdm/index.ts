@@ -16,7 +16,6 @@ export * from './Mnemonic';
 export * from './NetAddr';
 export * from './Quantity';
 export * from './Revision';
-export * from './BlockId';
 export * from './Txt';
 export * from './UInt';
 export type * from './VeChainDataModel';

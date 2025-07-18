@@ -1,6 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
-import { StorageRange, type StorageRangeJSON } from '@thor/debug';
-import { ThorId } from '@vcdm';
+import { StorageRange } from '@thor/debug';
+import { HexUInt32 } from '@vcdm';
+import { type StorageRangeJSON } from '@thor/debug/json';
 
 /**
  * VeChain storage range - unit
@@ -20,7 +21,7 @@ describe('StorageRange UNIT tests', () => {
         const range = new StorageRange(expected);
         expect(range.nextKey).toEqual(
             expected.nextKey !== undefined && expected.nextKey !== ''
-                ? ThorId.of(expected.nextKey)
+                ? HexUInt32.of(expected.nextKey)
                 : undefined
         );
         expect(range.storage).toEqual(expected.storage);
@@ -51,12 +52,12 @@ describe('StorageRange UNIT tests', () => {
         const range = new StorageRange(expected);
         const serialized = range.toJSON();
 
-        // Use the normalized ThorId string in the expected output
+        // Use the normalized HexUInt32 string in the expected output
         const expectedJson = {
             ...expected,
             nextKey:
                 expected.nextKey !== undefined && expected.nextKey !== ''
-                    ? ThorId.of(expected.nextKey).toString()
+                    ? HexUInt32.of(expected.nextKey).toString()
                     : undefined
         };
 

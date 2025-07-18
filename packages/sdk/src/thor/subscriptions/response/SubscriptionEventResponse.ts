@@ -1,5 +1,5 @@
 import { LogMeta } from '@thor/logs';
-import { Address, HexUInt, ThorId } from '@vcdm';
+import { Address, type Hex, HexUInt, HexUInt32 } from '@vcdm';
 import { type SubscriptionEventResponseJSON } from '@thor/subscriptions';
 import { IllegalArgumentError } from '@errors';
 
@@ -23,12 +23,12 @@ class SubscriptionEventResponse {
     /**
      * The event topics.
      */
-    readonly topics: ThorId[];
+    readonly topics: Hex[];
 
     /**
      * The event data.
      */
-    readonly data: HexUInt;
+    readonly data: Hex;
 
     /**
      * Whether the event is obsolete.
@@ -50,7 +50,7 @@ class SubscriptionEventResponse {
         try {
             this.address = Address.of(json.address);
             this.topics = json.topics.map(
-                (topic: string): ThorId => ThorId.of(topic)
+                (topic: string): Hex => HexUInt32.of(topic)
             );
             this.data = HexUInt.of(json.data);
             this.obsolete = json.obsolete;
@@ -73,9 +73,7 @@ class SubscriptionEventResponse {
     toJSON(): SubscriptionEventResponseJSON {
         return {
             address: this.address.toString(),
-            topics: this.topics.map((topic: ThorId): string =>
-                topic.toString()
-            ),
+            topics: this.topics.map((topic: Hex): string => topic.toString()),
             data: this.data.toString(),
             obsolete: this.obsolete,
             meta: this.meta.toJSON()

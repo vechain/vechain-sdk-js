@@ -25,7 +25,7 @@ class BlockRef extends HexUInt {
     /**
      * Constructs a BlockRef object with the provided hexadecimal value.
      *
-     * @param {HexUInt} huint - The hexadecimal value representing the BlockId.
+     * @param {HexUInt} huint - The hexadecimal value representing the block id.
      */
     protected constructor(huint: HexUInt) {
         super(Hex.POSITIVE, huint.fit(BlockRef.DIGITS).digits);
