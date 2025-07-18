@@ -62,9 +62,12 @@ type ContractEventSync<T = unknown, TABIEvent> = (
  *               are not specified, allowing for flexibility in function signatures.
  * @returns A promise that resolves to the type `T`, representing the result of the contract function execution.
  */
-type ContractFunctionAsync<T = unknown, TABIFunction> = (
+type ContractFunctionAsync<T, TABIFunction extends AbiFunction> = (
     ...args: [
-        ...Partial<{ value: number; comment: string }>,
+        ...(
+            | [Partial<{ value: number; revision: string; comment: string }>]
+            | []
+        ),
         ...AbiParametersToPrimitiveTypes<TABIFunction['inputs'], 'inputs'>
     ]
 ) => Promise<T>;
@@ -83,15 +86,16 @@ type ContractFunctionAsync<T = unknown, TABIFunction> = (
  */
 type ContractFunctionRead<
     TAbi extends Abi,
-    TFunctionName extends ExtractAbiFunctionNames<TAbi, 'pure' | 'view'>,
-    TAbiFunction extends AbiFunction = ExtractAbiFunction<TAbi, TFunctionName>
-> = Record<
-    TFunctionName,
-    ContractFunctionAsync<
-        AbiParametersToPrimitiveTypes<TAbiFunction['outputs'], 'outputs'>,
-        TAbiFunction
-    >
->;
+    TFunctionName extends ExtractAbiFunctionNames<TAbi, 'pure' | 'view'>
+> = {
+    [key in TFunctionName]: ContractFunctionAsync<
+        AbiParametersToPrimitiveTypes<
+            ExtractAbiFunction<TAbi, key>['outputs'],
+            'outputs'
+        >,
+        ExtractAbiFunction<TAbi, key>
+    >;
+};
 
 /**
  * Defines a mapping of contract function names to their corresponding transactional contract functions.
