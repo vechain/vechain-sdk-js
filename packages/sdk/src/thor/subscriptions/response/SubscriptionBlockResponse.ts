@@ -18,7 +18,7 @@ class SubscriptionBlockResponse {
     /**
      * The block number (height).
      */
-    readonly number: UInt;
+    readonly number: number;
 
     /**
      * The block identifier.
@@ -28,7 +28,7 @@ class SubscriptionBlockResponse {
     /**
      * The RLP encoded block size in bytes.
      */
-    readonly size: UInt;
+    readonly size: number;
 
     /**
      * The parent block identifier.
@@ -38,7 +38,7 @@ class SubscriptionBlockResponse {
     /**
      * The UNIX timestamp of the block.
      */
-    readonly timestamp: UInt;
+    readonly timestamp: number;
 
     /**
      * The maximum amount of gas that all transactions inside the block are allowed to consume.
@@ -58,7 +58,7 @@ class SubscriptionBlockResponse {
     /**
      * The accumulated witness number of the chain branch headed by the block.
      */
-    readonly totalScore: UInt;
+    readonly totalScore: number;
 
     /**
      * The root hash of transactions in the block.
@@ -68,7 +68,7 @@ class SubscriptionBlockResponse {
     /**
      * The supported transaction features bitset.
      */
-    readonly txsFeatures: UInt;
+    readonly txsFeatures: number;
 
     /**
      * The root hash for the global state after applying changes in this block.
@@ -108,17 +108,17 @@ class SubscriptionBlockResponse {
      */
     constructor(json: SubscriptionBlockResponseJSON) {
         try {
-            this.number = UInt.of(json.number);
+            this.number = UInt.of(json.number).valueOf();
             this.id = HexUInt32.of(json.id);
-            this.size = UInt.of(json.size);
+            this.size = UInt.of(json.size).valueOf();
             this.parentID = HexUInt32.of(json.parentID);
-            this.timestamp = UInt.of(json.timestamp);
+            this.timestamp = UInt.of(json.timestamp).valueOf();
             this.gasLimit = BigInt(json.gasLimit);
             this.beneficiary = Address.of(json.beneficiary);
             this.gasUsed = BigInt(json.gasUsed);
-            this.totalScore = UInt.of(json.totalScore);
+            this.totalScore = UInt.of(json.totalScore).valueOf();
             this.txsRoot = HexUInt32.of(json.txsRoot);
-            this.txsFeatures = UInt.of(json.txsFeatures);
+            this.txsFeatures = UInt.of(json.txsFeatures).valueOf();
             this.stateRoot = HexUInt32.of(json.stateRoot);
             this.receiptsRoot = HexUInt32.of(json.receiptsRoot);
             this.com = json.com;

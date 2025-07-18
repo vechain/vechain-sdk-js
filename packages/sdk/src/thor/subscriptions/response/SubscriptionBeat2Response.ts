@@ -1,4 +1,4 @@
-import { Hex, HexUInt, HexUInt32, UInt } from '@vcdm';
+import { type Hex, HexUInt, HexUInt32, UInt } from '@vcdm';
 import { type SubscriptionBeat2ResponseJSON } from '@thor/subscriptions';
 import { IllegalArgumentError } from '@errors';
 
@@ -27,7 +27,7 @@ class SubscriptionBeat2Response {
     /**
      * The block number (height).
      */
-    readonly number: UInt;
+    readonly number: number;
 
     /**
      * The block identifier.
@@ -42,17 +42,17 @@ class SubscriptionBeat2Response {
     /**
      * The UNIX timestamp of the block.
      */
-    readonly timestamp: UInt;
+    readonly timestamp: number;
 
     /**
      * The supported transaction features bitset.
      */
-    readonly txsFeatures: UInt;
+    readonly txsFeatures: number;
 
     /**
      * The bloom filter for the block.
      */
-    readonly bloom: HexUInt;
+    readonly bloom: Hex;
 
     /**
      * The k value for the block.
@@ -69,11 +69,11 @@ class SubscriptionBeat2Response {
         try {
             this.gasLimit = BigInt(json.gasLimit);
             this.obsolete = json.obsolete;
-            this.number = UInt.of(json.number);
+            this.number = UInt.of(json.number).valueOf();
             this.id = HexUInt32.of(json.id);
             this.parentID = HexUInt32.of(json.parentID);
-            this.timestamp = UInt.of(json.timestamp);
-            this.txsFeatures = UInt.of(json.txsFeatures);
+            this.timestamp = UInt.of(json.timestamp).valueOf();
+            this.txsFeatures = UInt.of(json.txsFeatures).valueOf();
             this.bloom = HexUInt.of(json.bloom);
             this.k = UInt.of(json.k);
         } catch (error) {

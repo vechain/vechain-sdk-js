@@ -83,27 +83,27 @@ classDiagram
     class SubscriptionBeat2Response {
         bigint gasLimit
         boolean obsolete
-        UInt number
+        number number
         Hex id
         Hex parentID
-        UInt timestamp
-        UInt txsFeatures
-        HexUInt bloom
-        UInt k
+        number timestamp
+        number txsFeatures
+        Hex bloom
+        number k
         SubscriptionBeat2ResponseJSON toJSON()
     }
     class SubscriptionBlockResponse {
-        UInt number
+        number number
         Hex id
-        UInt size
+        number size
         Hex parentID
-        UInt timestamp
+        number timestamp
         bigint gasLimit
         Address beneficiary
         bigint gasUsed
-        UInt totalScore
+        number totalScore
         Hex txsRoot
-        UInt txsFeatures
+        number txsFeatures
         Hex stateRoot
         Hex receiptsRoot
         boolean com

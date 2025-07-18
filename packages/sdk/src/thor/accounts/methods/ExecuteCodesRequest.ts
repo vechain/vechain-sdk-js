@@ -2,7 +2,8 @@ import { type ClauseJSON } from '../../json';
 import { Clause } from '@thor';
 import { Address, BlockRef, UInt } from '@vcdm';
 import { IllegalArgumentError } from '@errors';
-import { ExecuteCodesRequestJSON } from '../json';
+import { type ExecuteCodesRequestJSON } from '../json';
+
 /**
  * Full-Qualified Path
  */
@@ -29,7 +30,7 @@ class ExecuteCodesRequest {
     /**
      * The expiration of the request.
      */
-    readonly expiration: UInt | null;
+    readonly expiration: number | null;
 
     /**
      * The block reference of the request.
@@ -64,9 +65,11 @@ class ExecuteCodesRequest {
      */
     constructor(json: ExecuteCodesRequestJSON) {
         try {
-            this.provedWork = json.provedWork ? json.provedWork : null;
+            this.provedWork = json.provedWork != null ? json.provedWork : null;
             this.gasPayer = json.gasPayer ? Address.of(json.gasPayer) : null;
-            this.expiration = json.expiration ? UInt.of(json.expiration) : null;
+            this.expiration = json.expiration
+                ? UInt.of(json.expiration).valueOf()
+                : null;
             this.blockRef = json.blockRef ? BlockRef.of(json.blockRef) : null;
             this.clauses = json.clauses
                 ? json.clauses.map(
