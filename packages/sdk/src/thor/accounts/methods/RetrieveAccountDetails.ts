@@ -2,7 +2,7 @@ import { type HttpClient, type HttpPath } from '@http';
 import { GetAccountResponse } from '@thor/accounts';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
 import { type Address } from '@vcdm';
-import { GetAccountResponseJSON } from '../json';
+import { type GetAccountResponseJSON } from '../json';
 
 /**
  * Full-Qualified Path
