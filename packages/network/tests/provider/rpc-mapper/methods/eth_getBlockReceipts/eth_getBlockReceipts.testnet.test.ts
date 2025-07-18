@@ -82,7 +82,7 @@ describe('RPC Mapper - eth_getBlockReceipts method tests', () => {
 
                 expect(rpcCall).toBeDefined();
             }
-        });
+        }, 20000);
     });
 
     /**
