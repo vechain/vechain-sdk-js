@@ -352,6 +352,11 @@ describe('VeChain provider tests - solo', () => {
                 })
         );
 
+        console.log('Subscription IDs:', {
+            erc20Subscription,
+            erc721Subscription
+        });
+
         // Wait for subscriptions to be fully established
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
@@ -362,23 +367,38 @@ describe('VeChain provider tests - solo', () => {
 
         const eventPromise = new Promise<SubscriptionEvent[]>((resolve) => {
             const timeout = setTimeout(() => {
+                console.log(
+                    'Event collection timeout. Results:',
+                    results.length
+                );
+                console.log('ERC20 received:', erc20EventReceived);
+                console.log('ERC721 received:', erc721EventReceived);
                 provider.destroy();
                 resolve(results);
             }, 30000); // 30 second timeout
 
             provider.on('message', (message: SubscriptionEvent) => {
+                console.log('Received message:', {
+                    method: message.method,
+                    subscription: message.params?.subscription,
+                    erc20Subscription,
+                    erc721Subscription
+                });
                 results.push(message);
 
                 // Check if we received events for both subscriptions
                 if (message.params?.subscription === erc20Subscription) {
                     erc20EventReceived = true;
+                    console.log('ERC20 event received');
                 }
                 if (message.params?.subscription === erc721Subscription) {
                     erc721EventReceived = true;
+                    console.log('ERC721 event received');
                 }
 
                 // Resolve when we have both events or timeout
                 if (erc20EventReceived && erc721EventReceived) {
+                    console.log('Both events received, resolving');
                     clearTimeout(timeout);
                     provider.destroy();
                     resolve(results);
