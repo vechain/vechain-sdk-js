@@ -90,29 +90,6 @@ class BlockId extends HexUInt {
 }
 
 /**
- * This class is an alias of {@link BlockId} for back compatibility.
- */
-class ThorId extends BlockId {
-    /**
-     * Constructs an instance of the class with the specified block ID.
-     *
-     * @param {BlockId} blockId - The unique identifier for the block.
-     */
-    protected constructor(blockId: BlockId) {
-        super(blockId);
-    }
-
-    /**
-     * See {@link BlockId.of}.
-     */
-    public static of(
-        exp: bigint | number | string | Uint8Array | HexUInt
-    ): ThorId {
-        return new ThorId(BlockId.of(exp));
-    }
-}
-
-/**
  * This class is an alias of {@link TxId} for back compatibility.
  */
 class TxId extends BlockId {
@@ -135,4 +112,4 @@ class TxId extends BlockId {
     }
 }
 
-export { BlockId, ThorId, TxId };
+export { BlockId, TxId };
