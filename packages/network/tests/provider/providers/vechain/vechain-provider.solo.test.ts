@@ -311,7 +311,7 @@ describe('VeChain provider tests - solo', () => {
      * @throws {Error} If any of the assertions fail, indicating a problem with event subscription or log data capture.
      */
     test('Should be able to subscribe to the latest logs of an erc20 and erc721 contract', async () => {
-        // Test setup: Deploy contracts and set up event subscriptions
+        // Deploy contracts
         const erc20Contract = await deployERC20Contract(
             thorClient,
             (await provider.getSigner(
@@ -335,78 +335,52 @@ describe('VeChain provider tests - solo', () => {
             topics: []
         };
 
-        // Create subscriptions and wait for them to be established
-        const erc20Subscription = await retryOperation(
-            async () =>
-                await provider.request({
-                    method: 'eth_subscribe',
-                    params: ['logs', erc20logsParams]
-                })
-        );
+        // Set up event listeners BEFORE creating subscriptions
+        const events: SubscriptionEvent[] = [];
+        const eventPromise = new Promise<SubscriptionEvent[]>((resolve) => {
+            const timeout = setTimeout(() => {
+                console.log(
+                    'Event collection timeout. Events received:',
+                    events.length
+                );
+                resolve(events);
+            }, 30000);
 
-        const erc721Subscription = await retryOperation(
-            async () =>
-                await provider.request({
-                    method: 'eth_subscribe',
-                    params: ['logs', erc721logsParams]
-                })
-        );
+            provider.on('message', (message: SubscriptionEvent) => {
+                console.log(
+                    'Received event for subscription:',
+                    message.params?.subscription
+                );
+                events.push(message);
+
+                // Resolve when we have at least 2 events (one for each contract)
+                if (events.length >= 2) {
+                    clearTimeout(timeout);
+                    resolve(events);
+                }
+            });
+        });
+
+        // Create subscriptions
+        const erc20Subscription = await provider.request({
+            method: 'eth_subscribe',
+            params: ['logs', erc20logsParams]
+        });
+
+        const erc721Subscription = await provider.request({
+            method: 'eth_subscribe',
+            params: ['logs', erc721logsParams]
+        });
 
         console.log('Subscription IDs:', {
             erc20Subscription,
             erc721Subscription
         });
 
-        // Wait for subscriptions to be fully established
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        // Wait for subscriptions to be established
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        // Set up event listener BEFORE executing transactions
-        let results: SubscriptionEvent[] = [];
-        let erc20EventReceived = false;
-        let erc721EventReceived = false;
-
-        const eventPromise = new Promise<SubscriptionEvent[]>((resolve) => {
-            const timeout = setTimeout(() => {
-                console.log(
-                    'Event collection timeout. Results:',
-                    results.length
-                );
-                console.log('ERC20 received:', erc20EventReceived);
-                console.log('ERC721 received:', erc721EventReceived);
-                provider.destroy();
-                resolve(results);
-            }, 30000); // 30 second timeout
-
-            provider.on('message', (message: SubscriptionEvent) => {
-                console.log('Received message:', {
-                    method: message.method,
-                    subscription: message.params?.subscription,
-                    erc20Subscription,
-                    erc721Subscription
-                });
-                results.push(message);
-
-                // Check if we received events for both subscriptions
-                if (message.params?.subscription === erc20Subscription) {
-                    erc20EventReceived = true;
-                    console.log('ERC20 event received');
-                }
-                if (message.params?.subscription === erc721Subscription) {
-                    erc721EventReceived = true;
-                    console.log('ERC721 event received');
-                }
-
-                // Resolve when we have both events or timeout
-                if (erc20EventReceived && erc721EventReceived) {
-                    console.log('Both events received, resolving');
-                    clearTimeout(timeout);
-                    provider.destroy();
-                    resolve(results);
-                }
-            });
-        });
-
-        // Execute transactions that should emit events
+        // Execute transactions
         const erc20Tx = await thorClient.contracts.executeTransaction(
             (await provider.getSigner(
                 TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
@@ -415,9 +389,6 @@ describe('VeChain provider tests - solo', () => {
             ABIContract.ofAbi(erc20Contract.abi).getFunction('transfer'),
             [TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address, 100]
         );
-
-        // Wait for first transaction to be mined
-        await erc20Tx.wait();
 
         const erc721Tx = await thorClient.contracts.executeTransaction(
             (await provider.getSigner(
@@ -428,34 +399,35 @@ describe('VeChain provider tests - solo', () => {
             [TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address]
         );
 
-        // Wait for second transaction to be mined
-        await erc721Tx.wait();
+        // Wait for transactions to be mined
+        await Promise.all([erc20Tx.wait(), erc721Tx.wait()]);
 
-        // Small delay to ensure events have time to propagate
-        await new Promise((resolve) => setTimeout(resolve, 3000));
+        // Wait for events
+        const results = await eventPromise;
 
-        results = await eventPromise;
-
-        // Assertions to validate the received log events
+        // Assertions
         expect(results).toBeDefined();
-        expect(results.length).toBeGreaterThan(1);
-        expect(
-            results.filter((x) => x.params.subscription === erc20Subscription)
-                .length
-        ).toBeGreaterThan(0);
-        expect(
-            results.filter((x) => x.params.subscription === erc721Subscription)
-                .length
-        ).toBeGreaterThan(0);
+        expect(results.length).toBeGreaterThanOrEqual(2);
 
-        expect(results[0].method).toBe('eth_subscription');
-        expect(results[1].method).toBe('eth_subscription');
+        const erc20Events = results.filter(
+            (x) => x.params.subscription === erc20Subscription
+        );
+        const erc721Events = results.filter(
+            (x) => x.params.subscription === erc721Subscription
+        );
 
-        // @ts-expect-error - Asserting that log data is present
-        expect(results[0].params.result.length).toBeGreaterThan(0);
+        expect(erc20Events.length).toBeGreaterThan(0);
+        expect(erc721Events.length).toBeGreaterThan(0);
 
-        // @ts-expect-error - Asserting that log data is present
-        expect(results[1].params.result.length).toBeGreaterThan(0);
+        // Validate event structure
+        results.forEach((event) => {
+            expect(event.method).toBe('eth_subscription');
+            expect(event.params).toBeDefined();
+            expect(event.params.subscription).toBeDefined();
+            expect(event.params.result).toBeDefined();
+            // @ts-expect-error - Asserting that log data is present
+            expect(event.params.result.length).toBeGreaterThan(0);
+        });
     }, 60000);
 
     /**
