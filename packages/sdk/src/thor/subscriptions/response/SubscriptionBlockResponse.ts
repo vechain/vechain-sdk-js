@@ -1,4 +1,4 @@
-import { Address, BlockId, type Hex, HexUInt32, type TxId, UInt } from '@vcdm';
+import { Address, BlockId, type Hex, HexUInt32, UInt } from '@vcdm';
 import { type SubscriptionBlockResponseJSON } from '@thor/subscriptions';
 import { IllegalArgumentError } from '@errors';
 
@@ -125,7 +125,7 @@ class SubscriptionBlockResponse {
             this.signer = Address.of(json.signer);
             this.obsolete = json.obsolete;
             this.transactions = json.transactions.map(
-                (txId: string): TxId => HexUInt32.of(txId)
+                (txId: string): Hex => HexUInt32.of(txId)
             );
         } catch (error) {
             throw new IllegalArgumentError(
