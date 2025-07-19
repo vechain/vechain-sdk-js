@@ -18,7 +18,8 @@ import {
     RetrieveRegularBlock,
     Revision,
     SuggestPriorityFee,
-    type ThorNetworks
+    type ThorNetworks,
+    toURL
 } from '@index';
 import { type ExecuteCodesRequestJSON } from '@json';
 import { MozillaWebSocketClient } from '@ws';
@@ -41,15 +42,18 @@ function createPublicClient(params: PublicClientConfig): PublicClient {
 }
 
 class PublicClient {
-    readonly httpClient: ThorNetworks;
+    readonly thorNetwork: ThorNetworks;
 
     constructor(httpClient: ThorNetworks) {
-        this.httpClient = httpClient; // viem specific
+        this.thorNetwork = httpClient; // viem specific
     }
 
     public async getBalance(address: Address): Promise<bigint> {
         const accountDetails = await RetrieveAccountDetails.of(address).askTo(
-            FetchHttpClient.at(this.httpClient)
+            FetchHttpClient.at(toURL(this.thorNetwork), {
+                onRequest: (req) => req,
+                onResponse: (res) => res
+            })
         );
         const balance = accountDetails.response.balance;
         return balance;
@@ -62,17 +66,30 @@ class PublicClient {
         if (type === BlockReponseType.expanded) {
             const data = await RetrieveExpandedBlock.of(
                 Revision.of(revision)
-            ).askTo(FetchHttpClient.at(this.httpClient));
+            ).askTo(
+                FetchHttpClient.at(toURL(this.thorNetwork), {
+                    onRequest: (req) => req,
+                    onResponse: (res) => res
+                })
+            );
             return data.response;
         } else if (type === BlockReponseType.raw) {
             const data = await RetrieveRawBlock.of(Revision.of(revision)).askTo(
-                FetchHttpClient.at(this.httpClient)
+                FetchHttpClient.at(toURL(this.thorNetwork), {
+                    onRequest: (req) => req,
+                    onResponse: (res) => res
+                })
             );
             return data.response;
         } else {
             const data = await RetrieveRegularBlock.of(
                 Revision.of(revision)
-            ).askTo(FetchHttpClient.at(this.httpClient));
+            ).askTo(
+                FetchHttpClient.at(toURL(this.thorNetwork), {
+                    onRequest: (req) => req,
+                    onResponse: (res) => res
+                })
+            );
             return data.response;
         }
     }
@@ -82,7 +99,12 @@ class PublicClient {
     ): Promise<number | undefined> {
         const selectedBlock = await RetrieveRegularBlock.of(
             Revision.of(revision)
-        ).askTo(FetchHttpClient.at(this.httpClient));
+        ).askTo(
+            FetchHttpClient.at(toURL(this.thorNetwork), {
+                onRequest: (req) => req,
+                onResponse: (res) => res
+            })
+        );
         const blockNumber = selectedBlock?.response?.number;
         return blockNumber;
     }
@@ -92,7 +114,12 @@ class PublicClient {
     ): Promise<number | undefined> {
         const selectedBlock = await RetrieveRegularBlock.of(
             Revision.of(revision)
-        ).askTo(FetchHttpClient.at(this.httpClient));
+        ).askTo(
+            FetchHttpClient.at(toURL(this.thorNetwork), {
+                onRequest: (req) => req,
+                onResponse: (res) => res
+            })
+        );
         const trxCount = selectedBlock?.response?.transactions.length;
 
         return trxCount;
@@ -101,7 +128,12 @@ class PublicClient {
     public watchBlocks(pos: BlockId): BlocksSubscription {
         return BlocksSubscription.at(
             new MozillaWebSocketClient(
-                `ws://${FetchHttpClient.at(this.httpClient).baseURL}`
+                `ws://${
+                    FetchHttpClient.at(toURL(this.thorNetwork), {
+                        onRequest: (req) => req,
+                        onResponse: (res) => res
+                    }).baseURL
+                }`
             )
         ).atPos(pos);
     }
@@ -109,7 +141,12 @@ class PublicClient {
     public watchBlockNumber(): BlocksSubscription {
         return BlocksSubscription.at(
             new MozillaWebSocketClient(
-                `ws://${FetchHttpClient.at(this.httpClient).baseURL}`
+                `ws://${
+                    FetchHttpClient.at(toURL(this.thorNetwork), {
+                        onRequest: (req) => req,
+                        onResponse: (res) => res
+                    }).baseURL
+                }`
             )
         );
     }
@@ -120,7 +157,10 @@ class PublicClient {
         // this and call are the same because ETH doesn't support multi-call and they have explicit functions for this.
         // viem specific
         const inspectClause = await InspectClauses.of(request).askTo(
-            FetchHttpClient.at(this.httpClient)
+            FetchHttpClient.at(toURL(this.thorNetwork), {
+                onRequest: (req) => req,
+                onResponse: (res) => res
+            })
         );
         const clause = inspectClause.response;
         return clause;
@@ -132,7 +172,10 @@ class PublicClient {
     ): Promise<ExecuteCodesResponse> {
         // viem specific
         const inspectClause = await InspectClauses.of(request).askTo(
-            FetchHttpClient.at(this.httpClient)
+            FetchHttpClient.at(toURL(this.thorNetwork), {
+                onRequest: (req) => req,
+                onResponse: (res) => res
+            })
         );
         const clause = inspectClause.response;
         return clause;
@@ -143,7 +186,10 @@ class PublicClient {
     ): Promise<GetFeesHistoryResponse> {
         // viem specific
         const data = await RetrieveHistoricalFeeData.of(blockCount).askTo(
-            FetchHttpClient.at(this.httpClient)
+            FetchHttpClient.at(toURL(this.thorNetwork), {
+                onRequest: (req) => req,
+                onResponse: (res) => res
+            })
         );
         return data.response;
     }
@@ -151,7 +197,10 @@ class PublicClient {
     public async getGasPrice(): Promise<bigint[]> {
         // viem specific
         const lastBlock = await RetrieveHistoricalFeeData.of(1).askTo(
-            FetchHttpClient.at(this.httpClient)
+            FetchHttpClient.at(toURL(this.thorNetwork), {
+                onRequest: (req) => req,
+                onResponse: (res) => res
+            })
         );
         const lastBaseFeePerGas = lastBlock.response.baseFeePerGas;
         return lastBaseFeePerGas;
@@ -160,7 +209,10 @@ class PublicClient {
     public async estimateFeePerGas(): Promise<bigint | undefined> {
         // viem specific
         const lastRevision = await RetrieveRegularBlock.of(Revision.BEST).askTo(
-            FetchHttpClient.at(this.httpClient)
+            FetchHttpClient.at(toURL(this.thorNetwork), {
+                onRequest: (req) => req,
+                onResponse: (res) => res
+            })
         );
         const lastBaseFeePerGas = lastRevision?.response?.baseFeePerGas;
         return lastBaseFeePerGas;
@@ -171,7 +223,10 @@ class PublicClient {
     ): Promise<ExecuteCodesResponse> {
         // viem specific
         const inspectClause = await InspectClauses.of(request).askTo(
-            FetchHttpClient.at(this.httpClient)
+            FetchHttpClient.at(toURL(this.thorNetwork), {
+                onRequest: (req) => req,
+                onResponse: (res) => res
+            })
         );
         const gasUsedArray = inspectClause.response;
         return gasUsedArray;
@@ -180,7 +235,10 @@ class PublicClient {
     public async estimateMaxPriorityFeePerGas(): Promise<GetFeesPriorityResponse> {
         // viem specific
         const data = await SuggestPriorityFee.of().askTo(
-            FetchHttpClient.at(this.httpClient)
+            FetchHttpClient.at(toURL(this.thorNetwork), {
+                onRequest: (req) => req,
+                onResponse: (res) => res
+            })
         );
         return data.response;
     }

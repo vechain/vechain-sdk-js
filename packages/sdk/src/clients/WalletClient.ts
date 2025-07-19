@@ -1,10 +1,33 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
 import { type Account } from 'viem';
-import { type ThorNetworks, Transaction } from '@thor';
-import { Address, Blake2b256, type Hex, HexUInt, RLPProfiler } from '@vcdm';
+import {
+    type ThorNetworks,
+    Transaction,
+    type TransactionBody,
+    type TransactionClause
+} from '@thor';
+import {
+    Address,
+    Blake2b256,
+    Hex,
+    HexInt,
+    HexUInt,
+    HexUInt32,
+    RLPProfiler
+} from '@vcdm';
 import { UnsupportedOperationError } from '@errors';
 
 const FQP = 'packages/sdk/src/clients/WalletClient.ts!';
+
+/**
+ * Used internally to tag a transaction not tranferring token amount.
+ */
+const NO_VALUE = Hex.PREFIX + '0';
+
+/**
+ * Used internally to tag a transaction without data.
+ */
+const NO_DATA = Hex.PREFIX;
 
 function createWalletClient(parameters: WalletClientConfig): WalletClient {
     return new WalletClient(parameters.chain, parameters.account ?? null);
@@ -13,7 +36,7 @@ function createWalletClient(parameters: WalletClientConfig): WalletClient {
 class WalletClient {
     private readonly account: Account | null;
 
-    constructor(httpClient: ThorNetworks, account: Account | null) {
+    constructor(chain: ThorNetworks, account: Account | null) {
         this.account = account;
     }
 
@@ -24,6 +47,54 @@ class WalletClient {
      */
     public getAddresses(): Address[] {
         return this.account != null ? [Address.of(this.account.address)] : [];
+    }
+
+    public prepareTransactionRequest(
+        request: PrepareTransactionRequestRequest
+    ): Transaction {
+        try {
+            const txClause: TransactionClause = {
+                to: request.to !== undefined ? request.to.toString() : null,
+                value:
+                    request.value instanceof Hex
+                        ? HexUInt.of(HexInt.of(request.value)).toString()
+                        : NO_VALUE,
+                data:
+                    request.data instanceof Hex
+                        ? HexUInt.of(request.data).toString()
+                        : NO_DATA,
+                comment: request.comment,
+                abi:
+                    request.abi instanceof Hex
+                        ? HexUInt.of(HexInt.of(request.abi)).toString()
+                        : undefined
+            } satisfies TransactionClause;
+            const txBody: TransactionBody = {
+                chainTag: request.chainTag,
+                blockRef: HexUInt32.of(HexInt.of(request.blockRef)).toString(),
+                expiration: request.expiration,
+                clauses: [txClause],
+                gasPriceCoef: request.gasPriceCoef,
+                gas:
+                    request.gas instanceof Hex
+                        ? HexUInt.of(HexInt.of(request.gas)).toString()
+                        : request.gas,
+                dependsOn:
+                    request.dependsOn instanceof Hex
+                        ? HexUInt32.of(HexInt.of(request.dependsOn)).toString()
+                        : null,
+                nonce: request.nonce
+            } satisfies TransactionBody;
+            return Transaction.of(txBody);
+        } catch (e) {
+            throw new UnsupportedOperationError(
+                `${FQP}WalletClient.prepareTransactionRequest(request: PrepareTransactionRequestRequest): void`,
+                'invalid request',
+                {
+                    request
+                }
+            );
+        }
     }
 
     private static async signHash(
@@ -87,9 +158,31 @@ class WalletClient {
     }
 }
 
+interface PrepareTransactionRequestRequest {
+    // Clause
+    to?: Address;
+    value: Hex | number;
+    data?: Hex;
+    comment?: string;
+    abi?: Hex;
+    // Transaction body
+    blockRef: Hex;
+    chainTag: number;
+    dependsOn?: Hex;
+    expiration: number;
+    gas: Hex | number;
+    gasPriceCoef: number;
+    nonce: number;
+}
+
 interface WalletClientConfig {
     chain: ThorNetworks;
     account?: Account;
 }
 
-export { createWalletClient, WalletClient, type WalletClientConfig };
+export {
+    createWalletClient,
+    WalletClient,
+    type PrepareTransactionRequestRequest,
+    type WalletClientConfig
+};
