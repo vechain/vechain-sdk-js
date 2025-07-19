@@ -1,13 +1,11 @@
+import { type ExecuteCodesRequestJSON } from '@json';
+import { MozillaWebSocketClient } from '@ws';
 import {
-    type Address,
-    type BlockId,
     BlocksSubscription,
     type ExecuteCodesResponse,
     type ExpandedBlockResponse,
-    FetchHttpClient,
     type GetFeesHistoryResponse,
     type GetFeesPriorityResponse,
-    type Hex,
     InspectClauses,
     type RawTx,
     type RegularBlockResponse,
@@ -16,13 +14,12 @@ import {
     RetrieveHistoricalFeeData,
     RetrieveRawBlock,
     RetrieveRegularBlock,
-    Revision,
     SuggestPriorityFee,
     type ThorNetworks,
     toURL
-} from '@index';
-import { type ExecuteCodesRequestJSON } from '@json';
-import { MozillaWebSocketClient } from '@ws';
+} from '@thor';
+import { FetchHttpClient } from '@http';
+import { type Address, type Hex, Revision } from '@vcdm';
 
 interface PublicClientConfig {
     chain: ThorNetworks;
@@ -125,7 +122,7 @@ class PublicClient {
         return trxCount;
     }
 
-    public watchBlocks(pos: BlockId): BlocksSubscription {
+    public watchBlocks(pos: Hex): BlocksSubscription {
         return BlocksSubscription.at(
             new MozillaWebSocketClient(
                 `ws://${
