@@ -71,7 +71,7 @@ class WalletClient {
             } satisfies TransactionClause;
             const txBody: TransactionBody = {
                 chainTag: request.chainTag,
-                blockRef: HexUInt32.of(HexInt.of(request.blockRef)).toString(),
+                blockRef: HexInt.of(request.blockRef).toString(),
                 expiration: request.expiration,
                 clauses: [txClause],
                 gasPriceCoef: request.gasPriceCoef,

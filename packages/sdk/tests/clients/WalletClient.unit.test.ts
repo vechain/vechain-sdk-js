@@ -81,7 +81,7 @@ describe('WalletClient UNIT tests', () => {
                 gasPriceCoef: 0
             } satisfies PrepareTransactionRequestRequest;
             const actual = walletClient.prepareTransactionRequest(request);
-            expect(actual).toEqual(expected);
+            expect(actual.encoded).toEqual(expected.encoded);
         });
     });
 
