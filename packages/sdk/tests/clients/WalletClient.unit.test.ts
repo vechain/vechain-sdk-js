@@ -63,6 +63,7 @@ describe('WalletClient UNIT tests', () => {
                 nonce: 8
             };
             const expected = Transaction.of(txBody);
+
             const account = privateKeyToAccount(
                 `0x${TRANSACTION_SENDER.privateKey}`
             );
@@ -86,13 +87,6 @@ describe('WalletClient UNIT tests', () => {
     });
 
     describe('signTransaction', () => {
-        test('a', () => {
-            const sender = TRANSACTION_SENDER;
-            const receiver = TRANSACTION_RECEIVER;
-            console.log(sender.address, sender.privateKey);
-            console.log(receiver.address, receiver.privateKey);
-        });
-
         test('ok <- thor and viem equivalence', async () => {
             const latestBlock = {
                 number: 88,

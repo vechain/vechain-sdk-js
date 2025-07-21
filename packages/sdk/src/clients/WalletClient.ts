@@ -20,7 +20,7 @@ import { UnsupportedOperationError } from '@errors';
 const FQP = 'packages/sdk/src/clients/WalletClient.ts!';
 
 /**
- * Used internally to tag a transaction not tranferring token amount.
+ * Used internally to tag a transaction, not transferring token amount.
  */
 const NO_VALUE = Hex.PREFIX + '0';
 
