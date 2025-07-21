@@ -65,20 +65,35 @@ class ExecuteCodesRequest {
      */
     constructor(json: ExecuteCodesRequestJSON) {
         try {
-            this.provedWork = json.provedWork != null ? json.provedWork : null;
-            this.gasPayer = json.gasPayer ? Address.of(json.gasPayer) : null;
-            this.expiration = json.expiration
-                ? UInt.of(json.expiration).valueOf()
-                : null;
-            this.blockRef = json.blockRef ? BlockRef.of(json.blockRef) : null;
-            this.clauses = json.clauses
-                ? json.clauses.map(
-                      (clauseJSON: ClauseJSON): Clause => new Clause(clauseJSON)
-                  )
-                : null;
-            this.gas = json.gas ? BigInt(json.gas) : null;
-            this.gasPrice = json.gasPrice ? BigInt(json.gasPrice) : null;
-            this.caller = json.caller ? Address.of(json.caller) : null;
+            this.provedWork = json.provedWork ?? null;
+            this.gasPayer =
+                typeof json.gasPayer === 'string'
+                    ? Address.of(json.gasPayer)
+                    : null;
+            this.expiration =
+                typeof json.expiration === 'number'
+                    ? UInt.of(json.expiration).valueOf()
+                    : null;
+            this.blockRef =
+                typeof json.blockRef === 'string'
+                    ? BlockRef.of(json.blockRef)
+                    : null;
+            this.clauses =
+                json.clauses != null
+                    ? json.clauses.map(
+                          (clauseJSON: ClauseJSON): Clause =>
+                              new Clause(clauseJSON)
+                      )
+                    : null;
+            this.gas = typeof json.gas === 'number' ? BigInt(json.gas) : null;
+            this.gasPrice =
+                typeof json.gasPrice === 'string'
+                    ? BigInt(json.gasPrice)
+                    : null;
+            this.caller =
+                typeof json.caller === 'string'
+                    ? Address.of(json.caller)
+                    : null;
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: ExecuteCodesRequestJSON)`,
@@ -96,13 +111,13 @@ class ExecuteCodesRequest {
      */
     toJSON(): ExecuteCodesRequestJSON {
         return {
-            provedWork: this.provedWork || undefined,
+            provedWork: this.provedWork ?? undefined,
             gasPayer: this.gasPayer?.toString(),
             expiration: this.expiration?.valueOf(),
             blockRef: this.blockRef?.toString(),
             clauses: this.clauses?.map((clause: Clause) => clause.toJSON()),
-            gas: this.gas ? Number(this.gas) : undefined,
-            gasPrice: this.gasPrice ? this.gasPrice.toString() : undefined,
+            gas: this.gas !== null ? Number(this.gas) : undefined,
+            gasPrice: this.gasPrice?.toString(),
             caller: this.caller?.toString()
         } satisfies ExecuteCodesRequestJSON;
     }

@@ -1,13 +1,13 @@
 import { describe, expect, test } from '@jest/globals';
 import { RetrieveStorageRange, type StorageRangeOptionJSON } from '@thor/debug';
 import { FetchHttpClient } from '@http';
-import { ThorError, ThorNetworks } from '@thor';
+import { ThorError, ThorNetworks, toURL } from '@thor';
 
 /**
  * @group integration/debug
  */
 describe('RetrieveStorageRange SOLO tests', () => {
-    const httpClient = FetchHttpClient.at(ThorNetworks.SOLONET);
+    const httpClient = FetchHttpClient.at(toURL(ThorNetworks.SOLONET), {});
 
     test('err <- not implemented in solo', async () => {
         const status = 500;

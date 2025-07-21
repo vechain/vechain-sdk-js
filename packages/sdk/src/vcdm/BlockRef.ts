@@ -8,7 +8,7 @@ import { IllegalArgumentError } from '@errors';
 const FQP = 'packages/sdk/src/vcdm/BlockRef.ts!';
 
 /**
- * The BlockRef class represents a Thor block ID value, which is a hexadecimal positive integer having 64 digits.
+ * The BlockRef class represents a Thor block ID value, which is a hexadecimal positive integer having 16 digits.
  *
  * @extends HexInt
  */
@@ -25,7 +25,7 @@ class BlockRef extends HexUInt {
     /**
      * Constructs a BlockRef object with the provided hexadecimal value.
      *
-     * @param {HexUInt} huint - The hexadecimal value representing the block id.
+     * @param {HexUInt} huint - Hexadecimal value representing the block reference (16-digit hex).
      */
     protected constructor(huint: HexUInt) {
         super(Hex.POSITIVE, huint.fit(BlockRef.DIGITS).digits);

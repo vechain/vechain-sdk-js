@@ -1,14 +1,14 @@
 import { describe, expect, test, beforeEach } from '@jest/globals';
 import { ForkDetector } from '@thor/fork/methods/forkDetector';
 import { FetchHttpClient } from '@http';
-import { ThorNetworks } from '@thor';
+import { ThorNetworks, toURL } from '@thor';
 import { IllegalArgumentError } from '@errors';
 
 /**
  * @group integration/fork
  */
 describe('ForkDetector SOLO tests', () => {
-    const httpClient = FetchHttpClient.at(ThorNetworks.SOLONET);
+    const httpClient = FetchHttpClient.at(toURL(ThorNetworks.SOLONET), {});
     let forkDetector: ForkDetector;
 
     beforeEach(() => {

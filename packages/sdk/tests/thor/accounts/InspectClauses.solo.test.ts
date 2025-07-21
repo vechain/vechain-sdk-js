@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
-import { InspectClauses, ThorNetworks } from '@thor';
+import { InspectClauses, ThorNetworks, toURL } from '@thor';
 import { FetchHttpClient } from '@http';
-import { ExecuteCodesRequestJSON } from '@/json';
+import { type ExecuteCodesRequestJSON } from '@/json';
 
 /**
  * VeChain inspect clauses - solo
@@ -38,7 +38,7 @@ describe('InspectClauses solo tests', () => {
         } satisfies ExecuteCodesRequestJSON;
         const response = (
             await InspectClauses.of(request).askTo(
-                FetchHttpClient.at(ThorNetworks.SOLONET)
+                FetchHttpClient.at(toURL(ThorNetworks.SOLONET), {})
             )
         ).response;
         expect(response.length).toBe(1);

@@ -6,14 +6,15 @@ import {
     RetrieveHistoricalFeeData,
     RetrieveRegularBlock,
     ThorError,
-    ThorNetworks
+    ThorNetworks,
+    toURL
 } from '@thor';
 
 /**
  * @group integration/fees
  */
 describe('RetrieveHistoricalFeeData SOLO tests', () => {
-    const httpClient = FetchHttpClient.at(ThorNetworks.SOLONET);
+    const httpClient = FetchHttpClient.at(toURL(ThorNetworks.SOLONET), {});
 
     test('err <- of(not integer)', async () => {
         const status = 400;

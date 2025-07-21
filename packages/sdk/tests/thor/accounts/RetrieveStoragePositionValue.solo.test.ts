@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { Address, HexUInt32 } from '@vcdm';
-import { RetrieveStoragePositionValue, ThorNetworks } from '@thor';
+import { RetrieveStoragePositionValue, ThorNetworks, toURL } from '@thor';
 import { FetchHttpClient } from '@http';
 
 /**
@@ -16,7 +16,7 @@ describe('RetrieveStoragePositionValue testnet tests', () => {
                 HexUInt32.of(
                     '0x0000000000000000000000000000000000000000000000000000000000000001'
                 )
-            ).askTo(FetchHttpClient.at(ThorNetworks.SOLONET))
+            ).askTo(FetchHttpClient.at(toURL(ThorNetworks.SOLONET), {}))
         ).response;
 
         expect(response.value.toString()).toBe(

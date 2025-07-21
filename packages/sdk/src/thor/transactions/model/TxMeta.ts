@@ -57,8 +57,8 @@ class TxMeta {
     toJSON(): TxMetaJSON {
         return {
             blockID: this.blockID.toString(),
-            blockNumber: this.blockNumber.valueOf(),
-            blockTimestamp: this.blockTimestamp.valueOf()
+            blockNumber: this.blockNumber,
+            blockTimestamp: this.blockTimestamp
         } satisfies TxMetaJSON;
     }
 }

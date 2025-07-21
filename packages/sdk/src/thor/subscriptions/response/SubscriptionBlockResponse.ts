@@ -144,17 +144,17 @@ class SubscriptionBlockResponse {
      */
     toJSON(): SubscriptionBlockResponseJSON {
         return {
-            number: this.number.valueOf(),
+            number: this.number,
             id: this.id.toString(),
-            size: this.size.valueOf(),
+            size: this.size,
             parentID: this.parentID.toString(),
-            timestamp: this.timestamp.valueOf(),
+            timestamp: this.timestamp,
             gasLimit: Number(this.gasLimit),
             beneficiary: this.beneficiary.toString(),
             gasUsed: Number(this.gasUsed),
-            totalScore: this.totalScore.valueOf(),
+            totalScore: this.totalScore,
             txsRoot: this.txsRoot.toString(),
-            txsFeatures: this.txsFeatures.valueOf(),
+            txsFeatures: this.txsFeatures,
             stateRoot: this.stateRoot.toString(),
             receiptsRoot: this.receiptsRoot.toString(),
             com: this.com,

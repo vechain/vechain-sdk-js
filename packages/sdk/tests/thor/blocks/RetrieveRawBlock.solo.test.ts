@@ -1,6 +1,6 @@
 import { Revision } from '@vcdm';
 import { FetchHttpClient } from '@http';
-import { RawTx, RetrieveRawBlock, ThorError, ThorNetworks } from '@thor';
+import { RawTx, RetrieveRawBlock, ThorError, ThorNetworks, toURL } from '@thor';
 import { expect } from '@jest/globals';
 import { type RawTxJSON } from '@thor/json';
 
@@ -14,7 +14,7 @@ class InvalidRevision extends Revision {
  * @group integration/blocks
  */
 describe('RetrieveRawBlock SOLO tests', () => {
-    const httpClient = FetchHttpClient.at(ThorNetworks.SOLONET);
+    const httpClient = FetchHttpClient.at(toURL(ThorNetworks.SOLONET), {});
 
     test('err: <- bad revision', async () => {
         const status = 400;

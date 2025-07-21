@@ -6,14 +6,15 @@ import {
     type RegularBlockResponse,
     RetrieveRegularBlock,
     RetrieveTransactionReceipt,
-    ThorNetworks
+    ThorNetworks,
+    toURL
 } from '@thor';
 
 /**
  * @group integration/transactions
  */
 describe('RetrieveTransactionReceipt SOLO tests', () => {
-    const httpClient = FetchHttpClient.at(ThorNetworks.SOLONET);
+    const httpClient = FetchHttpClient.at(toURL(ThorNetworks.SOLONET), {});
 
     let block: RegularBlockResponse | null;
 

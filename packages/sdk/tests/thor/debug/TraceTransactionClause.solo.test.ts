@@ -6,12 +6,13 @@ import {
     type PostDebugTracerRequestJSON,
     ThorError,
     ThorNetworks,
+    toURL,
     TraceTransactionClause
 } from '@thor';
 import { expect } from '@jest/globals';
 
 describe('TraceTransactionClause SOLO tests', () => {
-    const httpClient = FetchHttpClient.at(ThorNetworks.SOLONET);
+    const httpClient = FetchHttpClient.at(toURL(ThorNetworks.SOLONET), {});
 
     test('err <- not implemented in solo', async () => {
         const status = 500;
