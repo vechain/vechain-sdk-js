@@ -58,7 +58,8 @@ class MockRequest {
     url: string;
     method: string;
     _body: string | null;
-    headers: Record<string, string>;
+    headers: Headers;
+    signal: AbortSignal | null;
 
     constructor(url: string | URL, init?: RequestInit) {
         this.url = url.toString();
@@ -69,7 +70,8 @@ class MockRequest {
                     ? init.body
                     : JSON.stringify(init.body)
                 : null;
-        this.headers = {};
+        this.headers = new Headers(init?.headers);
+        this.signal = init?.signal ?? null;
     }
 
     async text(): Promise<string> {
@@ -90,7 +92,9 @@ class MockRequest {
             method: this.method,
             body: this._body ?? undefined
         });
-        req.headers = { ...this.headers };
+        this.headers.forEach((value, key) => {
+            req.headers.set(key, value);
+        });
         return req;
     }
 }
@@ -200,8 +204,10 @@ describe('FetchHttpClient unit tests', () => {
         test('should create client with valid URL', () => {
             const client = new FetchHttpClient(
                 toURL(ThorNetworks.TESTNET),
-                (req) => req,
-                (res) => res,
+                {
+                    onRequest: (req) => req,
+                    onResponse: (res) => res
+                },
                 MockRequest as unknown as RequestConstructor,
                 mockFetch
             );
@@ -213,8 +219,10 @@ describe('FetchHttpClient unit tests', () => {
             const url = new URL('https://testnet.vechain.org/thor');
             const client = new FetchHttpClient(
                 url,
-                (req) => req,
-                (res) => res,
+                {
+                    onRequest: (req) => req,
+                    onResponse: (res) => res
+                },
                 MockRequest as unknown as RequestConstructor,
                 mockFetch
             );
@@ -235,8 +243,10 @@ describe('FetchHttpClient unit tests', () => {
             expect(() => {
                 const client = new FetchHttpClient(
                     new URL('https://invalid.url'),
-                    (req) => req,
-                    (res) => res,
+                    {
+                        onRequest: (req) => req,
+                        onResponse: (res) => res
+                    },
                     MockRequest as unknown as RequestConstructor,
                     mockFetch
                 );
@@ -248,9 +258,8 @@ describe('FetchHttpClient unit tests', () => {
     describe('static at', () => {
         test('should create client with string URL', () => {
             const client = FetchHttpClient.at(
-                ThorNetworks.TESTNET,
-                undefined,
-                undefined,
+                toURL(ThorNetworks.TESTNET),
+                {},
                 MockRequest as unknown as RequestConstructor,
                 mockFetch
             );
@@ -259,9 +268,8 @@ describe('FetchHttpClient unit tests', () => {
 
         test('should use default handlers when not provided', () => {
             const client = FetchHttpClient.at(
-                ThorNetworks.TESTNET,
-                undefined,
-                undefined,
+                toURL(ThorNetworks.TESTNET),
+                {},
                 MockRequest as unknown as RequestConstructor,
                 mockFetch
             );
@@ -283,8 +291,7 @@ describe('FetchHttpClient unit tests', () => {
 
             const client = new FetchHttpClient(
                 toURL(ThorNetworks.TESTNET),
-                (req) => req,
-                (res) => res,
+                {},
                 MockRequest as unknown as RequestConstructor,
                 mockFetch
             );
@@ -314,8 +321,7 @@ describe('FetchHttpClient unit tests', () => {
 
             const client = new FetchHttpClient(
                 toURL(ThorNetworks.TESTNET),
-                (req) => req,
-                (res) => res,
+                {},
                 MockRequest as unknown as RequestConstructor,
                 mockFetch
             );
@@ -346,8 +352,7 @@ describe('FetchHttpClient unit tests', () => {
 
             const client = new FetchHttpClient(
                 toURL(ThorNetworks.TESTNET),
-                (req) => req,
-                (res) => res,
+                {},
                 MockRequest as unknown as RequestConstructor,
                 mockFetch
             );
@@ -378,8 +383,7 @@ describe('FetchHttpClient unit tests', () => {
 
             const client = new FetchHttpClient(
                 toURL(ThorNetworks.TESTNET),
-                (req) => req,
-                (res) => res,
+                {},
                 MockRequest as unknown as RequestConstructor,
                 mockFetch
             );
@@ -410,13 +414,15 @@ describe('FetchHttpClient unit tests', () => {
 
             const client = new FetchHttpClient(
                 toURL(ThorNetworks.TESTNET),
-                (req) => {
-                    requestWasCalled = true;
-                    return req;
-                },
-                (res) => {
-                    responseWasCalled = true;
-                    return res;
+                {
+                    onRequest: (req) => {
+                        requestWasCalled = true;
+                        return req;
+                    },
+                    onResponse: (res) => {
+                        responseWasCalled = true;
+                        return res;
+                    }
                 },
                 MockRequest as unknown as RequestConstructor,
                 mockFetch
@@ -436,8 +442,7 @@ describe('FetchHttpClient unit tests', () => {
 
             const client = new FetchHttpClient(
                 toURL(ThorNetworks.TESTNET),
-                (req) => req,
-                (res) => res,
+                {},
                 MockRequest as unknown as RequestConstructor,
                 mockFetch
             );
@@ -478,8 +483,7 @@ describe('FetchHttpClient unit tests', () => {
 
             const client = new FetchHttpClient(
                 toURL(ThorNetworks.TESTNET),
-                (req) => req,
-                (res) => res,
+                {},
                 MockRequest as unknown as RequestConstructor,
                 mockFetch
             );
@@ -518,8 +522,7 @@ describe('FetchHttpClient unit tests', () => {
 
             const client = new FetchHttpClient(
                 toURL(ThorNetworks.TESTNET),
-                (req) => req,
-                (res) => res,
+                {},
                 MockRequest as unknown as RequestConstructor,
                 mockFetch
             );
@@ -541,14 +544,20 @@ describe('FetchHttpClient unit tests', () => {
             );
 
             let requestWasCalled = false;
+            let responseWasCalled = false;
 
             const client = new FetchHttpClient(
                 toURL(ThorNetworks.TESTNET),
-                (req) => {
-                    requestWasCalled = true;
-                    return req;
+                {
+                    onRequest: (req) => {
+                        requestWasCalled = true;
+                        return req;
+                    },
+                    onResponse: (res) => {
+                        responseWasCalled = true;
+                        return res;
+                    }
                 },
-                (res) => res,
                 MockRequest as unknown as RequestConstructor,
                 mockFetch
             );
@@ -556,6 +565,7 @@ describe('FetchHttpClient unit tests', () => {
             await client.post({ path: 'transactions' });
 
             expect(requestWasCalled).toBe(true);
+            expect(responseWasCalled).toBe(true);
             expect(mockFetch).toHaveBeenCalledTimes(1);
         });
 
@@ -567,8 +577,7 @@ describe('FetchHttpClient unit tests', () => {
 
             const client = new FetchHttpClient(
                 toURL(ThorNetworks.TESTNET),
-                (req) => req,
-                (res) => res,
+                {},
                 MockRequest as unknown as RequestConstructor,
                 mockFetch
             );
@@ -580,6 +589,147 @@ describe('FetchHttpClient unit tests', () => {
 
             const data = (await response.json()) as typeof errorResponse;
             expect(data).toEqual(errorResponse);
+        });
+    });
+
+    describe('custom headers', () => {
+        test('should include custom headers', async () => {
+            const mockResponse: MockResponse = {
+                status: 'success',
+                success: true
+            };
+            (mockFetch as jest.Mock).mockResolvedValueOnce(
+                createMockResponse(mockResponse) as never
+            );
+
+            const customHeaders = {
+                'Content-Type': 'application/json'
+            };
+
+            let validHeaders = false;
+
+            const client = new FetchHttpClient(
+                toURL(ThorNetworks.TESTNET),
+                {
+                    onRequest: (req) => {
+                        if (
+                            Object.keys(customHeaders).length > 0 &&
+                            Object.entries(customHeaders).every(
+                                ([key, value]) => req.headers.get(key) === value
+                            )
+                        ) {
+                            validHeaders = true;
+                        }
+                        return req;
+                    },
+                    headers: customHeaders
+                },
+                MockRequest as unknown as RequestConstructor,
+                mockFetch
+            );
+
+            await client.post({ path: 'transactions' });
+
+            expect(validHeaders).toBe(true);
+            expect(mockFetch).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('cookie storage', () => {
+        test('should store cookies from response', async () => {
+            // Create a mock response with a Set-Cookie header
+            const mockResponseOptions: MockResponse = {
+                status: 'success',
+                success: true
+            };
+            const mockResponse = createMockResponse(mockResponseOptions);
+            mockResponse.headers.set('Set-Cookie', 'test=123');
+            (mockFetch as jest.Mock).mockResolvedValueOnce(
+                mockResponse as never
+            );
+
+            // send request with cookie storage enabled
+            const client = new FetchHttpClient(
+                toURL(ThorNetworks.TESTNET),
+                {
+                    storeCookies: true
+                },
+                MockRequest as unknown as RequestConstructor,
+                mockFetch
+            );
+
+            // send request with cookie storage enabled
+            await client.post({ path: 'transactions' });
+
+            // validate that the cookie was stored
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+            expect((client as any).cookieStore.cookies.get('test')).toBe('123');
+
+            // validate that the cookie was sent in the request
+            expect(mockFetch).toHaveBeenCalledTimes(1);
+        });
+        test('should send cookies in requests', async () => {
+            let cookieWasSent = false;
+
+            const client = new FetchHttpClient(
+                toURL(ThorNetworks.TESTNET),
+                {
+                    onRequest: (req) => {
+                        const cookie = req.headers.get('cookie');
+                        if (cookie !== null) {
+                            if (cookie.includes('test=123')) {
+                                cookieWasSent = true;
+                            }
+                        }
+                        return req;
+                    },
+                    storeCookies: true
+                },
+                MockRequest as unknown as RequestConstructor,
+                mockFetch
+            );
+            // add item to cookie store
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+            (client as any).cookieStore.cookies.set('test', '123');
+
+            // send request with cookie storage enabled
+            await client.post({ path: 'transactions' });
+
+            // validate that the cookie was sent in the request
+            expect(cookieWasSent).toBe(true);
+            expect(mockFetch).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('timeout', () => {
+        test('should timeout', async () => {
+            (mockFetch as jest.Mock).mockImplementation(
+                async (request: unknown) => {
+                    const req = request as MockRequest;
+                    // Check if request was aborted before starting the delay
+                    if ((req as unknown as Request).signal?.aborted) {
+                        throw new Error('AbortError');
+                    }
+
+                    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+                    // Check again after the delay
+                    if ((req as unknown as Request).signal?.aborted) {
+                        throw new Error('AbortError');
+                    }
+                    return createMockResponse({ status: 'success' });
+                }
+            );
+            const client = new FetchHttpClient(
+                toURL(ThorNetworks.TESTNET),
+                {
+                    timeout: 1000
+                },
+                MockRequest as unknown as RequestConstructor,
+                mockFetch
+            );
+
+            await expect(client.get()).rejects.toThrow('AbortError');
         });
     });
 });
