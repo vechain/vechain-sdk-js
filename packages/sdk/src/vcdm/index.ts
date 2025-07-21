@@ -1,4 +1,3 @@
-export * from './abi';
 export * from './account';
 export * from './Address';
 export * from './BlockRef';

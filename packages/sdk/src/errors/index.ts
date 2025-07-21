@@ -1,6 +1,3 @@
-export * from './AbiConstructorNotFoundError';
-export * from './AbiEventNotFoundError';
-export * from './AbiFunctionNotFoundError';
 export * from './IllegalArgumentError';
 export * from './InvalidAbiDecodingTypeError';
 export * from './InvalidAbiEncodingTypeError';
