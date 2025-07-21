@@ -339,9 +339,11 @@ function extractAndRemoveAdditionalOptions(args: unknown[]): {
  * @returns The transaction value object, if found in the arguments list.
  */
 function getTransactionValue(args: unknown[]): TransactionValue | undefined {
-    return args.find((arg) => isTransactionValue(arg)) as
-        | TransactionValue
-        | undefined;
+    const found = args.find((arg) => isTransactionValue(arg));
+    if (!found) return undefined;
+    return {
+        value: (found.value as number | string | bigint).toString()
+    } as TransactionValue;
 }
 
 /**
