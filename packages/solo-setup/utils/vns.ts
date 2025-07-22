@@ -174,11 +174,7 @@ export const seedVnsSolo = async (): Promise<void> => {
             Address.of(vnsRegistry), // The contract address
             setSubNodeOwnerABI,
             'setSubnodeOwner',
-            [
-                ethers.namehash('reverse'),
-                ethers.id('addr'),
-                vnsReverseRegistrar
-            ]
+            [ethers.namehash('reverse'), ethers.id('addr'), vnsReverseRegistrar]
         );
         const latestBlock =
             await thorSoloClient.blocks.getBestBlockCompressed();
@@ -320,10 +316,7 @@ export const seedVnsSolo = async (): Promise<void> => {
             Address.of(vnsRegistry), // The contract address
             setResolverABI,
             'setResolver',
-            [
-                ethers.namehash(`${name}.${tld}`),
-                vnsPublicResolver
-            ]
+            [ethers.namehash(`${name}.${tld}`), vnsPublicResolver]
         );
         const setAddrABI = [
             {
@@ -349,10 +342,7 @@ export const seedVnsSolo = async (): Promise<void> => {
             Address.of(vnsPublicResolver), // The contract address
             setAddrABI,
             'setAddr',
-            [
-                ethers.namehash(`${name}.${tld}`),
-                owner
-            ]
+            [ethers.namehash(`${name}.${tld}`), owner]
         );
         const setNameABI = [
             {

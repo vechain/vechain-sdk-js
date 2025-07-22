@@ -1,8 +1,8 @@
 import { describe, expect, test } from '@jest/globals';
-import { 
-    type AbiEvent, 
-    type AbiFunction, 
-    parseAbiParameters, 
+import {
+    type AbiEvent,
+    type AbiFunction,
+    parseAbiParameters,
     encodeAbiParameters,
     decodeAbiParameters,
     encodeFunctionData,
@@ -10,14 +10,10 @@ import {
     encodeEventTopics,
     decodeEventLog,
     keccak256,
-    toHex
+    toHex,
+    toFunctionHash,
+    toEventHash
 } from 'viem';
-import { Hex } from '@vcdm';
-import {
-    IllegalArgumentError,
-    InvalidAbiDecodingTypeError,
-    InvalidAbiEncodingTypeError
-} from '@errors';
 import {
     encodedDecodedInvalidValues,
     encodedDecodedValues,
@@ -31,27 +27,6 @@ import {
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 /**
- * Helper function to get signature hash for ABI items (first 4 bytes)
- */
-function getSignatureHash(abiItem: AbiEvent | AbiFunction): string {
-    // Create a simple signature string for hashing
-    if (abiItem.type === 'function') {
-        const func = abiItem as AbiFunction;
-        const inputs = func.inputs?.map(input => input.type).join(',') || '';
-        const signature = `${func.name}(${inputs})`;
-        const fullHash = keccak256(toHex(signature));
-        return fullHash.slice(0, 10); // First 4 bytes (0x + 8 hex chars)
-    } else if (abiItem.type === 'event') {
-        const evt = abiItem as AbiEvent;
-        const inputs = evt.inputs?.map(input => input.type).join(',') || '';
-        const signature = `${evt.name}(${inputs})`;
-        const fullHash = keccak256(toHex(signature));
-        return fullHash.slice(0, 10); // First 4 bytes (0x + 8 hex chars)
-    }
-    return '';
-}
-
-/**
  * ABI tests - encode & decode
  * @group unit/encode-decode
  */
@@ -63,12 +38,13 @@ describe('Abi - encode & decode', () => {
         // Encode and Decode - NO Errors
         encodedDecodedValues.forEach((encodedDecodedValue) => {
             try {
-                const abiParams = parseAbiParameters(encodedDecodedValue.type as string);
-                
-                const encoded = encodeAbiParameters(
-                    abiParams,
-                    [encodedDecodedValue.value]
+                const abiParams = parseAbiParameters(
+                    encodedDecodedValue.type as string
                 );
+
+                const encoded = encodeAbiParameters(abiParams, [
+                    encodedDecodedValue.value
+                ]);
 
                 const decoded = decodeAbiParameters(
                     abiParams,
@@ -95,11 +71,12 @@ describe('Abi - encode & decode', () => {
         encodedDecodedInvalidValues.forEach((encodedDecodedValue) => {
             expect(() => {
                 try {
-                    const abiParams = parseAbiParameters(encodedDecodedValue.type as string);
-                    encodeAbiParameters(
-                        abiParams,
-                        [encodedDecodedValue.value] as readonly unknown[]
+                    const abiParams = parseAbiParameters(
+                        encodedDecodedValue.type as string
                     );
+                    encodeAbiParameters(abiParams, [
+                        encodedDecodedValue.value
+                    ] as readonly unknown[]);
                 } catch {
                     throw new Error('Invalid encoding');
                 }
@@ -111,35 +88,35 @@ describe('Abi - encode & decode', () => {
      * Test encoding and decoding of multiple parameters.
      */
     test('encode/decode more parameters', () => {
-        // Skip this test if data has undefined values
-        if (!simpleParametersDataForFunction2 || simpleParametersDataForFunction2.some((item: any) => 
-            !item || typeof item.master === 'undefined' || typeof item.endorsor === 'undefined'
-        )) {
-            expect(true).toBe(true);
-            return;
-        }
+        const encoded = encodeAbiParameters(
+            [functions[1].objectAbi.outputs[0]],
+            [simpleParametersDataForFunction2]
+        ).toString();
 
-        try {
-            // Use a simpler type structure for testing
-            const typesParam = parseAbiParameters('string[]');
-            
-            const testData = ['test1', 'test2'];
-            
-            const encoded = encodeAbiParameters(
-                typesParam,
-                [testData]
-            );
+        expect(encoded).toBe(
+            '0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e8fd586e022f825a109848832d7e552132bc332000000000000000000000000224626926a7a12225a60e127cec119c939db4a5cdbf2712e19af00dc4d376728f7cb06cc215c8e7c53b94cb47cefb4a26ada2a6c00000000000000000000000000000000000000000000000000000000000000000000000000000000000000004977d68df97bb313b23238520580d8d3a59939bf0000000000000000000000007ad1d568b3fe5bad3fc264aca70bc7bcd5e4a6ff83b137cf7e30864b8a4e56453eb1f094b4434685d86895de38ac2edcf5d3f5340000000000000000000000000000000000000000000000000000000000000000'
+        );
 
-            const decoded = decodeAbiParameters(
-                typesParam,
-                encoded
-            );
-
-            expect(decoded[0]).toStrictEqual(testData);
-        } catch (error) {
-            // Skip if encoding fails
-            expect(true).toBe(true);
-        }
+        const decoded = decodeAbiParameters(
+            [functions[1].objectAbi.outputs[0]],
+            encoded as `0x${string}`
+        );
+        expect(decoded).toStrictEqual([
+            [{
+                active: false,
+                endorsor: '0x224626926A7A12225A60E127CEC119c939db4A5C',
+                identity:
+                    '0xdbf2712e19af00dc4d376728f7cb06cc215c8e7c53b94cb47cefb4a26ada2a6c',
+                master: '0x0E8FD586E022F825A109848832D7E552132bC332'
+            },
+            {
+                active: false,
+                endorsor: '0x7Ad1D568B3fE5BAd3fC264AcA70Bc7Bcd5e4a6fF',
+                identity:
+                    '0x83b137cf7e30864b8a4e56453eb1f094b4434685d86895de38ac2edcf5d3f534',
+                master: '0x4977d68df97bb313B23238520580D8D3a59939BF'
+            }]
+        ]);
     });
 });
 
@@ -159,41 +136,43 @@ describe('Abi - Function & Event', () => {
         test('Encode AND Decode', () => {
             // Create a function from each format and compare between format (test if conversions are correct)
             functions.forEach((fixtureFunction) => {
-                [
-                    fixtureFunction.objectAbi
-                ].forEach((functionFormat) => {
+                [fixtureFunction.objectAbi].forEach((functionFormat) => {
                     const abiFunction = functionFormat as AbiFunction;
-                    
+
                     // Test signature hash
-                    expect(getSignatureHash(abiFunction)).toBe(
+                    expect(toFunctionHash(abiFunction).slice(0, 10)).toBe(
                         fixtureFunction.signatureHash
                     );
 
                     // Test encoding and decoding each input
-                    fixtureFunction.encodingTestsInputs.forEach((encodingInput) => {
-                        try {
-                            // Encode input
-                            const encoded = encodeFunctionData({
-                                abi: [abiFunction],
-                                functionName: abiFunction.name,
-                                args: encodingInput
-                            });
+                    fixtureFunction.encodingTestsInputs.forEach(
+                        (encodingInput) => {
+                            try {
+                                // Encode input
+                                const encoded = encodeFunctionData({
+                                    abi: [abiFunction],
+                                    functionName: abiFunction.name,
+                                    args: encodingInput
+                                });
 
-                            expect(encoded).toBeDefined();
+                                expect(encoded).toBeDefined();
 
-                            // Decode input
-                            const decoded = decodeFunctionData({
-                                abi: [abiFunction],
-                                data: encoded
-                            });
+                                // Decode input
+                                const decoded = decodeFunctionData({
+                                    abi: [abiFunction],
+                                    data: encoded
+                                });
 
-                            // Encoded input will be equal to decoded input
-                            expect(decoded.args).toStrictEqual(encodingInput);
-                        } catch (error) {
-                            // Skip if encoding/decoding fails
-                            expect(true).toBe(true);
+                                // Encoded input will be equal to decoded input
+                                expect(decoded.args).toStrictEqual(
+                                    encodingInput
+                                );
+                            } catch (error) {
+                                // Skip if encoding/decoding fails
+                                expect(true).toBe(true);
+                            }
                         }
-                    });
+                    );
                 });
             });
         });
@@ -216,7 +195,12 @@ describe('Abi - Function & Event', () => {
             const typesParam = parseAbiParameters('uint256, address');
 
             // Expect the function to throw an error
-            expect(() => encodeAbiParameters(typesParam, [123n, '0x1567890123456789012345678901234567890' as `0x${string}`])).toThrowError();
+            expect(() =>
+                encodeAbiParameters(typesParam, [
+                    123n,
+                    '0x1567890123456789012345678901234567890' as `0x${string}`
+                ])
+            ).toThrowError();
         });
 
         /**
@@ -225,11 +209,13 @@ describe('Abi - Function & Event', () => {
         test('Invalid function', () => {
             expect(() => {
                 encodeFunctionData({
-                    abi: [{
-                        type: 'function',
-                        name: 'test',
-                        inputs: []
-                    }] as const,
+                    abi: [
+                        {
+                            type: 'function',
+                            name: 'test',
+                            inputs: []
+                        }
+                    ] as const,
                     functionName: 'nonexistent' as any,
                     args: []
                 });
@@ -243,7 +229,7 @@ describe('Abi - Function & Event', () => {
             const abiFunction = functions[0].objectAbi as AbiFunction;
 
             // Encode with invalid data should throw
-            expect(() => 
+            expect(() =>
                 encodeFunctionData({
                     abi: [abiFunction],
                     functionName: abiFunction.name,
@@ -252,7 +238,7 @@ describe('Abi - Function & Event', () => {
             ).toThrowError();
 
             // Decode with invalid hex should throw
-            expect(() => 
+            expect(() =>
                 decodeFunctionData({
                     abi: [abiFunction],
                     data: 'INVALID' as `0x${string}`
@@ -271,48 +257,54 @@ describe('Abi - Function & Event', () => {
          */
         test('Encode inputs AND Decode event log', () => {
             events.forEach((fixtureEvent) => {
-                [
-                    fixtureEvent.objectAbi
-                ].forEach((eventFormat) => {
+                [fixtureEvent.objectAbi].forEach((eventFormat) => {
                     const abiEvent = eventFormat as AbiEvent;
-                    
+
                     // Test signature hash
-                    expect(getSignatureHash(abiEvent)).toBe(
+                    expect(toEventHash(abiEvent)).toBe(
                         fixtureEvent.signatureHash
                     );
 
                     // Test encoding and decoding each input
-                    fixtureEvent.encodingTestsInputs.forEach((encodingInput) => {
-                        try {
-                            // Encode event topics
-                            const encodedTopics = encodeEventTopics({
-                                abi: [abiEvent],
-                                eventName: abiEvent.name!,
-                                args: encodingInput as any
-                            });
+                    fixtureEvent.encodingTestsInputs.forEach(
+                        (encodingInput) => {
+                            try {
+                                // Encode event topics
+                                const encodedTopics = encodeEventTopics({
+                                    abi: [abiEvent],
+                                    eventName: abiEvent.name!,
+                                    args: encodingInput as any
+                                });
 
-                            expect(encodedTopics).toBeDefined();
+                                expect(encodedTopics).toBeDefined();
 
-                            // Create mock event log with proper topic types
-                            const eventLog = {
-                                data: '0x' as `0x${string}`,
-                                topics: encodedTopics.filter(t => t !== null) as [`0x${string}`, ...`0x${string}`[]]
-                            };
+                                // Create mock event log with proper topic types
+                                const eventLog = {
+                                    data: '0x' as `0x${string}`,
+                                    topics: encodedTopics.filter(
+                                        (t) => t !== null
+                                    ) as [`0x${string}`, ...`0x${string}`[]]
+                                };
 
-                            // Decode event log
-                            const decoded = decodeEventLog({
-                                abi: [abiEvent],
-                                ...eventLog
-                            });
+                                // Decode event log
+                                const decoded = decodeEventLog({
+                                    abi: [abiEvent],
+                                    ...eventLog
+                                });
 
-                            // Convert args to array for comparison
-                            const decodedArray = Object.values(decoded.args || {});
-                            expect(decodedArray).toStrictEqual(encodingInput);
-                        } catch (error) {
-                            // Skip if encoding/decoding fails
-                            expect(true).toBe(true);
+                                // Convert args to array for comparison
+                                const decodedArray = Object.values(
+                                    decoded.args || {}
+                                );
+                                expect(decodedArray).toStrictEqual(
+                                    encodingInput
+                                );
+                            } catch (error) {
+                                // Skip if encoding/decoding fails
+                                expect(true).toBe(true);
+                            }
                         }
-                    });
+                    );
                 });
             });
         });
@@ -323,11 +315,13 @@ describe('Abi - Function & Event', () => {
         test('Invalid event', () => {
             expect(() => {
                 encodeEventTopics({
-                    abi: [{
-                        type: 'event',
-                        name: 'test',
-                        inputs: []
-                    }] as const,
+                    abi: [
+                        {
+                            type: 'event',
+                            name: 'test',
+                            inputs: []
+                        }
+                    ] as const,
                     eventName: 'nonexistent' as any
                 });
             }).toThrowError();
