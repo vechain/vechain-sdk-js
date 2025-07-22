@@ -7,8 +7,6 @@ import {
     Transaction,
     type TransactionBody,
     type TransactionClause,
-    VET,
-    VTHO,
     VTHO_ADDRESS
 } from '@vechain/sdk';
 import {
@@ -21,7 +19,6 @@ import { type TestAccount } from '../funder/accounts';
 import {
     FetchHttpClient,
     RetrieveExpandedBlock,
-    RetrieveTransactionByID,
     SendTransaction
 } from '@vechain/sdk';
 
@@ -33,7 +30,7 @@ const genesisDeployerAccount = THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS[0];
  */
 export const seedVET = async (accounts: TestAccount[]): Promise<string> => {
     try {
-        const thorClient = FetchHttpClient.at('http://localhost:8669');
+        const thorClient = FetchHttpClient.at(new URL('http://localhost:8669'));
         const latestBlock = (
             await RetrieveExpandedBlock.of(Revision.of(0)).askTo(thorClient)
         ).response;
@@ -42,7 +39,7 @@ export const seedVET = async (accounts: TestAccount[]): Promise<string> => {
         for (const account of accounts) {
             const clause = ClauseBuilder.transferVET(
                 Address.of(account.address),
-                VET.of(THOR_SOLO_SEEDED_VET_AMOUNT)
+                BigInt(THOR_SOLO_SEEDED_VET_AMOUNT)
             );
             clauses.push(clause);
         }
@@ -83,7 +80,7 @@ export const seedVET = async (accounts: TestAccount[]): Promise<string> => {
  */
 export const seedVTHO = async (accounts: TestAccount[]): Promise<string> => {
     try {
-        const thorClient = FetchHttpClient.at('http://localhost:8669');
+        const thorClient = FetchHttpClient.at(new URL('http://localhost:8669'));
         const latestBlock = (
             await RetrieveExpandedBlock.of(Revision.of(0)).askTo(thorClient)
         ).response;
@@ -93,7 +90,7 @@ export const seedVTHO = async (accounts: TestAccount[]): Promise<string> => {
             const clause = ClauseBuilder.transferToken(
                 Address.of(VTHO_ADDRESS),
                 Address.of(account.address),
-                VTHO.of(THOR_SOLO_SEEDED_VTHO_AMOUNT)
+                BigInt(THOR_SOLO_SEEDED_VTHO_AMOUNT)
             );
             clauses.push(clause);
         }
@@ -135,7 +132,7 @@ export const seedTestToken = async (
     accounts: TestAccount[]
 ): Promise<string> => {
     try {
-        const thorClient = FetchHttpClient.at('http://localhost:8669');
+        const thorClient = FetchHttpClient.at(new URL('http://localhost:8669'));
         const latestBlock = (
             await RetrieveExpandedBlock.of(Revision.of(0)).askTo(thorClient)
         ).response;
@@ -145,7 +142,7 @@ export const seedTestToken = async (
             const clause = ClauseBuilder.transferToken(
                 Address.of(VTHO_ADDRESS),
                 Address.of(account.address),
-                VTHO.of(THOR_SOLO_SEEDED_TEST_TOKEN_AMOUNT)
+                BigInt(THOR_SOLO_SEEDED_TEST_TOKEN_AMOUNT)
             );
             clauses.push(clause);
         }

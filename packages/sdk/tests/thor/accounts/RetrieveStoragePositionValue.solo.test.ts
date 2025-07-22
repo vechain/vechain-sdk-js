@@ -16,7 +16,7 @@ describe('RetrieveStoragePositionValue testnet tests', () => {
                 BlockId.of(
                     '0x0000000000000000000000000000000000000000000000000000000000000001'
                 )
-            ).askTo(FetchHttpClient.at(ThorNetworks.SOLONET))
+            ).askTo(FetchHttpClient.at(new URL(ThorNetworks.SOLONET)))
         ).response;
 
         expect(response.value.toString()).toBe(

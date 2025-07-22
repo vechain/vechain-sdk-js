@@ -13,7 +13,7 @@ import {
  * @group integration/fees
  */
 describe('RetrieveHistoricalFeeData SOLO tests', () => {
-    const httpClient = FetchHttpClient.at(ThorNetworks.SOLONET);
+    const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
 
     test('err <- of(not integer)', async () => {
         const status = 400;

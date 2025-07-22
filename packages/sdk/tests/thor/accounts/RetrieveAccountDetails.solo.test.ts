@@ -13,7 +13,7 @@ describe('RetrieveAccountDetails solo tests', () => {
         const response = (
             await RetrieveAccountDetails.of(
                 Address.of('0x0000000000000000000000000000456E65726779')
-            ).askTo(FetchHttpClient.at(ThorNetworks.SOLONET))
+            ).askTo(FetchHttpClient.at(new URL(ThorNetworks.SOLONET)))
         ).response;
         expect(Hex.of(response.energy).toString()).toBe('0x00');
         expect(response.hasCode).toBe(true);

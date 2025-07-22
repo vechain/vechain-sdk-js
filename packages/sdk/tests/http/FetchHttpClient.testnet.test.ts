@@ -35,14 +35,13 @@ describe('FetchHttpClient testnet tests', () => {
         const mockResponse: MockResponse = { status: 'success' };
         let requestUrl: string | undefined;
 
-        const client = new FetchHttpClient(
-            toURL(ThorNetworks.TESTNET),
-            (request: Request) => {
+        const client = new FetchHttpClient(toURL(ThorNetworks.TESTNET), {
+            onRequest: (request: Request) => {
                 requestUrl = request.url;
                 return request;
             },
-            () => createMockResponse(mockResponse)
-        );
+            onResponse: () => createMockResponse(mockResponse)
+        });
 
         const response = await client.get();
         const data = (await response.json()) as MockResponse;
@@ -61,14 +60,13 @@ describe('FetchHttpClient testnet tests', () => {
         };
         let capturedRequest: Request | undefined;
 
-        const client = new FetchHttpClient(
-            toURL(ThorNetworks.TESTNET),
-            (request: Request) => {
+        const client = new FetchHttpClient(toURL(ThorNetworks.TESTNET), {
+            onRequest: (request: Request) => {
                 capturedRequest = request;
                 return request;
             },
-            () => createMockResponse(mockResponse)
-        );
+            onResponse: () => createMockResponse(mockResponse)
+        });
 
         const response = await client.post(
             { path: '/test' },

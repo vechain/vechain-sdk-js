@@ -13,7 +13,7 @@ describe('RetrieveContractBytecode testnet tests', () => {
         const response = (
             await RetrieveContractBytecode.of(
                 Address.of('0x0000000000000000000000000000456E65726779')
-            ).askTo(FetchHttpClient.at(ThorNetworks.SOLONET))
+            ).askTo(FetchHttpClient.at(new URL(ThorNetworks.SOLONET)))
         ).response;
 
         expect(response.code.toString()).toBe(
