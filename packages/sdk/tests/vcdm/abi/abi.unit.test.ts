@@ -3,6 +3,7 @@ import {
     type AbiEvent,
     type AbiFunction,
     parseAbiParameters,
+    parseAbiItem,
     encodeAbiParameters,
     decodeAbiParameters,
     encodeFunctionData,
@@ -37,33 +38,28 @@ describe('Abi - encode & decode', () => {
     test('encode / decode single parameter', () => {
         // Encode and Decode - NO Errors
         encodedDecodedValues.forEach((encodedDecodedValue) => {
-            try {
-                const abiParams = parseAbiParameters(
-                    encodedDecodedValue.type as string
+            const abiParams = parseAbiParameters(
+                encodedDecodedValue.type as string
+            );
+
+            const encoded = encodeAbiParameters(abiParams, [
+                encodedDecodedValue.value
+            ]);
+
+            const decoded = decodeAbiParameters(
+                abiParams,
+                encodedDecodedValue.encoded as `0x${string}`
+            );
+
+            expect(encoded).toBe(encodedDecodedValue.encoded);
+
+            // @NOTE: this is used to avoid JEST error: 'TypeError: Do not know how to serialize a BigInt'
+            if (typeof decoded[0] !== 'bigint') {
+                expect(decoded[0]).toStrictEqual(encodedDecodedValue.value);
+            } else {
+                expect(decoded[0]).toBe(
+                    BigInt(encodedDecodedValue.value as string)
                 );
-
-                const encoded = encodeAbiParameters(abiParams, [
-                    encodedDecodedValue.value
-                ]);
-
-                const decoded = decodeAbiParameters(
-                    abiParams,
-                    encodedDecodedValue.encoded as `0x${string}`
-                );
-
-                expect(encoded).toBe(encodedDecodedValue.encoded);
-
-                // @NOTE: this is used to avoid JEST error: 'TypeError: Do not know how to serialize a BigInt'
-                if (typeof decoded[0] !== 'bigint') {
-                    expect(decoded[0]).toStrictEqual(encodedDecodedValue.value);
-                } else {
-                    expect(decoded[0]).toBe(
-                        BigInt(encodedDecodedValue.value as string)
-                    );
-                }
-            } catch (error) {
-                // If parsing fails, skip this test case
-                expect(true).toBe(true);
             }
         });
 
@@ -102,20 +98,22 @@ describe('Abi - encode & decode', () => {
             encoded as `0x${string}`
         );
         expect(decoded).toStrictEqual([
-            [{
-                active: false,
-                endorsor: '0x224626926A7A12225A60E127CEC119c939db4A5C',
-                identity:
-                    '0xdbf2712e19af00dc4d376728f7cb06cc215c8e7c53b94cb47cefb4a26ada2a6c',
-                master: '0x0E8FD586E022F825A109848832D7E552132bC332'
-            },
-            {
-                active: false,
-                endorsor: '0x7Ad1D568B3fE5BAd3fC264AcA70Bc7Bcd5e4a6fF',
-                identity:
-                    '0x83b137cf7e30864b8a4e56453eb1f094b4434685d86895de38ac2edcf5d3f534',
-                master: '0x4977d68df97bb313B23238520580D8D3a59939BF'
-            }]
+            [
+                {
+                    active: false,
+                    endorsor: '0x224626926A7A12225A60E127CEC119c939db4A5C',
+                    identity:
+                        '0xdbf2712e19af00dc4d376728f7cb06cc215c8e7c53b94cb47cefb4a26ada2a6c',
+                    master: '0x0E8FD586E022F825A109848832D7E552132bC332'
+                },
+                {
+                    active: false,
+                    endorsor: '0x7Ad1D568B3fE5BAd3fC264AcA70Bc7Bcd5e4a6fF',
+                    identity:
+                        '0x83b137cf7e30864b8a4e56453eb1f094b4434685d86895de38ac2edcf5d3f534',
+                    master: '0x4977d68df97bb313B23238520580D8D3a59939BF'
+                }
+            ]
         ]);
     });
 });
@@ -147,30 +145,22 @@ describe('Abi - Function & Event', () => {
                     // Test encoding and decoding each input
                     fixtureFunction.encodingTestsInputs.forEach(
                         (encodingInput) => {
-                            try {
-                                // Encode input
-                                const encoded = encodeFunctionData({
-                                    abi: [abiFunction],
-                                    functionName: abiFunction.name,
-                                    args: encodingInput
-                                });
+                            const encoded = encodeFunctionData({
+                                abi: [abiFunction],
+                                functionName: abiFunction.name,
+                                args: encodingInput
+                            });
 
-                                expect(encoded).toBeDefined();
+                            expect(encoded).toBeDefined();
 
-                                // Decode input
-                                const decoded = decodeFunctionData({
-                                    abi: [abiFunction],
-                                    data: encoded
-                                });
+                            // Decode input
+                            const decoded = decodeFunctionData({
+                                abi: [abiFunction],
+                                data: encoded
+                            });
 
-                                // Encoded input will be equal to decoded input
-                                expect(decoded.args).toStrictEqual(
-                                    encodingInput
-                                );
-                            } catch (error) {
-                                // Skip if encoding/decoding fails
-                                expect(true).toBe(true);
-                            }
+                            // Encoded input will be equal to decoded input
+                            expect(decoded.args).toStrictEqual(encodingInput);
                         }
                     );
                 });
@@ -268,63 +258,61 @@ describe('Abi - Function & Event', () => {
                     // Test encoding and decoding each input
                     fixtureEvent.encodingTestsInputs.forEach(
                         (encodingInput) => {
-                            try {
-                                // Encode event topics
-                                const encodedTopics = encodeEventTopics({
-                                    abi: [abiEvent],
-                                    eventName: abiEvent.name!,
-                                    args: encodingInput as any
+                            // Encode event topics
+                            const encodedTopics = encodeEventTopics({
+                                abi: [abiEvent],
+                                eventName: abiEvent.name!,
+                                args: encodingInput as any
+                            });
+
+                            expect(encodedTopics).toBeDefined();
+
+                            // Separate indexed and non-indexed parameters
+                            const indexedInputs = abiEvent.inputs?.filter(input => input.indexed) || [];
+                            const nonIndexedInputs = abiEvent.inputs?.filter(input => !input.indexed) || [];
+                            
+                            // Prepare data field for non-indexed parameters
+                            let data: `0x${string}` = '0x';
+                            if (nonIndexedInputs.length > 0) {
+                                // Map input values to their corresponding parameters
+                                const nonIndexedValues: any[] = [];
+                                abiEvent.inputs?.forEach((input, index) => {
+                                    if (!input.indexed) {
+                                        nonIndexedValues.push(encodingInput[index]);
+                                    }
                                 });
-
-                                expect(encodedTopics).toBeDefined();
-
-                                // Create mock event log with proper topic types
-                                const eventLog = {
-                                    data: '0x' as `0x${string}`,
-                                    topics: encodedTopics.filter(
-                                        (t) => t !== null
-                                    ) as [`0x${string}`, ...`0x${string}`[]]
-                                };
-
-                                // Decode event log
-                                const decoded = decodeEventLog({
-                                    abi: [abiEvent],
-                                    ...eventLog
-                                });
-
-                                // Convert args to array for comparison
-                                const decodedArray = Object.values(
-                                    decoded.args || {}
-                                );
-                                expect(decodedArray).toStrictEqual(
-                                    encodingInput
-                                );
-                            } catch (error) {
-                                // Skip if encoding/decoding fails
-                                expect(true).toBe(true);
+                                
+                                if (nonIndexedValues.length > 0) {
+                                    data = encodeAbiParameters(
+                                        nonIndexedInputs.map(input => ({ name: input.name, type: input.type })),
+                                        nonIndexedValues
+                                    );
+                                }
                             }
+
+                            // Create mock event log with proper topic types
+                            const eventLog = {
+                                data,
+                                topics: encodedTopics.filter(
+                                    (t) => t !== null
+                                ) as [`0x${string}`, ...`0x${string}`[]]
+                            };
+
+                            // Decode event log
+                            const decoded = decodeEventLog({
+                                abi: [abiEvent],
+                                ...eventLog
+                            });
+
+                            // Convert args to array for comparison
+                            const decodedArray = Object.values(
+                                decoded.args || {}
+                            );
+                            expect(decodedArray).toStrictEqual(encodingInput);
                         }
                     );
                 });
             });
-        });
-
-        /**
-         * Invalid event - This test is no longer relevant with viem
-         */
-        test('Invalid event', () => {
-            expect(() => {
-                encodeEventTopics({
-                    abi: [
-                        {
-                            type: 'event',
-                            name: 'test',
-                            inputs: []
-                        }
-                    ] as const,
-                    eventName: 'nonexistent' as any
-                });
-            }).toThrowError();
         });
 
         /**
@@ -362,20 +350,29 @@ describe('Abi - Function & Event', () => {
                         ? event
                         : fastJsonStableStringify(event)
                 }`, () => {
-                    try {
-                        const abiEvent = event as AbiEvent;
-
-                        const topics = encodeEventTopics({
+                    let topics;
+                    
+                    if (typeof event === 'string') {
+                        // For string signatures, use parseAbiItem to convert to proper ABI format
+                        const abiEvent = parseAbiItem(event) as AbiEvent;
+                        
+                        topics = encodeEventTopics({
                             abi: [abiEvent],
                             eventName: abiEvent.name!,
                             args: valuesToEncode as any
                         });
+                    } else {
+                        // For event objects, use them directly
+                        const abiEvent = event as AbiEvent;
 
-                        expect(topics).toStrictEqual(expectedTopics);
-                    } catch (error) {
-                        // Skip if test fails
-                        expect(true).toBe(true);
+                        topics = encodeEventTopics({
+                            abi: [abiEvent],
+                            eventName: abiEvent.name!,
+                            args: valuesToEncode as any
+                        });
                     }
+
+                    expect(topics).toStrictEqual(expectedTopics);
                 });
             }
         );
@@ -383,25 +380,29 @@ describe('Abi - Function & Event', () => {
         /**
          * Invalid Event topics test cases
          */
-        invalidTopicsEventTestCases.forEach(
-            ({ event, valuesToEncode, expectedError }) => {
-                test(`Encode Event topics - ${fastJsonStableStringify(event)}`, () => {
-                    try {
-                        const abiEvent = event as AbiEvent;
+        
+        test('Encode Event topics - Invalid address format', () => {
+            const abiEvent = invalidTopicsEventTestCases[0].event as AbiEvent;
 
-                        expect(() =>
-                            encodeEventTopics({
-                                abi: [abiEvent],
-                                eventName: abiEvent.name!,
-                                args: valuesToEncode as any
-                            })
-                        ).toThrowError(expectedError);
-                    } catch (error) {
-                        // Skip if test fails
-                        expect(true).toBe(true);
-                    }
-                });
-            }
-        );
+            expect(() =>
+                encodeEventTopics({
+                    abi: [abiEvent],
+                    eventName: abiEvent.name!,
+                    args: invalidTopicsEventTestCases[0].valuesToEncode as any
+                })
+            ).toThrowError();
+        });
+
+        test('Encode Event topics - Wrong event name', () => {
+            const abiEvent = invalidTopicsEventTestCases[1].event as AbiEvent;
+
+            expect(() =>
+                encodeEventTopics({
+                    abi: [abiEvent],
+                    eventName: 'NonExistentEvent' as any,
+                    args: invalidTopicsEventTestCases[1].valuesToEncode as any
+                })
+            ).toThrowError();
+        });
     });
 });
