@@ -9,7 +9,7 @@ const FQP = 'vcdm.encoding.rlp.helpers.numericKind!';
 /**
  * Validates and converts the input data to a BigInt.
  *
- * @param data - Either a number or a string representing a non-negative integer.
+ * @param data - Either a number, string or bigint representing a non-negative integer.
  * @param context - A string representing the context in which this function is used,
  *                 to create meaningful error messages.
  * @returns The input data converted to a BigInt.
@@ -17,7 +17,11 @@ const FQP = 'vcdm.encoding.rlp.helpers.numericKind!';
  */
 const validateNumericKindData = (data: RLPInput, context: string): bigint => {
     // Input data must be either a number or a string.
-    if (typeof data !== 'number' && typeof data !== 'string') {
+    if (
+        typeof data !== 'number' &&
+        typeof data !== 'string' &&
+        typeof data !== 'bigint'
+    ) {
         throw new InvalidEncodingError(
             `${FQP}validateNumericKindData(data, context): bigint`,
             `Validation error: Input in ${context} must be a string or number.`,
@@ -34,6 +38,8 @@ const validateNumericKindData = (data: RLPInput, context: string): bigint => {
         _validateNumericKindNumber(data, context);
     } else if (typeof data === 'string') {
         _validateNumericKindString(data, context);
+    } else if (typeof data === 'bigint') {
+        return data;
     }
 
     return BigInt(data);

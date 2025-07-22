@@ -1,4 +1,4 @@
-import { type Address, type VeChainDataModel, type Currency } from '@vcdm';
+import { type Address, type VeChainDataModel } from '@vcdm';
 import { UnsupportedOperationError } from '@errors';
 
 /**
@@ -15,7 +15,7 @@ type AccountType = 'EOA' | 'Contract';
  */
 class Account implements VeChainDataModel<Account> {
     public readonly address: Address;
-    public readonly balance: Currency;
+    public readonly balance: bigint;
     // Replace the string array with a Transaction class #1162
     public readonly transactions: string[];
 
@@ -23,7 +23,7 @@ class Account implements VeChainDataModel<Account> {
 
     constructor(
         address: Address,
-        balance: Currency,
+        balance: bigint,
         type: AccountType = 'EOA',
         transactions?: string[]
     ) {
@@ -96,11 +96,13 @@ class Account implements VeChainDataModel<Account> {
         if (typeDiff === 0) {
             const addressDiff = this.address.compareTo(that.address);
             if (addressDiff === 0) {
-                const codeDiff = this.balance.code.compareTo(that.balance.code);
-                if (codeDiff === 0) {
-                    return this.balance.value.compareTo(that.balance.value);
-                }
-                return codeDiff;
+                const balanceDiff =
+                    this.balance < that.balance
+                        ? -1
+                        : this.balance > that.balance
+                          ? 1
+                          : 0;
+                return balanceDiff;
             }
             return addressDiff;
         }
@@ -124,7 +126,7 @@ class Account implements VeChainDataModel<Account> {
      * @returns {string} A string representation of the account.
      */
     public toString(): string {
-        return `${this.type} Address: ${this.address.toString()} Balance: ${this.balance.value} ${this.balance.code}`;
+        return `${this.type} Address: ${this.address.toString()} Balance: ${this.balance}`;
     }
 }
 

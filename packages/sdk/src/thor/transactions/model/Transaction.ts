@@ -12,9 +12,7 @@ import {
     OptionalFixedHexBlobKind,
     type RLPProfile,
     RLPProfiler,
-    type RLPValidObject,
-    Units,
-    VTHO
+    type RLPValidObject
 } from '@vcdm';
 import {
     IllegalArgumentError,
@@ -288,9 +286,9 @@ class Transaction {
     /**
      * Return the intrinsic gas required for this transaction.
      *
-     * @return {VTHO} The computed intrinsic gas for the transaction.
+     * @return {bigint} The computed intrinsic gas for the transaction.
      */
-    public get intrinsicGas(): VTHO {
+    public get intrinsicGas(): bigint {
         return Transaction.intrinsicGas(this.body.clauses);
     }
 
@@ -460,14 +458,13 @@ class Transaction {
      * Calculates the intrinsic gas required for the given transaction clauses.
      *
      * @param {TransactionClause[]} clauses - An array of transaction clauses to calculate the intrinsic gas for.
-     * @return {VTHO} The total intrinsic gas required for the provided clauses.
+     * @return {bigint} The total intrinsic gas required for the provided clauses.
      * @throws {IllegalArgumentError} If clauses have invalid data as invalid addresses.
      */
-    public static intrinsicGas(clauses: TransactionClause[]): VTHO {
+    public static intrinsicGas(clauses: TransactionClause[]): bigint {
         if (clauses.length > 0) {
-            // Some clauses.
-            return VTHO.of(
-                clauses.reduce((sum: bigint, clause: TransactionClause) => {
+            const totalGas = clauses.reduce(
+                (sum: bigint, clause: TransactionClause) => {
                     if (clause.to !== null) {
                         // Invalid address or no vet.domains name
                         if (
@@ -488,15 +485,15 @@ class Transaction {
                     }
                     sum += Transaction.computeUsedGasFor(clause.data);
                     return sum;
-                }, Transaction.GAS_CONSTANTS.TX_GAS),
-                Units.wei
+                },
+                Transaction.GAS_CONSTANTS.TX_GAS
             );
+            return totalGas;
         }
         // No clauses.
-        return VTHO.of(
+        return (
             Transaction.GAS_CONSTANTS.TX_GAS +
-                Transaction.GAS_CONSTANTS.CLAUSE_GAS,
-            Units.wei
+            Transaction.GAS_CONSTANTS.CLAUSE_GAS
         );
     }
 
@@ -856,7 +853,7 @@ class Transaction {
                  */
                 clauses: this.body.clauses as Array<{
                     to: string | null;
-                    value: string | number;
+                    value: bigint;
                     data: string;
                 }>,
                 // New reserved field.

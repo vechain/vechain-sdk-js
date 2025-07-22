@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { Address, HexUInt, VET } from '@vcdm';
+import { Address, HexUInt } from '@vcdm';
 import { ClauseBuilder } from '@thor';
 import { networkInfo } from '@utils';
 import { Secp256k1 } from '@secp256k1';
@@ -30,7 +30,7 @@ describe('unit tests', () => {
         ),
         address: Address.of('0x88b2551c3ed42ca663796c10ce68c88a65f73fe2')
     };
-    const OneVET = VET.of(1);
+    const OneVET = 10n ** 18n;
     const clauses = [ClauseBuilder.transferVET(receiver.address, OneVET)];
 
     test('Delegated Tx', async () => {
