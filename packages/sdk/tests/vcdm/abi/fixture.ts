@@ -1,5 +1,4 @@
 import { Address, Hex, HexUInt } from '@vcdm';
-import { InvalidAbiEncodingTypeError } from '@errors';
 import { generateRandomValidAddress } from '../../fixture';
 
 /**
@@ -414,8 +413,7 @@ const invalidTopicsEventTestCases = [
         valuesToEncode: [
             'invalid_address_format',
             toRandomAddress
-        ],
-        expectedError: InvalidAbiEncodingTypeError
+        ]
     },
     {
         event: {
@@ -443,8 +441,7 @@ const invalidTopicsEventTestCases = [
         valuesToEncode: [
             fromRandomAddress,
             toRandomAddress
-        ],
-        expectedError: InvalidAbiEncodingTypeError
+        ]
     }
 ];
 

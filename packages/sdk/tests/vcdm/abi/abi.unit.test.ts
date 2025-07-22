@@ -10,8 +10,6 @@ import {
     decodeFunctionData,
     encodeEventTopics,
     decodeEventLog,
-    keccak256,
-    toHex,
     toFunctionHash,
     toEventHash
 } from 'viem';
@@ -380,7 +378,7 @@ describe('Abi - Function & Event', () => {
         /**
          * Invalid Event topics test cases
          */
-        
+
         test('Encode Event topics - Invalid address format', () => {
             const abiEvent = invalidTopicsEventTestCases[0].event as AbiEvent;
 

@@ -1,6 +1,4 @@
 export * from './IllegalArgumentError';
-export * from './InvalidAbiDecodingTypeError';
-export * from './InvalidAbiEncodingTypeError';
 export * from './InvalidEncodingError';
 export * from './InvalidKeystoreError';
 export * from './InvalidMessageHashError';

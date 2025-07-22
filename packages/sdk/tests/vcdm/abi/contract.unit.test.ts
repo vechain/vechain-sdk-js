@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, test } from '@jest/globals';
+import {  describe, expect, test } from '@jest/globals';
 import { fail } from 'assert';
 import { expectType } from 'tsd';
 import { 
@@ -9,23 +9,12 @@ import {
     decodeFunctionResult,
     encodeEventTopics,
     decodeEventLog,
-    parseEventLogs,
-    type Abi,
-    type AbiFunction
 } from 'viem';
-import { Hex } from '@vcdm';
 import { ERC721_ABI } from '@utils';
-import {
-    IllegalArgumentError,
-    InvalidAbiDecodingTypeError,
-    InvalidAbiEncodingTypeError
-} from '@errors';
 import {
     contractABI,
     contractABIWithEvents,
     contractStorageABI,
-    type ExpectedCustomFunctionType,
-    type ExpectedERC721TransferEventType,
     ValueChangedEventData
 } from './fixture';
 
