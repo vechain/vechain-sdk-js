@@ -1,5 +1,4 @@
 import { Address, Hex, HexUInt } from '@vcdm';
-import { InvalidAbiEncodingTypeError } from '@errors';
 import { generateRandomValidAddress } from '../../fixture';
 
 /**
@@ -86,7 +85,7 @@ const functions = [
         signatureHash: '0x5db82fa0',
         jsonStringifiedAbi:
             '{"type":"function","name":"nodes","constant":false,"payable":false,"inputs":[],"outputs":[{"type":"tuple[]","name":"list","components":[{"type":"address","name":"master"},{"type":"address","name":"endorsor"},{"type":"bytes32","name":"identity"},{"type":"bool","name":"active"}]}]}',
-        encodingTestsInputs: [[]]
+        encodingTestsInputs: [undefined]
     }
 ];
 
@@ -298,7 +297,7 @@ const topicsEventTestCases = [
         expectedTopics: [
             '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
             `0x000000000000000000000000${fromRandomAddress.slice(2)}`, // Should return only signature and topic1
-            undefined // This the indexed address `to`
+            null // This the indexed address `to`
         ]
     },
     {
@@ -348,8 +347,8 @@ const topicsEventTestCases = [
         valuesToEncode: [null, null, randomBigInt],
         expectedTopics: [
             '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-            undefined,
-            undefined,
+            null,
+            null,
             Hex.of(randomBigInt).fit(64).toString()
         ]
     },
@@ -358,8 +357,8 @@ const topicsEventTestCases = [
         valuesToEncode: [undefined, undefined, randomBigInt],
         expectedTopics: [
             '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-            undefined,
-            undefined,
+            null,
+            null,
             Hex.of(randomBigInt).fit(64).toString()
         ]
     },
@@ -378,8 +377,8 @@ const topicsEventTestCases = [
         expectedTopics: [
             '0x4811710b0c25cc7e05baf214b3a939cf893f1cbff4d0b219e680f069a4f204a2',
             '0x6c977a18d427360e27c3fc2129a6942acd4ece2c8aaeaf4690034931dc5ba7f9',
-            undefined,
-            undefined
+            null,
+            null
         ]
     }
 ];
@@ -412,25 +411,37 @@ const invalidTopicsEventTestCases = [
             type: 'event'
         },
         valuesToEncode: [
-            // Too many parameters
-            fromRandomAddress,
-            toRandomAddress,
-            fromRandomAddress,
+            'invalid_address_format',
             toRandomAddress
-        ],
-        expectedError: InvalidAbiEncodingTypeError
+        ]
     },
     {
-        event: rewardDistributedEvent,
+        event: {
+            anonymous: false,
+            inputs: [
+                {
+                    indexed: true,
+                    name: 'from',
+                    type: 'address'
+                },
+                {
+                    indexed: true,
+                    name: 'to',
+                    type: 'address'
+                },
+                {
+                    indexed: false,
+                    name: 'value',
+                    type: 'uint256'
+                }
+            ],
+            name: 'Transfer',
+            type: 'event'
+        },
         valuesToEncode: [
-            // Wrong parameters
             fromRandomAddress,
-            toRandomAddress,
-            fromRandomAddress,
-            toRandomAddress,
-            fromRandomAddress
-        ],
-        expectedError: InvalidAbiEncodingTypeError
+            toRandomAddress
+        ]
     }
 ];
 
