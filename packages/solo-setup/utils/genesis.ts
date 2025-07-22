@@ -1,8 +1,8 @@
-import { Revision, ThorNetworks } from '@vechain/sdk';
 import {
-    RegularBlockResponse,
-    RetrieveRegularBlock,
-    FetchHttpClient
+    Revision,
+    type RegularBlockResponse,
+    FetchHttpClient,
+    RetrieveRegularBlock
 } from '@vechain/sdk';
 
 /**
@@ -11,12 +11,9 @@ import {
  */
 export const getGenesisBlock = async (): Promise<RegularBlockResponse> => {
     try {
-        const httpClient = FetchHttpClient.at(
-            new URL(ThorNetworks.SOLONET),
-            {}
-        );
+        const thorClient = FetchHttpClient.at(new URL('http://localhost:8669'));
         const genesisBlock = (
-            await RetrieveRegularBlock.of(Revision.of(0)).askTo(httpClient)
+            await RetrieveRegularBlock.of(Revision.of(0)).askTo(thorClient)
         ).response;
         if (genesisBlock === null) {
             throw new Error('Genesis block not found');

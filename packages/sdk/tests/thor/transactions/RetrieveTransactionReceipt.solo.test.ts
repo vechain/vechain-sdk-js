@@ -13,7 +13,7 @@ import {
  * @group integration/transactions
  */
 describe('RetrieveTransactionReceipt SOLO tests', () => {
-    const httpClient = FetchHttpClient.at(ThorNetworks.SOLONET);
+    const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
 
     let block: RegularBlockResponse | null;
 

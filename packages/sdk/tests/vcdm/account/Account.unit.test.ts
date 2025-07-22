@@ -1,12 +1,12 @@
 import { describe, expect, test } from '@jest/globals';
-import { Address, FixedPointNumber, Mnemonic, Account, VET } from '@vcdm';
+import { Address, Mnemonic, Account } from '@vcdm';
 
 /**
  * Test Account class.
  * @group unit/vcdm
  */
 describe('Account class tests', () => {
-    const balance = VET.of(FixedPointNumber.of(0));
+    const balance = 0n;
     const mnemonic = Mnemonic.of();
     describe('Construction tests', () => {
         test('Return an Account instance if the passed arguments are valid', () => {

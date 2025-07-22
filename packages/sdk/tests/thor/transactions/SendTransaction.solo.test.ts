@@ -8,10 +8,10 @@ import {
     RetrieveTransactionByID,
     SendTransaction,
     ThorNetworks,
-    TXID
+    TXID,
+    ClauseBuilder
 } from '@thor';
-import { Address, HexUInt, Revision, VET } from '@vcdm';
-import { ClauseBuilder } from '@thor';
+import { Address, HexUInt, Revision } from '@vcdm';
 import { Transaction, type TransactionBody } from '@thor/model';
 import { SOLO_NETWORK } from '@utils';
 import { expect, test } from '@jest/globals';
@@ -20,7 +20,7 @@ import { expect, test } from '@jest/globals';
  * @group integration/transactions
  */
 describe('RetrieveTransactionReceipt SOLO tests', () => {
-    const httpClient = FetchHttpClient.at(ThorNetworks.SOLONET);
+    const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
 
     // TO BE FIXED: DYNAMIC ACCOUNT IS NOT SEEDED YET WHEN THIS TESTS RUNS IN SOLO
     const toAddress = '0x435933c8064b4ae76be665428e0307ef2ccfbd68'; // THIS SOLO DEFAULT ACCOUNT[1]
@@ -32,7 +32,7 @@ describe('RetrieveTransactionReceipt SOLO tests', () => {
     test('ok <- transfer VET', async () => {
         const transferClause = ClauseBuilder.transferVET(
             Address.of(toAddress),
-            VET.of(1)
+            10n ** 18n
         );
 
         const latestBlock = (

@@ -8,8 +8,6 @@ import {
     ThorNetworks,
     type TransactionBody,
     type TransactionClause,
-    VET,
-    VTHO,
     VTHO_ADDRESS
 } from '@vechain/sdk';
 import {
@@ -45,7 +43,7 @@ export const seedVET = async (accounts: TestAccount[]): Promise<string> => {
         for (const account of accounts) {
             const clause = ClauseBuilder.transferVET(
                 Address.of(account.address),
-                VET.of(THOR_SOLO_SEEDED_VET_AMOUNT)
+                BigInt(THOR_SOLO_SEEDED_VET_AMOUNT)
             );
             clauses.push(clause);
         }
@@ -99,7 +97,7 @@ export const seedVTHO = async (accounts: TestAccount[]): Promise<string> => {
             const clause = ClauseBuilder.transferToken(
                 Address.of(VTHO_ADDRESS),
                 Address.of(account.address),
-                VTHO.of(THOR_SOLO_SEEDED_VTHO_AMOUNT)
+                BigInt(THOR_SOLO_SEEDED_VTHO_AMOUNT)
             );
             clauses.push(clause);
         }
@@ -154,7 +152,7 @@ export const seedTestToken = async (
             const clause = ClauseBuilder.transferToken(
                 Address.of(VTHO_ADDRESS),
                 Address.of(account.address),
-                VTHO.of(THOR_SOLO_SEEDED_TEST_TOKEN_AMOUNT)
+                BigInt(THOR_SOLO_SEEDED_TEST_TOKEN_AMOUNT)
             );
             clauses.push(clause);
         }
