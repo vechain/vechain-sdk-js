@@ -1,18 +1,18 @@
 import { ERC721_ABI, VIP180_ABI } from '@utils';
-import {
-    ABI,
-    ABIContract,
-    Hex,
-    type ABIFunction,
-    type Address,
-    type HexUInt
-} from '@vcdm';
+import { Hex, type Address, type HexUInt } from '@vcdm';
 import {
     type ClauseOptions,
     type DeployParams,
     type TransactionClause
 } from '@thor';
 import { IllegalArgumentError } from '@errors';
+import {
+    encodeFunctionData,
+    encodeAbiParameters,
+    parseAbiParameters,
+    type AbiFunction,
+    type Abi
+} from 'viem';
 
 /**
  * Full Qualified Path
@@ -117,7 +117,8 @@ class ClauseBuilder implements TransactionClause {
      * Return a new clause to call a function of a smart contract.
      *
      * @param {Address} contractAddress - The address of the smart contract.
-     * @param {ABIFunction} functionAbi - The ABI definition of the function to be called.
+     * @param {Abi} contractAbi - The ABI of the contract.
+     * @param {string} functionName - The name of the function to call.
      * @param {unknown[]} args - The arguments for the function.
      * @param {VET} [amount=VET.of(FixedPointNumber.ZERO)] - The amount of VET to be sent with the transaction calling the function.
      * @param {ClauseOptions} [clauseOptions] - Optional clause settings.
@@ -126,19 +127,31 @@ class ClauseBuilder implements TransactionClause {
      */
     public static callFunction(
         contractAddress: Address,
-        functionAbi: ABIFunction,
+        contractAbi: Abi,
+        functionName: string,
         args: unknown[],
         amount: bigint = BigInt(0),
         clauseOptions?: ClauseOptions
     ): ClauseBuilder {
         if (amount >= 0n) {
+            const encodedData = encodeFunctionData({
+                abi: contractAbi,
+                functionName,
+                args
+            });
+
+            const functionAbi = contractAbi.find(
+                (item: AbiFunction | { type?: string; name?: string }) =>
+                    item.type === 'function' && item.name === functionName
+            ) as AbiFunction | undefined;
+
             return new ClauseBuilder(
                 contractAddress.toString().toLowerCase(),
                 amount,
-                functionAbi.encodeData(args).toString(),
+                encodedData,
                 clauseOptions?.comment,
-                clauseOptions?.includeABI === true
-                    ? functionAbi.format(ClauseBuilder.FORMAT_TYPE)
+                clauseOptions?.includeABI === true && functionAbi !== undefined
+                    ? JSON.stringify(functionAbi)
                     : undefined
             );
         }
@@ -162,14 +175,22 @@ class ClauseBuilder implements TransactionClause {
         deployParams?: DeployParams,
         clauseOptions?: ClauseOptions
     ): ClauseBuilder {
-        const data =
-            deployParams != null && deployParams !== undefined
-                ? contractBytecode.digits +
-                  ABI.of(deployParams.types, deployParams.values)
-                      .toHex()
-                      .toString()
-                      .replace(Hex.PREFIX, '')
-                : contractBytecode.digits;
+        let data = contractBytecode.digits;
+
+        if (deployParams != null && deployParams !== undefined) {
+            // Handle both string and AbiParameter[] types
+            const abiParams =
+                typeof deployParams.types === 'string'
+                    ? parseAbiParameters(deployParams.types)
+                    : deployParams.types;
+
+            const encodedParams = encodeAbiParameters(
+                abiParams,
+                deployParams.values
+            );
+            data = contractBytecode.digits + encodedParams.slice(2); // Remove 0x prefix
+        }
+
         return new ClauseBuilder(
             null,
             BigInt(0),
@@ -197,9 +218,8 @@ class ClauseBuilder implements TransactionClause {
     ): ClauseBuilder {
         return ClauseBuilder.callFunction(
             contractAddress,
-            ABIContract.ofAbi(ERC721_ABI).getFunction(
-                ClauseBuilder.TRANSFER_NFT_FUNCTION
-            ),
+            ERC721_ABI,
+            ClauseBuilder.TRANSFER_NFT_FUNCTION,
             [
                 senderAddress.toString(),
                 recipientAddress.toString(),
@@ -233,9 +253,8 @@ class ClauseBuilder implements TransactionClause {
         if (amount >= 0n) {
             return this.callFunction(
                 tokenAddress,
-                ABIContract.ofAbi(VIP180_ABI).getFunction(
-                    ClauseBuilder.TRANSFER_TOKEN_FUNCTION
-                ),
+                VIP180_ABI,
+                ClauseBuilder.TRANSFER_TOKEN_FUNCTION,
                 [recipientAddress.toString(), amount],
                 undefined,
                 clauseOptions

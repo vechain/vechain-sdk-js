@@ -5,6 +5,7 @@ import {
     HexUInt,
     Revision,
     Transaction,
+    ThorNetworks,
     type TransactionBody,
     type TransactionClause,
     VTHO_ADDRESS
@@ -30,7 +31,10 @@ const genesisDeployerAccount = THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS[0];
  */
 export const seedVET = async (accounts: TestAccount[]): Promise<string> => {
     try {
-        const thorClient = FetchHttpClient.at(new URL('http://localhost:8669'));
+        const thorClient = FetchHttpClient.at(
+            new URL(ThorNetworks.SOLONET),
+            {}
+        );
         const latestBlock = (
             await RetrieveExpandedBlock.of(Revision.of(0)).askTo(thorClient)
         ).response;
@@ -80,7 +84,10 @@ export const seedVET = async (accounts: TestAccount[]): Promise<string> => {
  */
 export const seedVTHO = async (accounts: TestAccount[]): Promise<string> => {
     try {
-        const thorClient = FetchHttpClient.at(new URL('http://localhost:8669'));
+        const thorClient = FetchHttpClient.at(
+            new URL(ThorNetworks.SOLONET),
+            {}
+        );
         const latestBlock = (
             await RetrieveExpandedBlock.of(Revision.of(0)).askTo(thorClient)
         ).response;
@@ -132,7 +139,10 @@ export const seedTestToken = async (
     accounts: TestAccount[]
 ): Promise<string> => {
     try {
-        const thorClient = FetchHttpClient.at(new URL('http://localhost:8669'));
+        const thorClient = FetchHttpClient.at(
+            new URL(ThorNetworks.SOLONET),
+            {}
+        );
         const latestBlock = (
             await RetrieveExpandedBlock.of(Revision.of(0)).askTo(thorClient)
         ).response;
