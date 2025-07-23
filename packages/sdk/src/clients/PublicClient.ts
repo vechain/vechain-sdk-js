@@ -26,7 +26,8 @@ import {
     type ThorId,
     type ThorNetworks,
     type TransfersSubscription,
-    type EventLogResponse
+    type EventLogResponse,
+    type TXID
 } from '@index';
 import { type ExecuteCodesRequestJSON } from '@json';
 import { type EventLogFilterRequestJSON } from '@thor/logs/json';
@@ -41,6 +42,12 @@ import {
  * Filter types for viem compatibility.
  */
 type Filter = EventFilter | BlockFilter | PendingTransactionFilter;
+
+interface PendingTransactionFilter {
+    type: 'transaction';
+    subscription?: NewTransactionSubscription;
+    txQueue?: string[];
+}
 
 /**
  * Event filter type for viem compatibility.
@@ -528,28 +535,53 @@ class PublicClient {
         }
         // For pending transaction filters, we subscribe to new transactions if not already subscribed
         else if (filter.type === 'transaction') {
-            const txFilter = filter;
+            const txFilter = filter as PendingTransactionFilter & {
+                subscription?: NewTransactionSubscription;
+                txQueue?: string[];
+            };
 
-            // If we don't have a subscription yet, create one
-            if (txFilter.subscription === undefined) {
-                // Get the WebSocket client for the filter
+            if (txFilter.subscription == null) {
                 const webSocketClient = new MozillaWebSocketClient(
                     `ws://${FetchHttpClient.at(this.httpClient ?? '').baseURL}`
                 );
 
-                // Create a new transaction subscription
-                txFilter.subscription =
-                    NewTransactionSubscription.at(webSocketClient);
+                const subscription =
+                    NewTransactionSubscription.at(webSocketClient).open();
 
-                // We'll return an empty array for the first call, since the subscription
-                // is just being set up. Subsequent calls will return new transaction hashes.
+                txFilter.txQueue = [];
+
+                const listener: WebSocketListener<TXID> = {
+                    onMessage: (event: MessageEvent<TXID>) => {
+                        const data = event.data;
+                        let txHash: string | undefined;
+
+                        if (typeof data === 'string') {
+                            txHash = data;
+                        } else if (Buffer.isBuffer(data)) {
+                            txHash = data.toString('hex'); // Convert Buffer to hex string
+                        }
+
+                        if (txHash != null) {
+                            if (txFilter.txQueue == null) {
+                                txFilter.txQueue = [];
+                            }
+                            txFilter.txQueue.push(txHash);
+                        }
+                    },
+                    onOpen: () => {},
+                    onClose: () => {},
+                    onError: () => {}
+                };
+
+                subscription.addListener(listener);
+                txFilter.subscription = subscription;
+
                 return [];
             }
 
-            // For subsequent calls, we would collect transaction hashes since the last call
-            // In a real implementation, we would have some mechanism to collect txs between calls
-            // For now, we'll just return an empty array as we don't have a mechanism to collect new txs
-            return [];
+            const txs = txFilter.txQueue ?? [];
+            txFilter.txQueue = [];
+            return txs;
         }
 
         throw new Error(
