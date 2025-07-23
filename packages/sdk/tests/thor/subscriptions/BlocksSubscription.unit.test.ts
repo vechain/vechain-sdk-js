@@ -8,7 +8,7 @@ import { BlockId } from '@vcdm';
 import {
     mockWebSocketInstance,
     mockWebSocketConstructor
-} from '../../utils/MockWSClient';
+} from '../../MockWSClient';
 
 const mockBlockData = {
     number: 12345,
