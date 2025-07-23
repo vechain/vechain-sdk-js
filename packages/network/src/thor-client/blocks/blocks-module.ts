@@ -231,15 +231,15 @@ class BlocksModule {
         return await Poll.SyncPoll(
             async () =>
                 expanded
-                    ? await this.getBestBlockCompressed()
-                    : await this.getBestBlockExpanded(),
+                    ? await this.getBlockCompressed(blockNumber)
+                    : await this.getBlockExpanded(blockNumber),
             {
                 requestIntervalInMilliseconds: options?.intervalMs,
                 maximumWaitingTimeInMilliseconds: options?.timeoutMs
             }
         ).waitUntil((result) => {
             // Continue polling until the result's block number matches the specified revision
-            return result != null && result?.number >= blockNumber;
+            return result != null && result.number == blockNumber;
         });
     }
 
