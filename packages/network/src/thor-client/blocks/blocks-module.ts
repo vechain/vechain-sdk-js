@@ -231,8 +231,8 @@ class BlocksModule {
         return await Poll.SyncPoll(
             async () =>
                 expanded
-                    ? await this.getBlockCompressed(blockNumber)
-                    : await this.getBlockExpanded(blockNumber),
+                    ? await this.getBlockExpanded(blockNumber)
+                    : await this.getBlockCompressed(blockNumber),
             {
                 requestIntervalInMilliseconds: options?.intervalMs,
                 maximumWaitingTimeInMilliseconds: options?.timeoutMs
