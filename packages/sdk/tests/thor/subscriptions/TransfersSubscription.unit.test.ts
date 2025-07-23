@@ -10,7 +10,7 @@ import { type SubscriptionTransferResponseJSON } from '@thor/subscriptions';
 import {
     mockWebSocketInstance,
     mockWebSocketConstructor
-} from '../../utils/MockWSClient';
+} from '../../MockWSClient';
 
 // Factory functions for creating TransfersSubscription instances with different parameters
 // This avoids using reflection and provides a cleaner test approach

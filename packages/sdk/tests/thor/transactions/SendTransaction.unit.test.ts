@@ -7,7 +7,7 @@ import { SOLO_NETWORK } from '@utils';
 
 import { TEST_ACCOUNTS } from '../../fixture';
 import { expect } from '@jest/globals';
-import { mockHttpClient } from '../../utils/MockHttpClient';
+import { mockHttpClient } from '../../MockHttpClient';
 
 const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
 

@@ -3,7 +3,7 @@ import { ForkDetector } from '@thor/fork/methods/forkDetector';
 import {
     mockHttpClient,
     mockHttpClientWithError
-} from '../../utils/MockHttpClient';
+} from '../../MockHttpClient';
 import { IllegalArgumentError } from '@errors';
 
 /**

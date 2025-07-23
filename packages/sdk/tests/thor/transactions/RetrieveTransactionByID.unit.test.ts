@@ -8,7 +8,7 @@ import { expect } from '@jest/globals';
 import {
     mockHttpClient,
     mockHttpClientWithError
-} from '../../utils/MockHttpClient';
+} from '../../MockHttpClient';
 
 /**
  * @group unit/transactions
