@@ -506,19 +506,20 @@ class PublicClient {
                 return [];
             }
 
-            // Get block hashes for new blocks
+            // Get block hashes for all new blocks
             const blockHashes: string[] = [];
-
-            // In a real implementation, we would query for blocks between lastProcessed+1 and currentBlock
-            // For now, we'll just get the latest block as an example
-            const latestBlock = await this.getBlock(currentBlock);
-            if (
-                latestBlock !== null &&
-                latestBlock !== undefined &&
-                'id' in latestBlock &&
-                latestBlock.id !== undefined
-            ) {
-                blockHashes.push(String(latestBlock.id));
+            
+            // Get all blocks from lastProcessed+1 to currentBlock
+            for (let blockNum = lastProcessed + 1; blockNum <= currentBlock; blockNum++) {
+                const block = await this.getBlock(blockNum);
+                if (
+                    block !== null &&
+                    block !== undefined &&
+                    'id' in block &&
+                    block.id !== undefined
+                ) {
+                    blockHashes.push(String(block.id));
+                }
             }
 
             // Update the last processed block
