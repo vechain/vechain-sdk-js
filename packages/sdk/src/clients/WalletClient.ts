@@ -18,7 +18,7 @@ class WalletClient extends PublicClient {
     public async sendTransaction(encodedTx: Uint8Array): Promise<TXID> {
         // viem specific
         const data = await SendTransaction.of(encodedTx).askTo(
-            FetchHttpClient.at(this.httpClient)
+            FetchHttpClient.at(this.thorNetworks)
         );
         return data.response;
     }
