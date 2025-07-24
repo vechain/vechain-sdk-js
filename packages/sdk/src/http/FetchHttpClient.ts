@@ -35,7 +35,7 @@ class FetchHttpClient implements HttpClient {
 
     constructor(
         baseURL: URL,
-        httpOptions: HttpOptions,
+        httpOptions: HttpOptions = {},
         // Default dependencies to global objects, allows for testing injection or custom implementations
         requestConstructor: RequestConstructor = Request,
         fetchFunction: FetchFunction = fetch
@@ -78,7 +78,7 @@ class FetchHttpClient implements HttpClient {
      */
     static at(
         baseURL: URL,
-        httpOptions: HttpOptions,
+        httpOptions: HttpOptions = {},
         requestConstructor: RequestConstructor = Request,
         fetchFunction: FetchFunction = fetch
     ): FetchHttpClient {

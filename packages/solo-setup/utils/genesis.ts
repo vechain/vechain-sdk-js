@@ -1,6 +1,6 @@
-import { Revision } from '@vechain/sdk';
 import {
-    RegularBlockResponse,
+    Revision,
+    type RegularBlockResponse,
     FetchHttpClient,
     RetrieveRegularBlock
 } from '@vechain/sdk';
@@ -11,7 +11,7 @@ import {
  */
 export const getGenesisBlock = async (): Promise<RegularBlockResponse> => {
     try {
-        const thorClient = FetchHttpClient.at('http://localhost:8669');
+        const thorClient = FetchHttpClient.at(new URL('http://localhost:8669'));
         const genesisBlock = (
             await RetrieveRegularBlock.of(Revision.of(0)).askTo(thorClient)
         ).response;

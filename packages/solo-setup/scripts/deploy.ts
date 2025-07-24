@@ -41,8 +41,10 @@ async function main(): Promise<void> {
         // Try network operations (seeding)
         const seedVetTxId = await seedVET(THOR_SOLO_ACCOUNTS_TO_SEED);
         const seedVthoTxId = await seedVTHO(THOR_SOLO_ACCOUNTS_TO_SEED);
-        const seedTestTokenTxId = await seedTestToken(THOR_SOLO_ACCOUNTS_TO_SEED);
-        
+        const seedTestTokenTxId = await seedTestToken(
+            THOR_SOLO_ACCOUNTS_TO_SEED
+        );
+
         // Always create config.json file with available data
         console.log('Saving configuration to config.json...');
         setConfig(
@@ -63,9 +65,7 @@ async function main(): Promise<void> {
         if (seedVetTxId) {
             console.log('Account seeding completed');
         } else {
-            console.warn(
-                `Account seeding didn't take place`
-            );
+            console.warn(`Account seeding didn't take place`);
         }
     } catch (error) {
         console.error('Failed to deploy contracts:', error);

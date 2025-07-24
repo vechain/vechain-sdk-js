@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { InspectClauses, ThorNetworks, toURL } from '@thor';
+import { InspectClauses, ThorNetworks } from '@thor';
 import { FetchHttpClient } from '@http';
 import { type ExecuteCodesRequestJSON } from '@/json';
 
@@ -38,7 +38,7 @@ describe('InspectClauses solo tests', () => {
         } satisfies ExecuteCodesRequestJSON;
         const response = (
             await InspectClauses.of(request).askTo(
-                FetchHttpClient.at(toURL(ThorNetworks.SOLONET), {})
+                FetchHttpClient.at(new URL(ThorNetworks.SOLONET))
             )
         ).response;
         expect(response.length).toBe(1);

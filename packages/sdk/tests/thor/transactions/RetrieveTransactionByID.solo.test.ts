@@ -7,7 +7,7 @@ import {
     type RegularBlockResponse,
     RetrieveRegularBlock,
     RetrieveTransactionByID,
-    ThorNetworks, toURL
+    ThorNetworks
 } from '@thor';
 import { FetchHttpClient } from '@http';
 import { beforeAll, expect } from '@jest/globals';
@@ -16,7 +16,7 @@ import { beforeAll, expect } from '@jest/globals';
  * @group integration/transactions
  */
 describe('RetrieveTransactionByID SOLO tests', () => {
-    const httpClient = FetchHttpClient.at(toURL(ThorNetworks.SOLONET), {});
+    const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
 
     let block: RegularBlockResponse | null;
 

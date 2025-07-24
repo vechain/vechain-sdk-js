@@ -9,8 +9,8 @@ import { type SubscriptionEventResponseJSON } from '@thor/subscriptions';
 import {
     mockWebSocketInstance,
     mockWebSocketConstructor
-} from '../../utils/MockWSClient';
-import { type LogMetaJSON } from '@json';
+} from '../../MockWSClient';
+import { LogMetaJSON } from '@json';
 
 const mockLogMeta = {
     blockID:

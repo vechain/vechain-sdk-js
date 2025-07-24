@@ -4,7 +4,6 @@ import {
     type PostDebugTracerCallRequestJSON,
     ThorError,
     ThorNetworks,
-    toURL,
     TraceCall
 } from '@thor';
 import { Hex, Revision } from '@vcdm';
@@ -13,7 +12,7 @@ import { Hex, Revision } from '@vcdm';
  * @group integration/debug
  */
 describe('TraceCall SOLO tests', () => {
-    const httpClient = FetchHttpClient.at(toURL(ThorNetworks.SOLONET), {});
+    const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
 
     test('err <- of() - revision not found', async () => {
         const status = 400;

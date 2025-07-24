@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { Address } from '@vcdm';
-import { RetrieveContractBytecode, ThorNetworks, toURL } from '@thor';
+import { RetrieveContractBytecode, ThorNetworks } from '@thor';
 import { FetchHttpClient } from '@http';
 
 /**
@@ -13,7 +13,7 @@ describe('RetrieveContractBytecode testnet tests', () => {
         const response = (
             await RetrieveContractBytecode.of(
                 Address.of('0x0000000000000000000000000000456E65726779')
-            ).askTo(FetchHttpClient.at(toURL(ThorNetworks.SOLONET), {}))
+            ).askTo(FetchHttpClient.at(new URL(ThorNetworks.SOLONET)))
         ).response;
 
         expect(response.code.toString()).toBe(

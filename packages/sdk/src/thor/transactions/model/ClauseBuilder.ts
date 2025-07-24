@@ -1,22 +1,18 @@
 import { ERC721_ABI, VIP180_ABI } from '@utils';
-import {
-    ABI,
-    ABIContract,
-    FixedPointNumber,
-    VET,
-    Hex,
-    HexInt,
-    type ABIFunction,
-    type Address,
-    type HexUInt,
-    type VTHO
-} from '@vcdm';
+import { Hex, type Address, type HexUInt } from '@vcdm';
 import {
     type ClauseOptions,
     type DeployParams,
     type TransactionClause
 } from '@thor';
 import { IllegalArgumentError } from '@errors';
+import {
+    encodeFunctionData,
+    encodeAbiParameters,
+    parseAbiParameters,
+    type AbiFunction,
+    type Abi
+} from 'viem';
 
 /**
  * Full Qualified Path
@@ -62,14 +58,9 @@ class ClauseBuilder implements TransactionClause {
     readonly to: string | null;
 
     /**
-     * Return the hexadecimal expression of the amount of VET or VTHO
-     * token in {@link Units.wei} to transfer to the destination.
-     *
-     * @see {Clause.callFunction}
-     * @see {Clause.transferToken}
-     * @see {Clause.transferVET}
+     * Return the amount to transfer to the destination.
      */
-    readonly value: string;
+    readonly value: bigint;
 
     /**
      * Return the hexadecimal expression of the encoding of the arguments
@@ -93,8 +84,7 @@ class ClauseBuilder implements TransactionClause {
      *
      * @param {string|null} to - The address to transfer token
      * or the smart contract to call, can be null.
-     * @param {string} value - The token amount being transferred in wei units
-     * as hexadecimal expression.
+     * @param {bigint} value - The token amount being transferred in wei units.
      * @param {string} data - Arguments of the smart contract function called
      * as encoded as a hexadecimal expression
      * @param {string} [comment] - An optional comment.
@@ -102,7 +92,7 @@ class ClauseBuilder implements TransactionClause {
      */
     protected constructor(
         to: string | null,
-        value: string,
+        value: bigint,
         data: string,
         comment?: string,
         abi?: string
@@ -115,20 +105,20 @@ class ClauseBuilder implements TransactionClause {
     }
 
     /**
-     * Return the amount of {@link VET} or {@link VTHO} token
-     * in {@link Units.wei} to transfer to the destination.
+     * Return the amount to transfer to the destination.
      *
-     * @return {FixedPointNumber} The amount as a fixed-point number.
+     * @return {bigint} The amount as a bigint.
      */
-    public amount(): FixedPointNumber {
-        return FixedPointNumber.of(HexInt.of(this.value).bi);
+    public amount(): bigint {
+        return this.value;
     }
 
     /**
      * Return a new clause to call a function of a smart contract.
      *
      * @param {Address} contractAddress - The address of the smart contract.
-     * @param {ABIFunction} functionAbi - The ABI definition of the function to be called.
+     * @param {Abi} contractAbi - The ABI of the contract.
+     * @param {string} functionName - The name of the function to call.
      * @param {unknown[]} args - The arguments for the function.
      * @param {VET} [amount=VET.of(FixedPointNumber.ZERO)] - The amount of VET to be sent with the transaction calling the function.
      * @param {ClauseOptions} [clauseOptions] - Optional clause settings.
@@ -137,26 +127,38 @@ class ClauseBuilder implements TransactionClause {
      */
     public static callFunction(
         contractAddress: Address,
-        functionAbi: ABIFunction,
+        contractAbi: Abi,
+        functionName: string,
         args: unknown[],
-        amount: VET = VET.of(FixedPointNumber.ZERO),
+        amount: bigint = BigInt(0),
         clauseOptions?: ClauseOptions
     ): ClauseBuilder {
-        if (amount.value.isFinite() && amount.value.isPositive()) {
+        if (amount >= 0n) {
+            const encodedData = encodeFunctionData({
+                abi: contractAbi,
+                functionName,
+                args
+            });
+
+            const functionAbi = contractAbi.find(
+                (item: AbiFunction | { type?: string; name?: string }) =>
+                    item.type === 'function' && item.name === functionName
+            ) as AbiFunction | undefined;
+
             return new ClauseBuilder(
                 contractAddress.toString().toLowerCase(),
-                Hex.PREFIX + amount.wei.toString(Hex.RADIX),
-                functionAbi.encodeData(args).toString(),
+                amount,
+                encodedData,
                 clauseOptions?.comment,
-                clauseOptions?.includeABI === true
-                    ? functionAbi.format(ClauseBuilder.FORMAT_TYPE)
+                clauseOptions?.includeABI === true && functionAbi !== undefined
+                    ? JSON.stringify(functionAbi)
                     : undefined
             );
         }
         throw new IllegalArgumentError(
             `${FQP}Clause.callFunction(contractAddress: Address, functionAbi: ABIFunction, args: unknown[], amount: VET): Clause`,
-            'not finite positive amount',
-            { amount: `${amount.value}` }
+            'not positive amount',
+            { amount: `${amount}` }
         );
     }
 
@@ -173,17 +175,25 @@ class ClauseBuilder implements TransactionClause {
         deployParams?: DeployParams,
         clauseOptions?: ClauseOptions
     ): ClauseBuilder {
-        const data =
-            deployParams != null && deployParams !== undefined
-                ? contractBytecode.digits +
-                  ABI.of(deployParams.types, deployParams.values)
-                      .toHex()
-                      .toString()
-                      .replace(Hex.PREFIX, '')
-                : contractBytecode.digits;
+        let data = contractBytecode.digits;
+
+        if (deployParams != null && deployParams !== undefined) {
+            // Handle both string and AbiParameter[] types
+            const abiParams =
+                typeof deployParams.types === 'string'
+                    ? parseAbiParameters(deployParams.types)
+                    : deployParams.types;
+
+            const encodedParams = encodeAbiParameters(
+                abiParams,
+                deployParams.values
+            );
+            data = contractBytecode.digits + encodedParams.slice(2); // Remove 0x prefix
+        }
+
         return new ClauseBuilder(
             null,
-            ClauseBuilder.NO_VALUE,
+            BigInt(0),
             Hex.PREFIX + data,
             clauseOptions?.comment
         );
@@ -208,9 +218,8 @@ class ClauseBuilder implements TransactionClause {
     ): ClauseBuilder {
         return ClauseBuilder.callFunction(
             contractAddress,
-            ABIContract.ofAbi(ERC721_ABI).getFunction(
-                ClauseBuilder.TRANSFER_NFT_FUNCTION
-            ),
+            ERC721_ABI,
+            ClauseBuilder.TRANSFER_NFT_FUNCTION,
             [
                 senderAddress.toString(),
                 recipientAddress.toString(),
@@ -228,7 +237,7 @@ class ClauseBuilder implements TransactionClause {
      *
      * @param {Address} tokenAddress - The address of the VIP180 token.
      * @param {Address} recipientAddress - The address of the recipient.
-     * @param {VTHO} amount - The amount of token to be transferred.
+     * @param {bigint} amount - The amount of token to be transferred in wei units.
      * @param {ClauseOptions} [clauseOptions] - Optional clause settings.
      * @return {ClauseBuilder} The clause to transfer VIP180 tokens as part of a transaction.
      * @throws {IllegalArgumentError} Throws an error if the amount is not a positive integer.
@@ -238,24 +247,23 @@ class ClauseBuilder implements TransactionClause {
     public static transferToken(
         tokenAddress: Address,
         recipientAddress: Address,
-        amount: VTHO,
+        amount: bigint,
         clauseOptions?: ClauseOptions
     ): ClauseBuilder {
-        if (amount.value.isFinite() && amount.value.isPositive()) {
+        if (amount >= 0n) {
             return this.callFunction(
                 tokenAddress,
-                ABIContract.ofAbi(VIP180_ABI).getFunction(
-                    ClauseBuilder.TRANSFER_TOKEN_FUNCTION
-                ),
-                [recipientAddress.toString(), amount.wei],
+                VIP180_ABI,
+                ClauseBuilder.TRANSFER_TOKEN_FUNCTION,
+                [recipientAddress.toString(), amount],
                 undefined,
                 clauseOptions
             );
         }
         throw new IllegalArgumentError(
-            `${FQP}Clause.transferToken(tokenAddress: Address, recipientAddress: Address, amount: VTHO): Clause`,
-            'not positive integer amount',
-            { amount: `${amount.value}` }
+            `${FQP}Clause.transferToken(tokenAddress: Address, recipientAddress: Address, amount: bigint): Clause`,
+            'negative amount',
+            { amount: `${amount}` }
         );
     }
 
@@ -272,21 +280,21 @@ class ClauseBuilder implements TransactionClause {
      */
     public static transferVET(
         recipientAddress: Address,
-        amount: VET,
+        amount: bigint,
         clauseOptions?: ClauseOptions
     ): ClauseBuilder {
-        if (amount.value.isFinite() && amount.value.isPositive()) {
+        if (amount >= 0n) {
             return new ClauseBuilder(
                 recipientAddress.toString().toLowerCase(),
-                Hex.PREFIX + amount.wei.toString(Hex.RADIX),
+                amount,
                 ClauseBuilder.NO_DATA,
                 clauseOptions?.comment
             );
         }
         throw new IllegalArgumentError(
-            `${FQP}Clause.transferVET(recipientAddress: Address, amount: VET): Clause`,
-            'not finite positive amount',
-            { amount: `${amount.value}` }
+            `${FQP}Clause.transferVET(recipientAddress: Address, amount: bigint): Clause`,
+            'negative amount',
+            { amount: `${amount}` }
         );
     }
 }

@@ -12,7 +12,7 @@ import { type TXID } from '@thor';
 import {
     mockWebSocketInstance,
     mockWebSocketConstructor
-} from '../../utils/MockWSClient';
+} from '../../MockWSClient';
 
 /**
  * VeChain new transaction subscription - unit

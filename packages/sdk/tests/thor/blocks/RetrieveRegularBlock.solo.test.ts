@@ -5,7 +5,7 @@ import {
     RegularBlockResponse,
     RetrieveRegularBlock,
     ThorError,
-    ThorNetworks, toURL
+    ThorNetworks
 } from '@thor';
 import { type RegularBlockResponseJSON } from '@thor/json';
 
@@ -19,7 +19,7 @@ class InvalidRevision extends Revision {
  * @group integration/blocks
  */
 describe('RetrieveRegularBlock SOLO tests', () => {
-    const httpClient = FetchHttpClient.at(toURL(ThorNetworks.SOLONET), {});
+    const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
 
     test('err: <- bad revision', async () => {
         const status = 400;

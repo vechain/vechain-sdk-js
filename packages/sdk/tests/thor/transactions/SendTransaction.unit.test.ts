@@ -1,15 +1,20 @@
-import { RetrieveExpandedBlock, SendTransaction, TXID } from '@thor';
+import {
+    RetrieveExpandedBlock,
+    SendTransaction,
+    TXID,
+    ClauseBuilder
+} from '@thor';
 import { type RegularBlockResponseJSON, type TXIDJSON } from '@thor/json';
-import { Address, HexUInt, Revision, VET } from '@vcdm';
-import { ClauseBuilder } from '@thor';
+import { Address, HexUInt, Revision } from '@vcdm';
 import { Transaction, type TransactionBody } from '@thor/model';
 import { SOLO_NETWORK } from '@utils';
-
 import { TEST_ACCOUNTS } from '../../fixture';
 import { expect } from '@jest/globals';
-import { mockHttpClient } from '../../utils/MockHttpClient';
+import { mockHttpClient } from '../../MockHttpClient';
 
 const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
+
+const OneVET = 10n ** 18n;
 
 /**
  * @group unit/transactions
@@ -52,7 +57,7 @@ describe('RetrieveTransactionReceipt UNIT tests', () => {
         expect(latestBlock).toBeDefined();
         const transferClause = ClauseBuilder.transferVET(
             Address.of(TRANSACTION_RECEIVER.address),
-            VET.of(1)
+            OneVET
         );
         const expectedTxBody: TransactionBody = {
             chainTag: SOLO_NETWORK.chainTag,

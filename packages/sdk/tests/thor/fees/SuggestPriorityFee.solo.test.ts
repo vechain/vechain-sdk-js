@@ -2,8 +2,7 @@ import { FetchHttpClient } from '@http';
 import {
     GetFeesPriorityResponse,
     SuggestPriorityFee,
-    ThorNetworks,
-    toURL
+    ThorNetworks
 } from '@thor';
 import { expect } from '@jest/globals';
 
@@ -11,7 +10,7 @@ import { expect } from '@jest/globals';
  * @group integration/fees
  */
 describe('SuggestPriorityFee SOLO tests', () => {
-    const httpClient = FetchHttpClient.at(toURL(ThorNetworks.SOLONET), {});
+    const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
 
     test('ok <- ask', async () => {
         const actual = (await SuggestPriorityFee.of().askTo(httpClient))

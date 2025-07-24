@@ -1,14 +1,14 @@
 import { describe, expect, test, beforeEach } from '@jest/globals';
 import { ForkDetector } from '@thor/fork/methods/forkDetector';
 import { FetchHttpClient } from '@http';
-import { ThorNetworks, toURL } from '@thor';
+import { ThorNetworks } from '@thor';
 import { IllegalArgumentError } from '@errors';
 
 /**
  * @group integration/fork
  */
 describe('ForkDetector SOLO tests', () => {
-    const httpClient = FetchHttpClient.at(toURL(ThorNetworks.SOLONET), {});
+    const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
     let forkDetector: ForkDetector;
 
     beforeEach(() => {
@@ -145,7 +145,9 @@ describe('ForkDetector SOLO tests', () => {
         test('should handle network timeouts gracefully', async () => {
             // This test ensures the detector doesn't hang indefinitely
             const timeoutPromise = new Promise((_, reject) => {
-                setTimeout(() => reject(new Error('Test timeout')), 10000); // 10 second timeout
+                setTimeout(() => {
+                    reject(new Error('Test timeout'));
+                }, 10000); // 10 second timeout
             });
 
             const detectorPromise = forkDetector.isGalacticaForked('best');

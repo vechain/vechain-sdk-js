@@ -9,8 +9,8 @@ import {
 import {
     mockHttpClient,
     mockHttpClientWithError
-} from '../../utils/MockHttpClient';
-import { type GetStorageResponseJSON } from '@thor/json';
+} from '../../MockHttpClient';
+import { GetStorageResponseJSON } from '@thor/json';
 /**
  * VeChain retrieve storage position value - unit
  *
