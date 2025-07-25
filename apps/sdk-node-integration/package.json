@@ -13,7 +13,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@vechain/sdk-network": "2.0.1"
+    "@vechain/sdk-network": "2.0.2"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",

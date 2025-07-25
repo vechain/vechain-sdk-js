@@ -16,6 +16,6 @@
     "wrangler": "^3.72.3"
   },
   "dependencies": {
-    "@vechain/sdk-core": "2.0.1"
+    "@vechain/sdk-core": "2.0.2"
   }
 }

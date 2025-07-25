@@ -4133,30 +4133,6 @@
   resolved "https://registry.yarnpkg.com/@vechain/sdk-errors/-/sdk-errors-2.0.1.tgz#2d03c4137a33efe3abb104dde64d868adf85b5ca"
   integrity sha512-LSsQcTKsV7W7hs7rGZ5nQlPED1pCv0iYzDuiQxvh4P8jJiCAzulj0nnq43Vd1vJmDQfVCAQAWniBBxJFiG1aww==
 
-"@vechain/sdk-ethers-adapter@2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-ethers-adapter/-/sdk-ethers-adapter-2.0.1.tgz#3d78efb799a3af6feed8acf308d5743dc9b9d50b"
-  integrity sha512-Kv/MUvBwTZI14FjQJhyTlCRwc/T6CgKESudJ0khHiIDm+yY/aMYUpV05PF4AuEbpdtzh2YWbAxicD0MqvWUR+g==
-  dependencies:
-    "@vechain/sdk-core" "2.0.1"
-    "@vechain/sdk-errors" "2.0.1"
-    "@vechain/sdk-network" "2.0.1"
-    ethers "^6.14.0"
-
-"@vechain/sdk-hardhat-plugin@2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-hardhat-plugin/-/sdk-hardhat-plugin-2.0.1.tgz#19f66910e21ffd0391b46e137b3813e213dec7f0"
-  integrity sha512-0o1u+IXGqIKe5qQpwolN2UOciPthiQucafMQ2he8F+t2f2BZXpeQxMKt1C05EqudkDgC+xjY6oUzrwjPVY8tBQ==
-  dependencies:
-    "@nomicfoundation/hardhat-ethers" "^3.0.8"
-    "@vechain/sdk-core" "2.0.1"
-    "@vechain/sdk-errors" "2.0.1"
-    "@vechain/sdk-ethers-adapter" "2.0.1"
-    "@vechain/sdk-logging" "2.0.1"
-    "@vechain/sdk-network" "2.0.1"
-    ethers "^6.14.0"
-    hardhat "^2.22.15"
-
 "@vechain/sdk-logging@2.0.1":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@vechain/sdk-logging/-/sdk-logging-2.0.1.tgz#41ab37c71b20d7b6650fab424d1cb33b4f4a8d4c"
