@@ -1,4 +1,4 @@
-import { Address, BlockId, ThorId, type TxId, UInt } from '@vcdm';
+import { Address, type Hex, HexUInt32, UInt } from '@vcdm';
 import { type SubscriptionBlockResponseJSON } from '@thor/subscriptions';
 import { IllegalArgumentError } from '@errors';
 
@@ -18,27 +18,27 @@ class SubscriptionBlockResponse {
     /**
      * The block number (height).
      */
-    readonly number: UInt;
+    readonly number: number;
 
     /**
      * The block identifier.
      */
-    readonly id: BlockId;
+    readonly id: Hex;
 
     /**
      * The RLP encoded block size in bytes.
      */
-    readonly size: UInt;
+    readonly size: number;
 
     /**
      * The parent block identifier.
      */
-    readonly parentID: BlockId;
+    readonly parentID: Hex;
 
     /**
      * The UNIX timestamp of the block.
      */
-    readonly timestamp: UInt;
+    readonly timestamp: number;
 
     /**
      * The maximum amount of gas that all transactions inside the block are allowed to consume.
@@ -58,27 +58,27 @@ class SubscriptionBlockResponse {
     /**
      * The accumulated witness number of the chain branch headed by the block.
      */
-    readonly totalScore: UInt;
+    readonly totalScore: number;
 
     /**
      * The root hash of transactions in the block.
      */
-    readonly txsRoot: ThorId;
+    readonly txsRoot: Hex;
 
     /**
      * The supported transaction features bitset.
      */
-    readonly txsFeatures: UInt;
+    readonly txsFeatures: number;
 
     /**
      * The root hash for the global state after applying changes in this block.
      */
-    readonly stateRoot: ThorId;
+    readonly stateRoot: Hex;
 
     /**
      * The hash of the transaction receipts trie.
      */
-    readonly receiptsRoot: ThorId;
+    readonly receiptsRoot: Hex;
 
     /**
      * Whether the block signer voted COM(Commit) in BFT.
@@ -98,7 +98,7 @@ class SubscriptionBlockResponse {
     /**
      * The list of transaction identifiers in the block.
      */
-    readonly transactions: TxId[];
+    readonly transactions: Hex[];
 
     /**
      * Constructs a new instance of the class by parsing the provided JSON object.
@@ -108,24 +108,24 @@ class SubscriptionBlockResponse {
      */
     constructor(json: SubscriptionBlockResponseJSON) {
         try {
-            this.number = UInt.of(json.number);
-            this.id = BlockId.of(json.id);
-            this.size = UInt.of(json.size);
-            this.parentID = BlockId.of(json.parentID);
-            this.timestamp = UInt.of(json.timestamp);
+            this.number = UInt.of(json.number).valueOf();
+            this.id = HexUInt32.of(json.id);
+            this.size = UInt.of(json.size).valueOf();
+            this.parentID = HexUInt32.of(json.parentID);
+            this.timestamp = UInt.of(json.timestamp).valueOf();
             this.gasLimit = BigInt(json.gasLimit);
             this.beneficiary = Address.of(json.beneficiary);
             this.gasUsed = BigInt(json.gasUsed);
-            this.totalScore = UInt.of(json.totalScore);
-            this.txsRoot = ThorId.of(json.txsRoot);
-            this.txsFeatures = UInt.of(json.txsFeatures);
-            this.stateRoot = ThorId.of(json.stateRoot);
-            this.receiptsRoot = ThorId.of(json.receiptsRoot);
+            this.totalScore = UInt.of(json.totalScore).valueOf();
+            this.txsRoot = HexUInt32.of(json.txsRoot);
+            this.txsFeatures = UInt.of(json.txsFeatures).valueOf();
+            this.stateRoot = HexUInt32.of(json.stateRoot);
+            this.receiptsRoot = HexUInt32.of(json.receiptsRoot);
             this.com = json.com;
             this.signer = Address.of(json.signer);
             this.obsolete = json.obsolete;
             this.transactions = json.transactions.map(
-                (txId: string): TxId => ThorId.of(txId)
+                (txId: string): Hex => HexUInt32.of(txId)
             );
         } catch (error) {
             throw new IllegalArgumentError(
@@ -144,25 +144,23 @@ class SubscriptionBlockResponse {
      */
     toJSON(): SubscriptionBlockResponseJSON {
         return {
-            number: this.number.valueOf(),
+            number: this.number,
             id: this.id.toString(),
-            size: this.size.valueOf(),
+            size: this.size,
             parentID: this.parentID.toString(),
-            timestamp: this.timestamp.valueOf(),
+            timestamp: this.timestamp,
             gasLimit: Number(this.gasLimit),
             beneficiary: this.beneficiary.toString(),
             gasUsed: Number(this.gasUsed),
-            totalScore: this.totalScore.valueOf(),
+            totalScore: this.totalScore,
             txsRoot: this.txsRoot.toString(),
-            txsFeatures: this.txsFeatures.valueOf(),
+            txsFeatures: this.txsFeatures,
             stateRoot: this.stateRoot.toString(),
             receiptsRoot: this.receiptsRoot.toString(),
             com: this.com,
             signer: this.signer.toString(),
             obsolete: this.obsolete,
-            transactions: this.transactions.map((txId: ThorId) =>
-                txId.toString()
-            )
+            transactions: this.transactions.map((txId: Hex) => txId.toString())
         } satisfies SubscriptionBlockResponseJSON;
     }
 }

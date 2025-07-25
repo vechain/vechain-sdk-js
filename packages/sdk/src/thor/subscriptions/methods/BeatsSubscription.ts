@@ -1,6 +1,6 @@
 import { type WebSocketClient, type WebSocketListener } from '@ws';
 import type { HttpPath } from '@http';
-import type { BlockId } from '@vcdm';
+import type { Hex } from '@vcdm';
 import {
     SubscriptionBeat2Response,
     type SubscriptionBeat2ResponseJSON
@@ -191,14 +191,14 @@ class BeatsSubscriptionQuery {
     /**
      * Represents the position for the beats subscription.
      */
-    readonly pos?: BlockId;
+    readonly pos?: Hex;
 
     /**
      * Constructs an instance of the class with the specified position.
      *
-     * @param {BlockId} pos - The position to initialize the instance with.
+     * @param {Hex} pos - The position to initialize the instance with.
      */
-    constructor(pos?: BlockId) {
+    constructor(pos?: Hex) {
         this.pos = pos;
     }
 

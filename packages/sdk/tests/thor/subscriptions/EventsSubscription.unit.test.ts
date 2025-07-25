@@ -4,7 +4,7 @@ import {
     EventsSubscription,
     SubscriptionEventResponse
 } from '@thor/subscriptions';
-import { Address, ThorId } from '@vcdm';
+import { Address, HexUInt32 } from '@vcdm';
 import { type SubscriptionEventResponseJSON } from '@thor/subscriptions';
 import {
     mockWebSocketInstance,
@@ -211,19 +211,19 @@ describe('EventsSubscription unit tests', () => {
         const contractAddress = Address.of(
             '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'
         );
-        const t0 = ThorId.of(
+        const t0 = HexUInt32.of(
             '0x0000000000000000000000000000000000000000000000000000000000000001'
         );
-        const t1 = ThorId.of(
+        const t1 = HexUInt32.of(
             '0x0000000000000000000000000000000000000000000000000000000000000002'
         );
-        const t2 = ThorId.of(
+        const t2 = HexUInt32.of(
             '0x0000000000000000000000000000000000000000000000000000000000000003'
         );
-        const t3 = ThorId.of(
+        const t3 = HexUInt32.of(
             '0x0000000000000000000000000000000000000000000000000000000000000004'
         );
-        const pos = ThorId.of(
+        const pos = HexUInt32.of(
             '0x00003e9000000000000000000000000000000000000000000000000000000000'
         );
 
@@ -248,7 +248,7 @@ describe('EventsSubscription unit tests', () => {
         // Reset mock
         jest.clearAllMocks();
 
-        // Create subscription with filters - one at a time to ensure all branches are covered
+        // Create a subscription with filters - one at a time to ensure all branches are covered
         const t0Subscription = subscription.withFilters(t0);
         t0Subscription.open();
         expect(mockWebSocketConstructor).toHaveBeenCalledWith(
