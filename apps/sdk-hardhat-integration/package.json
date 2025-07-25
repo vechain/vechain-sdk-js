@@ -19,9 +19,9 @@
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.2",
-    "@vechain/sdk-core": "2.0.1",
-    "@vechain/sdk-hardhat-plugin": "2.0.1",
-    "@vechain/sdk-logging": "2.0.1"
+    "@vechain/sdk-core": "2.0.2",
+    "@vechain/sdk-hardhat-plugin": "2.0.2",
+    "@vechain/sdk-logging": "2.0.2"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
