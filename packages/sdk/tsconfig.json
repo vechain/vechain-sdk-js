@@ -8,6 +8,8 @@
       "@clients/*": ["./src/clients/*"],
       "@http": ["./src/http"],
       "@http/*": ["./src/http/*"],
+      "@json": ["./src/json"],
+      "@json/*": ["./src/json/*"],
       "@sdk": ["./src/*"],
       "@thor": ["./src/thor"],
       "@thor/*": ["./src/thor/*"],

@@ -1,7 +1,7 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
 import { type Account } from 'viem';
 import {
-    type ThorNetworks,
+    SendTransaction,
     Transaction,
     type TransactionBody,
     type TransactionClause
@@ -16,13 +16,9 @@ import {
     RLPProfiler
 } from '@vcdm';
 import { UnsupportedOperationError } from '@errors';
+import { type HttpClient } from '@http';
 
 const FQP = 'packages/sdk/src/clients/WalletClient.ts!';
-
-/**
- * Used internally to tag a transaction, not transferring token amount.
- */
-const NO_VALUE = Hex.PREFIX + '0';
 
 /**
  * Used internally to tag a transaction without data.
@@ -30,13 +26,16 @@ const NO_VALUE = Hex.PREFIX + '0';
 const NO_DATA = Hex.PREFIX;
 
 function createWalletClient(parameters: WalletClientConfig): WalletClient {
-    return new WalletClient(parameters.chain, parameters.account ?? null);
+    return new WalletClient(parameters.httpClient, parameters.account ?? null);
 }
 
 class WalletClient {
     private readonly account: Account | null;
 
-    constructor(chain: ThorNetworks, account: Account | null) {
+    private readonly httpClient: HttpClient;
+
+    constructor(httpClient: HttpClient, account: Account | null) {
+        this.httpClient = httpClient;
         this.account = account;
     }
 
@@ -57,8 +56,8 @@ class WalletClient {
                 to: request.to !== undefined ? request.to.toString() : null,
                 value:
                     request.value instanceof Hex
-                        ? HexUInt.of(HexInt.of(request.value)).toString()
-                        : NO_VALUE,
+                        ? HexUInt.of(HexInt.of(request.value)).bi
+                        : BigInt(request.value),
                 data:
                     request.data instanceof Hex
                         ? HexUInt.of(request.data).toString()
@@ -126,6 +125,19 @@ class WalletClient {
         );
     }
 
+    public async sendRawTransaction(raw: Hex): Promise<Hex> {
+        return (await SendTransaction.of(raw.bytes).askTo(this.httpClient))
+            .response.id;
+    }
+
+    public async sendTransaction(
+        request: PrepareTransactionRequestRequest
+    ): Promise<Hex> {
+        const tx = this.prepareTransactionRequest(request);
+        const raw = await this.signTransaction(tx);
+        return await this.sendRawTransaction(raw);
+    }
+
     public async signTransaction(tx: Transaction): Promise<Hex> {
         if (this.account !== null) {
             const encodedTx = RLPProfiler.ofObject(
@@ -139,7 +151,7 @@ class WalletClient {
                      */
                     clauses: tx.body.clauses as Array<{
                         to: string | null;
-                        value: string | number;
+                        value: bigint | number;
                         data: string;
                     }>,
                     // New reserved field.
@@ -176,7 +188,7 @@ interface PrepareTransactionRequestRequest {
 }
 
 interface WalletClientConfig {
-    chain: ThorNetworks;
+    httpClient: HttpClient;
     account?: Account;
 }
 

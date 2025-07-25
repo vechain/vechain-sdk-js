@@ -1,11 +1,6 @@
 import type { RegularBlockResponseJSON } from '@thor/blocks/json';
-import {
-    ClauseBuilder,
-    ThorNetworks,
-    Transaction,
-    type TransactionBody
-} from '@thor';
-import { Address, Hex, HexUInt, VET } from '@vcdm';
+import { ClauseBuilder, Transaction, type TransactionBody } from '@thor';
+import { Address, Hex, HexUInt } from '@vcdm';
 import { SOLO_NETWORK } from '@utils';
 import { TEST_ACCOUNTS } from '../fixture';
 import { privateKeyToAccount } from 'viem/accounts';
@@ -14,6 +9,7 @@ import {
     createWalletClient,
     type PrepareTransactionRequestRequest
 } from '@clients';
+import { mockHttpClient } from '../MockHttpClient';
 
 const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
 
@@ -50,7 +46,7 @@ describe('WalletClient UNIT tests', () => {
             } satisfies RegularBlockResponseJSON;
             const transferClause = ClauseBuilder.transferVET(
                 Address.of(TRANSACTION_RECEIVER.address),
-                VET.of(1)
+                1n
             );
             const txBody: TransactionBody = {
                 chainTag: SOLO_NETWORK.chainTag,
@@ -68,7 +64,7 @@ describe('WalletClient UNIT tests', () => {
                 `0x${TRANSACTION_SENDER.privateKey}`
             );
             const walletClient = createWalletClient({
-                chain: ThorNetworks.SOLONET,
+                httpClient: mockHttpClient({}, 'post'),
                 account
             });
             const request: PrepareTransactionRequestRequest = {
@@ -115,7 +111,7 @@ describe('WalletClient UNIT tests', () => {
             } satisfies RegularBlockResponseJSON;
             const transferClause = ClauseBuilder.transferVET(
                 Address.of(TRANSACTION_RECEIVER.address),
-                VET.of(1)
+                1n
             );
             const txBody: TransactionBody = {
                 chainTag: SOLO_NETWORK.chainTag,
@@ -138,7 +134,7 @@ describe('WalletClient UNIT tests', () => {
                 `0x${TRANSACTION_SENDER.privateKey}`
             );
             const walletClient = createWalletClient({
-                chain: ThorNetworks.SOLONET,
+                httpClient: mockHttpClient({}, 'post'),
                 account
             });
             const tx = Transaction.of(txBody);
