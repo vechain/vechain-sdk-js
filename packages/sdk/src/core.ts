@@ -9,3 +9,4 @@ export * from './utils';
 export * from './vcdm';
 export * from './thor';
 export * from './http';
+export * from './clients';
