@@ -122,7 +122,7 @@ class RetrieveTransactionByID
     /**
      * Sets the head block identifier for the transaction retrieval.
      *
-     * @param {BlockId} [head] - The block identifier representing the head block to retrieve the transaction from. Optional.
+     * @param {Hex} [head] - The block identifier representing the head block to retrieve the transaction from. Optional.
      * @return {RetrieveTransactionByID} A new instance of RetrieveTransactionByID with the specified head block identifier.
      * Best-block is assumed if omitted.
      * @throws {ThorError} If an invalid `head` value is provided.
@@ -138,7 +138,7 @@ class RetrieveTransactionByID
             );
         } catch (error) {
             throw new ThorError(
-                `${FQP}withHead(head?: BlockId): RetrieveTransactionByID`,
+                `${FQP}withHead(head?: Hex): RetrieveTransactionByID`,
                 'Invalid head value.',
                 {
                     head

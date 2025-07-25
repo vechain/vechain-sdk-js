@@ -4,19 +4,19 @@ import {
     TransfersSubscription,
     SubscriptionTransferResponse
 } from '@thor/subscriptions';
-import { Address, BlockId } from '@vcdm';
-import { LogMetaJSON } from '@json';
+import { Address, type Hex, HexUInt32 } from '@vcdm';
+import { type LogMetaJSON } from '@json';
 import { type SubscriptionTransferResponseJSON } from '@thor/subscriptions';
 import {
     mockWebSocketInstance,
     mockWebSocketConstructor
-} from '../../utils/MockWSClient';
+} from '../../MockWSClient';
 
 // Factory functions for creating TransfersSubscription instances with different parameters
 // This avoids using reflection and provides a cleaner test approach
 const createWithPosition = (
     baseURL: string,
-    pos: BlockId
+    pos: Hex
 ): TransfersSubscription => {
     // @ts-expect-error - We're accessing a protected constructor for testing
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
@@ -88,7 +88,7 @@ const createWithTxOrigin = (
 
 const createWithMultipleParams = (
     baseURL: string,
-    pos: BlockId,
+    pos: Hex,
     recipient: Address,
     sender: Address,
     txOrigin: Address
@@ -315,7 +315,7 @@ describe('TransfersSubscription unit tests', () => {
         jest.clearAllMocks();
 
         // Test with position
-        const pos = BlockId.of(
+        const pos = HexUInt32.of(
             '0x00003e9000000000000000000000000000000000000000000000000000000000'
         );
         const posSubscription = createWithPosition('ws://localhost:8669', pos);

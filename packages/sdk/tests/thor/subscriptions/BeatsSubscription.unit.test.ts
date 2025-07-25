@@ -8,7 +8,7 @@ import { type SubscriptionBeat2ResponseJSON } from '@thor/subscriptions';
 import {
     mockWebSocketInstance,
     mockWebSocketConstructor
-} from '../../utils/MockWSClient';
+} from '../../MockWSClient';
 
 const mockBeatData = {
     gasLimit: 21000,

@@ -8,7 +8,7 @@ import { IllegalArgumentError } from '@errors';
  * @group integration/fork
  */
 describe('ForkDetector SOLO tests', () => {
-    const httpClient = FetchHttpClient.at(ThorNetworks.SOLONET);
+    const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
     let forkDetector: ForkDetector;
 
     beforeEach(() => {
@@ -145,7 +145,9 @@ describe('ForkDetector SOLO tests', () => {
         test('should handle network timeouts gracefully', async () => {
             // This test ensures the detector doesn't hang indefinitely
             const timeoutPromise = new Promise((_, reject) => {
-                setTimeout(() => reject(new Error('Test timeout')), 10000); // 10 second timeout
+                setTimeout(() => {
+                    reject(new Error('Test timeout'));
+                }, 10000); // 10 second timeout
             });
 
             const detectorPromise = forkDetector.isGalacticaForked('best');

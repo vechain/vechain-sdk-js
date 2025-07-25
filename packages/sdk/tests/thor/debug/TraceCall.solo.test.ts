@@ -12,7 +12,7 @@ import { Hex, Revision } from '@vcdm';
  * @group integration/debug
  */
 describe('TraceCall SOLO tests', () => {
-    const httpClient = FetchHttpClient.at(ThorNetworks.SOLONET);
+    const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
 
     test('err <- of() - revision not found', async () => {
         const status = 400;

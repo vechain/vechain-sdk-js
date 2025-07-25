@@ -16,7 +16,7 @@ import { beforeAll, expect } from '@jest/globals';
  * @group integration/transactions
  */
 describe('RetrieveRawTransactionByID SOLO tests', () => {
-    const httpClient = FetchHttpClient.at(ThorNetworks.SOLONET);
+    const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
 
     let block: RegularBlockResponse | null;
 

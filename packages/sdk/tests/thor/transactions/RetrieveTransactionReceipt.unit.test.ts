@@ -9,7 +9,7 @@ import { type GetTxReceiptResponseJSON } from '@thor/json';
 import {
     mockHttpClient,
     mockHttpClientWithError
-} from '../../utils/MockHttpClient';
+} from '../../MockHttpClient';
 
 /**
  * @group unit/transactions

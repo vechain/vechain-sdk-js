@@ -14,7 +14,7 @@ interface TransactionClause {
     /**
      * Amount of token to transfer to the destination
      */
-    value: string | number;
+    value: bigint;
 
     /**
      * Input data for contract method invocation or deployment

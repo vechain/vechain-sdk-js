@@ -4,11 +4,11 @@ import {
     BlocksSubscription,
     SubscriptionBlockResponse
 } from '@thor/subscriptions';
-import { BlockId } from '@vcdm';
+import { HexUInt32 } from '@vcdm';
 import {
     mockWebSocketInstance,
     mockWebSocketConstructor
-} from '../../utils/MockWSClient';
+} from '../../MockWSClient';
 
 const mockBlockData = {
     number: 12345,
@@ -268,7 +268,7 @@ describe('BlocksSubscription unit tests', () => {
     });
 
     test('should create subscription with position', () => {
-        const positionId = BlockId.of(
+        const positionId = HexUInt32.of(
             '0x00003e9000000000000000000000000000000000000000000000000000000000'
         );
 

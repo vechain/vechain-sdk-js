@@ -11,7 +11,7 @@ import {
 import { expect } from '@jest/globals';
 
 describe('TraceTransactionClause SOLO tests', () => {
-    const httpClient = FetchHttpClient.at(ThorNetworks.SOLONET);
+    const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
 
     test('err <- not implemented in solo', async () => {
         const status = 500;
