@@ -138,7 +138,7 @@ const negativeCasesFixtures = [
             },
             Hex.of(0).toString()
         ],
-        expected: JSONRPCInternalError
+        expected: JSONRPCTransactionRevertError
     },
     {
         description:
@@ -152,7 +152,7 @@ const negativeCasesFixtures = [
             },
             'earliest'
         ],
-        expected: JSONRPCInternalError
+        expected: JSONRPCTransactionRevertError
     }
 ];
 
