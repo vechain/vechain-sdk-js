@@ -33,9 +33,9 @@
     "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit"
   },
   "dependencies": {
-    "@vechain/sdk-core": "2.0.1",
-    "@vechain/sdk-errors": "2.0.1",
-    "@vechain/sdk-network": "2.0.1",
+    "@vechain/sdk-core": "2.0.2",
+    "@vechain/sdk-errors": "2.0.2",
+    "@vechain/sdk-network": "2.0.2",
     "ethers": "^6.14.0"
   }
 }
