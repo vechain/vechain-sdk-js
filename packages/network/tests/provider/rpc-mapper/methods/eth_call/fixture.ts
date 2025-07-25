@@ -1,7 +1,8 @@
 import { Hex } from '@vechain/sdk-core';
 import {
     JSONRPCInternalError,
-    JSONRPCInvalidParams
+    JSONRPCInvalidParams,
+    JSONRPCTransactionRevertError
 } from '@vechain/sdk-errors';
 
 /**
@@ -123,7 +124,7 @@ const negativeCasesFixtures = [
             },
             '0x0'
         ],
-        expected: JSONRPCInternalError
+        expected: JSONRPCTransactionRevertError
     },
     {
         description:
@@ -137,7 +138,7 @@ const negativeCasesFixtures = [
             },
             Hex.of(0).toString()
         ],
-        expected: JSONRPCInternalError
+        expected: JSONRPCTransactionRevertError
     },
     {
         description:
@@ -151,7 +152,7 @@ const negativeCasesFixtures = [
             },
             'earliest'
         ],
-        expected: JSONRPCInternalError
+        expected: JSONRPCTransactionRevertError
     }
 ];
 

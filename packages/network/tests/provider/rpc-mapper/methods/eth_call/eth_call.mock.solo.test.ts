@@ -1,5 +1,8 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
-import { JSONRPCInternalError } from '@vechain/sdk-errors';
+import {
+    JSONRPCInternalError,
+    JSONRPCTransactionRevertError
+} from '@vechain/sdk-errors';
 import {
     RPC_METHODS,
     RPCMethodsMap,
@@ -31,6 +34,34 @@ describe('RPC Mapper - eth_call method tests', () => {
      * eth_call RPC call tests - Negative cases
      */
     describe('eth_call - Negative cases', () => {
+        /**
+         * Test case that mocks an revert error thrown by the simulateTransaction method
+         */
+        test('Should throw `JSONRPCTransactionRevertError` if an error occurs while simulating the transaction', async () => {
+            // Mock the simulateTransaction method to return a revert error
+            jest.spyOn(
+                thorClient.transactions,
+                'simulateTransaction'
+            ).mockRejectedValue(
+                new JSONRPCTransactionRevertError('message', 'data')
+            );
+
+            await expect(
+                retryOperation(async () => {
+                    return await RPCMethodsMap(thorClient)[
+                        RPC_METHODS.eth_call
+                    ]([
+                        {
+                            from: '0x7487d912d03ab9de786278f679592b3730bdd540',
+                            to: '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
+                            value: '1000000000000000000',
+                            data: '0x'
+                        },
+                        'latest'
+                    ]);
+                })
+            ).rejects.toThrowError(JSONRPCTransactionRevertError);
+        });
         /**
          * Test case that mocks an error thrown by the simulateTransaction method
          */
