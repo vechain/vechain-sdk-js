@@ -1,18 +1,9 @@
-import {
-    ClauseBuilder,
-    RetrieveExpandedBlock,
-    SendTransaction,
-    ThorNetworks,
-    type TransactionBody
-} from '@thor';
+import { ClauseBuilder, RetrieveExpandedBlock, SendTransaction, ThorNetworks, type TransactionBody } from '@thor';
 import { Address, Hex, Revision } from '@vcdm';
 import { FetchHttpClient } from '@http';
 import { SOLO_NETWORK } from '@utils';
 import { privateKeyToAccount } from 'viem/accounts';
-import {
-    createWalletClient,
-    type PrepareTransactionRequestRequest
-} from '@clients';
+import { createWalletClient, type PrepareTransactionRequestRequest } from '@clients';
 
 /**
  * @group integration/clients
@@ -28,7 +19,7 @@ describe('WalletClient SOLO tests', () => {
         '99f0500549792796c14fed62011a51081dc5b5e68fe8bd8a13b86be829c4fd36'; // THIS SOLO DEFAULT ACCOUNT[1]
 
     describe('sendRawTransaction', () => {
-        test('ok <- sendRawTransaction', async () => {
+        test('ok <- transfer VET', async () => {
             const latestBlock = (
                 await RetrieveExpandedBlock.of(Revision.BEST).askTo(httpClient)
             ).response;
@@ -66,13 +57,45 @@ describe('WalletClient SOLO tests', () => {
 
             const account = privateKeyToAccount(`0x${fromKey}`);
             const walletClient = createWalletClient({
-                httpClient: httpClient,
+                httpClient,
                 account
             });
             const tx = walletClient.prepareTransactionRequest(request);
             const raw = await walletClient.signTransaction(tx);
             const txid = (await SendTransaction.of(raw.bytes).askTo(httpClient))
                 .response.id;
+            console.log(txid.toString());
+        });
+    });
+
+    describe('sendTransaction', () => {
+        test('ok <- transfer VET', async () => {
+            const latestBlock = (
+                await RetrieveExpandedBlock.of(Revision.BEST).askTo(httpClient)
+            ).response;
+
+            if (latestBlock === undefined || latestBlock === null)
+                throw new Error(
+                    'Failed to retrieve latest block from Thor network.'
+                );
+
+            const request: PrepareTransactionRequestRequest = {
+                to: Address.of(toAddress),
+                value: Hex.of(10n ** 18n),
+                blockRef: Hex.of(latestBlock.id.toString().slice(0, 18)),
+                chainTag: SOLO_NETWORK.chainTag,
+                expiration: 32,
+                gas: 100000,
+                nonce: 8,
+                gasPriceCoef: 0
+            } satisfies PrepareTransactionRequestRequest;
+
+            const account = privateKeyToAccount(`0x${fromKey}`);
+            const walletClient = createWalletClient({
+                httpClient,
+                account
+            });
+            const txid = await walletClient.sendTransaction(request);
             console.log(txid.toString());
         });
     });
