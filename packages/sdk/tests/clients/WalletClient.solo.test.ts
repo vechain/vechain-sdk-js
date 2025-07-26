@@ -13,7 +13,6 @@ import {
     createWalletClient,
     type PrepareTransactionRequestRequest
 } from '@clients';
-import { mockHttpClient } from '../MockHttpClient';
 
 /**
  * @group integration/clients
@@ -67,14 +66,14 @@ describe('WalletClient SOLO tests', () => {
 
             const account = privateKeyToAccount(`0x${fromKey}`);
             const walletClient = createWalletClient({
-                httpClient: mockHttpClient({}, 'post'),
+                httpClient: httpClient,
                 account
             });
             const tx = walletClient.prepareTransactionRequest(request);
-            const raw = tx.sign(Hex.of(fromKey).bytes).encoded;
-            const txid = (await SendTransaction.of(raw).askTo(httpClient))
+            const raw = await walletClient.signTransaction(tx);
+            const txid = (await SendTransaction.of(raw.bytes).askTo(httpClient))
                 .response.id;
-            console.log(txid);
+            console.log(txid.toString());
         });
     });
 });
