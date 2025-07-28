@@ -1,10 +1,3 @@
-/**
- * Contract.ts - A viem-style contract interface for VeChain SDK
- *
- * This module provides a viem-compatible getContract function that creates a
- * typed interface for interacting with smart contracts on VeChain.
- */
-
 import {
     type Abi,
     encodeFunctionData,
@@ -110,32 +103,6 @@ export interface Contract<TAbi extends Abi> {
 }
 
 /**
- * Safely converts a value to a Hex type for viem compatibility
- * This is used to bridge the gap between VeChain SDK's hex strings and viem's branded Hex type
- */
-function toHex(value: string | number | bigint | Hex | undefined): Hex {
-    if (value === undefined) return Hex.of(0);
-
-    // If it's already a string
-    if (typeof value === 'string') {
-        // Ensure it starts with 0x
-        if (!value.startsWith('0x')) {
-            return Hex.of(value);
-        }
-        // Already hex string, use type assertion
-        return Hex.of(value);
-    }
-
-    // Handle number or bigint
-    if (typeof value === 'number' || typeof value === 'bigint') {
-        return Hex.of(value.toString(16));
-    }
-
-    // Already Hex
-    return value;
-}
-
-/**
  * Creates a contract instance for the given ABI and address using the provided public client
  *
  * @param config Contract configuration including address, ABI and public client
@@ -161,7 +128,7 @@ function toHex(value: string | number | bigint | Hex | undefined): Hex {
  * });
  * ```
  */
-export function getContract<const TAbi extends Abi>({
+function getContract<const TAbi extends Abi>({
     address,
     abi,
     publicClient,
@@ -251,9 +218,9 @@ export function getContract<const TAbi extends Abi>({
                     const request: ExecuteCodesRequestJSON = {
                         clauses: [
                             {
-                                to: address as unknown as string,
+                                to: address.toString(),
                                 data: data as unknown as string,
-                                value: '0x0'
+                                value: Hex.of(0).toString()
                             }
                         ]
                     };
@@ -303,10 +270,10 @@ export function getContract<const TAbi extends Abi>({
                     const txRequest: ExecuteCodesRequestJSON = {
                         clauses: [
                             {
-                                to: address as unknown as string,
+                                to: address.toString(),
                                 data: data as unknown as string,
-                                // Convert bigint to hex string
-                                value: `0x${value.toString(16)}`
+                                // Convert bigint to hex string using Hex.of
+                                value: Hex.of(value).toString()
                             }
                         ]
                     };
@@ -316,7 +283,7 @@ export function getContract<const TAbi extends Abi>({
                         txRequest.gas = Number(gas);
                     }
                     if (gasPrice !== undefined) {
-                        txRequest.gasPrice = `0x${gasPrice.toString(16)}`;
+                        txRequest.gasPrice = Hex.of(gasPrice).toString();
                     }
 
                     return txRequest;
@@ -340,9 +307,9 @@ export function getContract<const TAbi extends Abi>({
                     const request: ExecuteCodesRequestJSON = {
                         clauses: [
                             {
-                                to: address as unknown as string,
+                                to: address.toString(),
                                 data: data as unknown as string,
-                                value: `0x${value.toString(16)}`
+                                value: Hex.of(value).toString()
                             }
                         ]
                     };
@@ -367,9 +334,9 @@ export function getContract<const TAbi extends Abi>({
                     const request: ExecuteCodesRequestJSON = {
                         clauses: [
                             {
-                                to: address as unknown as string,
+                                to: address.toString(),
                                 data: data as unknown as string,
-                                value: `0x${value.toString(16)}`
+                                value: Hex.of(value).toString()
                             }
                         ]
                     };
@@ -409,7 +376,7 @@ export function getContract<const TAbi extends Abi>({
                         for (let i = 0; i < indexedInputs.length; i++) {
                             if (i < args.length && args[i] !== undefined) {
                                 indexedArgs.push(
-                                    toHex(args[i] as HexConvertible)
+                                    Hex.of(args[i] as HexConvertible)
                                 );
                             } else {
                                 // Use 0x0 for missing arguments
@@ -422,12 +389,12 @@ export function getContract<const TAbi extends Abi>({
                     return publicClient.watchEvent({
                         address,
                         // Convert event signature to Hex
-                        event: toHex(eventSignature),
+                        event: Hex.of(eventSignature),
                         args: indexedArgs,
                         // Convert fromBlock to Hex if provided
                         fromBlock:
                             fromBlock !== undefined
-                                ? toHex(fromBlock as HexConvertible)
+                                ? Hex.of(fromBlock as HexConvertible)
                                 : undefined,
                         onLogs,
                         onError
@@ -439,7 +406,7 @@ export function getContract<const TAbi extends Abi>({
                     const { args, fromBlock, toBlock } = options;
 
                     // Create topics array starting with event signature
-                    const topics: Array<Hex | null> = [toHex(eventSignature)];
+                    const topics: Array<Hex | null> = [Hex.of(eventSignature)];
 
                     // Add indexed arguments if provided
                     if (args != null && args.length > 0) {
@@ -453,7 +420,7 @@ export function getContract<const TAbi extends Abi>({
                             i++
                         ) {
                             if (args[i] !== undefined) {
-                                topics.push(toHex(args[i] as HexConvertible));
+                                topics.push(Hex.of(args[i] as HexConvertible));
                             } else {
                                 topics.push(null);
                             }
@@ -467,11 +434,11 @@ export function getContract<const TAbi extends Abi>({
                         // Convert block numbers to Hex if provided
                         fromBlock:
                             fromBlock !== undefined
-                                ? toHex(fromBlock as HexConvertible)
+                                ? Hex.of(fromBlock as HexConvertible)
                                 : undefined,
                         toBlock:
                             toBlock !== undefined
-                                ? toHex(toBlock as HexConvertible)
+                                ? Hex.of(toBlock as HexConvertible)
                                 : undefined
                     });
                 },
@@ -483,7 +450,7 @@ export function getContract<const TAbi extends Abi>({
                     // Create event filter using PublicClient
                     return publicClient.createEventFilter({
                         address,
-                        event: toHex(eventSignature),
+                        event: Hex.of(eventSignature),
                         args: args as Hex[] | undefined,
                         fromBlock: fromBlock as HexConvertible | undefined,
                         toBlock: toBlock as HexConvertible | undefined
@@ -495,3 +462,5 @@ export function getContract<const TAbi extends Abi>({
 
     return contract;
 }
+
+export { getContract };
