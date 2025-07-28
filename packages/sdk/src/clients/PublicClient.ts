@@ -138,6 +138,8 @@ class PublicClient {
                 Revision.of(revision)
             ).askTo(FetchHttpClient.at(new URL(this.thorNetworks)));
             return data.response;
+
+            // TO DO: throw the viem error here, check for null and inform
         }
     }
 
