@@ -11,7 +11,7 @@ import {
     TXID,
     ClauseBuilder
 } from '@thor';
-import { Address, HexUInt, Revision } from '@vcdm';
+import { Address, BlockRef, HexUInt, Revision } from '@vcdm';
 import { Transaction, type TransactionBody } from '@thor/model';
 import { SOLO_NETWORK } from '@utils';
 import { expect, test } from '@jest/globals';
@@ -43,7 +43,7 @@ describe('RetrieveTransactionReceipt SOLO tests', () => {
             chainTag: SOLO_NETWORK.chainTag,
             blockRef:
                 latestBlock !== null
-                    ? latestBlock.id.toString().slice(0, 18)
+                    ? BlockRef.of(latestBlock.id).toString()
                     : '0x0',
             expiration: 32,
             clauses: [transferClause],
