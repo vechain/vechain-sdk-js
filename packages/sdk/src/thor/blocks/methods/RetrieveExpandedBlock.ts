@@ -7,6 +7,7 @@ import {
 import { type ExpandedBlockResponseJSON } from '@thor/json';
 import { type HttpClient, type HttpPath } from '@http';
 import { type Revision } from '@vcdm';
+import { BlockNotFoundError } from 'viem';
 
 /**
  * Full-Qualified Path
@@ -75,6 +76,13 @@ class RetrieveExpandedBlock
                 );
             }
         } else {
+            // Check if it's a 404 (block not found)
+            if (response.status === 404) {
+                const revision = this.path.path.split('/').pop();
+                const blockNumber = revision && /^\d+$/.test(revision) ? BigInt(revision) : undefined;
+                throw new BlockNotFoundError({ blockNumber });
+            }
+            
             throw new ThorError(
                 fqp,
                 await response.text(),

@@ -10,6 +10,7 @@ import {
 } from '@thor';
 import { type GetRawTxResponseJSON } from '@/json';
 import { IllegalArgumentError } from '@errors';
+import { TransactionNotFoundError } from 'viem';
 
 /**
  * Full-Qualified Path
@@ -66,7 +67,8 @@ class RetrieveRawTransactionByID
             try {
                 return {
                     request: this,
-                    response: json === null ? null : new GetRawTxResponse(json)
+                    response:
+                        json === null ? null : new GetRawTxResponse(json)
                 };
             } catch (error) {
                 throw new ThorError(
@@ -81,6 +83,12 @@ class RetrieveRawTransactionByID
                 );
             }
         } else {
+            // Check if it's a 404 (raw transaction not found) - throw viem-compatible error
+            if (response.status === 404) {
+                const txHash = this.path.path.split('/').pop() as `0x${string}`;
+                throw new TransactionNotFoundError({ hash: txHash });
+            }
+            
             throw new ThorError(
                 fqp,
                 await response.text(),

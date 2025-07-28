@@ -6,8 +6,9 @@ import {
     type ThorRequest,
     type ThorResponse
 } from '@thor';
-import { type GetTxReceiptResponseJSON } from '@/json';
+import { type GetTxReceiptResponseJSON } from '@thor/json';
 import { IllegalArgumentError } from '@errors';
+import { TransactionReceiptNotFoundError } from 'viem';
 
 /**
  * Full-Qualified Path
@@ -82,6 +83,12 @@ class RetrieveTransactionReceipt
                 );
             }
         } else {
+            // Check if it's a 404 (transaction receipt not found) - throw viem-compatible error
+            if (response.status === 404) {
+                const txHash = this.path.path.split('/').slice(-2, -1)[0] as `0x${string}`;
+                throw new TransactionReceiptNotFoundError({ hash: txHash });
+            }
+            
             throw new ThorError(
                 fqp,
                 await response.text(),
