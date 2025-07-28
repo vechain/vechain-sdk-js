@@ -1,5 +1,5 @@
 import { ClauseBuilder, RetrieveExpandedBlock, SendTransaction, ThorNetworks, type TransactionBody } from '@thor';
-import { Address, Hex, Revision } from '@vcdm';
+import { Address, BlockRef, Hex, Revision } from '@vcdm';
 import { FetchHttpClient } from '@http';
 import { SOLO_NETWORK } from '@utils';
 import { privateKeyToAccount } from 'viem/accounts';
@@ -35,7 +35,7 @@ describe('WalletClient SOLO tests', () => {
             );
             const txBody: TransactionBody = {
                 chainTag: SOLO_NETWORK.chainTag,
-                blockRef: latestBlock.id.toString().slice(0, 18),
+                blockRef: BlockRef.of(latestBlock.id).toString(),
                 expiration: 32,
                 clauses: [transferClause],
                 gasPriceCoef: 0,
@@ -82,7 +82,7 @@ describe('WalletClient SOLO tests', () => {
             const request: PrepareTransactionRequestRequest = {
                 to: Address.of(toAddress),
                 value: Hex.of(10n ** 18n),
-                blockRef: Hex.of(latestBlock.id.toString().slice(0, 18)),
+                blockRef: BlockRef.of(latestBlock.id),
                 chainTag: SOLO_NETWORK.chainTag,
                 expiration: 32,
                 gas: 100000,

@@ -1,6 +1,6 @@
 import type { RegularBlockResponseJSON } from '@thor/blocks/json';
 import { ClauseBuilder, Transaction, type TransactionBody } from '@thor';
-import { Address, Hex, HexUInt } from '@vcdm';
+import { Address, BlockRef, Hex, HexUInt } from '@vcdm';
 import { SOLO_NETWORK } from '@utils';
 import { TEST_ACCOUNTS } from '../fixture';
 import { privateKeyToAccount } from 'viem/accounts';
@@ -50,7 +50,7 @@ describe('WalletClient UNIT tests', () => {
             );
             const txBody: TransactionBody = {
                 chainTag: SOLO_NETWORK.chainTag,
-                blockRef: latestBlock.id.toString().slice(0, 18),
+                blockRef: BlockRef.of(latestBlock.id).toString(),
                 expiration: 32,
                 clauses: [transferClause],
                 gasPriceCoef: 0,
