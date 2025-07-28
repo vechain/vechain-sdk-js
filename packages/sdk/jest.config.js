@@ -27,7 +27,8 @@ module.exports = {
         '@ws/(.*)': '<rootDir>/src/ws/$1',
         '@ws': '<rootDir>/src/ws',
         '@http/(.*)': '<rootDir>/src/http/$1',
-        '@http': '<rootDir>/src/http'
+        '@http': '<rootDir>/src/http',
+        '^@index$': '<rootDir>/src/index'
     },
     preset: 'ts-jest',
     testEnvironment: 'node',

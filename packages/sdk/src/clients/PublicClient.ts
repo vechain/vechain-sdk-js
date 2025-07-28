@@ -97,6 +97,8 @@ enum BlockReponseType {
     regular = 'regular' // vechain specific
 }
 
+// TO DO: remove string and add harcoded revision values
+
 // Revision type for viem
 type BlockRevision = bigint | number | string | Uint8Array | Hex;
 
@@ -593,4 +595,4 @@ class PublicClient {
     }
 }
 
-export { PublicClient, createPublicClient };
+export { PublicClient, createPublicClient, BlockReponseType };
