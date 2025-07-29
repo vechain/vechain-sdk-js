@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { type FetchHttpClient } from '@http';
+import { type HttpClient } from '@http';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 const mockHttpClient = <T>(
@@ -7,7 +7,7 @@ const mockHttpClient = <T>(
     httpMethod: 'get' | 'post',
     ok: boolean = true,
     status: number = 200
-): FetchHttpClient => {
+): HttpClient => {
     return {
         [httpMethod]: jest.fn().mockImplementation(async () => {
             return await Promise.resolve({
@@ -20,13 +20,13 @@ const mockHttpClient = <T>(
                     await Promise.resolve(JSON.stringify(response))
             });
         })
-    } as unknown as FetchHttpClient;
+    } as unknown as HttpClient;
 };
 
 const mockHttpClientWithError = (
     error: string,
     httpMethod: 'get' | 'post'
-): FetchHttpClient => {
+): HttpClient => {
     return {
         [httpMethod]: jest.fn(
             async () =>
@@ -36,7 +36,7 @@ const mockHttpClientWithError = (
                     })
                 )
         )
-    } as unknown as FetchHttpClient;
+    } as unknown as HttpClient;
 };
 
 export { mockHttpClient, mockHttpClientWithError };

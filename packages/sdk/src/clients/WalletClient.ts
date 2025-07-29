@@ -17,6 +17,7 @@ import {
 } from '@vcdm';
 import { UnsupportedOperationError } from '@errors';
 import { type HttpClient } from '@http';
+import { PublicClient } from '@clients/PublicClient';
 
 const FQP = 'packages/sdk/src/clients/WalletClient.ts!';
 
@@ -25,17 +26,26 @@ const FQP = 'packages/sdk/src/clients/WalletClient.ts!';
  */
 const NO_DATA = Hex.PREFIX;
 
-function createWalletClient(parameters: WalletClientConfig): WalletClient {
-    return new WalletClient(parameters.httpClient, parameters.account ?? null);
+function createWalletClient(
+    parameters: WalletClientConfig,
+    httpClientFactory: (url: URL) => HttpClient
+): WalletClient {
+    return new WalletClient(
+        parameters.baseUrl,
+        parameters.account ?? null,
+        httpClientFactory
+    );
 }
 
-class WalletClient {
+class WalletClient extends PublicClient {
     private readonly account: Account | null;
 
-    private readonly httpClient: HttpClient;
-
-    constructor(httpClient: HttpClient, account: Account | null) {
-        this.httpClient = httpClient;
+    constructor(
+        baseUrl: URL,
+        account: Account | null,
+        httpClientFactory: (url: URL) => HttpClient
+    ) {
+        super(baseUrl, httpClientFactory);
         this.account = account;
     }
 
@@ -126,8 +136,11 @@ class WalletClient {
     }
 
     public async sendRawTransaction(raw: Hex): Promise<Hex> {
-        return (await SendTransaction.of(raw.bytes).askTo(this.httpClient))
-            .response.id;
+        return (
+            await SendTransaction.of(raw.bytes).askTo(
+                this.httpClientFactory(this.baseUrl)
+            )
+        ).response.id;
     }
 
     public async sendTransaction(
@@ -188,7 +201,7 @@ interface PrepareTransactionRequestRequest {
 }
 
 interface WalletClientConfig {
-    httpClient: HttpClient;
+    baseUrl: URL;
     account?: Account;
 }
 
