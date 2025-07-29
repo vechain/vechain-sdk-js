@@ -1,9 +1,8 @@
 import { describe, expect, test } from '@jest/globals';
-import { Address, HexUInt } from '@vcdm';
-import { ClauseBuilder } from '@thor';
+import { Address, BlockRef, HexUInt } from '@vcdm';
+import { ClauseBuilder, Transaction, type TransactionBody } from '@thor';
 import { networkInfo } from '@utils';
 import { Secp256k1 } from '@secp256k1';
-import { Transaction, type TransactionBody } from '@thor';
 import { type GetTxReceiptResponseJSON, type TXIDJSON } from '@thor/json';
 import { type HttpPath } from '@http';
 import { mockHttpClient } from '../../MockHttpClient';
@@ -66,7 +65,7 @@ describe('unit tests', () => {
 
         const body: TransactionBody = {
             chainTag: networkInfo.solo.chainTag,
-            blockRef: mockBlockResponse.id.slice(0, 18),
+            blockRef: BlockRef.of(mockBlockResponse.id).toString(),
             expiration: 0,
             clauses,
             gasPriceCoef: 0,
@@ -142,7 +141,7 @@ describe('unit tests', () => {
 
         const txB = Transaction.of({
             chainTag: networkInfo.solo.chainTag,
-            blockRef: latestBlock?.id.slice(0, 18) ?? '0x0',
+            blockRef: BlockRef.of(latestBlock.id).toString(),
             expiration: 0,
             clauses,
             gasPriceCoef: 0,
