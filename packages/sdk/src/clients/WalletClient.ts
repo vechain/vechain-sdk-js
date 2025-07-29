@@ -1,27 +1,44 @@
 import {
     type Address,
     FetchHttpClient,
+    type HttpClient,
     SendTransaction,
     type ThorNetworks,
     type TXID
 } from '@index';
 import { PublicClient } from './PublicClient';
 
+interface WalletClientConfig {
+    network: URL | ThorNetworks;
+    transport?: HttpClient;
+    account: Address;
+}
+
+function createWalletClient({
+    network,
+    transport,
+    account
+}: WalletClientConfig): WalletClient {
+    const transportLayer = transport ?? new FetchHttpClient(new URL(network));
+    return new WalletClient(network, transportLayer, account);
+}
+
 class WalletClient extends PublicClient {
     readonly account: Address;
 
-    protected constructor(network: ThorNetworks, account: Address) {
-        super(network, FetchHttpClient.at(new URL(network))); // viem specific
-        this.account = account; // viem specific
+    constructor(
+        network: URL | ThorNetworks,
+        transport: HttpClient,
+        account: Address
+    ) {
+        super(network, transport);
+        this.account = account;
     }
 
     public async sendTransaction(encodedTx: Uint8Array): Promise<TXID> {
-        // viem specific
-        const data = await SendTransaction.of(encodedTx).askTo(
-            FetchHttpClient.at(new URL(this.network))
-        );
+        const data = await SendTransaction.of(encodedTx).askTo(this.httpClient);
         return data.response;
     }
 }
 
-export { WalletClient };
+export { WalletClient, createWalletClient };

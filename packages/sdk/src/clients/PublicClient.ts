@@ -114,7 +114,7 @@ function createPublicClient({
 
 class PublicClient {
     readonly network: URL | ThorNetworks;
-    private readonly httpClient: HttpClient;
+    protected readonly httpClient: HttpClient;
 
     constructor(network: URL | ThorNetworks, transport: HttpClient) {
         this.network = network;
