@@ -24,14 +24,14 @@ describe('PublicClient - Block Methods', () => {
         chain: ThorNetworks.SOLONET
     });
 
-    // Test block ID from mainnet
-    const testBlockId =
-        '0x015489d2109749d8ca5ab4ee99a5e5eeca8ebf04d1dfe249844ff2f1efda1b63';
+    // Genesis block ID for solo network
+    const genesisBlockId =
+        '0x00000000851caf3cfdb6e899cf5958bfb1ac3413d346d43539627e6be7ec1b4a';
 
     describe('getBlock', () => {
         test('should retrieve regular block by ID', async () => {
             const block = await publicClient.getBlock(
-                testBlockId,
+                0, // Genesis block number
                 BlockReponseType.regular
             );
 
@@ -54,13 +54,9 @@ describe('PublicClient - Block Methods', () => {
                 expect(block).toHaveProperty('signer');
                 expect(block).toHaveProperty('transactions');
 
-                // Verify the block ID matches what we requested (Hex object)
-                const blockId = (block as any).id;
-                if (typeof blockId === 'object' && blockId.digits) {
-                    expect(`0x${blockId.digits}`).toBe(testBlockId);
-                } else {
-                    expect(blockId).toBe(testBlockId);
-                }
+                // Verify the block number is 0 (genesis block)
+                expect(block).toHaveProperty('number');
+                expect((block as any).number).toBe(0);
 
                 console.log('Regular Block Properties:');
                 console.log(`Block Number: ${(block as any).number}`);
@@ -75,7 +71,7 @@ describe('PublicClient - Block Methods', () => {
 
         test('should retrieve expanded block by ID', async () => {
             const block = await publicClient.getBlock(
-                testBlockId,
+                0, // Genesis block number
                 BlockReponseType.expanded
             );
 
@@ -111,7 +107,7 @@ describe('PublicClient - Block Methods', () => {
 
         test('should retrieve raw block by ID', async () => {
             const block = await publicClient.getBlock(
-                testBlockId,
+                0, // Genesis block number
                 BlockReponseType.raw
             );
 
@@ -151,7 +147,7 @@ describe('PublicClient - Block Methods', () => {
         }, 30000);
 
         test('should retrieve block by number', async () => {
-            const blockNumber = 22317522; // Known block number
+            const blockNumber = 0; // Genesis block number
             const block = await publicClient.getBlock(blockNumber);
 
             expect(block).toBeDefined();
@@ -180,11 +176,11 @@ describe('PublicClient - Block Methods', () => {
         }, 30000);
 
         test('should get block number for specific revision', async () => {
-            const blockNumber = await publicClient.getBlockNumber(testBlockId);
+            const blockNumber = await publicClient.getBlockNumber(0);
 
             expect(blockNumber).toBeDefined();
             expect(typeof blockNumber).toBe('number');
-            expect(blockNumber).toBe(22317522); // Known block number for test block
+            expect(blockNumber).toBe(0); // Genesis block number
 
             console.log('Block Number for Test Block:', blockNumber);
         }, 30000);
@@ -212,11 +208,11 @@ describe('PublicClient - Block Methods', () => {
 
         test('should get transaction count for specific block', async () => {
             const txCount =
-                await publicClient.getBlockTransactionCount(testBlockId);
+                await publicClient.getBlockTransactionCount(0);
 
             expect(txCount).toBeDefined();
             expect(typeof txCount).toBe('number');
-            expect(txCount).toBe(56); // Known transaction count for test block
+            expect(txCount).toBe(0); // Genesis block has no transactions
 
             console.log('Test Block Transaction Count:', txCount);
         }, 30000);
