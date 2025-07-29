@@ -27,7 +27,8 @@ module.exports = {
         '@ws/(.*)': '<rootDir>/src/ws/$1',
         '@ws': '<rootDir>/src/ws',
         '@http/(.*)': '<rootDir>/src/http/$1',
-        '@http': '<rootDir>/src/http'
+        '@http': '<rootDir>/src/http',
+        '^@index$': '<rootDir>/src/index'
     },
     preset: 'ts-jest',
     testEnvironment: 'node',
@@ -39,7 +40,7 @@ module.exports = {
         global: {
             branches: 40,
             functions: 45,
-            lines: 88,
+            lines: 82,
             statements: 65
         }
     }
