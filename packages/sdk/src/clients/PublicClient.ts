@@ -100,9 +100,10 @@ enum BlockReponseType {
 // Revision type for viem
 type BlockRevision = bigint | number | string | Uint8Array | Hex;
 
-function createPublicClient(params: PublicClientConfig): PublicClient {
-    const httpClientFactory = (url: URL): FetchHttpClient =>
-        FetchHttpClient.at(url);
+function createPublicClient(
+    params: PublicClientConfig,
+    httpClientFactory = (url: URL): FetchHttpClient => FetchHttpClient.at(url)
+): PublicClient {
     return new PublicClient(params.chain, httpClientFactory);
 }
 
