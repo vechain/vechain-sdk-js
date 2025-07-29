@@ -4,7 +4,6 @@ import {
     type TransactionRPC
 } from './types';
 import {
-    BlockId,
     fromTransactionType,
     Hex,
     HexUInt,
@@ -18,7 +17,6 @@ import {
 } from '../../helpers/transaction/transaction-helpers';
 import { blocksFormatter } from '../blocks';
 import {
-    ThorClient,
     type ExpandedBlockDetail,
     type TransactionDetailNoRaw,
     type TransactionReceipt,
@@ -178,14 +176,13 @@ const formatExpandedBlockToRPCStandard = (
  * @param blockContainsTransaction - The block contains the transaction to be formatted.
  * @param chainId - The chain ID of the network.
  */
-async function formatTransactionReceiptToRPCStandard(
+function formatTransactionReceiptToRPCStandard(
     transactionHash: string,
     receipt: TransactionReceipt,
     transaction: TransactionDetailNoRaw,
     blockContainsTransaction: ExpandedBlockDetail,
-    chainId: string,
-    thorClient?: ThorClient
-): Promise<TransactionReceiptRPC> {
+    chainId: string
+): TransactionReceiptRPC {
     // Get transaction index
     const transactionIndex = getTransactionIndexIntoBlock(
         blocksFormatter.formatToRPCStandard(blockContainsTransaction, chainId),
@@ -221,50 +218,7 @@ async function formatTransactionReceiptToRPCStandard(
     // Default to legacy transaction type if 'type' property doesn't exist
     const txType = 'type' in transaction ? transaction.type : 0;
 
-    // Get revert reason if transaction failed
-    let revertReason: string | undefined;
-    if (receipt.reverted && thorClient) {
-        try {
-            // Get the raw revert data from VeChain debug trace
-            const debugModule = thorClient.debug;
-            if (debugModule) {
-                // Get the transaction index into the block
-                const block = blocksFormatter.formatToRPCStandard(
-                    blockContainsTransaction,
-                    chainId
-                );
-
-                const clausesRevertInfo =
-                    await thorClient.debug.traceTransactionClause(
-                        {
-                            target: {
-                                blockId: BlockId.of(block.hash),
-                                transaction: BlockId.of(transactionHash),
-                                clauseIndex: 0
-                            }
-                        },
-                        null
-                    );
-                if (clausesRevertInfo.valueOf()) {
-                    revertReason = (
-                        clausesRevertInfo.valueOf() as number
-                    ).toString();
-                }
-            }
-        } catch {
-            // If debug tracing fails, try alternative method
-            try {
-                revertReason =
-                    (await thorClient.transactions.getRevertReason(
-                        transactionHash
-                    )) ?? undefined;
-            } catch {
-                // Silent fail - revert reason will remain undefined
-            }
-        }
-    }
-
-    const receiptRPC: TransactionReceiptRPC = {
+    return {
         blockHash: receipt.meta.blockID,
         blockNumber: Quantity.of(receipt.meta.blockNumber).toString(),
         contractAddress:
@@ -285,13 +239,6 @@ async function formatTransactionReceiptToRPCStandard(
         effectiveGasPrice: '0x0',
         type: mapVeChainTypeToEthereumType(txType)
     };
-
-    // Add revert reason if available
-    if (revertReason) {
-        receiptRPC.revertReason = revertReason;
-    }
-
-    return receiptRPC;
 }
 
 export {

@@ -204,13 +204,6 @@ interface TransactionReceiptRPC {
      * @see https://docs.infura.io/networks/ethereum/concepts/transaction-types
      */
     type: '0x0' | '0x1' | '0x2';
-
-    /**
-     * The encoded revert reason if the transaction failed.
-     * This field contains the raw revert data that can be decoded by testing frameworks
-     * to identify custom errors and revert reasons.
-     */
-    revertReason?: string;
 }
 
 export {
