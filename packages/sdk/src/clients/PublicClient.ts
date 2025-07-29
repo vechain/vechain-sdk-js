@@ -108,9 +108,9 @@ function createPublicClient(
 }
 
 class PublicClient {
-    readonly url: URL;
+    protected readonly url: URL;
 
-    private readonly httpClientFactory: (url: URL) => HttpClient;
+    protected readonly httpClientFactory: (url: URL) => HttpClient;
 
     constructor(url: URL, httpClientFactory: (url: URL) => HttpClient) {
         this.url = url; // viem specific
