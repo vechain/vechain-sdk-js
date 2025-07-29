@@ -1,13 +1,16 @@
 import {
     type Address,
+    type BeatsSubscription,
     BlocksSubscription,
+    type EventLogResponse,
+    EventsSubscription,
     type ExecuteCodesResponse,
     type ExpandedBlockResponse,
-    EventsSubscription,
     FetchHttpClient,
     type GetFeesHistoryResponse,
     type GetFeesPriorityResponse,
     type Hex,
+    type HttpClient,
     InspectClauses,
     NewTransactionSubscription,
     QuerySmartContractEvents,
@@ -19,13 +22,10 @@ import {
     RetrieveRawBlock,
     RetrieveRegularBlock,
     Revision,
-    SuggestPriorityFee,
     type SubscriptionEventResponse,
-    type ThorNetworks,
+    SuggestPriorityFee,
     type TransfersSubscription,
-    type EventLogResponse,
-    type TXID,
-    type BeatsSubscription
+    type TXID
 } from '@index';
 import { type ExecuteCodesRequestJSON } from '@json';
 import { type EventLogFilterRequestJSON } from '@thor/logs/json';
@@ -88,7 +88,7 @@ interface PendingTransactionFilter {
 }
 
 interface PublicClientConfig {
-    chain: ThorNetworks;
+    chain: URL;
 }
 
 enum BlockReponseType {
@@ -101,19 +101,24 @@ enum BlockReponseType {
 type BlockRevision = bigint | number | string | Uint8Array | Hex;
 
 function createPublicClient(params: PublicClientConfig): PublicClient {
-    return new PublicClient(params.chain);
+    const httpClientFactory = (url: URL): FetchHttpClient =>
+        FetchHttpClient.at(url);
+    return new PublicClient(params.chain, httpClientFactory);
 }
 
 class PublicClient {
-    readonly thorNetworks: ThorNetworks;
+    readonly url: URL;
 
-    constructor(httpClient: ThorNetworks) {
-        this.thorNetworks = httpClient; // viem specific
+    private readonly httpClientFactory: (url: URL) => HttpClient;
+
+    constructor(url: URL, httpClientFactory: (url: URL) => HttpClient) {
+        this.url = url; // viem specific
+        this.httpClientFactory = httpClientFactory;
     }
 
     public async getBalance(address: Address): Promise<bigint> {
         const accountDetails = await RetrieveAccountDetails.of(address).askTo(
-            FetchHttpClient.at(new URL(this.thorNetworks))
+            this.httpClientFactory(this.url)
         );
         const balance = accountDetails.response.balance;
         return balance;
@@ -126,17 +131,17 @@ class PublicClient {
         if (type === BlockReponseType.expanded) {
             const data = await RetrieveExpandedBlock.of(
                 Revision.of(revision)
-            ).askTo(FetchHttpClient.at(new URL(this.thorNetworks)));
+            ).askTo(this.httpClientFactory(this.url));
             return data.response;
         } else if (type === BlockReponseType.raw) {
             const data = await RetrieveRawBlock.of(Revision.of(revision)).askTo(
-                FetchHttpClient.at(new URL(this.thorNetworks))
+                this.httpClientFactory(this.url)
             );
             return data.response;
         } else {
             const data = await RetrieveRegularBlock.of(
                 Revision.of(revision)
-            ).askTo(FetchHttpClient.at(new URL(this.thorNetworks)));
+            ).askTo(FetchHttpClient.at(this.url));
             return data.response;
         }
     }
@@ -146,7 +151,7 @@ class PublicClient {
     ): Promise<number | undefined> {
         const selectedBlock = await RetrieveRegularBlock.of(
             Revision.of(revision)
-        ).askTo(FetchHttpClient.at(new URL(this.thorNetworks)));
+        ).askTo(FetchHttpClient.at(this.url));
         const blockNumber = selectedBlock?.response?.number;
         return blockNumber;
     }
@@ -156,7 +161,7 @@ class PublicClient {
     ): Promise<number | undefined> {
         const selectedBlock = await RetrieveRegularBlock.of(
             Revision.of(revision)
-        ).askTo(FetchHttpClient.at(new URL(this.thorNetworks)));
+        ).askTo(FetchHttpClient.at(this.url));
         const trxCount = selectedBlock?.response?.transactions.length;
 
         return trxCount;
@@ -164,17 +169,13 @@ class PublicClient {
 
     public watchBlocks(pos: Hex): BlocksSubscription {
         return BlocksSubscription.at(
-            new MozillaWebSocketClient(
-                `ws://${FetchHttpClient.at(new URL(this.thorNetworks)).baseURL}`
-            )
+            new MozillaWebSocketClient(`ws://${this.url}`)
         ).atPos(pos);
     }
 
     public watchBlockNumber(): BlocksSubscription {
         return BlocksSubscription.at(
-            new MozillaWebSocketClient(
-                `ws://${FetchHttpClient.at(new URL(this.thorNetworks)).baseURL}`
-            )
+            new MozillaWebSocketClient(`ws://${this.url}`)
         );
     }
 
@@ -184,7 +185,7 @@ class PublicClient {
         // this and call are the same because ETH doesn't support multi-call and they have explicit functions for this.
         // viem specific
         const inspectClause = await InspectClauses.of(request).askTo(
-            FetchHttpClient.at(new URL(this.thorNetworks))
+            this.httpClientFactory(this.url)
         );
         const clause = inspectClause.response;
         return clause;
@@ -196,7 +197,7 @@ class PublicClient {
     ): Promise<ExecuteCodesResponse> {
         // viem specific
         const inspectClause = await InspectClauses.of(request).askTo(
-            FetchHttpClient.at(new URL(this.thorNetworks))
+            this.httpClientFactory(this.url)
         );
         const clause = inspectClause.response;
         return clause;
@@ -207,7 +208,7 @@ class PublicClient {
     ): Promise<GetFeesHistoryResponse> {
         // viem specific
         const data = await RetrieveHistoricalFeeData.of(blockCount).askTo(
-            FetchHttpClient.at(new URL(this.thorNetworks))
+            this.httpClientFactory(this.url)
         );
         return data.response;
     }
@@ -215,7 +216,7 @@ class PublicClient {
     public async getGasPrice(): Promise<bigint[]> {
         // viem specific
         const lastBlock = await RetrieveHistoricalFeeData.of(1).askTo(
-            FetchHttpClient.at(new URL(this.thorNetworks))
+            this.httpClientFactory(this.url)
         );
         const lastBaseFeePerGas = lastBlock.response.baseFeePerGas;
         return lastBaseFeePerGas;
@@ -224,7 +225,7 @@ class PublicClient {
     public async estimateFeePerGas(): Promise<bigint | undefined> {
         // viem specific
         const lastRevision = await RetrieveRegularBlock.of(Revision.BEST).askTo(
-            FetchHttpClient.at(new URL(this.thorNetworks))
+            this.httpClientFactory(this.url)
         );
         const lastBaseFeePerGas = lastRevision?.response?.baseFeePerGas;
         return lastBaseFeePerGas;
@@ -235,7 +236,7 @@ class PublicClient {
     ): Promise<ExecuteCodesResponse> {
         // viem specific
         const inspectClause = await InspectClauses.of(request).askTo(
-            FetchHttpClient.at(new URL(this.thorNetworks))
+            this.httpClientFactory(this.url)
         );
         const gasUsedArray = inspectClause.response;
         return gasUsedArray;
@@ -244,14 +245,14 @@ class PublicClient {
     public async estimateMaxPriorityFeePerGas(): Promise<GetFeesPriorityResponse> {
         // viem specific
         const data = await SuggestPriorityFee.of().askTo(
-            FetchHttpClient.at(new URL(this.thorNetworks))
+            this.httpClientFactory(this.url)
         );
         return data.response;
     }
 
     public async getChainId(): Promise<bigint> {
         const data = await RetrieveRegularBlock.of(Revision.of(0)).askTo(
-            FetchHttpClient.at(new URL(this.thorNetworks))
+            this.httpClientFactory(this.url)
         );
         const res = data?.response?.id;
         if (res == null) {
@@ -282,9 +283,7 @@ class PublicClient {
         const { onLogs, onError, address, event, args, fromBlock } = params;
 
         // Create WebSocket client
-        const webSocketClient = new MozillaWebSocketClient(
-            `ws://${FetchHttpClient.at(new URL(this.thorNetworks)).baseURL}`
-        );
+        const webSocketClient = new MozillaWebSocketClient(`ws://${this.url}`);
 
         // Create subscription
         let subscription = EventsSubscription.at(webSocketClient);
@@ -378,7 +377,7 @@ class PublicClient {
 
         // Query for logs
         const response = await QuerySmartContractEvents.of(request).askTo(
-            FetchHttpClient.at(new URL(this.thorNetworks))
+            this.httpClientFactory(this.url)
         );
 
         return response.response;
@@ -449,7 +448,7 @@ class PublicClient {
         // Use the stored filter request to query for logs
         const response = await QuerySmartContractEvents.of(
             filter.request
-        ).askTo(FetchHttpClient.at(new URL(this.thorNetworks)));
+        ).askTo(FetchHttpClient.at(this.url));
 
         return response.response;
     }
@@ -545,7 +544,7 @@ class PublicClient {
 
             if (txFilter.subscription == null) {
                 const webSocketClient = new MozillaWebSocketClient(
-                    `ws://${FetchHttpClient.at(new URL(this.thorNetworks)).baseURL}`
+                    `ws://${this.url}`
                 );
 
                 const subscription =
