@@ -16,7 +16,7 @@ import {
     RLPProfiler
 } from '@vcdm';
 import { UnsupportedOperationError } from '@errors';
-import { type HttpClient } from '@http';
+import { FetchHttpClient, type HttpClient } from '@http';
 import { PublicClient } from '@clients/PublicClient';
 
 const FQP = 'packages/sdk/src/clients/WalletClient.ts!';
@@ -26,14 +26,14 @@ const FQP = 'packages/sdk/src/clients/WalletClient.ts!';
  */
 const NO_DATA = Hex.PREFIX;
 
-function createWalletClient(
-    parameters: WalletClientConfig,
-    httpClientFactory: (url: URL) => HttpClient
-): WalletClient {
+function createWalletClient(parameters: WalletClientConfig): WalletClient {
     return new WalletClient(
         parameters.baseUrl,
         parameters.account ?? null,
-        httpClientFactory
+        parameters.transport ??
+            ((url: URL): HttpClient => {
+                return FetchHttpClient.at(url);
+            })
     );
 }
 
@@ -203,6 +203,7 @@ interface PrepareTransactionRequestRequest {
 interface WalletClientConfig {
     baseUrl: URL;
     account?: Account;
+    transport?: (url: URL) => HttpClient;
 }
 
 export {
