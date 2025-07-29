@@ -89,7 +89,7 @@ interface PendingTransactionFilter {
 }
 
 interface PublicClientConfig {
-    chain: ThorNetworks;
+    network: URL;
     transport?: HttpClient;
 }
 
@@ -102,20 +102,20 @@ enum BlockReponseType {
 // Revision type for viem
 type BlockRevision = bigint | number | string | Uint8Array | Hex;
 
-function createPublicClient(params: PublicClientConfig): PublicClient {
-    const transport = params.transport ?? new FetchHttpClient(new URL(params.chain));
-    return new PublicClient(params.chain, transport);
+function createPublicClient({
+    network,
+    transport
+}: PublicClientConfig): PublicClient {
+    const transportLayer = transport ?? new FetchHttpClient(new URL(network));
+    return new PublicClient(network, transportLayer);
 }
 
 class PublicClient {
-    readonly thorNetworks: ThorNetworks;
+    readonly network: URL;
     private readonly httpClient: HttpClient;
 
-    constructor(
-        thorNetworks: ThorNetworks,
-        transport: HttpClient
-    ) {
-        this.thorNetworks = thorNetworks;
+    constructor(network: URL, transport: HttpClient) {
+        this.network = network;
         this.httpClient = transport;
     }
 
