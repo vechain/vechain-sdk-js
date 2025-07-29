@@ -3,6 +3,7 @@
   "version": "2.0.0-beta.1",
   "description": "VeChain Thor solo blockchain development environment CLI",
   "main": "dist/index.js",
+  "license": "MIT",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "bin": {
@@ -45,9 +46,7 @@
   },
   "peerDependencies": {
     "@vechain/sdk": "*",
-    "@vechain/sdk-hardhat-plugin": "*",
-    "@vechain/sdk-logging": "*",
-    "@vechain/sdk-thorest-api": "*"
+    "@vechain/sdk-hardhat-plugin": "*"
   },
   "dependencies": {
     "@vechain/sdk-hardhat-plugin": "^1.2.0-rc.2",
