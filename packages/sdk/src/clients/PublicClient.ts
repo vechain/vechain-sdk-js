@@ -89,7 +89,7 @@ interface PendingTransactionFilter {
 }
 
 interface PublicClientConfig {
-    network: URL;
+    network: URL | ThorNetworks;
     transport?: HttpClient;
 }
 
@@ -113,10 +113,10 @@ function createPublicClient({
 }
 
 class PublicClient {
-    readonly network: URL;
+    readonly network: URL | ThorNetworks;
     private readonly httpClient: HttpClient;
 
-    constructor(network: URL, transport: HttpClient) {
+    constructor(network: URL | ThorNetworks, transport: HttpClient) {
         this.network = network;
         this.httpClient = transport;
     }

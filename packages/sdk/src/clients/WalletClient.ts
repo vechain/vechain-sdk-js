@@ -10,15 +10,15 @@ import { PublicClient } from './PublicClient';
 class WalletClient extends PublicClient {
     readonly account: Address;
 
-    protected constructor(httpClient: ThorNetworks, account: Address) {
-        super(httpClient); // viem specific
+    protected constructor(network: ThorNetworks, account: Address) {
+        super(network, FetchHttpClient.at(new URL(network))); // viem specific
         this.account = account; // viem specific
     }
 
     public async sendTransaction(encodedTx: Uint8Array): Promise<TXID> {
         // viem specific
         const data = await SendTransaction.of(encodedTx).askTo(
-            FetchHttpClient.at(new URL(this.thorNetworks))
+            FetchHttpClient.at(new URL(this.network))
         );
         return data.response;
     }

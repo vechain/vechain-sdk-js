@@ -13,7 +13,7 @@ export interface HttpClientFactory {
      * @param options - Optional HTTP configuration options
      * @returns A configured HttpClient instance
      */
-    create(baseURL: URL, options?: HttpOptions): HttpClient;
+    create: (baseURL: URL, options?: HttpOptions) => HttpClient;
 }
 
 /**
