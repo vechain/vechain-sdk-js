@@ -515,9 +515,13 @@ class PublicClient {
 
             // Get block hashes for all new blocks
             const blockHashes: string[] = [];
-            
+
             // Get all blocks from lastProcessed+1 to currentBlock
-            for (let blockNum = lastProcessed + 1; blockNum <= currentBlock; blockNum++) {
+            for (
+                let blockNum = lastProcessed + 1;
+                blockNum <= currentBlock;
+                blockNum++
+            ) {
                 const block = await this.getBlock(blockNum);
                 if (
                     block !== null &&

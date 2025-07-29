@@ -22,11 +22,6 @@ export default defineConfig({
             '@accounts': resolve(__dirname, './packages/sdk/src/thor/accounts'),
             '@blocks': resolve(__dirname, './packages/sdk/src/thor/blocks'),
             '@hdkey': resolve(__dirname, './packages/sdk/src/hdkey'),
-            '@keystore': resolve(__dirname, './packages/sdk/src/keystore'),
-            '@cryptography': resolve(
-                __dirname,
-                './packages/sdk/src/keystore/cryptography'
-            ),
             '@secp256k1': resolve(__dirname, './packages/sdk/src/secp256k1'),
             '@utils': resolve(__dirname, './packages/sdk/src/utils')
         };
