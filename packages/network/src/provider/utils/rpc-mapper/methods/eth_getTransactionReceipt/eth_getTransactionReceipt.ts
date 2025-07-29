@@ -73,12 +73,13 @@ const ethGetTransactionReceipt = async (
 
             // Initialize the result
             if (transactionDetail !== null)
-                return transactionsFormatter.formatTransactionReceiptToRPCStandard(
+                return await transactionsFormatter.formatTransactionReceiptToRPCStandard(
                     hash,
                     receipt,
                     transactionDetail,
                     blockContainsTransaction,
-                    chainId
+                    chainId,
+                    thorClient
                 );
             else return null;
         } else {
