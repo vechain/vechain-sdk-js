@@ -1,5 +1,9 @@
 import { HttpMethod } from './HttpMethod';
-import { InvalidHTTPParams, InvalidHTTPRequest } from '@vechain/sdk-errors';
+import {
+    InvalidHTTPParams,
+    InvalidHTTPRequest,
+    InvalidHTTPResponse
+} from '@vechain/sdk-errors';
 import { type HttpClient } from './HttpClient';
 import { type HttpParams } from './HttpParams';
 import { logRequest, logResponse, logError } from './trace-logger';
@@ -190,11 +194,28 @@ class SimpleHttpClient implements HttpClient {
                 // Return the responseBody as unknown rather than 'any'
                 return responseBody;
             }
+            let message = `HTTP ${response.status} ${response.statusText}`;
 
-            throw new Error(`HTTP ${response.status} ${response.statusText}`, {
-                cause: response
+            // append the API response text if available
+            await response
+                .text()
+                .then((text) => {
+                    if (text) {
+                        message += `: ${text}`;
+                    }
+                })
+                .catch();
+
+            throw new InvalidHTTPResponse('SimpleHttpClient.http()', message, {
+                method,
+                path,
+                status: response.status,
+                message
             });
         } catch (error) {
+            if (error instanceof InvalidHTTPResponse) {
+                throw error; // Re-throw if it's already an InvalidHTTPResponse
+            }
             // Different error handling based on whether it's a params error or request error
             if (url) {
                 // Log the error if url is defined (request was started)

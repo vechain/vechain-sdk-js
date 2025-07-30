@@ -4,6 +4,19 @@ import { VechainSDKError } from '../sdk-error';
  * Http invalid request error
  *
  * WHEN TO USE:
+ * * When the server returns an invalid HTTP response
+ */
+class InvalidHTTPResponse extends VechainSDKError<{
+    path: string;
+    method: string;
+    status: number;
+    message?: string;
+}> {}
+
+/**
+ * Http invalid request error
+ *
+ * WHEN TO USE:
  * * Error will be thrown when an invalid HTTP request fails
  */
 class InvalidHTTPRequest extends VechainSDKError<{
@@ -22,4 +35,4 @@ class InvalidHTTPParams extends VechainSDKError<{
     url: string;
 }> {}
 
-export { InvalidHTTPRequest, InvalidHTTPParams };
+export { InvalidHTTPRequest, InvalidHTTPParams, InvalidHTTPResponse };
