@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { PublicClient } from '../../../src/clients/PublicClient';
+import { createPublicClient, BlockReponseType } from '../../../dist/index.js';
 import { ThorNetworks } from '@thor';
 import { Address } from '@vcdm';
 
@@ -13,11 +13,16 @@ import { Address } from '@vcdm';
  * @group integration/clients
  */
 describe('PublicClient - Account Methods', () => {
-    const publicClient = new PublicClient(ThorNetworks.SOLONET);
-
+    const publicClient = createPublicClient({
+        network: ThorNetworks.SOLONET
+    });
     // Test addresses
-    const testAddress = Address.of('0xf077b491b355e64048ce21e3a6fc4751eeea77fa');
-    const zeroAddress = Address.of('0x0000000000000000000000000000000000000000');
+    const testAddress = Address.of(
+        '0xf077b491b355e64048ce21e3a6fc4751eeea77fa'
+    );
+    const zeroAddress = Address.of(
+        '0x0000000000000000000000000000000000000000'
+    );
 
     describe('getBalance', () => {
         test('should retrieve balance for valid address', async () => {
@@ -27,7 +32,9 @@ describe('PublicClient - Account Methods', () => {
             expect(typeof balance).toBe('bigint');
             expect(balance).toBeGreaterThanOrEqual(0n);
 
-            console.log(`Balance for ${testAddress.toString()}: ${balance.toString()}`);
+            console.log(
+                `Balance for ${testAddress.toString()}: ${balance.toString()}`
+            );
         });
 
         test('should retrieve zero balance for zero address', async () => {
@@ -44,7 +51,7 @@ describe('PublicClient - Account Methods', () => {
             // Test with different address representations
             const addressString = '0xf077b491b355e64048ce21e3a6fc4751eeea77fa';
             const addressFromString = Address.of(addressString);
-            
+
             const balance = await publicClient.getBalance(addressFromString);
 
             expect(balance).toBeDefined();
@@ -73,11 +80,11 @@ describe('PublicClient - Account Methods', () => {
 
         test('should return solo network chain ID for solo network', async () => {
             const chainId = await publicClient.getChainId();
-            
+
             // Solo network should have a specific chain ID
             expect(chainId).toBeDefined();
             expect(typeof chainId).toBe('bigint');
-            
+
             // Log for verification
             console.log(`Solo network chain ID: ${chainId.toString()}`);
         });
@@ -88,7 +95,7 @@ describe('PublicClient - Account Methods', () => {
             // This test depends on how Address.of handles invalid inputs
             // If it throws, we expect the error to be thrown
             // If it normalizes, we expect a valid response
-            
+
             try {
                 const invalidAddress = Address.of('0xinvalid');
                 const balance = await publicClient.getBalance(invalidAddress);

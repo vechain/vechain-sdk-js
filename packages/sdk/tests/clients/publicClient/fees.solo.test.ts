@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { PublicClient } from '../../../src/clients/PublicClient';
+import { createPublicClient, BlockReponseType } from '../../../dist/index.js';
 import { ThorNetworks } from '@thor';
 import { ExecuteCodesRequestJSON } from '@json';
 
@@ -16,8 +16,9 @@ import { ExecuteCodesRequestJSON } from '@json';
  * @group integration/clients
  */
 describe('PublicClient - Fee Estimation Methods', () => {
-    const publicClient = new PublicClient(ThorNetworks.SOLONET);
-
+    const publicClient = createPublicClient({
+        network: ThorNetworks.SOLONET
+    });
     // Sample contract call for gas estimation (ExecuteCodesRequestJSON format)
     const sampleContractCall: ExecuteCodesRequestJSON = {
         clauses: [

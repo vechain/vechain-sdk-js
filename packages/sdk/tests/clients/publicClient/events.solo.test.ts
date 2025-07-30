@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { PublicClient } from '../../../src/clients/PublicClient';
+import { createPublicClient, BlockReponseType } from '../../../dist/index.js';
 import { ThorNetworks } from '@thor';
 import { Address, Hex } from '@vcdm';
 
@@ -15,14 +15,21 @@ import { Address, Hex } from '@vcdm';
  * @group integration/clients
  */
 describe('PublicClient - Events/Logs Methods', () => {
-    const publicClient = new PublicClient(ThorNetworks.SOLONET);
-
+    const publicClient = createPublicClient({
+        network: ThorNetworks.SOLONET
+    });
     // Test addresses and event signatures
-    const vthoContract = Address.of('0x0000000000000000000000000000456E65726779');
-    const testAddress = Address.of('0xf077b491b355e64048ce21e3a6fc4751eeea77fa');
-    
+    const vthoContract = Address.of(
+        '0x0000000000000000000000000000456E65726779'
+    );
+    const testAddress = Address.of(
+        '0xf077b491b355e64048ce21e3a6fc4751eeea77fa'
+    );
+
     // Transfer event signature: Transfer(address,address,uint256)
-    const transferEventSignature = Hex.of('0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef');
+    const transferEventSignature = Hex.of(
+        '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
+    );
 
     describe('getLogs', () => {
         test('should retrieve logs with address filter', async () => {
@@ -33,16 +40,16 @@ describe('PublicClient - Events/Logs Methods', () => {
 
             expect(logs).toBeDefined();
             expect(Array.isArray(logs)).toBe(true);
-            
+
             console.log(`Retrieved ${logs.length} logs for VTHO contract`);
-            
+
             if (logs.length > 0) {
                 const firstLog = logs[0];
                 expect(firstLog).toHaveProperty('address');
                 expect(firstLog).toHaveProperty('topics');
                 expect(firstLog).toHaveProperty('data');
                 expect(firstLog).toHaveProperty('meta');
-                
+
                 console.log('First log:', {
                     address: firstLog.address,
                     topics: firstLog.topics,
@@ -53,7 +60,7 @@ describe('PublicClient - Events/Logs Methods', () => {
 
         test('should retrieve logs with multiple addresses', async () => {
             const addresses = [vthoContract, testAddress];
-            
+
             const logs = await publicClient.getLogs({
                 address: addresses
                 // Note: fromBlock/toBlock removed due to parsing issues
@@ -61,7 +68,7 @@ describe('PublicClient - Events/Logs Methods', () => {
 
             expect(logs).toBeDefined();
             expect(Array.isArray(logs)).toBe(true);
-            
+
             console.log(`Retrieved ${logs.length} logs for multiple addresses`);
         });
 
@@ -74,12 +81,14 @@ describe('PublicClient - Events/Logs Methods', () => {
 
             expect(logs).toBeDefined();
             expect(Array.isArray(logs)).toBe(true);
-            
+
             console.log(`Retrieved ${logs.length} Transfer event logs`);
-            
+
             if (logs.length > 0) {
                 const firstLog = logs[0];
-                expect(firstLog.topics[0]).toBe(transferEventSignature.toString());
+                expect(firstLog.topics[0]).toBe(
+                    transferEventSignature.toString()
+                );
             }
         });
 
@@ -92,14 +101,16 @@ describe('PublicClient - Events/Logs Methods', () => {
 
             expect(logs).toBeDefined();
             expect(Array.isArray(logs)).toBe(true);
-            
+
             console.log(`Retrieved ${logs.length} logs from blocks 0-100`);
         });
 
         test('should handle empty results gracefully', async () => {
             // Query for logs from a non-existent address
-            const nonExistentAddress = Address.of('0x1234567890123456789012345678901234567890');
-            
+            const nonExistentAddress = Address.of(
+                '0x1234567890123456789012345678901234567890'
+            );
+
             const logs = await publicClient.getLogs({
                 address: nonExistentAddress
                 // Note: fromBlock/toBlock removed due to parsing issues
@@ -124,7 +135,7 @@ describe('PublicClient - Events/Logs Methods', () => {
             expect(filter.type).toBe('event');
             expect(typeof filter.id).toBe('string');
             expect(filter.id).toMatch(/^0x[0-9a-f]+$/i);
-            
+
             console.log('Created event filter:', filter.id);
         });
 
@@ -137,7 +148,7 @@ describe('PublicClient - Events/Logs Methods', () => {
             expect(filter).toBeDefined();
             expect(filter.type).toBe('event');
             expect(filter.request).toHaveProperty('criteriaSet');
-            
+
             console.log('Created Transfer event filter:', filter.id);
         });
 
@@ -151,7 +162,7 @@ describe('PublicClient - Events/Logs Methods', () => {
             expect(filter).toBeDefined();
             expect(filter.id).toBeDefined();
             expect(typeof filter.id).toBe('string');
-            
+
             console.log('Event filter created with ID:', filter.id);
         });
 
@@ -164,7 +175,7 @@ describe('PublicClient - Events/Logs Methods', () => {
             expect(filter).toBeDefined();
             expect(filter.type).toBe('event');
             expect(filter.request).toHaveProperty('criteriaSet');
-            
+
             console.log('Created complex event filter:', filter.id);
         });
 
@@ -174,7 +185,7 @@ describe('PublicClient - Events/Logs Methods', () => {
             expect(filter).toBeDefined();
             expect(filter.type).toBe('event');
             expect(filter.request).toHaveProperty('criteriaSet');
-            
+
             console.log('Created basic event filter:', filter.id);
         });
     });
@@ -190,9 +201,9 @@ describe('PublicClient - Events/Logs Methods', () => {
 
             expect(logs).toBeDefined();
             expect(Array.isArray(logs)).toBe(true);
-            
+
             console.log('Retrieved logs using filter:', logs.length);
-            
+
             if (logs.length > 0) {
                 const firstLog = logs[0];
                 expect(firstLog).toHaveProperty('address');
@@ -212,11 +223,11 @@ describe('PublicClient - Events/Logs Methods', () => {
 
             expect(logs).toBeDefined();
             expect(Array.isArray(logs)).toBe(true);
-            
+
             console.log(`Retrieved ${logs.length} Transfer logs using filter`);
-            
+
             // All logs should be Transfer events
-            logs.forEach(log => {
+            logs.forEach((log) => {
                 expect(log.topics[0]).toBe(transferEventSignature.toString());
             });
         });
@@ -239,15 +250,19 @@ describe('PublicClient - Events/Logs Methods', () => {
             // Note: WebSocket not available in Node.js test environment
             // This test verifies the method exists and returns a function
             expect(typeof publicClient.watchEvent).toBe('function');
-            
-            console.log('watchEvent method is available (WebSocket tests skipped in Node.js)');
+
+            console.log(
+                'watchEvent method is available (WebSocket tests skipped in Node.js)'
+            );
         });
 
         test('should handle watcher cleanup concept', () => {
             // Test that the method signature is correct without actually using WebSocket
             expect(typeof publicClient.watchEvent).toBe('function');
-            
-            console.log('watchEvent cleanup concept verified (actual WebSocket tests skipped)');
+
+            console.log(
+                'watchEvent cleanup concept verified (actual WebSocket tests skipped)'
+            );
         });
     });
 
@@ -282,7 +297,7 @@ describe('PublicClient - Events/Logs Methods', () => {
             // Test that error handling methods exist
             expect(typeof publicClient.getLogs).toBe('function');
             expect(typeof publicClient.watchEvent).toBe('function');
-            
+
             console.log('Network error handling methods are available');
         });
     });

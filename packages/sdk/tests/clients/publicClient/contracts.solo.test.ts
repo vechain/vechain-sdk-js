@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { PublicClient } from '../../../src/clients/PublicClient';
+import { createPublicClient, BlockReponseType } from '../../../dist/index.js';
 import { ThorNetworks } from '@thor';
 import { ExecuteCodesRequestJSON } from '@json';
 
@@ -13,8 +13,9 @@ import { ExecuteCodesRequestJSON } from '@json';
  * @group integration/clients
  */
 describe('PublicClient - Contract/Call Methods', () => {
-    const publicClient = new PublicClient(ThorNetworks.SOLONET);
-
+    const publicClient = createPublicClient({
+        network: ThorNetworks.SOLONET
+    });
     // Sample contract calls for testing
     const vthoBalanceCall: ExecuteCodesRequestJSON = {
         clauses: [
@@ -90,7 +91,7 @@ describe('PublicClient - Contract/Call Methods', () => {
                 expect(clauseResult).toHaveProperty('data');
                 expect(clauseResult).toHaveProperty('gasUsed');
                 expect(clauseResult).toHaveProperty('reverted');
-                
+
                 console.log(`Clause ${index} result:`, {
                     data: clauseResult.data,
                     gasUsed: clauseResult.gasUsed,
@@ -153,7 +154,7 @@ describe('PublicClient - Contract/Call Methods', () => {
                 expect(clauseResult).toHaveProperty('data');
                 expect(clauseResult).toHaveProperty('gasUsed');
                 expect(clauseResult).toHaveProperty('reverted');
-                
+
                 console.log(`Simulation clause ${index} result:`, {
                     data: clauseResult.data,
                     gasUsed: clauseResult.gasUsed,
@@ -164,14 +165,17 @@ describe('PublicClient - Contract/Call Methods', () => {
 
         test('should produce same results as call method', async () => {
             const callResult = await publicClient.call(vthoBalanceCall);
-            const simulateResult = await publicClient.simulateCalls(vthoBalanceCall);
+            const simulateResult =
+                await publicClient.simulateCalls(vthoBalanceCall);
 
             expect(callResult).toBeDefined();
             expect(simulateResult).toBeDefined();
             expect(callResult.length).toBe(simulateResult.length);
 
             // Results should be identical since both methods do the same thing in VeChain
-            expect(callResult[0].data.toString()).toBe(simulateResult[0].data.toString());
+            expect(callResult[0].data.toString()).toBe(
+                simulateResult[0].data.toString()
+            );
             expect(callResult[0].reverted).toBe(simulateResult[0].reverted);
         });
     });
@@ -191,14 +195,14 @@ describe('PublicClient - Contract/Call Methods', () => {
             };
 
             const result = await publicClient.call(invalidCall);
-            
+
             expect(result).toBeDefined();
             expect(Array.isArray(result)).toBe(true);
-            
+
             // Call to zero address might revert or return empty data
             const firstResult = result[0];
             expect(firstResult).toHaveProperty('reverted');
-            
+
             console.log('Invalid address call result:', {
                 data: firstResult.data,
                 gasUsed: firstResult.gasUsed,
@@ -220,14 +224,14 @@ describe('PublicClient - Contract/Call Methods', () => {
             };
 
             const result = await publicClient.call(invalidDataCall);
-            
+
             expect(result).toBeDefined();
             expect(Array.isArray(result)).toBe(true);
-            
+
             // Invalid function call should typically revert
             const firstResult = result[0];
             expect(firstResult).toHaveProperty('reverted');
-            
+
             console.log('Invalid data call result:', {
                 data: firstResult.data,
                 gasUsed: firstResult.gasUsed,
@@ -249,14 +253,14 @@ describe('PublicClient - Contract/Call Methods', () => {
             };
 
             const result = await publicClient.call(lowGasCall);
-            
+
             expect(result).toBeDefined();
             expect(Array.isArray(result)).toBe(true);
-            
+
             // Low gas might cause revert or just use all available gas
             const firstResult = result[0];
             expect(firstResult).toHaveProperty('gasUsed');
-            
+
             console.log('Low gas call result:', {
                 data: firstResult.data,
                 gasUsed: firstResult.gasUsed,

@@ -12,4 +12,5 @@ export interface HttpClient {
     ) => Promise<Response>;
 
     options: HttpOptions;
+    baseURL: URL;
 }

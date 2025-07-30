@@ -1,10 +1,8 @@
 import { describe, expect, test } from '@jest/globals';
-import {
-    createPublicClient,
-    BlockReponseType
-} from '../../../src/clients/PublicClient';
+import { createPublicClient, BlockReponseType } from '../../../dist/index.js';
 import { ThorNetworks } from '@thor';
 import { Hex } from '@vcdm';
+import { FetchHttpClient } from '@index';
 
 /**
  * Test suite for PublicClient block-related functionality
@@ -19,9 +17,25 @@ import { Hex } from '@vcdm';
  * @group integration/clients
  */
 describe('PublicClient - Block Methods', () => {
+    const customTransport = new FetchHttpClient(new URL(ThorNetworks.SOLONET), {
+        onRequest: (request) => {
+            console.log(`Making ${request.method} request to ${request.url}`);
+            request.headers.set('X-Custom-Header', 'my-app-v1.0');
+            return request;
+        },
+        onResponse: (response) => {
+            console.log(`Response: ${response.status} ${response.statusText}`);
+            return response;
+        },
+        timeout: 10000,
+        headers: {
+            'User-Agent': 'MyVeChainApp/1.0'
+        }
+    });
     // Create a public client connected to mainnet
     const publicClient = createPublicClient({
-        chain: ThorNetworks.SOLONET
+        network: ThorNetworks.SOLONET,
+        transport: customTransport
     });
 
     // Genesis block ID for solo network
@@ -207,8 +221,7 @@ describe('PublicClient - Block Methods', () => {
         }, 30000);
 
         test('should get transaction count for specific block', async () => {
-            const txCount =
-                await publicClient.getBlockTransactionCount(0);
+            const txCount = await publicClient.getBlockTransactionCount(0);
 
             expect(txCount).toBeDefined();
             expect(typeof txCount).toBe('number');
