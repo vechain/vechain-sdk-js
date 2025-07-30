@@ -288,7 +288,7 @@ describe('VeChain base signer tests - solo', () => {
                                     origin.address
                                 )
                             )
-                        ).rejects.toThrowError(expectedError);
+                        ).rejects.toThrow(expectedError);
                     },
                     10000
                 );
@@ -354,7 +354,7 @@ describe('VeChain base signer tests - solo', () => {
 
                         await expect(
                             signer.signTransaction(txInput)
-                        ).rejects.toThrowError(expectedError);
+                        ).rejects.toThrow(expectedError);
                     },
                     10000
                 );
