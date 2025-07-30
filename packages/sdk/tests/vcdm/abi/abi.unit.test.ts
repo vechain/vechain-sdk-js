@@ -1,5 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import {
+    // abi
     type AbiEvent,
     type AbiFunction,
     parseAbiParameters,
@@ -10,9 +11,11 @@ import {
     decodeFunctionData,
     encodeEventTopics,
     decodeEventLog,
+
+    // hash
     toFunctionHash,
     toEventHash
-} from 'viem';
+} from '@reexports';
 import {
     encodedDecodedInvalidValues,
     encodedDecodedValues,
