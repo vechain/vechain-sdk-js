@@ -61,7 +61,7 @@ const ethEstimateGas = async (
             ],
             inputOptions.from,
             {
-                revision: revision.toString()
+                revision: revision
             }
         );
 
