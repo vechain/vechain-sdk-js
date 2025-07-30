@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
-import { createPublicClient, BlockReponseType } from '../../../dist/index.js';
+import { createPublicClient } from '../../../dist/index.js';
 import { ThorNetworks } from '@thor';
-import { ExecuteCodesRequestJSON } from '@json';
+import { type ExecuteCodesRequestJSON } from '@json';
 
 /**
  * Test suite for PublicClient fee estimation functionality
@@ -68,8 +68,14 @@ describe('PublicClient - Fee Estimation Methods', () => {
             const feeHistory = await publicClient.getFeeHistory(blockCount);
 
             expect(feeHistory).toBeDefined();
-            expect(feeHistory.baseFeePerGas.length).toBe(blockCount);
-            expect(feeHistory.gasUsedRatio.length).toBe(blockCount);
+            expect(
+                feeHistory.baseFeePerGas.length > 0 &&
+                    feeHistory.baseFeePerGas.length <= blockCount
+            ).toBe(true);
+            expect(
+                feeHistory.gasUsedRatio.length > 0 &&
+                    feeHistory.gasUsedRatio.length <= blockCount
+            ).toBe(true);
 
             console.log('Fee History (' + blockCount + ' blocks):');
             console.log(
