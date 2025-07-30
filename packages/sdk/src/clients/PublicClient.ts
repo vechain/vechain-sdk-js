@@ -127,7 +127,7 @@ class PublicClient {
 
     public async getBlock(
         revision: BlockRevision = 'best', // viem specific
-        type: BlockReponseType = BlockReponseType.regular // vechain specific
+        type: BlockReponseType = BlockReponseType.regular, // vechain specific,
     ): Promise<ExpandedBlockResponse | RawTx | RegularBlockResponse | null> {
         if (type === BlockReponseType.expanded) {
             const data = await RetrieveExpandedBlock.of(
