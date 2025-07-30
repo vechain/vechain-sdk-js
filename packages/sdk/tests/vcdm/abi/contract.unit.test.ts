@@ -9,7 +9,7 @@ import {
     decodeFunctionResult,
     encodeEventTopics,
     decodeEventLog,
-} from 'viem';
+} from '@reexports';
 import { ERC721_ABI } from '@utils';
 import {
     contractABI,

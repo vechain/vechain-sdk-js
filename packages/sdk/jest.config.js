@@ -7,6 +7,7 @@ module.exports = {
     moduleNameMapper: {
         '^@/(.*)$': '<rootDir>/src/$1',
         '^@vcdm$': '<rootDir>/src/vcdm',
+        '^@clients$': '<rootDir>/src/clients',
         '^@vcdm/(.*)$': '<rootDir>/src/vcdm/$1',
         '^@errors$': '<rootDir>/src/errors',
         '^@errors/(.*)$': '<rootDir>/src/errors/$1',
@@ -28,7 +29,8 @@ module.exports = {
         '@ws': '<rootDir>/src/ws',
         '@http/(.*)': '<rootDir>/src/http/$1',
         '@http': '<rootDir>/src/http',
-        '^@index$': '<rootDir>/src/index'
+        '^@index$': '<rootDir>/src/index',
+        '^@reexports$': '<rootDir>/src/reexports',
     },
     preset: 'ts-jest',
     testEnvironment: 'node',
