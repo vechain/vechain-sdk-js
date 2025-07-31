@@ -65,13 +65,10 @@ describe('WalletClient SOLO tests', () => {
             } satisfies PrepareTransactionRequestRequest;
 
             const account = privateKeyToAccount(`0x${fromKey}`);
-            const walletClient = createWalletClient(
-                {
-                    baseUrl: httpClient.baseURL,
-                    account
-                },
-                (url: URL) => FetchHttpClient.at(url)
-            );
+            const walletClient = createWalletClient({
+                network: httpClient.baseURL,
+                account
+            });
             const tx = walletClient.prepareTransactionRequest(request);
             const raw = await walletClient.signTransaction(tx);
             const txid = (await SendTransaction.of(raw.bytes).askTo(httpClient))
@@ -103,13 +100,10 @@ describe('WalletClient SOLO tests', () => {
             } satisfies PrepareTransactionRequestRequest;
 
             const account = privateKeyToAccount(`0x${fromKey}`);
-            const walletClient = createWalletClient(
-                {
-                    baseUrl: httpClient.baseURL,
-                    account
-                },
-                (url: URL) => FetchHttpClient.at(url)
-            );
+            const walletClient = createWalletClient({
+                network: httpClient.baseURL,
+                account
+            });
             const txid = await walletClient.sendTransaction(request);
             console.log(txid.toString());
         });

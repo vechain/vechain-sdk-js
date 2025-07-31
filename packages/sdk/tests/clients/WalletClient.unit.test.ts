@@ -65,13 +65,11 @@ describe('WalletClient UNIT tests', () => {
             const account = privateKeyToAccount(
                 `0x${TRANSACTION_SENDER.privateKey}`
             );
-            const walletClient = createWalletClient(
-                {
-                    baseUrl: MOCK_URL,
-                    account
-                },
-                (_: URL) => mockHttpClient({}, 'post')
-            );
+            const walletClient = createWalletClient({
+                network: MOCK_URL,
+                transport: mockHttpClient({}, 'post'),
+                account
+            });
             const request: PrepareTransactionRequestRequest = {
                 to: Address.of(transferClause.to as string),
                 value: Hex.of(transferClause.value),
@@ -138,13 +136,11 @@ describe('WalletClient UNIT tests', () => {
             const account = privateKeyToAccount(
                 `0x${TRANSACTION_SENDER.privateKey}`
             );
-            const walletClient = createWalletClient(
-                {
-                    baseUrl: MOCK_URL,
-                    account
-                },
-                (_: URL) => mockHttpClient({}, 'post')
-            );
+            const walletClient = createWalletClient({
+                network: MOCK_URL,
+                transport: mockHttpClient({}, 'post'),
+                account
+            });
             const tx = Transaction.of(txBody);
             const signedViem = await walletClient.signTransaction(tx);
             console.log(signedViem.toString());

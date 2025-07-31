@@ -2,6 +2,7 @@ import * as nc_utils from '@noble/curves/abstract/utils';
 import { type Account } from 'viem';
 import {
     SendTransaction,
+    type ThorNetworks,
     Transaction,
     type TransactionBody,
     type TransactionClause
@@ -17,7 +18,7 @@ import {
 } from '@vcdm';
 import { UnsupportedOperationError } from '@errors';
 import { FetchHttpClient, type HttpClient } from '@http';
-import { PublicClient } from '@clients/PublicClient';
+import { PublicClient, type PublicClientConfig } from '@clients/PublicClient';
 
 const FQP = 'packages/sdk/src/clients/WalletClient.ts!';
 
@@ -27,13 +28,13 @@ const FQP = 'packages/sdk/src/clients/WalletClient.ts!';
 const NO_DATA = Hex.PREFIX;
 
 function createWalletClient(parameters: WalletClientConfig): WalletClient {
-    return new WalletClient(
-        parameters.baseUrl,
-        parameters.account ?? null,
+    const transportLayer =
         parameters.transport ??
-            ((url: URL): HttpClient => {
-                return FetchHttpClient.at(url);
-            })
+        new FetchHttpClient(new URL(parameters.network));
+    return new WalletClient(
+        parameters.network,
+        transportLayer,
+        parameters.account ?? null
     );
 }
 
@@ -41,11 +42,11 @@ class WalletClient extends PublicClient {
     private readonly account: Account | null;
 
     constructor(
-        baseUrl: URL,
-        account: Account | null,
-        httpClientFactory: (url: URL) => HttpClient
+        network: URL | ThorNetworks,
+        transport: HttpClient,
+        account: Account | null
     ) {
-        super(baseUrl, httpClientFactory);
+        super(network, transport);
         this.account = account;
     }
 
@@ -136,11 +137,8 @@ class WalletClient extends PublicClient {
     }
 
     public async sendRawTransaction(raw: Hex): Promise<Hex> {
-        return (
-            await SendTransaction.of(raw.bytes).askTo(
-                this.httpClientFactory(this.baseUrl)
-            )
-        ).response.id;
+        return (await SendTransaction.of(raw.bytes).askTo(this.httpClient))
+            .response.id;
     }
 
     public async sendTransaction(
@@ -200,10 +198,8 @@ interface PrepareTransactionRequestRequest {
     nonce: number;
 }
 
-interface WalletClientConfig {
-    baseUrl: URL;
+interface WalletClientConfig extends PublicClientConfig {
     account?: Account;
-    transport?: (url: URL) => HttpClient;
 }
 
 export {
