@@ -31,7 +31,11 @@ import {
 import { type ExecuteCodesRequestJSON } from '@json';
 import { type EventLogFilterRequestJSON } from '@thor/logs/json';
 import { MozillaWebSocketClient, type WebSocketListener } from '@ws';
-import { handleAddressFilter, handleEventArgs, prepareBlockRange } from '@utils/filter-utils';
+import {
+    handleAddressFilter,
+    handleEventArgs,
+    prepareBlockRange
+} from '@utils/filter-utils';
 
 /**
  * Filter types for viem compatibility.
