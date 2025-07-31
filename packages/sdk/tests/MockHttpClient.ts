@@ -10,6 +10,7 @@ const mockHttpClient = <T>(
 ): HttpClient => {
     return {
         [httpMethod]: jest.fn().mockImplementation(async () => {
+            // noinspection ES6RedundantAwait
             return await Promise.resolve({
                 ok,
                 status,
@@ -27,6 +28,7 @@ const mockHttpClientWithError = (
     error: string,
     httpMethod: 'get' | 'post'
 ): HttpClient => {
+    // noinspection ES6RedundantAwait
     return {
         [httpMethod]: jest.fn(
             async () =>
