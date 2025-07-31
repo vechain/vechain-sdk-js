@@ -1,14 +1,16 @@
 import {
     type Address,
+    type BeatsSubscription,
     BlocksSubscription,
+    type EventLogResponse,
+    EventsSubscription,
     type ExecuteCodesResponse,
     type ExpandedBlockResponse,
-    EventsSubscription,
+    FetchHttpClient,
     type GetFeesHistoryResponse,
     type GetFeesPriorityResponse,
     type Hex,
     type HttpClient,
-    FetchHttpClient,
     InspectClauses,
     NewTransactionSubscription,
     QuerySmartContractEvents,
@@ -20,13 +22,11 @@ import {
     RetrieveRawBlock,
     RetrieveRegularBlock,
     Revision,
-    SuggestPriorityFee,
     type SubscriptionEventResponse,
+    SuggestPriorityFee,
     type ThorNetworks,
     type TransfersSubscription,
-    type EventLogResponse,
-    type TXID,
-    type BeatsSubscription
+    type TXID
 } from '@index';
 import { type ExecuteCodesRequestJSON } from '@json';
 import { type EventLogFilterRequestJSON } from '@thor/logs/json';
@@ -597,4 +597,9 @@ class PublicClient {
     }
 }
 
-export { PublicClient, createPublicClient, BlockReponseType };
+export {
+    PublicClient,
+    type PublicClientConfig,
+    createPublicClient,
+    BlockReponseType
+};
