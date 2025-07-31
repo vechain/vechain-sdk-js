@@ -1,11 +1,11 @@
 import { describe, expect, jest, test } from '@jest/globals';
-import { Hex, HexUInt32 } from '@vcdm';
+import { Hex, HexUInt32 } from '@common/vcdm';
 import {
     GetTxReceiptResponse,
     RetrieveTransactionReceipt,
     ThorError
 } from '@thor';
-import { type GetTxReceiptResponseJSON } from '@thor/json';
+import { type GetTxReceiptResponseJSON } from '@thor/thorest/json';
 import {
     mockHttpClient,
     mockHttpClientWithError

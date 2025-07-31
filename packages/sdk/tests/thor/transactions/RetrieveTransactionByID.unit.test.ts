@@ -1,9 +1,9 @@
 /**
  * @group unit/transactions
  */
-import { Hex, HexUInt32 } from '@vcdm';
+import { Hex, HexUInt32 } from '@common/vcdm';
 import { GetTxResponse, RetrieveTransactionByID, ThorError } from '@thor';
-import { type GetTxResponseJSON } from '@thor/json';
+import { type GetTxResponseJSON } from '@thor/thorest/json';
 import { expect } from '@jest/globals';
 import {
     mockHttpClient,

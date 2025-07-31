@@ -7,8 +7,8 @@
       "@sdk": ["./src/*"],
       "@thor": ["./src/thor"],
       "@thor/*": ["./src/thor/*"],
-      "@ws": ["./src/ws"],
-      "@ws/*": ["./src/ws/*"],
+      "@ws": ["src/thor/ws"],
+      "@ws/*": ["src/thor/ws/*"],
       "@http": ["./src/http"],
       "@http/*": ["./src/http/*"]
     }

@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { HexUInt } from '@vcdm';
+import { HexUInt } from '@common/vcdm';
 import { IllegalArgumentError } from '@errors';
 
 /**

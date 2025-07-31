@@ -1,12 +1,12 @@
 import { describe, expect, jest, test } from '@jest/globals';
-import { Address, HexUInt } from '@vcdm';
+import { Address, HexUInt } from '@common/vcdm';
 import {
     RetrieveContractBytecode,
     RetrieveContractBytecodePath,
     ContractBytecode,
     ThorError
 } from '@thor';
-import { type ContractBytecodeJSON } from '@thor/json';
+import { type ContractBytecodeJSON } from '@thor/thorest/json';
 import {
     mockHttpClient,
     mockHttpClientWithError

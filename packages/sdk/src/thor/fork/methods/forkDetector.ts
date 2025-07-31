@@ -1,4 +1,4 @@
-import { Revision } from '@vcdm';
+import { Revision } from '@common/vcdm';
 import { HttpClient } from '@http';
 import { ThorError } from '@thor';
 import { IllegalArgumentError } from '@errors';

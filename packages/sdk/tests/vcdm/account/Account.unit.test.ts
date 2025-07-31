@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { Address, Mnemonic, Account } from '@vcdm';
+import { Address, Mnemonic, Account } from '@common/vcdm';
 
 /**
  * Test Account class.

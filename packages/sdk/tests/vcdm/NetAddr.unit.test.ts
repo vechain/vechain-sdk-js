@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { IllegalArgumentError } from '@errors';
-import { NetAddr } from '@vcdm';
+import { NetAddr } from '@common/vcdm';
 
 /**
  * Test NetAddr class.

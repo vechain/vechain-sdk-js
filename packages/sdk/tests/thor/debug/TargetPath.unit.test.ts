@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { TargetPath } from '@thor/debug';
-import { Hex, IllegalArgumentError } from '@vcdm';
+import { Hex, IllegalArgumentError } from '@common/vcdm';
 
 /**
  * VeChain TargetPath - unit

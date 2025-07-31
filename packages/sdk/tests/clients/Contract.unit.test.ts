@@ -1,8 +1,8 @@
 import { describe, expect, test, jest } from '@jest/globals';
-import { getContract } from '../../src/clients/Contract';
+import { getContract } from '../../src/viem/clients/Contract';
 import type { Abi } from 'viem';
-import type { PublicClient } from '../../src/clients/PublicClient';
-import type { WalletClient } from '../../src/clients/WalletClient';
+import type { PublicClient } from '../../src/viem/clients/PublicClient';
+import type { WalletClient } from '../../src/viem/clients/WalletClient';
 
 // Example ERC20 ABI (simplified)
 const erc20Abi = [

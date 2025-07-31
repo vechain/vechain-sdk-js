@@ -1,7 +1,7 @@
 /**
  * @group integration/transactions
  */
-import { Hex, HexUInt32, Revision } from '@vcdm';
+import { Hex, HexUInt32, Revision } from '@common/vcdm';
 import {
     GetRawTxResponse,
     type RegularBlockResponse,

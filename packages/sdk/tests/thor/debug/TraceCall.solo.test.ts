@@ -6,7 +6,7 @@ import {
     ThorNetworks,
     TraceCall
 } from '@thor';
-import { Hex, Revision } from '@vcdm';
+import { Hex, Revision } from '@common/vcdm';
 
 /**
  * @group integration/debug

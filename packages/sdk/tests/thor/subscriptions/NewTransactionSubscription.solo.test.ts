@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, test } from '@jest/globals';
-import { MozillaWebSocketClient, type WebSocketListener } from '@ws';
+import { MozillaWebSocketClient, type WebSocketListener } from '@thor/ws';
 import { NewTransactionSubscription } from '@thor/subscriptions';
 import { type TXID } from '@thor';
 import log from 'loglevel';

@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { Hex, HexInt } from '@vcdm';
+import { Hex, HexInt } from '@common/vcdm';
 import { IllegalArgumentError, UnsupportedOperationError } from '@errors';
 
 /**

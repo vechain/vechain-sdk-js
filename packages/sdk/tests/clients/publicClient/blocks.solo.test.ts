@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { createPublicClient, BlockReponseType } from '../../../dist/index.js';
 import { ThorNetworks } from '@thor';
-import { Hex } from '@vcdm';
+import { Hex } from '@common/vcdm/index.js';
 import { FetchHttpClient } from '@index';
 
 /**

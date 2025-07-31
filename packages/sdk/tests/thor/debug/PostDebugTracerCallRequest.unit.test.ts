@@ -2,7 +2,7 @@
  * @group unit/debug
  */
 import { expect, test } from '@jest/globals';
-import { Address, HexUInt, IllegalArgumentError, UInt } from '@vcdm';
+import { Address, HexUInt, IllegalArgumentError, UInt } from '@common/vcdm';
 import {
     PostDebugTracerCallRequest,
     type PostDebugTracerCallRequestJSON

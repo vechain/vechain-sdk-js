@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import log from 'loglevel';
 import { BigNumber } from 'bignumber.js';
-import { FixedPointNumber, Txt } from '@vcdm';
+import { FixedPointNumber, Txt } from '@common/vcdm';
 import { IllegalArgumentError, UnsupportedOperationError } from '@errors';
 
 /**

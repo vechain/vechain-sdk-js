@@ -1,4 +1,4 @@
-import { Address } from '@vcdm';
+import { Address } from '@common/vcdm';
 import { IllegalArgumentError } from '@errors';
 import { describe, expect, test } from '@jest/globals';
 import { fail } from 'assert';

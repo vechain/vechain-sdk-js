@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { IllegalArgumentError, InvalidEncodingError } from '@errors';
-import { Hex, HexUInt, RLPProfiler, RLP } from '@vcdm';
+import { Hex, HexUInt, RLPProfiler, RLP } from '@common/vcdm';
 import {
     compactFixedHexBlobKindDecodeTestCases,
     compactFixedHexBlobKindEncodeTestCases,

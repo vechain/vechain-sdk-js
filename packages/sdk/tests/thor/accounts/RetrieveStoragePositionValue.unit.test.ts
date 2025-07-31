@@ -1,5 +1,5 @@
 import { describe, expect, jest, test } from '@jest/globals';
-import { Address, Hex, HexUInt32 } from '@vcdm';
+import { Address, Hex, HexUInt32 } from '@common/vcdm';
 import {
     RetrieveStoragePositionValue,
     RetrieveStoragePositionValuePath,
@@ -10,7 +10,7 @@ import {
     mockHttpClient,
     mockHttpClientWithError
 } from '../../MockHttpClient';
-import { GetStorageResponseJSON } from '@thor/json';
+import { GetStorageResponseJSON } from '@thor/thorest/json';
 /**
  * VeChain retrieve storage position value - unit
  *

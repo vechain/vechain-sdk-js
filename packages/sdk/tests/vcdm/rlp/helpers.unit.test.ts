@@ -10,7 +10,7 @@ import {
     encodeBigIntToBuffer,
     Hex,
     validateNumericKindData
-} from '@vcdm';
+} from '@common/vcdm';
 import {
     invalidCompactFixedHexBlobKindBufferTestCases,
     invalidFixedHexBlobKindBufferTestCases,

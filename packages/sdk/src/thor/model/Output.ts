@@ -1,4 +1,4 @@
-import { Address } from '@vcdm';
+import { Address } from '@common/vcdm';
 import { Event } from '@thor/model/Event';
 import { Transfer } from '@thor/model/Transfer';
 import { type OutputJSON, type EventJSON, type TransferJSON } from '@/json';

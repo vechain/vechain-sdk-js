@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { Revision } from '@vcdm';
+import { Revision } from '@common/vcdm';
 import { FetchHttpClient } from '@http';
 import {
     ExpandedBlockResponse,
@@ -7,7 +7,7 @@ import {
     ThorError,
     ThorNetworks
 } from '@thor';
-import { type ExpandedBlockResponseJSON } from '@thor/json';
+import { type ExpandedBlockResponseJSON } from '@thor/thorest/json';
 
 class InvalidRevision extends Revision {
     constructor() {

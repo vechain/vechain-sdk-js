@@ -2,7 +2,7 @@ import { describe, expect, jest, test } from '@jest/globals';
 import { GetTxPoolStatus } from '@thor';
 import { type HttpClient } from '@http';
 import { Status } from '@thor';
-import { type StatusJSON } from '@thor/json';
+import { type StatusJSON } from '@thor/thorest/json';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 const mockHttpClient = <T>(response: T): HttpClient => {

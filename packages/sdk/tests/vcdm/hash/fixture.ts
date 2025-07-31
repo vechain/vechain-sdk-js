@@ -1,4 +1,4 @@
-import { Hex, Txt } from '@vcdm';
+import { Hex, Txt } from '@common/vcdm';
 
 const CONTENT = Hex.of(
     Txt.of('Hello world - Здравствуйте - こんにちは!').bytes

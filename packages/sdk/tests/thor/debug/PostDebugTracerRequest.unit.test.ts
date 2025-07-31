@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { PostDebugTracerRequest, type PostDebugTracerRequestJSON } from '@thor';
-import { IllegalArgumentError } from '@vcdm';
+import { IllegalArgumentError } from '@common/vcdm';
 
 /**
  * @group unit/debug

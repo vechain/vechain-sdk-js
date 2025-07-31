@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { RetrieveAccountDetails, ThorNetworks } from '@thor';
 import { FetchHttpClient } from '@http';
-import { Address, Hex } from '@vcdm';
+import { Address, Hex } from '@common/vcdm';
 
 /**
  * VeChain retrieve account details - solo

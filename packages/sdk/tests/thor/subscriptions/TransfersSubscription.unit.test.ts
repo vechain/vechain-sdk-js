@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
-import { MozillaWebSocketClient, type WebSocketListener } from '@ws';
+import { MozillaWebSocketClient, type WebSocketListener } from '@thor/ws';
 import {
     TransfersSubscription,
     SubscriptionTransferResponse
 } from '@thor/subscriptions';
-import { Address, type Hex, HexUInt32 } from '@vcdm';
+import { Address, type Hex, HexUInt32 } from '@common/vcdm';
 import { type LogMetaJSON } from '@json';
 import { type SubscriptionTransferResponseJSON } from '@thor/subscriptions';
 import {

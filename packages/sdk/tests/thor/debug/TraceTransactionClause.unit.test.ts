@@ -3,7 +3,7 @@ import {
     type PostDebugTracerRequestJSON,
     TraceTransactionClause
 } from '@thor/debug';
-import { IllegalArgumentError } from '@vcdm';
+import { IllegalArgumentError } from '@common/vcdm';
 import type { HttpClient } from '@http';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { ThorError } from '@thor';

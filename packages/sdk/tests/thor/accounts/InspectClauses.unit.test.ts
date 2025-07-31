@@ -3,8 +3,8 @@ import { InspectClauses } from '@thor';
 import {
     type ExecuteCodeResponseJSON,
     type ExecuteCodesRequestJSON
-} from '@thor/json';
-import { HexUInt } from '@vcdm';
+} from '@thor/thorest/json';
+import { HexUInt } from '@common/vcdm';
 import { mockHttpClient } from '../../MockHttpClient';
 
 /**

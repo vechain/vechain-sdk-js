@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { StorageRange } from '@thor/debug';
-import { HexUInt32 } from '@vcdm';
+import { HexUInt32 } from '@common/vcdm';
 import { type StorageRangeJSON } from '@thor/debug/json';
 
 /**

@@ -1,10 +1,10 @@
 import { describe, expect, test } from '@jest/globals';
-import { Address, HexUInt, Mnemonic, type WordlistSizeType } from '@vcdm';
+import { Address, HexUInt, Mnemonic, type WordlistSizeType } from '@common/vcdm';
 
 import { IllegalArgumentError } from '@errors';
-import { Secp256k1 } from '@secp256k1';
-import { HDKey } from '@hdkey';
-import { ZERO_BYTES } from '@utils';
+import { Secp256k1 } from '@common/cryptography/secp256k1';
+import { HDKey } from '@common/cryptography/hdkey';
+import { ZERO_BYTES } from '@thor/utils';
 
 const HDKeyFixture = {
     /**

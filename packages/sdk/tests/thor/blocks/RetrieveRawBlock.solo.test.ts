@@ -1,8 +1,8 @@
-import { Revision } from '@vcdm';
+import { Revision } from '@common/vcdm';
 import { FetchHttpClient } from '@http';
 import { RawTx, RetrieveRawBlock, ThorError, ThorNetworks } from '@thor';
 import { expect } from '@jest/globals';
-import { type RawTxJSON } from '@thor/json';
+import { type RawTxJSON } from '@thor/thorest/json';
 
 class InvalidRevision extends Revision {
     constructor() {

@@ -8,7 +8,7 @@ import {
     OptionalFixedHexBlobKind,
     type RLPProfile,
     type RLPValidObject
-} from '@vcdm';
+} from '@common/vcdm';
 
 /* Simple encode */
 const encodeTestCases = [

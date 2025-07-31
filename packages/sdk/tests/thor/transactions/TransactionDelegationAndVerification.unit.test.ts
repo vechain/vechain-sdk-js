@@ -1,9 +1,9 @@
 import { describe, expect, test } from '@jest/globals';
-import { Address, BlockRef, HexUInt } from '@vcdm';
+import { Address, BlockRef, HexUInt } from '@common/vcdm';
 import { ClauseBuilder, Transaction, type TransactionBody } from '@thor';
-import { networkInfo } from '@utils';
-import { Secp256k1 } from '@secp256k1';
-import { type GetTxReceiptResponseJSON, type TXIDJSON } from '@thor/json';
+import { networkInfo } from '@thor/utils';
+import { Secp256k1 } from '@common/cryptography/secp256k1';
+import { type GetTxReceiptResponseJSON, type TXIDJSON } from '@thor/thorest/json';
 import { type HttpPath } from '@http';
 import { mockHttpClient } from '../../MockHttpClient';
 import { secp256k1 as nc_secp256k1 } from '@noble/curves/secp256k1';

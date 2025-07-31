@@ -1,12 +1,12 @@
 import { describe, expect, jest, test } from '@jest/globals';
-import { Address, VET, VTHO } from '@vcdm';
+import { Address, VET, VTHO } from '@common/vcdm';
 import {
     RetrieveAccountDetails,
     RetrieveAccountDetailsPath,
     GetAccountResponse,
     ThorError
 } from '@thor';
-import { type GetAccountResponseJSON } from '@thor/json';
+import { type GetAccountResponseJSON } from '@thor/thorest/json';
 import {
     mockHttpClient,
     mockHttpClientWithError

@@ -1,6 +1,6 @@
 import { beforeAll, expect, test } from '@jest/globals';
 import { FetchHttpClient } from '@http';
-import { Hex, HexUInt32, Revision } from '@vcdm';
+import { Hex, HexUInt32, Revision } from '@common/vcdm';
 import {
     GetTxReceiptResponse,
     type RegularBlockResponse,

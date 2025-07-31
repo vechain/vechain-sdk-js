@@ -1,13 +1,13 @@
 import { expect } from '@jest/globals';
 import { FetchHttpClient } from '@http';
-import { Revision } from '@vcdm';
+import { Revision } from '@common/vcdm';
 import {
     RegularBlockResponse,
     RetrieveRegularBlock,
     ThorError,
     ThorNetworks
 } from '@thor';
-import { type RegularBlockResponseJSON } from '@thor/json';
+import { type RegularBlockResponseJSON } from '@thor/thorest/json';
 
 class InvalidRevision extends Revision {
     constructor() {

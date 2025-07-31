@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { TextEncoder } from 'util';
-import { Txt } from '@vcdm';
+import { Txt } from '@common/vcdm';
 import { UnsupportedOperationError } from '@errors';
 
 const TEXT_ENCODER = new TextEncoder();

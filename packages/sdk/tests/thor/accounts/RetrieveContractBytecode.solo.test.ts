@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { Address } from '@vcdm';
+import { Address } from '@common/vcdm';
 import { RetrieveContractBytecode, ThorNetworks } from '@thor';
 import { FetchHttpClient } from '@http';
 

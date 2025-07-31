@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
-import { MozillaWebSocketClient, type WebSocketListener } from '@ws';
+import { MozillaWebSocketClient, type WebSocketListener } from '@thor/ws';
 import {
     BlocksSubscription,
     SubscriptionBlockResponse
 } from '@thor/subscriptions';
-import { HexUInt32 } from '@vcdm';
+import { HexUInt32 } from '@common/vcdm';
 import {
     mockWebSocketInstance,
     mockWebSocketConstructor

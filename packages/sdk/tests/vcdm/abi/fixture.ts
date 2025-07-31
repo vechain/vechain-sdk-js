@@ -1,4 +1,4 @@
-import { Address, Hex, HexUInt } from '@vcdm';
+import { Address, Hex, HexUInt } from '@common/vcdm';
 import { generateRandomValidAddress } from '../../fixture';
 
 /**

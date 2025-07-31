@@ -1,5 +1,5 @@
 import * as n_utils from '@noble/curves/abstract/utils';
-import { Keccak256, Txt } from '@vcdm';
+import { Keccak256, Txt } from '@common/vcdm';
 
 /**
  * Simple public key and private key pair with corresponding signature

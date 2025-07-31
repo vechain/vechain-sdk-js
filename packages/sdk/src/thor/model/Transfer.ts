@@ -1,4 +1,4 @@
-import { Address, HexUInt, UInt } from '@vcdm';
+import { Address, HexUInt, UInt } from '@common/vcdm';
 import { type TransferJSON } from '@/json';
 import { IllegalArgumentError } from '@errors';
 

@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { Address, Hex } from '@vcdm';
+import { Address, Hex } from '@common/vcdm';
 import { StorageRangeOption, type StorageRangeOptionJSON } from '@thor';
 
 /**

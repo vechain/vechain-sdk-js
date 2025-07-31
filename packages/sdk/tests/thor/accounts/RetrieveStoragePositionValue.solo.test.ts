@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { Address, HexUInt32 } from '@vcdm';
+import { Address, HexUInt32 } from '@common/vcdm';
 import { RetrieveStoragePositionValue, ThorNetworks, toURL } from '@thor';
 import { FetchHttpClient } from '@http';
 

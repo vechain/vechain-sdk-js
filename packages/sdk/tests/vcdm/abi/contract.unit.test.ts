@@ -10,7 +10,7 @@ import {
     encodeEventTopics,
     decodeEventLog,
 } from 'viem';
-import { ERC721_ABI } from '@utils';
+import { ERC721_ABI } from '@thor/utils';
 import {
     contractABI,
     contractABIWithEvents,

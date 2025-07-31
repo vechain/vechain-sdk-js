@@ -1,9 +1,9 @@
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { expect, jest } from '@jest/globals';
 import { RawTx, RetrieveRawBlock, ThorError } from '@thor';
-import { Revision } from '@vcdm';
+import { Revision } from '@common/vcdm';
 import { type HttpClient } from '@http';
-import { RawTxJSON } from '@thor/json';
+import { RawTxJSON } from '@thor/thorest/json';
 
 class InvalidRevision extends Revision {
     constructor() {

@@ -1,4 +1,4 @@
-import { Address, HexUInt, type Hex } from '@vcdm';
+import { Address, HexUInt, type Hex } from '@common/vcdm';
 import { type EventJSON } from '@/json';
 import { IllegalArgumentError } from '@errors';
 

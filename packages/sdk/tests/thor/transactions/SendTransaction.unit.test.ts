@@ -4,10 +4,10 @@ import {
     TXID,
     ClauseBuilder
 } from '@thor';
-import { type RegularBlockResponseJSON, type TXIDJSON } from '@thor/json';
-import { Address, BlockRef, HexUInt, Revision } from '@vcdm';
+import { type RegularBlockResponseJSON, type TXIDJSON } from '@thor/thorest/json';
+import { Address, BlockRef, HexUInt, Revision } from '@common/vcdm';
 import { Transaction, type TransactionBody } from '@thor/model';
-import { SOLO_NETWORK } from '@utils';
+import { SOLO_NETWORK } from '@thor/utils';
 import { TEST_ACCOUNTS } from '../../fixture';
 import { expect } from '@jest/globals';
 import { mockHttpClient } from '../../MockHttpClient';

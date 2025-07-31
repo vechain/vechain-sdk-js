@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { HexUInt, BlockRef } from '@vcdm';
+import { HexUInt, BlockRef } from '@common/vcdm';
 import { IllegalArgumentError } from '@errors';
 
 const BlockRefFixture = {

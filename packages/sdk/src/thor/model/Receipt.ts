@@ -1,4 +1,4 @@
-import { Address, HexUInt, Quantity, UInt } from '@vcdm';
+import { Address, HexUInt, Quantity, UInt } from '@common/vcdm';
 import { Output } from '@thor/model/Output';
 import { type ReceiptJSON, type OutputJSON } from '@/json';
 import { IllegalArgumentError } from '@errors';

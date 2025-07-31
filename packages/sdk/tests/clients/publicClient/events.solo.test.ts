@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { createPublicClient, BlockReponseType } from '../../../dist/index.js';
 import { ThorNetworks } from '@thor';
-import { Address, Hex } from '@vcdm';
+import { Address, Hex } from '@common/vcdm/index.js';
 
 /**
  * Test suite for PublicClient event/log-related functionality

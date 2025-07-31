@@ -1,13 +1,13 @@
 import { describe, expect, test } from '@jest/globals';
-import { HexUInt } from '@vcdm';
+import { HexUInt } from '@common/vcdm';
 import {
     IllegalArgumentError,
     InvalidMessageHashError,
     InvalidPrivateKeyError,
     InvalidSignatureError
 } from '@errors';
-import { Secp256k1 } from '@secp256k1';
-import { ZERO_BYTES } from '@utils';
+import { Secp256k1 } from '@common/cryptography/secp256k1';
+import { ZERO_BYTES } from '@thor/utils';
 import {
     invalidMessageHashes,
     messageHashBuffer,

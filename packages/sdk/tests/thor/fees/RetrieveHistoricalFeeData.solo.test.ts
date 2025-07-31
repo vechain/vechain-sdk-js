@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { type Hex, Revision } from '@vcdm';
+import { type Hex, Revision } from '@common/vcdm';
 import { FetchHttpClient } from '@http';
 import {
     GetFeesHistoryResponse,
