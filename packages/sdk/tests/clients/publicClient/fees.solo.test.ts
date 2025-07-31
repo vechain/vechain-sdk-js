@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { createPublicClient } from '../../../dist/index.js';
+import { createPublicClient } from '@clients';
 import { ThorNetworks } from '@thor';
 import { type ExecuteCodesRequestJSON } from '@json';
 
