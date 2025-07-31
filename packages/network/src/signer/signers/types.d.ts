@@ -1,4 +1,4 @@
-import { type TransactionClause } from '@vechain/sdk-core';
+import { type Revision, type TransactionClause } from '@vechain/sdk-core';
 import type {
     TypedDataDomain as viemTypedDataDomain,
     TypedDataParameter as viemTypedDataParameter
@@ -339,7 +339,7 @@ interface VeChainSigner {
      */
     call: (
         transactionToEvaluate: TransactionRequestInput,
-        revision?: string
+        revision?: Revision
     ) => Promise<string>;
 
     /**

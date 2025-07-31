@@ -55,7 +55,7 @@ const ethCall = async (
                 } satisfies SimulateTransactionClause
             ],
             {
-                revision: DefaultBlockToRevision(block).toString(),
+                revision: DefaultBlockToRevision(block),
                 gas:
                     inputOptions.gas !== undefined
                         ? parseInt(inputOptions.gas, 16)
