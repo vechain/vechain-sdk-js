@@ -1,7 +1,7 @@
 import { type HttpClient, type HttpPath } from '@http';
 import { GetAccountResponse } from '@thor/accounts';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
-import { type Address } from '@vcdm';
+import { type Revision, type Address } from '@vcdm';
 import { type GetAccountResponseJSON } from '../json';
 
 /**
@@ -75,22 +75,27 @@ class RetrieveAccountDetails
         );
     }
 
-    static of(address: Address): RetrieveAccountDetails {
+    static of(address: Address, revision?: Revision): RetrieveAccountDetails {
         return new RetrieveAccountDetails(
-            new RetrieveAccountDetailsPath(address)
+            new RetrieveAccountDetailsPath(address, revision)
         );
     }
 }
 
 class RetrieveAccountDetailsPath implements HttpPath {
     readonly address: Address;
+    readonly revision?: Revision;
 
-    constructor(address: Address) {
+    constructor(address: Address, revision?: Revision) {
         this.address = address;
+        this.revision = revision;
     }
 
     get path(): string {
-        return `/accounts/${this.address}`;
+        if (this.revision == null) {
+            return `/accounts/${this.address}`;
+        }
+        return `/accounts/${this.address}?revision=${this.revision}`;
     }
 }
 

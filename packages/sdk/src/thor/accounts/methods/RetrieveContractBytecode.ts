@@ -1,5 +1,5 @@
 import { type HttpClient, type HttpPath } from '@http';
-import type { Address } from '@vcdm';
+import type { Address, Revision } from '@vcdm';
 import { type ContractBytecodeJSON } from '@thor/json';
 import { ContractBytecode } from '@thor';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
@@ -81,9 +81,9 @@ class RetrieveContractBytecode
      * @param {Address} address - The address used to generate the contract bytecode's path.
      * @return {RetrieveContractBytecode} A new instance of RetrieveContractBytecode with the specified path.
      */
-    static of(address: Address): RetrieveContractBytecode {
+    static of(address: Address, revision?: Revision): RetrieveContractBytecode {
         return new RetrieveContractBytecode(
-            new RetrieveContractBytecodePath(address)
+            new RetrieveContractBytecodePath(address, revision)
         );
     }
 }
@@ -100,10 +100,16 @@ class RetrieveContractBytecodePath implements HttpPath {
     readonly address: Address;
 
     /**
+     * Represents the revision of the block.
+     */
+    readonly revision?: Revision;
+
+    /**
      * Constructs an instance of the class with the specified address.
      */
-    constructor(address: Address) {
+    constructor(address: Address, revision?: Revision) {
         this.address = address;
+        this.revision = revision;
     }
 
     /**
@@ -112,7 +118,10 @@ class RetrieveContractBytecodePath implements HttpPath {
      * @returns {string} The path for retrieving the bytecode of a contract.
      */
     get path(): string {
-        return `/accounts/${this.address}/code`;
+        if (this.revision == null) {
+            return `/accounts/${this.address}/code`;
+        }
+        return `/accounts/${this.address}/code?revision=${this.revision}`;
     }
 }
 
