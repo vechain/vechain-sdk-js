@@ -1,7 +1,7 @@
 import { type HttpClient, type HttpPath, type HttpQuery } from '@http';
 import { GetAccountResponse } from '@thor/accounts';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
-import { type Address, Revision } from '@vcdm';
+import { type Address, type Revision } from '@vcdm';
 import { type GetAccountResponseJSON } from '../json';
 
 /**
@@ -33,7 +33,10 @@ class RetrieveAccountDetails
      * @param {HttpPath} path - The HTTP path to initialize the instance with.
      * @param {RetrieveAccountDetailsQuery} query - The HTTP query to initialize the instance with.
      */
-    protected constructor(path: RetrieveAccountDetailsPath, query: RetrieveAccountDetailsQuery) {
+    protected constructor(
+        path: RetrieveAccountDetailsPath,
+        query: RetrieveAccountDetailsQuery
+    ) {
         this.path = path;
         this.query = query;
     }
@@ -92,13 +95,18 @@ class RetrieveAccountDetails
 
 class RetrieveAccountDetailsPath implements HttpPath {
     readonly address: Address;
+    readonly revision?: Revision;
 
-    constructor(address: Address) {
+    constructor(address: Address, revision?: Revision) {
         this.address = address;
+        this.revision = revision;
     }
 
     get path(): string {
-        return `/accounts/${this.address}`;
+        if (this.revision == null) {
+            return `/accounts/${this.address}`;
+        }
+        return `/accounts/${this.address}?revision=${this.revision}`;
     }
 }
 
@@ -132,4 +140,8 @@ class RetrieveAccountDetailsQuery implements HttpQuery {
     }
 }
 
-export { RetrieveAccountDetails, RetrieveAccountDetailsPath, RetrieveAccountDetailsQuery }; 
+export {
+    RetrieveAccountDetails,
+    RetrieveAccountDetailsPath,
+    RetrieveAccountDetailsQuery
+};

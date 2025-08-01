@@ -49,6 +49,7 @@ import {
     handleEventArgs,
     prepareBlockRange
 } from '@utils/filter-utils';
+import { ThorClient } from '@thor/thor-client/ThorClient';
 
 /**
  * Filter types for viem compatibility.
@@ -123,10 +124,12 @@ function createPublicClient({
 class PublicClient {
     readonly network: URL | ThorNetworks;
     protected readonly httpClient: HttpClient;
+    protected readonly thorClient: ThorClient;
 
     constructor(network: URL | ThorNetworks, transport: HttpClient) {
         this.network = network;
         this.httpClient = transport;
+        this.thorClient = ThorClient.at(this.httpClient);
     }
 
     public async getBalance(address: Address): Promise<bigint> {
