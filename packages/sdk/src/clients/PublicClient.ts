@@ -148,6 +148,8 @@ class PublicClient {
                 Revision.of(revision)
             ).askTo(this.httpClient);
             return data.response;
+
+            // TO DO: throw the viem error here, check for null and inform
         }
     }
 
