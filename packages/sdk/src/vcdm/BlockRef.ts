@@ -8,7 +8,7 @@ import { IllegalArgumentError } from '@errors';
 const FQP = 'packages/sdk/src/vcdm/BlockRef.ts!';
 
 /**
- * The BlockRef class represents a Thor block ID value, which is a hexadecimal positive integer having 64 digits.
+ * The BlockRef class represents the 8 most significant bytes of a Thor block identifier (32 bytes long).
  *
  * @extends HexInt
  */
@@ -25,7 +25,7 @@ class BlockRef extends HexUInt {
     /**
      * Constructs a BlockRef object with the provided hexadecimal value.
      *
-     * @param {HexUInt} huint - The hexadecimal value representing the BlockId.
+     * @param {HexUInt} huint - Hexadecimal value representing the block reference (16-digits hex).
      */
     protected constructor(huint: HexUInt) {
         super(Hex.POSITIVE, huint.fit(BlockRef.DIGITS).digits);
@@ -58,12 +58,14 @@ class BlockRef extends HexUInt {
     /**
      * Creates a new BlockRef object from the given expression.
      *
+     * This method returns the 8 most significant bytes of the `exp`.
+     *
      * @param {bigint | number | string | Hex | Uint8Array} exp - The expression to create the BlockRef from.
      *     It can be one of the following types:
      *     - bigint: A BigInteger value that represents the BlockRef.
      *     - number: A number value that represents the BlockRef.
      *     - string: A string value that represents the BlockRef.
-     *     - HexUInt: A HexUInt object that represents the BlockRef.
+     *     - Hex: A HexUInt object that represents the BlockRef.
      *     - Uint8Array: A Uint8Array object that represents the BlockRef.
      *
      * @returns {BlockRef} - A new BlockRef object created from the given expression.
@@ -71,16 +73,16 @@ class BlockRef extends HexUInt {
      * @throws {IllegalArgumentError} If the given expression is not a valid hexadecimal positive integer expression.
      */
     public static of(
-        exp: bigint | number | string | Uint8Array | HexUInt
+        exp: bigint | number | string | Uint8Array | Hex
     ): BlockRef {
         try {
-            if (exp instanceof HexUInt) {
-                return new BlockRef(exp);
-            }
-            return new BlockRef(HexUInt.of(exp));
+            const hex = exp instanceof Hex ? exp : HexUInt.of(exp); // Throw if not a positive integer expression.
+            return new BlockRef(
+                HexUInt.of(hex.digits.slice(0, BlockRef.DIGITS)) // Take the most significant 8 bytes of the `0x` prefixed expression.
+            );
         } catch (e) {
             throw new IllegalArgumentError(
-                `${FQP}BlockRef.of(exp: bigint | number | string | Uint8Array | HexUInt): BlockRef`,
+                `${FQP}BlockRef.of(exp: bigint | number | string | Uint8Array | Hex): BlockRef`,
                 'not a BlockRef expression',
                 { exp: `${exp}` }, // Needed to serialize bigint values.
                 e instanceof Error ? e : undefined

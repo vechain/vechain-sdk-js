@@ -4,7 +4,7 @@ import {
     SubscriptionBlockResponse,
     type SubscriptionBlockResponseJSON
 } from '@thor/subscriptions';
-import { type BlockId } from '@vcdm';
+import { type Hex } from '@vcdm';
 import { ThorError } from '@thor';
 
 /**
@@ -83,7 +83,7 @@ class BlocksSubscription
      * @param {WebSocketClient} wsc - The WebSocket client to initialize the instance with.
      * @param {BlockSubscriptionQuery} query - The query to initialize the instance with.
      */
-    atPos(pos?: BlockId): BlocksSubscription {
+    atPos(pos?: Hex): BlocksSubscription {
         return new BlocksSubscription(
             this.wsc,
             new BlockSubscriptionQuery(pos ?? this.query.pos)
@@ -206,14 +206,14 @@ class BlockSubscriptionQuery implements HttpQuery {
     /**
      * Represents the position for the blocks subscription.
      */
-    readonly pos?: BlockId;
+    readonly pos?: Hex;
 
     /**
      * Constructs an instance of the class with the specified position.
      *
-     * @param {BlockId} pos - The position to initialize the instance with.
+     * @param {Hex} pos - The position to initialize the instance with.
      */
-    constructor(pos?: BlockId) {
+    constructor(pos?: Hex) {
         this.pos = pos;
     }
 

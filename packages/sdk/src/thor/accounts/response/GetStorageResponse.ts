@@ -1,5 +1,5 @@
-import { GetStorageResponseJSON } from '../json';
-import { ThorId } from '@vcdm';
+import { type GetStorageResponseJSON } from '../json';
+import { type Hex, HexUInt32 } from '@vcdm';
 import { IllegalArgumentError } from '@errors';
 
 /**
@@ -18,7 +18,7 @@ class GetStorageResponse {
     /**
      * The value at the storage position.
      */
-    readonly value: ThorId;
+    readonly value: Hex;
 
     /**
      * Constructs a new instance of the class by parsing the provided JSON object.
@@ -28,7 +28,7 @@ class GetStorageResponse {
      */
     constructor(json: GetStorageResponseJSON) {
         try {
-            this.value = ThorId.of(json.value);
+            this.value = HexUInt32.of(json.value);
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: GetStorageResponseJSON)`,

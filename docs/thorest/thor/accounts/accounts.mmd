@@ -35,7 +35,7 @@ classDiagram
     }
     class RetrieveStoragePositionValue {
         RetrieveStoragePositionValuePath path
-        RetrieveStoragePositionValue of(Address address, BlockId key)$
+        RetrieveStoragePositionValue of(Address address, Hex key)$
         ThorResponse~RetrieveStoragePositionValue, GetStorageResponse~ askTo(HttpClient httpClient)
     }
     class InspectClauses {
@@ -57,7 +57,7 @@ classDiagram
         ContractBytecodeJSON toJSON()
     }
     class GetStorageResponse {
-        ThorId value
+        Hex value
         GetStorageResponseJSON toJSON()
     }
     class ExecuteCodesResponse {
@@ -75,7 +75,7 @@ classDiagram
     class ExecuteCodesRequest {
         string provedWork
         Address gasPayer
-        UInt expiration
+        number expiration
         BlockRef blockRef
         Clause[] clauses
         bigint gas
@@ -93,7 +93,7 @@ classDiagram
     }
     class RetrieveStoragePositionValuePath {
         Address address
-        BlockId key
+        Hex key
         string path
     }
     class InspectClauseQuery {

@@ -21,12 +21,12 @@ class TxMeta {
     /**
      * The block number (height) of the block in which the transaction was included.
      */
-    readonly blockNumber: UInt;
+    readonly blockNumber: number;
 
     /**
      * The UNIX timestamp of the block in which the transaction was included.
      */
-    readonly blockTimestamp: UInt;
+    readonly blockTimestamp: number;
 
     /**
      * Constructs an instance of the class using the provided JSON object.
@@ -37,8 +37,8 @@ class TxMeta {
     constructor(json: TxMetaJSON) {
         try {
             this.blockID = HexUInt32.of(json.blockID);
-            this.blockNumber = UInt.of(json.blockNumber);
-            this.blockTimestamp = UInt.of(json.blockTimestamp);
+            this.blockNumber = UInt.of(json.blockNumber).valueOf();
+            this.blockTimestamp = UInt.of(json.blockTimestamp).valueOf();
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: ClauseJSON)`,
@@ -57,8 +57,8 @@ class TxMeta {
     toJSON(): TxMetaJSON {
         return {
             blockID: this.blockID.toString(),
-            blockNumber: this.blockNumber.valueOf(),
-            blockTimestamp: this.blockTimestamp.valueOf()
+            blockNumber: this.blockNumber,
+            blockTimestamp: this.blockTimestamp
         } satisfies TxMetaJSON;
     }
 }
