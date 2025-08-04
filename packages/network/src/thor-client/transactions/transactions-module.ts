@@ -695,7 +695,7 @@ class TransactionsModule {
         if (
             revision !== undefined &&
             revision !== null &&
-            !Revision.isValid(revision)
+            !Revision.isValid(revision.toString())
         ) {
             throw new InvalidDataType(
                 'TransactionsModule.simulateTransaction()',
@@ -706,9 +706,9 @@ class TransactionsModule {
 
         return (await this.blocksModule.httpClient.http(
             HttpMethod.POST,
-            thorest.accounts.post.SIMULATE_TRANSACTION(revision),
+            thorest.accounts.post.SIMULATE_TRANSACTION(revision?.toString()),
             {
-                query: buildQuery({ revision }),
+                query: buildQuery({ revision: revision?.toString() }),
                 body: {
                     clauses: await this.resolveNamesInClauses(
                         clauses.map((clause) => {
