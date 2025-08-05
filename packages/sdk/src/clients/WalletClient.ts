@@ -27,15 +27,13 @@ const FQP = 'packages/sdk/src/clients/WalletClient.ts!';
  */
 const NO_DATA = Hex.PREFIX;
 
-function createWalletClient(parameters: WalletClientConfig): WalletClient {
-    const transportLayer =
-        parameters.transport ??
-        new FetchHttpClient(new URL(parameters.network));
-    return new WalletClient(
-        parameters.network,
-        transportLayer,
-        parameters.account ?? null
-    );
+function createWalletClient({
+    network,
+    transport,
+    account
+}: WalletClientConfig): WalletClient {
+    const transportLayer = transport ?? new FetchHttpClient(new URL(network));
+    return new WalletClient(network, transportLayer, account ?? null);
 }
 
 class WalletClient extends PublicClient {
