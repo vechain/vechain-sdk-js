@@ -27,11 +27,15 @@ class KeyManager {
     }
     
     // Create account from HD wallet
-    createAccount(index: number = 0) {
+    createAccount(index: number = 0): {
+        privateKey: Uint8Array;
+        address: string;
+        clear: () => void;
+    } {
         const child = this.hdNode.deriveChild(index);
         const privateKey = child.privateKey as Uint8Array;
         const address = Address.ofPublicKey(child.publicKey as Uint8Array);
-        
+
         return {
             privateKey,
             address: address.toString(),
@@ -41,10 +45,16 @@ class KeyManager {
     }
     
     // Recover account from mnemonic - more secure than keystore
-    getAccountFromMnemonic(mnemonicWords: string[], index: number = 0) {
+    getAccountFromMnemonic(
+        mnemonicWords: string[],
+        index: number = 0
+    ): {
+        privateKey: Uint8Array;
+        address: string;
+    } {
         const hdNode = HDKey.fromMnemonic(mnemonicWords);
         const child = hdNode.deriveChild(index);
-        
+
         return {
             privateKey: child.privateKey as Uint8Array,
             address: Address.ofPublicKey(child.publicKey as Uint8Array).toString()
@@ -57,16 +67,21 @@ class KeyManager {
     }
     
     // Method to sign transactions
-    signTransaction(transaction: Transaction, privateKey: Uint8Array) {
+    signTransaction(
+        transaction: Transaction,
+        privateKey: Uint8Array
+    ): Transaction {
         if (!this.validatePrivateKey(privateKey)) {
             throw new Error('Invalid private key');
         }
-        
-        const signedTx = transaction.sign(privateKey);
-        
-        // Clear memory
-        privateKey.fill(0);
-        
+
+        // Create a copy of the private key to avoid modifying the original
+        const privateKeyCopy = new Uint8Array(privateKey);
+        const signedTx = transaction.sign(privateKeyCopy);
+
+        // Clear memory of the copy
+        privateKeyCopy.fill(0);
+
         return signedTx;
     }
 }
@@ -157,7 +172,7 @@ describe('Key Management Tests', () => {
     describe('Transaction Signing', () => {
         test('should sign transaction correctly', () => {
             const account = keyManager.createAccount(0);
-            
+
             // Create a simple transaction
             const transaction = Transaction.of({
                 chainTag: 1,
@@ -169,12 +184,14 @@ describe('Key Management Tests', () => {
                 dependsOn: null,
                 nonce: 1
             });
-            
+
             const signedTx = keyManager.signTransaction(transaction, account.privateKey);
-            
+
             expect(signedTx.signature).toBeDefined();
-            expect(signedTx.signature!.length).toBeGreaterThan(0);
-            
+            if (signedTx.signature) {
+                expect(signedTx.signature.length).toBeGreaterThan(0);
+            }
+
             // Verify the signature is valid
             expect(signedTx.isSigned).toBe(true);
         });
