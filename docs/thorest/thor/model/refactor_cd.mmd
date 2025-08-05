@@ -49,6 +49,8 @@ classDiagram
         number nonce
     %% reserved.unused
         Uint8Array[]|null reserved
+    %% methods
+        boolean isValid()
         TransactionRequest of(TxRequestJSON json)$
         TxRequestJSON toJSON()
     }
