@@ -3,7 +3,6 @@ export * from './certificate';
 export * from './errors';
 export * from './hdkey';
 export * from './http';
-export * from './keystore';
 export * from './secp256k1';
 export * from './thor';
 export * from './utils';

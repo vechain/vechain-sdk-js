@@ -13,8 +13,6 @@ export default defineConfig({
             '@certificate': resolve(__dirname, './src/certificate'),
             '@transaction': resolve(__dirname, './src/transaction'),
             '@hdkey': resolve(__dirname, './src/hdkey'),
-            '@keystore': resolve(__dirname, './src/keystore'),
-            '@cryptography': resolve(__dirname, './src/keystore/cryptography'),
             '@secp256k1': resolve(__dirname, './src/secp256k1'),
             '@utils': resolve(__dirname, './src/utils'),
             '@http': resolve(__dirname, './src/http'),
