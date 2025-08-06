@@ -7,7 +7,7 @@ import {
 } from './types';
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { HttpMethod, type HttpClient } from '../../http';
-import { Revision } from '@vechain/sdk-core';
+import { HexUInt, Revision } from '@vechain/sdk-core';
 import { thorest } from '../../utils';
 import { type SimulateTransactionClause } from '../transactions/types';
 
@@ -173,6 +173,26 @@ class GasModule {
         }
 
         return response as FeeHistoryResponse;
+    }
+
+    /**
+     * Returns the base fee per gas of the next block.
+     * @returns The base fee per gas of the next block.
+     */
+    public async getNextBlockBaseFeePerGas(): Promise<bigint | null> {
+        const options: FeeHistoryOptions = {
+            blockCount: 1,
+            newestBlock: 'next'
+        };
+        const feeHistory = await this.getFeeHistory(options);
+        if (
+            feeHistory.baseFeePerGas === null ||
+            feeHistory.baseFeePerGas === undefined ||
+            feeHistory.baseFeePerGas.length === 0
+        ) {
+            return null;
+        }
+        return HexUInt.of(feeHistory.baseFeePerGas[0]).bi;
     }
 }
 
