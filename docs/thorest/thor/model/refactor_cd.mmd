@@ -24,7 +24,6 @@ classDiagram
     class Signer {
         <<interface>>
         Address address
-        Hex id
         SignedTransactionRequest sign(TransactionRequest transactionRequest)
         DelegatedTransactionRequest sign(SignedTransactionRequest transactionRequest)
     }
