@@ -25,7 +25,7 @@ import { type TransactionBody, type TransactionClause } from '@thor';
 /**
  * Full Qualified Path
  */
-const FQP = 'packages/sdk/src/transaction/Transaction.ts!Transaction!';
+const FQP = 'packages/sdk/src/transaction/model/Transaction.ts!Transaction!';
 
 /**
  * Represents an immutable transaction entity.

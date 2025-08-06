@@ -17,7 +17,7 @@ import {
 /**
  * Full Qualified Path
  */
-const FQP = 'packages/sdk/src/transaction/Clause.ts!';
+const FQP = 'packages/sdk/src/transaction/model/Clause.ts!';
 
 /**
  * This class represent a transaction clause.

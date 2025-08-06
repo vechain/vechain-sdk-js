@@ -1,4 +1,4 @@
-import { Address, Hex, HexUInt32 } from '@vcdm';
+import { Address, type Hex, HexUInt32 } from '@vcdm';
 
 import { IllegalArgumentError } from '@errors';
 import { TxMeta } from '../transactions/model/TxMeta';
@@ -7,7 +7,7 @@ import { type ReceiptMetaJSON } from '@thor/json/ReceiptMetaJSON';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/sdk/src/thor/transactions/ReceiptMeta.ts!';
+const FQP = 'packages/sdk/src/thor/model/ReceiptMeta.ts!';
 
 /**
  * [ReceiptMeta](http://localhost:8669/doc/stoplight-ui/#/schemas/ReceiptMeta)
