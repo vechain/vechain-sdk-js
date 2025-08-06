@@ -1,5 +1,5 @@
 import { type HttpClient, type HttpPath } from '@http';
-import { type Address, type Hex } from '@vcdm';
+import { type Revision, type Address, type Hex } from '@vcdm';
 import { GetStorageResponse } from '@thor';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
 import { type GetStorageResponseJSON } from '@thor/json';
@@ -82,9 +82,13 @@ class RetrieveStoragePositionValue
      * @param {Hex} key - The key used to generate the storage position value's path.
      * @return {RetrieveStoragePositionValue} A new instance of RetrieveStoragePositionValue with the specified path.
      */
-    static of(address: Address, key: Hex): RetrieveStoragePositionValue {
+    static of(
+        address: Address,
+        key: Hex,
+        revision?: Revision
+    ): RetrieveStoragePositionValue {
         return new RetrieveStoragePositionValue(
-            new RetrieveStoragePositionValuePath(address, key)
+            new RetrieveStoragePositionValuePath(address, key, revision)
         );
     }
 }
@@ -106,14 +110,20 @@ class RetrieveStoragePositionValuePath implements HttpPath {
     readonly key: Hex;
 
     /**
+     * Represents the revision of the block.
+     */
+    readonly revision?: Revision;
+
+    /**
      * Constructs an instance of the class with the specified address and key.
      *
      * @param {Address} address - The address used to generate the storage position value's path.
      * @param {Hex} key - The key used to generate the storage position value's path.
      */
-    constructor(address: Address, key: Hex) {
+    constructor(address: Address, key: Hex, revision?: Revision) {
         this.address = address;
         this.key = key;
+        this.revision = revision;
     }
 
     /**
@@ -122,7 +132,10 @@ class RetrieveStoragePositionValuePath implements HttpPath {
      * @returns {string} The path for retrieving the value of a storage position.
      */
     get path(): string {
-        return `/accounts/${this.address}/storage/${this.key}`;
+        if (this.revision == null) {
+            return `/accounts/${this.address}/storage/${this.key}`;
+        }
+        return `/accounts/${this.address}/storage/${this.key}?revision=${this.revision}`;
     }
 }
 

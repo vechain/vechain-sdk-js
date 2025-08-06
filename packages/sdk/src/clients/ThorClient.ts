@@ -36,6 +36,7 @@ import {
     handleEventArgs,
     prepareBlockRange
 } from '@utils/filter-utils';
+import { AccountsModule } from '@thor/client/account/account';
 
 /**
  * Filter types for viem compatibility.
@@ -115,17 +116,16 @@ class ThorClient {
     readonly network: URL | ThorNetworks;
     protected readonly httpClient: HttpClient;
 
+    public readonly accounts: AccountsModule;
+
     constructor(network: URL | ThorNetworks, transport: HttpClient) {
         this.network = network;
         this.httpClient = transport;
+
+        this.accounts = new AccountsModule(transport);
     }
-    public async getBalance(address: Address): Promise<bigint> {
-        const accountDetails = await RetrieveAccountDetails.of(address).askTo(
-            this.httpClient
-        );
-        const balance = accountDetails.response.balance;
-        return balance;
-    }
+
+    // ----------------   from this on needs to be finished. -------------------
 
     public async getBlock(
         revision: BlockRevision = 'best', // viem specific
