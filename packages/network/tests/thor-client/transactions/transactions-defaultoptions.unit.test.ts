@@ -1,5 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { TESTNET_URL, ThorClient } from '../../../src';
+import { HexUInt } from '@vechain/sdk-core';
 import { InvalidDataType } from '@vechain/sdk-errors';
 
 /**
@@ -124,10 +125,9 @@ describe('fillDefaultBodyOptions() unit tests', () => {
             '0x1'
         );
 
-        jest.spyOn(
-            client.blocks,
-            'getBestBlockBaseFeePerGas'
-        ).mockResolvedValue('0x99');
+        jest.spyOn(client.gas, 'getNextBlockBaseFeePerGas').mockResolvedValue(
+            1000n
+        );
 
         const options = {
             maxFeePerGas: '0x10'
@@ -149,17 +149,22 @@ describe('fillDefaultBodyOptions() unit tests', () => {
             '0x1'
         );
 
-        jest.spyOn(
-            client.blocks,
-            'getBestBlockBaseFeePerGas'
-        ).mockResolvedValue('0x30');
+        jest.spyOn(client.gas, 'getNextBlockBaseFeePerGas').mockResolvedValue(
+            48n
+        );
 
         const options = {
             maxPriorityFeePerGas: '0x20'
         };
+
         const filledOptions =
             await client.transactions.fillDefaultBodyOptions(options);
-        expect(filledOptions.maxFeePerGas).toBe('0x50'); // computed
+        // maxFeePerGas = 1.12 * baseFeePerGas + maxPriorityFeePerGas
+        const expectedMaxFeePerGas =
+            (112n * 48n) / 100n + BigInt(options.maxPriorityFeePerGas);
+        expect(filledOptions.maxFeePerGas).toBe(
+            HexUInt.of(expectedMaxFeePerGas).toString()
+        ); // computed
         expect(filledOptions.maxPriorityFeePerGas).toEqual('0x20'); // stays the same
     });
 
@@ -239,10 +244,9 @@ describe('fillDefaultBodyOptions() unit tests', () => {
             '0x1'
         );
 
-        jest.spyOn(
-            client.blocks,
-            'getBestBlockBaseFeePerGas'
-        ).mockResolvedValue('0x99');
+        jest.spyOn(client.gas, 'getNextBlockBaseFeePerGas').mockResolvedValue(
+            100n
+        );
 
         const options = {
             maxFeePerGas: 1000000000000000000
@@ -264,17 +268,27 @@ describe('fillDefaultBodyOptions() unit tests', () => {
             '0x1'
         );
 
-        jest.spyOn(
-            client.blocks,
-            'getBestBlockBaseFeePerGas'
-        ).mockResolvedValue('0x30');
+        jest.spyOn(client.gas, 'getNextBlockBaseFeePerGas').mockResolvedValue(
+            100n
+        );
 
         const options = {
             maxPriorityFeePerGas: 1000000000000000000
         };
+
+        // maxFeePerGas = 1.12 * baseFeePerGas + maxPriorityFeePerGas
+        const expectedMaxFeePerGas =
+            (112n * 100n) / 100n + BigInt(options.maxPriorityFeePerGas);
+
         const filledOptions =
             await client.transactions.fillDefaultBodyOptions(options);
-        expect(filledOptions.maxFeePerGas).toBe('0x0de0b6b3a7640030'); // computed
+
+        expect(filledOptions.maxFeePerGas).not.toBeNull();
+        expect(filledOptions.maxFeePerGas).not.toBeUndefined();
+        expect(
+            HexUInt.of(filledOptions.maxFeePerGas as string | number | bigint)
+                .bi
+        ).toBe(expectedMaxFeePerGas); // computed
         expect(filledOptions.maxPriorityFeePerGas).toEqual(1000000000000000000); // stays the same
     });
 
@@ -423,11 +437,10 @@ describe('buildTransactionBody() unit tests', () => {
             '0x1'
         );
 
-        // Mock getBestBlockBaseFeePerGas to ensure the 75th percentile (0x1) is lower than 4.6% of base fee
-        jest.spyOn(
-            client.blocks,
-            'getBestBlockBaseFeePerGas'
-        ).mockResolvedValue('0x99');
+        // Mock getNextBlockBaseFeePerGas
+        jest.spyOn(client.gas, 'getNextBlockBaseFeePerGas').mockResolvedValue(
+            100n
+        );
 
         const options = {
             maxFeePerGas: 1000000000000000000
