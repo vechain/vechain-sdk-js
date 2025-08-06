@@ -21,7 +21,6 @@ export default defineConfig({
             '@errors': resolve(__dirname, './packages/sdk/src/errors'),
             '@hdkey': resolve(__dirname, './packages/sdk/src/hdkey'),
             '@index': resolve(__dirname, './packages/sdk/src/index'),
-            '@keystore': resolve(__dirname, './packages/sdk/src/keystore'),
             '@sdk': resolve(__dirname, './packages/sdk'),
             '@secp256k1': resolve(__dirname, './packages/sdk/src/secp256k1'),
             '@transaction': resolve(
