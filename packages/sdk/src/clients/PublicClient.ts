@@ -125,6 +125,8 @@ class PublicClient {
         return accountDetails;
     }
 
+
+    //This is not done yet.
     public async getBlock(
         revision: BlockRevision = 'best', // viem specific
         type: BlockReponseType = BlockReponseType.regular // vechain specific
