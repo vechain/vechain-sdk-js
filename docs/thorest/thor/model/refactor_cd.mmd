@@ -37,6 +37,8 @@ classDiagram
     class DelegatedSignedTransactionRequest {
         Address gasPayer
         Uint8Array gasPayerSignature
+        SignedTransactionRequest of(DelegatedSignedTransactionRequestJSON json)$
+        SignedTransactionRequestJSON toJSON()
     }
     class TransactionRequest {
         Hex blockRef
