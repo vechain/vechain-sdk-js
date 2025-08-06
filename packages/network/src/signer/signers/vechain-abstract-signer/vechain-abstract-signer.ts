@@ -166,11 +166,23 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
             transactionToPopulate
         );
 
-        // 3 - Estimate gas
-        const totalGasResult =
-            transactionToPopulate.gas !== undefined
-                ? Number(transactionToPopulate.gas)
-                : await this.estimateGas(transactionToPopulate);
+        // 3 - Handle deprecated gasLimit property and estimate gas
+        let totalGasResult: number;
+
+        // Handle deprecated gasLimit property
+        if (transactionToPopulate.gasLimit !== undefined) {
+            console.warn(
+                '\n****************** WARNING: Deprecated Property Usage ******************\n' +
+                    '- The `gasLimit` property is deprecated and will be removed in a future release.\n' +
+                    '- Please use the `gas` property instead.\n' +
+                    '- The `gasLimit` value will be used as the `gas` value for this transaction.\n'
+            );
+            totalGasResult = Number(transactionToPopulate.gasLimit);
+        } else if (transactionToPopulate.gas !== undefined) {
+            totalGasResult = Number(transactionToPopulate.gas);
+        } else {
+            totalGasResult = await this.estimateGas(transactionToPopulate);
+        }
 
         // 4 - Build the transaction body
         return await thorClient.transactions.buildTransactionBody(
@@ -189,7 +201,9 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
                 gasPriceCoef: populatedTransaction.gasPriceCoef ?? undefined,
                 maxPriorityFeePerGas:
                     populatedTransaction.maxPriorityFeePerGas ?? undefined,
-                maxFeePerGas: populatedTransaction.maxFeePerGas ?? undefined
+                maxFeePerGas: populatedTransaction.maxFeePerGas ?? undefined,
+                gas: transactionToPopulate.gas,
+                gasLimit: transactionToPopulate.gasLimit
             }
         );
     }
