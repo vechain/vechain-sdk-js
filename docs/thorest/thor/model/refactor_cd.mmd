@@ -61,7 +61,7 @@ classDiagram
         TxRequestJSON toJSON()
     }
     RLPCodec --|> Codec
-    Clause *-- TransactionRequest
+    Clause *-- "TransactionRequest.clauses" TransactionRequest
     TransactionRequest <|-- SignedTransactionRequest
     SignedTransactionRequest <|-- DelegatedSignedTransactionRequest
     Signer <-- "1.in Signer.sign(...) " TransactionRequest
