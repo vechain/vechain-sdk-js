@@ -80,7 +80,8 @@ const ethEstimateGas = async (
                         } satisfies SimulateTransactionClause
                     ],
                     {
-                        revision: revision.toString(),
+                        // revision is expecetd as Txt not string
+                        revision: revision,
                         caller: inputOptions.from
                     }
                 );
