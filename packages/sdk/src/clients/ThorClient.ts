@@ -36,7 +36,6 @@ import {
     handleEventArgs,
     prepareBlockRange
 } from '@utils/filter-utils';
-import { createThorClient, ThorClient } from './ThorClient';
 
 /**
  * Filter types for viem compatibility.
@@ -88,12 +87,6 @@ interface PendingTransactionFilter {
     /** Subscription instance */
     subscription?: NewTransactionSubscription;
 }
-
-interface PublicClientConfig {
-    network: URL | ThorNetworks;
-    transport?: HttpClient;
-}
-
 enum BlockReponseType {
     raw = 'raw', // vechain specific
     expanded = 'expanded', // vechain specific
@@ -105,32 +98,54 @@ enum BlockReponseType {
 // Revision type for viem
 type BlockRevision = bigint | number | string | Uint8Array | Hex;
 
-function createPublicClient({
-    network,
-    transport
-}: PublicClientConfig): PublicClient {
-    const thorClient = createThorClient({ network, transport });
-    return new PublicClient(thorClient);
+interface ThorClientConfig {
+    network: URL | ThorNetworks;
+    transport?: HttpClient;
 }
 
-class PublicClient {
-    protected readonly thorClient: ThorClient;
+function createThorClient({
+    network,
+    transport
+}: ThorClientConfig): ThorClient {
+    const transportLayer = transport ?? new FetchHttpClient(new URL(network));
+    return new ThorClient(network, transportLayer);
+}
 
-    constructor(thorClient: ThorClient) {
-        this.thorClient = thorClient;
+class ThorClient {
+    readonly network: URL | ThorNetworks;
+    protected readonly httpClient: HttpClient;
+
+    constructor(network: URL | ThorNetworks, transport: HttpClient) {
+        this.network = network;
+        this.httpClient = transport;
     }
-
     public async getBalance(address: Address): Promise<bigint> {
-        const accountDetails = await this.thorClient.getBalance(address);
-        return accountDetails;
+        const accountDetails = await RetrieveAccountDetails.of(address).askTo(
+            this.httpClient
+        );
+        const balance = accountDetails.response.balance;
+        return balance;
     }
 
     public async getBlock(
         revision: BlockRevision = 'best', // viem specific
         type: BlockReponseType = BlockReponseType.regular // vechain specific
     ): Promise<ExpandedBlockResponse | RawTx | RegularBlockResponse | null> {
-            const blockReponse = this.thorClient.getBlock(revision, type);
-            return blockReponse;
+        if (type === BlockReponseType.expanded) {
+            const data = await RetrieveExpandedBlock.of(
+                Revision.of(revision)
+            ).askTo(this.httpClient);
+            return data.response;
+        } else if (type === BlockReponseType.raw) {
+            const data = await RetrieveRawBlock.of(Revision.of(revision)).askTo(
+                this.httpClient
+            );
+            return data.response;
+        } else {
+            const data = await RetrieveRegularBlock.of(
+                Revision.of(revision)
+            ).askTo(this.httpClient);
+            return data.response;
         }
     }
 
@@ -581,8 +596,8 @@ class PublicClient {
 }
 
 export {
-    PublicClient,
-    type PublicClientConfig,
-    createPublicClient,
+    ThorClient,
+    type ThorClientConfig,
+    createThorClient,
     BlockReponseType
 };
