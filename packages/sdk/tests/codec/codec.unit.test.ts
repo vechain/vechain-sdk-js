@@ -16,6 +16,7 @@ import {
 } from '@vcdm';
 import type { RegularBlockResponseJSON } from '@thor/blocks/json';
 import { TEST_ACCOUNTS } from '../fixture';
+import { TransactionRequest } from '@thor/model/TransactionRequest';
 
 const { TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
 
@@ -65,7 +66,19 @@ function encode(tx: Transaction): Uint8Array {
             value: bigint;
             data: string;
         }>,
-        reserved: encodeReservedField(tx)
+        reserved: [] // encodeReservedField(tx)
+    });
+}
+
+function encodeTR(tr: TransactionRequest): Uint8Array {
+    return encodeBodyField({
+        ...tr.toJSON(),
+        clauses: tr.clauses as Array<{
+            to: string | null;
+            value: bigint;
+            data: string;
+        }>,
+        reserved: [] // encodeReservedField(tx)
     });
 }
 
@@ -133,9 +146,23 @@ describe('codec', () => {
         nonce: 8
     };
 
-    test('test', () => {
+    test('test 1', () => {
         const tx = Transaction.of(txBody);
         console.log(HexUInt.of(tx.encode(false)).toString());
         console.log(HexUInt.of(encode(tx)).toString());
+    });
+
+    test('test 2', () => {
+        const tr = new TransactionRequest(
+            BlockRef.of(block.id),
+            SOLO_NETWORK.chainTag,
+            [clause],
+            32,
+            100000,
+            0,
+            8,
+            null
+        );
+        console.log(HexUInt.of(encodeTR(tr)).toString());
     });
 });

@@ -1,17 +1,14 @@
-import { type ClauseJSON } from '@thor/json';
+import { type TransactionClause } from '@thor';
 
 interface TransactionRequestJSON {
     blockRef: string;
-    chatTag: number;
-    clauses: ClauseJSON[];
-    dependsOn?: string;
-    features?: number;
+    chainTag: number;
+    clauses: TransactionClause[];
+    dependsOn: string | null;
     expiration: number;
-    gas: bigint;
-    gasPrice: bigint;
-    gasPriceCoef: bigint;
+    gas: number;
+    gasPriceCoef: number;
     nonce: number;
-    reserved?: Uint8Array[];
 }
 
 export type { TransactionRequestJSON };
