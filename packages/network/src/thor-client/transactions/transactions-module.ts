@@ -495,20 +495,19 @@ class TransactionsModule {
         // default to dynamic fee tx
         options.gasPriceCoef = undefined;
 
-        // Get best block base fee per gas
-        const bestBlockBaseFeePerGas =
-            await this.blocksModule.getBestBlockBaseFeePerGas();
+        // Get next block base fee per gas
+        const biNextBlockBaseFeePerGas =
+            await this.gasModule.getNextBlockBaseFeePerGas();
         if (
-            bestBlockBaseFeePerGas === null ||
-            bestBlockBaseFeePerGas === undefined
+            biNextBlockBaseFeePerGas === null ||
+            biNextBlockBaseFeePerGas === undefined
         ) {
             throw new InvalidDataType(
                 'TransactionsModule.fillDefaultBodyOptions()',
-                'Invalid transaction body options. Unable to get best block base fee per gas.',
+                'Invalid transaction body options. Unable to get next block base fee per gas.',
                 { options }
             );
         }
-        const biBestBlockBaseFeePerGas = HexUInt.of(bestBlockBaseFeePerGas).bi;
 
         // set maxPriorityFeePerGas if not specified already
         if (
@@ -519,7 +518,7 @@ class TransactionsModule {
             // and the HIGH speed threshold (min(0.046*baseFee, 75_percentile))
             const defaultMaxPriorityFeePerGas =
                 await this.calculateDefaultMaxPriorityFeePerGas(
-                    biBestBlockBaseFeePerGas
+                    biNextBlockBaseFeePerGas
                 );
             options.maxPriorityFeePerGas = defaultMaxPriorityFeePerGas;
         }
@@ -533,8 +532,10 @@ class TransactionsModule {
             const biMaxPriorityFeePerGas = HexUInt.of(
                 options.maxPriorityFeePerGas
             ).bi;
+            // maxFeePerGas = 1.12 * baseFeePerGas + maxPriorityFeePerGas
             const biMaxFeePerGas =
-                biBestBlockBaseFeePerGas + biMaxPriorityFeePerGas;
+                (112n * biNextBlockBaseFeePerGas) / 100n +
+                biMaxPriorityFeePerGas;
             options.maxFeePerGas = HexUInt.of(biMaxFeePerGas).toString();
         }
         return options;
