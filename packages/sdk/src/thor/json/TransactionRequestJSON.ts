@@ -6,8 +6,8 @@ interface TransactionRequestJSON {
     clauses: TransactionClause[];
     dependsOn: string | null;
     expiration: number;
-    gas: number;
-    gasPriceCoef: number;
+    gas: bigint;
+    gasPriceCoef: bigint;
     nonce: number;
 }
 

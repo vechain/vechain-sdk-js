@@ -158,8 +158,8 @@ describe('codec', () => {
             SOLO_NETWORK.chainTag,
             [clause],
             32,
-            100000,
-            0,
+            100000n,
+            0n,
             8,
             null
         );

@@ -12,8 +12,8 @@ class TransactionRequest {
     public readonly chainTag: number; // RLP 1
     public readonly clauses: TransactionClause[]; // RLP 4
     public readonly expiration: number; // RLP 3
-    public readonly gas: number; // RLP 6
-    public readonly gasPriceCoef: number; // RLP 5
+    public readonly gas: bigint; // RLP 6
+    public readonly gasPriceCoef: bigint; // RLP 5
     public readonly nonce: number; // RLP 8
 
     public readonly dependsOn: Hex | null; // RLP 7
@@ -24,8 +24,8 @@ class TransactionRequest {
         chainTag: number,
         clauses: TransactionClause[],
         expiration: number,
-        gas: number,
-        gasPriceCoef: number,
+        gas: bigint,
+        gasPriceCoef: bigint,
         nonce: number,
         dependsOn: Hex | null
     ) {
