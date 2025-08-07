@@ -2537,6 +2537,11 @@
     debug "^4.1.1"
     lodash.isequal "^4.5.0"
 
+"@nomicfoundation/hardhat-ignition-ethers@^0.15.14":
+  version "0.15.14"
+  resolved "https://registry.yarnpkg.com/@nomicfoundation/hardhat-ignition-ethers/-/hardhat-ignition-ethers-0.15.14.tgz#383baf0d949d37b3a0e2ee54b1040ecfe8683e0f"
+  integrity sha512-eq+5n+c1DW18/Xp8/QrHBBvG5QaKUxYF/byol4f1jrnZ1zAy0OrqEa/oaNFWchhpLalX7d7suk/2EL0PbT0CDQ==
+
 "@nomicfoundation/hardhat-network-helpers@^1.0.0":
   version "1.0.13"
   resolved "https://registry.yarnpkg.com/@nomicfoundation/hardhat-network-helpers/-/hardhat-network-helpers-1.0.13.tgz#8385f87464a4ca2f1b3cc38f2f72c56a3eaa79d2"
@@ -3479,7 +3484,7 @@
   dependencies:
     tslib "^2.4.0"
 
-"@typechain/ethers-v6@^0.5.0":
+"@typechain/ethers-v6@^0.5.1":
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/@typechain/ethers-v6/-/ethers-v6-0.5.1.tgz#42fe214a19a8b687086c93189b301e2b878797ea"
   integrity sha512-F+GklO8jBWlsaVV+9oHaPh5NJdd6rAKN4tklGfInX1Q7h0xPgVLP39Jl3eCulPB5qexI71ZFHwbljx4ZXNfouA==
