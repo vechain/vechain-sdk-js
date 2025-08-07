@@ -30,9 +30,9 @@
     "@vechain/sdk-hardhat-plugin": "*",
     "@vechain/sdk-logging": "*"
   },
-  "dependencies": {
-            "hardhat": "^2.26.2"
-  },
+      "dependencies": {
+            "hardhat": "^2.25.0"
+    },
   "devDependencies": {
     "@nomicfoundation/hardhat-ethers": "^3.0.8",
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",

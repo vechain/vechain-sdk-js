@@ -7410,7 +7410,7 @@ hardhat-gas-reporter@^1.0.8:
     eth-gas-reporter "^0.2.25"
     sha1 "^1.1.1"
 
-hardhat@^2.26.2:
+hardhat@^2.25.0:
   version "2.26.2"
   resolved "https://registry.yarnpkg.com/hardhat/-/hardhat-2.26.2.tgz#e331ad9c64730d00e1c71217a0161f204796b02d"
   integrity sha512-uIETdC1MAWSnu+48B+583r3b8JqHtkBGEiXoAPV5hcXYGkCW5Fnnpn7SIgPa8owhObm9oUqIqMXMJ6H92N7Pyg==
