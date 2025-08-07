@@ -28,6 +28,7 @@ import {
     type TransfersSubscription,
     type TXID
 } from '@index';
+import { BlockNotFoundError } from 'viem';
 import { type ExecuteCodesRequestJSON } from '@json';
 import { type EventLogFilterRequestJSON } from '@thor/logs/json';
 import { MozillaWebSocketClient, type WebSocketListener } from '@ws';
@@ -125,6 +126,9 @@ class PublicClient {
         const accountDetails = await RetrieveAccountDetails.of(address).askTo(
             this.httpClient
         );
+        if (accountDetails === null) {
+            throw new Error('Address not found');
+        }
         const balance = accountDetails.response.balance;
         return balance;
     }
@@ -133,20 +137,36 @@ class PublicClient {
         revision: BlockRevision = 'best', // viem specific
         type: BlockReponseType = BlockReponseType.regular // vechain specific
     ): Promise<ExpandedBlockResponse | RawTx | RegularBlockResponse | null> {
+        const blockNumber =
+            typeof revision === 'number'
+                ? BigInt(revision)
+                : typeof revision === 'string' && /^\d+$/.test(revision)
+                  ? BigInt(revision)
+                  : undefined;
+
         if (type === BlockReponseType.expanded) {
             const data = await RetrieveExpandedBlock.of(
                 Revision.of(revision)
             ).askTo(this.httpClient);
+            if (data.response === null) {
+                throw new BlockNotFoundError({ blockNumber });
+            }
             return data.response;
         } else if (type === BlockReponseType.raw) {
             const data = await RetrieveRawBlock.of(Revision.of(revision)).askTo(
                 this.httpClient
             );
+            if (data.response === null) {
+                throw new BlockNotFoundError({ blockNumber });
+            }
             return data.response;
         } else {
             const data = await RetrieveRegularBlock.of(
                 Revision.of(revision)
             ).askTo(this.httpClient);
+            if (data.response === null) {
+                throw new BlockNotFoundError({ blockNumber });
+            }
             return data.response;
         }
     }
@@ -158,6 +178,15 @@ class PublicClient {
             Revision.of(revision)
         ).askTo(this.httpClient);
         const blockNumber = selectedBlock?.response?.number;
+        if (blockNumber === null) {
+            const notFoundRevision =
+                typeof revision === 'number'
+                    ? BigInt(revision)
+                    : typeof revision === 'string' && /^\d+$/.test(revision)
+                      ? BigInt(revision)
+                      : undefined;
+            throw new BlockNotFoundError({ blockNumber: notFoundRevision });
+        }
         return blockNumber;
     }
 
@@ -168,7 +197,15 @@ class PublicClient {
             Revision.of(revision)
         ).askTo(this.httpClient);
         const trxCount = selectedBlock?.response?.transactions.length;
-
+        if (trxCount === null) {
+            const notFoundRevision =
+                typeof revision === 'number'
+                    ? BigInt(revision)
+                    : typeof revision === 'string' && /^\d+$/.test(revision)
+                      ? BigInt(revision)
+                      : undefined;
+            throw new BlockNotFoundError({ blockNumber: notFoundRevision });
+        }
         return trxCount;
     }
 
