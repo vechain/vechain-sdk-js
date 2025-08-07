@@ -28,9 +28,9 @@ jobs:
 
             - name: Install Solidity compiler
               run: |
-                wget https://github.com/ethereum/solidity/releases/download/v0.8.24/solc-linux
-                chmod +x solc-linux
-                sudo mv solc-linux /usr/local/bin/solc
+                wget https://github.com/ethereum/solidity/releases/download/v0.8.24/solc-static-linux
+                chmod +x solc-static-linux
+                sudo mv solc-static-linux /usr/local/bin/solc
                 solc --version
 
             - name: Install playwright dependencies (for sample Vite dApp tests)
