@@ -2,7 +2,7 @@ import { Clause } from '@thor';
 import { IllegalArgumentError } from '@errors';
 import { type ClauseJSON } from '@thor/json';
 import { type TransactionRequestJSON } from '@thor/json/TransactionRequestJSON';
-import { type Hex, HexUInt, HexUInt32 } from '@vcdm';
+import { BlockRef, type Hex, HexUInt32 } from '@vcdm';
 
 /**
  * Full-Qualified Path
@@ -10,17 +10,17 @@ import { type Hex, HexUInt, HexUInt32 } from '@vcdm';
 const FQP = 'packages/sdk/src/thor/model/TransactionRequest.ts!';
 
 class TransactionRequest {
-    readonly blockRef: Hex;
-    readonly chatTag: number;
-    readonly clauses: Clause[];
-    readonly dependsOn: Hex | null;
-    readonly features: number | null;
-    readonly expiration: number;
-    readonly gas: bigint;
+    readonly blockRef: Hex; // RLP 2
+    readonly chatTag: number; // RLP 1
+    readonly clauses: Clause[]; // RLP 4
+    readonly dependsOn: Hex | null; // RLP 7
+    readonly features: number | null; // RLP 9.1
+    readonly expiration: number; // RLP 3
+    readonly gas: bigint; // RLP 6
     readonly gasPrice: bigint;
-    readonly gasPriceCoef: bigint;
-    readonly nonce: number;
-    readonly reserved: Uint8Array[] | null;
+    readonly gasPriceCoef: bigint; // RLP 5
+    readonly nonce: number; // RLP 8
+    readonly reserved: Uint8Array[] | null; // RLP 9.2
 
     // eslint-disable-next-line sonarjs/sonar-max-params
     constructor(
@@ -52,7 +52,7 @@ class TransactionRequest {
     static of(json: TransactionRequestJSON): TransactionRequest {
         try {
             return new TransactionRequest(
-                HexUInt.of(HexUInt.of(json.blockRef).digits.slice(0, 16)),
+                BlockRef.of(json.blockRef),
                 json.chatTag,
                 json.clauses.map(
                     (clause: ClauseJSON): Clause => new Clause(clause)

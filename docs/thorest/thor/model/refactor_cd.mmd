@@ -14,8 +14,8 @@ classDiagram
     class Codec {
         <<interface>>
         T decode~T~(Uint8Array encoded)
-        Uint8Array encode~T~(T obj)
-        T fromHex~T~(Hex raw)
+        Uint8Array encode~T~(T bytes)
+        T fromHex~T~(Hex hex)
         Hex toHex~T~(T obj)
     }
     class RLPCodec {
