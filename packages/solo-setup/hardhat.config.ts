@@ -4,19 +4,25 @@ import '@nomicfoundation/hardhat-ethers';
 import '@vechain/sdk-hardhat-plugin';
 
 const config: HardhatUserConfig = {
-    solidity: '0.8.20'
-};
-
-module.exports = {
     solidity: {
-        version: '0.8.20',
-        evmVersion: 'shanghai',
-        settings: {
-            optimizer: {
-                enabled: true,
-                runs: 200
+        compilers: [
+            {
+                version: '0.8.24',
+                settings: {
+                    optimizer: {
+                        enabled: true,
+                        runs: 200
+                    },
+                    evmVersion: 'shanghai'
+                }
             }
-        }
+        ]
+    },
+    // Add compiler download configuration for better CI/CD compatibility
+    compilerDownload: {
+        solcVersion: '0.8.24',
+        downloadTimeout: 60000, // 60 seconds timeout
+        retries: 3
     },
     networks: {
         vechain_solo: {

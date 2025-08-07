@@ -10,7 +10,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                node: [18, lts/*, latest]
+                node: [20, 22, 24]
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
@@ -22,6 +22,11 @@ jobs:
 
             - name: Install & Patch packages
               run: yarn install
+
+            - name: Clear Hardhat cache (fixes compiler download issues)
+              run: |
+                find . -name "cache" -type d -exec rm -rf {} + 2>/dev/null || true
+                find . -name "artifacts" -type d -exec rm -rf {} + 2>/dev/null || true
 
             - name: Preliminary Stop of Thor solo node
               id: preliminary-stop-solo

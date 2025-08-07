@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.18;
+pragma solidity ^0.8.24;
 
 /// @title Energy represents the sub-token in VeChainThor which conforms VIP180(ERC20) standard.
 /// The name of token is "VeThor" and 1 THOR equals to 1e18 wei. The main function of VeThor is to pay for the transaction fee. 

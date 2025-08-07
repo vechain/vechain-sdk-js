@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.18;
+pragma solidity ^0.8.24;
 
 // Prototype is an account management model of VeChainThor.
 // In the account management model every contract has a master account, which, by default, is the creator of a contract.

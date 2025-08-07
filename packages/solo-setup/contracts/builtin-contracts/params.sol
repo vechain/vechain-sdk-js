@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.18;
+pragma solidity ^0.8.24;
 
 /// @title Params stores the governance params of VeChainThor.
 /// The params can be set by the executor, a contract that is authorized to modify governance params by a voting Committee.

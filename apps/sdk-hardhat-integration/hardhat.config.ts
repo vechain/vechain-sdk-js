@@ -18,7 +18,7 @@ const config: HardhatUserConfig = {
     solidity: {
         compilers: [
             {
-                version: '0.8.20', // Specify the first Solidity version
+                version: '0.8.24', // Updated Solidity version for better compatibility
                 settings: {
                     // Additional compiler settings for this version
                     optimizer: {
@@ -29,6 +29,12 @@ const config: HardhatUserConfig = {
                 }
             }
         ]
+    },
+    // Add compiler download configuration for better CI/CD compatibility
+    compilerDownload: {
+        solcVersion: '0.8.24',
+        downloadTimeout: 60000, // 60 seconds timeout
+        retries: 3
     },
     networks: {
         /**

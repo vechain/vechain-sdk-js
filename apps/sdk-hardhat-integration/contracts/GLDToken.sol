@@ -1,6 +1,6 @@
 // contracts/GLDToken.sol
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.20;
+pragma solidity 0.8.24;
 
 // Importing the ERC20 contract from OpenZeppelin
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";

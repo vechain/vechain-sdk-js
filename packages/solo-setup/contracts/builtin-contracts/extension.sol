@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.18;
+pragma solidity ^0.8.24;
 
 /// @title Extension extends EVM functions.
 /// Extension gives an opportunity for the developer to get information of the current transaction and any history block within the range of genesis to best block.
