@@ -18,12 +18,11 @@ const config: HardhatUserConfig = {
             }
         ]
     },
-    // Add compiler download configuration for better CI/CD compatibility
+    // Use pre-installed solc instead of downloading
     compilerDownload: {
-        solcVersion: '0.8.24',
-        downloadTimeout: 60000, // 60 seconds timeout
-        retries: 3
+        enabled: false
     },
+
     networks: {
         vechain_solo: {
             // Solo

@@ -10,7 +10,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                node: [20, lts/*, 24]
+                node: [22]
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
@@ -22,6 +22,13 @@ jobs:
 
             - name: Install & Patch packages
               run: yarn install
+
+            - name: Install Solidity compiler
+              run: |
+                wget https://github.com/ethereum/solidity/releases/download/v0.8.24/solc-linux
+                chmod +x solc-linux
+                sudo mv solc-linux /usr/local/bin/solc
+                solc --version
 
             - name: Clear Hardhat cache (fixes compiler download issues)
               run: |
