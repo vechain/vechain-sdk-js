@@ -55,12 +55,6 @@ import {
  */
 type Filter = EventFilter | BlockFilter | PendingTransactionFilter;
 
-interface PendingTransactionFilter {
-    type: 'transaction';
-    subscription?: NewTransactionSubscription;
-    txQueue?: string[];
-}
-
 /**
  * Event filter type for viem compatibility.
  */
@@ -99,6 +93,7 @@ interface PendingTransactionFilter {
     processedTxIds: Set<string>;
     /** Subscription instance */
     subscription?: NewTransactionSubscription;
+    txQueue?: string[];
 }
 
 interface PublicClientConfig {
