@@ -93,6 +93,7 @@ interface PendingTransactionFilter {
     processedTxIds: Set<string>;
     /** Subscription instance */
     subscription?: NewTransactionSubscription;
+    txQueue?: string[];
 }
 
 interface PublicClientConfig {
