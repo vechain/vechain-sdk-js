@@ -43,8 +43,8 @@ classDiagram
         Hex sendRawTransaction(Hex raw)
         Hex sendTransaction(TransactionRequest request)
         Hex sendTransaction(SignedTransactionRequest request)
-        Hex signTransaction(Transaction: tx)
-        Hex signTransaction(SignedTransaction: tx)
+        Hex signTransaction(TransactionRequest: tx)
+        Hex signTransaction(SignedTransactionRequest: tx)
     }
     class WalletClientConfig {
         Account: account

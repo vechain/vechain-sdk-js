@@ -1,9 +1,9 @@
-import { type TransactionClause } from '@thor';
+import { type ClauseJSON } from '@thor/json/ClauseJSON';
 
 interface TransactionRequestJSON {
     blockRef: string;
     chainTag: number;
-    clauses: TransactionClause[];
+    clauses: ClauseJSON[];
     dependsOn: string | null;
     expiration: number;
     gas: bigint;

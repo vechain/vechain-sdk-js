@@ -1,11 +1,17 @@
 import { describe } from '@jest/globals';
-import { ClauseBuilder, Transaction, type TransactionBody } from '@thor';
+import {
+    Clause,
+    ClauseBuilder,
+    Transaction,
+    type TransactionBody
+} from '@thor';
 import { SOLO_NETWORK } from '@utils';
 import {
     Address,
     BlockRef,
     BufferKind,
     CompactFixedHexBlobKind,
+    Hex,
     HexBlobKind,
     HexUInt,
     NumericKind,
@@ -71,13 +77,21 @@ function encode(tx: Transaction): Uint8Array {
 }
 
 function encodeTR(tr: TransactionRequest): Uint8Array {
+    const clauses: Array<{ to: string | null; value: bigint; data: string }> =
+        tr.clauses.map(
+            (
+                clause: Clause
+            ): { to: string | null; value: bigint; data: string } => {
+                return {
+                    to: clause.to?.toString() ?? null,
+                    value: clause.value,
+                    data: clause.data?.toString() ?? Hex.PREFIX
+                };
+            }
+        );
     return encodeBodyField({
         ...tr.toJSON(),
-        clauses: tr.clauses as Array<{
-            to: string | null;
-            value: bigint;
-            data: string;
-        }>,
+        clauses,
         reserved: [] // encodeReservedField(tx)
     });
 }
@@ -135,6 +149,8 @@ describe('codec', () => {
         1n
     );
 
+    const c = new Clause({ to: TRANSACTION_RECEIVER.address, value: 1n });
+
     const txBody: TransactionBody = {
         chainTag: SOLO_NETWORK.chainTag,
         blockRef: BlockRef.of(block.id).toString(),
@@ -156,7 +172,7 @@ describe('codec', () => {
         const tr = new TransactionRequest(
             BlockRef.of(block.id),
             SOLO_NETWORK.chainTag,
-            [clause],
+            [c],
             32,
             100000n,
             0n,
