@@ -34,7 +34,12 @@ import {
 import {
     BlockNotFoundError,
     TransactionNotFoundError,
-    TransactionReceiptNotFoundError
+    TransactionReceiptNotFoundError,
+    InvalidAddressError,
+    ChainNotFoundError,
+    FilterTypeNotSupportedError,
+    WebSocketRequestError,
+    BaseError
 } from 'viem';
 import { type ExecuteCodesRequestJSON } from '@json';
 import { type EventLogFilterRequestJSON } from '@thor/logs/json';
@@ -133,13 +138,8 @@ class PublicClient {
         const accountDetails = await RetrieveAccountDetails.of(address).askTo(
             this.httpClient
         );
-        if (
-            accountDetails?.response === null ||
-            accountDetails?.response === undefined
-        ) {
-            throw new Error(
-                `Account with address "${address.toString()}" could not be found.`
-            );
+        if (accountDetails?.response === null) {
+            throw new InvalidAddressError({ address: address.toString() });
         }
         const balance = accountDetails.response.balance;
         return balance;
@@ -308,9 +308,7 @@ class PublicClient {
         );
         const res = data?.response?.id;
         if (res == null) {
-            throw new Error(
-                'Chain ID could not be retrieved from genesis block.'
-            );
+            throw new ChainNotFoundError();
         }
         return res.bi;
     }
@@ -367,9 +365,7 @@ class PublicClient {
             this.httpClient
         );
         if (accountDetails?.response === null) {
-            throw new Error(
-                `Account with address "${address.toString()}" could not be found.`
-            );
+            throw new InvalidAddressError({ address: address.toString() });
         }
         // VeChain accounts don't have a txCount field, but we can simulate it
         // For now, return 0 as VeChain handles nonces differently
@@ -442,7 +438,14 @@ class PublicClient {
                 if (onError !== undefined && event instanceof Error) {
                     onError(event);
                 } else if (onError !== undefined) {
-                    onError(new Error('Unknown WebSocket error'));
+                    onError(
+                        new WebSocketRequestError({
+                            url: `ws://${this.httpClient.baseURL.host}`,
+                            cause: new BaseError('Unknown WebSocket error'),
+                            details: 'WebSocket connection error occurred',
+                            body: { error: event }
+                        })
+                    );
                 }
             },
             onClose: () => {},
@@ -565,8 +568,8 @@ class PublicClient {
         const { filter } = params;
 
         if (filter.type !== 'event') {
-            throw new Error(
-                `Invalid filter type "${filter.type}". Expected "event" filter.`
+            throw new FilterTypeNotSupportedError(
+                (filter as { type: string }).type
             );
         }
 
@@ -711,8 +714,8 @@ class PublicClient {
             return txs;
         }
 
-        throw new Error(
-            `Unknown filter type: ${(filter as { type: string }).type}`
+        throw new FilterTypeNotSupportedError(
+            (filter as { type: string }).type
         );
     }
 }
