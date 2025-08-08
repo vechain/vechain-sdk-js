@@ -236,15 +236,50 @@ class SimpleHttpClient implements HttpClient {
                                 (errorObj.msg as string) ??
                                 '';
 
-                            // Only include error code and message
+                            // Include error code, message, and data if it's a string
                             if (errorCode) errorMessage += ` [${errorCode}]`;
                             if (errorMsg) errorMessage += ` - ${errorMsg}`;
+
+                            // Include data if it's a string (not an object)
+                            const errorData = errorObj.data;
+                            if (
+                                errorData &&
+                                typeof errorData === 'string' &&
+                                errorData.trim()
+                            ) {
+                                errorMessage += ` (${errorData})`;
+                            }
                         }
                     } catch {
                         // If JSON parsing fails, don't include anything
                     }
                 }
-                // For plain text, don't include anything
+                // For plain text, parse and extract useful information
+                else if (
+                    trimmedBody.length <= 100 &&
+                    !trimmedBody.includes('<!DOCTYPE html>')
+                ) {
+                    // Try to extract key information from plain text
+                    const lines = trimmedBody.split('\n');
+                    const firstLine = lines[0].trim();
+
+                    // Look for common error patterns
+                    if (firstLine.includes(': ')) {
+                        // Format: "field: error message"
+                        const [field, message] = firstLine.split(': ', 2);
+                        if (field && message) {
+                            errorMessage += ` - ${field}: ${message}`;
+                        } else {
+                            errorMessage += ` - ${firstLine}`;
+                        }
+                    } else if (firstLine.includes(' - ')) {
+                        // Format: "error - details"
+                        errorMessage += ` - ${firstLine}`;
+                    } else {
+                        // Just include the first line if it's short
+                        errorMessage += ` - ${firstLine}`;
+                    }
+                }
             }
 
             throw new Error(errorMessage, {

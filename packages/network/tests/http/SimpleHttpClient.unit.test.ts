@@ -41,9 +41,9 @@ describe('SimpleHttpClient unit tests', () => {
             const innerError = (error as InvalidHTTPRequest).innerError;
             expect(innerError).toBeInstanceOf(Error);
 
-            // Check that the error message is clean (no response body for plain text)
+            // Check that the error message includes the response body for plain text
             expect((innerError as Error).message).toBe(
-                'HTTP 400 400: Bad Request'
+                'HTTP 400 400: Bad Request - ERROR OCCURRED'
             );
 
             const cause = (innerError as Error).cause;
@@ -106,11 +106,12 @@ describe('SimpleHttpClient unit tests', () => {
             const innerError = (error as InvalidHTTPRequest).innerError;
             expect(innerError).toBeInstanceOf(Error);
 
-            // Check that the error message includes only error code and message
+            // Check that the error message includes error code, message, and data
             const errorMessage = (innerError as Error).message;
             expect(errorMessage).toContain('HTTP 400 400: Bad Request');
             expect(errorMessage).toContain('Invalid params');
             expect(errorMessage).toContain('-32602');
+            expect(errorMessage).toContain('Transaction format is invalid');
 
             const cause = (innerError as Error).cause;
             expect(cause).toBeInstanceOf(Response);
@@ -152,13 +153,13 @@ describe('SimpleHttpClient unit tests', () => {
 
             const errorMessage = (innerError as Error).message;
 
-            // Expect only error code and message to be included
+            // Expect error code, message, and data to be included
             expect(errorMessage).toContain(
                 'HTTP 500 500: Internal Server Error'
             );
             expect(errorMessage).toContain('Server error');
             expect(errorMessage).toContain('-32000');
-            // Note: Only error code and message are included, not complex nested objects
+            // Note: Data is included if it's a string, not complex nested objects
         }
     });
 
