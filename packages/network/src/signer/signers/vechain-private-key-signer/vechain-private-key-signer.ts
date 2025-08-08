@@ -118,7 +118,8 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
      * Sends a transaction to the blockchain.
      *
      * @param {TransactionRequestInput} transactionToSend - The transaction object to be sent.
-     * This includes all the necessary details such as `to`, `value`, `data`, `gasLimit`, etc.
+     * This includes all the necessary details such as `to`, `value`, `data`, `gas`, etc.
+     * Note: `gasLimit` is deprecated and will be removed in a future release. Use `gas` instead.
      * @return {Promise<string>} A promise that resolves to the transaction hash as a string
      * once the transaction is successfully sent.
      * @throws {JSONRPCInvalidParams} Throws an error if the provider is not attached

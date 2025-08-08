@@ -314,11 +314,12 @@ class TransactionsModule {
      *
      * @param clauses - The clauses of the transaction.
      * @param gas - The gas to be used to perform the transaction.
-     * @param options - Optional parameters for the request. Includes the expiration, gasPriceCoef, maxFeePErGas, maxPriorityFeePerGas, dependsOn and isDelegated fields.
+     * @param options - Optional parameters for the request. Includes the expiration, gasPriceCoef, maxFeePerGas, maxPriorityFeePerGas, gas, dependsOn and isDelegated fields.
      *                  If the `expiration` is not specified, the transaction will expire after 32 blocks.
      *                  If the `gasPriceCoef` is not specified & galactica fork didn't happen yet, the transaction will use the default gas price coef of 0.
      *                  If the `gasPriceCoef` is not specified & galactica fork happened, the transaction will use the default maxFeePerGas and maxPriorityFeePerGas.
-     *                  If the `dependsOn is` not specified, the transaction will not depend on any other transaction.
+     *                  If the `gas` is specified in options, it will override the gas parameter.
+     *                  If the `dependsOn` is not specified, the transaction will not depend on any other transaction.
      *                  If the `isDelegated` is not specified, the transaction will not be delegated.
      *
      * @returns A promise that resolves to the transaction body.
@@ -380,7 +381,7 @@ class TransactionsModule {
             clauses: await this.resolveNamesInClauses(processedClauses),
             dependsOn: options?.dependsOn ?? null,
             expiration: options?.expiration ?? 32,
-            gas,
+            gas: options?.gas !== undefined ? Number(options.gas) : gas,
             gasPriceCoef: filledOptions?.gasPriceCoef,
             maxFeePerGas: filledOptions?.maxFeePerGas,
             maxPriorityFeePerGas: filledOptions?.maxPriorityFeePerGas,
