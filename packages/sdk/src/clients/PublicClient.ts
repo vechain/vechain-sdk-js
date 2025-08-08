@@ -1,33 +1,46 @@
+import { type Address, type Hex, Revision } from '@vcdm';
+import { type HttpClient, FetchHttpClient } from '@http';
 import {
-    type Address,
     type BeatsSubscription,
     BlocksSubscription,
     type EventLogResponse,
     EventsSubscription,
     type ExecuteCodesResponse,
     type ExpandedBlockResponse,
-    FetchHttpClient,
     type GetFeesHistoryResponse,
     type GetFeesPriorityResponse,
-    type Hex,
-    type HttpClient,
     InspectClauses,
     NewTransactionSubscription,
     QuerySmartContractEvents,
     type RawTx,
     type RegularBlockResponse,
     RetrieveAccountDetails,
+    RetrieveContractBytecode,
     RetrieveExpandedBlock,
     RetrieveHistoricalFeeData,
     RetrieveRawBlock,
     RetrieveRegularBlock,
-    Revision,
+    RetrieveStoragePositionValue,
+    RetrieveTransactionByID,
+    RetrieveTransactionReceipt,
     type SubscriptionEventResponse,
     SuggestPriorityFee,
     type ThorNetworks,
+    type GetTxResponse,
+    type GetTxReceiptResponse,
     type TransfersSubscription,
     type TXID
-} from '@index';
+} from '@thor';
+import {
+    BlockNotFoundError,
+    TransactionNotFoundError,
+    TransactionReceiptNotFoundError,
+    InvalidAddressError,
+    ChainNotFoundError,
+    FilterTypeNotSupportedError,
+    WebSocketRequestError,
+    BaseError
+} from 'viem';
 import { type ExecuteCodesRequestJSON } from '@json';
 import { type EventLogFilterRequestJSON } from '@thor/logs/json';
 import { MozillaWebSocketClient, type WebSocketListener } from '@ws';
@@ -41,12 +54,6 @@ import {
  * Filter types for viem compatibility.
  */
 type Filter = EventFilter | BlockFilter | PendingTransactionFilter;
-
-interface PendingTransactionFilter {
-    type: 'transaction';
-    subscription?: NewTransactionSubscription;
-    txQueue?: string[];
-}
 
 /**
  * Event filter type for viem compatibility.
@@ -86,6 +93,7 @@ interface PendingTransactionFilter {
     processedTxIds: Set<string>;
     /** Subscription instance */
     subscription?: NewTransactionSubscription;
+    txQueue?: string[];
 }
 
 interface PublicClientConfig {
@@ -125,6 +133,9 @@ class PublicClient {
         const accountDetails = await RetrieveAccountDetails.of(address).askTo(
             this.httpClient
         );
+        if (accountDetails?.response === null) {
+            throw new InvalidAddressError({ address: address.toString() });
+        }
         const balance = accountDetails.response.balance;
         return balance;
     }
@@ -133,20 +144,36 @@ class PublicClient {
         revision: BlockRevision = 'best', // viem specific
         type: BlockReponseType = BlockReponseType.regular // vechain specific
     ): Promise<ExpandedBlockResponse | RawTx | RegularBlockResponse | null> {
+        const blockNumber =
+            typeof revision === 'number'
+                ? BigInt(revision)
+                : typeof revision === 'string' && /^\d+$/.test(revision)
+                  ? BigInt(revision)
+                  : undefined;
+
         if (type === BlockReponseType.expanded) {
             const data = await RetrieveExpandedBlock.of(
                 Revision.of(revision)
             ).askTo(this.httpClient);
+            if (data.response === null) {
+                throw new BlockNotFoundError({ blockNumber });
+            }
             return data.response;
         } else if (type === BlockReponseType.raw) {
             const data = await RetrieveRawBlock.of(Revision.of(revision)).askTo(
                 this.httpClient
             );
+            if (data.response === null) {
+                throw new BlockNotFoundError({ blockNumber });
+            }
             return data.response;
         } else {
             const data = await RetrieveRegularBlock.of(
                 Revision.of(revision)
             ).askTo(this.httpClient);
+            if (data.response === null) {
+                throw new BlockNotFoundError({ blockNumber });
+            }
             return data.response;
         }
     }
@@ -158,6 +185,15 @@ class PublicClient {
             Revision.of(revision)
         ).askTo(this.httpClient);
         const blockNumber = selectedBlock?.response?.number;
+        if (blockNumber === null) {
+            const notFoundRevision =
+                typeof revision === 'number'
+                    ? BigInt(revision)
+                    : typeof revision === 'string' && /^\d+$/.test(revision)
+                      ? BigInt(revision)
+                      : undefined;
+            throw new BlockNotFoundError({ blockNumber: notFoundRevision });
+        }
         return blockNumber;
     }
 
@@ -168,7 +204,15 @@ class PublicClient {
             Revision.of(revision)
         ).askTo(this.httpClient);
         const trxCount = selectedBlock?.response?.transactions.length;
-
+        if (trxCount === null) {
+            const notFoundRevision =
+                typeof revision === 'number'
+                    ? BigInt(revision)
+                    : typeof revision === 'string' && /^\d+$/.test(revision)
+                      ? BigInt(revision)
+                      : undefined;
+            throw new BlockNotFoundError({ blockNumber: notFoundRevision });
+        }
         return trxCount;
     }
 
@@ -259,9 +303,74 @@ class PublicClient {
         );
         const res = data?.response?.id;
         if (res == null) {
-            throw new Error('Chain ID could not be retrieved');
+            throw new ChainNotFoundError();
         }
         return res.bi;
+    }
+
+    public async getTransaction(hash: Hex): Promise<GetTxResponse | null> {
+        const data = await RetrieveTransactionByID.of(hash).askTo(
+            this.httpClient
+        );
+        if (data.response === null) {
+            throw new TransactionNotFoundError({
+                hash: hash.toString() as `0x${string}`
+            });
+        }
+        return data.response;
+    }
+
+    public async getTransactionReceipt(
+        hash: Hex
+    ): Promise<GetTxReceiptResponse | null> {
+        const data = await RetrieveTransactionReceipt.of(hash).askTo(
+            this.httpClient
+        );
+        if (data.response === null) {
+            throw new TransactionReceiptNotFoundError({
+                hash: hash.toString() as `0x${string}`
+            });
+        }
+        return data.response;
+    }
+
+    public async getBytecode(address: Address): Promise<Hex | undefined> {
+        const data = await RetrieveContractBytecode.of(address).askTo(
+            this.httpClient
+        );
+        return data.response?.code;
+    }
+
+    public async getCode(address: Address): Promise<Hex | undefined> {
+        // getCode is essentially the same as getBytecode in VeChain
+        const code = await this.getBytecode(address);
+        return code;
+    }
+
+    public async getStorageAt(address: Address, slot: Hex): Promise<Hex> {
+        const data = await RetrieveStoragePositionValue.of(address, slot).askTo(
+            this.httpClient
+        );
+        return data.response?.value ?? '0x0';
+    }
+
+    public async getTransactionCount(address: Address): Promise<number> {
+        // In VeChain, transaction count is equivalent to account nonce?
+        const accountDetails = await RetrieveAccountDetails.of(address).askTo(
+            this.httpClient
+        );
+        if (accountDetails?.response === null) {
+            throw new InvalidAddressError({ address: address.toString() });
+        }
+        // VeChain accounts don't have a txCount field, but we can simulate it
+        // For now, return 0 as VeChain handles nonces differently
+        return 0;
+    }
+
+    public async getNonce(address: Address): Promise<number> {
+        // getNonce is the same as getTransactionCount in viem
+        const trxCount = await this.getTransactionCount(address);
+        return trxCount;
     }
 
     public uninstallFilter(
@@ -324,7 +433,14 @@ class PublicClient {
                 if (onError !== undefined && event instanceof Error) {
                     onError(event);
                 } else if (onError !== undefined) {
-                    onError(new Error('Unknown WebSocket error'));
+                    onError(
+                        new WebSocketRequestError({
+                            url: `ws://${this.httpClient.baseURL.host}`,
+                            cause: new BaseError('Unknown WebSocket error'),
+                            details: 'WebSocket connection error occurred',
+                            body: { error: event }
+                        })
+                    );
                 }
             },
             onClose: () => {},
@@ -447,7 +563,9 @@ class PublicClient {
         const { filter } = params;
 
         if (filter.type !== 'event') {
-            throw new Error('Invalid filter type. Expected "event" filter.');
+            throw new FilterTypeNotSupportedError(
+                (filter as { type: string }).type
+            );
         }
 
         // Use the stored filter request to query for logs
@@ -591,8 +709,8 @@ class PublicClient {
             return txs;
         }
 
-        throw new Error(
-            `Unknown filter type: ${(filter as { type: string }).type}`
+        throw new FilterTypeNotSupportedError(
+            (filter as { type: string }).type
         );
     }
 }

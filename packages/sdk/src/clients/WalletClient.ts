@@ -18,7 +18,7 @@ import {
 } from '@vcdm';
 import { UnsupportedOperationError } from '@errors';
 import { FetchHttpClient, type HttpClient } from '@http';
-import { PublicClient, type PublicClientConfig } from '@clients/PublicClient';
+import { PublicClient, type PublicClientConfig } from './PublicClient';
 
 const FQP = 'packages/sdk/src/clients/WalletClient.ts!';
 
