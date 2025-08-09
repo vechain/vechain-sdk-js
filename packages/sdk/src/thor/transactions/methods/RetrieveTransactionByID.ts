@@ -8,8 +8,9 @@ import {
     type ThorRequest,
     type ThorResponse
 } from '@thor';
-import { type GetTxResponseJSON } from '@/json';
+import { type GetTxResponseJSON } from '@thor/json';
 import { IllegalArgumentError } from '@errors';
+import { TransactionNotFoundError } from 'viem';
 
 /**
  * Full-Qualified Path
@@ -63,11 +64,13 @@ class RetrieveTransactionByID
         const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveTransactionByID, GetTxResponse|null>>`;
         const response = await httpClient.get(this.path, this.query);
         if (response.ok) {
-            const json = (await response.json()) as GetTxResponseJSON | null;
+            const json =
+                (await response.json()) as GetTxResponseJSON | null;
             try {
                 return {
                     request: this,
-                    response: json === null ? null : new GetTxResponse(json)
+                    response:
+                        json === null ? null : new GetTxResponse(json)
                 };
             } catch (error) {
                 throw new ThorError(
@@ -82,6 +85,12 @@ class RetrieveTransactionByID
                 );
             }
         } else {
+            // Check if it's a 404 (transaction not found)
+            if (response.status === 404) {
+                const txHash = this.path.path.split('/').pop() as `0x${string}`;
+                throw new TransactionNotFoundError({ hash: txHash });
+            }
+            
             throw new ThorError(
                 fqp,
                 await response.text(),
