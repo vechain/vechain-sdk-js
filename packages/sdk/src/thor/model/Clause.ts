@@ -1,11 +1,11 @@
-import { Address, HexUInt, Quantity, type Hex } from '@vcdm';
+import { Address, Hex, HexUInt, Quantity } from '@vcdm';
 import { type ClauseJSON } from '@/json';
 import { IllegalArgumentError } from '@errors';
 
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/sdk/src/thor/blocks/Clause.ts!';
+const FQP = 'packages/sdk/src/thor/model/Clause.ts!';
 
 /**
  * [Clause](http://localhost:8669/doc/stoplight-ui/#/schemas/Clause)
@@ -25,7 +25,7 @@ class Clause {
     /**
      * The input data for the clause (in bytes).
      */
-    readonly data: Hex;
+    readonly data: Hex | null;
 
     /**
      * Constructs an instance of the class using the provided JSON object.
@@ -37,7 +37,7 @@ class Clause {
         try {
             this.to = json.to !== null ? Address.of(json.to) : undefined;
             this.value = HexUInt.of(json.value).bi;
-            this.data = HexUInt.of(json.data);
+            this.data = json.data === undefined ? null : HexUInt.of(json.data);
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: ClauseJSON)`,
@@ -51,14 +51,15 @@ class Clause {
     /**
      * Converts the current instance of the class into a ClauseJSON representation.
      *
+     * No input data is expressed as `0x`.
+     *
      * @return {ClauseJSON} The JSON object representing the current instance.
      */
     toJSON(): ClauseJSON {
         return {
             to: this.to !== undefined ? this.to.toString() : null,
-
             value: Quantity.of(this.value).toString(),
-            data: this.data.toString()
+            data: this.data?.toString() ?? Hex.PREFIX
         } satisfies ClauseJSON;
     }
 }

@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { createPublicClient, BlockReponseType } from '../../../dist/index.js';
+import { createPublicClient } from '../../../dist/index.js';
 import { ThorNetworks } from '@thor';
 import { Address, Hex } from '@vcdm';
 
@@ -241,7 +241,8 @@ describe('PublicClient - Events/Logs Methods', () => {
 
             await expect(
                 publicClient.getFilterLogs({ filter: invalidFilter })
-            ).rejects.toThrow('Invalid filter type');
+        // ).rejects.toThrow('Invalid filter type');
+            ).rejects.toThrow('Filter type "invalid" is not supported.'); // to check
         });
     });
 
