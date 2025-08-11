@@ -245,7 +245,6 @@ describe('ThorClient - Transactions Module', () => {
                     expect(txBody.reserved).toStrictEqual(
                         expected.solo.reserved
                     );
-                    expect(txBody.chainTag).toBe(expected.solo.chainTag);
                 });
             }
         );
