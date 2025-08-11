@@ -3,13 +3,13 @@
  */
 interface LogMetaJSON {
     blockID: string;
-    blockNumber: number;
-    blockTimestamp: number;
+    blockNumber: number | null;
+    blockTimestamp: number | null;
     txID: string;
     txOrigin: string;
-    clauseIndex: number;
-    txIndex: number;
-    logIndex: number;
+    clauseIndex: number | null;
+    txIndex: number | null;
+    logIndex: number | null;
 }
 
 export { type LogMetaJSON };

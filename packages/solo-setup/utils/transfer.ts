@@ -36,7 +36,9 @@ export const seedVET = async (accounts: TestAccount[]): Promise<string> => {
             {}
         );
         const latestBlock = (
-            await RetrieveExpandedBlock.of(Revision.of(0)).askTo(thorClient)
+            await RetrieveExpandedBlock.of(Revision.of('best')).askTo(
+                thorClient
+            )
         ).response;
         const privateKey = HexUInt.of(genesisDeployerAccount.privateKey).bytes;
         const clauses: TransactionClause[] = [];
@@ -89,7 +91,9 @@ export const seedVTHO = async (accounts: TestAccount[]): Promise<string> => {
             {}
         );
         const latestBlock = (
-            await RetrieveExpandedBlock.of(Revision.of(0)).askTo(thorClient)
+            await RetrieveExpandedBlock.of(Revision.of('best')).askTo(
+                thorClient
+            )
         ).response;
         const privateKey = HexUInt.of(genesisDeployerAccount.privateKey).bytes;
         const clauses: TransactionClause[] = [];
@@ -136,7 +140,8 @@ export const seedVTHO = async (accounts: TestAccount[]): Promise<string> => {
  * Seeds from the first account in the default genesis accounts.
  */
 export const seedTestToken = async (
-    accounts: TestAccount[]
+    accounts: TestAccount[],
+    testTokenAddress: string
 ): Promise<string> => {
     try {
         const thorClient = FetchHttpClient.at(
@@ -144,13 +149,15 @@ export const seedTestToken = async (
             {}
         );
         const latestBlock = (
-            await RetrieveExpandedBlock.of(Revision.of(0)).askTo(thorClient)
+            await RetrieveExpandedBlock.of(Revision.of('best')).askTo(
+                thorClient
+            )
         ).response;
         const privateKey = HexUInt.of(genesisDeployerAccount.privateKey).bytes;
         const clauses: TransactionClause[] = [];
         for (const account of accounts) {
             const clause = ClauseBuilder.transferToken(
-                Address.of(VTHO_ADDRESS),
+                Address.of(testTokenAddress),
                 Address.of(account.address),
                 BigInt(THOR_SOLO_SEEDED_TEST_TOKEN_AMOUNT)
             );
