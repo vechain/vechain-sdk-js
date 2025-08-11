@@ -141,7 +141,7 @@ class Transaction {
      * - `name` - A string indicating the name of the field in the RLP structure.
      * - `kind` - RLP profile type.
      */
-    private static readonly RLP_UNSIGNED_TRANSACTION_PROFILE: RLPProfile = {
+    public static readonly RLP_UNSIGNED_TRANSACTION_PROFILE: RLPProfile = {
         name: 'tx',
         kind: Transaction.RLP_FIELDS
     };
@@ -840,7 +840,7 @@ class Transaction {
      *
      * @see encoded
      */
-    private encode(isSigned: boolean): Uint8Array {
+    public encode(isSigned: boolean): Uint8Array {
         // Encode transaction body with RLP
         return this.encodeBodyField(
             {
@@ -873,7 +873,7 @@ class Transaction {
      *
      * @see encoded
      */
-    private encodeBodyField(
+    public encodeBodyField(
         body: RLPValidObject,
         isSigned: boolean
     ): Uint8Array {
@@ -905,7 +905,7 @@ class Transaction {
      *
      * @see encode
      */
-    private encodeReservedField(): Uint8Array[] {
+    public encodeReservedField(): Uint8Array[] {
         // Check if is reserved or not
         const reserved = this.body.reserved ?? {};
         // Init kind for features

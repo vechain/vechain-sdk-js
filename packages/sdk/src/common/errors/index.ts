@@ -1,6 +1,5 @@
 export * from './IllegalArgumentError';
 export * from './InvalidEncodingError';
-export * from './InvalidKeystoreError';
 export * from './InvalidMessageHashError';
 export * from './InvalidPasswordError';
 export * from './InvalidPrivateKeyError';

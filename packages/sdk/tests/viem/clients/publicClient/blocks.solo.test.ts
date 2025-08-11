@@ -20,7 +20,6 @@ describe('PublicClient - Block Methods', () => {
     const customTransport = new FetchHttpClient(new URL(ThorNetworks.SOLONET), {
         onRequest: (request) => {
             console.log(`Making ${request.method} request to ${request.url}`);
-            request.headers.set('X-Custom-Header', 'my-app-v1.0');
             return request;
         },
         onResponse: (response) => {
