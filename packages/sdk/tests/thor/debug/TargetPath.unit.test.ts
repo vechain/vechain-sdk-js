@@ -5,7 +5,7 @@ import { Hex, IllegalArgumentError } from '@vcdm';
 /**
  * VeChain TargetPath - unit
  *
- * @group unit/debug
+ * @group unit/thor/debug
  */
 describe('TargetPath UNIT tests', () => {
     describe('static isValid()', () => {

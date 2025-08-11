@@ -7,7 +7,7 @@ import {
 import { IllegalArgumentError } from '@errors';
 
 /**
- * @group unit/fork
+ * @group unit/thor/fork
  */
 describe('ForkDetector unit tests', () => {
     beforeEach(() => {

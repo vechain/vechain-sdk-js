@@ -28,6 +28,16 @@ class Clause {
     readonly data: Hex | null;
 
     /**
+     * Optional comment for the clause, helpful for displaying what the clause is doing.
+     */
+    readonly comment: string | null;
+
+    /**
+     * Optional ABI for the contract method invocation.
+     */
+    readonly abi: string | null;
+
+    /**
      * Constructs an instance of the class using the provided JSON object.
      *
      * @param {ClauseJSON} json - The JSON object containing the required fields to initialize the instance.
@@ -38,6 +48,8 @@ class Clause {
             this.to = json.to !== null ? Address.of(json.to) : null;
             this.value = HexUInt.of(json.value).bi;
             this.data = json.data === undefined ? null : HexUInt.of(json.data);
+            this.comment = json.comment ?? null;
+            this.abi = json.abi ?? null;
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: ClauseJSON)`,
@@ -59,7 +71,9 @@ class Clause {
         return {
             to: this.to !== null ? this.to.toString() : null,
             value: Quantity.of(this.value).toString(),
-            data: this.data?.toString() ?? Hex.PREFIX
+            data: this.data !== null ? this.data.toString() : Hex.PREFIX,
+            comment: this.comment ?? undefined,
+            abi: this.abi ?? undefined
         } satisfies ClauseJSON;
     }
 }

@@ -4,7 +4,7 @@ import { FetchHttpClient } from '@http';
 import { ThorError, ThorNetworks } from '@thor';
 
 /**
- * @group integration/debug
+ * @group integration/thor/debug
  */
 describe('RetrieveStorageRange SOLO tests', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));

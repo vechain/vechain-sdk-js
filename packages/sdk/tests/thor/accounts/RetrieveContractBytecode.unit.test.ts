@@ -14,7 +14,7 @@ import {
 /**
  * VeChain retrieve contract bytecode - unit
  *
- * @group unit/accounts
+ * @group unit/thor/accounts
  */
 describe('RetrieveContractBytecode unit tests', () => {
     describe('RetrieveContractBytecodePath', () => {

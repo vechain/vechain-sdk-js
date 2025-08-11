@@ -7,7 +7,7 @@ import {
 import { expect } from '@jest/globals';
 
 /**
- * @group integration/fees
+ * @group integration/thor/fees
  */
 describe('SuggestPriorityFee SOLO tests', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));

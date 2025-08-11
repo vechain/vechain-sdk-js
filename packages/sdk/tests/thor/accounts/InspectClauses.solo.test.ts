@@ -6,7 +6,7 @@ import { type ExecuteCodesRequestJSON } from '@/json';
 /**
  * VeChain inspect clauses - solo
  *
- * @group integration/accounts
+ * @group integration/thor/accounts
  */
 describe('InspectClauses solo tests', () => {
     test('ok <- askTo', async () => {
