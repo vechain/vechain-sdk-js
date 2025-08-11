@@ -27,7 +27,7 @@ import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 /**
  * ABI tests - encode & decode
- * @group unit/encode-decode
+ * @group unit/vcdm/abi
  */
 describe('Abi - encode & decode', () => {
     /**
@@ -268,7 +268,7 @@ describe('Abi - Function & Event', () => {
                             // Separate indexed and non-indexed parameters
                             const indexedInputs = abiEvent.inputs?.filter(input => input.indexed) || [];
                             const nonIndexedInputs = abiEvent.inputs?.filter(input => !input.indexed) || [];
-                            
+
                             // Prepare data field for non-indexed parameters
                             let data: `0x${string}` = '0x';
                             if (nonIndexedInputs.length > 0) {
@@ -279,7 +279,7 @@ describe('Abi - Function & Event', () => {
                                         nonIndexedValues.push(encodingInput[index]);
                                     }
                                 });
-                                
+
                                 if (nonIndexedValues.length > 0) {
                                     data = encodeAbiParameters(
                                         nonIndexedInputs.map(input => ({ name: input.name, type: input.type })),
@@ -349,11 +349,11 @@ describe('Abi - Function & Event', () => {
                         : fastJsonStableStringify(event)
                 }`, () => {
                     let topics;
-                    
+
                     if (typeof event === 'string') {
                         // For string signatures, use parseAbiItem to convert to proper ABI format
                         const abiEvent = parseAbiItem(event) as AbiEvent;
-                        
+
                         topics = encodeEventTopics({
                             abi: [abiEvent],
                             eventName: abiEvent.name!,

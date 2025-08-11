@@ -2,6 +2,9 @@ import { afterEach, beforeEach, describe, test } from '@jest/globals';
 import { MozillaWebSocketClient } from '@ws';
 import log from 'loglevel';
 
+/*
+ * @group integration/ws/MozillaWebSocketClient
+ */
 describe('MozillaWebSocketClient solo tests', () => {
     let wsc: MozillaWebSocketClient;
     beforeEach(() => {

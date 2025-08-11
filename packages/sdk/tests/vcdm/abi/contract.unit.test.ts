@@ -1,8 +1,8 @@
 import {  describe, expect, test } from '@jest/globals';
 import { fail } from 'assert';
 import { expectType } from 'tsd';
-import { 
-    type AbiEvent, 
+import {
+    type AbiEvent,
     encodeFunctionResult,
     encodeFunctionData,
     decodeFunctionData,
@@ -20,7 +20,7 @@ import {
 
 /**
  * Contract tests - encode & decode
- * @group unit/encode-decode
+ * @group unit/vcdm/abi
  */
 describe('Contract interface for ABI encoding/decoding', () => {
     /**
@@ -41,7 +41,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
                 args: [123n]
             })
         ).toBeDefined();
-        
+
         expect(
             encodeFunctionData({
                 abi: contractABI,
@@ -59,7 +59,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
             functionName: 'setValue',
             args: [123n]
         });
-        
+
         const encoded2 = encodeFunctionData({
             abi: contractABI,
             functionName: 'setValue',
@@ -72,7 +72,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
             abi: contractABI,
             functionName: 'getValue'
         });
-        
+
         expect(encodedGetValue).toBeDefined();
     });
 
@@ -111,14 +111,14 @@ describe('Contract interface for ABI encoding/decoding', () => {
             functionName: 'setValue',
             args: [123n]
         });
-        
+
         const functionInputDecoded = decodeFunctionData({
             abi: contractABI,
             data: encodedData
         });
-        
+
         expectType<{ functionName: string; args?: readonly unknown[] }>(functionInputDecoded);
-        
+
         const decodedData =
             functionInputDecoded.args !== null &&
             functionInputDecoded.args !== undefined
@@ -169,7 +169,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
      * Test the error when getting an event ABI.
      */
     test('get an event ABI and throw an error', () => {
-        expect(() => 
+        expect(() =>
             encodeEventTopics({
                 abi: contractABIWithEvents,
                 eventName: 'undefined' as any
@@ -181,7 +181,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
      * Test the failed encoding of an event log.
      */
     test('Fail to encode a contract event log', () => {
-        expect(() => 
+        expect(() =>
             encodeEventTopics({
                 abi: contractABIWithEvents,
                 eventName: 'undefined' as any,
@@ -231,11 +231,11 @@ describe('Contract interface for ABI encoding/decoding', () => {
         expect(decodedEventLog).toBeDefined();
         expect(decodedEventLog.eventName).toEqual('Transfer');
         expect(decodedEventLog.args).toBeDefined();
-        
+
         if (decodedEventLog.args === undefined) {
             fail('Decoded event log args are undefined');
         }
-        
+
         // Type guard for Transfer event
         if (decodedEventLog.eventName === 'Transfer') {
             const transferArgs = decodedEventLog.args as { from: `0x${string}`; to: `0x${string}`; tokenId: bigint };
@@ -268,7 +268,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
 
         expect(decodedEventLog).toBeDefined();
         expect(decodedEventLog.args).toBeDefined();
-        
+
         // Convert to array format for comparison
         const argsArray = Object.values(decodedEventLog.args || {});
         expect(argsArray.length).toEqual(3);
@@ -406,7 +406,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
         const valueChangedEvent = contractABIWithEvents.find(
             (item: any) => item.type === 'event' && item.name === 'ValueChanged'
         ) as AbiEvent;
-        
+
         expect(valueChangedEvent).toBeDefined();
         expect(valueChangedEvent.name).toEqual('ValueChanged');
         expect(valueChangedEvent.type).toEqual('event');
