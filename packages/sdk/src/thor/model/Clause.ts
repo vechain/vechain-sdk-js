@@ -13,9 +13,9 @@ const FQP = 'packages/sdk/src/thor/model/Clause.ts!';
 
 class Clause {
     /**
-     * The address that sent the VET.
+     * The recipient of the clause. Null indicates contract deployment.
      */
-    readonly to?: Address;
+    readonly to: Address | null;
 
     /**
      * The amount (wei) of VET to be transferred.
@@ -35,7 +35,7 @@ class Clause {
      */
     constructor(json: ClauseJSON) {
         try {
-            this.to = json.to !== null ? Address.of(json.to) : undefined;
+            this.to = json.to !== null ? Address.of(json.to) : null;
             this.value = HexUInt.of(json.value).bi;
             this.data = json.data === undefined ? null : HexUInt.of(json.data);
         } catch (error) {
@@ -57,7 +57,7 @@ class Clause {
      */
     toJSON(): ClauseJSON {
         return {
-            to: this.to !== undefined ? this.to.toString() : null,
+            to: this.to !== null ? this.to.toString() : null,
             value: Quantity.of(this.value).toString(),
             data: this.data?.toString() ?? Hex.PREFIX
         } satisfies ClauseJSON;
