@@ -88,11 +88,11 @@ jobs:
       - name: Unit tests
         run: yarn test:unit
 
-      - name: Archive coverage
+      - name: Archive coverage (unit)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-results
+          name: coverage-unit
           path: |
             packages/**/coverage*/lcov.info
 
@@ -145,7 +145,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-results
+          name: coverage-integration
           path: |
             packages/**/coverageIntegration/lcov.info
 
@@ -198,7 +198,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-results
+          name: coverage-clients
           path: |
             packages/**/coverageClients/lcov.info
 
@@ -242,7 +242,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-results
+          name: coverage-browser
           path: |
             packages/**/coverage/lcov.info
 
