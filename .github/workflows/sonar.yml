@@ -13,11 +13,8 @@ jobs:
           fetch-depth: 0
 
       - name: Download coverage report
-        uses: actions/download-artifact@v4.1.8
-        continue-on-error: true
+        uses: actions/download-artifact@v4
         with:
-          run-id: ${{ github.event.workflow_run.id }}
-          github-token: ${{ github.token }}
           name: coverage-results
           path: coverage
 

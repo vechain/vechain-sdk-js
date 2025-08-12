@@ -95,7 +95,6 @@ jobs:
           name: coverage-results
           path: |
             packages/**/coverage*/lcov.info
-          if-no-files-found: ignore
 
   tests_integration:
     name: Tests • Integration (Thor Solo)
@@ -142,6 +141,14 @@ jobs:
         if: always()
         run: yarn stop-thor-solo || true
 
+      - name: Archive coverage (integration)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-results
+          path: |
+            packages/**/coverageIntegration/lcov.info
+
   tests_clients:
     name: Tests • Clients (Thor Solo)
     runs-on: ubuntu-latest
@@ -187,6 +194,14 @@ jobs:
         if: always()
         run: yarn stop-thor-solo || true
 
+      - name: Archive coverage (clients)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-results
+          path: |
+            packages/**/coverageClients/lcov.info
+
   tests_browser:
     name: Tests • Browser
     runs-on: ubuntu-latest
@@ -222,6 +237,14 @@ jobs:
       - name: Stop Thor solo node
         if: always()
         run: yarn stop-thor-solo || true
+
+      - name: Archive coverage (browser)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-results
+          path: |
+            packages/**/coverage/lcov.info
 
   sonar:
     name: SonarCloud
