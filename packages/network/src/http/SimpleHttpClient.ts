@@ -158,7 +158,9 @@ class SimpleHttpClient implements HttpClient {
                 headers,
                 body:
                     method !== HttpMethod.GET
-                        ? JSON.stringify(params?.body)
+                        ? params?.rawBody !== undefined
+                            ? (params.rawBody as BodyInit)
+                            : JSON.stringify(params?.body)
                         : undefined,
                 signal: controller.signal
             });
@@ -256,7 +258,9 @@ class SimpleHttpClient implements HttpClient {
                 }
                 // For plain text, parse and extract useful information
                 else if (
-                    trimmedBody.length <= 100 &&
+                    // Include plain text error bodies (even if long) as they often contain
+                    // crucial details coming directly from Thor (e.g. "invalid character 'x' ...").
+                    // We only skip HTML payloads.
                     !trimmedBody.includes('<!DOCTYPE html>')
                 ) {
                     // Try to extract key information from plain text
