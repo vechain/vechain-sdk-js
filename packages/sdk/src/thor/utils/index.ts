@@ -1,1 +1,1 @@
-export * from './ThorNetworks';
+export * from './const';

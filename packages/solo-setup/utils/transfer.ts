@@ -1,15 +1,20 @@
 import { THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS } from '../config/accounts';
 import {
-    Address,
     ClauseBuilder,
-    HexUInt,
-    Revision,
+    RetrieveExpandedBlock,
+    SendTransaction,
     Transaction,
     ThorNetworks,
     type TransactionBody,
     type TransactionClause,
     VTHO_ADDRESS
-} from '@vechain/sdk';
+} from '@vechain/sdk/thor';
+import {
+    Address,
+    FetchHttpClient,
+    HexUInt,
+    Revision
+} from '@vechain/sdk/common';
 import {
     THOR_SOLO_CHAIN_TAG,
     THOR_SOLO_SEEDED_TEST_TOKEN_AMOUNT,
@@ -17,11 +22,6 @@ import {
     THOR_SOLO_SEEDED_VTHO_AMOUNT
 } from '../config/constants';
 import { type TestAccount } from '../funder/accounts';
-import {
-    FetchHttpClient,
-    RetrieveExpandedBlock,
-    SendTransaction
-} from '@vechain/sdk';
 
 const genesisDeployerAccount = THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS[0];
 
@@ -36,7 +36,9 @@ export const seedVET = async (accounts: TestAccount[]): Promise<string> => {
             {}
         );
         const latestBlock = (
-            await RetrieveExpandedBlock.of(Revision.of(0)).askTo(thorClient)
+            await RetrieveExpandedBlock.of(Revision.of('best')).askTo(
+                thorClient
+            )
         ).response;
         const privateKey = HexUInt.of(genesisDeployerAccount.privateKey).bytes;
         const clauses: TransactionClause[] = [];
@@ -89,7 +91,9 @@ export const seedVTHO = async (accounts: TestAccount[]): Promise<string> => {
             {}
         );
         const latestBlock = (
-            await RetrieveExpandedBlock.of(Revision.of(0)).askTo(thorClient)
+            await RetrieveExpandedBlock.of(Revision.of('best')).askTo(
+                thorClient
+            )
         ).response;
         const privateKey = HexUInt.of(genesisDeployerAccount.privateKey).bytes;
         const clauses: TransactionClause[] = [];
@@ -136,7 +140,8 @@ export const seedVTHO = async (accounts: TestAccount[]): Promise<string> => {
  * Seeds from the first account in the default genesis accounts.
  */
 export const seedTestToken = async (
-    accounts: TestAccount[]
+    accounts: TestAccount[],
+    testTokenAddress: string
 ): Promise<string> => {
     try {
         const thorClient = FetchHttpClient.at(
@@ -144,13 +149,15 @@ export const seedTestToken = async (
             {}
         );
         const latestBlock = (
-            await RetrieveExpandedBlock.of(Revision.of(0)).askTo(thorClient)
+            await RetrieveExpandedBlock.of(Revision.of('best')).askTo(
+                thorClient
+            )
         ).response;
         const privateKey = HexUInt.of(genesisDeployerAccount.privateKey).bytes;
         const clauses: TransactionClause[] = [];
         for (const account of accounts) {
             const clause = ClauseBuilder.transferToken(
-                Address.of(VTHO_ADDRESS),
+                Address.of(testTokenAddress),
                 Address.of(account.address),
                 BigInt(THOR_SOLO_SEEDED_TEST_TOKEN_AMOUNT)
             );

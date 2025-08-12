@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/pseudo-random */
-import { Address, HDKey } from '@vechain/sdk';
+import { Address, HDKey } from '@vechain/sdk/common';
 import { THOR_SOLO_DEFAULT_MNEMONIC } from '../config';
 import { seedTestToken, seedVET, seedVTHO } from '../utils/transfer';
 
@@ -57,10 +57,19 @@ export const randomAccount = (): TestAccount => {
 
 /**
  * Fund a random account with VET, VTHO and TestToken
+ * Note: This function needs the TestToken contract address to work properly
  */
-export const fundRandomAccount = async (): Promise<void> => {
+export const fundRandomAccount = async (
+    testTokenAddress?: string
+): Promise<void> => {
     const account = randomAccount();
     await seedVET([account]);
     await seedVTHO([account]);
-    await seedTestToken([account]);
+    if (testTokenAddress) {
+        await seedTestToken([account], testTokenAddress);
+    } else {
+        console.warn(
+            'TestToken address not provided, skipping TestToken seeding'
+        );
+    }
 };
