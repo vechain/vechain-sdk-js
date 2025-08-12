@@ -228,7 +228,9 @@ describe('PublicClient - Events/Logs Methods', () => {
 
             // All logs should be Transfer events
             logs.forEach((log) => {
-                expect(log.topics[0]).toBe(transferEventSignature.toString());
+                expect(log.topics[0].toString()).toBe(
+                    transferEventSignature.toString()
+                );
             });
         });
 
@@ -241,7 +243,7 @@ describe('PublicClient - Events/Logs Methods', () => {
 
             await expect(
                 publicClient.getFilterLogs({ filter: invalidFilter })
-            ).rejects.toThrow('Invalid filter type');
+            ).rejects.toThrow('Filter type "invalid" is not supported.');
         });
     });
 

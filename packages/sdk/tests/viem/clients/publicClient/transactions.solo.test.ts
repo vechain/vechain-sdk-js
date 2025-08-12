@@ -149,7 +149,7 @@ describe('PublicClient - Transaction Methods', () => {
             const bytecode = await publicClient.getBytecode(zeroAddress);
 
             // Zero address should not have bytecode
-            expect(bytecode).toBeUndefined();
+            expect(bytecode?.digits).toHaveLength(0);
         });
     });
 
@@ -179,7 +179,7 @@ describe('PublicClient - Transaction Methods', () => {
             const code = await publicClient.getCode(zeroAddress);
 
             // Zero address should not have code
-            expect(code).toBeUndefined();
+            expect(code?.digits).toHaveLength(0);
         });
     });
 
@@ -206,7 +206,7 @@ describe('PublicClient - Transaction Methods', () => {
             );
 
             expect(storageValue).toBeDefined();
-            expect(storageValue.toString()).toBe('0x0');
+            expect(storageValue.n).toBe(0);
         });
 
         test('should handle different storage slots', async () => {
@@ -239,8 +239,8 @@ describe('PublicClient - Transaction Methods', () => {
                 storageSlot
             );
 
-            expect(bytecode).toBeUndefined();
-            expect(code).toBeUndefined();
+            expect(bytecode?.digits).toHaveLength(0);
+            expect(code?.digits).toHaveLength(0);
             expect(storage).toBeDefined(); // Should return default value
         });
 
