@@ -39,7 +39,7 @@ const mockBlockData = {
 /**
  * VeChain blocks subscription - unit
  *
- * @group unit/subscriptions
+ * @group unit/thor/subscriptions
  */
 describe('BlocksSubscription unit tests', () => {
     let subscription: BlocksSubscription;

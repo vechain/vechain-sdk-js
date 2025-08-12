@@ -26,7 +26,7 @@ const mockBeatData = {
 /**
  * VeChain beats subscription - unit
  *
- * @group unit/subscriptions
+ * @group unit/thor/subscriptions
  */
 describe('BeatsSubscription unit tests', () => {
     let subscription: BeatsSubscription;

@@ -3,7 +3,7 @@ import { PostDebugTracerRequest, type PostDebugTracerRequestJSON } from '@thor';
 import { IllegalArgumentError } from '@vcdm';
 
 /**
- * @group unit/debug
+ * @group unit/thor/debug
  */
 describe('PostDebugTracerRequest UNIT tests', () => {
     test('err <- constructor illegal', () => {

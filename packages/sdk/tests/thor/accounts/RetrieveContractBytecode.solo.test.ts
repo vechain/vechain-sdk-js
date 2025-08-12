@@ -6,7 +6,7 @@ import { FetchHttpClient } from '@http';
 /**
  * VeChain retrieve contract bytecode - solo
  *
- * @group integration/accounts
+ * @group integration/thor/accounts
  */
 describe('RetrieveContractBytecode testnet tests', () => {
     test('ok <- askTo', async () => {

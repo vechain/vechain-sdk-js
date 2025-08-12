@@ -24,7 +24,7 @@ const mockResponse = <T>(body: T, status: number): Response => {
 };
 
 /**
- * @group unit/node
+ * @group unit/thor/node
  */
 describe('RetrieveConnectedPeers unit tests', () => {
     test('ok <- askTo', async () => {

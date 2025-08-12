@@ -17,7 +17,7 @@ import { SOLO_NETWORK } from '@utils';
 import { expect, test } from '@jest/globals';
 
 /**
- * @group integration/transactions
+ * @group integration/thor/transactions
  */
 describe('RetrieveTransactionReceipt SOLO tests', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));

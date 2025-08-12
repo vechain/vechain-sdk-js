@@ -1,5 +1,5 @@
 import { describe, expect, jest, test } from '@jest/globals';
-import { Address, VET, VTHO } from '@vcdm';
+import { Address } from '@vcdm';
 import {
     RetrieveAccountDetails,
     RetrieveAccountDetailsPath,
@@ -7,15 +7,12 @@ import {
     ThorError
 } from '@thor';
 import { type GetAccountResponseJSON } from '@thor/json';
-import {
-    mockHttpClient,
-    mockHttpClientWithError
-} from '../../MockHttpClient';
+import { mockHttpClient, mockHttpClientWithError } from '../../MockHttpClient';
 
 /**
  * VeChain retrieve account details - unit
  *
- * @group unit/accounts
+ * @group unit/thor/accounts
  */
 describe('RetrieveAccountDetails unit tests', () => {
     describe('RetrieveAccountDetailsPath', () => {

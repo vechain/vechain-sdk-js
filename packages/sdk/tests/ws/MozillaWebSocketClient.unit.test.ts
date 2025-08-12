@@ -63,7 +63,7 @@ const MockWebSocketConstructor = jest.fn().mockImplementation(() => {
 /**
  * VeChain websocket - unit
  *
- * @group unit/websocket
+ * @group unit/ws
  */
 describe('MozillaWebSocketClient unit tests', () => {
     let client: MozillaWebSocketClient;

@@ -11,7 +11,7 @@ import { secp256k1 as nc_secp256k1 } from '@noble/curves/secp256k1';
 /**
  * VeChain transaction - unit
  *
- * @group unit/transaction
+ * @group unit/thor/transaction
  */
 describe('unit tests', () => {
     const sender = {

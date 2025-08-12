@@ -5,6 +5,11 @@ import { type TXID } from '@thor';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 
+/**
+ * VeChain beats subscription - integration
+ *
+ * @group integration/thor/subscriptions
+ */
 describe('NewTransactionSubscription solo tests', () => {
     let subscription: NewTransactionSubscription;
     beforeEach(() => {

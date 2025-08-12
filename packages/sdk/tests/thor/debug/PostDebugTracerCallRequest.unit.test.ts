@@ -2,14 +2,15 @@
  * @group unit/debug
  */
 import { expect, test } from '@jest/globals';
-import { Address, HexUInt, IllegalArgumentError, UInt } from '@vcdm';
+import { Address, HexUInt, UInt } from '@vcdm';
 import {
     PostDebugTracerCallRequest,
     type PostDebugTracerCallRequestJSON
 } from '@thor';
+import { IllegalArgumentError } from '@errors';
 
 /**
- * @group unit/debug
+ * @group unit/thor/debug
  */
 describe('PostDebugTracerCallRequest UNIT tests', () => {
     test('err <- invalid value', () => {

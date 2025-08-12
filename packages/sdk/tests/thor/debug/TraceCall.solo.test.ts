@@ -9,7 +9,7 @@ import {
 import { Hex, Revision } from '@vcdm';
 
 /**
- * @group integration/debug
+ * @group integration/thor/debug
  */
 describe('TraceCall SOLO tests', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
