@@ -6,7 +6,7 @@ import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 /**
- * VeChain beats subscription - unit
+ * VeChain beats subscription - integration
  *
  * @group integration/thor/subscriptions
  */

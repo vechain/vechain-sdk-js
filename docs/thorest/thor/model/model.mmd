@@ -5,8 +5,11 @@ classDiagram
     class Clause {
         Address|null to
         bigint value
-        Hex data
-        constructor(ClauseJSON: json)
+        Hex|null data
+        string|null comment
+        string|null abi
+        constructor(Address|null to, bigint value, Hex|null, data, string|null comment, string|null abi)
+        of(ClauseJSON: json)$
         ClauseJSON toJSON()
     }
     class Event {

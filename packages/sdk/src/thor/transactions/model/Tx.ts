@@ -115,7 +115,7 @@ class Tx {
             this.blockRef = HexUInt.of(json.blockRef);
             this.expiration = UInt.of(json.expiration).valueOf();
             this.clauses = json.clauses.map(
-                (clause: ClauseJSON): Clause => new Clause(clause)
+                (clause: ClauseJSON): Clause => Clause.of(clause)
             );
             this.gasPriceCoef =
                 json.gasPriceCoef !== null && json.gasPriceCoef !== undefined

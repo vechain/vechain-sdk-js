@@ -20,16 +20,6 @@ interface ClauseJSON {
      * The input data for the clause (in bytes).
      */
     data?: string; // hex ^0x[0-9a-f]*$
-
-    /**
-     * Optional comment for the clause, helpful for displaying what the clause is doing.
-     */
-    comment?: string;
-
-    /**
-     * Optional ABI for the contract method invocation.
-     */
-    abi?: string;
 }
 
 export { type ClauseJSON };

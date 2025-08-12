@@ -10,7 +10,6 @@ const FQP = 'packages/sdk/src/thor/model/Clause.ts!';
 /**
  * [Clause](http://localhost:8669/doc/stoplight-ui/#/schemas/Clause)
  */
-
 class Clause {
     /**
      * The recipient of the clause. Null indicates contract deployment.
@@ -29,30 +28,64 @@ class Clause {
 
     /**
      * Optional comment for the clause, helpful for displaying what the clause is doing.
+     *
+     * Not serialized in {@link ClauseJSON}.
      */
     readonly comment: string | null;
 
     /**
      * Optional ABI for the contract method invocation.
+     *
+     * Not serialized in {@link ClauseJSON}.
      */
     readonly abi: string | null;
 
     /**
-     * Constructs an instance of the class using the provided JSON object.
+     * Constructs an instance representing a transaction or an interaction.
      *
-     * @param {ClauseJSON} json - The JSON object containing the required fields to initialize the instance.
-     * @throws {IllegalArgumentError} If the JSON object cannot be parsed or contains invalid values.
+     * @param {Address | null} to - The target address of the transaction. Can be null if not specified.
+     * @param {bigint} value - The amount of value associated with the transaction, defined as a bigint.
+     * @param {Hex | null} [data] - Optional hexadecimal data payload. Defaults to null if not provided.
+     * @param {string | null} [comment] - Optional comment or note associated with the transaction. Defaults to null if not provided.
+     * @param {string | null} [abi] - Optional ABI (Application Binary Interface) string defining the structure of the interaction. Defaults to null if not provided.
+     * @return {void} Does not return anything.
      */
-    constructor(json: ClauseJSON) {
+    constructor(
+        to: Address | null,
+        value: bigint,
+        data: Hex | null,
+        comment: string | null,
+        abi: string | null
+    ) {
+        this.to = to;
+        this.value = value;
+        this.data = data ?? null;
+        this.comment = comment ?? null;
+        this.abi = abi ?? null;
+    }
+
+    /**
+     * Creates a new Clause instance from the given ClauseJSON object.
+     *
+     * @param {ClauseJSON} json - The JSON object containing the input data to construct a Clause.
+     *                             The `to` property represents the target address and is processed as an Address instance.
+     *                             The `value` property is expected to be a hexadecimal value, parsed as a BigInt.
+     *                             The `data` property is optional and, if present, is parsed as a HexUInt instance.
+     * @return {Clause} A new Clause instance created using the data extracted from the provided ClauseJSON object.
+     * @throws {IllegalArgumentError} If the provided JSON object contains invalid data or couldn't be properly parsed.
+     */
+    public static of(json: ClauseJSON): Clause {
         try {
-            this.to = json.to !== null ? Address.of(json.to) : null;
-            this.value = HexUInt.of(json.value).bi;
-            this.data = json.data === undefined ? null : HexUInt.of(json.data);
-            this.comment = json.comment ?? null;
-            this.abi = json.abi ?? null;
+            return new Clause(
+                json.to !== null ? Address.of(json.to) : null,
+                HexUInt.of(json.value).bi,
+                json.data !== undefined ? HexUInt.of(json.data) : null,
+                null,
+                null
+            );
         } catch (error) {
             throw new IllegalArgumentError(
-                `${FQP}constructor(json: ClauseJSON)`,
+                `${FQP}of(json ClauseJSON)`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined
@@ -71,9 +104,7 @@ class Clause {
         return {
             to: this.to !== null ? this.to.toString() : null,
             value: Quantity.of(this.value).toString(),
-            data: this.data !== null ? this.data.toString() : Hex.PREFIX,
-            comment: this.comment ?? undefined,
-            abi: this.abi ?? undefined
+            data: this.data !== null ? this.data.toString() : Hex.PREFIX
         } satisfies ClauseJSON;
     }
 }
