@@ -41,7 +41,7 @@ describe('encodeBigIntToBuffer', () => {
 
 /**
  * Test suite for Buffer helper functions
- * @group unit/numerickind-helpers
+ * @group unit/vcdm/rlp
  */
 describe('decodeBufferToHexWithLeadingZeros', () => {
     const buffer = new Uint8Array(1);

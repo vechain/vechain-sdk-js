@@ -82,7 +82,7 @@ class ExecuteCodesRequest {
                 json.clauses != null
                     ? json.clauses.map(
                           (clauseJSON: ClauseJSON): Clause =>
-                              new Clause(clauseJSON)
+                              Clause.of(clauseJSON)
                       )
                     : null;
             this.gas = typeof json.gas === 'number' ? BigInt(json.gas) : null;

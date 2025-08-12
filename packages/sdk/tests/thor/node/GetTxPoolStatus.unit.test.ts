@@ -1,7 +1,6 @@
 import { describe, expect, jest, test } from '@jest/globals';
-import { GetTxPoolStatus } from '@thor';
+import { GetTxPoolStatus, Status } from '@thor';
 import { type HttpClient } from '@http';
-import { Status } from '@thor';
 import { type StatusJSON } from '@thor/json';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 
@@ -22,7 +21,7 @@ const mockResponse = <T>(body: T, status: number): Response => {
 };
 
 /**
- * @group unit/node
+ * @group unit/thor/node
  */
 describe('GetTxPoolStatus UNIT tests', () => {
     test('ok <- askTo', async () => {

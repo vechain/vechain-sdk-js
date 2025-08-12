@@ -17,7 +17,7 @@ import {
 /**
  * VeChain new transaction subscription - unit
  *
- * @group unit/subscriptions
+ * @group unit/thor/subscriptions
  */
 describe('NewTransactionSubscription unit tests', () => {
     let subscription: NewTransactionSubscription;
@@ -39,8 +39,8 @@ describe('NewTransactionSubscription unit tests', () => {
     });
 
     test('should receive transaction data when subscribed', (done) => {
-        const mockTXID = { 
-            id: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef' 
+        const mockTXID = {
+            id: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'
         };
 
         const mockListener = {

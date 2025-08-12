@@ -11,7 +11,7 @@ import {
 } from '../../MockHttpClient';
 
 /**
- * @group unit/transactions
+ * @group unit/thor/transactions
  */
 describe('RetrieveTransactionByID UNIT tests', () => {
     test('err <- bad tx id', async () => {

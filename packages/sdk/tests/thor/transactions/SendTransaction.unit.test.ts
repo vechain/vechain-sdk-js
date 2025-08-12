@@ -17,7 +17,7 @@ const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
 const OneVET = 10n ** 18n;
 
 /**
- * @group unit/transactions
+ * @group unit/thor/transactions
  */
 describe('RetrieveTransactionReceipt UNIT tests', () => {
     test('ok <- transfer VET', async () => {

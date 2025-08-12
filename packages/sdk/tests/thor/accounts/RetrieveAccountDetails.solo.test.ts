@@ -6,7 +6,7 @@ import { Address, Hex } from '@vcdm';
 /**
  * VeChain retrieve account details - solo
  *
- * @group integration/accounts
+ * @group integration/thor/accounts
  */
 describe('RetrieveAccountDetails solo tests', () => {
     test('ok <- askTo', async () => {

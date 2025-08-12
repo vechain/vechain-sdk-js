@@ -3,7 +3,7 @@ import { Address, Hex } from '@vcdm';
 import { StorageRangeOption, type StorageRangeOptionJSON } from '@thor';
 
 /**
- * @group unit/debug
+ * @group unit/thor/debug
  */
 describe('StorageRangeOption UNIT tests', () => {
     test('constructs with all fields', () => {

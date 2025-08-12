@@ -26,7 +26,7 @@ const mockResponse = <T>(body: T, status: number): Response => {
 };
 
 /**
- * group unit/logs
+ * group unit/thor/logs
  */
 describe('QueryVERTransferEvents UNIT tests', () => {
     test('err <- askTo - invalid request', async () => {

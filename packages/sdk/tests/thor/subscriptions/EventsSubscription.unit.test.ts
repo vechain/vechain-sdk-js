@@ -38,7 +38,7 @@ const mockEventData = {
 /**
  * VeChain events subscription - unit
  *
- * @group unit/subscriptions
+ * @group unit/thor/subscriptions
  */
 describe('EventsSubscription unit tests', () => {
     let subscription: EventsSubscription;

@@ -10,7 +10,7 @@ import { mockHttpClient } from '../../MockHttpClient';
 /**
  * VeChain inspect clauses - unit
  *
- * @group unit/accounts
+ * @group unit/thor/accounts
  */
 describe('InspectClauses unit tests', () => {
     test('should inspect clauses successfully', async () => {

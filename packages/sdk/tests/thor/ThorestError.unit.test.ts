@@ -2,6 +2,11 @@ import { describe, expect, test } from '@jest/globals';
 import { ThorError } from '@thor';
 import { VeChainSDKError } from '@errors';
 
+/**
+ * VeChain beats subscription - unit
+ *
+ * @group unit/thor
+ */
 describe('ThorestError', () => {
     describe('constructor', () => {
         test('ok <- default status', () => {

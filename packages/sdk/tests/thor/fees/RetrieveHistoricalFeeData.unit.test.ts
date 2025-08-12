@@ -26,7 +26,7 @@ const mockResponse = <T>(body: T, status: number): Response => {
 };
 
 /**
- * @group unit/fees
+ * @group unit/thor/fees
  */
 describe('RetrieveHistoricalFeeData UNIT tests', () => {
     test('err <- of(not integer)', async () => {

@@ -1,6 +1,6 @@
 import {
-    RetrieveTransactionsFromTransactionPool, Transactions,
-    TransactionsIDs,
+    RetrieveTransactionsFromTransactionPool,
+    Transactions,
     type TransactionsIDsJSON,
     type TransactionsJSON,
     type TxJSON
@@ -26,7 +26,7 @@ const mockResponse = <T>(body: T, status: number): Response => {
 };
 
 /**
- * @group unit/node
+ * @group unit/thor/node
  */
 describe('RetrieveExpandedTransactionsFromTransactionPool UNIT tests', () => {
     test('ok <- askTo', async () => {

@@ -13,7 +13,7 @@ import { FetchHttpClient } from '@http';
 import { beforeAll, expect } from '@jest/globals';
 
 /**
- * @group integration/transactions
+ * @group integration/thor/transactions
  */
 describe('RetrieveTransactionByID SOLO tests', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));

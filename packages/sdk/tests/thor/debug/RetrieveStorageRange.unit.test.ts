@@ -27,7 +27,7 @@ const mockResponse = <T>(body: T, status: number): Response => {
 };
 
 /**
- * @group unit/debug
+ * @group unit/thor/debug
  */
 describe('RetrieveStorageRange UNIT tests', () => {
     test('err <- of() - bad address', () => {

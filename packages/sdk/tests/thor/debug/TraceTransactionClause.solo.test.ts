@@ -10,6 +10,9 @@ import {
 } from '@thor';
 import { expect } from '@jest/globals';
 
+/**
+ * @group integration/thor/debug
+ */
 describe('TraceTransactionClause SOLO tests', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
 

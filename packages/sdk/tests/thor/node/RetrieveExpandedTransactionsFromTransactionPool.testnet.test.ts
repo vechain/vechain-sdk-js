@@ -1,6 +1,8 @@
 import {
-    RetrieveExpandedTransactionsFromTransactionPool, ThorError,
-    ThorNetworks, Transactions
+    RetrieveExpandedTransactionsFromTransactionPool,
+    ThorError,
+    ThorNetworks,
+    Transactions
 } from '@thor';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
