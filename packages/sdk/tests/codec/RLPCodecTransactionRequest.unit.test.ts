@@ -1,73 +1,95 @@
 // RLPCodecTransactionRequest.test.ts
+import { describe, expect } from '@jest/globals';
 import { RLPCodecTransactionRequest } from '@codec/RLPCodecTransactionRequest';
-import { TransactionRequest } from './TransactionRequest';
+import {
+    Clause,
+    ClauseBuilder,
+    type TransactionBody,
+    TransactionRequest
+} from '@thor';
+import { BlockRef, Hex } from '@vcdm';
+import { Address, Transaction } from '@vechain/sdk';
+import { SOLO_NETWORK } from '@utils';
+import { TEST_ACCOUNTS } from '../fixture';
 
+const { TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
+
+/*
+ * @group unit/codec
+ */
 describe('RLPCodecTransactionRequest', () => {
     describe('encode', () => {
-        it('should correctly encode a valid transaction request', () => {
+        test('ok <- valid transaction request', () => {
             const transactionRequest = new TransactionRequest(
-                '0xdeadbeef', // blockRef
-                42, // chainTag
+                BlockRef.of(
+                    '0x00000058f9f240032e073f4a078c5f0f3e04ae7272e4550de41f10723d6f8b2e'
+                ), // blockRef
+                SOLO_NETWORK.chainTag, // chainTag
                 [
-                    {
-                        to: '0x000000000000000000000000000000000000dead',
-                        value: 1000n,
-                        data: '0xbeef'
-                    }
+                    new Clause(
+                        Address.of(TRANSACTION_RECEIVER.address),
+                        1n,
+                        null,
+                        null,
+                        null
+                    )
                 ], // clauses
-                3600, // expiration
-                21000n, // gas
-                1n, // gasPriceCoef
-                123, // nonce
+                32, // expiration
+                100000n, // gas
+                0n, // gasPriceCoef
+                8, // nonce
                 null // dependsOn
             );
 
-            const encoded = RLPCodecTransactionRequest.encode(transactionRequest);
-
-            expect(encoded).toBeInstanceOf(Uint8Array);
-            // Add additional assertions here based on the expected encoded value
+            const expected = Hex.of(
+                '0xea81f68558f9f2400320d8d7949e4e0efb170070e35a6b76b683aee91dd77805b3018080830186a08008c0'
+            ).bytes;
+            const actual =
+                RLPCodecTransactionRequest.encode(transactionRequest);
+            expect(actual).toEqual(expected);
         });
 
-        it('should correctly handle transaction request with null "to" clause', () => {
+        test('ok <- sdk 2 equivalence', () => {
             const transactionRequest = new TransactionRequest(
-                '0xdeadbeef', // blockRef
-                42, // chainTag
+                BlockRef.of(
+                    '0x00000058f9f240032e073f4a078c5f0f3e04ae7272e4550de41f10723d6f8b2e'
+                ), // blockRef
+                SOLO_NETWORK.chainTag, // chainTag
                 [
-                    {
-                        to: null,
-                        value: 5000n,
-                        data: '0xdeadc0de'
-                    }
+                    new Clause(
+                        Address.of(TRANSACTION_RECEIVER.address),
+                        1n,
+                        null,
+                        null,
+                        null
+                    )
                 ], // clauses
-                7200, // expiration
-                30000n, // gas
-                2n, // gasPriceCoef
-                456, // nonce
+                32, // expiration
+                100000n, // gas
+                0n, // gasPriceCoef
+                8, // nonce
                 null // dependsOn
             );
 
-            const encoded = RLPCodecTransactionRequest.encode(transactionRequest);
-
-            expect(encoded).toBeInstanceOf(Uint8Array);
-            // Add additional assertions here based on the expected encoded value
-        });
-
-        it('should correctly encode transaction request with empty clauses', () => {
-            const transactionRequest = new TransactionRequest(
-                '0xcafebabe', // blockRef
-                1, // chainTag
-                [], // clauses
-                1800, // expiration
-                15000n, // gas
-                1n, // gasPriceCoef
-                789, // nonce
-                '0xabcdef' // dependsOn
-            );
-
-            const encoded = RLPCodecTransactionRequest.encode(transactionRequest);
-
-            expect(encoded).toBeInstanceOf(Uint8Array);
-            // Add additional assertions here based on the expected encoded value
+            const txBody: TransactionBody = {
+                chainTag: transactionRequest.chainTag,
+                blockRef: transactionRequest.blockRef.toString(),
+                expiration: transactionRequest.expiration,
+                clauses: [
+                    ClauseBuilder.transferVET(
+                        transactionRequest.clauses[0].to as Address,
+                        transactionRequest.clauses[0].value
+                    )
+                ],
+                gasPriceCoef: Number(transactionRequest.gasPriceCoef),
+                gas: Number(transactionRequest.gas),
+                dependsOn: transactionRequest.dependsOn?.toString() ?? null,
+                nonce: transactionRequest.nonce
+            };
+            const expected = Transaction.of(txBody).encode(false);
+            const actual =
+                RLPCodecTransactionRequest.encode(transactionRequest);
+            expect(actual).toEqual(expected);
         });
     });
 });

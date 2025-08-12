@@ -96,26 +96,26 @@ function encodeTR(tr: TransactionRequest): Uint8Array {
     });
 }
 
-function encodeReservedField(tx: Transaction): Uint8Array[] {
-    // Check if is reserved or not
-    const reserved = tx.body.reserved ?? {};
-    // Init kind for features
-    const featuresKind = RLP_FEATURES.kind;
-    // Features list
-    const featuresList = [
-        featuresKind.data(reserved.features ?? 0, RLP_FEATURES.name).encode(),
-        ...(reserved.unused ?? [])
-    ];
-    // Trim features list
-    while (featuresList.length > 0) {
-        if (featuresList[featuresList.length - 1].length === 0) {
-            featuresList.pop();
-        } else {
-            break;
-        }
-    }
-    return featuresList;
-}
+// function encodeReservedField(tx: Transaction): Uint8Array[] {
+//     // Check if is reserved or not
+//     const reserved = tx.body.reserved ?? {};
+//     // Init kind for features
+//     const featuresKind = RLP_FEATURES.kind;
+//     // Features list
+//     const featuresList = [
+//         featuresKind.data(reserved.features ?? 0, RLP_FEATURES.name).encode(),
+//         ...(reserved.unused ?? [])
+//     ];
+//     // Trim features list
+//     while (featuresList.length > 0) {
+//         if (featuresList[featuresList.length - 1].length === 0) {
+//             featuresList.pop();
+//         } else {
+//             break;
+//         }
+//     }
+//     return featuresList;
+// }
 
 describe('codec', () => {
     const block = {
@@ -149,7 +149,13 @@ describe('codec', () => {
         1n
     );
 
-    const c = new Clause({ to: TRANSACTION_RECEIVER.address, value: 1n });
+    const c = new Clause(
+        Address.of(TRANSACTION_RECEIVER.address),
+        1n,
+        null,
+        null,
+        null
+    );
 
     const txBody: TransactionBody = {
         chainTag: SOLO_NETWORK.chainTag,

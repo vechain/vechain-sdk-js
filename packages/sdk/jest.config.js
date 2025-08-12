@@ -9,6 +9,7 @@ module.exports = {
         '^@certificate$': '<rootDir>/src/certificate',
         '^@certificate/(.*)$': '<rootDir>/src/certificate/$1',
         '^@clients': `<rootDir>/src/clients`,
+        '^@codec': `<rootDir>/src/codec`,
         '^@errors$': '<rootDir>/src/errors',
         '^@errors/(.*)$': '<rootDir>/src/errors/$1',
         '^@hdkey$': '<rootDir>/src/hdkey',
