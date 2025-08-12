@@ -32,7 +32,7 @@ const mockResponse = <T>(body: T, status: number): Response => {
 };
 
 /**
- * @group unit/blocks
+ * @group unit/thor/blocks
  */
 describe('RetrieveRegularBlock UNIT tests', () => {
     test('err: <- bad revision', async () => {

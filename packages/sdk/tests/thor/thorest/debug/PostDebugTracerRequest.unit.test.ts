@@ -4,7 +4,7 @@ import { IllegalArgumentError } from '@common/errors';
 import { type PostDebugTracerRequestJSON } from '@thor/thorest/json';
 
 /**
- * @group unit/debug
+ * @group unit/thor/debug
  */
 describe('PostDebugTracerRequest UNIT tests', () => {
     test('err <- constructor illegal', () => {

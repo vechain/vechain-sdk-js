@@ -37,7 +37,7 @@ class Clause {
         try {
             this.to = json.to !== null ? Address.of(json.to) : undefined;
             this.value = HexUInt.of(json.value).bi;
-            this.data = HexUInt.of(json.data);
+            this.data = HexUInt.of(json.data ?? '0x');
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: ClauseJSON)`,

@@ -7,6 +7,7 @@ import {
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 
+
 describe('BlocksSubscription solo tests', () => {
     let subscription: BlocksSubscription;
     beforeEach(() => {

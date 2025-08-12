@@ -5,7 +5,7 @@ import { PostDebugTracerCallRequest } from '@thor/thorest/debug';
 import { type PostDebugTracerCallRequestJSON } from '@thor/thorest/json';
 
 /**
- * @group unit/debug
+ * @group unit/thor/debug
  */
 describe('PostDebugTracerCallRequest UNIT tests', () => {
     test('err <- invalid value', () => {

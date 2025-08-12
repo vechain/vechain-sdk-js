@@ -8,7 +8,7 @@ import { FetchHttpClient } from '@common/http';
 import { type TransferLogFilterRequestJSON } from '@thor/thorest/json';
 
 /**
- * group integration/logs
+ * group integration/thor/logs
  */
 describe('QueryVETTransferEvents SOLO tests', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));

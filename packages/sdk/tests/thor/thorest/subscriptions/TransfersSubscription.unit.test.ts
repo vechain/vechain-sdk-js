@@ -113,7 +113,7 @@ const createWithMultipleParams = (
 /**
  * VeChain transfers subscription - unit
  *
- * @group unit/subscriptions
+ * @group unit/thor/subscriptions
  */
 describe('TransfersSubscription unit tests', () => {
     let subscription: TransfersSubscription;

@@ -7,6 +7,11 @@ import {
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 
+/**
+ * VeChain beats subscription - unit
+ *
+ * @group integration/thor/subscriptions
+ */
 describe('BlocksSubscription solo tests', () => {
     let subscription: BeatsSubscription;
     beforeEach(() => {

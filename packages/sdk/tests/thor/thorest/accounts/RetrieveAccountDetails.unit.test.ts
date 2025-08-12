@@ -15,7 +15,7 @@ import {
 /**
  * VeChain retrieve account details - unit
  *
- * @group unit/accounts
+ * @group unit/thor/accounts
  */
 describe('RetrieveAccountDetails unit tests', () => {
     describe('RetrieveAccountDetailsPath', () => {

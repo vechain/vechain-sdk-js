@@ -55,7 +55,7 @@ class MockCloseEvent extends Event {
 /**
  * VeChain websocket - unit
  *
- * @group unit/websocket
+ * @group unit/ws
  */
 describe('WebSocketClient interface tests', () => {
     let client: MockWebSocketClient;

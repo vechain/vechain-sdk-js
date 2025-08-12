@@ -34,7 +34,7 @@ const mockResponse = <T>(body: T, status: number): Response => {
 /**
  * VeChain expanded block - unit
  *
- * @group unit/blocks
+ * @group unit/thor/blocks
  */
 describe('RetrieveExpandedBlock UNIT tests', () => {
     test('err: <- bad revision', async () => {

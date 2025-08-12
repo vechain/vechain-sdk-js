@@ -5,7 +5,7 @@ import { ThorNetworks } from '@thor/thorest';
 import { IllegalArgumentError } from '@common/errors';
 
 /**
- * @group integration/fork
+ * @group integration/thor/fork
  */
 describe('ForkDetector SOLO tests', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));

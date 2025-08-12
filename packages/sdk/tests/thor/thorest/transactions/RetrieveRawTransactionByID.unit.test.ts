@@ -15,7 +15,7 @@ import {
 } from '../../../MockHttpClient';
 
 /**
- * @group unit/transactions
+ * @group unit/thor/transactions
  */
 describe('RetrieveRawTransactionByID UNIT tests', () => {
     const txId = HexUInt32.of(

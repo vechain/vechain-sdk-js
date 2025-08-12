@@ -40,7 +40,9 @@ describe('PublicClient - Transaction Methods', () => {
         test('should throw TransactionNotFoundError for invalid transaction hash', async () => {
             await expect(
                 publicClient.getTransaction(invalidTxHash)
-            ).rejects.toThrow('Transaction');
+            ).rejects.toThrow(
+                'Transaction with hash \"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef\" could not be found.'
+            );
         });
 
         test('should handle null response gracefully', async () => {
@@ -59,7 +61,9 @@ describe('PublicClient - Transaction Methods', () => {
         test('should throw TransactionReceiptNotFoundError for invalid transaction hash', async () => {
             await expect(
                 publicClient.getTransactionReceipt(invalidTxHash)
-            ).rejects.toThrow('Transaction');
+            ).rejects.toThrow(
+                'Transaction receipt with hash \"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef\" could not be found. The Transaction may not be processed on a block yet.'
+            );
         });
 
         test('should handle null response gracefully', async () => {
@@ -149,7 +153,8 @@ describe('PublicClient - Transaction Methods', () => {
             const bytecode = await publicClient.getBytecode(zeroAddress);
 
             // Zero address should not have bytecode
-            expect(bytecode?.digits).toHaveLength(0);
+            // expect(bytecode).toBeUndefined();
+            expect(bytecode?.toString()).toBe('0x');
         });
     });
 
@@ -179,7 +184,8 @@ describe('PublicClient - Transaction Methods', () => {
             const code = await publicClient.getCode(zeroAddress);
 
             // Zero address should not have code
-            expect(code?.digits).toHaveLength(0);
+            // expect(code).toBeUndefined();
+            expect(code?.toString()).toBe('0x');
         });
     });
 
@@ -206,7 +212,9 @@ describe('PublicClient - Transaction Methods', () => {
             );
 
             expect(storageValue).toBeDefined();
-            expect(storageValue.n).toBe(0);
+            expect(storageValue.toString()).toBe(
+                '0x0000000000000000000000000000000000000000000000000000000000000000'
+            );
         });
 
         test('should handle different storage slots', async () => {
@@ -239,8 +247,8 @@ describe('PublicClient - Transaction Methods', () => {
                 storageSlot
             );
 
-            expect(bytecode?.digits).toHaveLength(0);
-            expect(code?.digits).toHaveLength(0);
+            expect(bytecode?.toString()).toBe('0x');
+            expect(code?.toString()).toBe('0x');
             expect(storage).toBeDefined(); // Should return default value
         });
 

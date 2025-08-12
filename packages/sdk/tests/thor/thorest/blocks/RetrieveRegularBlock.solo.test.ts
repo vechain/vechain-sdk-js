@@ -16,7 +16,7 @@ class InvalidRevision extends Revision {
 }
 
 /**
- * @group integration/blocks
+ * @group integration/thor/blocks
  */
 describe('RetrieveRegularBlock SOLO tests', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));

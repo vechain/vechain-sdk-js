@@ -14,7 +14,7 @@ import { GetStorageResponseJSON } from '@thor/thorest/json';
 /**
  * VeChain retrieve storage position value - unit
  *
- * @group unit/accounts
+ * @group unit/thor/accounts
  */
 describe('RetrieveStoragePositionValue unit tests', () => {
     describe('RetrieveStoragePositionValuePath', () => {

@@ -11,7 +11,7 @@ import {
 
 /**
  * Test Mnemonic class.
- * @group unit/vcdm
+ * @group unit/vcdm/mnemonic
  */
 describe('Mnemonic', () => {
     describe('toPrivateKey', () => {

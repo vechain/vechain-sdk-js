@@ -4,7 +4,7 @@ import { StorageRangeOption } from '@thor/thorest/debug';
 import { type StorageRangeOptionJSON } from '@thor/thorest/json';
 
 /**
- * @group unit/debug
+ * @group unit/thor/debug
  */
 describe('StorageRangeOption UNIT tests', () => {
     test('constructs with all fields', () => {

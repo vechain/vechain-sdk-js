@@ -10,7 +10,7 @@ import { FetchHttpClient } from '@common/http';
 /**
  * VeChain retrieve storage position value - solo
  *
- * @group integration/accounts
+ * @group integration/thor/accounts
  */
 describe('RetrieveStoragePositionValue testnet tests', () => {
     test('ok <- askTo', async () => {

@@ -5,7 +5,7 @@ import { ThorError } from '@thor/thorest';
 import { type StorageRangeOptionJSON } from '@thor/thorest/json';
 
 /**
- * @group integration/debug
+ * @group integration/thor/debug
  */
 describe('RetrieveStorageRange SOLO tests', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));

@@ -6,7 +6,7 @@ import { type StorageRangeJSON } from '@thor/thorest/json';
 /**
  * VeChain storage range - unit
  *
- * @group unit/debug
+ * @group unit/thor/debug
  */
 describe('StorageRange UNIT tests', () => {
     test('constructs with all fields', () => {

@@ -187,7 +187,7 @@ type RequestConstructor = typeof Request;
 /**
  * VeChain FetchHttpClient - unit tests
  *
- * @group unit/network/http
+ * @group unit/http
  */
 describe('FetchHttpClient unit tests', () => {
     beforeEach(() => {

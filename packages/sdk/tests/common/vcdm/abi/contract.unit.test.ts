@@ -20,7 +20,7 @@ import {
 
 /**
  * Contract tests - encode & decode
- * @group unit/encode-decode
+ * @group unit/vcdm/abi
  */
 describe('Contract interface for ABI encoding/decoding', () => {
     /**

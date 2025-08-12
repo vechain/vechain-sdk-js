@@ -25,7 +25,7 @@ const mockResponse = <T>(body: T, status: number): Response => {
 };
 
 /**
- * @group unit/fees
+ * @group unit/thor/fees
  */
 describe('SuggestPriorityFee UNIT tests', () => {
     test('err <- server error', async () => {

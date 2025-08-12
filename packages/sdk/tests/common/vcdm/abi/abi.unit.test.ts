@@ -30,7 +30,7 @@ import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 /**
  * ABI tests - encode & decode
- * @group unit/encode-decode
+ * @group unit/vcdm/abi
  */
 describe('Abi - encode & decode', () => {
     /**

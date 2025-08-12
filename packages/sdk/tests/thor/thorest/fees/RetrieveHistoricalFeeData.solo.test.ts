@@ -10,7 +10,7 @@ import {
 } from '@thor/thorest';
 
 /**
- * @group integration/fees
+ * @group integration/thor/fees
  */
 describe('RetrieveHistoricalFeeData SOLO tests', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));

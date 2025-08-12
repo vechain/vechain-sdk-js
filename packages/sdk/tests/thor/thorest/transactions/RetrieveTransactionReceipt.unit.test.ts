@@ -12,7 +12,7 @@ import {
 } from '../../../MockHttpClient';
 
 /**
- * @group unit/transactions
+ * @group unit/thor/transactions
  */
 describe('RetrieveTransactionReceipt UNIT tests', () => {
     // You can't build an invalid Hex expression from the SDK,

@@ -24,7 +24,7 @@ const mockResponse = <T>(body: T, status: number): Response => {
 };
 
 /**
- * @group unit/debug
+ * @group unit/thor/debug
  */
 describe('TraceCall UNIT tests', () => {
     test('err <- of() - illegal request', () => {

@@ -5,7 +5,7 @@ import { Hex, Revision } from '@common/vcdm';
 import { type PostDebugTracerCallRequestJSON } from '@thor/thorest/json';
 
 /**
- * @group integration/debug
+ * @group integration/thor/debug
  */
 describe('TraceCall SOLO tests', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));

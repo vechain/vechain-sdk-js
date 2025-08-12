@@ -3,7 +3,7 @@ import { Address, Mnemonic, Account } from '@common/vcdm';
 
 /**
  * Test Account class.
- * @group unit/vcdm
+ * @group unit/vcdm/account
  */
 describe('Account class tests', () => {
     const balance = 0n;

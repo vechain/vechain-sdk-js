@@ -17,7 +17,7 @@ import {
 /**
  * VeChain new transaction subscription - unit
  *
- * @group unit/subscriptions
+ * @group unit/thor/subscriptions
  */
 describe('NewTransactionSubscription unit tests', () => {
     let subscription: NewTransactionSubscription;
