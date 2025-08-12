@@ -1,7 +1,7 @@
 // Local type declarations for @vechain/sdk-thorest-api
 // This allows TypeScript compilation in CI where peer dependencies aren't installed
 
-declare module '@vechain/sdk' {
+declare module '@vechain/sdk/thor' {
     export interface RegularBlockResponse {
         id: string;
         number: number;

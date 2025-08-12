@@ -1,18 +1,20 @@
 import { THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS } from '../config/accounts';
 import {
-    Address,
     ClauseBuilder,
-    FetchHttpClient,
     RetrieveExpandedBlock,
     SendTransaction,
-    HexUInt,
-    Revision,
     Transaction,
     ThorNetworks,
     type TransactionBody,
     type TransactionClause,
     VTHO_ADDRESS
-} from '@vechain/sdk';
+} from '@vechain/sdk/thor';
+import {
+    Address,
+    FetchHttpClient,
+    HexUInt,
+    Revision
+} from '@vechain/sdk/common';
 import {
     THOR_SOLO_CHAIN_TAG,
     THOR_SOLO_SEEDED_TEST_TOKEN_AMOUNT,

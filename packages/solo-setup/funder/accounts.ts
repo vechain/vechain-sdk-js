@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/pseudo-random */
-import { Address, HDKey } from '@vechain/sdk';
+import { Address, HDKey } from '@vechain/sdk/common';
 import { THOR_SOLO_DEFAULT_MNEMONIC } from '../config';
 import { seedTestToken, seedVET, seedVTHO } from '../utils/transfer';
 

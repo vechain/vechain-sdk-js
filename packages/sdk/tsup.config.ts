@@ -8,6 +8,12 @@ export default defineConfig({
     esbuildOptions(options) {
         // Configure path alias resolution for esbuild
         options.alias = {
+            '@common': resolve(__dirname, './src/common'),
+            '@common/*': resolve(__dirname, './src/common/*'),
+            '@thor': resolve(__dirname, './src/thor'),
+            '@thor/*': resolve(__dirname, './src/thor/*'),
+            '@viem': resolve(__dirname, './src/viem'),
+            '@viem/*': resolve(__dirname, './src/viem/*'),
             '@vcdm': resolve(__dirname, './src/vcdm'),
             '@errors': resolve(__dirname, './src/errors'),
             '@certificate': resolve(__dirname, './src/certificate'),

@@ -1,9 +1,8 @@
 import {
-    Revision,
     type RegularBlockResponse,
-    FetchHttpClient,
     RetrieveRegularBlock
-} from '@vechain/sdk';
+} from '@vechain/sdk/thor';
+import { Revision, FetchHttpClient } from '@vechain/sdk/common';
 
 /**
  * Get the genesis block from the ThorClient

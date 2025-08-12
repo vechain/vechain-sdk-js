@@ -86,7 +86,7 @@ describe('PublicClient - Events/Logs Methods', () => {
 
             if (logs.length > 0) {
                 const firstLog = logs[0];
-                expect(firstLog.topics[0]).toBe(
+                expect(firstLog.topics[0].toString()).toBe(
                     transferEventSignature.toString()
                 );
             }
