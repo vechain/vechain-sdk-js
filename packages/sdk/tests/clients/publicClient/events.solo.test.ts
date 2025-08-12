@@ -241,8 +241,7 @@ describe('PublicClient - Events/Logs Methods', () => {
 
             await expect(
                 publicClient.getFilterLogs({ filter: invalidFilter })
-        // ).rejects.toThrow('Invalid filter type');
-            ).rejects.toThrow('Filter type "invalid" is not supported.'); // to check
+            ).rejects.toThrow('Filter type "invalid" is not supported.');
         });
     });
 
