@@ -3,28 +3,21 @@ name: CI
 on:
   push:
     branches:
-      - main
-      - main-*
-      - supported-*
-      - feature-*
-      - sdk-*
+      - sdk-v3 #will be main in the future
   pull_request:
     branches:
-      - main
-      - main-*
-      - supported-*
-      - feature-*
-      - sdk-*
+      - sdk-v3
+      
+    
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  lint_build:
-    name: Lint & Build
+  build:
+    name: Build (and Lint)
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -34,6 +27,24 @@ jobs:
         with:
           node-version: lts/*
           cache: yarn
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            packages/*/node_modules
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-modules-
+
+      - name: Cache Turborepo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
@@ -44,11 +55,19 @@ jobs:
       - name: Build
         run: yarn build
 
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: |
+            packages/**/dist
+          if-no-files-found: ignore
+
   tests_unit:
     name: Tests • Unit (Node)
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    needs: [lint_build]
+    needs: [build]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -59,8 +78,24 @@ jobs:
           node-version: lts/*
           cache: yarn
 
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            packages/*/node_modules
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-modules-
+
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+          path: .
 
       - name: Unit tests
         run: yarn test:unit
@@ -78,7 +113,7 @@ jobs:
     name: Tests • Integration (Thor Solo)
     runs-on: ubuntu-latest
     timeout-minutes: 25
-    needs: [lint_build]
+    needs: [build]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -89,8 +124,24 @@ jobs:
           node-version: lts/*
           cache: yarn
 
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            packages/*/node_modules
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-modules-
+
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+          path: .
 
       - name: Preliminary Stop of Thor solo node
         run: yarn stop-thor-solo || true
@@ -107,12 +158,61 @@ jobs:
         if: always()
         run: yarn stop-thor-solo || true
 
+  tests_clients:
+    name: Tests • Clients (Thor Solo)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: [build]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node (LTS)
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: yarn
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            packages/*/node_modules
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-modules-
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+          path: .
+
+      - name: Preliminary Stop of Thor solo node
+        run: yarn stop-thor-solo || true
+
+      - name: Start & Seed Thor solo node
+        run: |
+          yarn start-thor-solo
+          yarn seed-thor-solo
+
+      - name: Clients tests
+        run: yarn test:clients
+
+      - name: Stop Thor solo node
+        if: always()
+        run: yarn stop-thor-solo || true
+
   tests_browser:
     name: Tests • Browser
     runs-on: ubuntu-latest
     timeout-minutes: 25
     continue-on-error: true
-    needs: [lint_build]
+    needs: [build]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -126,8 +226,11 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Build for solo setup
-        run: yarn build
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+          path: .
 
       - name: Preliminary Stop of Thor solo node
         run: yarn stop-thor-solo || true
