@@ -1,3 +1,0 @@
-name: Check for leaks in secrets (Disabled)
-on:
-  workflow_call:

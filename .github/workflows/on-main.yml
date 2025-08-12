@@ -1,4 +1,0 @@
-name: Main CI (Deprecated)
-
-on:
-  workflow_call:

@@ -15,8 +15,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
-    name: Build (and Lint)
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -52,22 +52,10 @@ jobs:
       - name: Lint
         run: yarn lint
 
-      - name: Build
-        run: yarn build
-
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-output
-          path: |
-            packages/**/dist
-          if-no-files-found: ignore
-
   tests_unit:
     name: Tests • Unit (Node)
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    needs: [build]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -91,11 +79,8 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: build-output
-          path: .
+      - name: Build
+        run: yarn build
 
       - name: Unit tests
         run: yarn test:unit
@@ -113,7 +98,6 @@ jobs:
     name: Tests • Integration (Thor Solo)
     runs-on: ubuntu-latest
     timeout-minutes: 25
-    needs: [build]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -137,11 +121,8 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: build-output
-          path: .
+      - name: Build
+        run: yarn build
 
       - name: Preliminary Stop of Thor solo node
         run: yarn stop-thor-solo || true
@@ -162,7 +143,6 @@ jobs:
     name: Tests • Clients (Thor Solo)
     runs-on: ubuntu-latest
     timeout-minutes: 25
-    needs: [build]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -186,11 +166,8 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: build-output
-          path: .
+      - name: Build
+        run: yarn build
 
       - name: Preliminary Stop of Thor solo node
         run: yarn stop-thor-solo || true
@@ -212,7 +189,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     continue-on-error: true
-    needs: [build]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -226,11 +202,8 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: build-output
-          path: .
+      - name: Build
+        run: yarn build
 
       - name: Preliminary Stop of Thor solo node
         run: yarn stop-thor-solo || true

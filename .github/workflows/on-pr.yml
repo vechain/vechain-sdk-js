@@ -1,6 +1,0 @@
-name: PR Checks (Deprecated)
-
-on:
-  workflow_call:
-
-
