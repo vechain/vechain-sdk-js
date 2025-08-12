@@ -2,6 +2,9 @@ import { THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS } from '../config/accounts';
 import {
     Address,
     ClauseBuilder,
+    FetchHttpClient,
+    RetrieveExpandedBlock,
+    SendTransaction,
     HexUInt,
     Revision,
     Transaction,
@@ -17,11 +20,6 @@ import {
     THOR_SOLO_SEEDED_VTHO_AMOUNT
 } from '../config/constants';
 import { type TestAccount } from '../funder/accounts';
-import {
-    FetchHttpClient,
-    RetrieveExpandedBlock,
-    SendTransaction
-} from '@vechain/sdk';
 
 const genesisDeployerAccount = THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS[0];
 
