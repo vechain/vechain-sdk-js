@@ -1,0 +1,147 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - main-*
+      - supported-*
+      - feature-*
+      - sdk-*
+  pull_request:
+    branches:
+      - main
+      - main-*
+      - supported-*
+      - feature-*
+      - sdk-*
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint_build:
+    name: Lint & Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node (LTS)
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Build
+        run: yarn build
+
+  tests_unit:
+    name: Tests • Unit (Node)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [lint_build]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node (LTS)
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Unit tests
+        run: yarn test:unit
+
+      - name: Archive coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-results
+          path: |
+            packages/**/coverage*/lcov.info
+          if-no-files-found: ignore
+
+  tests_integration:
+    name: Tests • Integration (Thor Solo)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: [lint_build]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node (LTS)
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Preliminary Stop of Thor solo node
+        run: yarn stop-thor-solo || true
+
+      - name: Start & Seed Thor solo node
+        run: |
+          yarn start-thor-solo
+          yarn seed-thor-solo
+
+      - name: Integration tests
+        run: yarn test:integration
+
+      - name: Stop Thor solo node
+        if: always()
+        run: yarn stop-thor-solo || true
+
+  tests_browser:
+    name: Tests • Browser
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    continue-on-error: true
+    needs: [lint_build]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node (LTS)
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build for solo setup
+        run: yarn build
+
+      - name: Preliminary Stop of Thor solo node
+        run: yarn stop-thor-solo || true
+
+      - name: Start & Seed Thor solo node
+        run: |
+          yarn start-thor-solo
+          yarn seed-thor-solo
+
+      - name: Browser tests
+        run: yarn test:browser
+
+      - name: Stop Thor solo node
+        if: always()
+        run: yarn stop-thor-solo || true
+
+

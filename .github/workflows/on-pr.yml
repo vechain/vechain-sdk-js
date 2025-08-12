@@ -1,17 +1,6 @@
-name: PR Checks
+name: PR Checks (Deprecated)
 
 on:
-  pull_request:
-    branches:
-      - 'main'
-      - 'main-*'
-      - 'supported-*'
-      - 'feature-*'
-      - 'sdk-*'
-
-jobs:
-    build-lint:
-        uses: ./.github/workflows/build-lint.yml
-        secrets: inherit
+  workflow_call:
 
 
