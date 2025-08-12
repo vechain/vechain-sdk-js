@@ -223,4 +223,11 @@ jobs:
         if: always()
         run: yarn stop-thor-solo || true
 
+  sonar:
+    name: SonarCloud
+    needs: [tests_unit, tests_integration, tests_clients, tests_browser]
+    if: always()
+    uses: ./.github/workflows/sonar.yml
+    secrets: inherit
+
 

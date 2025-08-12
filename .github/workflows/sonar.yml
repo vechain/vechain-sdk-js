@@ -1,9 +1,6 @@
 name: Sonar Scan
 on:
-  workflow_run:
-    workflows: [ CI-V3 ]
-    types:
-      - completed
+  workflow_call:
 
 jobs:
   sonar-scan:
