@@ -131,9 +131,8 @@ describe('PublicClient - Fee Estimation Methods', () => {
 
     describe('estimateGas', () => {
         test('should estimate gas for contract call', async () => {
-            const gasEstimate = await publicClient.estimateGas(
-                sampleContractCall
-            );
+            const gasEstimate =
+                await publicClient.estimateGas(sampleContractCall);
 
             expect(gasEstimate).toBeDefined();
             expect(Array.isArray(gasEstimate)).toBe(true);
@@ -170,9 +169,8 @@ describe('PublicClient - Fee Estimation Methods', () => {
                 gas: 21000
             };
 
-            const estimate = await publicClient.estimateGas(
-                transferTransaction
-            );
+            const estimate =
+                await publicClient.estimateGas(transferTransaction);
 
             expect(estimate).toBeDefined();
             expect(Array.isArray(estimate)).toBe(true);
@@ -218,9 +216,8 @@ describe('PublicClient - Fee Estimation Methods', () => {
 
     describe('fee calculation helpers', () => {
         test('should calculate transaction costs', async () => {
-            const gasEstimate = await publicClient.estimateGas(
-                sampleContractCall
-            );
+            const gasEstimate =
+                await publicClient.estimateGas(sampleContractCall);
             const feePerGas = await publicClient.estimateFeePerGas();
 
             const firstClauseGas = gasEstimate[0].gasUsed;

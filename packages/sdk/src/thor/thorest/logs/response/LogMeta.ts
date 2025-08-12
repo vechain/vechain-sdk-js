@@ -62,13 +62,24 @@ class LogMeta {
     constructor(json: LogMetaJSON) {
         try {
             this.blockID = HexUInt32.of(json.blockID);
-            this.blockNumber = json.blockNumber != null ? UInt.of(json.blockNumber).valueOf() : 0;
-            this.blockTimestamp = json.blockTimestamp != null ? UInt.of(json.blockTimestamp).valueOf() : 0;
+            this.blockNumber =
+                json.blockNumber != null
+                    ? UInt.of(json.blockNumber).valueOf()
+                    : 0;
+            this.blockTimestamp =
+                json.blockTimestamp != null
+                    ? UInt.of(json.blockTimestamp).valueOf()
+                    : 0;
             this.txID = HexUInt32.of(json.txID);
             this.txOrigin = Address.of(json.txOrigin);
-            this.clauseIndex = json.clauseIndex != null ? UInt.of(json.clauseIndex).valueOf() : 0;
-            this.txIndex = json.txIndex != null ? UInt.of(json.txIndex).valueOf() : 0;
-            this.logIndex = json.logIndex != null ? UInt.of(json.logIndex).valueOf() : 0;
+            this.clauseIndex =
+                json.clauseIndex != null
+                    ? UInt.of(json.clauseIndex).valueOf()
+                    : 0;
+            this.txIndex =
+                json.txIndex != null ? UInt.of(json.txIndex).valueOf() : 0;
+            this.logIndex =
+                json.logIndex != null ? UInt.of(json.logIndex).valueOf() : 0;
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: LogMetaJSON)`,

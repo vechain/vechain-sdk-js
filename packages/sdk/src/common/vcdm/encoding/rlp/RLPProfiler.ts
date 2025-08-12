@@ -11,7 +11,10 @@ class RLPProfiler extends RLP {
      * Creates a new Profiler instance.
      * @param profile - Profile for encoding/decoding structures.
      */
-    private constructor(data: RLPInput, readonly profile: RLPProfile) {
+    private constructor(
+        data: RLPInput,
+        readonly profile: RLPProfile
+    ) {
         super(data);
     }
 

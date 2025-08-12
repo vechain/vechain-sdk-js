@@ -61,8 +61,8 @@ class EventLogFilterRequest {
                 json.order === undefined
                     ? null
                     : Object.values(LogSort).includes(json.order as LogSort)
-                    ? (json.order as LogSort)
-                    : null;
+                      ? (json.order as LogSort)
+                      : null;
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: EventLogFilterRequestJSON)`,

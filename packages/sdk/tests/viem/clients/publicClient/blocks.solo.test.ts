@@ -299,9 +299,8 @@ describe('PublicClient - Block Methods', () => {
             const invalidBlockNumber = 999999999; // Very high block number
 
             try {
-                const blockNumber = await publicClient.getBlockNumber(
-                    invalidBlockNumber
-                );
+                const blockNumber =
+                    await publicClient.getBlockNumber(invalidBlockNumber);
                 expect(blockNumber).toBeUndefined();
             } catch (error) {
                 expect(error).toBeDefined();

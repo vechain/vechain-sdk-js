@@ -77,7 +77,7 @@ const createMockPublicClient = (): jest.Mocked<PublicClient> =>
         createEventFilter: (jest.fn() as any).mockReturnValue({
             id: 'filter-1'
         })
-    } as any);
+    }) as any;
 
 // Mock WalletClient
 const createMockWalletClient = (): jest.Mocked<WalletClient> =>
@@ -86,7 +86,7 @@ const createMockWalletClient = (): jest.Mocked<WalletClient> =>
             hash: '0x123456789abcdef',
             id: 'tx-1'
         })
-    } as any);
+    }) as any;
 
 /**
  * Contract getContract function tests

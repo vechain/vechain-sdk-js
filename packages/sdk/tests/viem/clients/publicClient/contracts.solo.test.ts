@@ -165,9 +165,8 @@ describe('PublicClient - Contract/Call Methods', () => {
 
         test('should produce same results as call method', async () => {
             const callResult = await publicClient.call(vthoBalanceCall);
-            const simulateResult = await publicClient.simulateCalls(
-                vthoBalanceCall
-            );
+            const simulateResult =
+                await publicClient.simulateCalls(vthoBalanceCall);
 
             expect(callResult).toBeDefined();
             expect(simulateResult).toBeDefined();

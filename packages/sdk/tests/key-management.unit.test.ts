@@ -4,18 +4,18 @@
  */
 
 import { describe, expect, test, beforeEach } from '@jest/globals';
-import { 
-    Secp256k1, 
-    Address, 
-    HDKey, 
-    Mnemonic, 
+import {
+    Secp256k1,
+    Address,
+    HDKey,
+    Mnemonic,
     HexUInt,
-    Transaction 
+    Transaction
 } from '@vechain/sdk';
 
 class KeyManager {
     private hdNode: HDKey;
-    
+
     constructor(mnemonicWords?: string[]) {
         if (mnemonicWords) {
             this.hdNode = HDKey.fromMnemonic(mnemonicWords);
@@ -25,7 +25,7 @@ class KeyManager {
             this.hdNode = HDKey.fromMnemonic(mnemonicWords);
         }
     }
-    
+
     // Create account from HD wallet
     createAccount(index: number = 0): {
         privateKey: Uint8Array;
@@ -43,7 +43,7 @@ class KeyManager {
             clear: () => privateKey.fill(0)
         };
     }
-    
+
     // Recover account from mnemonic - more secure than keystore
     getAccountFromMnemonic(
         mnemonicWords: string[],
@@ -57,15 +57,17 @@ class KeyManager {
 
         return {
             privateKey: child.privateKey as Uint8Array,
-            address: Address.ofPublicKey(child.publicKey as Uint8Array).toString()
+            address: Address.ofPublicKey(
+                child.publicKey as Uint8Array
+            ).toString()
         };
     }
-    
+
     // Validate private key using SDK
     validatePrivateKey(privateKey: Uint8Array): boolean {
         return Secp256k1.isValidPrivateKey(privateKey);
     }
-    
+
     // Method to sign transactions
     signTransaction(
         transaction: Transaction,
@@ -99,21 +101,23 @@ describe('Key Management Tests', () => {
     describe('Account Creation', () => {
         test('should create account with valid private key and address', () => {
             const account = keyManager.createAccount(0);
-            
+
             expect(account.privateKey).toBeDefined();
             expect(account.privateKey.length).toBe(32);
             expect(account.address).toBeDefined();
             expect(account.address).toMatch(/^0x[a-fA-F0-9]{40}$/);
-            
+
             // Verify private key is valid
-            expect(keyManager.validatePrivateKey(account.privateKey)).toBe(true);
-            
+            expect(keyManager.validatePrivateKey(account.privateKey)).toBe(
+                true
+            );
+
             // Verify address derivation
             const derivedAddress = Address.ofPublicKey(
                 Secp256k1.derivePublicKey(account.privateKey)
             ).toString();
             expect(account.address).toBe(derivedAddress);
-            
+
             // Clean up
             account.clear();
         });
@@ -121,10 +125,10 @@ describe('Key Management Tests', () => {
         test('should create multiple accounts with different indices', () => {
             const account1 = keyManager.createAccount(0);
             const account2 = keyManager.createAccount(1);
-            
+
             expect(account1.address).not.toBe(account2.address);
             expect(account1.privateKey).not.toEqual(account2.privateKey);
-            
+
             // Clean up
             account1.clear();
             account2.clear();
@@ -134,11 +138,16 @@ describe('Key Management Tests', () => {
     describe('Mnemonic Recovery', () => {
         test('should recover account from mnemonic', () => {
             const originalAccount = keyManager.createAccount(0);
-            const recoveredAccount = keyManager.getAccountFromMnemonic(testMnemonic, 0);
-            
+            const recoveredAccount = keyManager.getAccountFromMnemonic(
+                testMnemonic,
+                0
+            );
+
             expect(recoveredAccount.address).toBe(originalAccount.address);
-            expect(recoveredAccount.privateKey).toEqual(originalAccount.privateKey);
-            
+            expect(recoveredAccount.privateKey).toEqual(
+                originalAccount.privateKey
+            );
+
             // Clean up
             originalAccount.clear();
         });
@@ -146,7 +155,7 @@ describe('Key Management Tests', () => {
         test('should recover different accounts with different indices', () => {
             const account0 = keyManager.getAccountFromMnemonic(testMnemonic, 0);
             const account1 = keyManager.getAccountFromMnemonic(testMnemonic, 1);
-            
+
             expect(account0.address).not.toBe(account1.address);
             expect(account0.privateKey).not.toEqual(account1.privateKey);
         });
@@ -185,7 +194,10 @@ describe('Key Management Tests', () => {
                 nonce: 1
             });
 
-            const signedTx = keyManager.signTransaction(transaction, account.privateKey);
+            const signedTx = keyManager.signTransaction(
+                transaction,
+                account.privateKey
+            );
 
             expect(signedTx.signature).toBeDefined();
             if (signedTx.signature) {
@@ -207,9 +219,9 @@ describe('Key Management Tests', () => {
                 dependsOn: null,
                 nonce: 1
             });
-            
+
             const invalidKey = new Uint8Array(32).fill(0);
-            
+
             expect(() => {
                 keyManager.signTransaction(transaction, invalidKey);
             }).toThrow('Invalid private key');
@@ -220,13 +232,15 @@ describe('Key Management Tests', () => {
         test('should clear private key from memory', () => {
             const account = keyManager.createAccount(0);
             const originalKey = new Uint8Array(account.privateKey);
-            
+
             account.clear();
-            
+
             // Verify the key has been cleared
-            expect(account.privateKey.every((byte: number) => byte === 0)).toBe(true);
+            expect(account.privateKey.every((byte: number) => byte === 0)).toBe(
+                true
+            );
             // Note: originalKey is a copy, so it won't be cleared
-            expect(originalKey.some(byte => byte !== 0)).toBe(true);
+            expect(originalKey.some((byte) => byte !== 0)).toBe(true);
         });
     });
 
@@ -234,31 +248,32 @@ describe('Key Management Tests', () => {
         test('should generate and use private key directly', async () => {
             // Generate private key directly
             const privateKey = await Secp256k1.generatePrivateKey();
-            
+
             // Derive public key
             const publicKey = Secp256k1.derivePublicKey(privateKey);
-            
+
             // Create address
             const address = Address.ofPublicKey(publicKey);
-            
+
             // Verify everything works
             expect(Secp256k1.isValidPrivateKey(privateKey)).toBe(true);
             expect(publicKey.length).toBe(33); // compressed
             expect(address.toString()).toMatch(/^0x[a-fA-F0-9]{40}$/);
-            
+
             // Clean up
             privateKey.fill(0);
         });
 
         test('should work with hex string private keys', () => {
-            const hexPrivateKey = '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
+            const hexPrivateKey =
+                '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
             const privateKey = HexUInt.of(hexPrivateKey).bytes;
-            
+
             expect(keyManager.validatePrivateKey(privateKey)).toBe(true);
-            
+
             const publicKey = Secp256k1.derivePublicKey(privateKey);
             const address = Address.ofPublicKey(publicKey);
-            
+
             expect(address.toString()).toBeDefined();
         });
     });
@@ -266,28 +281,28 @@ describe('Key Management Tests', () => {
     describe('HD Wallet Functionality', () => {
         test('should derive multiple accounts from same mnemonic', () => {
             const accounts = [];
-            
+
             for (let i = 0; i < 5; i++) {
                 accounts.push(keyManager.createAccount(i));
             }
-            
+
             // All addresses should be different
-            const addresses = accounts.map(acc => acc.address);
+            const addresses = accounts.map((acc) => acc.address);
             const uniqueAddresses = new Set(addresses);
             expect(uniqueAddresses.size).toBe(5);
-            
+
             // Clean up
-            accounts.forEach(acc => acc.clear());
+            accounts.forEach((acc) => acc.clear());
         });
 
         test('should use standard VET derivation path', () => {
             const hdNode = HDKey.fromMnemonic(testMnemonic);
             const vetPath = HDKey.VET_DERIVATION_PATH; // m/44'/818'/0'/0
-            
+
             const child = hdNode.derive(vetPath);
             const address = Address.ofPublicKey(child.publicKey as Uint8Array);
-            
+
             expect(address.toString()).toMatch(/^0x[a-fA-F0-9]{40}$/);
         });
     });
-}); 
+});

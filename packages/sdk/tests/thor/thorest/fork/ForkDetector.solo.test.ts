@@ -50,9 +50,8 @@ describe('ForkDetector SOLO tests', () => {
 
         test('should handle different revisions independently', async () => {
             const bestResult = await forkDetector.isGalacticaForked('best');
-            const finalizedResult = await forkDetector.isGalacticaForked(
-                'finalized'
-            );
+            const finalizedResult =
+                await forkDetector.isGalacticaForked('finalized');
             const block0Result = await forkDetector.isGalacticaForked(0);
 
             // All should return boolean values
