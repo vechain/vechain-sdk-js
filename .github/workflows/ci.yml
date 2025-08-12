@@ -1,5 +1,8 @@
 name: CI-V3
 
+permissions:
+  contents: read
+
 on:
   push:
     branches:
