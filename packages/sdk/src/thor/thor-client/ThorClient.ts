@@ -1,5 +1,6 @@
 import { AccountsModule } from './accounts/accounts-module';
 import { FetchHttpClient, type HttpClient } from '@http';
+import { LogsModule } from './logs/logs-module';
 
 /**
  * The `ThorClient` class serves as an abstractedinterface to interact with the VeChainThor blockchain.
@@ -11,13 +12,31 @@ class ThorClient {
     public readonly accounts: AccountsModule;
 
     /**
+     * The `LogsModule` instance
+     */
+    public readonly logs: LogsModule;
+
+    /**
+     * The `HttpClient` instance used for making network requests.
+     */
+    public readonly httpClient: HttpClient;
+
+    /**
      * Constructs a new `ThorClient` instance with a given HTTPClient
      *
      * @param httpClient - The HTTP client instance used for making network requests.
      * @param options - (Optional) Other optional parameters for polling and error handling.
      */
-    constructor(readonly httpClient: HttpClient) {
+    constructor(httpClient: HttpClient) {
+        // initialise module with httpClient
+        // modules should expect thorClient to be set after construction
+        this.httpClient = httpClient;
         this.accounts = new AccountsModule(httpClient);
+        this.logs = new LogsModule(httpClient);
+
+        // set thorClient to modules for cross-module communication
+        this.accounts.setThorClient(this);
+        this.logs.setThorClient(this);
     }
 
     /**

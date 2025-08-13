@@ -2,6 +2,7 @@ import { UInt } from '@vcdm';
 import { type FilterRangeUnits } from '@thor';
 import { type FilterRangeJSON } from '@thor/json';
 import { IllegalArgumentError } from '@errors';
+import { type FilterRange } from '@thor/thor-client/model/logs/FilterRange';
 
 /**
  * Full-Qualified-Path
@@ -11,7 +12,7 @@ const FQP = 'packages/sdk/src/thor/logs/FilterRange.ts!';
 /**
  * [FilterRange](http://localhost:8669/doc/stoplight-ui/#/schemas/FilterRange)
  */
-class FilterRange {
+class FilterRangeRequest {
     /**
      * Specifies the unit of measurement for the from and to values.
      */
@@ -34,23 +35,16 @@ class FilterRange {
      * Each property in the JSON object is parsed and converted to its respective type.
      * @throws {IllegalArgumentError} Thrown when the provided JSON object contains invalid or unparsable data.
      */
-    constructor(json: FilterRangeJSON) {
+    constructor(range: FilterRange) {
         try {
-            this.unit =
-                typeof json.unit === 'string'
-                    ? (json.unit as FilterRangeUnits)
-                    : null;
-            this.from =
-                typeof json.from === 'number'
-                    ? UInt.of(json.from).valueOf()
-                    : null;
-            this.to =
-                typeof json.to === 'number' ? UInt.of(json.to).valueOf() : null;
+            this.unit = range.unit;
+            this.from = range.from;
+            this.to = range.to;
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: FilterRangeJSON)`,
                 'Bad parse',
-                { json },
+                { range },
                 error instanceof Error ? error : undefined
             );
         }
@@ -70,4 +64,4 @@ class FilterRange {
     }
 }
 
-export { FilterRange };
+export { FilterRangeRequest };

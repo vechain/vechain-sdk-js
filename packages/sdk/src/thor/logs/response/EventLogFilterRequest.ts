@@ -1,6 +1,12 @@
-import { EventCriteria, FilterOptions, FilterRange, LogSort } from '@thor';
+import {
+    EventCriteriaRequest,
+    FilterOptionsRequest,
+    FilterRangeRequest,
+    type LogSort
+} from '@thor';
 import { type EventLogFilterRequestJSON } from '@thor/json';
 import { IllegalArgumentError } from '@errors';
+import { type EventLogFilter } from '@thor/thor-client/model/logs/EventLogFilter';
 
 /**
  * Full-Qualified-Path
@@ -14,17 +20,17 @@ class EventLogFilterRequest {
     /**
      * Defines the range for filtering. Setting values to null indicates the entire range.
      */
-    readonly range: FilterRange | null;
+    readonly range: FilterRangeRequest | null;
 
     /**
      * Include these parameters to receive filtered results in a paged format.
      */
-    readonly options: FilterOptions | null;
+    readonly options: FilterOptionsRequest | null;
 
     /**
      * Criteria to filter events. All fields are joined with the AND operator.
      */
-    readonly criteriaSet: EventCriteria[] | null;
+    readonly criteriaSet: EventCriteriaRequest[] | null;
 
     /**
      * Specifies the order of the results. Use `asc` for ascending order, and `desc` for descending order.S
@@ -38,31 +44,26 @@ class EventLogFilterRequest {
      * Each property in the JSON object is parsed and converted to its respective type.
      * @throws {IllegalArgumentError} Thrown when the provided JSON object contains invalid or unparsable data.
      */
-    constructor(json: EventLogFilterRequestJSON) {
+    constructor(filter: EventLogFilter) {
         try {
             this.range =
-                json.range === undefined ? null : new FilterRange(json.range);
+                filter.range != null
+                    ? new FilterRangeRequest(filter.range)
+                    : null;
             this.options =
-                json.options === undefined
-                    ? null
-                    : new FilterOptions(json.options);
+                filter.options != null
+                    ? new FilterOptionsRequest(filter.options)
+                    : null;
             this.criteriaSet =
-                json.criteriaSet === undefined
-                    ? null
-                    : json.criteriaSet.map(
-                          (criteriaJSON) => new EventCriteria(criteriaJSON)
-                      );
-            this.order =
-                json.order === undefined
-                    ? null
-                    : Object.values(LogSort).includes(json.order as LogSort)
-                      ? (json.order as LogSort)
-                      : null;
+                filter.criteriaSet?.map(
+                    (criteria) => new EventCriteriaRequest(criteria)
+                ) ?? null;
+            this.order = filter.order;
         } catch (error) {
             throw new IllegalArgumentError(
-                `${FQP}constructor(json: EventLogFilterRequestJSON)`,
-                'Bad parse',
-                { json },
+                `${FQP}constructor(filter: EventLogFilter)`,
+                'Unable to construct EventLogFilterRequest from EventLogFilter',
+                { filter },
                 error instanceof Error ? error : undefined
             );
         }

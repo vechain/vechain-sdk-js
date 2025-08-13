@@ -10,7 +10,7 @@ const FQP = 'packages/sdk/src/thor/logs/LogMeta.ts!';
 /**
  * [LogMeta](http://localhost:8669/doc/stoplight-ui/#/schemas/LogMeta)
  */
-class LogMeta {
+class LogMetaResponse {
     /**
      * The block identifier in which the log was included.
      */
@@ -98,4 +98,4 @@ class LogMeta {
     }
 }
 
-export { LogMeta };
+export { LogMetaResponse };

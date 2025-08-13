@@ -2,7 +2,7 @@ import {
     type Abi,
     encodeFunctionData,
     decodeFunctionResult,
-    getEventSelector
+    toEventSelector
 } from 'viem';
 import { type Address, Hex } from '@vcdm';
 import { type PublicClient } from './PublicClient';
@@ -356,7 +356,7 @@ function getContract<const TAbi extends Abi>({
         else if (abiItem.type === 'event' && publicClient != null) {
             const eventName = abiItem.name;
             // Get event signature using viem's getEventSelector
-            const eventSignature = getEventSelector(abiItem);
+            const eventSignature = toEventSelector(abiItem);
 
             contract.events[eventName] = {
                 // Watch for contract events
