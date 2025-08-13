@@ -1,26 +1,19 @@
-import { type HttpClient } from '@http';
 import { type Revision, type Address, HexUInt, type Hex } from '@vcdm';
-import { AccountDetail } from './account-detail';
+import { AccountDetail } from '../model/accounts/AccountDetail';
 import {
     RetrieveAccountDetails,
     RetrieveContractBytecode,
     RetrieveStoragePositionValue
 } from '@thor/accounts';
+import { AbstractThorModule } from '../AbstractThorModule';
 
 /**
  * The accounts module of the VeChain Thor blockchain.
  * It allows to retrieve details, bytecode, and storage data for a specific blockchain account.
  */
-class AccountsModule {
+class AccountsModule extends AbstractThorModule {
     /**
-     * Creates an instance of the class with a specified HTTP client.
-     *
-     * @param {HttpClient} httpClient - The HTTP client instance to be used for making requests.
-     */
-    constructor(readonly httpClient: HttpClient) {}
-
-    /**
-     * Retrieves the details of an account given the account address and optional parameters.
+     * Gets the details of the account at the specified address.
      *
      * @param {Address} address - The address of the account to be retrieved.
      * @param {Revision} [revision] - Optional revision to modify the account retrieval.

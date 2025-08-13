@@ -1,6 +1,7 @@
-import { Address } from '@vcdm';
+import { type Address } from '@vcdm';
 import { type TransferCriteriaJSON } from '@thor/json';
 import { IllegalArgumentError } from '@errors';
+import { type TransferCriteria } from '@thor/thor-client/model/logs/TransferCriteria';
 
 /**
  * Full-Qualified-Path
@@ -10,7 +11,7 @@ const FQP = 'packages/sdk/src/thor/logs/TransferCriteria.ts!';
 /**
  * [TransferCriteria](http://localhost:8669/doc/stoplight-ui/#/schemas/TransferCriteria)
  */
-class TransferCriteria {
+class TransferCriteriaRequest {
     /**
      * The address from which the transaction was sent.
      */
@@ -32,21 +33,16 @@ class TransferCriteria {
      * @param {TransferCriteriaJSON} json - The input object containing transfer criteria details. It may contain the properties `txOrigin`, `sender`, and `recipient`.
      * @throws {IllegalArgumentError}  If the provided JSON object contains invalid or unparsable data.
      */
-    constructor(json: TransferCriteriaJSON) {
+    constructor(criteria: TransferCriteria) {
         try {
-            this.txOrigin =
-                json.txOrigin === undefined ? null : Address.of(json.txOrigin);
-            this.sender =
-                json.sender === undefined ? null : Address.of(json.sender);
-            this.recipient =
-                json.recipient === undefined
-                    ? null
-                    : Address.of(json.recipient);
+            this.txOrigin = criteria.txOrigin;
+            this.sender = criteria.sender;
+            this.recipient = criteria.recipient;
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: TransferCriteriaJSON)`,
-                'Bad parse',
-                { json },
+                'Unable to construct TransferCriteriaRequest from TransferCriteria',
+                { criteria },
                 error instanceof Error ? error : undefined
             );
         }
@@ -68,4 +64,4 @@ class TransferCriteria {
     }
 }
 
-export { TransferCriteria };
+export { TransferCriteriaRequest };

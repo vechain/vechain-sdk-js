@@ -3,7 +3,6 @@ import { type HttpClient, FetchHttpClient } from '@http';
 import {
     type BeatsSubscription,
     BlocksSubscription,
-    type EventLogResponse,
     EventsSubscription,
     type ExecuteCodesResponse,
     type ExpandedBlockResponse,
@@ -42,14 +41,16 @@ import {
     BaseError
 } from 'viem';
 import { type ExecuteCodesRequestJSON } from '@json';
-import { type EventLogFilterRequestJSON } from '@thor/logs/json';
 import { MozillaWebSocketClient, type WebSocketListener } from '@ws';
-import {
-    handleAddressFilter,
-    handleEventArgs,
-    prepareBlockRange
-} from '@utils/filter-utils';
 import { ThorClient } from '@thor/thor-client/ThorClient';
+import { type EventLog } from '@thor/thor-client/model/logs/EventLog';
+import { EventLogFilter } from '@thor/thor-client/model/logs/EventLogFilter';
+import { type DecodedEventLog } from '@thor/thor-client/model/logs/DecodedEventLog';
+import { FilterRange } from '@thor/thor-client/model/logs/FilterRange';
+import { FilterRangeUnits } from '@thor/thor-client/model/logs/FilterRangeUnits';
+import { FilterOptions } from '@thor/thor-client/model/logs/FilterOptions';
+import { EventCriteria } from '@thor/thor-client/model/logs/EventCriteria';
+import { type AbiEvent, toEventSelector } from 'viem';
 
 /**
  * Filter types for viem compatibility.
@@ -64,8 +65,10 @@ interface EventFilter {
     id: string;
     /** Type of filter */
     type: 'event';
-    /** The filter request to be used with QuerySmartContractEvents */
-    request: EventLogFilterRequestJSON;
+    /** The filter to be used **/
+    filter: EventLogFilter;
+    /** The event abis to be used for decoding */
+    eventAbis: AbiEvent[];
 }
 
 /**
@@ -459,102 +462,69 @@ class PublicClient {
         };
     }
 
-    public async getLogs(params: {
-        address?: Address | Address[];
-        topics?: Array<Hex | null>;
-        fromBlock?: BlockRevision;
-        toBlock?: BlockRevision;
-    }): Promise<EventLogResponse[]> {
-        const { address, topics, fromBlock, toBlock } = params;
-
-        // Prepare filter criteria
-        const criteria: Record<string, string> = {};
-
-        // Handle address (single or array)
-        const addressFilter = handleAddressFilter(address);
-        if (addressFilter != null) {
-            criteria.address = addressFilter;
-        }
-
-        // Handle topics (map to VeChain's topic0, topic1, etc.)
-        if (topics !== undefined && topics.length > 0) {
-            // Map topics to VeChain topic format (topic0, topic1, etc.)
-            topics.forEach((topic, index) => {
-                if (topic !== null) {
-                    const topicKey = `topic${index}`;
-                    criteria[topicKey] = String(topic);
-                }
-            });
-        }
-
-        const range = prepareBlockRange(fromBlock, toBlock);
-
-        // Construct the filter request
-        const request: EventLogFilterRequestJSON = {
-            criteriaSet: [criteria]
-        };
-
-        // Add range if specified
-        if (Object.keys(range).length > 0) {
-            request.range = range;
-        }
-
-        // Query for logs
-        const response = await QuerySmartContractEvents.of(request).askTo(
-            this.httpClient
+    public async getLogs(eventFilter: EventFilter): Promise<DecodedEventLog[]> {
+        return await this.thorClient.logs.filterEventLogs(
+            eventFilter.filter,
+            eventFilter.eventAbis
         );
-
-        return response.response;
     }
 
     public createEventFilter(params?: {
         address?: Address | Address[];
-        event?: Hex;
+        event?: AbiEvent;
         args?: Hex[];
-        fromBlock?: BlockRevision;
-        toBlock?: BlockRevision;
+        fromBlock?: bigint;
+        toBlock?: bigint;
     }): EventFilter {
         const { address, event, args, fromBlock, toBlock } = params ?? {};
 
         // Create a unique ID for this filter using timestamp to avoid Math.random security issues
         const filterId = `0x${(Date.now() % 0xffffffff).toString(16).padStart(8, '0')}`;
 
-        // Prepare filter criteria
-        const criteria: Record<string, string> = {};
+        // create the EventLogFilter
+        const filterRange = new FilterRange(
+            FilterRangeUnits.block,
+            Number(fromBlock),
+            Number(toBlock)
+        );
 
-        // Handle address (single or array)
-        const addressFilter = handleAddressFilter(address);
-        if (addressFilter != null) {
-            criteria.address = addressFilter;
+        // create topics from args
+        const topic0 =
+            event != null ? Hex.of(toEventSelector(event)) : undefined;
+        const topics: Array<Hex | undefined> = [
+            topic0,
+            args?.[0],
+            args?.[1],
+            args?.[2]
+        ];
+
+        // filterOptions is needed by Thor but not used by viem
+        const filterOptions = new FilterOptions();
+        // create an EventCriteria for each address
+        const criteriaSet: EventCriteria[] = [];
+        if (address instanceof Address) {
+            // user specified a single address
+            const eventCriteria = new EventCriteria(address, ...topics);
+            criteriaSet.push(eventCriteria);
+        } else if (Array.isArray(address)) {
+            address.forEach((addr) => {
+                const eventCriteria = new EventCriteria(addr, ...topics);
+                criteriaSet.push(eventCriteria);
+            });
         }
-
-        // Handle event signature (topic0)
-        if (event !== undefined) {
-            criteria.topic0 = String(event);
-        }
-
-        // Handle indexed parameters (topic1, topic2, topic3)
-        const topicValues = handleEventArgs(args);
-        Object.assign(criteria, topicValues);
-
-        // Prepare range filter if fromBlock or toBlock is provided
-        const range = prepareBlockRange(fromBlock, toBlock);
-
-        // Construct the filter request
-        const filterRequest: EventLogFilterRequestJSON = {
-            criteriaSet: [criteria]
-        };
-
-        // Add range if specified
-        if (Object.keys(range).length > 0) {
-            filterRequest.range = range;
-        }
-
-        // Store the filter so it can be used later by getFilterLogs
+        // create the EventLogFilter
+        const eventFilter = new EventLogFilter(
+            filterRange,
+            filterOptions,
+            criteriaSet,
+            null
+        );
+        // Create final event filter
         const filter: EventFilter = {
             id: filterId,
             type: 'event',
-            request: filterRequest
+            filter: eventFilter,
+            eventAbis: event != null ? [event] : []
         };
 
         return filter;
@@ -562,7 +532,7 @@ class PublicClient {
 
     public async getFilterLogs(params: {
         filter: Filter;
-    }): Promise<EventLogResponse[]> {
+    }): Promise<EventLog[]> {
         const { filter } = params;
 
         if (filter.type !== 'event') {
@@ -612,7 +582,7 @@ class PublicClient {
 
     public async getFilterChanges(params: {
         filter: Filter;
-    }): Promise<Array<EventLogResponse | string>> {
+    }): Promise<Array<EventLog | string>> {
         const { filter } = params;
 
         // For event filters, we just delegate to getLogs
