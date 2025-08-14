@@ -2,11 +2,6 @@ import { type Clause } from '@thor';
 import { type Hex } from '@vcdm';
 import { type TransactionRequestJSON } from '@thor/json/TransactionRequestJSON';
 
-/**
- * Full-Qualified Path
- */
-const FQP = 'packages/sdk/src/thor/model/TransactionRequest.ts!';
-
 class TransactionRequest {
     public readonly blockRef: Hex; // RLP 2
     public readonly chainTag: number; // RLP 1

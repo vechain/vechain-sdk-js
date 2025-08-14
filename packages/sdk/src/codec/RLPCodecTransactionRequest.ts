@@ -11,6 +11,7 @@ import {
     type RLPValidObject
 } from '@vcdm';
 
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 class RLPCodecTransactionRequest {
     private static readonly RLP_FEATURES = {
         name: 'reserved.features',

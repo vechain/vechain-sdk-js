@@ -18,6 +18,7 @@ module.exports = {
         '^@keystore/(.*)$': '<rootDir>/src/keystore/$1',
         '^@secp256k1$': '<rootDir>/src/secp256k1',
         '^@secp256k1/(.*)$': '<rootDir>/src/secp256k1/$1',
+        '^@signer': '<rootDir>/src/signer',
         '^@transaction$': '<rootDir>/src/transaction',
         '^@transaction/(.*)$': '<rootDir>/src/transaction/$1',
         '^@utils$': '<rootDir>/src/utils',
