@@ -175,6 +175,8 @@ class PublicClient {
                 throw new BlockNotFoundError({ blockNumber });
             }
             return data.response;
+
+            // TO DO: throw the viem error here, check for null and inform
         }
     }
 
