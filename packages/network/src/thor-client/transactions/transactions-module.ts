@@ -861,21 +861,28 @@ class TransactionsModule {
         caller?: string,
         options?: EstimateGasOptions
     ): Promise<EstimateGasResult> {
+        // Normalize to SimulateTransactionClause[]
         const clausesToEstimate: SimulateTransactionClause[] = clauses.map(
             (clause) => {
-                // Check if clause has a 'clause' property (indicating it's a ContractClause)
-                if ('clause' in clause && clause.clause) {
+                if ('clause' in clause) {
+                    if (!clause.clause) {
+                        throw new InvalidDataType(
+                            'TransactionsModule.estimateGas()',
+                            'Invalid ContractClause provided: missing inner clause.',
+                            { clause }
+                        );
+                    }
                     return clause.clause;
                 }
-                return clause as SimulateTransactionClause;
+                return clause;
             }
         );
 
-        // Clauses must be an array of clauses with at least one clause
-        if (clauses.length <= 0) {
+        // Validate the normalized set is non-empty
+        if (clausesToEstimate.length === 0) {
             throw new InvalidDataType(
-                'GasModule.estimateGas()',
-                'Invalid clauses. Clauses must be an array of clauses with at least one clause.',
+                'TransactionsModule.estimateGas()',
+                'Invalid clauses. Clauses must be an array with at least one clause.',
                 { clauses, caller, options }
             );
         }
