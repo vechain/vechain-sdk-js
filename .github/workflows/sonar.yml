@@ -1,9 +1,6 @@
 name: Sonar Scan
 on:
-  workflow_run:
-    workflows: [ PR Checks, Main CI ]
-    types:
-      - completed
+  workflow_call:
 
 jobs:
   sonar-scan:
@@ -15,24 +12,42 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Download coverage report
-        uses: actions/download-artifact@v4.1.8
+      - name: Download unit coverage
+        uses: actions/download-artifact@v4
         with:
-          run-id: ${{ github.event.workflow_run.id }}
-          github-token: ${{ github.token }}
-          name: coverage-results
-          path: coverage
+          name: coverage-unit
+          path: coverage/unit
+
+      - name: Download integration coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-integration
+          path: coverage/integration
+
+      - name: Download clients coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-clients
+          path: coverage/clients
+
+      - name: Download browser coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-browser
+          path: coverage/browser
 
       - name: SonarCloud Scan
         id: sonarcloud-scan
-        uses: sonarsource/sonarcloud-github-action@master
+        uses: SonarSource/sonarqube-scan-action@v5.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: https://sonarcloud.io
         with:
           args: >
             -Dsonar.verbose=false
             -Dsonar.branch.name=${{ github.head_ref || github.ref_name }}
+            -Dsonar.javascript.lcov.reportPaths=coverage/**/lcov.info
 
       - name: SonarCloud Quality Gate Check
         id: sonarqube-quality-gate-check
