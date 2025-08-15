@@ -857,15 +857,32 @@ class TransactionsModule {
      * @see {@link TransactionsModule#simulateTransaction}
      */
     public async estimateGas(
-        clauses: SimulateTransactionClause[],
+        clauses: (SimulateTransactionClause | ContractClause)[],
         caller?: string,
         options?: EstimateGasOptions
     ): Promise<EstimateGasResult> {
-        // Clauses must be an array of clauses with at least one clause
-        if (clauses.length <= 0) {
+        // Normalize to SimulateTransactionClause[]
+        const clausesToEstimate: SimulateTransactionClause[] = clauses.map(
+            (clause) => {
+                if ('clause' in clause) {
+                    if (!clause.clause) {
+                        throw new InvalidDataType(
+                            'TransactionsModule.estimateGas()',
+                            'Invalid ContractClause provided: missing inner clause.',
+                            { clause }
+                        );
+                    }
+                    return clause.clause;
+                }
+                return clause;
+            }
+        );
+
+        // Validate the normalized set is non-empty
+        if (clausesToEstimate.length === 0) {
             throw new InvalidDataType(
-                'GasModule.estimateGas()',
-                'Invalid clauses. Clauses must be an array of clauses with at least one clause.',
+                'TransactionsModule.estimateGas()',
+                'Invalid clauses. Clauses must be an array with at least one clause.',
                 { clauses, caller, options }
             );
         }
@@ -883,7 +900,7 @@ class TransactionsModule {
         }
 
         // Simulate the transaction to get the simulations of each clause
-        const simulations = await this.simulateTransaction(clauses, {
+        const simulations = await this.simulateTransaction(clausesToEstimate, {
             caller,
             ...options
         });
@@ -894,7 +911,9 @@ class TransactionsModule {
         });
 
         // The intrinsic gas of the transaction
-        const intrinsicGas = Number(Transaction.intrinsicGas(clauses).wei);
+        const intrinsicGas = Number(
+            Transaction.intrinsicGas(clausesToEstimate).wei
+        );
 
         // totalSimulatedGas represents the summation of all clauses' gasUsed
         const totalSimulatedGas = simulations.reduce((sum, simulation) => {
