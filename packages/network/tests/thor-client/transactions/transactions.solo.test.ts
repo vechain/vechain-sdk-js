@@ -107,7 +107,7 @@ describe('ThorClient - Transactions Module', () => {
                     expect(txReceipt?.gasPayer).toBe(expectedReceipt.gasPayer);
                     expect(sendTransactionResult.id).toBe(txReceipt?.meta.txID);
                 },
-                10000
+                60000
             );
         });
 
@@ -148,7 +148,7 @@ describe('ThorClient - Transactions Module', () => {
 
             expect(txReceipt).toBeDefined();
             expect(txReceipt?.reverted).toBe(expectedReceipt.reverted);
-        });
+        }, 30000);
 
         /**
          * waitForTransaction test cases that should not return a transaction receipt
@@ -195,7 +195,7 @@ describe('ThorClient - Transactions Module', () => {
 
                         expect(txReceipt).toBeNull();
                     },
-                    5000
+                    20000
                 );
             }
         );

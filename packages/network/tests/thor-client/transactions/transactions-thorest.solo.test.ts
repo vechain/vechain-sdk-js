@@ -16,9 +16,15 @@ import { retryOperation } from '../../test-utils';
 describe('ThorClient - Transactions Module', () => {
     // ThorClient instance
     let thorSoloClient: ThorClient;
+    let dynamicChainTag: number;
 
-    beforeEach(() => {
+    beforeEach(async () => {
         thorSoloClient = ThorClient.at(THOR_SOLO_URL);
+        const genesis = await retryOperation(
+            async () => await thorSoloClient.blocks.getBlockCompressed(0)
+        );
+        const genesisHash = genesis?.id ?? '0x00';
+        dynamicChainTag = parseInt(genesisHash.slice(-2), 16);
     });
 
     /**
@@ -49,7 +55,7 @@ describe('ThorClient - Transactions Module', () => {
 
                 // Create transactions
                 const transactionBody = {
-                    chainTag: 0xf6,
+                    chainTag: dynamicChainTag,
                     blockRef:
                         latestBlock !== null
                             ? latestBlock.id.slice(0, 18)
@@ -63,7 +69,7 @@ describe('ThorClient - Transactions Module', () => {
                 };
 
                 const delegatedTransactionBody = {
-                    chainTag: 0xf6,
+                    chainTag: dynamicChainTag,
                     blockRef:
                         latestBlock !== null
                             ? latestBlock.id.slice(0, 18)

@@ -17,9 +17,15 @@ import { retryOperation } from '../../test-utils';
 describe('ThorClient - Transactions Module Dynamic Fees', () => {
     // ThorClient instance
     let thorSoloClient: ThorClient;
+    let dynamicChainTag: number;
 
-    beforeEach(() => {
+    beforeEach(async () => {
         thorSoloClient = ThorClient.at(THOR_SOLO_URL);
+        const genesis = await retryOperation(
+            async () => await thorSoloClient.blocks.getBlockCompressed(0)
+        );
+        const genesisHash = genesis?.id ?? '0x00';
+        dynamicChainTag = parseInt(genesisHash.slice(-2), 16);
     });
 
     test('e2e <- Send Dynamic Fee Vet Transfer Transaction with maxFeePerGas and maxPriorityFeePerGas specified', async () => {
@@ -49,7 +55,7 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
 
         // Create transaction body
         const transactionBody = {
-            chainTag: 0xf6, // 0xf6 for Galactica dev network
+            chainTag: dynamicChainTag,
             blockRef:
                 latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
             expiration: 32,
@@ -83,7 +89,7 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
         expect(decodedTx.transactionType).toBe(TransactionType.EIP1559);
         expect(decodedTx.body.maxFeePerGas).toBe(10000000000000); // 10000000000000 in hex
         expect(decodedTx.body.maxPriorityFeePerGas).toBe(1000000); // 1000000 in hex
-        expect(decodedTx.body.chainTag).toBe(0xf6);
+        expect(decodedTx.body.chainTag).toBe(dynamicChainTag);
         expect(decodedTx.body.blockRef).toBe(
             latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0'
         );
@@ -149,7 +155,7 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
 
         // Create transaction body
         const transactionBody = {
-            chainTag: 0xf6, // 0xf6 for Galactica dev network
+            chainTag: dynamicChainTag,
             blockRef:
                 latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
             expiration: 32,
@@ -189,7 +195,7 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
         expect(decodedTx.transactionType).toBe(TransactionType.EIP1559);
         expect(decodedTx.body.maxFeePerGas).toBe(10000000000000);
         expect(decodedTx.body.maxPriorityFeePerGas).toBeGreaterThan(0);
-        expect(decodedTx.body.chainTag).toBe(0xf6);
+        expect(decodedTx.body.chainTag).toBe(dynamicChainTag);
         expect(decodedTx.body.blockRef).toBe(
             latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0'
         );

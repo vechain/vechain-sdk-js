@@ -8,7 +8,6 @@ import {
 } from '../transactions/fixture';
 import { HexUInt, BlockId, Transaction } from '@vechain/sdk-core';
 import { type ThorSoloAccount } from '@vechain/sdk-solo-setup';
-import { retryOperation } from '../../test-utils';
 /**
  * Debug traceTransactionClause tests fixture testnet
  *
@@ -464,12 +463,10 @@ const sendTransactionWithAccount = async (
     thorClient: ThorClient
 ): Promise<TransactionReceipt | null> => {
     // Estimate the gas required for the transfer transaction
-    const gasResult = await retryOperation(async () => {
-        return await thorClient.transactions.estimateGas(
-            [transfer1VTHOClause],
-            account.address
-        );
-    });
+    const gasResult = await thorClient.transactions.estimateGas(
+        [transfer1VTHOClause],
+        account.address
+    );
 
     // Create the signed transfer transaction
     const tx = Transaction.of({
@@ -480,14 +477,10 @@ const sendTransactionWithAccount = async (
     }).sign(HexUInt.of(account.privateKey).bytes);
 
     // Send the transaction and obtain the transaction ID
-    const sendTransactionResult = await retryOperation(async () => {
-        return await thorClient.transactions.sendTransaction(tx);
-    });
+    const sendTransactionResult = await thorClient.transactions.sendTransaction(tx);
 
     // Wait for the transaction to be included in a block
-    return await retryOperation(async () => {
-        return await sendTransactionResult.wait();
-    });
+    return await sendTransactionResult.wait();
 };
 
 export {

@@ -6,8 +6,7 @@ import {
     ThorClient
 } from '../../../../../src';
 import { retryOperation } from '../../../../test-utils';
-
-const soloChainId = '0xf6';
+let dynamicChainId: string;
 
 /**
  * RPC Mapper integration tests for 'eth_chainId' method
@@ -23,9 +22,14 @@ describe('RPC Mapper - eth_chainId method tests solo', () => {
     /**
      * Init thor client before each test
      */
-    beforeEach(() => {
+    beforeEach(async () => {
         // Init thor client
         thorClient = ThorClient.at(THOR_SOLO_URL);
+        const genesis = await retryOperation(
+            async () => await thorClient.blocks.getBlockCompressed(0)
+        );
+        const genesisHash = genesis?.id ?? '0x00';
+        dynamicChainId = `0x${genesisHash.slice(-2)}`;
     });
 
     /**
@@ -41,7 +45,7 @@ describe('RPC Mapper - eth_chainId method tests solo', () => {
                     await RPCMethodsMap(thorClient)[RPC_METHODS.eth_chainId]([])
             )) as string;
 
-            expect(rpcCallChainId).toBe(soloChainId);
+            expect(rpcCallChainId).toBe(dynamicChainId);
         });
     });
 });
