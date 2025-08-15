@@ -23,12 +23,6 @@ const providerMethodsTestCasesTestnet = [
         expected: zeroBlock
     },
     {
-        description: 'Should be able to call eth_chainId',
-        method: 'eth_chainId',
-        params: [],
-        expected: '0x186aa'
-    },
-    {
         description: `Should be able to call eth_getTransactionByHash with ${validTransactionHashTestnet} as the transaction hash`,
         method: 'eth_getTransactionByHash',
         params: [validTransactionHashTestnet],

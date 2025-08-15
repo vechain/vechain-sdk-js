@@ -3,7 +3,7 @@ import {
     HardhatVeChainProvider,
     JSONRPCEthersProvider,
     ProviderInternalBaseWallet,
-    type SubscriptionEvent,
+    SubscriptionEvent,
     TESTNET_URL
 } from '../../../../src';
 
@@ -73,6 +73,28 @@ describe('Vechain provider tests - solo', () => {
         },
         8000
     );
+
+    /**
+     * eth_chainId dynamic check (derived from genesis)
+     */
+    test('Should return the chain id derived from genesis', async () => {
+        // get genesis block
+        const genesisBlock: any = await jsonRPCEthersProvider.send(
+            'eth_getBlockByNumber',
+            ['0x0', true]
+        );
+
+        const blockHashBytes = (genesisBlock.hash as string).slice(2);
+        const lastByte = blockHashBytes.slice(-2);
+        const expectedChainId = `0x${lastByte}`;
+
+        const rpcCallChainId = (await jsonRPCEthersProvider.send(
+            'eth_chainId',
+            []
+        )) as string;
+
+        expect(rpcCallChainId).toBe(expectedChainId);
+    });
 
     /**
      * eth_subscribe latest blocks RPC call test
