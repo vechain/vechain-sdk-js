@@ -49,12 +49,13 @@ interface TransactionRequestInput {
     nonce?: string | number;
 
     /**
-     * Transaction gas.
+     * The maximum amount of gas to allow this transaction to consume.
      */
     gas?: string | number;
 
     /**
      *  The maximum amount of gas to allow this transaction to consume.
+     *  @deprecated Use `gas` instead. This property will be removed in a future release.
      */
     gasLimit?: string;
 
