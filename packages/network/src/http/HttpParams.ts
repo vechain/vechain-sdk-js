@@ -12,6 +12,12 @@ export interface HttpParams {
     body?: unknown;
 
     /**
+     * Raw request body to be sent as-is without JSON.stringify.
+     * If provided, this takes precedence over `body`.
+     */
+    rawBody?: string | Uint8Array;
+
+    /**
      * Custom headers to be included in the request.
      */
     headers?: Record<string, string>;
