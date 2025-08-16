@@ -3,6 +3,8 @@ export * from './EventJSON';
 export * from './OutputJSON';
 export * from './ReceiptJSON';
 export * from './ReceiptMetaJSON';
+export * from './SignedTransactionRequestJSON';
+export * from './TransactionRequestJSON';
 export * from './TransferJSON';
 export * from './TransferJSON';
 export * from '../transactions/json';

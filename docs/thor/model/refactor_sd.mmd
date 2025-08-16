@@ -1,0 +1,12 @@
+---
+title: Transaction refactor
+---
+sequenceDiagram
+    actor Signer
+    participant TransactionRequest
+    participant SignedTransactionRequest
+    participant DelegatedTransactionRequest
+    TransactionRequest->>Signer: SignedTransactionRequest Signer.sign(TransactionRequest)
+    Signer->>SignedTransactionRequest: SignedTransactionRequest Signer.sign(TransactionRequest)
+    SignedTransactionRequest->>Signer: SponsoredTransactionRequest Signer.sign(SignedTransactionRequest)
+    Signer->>DelegatedTransactionRequest: SponsoredTransactionRequest Signer.sign(SignedTransactionRequest)

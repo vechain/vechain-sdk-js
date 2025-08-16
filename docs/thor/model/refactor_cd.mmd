@@ -1,0 +1,74 @@
+---
+title: Transaction refactor
+---
+classDiagram
+    class Clause {
+        Address|null to
+        bigint value
+        Hex|null data
+        Txt|null comment
+        Hex|null abi
+        Clause of(ClauseJSON: json)$
+        ClauseJSON toJSON()
+    }
+    class Codec {
+        <<interface>>
+        T decode~T~(Uint8Array encoded)
+        Uint8Array encode~T~(T bytes)
+        T fromHex~T~(Hex hex)
+        Hex toHex~T~(T obj)
+    }
+    class RLPCodec {
+
+    }
+    class Signer {
+        <<interface>>
+        Address address
+        SignedTransactionRequest sign(TransactionRequest transactionRequest)
+        DelegatedTransactionRequest sign(SignedTransactionRequest transactionRequest)
+    }
+    class SignedTransactionRequest {
+        Address origin
+        Uint8Array senderSignature
+        Uint8Array signature
+        SignedTransactionRequest of(SignedTransactionRequestJSON json)$
+        SignedTransactionRequestJSON toJSON()
+    }
+    class DelegatedSignedTransactionRequest {
+        Address gasPayer
+        Uint8Array gasPayerSignature
+        SignedTransactionRequest of(DelegatedSignedTransactionRequestJSON json)$
+        SignedTransactionRequestJSON toJSON()
+    }
+    class TransactionRequest {
+        Hex blockRef
+        number chainTag
+        Clause[] clauses
+        Hex|null dependsOn
+    %% reserved.features
+        number|null features
+        number expiration
+        bigint gas
+        bigint gasPriceCoef
+        bigint intrinsicGas
+        number nonce
+    %% reserved.unused
+        Uint8Array[]|null reserved
+    %% methods
+        boolean isDelegated()
+        boolean isSigned()
+        TransactionRequest of(TxRequestJSON json)$
+        TxRequestJSON toJSON()
+    }
+    RLPCodec --|> Codec
+    Clause *-- "TransactionRequest.clauses" TransactionRequest
+    TransactionRequest <|-- SignedTransactionRequest
+    SignedTransactionRequest <|-- DelegatedSignedTransactionRequest
+    Signer <-- "1.in Signer.sign(...) " TransactionRequest
+    Signer "1.out Signer.sign(...)" --> SignedTransactionRequest
+    Signer <-- "2.in Signer.sign(...)" SignedTransactionRequest
+    Signer "2.out Signer.sign(...)" --> DelegatedSignedTransactionRequest
+    TransactionRequest --> RLPCodec
+    SignedTransactionRequest --> RLPCodec
+    DelegatedSignedTransactionRequest --> RLPCodec
+
