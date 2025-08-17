@@ -1,8 +1,15 @@
 /*
  * @group unit/thor/signer
  */
-import { Clause, ClauseBuilder, PrivateKeySigner, type Signer, type TransactionBody, TransactionRequest } from '@thor';
-import { BlockRef, Hex, HexUInt } from '@vcdm';
+import {
+    Clause,
+    ClauseBuilder,
+    PrivateKeySigner,
+    type Signer,
+    type TransactionBody,
+    TransactionRequest
+} from '@thor';
+import { BlockRef, HexUInt } from '@vcdm';
 import { SOLO_NETWORK } from '@utils';
 import { Address, Transaction } from '@vechain/sdk';
 import { expect } from '@jest/globals';
