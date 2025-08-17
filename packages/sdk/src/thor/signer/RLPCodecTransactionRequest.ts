@@ -42,12 +42,26 @@ class RLPCodecTransactionRequest {
         { name: 'reserved', kind: { item: new BufferKind() } }
     ];
 
+    private static readonly RLP_SIGNATURE = {
+        name: 'signature',
+        kind: new BufferKind()
+    };
+
+    private static readonly RLP_SIGNED_TRANSACTION_PROFILE: RLPProfile = {
+        name: 'tx',
+        kind: RLPCodecTransactionRequest.RLP_FIELDS.concat([
+            RLPCodecTransactionRequest.RLP_SIGNATURE
+        ])
+    };
+
     private static readonly RLP_UNSIGNED_TRANSACTION_PROFILE: RLPProfile = {
         name: 'tx',
         kind: RLPCodecTransactionRequest.RLP_FIELDS
     };
 
-    public static encode(transactionRequest: TransactionRequest): Uint8Array {
+    public static encodeTransactionRequest(
+        transactionRequest: TransactionRequest
+    ): Uint8Array {
         const clauses: Array<{
             to: string | null;
             value: bigint;

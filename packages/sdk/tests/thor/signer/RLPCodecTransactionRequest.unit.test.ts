@@ -45,7 +45,9 @@ describe('RLPCodecTransactionRequest UNIT tests', () => {
                 '0xea81f68558f9f2400320d8d7949e4e0efb170070e35a6b76b683aee91dd77805b3018080830186a08008c0'
             ).bytes;
             const actual =
-                RLPCodecTransactionRequest.encode(transactionRequest);
+                RLPCodecTransactionRequest.encodeTransactionRequest(
+                    transactionRequest
+                );
             expect(actual).toEqual(expected);
         });
 
@@ -88,7 +90,9 @@ describe('RLPCodecTransactionRequest UNIT tests', () => {
             };
             const expected = Transaction.of(txBody).encode(false);
             const actual =
-                RLPCodecTransactionRequest.encode(transactionRequest);
+                RLPCodecTransactionRequest.encodeTransactionRequest(
+                    transactionRequest
+                );
             expect(actual).toEqual(expected);
         });
     });

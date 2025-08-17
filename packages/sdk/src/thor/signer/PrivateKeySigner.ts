@@ -23,7 +23,9 @@ class PrivateKeySigner implements Signer {
     ): SignedTransactionRequest {
         if (this.privateKey !== null) {
             const messageHash = Blake2b256.of(
-                RLPCodecTransactionRequest.encode(transactionRequest)
+                RLPCodecTransactionRequest.encodeTransactionRequest(
+                    transactionRequest
+                )
             ).bytes;
             const signature = Secp256k1.sign(messageHash, this.privateKey);
             return new SignedTransactionRequest(
