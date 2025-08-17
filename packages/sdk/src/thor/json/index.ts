@@ -1,4 +1,5 @@
 export * from './ClauseJSON';
+export * from './DelegatedSignedTransactionRequestJSON';
 export * from './EventJSON';
 export * from './OutputJSON';
 export * from './ReceiptJSON';
