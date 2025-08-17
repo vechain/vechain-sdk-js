@@ -18,7 +18,9 @@ class PrivateKeySigner implements Signer {
         this.address = Address.ofPrivateKey(privateKey);
     }
 
-    sign(transactionRequest: TransactionRequest): SignedTransactionRequest {
+    public sign(
+        transactionRequest: TransactionRequest
+    ): SignedTransactionRequest {
         if (this.privateKey !== null) {
             const messageHash = Blake2b256.of(
                 RLPCodecTransactionRequest.encode(transactionRequest)
@@ -39,7 +41,7 @@ class PrivateKeySigner implements Signer {
             );
         }
         throw new InvalidPrivateKeyError(
-            `${FQP}PrivateKeySigner.sign(transactionRequest: TransactionRequest): Uint8Array`,
+            `${FQP}PrivateKeySigner.sign(transactionRequest: TransactionRequest): SignedTransactionRequest`,
             'void private key'
         );
     }
