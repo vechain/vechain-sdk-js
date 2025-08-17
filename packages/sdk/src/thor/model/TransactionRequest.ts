@@ -13,7 +13,7 @@ class TransactionRequest {
     public readonly nonce: number; // RLP 8
 
     // eslint-disable-next-line sonarjs/sonar-max-params
-    constructor(
+    public constructor(
         blockRef: Hex,
         chainTag: number,
         clauses: Clause[],

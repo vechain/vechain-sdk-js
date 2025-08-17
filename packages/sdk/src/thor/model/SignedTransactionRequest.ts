@@ -1,5 +1,6 @@
+import { TransactionRequest } from './TransactionRequest';
 import type { Address, Hex } from '@vcdm';
-import { type Clause, TransactionRequest } from '@thor';
+import { type Clause } from '@thor';
 import { type SignedTransactionRequestJSON } from '@thor/json';
 
 class SignedTransactionRequest extends TransactionRequest {
@@ -8,7 +9,7 @@ class SignedTransactionRequest extends TransactionRequest {
     public readonly signature: Uint8Array;
 
     // eslint-disable-next-line sonarjs/sonar-max-params
-    constructor(
+    public constructor(
         blockRef: Hex,
         chainTag: number,
         clauses: Clause[],

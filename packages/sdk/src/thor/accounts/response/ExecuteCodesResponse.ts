@@ -1,10 +1,12 @@
-import { Hex, HexUInt } from '@vcdm';
+import { type Hex, HexUInt } from '@vcdm';
 import { Transfer } from '@thor/model/Transfer';
 import { type EventJSON, type TransferJSON } from '@thor/json';
 import { Event } from '@thor/model';
 import { IllegalArgumentError } from '@errors';
-import { ExecuteCodeResponseJSON } from '../json';
-import { ExecuteCodesResponseJSON } from '../json';
+import {
+    type ExecuteCodeResponseJSON,
+    type ExecuteCodesResponseJSON
+} from '../json';
 
 /**
  * Full-Qualified Path
