@@ -1,4 +1,5 @@
 export * from './Clause';
+export * from './DelegatedSignedTransactionRequest';
 export * from './Event';
 export * from './Output';
 export * from './Receipt';

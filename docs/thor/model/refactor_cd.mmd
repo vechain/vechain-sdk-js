@@ -29,7 +29,7 @@ classDiagram
     }
     class SignedTransactionRequest {
         Address origin
-        Uint8Array senderSignature
+        Uint8Array originSignature
         Uint8Array signature
         SignedTransactionRequest of(SignedTransactionRequestJSON json)$
         SignedTransactionRequestJSON toJSON()

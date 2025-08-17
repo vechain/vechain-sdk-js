@@ -5,7 +5,7 @@ import { type SignedTransactionRequestJSON } from '@thor/json';
 
 class SignedTransactionRequest extends TransactionRequest {
     public readonly origin: Address;
-    public readonly senderSignature: Uint8Array;
+    public readonly originSignature: Uint8Array;
     public readonly signature: Uint8Array;
 
     // eslint-disable-next-line sonarjs/sonar-max-params
@@ -19,7 +19,7 @@ class SignedTransactionRequest extends TransactionRequest {
         nonce: number,
         dependsOn: Hex | null,
         origin: Address,
-        senderSignature: Uint8Array,
+        originSignature: Uint8Array,
         signature: Uint8Array
     ) {
         super(
@@ -34,7 +34,7 @@ class SignedTransactionRequest extends TransactionRequest {
         );
         this.origin = origin;
         // Defensive copies to avoid external mutation.
-        this.senderSignature = new Uint8Array(senderSignature);
+        this.originSignature = new Uint8Array(originSignature);
         this.signature = new Uint8Array(signature);
     }
 
@@ -46,7 +46,7 @@ class SignedTransactionRequest extends TransactionRequest {
         return {
             ...super.toJSON(),
             origin: this.origin.toString(),
-            senderSignature: this.senderSignature,
+            senderSignature: this.originSignature,
             signature: this.signature
         };
     }
