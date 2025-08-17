@@ -1,7 +1,9 @@
-import { type TransactionRequest } from '@thor';
+import { type SignedTransactionRequest, type TransactionRequest } from '@thor';
+import { type Address } from '@vcdm';
 
 interface Signer {
-    sign: (transactionRequest: TransactionRequest) => Uint8Array;
+    address: Address;
+    sign: (transactionRequest: TransactionRequest) => SignedTransactionRequest;
 }
 
 export { type Signer };

@@ -1,17 +1,11 @@
 /*
  * @group unit/thor/signer
  */
-import {
-    Clause,
-    ClauseBuilder,
-    PrivateKeySigner,
-    type Signer,
-    type TransactionBody,
-    TransactionRequest
-} from '@thor';
+import { Clause, ClauseBuilder, PrivateKeySigner, type Signer, type TransactionBody, TransactionRequest } from '@thor';
 import { BlockRef, Hex, HexUInt } from '@vcdm';
 import { SOLO_NETWORK } from '@utils';
 import { Address, Transaction } from '@vechain/sdk';
+import { expect } from '@jest/globals';
 
 describe('PrivateKeySigner UNIT tests', () => {
     // TO BE FIXED: DYNAMIC ACCOUNT IS NOT SEEDED YET WHEN THIS TESTS RUNS IN SOLO
@@ -52,10 +46,8 @@ describe('PrivateKeySigner UNIT tests', () => {
             nonce: transactionRequest.nonce
         };
         const expected = Transaction.of(txBody).sign(fromKey);
-        console.log(Hex.of(expected.signature as Uint8Array).toString());
-
         const signer: Signer = new PrivateKeySigner(fromKey);
-        const actual = signer.sign(transactionRequest);
-        console.log(Hex.of(actual).toString());
+        const actual = signer.sign(transactionRequest).signature;
+        expect(actual).toEqual(expected.signature);
     });
 });
