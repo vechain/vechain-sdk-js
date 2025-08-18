@@ -62,7 +62,7 @@ async function main(): Promise<void> {
         console.log('Deployment completed successfully!');
         console.log(`TestingContract: ${testContractAddress}`);
         console.log(`TestingToken: ${testTokenAddress}`);
-        if (seedVetTxId) {
+        if (seedVetTxId !== '') {
             console.log('Account seeding completed');
         } else {
             console.warn(`Account seeding didn't take place`);
