@@ -62,11 +62,6 @@ async function main(): Promise<void> {
         console.log('Deployment completed successfully!');
         console.log(`TestingContract: ${testContractAddress}`);
         console.log(`TestingToken: ${testTokenAddress}`);
-        if (seedVetTxId !== '') {
-            console.log('Account seeding completed');
-        } else {
-            console.warn(`Account seeding didn't take place`);
-        }
     } catch (error) {
         console.error('Failed to deploy contracts:', error);
         throw error;
