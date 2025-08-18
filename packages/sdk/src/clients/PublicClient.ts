@@ -10,7 +10,6 @@ import {
     type GetFeesPriorityResponse,
     InspectClauses,
     NewTransactionSubscription,
-    QuerySmartContractEvents,
     type RawTx,
     type RegularBlockResponse,
     RetrieveAccountDetails,
@@ -43,7 +42,6 @@ import {
 import { type ExecuteCodesRequestJSON } from '@json';
 import { MozillaWebSocketClient, type WebSocketListener } from '@ws';
 import { ThorClient } from '@thor/thor-client/ThorClient';
-import { type EventLog } from '@thor/thor-client/model/logs/EventLog';
 import { EventLogFilter } from '@thor/thor-client/model/logs/EventLogFilter';
 import { type DecodedEventLog } from '@thor/thor-client/model/logs/DecodedEventLog';
 import { FilterRange } from '@thor/thor-client/model/logs/FilterRange';
@@ -532,21 +530,17 @@ class PublicClient {
 
     public async getFilterLogs(params: {
         filter: Filter;
-    }): Promise<EventLog[]> {
+    }): Promise<DecodedEventLog[]> {
         const { filter } = params;
-
         if (filter.type !== 'event') {
             throw new FilterTypeNotSupportedError(
                 (filter as { type: string }).type
             );
         }
-
-        // Use the stored filter request to query for logs
-        const response = await QuerySmartContractEvents.of(
-            filter.request
-        ).askTo(this.httpClient);
-
-        return response.response;
+        return await this.thorClient.logs.filterEventLogs(
+            filter.filter,
+            filter.eventAbis
+        );
     }
 
     public async createBlockFilter(): Promise<BlockFilter> {
@@ -582,7 +576,7 @@ class PublicClient {
 
     public async getFilterChanges(params: {
         filter: Filter;
-    }): Promise<Array<EventLog | string>> {
+    }): Promise<Array<DecodedEventLog | string>> {
         const { filter } = params;
 
         // For event filters, we just delegate to getLogs
