@@ -7,7 +7,7 @@ import {
     type TransactionBody,
     TransactionRequest
 } from '@thor';
-import { BlockRef, Hex } from '@vcdm';
+import { BlockRef } from '@vcdm';
 import { Address, Transaction } from '@vechain/sdk';
 import { SOLO_NETWORK } from '@utils';
 import { TEST_ACCOUNTS } from '../../fixture';
@@ -18,7 +18,7 @@ const { TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
  * @group unit/thor/signer
  */
 describe('RLPCodecTransactionRequest UNIT tests', () => {
-    describe('encode', () => {
+    describe('encode delegated', () => {
         test('ok <- valid transaction request', () => {
             const transactionRequest = new TransactionRequest(
                 BlockRef.of(
@@ -38,19 +38,41 @@ describe('RLPCodecTransactionRequest UNIT tests', () => {
                 100000n, // gas
                 0n, // gasPriceCoef
                 8, // nonce
-                null // dependsOn
+                null, // dependsOn,
+                true
             );
 
-            const expected = Hex.of(
-                '0xea81f68558f9f2400320d8d7949e4e0efb170070e35a6b76b683aee91dd77805b3018080830186a08008c0'
-            ).bytes;
+            const txBody: TransactionBody = {
+                chainTag: transactionRequest.chainTag,
+                blockRef: transactionRequest.blockRef.toString(),
+                expiration: transactionRequest.expiration,
+                clauses: [
+                    ClauseBuilder.transferVET(
+                        transactionRequest.clauses[0].to as Address,
+                        transactionRequest.clauses[0].value
+                    )
+                ],
+                gasPriceCoef: Number(transactionRequest.gasPriceCoef),
+                gas: Number(transactionRequest.gas),
+                dependsOn: transactionRequest.dependsOn?.toString() ?? null,
+                nonce: transactionRequest.nonce,
+                reserved: {
+                    features: 1,
+                    unused: []
+                }
+            };
+            const expected = Transaction.of(txBody).encode(false);
+            // console.log(Hex.of(expected).toString());
             const actual =
                 RLPCodecTransactionRequest.encodeTransactionRequest(
                     transactionRequest
                 );
+            // console.log(Hex.of(actual).toString());
             expect(actual).toEqual(expected);
         });
+    });
 
+    describe('encode not delegated', () => {
         test('ok <- sdk 2 equivalence', () => {
             const transactionRequest = new TransactionRequest(
                 BlockRef.of(

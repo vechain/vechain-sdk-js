@@ -80,7 +80,7 @@ class RLPCodecTransactionRequest {
         return RLPCodecTransactionRequest.encodeBodyField({
             ...transactionRequest.toJSON(),
             clauses,
-            reserved: [] // encodeReservedField(tx)
+            reserved: transactionRequest.isDelegated ? [Uint8Array.of(1)] : [] // encodeReservedField(tx)
         });
     }
 
