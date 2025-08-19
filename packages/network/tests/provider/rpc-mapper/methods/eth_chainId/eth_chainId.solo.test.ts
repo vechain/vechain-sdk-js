@@ -6,8 +6,8 @@ import {
     ThorClient
 } from '../../../../../src';
 import { retryOperation } from '../../../../test-utils';
-
-const soloChainId = '0xf6';
+import { getL1BatchBlockRange } from 'viem/zksync';
+let dynamicChainId: string;
 
 /**
  * RPC Mapper integration tests for 'eth_chainId' method
@@ -23,7 +23,7 @@ describe('RPC Mapper - eth_chainId method tests solo', () => {
     /**
      * Init thor client before each test
      */
-    beforeEach(() => {
+    beforeEach(async () => {
         // Init thor client
         thorClient = ThorClient.at(THOR_SOLO_URL);
     });
@@ -36,12 +36,19 @@ describe('RPC Mapper - eth_chainId method tests solo', () => {
          * Test case regarding obtaining the chain id
          */
         test('Should return the chain id', async () => {
+            const genesisBlock: any = await RPCMethodsMap(thorClient)[
+                RPC_METHODS.eth_getBlockByNumber
+            ](['0x0', true]);
+
+            const blockHashBytes = genesisBlock.hash.slice(2);
+            const lastByte = blockHashBytes.slice(-2);
+            const lastByteHexValue = `0x${lastByte}`;
             const rpcCallChainId = (await retryOperation(
                 async () =>
                     await RPCMethodsMap(thorClient)[RPC_METHODS.eth_chainId]([])
             )) as string;
 
-            expect(rpcCallChainId).toBe(soloChainId);
+            expect(rpcCallChainId).toBe(lastByteHexValue);
         });
     });
 });

@@ -23,13 +23,19 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
      * Thor client instance
      */
     let thorClient: ThorClient;
+    let dynamicChainTag: number;
 
     /**
      * Init thor client before each test
      */
-    beforeEach(() => {
+    beforeEach(async () => {
         // Init thor client
         thorClient = ThorClient.at(THOR_SOLO_URL);
+        const genesis = await retryOperation(
+            async () => await thorClient.blocks.getBlockCompressed(0)
+        );
+        const genesisHash = genesis?.id ?? '0x00';
+        dynamicChainTag = parseInt(genesisHash.slice(-2), 16);
     });
 
     /**
@@ -74,7 +80,7 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
 
             // Create transactions
             const transactionBody = {
-                chainTag: 0xf6,
+                chainTag: dynamicChainTag,
                 blockRef:
                     latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
                 expiration: 32,

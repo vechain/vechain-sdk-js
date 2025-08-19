@@ -76,6 +76,28 @@ describe('VeChain provider tests - testnet', () => {
     );
 
     /**
+     * eth_chainId dynamic check (derived from genesis)
+     */
+    test('Should return the chain id derived from genesis', async () => {
+        // get genesis block
+        const genesisBlock: any = await provider.request({
+            method: RPC_METHODS.eth_getBlockByNumber,
+            params: ['0x0', true]
+        });
+
+        const blockHashBytes = (genesisBlock.hash as string).slice(2);
+        const lastByte = blockHashBytes.slice(-2);
+        const expectedChainId = `0x${lastByte}`;
+
+        const rpcCallChainId = (await provider.request({
+            method: 'eth_chainId',
+            params: []
+        })) as string;
+
+        expect(rpcCallChainId).toBe(expectedChainId);
+    });
+
+    /**
      * eth_blockNumber RPC call test
      */
     test('Should be able to get the latest block number', async () => {
