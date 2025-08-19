@@ -1,13 +1,14 @@
-import { RegularBlockResponse } from '@vechain/sdk';
+import { type CompressedBlockDetail } from '@vechain/sdk-network';
 import * as fs from 'fs';
 import * as path from 'path';
+import { fileURLToPath } from 'url';
 
 // Define the config structure type
 export interface ConfigData {
     TESTING_CONTRACT_ADDRESS: string;
     TESTING_CONTRACT_ABI: any[];
     TESTING_CONTRACT_BYTECODE: string;
-    SOLO_GENESIS_BLOCK: RegularBlockResponse;
+    SOLO_GENESIS_BLOCK: CompressedBlockDetail;
     SEED_VET_TX_ID: string;
     SEED_VTHO_TX_ID: string;
     SEED_TEST_TOKEN_TX_ID: string;
@@ -16,9 +17,12 @@ export interface ConfigData {
 
 // Get the config file path in the current working directory
 const getConfigPath = (): string => {
-    // Use the original working directory passed from the CLI, or fall back to current working directory
-    const targetDir = process.env.SOLO_SETUP_ORIGINAL_CWD || process.cwd();
-    return path.join(targetDir, 'config.json');
+    const filename = fileURLToPath(import.meta.url);
+    const dirname = path.dirname(filename);
+    const configPath =
+        process.env.SOLO_SETUP_ORIGINAL_CWD ??
+        path.resolve(dirname, '../config.json');
+    return configPath;
 };
 
 /**
@@ -29,7 +33,7 @@ const getConfigData = (): ConfigData => {
 
     if (!fs.existsSync(configPath)) {
         throw new Error(
-            'Configuration file not found. Please run "solo-setup seed" to deploy contracts and generate configuration.'
+            `Configuration file not found at ${configPath}. Please run "solo-setup seed" to deploy contracts and generate configuration.`
         );
     }
 
@@ -50,7 +54,7 @@ function setConfig(
     address: string,
     abi: string | any[], // Allow abi as string or parsed array
     bytecode: string,
-    genesisBlock: RegularBlockResponse,
+    genesisBlock: CompressedBlockDetail,
     seedVetTxId: string,
     seedVthoTxId: string,
     testTokenAddress: string,

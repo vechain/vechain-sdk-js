@@ -2,8 +2,13 @@ import { describe, expect, test } from '@jest/globals';
 import { ThorClient } from '@thor/thor-client/ThorClient';
 import { ThorNetworks } from '@thor';
 import { FetchHttpClient } from '@http';
-import { Address, Revision } from '@vcdm';
+import { Address, Hex, Revision } from '@vcdm';
+import { getConfigData } from '@vechain/sdk-solo-setup';
 
+/**
+ * AccountsModule tests for solo network
+ * @group solo
+ */
 describe('AccountsModule', () => {
     describe('getAccount', () => {
         test('should be able to get account details with default revision', async () => {
@@ -52,6 +57,7 @@ describe('AccountsModule', () => {
             const thorClient = ThorClient.at(
                 FetchHttpClient.at(new URL(ThorNetworks.SOLONET))
             );
+            // VTHO token contract
             const bytecode = await thorClient.accounts.getBytecode(
                 Address.of('0x0000000000000000000000000000456E65726779')
             );
@@ -64,9 +70,26 @@ describe('AccountsModule', () => {
             const thorClient = ThorClient.at(
                 FetchHttpClient.at(new URL(ThorNetworks.SOLONET))
             );
+            const soloConfig = getConfigData();
             const storage = await thorClient.accounts.getStorageAt(
-                Address.of('0x0000000000000000000000000000456E65726779'),
-                Hex.of('0x00')
+                Address.of(soloConfig.TEST_TOKEN_ADDRESS),
+                Hex.of('0x0')
             );
+            expect(storage).toBeDefined();
+            expect(storage.toString().length).toBeGreaterThan(0);
         });
+        test('should be able to get storage at with BEST revision', async () => {
+            const thorClient = ThorClient.at(
+                FetchHttpClient.at(new URL(ThorNetworks.SOLONET))
+            );
+            const soloConfig = getConfigData();
+            const storage = await thorClient.accounts.getStorageAt(
+                Address.of(soloConfig.TEST_TOKEN_ADDRESS),
+                Hex.of('0x0'),
+                Revision.BEST
+            );
+            expect(storage).toBeDefined();
+            expect(storage.toString().length).toBeGreaterThan(0);
+        });
+    });
 });
