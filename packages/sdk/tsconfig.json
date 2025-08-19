@@ -6,6 +6,8 @@
       "@*": ["./src/*"],
       "@clients": ["./src/clients"],
       "@clients/*": ["./src/clients/*"],
+      "@errors": ["./src/errors"],
+      "@errors/*": ["./src/errors/*"],
       "@http": ["./src/http"],
       "@http/*": ["./src/http/*"],
       "@json": ["./src/json"],
@@ -13,6 +15,10 @@
       "@sdk": ["./src/*"],
       "@thor": ["./src/thor"],
       "@thor/*": ["./src/thor/*"],
+      "@utils": ["./src/utils"],
+      "@utils/*": ["./src/utils/*"],
+      "@vcdm": ["./src/vcdm"],
+      "@vcdm/*": ["./src/vcdm/*"],
       "@ws": ["./src/ws"],
       "@ws/*": ["./src/ws/*"]
     }

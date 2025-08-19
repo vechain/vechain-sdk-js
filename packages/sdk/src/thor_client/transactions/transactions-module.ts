@@ -1,0 +1,1154 @@
+import { Address, Hex, HexUInt, HexUInt32, Revision } from '@vcdm';
+import {
+    ClauseBuilder,
+    Transaction,
+    type TransactionBody,
+    type TransactionClause
+} from '@thor';
+import { SendTransaction } from '@thor/transactions/methods';
+import { IllegalArgumentError } from '@errors';
+import { ErrorFragment, Interface } from 'ethers';
+import { buildQuery, thorest } from '../utils';
+import {
+    formatUnits,
+    parseUnits,
+    encodeAbiParameters,
+    decodeAbiParameters,
+    type AbiFunction,
+    encodeFunctionData,
+    decodeFunctionResult,
+    Abi
+} from 'viem';
+import { type BlocksModule, type ExpandedBlockDetail } from '../blocks';
+import type {
+    ContractCallOptions,
+    ContractCallResult,
+    ContractTransactionOptions
+} from '../contracts';
+import { type CallNameReturnType, type DebugModule } from '../debug';
+import { type ForkDetector } from '../fork';
+import { type GasModule } from '../gas';
+import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
+import type { EstimateGasOptions, EstimateGasResult } from '../gas/types';
+import { type LogsModule } from '../logs';
+import {
+    type GetTransactionInputOptions,
+    type GetTransactionReceiptInputOptions,
+    type SendTransactionResult,
+    type SimulateTransactionClause,
+    type SimulateTransactionOptions,
+    type TransactionBodyOptions,
+    type TransactionDetailNoRaw,
+    type TransactionDetailRaw,
+    type TransactionReceipt,
+    type TransactionSimulationResult,
+    type WaitForTransactionOptions
+} from './types';
+import { BUILT_IN_CONTRACTS } from '@utils/const/built-ins';
+
+const FQP = 'packages/sdk/src/thor_client/transactions/transactions-module';
+
+// Simple VeChainSigner interface for this implementation
+interface VeChainSigner {
+    getAddress(): Promise<string>;
+    signTransaction(transaction: Transaction): Promise<string>;
+}
+
+/**
+ * The `TransactionsModule` handles transaction related operations and provides
+ * convenient methods for sending transactions and waiting for transaction confirmation.
+ */
+class TransactionsModule {
+    readonly blocksModule: BlocksModule;
+    readonly debugModule: DebugModule;
+    readonly logsModule: LogsModule;
+    readonly gasModule: GasModule;
+    readonly forkDetector: ForkDetector;
+
+    constructor(
+        blocksModule: BlocksModule,
+        debugModule: DebugModule,
+        logsModule: LogsModule,
+        gasModule: GasModule,
+        forkDetector: ForkDetector
+    ) {
+        this.blocksModule = blocksModule;
+        this.debugModule = debugModule;
+        this.logsModule = logsModule;
+        this.gasModule = gasModule;
+        this.forkDetector = forkDetector;
+    }
+
+    /**
+     * Retrieves the details of a transaction.
+     *
+     * @param id - Transaction ID of the transaction to retrieve.
+     * @param options - (Optional) Other optional parameters for the request.
+     * @returns A promise that resolves to the details of the transaction.
+     * @throws {IllegalArgumentError}
+     */
+    public async getTransaction(
+        id: string,
+        options?: GetTransactionInputOptions
+    ): Promise<TransactionDetailNoRaw | null> {
+        // Invalid transaction ID
+        if (!HexUInt.isValid(id)) {
+            throw new IllegalArgumentError(
+                `${FQP}.getTransaction()`,
+                'Invalid transaction ID given as input. Input must be an hex string of length 64.',
+                { id }
+            );
+        }
+
+        // Invalid head
+        if (options?.head !== undefined && !HexUInt.isValid(options.head))
+            throw new IllegalArgumentError(
+                `${FQP}.getTransaction()`,
+                'Invalid head given as input. Input must be an hex string of length 64.',
+                { head: options?.head }
+            );
+
+        return (await this.blocksModule.httpClient.get(
+            { path: thorest.transactions.get.TRANSACTION(id) },
+            buildQuery({
+                raw: false,
+                head: options?.head,
+                pending: options?.pending
+            })
+        )) as unknown as TransactionDetailNoRaw | null;
+    }
+
+    /**
+     * Retrieves the details of a transaction.
+     *
+     * @param id - Transaction ID of the transaction to retrieve.
+     * @param options - (Optional) Other optional parameters for the request.
+     * @returns A promise that resolves to the details of the transaction.
+     * @throws {IllegalArgumentError}
+     */
+    public async getTransactionRaw(
+        id: string,
+        options?: GetTransactionInputOptions
+    ): Promise<TransactionDetailRaw | null> {
+        // Invalid transaction ID
+        if (!HexUInt.isValid(id)) {
+            throw new IllegalArgumentError(
+                `${FQP}.getTransactionRaw()`,
+                'Invalid transaction ID given as input. Input must be an hex string of length 64.',
+                { id }
+            );
+        }
+
+        // Invalid head
+        if (options?.head !== undefined && !HexUInt.isValid(options.head))
+            throw new IllegalArgumentError(
+                `${FQP}.getTransaction()`,
+                'Invalid head given as input. Input must be an hex string of length 64.',
+                { head: options?.head }
+            );
+
+        return (await this.blocksModule.httpClient.get(
+            { path: thorest.transactions.get.TRANSACTION(id) },
+            buildQuery({
+                raw: true,
+                head: options?.head,
+                pending: options?.pending
+            })
+        )) as unknown as TransactionDetailRaw | null;
+    }
+
+    /**
+     * Retrieves the receipt of a transaction.
+     *
+     * @param id - Transaction ID of the transaction to retrieve.
+     * @param options - (Optional) Other optional parameters for the request.
+     *                  If `head` is not specified, the receipt of the transaction at the best block is returned.
+     * @returns A promise that resolves to the receipt of the transaction.
+     * @throws {IllegalArgumentError}
+     */
+    public async getTransactionReceipt(
+        id: string,
+        options?: GetTransactionReceiptInputOptions
+    ): Promise<TransactionReceipt | null> {
+        // Invalid transaction ID
+        if (!HexUInt.isValid(id)) {
+            throw new IllegalArgumentError(
+                `${FQP}.getTransactionReceipt()`,
+                'Invalid transaction ID given as input. Input must be an hex string of length 64.',
+                { id }
+            );
+        }
+
+        // Invalid head
+        if (options?.head !== undefined && !HexUInt.isValid(options.head))
+            throw new IllegalArgumentError(
+                `${FQP}.getTransaction()`,
+                'Invalid head given as input. Input must be an hex string of length 64.',
+                { head: options?.head }
+            );
+
+        return (await this.blocksModule.httpClient.get(
+            { path: thorest.transactions.get.TRANSACTION_RECEIPT(id) },
+            buildQuery({ head: options?.head })
+        )) as unknown as TransactionReceipt | null;
+    }
+
+    /**
+     * Retrieves the receipt of a transaction.
+     *
+     * @param raw - The raw transaction.
+     * @returns The transaction id of send transaction.
+     * @throws {IllegalArgumentError}
+     */
+    public async sendRawTransaction(
+        raw: string
+    ): Promise<SendTransactionResult> {
+        // Validate raw transaction
+        if (!Hex.isValid0x(raw)) {
+            throw new IllegalArgumentError(
+                `${FQP}.sendRawTransaction()`,
+                'Sending failed: Input must be a valid raw transaction in hex format.',
+                { raw }
+            );
+        }
+
+        // Decode raw transaction to check if raw is ok
+        try {
+            Transaction.decode(HexUInt.of(raw.slice(2)).bytes, true);
+        } catch (error) {
+            throw new IllegalArgumentError(
+                `${FQP}.sendRawTransaction()`,
+                'Sending failed: Input must be a valid raw transaction in hex format. Decoding error encountered.',
+                { raw },
+                error instanceof Error ? error : undefined
+            );
+        }
+
+        const transactionResult = (await this.blocksModule.httpClient.post(
+            { path: thorest.transactions.post.TRANSACTION() },
+            { query: '' },
+            { raw }
+        )) as unknown as SendTransactionResult;
+
+        return {
+            id: transactionResult.id,
+            wait: async () =>
+                await this.waitForTransaction(transactionResult.id)
+        };
+    }
+
+    /**
+     * Sends a signed transaction to the network.
+     *
+     * @param signedTx - the transaction to send. It must be signed.
+     * @returns A promise that resolves to the transaction ID of the sent transaction.
+     * @throws {IllegalArgumentError}
+     */
+    public async sendTransaction(
+        signedTx: Transaction
+    ): Promise<SendTransactionResult> {
+        // Assert transaction is signed or not
+        if (!signedTx.isSigned) {
+            throw new IllegalArgumentError(
+                `${FQP}.sendTransaction()`,
+                'Invalid transaction given as input. Transaction must be signed.',
+                { signedTx }
+            );
+        }
+
+        const rawTx = Hex.of(signedTx.encoded).toString();
+
+        return await this.sendRawTransaction(rawTx);
+    }
+
+    /**
+     * Waits for a transaction to be included in a block.
+     *
+     * @param txID - The transaction ID of the transaction to wait for.
+     * @param options - Optional parameters for the request. Includes the timeout and interval between requests.
+     *                  Both parameters are in milliseconds. If the timeout is not specified, the request will not time out!
+     * @returns A promise that resolves to the transaction receipt of the transaction. If the transaction is not included in a block before the timeout,
+     *          the promise will resolve to `null`.
+     * @throws {IllegalArgumentError}
+     */
+    public async waitForTransaction(
+        txID: string,
+        options?: WaitForTransactionOptions
+    ): Promise<TransactionReceipt | null> {
+        // Invalid transaction ID
+        if (!HexUInt.isValid(txID)) {
+            throw new IllegalArgumentError(
+                `${FQP}.waitForTransaction()`,
+                'Invalid transaction ID given as input. Input must be an hex string of length 64.',
+                { txID }
+            );
+        }
+
+        // Simple polling implementation
+        const interval = options?.intervalMs ?? 1000;
+        const timeout = options?.timeoutMs;
+        const startTime = Date.now();
+
+        while (true) {
+            const receipt = await this.getTransactionReceipt(txID);
+            if (receipt !== null) {
+                return receipt;
+            }
+
+            if (timeout && Date.now() - startTime > timeout) {
+                return null;
+            }
+
+            await new Promise((resolve) => setTimeout(resolve, interval));
+        }
+    }
+
+    /**
+     * Builds a transaction body with the given clauses without having to
+     * specify the chainTag, expiration, gasPriceCoef, gas, dependsOn and reserved fields.
+     *
+     * @param clauses - The clauses of the transaction.
+     * @param gas - The gas to be used to perform the transaction.
+     * @param options - Optional parameters for the request. Includes the expiration, gasPriceCoef, maxFeePErGas, maxPriorityFeePerGas, dependsOn and isDelegated fields.
+     *                  If the `expiration` is not specified, the transaction will expire after 32 blocks.
+     *                  If the `gasPriceCoef` is not specified & galactica fork didn't happen yet, the transaction will use the default gas price coef of 0.
+     *                  If the `gasPriceCoef` is not specified & galactica fork happened, the transaction will use the default maxFeePerGas and maxPriorityFeePerGas.
+     *                  If the `dependsOn is` not specified, the transaction will not depend on any other transaction.
+     *                  If the `isDelegated` is not specified, the transaction will not be delegated.
+     *
+     * @returns A promise that resolves to the transaction body.
+     *
+     * @throws an error if the genesis block or the latest block cannot be retrieved.
+     */
+    public async buildTransactionBody(
+        clauses: TransactionClause[],
+        gas: number,
+        options?: TransactionBodyOptions
+    ): Promise<TransactionBody> {
+        // Get the genesis block to get the chainTag
+        const genesisBlock = await this.blocksModule.getBlockCompressed(0);
+        if (genesisBlock === null)
+            throw new IllegalArgumentError(
+                `${FQP}.buildTransactionBody()`,
+                'Error while building transaction body: Cannot get genesis block.',
+                { fieldName: 'genesisBlock', genesisBlock, clauses, options }
+            );
+
+        const blockRef =
+            options?.blockRef ?? (await this.blocksModule.getBestBlockRef());
+        if (blockRef === null)
+            throw new IllegalArgumentError(
+                `${FQP}.buildTransactionBody()`,
+                'Error while building transaction body: Cannot get blockRef.',
+                { fieldName: 'blockRef', blockRef, clauses, options }
+            );
+
+        const chainTag =
+            options?.chainTag ?? Number(`0x${genesisBlock.id.slice(64)}`);
+
+        const filledOptions = await this.fillDefaultBodyOptions(options);
+
+        // Process clauses - already TransactionClause[]
+        const processedClauses: TransactionClause[] = clauses;
+
+        return {
+            blockRef,
+            chainTag,
+            clauses: await this.resolveNamesInClauses(processedClauses),
+            dependsOn: options?.dependsOn ?? null,
+            expiration: options?.expiration ?? 32,
+            gas,
+            gasPriceCoef: filledOptions?.gasPriceCoef ?? 0,
+            nonce: Number(options?.nonce ?? Hex.random(8).toString()),
+            reserved:
+                options?.isDelegated === true ? { features: 1 } : undefined
+        };
+    }
+
+    /**
+     * Fills the transaction body with the default options.
+     *
+     * @param body - The transaction body to fill.
+     * @returns A promise that resolves to the filled transaction body.
+     * @throws {IllegalArgumentError}
+     */
+    public async fillTransactionBody(
+        body: TransactionBody
+    ): Promise<TransactionBody> {
+        const extractedOptions: TransactionBodyOptions = {
+            gas: body.gas,
+            gasPriceCoef: body.gasPriceCoef
+        };
+
+        const filledOptions =
+            await this.fillDefaultBodyOptions(extractedOptions);
+        return {
+            ...body,
+            gasPriceCoef: filledOptions?.gasPriceCoef ?? body.gasPriceCoef,
+            nonce:
+                typeof body.nonce === 'string' ? Number(body.nonce) : body.nonce
+        };
+    }
+
+    /**
+     * Fills the default body options for a transaction.
+     *
+     * @param options - The transaction body options to fill.
+     * @returns A promise that resolves to the filled transaction body options.
+     * @throws {IllegalArgumentError}
+     */
+    public async fillDefaultBodyOptions(
+        options?: TransactionBodyOptions
+    ): Promise<TransactionBodyOptions> {
+        options ??= {};
+
+        // Check for invalid parameter combinations first
+        const hasMaxFeePerGas = options.maxFeePerGas !== undefined;
+        const hasMaxPriorityFeePerGas =
+            options.maxPriorityFeePerGas !== undefined;
+        const hasGasPriceCoef = options.gasPriceCoef !== undefined;
+
+        // Case 3: maxPriorityFeePerGas + gasPriceCoef (error)
+        if (hasMaxPriorityFeePerGas && hasGasPriceCoef && !hasMaxFeePerGas) {
+            throw new IllegalArgumentError(
+                `${FQP}.fillDefaultBodyOptions()`,
+                'Invalid parameter combination: maxPriorityFeePerGas and gasPriceCoef cannot be used together without maxFeePerGas.',
+                { options }
+            );
+        }
+
+        // Case 4: maxFeePerGas + gasPriceCoef (error)
+        if (hasMaxFeePerGas && hasGasPriceCoef && !hasMaxPriorityFeePerGas) {
+            throw new IllegalArgumentError(
+                `${FQP}.fillDefaultBodyOptions()`,
+                'Invalid parameter combination: maxFeePerGas and gasPriceCoef cannot be used together without maxPriorityFeePerGas.',
+                { options }
+            );
+        }
+
+        // Case 1: maxPriorityFeePerGas + maxFeePerGas + gasPriceCoef (only 1 and 2 are used)
+        if (hasMaxPriorityFeePerGas && hasMaxFeePerGas && hasGasPriceCoef) {
+            options.gasPriceCoef = undefined;
+            // Continue with dynamic fee processing below
+        } else if (hasMaxPriorityFeePerGas && hasMaxFeePerGas) {
+            // Case 2: maxPriorityFeePerGas + maxFeePerGas (1 and 2 are used)
+            options.gasPriceCoef = undefined;
+            // Continue with dynamic fee processing below
+        } else if (
+            hasGasPriceCoef &&
+            !hasMaxPriorityFeePerGas &&
+            !hasMaxFeePerGas
+        ) {
+            // Case 5: gasPriceCoef only (3 is used - legacy transaction)
+            options.maxFeePerGas = undefined;
+            options.maxPriorityFeePerGas = undefined;
+            return options;
+        }
+
+        // check if fork happened
+        const galacticaHappened =
+            await this.forkDetector.isGalacticaForked('best');
+        if (
+            !galacticaHappened &&
+            (hasMaxFeePerGas || hasMaxPriorityFeePerGas)
+        ) {
+            // user has specified dynamic fee tx, but fork didn't happen yet
+            throw new IllegalArgumentError(
+                `${FQP}.fillDefaultBodyOptions()`,
+                'Invalid transaction body options. Dynamic fee tx is not allowed before Galactica fork.',
+                { options }
+            );
+        }
+        if (!galacticaHappened && !hasGasPriceCoef) {
+            // galactica hasn't happened yet, default is legacy fee
+            options.gasPriceCoef = 0;
+            return options;
+        }
+        if (galacticaHappened && hasMaxFeePerGas && hasMaxPriorityFeePerGas) {
+            // galactica happened, user specified new fee type
+            return options;
+        }
+        // default to dynamic fee tx
+        options.gasPriceCoef = undefined;
+
+        // Get next block base fee per gas
+        const biNextBlockBaseFeePerGas =
+            await this.gasModule.getNextBlockBaseFeePerGas();
+        if (
+            biNextBlockBaseFeePerGas === null ||
+            biNextBlockBaseFeePerGas === undefined
+        ) {
+            throw new IllegalArgumentError(
+                `${FQP}.fillDefaultBodyOptions()`,
+                'Invalid transaction body options. Unable to get next block base fee per gas.',
+                { options }
+            );
+        }
+
+        // set maxPriorityFeePerGas if not specified already
+        if (
+            options.maxPriorityFeePerGas === undefined ||
+            options.maxPriorityFeePerGas === null
+        ) {
+            // Calculate maxPriorityFeePerGas based on fee history (75th percentile)
+            // and the HIGH speed threshold (min(0.046*baseFee, 75_percentile))
+            const defaultMaxPriorityFeePerGas =
+                await this.calculateDefaultMaxPriorityFeePerGas(
+                    biNextBlockBaseFeePerGas
+                );
+            options.maxPriorityFeePerGas = defaultMaxPriorityFeePerGas;
+        }
+
+        // set maxFeePerGas if not specified already
+        if (
+            options.maxFeePerGas === undefined ||
+            options.maxFeePerGas === null
+        ) {
+            // compute maxFeePerGas
+            const biMaxPriorityFeePerGas = HexUInt.of(
+                options.maxPriorityFeePerGas
+            ).bi;
+            // maxFeePerGas = 1.12 * baseFeePerGas + maxPriorityFeePerGas
+            const biMaxFeePerGas =
+                (112n * biNextBlockBaseFeePerGas) / 100n +
+                biMaxPriorityFeePerGas;
+            options.maxFeePerGas = HexUInt.of(biMaxFeePerGas).toString();
+        }
+        return options;
+    }
+
+    /**
+     * Calculates the default max priority fee per gas based on the current base fee
+     * and historical 75th percentile rewards.
+     *
+     * Uses the FAST (HIGH) speed threshold: min(0.046*baseFee, 75_percentile)
+     *
+     * @param baseFee - The current base fee per gas
+     * @returns A promise that resolves to the default max priority fee per gas as a hex string
+     */
+    private async calculateDefaultMaxPriorityFeePerGas(
+        baseFee: bigint
+    ): Promise<string> {
+        // Get fee history for recent blocks
+        const feeHistory = await this.gasModule.getFeeHistory({
+            blockCount: 10,
+            newestBlock: 'best',
+            rewardPercentiles: [25, 50, 75] // Get 25th, 50th and 75th percentiles
+        });
+
+        // Get the 75th percentile reward from the most recent block
+        let percentile75: bigint;
+
+        if (
+            feeHistory.reward !== null &&
+            feeHistory.reward !== undefined &&
+            feeHistory.reward.length > 0
+        ) {
+            const latestBlockRewards =
+                feeHistory.reward[feeHistory.reward.length - 1];
+            const equalRewardsOnLastBlock =
+                new Set(latestBlockRewards).size === 3;
+
+            // If rewards are equal in the last block, use the first one (75th percentile)
+            // Otherwise, calculate the average of 75th percentiles across blocks
+            if (equalRewardsOnLastBlock) {
+                percentile75 = HexUInt.of(latestBlockRewards[2]).bi; // 75th percentile at index 2
+            } else {
+                // Calculate average of 75th percentiles across blocks
+                let sum = 0n;
+                let count = 0;
+
+                for (const blockRewards of feeHistory.reward) {
+                    if (
+                        blockRewards.length !== null &&
+                        blockRewards.length > 2 &&
+                        blockRewards[2] !== null &&
+                        blockRewards[2] !== undefined
+                    ) {
+                        sum += HexUInt.of(blockRewards[2]).bi;
+                        count++;
+                    }
+                }
+
+                percentile75 = count > 0 ? sum / BigInt(count) : 0n;
+            }
+        } else {
+            // Fallback to getMaxPriorityFeePerGas if fee history is not available
+            percentile75 = HexUInt.of(
+                await this.gasModule.getMaxPriorityFeePerGas()
+            ).bi;
+        }
+
+        // Calculate 4.6% of base fee (HIGH speed threshold)
+        const baseFeeCap = (baseFee * 46n) / 1000n; // 0.046 * baseFee
+
+        // Use the minimum of the two values
+        const priorityFee =
+            baseFeeCap < percentile75 ? baseFeeCap : percentile75;
+
+        return HexUInt.of(priorityFee).toString();
+    }
+
+    /**
+     * Ensures that names in clauses are resolved to addresses
+     *
+     * @param clauses - The clauses of the transaction.
+     * @returns A promise that resolves to clauses with resolved addresses
+     */
+    public async resolveNamesInClauses(
+        clauses: TransactionClause[]
+    ): Promise<TransactionClause[]> {
+        // find unique names in the clause list
+        const uniqueNames = clauses.reduce((map, clause) => {
+            if (
+                typeof clause.to === 'string' &&
+                !map.has(clause.to) &&
+                clause.to.includes('.')
+            ) {
+                map.set(clause.to, clause.to);
+            }
+            return map;
+        }, new Map<string, string>());
+
+        const nameList = [...uniqueNames.keys()];
+
+        // no names, return the original clauses
+        if (uniqueNames.size === 0) {
+            return clauses;
+        }
+
+        // For V3, skip name resolution for now (VNS utils not available)
+        // const addresses = await resolveNames(nameList);
+
+        // Skip name resolution - return original clauses
+        // In V3, name resolution would need to be implemented differently
+
+        // replace names with resolved addresses, or leave unchanged
+        return clauses.map((clause) => {
+            if (typeof clause.to !== 'string') {
+                return clause;
+            }
+
+            return {
+                to: uniqueNames.get(clause.to) ?? clause.to,
+                data: clause.data,
+                value: clause.value
+            };
+        });
+    }
+
+    /**
+     * Simulates the execution of a transaction.
+     * Allows to estimate the gas cost of a transaction without sending it, as well as to retrieve the return value(s) of the transaction.
+     *
+     * @param clauses - The clauses of the transaction to simulate.
+     * @param options - (Optional) The options for simulating the transaction.
+     * @returns A promise that resolves to an array of simulation results.
+     *          Each element of the array represents the result of simulating a clause.
+     * @throws {IllegalArgumentError}
+     */
+    public async simulateTransaction(
+        clauses: SimulateTransactionClause[],
+        options?: SimulateTransactionOptions
+    ): Promise<TransactionSimulationResult[]> {
+        const {
+            revision,
+            caller,
+            gasPrice,
+            gasPayer,
+            gas,
+            blockRef,
+            expiration,
+            provedWork
+        } = options ?? {};
+        if (
+            revision !== undefined &&
+            revision !== null &&
+            !Revision.isValid(revision.toString())
+        ) {
+            throw new IllegalArgumentError(
+                `${FQP}.simulateTransaction()`,
+                'Invalid revision given as input. Input must be a valid revision (i.e., a block number or block ID).',
+                { revision }
+            );
+        }
+
+        return (await this.blocksModule.httpClient.post(
+            {
+                path: thorest.accounts.post.SIMULATE_TRANSACTION(
+                    revision?.toString()
+                )
+            },
+            buildQuery({ revision: revision?.toString() }),
+            {
+                clauses: await this.resolveNamesInClauses(
+                    clauses.map((clause) => {
+                        return {
+                            to: clause.to,
+                            data: clause.data,
+                            value: BigInt(clause.value)
+                        };
+                    })
+                ),
+                gas,
+                gasPrice,
+                caller,
+                provedWork,
+                gasPayer,
+                expiration,
+                blockRef
+            }
+        )) as unknown as TransactionSimulationResult[];
+    }
+
+    /**
+     * Decode the revert reason from the encoded revert reason into a transaction.
+     *
+     * @param encodedRevertReason - The encoded revert reason to decode.
+     * @param errorFragment - (Optional) The error fragment to use to decode the revert reason (For Solidity custom errors).
+     * @returns A promise that resolves to the decoded revert reason.
+     * Revert reason can be a string error or Panic(error_code)
+     */
+    public decodeRevertReason(
+        encodedRevertReason: string,
+        errorFragment?: string
+    ): string {
+        // Error selector for Error(string)
+        const ERROR_SELECTOR = '0x08c379a0';
+        // Panic selector for Panic(uint256)
+        const PANIC_SELECTOR = '0x4e487b71';
+
+        if (encodedRevertReason.startsWith(ERROR_SELECTOR)) {
+            const decoded = decodeAbiParameters(
+                [{ type: 'string' }],
+                `0x${encodedRevertReason.slice(ERROR_SELECTOR.length)}` as `0x${string}`
+            );
+            return decoded[0] as string;
+        } else if (encodedRevertReason.startsWith(PANIC_SELECTOR)) {
+            const decoded = decodeAbiParameters(
+                [{ type: 'uint256' }],
+                `0x${encodedRevertReason.slice(PANIC_SELECTOR.length)}` as `0x${string}`
+            );
+            return `Panic(0x${decoded[0].toString(16).padStart(2, '0')})`;
+        } else if (errorFragment !== undefined) {
+            const errorInterface = new Interface([
+                ErrorFragment.from(errorFragment)
+            ]);
+            return errorInterface
+                .decodeErrorResult(
+                    ErrorFragment.from(errorFragment),
+                    encodedRevertReason
+                )
+                .toArray()[0] as string;
+        }
+
+        return ``;
+    }
+
+    /**
+     * Get the revert reason of an existing transaction.
+     *
+     * @param transactionHash - The hash of the transaction to get the revert reason for.
+     * @param errorFragment - (Optional) The error fragment to use to decode the revert reason (For Solidity custom errors).
+     * @returns A promise that resolves to the revert reason of the transaction.
+     */
+    public async getRevertReason(
+        transactionHash: string,
+        errorFragment?: string
+    ): Promise<string | null> {
+        // 1 - Init Blocks and Debug modules
+        const blocksModule = this.blocksModule;
+        const debugModule = this.debugModule;
+
+        // 2 - Get the transaction details
+        const transaction = await this.getTransaction(transactionHash);
+
+        // 3 - Get the block details (to get the transaction index)
+        const block =
+            transaction !== null
+                ? ((await blocksModule.getBlockExpanded(
+                      transaction.meta.blockID
+                  )) as ExpandedBlockDetail)
+                : null;
+
+        // Block or transaction not found
+        if (block === null || transaction === null) return null;
+
+        // 4 - Get the error or panic reason. By iterating over the clauses of the transaction
+        for (
+            let transactionClauseIndex = 0;
+            transactionClauseIndex < transaction.clauses.length;
+            transactionClauseIndex++
+        ) {
+            // 5.1 - Debug the clause
+            const debuggedClause = (await debugModule.traceTransactionClause(
+                {
+                    target: {
+                        blockId: HexUInt32.of(block.id),
+                        transaction: HexUInt32.of(transactionHash),
+                        clauseIndex: transactionClauseIndex
+                    },
+                    // Optimized for top call
+                    config: {
+                        OnlyTopCall: true
+                    }
+                },
+                'call'
+            )) as CallNameReturnType;
+
+            // 5.2 - Error or panic present, so decode the revert reason
+            if (debuggedClause.output !== undefined) {
+                return this.decodeRevertReason(
+                    debuggedClause.output,
+                    errorFragment
+                );
+            }
+        }
+
+        // No revert reason found
+        return null;
+    }
+
+    /**
+     * Estimates the amount of gas required to execute a set of transaction clauses.
+     *
+     * @param {SimulateTransactionClause[]} clauses - An array of clauses to be simulated. Must contain at least one clause.
+     * @param {string} [caller] - The address initiating the transaction. Optional.
+     * @param {EstimateGasOptions} [options] - Additional options for the estimation, including gas padding.
+     * @return {Promise<EstimateGasResult>} - The estimated gas result, including total gas required, whether the transaction reverted, revert reasons, and any VM errors.
+     * @throws {IllegalArgumentError} - If clauses array is empty or if gas padding is not within the range (0, 1].
+     *
+     * @see {@link TransactionsModule#simulateTransaction}
+     */
+    public async estimateGas(
+        clauses: SimulateTransactionClause[],
+        caller?: string,
+        options?: EstimateGasOptions
+    ): Promise<EstimateGasResult> {
+        // Validate the normalized set is non-empty
+        if (clauses.length === 0) {
+            throw new IllegalArgumentError(
+                `${FQP}.estimateGas()`,
+                'Invalid clauses. Clauses must be an array with at least one clause.',
+                { clauses, caller, options }
+            );
+        }
+
+        // gasPadding must be a number between (0, 1]
+        if (
+            options?.gasPadding !== undefined &&
+            (options.gasPadding <= 0 || options.gasPadding > 1)
+        ) {
+            throw new IllegalArgumentError(
+                `${FQP}.estimateGas()`,
+                'Invalid gasPadding. gasPadding must be a number between (0, 1].',
+                { gasPadding: options?.gasPadding }
+            );
+        }
+
+        // Simulate the transaction to get the simulations of each clause
+        const simulations = await this.simulateTransaction(clauses, {
+            caller,
+            ...options
+        });
+
+        // If any of the clauses reverted, then the transaction reverted
+        const isReverted = simulations.some((simulation) => {
+            return simulation.reverted;
+        });
+
+        // The intrinsic gas of the transaction
+        const intrinsicGas = Number(Transaction.intrinsicGas(clauses));
+
+        // totalSimulatedGas represents the summation of all clauses' gasUsed
+        const totalSimulatedGas = simulations.reduce((sum, simulation) => {
+            return sum + simulation.gasUsed;
+        }, 0);
+
+        // The total gas of the transaction
+        // If the transaction involves contract interaction, a constant 15000 gas is added to the total gas
+        const totalGas = Math.ceil(
+            (intrinsicGas +
+                (totalSimulatedGas !== 0 ? totalSimulatedGas + 15000 : 0)) *
+                (1 + (options?.gasPadding ?? 0))
+        ); // Add gasPadding if it is defined
+        return isReverted
+            ? {
+                  totalGas,
+                  reverted: true,
+                  revertReasons: simulations.map((simulation) => {
+                      /**
+                       * The decoded revert reason of the transaction.
+                       * Solidity may revert with Error(string) or Panic(uint256).
+                       *
+                       * @link see [Error handling: Assert, Require, Revert and Exceptions](https://docs.soliditylang.org/en/latest/control-structures.html#error-handling-assert-require-revert-and-exceptions)
+                       */
+                      return decodeRevertReason(simulation.data) ?? '';
+                  }),
+                  vmErrors: simulations.map((simulation) => {
+                      return simulation.vmError;
+                  })
+              }
+            : {
+                  totalGas,
+                  reverted: false,
+                  revertReasons: [],
+                  vmErrors: []
+              };
+    }
+
+    /**
+     * Executes a read-only call to a smart contract function, simulating the transaction to obtain the result.
+     *
+     * The method simulates a transaction using the provided parameters
+     * without submitting it to the blockchain, allowing read-only operations
+     * to be tested without incurring gas costs or modifying the blockchain state.
+     *
+     * @param {string} contractAddress - The address of the smart contract.
+     * @param {ABIFunction} functionAbi - The ABI definition of the smart contract function to be called.
+     * @param {unknown[]} functionData - The arguments to be passed to the smart contract function.
+     * @param {ContractCallOptions} [contractCallOptions] - Optional parameters for the contract call execution.
+     * @return {Promise<ContractCallResult>} The result of the contract call.
+     */
+    public async executeCall(
+        contractAddress: string,
+        functionAbi: AbiFunction,
+        functionData: unknown[],
+        contractCallOptions?: ContractCallOptions
+    ): Promise<ContractCallResult> {
+        // Simulate the transaction to get the result of the contract call
+        const response = await this.simulateTransaction(
+            [
+                {
+                    to: contractAddress,
+                    value: 0n,
+                    data: encodeFunctionData({
+                        abi: [functionAbi],
+                        functionName: functionAbi.name,
+                        args: functionData
+                    })
+                }
+            ],
+            contractCallOptions
+        );
+
+        return this.getContractCallResult(
+            response[0].data,
+            functionAbi,
+            response[0].reverted
+        );
+    }
+
+    /**
+     * Executes and simulates multiple read-only smart-contract clause calls,
+     * simulating the transaction to obtain the results.
+     *
+     * @param {SimulateTransactionClause[]} clauses - The array of contract clauses to be executed.
+     * @param {SimulateTransactionOptions} [options] - Optional simulation transaction settings.
+     * @return {Promise<ContractCallResult[]>} - The decoded results of the contract calls.
+     */
+    public async executeMultipleClausesCall(
+        clauses: SimulateTransactionClause[],
+        functionAbi: AbiFunction[],
+        options?: SimulateTransactionOptions
+    ): Promise<ContractCallResult[]> {
+        // Simulate the transaction to get the result of the contract call
+        const response = await this.simulateTransaction(clauses, options);
+        // Returning the decoded results both as plain and array.
+        return response.map((res, index) =>
+            this.getContractCallResult(
+                res.data,
+                functionAbi[index],
+                res.reverted
+            )
+        );
+    }
+
+    /**
+     * Executes a transaction with a smart-contract on the VeChain blockchain.
+     *
+     * @param {VeChainSigner} signer - The signer instance to sign the transaction.
+     * @param {string} contractAddress - The address of the smart contract.
+     * @param {AbiFunction} functionAbi - The ABI of the contract function to be called.
+     * @param {unknown[]} functionData - The input parameters for the contract function.
+     * @param {ContractTransactionOptions} [options] - Optional transaction parameters.
+     * @return {Promise<SendTransactionResult>} - A promise that resolves to the result of the transaction.
+     *
+     * @see {@link TransactionsModule.buildTransactionBody}
+     */
+    public async executeTransaction(
+        signer: VeChainSigner,
+        contractAddress: string,
+        functionAbi: Abi,
+        functionName: string,
+        functionData: unknown[],
+        options?: ContractTransactionOptions,
+        value?: bigint
+    ): Promise<SendTransactionResult> {
+        // Build the transaction clause
+        const clause = ClauseBuilder.callFunction(
+            Address.of(contractAddress),
+            functionAbi,
+            functionName,
+            functionData,
+            value ?? 0n
+        );
+
+        // Estimate gas if not provided
+        const gasResult = await this.estimateGas(
+            [clause],
+            await signer.getAddress(),
+            options
+        );
+
+        // Build transaction body
+        const txBody = await this.buildTransactionBody(
+            [clause],
+            gasResult.totalGas,
+            options
+        );
+
+        // Create Transaction from body
+        const transaction = Transaction.of(txBody);
+
+        // Sign the transaction
+        const signedTx = await signer.signTransaction(transaction);
+
+        // Create SendTransaction instance and send it
+        const sendTransaction = SendTransaction.of(
+            HexUInt.of(signedTx.slice(2)).bytes
+        );
+
+        const response = await sendTransaction.askTo(
+            this.blocksModule.httpClient
+        );
+        const id = response.response.id.toString();
+
+        return {
+            id,
+            wait: async () => await this.waitForTransaction(id)
+        };
+    }
+
+    /**
+     * Executes a transaction with multiple clauses on the VeChain blockchain.
+     *
+     * @param {SimulateTransactionClause[]} clauses - Array of contract clauses to be included in the transaction.
+     * @param {VeChainSigner} signer - A VeChain signer instance used to sign and send the transaction.
+     * @param {ContractTransactionOptions} [options] - Optional parameters to customize the transaction.
+     * @return {Promise<SendTransactionResult>} The result of the transaction, including transaction ID and a wait function.
+     */
+    public async executeMultipleClausesTransaction(
+        clauses: SimulateTransactionClause[],
+        signer: VeChainSigner,
+        options?: ContractTransactionOptions
+    ): Promise<SendTransactionResult> {
+        // Estimate gas if not provided
+        const gasResult = await this.estimateGas(
+            clauses,
+            await signer.getAddress(),
+            options
+        );
+
+        // Build transaction body
+        const txBody = await this.buildTransactionBody(
+            clauses as any, // Cast to TransactionClause[]
+            gasResult.totalGas,
+            options
+        );
+
+        // Create Transaction from body
+        const transaction = Transaction.of(txBody);
+
+        // Sign the transaction
+        const signedTx = await signer.signTransaction(transaction);
+
+        // Create SendTransaction instance and send it
+        const sendTransaction = SendTransaction.of(
+            HexUInt.of(signedTx.slice(2)).bytes
+        );
+
+        const response = await sendTransaction.askTo(
+            this.blocksModule.httpClient
+        );
+        const id = response.response.id.toString();
+
+        return {
+            id,
+            wait: async () => await this.waitForTransaction(id)
+        };
+    }
+
+    /**
+     * Retrieves the base gas price from the blockchain parameters.
+     *
+     * This method sends a call to the blockchain parameters contract to fetch the current base gas price.
+     * The base gas price is the minimum gas price that can be used for a transaction.
+     * It is used to obtain the VTHO (energy) cost of a transaction.
+     * @link [Total Gas Price](https://docs.vechain.org/core-concepts/transactions/transaction-calculation#total-gas-price)
+     *
+     * @return {Promise<ContractCallResult>} A promise that resolves to the result of the contract call, containing the base gas price.
+     */
+    public async getLegacyBaseGasPrice(): Promise<ContractCallResult> {
+        // Find the 'get' function in the PARAMS_ABI
+        const getFunction = BUILT_IN_CONTRACTS.PARAMS_ABI.find(
+            (item: any) => item.type === 'function' && item.name === 'get'
+        ) as AbiFunction;
+
+        // Encode 'base-gas-price' as bytes32 (left-padded)
+        const keyBytes32 = encodeAbiParameters(
+            [{ type: 'bytes32' }],
+            [
+                '0x626173652d6761732d707269636500000000000000000000000000000000000000'
+            ]
+        );
+
+        return await this.executeCall(
+            BUILT_IN_CONTRACTS.PARAMS_ADDRESS,
+            getFunction,
+            [keyBytes32]
+        );
+    }
+
+    /**
+     * Decode the result of a contract call from the result of a simulated transaction.
+     *
+     * @param {string} encodedData - The encoded data received from the contract call.
+     * @param {ABIFunction} functionAbi - The ABI function definition used for decoding the result.
+     * @param {boolean} reverted - Indicates if the contract call reverted.
+     * @return {ContractCallResult} An object containing the success status and the decoded result.
+     */
+    private getContractCallResult(
+        encodedData: string,
+        functionAbi: AbiFunction,
+        reverted: boolean
+    ): ContractCallResult {
+        if (reverted) {
+            const errorMessage = decodeRevertReason(encodedData) ?? '';
+            return {
+                success: false,
+                result: {
+                    errorMessage
+                }
+            };
+        }
+
+        // Returning the decoded result using viem
+        const result = decodeFunctionResult({
+            abi: [functionAbi],
+            functionName: functionAbi.name,
+            data: encodedData as `0x${string}`
+        });
+        const plain = result;
+        const array = Array.isArray(result) ? result : [result];
+        return {
+            success: true,
+            result: {
+                plain,
+                array
+            }
+        };
+    }
+}
+
+export { TransactionsModule };
