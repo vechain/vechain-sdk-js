@@ -23,7 +23,7 @@ class TransactionRequest {
         gasPriceCoef: bigint,
         nonce: number,
         dependsOn: Hex | null,
-        isDelegated: boolean
+        isDelegated: boolean = false
     ) {
         this.blockRef = blockRef;
         this.chainTag = chainTag;
@@ -33,7 +33,7 @@ class TransactionRequest {
         this.gas = gas;
         this.gasPriceCoef = gasPriceCoef;
         this.nonce = nonce;
-        this.isDelegated = false;
+        this.isDelegated = isDelegated;
     }
 
     toJSON(): TransactionRequestJSON {
