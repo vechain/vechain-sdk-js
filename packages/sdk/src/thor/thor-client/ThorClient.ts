@@ -1,6 +1,7 @@
 import { AccountsModule } from './accounts/accounts-module';
 import { FetchHttpClient, type HttpClient } from '@http';
 import { LogsModule } from './logs/logs-module';
+import { GasModule } from './gas/gas-module';
 
 /**
  * The `ThorClient` class serves as an abstractedinterface to interact with the VeChainThor blockchain.
@@ -10,6 +11,9 @@ class ThorClient {
      * The `AccountsModule` instance
      */
     public readonly accounts: AccountsModule;
+
+    /**gas instance */
+    public readonly gas: GasModule;
 
     /**
      * The `LogsModule` instance
@@ -32,10 +36,12 @@ class ThorClient {
         // modules should expect thorClient to be set after construction
         this.httpClient = httpClient;
         this.accounts = new AccountsModule(httpClient);
+        this.gas = new GasModule(httpClient);
         this.logs = new LogsModule(httpClient);
 
         // set thorClient to modules for cross-module communication
         this.accounts.setThorClient(this);
+        this.gas.setThorClient(this);
         this.logs.setThorClient(this);
     }
 
