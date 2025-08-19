@@ -9,6 +9,10 @@ interface TransactionRequestJSON {
     gas: bigint;
     gasPriceCoef: bigint;
     nonce: number;
+    reserved?: {
+        features?: number;
+        unused?: Uint8Array[];
+    };
 }
 
 export type { TransactionRequestJSON };

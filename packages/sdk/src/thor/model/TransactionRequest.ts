@@ -1,6 +1,6 @@
 import { type Clause } from '@thor';
 import { type Hex } from '@vcdm';
-import { type TransactionRequestJSON } from '@thor/json';
+import { type TransactionRequestJSON } from '@thor/json/';
 
 class TransactionRequest {
     public readonly blockRef: Hex; // RLP 2
@@ -11,6 +11,7 @@ class TransactionRequest {
     public readonly gas: bigint; // RLP 6
     public readonly gasPriceCoef: bigint; // RLP 5
     public readonly nonce: number; // RLP 8
+    public readonly isDelegated: boolean;
 
     // eslint-disable-next-line sonarjs/sonar-max-params
     public constructor(
@@ -21,7 +22,8 @@ class TransactionRequest {
         gas: bigint,
         gasPriceCoef: bigint,
         nonce: number,
-        dependsOn: Hex | null
+        dependsOn: Hex | null,
+        isDelegated: boolean
     ) {
         this.blockRef = blockRef;
         this.chainTag = chainTag;
@@ -31,6 +33,7 @@ class TransactionRequest {
         this.gas = gas;
         this.gasPriceCoef = gasPriceCoef;
         this.nonce = nonce;
+        this.isDelegated = false;
     }
 
     toJSON(): TransactionRequestJSON {
@@ -44,11 +47,7 @@ class TransactionRequest {
             gas: this.gas,
             gasPriceCoef: this.gasPriceCoef,
             nonce: this.nonce
-        };
-    }
-
-    public isDelegated(): boolean {
-        return false;
+        } satisfies TransactionRequestJSON;
     }
 
     public isSigned(): boolean {

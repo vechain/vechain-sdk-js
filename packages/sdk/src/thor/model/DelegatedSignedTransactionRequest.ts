@@ -17,6 +17,7 @@ class DelegatedSignedTransactionRequest extends SignedTransactionRequest {
         gasPriceCoef: bigint,
         nonce: number,
         dependsOn: Hex | null,
+        isDelegated: boolean,
         origin: Address,
         originSignature: Uint8Array,
         gasPayer: Address,
@@ -32,16 +33,13 @@ class DelegatedSignedTransactionRequest extends SignedTransactionRequest {
             gasPriceCoef,
             nonce,
             dependsOn,
+            isDelegated,
             origin,
             originSignature,
             signature
         );
         this.gasPayer = gasPayer;
         this.gasPayerSignature = gasPayerSignature;
-    }
-
-    public isDelegated(): boolean {
-        return true;
     }
 
     public toJSON(): DelegatedSignedTransactionRequestJSON {

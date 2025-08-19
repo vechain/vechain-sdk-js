@@ -37,6 +37,7 @@ class PrivateKeySigner implements Signer {
                 transactionRequest.gasPriceCoef,
                 transactionRequest.nonce,
                 transactionRequest.dependsOn,
+                transactionRequest.isDelegated,
                 this.address,
                 signature,
                 signature

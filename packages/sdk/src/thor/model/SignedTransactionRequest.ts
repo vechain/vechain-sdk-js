@@ -18,6 +18,7 @@ class SignedTransactionRequest extends TransactionRequest {
         gasPriceCoef: bigint,
         nonce: number,
         dependsOn: Hex | null,
+        isDelegated: boolean,
         origin: Address,
         originSignature: Uint8Array,
         signature: Uint8Array
@@ -30,7 +31,8 @@ class SignedTransactionRequest extends TransactionRequest {
             gas,
             gasPriceCoef,
             nonce,
-            dependsOn
+            dependsOn,
+            isDelegated
         );
         this.origin = origin;
         // Defensive copies to avoid external mutation.
