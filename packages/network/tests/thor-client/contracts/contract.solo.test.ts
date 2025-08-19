@@ -644,7 +644,53 @@ describe('ThorClient - Contracts', () => {
                     ),
                     params
                 );
-                expect(response).toEqual(expected);
+
+                // Dynamically compute expected values for block-related functions using live chain data
+                let dynamicExpected = expected;
+                if (
+                    functionName === 'getBlockID' ||
+                    functionName === 'getBlockTotalScore' ||
+                    functionName === 'getBlockTime' ||
+                    functionName === 'getBlockSigner'
+                ) {
+                    const blockNumber = params[0] as number;
+                    const block =
+                        blockNumber === 0
+                            ? await thorSoloClient.blocks.getGenesisBlock()
+                            : await thorSoloClient.blocks.getBlockCompressed(
+                                  blockNumber
+                              );
+
+                    expect(block).not.toBeNull();
+
+                    if (functionName === 'getBlockID') {
+                        const id = (block as any).id as string;
+                        dynamicExpected = {
+                            success: true,
+                            result: { array: [id], plain: id }
+                        };
+                    } else if (functionName === 'getBlockTotalScore') {
+                        const totalScore = BigInt((block as any).totalScore);
+                        dynamicExpected = {
+                            success: true,
+                            result: { array: [totalScore], plain: totalScore }
+                        };
+                    } else if (functionName === 'getBlockTime') {
+                        const timestamp = BigInt((block as any).timestamp);
+                        dynamicExpected = {
+                            success: true,
+                            result: { array: [timestamp], plain: timestamp }
+                        };
+                    } else if (functionName === 'getBlockSigner') {
+                        const blockSigner = (block as any).signer as string;
+                        dynamicExpected = {
+                            success: true,
+                            result: { array: [blockSigner], plain: blockSigner }
+                        };
+                    }
+                }
+
+                expect(response).toEqual(dynamicExpected);
             });
         }
     );

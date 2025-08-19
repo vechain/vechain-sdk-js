@@ -11,7 +11,7 @@ import {
 import { sendTransactionWithAccount } from './fixture-thorest';
 import { getUnusedAccount } from '../../fixture';
 
-const TIMEOUT = 30000;
+const TIMEOUT = 10000;
 
 const TO = Address.of('0x0000000000000000000000000000456E65726779');
 
