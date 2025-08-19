@@ -7,6 +7,7 @@ import {
 import { type RegularBlockResponseJSON } from '@thor/json';
 import { type HttpClient, type HttpPath } from '@http';
 import { type Revision } from '@vcdm';
+import { BlockNotFoundError } from 'viem';
 
 /**
  * Full-Qualified Path
@@ -75,6 +76,12 @@ class RetrieveRegularBlock
                 );
             }
         } else {
+            // Check if it's a 404 (block not found) - throw viem-compatible error
+            if (response.status === 404) {
+                const blockNumber = BigInt(this.path.path.split('/').pop() || '0');
+                throw new BlockNotFoundError({ blockNumber });
+            }
+            
             throw new ThorError(
                 fqp,
                 await response.text(),
