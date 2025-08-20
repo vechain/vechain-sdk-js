@@ -1,4 +1,8 @@
-import { type Clause, type TransactionRequest } from '@thor';
+import {
+    type Clause,
+    type SignedTransactionRequest,
+    type TransactionRequest
+} from '@thor';
 import {
     BufferKind,
     CompactFixedHexBlobKind,
@@ -59,6 +63,36 @@ class RLPCodecTransactionRequest {
         kind: RLPCodecTransactionRequest.RLP_FIELDS
     };
 
+    public static encodeSignedTransactionRequest(
+        transactionRequest: SignedTransactionRequest
+    ): Uint8Array {
+        const clauses: Array<{
+            to: string | null;
+            value: bigint;
+            data: string;
+        }> = transactionRequest.clauses.map(
+            (
+                clause: Clause
+            ): { to: string | null; value: bigint; data: string } => {
+                return {
+                    to: clause.to?.toString() ?? null,
+                    value: clause.value,
+                    data: clause.data?.toString() ?? Hex.PREFIX
+                };
+            }
+        );
+        return RLPCodecTransactionRequest.encodeSignedBodyField(
+            {
+                ...transactionRequest.toJSON(),
+                clauses,
+                reserved: transactionRequest.isDelegated
+                    ? [Uint8Array.of(1)]
+                    : [] // encodeReservedField(tx)
+            },
+            transactionRequest.signature
+        );
+    }
+
     public static encodeTransactionRequest(
         transactionRequest: TransactionRequest
     ): Uint8Array {
@@ -77,14 +111,27 @@ class RLPCodecTransactionRequest {
                 };
             }
         );
-        return RLPCodecTransactionRequest.encodeBodyField({
+        return RLPCodecTransactionRequest.encodeUnsignedBodyField({
             ...transactionRequest.toJSON(),
             clauses,
             reserved: transactionRequest.isDelegated ? [Uint8Array.of(1)] : [] // encodeReservedField(tx)
         });
     }
 
-    private static encodeBodyField(body: RLPValidObject): Uint8Array {
+    private static encodeSignedBodyField(
+        body: RLPValidObject,
+        signature: Uint8Array
+    ): Uint8Array {
+        return RLPProfiler.ofObject(
+            {
+                ...body,
+                signature
+            },
+            RLPCodecTransactionRequest.RLP_SIGNED_TRANSACTION_PROFILE
+        ).encoded;
+    }
+
+    private static encodeUnsignedBodyField(body: RLPValidObject): Uint8Array {
         return RLPProfiler.ofObject(
             body,
             RLPCodecTransactionRequest.RLP_UNSIGNED_TRANSACTION_PROFILE
