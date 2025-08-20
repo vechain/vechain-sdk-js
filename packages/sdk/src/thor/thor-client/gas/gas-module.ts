@@ -1,53 +1,16 @@
-import { AbstractThorModule } from '../AbstractThorModule';
-import { type HttpClient } from '../../../http';
 import {
     RetrieveHistoricalFeeData,
     SuggestPriorityFee,
     type GetFeesHistoryResponse,
-    type GetFeesPriorityResponse
-} from '../../fees';
-import { InspectClauses } from '../../accounts/methods';
-import { type ExecuteCodesResponse } from '../../accounts/response';
-import { Revision, HexUInt, Quantity } from '../../../vcdm';
-import { Transaction, type TransactionClause } from '../../transactions';
-import { IllegalArgumentError } from '../../../errors';
-import { type ExecuteCodesRequestJSON } from '../../accounts/json/ExecuteCodesRequestJSON';
+} from '@thor/fees';
+import { InspectClauses, type ExecuteCodesResponse } from '@thor/accounts';
+import { Revision } from '@vcdm';
+import { Transaction, type TransactionClause } from '@thor/transactions';
+import { IllegalArgumentError } from '@errors';
 
-/**
- * Options for retrieving fee history.
- */
-interface FeeHistoryOptions {
-    /**
-     * The number of blocks to return fee history for.
-     */
-    blockCount: number;
-
-    /**
-     * The newest block to include in the fee history.
-     * Can be a block number, block ID, or special values like "best", "finalized", "next".
-     */
-    newestBlock?: Revision | null;
-
-    /**
-     * Array of percentiles (0-100) to calculate reward values for.
-     */
-    rewardPercentiles?: number[];
-}
-
-/**
- * Options for gas estimation.
- */
-interface EstimateGasOptions {
-    /**
-     * The revision (block) to estimate gas at.
-     */
-    revision?: Revision;
-
-    /**
-     * Gas padding percentage to add on top of estimated gas (0, 1].
-     */
-    gasPadding?: number;
-}
+import { AbstractThorModule } from '@thor/thor-client/AbstractThorModule';
+import { type FeeHistoryOptions } from '@thor/thor-client/model/gas/FeeHistoryOptions';
+import { type ExecuteCodesRequest } from '@thor/thor-client/model/gas/ExecuteCodesRequest';
 
 /**
  * The gas module of the VeChain Thor blockchain.
@@ -74,7 +37,7 @@ class GasModule extends AbstractThorModule {
      * @returns The execution response containing gas usage and other details.
      */
     public async estimateGas(
-        request: ExecuteCodesRequestJSON
+        request: ExecuteCodesRequest
     ): Promise<ExecuteCodesResponse> {
         const inspectClause = await InspectClauses.of(request).askTo(
             this.httpClient
@@ -159,4 +122,4 @@ class GasModule extends AbstractThorModule {
     }
 }
 
-export { GasModule, type FeeHistoryOptions, type EstimateGasOptions };
+export { GasModule };
