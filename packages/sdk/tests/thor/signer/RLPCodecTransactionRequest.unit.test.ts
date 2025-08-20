@@ -5,7 +5,7 @@ import {
     ClauseBuilder,
     PrivateKeySigner,
     RLPCodecTransactionRequest,
-    Signer,
+    type Signer,
     type TransactionBody,
     TransactionRequest
 } from '@thor';
@@ -20,6 +20,73 @@ const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
  * @group unit/thor/signer
  */
 describe('RLPCodecTransactionRequest UNIT tests', () => {
+    describe('encode signed delegated', () => {
+        test('ok <- valid transaction request', () => {
+            const transactionRequest = new TransactionRequest(
+                BlockRef.of(
+                    '0x00000058f9f240032e073f4a078c5f0f3e04ae7272e4550de41f10723d6f8b2e'
+                ), // blockRef
+                SOLO_NETWORK.chainTag, // chainTag
+                [
+                    new Clause(
+                        Address.of(TRANSACTION_RECEIVER.address),
+                        1n,
+                        null,
+                        null,
+                        null
+                    )
+                ], // clauses
+                32, // expiration
+                100000n, // gas
+                0n, // gasPriceCoef
+                8, // nonce
+                null, // dependsOn,
+                true
+            );
+
+            const txBody: TransactionBody = {
+                chainTag: transactionRequest.chainTag,
+                blockRef: transactionRequest.blockRef.toString(),
+                expiration: transactionRequest.expiration,
+                clauses: [
+                    ClauseBuilder.transferVET(
+                        transactionRequest.clauses[0].to as Address,
+                        transactionRequest.clauses[0].value
+                    )
+                ],
+                gasPriceCoef: Number(transactionRequest.gasPriceCoef),
+                gas: Number(transactionRequest.gas),
+                dependsOn: transactionRequest.dependsOn?.toString() ?? null,
+                nonce: transactionRequest.nonce,
+                reserved: {
+                    features: 1,
+                    unused: []
+                }
+            };
+            const expected = Transaction.of(txBody)
+                .signAsSenderAndGasPayer(
+                    HexUInt.of(TRANSACTION_SENDER.privateKey).bytes,
+                    HexUInt.of(TRANSACTION_RECEIVER.privateKey).bytes
+                )
+                .encode(true);
+            const signer: Signer = new PrivateKeySigner(
+                HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
+            );
+            const signedTransactionRequest = signer.sign(transactionRequest);
+            const gasPayer: Signer = new PrivateKeySigner(
+                HexUInt.of(TRANSACTION_RECEIVER.privateKey).bytes
+            );
+            const sponsoredTransactionRequest = gasPayer.sign(
+                signedTransactionRequest
+            );
+            const actual =
+                RLPCodecTransactionRequest.encodeSignedTransactionRequest(
+                    sponsoredTransactionRequest
+                );
+            expect(actual).toEqual(expected);
+        });
+    });
+
     describe('encode signed not delegated', () => {
         test('ok <- sdk 2 equivalence', () => {
             const transactionRequest = new TransactionRequest(
@@ -61,10 +128,10 @@ describe('RLPCodecTransactionRequest UNIT tests', () => {
             const expected = Transaction.of(txBody)
                 .sign(HexUInt.of(TRANSACTION_SENDER.privateKey).bytes)
                 .encode(true);
-            const signed: Signer = new PrivateKeySigner(
+            const signer: Signer = new PrivateKeySigner(
                 HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
             );
-            const signedTransactionRequest = signed.sign(transactionRequest);
+            const signedTransactionRequest = signer.sign(transactionRequest);
             const actual =
                 RLPCodecTransactionRequest.encodeSignedTransactionRequest(
                     signedTransactionRequest
