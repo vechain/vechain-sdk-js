@@ -19,7 +19,7 @@ interface Clause {
     data?: string; // hex ^0x[0-9a-f]*$
 }
 
-interface ExecuteCodesRequest {
+interface EstimateGasRequest {
     provedWork?: string;
     gasPayer?: string;
     expiration?: number;
@@ -30,4 +30,4 @@ interface ExecuteCodesRequest {
     caller?: string;
 }
 
-export type { ExecuteCodesRequest };
+export type { EstimateGasRequest };

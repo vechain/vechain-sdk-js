@@ -10,7 +10,9 @@ import { IllegalArgumentError } from '@errors';
 
 import { AbstractThorModule } from '@thor/thor-client/AbstractThorModule';
 import { type FeeHistoryOptions } from '@thor/thor-client/model/gas/FeeHistoryOptions';
-import { type ExecuteCodesRequest } from '@thor/thor-client/model/gas/ExecuteCodesRequest';
+import { type EstimateGasRequest } from '@thor/thor-client/model/gas/EstimateGasRequest';
+import { FeeHistory } from '../model/gas/FeeHistory';
+import { EstimatedGas } from '../model/gas/EstimatedGas';
 
 /**
  * The gas module of the VeChain Thor blockchain.
@@ -37,8 +39,8 @@ class GasModule extends AbstractThorModule {
      * @returns The execution response containing gas usage and other details.
      */
     public async estimateGas(
-        request: ExecuteCodesRequest
-    ): Promise<ExecuteCodesResponse> {
+        request: EstimateGasRequest
+    ): Promise<EstimatedGas[]> {
         const inspectClause = await InspectClauses.of(request).askTo(
             this.httpClient
         );
@@ -66,7 +68,7 @@ class GasModule extends AbstractThorModule {
      */
     public async getFeeHistory(
         options: FeeHistoryOptions
-    ): Promise<GetFeesHistoryResponse> {
+    ): Promise<FeeHistory> {
         // Validate blockCount
         if (
             options?.blockCount === null ||
@@ -102,7 +104,7 @@ class GasModule extends AbstractThorModule {
      *
      * @returns The base fee per gas of the next block, or null if not available.
      */
-    public async getNextBlockBaseFeePerGas(): Promise<bigint | null> {
+    public async getNextBlockBaseFeePerGas(): Promise<bigint | undefined> {
         const options: FeeHistoryOptions = {
             blockCount: 1,
             newestBlock: Revision.of('next')
@@ -115,7 +117,7 @@ class GasModule extends AbstractThorModule {
             feeHistory.baseFeePerGas === undefined ||
             feeHistory.baseFeePerGas.length === 0
         ) {
-            return null;
+            return undefined;
         }
 
         return feeHistory.baseFeePerGas[0];
