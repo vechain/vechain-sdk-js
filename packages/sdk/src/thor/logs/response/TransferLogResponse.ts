@@ -1,5 +1,6 @@
 import { Address, HexUInt, Quantity } from '@vcdm';
 import { LogMeta } from '@thor/thor-client/model/logs/LogMeta';
+import { LogMetaResponse } from './LogMetaResponse';
 import { type TransferLogResponseJSON } from '@thor/json';
 import { IllegalArgumentError } from '@errors';
 
@@ -43,7 +44,7 @@ class TransferLogResponse {
         try {
             this.sender = Address.of(json.sender);
             this.recipient = Address.of(json.recipient);
-            this.meta = new LogMeta(json.meta);
+            this.meta = new LogMeta(new LogMetaResponse(json.meta));
             this.amount = HexUInt.of(json.amount).bi;
         } catch (error) {
             throw new IllegalArgumentError(
@@ -65,7 +66,16 @@ class TransferLogResponse {
             sender: this.sender.toString(),
             recipient: this.recipient.toString(),
             amount: Quantity.of(this.amount).toString(),
-            meta: this.meta.toJSON()
+            meta: {
+                blockID: this.meta.blockID.toString(),
+                blockNumber: this.meta.blockNumber,
+                blockTimestamp: this.meta.blockTimestamp,
+                txID: this.meta.txID.toString(),
+                txOrigin: this.meta.txOrigin.toString(),
+                clauseIndex: this.meta.clauseIndex,
+                txIndex: this.meta.txIndex,
+                logIndex: this.meta.logIndex
+            }
         } satisfies TransferLogResponseJSON;
     }
 }

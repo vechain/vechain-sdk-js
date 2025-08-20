@@ -6,7 +6,6 @@ import {
     EventsSubscription,
     type ExecuteCodesResponse,
     type ExpandedBlockResponse,
-    type GetFeesHistoryResponse,
     type GetFeesPriorityResponse,
     InspectClauses,
     NewTransactionSubscription,
@@ -49,8 +48,8 @@ import { FilterRangeUnits } from '@thor/thor-client/model/logs/FilterRangeUnits'
 import { FilterOptions } from '@thor/thor-client/model/logs/FilterOptions';
 import { EventCriteria } from '@thor/thor-client/model/logs/EventCriteria';
 import { type AbiEvent, toEventSelector } from 'viem';
-import { EstimatedGas } from '@thor/thor-client/model/gas/EstimatedGas';
-import { FeeHistory } from '@thor/thor-client/model/gas/FeeHistory';
+import type { EstimatedGas } from '@thor/thor-client/model/gas/EstimatedGas';
+import type { FeeHistory } from '@thor/thor-client/model/gas/FeeHistory';
 
 /**
  * Filter types for viem compatibility.
@@ -258,12 +257,10 @@ class PublicClient {
         return clause;
     }
 
-    public async getFeeHistory(
-        blockCount: number
-    ): Promise<FeeHistory> {
+    public async getFeeHistory(blockCount: number): Promise<FeeHistory> {
         const thorClient = ThorClient.at(this.httpClient);
         const gasModule = thorClient.gas;
-        const gas = await gasModule.getFeeHistory({blockCount});
+        const gas = await gasModule.getFeeHistory({ blockCount });
         return gas;
     }
 

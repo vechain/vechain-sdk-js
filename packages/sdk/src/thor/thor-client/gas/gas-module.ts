@@ -44,7 +44,7 @@ class GasModule extends AbstractThorModule {
         const inspectClause = await InspectClauses.of(request).askTo(
             this.httpClient
         );
-        return inspectClause.response;
+        return Array.from(inspectClause.response);
     }
 
     /**

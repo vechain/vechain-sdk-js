@@ -47,7 +47,7 @@ class EventLog {
             eventLog.address,
             eventLog.topics,
             eventLog.data,
-            new LogMeta(eventLog.meta)
+            eventLog.meta
         );
     }
 }

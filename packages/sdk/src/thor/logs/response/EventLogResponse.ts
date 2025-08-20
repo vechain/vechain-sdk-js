@@ -1,5 +1,6 @@
 import { type EventLogResponseJSON } from '@thor/json';
 import { LogMeta } from '@thor/thor-client/model/logs/LogMeta';
+import { LogMetaResponse } from './LogMetaResponse';
 import { Address, HexUInt, HexUInt32, type Hex } from '@vcdm';
 import { IllegalArgumentError } from '@errors';
 
@@ -46,7 +47,7 @@ class EventLogResponse {
                 (topic: string): HexUInt32 => HexUInt32.of(topic)
             );
             this.data = HexUInt.of(json.data);
-            this.meta = new LogMeta(json.meta);
+            this.meta = new LogMeta(new LogMetaResponse(json.meta));
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: EventLogResponseJSON)`,
@@ -69,7 +70,16 @@ class EventLogResponse {
                 topic.toString()
             ),
             data: this.data.toString(),
-            meta: this.meta.toJSON()
+            meta: {
+                blockID: this.meta.blockID.toString(),
+                blockNumber: this.meta.blockNumber,
+                blockTimestamp: this.meta.blockTimestamp,
+                txID: this.meta.txID.toString(),
+                txOrigin: this.meta.txOrigin.toString(),
+                clauseIndex: this.meta.clauseIndex,
+                txIndex: this.meta.txIndex,
+                logIndex: this.meta.logIndex
+            }
         } satisfies EventLogResponseJSON;
     }
 }

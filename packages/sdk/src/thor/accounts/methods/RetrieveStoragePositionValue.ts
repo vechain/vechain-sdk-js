@@ -1,6 +1,6 @@
 import { type HttpClient, type HttpPath } from '@http';
 import { type Revision, type Address, type Hex } from '@vcdm';
-import { GetStorageResponse } from '@thor';
+import { GetStorageResponse } from '../response/GetStorageResponse';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
 import { type GetStorageResponseJSON } from '@thor/json';
 

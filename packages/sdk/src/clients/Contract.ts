@@ -8,7 +8,10 @@ import { type Address, Hex } from '@vcdm';
 import { type PublicClient } from './PublicClient';
 import { type WalletClient } from './WalletClient';
 import { type ExecuteCodesRequestJSON } from '@json';
-import { type EventLogResponse } from '@thor/logs/response';
+import {
+    type EventLogResponse,
+    EventLogResponse as EventLogResponseClass
+} from '@thor/logs/response';
 import { type SubscriptionEventResponse } from '@thor/subscriptions/response';
 import { type ExecuteCodesResponse } from '@thor/accounts/response';
 
@@ -405,42 +408,50 @@ function getContract<const TAbi extends Abi>({
                 getLogs: async (options = {}) => {
                     const { args, fromBlock, toBlock } = options;
 
-                    // Create topics array starting with event signature
-                    const topics: Array<Hex | null> = [Hex.of(eventSignature)];
-
-                    // Add indexed arguments if provided
-                    if (args != null && args.length > 0) {
-                        const indexedInputs = abiItem.inputs.filter(
-                            (input) => input.indexed
-                        );
-
-                        for (
-                            let i = 0;
-                            i < Math.min(args.length, indexedInputs.length);
-                            i++
-                        ) {
-                            if (args[i] !== undefined) {
-                                topics.push(Hex.of(args[i] as HexConvertible));
-                            } else {
-                                topics.push(null);
-                            }
-                        }
-                    }
-
-                    // Call PublicClient's getLogs with properly typed parameters
-                    return await publicClient.getLogs({
+                    // Create event filter using PublicClient's createEventFilter
+                    const eventFilter = publicClient.createEventFilter({
                         address,
-                        topics: topics as Hex[],
-                        // Convert block numbers to Hex if provided
+                        event: abiItem,
+                        args: args as Hex[] | undefined,
                         fromBlock:
                             fromBlock !== undefined
-                                ? Hex.of(fromBlock as HexConvertible)
+                                ? BigInt(fromBlock as number)
                                 : undefined,
                         toBlock:
                             toBlock !== undefined
-                                ? Hex.of(toBlock as HexConvertible)
+                                ? BigInt(toBlock as number)
                                 : undefined
                     });
+
+                    // Call PublicClient's getLogs with the event filter
+                    const decodedLogs = await publicClient.getLogs(eventFilter);
+
+                    // Convert DecodedEventLog[] to EventLogResponse[]
+                    return decodedLogs.map(
+                        (decodedLog) =>
+                            new EventLogResponseClass({
+                                address: decodedLog.eventLog.address.toString(),
+                                topics: decodedLog.eventLog.topics.map(
+                                    (topic) => topic.toString()
+                                ),
+                                data: decodedLog.eventLog.data.toString(),
+                                meta: {
+                                    blockID:
+                                        decodedLog.eventLog.meta.blockID.toString(),
+                                    blockNumber:
+                                        decodedLog.eventLog.meta.blockNumber,
+                                    blockTimestamp:
+                                        decodedLog.eventLog.meta.blockTimestamp,
+                                    txID: decodedLog.eventLog.meta.txID.toString(),
+                                    txOrigin:
+                                        decodedLog.eventLog.meta.txOrigin.toString(),
+                                    clauseIndex:
+                                        decodedLog.eventLog.meta.clauseIndex,
+                                    txIndex: decodedLog.eventLog.meta.txIndex,
+                                    logIndex: decodedLog.eventLog.meta.logIndex
+                                }
+                            })
+                    );
                 },
 
                 // Create event filter - viem compatibility
@@ -450,10 +461,16 @@ function getContract<const TAbi extends Abi>({
                     // Create event filter using PublicClient
                     return publicClient.createEventFilter({
                         address,
-                        event: Hex.of(eventSignature),
+                        event: abiItem,
                         args: args as Hex[] | undefined,
-                        fromBlock: fromBlock as HexConvertible | undefined,
-                        toBlock: toBlock as HexConvertible | undefined
+                        fromBlock:
+                            fromBlock !== undefined
+                                ? BigInt(fromBlock as number)
+                                : undefined,
+                        toBlock:
+                            toBlock !== undefined
+                                ? BigInt(toBlock as number)
+                                : undefined
                     });
                 }
             };
