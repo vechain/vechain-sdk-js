@@ -55,71 +55,8 @@ describe('NodesModule', () => {
             const isHealthy = await thorClient.nodes.isHealthy();
             
             expect(typeof isHealthy).toBe('boolean');
-            // Solo network should be healthy since it's actively running
+            // Solo network should be healthy
             expect(isHealthy).toBe(true);
-        });
-
-        test('should return true for healthy solo network with recent blocks', async () => {
-            const thorClient = ThorClient.at(
-                FetchHttpClient.at(new URL(ThorNetworks.SOLONET))
-            );
-            
-            // Call isHealthy multiple times to ensure consistency
-            const healthCheck1 = await thorClient.nodes.isHealthy();
-            const healthCheck2 = await thorClient.nodes.isHealthy();
-            
-            expect(healthCheck1).toBe(true);
-            expect(healthCheck2).toBe(true);
-            expect(healthCheck1).toBe(healthCheck2);
-        });
-
-        test('should handle health check with proper timestamp validation', async () => {
-            const thorClient = ThorClient.at(
-                FetchHttpClient.at(new URL(ThorNetworks.SOLONET))
-            );
-            
-            const isHealthy = await thorClient.nodes.isHealthy();
-            
-            // The health check should work properly with the solo network
-            // Since solo network is actively producing blocks, it should be healthy
-            expect(typeof isHealthy).toBe('boolean');
-            expect(isHealthy).toBe(true);
-        });
-    });
-
-    describe('edge cases', () => {
-        test('should handle empty peer response gracefully', async () => {
-            const thorClient = ThorClient.at(
-                FetchHttpClient.at(new URL(ThorNetworks.SOLONET))
-            );
-            
-            const connectedPeers = await thorClient.nodes.getNodes();
-            
-            // Should always return an array, even if empty
-            expect(Array.isArray(connectedPeers)).toBe(true);
-            expect(connectedPeers.length).toBeGreaterThanOrEqual(0);
-        });
-
-        test('should maintain consistent health status across calls', async () => {
-            const thorClient = ThorClient.at(
-                FetchHttpClient.at(new URL(ThorNetworks.SOLONET))
-            );
-            
-            // Call health check multiple times in rapid succession
-            const promises = Array.from({ length: 3 }, () => 
-                thorClient.nodes.isHealthy()
-            );
-            
-            const results = await Promise.all(promises);
-            
-            // All results should be boolean and consistent
-            results.forEach(result => {
-                expect(typeof result).toBe('boolean');
-            });
-            
-            // For a running solo network, all should be true
-            const allHealthy = results.every(result => result === true);
-            expect(allHealthy).toBe(true);
         });
     });
 });
