@@ -64,7 +64,7 @@ class RLPCodecTransactionRequest {
         return RLPCodecTransactionRequest.encodeSignedBodyField(
             {
                 ...RLPCodecTransactionRequest.mapBody(transactionRequest),
-                reserved: transactionRequest.isDelegated
+                reserved: transactionRequest.isSponsored
                     ? [Uint8Array.of(1)]
                     : [] // encodeReservedField(tx)
             },
@@ -77,7 +77,7 @@ class RLPCodecTransactionRequest {
     ): Uint8Array {
         return RLPCodecTransactionRequest.encodeUnsignedBodyField({
             ...RLPCodecTransactionRequest.mapBody(transactionRequest),
-            reserved: transactionRequest.isDelegated ? [Uint8Array.of(1)] : [] // encodeReservedField(tx)
+            reserved: transactionRequest.isSponsored ? [Uint8Array.of(1)] : [] // encodeReservedField(tx)
         });
     }
 

@@ -4,12 +4,15 @@ import { RLPCodecTransactionRequest } from './RLPCodecTransactionRequest';
 import { Secp256k1 } from '@secp256k1';
 import { type Signer } from './Signer';
 import {
-    DelegatedSignedTransactionRequest,
     SignedTransactionRequest,
+    SponsoredTransactionRequest,
     type TransactionRequest
 } from '@thor';
 import * as nc_utils from '@noble/curves/abstract/utils';
 
+/**
+ * Full-Qualified Path
+ */
 const FQP = 'packages/sdk/src/signer/PrivateKeySigner.ts!';
 
 class PrivateKeySigner implements Signer {
@@ -40,20 +43,20 @@ class PrivateKeySigner implements Signer {
                 )
             ).bytes;
             const signature = Secp256k1.sign(hash, this.privateKey);
-            return new SignedTransactionRequest(
-                transactionRequest.blockRef,
-                transactionRequest.chainTag,
-                transactionRequest.clauses,
-                transactionRequest.expiration,
-                transactionRequest.gas,
-                transactionRequest.gasPriceCoef,
-                transactionRequest.nonce,
-                transactionRequest.dependsOn,
-                transactionRequest.isDelegated,
-                this.address,
-                signature,
+            return new SignedTransactionRequest({
+                blockRef: transactionRequest.blockRef,
+                chainTag: transactionRequest.chainTag,
+                clauses: transactionRequest.clauses,
+                dependsOn: transactionRequest.dependsOn,
+                expiration: transactionRequest.expiration,
+                gas: transactionRequest.gas,
+                gasPriceCoef: transactionRequest.gasPriceCoef,
+                nonce: transactionRequest.nonce,
+                isSponsored: transactionRequest.isSponsored,
+                origin: this.address,
+                originSignature: signature,
                 signature
-            );
+            });
         }
         throw new InvalidPrivateKeyError(
             `${FQP}PrivateKeySigner.sign(transactionRequest: TransactionRequest): SignedTransactionRequest`,
@@ -63,9 +66,9 @@ class PrivateKeySigner implements Signer {
 
     private sponsorTransactionRequest(
         signedTransactionRequest: SignedTransactionRequest
-    ): DelegatedSignedTransactionRequest {
+    ): SponsoredTransactionRequest {
         if (this.privateKey !== null) {
-            if (signedTransactionRequest.isDelegated) {
+            if (signedTransactionRequest.isSponsored) {
                 const hash = Blake2b256.of(
                     nc_utils.concatBytes(
                         Blake2b256.of(
@@ -77,25 +80,25 @@ class PrivateKeySigner implements Signer {
                     )
                 ).bytes;
                 const gasPayerSignature = Secp256k1.sign(hash, this.privateKey);
-                return new DelegatedSignedTransactionRequest(
-                    signedTransactionRequest.blockRef,
-                    signedTransactionRequest.chainTag,
-                    signedTransactionRequest.clauses,
-                    signedTransactionRequest.expiration,
-                    signedTransactionRequest.gas,
-                    signedTransactionRequest.gasPriceCoef,
-                    signedTransactionRequest.nonce,
-                    signedTransactionRequest.dependsOn,
-                    true,
-                    signedTransactionRequest.origin,
-                    signedTransactionRequest.originSignature,
-                    this.address,
+                return new SponsoredTransactionRequest({
+                    blockRef: signedTransactionRequest.blockRef,
+                    chainTag: signedTransactionRequest.chainTag,
+                    clauses: signedTransactionRequest.clauses,
+                    dependsOn: signedTransactionRequest.dependsOn,
+                    expiration: signedTransactionRequest.expiration,
+                    gas: signedTransactionRequest.gas,
+                    gasPriceCoef: signedTransactionRequest.gasPriceCoef,
+                    nonce: signedTransactionRequest.nonce,
+                    isSponsored: true,
+                    origin: signedTransactionRequest.origin,
+                    originSignature: signedTransactionRequest.originSignature,
+                    gasPayer: this.address,
                     gasPayerSignature,
-                    nc_utils.concatBytes(
+                    signature: nc_utils.concatBytes(
                         signedTransactionRequest.originSignature,
                         gasPayerSignature
                     )
-                );
+                });
             }
             throw new InvalidPrivateKeyError(
                 `${FQP}PrivateKeySigner.sign(signedTransactionRequest: SignedTransactionRequest): DelegatedSignedTransactionRequest`,
@@ -110,7 +113,7 @@ class PrivateKeySigner implements Signer {
 
     public sign(
         transactionRequest: TransactionRequest | SignedTransactionRequest
-    ): SignedTransactionRequest | DelegatedSignedTransactionRequest {
+    ): SignedTransactionRequest | SponsoredTransactionRequest {
         if (transactionRequest instanceof SignedTransactionRequest) {
             return this.sponsorTransactionRequest(transactionRequest);
         }

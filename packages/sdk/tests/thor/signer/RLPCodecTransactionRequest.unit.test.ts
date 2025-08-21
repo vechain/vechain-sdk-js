@@ -22,12 +22,12 @@ const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
 describe('RLPCodecTransactionRequest UNIT tests', () => {
     describe('encode signed delegated', () => {
         test('ok <- valid transaction request', () => {
-            const transactionRequest = new TransactionRequest(
-                BlockRef.of(
+            const transactionRequest = new TransactionRequest({
+                blockRef: BlockRef.of(
                     '0x00000058f9f240032e073f4a078c5f0f3e04ae7272e4550de41f10723d6f8b2e'
-                ), // blockRef
-                SOLO_NETWORK.chainTag, // chainTag
-                [
+                ),
+                chainTag: SOLO_NETWORK.chainTag, // chainTag
+                clauses: [
                     new Clause(
                         Address.of(TRANSACTION_RECEIVER.address),
                         1n,
@@ -35,14 +35,14 @@ describe('RLPCodecTransactionRequest UNIT tests', () => {
                         null,
                         null
                     )
-                ], // clauses
-                32, // expiration
-                100000n, // gas
-                0n, // gasPriceCoef
-                8, // nonce
-                null, // dependsOn,
-                true
-            );
+                ],
+                dependsOn: null, // dependsOn,
+                expiration: 32,
+                gas: 100000n,
+                gasPriceCoef: 0n, // gasPriceCoef
+                nonce: 8, // nonce
+                isSponsored: true
+            });
 
             const txBody: TransactionBody = {
                 chainTag: transactionRequest.chainTag,
@@ -89,12 +89,12 @@ describe('RLPCodecTransactionRequest UNIT tests', () => {
 
     describe('encode signed not delegated', () => {
         test('ok <- sdk 2 equivalence', () => {
-            const transactionRequest = new TransactionRequest(
-                BlockRef.of(
+            const transactionRequest = new TransactionRequest({
+                blockRef: BlockRef.of(
                     '0x00000058f9f240032e073f4a078c5f0f3e04ae7272e4550de41f10723d6f8b2e'
-                ), // blockRef
-                SOLO_NETWORK.chainTag, // chainTag
-                [
+                ),
+                chainTag: SOLO_NETWORK.chainTag,
+                clauses: [
                     new Clause(
                         Address.of(TRANSACTION_RECEIVER.address),
                         1n,
@@ -102,13 +102,13 @@ describe('RLPCodecTransactionRequest UNIT tests', () => {
                         null,
                         null
                     )
-                ], // clauses
-                32, // expiration
-                100000n, // gas
-                0n, // gasPriceCoef
-                8, // nonce
-                null // dependsOn
-            );
+                ],
+                expiration: 32,
+                gas: 100000n,
+                gasPriceCoef: 0n,
+                nonce: 8,
+                dependsOn: null
+            });
 
             const txBody: TransactionBody = {
                 chainTag: transactionRequest.chainTag,
@@ -142,12 +142,12 @@ describe('RLPCodecTransactionRequest UNIT tests', () => {
 
     describe('encode unsigned delegated', () => {
         test('ok <- valid transaction request', () => {
-            const transactionRequest = new TransactionRequest(
-                BlockRef.of(
+            const transactionRequest = new TransactionRequest({
+                blockRef: BlockRef.of(
                     '0x00000058f9f240032e073f4a078c5f0f3e04ae7272e4550de41f10723d6f8b2e'
-                ), // blockRef
-                SOLO_NETWORK.chainTag, // chainTag
-                [
+                ),
+                chainTag: SOLO_NETWORK.chainTag,
+                clauses: [
                     new Clause(
                         Address.of(TRANSACTION_RECEIVER.address),
                         1n,
@@ -155,14 +155,14 @@ describe('RLPCodecTransactionRequest UNIT tests', () => {
                         null,
                         null
                     )
-                ], // clauses
-                32, // expiration
-                100000n, // gas
-                0n, // gasPriceCoef
-                8, // nonce
-                null, // dependsOn,
-                true
-            );
+                ],
+                dependsOn: null,
+                expiration: 32,
+                gas: 100000n,
+                gasPriceCoef: 0n,
+                nonce: 8,
+                isSponsored: true
+            });
 
             const txBody: TransactionBody = {
                 chainTag: transactionRequest.chainTag,
@@ -194,12 +194,12 @@ describe('RLPCodecTransactionRequest UNIT tests', () => {
 
     describe('encode unsigned not delegated', () => {
         test('ok <- sdk 2 equivalence', () => {
-            const transactionRequest = new TransactionRequest(
-                BlockRef.of(
+            const transactionRequest = new TransactionRequest({
+                blockRef: BlockRef.of(
                     '0x00000058f9f240032e073f4a078c5f0f3e04ae7272e4550de41f10723d6f8b2e'
-                ), // blockRef
-                SOLO_NETWORK.chainTag, // chainTag
-                [
+                ),
+                chainTag: SOLO_NETWORK.chainTag,
+                clauses: [
                     new Clause(
                         Address.of(TRANSACTION_RECEIVER.address),
                         1n,
@@ -207,13 +207,13 @@ describe('RLPCodecTransactionRequest UNIT tests', () => {
                         null,
                         null
                     )
-                ], // clauses
-                32, // expiration
-                100000n, // gas
-                0n, // gasPriceCoef
-                8, // nonce
-                null // dependsOn
-            );
+                ],
+                dependsOn: null,
+                expiration: 32,
+                gas: 100000n,
+                gasPriceCoef: 0n,
+                nonce: 8
+            });
 
             const txBody: TransactionBody = {
                 chainTag: transactionRequest.chainTag,

@@ -4,9 +4,9 @@
 import {
     Clause,
     ClauseBuilder,
-    type DelegatedSignedTransactionRequest,
     PrivateKeySigner,
     type Signer,
+    type SponsoredTransactionRequest,
     type TransactionBody,
     TransactionRequest
 } from '@thor';
@@ -32,19 +32,19 @@ describe('PrivateKeySigner UNIT tests', () => {
     };
 
     test('demo', () => {
-        const requestTx = new TransactionRequest(
-            BlockRef.of(
+        const requestTx = new TransactionRequest({
+            blockRef: BlockRef.of(
                 '0x00000058f9f240032e073f4a078c5f0f3e04ae7272e4550de41f10723d6f8b2e'
-            ), // blockRef
-            SOLO_NETWORK.chainTag, // chainTag
-            [new Clause(RECEIVER.address, 1n, null, null, null)], // clauses
-            32, // expiration
-            100000n, // gas
-            0n, // gasPriceCoef
-            8, // nonce
-            null, // dependsOn
-            true // delegated
-        );
+            ),
+            chainTag: SOLO_NETWORK.chainTag,
+            clauses: [new Clause(RECEIVER.address, 1n, null, null, null)],
+            dependsOn: null,
+            expiration: 32,
+            gas: 100000n,
+            gasPriceCoef: 0n,
+            nonce: 8,
+            isSponsored: true
+        });
         const sender: Signer = new PrivateKeySigner(SENDER.privateKey);
         const signedTx = sender.sign(requestTx);
         const gasPayer: PrivateKeySigner = new PrivateKeySigner(
@@ -54,27 +54,26 @@ describe('PrivateKeySigner UNIT tests', () => {
         expect(sponsoredTx.signature).toEqual(
             nc_utils.concatBytes(
                 signedTx.signature,
-                (sponsoredTx as DelegatedSignedTransactionRequest)
-                    .gasPayerSignature
+                (sponsoredTx as SponsoredTransactionRequest).gasPayerSignature
             )
         );
     });
 
     describe('sign - signed delegated', () => {
         test('ok <- sdk 2 equivalence', () => {
-            const transactionRequest = new TransactionRequest(
-                BlockRef.of(
+            const transactionRequest = new TransactionRequest({
+                blockRef: BlockRef.of(
                     '0x00000058f9f240032e073f4a078c5f0f3e04ae7272e4550de41f10723d6f8b2e'
-                ), // blockRef
-                SOLO_NETWORK.chainTag, // chainTag
-                [new Clause(RECEIVER.address, 1n, null, null, null)], // clauses
-                32, // expiration
-                100000n, // gas
-                0n, // gasPriceCoef
-                8, // nonce
-                null, // dependsOn
-                true // delegated
-            );
+                ),
+                chainTag: SOLO_NETWORK.chainTag,
+                clauses: [new Clause(RECEIVER.address, 1n, null, null, null)],
+                dependsOn: null,
+                expiration: 32,
+                gas: 100000n,
+                gasPriceCoef: 0n,
+                nonce: 8,
+                isSponsored: true
+            });
 
             const txBody: TransactionBody = {
                 chainTag: transactionRequest.chainTag,
@@ -117,19 +116,19 @@ describe('PrivateKeySigner UNIT tests', () => {
 
     describe('sign - unsigned delegated', () => {
         test('ok <- sdk 2 equivalence', () => {
-            const transactionRequest = new TransactionRequest(
-                BlockRef.of(
+            const transactionRequest = new TransactionRequest({
+                blockRef: BlockRef.of(
                     '0x00000058f9f240032e073f4a078c5f0f3e04ae7272e4550de41f10723d6f8b2e'
-                ), // blockRef
-                SOLO_NETWORK.chainTag, // chainTag
-                [new Clause(RECEIVER.address, 1n, null, null, null)], // clauses
-                32, // expiration
-                100000n, // gas
-                0n, // gasPriceCoef
-                8, // nonce
-                null, // dependsOn
-                true // delegated
-            );
+                ),
+                chainTag: SOLO_NETWORK.chainTag,
+                clauses: [new Clause(RECEIVER.address, 1n, null, null, null)],
+                dependsOn: null,
+                expiration: 32,
+                gas: 100000n,
+                gasPriceCoef: 0n,
+                nonce: 8,
+                isSponsored: true
+            });
 
             const txBody: TransactionBody = {
                 chainTag: transactionRequest.chainTag,
@@ -161,18 +160,18 @@ describe('PrivateKeySigner UNIT tests', () => {
 
     describe('sign - not delegated', () => {
         test('ok <- sdk 2 equivalence', () => {
-            const transactionRequest = new TransactionRequest(
-                BlockRef.of(
+            const transactionRequest = new TransactionRequest({
+                blockRef: BlockRef.of(
                     '0x00000058f9f240032e073f4a078c5f0f3e04ae7272e4550de41f10723d6f8b2e'
-                ), // blockRef
-                SOLO_NETWORK.chainTag, // chainTag
-                [new Clause(RECEIVER.address, 1n, null, null, null)], // clauses
-                32, // expiration
-                100000n, // gas
-                0n, // gasPriceCoef
-                8, // nonce
-                null // dependsOn
-            );
+                ),
+                chainTag: SOLO_NETWORK.chainTag,
+                clauses: [new Clause(RECEIVER.address, 1n, null, null, null)],
+                dependsOn: null,
+                expiration: 32,
+                gas: 100000n,
+                gasPriceCoef: 0n,
+                nonce: 8
+            });
 
             const txBody: TransactionBody = {
                 chainTag: transactionRequest.chainTag,

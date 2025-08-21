@@ -19,7 +19,6 @@ classDiagram
         Hex toHex~T~(T obj)
     }
     class RLPCodec {
-
     }
     class Signer {
         <<interface>>
@@ -31,44 +30,32 @@ classDiagram
         Address origin
         Uint8Array originSignature
         Uint8Array signature
-        SignedTransactionRequest of(SignedTransactionRequestJSON json)$
-        SignedTransactionRequestJSON toJSON()
     }
-    class DelegatedSignedTransactionRequest {
+    class SponsoredTransactionRequest {
         Address gasPayer
         Uint8Array gasPayerSignature
-        SignedTransactionRequest of(DelegatedSignedTransactionRequestJSON json)$
-        SignedTransactionRequestJSON toJSON()
     }
     class TransactionRequest {
         Hex blockRef
         number chainTag
         Clause[] clauses
         Hex|null dependsOn
-    %% reserved.features
-        number|null features
         number expiration
         bigint gas
         bigint gasPriceCoef
-        bigint intrinsicGas
         number nonce
-    %% reserved.unused
-        Uint8Array[]|null reserved
-    %% methods
-        boolean isDelegated()
+        boolean isSponsored
         boolean isSigned()
-        TransactionRequest of(TxRequestJSON json)$
-        TxRequestJSON toJSON()
     }
     RLPCodec --|> Codec
     Clause *-- "TransactionRequest.clauses" TransactionRequest
     TransactionRequest <|-- SignedTransactionRequest
-    SignedTransactionRequest <|-- DelegatedSignedTransactionRequest
+    SignedTransactionRequest <|-- SponsoredTransactionRequest
     Signer <-- "1.in Signer.sign(...) " TransactionRequest
     Signer "1.out Signer.sign(...)" --> SignedTransactionRequest
     Signer <-- "2.in Signer.sign(...)" SignedTransactionRequest
-    Signer "2.out Signer.sign(...)" --> DelegatedSignedTransactionRequest
+    Signer "2.out Signer.sign(...)" --> SponsoredTransactionRequest
     TransactionRequest --> RLPCodec
     SignedTransactionRequest --> RLPCodec
-    DelegatedSignedTransactionRequest --> RLPCodec
+    SponsoredTransactionRequest --> RLPCodec
 
