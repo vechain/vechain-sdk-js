@@ -1,7 +1,6 @@
 import { TransactionRequest } from './TransactionRequest';
 import type { Address, Hex } from '@vcdm';
 import { type Clause } from '@thor';
-import { type SignedTransactionRequestJSON } from '@thor/json';
 
 class SignedTransactionRequest extends TransactionRequest {
     public readonly origin: Address;
@@ -42,15 +41,6 @@ class SignedTransactionRequest extends TransactionRequest {
 
     public isSigned(): boolean {
         return true;
-    }
-
-    public toJSON(): SignedTransactionRequestJSON {
-        return {
-            ...super.toJSON(),
-            origin: this.origin.toString(),
-            senderSignature: this.originSignature,
-            signature: this.signature
-        };
     }
 }
 

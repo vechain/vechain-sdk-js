@@ -1,6 +1,5 @@
 import { type Clause } from '@thor';
 import { type Address, type Hex } from '@vcdm';
-import { type DelegatedSignedTransactionRequestJSON } from '@thor/json';
 import { SignedTransactionRequest } from './SignedTransactionRequest';
 
 class DelegatedSignedTransactionRequest extends SignedTransactionRequest {
@@ -40,14 +39,6 @@ class DelegatedSignedTransactionRequest extends SignedTransactionRequest {
         );
         this.gasPayer = gasPayer;
         this.gasPayerSignature = gasPayerSignature;
-    }
-
-    public toJSON(): DelegatedSignedTransactionRequestJSON {
-        return {
-            ...super.toJSON(),
-            gasPayer: this.gasPayer.toString(),
-            gasPayerSignature: this.gasPayerSignature
-        };
     }
 }
 

@@ -14,6 +14,7 @@ import {
     RLPProfiler,
     type RLPValidObject
 } from '@vcdm';
+import type { ClauseJSON } from '@thor/json'; // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 class RLPCodecTransactionRequest {
@@ -64,7 +65,7 @@ class RLPCodecTransactionRequest {
         const clauses = this.mapClauses(transactionRequest);
         return RLPCodecTransactionRequest.encodeSignedBodyField(
             {
-                ...transactionRequest.toJSON(),
+                ...RLPCodecTransactionRequest.mapToJSON(transactionRequest),
                 clauses,
                 reserved: transactionRequest.isDelegated
                     ? [Uint8Array.of(1)]
@@ -80,7 +81,7 @@ class RLPCodecTransactionRequest {
         const clauses =
             RLPCodecTransactionRequest.mapClauses(transactionRequest);
         return RLPCodecTransactionRequest.encodeUnsignedBodyField({
-            ...transactionRequest.toJSON(),
+            ...RLPCodecTransactionRequest.mapToJSON(transactionRequest),
             clauses,
             reserved: transactionRequest.isDelegated ? [Uint8Array.of(1)] : [] // encodeReservedField(tx)
         });
@@ -123,6 +124,41 @@ class RLPCodecTransactionRequest {
             }
         );
     }
+
+    private static mapToJSON(
+        transactionRequest: TransactionRequest
+    ): TransactionRequestJSON {
+        return {
+            blockRef: transactionRequest.blockRef.toString(),
+            chainTag: transactionRequest.chainTag,
+            clauses: transactionRequest.clauses.map((clause) =>
+                clause.toJSON()
+            ),
+            dependsOn:
+                transactionRequest.dependsOn !== null
+                    ? transactionRequest.dependsOn.toString()
+                    : null,
+            expiration: transactionRequest.expiration,
+            gas: transactionRequest.gas,
+            gasPriceCoef: transactionRequest.gasPriceCoef,
+            nonce: transactionRequest.nonce
+        } satisfies TransactionRequestJSON;
+    }
+}
+
+interface TransactionRequestJSON {
+    blockRef: string;
+    chainTag: number;
+    clauses: ClauseJSON[];
+    dependsOn: string | null;
+    expiration: number;
+    gas: bigint;
+    gasPriceCoef: bigint;
+    nonce: number;
+    reserved?: {
+        features?: number;
+        unused?: Uint8Array[];
+    };
 }
 
 export { RLPCodecTransactionRequest };

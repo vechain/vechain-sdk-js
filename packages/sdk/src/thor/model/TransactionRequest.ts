@@ -1,6 +1,5 @@
 import { type Clause } from '@thor';
 import { type Hex } from '@vcdm';
-import { type TransactionRequestJSON } from '@thor/json/';
 
 class TransactionRequest {
     public readonly blockRef: Hex; // RLP 2
@@ -34,20 +33,6 @@ class TransactionRequest {
         this.gasPriceCoef = gasPriceCoef;
         this.nonce = nonce;
         this.isDelegated = isDelegated;
-    }
-
-    toJSON(): TransactionRequestJSON {
-        return {
-            blockRef: this.blockRef.toString(),
-            chainTag: this.chainTag,
-            clauses: this.clauses.map((clause) => clause.toJSON()),
-            dependsOn:
-                this.dependsOn !== null ? this.dependsOn.toString() : null,
-            expiration: this.expiration,
-            gas: this.gas,
-            gasPriceCoef: this.gasPriceCoef,
-            nonce: this.nonce
-        } satisfies TransactionRequestJSON;
     }
 
     public isSigned(): boolean {

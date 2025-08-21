@@ -6,11 +6,11 @@ import {
     PrivateKeySigner,
     RLPCodecTransactionRequest,
     type Signer,
+    Transaction,
     type TransactionBody,
     TransactionRequest
 } from '@thor';
-import { BlockRef, HexUInt } from '@vcdm';
-import { Address, Transaction } from '@vechain/sdk';
+import { Address, BlockRef, HexUInt } from '@vcdm';
 import { SOLO_NETWORK } from '@utils';
 import { TEST_ACCOUNTS } from '../../fixture';
 
@@ -184,12 +184,10 @@ describe('RLPCodecTransactionRequest UNIT tests', () => {
                 }
             };
             const expected = Transaction.of(txBody).encode(false);
-            // console.log(Hex.of(expected).toString());
             const actual =
                 RLPCodecTransactionRequest.encodeTransactionRequest(
                     transactionRequest
                 );
-            // console.log(Hex.of(actual).toString());
             expect(actual).toEqual(expected);
         });
     });
