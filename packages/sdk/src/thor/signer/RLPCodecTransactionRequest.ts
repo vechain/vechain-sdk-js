@@ -14,7 +14,6 @@ import {
     RLPProfiler,
     type RLPValidObject
 } from '@vcdm';
-import type { ClauseJSON } from '@thor/json'; // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 class RLPCodecTransactionRequest {
@@ -62,11 +61,9 @@ class RLPCodecTransactionRequest {
     public static encodeSignedTransactionRequest(
         transactionRequest: SignedTransactionRequest
     ): Uint8Array {
-        const clauses = this.mapClauses(transactionRequest);
         return RLPCodecTransactionRequest.encodeSignedBodyField(
             {
-                ...RLPCodecTransactionRequest.mapToJSON(transactionRequest),
-                clauses,
+                ...RLPCodecTransactionRequest.mapBody(transactionRequest),
                 reserved: transactionRequest.isDelegated
                     ? [Uint8Array.of(1)]
                     : [] // encodeReservedField(tx)
@@ -78,11 +75,8 @@ class RLPCodecTransactionRequest {
     public static encodeTransactionRequest(
         transactionRequest: TransactionRequest
     ): Uint8Array {
-        const clauses =
-            RLPCodecTransactionRequest.mapClauses(transactionRequest);
         return RLPCodecTransactionRequest.encodeUnsignedBodyField({
-            ...RLPCodecTransactionRequest.mapToJSON(transactionRequest),
-            clauses,
+            ...RLPCodecTransactionRequest.mapBody(transactionRequest),
             reserved: transactionRequest.isDelegated ? [Uint8Array.of(1)] : [] // encodeReservedField(tx)
         });
     }
@@ -107,6 +101,24 @@ class RLPCodecTransactionRequest {
         ).encoded;
     }
 
+    private static mapBody(
+        transactionRequest: TransactionRequest
+    ): TransactionRequestJSON {
+        return {
+            blockRef: transactionRequest.blockRef.toString(),
+            chainTag: transactionRequest.chainTag,
+            clauses: RLPCodecTransactionRequest.mapClauses(transactionRequest),
+            dependsOn:
+                transactionRequest.dependsOn !== null
+                    ? transactionRequest.dependsOn.toString()
+                    : null,
+            expiration: transactionRequest.expiration,
+            gas: transactionRequest.gas,
+            gasPriceCoef: transactionRequest.gasPriceCoef,
+            nonce: transactionRequest.nonce
+        } satisfies TransactionRequestJSON;
+    }
+
     private static mapClauses(transactionRequest: TransactionRequest): Array<{
         to: string | null;
         value: bigint;
@@ -124,32 +136,16 @@ class RLPCodecTransactionRequest {
             }
         );
     }
-
-    private static mapToJSON(
-        transactionRequest: TransactionRequest
-    ): TransactionRequestJSON {
-        return {
-            blockRef: transactionRequest.blockRef.toString(),
-            chainTag: transactionRequest.chainTag,
-            clauses: transactionRequest.clauses.map((clause) =>
-                clause.toJSON()
-            ),
-            dependsOn:
-                transactionRequest.dependsOn !== null
-                    ? transactionRequest.dependsOn.toString()
-                    : null,
-            expiration: transactionRequest.expiration,
-            gas: transactionRequest.gas,
-            gasPriceCoef: transactionRequest.gasPriceCoef,
-            nonce: transactionRequest.nonce
-        } satisfies TransactionRequestJSON;
-    }
 }
 
 interface TransactionRequestJSON {
     blockRef: string;
     chainTag: number;
-    clauses: ClauseJSON[];
+    clauses: Array<{
+        to: string | null;
+        value: bigint;
+        data: string;
+    }>;
     dependsOn: string | null;
     expiration: number;
     gas: bigint;
