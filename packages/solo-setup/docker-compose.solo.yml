@@ -1,6 +1,6 @@
 services:
   thor-solo:
-    image: ghcr.io/vechain/thor:release-galactica-latest
+    image: vechain/thor:latest
     container_name: thor-solo
     user: root
     ports:

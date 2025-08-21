@@ -44,13 +44,10 @@
     "solo-down": "make solo-down",
     "solo-seed": "yarn build && yarn deploy-solo"
   },
-  "peerDependencies": {
-    "@vechain/sdk": "*",
-    "@vechain/sdk-hardhat-plugin": "*"
-  },
   "dependencies": {
-    "@vechain/sdk-hardhat-plugin": "^1.2.0-rc.2",
-    "hardhat": "^2.22.15"
+    "@vechain/sdk-hardhat-plugin": "^2.0.4",
+    "hardhat": "^2.22.15",
+    "@vechain/sdk-network": "^2.0.4"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-ethers": "^3.0.8",
