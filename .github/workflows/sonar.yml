@@ -36,6 +36,18 @@ jobs:
           name: coverage-browser
           path: coverage/browser
 
+      - name: Download testnet coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-testnet
+          path: coverage/testnet
+
+      - name: Download mainnet coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-mainnet
+          path: coverage/mainnet
+
       - name: SonarCloud Scan
         id: sonarcloud-scan
         uses: SonarSource/sonarqube-scan-action@v5.0.0
