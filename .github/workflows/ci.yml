@@ -134,8 +134,8 @@ jobs:
           yarn start-thor-solo
           yarn seed-thor-solo
 
-      - name: Integration tests
-        run: yarn test:integration
+      - name: Integration tests (solo only)
+        run: yarn test:solo:only
 
       - name: Stop Thor solo node
         if: always()
@@ -147,7 +147,7 @@ jobs:
         with:
           name: coverage-integration
           path: |
-            packages/**/coverageIntegration/lcov.info
+            packages/**/coverageSolo/lcov.info
 
   tests_clients:
     name: Tests • Clients (Thor Solo)
@@ -245,6 +245,45 @@ jobs:
           name: coverage-browser
           path: |
             packages/**/coverage/lcov.info
+
+  tag_build:
+    name: Build Number Tagging
+    runs-on: ubuntu-latest
+    needs: [tests_unit, tests_integration, tests_clients, tests_browser]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create and push build tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          TAG="build-${GITHUB_RUN_NUMBER}"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists, skipping"; exit 0;
+          fi
+          git tag -a "$TAG" -m "CI build $TAG"
+          git push origin "$TAG"
+
+            }
+      - name: Post success to Slack
+        if: success()
+        uses: slackapi/slack-github-action@v2.0.0
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: webhook-trigger
+          payload: |
+            {
+              "source": "GitHub",
+              "repo": "${{ github.repository }}",
+              "branch": "${{ github.head_ref || github.ref_name }}",
+              "message": "CI-V3 passed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }
 
   sonar:
     name: SonarCloud

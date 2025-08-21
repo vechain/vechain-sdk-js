@@ -21,6 +21,18 @@
             "outputs": ["coverage/**"],
             "dependsOn": ["^build"]
         },
+        "test:solo:only": {
+            "outputs": ["coverage/**"],
+            "dependsOn": ["^build"]
+        },
+        "test:testnet": {
+            "outputs": ["coverage/**"],
+            "dependsOn": ["^build"]
+        },
+        "test:mainnet": {
+            "outputs": ["coverage/**"],
+            "dependsOn": ["^build"]
+        },
         "lint": {
             "dependsOn": ["^build"]
         },
