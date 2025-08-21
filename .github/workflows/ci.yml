@@ -142,9 +142,11 @@ jobs:
         run: yarn stop-thor-solo || true
 
       - name: Integration tests (testnet)
+        if: ${{ always() }}
         run: yarn test:testnet
 
       - name: Integration tests (mainnet)
+        if: ${{ always() }}
         run: yarn test:mainnet
 
       - name: Archive coverage (integration)
@@ -217,9 +219,11 @@ jobs:
         run: yarn stop-thor-solo || true
 
       - name: Clients tests (testnet)
+        if: ${{ always() }}
         run: yarn test:testnet
 
       - name: Clients tests (mainnet)
+        if: ${{ always() }}
         run: yarn test:mainnet
 
       - name: Archive coverage (clients)
