@@ -3,7 +3,7 @@ import {
     FilterOptionsRequest,
     FilterRangeRequest,
     type LogSort
-} from '@thor';
+} from '@thor/logs/response';
 import { type EventLogFilterRequestJSON } from '@thor/json';
 import { IllegalArgumentError } from '@errors';
 import { type EventLogFilter } from '@thor/thor-client/model/logs/EventLogFilter';
