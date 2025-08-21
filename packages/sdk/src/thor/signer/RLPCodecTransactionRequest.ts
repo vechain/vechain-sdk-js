@@ -17,11 +17,6 @@ import {
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 class RLPCodecTransactionRequest {
-    private static readonly RLP_FEATURES = {
-        name: 'reserved.features',
-        kind: new NumericKind(4)
-    };
-
     private static readonly RLP_FIELDS = [
         { name: 'chainTag', kind: new NumericKind(1) },
         { name: 'blockRef', kind: new CompactFixedHexBlobKind(8) },
@@ -66,21 +61,7 @@ class RLPCodecTransactionRequest {
     public static encodeSignedTransactionRequest(
         transactionRequest: SignedTransactionRequest
     ): Uint8Array {
-        const clauses: Array<{
-            to: string | null;
-            value: bigint;
-            data: string;
-        }> = transactionRequest.clauses.map(
-            (
-                clause: Clause
-            ): { to: string | null; value: bigint; data: string } => {
-                return {
-                    to: clause.to?.toString() ?? null,
-                    value: clause.value,
-                    data: clause.data?.toString() ?? Hex.PREFIX
-                };
-            }
-        );
+        const clauses = this.mapClauses(transactionRequest);
         return RLPCodecTransactionRequest.encodeSignedBodyField(
             {
                 ...transactionRequest.toJSON(),
@@ -96,21 +77,8 @@ class RLPCodecTransactionRequest {
     public static encodeTransactionRequest(
         transactionRequest: TransactionRequest
     ): Uint8Array {
-        const clauses: Array<{
-            to: string | null;
-            value: bigint;
-            data: string;
-        }> = transactionRequest.clauses.map(
-            (
-                clause: Clause
-            ): { to: string | null; value: bigint; data: string } => {
-                return {
-                    to: clause.to?.toString() ?? null,
-                    value: clause.value,
-                    data: clause.data?.toString() ?? Hex.PREFIX
-                };
-            }
-        );
+        const clauses =
+            RLPCodecTransactionRequest.mapClauses(transactionRequest);
         return RLPCodecTransactionRequest.encodeUnsignedBodyField({
             ...transactionRequest.toJSON(),
             clauses,
@@ -136,6 +104,24 @@ class RLPCodecTransactionRequest {
             body,
             RLPCodecTransactionRequest.RLP_UNSIGNED_TRANSACTION_PROFILE
         ).encoded;
+    }
+
+    private static mapClauses(transactionRequest: TransactionRequest): Array<{
+        to: string | null;
+        value: bigint;
+        data: string;
+    }> {
+        return transactionRequest.clauses.map(
+            (
+                clause: Clause
+            ): { to: string | null; value: bigint; data: string } => {
+                return {
+                    to: clause.to?.toString() ?? null,
+                    value: clause.value,
+                    data: clause.data?.toString() ?? Hex.PREFIX
+                };
+            }
+        );
     }
 }
 
