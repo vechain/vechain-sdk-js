@@ -141,6 +141,12 @@ jobs:
         if: always()
         run: yarn stop-thor-solo || true
 
+      - name: Integration tests (testnet)
+        run: yarn test:testnet
+
+      - name: Integration tests (mainnet)
+        run: yarn test:mainnet
+
       - name: Archive coverage (integration)
         if: always()
         uses: actions/upload-artifact@v4
@@ -148,6 +154,22 @@ jobs:
           name: coverage-integration
           path: |
             packages/**/coverageSolo/lcov.info
+
+      - name: Archive coverage (testnet)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-testnet
+          path: |
+            packages/**/coverageTestnet/lcov.info
+
+      - name: Archive coverage (mainnet)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-mainnet
+          path: |
+            packages/**/coverageMainnet/lcov.info
 
   tests_clients:
     name: Tests • Clients (Thor Solo)
@@ -193,6 +215,12 @@ jobs:
       - name: Stop Thor solo node
         if: always()
         run: yarn stop-thor-solo || true
+
+      - name: Clients tests (testnet)
+        run: yarn test:testnet
+
+      - name: Clients tests (mainnet)
+        run: yarn test:mainnet
 
       - name: Archive coverage (clients)
         if: always()
