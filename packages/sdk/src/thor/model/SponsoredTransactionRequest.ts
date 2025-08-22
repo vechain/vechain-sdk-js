@@ -48,7 +48,7 @@ class SponsoredTransactionRequest
     public constructor(params: SponsoredTransactionRequestParams) {
         super(params);
         this.gasPayer = params.gasPayer;
-        this.gasPayerSignature = params.gasPayerSignature;
+        this.gasPayerSignature = new Uint8Array(params.gasPayerSignature);
     }
 }
 

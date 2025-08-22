@@ -17,7 +17,27 @@ import {
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 class RLPCodec {
-    private static readonly RLP_FIELDS = [
+    /**
+     * RLP_FIELDS is an array of objects that defines the structure and encoding scheme
+     * for various components in a transaction using Recursive Length Prefix (RLP) encoding.
+     * Each object in the array represents a field in the transaction, specifying its name and kind.
+     * The `kind` attribute is an instance of an RLP coder that determines how the field is encoded.
+     *
+     * Properties
+     * - `chainTag` - Represent the id of the chain the transaction is sent to.
+     * - `blockRef` - Represent the last block of the chain the transaction is sent to.
+     * - `expiration` -  Represent the expiration date of the transaction.
+     * - `clauses` - List of clause objects, each containing:
+     *   - `to` - Represent the destination of the transaction.
+     *   - `value` - Represent the 'wei' quantity (VET or VTHO) value the transaction is worth.
+     *   - `data` - Represent the content of the transaction.
+     * - `gasPriceCoef` - Represent the gas price coefficient of the transaction.
+     * - `gas` - Represent the gas limit of the transaction.
+     * - `dependsOn` - Represent the hash of the transaction the current transaction depends on.
+     * - `nonce` - Represent the nonce of the transaction.
+     * - `reserved` -  Reserved field.
+     */
+    public static readonly RLP_FIELDS = [
         { name: 'chainTag', kind: new NumericKind(1) },
         { name: 'blockRef', kind: new CompactFixedHexBlobKind(8) },
         { name: 'expiration', kind: new NumericKind(4) },
@@ -41,21 +61,48 @@ class RLPCodec {
         { name: 'reserved', kind: { item: new BufferKind() } }
     ];
 
-    private static readonly RLP_SIGNATURE = {
+    /**
+     * Represents a Recursive Length Prefix (RLP) of the transaction signature.
+     *
+     * Properties
+     * - `name` - A string indicating the name of the field in the RLP structure.
+     * - `kind` - RLP profile type.
+     */
+    public static readonly RLP_SIGNATURE = {
         name: 'signature',
         kind: new BufferKind()
     };
 
-    private static readonly RLP_SIGNED_TRANSACTION_PROFILE: RLPProfile = {
+    /**
+     * Represents a Recursive Length Prefix (RLP) of the signed transaction.
+     *
+     * Properties
+     * - `name` - A string indicating the name of the field in the RLP structure.
+     * - `kind` - RLP profile type.
+     */
+    public static readonly RLP_SIGNED_TRANSACTION_PROFILE: RLPProfile = {
         name: 'tx',
         kind: RLPCodec.RLP_FIELDS.concat([RLPCodec.RLP_SIGNATURE])
     };
 
-    private static readonly RLP_UNSIGNED_TRANSACTION_PROFILE: RLPProfile = {
+    /**
+     * Represents a Recursive Length Prefix (RLP) of the unsigned transaction.
+     *
+     * Properties
+     * - `name` - A string indicating the name of the field in the RLP structure.
+     * - `kind` - RLP profile type.
+     */
+    public static readonly RLP_UNSIGNED_TRANSACTION_PROFILE: RLPProfile = {
         name: 'tx',
         kind: RLPCodec.RLP_FIELDS
     };
 
+    /**
+     * Encodes a signed transaction request into a Uint8Array format.
+     *
+     * @param {SignedTransactionRequest} transactionRequest - The signed transaction request object containing transaction details.
+     * @return {Uint8Array} The encoded transaction request as a Uint8Array.
+     */
     public static encodeSignedTransactionRequest(
         transactionRequest: SignedTransactionRequest
     ): Uint8Array {
@@ -70,6 +117,12 @@ class RLPCodec {
         );
     }
 
+    /**
+     * Encodes a transaction request object into a Uint8Array using RLP encoding.
+     *
+     * @param {TransactionRequest} transactionRequest - The transaction request object to encode.
+     * @return {Uint8Array} The encoded transaction request as a byte array.
+     */
     public static encodeTransactionRequest(
         transactionRequest: TransactionRequest
     ): Uint8Array {
@@ -79,6 +132,13 @@ class RLPCodec {
         });
     }
 
+    /**
+     * Encodes the given object with a signature into a single Uint8Array using RLP encoding.
+     *
+     * @param {RLPValidObject} body - The main object to be encoded. This should be a valid RLP object.
+     * @param {Uint8Array} signature - The signature to be included in the encoded result.
+     * @return {Uint8Array} The encoded Uint8Array representation of the object and signature.
+     */
     private static encodeSignedBodyField(
         body: RLPValidObject,
         signature: Uint8Array
@@ -92,6 +152,12 @@ class RLPCodec {
         ).encoded;
     }
 
+    /**
+     * Encodes an unsigned body field into a Uint8Array using RLP (Recursive Length Prefix) encoding.
+     *
+     * @param {RLPValidObject} body - The object representing the body field to be encoded.
+     * @return {Uint8Array} The encoded unsigned body field as a Uint8Array.
+     */
     private static encodeUnsignedBodyField(body: RLPValidObject): Uint8Array {
         return RLPProfiler.ofObject(
             body,
@@ -99,6 +165,12 @@ class RLPCodec {
         ).encoded;
     }
 
+    /**
+     * Transforms a `TransactionRequest` object into a `TransactionRequestJSON` object.
+     *
+     * @param transactionRequest The `TransactionRequest` object to be transformed.
+     * @return The transformed `TransactionRequestJSON` object.
+     */
     private static mapBody(
         transactionRequest: TransactionRequest
     ): TransactionRequestJSON {
@@ -117,6 +189,12 @@ class RLPCodec {
         } satisfies TransactionRequestJSON;
     }
 
+    /**
+     * Transforms the clauses in a transaction request into an array of mapped objects.
+     *
+     * @param {TransactionRequest} transactionRequest - The transaction request containing clauses to be mapped.
+     * @return {Array<{to: string | null, value: bigint, data: string}>} An array of mapped clause objects containing properties: `to`, `value`, and `data`.
+     */
     private static mapClauses(transactionRequest: TransactionRequest): Array<{
         to: string | null;
         value: bigint;
@@ -136,6 +214,13 @@ class RLPCodec {
     }
 }
 
+/**
+ * Represents the structure of a transaction request in JSON format
+ * to be encoded according RLP rules.
+ *
+ * @remark This interface is only used internally in {@link RLPCodec} methods.
+ * Not to be exported.
+ */
 interface TransactionRequestJSON {
     blockRef: string;
     chainTag: number;

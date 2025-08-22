@@ -113,20 +113,28 @@ class TransactionRequest implements TransactionRequestParam {
      * @param {number} params.gas - The gas limit for the transaction.
      * @param {number} params.gasPriceCoef - Coefficient for the gas price.
      * @param {string} params.nonce - Unique value to ensure transaction uniqueness.
-     * @param {boolean} params.isSponsored - Indicates if the transaction is sponsored.
-     *
-     * @return {void} This constructor does not return a value.
+     * @param {boolean} params.isSponsored - Indicates if the transaction is sponsored, `false` by default.
      */
-    public constructor(params: TransactionRequestParam) {
-        this.blockRef = params.blockRef;
-        this.chainTag = params.chainTag;
-        this.clauses = params.clauses;
-        this.dependsOn = params.dependsOn;
-        this.expiration = params.expiration;
-        this.gas = params.gas;
-        this.gasPriceCoef = params.gasPriceCoef;
-        this.nonce = params.nonce;
-        this.isSponsored = params.isSponsored ?? false;
+    public constructor({
+        blockRef,
+        chainTag,
+        clauses,
+        dependsOn,
+        expiration,
+        gas,
+        gasPriceCoef,
+        nonce,
+        isSponsored = false
+    }: TransactionRequestParam) {
+        this.blockRef = blockRef;
+        this.chainTag = chainTag;
+        this.clauses = clauses;
+        this.dependsOn = dependsOn;
+        this.expiration = expiration;
+        this.gas = gas;
+        this.gasPriceCoef = gasPriceCoef;
+        this.nonce = nonce;
+        this.isSponsored = isSponsored;
     }
 
     /**
