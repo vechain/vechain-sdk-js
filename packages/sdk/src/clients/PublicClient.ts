@@ -1,4 +1,4 @@
-import { type Address, type Hex, Revision } from '@vcdm';
+import { Address, Hex, Revision } from '@vcdm';
 import { type HttpClient, FetchHttpClient } from '@http';
 import {
     type BeatsSubscription,

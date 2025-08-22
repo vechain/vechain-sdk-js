@@ -1,4 +1,3 @@
-import { UInt } from '@vcdm';
 import { type FilterRangeUnits } from '@thor';
 import { type FilterRangeJSON } from '@thor/json';
 import { IllegalArgumentError } from '@errors';
