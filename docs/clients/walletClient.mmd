@@ -1,0 +1,54 @@
+---
+title: walletClient
+---
+classDiagram
+    class Clause {
+        Address|null to
+        bigint value
+        Hex|null data
+        Txt|null comment
+        Hex|null abi
+        Clause of(ClauseJSON: json)$
+        ClauseJSON toJSON()
+    }
+    namespace publicClient {
+        class PublicClient {
+        }
+        class PublicClientConfig {
+        }
+    }
+    class PrepareTransactionRequestRequest {
+        <<interface>>
+    %% Clause as Viem is optional: this section section will be merged in TransactionRequest.clauses
+        Hex|null abi
+        Txt|null comment
+        Hex|null data
+        Address|null to
+        bigint|null value
+    %% Clause array is optional, it will be merged in TransactionRequest.clauses
+        Clause[]|null clauses
+    %% Viem transaction body
+        blockRef: Hex;
+        chainTag: number;
+        dependsOn?: Hex;
+        expiration: number;
+        gas: Hex | number;
+        gasPriceCoef: number;
+        nonce: number;
+    }
+    class WalletClient {
+        Address[] getAddress()
+        WalletClient createWalletClient(WalletClientConfig: config)$
+        TransactionRequest prepareTransactionRequest(PrepareTransactionRequestRequest request)
+        Hex sendRawTransaction(Hex raw)
+        Hex sendTransaction(TransactionRequest request)
+        Hex sendTransaction(SignedTransactionRequest request)
+        Hex signTransaction(TransactionRequest: tx)
+        Hex signTransaction(SignedTransactionRequest: tx)
+    }
+    class WalletClientConfig {
+        Account: account
+    }
+    Clause *-- PrepareTransactionRequestRequest
+    PublicClient <|-- WalletClient
+    PublicClientConfig <|-- WalletClientConfig
