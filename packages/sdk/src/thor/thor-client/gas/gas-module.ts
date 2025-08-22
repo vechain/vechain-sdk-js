@@ -33,7 +33,6 @@ class GasModule extends AbstractThorModule {
 
     /**
      * Estimates the gas required for executing the given request.
-     * This method follows the same pattern as PublicClient.estimateGas.
      *
      * @param request - The execute codes request containing transaction details.
      * @returns The execution response containing gas usage and other details.
