@@ -8,6 +8,7 @@ import {
 } from '@errors';
 import { randomBytes as nh_randomBytes } from '@noble/hashes/utils';
 import { secp256k1 as nc_secp256k1 } from '@noble/curves/secp256k1';
+import { getFq, Trace } from '@utils/trace';
 
 /**
  * Full Qualified Path
@@ -65,7 +66,10 @@ class Secp256k1 {
      *
      * @see Secp256k1.inflatePublicKey
      */
+    @Trace(__filename)
     public static compressPublicKey(publicKey: Uint8Array): Uint8Array {
+        const fq = getFq(this, 'compressPublicKey');
+        console.log(`fq: ${fq}`);
         const prefix = publicKey.at(0);
         if (prefix === Secp256k1.UNCOMPRESSED_PREFIX) {
             // To compress.
