@@ -1,4 +1,5 @@
 export const TRACE_FQ = Symbol('sdk:trace:fq');
+export const TRACE_CURRENT = Symbol('sdk:trace:current');
 
 export function Trace(modulePath: string) {
     const resolvedModulePath = modulePath;
@@ -14,14 +15,25 @@ export function Trace(modulePath: string) {
 
             const store = (this as any)[TRACE_FQ] ?? ((this as any)[TRACE_FQ] = {});
             store[methodName] = fq;
-            return original.apply(this, args);
+            
+            // Set current method context
+            const previousCurrent = (this as any)[TRACE_CURRENT];
+            (this as any)[TRACE_CURRENT] = fq;
+            
+            try {
+                return original.apply(this, args);
+            } finally {
+                // Restore previous context
+                (this as any)[TRACE_CURRENT] = previousCurrent;
+            }
         };
         return descriptor;
     };
 }
 
-export function getFq(thisArg: any, methodName: string): string | undefined {
-    return thisArg?.[TRACE_FQ]?.[methodName];
+export function getFqp(thisArg: any): string {
+    // Simply return the current execution context set by the decorator
+    return thisArg?.[TRACE_CURRENT] ?? '';
 }
 
 
