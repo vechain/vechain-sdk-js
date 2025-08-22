@@ -18,19 +18,6 @@ describe('NodesModule', () => {
             
             expect(connectedPeers).toBeDefined();
             expect(Array.isArray(connectedPeers)).toBe(true);
-            // Solo network might not have peers, so we just check it's an array
-            // If there are peers, verify their structure
-            if (connectedPeers.length > 0) {
-                const peer = connectedPeers[0];
-                expect(peer.name).toBeDefined();
-                expect(peer.bestBlockID).toBeDefined();
-                expect(peer.totalScore).toBeDefined();
-                expect(peer.peerID).toBeDefined();
-                expect(peer.netAddr).toBeDefined();
-                expect(typeof peer.inbound).toBe('boolean');
-                expect(typeof peer.duration).toBe('number');
-                expect(typeof peer.totalScore).toBe('number');
-            }
         });
 
         test('should return empty array when no peers are connected', async () => {
@@ -40,9 +27,10 @@ describe('NodesModule', () => {
             
             const connectedPeers = await thorClient.nodes.getNodes();
             
-            // Solo network typically has no peers, so we expect empty array or peers
+            // Solo network run with solo-setup shouldn't have any peers,
+            // so we expect empty array or peers
             expect(Array.isArray(connectedPeers)).toBe(true);
-            expect(connectedPeers.length).toBeGreaterThanOrEqual(0);
+            expect(connectedPeers.length).toBe(0);
         });
     });
 
