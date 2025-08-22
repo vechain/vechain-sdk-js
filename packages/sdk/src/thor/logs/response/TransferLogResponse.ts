@@ -1,5 +1,4 @@
 import { Address, HexUInt, Quantity } from '@vcdm';
-import { LogMeta } from '@thor/thor-client/model/logs/LogMeta';
 import { LogMetaResponse } from './LogMetaResponse';
 import { type TransferLogResponseJSON } from '@thor/json';
 import { IllegalArgumentError } from '@errors';
@@ -31,7 +30,7 @@ class TransferLogResponse {
     /**
      * The event or transfer log metadata such as block number, block timestamp, etc.
      */
-    readonly meta: LogMeta;
+    readonly meta: LogMetaResponse;
 
     /**
      * Constructs an instance of the trasfer logs response as a JSON object.
@@ -44,7 +43,7 @@ class TransferLogResponse {
         try {
             this.sender = Address.of(json.sender);
             this.recipient = Address.of(json.recipient);
-            this.meta = new LogMeta(new LogMetaResponse(json.meta));
+            this.meta = new LogMetaResponse(json.meta);
             this.amount = HexUInt.of(json.amount).bi;
         } catch (error) {
             throw new IllegalArgumentError(

@@ -73,7 +73,9 @@ describe('AccountsModule', () => {
             const soloConfig = getConfigData();
             const storage = await thorClient.accounts.getStorageAt(
                 Address.of(soloConfig.TEST_TOKEN_ADDRESS),
-                Hex.of('0x0')
+                Hex.of(
+                    '0x0000000000000000000000000000000000000000000000000000000000000001'
+                )
             );
             expect(storage).toBeDefined();
             expect(storage.toString().length).toBeGreaterThan(0);
@@ -85,7 +87,9 @@ describe('AccountsModule', () => {
             const soloConfig = getConfigData();
             const storage = await thorClient.accounts.getStorageAt(
                 Address.of(soloConfig.TEST_TOKEN_ADDRESS),
-                Hex.of('0x0'),
+                Hex.of(
+                    '0x0000000000000000000000000000000000000000000000000000000000000001'
+                ),
                 Revision.BEST
             );
             expect(storage).toBeDefined();

@@ -8,12 +8,9 @@ import { type Address, Hex } from '@vcdm';
 import { type PublicClient } from './PublicClient';
 import { type WalletClient } from './WalletClient';
 import { type ExecuteCodesRequestJSON } from '@json';
-import {
-    type EventLogResponse,
-    EventLogResponse as EventLogResponseClass
-} from '@thor/logs/response';
 import { type SubscriptionEventResponse } from '@thor/subscriptions/response';
 import { type ExecuteCodesResponse } from '@thor/accounts/response';
+import { type DecodedEventLog } from '@thor/thor-client/model/logs/DecodedEventLog';
 
 // Type alias for hex-convertible values
 type HexConvertible = string | number | bigint;
@@ -92,14 +89,14 @@ export interface Contract<TAbi extends Abi> {
             /** Get historical event logs */
             getLogs: (options?: {
                 args?: FunctionArgs;
-                fromBlock?: string | number;
-                toBlock?: string | number;
-            }) => Promise<EventLogResponse[]>;
+                fromBlock?: bigint;
+                toBlock?: bigint;
+            }) => Promise<DecodedEventLog[]>;
             /** Create event filter */
             createEventFilter: (options?: {
                 args?: FunctionArgs;
-                fromBlock?: string | number;
-                toBlock?: string | number;
+                fromBlock?: bigint;
+                toBlock?: bigint;
             }) => unknown; // EventFilter type
         }
     >;
@@ -175,14 +172,14 @@ function getContract<const TAbi extends Abi>({
             }) => () => void;
             getLogs: (options?: {
                 args?: FunctionArgs;
-                fromBlock?: string | number;
-                toBlock?: string | number;
-            }) => Promise<EventLogResponse[]>;
+                fromBlock?: bigint;
+                toBlock?: bigint;
+            }) => Promise<DecodedEventLog[]>;
             createEventFilter: (options?: {
                 args?: FunctionArgs;
-                fromBlock?: string | number;
-                toBlock?: string | number;
-            }) => unknown;
+                fromBlock?: bigint;
+                toBlock?: bigint;
+            }) => unknown; // EventFilter type
         }
     > = {};
 
@@ -407,71 +404,27 @@ function getContract<const TAbi extends Abi>({
                 // Get historical event logs
                 getLogs: async (options = {}) => {
                     const { args, fromBlock, toBlock } = options;
-
-                    // Create event filter using PublicClient's createEventFilter
-                    const eventFilter = publicClient.createEventFilter({
+                    const filter = publicClient.createEventFilter({
                         address,
                         event: abiItem,
                         args: args as Hex[] | undefined,
-                        fromBlock:
-                            fromBlock !== undefined
-                                ? BigInt(fromBlock as number)
-                                : undefined,
-                        toBlock:
-                            toBlock !== undefined
-                                ? BigInt(toBlock as number)
-                                : undefined
+                        fromBlock,
+                        toBlock
                     });
-
-                    // Call PublicClient's getLogs with the event filter
-                    const decodedLogs = await publicClient.getLogs(eventFilter);
-
-                    // Convert DecodedEventLog[] to EventLogResponse[]
-                    return decodedLogs.map(
-                        (decodedLog) =>
-                            new EventLogResponseClass({
-                                address: decodedLog.eventLog.address.toString(),
-                                topics: decodedLog.eventLog.topics.map(
-                                    (topic) => topic.toString()
-                                ),
-                                data: decodedLog.eventLog.data.toString(),
-                                meta: {
-                                    blockID:
-                                        decodedLog.eventLog.meta.blockID.toString(),
-                                    blockNumber:
-                                        decodedLog.eventLog.meta.blockNumber,
-                                    blockTimestamp:
-                                        decodedLog.eventLog.meta.blockTimestamp,
-                                    txID: decodedLog.eventLog.meta.txID.toString(),
-                                    txOrigin:
-                                        decodedLog.eventLog.meta.txOrigin.toString(),
-                                    clauseIndex:
-                                        decodedLog.eventLog.meta.clauseIndex,
-                                    txIndex: decodedLog.eventLog.meta.txIndex,
-                                    logIndex: decodedLog.eventLog.meta.logIndex
-                                }
-                            })
-                    );
+                    return await publicClient.getLogs(filter);
                 },
 
                 // Create event filter - viem compatibility
                 createEventFilter: (options = {}) => {
                     const { args, fromBlock, toBlock } = options;
-
-                    // Create event filter using PublicClient
-                    return publicClient.createEventFilter({
+                    const filter = publicClient.createEventFilter({
                         address,
                         event: abiItem,
                         args: args as Hex[] | undefined,
-                        fromBlock:
-                            fromBlock !== undefined
-                                ? BigInt(fromBlock as number)
-                                : undefined,
-                        toBlock:
-                            toBlock !== undefined
-                                ? BigInt(toBlock as number)
-                                : undefined
+                        fromBlock,
+                        toBlock
                     });
+                    return filter;
                 }
             };
         }

@@ -1,6 +1,6 @@
-import { type HttpClient, type HttpPath } from '@http';
+import { type HttpQuery, type HttpClient, type HttpPath } from '@http';
 import { type Revision, type Address, type Hex } from '@vcdm';
-import { GetStorageResponse } from '../response/GetStorageResponse';
+import { GetStorageResponse } from '@thor/accounts/response/GetStorageResponse';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
 import { type GetStorageResponseJSON } from '@thor/json';
 
@@ -23,12 +23,21 @@ class RetrieveStoragePositionValue
     private readonly path: RetrieveStoragePositionValuePath;
 
     /**
+     * Represents the HTTP query for this specific API endpoint.
+     */
+    private readonly query: RetrieveStoragePositionValueQuery;
+
+    /**
      * Constructs an instance of the class with the specified HTTP path.
      *
      * @param {HttpPath} path - The HTTP path to initialize the instance with.
      */
-    protected constructor(path: RetrieveStoragePositionValuePath) {
+    protected constructor(
+        path: RetrieveStoragePositionValuePath,
+        query: RetrieveStoragePositionValueQuery
+    ) {
         this.path = path;
+        this.query = query;
     }
 
     /**
@@ -43,10 +52,11 @@ class RetrieveStoragePositionValue
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveStoragePositionValue, GetStorageResponse>> {
         const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveStoragePositionValue, GetStorageResponse>>`;
-        const response = await httpClient.get(this.path, { query: '' });
+        const response = await httpClient.get(this.path, this.query);
         if (response.ok) {
             const json = (await response.json()) as GetStorageResponseJSON;
             try {
+                console.log(`${FQP} json: ${JSON.stringify(json)}`);
                 return {
                     request: this,
                     response: new GetStorageResponse(json)
@@ -64,6 +74,9 @@ class RetrieveStoragePositionValue
                 );
             }
         }
+        console.log(
+            `${FQP} response: ${response.status}: path: ${this.path.path}: query: ${this.query.query}`
+        );
         throw new ThorError(
             fqp,
             'Bad response.',
@@ -88,7 +101,8 @@ class RetrieveStoragePositionValue
         revision?: Revision
     ): RetrieveStoragePositionValue {
         return new RetrieveStoragePositionValue(
-            new RetrieveStoragePositionValuePath(address, key, revision)
+            new RetrieveStoragePositionValuePath(address, key),
+            new RetrieveStoragePositionValueQuery(revision)
         );
     }
 }
@@ -110,20 +124,14 @@ class RetrieveStoragePositionValuePath implements HttpPath {
     readonly key: Hex;
 
     /**
-     * Represents the revision of the block.
-     */
-    readonly revision?: Revision;
-
-    /**
      * Constructs an instance of the class with the specified address and key.
      *
      * @param {Address} address - The address used to generate the storage position value's path.
      * @param {Hex} key - The key used to generate the storage position value's path.
      */
-    constructor(address: Address, key: Hex, revision?: Revision) {
+    constructor(address: Address, key: Hex) {
         this.address = address;
         this.key = key;
-        this.revision = revision;
     }
 
     /**
@@ -132,11 +140,42 @@ class RetrieveStoragePositionValuePath implements HttpPath {
      * @returns {string} The path for retrieving the value of a storage position.
      */
     get path(): string {
-        if (this.revision == null) {
-            return `/accounts/${this.address}/storage/${this.key}`;
-        }
-        return `/accounts/${this.address}/storage/${this.key}?revision=${this.revision}`;
+        return `/accounts/${this.address}/storage/${this.key}`;
     }
 }
 
-export { RetrieveStoragePositionValue, RetrieveStoragePositionValuePath };
+/**
+ * Retrieve Storage Position Value Query
+ *
+ * Represents a query for retrieving storage position value with optional revision parameter.
+ */
+class RetrieveStoragePositionValueQuery implements HttpQuery {
+    /**
+     * Represents the revision of the query.
+     */
+    private readonly revision?: Revision;
+
+    /**
+     * Constructs an instance of the class with an optional revision.
+     *
+     * @param {Revision} [revision] - The revision to be set. If not provided, no revision query parameter will be added.
+     */
+    constructor(revision?: Revision) {
+        this.revision = revision;
+    }
+
+    /**
+     * Returns the query string for the revision.
+     *
+     * @returns {string} The query string for the revision, or empty string if no revision is set.
+     */
+    get query(): string {
+        return this.revision != null ? `?revision=${this.revision}` : '';
+    }
+}
+
+export {
+    RetrieveStoragePositionValue,
+    RetrieveStoragePositionValuePath,
+    RetrieveStoragePositionValueQuery
+};
