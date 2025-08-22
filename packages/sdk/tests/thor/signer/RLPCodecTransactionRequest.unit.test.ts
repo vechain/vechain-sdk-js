@@ -4,7 +4,7 @@ import {
     Clause,
     ClauseBuilder,
     PrivateKeySigner,
-    RLPCodecTransactionRequest,
+    RLPCodec,
     type Signer,
     Transaction,
     type TransactionBody,
@@ -79,10 +79,9 @@ describe('RLPCodecTransactionRequest UNIT tests', () => {
             const sponsoredTransactionRequest = gasPayer.sign(
                 signedTransactionRequest
             );
-            const actual =
-                RLPCodecTransactionRequest.encodeSignedTransactionRequest(
-                    sponsoredTransactionRequest
-                );
+            const actual = RLPCodec.encodeSignedTransactionRequest(
+                sponsoredTransactionRequest
+            );
             expect(actual).toEqual(expected);
         });
     });
@@ -132,10 +131,9 @@ describe('RLPCodecTransactionRequest UNIT tests', () => {
                 HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
             );
             const signedTransactionRequest = signer.sign(transactionRequest);
-            const actual =
-                RLPCodecTransactionRequest.encodeSignedTransactionRequest(
-                    signedTransactionRequest
-                );
+            const actual = RLPCodec.encodeSignedTransactionRequest(
+                signedTransactionRequest
+            );
             expect(actual).toEqual(expected);
         });
     });
@@ -185,9 +183,7 @@ describe('RLPCodecTransactionRequest UNIT tests', () => {
             };
             const expected = Transaction.of(txBody).encode(false);
             const actual =
-                RLPCodecTransactionRequest.encodeTransactionRequest(
-                    transactionRequest
-                );
+                RLPCodec.encodeTransactionRequest(transactionRequest);
             expect(actual).toEqual(expected);
         });
     });
@@ -232,9 +228,7 @@ describe('RLPCodecTransactionRequest UNIT tests', () => {
             };
             const expected = Transaction.of(txBody).encode(false);
             const actual =
-                RLPCodecTransactionRequest.encodeTransactionRequest(
-                    transactionRequest
-                );
+                RLPCodec.encodeTransactionRequest(transactionRequest);
             expect(actual).toEqual(expected);
         });
     });

@@ -16,7 +16,7 @@ import {
 } from '@vcdm';
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
-class RLPCodecTransactionRequest {
+class RLPCodec {
     private static readonly RLP_FIELDS = [
         { name: 'chainTag', kind: new NumericKind(1) },
         { name: 'blockRef', kind: new CompactFixedHexBlobKind(8) },
@@ -48,22 +48,20 @@ class RLPCodecTransactionRequest {
 
     private static readonly RLP_SIGNED_TRANSACTION_PROFILE: RLPProfile = {
         name: 'tx',
-        kind: RLPCodecTransactionRequest.RLP_FIELDS.concat([
-            RLPCodecTransactionRequest.RLP_SIGNATURE
-        ])
+        kind: RLPCodec.RLP_FIELDS.concat([RLPCodec.RLP_SIGNATURE])
     };
 
     private static readonly RLP_UNSIGNED_TRANSACTION_PROFILE: RLPProfile = {
         name: 'tx',
-        kind: RLPCodecTransactionRequest.RLP_FIELDS
+        kind: RLPCodec.RLP_FIELDS
     };
 
     public static encodeSignedTransactionRequest(
         transactionRequest: SignedTransactionRequest
     ): Uint8Array {
-        return RLPCodecTransactionRequest.encodeSignedBodyField(
+        return RLPCodec.encodeSignedBodyField(
             {
-                ...RLPCodecTransactionRequest.mapBody(transactionRequest),
+                ...RLPCodec.mapBody(transactionRequest),
                 reserved: transactionRequest.isSponsored
                     ? [Uint8Array.of(1)]
                     : [] // encodeReservedField(tx)
@@ -75,8 +73,8 @@ class RLPCodecTransactionRequest {
     public static encodeTransactionRequest(
         transactionRequest: TransactionRequest
     ): Uint8Array {
-        return RLPCodecTransactionRequest.encodeUnsignedBodyField({
-            ...RLPCodecTransactionRequest.mapBody(transactionRequest),
+        return RLPCodec.encodeUnsignedBodyField({
+            ...RLPCodec.mapBody(transactionRequest),
             reserved: transactionRequest.isSponsored ? [Uint8Array.of(1)] : [] // encodeReservedField(tx)
         });
     }
@@ -90,14 +88,14 @@ class RLPCodecTransactionRequest {
                 ...body,
                 signature
             },
-            RLPCodecTransactionRequest.RLP_SIGNED_TRANSACTION_PROFILE
+            RLPCodec.RLP_SIGNED_TRANSACTION_PROFILE
         ).encoded;
     }
 
     private static encodeUnsignedBodyField(body: RLPValidObject): Uint8Array {
         return RLPProfiler.ofObject(
             body,
-            RLPCodecTransactionRequest.RLP_UNSIGNED_TRANSACTION_PROFILE
+            RLPCodec.RLP_UNSIGNED_TRANSACTION_PROFILE
         ).encoded;
     }
 
@@ -107,7 +105,7 @@ class RLPCodecTransactionRequest {
         return {
             blockRef: transactionRequest.blockRef.toString(),
             chainTag: transactionRequest.chainTag,
-            clauses: RLPCodecTransactionRequest.mapClauses(transactionRequest),
+            clauses: RLPCodec.mapClauses(transactionRequest),
             dependsOn:
                 transactionRequest.dependsOn !== null
                     ? transactionRequest.dependsOn.toString()
@@ -157,4 +155,4 @@ interface TransactionRequestJSON {
     };
 }
 
-export { RLPCodecTransactionRequest };
+export { RLPCodec };
