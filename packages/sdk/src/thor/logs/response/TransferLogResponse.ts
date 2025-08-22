@@ -1,7 +1,7 @@
 import { Address, HexUInt, Quantity } from '@vcdm';
-import { LogMetaResponse } from './LogMetaResponse';
 import { type TransferLogResponseJSON } from '@thor/json';
 import { IllegalArgumentError } from '@errors';
+import { LogMetaResponse } from './LogMetaResponse';
 
 /**
  * Full-Qualified-Path
@@ -65,16 +65,7 @@ class TransferLogResponse {
             sender: this.sender.toString(),
             recipient: this.recipient.toString(),
             amount: Quantity.of(this.amount).toString(),
-            meta: {
-                blockID: this.meta.blockID.toString(),
-                blockNumber: this.meta.blockNumber,
-                blockTimestamp: this.meta.blockTimestamp,
-                txID: this.meta.txID.toString(),
-                txOrigin: this.meta.txOrigin.toString(),
-                clauseIndex: this.meta.clauseIndex,
-                txIndex: this.meta.txIndex,
-                logIndex: this.meta.logIndex
-            }
+            meta: this.meta.toJSON()
         } satisfies TransferLogResponseJSON;
     }
 }

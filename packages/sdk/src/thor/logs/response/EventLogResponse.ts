@@ -1,7 +1,7 @@
 import { type EventLogResponseJSON } from '@thor/json';
-import { LogMetaResponse } from './LogMetaResponse';
 import { Address, HexUInt, HexUInt32, type Hex } from '@vcdm';
 import { IllegalArgumentError } from '@errors';
+import { LogMetaResponse } from './LogMetaResponse';
 
 /**
  * Full-Qualified-Path
@@ -69,16 +69,7 @@ class EventLogResponse {
                 topic.toString()
             ),
             data: this.data.toString(),
-            meta: {
-                blockID: this.meta.blockID.toString(),
-                blockNumber: this.meta.blockNumber,
-                blockTimestamp: this.meta.blockTimestamp,
-                txID: this.meta.txID.toString(),
-                txOrigin: this.meta.txOrigin.toString(),
-                clauseIndex: this.meta.clauseIndex,
-                txIndex: this.meta.txIndex,
-                logIndex: this.meta.logIndex
-            }
+            meta: this.meta.toJSON()
         } satisfies EventLogResponseJSON;
     }
 }
