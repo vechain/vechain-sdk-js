@@ -42,7 +42,7 @@ function newTransactionBodyFromTransactionRequest(
 }
 
 // Temporary until Transaction exists.
-function newTransactionFromTransactionRequest(
+export function newTransactionFromTransactionRequest(
     txRequest: TransactionRequest
 ): Transaction {
     return Transaction.of(newTransactionBodyFromTransactionRequest(txRequest));
