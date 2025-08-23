@@ -1,4 +1,3 @@
-// packages/sdk/test/unit/Clause.unit.test.ts
 import { describe, expect, test } from '@jest/globals';
 import { Address, HexUInt } from '@vcdm';
 import { Clause } from '@thor';

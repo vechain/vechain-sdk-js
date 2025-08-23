@@ -1,0 +1,109 @@
+---
+title: publicClient
+---
+classDiagram
+    class BlockFilter {
+        <<interface>>
+        string id
+        "block" type
+        number lastBlockProcessed?
+        BlockSubscription subscription?
+    }
+    class BlockResponseType {
+        <<enum>>
+        expanded
+        raw
+        regular
+    }
+    class BlockRevision {
+        <<type>>
+    }
+    class CreateEventFilterParams {
+        Address|Arress[] address?
+        Hex event?
+        Hex[] args?
+        BlockRevision fromBlock?
+        BlockRevision toBlock?
+    }
+    class EventFilter {
+        <<interface>>
+        string id;
+        "event" type
+        EventLogFilterRequestJSON request
+    }
+    class Filter {
+        <<type>>
+    }
+    class GetLogsParams {
+        Address|Address[] address?
+        Array~Hex|null~ topics?
+        BlockRevision fromBlock?
+        BlockRevision toBlock?
+    }
+    class PendingTransactionFilter_Opaque{
+        <<inetrface>>
+        "transaction" type
+        NewTransactionSubscription subscription?
+        string[] txQueue?
+    }
+    class PendingTransactionFilter {
+        <<interface>>
+        string id
+        "transaction" type
+        Set~string~ processedTxIds
+        NewTransactionSubscription sunscription?
+    }
+    class PublicClient {
+        URL|ThorNetworks network
+        PublicClient createPublicClient(PublicClientConfig: config)$
+        bigint getBalance(Address address)
+        ExpandedBlockResponse|RawTx|RegularBlockResponse|null getBlock(BlockRevision revision, BlockResponseType type)
+        number|undefined getBlockNumber(BlockRevision revision)
+        number|undefined getBlockTransactionCount(BlockRevision revision)
+        BlocksSubscription watchBlocks(Hex pos)
+        BlocksSubscription watchBlockNumber()
+        ExecuteCodesResponse simulateCalls(ExecuteCodesRequestJSON json)
+        ExecuteCodesResponse call(ExecuteCodesRequestJSON request)
+        GetFeesHistoryResponse getFeeHistory(number blockCount)
+        bigint[] getGasPrice()
+        bigint|undefined estimateFeePerGas()
+        ExecuteCodesResponse estimateGas(ExecuteCodesRequestJSON request)
+        GetFeesPriorityResponse estimateMaxPriorityFeePerGas()
+        bigint getChainId()
+        uninstallFilter(BeatsSubscription|BlocksSubscription|EventsSubscription|NewTransactionSubscription|TransfersSubscription)
+        watchEvent(WatchEventParams params)
+        EventLogResponse[] getLogs(GetLogsParams params)
+        EventFilter createEventFilter(CreateEventFilterParams params?)
+        EventLogResponse[] getFilterLogs(λ~Filter~ filter)
+        BlockFilter createBlockFilter()
+        PendingTransactionFilter createPendingTransactionFilter()
+        Array~EventLogResponse|string~ getFilterChanges(λ~Filter~ filter)
+    }
+    class PublicClientConfig {
+        <<interface>>
+        URL|ThorNetworks network
+        HttpClient transport?
+    }
+    class WatchEventParams {
+        <<interface>>
+        λ~SubscriptionEventResponse[] logs~ onLogs
+        λ~Error error~ onError?
+        Address address?
+        Hex event?
+        Hex[] args?
+        Hex fromBlock?
+    }
+    PublicClientConfig <-- "createPublicClient(PublicClientConfig config)" PublicClient
+    BlockResponseType <-- "getBlock(BlockRevision revision, BlockResponseType type)" PublicClient
+    BlockRevision <-- "getBlock(BlockRevision revision, BlockResponseType type)" PublicClient
+    BlockRevision <-- "getBlockNumber(BlockRevision revision, BlockResponseType type)" PublicClient
+    BlockRevision <-- "getBlockTransactionCount(BlockRevision revision, BlockResponseType type)" PublicClient
+    WatchEventParams <-- "watchEvent(WatchEventParams params)" PublicClient
+    GetLogsParams <-- "getLogs(GetLogsParams params)" PublicClient
+    CreateEventFilterParams <-- "createEventFilter(CreateEventFilterParams params?)" PublicClient
+    Filter <-- "getFilterLogs(λ~Filter~ filter)" PublicClient
+    BlockFilter ..|> Filter
+    EventFilter ..|> Filter
+    PendingTransactionFilter ..|> Filter
+    PendingTransactionFilter_Opaque .. PendingTransactionFilter
+
