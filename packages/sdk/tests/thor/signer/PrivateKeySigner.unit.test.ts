@@ -1,197 +1,252 @@
-/*
- * @group unit/thor/signer
- */
+import { expect, jest } from '@jest/globals';
 import {
     Clause,
-    ClauseBuilder,
     PrivateKeySigner,
-    type Signer,
-    type SponsoredTransactionRequest,
-    type TransactionBody,
+    RLPCodec,
+    SignedTransactionRequest,
+    SponsoredTransactionRequest,
     TransactionRequest
 } from '@thor';
-import { BlockRef, HexUInt } from '@vcdm';
-import { SOLO_NETWORK } from '@utils';
-import { Address, Transaction } from '@vechain/sdk';
-import { describe, expect } from '@jest/globals';
+import { Address, Blake2b256, BlockRef, HexUInt } from '@vcdm';
+import { InvalidPrivateKeyError, UnsupportedOperationError } from '@errors';
 import * as nc_utils from '@noble/curves/abstract/utils';
+import { Secp256k1 } from '@secp256k1';
 
-describe('PrivateKeySigner UNIT tests', () => {
-    const SENDER = {
+/**
+ * @group unit/thor/signer
+ */
+describe('PrivateKeySigner', () => {
+    // Test data
+    const mockSender = {
         privateKey: HexUInt.of(
             'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5'
         ).bytes
     };
-    const RECEIVER = {
+    const mockReceiver = {
         address: Address.of('0x9e7911de289c3c856ce7f421034f66b6cde49c39')
     };
-    const GAS_PAYER = {
+    const mockGasPAyer = {
         privateKey: HexUInt.of(
             '432f38bcf338c374523e83fdb2ebe1030aba63c7f1e81f7d76c5f53f4d42e766'
         ).bytes
     };
+    const invalidPrivateKey = new Uint8Array(31).fill(1); // Wrong length
 
-    test('demo', () => {
-        const requestTx = new TransactionRequest({
-            blockRef: BlockRef.of(
-                '0x00000058f9f240032e073f4a078c5f0f3e04ae7272e4550de41f10723d6f8b2e'
-            ),
-            chainTag: SOLO_NETWORK.chainTag,
-            clauses: [new Clause(RECEIVER.address, 1n, null, null, null)],
-            dependsOn: null,
-            expiration: 32,
-            gas: 100000n,
-            gasPriceCoef: 0n,
-            nonce: 8,
-            isSponsored: true
+    // Common transaction request parameters
+    const transactionParams = {
+        blockRef: BlockRef.of('0x1234567890abcdef'),
+        chainTag: 1,
+        clauses: [new Clause(mockReceiver.address, 1000n, null, null, null)],
+        dependsOn: null,
+        expiration: 32,
+        gas: 21000n,
+        gasPriceCoef: 0n,
+        nonce: 1
+    };
+
+    describe('constructor', () => {
+        test('ok <- should create a new instance with valid private key', () => {
+            const signer = new PrivateKeySigner(mockSender.privateKey);
+            const address = Address.ofPrivateKey(mockSender.privateKey);
+            expect(signer).toBeInstanceOf(PrivateKeySigner);
+            expect(signer.address).toBe(address);
         });
-        const sender: Signer = new PrivateKeySigner(SENDER.privateKey);
-        const signedTx = sender.sign(requestTx);
-        const gasPayer: PrivateKeySigner = new PrivateKeySigner(
-            GAS_PAYER.privateKey
-        );
-        const sponsoredTx = gasPayer.sign(signedTx);
-        expect(sponsoredTx.signature).toEqual(
-            nc_utils.concatBytes(
-                signedTx.signature,
-                (sponsoredTx as SponsoredTransactionRequest).gasPayerSignature
-            )
-        );
+
+        test('ok <- should make a defensive copy of the private key', () => {
+            const privateKey = new Uint8Array(mockSender.privateKey);
+            const signer = new PrivateKeySigner(privateKey);
+
+            // Modify the original private key
+            privateKey[0] = 99;
+
+            // Sign to force using the private key
+            const txRequest = new TransactionRequest({
+                ...transactionParams,
+                isSponsored: false
+            });
+
+            signer.sign(txRequest);
+
+            // Check if the correct (original) private key was used
+            expect(Secp256k1.sign).toHaveBeenCalledWith(
+                expect.any(Uint8Array),
+                expect.not.arrayContaining([99]) // Should not contain the modified value
+            );
+        });
+
+        test('should throw InvalidPrivateKeyError for invalid private key', () => {
+            expect(() => new PrivateKeySigner(invalidPrivateKey)).toThrow(
+                InvalidPrivateKeyError
+            );
+            expect(Secp256k1.isValidPrivateKey).toHaveBeenCalledWith(
+                invalidPrivateKey
+            );
+        });
     });
 
-    describe('sign - signed delegated', () => {
-        test('ok <- sdk 2 equivalence', () => {
-            const transactionRequest = new TransactionRequest({
-                blockRef: BlockRef.of(
-                    '0x00000058f9f240032e073f4a078c5f0f3e04ae7272e4550de41f10723d6f8b2e'
-                ),
-                chainTag: SOLO_NETWORK.chainTag,
-                clauses: [new Clause(RECEIVER.address, 1n, null, null, null)],
-                dependsOn: null,
-                expiration: 32,
-                gas: 100000n,
-                gasPriceCoef: 0n,
-                nonce: 8,
+    describe('sign method with TransactionRequest', () => {
+        test('should sign a regular transaction request', () => {
+            const signer = new PrivateKeySigner(validPrivateKey);
+            const txRequest = new TransactionRequest({
+                ...transactionParams,
+                isSponsored: false
+            });
+
+            const signedTx = signer.sign(txRequest);
+
+            expect(signedTx).toBeInstanceOf(SignedTransactionRequest);
+            expect(RLPCodec.encodeTransactionRequest).toHaveBeenCalledWith(
+                txRequest
+            );
+            expect(Blake2b256.of).toHaveBeenCalled();
+            expect(Secp256k1.sign).toHaveBeenCalledWith(
+                mockHash,
+                expect.any(Uint8Array)
+            );
+
+            // Verify properties on the signed transaction
+            expect(signedTx.origin).toBe(mockAddress);
+            expect(signedTx.signature).toEqual(mockSignature);
+            expect(signedTx.originSignature).toEqual(mockSignature);
+            expect(signedTx.blockRef).toBe(txRequest.blockRef);
+            expect(signedTx.chainTag).toBe(txRequest.chainTag);
+            expect(signedTx.clauses).toBe(txRequest.clauses);
+            expect(signedTx.isSponsored).toBe(false);
+        });
+
+        test('should sign a transaction request marked for sponsorship', () => {
+            const signer = new PrivateKeySigner(validPrivateKey);
+            const txRequest = new TransactionRequest({
+                ...transactionParams,
                 isSponsored: true
             });
 
-            const txBody: TransactionBody = {
-                chainTag: transactionRequest.chainTag,
-                blockRef: transactionRequest.blockRef.toString(),
-                expiration: transactionRequest.expiration,
-                clauses: [
-                    ClauseBuilder.transferVET(
-                        transactionRequest.clauses[0].to as Address,
-                        transactionRequest.clauses[0].value
-                    )
-                ],
-                gasPriceCoef: Number(transactionRequest.gasPriceCoef),
-                gas: Number(transactionRequest.gas),
-                dependsOn: transactionRequest.dependsOn?.toString() ?? null,
-                nonce: transactionRequest.nonce,
-                reserved: {
-                    features: 1,
-                    unused: []
-                }
-            };
-            const signedTransaction = Transaction.of(txBody).signAsSender(
-                SENDER.privateKey
-            );
+            const signedTx = signer.sign(txRequest);
 
-            const sender: Signer = new PrivateKeySigner(SENDER.privateKey);
-            const signedTransactionRequest = sender.sign(transactionRequest);
-            expect(signedTransaction.signature).toEqual(
-                signedTransactionRequest.signature
-            );
+            expect(signedTx).toBeInstanceOf(SignedTransactionRequest);
+            expect(signedTx.isSponsored).toBe(true);
+        });
 
-            const gasPayer: Signer = new PrivateKeySigner(GAS_PAYER.privateKey);
-            const expected = signedTransaction.signAsGasPayer(
-                sender.address,
-                GAS_PAYER.privateKey
+        test('should throw error if private key is voided before signing', () => {
+            const signer = new PrivateKeySigner(validPrivateKey);
+            const txRequest = new TransactionRequest(transactionParams);
+
+            signer.void();
+
+            expect(() => signer.sign(txRequest)).toThrow(
+                InvalidPrivateKeyError
             );
-            const actual = gasPayer.sign(signedTransactionRequest);
-            expect(actual.signature).toEqual(expected.signature);
         });
     });
 
-    describe('sign - unsigned delegated', () => {
-        test('ok <- sdk 2 equivalence', () => {
-            const transactionRequest = new TransactionRequest({
-                blockRef: BlockRef.of(
-                    '0x00000058f9f240032e073f4a078c5f0f3e04ae7272e4550de41f10723d6f8b2e'
-                ),
-                chainTag: SOLO_NETWORK.chainTag,
-                clauses: [new Clause(RECEIVER.address, 1n, null, null, null)],
-                dependsOn: null,
-                expiration: 32,
-                gas: 100000n,
-                gasPriceCoef: 0n,
-                nonce: 8,
+    describe('sign method with SignedTransactionRequest (sponsoring)', () => {
+        test('should sponsor a signed transaction request', () => {
+            const signer = new PrivateKeySigner(validPrivateKey);
+            const originSigner = new PrivateKeySigner(
+                new Uint8Array(32).fill(5)
+            );
+
+            // Create a transaction request marked for sponsorship
+            const txRequest = new TransactionRequest({
+                ...transactionParams,
                 isSponsored: true
             });
 
-            const txBody: TransactionBody = {
-                chainTag: transactionRequest.chainTag,
-                blockRef: transactionRequest.blockRef.toString(),
-                expiration: transactionRequest.expiration,
-                clauses: [
-                    ClauseBuilder.transferVET(
-                        transactionRequest.clauses[0].to as Address,
-                        transactionRequest.clauses[0].value
-                    )
-                ],
-                gasPriceCoef: Number(transactionRequest.gasPriceCoef),
-                gas: Number(transactionRequest.gas),
-                dependsOn: transactionRequest.dependsOn?.toString() ?? null,
-                nonce: transactionRequest.nonce,
-                reserved: {
-                    features: 1,
-                    unused: []
-                }
-            };
-            const expected = Transaction.of(txBody).signAsSender(
-                SENDER.privateKey
+            // Sign it with the origin signer
+            const signedTx = originSigner.sign(txRequest);
+
+            // Mock the concatenated hash
+            jest.spyOn(nc_utils, 'concatBytes').mockImplementation(
+                (a, b) => new Uint8Array([...a, ...b])
             );
-            const signer: Signer = new PrivateKeySigner(SENDER.privateKey);
-            const actual = signer.sign(transactionRequest).signature;
-            expect(actual).toEqual(expected.signature);
+
+            // Sponsor the transaction
+            const sponsoredTx = signer.sign(
+                signedTx
+            ) as SponsoredTransactionRequest;
+
+            expect(sponsoredTx).toBeInstanceOf(SponsoredTransactionRequest);
+            expect(Blake2b256.of).toHaveBeenCalledTimes(2);
+            expect(Secp256k1.sign).toHaveBeenCalledTimes(2);
+
+            // Verify the sponsored transaction properties
+            expect(sponsoredTx.gasPayer).toBe(mockAddress);
+            expect(sponsoredTx.gasPayerSignature).toEqual(mockSignature);
+            expect(sponsoredTx.origin).toBe(signedTx.origin);
+            expect(sponsoredTx.originSignature).toEqual(
+                signedTx.originSignature
+            );
+            expect(nc_utils.concatBytes).toHaveBeenCalledWith(
+                signedTx.originSignature,
+                mockSignature
+            );
+        });
+
+        test('should throw UnsupportedOperationError when sponsoring non-sponsored transaction', () => {
+            const signer = new PrivateKeySigner(validPrivateKey);
+            const originSigner = new PrivateKeySigner(
+                new Uint8Array(32).fill(5)
+            );
+
+            // Create a regular transaction request not marked for sponsorship
+            const txRequest = new TransactionRequest({
+                ...transactionParams,
+                isSponsored: false
+            });
+
+            // Sign it with the origin signer
+            const signedTx = originSigner.sign(txRequest);
+
+            // Attempt to sponsor the transaction
+            expect(() => signer.sign(signedTx)).toThrow(
+                UnsupportedOperationError
+            );
+        });
+
+        test('should throw InvalidPrivateKeyError if private key is voided before sponsoring', () => {
+            const signer = new PrivateKeySigner(validPrivateKey);
+            const originSigner = new PrivateKeySigner(
+                new Uint8Array(32).fill(5)
+            );
+
+            // Create a transaction request marked for sponsorship
+            const txRequest = new TransactionRequest({
+                ...transactionParams,
+                isSponsored: true
+            });
+
+            // Sign it with the origin signer
+            const signedTx = originSigner.sign(txRequest);
+
+            // Void the signer's private key
+            signer.void();
+
+            // Attempt to sponsor the transaction
+            expect(() => signer.sign(signedTx)).toThrow(InvalidPrivateKeyError);
         });
     });
 
-    describe('sign - not delegated', () => {
-        test('ok <- sdk 2 equivalence', () => {
-            const transactionRequest = new TransactionRequest({
-                blockRef: BlockRef.of(
-                    '0x00000058f9f240032e073f4a078c5f0f3e04ae7272e4550de41f10723d6f8b2e'
-                ),
-                chainTag: SOLO_NETWORK.chainTag,
-                clauses: [new Clause(RECEIVER.address, 1n, null, null, null)],
-                dependsOn: null,
-                expiration: 32,
-                gas: 100000n,
-                gasPriceCoef: 0n,
-                nonce: 8
-            });
+    describe('void method', () => {
+        test('should clear the private key and set it to null', () => {
+            const privateKey = new Uint8Array(32).fill(1);
+            const signer = new PrivateKeySigner(privateKey);
 
-            const txBody: TransactionBody = {
-                chainTag: transactionRequest.chainTag,
-                blockRef: transactionRequest.blockRef.toString(),
-                expiration: transactionRequest.expiration,
-                clauses: [
-                    ClauseBuilder.transferVET(
-                        transactionRequest.clauses[0].to as Address,
-                        transactionRequest.clauses[0].value
-                    )
-                ],
-                gasPriceCoef: Number(transactionRequest.gasPriceCoef),
-                gas: Number(transactionRequest.gas),
-                dependsOn: transactionRequest.dependsOn?.toString() ?? null,
-                nonce: transactionRequest.nonce
-            };
-            const expected = Transaction.of(txBody).sign(SENDER.privateKey);
-            const signer: Signer = new PrivateKeySigner(SENDER.privateKey);
-            const actual = signer.sign(transactionRequest).signature;
-            expect(actual).toEqual(expected.signature);
+            signer.void();
+
+            // Attempt to sign to verify the private key is cleared
+            const txRequest = new TransactionRequest(transactionParams);
+            expect(() => signer.sign(txRequest)).toThrow(
+                InvalidPrivateKeyError
+            );
+        });
+
+        test('should be safe to call void multiple times', () => {
+            const signer = new PrivateKeySigner(validPrivateKey);
+
+            signer.void();
+            signer.void(); // Second call should not throw
+
+            expect(() => signer.void()).not.toThrow();
         });
     });
 });
