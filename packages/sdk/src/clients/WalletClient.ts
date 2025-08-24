@@ -5,6 +5,7 @@ import {
     RLPCodec,
     SendTransaction,
     SignedTransactionRequest,
+    SponsoredTransactionRequest,
     type ThorNetworks,
     TransactionRequest
 } from '@thor';
@@ -14,7 +15,6 @@ import { FetchHttpClient, type HttpClient } from '@http';
 import { PublicClient, type PublicClientConfig } from './PublicClient';
 
 const FQP = 'packages/sdk/src/clients/WalletClient.ts!';
-
 
 function createWalletClient({
     network,
@@ -47,8 +47,7 @@ class WalletClient extends PublicClient {
     }
 
     public prepareTransactionRequest(
-        request: PrepareTransactionRequestRequest,
-        isSponsored: boolean = false
+        request: PrepareTransactionRequestRequest
     ): TransactionRequest {
         try {
             const clause = new Clause(
@@ -74,7 +73,7 @@ class WalletClient extends PublicClient {
                         : BigInt(request.gas),
                 gasPriceCoef: BigInt(request.gasPriceCoef),
                 nonce: request.nonce,
-                isSponsored
+                isSponsored: request.isSponsored ?? false
             });
         } catch (e) {
             throw new UnsupportedOperationError(
@@ -129,14 +128,13 @@ class WalletClient extends PublicClient {
         return await this.sendRawTransaction(raw);
     }
 
-    public async signTransaction(
+    private async signTransactionRequest(
         transactionRequest: TransactionRequest
     ): Promise<Hex> {
         if (this.account !== null) {
             const hash = Blake2b256.of(
                 RLPCodec.encodeTransactionRequest(transactionRequest)
             ).bytes;
-            this.getAddresses();
             const signature = await WalletClient.signHash(hash, this.account);
             const signedTransaction = new SignedTransactionRequest({
                 ...transactionRequest,
@@ -149,9 +147,75 @@ class WalletClient extends PublicClient {
             );
         }
         throw new UnsupportedOperationError(
-            `${FQP}WalletClient.signTransaction(encodedTx: Hex): Hex`,
+            `${FQP}WalletClient.signTransaction(transactionRequest: TransactionRequest): Hex`,
             'account is not set'
         );
+    }
+
+    private async sponsorTransactionRequest(
+        signedTransactionRequest: SignedTransactionRequest
+    ): Promise<Hex> {
+        if (this.account !== null) {
+            if (signedTransactionRequest.isSponsored) {
+                const hash = Blake2b256.of(
+                    nc_utils.concatBytes(
+                        Blake2b256.of(
+                            RLPCodec.encodeTransactionRequest(
+                                signedTransactionRequest
+                            )
+                        ).bytes,
+                        signedTransactionRequest.origin.bytes
+                    )
+                ).bytes;
+                const gasPayerSignature = await WalletClient.signHash(
+                    hash,
+                    this.account
+                );
+                const sponsoredTransactionRequest =
+                    new SponsoredTransactionRequest({
+                        blockRef: signedTransactionRequest.blockRef,
+                        chainTag: signedTransactionRequest.chainTag,
+                        clauses: signedTransactionRequest.clauses,
+                        dependsOn: signedTransactionRequest.dependsOn,
+                        expiration: signedTransactionRequest.expiration,
+                        gas: signedTransactionRequest.gas,
+                        gasPriceCoef: signedTransactionRequest.gasPriceCoef,
+                        nonce: signedTransactionRequest.nonce,
+                        isSponsored: true,
+                        origin: signedTransactionRequest.origin,
+                        originSignature:
+                            signedTransactionRequest.originSignature,
+                        gasPayer: Address.of(this.account.address),
+                        gasPayerSignature,
+                        signature: nc_utils.concatBytes(
+                            signedTransactionRequest.originSignature,
+                            gasPayerSignature
+                        )
+                    });
+                return HexUInt.of(
+                    RLPCodec.encodeSignedTransactionRequest(
+                        sponsoredTransactionRequest
+                    )
+                );
+            }
+            throw new UnsupportedOperationError(
+                `${FQP}WalletClient.signTransaction(signedTransactionRequest: SignedTransactionRequest): Hex`,
+                'transaction request is not intended to be sponsored'
+            );
+        }
+        throw new UnsupportedOperationError(
+            `${FQP}WalletClient.signTransaction(signedTransactionRequest: signedTransactionRequest): Hex`,
+            'account is not set'
+        );
+    }
+
+    public async signTransaction(
+        transactionRequest: TransactionRequest | SignedTransactionRequest
+    ): Promise<Hex> {
+        if (transactionRequest instanceof SignedTransactionRequest) {
+            return await this.sponsorTransactionRequest(transactionRequest);
+        }
+        return await this.signTransactionRequest(transactionRequest);
     }
 }
 
@@ -170,6 +234,7 @@ interface PrepareTransactionRequestRequest {
     gas: Hex | number;
     gasPriceCoef: number;
     nonce: number;
+    isSponsored?: boolean;
 }
 
 interface WalletClientConfig extends PublicClientConfig {
