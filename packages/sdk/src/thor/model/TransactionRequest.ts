@@ -105,14 +105,14 @@ class TransactionRequest implements TransactionRequestParam {
      * Constructs an instance of the class with the given transaction request parameters.
      *
      * @param {TransactionRequestParam} params - An object containing the parameters for the transaction request.
-     * @param {string} params.blockRef - Reference to the specific block.
-     * @param {string} params.chainTag - Identifier for the blockchain network.
+     * @param {Hex} params.blockRef - Reference to the specific block.
+     * @param {number} params.chainTag - Identifier for the blockchain network.
      * @param {Array} params.clauses - Array of clauses representing transaction actions.
-     * @param {string|null} params.dependsOn - Reference to a dependent transaction if present.
+     * @param {Hex|null} params.dependsOn - Reference to a dependent transaction if present.
      * @param {number} params.expiration - Number of blocks after which the transaction expires.
-     * @param {number} params.gas - The gas limit for the transaction.
-     * @param {number} params.gasPriceCoef - Coefficient for the gas price.
-     * @param {string} params.nonce - Unique value to ensure transaction uniqueness.
+     * @param {bigint} params.gas - The gas limit for the transaction.
+     * @param {bigint} params.gasPriceCoef - Coefficient for the gas price.
+     * @param {number} params.nonce - Unique value to ensure transaction uniqueness.
      * @param {boolean} params.isSponsored - Indicates if the transaction is sponsored, `false` by default.
      */
     public constructor({

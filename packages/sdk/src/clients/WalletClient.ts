@@ -1,31 +1,20 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
 import { type Account } from 'viem';
 import {
+    Clause,
+    RLPCodec,
     SendTransaction,
+    SignedTransactionRequest,
     type ThorNetworks,
-    Transaction,
-    type TransactionBody,
-    type TransactionClause
+    TransactionRequest
 } from '@thor';
-import {
-    Address,
-    Blake2b256,
-    Hex,
-    HexInt,
-    HexUInt,
-    HexUInt32,
-    RLPProfiler
-} from '@vcdm';
+import { Address, Blake2b256, BlockRef, Hex, HexUInt } from '@vcdm';
 import { UnsupportedOperationError } from '@errors';
 import { FetchHttpClient, type HttpClient } from '@http';
 import { PublicClient, type PublicClientConfig } from './PublicClient';
 
 const FQP = 'packages/sdk/src/clients/WalletClient.ts!';
 
-/**
- * Used internally to tag a transaction without data.
- */
-const NO_DATA = Hex.PREFIX;
 
 function createWalletClient({
     network,
@@ -58,42 +47,35 @@ class WalletClient extends PublicClient {
     }
 
     public prepareTransactionRequest(
-        request: PrepareTransactionRequestRequest
-    ): Transaction {
+        request: PrepareTransactionRequestRequest,
+        isSponsored: boolean = false
+    ): TransactionRequest {
         try {
-            const txClause: TransactionClause = {
-                to: request.to !== undefined ? request.to.toString() : null,
-                value:
-                    request.value instanceof Hex
-                        ? HexUInt.of(HexInt.of(request.value)).bi
-                        : BigInt(request.value),
-                data:
-                    request.data instanceof Hex
-                        ? HexUInt.of(request.data).toString()
-                        : NO_DATA,
-                comment: request.comment,
-                abi:
-                    request.abi instanceof Hex
-                        ? HexUInt.of(HexInt.of(request.abi)).toString()
-                        : undefined
-            } satisfies TransactionClause;
-            const txBody: TransactionBody = {
+            const clause = new Clause(
+                request.to ?? null,
+                request.value instanceof Hex
+                    ? HexUInt.of(request.value).bi
+                    : BigInt(request.value),
+                request.data instanceof Hex ? HexUInt.of(request.data) : null,
+                request.comment ?? null,
+                request.abi instanceof Hex
+                    ? HexUInt.of(request.abi).toString()
+                    : null
+            );
+            return new TransactionRequest({
+                blockRef: BlockRef.of(request.blockRef),
                 chainTag: request.chainTag,
-                blockRef: HexInt.of(request.blockRef).toString(),
+                clauses: [clause],
+                dependsOn: request.dependsOn ?? null,
                 expiration: request.expiration,
-                clauses: [txClause],
-                gasPriceCoef: request.gasPriceCoef,
                 gas:
                     request.gas instanceof Hex
-                        ? HexUInt.of(HexInt.of(request.gas)).toString()
-                        : request.gas,
-                dependsOn:
-                    request.dependsOn instanceof Hex
-                        ? HexUInt32.of(HexInt.of(request.dependsOn)).toString()
-                        : null,
-                nonce: request.nonce
-            } satisfies TransactionBody;
-            return Transaction.of(txBody);
+                        ? HexUInt.of(request.gas).bi
+                        : BigInt(request.gas),
+                gasPriceCoef: BigInt(request.gasPriceCoef),
+                nonce: request.nonce,
+                isSponsored
+            });
         } catch (e) {
             throw new UnsupportedOperationError(
                 `${FQP}WalletClient.prepareTransactionRequest(request: PrepareTransactionRequestRequest): void`,
@@ -147,30 +129,24 @@ class WalletClient extends PublicClient {
         return await this.sendRawTransaction(raw);
     }
 
-    public async signTransaction(tx: Transaction): Promise<Hex> {
+    public async signTransaction(
+        transactionRequest: TransactionRequest
+    ): Promise<Hex> {
         if (this.account !== null) {
-            const encodedTx = RLPProfiler.ofObject(
-                {
-                    // Existing body and the optional `reserved` field if present.
-                    ...tx.body,
-                    /*
-                     * The `body.clauses` property is already an array,
-                     * albeit TypeScript realize; hence cast is needed
-                     * otherwise encodeObject will throw an error.
-                     */
-                    clauses: tx.body.clauses as Array<{
-                        to: string | null;
-                        value: bigint | number;
-                        data: string;
-                    }>,
-                    // New reserved field.
-                    reserved: tx.encodeReservedField()
-                },
-                Transaction.RLP_UNSIGNED_TRANSACTION_PROFILE
-            ).encoded;
-            const txHash = Blake2b256.of(encodedTx).bytes;
-            const signature = await WalletClient.signHash(txHash, this.account);
-            return HexUInt.of(Transaction.of(tx.body, signature).encode(true));
+            const hash = Blake2b256.of(
+                RLPCodec.encodeTransactionRequest(transactionRequest)
+            ).bytes;
+            this.getAddresses();
+            const signature = await WalletClient.signHash(hash, this.account);
+            const signedTransaction = new SignedTransactionRequest({
+                ...transactionRequest,
+                origin: Address.of(this.account.address),
+                originSignature: signature,
+                signature
+            });
+            return HexUInt.of(
+                RLPCodec.encodeSignedTransactionRequest(signedTransaction)
+            );
         }
         throw new UnsupportedOperationError(
             `${FQP}WalletClient.signTransaction(encodedTx: Hex): Hex`,
