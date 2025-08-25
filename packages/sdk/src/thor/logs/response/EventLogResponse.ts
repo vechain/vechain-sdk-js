@@ -1,5 +1,4 @@
 import { type EventLogResponseJSON } from '@thor/json';
-import { LogMeta } from '@thor/thor-client/model/logs/LogMeta';
 import { Address, HexUInt, HexUInt32, type Hex } from '@vcdm';
 import { IllegalArgumentError } from '@errors';
 import { LogMetaResponse } from './LogMetaResponse';
