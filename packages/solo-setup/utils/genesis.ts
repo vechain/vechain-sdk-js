@@ -1,22 +1,13 @@
-import {
-    type RegularBlockResponse,
-    RetrieveRegularBlock
-} from '@vechain/sdk/thor';
-import { Revision, FetchHttpClient } from '@vechain/sdk/common';
+import { type CompressedBlockDetail, ThorClient } from '@vechain/sdk-network';
 
 /**
  * Get the genesis block from the ThorClient
  * @returns The genesis block
  */
-export const getGenesisBlock = async (): Promise<RegularBlockResponse> => {
+export const getGenesisBlock = async (): Promise<CompressedBlockDetail> => {
     try {
-        const thorClient = FetchHttpClient.at(
-            new URL('http://localhost:8669'),
-            {}
-        );
-        const genesisBlock = (
-            await RetrieveRegularBlock.of(Revision.of(0)).askTo(thorClient)
-        ).response;
+        const thorClient = ThorClient.at('http://localhost:8669');
+        const genesisBlock = await thorClient.blocks.getGenesisBlock();
         if (genesisBlock === null) {
             throw new Error('Genesis block not found');
         }

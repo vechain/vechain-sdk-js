@@ -1,8 +1,9 @@
 import { describe, expect, jest, test } from '@jest/globals';
-import { Address } from '@common/vcdm';
+import { Address, Revision } from '@common/vcdm';
 import {
     RetrieveAccountDetails,
     RetrieveAccountDetailsPath,
+    RetrieveAccountDetailsQuery,
     GetAccountResponse,
     ThorError
 } from '@thor/thorest';
@@ -28,6 +29,23 @@ describe('RetrieveAccountDetails unit tests', () => {
         });
     });
 
+    describe('RetrieveAccountDetailsQuery', () => {
+        test('constructs empty query when no revision provided', () => {
+            const query = new RetrieveAccountDetailsQuery();
+            expect(query.query).toBe('');
+        });
+
+        test('constructs query with revision when provided', () => {
+            const query = new RetrieveAccountDetailsQuery(Revision.BEST);
+            expect(query.query).toBe('?revision=best');
+        });
+
+        test('constructs query with numeric revision', () => {
+            const query = new RetrieveAccountDetailsQuery(Revision.of(123));
+            expect(query.query).toBe('?revision=123');
+        });
+    });
+
     describe('RetrieveAccountDetails', () => {
         test('static of() creates instance correctly', () => {
             const address = Address.of(
@@ -45,7 +63,23 @@ describe('RetrieveAccountDetails unit tests', () => {
             ).toBe(address);
         });
 
-        test('askTo() processes response correctly', async () => {
+        test('static of() creates instance with revision', () => {
+            const address = Address.of(
+                '0x0000000000000000000000000000456E65726779'
+            );
+            const request = RetrieveAccountDetails.of(address, Revision.BEST);
+            expect(request).toBeInstanceOf(RetrieveAccountDetails);
+            expect(
+                (request as unknown as { query: RetrieveAccountDetailsQuery })
+                    .query
+            ).toBeInstanceOf(RetrieveAccountDetailsQuery);
+            expect(
+                (request as unknown as { query: RetrieveAccountDetailsQuery })
+                    .query.query
+            ).toBe('?revision=best');
+        });
+
+        test('askTo() processes response correctly without revision', async () => {
             const address = Address.of(
                 '0x0000000000000000000000000000456E65726779'
             );
@@ -65,7 +99,39 @@ describe('RetrieveAccountDetails unit tests', () => {
             const getSpy = jest.spyOn(mockClient, 'get');
             expect(getSpy).toHaveBeenCalledWith(
                 expect.any(RetrieveAccountDetailsPath),
-                { query: '' }
+                expect.any(RetrieveAccountDetailsQuery)
+            );
+
+            expect(result.request).toBe(request);
+            expect(result.response).toBeInstanceOf(GetAccountResponse);
+            expect(result.response.hasCode).toBe(true);
+            expect(result.response.balance.toString(16)).toBe('1234');
+            expect(result.response.energy.toString(16)).toBe('5678');
+        });
+
+        test('askTo() processes response correctly with revision', async () => {
+            const address = Address.of(
+                '0x0000000000000000000000000000456E65726779'
+            );
+            const mockResponse = {
+                balance: '0x1234',
+                energy: '0x5678',
+                hasCode: true
+            };
+
+            const mockClient = mockHttpClient<GetAccountResponseJSON>(
+                mockResponse,
+                'get'
+            );
+            const request = RetrieveAccountDetails.of(address, Revision.FINALIZED);
+            const result = await request.askTo(mockClient);
+
+            const getSpy = jest.spyOn(mockClient, 'get');
+            expect(getSpy).toHaveBeenCalledWith(
+                expect.any(RetrieveAccountDetailsPath),
+                expect.objectContaining({
+                    query: '?revision=finalized'
+                })
             );
 
             expect(result.request).toBe(request);
@@ -85,8 +151,6 @@ describe('RetrieveAccountDetails unit tests', () => {
 
             try {
                 await request.askTo(mockClient);
-                // Triggers the catch block
-                expect(true).toBe(false);
             } catch (error) {
                 expect(error).toBeInstanceOf(ThorError);
                 const thorError = error as ThorError;

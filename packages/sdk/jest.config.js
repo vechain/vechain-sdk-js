@@ -1,7 +1,7 @@
 const { compilerOptions } = require('./tsconfig.json')
 
 /** @type {import('ts-jest').JestConfigWithTsJest} */
-module.exports = {
+const baseConfig = {
     roots: ['<rootDir>'],
     modulePaths: ['<rootDir>/src'],
     moduleNameMapper: {
@@ -18,13 +18,22 @@ module.exports = {
     coverageReporters: ['html', 'lcov', 'json'],
     runner: 'groups',
     reporters: ['default', 'jest-junit'],
-    workerThreads: true,
-    coverageThreshold: {
-        global: {
-            branches: 40,
-            functions: 45,
-            lines: 81,
-            statements: 65
-        }
-    }
+    workerThreads: true
 };
+
+// Enforce coverage thresholds only for UNIT runs.
+// Integration/clients/browser are signal-only and shouldn't fail CI due to coverage.
+/** @type {import('ts-jest').JestConfigWithTsJest} */
+module.exports = process.env.UNIT
+    ? {
+          ...baseConfig,
+          coverageThreshold: {
+              global: {
+                  branches: 40,
+                  functions: 45,
+                  lines: 81,
+                  statements: 65
+              }
+          }
+      }
+    : baseConfig;

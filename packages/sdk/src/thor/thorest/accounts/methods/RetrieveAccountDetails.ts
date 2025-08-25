@@ -1,12 +1,8 @@
-import { type HttpClient, type HttpPath } from '@common/http';
-import {
-    GetAccountResponse,
-    ThorError,
-    type ThorRequest,
-    type ThorResponse
-} from '@thor/thorest';
-import { type Address } from '@common/vcdm';
-import { type GetAccountResponseJSON } from '@thor/thorest/json';
+import { type HttpClient, type HttpPath, type HttpQuery } from '@common/http';
+import { GetAccountResponse } from '@thor/thorest';
+import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
+import { type Address, Revision } from '@common/vcdm';
+import { type GetAccountResponseJSON } from '../json';
 
 /**
  * Full-Qualified Path
@@ -27,12 +23,22 @@ class RetrieveAccountDetails
     private readonly path: RetrieveAccountDetailsPath;
 
     /**
+     * Represents the HTTP query for this specific API endpoint.
+     */
+    private readonly query: RetrieveAccountDetailsQuery;
+
+    /**
      * Constructs an instance of the class with the specified HTTP path.
      *
      * @param {HttpPath} path - The HTTP path to initialize the instance with.
+     * @param {RetrieveAccountDetailsQuery} query - The HTTP query to initialize the instance with.
      */
-    protected constructor(path: RetrieveAccountDetailsPath) {
+    protected constructor(
+        path: RetrieveAccountDetailsPath,
+        query: RetrieveAccountDetailsQuery
+    ) {
         this.path = path;
+        this.query = query;
     }
 
     /**
@@ -47,7 +53,7 @@ class RetrieveAccountDetails
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveAccountDetails, GetAccountResponse>> {
         const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveAccountDetails, GetAccountResponse>>`;
-        const response = await httpClient.get(this.path, { query: '' });
+        const response = await httpClient.get(this.path, this.query);
         if (response.ok) {
             const json = (await response.json()) as GetAccountResponseJSON;
             try {
@@ -79,9 +85,10 @@ class RetrieveAccountDetails
         );
     }
 
-    static of(address: Address): RetrieveAccountDetails {
+    static of(address: Address, revision?: Revision): RetrieveAccountDetails {
         return new RetrieveAccountDetails(
-            new RetrieveAccountDetailsPath(address)
+            new RetrieveAccountDetailsPath(address),
+            new RetrieveAccountDetailsQuery(revision)
         );
     }
 }
@@ -98,4 +105,38 @@ class RetrieveAccountDetailsPath implements HttpPath {
     }
 }
 
-export { RetrieveAccountDetails, RetrieveAccountDetailsPath };
+/**
+ * Retrieve Account Details Query
+ *
+ * Represents a query for retrieving account details with optional revision parameter.
+ */
+class RetrieveAccountDetailsQuery implements HttpQuery {
+    /**
+     * Represents the revision of the query.
+     */
+    private readonly revision?: Revision;
+
+    /**
+     * Constructs an instance of the class with an optional revision.
+     *
+     * @param {Revision} [revision] - The revision to be set. If not provided, no revision query parameter will be added.
+     */
+    constructor(revision?: Revision) {
+        this.revision = revision;
+    }
+
+    /**
+     * Returns the query string for the revision.
+     *
+     * @returns {string} The query string for the revision, or empty string if no revision is set.
+     */
+    get query(): string {
+        return this.revision != null ? `?revision=${this.revision}` : '';
+    }
+}
+
+export {
+    RetrieveAccountDetails,
+    RetrieveAccountDetailsPath,
+    RetrieveAccountDetailsQuery
+};
