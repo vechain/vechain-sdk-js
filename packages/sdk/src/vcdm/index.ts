@@ -2,7 +2,6 @@ export * from './account';
 export * from './Address';
 export * from './BlockRef';
 export * from './encoding';
-export * from './FixedPointNumber';
 export * from './hash';
 export * from './Hex';
 export * from './HexInt';
