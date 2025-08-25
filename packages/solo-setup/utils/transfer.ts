@@ -129,7 +129,8 @@ export const seedVTHO = async (accounts: TestAccount[]): Promise<string> => {
  * Seeds from the first account in the default genesis accounts.
  */
 export const seedTestToken = async (
-    accounts: TestAccount[]
+    accounts: TestAccount[],
+    testTokenAddress: string
 ): Promise<string> => {
     try {
         const thorClient = ThorClient.at('http://localhost:8669');
