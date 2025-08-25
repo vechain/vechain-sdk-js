@@ -5,6 +5,7 @@ import {
     type TransferLogFilterRequestJSON
 } from '@thor/json';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
+import { type TransferLogFilter } from '@thor/thor-client/model/logs/TransferLogFilter';
 
 /**
  * Full-Qualified-Path
@@ -93,7 +94,7 @@ class QueryVETTransferEvents
      * @param {TransferLogFilterRequestJSON} request - The JSON object containing the transfer log filter request details.
      * @return {QueryVETTransferEvents} A new instance of QueryVETTransferEvents initialized with the specified filter request.
      */
-    static of(request: TransferLogFilterRequestJSON): QueryVETTransferEvents {
+    static of(request: TransferLogFilter): QueryVETTransferEvents {
         return new QueryVETTransferEvents(
             new TransferLogFilterRequest(request)
         );
