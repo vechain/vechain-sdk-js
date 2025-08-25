@@ -58,14 +58,4 @@ export {
     parseAbiParameters,
     type EncodePackedErrorType,
     encodePacked
-    // Only on more recent versions of viem
-
-    // type EncodeArgErrorType,
-    // type FormatAbiItemWithArgsErrorType,
-    // formatAbiItemWithArgs,
-    // type FormatAbiItemErrorType,
-    // type FormatAbiParamErrorType,
-    // type FormatAbiParamsErrorType,
-    // formatAbiItem,
-    // formatAbiParams,
 } from 'viem';
