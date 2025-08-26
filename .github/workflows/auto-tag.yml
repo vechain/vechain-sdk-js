@@ -1,0 +1,11 @@
+name: Codebase Versioning
+
+on:
+  pull_request:
+    branches: 
+      - main
+    types: [closed]
+
+jobs:
+  semantic-versioning:
+    uses: vechain/github-actions/.github/workflows/semantic-versioning.yaml@63a58e80aff4ba11ad29d6cfa8689b1b0a101fdc # v.1.1.2
