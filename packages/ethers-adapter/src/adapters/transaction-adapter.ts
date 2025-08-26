@@ -106,8 +106,56 @@ export async function adaptTransaction(
         );
     }
 
+    // Check for invalid parameter combinations
+    const hasMaxFeePerGas = tx.maxFeePerGas !== undefined;
+    const hasMaxPriorityFeePerGas = tx.maxPriorityFeePerGas !== undefined;
+    const hasGasPrice = tx.gasPrice !== undefined;
+
+    // Case 3: maxPriorityFeePerGas + gasPriceCoef (error)
+    if (hasMaxPriorityFeePerGas && hasGasPrice && !hasMaxFeePerGas) {
+        throw new Error(
+            'Invalid parameter combination: maxPriorityFeePerGas and gasPrice cannot be used together without maxFeePerGas'
+        );
+    }
+
+    // Case 4: maxFeePerGas + gasPriceCoef (error)
+    if (hasMaxFeePerGas && hasGasPrice && !hasMaxPriorityFeePerGas) {
+        throw new Error(
+            'Invalid parameter combination: maxFeePerGas and gasPrice cannot be used together without maxPriorityFeePerGas'
+        );
+    }
+
+    // Case 1: maxPriorityFeePerGas + maxFeePerGas + gasPriceCoef (only 1 and 2 are used)
+    if (hasMaxPriorityFeePerGas && hasMaxFeePerGas && hasGasPrice) {
+        return {
+            ...tx,
+            gasPriceCoef: undefined,
+            gasPrice: undefined
+        };
+    }
+
+    // Case 2: maxPriorityFeePerGas + maxFeePerGas (1 and 2 are used)
+    if (hasMaxPriorityFeePerGas && hasMaxFeePerGas) {
+        return {
+            ...tx,
+            gasPriceCoef: undefined,
+            gasPrice: undefined
+        };
+    }
+
+    // Case 5: gasPriceCoef only (3 is used - legacy transaction)
+    if (hasGasPrice && !hasMaxPriorityFeePerGas && !hasMaxFeePerGas) {
+        return {
+            ...tx,
+            gasPriceCoef: Number(tx.gasPrice),
+            gasPrice: undefined,
+            maxFeePerGas: undefined,
+            maxPriorityFeePerGas: undefined
+        };
+    }
+
     // If Galactica hasn't happened and no gasPriceCoef is set, use default of 0
-    if (!galacticaHappened && tx.gasPrice === undefined) {
+    if (!galacticaHappened && !hasGasPrice) {
         return {
             ...tx,
             gasPriceCoef: 0
@@ -115,11 +163,7 @@ export async function adaptTransaction(
     }
 
     // If Galactica has happened and no dynamic fees are set, calculate them
-    if (
-        galacticaHappened &&
-        tx.maxFeePerGas === undefined &&
-        tx.maxPriorityFeePerGas === undefined
-    ) {
+    if (galacticaHappened && !hasMaxFeePerGas && !hasMaxPriorityFeePerGas) {
         const bestBlockBaseFeePerGas =
             await hardhatVeChainProvider.thorClient.blocks.getBestBlockBaseFeePerGas();
         if (
@@ -146,24 +190,9 @@ export async function adaptTransaction(
         };
     }
 
-    // For legacy transactions (pre-Galactica), convert gasPrice to gasPriceCoef
-    if (!galacticaHappened && tx.gasPrice !== undefined) {
-        return {
-            ...tx,
-            gasPriceCoef: Number(tx.gasPrice),
-            gasPrice: undefined
-        };
-    }
-
     // For Galactica transactions with dynamic fees, ensure both maxFeePerGas and maxPriorityFeePerGas are set
-    if (
-        galacticaHappened &&
-        (tx.maxFeePerGas !== undefined || tx.maxPriorityFeePerGas !== undefined)
-    ) {
-        if (
-            tx.maxFeePerGas === undefined ||
-            tx.maxPriorityFeePerGas === undefined
-        ) {
+    if (galacticaHappened && (hasMaxFeePerGas || hasMaxPriorityFeePerGas)) {
+        if (!hasMaxFeePerGas || !hasMaxPriorityFeePerGas) {
             throw new Error(
                 'Both maxFeePerGas and maxPriorityFeePerGas must be set for dynamic fee transactions'
             );

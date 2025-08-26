@@ -30,7 +30,16 @@ import { type ContractFilter } from './contract-filter';
 
 type ContractFunctionSync<T = unknown, TABIFunction> = (
     ...args: [
-        ...Partial<{ value: number; comment: string }>,
+        ...(
+            | [
+                  Partial<{
+                      value: number | string | bigint;
+                      revision: string;
+                      comment: string;
+                  }>
+              ]
+            | []
+        ),
         ...AbiParametersToPrimitiveTypes<TABIFunction['inputs'], 'inputs'>
     ]
 ) => T;
@@ -62,9 +71,18 @@ type ContractEventSync<T = unknown, TABIEvent> = (
  *               are not specified, allowing for flexibility in function signatures.
  * @returns A promise that resolves to the type `T`, representing the result of the contract function execution.
  */
-type ContractFunctionAsync<T = unknown, TABIFunction> = (
+type ContractFunctionAsync<T, TABIFunction extends AbiFunction> = (
     ...args: [
-        ...Partial<{ value: number; comment: string }>,
+        ...(
+            | [
+                  Partial<{
+                      value: number | string | bigint;
+                      revision: string;
+                      comment: string;
+                  }>
+              ]
+            | []
+        ),
         ...AbiParametersToPrimitiveTypes<TABIFunction['inputs'], 'inputs'>
     ]
 ) => Promise<T>;
@@ -83,15 +101,16 @@ type ContractFunctionAsync<T = unknown, TABIFunction> = (
  */
 type ContractFunctionRead<
     TAbi extends Abi,
-    TFunctionName extends ExtractAbiFunctionNames<TAbi, 'pure' | 'view'>,
-    TAbiFunction extends AbiFunction = ExtractAbiFunction<TAbi, TFunctionName>
-> = Record<
-    TFunctionName,
-    ContractFunctionAsync<
-        AbiParametersToPrimitiveTypes<TAbiFunction['outputs'], 'outputs'>,
-        TAbiFunction
-    >
->;
+    TFunctionName extends ExtractAbiFunctionNames<TAbi, 'pure' | 'view'>
+> = {
+    [key in TFunctionName]: ContractFunctionAsync<
+        AbiParametersToPrimitiveTypes<
+            ExtractAbiFunction<TAbi, key>['outputs'],
+            'outputs'
+        >,
+        ExtractAbiFunction<TAbi, key>
+    >;
+};
 
 /**
  * Defines a mapping of contract function names to their corresponding transactional contract functions.
@@ -110,12 +129,13 @@ type ContractFunctionTransact<
     TFunctionName extends ExtractAbiFunctionNames<
         TAbi,
         'payable' | 'non payable'
-    >,
-    TAbiFunction extends AbiFunction = ExtractAbiFunction<TAbi, TFunctionName>
-> = Record<
-    TFunctionName,
-    ContractFunctionAsync<SendTransactionResult, TAbiFunction>
->;
+    >
+> = {
+    [key in TFunctionName]: ContractFunctionAsync<
+        SendTransactionResult,
+        ExtractAbiFunction<TAbi, key>
+    >;
+};
 
 /**
  * Defines a mapping of contract event names to their corresponding filter criteria contract functions.
@@ -154,9 +174,13 @@ type ContractFunctionFilter<
  */
 type ContractFunctionClause<
     TAbi extends Abi,
-    TFunctionName extends ExtractAbiFunctionNames<TAbi, 'pure' | 'view'>,
-    TAbiFunction extends AbiFunction = ExtractAbiFunction<TAbi, TFunctionName>
-> = Record<TFunctionName, ContractFunctionSync<ContractClause, TAbiFunction>>;
+    TFunctionName extends ExtractAbiFunctionNames<TAbi, 'pure' | 'view'>
+> = {
+    [key in TFunctionName]: ContractFunctionSync<
+        ContractClause,
+        ExtractAbiFunction<TAbi, key>
+    >;
+};
 
 /**
  * Defines a mapping of contract event names to their corresponding filter criteria contract functions.

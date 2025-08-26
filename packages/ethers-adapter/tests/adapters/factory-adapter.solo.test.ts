@@ -468,5 +468,79 @@ describe('Hardhat factory adapter tests', () => {
                 'Dynamic fee transaction not supported before Galactica fork'
             );
         });
+
+        it('should fail with clear error when contract address is missing', async () => {
+            // Mock waitForTransaction to return null receipt
+            jest.spyOn(
+                provider.thorClient.transactions,
+                'waitForTransaction'
+            ).mockResolvedValue(null);
+
+            const adapter = factoryAdapter(contractFactory, provider);
+
+            await expect(adapter.deploy()).rejects.toThrow(
+                'Contract deployment failed: no contract address returned from transaction receipt'
+            );
+        });
+
+        it('should fail with insufficient VTHO error message', async () => {
+            // Mock transaction failure due to insufficient VTHO
+            const insufficientVthoError = new Error(
+                'insufficient energy for gas * price + value'
+            );
+            sendTransactionMock.mockImplementationOnce(() =>
+                Promise.reject(insufficientVthoError)
+            );
+
+            const adapter = factoryAdapter(contractFactory, provider);
+
+            await expect(adapter.deploy()).rejects.toThrow(
+                'insufficient energy for gas * price + value'
+            );
+        });
+
+        it('should fail with missing constructor arguments error message', async () => {
+            // Create a contract factory that requires constructor arguments
+            const contractWithConstructorArgs = {
+                ...contractFactory,
+                interface: {
+                    ...contractFactory.interface,
+                    deploy: {
+                        inputs: [
+                            {
+                                name: '_simpleParameter',
+                                type: 'uint8'
+                            }
+                        ],
+                        outputs: [],
+                        stateMutability: 'nonpayable',
+                        type: 'constructor'
+                    }
+                }
+            } as unknown as ContractFactory;
+
+            // Mock the getDeployTransaction to throw when no arguments are provided
+            (contractWithConstructorArgs.getDeployTransaction as jest.Mock) =
+                jest.fn().mockImplementation(async (...args: unknown[]) => {
+                    if (!args || args.length === 0) {
+                        throw new Error('missing argument: _simpleParameter');
+                    }
+                    return await Promise.resolve({
+                        to: null,
+                        data: '0x123',
+                        value: BigInt(0),
+                        gas: BigInt(21000)
+                    });
+                });
+
+            const adapter = factoryAdapter(
+                contractWithConstructorArgs,
+                provider
+            );
+
+            await expect(adapter.deploy()).rejects.toThrow(
+                'missing argument: _simpleParameter'
+            );
+        });
     });
 });

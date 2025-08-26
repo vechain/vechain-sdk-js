@@ -7,13 +7,13 @@ import {
 } from './types';
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { HttpMethod, type HttpClient } from '../../http';
-import { Revision } from '@vechain/sdk-core';
+import { ContractClause, HexUInt, Revision } from '@vechain/sdk-core';
 import { thorest } from '../../utils';
 import { type SimulateTransactionClause } from '../transactions/types';
 
 interface TransactionModuleInterface {
     estimateGas: (
-        clauses: SimulateTransactionClause[],
+        clauses: (SimulateTransactionClause | ContractClause)[],
         caller?: string,
         options?: EstimateGasOptions
     ) => Promise<EstimateGasResult>;
@@ -57,7 +57,7 @@ class GasModule {
      * @throws{InvalidDataType}
      */
     public async estimateGas(
-        clauses: SimulateTransactionClause[],
+        clauses: (SimulateTransactionClause | ContractClause)[],
         caller?: string,
         options?: EstimateGasOptions
     ): Promise<EstimateGasResult> {
@@ -173,6 +173,26 @@ class GasModule {
         }
 
         return response as FeeHistoryResponse;
+    }
+
+    /**
+     * Returns the base fee per gas of the next block.
+     * @returns The base fee per gas of the next block.
+     */
+    public async getNextBlockBaseFeePerGas(): Promise<bigint | null> {
+        const options: FeeHistoryOptions = {
+            blockCount: 1,
+            newestBlock: 'next'
+        };
+        const feeHistory = await this.getFeeHistory(options);
+        if (
+            feeHistory.baseFeePerGas === null ||
+            feeHistory.baseFeePerGas === undefined ||
+            feeHistory.baseFeePerGas.length === 0
+        ) {
+            return null;
+        }
+        return HexUInt.of(feeHistory.baseFeePerGas[0]).bi;
     }
 }
 

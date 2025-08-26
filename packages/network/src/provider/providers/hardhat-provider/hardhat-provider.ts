@@ -1,5 +1,6 @@
 import {
     JSONRPCInternalError,
+    JSONRPCTransactionRevertError,
     stringifyData,
     VechainSDKError
 } from '@vechain/sdk-errors';
@@ -184,16 +185,12 @@ class HardhatVeChainProvider extends VeChainProvider {
                 );
             }
 
+            // eth_call transaction revert error already in correct format
+            if (error instanceof JSONRPCTransactionRevertError) {
+                throw error;
+            }
+
             if (error instanceof VechainSDKError) {
-                // Throw the error
-                // eth_call is a special case, @nomiclabs/truffle-contract uses this error to revert the transaction
-                // @NOTE: Review whether makes sense to handle this case in a different way (error message per RPC method?)
-                if (args.method === 'eth_call') {
-                    throw this.buildHardhatErrorFunctionCallback(
-                        'revert',
-                        error
-                    );
-                }
                 throw this.buildHardhatErrorFunctionCallback(
                     `Error on request ${args.method}: ${error.innerError}`,
                     error

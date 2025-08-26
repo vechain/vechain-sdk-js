@@ -326,7 +326,7 @@ class TransactionsModule {
      * @throws an error if the genesis block or the latest block cannot be retrieved.
      */
     public async buildTransactionBody(
-        clauses: TransactionClause[],
+        clauses: TransactionClause[] | Clause[] | ContractClause['clause'],
         gas: number,
         options?: TransactionBodyOptions
     ): Promise<TransactionBody> {
@@ -353,10 +353,31 @@ class TransactionsModule {
 
         const filledOptions = await this.fillDefaultBodyOptions(options);
 
+        // Process clauses - handle different clause types properly
+        let processedClauses: TransactionClause[];
+
+        if (Array.isArray(clauses)) {
+            // This is a TransactionClause[] or Clause[] - convert to TransactionClause[]
+            processedClauses = clauses.map((clause) => ({
+                to: clause.to,
+                data: clause.data,
+                value: clause.value
+            }));
+        } else {
+            // Single TransactionClause or Clause
+            processedClauses = [
+                {
+                    to: clauses.to,
+                    data: clauses.data,
+                    value: clauses.value
+                }
+            ];
+        }
+
         return {
             blockRef,
             chainTag,
-            clauses: await this.resolveNamesInClauses(clauses),
+            clauses: await this.resolveNamesInClauses(processedClauses),
             dependsOn: options?.dependsOn ?? null,
             expiration: options?.expiration ?? 32,
             gas,
@@ -404,31 +425,56 @@ class TransactionsModule {
         options?: TransactionBodyOptions
     ): Promise<TransactionBodyOptions> {
         options ??= {};
-        if (options.gasPriceCoef !== undefined) {
-            // user specified legacy fee type
+
+        // Check for invalid parameter combinations first
+        const hasMaxFeePerGas = options.maxFeePerGas !== undefined;
+        const hasMaxPriorityFeePerGas =
+            options.maxPriorityFeePerGas !== undefined;
+        const hasGasPriceCoef = options.gasPriceCoef !== undefined;
+
+        // Case 3: maxPriorityFeePerGas + gasPriceCoef (error)
+        if (hasMaxPriorityFeePerGas && hasGasPriceCoef && !hasMaxFeePerGas) {
+            throw new InvalidDataType(
+                'TransactionsModule.fillDefaultBodyOptions()',
+                'Invalid parameter combination: maxPriorityFeePerGas and gasPriceCoef cannot be used together without maxFeePerGas.',
+                { options }
+            );
+        }
+
+        // Case 4: maxFeePerGas + gasPriceCoef (error)
+        if (hasMaxFeePerGas && hasGasPriceCoef && !hasMaxPriorityFeePerGas) {
+            throw new InvalidDataType(
+                'TransactionsModule.fillDefaultBodyOptions()',
+                'Invalid parameter combination: maxFeePerGas and gasPriceCoef cannot be used together without maxPriorityFeePerGas.',
+                { options }
+            );
+        }
+
+        // Case 1: maxPriorityFeePerGas + maxFeePerGas + gasPriceCoef (only 1 and 2 are used)
+        if (hasMaxPriorityFeePerGas && hasMaxFeePerGas && hasGasPriceCoef) {
+            options.gasPriceCoef = undefined;
+            // Continue with dynamic fee processing below
+        } else if (hasMaxPriorityFeePerGas && hasMaxFeePerGas) {
+            // Case 2: maxPriorityFeePerGas + maxFeePerGas (1 and 2 are used)
+            options.gasPriceCoef = undefined;
+            // Continue with dynamic fee processing below
+        } else if (
+            hasGasPriceCoef &&
+            !hasMaxPriorityFeePerGas &&
+            !hasMaxFeePerGas
+        ) {
+            // Case 5: gasPriceCoef only (3 is used - legacy transaction)
             options.maxFeePerGas = undefined;
             options.maxPriorityFeePerGas = undefined;
             return options;
         }
-        if (
-            options.gasPriceCoef !== undefined &&
-            (options.maxFeePerGas !== undefined ||
-                options.maxPriorityFeePerGas !== undefined)
-        ) {
-            // user specified both legacy and dynamic fee type
-            throw new InvalidDataType(
-                'TransactionsModule.fillDefaultBodyOptions()',
-                'Invalid transaction body options. Cannot specify both legacy and dynamic fee type options.',
-                { options }
-            );
-        }
+
         // check if fork happened
         const galacticaHappened =
             await this.forkDetector.isGalacticaForked('best');
         if (
             !galacticaHappened &&
-            (options.maxFeePerGas !== undefined ||
-                options.maxPriorityFeePerGas !== undefined)
+            (hasMaxFeePerGas || hasMaxPriorityFeePerGas)
         ) {
             // user has specified dynamic fee tx, but fork didn't happen yet
             throw new InvalidDataType(
@@ -437,40 +483,31 @@ class TransactionsModule {
                 { options }
             );
         }
-        if (
-            !galacticaHappened &&
-            (options.gasPriceCoef === undefined ||
-                options.gasPriceCoef === null)
-        ) {
+        if (!galacticaHappened && !hasGasPriceCoef) {
             // galactica hasn't happened yet, default is legacy fee
             options.gasPriceCoef = 0;
             return options;
         }
-        if (
-            galacticaHappened &&
-            options.maxFeePerGas !== undefined &&
-            options.maxPriorityFeePerGas !== undefined
-        ) {
+        if (galacticaHappened && hasMaxFeePerGas && hasMaxPriorityFeePerGas) {
             // galactica happened, user specified new fee type
             return options;
         }
         // default to dynamic fee tx
         options.gasPriceCoef = undefined;
 
-        // Get best block base fee per gas
-        const bestBlockBaseFeePerGas =
-            await this.blocksModule.getBestBlockBaseFeePerGas();
+        // Get next block base fee per gas
+        const biNextBlockBaseFeePerGas =
+            await this.gasModule.getNextBlockBaseFeePerGas();
         if (
-            bestBlockBaseFeePerGas === null ||
-            bestBlockBaseFeePerGas === undefined
+            biNextBlockBaseFeePerGas === null ||
+            biNextBlockBaseFeePerGas === undefined
         ) {
             throw new InvalidDataType(
                 'TransactionsModule.fillDefaultBodyOptions()',
-                'Invalid transaction body options. Unable to get best block base fee per gas.',
+                'Invalid transaction body options. Unable to get next block base fee per gas.',
                 { options }
             );
         }
-        const biBestBlockBaseFeePerGas = HexUInt.of(bestBlockBaseFeePerGas).bi;
 
         // set maxPriorityFeePerGas if not specified already
         if (
@@ -481,7 +518,7 @@ class TransactionsModule {
             // and the HIGH speed threshold (min(0.046*baseFee, 75_percentile))
             const defaultMaxPriorityFeePerGas =
                 await this.calculateDefaultMaxPriorityFeePerGas(
-                    biBestBlockBaseFeePerGas
+                    biNextBlockBaseFeePerGas
                 );
             options.maxPriorityFeePerGas = defaultMaxPriorityFeePerGas;
         }
@@ -495,8 +532,10 @@ class TransactionsModule {
             const biMaxPriorityFeePerGas = HexUInt.of(
                 options.maxPriorityFeePerGas
             ).bi;
+            // maxFeePerGas = 1.12 * baseFeePerGas + maxPriorityFeePerGas
             const biMaxFeePerGas =
-                biBestBlockBaseFeePerGas + biMaxPriorityFeePerGas;
+                (112n * biNextBlockBaseFeePerGas) / 100n +
+                biMaxPriorityFeePerGas;
             options.maxFeePerGas = HexUInt.of(biMaxFeePerGas).toString();
         }
         return options;
@@ -657,7 +696,7 @@ class TransactionsModule {
         if (
             revision !== undefined &&
             revision !== null &&
-            !Revision.isValid(revision)
+            !Revision.isValid(revision.toString())
         ) {
             throw new InvalidDataType(
                 'TransactionsModule.simulateTransaction()',
@@ -668,9 +707,9 @@ class TransactionsModule {
 
         return (await this.blocksModule.httpClient.http(
             HttpMethod.POST,
-            thorest.accounts.post.SIMULATE_TRANSACTION(revision),
+            thorest.accounts.post.SIMULATE_TRANSACTION(revision?.toString()),
             {
-                query: buildQuery({ revision }),
+                query: buildQuery({ revision: revision?.toString() }),
                 body: {
                     clauses: await this.resolveNamesInClauses(
                         clauses.map((clause) => {
@@ -818,15 +857,32 @@ class TransactionsModule {
      * @see {@link TransactionsModule#simulateTransaction}
      */
     public async estimateGas(
-        clauses: SimulateTransactionClause[],
+        clauses: (SimulateTransactionClause | ContractClause)[],
         caller?: string,
         options?: EstimateGasOptions
     ): Promise<EstimateGasResult> {
-        // Clauses must be an array of clauses with at least one clause
-        if (clauses.length <= 0) {
+        // Normalize to SimulateTransactionClause[]
+        const clausesToEstimate: SimulateTransactionClause[] = clauses.map(
+            (clause) => {
+                if ('clause' in clause) {
+                    if (!clause.clause) {
+                        throw new InvalidDataType(
+                            'TransactionsModule.estimateGas()',
+                            'Invalid ContractClause provided: missing inner clause.',
+                            { clause }
+                        );
+                    }
+                    return clause.clause;
+                }
+                return clause;
+            }
+        );
+
+        // Validate the normalized set is non-empty
+        if (clausesToEstimate.length === 0) {
             throw new InvalidDataType(
-                'GasModule.estimateGas()',
-                'Invalid clauses. Clauses must be an array of clauses with at least one clause.',
+                'TransactionsModule.estimateGas()',
+                'Invalid clauses. Clauses must be an array with at least one clause.',
                 { clauses, caller, options }
             );
         }
@@ -844,7 +900,7 @@ class TransactionsModule {
         }
 
         // Simulate the transaction to get the simulations of each clause
-        const simulations = await this.simulateTransaction(clauses, {
+        const simulations = await this.simulateTransaction(clausesToEstimate, {
             caller,
             ...options
         });
@@ -855,7 +911,9 @@ class TransactionsModule {
         });
 
         // The intrinsic gas of the transaction
-        const intrinsicGas = Number(Transaction.intrinsicGas(clauses).wei);
+        const intrinsicGas = Number(
+            Transaction.intrinsicGas(clausesToEstimate).wei
+        );
 
         // totalSimulatedGas represents the summation of all clauses' gasUsed
         const totalSimulatedGas = simulations.reduce((sum, simulation) => {

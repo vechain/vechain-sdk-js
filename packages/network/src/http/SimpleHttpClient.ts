@@ -2,6 +2,7 @@ import { HttpMethod } from './HttpMethod';
 import { InvalidHTTPParams, InvalidHTTPRequest } from '@vechain/sdk-errors';
 import { type HttpClient } from './HttpClient';
 import { type HttpParams } from './HttpParams';
+import { logRequest, logResponse, logError } from './trace-logger';
 
 /**
  * This class implements the HttpClient interface using the Fetch API.
@@ -95,8 +96,11 @@ class SimpleHttpClient implements HttpClient {
         const timeoutId = setTimeout(() => {
             controller.abort();
         }, this.timeout);
-        // setup
-        let url: URL;
+
+        let url: URL | undefined;
+        let requestStartTime = Date.now(); // Initialize with current timestamp
+        let headerObj: Record<string, string> = {};
+
         try {
             // Remove leading slash from path
             if (path.startsWith('/')) {
@@ -107,74 +111,121 @@ class SimpleHttpClient implements HttpClient {
             if (!baseURL.endsWith('/')) {
                 baseURL += '/';
             }
-            url = new URL(path, baseURL);
-            if (params?.query != null) {
+            // Check if path is already a fully qualified URL
+            if (/^https?:\/\//.exec(path)) {
+                url = new URL(path);
+            } else {
+                url = new URL(path, baseURL);
+            }
+
+            if (params?.query && url !== undefined) {
                 Object.entries(params.query).forEach(([key, value]) => {
-                    url.searchParams.append(key, String(value));
+                    (url as URL).searchParams.append(key, String(value));
                 });
             }
+
+            if (
+                params?.query !== undefined &&
+                params?.query != null &&
+                url !== undefined
+            ) {
+                Object.entries(params.query).forEach(([key, value]) => {
+                    (url as URL).searchParams.append(key, String(value));
+                });
+            }
+
             const headers = new Headers(this.headers);
             if (params?.headers !== undefined && params?.headers != null) {
                 Object.entries(params.headers).forEach(([key, value]) => {
                     headers.append(key, String(value));
                 });
             }
-        } catch (error) {
-            throw new InvalidHTTPParams(
-                'HttpClient.http()',
-                (error as Error).message,
-                {
-                    method,
-                    url: !this.isValidUrl(this.baseURL)
-                        ? path
-                        : new URL(path, this.baseURL).toString()
-                },
-                error
-            );
-        }
-        // send request
-        try {
-            const response = await fetch(url, {
+
+            // Convert Headers to plain object for logging
+            headerObj = Object.fromEntries(headers.entries());
+
+            // Log the request
+            requestStartTime = logRequest(
                 method,
-                headers: params?.headers as HeadersInit,
+                url.toString(),
+                headerObj,
+                method !== HttpMethod.GET ? params?.body : undefined
+            );
+
+            // Send request
+            const response = await fetch(url.toString(), {
+                method,
+                headers,
                 body:
                     method !== HttpMethod.GET
                         ? JSON.stringify(params?.body)
                         : undefined,
                 signal: controller.signal
             });
+
+            const responseHeaders = Object.fromEntries(
+                response.headers.entries()
+            );
+
             if (response.ok) {
-                const responseHeaders = Object.fromEntries(
-                    response.headers.entries()
-                );
                 if (
                     params?.validateResponseHeader != null &&
                     responseHeaders != null
                 ) {
                     params.validateResponseHeader(responseHeaders);
                 }
-                return (await response.json()) as unknown;
+
+                // Parse response body
+                // Using explicit type annotation to handle the 'any' returned by response.json()
+                const responseBody: unknown = await response.json();
+
+                // Log the successful response
+                logResponse(
+                    requestStartTime,
+                    url.toString(),
+                    responseHeaders,
+                    responseBody
+                );
+
+                // Return the responseBody as unknown rather than 'any'
+                return responseBody;
             }
-            // get error message from response
-            const errorMessage = await response.clone().text();
-            throw new Error(
-                `HTTP ${response.status} ${response.statusText} ${errorMessage}`,
-                {
-                    cause: response
-                }
-            );
+
+            throw new Error(`HTTP ${response.status} ${response.statusText}`, {
+                cause: response
+            });
         } catch (error) {
-            throw new InvalidHTTPRequest(
-                'HttpClient.http()',
-                (error as Error).message,
-                {
-                    method,
-                    url: !this.isValidUrl(this.baseURL)
-                        ? path
-                        : new URL(path, this.baseURL).toString()
-                },
-                error
-            );
+            // Different error handling based on whether it's a params error or request error
+            if (url) {
+                // Log the error if url is defined (request was started)
+                const urlString = url.toString();
+                logError(requestStartTime, urlString, method, error);
+
+                throw new InvalidHTTPRequest(
+                    'HttpClient.http()',
+                    (error as Error).message,
+                    {
+                        method,
+                        url: urlString
+                    },
+                    error
+                );
+            } else {
+                // Parameter error before request was even started
+                const fallbackUrl = !this.isValidUrl(this.baseURL)
+                    ? path
+                    : new URL(path, this.baseURL).toString();
+
+                throw new InvalidHTTPParams(
+                    'HttpClient.http()',
+                    (error as Error).message,
+                    {
+                        method,
+                        url: fallbackUrl
+                    },
+                    error
+                );
+            }
         } finally {
             clearTimeout(timeoutId);
         }

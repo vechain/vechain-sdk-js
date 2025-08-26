@@ -10,10 +10,10 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                node: [18, lts/*, latest]
+                node: [20, lts/*, 24]
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
 
             - name: Setup Node
               uses: actions/setup-node@v4
@@ -93,7 +93,7 @@ jobs:
 
             - name: Archive coverage
               if: always() &&matrix.node == 'lts/*' && (steps.stop-solo.outcome == 'success')
-              uses: actions/upload-artifact@v4.4.3
+              uses: actions/upload-artifact@v4.6.2
               with:
                 name: coverage-results
                 path: |

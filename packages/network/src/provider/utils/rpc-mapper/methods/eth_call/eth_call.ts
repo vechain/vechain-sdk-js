@@ -1,6 +1,7 @@
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
+    JSONRPCTransactionRevertError,
     stringifyData
 } from '@vechain/sdk-errors';
 import {
@@ -54,7 +55,7 @@ const ethCall = async (
                 } satisfies SimulateTransactionClause
             ],
             {
-                revision: DefaultBlockToRevision(block).toString(),
+                revision: DefaultBlockToRevision(block),
                 gas:
                     inputOptions.gas !== undefined
                         ? parseInt(inputOptions.gas, 16)
@@ -65,20 +66,18 @@ const ethCall = async (
         );
 
         if (simulatedTx[0].reverted) {
-            throw new JSONRPCInternalError(
-                'eth_call()',
-                'Method "eth_call" failed when simulating the transaction.',
-                {
-                    params: stringifyData(params),
-                    innerError: simulatedTx[0].vmError
-                }
+            throw new JSONRPCTransactionRevertError(
+                simulatedTx[0].vmError,
+                simulatedTx[0].data
             );
         }
-
         // Return simulated transaction data
         return simulatedTx[0].data;
     } catch (e) {
         if (e instanceof JSONRPCInternalError) {
+            throw e;
+        }
+        if (e instanceof JSONRPCTransactionRevertError) {
             throw e;
         }
         throw new JSONRPCInternalError(
