@@ -8,4 +8,5 @@ on:
 
 jobs:
   semantic-versioning:
+    if: ${{ github.event.pull_request.merged == true }}
     uses: vechain/github-actions/.github/workflows/semantic-versioning.yaml@63a58e80aff4ba11ad29d6cfa8689b1b0a101fdc # v.1.1.2
