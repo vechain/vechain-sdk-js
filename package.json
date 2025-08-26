@@ -34,6 +34,7 @@
         "generate:apidocs": "typedoc --options typedoc.json --logLevel Error",
         "generate:apidocs-debug": "typedoc --options typedoc.json --logLevel Verbose --plugin typedoc-plugin-missing-exports --validation.notDocumented",
         "lint": "turbo lint",
+        "contracts:compile": "hardhat compile",
         "format": "turbo format",
         "test:unit": "turbo test:unit",
         "test:integration": "turbo test:integration",

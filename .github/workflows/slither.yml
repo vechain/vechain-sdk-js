@@ -18,8 +18,8 @@ jobs:
   slither:
     uses: vechain/github-actions/.github/workflows/slither.yaml@57aaf426374fa4d13d91d6039c1cc063a59bbf3c
     with:
-      solc-version: '0.8.20'
-      target: 'contracts'
+      solc-version: '0.8.18'
+      target: 'vechain-sdk-js/packages/solo-setup/contracts/'
       fail-on: 'none'
       cache: 'npm'
       compile-command: 'yarn contracts:compile'
