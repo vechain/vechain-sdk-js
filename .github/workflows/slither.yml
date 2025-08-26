@@ -5,7 +5,7 @@ on:
   pull_request:
   push:
     branches:
-      - develop
+      - main
       - add-slither
   workflow_dispatch:
 
