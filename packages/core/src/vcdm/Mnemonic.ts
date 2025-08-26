@@ -1,8 +1,5 @@
-import {
-    entropyToMnemonic,
-    generateMnemonic,
-    validateMnemonic
-} from '@scure/bip39';
+import * as s_bip32 from '@scure/bip32';
+import * as s_bip39 from '@scure/bip39';
 import { wordlist } from '@scure/bip39/wordlists/english';
 import {
     InvalidDataType,
@@ -10,8 +7,8 @@ import {
     InvalidHDKeyMnemonic,
     InvalidOperation
 } from '@vechain/sdk-errors';
-import { HDKey } from '../hdkey';
 import { type VeChainDataModel } from './VeChainDataModel';
+import { HDKey } from '../hdkey';
 
 /**
  * Type of the wordlist size.
@@ -79,8 +76,9 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
     }
 
     /**
+     * There is no comparison for a mnemonic.
      *
-     * @param that - The mnemonic to compare with.
+     * @throws {InvalidOperation} The mnemonic cannot be compared.
      */
     public compareTo(_that: Mnemonic): number {
         throw new InvalidOperation(
@@ -90,6 +88,11 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
         );
     }
 
+    /**
+     * There is no comparison for a mnemonic.
+     *
+     * @throws {InvalidOperation} The mnemonic cannot be compared.
+     */
     public isEqual(_that: Mnemonic): boolean {
         throw new InvalidOperation(
             'Mnemonic.isEqual',
@@ -130,33 +133,26 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
 
     // Legacy method, probably should be part of a Private Key class (ofMnemonic) #1122
     /**
-     * Derives a private key from a given list of
-     * [BIP39 Mnemonic Words](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
-     * and a derivation path as in the examples.
+     * Derives a private key for the given mnemonic words and derivation path.
      *
-     * @example `m/0` (default)
-     * @example `m/0/2`
-     * @example `m/0/2/4/6`
+     * @param {string[]} words - An array of mnemonic words used to generate the private key.
+     * @param {string} [path=HDKey.VET_DERIVATION_PATH+'/0'] - The BIP32 derivation path to derive the private key.
+     * @return {Uint8Array} The derived private key as a Uint8Array.
+     * @throws {InvalidHDKey} If the provided derivation path is invalid.
      *
-     * @param {string[]} words - The set of words used for mnemonic generation.
-     * @param {string} [path='m/0'] - The derivation path from the current node.
-     *
-     * @returns {Uint8Array} - The derived private key as a Uint8Array.
-     *
-     * @throws {InvalidHDKey}
-     *
-     * @remarks Security auditable method, depends on
-     * * {@link HDKey}.
+     * @remarks Security auditable method, depends on {@link HDKey}.
      */
     public static toPrivateKey(
         words: string[],
-        path: string = 'm/0'
+        path: string = HDKey.VET_DERIVATION_PATH + '/0'
     ): Uint8Array {
-        const root = HDKey.fromMnemonic(words);
+        const master = s_bip32.HDKey.fromMasterSeed(
+            s_bip39.mnemonicToSeedSync(words.join(' ').toLowerCase())
+        );
         // Any exception involving mnemonic words is thrown before this point: words are not leaked next.
         try {
-            // Derived from root, private key is always available.
-            return root.derive(path).privateKey as Uint8Array;
+            // Derived from root, a private key is always available.
+            return master.derive(path).privateKey as Uint8Array;
         } catch (error) {
             throw new InvalidHDKey(
                 'mnemonic.derivePrivateKey()',
@@ -196,12 +192,11 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
             if (randomGenerator != null) {
                 const numberOfBytes = (strength /
                     8) as WordListRandomGeneratorSizeInBytes;
-                return entropyToMnemonic(
-                    randomGenerator(numberOfBytes),
-                    wordlist
-                ).split(' ');
+                return s_bip39
+                    .entropyToMnemonic(randomGenerator(numberOfBytes), wordlist)
+                    .split(' ');
             }
-            return generateMnemonic(wordlist, strength).split(' ');
+            return s_bip39.generateMnemonic(wordlist, strength).split(' ');
         } catch (error) {
             throw new InvalidHDKeyMnemonic(
                 'Mnemonic.of',
@@ -224,7 +219,7 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
      */
     public static isValid(words: string | string[]): boolean {
         const wordsToValidate = Array.isArray(words) ? words.join(' ') : words;
-        return validateMnemonic(wordsToValidate, wordlist);
+        return s_bip39.validateMnemonic(wordsToValidate, wordlist);
     }
 }
 

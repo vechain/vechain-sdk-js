@@ -96,4 +96,105 @@ describe('Units namespace tests', () => {
             expect(actual.bi).toEqual(expected);
         });
     });
+
+    describe('convertUnits method tests', () => {
+        test('wei to 1 gwei', () => {
+            const value = FixedPointNumber.of(1000000000n);
+            const expected = FixedPointNumber.of(1n);
+            const actual = Units.convertUnits(value, Units.wei, Units.gwei);
+            expect(actual.eq(expected)).toBe(true);
+        });
+        test('gwei to 1 wei', () => {
+            const value = FixedPointNumber.of(1n);
+            const expected = FixedPointNumber.of(1000000000n);
+            const actual = Units.convertUnits(value, Units.gwei, Units.wei);
+            expect(actual.eq(expected)).toBe(true);
+        });
+        test('wei to 1 ether', () => {
+            const value = FixedPointNumber.of(1000000000000000000n);
+            const expected = FixedPointNumber.of(1n);
+            const actual = Units.convertUnits(value, Units.wei, Units.ether);
+            expect(actual.eq(expected)).toBe(true);
+        });
+        test('1 ether to wei', () => {
+            const value = FixedPointNumber.of(1n);
+            const expected = FixedPointNumber.of(1000000000000000000n);
+            const actual = Units.convertUnits(value, Units.ether, Units.wei);
+            expect(actual.eq(expected)).toBe(true);
+        });
+        test('1 ether to gwei', () => {
+            const value = FixedPointNumber.of(1n);
+            const expected = FixedPointNumber.of(1000000000n);
+            const actual = Units.convertUnits(value, Units.ether, Units.gwei);
+            expect(actual.eq(expected)).toBe(true);
+        });
+        test('1000 gwei to ether', () => {
+            const value = FixedPointNumber.of(1000n);
+            const expected = FixedPointNumber.of('0.000001');
+            const actual = Units.convertUnits(value, Units.gwei, Units.ether);
+            expect(actual.eq(expected)).toBe(true);
+        });
+        test('1000 gwei to wei', () => {
+            const value = FixedPointNumber.of(1000n);
+            const expected = FixedPointNumber.of(1000000000000n);
+            const actual = Units.convertUnits(value, Units.gwei, Units.wei);
+            expect(actual.eq(expected)).toBe(true);
+        });
+        test('1000000000 wei to ether', () => {
+            const value = FixedPointNumber.of(1000000000n);
+            const expected = FixedPointNumber.of('0.000000001');
+            const actual = Units.convertUnits(value, Units.wei, Units.ether);
+            expect(actual.eq(expected)).toBe(true);
+        });
+        test('1000000000 wei to gwei', () => {
+            const value = FixedPointNumber.of(1000000000n);
+            const expected = FixedPointNumber.of(1n);
+            const actual = Units.convertUnits(value, Units.wei, Units.gwei);
+            expect(actual.eq(expected)).toBe(true);
+        });
+        test('1 wei to ether', () => {
+            const value = FixedPointNumber.of(1n);
+            const expected = FixedPointNumber.of('0.000000000000000001');
+            const actual = Units.convertUnits(value, Units.wei, Units.ether);
+            expect(actual.eq(expected)).toBe(true);
+        });
+        test('wei to wei', () => {
+            const value = FixedPointNumber.of(1000000000n);
+            const expected = FixedPointNumber.of(1000000000n);
+            const actual = Units.convertUnits(value, Units.wei, Units.wei);
+            expect(actual.eq(expected)).toBe(true);
+        });
+        test('100 mwei to wei', () => {
+            const value = FixedPointNumber.of(100n);
+            const expected = FixedPointNumber.of(100000000n);
+            const actual = Units.convertUnits(value, Units.mwei, Units.wei);
+            expect(actual.eq(expected)).toBe(true);
+        });
+    });
+
+    describe('formatFromUnits method tests', () => {
+        test('wei to gwei', () => {
+            const value = FixedPointNumber.of(1000000000n);
+            const expected = '1';
+            const actual = Units.formatFromUnits(value, Units.wei, Units.gwei);
+            expect(actual).toEqual(expected);
+        });
+        test('wei to ether', () => {
+            const value = FixedPointNumber.of(1000000000n);
+            const expected = '0.000000001';
+            const actual = Units.formatFromUnits(value, Units.wei, Units.ether);
+            expect(actual).toEqual(expected);
+        });
+        test('wei to ether with displayDecimals', () => {
+            const value = FixedPointNumber.of(1000000000n);
+            const expected = '0.00';
+            const actual = Units.formatFromUnits(
+                value,
+                Units.wei,
+                Units.ether,
+                2
+            );
+            expect(actual).toEqual(expected);
+        });
+    });
 });

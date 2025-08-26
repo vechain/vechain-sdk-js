@@ -165,7 +165,7 @@ const estimateGasTestCases = {
             expected: {
                 revertReasons: ['Panic(0x01)'], // 0x01: If you call assert with an argument that evaluates to false.
                 reverted: true,
-                totalGas: 37009,
+                totalGas: 36829,
                 vmErrors: ['execution reverted']
             }
         },
@@ -225,7 +225,7 @@ const estimateGasTestCases = {
             options: {},
             expected: {
                 reverted: false,
-                totalGas: 115954,
+                totalGas: 115768,
                 revertReasons: [],
                 vmErrors: []
             }
@@ -286,6 +286,32 @@ const estimateGasTestCases = {
             expected: {
                 reverted: false,
                 totalGas: 44400, // 37000 + 20%
+                revertReasons: [],
+                vmErrors: []
+            }
+        },
+        {
+            description:
+                'Should estimate gas cost correct and have an integer as gas, when gasPadding should add a decimal',
+            clauses: [
+                {
+                    to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+                    value: Units.parseEther('1').toString(),
+                    data: '0x'
+                },
+                {
+                    to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+                    value: Units.parseEther('1').toString(),
+                    data: '0x'
+                }
+            ],
+            caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address,
+            options: {
+                gasPadding: 0.113458 // 11.3458%
+            },
+            expected: {
+                reverted: false,
+                totalGas: 41198, // 37000 + 11.3458% = 41197.946
                 revertReasons: [],
                 vmErrors: []
             }

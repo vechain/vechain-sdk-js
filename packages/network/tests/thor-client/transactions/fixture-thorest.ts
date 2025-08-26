@@ -19,6 +19,7 @@ const transactionDetails = {
             expected: {
                 id: '0x46d195f69e1ac3922d42c207e4705a3d1642883d97e58f7efc72f179ea326adb',
                 chainTag: 39,
+                type: 0,
                 blockRef: '0x010284a0b704e751',
                 expiration: 2000,
                 clauses: [
@@ -338,7 +339,7 @@ const simulateTransaction = {
                              *
                              * @link see [thor/params.go](https://github.com/vechain/thor/blob/master/thor/params.go)
                              */
-                            data: '0x00000000000000000000000000000000000000000000000000038d7ea4c68000',
+                            data: '0x000000000000000000000000000000000000000000000000000009184e72a000',
                             events: [],
                             transfers: [],
                             gasUsed: 591,

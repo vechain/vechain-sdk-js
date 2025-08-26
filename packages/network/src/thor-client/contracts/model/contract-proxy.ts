@@ -1,6 +1,7 @@
 import {
     Address,
     Clause,
+    type ContractClause,
     type TransactionClause,
     Units,
     VET
@@ -19,7 +20,6 @@ import type {
 import { type VeChainSigner } from '../../../signer';
 import { type FilterCriteria } from '../../logs';
 import { type SendTransactionResult } from '../../transactions/types';
-import { type ContractClause } from '../types';
 import { type Contract } from './contract';
 import { ContractFilter } from './contract-filter';
 import {
@@ -35,8 +35,8 @@ import {
 } from './types';
 
 /**
- * Creates a Proxy object for reading contract state, allowing for the dynamic invocation of contract read operations.
- * @param contract - The contract instance to create the read proxy for.
+ * Creates a Proxy object for reading contract functions, allowing for the dynamic invocation of contract read operations.
+ * @param contract - The contract instance
  * @returns A Proxy that intercepts calls to read contract functions, automatically handling the invocation with the configured options.
  */
 function getReadProxy<TAbi extends Abi>(
@@ -91,7 +91,9 @@ function getReadProxy<TAbi extends Abi>(
                         }
                     );
                 }
-                return executeCallResult.result.array as unknown[];
+
+                // Return the properly typed result based on the function's outputs
+                return executeCallResult.result.array ?? [];
             };
         }
     });
@@ -151,7 +153,9 @@ function getTransactProxy<TAbi extends Abi>(
                     {
                         ...transactionOptions,
                         value:
-                            transactionOptions.value ?? transactionValue ?? 0,
+                            transactionOptions.value ??
+                            transactionValue ??
+                            '0x0',
                         comment: clauseComment,
                         includeABI: true
                     }
@@ -335,9 +339,11 @@ function extractAndRemoveAdditionalOptions(args: unknown[]): {
  * @returns The transaction value object, if found in the arguments list.
  */
 function getTransactionValue(args: unknown[]): TransactionValue | undefined {
-    return args.find((arg) => isTransactionValue(arg)) as
-        | TransactionValue
-        | undefined;
+    const found = args.find((arg) => isTransactionValue(arg));
+    if (!found) return undefined;
+    return {
+        value: (found.value as number | string | bigint).toString()
+    } as TransactionValue;
 }
 
 /**

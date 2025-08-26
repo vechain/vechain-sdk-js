@@ -30,7 +30,7 @@ const body: TransactionBody = {
     expiration: 32, // tx will expire after block #16772280 + 32
     clauses,
     gasPriceCoef: 0,
-    gas: HexUInt.of(Transaction.intrinsicGas(clauses).wei).toString(), // use thor.gas.estimateGas() for better estimation
+    gas: HexUInt.of(Transaction.intrinsicGas(clauses).wei).toString(), // use thor.transaction.estimateGas() for better estimation
     dependsOn: null,
     nonce: 1
 };

@@ -18,12 +18,13 @@ describe('Using eth_getTransactionCount with random value (not the default 0x0 v
      */
     let hre: HardhatRuntimeEnvironment;
 
-    beforeEach(async function () {
+    beforeEach(function () {
         // Set hardhat context
         setHardhatContext('eth_getTransactionCount-random-value-project');
 
-        // Load hardhat environment
-        hre = await import('hardhat');
+        // Load hardhat environment using require instead of dynamic import
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        hre = require('hardhat') as HardhatRuntimeEnvironment;
     });
 
     afterEach(function () {

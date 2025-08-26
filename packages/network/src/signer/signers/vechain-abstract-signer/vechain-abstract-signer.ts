@@ -5,6 +5,7 @@ import {
     Hex,
     HexUInt,
     Keccak256,
+    Revision,
     Txt,
     type TransactionBody,
     type TransactionClause
@@ -25,6 +26,7 @@ import {
     type TypedDataParameter,
     type VeChainSigner
 } from '../types';
+import type { TypedDataDomain as viemTypedDataDomain } from 'viem';
 
 /**
  * Abstract VeChain signer.
@@ -185,7 +187,10 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
                 chainTag: populatedTransaction.chainTag ?? undefined,
                 dependsOn: populatedTransaction.dependsOn ?? undefined,
                 expiration: populatedTransaction.expiration,
-                gasPriceCoef: populatedTransaction.gasPriceCoef ?? undefined
+                gasPriceCoef: populatedTransaction.gasPriceCoef ?? undefined,
+                maxPriorityFeePerGas:
+                    populatedTransaction.maxPriorityFeePerGas ?? undefined,
+                maxFeePerGas: populatedTransaction.maxFeePerGas ?? undefined
             }
         );
     }
@@ -221,7 +226,7 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         );
 
         // 3 - Estimate gas
-        const gasEstimation = await thorClient.gas.estimateGas(
+        const gasEstimation = await thorClient.transactions.estimateGas(
             populatedTransaction.clauses ??
                 this._buildClauses(populatedTransaction),
             populatedTransaction.from as string
@@ -247,7 +252,7 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
      */
     async call(
         transactionToEvaluate: TransactionRequestInput,
-        revision?: string
+        revision?: Revision
     ): Promise<string> {
         // 1 - Get the thor client
         if ((this.provider as AvailableVeChainProviders) === undefined) {
@@ -426,9 +431,33 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         primaryType?: string
     ): Promise<string> {
         try {
+            const viemDomain: viemTypedDataDomain = {
+                chainId: undefined,
+                name: domain.name,
+                salt: domain.salt,
+                verifyingContract: domain.verifyingContract,
+                version: domain.version
+            };
+            // convert chainId
+            if (domain.chainId !== undefined) {
+                if (
+                    typeof domain.chainId === 'string' ||
+                    typeof domain.chainId === 'number'
+                ) {
+                    viemDomain.chainId = BigInt(domain.chainId);
+                } else if (typeof domain.chainId === 'bigint') {
+                    viemDomain.chainId = domain.chainId;
+                } else {
+                    throw new InvalidDataType(
+                        'VeChainAbstractSigner.signTypedData',
+                        'Invalid chainId type.',
+                        { chainId: domain.chainId }
+                    );
+                }
+            }
             const payload = Hex.of(
                 hashTypedData({
-                    domain,
+                    domain: viemDomain,
                     types,
                     primaryType: primaryType ?? this.deducePrimaryType(types), // Deduce the primary type if not provided
                     message
@@ -481,7 +510,17 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
             : // If 'to' address is not provided, it will be assumed that the transaction is a contract creation transaction.
               [
                   Clause.deployContract(
-                      HexUInt.of(transaction.data ?? 0)
+                      HexUInt.of(transaction.data ?? 0),
+                      undefined,
+                      {
+                          value:
+                              transaction.value === undefined
+                                  ? transaction.value
+                                  : HexUInt.of(transaction.value).toString(
+                                        true
+                                    ),
+                          comment: transaction.comment
+                      }
                   ) as TransactionClause
               ];
     }

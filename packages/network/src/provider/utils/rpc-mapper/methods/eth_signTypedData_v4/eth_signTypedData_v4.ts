@@ -20,7 +20,7 @@ import type { VeChainProvider } from '../../../../providers/vechain-provider';
  * @param thorClient - The thor client instance to use.
  * @param params - The standard array of rpc call parameters.
  *               * params[0]: The hex encoded address of the account to sign the typed message.
- *               * params[1] An object containing:
+ *               * params[1] An object or a JSON string containing:
  *                   * types - An array of EIP712Domain object. It is an array specifying one or more (name, version, chainId, verifyingContract) tuples.
  *                   * domain - Contains the domain separator values specified in the EIP712Domain type.
  *                   * primaryType: A string specifying the name of the primary type for the message.
@@ -38,7 +38,7 @@ const ethSignTypedDataV4 = async (
         params.length !== 2 ||
         typeof params[0] !== 'string' ||
         !Address.isValid(params[0]) ||
-        typeof params[1] !== 'object'
+        (typeof params[1] !== 'object' && typeof params[1] !== 'string')
     )
         throw new JSONRPCInvalidParams(
             'eth_signTypedDataV4',
@@ -59,15 +59,59 @@ const ethSignTypedDataV4 = async (
     }
 
     // Input params
-    const [address, typedData] = params as [
-        string,
-        {
-            primaryType: string;
-            domain: TypedDataDomain;
-            types: Record<string, TypedDataParameter[]>;
-            message: Record<string, unknown>;
+    const [address] = params as [string, unknown];
+    let typedData: {
+        primaryType: string;
+        domain: TypedDataDomain;
+        types: Record<string, TypedDataParameter[]>;
+        message: Record<string, unknown>;
+    };
+
+    // Parse typedData if it's a string
+    if (typeof params[1] === 'string') {
+        try {
+            const parsed = JSON.parse(params[1]) as {
+                primaryType: string;
+                domain: TypedDataDomain;
+                types: Record<string, TypedDataParameter[]>;
+                message: Record<string, unknown>;
+            };
+            const isObject =
+                typeof parsed === 'object' &&
+                parsed !== null &&
+                !Array.isArray(parsed);
+            const hasFields =
+                'primaryType' in parsed &&
+                'domain' in parsed &&
+                'types' in parsed &&
+                'message' in parsed;
+            if (!isObject || !hasFields) {
+                throw new JSONRPCInvalidParams(
+                    'eth_signTypedDataV4',
+                    'Invalid typedData structure',
+                    { params }
+                );
+            }
+            typedData = parsed;
+        } catch (error) {
+            throw new JSONRPCInvalidParams(
+                'eth_signTypedData_v4',
+                'Invalid JSON string for typed data parameter',
+                { params },
+                error
+            );
         }
-    ];
+    } else {
+        typedData = params[1] as typeof typedData;
+    }
+    // check domain is an object
+    if (typeof typedData.domain !== 'object' || typedData.domain === null) {
+        throw new JSONRPCInvalidParams(
+            'eth_signTypedDataV4',
+            'Invalid typedData structure',
+            { params }
+        );
+    }
 
     try {
         // Get the signer of the provider
