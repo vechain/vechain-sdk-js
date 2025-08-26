@@ -39,19 +39,24 @@ jobs:
     steps:
       - name: Notify Slack (PR opened)
         if: ${{ github.event.action == 'opened' }}
+        shell: bash
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_USER: ${{ github.event.pull_request.user.login }}
+          BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
         run: |
-          PR_URL="${{ github.event.pull_request.html_url }}"
-          PR_TITLE="${{ github.event.pull_request.title }}"
-          PR_USER="${{ github.event.pull_request.user.login }}"
-          BASE_BRANCH="${{ github.event.pull_request.base.ref }}"
-          curl -sS -X POST https://slack.com/api/chat.postMessage \
+          set -euo pipefail
+          PAYLOAD=$(jq -n --arg channel "$SLACK_CHANNEL_ID" \
+                        --arg text "PR opened on ${BASE_BRANCH}: ${PR_TITLE} by ${PR_USER} → ${PR_URL}" \
+                        '{channel:$channel,text:$text}')
+          RESP=$(curl -sS -X POST https://slack.com/api/chat.postMessage \
             -H "Authorization: Bearer ${SLACK_BOT_TOKEN}" \
             -H "Content-type: application/json; charset=utf-8" \
-            --data "{\"channel\":\"${SLACK_CHANNEL_ID}\",\"text\":\"PR opened on ${BASE_BRANCH}: ${PR_TITLE} by ${PR_USER} → ${PR_URL}\"}"
-
+            --data "$PAYLOAD")
+          echo "$RESP" | jq -e '.ok == true' >/dev/null || { echo "Slack post failed"; echo "$RESP" | jq .; exit 1; }
       - name: Notify Slack (PR merged)
         if: ${{ github.event.action == 'closed' && github.event.pull_request.merged == true }}
         env:
