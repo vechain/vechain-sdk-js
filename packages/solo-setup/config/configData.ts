@@ -13,6 +13,8 @@ export interface ConfigData {
     SEED_VTHO_TX_ID: string;
     SEED_TEST_TOKEN_TX_ID: string;
     TEST_TOKEN_ADDRESS: string;
+    EVENTS_CONTRACT_ADDRESS: string;
+    EVENTS_CONTRACT_ABI: any[];
 }
 
 // Get the config file path in the current working directory
@@ -58,10 +60,15 @@ function setConfig(
     seedVetTxId: string,
     seedVthoTxId: string,
     testTokenAddress: string,
-    seedTestTokenTxId: string
+    seedTestTokenTxId: string,
+    eventsContractAddress: string,
+    eventsContractABI: string | any[]
 ): void {
     const parsedAbi = typeof abi === 'string' ? JSON.parse(abi) : abi;
-
+    const parsedEventsContractAbi =
+        typeof eventsContractABI === 'string'
+            ? JSON.parse(eventsContractABI)
+            : eventsContractABI;
     const configData: ConfigData = {
         TESTING_CONTRACT_ADDRESS: address,
         TESTING_CONTRACT_ABI: parsedAbi,
@@ -70,7 +77,9 @@ function setConfig(
         SEED_VET_TX_ID: seedVetTxId,
         SEED_VTHO_TX_ID: seedVthoTxId,
         SEED_TEST_TOKEN_TX_ID: seedTestTokenTxId,
-        TEST_TOKEN_ADDRESS: testTokenAddress
+        TEST_TOKEN_ADDRESS: testTokenAddress,
+        EVENTS_CONTRACT_ADDRESS: eventsContractAddress,
+        EVENTS_CONTRACT_ABI: parsedEventsContractAbi
     };
 
     const configPath = getConfigPath();

@@ -44,13 +44,13 @@ class LogMetaResponse {
     /**
      * The index of the transaction in the block, from which the log was generated.
      */
-    readonly txIndex: number;
+    readonly txIndex: number | undefined;
 
     /**
      * The index of the log in the receipt's outputs.
      * This is an overall index among all clauses.
      */
-    readonly logIndex: number;
+    readonly logIndex: number | undefined;
 
     /**
      * Constructs an instance of the log meta-data represented as a JSON object.
@@ -67,8 +67,14 @@ class LogMetaResponse {
             this.txID = HexUInt32.of(json.txID);
             this.txOrigin = Address.of(json.txOrigin);
             this.clauseIndex = UInt.of(json.clauseIndex).valueOf();
-            this.txIndex = UInt.of(json.txIndex).valueOf();
-            this.logIndex = UInt.of(json.logIndex).valueOf();
+            this.txIndex =
+                json.txIndex != null
+                    ? UInt.of(json.txIndex).valueOf()
+                    : undefined;
+            this.logIndex =
+                json.logIndex != null
+                    ? UInt.of(json.logIndex).valueOf()
+                    : undefined;
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: LogMetaJSON)`,
@@ -92,8 +98,8 @@ class LogMetaResponse {
             txID: this.txID.toString(),
             txOrigin: this.txOrigin.toString(),
             clauseIndex: this.clauseIndex.valueOf(),
-            txIndex: this.txIndex.valueOf(),
-            logIndex: this.logIndex.valueOf()
+            txIndex: this.txIndex?.valueOf() ?? undefined,
+            logIndex: this.logIndex?.valueOf() ?? undefined
         } satisfies LogMetaJSON;
     }
 }

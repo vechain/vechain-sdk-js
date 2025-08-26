@@ -34,10 +34,10 @@ export class TransferLogFilter {
      * @param order - The order of the results.
      */
     constructor(
-        range: FilterRange,
-        options: FilterOptions,
-        criteriaSet: TransferCriteria[],
-        order: LogSort
+        range: FilterRange | null,
+        options: FilterOptions | null,
+        criteriaSet: TransferCriteria[] | null,
+        order: LogSort | null
     ) {
         this.range = range;
         this.options = options;
@@ -54,20 +54,11 @@ export class TransferLogFilter {
      * @param order - The order of the results.
      */
     static of(
-        range: FilterRange,
-        options: FilterOptions,
-        criteriaSet: TransferCriteria[],
-        order: LogSort
+        range: FilterRange | null,
+        options: FilterOptions | null,
+        criteriaSet: TransferCriteria[] | null,
+        order: LogSort | null
     ): TransferLogFilter {
         return new TransferLogFilter(range, options, criteriaSet, order);
-    }
-
-    /**
-     * Converts the current TransferLogFilter instance into a TransferLogFilterRequest instance.
-     *
-     * @return {TransferLogFilterRequest} The TransferLogFilterRequest instance.
-     */
-    toTransferLogFilterRequest(): TransferLogFilterRequest {
-        return new TransferLogFilterRequest(this);
     }
 }

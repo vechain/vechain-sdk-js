@@ -1,5 +1,5 @@
 import { type Address } from '@vcdm';
-import { type LogMeta } from './LogMeta';
+import { LogMeta } from './LogMeta';
 import { type TransferLogResponse } from '@thor/logs/response';
 
 /**
@@ -35,7 +35,7 @@ class TransferLog {
         this.sender = response.sender;
         this.recipient = response.recipient;
         this.amount = response.amount;
-        this.meta = response.meta;
+        this.meta = new LogMeta(response.meta);
     }
 }
 

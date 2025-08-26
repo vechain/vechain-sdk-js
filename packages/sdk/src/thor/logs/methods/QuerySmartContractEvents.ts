@@ -5,10 +5,7 @@ import {
     type ThorRequest,
     type ThorResponse
 } from '@thor';
-import {
-    type EventLogsResponseJSON,
-    type EventLogFilterRequestJSON
-} from '@thor/json';
+import { type EventLogsResponseJSON } from '@thor/json';
 import { type HttpClient, type HttpPath } from '@http';
 import { type EventLogFilter } from '@thor/thor-client/model/logs/EventLogFilter';
 
@@ -38,7 +35,7 @@ class QuerySmartContractEvents
      *
      * @param {EventLogFilterRequest} request - The filter request object that contains parameters for event log filtering.
      */
-    protected constructor(request: EventLogFilterRequest) {
+    constructor(request: EventLogFilterRequest) {
         this.request = request;
     }
 
@@ -98,7 +95,7 @@ class QuerySmartContractEvents
      * @return {QuerySmartContractEvents} A new instance of `QuerySmartContractEvents` initialized with the provided request.
      */
     static of(request: EventLogFilter): QuerySmartContractEvents {
-        return new QuerySmartContractEvents(new EventLogFilterRequest(request));
+        return new QuerySmartContractEvents(EventLogFilterRequest.of(request));
     }
 }
 

@@ -1,55 +1,56 @@
-import { UInt } from '@vcdm';
 import { type FilterOptionsJSON } from '@thor/json';
-import { IllegalArgumentError } from '@errors';
 import { type FilterOptions } from '@thor/thor-client/model/logs/FilterOptions';
 
 /**
- * Full-Qualified-Path(http://localhost:8669/doc/stoplight-ui/#/schemas/FilterOptions)
+ * Filter options for event logs.
  */
-const FQP = 'packages/sdk/src/thor/logs/FilterOptions.ts!';
-
 class FilterOptionsRequest {
     /**
-     Defaults to all results at the API level if not set
-     **/
-    readonly limit: number | null;
-
-    /**
-     Defaults to 0 at the API level if not set
-     **/
-    readonly offset: number | null;
-
-    /**
-     Defaults to false at the API level if not set
-     **/
-    readonly includeIndexes: boolean | null;
-
-    /**
-     * Constructs an instance of the class with the filter options represented as a JSON object.
-     *
-     * @param {FilterOptionsJSON} json - The JSON object containing filter options.
-     * Each property in the JSON object is parsed and converted to its respective type.
-     * @throws {IllegalArgumentError} Thrown when the provided JSON object contains invalid or unparsable data.
+     * The maximum number of results to return.
      */
-    constructor(options: FilterOptions) {
-        try {
-            this.limit = options.limit;
-            this.offset = options.offset;
-            this.includeIndexes = options.includeIndexes;
-        } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: FilterOptionsJSON)`,
-                'Unable to construct FilterOptionsRequest from FilterOptions',
-                { options },
-                error instanceof Error ? error : undefined
-            );
-        }
+    readonly limit?: number;
+
+    /**
+     * The offset for the results (allows for pagination).
+     */
+    readonly offset?: number;
+
+    /**
+     * Whether to include index information in the results.
+     */
+    readonly includeIndexes?: boolean;
+
+    /**
+     * Constructs an instance of the class.
+     *
+     * @param {number} limit - The maximum number of results to return.
+     * @param {number} offset - The offset for the results (allows for pagination).
+     * @param {boolean} includeIndexes - Whether to include index information in the results.
+     */
+    constructor(limit?: number, offset?: number, includeIndexes?: boolean) {
+        this.limit = limit;
+        this.offset = offset;
+        this.includeIndexes = includeIndexes;
     }
 
     /**
-     * Converts the current FilterOptions instance into a JSON representation.
+     * Constructs an instance of the class from a FilterOptions.
      *
-     * @return {FilterOptionsJSON } The JSON object representing the current FilterOptions instance.
+     * @param {FilterOptions} options - The FilterOptions to convert to a FilterOptionsRequest.
+     * @return {FilterOptionsRequest} The FilterOptionsRequest instance created from the FilterOptions.
+     */
+    static of(options: FilterOptions): FilterOptionsRequest {
+        return new FilterOptionsRequest(
+            options.limit ?? undefined,
+            options.offset ?? undefined,
+            options.includeIndexes ?? undefined
+        );
+    }
+
+    /**
+     * Converts into a JSON representation.
+     *
+     * @return {FilterOptionsJSON} The JSON object representing the current FilterOptionsRequest instance.
      */
     toJSON(): FilterOptionsJSON {
         return {

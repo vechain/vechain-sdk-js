@@ -1,65 +1,63 @@
 import { type Address } from '@vcdm';
 import { type TransferCriteriaJSON } from '@thor/json';
-import { IllegalArgumentError } from '@errors';
 import { type TransferCriteria } from '@thor/thor-client/model/logs/TransferCriteria';
 
 /**
- * Full-Qualified-Path
- */
-const FQP = 'packages/sdk/src/thor/logs/TransferCriteria.ts!';
-
-/**
- * [TransferCriteria](http://localhost:8669/doc/stoplight-ui/#/schemas/TransferCriteria)
+ * Filter criteria for transfer events.
  */
 class TransferCriteriaRequest {
     /**
-     * The address from which the transaction was sent.
+     * The address from which the transfer was initiated.
      */
-    readonly txOrigin: Address | null;
+    readonly txOrigin?: Address;
 
     /**
      * The address that sent the VET.
      */
-    readonly sender: Address | null;
+    readonly sender?: Address;
 
     /**
      * The address that received the VET.
      */
-    readonly recipient: Address | null;
+    readonly recipient?: Address;
 
     /**
-     * Constructs a new instance of the class using the provided TransferCriteriaJSON object.
+     * Constructs an instance of the class.
      *
-     * @param {TransferCriteriaJSON} json - The input object containing transfer criteria details. It may contain the properties `txOrigin`, `sender`, and `recipient`.
-     * @throws {IllegalArgumentError}  If the provided JSON object contains invalid or unparsable data.
+     * @param {Address} txOrigin - The address from which the transfer was initiated.
+     * @param {Address} sender - The address that sent the VET.
+     * @param {Address} recipient - The address that received the VET.
      */
-    constructor(criteria: TransferCriteria) {
-        try {
-            this.txOrigin = criteria.txOrigin;
-            this.sender = criteria.sender;
-            this.recipient = criteria.recipient;
-        } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: TransferCriteriaJSON)`,
-                'Unable to construct TransferCriteriaRequest from TransferCriteria',
-                { criteria },
-                error instanceof Error ? error : undefined
-            );
-        }
+    constructor(txOrigin?: Address, sender?: Address, recipient?: Address) {
+        this.txOrigin = txOrigin;
+        this.sender = sender;
+        this.recipient = recipient;
     }
 
     /**
-     * Converts the current TransferCriteria instance into a JSON serializable object.
+     * Constructs an instance of the class from a TransferCriteria.
      *
-     * @return {TransferCriteriaJSON} A JSON representation of the TransferCriteria object.
+     * @param {TransferCriteria} criteria - The TransferCriteria to convert to a TransferCriteriaRequest.
+     * @return {TransferCriteriaRequest} The TransferCriteriaRequest instance created from the TransferCriteria.
+     */
+    static of(criteria: TransferCriteria): TransferCriteriaRequest {
+        return new TransferCriteriaRequest(
+            criteria.txOrigin ?? undefined,
+            criteria.sender ?? undefined,
+            criteria.recipient ?? undefined
+        );
+    }
+
+    /**
+     * Converts into a JSON representation.
+     *
+     * @return {TransferCriteriaJSON} The JSON object representing the current TransferCriteriaRequest instance.
      */
     toJSON(): TransferCriteriaJSON {
         return {
-            txOrigin:
-                this.txOrigin === null ? undefined : this.txOrigin.toString(),
-            sender: this.sender === null ? undefined : this.sender.toString(),
-            recipient:
-                this.recipient === null ? undefined : this.recipient.toString()
+            txOrigin: this.txOrigin?.toString(),
+            sender: this.sender?.toString(),
+            recipient: this.recipient?.toString()
         } satisfies TransferCriteriaJSON;
     }
 }

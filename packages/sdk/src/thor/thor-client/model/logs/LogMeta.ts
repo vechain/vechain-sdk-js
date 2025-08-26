@@ -35,13 +35,13 @@ class LogMeta {
     /**
      * The index of the transaction in the block, from which the log was generated.
      */
-    readonly txIndex: number;
+    readonly txIndex: number | null;
 
     /**
      * The index of the log in the receipt's outputs.
      * This is an overall index among all clauses.
      */
-    readonly logIndex: number;
+    readonly logIndex: number | null;
 
     /**
      * Creates a new LogMeta instance from a LogMetaResponse.
@@ -54,8 +54,8 @@ class LogMeta {
         this.txID = logMeta.txID;
         this.txOrigin = logMeta.txOrigin;
         this.clauseIndex = logMeta.clauseIndex;
-        this.txIndex = logMeta.txIndex;
-        this.logIndex = logMeta.logIndex;
+        this.txIndex = logMeta.txIndex ?? null;
+        this.logIndex = logMeta.logIndex ?? null;
     }
 }
 

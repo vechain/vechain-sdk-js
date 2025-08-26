@@ -5,70 +5,50 @@ import {
     type LogSort
 } from '@thor/logs';
 import { type TransferLogFilterRequestJSON } from '@thor/json';
-import { IllegalArgumentError } from '@errors';
 import { type TransferLogFilter } from '@thor/thor-client/model/logs/TransferLogFilter';
 
 /**
- * Full-Qualified-Path
- */
-const FQP = 'packages/sdk/src/thor/logs/TransferLogFilterRequest.ts!';
-
-/**
- * [TransferLogFilterRequest](http://localhost:8669/doc/stoplight-ui/#/schemas/TransferLogFilterRequest)
+ * Overall filter request for transfer logs.
  */
 class TransferLogFilterRequest {
     /**
-     * Defines the range for filtering. Setting values to null indicates the entire range.
+     * The range for filtering.
      */
-    readonly range: FilterRangeRequest | null;
+    readonly range?: FilterRangeRequest;
 
     /**
      * Include these parameters to receive filtered results in a paged format.
      */
-    readonly options: FilterOptionsRequest | null;
+    readonly options?: FilterOptionsRequest;
 
     /**
      * Transfer criteria.
      */
-    readonly criteriaSet: TransferCriteriaRequest[] | null;
+    readonly criteriaSet?: TransferCriteriaRequest[];
 
     /**
      * Specifies the order of the results. Use asc for ascending order, and desc for descending order.
      */
-    readonly order: LogSort | null;
+    readonly order?: LogSort;
 
     /**
-     * Constructs an instance of the request for the logs of transfers as a JSON object.
+     * Constructs an instance of the class.
      *
-     * @param {TransferLogFilterRequestJSON} json - The JSON object containing filter options.
-     * Each property in the JSON object is parsed and converted to its respective type.
-     * @throws {IllegalArgumentError} Thrown when the provided JSON object contains invalid or unparsable data.
+     * @param {FilterRangeRequest} range - The range for filtering.
+     * @param {FilterOptionsRequest} options - Include these parameters to receive filtered results in a paged format.
+     * @param {TransferCriteriaRequest[]} criteriaSet - Transfer criteria.
+     * @param {LogSort} order - Specifies the order of the results. Use asc for ascending order, and desc for descending order.
      */
-    constructor(filter: TransferLogFilter) {
-        try {
-            this.range =
-                filter.range != null
-                    ? new FilterRangeRequest(filter.range)
-                    : null;
-            this.options =
-                filter.options != null
-                    ? new FilterOptionsRequest(filter.options)
-                    : null;
-            this.criteriaSet =
-                filter.criteriaSet != null
-                    ? filter.criteriaSet.map(
-                          (criteria) => new TransferCriteriaRequest(criteria)
-                      )
-                    : null;
-            this.order = filter.order;
-        } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: TransferLogFilterRequestJSON)`,
-                'Unable to construct TransferLogFilterRequest from TransferLogFilter',
-                { filter },
-                error instanceof Error ? error : undefined
-            );
-        }
+    constructor(
+        range?: FilterRangeRequest,
+        options?: FilterOptionsRequest,
+        criteriaSet?: TransferCriteriaRequest[],
+        order?: LogSort
+    ) {
+        this.range = range;
+        this.options = options;
+        this.criteriaSet = criteriaSet;
+        this.order = order;
     }
 
     /**
@@ -78,7 +58,24 @@ class TransferLogFilterRequest {
      * @return {TransferLogFilterRequest} The TransferLogFilterRequest instance.
      */
     static of(filter: TransferLogFilter): TransferLogFilterRequest {
-        return new TransferLogFilterRequest(filter);
+        return new TransferLogFilterRequest(
+            filter.range != null
+                ? FilterRangeRequest.of(filter.range)
+                : undefined,
+            filter.options != null
+                ? new FilterOptionsRequest(
+                      filter.options.limit ?? undefined,
+                      filter.options.offset ?? undefined,
+                      filter.options.includeIndexes ?? undefined
+                  )
+                : undefined,
+            filter.criteriaSet != null
+                ? filter.criteriaSet.map((criteria) =>
+                      TransferCriteriaRequest.of(criteria)
+                  )
+                : undefined,
+            filter.order ?? undefined
+        );
     }
 
     /**
@@ -88,12 +85,12 @@ class TransferLogFilterRequest {
      */
     toJSON(): TransferLogFilterRequestJSON {
         return {
-            range: this.range === null ? undefined : this.range.toJSON(),
-            options: this.options === null ? undefined : this.options.toJSON(),
+            range: this.range != null ? this.range.toJSON() : undefined,
+            options: this.options != null ? this.options.toJSON() : undefined,
             criteriaSet:
-                this.criteriaSet === null
-                    ? undefined
-                    : this.criteriaSet.map((criteria) => criteria.toJSON()),
+                this.criteriaSet != null
+                    ? this.criteriaSet.map((criteria) => criteria.toJSON())
+                    : undefined,
             order: this.order ?? undefined
         } satisfies TransferLogFilterRequestJSON;
     }
