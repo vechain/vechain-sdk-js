@@ -23,8 +23,9 @@ import {
     VTHO
 } from '../vcdm';
 import { Blake2b256 } from '../vcdm/hash/Blake2b256';
-import { type TransactionBody } from './TransactionBody';
 import type { TransactionClause } from './TransactionClause';
+import { TransactionType } from './TransactionType';
+import { type TransactionBody } from './TransactionBody';
 
 /**
  * Represents an immutable transaction entity.
@@ -54,6 +55,11 @@ class Transaction {
     };
 
     /**
+     * Represents the prefix for raw EIP-1559 transaction type.
+     */
+    private static readonly EIP1559_TX_TYPE_PREFIX = 0x51;
+
+    /**
      * RLP_FIELDS is an array of objects that defines the structure and encoding scheme
      * for various components in a transaction using Recursive Length Prefix (RLP) encoding.
      * Each object in the array represents a field in the transaction, specifying its name and kind.
@@ -73,7 +79,7 @@ class Transaction {
      * - `nonce` - Represent the nonce of the transaction.
      * - `reserved` -  Reserved field.
      */
-    private static readonly RLP_FIELDS = [
+    private static readonly LEGACY_RLP_FIELDS = [
         { name: 'chainTag', kind: new NumericKind(1) },
         { name: 'blockRef', kind: new CompactFixedHexBlobKind(8) },
         { name: 'expiration', kind: new NumericKind(4) },
@@ -91,6 +97,34 @@ class Transaction {
             }
         },
         { name: 'gasPriceCoef', kind: new NumericKind(1) },
+        { name: 'gas', kind: new NumericKind(8) },
+        { name: 'dependsOn', kind: new OptionalFixedHexBlobKind(32) },
+        { name: 'nonce', kind: new NumericKind(8) },
+        { name: 'reserved', kind: { item: new BufferKind() } }
+    ];
+
+    /**
+     * Represents the RLP fields for EIP-1559 transactions.
+     */
+    private static readonly EIP1559_RLP_FIELDS = [
+        { name: 'chainTag', kind: new NumericKind(1) },
+        { name: 'blockRef', kind: new CompactFixedHexBlobKind(8) },
+        { name: 'expiration', kind: new NumericKind(4) },
+        {
+            name: 'clauses',
+            kind: {
+                item: [
+                    {
+                        name: 'to',
+                        kind: new OptionalFixedHexBlobKind(20)
+                    },
+                    { name: 'value', kind: new NumericKind(32) },
+                    { name: 'data', kind: new HexBlobKind() }
+                ]
+            }
+        },
+        { name: 'maxPriorityFeePerGas', kind: new NumericKind(32) },
+        { name: 'maxFeePerGas', kind: new NumericKind(32) },
         { name: 'gas', kind: new NumericKind(8) },
         { name: 'dependsOn', kind: new OptionalFixedHexBlobKind(32) },
         { name: 'nonce', kind: new NumericKind(8) },
@@ -128,10 +162,13 @@ class Transaction {
      * - `name` - A string indicating the name of the field in the RLP structure.
      * - `kind` - RLP profile type.
      */
-    private static readonly RLP_SIGNED_TRANSACTION_PROFILE: RLPProfile = {
-        name: 'tx',
-        kind: Transaction.RLP_FIELDS.concat([Transaction.RLP_SIGNATURE])
-    };
+    private static readonly RLP_SIGNED_LEGACY_TRANSACTION_PROFILE: RLPProfile =
+        {
+            name: 'tx',
+            kind: Transaction.LEGACY_RLP_FIELDS.concat([
+                Transaction.RLP_SIGNATURE
+            ])
+        };
 
     /**
      * Represents a Recursive Length Prefix (RLP) of the unsigned transaction.
@@ -140,15 +177,49 @@ class Transaction {
      * - `name` - A string indicating the name of the field in the RLP structure.
      * - `kind` - RLP profile type.
      */
-    private static readonly RLP_UNSIGNED_TRANSACTION_PROFILE: RLPProfile = {
-        name: 'tx',
-        kind: Transaction.RLP_FIELDS
-    };
+    private static readonly RLP_UNSIGNED_LEGACY_TRANSACTION_PROFILE: RLPProfile =
+        {
+            name: 'tx',
+            kind: Transaction.LEGACY_RLP_FIELDS
+        };
+
+    /**
+     * Represents a Recursive Length Prefix (RLP) of the signed EIP-1559 transaction.
+     *
+     * Properties
+     * - `name` - A string indicating the name of the field in the RLP structure.
+     * - `kind` - RLP profile type.
+     */
+    private static readonly RLP_SIGNED_EIP1559_TRANSACTION_PROFILE: RLPProfile =
+        {
+            name: 'tx',
+            kind: Transaction.EIP1559_RLP_FIELDS.concat([
+                Transaction.RLP_SIGNATURE
+            ])
+        };
+
+    /**
+     * Represents a Recursive Length Prefix (RLP) of the unsigned EIP-1559 transaction.
+     *
+     * Properties
+     * - `name` - A string indicating the name of the field in the RLP structure.
+     * - `kind` - RLP profile type.
+     */
+    private static readonly RLP_UNSIGNED_EIP1559_TRANSACTION_PROFILE: RLPProfile =
+        {
+            name: 'tx',
+            kind: Transaction.EIP1559_RLP_FIELDS
+        };
 
     /**
      * It represents the content of the transaction.
      */
     public readonly body: TransactionBody;
+
+    /**
+     * It represents the type of the transaction.
+     */
+    public readonly transactionType: TransactionType;
 
     /**
      * It represents the signature of the transaction content.
@@ -161,8 +232,13 @@ class Transaction {
      * @param {TransactionBody} body The transaction body to be used.
      * @param {Uint8Array} [signature] The optional signature for the transaction.
      */
-    protected constructor(body: TransactionBody, signature?: Uint8Array) {
+    protected constructor(
+        body: TransactionBody,
+        type: TransactionType,
+        signature?: Uint8Array
+    ) {
         this.body = body;
+        this.transactionType = type;
         this.signature = signature;
     }
 
@@ -337,10 +413,26 @@ class Transaction {
         rawTransaction: Uint8Array,
         isSigned: boolean
     ): Transaction {
+        // check prefix to get tx type
+        const rawPrefix = rawTransaction[0];
+        let txType: TransactionType = TransactionType.Legacy;
+        if (Number(rawPrefix) === Transaction.EIP1559_TX_TYPE_PREFIX) {
+            txType = TransactionType.EIP1559;
+        }
+
         // Get correct decoder profiler
         const profile = isSigned
-            ? Transaction.RLP_SIGNED_TRANSACTION_PROFILE
-            : Transaction.RLP_UNSIGNED_TRANSACTION_PROFILE;
+            ? txType === TransactionType.Legacy
+                ? Transaction.RLP_SIGNED_LEGACY_TRANSACTION_PROFILE
+                : Transaction.RLP_SIGNED_EIP1559_TRANSACTION_PROFILE
+            : txType === TransactionType.Legacy
+              ? Transaction.RLP_UNSIGNED_LEGACY_TRANSACTION_PROFILE
+              : Transaction.RLP_UNSIGNED_EIP1559_TRANSACTION_PROFILE;
+
+        // if eip1559, remove prefix
+        if (txType === TransactionType.EIP1559) {
+            rawTransaction = rawTransaction.slice(1);
+        }
 
         // Get decoded body
         const decodedRLPBody = RLPProfiler.ofObjectEncoded(
@@ -355,8 +447,15 @@ class Transaction {
             dependsOn: decodedRLPBody.dependsOn as string | null,
             expiration: decodedRLPBody.expiration as number,
             gas: decodedRLPBody.gas as number,
-            gasPriceCoef: decodedRLPBody.gasPriceCoef as number,
-            nonce: decodedRLPBody.nonce as number
+            nonce: decodedRLPBody.nonce as number,
+            // Handle both legacy and EIP-1559 gas pricing
+            ...(decodedRLPBody.gasPriceCoef !== undefined
+                ? { gasPriceCoef: decodedRLPBody.gasPriceCoef as number }
+                : {
+                      maxFeePerGas: decodedRLPBody.maxFeePerGas as string,
+                      maxPriorityFeePerGas:
+                          decodedRLPBody.maxPriorityFeePerGas as string
+                  })
         };
         // Create correct transaction body (with correct reserved field)
         const correctTransactionBody: TransactionBody =
@@ -444,13 +543,35 @@ class Transaction {
     }
 
     /**
-     * Return `true` if the transaction body is valid, `false` otherwise.
+     * Validates the transaction body's fields according to the transaction type.
      *
      * @param {TransactionBody} body - The transaction body to validate.
-     * @return {boolean} `true` if the transaction body is valid, `false` otherwise.
+     * @param {TransactionType} type - The transaction type to validate the body against.
+     * @return {boolean} True if the transaction body is valid for the given type.
      */
-    public static isValidBody(body: TransactionBody): boolean {
-        return (
+    public static isValidBody(
+        body: TransactionBody,
+        type: TransactionType
+    ): boolean {
+        // Legacy transactions shouldn't have any EIP-1559 parameters
+        if (
+            type === TransactionType.Legacy &&
+            (body.maxFeePerGas !== undefined ||
+                body.maxPriorityFeePerGas !== undefined)
+        ) {
+            return false;
+        }
+
+        // EIP-1559 transactions shouldn't have legacy parameters
+        if (
+            type === TransactionType.EIP1559 &&
+            body.gasPriceCoef !== undefined
+        ) {
+            return false;
+        }
+
+        // validate common fields
+        const isValidCommonFields =
             // Chain tag
             body.chainTag !== undefined &&
             body.chainTag >= 0 &&
@@ -464,14 +585,59 @@ class Transaction {
             body.expiration !== undefined &&
             // Clauses
             body.clauses !== undefined &&
-            // Gas price coef
-            body.gasPriceCoef !== undefined &&
             // Gas
             body.gas !== undefined &&
             // Depends on
             body.dependsOn !== undefined &&
             // Nonce
-            body.nonce !== undefined
+            body.nonce !== undefined;
+
+        // validate eip1559 fields
+        const isValidEip1559Fields =
+            type === TransactionType.EIP1559 &&
+            body.maxFeePerGas !== undefined &&
+            body.maxPriorityFeePerGas !== undefined &&
+            ((typeof body.maxFeePerGas === 'string' &&
+                Hex.isValid0x(body.maxFeePerGas)) ||
+                typeof body.maxFeePerGas === 'number') &&
+            ((typeof body.maxPriorityFeePerGas === 'string' &&
+                Hex.isValid0x(body.maxPriorityFeePerGas)) ||
+                typeof body.maxPriorityFeePerGas === 'number');
+
+        // validate legacy fields
+        const isValidLegacyFields =
+            type === TransactionType.Legacy && body.gasPriceCoef !== undefined;
+
+        // return true if the transaction body is valid
+        if (type === TransactionType.EIP1559) {
+            return isValidCommonFields && isValidEip1559Fields;
+        }
+        return isValidCommonFields && isValidLegacyFields;
+    }
+
+    /**
+     * Returns the type of the transaction.
+     *
+     * @param {TransactionBody} body - The transaction body to get the type of.
+     * @return {TransactionType} The type of the transaction.
+     */
+    private static getTransactionType(body: TransactionBody): TransactionType {
+        if (body.gasPriceCoef !== undefined) {
+            return TransactionType.Legacy;
+        }
+        if (
+            body.maxFeePerGas !== undefined &&
+            body.maxPriorityFeePerGas !== undefined
+        ) {
+            return TransactionType.EIP1559;
+        }
+        throw new InvalidTransactionField(
+            'Transaction.getTransactionType',
+            'invalid transaction body',
+            {
+                fieldName: 'body',
+                body
+            }
         );
     }
 
@@ -487,8 +653,9 @@ class Transaction {
         body: TransactionBody,
         signature?: Uint8Array
     ): Transaction {
-        if (Transaction.isValidBody(body)) {
-            return new Transaction(body, signature);
+        const txType = Transaction.getTransactionType(body);
+        if (Transaction.isValidBody(body, txType)) {
+            return new Transaction(body, txType, signature);
         }
         throw new InvalidTransactionField('Transaction.of', 'invalid body', {
             fieldName: 'body',
@@ -561,6 +728,7 @@ class Transaction {
                 if (this.signature !== undefined) {
                     return new Transaction(
                         this.body,
+                        this.transactionType,
                         nc_utils.concatBytes(
                             // Drop any previous gas payer signature.
                             this.signature.slice(0, Secp256k1.SIGNATURE_LENGTH),
@@ -570,6 +738,7 @@ class Transaction {
                 } else {
                     return new Transaction(
                         this.body,
+                        this.transactionType,
                         Secp256k1.sign(senderHash, gasPayerPrivateKey)
                     );
                 }
@@ -608,6 +777,7 @@ class Transaction {
                 const transactionHash = this.getTransactionHash().bytes;
                 return new Transaction(
                     this.body,
+                    this.transactionType,
                     Secp256k1.sign(transactionHash, senderPrivateKey)
                 );
             }
@@ -757,7 +927,7 @@ class Transaction {
      */
     private encode(isSigned: boolean): Uint8Array {
         // Encode transaction body with RLP
-        return this.encodeBodyField(
+        const encodedBody = this.encodeBodyField(
             {
                 // Existing body and the optional `reserved` field if present.
                 ...this.body,
@@ -776,6 +946,14 @@ class Transaction {
             },
             isSigned
         );
+        // add prefix if eip1559
+        if (this.transactionType === TransactionType.EIP1559) {
+            return nc_utils.concatBytes(
+                Uint8Array.from([Transaction.EIP1559_TX_TYPE_PREFIX]),
+                encodedBody
+            );
+        }
+        return encodedBody;
     }
 
     /**
@@ -799,13 +977,17 @@ class Transaction {
                     ...body,
                     signature: Uint8Array.from(this.signature as Uint8Array)
                 },
-                Transaction.RLP_SIGNED_TRANSACTION_PROFILE
+                this.transactionType === TransactionType.EIP1559
+                    ? Transaction.RLP_SIGNED_EIP1559_TRANSACTION_PROFILE
+                    : Transaction.RLP_SIGNED_LEGACY_TRANSACTION_PROFILE
             ).encoded;
         }
         // Encode transaction object - UNSIGNED
         return RLPProfiler.ofObject(
             body,
-            Transaction.RLP_UNSIGNED_TRANSACTION_PROFILE
+            this.transactionType === TransactionType.EIP1559
+                ? Transaction.RLP_UNSIGNED_EIP1559_TRANSACTION_PROFILE
+                : Transaction.RLP_UNSIGNED_LEGACY_TRANSACTION_PROFILE
         ).encoded;
     }
 

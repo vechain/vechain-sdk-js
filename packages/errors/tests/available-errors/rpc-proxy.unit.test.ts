@@ -3,6 +3,7 @@ import {
     InvalidCommandLineArguments,
     InvalidConfigurationFile,
     InvalidConfigurationFilePath,
+    JSONRPCTransactionRevertError,
     VechainSDKError
 } from '../../src';
 
@@ -64,5 +65,18 @@ describe('Error package Available errors test - RPC Proxy', () => {
                 );
             }).toThrowError(VechainSDKError);
         });
+    });
+
+    test('JSONRPCTransactionRevertError', () => {
+        expect(() => {
+            throw new JSONRPCTransactionRevertError('message', 'data');
+        }).toThrowError(Error);
+
+        expect(() => {
+            throw new JSONRPCTransactionRevertError(
+                undefined as unknown as string,
+                undefined as unknown as string
+            );
+        }).toThrowError(Error);
     });
 });

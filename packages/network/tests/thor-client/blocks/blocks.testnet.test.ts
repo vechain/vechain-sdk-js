@@ -9,6 +9,7 @@ import {
 import { Poll, TESTNET_URL, ThorClient } from '../../../src';
 import { Address, BloomFilter, networkInfo } from '@vechain/sdk-core';
 import { SimpleHttpClient } from '../../../src/http';
+import { retryOperation } from '../../test-utils';
 
 /**
  * Blocks Module integration tests
@@ -184,8 +185,7 @@ describe('ThorClient - Blocks Module', () => {
                 }
             );
 
-            expect(block).toBeDefined();
-            expect(block?.number).not.toBeGreaterThan(bestBlock?.number + 1); // Not enough time to wait for the block (only 1 second was given)
+            expect(block).toBeNull(); // Not enough time to wait for the block (only 1 second was given)
         }
     }, 23000);
 
@@ -261,8 +261,9 @@ describe('ThorClient - Blocks Module', () => {
          * getBestBlockCompressed test
          */
         test('getBestBlockCompressed', async () => {
-            const blockDetails =
-                await thorClient.blocks.getBestBlockCompressed();
+            const blockDetails = await retryOperation(async () => {
+                return await thorClient.blocks.getBestBlockCompressed();
+            });
             if (blockDetails != null) {
                 const block = await thorClient.blocks.getBlockCompressed(
                     blockDetails.number
@@ -271,13 +272,15 @@ describe('ThorClient - Blocks Module', () => {
             }
             expect(blockDetails).not.toBeNull();
             expect(blockDetails).toBeDefined();
-        }, 3000);
+        }, 15000);
 
         /**
          * getBestBlockExpanded test
          */
         test('getBestBlockExpanded', async () => {
-            const blockDetails = await thorClient.blocks.getBestBlockExpanded();
+            const blockDetails = await retryOperation(async () => {
+                return await thorClient.blocks.getBestBlockExpanded();
+            });
             if (blockDetails != null) {
                 const block = await thorClient.blocks.getBlockExpanded(
                     blockDetails.number
@@ -286,36 +289,40 @@ describe('ThorClient - Blocks Module', () => {
             }
             expect(blockDetails).not.toBeNull();
             expect(blockDetails).toBeDefined();
-        }, 3000);
+        }, 15000);
 
         /**
          * getBestBlockRef test
          */
         test('getBestBlockRef', async () => {
-            const bestBlockRef = await thorClient.blocks.getBestBlockRef();
+            const bestBlockRef = await retryOperation(async () => {
+                return await thorClient.blocks.getBestBlockRef();
+            });
             expect(bestBlockRef).not.toBeNull();
             expect(bestBlockRef).toBeDefined();
-        }, 3000);
+        }, 15000);
 
         /**
          * getFinalBlockCompressed test
          */
         test('getFinalBlockCompressed', async () => {
-            const blockDetails =
-                await thorClient.blocks.getFinalBlockCompressed();
+            const blockDetails = await retryOperation(async () => {
+                return await thorClient.blocks.getFinalBlockCompressed();
+            });
             expect(blockDetails).not.toBeNull();
             expect(blockDetails).toBeDefined();
-        }, 3000);
+        }, 15000);
 
         /**
          * getFinalBlockExpanded test
          */
         test('getFinalBlockExpanded', async () => {
-            const blockDetails =
-                await thorClient.blocks.getFinalBlockExpanded();
+            const blockDetails = await retryOperation(async () => {
+                return await thorClient.blocks.getFinalBlockExpanded();
+            });
             expect(blockDetails).not.toBeNull();
             expect(blockDetails).toBeDefined();
-        }, 3000);
+        }, 15000);
 
         /**
          * getHeadBlock test

@@ -1,21 +1,21 @@
-import type { ContractClause } from '../types';
-import type { SendTransactionResult } from '../../transactions/types';
-import { type ContractFilter } from './contract-filter';
-import type {
-    FilterCriteria,
-    Range,
-    PaginationOptions,
-    EventDisplayOrder
-} from '../../logs';
 import {
     type Abi,
-    type ExtractAbiFunctionNames,
-    type ExtractAbiFunction,
-    type AbiParametersToPrimitiveTypes,
     type AbiFunction,
-    type ExtractAbiEvent
+    type AbiParametersToPrimitiveTypes,
+    type ExtractAbiEvent,
+    type ExtractAbiFunction,
+    type ExtractAbiFunctionNames
 } from 'abitype';
+import { type ContractClause } from '@vechain/sdk-core';
 import { type GetEventArgs } from 'viem';
+import type {
+    EventDisplayOrder,
+    FilterCriteria,
+    PaginationOptions,
+    Range
+} from '../../logs';
+import type { SendTransactionResult } from '../../transactions/types';
+import { type ContractFilter } from './contract-filter';
 
 /**
  * Represents a generic contract function type that accepts an arbitrary number of arguments
@@ -27,9 +27,19 @@ import { type GetEventArgs } from 'viem';
  *               are not specified, allowing for flexibility in function signatures.
  * @returns A value of type `T`, representing the result of the contract function execution.
  */
+
 type ContractFunctionSync<T = unknown, TABIFunction> = (
     ...args: [
-        ...Partial<{ value: number; comment: string }>,
+        ...(
+            | [
+                  Partial<{
+                      value: number | string | bigint;
+                      revision: string;
+                      comment: string;
+                  }>
+              ]
+            | []
+        ),
         ...AbiParametersToPrimitiveTypes<TABIFunction['inputs'], 'inputs'>
     ]
 ) => T;
@@ -43,6 +53,8 @@ type ContractFunctionSync<T = unknown, TABIFunction> = (
  * This type represents a function that takes a variable number of arguments, which are partial
  * representations of the input parameters defined in the ABI for the event, and returns a value of type `T`.
  */
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type ContractEventSync<T = unknown, TABIEvent> = (
     ...args: Partial<
         AbiParametersToPrimitiveTypes<TABIEvent['inputs'], 'inputs'>
@@ -59,9 +71,18 @@ type ContractEventSync<T = unknown, TABIEvent> = (
  *               are not specified, allowing for flexibility in function signatures.
  * @returns A promise that resolves to the type `T`, representing the result of the contract function execution.
  */
-type ContractFunctionAsync<T = unknown, TABIFunction> = (
+type ContractFunctionAsync<T, TABIFunction extends AbiFunction> = (
     ...args: [
-        ...Partial<{ value: number; comment: string }>,
+        ...(
+            | [
+                  Partial<{
+                      value: number | string | bigint;
+                      revision: string;
+                      comment: string;
+                  }>
+              ]
+            | []
+        ),
         ...AbiParametersToPrimitiveTypes<TABIFunction['inputs'], 'inputs'>
     ]
 ) => Promise<T>;
@@ -80,15 +101,16 @@ type ContractFunctionAsync<T = unknown, TABIFunction> = (
  */
 type ContractFunctionRead<
     TAbi extends Abi,
-    TFunctionName extends ExtractAbiFunctionNames<TAbi, 'pure' | 'view'>,
-    TAbiFunction extends AbiFunction = ExtractAbiFunction<TAbi, TFunctionName>
-> = Record<
-    TFunctionName,
-    ContractFunctionAsync<
-        AbiParametersToPrimitiveTypes<TAbiFunction['outputs'], 'outputs'>,
-        TAbiFunction
-    >
->;
+    TFunctionName extends ExtractAbiFunctionNames<TAbi, 'pure' | 'view'>
+> = {
+    [key in TFunctionName]: ContractFunctionAsync<
+        AbiParametersToPrimitiveTypes<
+            ExtractAbiFunction<TAbi, key>['outputs'],
+            'outputs'
+        >,
+        ExtractAbiFunction<TAbi, key>
+    >;
+};
 
 /**
  * Defines a mapping of contract function names to their corresponding transactional contract functions.
@@ -107,12 +129,13 @@ type ContractFunctionTransact<
     TFunctionName extends ExtractAbiFunctionNames<
         TAbi,
         'payable' | 'non payable'
-    >,
-    TAbiFunction extends AbiFunction = ExtractAbiFunction<TAbi, TFunctionName>
-> = Record<
-    TFunctionName,
-    ContractFunctionAsync<SendTransactionResult, TAbiFunction>
->;
+    >
+> = {
+    [key in TFunctionName]: ContractFunctionAsync<
+        SendTransactionResult,
+        ExtractAbiFunction<TAbi, key>
+    >;
+};
 
 /**
  * Defines a mapping of contract event names to their corresponding filter criteria contract functions.
@@ -151,9 +174,13 @@ type ContractFunctionFilter<
  */
 type ContractFunctionClause<
     TAbi extends Abi,
-    TFunctionName extends ExtractAbiFunctionNames<TAbi, 'pure' | 'view'>,
-    TAbiFunction extends AbiFunction = ExtractAbiFunction<TAbi, TFunctionName>
-> = Record<TFunctionName, ContractFunctionSync<ContractClause, TAbiFunction>>;
+    TFunctionName extends ExtractAbiFunctionNames<TAbi, 'pure' | 'view'>
+> = {
+    [key in TFunctionName]: ContractFunctionSync<
+        ContractClause,
+        ExtractAbiFunction<TAbi, key>
+    >;
+};
 
 /**
  * Defines a mapping of contract event names to their corresponding filter criteria contract functions.
@@ -183,7 +210,7 @@ type ContractFunctionCriteria<
  * Represents the amount of VET to transfer in a transaction.
  */
 interface TransactionValue {
-    value: number;
+    value: string;
 }
 
 /**
@@ -204,9 +231,9 @@ interface ClauseRevision {
  * Represents additional options for a transaction clause.
  */
 interface ClauseAdditionalOptions {
-    value: number | undefined;
-    comment: string | undefined;
-    revision: string | undefined;
+    value?: string;
+    comment?: string;
+    revision?: string;
 }
 
 /**
@@ -219,16 +246,16 @@ interface TransferFilterOptions {
 }
 
 export type {
-    ContractFunctionAsync,
-    ContractFunctionSync,
-    ContractFunctionRead,
-    ContractFunctionTransact,
-    ContractFunctionFilter,
-    ContractFunctionClause,
-    ContractFunctionCriteria,
-    TransactionValue,
+    ClauseAdditionalOptions,
     ClauseComment,
     ClauseRevision,
-    ClauseAdditionalOptions,
+    ContractFunctionAsync,
+    ContractFunctionClause,
+    ContractFunctionCriteria,
+    ContractFunctionFilter,
+    ContractFunctionRead,
+    ContractFunctionSync,
+    ContractFunctionTransact,
+    TransactionValue,
     TransferFilterOptions
 };

@@ -11,6 +11,7 @@ import {
 } from '../../../src';
 import { TEST_ACCOUNTS } from '../../fixture';
 import { erc20ContractBytecode } from './fixture';
+import { retryOperation } from '../../test-utils';
 
 /**
  * Tests for the ThorClient class, specifically focusing on ERC20 contract-related functionality.
@@ -287,12 +288,14 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         const contract = await factory.waitForDeployment();
 
-        const contractRead =
-            await thorSoloClient.contracts.executeMultipleClausesCall([
-                contract.clause.name(),
-                contract.clause.symbol(),
-                contract.clause.decimals()
-            ]);
+        const contractRead = await retryOperation(
+            async () =>
+                await thorSoloClient.contracts.executeMultipleClausesCall([
+                    contract.clause.name(),
+                    contract.clause.symbol(),
+                    contract.clause.decimals()
+                ])
+        );
 
         expect(contractRead[0]).toEqual({
             success: true,
@@ -332,12 +335,14 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         const contract = await factory.waitForDeployment();
 
-        const contractRead =
-            await thorSoloClient.contracts.executeMultipleClausesCall([
-                contract.clause.name(),
-                contract.clause.symbol(),
-                contract.clause.decimals()
-            ]);
+        const contractRead = await retryOperation(
+            async () =>
+                await thorSoloClient.contracts.executeMultipleClausesCall([
+                    contract.clause.name(),
+                    contract.clause.symbol(),
+                    contract.clause.decimals()
+                ])
+        );
 
         expect(contractRead[0]).toEqual({
             success: true,
@@ -402,15 +407,16 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         await txResult.wait();
 
-        const reads = await thorSoloClient.contracts.executeMultipleClausesCall(
-            [
-                contract.clause.balanceOf(
-                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
-                ),
-                contract.clause.balanceOf(
-                    TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address
-                )
-            ]
+        const reads = await retryOperation(
+            async () =>
+                await thorSoloClient.contracts.executeMultipleClausesCall([
+                    contract.clause.balanceOf(
+                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+                    ),
+                    contract.clause.balanceOf(
+                        TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address
+                    )
+                ])
         );
 
         expect(reads[0]).toEqual({

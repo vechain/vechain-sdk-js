@@ -30,8 +30,8 @@ const ethGetTransactionByBlockNumberAndIndexTestCases = [
             r: '0x0',
             s: '0x0',
             accessList: [],
-            maxFeePerGas: '0x0',
-            maxPriorityFeePerGas: '0x0',
+            maxFeePerGas: undefined,
+            maxPriorityFeePerGas: undefined,
             yParity: '0x0'
         }
     },
@@ -50,8 +50,8 @@ const ethGetTransactionByBlockNumberAndIndexTestCases = [
             gasPrice: '0x0',
             hash: '0xd331443a31ef1f32e2c4510710e62561012de11ef404c35086629436e4d5dded',
             input: '0xd547741f3c11d16cbaffd01df69ce1c404f6340ee057498f5f00246190ea54220576a84800000000000000000000000042f51a1de771c41157be6129ba7b1756da2f8290',
-            maxFeePerGas: '0x0',
-            maxPriorityFeePerGas: '0x0',
+            maxFeePerGas: undefined,
+            maxPriorityFeePerGas: undefined,
             nonce: '0xb8314776ce0bf5df',
             r: '0x0',
             s: '0x0',

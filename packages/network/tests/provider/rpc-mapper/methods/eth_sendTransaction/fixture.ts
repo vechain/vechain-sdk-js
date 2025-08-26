@@ -1,17 +1,17 @@
-import { THOR_SOLO_ACCOUNTS } from '../../../../../src';
+import { getUnusedAccount } from '../../../../fixture';
 
 /**
  * Thor solo accounts to use in the tests
  */
 const THOR_SOLO_ACCOUNTS_ETH_SEND_TRANSACTION_FIXTURE = {
-    sender: THOR_SOLO_ACCOUNTS[5],
-    receiver: THOR_SOLO_ACCOUNTS[6]
+    sender: getUnusedAccount(),
+    receiver: getUnusedAccount()
 };
 
 /**
  * Fixture for a gasPayer private key
  */
-const gasPayerPrivateKeyFixture = THOR_SOLO_ACCOUNTS[4].privateKey;
+const gasPayerPrivateKeyFixture = getUnusedAccount().privateKey;
 
 export {
     THOR_SOLO_ACCOUNTS_ETH_SEND_TRANSACTION_FIXTURE,

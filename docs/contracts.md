@@ -126,7 +126,7 @@ const contract = thorSoloClient.contracts.load(
 );
 
 // 2 - Create a clause to call setValue(123)
-const setValueClause = contract.clause.setValue(123);
+const setValueClause = contract.clause.setValue(123n);
 ```
 
 

@@ -7,6 +7,7 @@ import {
     type TransactionBody
 } from '@vechain/sdk-core';
 import {
+    InvalidDataType,
     InvalidSecp256k1PrivateKey,
     JSONRPCInvalidParams
 } from '@vechain/sdk-errors';
@@ -215,13 +216,23 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         const unsignedTx = Transaction.of(unsignedTransactionBody);
 
         // Sign transaction with origin private key and gasPayer private key
-        if (gasPayerOptions?.gasPayerPrivateKey !== undefined)
+        if (gasPayerOptions?.gasPayerPrivateKey !== undefined) {
+            // Validate the gas payer private key before using it
+            if (!HexUInt.isValid(gasPayerOptions.gasPayerPrivateKey)) {
+                throw new InvalidDataType(
+                    'VeChainPrivateKeySigner._signWithGasPayer',
+                    'Invalid gas payer private key. Ensure it is a valid hexadecimal string.',
+                    { gasPayerPrivateKey: gasPayerOptions.gasPayerPrivateKey }
+                );
+            }
+
             return Hex.of(
                 Transaction.of(unsignedTransactionBody).signAsSenderAndGasPayer(
                     originPrivateKey,
-                    HexUInt.of(gasPayerOptions?.gasPayerPrivateKey).bytes
+                    HexUInt.of(gasPayerOptions.gasPayerPrivateKey).bytes
                 ).encoded
             ).toString();
+        }
 
         // Otherwise, get the signature of the gasPayer from the gasPayer endpoint
         const gasPayerSignature = await DelegationHandler(

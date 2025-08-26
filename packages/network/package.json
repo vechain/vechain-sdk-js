@@ -1,6 +1,6 @@
 {
   "name": "@vechain/sdk-network",
-  "version": "1.1.0",
+  "version": "2.0.4",
   "description": "This module serves as the standard interface connecting decentralized applications (dApps) and users to the VeChainThor blockchain",
   "author": "VeChain Foundation",
   "license": "MIT",
@@ -26,35 +26,39 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "rm -rf ./dist && tsup-node src/index.ts --format cjs,esm --dts",
+    "build": "rm -rf ./dist && tsup-node src/index.ts --format cjs,esm --dts --sourcemap",
     "check:circular-dependencies": "npx madge --json --circular --extensions ts src | jq '. | length' | awk '{if($1 > 15) exit 1}'",
     "lint": "eslint",
     "format": "prettier --write src/**/*.ts tests/**/*.ts solo-seeding/**/*.ts",
-    "start-thor-solo": "echo 'Starting thor solo node ...' && docker compose -f ../../docker-compose.thor.yml up -d --wait && echo '\nThor solo node started ...'",
-    "stop-thor-solo": "echo 'Stopping thor solo node ...' && docker compose -f ../../docker-compose.thor.yml down && echo 'Thor solo node stopped ...'",
+    "start-thor-solo": "yarn workspace @vechain/sdk-solo-setup solo-up",
+    "stop-thor-solo": "yarn workspace @vechain/sdk-solo-setup solo-down",
+    "seed-thor-solo": "yarn workspace @vechain/sdk-solo-setup solo-seed",
+    "setup-thor-solo": "yarn start-thor-solo && yarn seed-thor-solo",
     "test:unit": "rm -rf ./coverageUnit && APPLYCODECOVLIMITS=false jest --coverage --coverageDirectory=coverageUnit --group=unit",
     "test:integration": "rm -rf ./coverageIntegration && APPLYCODECOVLIMITS=false jest --coverage --coverageDirectory=coverageIntegration --group=integration",
-    "test:integration:solo": "APPLYCODECOVLIMITS=false yarn start-thor-solo && yarn test:integration && yarn stop-thor-solo || yarn stop-thor-solo",
+    "test:integration:solo": "(APPLYCODECOVLIMITS=false yarn stop-thor-solo && yarn setup-thor-solo && yarn test:integration && yarn stop-thor-solo) || yarn stop-thor-solo",
     "test:browser": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit --config ./jest.config.browser.js",
-    "test": "rm -rf ./coverage && APPLYCODECOVLIMITS=true jest --coverage --coverageDirectory=coverage --group=integration --group=unit",
-    "test:solo": "(yarn start-thor-solo && yarn test && yarn stop-thor-solo) || yarn stop-thor-solo",
-    "test:browser:solo": "(yarn start-thor-solo && yarn test:browser && yarn stop-thor-solo) || yarn stop-thor-solo"
+    "test:galactica": "rm -rf ./coverage && APPLYCODECOVLIMITS=false jest --verbose --coverage --coverageDirectory=coverage --group=galactica",
+    "test": "rm -rf ./coverage && APPLYCODECOVLIMITS=true jest --coverage --coverageDirectory=coverage --group=integration --group=unit --group=galactica --group=-websocket",
+    "test:solo": "(yarn setup-thor-solo && yarn test && yarn stop-thor-solo) || yarn stop-thor-solo",
+    "test:solo:galactica": "(yarn setup-thor-solo && yarn test:galactica && yarn stop-thor-solo) || yarn stop-thor-solo",
+    "test:browser:solo": "(yarn setup-thor-solo && yarn test:browser && yarn stop-thor-solo) || yarn stop-thor-solo"
   },
   "dependencies": {
     "@noble/curves": "^1.6.0",
-    "@vechain/sdk-core": "1.1.0",
-    "@vechain/sdk-errors": "1.1.0",
-    "@vechain/sdk-logging": "1.1.0",
-    "@vechain/vebetterdao-contracts": "^4.0.0",
-    "abitype": "^1.0.6",
-    "ethers": "6.13.4",
-    "isomorphic-ws": "^5.0.0",
-    "viem": "^2.21.45",
-    "ws": "^8.18.0"
+    "@vechain/sdk-core": "2.0.4",
+    "@vechain/sdk-errors": "2.0.4",
+    "@vechain/sdk-logging": "2.0.4",
+    "abitype": "1.0.8",
+    "viem": "^2.21.54",
+    "ethers": "^6.14.0"
   },
   "devDependencies": {
     "@types/ws": "^8.5.13",
+    "@vechain/sdk-solo-setup": "2.0.4",
+    "@vechain/vebetterdao-contracts": "^4.1.0",
     "jest-fetch-mock": "^3.0.3",
-    "whatwg-fetch": "^3.6.20"
+    "whatwg-fetch": "^3.6.20",
+    "ws": "^8.18.1"
   }
 }

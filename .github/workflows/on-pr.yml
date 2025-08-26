@@ -9,6 +9,10 @@ on:
       - 'feature-*'
       - '1.0.0'
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
     doc-examples:
         name: Execute doc examples
@@ -28,7 +32,9 @@ jobs:
 
             - name: Start Thor solo node
               id: start-solo
-              run: yarn start-thor-solo
+              run:  |
+                yarn start-thor-solo
+                yarn seed-thor-solo
 
             - name: Test docs examples
               run: |
@@ -40,10 +46,6 @@ jobs:
     
     test-apps:
         uses: ./.github/workflows/test-apps.yml
-        secrets: inherit
-    
-    rpc-proxy:
-        uses: ./.github/workflows/rpc-proxy-test.yml
         secrets: inherit
 
     install-build:

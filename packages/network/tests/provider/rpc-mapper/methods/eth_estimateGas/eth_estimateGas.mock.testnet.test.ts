@@ -36,9 +36,10 @@ describe('RPC Mapper - eth_estimateGas method tests', () => {
          */
         test('Should throw `JSONRPCInternalError` if an error occurs while estimating the gas', async () => {
             // Mock the estimateGas method to return null
-            jest.spyOn(thorClient.gas, 'estimateGas').mockRejectedValue(
-                new Error()
-            );
+            jest.spyOn(
+                thorClient.transactions,
+                'estimateGas'
+            ).mockRejectedValue(new Error());
 
             await expect(
                 RPCMethodsMap(thorClient)[RPC_METHODS.eth_estimateGas]([

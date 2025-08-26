@@ -9,6 +9,7 @@ import {
     ethGetBalanceTestCases,
     invalidEthGetBalanceTestCases
 } from './fixture';
+import { retryOperation } from '../../../../test-utils';
 
 /**
  * RPC Mapper integration tests for 'eth_getBalance' method
@@ -38,10 +39,12 @@ describe('RPC Mapper - eth_getBalance method tests', () => {
          */
         ethGetBalanceTestCases.forEach(({ description, params, expected }) => {
             test(description, async () => {
-                const rpcCall =
-                    await RPCMethodsMap(thorClient)[RPC_METHODS.eth_getBalance](
-                        params
-                    );
+                const rpcCall = await retryOperation(
+                    async () =>
+                        await RPCMethodsMap(thorClient)[
+                            RPC_METHODS.eth_getBalance
+                        ](params)
+                );
 
                 // Compare the result with the expected value
                 expect(rpcCall).toStrictEqual(expected);
@@ -56,8 +59,11 @@ describe('RPC Mapper - eth_getBalance method tests', () => {
                 test(description, async () => {
                     // Call RPC method
                     await expect(
-                        RPCMethodsMap(thorClient)[RPC_METHODS.eth_getBalance](
-                            params
+                        retryOperation(
+                            async () =>
+                                await RPCMethodsMap(thorClient)[
+                                    RPC_METHODS.eth_getBalance
+                                ](params)
                         )
                     ).rejects.toThrowError(expectedError);
                 });

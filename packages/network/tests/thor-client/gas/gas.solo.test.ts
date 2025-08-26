@@ -3,6 +3,7 @@ import { THOR_SOLO_URL, ThorClient } from '../../../src';
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { estimateGasTestCases, invalidEstimateGasTestCases } from './fixture';
 import { stringifyData } from '@vechain/sdk-errors';
+import { retryOperation } from '../../test-utils';
 
 /**
  * Gas module tests.
@@ -29,10 +30,13 @@ describe('ThorClient - Gas Module', () => {
                 test(
                     description,
                     async () => {
-                        const result = await thorSoloClient.gas.estimateGas(
-                            clauses,
-                            caller,
-                            options
+                        const result = await retryOperation(
+                            async () =>
+                                await thorSoloClient.transactions.estimateGas(
+                                    clauses,
+                                    caller,
+                                    options
+                                )
                         );
 
                         expect(result).toBeDefined();
@@ -51,10 +55,13 @@ describe('ThorClient - Gas Module', () => {
                 test(
                     description,
                     async () => {
-                        const result = await thorSoloClient.gas.estimateGas(
-                            clauses,
-                            caller,
-                            options
+                        const result = await retryOperation(
+                            async () =>
+                                await thorSoloClient.transactions.estimateGas(
+                                    clauses,
+                                    caller,
+                                    options
+                                )
                         );
 
                         expect(result).toBeDefined();
@@ -74,11 +81,14 @@ describe('ThorClient - Gas Module', () => {
                     clauses
                 )}, options: ${stringifyData(options)}`, async () => {
                     await expect(
-                        thorSoloClient.gas.estimateGas(
-                            clauses,
-                            // Random address
-                            Hex.random(20).toString(),
-                            options
+                        retryOperation(
+                            async () =>
+                                await thorSoloClient.transactions.estimateGas(
+                                    clauses,
+                                    // Random address
+                                    Hex.random(20).toString(),
+                                    options
+                                )
                         )
                     ).rejects.toThrow(expectedError);
                 });

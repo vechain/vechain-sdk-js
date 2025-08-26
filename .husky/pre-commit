@@ -1,4 +1,11 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Clean up coverage folders
+find packages -type d -name "*coverage*" -o -name "coverage*" | xargs rm -rf 2>/dev/null || true
+
 yarn build
+yarn install
 yarn lint
 yarn check:circular-dependencies
 yarn test:unit && git add docs

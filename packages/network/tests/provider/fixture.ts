@@ -36,8 +36,8 @@ const blockWithTransactionsExpanded = {
             r: '0x0',
             s: '0x0',
             accessList: [],
-            maxFeePerGas: '0x0',
-            maxPriorityFeePerGas: '0x0',
+            maxFeePerGas: undefined,
+            maxPriorityFeePerGas: undefined,
             yParity: '0x0'
         },
         {
@@ -59,8 +59,8 @@ const blockWithTransactionsExpanded = {
             r: '0x0',
             s: '0x0',
             accessList: [],
-            maxFeePerGas: '0x0',
-            maxPriorityFeePerGas: '0x0',
+            maxFeePerGas: undefined,
+            maxPriorityFeePerGas: undefined,
             yParity: '0x0'
         },
         {
@@ -82,8 +82,8 @@ const blockWithTransactionsExpanded = {
             r: '0x0',
             s: '0x0',
             accessList: [],
-            maxFeePerGas: '0x0',
-            maxPriorityFeePerGas: '0x0',
+            maxFeePerGas: undefined,
+            maxPriorityFeePerGas: undefined,
             yParity: '0x0'
         }
     ],
@@ -97,7 +97,7 @@ const blockWithTransactionsExpanded = {
     logsBloom:
         '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
     extraData: '0x',
-    baseFeePerGas: '0x0',
+    baseFeePerGas: undefined,
     mixHash:
         '0x0000000000000000000000000000000000000000000000000000000000000000'
 };
@@ -135,7 +135,7 @@ const blockWithTransactionsNotExpanded = {
     logsBloom:
         '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
     extraData: '0x',
-    baseFeePerGas: '0x0',
+    baseFeePerGas: undefined,
     mixHash:
         '0x0000000000000000000000000000000000000000000000000000000000000000'
 };
@@ -168,8 +168,8 @@ const validTransactionDetailTestnet = {
     r: '0x0',
     s: '0x0',
     accessList: [],
-    maxFeePerGas: '0x0',
-    maxPriorityFeePerGas: '0x0',
+    maxFeePerGas: undefined,
+    maxPriorityFeePerGas: undefined,
     yParity: '0x0'
 };
 

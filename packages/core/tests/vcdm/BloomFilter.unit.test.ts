@@ -53,7 +53,7 @@ describe('BloomFilter class tests.', () => {
 
         test('Throw an exception if the filter cannot cast to n', () => {
             expect(() => {
-                // eslint-disable-next-line @typescript-eslint/no-unused-expressions, sonarjs/no-unused-expressions
+                // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                 BloomFilter.of(...BloomFilterFixture.setA).build().n;
             }).toThrow(InvalidDataType);
         });

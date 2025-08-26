@@ -1,3 +1,4 @@
+import { InvalidDataType } from '@vechain/sdk-errors';
 import { FixedPointNumber } from '../FixedPointNumber';
 
 /**
@@ -139,6 +140,85 @@ namespace Units {
         return FixedPointNumber.of(exp).times(
             FixedPointNumber.of(10n ** BigInt(unit))
         );
+    }
+
+    /**
+     * Convert a value expressed in `fromUnits` to `toUnits`.
+     *
+     * @param value The value to convert.
+     * @param fromUnits The units of the value to convert.
+     * @param toUnits The units to convert the value to.
+     * @returns The value converted to `toUnits`.
+     */
+    export function convertUnits(
+        value: FixedPointNumber,
+        fromUnits: Units,
+        toUnits: Units
+    ): FixedPointNumber {
+        const diffUnits = BigInt(toUnits - fromUnits);
+        if (diffUnits >= 0n) {
+            return value.div(FixedPointNumber.of(10n ** diffUnits));
+        } else {
+            return value.times(FixedPointNumber.of(10n ** BigInt(-diffUnits)));
+        }
+    }
+
+    /**
+     * Format a value expressed in `fromUnits` to a decimal string
+     * expressed in `toUnits`.
+     *
+     * @param value The value to format.
+     * @param fromUnits The units of the value to format.
+     * @param toUnits The units to format the value to.
+     * @returns The formatted value as a decimal string.
+     */
+    export function formatFromUnits(
+        value: FixedPointNumber,
+        fromUnits: Units,
+        toUnits: Units,
+        displayDecimals?: number
+    ): string {
+        let targetValue = convertUnits(value, fromUnits, toUnits);
+        // round the target value to the displayDecimals
+        if (displayDecimals !== undefined) {
+            if (displayDecimals >= 0) {
+                targetValue =
+                    FixedPointNumber.of(targetValue).dp(displayDecimals);
+            } else {
+                throw new InvalidDataType(
+                    'Units.formatFromUnits',
+                    'displayDecimals must be greater than or equal to 0',
+                    {
+                        value,
+                        fromUnits,
+                        toUnits,
+                        displayDecimals
+                    }
+                );
+            }
+        }
+        const decimalValue = targetValue.toString();
+        // pad the decimal value with zeros to the displayDecimals
+        if (displayDecimals !== undefined) {
+            const decimalParts = decimalValue.split('.');
+            if (decimalParts.length > 1) {
+                if (displayDecimals > 0) {
+                    return (
+                        decimalParts[0] +
+                        '.' +
+                        decimalParts[1].slice(0, displayDecimals)
+                    );
+                } else {
+                    return decimalParts[0];
+                }
+            }
+            if (displayDecimals > 0) {
+                return decimalParts[0] + '.' + '0'.repeat(displayDecimals);
+            } else {
+                return decimalParts[0];
+            }
+        }
+        return decimalValue;
     }
 }
 

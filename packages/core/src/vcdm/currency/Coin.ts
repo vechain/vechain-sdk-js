@@ -95,7 +95,7 @@ abstract class Coin implements Currency {
             return this.value.compareTo(that.value);
         }
         throw new InvalidDataType('Coin.compareTo', 'not VET currency', {
-            // eslint-disable-next-line sonarjs/no-base-to-string, @typescript-eslint/no-base-to-string
+            // eslint-disable-next-line @typescript-eslint/no-base-to-string
             that: `${that}` // Needed to serialize bigint value.
         });
     }
@@ -109,7 +109,7 @@ abstract class Coin implements Currency {
     isEqual(that: Currency): boolean {
         try {
             return this.compareTo(that) === 0;
-        } catch (e) {
+        } catch {
             return false;
         }
     }

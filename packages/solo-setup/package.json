@@ -1,0 +1,49 @@
+{
+  "name": "@vechain/sdk-solo-setup",
+  "version": "2.0.4",
+  "private": true,
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rm -rf ./dist && tsup-node index.ts --dts --format cjs,esm --outDir dist && npx tsup-node scripts/deploy.ts --format cjs,esm --outDir dist",
+    "clean": "rm -rf dist node_modules && rm -rf ./dist",
+    "dev": "npm run build -- --watch",
+    "compile": "npx hardhat compile",
+    "deploy-solo": "npx hardhat run dist/deploy.js --network vechain_solo",
+    "solo-up": "make solo-up",
+    "solo-down": "make solo-down",
+    "solo-seed": "yarn build && yarn deploy-solo",
+    "solo-logs-save": "mkdir -p logs && docker logs thor-solo > logs/thor-solo-$(date +%Y%m%d-%H%M%S).log 2>&1"
+  },
+  "peerDependencies": {
+    "@vechain/sdk-core": "*",
+    "@vechain/sdk-hardhat-plugin": "*",
+    "@vechain/sdk-logging": "*"
+  },
+  "dependencies": {
+    "hardhat": "^2.26.2"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "^3.1.0",
+    "@nomicfoundation/hardhat-ignition": "^0.15.13",
+    "@nomicfoundation/hardhat-ignition-ethers": "^0.15.14",
+    "@nomicfoundation/ignition-core": "^0.15.13",
+    "@nomicfoundation/hardhat-toolbox": "^6.1.0",
+    "@typechain/ethers-v6": "^0.5.1",
+    "@typechain/hardhat": "^9.1.0",
+    "@types/mocha": ">=10.0.9",
+    "ts-node": "^10.9.2",
+    "typechain": "^8.3.2",
+    "typescript": "^5.6.3"
+  }
+}

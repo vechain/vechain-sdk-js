@@ -42,6 +42,11 @@ describe('ThorClient - Testnet allocation events', () => {
                     roundCreatedCriteria,
                     emissionDistributedCriteria
                 ],
+                // We limit the range to avoid timeout
+                range: {
+                    unit: 'block',
+                    from: 17000000
+                },
                 options: {
                     offset: 0,
                     limit: 256
@@ -76,6 +81,11 @@ describe('ThorClient - Testnet allocation events', () => {
                     roundCreatedCriteria,
                     emissionDistributedCriteria
                 ],
+                // We limit the range to avoid timeout
+                range: {
+                    unit: 'block',
+                    from: 17000000
+                },
                 options: {
                     offset: 0,
                     limit: 256

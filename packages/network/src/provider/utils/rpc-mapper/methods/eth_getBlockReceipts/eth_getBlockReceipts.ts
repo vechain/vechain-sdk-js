@@ -5,12 +5,15 @@ import {
     stringifyData
 } from '@vechain/sdk-errors';
 import {
+    BlocksRPC,
     type TransactionReceiptRPC,
     type TransactionRPC
 } from '../../../formatter';
 import { ethGetBlockByNumber } from '../eth_getBlockByNumber';
 import { ethGetTransactionReceipt } from '../eth_getTransactionReceipt';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
+import { HexUInt } from '@vechain/sdk-core';
+import { ethGetBlockByHash } from '../eth_getBlockByHash';
 
 /**
  * RPC Method eth_getBlockReceipts implementation
@@ -37,13 +40,21 @@ const ethGetBlockReceipts = async (
 
     try {
         // Initialize the block number from the params
-        const [blockNumber] = params as [string];
+        const [blockIdentifier] = params as [string];
 
-        // Get the block by number
-        const block = await ethGetBlockByNumber(thorClient, [
-            blockNumber,
-            true
-        ]);
+        let block: BlocksRPC | null = null;
+
+        if (HexUInt.isValid(blockIdentifier) && blockIdentifier.length === 66) {
+            block = await ethGetBlockByHash(thorClient, [
+                blockIdentifier,
+                true
+            ]);
+        } else {
+            block = await ethGetBlockByNumber(thorClient, [
+                blockIdentifier,
+                true
+            ]);
+        }
 
         // Return the block receipts
 

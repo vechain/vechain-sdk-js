@@ -19,7 +19,13 @@ function factoryAdapter<A extends unknown[], I>(
     contractFactory: ContractFactory<A, I>,
     hardhatVeChainProvider: HardhatVeChainProvider
 ): ContractFactory<A, I> {
-    contractFactory.deploy = async function (...args: ContractMethodArgs<A>) {
+    contractFactory.deploy = async function (
+        ...args: ContractMethodArgs<A>
+    ): Promise<
+        BaseContract & {
+            deploymentTransaction: () => ContractTransactionResponse;
+        } & Omit<I, keyof BaseContract>
+    > {
         const tx = await this.getDeployTransaction(...args);
 
         if (
@@ -43,7 +49,12 @@ function factoryAdapter<A extends unknown[], I>(
             );
 
         return new BaseContract(
-            receipt?.outputs[0].contractAddress ?? '',
+            receipt?.outputs[0]?.contractAddress ??
+                ((): never => {
+                    throw new Error(
+                        'Contract deployment failed: no contract address returned from transaction receipt'
+                    );
+                })(),
             this.interface,
             this.runner,
             sentTx
