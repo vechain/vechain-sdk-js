@@ -82,6 +82,11 @@ interface BlockDetail {
     gasUsed: number;
 
     /**
+     * The minimum amount of fee required to include a transaction in the current block
+     */
+    baseFeePerGas?: string;
+
+    /**
      * Represents the Accumulated Witness Number (AWN) of the block.
      * It is used when selecting the trunk block in the VeChainThor consensus algorithm.
      *
@@ -125,7 +130,7 @@ interface BlockDetail {
     isFinalized?: boolean;
 
     /**
-     * Since there is no computational competition in PoA, the “longest chain” rule does not apply.
+     * Since there is no computational competition in PoA, the "longest chain" rule does not apply.
      * Instead, we consider the better branch as the one witnessed by more AMs (Authority Master nodes).
      *
      * @link see [VeChainThor Trunk](https://docs.vechain.org/introduction-to-vechain/about-the-vechain-blockchain/consensus-deep-dive#meta-transaction-features-3)
@@ -177,6 +182,11 @@ interface TransactionsExpandedBlockDetail {
     id: string;
 
     /**
+     * Type of the transaction (ex: type 81).
+     */
+    type?: number;
+
+    /**
      * Chain tag of the blockchain.
      */
     chainTag: string;
@@ -197,9 +207,21 @@ interface TransactionsExpandedBlockDetail {
     clauses: TransactionClause[];
 
     /**
+     * The maximum amount that can be spent to pay for base fee and priority fee expressed in hex.
+     * This is an optional hexadecimal expression or null.
+     */
+    maxFeePerGas?: string | null;
+
+    /**
+     * The maximum amount that can be spent to pay for base fee and priority fee expressed in hex.
+     * This is an optional hexadecimal expression or null.
+     */
+    maxPriorityFeePerGas?: string | null;
+
+    /**
      * Gas price coefficient for the transaction.
      */
-    gasPriceCoef: number;
+    gasPriceCoef?: number;
 
     /**
      * Gas limit for the transaction.
@@ -212,7 +234,20 @@ interface TransactionsExpandedBlockDetail {
     origin: string;
 
     /**
-     * Delegator associated with the transaction.
+     * The address of the gas-payer of the transaction.
+     *
+     * **NOTE!**
+     *
+     * * The property name `delegator` is exposed by
+     *   [Tx](https://mainnet.vechain.org/doc/stoplight-ui/#/schemas/Tx)
+     *   response of the end-point
+     *   [Retrieve a block](https://mainnet.vechain.org/doc/stoplight-ui/#/paths/blocks-revision/get)
+     *   with query set as `?expanded=true`.
+     * * In the rest of the SDK the address of the sponsor of the transaction is exposed by properties named
+     *   `gasPayer`.
+     *   It's suggested to read as "delegated" the term written as "delegator".
+     * * This interface exposes the property {@link gasPayer} to express the address of the sponsor of the
+     *   transaction, either {@link origin} or {@link delegator}.
      */
     delegator: string;
 

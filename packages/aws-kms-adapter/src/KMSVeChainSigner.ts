@@ -1,7 +1,7 @@
 import { bytesToHex, concatBytes } from '@noble/curves/abstract/utils';
 import { type SignatureType } from '@noble/curves/abstract/weierstrass';
 import { secp256k1 } from '@noble/curves/secp256k1';
-import { Address, Hex, Keccak256, Transaction, Txt } from '@vechain/sdk-core';
+import { Address, Hex, Transaction } from '@vechain/sdk-core';
 import { JSONRPCInvalidParams, SignerMethodError } from '@vechain/sdk-errors';
 import {
     type AvailableVeChainProviders,
@@ -11,22 +11,17 @@ import {
     VeChainAbstractSigner
 } from '@vechain/sdk-network';
 import { BitString, ObjectIdentifier, Sequence, verifySchema } from 'asn1js';
-import {
-    type TypedDataDomain,
-    TypedDataEncoder,
-    type TypedDataField
-} from 'ethers';
 import { recoverPublicKey, toHex } from 'viem';
 import { KMSVeChainProvider } from './KMSVeChainProvider';
 
 class KMSVeChainSigner extends VeChainAbstractSigner {
     private readonly kmsVeChainProvider?: KMSVeChainProvider;
-    private readonly kmsVeChainDelegatorProvider?: KMSVeChainProvider;
-    private readonly kmsVeChainDelegatorUrl?: string;
+    private readonly kmsVeChainGasPayerProvider?: KMSVeChainProvider;
+    private readonly kmsVeChainGasPayerServiceUrl?: string;
 
     public constructor(
         provider?: AvailableVeChainProviders,
-        delegator?: {
+        gasPayer?: {
             provider?: AvailableVeChainProviders;
             url?: string;
         }
@@ -44,20 +39,20 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
             this.kmsVeChainProvider = this.provider;
         }
 
-        // Delegator provider, if any
-        if (delegator !== undefined) {
+        // Gas-payer provider, if any
+        if (gasPayer !== undefined) {
             if (
-                delegator.provider !== undefined &&
-                delegator.provider instanceof KMSVeChainProvider
+                gasPayer.provider !== undefined &&
+                gasPayer.provider instanceof KMSVeChainProvider
             ) {
-                this.kmsVeChainDelegatorProvider = delegator.provider;
-            } else if (delegator.url !== undefined) {
-                this.kmsVeChainDelegatorUrl = delegator.url;
+                this.kmsVeChainGasPayerProvider = gasPayer.provider;
+            } else if (gasPayer.url !== undefined) {
+                this.kmsVeChainGasPayerServiceUrl = gasPayer.url;
             } else {
                 throw new JSONRPCInvalidParams(
                     'KMSVeChainSigner.constructor',
-                    'The delegator object is not well formed, either provider or url should be provided.',
-                    { delegator }
+                    'The gasPayer object is not well formed, either provider or url should be provided.',
+                    { gasPayer }
                 );
             }
         }
@@ -132,15 +127,15 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
 
     /**
      * It returns the address associated with the signer.
-     * @param {boolean} fromDelegatorProvider (Optional) If true, the provider will be the delegator.
+     * @param {boolean} fromGasPayerProvider (Optional) If true, the provider will be the gasPayer.
      * @returns The address associated with the signer.
      */
     public async getAddress(
-        fromDelegatorProvider: boolean | undefined = false
+        fromGasPayerProvider: boolean | undefined = false
     ): Promise<string> {
         try {
-            const kmsProvider = fromDelegatorProvider
-                ? this.kmsVeChainDelegatorProvider
+            const kmsProvider = fromGasPayerProvider
+                ? this.kmsVeChainGasPayerProvider
                 : this.kmsVeChainProvider;
             const publicKeyDecoded =
                 await this.getDecodedPublicKey(kmsProvider);
@@ -149,17 +144,18 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
             throw new SignerMethodError(
                 'KMSVeChainSigner.getAddress',
                 'The address could not be retrieved.',
-                { fromDelegatorProvider },
+                { fromGasPayerProvider },
                 error
             );
         }
     }
 
     /**
-     * It builds a VeChain signature from a bytes payload.
+     * It builds a VeChain signature from a bytes' payload.
      * @param {Uint8Array} payload to sign.
      * @param {KMSVeChainProvider} kmsProvider The provider to sign the payload.
      * @returns {Uint8Array} The signature following the VeChain format.
+     * @throws JSONRPCInvalidParams if `kmsProvider` is undefined.
      */
     private async buildVeChainSignatureFromPayload(
         payload: Uint8Array,
@@ -187,12 +183,10 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
             kmsProvider
         );
 
-        const decodedSignature = concatBytes(
+        return concatBytes(
             decodedSignatureWithoutRecoveryBit.toCompactRawBytes(),
             new Uint8Array([recoveryBit])
         );
-
-        return decodedSignature;
     }
 
     /**
@@ -232,9 +226,13 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
     }
 
     /**
-     * Concat the origin signature to the delegator signature if the delegator is set.
-     * @param {Transaction} transaction Transaction to sign.
-     * @returns Both signatures concatenated if the delegator is set, the origin signature otherwise.
+     * Processes a transaction by signing its hash with the origin key and, if delegation is available,
+     * appends a gas payer's signature to the original signature.
+     *
+     * @param {Transaction} transaction - The transaction to be processed, provides the transaction hash and necessary details.
+     * @return {Promise<Uint8Array>} A Promise that resolves to a byte array containing the combined origin and gas payer signatures,
+     * or just the origin signature if no gas payer provider or service URL is available.
+     * @throws JSONRPCInvalidParams if {@link this.provider} is undefined.
      */
     private async concatSignatureIfDelegation(
         transaction: Transaction
@@ -246,33 +244,34 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
         const originSignature =
             await this.buildVeChainSignatureFromPayload(transactionHash);
 
-        // We try first in case there is a delegator provider
-        if (this.kmsVeChainDelegatorProvider !== undefined) {
+        // We try first in case there is a gasPayer provider
+        if (this.kmsVeChainGasPayerProvider !== undefined) {
             const publicKeyDecoded = await this.getDecodedPublicKey();
             const originAddress = Address.ofPublicKey(publicKeyDecoded);
             const delegatedHash =
                 transaction.getTransactionHash(originAddress).bytes;
-            const delegatorSignature =
+            const gasPayerSignature =
                 await this.buildVeChainSignatureFromPayload(
                     delegatedHash,
-                    this.kmsVeChainDelegatorProvider
+                    this.kmsVeChainGasPayerProvider
                 );
-            return concatBytes(originSignature, delegatorSignature);
+            return concatBytes(originSignature, gasPayerSignature);
         } else if (
-            // If not, we try with the delegator URL
-            this.kmsVeChainDelegatorUrl !== undefined &&
-            this.provider !== undefined
+            // If not, we try with the gasPayer URL
+            this.kmsVeChainGasPayerServiceUrl !== undefined
         ) {
             const originAddress = await this.getAddress();
-            const delegatorSignature = await DelegationHandler({
-                delegatorUrl: this.kmsVeChainDelegatorUrl
+            const gasPayerSignature = await DelegationHandler({
+                gasPayerServiceUrl: this.kmsVeChainGasPayerServiceUrl
             }).getDelegationSignatureUsingUrl(
                 transaction,
                 originAddress,
-                this.provider.thorClient.httpClient
+                // Calling `buildVeChainSignatureFromPayload(transactionHash)` above throws error is `this.provider` is undefined.
+                // eslint-disable-next-line  @typescript-eslint/no-non-null-assertion
+                this.provider!.thorClient.httpClient // Never undefined.
             );
 
-            return concatBytes(originSignature, delegatorSignature);
+            return concatBytes(originSignature, gasPayerSignature);
         }
 
         return originSignature;
@@ -282,6 +281,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
      * It signs a transaction.
      * @param transactionToSign Transaction body to sign in plain format.
      * @returns {string} The signed transaction in hexadecimal format.
+     * @throws JSONRPCInvalidParams if {@link this.provider} is undefined.
      */
     public async signTransaction(
         transactionToSign: TransactionRequestInput
@@ -313,7 +313,7 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
 
     /**
      * Submits a signed transaction to the network.
-     * @param transactionToSend Transaction to by signed and sent to the network.
+     * @param transactionToSend Transaction to be signed and sent to the network.
      * @returns {string} The transaction ID.
      */
     public async sendTransaction(
@@ -344,67 +344,12 @@ class KMSVeChainSigner extends VeChainAbstractSigner {
      * @param {Uint8Array} payload in bytes to sign.
      * @returns {string} The VeChain signature in hexadecimal format.
      */
-    private async signPayload(payload: Uint8Array): Promise<string> {
+    public async signPayload(payload: Uint8Array): Promise<string> {
         const veChainSignature =
             await this.buildVeChainSignatureFromPayload(payload);
         // SCP256K1 encodes the recovery flag in the last byte. EIP-191 adds 27 to it.
         veChainSignature[veChainSignature.length - 1] += 27;
         return Hex.of(veChainSignature).toString();
-    }
-
-    /**
-     * Signs a message returning the VeChain signature in hexadecimal format.
-     * @param {string | Uint8Array} message to sign.
-     * @returns {string} The VeChain signature in hexadecimal format.
-     */
-    public async signMessage(message: string | Uint8Array): Promise<string> {
-        try {
-            const payload =
-                typeof message === 'string' ? Txt.of(message).bytes : message;
-            const payloadHashed = Keccak256.of(
-                concatBytes(
-                    this.MESSAGE_PREFIX,
-                    Txt.of(payload.length).bytes,
-                    payload
-                )
-            ).bytes;
-            return await this.signPayload(payloadHashed);
-        } catch (error) {
-            throw new SignerMethodError(
-                'KMSVeChainSigner.signMessage',
-                'The message could not be signed.',
-                { message },
-                error
-            );
-        }
-    }
-
-    /**
-     * Signs a typed data returning the VeChain signature in hexadecimal format.
-     * @param {TypedDataDomain} domain to hash as typed data.
-     * @param {Record<string, TypedDataField[]>} types to hash as typed data.
-     * @param {Record<string, unknown>} value to hash as typed data.
-     * @returns {string} The VeChain signature in hexadecimal format.
-     */
-    public async signTypedData(
-        domain: TypedDataDomain,
-        types: Record<string, TypedDataField[]>,
-        value: Record<string, unknown>
-    ): Promise<string> {
-        try {
-            const payload = Hex.of(
-                TypedDataEncoder.hash(domain, types, value)
-            ).bytes;
-
-            return await this.signPayload(payload);
-        } catch (error) {
-            throw new SignerMethodError(
-                'KMSVeChainSigner.signTypedData',
-                'The typed data could not be signed.',
-                { domain, types, value },
-                error
-            );
-        }
     }
 }
 

@@ -33,7 +33,7 @@ class BlocksModule {
 
     /**
      * Initializes a new instance of the `Thor` class.
-     * @param thor - The Thor instance used to interact with the VeChain blockchain API.
+     * @param httpClient - The Thor instance used to interact with the VeChain blockchain API.
      * @param options - (Optional) Other optional parameters for polling and error handling.
      */
     constructor(
@@ -65,7 +65,7 @@ class BlocksModule {
             .onData((data) => {
                 this.headBlock = data;
             })
-            .onError(this.onBlockError ?? (() => {}));
+            .onError(this.onBlockError ?? ((): void => {}));
 
         this.pollInstance.startListen();
     }
@@ -149,6 +149,17 @@ class BlocksModule {
     }
 
     /**
+     * Retrieves the base fee per gas of the best block.
+     *
+     * @returns A promise that resolves to the base fee per gas of the best block.
+     */
+    public async getBestBlockBaseFeePerGas(): Promise<string | null> {
+        const bestBlock = await this.getBestBlockCompressed();
+        if (bestBlock === null) return null;
+        return bestBlock.baseFeePerGas ?? null;
+    }
+
+    /**
      * Asynchronously retrieves a reference to the best block in the blockchain.
      *
      * This method first calls `getBestBlockCompressed()` to obtain the current best block. If no block is found (i.e., if `getBestBlockCompressed()` returns `null`),
@@ -220,15 +231,15 @@ class BlocksModule {
         return await Poll.SyncPoll(
             async () =>
                 expanded
-                    ? await this.getBestBlockCompressed()
-                    : await this.getBestBlockExpanded(),
+                    ? await this.getBlockExpanded(blockNumber)
+                    : await this.getBlockCompressed(blockNumber),
             {
                 requestIntervalInMilliseconds: options?.intervalMs,
                 maximumWaitingTimeInMilliseconds: options?.timeoutMs
             }
         ).waitUntil((result) => {
             // Continue polling until the result's block number matches the specified revision
-            return result != null && result?.number >= blockNumber;
+            return result != null && result.number == blockNumber;
         });
     }
 
@@ -287,7 +298,7 @@ class BlocksModule {
 
     /**
      * Retrieves all addresses involved in a given block. This includes beneficiary, signer, clauses,
-     * delegator, gas payer, origin, contract addresses, event addresses, and transfer recipients and senders.
+     * gas payer, origin, contract addresses, event addresses, and transfer recipients and senders.
      *
      * @param {ExpandedBlockDetail} block - The block object to extract addresses from.
      *
@@ -306,7 +317,6 @@ class BlocksModule {
                         addresses.add(clause.to);
                     }
                 });
-                addresses.add(transaction.delegator);
                 addresses.add(transaction.gasPayer);
                 addresses.add(transaction.origin);
                 transaction.outputs.forEach((output) => {

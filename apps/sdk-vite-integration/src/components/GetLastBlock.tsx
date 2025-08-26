@@ -1,14 +1,9 @@
-import { type CompressedBlockDetail, ThorClient } from "@vechain/sdk-network";
+import { type CompressedBlockDetail } from "@vechain/sdk-network";
 import { useState } from "react";
+import { thorClient } from '../const/index.tsx';
 
 const GetLastBlock = () => {
     const [block, setBlock] = useState<CompressedBlockDetail | null>(null);
-
-    // URL of the VeChain mainnet
-    const mainnetUrl = 'https://mainnet.vechain.org';
-
-    // Thor client instance
-    const thorClient = ThorClient.fromUrl(mainnetUrl);
 
     // Function to fetch the last block
     const fetchLastBlock = async () => {
@@ -22,13 +17,13 @@ const GetLastBlock = () => {
 
     return (
         <div>
-            <button onClick={fetchLastBlock}>
+            <button onClick={fetchLastBlock} data-testid="getlastblock">
                 Get Last Block
             </button>
             {block && (
                 <div>
                     <h3>Last Block Details:</h3>
-                    <pre>{JSON.stringify(block, null, 2)}</pre>
+                    <pre data-testid="last-block-details">{JSON.stringify(block, null, 2)}</pre>
                 </div>
             )}
         </div>

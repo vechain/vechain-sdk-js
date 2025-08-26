@@ -6,7 +6,8 @@ classDiagram
         +Clause deployContract(HexUInt contractBytecode, DeployParams deployParams?, ClauseOptions clauseOptions?)
         +Clause transferNFT(Address contractAddress, Address senderAddress, Address recipientAddress, HexUInt tokenId, ClauseOptions clauseOptions?)
         +Clause transferToken(Address tokenAddress, Address: senderAddress, VTHO amount, ClauseOptions clauseOptions?)
-        +Cluase transferVET(Address recipientAddress, VET amount, ClauseOptions clauseOptions?)
+        +Clause transferVTHOToken(Address tokenAddress, Address: senderAddress, Token token, ClauseOptions clauseOptions?)
+        +Clause transferVET(Address recipientAddress, VET amount, ClauseOptions clauseOptions?)
     }
     class ClauseOption{
         <<interface>>
@@ -34,7 +35,7 @@ classDiagram
         +Address origin
         +Uint8Array signature?
         +Transaction decode(Uint8Array rawTransaction, boolean isSigned)$
-        +Blake2b256 getTransactionHash(Address delegator?)
+        +Blake2b256 getTransactionHash(Address sender?)
         +VTHO intrinsicGas(TransactionClause[] clauses)$
         +boolean isValidBody(TransactionBody body)$
         +Transaction of(TransactionBody: body, Uint8Array signature?)$

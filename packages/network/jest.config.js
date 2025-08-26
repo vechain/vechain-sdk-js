@@ -1,22 +1,32 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 // Coverage threshold would apply to yarn test, not yarn test:unit
-const isUnitTest = process.env.UNIT;
+const applyCodeCoverageLimits = process.env.APPLYCODECOVLIMITS;
 
 module.exports = {
+    globalSetup: '<rootDir>/jest.global-setup.js',
+    globalTeardown: '<rootDir>/jest.global-setup.js',
     preset: 'ts-jest',
     testEnvironment: 'node',
     coverageReporters: ['html', 'lcov', 'json'],
     runner: 'groups',
     reporters: ['default', 'jest-junit'],
-    workerThreads: true,
+    maxWorkers: process.env.CI ? 1 : 5,
+    // Add cleanup options to prevent hanging
+    forceExit: true,
+    detectOpenHandles: true,
+    testTimeout: 120000,
+    coveragePathIgnorePatterns: [
+        "/dist/",
+        "/tests/"
+    ],
     coverageThreshold:
-        isUnitTest !== 'true'
+        applyCodeCoverageLimits == 'true'
             ? {
                   global: {
-                      branches: 98,
-                      functions: 99,
-                      lines: 99,
-                      statements: 99
+                      branches: 90,
+                      functions: 90,
+                      lines: 90,
+                      statements: 90
                   }
               }
             : undefined

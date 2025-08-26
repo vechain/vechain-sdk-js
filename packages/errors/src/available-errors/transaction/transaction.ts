@@ -30,7 +30,7 @@ class InvalidTransactionField extends VechainSDKError<
  * * Error will be thrown when the transaction is not delegated.
  */
 class NotDelegatedTransaction extends VechainSDKError<
-    undefined | { delegatorUrl: string }
+    undefined | { gasPayerUrl: string }
 > {}
 
 /**
@@ -44,9 +44,21 @@ class CannotFindTransaction extends VechainSDKError<{
     networkUrl?: string;
 }> {}
 
+/**
+ * Invalid transaction type error.
+ *
+ * WHEN TO USE:
+ * * Error will be thrown when the transaction type is invalid.
+ */
+class InvalidTransactionType extends VechainSDKError<{
+    transactionType?: string;
+    validTypes?: string;
+}> {}
+
 export {
     UnavailableTransactionField,
     InvalidTransactionField,
     NotDelegatedTransaction,
-    CannotFindTransaction
+    CannotFindTransaction,
+    InvalidTransactionType
 };

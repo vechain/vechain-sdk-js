@@ -200,6 +200,7 @@ const validExpandedBlockRevisions = [
                 {
                     id: '0x42720d768659aabff05c456acdd4e1f5c5672740a3728fbc0681117e4868167f',
                     chainTag: 39,
+                    type: 0,
                     blockRef: '0x01038ee704383133',
                     expiration: 2000,
                     clauses: [
@@ -212,7 +213,7 @@ const validExpandedBlockRevisions = [
                     gasPriceCoef: 0,
                     gas: 21000,
                     origin: '0x6b8d66568cbc7944798268aca153f426596d250a',
-                    delegator: null,
+                    delegator: null, // TO BE REMOVED WHEN BNC COMPLETE
                     nonce: '0x4ec144ad97b4b079',
                     dependsOn: null,
                     size: 130,

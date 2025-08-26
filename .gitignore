@@ -10,6 +10,7 @@ docs/**/dist
 yarn-error.log
 # Code coverage folders and files
 coverage*
+**/coverage*
 junit.xml
 
 **/.DS_Store

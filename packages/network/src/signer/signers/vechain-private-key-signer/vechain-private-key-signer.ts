@@ -1,24 +1,16 @@
-import * as n_utils from '@noble/curves/abstract/utils';
 import {
     Address,
     Hex,
     HexUInt,
-    Keccak256,
     Secp256k1,
     Transaction,
-    type TransactionBody,
-    Txt
+    type TransactionBody
 } from '@vechain/sdk-core';
 import {
+    InvalidDataType,
     InvalidSecp256k1PrivateKey,
-    JSONRPCInvalidParams,
-    stringifyData
+    JSONRPCInvalidParams
 } from '@vechain/sdk-errors';
-import {
-    type TypedDataDomain,
-    TypedDataEncoder,
-    type TypedDataField
-} from 'ethers';
 import { RPC_METHODS } from '../../../provider/utils/const/rpc-mapper/rpc-methods';
 import {
     DelegationHandler,
@@ -103,21 +95,21 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
             );
         }
 
-        let delegator = DelegationHandler(
-            await this.provider.wallet?.getDelegator()
-        ).delegatorOrNull();
+        let gasPayer = DelegationHandler(
+            await this.provider.wallet?.getGasPayer()
+        ).gasPayerOrNull();
 
-        // Override the delegator if the transaction has a delegation URL
+        // Override the gasPayer if the transaction has a delegation URL
         if (transactionToSign.delegationUrl !== undefined) {
-            delegator = {
-                delegatorUrl: transactionToSign.delegationUrl
+            gasPayer = {
+                gasPayerServiceUrl: transactionToSign.delegationUrl
             };
         }
 
         // Sign the transaction
         return await this._signFlow(
             transactionToSign,
-            delegator,
+            gasPayer,
             this.provider.thorClient
         );
     }
@@ -157,105 +149,30 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
     }
 
     /**
-     * Signs an [EIP-191](https://eips.ethereum.org/EIPS/eip-191) prefixed a personal message.
+     * Signs a payload.
      *
-     * This function is a drop-in replacement for {@link ethers.BaseWallet.signMessage} function.
-     *
-     * @param {string|Uint8Array} message - The message to be signed.
-     *                                      If the %%message%% is a string, it is signed as UTF-8 encoded bytes.
-     *                                      It is **not** interpreted as a [[BytesLike]];
-     *                                      so the string ``"0x1234"`` is signed as six characters, **not** two bytes.
+     * @param {Uint8Array} payload - The payload to be signed as a byte array
      * @return {Promise<string>} - A Promise that resolves to the signature as a string.
      */
-    async signMessage(message: string | Uint8Array): Promise<string> {
-        return await new Promise((resolve, reject) => {
-            try {
-                const body =
-                    typeof message === 'string'
-                        ? Txt.of(message).bytes
-                        : message;
-                const sign = Secp256k1.sign(
-                    Keccak256.of(
-                        n_utils.concatBytes(
-                            this.MESSAGE_PREFIX,
-                            Txt.of(body.length).bytes,
-                            body
-                        )
-                    ).bytes,
-                    new Uint8Array(this.privateKey)
-                );
-                // SCP256K1 encodes the recovery flag in the last byte. EIP-191 adds 27 to it.
-                sign[sign.length - 1] += 27;
-                resolve(Hex.of(sign).toString());
-            } catch (e) {
-                const error =
-                    e instanceof Error
-                        ? e
-                        : new Error(
-                              e !== undefined
-                                  ? stringifyData(e)
-                                  : 'Error while signing the message'
-                          );
-                reject(error);
-            }
-        });
-    }
-
-    /**
-     * Signs the [[link-eip-712]] typed data.
-     *
-     * This function is a drop-in replacement for {@link ethers.BaseWallet.signTypedData} function,
-     * albeit Ethereum Name Services are not resolved because he resolution depends on **ethers** provider implementation.
-     *
-     * @param {TypedDataDomain} domain - The domain parameters used for signing.
-     * @param {Record<string, TypedDataField[]>} types - The types used for signing.
-     * @param {Record<string, unknown>} value - The value data to be signed.
-     *
-     * @return {Promise<string>} - A promise that resolves with the signature string.
-     */
-    async signTypedData(
-        domain: TypedDataDomain,
-        types: Record<string, TypedDataField[]>,
-        value: Record<string, unknown>
-    ): Promise<string> {
-        return await new Promise((resolve, reject) => {
-            try {
-                const hash = Hex.of(
-                    TypedDataEncoder.hash(domain, types, value)
-                ).bytes;
-                const sign = Secp256k1.sign(
-                    hash,
-                    new Uint8Array(this.privateKey)
-                );
-                // SCP256K1 encodes the recovery flag in the last byte. EIP-712 adds 27 to it.
-                sign[sign.length - 1] += 27;
-                resolve(Hex.of(sign).toString());
-            } catch (e) {
-                const error =
-                    e instanceof Error
-                        ? e
-                        : new Error(
-                              e !== undefined
-                                  ? stringifyData(e)
-                                  : 'Error while signing typed data'
-                          );
-                reject(error);
-            }
-        });
+    async signPayload(payload: Uint8Array): Promise<string> {
+        const sign = Secp256k1.sign(payload, new Uint8Array(this.privateKey));
+        // SCP256K1 encodes the recovery flag in the last byte. EIP-191 adds 27 to it.
+        sign[sign.length - 1] += 27;
+        return await Promise.resolve(Hex.of(sign).toString());
     }
 
     /**
      * Signs a transaction internal method
      *
      * @param transaction - The transaction to sign
-     * @param delegator - The delegator to use
+     * @param gasPayer - The gasPayer to use
      * @param thorClient - The ThorClient instance
      * @returns The fully signed transaction
      * @throws {InvalidSecp256k1PrivateKey, InvalidDataType}
      */
     async _signFlow(
         transaction: TransactionRequestInput,
-        delegator: SignTransactionOptions | null,
+        gasPayer: SignTransactionOptions | null,
         thorClient: ThorClient
     ): Promise<string> {
         // Populate the call, to get proper from and to address (compatible with multi-clause transactions)
@@ -263,12 +180,12 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
             await this.populateTransaction(transaction);
 
         // Sign the transaction
-        return delegator !== null
-            ? await this._signWithDelegator(
+        return gasPayer !== null
+            ? await this._signWithGasPayer(
                   populatedTransaction,
                   this.privateKey,
                   thorClient,
-                  delegator
+                  gasPayer
               )
             : Hex.of(
                   Transaction.of(populatedTransaction).sign(this.privateKey)
@@ -277,39 +194,49 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
     }
 
     /**
-     * Signs a transaction where the gas fee is paid by a delegator.
+     * Signs a transaction where the gas fee is paid by a gasPayer.
      *
      * @param unsignedTransactionBody - The unsigned transaction body to sign.
      * @param originPrivateKey - The private key of the origin account.
      * @param thorClient - The ThorClient instance.
-     * @param delegatorOptions - Optional parameters for the request. Includes the `delegatorUrl` and `delegatorPrivateKey` fields.
-     *                  Only one of the following options can be specified: `delegatorUrl`, `delegatorPrivateKey`.
+     * @param gasPayerOptions - Optional parameters for the request. Includes the `gasPayerServiceUrl` and `gasPayerPrivateKey` fields.
+     *                  Only one of the following options can be specified: `gasPayerServiceUrl`, `gasPayerPrivateKey`.
      * @returns A promise that resolves to the signed transaction.
      * @throws {NotDelegatedTransaction}
      */
-    private async _signWithDelegator(
+    private async _signWithGasPayer(
         unsignedTransactionBody: TransactionBody,
         originPrivateKey: Uint8Array,
         thorClient: ThorClient,
-        delegatorOptions?: SignTransactionOptions
+        gasPayerOptions?: SignTransactionOptions
     ): Promise<string> {
         // Address of the origin account
         const originAddress = Address.ofPrivateKey(originPrivateKey).toString();
 
         const unsignedTx = Transaction.of(unsignedTransactionBody);
 
-        // Sign transaction with origin private key and delegator private key
-        if (delegatorOptions?.delegatorPrivateKey !== undefined)
+        // Sign transaction with origin private key and gasPayer private key
+        if (gasPayerOptions?.gasPayerPrivateKey !== undefined) {
+            // Validate the gas payer private key before using it
+            if (!HexUInt.isValid(gasPayerOptions.gasPayerPrivateKey)) {
+                throw new InvalidDataType(
+                    'VeChainPrivateKeySigner._signWithGasPayer',
+                    'Invalid gas payer private key. Ensure it is a valid hexadecimal string.',
+                    { gasPayerPrivateKey: gasPayerOptions.gasPayerPrivateKey }
+                );
+            }
+
             return Hex.of(
                 Transaction.of(unsignedTransactionBody).signAsSenderAndGasPayer(
                     originPrivateKey,
-                    HexUInt.of(delegatorOptions?.delegatorPrivateKey).bytes
+                    HexUInt.of(gasPayerOptions.gasPayerPrivateKey).bytes
                 ).encoded
             ).toString();
+        }
 
-        // Otherwise, get the signature of the delegator from the delegator endpoint
-        const delegatorSignature = await DelegationHandler(
-            delegatorOptions
+        // Otherwise, get the signature of the gasPayer from the gasPayer endpoint
+        const gasPayerSignature = await DelegationHandler(
+            gasPayerOptions
         ).getDelegationSignatureUsingUrl(
             unsignedTx,
             originAddress,
@@ -324,10 +251,10 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
 
         // Sign the transaction with both signatures. Concat both signatures to get the final signature
         const signature = new Uint8Array(
-            originSignature.length + delegatorSignature.length
+            originSignature.length + gasPayerSignature.length
         );
         signature.set(originSignature);
-        signature.set(delegatorSignature, originSignature.length);
+        signature.set(gasPayerSignature, originSignature.length);
 
         // Return new signed transaction
         return Hex.of(

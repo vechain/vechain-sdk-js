@@ -1,46 +1,44 @@
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { Hex } from './Hex';
-import { HexUInt } from './HexUInt';
 import { Txt } from './Txt';
 
 /**
- * Represents a revision for a Thor transaction or block.
- *
- * @remarks The string representation of the revision is always expressed as a number in base 10.
+ * Represents a revision for a Thor transaction or block
+ * Revision strings can be one of the following:
+ * - "best": indicating the best revision
+ * - "finalized": indicating a finalized revision
+ * - "next": indicating the next revision
+ * - "justified": indicating the justified revision
+ * - A hex string prefixed with "0x" indicating a specific block id
+ * - A positive number indicating a specific block number
  *
  * @extends Txt
  */
 class Revision extends Txt {
     /**
      * Regular expression pattern for revision strings.
-     * Revision strings can be one of the following:
-     * - "best": indicating the best revision
-     * - "finalized": indicating a finalized revision
-     * - A positive numeric string indicating a specific revision
      *
      * @type {RegExp}
      */
-    private static readonly REGEX_DECIMAL_REVISION = /^(best|finalized|\d+)$/;
+    private static readonly VALID_REVISION_REGEX =
+        /^(best|finalized|next|justified|0x[a-fA-F0-9]+|\d+)$/;
 
     /**
-     * Determines if the given value is valid.
-     * This is true if the given value is
-     * - "best" string or {@link Txt}: indicating the best revision;
-     * - "finalized" string or {@link Txt}: indicating a finalized revision;
-     * - a positive number;
-     * - a positive numeric decimal or `0x` prefixed hexadecimal string indicating a specific revision,
-     *
-     * @param {bigint | number | string | Hex | Txt} value - The value to be validated.
+     * Determines if the given value is a valid revision.
+     * @param {bigint| number | string | Hex} value - The value to be validated.
      * @returns {boolean} - Returns `true` if the value is valid, `false` otherwise.
      */
-    public static isValid(value: number | string): boolean {
+    public static isValid(value: bigint | number | string | Hex): boolean {
         if (typeof value === 'number') {
             return Number.isInteger(value) && value >= 0;
         }
-        return (
-            HexUInt.isValid0x(value) ||
-            Revision.REGEX_DECIMAL_REVISION.test(value)
-        );
+        if (typeof value === 'bigint') {
+            return value >= BigInt(0);
+        }
+        if (value instanceof Hex) {
+            return Revision.isValid(value.bi);
+        }
+        return Revision.VALID_REVISION_REGEX.test(value);
     }
 
     /**
@@ -59,24 +57,25 @@ class Revision extends Txt {
      */
     public static of(value: bigint | number | string | Uint8Array | Hex): Txt {
         try {
-            let txt: string;
-            if (value instanceof Hex) {
-                txt = value.bi.toString();
-            } else if (
-                typeof value === 'bigint' ||
-                typeof value === 'number' ||
-                typeof value === 'string'
-            ) {
-                txt = `${value}`;
+            // handle Uint8Array which is needed to extend Txt.of
+            if (ArrayBuffer.isView(value)) {
+                const txtValue = Txt.of(value).toString();
+                if (Revision.isValid(txtValue)) {
+                    return new Revision(txtValue);
+                } else {
+                    throw new InvalidDataType('Revision.of', 'not a revision', {
+                        value: `${value}`
+                    });
+                }
+            }
+            // handle other types
+            if (Revision.isValid(value)) {
+                return new Revision(`${value}`);
             } else {
-                txt = Txt.of(value).toString();
+                throw new InvalidDataType('Revision.of', 'not a revision', {
+                    value: `${value}`
+                });
             }
-            if (Revision.isValid(txt)) {
-                return new Revision(txt);
-            }
-            throw new InvalidDataType('Revision.of', 'not a revision', {
-                value: `${value}`
-            });
         } catch (e) {
             throw new InvalidDataType('Revision.of', 'not a revision', {
                 value: `${value}`,
@@ -94,6 +93,16 @@ class Revision extends Txt {
      * Return the `finalized` revision instance.
      */
     public static readonly FINALIZED: Revision = Revision.of('finalized');
+
+    /**
+     * Return the `next` revision instance.
+     */
+    public static readonly NEXT: Revision = Revision.of('next');
+
+    /**
+     * Return the `justified` revision instance.
+     */
+    public static readonly JUSTIFIED: Revision = Revision.of('justified');
 }
 
 export { Revision };

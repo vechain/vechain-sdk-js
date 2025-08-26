@@ -15,7 +15,7 @@ import {
  * including compressing and inflating public keys,
  * generating private keys, and validating message hashes and private keys.
  */
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
+
 class Secp256k1 {
     /**
      * This value is used to identify compressed public key.
@@ -94,45 +94,6 @@ class Secp256k1 {
     }
 
     /**
-     * Generates a new random private key.
-     * If an error occurs during generation using
-     * [nc_secp256k1](https://github.com/paulmillr/noble-secp256k1),
-     * an AES-GCM key is generated as a fallback in runtimes not supported
-     * by `nc_secp256k1`, if those support {@link {@link global.crypto}.
-     *
-     * @return {Promise<Uint8Array>} The generated private key as a Uint8Array.
-     *
-     * @remarks Security auditable method, depends on
-     * * {@link global.crypto.subtle.exportKey};
-     * * {@link global.crypto.subtle.generateKey};
-     * * [nc_secp256k1.utils.randomPrivateKey](https://github.com/paulmillr/noble-secp256k1).
-     */
-    public static async _generatePrivateKey(): Promise<Uint8Array> {
-        try {
-            return nc_secp256k1.utils.randomPrivateKey();
-        } catch (e) {
-            // Generate an ECDSA key pair
-            const cryptoKey = await global.crypto.subtle.generateKey(
-                {
-                    name: 'AES-GCM',
-                    length: 256
-                },
-                true,
-                ['encrypt', 'decrypt']
-            );
-
-            // Export the private key to raw format
-            const rawKey = await global.crypto.subtle.exportKey(
-                'raw',
-                cryptoKey
-            );
-
-            // Convert the ArrayBuffer to Uint8Array
-            return new Uint8Array(rawKey);
-        }
-    }
-
-    /**
      * Generates a new Secp256k1 private key using a secure random number generator.
      *
      * @return {Promise<Uint8Array>} A promise that resolves to a Uint8Array representing the generated private key.
@@ -144,15 +105,18 @@ class Secp256k1 {
      * * [nc_secp256k1.utils.randomPrivateKey](https://github.com/paulmillr/noble-secp256k1).
      */
     public static async generatePrivateKey(): Promise<Uint8Array> {
-        return await new Promise<Uint8Array>((resolve) => {
+        return await new Promise<Uint8Array>((resolve, reject) => {
             try {
-                resolve(nc_secp256k1.utils.randomPrivateKey());
+                const privateKey = nc_secp256k1.utils.randomPrivateKey();
+                resolve(privateKey); // Resolve the promise with the generated private key
             } catch (e) {
-                throw new InvalidSecp256k1PrivateKey(
-                    'Secp256k1.generatePrivateKey',
-                    'Private key generation failed: ensure you have a secure random number generator available at runtime.',
-                    undefined,
-                    e
+                reject(
+                    new InvalidSecp256k1PrivateKey(
+                        'Secp256k1.generatePrivateKey',
+                        'Private key generation failed: ensure you have a secure random number generator available at runtime.',
+                        undefined,
+                        e
+                    )
                 );
             }
         });
@@ -228,7 +192,7 @@ class Secp256k1 {
     public static randomBytes(bytesLength: number = 32): Uint8Array {
         try {
             return nh_randomBytes(bytesLength);
-        } catch (e) {
+        } catch {
             return global.crypto.getRandomValues(new Uint8Array(bytesLength));
         }
     }

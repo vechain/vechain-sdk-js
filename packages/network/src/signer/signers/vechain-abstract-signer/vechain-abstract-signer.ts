@@ -1,23 +1,32 @@
+import { concatBytes } from '@noble/curves/abstract/utils';
 import {
     Address,
     Clause,
     Hex,
     HexUInt,
+    Keccak256,
+    Revision,
     Txt,
     type TransactionBody,
     type TransactionClause
 } from '@vechain/sdk-core';
-import { InvalidDataType, JSONRPCInvalidParams } from '@vechain/sdk-errors';
-import { type TypedDataDomain, type TypedDataField } from 'ethers';
+import {
+    InvalidDataType,
+    JSONRPCInvalidParams,
+    SignerMethodError
+} from '@vechain/sdk-errors';
+import { hashTypedData } from 'viem';
 import { RPC_METHODS } from '../../../provider/utils/const/rpc-mapper/rpc-methods';
 import { type TransactionSimulationResult } from '../../../thor-client';
 import { vnsUtils } from '../../../utils';
 import {
     type AvailableVeChainProviders,
-    type SignTypedDataOptions,
     type TransactionRequestInput,
+    type TypedDataDomain,
+    type TypedDataParameter,
     type VeChainSigner
 } from '../types';
+import type { TypedDataDomain as viemTypedDataDomain } from 'viem';
 
 /**
  * Abstract VeChain signer.
@@ -41,7 +50,7 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
      * @param provider - The provider to connect to
      */
     protected constructor(provider?: AvailableVeChainProviders) {
-        // Store provider and delegator
+        // Store provider and gasPayer
         this.provider = provider;
     }
 
@@ -178,15 +187,18 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
                 chainTag: populatedTransaction.chainTag ?? undefined,
                 dependsOn: populatedTransaction.dependsOn ?? undefined,
                 expiration: populatedTransaction.expiration,
-                gasPriceCoef: populatedTransaction.gasPriceCoef ?? undefined
+                gasPriceCoef: populatedTransaction.gasPriceCoef ?? undefined,
+                maxPriorityFeePerGas:
+                    populatedTransaction.maxPriorityFeePerGas ?? undefined,
+                maxFeePerGas: populatedTransaction.maxFeePerGas ?? undefined
             }
         );
     }
 
     /**
-     * Estimates the required gas required to execute //tx// on the Blockchain. This
-     * will be the expected amount a transaction will require
-     * to successfully run all the necessary computations and store the needed state
+     * Estimates the gas required to execute //tx// on the Blockchain. This
+     * will be the expected amount a transaction will need
+     * to successfully run all the necessary computations and store the changed state
      * that the transaction intends.
      *
      * @param transactionToEstimate - The transaction to estimate gas for
@@ -214,7 +226,7 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         );
 
         // 3 - Estimate gas
-        const gasEstimation = await thorClient.gas.estimateGas(
+        const gasEstimation = await thorClient.transactions.estimateGas(
             populatedTransaction.clauses ??
                 this._buildClauses(populatedTransaction),
             populatedTransaction.from as string
@@ -240,7 +252,7 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
      */
     async call(
         transactionToEvaluate: TransactionRequestInput,
-        revision?: string
+        revision?: Revision
     ): Promise<string> {
         // 1 - Get the thor client
         if ((this.provider as AvailableVeChainProviders) === undefined) {
@@ -322,6 +334,13 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
     ): Promise<string>;
 
     /**
+     * Signs a bytes payload returning the VeChain signature in hexadecimal format.
+     * @param {Uint8Array} payload in bytes to sign.
+     * @returns {string} The VeChain signature in hexadecimal format.
+     */
+    abstract signPayload(payload: Uint8Array): Promise<string>;
+
+    /**
      * Signs an [[link-eip-191]] prefixed a personal message.
      *
      * @param {string|Uint8Array} message - The message to be signed.
@@ -330,23 +349,131 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
      *                                      so the string ``"0x1234"`` is signed as six characters, **not** two bytes.
      * @return {Promise<string>} - A Promise that resolves to the signature as a string.
      */
-    abstract signMessage(message: string | Uint8Array): Promise<string>;
+    public async signMessage(message: string | Uint8Array): Promise<string> {
+        try {
+            const payload =
+                typeof message === 'string' ? Txt.of(message).bytes : message;
+            const payloadHashed = Keccak256.of(
+                concatBytes(
+                    this.MESSAGE_PREFIX,
+                    Txt.of(payload.length).bytes,
+                    payload
+                )
+            ).bytes;
+            return await this.signPayload(payloadHashed);
+        } catch (error) {
+            throw new SignerMethodError(
+                'VeChainAbstractSigner.signMessage',
+                'The message could not be signed.',
+                { message },
+                error
+            );
+        }
+    }
+
+    /**
+     * Deduces the primary from the types if not given.
+     * The primary type will be the only type that is not used in any other type.
+     * @param {Record<string, TypedDataParameter[]>} types - The types used for EIP712.
+     * @returns {string} The primary type.
+     */
+    private deducePrimaryType(
+        types: Record<string, TypedDataParameter[]>
+    ): string {
+        const parents = new Map<string, string[]>();
+
+        // Initialize parents map
+        Object.keys(types).forEach((type) => {
+            parents.set(type, []);
+        });
+
+        // Populate parents map
+        for (const name in types) {
+            for (const field of types[name]) {
+                // In case the type is an array, we get its prefix
+                const type = field.type.split('[')[0];
+                if (parents.has(type)) {
+                    parents.get(type)?.push(name);
+                }
+            }
+        }
+
+        // Find primary types
+        const primaryTypes = Array.from(parents.keys()).filter(
+            (n) => parents.get(n)?.length === 0
+        );
+
+        if (primaryTypes.length !== 1) {
+            throw new SignerMethodError(
+                'VeChainAbstractSigner.deducePrimaryType',
+                'Ambiguous primary types or unused types.',
+                { primaryTypes: primaryTypes.join(', ') }
+            );
+        }
+
+        return primaryTypes[0];
+    }
 
     /**
      * Signs the [[link-eip-712]] typed data.
      *
      * @param {TypedDataDomain} domain - The domain parameters used for signing.
-     * @param {Record<string, TypedDataField[]>} types - The types used for signing.
-     * @param {Record<string, unknown>} value - The message data to be signed.
+     * @param {Record<string, TypedDataParameter[]>} types - The types used for signing.
+     * @param {Record<string, unknown>} message - The message data to be signed.
+     * @param {string} primaryType - The primary type used for signing.
      *
      * @return {Promise<string>} - A promise that resolves with the signature string.
      */
-    abstract signTypedData(
+    public async signTypedData(
         domain: TypedDataDomain,
-        types: Record<string, TypedDataField[]>,
-        value: Record<string, unknown>,
-        options?: SignTypedDataOptions
-    ): Promise<string>;
+        types: Record<string, TypedDataParameter[]>,
+        message: Record<string, unknown>,
+        primaryType?: string
+    ): Promise<string> {
+        try {
+            const viemDomain: viemTypedDataDomain = {
+                chainId: undefined,
+                name: domain.name,
+                salt: domain.salt,
+                verifyingContract: domain.verifyingContract,
+                version: domain.version
+            };
+            // convert chainId
+            if (domain.chainId !== undefined) {
+                if (
+                    typeof domain.chainId === 'string' ||
+                    typeof domain.chainId === 'number'
+                ) {
+                    viemDomain.chainId = BigInt(domain.chainId);
+                } else if (typeof domain.chainId === 'bigint') {
+                    viemDomain.chainId = domain.chainId;
+                } else {
+                    throw new InvalidDataType(
+                        'VeChainAbstractSigner.signTypedData',
+                        'Invalid chainId type.',
+                        { chainId: domain.chainId }
+                    );
+                }
+            }
+            const payload = Hex.of(
+                hashTypedData({
+                    domain: viemDomain,
+                    types,
+                    primaryType: primaryType ?? this.deducePrimaryType(types), // Deduce the primary type if not provided
+                    message
+                })
+            ).bytes;
+
+            return await this.signPayload(payload);
+        } catch (error) {
+            throw new SignerMethodError(
+                'VeChainAbstractSigner.signTypedData',
+                'The typed data could not be signed.',
+                { domain, types, message, primaryType },
+                error
+            );
+        }
+    }
 
     /**
      * Use vet.domains to resolve name to address
@@ -383,7 +510,17 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
             : // If 'to' address is not provided, it will be assumed that the transaction is a contract creation transaction.
               [
                   Clause.deployContract(
-                      HexUInt.of(transaction.data ?? 0)
+                      HexUInt.of(transaction.data ?? 0),
+                      undefined,
+                      {
+                          value:
+                              transaction.value === undefined
+                                  ? transaction.value
+                                  : HexUInt.of(transaction.value).toString(
+                                        true
+                                    ),
+                          comment: transaction.comment
+                      }
                   ) as TransactionClause
               ];
     }

@@ -1,5 +1,8 @@
-import { type TransactionClause } from '@vechain/sdk-core';
-import { type AccessListish } from 'ethers';
+import { type Revision, type TransactionClause } from '@vechain/sdk-core';
+import type {
+    TypedDataDomain as viemTypedDataDomain,
+    TypedDataParameter as viemTypedDataParameter
+} from 'viem';
 import {
     type HardhatVeChainProvider,
     type VeChainProvider
@@ -12,6 +15,15 @@ import {
  * If you create a new provider, you need to add it here.
  */
 type AvailableVeChainProviders = VeChainProvider | HardhatVeChainProvider;
+
+/**
+ * EIP-712 types in case we change the provider (viem as of now)
+ */
+
+type TypedDataDomain = Omit<viemTypedDataDomain, 'chainId'> & {
+    chainId?: number | bigint | string;
+};
+type TypedDataParameter = viemTypedDataParameter;
 
 /**
  * Type for transaction input
@@ -181,6 +193,7 @@ interface TransactionRequestInput {
      *  list are //warmed// by preloading them, so their initial cost to
      *  fetch is guaranteed, but then each additional access is cheaper.
      */
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     accessList?: null | AccessListish;
 
     /**
@@ -192,13 +205,13 @@ interface TransactionRequestInput {
     /**
      *  The [[link-eip-1559]] maximum priority fee to pay per gas.
      */
-    maxPriorityFeePerGas?: string;
+    maxPriorityFeePerGas?: string | number;
 
     /**
      *  The [[link-eip-1559]] maximum total fee to pay per gas. The actual
      *  value used is protocol enforced to be the block's base fee.
      */
-    maxFeePerGas?: string;
+    maxFeePerGas?: string | number;
 
     /**
      *  The transaction type.
@@ -326,7 +339,7 @@ interface VeChainSigner {
      */
     call: (
         transactionToEvaluate: TransactionRequestInput,
-        revision?: string
+        revision?: Revision
     ) => Promise<string>;
 
     /**
@@ -368,9 +381,10 @@ interface VeChainSigner {
      *  Signs the [[link-eip-712]] typed data.
      */
     signTypedData: (
-        domain: vechain_sdk_core_ethers.TypedDataDomain,
-        types: Record<string, vechain_sdk_core_ethers.TypedDataField[]>,
-        value: Record<string, unknown>,
+        domain: TypedDataDomain,
+        types: Record<string, TypedDataParameter[]>,
+        message: Record<string, unknown>,
+        primaryType?: string,
         options?: SignTypedDataOptions
     ) => Promise<string>;
 
@@ -382,6 +396,8 @@ interface VeChainSigner {
 
 export {
     type AvailableVeChainProviders,
+    type TypedDataDomain,
+    type TypedDataParameter,
     type SignTypedDataOptions,
     type TransactionRequestInput,
     type VeChainSigner

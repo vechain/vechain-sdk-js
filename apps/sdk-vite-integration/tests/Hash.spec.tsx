@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
 import { render } from 'vitest-browser-react'
-import Hash from '../src/components/Hash'
+import Hash from '../src/components/Hash.js'
 
 test('renders name', async () => {
   const { getByText } = render(<Hash />)

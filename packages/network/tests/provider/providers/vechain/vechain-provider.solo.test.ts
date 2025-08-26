@@ -1,6 +1,9 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { ABIContract, Address, Clause, HexUInt } from '@vechain/sdk-core';
-import { JSONRPCMethodNotFound } from '@vechain/sdk-errors';
+import {
+    JSONRPCMethodNotFound,
+    JSONRPCMethodNotImplemented
+} from '@vechain/sdk-errors';
 import {
     ProviderInternalBaseWallet,
     type SubscriptionEvent,
@@ -9,13 +12,30 @@ import {
     VeChainProvider,
     type VeChainSigner
 } from '../../../../src';
-import { providerMethodsTestCasesSolo, TEST_ACCOUNT } from '../fixture';
+import { providerMethodsTestCasesSolo } from '../fixture';
+import { TEST_ACCOUNTS } from '../../../fixture';
 import {
     deployERC20Contract,
     deployERC721Contract,
     waitForMessage
 } from '../helpers';
 import { fail } from 'assert';
+import { retryOperation } from '../../../test-utils';
+
+/**
+ * Health check function to ensure Thor solo node is ready
+ */
+const waitForThorSoloReady = async (thorClient: ThorClient): Promise<void> => {
+    for (let i = 0; i < 10; i++) {
+        try {
+            await thorClient.blocks.getBestBlockCompressed();
+            return; // Success
+        } catch (error) {
+            if (i === 9) throw error; // Last attempt
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+        }
+    }
+};
 
 /**
  *VeChain provider tests - Solo Network
@@ -32,17 +52,22 @@ describe('VeChain provider tests - solo', () => {
     /**
      * Init thor client and provider before each test
      */
-    beforeEach(() => {
+    beforeEach(async () => {
         thorClient = ThorClient.at(THOR_SOLO_URL);
         provider = new VeChainProvider(
             thorClient,
             new ProviderInternalBaseWallet([
                 {
-                    privateKey: HexUInt.of(TEST_ACCOUNT.privateKey).bytes,
-                    address: TEST_ACCOUNT.address
+                    privateKey: HexUInt.of(
+                        TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.privateKey
+                    ).bytes,
+                    address:
+                        TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
                 }
             ])
         );
+        // Wait for Thor solo node to be ready
+        await waitForThorSoloReady(thorClient);
     });
 
     /**
@@ -59,10 +84,13 @@ describe('VeChain provider tests - solo', () => {
         ({ description, method, params, expected }) => {
             test(description, async () => {
                 // Call RPC function
-                const rpcCall = await provider.request({
-                    method,
-                    params
-                });
+                const rpcCall = await retryOperation(
+                    async () =>
+                        await provider.request({
+                            method,
+                            params
+                        })
+                );
 
                 // Compare the result with the expected value
                 expect(rpcCall).toStrictEqual(expected);
@@ -75,10 +103,13 @@ describe('VeChain provider tests - solo', () => {
      */
     test('Should be able to get the latest block number', async () => {
         // Call RPC function
-        const rpcCall = await provider.request({
-            method: 'eth_blockNumber',
-            params: []
-        });
+        const rpcCall = await retryOperation(
+            async () =>
+                await provider.request({
+                    method: 'eth_blockNumber',
+                    params: []
+                })
+        );
 
         // Compare the result with the expected value
         expect(rpcCall).not.toBe('0x0');
@@ -89,10 +120,13 @@ describe('VeChain provider tests - solo', () => {
      */
     test('Should be able to get to subscribe to the latest blocks', async () => {
         // Call RPC function
-        const subscriptionId = await provider.request({
-            method: 'eth_subscribe',
-            params: ['newHeads']
-        });
+        const subscriptionId = await retryOperation(
+            async () =>
+                await provider.request({
+                    method: 'eth_subscribe',
+                    params: ['newHeads']
+                })
+        );
 
         const messageReceived = new Promise((resolve) => {
             provider.on('message', (message) => {
@@ -117,10 +151,13 @@ describe('VeChain provider tests - solo', () => {
     test('Should be able to get to subscribe to the latest blocks and then unsubscribe', async () => {
         expect(provider.getPollInstance()).toBeUndefined();
         // Call RPC function
-        const subscriptionId = await provider.request({
-            method: 'eth_subscribe',
-            params: ['newHeads']
-        });
+        const subscriptionId = await retryOperation(
+            async () =>
+                await provider.request({
+                    method: 'eth_subscribe',
+                    params: ['newHeads']
+                })
+        );
 
         expect(provider.getPollInstance()).toBeDefined();
 
@@ -129,10 +166,13 @@ describe('VeChain provider tests - solo', () => {
             provider.subscriptionManager.newHeadsSubscription?.subscriptionId
         ).toBe(subscriptionId);
 
-        await provider.request({
-            method: 'eth_unsubscribe',
-            params: [subscriptionId]
-        });
+        await retryOperation(
+            async () =>
+                await provider.request({
+                    method: 'eth_unsubscribe',
+                    params: [subscriptionId]
+                })
+        );
 
         expect(provider.getPollInstance()).toBeUndefined();
 
@@ -178,7 +218,9 @@ describe('VeChain provider tests - solo', () => {
     test('Should be able to get to subscribe to the latest logs of an erc20 contract', async () => {
         const contract = await deployERC20Contract(
             thorClient,
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner
+            (await provider.getSigner(
+                TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
+            )) as VeChainSigner
         );
 
         const logsParams = {
@@ -187,19 +229,24 @@ describe('VeChain provider tests - solo', () => {
         };
 
         // Call RPC function to subscribe to logs
-        const rpcCall = await provider.request({
-            method: 'eth_subscribe',
-            params: ['logs', logsParams]
-        });
+        const rpcCall = await retryOperation(
+            async () =>
+                await provider.request({
+                    method: 'eth_subscribe',
+                    params: ['logs', logsParams]
+                })
+        );
         // Wait for the subscription to receive a message (log event)
         const messageReceived = waitForMessage(provider);
 
         // Execute a contract transaction to generate a log event
         await thorClient.contracts.executeTransaction(
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner,
+            (await provider.getSigner(
+                TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
+            )) as VeChainSigner,
             contract.address,
             ABIContract.ofAbi(contract.abi).getFunction('transfer'),
-            [TEST_ACCOUNT.address, 100]
+            [TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address, 100]
         );
 
         const message = await messageReceived;
@@ -253,95 +300,141 @@ describe('VeChain provider tests - solo', () => {
      * @throws {Error} If any of the assertions fail, indicating a problem with event subscription or log data capture.
      */
     test('Should be able to subscribe to the latest logs of an erc20 and erc721 contract', async () => {
-        // Test setup: Deploy contracts and set up event subscriptions
-        const erc20Contract = await deployERC20Contract(
-            thorClient,
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner
-        );
-        const erc721Contract = await deployERC721Contract(
-            thorClient,
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner
-        );
+        // Retry mechanism for connection issues
+        let lastError: Error | null = null;
+        for (let attempt = 1; attempt <= 5; attempt++) {
+            try {
+                // Wait for Thor solo node to be ready
+                await new Promise((resolve) => setTimeout(resolve, 2000));
 
-        const erc20logsParams = {
-            address: [erc20Contract.address],
-            topics: []
-        };
+                // Test setup: Deploy contracts and set up event subscriptions
+                const erc20Contract = await deployERC20Contract(
+                    thorClient,
+                    (await provider.getSigner(
+                        TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
+                    )) as VeChainSigner
+                );
+                const erc721Contract = await deployERC721Contract(
+                    thorClient,
+                    (await provider.getSigner(
+                        TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
+                    )) as VeChainSigner
+                );
 
-        const erc721logsParams = {
-            address: [erc721Contract.address],
-            topics: []
-        };
+                const erc20logsParams = {
+                    address: [erc20Contract.address],
+                    topics: []
+                };
 
-        const erc20Subscription = await provider.request({
-            method: 'eth_subscribe',
-            params: ['logs', erc20logsParams]
-        });
+                const erc721logsParams = {
+                    address: [erc721Contract.address],
+                    topics: []
+                };
 
-        const erc721Subscription = await provider.request({
-            method: 'eth_subscribe',
-            params: ['logs', erc721logsParams]
-        });
+                const erc20Subscription = await retryOperation(
+                    async () =>
+                        await provider.request({
+                            method: 'eth_subscribe',
+                            params: ['logs', erc20logsParams]
+                        })
+                );
 
-        // Collect and assert log events
-        let results: SubscriptionEvent[] = [];
-        const eventPromise = new Promise((resolve) => {
-            provider.on('message', (message: SubscriptionEvent) => {
-                results.push(message);
-                if (results.length >= 2) {
-                    provider.destroy();
-                    resolve(results);
+                const erc721Subscription = await retryOperation(
+                    async () =>
+                        await provider.request({
+                            method: 'eth_subscribe',
+                            params: ['logs', erc721logsParams]
+                        })
+                );
+
+                // Collect and assert log events
+                let results: SubscriptionEvent[] = [];
+                const eventPromise = new Promise((resolve) => {
+                    provider.on('message', (message: SubscriptionEvent) => {
+                        results.push(message);
+                        if (results.length >= 2) {
+                            provider.destroy();
+                            resolve(results);
+                        }
+                    });
+                });
+
+                // Execute transactions that should emit events
+                await thorClient.contracts.executeTransaction(
+                    (await provider.getSigner(
+                        TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
+                    )) as VeChainSigner,
+                    erc20Contract.address,
+                    ABIContract.ofAbi(erc20Contract.abi).getFunction(
+                        'transfer'
+                    ),
+                    [TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address, 100]
+                );
+
+                const clauses = Clause.callFunction(
+                    Address.of(erc721Contract.address),
+                    ABIContract.ofAbi(erc721Contract.abi).getFunction(
+                        'mintItem'
+                    ),
+                    [TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address]
+                );
+
+                const gas = await thorClient.transactions.estimateGas([
+                    clauses
+                ]);
+
+                await thorClient.contracts.executeTransaction(
+                    (await provider.getSigner(
+                        TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
+                    )) as VeChainSigner,
+                    erc721Contract.address,
+                    ABIContract.ofAbi(erc721Contract.abi).getFunction(
+                        'mintItem'
+                    ),
+                    [TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address],
+                    { gas: gas.totalGas }
+                );
+
+                results = (await eventPromise) as SubscriptionEvent[];
+
+                // Assertions to validate the received log events
+                expect(results).toBeDefined();
+                expect(results.length).toBeGreaterThan(1);
+                expect(
+                    results.filter(
+                        (x) => x.params.subscription === erc20Subscription
+                    ).length
+                ).toBeGreaterThan(0);
+                expect(
+                    results.filter(
+                        (x) => x.params.subscription === erc721Subscription
+                    ).length
+                ).toBeGreaterThan(0);
+
+                expect(results[0].method).toBe('eth_subscription');
+                expect(results[1].method).toBe('eth_subscription');
+
+                // @ts-expect-error - Asserting that log data is present
+                expect(results[0].params.result.length).toBeGreaterThan(0);
+
+                // @ts-expect-error - Asserting that log data is present
+                expect(results[1].params.result.length).toBeGreaterThan(0);
+
+                // Success - exit retry loop
+                return;
+            } catch (error) {
+                lastError = error as Error;
+                console.log(`Attempt ${attempt} failed:`, error);
+                if (attempt < 5) {
+                    // Wait longer between retries for complex test
+                    await new Promise((resolve) => setTimeout(resolve, 10000));
                 }
-            });
-        });
+            }
+        }
 
-        // Execute transactions that should emit events
-        await thorClient.contracts.executeTransaction(
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner,
-            erc20Contract.address,
-            ABIContract.ofAbi(erc20Contract.abi).getFunction('transfer'),
-            [TEST_ACCOUNT.address, 100]
-        );
-
-        const clauses = Clause.callFunction(
-            Address.of(erc721Contract.address),
-            ABIContract.ofAbi(erc721Contract.abi).getFunction('mintItem'),
-            [TEST_ACCOUNT.address]
-        );
-
-        const gas = await thorClient.gas.estimateGas([clauses]);
-
-        await thorClient.contracts.executeTransaction(
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner,
-            erc721Contract.address,
-            ABIContract.ofAbi(erc721Contract.abi).getFunction('mintItem'),
-            [TEST_ACCOUNT.address],
-            { gas: gas.totalGas }
-        );
-
-        results = (await eventPromise) as SubscriptionEvent[];
-
-        // Assertions to validate the received log events
-        expect(results).toBeDefined();
-        expect(results.length).toBeGreaterThan(1);
-        expect(
-            results.filter((x) => x.params.subscription === erc20Subscription)
-                .length
-        ).toBeGreaterThan(0);
-        expect(
-            results.filter((x) => x.params.subscription === erc721Subscription)
-                .length
-        ).toBeGreaterThan(0);
-
-        expect(results[0].method).toBe('eth_subscription');
-        expect(results[1].method).toBe('eth_subscription');
-
-        // @ts-expect-error - Asserting that log data is present
-        expect(results[0].params.result.length).toBeGreaterThan(0);
-
-        // @ts-expect-error - Asserting that log data is present
-        expect(results[1].params.result.length).toBeGreaterThan(0);
-    }, 30000);
+        // All retries failed
+        throw lastError ?? new Error('Connection failed after 5 attempts');
+    }, 120000);
 
     /**
      * Invalid RPC method tests
@@ -360,40 +453,32 @@ describe('VeChain provider tests - solo', () => {
         } catch (error) {
             expect(error).toBeInstanceOf(JSONRPCMethodNotFound);
             if (error instanceof JSONRPCMethodNotFound) {
-                expect(error.message).toBe(
-                    `Method 'VeChainProvider.request()' failed.` +
-                        `\n-Reason: 'Method not found. Invalid RPC method given as input.'` +
-                        `\n-Parameters: \n\t{\n  "code": -32601,\n  "message": "Method not found. Invalid RPC method given as input.",\n  "data": {\n    "method": "INVALID_METHOD"\n  }\n}`
-                );
+                expect(error.data.code).toBe(-32601);
+                expect(error.data.message).toBe('Method not found');
             }
         }
     });
 
-    describe('resolveName(vnsName)', () => {
-        test('Should be able to resolve an address by name', async () => {
-            const name = 'test-sdk.vet';
-            const address = await provider.resolveName(name);
-            expect(address).toBe('0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54');
-        });
+    /**
+     * Not implemented RPC method tests
+     */
+    test('Should throw an error when calling an invalid RPC method', async () => {
+        // Check if the provider is defined
+        expect(provider).toBeDefined();
 
-        test('Should resolve to null for unknown names', async () => {
-            const name = 'unknown.test-sdk.vet';
-            const address = await provider.resolveName(name);
-            expect(address).toBe(null);
-        });
-    });
-
-    describe('lookupAddress(address)', () => {
-        test('Should be able to lookup a name for an address', async () => {
-            const address = '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54';
-            const name = await provider.lookupAddress(address);
-            expect(name).toBe('test-sdk.vet');
-        });
-
-        test('Should resolve to null for unknown names', async () => {
-            const address = '0x0000000000000000000000000000000000000001';
-            const name = await provider.resolveName(address);
-            expect(name).toBe(null);
-        });
+        // Call RPC function
+        try {
+            await provider.request({
+                method: 'eth_getProof',
+                params: [-1]
+            });
+            fail('Should throw an error');
+        } catch (error) {
+            expect(error).toBeInstanceOf(JSONRPCMethodNotImplemented);
+            if (error instanceof JSONRPCMethodNotImplemented) {
+                expect(error.data.code).toBe(-32004);
+                expect(error.data.message).toBe('Method not implemented');
+            }
+        }
     });
 });

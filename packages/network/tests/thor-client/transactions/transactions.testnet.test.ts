@@ -3,7 +3,7 @@ import {
     buildTransactionBodyClausesTestCases,
     getRevertReasonTestCasesFixture
 } from './fixture';
-import { THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../fixture';
+import { getUnusedBaseWallet } from '../../fixture';
 import { TESTNET_URL, ThorClient, VeChainProvider } from '../../../src';
 import { InvalidDataType } from '@vechain/sdk-errors';
 
@@ -26,7 +26,7 @@ describe('Transactions module Testnet tests suite', () => {
         thorClient = ThorClient.at(TESTNET_URL);
         provider = new VeChainProvider(
             thorClient,
-            THOR_SOLO_ACCOUNTS_BASE_WALLET,
+            getUnusedBaseWallet(),
             false
         );
     });
@@ -51,10 +51,11 @@ describe('Transactions module Testnet tests suite', () => {
                     description,
                     async () => {
                         const thorClient = ThorClient.at(TESTNET_URL);
-                        const gasResult = await thorClient.gas.estimateGas(
-                            clauses,
-                            '0x000000000000000000000000004d000000000000' // This address might not exist on testnet, thus the gasResult.reverted might be true
-                        );
+                        const gasResult =
+                            await thorClient.transactions.estimateGas(
+                                clauses,
+                                '0x000000000000000000000000004d000000000000' // This address might not exist on testnet, thus the gasResult.reverted might be true
+                            );
 
                         expect(gasResult.totalGas).toBe(expected.testnet.gas);
 

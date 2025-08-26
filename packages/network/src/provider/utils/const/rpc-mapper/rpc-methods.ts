@@ -39,6 +39,7 @@ enum RPC_METHODS {
     debug_traceTransaction = 'debug_traceTransaction',
     debug_traceCall = 'debug_traceCall',
     evm_mine = 'evm_mine',
+    evm_increaseTime = 'evm_increaseTime', // Uses evm_mine under the hood, required for hardhat
     web3_sha3 = 'web3_sha3',
     net_peerCount = 'net_peerCount',
     net_listening = 'net_listening',
@@ -54,9 +55,11 @@ enum RPC_METHODS {
     eth_getUncleCountByBlockHash = 'eth_getUncleCountByBlockHash',
     eth_getUncleCountByBlockNumber = 'eth_getUncleCountByBlockNumber',
     eth_signTypedData_v4 = 'eth_signTypedData_v4',
+    eth_getBlockReceipts = 'eth_getBlockReceipts',
 
     /**
      * TO BE IMPLEMENTED METHODS:
+     * Add to packages/network/src/provider/utils/rpc-mapper/methods/index.ts to implement
      */
     eth_coinbase = 'eth_coinbase',
     eth_feeHistory = 'eth_feeHistory',
@@ -92,7 +95,6 @@ enum RPC_METHODS {
     engine_newPayloadV2 = 'engine_newPayloadV2',
     engine_newPayloadV3 = 'engine_newPayloadV3',
     eth_createAccessList = 'eth_createAccessList',
-    eth_getBlockReceipts = 'eth_getBlockReceipts',
     eth_getProof = 'eth_getProof',
     eth_maxPriorityFeePerGas = 'eth_maxPriorityFeePerGas'
 }

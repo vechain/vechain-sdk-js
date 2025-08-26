@@ -1,19 +1,20 @@
-import { VeChainProvider } from '../vechain-provider/vechain-provider';
-import type { EIP1193RequestArguments } from '../../eip1193';
 import {
     JSONRPCInternalError,
+    JSONRPCTransactionRevertError,
     stringifyData,
     VechainSDKError
 } from '@vechain/sdk-errors';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
+import { SimpleHttpClient } from '../../../http';
+import { ThorClient } from '../../../thor-client';
+import type { EIP1193RequestArguments } from '../../eip1193';
+import { type ProviderInternalWallet } from '../../helpers';
+import { VeChainProvider } from '../vechain-provider/vechain-provider';
 import {
     type BuildHardhatErrorFunction,
     type JsonRpcRequest,
     type JsonRpcResponse
 } from './types';
-import { ThorClient } from '../../../thor-client';
-import { type ProviderInternalWallet } from '../../helpers';
-import { VeChainSDKLogger } from '@vechain/sdk-logging';
-import { SimpleHttpClient } from '../../../http';
 
 /**
  * This class is a wrapper for the VeChainProvider that Hardhat uses.
@@ -77,7 +78,7 @@ class HardhatVeChainProvider extends VeChainProvider {
     }
 
     /**
-     * Overload off the send method
+     * Overload of the send method
      *
      * @param method - The method to call.
      * @param params - The parameters to pass to the method.
@@ -90,7 +91,7 @@ class HardhatVeChainProvider extends VeChainProvider {
     }
 
     /**
-     * Overload off the sendAsync method.
+     * Overload of the sendAsync method.
      * It is the same of the send method, but with a callback.
      * Instead of returning the result, it calls the callback with the result.
      *
@@ -139,16 +140,16 @@ class HardhatVeChainProvider extends VeChainProvider {
                 const accounts = await (
                     this.wallet as ProviderInternalWallet
                 ).getAddresses();
-                const delegator = await (
+                const gasPayer = await (
                     this.wallet as ProviderInternalWallet
-                ).getDelegator();
+                ).getGasPayer();
 
                 VeChainSDKLogger('log').log({
                     title: `Sending request - ${args.method}`,
                     messages: [
                         `params: ${stringifyData(args.params)}`,
                         `accounts: ${stringifyData(accounts)}`,
-                        `delegator: ${stringifyData(delegator)}`,
+                        `gasPayer: ${stringifyData(gasPayer)}`,
                         `url: ${this.thorClient.httpClient.baseURL}`
                     ]
                 });
@@ -184,8 +185,12 @@ class HardhatVeChainProvider extends VeChainProvider {
                 );
             }
 
+            // eth_call transaction revert error already in correct format
+            if (error instanceof JSONRPCTransactionRevertError) {
+                throw error;
+            }
+
             if (error instanceof VechainSDKError) {
-                // Throw the error
                 throw this.buildHardhatErrorFunctionCallback(
                     `Error on request ${args.method}: ${error.innerError}`,
                     error

@@ -1,16 +1,16 @@
 {
   "compilerOptions": {
-      "target": "ESNext",
-      "module": "ESNext",
-      "moduleResolution": "Node",
+      "target": "ES2022",
+      "module": "Node16",
+      "moduleResolution": "Node16",
       "allowSyntheticDefaultImports": true,
   },
   "ts-node": {
     "compilerOptions": {
       "esModuleInterop": true,
-      "module": "ESNext",
-      "target": "ESNext",
-      "moduleResolution": "Node",
+      "module": "Node16",
+      "target": "ES2022",
+      "moduleResolution": "Node16",
     },
     "esm": true
   }

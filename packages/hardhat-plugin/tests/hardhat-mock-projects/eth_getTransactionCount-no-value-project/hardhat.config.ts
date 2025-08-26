@@ -25,12 +25,12 @@ const vechainTestNetwork: HttpNetworkConfig = {
         path: HDKey.VET_DERIVATION_PATH,
         count: 3,
         initialIndex: 0,
-        passphrase: 'VeChainThor'
+        passphrase: 'VeChainThor' // eslint-disable-line sonarjs/no-hardcoded-passwords
     },
 
     // Custom parameters
-    delegator: {
-        delegatorPrivateKey:
+    gasPayer: {
+        gasPayerPrivateKey:
             'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5'
     },
     debug: true,

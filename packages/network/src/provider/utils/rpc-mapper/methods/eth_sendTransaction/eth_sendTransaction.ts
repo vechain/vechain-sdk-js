@@ -1,13 +1,14 @@
-import { type ThorClient } from '../../../../../thor-client';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
-import { type VeChainProvider } from '../../../../providers/vechain-provider';
-import { type TransactionObjectInput } from './types';
 import { type VeChainSigner } from '../../../../../signer';
+import { type ThorClient } from '../../../../../thor-client';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
+import { type VeChainProvider } from '../../../../providers/vechain-provider';
+import { getCachedChainId } from '../eth_chainId';
+import { type TransactionObjectInput } from './types';
 
 /**
  * RPC Method eth_sendTransaction implementation
@@ -19,7 +20,6 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
  * The 'data' field of the transaction will be used as the contract initialization code.
  *
  * @NOTE: 'gasPrice' cannot be used together with 'maxPriorityFeePerGas' and 'maxFeePerGas'.
- * 'maxPriorityFeePerGas' and 'maxFeePerGas' are not supported in the current version.
  *
  * @param thorClient - The thor client instance to use.
  * @param params - The standard array of rpc call parameters.
@@ -41,7 +41,11 @@ const ethSendTransaction = async (
     provider?: VeChainProvider
 ): Promise<string> => {
     // Input validation
-    if (params.length !== 1 || typeof params[0] !== 'object')
+    if (
+        params === undefined ||
+        params.length !== 1 ||
+        typeof params[0] !== 'object'
+    )
         throw new JSONRPCInvalidParams(
             'eth_sendTransaction',
             `Invalid input params for "eth_sendTransaction" method. See ${RPC_DOCUMENTATION_URL} for details.`,
@@ -66,8 +70,23 @@ const ethSendTransaction = async (
         );
     }
 
+    // default value for value is 0x0
+    if ((params[0] as TransactionObjectInput).value === undefined) {
+        (params[0] as TransactionObjectInput).value = '0x0';
+    }
+
     // Input params
     const [transaction] = params as [TransactionObjectInput];
+
+    // Check if the chainId in the transaction object if specified matches the chainId of the network
+    const chainId = await getCachedChainId(thorClient);
+    if (transaction.chainId != null && transaction.chainId !== chainId) {
+        throw new JSONRPCInvalidParams(
+            'eth_sendTransaction',
+            `ChainId in the transaction object does not match the chainId of the network. Expected: ${chainId}, Received: ${transaction.chainId}`,
+            { chainId: transaction.chainId }
+        );
+    }
 
     try {
         // Get the signer of the provider

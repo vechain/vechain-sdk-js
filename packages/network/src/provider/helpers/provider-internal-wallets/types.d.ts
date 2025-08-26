@@ -37,9 +37,9 @@ interface ProviderInternalWalletAccount {
  */
 interface ProviderInternalWallet {
     /**
-     * Options for signing a transaction with delegator.
+     * Options for signing a transaction with gasPayer.
      */
-    delegator?: SignTransactionOptions;
+    gasPayer?: SignTransactionOptions;
 
     /**
      * List of accounts in the wallet.
@@ -113,20 +113,20 @@ interface ProviderInternalWallet {
     ) => ProviderInternalWalletAccount | null;
 
     /**
-     * Get the options for signing a transaction with delegator (if any).
+     * Get the options for signing a transaction with gasPayer (if any).
      *
-     * @returns The options for signing a transaction with delegator.
+     * @returns The options for signing a transaction with gasPayer.
      */
-    getDelegator: () => Promise<SignTransactionOptions | null>;
+    getGasPayer: () => Promise<SignTransactionOptions | null>;
 
     /**
-     * SYNC Version of getDelegator()
+     * SYNC Version of getGasPayer()
      *
-     * Get the options for signing a transaction with delegator (if any).
+     * Get the options for signing a transaction with gasPayer (if any).
      *
-     * @returns The options for signing a transaction with delegator.
+     * @returns The options for signing a transaction with gasPayer.
      */
-    getDelegatorSync: () => SignTransactionOptions | null;
+    getGasPayerSync: () => SignTransactionOptions | null;
 }
 
 export { type ProviderInternalWallet, type ProviderInternalWalletAccount };

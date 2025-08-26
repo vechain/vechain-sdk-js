@@ -15,17 +15,14 @@ import {
     KMSVeChainSigner
 } from '../src';
 import {
-    EIP712_CONTRACT,
-    EIP712_FROM,
-    EIP712_TO,
     fundVTHO,
     signTransactionTestCases as sendTransactionTestCases,
     signTransactionTestCases,
     TESTING_CONTRACT_ABI,
-    TESTING_CONTRACT_ADDRESS,
+    SOLO_CONTRACT_ADDRESS,
     timeout
 } from './fixture';
-
+import { EIP712_CONTRACT, EIP712_FROM, EIP712_TO } from './dummy_data';
 // This variable should be replaced once this is clarified  https://github.com/localstack/localstack/issues/11678
 let expectedAddress: string;
 
@@ -46,9 +43,9 @@ describe('KMSVeChainSigner - Thor Solo', () => {
     let signer: KMSVeChainSigner;
 
     /**
-     * KMSVeChainSigner with delegator instance
+     * KMSVeChainSigner with gasPayer instance
      */
-    let signerWithDelegator: KMSVeChainSigner;
+    let signerWithGasPayer: KMSVeChainSigner;
 
     /**
      * Init thor client and provider before all tests
@@ -59,24 +56,24 @@ describe('KMSVeChainSigner - Thor Solo', () => {
             './aws-credentials.json'
         );
         let awsClientParameters: KMSClientParameters;
-        let delegatorAwsClientParameters: KMSClientParameters;
+        let gasPayerAwsClientParameters: KMSClientParameters;
         try {
-            [awsClientParameters, delegatorAwsClientParameters] = JSON.parse(
+            [awsClientParameters, gasPayerAwsClientParameters] = JSON.parse(
                 fs.readFileSync(awsCredentialsPath, 'utf8')
             ) as KMSClientParameters[];
-        } catch (error) {
+        } catch {
             console.log('Loading test credentials');
             const testAwsCredentialsPath = path.resolve(
                 __dirname,
                 './test-aws-credentials.json'
             );
-            [awsClientParameters, delegatorAwsClientParameters] = JSON.parse(
+            [awsClientParameters, gasPayerAwsClientParameters] = JSON.parse(
                 fs.readFileSync(testAwsCredentialsPath, 'utf8')
             ) as KMSClientParameters[];
         }
         thorClient = ThorClient.at(THOR_SOLO_URL);
 
-        // Signer with delegator disabled
+        // Signer with gasPayer disabled
         signer = new KMSVeChainSigner(
             new KMSVeChainProvider(thorClient, awsClientParameters)
         );
@@ -84,20 +81,20 @@ describe('KMSVeChainSigner - Thor Solo', () => {
         // This step should be removed once this is clarified  https://github.com/localstack/localstack/issues/11678
         await fundVTHO(thorClient, expectedAddress);
 
-        // Signer with delegator enabled
-        const delegatorProvider = new KMSVeChainProvider(
+        // Signer with gasPayer enabled
+        const gasPayerProvider = new KMSVeChainProvider(
             thorClient,
-            delegatorAwsClientParameters
+            gasPayerAwsClientParameters
         );
-        expect(delegatorProvider).toBeInstanceOf(KMSVeChainProvider);
-        signerWithDelegator = new KMSVeChainSigner(
+        expect(gasPayerProvider).toBeInstanceOf(KMSVeChainProvider);
+        signerWithGasPayer = new KMSVeChainSigner(
             new KMSVeChainProvider(thorClient, awsClientParameters, true),
             {
-                provider: delegatorProvider
+                provider: gasPayerProvider
             }
         );
         // This step should be removed once this is clarified  https://github.com/localstack/localstack/issues/11678
-        await fundVTHO(thorClient, await signerWithDelegator.getAddress(true));
+        await fundVTHO(thorClient, await signerWithGasPayer.getAddress(true));
     }, timeout);
 
     describe('getAddress', () => {
@@ -120,10 +117,10 @@ describe('KMSVeChainSigner - Thor Solo', () => {
                     description,
                     async () => {
                         const signTransactionSigner = isDelegated
-                            ? signerWithDelegator
+                            ? signerWithGasPayer
                             : signer;
                         const sampleClause = Clause.callFunction(
-                            Address.of(TESTING_CONTRACT_ADDRESS),
+                            Address.of(SOLO_CONTRACT_ADDRESS),
                             ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
                                 'deposit'
                             ),
@@ -133,10 +130,11 @@ describe('KMSVeChainSigner - Thor Solo', () => {
                         const originAddress =
                             await signTransactionSigner.getAddress();
 
-                        const gasResult = await thorClient.gas.estimateGas(
-                            [sampleClause],
-                            originAddress
-                        );
+                        const gasResult =
+                            await thorClient.transactions.estimateGas(
+                                [sampleClause],
+                                originAddress
+                            );
 
                         const txBody =
                             await thorClient.transactions.buildTransactionBody(
@@ -167,6 +165,18 @@ describe('KMSVeChainSigner - Thor Solo', () => {
                         expect(signedTx.isDelegated).toBe(isDelegated);
                         expect(signedTx.isSigned).toBe(true);
                         expect(signedTx.signature).toBeDefined();
+
+                        // dynamic fee default
+                        const galacticaForked =
+                            await thorClient.forkDetector.isGalacticaForked();
+                        if (galacticaForked) {
+                            expect(signedTx.body.maxFeePerGas).toBeDefined();
+                            expect(
+                                signedTx.body.maxPriorityFeePerGas
+                            ).toBeDefined();
+                        } else {
+                            expect(signedTx.body.gas).toBeDefined();
+                        }
                     },
                     timeout
                 );
@@ -187,10 +197,10 @@ describe('KMSVeChainSigner - Thor Solo', () => {
                     description,
                     async () => {
                         const signTransactionSigner = isDelegated
-                            ? signerWithDelegator
+                            ? signerWithGasPayer
                             : signer;
                         const sampleClause = Clause.callFunction(
-                            Address.of(TESTING_CONTRACT_ADDRESS),
+                            Address.of(SOLO_CONTRACT_ADDRESS),
                             ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
                                 'deposit'
                             ),
@@ -200,10 +210,11 @@ describe('KMSVeChainSigner - Thor Solo', () => {
                         const originAddress =
                             await signTransactionSigner.getAddress();
 
-                        const gasResult = await thorClient.gas.estimateGas(
-                            [sampleClause],
-                            originAddress
-                        );
+                        const gasResult =
+                            await thorClient.transactions.estimateGas(
+                                [sampleClause],
+                                originAddress
+                            );
 
                         const txBody =
                             await thorClient.transactions.buildTransactionBody(
@@ -299,11 +310,27 @@ describe('KMSVeChainSigner - Thor Solo', () => {
             const signature = await signer.signTypedData(
                 typedData.domain,
                 typedData.types,
-                typedData.data
+                typedData.data,
+                typedData.primaryType
             );
             expect(signature).toBeDefined();
             // 64-bytes hex string
-            expect(signature.length).toBe(132);
+            expect(signature).toMatch(/^0x[A-Fa-f0-9]{130}$/);
+
+            const signatureWithoutPrimaryType = await signer.signTypedData(
+                typedData.domain,
+                typedData.types,
+                typedData.data
+            );
+            expect(signatureWithoutPrimaryType).toBeDefined();
+            // 64-bytes hex string
+            expect(signatureWithoutPrimaryType).toMatch(/^0x[A-Fa-f0-9]{130}$/);
+
+            // Not checking directly the signatures since there is an issue in LocalStack:
+            // https://github.com/localstack/localstack/issues/11678
+            // Looks like, regardless the configuration, a new SECP256r1 key is generated
+            // meaning that the signature will be different every time.
+            // However both hashes have been checked and they match, + tests in the other implementation.
         });
     });
 });

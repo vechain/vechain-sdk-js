@@ -1,6 +1,6 @@
 {
   "name": "@vechain/sdk-hardhat-plugin",
-  "version": "1.0.0-rc.6",
+  "version": "2.0.4",
   "description": "This module allows to create smart contracts and interact with them using the VeChain SDK and Hardhat",
   "author": "VeChain Foundation",
   "license": "MIT",
@@ -29,21 +29,22 @@
     "build": "rm -rf ./dist && tsup-node src/index.ts --format cjs,esm --dts",
     "lint": "eslint",
     "format": "prettier --write src/**/*.ts tests/**/*.ts",
-    "start-thor-solo": "echo 'Starting thor solo node ...' && docker compose -f ../../docker-compose.thor.yml up -d --wait && echo '\nThor solo node started ...'",
-    "stop-thor-solo": "echo 'Stopping thor solo node ...' && docker compose -f ../../docker-compose.thor.yml down && echo 'Thor solo node stopped ...'",
+    "start-thor-solo": "yarn workspace @vechain/sdk-solo-setup solo-up",
+    "stop-thor-solo": "yarn workspace @vechain/sdk-solo-setup solo-down",
+    "seed-thor-solo": "yarn workspace @vechain/sdk-solo-setup solo-seed",
     "test:unit": "rm -rf ./coverageUnit && UNIT=true jest --coverage --coverageDirectory=coverageUnit --group=unit",
     "test:integration": "rm -rf ./coverageIntegration && jest --coverage --coverageDirectory=coverageIntegration --group=integration",
     "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit",
-    "test:solo": "(yarn start-thor-solo && yarn test && yarn stop-thor-solo) || yarn stop-thor-solo"
+    "test:solo": "(yarn start-thor-solo && yarn seed-thor-solo && yarn test && yarn stop-thor-solo) || yarn stop-thor-solo"
   },
   "dependencies": {
-    "@nomicfoundation/hardhat-ethers": "^3.0.8",
-    "@vechain/sdk-core": "1.0.0-rc.6",
-    "@vechain/sdk-errors": "1.0.0-rc.6",
-    "@vechain/sdk-ethers-adapter": "1.0.0-rc.6",
-    "@vechain/sdk-logging": "1.0.0-rc.6",
-    "@vechain/sdk-network": "1.0.0-rc.6",
-    "ethers": "6.13.4",
-    "hardhat": "^2.22.15"
+    "@nomicfoundation/hardhat-ethers": "^3.1.0",
+    "@vechain/sdk-core": "2.0.4",
+    "@vechain/sdk-errors": "2.0.4",
+    "@vechain/sdk-ethers-adapter": "2.0.4",
+    "@vechain/sdk-logging": "2.0.4",
+    "@vechain/sdk-network": "2.0.4",
+    "ethers": "^6.14.0",
+    "hardhat": "^2.26.2"
   }
 }

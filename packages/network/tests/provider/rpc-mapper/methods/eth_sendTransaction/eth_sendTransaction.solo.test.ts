@@ -1,18 +1,14 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import {
-    THOR_SOLO_ACCOUNTS_BASE_WALLET,
-    THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR
-} from '../../../../fixture';
+import { getUnusedAccount } from '../../../../fixture';
 import {
     ProviderInternalBaseWallet,
     RPC_METHODS,
-    THOR_SOLO_ACCOUNTS,
     THOR_SOLO_URL,
     ThorClient,
     VeChainProvider
 } from '../../../../../src';
 import {
-    delegatorPrivateKeyFixture,
+    gasPayerPrivateKeyFixture,
     THOR_SOLO_ACCOUNTS_ETH_SEND_TRANSACTION_FIXTURE
 } from './fixture';
 import {
@@ -36,7 +32,7 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
      * Provider instance
      */
     let provider: VeChainProvider;
-    let providerWithDelegator: VeChainProvider;
+    let providerWithgasPayer: VeChainProvider;
 
     /**
      * Init thor client before each test
@@ -45,19 +41,44 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
         // Init thor client
         thorClient = ThorClient.at(THOR_SOLO_URL);
 
-        // Init provider
+        // Create wallet with the sender account that we'll use in the tests
+        const senderAccount =
+            THOR_SOLO_ACCOUNTS_ETH_SEND_TRANSACTION_FIXTURE.sender;
+
+        // Init provider with the same account used in the transactions
         provider = new VeChainProvider(
             thorClient,
-            THOR_SOLO_ACCOUNTS_BASE_WALLET
+            new ProviderInternalBaseWallet([
+                {
+                    privateKey: HexUInt.of(senderAccount.privateKey).bytes,
+                    publicKey: Secp256k1.derivePublicKey(
+                        HexUInt.of(senderAccount.privateKey).bytes
+                    ),
+                    address: senderAccount.address
+                }
+            ])
         );
 
-        // Init provider with delegator
+        // Init provider with gasPayer
         // @NOTE due to the fact we are testing on thor-solo, we can delegate ONLY with a private key!
-        providerWithDelegator = new VeChainProvider(
+        providerWithgasPayer = new VeChainProvider(
             thorClient,
-            THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR({
-                delegatorPrivateKey: delegatorPrivateKeyFixture
-            }),
+            new ProviderInternalBaseWallet(
+                [
+                    {
+                        privateKey: HexUInt.of(senderAccount.privateKey).bytes,
+                        publicKey: Secp256k1.derivePublicKey(
+                            HexUInt.of(senderAccount.privateKey).bytes
+                        ),
+                        address: senderAccount.address
+                    }
+                ],
+                {
+                    gasPayer: {
+                        gasPayerPrivateKey: gasPayerPrivateKeyFixture
+                    }
+                }
+            ),
             true
         );
     });
@@ -74,7 +95,7 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
                 test(`eth_sendTransaction - Should be able to send a transaction with value ${value} - ${delegated ? 'delegated case' : 'not delegated case'}`, async () => {
                     // Get the provider to use depending on delegated or not
                     const providerToUse = delegated
-                        ? providerWithDelegator
+                        ? providerWithgasPayer
                         : provider;
 
                     // Get the balance of the sender and the receiver before sending the transaction
@@ -147,20 +168,37 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
          * Positive case 2 - Should be able to send a transaction with undefined value
          */
         test('eth_sendTransaction - Should be able to send a transaction with value undefined', async () => {
-            const from = THOR_SOLO_ACCOUNTS[18].address;
-            const to = THOR_SOLO_ACCOUNTS[19].address;
+            // Create new accounts for this test
+            const fromAccount = getUnusedAccount();
+            const from = fromAccount.address;
+            const to = getUnusedAccount().address;
+
+            // Create a specific provider with these accounts in its wallet
+            const testProvider = new VeChainProvider(
+                thorClient,
+                new ProviderInternalBaseWallet([
+                    {
+                        privateKey: HexUInt.of(fromAccount.privateKey).bytes,
+                        publicKey: Secp256k1.derivePublicKey(
+                            HexUInt.of(fromAccount.privateKey).bytes
+                        ),
+                        address: from
+                    }
+                ])
+            );
+
             // Get the balance of the sender and the receiver before sending the transaction
-            const balanceSenderBefore = (await provider.request({
+            const balanceSenderBefore = (await testProvider.request({
                 method: RPC_METHODS.eth_getBalance,
                 params: [from, 'latest']
             })) as string;
-            const balanceReceiverBefore = (await provider.request({
+            const balanceReceiverBefore = (await testProvider.request({
                 method: RPC_METHODS.eth_getBalance,
                 params: [to, 'latest']
             })) as string;
 
             // Send a transaction
-            const transaction = (await provider.request({
+            const transaction = (await testProvider.request({
                 method: RPC_METHODS.eth_sendTransaction,
                 params: [
                     {
@@ -176,11 +214,11 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
             expect(receipt).toBeDefined();
 
             // Get the balance of the sender and the receiver after sending the transaction
-            const balanceSenderAfter = (await provider.request({
+            const balanceSenderAfter = (await testProvider.request({
                 method: RPC_METHODS.eth_getBalance,
                 params: [from, 'latest']
             })) as string;
-            const balanceReceiverAfter = (await provider.request({
+            const balanceReceiverAfter = (await testProvider.request({
                 method: RPC_METHODS.eth_getBalance,
                 params: [to, 'latest']
             })) as string;
@@ -264,12 +302,12 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
                 thorClient,
                 new ProviderInternalBaseWallet([
                     {
-                        privateKey: HexUInt.of(THOR_SOLO_ACCOUNTS[0].privateKey)
+                        privateKey: HexUInt.of(getUnusedAccount().privateKey)
                             .bytes,
                         publicKey: Secp256k1.derivePublicKey(
-                            HexUInt.of(THOR_SOLO_ACCOUNTS[0].privateKey).bytes
+                            HexUInt.of(getUnusedAccount().privateKey).bytes
                         ),
-                        address: THOR_SOLO_ACCOUNTS[0].address
+                        address: getUnusedAccount().address
                     }
                 ])
             );
@@ -299,6 +337,27 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
                     await provider.request({
                         method: RPC_METHODS.eth_sendTransaction,
                         params: ['INVALID']
+                    })
+            ).rejects.toThrowError(JSONRPCInvalidParams);
+        });
+
+        /**
+         * Negative case 5 - Chain Id mismatch
+         */
+        test('eth_sendTransaction - Should throw error if chainId does not match', async () => {
+            // Send a transaction with invalid chainId
+            await expect(
+                async () =>
+                    await provider.request({
+                        method: RPC_METHODS.eth_sendTransaction,
+                        params: [
+                            {
+                                from: getUnusedAccount().address,
+                                to: getUnusedAccount().address,
+                                value: '0x1',
+                                chainId: '0x123'
+                            }
+                        ]
                     })
             ).rejects.toThrowError(JSONRPCInvalidParams);
         });

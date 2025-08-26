@@ -37,7 +37,7 @@ const ethGetBlockByHashTestCases = [
     {
         description: 'Should get null if block does not exist',
         params: [
-            '0x00000000000000000000000000083d49db800000000000000000000000000000',
+            '0x00000000851caf3cfdb6e899cf5958bfb1ac3413d346d43539627e6be7ec1b4a', // Invalid block hash for testnet
             true
         ],
         expected: null,

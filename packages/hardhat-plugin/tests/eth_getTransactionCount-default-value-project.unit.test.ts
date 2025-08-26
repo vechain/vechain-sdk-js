@@ -18,12 +18,13 @@ describe('Using eth_getTransactionCount with default value as 0x0', () => {
      */
     let hre: HardhatRuntimeEnvironment;
 
-    beforeEach(async function () {
+    beforeEach(function () {
         // Set hardhat context
         setHardhatContext('eth_getTransactionCount-default-value-project');
 
-        // Load hardhat environment
-        hre = await import('hardhat');
+        // Load hardhat environment using require instead of dynamic import
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        hre = require('hardhat') as HardhatRuntimeEnvironment;
     });
 
     afterEach(function () {

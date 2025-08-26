@@ -119,6 +119,14 @@ class JSONRPCInternalError extends JSONRPCProviderError {
 }
 
 /**
+ * Invalid default block.
+ *
+ * WHEN TO USE:
+ * * When converting default block to vechain revision
+ */
+class JSONRPCInvalidDefaultBlock extends VechainSDKError<string> {}
+
+/**
  * Server error.
  *
  * WHEN TO USE:
@@ -135,13 +143,56 @@ class JSONRPCServerError extends JSONRPCProviderError {
     }
 }
 
+/**
+ * Method not implemented.
+ *
+ * WHEN TO USE:
+ * * When a method is implemented but not yet supported by the provider.
+ */
+class JSONRPCMethodNotImplemented extends JSONRPCProviderError {
+    constructor(
+        readonly methodName: string,
+        message: string,
+        data: ObjectErrorData,
+        readonly innerError?: unknown
+    ) {
+        super(methodName, -32004, message, data, innerError);
+    }
+}
+
+/**
+ * Revert error.
+ *
+ * WHEN TO USE:
+ * * When a Transaction is reverted.
+ */
+class JSONRPCTransactionRevertError extends Error {
+    code: number;
+    data?: string;
+    message: string;
+
+    constructor(message: string, data?: string) {
+        super(message || 'execution reverted');
+        this.message = message;
+        this.name = 'JSONRPCTransactionRevertError';
+        this.code = -32000;
+        this.data = data;
+
+        // Needed to make instanceof work when transpiled
+        Object.setPrototypeOf(this, new.target.prototype);
+    }
+}
+
 export {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     JSONRPCInvalidRequest,
     JSONRPCMethodNotFound,
+    JSONRPCMethodNotImplemented,
     JSONRPCParseError,
     JSONRPCProviderError,
     JSONRPCServerError,
-    ProviderMethodError
+    ProviderMethodError,
+    JSONRPCInvalidDefaultBlock,
+    JSONRPCTransactionRevertError
 };

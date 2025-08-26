@@ -27,7 +27,7 @@ interface TransactionBody {
     /**
      * Coefficient applied to base gas price [0,255]
      */
-    gasPriceCoef: number;
+    gasPriceCoef?: number;
 
     /**
      * Max gas provided for execution
@@ -45,6 +45,16 @@ interface TransactionBody {
      * Every transaction with same chainTag, blockRef, ... must have different nonce.
      */
     nonce: string | number;
+
+    /**
+     * The maximum fee per gas for the transaction.
+     */
+    maxFeePerGas?: string | number;
+
+    /**
+     * The maximum priority fee per gas for the transaction.
+     */
+    maxPriorityFeePerGas?: string | number;
 
     /**
      * A reserved field intended for features use.

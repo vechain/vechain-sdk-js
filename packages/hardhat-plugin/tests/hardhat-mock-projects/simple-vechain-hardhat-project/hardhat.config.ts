@@ -25,12 +25,12 @@ const vechainTestNetwork: HttpNetworkConfig = {
         path: HDKey.VET_DERIVATION_PATH,
         count: 3,
         initialIndex: 0,
-        passphrase: 'VeChainThor'
+        passphrase: 'VeChainThor' // eslint-disable-line sonarjs/no-hardcoded-passwords
     },
 
     // Custom parameters
-    delegator: {
-        delegatorPrivateKey:
+    gasPayer: {
+        gasPayerPrivateKey:
             'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5'
     },
     debug: true,
@@ -42,12 +42,12 @@ const vechainTestNetwork: HttpNetworkConfig = {
  */
 const vechainSoloNetwork = {
     // Thor solo network
-    url: 'http://localhost:8669',
+    url: 'http://127.0.0.1:8669',
     accounts: [
-        '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
+        '99f0500549792796c14fed62011a51081dc5b5e68fe8bd8a13b86be829c4fd36' // private key of 1st solo account
     ],
     debug: false,
-    delegator: undefined,
+    gasPayer: undefined,
     enableDelegation: false,
     gas: 'auto',
     gasPrice: 'auto',

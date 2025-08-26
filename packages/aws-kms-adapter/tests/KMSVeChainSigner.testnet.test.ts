@@ -15,11 +15,9 @@ import {
     KMSVeChainSigner
 } from '../src';
 import {
-    addAddressToFeeDelegationWhitelist,
-    removeAddressFromFeeDelegationWhitelist,
     signTransactionTestCases,
     TESTING_CONTRACT_ABI,
-    TESTING_CONTRACT_ADDRESS,
+    TESTNET_CONTRACT_ADDRESS,
     TESTNET_DELEGATE_URL,
     timeout
 } from './fixture';
@@ -36,14 +34,14 @@ describe('KMSVeChainSigner - Testnet', () => {
     let thorClient: ThorClient;
 
     /**
-     * KMSVeChainSigner with delegator instance
+     * KMSVeChainSigner with gasPayer instance
      */
-    let signerWithDelegator: KMSVeChainSigner;
+    let signerWithGasPayer: KMSVeChainSigner;
 
     /**
      * Init thor client and provider before all tests
      */
-    beforeAll(async () => {
+    beforeAll(() => {
         const awsCredentialsPath = path.resolve(
             __dirname,
             './aws-credentials.json'
@@ -53,7 +51,7 @@ describe('KMSVeChainSigner - Testnet', () => {
             [awsClientParameters] = JSON.parse(
                 fs.readFileSync(awsCredentialsPath, 'utf8')
             ) as KMSClientParameters[];
-        } catch (error) {
+        } catch {
             console.log('Loading test credentials');
             const testAwsCredentialsPath = path.resolve(
                 __dirname,
@@ -65,23 +63,11 @@ describe('KMSVeChainSigner - Testnet', () => {
         }
         thorClient = ThorClient.at(TESTNET_URL);
 
-        signerWithDelegator = new KMSVeChainSigner(
+        signerWithGasPayer = new KMSVeChainSigner(
             new KMSVeChainProvider(thorClient, awsClientParameters, true),
             {
                 url: TESTNET_DELEGATE_URL
             }
-        );
-
-        await addAddressToFeeDelegationWhitelist(
-            thorClient,
-            await signerWithDelegator.getAddress()
-        );
-    }, 4 * timeout);
-
-    afterAll(async () => {
-        await removeAddressFromFeeDelegationWhitelist(
-            thorClient,
-            await signerWithDelegator.getAddress()
         );
     }, 4 * timeout);
 
@@ -104,7 +90,7 @@ describe('KMSVeChainSigner - Testnet', () => {
                     description,
                     async () => {
                         const sampleClause = Clause.callFunction(
-                            Address.of(TESTING_CONTRACT_ADDRESS),
+                            Address.of(TESTNET_CONTRACT_ADDRESS),
                             ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
                                 'deposit'
                             ),
@@ -112,12 +98,13 @@ describe('KMSVeChainSigner - Testnet', () => {
                         ) as TransactionClause;
 
                         const originAddress =
-                            await signerWithDelegator.getAddress();
+                            await signerWithGasPayer.getAddress();
 
-                        const gasResult = await thorClient.gas.estimateGas(
-                            [sampleClause],
-                            originAddress
-                        );
+                        const gasResult =
+                            await thorClient.transactions.estimateGas(
+                                [sampleClause],
+                                originAddress
+                            );
 
                         const txBody =
                             await thorClient.transactions.buildTransactionBody(
@@ -129,7 +116,7 @@ describe('KMSVeChainSigner - Testnet', () => {
                             );
 
                         const signedRawTx =
-                            await signerWithDelegator.signTransaction(
+                            await signerWithGasPayer.signTransaction(
                                 signerUtils.transactionBodyToTransactionRequestInput(
                                     txBody,
                                     originAddress

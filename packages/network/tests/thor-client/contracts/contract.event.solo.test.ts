@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { ERC20_ABI, HexUInt } from '@vechain/sdk-core';
+import { Address, ERC20_ABI, HexUInt } from '@vechain/sdk-core';
 import { InvalidAbiItem } from '@vechain/sdk-errors';
 import {
     THOR_SOLO_URL,
@@ -101,14 +101,14 @@ describe('ThorClient - ERC20 Contracts', () => {
         const eventsWithAnArgsObject = await contract.filters
             .Transfer({
                 from: undefined,
-                to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+                to: `0x${Address.of(TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address).digits}`
             })
             .get();
 
         expect(eventsWithAnArgsObject.map((x) => x.decodedData)).toEqual(
             expectedEvents
         );
-    }, 10000); // Set a timeout of 10000ms for this test
+    }, 30000); // Set a timeout of 30000ms for this test
 
     /**
      * Tests the listening to ERC20 contract operations using a blockchain client.
@@ -175,7 +175,7 @@ describe('ThorClient - ERC20 Contracts', () => {
                 '0x0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c39'
             ]
         ]);
-    }, 10000); // Set a timeout of 10000ms for this test
+    }, 30000); // Set a timeout of 30000ms for this test
 
     /**
      * Tests the listening to ERC20 contract operations using a blockchain client.
@@ -315,7 +315,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         await (
             await contract.transact.transfer(
-                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
+                TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address,
                 5000n
             )
         ).wait();
@@ -325,13 +325,13 @@ describe('ThorClient - ERC20 Contracts', () => {
             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
         ]);
 
-        const transferCriteriaDelegator = contract.criteria.Transfer([
+        const transferCriteriaGasPayer = contract.criteria.Transfer([
             undefined,
-            TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
+            TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address
         ]);
 
         const events = await thorSoloClient.logs.filterEventLogs({
-            criteriaSet: [transferCriteria, transferCriteriaDelegator]
+            criteriaSet: [transferCriteria, transferCriteriaGasPayer]
         });
 
         expect(
@@ -365,7 +365,7 @@ describe('ThorClient - ERC20 Contracts', () => {
                 '0x00000000000000000000000088b2551c3ed42ca663796c10ce68c88a65f73fe2'
             ]
         ]);
-    }, 20000); // Set a timeout of 10000ms for this test
+    }, 30000); // Set a timeout of 30000ms for this test
 
     /**
      * Tests the listening to ERC20 contract operations with multiple criteria decoding the result.
@@ -400,7 +400,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         await (
             await contract.transact.transfer(
-                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
+                TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address,
                 5000n
             )
         ).wait();
@@ -410,13 +410,13 @@ describe('ThorClient - ERC20 Contracts', () => {
             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
         ]);
 
-        const transferCriteriaDelegator = contract.criteria.Transfer([
+        const transferCriteriaGasPayer = contract.criteria.Transfer([
             undefined,
-            TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
+            TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address
         ]);
 
         const events = await thorSoloClient.logs.filterEventLogs({
-            criteriaSet: [transferCriteria, transferCriteriaDelegator]
+            criteriaSet: [transferCriteria, transferCriteriaGasPayer]
         });
 
         expect(events.map((x) => x.decodedData)).toEqual([
@@ -476,7 +476,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         await (await contractEventExample.transact.setValue(3000n)).wait();
 
         const transferCriteria = contractERC20.criteria.Transfer({
-            to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+            to: `0x${Address.of(TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address).digits}`
         });
 
         const valueCriteria = contractEventExample.criteria.ValueSet();
@@ -484,8 +484,6 @@ describe('ThorClient - ERC20 Contracts', () => {
         const events = await thorSoloClient.logs.filterEventLogs({
             criteriaSet: [transferCriteria, valueCriteria]
         });
-
-        console.log(events);
 
         expect(events[0].decodedData).toEqual([
             '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
@@ -537,7 +535,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         await (await contractEventExample.transact.setValue(3000n)).wait();
 
         const transferCriteria = contractERC20.criteria.Transfer({
-            to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+            to: `0x${Address.of(TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address).digits}`
         });
 
         const valueCriteria = contractEventExample.criteria.ValueSet();
@@ -545,8 +543,6 @@ describe('ThorClient - ERC20 Contracts', () => {
         const events = await thorSoloClient.logs.filterGroupedEventLogs({
             criteriaSet: [transferCriteria, valueCriteria]
         });
-
-        console.log(events);
 
         expect(events[0].map((x) => x.decodedData)).toEqual([
             [
@@ -559,5 +555,5 @@ describe('ThorClient - ERC20 Contracts', () => {
         expect(events[1].map((x) => x.decodedData)).toEqual([
             ['0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54', 3000n]
         ]);
-    }, 20000); // Set a timeout of 10000ms for this test
+    }, 30000); // Set a timeout of 10000ms for this test
 });

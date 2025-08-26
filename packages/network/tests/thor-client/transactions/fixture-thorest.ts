@@ -19,6 +19,7 @@ const transactionDetails = {
             expected: {
                 id: '0x46d195f69e1ac3922d42c207e4705a3d1642883d97e58f7efc72f179ea326adb',
                 chainTag: 39,
+                type: 0,
                 blockRef: '0x010284a0b704e751',
                 expiration: 2000,
                 clauses: [
@@ -31,7 +32,7 @@ const transactionDetails = {
                 gasPriceCoef: 0,
                 gas: 41192,
                 origin: '0x2d4ed6b8abd00bc2ef0bdb2258a946c214d9d0af',
-                delegator: null,
+                delegator: null, // TO BE REMOVED WHEN BNC REFACTORING DONE.
                 nonce: '0x76eed751cef0e52d',
                 dependsOn: null,
                 size: 130,
@@ -180,7 +181,7 @@ const sendTransactionErrors = {
                         data: '0x'
                     },
                     {
-                        to: TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
+                        to: TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address,
                         value: 1000000,
                         data: '0x'
                     }
@@ -338,7 +339,7 @@ const simulateTransaction = {
                              *
                              * @link see [thor/params.go](https://github.com/vechain/thor/blob/master/thor/params.go)
                              */
-                            data: '0x00000000000000000000000000000000000000000000000000038d7ea4c68000',
+                            data: '0x000000000000000000000000000000000000000000000000000009184e72a000',
                             events: [],
                             transfers: [],
                             gasUsed: 591,

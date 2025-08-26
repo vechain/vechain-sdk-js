@@ -37,7 +37,7 @@ const clauses: TransactionClause[] = [
 ];
 
 // Get gas estimate
-const gasResult = await thorSoloClient.gas.estimateGas(
+const gasResult = await thorSoloClient.transactions.estimateGas(
     clauses,
     senderAccount.address
 );
@@ -61,17 +61,17 @@ const body: TransactionBody = {
 // 4 - Create private keys of sender and delegate
 
 const nodeDelegate = HDKey.fromMnemonic(Mnemonic.of());
-const delegatorPrivateKey = nodeDelegate.privateKey;
+const gasPayerPrivateKey = nodeDelegate.privateKey;
 
 // 5 - Get address of delegate
 
-const delegatorAddress = Address.ofPublicKey(nodeDelegate.publicKey).toString();
+const gasPayerAddress = Address.ofPublicKey(nodeDelegate.publicKey).toString();
 
 // 6 - Sign transaction as sender and delegate
 
 const signedTransaction = Transaction.of(body).signAsSenderAndGasPayer(
     HexUInt.of(senderAccount.privateKey).bytes,
-    HexUInt.of(delegatorPrivateKey).bytes
+    HexUInt.of(gasPayerPrivateKey).bytes
 );
 
 // 7 - Encode transaction
@@ -85,4 +85,4 @@ const decodedTx = Transaction.decode(encodedRaw, true);
 // END_SNIPPET: FeeDelegationSnippet
 
 expect(decodedTx.isDelegated).toBeTruthy();
-expect(decodedTx.gasPayer.toString()).toBe(delegatorAddress);
+expect(decodedTx.gasPayer.toString()).toBe(gasPayerAddress);

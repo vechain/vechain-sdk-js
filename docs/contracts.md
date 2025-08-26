@@ -37,8 +37,7 @@ const transferVetClause = Clause.transferVET(
 
 // 2. Transfer VTHO
 
-const transferVTHOClause = Clause.transferToken(
-    Address.of(VTHO_ADDRESS),
+const transferVTHOClause = Clause.transferVTHOToken(
     Address.of('0xf02f557c753edf5fcdcbfe4c1c3a448b3cc84d54'),
     VTHO.of(300n, Units.wei)
 );
@@ -127,7 +126,7 @@ const contract = thorSoloClient.contracts.load(
 );
 
 // 2 - Create a clause to call setValue(123)
-const setValueClause = contract.clause.setValue(123);
+const setValueClause = contract.clause.setValue(123n);
 ```
 
 
@@ -203,22 +202,20 @@ You can specify revisions (`best` or `finalized`) for read functions, similar to
 
 ## Delegating a Contract Call
 
-VeChain supports delegated contract calls where fees are paid by the delegator.
+VeChain supports delegated contract calls where fees are paid by the gas-payer.
 
 ```typescript { name=contract-delegation-erc20, category=example }
 const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 const provider = new VeChainProvider(
     thorSoloClient,
     new ProviderInternalBaseWallet([deployerAccount], {
-        delegator: {
-            delegatorPrivateKey: delegatorAccount.privateKey
+        gasPayer: {
+            gasPayerPrivateKey: gasPayerAccount.privateKey
         }
     }),
     true
 );
-const signer = (await provider.getSigner(
-    deployerAccount.address
-)) as VeChainSigner;
+const signer = await provider.getSigner(deployerAccount.address);
 
 // Defining a function for deploying the ERC20 contract
 const setupERC20Contract = async (): Promise<Contract<typeof ERC20_ABI>> => {
@@ -245,8 +242,7 @@ const transferResult = await contract.transact.transfer(
 );
 
 // Wait for the transfer transaction to complete and obtain its receipt
-const transactionReceiptTransfer =
-    (await transferResult.wait()) as TransactionReceipt;
+const transactionReceiptTransfer = await transferResult.wait();
 
 // Asserting that the transaction has not been reverted
 expect(transactionReceiptTransfer.reverted).toEqual(false);

@@ -1,7 +1,7 @@
 {
   "name": "sdk-hardhat-integration",
   "description": "An example app of how to use the @vechain/sdk-hardhat-plugin to interact with the VeChainThor blockchain",
-  "version": "1.0.0-rc.6",
+  "version": "2.0.4",
   "private": true,
   "main": "index.js",
   "author": "VeChain Foundation",
@@ -9,6 +9,8 @@
   "scripts": {
     "compile": "npx hardhat compile",
     "test": "npx hardhat test --network vechain_testnet",
+    "test:solo": "npx hardhat test --network vechain_solo",
+    "test:typechain": "npx hardhat test --network vechain_solo --grep \"Counter with Typechain\"",
     "deploy-solo": "npx hardhat run scripts/deploy.ts --network vechain_solo",
     "deploy-testnet": "npx hardhat run scripts/deploy.ts --network vechain_testnet",
     "deploy-erc20": "npx hardhat run scripts/erc20/deploy.ts --network vechain_testnet",
@@ -18,26 +20,29 @@
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.2",
-    "@vechain/sdk-core": "1.0.0-rc.6",
-    "@vechain/sdk-hardhat-plugin": "1.0.0-rc.6",
-    "@vechain/sdk-logging": "1.0.0-rc.6"
+    "@vechain/sdk-core": "2.0.4",
+    "@vechain/sdk-hardhat-plugin": "2.0.4",
+    "@vechain/sdk-logging": "2.0.4"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
-    "@nomicfoundation/hardhat-ethers": "^3.0.8",
+    "@nomicfoundation/hardhat-ethers": "^3.1.0",
+    "@nomicfoundation/hardhat-ignition": "^0.15.13",
+    "@nomicfoundation/hardhat-ignition-ethers": "^0.15.14",
+    "@nomicfoundation/ignition-core": "^0.15.13",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.0",
-    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
-    "@nomicfoundation/hardhat-verify": "^2.0.12",
-    "@typechain/ethers-v6": "^0.5.0",
-    "@typechain/hardhat": "^9.0.0",
+    "@nomicfoundation/hardhat-toolbox": "^6.1.0",
+    "@nomicfoundation/hardhat-verify": "^2.1.1",
+    "@typechain/ethers-v6": "^0.5.1",
+    "@typechain/hardhat": "^9.1.0",
     "@types/chai": "^4.2.0",
     "@types/mocha": ">=10.0.9",
     "chai": "^4.2.0",
-    "hardhat": "^2.22.15",
+    "hardhat": "^2.26.2",
     "hardhat-gas-reporter": "^1.0.8",
     "solidity-coverage": "^0.8.1",
     "ts-node": "^10.9.2",
-    "typechain": "^8.3.0",
+    "typechain": "^8.3.2",
     "typescript": "^5.6.3"
   }
 }

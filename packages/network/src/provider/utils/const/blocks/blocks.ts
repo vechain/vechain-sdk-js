@@ -1,46 +1,59 @@
-import { Hex } from '@vechain/sdk-core';
-import { type BlockQuantityInputRPC } from '../../rpc-mapper/types';
+import { HexUInt, Revision } from '@vechain/sdk-core';
+import { JSONRPCInvalidDefaultBlock } from '@vechain/sdk-errors';
+
+type DefaultBlock =
+    | `0x${string}`
+    | 'latest'
+    | 'earliest'
+    | 'pending'
+    | 'safe'
+    | 'finalized';
+const defaultBlockTags: DefaultBlock[] = [
+    'latest',
+    'earliest',
+    'pending',
+    'safe',
+    'finalized'
+];
 
 /**
- * Get the correct block number for the given block number.
+ * Maps the Ethereum "default block" type to VeChainThor Revision type.
+ * Ethereum "default block" can be:
+ * - 'latest' or 'earliest' or 'pending' or 'safe' or 'finalized'
+ * - a hexadecimal block number
+ * VeChainThor revision type can be:
+ * - 'best', 'next', 'justified', 'finalized'
+ * - a hexadecimal block Id
+ * - a integer block number
  *
- * @param block - The block tag to get.
- * 'latest' or 'earliest' or 'pending' or 'safe' or 'finalized'
- * or an object: { blockNumber: number } or { blockHash: string }
- *
- * @note
- *  * Currently VeChainThor supports 'earliest', 'latest' and 'finalized' as block tags.
- *  So 'pending' and 'safe' are converted to 'best' which is the alias for 'latest' and 'finalized' in VeChainThor.
+ * @param defaultBlock - The Ethereum default block type to convert
+ * @returns The VeChainThor revision type
  */
-const getCorrectBlockNumberRPCToVeChain = (
-    block: BlockQuantityInputRPC
-): string => {
-    // Tag block number
-    if (typeof block === 'string') {
-        // Latest, Finalized, Safe blocks
-        if (
-            block === 'latest' ||
-            block === 'finalized' ||
-            block === 'safe' ||
-            block === 'pending'
-        )
-            // 'best' is the alias for 'latest', 'finalized' and 'safe' in VeChainThor
-            return 'best';
-
-        // Earliest block
-        if (block === 'earliest') return Hex.of(0).toString();
-
-        // Hex number of block
-        return block;
+const DefaultBlockToRevision = (defaultBlock: DefaultBlock): Revision => {
+    // if valid hex then return integer block number
+    if (HexUInt.isValid(defaultBlock)) {
+        return Revision.of(HexUInt.of(defaultBlock).n.toString());
     }
-
-    // Object with block number
-    if (block.blockNumber !== undefined) {
-        return Hex.of(block.blockNumber).toString();
+    // check if default block is a valid block tag
+    if (!defaultBlockTags.includes(defaultBlock)) {
+        const defaultBlockValue = defaultBlock.toString();
+        throw new JSONRPCInvalidDefaultBlock(
+            'DefaultBlockToRevision',
+            `Invalid default block: ${defaultBlockValue}`,
+            defaultBlockValue,
+            null
+        );
     }
-
-    // Object with block hash - Default case
-    return block.blockHash;
+    // map block tag to VeChainThor revision
+    if (defaultBlock === 'earliest') {
+        return Revision.of(HexUInt.of(0));
+    } else if (defaultBlock === 'safe') {
+        return Revision.of('justified');
+    } else if (defaultBlock === 'finalized') {
+        return Revision.of('finalized');
+    } else {
+        return Revision.of('best');
+    }
 };
 
-export { getCorrectBlockNumberRPCToVeChain };
+export { type DefaultBlock, DefaultBlockToRevision };

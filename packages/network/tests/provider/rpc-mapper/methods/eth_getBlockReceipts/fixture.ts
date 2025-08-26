@@ -134,4 +134,16 @@ const blockReceiptsInvalidFixture = [
     {}
 ];
 
-export { blockReceiptsFixture, blockReceiptsInvalidFixture };
+/**
+ * Block hash for testing ethGetBlockReceipts with a specific block hash
+ */
+const blockHashReceiptsFixture = {
+    blockHash:
+        '0x015395abb2644d21d6f15c9e2b616a190e1a9d01259ba895d6f99ece4f99e2f0'
+};
+
+export {
+    blockReceiptsFixture,
+    blockHashReceiptsFixture,
+    blockReceiptsInvalidFixture
+};

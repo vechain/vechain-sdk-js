@@ -1,8 +1,7 @@
-import { type HardhatUserConfig } from 'hardhat/config';
 import '@nomicfoundation/hardhat-toolbox';
+import { HDKey } from '@vechain/sdk-core';
 import '@vechain/sdk-hardhat-plugin';
-
-import { VET_DERIVATION_PATH } from '@vechain/sdk-core';
+import { type HardhatUserConfig } from 'hardhat/config';
 import { type HttpNetworkConfig } from 'hardhat/types';
 
 /**
@@ -12,7 +11,7 @@ import { type HttpNetworkConfig } from 'hardhat/types';
  *
  * They have custom parameters:
  * - debug: whether to enable debug mode
- * - delegator: the delegator to use
+ * - gasPayer: the gasPayer to use
  * - enableDelegation: whether to enable fee delegation
  */
 const config: HardhatUserConfig = {
@@ -26,7 +25,7 @@ const config: HardhatUserConfig = {
                         enabled: true,
                         runs: 200
                     },
-                    evmVersion: 'paris'
+                    evmVersion: 'shanghai'
                 }
             }
         ]
@@ -42,7 +41,7 @@ const config: HardhatUserConfig = {
                 '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
             ],
             debug: false,
-            delegator: undefined,
+            gasPayer: undefined,
             gas: 'auto',
             gasPrice: 'auto',
             gasMultiplier: 1,
@@ -59,13 +58,13 @@ const config: HardhatUserConfig = {
             accounts: {
                 mnemonic:
                     'vivid any call mammal mosquito budget midnight expose spirit approve reject system',
-                path: VET_DERIVATION_PATH,
+                path: HDKey.VET_DERIVATION_PATH,
                 count: 3,
                 initialIndex: 0,
                 passphrase: 'vechainthor'
             },
-            debug: true,
-            delegator: undefined,
+            debug: false,
+            gasPayer: undefined,
             gas: 'auto',
             gasPrice: 'auto',
             gasMultiplier: 1,
@@ -74,22 +73,23 @@ const config: HardhatUserConfig = {
         } satisfies HttpNetworkConfig,
 
         /**
-         * Testnet configuration - with delegator url
+         * Testnet configuration - with gasPayer url
          */
-        vechain_testnet_delegator_url: {
+        vechain_testnet_gas_payer_url: {
             // Testnet
             url: 'https://testnet.vechain.org',
             accounts: {
                 mnemonic:
                     'vivid any call mammal mosquito budget midnight expose spirit approve reject system',
-                path: VET_DERIVATION_PATH,
+                path: HDKey.VET_DERIVATION_PATH,
                 count: 3,
                 initialIndex: 0,
                 passphrase: 'vechainthor'
             },
             debug: true,
-            delegator: {
-                delegatorUrl: 'https://sponsor-testnet.vechain.energy/by/269'
+            gasPayer: {
+                gasPayerServiceUrl:
+                    'https://sponsor-testnet.vechain.energy/by/883'
             },
             enableDelegation: true,
             gas: 'auto',
@@ -100,22 +100,22 @@ const config: HardhatUserConfig = {
         } satisfies HttpNetworkConfig,
 
         /**
-         * Testnet configuration - with delegator private key
+         * Testnet configuration - with gasPayer private key
          */
-        vechain_testnet_delegator_private_key: {
+        vechain_testnet_gas_payer_private_key: {
             // Testnet
             url: 'https://testnet.vechain.org',
             accounts: {
                 mnemonic:
                     'vivid any call mammal mosquito budget midnight expose spirit approve reject system',
-                path: VET_DERIVATION_PATH,
+                path: HDKey.VET_DERIVATION_PATH,
                 count: 3,
                 initialIndex: 0,
                 passphrase: 'vechainthor'
             },
             debug: true,
-            delegator: {
-                delegatorPrivateKey:
+            gasPayer: {
+                gasPayerPrivateKey:
                     'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5'
             },
             enableDelegation: true,
@@ -131,13 +131,18 @@ const config: HardhatUserConfig = {
          */
         vechain_solo: {
             // Thor solo network
-            url: 'http://localhost:8669',
-            accounts: [
-                '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
-            ],
+            url: 'http://127.0.0.1:8669',
+            accounts: {
+                mnemonic:
+                    'denial kitchen pet squirrel other broom bar gas better priority spoil cross',
+                path: HDKey.VET_DERIVATION_PATH,
+                count: 11,
+                initialIndex: 0,
+                passphrase: 'vechainthor'
+            },
             debug: false,
             enableDelegation: false,
-            delegator: undefined,
+            gasPayer: undefined,
             gas: 'auto',
             gasPrice: 'auto',
             gasMultiplier: 1,
@@ -153,12 +158,12 @@ const config: HardhatUserConfig = {
             accounts: {
                 mnemonic:
                     'vivid any call mammal mosquito budget midnight expose spirit approve reject system',
-                path: VET_DERIVATION_PATH,
+                path: HDKey.VET_DERIVATION_PATH,
                 count: 3,
                 initialIndex: 0
             },
             debug: true,
-            delegator: undefined,
+            gasPayer: undefined,
             gas: 'auto',
             gasPrice: 'auto',
             gasMultiplier: 1,

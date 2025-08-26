@@ -3,11 +3,12 @@ import { JSONRPCInvalidParams, SignerMethodError } from '@vechain/sdk-errors';
 import {
     VeChainProvider,
     type ThorClient,
-    type TransactionRequestInput
+    type TransactionRequestInput,
+    type TypedDataDomain,
+    type TypedDataParameter
 } from '@vechain/sdk-network';
-import { type TypedDataDomain, type TypedDataField } from 'ethers';
 import { KMSVeChainProvider, KMSVeChainSigner } from '../src';
-import { EIP712_CONTRACT, EIP712_FROM, EIP712_TO } from './fixture';
+import { EIP712_CONTRACT, EIP712_FROM, EIP712_TO } from './dummy_data';
 jest.mock('asn1js', () => ({
     Sequence: jest.fn(),
     ObjectIdentifier: jest.fn(),
@@ -146,7 +147,8 @@ describe('KMSVeChainSigner', () => {
                             wallet: EIP712_TO
                         },
                         contents: 'Hello, Bob!'
-                    }
+                    },
+                    'Mail'
                 )
             ).rejects.toThrow(SignerMethodError);
         });
@@ -159,8 +161,9 @@ describe('KMSVeChainSigner', () => {
             await expect(
                 signer.signTypedData(
                     {} as unknown as TypedDataDomain,
-                    {} as unknown as Record<string, TypedDataField[]>,
-                    {} as unknown as Record<string, unknown>
+                    {} as unknown as Record<string, TypedDataParameter[]>,
+                    {} as unknown as Record<string, unknown>,
+                    'primaryType'
                 )
             ).rejects.toThrow(SignerMethodError);
         });

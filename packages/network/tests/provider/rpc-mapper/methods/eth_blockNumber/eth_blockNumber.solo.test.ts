@@ -5,6 +5,7 @@ import {
     THOR_SOLO_URL,
     ThorClient
 } from '../../../../../src';
+import { retryOperation } from '../../../../test-utils';
 
 /**
  * RPC Mapper integration tests for 'eth_blockNumber' method on Solo Network
@@ -33,9 +34,12 @@ describe('RPC Mapper - eth_blockNumber method tests', () => {
          * Test case where the latest block number is returned and updated when a new block is mined
          */
         test('Should return the latest block number and the updated latest block number when updated', async () => {
-            const rpcCallLatestBlockNumber = await RPCMethodsMap(thorClient)[
-                RPC_METHODS.eth_blockNumber
-            ]([]);
+            const rpcCallLatestBlockNumber = await retryOperation(
+                async () =>
+                    await RPCMethodsMap(thorClient)[
+                        RPC_METHODS.eth_blockNumber
+                    ]([])
+            );
 
             expect(rpcCallLatestBlockNumber).not.toBe('0x0');
 
@@ -43,14 +47,17 @@ describe('RPC Mapper - eth_blockNumber method tests', () => {
                 Number(rpcCallLatestBlockNumber) + 1
             );
 
-            const rpcCallUpdatedLatestBlockNumber = await RPCMethodsMap(
-                thorClient
-            )[RPC_METHODS.eth_blockNumber]([]);
+            const rpcCallUpdatedLatestBlockNumber = await retryOperation(
+                async () =>
+                    await RPCMethodsMap(thorClient)[
+                        RPC_METHODS.eth_blockNumber
+                    ]([])
+            );
 
             expect(rpcCallUpdatedLatestBlockNumber).not.toBe('0x0');
             expect(
                 Number(rpcCallUpdatedLatestBlockNumber)
             ).toBeGreaterThanOrEqual(Number(rpcCallLatestBlockNumber) + 1);
-        }, 15000);
+        }, 30000);
     });
 });

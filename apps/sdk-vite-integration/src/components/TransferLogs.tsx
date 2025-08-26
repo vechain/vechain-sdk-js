@@ -5,8 +5,8 @@ import {
     FilterTransferLogsOptions
 } from '@vechain/sdk-network';
 import { Link } from 'react-router-dom';
-import { Transfer } from "../types";
-import { explorerUrl, thorClient } from "../const";
+import { Transfer } from "../types/index.tsx";
+import { explorerUrl, thorClient } from "../const/index.tsx";
 
 /**
  * Reduce the size of a hex string

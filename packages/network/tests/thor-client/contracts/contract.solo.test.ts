@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { ABIContract, Address, type DeployParams, HexUInt } from '@vechain/sdk-core';
+import { ABIContract, Address, DeployParams, HexUInt } from '@vechain/sdk-core';
 import {
     CannotFindTransaction,
     ContractDeploymentFailed,
@@ -40,6 +40,9 @@ import {
     testingContractNegativeTestCases,
     testingContractTestCases
 } from './fixture';
+import { configData } from '../../fixture';
+import { THOR_SOLO_DEFAULT_BASE_FEE_PER_GAS } from '@vechain/sdk-solo-setup';
+import { retryOperation } from '../../test-utils';
 
 /**
  * Tests for the ThorClient class, specifically focusing on contract-related functionality.
@@ -133,7 +136,11 @@ describe('ThorClient - Contracts', () => {
         const response = await createExampleContractFactory();
 
         // Poll until the transaction receipt is available
-        const contract = await response.waitForDeployment();
+        const contract = await retryOperation(async () =>
+            await response.waitForDeployment(),
+            5, // maxAttempts
+            2000 // baseDelay
+        );
 
         expect(contract.address).toBeDefined();
         expect(contract.abi).toBeDefined();
@@ -143,14 +150,13 @@ describe('ThorClient - Contracts', () => {
         const contractAddress = contract.address;
 
         // Call the get function of the deployed contract to verify that the stored value is 100
-        const result = await contract.read.get();
+        const result = await retryOperation(async () => contract.read.get());
 
         expect(result).toEqual([100n]);
 
         // Assertions
         expect(contract.deployTransactionReceipt?.reverted).toBe(false);
         expect(contract.deployTransactionReceipt?.outputs).toHaveLength(1);
-        expect(contractAddress).not.toBeNull();
         expect(Address.isValid(contractAddress)).toBe(true);
     }, 10000);
 
@@ -169,9 +175,9 @@ describe('ThorClient - Contracts', () => {
         contractFactory = await contractFactory.startDeployment();
 
         // Wait for the deployment to complete and obtain the contract instance
-        await expect(contractFactory.waitForDeployment()).rejects.toThrow(
-            ContractDeploymentFailed
-        );
+        await expect(
+            retryOperation(async () => contractFactory.waitForDeployment())
+        ).rejects.toThrow(ContractDeploymentFailed);
     }, 10000);
 
     /**
@@ -186,9 +192,9 @@ describe('ThorClient - Contracts', () => {
         );
 
         // Waiting for a deployment that has not started
-        await expect(contractFactory.waitForDeployment()).rejects.toThrow(
-            CannotFindTransaction
-        );
+        await expect(
+            retryOperation(async () => contractFactory.waitForDeployment())
+        ).rejects.toThrow(CannotFindTransaction);
     }, 10000);
 
     /**
@@ -199,11 +205,14 @@ describe('ThorClient - Contracts', () => {
         const factory = await createExampleContractFactory();
 
         // Wait for the deployment to complete and obtain the contract instance
-        const contract = await factory.waitForDeployment();
+        const contract = await retryOperation(async () =>
+            factory.waitForDeployment()
+        );
 
         // Retrieve the bytecode of the deployed contract
-        const contractBytecodeResponse =
-            await thorSoloClient.accounts.getBytecode(Address.of(contract.address));
+        const contractBytecodeResponse = await retryOperation(async () =>
+            thorSoloClient.accounts.getBytecode(Address.of(contract.address))
+        );
 
         // Assertion: Compare with the expected deployed contract bytecode
         expect(`${contractBytecodeResponse}`).toBe(deployedContractBytecode);
@@ -217,16 +226,22 @@ describe('ThorClient - Contracts', () => {
         const factory = await createExampleContractFactory();
 
         // Wait for the deployment to complete and obtain the contract instance
-        const contract = await factory.waitForDeployment();
+        const contract = await retryOperation(async () =>
+            factory.waitForDeployment()
+        );
 
-        const callFunctionSetResponse = await contract.transact.set(123n);
+        const callFunctionSetResponse = await retryOperation(async () =>
+            contract.transact.set(123n)
+        );
 
         const transactionReceiptCallSetContract =
             (await callFunctionSetResponse.wait()) as TransactionReceipt;
 
         expect(transactionReceiptCallSetContract.reverted).toBe(false);
 
-        const callFunctionGetResult = await contract.read.get();
+        const callFunctionGetResult = await retryOperation(async () =>
+            contract.read.get()
+        );
 
         expect(callFunctionGetResult).toEqual([123n]);
     }, 10000);
@@ -486,9 +501,9 @@ describe('ThorClient - Contracts', () => {
             if (error instanceof Error) {
                 expect(error.message).toEqual(
                     `Method 'getSecretData()' failed.` +
-                    `\n-Reason: 'Not the contract owner'` +
-                    `\n-Parameters: \n\t` +
-                    `{\n  "contractAddress": "${deployedContract.address}"\n}`
+                        `\n-Reason: 'Not the contract owner'` +
+                        `\n-Parameters: \n\t` +
+                        `{\n  "contractAddress": "${deployedContract.address}"\n}`
                 );
             }
         }
@@ -647,7 +662,7 @@ describe('ThorClient - Contracts', () => {
             .StateChanged({
                 newValue: undefined,
                 oldValue: undefined,
-                sender: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+                sender: `0x${Address.of(TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address).digits}`
             })
             .get();
 
@@ -790,20 +805,19 @@ describe('ThorClient - Contracts', () => {
     });
 
     /**
-     * Test suite for 'getBaseGasPrice' method
+     * Test suite for 'getLegacyBaseGasPrice' method
      */
-    describe('getBaseGasPrice', () => {
+    describe('getLegacyBaseGasPrice', () => {
         test('Should return the base gas price of the Solo network', async () => {
             const baseGasPrice =
-                await thorSoloClient.contracts.getBaseGasPrice();
-            expect(baseGasPrice).toEqual(            {
+                await thorSoloClient.contracts.getLegacyBaseGasPrice();
+            expect(baseGasPrice).toEqual({
                 success: true,
-                result: { plain: 1000000000000000n, array: [1000000000000000n] }
+                result: {
+                    plain: THOR_SOLO_DEFAULT_BASE_FEE_PER_GAS,
+                    array: [THOR_SOLO_DEFAULT_BASE_FEE_PER_GAS]
+                }
             });
-            expect(baseGasPrice).toEqual(            {
-                success: true,
-                result: { plain: BigInt(10 ** 15), array: [BigInt(10 ** 15)] }
-            }); // 10^13 wei
         });
     });
 });

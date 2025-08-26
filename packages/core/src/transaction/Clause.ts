@@ -1,13 +1,16 @@
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { ERC721_ABI, VIP180_ABI } from '../utils';
+import { VTHO_ADDRESS } from '../utils/const/network';
 import {
     ABI,
     ABIContract,
+    Address,
     FixedPointNumber,
+    Units,
     VET,
     type ABIFunction,
-    type Address,
     type HexUInt,
+    type Token,
     type VTHO
 } from '../vcdm';
 import { Hex } from '../vcdm/Hex';
@@ -15,6 +18,14 @@ import { HexInt } from '../vcdm/HexInt';
 import type { ClauseOptions } from './ClauseOptions';
 import type { DeployParams } from './DeployParams';
 import type { TransactionClause } from './TransactionClause';
+
+/**
+ * Represents a contract clause, which includes the clause and the corresponding function ABI.
+ */
+interface ContractClause {
+    clause: TransactionClause;
+    functionAbi: ABIFunction;
+}
 
 /**
  * This class represent a transaction clause.
@@ -28,11 +39,6 @@ class Clause implements TransactionClause {
     private static readonly FORMAT_TYPE = 'json';
 
     /**
-     * Used internally to tag a transaction not tranferring token amount.
-     */
-    private static readonly NO_VALUE = Hex.PREFIX + '0';
-
-    /**
      * Used internally to tag a transaction without data.
      */
     private static readonly NO_DATA = Hex.PREFIX;
@@ -43,7 +49,7 @@ class Clause implements TransactionClause {
     private static readonly TRANSFER_NFT_FUNCTION = 'transferFrom';
 
     /**
-     * Used internally in {@link Clause.transferToken} method.
+     * Used internally in {@link Clause.transferVTHOToken} method.
      */
     private static readonly TRANSFER_TOKEN_FUNCTION = 'transfer';
 
@@ -59,7 +65,7 @@ class Clause implements TransactionClause {
      * token in {@link Units.wei} to transfer to the destination.
      *
      * @see {Clause.callFunction}
-     * @see {Clause.transferToken}
+     * @see {Clause.transferVTHOToken}
      * @see {Clause.transferVET}
      */
     readonly value: string;
@@ -80,6 +86,11 @@ class Clause implements TransactionClause {
      * function of a smart contract.
      */
     readonly abi?: string;
+
+    /**
+     * Used publicly to tag a transaction not tranferring token amount.
+     */
+    public static readonly NO_VALUE = Hex.PREFIX + '0';
 
     /**
      * Creates an instance of the class.
@@ -135,7 +146,10 @@ class Clause implements TransactionClause {
         amount: VET = VET.of(FixedPointNumber.ZERO),
         clauseOptions?: ClauseOptions
     ): Clause {
-        if (amount.value.isFinite() && amount.value.isPositive()) {
+        if (
+            amount.value.isFinite() &&
+            amount.value.gte(FixedPointNumber.ZERO)
+        ) {
             return new Clause(
                 contractAddress.toString().toLowerCase(),
                 Hex.PREFIX + amount.wei.toString(Hex.RADIX),
@@ -176,7 +190,7 @@ class Clause implements TransactionClause {
                 : contractBytecode.digits;
         return new Clause(
             null,
-            Clause.NO_VALUE,
+            clauseOptions?.value ?? Clause.NO_VALUE,
             Hex.PREFIX + data,
             clauseOptions?.comment
         );
@@ -198,8 +212,8 @@ class Clause implements TransactionClause {
         recipientAddress: Address,
         tokenId: HexUInt,
         clauseOptions?: ClauseOptions
-    ): Clause {
-        return Clause.callFunction(
+    ): ContractClause {
+        const clause = Clause.callFunction(
             contractAddress,
             ABIContract.ofAbi(ERC721_ABI).getFunction(
                 Clause.TRANSFER_NFT_FUNCTION
@@ -212,43 +226,93 @@ class Clause implements TransactionClause {
             undefined,
             clauseOptions
         );
+
+        return {
+            clause,
+            functionAbi: ABIContract.ofAbi(ERC721_ABI).getFunction(
+                Clause.TRANSFER_NFT_FUNCTION
+            )
+        };
     }
 
     /**
-     * Return a new clause to transfers the specified amount of
-     * [VIP180](https://docs.vechain.org/introduction-to-vechain/dual-token-economic-model/vethor-vtho#vip180-vechains-fungible-token-standard)
-     * token.
+     * Return a new clause to transfers the specified amount of VTHO
      *
-     * @param {Address} tokenAddress - The address of the VIP180 token.
      * @param {Address} recipientAddress - The address of the recipient.
      * @param {VTHO} amount - The amount of token to be transferred.
-     * @param {ClauseOptions} [clauseOptions] - Optional clause settings.
-     * @return {Clause} The clause to transfer VIP180 tokens as part of a transaction.
+     * @return {ContractClause} The contract clause to transfer VTHO tokens as part of a transaction.
      * @throws {InvalidDataType} Throws an error if the amount is not a positive integer.
      *
      * @see VTHO.transferTokenTo
      */
-    public static transferToken(
-        tokenAddress: Address,
+    public static transferVTHOToken(
         recipientAddress: Address,
-        amount: VTHO,
-        clauseOptions?: ClauseOptions
-    ): Clause {
+        amount: VTHO
+    ): ContractClause {
         if (amount.value.isFinite() && amount.value.isPositive()) {
-            return this.callFunction(
-                tokenAddress,
+            const vthoAddress = Address.of(VTHO_ADDRESS);
+            const functionAbi = ABIContract.ofAbi(VIP180_ABI).getFunction(
+                Clause.TRANSFER_TOKEN_FUNCTION
+            );
+            const clause = Clause.callFunction(
+                vthoAddress,
+                functionAbi,
+                [recipientAddress.toString(), amount.wei],
+                undefined,
+                { comment: 'Transfer VTHO' }
+            );
+
+            return {
+                clause,
+                functionAbi
+            };
+        }
+        throw new InvalidDataType(
+            'Clause.transferVTHOToken',
+            'not positive integer amount',
+            { amount: `${amount.value}` }
+        );
+    }
+
+    /**
+     * Return a new clause to transfer a generic ERC20 Token
+     *
+     * @param {Address} recipientAddress - The address of the recipient.
+     * @param {Token} amount - The amount of token to be transferred.
+     * @return {ContractClause} The contract clause to transfer tokens as part of a transaction.
+     * @throws {InvalidDataType} Throws an error if the amount is not a positive integer.
+     */
+    public static transferToken(
+        recipientAddress: Address,
+        token: Token
+    ): ContractClause {
+        if (token.value >= 0) {
+            const tokenValueWei = Units.convertUnits(
+                FixedPointNumber.of(token.value),
+                token.units,
+                Units.wei
+            );
+            const clause = Clause.callFunction(
+                token.tokenAddress,
                 ABIContract.ofAbi(VIP180_ABI).getFunction(
                     Clause.TRANSFER_TOKEN_FUNCTION
                 ),
-                [recipientAddress.toString(), amount.wei],
+                [recipientAddress.toString(), tokenValueWei],
                 undefined,
-                clauseOptions
+                { comment: `Transfer ${token.name}` }
             );
+
+            return {
+                clause,
+                functionAbi: ABIContract.ofAbi(VIP180_ABI).getFunction(
+                    Clause.TRANSFER_TOKEN_FUNCTION
+                )
+            };
         }
         throw new InvalidDataType(
             'Clause.transferToken',
             'not positive integer amount',
-            { amount: `${amount.value}` }
+            { amount: `${token.value}` }
         );
     }
 
@@ -284,4 +348,4 @@ class Clause implements TransactionClause {
     }
 }
 
-export { Clause };
+export { Clause, type ContractClause };
