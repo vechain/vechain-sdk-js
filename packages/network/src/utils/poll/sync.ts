@@ -111,23 +111,25 @@ function SyncPoll<TReturnType>(
                     // 1 - Fetch the result of promise
                     currentResult = await pollingFunction();
 
+                    const isConditionSatisfied = condition(currentResult);
+                    if (isConditionSatisfied) {
+                        // If the condition is satisfied, return the current result
+                        return currentResult;
+                    }
+
                     // 2 - Sleep for the interval (in a synchronous way)
                     await sleep(options?.requestIntervalInMilliseconds ?? 1000);
 
                     // 3 - Increment the current iteration
                     currentIteration = currentIteration + 1;
 
-                    // 4 - Check if the poll should be stopped (in a forced way OR not)
-                    // 4.1 - If the condition is met or not
-                    const isConditionSatisfied = condition(currentResult);
-
-                    // 4.2 - Stop forced on iterations
+                    // 4.1 - Stop forced on iterations
                     const isMaximumIterationsReached =
                         options?.maximumIterations !== undefined
                             ? currentIteration >= options.maximumIterations
                             : false;
 
-                    // 4.3 - Stop forced on maximum waiting time
+                    // 4.2 - Stop forced on maximum waiting time
                     const isTimeLimitReached =
                         options?.maximumWaitingTimeInMilliseconds !==
                             undefined &&

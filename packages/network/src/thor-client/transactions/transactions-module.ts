@@ -495,20 +495,19 @@ class TransactionsModule {
         // default to dynamic fee tx
         options.gasPriceCoef = undefined;
 
-        // Get best block base fee per gas
-        const bestBlockBaseFeePerGas =
-            await this.blocksModule.getBestBlockBaseFeePerGas();
+        // Get next block base fee per gas
+        const biNextBlockBaseFeePerGas =
+            await this.gasModule.getNextBlockBaseFeePerGas();
         if (
-            bestBlockBaseFeePerGas === null ||
-            bestBlockBaseFeePerGas === undefined
+            biNextBlockBaseFeePerGas === null ||
+            biNextBlockBaseFeePerGas === undefined
         ) {
             throw new InvalidDataType(
                 'TransactionsModule.fillDefaultBodyOptions()',
-                'Invalid transaction body options. Unable to get best block base fee per gas.',
+                'Invalid transaction body options. Unable to get next block base fee per gas.',
                 { options }
             );
         }
-        const biBestBlockBaseFeePerGas = HexUInt.of(bestBlockBaseFeePerGas).bi;
 
         // set maxPriorityFeePerGas if not specified already
         if (
@@ -519,7 +518,7 @@ class TransactionsModule {
             // and the HIGH speed threshold (min(0.046*baseFee, 75_percentile))
             const defaultMaxPriorityFeePerGas =
                 await this.calculateDefaultMaxPriorityFeePerGas(
-                    biBestBlockBaseFeePerGas
+                    biNextBlockBaseFeePerGas
                 );
             options.maxPriorityFeePerGas = defaultMaxPriorityFeePerGas;
         }
@@ -533,8 +532,10 @@ class TransactionsModule {
             const biMaxPriorityFeePerGas = HexUInt.of(
                 options.maxPriorityFeePerGas
             ).bi;
+            // maxFeePerGas = 1.12 * baseFeePerGas + maxPriorityFeePerGas
             const biMaxFeePerGas =
-                biBestBlockBaseFeePerGas + biMaxPriorityFeePerGas;
+                (112n * biNextBlockBaseFeePerGas) / 100n +
+                biMaxPriorityFeePerGas;
             options.maxFeePerGas = HexUInt.of(biMaxFeePerGas).toString();
         }
         return options;
@@ -695,7 +696,7 @@ class TransactionsModule {
         if (
             revision !== undefined &&
             revision !== null &&
-            !Revision.isValid(revision)
+            !Revision.isValid(revision.toString())
         ) {
             throw new InvalidDataType(
                 'TransactionsModule.simulateTransaction()',
@@ -706,9 +707,9 @@ class TransactionsModule {
 
         return (await this.blocksModule.httpClient.http(
             HttpMethod.POST,
-            thorest.accounts.post.SIMULATE_TRANSACTION(revision),
+            thorest.accounts.post.SIMULATE_TRANSACTION(revision?.toString()),
             {
-                query: buildQuery({ revision }),
+                query: buildQuery({ revision: revision?.toString() }),
                 body: {
                     clauses: await this.resolveNamesInClauses(
                         clauses.map((clause) => {
@@ -856,15 +857,32 @@ class TransactionsModule {
      * @see {@link TransactionsModule#simulateTransaction}
      */
     public async estimateGas(
-        clauses: SimulateTransactionClause[],
+        clauses: (SimulateTransactionClause | ContractClause)[],
         caller?: string,
         options?: EstimateGasOptions
     ): Promise<EstimateGasResult> {
-        // Clauses must be an array of clauses with at least one clause
-        if (clauses.length <= 0) {
+        // Normalize to SimulateTransactionClause[]
+        const clausesToEstimate: SimulateTransactionClause[] = clauses.map(
+            (clause) => {
+                if ('clause' in clause) {
+                    if (!clause.clause) {
+                        throw new InvalidDataType(
+                            'TransactionsModule.estimateGas()',
+                            'Invalid ContractClause provided: missing inner clause.',
+                            { clause }
+                        );
+                    }
+                    return clause.clause;
+                }
+                return clause;
+            }
+        );
+
+        // Validate the normalized set is non-empty
+        if (clausesToEstimate.length === 0) {
             throw new InvalidDataType(
-                'GasModule.estimateGas()',
-                'Invalid clauses. Clauses must be an array of clauses with at least one clause.',
+                'TransactionsModule.estimateGas()',
+                'Invalid clauses. Clauses must be an array with at least one clause.',
                 { clauses, caller, options }
             );
         }
@@ -882,7 +900,7 @@ class TransactionsModule {
         }
 
         // Simulate the transaction to get the simulations of each clause
-        const simulations = await this.simulateTransaction(clauses, {
+        const simulations = await this.simulateTransaction(clausesToEstimate, {
             caller,
             ...options
         });
@@ -893,7 +911,9 @@ class TransactionsModule {
         });
 
         // The intrinsic gas of the transaction
-        const intrinsicGas = Number(Transaction.intrinsicGas(clauses).wei);
+        const intrinsicGas = Number(
+            Transaction.intrinsicGas(clausesToEstimate).wei
+        );
 
         // totalSimulatedGas represents the summation of all clauses' gasUsed
         const totalSimulatedGas = simulations.reduce((sum, simulation) => {

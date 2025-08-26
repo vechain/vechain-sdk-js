@@ -5,6 +5,7 @@ import {
     Hex,
     HexUInt,
     Keccak256,
+    Revision,
     Txt,
     type TransactionBody,
     type TransactionClause
@@ -251,7 +252,7 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
      */
     async call(
         transactionToEvaluate: TransactionRequestInput,
-        revision?: string
+        revision?: Revision
     ): Promise<string> {
         // 1 - Get the thor client
         if ((this.provider as AvailableVeChainProviders) === undefined) {

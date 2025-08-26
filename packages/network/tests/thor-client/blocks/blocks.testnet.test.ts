@@ -185,8 +185,7 @@ describe('ThorClient - Blocks Module', () => {
                 }
             );
 
-            expect(block).toBeDefined();
-            expect(block?.number).not.toBeGreaterThan(bestBlock?.number + 1); // Not enough time to wait for the block (only 1 second was given)
+            expect(block).toBeNull(); // Not enough time to wait for the block (only 1 second was given)
         }
     }, 23000);
 
