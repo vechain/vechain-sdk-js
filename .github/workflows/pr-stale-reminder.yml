@@ -1,9 +1,11 @@
 name: PR Reminder (last 7 days)
 
 on:
-  schedule:
-    - cron: '15 8 * * 1-5' # 10:15 Europe/Rome during CEST (UTC+2)
-  workflow_dispatch:
+#   schedule:
+#     - cron: '15 8 * * 1-5' # 10:15 Europe/Rome during CEST (UTC+2)
+#   workflow_dispatch:
+    pull_request:
+      types: [opened] #just a test, will then uncomment the schedule above  
 
 permissions:
   contents: read
