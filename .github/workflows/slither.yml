@@ -10,14 +10,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  scorecard:
-    uses: vechain/github-actions/.github/workflows/scorecard.yaml@19d21c31f683f524c302fa9f9eacf81fd68002e8
-    secrets:
-      app-id: ${{ secrets.SCORECARD_APPID }}
-      private-key: ${{ secrets.SCORECARD_PRIVATEKEY }}
-    with:
-      default-branch: develop
- 
   slither:
     uses: vechain/github-actions/.github/workflows/slither.yaml@57aaf426374fa4d13d91d6039c1cc063a59bbf3c
     with:
