@@ -1,0 +1,2552 @@
+yarn workspace v1.22.22
+warning From Yarn 1.0 onwards, scripts don't require "--" for options to be forwarded. In a future version, any explicit "--" will be forwarded as-is to the scripts.
+yarn run v1.22.22
+$ rm -rf ./coverageIntegration && APPLYCODECOVLIMITS=false jest --coverage --coverageDirectory=coverageIntegration --group=integration --testPathPattern=tests/thor-client/debug/DebugModule.solo.test.ts
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.343Z] [sendTransactionWithAccount] start: {
+      "account": {
+        "address": "0x062f167a905c1484de7e75b88edc7439f82117de"
+      }
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.350Z] [sendTransactionWithAccount] transfer1VTHOClause: {
+      "to": "0x0000000000000000000000000000456e65726779",
+      "value": "0",
+      "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.350Z] [sendTransactionWithAccount] transferTransactionBodyValueAsNumber: {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "value": 0,
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+        }
+      ],
+      "chainTag": 246,
+      "blockRef": "0x00000000c05a20fb",
+      "expiration": 1000,
+      "gasPriceCoef": 128,
+      "dependsOn": null
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.351Z] [sendTransactionWithAccount] estimating gas: {
+      "from": "0x062f167a905c1484de7e75b88edc7439f82117de"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.352Z] [sendTransactionWithAccount] start: {
+      "account": {
+        "address": "0x3e3d79163b08502a086213cd09660721740443d7"
+      }
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.352Z] [sendTransactionWithAccount] transfer1VTHOClause: {
+      "to": "0x0000000000000000000000000000456e65726779",
+      "value": "0",
+      "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.352Z] [sendTransactionWithAccount] transferTransactionBodyValueAsNumber: {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "value": 0,
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+        }
+      ],
+      "chainTag": 246,
+      "blockRef": "0x00000000c05a20fb",
+      "expiration": 1000,
+      "gasPriceCoef": 128,
+      "dependsOn": null
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.353Z] [sendTransactionWithAccount] estimating gas: {
+      "from": "0x3e3d79163b08502a086213cd09660721740443d7"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.353Z] [sendTransactionWithAccount] start: {
+      "account": {
+        "address": "0x982E6C08c767ca7dD6216738E6A25413c341f976"
+      }
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.353Z] [sendTransactionWithAccount] transfer1VTHOClause: {
+      "to": "0x0000000000000000000000000000456e65726779",
+      "value": "0",
+      "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.354Z] [sendTransactionWithAccount] transferTransactionBodyValueAsNumber: {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "value": 0,
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+        }
+      ],
+      "chainTag": 246,
+      "blockRef": "0x00000000c05a20fb",
+      "expiration": 1000,
+      "gasPriceCoef": 128,
+      "dependsOn": null
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.354Z] [sendTransactionWithAccount] estimating gas: {
+      "from": "0x982E6C08c767ca7dD6216738E6A25413c341f976"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.354Z] [sendTransactionWithAccount] start: {
+      "account": {
+        "address": "0x74284087E9b0953b453FDced661ac37F51E53Fe2"
+      }
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.355Z] [sendTransactionWithAccount] transfer1VTHOClause: {
+      "to": "0x0000000000000000000000000000456e65726779",
+      "value": "0",
+      "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.355Z] [sendTransactionWithAccount] transferTransactionBodyValueAsNumber: {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "value": 0,
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+        }
+      ],
+      "chainTag": 246,
+      "blockRef": "0x00000000c05a20fb",
+      "expiration": 1000,
+      "gasPriceCoef": 128,
+      "dependsOn": null
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.355Z] [sendTransactionWithAccount] estimating gas: {
+      "from": "0x74284087E9b0953b453FDced661ac37F51E53Fe2"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.357Z] [sendTransactionWithAccount] start: {
+      "account": {
+        "address": "0x0DcC42dfEd29218713aF324241D848a7520dbc21"
+      }
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.357Z] [sendTransactionWithAccount] transfer1VTHOClause: {
+      "to": "0x0000000000000000000000000000456e65726779",
+      "value": "0",
+      "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.357Z] [sendTransactionWithAccount] transferTransactionBodyValueAsNumber: {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "value": 0,
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+        }
+      ],
+      "chainTag": 246,
+      "blockRef": "0x00000000c05a20fb",
+      "expiration": 1000,
+      "gasPriceCoef": 128,
+      "dependsOn": null
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.357Z] [sendTransactionWithAccount] estimating gas: {
+      "from": "0x0DcC42dfEd29218713aF324241D848a7520dbc21"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.358Z] [sendTransactionWithAccount] start: {
+      "account": {
+        "address": "0x17906B53a9b987bFf4f7237903B265Cb1AAcb730"
+      }
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.358Z] [sendTransactionWithAccount] transfer1VTHOClause: {
+      "to": "0x0000000000000000000000000000456e65726779",
+      "value": "0",
+      "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.359Z] [sendTransactionWithAccount] transferTransactionBodyValueAsNumber: {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "value": 0,
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+        }
+      ],
+      "chainTag": 246,
+      "blockRef": "0x00000000c05a20fb",
+      "expiration": 1000,
+      "gasPriceCoef": 128,
+      "dependsOn": null
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.359Z] [sendTransactionWithAccount] estimating gas: {
+      "from": "0x17906B53a9b987bFf4f7237903B265Cb1AAcb730"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.359Z] [sendTransactionWithAccount] start: {
+      "account": {
+        "address": "0xd95aEf7F16225735F2828bbC66E94FAcDF2497A6"
+      }
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.359Z] [sendTransactionWithAccount] transfer1VTHOClause: {
+      "to": "0x0000000000000000000000000000456e65726779",
+      "value": "0",
+      "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.359Z] [sendTransactionWithAccount] transferTransactionBodyValueAsNumber: {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "value": 0,
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+        }
+      ],
+      "chainTag": 246,
+      "blockRef": "0x00000000c05a20fb",
+      "expiration": 1000,
+      "gasPriceCoef": 128,
+      "dependsOn": null
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.360Z] [sendTransactionWithAccount] estimating gas: {
+      "from": "0xd95aEf7F16225735F2828bbC66E94FAcDF2497A6"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.360Z] [sendTransactionWithAccount] start: {
+      "account": {
+        "address": "0x60b406d7186c497D6a5cE31EdC478343878F754e"
+      }
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.360Z] [sendTransactionWithAccount] transfer1VTHOClause: {
+      "to": "0x0000000000000000000000000000456e65726779",
+      "value": "0",
+      "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.361Z] [sendTransactionWithAccount] transferTransactionBodyValueAsNumber: {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "value": 0,
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+        }
+      ],
+      "chainTag": 246,
+      "blockRef": "0x00000000c05a20fb",
+      "expiration": 1000,
+      "gasPriceCoef": 128,
+      "dependsOn": null
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.361Z] [sendTransactionWithAccount] estimating gas: {
+      "from": "0x60b406d7186c497D6a5cE31EdC478343878F754e"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.361Z] [sendTransactionWithAccount] start: {
+      "account": {
+        "address": "0xFE3B5E9b0A1f138ba5cD8eC3E680377b87D9EDec"
+      }
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.361Z] [sendTransactionWithAccount] transfer1VTHOClause: {
+      "to": "0x0000000000000000000000000000456e65726779",
+      "value": "0",
+      "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.362Z] [sendTransactionWithAccount] transferTransactionBodyValueAsNumber: {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "value": 0,
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+        }
+      ],
+      "chainTag": 246,
+      "blockRef": "0x00000000c05a20fb",
+      "expiration": 1000,
+      "gasPriceCoef": 128,
+      "dependsOn": null
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.362Z] [sendTransactionWithAccount] estimating gas: {
+      "from": "0xFE3B5E9b0A1f138ba5cD8eC3E680377b87D9EDec"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.362Z] [sendTransactionWithAccount] start: {
+      "account": {
+        "address": "0xa246E66bb325DD2A44A0e91ecF666e09b71279fB"
+      }
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.362Z] [sendTransactionWithAccount] transfer1VTHOClause: {
+      "to": "0x0000000000000000000000000000456e65726779",
+      "value": "0",
+      "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.362Z] [sendTransactionWithAccount] transferTransactionBodyValueAsNumber: {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "value": 0,
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+        }
+      ],
+      "chainTag": 246,
+      "blockRef": "0x00000000c05a20fb",
+      "expiration": 1000,
+      "gasPriceCoef": 128,
+      "dependsOn": null
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.363Z] [sendTransactionWithAccount] estimating gas: {
+      "from": "0xa246E66bb325DD2A44A0e91ecF666e09b71279fB"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.363Z] [sendTransactionWithAccount] start: {
+      "account": {
+        "address": "0x31C547C920015D8beE16E268bB68544f504078B9"
+      }
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.363Z] [sendTransactionWithAccount] transfer1VTHOClause: {
+      "to": "0x0000000000000000000000000000456e65726779",
+      "value": "0",
+      "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.363Z] [sendTransactionWithAccount] transferTransactionBodyValueAsNumber: {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "value": 0,
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+        }
+      ],
+      "chainTag": 246,
+      "blockRef": "0x00000000c05a20fb",
+      "expiration": 1000,
+      "gasPriceCoef": 128,
+      "dependsOn": null
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.364Z] [sendTransactionWithAccount] estimating gas: {
+      "from": "0x31C547C920015D8beE16E268bB68544f504078B9"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:09:16.367Z)
+
+      at log (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "requestHeaders": {},
+      "requestBody": {
+        "clauses": [
+          {
+            "to": "0x0000000000000000000000000000456e65726779",
+            "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "value": "0"
+          }
+        ],
+        "caller": "0x062f167a905c1484de7e75b88edc7439f82117de"
+      },
+      "timestamp": 1756199356367
+    }
+
+      at log (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at log (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+          "value": "0"
+        }
+      ],
+      "caller": "0x062f167a905c1484de7e75b88edc7439f82117de"
+    }
+
+      at log (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:09:16.372Z)
+
+      at log (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "requestHeaders": {},
+      "requestBody": {
+        "clauses": [
+          {
+            "to": "0x0000000000000000000000000000456e65726779",
+            "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "value": "0"
+          }
+        ],
+        "caller": "0x3e3d79163b08502a086213cd09660721740443d7"
+      },
+      "timestamp": 1756199356372
+    }
+
+      at log (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at log (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+          "value": "0"
+        }
+      ],
+      "caller": "0x3e3d79163b08502a086213cd09660721740443d7"
+    }
+
+      at log (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:09:16.373Z)
+
+      at log (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "requestHeaders": {},
+      "requestBody": {
+        "clauses": [
+          {
+            "to": "0x0000000000000000000000000000456e65726779",
+            "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "value": "0"
+          }
+        ],
+        "caller": "0x982E6C08c767ca7dD6216738E6A25413c341f976"
+      },
+      "timestamp": 1756199356373
+    }
+
+      at log (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at log (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+          "value": "0"
+        }
+      ],
+      "caller": "0x982E6C08c767ca7dD6216738E6A25413c341f976"
+    }
+
+      at log (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:09:16.375Z)
+
+      at log (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "requestHeaders": {},
+      "requestBody": {
+        "clauses": [
+          {
+            "to": "0x0000000000000000000000000000456e65726779",
+            "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "value": "0"
+          }
+        ],
+        "caller": "0x74284087E9b0953b453FDced661ac37F51E53Fe2"
+      },
+      "timestamp": 1756199356375
+    }
+
+      at log (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at log (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+          "value": "0"
+        }
+      ],
+      "caller": "0x74284087E9b0953b453FDced661ac37F51E53Fe2"
+    }
+
+      at log (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:09:16.377Z)
+
+      at log (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "requestHeaders": {},
+      "requestBody": {
+        "clauses": [
+          {
+            "to": "0x0000000000000000000000000000456e65726779",
+            "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "value": "0"
+          }
+        ],
+        "caller": "0x0DcC42dfEd29218713aF324241D848a7520dbc21"
+      },
+      "timestamp": 1756199356377
+    }
+
+      at log (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at log (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+          "value": "0"
+        }
+      ],
+      "caller": "0x0DcC42dfEd29218713aF324241D848a7520dbc21"
+    }
+
+      at log (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:09:16.377Z)
+
+      at log (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "requestHeaders": {},
+      "requestBody": {
+        "clauses": [
+          {
+            "to": "0x0000000000000000000000000000456e65726779",
+            "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "value": "0"
+          }
+        ],
+        "caller": "0x17906B53a9b987bFf4f7237903B265Cb1AAcb730"
+      },
+      "timestamp": 1756199356377
+    }
+
+      at log (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at log (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+          "value": "0"
+        }
+      ],
+      "caller": "0x17906B53a9b987bFf4f7237903B265Cb1AAcb730"
+    }
+
+      at log (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:09:16.378Z)
+
+      at log (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "requestHeaders": {},
+      "requestBody": {
+        "clauses": [
+          {
+            "to": "0x0000000000000000000000000000456e65726779",
+            "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "value": "0"
+          }
+        ],
+        "caller": "0xd95aEf7F16225735F2828bbC66E94FAcDF2497A6"
+      },
+      "timestamp": 1756199356378
+    }
+
+      at log (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at log (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+          "value": "0"
+        }
+      ],
+      "caller": "0xd95aEf7F16225735F2828bbC66E94FAcDF2497A6"
+    }
+
+      at log (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:09:16.379Z)
+
+      at log (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "requestHeaders": {},
+      "requestBody": {
+        "clauses": [
+          {
+            "to": "0x0000000000000000000000000000456e65726779",
+            "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "value": "0"
+          }
+        ],
+        "caller": "0x60b406d7186c497D6a5cE31EdC478343878F754e"
+      },
+      "timestamp": 1756199356379
+    }
+
+      at log (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at log (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+          "value": "0"
+        }
+      ],
+      "caller": "0x60b406d7186c497D6a5cE31EdC478343878F754e"
+    }
+
+      at log (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:09:16.380Z)
+
+      at log (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "requestHeaders": {},
+      "requestBody": {
+        "clauses": [
+          {
+            "to": "0x0000000000000000000000000000456e65726779",
+            "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "value": "0"
+          }
+        ],
+        "caller": "0xFE3B5E9b0A1f138ba5cD8eC3E680377b87D9EDec"
+      },
+      "timestamp": 1756199356380
+    }
+
+      at log (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at log (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+          "value": "0"
+        }
+      ],
+      "caller": "0xFE3B5E9b0A1f138ba5cD8eC3E680377b87D9EDec"
+    }
+
+      at log (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:09:16.381Z)
+
+      at log (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "requestHeaders": {},
+      "requestBody": {
+        "clauses": [
+          {
+            "to": "0x0000000000000000000000000000456e65726779",
+            "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "value": "0"
+          }
+        ],
+        "caller": "0xa246E66bb325DD2A44A0e91ecF666e09b71279fB"
+      },
+      "timestamp": 1756199356381
+    }
+
+      at log (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at log (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+          "value": "0"
+        }
+      ],
+      "caller": "0xa246E66bb325DD2A44A0e91ecF666e09b71279fB"
+    }
+
+      at log (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:09:16.382Z)
+
+      at log (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "requestHeaders": {},
+      "requestBody": {
+        "clauses": [
+          {
+            "to": "0x0000000000000000000000000000456e65726779",
+            "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "value": "0"
+          }
+        ],
+        "caller": "0x31C547C920015D8beE16E268bB68544f504078B9"
+      },
+      "timestamp": 1756199356382
+    }
+
+      at log (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at log (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+          "value": "0"
+        }
+      ],
+      "caller": "0x31C547C920015D8beE16E268bB68544f504078B9"
+    }
+
+      at log (src/http/trace-logger.ts:70:21)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.387Z] traceContractCall :: start -> {
+      "tracerName": ""
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.387Z] traceContractCall :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Error (2025-08-26T09:09:16.390Z)
+
+      at log (src/http/trace-logger.ts:158:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Error",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "error": {},
+      "timestamp": 1756199356390,
+      "duration": 23
+    }
+
+      at log (src/http/trace-logger.ts:161:13)
+
+  console.log
+    ❌ POST http://127.0.0.1:8669/accounts/* (23ms)
+
+      at log (src/http/trace-logger.ts:162:13)
+
+  console.log
+    ⛔ Error:
+
+      at log (src/http/trace-logger.ts:163:13)
+
+  console.log
+    TypeError: fetch failed
+        at node:internal/deps/undici/undici:13502:13
+        at processTicksAndRejections (node:internal/process/task_queues:95:5)
+        at SimpleHttpClient.http (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/http/SimpleHttpClient.ts:156:30)
+        at TransactionsModule.simulateTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:708:17)
+        at TransactionsModule.estimateGas (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:886:29)
+        at sendTransactionWithAccount (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/fixture-thorest.ts:506:21)
+        at testTraceContractCall (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+        at Object.<anonymous> (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/DebugModule.solo.test.ts:151:32) {
+      [cause]: Error: connect ECONNREFUSED 127.0.0.1:8669
+          at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16) {
+        errno: -61,
+        code: 'ECONNREFUSED',
+        syscall: 'connect',
+        address: '127.0.0.1',
+        port: 8669
+      }
+    }
+
+      at log (src/http/trace-logger.ts:177:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.391Z] [sendTransactionWithAccount] estimateGas error: {
+      "name": "Error",
+      "message": "Method 'HttpClient.http()' failed.\n-Reason: 'fetch failed'\n-Parameters: \n\t{\n  \"method\": \"POST\",\n  \"url\": \"http://127.0.0.1:8669/accounts/*\"\n}\n-Internal error: \n\tInner error is not an instance of Error. Object:\n\t{}"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.402Z] traceTransactionClause :: start -> {
+      "tracerName": ""
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.403Z] traceTransactionClause :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.403Z] traceContractCall :: start -> {
+      "tracerName": "4byte"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.404Z] traceContractCall :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Error (2025-08-26T09:09:16.404Z)
+
+      at log (src/http/trace-logger.ts:158:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Error",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "error": {},
+      "timestamp": 1756199356404,
+      "duration": 32
+    }
+
+      at log (src/http/trace-logger.ts:161:13)
+
+  console.log
+    ❌ POST http://127.0.0.1:8669/accounts/* (32ms)
+
+      at log (src/http/trace-logger.ts:162:13)
+
+  console.log
+    ⛔ Error:
+
+      at log (src/http/trace-logger.ts:163:13)
+
+  console.log
+    TypeError: fetch failed
+        at node:internal/deps/undici/undici:13502:13
+        at processTicksAndRejections (node:internal/process/task_queues:95:5)
+        at SimpleHttpClient.http (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/http/SimpleHttpClient.ts:156:30)
+        at TransactionsModule.simulateTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:708:17)
+        at TransactionsModule.estimateGas (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:886:29)
+        at sendTransactionWithAccount (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/fixture-thorest.ts:506:21)
+        at testTraceContractCall (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+        at Object.<anonymous> (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/DebugModule.solo.test.ts:184:32) {
+      [cause]: Error: connect ECONNREFUSED 127.0.0.1:8669
+          at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16) {
+        errno: -61,
+        code: 'ECONNREFUSED',
+        syscall: 'connect',
+        address: '127.0.0.1',
+        port: 8669
+      }
+    }
+
+      at log (src/http/trace-logger.ts:177:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.405Z] [sendTransactionWithAccount] estimateGas error: {
+      "name": "Error",
+      "message": "Method 'HttpClient.http()' failed.\n-Reason: 'fetch failed'\n-Parameters: \n\t{\n  \"method\": \"POST\",\n  \"url\": \"http://127.0.0.1:8669/accounts/*\"\n}\n-Internal error: \n\tInner error is not an instance of Error. Object:\n\t{}"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.406Z] traceTransactionClause :: start -> {
+      "tracerName": "4byte"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.406Z] traceTransactionClause :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.406Z] traceContractCall :: start -> {
+      "tracerName": "call"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.407Z] traceContractCall :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Error (2025-08-26T09:09:16.407Z)
+
+      at log (src/http/trace-logger.ts:158:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Error",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "error": {},
+      "timestamp": 1756199356407,
+      "duration": 34
+    }
+
+      at log (src/http/trace-logger.ts:161:13)
+
+  console.log
+    ❌ POST http://127.0.0.1:8669/accounts/* (34ms)
+
+      at log (src/http/trace-logger.ts:162:13)
+
+  console.log
+    ⛔ Error:
+
+      at log (src/http/trace-logger.ts:163:13)
+
+  console.log
+    TypeError: fetch failed
+        at node:internal/deps/undici/undici:13502:13
+        at processTicksAndRejections (node:internal/process/task_queues:95:5)
+        at SimpleHttpClient.http (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/http/SimpleHttpClient.ts:156:30)
+        at TransactionsModule.simulateTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:708:17)
+        at TransactionsModule.estimateGas (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:886:29)
+        at sendTransactionWithAccount (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/fixture-thorest.ts:506:21)
+        at testTraceContractCall (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+        at Object.<anonymous> (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/DebugModule.solo.test.ts:217:32) {
+      [cause]: Error: connect ECONNREFUSED 127.0.0.1:8669
+          at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16) {
+        errno: -61,
+        code: 'ECONNREFUSED',
+        syscall: 'connect',
+        address: '127.0.0.1',
+        port: 8669
+      }
+    }
+
+      at log (src/http/trace-logger.ts:177:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.408Z] [sendTransactionWithAccount] estimateGas error: {
+      "name": "Error",
+      "message": "Method 'HttpClient.http()' failed.\n-Reason: 'fetch failed'\n-Parameters: \n\t{\n  \"method\": \"POST\",\n  \"url\": \"http://127.0.0.1:8669/accounts/*\"\n}\n-Internal error: \n\tInner error is not an instance of Error. Object:\n\t{}"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.409Z] traceTransactionClause :: start -> {
+      "tracerName": "call"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.409Z] traceTransactionClause :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.410Z] traceContractCall :: start -> {
+      "tracerName": "noop"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.410Z] traceContractCall :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Error (2025-08-26T09:09:16.410Z)
+
+      at log (src/http/trace-logger.ts:158:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Error",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "error": {},
+      "timestamp": 1756199356410,
+      "duration": 35
+    }
+
+      at log (src/http/trace-logger.ts:161:13)
+
+  console.log
+    ❌ POST http://127.0.0.1:8669/accounts/* (35ms)
+
+      at log (src/http/trace-logger.ts:162:13)
+
+  console.log
+    ⛔ Error:
+
+      at log (src/http/trace-logger.ts:163:13)
+
+  console.log
+    TypeError: fetch failed
+        at node:internal/deps/undici/undici:13502:13
+        at processTicksAndRejections (node:internal/process/task_queues:95:5)
+        at SimpleHttpClient.http (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/http/SimpleHttpClient.ts:156:30)
+        at TransactionsModule.simulateTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:708:17)
+        at TransactionsModule.estimateGas (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:886:29)
+        at sendTransactionWithAccount (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/fixture-thorest.ts:506:21)
+        at testTraceContractCall (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+        at Object.<anonymous> (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/DebugModule.solo.test.ts:250:32) {
+      [cause]: Error: connect ECONNREFUSED 127.0.0.1:8669
+          at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16) {
+        errno: -61,
+        code: 'ECONNREFUSED',
+        syscall: 'connect',
+        address: '127.0.0.1',
+        port: 8669
+      }
+    }
+
+      at log (src/http/trace-logger.ts:177:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.411Z] [sendTransactionWithAccount] estimateGas error: {
+      "name": "Error",
+      "message": "Method 'HttpClient.http()' failed.\n-Reason: 'fetch failed'\n-Parameters: \n\t{\n  \"method\": \"POST\",\n  \"url\": \"http://127.0.0.1:8669/accounts/*\"\n}\n-Internal error: \n\tInner error is not an instance of Error. Object:\n\t{}"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.412Z] traceTransactionClause :: start -> {
+      "tracerName": "noop"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.412Z] traceTransactionClause :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.412Z] traceContractCall :: start -> {
+      "tracerName": "prestate"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.412Z] traceContractCall :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Error (2025-08-26T09:09:16.414Z)
+
+      at log (src/http/trace-logger.ts:158:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Error",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "error": {},
+      "timestamp": 1756199356414,
+      "duration": 37
+    }
+
+      at log (src/http/trace-logger.ts:161:13)
+
+  console.log
+    ❌ POST http://127.0.0.1:8669/accounts/* (37ms)
+
+      at log (src/http/trace-logger.ts:162:13)
+
+  console.log
+    ⛔ Error:
+
+      at log (src/http/trace-logger.ts:163:13)
+
+  console.log
+    TypeError: fetch failed
+        at node:internal/deps/undici/undici:13502:13
+        at processTicksAndRejections (node:internal/process/task_queues:95:5)
+        at SimpleHttpClient.http (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/http/SimpleHttpClient.ts:156:30)
+        at TransactionsModule.simulateTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:708:17)
+        at TransactionsModule.estimateGas (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:886:29)
+        at sendTransactionWithAccount (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/fixture-thorest.ts:506:21)
+        at testTraceContractCall (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+        at Object.<anonymous> (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/DebugModule.solo.test.ts:283:32) {
+      [cause]: Error: connect ECONNREFUSED 127.0.0.1:8669
+          at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16) {
+        errno: -61,
+        code: 'ECONNREFUSED',
+        syscall: 'connect',
+        address: '127.0.0.1',
+        port: 8669
+      }
+    }
+
+      at log (src/http/trace-logger.ts:177:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.415Z] [sendTransactionWithAccount] estimateGas error: {
+      "name": "Error",
+      "message": "Method 'HttpClient.http()' failed.\n-Reason: 'fetch failed'\n-Parameters: \n\t{\n  \"method\": \"POST\",\n  \"url\": \"http://127.0.0.1:8669/accounts/*\"\n}\n-Internal error: \n\tInner error is not an instance of Error. Object:\n\t{}"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.415Z] traceTransactionClause :: start -> {
+      "tracerName": "prestate"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.416Z] traceTransactionClause :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.416Z] traceContractCall :: start -> {
+      "tracerName": "unigram"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.417Z] traceContractCall :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Error (2025-08-26T09:09:16.417Z)
+
+      at log (src/http/trace-logger.ts:158:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Error",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "error": {},
+      "timestamp": 1756199356417,
+      "duration": 40
+    }
+
+      at log (src/http/trace-logger.ts:161:13)
+
+  console.log
+    ❌ POST http://127.0.0.1:8669/accounts/* (40ms)
+
+      at log (src/http/trace-logger.ts:162:13)
+
+  console.log
+    ⛔ Error:
+
+      at log (src/http/trace-logger.ts:163:13)
+
+  console.log
+    TypeError: fetch failed
+        at node:internal/deps/undici/undici:13502:13
+        at processTicksAndRejections (node:internal/process/task_queues:95:5)
+        at SimpleHttpClient.http (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/http/SimpleHttpClient.ts:156:30)
+        at TransactionsModule.simulateTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:708:17)
+        at TransactionsModule.estimateGas (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:886:29)
+        at sendTransactionWithAccount (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/fixture-thorest.ts:506:21)
+        at testTraceContractCall (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+        at Object.<anonymous> (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/DebugModule.solo.test.ts:316:32) {
+      [cause]: Error: connect ECONNREFUSED 127.0.0.1:8669
+          at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16) {
+        errno: -61,
+        code: 'ECONNREFUSED',
+        syscall: 'connect',
+        address: '127.0.0.1',
+        port: 8669
+      }
+    }
+
+      at log (src/http/trace-logger.ts:177:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.418Z] [sendTransactionWithAccount] estimateGas error: {
+      "name": "Error",
+      "message": "Method 'HttpClient.http()' failed.\n-Reason: 'fetch failed'\n-Parameters: \n\t{\n  \"method\": \"POST\",\n  \"url\": \"http://127.0.0.1:8669/accounts/*\"\n}\n-Internal error: \n\tInner error is not an instance of Error. Object:\n\t{}"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.419Z] traceTransactionClause :: start -> {
+      "tracerName": "unigram"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.419Z] traceTransactionClause :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.420Z] traceContractCall :: start -> {
+      "tracerName": "bigram"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.420Z] traceContractCall :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Error (2025-08-26T09:09:16.420Z)
+
+      at log (src/http/trace-logger.ts:158:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Error",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "error": {},
+      "timestamp": 1756199356420,
+      "duration": 42
+    }
+
+      at log (src/http/trace-logger.ts:161:13)
+
+  console.log
+    ❌ POST http://127.0.0.1:8669/accounts/* (42ms)
+
+      at log (src/http/trace-logger.ts:162:13)
+
+  console.log
+    ⛔ Error:
+
+      at log (src/http/trace-logger.ts:163:13)
+
+  console.log
+    TypeError: fetch failed
+        at node:internal/deps/undici/undici:13502:13
+        at processTicksAndRejections (node:internal/process/task_queues:95:5)
+        at SimpleHttpClient.http (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/http/SimpleHttpClient.ts:156:30)
+        at TransactionsModule.simulateTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:708:17)
+        at TransactionsModule.estimateGas (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:886:29)
+        at sendTransactionWithAccount (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/fixture-thorest.ts:506:21)
+        at testTraceContractCall (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+        at Object.<anonymous> (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/DebugModule.solo.test.ts:349:32) {
+      [cause]: Error: connect ECONNREFUSED 127.0.0.1:8669
+          at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16) {
+        errno: -61,
+        code: 'ECONNREFUSED',
+        syscall: 'connect',
+        address: '127.0.0.1',
+        port: 8669
+      }
+    }
+
+      at log (src/http/trace-logger.ts:177:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.421Z] [sendTransactionWithAccount] estimateGas error: {
+      "name": "Error",
+      "message": "Method 'HttpClient.http()' failed.\n-Reason: 'fetch failed'\n-Parameters: \n\t{\n  \"method\": \"POST\",\n  \"url\": \"http://127.0.0.1:8669/accounts/*\"\n}\n-Internal error: \n\tInner error is not an instance of Error. Object:\n\t{}"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.421Z] traceTransactionClause :: start -> {
+      "tracerName": "bigram"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.422Z] traceTransactionClause :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.422Z] traceContractCall :: start -> {
+      "tracerName": "trigram"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.422Z] traceContractCall :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Error (2025-08-26T09:09:16.423Z)
+
+      at log (src/http/trace-logger.ts:158:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Error",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "error": {},
+      "timestamp": 1756199356423,
+      "duration": 44
+    }
+
+      at log (src/http/trace-logger.ts:161:13)
+
+  console.log
+    ❌ POST http://127.0.0.1:8669/accounts/* (44ms)
+
+      at log (src/http/trace-logger.ts:162:13)
+
+  console.log
+    ⛔ Error:
+
+      at log (src/http/trace-logger.ts:163:13)
+
+  console.log
+    TypeError: fetch failed
+        at node:internal/deps/undici/undici:13502:13
+        at processTicksAndRejections (node:internal/process/task_queues:95:5)
+        at SimpleHttpClient.http (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/http/SimpleHttpClient.ts:156:30)
+        at TransactionsModule.simulateTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:708:17)
+        at TransactionsModule.estimateGas (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:886:29)
+        at sendTransactionWithAccount (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/fixture-thorest.ts:506:21)
+        at testTraceContractCall (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+        at Object.<anonymous> (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/DebugModule.solo.test.ts:382:32) {
+      [cause]: Error: connect ECONNREFUSED 127.0.0.1:8669
+          at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16) {
+        errno: -61,
+        code: 'ECONNREFUSED',
+        syscall: 'connect',
+        address: '127.0.0.1',
+        port: 8669
+      }
+    }
+
+      at log (src/http/trace-logger.ts:177:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.424Z] [sendTransactionWithAccount] estimateGas error: {
+      "name": "Error",
+      "message": "Method 'HttpClient.http()' failed.\n-Reason: 'fetch failed'\n-Parameters: \n\t{\n  \"method\": \"POST\",\n  \"url\": \"http://127.0.0.1:8669/accounts/*\"\n}\n-Internal error: \n\tInner error is not an instance of Error. Object:\n\t{}"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.424Z] traceTransactionClause :: start -> {
+      "tracerName": "trigram"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.424Z] traceTransactionClause :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.425Z] traceContractCall :: start -> {
+      "tracerName": "evmdis"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.425Z] traceContractCall :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Error (2025-08-26T09:09:16.426Z)
+
+      at log (src/http/trace-logger.ts:158:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Error",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "error": {},
+      "timestamp": 1756199356426,
+      "duration": 46
+    }
+
+      at log (src/http/trace-logger.ts:161:13)
+
+  console.log
+    ❌ POST http://127.0.0.1:8669/accounts/* (46ms)
+
+      at log (src/http/trace-logger.ts:162:13)
+
+  console.log
+    ⛔ Error:
+
+      at log (src/http/trace-logger.ts:163:13)
+
+  console.log
+    TypeError: fetch failed
+        at node:internal/deps/undici/undici:13502:13
+        at processTicksAndRejections (node:internal/process/task_queues:95:5)
+        at SimpleHttpClient.http (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/http/SimpleHttpClient.ts:156:30)
+        at TransactionsModule.simulateTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:708:17)
+        at TransactionsModule.estimateGas (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:886:29)
+        at sendTransactionWithAccount (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/fixture-thorest.ts:506:21)
+        at testTraceContractCall (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+        at Object.<anonymous> (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/DebugModule.solo.test.ts:415:32) {
+      [cause]: Error: connect ECONNREFUSED 127.0.0.1:8669
+          at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16) {
+        errno: -61,
+        code: 'ECONNREFUSED',
+        syscall: 'connect',
+        address: '127.0.0.1',
+        port: 8669
+      }
+    }
+
+      at log (src/http/trace-logger.ts:177:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.427Z] [sendTransactionWithAccount] estimateGas error: {
+      "name": "Error",
+      "message": "Method 'HttpClient.http()' failed.\n-Reason: 'fetch failed'\n-Parameters: \n\t{\n  \"method\": \"POST\",\n  \"url\": \"http://127.0.0.1:8669/accounts/*\"\n}\n-Internal error: \n\tInner error is not an instance of Error. Object:\n\t{}"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.428Z] traceTransactionClause :: start -> {
+      "tracerName": "evmdis"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.428Z] traceTransactionClause :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.429Z] traceContractCall :: start -> {
+      "tracerName": "opcount"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.429Z] traceContractCall :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Error (2025-08-26T09:09:16.430Z)
+
+      at log (src/http/trace-logger.ts:158:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Error",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "error": {},
+      "timestamp": 1756199356430,
+      "duration": 49
+    }
+
+      at log (src/http/trace-logger.ts:161:13)
+
+  console.log
+    ❌ POST http://127.0.0.1:8669/accounts/* (49ms)
+
+      at log (src/http/trace-logger.ts:162:13)
+
+  console.log
+    ⛔ Error:
+
+      at log (src/http/trace-logger.ts:163:13)
+
+  console.log
+    TypeError: fetch failed
+        at node:internal/deps/undici/undici:13502:13
+        at processTicksAndRejections (node:internal/process/task_queues:95:5)
+        at SimpleHttpClient.http (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/http/SimpleHttpClient.ts:156:30)
+        at TransactionsModule.simulateTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:708:17)
+        at TransactionsModule.estimateGas (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:886:29)
+        at sendTransactionWithAccount (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/fixture-thorest.ts:506:21)
+        at testTraceContractCall (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+        at Object.<anonymous> (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/DebugModule.solo.test.ts:448:32) {
+      [cause]: Error: connect ECONNREFUSED 127.0.0.1:8669
+          at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16) {
+        errno: -61,
+        code: 'ECONNREFUSED',
+        syscall: 'connect',
+        address: '127.0.0.1',
+        port: 8669
+      }
+    }
+
+      at log (src/http/trace-logger.ts:177:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.431Z] [sendTransactionWithAccount] estimateGas error: {
+      "name": "Error",
+      "message": "Method 'HttpClient.http()' failed.\n-Reason: 'fetch failed'\n-Parameters: \n\t{\n  \"method\": \"POST\",\n  \"url\": \"http://127.0.0.1:8669/accounts/*\"\n}\n-Internal error: \n\tInner error is not an instance of Error. Object:\n\t{}"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.431Z] traceTransactionClause :: start -> {
+      "tracerName": "opcount"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.431Z] traceTransactionClause :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.432Z] traceContractCall :: start -> {
+      "tracerName": null
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.432Z] traceContractCall :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Error (2025-08-26T09:09:16.433Z)
+
+      at log (src/http/trace-logger.ts:158:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Error",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "error": {},
+      "timestamp": 1756199356433,
+      "duration": 51
+    }
+
+      at log (src/http/trace-logger.ts:161:13)
+
+  console.log
+    ❌ POST http://127.0.0.1:8669/accounts/* (51ms)
+
+      at log (src/http/trace-logger.ts:162:13)
+
+  console.log
+    ⛔ Error:
+
+      at log (src/http/trace-logger.ts:163:13)
+
+  console.log
+    TypeError: fetch failed
+        at node:internal/deps/undici/undici:13502:13
+        at processTicksAndRejections (node:internal/process/task_queues:95:5)
+        at SimpleHttpClient.http (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/http/SimpleHttpClient.ts:156:30)
+        at TransactionsModule.simulateTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:708:17)
+        at TransactionsModule.estimateGas (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:886:29)
+        at sendTransactionWithAccount (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/fixture-thorest.ts:506:21)
+        at testTraceContractCall (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+        at Object.<anonymous> (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/DebugModule.solo.test.ts:481:32) {
+      [cause]: Error: connect ECONNREFUSED 127.0.0.1:8669
+          at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1611:16) {
+        errno: -61,
+        code: 'ECONNREFUSED',
+        syscall: 'connect',
+        address: '127.0.0.1',
+        port: 8669
+      }
+    }
+
+      at log (src/http/trace-logger.ts:177:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:09:16.433Z] [sendTransactionWithAccount] estimateGas error: {
+      "name": "Error",
+      "message": "Method 'HttpClient.http()' failed.\n-Reason: 'fetch failed'\n-Parameters: \n\t{\n  \"method\": \"POST\",\n  \"url\": \"http://127.0.0.1:8669/accounts/*\"\n}\n-Internal error: \n\tInner error is not an instance of Error. Object:\n\t{}"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.434Z] traceTransactionClause :: start -> {
+      "tracerName": null
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:09:16.434Z] traceTransactionClause :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+FAIL tests/thor-client/debug/DebugModule.solo.test.ts
+  DebugModule testnet tests
+    name = empty, sender account index = 7
+      ✕ ok <- traceContractCall (6 ms)
+      ✕ ok <- traceTransactionClause (1 ms)
+    name = 4byte, sender account index = 8
+      ✕ ok <- traceContractCall (2 ms)
+      ✕ ok <- traceTransactionClause (1 ms)
+    name = call, sender account index = 9
+      ✕ ok <- traceContractCall (2 ms)
+      ✕ ok <- traceTransactionClause
+    name = noop, sender account index = 10
+      ✕ ok <- traceContractCall (2 ms)
+      ✕ ok <- traceTransactionClause (1 ms)
+    name = prestate, sender account index = 11
+      ✕ ok <- traceContractCall (3 ms)
+      ✕ ok <- traceTransactionClause (1 ms)
+    name = unigram, sender account index = 12
+      ✕ ok <- traceContractCall (2 ms)
+      ✕ ok <- traceTransactionClause
+    name = bigram, sender account index = 13
+      ✕ ok <- traceContractCall (2 ms)
+      ✕ ok <- traceTransactionClause (1 ms)
+    name = trigram, sender account index = 14
+      ✕ ok <- traceContractCall (2 ms)
+      ✕ ok <- traceTransactionClause (1 ms)
+    name = evmdis, sender account index = 15
+      ✕ ok <- traceContractCall (2 ms)
+      ✕ ok <- traceTransactionClause (2 ms)
+    name = opcount, sender account index = 16
+      ✕ ok <- traceContractCall (2 ms)
+      ✕ ok <- traceTransactionClause (1 ms)
+    name = null, sender account index = 17
+      ✕ ok <- traceContractCall (2 ms)
+      ✕ ok <- traceTransactionClause
+
+  ● DebugModule testnet tests › name = empty, sender account index = 7 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'fetch failed'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*"
+    }
+    -Internal error: 
+    	Inner error is not an instance of Error. Object:
+    	{}
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.simulateTransaction (src/thor-client/transactions/transactions-module.ts:708:17)
+      at TransactionsModule.estimateGas (src/thor-client/transactions/transactions-module.ts:886:29)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:506:21)
+      at testTraceContractCall (tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+      at Object.<anonymous> (tests/thor-client/debug/DebugModule.solo.test.ts:151:32)
+
+  ● DebugModule testnet tests › name = empty, sender account index = 7 › ok <- traceTransactionClause
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'fetch failed'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*"
+    }
+    -Internal error: 
+    	Inner error is not an instance of Error. Object:
+    	{}
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.simulateTransaction (src/thor-client/transactions/transactions-module.ts:708:17)
+      at TransactionsModule.estimateGas (src/thor-client/transactions/transactions-module.ts:886:29)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:506:21)
+      at testTraceContractCall (tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+      at Object.<anonymous> (tests/thor-client/debug/DebugModule.solo.test.ts:151:32)
+
+  ● DebugModule testnet tests › name = 4byte, sender account index = 8 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'fetch failed'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*"
+    }
+    -Internal error: 
+    	Inner error is not an instance of Error. Object:
+    	{}
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.simulateTransaction (src/thor-client/transactions/transactions-module.ts:708:17)
+      at TransactionsModule.estimateGas (src/thor-client/transactions/transactions-module.ts:886:29)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:506:21)
+      at testTraceContractCall (tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+      at Object.<anonymous> (tests/thor-client/debug/DebugModule.solo.test.ts:184:32)
+
+  ● DebugModule testnet tests › name = 4byte, sender account index = 8 › ok <- traceTransactionClause
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'fetch failed'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*"
+    }
+    -Internal error: 
+    	Inner error is not an instance of Error. Object:
+    	{}
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.simulateTransaction (src/thor-client/transactions/transactions-module.ts:708:17)
+      at TransactionsModule.estimateGas (src/thor-client/transactions/transactions-module.ts:886:29)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:506:21)
+      at testTraceContractCall (tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+      at Object.<anonymous> (tests/thor-client/debug/DebugModule.solo.test.ts:184:32)
+
+  ● DebugModule testnet tests › name = call, sender account index = 9 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'fetch failed'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*"
+    }
+    -Internal error: 
+    	Inner error is not an instance of Error. Object:
+    	{}
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.simulateTransaction (src/thor-client/transactions/transactions-module.ts:708:17)
+      at TransactionsModule.estimateGas (src/thor-client/transactions/transactions-module.ts:886:29)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:506:21)
+      at testTraceContractCall (tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+      at Object.<anonymous> (tests/thor-client/debug/DebugModule.solo.test.ts:217:32)
+
+  ● DebugModule testnet tests › name = call, sender account index = 9 › ok <- traceTransactionClause
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'fetch failed'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*"
+    }
+    -Internal error: 
+    	Inner error is not an instance of Error. Object:
+    	{}
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.simulateTransaction (src/thor-client/transactions/transactions-module.ts:708:17)
+      at TransactionsModule.estimateGas (src/thor-client/transactions/transactions-module.ts:886:29)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:506:21)
+      at testTraceContractCall (tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+      at Object.<anonymous> (tests/thor-client/debug/DebugModule.solo.test.ts:217:32)
+
+  ● DebugModule testnet tests › name = noop, sender account index = 10 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'fetch failed'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*"
+    }
+    -Internal error: 
+    	Inner error is not an instance of Error. Object:
+    	{}
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.simulateTransaction (src/thor-client/transactions/transactions-module.ts:708:17)
+      at TransactionsModule.estimateGas (src/thor-client/transactions/transactions-module.ts:886:29)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:506:21)
+      at testTraceContractCall (tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+      at Object.<anonymous> (tests/thor-client/debug/DebugModule.solo.test.ts:250:32)
+
+  ● DebugModule testnet tests › name = noop, sender account index = 10 › ok <- traceTransactionClause
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'fetch failed'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*"
+    }
+    -Internal error: 
+    	Inner error is not an instance of Error. Object:
+    	{}
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.simulateTransaction (src/thor-client/transactions/transactions-module.ts:708:17)
+      at TransactionsModule.estimateGas (src/thor-client/transactions/transactions-module.ts:886:29)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:506:21)
+      at testTraceContractCall (tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+      at Object.<anonymous> (tests/thor-client/debug/DebugModule.solo.test.ts:250:32)
+
+  ● DebugModule testnet tests › name = prestate, sender account index = 11 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'fetch failed'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*"
+    }
+    -Internal error: 
+    	Inner error is not an instance of Error. Object:
+    	{}
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.simulateTransaction (src/thor-client/transactions/transactions-module.ts:708:17)
+      at TransactionsModule.estimateGas (src/thor-client/transactions/transactions-module.ts:886:29)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:506:21)
+      at testTraceContractCall (tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+      at Object.<anonymous> (tests/thor-client/debug/DebugModule.solo.test.ts:283:32)
+
+  ● DebugModule testnet tests › name = prestate, sender account index = 11 › ok <- traceTransactionClause
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'fetch failed'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*"
+    }
+    -Internal error: 
+    	Inner error is not an instance of Error. Object:
+    	{}
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.simulateTransaction (src/thor-client/transactions/transactions-module.ts:708:17)
+      at TransactionsModule.estimateGas (src/thor-client/transactions/transactions-module.ts:886:29)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:506:21)
+      at testTraceContractCall (tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+      at Object.<anonymous> (tests/thor-client/debug/DebugModule.solo.test.ts:283:32)
+
+  ● DebugModule testnet tests › name = unigram, sender account index = 12 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'fetch failed'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*"
+    }
+    -Internal error: 
+    	Inner error is not an instance of Error. Object:
+    	{}
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.simulateTransaction (src/thor-client/transactions/transactions-module.ts:708:17)
+      at TransactionsModule.estimateGas (src/thor-client/transactions/transactions-module.ts:886:29)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:506:21)
+      at testTraceContractCall (tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+      at Object.<anonymous> (tests/thor-client/debug/DebugModule.solo.test.ts:316:32)
+
+  ● DebugModule testnet tests › name = unigram, sender account index = 12 › ok <- traceTransactionClause
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'fetch failed'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*"
+    }
+    -Internal error: 
+    	Inner error is not an instance of Error. Object:
+    	{}
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.simulateTransaction (src/thor-client/transactions/transactions-module.ts:708:17)
+      at TransactionsModule.estimateGas (src/thor-client/transactions/transactions-module.ts:886:29)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:506:21)
+      at testTraceContractCall (tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+      at Object.<anonymous> (tests/thor-client/debug/DebugModule.solo.test.ts:316:32)
+
+  ● DebugModule testnet tests › name = bigram, sender account index = 13 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'fetch failed'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*"
+    }
+    -Internal error: 
+    	Inner error is not an instance of Error. Object:
+    	{}
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.simulateTransaction (src/thor-client/transactions/transactions-module.ts:708:17)
+      at TransactionsModule.estimateGas (src/thor-client/transactions/transactions-module.ts:886:29)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:506:21)
+      at testTraceContractCall (tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+      at Object.<anonymous> (tests/thor-client/debug/DebugModule.solo.test.ts:349:32)
+
+  ● DebugModule testnet tests › name = bigram, sender account index = 13 › ok <- traceTransactionClause
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'fetch failed'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*"
+    }
+    -Internal error: 
+    	Inner error is not an instance of Error. Object:
+    	{}
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.simulateTransaction (src/thor-client/transactions/transactions-module.ts:708:17)
+      at TransactionsModule.estimateGas (src/thor-client/transactions/transactions-module.ts:886:29)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:506:21)
+      at testTraceContractCall (tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+      at Object.<anonymous> (tests/thor-client/debug/DebugModule.solo.test.ts:349:32)
+
+  ● DebugModule testnet tests › name = trigram, sender account index = 14 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'fetch failed'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*"
+    }
+    -Internal error: 
+    	Inner error is not an instance of Error. Object:
+    	{}
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.simulateTransaction (src/thor-client/transactions/transactions-module.ts:708:17)
+      at TransactionsModule.estimateGas (src/thor-client/transactions/transactions-module.ts:886:29)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:506:21)
+      at testTraceContractCall (tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+      at Object.<anonymous> (tests/thor-client/debug/DebugModule.solo.test.ts:382:32)
+
+  ● DebugModule testnet tests › name = trigram, sender account index = 14 › ok <- traceTransactionClause
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'fetch failed'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*"
+    }
+    -Internal error: 
+    	Inner error is not an instance of Error. Object:
+    	{}
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.simulateTransaction (src/thor-client/transactions/transactions-module.ts:708:17)
+      at TransactionsModule.estimateGas (src/thor-client/transactions/transactions-module.ts:886:29)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:506:21)
+      at testTraceContractCall (tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+      at Object.<anonymous> (tests/thor-client/debug/DebugModule.solo.test.ts:382:32)
+
+  ● DebugModule testnet tests › name = evmdis, sender account index = 15 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'fetch failed'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*"
+    }
+    -Internal error: 
+    	Inner error is not an instance of Error. Object:
+    	{}
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.simulateTransaction (src/thor-client/transactions/transactions-module.ts:708:17)
+      at TransactionsModule.estimateGas (src/thor-client/transactions/transactions-module.ts:886:29)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:506:21)
+      at testTraceContractCall (tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+      at Object.<anonymous> (tests/thor-client/debug/DebugModule.solo.test.ts:415:32)
+
+  ● DebugModule testnet tests › name = evmdis, sender account index = 15 › ok <- traceTransactionClause
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'fetch failed'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*"
+    }
+    -Internal error: 
+    	Inner error is not an instance of Error. Object:
+    	{}
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.simulateTransaction (src/thor-client/transactions/transactions-module.ts:708:17)
+      at TransactionsModule.estimateGas (src/thor-client/transactions/transactions-module.ts:886:29)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:506:21)
+      at testTraceContractCall (tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+      at Object.<anonymous> (tests/thor-client/debug/DebugModule.solo.test.ts:415:32)
+
+  ● DebugModule testnet tests › name = opcount, sender account index = 16 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'fetch failed'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*"
+    }
+    -Internal error: 
+    	Inner error is not an instance of Error. Object:
+    	{}
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.simulateTransaction (src/thor-client/transactions/transactions-module.ts:708:17)
+      at TransactionsModule.estimateGas (src/thor-client/transactions/transactions-module.ts:886:29)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:506:21)
+      at testTraceContractCall (tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+      at Object.<anonymous> (tests/thor-client/debug/DebugModule.solo.test.ts:448:32)
+
+  ● DebugModule testnet tests › name = opcount, sender account index = 16 › ok <- traceTransactionClause
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'fetch failed'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*"
+    }
+    -Internal error: 
+    	Inner error is not an instance of Error. Object:
+    	{}
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.simulateTransaction (src/thor-client/transactions/transactions-module.ts:708:17)
+      at TransactionsModule.estimateGas (src/thor-client/transactions/transactions-module.ts:886:29)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:506:21)
+      at testTraceContractCall (tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+      at Object.<anonymous> (tests/thor-client/debug/DebugModule.solo.test.ts:448:32)
+
+  ● DebugModule testnet tests › name = null, sender account index = 17 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'fetch failed'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*"
+    }
+    -Internal error: 
+    	Inner error is not an instance of Error. Object:
+    	{}
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.simulateTransaction (src/thor-client/transactions/transactions-module.ts:708:17)
+      at TransactionsModule.estimateGas (src/thor-client/transactions/transactions-module.ts:886:29)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:506:21)
+      at testTraceContractCall (tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+      at Object.<anonymous> (tests/thor-client/debug/DebugModule.solo.test.ts:481:32)
+
+  ● DebugModule testnet tests › name = null, sender account index = 17 › ok <- traceTransactionClause
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'fetch failed'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*"
+    }
+    -Internal error: 
+    	Inner error is not an instance of Error. Object:
+    	{}
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.simulateTransaction (src/thor-client/transactions/transactions-module.ts:708:17)
+      at TransactionsModule.estimateGas (src/thor-client/transactions/transactions-module.ts:886:29)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:506:21)
+      at testTraceContractCall (tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+      at Object.<anonymous> (tests/thor-client/debug/DebugModule.solo.test.ts:481:32)
+
+Test Suites: 1 failed, 1 total
+Tests:       22 failed, 22 total
+Snapshots:   0 total
+Time:        0.735 s, estimated 1 s
+Ran all test suites matching /tests\/thor-client\/debug\/DebugModule.solo.test.ts/i.
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+error Command failed.
+Exit code: 1
+Command: /Users/andreas.frank/.nvm/versions/node/v20.19.0/bin/node
+Arguments: /Users/andreas.frank/.cache/node/corepack/v1/yarn/1.22.22/lib/cli.js test:integration --testPathPattern=tests/thor-client/debug/DebugModule.solo.test.ts
+Directory: /Users/andreas.frank/work/vechain-sdk-js/packages/network
+Output:
+
+info Visit https://yarnpkg.com/en/docs/cli/workspace for documentation about this command.

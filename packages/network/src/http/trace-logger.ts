@@ -10,7 +10,7 @@
  */
 export const isTraceEnabled = (): boolean => {
     const value = process?.env?.SDK_TRACE?.toLowerCase();
-    return value === 'true' || value === '1';
+    return true;
 };
 
 /**

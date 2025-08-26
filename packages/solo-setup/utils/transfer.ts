@@ -37,6 +37,8 @@ export const seedVET = async (accounts: TestAccount[]): Promise<string> => {
             );
             clauses.push(clause);
         }
+
+        // make chaintag dynamic see SS from 20.08
         const txBody: TransactionBody = {
             chainTag: THOR_SOLO_CHAIN_TAG,
             blockRef:
@@ -53,9 +55,13 @@ export const seedVET = async (accounts: TestAccount[]): Promise<string> => {
         const sendResult = await thorClient.transactions.sendRawTransaction(
             HexUInt.of(encodedTx).toString()
         );
+
+        console.log('Receipt in work');
         const receipt = await thorClient.transactions.waitForTransaction(
             sendResult.id
         );
+
+        console.log('receipt', receipt);
         if (receipt === null || receipt.reverted) {
             throw new Error(`Transaction ${sendResult.id} failed`);
         }

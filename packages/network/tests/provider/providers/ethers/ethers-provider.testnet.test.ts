@@ -88,6 +88,8 @@ describe('Vechain provider tests - solo', () => {
         const lastByte = blockHashBytes.slice(-2);
         const expectedChainId = `0x${lastByte}`;
 
+        // check this to fix chainId
+
         const rpcCallChainId = (await jsonRPCEthersProvider.send(
             'eth_chainId',
             []

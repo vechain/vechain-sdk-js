@@ -15,45 +15,116 @@ const TIMEOUT = 10000;
 
 const TO = Address.of('0x0000000000000000000000000000456E65726779');
 
+// --- Simple test logger (always on, no env gating) ---
+const debugNow = (): string => new Date().toISOString();
+const safeStringify = (obj: unknown): string => {
+    try {
+        return JSON.stringify(
+            obj,
+            (_k, v) => (typeof v === 'bigint' ? `${v.toString()}n` : v),
+            2
+        );
+    } catch {
+        return String(obj);
+    }
+};
+const tlog = (ctx: string, step: string, data?: unknown): void => {
+    if (data === undefined) {
+        // eslint-disable-next-line no-console
+        console.log(`[DebugTest ${debugNow()}] ${ctx} :: ${step}`);
+    } else {
+        // eslint-disable-next-line no-console
+        console.log(
+            `[DebugTest ${debugNow()}] ${ctx} :: ${step} -> ${safeStringify(data)}`
+        );
+    }
+};
+
 async function testTraceContractCall(
     thorClient: ThorClient,
     tracerName: TracerName,
-    txPromise: Promise<TransactionReceipt | null>
+    txPromise: Promise<TransactionReceipt | null>,
+    ctxLabel: string = 'traceContractCall'
 ): Promise<TraceReturnType<TracerName | undefined>> {
+    const ctx = ctxLabel;
+    tlog(ctx, 'start', { tracerName });
+    tlog(ctx, 'awaiting transaction receipt');
     const txReceipt = await txPromise;
-    return await thorClient.debug.traceContractCall(
-        {
-            target: {
-                to: TO,
-                data: HexUInt.of(transfer1VTHOClause.data)
-            },
-            options: {
-                caller: txReceipt?.gasPayer as string,
-                gasPayer: txReceipt?.gasPayer as string
-            },
-            config: {}
+    tlog(ctx, 'got transaction receipt', {
+        txID: txReceipt?.meta?.txID,
+        blockID: txReceipt?.meta?.blockID,
+        gasPayer: txReceipt?.gasPayer
+    });
+
+    const request = {
+        target: {
+            to: TO,
+            data: HexUInt.of(transfer1VTHOClause.data)
         },
-        tracerName
-    );
+        options: {
+            caller: txReceipt?.gasPayer as string,
+            gasPayer: txReceipt?.gasPayer as string
+        },
+        config: {}
+    } as const;
+
+    tlog(ctx, 'constructed traceContractCall request', request);
+
+    try {
+        tlog(ctx, 'calling thorClient.debug.traceContractCall');
+        const result = await thorClient.debug.traceContractCall(request, tracerName);
+        tlog(ctx, 'received response', result);
+        return result;
+    } catch (err) {
+        tlog(ctx, 'error thrown', {
+            name: (err as Error)?.name,
+            message: (err as Error)?.message
+        });
+        throw err;
+    }
 }
 
 async function testTransactionClause(
     thorClient: ThorClient,
     tracerName: TracerName,
-    txPromise: Promise<TransactionReceipt | null>
+    txPromise: Promise<TransactionReceipt | null>,
+    ctxLabel: string = 'traceTransactionClause'
 ): Promise<TraceReturnType<TracerName | undefined>> {
+    const ctx = ctxLabel;
+    tlog(ctx, 'start', { tracerName });
+    tlog(ctx, 'awaiting transaction receipt');
     const txReceipt = await txPromise;
-    return await thorClient.debug.traceTransactionClause(
-        {
-            target: {
-                blockId: BlockId.of(txReceipt?.meta.blockID as string),
-                transaction: BlockId.of(txReceipt?.meta.txID as string),
-                clauseIndex: 0
-            },
-            config: {}
+    tlog(ctx, 'got transaction receipt', {
+        txID: txReceipt?.meta?.txID,
+        blockID: txReceipt?.meta?.blockID
+    });
+
+    const request = {
+        target: {
+            blockId: BlockId.of(txReceipt?.meta.blockID as string),
+            transaction: BlockId.of(txReceipt?.meta.txID as string),
+            clauseIndex: 0
         },
-        tracerName
-    );
+        config: {}
+    } as const;
+
+    tlog(ctx, 'constructed traceTransactionClause request', request);
+
+    try {
+        tlog(ctx, 'calling thorClient.debug.traceTransactionClause');
+        const result = await thorClient.debug.traceTransactionClause(
+            request,
+            tracerName
+        );
+        tlog(ctx, 'received response', result);
+        return result;
+    } catch (err) {
+        tlog(ctx, 'error thrown', {
+            name: (err as Error)?.name,
+            message: (err as Error)?.message
+        });
+        throw err;
+    }
 }
 
 /**

@@ -8,6 +8,36 @@ import {
 } from '../transactions/fixture';
 import { HexUInt, BlockId, Transaction } from '@vechain/sdk-core';
 import { type ThorSoloAccount } from '@vechain/sdk-solo-setup';
+// Test fixture logging utilities (isolated from SDK logging)
+const ts = () => new Date().toISOString();
+const safeStringify = (v: any) => {
+    const seen = new Set<any>();
+    try {
+        return JSON.stringify(
+            v,
+            (_k, value) => {
+                if (typeof value === 'bigint') return value.toString();
+                if (typeof value === 'object' && value !== null) {
+                    if (seen.has(value)) return '[Circular]';
+                    seen.add(value);
+                }
+                return value;
+            },
+            2
+        );
+    } catch {
+        return String(v);
+    }
+};
+const flog = (ctx: string, msg: string, data?: unknown) => {
+    if (data !== undefined) {
+        // eslint-disable-next-line no-console
+        console.log(`[DebugFixture ${ts()}] [${ctx}] ${msg}:`, safeStringify(data));
+    } else {
+        // eslint-disable-next-line no-console
+        console.log(`[DebugFixture ${ts()}] [${ctx}] ${msg}`);
+    }
+};
 /**
  * Debug traceTransactionClause tests fixture testnet
  *
@@ -460,27 +490,94 @@ const retrieveStorageRangeTestnetFixture = {
  */
 const sendTransactionWithAccount = async (
     account: ThorSoloAccount,
-    thorClient: ThorClient
+    thorClient: ThorClient,
+    ctxLabel: string = 'sendTransactionWithAccount'
 ): Promise<TransactionReceipt | null> => {
-    // Estimate the gas required for the transfer transaction
-    const gasResult = await thorClient.transactions.estimateGas(
-        [transfer1VTHOClause],
-        account.address
-    );
+    const ctx = ctxLabel;
 
-    // Create the signed transfer transaction
-    const tx = Transaction.of({
-        ...transferTransactionBodyValueAsNumber,
-        gas: gasResult.totalGas,
-        nonce: transactionNonces
-            .sendTransactionWithANumberAsValueInTransactionBody[0]
-    }).sign(HexUInt.of(account.privateKey).bytes);
+    flog(ctx, 'start', { account: { address: account.address } });
+    flog(ctx, 'transfer1VTHOClause', transfer1VTHOClause);
+    flog(ctx, 'transferTransactionBodyValueAsNumber', transferTransactionBodyValueAsNumber);
 
-    // Send the transaction and obtain the transaction ID
-    const sendTransactionResult = await thorClient.transactions.sendTransaction(tx);
+    // Estimate gas
+    let gasResult: any;
+    try {
+        flog(ctx, 'estimating gas', { from: account.address });
+        gasResult = await thorClient.transactions.estimateGas(
+            [transfer1VTHOClause],
+            account.address
+        );
+        flog(ctx, 'estimated gas result', gasResult);
+    } catch (err) {
+        flog(ctx, 'estimateGas error', {
+            name: (err as Error)?.name,
+            message: (err as Error)?.message
+        });
+        throw err;
+    }
 
-    // Wait for the transaction to be included in a block
-    return await sendTransactionResult.wait();
+    // Construct and sign transaction
+    let tx: any;
+    try {
+        const nonce = transactionNonces
+            .sendTransactionWithANumberAsValueInTransactionBody[0];
+        flog(ctx, 'constructing transaction', {
+            nonce,
+            gas: gasResult?.totalGas
+        });
+        tx = Transaction.of({
+            ...transferTransactionBodyValueAsNumber,
+            gas: gasResult.totalGas,
+            nonce
+        }).sign(HexUInt.of(account.privateKey).bytes);
+        flog(ctx, 'transaction constructed and signed', {
+            clauses: (transferTransactionBodyValueAsNumber?.clauses as any[])?.length,
+            gas: gasResult?.totalGas,
+            nonce
+        });
+    } catch (err) {
+        flog(ctx, 'transaction construction/signing error', {
+            name: (err as Error)?.name,
+            message: (err as Error)?.message
+        });
+        throw err;
+    }
+
+    // Send transaction
+    let sendTransactionResult: any;
+    try {
+        flog(ctx, 'sending transaction');
+        sendTransactionResult = await thorClient.transactions.sendTransaction(tx);
+        flog(ctx, 'sendTransaction result', sendTransactionResult);
+    } catch (err) {
+        const e = err as any;
+        flog(ctx, 'sendTransaction error', {
+            name: e?.name,
+            message: e?.message,
+            status: e?.status || e?.statusCode,
+            method: e?.parameters?.method,
+            url: e?.parameters?.url
+        });
+        throw err;
+    }
+
+    // Wait for inclusion
+    try {
+        flog(ctx, 'waiting for transaction to be included');
+        const receipt = await sendTransactionResult.wait();
+        flog(ctx, 'got receipt', {
+            txID: receipt?.meta?.txID,
+            blockID: receipt?.meta?.blockID,
+            gasPayer: (receipt as any)?.gasPayer
+        });
+        return receipt;
+    } catch (err) {
+        flog(ctx, 'wait() error', {
+            name: (err as Error)?.name,
+            message: (err as Error)?.message
+        });
+        throw err;
+    }
 };
 
 export {

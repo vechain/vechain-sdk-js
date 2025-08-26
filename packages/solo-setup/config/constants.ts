@@ -1,4 +1,4 @@
-export const THOR_SOLO_CHAIN_TAG = 0xb3;
+export const THOR_SOLO_CHAIN_TAG = 0x64; // check this with localhost:8669 swagger try block 0 and last 2 bytes of id
 export const THOR_SOLO_SEEDED_VET_AMOUNT = 10000;
 export const THOR_SOLO_SEEDED_VTHO_AMOUNT = 10000;
 export const THOR_SOLO_SEEDED_TEST_TOKEN_AMOUNT = 10000;

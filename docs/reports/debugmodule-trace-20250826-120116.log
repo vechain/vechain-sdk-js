@@ -1,0 +1,4981 @@
+yarn run v1.22.22
+$ yarn workspace @vechain/sdk-solo-setup solo-down
+$ make solo-down
+docker compose -f ./docker-compose.solo.yml down
+Done in 0.53s.
+yarn run v1.22.22
+$ yarn workspace @vechain/sdk-solo-setup solo-up
+$ make solo-up
+mkdir -p logs data
+docker compose -f ./docker-compose.solo.yml up -d
+ Network solo-setup_default  Creating
+ Network solo-setup_default  Created
+ Container thor-solo  Creating
+ Container thor-solo  Created
+ Container thor-solo  Starting
+ Container thor-solo  Started
+Done in 0.55s.
+yarn run v1.22.22
+$ yarn workspace @vechain/sdk-solo-setup solo-seed
+$ yarn build && yarn deploy-solo
+$ rm -rf ./dist && tsup-node index.ts --dts --format cjs,esm --outDir dist && npx tsup-node scripts/deploy.ts --format cjs,esm --outDir dist
+CLI Building entry: index.ts
+CLI Using tsconfig: tsconfig.json
+CLI tsup v8.5.0
+CLI Using tsup config: /Users/andreas.frank/work/vechain-sdk-js/tsup.config.ts
+CLI Target: es2022
+CJS Build start
+ESM Build start
+CJS dist/index.js     10.21 KB
+CJS dist/index.js.map 22.62 KB
+CJS ⚡️ Build success in 40ms
+ESM dist/index.mjs     9.95 KB
+ESM dist/index.mjs.map 22.62 KB
+ESM ⚡️ Build success in 40ms
+DTS Build start
+DTS ⚡️ Build success in 512ms
+DTS dist/index.d.ts  2.58 KB
+DTS dist/index.d.mts 2.58 KB
+npm warn Unknown env config "version-git-tag". This will stop working in the next major version of npm.
+npm warn Unknown env config "argv". This will stop working in the next major version of npm.
+npm warn Unknown env config "version-commit-hooks". This will stop working in the next major version of npm.
+npm warn Unknown env config "version-git-message". This will stop working in the next major version of npm.
+npm warn Unknown env config "version-tag-prefix". This will stop working in the next major version of npm.
+CLI Building entry: scripts/deploy.ts
+CLI Using tsconfig: tsconfig.json
+CLI tsup v8.5.0
+CLI Using tsup config: /Users/andreas.frank/work/vechain-sdk-js/tsup.config.ts
+CLI Target: es2022
+CJS Build start
+ESM Build start
+ESM dist/deploy.mjs     12.75 KB
+ESM dist/deploy.mjs.map 37.41 KB
+ESM ⚡️ Build success in 62ms
+CJS dist/deploy.js     13.12 KB
+CJS dist/deploy.js.map 37.42 KB
+CJS ⚡️ Build success in 62ms
+$ npx hardhat run dist/deploy.js --network vechain_solo
+npm warn Unknown env config "version-git-tag". This will stop working in the next major version of npm.
+npm warn Unknown env config "argv". This will stop working in the next major version of npm.
+npm warn Unknown env config "version-commit-hooks". This will stop working in the next major version of npm.
+npm warn Unknown env config "version-git-message". This will stop working in the next major version of npm.
+npm warn Unknown env config "version-tag-prefix". This will stop working in the next major version of npm.
+networkConfig undefined
+networkConfig undefined
+TestingContract deployed with address: 0xacf6e6d1d44cb4110d343de0b29c445e50da5868
+TestingToken deployed with address: 0x14b0bb0f25b90fc1e99d82fa3c3982cf9e5ac2ef
+Error seeding VET Method 'HttpClient.http()' failed.
+-Reason: 'HTTP 400 Bad Request'
+-Parameters: 
+	{
+  "method": "POST",
+  "url": "http://localhost:8669/transactions"
+}
+-Internal error: 
+	HTTP 400 Bad Request
+Thor solo network might not be running. Skipping network operations.
+Run with a live Thor solo network using solo-seed command for complete setup.
+Done in 3.16s.
+yarn workspace v1.22.22
+yarn run v1.22.22
+$ /Users/andreas.frank/work/vechain-sdk-js/node_modules/.bin/jest --runInBand --verbose --detectOpenHandles --coverage=false tests/thor-client/debug/DebugModule.solo.test.ts
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.896Z] [sendTransactionWithAccount] start: {
+      "account": {
+        "address": "0x062f167a905c1484de7e75b88edc7439f82117de"
+      }
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.908Z] [sendTransactionWithAccount] transfer1VTHOClause: {
+      "to": "0x0000000000000000000000000000456e65726779",
+      "value": "0",
+      "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.908Z] [sendTransactionWithAccount] transferTransactionBodyValueAsNumber: {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "value": 0,
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+        }
+      ],
+      "chainTag": 246,
+      "blockRef": "0x00000000c05a20fb",
+      "expiration": 1000,
+      "gasPriceCoef": 128,
+      "dependsOn": null
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.909Z] [sendTransactionWithAccount] estimating gas: {
+      "from": "0x062f167a905c1484de7e75b88edc7439f82117de"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.910Z] [sendTransactionWithAccount] start: {
+      "account": {
+        "address": "0x3e3d79163b08502a086213cd09660721740443d7"
+      }
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.911Z] [sendTransactionWithAccount] transfer1VTHOClause: {
+      "to": "0x0000000000000000000000000000456e65726779",
+      "value": "0",
+      "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.911Z] [sendTransactionWithAccount] transferTransactionBodyValueAsNumber: {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "value": 0,
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+        }
+      ],
+      "chainTag": 246,
+      "blockRef": "0x00000000c05a20fb",
+      "expiration": 1000,
+      "gasPriceCoef": 128,
+      "dependsOn": null
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.911Z] [sendTransactionWithAccount] estimating gas: {
+      "from": "0x3e3d79163b08502a086213cd09660721740443d7"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.911Z] [sendTransactionWithAccount] start: {
+      "account": {
+        "address": "0x982E6C08c767ca7dD6216738E6A25413c341f976"
+      }
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.912Z] [sendTransactionWithAccount] transfer1VTHOClause: {
+      "to": "0x0000000000000000000000000000456e65726779",
+      "value": "0",
+      "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.912Z] [sendTransactionWithAccount] transferTransactionBodyValueAsNumber: {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "value": 0,
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+        }
+      ],
+      "chainTag": 246,
+      "blockRef": "0x00000000c05a20fb",
+      "expiration": 1000,
+      "gasPriceCoef": 128,
+      "dependsOn": null
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.912Z] [sendTransactionWithAccount] estimating gas: {
+      "from": "0x982E6C08c767ca7dD6216738E6A25413c341f976"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.913Z] [sendTransactionWithAccount] start: {
+      "account": {
+        "address": "0x74284087E9b0953b453FDced661ac37F51E53Fe2"
+      }
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.913Z] [sendTransactionWithAccount] transfer1VTHOClause: {
+      "to": "0x0000000000000000000000000000456e65726779",
+      "value": "0",
+      "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.913Z] [sendTransactionWithAccount] transferTransactionBodyValueAsNumber: {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "value": 0,
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+        }
+      ],
+      "chainTag": 246,
+      "blockRef": "0x00000000c05a20fb",
+      "expiration": 1000,
+      "gasPriceCoef": 128,
+      "dependsOn": null
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.913Z] [sendTransactionWithAccount] estimating gas: {
+      "from": "0x74284087E9b0953b453FDced661ac37F51E53Fe2"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.914Z] [sendTransactionWithAccount] start: {
+      "account": {
+        "address": "0x0DcC42dfEd29218713aF324241D848a7520dbc21"
+      }
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.914Z] [sendTransactionWithAccount] transfer1VTHOClause: {
+      "to": "0x0000000000000000000000000000456e65726779",
+      "value": "0",
+      "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.914Z] [sendTransactionWithAccount] transferTransactionBodyValueAsNumber: {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "value": 0,
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+        }
+      ],
+      "chainTag": 246,
+      "blockRef": "0x00000000c05a20fb",
+      "expiration": 1000,
+      "gasPriceCoef": 128,
+      "dependsOn": null
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.915Z] [sendTransactionWithAccount] estimating gas: {
+      "from": "0x0DcC42dfEd29218713aF324241D848a7520dbc21"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.915Z] [sendTransactionWithAccount] start: {
+      "account": {
+        "address": "0x17906B53a9b987bFf4f7237903B265Cb1AAcb730"
+      }
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.915Z] [sendTransactionWithAccount] transfer1VTHOClause: {
+      "to": "0x0000000000000000000000000000456e65726779",
+      "value": "0",
+      "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.915Z] [sendTransactionWithAccount] transferTransactionBodyValueAsNumber: {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "value": 0,
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+        }
+      ],
+      "chainTag": 246,
+      "blockRef": "0x00000000c05a20fb",
+      "expiration": 1000,
+      "gasPriceCoef": 128,
+      "dependsOn": null
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.916Z] [sendTransactionWithAccount] estimating gas: {
+      "from": "0x17906B53a9b987bFf4f7237903B265Cb1AAcb730"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.916Z] [sendTransactionWithAccount] start: {
+      "account": {
+        "address": "0xd95aEf7F16225735F2828bbC66E94FAcDF2497A6"
+      }
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.916Z] [sendTransactionWithAccount] transfer1VTHOClause: {
+      "to": "0x0000000000000000000000000000456e65726779",
+      "value": "0",
+      "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.916Z] [sendTransactionWithAccount] transferTransactionBodyValueAsNumber: {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "value": 0,
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+        }
+      ],
+      "chainTag": 246,
+      "blockRef": "0x00000000c05a20fb",
+      "expiration": 1000,
+      "gasPriceCoef": 128,
+      "dependsOn": null
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.916Z] [sendTransactionWithAccount] estimating gas: {
+      "from": "0xd95aEf7F16225735F2828bbC66E94FAcDF2497A6"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.917Z] [sendTransactionWithAccount] start: {
+      "account": {
+        "address": "0x60b406d7186c497D6a5cE31EdC478343878F754e"
+      }
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.917Z] [sendTransactionWithAccount] transfer1VTHOClause: {
+      "to": "0x0000000000000000000000000000456e65726779",
+      "value": "0",
+      "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.917Z] [sendTransactionWithAccount] transferTransactionBodyValueAsNumber: {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "value": 0,
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+        }
+      ],
+      "chainTag": 246,
+      "blockRef": "0x00000000c05a20fb",
+      "expiration": 1000,
+      "gasPriceCoef": 128,
+      "dependsOn": null
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.917Z] [sendTransactionWithAccount] estimating gas: {
+      "from": "0x60b406d7186c497D6a5cE31EdC478343878F754e"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.918Z] [sendTransactionWithAccount] start: {
+      "account": {
+        "address": "0xFE3B5E9b0A1f138ba5cD8eC3E680377b87D9EDec"
+      }
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.918Z] [sendTransactionWithAccount] transfer1VTHOClause: {
+      "to": "0x0000000000000000000000000000456e65726779",
+      "value": "0",
+      "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.918Z] [sendTransactionWithAccount] transferTransactionBodyValueAsNumber: {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "value": 0,
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+        }
+      ],
+      "chainTag": 246,
+      "blockRef": "0x00000000c05a20fb",
+      "expiration": 1000,
+      "gasPriceCoef": 128,
+      "dependsOn": null
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.918Z] [sendTransactionWithAccount] estimating gas: {
+      "from": "0xFE3B5E9b0A1f138ba5cD8eC3E680377b87D9EDec"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.919Z] [sendTransactionWithAccount] start: {
+      "account": {
+        "address": "0xa246E66bb325DD2A44A0e91ecF666e09b71279fB"
+      }
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.919Z] [sendTransactionWithAccount] transfer1VTHOClause: {
+      "to": "0x0000000000000000000000000000456e65726779",
+      "value": "0",
+      "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.919Z] [sendTransactionWithAccount] transferTransactionBodyValueAsNumber: {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "value": 0,
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+        }
+      ],
+      "chainTag": 246,
+      "blockRef": "0x00000000c05a20fb",
+      "expiration": 1000,
+      "gasPriceCoef": 128,
+      "dependsOn": null
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.919Z] [sendTransactionWithAccount] estimating gas: {
+      "from": "0xa246E66bb325DD2A44A0e91ecF666e09b71279fB"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.920Z] [sendTransactionWithAccount] start: {
+      "account": {
+        "address": "0x31C547C920015D8beE16E268bB68544f504078B9"
+      }
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.920Z] [sendTransactionWithAccount] transfer1VTHOClause: {
+      "to": "0x0000000000000000000000000000456e65726779",
+      "value": "0",
+      "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.920Z] [sendTransactionWithAccount] transferTransactionBodyValueAsNumber: {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "value": 0,
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000"
+        }
+      ],
+      "chainTag": 246,
+      "blockRef": "0x00000000c05a20fb",
+      "expiration": 1000,
+      "gasPriceCoef": 128,
+      "dependsOn": null
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.920Z] [sendTransactionWithAccount] estimating gas: {
+      "from": "0x31C547C920015D8beE16E268bB68544f504078B9"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:01:21.924Z)
+
+      at logRequest (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "requestHeaders": {},
+      "requestBody": {
+        "clauses": [
+          {
+            "to": "0x0000000000000000000000000000456e65726779",
+            "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "value": "0"
+          }
+        ],
+        "caller": "0x062f167a905c1484de7e75b88edc7439f82117de"
+      },
+      "timestamp": 1756198881924
+    }
+
+      at logRequest (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at logRequest (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+          "value": "0"
+        }
+      ],
+      "caller": "0x062f167a905c1484de7e75b88edc7439f82117de"
+    }
+
+      at logRequest (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:01:21.928Z)
+
+      at logRequest (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "requestHeaders": {},
+      "requestBody": {
+        "clauses": [
+          {
+            "to": "0x0000000000000000000000000000456e65726779",
+            "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "value": "0"
+          }
+        ],
+        "caller": "0x3e3d79163b08502a086213cd09660721740443d7"
+      },
+      "timestamp": 1756198881928
+    }
+
+      at logRequest (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at logRequest (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+          "value": "0"
+        }
+      ],
+      "caller": "0x3e3d79163b08502a086213cd09660721740443d7"
+    }
+
+      at logRequest (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:01:21.929Z)
+
+      at logRequest (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "requestHeaders": {},
+      "requestBody": {
+        "clauses": [
+          {
+            "to": "0x0000000000000000000000000000456e65726779",
+            "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "value": "0"
+          }
+        ],
+        "caller": "0x982E6C08c767ca7dD6216738E6A25413c341f976"
+      },
+      "timestamp": 1756198881929
+    }
+
+      at logRequest (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at logRequest (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+          "value": "0"
+        }
+      ],
+      "caller": "0x982E6C08c767ca7dD6216738E6A25413c341f976"
+    }
+
+      at logRequest (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:01:21.930Z)
+
+      at logRequest (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "requestHeaders": {},
+      "requestBody": {
+        "clauses": [
+          {
+            "to": "0x0000000000000000000000000000456e65726779",
+            "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "value": "0"
+          }
+        ],
+        "caller": "0x74284087E9b0953b453FDced661ac37F51E53Fe2"
+      },
+      "timestamp": 1756198881930
+    }
+
+      at logRequest (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at logRequest (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+          "value": "0"
+        }
+      ],
+      "caller": "0x74284087E9b0953b453FDced661ac37F51E53Fe2"
+    }
+
+      at logRequest (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:01:21.931Z)
+
+      at logRequest (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "requestHeaders": {},
+      "requestBody": {
+        "clauses": [
+          {
+            "to": "0x0000000000000000000000000000456e65726779",
+            "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "value": "0"
+          }
+        ],
+        "caller": "0x0DcC42dfEd29218713aF324241D848a7520dbc21"
+      },
+      "timestamp": 1756198881931
+    }
+
+      at logRequest (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at logRequest (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+          "value": "0"
+        }
+      ],
+      "caller": "0x0DcC42dfEd29218713aF324241D848a7520dbc21"
+    }
+
+      at logRequest (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:01:21.932Z)
+
+      at logRequest (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "requestHeaders": {},
+      "requestBody": {
+        "clauses": [
+          {
+            "to": "0x0000000000000000000000000000456e65726779",
+            "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "value": "0"
+          }
+        ],
+        "caller": "0x17906B53a9b987bFf4f7237903B265Cb1AAcb730"
+      },
+      "timestamp": 1756198881932
+    }
+
+      at logRequest (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at logRequest (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+          "value": "0"
+        }
+      ],
+      "caller": "0x17906B53a9b987bFf4f7237903B265Cb1AAcb730"
+    }
+
+      at logRequest (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:01:21.933Z)
+
+      at logRequest (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "requestHeaders": {},
+      "requestBody": {
+        "clauses": [
+          {
+            "to": "0x0000000000000000000000000000456e65726779",
+            "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "value": "0"
+          }
+        ],
+        "caller": "0xd95aEf7F16225735F2828bbC66E94FAcDF2497A6"
+      },
+      "timestamp": 1756198881933
+    }
+
+      at logRequest (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at logRequest (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+          "value": "0"
+        }
+      ],
+      "caller": "0xd95aEf7F16225735F2828bbC66E94FAcDF2497A6"
+    }
+
+      at logRequest (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:01:21.933Z)
+
+      at logRequest (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "requestHeaders": {},
+      "requestBody": {
+        "clauses": [
+          {
+            "to": "0x0000000000000000000000000000456e65726779",
+            "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "value": "0"
+          }
+        ],
+        "caller": "0x60b406d7186c497D6a5cE31EdC478343878F754e"
+      },
+      "timestamp": 1756198881933
+    }
+
+      at logRequest (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at logRequest (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+          "value": "0"
+        }
+      ],
+      "caller": "0x60b406d7186c497D6a5cE31EdC478343878F754e"
+    }
+
+      at logRequest (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:01:21.934Z)
+
+      at logRequest (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "requestHeaders": {},
+      "requestBody": {
+        "clauses": [
+          {
+            "to": "0x0000000000000000000000000000456e65726779",
+            "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "value": "0"
+          }
+        ],
+        "caller": "0xFE3B5E9b0A1f138ba5cD8eC3E680377b87D9EDec"
+      },
+      "timestamp": 1756198881934
+    }
+
+      at logRequest (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at logRequest (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+          "value": "0"
+        }
+      ],
+      "caller": "0xFE3B5E9b0A1f138ba5cD8eC3E680377b87D9EDec"
+    }
+
+      at logRequest (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:01:21.936Z)
+
+      at logRequest (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "requestHeaders": {},
+      "requestBody": {
+        "clauses": [
+          {
+            "to": "0x0000000000000000000000000000456e65726779",
+            "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "value": "0"
+          }
+        ],
+        "caller": "0xa246E66bb325DD2A44A0e91ecF666e09b71279fB"
+      },
+      "timestamp": 1756198881936
+    }
+
+      at logRequest (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at logRequest (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+          "value": "0"
+        }
+      ],
+      "caller": "0xa246E66bb325DD2A44A0e91ecF666e09b71279fB"
+    }
+
+      at logRequest (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:01:21.937Z)
+
+      at logRequest (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "requestHeaders": {},
+      "requestBody": {
+        "clauses": [
+          {
+            "to": "0x0000000000000000000000000000456e65726779",
+            "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "value": "0"
+          }
+        ],
+        "caller": "0x31C547C920015D8beE16E268bB68544f504078B9"
+      },
+      "timestamp": 1756198881937
+    }
+
+      at logRequest (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at logRequest (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "clauses": [
+        {
+          "to": "0x0000000000000000000000000000456e65726779",
+          "data": "0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+          "value": "0"
+        }
+      ],
+      "caller": "0x31C547C920015D8beE16E268bB68544f504078B9"
+    }
+
+      at logRequest (src/http/trace-logger.ts:70:21)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:21.944Z] traceContractCall :: start -> {
+      "tracerName": ""
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:21.944Z] traceContractCall :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Response (2025-08-26T09:01:21.975Z)
+
+      at logResponse (src/http/trace-logger.ts:106:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Response",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "responseHeaders": {
+        "content-encoding": "gzip",
+        "content-length": "168",
+        "content-type": "application/json; charset=utf-8",
+        "date": "Tue, 26 Aug 2025 09:01:21 GMT",
+        "vary": "Accept-Encoding",
+        "x-genesis-id": "0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57",
+        "x-thorest-ver": "2.3.1"
+      },
+      "responseBody": [
+        {
+          "data": "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001d6275696c74696e3a20696e73756666696369656e742062616c616e6365000000",
+          "events": [],
+          "transfers": [],
+          "gasUsed": 1071,
+          "reverted": true,
+          "vmError": "execution reverted"
+        }
+      ],
+      "timestamp": 1756198881975,
+      "duration": 45
+    }
+
+      at logResponse (src/http/trace-logger.ts:109:13)
+
+  console.log
+    ⬅️ http://127.0.0.1:8669/accounts/* (45ms)
+
+      at logResponse (src/http/trace-logger.ts:110:13)
+
+  console.log
+    📋 Headers:
+
+      at logResponse (src/http/trace-logger.ts:113:17)
+
+  console.log
+       content-encoding: gzip
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       content-length: 168
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       content-type: application/json; charset=utf-8
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       date: Tue, 26 Aug 2025 09:01:21 GMT
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       vary: Accept-Encoding
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       x-genesis-id: 0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       x-thorest-ver: 2.3.1
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+    📦 Body:
+
+      at logResponse (src/http/trace-logger.ts:120:17)
+
+  console.log
+    [
+      {
+        "data": "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001d6275696c74696e3a20696e73756666696369656e742062616c616e6365000000",
+        "events": [],
+        "transfers": [],
+        "gasUsed": 1071,
+        "reverted": true,
+        "vmError": "execution reverted"
+      }
+    ]
+
+      at logResponse (src/http/trace-logger.ts:122:21)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.978Z] [sendTransactionWithAccount] estimated gas result: {
+      "totalGas": 39263,
+      "reverted": true,
+      "revertReasons": [
+        "builtin: insufficient balance"
+      ],
+      "vmErrors": [
+        "execution reverted"
+      ]
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.978Z] [sendTransactionWithAccount] constructing transaction: {
+      "nonce": 10000004,
+      "gas": 39263
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.995Z] [sendTransactionWithAccount] transaction constructed and signed: {
+      "clauses": 1,
+      "gas": 39263,
+      "nonce": 10000004
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:21.995Z] [sendTransactionWithAccount] sending transaction
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:38:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:01:21.996Z)
+
+      at logRequest (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions",
+      "requestHeaders": {},
+      "requestBody": {
+        "raw": "0xf8b881f684c05a20fb8203e8f85ef85c940000000000000000000000000000456e6572677980b844a9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000818082995f8083989684c0b841c297ee69436e6a4455ea9cecb5a52a6ca1e266e7ffee555890a24b00b9d5c00033dc346cccf751ab7602c404b12d9b50092c7c0d647102d1ae0d77de32b042ae00"
+      },
+      "timestamp": 1756198881996
+    }
+
+      at logRequest (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at logRequest (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "raw": "0xf8b881f684c05a20fb8203e8f85ef85c940000000000000000000000000000456e6572677980b844a9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000818082995f8083989684c0b841c297ee69436e6a4455ea9cecb5a52a6ca1e266e7ffee555890a24b00b9d5c00033dc346cccf751ab7602c404b12d9b50092c7c0d647102d1ae0d77de32b042ae00"
+    }
+
+      at logRequest (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Response (2025-08-26T09:01:21.998Z)
+
+      at logResponse (src/http/trace-logger.ts:106:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Response",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "responseHeaders": {
+        "content-encoding": "gzip",
+        "content-length": "168",
+        "content-type": "application/json; charset=utf-8",
+        "date": "Tue, 26 Aug 2025 09:01:21 GMT",
+        "vary": "Accept-Encoding",
+        "x-genesis-id": "0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57",
+        "x-thorest-ver": "2.3.1"
+      },
+      "responseBody": [
+        {
+          "data": "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001d6275696c74696e3a20696e73756666696369656e742062616c616e6365000000",
+          "events": [],
+          "transfers": [],
+          "gasUsed": 1071,
+          "reverted": true,
+          "vmError": "execution reverted"
+        }
+      ],
+      "timestamp": 1756198881998,
+      "duration": 65
+    }
+
+      at logResponse (src/http/trace-logger.ts:109:13)
+
+  console.log
+    ⬅️ http://127.0.0.1:8669/accounts/* (65ms)
+
+      at logResponse (src/http/trace-logger.ts:110:13)
+
+  console.log
+    📋 Headers:
+
+      at logResponse (src/http/trace-logger.ts:113:17)
+
+  console.log
+       content-encoding: gzip
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       content-length: 168
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       content-type: application/json; charset=utf-8
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       date: Tue, 26 Aug 2025 09:01:21 GMT
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       vary: Accept-Encoding
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       x-genesis-id: 0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       x-thorest-ver: 2.3.1
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+    📦 Body:
+
+      at logResponse (src/http/trace-logger.ts:120:17)
+
+  console.log
+    [
+      {
+        "data": "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001d6275696c74696e3a20696e73756666696369656e742062616c616e6365000000",
+        "events": [],
+        "transfers": [],
+        "gasUsed": 1071,
+        "reverted": true,
+        "vmError": "execution reverted"
+      }
+    ]
+
+      at logResponse (src/http/trace-logger.ts:122:21)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.000Z] [sendTransactionWithAccount] estimated gas result: {
+      "totalGas": 39263,
+      "reverted": true,
+      "revertReasons": [
+        "builtin: insufficient balance"
+      ],
+      "vmErrors": [
+        "execution reverted"
+      ]
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.000Z] [sendTransactionWithAccount] constructing transaction: {
+      "nonce": 10000004,
+      "gas": 39263
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.001Z] [sendTransactionWithAccount] transaction constructed and signed: {
+      "clauses": 1,
+      "gas": 39263,
+      "nonce": 10000004
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.001Z] [sendTransactionWithAccount] sending transaction
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:38:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:01:22.002Z)
+
+      at logRequest (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions",
+      "requestHeaders": {},
+      "requestBody": {
+        "raw": "0xf8b881f684c05a20fb8203e8f85ef85c940000000000000000000000000000456e6572677980b844a9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000818082995f8083989684c0b841d9d8e7d25b6c197a0bd231d402f34aee3bcacf10a64528e513348fd3fa60ebb7725f889824cdc7520857a151d700ea414949a1cc2e5a59c3ccba9ac7e27946ed01"
+      },
+      "timestamp": 1756198882002
+    }
+
+      at logRequest (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at logRequest (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "raw": "0xf8b881f684c05a20fb8203e8f85ef85c940000000000000000000000000000456e6572677980b844a9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000818082995f8083989684c0b841d9d8e7d25b6c197a0bd231d402f34aee3bcacf10a64528e513348fd3fa60ebb7725f889824cdc7520857a151d700ea414949a1cc2e5a59c3ccba9ac7e27946ed01"
+    }
+
+      at logRequest (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Response (2025-08-26T09:01:22.004Z)
+
+      at logResponse (src/http/trace-logger.ts:106:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Response",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "responseHeaders": {
+        "content-encoding": "gzip",
+        "content-length": "168",
+        "content-type": "application/json; charset=utf-8",
+        "date": "Tue, 26 Aug 2025 09:01:21 GMT",
+        "vary": "Accept-Encoding",
+        "x-genesis-id": "0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57",
+        "x-thorest-ver": "2.3.1"
+      },
+      "responseBody": [
+        {
+          "data": "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001d6275696c74696e3a20696e73756666696369656e742062616c616e6365000000",
+          "events": [],
+          "transfers": [],
+          "gasUsed": 1071,
+          "reverted": true,
+          "vmError": "execution reverted"
+        }
+      ],
+      "timestamp": 1756198882004,
+      "duration": 76
+    }
+
+      at logResponse (src/http/trace-logger.ts:109:13)
+
+  console.log
+    ⬅️ http://127.0.0.1:8669/accounts/* (76ms)
+
+      at logResponse (src/http/trace-logger.ts:110:13)
+
+  console.log
+    📋 Headers:
+
+      at logResponse (src/http/trace-logger.ts:113:17)
+
+  console.log
+       content-encoding: gzip
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       content-length: 168
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       content-type: application/json; charset=utf-8
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       date: Tue, 26 Aug 2025 09:01:21 GMT
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       vary: Accept-Encoding
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       x-genesis-id: 0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       x-thorest-ver: 2.3.1
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+    📦 Body:
+
+      at logResponse (src/http/trace-logger.ts:120:17)
+
+  console.log
+    [
+      {
+        "data": "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001d6275696c74696e3a20696e73756666696369656e742062616c616e6365000000",
+        "events": [],
+        "transfers": [],
+        "gasUsed": 1071,
+        "reverted": true,
+        "vmError": "execution reverted"
+      }
+    ]
+
+      at logResponse (src/http/trace-logger.ts:122:21)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.005Z] [sendTransactionWithAccount] estimated gas result: {
+      "totalGas": 39263,
+      "reverted": true,
+      "revertReasons": [
+        "builtin: insufficient balance"
+      ],
+      "vmErrors": [
+        "execution reverted"
+      ]
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.005Z] [sendTransactionWithAccount] constructing transaction: {
+      "nonce": 10000004,
+      "gas": 39263
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.006Z] [sendTransactionWithAccount] transaction constructed and signed: {
+      "clauses": 1,
+      "gas": 39263,
+      "nonce": 10000004
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.006Z] [sendTransactionWithAccount] sending transaction
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:38:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:01:22.006Z)
+
+      at logRequest (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions",
+      "requestHeaders": {},
+      "requestBody": {
+        "raw": "0xf8b881f684c05a20fb8203e8f85ef85c940000000000000000000000000000456e6572677980b844a9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000818082995f8083989684c0b8419070aa9fbca14ac95a027c32a5b68269cc1eef5489b470f1e1197b119f70361653766bb0a1e3f5780d8ff2ee502f5aa26a98fa1bce2bfa6cbfdc2dd987bca7a101"
+      },
+      "timestamp": 1756198882006
+    }
+
+      at logRequest (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at logRequest (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "raw": "0xf8b881f684c05a20fb8203e8f85ef85c940000000000000000000000000000456e6572677980b844a9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000818082995f8083989684c0b8419070aa9fbca14ac95a027c32a5b68269cc1eef5489b470f1e1197b119f70361653766bb0a1e3f5780d8ff2ee502f5aa26a98fa1bce2bfa6cbfdc2dd987bca7a101"
+    }
+
+      at logRequest (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Response (2025-08-26T09:01:22.008Z)
+
+      at logResponse (src/http/trace-logger.ts:106:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Response",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "responseHeaders": {
+        "content-encoding": "gzip",
+        "content-length": "168",
+        "content-type": "application/json; charset=utf-8",
+        "date": "Tue, 26 Aug 2025 09:01:21 GMT",
+        "vary": "Accept-Encoding",
+        "x-genesis-id": "0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57",
+        "x-thorest-ver": "2.3.1"
+      },
+      "responseBody": [
+        {
+          "data": "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001d6275696c74696e3a20696e73756666696369656e742062616c616e6365000000",
+          "events": [],
+          "transfers": [],
+          "gasUsed": 1071,
+          "reverted": true,
+          "vmError": "execution reverted"
+        }
+      ],
+      "timestamp": 1756198882008,
+      "duration": 72
+    }
+
+      at logResponse (src/http/trace-logger.ts:109:13)
+
+  console.log
+    ⬅️ http://127.0.0.1:8669/accounts/* (72ms)
+
+      at logResponse (src/http/trace-logger.ts:110:13)
+
+  console.log
+    📋 Headers:
+
+      at logResponse (src/http/trace-logger.ts:113:17)
+
+  console.log
+       content-encoding: gzip
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       content-length: 168
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       content-type: application/json; charset=utf-8
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       date: Tue, 26 Aug 2025 09:01:21 GMT
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       vary: Accept-Encoding
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       x-genesis-id: 0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       x-thorest-ver: 2.3.1
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+    📦 Body:
+
+      at logResponse (src/http/trace-logger.ts:120:17)
+
+  console.log
+    [
+      {
+        "data": "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001d6275696c74696e3a20696e73756666696369656e742062616c616e6365000000",
+        "events": [],
+        "transfers": [],
+        "gasUsed": 1071,
+        "reverted": true,
+        "vmError": "execution reverted"
+      }
+    ]
+
+      at logResponse (src/http/trace-logger.ts:122:21)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.009Z] [sendTransactionWithAccount] estimated gas result: {
+      "totalGas": 39263,
+      "reverted": true,
+      "revertReasons": [
+        "builtin: insufficient balance"
+      ],
+      "vmErrors": [
+        "execution reverted"
+      ]
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.009Z] [sendTransactionWithAccount] constructing transaction: {
+      "nonce": 10000004,
+      "gas": 39263
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.010Z] [sendTransactionWithAccount] transaction constructed and signed: {
+      "clauses": 1,
+      "gas": 39263,
+      "nonce": 10000004
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.010Z] [sendTransactionWithAccount] sending transaction
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:38:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:01:22.010Z)
+
+      at logRequest (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions",
+      "requestHeaders": {},
+      "requestBody": {
+        "raw": "0xf8b881f684c05a20fb8203e8f85ef85c940000000000000000000000000000456e6572677980b844a9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000818082995f8083989684c0b84100d7914c89b9d9387a4c608fb01647b60f6e40c0fcb33f85d7e2d63b295d62e17b71b2ae04d6df333833ea871adc498356fd74aa86d69775a84d2ae60db00bc801"
+      },
+      "timestamp": 1756198882010
+    }
+
+      at logRequest (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at logRequest (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "raw": "0xf8b881f684c05a20fb8203e8f85ef85c940000000000000000000000000000456e6572677980b844a9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000818082995f8083989684c0b84100d7914c89b9d9387a4c608fb01647b60f6e40c0fcb33f85d7e2d63b295d62e17b71b2ae04d6df333833ea871adc498356fd74aa86d69775a84d2ae60db00bc801"
+    }
+
+      at logRequest (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Response (2025-08-26T09:01:22.012Z)
+
+      at logResponse (src/http/trace-logger.ts:106:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Response",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "responseHeaders": {
+        "content-encoding": "gzip",
+        "content-length": "168",
+        "content-type": "application/json; charset=utf-8",
+        "date": "Tue, 26 Aug 2025 09:01:21 GMT",
+        "vary": "Accept-Encoding",
+        "x-genesis-id": "0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57",
+        "x-thorest-ver": "2.3.1"
+      },
+      "responseBody": [
+        {
+          "data": "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001d6275696c74696e3a20696e73756666696369656e742062616c616e6365000000",
+          "events": [],
+          "transfers": [],
+          "gasUsed": 1071,
+          "reverted": true,
+          "vmError": "execution reverted"
+        }
+      ],
+      "timestamp": 1756198882012,
+      "duration": 79
+    }
+
+      at logResponse (src/http/trace-logger.ts:109:13)
+
+  console.log
+    ⬅️ http://127.0.0.1:8669/accounts/* (79ms)
+
+      at logResponse (src/http/trace-logger.ts:110:13)
+
+  console.log
+    📋 Headers:
+
+      at logResponse (src/http/trace-logger.ts:113:17)
+
+  console.log
+       content-encoding: gzip
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       content-length: 168
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       content-type: application/json; charset=utf-8
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       date: Tue, 26 Aug 2025 09:01:21 GMT
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       vary: Accept-Encoding
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       x-genesis-id: 0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       x-thorest-ver: 2.3.1
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+    📦 Body:
+
+      at logResponse (src/http/trace-logger.ts:120:17)
+
+  console.log
+    [
+      {
+        "data": "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001d6275696c74696e3a20696e73756666696369656e742062616c616e6365000000",
+        "events": [],
+        "transfers": [],
+        "gasUsed": 1071,
+        "reverted": true,
+        "vmError": "execution reverted"
+      }
+    ]
+
+      at logResponse (src/http/trace-logger.ts:122:21)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.014Z] [sendTransactionWithAccount] estimated gas result: {
+      "totalGas": 39263,
+      "reverted": true,
+      "revertReasons": [
+        "builtin: insufficient balance"
+      ],
+      "vmErrors": [
+        "execution reverted"
+      ]
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.014Z] [sendTransactionWithAccount] constructing transaction: {
+      "nonce": 10000004,
+      "gas": 39263
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.015Z] [sendTransactionWithAccount] transaction constructed and signed: {
+      "clauses": 1,
+      "gas": 39263,
+      "nonce": 10000004
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.015Z] [sendTransactionWithAccount] sending transaction
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:38:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:01:22.015Z)
+
+      at logRequest (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions",
+      "requestHeaders": {},
+      "requestBody": {
+        "raw": "0xf8b881f684c05a20fb8203e8f85ef85c940000000000000000000000000000456e6572677980b844a9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000818082995f8083989684c0b84112d6f9dc2b07854bec02e4cd44fcf56d697e6163cb08ca2b54b2d4fd115eefa65268bb65243f36c25a102b5602797be7e0ebe478d6b26e85f61fe9857e18707f00"
+      },
+      "timestamp": 1756198882015
+    }
+
+      at logRequest (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at logRequest (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "raw": "0xf8b881f684c05a20fb8203e8f85ef85c940000000000000000000000000000456e6572677980b844a9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000818082995f8083989684c0b84112d6f9dc2b07854bec02e4cd44fcf56d697e6163cb08ca2b54b2d4fd115eefa65268bb65243f36c25a102b5602797be7e0ebe478d6b26e85f61fe9857e18707f00"
+    }
+
+      at logRequest (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Response (2025-08-26T09:01:22.017Z)
+
+      at logResponse (src/http/trace-logger.ts:106:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Response",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "responseHeaders": {
+        "content-encoding": "gzip",
+        "content-length": "168",
+        "content-type": "application/json; charset=utf-8",
+        "date": "Tue, 26 Aug 2025 09:01:21 GMT",
+        "vary": "Accept-Encoding",
+        "x-genesis-id": "0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57",
+        "x-thorest-ver": "2.3.1"
+      },
+      "responseBody": [
+        {
+          "data": "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001d6275696c74696e3a20696e73756666696369656e742062616c616e6365000000",
+          "events": [],
+          "transfers": [],
+          "gasUsed": 1071,
+          "reverted": true,
+          "vmError": "execution reverted"
+        }
+      ],
+      "timestamp": 1756198882017,
+      "duration": 93
+    }
+
+      at logResponse (src/http/trace-logger.ts:109:13)
+
+  console.log
+    ⬅️ http://127.0.0.1:8669/accounts/* (93ms)
+
+      at logResponse (src/http/trace-logger.ts:110:13)
+
+  console.log
+    📋 Headers:
+
+      at logResponse (src/http/trace-logger.ts:113:17)
+
+  console.log
+       content-encoding: gzip
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       content-length: 168
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       content-type: application/json; charset=utf-8
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       date: Tue, 26 Aug 2025 09:01:21 GMT
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       vary: Accept-Encoding
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       x-genesis-id: 0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       x-thorest-ver: 2.3.1
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+    📦 Body:
+
+      at logResponse (src/http/trace-logger.ts:120:17)
+
+  console.log
+    [
+      {
+        "data": "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001d6275696c74696e3a20696e73756666696369656e742062616c616e6365000000",
+        "events": [],
+        "transfers": [],
+        "gasUsed": 1071,
+        "reverted": true,
+        "vmError": "execution reverted"
+      }
+    ]
+
+      at logResponse (src/http/trace-logger.ts:122:21)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.019Z] [sendTransactionWithAccount] estimated gas result: {
+      "totalGas": 39263,
+      "reverted": true,
+      "revertReasons": [
+        "builtin: insufficient balance"
+      ],
+      "vmErrors": [
+        "execution reverted"
+      ]
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.019Z] [sendTransactionWithAccount] constructing transaction: {
+      "nonce": 10000004,
+      "gas": 39263
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.020Z] [sendTransactionWithAccount] transaction constructed and signed: {
+      "clauses": 1,
+      "gas": 39263,
+      "nonce": 10000004
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.020Z] [sendTransactionWithAccount] sending transaction
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:38:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:01:22.020Z)
+
+      at logRequest (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions",
+      "requestHeaders": {},
+      "requestBody": {
+        "raw": "0xf8b881f684c05a20fb8203e8f85ef85c940000000000000000000000000000456e6572677980b844a9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000818082995f8083989684c0b84187eac3524820d57a126cfd1212edefd3e2b402ac870eb1a8eb0cbfc4ca2433cf0eb8bd4f444225b6ca37770f309d2ad6b94648557f2b99e5848bedf95277c7dc01"
+      },
+      "timestamp": 1756198882020
+    }
+
+      at logRequest (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at logRequest (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "raw": "0xf8b881f684c05a20fb8203e8f85ef85c940000000000000000000000000000456e6572677980b844a9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000818082995f8083989684c0b84187eac3524820d57a126cfd1212edefd3e2b402ac870eb1a8eb0cbfc4ca2433cf0eb8bd4f444225b6ca37770f309d2ad6b94648557f2b99e5848bedf95277c7dc01"
+    }
+
+      at logRequest (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Response (2025-08-26T09:01:22.022Z)
+
+      at logResponse (src/http/trace-logger.ts:106:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Response",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "responseHeaders": {
+        "content-encoding": "gzip",
+        "content-length": "168",
+        "content-type": "application/json; charset=utf-8",
+        "date": "Tue, 26 Aug 2025 09:01:21 GMT",
+        "vary": "Accept-Encoding",
+        "x-genesis-id": "0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57",
+        "x-thorest-ver": "2.3.1"
+      },
+      "responseBody": [
+        {
+          "data": "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001d6275696c74696e3a20696e73756666696369656e742062616c616e6365000000",
+          "events": [],
+          "transfers": [],
+          "gasUsed": 1071,
+          "reverted": true,
+          "vmError": "execution reverted"
+        }
+      ],
+      "timestamp": 1756198882022,
+      "duration": 91
+    }
+
+      at logResponse (src/http/trace-logger.ts:109:13)
+
+  console.log
+    ⬅️ http://127.0.0.1:8669/accounts/* (91ms)
+
+      at logResponse (src/http/trace-logger.ts:110:13)
+
+  console.log
+    📋 Headers:
+
+      at logResponse (src/http/trace-logger.ts:113:17)
+
+  console.log
+       content-encoding: gzip
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       content-length: 168
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       content-type: application/json; charset=utf-8
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       date: Tue, 26 Aug 2025 09:01:21 GMT
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       vary: Accept-Encoding
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       x-genesis-id: 0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       x-thorest-ver: 2.3.1
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+    📦 Body:
+
+      at logResponse (src/http/trace-logger.ts:120:17)
+
+  console.log
+    [
+      {
+        "data": "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001d6275696c74696e3a20696e73756666696369656e742062616c616e6365000000",
+        "events": [],
+        "transfers": [],
+        "gasUsed": 1071,
+        "reverted": true,
+        "vmError": "execution reverted"
+      }
+    ]
+
+      at logResponse (src/http/trace-logger.ts:122:21)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.024Z] [sendTransactionWithAccount] estimated gas result: {
+      "totalGas": 39263,
+      "reverted": true,
+      "revertReasons": [
+        "builtin: insufficient balance"
+      ],
+      "vmErrors": [
+        "execution reverted"
+      ]
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.024Z] [sendTransactionWithAccount] constructing transaction: {
+      "nonce": 10000004,
+      "gas": 39263
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.024Z] [sendTransactionWithAccount] transaction constructed and signed: {
+      "clauses": 1,
+      "gas": 39263,
+      "nonce": 10000004
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.024Z] [sendTransactionWithAccount] sending transaction
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:38:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:01:22.025Z)
+
+      at logRequest (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions",
+      "requestHeaders": {},
+      "requestBody": {
+        "raw": "0xf8b881f684c05a20fb8203e8f85ef85c940000000000000000000000000000456e6572677980b844a9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000818082995f8083989684c0b841a4d84ee6bd9a3425c30c6733f50506d14fde586af0a4de7a3cb07efe13802bf54c8034d6ef7ae0a9bc3d9a254a69417011e95acad0a560664a0f67e9dbde570700"
+      },
+      "timestamp": 1756198882025
+    }
+
+      at logRequest (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at logRequest (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "raw": "0xf8b881f684c05a20fb8203e8f85ef85c940000000000000000000000000000456e6572677980b844a9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000818082995f8083989684c0b841a4d84ee6bd9a3425c30c6733f50506d14fde586af0a4de7a3cb07efe13802bf54c8034d6ef7ae0a9bc3d9a254a69417011e95acad0a560664a0f67e9dbde570700"
+    }
+
+      at logRequest (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Response (2025-08-26T09:01:22.026Z)
+
+      at logResponse (src/http/trace-logger.ts:106:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Response",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "responseHeaders": {
+        "content-encoding": "gzip",
+        "content-length": "168",
+        "content-type": "application/json; charset=utf-8",
+        "date": "Tue, 26 Aug 2025 09:01:21 GMT",
+        "vary": "Accept-Encoding",
+        "x-genesis-id": "0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57",
+        "x-thorest-ver": "2.3.1"
+      },
+      "responseBody": [
+        {
+          "data": "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001d6275696c74696e3a20696e73756666696369656e742062616c616e6365000000",
+          "events": [],
+          "transfers": [],
+          "gasUsed": 1071,
+          "reverted": true,
+          "vmError": "execution reverted"
+        }
+      ],
+      "timestamp": 1756198882026,
+      "duration": 94
+    }
+
+      at logResponse (src/http/trace-logger.ts:109:13)
+
+  console.log
+    ⬅️ http://127.0.0.1:8669/accounts/* (94ms)
+
+      at logResponse (src/http/trace-logger.ts:110:13)
+
+  console.log
+    📋 Headers:
+
+      at logResponse (src/http/trace-logger.ts:113:17)
+
+  console.log
+       content-encoding: gzip
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       content-length: 168
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       content-type: application/json; charset=utf-8
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       date: Tue, 26 Aug 2025 09:01:21 GMT
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       vary: Accept-Encoding
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       x-genesis-id: 0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       x-thorest-ver: 2.3.1
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+    📦 Body:
+
+      at logResponse (src/http/trace-logger.ts:120:17)
+
+  console.log
+    [
+      {
+        "data": "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001d6275696c74696e3a20696e73756666696369656e742062616c616e6365000000",
+        "events": [],
+        "transfers": [],
+        "gasUsed": 1071,
+        "reverted": true,
+        "vmError": "execution reverted"
+      }
+    ]
+
+      at logResponse (src/http/trace-logger.ts:122:21)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.028Z] [sendTransactionWithAccount] estimated gas result: {
+      "totalGas": 39263,
+      "reverted": true,
+      "revertReasons": [
+        "builtin: insufficient balance"
+      ],
+      "vmErrors": [
+        "execution reverted"
+      ]
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.028Z] [sendTransactionWithAccount] constructing transaction: {
+      "nonce": 10000004,
+      "gas": 39263
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.029Z] [sendTransactionWithAccount] transaction constructed and signed: {
+      "clauses": 1,
+      "gas": 39263,
+      "nonce": 10000004
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.029Z] [sendTransactionWithAccount] sending transaction
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:38:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:01:22.029Z)
+
+      at logRequest (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions",
+      "requestHeaders": {},
+      "requestBody": {
+        "raw": "0xf8b881f684c05a20fb8203e8f85ef85c940000000000000000000000000000456e6572677980b844a9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000818082995f8083989684c0b84188dcd92397c843f3ce7f641e2e1f24897724be59cdf405ddf91a42dc6777b1fb08ec42cfc69a22b9d02ab6d5966a964b00dc4e370b4f92de5b88477b9cca939301"
+      },
+      "timestamp": 1756198882029
+    }
+
+      at logRequest (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at logRequest (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "raw": "0xf8b881f684c05a20fb8203e8f85ef85c940000000000000000000000000000456e6572677980b844a9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000818082995f8083989684c0b84188dcd92397c843f3ce7f641e2e1f24897724be59cdf405ddf91a42dc6777b1fb08ec42cfc69a22b9d02ab6d5966a964b00dc4e370b4f92de5b88477b9cca939301"
+    }
+
+      at logRequest (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Response (2025-08-26T09:01:22.031Z)
+
+      at logResponse (src/http/trace-logger.ts:106:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Response",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "responseHeaders": {
+        "content-encoding": "gzip",
+        "content-length": "168",
+        "content-type": "application/json; charset=utf-8",
+        "date": "Tue, 26 Aug 2025 09:01:21 GMT",
+        "vary": "Accept-Encoding",
+        "x-genesis-id": "0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57",
+        "x-thorest-ver": "2.3.1"
+      },
+      "responseBody": [
+        {
+          "data": "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001d6275696c74696e3a20696e73756666696369656e742062616c616e6365000000",
+          "events": [],
+          "transfers": [],
+          "gasUsed": 1071,
+          "reverted": true,
+          "vmError": "execution reverted"
+        }
+      ],
+      "timestamp": 1756198882031,
+      "duration": 97
+    }
+
+      at logResponse (src/http/trace-logger.ts:109:13)
+
+  console.log
+    ⬅️ http://127.0.0.1:8669/accounts/* (97ms)
+
+      at logResponse (src/http/trace-logger.ts:110:13)
+
+  console.log
+    📋 Headers:
+
+      at logResponse (src/http/trace-logger.ts:113:17)
+
+  console.log
+       content-encoding: gzip
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       content-length: 168
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       content-type: application/json; charset=utf-8
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       date: Tue, 26 Aug 2025 09:01:21 GMT
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       vary: Accept-Encoding
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       x-genesis-id: 0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       x-thorest-ver: 2.3.1
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+    📦 Body:
+
+      at logResponse (src/http/trace-logger.ts:120:17)
+
+  console.log
+    [
+      {
+        "data": "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001d6275696c74696e3a20696e73756666696369656e742062616c616e6365000000",
+        "events": [],
+        "transfers": [],
+        "gasUsed": 1071,
+        "reverted": true,
+        "vmError": "execution reverted"
+      }
+    ]
+
+      at logResponse (src/http/trace-logger.ts:122:21)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.032Z] [sendTransactionWithAccount] estimated gas result: {
+      "totalGas": 39263,
+      "reverted": true,
+      "revertReasons": [
+        "builtin: insufficient balance"
+      ],
+      "vmErrors": [
+        "execution reverted"
+      ]
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.032Z] [sendTransactionWithAccount] constructing transaction: {
+      "nonce": 10000004,
+      "gas": 39263
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.033Z] [sendTransactionWithAccount] transaction constructed and signed: {
+      "clauses": 1,
+      "gas": 39263,
+      "nonce": 10000004
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.033Z] [sendTransactionWithAccount] sending transaction
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:38:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:01:22.033Z)
+
+      at logRequest (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions",
+      "requestHeaders": {},
+      "requestBody": {
+        "raw": "0xf8b881f684c05a20fb8203e8f85ef85c940000000000000000000000000000456e6572677980b844a9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000818082995f8083989684c0b84126e5a0d33720237b86959c1cc9e42cffc698123f165e267aff535a17fa912e6470266a8d61001af27deefa3d13f442c6895badb707f46383962d1d922dae9bf701"
+      },
+      "timestamp": 1756198882033
+    }
+
+      at logRequest (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at logRequest (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "raw": "0xf8b881f684c05a20fb8203e8f85ef85c940000000000000000000000000000456e6572677980b844a9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000818082995f8083989684c0b84126e5a0d33720237b86959c1cc9e42cffc698123f165e267aff535a17fa912e6470266a8d61001af27deefa3d13f442c6895badb707f46383962d1d922dae9bf701"
+    }
+
+      at logRequest (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Response (2025-08-26T09:01:22.035Z)
+
+      at logResponse (src/http/trace-logger.ts:106:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Response",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "responseHeaders": {
+        "content-encoding": "gzip",
+        "content-length": "168",
+        "content-type": "application/json; charset=utf-8",
+        "date": "Tue, 26 Aug 2025 09:01:21 GMT",
+        "vary": "Accept-Encoding",
+        "x-genesis-id": "0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57",
+        "x-thorest-ver": "2.3.1"
+      },
+      "responseBody": [
+        {
+          "data": "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001d6275696c74696e3a20696e73756666696369656e742062616c616e6365000000",
+          "events": [],
+          "transfers": [],
+          "gasUsed": 1071,
+          "reverted": true,
+          "vmError": "execution reverted"
+        }
+      ],
+      "timestamp": 1756198882035,
+      "duration": 98
+    }
+
+      at logResponse (src/http/trace-logger.ts:109:13)
+
+  console.log
+    ⬅️ http://127.0.0.1:8669/accounts/* (98ms)
+
+      at logResponse (src/http/trace-logger.ts:110:13)
+
+  console.log
+    📋 Headers:
+
+      at logResponse (src/http/trace-logger.ts:113:17)
+
+  console.log
+       content-encoding: gzip
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       content-length: 168
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       content-type: application/json; charset=utf-8
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       date: Tue, 26 Aug 2025 09:01:21 GMT
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       vary: Accept-Encoding
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       x-genesis-id: 0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       x-thorest-ver: 2.3.1
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+    📦 Body:
+
+      at logResponse (src/http/trace-logger.ts:120:17)
+
+  console.log
+    [
+      {
+        "data": "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001d6275696c74696e3a20696e73756666696369656e742062616c616e6365000000",
+        "events": [],
+        "transfers": [],
+        "gasUsed": 1071,
+        "reverted": true,
+        "vmError": "execution reverted"
+      }
+    ]
+
+      at logResponse (src/http/trace-logger.ts:122:21)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.037Z] [sendTransactionWithAccount] estimated gas result: {
+      "totalGas": 39263,
+      "reverted": true,
+      "revertReasons": [
+        "builtin: insufficient balance"
+      ],
+      "vmErrors": [
+        "execution reverted"
+      ]
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.037Z] [sendTransactionWithAccount] constructing transaction: {
+      "nonce": 10000004,
+      "gas": 39263
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.037Z] [sendTransactionWithAccount] transaction constructed and signed: {
+      "clauses": 1,
+      "gas": 39263,
+      "nonce": 10000004
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.038Z] [sendTransactionWithAccount] sending transaction
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:38:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:01:22.038Z)
+
+      at logRequest (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions",
+      "requestHeaders": {},
+      "requestBody": {
+        "raw": "0xf8b881f684c05a20fb8203e8f85ef85c940000000000000000000000000000456e6572677980b844a9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000818082995f8083989684c0b841cd9114954f1879dcf119bebc04d5023b89cbf2f811593894a9e0504973c405500856ea0896e6e6a667756f83472a422fb49285a8736a9086e626878cab480a9500"
+      },
+      "timestamp": 1756198882038
+    }
+
+      at logRequest (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at logRequest (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "raw": "0xf8b881f684c05a20fb8203e8f85ef85c940000000000000000000000000000456e6572677980b844a9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000818082995f8083989684c0b841cd9114954f1879dcf119bebc04d5023b89cbf2f811593894a9e0504973c405500856ea0896e6e6a667756f83472a422fb49285a8736a9086e626878cab480a9500"
+    }
+
+      at logRequest (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Response (2025-08-26T09:01:22.039Z)
+
+      at logResponse (src/http/trace-logger.ts:106:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Response",
+      "url": "http://127.0.0.1:8669/accounts/*",
+      "responseHeaders": {
+        "content-encoding": "gzip",
+        "content-length": "168",
+        "content-type": "application/json; charset=utf-8",
+        "date": "Tue, 26 Aug 2025 09:01:21 GMT",
+        "vary": "Accept-Encoding",
+        "x-genesis-id": "0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57",
+        "x-thorest-ver": "2.3.1"
+      },
+      "responseBody": [
+        {
+          "data": "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001d6275696c74696e3a20696e73756666696369656e742062616c616e6365000000",
+          "events": [],
+          "transfers": [],
+          "gasUsed": 1071,
+          "reverted": true,
+          "vmError": "execution reverted"
+        }
+      ],
+      "timestamp": 1756198882039,
+      "duration": 110
+    }
+
+      at logResponse (src/http/trace-logger.ts:109:13)
+
+  console.log
+    ⬅️ http://127.0.0.1:8669/accounts/* (110ms)
+
+      at logResponse (src/http/trace-logger.ts:110:13)
+
+  console.log
+    📋 Headers:
+
+      at logResponse (src/http/trace-logger.ts:113:17)
+
+  console.log
+       content-encoding: gzip
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       content-length: 168
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       content-type: application/json; charset=utf-8
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       date: Tue, 26 Aug 2025 09:01:21 GMT
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       vary: Accept-Encoding
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       x-genesis-id: 0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+       x-thorest-ver: 2.3.1
+
+      at src/http/trace-logger.ts:115:21
+          at Array.forEach (<anonymous>)
+
+  console.log
+    📦 Body:
+
+      at logResponse (src/http/trace-logger.ts:120:17)
+
+  console.log
+    [
+      {
+        "data": "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001d6275696c74696e3a20696e73756666696369656e742062616c616e6365000000",
+        "events": [],
+        "transfers": [],
+        "gasUsed": 1071,
+        "reverted": true,
+        "vmError": "execution reverted"
+      }
+    ]
+
+      at logResponse (src/http/trace-logger.ts:122:21)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.041Z] [sendTransactionWithAccount] estimated gas result: {
+      "totalGas": 39263,
+      "reverted": true,
+      "revertReasons": [
+        "builtin: insufficient balance"
+      ],
+      "vmErrors": [
+        "execution reverted"
+      ]
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.041Z] [sendTransactionWithAccount] constructing transaction: {
+      "nonce": 10000004,
+      "gas": 39263
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.041Z] [sendTransactionWithAccount] transaction constructed and signed: {
+      "clauses": 1,
+      "gas": 39263,
+      "nonce": 10000004
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.041Z] [sendTransactionWithAccount] sending transaction
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:38:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Request (2025-08-26T09:01:22.042Z)
+
+      at logRequest (src/http/trace-logger.ts:55:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Request",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions",
+      "requestHeaders": {},
+      "requestBody": {
+        "raw": "0xf8b881f684c05a20fb8203e8f85ef85c940000000000000000000000000000456e6572677980b844a9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000818082995f8083989684c0b841a5cccebd40d884987bffea656e00afa08742067285978f462b3c76163bd9b05425c30eaa5fb2df5202c0cb1be98a50afe91a91aa478c42ea2b2f6a641791045801"
+      },
+      "timestamp": 1756198882042
+    }
+
+      at logRequest (src/http/trace-logger.ts:58:13)
+
+  console.log
+    📦 Body:
+
+      at logRequest (src/http/trace-logger.ts:68:17)
+
+  console.log
+    {
+      "raw": "0xf8b881f684c05a20fb8203e8f85ef85c940000000000000000000000000000456e6572677980b844a9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000818082995f8083989684c0b841a5cccebd40d884987bffea656e00afa08742067285978f462b3c76163bd9b05425c30eaa5fb2df5202c0cb1be98a50afe91a91aa478c42ea2b2f6a641791045801"
+    }
+
+      at logRequest (src/http/trace-logger.ts:70:21)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Error (2025-08-26T09:01:22.045Z)
+
+      at logError (src/http/trace-logger.ts:158:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Error",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions",
+      "error": {},
+      "timestamp": 1756198882045,
+      "duration": 49
+    }
+
+      at logError (src/http/trace-logger.ts:161:13)
+
+  console.log
+    ❌ POST http://127.0.0.1:8669/transactions (49ms)
+
+      at logError (src/http/trace-logger.ts:162:13)
+
+  console.log
+    ⛔ Error:
+
+      at logError (src/http/trace-logger.ts:163:13)
+
+  console.log
+       Error: HTTP 400 Bad Request
+
+      at logError (src/http/trace-logger.ts:166:17)
+
+  console.log
+       Stack: Error: HTTP 400 Bad Request
+        at SimpleHttpClient.http (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/http/SimpleHttpClient.ts:194:19)
+        at processTicksAndRejections (node:internal/process/task_queues:95:5)
+        at TransactionsModule.sendRawTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:238:36)
+        at TransactionsModule.sendTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:274:16)
+        at sendTransactionWithAccount (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+      at logError (src/http/trace-logger.ts:169:21)
+
+  console.log
+       Cause:
+
+      at logError (src/http/trace-logger.ts:173:21)
+
+  console.log
+    Response {
+      status: 400,
+      statusText: 'Bad Request',
+      headers: Headers {
+        'content-encoding': 'gzip',
+        'content-type': 'text/plain; charset=utf-8',
+        vary: 'Accept-Encoding',
+        'x-content-type-options': 'nosniff',
+        'x-genesis-id': '0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57',
+        'x-thorest-ver': '2.3.1',
+        date: 'Tue, 26 Aug 2025 09:01:21 GMT',
+        'content-length': '51'
+      },
+      body: ReadableStream { locked: false, state: 'readable', supportsBYOB: true },
+      bodyUsed: false,
+      ok: false,
+      redirected: false,
+      type: 'basic',
+      url: 'http://127.0.0.1:8669/transactions'
+    }
+
+      at logError (src/http/trace-logger.ts:174:21)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.055Z] [sendTransactionWithAccount] sendTransaction error: {
+      "name": "Error",
+      "message": "Method 'HttpClient.http()' failed.\n-Reason: 'HTTP 400 Bad Request'\n-Parameters: \n\t{\n  \"method\": \"POST\",\n  \"url\": \"http://127.0.0.1:8669/transactions\"\n}\n-Internal error: \n\tHTTP 400 Bad Request"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Error (2025-08-26T09:01:22.056Z)
+
+      at logError (src/http/trace-logger.ts:158:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Error",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions",
+      "error": {},
+      "timestamp": 1756198882056,
+      "duration": 54
+    }
+
+      at logError (src/http/trace-logger.ts:161:13)
+
+  console.log
+    ❌ POST http://127.0.0.1:8669/transactions (54ms)
+
+      at logError (src/http/trace-logger.ts:162:13)
+
+  console.log
+    ⛔ Error:
+
+      at logError (src/http/trace-logger.ts:163:13)
+
+  console.log
+       Error: HTTP 400 Bad Request
+
+      at logError (src/http/trace-logger.ts:166:17)
+
+  console.log
+       Stack: Error: HTTP 400 Bad Request
+        at SimpleHttpClient.http (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/http/SimpleHttpClient.ts:194:19)
+        at processTicksAndRejections (node:internal/process/task_queues:95:5)
+        at TransactionsModule.sendRawTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:238:36)
+        at TransactionsModule.sendTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:274:16)
+        at sendTransactionWithAccount (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+      at logError (src/http/trace-logger.ts:169:21)
+
+  console.log
+       Cause:
+
+      at logError (src/http/trace-logger.ts:173:21)
+
+  console.log
+    Response {
+      status: 400,
+      statusText: 'Bad Request',
+      headers: Headers {
+        'content-encoding': 'gzip',
+        'content-type': 'text/plain; charset=utf-8',
+        vary: 'Accept-Encoding',
+        'x-content-type-options': 'nosniff',
+        'x-genesis-id': '0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57',
+        'x-thorest-ver': '2.3.1',
+        date: 'Tue, 26 Aug 2025 09:01:22 GMT',
+        'content-length': '51'
+      },
+      body: ReadableStream { locked: false, state: 'readable', supportsBYOB: true },
+      bodyUsed: false,
+      ok: false,
+      redirected: false,
+      type: 'basic',
+      url: 'http://127.0.0.1:8669/transactions'
+    }
+
+      at logError (src/http/trace-logger.ts:174:21)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.057Z] [sendTransactionWithAccount] sendTransaction error: {
+      "name": "Error",
+      "message": "Method 'HttpClient.http()' failed.\n-Reason: 'HTTP 400 Bad Request'\n-Parameters: \n\t{\n  \"method\": \"POST\",\n  \"url\": \"http://127.0.0.1:8669/transactions\"\n}\n-Internal error: \n\tHTTP 400 Bad Request"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Error (2025-08-26T09:01:22.058Z)
+
+      at logError (src/http/trace-logger.ts:158:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Error",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions",
+      "error": {},
+      "timestamp": 1756198882058,
+      "duration": 52
+    }
+
+      at logError (src/http/trace-logger.ts:161:13)
+
+  console.log
+    ❌ POST http://127.0.0.1:8669/transactions (52ms)
+
+      at logError (src/http/trace-logger.ts:162:13)
+
+  console.log
+    ⛔ Error:
+
+      at logError (src/http/trace-logger.ts:163:13)
+
+  console.log
+       Error: HTTP 400 Bad Request
+
+      at logError (src/http/trace-logger.ts:166:17)
+
+  console.log
+       Stack: Error: HTTP 400 Bad Request
+        at SimpleHttpClient.http (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/http/SimpleHttpClient.ts:194:19)
+        at processTicksAndRejections (node:internal/process/task_queues:95:5)
+        at TransactionsModule.sendRawTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:238:36)
+        at TransactionsModule.sendTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:274:16)
+        at sendTransactionWithAccount (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+      at logError (src/http/trace-logger.ts:169:21)
+
+  console.log
+       Cause:
+
+      at logError (src/http/trace-logger.ts:173:21)
+
+  console.log
+    Response {
+      status: 400,
+      statusText: 'Bad Request',
+      headers: Headers {
+        'content-encoding': 'gzip',
+        'content-type': 'text/plain; charset=utf-8',
+        vary: 'Accept-Encoding',
+        'x-content-type-options': 'nosniff',
+        'x-genesis-id': '0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57',
+        'x-thorest-ver': '2.3.1',
+        date: 'Tue, 26 Aug 2025 09:01:22 GMT',
+        'content-length': '51'
+      },
+      body: ReadableStream { locked: false, state: 'readable', supportsBYOB: true },
+      bodyUsed: false,
+      ok: false,
+      redirected: false,
+      type: 'basic',
+      url: 'http://127.0.0.1:8669/transactions'
+    }
+
+      at logError (src/http/trace-logger.ts:174:21)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.059Z] [sendTransactionWithAccount] sendTransaction error: {
+      "name": "Error",
+      "message": "Method 'HttpClient.http()' failed.\n-Reason: 'HTTP 400 Bad Request'\n-Parameters: \n\t{\n  \"method\": \"POST\",\n  \"url\": \"http://127.0.0.1:8669/transactions\"\n}\n-Internal error: \n\tHTTP 400 Bad Request"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Error (2025-08-26T09:01:22.060Z)
+
+      at logError (src/http/trace-logger.ts:158:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Error",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions",
+      "error": {},
+      "timestamp": 1756198882060,
+      "duration": 50
+    }
+
+      at logError (src/http/trace-logger.ts:161:13)
+
+  console.log
+    ❌ POST http://127.0.0.1:8669/transactions (50ms)
+
+      at logError (src/http/trace-logger.ts:162:13)
+
+  console.log
+    ⛔ Error:
+
+      at logError (src/http/trace-logger.ts:163:13)
+
+  console.log
+       Error: HTTP 400 Bad Request
+
+      at logError (src/http/trace-logger.ts:166:17)
+
+  console.log
+       Stack: Error: HTTP 400 Bad Request
+        at SimpleHttpClient.http (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/http/SimpleHttpClient.ts:194:19)
+        at processTicksAndRejections (node:internal/process/task_queues:95:5)
+        at TransactionsModule.sendRawTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:238:36)
+        at TransactionsModule.sendTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:274:16)
+        at sendTransactionWithAccount (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+      at logError (src/http/trace-logger.ts:169:21)
+
+  console.log
+       Cause:
+
+      at logError (src/http/trace-logger.ts:173:21)
+
+  console.log
+    Response {
+      status: 400,
+      statusText: 'Bad Request',
+      headers: Headers {
+        'content-encoding': 'gzip',
+        'content-type': 'text/plain; charset=utf-8',
+        vary: 'Accept-Encoding',
+        'x-content-type-options': 'nosniff',
+        'x-genesis-id': '0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57',
+        'x-thorest-ver': '2.3.1',
+        date: 'Tue, 26 Aug 2025 09:01:22 GMT',
+        'content-length': '51'
+      },
+      body: ReadableStream { locked: false, state: 'readable', supportsBYOB: true },
+      bodyUsed: false,
+      ok: false,
+      redirected: false,
+      type: 'basic',
+      url: 'http://127.0.0.1:8669/transactions'
+    }
+
+      at logError (src/http/trace-logger.ts:174:21)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.061Z] [sendTransactionWithAccount] sendTransaction error: {
+      "name": "Error",
+      "message": "Method 'HttpClient.http()' failed.\n-Reason: 'HTTP 400 Bad Request'\n-Parameters: \n\t{\n  \"method\": \"POST\",\n  \"url\": \"http://127.0.0.1:8669/transactions\"\n}\n-Internal error: \n\tHTTP 400 Bad Request"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Error (2025-08-26T09:01:22.062Z)
+
+      at logError (src/http/trace-logger.ts:158:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Error",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions",
+      "error": {},
+      "timestamp": 1756198882062,
+      "duration": 47
+    }
+
+      at logError (src/http/trace-logger.ts:161:13)
+
+  console.log
+    ❌ POST http://127.0.0.1:8669/transactions (47ms)
+
+      at logError (src/http/trace-logger.ts:162:13)
+
+  console.log
+    ⛔ Error:
+
+      at logError (src/http/trace-logger.ts:163:13)
+
+  console.log
+       Error: HTTP 400 Bad Request
+
+      at logError (src/http/trace-logger.ts:166:17)
+
+  console.log
+       Stack: Error: HTTP 400 Bad Request
+        at SimpleHttpClient.http (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/http/SimpleHttpClient.ts:194:19)
+        at processTicksAndRejections (node:internal/process/task_queues:95:5)
+        at TransactionsModule.sendRawTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:238:36)
+        at TransactionsModule.sendTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:274:16)
+        at sendTransactionWithAccount (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+      at logError (src/http/trace-logger.ts:169:21)
+
+  console.log
+       Cause:
+
+      at logError (src/http/trace-logger.ts:173:21)
+
+  console.log
+    Response {
+      status: 400,
+      statusText: 'Bad Request',
+      headers: Headers {
+        'content-encoding': 'gzip',
+        'content-type': 'text/plain; charset=utf-8',
+        vary: 'Accept-Encoding',
+        'x-content-type-options': 'nosniff',
+        'x-genesis-id': '0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57',
+        'x-thorest-ver': '2.3.1',
+        date: 'Tue, 26 Aug 2025 09:01:22 GMT',
+        'content-length': '51'
+      },
+      body: ReadableStream { locked: false, state: 'readable', supportsBYOB: true },
+      bodyUsed: false,
+      ok: false,
+      redirected: false,
+      type: 'basic',
+      url: 'http://127.0.0.1:8669/transactions'
+    }
+
+      at logError (src/http/trace-logger.ts:174:21)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.063Z] [sendTransactionWithAccount] sendTransaction error: {
+      "name": "Error",
+      "message": "Method 'HttpClient.http()' failed.\n-Reason: 'HTTP 400 Bad Request'\n-Parameters: \n\t{\n  \"method\": \"POST\",\n  \"url\": \"http://127.0.0.1:8669/transactions\"\n}\n-Internal error: \n\tHTTP 400 Bad Request"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Error (2025-08-26T09:01:22.064Z)
+
+      at logError (src/http/trace-logger.ts:158:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Error",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions",
+      "error": {},
+      "timestamp": 1756198882064,
+      "duration": 44
+    }
+
+      at logError (src/http/trace-logger.ts:161:13)
+
+  console.log
+    ❌ POST http://127.0.0.1:8669/transactions (44ms)
+
+      at logError (src/http/trace-logger.ts:162:13)
+
+  console.log
+    ⛔ Error:
+
+      at logError (src/http/trace-logger.ts:163:13)
+
+  console.log
+       Error: HTTP 400 Bad Request
+
+      at logError (src/http/trace-logger.ts:166:17)
+
+  console.log
+       Stack: Error: HTTP 400 Bad Request
+        at SimpleHttpClient.http (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/http/SimpleHttpClient.ts:194:19)
+        at processTicksAndRejections (node:internal/process/task_queues:95:5)
+        at TransactionsModule.sendRawTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:238:36)
+        at TransactionsModule.sendTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:274:16)
+        at sendTransactionWithAccount (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/fixture-thorest.ts:550:33)
+        at testTraceContractCall (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+        at Object.<anonymous> (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/DebugModule.solo.test.ts:151:32)
+
+      at logError (src/http/trace-logger.ts:169:21)
+
+  console.log
+       Cause:
+
+      at logError (src/http/trace-logger.ts:173:21)
+
+  console.log
+    Response {
+      status: 400,
+      statusText: 'Bad Request',
+      headers: Headers {
+        'content-encoding': 'gzip',
+        'content-type': 'text/plain; charset=utf-8',
+        vary: 'Accept-Encoding',
+        'x-content-type-options': 'nosniff',
+        'x-genesis-id': '0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57',
+        'x-thorest-ver': '2.3.1',
+        date: 'Tue, 26 Aug 2025 09:01:22 GMT',
+        'content-length': '51'
+      },
+      body: ReadableStream { locked: false, state: 'readable', supportsBYOB: true },
+      bodyUsed: false,
+      ok: false,
+      redirected: false,
+      type: 'basic',
+      url: 'http://127.0.0.1:8669/transactions'
+    }
+
+      at logError (src/http/trace-logger.ts:174:21)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.066Z] [sendTransactionWithAccount] sendTransaction error: {
+      "name": "Error",
+      "message": "Method 'HttpClient.http()' failed.\n-Reason: 'HTTP 400 Bad Request'\n-Parameters: \n\t{\n  \"method\": \"POST\",\n  \"url\": \"http://127.0.0.1:8669/transactions\"\n}\n-Internal error: \n\tHTTP 400 Bad Request"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.068Z] traceTransactionClause :: start -> {
+      "tracerName": ""
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.068Z] traceTransactionClause :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.069Z] traceContractCall :: start -> {
+      "tracerName": "4byte"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.069Z] traceContractCall :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.069Z] traceTransactionClause :: start -> {
+      "tracerName": "4byte"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.069Z] traceTransactionClause :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.070Z] traceContractCall :: start -> {
+      "tracerName": "call"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.070Z] traceContractCall :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+(node:80804) PromiseRejectionHandledWarning: Promise rejection was handled asynchronously (rejection id: 25)
+(Use `node --trace-warnings ...` to show where the warning was created)
+  console.log
+    
+    ⚡ [TRACE] HTTP Error (2025-08-26T09:01:22.071Z)
+
+      at logError (src/http/trace-logger.ts:158:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Error",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions",
+      "error": {},
+      "timestamp": 1756198882071,
+      "duration": 46
+    }
+
+      at logError (src/http/trace-logger.ts:161:13)
+
+  console.log
+    ❌ POST http://127.0.0.1:8669/transactions (46ms)
+
+      at logError (src/http/trace-logger.ts:162:13)
+
+  console.log
+    ⛔ Error:
+
+      at logError (src/http/trace-logger.ts:163:13)
+
+  console.log
+       Error: HTTP 400 Bad Request
+
+      at logError (src/http/trace-logger.ts:166:17)
+
+  console.log
+       Stack: Error: HTTP 400 Bad Request
+        at SimpleHttpClient.http (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/http/SimpleHttpClient.ts:194:19)
+        at processTicksAndRejections (node:internal/process/task_queues:95:5)
+        at TransactionsModule.sendRawTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:238:36)
+        at TransactionsModule.sendTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:274:16)
+        at sendTransactionWithAccount (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+      at logError (src/http/trace-logger.ts:169:21)
+
+  console.log
+       Cause:
+
+      at logError (src/http/trace-logger.ts:173:21)
+
+  console.log
+    Response {
+      status: 400,
+      statusText: 'Bad Request',
+      headers: Headers {
+        'content-encoding': 'gzip',
+        'content-type': 'text/plain; charset=utf-8',
+        vary: 'Accept-Encoding',
+        'x-content-type-options': 'nosniff',
+        'x-genesis-id': '0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57',
+        'x-thorest-ver': '2.3.1',
+        date: 'Tue, 26 Aug 2025 09:01:22 GMT',
+        'content-length': '51'
+      },
+      body: ReadableStream { locked: false, state: 'readable', supportsBYOB: true },
+      bodyUsed: false,
+      ok: false,
+      redirected: false,
+      type: 'basic',
+      url: 'http://127.0.0.1:8669/transactions'
+    }
+
+      at logError (src/http/trace-logger.ts:174:21)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.072Z] [sendTransactionWithAccount] sendTransaction error: {
+      "name": "Error",
+      "message": "Method 'HttpClient.http()' failed.\n-Reason: 'HTTP 400 Bad Request'\n-Parameters: \n\t{\n  \"method\": \"POST\",\n  \"url\": \"http://127.0.0.1:8669/transactions\"\n}\n-Internal error: \n\tHTTP 400 Bad Request"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Error (2025-08-26T09:01:22.073Z)
+
+      at logError (src/http/trace-logger.ts:158:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Error",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions",
+      "error": {},
+      "timestamp": 1756198882073,
+      "duration": 44
+    }
+
+      at logError (src/http/trace-logger.ts:161:13)
+
+  console.log
+    ❌ POST http://127.0.0.1:8669/transactions (44ms)
+
+      at logError (src/http/trace-logger.ts:162:13)
+
+  console.log
+    ⛔ Error:
+
+      at logError (src/http/trace-logger.ts:163:13)
+
+  console.log
+       Error: HTTP 400 Bad Request
+
+      at logError (src/http/trace-logger.ts:166:17)
+
+  console.log
+       Stack: Error: HTTP 400 Bad Request
+        at SimpleHttpClient.http (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/http/SimpleHttpClient.ts:194:19)
+        at processTicksAndRejections (node:internal/process/task_queues:95:5)
+        at TransactionsModule.sendRawTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:238:36)
+        at TransactionsModule.sendTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:274:16)
+        at sendTransactionWithAccount (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+      at logError (src/http/trace-logger.ts:169:21)
+
+  console.log
+       Cause:
+
+      at logError (src/http/trace-logger.ts:173:21)
+
+  console.log
+    Response {
+      status: 400,
+      statusText: 'Bad Request',
+      headers: Headers {
+        'content-encoding': 'gzip',
+        'content-type': 'text/plain; charset=utf-8',
+        vary: 'Accept-Encoding',
+        'x-content-type-options': 'nosniff',
+        'x-genesis-id': '0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57',
+        'x-thorest-ver': '2.3.1',
+        date: 'Tue, 26 Aug 2025 09:01:22 GMT',
+        'content-length': '51'
+      },
+      body: ReadableStream { locked: false, state: 'readable', supportsBYOB: true },
+      bodyUsed: false,
+      ok: false,
+      redirected: false,
+      type: 'basic',
+      url: 'http://127.0.0.1:8669/transactions'
+    }
+
+      at logError (src/http/trace-logger.ts:174:21)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.074Z] [sendTransactionWithAccount] sendTransaction error: {
+      "name": "Error",
+      "message": "Method 'HttpClient.http()' failed.\n-Reason: 'HTTP 400 Bad Request'\n-Parameters: \n\t{\n  \"method\": \"POST\",\n  \"url\": \"http://127.0.0.1:8669/transactions\"\n}\n-Internal error: \n\tHTTP 400 Bad Request"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Error (2025-08-26T09:01:22.075Z)
+
+      at logError (src/http/trace-logger.ts:158:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Error",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions",
+      "error": {},
+      "timestamp": 1756198882075,
+      "duration": 42
+    }
+
+      at logError (src/http/trace-logger.ts:161:13)
+
+  console.log
+    ❌ POST http://127.0.0.1:8669/transactions (42ms)
+
+      at logError (src/http/trace-logger.ts:162:13)
+
+  console.log
+    ⛔ Error:
+
+      at logError (src/http/trace-logger.ts:163:13)
+
+  console.log
+       Error: HTTP 400 Bad Request
+
+      at logError (src/http/trace-logger.ts:166:17)
+
+  console.log
+       Stack: Error: HTTP 400 Bad Request
+        at SimpleHttpClient.http (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/http/SimpleHttpClient.ts:194:19)
+        at processTicksAndRejections (node:internal/process/task_queues:95:5)
+        at TransactionsModule.sendRawTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:238:36)
+        at TransactionsModule.sendTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:274:16)
+        at sendTransactionWithAccount (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+      at logError (src/http/trace-logger.ts:169:21)
+
+  console.log
+       Cause:
+
+      at logError (src/http/trace-logger.ts:173:21)
+
+  console.log
+    Response {
+      status: 400,
+      statusText: 'Bad Request',
+      headers: Headers {
+        'content-encoding': 'gzip',
+        'content-type': 'text/plain; charset=utf-8',
+        vary: 'Accept-Encoding',
+        'x-content-type-options': 'nosniff',
+        'x-genesis-id': '0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57',
+        'x-thorest-ver': '2.3.1',
+        date: 'Tue, 26 Aug 2025 09:01:22 GMT',
+        'content-length': '51'
+      },
+      body: ReadableStream { locked: false, state: 'readable', supportsBYOB: true },
+      bodyUsed: false,
+      ok: false,
+      redirected: false,
+      type: 'basic',
+      url: 'http://127.0.0.1:8669/transactions'
+    }
+
+      at logError (src/http/trace-logger.ts:174:21)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.076Z] [sendTransactionWithAccount] sendTransaction error: {
+      "name": "Error",
+      "message": "Method 'HttpClient.http()' failed.\n-Reason: 'HTTP 400 Bad Request'\n-Parameters: \n\t{\n  \"method\": \"POST\",\n  \"url\": \"http://127.0.0.1:8669/transactions\"\n}\n-Internal error: \n\tHTTP 400 Bad Request"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Error (2025-08-26T09:01:22.077Z)
+
+      at logError (src/http/trace-logger.ts:158:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Error",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions",
+      "error": {},
+      "timestamp": 1756198882077,
+      "duration": 39
+    }
+
+      at logError (src/http/trace-logger.ts:161:13)
+
+  console.log
+    ❌ POST http://127.0.0.1:8669/transactions (39ms)
+
+      at logError (src/http/trace-logger.ts:162:13)
+
+  console.log
+    ⛔ Error:
+
+      at logError (src/http/trace-logger.ts:163:13)
+
+  console.log
+       Error: HTTP 400 Bad Request
+
+      at logError (src/http/trace-logger.ts:166:17)
+
+  console.log
+       Stack: Error: HTTP 400 Bad Request
+        at SimpleHttpClient.http (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/http/SimpleHttpClient.ts:194:19)
+        at processTicksAndRejections (node:internal/process/task_queues:95:5)
+        at TransactionsModule.sendRawTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:238:36)
+        at TransactionsModule.sendTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:274:16)
+        at sendTransactionWithAccount (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+      at logError (src/http/trace-logger.ts:169:21)
+
+  console.log
+       Cause:
+
+      at logError (src/http/trace-logger.ts:173:21)
+
+  console.log
+    Response {
+      status: 400,
+      statusText: 'Bad Request',
+      headers: Headers {
+        'content-encoding': 'gzip',
+        'content-type': 'text/plain; charset=utf-8',
+        vary: 'Accept-Encoding',
+        'x-content-type-options': 'nosniff',
+        'x-genesis-id': '0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57',
+        'x-thorest-ver': '2.3.1',
+        date: 'Tue, 26 Aug 2025 09:01:22 GMT',
+        'content-length': '51'
+      },
+      body: ReadableStream { locked: false, state: 'readable', supportsBYOB: true },
+      bodyUsed: false,
+      ok: false,
+      redirected: false,
+      type: 'basic',
+      url: 'http://127.0.0.1:8669/transactions'
+    }
+
+      at logError (src/http/trace-logger.ts:174:21)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.079Z] [sendTransactionWithAccount] sendTransaction error: {
+      "name": "Error",
+      "message": "Method 'HttpClient.http()' failed.\n-Reason: 'HTTP 400 Bad Request'\n-Parameters: \n\t{\n  \"method\": \"POST\",\n  \"url\": \"http://127.0.0.1:8669/transactions\"\n}\n-Internal error: \n\tHTTP 400 Bad Request"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    
+    ⚡ [TRACE] HTTP Error (2025-08-26T09:01:22.080Z)
+
+      at logError (src/http/trace-logger.ts:158:13)
+
+  console.log
+    ➡️ {
+      "category": "HTTP Error",
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions",
+      "error": {},
+      "timestamp": 1756198882080,
+      "duration": 38
+    }
+
+      at logError (src/http/trace-logger.ts:161:13)
+
+  console.log
+    ❌ POST http://127.0.0.1:8669/transactions (38ms)
+
+      at logError (src/http/trace-logger.ts:162:13)
+
+  console.log
+    ⛔ Error:
+
+      at logError (src/http/trace-logger.ts:163:13)
+
+  console.log
+       Error: HTTP 400 Bad Request
+
+      at logError (src/http/trace-logger.ts:166:17)
+
+  console.log
+       Stack: Error: HTTP 400 Bad Request
+        at SimpleHttpClient.http (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/http/SimpleHttpClient.ts:194:19)
+        at processTicksAndRejections (node:internal/process/task_queues:95:5)
+        at TransactionsModule.sendRawTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:238:36)
+        at TransactionsModule.sendTransaction (/Users/andreas.frank/work/vechain-sdk-js/packages/network/src/thor-client/transactions/transactions-module.ts:274:16)
+        at sendTransactionWithAccount (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/fixture-thorest.ts:550:33)
+        at testTraceContractCall (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+        at Object.<anonymous> (/Users/andreas.frank/work/vechain-sdk-js/packages/network/tests/thor-client/debug/DebugModule.solo.test.ts:217:32)
+
+      at logError (src/http/trace-logger.ts:169:21)
+
+  console.log
+       Cause:
+
+      at logError (src/http/trace-logger.ts:173:21)
+
+  console.log
+    Response {
+      status: 400,
+      statusText: 'Bad Request',
+      headers: Headers {
+        'content-encoding': 'gzip',
+        'content-type': 'text/plain; charset=utf-8',
+        vary: 'Accept-Encoding',
+        'x-content-type-options': 'nosniff',
+        'x-genesis-id': '0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57',
+        'x-thorest-ver': '2.3.1',
+        date: 'Tue, 26 Aug 2025 09:01:22 GMT',
+        'content-length': '51'
+      },
+      body: ReadableStream { locked: false, state: 'readable', supportsBYOB: true },
+      bodyUsed: false,
+      ok: false,
+      redirected: false,
+      type: 'basic',
+      url: 'http://127.0.0.1:8669/transactions'
+    }
+
+      at logError (src/http/trace-logger.ts:174:21)
+
+  console.log
+    [DebugFixture 2025-08-26T09:01:22.081Z] [sendTransactionWithAccount] sendTransaction error: {
+      "name": "Error",
+      "message": "Method 'HttpClient.http()' failed.\n-Reason: 'HTTP 400 Bad Request'\n-Parameters: \n\t{\n  \"method\": \"POST\",\n  \"url\": \"http://127.0.0.1:8669/transactions\"\n}\n-Internal error: \n\tHTTP 400 Bad Request"
+    }
+
+      at flog (tests/thor-client/debug/fixture-thorest.ts:35:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.081Z] traceTransactionClause :: start -> {
+      "tracerName": "call"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.082Z] traceTransactionClause :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.082Z] traceContractCall :: start -> {
+      "tracerName": "noop"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.082Z] traceContractCall :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.083Z] traceTransactionClause :: start -> {
+      "tracerName": "noop"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.083Z] traceTransactionClause :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.083Z] traceContractCall :: start -> {
+      "tracerName": "prestate"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.084Z] traceContractCall :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.084Z] traceTransactionClause :: start -> {
+      "tracerName": "prestate"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.084Z] traceTransactionClause :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.085Z] traceContractCall :: start -> {
+      "tracerName": "unigram"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.085Z] traceContractCall :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.086Z] traceTransactionClause :: start -> {
+      "tracerName": "unigram"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.086Z] traceTransactionClause :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.086Z] traceContractCall :: start -> {
+      "tracerName": "bigram"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.086Z] traceContractCall :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.087Z] traceTransactionClause :: start -> {
+      "tracerName": "bigram"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.087Z] traceTransactionClause :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.087Z] traceContractCall :: start -> {
+      "tracerName": "trigram"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.088Z] traceContractCall :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.088Z] traceTransactionClause :: start -> {
+      "tracerName": "trigram"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.088Z] traceTransactionClause :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.089Z] traceContractCall :: start -> {
+      "tracerName": "evmdis"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.089Z] traceContractCall :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.089Z] traceTransactionClause :: start -> {
+      "tracerName": "evmdis"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.089Z] traceTransactionClause :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.090Z] traceContractCall :: start -> {
+      "tracerName": "opcount"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.091Z] traceContractCall :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.091Z] traceTransactionClause :: start -> {
+      "tracerName": "opcount"
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.091Z] traceTransactionClause :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.092Z] traceContractCall :: start -> {
+      "tracerName": null
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.092Z] traceContractCall :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.092Z] traceTransactionClause :: start -> {
+      "tracerName": null
+    }
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:37:17)
+
+  console.log
+    [DebugTest 2025-08-26T09:01:22.092Z] traceTransactionClause :: awaiting transaction receipt
+
+      at tlog (tests/thor-client/debug/DebugModule.solo.test.ts:34:17)
+
+(node:80804) PromiseRejectionHandledWarning: Promise rejection was handled asynchronously (rejection id: 23)
+(node:80804) PromiseRejectionHandledWarning: Promise rejection was handled asynchronously (rejection id: 28)
+(node:80804) PromiseRejectionHandledWarning: Promise rejection was handled asynchronously (rejection id: 29)
+(node:80804) PromiseRejectionHandledWarning: Promise rejection was handled asynchronously (rejection id: 27)
+(node:80804) PromiseRejectionHandledWarning: Promise rejection was handled asynchronously (rejection id: 24)
+(node:80804) PromiseRejectionHandledWarning: Promise rejection was handled asynchronously (rejection id: 30)
+(node:80804) PromiseRejectionHandledWarning: Promise rejection was handled asynchronously (rejection id: 26)
+(node:80804) PromiseRejectionHandledWarning: Promise rejection was handled asynchronously (rejection id: 31)
+FAIL tests/thor-client/debug/DebugModule.solo.test.ts
+  DebugModule testnet tests
+    name = empty, sender account index = 7
+      ✕ ok <- traceContractCall (124 ms)
+      ✕ ok <- traceTransactionClause (1 ms)
+    name = 4byte, sender account index = 8
+      ✕ ok <- traceContractCall (1 ms)
+      ✕ ok <- traceTransactionClause (1 ms)
+    name = call, sender account index = 9
+      ✕ ok <- traceContractCall (11 ms)
+      ✕ ok <- traceTransactionClause (1 ms)
+    name = noop, sender account index = 10
+      ✕ ok <- traceContractCall (1 ms)
+      ✕ ok <- traceTransactionClause
+    name = prestate, sender account index = 11
+      ✕ ok <- traceContractCall (1 ms)
+      ✕ ok <- traceTransactionClause (1 ms)
+    name = unigram, sender account index = 12
+      ✕ ok <- traceContractCall
+      ✕ ok <- traceTransactionClause (1 ms)
+    name = bigram, sender account index = 13
+      ✕ ok <- traceContractCall (1 ms)
+      ✕ ok <- traceTransactionClause
+    name = trigram, sender account index = 14
+      ✕ ok <- traceContractCall (1 ms)
+      ✕ ok <- traceTransactionClause
+    name = evmdis, sender account index = 15
+      ✕ ok <- traceContractCall (1 ms)
+      ✕ ok <- traceTransactionClause
+    name = opcount, sender account index = 16
+      ✕ ok <- traceContractCall (1 ms)
+      ✕ ok <- traceTransactionClause
+    name = null, sender account index = 17
+      ✕ ok <- traceContractCall (1 ms)
+      ✕ ok <- traceTransactionClause
+
+  ● DebugModule testnet tests › name = empty, sender account index = 7 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+  ● DebugModule testnet tests › name = empty, sender account index = 7 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+  ● DebugModule testnet tests › name = empty, sender account index = 7 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+  ● DebugModule testnet tests › name = empty, sender account index = 7 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+  ● DebugModule testnet tests › name = empty, sender account index = 7 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+  ● DebugModule testnet tests › name = empty, sender account index = 7 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+      at testTraceContractCall (tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+      at Object.<anonymous> (tests/thor-client/debug/DebugModule.solo.test.ts:151:32)
+
+  ● DebugModule testnet tests › name = empty, sender account index = 7 › ok <- traceTransactionClause
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+      at testTraceContractCall (tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+      at Object.<anonymous> (tests/thor-client/debug/DebugModule.solo.test.ts:151:32)
+
+  ● DebugModule testnet tests › name = 4byte, sender account index = 8 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+  ● DebugModule testnet tests › name = 4byte, sender account index = 8 › ok <- traceTransactionClause
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+  ● DebugModule testnet tests › name = call, sender account index = 9 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+  ● DebugModule testnet tests › name = call, sender account index = 9 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+  ● DebugModule testnet tests › name = call, sender account index = 9 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+  ● DebugModule testnet tests › name = call, sender account index = 9 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+  ● DebugModule testnet tests › name = call, sender account index = 9 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+      at testTraceContractCall (tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+      at Object.<anonymous> (tests/thor-client/debug/DebugModule.solo.test.ts:217:32)
+
+  ● DebugModule testnet tests › name = call, sender account index = 9 › ok <- traceTransactionClause
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+      at testTraceContractCall (tests/thor-client/debug/DebugModule.solo.test.ts:52:23)
+      at Object.<anonymous> (tests/thor-client/debug/DebugModule.solo.test.ts:217:32)
+
+  ● DebugModule testnet tests › name = noop, sender account index = 10 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+  ● DebugModule testnet tests › name = noop, sender account index = 10 › ok <- traceTransactionClause
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+  ● DebugModule testnet tests › name = prestate, sender account index = 11 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+  ● DebugModule testnet tests › name = prestate, sender account index = 11 › ok <- traceTransactionClause
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+  ● DebugModule testnet tests › name = unigram, sender account index = 12 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+  ● DebugModule testnet tests › name = unigram, sender account index = 12 › ok <- traceTransactionClause
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+  ● DebugModule testnet tests › name = bigram, sender account index = 13 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+  ● DebugModule testnet tests › name = bigram, sender account index = 13 › ok <- traceTransactionClause
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+  ● DebugModule testnet tests › name = trigram, sender account index = 14 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+  ● DebugModule testnet tests › name = trigram, sender account index = 14 › ok <- traceTransactionClause
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+  ● DebugModule testnet tests › name = evmdis, sender account index = 15 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+  ● DebugModule testnet tests › name = evmdis, sender account index = 15 › ok <- traceTransactionClause
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+  ● DebugModule testnet tests › name = opcount, sender account index = 16 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+  ● DebugModule testnet tests › name = opcount, sender account index = 16 › ok <- traceTransactionClause
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+  ● DebugModule testnet tests › name = null, sender account index = 17 › ok <- traceContractCall
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+  ● DebugModule testnet tests › name = null, sender account index = 17 › ok <- traceTransactionClause
+
+    Method 'HttpClient.http()' failed.
+    -Reason: 'HTTP 400 Bad Request'
+    -Parameters: 
+    	{
+      "method": "POST",
+      "url": "http://127.0.0.1:8669/transactions"
+    }
+    -Internal error: 
+    	HTTP 400 Bad Request
+
+      202 |                 logError(requestStartTime, urlString, method, error);
+      203 |
+    > 204 |                 throw new InvalidHTTPRequest(
+          |                       ^
+      205 |                     'HttpClient.http()',
+      206 |                     (error as Error).message,
+      207 |                     {
+
+      at SimpleHttpClient.http (src/http/SimpleHttpClient.ts:204:23)
+      at TransactionsModule.sendRawTransaction (src/thor-client/transactions/transactions-module.ts:238:36)
+      at TransactionsModule.sendTransaction (src/thor-client/transactions/transactions-module.ts:274:16)
+      at sendTransactionWithAccount (tests/thor-client/debug/fixture-thorest.ts:550:33)
+
+Test Suites: 1 failed, 1 total
+Tests:       22 failed, 22 total
+Snapshots:   0 total
+Time:        0.458 s, estimated 1 s
+Ran all test suites matching /tests\/thor-client\/debug\/DebugModule.solo.test.ts/i.
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+error Command failed.
+Exit code: 1
+Command: /Users/andreas.frank/.nvm/versions/node/v20.19.0/bin/node
+Arguments: /Users/andreas.frank/.cache/node/corepack/v1/yarn/1.22.22/lib/cli.js jest --runInBand --verbose --detectOpenHandles --coverage=false tests/thor-client/debug/DebugModule.solo.test.ts
+Directory: /Users/andreas.frank/work/vechain-sdk-js/packages/network
+Output:
+
+info Visit https://yarnpkg.com/en/docs/cli/workspace for documentation about this command.
+yarn run v1.22.22
+$ yarn workspace @vechain/sdk-solo-setup solo-logs-save
+$ mkdir -p logs && docker logs thor-solo > logs/thor-solo-$(date +%Y%m%d-%H%M%S).log 2>&1
+Done in 0.36s.
+yarn run v1.22.22
+$ yarn workspace @vechain/sdk-solo-setup solo-down
+$ make solo-down
+docker compose -f ./docker-compose.solo.yml down
+ Container thor-solo  Stopping
+ Container thor-solo  Stopped
+ Container thor-solo  Removing
+ Container thor-solo  Removed
+ Network solo-setup_default  Removing
+ Network solo-setup_default  Removed
+Done in 0.79s.
