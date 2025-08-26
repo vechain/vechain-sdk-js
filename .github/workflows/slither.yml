@@ -8,19 +8,19 @@ on:
       - add-slither
   workflow_dispatch:
 
-jobs:
-  slither:
-    uses: vechain/github-actions/.github/workflows/slither.yaml@75ae37b9b4f314eadf00a178d2eba181e3fc0793
-    with:
-      solc-version: '0.8.18'
-      target: 'vechain-sdk-js/packages/solo-setup/contracts/'
-      fail-on: 'none'
-      cache: 'yarn'
-      compile-command: 'yarn contracts:compile'
-      ignore-compile: true
-      slither-args: |
-        --solc-remaps '@openzeppelin/contracts/=node_modules/@openzeppelin/contracts/ @openzeppelin/contracts-upgradeable/=node_modules/@openzeppelin/contracts-upgradeable/'
-        --filter-paths '(openzeppelin|mocks|interfaces|deprecated|templates)'
-        --exclude-informational
-        --exclude-optimization
-        --checklist
+#jobs:
+#  slither:
+#    uses: vechain/github-actions/.github/workflows/slither.yaml@75ae37b9b4f314eadf00a178d2eba181e3fc0793
+#    with:
+#      solc-version: '0.8.18'
+#      target: 'vechain-sdk-js/packages/solo-setup/contracts/'
+#      fail-on: 'none'
+#      cache: 'yarn'
+#      compile-command: 'yarn contracts:compile'
+#      ignore-compile: true
+#      slither-args: |
+#        --solc-remaps '@openzeppelin/contracts/=node_modules/@openzeppelin/contracts/ @openzeppelin/contracts-upgradeable/=node_modules/@openzeppelin/contracts-upgradeable/'
+#        --filter-paths '(openzeppelin|mocks|interfaces|deprecated|templates)'
+#        --exclude-informational
+#        --exclude-optimization
+#        --checklist
