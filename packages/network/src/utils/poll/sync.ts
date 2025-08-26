@@ -1,6 +1,27 @@
 import { type SyncPollInputOptions } from './types';
 import { InvalidDataType, PollExecution } from '@vechain/sdk-errors';
 
+const MAX_SAFE_ITERATIONS = 1000;
+
+function isNetworkError(error: unknown): boolean {
+    if (error instanceof Error) {
+        const errorMessage = error.message.toLowerCase();
+        return (
+            errorMessage.includes('network') ||
+            errorMessage.includes('connection') ||
+            errorMessage.includes('timeout') ||
+            errorMessage.includes('socket') ||
+            errorMessage.includes('econnreset') ||
+            errorMessage.includes('etimedout') ||
+            errorMessage.includes('fetch failed') ||
+            errorMessage.includes('request failed') ||
+            errorMessage.includes('http') ||
+            errorMessage.includes('thor')
+        );
+    }
+    return false;
+}
+
 /**
  * Sleep for a given amount of time (in milliseconds).
  *
@@ -106,15 +127,46 @@ function SyncPoll<TReturnType>(
         waitUntil: async (
             condition: (data: TReturnType) => boolean
         ): Promise<TReturnType> => {
+            let consecutiveNetworkErrors = 0;
+            const maxConsecutiveNetworkErrors = 10;
+            let isConditionSatisfied = false;
+
             try {
                 do {
-                    // 1 - Fetch the result of promise
-                    currentResult = await pollingFunction();
-
-                    const isConditionSatisfied = condition(currentResult);
-                    if (isConditionSatisfied) {
-                        // If the condition is satisfied, return the current result
-                        return currentResult;
+                    try {
+                        // 1 - Fetch the result of promise
+                        currentResult = await pollingFunction();
+                        consecutiveNetworkErrors = 0;
+                        isConditionSatisfied = condition(currentResult);
+                        if (isConditionSatisfied) {
+                            // If the condition is satisfied, return the current result
+                            return currentResult;
+                        }
+                    } catch (error) {
+                        if (isNetworkError(error)) {
+                            consecutiveNetworkErrors++;
+                            if (
+                                consecutiveNetworkErrors >=
+                                maxConsecutiveNetworkErrors
+                            ) {
+                                throw new PollExecution(
+                                    'SyncPoll.waitUntil()',
+                                    'Polling failed: Too many consecutive network errors.',
+                                    {
+                                        functionName: pollingFunction.name
+                                    },
+                                    error
+                                );
+                            }
+                            // Continue polling for network errors without incrementing iteration
+                            await sleep(
+                                options?.requestIntervalInMilliseconds ?? 1000
+                            );
+                            continue;
+                        } else {
+                            // Re-throw non-network errors immediately
+                            throw error;
+                        }
                     }
 
                     // 2 - Sleep for the interval (in a synchronous way)
@@ -127,7 +179,7 @@ function SyncPoll<TReturnType>(
                     const isMaximumIterationsReached =
                         options?.maximumIterations !== undefined
                             ? currentIteration >= options.maximumIterations
-                            : false;
+                            : currentIteration >= MAX_SAFE_ITERATIONS;
 
                     // 4.2 - Stop forced on maximum waiting time
                     const isTimeLimitReached =
@@ -142,6 +194,17 @@ function SyncPoll<TReturnType>(
                         isMaximumIterationsReached ||
                         isTimeLimitReached
                     );
+
+                    // Additional safety check for maximum iterations
+                    if (currentIteration >= MAX_SAFE_ITERATIONS) {
+                        throw new PollExecution(
+                            'SyncPoll.waitUntil()',
+                            'Polling failed: Maximum safe iterations reached.',
+                            {
+                                functionName: pollingFunction.name
+                            }
+                        );
+                    }
                 } while (pollingCondition);
 
                 return currentResult;

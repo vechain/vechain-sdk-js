@@ -195,13 +195,35 @@ class TransactionsModule {
                 { head: options?.head }
             );
 
-        return (await this.blocksModule.httpClient.http(
-            HttpMethod.GET,
-            thorest.transactions.get.TRANSACTION_RECEIPT(id),
-            {
-                query: buildQuery({ head: options?.head })
+        try {
+            return (await this.blocksModule.httpClient.http(
+                HttpMethod.GET,
+                thorest.transactions.get.TRANSACTION_RECEIPT(id),
+                {
+                    query: buildQuery({ head: options?.head })
+                }
+            )) as TransactionReceipt | null;
+        } catch (error) {
+            if (error instanceof Error) {
+                const errorMessage = error.message.toLowerCase();
+                const isNetworkError =
+                    errorMessage.includes('network') ||
+                    errorMessage.includes('connection') ||
+                    errorMessage.includes('timeout') ||
+                    errorMessage.includes('socket') ||
+                    errorMessage.includes('econnreset') ||
+                    errorMessage.includes('etimedout') ||
+                    errorMessage.includes('fetch failed') ||
+                    errorMessage.includes('request failed') ||
+                    errorMessage.includes('http') ||
+                    errorMessage.includes('thor');
+
+                if (isNetworkError) {
+                    return null;
+                }
             }
-        )) as TransactionReceipt | null;
+            throw error;
+        }
     }
 
     /**
@@ -297,11 +319,13 @@ class TransactionsModule {
             );
         }
 
+        const safetyTimeout = options?.timeoutMs ?? 5 * 60 * 1000; // 5 minutes
+
         return await Poll.SyncPoll(
             async () => await this.getTransactionReceipt(txID),
             {
                 requestIntervalInMilliseconds: options?.intervalMs,
-                maximumWaitingTimeInMilliseconds: options?.timeoutMs
+                maximumWaitingTimeInMilliseconds: safetyTimeout
             }
         ).waitUntil((result) => {
             return result !== null;
