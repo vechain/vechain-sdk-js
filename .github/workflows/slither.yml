@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - develop
+      - add-slither
   workflow_dispatch:
 
 jobs:
