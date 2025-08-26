@@ -26,6 +26,17 @@ jobs:
             - name: Install & Patch packages
               run: yarn install
 
+            - name: Run Slither
+              uses: crytic/slither-action@4fd765aeef19915d04ddf0be90c2930036a774d8 # v0.4.1
+              id: slither
+              with:
+                ignore-compile: ${{ inputs.ignore-compile }}
+                target: ${{ inputs.target }}
+                fail-on: ${{ inputs.fail-on }}
+                slither-args: ${{ inputs.slither-args }}
+                solc-version: ${{ inputs.solc-version }}
+                sarif: ${{ inputs.sarif-file }}
+
             - name: Install playwright dependencies (for sample Vite dApp tests)
               run: yarn playwright install
 
