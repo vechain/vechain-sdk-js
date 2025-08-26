@@ -1004,7 +1004,12 @@ class TransactionsModule {
     ): Promise<ContractCallResult[]> {
         // Simulate the transaction to get the result of the contract call
         const response = await this.simulateTransaction(
-            clauses.map((clause) => clause.clause),
+            clauses.map((clause) => {
+                if ('functionAbi' in clause) {
+                    return (clause as unknown as ContractClause).clause;
+                }
+                return clause;
+            }),
             options
         );
         // Returning the decoded results both as plain and array.
@@ -1078,12 +1083,25 @@ class TransactionsModule {
      * @return {Promise<SendTransactionResult>} The result of the transaction, including transaction ID and a wait function.
      */
     public async executeMultipleClausesTransaction(
-        clauses: ContractClause[],
+        clauses: ContractClause[] | TransactionClause[],
         signer: VeChainSigner,
         options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {
         const id = await signer.sendTransaction({
-            clauses: clauses.map((clause) => clause.clause),
+            clauses: clauses.map((clause) => {
+                if ('functionAbi' in clause) {
+                    if ('clause' in clause) {
+                        return (clause as unknown as ContractClause).clause;
+                    } else {
+                        throw new InvalidDataType(
+                            'TransactionsModule.executeMultipleClausesTransaction()',
+                            'Invalid ContractClause provided: missing inner clause.',
+                            { clause }
+                        );
+                    }
+                }
+                return clause;
+            }),
             gas: options?.gas,
             gasLimit: options?.gasLimit,
             gasPrice: options?.gasPrice,

@@ -1,4 +1,8 @@
-import { type ABIFunction, type ContractClause } from '@vechain/sdk-core';
+import {
+    TransactionClause,
+    type ABIFunction,
+    type ContractClause
+} from '@vechain/sdk-core';
 import { type Abi } from 'abitype';
 import { type VeChainSigner } from '../../signer/signers/types';
 import {
@@ -78,6 +82,12 @@ class ContractsModule {
         clauses: ContractClause[],
         options?: SimulateTransactionOptions
     ): Promise<ContractCallResult[]> {
+        if (clauses.every((clause) => 'clause' in clause)) {
+            return await this.transactionsModule.executeMultipleClausesCall(
+                clauses,
+                options
+            );
+        }
         return await this.transactionsModule.executeMultipleClausesCall(
             clauses,
             options
@@ -109,7 +119,7 @@ class ContractsModule {
      * Use {@link TransactionsModule.executeMultipleClausesTransaction} instead.
      */
     public async executeMultipleClausesTransaction(
-        clauses: ContractClause[],
+        clauses: ContractClause[] | TransactionClause[],
         signer: VeChainSigner,
         options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {
