@@ -39,13 +39,18 @@ describe('ThorClient - Transactions Module', () => {
                     )
             );
 
+            const nonce =
+                transactionNonces.shouldThrowErrorIfTransactionIsntSigned[0];
+
+            const txBody =
+                await thorSoloClient.transactions.buildTransactionBody(
+                    [transfer1VTHOClause],
+                    gasResult.totalGas,
+                    { nonce }
+                );
+
             // Create the unsigned transfer transaction
-            const tx = Transaction.of({
-                ...transferTransactionBody,
-                gas: gasResult.totalGas,
-                nonce: transactionNonces
-                    .shouldThrowErrorIfTransactionIsntSigned[0]
-            });
+            const tx = Transaction.of(txBody);
 
             await expect(
                 thorSoloClient.transactions.sendTransaction(tx)
@@ -73,13 +78,16 @@ describe('ThorClient - Transactions Module', () => {
                                     .address
                             )
                     );
+                    const nonce = options.nonce;
 
-                    // Create the signed transfer transaction
-                    const tx = Transaction.of({
-                        ...transferTransactionBody,
-                        gas: gasResult.totalGas,
-                        nonce: options.nonce
-                    }).sign(
+                    const txBody =
+                        await thorSoloClient.transactions.buildTransactionBody(
+                            [transfer1VTHOClause],
+                            gasResult.totalGas,
+                            { nonce }
+                        );
+
+                    const tx = Transaction.of(txBody).sign(
                         HexUInt.of(
                             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
                                 .privateKey
@@ -124,13 +132,19 @@ describe('ThorClient - Transactions Module', () => {
                     )
             );
 
+            const nonce =
+                transactionNonces
+                    .sendTransactionWithANumberAsValueInTransactionBody[0];
+
+            const txBody =
+                await thorSoloClient.transactions.buildTransactionBody(
+                    [transfer1VTHOClause],
+                    gasResult.totalGas,
+                    { nonce }
+                );
+
             // Create the signed transfer transaction
-            const tx = Transaction.of({
-                ...transferTransactionBodyValueAsNumber,
-                gas: gasResult.totalGas,
-                nonce: transactionNonces
-                    .sendTransactionWithANumberAsValueInTransactionBody[0]
-            }).sign(
+            const tx = Transaction.of(txBody).sign(
                 HexUInt.of(
                     TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
                 ).bytes
@@ -168,12 +182,17 @@ describe('ThorClient - Transactions Module', () => {
                                 )
                         );
 
+                        const nonce = options.nonce;
+
+                        const txBody =
+                            await thorSoloClient.transactions.buildTransactionBody(
+                                [transfer1VTHOClause],
+                                gasResult.totalGas,
+                                { nonce }
+                            );
+
                         // Create the signed transfer transaction
-                        const tx = Transaction.of({
-                            ...transferTransactionBody,
-                            gas: gasResult.totalGas,
-                            nonce: options.nonce
-                        }).sign(
+                        const tx = Transaction.of(txBody).sign(
                             HexUInt.of(
                                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
                                     .privateKey

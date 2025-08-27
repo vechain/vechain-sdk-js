@@ -17,6 +17,7 @@ import {
     THOR_SOLO_SEEDED_VTHO_AMOUNT
 } from '../config/constants';
 import { type TestAccount } from '../funder/accounts';
+import { getGenesisBlock } from './genesis';
 
 const genesisDeployerAccount = THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS[0];
 
@@ -27,6 +28,8 @@ const genesisDeployerAccount = THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS[0];
 export const seedVET = async (accounts: TestAccount[]): Promise<string> => {
     try {
         const thorClient = ThorClient.at('http://localhost:8669');
+        const genesisBlock = await thorClient.blocks.getGenesisBlock();
+        const chainTagId = Number(`0x${genesisBlock.id.slice(-2)}`);
         const latestBlock = await thorClient.blocks.getBestBlockCompressed();
         const privateKey = HexUInt.of(genesisDeployerAccount.privateKey).bytes;
         const clauses: TransactionClause[] = [];
@@ -38,7 +41,7 @@ export const seedVET = async (accounts: TestAccount[]): Promise<string> => {
             clauses.push(clause);
         }
         const txBody: TransactionBody = {
-            chainTag: THOR_SOLO_CHAIN_TAG,
+            chainTag: chainTagId,
             blockRef:
                 latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
             expiration: 32,
