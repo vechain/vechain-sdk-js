@@ -170,7 +170,7 @@ const buildTransactionBodyClausesTestCases = [
         options: { gasPriceCoef: 0 },
         expected: {
             solo: {
-                chainTag: 246,
+                chainTag: 87,
                 clauses: [
                     {
                         data: '0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000',
@@ -232,7 +232,7 @@ const buildTransactionBodyClausesTestCases = [
         },
         expected: {
             solo: {
-                chainTag: 246,
+                chainTag: 87,
                 clauses: [
                     {
                         data: '0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000',

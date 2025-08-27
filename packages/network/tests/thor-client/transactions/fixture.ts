@@ -151,11 +151,14 @@ const waitForTransactionTestCases = [
  */
 const invalidWaitForTransactionTestCases = [
     {
-        description: 'Should throw error when timeoutMs is too low',
+        description:
+            'Should return null when timeoutMs is too low and tx cannot be included in time',
         options: {
             timeoutMs: 1,
             intervalMs: undefined,
-            nonce: transactionNonces.invalidWaitForTransactionTestCases[0]
+            nonce: transactionNonces.invalidWaitForTransactionTestCases[0],
+            dependsOn:
+                '0x9140e36f05000508465fd55d70947b99a78c84b3afa5e068b955e366b560935f'
         }
     }
 ];
@@ -170,7 +173,7 @@ const buildTransactionBodyClausesTestCases = [
         options: { gasPriceCoef: 0 },
         expected: {
             solo: {
-                chainTag: 246,
+                chainTag: 87,
                 clauses: [
                     {
                         data: '0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000',
@@ -232,7 +235,7 @@ const buildTransactionBodyClausesTestCases = [
         },
         expected: {
             solo: {
-                chainTag: 246,
+                chainTag: 87,
                 clauses: [
                     {
                         data: '0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000',

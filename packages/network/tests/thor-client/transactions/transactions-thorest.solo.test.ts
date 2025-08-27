@@ -47,9 +47,13 @@ describe('ThorClient - Transactions Module', () => {
                         )
                 );
 
+                const genesisBlock: any =
+                    await thorSoloClient.blocks.getGenesisBlock();
+                const chainTagId = Number(`0x${genesisBlock.id.slice(-2)}`);
+
                 // Create transactions
                 const transactionBody = {
-                    chainTag: 0xf6,
+                    chainTag: chainTagId,
                     blockRef:
                         latestBlock !== null
                             ? latestBlock.id.slice(0, 18)
@@ -63,7 +67,7 @@ describe('ThorClient - Transactions Module', () => {
                 };
 
                 const delegatedTransactionBody = {
-                    chainTag: 0xf6,
+                    chainTag: chainTagId,
                     blockRef:
                         latestBlock !== null
                             ? latestBlock.id.slice(0, 18)

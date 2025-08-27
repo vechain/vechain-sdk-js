@@ -47,9 +47,12 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
                 )
         );
 
+        const genesisBlock: any = await thorSoloClient.blocks.getGenesisBlock();
+        const chainTagId = Number(`0x${genesisBlock.id.slice(-2)}`);
+
         // Create transaction body
         const transactionBody = {
-            chainTag: 0xf6, // 0xf6 for Galactica dev network
+            chainTag: chainTagId, // 0xf6 for Galactica dev network
             blockRef:
                 latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
             expiration: 32,
@@ -83,7 +86,7 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
         expect(decodedTx.transactionType).toBe(TransactionType.EIP1559);
         expect(decodedTx.body.maxFeePerGas).toBe(10000000000000); // 10000000000000 in hex
         expect(decodedTx.body.maxPriorityFeePerGas).toBe(1000000); // 1000000 in hex
-        expect(decodedTx.body.chainTag).toBe(0xf6);
+        expect(decodedTx.body.chainTag).toBe(chainTagId);
         expect(decodedTx.body.blockRef).toBe(
             latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0'
         );
@@ -147,9 +150,12 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
                 )
         );
 
+        const genesisBlock: any = await thorSoloClient.blocks.getGenesisBlock();
+        const chainTagId = Number(`0x${genesisBlock.id.slice(-2)}`);
+
         // Create transaction body
         const transactionBody = {
-            chainTag: 0xf6, // 0xf6 for Galactica dev network
+            chainTag: chainTagId, // 0xf6 for Galactica dev network
             blockRef:
                 latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
             expiration: 32,
@@ -189,7 +195,7 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
         expect(decodedTx.transactionType).toBe(TransactionType.EIP1559);
         expect(decodedTx.body.maxFeePerGas).toBe(10000000000000);
         expect(decodedTx.body.maxPriorityFeePerGas).toBeGreaterThan(0);
-        expect(decodedTx.body.chainTag).toBe(0xf6);
+        expect(decodedTx.body.chainTag).toBe(chainTagId);
         expect(decodedTx.body.blockRef).toBe(
             latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0'
         );

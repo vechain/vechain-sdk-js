@@ -72,9 +72,12 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
                     )
             );
 
+            const genesisBlock: any = await thorClient.blocks.getGenesisBlock();
+            const chainTagId = Number(`0x${genesisBlock.id.slice(-2)}`);
+
             // Create transactions
             const transactionBody = {
-                chainTag: 0xf6,
+                chainTag: chainTagId,
                 blockRef:
                     latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
                 expiration: 32,

@@ -44,8 +44,12 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
                     )
             );
 
+            const genesisBlock: any =
+                await thorSoloClient.blocks.getGenesisBlock();
+            const chainTagId = Number(`0x${genesisBlock.id.slice(-2)}`);
+
             const transactionBody = {
-                chainTag: 0xf6,
+                chainTag: chainTagId,
                 blockRef:
                     latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
                 expiration: 32,
@@ -137,7 +141,7 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
             expect(txInBlock.maxFeePerGas).toBe('0x9184e72a000'); // 10000000000000
             expect(txInBlock.maxPriorityFeePerGas).toBe('0xf4240'); // 1000000
             expect(txInBlock.nonce).toBe('0xbc614d'); // 12345677 in hex
-            expect(txInBlock.chainTag).toBe(0xf6);
+            expect(txInBlock.chainTag).toBe(chainTagId);
         });
     });
 });
