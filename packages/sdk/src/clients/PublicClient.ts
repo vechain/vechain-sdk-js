@@ -6,7 +6,6 @@ import {
     EventsSubscription,
     type ExecuteCodesResponse,
     type ExpandedBlockResponse,
-    type GetFeesPriorityResponse,
     InspectClauses,
     NewTransactionSubscription,
     type RawTx,
@@ -21,7 +20,6 @@ import {
     RetrieveTransactionByID,
     RetrieveTransactionReceipt,
     type SubscriptionEventResponse,
-    SuggestPriorityFee,
     type ThorNetworks,
     type GetTxResponse,
     type GetTxReceiptResponse,
@@ -260,7 +258,7 @@ class PublicClient {
     public async getFeeHistory(blockCount: number): Promise<FeeHistory> {
         const thorClient = ThorClient.at(this.httpClient);
         const gasModule = thorClient.gas;
-        const gas = await gasModule.getFeeHistory({ blockCount });
+        const gas = await gasModule.getFeeHistory(blockCount);
         return gas;
     }
 
@@ -291,10 +289,12 @@ class PublicClient {
         return gas;
     }
 
-    public async estimateMaxPriorityFeePerGas(): Promise<GetFeesPriorityResponse> {
+    public async suggestPriorityFeeRequest(): Promise<bigint> {
         // viem specific
-        const data = await SuggestPriorityFee.of().askTo(this.httpClient);
-        return data.response;
+        const thorClient = ThorClient.at(this.httpClient);
+        const gasModule = thorClient.gas;
+        const gas = await gasModule.suggestPriorityFeeRequest();
+        return gas;
     }
 
     public async getChainId(): Promise<bigint> {

@@ -1,18 +1,14 @@
-import {
-    RetrieveHistoricalFeeData,
-    SuggestPriorityFee,
-    type GetFeesHistoryResponse,
-} from '@thor/fees';
-import { InspectClauses, type ExecuteCodesResponse } from '@thor/accounts';
+import { RetrieveHistoricalFeeData, SuggestPriorityFee } from '@thor/fees';
+import { InspectClauses } from '@thor/accounts';
 import { Revision } from '@vcdm';
 import { Transaction, type TransactionClause } from '@thor/transactions';
-import { IllegalArgumentError } from '@errors';
-
+import { IllegalArgumentError, NoSuchElementError } from '@errors';
 import { AbstractThorModule } from '@thor/thor-client/AbstractThorModule';
-import { type FeeHistoryOptions } from '@thor/thor-client/model/gas/FeeHistoryOptions';
-import { type EstimateGasRequest } from '@thor/thor-client/model/gas/EstimateGasRequest';
 import { FeeHistory } from '../model/gas/FeeHistory';
 import { EstimatedGas } from '../model/gas/EstimatedGas';
+import { EstimateGas } from '../model/gas/EstimateGas';
+
+const FQP = 'packages/sdk/src/thor/thor-client/gas/gas-module.ts';
 
 /**
  * The gas module of the VeChain Thor blockchain.
@@ -38,9 +34,9 @@ class GasModule extends AbstractThorModule {
      * @returns The execution response containing gas usage and other details.
      */
     public async estimateGas(
-        request: EstimateGasRequest
+        estimateGas: EstimateGas
     ): Promise<EstimatedGas[]> {
-        const inspectClause = await InspectClauses.of(request).askTo(
+        const inspectClause = await InspectClauses.of(estimateGas).askTo(
             this.httpClient
         );
         return Array.from(inspectClause.response);
@@ -66,32 +62,34 @@ class GasModule extends AbstractThorModule {
      * @throws {IllegalArgumentError} If options are invalid.
      */
     public async getFeeHistory(
-        options: FeeHistoryOptions
+        blockCount: number,
+        newestBlock?: Revision,
+        rewardPercentiles?: number[]
     ): Promise<FeeHistory> {
         // Validate blockCount
         if (
-            options?.blockCount === null ||
-            options?.blockCount === undefined ||
-            typeof options.blockCount !== 'number' ||
-            !Number.isFinite(options.blockCount) ||
-            options.blockCount <= 0
+            blockCount === null ||
+            blockCount === undefined ||
+            typeof blockCount !== 'number' ||
+            !Number.isFinite(blockCount) ||
+            blockCount <= 0
         ) {
             throw new IllegalArgumentError(
-                'GasModule.getFeeHistory()',
+                `${FQP}.getFeeHistory()`,
                 'Invalid blockCount parameter. Must be a positive finite number.',
-                { options }
+                { blockCount }
             );
         }
 
         // Create and execute the query
-        let query = RetrieveHistoricalFeeData.of(options.blockCount);
+        let query = RetrieveHistoricalFeeData.of(blockCount);
 
-        if (options.newestBlock !== null && options.newestBlock !== undefined) {
-            query = query.withNewestBlock(options.newestBlock);
+        if (newestBlock !== null && newestBlock !== undefined) {
+            query = query.withNewestBlock(newestBlock);
         }
 
-        if (options.rewardPercentiles && options.rewardPercentiles.length > 0) {
-            query = query.withRewardPercentiles(options.rewardPercentiles);
+        if (rewardPercentiles && rewardPercentiles.length > 0) {
+            query = query.withRewardPercentiles(rewardPercentiles);
         }
 
         const response = (await query.askTo(this.httpClient)).response;
@@ -103,20 +101,19 @@ class GasModule extends AbstractThorModule {
      *
      * @returns The base fee per gas of the next block, or null if not available.
      */
-    public async getNextBlockBaseFeePerGas(): Promise<bigint | undefined> {
-        const options: FeeHistoryOptions = {
-            blockCount: 1,
-            newestBlock: Revision.of('next')
-        };
-
-        const feeHistory = await this.getFeeHistory(options);
+    public async suggestPriorityFeeRequest(): Promise<bigint> {
+        const feeHistory = await this.getFeeHistory(1, Revision.of('next'));
 
         if (
             feeHistory.baseFeePerGas === null ||
             feeHistory.baseFeePerGas === undefined ||
             feeHistory.baseFeePerGas.length === 0
         ) {
-            return undefined;
+            throw new NoSuchElementError(
+                `${FQP}.suggestPriorityFeeRequest()`,
+                'Base fee per gas for next block is not available.',
+                { newestBlock: 'next' }
+            );
         }
 
         return feeHistory.baseFeePerGas[0];
