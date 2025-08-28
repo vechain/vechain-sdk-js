@@ -36,7 +36,7 @@ describe('TransactionRequest UNIT tests', () => {
                 gas: validGas,
                 gasPriceCoef: validGasPriceCoef,
                 nonce: validNonce,
-                isSponsored: true
+                isIntendedToBeSponsored: true
             });
 
             expect(request.blockRef).toBe(validBlockRef);
@@ -47,7 +47,7 @@ describe('TransactionRequest UNIT tests', () => {
             expect(request.gas).toBe(validGas);
             expect(request.gasPriceCoef).toBe(validGasPriceCoef);
             expect(request.nonce).toBe(validNonce);
-            expect(request.isSponsored).toBe(true);
+            expect(request.isIntendedToBeSponsored).toBe(true);
         });
 
         test('ok <- should create a TransactionRequest with isSponsored defaulting to false when not provided', () => {
@@ -62,7 +62,7 @@ describe('TransactionRequest UNIT tests', () => {
                 nonce: validNonce
             } as any); // Type assertion to test default behavior
 
-            expect(request.isSponsored).toBe(false);
+            expect(request.isIntendedToBeSponsored).toBe(false);
         });
 
         test('ok <- should handle null dependsOn', () => {

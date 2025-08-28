@@ -35,7 +35,7 @@ function newTransactionBodyFromTransactionRequest(
         gas: Number(txRequest.gas),
         nonce: txRequest.nonce,
         reserved: {
-            features: txRequest.isSponsored ? 1 : 0,
+            features: txRequest.isIntendedToBeSponsored ? 1 : 0,
             unused: []
         }
     } satisfies TransactionBody;
@@ -71,7 +71,7 @@ describe('RLPCodec', () => {
                 gas: mockGas,
                 gasPriceCoef: 0n,
                 nonce: 1,
-                isSponsored: false
+                isIntendedToBeSponsored: false
             });
 
             // Call the method
@@ -97,7 +97,7 @@ describe('RLPCodec', () => {
                 gas: mockGas,
                 gasPriceCoef: 0n,
                 nonce: 2,
-                isSponsored: true
+                isIntendedToBeSponsored: true
             });
 
             // Call the method
@@ -131,7 +131,7 @@ describe('RLPCodec', () => {
                 gas: mockGas,
                 gasPriceCoef: 0n,
                 nonce: 3,
-                isSponsored: false
+                isIntendedToBeSponsored: false
             });
 
             // Call the method
@@ -165,7 +165,7 @@ describe('RLPCodec', () => {
                 gas: mockGas,
                 gasPriceCoef: 0n,
                 nonce: 3,
-                isSponsored: false
+                isIntendedToBeSponsored: false
             });
 
             // Call the method
@@ -199,7 +199,7 @@ describe('RLPCodec', () => {
                 gas: mockGas,
                 gasPriceCoef: 0n,
                 nonce: 3,
-                isSponsored: false
+                isIntendedToBeSponsored: false
             });
 
             // Call the method
@@ -233,7 +233,7 @@ describe('RLPCodec', () => {
                 gas: mockGas,
                 gasPriceCoef: 0n,
                 nonce: 3,
-                isSponsored: false
+                isIntendedToBeSponsored: false
             });
 
             // Call the method
@@ -259,7 +259,7 @@ describe('RLPCodec', () => {
                 gas: mockGas,
                 gasPriceCoef: 0n,
                 nonce: 4,
-                isSponsored: false
+                isIntendedToBeSponsored: false
             });
 
             // Call the method
@@ -295,7 +295,7 @@ describe('RLPCodec', () => {
                 gas: mockGas,
                 gasPriceCoef: 0n,
                 nonce: 5,
-                isSponsored: false
+                isIntendedToBeSponsored: false
             });
 
             // Temporary until Transaction exists.
@@ -339,7 +339,7 @@ describe('RLPCodec', () => {
                 gas: mockGas,
                 gasPriceCoef: 0n,
                 nonce: 6,
-                isSponsored: true
+                isIntendedToBeSponsored: true
             });
 
             // Temporary until Transaction exists.

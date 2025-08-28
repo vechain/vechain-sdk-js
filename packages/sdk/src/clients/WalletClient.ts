@@ -73,7 +73,7 @@ class WalletClient extends PublicClient {
                         : BigInt(request.gas),
                 gasPriceCoef: BigInt(request.gasPriceCoef),
                 nonce: request.nonce,
-                isSponsored: request.isSponsored ?? false
+                isIntendedToBeSponsored: request.isSponsored ?? false
             });
         } catch (e) {
             throw new UnsupportedOperationError(
@@ -156,7 +156,7 @@ class WalletClient extends PublicClient {
         signedTransactionRequest: SignedTransactionRequest
     ): Promise<Hex> {
         if (this.account !== null) {
-            if (signedTransactionRequest.isSponsored) {
+            if (signedTransactionRequest.isIntendedToBeSponsored) {
                 const hash = Blake2b256.of(
                     nc_utils.concatBytes(
                         Blake2b256.of(
@@ -181,7 +181,7 @@ class WalletClient extends PublicClient {
                         gas: signedTransactionRequest.gas,
                         gasPriceCoef: signedTransactionRequest.gasPriceCoef,
                         nonce: signedTransactionRequest.nonce,
-                        isSponsored: true,
+                        isIntendedToBeSponsored: true,
                         origin: signedTransactionRequest.origin,
                         originSignature:
                             signedTransactionRequest.originSignature,

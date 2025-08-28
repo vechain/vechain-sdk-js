@@ -95,7 +95,7 @@ class PrivateKeySigner implements Signer {
                 gas: transactionRequest.gas,
                 gasPriceCoef: transactionRequest.gasPriceCoef,
                 nonce: transactionRequest.nonce,
-                isSponsored: transactionRequest.isSponsored,
+                isIntendedToBeSponsored: transactionRequest.isIntendedToBeSponsored,
                 origin: this.address,
                 originSignature: signature,
                 signature
@@ -127,7 +127,7 @@ class PrivateKeySigner implements Signer {
         signedTransactionRequest: SignedTransactionRequest
     ): SponsoredTransactionRequest {
         if (this.privateKey !== null) {
-            if (signedTransactionRequest.isSponsored) {
+            if (signedTransactionRequest.isIntendedToBeSponsored) {
                 const hash = Blake2b256.of(
                     nc_utils.concatBytes(
                         Blake2b256.of(
@@ -148,7 +148,7 @@ class PrivateKeySigner implements Signer {
                     gas: signedTransactionRequest.gas,
                     gasPriceCoef: signedTransactionRequest.gasPriceCoef,
                     nonce: signedTransactionRequest.nonce,
-                    isSponsored: true,
+                    isIntendedToBeSponsored: true,
                     origin: signedTransactionRequest.origin,
                     originSignature: signedTransactionRequest.originSignature,
                     gasPayer: this.address,

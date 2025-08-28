@@ -97,7 +97,7 @@ describe('PrivateKeySigner', () => {
             // Sign to force using the private key
             const txRequest = new TransactionRequest({
                 ...transactionParams,
-                isSponsored: false
+                isIntendedToBeSponsored: false
             });
 
             signer.sign(txRequest);
@@ -126,7 +126,7 @@ describe('PrivateKeySigner', () => {
             const signer = new PrivateKeySigner(validPrivateKey);
             const txRequest = new TransactionRequest({
                 ...transactionParams,
-                isSponsored: false
+                isIntendedToBeSponsored: false
             });
 
             const signedTx = signer.sign(txRequest);
@@ -151,7 +151,7 @@ describe('PrivateKeySigner', () => {
             expect(signedTx.blockRef).toBe(txRequest.blockRef);
             expect(signedTx.chainTag).toBe(txRequest.chainTag);
             expect(signedTx.clauses).toBe(txRequest.clauses);
-            expect(signedTx.isSponsored).toBe(false);
+            expect(signedTx.isIntendedToBeSponsored).toBe(false);
         });
 
         test('ok <- signature clones the origin signature', () => {
@@ -171,13 +171,13 @@ describe('PrivateKeySigner', () => {
             const signer = new PrivateKeySigner(validPrivateKey);
             const txRequest = new TransactionRequest({
                 ...transactionParams,
-                isSponsored: true
+                isIntendedToBeSponsored: true
             });
 
             const signedTx = signer.sign(txRequest);
 
             expect(signedTx).toBeInstanceOf(SignedTransactionRequest);
-            expect(signedTx.isSponsored).toBe(true);
+            expect(signedTx.isIntendedToBeSponsored).toBe(true);
         });
 
         test('err <- throw error if private key is voided before signing', () => {
@@ -202,7 +202,7 @@ describe('PrivateKeySigner', () => {
             // Create a transaction request marked for sponsorship
             const txRequest = new TransactionRequest({
                 ...transactionParams,
-                isSponsored: true
+                isIntendedToBeSponsored: true
             });
 
             // Sign it with the origin signer
@@ -240,7 +240,7 @@ describe('PrivateKeySigner', () => {
         test('ok <- signature combines origin and gas payer signatures', () => {
             const txRequest = new TransactionRequest({
                 ...transactionParams,
-                isSponsored: true
+                isIntendedToBeSponsored: true
             });
             const sender = new PrivateKeySigner(mockSender.privateKey);
             const signedTx = sender.sign(txRequest);
@@ -281,7 +281,7 @@ describe('PrivateKeySigner', () => {
             // Create a regular transaction request not marked for sponsorship
             const txRequest = new TransactionRequest({
                 ...transactionParams,
-                isSponsored: false
+                isIntendedToBeSponsored: false
             });
 
             // Sign it with the origin signer
@@ -302,7 +302,7 @@ describe('PrivateKeySigner', () => {
             // Create a transaction request marked for sponsorship
             const txRequest = new TransactionRequest({
                 ...transactionParams,
-                isSponsored: true
+                isIntendedToBeSponsored: true
             });
 
             // Sign it with the origin signer

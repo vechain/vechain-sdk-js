@@ -26,7 +26,7 @@ describe('SignedTransactionRequest', () => {
         gas: 21000n,
         gasPriceCoef: 0n,
         nonce: 1,
-        isSponsored: false,
+        isIntendedToBeSponsored: false,
 
         // SignedTransactionRequest params
         origin: mockOrigin,
@@ -53,7 +53,9 @@ describe('SignedTransactionRequest', () => {
                 mockParams.gasPriceCoef
             );
             expect(signedTxRequest.nonce).toEqual(mockParams.nonce);
-            expect(signedTxRequest.isSponsored).toEqual(mockParams.isSponsored);
+            expect(signedTxRequest.isIntendedToBeSponsored).toEqual(
+                mockParams.isIntendedToBeSponsored
+            );
             expect(signedTxRequest.origin).toEqual(mockParams.origin);
 
             // Test that signature properties match (but are not the same reference)

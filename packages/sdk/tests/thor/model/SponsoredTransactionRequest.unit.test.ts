@@ -31,7 +31,7 @@ describe('SponsoredTransactionRequest', () => {
         gas: 21000n,
         gasPriceCoef: 0n,
         nonce: 1,
-        isSponsored: true,
+        isIntendedToBeSponsored: true,
 
         // SignedTransactionRequest params
         origin: mockOrigin,
@@ -78,7 +78,7 @@ describe('SponsoredTransactionRequest', () => {
         });
 
         test('ok <- should inherit isSponsored flag set to true', () => {
-            expect(sponsoredTxRequest.isSponsored).toBe(true);
+            expect(sponsoredTxRequest.isIntendedToBeSponsored).toBe(true);
         });
 
         test('ok <- should inherit origin property from SignedTransactionRequest', () => {

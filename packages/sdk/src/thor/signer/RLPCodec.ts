@@ -109,7 +109,7 @@ class RLPCodec {
         return RLPCodec.encodeSignedBodyField(
             {
                 ...RLPCodec.mapBody(transactionRequest),
-                reserved: transactionRequest.isSponsored
+                reserved: transactionRequest.isIntendedToBeSponsored
                     ? [Uint8Array.of(1)]
                     : [] // encodeReservedField(tx)
             },
@@ -128,7 +128,7 @@ class RLPCodec {
     ): Uint8Array {
         return RLPCodec.encodeUnsignedBodyField({
             ...RLPCodec.mapBody(transactionRequest),
-            reserved: transactionRequest.isSponsored ? [Uint8Array.of(1)] : [] // encodeReservedField(tx)
+            reserved: transactionRequest.isIntendedToBeSponsored ? [Uint8Array.of(1)] : [] // encodeReservedField(tx)
         });
     }
 

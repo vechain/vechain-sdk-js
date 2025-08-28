@@ -48,7 +48,7 @@ interface TransactionRequestParam {
     /**
      * Indicates if the gas cost transaction is sponsored by a "gas payer".
      */
-    isSponsored?: boolean;
+    isIntendedToBeSponsored?: boolean;
 }
 
 /**
@@ -99,7 +99,7 @@ class TransactionRequest implements TransactionRequestParam {
     /**
      * Indicates if the gas cost transaction is sponsored by a "gas payer".
      */
-    public readonly isSponsored: boolean;
+    public readonly isIntendedToBeSponsored: boolean;
 
     /**
      * Constructs an instance of the class with the given transaction request parameters.
@@ -113,7 +113,7 @@ class TransactionRequest implements TransactionRequestParam {
      * @param {bigint} params.gas - The gas limit for the transaction.
      * @param {bigint} params.gasPriceCoef - Coefficient for the gas price.
      * @param {number} params.nonce - Unique value to ensure transaction uniqueness.
-     * @param {boolean} params.isSponsored - Indicates if the transaction is sponsored, `false` by default.
+     * @param {boolean} params.isIntendedToBeSponsored - Indicates if the transaction is sponsored, `false` by default.
      */
     public constructor({
         blockRef,
@@ -124,7 +124,7 @@ class TransactionRequest implements TransactionRequestParam {
         gas,
         gasPriceCoef,
         nonce,
-        isSponsored = false
+        isIntendedToBeSponsored = false
     }: TransactionRequestParam) {
         this.blockRef = blockRef;
         this.chainTag = chainTag;
@@ -134,7 +134,7 @@ class TransactionRequest implements TransactionRequestParam {
         this.gas = gas;
         this.gasPriceCoef = gasPriceCoef;
         this.nonce = nonce;
-        this.isSponsored = isSponsored;
+        this.isIntendedToBeSponsored = isIntendedToBeSponsored;
     }
 
     /**
