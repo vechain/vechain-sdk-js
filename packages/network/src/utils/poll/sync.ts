@@ -1,26 +1,11 @@
 import { type SyncPollInputOptions } from './types';
-import { InvalidDataType, PollExecution } from '@vechain/sdk-errors';
+import {
+    InvalidDataType,
+    PollExecution,
+    HttpNetworkError
+} from '@vechain/sdk-errors';
 
 const MAX_SAFE_ITERATIONS = 1000;
-
-function isNetworkError(error: unknown): boolean {
-    if (error instanceof Error) {
-        const errorMessage = error.message.toLowerCase();
-        return (
-            errorMessage.includes('network') ||
-            errorMessage.includes('connection') ||
-            errorMessage.includes('timeout') ||
-            errorMessage.includes('socket') ||
-            errorMessage.includes('econnreset') ||
-            errorMessage.includes('etimedout') ||
-            errorMessage.includes('fetch failed') ||
-            errorMessage.includes('request failed') ||
-            errorMessage.includes('http') ||
-            errorMessage.includes('thor')
-        );
-    }
-    return false;
-}
 
 /**
  * Sleep for a given amount of time (in milliseconds).
@@ -143,7 +128,7 @@ function SyncPoll<TReturnType>(
                             return currentResult;
                         }
                     } catch (error) {
-                        if (isNetworkError(error)) {
+                        if (error instanceof HttpNetworkError) {
                             consecutiveNetworkErrors++;
                             if (
                                 consecutiveNetworkErrors >=

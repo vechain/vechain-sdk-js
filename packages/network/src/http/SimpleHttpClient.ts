@@ -1,5 +1,9 @@
 import { HttpMethod } from './HttpMethod';
-import { InvalidHTTPParams, InvalidHTTPRequest } from '@vechain/sdk-errors';
+import {
+    InvalidHTTPParams,
+    InvalidHTTPRequest,
+    HttpNetworkError
+} from '@vechain/sdk-errors';
 import { type HttpClient } from './HttpClient';
 import { type HttpParams } from './HttpParams';
 import { logRequest, logResponse, logError } from './trace-logger';
@@ -201,6 +205,23 @@ class SimpleHttpClient implements HttpClient {
                 const urlString = url.toString();
                 logError(requestStartTime, urlString, method, error);
 
+                // Check if this is a network communication error
+                // According to Fetch API spec: https://developer.mozilla.org/en-US/docs/Web/API/Window/fetch#exceptions
+                // Network errors throw TypeError, while HTTP errors (4xx/5xx) are handled in the response.ok check
+                if (error instanceof TypeError) {
+                    throw new HttpNetworkError(
+                        'HttpClient.http()',
+                        error.message,
+                        {
+                            method,
+                            url: urlString,
+                            networkErrorType: 'TypeError'
+                        },
+                        error
+                    );
+                }
+
+                // If not a network error, treat as HTTP protocol error
                 throw new InvalidHTTPRequest(
                     'HttpClient.http()',
                     (error as Error).message,

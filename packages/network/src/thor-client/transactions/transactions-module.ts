@@ -16,7 +16,11 @@ import {
     Units,
     VET
 } from '@vechain/sdk-core';
-import { InvalidDataType, InvalidTransactionField } from '@vechain/sdk-errors';
+import {
+    InvalidDataType,
+    InvalidTransactionField,
+    HttpNetworkError
+} from '@vechain/sdk-errors';
 import { ErrorFragment, Interface } from 'ethers';
 import { HttpMethod } from '../../http';
 import { blocksFormatter, getTransactionIndexIntoBlock } from '../../provider';
@@ -204,23 +208,11 @@ class TransactionsModule {
                 }
             )) as TransactionReceipt | null;
         } catch (error) {
-            if (error instanceof Error) {
-                const errorMessage = error.message.toLowerCase();
-                const isNetworkError =
-                    errorMessage.includes('network') ||
-                    errorMessage.includes('connection') ||
-                    errorMessage.includes('timeout') ||
-                    errorMessage.includes('socket') ||
-                    errorMessage.includes('econnreset') ||
-                    errorMessage.includes('etimedout') ||
-                    errorMessage.includes('fetch failed') ||
-                    errorMessage.includes('request failed') ||
-                    errorMessage.includes('http') ||
-                    errorMessage.includes('thor');
-
-                if (isNetworkError) {
-                    return null;
-                }
+            // Check if this is a network communication error
+            if (error instanceof HttpNetworkError) {
+                // For network errors, return null instead of throwing
+                // This allows the polling mechanism to continue
+                return null;
             }
             throw error;
         }
