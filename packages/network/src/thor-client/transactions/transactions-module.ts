@@ -1005,10 +1005,14 @@ class TransactionsModule {
         // Simulate the transaction to get the result of the contract call
         const response = await this.simulateTransaction(
             clauses.map((clause) => {
-                if ('functionAbi' in clause) {
-                    return (clause as unknown as ContractClause).clause;
+                if (clause.clause === undefined) {
+                    throw new InvalidDataType(
+                        'TransactionsModule.executeMultipleClausesCall()',
+                        'Invalid ContractClause provided: missing inner clause.',
+                        { clause }
+                    );
                 }
-                return clause;
+                return clause.clause;
             }),
             options
         );
@@ -1089,18 +1093,17 @@ class TransactionsModule {
     ): Promise<SendTransactionResult> {
         const id = await signer.sendTransaction({
             clauses: clauses.map((clause) => {
-                if ('functionAbi' in clause) {
-                    if ('clause' in clause) {
-                        return (clause as unknown as ContractClause).clause;
-                    } else {
-                        throw new InvalidDataType(
-                            'TransactionsModule.executeMultipleClausesTransaction()',
-                            'Invalid ContractClause provided: missing inner clause.',
-                            { clause }
-                        );
-                    }
+                if ('clause' in clause) {
+                    return (clause as unknown as ContractClause).clause;
                 }
-                return clause;
+                if (clause === undefined) {
+                    throw new InvalidDataType(
+                        'TransactionsModule.executeMultipleClausesTransaction()',
+                        'Invalid TransactionClause provided: missing clause.',
+                        { clause }
+                    );
+                }
+                return clause as TransactionClause;
             }),
             gas: options?.gas,
             gasLimit: options?.gasLimit,
