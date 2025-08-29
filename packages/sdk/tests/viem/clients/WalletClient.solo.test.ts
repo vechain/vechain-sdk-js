@@ -5,8 +5,7 @@ import {
     ThorNetworks,
     type TransactionBody
 } from '@thor';
-import { Address, BlockRef, Hex, Revision } from '@common';
-import { FetchHttpClient } from '@common';
+import { Address, BlockRef, Hex, Revision, FetchHttpClient } from '@common';
 import { SOLO_NETWORK } from '@thor/utils';
 import { privateKeyToAccount } from 'viem/accounts';
 import {

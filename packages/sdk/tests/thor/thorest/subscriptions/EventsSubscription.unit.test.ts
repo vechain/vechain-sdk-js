@@ -10,7 +10,7 @@ import {
     mockWebSocketInstance,
     mockWebSocketConstructor
 } from '../../../MockWSClient';
-import { LogMetaJSON } from '@thor/thorest/json';
+import { type LogMetaJSON } from '@thor/thorest/json';
 
 const mockLogMeta = {
     blockID:

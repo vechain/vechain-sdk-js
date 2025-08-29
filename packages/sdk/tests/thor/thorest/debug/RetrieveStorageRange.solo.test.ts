@@ -1,7 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
-import { RetrieveStorageRange, ThorNetworks } from '@thor/thorest';
+import { RetrieveStorageRange, ThorNetworks, ThorError } from '@thor/thorest';
 import { FetchHttpClient } from '@common/http';
-import { ThorError } from '@thor/thorest';
 import { type StorageRangeOptionJSON } from '@thor/thorest/json';
 
 /**

@@ -1,4 +1,4 @@
-import { RegularBlockResponse } from '@vechain/sdk/thor';
+import { type RegularBlockResponse } from '@vechain/sdk/thor';
 import * as fs from 'fs';
 import * as path from 'path';
 

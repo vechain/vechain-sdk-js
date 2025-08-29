@@ -3,7 +3,7 @@ import { expect, jest } from '@jest/globals';
 import { RawTx, RetrieveRawBlock, ThorError } from '@thor/thorest';
 import { Revision } from '@common/vcdm';
 import { type HttpClient } from '@common/http';
-import { RawTxJSON } from '@thor/thorest/json';
+import { type RawTxJSON } from '@thor/thorest/json';
 
 class InvalidRevision extends Revision {
     constructor() {

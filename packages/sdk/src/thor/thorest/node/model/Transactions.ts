@@ -1,6 +1,5 @@
 import { Tx } from '@thor/thorest/model';
-import { type TxJSON } from '@thor/thorest/json';
-import { type TransactionsJSON } from '@thor/thorest/json';
+import { type TxJSON, type TransactionsJSON } from '@thor/thorest/json';
 import { IllegalArgumentError } from '@common/errors';
 
 /**

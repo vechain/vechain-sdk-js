@@ -1,5 +1,5 @@
 import { Revision } from '@common/vcdm';
-import { HttpClient } from '@common/http';
+import { type HttpClient } from '@common/http';
 import { ThorError } from '@thor/thorest';
 import { IllegalArgumentError } from '@common/errors';
 

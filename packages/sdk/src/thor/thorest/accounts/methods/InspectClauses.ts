@@ -6,8 +6,8 @@ import {
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
 import { Revision } from '@common/vcdm';
 import {
-    ExecuteCodesResponseJSON,
-    ExecuteCodesRequestJSON
+    type ExecuteCodesResponseJSON,
+    type ExecuteCodesRequestJSON
 } from '@thor/thorest/accounts/json';
 
 /**

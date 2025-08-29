@@ -1,6 +1,5 @@
-import { TxMeta } from '@thor/thorest/transactions/model';
+import { TxMeta, Tx } from '@thor/thorest/transactions/model';
 import { type GetTxResponseJSON } from '@thor/thorest/json';
-import { Tx } from '@thor/thorest/transactions/model';
 import { IllegalArgumentError } from '@common/errors';
 
 /**

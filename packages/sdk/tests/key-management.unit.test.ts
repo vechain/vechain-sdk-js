@@ -14,7 +14,7 @@ import {
 } from '@vechain/sdk';
 
 class KeyManager {
-    private hdNode: HDKey;
+    private readonly hdNode: HDKey;
 
     constructor(mnemonicWords?: string[]) {
         if (mnemonicWords) {
@@ -292,7 +292,9 @@ describe('Key Management Tests', () => {
             expect(uniqueAddresses.size).toBe(5);
 
             // Clean up
-            accounts.forEach((acc) => acc.clear());
+            accounts.forEach((acc) => {
+                acc.clear();
+            });
         });
 
         test('should use standard VET derivation path', () => {

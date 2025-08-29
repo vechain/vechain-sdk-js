@@ -28,8 +28,8 @@ import {
     type GetTxReceiptResponse,
     type TransfersSubscription,
     MozillaWebSocketClient,
-    WebSocketListener,
-    TXID
+    type WebSocketListener,
+    type TXID
 } from '@thor';
 import {
     BlockNotFoundError,
@@ -47,10 +47,16 @@ import {
     prepareBlockRange
 } from '@thor/utils/filter-utils';
 import {
-    EventLogFilterRequestJSON,
-    ExecuteCodesRequestJSON
+    type EventLogFilterRequestJSON,
+    type ExecuteCodesRequestJSON
 } from '@thor/thorest/json';
-import { Address, FetchHttpClient, Hex, HttpClient, Revision } from '@common';
+import {
+    type Address,
+    FetchHttpClient,
+    type Hex,
+    type HttpClient,
+    Revision
+} from '@common';
 
 /**
  * Filter types for viem compatibility.

@@ -100,8 +100,8 @@ class Account implements VeChainDataModel<Account> {
                     this.balance < that.balance
                         ? -1
                         : this.balance > that.balance
-                        ? 1
-                        : 0;
+                          ? 1
+                          : 0;
                 return balanceDiff;
             }
             return addressDiff;

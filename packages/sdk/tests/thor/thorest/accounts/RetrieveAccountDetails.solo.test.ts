@@ -24,7 +24,8 @@ describe('RetrieveAccountDetails solo tests', () => {
     test('ok <- askTo with BEST revision', async () => {
         const response = (
             await RetrieveAccountDetails.of(
-                Address.of(VTHO_ADDRESS), Revision.BEST
+                Address.of(VTHO_ADDRESS),
+                Revision.BEST
             ).askTo(FetchHttpClient.at(new URL(ThorNetworks.SOLONET)))
         ).response;
         expect(Hex.of(response.energy).toString()).toBe('0x00');
@@ -35,7 +36,8 @@ describe('RetrieveAccountDetails solo tests', () => {
     test('ok <- askTo with FINALIZED revision', async () => {
         const response = (
             await RetrieveAccountDetails.of(
-                Address.of(VTHO_ADDRESS), Revision.FINALIZED
+                Address.of(VTHO_ADDRESS),
+                Revision.FINALIZED
             ).askTo(FetchHttpClient.at(new URL(ThorNetworks.SOLONET)))
         ).response;
         expect(Hex.of(response.energy).toString()).toBe('0x00');
@@ -46,7 +48,8 @@ describe('RetrieveAccountDetails solo tests', () => {
     test('ok <- askTo with numeric revision', async () => {
         const response = (
             await RetrieveAccountDetails.of(
-                Address.of(VTHO_ADDRESS), Revision.of(0)
+                Address.of(VTHO_ADDRESS),
+                Revision.of(0)
             ).askTo(FetchHttpClient.at(new URL(ThorNetworks.SOLONET)))
         ).response;
         expect(Hex.of(response.energy).toString()).toBe('0x00');
