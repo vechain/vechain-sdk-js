@@ -194,10 +194,8 @@ describe('PrivateKeySigner', () => {
 
     describe('sign method with SignedTransactionRequest (sponsoring)', () => {
         test('ok <- sponsor a signed transaction request', () => {
-            const signer = new PrivateKeySigner(validPrivateKey);
-            const originSigner = new PrivateKeySigner(
-                new Uint8Array(32).fill(5)
-            );
+            const sender = new PrivateKeySigner(new Uint8Array(32).fill(5));
+            const gasPayer = new PrivateKeySigner(validPrivateKey);
 
             // Create a transaction request marked for sponsorship
             const txRequest = new TransactionRequest({
@@ -205,8 +203,8 @@ describe('PrivateKeySigner', () => {
                 isIntendedToBeSponsored: true
             });
 
-            // Sign it with the origin signer
-            const signedTx = originSigner.sign(txRequest);
+            // Sign it with the origin gasPayer
+            const signedTx = sender.sign(txRequest);
 
             // Mock the concatenated hash
             jest.spyOn(nc_utils, 'concatBytes').mockImplementation(
@@ -214,7 +212,7 @@ describe('PrivateKeySigner', () => {
             );
 
             // Sponsor the transaction
-            const sponsoredTx = signer.sign(
+            const sponsoredTx = gasPayer.sign(
                 signedTx
             ) as SponsoredTransactionRequest;
 
