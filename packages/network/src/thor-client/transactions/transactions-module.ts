@@ -880,14 +880,14 @@ class TransactionsModule {
         // Normalize to SimulateTransactionClause[]
         const clausesToEstimate: SimulateTransactionClause[] = clauses.map(
             (clause) => {
+                if (clause === undefined) {
+                    throw new InvalidDataType(
+                        'TransactionsModule.estimateGas()',
+                        'Invalid ContractClause provided: missing inner clause.',
+                        { clause }
+                    );
+                }
                 if ('clause' in clause) {
-                    if (!clause.clause) {
-                        throw new InvalidDataType(
-                            'TransactionsModule.estimateGas()',
-                            'Invalid ContractClause provided: missing inner clause.',
-                            { clause }
-                        );
-                    }
                     return clause.clause;
                 }
                 return clause;
@@ -1020,7 +1020,16 @@ class TransactionsModule {
     ): Promise<ContractCallResult[]> {
         // Simulate the transaction to get the result of the contract call
         const response = await this.simulateTransaction(
-            clauses.map((clause) => clause.clause),
+            clauses.map((clause) => {
+                if (clause.clause === undefined) {
+                    throw new InvalidDataType(
+                        'TransactionsModule.executeMultipleClausesCall()',
+                        'Invalid ContractClause provided: missing inner clause.',
+                        { clause }
+                    );
+                }
+                return clause.clause;
+            }),
             options
         );
         // Returning the decoded results both as plain and array.
@@ -1094,12 +1103,24 @@ class TransactionsModule {
      * @return {Promise<SendTransactionResult>} The result of the transaction, including transaction ID and a wait function.
      */
     public async executeMultipleClausesTransaction(
-        clauses: ContractClause[],
+        clauses: ContractClause[] | TransactionClause[],
         signer: VeChainSigner,
         options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {
         const id = await signer.sendTransaction({
-            clauses: clauses.map((clause) => clause.clause),
+            clauses: clauses.map((clause) => {
+                if (clause === undefined) {
+                    throw new InvalidDataType(
+                        'TransactionsModule.executeMultipleClausesTransaction()',
+                        'Invalid ContractClause[] | TransactionClause[] provided: missing clause.',
+                        { clause }
+                    );
+                }
+                if ('clause' in clause) {
+                    return (clause as unknown as ContractClause).clause;
+                }
+                return clause;
+            }),
             gas: options?.gas,
             gasLimit: options?.gasLimit,
             gasPrice: options?.gasPrice,
