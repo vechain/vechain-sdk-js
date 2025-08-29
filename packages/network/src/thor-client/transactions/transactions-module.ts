@@ -864,14 +864,14 @@ class TransactionsModule {
         // Normalize to SimulateTransactionClause[]
         const clausesToEstimate: SimulateTransactionClause[] = clauses.map(
             (clause) => {
+                if (clause === undefined) {
+                    throw new InvalidDataType(
+                        'TransactionsModule.estimateGas()',
+                        'Invalid ContractClause provided: missing inner clause.',
+                        { clause }
+                    );
+                }
                 if ('clause' in clause) {
-                    if (!clause.clause) {
-                        throw new InvalidDataType(
-                            'TransactionsModule.estimateGas()',
-                            'Invalid ContractClause provided: missing inner clause.',
-                            { clause }
-                        );
-                    }
                     return clause.clause;
                 }
                 return clause;
@@ -1093,15 +1093,15 @@ class TransactionsModule {
     ): Promise<SendTransactionResult> {
         const id = await signer.sendTransaction({
             clauses: clauses.map((clause) => {
-                if ('clause' in clause) {
-                    return (clause as unknown as ContractClause).clause;
-                }
                 if (clause === undefined) {
                     throw new InvalidDataType(
                         'TransactionsModule.executeMultipleClausesTransaction()',
-                        'Invalid TransactionClause provided: missing clause.',
+                        'Invalid ContractClause[] | TransactionClause[] provided: missing clause.',
                         { clause }
                     );
+                }
+                if ('clause' in clause) {
+                    return (clause as unknown as ContractClause).clause;
                 }
                 return clause as TransactionClause;
             }),
