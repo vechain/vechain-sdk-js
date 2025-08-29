@@ -16,9 +16,23 @@
     "certificate",
     "bloom"
   ],
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "exports": {
+    "./common": {
+      "types": "./dist/common.d.ts",
+      "import": "./dist/common.mjs",
+      "require": "./dist/common.js"
+    },
+    "./thor": {
+      "types": "./dist/thor.d.ts",
+      "import": "./dist/thor.mjs",
+      "require": "./dist/thor.js"
+    },
+    "./viem": {
+      "types": "./dist/viem.d.ts",
+      "import": "./dist/viem.mjs",
+      "require": "./dist/viem.js"
+    }
+  },
   "files": [
     "dist",
     "src",
@@ -27,10 +41,10 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "rm -rf ./dist && tsup-node src/index.ts --format cjs,esm --dts --sourcemap",
+    "build": "rm -rf ./dist && tsup-node --entry.common=src/common/index.ts --entry.thor=src/thor/index.ts --entry.viem=src/viem/index.ts --format cjs,esm --dts --sourcemap",
     "check:circular-dependencies": "npx madge --json --circular --extensions ts src | jq '. | length' | awk '{if($1 > 15) exit 1}'",
     "lint": "eslint src/**/*.ts",
-    "format": "prettier --write src/**/*.ts tests/**/*.ts solo-seeding/**/*.ts",
+    "format": "prettier --write src/**/**/**/**/*.ts tests/**/**/**/**/*.ts",
     "start-thor-solo": "yarn workspace @vechain/sdk-solo-setup solo-up",
     "stop-thor-solo": "yarn workspace @vechain/sdk-solo-setup solo-down",
     "seed-thor-solo": "yarn workspace @vechain/sdk-solo-setup solo-seed",

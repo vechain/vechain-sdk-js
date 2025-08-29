@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, test } from '@jest/globals';
-import { MozillaWebSocketClient } from '@ws';
+import { MozillaWebSocketClient } from '@thor/ws';
 import log from 'loglevel';
 
 /*

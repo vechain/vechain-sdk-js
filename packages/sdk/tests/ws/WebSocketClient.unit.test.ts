@@ -1,6 +1,6 @@
 import { describe, test, expect, jest, beforeEach } from '@jest/globals';
-import { type WebSocketClient, type WebSocketListener } from '@ws';
-import { type HttpPath } from '@http';
+import { type WebSocketClient, type WebSocketListener } from '@thor/ws';
+import { type HttpPath } from '@common/http';
 // Simplified mock implementation of WebSocketClient for testing
 class MockWebSocketClient implements WebSocketClient {
     private readonly _baseURL: string;
