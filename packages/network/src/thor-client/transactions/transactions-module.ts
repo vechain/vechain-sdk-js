@@ -1103,7 +1103,7 @@ class TransactionsModule {
                 if ('clause' in clause) {
                     return (clause as unknown as ContractClause).clause;
                 }
-                return clause as TransactionClause;
+                return clause;
             }),
             gas: options?.gas,
             gasLimit: options?.gasLimit,
