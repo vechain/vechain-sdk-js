@@ -6,8 +6,6 @@ import {
     EventsSubscription,
     type ExecuteCodesResponse,
     type ExpandedBlockResponse,
-    type GetFeesHistoryResponse,
-    type GetFeesPriorityResponse,
     InspectClauses,
     NewTransactionSubscription,
     type RawTx,
@@ -22,7 +20,6 @@ import {
     RetrieveTransactionByID,
     RetrieveTransactionReceipt,
     type SubscriptionEventResponse,
-    SuggestPriorityFee,
     type ThorNetworks,
     type GetTxResponse,
     type GetTxReceiptResponse,
@@ -49,6 +46,8 @@ import { FilterRangeUnits } from '@thor/thor-client/model/logs/FilterRangeUnits'
 import { FilterOptions } from '@thor/thor-client/model/logs/FilterOptions';
 import { EventCriteria } from '@thor/thor-client/model/logs/EventCriteria';
 import { type AbiEvent, toEventSelector } from 'viem';
+import type { EstimatedGas } from '@thor/thor-client/model/gas/EstimatedGas';
+import type { FeeHistory } from '@thor/thor-client/model/gas/FeeHistory';
 
 /**
  * Filter types for viem compatibility.
@@ -256,14 +255,11 @@ class PublicClient {
         return clause;
     }
 
-    public async getFeeHistory(
-        blockCount: number
-    ): Promise<GetFeesHistoryResponse> {
-        // viem specific
-        const data = await RetrieveHistoricalFeeData.of(blockCount).askTo(
-            this.httpClient
-        );
-        return data.response;
+    public async getFeeHistory(blockCount: number): Promise<FeeHistory> {
+        const thorClient = ThorClient.at(this.httpClient);
+        const gasModule = thorClient.gas;
+        const gas = await gasModule.getFeeHistory(blockCount);
+        return gas;
     }
 
     public async getGasPrice(): Promise<bigint[]> {
@@ -286,19 +282,19 @@ class PublicClient {
 
     public async estimateGas(
         request: ExecuteCodesRequestJSON
-    ): Promise<ExecuteCodesResponse> {
-        // viem specific
-        const inspectClause = await InspectClauses.of(request).askTo(
-            this.httpClient
-        );
-        const gasUsedArray = inspectClause.response;
-        return gasUsedArray;
+    ): Promise<EstimatedGas[]> {
+        const thorClient = ThorClient.at(this.httpClient);
+        const gasModule = thorClient.gas;
+        const gas = await gasModule.estimateGas(request);
+        return gas;
     }
 
-    public async estimateMaxPriorityFeePerGas(): Promise<GetFeesPriorityResponse> {
+    public async suggestPriorityFeeRequest(): Promise<bigint> {
         // viem specific
-        const data = await SuggestPriorityFee.of().askTo(this.httpClient);
-        return data.response;
+        const thorClient = ThorClient.at(this.httpClient);
+        const gasModule = thorClient.gas;
+        const gas = await gasModule.suggestPriorityFeeRequest();
+        return gas;
     }
 
     public async getChainId(): Promise<bigint> {

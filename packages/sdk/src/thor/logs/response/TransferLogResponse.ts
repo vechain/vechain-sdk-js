@@ -1,5 +1,4 @@
 import { Address, HexUInt, Quantity } from '@vcdm';
-import { LogMeta } from '@thor/thor-client/model/logs/LogMeta';
 import { type TransferLogResponseJSON } from '@thor/json';
 import { IllegalArgumentError } from '@errors';
 import { LogMetaResponse } from './LogMetaResponse';
