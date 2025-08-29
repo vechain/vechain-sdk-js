@@ -10,6 +10,7 @@ import {
 } from 'abitype';
 import { type VeChainSigner } from '../../../signer';
 import type { TransactionReceipt } from '../../transactions/types';
+import { type ContractsModule } from '../contracts-module';
 import type { ContractCallOptions, ContractTransactionOptions } from '../types';
 import {
     getClauseProxy,
@@ -25,7 +26,6 @@ import {
     type ContractFunctionRead,
     type ContractFunctionTransact
 } from './types';
-import { type ContractsModule } from '../contracts-module';
 
 /**
  * A class representing a smart contract deployed on the blockchain.
@@ -104,9 +104,6 @@ class Contract<TAbi extends Abi> {
         options: ContractCallOptions
     ): ContractCallOptions {
         this.contractCallOptions = options;
-
-        // initialize the proxy with the new options
-        this.read = getReadProxy(this);
         return this.contractCallOptions;
     }
 
@@ -123,7 +120,6 @@ class Contract<TAbi extends Abi> {
      */
     public clearContractReadOptions(): void {
         this.contractCallOptions = {};
-        this.read = getReadProxy(this);
     }
 
     /**
@@ -135,9 +131,6 @@ class Contract<TAbi extends Abi> {
         options: ContractTransactionOptions
     ): ContractTransactionOptions {
         this.contractTransactionOptions = options;
-
-        // initialize the proxy with the new options
-        this.transact = getTransactProxy(this);
         return this.contractTransactionOptions;
     }
 
@@ -154,7 +147,6 @@ class Contract<TAbi extends Abi> {
      */
     public clearContractTransactOptions(): void {
         this.contractTransactionOptions = {};
-        this.transact = getTransactProxy(this);
     }
 
     /**
@@ -163,10 +155,6 @@ class Contract<TAbi extends Abi> {
      */
     public setSigner(signer: VeChainSigner): VeChainSigner {
         this.signer = signer;
-
-        // initialize the proxy with the new signer
-        this.transact = getTransactProxy(this);
-        this.read = getReadProxy(this);
         return this.signer;
     }
 
