@@ -22,4 +22,17 @@ class InvalidHTTPParams extends VechainSDKError<{
     url: string;
 }> {}
 
-export { InvalidHTTPRequest, InvalidHTTPParams };
+/**
+ * Http network communication error
+ *
+ * WHEN TO USE:
+ * * Error will be thrown when network communication fails (timeout, connection reset, etc.)
+ * * This is different from HTTP protocol errors (4xx/5xx responses)
+ */
+class HttpNetworkError extends VechainSDKError<{
+    method: string;
+    url: string;
+    networkErrorType?: string;
+}> {}
+
+export { InvalidHTTPRequest, InvalidHTTPParams, HttpNetworkError };

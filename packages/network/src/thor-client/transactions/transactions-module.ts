@@ -16,7 +16,11 @@ import {
     Units,
     VET
 } from '@vechain/sdk-core';
-import { InvalidDataType, InvalidTransactionField } from '@vechain/sdk-errors';
+import {
+    InvalidDataType,
+    InvalidTransactionField,
+    HttpNetworkError
+} from '@vechain/sdk-errors';
 import { ErrorFragment, Interface } from 'ethers';
 import { HttpMethod } from '../../http';
 import { blocksFormatter, getTransactionIndexIntoBlock } from '../../provider';
@@ -195,13 +199,23 @@ class TransactionsModule {
                 { head: options?.head }
             );
 
-        return (await this.blocksModule.httpClient.http(
-            HttpMethod.GET,
-            thorest.transactions.get.TRANSACTION_RECEIPT(id),
-            {
-                query: buildQuery({ head: options?.head })
+        try {
+            return (await this.blocksModule.httpClient.http(
+                HttpMethod.GET,
+                thorest.transactions.get.TRANSACTION_RECEIPT(id),
+                {
+                    query: buildQuery({ head: options?.head })
+                }
+            )) as TransactionReceipt | null;
+        } catch (error) {
+            // Check if this is a network communication error
+            if (error instanceof HttpNetworkError) {
+                // For network errors, return null instead of throwing
+                // This allows the polling mechanism to continue
+                return null;
             }
-        )) as TransactionReceipt | null;
+            throw error;
+        }
     }
 
     /**
@@ -297,11 +311,13 @@ class TransactionsModule {
             );
         }
 
+        const safetyTimeout = options?.timeoutMs ?? 5 * 60 * 1000; // 5 minutes
+
         return await Poll.SyncPoll(
             async () => await this.getTransactionReceipt(txID),
             {
                 requestIntervalInMilliseconds: options?.intervalMs,
-                maximumWaitingTimeInMilliseconds: options?.timeoutMs
+                maximumWaitingTimeInMilliseconds: safetyTimeout
             }
         ).waitUntil((result) => {
             return result !== null;

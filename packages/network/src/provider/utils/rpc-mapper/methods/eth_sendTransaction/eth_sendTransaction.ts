@@ -1,6 +1,7 @@
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
+    HttpNetworkError,
     stringifyData
 } from '@vechain/sdk-errors';
 import { type VeChainSigner } from '../../../../../signer';
@@ -97,6 +98,21 @@ const ethSendTransaction = async (
         // Return the result
         return await signer.sendTransaction(transaction);
     } catch (error) {
+        // Check if this is a network communication error
+        if (error instanceof HttpNetworkError) {
+            throw new JSONRPCInternalError(
+                'eth_sendTransaction()',
+                'Method "eth_sendTransaction" failed due to network communication error.',
+                {
+                    params: stringifyData(params),
+                    url: thorClient.httpClient.baseURL,
+                    networkError: true,
+                    networkErrorType: error.data.networkErrorType
+                },
+                error
+            );
+        }
+
         throw new JSONRPCInternalError(
             'eth_sendTransaction()',
             'Method "eth_sendTransaction" failed.',

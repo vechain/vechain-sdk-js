@@ -2,6 +2,7 @@ import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     JSONRPCTransactionRevertError,
+    HttpNetworkError,
     stringifyData
 } from '@vechain/sdk-errors';
 import {
@@ -80,6 +81,22 @@ const ethCall = async (
         if (e instanceof JSONRPCTransactionRevertError) {
             throw e;
         }
+
+        // Check if this is a network communication error
+        if (e instanceof HttpNetworkError) {
+            throw new JSONRPCInternalError(
+                'eth_call()',
+                'Method "eth_call" failed due to network communication error.',
+                {
+                    params: stringifyData(params),
+                    url: thorClient.httpClient.baseURL,
+                    networkError: true,
+                    networkErrorType: e.data.networkErrorType,
+                    innerError: stringifyData(e)
+                }
+            );
+        }
+
         throw new JSONRPCInternalError(
             'eth_call()',
             'Method "eth_call" failed.',

@@ -1,5 +1,9 @@
 import { EventEmitter } from 'events';
-import { InvalidDataType, PollExecution } from '@vechain/sdk-errors';
+import {
+    InvalidDataType,
+    PollExecution,
+    HttpNetworkError
+} from '@vechain/sdk-errors';
 
 /**
  * Poll in an event based way.
@@ -104,21 +108,39 @@ class EventPoll<TReturnType> extends EventEmitter {
             const data = await this.pollingFunction();
             this.emit('data', { data, eventPoll: this });
         } catch (error) {
-            // Set error
-            this.error = new PollExecution(
-                'EventPoll - main interval loop function',
-                `Error during the execution of the poll ${(error as Error).message}`,
-                {
-                    functionName: this.pollingFunction.name
+            // Check if this is a network communication error
+            if (error instanceof HttpNetworkError) {
+                // For network errors, we might want to continue polling
+                // Log the network error but don't stop polling
+                console.warn(
+                    'Network error during polling, continuing:',
+                    error.message
+                );
+
+                // Emit the network error but don't stop
+                this.emit('error', { error });
+
+                // Don't stop polling for network errors unless explicitly configured
+                if (this.hasToStopOnError) {
+                    this.stopListen();
                 }
-            );
+            } else {
+                // For other errors, create a PollExecution error
+                this.error = new PollExecution(
+                    'EventPoll - main interval loop function',
+                    `Error during the execution of the poll ${(error as Error).message}`,
+                    {
+                        functionName: this.pollingFunction.name
+                    }
+                );
 
-            // Emit the error
-            this.emit('error', { error: this.error });
+                // Emit the error
+                this.emit('error', { error: this.error });
 
-            // Stop listening?
-            if (this.hasToStopOnError) {
-                this.stopListen();
+                // Stop listening for non-network errors
+                if (this.hasToStopOnError) {
+                    this.stopListen();
+                }
             }
         }
 
