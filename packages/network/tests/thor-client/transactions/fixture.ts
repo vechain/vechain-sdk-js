@@ -1,9 +1,4 @@
-import {
-    ABIContract,
-    networkInfo,
-    Units,
-    type TransactionBody
-} from '@vechain/sdk-core';
+import { ABIContract, Units, type TransactionBody } from '@vechain/sdk-core';
 import { BUILT_IN_CONTRACTS } from '../../../src';
 import {
     TEST_ACCOUNTS,

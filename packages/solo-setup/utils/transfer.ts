@@ -11,7 +11,6 @@ import {
     VTHO
 } from '@vechain/sdk-core';
 import {
-    THOR_SOLO_CHAIN_TAG,
     THOR_SOLO_SEEDED_TEST_TOKEN_AMOUNT,
     THOR_SOLO_SEEDED_VET_AMOUNT,
     THOR_SOLO_SEEDED_VTHO_AMOUNT
@@ -83,6 +82,10 @@ export const seedVTHO = async (accounts: TestAccount[]): Promise<string> => {
     try {
         const thorClient = ThorClient.at('http://localhost:8669');
         const latestBlock = await thorClient.blocks.getBestBlockCompressed();
+
+        const genesisBlock: any = await thorClient.blocks.getGenesisBlock();
+        const chainTagId = Number(`0x${genesisBlock.id.slice(-2)}`);
+
         const privateKey = HexUInt.of(genesisDeployerAccount.privateKey).bytes;
         const clauses: TransactionClause[] = [];
         for (const account of accounts) {
@@ -93,7 +96,7 @@ export const seedVTHO = async (accounts: TestAccount[]): Promise<string> => {
             clauses.push(contractClause.clause);
         }
         const txBody: TransactionBody = {
-            chainTag: THOR_SOLO_CHAIN_TAG,
+            chainTag: chainTagId,
             blockRef:
                 latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
             expiration: 32,
@@ -137,6 +140,8 @@ export const seedTestToken = async (
     try {
         const thorClient = ThorClient.at('http://localhost:8669');
         const latestBlock = await thorClient.blocks.getBestBlockCompressed();
+        const genesisBlock = await thorClient.blocks.getGenesisBlock();
+        const chainTagId = Number(`0x${genesisBlock.id.slice(-2)}`);
         const privateKey = HexUInt.of(genesisDeployerAccount.privateKey).bytes;
         const clauses: TransactionClause[] = [];
         for (const account of accounts) {
@@ -147,7 +152,7 @@ export const seedTestToken = async (
             clauses.push(contractClause.clause);
         }
         const txBody: TransactionBody = {
-            chainTag: THOR_SOLO_CHAIN_TAG,
+            chainTag: chainTagId,
             blockRef:
                 latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
             expiration: 32,

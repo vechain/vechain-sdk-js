@@ -3,8 +3,7 @@ import { InvalidDataType } from '@vechain/sdk-errors';
 import { type ThorClient, type TransactionReceipt } from '../../../src';
 import {
     transactionNonces,
-    transfer1VTHOClause,
-    transferTransactionBodyValueAsNumber
+    transfer1VTHOClause
 } from '../transactions/fixture';
 import { HexUInt, BlockId, Transaction } from '@vechain/sdk-core';
 import { type ThorSoloAccount } from '@vechain/sdk-solo-setup';

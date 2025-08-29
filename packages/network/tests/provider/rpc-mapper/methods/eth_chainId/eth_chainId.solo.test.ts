@@ -7,8 +7,6 @@ import {
 } from '../../../../../src';
 import { retryOperation } from '../../../../test-utils';
 
-const soloChainId = '0xf6';
-
 /**
  * RPC Mapper integration tests for 'eth_chainId' method
  *

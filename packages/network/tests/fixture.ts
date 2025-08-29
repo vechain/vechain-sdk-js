@@ -1,9 +1,11 @@
 import { HexUInt, Secp256k1 } from '@vechain/sdk-core';
 import {
+    CompressedBlockDetail,
     MAINNET_URL,
     ProviderInternalBaseWallet,
     type SignTransactionOptions,
-    TESTNET_URL
+    TESTNET_URL,
+    ThorClient
 } from '../src';
 import { SimpleHttpClient } from '../src/http';
 import {
@@ -39,6 +41,16 @@ const accountDispatcher = AccountDispatcher.getInstance();
 
 const getUnusedAccount = (): ThorSoloAccount => {
     return accountDispatcher.getNextAccount();
+};
+
+const getChainTag = async (thorClient: ThorClient): Promise<number | null> => {
+    const genesisBlock: CompressedBlockDetail | null =
+        await thorClient.blocks.getGenesisBlock();
+    if (genesisBlock) {
+        const chainTagId = Number(`0x${genesisBlock.id.slice(-2)}`);
+        return chainTagId;
+    }
+    return null;
 };
 
 const getAllUsedAccounts = (): ThorSoloAccount[] => {
@@ -171,6 +183,7 @@ export {
     testNetwork,
     ZERO_ADDRESS,
     getUnusedAccount,
+    getChainTag,
     getAllUsedAccounts,
     getUnusedBaseWallet,
     getUnusedBaseWalletWithGasPayer,

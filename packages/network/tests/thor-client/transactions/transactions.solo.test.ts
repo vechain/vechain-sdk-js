@@ -5,8 +5,6 @@ import {
     invalidWaitForTransactionTestCases,
     transactionNonces,
     transfer1VTHOClause,
-    transferTransactionBody,
-    transferTransactionBodyValueAsNumber,
     waitForTransactionTestCases
 } from './fixture';
 import { TEST_ACCOUNTS } from '../../fixture';
