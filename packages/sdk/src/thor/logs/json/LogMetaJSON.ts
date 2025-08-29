@@ -8,8 +8,8 @@ interface LogMetaJSON {
     txID: string;
     txOrigin: string;
     clauseIndex: number;
-    txIndex: number;
-    logIndex: number;
+    txIndex: number | undefined;
+    logIndex: number | undefined;
 }
 
 export { type LogMetaJSON };

@@ -1,7 +1,7 @@
 import { type EventLogResponseJSON } from '@thor/json';
-import { LogMeta } from '@thor';
 import { Address, HexUInt, HexUInt32, type Hex } from '@vcdm';
 import { IllegalArgumentError } from '@errors';
+import { LogMetaResponse } from './LogMetaResponse';
 
 /**
  * Full-Qualified-Path
@@ -30,7 +30,7 @@ class EventLogResponse {
     /**
      * The event or transfer log metadata such as block number, block timestamp, etc.
      */
-    readonly meta: LogMeta;
+    readonly meta: LogMetaResponse;
 
     /**
      * Constructs an instance of the class with the event log response represented as a JSON object.
@@ -46,7 +46,7 @@ class EventLogResponse {
                 (topic: string): HexUInt32 => HexUInt32.of(topic)
             );
             this.data = HexUInt.of(json.data);
-            this.meta = new LogMeta(json.meta);
+            this.meta = new LogMetaResponse(json.meta);
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: EventLogResponseJSON)`,

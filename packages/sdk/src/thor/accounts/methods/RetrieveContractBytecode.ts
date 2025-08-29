@@ -1,7 +1,7 @@
-import { type HttpClient, type HttpPath } from '@http';
-import type { Address } from '@vcdm';
+import { type HttpQuery, type HttpClient, type HttpPath } from '@http';
+import type { Address, Revision } from '@vcdm';
 import { type ContractBytecodeJSON } from '@thor/json';
-import { ContractBytecode } from '@thor';
+import { ContractBytecode } from '@thor/accounts/response/ContractBytecode';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
 
 /**
@@ -23,12 +23,21 @@ class RetrieveContractBytecode
     private readonly path: RetrieveContractBytecodePath;
 
     /**
+     * Represents the HTTP query for this specific API endpoint.
+     */
+    private readonly query: RetrieveContractBytecodeQuery;
+
+    /**
      * Constructs an instance of the class with the specified HTTP path.
      *
      * @param {HttpPath} path - The HTTP path to initialize the instance with.
      */
-    protected constructor(path: RetrieveContractBytecodePath) {
+    protected constructor(
+        path: RetrieveContractBytecodePath,
+        query: RetrieveContractBytecodeQuery
+    ) {
         this.path = path;
+        this.query = query;
     }
 
     /**
@@ -43,7 +52,7 @@ class RetrieveContractBytecode
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveContractBytecode, ContractBytecode>> {
         const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveContractBytecode, ContractBytecode>>`;
-        const response = await httpClient.get(this.path, { query: '' });
+        const response = await httpClient.get(this.path, this.query);
         if (response.ok) {
             const json = (await response.json()) as ContractBytecodeJSON;
             try {
@@ -81,9 +90,10 @@ class RetrieveContractBytecode
      * @param {Address} address - The address used to generate the contract bytecode's path.
      * @return {RetrieveContractBytecode} A new instance of RetrieveContractBytecode with the specified path.
      */
-    static of(address: Address): RetrieveContractBytecode {
+    static of(address: Address, revision?: Revision): RetrieveContractBytecode {
         return new RetrieveContractBytecode(
-            new RetrieveContractBytecodePath(address)
+            new RetrieveContractBytecodePath(address),
+            new RetrieveContractBytecodeQuery(revision)
         );
     }
 }
@@ -116,4 +126,38 @@ class RetrieveContractBytecodePath implements HttpPath {
     }
 }
 
-export { RetrieveContractBytecode, RetrieveContractBytecodePath };
+/**
+ * Retrieve Contract Bytecode Query
+ *
+ * Represents a query for retrieving contract bytecode with optional revision parameter.
+ */
+class RetrieveContractBytecodeQuery implements HttpQuery {
+    /**
+     * Represents the revision of the query.
+     */
+    private readonly revision?: Revision;
+
+    /**
+     * Constructs an instance of the class with an optional revision.
+     *
+     * @param {Revision} [revision] - The revision to be set. If not provided, no revision query parameter will be added.
+     */
+    constructor(revision?: Revision) {
+        this.revision = revision;
+    }
+
+    /**
+     * Returns the query string for the revision.
+     *
+     * @returns {string} The query string for the revision, or empty string if no revision is set.
+     */
+    get query(): string {
+        return this.revision != null ? `?revision=${this.revision}` : '';
+    }
+}
+
+export {
+    RetrieveContractBytecode,
+    RetrieveContractBytecodePath,
+    RetrieveContractBytecodeQuery
+};

@@ -1,7 +1,7 @@
 import { type HttpClient, type HttpPath, type HttpQuery } from '@http';
 import { GetAccountResponse } from '@thor/accounts';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor';
-import { type Address, Revision } from '@vcdm';
+import { type Address, type Revision } from '@vcdm';
 import { type GetAccountResponseJSON } from '../json';
 
 /**
@@ -33,7 +33,10 @@ class RetrieveAccountDetails
      * @param {HttpPath} path - The HTTP path to initialize the instance with.
      * @param {RetrieveAccountDetailsQuery} query - The HTTP query to initialize the instance with.
      */
-    protected constructor(path: RetrieveAccountDetailsPath, query: RetrieveAccountDetailsQuery) {
+    protected constructor(
+        path: RetrieveAccountDetailsPath,
+        query: RetrieveAccountDetailsQuery
+    ) {
         this.path = path;
         this.query = query;
     }
@@ -82,6 +85,13 @@ class RetrieveAccountDetails
         );
     }
 
+    /**
+     * Creates an instance of RetrieveAccountDetails using the provided address and revision.
+     *
+     * @param {Address} [address] - The address used to generate the account details' path.
+     * @param {Revision} [revision] - The revision to be set. If not provided, no revision query parameter will be added.
+     * @return {RetrieveAccountDetails} A new instance of RetrieveAccountDetails with the specified path and query.
+     */
     static of(address: Address, revision?: Revision): RetrieveAccountDetails {
         return new RetrieveAccountDetails(
             new RetrieveAccountDetailsPath(address),
@@ -90,6 +100,11 @@ class RetrieveAccountDetails
     }
 }
 
+/**
+ * Retrieve Account Details Path
+ *
+ * Represents a path for retrieving account details.
+ */
 class RetrieveAccountDetailsPath implements HttpPath {
     readonly address: Address;
 
@@ -132,4 +147,8 @@ class RetrieveAccountDetailsQuery implements HttpQuery {
     }
 }
 
-export { RetrieveAccountDetails, RetrieveAccountDetailsPath, RetrieveAccountDetailsQuery }; 
+export {
+    RetrieveAccountDetails,
+    RetrieveAccountDetailsPath,
+    RetrieveAccountDetailsQuery
+};

@@ -4,13 +4,11 @@ import {
     RetrieveStoragePositionValue,
     RetrieveStoragePositionValuePath,
     GetStorageResponse,
-    ThorError
+    ThorError,
+    RetrieveStoragePositionValueQuery
 } from '@thor';
-import {
-    mockHttpClient,
-    mockHttpClientWithError
-} from '../../MockHttpClient';
-import { GetStorageResponseJSON } from '@thor/json';
+import { mockHttpClient, mockHttpClientWithError } from '../../MockHttpClient';
+import { type GetStorageResponseJSON } from '@thor/json';
 /**
  * VeChain retrieve storage position value - unit
  *
@@ -85,7 +83,7 @@ describe('RetrieveStoragePositionValue unit tests', () => {
             const getSpy = jest.spyOn(mockClient, 'get');
             expect(getSpy).toHaveBeenCalledWith(
                 expect.any(RetrieveStoragePositionValuePath),
-                { query: '' }
+                expect.any(RetrieveStoragePositionValueQuery)
             );
 
             expect(result.request).toBe(request);

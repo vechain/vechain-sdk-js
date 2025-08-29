@@ -1,14 +1,19 @@
 import {
-    type EventLogFilterRequestJSON,
+    EventCriteriaRequest,
+    EventLogFilterRequest,
     EventLogsResponse,
-    type EventLogsResponseJSON,
+    FilterOptionsRequest,
+    FilterRangeRequest,
+    FilterRangeUnits,
     QuerySmartContractEvents,
     ThorError
 } from '@thor';
+import { type EventLogsResponseJSON } from '@thor/json';
 import { expect, jest } from '@jest/globals';
 import type { HttpClient } from '@http';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
-
+import { Address, Hex } from '@vcdm';
+import { LogSort } from '@thor/thor-client/model/logs/LogSort';
 
 const mockHttpClient = <T>(response: T): HttpClient => {
     return {
@@ -27,19 +32,18 @@ const mockResponse = <T>(body: T, status: number): Response => {
 };
 
 /**
- * group unit/thor/logs
+ * @group unit
  */
 describe('QuerySmartContractEvents UNIT tests', () => {
     test('err <- askTo - invalid request', async () => {
         const status = 400;
-        // Pretend the request is invalid albeit not possible to build an invalid request from the SDK.
-        const request: EventLogFilterRequestJSON =
-            {} satisfies EventLogFilterRequestJSON;
+        // Valid request, mock error response.
+        const request = new EventLogFilterRequest(
+            new FilterRangeRequest(FilterRangeUnits.block, 0, 0)
+        );
         try {
-            await QuerySmartContractEvents.of(request).askTo(
-                mockHttpClient(mockResponse({}, status))
-            );
-            // noinspection ExceptionCaughtLocallyJS
+            const query = new QuerySmartContractEvents(request);
+            await query.askTo(mockHttpClient(mockResponse({}, status)));
             throw new Error('Should not reach here.');
         } catch (error) {
             expect(error).toBeInstanceOf(ThorError);
@@ -48,26 +52,22 @@ describe('QuerySmartContractEvents UNIT tests', () => {
     });
 
     test('ok <- askTo - not empty', async () => {
-        const request: EventLogFilterRequestJSON = {
-            range: {
-                unit: 'block',
-                from: 17240365,
-                to: 17289864
-            },
-            options: {
-                offset: 0,
-                limit: 100,
-                includeIndexes: true
-            },
-            criteriaSet: [
-                {
-                    address: '0x0000000000000000000000000000456E65726779',
-                    topic0: '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-                    topic1: '0x0000000000000000000000006d95e6dca01d109882fe1726a2fb9865fa41e7aa'
-                }
+        const filter = new EventLogFilterRequest(
+            new FilterRangeRequest(FilterRangeUnits.block, 17240365, 17289864),
+            new FilterOptionsRequest(0, 100, true),
+            [
+                new EventCriteriaRequest(
+                    Address.of('0x0000000000000000000000000000456E65726779'),
+                    Hex.of(
+                        '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
+                    ),
+                    Hex.of(
+                        '0x0000000000000000000000006d95e6dca01d109882fe1726a2fb9865fa41e7aa'
+                    )
+                )
             ],
-            order: 'asc'
-        } satisfies EventLogFilterRequestJSON;
+            LogSort.asc
+        );
         const expected = [
             {
                 address: '0x0000000000000000000000000000456E65726779',
@@ -89,10 +89,9 @@ describe('QuerySmartContractEvents UNIT tests', () => {
                 }
             }
         ] satisfies EventLogsResponseJSON;
+        const query = new QuerySmartContractEvents(filter);
         const actual = (
-            await QuerySmartContractEvents.of(request).askTo(
-                mockHttpClient(mockResponse(expected, 200))
-            )
+            await query.askTo(mockHttpClient(mockResponse(expected, 200)))
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toBeInstanceOf(EventLogsResponse);
@@ -100,19 +99,13 @@ describe('QuerySmartContractEvents UNIT tests', () => {
     });
 
     test('ok <- askTo -  empty', async () => {
-        const request: EventLogFilterRequestJSON = {
-            range: {
-                unit: 'block',
-                from: 0,
-                to: 0
-            },
-            options: {}
-        } satisfies EventLogFilterRequestJSON;
+        const filter = new EventLogFilterRequest(
+            new FilterRangeRequest(FilterRangeUnits.block, 0, 0)
+        );
         const expected = [] satisfies EventLogsResponseJSON;
+        const query = new QuerySmartContractEvents(filter);
         const actual = (
-            await QuerySmartContractEvents.of(request).askTo(
-                mockHttpClient(mockResponse(expected, 200))
-            )
+            await query.askTo(mockHttpClient(mockResponse(expected, 200)))
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toBeInstanceOf(EventLogsResponse);

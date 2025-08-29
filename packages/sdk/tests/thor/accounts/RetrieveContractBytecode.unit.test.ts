@@ -4,13 +4,11 @@ import {
     RetrieveContractBytecode,
     RetrieveContractBytecodePath,
     ContractBytecode,
-    ThorError
+    ThorError,
+    RetrieveContractBytecodeQuery
 } from '@thor';
 import { type ContractBytecodeJSON } from '@thor/json';
-import {
-    mockHttpClient,
-    mockHttpClientWithError
-} from '../../MockHttpClient';
+import { mockHttpClient, mockHttpClientWithError } from '../../MockHttpClient';
 /**
  * VeChain retrieve contract bytecode - unit
  *
@@ -63,7 +61,7 @@ describe('RetrieveContractBytecode unit tests', () => {
             const getSpy = jest.spyOn(mockClient, 'get');
             expect(getSpy).toHaveBeenCalledWith(
                 expect.any(RetrieveContractBytecodePath),
-                { query: '' }
+                expect.any(RetrieveContractBytecodeQuery)
             );
 
             expect(result.request).toBe(request);
