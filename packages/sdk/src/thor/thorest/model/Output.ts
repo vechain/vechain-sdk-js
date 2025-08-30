@@ -11,7 +11,7 @@ import { IllegalArgumentError } from '@common/errors';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/sdk/src/thor/model/Output.ts!';
+const FQP = 'packages/sdk/src/thor/thorest/model/Output.ts!';
 
 /**
  * [Receipt.outputs](http://localhost:8669/doc/stoplight-ui/#/schemas/Receipt)

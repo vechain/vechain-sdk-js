@@ -4,7 +4,8 @@ import { InvalidEncodingError } from '@common/errors';
 /**
  * Full Qualified Path
  */
-const FQP = 'vcdm.encoding.rlp.helpers.compactFixedHexBlobKind!';
+const FQP =
+    'packages/sdk/src/common/vcdm/encoding/rlp/helpers/compactFixedHexBlobKind!';
 
 /**
  * Asserts that the provided buffer is of a specific length and does not contain leading zeros.

@@ -7,7 +7,7 @@ import { HexUInt } from './HexUInt';
 /**
  * Full-Qualified Path.
  */
-const FQP = 'packages/sdk/src/vcdm/Address.ts!';
+const FQP = 'packages/sdk/src/common/vcdm/Address.ts!';
 
 /**
  * Represents a VeChain Address as an unsigned integer.

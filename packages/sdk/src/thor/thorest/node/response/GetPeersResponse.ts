@@ -5,7 +5,7 @@ import { IllegalArgumentError } from '@common/errors';
 /**
  * Full-Qualified-Path
  */
-const FQP = 'packages/sdk/src/thor/node/GetPeersResponse.ts!';
+const FQP = 'packages/sdk/src/thor/thorest/node/response/GetPeersResponse.ts!';
 
 /**
  * [GetPeersResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/GetPeersResponse)

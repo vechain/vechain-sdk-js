@@ -5,7 +5,7 @@ import { IllegalArgumentError } from '@common/errors';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/sdk/src/thor/blocks/Block.ts!';
+const FQP = 'packages/sdk/src/thor/thorest/blocks/model/Block.ts!';
 
 /**
  * [Block](http://localhost:8669/doc/stoplight-ui/#/schemas/Block)

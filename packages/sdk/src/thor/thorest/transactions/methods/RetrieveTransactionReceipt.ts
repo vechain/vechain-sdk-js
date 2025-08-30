@@ -12,7 +12,8 @@ import { IllegalArgumentError } from '@common/errors';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/sdk/src/thor/transactions/RetrieveTransactionByID.ts!';
+const FQP =
+    'packages/sdk/src/thor/thorest/transactions/methods/RetrieveTransactionByID.ts!';
 
 /**
  * [Retrieve transaction receipt](http://localhost:8669/doc/stoplight-ui/#/paths/transactions-id--receipt/get)

@@ -10,7 +10,8 @@ import { IllegalArgumentError } from '@common/errors';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/sdk/src/thor/transactions/GetTxReceiptResponse.ts!';
+const FQP =
+    'packages/sdk/src/thor/thorest/transactions/response/GetTxReceiptResponse.ts!';
 
 /**
  * [GetTxReceiptResponse](http://localhost:8669/doc/stoplight-ui/#/paths/transactions-id/get)

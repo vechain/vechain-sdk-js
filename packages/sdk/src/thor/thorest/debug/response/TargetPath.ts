@@ -4,7 +4,7 @@ import { IllegalArgumentError } from '@common/errors';
 /**
  * Full Qualified Path
  */
-const FQP = 'packages/sdk/src/thor/debug/TargetPath.ts!';
+const FQP = 'packages/sdk/src/thor/thorest/debug/response/TargetPath.ts!';
 
 /**
  * Represents a target path for transaction clauses

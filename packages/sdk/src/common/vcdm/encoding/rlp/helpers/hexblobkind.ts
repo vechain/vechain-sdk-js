@@ -5,7 +5,7 @@ import { InvalidEncodingError } from '@common/errors';
 /**
  * Full Qualified Path
  */
-const FQP = 'vcdm.encoding.rlp.helpers.hexBlobKind!';
+const FQP = 'packages/sdk/src/common/vcdm/encoding/rlp/helpers/hexBlobKind!';
 
 /**
  * Validates if the input is a proper hex string for HexBlobKind.

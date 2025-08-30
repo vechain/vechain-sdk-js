@@ -11,7 +11,8 @@ import { IllegalArgumentError } from '@common/errors';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/sdk/src/thor/blocks/ExpandedBlockResponse.ts!';
+const FQP =
+    'packages/sdk/src/thor/thorest/blocks/response/ExpandedBlockResponse.ts!';
 
 class ExpandedBlockResponse extends Block {
     /**

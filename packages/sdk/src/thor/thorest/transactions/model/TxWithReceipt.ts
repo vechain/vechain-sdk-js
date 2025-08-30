@@ -7,7 +7,8 @@ import { Output } from '@thor/thorest/model';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/sdk/src/thor/model/TxWithReceipt.ts!';
+const FQP =
+    'packages/sdk/src/thor/thorest/transactions/model/TxWithReceipt.ts!';
 
 /**
  * Type of the property

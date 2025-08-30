@@ -5,7 +5,7 @@ import { IllegalArgumentError } from '@common/errors';
 /**
  * Full-Qualified-Path
  */
-const FQP = 'packages/sdk/src/thor/debug/StorageRange.ts!';
+const FQP = 'packages/sdk/src/thor/thorest/debug/response/StorageRange.ts!';
 
 /**
  * [StorageRange](http://localhost:8669/doc/stoplight-ui/#/schemas/StorageRange)

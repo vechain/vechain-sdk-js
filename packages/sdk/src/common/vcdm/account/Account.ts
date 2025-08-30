@@ -4,7 +4,7 @@ import { UnsupportedOperationError } from '@common/errors';
 /**
  * Full Qualified Path
  */
-const FQP = 'packages/sdk/src/vcdm/account/Account.ts!';
+const FQP = 'packages/sdk/src/common/vcdm/account/Account.ts!';
 
 type AccountType = 'EOA' | 'Contract';
 

@@ -10,7 +10,8 @@ import { IllegalArgumentError } from '@common/errors';
 /**
  * Full-Qualified-Path
  */
-const FQP = 'packages/sdk/src/thor/debug/RetrieveStorageRange.ts';
+const FQP =
+    'packages/sdk/src/thor/thorest/debug/methods/RetrieveStorageRange.ts';
 
 /**
  * [Retrieve storage range](http://localhost:8669/doc/stoplight-ui/#/paths/debug-storage-range/post)

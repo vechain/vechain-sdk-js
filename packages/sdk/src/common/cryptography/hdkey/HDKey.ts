@@ -9,7 +9,7 @@ import { base58 } from '@scure/base';
 /**
  * Full Qualified Path
  */
-const FQP = 'packages/sdk/src/hdkey/HDKey.ts!';
+const FQP = 'packages/sdk/src/common/cryptography/hdkey/HDKey.ts!';
 
 /**
  * This class extends the

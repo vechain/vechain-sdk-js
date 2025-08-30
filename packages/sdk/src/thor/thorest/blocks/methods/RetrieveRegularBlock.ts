@@ -11,7 +11,8 @@ import { type Revision } from '@common/vcdm';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/sdk/src/thor/blocks/RetrieveRegularBlock.ts!';
+const FQP =
+    'packages/sdk/src/thor/thorest/blocks/methods/RetrieveRegularBlock.ts!';
 
 /**
  * [Retrieve a regular block](http://localhost:8669/doc/stoplight-ui/#/paths/blocks-revision/get)

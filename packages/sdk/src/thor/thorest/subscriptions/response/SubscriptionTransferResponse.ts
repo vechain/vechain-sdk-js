@@ -7,7 +7,7 @@ import { IllegalArgumentError } from '@common/errors';
  * Full-Qualified Path
  */
 const FQP =
-    'packages/core/src/thor/subscriptions/SubscriptionTransferResponse.ts!';
+    'packages/sdk/src/thor/thorest/subscriptions/response/SubscriptionTransferResponse.ts!';
 
 /**
  * [SubscriptionTransferResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/SubscriptionTransferResponse)

@@ -4,7 +4,7 @@ import { type VeChainDataModel } from './VeChainDataModel';
 /**
  * Full Qualified Path
  */
-const FQP = 'packages/sdk/src/vcdm/Txt.ts!';
+const FQP = 'packages/sdk/src/common/vcdm/Txt.ts!';
 
 /**
  * Represents a text string encoded according the *Normalization Form Canonical Composition*

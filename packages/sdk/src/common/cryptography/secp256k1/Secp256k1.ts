@@ -12,7 +12,7 @@ import { secp256k1 as nc_secp256k1 } from '@noble/curves/secp256k1';
 /**
  * Full Qualified Path
  */
-const FQP = 'packages/sdk/src/secp256k1/Secp256k1.ts!';
+const FQP = 'packages/sdk/src/common/cryptography/secp256k1/Secp256k1.ts!';
 
 /**
  * The Secp256k1 class provides cryptographic utilities for the

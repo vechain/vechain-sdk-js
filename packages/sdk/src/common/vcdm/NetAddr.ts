@@ -7,7 +7,7 @@ import { type VeChainDataModel } from '@common/vcdm';
 /**
  * Full Qualified Path
  */
-const FQP = 'net.vechain.network.NetAddr!';
+const FQP = 'packages/sdk/src/common/vcdm/NetAddr!';
 
 /**
  * Represents a network address with an IP address and port.

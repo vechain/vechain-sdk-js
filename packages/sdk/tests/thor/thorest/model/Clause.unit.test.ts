@@ -1,15 +1,13 @@
-// packages/sdk/test/unit/Clause.unit.test.ts
 import { describe, expect, test } from '@jest/globals';
-import { Address, HexUInt } from '@common/vcdm';
-import { Clause } from '@thor/thorest';
-import type { ClauseJSON } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
+import { Address, HexUInt, IllegalArgumentError } from '@common';
+import { Clause } from '@thor/thorest/model';
+import { type ClauseJSON } from '@thor/thorest/json';
 
 const addrStr = '0x' + '1'.repeat(40); // 20-byte address
 const otherAddrStr = '0x' + '2'.repeat(40);
 
 /*
- * @group unit/thor/model
+ * @group unit/thor/thorest/model
  */
 describe('Clause class tests', () => {
     describe('of(json) construction', () => {

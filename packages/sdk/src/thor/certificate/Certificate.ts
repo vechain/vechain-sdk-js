@@ -7,7 +7,7 @@ import { IllegalArgumentError, InvalidSignatureError } from '@common/errors';
 /**
  * Full Qualified Path
  */
-const FQP = 'packages/sdk/src/certificate/Certificate.ts!';
+const FQP = 'packages/sdk/src/thor/certificate/Certificate.ts!';
 
 /**
  * The Certificate class provides functionality to create, sign, and verify certificates.

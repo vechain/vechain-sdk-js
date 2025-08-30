@@ -11,7 +11,8 @@ import { type Revision } from '@common/vcdm';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/sdk/src/thor/blocks/RetrieveExpandedBlock.ts!';
+const FQP =
+    'packages/sdk/src/thor/thorest/blocks/methods/RetrieveExpandedBlock.ts!';
 
 /**
  * [Retrieve an expanded block](http://localhost:8669/doc/stoplight-ui/#/paths/blocks-revision/get)

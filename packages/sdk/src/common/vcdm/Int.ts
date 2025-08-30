@@ -3,7 +3,7 @@ import { IllegalArgumentError } from '@common/errors';
 /**
  * Full Qualified Path
  */
-const FQP = 'packages/sdk/src/vcdm/Int.ts!';
+const FQP = 'packages/sdk/src/common/vcdm/Int.ts!';
 
 /**
  * The `Int` class is an extension of the native `Number` class, representing an integer value.

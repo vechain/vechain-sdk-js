@@ -12,7 +12,7 @@ import { type TransactionsIDsJSON } from '@thor/thorest/json';
  * Full-Qualified-Path
  */
 const FQP =
-    'packages/core/src/thor/node/RetrieveTransactionsFromTransactionPool.ts!';
+    'packages/sdk/src/thor/thorest/node/methods/GetTxPoolStatus.ts/RetrieveTransactionsFromTransactionPool.ts!';
 
 /**
  * [Retrieve transactions from transactions pool](http://localhost:8669/doc/stoplight-ui/#/paths/node-txpool/get)

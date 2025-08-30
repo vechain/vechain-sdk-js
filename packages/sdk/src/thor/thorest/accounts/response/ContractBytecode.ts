@@ -4,7 +4,8 @@ import { IllegalArgumentError } from '@common/errors';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/sdk/src/thor/accounts/ContractBytecode.ts!';
+const FQP =
+    'packages/sdk/src/thor/thorest/accounts/response/ContractBytecode.ts!';
 
 /**
  * Contract Bytecode

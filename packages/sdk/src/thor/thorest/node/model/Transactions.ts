@@ -5,7 +5,7 @@ import { IllegalArgumentError } from '@common/errors';
 /**
  * Full-Qualified-Path
  */
-const FQP = 'packages/sdk/src/thor/node/Transactions.ts!';
+const FQP = 'packages/sdk/src/thor/thorest/node/model/Transactions.ts!';
 
 /**
  * [TransactionsIDs](http://localhost:8669/doc/stoplight-ui/#/schemas/TransactionsIDs)

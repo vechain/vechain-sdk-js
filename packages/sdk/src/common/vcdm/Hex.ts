@@ -9,7 +9,7 @@ import { type VeChainDataModel } from '@common/vcdm';
 /**
  * Full Qualified Path
  */
-const FQP = 'packages/sdk/src/vcdm/Hex.ts!';
+const FQP = 'packages/sdk/src/common/vcdm/Hex.ts!';
 
 /**
  * Represents a hexadecimal value expressed as

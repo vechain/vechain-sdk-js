@@ -7,7 +7,7 @@ import {
 /**
  * Full Qualified Path
  */
-const FQP = 'packages/sdk/src/vcdm/HexInt.ts!';
+const FQP = 'packages/sdk/src/common/vcdm/HexInt.ts!';
 
 /**
  * Represents a hexadecimal signed integer value.
