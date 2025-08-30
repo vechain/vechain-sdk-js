@@ -7,7 +7,7 @@ import { type ReceiptMetaJSON } from '@thor/thorest/json';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/sdk/src/thor/transactions/ReceiptMeta.ts!';
+const FQP = 'packages/sdk/src/thor/thorest/model/ReceiptMeta.ts!';
 
 /**
  * [ReceiptMeta](http://localhost:8669/doc/stoplight-ui/#/schemas/ReceiptMeta)
