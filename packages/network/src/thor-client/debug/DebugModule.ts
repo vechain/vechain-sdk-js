@@ -1,7 +1,7 @@
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { thorest } from '../../utils';
 import { type ContractTraceTarget } from './ContractTraceTarget';
-import { type HttpClient } from '../../http';
+import { type HttpClient, isTraceEnabled } from '../../http';
 import { type RetrieveStorageRange } from './RetrieveStorageRange';
 import { type RetrieveStorageRangeOptions } from './RetrieveStorageRangeOptions';
 import { type TransactionTraceTarget } from './TransactionTraceTarget';
@@ -25,6 +25,28 @@ class DebugModule {
     constructor(readonly httpClient: HttpClient) {}
 
     /**
+     * Internal debug logger for this module (enabled when SDK_TRACE is true/1)
+     */
+    private log(step: string, data?: unknown): void {
+        try {
+            if (!isTraceEnabled()) return;
+            const ts = new Date().toISOString();
+            console.log(`\n🧭 [TRACE] DebugModule.${step} (${ts})`);
+            if (data !== undefined) {
+                const replacer = (_: string, value: unknown) =>
+                    typeof value === 'bigint' ? (value as bigint).toString() : value;
+                if (typeof data === 'string') {
+                    console.log(data);
+                } else {
+                    console.log(JSON.stringify(data, replacer, 2));
+                }
+            }
+        } catch {
+            // best-effort logging, never throw
+        }
+    }
+
+    /**
      * Retrieve the storage range for a specified transaction trace target.
      *
      * @param {Object} input - The input parameters.
@@ -42,26 +64,37 @@ class DebugModule {
         target: TransactionTraceTarget;
         options?: RetrieveStorageRangeOptions;
     }): Promise<RetrieveStorageRange> {
+        this.log('retrieveStorageRange:start', { input });
         // Validate target. If invalid, assert
         this.validateTarget(input.target, 'retrieveStorageRange');
+        this.log('retrieveStorageRange:validatedTarget', { target: input.target });
 
         // Parse target
         const parsedTarget = `${input.target.blockId}/${input.target.transaction}/${input.target.clauseIndex}`;
+        this.log('retrieveStorageRange:parsedTarget', { parsedTarget });
 
-        // Send request
-        return (await this.httpClient.post(
-            thorest.debug.post.RETRIEVE_STORAGE_RANGE(),
-            {
+        // Prepare request
+        const endpoint = thorest.debug.post.RETRIEVE_STORAGE_RANGE();
+        const body = {
+            target: parsedTarget,
+            address: input.options?.address?.toString(),
+            keyStart: input.options?.keyStart?.toString(),
+            maxResult: input.options?.maxResult
+        };
+        this.log('retrieveStorageRange:request', { endpoint, body });
+
+        try {
+            const result = (await this.httpClient.post(endpoint, {
                 query: {},
-                body: {
-                    target: parsedTarget,
-                    address: input.options?.address?.toString(),
-                    keyStart: input.options?.keyStart?.toString(),
-                    maxResult: input.options?.maxResult
-                },
+                body,
                 headers: {}
-            }
-        )) as RetrieveStorageRange;
+            })) as RetrieveStorageRange;
+            this.log('retrieveStorageRange:response', result);
+            return result;
+        } catch (err) {
+            this.log('retrieveStorageRange:error', err);
+            throw err;
+        }
     }
 
     /**
@@ -82,31 +115,45 @@ class DebugModule {
         },
         name?: TracerName
     ): Promise<TraceReturnType<typeof name>> {
-        // Send request
-        return (await this.httpClient.post(
-            thorest.debug.post.TRACE_CONTRACT_CALL(),
-            {
+        this.log('traceContractCall:start', { input, name });
+
+        const to = input.target?.to?.toString();
+        const data = input.target?.data?.toString();
+        const value =
+            typeof input.target?.value?.wei === 'bigint'
+                ? HexUInt.of(input.target.value.wei).toString()
+                : undefined;
+
+        const endpoint = thorest.debug.post.TRACE_CONTRACT_CALL();
+        const body = {
+            to,
+            data,
+            value,
+            name,
+            gas: input.options?.gas,
+            gasPrice: input.options?.gasPrice,
+            caller: input.options?.caller,
+            provedWork: input.options?.provedWork,
+            gasPayer: input.options?.gasPayer,
+            expiration: input.options?.expiration,
+            blockRef: input.options?.blockRef,
+            config: input.config
+        };
+
+        this.log('traceContractCall:request', { endpoint, body });
+
+        try {
+            const result = (await this.httpClient.post(endpoint, {
                 query: {},
-                body: {
-                    to: input.target?.to?.toString(),
-                    data: input.target?.data?.toString(),
-                    value:
-                        typeof input.target?.value?.wei === 'bigint'
-                            ? HexUInt.of(input.target.value.wei).toString()
-                            : undefined,
-                    name,
-                    gas: input.options?.gas,
-                    gasPrice: input.options?.gasPrice,
-                    caller: input.options?.caller,
-                    provedWork: input.options?.provedWork,
-                    gasPayer: input.options?.gasPayer,
-                    expiration: input.options?.expiration,
-                    blockRef: input.options?.blockRef,
-                    config: input.config
-                },
+                body,
                 headers: {}
-            }
-        )) as TraceReturnType<typeof name>;
+            })) as TraceReturnType<typeof name>;
+            this.log('traceContractCall:response', result);
+            return result;
+        } catch (err) {
+            this.log('traceContractCall:error', err);
+            throw err;
+        }
     }
 
     /**
@@ -128,23 +175,34 @@ class DebugModule {
         },
         name?: TracerName
     ): Promise<TraceReturnType<typeof name>> {
+        this.log('traceTransactionClause:start', { input, name });
         // Validate target. If invalid, assert
         this.validateTarget(input.target, 'traceTransactionClause');
+        this.log('traceTransactionClause:validatedTarget', { target: input.target });
         // Parse target
         const parsedTarget = `${input.target.blockId}/${input.target.transaction}/${input.target.clauseIndex}`;
+        this.log('traceTransactionClause:parsedTarget', { parsedTarget });
+        // Prepare request
+        const endpoint = thorest.debug.post.TRACE_TRANSACTION_CLAUSE();
+        const body = {
+            target: parsedTarget,
+            name,
+            config: input.config
+        };
+        this.log('traceTransactionClause:request', { endpoint, body });
         // Send request
-        return (await this.httpClient.post(
-            thorest.debug.post.TRACE_TRANSACTION_CLAUSE(),
-            {
+        try {
+            const result = (await this.httpClient.post(endpoint, {
                 query: {},
-                body: {
-                    target: parsedTarget,
-                    name,
-                    config: input.config
-                },
+                body,
                 headers: {}
-            }
-        )) as TraceReturnType<typeof name>;
+            })) as TraceReturnType<typeof name>;
+            this.log('traceTransactionClause:response', result);
+            return result;
+        } catch (err) {
+            this.log('traceTransactionClause:error', err);
+            throw err;
+        }
     }
 
     /**

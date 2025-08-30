@@ -12,9 +12,15 @@ import { retryOperation } from '../../test-utils';
 describe('ThorClient - Transactions Module Dynamic Fees', () => {
     // ThorClient instance
     let thorSoloClient: ThorClient;
+    let dynamicChainTag: number;
 
-    beforeEach(() => {
+    beforeEach(async () => {
         thorSoloClient = ThorClient.at(THOR_SOLO_URL);
+        const genesis = await retryOperation(
+            async () => await thorSoloClient.blocks.getBlockCompressed(0)
+        );
+        const genesisHash = genesis?.id ?? '0x00';
+        dynamicChainTag = parseInt(genesisHash.slice(-2), 16);
     });
 
     /**
@@ -45,7 +51,7 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
             );
 
             const transactionBody = {
-                chainTag: 0xf6,
+                chainTag: dynamicChainTag,
                 blockRef:
                     latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
                 expiration: 32,
@@ -137,7 +143,7 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
             expect(txInBlock.maxFeePerGas).toBe('0x9184e72a000'); // 10000000000000
             expect(txInBlock.maxPriorityFeePerGas).toBe('0xf4240'); // 1000000
             expect(txInBlock.nonce).toBe('0xbc614d'); // 12345677 in hex
-            expect(txInBlock.chainTag).toBe(0xf6);
+            expect(txInBlock.chainTag).toBe(dynamicChainTag);
         });
     });
 });

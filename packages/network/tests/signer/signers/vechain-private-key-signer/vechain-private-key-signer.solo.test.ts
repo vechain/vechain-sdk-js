@@ -48,6 +48,7 @@ describe('VeChain base signer tests - solo', () => {
      */
     let thorClient: ThorClient;
     let isGalacticaActive: boolean;
+    let dynamicChainTag: number;
 
     /**
      * Init thor client and provider before each test
@@ -55,6 +56,11 @@ describe('VeChain base signer tests - solo', () => {
     beforeEach(async () => {
         thorClient = ThorClient.at(THOR_SOLO_URL);
         isGalacticaActive = await thorClient.forkDetector.detectGalactica();
+        const genesis = await retryOperation(
+            async () => await thorClient.blocks.getBlockCompressed(0)
+        );
+        const genesisHash = genesis?.id ?? '0x00';
+        dynamicChainTag = parseInt(genesisHash.slice(-2), 16);
     });
 
     /**
@@ -132,6 +138,8 @@ describe('VeChain base signer tests - solo', () => {
 
                         expect(signedTx).toBeDefined();
                         console.log(signedTx.body);
+                        // Adjust expected chainTag dynamically based on solo network
+                        (expected.body as any).chainTag = dynamicChainTag;
                         expect(signedTx.body).toMatchObject(expected.body);
                         expect(signedTx.origin.toString()).toBe(
                             Address.checksum(HexUInt.of(origin.address))
@@ -225,6 +233,8 @@ describe('VeChain base signer tests - solo', () => {
 
                         expect(signedTx).toBeDefined();
                         console.log(signedTx.body);
+                        // Adjust expected chainTag dynamically based on solo network
+                        (expected.body as any).chainTag = dynamicChainTag;
                         expect(signedTx.body).toMatchObject(expected.body);
                         expect(signedTx.origin.toString()).toBe(
                             Address.checksum(HexUInt.of(origin.address))
