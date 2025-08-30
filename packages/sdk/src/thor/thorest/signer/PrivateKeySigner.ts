@@ -9,10 +9,10 @@ import {
     SignedTransactionRequest,
     SponsoredTransactionRequest,
     type TransactionRequest
-} from '@thor/thorest/model';
+} from '@thor';
+import { RLPCodec } from './RLPCodec';
+import { type Signer } from './Signer';
 import * as nc_utils from '@noble/curves/abstract/utils';
-import { type Signer } from '@thor/thorest/signer/Signer';
-import { RLPCodec } from '@thor/thorest/signer/RLPCodec';
 
 /**
  * Full-Qualified Path
