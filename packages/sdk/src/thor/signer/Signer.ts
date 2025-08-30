@@ -3,7 +3,7 @@ import {
     type SponsoredTransactionRequest,
     type TransactionRequest
 } from '@thor';
-import { type Address } from '@vcdm';
+import { type Address } from '@common';
 
 /**
  * Interface representing a signer, capable of signing

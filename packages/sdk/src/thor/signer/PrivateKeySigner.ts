@@ -1,14 +1,18 @@
-import { Address, Blake2b256 } from '@vcdm';
-import { InvalidPrivateKeyError, UnsupportedOperationError } from '@errors';
-import { RLPCodec } from '@thor';
-import { Secp256k1 } from '@secp256k1';
 import {
-    type Signer,
+    RLPCodec,
     SignedTransactionRequest,
+    type Signer,
     SponsoredTransactionRequest,
     type TransactionRequest
 } from '@thor';
 import * as nc_utils from '@noble/curves/abstract/utils';
+import {
+    Address,
+    Blake2b256,
+    InvalidPrivateKeyError,
+    Secp256k1,
+    UnsupportedOperationError
+} from '@common';
 
 /**
  * Full-Qualified Path
@@ -95,7 +99,8 @@ class PrivateKeySigner implements Signer {
                 gas: transactionRequest.gas,
                 gasPriceCoef: transactionRequest.gasPriceCoef,
                 nonce: transactionRequest.nonce,
-                isSponsored: transactionRequest.isSponsored,
+                isIntendedToBeSponsored:
+                    transactionRequest.isIntendedToBeSponsored,
                 origin: this.address,
                 originSignature: signature,
                 signature
@@ -127,7 +132,7 @@ class PrivateKeySigner implements Signer {
         signedTransactionRequest: SignedTransactionRequest
     ): SponsoredTransactionRequest {
         if (this.privateKey !== null) {
-            if (signedTransactionRequest.isSponsored) {
+            if (signedTransactionRequest.isIntendedToBeSponsored) {
                 const hash = Blake2b256.of(
                     nc_utils.concatBytes(
                         Blake2b256.of(
@@ -148,7 +153,7 @@ class PrivateKeySigner implements Signer {
                     gas: signedTransactionRequest.gas,
                     gasPriceCoef: signedTransactionRequest.gasPriceCoef,
                     nonce: signedTransactionRequest.nonce,
-                    isSponsored: true,
+                    isIntendedToBeSponsored: true,
                     origin: signedTransactionRequest.origin,
                     originSignature: signedTransactionRequest.originSignature,
                     gasPayer: this.address,

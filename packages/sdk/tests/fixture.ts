@@ -1,5 +1,5 @@
-import { Hex } from '@vcdm';
-import { Secp256k1 } from '@secp256k1';
+import { Hex } from '@common/vcdm';
+import { Secp256k1 } from '@common/cryptography/secp256k1';
 import {
     AccountDispatcher,
     type ThorSoloAccount
