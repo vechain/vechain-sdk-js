@@ -33,7 +33,11 @@
         "lint": "turbo lint",
         "format": "turbo format",
         "test:unit": "turbo test:unit",
-        "test:integration": "turbo test:integration",
+        "test:integration": "yarn test:solo && yarn test:testnet && yarn test:mainnet",
+        "test:solo:only": "turbo test:solo:only",
+        "test:testnet": "turbo test:testnet",
+        "test:mainnet": "turbo test:mainnet",
+        
         "test:integration:solo": "(yarn start-thor-solo && yarn seed-thor-solo && yarn test:integration && yarn stop-thor-solo) || yarn stop-thor-solo",
         "test:clients": "yarn workspace @vechain/sdk test:clients",
         "test:clients:solo": "yarn workspace @vechain/sdk test:clients:solo",
@@ -41,7 +45,7 @@
         "test:examples:solo": "(yarn start-thor-solo && yarn test:examples && yarn stop-thor-solo) || yarn stop-thor-solo",
         "test": "turbo test --force --filter='@vechain/sdk'",
         "test:browser": "turbo test:browser --force && yarn merge-coverage",
-        "test:solo": "(yarn start-thor-solo && yarn seed-thor-solo && yarn test && yarn stop-thor-solo) || yarn stop-thor-solo",
+        "test:solo": "(yarn start-thor-solo && yarn seed-thor-solo && yarn test:solo:only && yarn stop-thor-solo) || yarn stop-thor-solo",
         "test:browser:solo": "(yarn start-thor-solo && yarn seed-thor-solo && yarn test:browser && yarn stop-thor-solo) || yarn stop-thor-solo",
         "merge-coverage": "ts-node scripts/merge-coverage.ts",
         "check:tests-naming": "ts-node scripts/check-tests-naming.ts"
