@@ -7,7 +7,7 @@ import {
     test
 } from '@jest/globals';
 import { isValidNetworkUrl, ThorNetworks, toURL } from '@thor/thorest';
-import { FetchHttpClient } from '@common/http/FetchHttpClient';
+import { FetchHttpClient } from '@common/http';
 
 // Define module interface explicitly instead of using import() type
 interface ThorModule {
