@@ -1,11 +1,10 @@
-import { Address, Hex, HexUInt, Quantity } from '@common/vcdm';
+import { Address, Hex, HexUInt, IllegalArgumentError, Quantity } from '@common';
 import { type ClauseJSON } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
 
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/sdk/src/thor/model/Clause.ts!';
+const FQP = 'packages/sdk/src/thor/thorest/model/Clause.ts!';
 
 /**
  * [Clause](http://localhost:8669/doc/stoplight-ui/#/schemas/Clause)

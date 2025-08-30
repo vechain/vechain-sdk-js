@@ -1,7 +1,6 @@
-import { type Address } from '@index';
-import { type Hex } from '@/vcdm';
-
 // Use the same type definitions as in PublicClient
+import { type Address, type Hex } from '@common';
+
 type ThorId = string | Uint8Array | Hex;
 type BlockRevision = bigint | number | string | Uint8Array | Hex;
 

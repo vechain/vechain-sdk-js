@@ -4,20 +4,14 @@
  */
 
 import { describe, expect, test, beforeEach } from '@jest/globals';
-import {
-    Secp256k1,
-    Address,
-    HDKey,
-    Mnemonic,
-    HexUInt,
-    Transaction
-} from '@vechain/sdk';
+import { Address, HDKey, HexUInt, Mnemonic, Secp256k1 } from '@common';
+import { Transaction } from '@thor';
 
 class KeyManager {
     private readonly hdNode: HDKey;
 
     constructor(mnemonicWords?: string[]) {
-        if (mnemonicWords) {
+        if (mnemonicWords != null) {
             this.hdNode = HDKey.fromMnemonic(mnemonicWords);
         } else {
             // Generate new mnemonic
@@ -200,7 +194,7 @@ describe('Key Management Tests', () => {
             );
 
             expect(signedTx.signature).toBeDefined();
-            if (signedTx.signature) {
+            if (signedTx.signature != null) {
                 expect(signedTx.signature.length).toBeGreaterThan(0);
             }
 
