@@ -7,7 +7,7 @@ import { type ExecuteCodesRequestJSON } from '../json';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/sdk/src/thor/accounts/ExecuteCodesRequest.ts!';
+const FQP = 'packages/sdk/src/thor/accounts/methods/ExecuteCodesRequest.ts!';
 
 /**
  * Execute Codes Request

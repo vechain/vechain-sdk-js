@@ -11,7 +11,7 @@ import {
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/sdk/src/thor/accounts/ExecuteCodesResponse.ts!';
+const FQP = 'packages/sdk/src/thor/accounts/response/ExecuteCodesResponse.ts!';
 
 /**
  * Execute Code Response

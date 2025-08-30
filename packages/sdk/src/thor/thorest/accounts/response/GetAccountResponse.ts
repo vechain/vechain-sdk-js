@@ -5,7 +5,7 @@ import { IllegalArgumentError } from '@common/errors';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/sdk/src/thor/accounts/GetAccountResponse.ts!';
+const FQP = 'packages/sdk/src/thor/accounts/response/GetAccountResponse.ts!';
 
 /**
  * Get Account Response
