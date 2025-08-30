@@ -9,7 +9,7 @@ import {
     SignedTransactionRequest,
     SponsoredTransactionRequest,
     type TransactionRequest
-} from '@thor';
+} from '@thor/thorest/model';
 import { RLPCodec } from './RLPCodec';
 import { type Signer } from './Signer';
 import * as nc_utils from '@noble/curves/abstract/utils';
