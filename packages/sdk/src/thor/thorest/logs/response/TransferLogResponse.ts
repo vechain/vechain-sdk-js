@@ -6,7 +6,8 @@ import { IllegalArgumentError } from '@common/errors';
 /**
  * Full-Qualified-Path
  */
-const FQP = 'packages/sdk/src/thor/logs/TransferLogResponse.ts!';
+const FQP =
+    'packages/sdk/src/thor/thorest/logs/response/TransferLogResponse.ts!';
 
 /**
  * [TransferLogResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/TransferLogsResponse)

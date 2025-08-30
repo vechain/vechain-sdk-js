@@ -4,7 +4,7 @@ import { IllegalArgumentError } from '@common/errors';
 /**
  * Full Qualified Path
  */
-const FQP = 'packages/sdk/src/vcdm/Quantity.ts!';
+const FQP = 'packages/sdk/src/common/vcdm/Quantity.ts!';
 
 /**
  * Represents a hexadecimal numeric value compatible with the result of

@@ -160,7 +160,7 @@ describe('RetrieveAccountDetails unit tests', () => {
 
                 expect(thorError.message).toBe('Bad response.');
                 expect(thorError.fqn).toBe(
-                    'packages/sdk/src/thor/accounts/methods/RetrieveAccountDetails.ts!askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveAccountDetails, GetAccountResponse>>'
+                    'packages/sdk/src/thor/thorest/accounts/methods/RetrieveAccountDetails.ts!askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveAccountDetails, GetAccountResponse>>'
                 );
                 expect(thorError.status).toBe(400);
                 expect(thorError.args).toEqual({

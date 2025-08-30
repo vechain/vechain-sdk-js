@@ -10,7 +10,8 @@ import { IllegalArgumentError } from '@common/errors';
 /**
  * Full-Qualified-Path
  */
-const FQP = 'packages/sdk/src/thor/logs/EventLogFilterRequest.ts!';
+const FQP =
+    'packages/sdk/src/thor/thorest/logs/response/EventLogFilterRequest.ts!';
 
 /**
  * [EventLogFilterRequest](EventLogFilterRequest)

@@ -5,7 +5,7 @@ import { isValidNetworkUrl } from '@thor/thorest';
 import { type HttpOptions } from './HttpOptions';
 import { CookieStore } from './CookieStore';
 
-const FQP = 'packages/sdk/src/http/FetchHttpClient.ts';
+const FQP = 'packages/sdk/src/common/http/FetchHttpClient.ts';
 
 // Types for dependency injection
 type RequestConstructor = typeof Request;

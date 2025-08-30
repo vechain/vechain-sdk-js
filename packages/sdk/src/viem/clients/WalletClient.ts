@@ -21,7 +21,7 @@ import {
 } from '@common';
 import { PublicClient, type PublicClientConfig } from './PublicClient';
 
-const FQP = 'packages/sdk/src/clients/WalletClient.ts!';
+const FQP = 'packages/sdk/src/viem/clients/WalletClient.ts!';
 
 /**
  * Used internally to tag a transaction without data.

@@ -6,7 +6,7 @@ import { IllegalArgumentError } from '@common/errors';
 /**
  * Full Qualified Path
  */
-const FQP = 'packages/sdk/src/vcdm/hash/Keccak256.ts!';
+const FQP = 'packages/sdk/src/common/vcdm/hash/Keccak256.ts!';
 
 /**
  * Represents the result of an [KECCAK 256](https://keccak.team/keccak.html) hash operation.

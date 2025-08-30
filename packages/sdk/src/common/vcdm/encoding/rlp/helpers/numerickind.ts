@@ -4,7 +4,7 @@ import { InvalidEncodingError } from '@common/errors';
 /**
  * Full Qualified Path
  */
-const FQP = 'vcdm.encoding.rlp.helpers.numericKind!';
+const FQP = 'packages/sdk/src/common/vcdm/encoding/rlp/helpers/numericKind!';
 
 /**
  * Regular expression pattern for matching natural numbers expressed as base 10 strings.
