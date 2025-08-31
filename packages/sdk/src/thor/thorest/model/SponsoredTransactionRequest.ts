@@ -8,7 +8,7 @@ import {
  * Represents the parameters required for a sponsored transaction request.
  * Extends the base `SignedTransactionRequest` class with additional properties specific to sponsored transactions.
  */
-interface SponsoredTransactionRequestParams
+interface SponsoredTransactionRequestParam
     extends SignedTransactionRequestParam {
     /**
      * The address of the sponsor delegated to pay the gas to execute the transaction request.
@@ -27,7 +27,7 @@ interface SponsoredTransactionRequestParams
  */
 class SponsoredTransactionRequest
     extends SignedTransactionRequest
-    implements SponsoredTransactionRequestParams
+    implements SponsoredTransactionRequestParam
 {
     /**
      * The address of the sponsor delegated to pay the gas to execute the transaction request.
@@ -42,16 +42,16 @@ class SponsoredTransactionRequest
     /**
      * Constructs a new instance of the class with the provided parameters.
      *
-     * @param {SponsoredTransactionRequestParams} params - An object containing the parameters for the transaction.
+     * @param {SponsoredTransactionRequestParam} params - An object containing the parameters for the transaction.
      * @param {string} params.gasPayer - The identifier of the entity responsible for paying the gas fees.
      * @param {string} params.gasPayerSignature - The signature of the gas payer, verifying their authorization.
      * @return {void} Does not return a value.
      */
-    public constructor(params: SponsoredTransactionRequestParams) {
+    public constructor(params: SponsoredTransactionRequestParam) {
         super(params);
         this.gasPayer = params.gasPayer;
         this.gasPayerSignature = new Uint8Array(params.gasPayerSignature);
     }
 }
 
-export { SponsoredTransactionRequest, type SponsoredTransactionRequestParams };
+export { SponsoredTransactionRequest, type SponsoredTransactionRequestParam };

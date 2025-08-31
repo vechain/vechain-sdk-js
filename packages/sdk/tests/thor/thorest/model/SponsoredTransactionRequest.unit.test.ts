@@ -3,7 +3,7 @@ import { Address, BlockRef } from '@common';
 import {
     SignedTransactionRequest,
     SponsoredTransactionRequest,
-    type SponsoredTransactionRequestParams,
+    type SponsoredTransactionRequestParam,
     TransactionRequest
 } from '@thor/thorest/model'; /*
 
@@ -39,7 +39,7 @@ describe('SponsoredTransactionRequest', () => {
         // SponsoredTransactionRequest params
         gasPayer: mockGasPayer,
         gasPayerSignature: mockGasPayerSignature
-    } satisfies SponsoredTransactionRequestParams;
+    } satisfies SponsoredTransactionRequestParam;
 
     let sponsoredTxRequest: SponsoredTransactionRequest;
 

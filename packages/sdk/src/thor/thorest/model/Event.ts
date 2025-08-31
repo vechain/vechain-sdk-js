@@ -25,7 +25,7 @@ class Event {
     /**
      * The data associated with the event.
      */
-    readonly data: HexUInt;
+    readonly data: Hex;
 
     /**
      * Constructs an instance of the class using the provided JSON object.
