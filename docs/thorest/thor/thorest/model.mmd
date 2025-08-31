@@ -2,6 +2,15 @@
 title: "@thor.thorest.model"
 ---
 classDiagram
+    namespace transactions_model {
+        class TxMeta {
+            Hex blockID
+            number blockNumber
+            number blockTimeStamp
+            constructor(TxMetaJSON json)
+            TxMetaJSON toJSON()
+        }
+    }
     class Clause {
         Address|null to
         bigint value
@@ -96,6 +105,7 @@ classDiagram
     SignedTransactionRequest <-- SponsoredTransactionRequest
     TransactionRequestParams <|-- SignedTransactionRequestParam
     SignedTransactionRequestParam <|-- SponsoredTransactionRequestParam
+    TxMeta <|-- ReceiptMeta
     TransactionRequest "1. SignedTransactionRequest sign(TransactionRequest request)" <-- Signer
     SignedTransactionRequest "3. SponsoredTransactionRequest sign(SignedTransactionRequest request)" <-- Signer
     SignedTransactionRequest "2. SignedTransactionRequest sign(TransactionRequest request)" --> Signer
