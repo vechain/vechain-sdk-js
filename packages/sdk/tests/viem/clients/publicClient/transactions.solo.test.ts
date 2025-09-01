@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { createPublicClient } from '@viem/clients';
-import { ThorNetworks } from '@thor';
-import { Hex, Address } from '@common';
+import { ThorNetworks } from '@thor/thorest';
+import { Hex, Address } from '@common/vcdm';
 
 /**
  * Test suite for PublicClient transaction-related functionality
