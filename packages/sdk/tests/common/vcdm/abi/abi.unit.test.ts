@@ -15,7 +15,7 @@ import {
     // hash
     toFunctionHash,
     toEventHash
-} from '@viem';
+} from '@viem/utils';
 import {
     encodedDecodedInvalidValues,
     encodedDecodedValues,

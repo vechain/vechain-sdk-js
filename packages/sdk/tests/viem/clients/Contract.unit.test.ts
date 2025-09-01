@@ -1,10 +1,10 @@
 import { describe, expect, test, jest } from '@jest/globals';
 import {
     getContract,
-    type Abi,
     type PublicClient,
     type WalletClient
-} from '@viem';
+} from '@viem/clients';
+import { type Abi } from '@viem/utils';
 import { Address } from '@common/vcdm';
 
 // Example ERC20 ABI (simplified)

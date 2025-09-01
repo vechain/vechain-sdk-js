@@ -1,6 +1,10 @@
 import type { RegularBlockResponseJSON } from '@thor/thorest/json';
-import { ClauseBuilder, Transaction, type TransactionBody } from '@thor';
-import { Address, BlockRef, Hex, HexUInt } from '@common';
+import {
+    ClauseBuilder,
+    Transaction,
+    type TransactionBody
+} from '@thor/thorest';
+import { Address, BlockRef, Hex, HexUInt } from '@common/vcdm';
 import { SOLO_NETWORK } from '@thor/utils';
 import { TEST_ACCOUNTS } from '../../fixture';
 import { privateKeyToAccount } from 'viem/accounts';
