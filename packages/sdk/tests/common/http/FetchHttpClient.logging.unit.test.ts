@@ -21,7 +21,7 @@ describe('FetchHttpClient logging', () => {
         expect(response.status).toBe(200);
         const callArgs = loggerSpy.mock.calls[0][0];
         expect(callArgs).toMatchObject({
-            verbosity: 'info',
+            verbosity: 'debug',
             message: 'HTTP Response',
             source: 'FetchHttpClient'
         });

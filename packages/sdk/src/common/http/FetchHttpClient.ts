@@ -236,13 +236,13 @@ class FetchHttpClient implements HttpClient {
             // compute log level based on response status
             // if response is undefined, log as warning
             // if response status is >= 400, log as error
-            // otherwise, log as info
+            // otherwise, log as debug
             const logLevel =
                 response === undefined
                     ? 'warn'
                     : response?.status >= 400
                       ? 'error'
-                      : 'info';
+                      : 'debug';
             const logItem: LogItem = {
                 verbosity: logLevel,
                 message: 'HTTP Response',
