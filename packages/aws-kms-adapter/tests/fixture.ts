@@ -45,7 +45,7 @@ const signTransactionTestCases = {
                 isDelegated: false,
                 expected: {
                     body: {
-                        chainTag: 246,
+                        chainTag: 87,
                         clauses: [
                             {
                                 data: '0xb6b55f25000000000000000000000000000000000000000000000000000000000000007b',
@@ -65,7 +65,7 @@ const signTransactionTestCases = {
                 isDelegated: true,
                 expected: {
                     body: {
-                        chainTag: 246,
+                        chainTag: 87,
                         clauses: [
                             {
                                 data: '0xb6b55f25000000000000000000000000000000000000000000000000000000000000007b',

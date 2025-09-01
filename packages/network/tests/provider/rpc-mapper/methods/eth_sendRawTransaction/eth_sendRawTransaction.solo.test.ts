@@ -72,9 +72,13 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
                     )
             );
 
-            const genesisBlock: any = await thorClient.blocks.getGenesisBlock();
-            const chainTagId = Number(`0x${genesisBlock.id.slice(-2)}`);
+            const genesisBlock = await thorClient.blocks.getGenesisBlock();
 
+            if (!genesisBlock) {
+                throw new Error('Genesis block not found');
+            }
+
+            const chainTagId = Number(`0x${genesisBlock.id.slice(-2)}`);
             // Create transactions
             const transactionBody = {
                 chainTag: chainTagId,

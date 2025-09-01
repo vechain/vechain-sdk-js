@@ -47,10 +47,14 @@ describe('ThorClient - Transactions Module', () => {
                         )
                 );
 
-                const genesisBlock: any =
+                const genesisBlock =
                     await thorSoloClient.blocks.getGenesisBlock();
-                const chainTagId = Number(`0x${genesisBlock.id.slice(-2)}`);
 
+                if (!genesisBlock) {
+                    throw new Error('Genesis block not found');
+                }
+
+                const chainTagId = Number(`0x${genesisBlock.id.slice(-2)}`);
                 // Create transactions
                 const transactionBody = {
                     chainTag: chainTagId,

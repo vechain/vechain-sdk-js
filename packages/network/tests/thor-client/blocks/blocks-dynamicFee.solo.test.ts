@@ -43,9 +43,12 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
                             .address
                     )
             );
+            const genesisBlock = await thorSoloClient.blocks.getGenesisBlock();
 
-            const genesisBlock: any =
-                await thorSoloClient.blocks.getGenesisBlock();
+            if (!genesisBlock) {
+                throw new Error('Genesis block not found');
+            }
+
             const chainTagId = Number(`0x${genesisBlock.id.slice(-2)}`);
 
             const transactionBody = {

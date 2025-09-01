@@ -7,6 +7,8 @@ import {
 } from '../../../../../src';
 import { retryOperation } from '../../../../test-utils';
 
+type EthBlock = { hash: string };
+
 /**
  * RPC Mapper integration tests for 'eth_chainId' method
  *
@@ -34,9 +36,13 @@ describe('RPC Mapper - eth_chainId method tests solo', () => {
          * Test case regarding obtaining the chain id
          */
         test('Should return the chain id', async () => {
-            const genesisBlock: any = await RPCMethodsMap(thorClient)[
+            const ethGetBlockByNumber = RPCMethodsMap(thorClient)[
                 RPC_METHODS.eth_getBlockByNumber
-            ](['0x0', true]);
+            ] as (
+                params: [blockTag: string, fullTxObjects: boolean]
+            ) => Promise<EthBlock>;
+
+            const genesisBlock = await ethGetBlockByNumber(['0x0', true]);
 
             const blockHash = genesisBlock.hash.slice(2);
             const chainTagByte = blockHash.slice(-2);

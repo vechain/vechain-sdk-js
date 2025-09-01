@@ -47,7 +47,12 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
                 )
         );
 
-        const genesisBlock: any = await thorSoloClient.blocks.getGenesisBlock();
+        const genesisBlock = await thorSoloClient.blocks.getGenesisBlock();
+
+        if (!genesisBlock) {
+            throw new Error('Genesis block not found');
+        }
+
         const chainTagId = Number(`0x${genesisBlock.id.slice(-2)}`);
 
         // Create transaction body
@@ -149,8 +154,12 @@ describe('ThorClient - Transactions Module Dynamic Fees', () => {
                     SOLO_GENESIS_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
                 )
         );
+        const genesisBlock = await thorSoloClient.blocks.getGenesisBlock();
 
-        const genesisBlock: any = await thorSoloClient.blocks.getGenesisBlock();
+        if (!genesisBlock) {
+            throw new Error('Genesis block not found');
+        }
+
         const chainTagId = Number(`0x${genesisBlock.id.slice(-2)}`);
 
         // Create transaction body
