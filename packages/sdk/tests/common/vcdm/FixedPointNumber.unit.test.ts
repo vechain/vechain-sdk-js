@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import log from 'loglevel';
+import { log } from '@common/logging';
 import { BigNumber } from 'bignumber.js';
 import { FixedPointNumber, Txt } from '@common/vcdm';
 import {
@@ -16,19 +16,31 @@ describe('FixedPointNumber class tests', () => {
         describe('get bi tests', () => {
             test('NaN throws exception', () => {
                 expect(() => {
-                    log.debug(FixedPointNumber.NaN.bi);
+                    log({
+                        verbosity: 'debug',
+                        message: 'test',
+                        context: { bi: FixedPointNumber.NaN.bi }
+                    });
                 }).toThrow(UnsupportedOperationError);
             });
 
             test('-Infinity throws exception', () => {
                 expect(() => {
-                    log.debug(FixedPointNumber.NEGATIVE_INFINITY.bi);
+                    log({
+                        verbosity: 'debug',
+                        message: 'test',
+                        context: { bi: FixedPointNumber.NEGATIVE_INFINITY.bi }
+                    });
                 }).toThrow(UnsupportedOperationError);
             });
 
             test('+Infinity throws exception', () => {
                 expect(() => {
-                    log.debug(FixedPointNumber.POSITIVE_INFINITY.bi);
+                    log({
+                        verbosity: 'debug',
+                        message: 'test',
+                        context: { bi: FixedPointNumber.POSITIVE_INFINITY.bi }
+                    });
                 }).toThrow(UnsupportedOperationError);
             });
 
