@@ -98,3 +98,14 @@ log({ verbosity: 'info', message: 'my log message', source: 'test', context: { d
 
 As the SDK reads an environment variable, app restarts are needed to pickup any new config.  
 However you may register a custom Logger that is able to listen for its own dynamic config changes
+
+## HTTP Requests & Responses
+
+The HttpClient built into the SDK to communicate with Thor emits log messages for requests & responses  
+These are emitted with verbosity levels:
+
+- debug : When http status 200 is received
+- warn : When no response was received
+- error : When http status >= 400 is received
+
+Enabling the appropriate verbosity level will allow to see the full http communications to Thor
