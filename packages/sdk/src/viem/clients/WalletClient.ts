@@ -19,6 +19,7 @@ import {
 import { FetchHttpClient, type HttpClient } from '@common/http';
 import { UnsupportedOperationError } from '@common/errors';
 import { PublicClient, type PublicClientConfig } from './PublicClient';
+import { RLPCodec } from '@thor/thorest/signer';
 
 const FQP = 'packages/sdk/src/viem/clients/WalletClient.ts!';
 
@@ -166,7 +167,7 @@ class WalletClient extends PublicClient {
                     // New reserved field.
                     reserved: tx.encodeReservedField()
                 },
-                Transaction.RLP_UNSIGNED_TRANSACTION_PROFILE
+                RLPCodec.RLP_UNSIGNED_TRANSACTION_PROFILE
             ).encoded;
             const txHash = Blake2b256.of(encodedTx).bytes;
             const signature = await WalletClient.signHash(txHash, this.account);
