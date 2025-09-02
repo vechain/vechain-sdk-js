@@ -6,7 +6,7 @@ import {
     HexUInt32,
     UInt
 } from '@common/vcdm';
-import { Clause } from '@thor/thorest';
+import { Clause } from '@thor/thorest/model/Clause';
 import { type ClauseJSON } from '@thor/thorest/json';
 import { IllegalArgumentError } from '@common/errors';
 import { type TxJSON } from '../json/TxJSON';

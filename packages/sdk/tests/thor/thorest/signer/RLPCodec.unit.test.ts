@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { Address, HexUInt } from '@common';
+import { Address, HexUInt } from '@common/vcdm';
 import {
     Clause,
     SignedTransactionRequest,
