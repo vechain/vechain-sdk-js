@@ -28,6 +28,9 @@ export const seedVET = async (accounts: TestAccount[]): Promise<string> => {
     try {
         const thorClient = ThorClient.at('http://localhost:8669');
         const genesisBlock = await getGenesisBlock();
+        if (!genesisBlock?.id || genesisBlock.id.length < 2) {
+            throw new Error('Unable to derive chainTag: invalid genesis block id');
+        }
         const chainTagId = Number(`0x${genesisBlock.id.slice(-2)}`);
         const latestBlock = await thorClient.blocks.getBestBlockCompressed();
         const privateKey = HexUInt.of(genesisDeployerAccount.privateKey).bytes;
