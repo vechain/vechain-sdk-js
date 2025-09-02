@@ -6,19 +6,18 @@ import {
     Transaction,
     type TransactionBody,
     type TransactionClause
-} from '@thor';
+} from '@thor/thorest';
 import {
     Address,
     Blake2b256,
-    FetchHttpClient,
-    type HttpClient,
     Hex,
     HexInt,
     HexUInt,
     HexUInt32,
-    RLPProfiler,
-    UnsupportedOperationError
-} from '@common';
+    RLPProfiler
+} from '@common/vcdm';
+import { FetchHttpClient, type HttpClient } from '@common/http';
+import { UnsupportedOperationError } from '@common/errors';
 import { PublicClient, type PublicClientConfig } from './PublicClient';
 
 const FQP = 'packages/sdk/src/viem/clients/WalletClient.ts!';

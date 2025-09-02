@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { RetrieveAccountDetails, ThorNetworks } from '@thor';
+import { RetrieveAccountDetails, ThorNetworks } from '@thor/thorest';
 import { FetchHttpClient } from '@common/http';
 import { Address, Hex, Revision } from '@common/vcdm';
 import { VTHO_ADDRESS } from '@thor/utils/const/network';

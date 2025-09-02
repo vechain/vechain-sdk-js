@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { InspectClauses } from '@thor';
+import { InspectClauses } from '@thor/thorest';
 import {
     type ExecuteCodeResponseJSON,
     type ExecuteCodesRequestJSON

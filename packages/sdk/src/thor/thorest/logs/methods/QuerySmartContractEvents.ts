@@ -4,7 +4,7 @@ import {
     ThorError,
     type ThorRequest,
     type ThorResponse
-} from '@thor';
+} from '@thor/thorest';
 import {
     type EventLogsResponseJSON,
     type EventLogFilterRequestJSON
