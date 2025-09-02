@@ -1,7 +1,7 @@
 /**
  * The verbosity of a log message.
  */
-type LogVerbosity = 'debug' | 'info' | 'warn' | 'error';
+type LogVerbosity = 'debug' | 'info' | 'warn' | 'error' | 'none';
 
 /**
  * The numerical order of the verbosity levels.
@@ -10,7 +10,8 @@ const VERBOSITY_ORDER: Record<LogVerbosity, number> = {
     debug: 0,
     info: 1,
     warn: 2,
-    error: 3
+    error: 3,
+    none: 4
 };
 
 /**

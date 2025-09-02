@@ -1,5 +1,5 @@
 import { FetchHttpClient } from '@common/http';
-import { JSONLogger, LoggerRegistry } from '@common/logging';
+import { JSONLogger, LoggerRegistry, type LogItem } from '@common/logging';
 import { describe, expect, jest, test } from '@jest/globals';
 
 /**
@@ -14,6 +14,8 @@ describe('FetchHttpClient logging', () => {
         const jsonLogger = new JSONLogger();
         LoggerRegistry.getInstance().registerLogger(jsonLogger);
         const loggerSpy = jest.spyOn(jsonLogger, 'log');
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        loggerSpy.mockImplementation((entry: LogItem) => {});
         const httpClient = new FetchHttpClient(
             new URL('https://mainnet.vechain.org')
         );
@@ -32,6 +34,8 @@ describe('FetchHttpClient logging', () => {
         const jsonLogger = new JSONLogger();
         LoggerRegistry.getInstance().registerLogger(jsonLogger);
         const loggerSpy = jest.spyOn(jsonLogger, 'log');
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        loggerSpy.mockImplementation((entry: LogItem) => {});
         const httpClient = new FetchHttpClient(
             new URL('https://mainnet.vechain.org/invalid')
         );

@@ -6,7 +6,8 @@ import {
     type LogVerbosity,
     type LoggedItem,
     type LogItem,
-    log
+    log,
+    PrettyLogger
 } from '@common/logging';
 
 // example callback logger
@@ -15,6 +16,7 @@ class ErrorThrowingLogger extends Logger {
     private config: LoggerConfig = {
         verbosity: this.DEFAULT_VERBOSITY
     };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     log(entry: LoggedItem): void {
         throw new Error('test logger error');
     }
@@ -69,5 +71,23 @@ describe('log', () => {
         expect(msg).toContain('Logger callback failed');
         expect(err).toBeInstanceOf(Error);
         expect(err.message).toContain('test logger error');
+    });
+    test('when verbosity is none, it does nothing', () => {
+        const logger = new PrettyLogger();
+        LoggerRegistry.getInstance().registerLogger(logger);
+        logger.setConfig({
+            verbosity: 'none'
+        });
+        const consoleSpy = jest
+            .spyOn(console, 'error')
+            .mockImplementation(() => {});
+        const logItem: LogItem = {
+            verbosity: 'none',
+            message: 'test',
+            source: 'test',
+            context: { data: { key: 'value' } }
+        };
+        log(logItem);
+        expect(consoleSpy).not.toHaveBeenCalled();
     });
 });

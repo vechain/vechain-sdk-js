@@ -50,7 +50,9 @@ When a Logger is registered the SDK will load environment variable: SDK_LOG_VERB
 The value of that variable is then passed to the `setConfig` callback function of the registered Logger  
 It is then up to the logger to re-configure itself (using its own framework) to set the requested config  
 
-SDK_LOG_VERBOSITY can take values: 'debug' | 'info' | 'warn' | 'error'
+SDK_LOG_VERBOSITY can take values: 'debug' | 'info' | 'warn' | 'error' | 'none'
+
+When verbosity is set to 'none' then no logs will be sent to the registered logger
 
 A custom source for the environment variable can be set via:
 

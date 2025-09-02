@@ -18,6 +18,7 @@ class PrettyLogger extends Logger {
     };
 
     NODE_COLORS: Record<LogVerbosity, string> = {
+        none: '',
         debug: '\x1b[90m', // gray
         info: '\x1b[34m', // blue
         warn: '\x1b[33m', // yellow
@@ -25,12 +26,14 @@ class PrettyLogger extends Logger {
     };
     NODE_RESET_COLOR = '\x1b[0m';
     ICONS: Record<LogVerbosity, string> = {
+        none: '',
         debug: '🐛', // bug for debugging
         info: 'ℹ️', // info symbol
         warn: '⚠️', // warning triangle
         error: '❌' // red cross
     };
     BROWSER_COLORS: Record<LogVerbosity, string> = {
+        none: '',
         debug: 'color: #999', // gray
         info: 'color: #007bff', // blue
         warn: 'color: #ffc107', // yellow

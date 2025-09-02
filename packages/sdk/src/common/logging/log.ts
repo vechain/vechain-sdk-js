@@ -7,7 +7,11 @@ import { type LoggedItem, type LogItem } from './types';
  */
 function log(entry: LogItem): void {
     const logger = LoggerRegistry.getInstance().getRegisteredLogger();
+    // if no registered logger, return
     if (logger === undefined) return;
+    const config = logger.getConfig();
+    // if the logger is configured to not log, return
+    if (config.verbosity === 'none') return;
     // default source to 'VeChain SDK'
     entry.source ??= 'VeChain SDK';
     try {
