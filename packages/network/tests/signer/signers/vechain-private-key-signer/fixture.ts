@@ -5,6 +5,7 @@ import {
     TESTNET_DELEGATE_URL,
     configData
 } from '../../../fixture';
+import { getSoloChainTag } from '../../../test-utils';
 
 /**
  * SignTransaction test cases
@@ -26,7 +27,7 @@ const signTransactionTestCases = {
                 isDelegated: false,
                 expected: {
                     body: {
-                        chainTag: 87,
+                        chainTag: getSoloChainTag(),
                         clauses: [
                             {
                                 data: '0xb6b55f25000000000000000000000000000000000000000000000000000000000000007b',
@@ -52,7 +53,7 @@ const signTransactionTestCases = {
                 isDelegated: false,
                 expected: {
                     body: {
-                        chainTag: 87,
+                        chainTag: getSoloChainTag(),
                         clauses: [
                             {
                                 data: '0xb6b55f25000000000000000000000000000000000000000000000000000000000000007b',
@@ -80,7 +81,7 @@ const signTransactionTestCases = {
                 isDelegated: true,
                 expected: {
                     body: {
-                        chainTag: 87,
+                        chainTag: getSoloChainTag(),
                         clauses: [
                             {
                                 data: '0xb6b55f25000000000000000000000000000000000000000000000000000000000000007b',
@@ -113,7 +114,7 @@ const signTransactionTestCases = {
                 isDelegated: true,
                 expected: {
                     body: {
-                        chainTag: 87,
+                        chainTag: getSoloChainTag(),
                         clauses: [
                             {
                                 data: '0xb6b55f25000000000000000000000000000000000000000000000000000000000000007b',

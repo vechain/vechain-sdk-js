@@ -1,7 +1,8 @@
 import { ERC20_ABI, HexUInt, VTHO_ADDRESS } from '@vechain/sdk-core';
 import {
     ProviderInternalBaseWallet,
-    type ThorClient,
+    THOR_SOLO_URL,
+    ThorClient,
     type TransactionReceipt,
     VeChainPrivateKeySigner,
     VeChainProvider
@@ -13,6 +14,12 @@ import {
 } from '@vechain/sdk-solo-setup';
 
 const accountDispatcher = AccountDispatcher.getInstance();
+
+const getSoloChainTag = async (): Promise<number> => {
+    const thorClient = ThorClient.at(THOR_SOLO_URL);
+    const chainTag = await thorClient.nodes.getChaintag();
+    return chainTag;
+};
 
 const getUnusedAccount = (): ThorSoloAccount => {
     return accountDispatcher.getNextAccount();
@@ -45,7 +52,7 @@ const signTransactionTestCases = {
                 isDelegated: false,
                 expected: {
                     body: {
-                        chainTag: 87,
+                        chainTag: getSoloChainTag(),
                         clauses: [
                             {
                                 data: '0xb6b55f25000000000000000000000000000000000000000000000000000000000000007b',
@@ -65,7 +72,7 @@ const signTransactionTestCases = {
                 isDelegated: true,
                 expected: {
                     body: {
-                        chainTag: 87,
+                        chainTag: getSoloChainTag(),
                         clauses: [
                             {
                                 data: '0xb6b55f25000000000000000000000000000000000000000000000000000000000000007b',

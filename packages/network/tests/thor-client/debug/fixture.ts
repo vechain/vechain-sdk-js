@@ -6,6 +6,7 @@ import {
     TESTING_CONTRACT_ADDRESS,
     configData
 } from '../../fixture';
+import { getSoloChainTag } from '../../test-utils';
 
 /**
  * Some random transaction nonces to use into tests
@@ -165,7 +166,7 @@ const buildTransactionBodyClausesTestCases = [
         options: { gasPriceCoef: 0 },
         expected: {
             solo: {
-                chainTag: 87,
+                chainTag: getSoloChainTag(),
                 clauses: [
                     {
                         data: '0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000',
@@ -227,7 +228,7 @@ const buildTransactionBodyClausesTestCases = [
         },
         expected: {
             solo: {
-                chainTag: 87,
+                chainTag: getSoloChainTag(),
                 clauses: [
                     {
                         data: '0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000',

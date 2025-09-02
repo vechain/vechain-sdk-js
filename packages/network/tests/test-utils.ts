@@ -1,4 +1,5 @@
 import { jest } from '@jest/globals';
+import { THOR_SOLO_URL, ThorClient } from '../src';
 
 /**
  * Advance timers by the specified time and tick
@@ -14,6 +15,12 @@ const advanceTimersByTimeAndTick = async (time: number): Promise<void> => {
     await new Promise<void>((resolve) => {
         process.nextTick(resolve);
     });
+};
+
+const getSoloChainTag = async (): Promise<number> => {
+    const thorClient = ThorClient.at(THOR_SOLO_URL);
+    const chainTag = await thorClient.nodes.getChaintag();
+    return chainTag;
 };
 
 /**
@@ -66,4 +73,4 @@ const retryOperation = async <T>(
     throw lastError ?? new Error('Unknown error');
 };
 
-export { advanceTimersByTimeAndTick, retryOperation };
+export { advanceTimersByTimeAndTick, retryOperation, getSoloChainTag };
