@@ -1,4 +1,5 @@
 import { beforeEach, describe, test } from '@jest/globals';
+
 import {
     RPC_METHODS,
     RPCMethodsMap,

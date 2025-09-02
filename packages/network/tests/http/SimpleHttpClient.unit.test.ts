@@ -1,6 +1,6 @@
 import { describe, expect } from '@jest/globals';
-import { InvalidHTTPRequest } from '@vechain/sdk-errors';
-import { SimpleHttpClient } from '../../src';
+import { InvalidHTTPRequest, HttpNetworkError } from '@vechain/sdk-errors';
+import { SimpleHttpClient } from '../../src/http/SimpleHttpClient';
 
 /**
  * Test SimpleHttpClient class.
@@ -48,6 +48,43 @@ describe('SimpleHttpClient unit tests', () => {
             const cloned = response.clone();
             const text = await cloned.text();
             expect(text).toBe('ERROR OCCURRED');
+        }
+    });
+
+    it('http should throw HttpNetworkError on network failures', async () => {
+        // Mock fetch to throw a TypeError (network error according to Fetch API spec)
+        jest.spyOn(globalThis, 'fetch').mockImplementation(
+            jest.fn().mockRejectedValueOnce(new TypeError('fetch failed'))
+        );
+        const client = new SimpleHttpClient('http://localhost/');
+        try {
+            await client.get('/');
+            fail('Should have thrown an error');
+        } catch (error) {
+            expect(error).toBeInstanceOf(HttpNetworkError);
+            const networkError = error as HttpNetworkError;
+            expect(networkError.data.method).toBe('GET');
+            expect(networkError.data.url).toBe('http://localhost/');
+            expect(networkError.data.networkErrorType).toBe('TypeError');
+        }
+    });
+
+    it('http should throw HttpNetworkError on connection timeout', async () => {
+        // Mock fetch to throw a TypeError for connection timeout
+        jest.spyOn(globalThis, 'fetch').mockImplementation(
+            jest.fn().mockRejectedValueOnce(new TypeError('timeout'))
+        );
+
+        const client = new SimpleHttpClient('http://localhost/');
+        try {
+            await client.get('/');
+            fail('Should have thrown an error');
+        } catch (error) {
+            expect(error).toBeInstanceOf(HttpNetworkError);
+            const networkError = error as HttpNetworkError;
+            expect(networkError.data.method).toBe('GET');
+            expect(networkError.data.url).toBe('http://localhost/');
+            expect(networkError.data.networkErrorType).toBe('TypeError');
         }
     });
 });
