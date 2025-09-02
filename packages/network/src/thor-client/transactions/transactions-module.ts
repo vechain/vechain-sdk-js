@@ -349,7 +349,7 @@ class TransactionsModule {
             );
 
         const chainTag =
-            options?.chainTag ?? Number(`0x${genesisBlock.id.slice(64)}`);
+            options?.chainTag ?? Number(`0x${genesisBlock.id.slice(-2)}`);
 
         const filledOptions = await this.fillDefaultBodyOptions(options);
 

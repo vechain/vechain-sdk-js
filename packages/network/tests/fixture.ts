@@ -3,8 +3,7 @@ import {
     MAINNET_URL,
     ProviderInternalBaseWallet,
     type SignTransactionOptions,
-    TESTNET_URL,
-    ThorClient
+    TESTNET_URL
 } from '../src';
 import { SimpleHttpClient } from '../src/http';
 import {
@@ -40,14 +39,6 @@ const accountDispatcher = AccountDispatcher.getInstance();
 
 const getUnusedAccount = (): ThorSoloAccount => {
     return accountDispatcher.getNextAccount();
-};
-
-const getChainTag = async (thorClient: ThorClient): Promise<number | null> => {
-    const genesisBlock: number = await thorClient.nodes.getChaintag();
-    if (genesisBlock) {
-        return genesisBlock;
-    }
-    return null;
 };
 
 const getAllUsedAccounts = (): ThorSoloAccount[] => {
@@ -180,7 +171,6 @@ export {
     testNetwork,
     ZERO_ADDRESS,
     getUnusedAccount,
-    getChainTag,
     getAllUsedAccounts,
     getUnusedBaseWallet,
     getUnusedBaseWalletWithGasPayer,
