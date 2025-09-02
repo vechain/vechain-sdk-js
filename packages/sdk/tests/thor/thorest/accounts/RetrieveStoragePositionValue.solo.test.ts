@@ -2,8 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import { Address, HexUInt32 } from '@common/vcdm';
 import {
     RetrieveStoragePositionValue,
-    ThorNetworks,
-    toURL
+    ThorNetworks
 } from '@thor/thorest';
 import { FetchHttpClient } from '@common/http';
 

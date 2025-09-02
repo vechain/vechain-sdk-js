@@ -1,13 +1,10 @@
 import { type HttpClient, type HttpPath, type HttpQuery } from '@common/http';
-import {
-    ExecuteCodesResponse,
-    ExecuteCodesRequest
-} from '@thor/thorest/accounts';
+import { ExecuteCodesResponse, ExecuteCodesRequest } from '@thor/thorest';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
 import { Revision } from '@common/vcdm';
 import {
-    ExecuteCodesResponseJSON,
-    ExecuteCodesRequestJSON
+    type ExecuteCodesResponseJSON,
+    type ExecuteCodesRequestJSON
 } from '@thor/thorest/accounts/json';
 
 /**

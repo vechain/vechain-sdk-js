@@ -1,7 +1,7 @@
 import { type HttpClient, type HttpPath, type HttpQuery } from '@common/http';
 import { GetAccountResponse } from '@thor/thorest';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
-import { type Address, Revision } from '@common/vcdm';
+import { type Address, type Revision } from '@common/vcdm';
 import { type GetAccountResponseJSON } from '../json';
 
 /**

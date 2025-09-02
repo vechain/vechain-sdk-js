@@ -4,9 +4,9 @@ import {
     SendTransaction,
     ThorNetworks,
     type TransactionBody
-} from '@thor';
-import { Address, BlockRef, Hex, Revision } from '@common';
-import { FetchHttpClient } from '@common';
+} from '@thor/thorest';
+import { Address, BlockRef, Hex, Revision } from '@common/vcdm';
+import { FetchHttpClient } from '@common/http';
 import { SOLO_NETWORK } from '@thor/utils';
 import { privateKeyToAccount } from 'viem/accounts';
 import {

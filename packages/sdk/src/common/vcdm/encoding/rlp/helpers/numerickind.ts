@@ -1,10 +1,15 @@
-import { FixedPointNumber, Hex, HexUInt, type RLPInput } from '@common/vcdm';
+import { Hex, HexUInt, type RLPInput } from '@common/vcdm';
 import { InvalidEncodingError } from '@common/errors';
 
 /**
  * Full Qualified Path
  */
 const FQP = 'vcdm.encoding.rlp.helpers.numericKind!';
+
+/**
+ * Regular expression pattern for matching natural numbers expressed as base 10 strings.
+ */
+const REGEX_NATURAL: RegExp = /^\d+$/;
 
 /**
  * Validates and converts the input data to a BigInt.
@@ -86,7 +91,7 @@ const _validateNumericKindNumber = (num: number, context: string): void => {
  */
 const _validateNumericKindString = (str: string, context: string): void => {
     const isHexUInt = HexUInt.isValid0x(str);
-    const isDecimal = FixedPointNumber.isNaturalExpression(str);
+    const isDecimal = REGEX_NATURAL.test(str);
     // Ensure the string is either a hex or decimal number.
     if (!isHexUInt && !isDecimal) {
         throw new InvalidEncodingError(

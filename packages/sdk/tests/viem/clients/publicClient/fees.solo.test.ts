@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
-import { createPublicClient } from '@viem';
+import { createPublicClient } from '@viem/clients';
 import { ThorNetworks } from '@thor/thorest';
-import { ExecuteCodesRequestJSON } from '@thor/thorest/json';
+import { type ExecuteCodesRequestJSON } from '@thor/thorest/json';
 
 /**
  * Test suite for PublicClient fee estimation functionality

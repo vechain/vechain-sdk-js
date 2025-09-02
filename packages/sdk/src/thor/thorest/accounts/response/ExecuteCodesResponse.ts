@@ -1,11 +1,11 @@
-import { Hex, HexUInt } from '@common/vcdm';
+import { type Hex, HexUInt } from '@common/vcdm';
 import { Transfer } from '@thor/thorest/model/Transfer';
 import { type EventJSON, type TransferJSON } from '@thor/thorest/json';
 import { Event } from '@thor/thorest/model';
 import { IllegalArgumentError } from '@common/errors';
 import {
-    ExecuteCodeResponseJSON,
-    ExecuteCodesResponseJSON
+    type ExecuteCodeResponseJSON,
+    type ExecuteCodesResponseJSON
 } from '@thor/thorest/accounts/json';
 
 /**

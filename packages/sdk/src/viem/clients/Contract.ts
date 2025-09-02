@@ -5,8 +5,7 @@ import {
     getEventSelector
 } from 'viem';
 import { type Address, Hex } from '@common/vcdm';
-import { type PublicClient } from '@viem';
-import { type WalletClient } from '@viem';
+import { type PublicClient, type WalletClient } from '@viem/clients';
 import { type ExecuteCodesRequestJSON } from '@thor/thorest/json';
 import { type EventLogResponse } from '@thor/thorest/logs/response';
 import { type SubscriptionEventResponse } from '@thor/thorest/subscriptions/response';

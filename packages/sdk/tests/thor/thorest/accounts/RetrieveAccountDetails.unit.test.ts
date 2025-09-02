@@ -123,7 +123,10 @@ describe('RetrieveAccountDetails unit tests', () => {
                 mockResponse,
                 'get'
             );
-            const request = RetrieveAccountDetails.of(address, Revision.FINALIZED);
+            const request = RetrieveAccountDetails.of(
+                address,
+                Revision.FINALIZED
+            );
             const result = await request.askTo(mockClient);
 
             const getSpy = jest.spyOn(mockClient, 'get');

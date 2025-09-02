@@ -1,4 +1,4 @@
-import { Hex, HexUInt } from '@common/vcdm';
+import { type Hex, HexUInt } from '@common/vcdm';
 import { type ContractBytecodeJSON } from '@thor/thorest/json';
 import { IllegalArgumentError } from '@common/errors';
 /**

@@ -1,4 +1,4 @@
-import { Address, Hex, HexUInt32 } from '@common/vcdm';
+import { Address, type Hex, HexUInt32 } from '@common/vcdm';
 
 import { IllegalArgumentError } from '@common/errors';
 import { TxMeta } from '../transactions/model/TxMeta';
