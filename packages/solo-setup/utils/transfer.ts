@@ -27,11 +27,7 @@ const genesisDeployerAccount = THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS[0];
 export const seedVET = async (accounts: TestAccount[]): Promise<string> => {
     try {
         const thorClient = ThorClient.at('http://localhost:8669');
-        const genesisBlock = await getGenesisBlock();
-        if (!genesisBlock?.id || genesisBlock.id.length < 2) {
-            throw new Error('Unable to derive chainTag: invalid genesis block id');
-        }
-        const chainTagId = Number(`0x${genesisBlock.id.slice(-2)}`);
+        const chainTagId = await thorClient.nodes.getChaintag();
         const latestBlock = await thorClient.blocks.getBestBlockCompressed();
         const privateKey = HexUInt.of(genesisDeployerAccount.privateKey).bytes;
         const clauses: TransactionClause[] = [];
@@ -85,10 +81,7 @@ export const seedVTHO = async (accounts: TestAccount[]): Promise<string> => {
     try {
         const thorClient = ThorClient.at('http://localhost:8669');
         const latestBlock = await thorClient.blocks.getBestBlockCompressed();
-
-        const genesisBlock = await getGenesisBlock();
-        const chainTagId = Number(`0x${genesisBlock.id.slice(-2)}`);
-
+        const chainTagId = await thorClient.nodes.getChaintag();
         const privateKey = HexUInt.of(genesisDeployerAccount.privateKey).bytes;
         const clauses: TransactionClause[] = [];
         for (const account of accounts) {
@@ -143,8 +136,7 @@ export const seedTestToken = async (
     try {
         const thorClient = ThorClient.at('http://localhost:8669');
         const latestBlock = await thorClient.blocks.getBestBlockCompressed();
-        const genesisBlock = await getGenesisBlock();
-        const chainTagId = Number(`0x${genesisBlock.id.slice(-2)}`);
+        const chainTagId = await thorClient.nodes.getChaintag();
         const privateKey = HexUInt.of(genesisDeployerAccount.privateKey).bytes;
         const clauses: TransactionClause[] = [];
         for (const account of accounts) {

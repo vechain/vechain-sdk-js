@@ -1,6 +1,5 @@
 import { HexUInt, Secp256k1 } from '@vechain/sdk-core';
 import {
-    CompressedBlockDetail,
     MAINNET_URL,
     ProviderInternalBaseWallet,
     type SignTransactionOptions,
@@ -44,11 +43,9 @@ const getUnusedAccount = (): ThorSoloAccount => {
 };
 
 const getChainTag = async (thorClient: ThorClient): Promise<number | null> => {
-    const genesisBlock: CompressedBlockDetail | null =
-        await thorClient.blocks.getGenesisBlock();
+    const genesisBlock: number = await thorClient.nodes.getChaintag();
     if (genesisBlock) {
-        const chainTagId = Number(`0x${genesisBlock.id.slice(-2)}`);
-        return chainTagId;
+        return genesisBlock;
     }
     return null;
 };
