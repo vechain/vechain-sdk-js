@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
-    ABIFunction,
     Address,
     ContractClause,
     ERC20_ABI,
@@ -412,10 +411,8 @@ describe('ThorClient - ERC20 Contracts', () => {
             const txResult =
                 await thorSoloClient.contracts.executeMultipleClausesTransaction(
                     testCase === 'ContractClause'
-                        ? (rawClauses as ContractClause[])
-                        : (rawClauses.map(
-                              (clause) => clause.clause
-                          ) as TransactionClause[]),
+                        ? rawClauses
+                        : rawClauses.map((clause) => clause.clause),
                     signer
                 );
 
