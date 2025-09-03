@@ -1,15 +1,19 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
+    BlocksRPC,
     RPC_METHODS,
     RPCMethodsMap,
     TESTNET_URL,
-    ThorClient
+    ThorClient,
+    TransactionRPC
 } from '../../../../../src';
 import {
     ethGetBlockByNumberTestCases,
     invalidEthGetBlockByNumberTestCases
 } from './fixture';
 import { JSONRPCInternalError } from '@vechain/sdk-errors';
+import { HexUInt } from '@vechain/sdk-core';
+import { retryOperation } from '../../../../test-utils';
 
 /**
  * RPC Mapper integration tests for 'eth_getBlockByNumber' method
@@ -107,5 +111,88 @@ describe('RPC Mapper - eth_getBlockByNumber method tests', () => {
                     ]([`0x${BigInt(-1).toString(16)}`, false]) // Block number is negative (-1)
             ).rejects.toThrowError(JSONRPCInternalError);
         });
+    });
+
+    describe('GALACTICA - baseFeePerGas', () => {
+        test('OK <- blocks/0?expanded=false', async () => {
+            const actual = await RPCMethodsMap(thorClient)[
+                RPC_METHODS.eth_getBlockByNumber
+            ](['0x0', false]);
+            expect(actual).toBeDefined();
+            const block = actual as BlocksRPC;
+            expect(block.baseFeePerGas).toBeUndefined();
+        });
+
+        test('OK <- blocks/0?expanded=true', async () => {
+            const actual = await RPCMethodsMap(thorClient)[
+                RPC_METHODS.eth_getBlockByNumber
+            ](['0x0', true]);
+            expect(actual).toBeDefined();
+            const block = actual as BlocksRPC;
+            expect(block.baseFeePerGas).toBeUndefined();
+            expect(block.transactions.length).toBe(0);
+        });
+
+        test('OK <- blocks/1?expanded=false', async () => {
+            const actual = await RPCMethodsMap(thorClient)[
+                RPC_METHODS.eth_getBlockByNumber
+            ](['0x01', false]);
+            expect(actual).toBeDefined();
+            const block = actual as BlocksRPC;
+            expect(block.baseFeePerGas).toBeDefined();
+            expect(block.baseFeePerGas).not.toBeNull();
+            expect(
+                HexUInt.isValid0x(block.baseFeePerGas as string)
+            ).toBeTruthy();
+            expect(
+                HexUInt.of(block.baseFeePerGas as string).bi
+            ).toBeGreaterThan(0n);
+        });
+
+        test('OK <- blocks/1?expanded=true', async () => {
+            const actual = await RPCMethodsMap(thorClient)[
+                RPC_METHODS.eth_getBlockByNumber
+            ](['0x01', true]);
+            expect(actual).toBeDefined();
+            const block = actual as BlocksRPC;
+            expect(block.baseFeePerGas).toBeDefined();
+            expect(block.baseFeePerGas).not.toBeNull();
+            expect(
+                HexUInt.isValid0x(block.baseFeePerGas as string)
+            ).toBeTruthy();
+            expect(
+                HexUInt.of(block.baseFeePerGas as string).bi
+            ).toBeGreaterThan(0n);
+            block.transactions.forEach((tx) => {
+                const transactionRPC = tx as TransactionRPC;
+                expect(HexUInt.isValid0x(transactionRPC.type)).toBeTruthy();
+                if (
+                    transactionRPC.maxFeePerGas !== undefined &&
+                    transactionRPC.maxFeePerGas !== null
+                ) {
+                    expect(
+                        HexUInt.isValid0x(transactionRPC.maxFeePerGas)
+                    ).toBeTruthy();
+                }
+                if (
+                    transactionRPC.maxPriorityFeePerGas !== undefined &&
+                    transactionRPC.maxPriorityFeePerGas !== null
+                ) {
+                    expect(
+                        HexUInt.isValid0x(transactionRPC.maxPriorityFeePerGas)
+                    ).toBeTruthy();
+                }
+            });
+            console.log(JSON.stringify(block, null, 2));
+        });
+
+        test('eth_getBlockByNumber', async () => {
+            const block = await retryOperation(async () => {
+                return await RPCMethodsMap(thorClient)[
+                    RPC_METHODS.eth_getBlockByNumber
+                ](['latest', false]);
+            });
+            expect(block).toBeDefined();
+        }, 15000);
     });
 });

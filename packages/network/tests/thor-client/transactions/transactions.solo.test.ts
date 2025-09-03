@@ -186,7 +186,10 @@ describe('ThorClient - Transactions Module', () => {
                             await thorSoloClient.transactions.buildTransactionBody(
                                 [transfer1VTHOClause],
                                 gasResult.totalGas,
-                                { nonce }
+                                {
+                                    nonce,
+                                    dependsOn: options.dependsOn
+                                }
                             );
 
                         // Create the signed transfer transaction
