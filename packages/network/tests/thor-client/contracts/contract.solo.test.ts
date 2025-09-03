@@ -632,10 +632,11 @@ describe('ThorClient - Contracts', () => {
     );
 
     /**
-     * Test cases for EVM Extension functions
+     * Test cases for EVM Extension functions (excluding dynamic tests)
      */
-    testingContractEVMExtensionTestCases.forEach(
-        ({ description, functionName, params, expected }) => {
+    testingContractEVMExtensionTestCases
+        .filter(({ functionName }) => functionName !== 'getBlockID')
+        .forEach(({ description, functionName, params, expected }) => {
             test(description, async () => {
                 const response = await thorSoloClient.contracts.executeCall(
                     TESTING_CONTRACT_ADDRESS,
@@ -646,8 +647,34 @@ describe('ThorClient - Contracts', () => {
                 );
                 expect(response).toEqual(expected);
             });
-        }
-    );
+        });
+
+    /**
+     * Dynamic test for getBlockID function that fetches actual genesis block ID
+     */
+    test('should return the blockID of the given block number (dynamic)', async () => {
+        // Fetch the actual genesis block from the solo network
+        const genesisBlock = await thorSoloClient.blocks.getGenesisBlock();
+        expect(genesisBlock).not.toBeNull();
+        
+        const expectedBlockId = genesisBlock!.id;
+        
+        // Call the contract function to get block ID for block 0
+        const response = await thorSoloClient.contracts.executeCall(
+            TESTING_CONTRACT_ADDRESS,
+            ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction('getBlockID'),
+            [0]
+        );
+        
+        // Verify the response matches the actual genesis block ID
+        expect(response).toEqual({
+            result: {
+                array: [expectedBlockId],
+                plain: expectedBlockId
+            },
+            success: true
+        });
+    });
 
     test('Should filter the StateChanged event of the testing contract', async () => {
         const contract = thorSoloClient.contracts.load(
