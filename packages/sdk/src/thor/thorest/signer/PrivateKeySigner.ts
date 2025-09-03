@@ -23,7 +23,7 @@ const FQP = 'packages/sdk/src/thor/thorest/signer/PrivateKeySigner.ts!';
  * The class implements the {@link Signer} interface,
  * to sign transaction requests using the provided private key.
  *
- * @remark Call {@link PrivateKeySigner.void} method to dispose the private key
+ * @remark Call {@link PrivateKeySigner.disponse} method to dispose the private key
  * when the signer is not needed anymore.
  * This will clear the private key from memory, minimizing the risk of leaking it.
  *
@@ -40,9 +40,8 @@ class PrivateKeySigner implements Signer {
      *
      * @remark The value should be handled with care, as it may contain sensitive
      * information.
-     *
      */
-    private privateKey: Uint8Array | null = null;
+    #privateKey: Uint8Array | null = null;
 
     /**
      * Represents the address of the signer.
@@ -60,7 +59,7 @@ class PrivateKeySigner implements Signer {
     constructor(privateKey: Uint8Array) {
         if (Secp256k1.isValidPrivateKey(privateKey)) {
             // Defensive copies to avoid external mutation.
-            this.privateKey = new Uint8Array(privateKey);
+            this.#privateKey = new Uint8Array(privateKey);
             this.address = Address.ofPrivateKey(privateKey);
         } else {
             throw new InvalidPrivateKeyError(
@@ -68,6 +67,24 @@ class PrivateKeySigner implements Signer {
                 'invalid private key'
             );
         }
+    }
+
+    /**
+     * Clears the existing private key data by overwriting it with zeroes
+     * and sets the private key to null to be its memory recovered by the garbage collector.
+     *
+     * @return {void} This method does not return a value.
+     *
+     * @remark Call {@link PrivateKeySigner.disponse} method to dispose the private key
+     * when the signer is not needed anymore.
+     * This will clear the private key from memory, minimizing the risk of leaking it.
+     * After this call this {@link Signer} instance can't be used anymore.
+     */
+    public disponse(): void {
+        if (this.#privateKey !== null) {
+            this.#privateKey.fill(0);
+        }
+        this.#privateKey = null;
     }
 
     /**
@@ -85,11 +102,11 @@ class PrivateKeySigner implements Signer {
     private signTransactionRequest(
         transactionRequest: TransactionRequest
     ): SignedTransactionRequest {
-        if (this.privateKey !== null) {
+        if (this.#privateKey !== null) {
             const hash = Blake2b256.of(
                 RLPCodec.encodeTransactionRequest(transactionRequest)
             ).bytes;
-            const signature = Secp256k1.sign(hash, this.privateKey);
+            const signature = Secp256k1.sign(hash, this.#privateKey);
             return new SignedTransactionRequest({
                 blockRef: transactionRequest.blockRef,
                 chainTag: transactionRequest.chainTag,
@@ -108,70 +125,7 @@ class PrivateKeySigner implements Signer {
         }
         throw new InvalidPrivateKeyError(
             `${FQP}PrivateKeySigner.sign(transactionRequest: TransactionRequest): SignedTransactionRequest`,
-            'void private key'
-        );
-    }
-
-    /**
-     * Signs and sponsors as gas-payer a given transaction request if it is eligible for sponsorship.
-     *
-     * @param {SignedTransactionRequest} signedTransactionRequest - The signed transaction request to be sponsored.
-     * This request must already include all necessary fields and signatures from the transaction originator.
-     * @return {SponsoredTransactionRequest} The sponsored transaction request, which includes the signature from the gas payer,
-     * as well as all relevant transaction details.
-     *
-     * @throws {InvalidPrivateKeyError} If the private key is null or invalid for signing the transaction.
-     * @throws {UnsupportedOperationError} If the transaction request is not intended to be sponsored.
-     *
-     * @remarks Security audited class, depends on
-     * - {@link Blake2b256.of};
-     * - {@link Secp256k1.sign}.
-     * - Follow links for additional security notes.
-     */
-    private sponsorTransactionRequest(
-        signedTransactionRequest: SignedTransactionRequest
-    ): SponsoredTransactionRequest {
-        if (this.privateKey !== null) {
-            if (signedTransactionRequest.isIntendedToBeSponsored) {
-                const hash = Blake2b256.of(
-                    nc_utils.concatBytes(
-                        Blake2b256.of(
-                            RLPCodec.encodeTransactionRequest(
-                                signedTransactionRequest
-                            )
-                        ).bytes,
-                        signedTransactionRequest.origin.bytes
-                    )
-                ).bytes;
-                const gasPayerSignature = Secp256k1.sign(hash, this.privateKey);
-                return new SponsoredTransactionRequest({
-                    blockRef: signedTransactionRequest.blockRef,
-                    chainTag: signedTransactionRequest.chainTag,
-                    clauses: signedTransactionRequest.clauses,
-                    dependsOn: signedTransactionRequest.dependsOn,
-                    expiration: signedTransactionRequest.expiration,
-                    gas: signedTransactionRequest.gas,
-                    gasPriceCoef: signedTransactionRequest.gasPriceCoef,
-                    nonce: signedTransactionRequest.nonce,
-                    isIntendedToBeSponsored: true,
-                    origin: signedTransactionRequest.origin,
-                    originSignature: signedTransactionRequest.originSignature,
-                    gasPayer: this.address,
-                    gasPayerSignature,
-                    signature: nc_utils.concatBytes(
-                        signedTransactionRequest.originSignature,
-                        gasPayerSignature
-                    )
-                });
-            }
-            throw new UnsupportedOperationError(
-                `${FQP}PrivateKeySigner.sign(signedTransactionRequest: SignedTransactionRequest): DelegatedSignedTransactionRequest`,
-                'transaction request is not intended to be sponsored'
-            );
-        }
-        throw new InvalidPrivateKeyError(
-            `${FQP}PrivateKeySigner.sign(signedTransactionRequest: SignedTransactionRequest): DelegatedSignedTransactionRequest`,
-            'void private key'
+            'no private key'
         );
     }
 
@@ -202,21 +156,69 @@ class PrivateKeySigner implements Signer {
     }
 
     /**
-     * Clears the existing private key data by overwriting it with zeroes
-     * and sets the private key to null to be its memory recovered by the garbage collector.
+     * Signs and sponsors as gas-payer a given transaction request if it is eligible for sponsorship.
      *
-     * @return {void} This method does not return a value.
+     * @param {SignedTransactionRequest} signedTransactionRequest - The signed transaction request to be sponsored.
+     * This request must already include all necessary fields and signatures from the transaction originator.
+     * @return {SponsoredTransactionRequest} The sponsored transaction request, which includes the signature from the gas payer,
+     * as well as all relevant transaction details.
      *
-     * @remark Call {@link PrivateKeySigner.void} method to dispose the private key
-     * when the signer is not needed anymore.
-     * This will clear the private key from memory, minimizing the risk of leaking it.
-     * After this call this {@link Signer} instance can't be used anymore.
+     * @throws {InvalidPrivateKeyError} If the private key is null or invalid for signing the transaction.
+     * @throws {UnsupportedOperationError} If the transaction request is not intended to be sponsored.
+     *
+     * @remarks Security audited class, depends on
+     * - {@link Blake2b256.of};
+     * - {@link Secp256k1.sign}.
+     * - Follow links for additional security notes.
      */
-    public void(): void {
-        if (this.privateKey !== null) {
-            this.privateKey.fill(0);
+    private sponsorTransactionRequest(
+        signedTransactionRequest: SignedTransactionRequest
+    ): SponsoredTransactionRequest {
+        if (this.#privateKey !== null) {
+            if (signedTransactionRequest.isIntendedToBeSponsored) {
+                const hash = Blake2b256.of(
+                    nc_utils.concatBytes(
+                        Blake2b256.of(
+                            RLPCodec.encodeTransactionRequest(
+                                signedTransactionRequest
+                            )
+                        ).bytes,
+                        signedTransactionRequest.origin.bytes
+                    )
+                ).bytes;
+                const gasPayerSignature = Secp256k1.sign(
+                    hash,
+                    this.#privateKey
+                );
+                return new SponsoredTransactionRequest({
+                    blockRef: signedTransactionRequest.blockRef,
+                    chainTag: signedTransactionRequest.chainTag,
+                    clauses: signedTransactionRequest.clauses,
+                    dependsOn: signedTransactionRequest.dependsOn,
+                    expiration: signedTransactionRequest.expiration,
+                    gas: signedTransactionRequest.gas,
+                    gasPriceCoef: signedTransactionRequest.gasPriceCoef,
+                    nonce: signedTransactionRequest.nonce,
+                    isIntendedToBeSponsored: true,
+                    origin: signedTransactionRequest.origin,
+                    originSignature: signedTransactionRequest.originSignature,
+                    gasPayer: this.address,
+                    gasPayerSignature,
+                    signature: nc_utils.concatBytes(
+                        signedTransactionRequest.originSignature,
+                        gasPayerSignature
+                    )
+                });
+            }
+            throw new UnsupportedOperationError(
+                `${FQP}PrivateKeySigner.sign(signedTransactionRequest: SignedTransactionRequest): DelegatedSignedTransactionRequest`,
+                'transaction request is not intended to be sponsored'
+            );
         }
-        this.privateKey = null;
+        throw new InvalidPrivateKeyError(
+            `${FQP}PrivateKeySigner.sign(signedTransactionRequest: SignedTransactionRequest): DelegatedSignedTransactionRequest`,
+            'no private key'
+        );
     }
 }
 

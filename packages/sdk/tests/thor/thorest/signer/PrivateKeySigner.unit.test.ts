@@ -78,6 +78,32 @@ describe('PrivateKeySigner', () => {
         jest.restoreAllMocks();
     });
 
+    describe('disponse method', () => {
+        test('ok <- clear the private key and set it to null', () => {
+            const privateKey = new Uint8Array(32).fill(1);
+            const signer = new PrivateKeySigner(privateKey);
+
+            signer.disponse();
+
+            // Attempt to sign to verify the private key is cleared
+            const txRequest = new TransactionRequest(transactionParams);
+            expect(() => signer.sign(txRequest)).toThrow(
+                InvalidPrivateKeyError
+            );
+        });
+
+        test('ok <- should be safe to call disponse multiple times', () => {
+            const signer = new PrivateKeySigner(validPrivateKey);
+
+            signer.disponse();
+            signer.disponse(); // Second call should not throw
+
+            expect(() => {
+                signer.disponse();
+            }).not.toThrow();
+        });
+    });
+
     describe('constructor', () => {
         test('ok <- create a new instance with valid private key', () => {
             const signer = new PrivateKeySigner(validPrivateKey);
@@ -189,7 +215,7 @@ describe('PrivateKeySigner', () => {
             const signer = new PrivateKeySigner(validPrivateKey);
             const txRequest = new TransactionRequest(transactionParams);
 
-            signer.void();
+            signer.disponse();
 
             expect(() => signer.sign(txRequest)).toThrow(
                 InvalidPrivateKeyError
@@ -312,36 +338,10 @@ describe('PrivateKeySigner', () => {
             const signedTx = originSigner.sign(txRequest);
 
             // Void the signer's private key
-            signer.void();
+            signer.disponse();
 
             // Attempt to sponsor the transaction
             expect(() => signer.sign(signedTx)).toThrow(InvalidPrivateKeyError);
-        });
-    });
-
-    describe('void method', () => {
-        test('ok <- clear the private key and set it to null', () => {
-            const privateKey = new Uint8Array(32).fill(1);
-            const signer = new PrivateKeySigner(privateKey);
-
-            signer.void();
-
-            // Attempt to sign to verify the private key is cleared
-            const txRequest = new TransactionRequest(transactionParams);
-            expect(() => signer.sign(txRequest)).toThrow(
-                InvalidPrivateKeyError
-            );
-        });
-
-        test('ok <- should be safe to call void multiple times', () => {
-            const signer = new PrivateKeySigner(validPrivateKey);
-
-            signer.void();
-            signer.void(); // Second call should not throw
-
-            expect(() => {
-                signer.void();
-            }).not.toThrow();
         });
     });
 });
