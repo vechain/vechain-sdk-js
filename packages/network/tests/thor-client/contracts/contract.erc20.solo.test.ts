@@ -1,11 +1,5 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import {
-    Address,
-    ContractClause,
-    ERC20_ABI,
-    HexUInt,
-    TransactionClause
-} from '@vechain/sdk-core';
+import { Address, ERC20_ABI, HexUInt } from '@vechain/sdk-core';
 import {
     ProviderInternalBaseWallet,
     THOR_SOLO_URL,
