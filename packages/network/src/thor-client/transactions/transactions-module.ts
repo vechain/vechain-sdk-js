@@ -311,7 +311,6 @@ class TransactionsModule {
             );
         }
 
-
         // If no timeout is specified, use the original polling behavior
         if (options?.timeoutMs === undefined) {
             return await Poll.SyncPoll(
@@ -332,7 +331,6 @@ class TransactionsModule {
             // Check if timeout has been reached
             if (Date.now() >= deadline) {
                 return null;
-
             }
             // Try to get the transaction receipt
             const receipt = await this.getTransactionReceipt(txID).catch(

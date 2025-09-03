@@ -2,7 +2,6 @@ import { jest } from '@jest/globals';
 import { THOR_SOLO_URL, ThorClient } from '../src';
 import { HttpNetworkError } from '@vechain/sdk-errors';
 
-
 /**
  * Advance timers by the specified time and tick
  *
