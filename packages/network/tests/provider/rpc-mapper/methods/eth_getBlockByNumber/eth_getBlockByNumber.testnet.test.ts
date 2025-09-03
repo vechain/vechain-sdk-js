@@ -117,13 +117,13 @@ describe('RPC Mapper - eth_getBlockByNumber method tests', () => {
         test('OK <- blocks/0?expanded=false', async () => {
             const actual = await RPCMethodsMap(thorClient)[
                 RPC_METHODS.eth_getBlockByNumber
-            ](['0x0', false]);
+            ](['0x0', true]);
             expect(actual).toBeDefined();
             const block = actual as BlocksRPC;
             expect(block.baseFeePerGas).toBeUndefined();
         });
 
-        test('OK <- blocks/0?expanded=true', async () => {
+        test('OK <- blocks/1?expanded=true', async () => {
             const actual = await RPCMethodsMap(thorClient)[
                 RPC_METHODS.eth_getBlockByNumber
             ](['0x0', true]);
@@ -133,10 +133,10 @@ describe('RPC Mapper - eth_getBlockByNumber method tests', () => {
             expect(block.transactions.length).toBe(0);
         });
 
-        test('OK <- blocks/1?expanded=false', async () => {
+        test('OK <- blocks/22638715?expanded=false', async () => {
             const actual = await RPCMethodsMap(thorClient)[
                 RPC_METHODS.eth_getBlockByNumber
-            ](['0x01', false]);
+            ](['0x1593E7B', true]);
             expect(actual).toBeDefined();
             const block = actual as BlocksRPC;
             expect(block.baseFeePerGas).toBeDefined();
@@ -149,10 +149,10 @@ describe('RPC Mapper - eth_getBlockByNumber method tests', () => {
             ).toBeGreaterThan(0n);
         });
 
-        test('OK <- blocks/1?expanded=true', async () => {
+        test('OK <- blocks/22638715?expanded=true', async () => {
             const actual = await RPCMethodsMap(thorClient)[
                 RPC_METHODS.eth_getBlockByNumber
-            ](['0x01', true]);
+            ](['0x1593E7B', true]);
             expect(actual).toBeDefined();
             const block = actual as BlocksRPC;
             expect(block.baseFeePerGas).toBeDefined();

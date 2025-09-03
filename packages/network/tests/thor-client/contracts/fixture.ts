@@ -667,9 +667,9 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
         expected: {
             result: {
                 array: [
-                    '0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57'
+                    '0x000000007ddd67eb598130944bc9714dcc89196b01261839d67533b2993489eb'
                 ],
-                plain: '0x0000000089970f535c92d8f2151346f002755b4cf6f7fb4b731317fc6df8ee57'
+                plain: '0x000000007ddd67eb598130944bc9714dcc89196b01261839d67533b2993489eb'
             },
             success: true
         },
