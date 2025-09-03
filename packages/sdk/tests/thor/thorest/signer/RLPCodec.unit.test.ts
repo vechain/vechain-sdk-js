@@ -62,7 +62,33 @@ describe('RLPCodec', () => {
     const mockGas = 21000n;
 
     describe('decode', () => {
-        test('ok <- should decode a non-sponsored transaction request correctly', () => {
+        test('ok <- should decode a sponsored unsigned transaction request correctly', () => {
+            // Create a transaction request with clauses
+            const clause = new Clause(
+                Address.of(TRANSACTION_RECEIVER.address),
+                1000n,
+                null,
+                null,
+                null
+            );
+
+            const expected = new TransactionRequest({
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [clause],
+                dependsOn: null,
+                expiration: 32,
+                gas: mockGas,
+                gasPriceCoef: 0n,
+                nonce: 3,
+                isIntendedToBeSponsored: true
+            });
+            const encoded = RLPCodec.encodeTransactionRequest(expected);
+            const actual = RLPCodec.decode(encoded);
+            expect(actual.toJSON()).toEqual(expected.toJSON());
+        });
+
+        test('ok <- should decode a non-sponsored unsigned transaction request correctly', () => {
             // Create a transaction request with clauses
             const clause = new Clause(
                 Address.of(TRANSACTION_RECEIVER.address),
@@ -83,11 +109,9 @@ describe('RLPCodec', () => {
                 nonce: 3,
                 isIntendedToBeSponsored: false
             });
-            console.log(expected);
             const encoded = RLPCodec.encodeTransactionRequest(expected);
-            console.log(HexUInt.of(encoded).toString());
             const actual = RLPCodec.decode(encoded);
-            console.log(actual);
+            expect(actual.toJSON()).toEqual(expected.toJSON());
         });
     });
 

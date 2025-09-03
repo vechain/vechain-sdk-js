@@ -12,6 +12,7 @@ import {
     NumericKind,
     OptionalFixedHexBlobKind,
     Quantity,
+    RLP,
     type RLPProfile,
     RLPProfiler,
     type RLPValidObject
@@ -100,9 +101,14 @@ class RLPCodec {
     };
 
     public static decode(encoded: Uint8Array): TransactionRequest {
+        const isSigned =
+            (RLP.ofEncoded(encoded).decoded as unknown[]).length >
+            (RLPCodec.RLP_SIGNED_TRANSACTION_PROFILE.kind as []).length;
         const decoded = RLPProfiler.ofObjectEncoded(
             encoded,
-            RLPCodec.RLP_UNSIGNED_TRANSACTION_PROFILE
+            isSigned
+                ? RLPCodec.RLP_SIGNED_TRANSACTION_PROFILE
+                : RLPCodec.RLP_UNSIGNED_TRANSACTION_PROFILE
         ).object as RLPValidObject;
         const clauses = (decoded.clauses as []).map(
             (decodedClause: RLPValidObject) => {
@@ -120,6 +126,7 @@ class RLPCodec {
                 });
             }
         );
+        const isIntendedToBeSponsored = (decoded.reserved as []).length > 0;
         const transactionRequest = new TransactionRequest({
             blockRef: HexUInt.of(decoded.blockRef as string),
             chainTag: decoded.chainTag as number,
@@ -129,9 +136,10 @@ class RLPCodec {
                     ? null
                     : Hex.of(decoded.dependsOn as string),
             expiration: decoded.expiration as number,
-            gas: decoded.gas as bigint,
-            gasPriceCoef: decoded.gasPriceCoef as bigint,
-            nonce: decoded.nonce as number
+            gas: BigInt(decoded.gas as bigint), // Double cast needed else a number is returned.
+            gasPriceCoef: BigInt(decoded.gasPriceCoef as bigint), // Double cast needed else a number is returned.
+            nonce: decoded.nonce as number,
+            isIntendedToBeSponsored
         });
         return transactionRequest;
     }
