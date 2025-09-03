@@ -310,22 +310,21 @@ class TransactionsModule {
             });
         }
 
-        // Custom timeout handling to return null when timeout is reached
         const startTime = Date.now();
+        const deadline = startTime + options.timeoutMs;
         const intervalMs = options?.intervalMs ?? 1000;
-
         while (true) {
             // Check if timeout has been reached
-            if (Date.now() - startTime >= options.timeoutMs) {
+            if (Date.now() >= deadline) {
                 return null;
             }
-
             // Try to get the transaction receipt
-            const receipt = await this.getTransactionReceipt(txID);
+            const receipt = await this.getTransactionReceipt(txID).catch(
+                () => null
+            );
             if (receipt !== null) {
                 return receipt;
             }
-
             // Wait for the specified interval before trying again
             await new Promise((resolve) => setTimeout(resolve, intervalMs));
         }
