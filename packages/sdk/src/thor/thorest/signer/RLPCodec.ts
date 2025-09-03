@@ -1,19 +1,21 @@
 import {
-    type Clause,
+    Clause,
     type SignedTransactionRequest,
-    type TransactionRequest
+    TransactionRequest
 } from '@thor/thorest/model';
 import {
     BufferKind,
     CompactFixedHexBlobKind,
     Hex,
     HexBlobKind,
+    HexUInt,
     NumericKind,
     OptionalFixedHexBlobKind,
+    Quantity,
     type RLPProfile,
     RLPProfiler,
     type RLPValidObject
-} from '@common';
+} from '@common'; // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 class RLPCodec {
@@ -96,6 +98,43 @@ class RLPCodec {
         name: 'tx',
         kind: RLPCodec.RLP_FIELDS
     };
+
+    public static decode(encoded: Uint8Array): TransactionRequest {
+        const decoded = RLPProfiler.ofObjectEncoded(
+            encoded,
+            RLPCodec.RLP_UNSIGNED_TRANSACTION_PROFILE
+        ).object as RLPValidObject;
+        const clauses = (decoded.clauses as []).map(
+            (decodedClause: RLPValidObject) => {
+                return Clause.of({
+                    to: (decodedClause.to as string) ?? null,
+                    value:
+                        typeof decodedClause.value === 'number'
+                            ? Quantity.of(decodedClause.value).toString()
+                            : typeof decodedClause.value === 'string'
+                              ? Quantity.of(
+                                    HexUInt.of(decodedClause.value).bi
+                                ).toString()
+                              : Quantity.PREFIX,
+                    data: (decodedClause.data as string) ?? undefined
+                });
+            }
+        );
+        const transactionRequest = new TransactionRequest({
+            blockRef: HexUInt.of(decoded.blockRef as string),
+            chainTag: decoded.chainTag as number,
+            clauses,
+            dependsOn:
+                decoded.dependsOn === null
+                    ? null
+                    : Hex.of(decoded.dependsOn as string),
+            expiration: decoded.expiration as number,
+            gas: decoded.gas as bigint,
+            gasPriceCoef: decoded.gasPriceCoef as bigint,
+            nonce: decoded.nonce as number
+        });
+        return transactionRequest;
+    }
 
     /**
      * Encodes a signed transaction request into a Uint8Array format.
