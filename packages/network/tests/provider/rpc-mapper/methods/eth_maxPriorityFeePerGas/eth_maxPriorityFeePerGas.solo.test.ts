@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
+import { HttpNetworkError } from '@vechain/sdk-errors';
 import {
     RPC_METHODS,
     RPCMethodsMap,
@@ -40,23 +41,17 @@ describe('RPC Mapper - eth_maxPriorityFeePerGas method tests solo', () => {
             } catch (error) {
                 lastError = error as Error;
 
-                // Check if it's a connection error
-                const errorMessage =
-                    error instanceof Error ? error.message : String(error);
-                const isConnectionError =
-                    errorMessage.includes('socket hang up') ||
-                    errorMessage.includes('ECONNRESET') ||
-                    errorMessage.includes('connection reset') ||
-                    errorMessage.includes('network error');
+                // Check if it's a network communication error
+                const isNetworkError = error instanceof HttpNetworkError;
 
-                if (isConnectionError && attempt < maxAttempts) {
+                if (isNetworkError && attempt < maxAttempts) {
                     // Wait with exponential backoff: 1s, 2s, 4s
                     const delay = Math.pow(2, attempt - 1) * 1000;
                     await new Promise((resolve) => setTimeout(resolve, delay));
                     continue;
                 }
 
-                // If it's not a connection error or we've exhausted attempts, throw
+                // If it's not a network error or we've exhausted attempts, throw
                 throw error instanceof Error ? error : new Error(String(error));
             }
         }
