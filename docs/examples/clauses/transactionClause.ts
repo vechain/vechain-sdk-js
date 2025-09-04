@@ -44,12 +44,14 @@ const clause = [
 const gasResult = await thor.gas.estimateGas(clause, address);
 const defaultBodyOptions = await thor.transactions.fillDefaultBodyOptions();
 
+const chainTag = await thor.nodes.getChaintag();
+
 // 4. Build transaction body with explicit values
 const txBody = await thor.transactions.buildTransactionBody(
     clause,
     gasResult.totalGas,
     {
-        chainTag: networkInfo.solo.chainTag,
+        chainTag: chainTag,
         blockRef: '0x0000000000000000',
         expiration: 32,
         gasPriceCoef: 128,

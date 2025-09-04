@@ -311,17 +311,37 @@ class TransactionsModule {
             );
         }
 
-        const safetyTimeout = options?.timeoutMs ?? 5 * 60 * 1000; // 5 minutes
+        // If no timeout is specified, use the original polling behavior
+        if (options?.timeoutMs === undefined) {
+            return await Poll.SyncPoll(
+                async () => await this.getTransactionReceipt(txID),
+                {
+                    requestIntervalInMilliseconds: options?.intervalMs,
+                    maximumWaitingTimeInMilliseconds: options?.timeoutMs
+                }
+            ).waitUntil((result) => {
+                return result !== null;
+            });
+        }
 
-        return await Poll.SyncPoll(
-            async () => await this.getTransactionReceipt(txID),
-            {
-                requestIntervalInMilliseconds: options?.intervalMs,
-                maximumWaitingTimeInMilliseconds: safetyTimeout
+        const startTime = Date.now();
+        const deadline = startTime + options.timeoutMs;
+        const intervalMs = options?.intervalMs ?? 1000;
+        while (true) {
+            // Check if timeout has been reached
+            if (Date.now() >= deadline) {
+                return null;
             }
-        ).waitUntil((result) => {
-            return result !== null;
-        });
+            // Try to get the transaction receipt
+            const receipt = await this.getTransactionReceipt(txID).catch(
+                () => null
+            );
+            if (receipt !== null) {
+                return receipt;
+            }
+            // Wait for the specified interval before trying again
+            await new Promise((resolve) => setTimeout(resolve, intervalMs));
+        }
     }
 
     /**
@@ -366,7 +386,7 @@ class TransactionsModule {
             );
 
         const chainTag =
-            options?.chainTag ?? Number(`0x${genesisBlock.id.slice(64)}`);
+            options?.chainTag ?? Number(`0x${genesisBlock.id.slice(-2)}`);
 
         const filledOptions = await this.fillDefaultBodyOptions(options);
 
