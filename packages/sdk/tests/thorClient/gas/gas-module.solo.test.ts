@@ -1,9 +1,9 @@
 import { describe, expect, test } from '@jest/globals';
 import { ThorClient } from '@thor/thor-client/ThorClient';
-import { ThorNetworks } from '@thor';
-import { FetchHttpClient } from '@http';
-import { Revision } from '@vcdm';
-import { type ExecuteCodesRequestJSON } from '@thor/json';
+import { ThorNetworks } from '@thor/thorest';
+import { FetchHttpClient } from '@common/http';
+import { Revision } from '@common/vcdm';
+import { type ExecuteCodesRequestJSON } from '@thor/thorest/json';
 
 /**
  * GasModule solo network tests

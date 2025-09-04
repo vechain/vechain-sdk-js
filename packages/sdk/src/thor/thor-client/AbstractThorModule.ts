@@ -1,4 +1,4 @@
-import type { HttpClient } from '@http';
+import type { HttpClient } from '@common/http';
 import type { ThorClient } from './ThorClient';
 
 /**

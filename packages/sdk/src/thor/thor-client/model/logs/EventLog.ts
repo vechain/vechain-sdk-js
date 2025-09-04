@@ -1,5 +1,5 @@
-import { type Address, type Hex } from '@vcdm';
-import { type EventLogResponse } from '@thor/logs/response/EventLogResponse';
+import { type Address, type Hex } from '@common/vcdm';
+import { type EventLogResponse } from '@thor/thorest/logs/response/EventLogResponse';
 import { LogMeta } from './LogMeta';
 
 class EventLog {

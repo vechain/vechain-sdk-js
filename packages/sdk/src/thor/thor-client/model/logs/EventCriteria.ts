@@ -1,4 +1,4 @@
-import { type Address, type Hex } from '@vcdm';
+import { type Address, type Hex } from '@common/vcdm';
 
 /**
  * [EventCriteria](http://localhost:8669/doc/stoplight-ui/#/schemas/EventCriteria)

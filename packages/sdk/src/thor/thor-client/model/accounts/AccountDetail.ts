@@ -1,4 +1,4 @@
-import { type GetAccountResponse } from '@thor/accounts/response/GetAccountResponse';
+import { type GetAccountResponse } from '@thor/thorest/accounts/response/GetAccountResponse';
 
 /**
  * Represents detailed account information.

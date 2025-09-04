@@ -1,5 +1,5 @@
 import { AccountsModule } from './accounts/accounts-module';
-import { FetchHttpClient, type HttpClient } from '@http';
+import { FetchHttpClient, type HttpClient } from '@common/http';
 import { LogsModule } from './logs/logs-module';
 import { GasModule } from './gas/gas-module';
 import { NodesModule } from './nodes/nodes-module';

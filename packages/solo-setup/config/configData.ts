@@ -1,4 +1,4 @@
-import { type CompressedBlockDetail } from '@vechain/sdk-network';
+import { type RegularBlockResponse } from '@vechain/sdk/thor';
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
@@ -8,7 +8,7 @@ export interface ConfigData {
     TESTING_CONTRACT_ADDRESS: string;
     TESTING_CONTRACT_ABI: any[];
     TESTING_CONTRACT_BYTECODE: string;
-    SOLO_GENESIS_BLOCK: CompressedBlockDetail;
+    SOLO_GENESIS_BLOCK: RegularBlockResponse;
     SEED_VET_TX_ID: string;
     SEED_VTHO_TX_ID: string;
     SEED_TEST_TOKEN_TX_ID: string;
@@ -56,7 +56,7 @@ function setConfig(
     address: string,
     abi: string | any[], // Allow abi as string or parsed array
     bytecode: string,
-    genesisBlock: CompressedBlockDetail,
+    genesisBlock: RegularBlockResponse,
     seedVetTxId: string,
     seedVthoTxId: string,
     testTokenAddress: string,

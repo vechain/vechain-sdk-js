@@ -1,4 +1,4 @@
-import { Revision } from "@vcdm";
+import { Revision } from "@common/vcdm";
 
 /**
  * Options for gas estimation.

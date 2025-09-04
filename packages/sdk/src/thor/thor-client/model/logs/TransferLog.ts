@@ -1,6 +1,6 @@
-import { type Address } from '@vcdm';
+import { type Address } from '@common/vcdm';
 import { LogMeta } from './LogMeta';
-import { type TransferLogResponse } from '@thor/logs/response';
+import { type TransferLogResponse } from '@thor/thorest/logs/response';
 
 /**
  * Individual transfer log

@@ -1,4 +1,4 @@
-import { type Address } from '@vcdm';
+import { type Address } from '@common/vcdm';
 
 class TransferCriteria {
     /**

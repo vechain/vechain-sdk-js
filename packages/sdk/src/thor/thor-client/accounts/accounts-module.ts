@@ -1,10 +1,10 @@
-import { type Revision, type Address, HexUInt, type Hex } from '@vcdm';
+import { type Revision, type Address, HexUInt, type Hex } from '@common/vcdm';
 import { AccountDetail } from '../model/accounts/AccountDetail';
 import {
     RetrieveAccountDetails,
     RetrieveContractBytecode,
     RetrieveStoragePositionValue
-} from '@thor/accounts';
+} from '@thor/thorest';
 import { AbstractThorModule } from '../AbstractThorModule';
 
 /**

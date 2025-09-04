@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { ThorClient } from '@thor/thor-client/ThorClient';
-import { ThorNetworks } from '@thor';
-import { FetchHttpClient } from '@http';
+import { ThorNetworks } from '@thor/thorest';
+import { FetchHttpClient } from '@common/http';
 
 /**
  * NodesModule tests for solo network
@@ -13,9 +13,9 @@ describe('NodesModule', () => {
             const thorClient = ThorClient.at(
                 FetchHttpClient.at(new URL(ThorNetworks.SOLONET))
             );
-            
+
             const connectedPeers = await thorClient.nodes.getNodes();
-            
+
             expect(connectedPeers).toBeDefined();
             expect(Array.isArray(connectedPeers)).toBe(true);
         });
@@ -24,9 +24,9 @@ describe('NodesModule', () => {
             const thorClient = ThorClient.at(
                 FetchHttpClient.at(new URL(ThorNetworks.SOLONET))
             );
-            
+
             const connectedPeers = await thorClient.nodes.getNodes();
-            
+
             // Solo network run with solo-setup shouldn't have any peers,
             // so we expect empty array or peers
             expect(Array.isArray(connectedPeers)).toBe(true);
@@ -39,9 +39,9 @@ describe('NodesModule', () => {
             const thorClient = ThorClient.at(
                 FetchHttpClient.at(new URL(ThorNetworks.SOLONET))
             );
-            
+
             const isHealthy = await thorClient.nodes.isHealthy();
-            
+
             expect(typeof isHealthy).toBe('boolean');
             // Solo network should be healthy
             expect(isHealthy).toBe(true);

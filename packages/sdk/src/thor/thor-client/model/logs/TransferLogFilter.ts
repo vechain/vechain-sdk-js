@@ -2,7 +2,6 @@ import { type FilterRange } from './FilterRange';
 import { type FilterOptions } from './FilterOptions';
 import { type TransferCriteria } from './TransferCriteria';
 import { type LogSort } from './LogSort';
-import { TransferLogFilterRequest } from '@thor/logs/response/TransferLogFilterRequest';
 
 export class TransferLogFilter {
     /**

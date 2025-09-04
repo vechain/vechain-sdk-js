@@ -1,9 +1,9 @@
 import { AbstractThorModule } from '../AbstractThorModule';
 import { ConnectedPeer } from '../model/nodes';
-import { RetrieveConnectedPeers } from '@thor/node/methods';
-import { RetrieveRegularBlock } from '@thor/blocks/methods';
-import { IllegalArgumentError } from '@errors';
-import { Revision } from '@vcdm';
+import { RetrieveConnectedPeers } from '@thor/thorest/node/methods';
+import { RetrieveRegularBlock } from '@thor/thorest/blocks/methods';
+import { IllegalArgumentError } from '@common/errors';
+import { Revision } from '@common/vcdm';
 
 /**
  * The node health check tolerance in seconds.
@@ -24,12 +24,12 @@ class NodesModule extends AbstractThorModule {
     public async getNodes(): Promise<ConnectedPeer[]> {
         const query = RetrieveConnectedPeers.of();
         const response = await query.askTo(this.httpClient);
-        
+
         if (response.response === null) {
             return [];
         }
-        
-        return response.response.map((peerStat) => 
+
+        return response.response.map((peerStat) =>
             ConnectedPeer.fromPeerStat(peerStat)
         );
     }
@@ -39,11 +39,11 @@ class NodesModule extends AbstractThorModule {
      * 1. Make an HTTP request to retrieve the best block.
      * 2. Calculates the difference between the current time and the last block timestamp.
      * 3. If the difference is less than the tolerance, the node is healthy.
-     * 
+     *
      * Note: We check the best block timestamp rather than just peer connectivity
      * because a node could be connected to peers but not syncing properly
      * (e.g., due to disk issues preventing block storage).
-     * 
+     *
      * @returns A boolean indicating whether the node is healthy.
      * @throws {IllegalArgumentError} If the block response is invalid or missing timestamp.
      */
@@ -61,14 +61,16 @@ class NodesModule extends AbstractThorModule {
                 );
             }
 
-            const lastBlockTimestamp = this.getTimestampFromBlock(response.response);
-            
+            const lastBlockTimestamp = this.getTimestampFromBlock(
+                response.response
+            );
+
             // Calculate seconds elapsed since the last block
-            const secondsSinceLastBlock = 
+            const secondsSinceLastBlock =
                 Math.floor(Date.now() / 1000) - lastBlockTimestamp;
 
             return (
-                Math.abs(secondsSinceLastBlock) < 
+                Math.abs(secondsSinceLastBlock) <
                 NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS
             );
         } catch (error) {
@@ -79,7 +81,7 @@ class NodesModule extends AbstractThorModule {
 
     /**
      * Extracts the timestamp from the block response.
-     * 
+     *
      * @param blockResponse - The response from the block retrieval API
      * @returns The timestamp from the block
      * @throws {IllegalArgumentError} If the timestamp is not available in the response

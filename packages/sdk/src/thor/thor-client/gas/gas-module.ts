@@ -1,8 +1,8 @@
-import { RetrieveHistoricalFeeData, SuggestPriorityFee } from '@thor/fees';
-import { InspectClauses } from '@thor/accounts';
-import { Revision } from '@vcdm';
-import { Transaction, type TransactionClause } from '@thor/transactions';
-import { IllegalArgumentError, NoSuchElementError } from '@errors';
+import { RetrieveHistoricalFeeData, SuggestPriorityFee } from '@thor/thorest';
+import { InspectClauses } from '@thor/thorest';
+import { Revision } from '@common/vcdm';
+import { Transaction, type TransactionClause } from '@thor/thorest';
+import { IllegalArgumentError, NoSuchElementError } from '@common/errors';
 import { AbstractThorModule } from '@thor/thor-client/AbstractThorModule';
 import { FeeHistory } from '../model/gas/FeeHistory';
 import { EstimatedGas } from '../model/gas/EstimatedGas';

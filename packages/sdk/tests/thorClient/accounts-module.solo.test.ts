@@ -1,8 +1,8 @@
 import { describe, expect, test } from '@jest/globals';
 import { ThorClient } from '@thor/thor-client/ThorClient';
-import { ThorNetworks } from '@thor';
-import { FetchHttpClient } from '@http';
-import { Address, Hex, Revision } from '@vcdm';
+import { ThorNetworks } from '@thor/thorest';
+import { FetchHttpClient } from '@common/http';
+import { Address, Hex, Revision } from '@common/vcdm';
 import { getConfigData } from '@vechain/sdk-solo-setup';
 
 /**

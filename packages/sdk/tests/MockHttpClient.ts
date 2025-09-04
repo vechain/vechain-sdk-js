@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { type HttpClient } from '@http';
+import { type HttpClient } from '@common/http';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 const mockHttpClient = <T>(

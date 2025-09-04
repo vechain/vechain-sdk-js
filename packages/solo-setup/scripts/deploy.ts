@@ -51,7 +51,8 @@ async function main(): Promise<void> {
         const seedVetTxId = await seedVET(THOR_SOLO_ACCOUNTS_TO_SEED);
         const seedVthoTxId = await seedVTHO(THOR_SOLO_ACCOUNTS_TO_SEED);
         const seedTestTokenTxId = await seedTestToken(
-            THOR_SOLO_ACCOUNTS_TO_SEED
+            THOR_SOLO_ACCOUNTS_TO_SEED,
+            testTokenAddress
         );
 
         // Always create config.json file with available data

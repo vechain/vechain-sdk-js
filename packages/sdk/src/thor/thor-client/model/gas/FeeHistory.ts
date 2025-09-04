@@ -1,4 +1,4 @@
-import type { Hex } from '@vcdm';
+import type { Hex } from '@common/vcdm';
 
 interface FeeHistory {
     /**

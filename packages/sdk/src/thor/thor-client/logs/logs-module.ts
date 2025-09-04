@@ -1,16 +1,16 @@
 import { AbstractThorModule } from '../AbstractThorModule';
-import { type TransferLogFilter } from '../model/logs/TransferLogFilter';
-import { TransferLog } from '../model/logs/TransferLog';
+import { type TransferLogFilter } from '@thor/thor-client/model/logs/TransferLogFilter';
+import { TransferLog } from '@thor/thor-client/model/logs/TransferLog';
 import {
     QuerySmartContractEvents,
     QueryVETTransferEvents
-} from '@thor/logs/methods';
+} from '@thor/thorest';
 import { EventLog } from '@thor/thor-client/model/logs/EventLog';
 import { type EventLogFilter } from '@thor/thor-client/model/logs/EventLogFilter';
 import { type AbiEvent, toEventSelector, decodeEventLog } from 'viem';
 import { DecodedEventLog } from '@thor/thor-client/model/logs/DecodedEventLog';
-import { Hex } from '@vcdm';
-import { IllegalArgumentError } from '@errors';
+import { Hex } from '@common/vcdm';
+import { IllegalArgumentError } from '@common/errors';
 
 /**
  * The `LogsClient` class provides methods to interact with log-related endpoints

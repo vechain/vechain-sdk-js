@@ -1,0 +1,226 @@
+import { Hex, HexUInt, type RLPInput } from '@common/vcdm';
+import { InvalidEncodingError } from '@common/errors';
+
+/**
+ * Full Qualified Path
+ */
+const FQP = 'vcdm.encoding.rlp.helpers.numericKind!';
+
+/**
+ * Regular expression pattern for matching natural numbers expressed as base 10 strings.
+ */
+const REGEX_NATURAL: RegExp = /^\d+$/;
+
+/**
+ * Validates and converts the input data to a BigInt.
+ *
+ * @param data - Either a number, string or bigint representing a non-negative integer.
+ * @param context - A string representing the context in which this function is used,
+ *                 to create meaningful error messages.
+ * @returns The input data converted to a BigInt.
+ * @throws {InvalidEncodingError} - If the operation fails.
+ */
+const validateNumericKindData = (data: RLPInput, context: string): bigint => {
+    // Input data must be either a number or a string.
+    if (
+        typeof data !== 'number' &&
+        typeof data !== 'string' &&
+        typeof data !== 'bigint'
+    ) {
+        throw new InvalidEncodingError(
+            `${FQP}validateNumericKindData(data, context): bigint`,
+            `Validation error: Input in ${context} must be a string or number.`,
+            {
+                context,
+                data: {
+                    data
+                }
+            }
+        );
+    }
+
+    if (typeof data === 'number') {
+        _validateNumericKindNumber(data, context);
+    } else if (typeof data === 'string') {
+        _validateNumericKindString(data, context);
+    } else if (typeof data === 'bigint') {
+        return data;
+    }
+
+    return BigInt(data);
+};
+
+/**
+ * Ensures that a numeric input is a safe and non-negative integer.
+ *
+ * @remarks
+ * A "safe integer" in JavaScript is an integer that can be precisely represented
+ * without rounding in the double-precision floating point format used by the language,
+ * i.e., between 0 and 2^53 - 1, since we're ensuring non-negativity.
+ *
+ * @param num - The number to be validated.
+ * @param context - A string indicating the context, used for error messaging.
+ * @throws {InvalidEncodingError} - If the operation fails.
+ */
+const _validateNumericKindNumber = (num: number, context: string): void => {
+    if (!Number.isSafeInteger(num) || num < 0) {
+        throw new InvalidEncodingError(
+            '$(FQP)_validateNumericKindNumber(num, context): void',
+            `Validation error: Number in ${context} must be a safe and non-negative integer.`,
+            {
+                context,
+                data: {
+                    num
+                }
+            }
+        );
+    }
+};
+
+/**
+ * Validates a string to ensure it represents a valid non-negative integer.
+ *
+ * @remarks
+ * The input string can represent an unsigned integer in either decimal or hexadecimal format.
+ *
+ * @param str - A string expected to represent a non-negative integer.
+ * @param context - A string indicating the context, for creating meaningful error messages.
+ * @throws {InvalidEncodingError} - If the operation fails.
+ *
+ * @private
+ */
+const _validateNumericKindString = (str: string, context: string): void => {
+    const isHexUInt = HexUInt.isValid0x(str);
+    const isDecimal = REGEX_NATURAL.test(str);
+    // Ensure the string is either a hex or decimal number.
+    if (!isHexUInt && !isDecimal) {
+        throw new InvalidEncodingError(
+            `${FQP}validateNumericKindString(str, context): void`,
+            `Validation error: String in ${context} must represent a non-negative integer in hex or decimal format.`,
+            {
+                context,
+                data: {
+                    str
+                }
+            }
+        );
+    }
+
+    // Ensure hex numbers are of a valid length.
+    if (isHexUInt && str.length <= 2) {
+        throw new InvalidEncodingError(
+            `${FQP}validateNumericKindString(str, context): void`,
+            `Validation error: Hex string number in ${context} must be of valid length.`,
+            {
+                context,
+                data: {
+                    str
+                }
+            }
+        );
+    }
+};
+
+/**
+ * Validates a buffer to ensure it adheres to constraints and does not contain
+ * leading zero bytes which are not canonical representation in integers.
+ *
+ * @param {Uint8Array} buf - The buffer to validate.
+ * @param {string} context - A string providing context for error messages.
+ * @param {number} maxBytes - [Optional] An integer representing the maximum allowed length
+ *                   of the buffer. If provided, an error will be thrown if buf is longer.
+ * @throws {InvalidEncodingError} - If the operation fails.
+ *
+ * @private
+ */
+const assertValidNumericKindBuffer = (
+    buf: Uint8Array,
+    context: string,
+    maxBytes?: number
+): void => {
+    // If maxBytes is defined, ensure buffer length is within bounds.
+    if (maxBytes !== undefined && buf.length > maxBytes) {
+        throw new InvalidEncodingError(
+            `${FQP}assertValidNumericKindBuffer(buf, context, maxBytes): void`,
+            `Validation error: Buffer in ${context} must be less than ${maxBytes} bytes.`,
+            {
+                context,
+                data: {
+                    buf,
+                    maxBytes
+                }
+            }
+        );
+    }
+
+    // Ensure the buffer does not have leading zeros, as it's not canonical in integer representation.
+    if (buf[0] === 0) {
+        throw new InvalidEncodingError(
+            `${FQP}assertValidNumericKindBuffer(buf, context, maxBytes): void`,
+            `Validation error: Buffer in ${context} must represent a canonical integer (no leading zeros).`,
+            {
+                context,
+                data: {
+                    buf,
+                    maxBytes
+                }
+            }
+        );
+    }
+};
+
+/**
+ * Encode a BigInt instance into a Buffer, ensuring it adheres to specific constraints.
+ *
+ * @param {bigint} bi - BigInt instance to encode.
+ * @param {number | undefined} maxBytes - Maximum byte length allowed for the encoding. If undefined, no byte size limit is imposed.
+ * @param {string} context - Contextual information for error messages.
+ * @returns {Uint8Array} Encoded data.
+ * @throws {InvalidEncodingError} - If the operation fails.
+ */
+const encodeBigIntToBuffer = (
+    bi: bigint,
+    maxBytes: number | undefined,
+    context: string
+): Uint8Array => {
+    if (bi === 0n) return Uint8Array.from([]);
+    const hex = Hex.of(bi).digits;
+
+    if (maxBytes !== undefined && hex.length > maxBytes * 2) {
+        throw new InvalidEncodingError(
+            `${FQP}encodeBigIntToBuffer(bi, maxBytes, context): Uint8Array`,
+            `Validation error: Encoded number in ${context} must fit within ${maxBytes} bytes.`,
+            {
+                context,
+                data: {
+                    hex,
+                    maxBytes
+                }
+            }
+        );
+    }
+
+    return Hex.of(hex).bytes;
+};
+
+/**
+ * Decode a Uint8Array into a number or hexadecimal string.
+ * @param {Uint8Array} buffer - Instance to decode.
+ * @returns A number if the decoded BigInt is a safe integer, otherwise returns a hexadecimal string.
+ */
+const decodeBufferToNumberOrHex = (buffer: Uint8Array): number | string => {
+    if (buffer.length === 0) return 0;
+
+    const bi = Hex.of(buffer).bi;
+    const num = Number(bi);
+
+    // Return number or hex based on integer safety
+    return Number.isSafeInteger(num) ? num : '0x' + bi.toString(16);
+};
+
+export {
+    assertValidNumericKindBuffer,
+    decodeBufferToNumberOrHex,
+    encodeBigIntToBuffer,
+    validateNumericKindData
+};

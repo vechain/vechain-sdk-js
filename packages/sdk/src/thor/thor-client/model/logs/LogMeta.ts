@@ -1,5 +1,5 @@
-import { type LogMetaResponse } from '@thor/logs/response/LogMetaResponse';
-import { type Address, type Hex } from '@vcdm';
+import { type LogMetaResponse } from '@thor/thorest/logs/response/LogMetaResponse';
+import { type Address, type Hex } from '@common/vcdm';
 
 class LogMeta {
     /**
