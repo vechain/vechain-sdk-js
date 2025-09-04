@@ -12,7 +12,6 @@ export {
 
 // Direct exports for constants
 export {
-    THOR_SOLO_CHAIN_TAG,
     THOR_SOLO_SEEDED_VET_AMOUNT,
     THOR_SOLO_SEEDED_VTHO_AMOUNT,
     THOR_SOLO_SEEDED_TEST_TOKEN_AMOUNT,

@@ -4,6 +4,7 @@ import { type BlocksModule, type CompressedBlockDetail } from '../blocks';
 import { type ConnectedPeer } from './types';
 import { HttpMethod } from '../../http';
 
+const chainTagCache = new WeakMap<BlocksModule, number>();
 /**
  * The `NodesModule` class serves as a module for node-related functionality, for example, checking the health of a node.
  */
@@ -92,6 +93,39 @@ class NodesModule {
 
         return response?.timestamp;
     };
+
+    /**
+     * Retrieves and caches the chainTag from the genesis block of the given ThorClient.
+     * Uses the same short-circuit caching logic as eth_chainId().
+     */
+    public async getChaintag(): Promise<number> {
+        const cached = chainTagCache.get(this.blocksModule);
+
+        if (cached !== undefined) return cached;
+
+        const genesisBlock = await this.blocksModule.getGenesisBlock();
+
+        if (!genesisBlock?.id) {
+            throw new InvalidDataType(
+                'NodesModule.getChaintag()',
+                'The genesis block id is null or undefined. Unable to get the chain tag.',
+                { url: this.blocksModule.httpClient.baseURL }
+            );
+        }
+
+        // derive chainTag from last byte of the genesis block id
+        const chainTag = Number(`0x${genesisBlock.id.slice(-2)}`);
+        if (Number.isNaN(chainTag)) {
+            throw new InvalidDataType(
+                'NodesModule.getChaintag()',
+                'Invalid genesis block id. Unable to derive chain tag.',
+                { id: genesisBlock.id }
+            );
+        }
+
+        chainTagCache.set(this.blocksModule, chainTag);
+        return chainTag;
+    }
 }
 
 export { NodesModule };

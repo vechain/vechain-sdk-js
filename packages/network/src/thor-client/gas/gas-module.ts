@@ -7,13 +7,13 @@ import {
 } from './types';
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { HttpMethod, type HttpClient } from '../../http';
-import { HexUInt, Revision } from '@vechain/sdk-core';
+import { ContractClause, HexUInt, Revision } from '@vechain/sdk-core';
 import { thorest } from '../../utils';
 import { type SimulateTransactionClause } from '../transactions/types';
 
 interface TransactionModuleInterface {
     estimateGas: (
-        clauses: SimulateTransactionClause[],
+        clauses: (SimulateTransactionClause | ContractClause)[],
         caller?: string,
         options?: EstimateGasOptions
     ) => Promise<EstimateGasResult>;
@@ -57,7 +57,7 @@ class GasModule {
      * @throws{InvalidDataType}
      */
     public async estimateGas(
-        clauses: SimulateTransactionClause[],
+        clauses: (SimulateTransactionClause | ContractClause)[],
         caller?: string,
         options?: EstimateGasOptions
     ): Promise<EstimateGasResult> {

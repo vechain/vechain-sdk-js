@@ -147,14 +147,11 @@ const waitForTransactionTestCases = [
  */
 const invalidWaitForTransactionTestCases = [
     {
-        description:
-            'Should return null when timeoutMs is too low and tx cannot be included in time',
+        description: 'Should throw error when timeoutMs is too low',
         options: {
             timeoutMs: 1,
             intervalMs: undefined,
-            nonce: transactionNonces.invalidWaitForTransactionTestCases[0],
-            dependsOn:
-                '0x9140e36f05000508465fd55d70947b99a78c84b3afa5e068b955e366b560935f'
+            nonce: transactionNonces.invalidWaitForTransactionTestCases[0]
         }
     }
 ];

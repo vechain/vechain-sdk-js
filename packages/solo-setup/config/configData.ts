@@ -29,6 +29,7 @@ export interface ConfigData {
     TESTING_CONTRACT_ABI: any[];
     TESTING_CONTRACT_BYTECODE: string;
     SOLO_GENESIS_BLOCK: CompressedBlockDetail;
+    SOLO_CHAIN_TAG: number;
     SEED_VET_TX_ID: string;
     SEED_VTHO_TX_ID: string;
     SEED_TEST_TOKEN_TX_ID: string;
@@ -65,6 +66,7 @@ function setConfig(
     abi: string | any[], // Allow abi as string or parsed array
     bytecode: string | null,
     genesisBlock: CompressedBlockDetail,
+    chainTag: number,
     seedVetTxId: string,
     seedVthoTxId: string,
     testTokenAddress: string,
@@ -87,6 +89,7 @@ function setConfig(
         TESTING_CONTRACT_ABI: parsedAbi,
         TESTING_CONTRACT_BYTECODE: bytecode,
         SOLO_GENESIS_BLOCK: genesisBlock,
+        SOLO_CHAIN_TAG: chainTag,
         SEED_VET_TX_ID: seedVetTxId,
         SEED_VTHO_TX_ID: seedVthoTxId,
         SEED_TEST_TOKEN_TX_ID: seedTestTokenTxId,
