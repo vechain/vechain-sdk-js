@@ -16,7 +16,7 @@ import {
     type RLPProfile,
     RLPProfiler,
     type RLPValidObject
-} from '@common'; // eslint-disable-next-line @typescript-eslint/no-extraneous-class
+} from '@common';
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 class RLPCodec {
