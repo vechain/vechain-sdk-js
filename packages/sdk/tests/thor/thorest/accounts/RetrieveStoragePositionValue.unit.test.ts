@@ -117,7 +117,7 @@ describe('RetrieveStoragePositionValue unit tests', () => {
 
                 expect(thorError.message).toBe('Bad response.');
                 expect(thorError.fqn).toBe(
-                    'packages/sdk/src/thor/accounts/RetrieveStoragePositionValue.ts!askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveStoragePositionValue, GetStorageResponse>>'
+                    'packages/sdk/src/thor/thorest/accounts/methods/RetrieveStoragePositionValue.ts!askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveStoragePositionValue, GetStorageResponse>>'
                 );
                 expect(thorError.status).toBe(400);
                 expect(thorError.args).toEqual({

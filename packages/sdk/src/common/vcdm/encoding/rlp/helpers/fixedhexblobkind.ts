@@ -3,7 +3,8 @@ import { InvalidEncodingError } from '@common/errors';
 /**
  * Full Qualified Path
  */
-const FQP = 'vcdm.encoding.rlp.helpers.fixedHexBlobKind!';
+const FQP =
+    'packages/sdk/src/common/vcdm/encoding/rlp/helpers/fixedHexBlobKind!';
 
 /**
  * Asserts that the data is a hex string of the correct length.

@@ -10,7 +10,7 @@ import { type VeChainDataModel } from '@common/vcdm';
 /**
  * Full Qualified Path
  */
-const FQP = 'vcdm.encoding.rlp.RLP!';
+const FQP = 'packages/sdk/src/common/vcdm/encoding/rlp/RLP!';
 
 class RLP implements VeChainDataModel<RLP> {
     public readonly encoded: Uint8Array;

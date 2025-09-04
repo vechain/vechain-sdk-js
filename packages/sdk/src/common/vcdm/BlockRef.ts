@@ -5,7 +5,7 @@ import { IllegalArgumentError } from '@common/errors';
 /**
  * Full-Qualified Path.
  */
-const FQP = 'packages/sdk/src/vcdm/BlockRef.ts!';
+const FQP = 'packages/sdk/src/common/vcdmBlockRef.ts!';
 
 /**
  * The BlockRef class represents the 8 most significant bytes of a Thor block identifier (32 bytes long).

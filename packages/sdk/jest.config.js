@@ -5,8 +5,11 @@ const baseConfig = {
     roots: ['<rootDir>'],
     modulePaths: ['<rootDir>/src'],
     moduleNameMapper: {
+        '^@common$': '<rootDir>/src/common',
         '^@common/(.*)$': '<rootDir>/src/common/$1',
+        '^@thor$': '<rootDir>/src/thor',
         '^@thor/(.*)$': '<rootDir>/src/thor/$1',
+        '^@viem$': '<rootDir>/src/viem',
         '^@viem/(.*)$': '<rootDir>/src/viem/$1',
     },
     preset: 'ts-jest',

@@ -7,7 +7,7 @@ import { type TXIDJSON } from '@thor/thorest/json';
  * Full-Qualified Path
  */
 const FQP =
-    'packages/core/src/thor/subscriptions/NewTransactionSubscription.ts!';
+    'packages/sdk/src/thor/thorest/subscriptions/methods/NewTransactionSubscription.ts!';
 
 /**
  * [Retrieve a subscription to the new transactions endpoint](http://localhost:8669/doc/stoplight-ui/#/paths/subscriptions-txpool/get)

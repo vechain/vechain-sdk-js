@@ -10,7 +10,8 @@ import { type StatusJSON } from '@thor/thorest/json';
 /**
  * Full-Qualified-Path
  */
-const FQP = 'packages/sdk/src/thor/node/GetTxPoolStatus.ts';
+const FQP =
+    'packages/sdk/src/thor/thorest/node/methods/GetTxPoolStatus.ts/GetTxPoolStatus.ts';
 
 /**
  * [Get txpool status](http://localhost:8669/doc/stoplight-ui/#/paths/node-txpool-status/get)

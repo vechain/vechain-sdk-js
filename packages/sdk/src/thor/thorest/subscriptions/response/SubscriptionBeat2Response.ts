@@ -6,7 +6,7 @@ import { IllegalArgumentError } from '@common/errors';
  * Full-Qualified Path
  */
 const FQP =
-    'packages/core/src/thor/subscriptions/SubscriptionBeat2Response.ts!';
+    'packages/sdk/src/thor/thorest/subscriptions/response/SubscriptionBeat2Response.ts!';
 
 /**
  * [SubscriptionBeat2Response](http://localhost:8669/doc/stoplight-ui/#/schemas/SubscriptionBeat2Response)
