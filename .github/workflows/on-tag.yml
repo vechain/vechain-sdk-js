@@ -1,12 +1,17 @@
-name: Jobs on tag
+permissions:
+  contents: read
+name: Jobs on tag (manual only)
 
 on:
-    push:
-        tags:
-            - '*'
+    workflow_dispatch:
+        inputs:
+            tag:
+                description: "Tag to publish (e.g., 1.2.3)"
+                required: true
 
 jobs:
     npm-publish:
+        if: false
         uses: ./.github/workflows/publish-sdk.yml
         secrets: inherit
-
+        # Publication intentionally disabled until we create service accounts
