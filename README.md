@@ -276,6 +276,14 @@ yarn changeset publish
 ```
 Finally, update also the [documentation](https://github.com/vechain/vechain-docs).
 
+## NodeJS Version
+
+The SDK is tested on LTS versions of NodeJS, to check LTS versions see: [NodeJS end of life](https://endoflife.date/nodejs)
+
+## HTTP Tracing
+
+To aid debugging of http request to thor blockchain, if the environment variable: `SDK_TRACE` is set to `true`, each http request and response will be logged to console.
+
 ## Contact information
 
 - Discord https://discord.com/invite/vechain
