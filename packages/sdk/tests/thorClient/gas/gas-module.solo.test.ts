@@ -78,21 +78,23 @@ describe('GasModule Solo Tests', () => {
             };
 
             const result = await gasModule.estimateGas(request);
-            
+
             expect(result).toBeInstanceOf(Array);
             expect(result.length).toBe(1);
-            
+
             // VeChain solo network may return 0 gas for simple VET transfers
             // This is different from Ethereum where gas estimation returns estimated gas
-            expect(result[0].gasUsed.valueOf()).toBeGreaterThanOrEqual(BigInt(0));
+            expect(result[0].gasUsed.valueOf()).toBeGreaterThanOrEqual(
+                BigInt(0)
+            );
             expect(result[0].reverted).toBe(false);
             expect(result[0].vmError).toBe('');
             expect(result[0].transfers).toHaveLength(1);
-            expect(result[0].transfers[0].sender.toString().toLowerCase()).toBe(
-                '0xf077b491b355e64048ce21e3a6fc4751eeea77fa'
-            );
             expect(
-                result[0].transfers[0].recipient.toString().toLowerCase()
+                result[0].transfers![0].sender.toString().toLowerCase()
+            ).toBe('0xf077b491b355e64048ce21e3a6fc4751eeea77fa');
+            expect(
+                result[0].transfers![0].recipient.toString().toLowerCase()
             ).toBe('0x2669514f9fe96bc7301177ba774d3da8a06cace4');
         });
 
@@ -118,7 +120,7 @@ describe('GasModule Solo Tests', () => {
             expect(result[0].reverted).toBe(false);
             expect(result[0].vmError).toBe('');
             expect(result[0].events).toHaveLength(1); // Transfer event
-            expect(result[0].events[0].address.toString().toLowerCase()).toBe(
+            expect(result[0].events![0].address.toString().toLowerCase()).toBe(
                 '0x0000000000000000000000000000456e65726779'
             );
         });
@@ -177,12 +179,16 @@ describe('GasModule Solo Tests', () => {
             expect(result.length).toBe(2);
 
             // First clause (VET transfer) - VeChain solo may return 0 gas for VET transfers
-            expect(result[0].gasUsed.valueOf()).toBeGreaterThanOrEqual(BigInt(0));
+            expect(result[0].gasUsed.valueOf()).toBeGreaterThanOrEqual(
+                BigInt(0)
+            );
             expect(result[0].reverted).toBe(false);
             expect(result[0].transfers).toHaveLength(1);
 
             // Second clause (VTHO transfer) - Should use more gas than simple transfer
-            expect(result[1].gasUsed.valueOf()).toBeGreaterThanOrEqual(BigInt(0)); // Allow for low gas
+            expect(result[1].gasUsed.valueOf()).toBeGreaterThanOrEqual(
+                BigInt(0)
+            ); // Allow for low gas
             if (!result[1].reverted) {
                 expect(result[1].events).toHaveLength(1);
             }
@@ -252,7 +258,10 @@ describe('GasModule Solo Tests', () => {
                 newestBlock: Revision.of('best')
             };
 
-            const result = await gasModule.getFeeHistory(options);
+            const result = await gasModule.getFeeHistory(
+                options.blockCount,
+                options.newestBlock
+            );
 
             expect(result.baseFeePerGas).toBeDefined();
             expect(result.gasUsedRatio).toBeDefined();
@@ -281,7 +290,11 @@ describe('GasModule Solo Tests', () => {
                 rewardPercentiles: [25, 50, 75]
             };
 
-            const result = await gasModule.getFeeHistory(options);
+            const result = await gasModule.getFeeHistory(
+                options.blockCount,
+                options.newestBlock,
+                options.rewardPercentiles
+            );
 
             expect(result.baseFeePerGas).toBeDefined();
             expect(result.gasUsedRatio).toBeDefined();
@@ -305,7 +318,10 @@ describe('GasModule Solo Tests', () => {
                 newestBlock: Revision.of('best') // Use best block instead of fixed number
             };
 
-            const result = await gasModule.getFeeHistory(options);
+            const result = await gasModule.getFeeHistory(
+                options.blockCount,
+                options.newestBlock
+            );
 
             expect(result.baseFeePerGas).toBeDefined();
             expect(result.gasUsedRatio).toBeDefined();
@@ -322,7 +338,7 @@ describe('GasModule Solo Tests', () => {
                 blockCount: 1
             };
 
-            const result = await gasModule.getFeeHistory(options);
+            const result = await gasModule.getFeeHistory(options.blockCount);
 
             expect(result.baseFeePerGas).toBeDefined();
             expect(result.gasUsedRatio).toBeDefined();
@@ -336,14 +352,12 @@ describe('GasModule Solo Tests', () => {
 
     describe('getNextBlockBaseFeePerGas', () => {
         test('should get next block base fee per gas', async () => {
-            const result = await gasModule.getNextBlockBaseFeePerGas();
+            const result = await gasModule.suggestPriorityFeeRequest();
 
-            if (result !== null) {
-                expect(typeof result).toBe('bigint');
-                expect(result).toBeGreaterThanOrEqual(0n);
-                // Solo network typically has a base fee
-                expect(result).toBeGreaterThan(0n);
-            }
+            expect(typeof result).toBe('bigint');
+            expect(result).toBeGreaterThanOrEqual(0n);
+            // Solo network typically has a base fee
+            expect(result).toBeGreaterThan(0n);
         });
     });
 });

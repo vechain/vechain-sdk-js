@@ -36,10 +36,26 @@ class GasModule extends AbstractThorModule {
     public async estimateGas(
         estimateGas: EstimateGas
     ): Promise<EstimatedGas[]> {
-        const inspectClause = await InspectClauses.of(estimateGas).askTo(
+        const inspectClause: EstimatedGas[] = (await InspectClauses.of(estimateGas).askTo(
             this.httpClient
-        );
-        return Array.from(inspectClause.response);
+        )).response.map((response) => {
+            return {
+                gasUsed: response.gasUsed,
+                reverted: response.reverted,
+                vmError: response.vmError,
+                transfers: response.transfers?.map((transfer) => ({
+                    sender: transfer.sender.toString(),
+                    recipient: transfer.recipient.toString(),
+                    amount: transfer.amount.toString(),
+                })),
+                events: response.events?.map((event) => ({
+                    address: event.address.toString(),
+                    topics: event.topics.map((topic) => topic.toString()),
+                    data: event.data.toString(),
+                })),
+            }
+        })
+        return Array.from(inspectClause);
     }
 
     /**
