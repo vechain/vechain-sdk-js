@@ -14,6 +14,7 @@ import {
     type PrepareTransactionRequestRequest
 } from '@viem/clients';
 import { mockHttpClient } from '../../MockHttpClient';
+import { log } from '@common/logging';
 
 const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
 
@@ -135,7 +136,12 @@ describe('WalletClient UNIT tests', () => {
                 HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
             );
             const thorSigned = HexUInt.of(signedTx.encoded);
-            console.log(thorSigned.toString());
+            log({
+                verbosity: 'debug',
+                message: 'thorSigned',
+                source: 'WalletClient.unit.test',
+                context: { thorSigned: thorSigned.toString() }
+            });
 
             const account = privateKeyToAccount(
                 `0x${TRANSACTION_SENDER.privateKey}`
@@ -147,7 +153,12 @@ describe('WalletClient UNIT tests', () => {
             });
             const tx = Transaction.of(txBody);
             const signedViem = await walletClient.signTransaction(tx);
-            console.log(signedViem.toString());
+            log({
+                verbosity: 'debug',
+                message: 'signedViem',
+                source: 'WalletClient.unit.test',
+                context: { signedViem: signedViem.toString() }
+            });
             expect(signedViem.toString()).toEqual(thorSigned.toString());
         });
     });
