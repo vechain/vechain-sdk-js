@@ -8,10 +8,7 @@ import {
     Transaction,
     type TransactionBody
 } from '@vechain/sdk-core';
-import {
-    THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS,
-    ALL_ACCOUNTS
-} from '../config';
+import { THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS, ALL_ACCOUNTS } from '../config';
 import { ethers } from 'hardhat';
 
 /**
@@ -31,9 +28,11 @@ export const seedVnsSolo = async (): Promise<void> => {
         THOR_SOLO_DEFAULT_GENESIS_ACCOUNTS[4].privateKey
     ).bytes;
 
+    const chainTag = await thorSoloClient.nodes.getChaintag();
+
     // template body
     const txBody: TransactionBody = {
-        chainTag: networkInfo.solo.chainTag,
+        chainTag: chainTag,
         blockRef: '0x0',
         expiration: 100000,
         gasPriceCoef: 0,
