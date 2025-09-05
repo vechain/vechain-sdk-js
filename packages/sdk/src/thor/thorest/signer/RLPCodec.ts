@@ -1,6 +1,8 @@
+import * as nc_utils from '@noble/curves/abstract/utils';
 import {
     Clause,
     SignedTransactionRequest,
+    SponsoredTransactionRequest,
     TransactionRequest
 } from '@thor/thorest/model';
 import {
@@ -19,7 +21,7 @@ import {
     RLPProfiler,
     type RLPValidObject,
     Secp256k1
-} from '@common';
+} from '@common'; // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 class RLPCodec {
@@ -43,7 +45,7 @@ class RLPCodec {
      * - `nonce` - Represent the nonce of the transaction.
      * - `reserved` -  Reserved field.
      */
-    public static readonly RLP_FIELDS = [
+    private static readonly RLP_FIELDS = [
         { name: 'chainTag', kind: new NumericKind(1) },
         { name: 'blockRef', kind: new CompactFixedHexBlobKind(8) },
         { name: 'expiration', kind: new NumericKind(4) },
@@ -74,7 +76,7 @@ class RLPCodec {
      * - `name` - A string indicating the name of the field in the RLP structure.
      * - `kind` - RLP profile type.
      */
-    public static readonly RLP_SIGNATURE = {
+    private static readonly RLP_SIGNATURE = {
         name: 'signature',
         kind: new BufferKind()
     };
@@ -86,7 +88,7 @@ class RLPCodec {
      * - `name` - A string indicating the name of the field in the RLP structure.
      * - `kind` - RLP profile type.
      */
-    public static readonly RLP_SIGNED_TRANSACTION_PROFILE: RLPProfile = {
+    private static readonly RLP_SIGNED_TRANSACTION_PROFILE: RLPProfile = {
         name: 'tx',
         kind: RLPCodec.RLP_FIELDS.concat([RLPCodec.RLP_SIGNATURE])
     };
@@ -98,12 +100,28 @@ class RLPCodec {
      * - `name` - A string indicating the name of the field in the RLP structure.
      * - `kind` - RLP profile type.
      */
-    public static readonly RLP_UNSIGNED_TRANSACTION_PROFILE: RLPProfile = {
+    private static readonly RLP_UNSIGNED_TRANSACTION_PROFILE: RLPProfile = {
         name: 'tx',
         kind: RLPCodec.RLP_FIELDS
     };
 
-    public static decode(encoded: Uint8Array): TransactionRequest {
+    /**
+     * Decodes an encoded transaction and returns an instance of a TransactionRequest,
+     * SignedTransactionRequest, or SponsoredTransactionRequest based on the encoded data.
+     *
+     * @param {Uint8Array} encoded - The encoded transaction data to decode.
+     * @return {TransactionRequest | SignedTransactionRequest | SponsoredTransactionRequest}
+     *         Returns a TransactionRequest if the transaction is unsigned.
+     *         Returns a SignedTransactionRequest if the transaction is signed.
+     *         Returns a SponsoredTransactionRequest if the transaction is signed and includes a gas payer.
+     * @throws {IllegalArgumentError} Throws an error if the encoded data is invalid.
+     */
+    public static decode(
+        encoded: Uint8Array
+    ):
+        | TransactionRequest
+        | SignedTransactionRequest
+        | SponsoredTransactionRequest {
         const isSigned =
             (RLP.ofEncoded(encoded).decoded as unknown[]).length >
             (RLPCodec.RLP_UNSIGNED_TRANSACTION_PROFILE.kind as []).length;
@@ -148,23 +166,48 @@ class RLPCodec {
             const signature = decoded.signature as Uint8Array;
             const encodedTransactionRequest =
                 RLPCodec.encodeTransactionRequest(transactionRequest);
-            const originSignature = signature;
-            const origin = Address.ofPublicKey(
-                Secp256k1.recover(
-                    Blake2b256.of(encodedTransactionRequest).bytes,
-                    originSignature
-                )
+            const originSignature = signature.slice(
+                0,
+                Secp256k1.SIGNATURE_LENGTH
             );
-            return new SignedTransactionRequest({
+            const originHash = Blake2b256.of(encodedTransactionRequest).bytes;
+            const origin = Address.ofPublicKey(
+                Secp256k1.recover(originHash, originSignature)
+            );
+            const signedTransactionRequest = new SignedTransactionRequest({
                 ...transactionRequest,
                 origin,
                 originSignature,
                 signature
             });
+            if (signature.length > Secp256k1.SIGNATURE_LENGTH) {
+                const gasPayerSignature = signature.slice(
+                    Secp256k1.SIGNATURE_LENGTH,
+                    Secp256k1.SIGNATURE_LENGTH * 2
+                );
+                const gasPayerHash = Blake2b256.of(
+                    nc_utils.concatBytes(originHash, origin.bytes)
+                ).bytes;
+                const gasPayer = Address.ofPublicKey(
+                    Secp256k1.recover(gasPayerHash, gasPayerSignature)
+                );
+                return new SponsoredTransactionRequest({
+                    ...signedTransactionRequest,
+                    gasPayer,
+                    gasPayerSignature
+                });
+            }
+            return signedTransactionRequest;
         }
         return transactionRequest;
     }
 
+    /**
+     * Encodes a given transaction request into a Uint8Array.
+     *
+     * @param {TransactionRequest | SignedTransactionRequest} transactionRequest - The transaction request to encode, which can be either a TransactionRequest or a SignedTransactionRequest.
+     * @return {Uint8Array} The encoded transaction request as a Uint8Array.
+     */
     public static encode(
         transactionRequest: TransactionRequest | SignedTransactionRequest
     ): Uint8Array {

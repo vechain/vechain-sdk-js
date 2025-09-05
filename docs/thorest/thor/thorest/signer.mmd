@@ -28,12 +28,12 @@ classDiagram
         }
     }
     class RLPCodec {
-        Uint8Array encodeSignedTransactionRequest(SignedTransactionRequest transactionRequest)
-        Uint8Array encodeTransactionRequest(TransactionRequest transactionRequest)
+        TransactionRequest|SignedTransactionRequest|SponsoredTransactionRequest decode(Uint8Array encded)
+        Uint8Array encode(TransactionRequest|SignedTransactionRequest|SponsoredTransactionRequest transactionRequest)
     }
     class PrivateKeySigner {
         constructor(Uint8Array privateKey)
-        void()
+        disponse()
     }
     class Signer {
         <<interface>>

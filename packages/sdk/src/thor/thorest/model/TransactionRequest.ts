@@ -147,6 +147,11 @@ class TransactionRequest implements TransactionRequestParam {
         return false;
     }
 
+    /**
+     * Converts the TransactionRequest object into a JSON representation.
+     *
+     * @return {TransactionRequestJSON} The JSON representation of the TransactionRequest object.
+     */
     public toJSON(): TransactionRequestJSON {
         return {
             blockRef: this.blockRef.toString(),

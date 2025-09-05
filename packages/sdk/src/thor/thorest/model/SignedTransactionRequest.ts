@@ -78,6 +78,11 @@ class SignedTransactionRequest
         return true;
     }
 
+    /**
+     * Converts the SignedTransactionRequest object into its JSON representation.
+     *
+     * @return {SignedTransactionRequestJSON} The JSON representation of the SignedTransactionRequest object.
+     */
     public toJSON(): SignedTransactionRequestJSON {
         return {
             ...super.toJSON(),
