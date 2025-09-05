@@ -88,10 +88,12 @@ const gasResult = await thorSoloClient.transactions.estimateGas(
     sender.address
 );
 
+const chainTag = await thorSoloClient.nodes.getChaintag();
+
 // 2.4 - Create transactions
 const transactionBody = {
     // Solo network chain tag
-    chainTag: 0xf6,
+    chainTag: chainTag,
     // Solo network block ref
     blockRef: latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
     expiration: 32,

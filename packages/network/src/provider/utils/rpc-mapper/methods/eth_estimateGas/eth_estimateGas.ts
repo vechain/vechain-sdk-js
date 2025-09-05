@@ -3,6 +3,7 @@ import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     JSONRPCTransactionRevertError,
+    HttpNetworkError,
     stringifyData
 } from '@vechain/sdk-errors';
 import {
@@ -112,6 +113,21 @@ const ethEstimateGas = async (
         // Re-throw JSONRPCTransactionRevertError as-is
         if (e instanceof JSONRPCTransactionRevertError) {
             throw e;
+        }
+
+        // Check if this is a network communication error
+        if (e instanceof HttpNetworkError) {
+            throw new JSONRPCInternalError(
+                'eth_estimateGas()',
+                'Method "eth_estimateGas" failed due to network communication error.',
+                {
+                    params: stringifyData(params),
+                    url: thorClient.httpClient.baseURL,
+                    networkError: true,
+                    networkErrorType: e.data.networkErrorType,
+                    innerError: stringifyData(e)
+                }
+            );
         }
 
         throw new JSONRPCInternalError(

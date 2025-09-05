@@ -3,8 +3,7 @@ import { InvalidDataType } from '@vechain/sdk-errors';
 import { type ThorClient, type TransactionReceipt } from '../../../src';
 import {
     transactionNonces,
-    transfer1VTHOClause,
-    transferTransactionBodyValueAsNumber
+    transfer1VTHOClause
 } from '../transactions/fixture';
 import { HexUInt, BlockId, Transaction } from '@vechain/sdk-core';
 import { type ThorSoloAccount } from '@vechain/sdk-solo-setup';
@@ -472,12 +471,19 @@ const sendTransactionWithAccount = async (
     });
 
     // Create the signed transfer transaction
-    const tx = Transaction.of({
-        ...transferTransactionBodyValueAsNumber,
-        gas: gasResult.totalGas,
-        nonce: transactionNonces
-            .sendTransactionWithANumberAsValueInTransactionBody[0]
-    }).sign(HexUInt.of(account.privateKey).bytes);
+
+    const nonce =
+        transactionNonces.sendTransactionWithANumberAsValueInTransactionBody[0];
+
+    const txBody = await thorClient.transactions.buildTransactionBody(
+        [transfer1VTHOClause],
+        gasResult.totalGas,
+        { nonce }
+    );
+
+    const tx = Transaction.of(txBody).sign(
+        HexUInt.of(account.privateKey).bytes
+    );
 
     // Send the transaction and obtain the transaction ID
     const sendTransactionResult = await retryOperation(async () => {

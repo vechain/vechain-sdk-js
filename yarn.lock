@@ -4153,50 +4153,6 @@
     uuid "2.0.1"
     xmlhttprequest "1.8.0"
 
-"@vechain/sdk-core@2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-core/-/sdk-core-2.0.1.tgz#13a3a3554835100aaac34866ed0d56c9f123ac65"
-  integrity sha512-RT9G2sDEtpiZk9xlLJPe2t0Xvb+/VtvjehL4TD5enuAgXh4MkKOXXn71ihPoQ5gAo41Z2yBArtp9SYEfjUFy9A==
-  dependencies:
-    "@ethereumjs/rlp" "^5.0.2"
-    "@noble/ciphers" "^1.1.1"
-    "@noble/curves" "^1.6.0"
-    "@noble/hashes" "^1.5.0"
-    "@scure/base" "^1.2.4"
-    "@scure/bip32" "^1.4.0"
-    "@scure/bip39" "^1.5.1"
-    "@vechain/sdk-errors" "2.0.1"
-    "@vechain/sdk-logging" "2.0.1"
-    abitype "^1.0.6"
-    ethers "^6.14.0"
-    fast-json-stable-stringify "^2.1.0"
-    viem "^2.21.45"
-
-"@vechain/sdk-errors@2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-errors/-/sdk-errors-2.0.1.tgz#2d03c4137a33efe3abb104dde64d868adf85b5ca"
-  integrity sha512-LSsQcTKsV7W7hs7rGZ5nQlPED1pCv0iYzDuiQxvh4P8jJiCAzulj0nnq43Vd1vJmDQfVCAQAWniBBxJFiG1aww==
-
-"@vechain/sdk-logging@2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-logging/-/sdk-logging-2.0.1.tgz#41ab37c71b20d7b6650fab424d1cb33b4f4a8d4c"
-  integrity sha512-/U7ruVONACAS+pb6m/KHofy6wCw4OkEXwe4W86xJiJXXDUuflTMVu4H/JcXq/QwFIkGTKapWU5YuI6llbNQP4g==
-  dependencies:
-    "@vechain/sdk-errors" "2.0.1"
-
-"@vechain/sdk-network@2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-network/-/sdk-network-2.0.1.tgz#88d4876eb6c91ae1f388a56377c49bca23ba311c"
-  integrity sha512-x3Ph6W6J2fNjsrzI4wFR3MA2fxfp/uq1eWOsAiXxKbwQ+8EACqzMCOyC+Y+7d8eNmuhXMy80AGxYvtjInjBeIw==
-  dependencies:
-    "@noble/curves" "^1.6.0"
-    "@vechain/sdk-core" "2.0.1"
-    "@vechain/sdk-errors" "2.0.1"
-    "@vechain/sdk-logging" "2.0.1"
-    abitype "1.0.8"
-    ethers "^6.14.0"
-    viem "^2.21.54"
-
 "@vechain/vebetterdao-contracts@^4.1.0":
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/@vechain/vebetterdao-contracts/-/vebetterdao-contracts-4.1.0.tgz#5a081bf9c548ea777fe16dcab40536d6d2cc1a62"
@@ -12273,7 +12229,7 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==
 
-typedoc-plugin-missing-exports@^3.0.0:
+typedoc-plugin-missing-exports@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/typedoc-plugin-missing-exports/-/typedoc-plugin-missing-exports-3.1.0.tgz#cab4952c19cae1ab3f91cbbf2d7d17564682b023"
   integrity sha512-Sogbaj+qDa21NjB3SlIw4JXSwmcl/WOjwiPNaVEcPhpNG/MiRTtpwV81cT7h1cbu9StpONFPbddYWR0KV/fTWA==

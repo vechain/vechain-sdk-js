@@ -1,5 +1,9 @@
 import { HttpMethod } from './HttpMethod';
-import { InvalidHTTPParams, InvalidHTTPRequest } from '@vechain/sdk-errors';
+import {
+    InvalidHTTPParams,
+    InvalidHTTPRequest,
+    HttpNetworkError
+} from '@vechain/sdk-errors';
 import { type HttpClient } from './HttpClient';
 import { type HttpParams } from './HttpParams';
 import { logRequest, logResponse, logError } from './trace-logger';
@@ -158,7 +162,9 @@ class SimpleHttpClient implements HttpClient {
                 headers,
                 body:
                     method !== HttpMethod.GET
-                        ? JSON.stringify(params?.body)
+                        ? params?.rawBody !== undefined
+                            ? (params.rawBody as BodyInit)
+                            : JSON.stringify(params?.body)
                         : undefined,
                 signal: controller.signal
             });
@@ -191,7 +197,100 @@ class SimpleHttpClient implements HttpClient {
                 return responseBody;
             }
 
-            throw new Error(`HTTP ${response.status} ${response.statusText}`, {
+            // Extract response body for error context
+            let responseBodyText: string | undefined;
+            try {
+                // Clone the response to avoid consuming it
+                const clonedResponse = response.clone();
+                responseBodyText = await clonedResponse.text();
+            } catch {
+                // If we can't read the response body, continue without it
+                responseBodyText = undefined;
+            }
+
+            // Create error message with response body if available
+            let errorMessage = `HTTP ${response.status} ${response.statusText}`;
+            if (responseBodyText?.trim()) {
+                const trimmedBody = responseBodyText.trim();
+
+                // Skip HTML responses
+                if (trimmedBody.includes('<!DOCTYPE html>')) {
+                    // Don't include HTML content
+                }
+                // Try to parse JSON and extract error code and message
+                else if (
+                    trimmedBody.startsWith('{') ||
+                    trimmedBody.startsWith('[')
+                ) {
+                    try {
+                        const jsonData = JSON.parse(trimmedBody) as Record<
+                            string,
+                            unknown
+                        >;
+                        if (
+                            jsonData.error &&
+                            typeof jsonData.error === 'object' &&
+                            jsonData.error !== null
+                        ) {
+                            const errorObj = jsonData.error as Record<
+                                string,
+                                unknown
+                            >;
+                            const errorCode = (errorObj.code as string) ?? '';
+                            const errorMsg =
+                                (errorObj.message as string) ??
+                                (errorObj.msg as string) ??
+                                '';
+
+                            // Include error code, message, and data if it's a string
+                            if (errorCode) errorMessage += ` [${errorCode}]`;
+                            if (errorMsg) errorMessage += ` - ${errorMsg}`;
+
+                            // Include data if it's a string (not an object)
+                            const errorData = errorObj.data;
+                            if (
+                                errorData &&
+                                typeof errorData === 'string' &&
+                                errorData.trim()
+                            ) {
+                                errorMessage += ` (${errorData})`;
+                            }
+                        }
+                    } catch {
+                        // If JSON parsing fails, don't include anything
+                    }
+                }
+                // For plain text, parse and extract useful information
+                else if (
+                    // Include plain text error bodies (even if long) as they often contain
+                    // crucial details coming directly from Thor (e.g. "invalid character 'x' ...").
+                    // We only skip HTML payloads.
+                    !trimmedBody.includes('<!DOCTYPE html>')
+                ) {
+                    // Try to extract key information from plain text
+                    const lines = trimmedBody.split('\n');
+                    const firstLine = lines[0].trim();
+
+                    // Look for common error patterns
+                    if (firstLine.includes(': ')) {
+                        // Format: "field: error message"
+                        const [field, message] = firstLine.split(': ', 2);
+                        if (field && message) {
+                            errorMessage += ` - ${field}: ${message}`;
+                        } else {
+                            errorMessage += ` - ${firstLine}`;
+                        }
+                    } else if (firstLine.includes(' - ')) {
+                        // Format: "error - details"
+                        errorMessage += ` - ${firstLine}`;
+                    } else {
+                        // Just include the first line if it's short
+                        errorMessage += ` - ${firstLine}`;
+                    }
+                }
+            }
+
+            throw new Error(errorMessage, {
                 cause: response
             });
         } catch (error) {
@@ -201,6 +300,23 @@ class SimpleHttpClient implements HttpClient {
                 const urlString = url.toString();
                 logError(requestStartTime, urlString, method, error);
 
+                // Check if this is a network communication error
+                // According to Fetch API spec: https://developer.mozilla.org/en-US/docs/Web/API/Window/fetch#exceptions
+                // Network errors throw TypeError, while HTTP errors (4xx/5xx) are handled in the response.ok check
+                if (error instanceof TypeError) {
+                    throw new HttpNetworkError(
+                        'HttpClient.http()',
+                        error.message,
+                        {
+                            method,
+                            url: urlString,
+                            networkErrorType: 'TypeError'
+                        },
+                        error
+                    );
+                }
+
+                // If not a network error, treat as HTTP protocol error
                 throw new InvalidHTTPRequest(
                     'HttpClient.http()',
                     (error as Error).message,

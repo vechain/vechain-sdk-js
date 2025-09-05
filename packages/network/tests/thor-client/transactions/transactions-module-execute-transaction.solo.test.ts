@@ -7,6 +7,7 @@ import {
     VeChainProvider,
     type VeChainSigner
 } from '../../../src';
+import { HttpMethod, type HttpParams } from '../../../src/http';
 import { ABIContract, Hex } from '@vechain/sdk-core';
 import { AccountDispatcher, getConfigData } from '@vechain/sdk-solo-setup';
 import { retryOperation } from '../../test-utils';
@@ -144,4 +145,119 @@ describe('ThorClient - Transactions Module Execute Transaction', () => {
         // assert the transaction was successful
         expect(receipt?.reverted).toBe(false);
     }, 15000);
+
+    // Tests for the fix that prevents "Maximum call stack size exceeded" error
+    test('Should handle polling timeout gracefully with safety limit', async () => {
+        const originalHttpClient = thorSoloClient.httpClient;
+        const mockHttpClient = {
+            ...originalHttpClient,
+            http: async (
+                _method: HttpMethod,
+                _path: string,
+                _params?: HttpParams
+            ): Promise<unknown> => {
+                await new Promise((resolve) => setTimeout(resolve, 0));
+                throw new Error('Network timeout error');
+            }
+        };
+        (thorSoloClient as { httpClient: typeof mockHttpClient }).httpClient =
+            mockHttpClient;
+
+        try {
+            const startTime = Date.now();
+            const receipt =
+                await thorSoloClient.transactions.waitForTransaction(
+                    '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+                    { timeoutMs: 5000 }
+                );
+            const endTime = Date.now();
+            const duration = endTime - startTime;
+
+            expect(duration).toBeLessThan(10000); // Should not take more than 10 seconds
+            expect(receipt).toBeNull();
+        } catch (error) {
+            expect(error).not.toBeInstanceOf(RangeError);
+            expect((error as Error).message).not.toContain(
+                'Maximum call stack size exceeded'
+            );
+        } finally {
+            (
+                thorSoloClient as { httpClient: typeof originalHttpClient }
+            ).httpClient = originalHttpClient;
+        }
+    }, 15000);
+
+    test('Should handle network errors gracefully in getTransactionReceipt', async () => {
+        const originalHttpClient = thorSoloClient.httpClient;
+        const mockHttpClient = {
+            ...originalHttpClient,
+            http: async (
+                _method: HttpMethod,
+                _path: string,
+                _params?: HttpParams
+            ): Promise<unknown> => {
+                await new Promise((resolve) => setTimeout(resolve, 0));
+                throw new Error('Network connection reset');
+            }
+        };
+        (thorSoloClient as { httpClient: typeof mockHttpClient }).httpClient =
+            mockHttpClient;
+
+        try {
+            const receipt =
+                await thorSoloClient.transactions.getTransactionReceipt(
+                    '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'
+                );
+            expect(receipt).toBeNull();
+        } finally {
+            (
+                thorSoloClient as { httpClient: typeof originalHttpClient }
+            ).httpClient = originalHttpClient;
+        }
+    });
+
+    test('Should demonstrate fix prevents infinite polling loops', async () => {
+        const originalHttpClient = thorSoloClient.httpClient;
+        let callCount = 0;
+        const mockHttpClient = {
+            ...originalHttpClient,
+            http: async (
+                method: HttpMethod,
+                path: string,
+                params?: HttpParams
+            ): Promise<unknown> => {
+                callCount++;
+                if (callCount < 50) {
+                    throw new Error(
+                        'Network timeout error - Thor temporarily unavailable'
+                    );
+                }
+                return originalHttpClient.http(method, path, params);
+            }
+        };
+        (thorSoloClient as { httpClient: typeof mockHttpClient }).httpClient =
+            mockHttpClient;
+
+        try {
+            const startTime = Date.now();
+            await thorSoloClient.transactions.waitForTransaction(
+                '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+                { timeoutMs: 10000 }
+            );
+            const endTime = Date.now();
+            const duration = endTime - startTime;
+
+            expect(duration).toBeLessThan(15000); // Should not take more than 15 seconds
+            expect(callCount).toBeGreaterThan(0);
+        } catch (error) {
+            expect(error).not.toBeInstanceOf(RangeError);
+            expect((error as Error).message).not.toContain(
+                'Maximum call stack size exceeded'
+            );
+        } finally {
+            (
+                thorSoloClient as { httpClient: typeof originalHttpClient }
+            ).httpClient = originalHttpClient;
+        }
+    }, 20000);
 });

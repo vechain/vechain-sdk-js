@@ -221,6 +221,8 @@ const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 
 const latestBlock = await thorSoloClient.blocks.getBestBlockCompressed();
 
+const chainTag = await thorSoloClient.nodes.getChaintag();
+
 // 3 - Create clauses
 
 const clauses = [
@@ -239,7 +241,7 @@ const gasResult = await thorSoloClient.transactions.estimateGas(
 // 4 - Create transaction
 
 const transactionBody = {
-    chainTag: 0xf6,
+    chainTag: chainTag,
     blockRef: latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
     expiration: 32,
     clauses,
@@ -339,10 +341,12 @@ const gasResult = await thorSoloClient.transactions.estimateGas(
     senderAccount.address
 );
 
+const chainTag = await thorSoloClient.nodes.getChaintag();
+
 //  4 - Create delegated transaction
 
 const delegatedTransactionBody = {
-    chainTag: 0xf6,
+    chainTag: chainTag,
     blockRef: latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
     expiration: 32,
     clauses,
@@ -438,10 +442,12 @@ const gasResult = await thorSoloClient.transactions.estimateGas(
     options
 );
 
+const chainTag = await thorSoloClient.nodes.getChaintag();
+
 // 4 - Create transaction
 
 const transactionBody = {
-    chainTag: networkInfo.solo.chainTag,
+    chainTag: chainTag,
     blockRef: latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
     expiration: 32,
     clauses,
