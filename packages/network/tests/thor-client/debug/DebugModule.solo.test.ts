@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { Address, BlockId, HexUInt } from '@vechain/sdk-core';
-import { transfer1VTHOClause } from '../transactions/fixture';
+import { transfer1VTHOClause } from './fixture';
 import {
     THOR_SOLO_URL,
     ThorClient,

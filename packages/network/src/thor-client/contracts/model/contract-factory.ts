@@ -92,7 +92,8 @@ class ContractFactory<TAbi extends Abi> {
         const gasResult =
             await this.contractsModule.transactionsModule.estimateGas(
                 [deployContractClause],
-                await this.signer.getAddress()
+                await this.signer.getAddress(),
+                options // Pass through EstimateGasOptions including gasPadding
             );
 
         const txBody =

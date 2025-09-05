@@ -1,6 +1,8 @@
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
+    JSONRPCTransactionRevertError,
+    HttpNetworkError,
     stringifyData
 } from '@vechain/sdk-errors';
 import {
@@ -54,7 +56,7 @@ const ethCall = async (
                 } satisfies SimulateTransactionClause
             ],
             {
-                revision: DefaultBlockToRevision(block).toString(),
+                revision: DefaultBlockToRevision(block),
                 gas:
                     inputOptions.gas !== undefined
                         ? parseInt(inputOptions.gas, 16)
@@ -65,22 +67,36 @@ const ethCall = async (
         );
 
         if (simulatedTx[0].reverted) {
-            throw new JSONRPCInternalError(
-                'eth_call()',
-                'Method "eth_call" failed when simulating the transaction.',
-                {
-                    params: stringifyData(params),
-                    innerError: simulatedTx[0].vmError
-                }
+            throw new JSONRPCTransactionRevertError(
+                simulatedTx[0].vmError,
+                simulatedTx[0].data
             );
         }
-
         // Return simulated transaction data
         return simulatedTx[0].data;
     } catch (e) {
         if (e instanceof JSONRPCInternalError) {
             throw e;
         }
+        if (e instanceof JSONRPCTransactionRevertError) {
+            throw e;
+        }
+
+        // Check if this is a network communication error
+        if (e instanceof HttpNetworkError) {
+            throw new JSONRPCInternalError(
+                'eth_call()',
+                'Method "eth_call" failed due to network communication error.',
+                {
+                    params: stringifyData(params),
+                    url: thorClient.httpClient.baseURL,
+                    networkError: true,
+                    networkErrorType: e.data.networkErrorType,
+                    innerError: stringifyData(e)
+                }
+            );
+        }
+
         throw new JSONRPCInternalError(
             'eth_call()',
             'Method "eth_call" failed.',

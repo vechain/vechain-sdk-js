@@ -1,4 +1,6 @@
 import { jest } from '@jest/globals';
+import { THOR_SOLO_URL, ThorClient } from '../src';
+import { HttpNetworkError } from '@vechain/sdk-errors';
 
 /**
  * Advance timers by the specified time and tick
@@ -14,6 +16,12 @@ const advanceTimersByTimeAndTick = async (time: number): Promise<void> => {
     await new Promise<void>((resolve) => {
         process.nextTick(resolve);
     });
+};
+
+const getSoloChainTag = async (): Promise<number> => {
+    const thorClient = ThorClient.at(THOR_SOLO_URL);
+    const chainTag = await thorClient.nodes.getChaintag();
+    return chainTag;
 };
 
 /**
@@ -41,18 +49,11 @@ const retryOperation = async <T>(
             lastError =
                 error instanceof Error ? error : new Error(String(error));
 
-            // Check if it's a connection error
-            const errorMessage = lastError.message;
-            const isConnectionError =
-                errorMessage.includes('socket hang up') ||
-                errorMessage.includes('ECONNRESET') ||
-                errorMessage.includes('connect ETIMEDOUT') ||
-                errorMessage.includes('request failed') ||
-                errorMessage.includes('UND_ERR_SOCKET') ||
-                errorMessage.includes('fetch failed');
+            // Check if it's a network communication error
+            const isNetworkError = lastError instanceof HttpNetworkError;
 
-            // If it's not a connection error or this is the last attempt, throw
-            if (!isConnectionError || attempt === maxAttempts) {
+            // If it's not a network error or this is the last attempt, throw
+            if (!isNetworkError || attempt === maxAttempts) {
                 throw lastError ?? new Error('Unknown error');
             }
 
@@ -66,4 +67,4 @@ const retryOperation = async <T>(
     throw lastError ?? new Error('Unknown error');
 };
 
-export { advanceTimersByTimeAndTick, retryOperation };
+export { advanceTimersByTimeAndTick, retryOperation, getSoloChainTag };

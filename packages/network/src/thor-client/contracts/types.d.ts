@@ -1,8 +1,8 @@
 import type {
     SignTransactionOptions,
-    SimulateTransactionOptions,
     TransactionBodyOptions
 } from '../transactions/types';
+import type { EstimateGasOptions } from '../gas/types';
 
 import type { ClauseOptions } from '@vechain/sdk-core';
 
@@ -22,6 +22,8 @@ declare module 'viem/node_modules/abitype' {
 
 /**
  * Defines the options for executing a contract transaction.
+ * Includes all EstimateGasOptions properties (revision, gas, gasPrice, provedWork, gasPayer, expiration, blockRef)
+ * plus the gasPadding property for gas estimation padding.
  */
 type ContractTransactionOptions = {
     signTransactionOptions?: SignTransactionOptions;
@@ -31,12 +33,15 @@ type ContractTransactionOptions = {
      */
     delegationUrl?: string;
 } & TransactionBodyOptions &
+    EstimateGasOptions &
     ClauseOptions;
 
 /**
  * Defines the options for executing a contract call within a blockchain environment.
+ * Includes all EstimateGasOptions properties (revision, gas, gasPrice, provedWork, gasPayer, expiration, blockRef)
+ * plus the gasPadding property for gas estimation padding.
  */
-type ContractCallOptions = SimulateTransactionOptions & ClauseOptions;
+type ContractCallOptions = EstimateGasOptions & ClauseOptions;
 
 /* --------- Input types End --------- */
 

@@ -1,4 +1,8 @@
-import type { TransactionBody, TransactionClause } from '@vechain/sdk-core';
+import type {
+    Revision,
+    TransactionBody,
+    TransactionClause
+} from '@vechain/sdk-core';
 import type { Output } from '../blocks';
 import { type Transfer } from '../logs';
 
@@ -51,12 +55,13 @@ interface TransactionBodyOptions {
     expiration?: number;
 
     /**
-     * Transaction gas.
+     * The maximum amount of gas to allow this transaction to consume.
      */
     gas?: string | number;
 
     /**
      *  The maximum amount of gas to allow this transaction to consume.
+     *  @deprecated Use `gas` instead. This property will be removed in a future release.
      */
     gasLimit?: string;
 
@@ -135,7 +140,7 @@ interface SimulateTransactionOptions {
     /**
      * The block number or block ID of which the transaction simulation is based on
      */
-    revision?: string;
+    revision?: Revision;
     /**
      * The offered gas for the transaction simulation
      */

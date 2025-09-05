@@ -16,7 +16,11 @@ import {
     Units,
     VET
 } from '@vechain/sdk-core';
-import { InvalidDataType, InvalidTransactionField } from '@vechain/sdk-errors';
+import {
+    InvalidDataType,
+    InvalidTransactionField,
+    HttpNetworkError
+} from '@vechain/sdk-errors';
 import { ErrorFragment, Interface } from 'ethers';
 import { HttpMethod } from '../../http';
 import { blocksFormatter, getTransactionIndexIntoBlock } from '../../provider';
@@ -195,13 +199,23 @@ class TransactionsModule {
                 { head: options?.head }
             );
 
-        return (await this.blocksModule.httpClient.http(
-            HttpMethod.GET,
-            thorest.transactions.get.TRANSACTION_RECEIPT(id),
-            {
-                query: buildQuery({ head: options?.head })
+        try {
+            return (await this.blocksModule.httpClient.http(
+                HttpMethod.GET,
+                thorest.transactions.get.TRANSACTION_RECEIPT(id),
+                {
+                    query: buildQuery({ head: options?.head })
+                }
+            )) as TransactionReceipt | null;
+        } catch (error) {
+            // Check if this is a network communication error
+            if (error instanceof HttpNetworkError) {
+                // For network errors, return null instead of throwing
+                // This allows the polling mechanism to continue
+                return null;
             }
-        )) as TransactionReceipt | null;
+            throw error;
+        }
     }
 
     /**
@@ -297,15 +311,37 @@ class TransactionsModule {
             );
         }
 
-        return await Poll.SyncPoll(
-            async () => await this.getTransactionReceipt(txID),
-            {
-                requestIntervalInMilliseconds: options?.intervalMs,
-                maximumWaitingTimeInMilliseconds: options?.timeoutMs
+        // If no timeout is specified, use the original polling behavior
+        if (options?.timeoutMs === undefined) {
+            return await Poll.SyncPoll(
+                async () => await this.getTransactionReceipt(txID),
+                {
+                    requestIntervalInMilliseconds: options?.intervalMs,
+                    maximumWaitingTimeInMilliseconds: options?.timeoutMs
+                }
+            ).waitUntil((result) => {
+                return result !== null;
+            });
+        }
+
+        const startTime = Date.now();
+        const deadline = startTime + options.timeoutMs;
+        const intervalMs = options?.intervalMs ?? 1000;
+        while (true) {
+            // Check if timeout has been reached
+            if (Date.now() >= deadline) {
+                return null;
             }
-        ).waitUntil((result) => {
-            return result !== null;
-        });
+            // Try to get the transaction receipt
+            const receipt = await this.getTransactionReceipt(txID).catch(
+                () => null
+            );
+            if (receipt !== null) {
+                return receipt;
+            }
+            // Wait for the specified interval before trying again
+            await new Promise((resolve) => setTimeout(resolve, intervalMs));
+        }
     }
 
     /**
@@ -314,11 +350,12 @@ class TransactionsModule {
      *
      * @param clauses - The clauses of the transaction.
      * @param gas - The gas to be used to perform the transaction.
-     * @param options - Optional parameters for the request. Includes the expiration, gasPriceCoef, maxFeePErGas, maxPriorityFeePerGas, dependsOn and isDelegated fields.
+     * @param options - Optional parameters for the request. Includes the expiration, gasPriceCoef, maxFeePerGas, maxPriorityFeePerGas, gas, dependsOn and isDelegated fields.
      *                  If the `expiration` is not specified, the transaction will expire after 32 blocks.
      *                  If the `gasPriceCoef` is not specified & galactica fork didn't happen yet, the transaction will use the default gas price coef of 0.
      *                  If the `gasPriceCoef` is not specified & galactica fork happened, the transaction will use the default maxFeePerGas and maxPriorityFeePerGas.
-     *                  If the `dependsOn is` not specified, the transaction will not depend on any other transaction.
+     *                  If the `gas` is specified in options, it will override the gas parameter.
+     *                  If the `dependsOn` is not specified, the transaction will not depend on any other transaction.
      *                  If the `isDelegated` is not specified, the transaction will not be delegated.
      *
      * @returns A promise that resolves to the transaction body.
@@ -349,7 +386,7 @@ class TransactionsModule {
             );
 
         const chainTag =
-            options?.chainTag ?? Number(`0x${genesisBlock.id.slice(64)}`);
+            options?.chainTag ?? Number(`0x${genesisBlock.id.slice(-2)}`);
 
         const filledOptions = await this.fillDefaultBodyOptions(options);
 
@@ -380,7 +417,7 @@ class TransactionsModule {
             clauses: await this.resolveNamesInClauses(processedClauses),
             dependsOn: options?.dependsOn ?? null,
             expiration: options?.expiration ?? 32,
-            gas,
+            gas: options?.gas !== undefined ? Number(options.gas) : gas,
             gasPriceCoef: filledOptions?.gasPriceCoef,
             maxFeePerGas: filledOptions?.maxFeePerGas,
             maxPriorityFeePerGas: filledOptions?.maxPriorityFeePerGas,
@@ -495,20 +532,19 @@ class TransactionsModule {
         // default to dynamic fee tx
         options.gasPriceCoef = undefined;
 
-        // Get best block base fee per gas
-        const bestBlockBaseFeePerGas =
-            await this.blocksModule.getBestBlockBaseFeePerGas();
+        // Get next block base fee per gas
+        const biNextBlockBaseFeePerGas =
+            await this.gasModule.getNextBlockBaseFeePerGas();
         if (
-            bestBlockBaseFeePerGas === null ||
-            bestBlockBaseFeePerGas === undefined
+            biNextBlockBaseFeePerGas === null ||
+            biNextBlockBaseFeePerGas === undefined
         ) {
             throw new InvalidDataType(
                 'TransactionsModule.fillDefaultBodyOptions()',
-                'Invalid transaction body options. Unable to get best block base fee per gas.',
+                'Invalid transaction body options. Unable to get next block base fee per gas.',
                 { options }
             );
         }
-        const biBestBlockBaseFeePerGas = HexUInt.of(bestBlockBaseFeePerGas).bi;
 
         // set maxPriorityFeePerGas if not specified already
         if (
@@ -519,7 +555,7 @@ class TransactionsModule {
             // and the HIGH speed threshold (min(0.046*baseFee, 75_percentile))
             const defaultMaxPriorityFeePerGas =
                 await this.calculateDefaultMaxPriorityFeePerGas(
-                    biBestBlockBaseFeePerGas
+                    biNextBlockBaseFeePerGas
                 );
             options.maxPriorityFeePerGas = defaultMaxPriorityFeePerGas;
         }
@@ -533,8 +569,10 @@ class TransactionsModule {
             const biMaxPriorityFeePerGas = HexUInt.of(
                 options.maxPriorityFeePerGas
             ).bi;
+            // maxFeePerGas = 1.12 * baseFeePerGas + maxPriorityFeePerGas
             const biMaxFeePerGas =
-                biBestBlockBaseFeePerGas + biMaxPriorityFeePerGas;
+                (112n * biNextBlockBaseFeePerGas) / 100n +
+                biMaxPriorityFeePerGas;
             options.maxFeePerGas = HexUInt.of(biMaxFeePerGas).toString();
         }
         return options;
@@ -695,7 +733,7 @@ class TransactionsModule {
         if (
             revision !== undefined &&
             revision !== null &&
-            !Revision.isValid(revision)
+            !Revision.isValid(revision.toString())
         ) {
             throw new InvalidDataType(
                 'TransactionsModule.simulateTransaction()',
@@ -706,9 +744,9 @@ class TransactionsModule {
 
         return (await this.blocksModule.httpClient.http(
             HttpMethod.POST,
-            thorest.accounts.post.SIMULATE_TRANSACTION(revision),
+            thorest.accounts.post.SIMULATE_TRANSACTION(revision?.toString()),
             {
-                query: buildQuery({ revision }),
+                query: buildQuery({ revision: revision?.toString() }),
                 body: {
                     clauses: await this.resolveNamesInClauses(
                         clauses.map((clause) => {
@@ -856,15 +894,32 @@ class TransactionsModule {
      * @see {@link TransactionsModule#simulateTransaction}
      */
     public async estimateGas(
-        clauses: SimulateTransactionClause[],
+        clauses: (SimulateTransactionClause | ContractClause)[],
         caller?: string,
         options?: EstimateGasOptions
     ): Promise<EstimateGasResult> {
-        // Clauses must be an array of clauses with at least one clause
-        if (clauses.length <= 0) {
+        // Normalize to SimulateTransactionClause[]
+        const clausesToEstimate: SimulateTransactionClause[] = clauses.map(
+            (clause) => {
+                if (clause === undefined) {
+                    throw new InvalidDataType(
+                        'TransactionsModule.estimateGas()',
+                        'Invalid ContractClause provided: missing inner clause.',
+                        { clause }
+                    );
+                }
+                if ('clause' in clause) {
+                    return clause.clause;
+                }
+                return clause;
+            }
+        );
+
+        // Validate the normalized set is non-empty
+        if (clausesToEstimate.length === 0) {
             throw new InvalidDataType(
-                'GasModule.estimateGas()',
-                'Invalid clauses. Clauses must be an array of clauses with at least one clause.',
+                'TransactionsModule.estimateGas()',
+                'Invalid clauses. Clauses must be an array with at least one clause.',
                 { clauses, caller, options }
             );
         }
@@ -882,7 +937,7 @@ class TransactionsModule {
         }
 
         // Simulate the transaction to get the simulations of each clause
-        const simulations = await this.simulateTransaction(clauses, {
+        const simulations = await this.simulateTransaction(clausesToEstimate, {
             caller,
             ...options
         });
@@ -893,7 +948,9 @@ class TransactionsModule {
         });
 
         // The intrinsic gas of the transaction
-        const intrinsicGas = Number(Transaction.intrinsicGas(clauses).wei);
+        const intrinsicGas = Number(
+            Transaction.intrinsicGas(clausesToEstimate).wei
+        );
 
         // totalSimulatedGas represents the summation of all clauses' gasUsed
         const totalSimulatedGas = simulations.reduce((sum, simulation) => {
@@ -984,7 +1041,16 @@ class TransactionsModule {
     ): Promise<ContractCallResult[]> {
         // Simulate the transaction to get the result of the contract call
         const response = await this.simulateTransaction(
-            clauses.map((clause) => clause.clause),
+            clauses.map((clause) => {
+                if (clause.clause === undefined) {
+                    throw new InvalidDataType(
+                        'TransactionsModule.executeMultipleClausesCall()',
+                        'Invalid ContractClause provided: missing inner clause.',
+                        { clause }
+                    );
+                }
+                return clause.clause;
+            }),
             options
         );
         // Returning the decoded results both as plain and array.
@@ -1058,12 +1124,24 @@ class TransactionsModule {
      * @return {Promise<SendTransactionResult>} The result of the transaction, including transaction ID and a wait function.
      */
     public async executeMultipleClausesTransaction(
-        clauses: ContractClause[],
+        clauses: ContractClause[] | TransactionClause[],
         signer: VeChainSigner,
         options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {
         const id = await signer.sendTransaction({
-            clauses: clauses.map((clause) => clause.clause),
+            clauses: clauses.map((clause) => {
+                if (clause === undefined) {
+                    throw new InvalidDataType(
+                        'TransactionsModule.executeMultipleClausesTransaction()',
+                        'Invalid ContractClause[] | TransactionClause[] provided: missing clause.',
+                        { clause }
+                    );
+                }
+                if ('clause' in clause) {
+                    return (clause as unknown as ContractClause).clause;
+                }
+                return clause;
+            }),
             gas: options?.gas,
             gasLimit: options?.gasLimit,
             gasPrice: options?.gasPrice,
