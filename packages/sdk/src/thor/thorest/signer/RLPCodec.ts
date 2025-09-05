@@ -13,6 +13,7 @@ import {
     Hex,
     HexBlobKind,
     HexUInt,
+    IllegalArgumentError,
     NumericKind,
     OptionalFixedHexBlobKind,
     Quantity,
@@ -21,7 +22,7 @@ import {
     RLPProfiler,
     type RLPValidObject,
     Secp256k1
-} from '@common'; // eslint-disable-next-line @typescript-eslint/no-extraneous-class
+} from '@common';
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 class RLPCodec {
@@ -122,84 +123,95 @@ class RLPCodec {
         | TransactionRequest
         | SignedTransactionRequest
         | SponsoredTransactionRequest {
-        const isSigned =
-            (RLP.ofEncoded(encoded).decoded as unknown[]).length >
-            (RLPCodec.RLP_UNSIGNED_TRANSACTION_PROFILE.kind as []).length;
-        const decoded = RLPProfiler.ofObjectEncoded(
-            encoded,
-            isSigned
-                ? RLPCodec.RLP_SIGNED_TRANSACTION_PROFILE
-                : RLPCodec.RLP_UNSIGNED_TRANSACTION_PROFILE
-        ).object as RLPValidObject;
-        const clauses = (decoded.clauses as []).map(
-            (decodedClause: RLPValidObject) => {
-                return Clause.of({
-                    to: (decodedClause.to as string) ?? null,
-                    value:
-                        typeof decodedClause.value === 'number'
-                            ? Quantity.of(decodedClause.value).toString()
-                            : typeof decodedClause.value === 'string'
-                              ? Quantity.of(
-                                    HexUInt.of(decodedClause.value).bi
-                                ).toString()
-                              : Quantity.PREFIX,
-                    data: (decodedClause.data as string) ?? undefined
-                });
-            }
-        );
-        const isIntendedToBeSponsored = (decoded.reserved as []).length > 0;
-        const transactionRequest = new TransactionRequest({
-            blockRef: HexUInt.of(decoded.blockRef as string),
-            chainTag: decoded.chainTag as number,
-            clauses,
-            dependsOn:
-                decoded.dependsOn === null
-                    ? null
-                    : Hex.of(decoded.dependsOn as string),
-            expiration: decoded.expiration as number,
-            gas: BigInt(decoded.gas as bigint), // Double cast needed else a number is returned.
-            gasPriceCoef: BigInt(decoded.gasPriceCoef as bigint), // Double cast needed else a number is returned.
-            nonce: decoded.nonce as number,
-            isIntendedToBeSponsored
-        });
-        if (isSigned) {
-            const signature = decoded.signature as Uint8Array;
-            const encodedTransactionRequest =
-                RLPCodec.encodeTransactionRequest(transactionRequest);
-            const originSignature = signature.slice(
-                0,
-                Secp256k1.SIGNATURE_LENGTH
+        try {
+            const isSigned =
+                (RLP.ofEncoded(encoded).decoded as unknown[]).length >
+                (RLPCodec.RLP_UNSIGNED_TRANSACTION_PROFILE.kind as []).length;
+            const decoded = RLPProfiler.ofObjectEncoded(
+                encoded,
+                isSigned
+                    ? RLPCodec.RLP_SIGNED_TRANSACTION_PROFILE
+                    : RLPCodec.RLP_UNSIGNED_TRANSACTION_PROFILE
+            ).object as RLPValidObject;
+            const clauses = (decoded.clauses as []).map(
+                (decodedClause: RLPValidObject) => {
+                    return Clause.of({
+                        to: (decodedClause.to as string) ?? null,
+                        value:
+                            typeof decodedClause.value === 'number'
+                                ? Quantity.of(decodedClause.value).toString()
+                                : typeof decodedClause.value === 'string'
+                                  ? Quantity.of(
+                                        HexUInt.of(decodedClause.value).bi
+                                    ).toString()
+                                  : Quantity.PREFIX,
+                        data: (decodedClause.data as string) ?? undefined
+                    });
+                }
             );
-            const originHash = Blake2b256.of(encodedTransactionRequest).bytes;
-            const origin = Address.ofPublicKey(
-                Secp256k1.recover(originHash, originSignature)
-            );
-            const signedTransactionRequest = new SignedTransactionRequest({
-                ...transactionRequest,
-                origin,
-                originSignature,
-                signature
+            const isIntendedToBeSponsored = (decoded.reserved as []).length > 0;
+            const transactionRequest = new TransactionRequest({
+                blockRef: HexUInt.of(decoded.blockRef as string),
+                chainTag: decoded.chainTag as number,
+                clauses,
+                dependsOn:
+                    decoded.dependsOn === null
+                        ? null
+                        : Hex.of(decoded.dependsOn as string),
+                expiration: decoded.expiration as number,
+                gas: BigInt(decoded.gas as bigint), // Double cast needed else a number is returned.
+                gasPriceCoef: BigInt(decoded.gasPriceCoef as bigint), // Double cast needed else a number is returned.
+                nonce: decoded.nonce as number,
+                isIntendedToBeSponsored
             });
-            if (signature.length > Secp256k1.SIGNATURE_LENGTH) {
-                const gasPayerSignature = signature.slice(
-                    Secp256k1.SIGNATURE_LENGTH,
-                    Secp256k1.SIGNATURE_LENGTH * 2
+            if (isSigned) {
+                const signature = decoded.signature as Uint8Array;
+                const encodedTransactionRequest =
+                    RLPCodec.encodeTransactionRequest(transactionRequest);
+                const originSignature = signature.slice(
+                    0,
+                    Secp256k1.SIGNATURE_LENGTH
                 );
-                const gasPayerHash = Blake2b256.of(
-                    nc_utils.concatBytes(originHash, origin.bytes)
+                const originHash = Blake2b256.of(
+                    encodedTransactionRequest
                 ).bytes;
-                const gasPayer = Address.ofPublicKey(
-                    Secp256k1.recover(gasPayerHash, gasPayerSignature)
+                const origin = Address.ofPublicKey(
+                    Secp256k1.recover(originHash, originSignature)
                 );
-                return new SponsoredTransactionRequest({
-                    ...signedTransactionRequest,
-                    gasPayer,
-                    gasPayerSignature
+                const signedTransactionRequest = new SignedTransactionRequest({
+                    ...transactionRequest,
+                    origin,
+                    originSignature,
+                    signature
                 });
+                if (signature.length > Secp256k1.SIGNATURE_LENGTH) {
+                    const gasPayerSignature = signature.slice(
+                        Secp256k1.SIGNATURE_LENGTH,
+                        Secp256k1.SIGNATURE_LENGTH * 2
+                    );
+                    const gasPayerHash = Blake2b256.of(
+                        nc_utils.concatBytes(originHash, origin.bytes)
+                    ).bytes;
+                    const gasPayer = Address.ofPublicKey(
+                        Secp256k1.recover(gasPayerHash, gasPayerSignature)
+                    );
+                    return new SponsoredTransactionRequest({
+                        ...signedTransactionRequest,
+                        gasPayer,
+                        gasPayerSignature
+                    });
+                }
+                return signedTransactionRequest;
             }
-            return signedTransactionRequest;
+            return transactionRequest;
+        } catch (error) {
+            throw new IllegalArgumentError(
+                `${RLPCodec.decode.name}(encoded: Uint8Array)`,
+                'invalid encoded data',
+                { encoded },
+                error as Error
+            );
         }
-        return transactionRequest;
     }
 
     /**

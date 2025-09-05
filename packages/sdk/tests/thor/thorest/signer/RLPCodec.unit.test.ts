@@ -3,6 +3,7 @@ import { Address, HexUInt, Quantity } from '@common/vcdm';
 import { Clause, TransactionRequest } from '@thor/thorest/model';
 import { PrivateKeySigner, RLPCodec } from '@thor/thorest/signer';
 import { TEST_ACCOUNTS } from '../../../fixture';
+import { IllegalArgumentError } from '@common';
 
 const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
 
@@ -26,6 +27,36 @@ describe('RLPCodec', () => {
     );
 
     const mockValue = Quantity.of(1000);
+
+    describe('decode transaction request', () => {
+        test('err <- invalid input', () => {
+            const expected = mockSponsor.sign(
+                mockSigner.sign(
+                    new TransactionRequest({
+                        blockRef: mockBlockRef,
+                        chainTag: 1,
+                        clauses: [
+                            Clause.of({
+                                to: TRANSACTION_RECEIVER.address,
+                                value: mockValue.toString()
+                            })
+                        ],
+                        dependsOn: null,
+                        expiration: 32,
+                        gas: mockGas,
+                        gasPriceCoef: 0n,
+                        nonce: 3,
+                        isIntendedToBeSponsored: true
+                    })
+                )
+            );
+
+            const encoded = RLPCodec.encode(expected).slice(0);
+            expect(() =>
+                RLPCodec.decode(encoded.slice(0, encoded.length / 2))
+            ).toThrow(IllegalArgumentError);
+        });
+    });
 
     describe('encode/decode', () => {
         test('ok <- non-sponsored signed transaction request', () => {

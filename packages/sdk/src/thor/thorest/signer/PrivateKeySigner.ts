@@ -23,7 +23,7 @@ const FQP = 'packages/sdk/src/thor/thorest/signer/PrivateKeySigner.ts!';
  * The class implements the {@link Signer} interface,
  * to sign transaction requests using the provided private key.
  *
- * @remark Call {@link PrivateKeySigner.disponse} method to dispose the private key
+ * @remark Call {@link PrivateKeySigner.dispose} method to dispose the private key
  * when the signer is not needed anymore.
  * This will clear the private key from memory, minimizing the risk of leaking it.
  *
@@ -75,12 +75,12 @@ class PrivateKeySigner implements Signer {
      *
      * @return {void} This method does not return a value.
      *
-     * @remark Call {@link PrivateKeySigner.disponse} method to dispose the private key
+     * @remark Call {@link PrivateKeySigner.dispose} method to dispose the private key
      * when the signer is not needed anymore.
      * This will clear the private key from memory, minimizing the risk of leaking it.
      * After this call this {@link Signer} instance can't be used anymore.
      */
-    public disponse(): void {
+    public dispose(): void {
         if (this.#privateKey !== null) {
             this.#privateKey.fill(0);
         }
@@ -104,7 +104,7 @@ class PrivateKeySigner implements Signer {
     ): SignedTransactionRequest {
         if (this.#privateKey !== null) {
             const hash = Blake2b256.of(
-                RLPCodec.encodeTransactionRequest(transactionRequest)
+                RLPCodec.encode(transactionRequest)
             ).bytes;
             const signature = Secp256k1.sign(hash, this.#privateKey);
             return new SignedTransactionRequest({
@@ -178,11 +178,8 @@ class PrivateKeySigner implements Signer {
             if (signedTransactionRequest.isIntendedToBeSponsored) {
                 const hash = Blake2b256.of(
                     nc_utils.concatBytes(
-                        Blake2b256.of(
-                            RLPCodec.encodeTransactionRequest(
-                                signedTransactionRequest
-                            )
-                        ).bytes,
+                        Blake2b256.of(RLPCodec.encode(signedTransactionRequest))
+                            .bytes,
                         signedTransactionRequest.origin.bytes
                     )
                 ).bytes;
