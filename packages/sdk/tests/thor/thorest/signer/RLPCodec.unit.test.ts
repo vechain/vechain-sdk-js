@@ -10,7 +10,7 @@ import {
     type TransactionBody,
     type TransactionClause
 } from '@thor/thorest/transactions/model';
-import { RLPCodec } from '@thor/thorest/signer';
+import { PrivateKeySigner, RLPCodec } from '@thor/thorest/signer';
 import { TEST_ACCOUNTS } from '../../../fixture';
 
 const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
@@ -61,47 +61,50 @@ describe('RLPCodec', () => {
     );
     const mockGas = 21000n;
 
+    const mockSigner = new PrivateKeySigner(
+        HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
+    );
+
+    const mockSponsor = new PrivateKeySigner(
+        HexUInt.of(TRANSACTION_RECEIVER.privateKey).bytes
+    );
+
     describe('decode', () => {
-        test('ok <- should decode a sponsored unsigned transaction request correctly', () => {
-            // Create a transaction request with clauses
-            const clause = new Clause(
-                Address.of(TRANSACTION_RECEIVER.address),
-                1000n,
-                null,
-                null,
-                null
+        test('ok <- non-sponsored signed transaction request', () => {
+            const expected = mockSigner.sign(
+                new TransactionRequest({
+                    blockRef: mockBlockRef,
+                    chainTag: 1,
+                    clauses: [
+                        Clause.of({
+                            to: TRANSACTION_RECEIVER.address,
+                            value: '1000'
+                        })
+                    ],
+                    dependsOn: null,
+                    expiration: 32,
+                    gas: mockGas,
+                    gasPriceCoef: 0n,
+                    nonce: 3,
+                    isIntendedToBeSponsored: false
+                })
             );
 
-            const expected = new TransactionRequest({
-                blockRef: mockBlockRef,
-                chainTag: 1,
-                clauses: [clause],
-                dependsOn: null,
-                expiration: 32,
-                gas: mockGas,
-                gasPriceCoef: 0n,
-                nonce: 3,
-                isIntendedToBeSponsored: true
-            });
-            const encoded = RLPCodec.encodeTransactionRequest(expected);
+            const encoded = RLPCodec.encode(expected);
             const actual = RLPCodec.decode(encoded);
             expect(actual.toJSON()).toEqual(expected.toJSON());
         });
 
-        test('ok <- should decode a non-sponsored unsigned transaction request correctly', () => {
-            // Create a transaction request with clauses
-            const clause = new Clause(
-                Address.of(TRANSACTION_RECEIVER.address),
-                1000n,
-                null,
-                null,
-                null
-            );
-
+        test('ok <- non-sponsored unsigned transaction request', () => {
             const expected = new TransactionRequest({
                 blockRef: mockBlockRef,
                 chainTag: 1,
-                clauses: [clause],
+                clauses: [
+                    Clause.of({
+                        to: TRANSACTION_RECEIVER.address,
+                        value: '1000'
+                    })
+                ],
                 dependsOn: null,
                 expiration: 32,
                 gas: mockGas,
@@ -109,14 +112,63 @@ describe('RLPCodec', () => {
                 nonce: 3,
                 isIntendedToBeSponsored: false
             });
-            const encoded = RLPCodec.encodeTransactionRequest(expected);
+            const encoded = RLPCodec.encode(expected);
+            const actual = RLPCodec.decode(encoded);
+            expect(actual.toJSON()).toEqual(expected.toJSON());
+        });
+
+        test('ok <- sponsored signed transaction request', () => {
+            const expected = mockSponsor.sign(
+                mockSigner.sign(
+                    new TransactionRequest({
+                        blockRef: mockBlockRef,
+                        chainTag: 1,
+                        clauses: [
+                            Clause.of({
+                                to: TRANSACTION_RECEIVER.address,
+                                value: '1000'
+                            })
+                        ],
+                        dependsOn: null,
+                        expiration: 32,
+                        gas: mockGas,
+                        gasPriceCoef: 0n,
+                        nonce: 3,
+                        isIntendedToBeSponsored: true
+                    })
+                )
+            );
+
+            const encoded = RLPCodec.encode(expected);
+            const actual = RLPCodec.decode(encoded);
+            expect(actual.toJSON()).toEqual(expected.toJSON());
+        });
+
+        test('ok <- sponsored unsigned transaction request', () => {
+            const expected = new TransactionRequest({
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [
+                    Clause.of({
+                        to: TRANSACTION_RECEIVER.address,
+                        value: '1000'
+                    })
+                ],
+                dependsOn: null,
+                expiration: 32,
+                gas: mockGas,
+                gasPriceCoef: 0n,
+                nonce: 3,
+                isIntendedToBeSponsored: true
+            });
+            const encoded = RLPCodec.encode(expected);
             const actual = RLPCodec.decode(encoded);
             expect(actual.toJSON()).toEqual(expected.toJSON());
         });
     });
 
     describe('encodeTransactionRequest', () => {
-        test('ok <- should encode a non-sponsored transaction request correctly', () => {
+        test('ok <- non-sponsored transaction request correctly', () => {
             // Create a simple transaction request
             const txRequest = new TransactionRequest({
                 blockRef: mockBlockRef,
@@ -131,7 +183,7 @@ describe('RLPCodec', () => {
             });
 
             // Call the method
-            const actual = RLPCodec.encodeTransactionRequest(txRequest);
+            const actual = RLPCodec.encode(txRequest);
 
             // Assert actual
             expect(actual.length).toBeGreaterThan(0);
@@ -142,7 +194,7 @@ describe('RLPCodec', () => {
             expect(actual).toEqual(expected);
         });
 
-        test('ok <- should encode a sponsored transaction request correctly', () => {
+        test('ok <- sponsored transaction request correctly', () => {
             // Create a simple sponsored transaction request
             const txRequest = new TransactionRequest({
                 blockRef: mockBlockRef,
@@ -157,7 +209,7 @@ describe('RLPCodec', () => {
             });
 
             // Call the method
-            const actual = RLPCodec.encodeTransactionRequest(txRequest);
+            const actual = RLPCodec.encode(txRequest);
 
             // Assert actual
             expect(actual.length).toBeGreaterThan(0);
@@ -168,7 +220,7 @@ describe('RLPCodec', () => {
             expect(actual).toEqual(expected);
         });
 
-        test('ok <- should handle transaction without clause.data correctly', () => {
+        test('ok <- handle transaction without clause.data correctly', () => {
             // Create a transaction request with clauses
             const clause = new Clause(
                 Address.of(TRANSACTION_RECEIVER.address),
@@ -191,7 +243,7 @@ describe('RLPCodec', () => {
             });
 
             // Call the method
-            const actual = RLPCodec.encodeTransactionRequest(txRequest);
+            const actual = RLPCodec.encode(txRequest);
 
             // Assert actual
             expect(actual.length).toBeGreaterThan(0);
@@ -202,7 +254,7 @@ describe('RLPCodec', () => {
             expect(actual).toEqual(expected);
         });
 
-        test('ok <- should handle transaction without clause.to correctly', () => {
+        test('ok <- handle transaction without clause.to correctly', () => {
             // Create a transaction request with clauses
             const clause = new Clause(
                 null,
@@ -225,7 +277,7 @@ describe('RLPCodec', () => {
             });
 
             // Call the method
-            const actual = RLPCodec.encodeTransactionRequest(txRequest);
+            const actual = RLPCodec.encode(txRequest);
 
             // Assert actual
             expect(actual.length).toBeGreaterThan(0);
@@ -236,7 +288,7 @@ describe('RLPCodec', () => {
             expect(actual).toEqual(expected);
         });
 
-        test('ok <- should handle transaction without optional clauses correctly', () => {
+        test('ok <- handle transaction without optional clauses correctly', () => {
             // Create a transaction request with clauses
             const clause = new Clause(
                 Address.of(TRANSACTION_RECEIVER.address),
@@ -259,7 +311,7 @@ describe('RLPCodec', () => {
             });
 
             // Call the method
-            const actual = RLPCodec.encodeTransactionRequest(txRequest);
+            const actual = RLPCodec.encode(txRequest);
 
             // Assert actual
             expect(actual.length).toBeGreaterThan(0);
@@ -270,7 +322,7 @@ describe('RLPCodec', () => {
             expect(actual).toEqual(expected);
         });
 
-        test('ok <- should handle transaction with optional clauses correctly', () => {
+        test('ok <- handle transaction with optional clauses correctly', () => {
             // Create a transaction request with clauses
             const clause = new Clause(
                 Address.of(TRANSACTION_RECEIVER.address),
@@ -293,7 +345,7 @@ describe('RLPCodec', () => {
             });
 
             // Call the method
-            const actual = RLPCodec.encodeTransactionRequest(txRequest);
+            const actual = RLPCodec.encode(txRequest);
 
             // Assert actual
             expect(actual.length).toBeGreaterThan(0);
@@ -304,7 +356,7 @@ describe('RLPCodec', () => {
             expect(actual).toEqual(expected);
         });
 
-        test('ok <- should handle transaction with dependsOn correctly', () => {
+        test('ok <- handle transaction with dependsOn correctly', () => {
             // Create a transaction request with dependsOn
             const txRequest = new TransactionRequest({
                 blockRef: mockBlockRef,
@@ -319,7 +371,7 @@ describe('RLPCodec', () => {
             });
 
             // Call the method
-            const actual = RLPCodec.encodeTransactionRequest(txRequest);
+            const actual = RLPCodec.encode(txRequest);
 
             // Assert actual
             expect(actual.length).toBeGreaterThan(0);
@@ -332,7 +384,7 @@ describe('RLPCodec', () => {
     });
 
     describe('encodeSignedTransactionRequest', () => {
-        test('ok <- should encode a non-sponsored signed transaction request correctly', () => {
+        test('ok <- non-sponsored signed transaction request correctly', () => {
             const clause = new Clause(
                 Address.of(TRANSACTION_RECEIVER.address),
                 1000n,
@@ -366,8 +418,7 @@ describe('RLPCodec', () => {
             });
 
             // Call the method
-            const actual =
-                RLPCodec.encodeSignedTransactionRequest(signedTxRequest);
+            const actual = RLPCodec.encode(signedTxRequest);
 
             // Assert actual
             expect(actual.length).toBeGreaterThan(0);
@@ -376,7 +427,7 @@ describe('RLPCodec', () => {
             expect(actual).toEqual(signedTx.encode(true));
         });
 
-        test('ok <- should encode a sponsored signed transaction request correctly', () => {
+        test('ok <- sponsored signed transaction request correctly', () => {
             const clause = new Clause(
                 Address.of(TRANSACTION_RECEIVER.address),
                 1000n,
@@ -413,8 +464,7 @@ describe('RLPCodec', () => {
             });
 
             // Call the method
-            const actual =
-                RLPCodec.encodeSignedTransactionRequest(signedTxRequest);
+            const actual = RLPCodec.encode(signedTxRequest);
 
             // Assert actual
             expect(actual.length).toBeGreaterThan(0);

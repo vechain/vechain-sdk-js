@@ -1,9 +1,11 @@
 import {
     Clause,
-    type SignedTransactionRequest,
+    SignedTransactionRequest,
     TransactionRequest
 } from '@thor/thorest/model';
 import {
+    Address,
+    Blake2b256,
     BufferKind,
     CompactFixedHexBlobKind,
     Hex,
@@ -15,7 +17,8 @@ import {
     RLP,
     type RLPProfile,
     RLPProfiler,
-    type RLPValidObject
+    type RLPValidObject,
+    Secp256k1
 } from '@common';
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
@@ -103,7 +106,7 @@ class RLPCodec {
     public static decode(encoded: Uint8Array): TransactionRequest {
         const isSigned =
             (RLP.ofEncoded(encoded).decoded as unknown[]).length >
-            (RLPCodec.RLP_SIGNED_TRANSACTION_PROFILE.kind as []).length;
+            (RLPCodec.RLP_UNSIGNED_TRANSACTION_PROFILE.kind as []).length;
         const decoded = RLPProfiler.ofObjectEncoded(
             encoded,
             isSigned
@@ -141,7 +144,34 @@ class RLPCodec {
             nonce: decoded.nonce as number,
             isIntendedToBeSponsored
         });
+        if (isSigned) {
+            const signature = decoded.signature as Uint8Array;
+            const encodedTransactionRequest =
+                RLPCodec.encodeTransactionRequest(transactionRequest);
+            const originSignature = signature;
+            const origin = Address.ofPublicKey(
+                Secp256k1.recover(
+                    Blake2b256.of(encodedTransactionRequest).bytes,
+                    originSignature
+                )
+            );
+            return new SignedTransactionRequest({
+                ...transactionRequest,
+                origin,
+                originSignature,
+                signature
+            });
+        }
         return transactionRequest;
+    }
+
+    public static encode(
+        transactionRequest: TransactionRequest | SignedTransactionRequest
+    ): Uint8Array {
+        if (transactionRequest instanceof SignedTransactionRequest) {
+            return RLPCodec.encodeSignedTransactionRequest(transactionRequest);
+        }
+        return RLPCodec.encodeTransactionRequest(transactionRequest);
     }
 
     /**
@@ -150,7 +180,7 @@ class RLPCodec {
      * @param {SignedTransactionRequest} transactionRequest - The signed transaction request object containing transaction details.
      * @return {Uint8Array} The encoded transaction request as a Uint8Array.
      */
-    public static encodeSignedTransactionRequest(
+    private static encodeSignedTransactionRequest(
         transactionRequest: SignedTransactionRequest
     ): Uint8Array {
         return RLPCodec.encodeSignedBodyField(
@@ -170,7 +200,7 @@ class RLPCodec {
      * @param {TransactionRequest} transactionRequest - The transaction request object to encode.
      * @return {Uint8Array} The encoded transaction request as a byte array.
      */
-    public static encodeTransactionRequest(
+    private static encodeTransactionRequest(
         transactionRequest: TransactionRequest
     ): Uint8Array {
         return RLPCodec.encodeUnsignedBodyField({

@@ -69,7 +69,7 @@ describe('PrivateKeySigner', () => {
 
         jest.spyOn(Secp256k1, 'sign').mockReturnValue(mockSignature);
 
-        jest.spyOn(RLPCodec, 'encodeTransactionRequest').mockReturnValue(
+        jest.spyOn(RLPCodec, 'encode').mockReturnValue(
             new Uint8Array(10).fill(4)
         );
     });
@@ -164,9 +164,7 @@ describe('PrivateKeySigner', () => {
 
             expect(signedTx).toBeInstanceOf(SignedTransactionRequest);
             // eslint-disable-next-line @typescript-eslint/unbound-method
-            expect(RLPCodec.encodeTransactionRequest).toHaveBeenCalledWith(
-                txRequest
-            );
+            expect(RLPCodec.encode).toHaveBeenCalledWith(txRequest);
             // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(Blake2b256.of).toHaveBeenCalled();
             // eslint-disable-next-line @typescript-eslint/unbound-method
