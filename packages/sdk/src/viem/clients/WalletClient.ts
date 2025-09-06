@@ -167,7 +167,7 @@ class WalletClient extends PublicClient {
                     // New reserved field.
                     reserved: tx.encodeReservedField()
                 },
-                RLPCodec.RLP_UNSIGNED_TRANSACTION_PROFILE
+                Transaction.RLP_UNSIGNED_TRANSACTION_PROFILE
             ).encoded;
             const txHash = Blake2b256.of(encodedTx).bytes;
             const signature = await WalletClient.signHash(txHash, this.account);

@@ -224,7 +224,9 @@ class Transaction {
                     this.getTransactionHash(this.origin).bytes,
                     this.gasPayerSignature
                 );
-                return Address.ofPublicKey(gasPayerPublicKey);
+                const a = Address.ofPublicKey(gasPayerPublicKey);
+                console.log('E ' + a.toString());
+                return a;
             }
             throw new NoSuchElementError(
                 `${FQP}<Transaction>.gasPayer(): Address`,

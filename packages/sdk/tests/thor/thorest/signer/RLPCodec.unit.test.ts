@@ -1,11 +1,47 @@
 import { describe, expect, test } from '@jest/globals';
-import { Address, HexUInt, Quantity } from '@common/vcdm';
-import { Clause, TransactionRequest } from '@thor/thorest/model';
+import { Address, Blake2b256, HexUInt, Quantity } from '@common/vcdm';
+import {
+    Clause,
+    type SponsoredTransactionRequest,
+    Transaction,
+    type TransactionBody,
+    type TransactionClause,
+    TransactionRequest
+} from '@thor/thorest/model';
 import { PrivateKeySigner, RLPCodec } from '@thor/thorest/signer';
 import { TEST_ACCOUNTS } from '../../../fixture';
-import { IllegalArgumentError } from '@common';
+import { IllegalArgumentError, Secp256k1 } from '@common';
+import * as nc_utils from '@noble/curves/abstract/utils';
 
 const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
+
+// Temporary until Transaction exists.
+function newTransactionBodyFromTransactionRequest(
+    txRequest: TransactionRequest
+): TransactionBody {
+    return {
+        chainTag: txRequest.chainTag,
+        blockRef: txRequest.blockRef.toString(),
+        dependsOn: txRequest.dependsOn?.toString() ?? null,
+        expiration: txRequest.expiration,
+        clauses: txRequest.clauses.map((clause: Clause): TransactionClause => {
+            return {
+                to: clause.to?.toString() ?? null,
+                value: clause.value,
+                data: clause.data?.toString() ?? '0x',
+                comment: clause.comment ?? undefined,
+                abi: clause.abi ?? undefined
+            } satisfies TransactionClause;
+        }),
+        gasPriceCoef: Number(txRequest.gasPriceCoef),
+        gas: Number(txRequest.gas),
+        nonce: txRequest.nonce,
+        reserved: {
+            features: txRequest.isIntendedToBeSponsored ? 1 : 0,
+            unused: []
+        }
+    } satisfies TransactionBody;
+}
 
 /**
  * @group unit/thor/thorest/signer
@@ -18,11 +54,11 @@ describe('RLPCodec', () => {
     );
     const mockGas = 21000n;
 
-    const mockSigner = new PrivateKeySigner(
+    const mockOrigin = new PrivateKeySigner(
         HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
     );
 
-    const mockSponsor = new PrivateKeySigner(
+    const mockGasPayer = new PrivateKeySigner(
         HexUInt.of(TRANSACTION_RECEIVER.privateKey).bytes
     );
 
@@ -30,8 +66,8 @@ describe('RLPCodec', () => {
 
     describe('decode transaction request', () => {
         test('err <- invalid input', () => {
-            const expected = mockSponsor.sign(
-                mockSigner.sign(
+            const expected = mockGasPayer.sign(
+                mockOrigin.sign(
                     new TransactionRequest({
                         blockRef: mockBlockRef,
                         chainTag: 1,
@@ -60,7 +96,7 @@ describe('RLPCodec', () => {
 
     describe('encode/decode', () => {
         test('ok <- non-sponsored signed transaction request', () => {
-            const expected = mockSigner.sign(
+            const expected = mockOrigin.sign(
                 new TransactionRequest({
                     blockRef: mockBlockRef,
                     chainTag: 1,
@@ -78,7 +114,9 @@ describe('RLPCodec', () => {
                     isIntendedToBeSponsored: false
                 })
             );
-
+            expect(expected.origin.toString()).toEqual(
+                mockOrigin.address.toString()
+            );
             const encoded = RLPCodec.encode(expected);
             const actual = RLPCodec.decode(encoded);
             expect(actual.toJSON()).toEqual(expected.toJSON());
@@ -107,30 +145,57 @@ describe('RLPCodec', () => {
         });
 
         test('ok <- sponsored signed transaction request', () => {
-            const expected = mockSponsor.sign(
-                mockSigner.sign(
-                    new TransactionRequest({
-                        blockRef: mockBlockRef,
-                        chainTag: 1,
-                        clauses: [
-                            Clause.of({
-                                to: TRANSACTION_RECEIVER.address,
-                                value: mockValue.toString()
-                            })
-                        ],
-                        dependsOn: null,
-                        expiration: 32,
-                        gas: mockGas,
-                        gasPriceCoef: 0n,
-                        nonce: 3,
-                        isIntendedToBeSponsored: true
+            const txRequest = new TransactionRequest({
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [
+                    Clause.of({
+                        to: TRANSACTION_RECEIVER.address,
+                        value: mockValue.toString()
                     })
-                )
+                ],
+                dependsOn: null,
+                expiration: 32,
+                gas: mockGas,
+                gasPriceCoef: 0n,
+                nonce: 3,
+                isIntendedToBeSponsored: true
+            });
+            const expected = mockGasPayer.sign(
+                mockOrigin.sign(txRequest)
+            ) as SponsoredTransactionRequest;
+            expect(expected.origin.toString()).toEqual(
+                mockOrigin.address.toString()
+            );
+            expect(expected.gasPayer.toString()).toEqual(
+                mockGasPayer.address.toString()
             );
 
-            const encoded = RLPCodec.encode(expected);
-            const actual = RLPCodec.decode(encoded);
-            expect(actual.toJSON()).toEqual(expected.toJSON());
+            const tx = Transaction.of(
+                newTransactionBodyFromTransactionRequest(txRequest)
+            ).signAsSenderAndGasPayer(
+                HexUInt.of(TRANSACTION_SENDER.privateKey).bytes,
+                HexUInt.of(TRANSACTION_RECEIVER.privateKey).bytes
+            );
+
+            expect(expected.originSignature).toEqual(tx.senderSignature);
+
+            expect(expected.origin.toString()).toEqual(tx.origin.toString());
+            expect(expected.gasPayer.toString()).toEqual(
+                tx.gasPayer.toString()
+            );
+            const originHash = Blake2b256.of(RLPCodec.encode(txRequest));
+            const sponsorHash = Blake2b256.of(
+                nc_utils.concatBytes(originHash.bytes, expected.origin.bytes)
+            );
+            const gasPayerPublicKey = Secp256k1.recover(
+                sponsorHash.bytes,
+                tx.gasPayerSignature as Uint8Array
+            );
+
+            const a = Address.ofPublicKey(gasPayerPublicKey);
+            console.log('A ' + a.toString());
+            expect(a.toString()).toEqual(expected.gasPayer.toString());
         });
 
         test('ok <- sponsored unsigned transaction request', () => {
