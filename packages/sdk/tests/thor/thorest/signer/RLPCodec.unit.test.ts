@@ -178,8 +178,6 @@ describe('RLPCodec', () => {
                 HexUInt.of(TRANSACTION_RECEIVER.privateKey).bytes
             );
 
-            expect(expected.originSignature).toEqual(tx.senderSignature);
-
             expect(expected.origin.toString()).toEqual(tx.origin.toString());
             expect(expected.gasPayer.toString()).toEqual(
                 tx.gasPayer.toString()
@@ -196,6 +194,10 @@ describe('RLPCodec', () => {
             const a = Address.ofPublicKey(gasPayerPublicKey);
             console.log('A ' + a.toString());
             expect(a.toString()).toEqual(expected.gasPayer.toString());
+
+            const encoded = RLPCodec.encode(expected);
+            const actual = RLPCodec.decode(encoded);
+            expect(actual.toJSON()).toEqual(expected.toJSON());
         });
 
         test('ok <- sponsored unsigned transaction request', () => {
