@@ -1,47 +1,15 @@
 import { describe, expect, test } from '@jest/globals';
-import { Address, Blake2b256, HexUInt, Quantity } from '@common/vcdm';
+import { Address, HexUInt, Quantity } from '@common/vcdm';
 import {
     Clause,
     type SponsoredTransactionRequest,
-    Transaction,
-    type TransactionBody,
-    type TransactionClause,
     TransactionRequest
 } from '@thor/thorest/model';
 import { PrivateKeySigner, RLPCodec } from '@thor/thorest/signer';
 import { TEST_ACCOUNTS } from '../../../fixture';
-import { IllegalArgumentError, Secp256k1 } from '@common';
-import * as nc_utils from '@noble/curves/abstract/utils';
+import { IllegalArgumentError } from '@common';
 
 const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
-
-// Temporary until Transaction exists.
-function newTransactionBodyFromTransactionRequest(
-    txRequest: TransactionRequest
-): TransactionBody {
-    return {
-        chainTag: txRequest.chainTag,
-        blockRef: txRequest.blockRef.toString(),
-        dependsOn: txRequest.dependsOn?.toString() ?? null,
-        expiration: txRequest.expiration,
-        clauses: txRequest.clauses.map((clause: Clause): TransactionClause => {
-            return {
-                to: clause.to?.toString() ?? null,
-                value: clause.value,
-                data: clause.data?.toString() ?? '0x',
-                comment: clause.comment ?? undefined,
-                abi: clause.abi ?? undefined
-            } satisfies TransactionClause;
-        }),
-        gasPriceCoef: Number(txRequest.gasPriceCoef),
-        gas: Number(txRequest.gas),
-        nonce: txRequest.nonce,
-        reserved: {
-            features: txRequest.isIntendedToBeSponsored ? 1 : 0,
-            unused: []
-        }
-    } satisfies TransactionBody;
-}
 
 /**
  * @group unit/thor/thorest/signer
@@ -170,30 +138,6 @@ describe('RLPCodec', () => {
             expect(expected.gasPayer.toString()).toEqual(
                 mockGasPayer.address.toString()
             );
-
-            const tx = Transaction.of(
-                newTransactionBodyFromTransactionRequest(txRequest)
-            ).signAsSenderAndGasPayer(
-                HexUInt.of(TRANSACTION_SENDER.privateKey).bytes,
-                HexUInt.of(TRANSACTION_RECEIVER.privateKey).bytes
-            );
-
-            expect(expected.origin.toString()).toEqual(tx.origin.toString());
-            expect(expected.gasPayer.toString()).toEqual(
-                tx.gasPayer.toString()
-            );
-            const originHash = Blake2b256.of(RLPCodec.encode(txRequest));
-            const sponsorHash = Blake2b256.of(
-                nc_utils.concatBytes(originHash.bytes, expected.origin.bytes)
-            );
-            const gasPayerPublicKey = Secp256k1.recover(
-                sponsorHash.bytes,
-                tx.gasPayerSignature as Uint8Array
-            );
-
-            const a = Address.ofPublicKey(gasPayerPublicKey);
-            console.log('A ' + a.toString());
-            expect(a.toString()).toEqual(expected.gasPayer.toString());
 
             const encoded = RLPCodec.encode(expected);
             const actual = RLPCodec.decode(encoded);
