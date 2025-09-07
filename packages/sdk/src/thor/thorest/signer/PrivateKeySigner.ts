@@ -1,7 +1,6 @@
 import {
     Address,
     Blake2b256,
-    HexUInt,
     InvalidPrivateKeyError,
     Secp256k1,
     UnsupportedOperationError
@@ -109,16 +108,7 @@ class PrivateKeySigner implements Signer {
             ).bytes;
             const signature = Secp256k1.sign(hash, this.privateKey);
             return new SignedTransactionRequest({
-                blockRef: transactionRequest.blockRef,
-                chainTag: transactionRequest.chainTag,
-                clauses: transactionRequest.clauses,
-                dependsOn: transactionRequest.dependsOn,
-                expiration: transactionRequest.expiration,
-                gas: transactionRequest.gas,
-                gasPriceCoef: transactionRequest.gasPriceCoef,
-                nonce: transactionRequest.nonce,
-                isIntendedToBeSponsored:
-                    transactionRequest.isIntendedToBeSponsored,
+                ...transactionRequest,
                 origin: this.address,
                 originSignature: signature,
                 signature
@@ -224,12 +214,12 @@ class PrivateKeySigner implements Signer {
                 });
             }
             throw new UnsupportedOperationError(
-                `${FQP}PrivateKeySigner.sign(signedTransactionRequest: SignedTransactionRequest): DelegatedSignedTransactionRequest`,
+                `${FQP}PrivateKeySigner.sign(signedTransactionRequest: SignedTransactionRequest): SponsoredTransactionRequest`,
                 'transaction request is not intended to be sponsored'
             );
         }
         throw new InvalidPrivateKeyError(
-            `${FQP}PrivateKeySigner.sign(signedTransactionRequest: SignedTransactionRequest): DelegatedSignedTransactionRequest`,
+            `${FQP}PrivateKeySigner.sign(signedTransactionRequest: SignedTransactionRequest): SponsoredTransactionRequest`,
             'no private key'
         );
     }

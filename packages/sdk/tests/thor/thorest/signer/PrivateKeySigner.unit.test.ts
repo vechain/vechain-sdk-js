@@ -198,7 +198,7 @@ describe('PrivateKeySigner', () => {
             );
         });
 
-        test('ok <- sponsor a signed transaction request', () => {
+        test('ok <- sponsor a sponsored signed transaction request', () => {
             const originSigner = new PrivateKeySigner(
                 new Uint8Array(32).fill(5)
             );

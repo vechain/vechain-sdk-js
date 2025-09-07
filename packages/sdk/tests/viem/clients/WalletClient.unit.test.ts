@@ -1,10 +1,5 @@
-import type { RegularBlockResponseJSON } from '@thor/thorest/json';
-import {
-    ClauseBuilder,
-    Transaction,
-    type TransactionBody
-} from '@thor/thorest';
-import { Address, BlockRef, Hex, HexUInt } from '@common/vcdm';
+import { Clause, TransactionRequest } from '@thor/thorest';
+import { type Address, BlockRef, HexUInt, Quantity } from '@common/vcdm';
 import { SOLO_NETWORK } from '@thor/utils';
 import { TEST_ACCOUNTS } from '../../fixture';
 import { privateKeyToAccount } from 'viem/accounts';
@@ -14,7 +9,7 @@ import {
     type PrepareTransactionRequestRequest
 } from '@viem/clients';
 import { mockHttpClient } from '../../MockHttpClient';
-import { log } from '@common/logging';
+import { PrivateKeySigner, RLPCodec } from '@thor/thorest/signer';
 
 const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
 
@@ -24,48 +19,35 @@ const MOCK_URL = new URL('https://mock-url');
  * @group unit/clients
  */
 describe('WalletClient UNIT tests', () => {
+    const mockBlockRef = BlockRef.of('0x1234567890abcdef');
+    const mockGas = 21000n;
+    const mockValue = Quantity.of(1000);
+
+    const mockOriginSigner = new PrivateKeySigner(
+        HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
+    );
+
+    const mockGasPayerSigner = new PrivateKeySigner(
+        HexUInt.of(TRANSACTION_RECEIVER.privateKey).bytes
+    );
+
     describe('prepareTransactionRequest', () => {
         test('ok <- thor and viem equivalence', () => {
-            const latestBlock = {
-                number: 88,
-                id: '0x00000058f9f240032e073f4a078c5f0f3e04ae7272e4550de41f10723d6f8b2e',
-                size: 364,
-                parentID:
-                    '0x000000577127e6426fbe5a303755ba64c167f173bb4e9b60156a62bced1551d8',
-                timestamp: 1749224420,
-                gasLimit: '150000000',
-                beneficiary: '0xf077b491b355e64048ce21e3a6fc4751eeea77fa',
-                gasUsed: '0',
-                totalScore: 88,
-                txsRoot:
-                    '0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0',
-                txsFeatures: 1,
-                stateRoot:
-                    '0xe030c534b66bd1c1b156ada9508bd639cdcbeb7ea1e932f4fd998857b3c4f30a',
-                receiptsRoot:
-                    '0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0',
-                com: false,
-                signer: '0xf077b491b355e64048ce21e3a6fc4751eeea77fa',
-                isTrunk: true,
-                isFinalized: false,
-                baseFeePerGas: '0x9184e72a000',
-                transactions: []
-            } satisfies RegularBlockResponseJSON;
-            const transferClause = ClauseBuilder.transferVET(
-                Address.of(TRANSACTION_RECEIVER.address),
-                1n
-            );
-            const txBody: TransactionBody = {
+            const expected = new TransactionRequest({
+                blockRef: mockBlockRef,
                 chainTag: SOLO_NETWORK.chainTag,
-                blockRef: BlockRef.of(latestBlock.id).toString(),
-                expiration: 32,
-                clauses: [transferClause],
-                gasPriceCoef: 0,
-                gas: 100000,
+                clauses: [
+                    Clause.of({
+                        to: TRANSACTION_RECEIVER.address,
+                        value: mockValue.toString()
+                    })
+                ],
                 dependsOn: null,
-                nonce: 8
-            };
-            const expected = Transaction.of(txBody);
+                expiration: 32,
+                gas: mockGas,
+                gasPriceCoef: 0n,
+                nonce: 3
+            });
 
             const account = privateKeyToAccount(
                 `0x${TRANSACTION_SENDER.privateKey}`
@@ -76,90 +58,129 @@ describe('WalletClient UNIT tests', () => {
                 account
             });
             const request: PrepareTransactionRequestRequest = {
-                to: Address.of(transferClause.to as string),
-                value: Hex.of(transferClause.value),
-                blockRef: Hex.of(txBody.blockRef),
-                chainTag: txBody.chainTag,
-                expiration: txBody.expiration,
-                gas: txBody.gas as number,
-                nonce: txBody.nonce,
-                gasPriceCoef: 0
+                to: expected.clauses[0].to as Address,
+                value: HexUInt.of(expected.clauses[0].value),
+                blockRef: expected.blockRef,
+                chainTag: expected.chainTag,
+                expiration: expected.expiration,
+                gas: HexUInt.of(expected.gas),
+                nonce: expected.nonce,
+                gasPriceCoef: Number(expected.gasPriceCoef)
             } satisfies PrepareTransactionRequestRequest;
             const actual = walletClient.prepareTransactionRequest(request);
-            expect(actual.encoded).toEqual(expected.encoded);
+            expect(actual.toJSON()).toEqual(expected.toJSON());
         });
     });
 
     describe('signTransaction', () => {
-        test('ok <- thor and viem equivalence', async () => {
-            const latestBlock = {
-                number: 88,
-                id: '0x00000058f9f240032e073f4a078c5f0f3e04ae7272e4550de41f10723d6f8b2e',
-                size: 364,
-                parentID:
-                    '0x000000577127e6426fbe5a303755ba64c167f173bb4e9b60156a62bced1551d8',
-                timestamp: 1749224420,
-                gasLimit: '150000000',
-                beneficiary: '0xf077b491b355e64048ce21e3a6fc4751eeea77fa',
-                gasUsed: '0',
-                totalScore: 88,
-                txsRoot:
-                    '0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0',
-                txsFeatures: 1,
-                stateRoot:
-                    '0xe030c534b66bd1c1b156ada9508bd639cdcbeb7ea1e932f4fd998857b3c4f30a',
-                receiptsRoot:
-                    '0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0',
-                com: false,
-                signer: '0xf077b491b355e64048ce21e3a6fc4751eeea77fa',
-                isTrunk: true,
-                isFinalized: false,
-                baseFeePerGas: '0x9184e72a000',
-                transactions: []
-            } satisfies RegularBlockResponseJSON;
-            const transferClause = ClauseBuilder.transferVET(
-                Address.of(TRANSACTION_RECEIVER.address),
-                1n
-            );
-            const txBody: TransactionBody = {
+        test('ok <- sign a not-sponsored unsigned transaction request', async () => {
+            const txRequest = new TransactionRequest({
+                blockRef: mockBlockRef,
                 chainTag: SOLO_NETWORK.chainTag,
-                blockRef: latestBlock.id.toString().slice(0, 18),
-                expiration: 32,
-                clauses: [transferClause],
-                gasPriceCoef: 0,
-                gas: 100000,
+                clauses: [
+                    Clause.of({
+                        to: TRANSACTION_RECEIVER.address,
+                        value: mockValue.toString()
+                    })
+                ],
                 dependsOn: null,
-                nonce: 8
-            };
-
-            const signedTx = Transaction.of(txBody).sign(
-                HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
-            );
-            const thorSigned = HexUInt.of(signedTx.encoded);
-            log({
-                verbosity: 'debug',
-                message: 'thorSigned',
-                source: 'WalletClient.unit.test',
-                context: { thorSigned: thorSigned.toString() }
+                expiration: 32,
+                gas: mockGas,
+                gasPriceCoef: 0n,
+                nonce: 3
             });
-
-            const account = privateKeyToAccount(
+            const expected = mockOriginSigner.sign(txRequest);
+            const originAccount = privateKeyToAccount(
                 `0x${TRANSACTION_SENDER.privateKey}`
             );
-            const walletClient = createWalletClient({
+            const originWallet = createWalletClient({
                 network: MOCK_URL,
                 transport: mockHttpClient({}, 'post'),
-                account
+                account: originAccount
             });
-            const tx = Transaction.of(txBody);
-            const signedViem = await walletClient.signTransaction(tx);
-            log({
-                verbosity: 'debug',
-                message: 'signedViem',
-                source: 'WalletClient.unit.test',
-                context: { signedViem: signedViem.toString() }
+            const encoded = await originWallet.signTransaction(txRequest);
+            const actual = RLPCodec.decode(encoded.bytes);
+            expect(actual.toJSON()).toEqual(expected.toJSON());
+        });
+
+        test('ok <- sign a sponsored unsigned transaction request', async () => {
+            const txRequest = new TransactionRequest({
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [
+                    Clause.of({
+                        to: TRANSACTION_RECEIVER.address,
+                        value: mockValue.toString()
+                    })
+                ],
+                dependsOn: null,
+                expiration: 32,
+                gas: mockGas,
+                gasPriceCoef: 0n,
+                nonce: 3,
+                isIntendedToBeSponsored: true
             });
-            expect(signedViem.toString()).toEqual(thorSigned.toString());
+            const expected = mockOriginSigner.sign(txRequest);
+
+            const originAccount = privateKeyToAccount(
+                `0x${TRANSACTION_SENDER.privateKey}`
+            );
+            const originWallet = createWalletClient({
+                network: MOCK_URL,
+                transport: mockHttpClient({}, 'post'),
+                account: originAccount
+            });
+            const actual = RLPCodec.decode(
+                (await originWallet.signTransaction(txRequest)).bytes
+            );
+            expect(actual.toJSON()).toEqual(expected.toJSON());
+        });
+
+        test('ok <- sponsor a sponsored signed transaction request', async () => {
+            const txRequest = new TransactionRequest({
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [
+                    Clause.of({
+                        to: TRANSACTION_RECEIVER.address,
+                        value: mockValue.toString()
+                    })
+                ],
+                dependsOn: null,
+                expiration: 32,
+                gas: mockGas,
+                gasPriceCoef: 0n,
+                nonce: 3,
+                isIntendedToBeSponsored: true
+            });
+            const expected = mockGasPayerSigner.sign(
+                mockOriginSigner.sign(txRequest)
+            );
+
+            const originAccount = privateKeyToAccount(
+                `0x${TRANSACTION_SENDER.privateKey}`
+            );
+            const originWallet = createWalletClient({
+                network: MOCK_URL,
+                transport: mockHttpClient({}, 'post'),
+                account: originAccount
+            });
+            const signedTxRequest = RLPCodec.decode(
+                (await originWallet.signTransaction(txRequest)).bytes
+            );
+
+            const gasPayerAccount = privateKeyToAccount(
+                `0x${TRANSACTION_RECEIVER.privateKey}`
+            );
+            const gasPayerWallet = createWalletClient({
+                network: MOCK_URL,
+                transport: mockHttpClient({}, 'post'),
+                account: gasPayerAccount
+            });
+            const actual = RLPCodec.decode(
+                (await gasPayerWallet.signTransaction(signedTxRequest)).bytes
+            );
+            expect(actual.toJSON()).toEqual(expected.toJSON());
         });
     });
 });
