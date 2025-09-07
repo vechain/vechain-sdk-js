@@ -11,7 +11,7 @@ import {
 import { Address, Blake2b256, Hex, HexInt, HexUInt } from '@common/vcdm';
 import { FetchHttpClient, type HttpClient } from '@common/http';
 import {
-    InvalidPrivateKeyError,
+    IllegalArgumentError,
     UnsupportedOperationError
 } from '@common/errors';
 import { PublicClient, type PublicClientConfig } from './PublicClient';
@@ -278,7 +278,7 @@ class WalletClient extends PublicClient {
      *        Must have the `isIntendedToBeSponsored` flag set to true.
      * @param {Account} account - The account object providing the gas payer's private key for signing the transaction.
      * @return {Promise<Hex>} A Promise that resolves to the hex-encoded representation of the sponsored transaction request.
-     * @throws {InvalidPrivateKeyError} If no private key is available to complete the process.
+     * @throws {IllegalArgumentError} If the transaction request is not intended to be sponsored.
      */
     private static async sponsorTransactionRequest(
         signedTransactionRequest: SignedTransactionRequest,
@@ -334,9 +334,9 @@ class WalletClient extends PublicClient {
             );
             return HexUInt.of(RLPCodec.encode(sponsoredTransactionRequest));
         }
-        throw new InvalidPrivateKeyError(
+        throw new IllegalArgumentError(
             `${FQP}WalletClient.signTransaction(signedTransactionRequest: SignedTransactionRequest): Hex`,
-            'no private key'
+            'not intended to be sponsored'
         );
     }
 }
