@@ -5,7 +5,7 @@ import { IllegalArgumentError } from '@common/errors';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/sdk/src/thor/blocks/XEvent.ts!';
+const FQP = 'packages/sdk/src/thor/thorest/model/Event.ts!';
 
 /**
  * [Event](http://localhost:8669/doc/stoplight-ui/#/schemas/Event)
@@ -25,7 +25,7 @@ class Event {
     /**
      * The data associated with the event.
      */
-    readonly data: HexUInt;
+    readonly data: Hex;
 
     /**
      * Constructs an instance of the class using the provided JSON object.

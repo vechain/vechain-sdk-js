@@ -1,11 +1,12 @@
-import { TxMeta, Tx } from '@thor/thorest/transactions/model';
+import { Tx, TxMeta } from '@thor/thorest/transactions/model';
 import { type GetTxResponseJSON } from '@thor/thorest/json';
 import { IllegalArgumentError } from '@common/errors';
 
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/sdk/src/thor/transactions/GetTxResponse.ts!';
+const FQP =
+    'packages/sdk/src/thor/thorest/transactions/response/GetTxResponse.ts!';
 
 class GetTxResponse extends Tx {
     /**

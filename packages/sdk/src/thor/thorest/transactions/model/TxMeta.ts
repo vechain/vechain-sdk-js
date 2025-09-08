@@ -5,7 +5,7 @@ import { IllegalArgumentError } from '@common/errors';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/sdk/src/thor/model/TxMeta.ts!';
+const FQP = 'packages/sdk/src/thor/thorest/transactions/model/TxMeta.ts!';
 
 /**
  * [TxMeta](http://localhost:8669/doc/stoplight-ui/#/schemas/TxMeta)

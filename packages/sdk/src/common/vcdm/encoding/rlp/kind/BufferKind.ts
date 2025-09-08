@@ -9,7 +9,7 @@ import { InvalidEncodingError } from '@common/errors';
 /**
  * Full Qualified Path
  */
-const FQP = 'vcdm.encoding.rlp.kind.BufferKind!';
+const FQP = 'packages/sdk/src/common/vcdm/encoding/rlp/helpers/BufferKind!';
 
 /**
  * Represents a scalar kind with Buffer functionality.

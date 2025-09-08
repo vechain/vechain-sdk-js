@@ -6,7 +6,8 @@ import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/sdk/src/thor/node/RetrieveConnectedPeers.ts!';
+const FQP =
+    'packages/sdk/src/thor/thorest/node/methods/GetTxPoolStatus.ts/RetrieveConnectedPeers.ts!';
 
 /**
  * [Retrieve connected peers](http://localhost:8669/doc/stoplight-ui/#/paths/node-network-peers/get)

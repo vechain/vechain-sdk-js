@@ -14,7 +14,7 @@ import { wordlist } from '@scure/bip39/wordlists/english';
 /**
  * Full Qualified Path
  */
-const FQP = 'packages/sdk/src/vcdm/Mnemonic.ts!';
+const FQP = 'packages/sdk/src/common/vcdm/Mnemonic.ts!';
 
 /**
  * Type of the wordlist size.

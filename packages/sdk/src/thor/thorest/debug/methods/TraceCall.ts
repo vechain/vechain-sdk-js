@@ -8,7 +8,7 @@ import { IllegalArgumentError } from '@common/errors';
 /**
  * Full-Qualified-Path
  */
-const FQP = 'packages/sdk/src/thor/debug/TraceCall.ts';
+const FQP = 'packages/sdk/src/thor/thorest/debug/methods/TraceCall.ts';
 
 /**
  * [Trace a call](http://localhost:8669/doc/stoplight-ui/#/paths/debug-tracers-call/post)

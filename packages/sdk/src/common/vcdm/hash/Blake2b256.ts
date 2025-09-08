@@ -6,7 +6,7 @@ import { IllegalArgumentError } from '@common/errors';
 /**
  * Full Qualified Path
  */
-const FQP = 'packages/sdk/src/vcdm/hash/Blake2b256.ts!';
+const FQP = 'packages/sdk/src/common/vcdm/hash/Blake2b256.ts!';
 
 /**
  * Represents the result of an [BLAKE](https://en.wikipedia.org/wiki/BLAKE_(hash_function)) [BlAKE2B 256](https://www.blake2.net/) hash operation.

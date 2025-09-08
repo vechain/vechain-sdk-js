@@ -1,0 +1,15 @@
+---
+title: Transaction refactor
+---
+sequenceDiagram
+    actor Signer
+    participant TransactionRequest
+    participant SignedTransactionRequest
+    participant SponsoredTransactionRequest
+    Signer ->> TransactionRequest: 1.1 AS ORIGIN CALL Signer.sign(TransactionRequest)
+    TransactionRequest ->> SignedTransactionRequest: 1.2 RETURN SignedTransactionRequest
+    SignedTransactionRequest ->> Signer: 1.3 AS ORIGIN GET SignedTransactionRequest Signer.sign(TransactionRequest)
+    Signer ->> SignedTransactionRequest: 2.1 AS GAS-PAYER CALL Signer.sign(SignedTransactionRequest)
+    SignedTransactionRequest ->> SponsoredTransactionRequest: 2.2 RETURN SponsoredTransactionRequest
+    SponsoredTransactionRequest ->> Signer: 2.3 AS GAS-PAYER GET SponsoredTransactionRequest Signer.sign(SignedTransactionRequest)
+
