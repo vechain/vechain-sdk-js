@@ -3,6 +3,7 @@ import { createPublicClient, BlockReponseType } from '@viem/clients';
 import { ThorNetworks } from '@thor/thorest';
 import { Hex } from '@common/vcdm';
 import { FetchHttpClient } from '@common/http';
+import { log } from '@common/logging';
 
 /**
  * Test suite for PublicClient block-related functionality
@@ -19,11 +20,15 @@ import { FetchHttpClient } from '@common/http';
 describe('PublicClient - Block Methods', () => {
     const customTransport = new FetchHttpClient(new URL(ThorNetworks.SOLONET), {
         onRequest: (request) => {
-            console.log(`Making ${request.method} request to ${request.url}`);
+            log.debug({
+                message: `Making ${request.method} request to ${request.url}`
+            });
             return request;
         },
         onResponse: (response) => {
-            console.log(`Response: ${response.status} ${response.statusText}`);
+            log.debug({
+                message: `Response: ${response.status} ${response.statusText}`
+            });
             return response;
         },
         timeout: 10000,
@@ -71,14 +76,18 @@ describe('PublicClient - Block Methods', () => {
                 expect(block).toHaveProperty('number');
                 expect((block as any).number).toBe(0);
 
-                console.log('Regular Block Properties:');
-                console.log(`Block Number: ${(block as any).number}`);
-                console.log(`Block ID: ${(block as any).id}`);
-                console.log(`Gas Limit: ${(block as any).gasLimit}`);
-                console.log(`Gas Used: ${(block as any).gasUsed}`);
-                console.log(
-                    `Transaction Count: ${(block as any).transactions.length}`
-                );
+                log.debug({
+                    message: 'Regular Block Properties:'
+                });
+                log.debug({
+                    message: `Block Number: ${(block as any).number}`
+                });
+                log.debug({ message: `Block ID: ${(block as any).id}` });
+                log.debug({ message: `Gas Limit: ${(block as any).gasLimit}` });
+                log.debug({ message: `Gas Used: ${(block as any).gasUsed}` });
+                log.debug({
+                    message: `Transaction Count: ${(block as any).transactions.length}`
+                });
             }
         }, 30000);
 
@@ -110,10 +119,16 @@ describe('PublicClient - Block Methods', () => {
                     expect(firstTx).toHaveProperty('gas');
                     expect(firstTx).toHaveProperty('origin');
 
-                    console.log('Expanded Block Transaction Details:');
-                    console.log(`First Transaction ID: ${firstTx.id}`);
-                    console.log(`Transaction Gas: ${firstTx.gas}`);
-                    console.log(`Transaction Origin: ${firstTx.origin}`);
+                    log.debug({
+                        message: 'Expanded Block Transaction Details:'
+                    });
+                    log.debug({
+                        message: `First Transaction ID: ${firstTx.id}`
+                    });
+                    log.debug({ message: `Transaction Gas: ${firstTx.gas}` });
+                    log.debug({
+                        message: `Transaction Origin: ${firstTx.origin}`
+                    });
                 }
             }
         }, 30000);
@@ -134,11 +149,15 @@ describe('PublicClient - Block Methods', () => {
                 expect(rawData).toHaveProperty('digits');
                 expect(rawData).toHaveProperty('sign');
 
-                console.log('Raw Block Properties:');
-                console.log(`Raw Data Type: ${typeof rawData}`);
-                console.log(
-                    `Raw Data Length: ${rawData.digits?.length || 0} characters`
-                );
+                log.debug({
+                    message: 'Raw Block Properties:'
+                });
+                log.debug({
+                    message: `Raw Data Type: ${typeof rawData}`
+                });
+                log.debug({
+                    message: `Raw Data Length: ${rawData.digits?.length ?? 0} characters`
+                });
             }
         }, 30000);
 
@@ -153,9 +172,13 @@ describe('PublicClient - Block Methods', () => {
                 expect(block).toHaveProperty('number');
                 expect((block as any).number).toBeGreaterThan(0);
 
-                console.log('Best Block Info:');
-                console.log(`Best Block Number: ${(block as any).number}`);
-                console.log(`Best Block ID: ${(block as any).id}`);
+                log.debug({
+                    message: 'Best Block Info:'
+                });
+                log.debug({
+                    message: `Best Block Number: ${(block as any).number}`
+                });
+                log.debug({ message: `Best Block ID: ${(block as any).id}` });
             }
         }, 30000);
 
@@ -170,9 +193,15 @@ describe('PublicClient - Block Methods', () => {
                 expect(block).toHaveProperty('number');
                 expect((block as any).number).toBe(blockNumber);
 
-                console.log('Block by Number:');
-                console.log(`Requested Number: ${blockNumber}`);
-                console.log(`Retrieved Number: ${(block as any).number}`);
+                log.debug({
+                    message: 'Block by Number:'
+                });
+                log.debug({
+                    message: `Requested Number: ${blockNumber}`
+                });
+                log.debug({
+                    message: `Retrieved Number: ${(block as any).number}`
+                });
             }
         }, 30000);
     });
@@ -185,7 +214,7 @@ describe('PublicClient - Block Methods', () => {
             expect(typeof blockNumber).toBe('number');
             expect(blockNumber).toBeGreaterThan(0);
 
-            console.log('Current Block Number:', blockNumber);
+            log.debug({ message: `Current Block Number: ${blockNumber}` });
         }, 30000);
 
         test('should get block number for specific revision', async () => {
@@ -195,7 +224,9 @@ describe('PublicClient - Block Methods', () => {
             expect(typeof blockNumber).toBe('number');
             expect(blockNumber).toBe(0); // Genesis block number
 
-            console.log('Block Number for Test Block:', blockNumber);
+            log.debug({
+                message: `Block Number for Test Block: ${blockNumber}`
+            });
         }, 30000);
 
         test('should get block number for genesis block', async () => {
@@ -204,7 +235,7 @@ describe('PublicClient - Block Methods', () => {
             expect(blockNumber).toBeDefined();
             expect(blockNumber).toBe(0);
 
-            console.log('Genesis Block Number:', blockNumber);
+            log.debug({ message: `Genesis Block Number: ${blockNumber}` });
         }, 30000);
     });
 
@@ -216,7 +247,9 @@ describe('PublicClient - Block Methods', () => {
             expect(typeof txCount).toBe('number');
             expect(txCount).toBeGreaterThanOrEqual(0);
 
-            console.log('Current Block Transaction Count:', txCount);
+            log.debug({
+                message: `Current Block Transaction Count: ${txCount}`
+            });
         }, 30000);
 
         test('should get transaction count for specific block', async () => {
@@ -226,7 +259,7 @@ describe('PublicClient - Block Methods', () => {
             expect(typeof txCount).toBe('number');
             expect(txCount).toBe(0); // Genesis block has no transactions
 
-            console.log('Test Block Transaction Count:', txCount);
+            log.debug({ message: `Test Block Transaction Count: ${txCount}` });
         }, 30000);
 
         test('should get transaction count for genesis block', async () => {
@@ -236,7 +269,9 @@ describe('PublicClient - Block Methods', () => {
             expect(typeof txCount).toBe('number');
             expect(txCount).toBeGreaterThanOrEqual(0);
 
-            console.log('Genesis Block Transaction Count:', txCount);
+            log.debug({
+                message: `Genesis Block Transaction Count: ${txCount}`
+            });
         }, 30000);
     });
 
@@ -248,7 +283,9 @@ describe('PublicClient - Block Methods', () => {
             expect(subscription).toBeDefined();
             expect(subscription).toHaveProperty('atPos');
 
-            console.log('Blocks Subscription Created:', typeof subscription);
+            log.debug({
+                message: `Blocks Subscription Created: ${typeof subscription}`
+            });
 
             // Clean up subscription if needed
             if (subscription && typeof subscription.close === 'function') {
@@ -265,11 +302,13 @@ describe('PublicClient - Block Methods', () => {
             expect(subscription).toHaveProperty('listeners');
             expect(subscription).toHaveProperty('query');
 
-            console.log(
-                'Block Number Subscription Created:',
-                typeof subscription
-            );
-            console.log('Subscription properties:', Object.keys(subscription));
+            log.debug({
+                message: `Block Number Subscription Created: ${typeof subscription}`
+            });
+            log.debug({
+                message: 'Subscription properties',
+                context: { data: Object.keys(subscription) }
+            });
 
             // Clean up subscription if needed
             if (subscription && typeof subscription.close === 'function') {
@@ -288,10 +327,10 @@ describe('PublicClient - Block Methods', () => {
                 expect(block).toBeNull();
             } catch (error) {
                 expect(error).toBeDefined();
-                console.log(
-                    'Expected error for invalid block:',
-                    (error as Error).message
-                );
+                log.debug({
+                    message: 'Expected error for invalid block',
+                    context: { data: (error as Error).message }
+                });
             }
         }, 30000);
 
@@ -304,10 +343,10 @@ describe('PublicClient - Block Methods', () => {
                 expect(blockNumber).toBeUndefined();
             } catch (error) {
                 expect(error).toBeDefined();
-                console.log(
-                    'Expected error for invalid block number:',
-                    (error as Error).message
-                );
+                log.debug({
+                    message: 'Expected error for invalid block number',
+                    context: { data: (error as Error).message }
+                });
             }
         }, 30000);
     });

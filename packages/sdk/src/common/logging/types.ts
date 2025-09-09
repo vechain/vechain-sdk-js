@@ -17,12 +17,17 @@ const VERBOSITY_ORDER: Record<LogVerbosity, number> = {
 /**
  * An item that is to be logged from the user.
  */
-interface LogItem {
+interface LogItemWithVerbosity {
     verbosity: LogVerbosity;
     message: string;
     source?: string;
     context?: Record<string, unknown>;
 }
+
+/**
+ * An item that is to be logged without a verbosity level.
+ */
+type LogItem = Omit<LogItemWithVerbosity, 'verbosity'>;
 
 /**
  * An expanded log item sent to the logger.
@@ -56,6 +61,7 @@ interface LoggerConfig {
 export {
     type LogVerbosity,
     type LogItem,
+    type LogItemWithVerbosity,
     type LoggedItem,
     type LoggerConfigSource,
     type LoggerConfig,

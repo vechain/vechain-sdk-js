@@ -3,6 +3,7 @@ import { createPublicClient } from '@viem/clients';
 import { ThorNetworks } from '@thor/thorest';
 import { Address, Hex } from '@common/vcdm';
 import { parseAbiItem } from 'viem';
+import { log } from '@common/logging';
 
 /**
  * Test suite for PublicClient event/log-related functionality
@@ -40,7 +41,11 @@ describe('PublicClient - Events/Logs Methods', () => {
             const logs = await publicClient.getLogs(filter);
             expect(logs).toBeDefined();
             expect(Array.isArray(logs)).toBe(true);
-            console.log(`Retrieved ${logs.length} logs for VTHO contract`);
+
+            log.debug({
+                message: `Retrieved ${logs.length} logs for VTHO contract`,
+                context: { data: logs.length }
+            });
 
             if (logs.length > 0) {
                 const firstLog = logs[0];
@@ -49,10 +54,15 @@ describe('PublicClient - Events/Logs Methods', () => {
                 expect(firstLog).toHaveProperty('data');
                 expect(firstLog).toHaveProperty('meta');
 
-                console.log('First log:', {
-                    address: firstLog.eventLog.address,
-                    topics: firstLog.eventLog.topics,
-                    data: firstLog.eventLog.data
+                log.debug({
+                    message: 'First log:',
+                    context: {
+                        data: {
+                            address: firstLog.address,
+                            topics: firstLog.topics,
+                            data: firstLog.data
+                        }
+                    }
                 });
             }
         });
@@ -67,7 +77,10 @@ describe('PublicClient - Events/Logs Methods', () => {
             expect(logs).toBeDefined();
             expect(Array.isArray(logs)).toBe(true);
 
-            console.log(`Retrieved ${logs.length} logs for multiple addresses`);
+            log.debug({
+                message: `Retrieved ${logs.length} logs for multiple addresses`,
+                context: { data: logs.length }
+            });
         });
 
         test('should retrieve logs with topic filter', async () => {
@@ -80,7 +93,10 @@ describe('PublicClient - Events/Logs Methods', () => {
             expect(logs).toBeDefined();
             expect(Array.isArray(logs)).toBe(true);
 
-            console.log(`Retrieved ${logs.length} Transfer event logs`);
+            log.debug({
+                message: `Retrieved ${logs.length} Transfer event logs`,
+                context: { data: logs.length }
+            });
 
             if (logs.length > 0) {
                 const firstLog = logs[0];
@@ -101,7 +117,10 @@ describe('PublicClient - Events/Logs Methods', () => {
             expect(logs).toBeDefined();
             expect(Array.isArray(logs)).toBe(true);
 
-            console.log(`Retrieved ${logs.length} logs from blocks 0-100`);
+            log.debug({
+                message: `Retrieved ${logs.length} logs from blocks 0-100`,
+                context: { data: logs.length }
+            });
         });
 
         test('should handle empty results gracefully', async () => {
@@ -134,7 +153,10 @@ describe('PublicClient - Events/Logs Methods', () => {
             expect(typeof filter.id).toBe('string');
             expect(filter.id).toMatch(/^0x[0-9a-f]+$/i);
 
-            console.log('Created event filter:', filter.id);
+            log.debug({
+                message: 'Created event filter:',
+                context: { data: filter.id }
+            });
         });
 
         test('should create event filter with event signature', () => {
@@ -147,7 +169,10 @@ describe('PublicClient - Events/Logs Methods', () => {
             expect(filter.type).toBe('event');
             expect(filter.filter).toHaveProperty('criteriaSet');
 
-            console.log('Created Transfer event filter:', filter.id);
+            log.debug({
+                message: 'Created Transfer event filter:',
+                context: { data: filter.id }
+            });
         });
 
         test('should create event filter', () => {
@@ -161,7 +186,10 @@ describe('PublicClient - Events/Logs Methods', () => {
             expect(filter.id).toBeDefined();
             expect(typeof filter.id).toBe('string');
 
-            console.log('Event filter created with ID:', filter.id);
+            log.debug({
+                message: 'Event filter created with ID:',
+                context: { data: filter.id }
+            });
         });
 
         test('should create complex event filter', () => {
@@ -174,7 +202,10 @@ describe('PublicClient - Events/Logs Methods', () => {
             expect(filter.type).toBe('event');
             expect(filter.filter).toHaveProperty('criteriaSet');
 
-            console.log('Created complex event filter:', filter.id);
+            log.debug({
+                message: 'Created complex event filter:',
+                context: { data: filter.id }
+            });
         });
 
         test('should create filter without parameters', () => {
@@ -184,7 +215,10 @@ describe('PublicClient - Events/Logs Methods', () => {
             expect(filter.type).toBe('event');
             expect(filter.filter).toHaveProperty('criteriaSet');
 
-            console.log('Created basic event filter:', filter.id);
+            log.debug({
+                message: 'Created basic event filter:',
+                context: { data: filter.id }
+            });
         });
     });
 
@@ -200,7 +234,10 @@ describe('PublicClient - Events/Logs Methods', () => {
             expect(logs).toBeDefined();
             expect(Array.isArray(logs)).toBe(true);
 
-            console.log('Retrieved logs using filter:', logs.length);
+            log.debug({
+                message: 'Retrieved logs using filter:',
+                context: { data: logs.length }
+            });
 
             if (logs.length > 0) {
                 const firstLog = logs[0];
@@ -221,7 +258,10 @@ describe('PublicClient - Events/Logs Methods', () => {
             expect(logs).toBeDefined();
             expect(Array.isArray(logs)).toBe(true);
 
-            console.log(`Retrieved ${logs.length} Transfer logs using filter`);
+            log.debug({
+                message: `Retrieved ${logs.length} Transfer logs using filter`,
+                context: { data: logs.length }
+            });
 
             // All logs should be Transfer events
             logs.forEach((log) => {
@@ -248,18 +288,20 @@ describe('PublicClient - Events/Logs Methods', () => {
             // This test verifies the method exists and returns a function
             expect(typeof publicClient.watchEvent).toBe('function');
 
-            console.log(
-                'watchEvent method is available (WebSocket tests skipped in Node.js)'
-            );
+            log.debug({
+                message:
+                    'watchEvent method is available (WebSocket tests skipped in Node.js)'
+            });
         });
 
         test('should handle watcher cleanup concept', () => {
             // Test that the method signature is correct without actually using WebSocket
             expect(typeof publicClient.watchEvent).toBe('function');
 
-            console.log(
-                'watchEvent cleanup concept verified (actual WebSocket tests skipped)'
-            );
+            log.debug({
+                message:
+                    'watchEvent cleanup concept verified (actual WebSocket tests skipped)'
+            });
         });
     });
 
@@ -296,7 +338,9 @@ describe('PublicClient - Events/Logs Methods', () => {
             expect(typeof publicClient.getLogs).toBe('function');
             expect(typeof publicClient.watchEvent).toBe('function');
 
-            console.log('Network error handling methods are available');
+            log.debug({
+                message: 'Network error handling methods are available'
+            });
         });
     });
 });
