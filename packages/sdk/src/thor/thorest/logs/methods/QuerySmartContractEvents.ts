@@ -5,11 +5,9 @@ import {
     type ThorRequest,
     type ThorResponse
 } from '@thor/thorest';
-import {
-    type EventLogsResponseJSON,
-    type EventLogFilterRequestJSON
-} from '@thor/thorest/logs/json';
+import { type EventLogsResponseJSON } from '@thor/thorest/logs/json';
 import { type HttpClient, type HttpPath } from '@common/http';
+import { EventLogFilter } from '@thor/thor-client/model/logs/EventLogFilter';
 
 /**
  * Full-Qualified-Path
@@ -38,7 +36,7 @@ class QuerySmartContractEvents
      *
      * @param {EventLogFilterRequest} request - The filter request object that contains parameters for event log filtering.
      */
-    protected constructor(request: EventLogFilterRequest) {
+    constructor(request: EventLogFilterRequest) {
         this.request = request;
     }
 
@@ -92,13 +90,13 @@ class QuerySmartContractEvents
     }
 
     /**
-     * Creates a new instance of `QuerySmartContractEvents` using the provided `EventLogFilterRequestJSON`.
+     * Creates a new instance of `QuerySmartContractEvents` using the provided `EventLogFilter`.
      *
-     * @param {EventLogFilterRequestJSON} request - The JSON representation of an event log filter request.
+     * @param {EventLogFilter} request - The event log filter.
      * @return {QuerySmartContractEvents} A new instance of `QuerySmartContractEvents` initialized with the provided request.
      */
-    static of(request: EventLogFilterRequestJSON): QuerySmartContractEvents {
-        return new QuerySmartContractEvents(new EventLogFilterRequest(request));
+    static of(request: EventLogFilter): QuerySmartContractEvents {
+        return new QuerySmartContractEvents(EventLogFilterRequest.of(request));
     }
 }
 

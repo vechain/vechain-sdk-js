@@ -1,15 +1,19 @@
 import {
+    FilterOptionsRequest,
+    FilterRangeRequest,
     QueryVETTransferEvents,
     ThorError,
+    TransferCriteriaRequest,
+    TransferLogFilterRequest,
     TransferLogsResponse
 } from '@thor/thorest';
-import {
-    type TransferLogFilterRequestJSON,
-    type TransferLogsResponseJSON
-} from '@thor/thorest/json';
 import { expect, jest } from '@jest/globals';
 import type { HttpClient } from '@common/http';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
+import { Address } from '@common/vcdm';
+import { LogSort } from '@thor/thor-client/model/logs/LogSort';
+import { type TransferLogsResponseJSON } from '@thor/thorest/json';
+import { FilterRangeUnits } from '@thor/thorest/logs/response/FilterRangeUnits';
 
 const mockHttpClient = <T>(response: T): HttpClient => {
     return {
@@ -28,18 +32,18 @@ const mockResponse = <T>(body: T, status: number): Response => {
 };
 
 /**
- * group unit/thor/logs
+ * @group unit
  */
 describe('QueryVERTransferEvents UNIT tests', () => {
     test('err <- askTo - invalid request', async () => {
         const status = 400;
-        // Pretend the request is invalid albeit not possible to build an invalid request from the SDK.
-        const request: TransferLogFilterRequestJSON =
-            {} satisfies TransferLogFilterRequestJSON;
+        // Valid request, mock error response.
+        const request = new TransferLogFilterRequest(
+            new FilterRangeRequest(FilterRangeUnits.block, 0, 0)
+        );
         try {
-            await QueryVETTransferEvents.of(request).askTo(
-                mockHttpClient(mockResponse({}, status))
-            );
+            const query = new QueryVETTransferEvents(request);
+            await query.askTo(mockHttpClient(mockResponse({}, status)));
             // noinspection ExceptionCaughtLocallyJS
             throw new Error('Should not reach here.');
         } catch (error) {
@@ -49,26 +53,18 @@ describe('QueryVERTransferEvents UNIT tests', () => {
     });
 
     test('ok <- askTo - not empty', async () => {
-        const request: TransferLogFilterRequestJSON = {
-            range: {
-                unit: 'block',
-                from: 17240365,
-                to: 17289864
-            },
-            options: {
-                offset: 0,
-                limit: 100,
-                includeIndexes: true
-            },
-            criteriaSet: [
-                {
-                    txOrigin: '0xDb4027477B2a8fE4c83C6daFe7f86678bb1B8a8d',
-                    sender: '0x5034Aa590125b64023a0262112b98d72e3C8E40e',
-                    recipient: '0x6d95E6dCa01D109882fe1726A2fb9865Fa41e7aA'
-                }
+        const filter = new TransferLogFilterRequest(
+            new FilterRangeRequest(FilterRangeUnits.block, 17240365, 17289864),
+            new FilterOptionsRequest(0, 100, true),
+            [
+                new TransferCriteriaRequest(
+                    Address.of('0xDb4027477B2a8fE4c83C6daFe7f86678bb1B8a8d'),
+                    Address.of('0x5034Aa590125b64023a0262112b98d72e3C8E40e'),
+                    Address.of('0x6d95E6dCa01D109882fe1726A2fb9865Fa41e7aA')
+                )
             ],
-            order: 'asc'
-        } satisfies TransferLogFilterRequestJSON;
+            LogSort.asc
+        );
         const expected = [
             {
                 sender: '0x5034Aa590125b64023a0262112b98d72e3C8E40e',
@@ -87,10 +83,9 @@ describe('QueryVERTransferEvents UNIT tests', () => {
                 }
             }
         ] satisfies TransferLogsResponseJSON;
+        const query = new QueryVETTransferEvents(filter);
         const actual = (
-            await QueryVETTransferEvents.of(request).askTo(
-                mockHttpClient(mockResponse(expected, 200))
-            )
+            await query.askTo(mockHttpClient(mockResponse(expected, 200)))
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toBeInstanceOf(TransferLogsResponse);
@@ -98,19 +93,13 @@ describe('QueryVERTransferEvents UNIT tests', () => {
     });
 
     test('ok <- askTo -  empty', async () => {
-        const request: TransferLogFilterRequestJSON = {
-            range: {
-                unit: 'block',
-                from: 0,
-                to: 0
-            },
-            options: {}
-        } satisfies TransferLogFilterRequestJSON;
+        const filter = new TransferLogFilterRequest(
+            new FilterRangeRequest(FilterRangeUnits.block, 0, 0)
+        );
         const expected = [] satisfies TransferLogsResponseJSON;
+        const query = new QueryVETTransferEvents(filter);
         const actual = (
-            await QueryVETTransferEvents.of(request).askTo(
-                mockHttpClient(mockResponse(expected, 200))
-            )
+            await query.askTo(mockHttpClient(mockResponse(expected, 200)))
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toBeInstanceOf(TransferLogsResponse);

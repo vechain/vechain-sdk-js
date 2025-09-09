@@ -10,7 +10,7 @@ const FQP = 'packages/sdk/src/thor/thorest/logs/response/LogMeta.ts!';
 /**
  * [LogMeta](http://localhost:8669/doc/stoplight-ui/#/schemas/LogMeta)
  */
-class LogMeta {
+class LogMetaResponse {
     /**
      * The block identifier in which the log was included.
      */
@@ -44,13 +44,13 @@ class LogMeta {
     /**
      * The index of the transaction in the block, from which the log was generated.
      */
-    readonly txIndex: number;
+    readonly txIndex: number | undefined;
 
     /**
      * The index of the log in the receipt's outputs.
      * This is an overall index among all clauses.
      */
-    readonly logIndex: number;
+    readonly logIndex: number | undefined;
 
     /**
      * Constructs an instance of the log meta-data represented as a JSON object.
@@ -72,6 +72,7 @@ class LogMeta {
                     : 0;
             this.txID = HexUInt32.of(json.txID);
             this.txOrigin = Address.of(json.txOrigin);
+
             this.clauseIndex =
                 json.clauseIndex != null
                     ? UInt.of(json.clauseIndex).valueOf()
@@ -103,10 +104,10 @@ class LogMeta {
             txID: this.txID.toString(),
             txOrigin: this.txOrigin.toString(),
             clauseIndex: this.clauseIndex.valueOf(),
-            txIndex: this.txIndex.valueOf(),
-            logIndex: this.logIndex.valueOf()
+            txIndex: this.txIndex?.valueOf() ?? null,
+            logIndex: this.logIndex?.valueOf() ?? null
         } satisfies LogMetaJSON;
     }
 }
 
-export { LogMeta };
+export { LogMetaResponse };

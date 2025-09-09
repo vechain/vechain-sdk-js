@@ -51,12 +51,12 @@
     "setup-thor-solo": "yarn start-thor-solo && yarn seed-thor-solo",
     "test:unit": "rm -rf ./coverageUnit && UNIT=true jest --coverage --coverageDirectory=coverageUnit --group=unit",
     "test:integration": "rm -rf ./coverageIntegration && jest --coverage --coverageDirectory=coverageIntegration --group=integration",
-    "test:integration:solo": "(yarn start-thor-solo && yarn seed-thor-solo && yarn test:integration && yarn stop-thor-solo) || yarn stop-thor-solo",
     "test:clients": "rm -rf ./coverageClients && jest --coverage --coverageDirectory=coverageClients --group=integration/clients",
     "test:clients:solo": "(yarn start-thor-solo && yarn seed-thor-solo && yarn test:clients && yarn stop-thor-solo) || yarn stop-thor-solo",
     "test:browser": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit --config ./jest.config.browser.js",
-    "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit",
-    "test:solo": "(yarn start-thor-solo && yarn test && yarn stop-thor-solo) || yarn stop-thor-solo",
+    "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit --group=solo",
+    "test:group:solo": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=solo",
+    "test:solo": "(yarn start-thor-solo && yarn seed-thor-solo && yarn test:group:solo && yarn stop-thor-solo) || yarn stop-thor-solo",
     "test:browser:solo": "(yarn start-thor-solo && yarn test:browser && yarn stop-thor-solo) || yarn stop-thor-solo"
   },
   "dependencies": {
@@ -80,6 +80,7 @@
     "@types/ws": "^8.5.13",
     "loglevel": "^1.9.2",
     "jest-fetch-mock": "^3.0.3",
-    "whatwg-fetch": "^3.6.20"
+    "whatwg-fetch": "^3.6.20",
+    "@vechain/sdk-solo-setup": "3.0.0-beta.1"
   }
 }

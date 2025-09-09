@@ -1,10 +1,8 @@
 import { type HttpClient, type HttpPath } from '@common/http';
 import { TransferLogFilterRequest, TransferLogsResponse } from '@thor/thorest';
-import {
-    type TransferLogsResponseJSON,
-    type TransferLogFilterRequestJSON
-} from '@thor/thorest/json';
+import { type TransferLogsResponseJSON } from '@thor/thorest/json';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
+import { TransferLogFilter } from '@thor/thor-client/model/logs/TransferLogFilter';
 
 /**
  * Full-Qualified-Path
@@ -37,7 +35,7 @@ class QueryVETTransferEvents
      *
      * @param {TransferLogFilterRequest} request - The transfer log filter request to initialize the instance with.
      */
-    protected constructor(request: TransferLogFilterRequest) {
+    public constructor(request: TransferLogFilterRequest) {
         this.request = request;
     }
 
@@ -89,15 +87,13 @@ class QueryVETTransferEvents
     }
 
     /**
-     * Creates and returns an instance of QueryVETTransferEvents using the provided TransferLogFilterRequestJSON object.
+     * Creates and returns an instance of QueryVETTransferEvents using the provided TransferLogFilter object.
      *
-     * @param {TransferLogFilterRequestJSON} request - The JSON object containing the transfer log filter request details.
+     * @param {TransferLogFilter} request - The transfer log filter object containing the transfer log filter request details.
      * @return {QueryVETTransferEvents} A new instance of QueryVETTransferEvents initialized with the specified filter request.
      */
-    static of(request: TransferLogFilterRequestJSON): QueryVETTransferEvents {
-        return new QueryVETTransferEvents(
-            new TransferLogFilterRequest(request)
-        );
+    static of(request: TransferLogFilter): QueryVETTransferEvents {
+        return new QueryVETTransferEvents(TransferLogFilterRequest.of(request));
     }
 }
 
