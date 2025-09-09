@@ -1,3 +1,3 @@
 export * from './MozillaWebSocketClient';
-export * from './WebSocketClient';
-export * from './WebSocketListener';
+export type * from './WebSocketClient';
+export type * from './WebSocketListener';

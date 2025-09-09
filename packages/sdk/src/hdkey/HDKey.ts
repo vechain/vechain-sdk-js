@@ -148,7 +148,7 @@ class HDKey extends s_bip32.HDKey {
                 return s_bip32.HDKey.fromExtendedKey(
                     base58.encode(expandedPrivateKey)
                 ) as HDKey;
-            } catch (e) {
+            } catch {
                 throw new IllegalArgumentError(
                     `${FQP}HDNode.fromPrivateKey(privateKey: Uint8Array, chainCode: Uint8Array): HDKey`,
                     'Invalid private key path given as input.'

@@ -363,7 +363,7 @@ function getContract<const TAbi extends Abi>({
                 watch: ({ onLogs, onError, args = [], fromBlock }) => {
                     // Process indexed arguments if provided
                     const indexedInputs = abiItem.inputs.filter(
-                        (input) => input.indexed
+                        (input) => input.indexed === true
                     );
                     const indexedArgs: Hex[] = [];
 
@@ -411,7 +411,7 @@ function getContract<const TAbi extends Abi>({
                     // Add indexed arguments if provided
                     if (args != null && args.length > 0) {
                         const indexedInputs = abiItem.inputs.filter(
-                            (input) => input.indexed
+                            (input) => input.indexed === true
                         );
 
                         for (

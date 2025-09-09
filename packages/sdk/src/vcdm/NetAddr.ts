@@ -230,7 +230,7 @@ class NetAddr implements VeChainDataModel<NetAddr> {
                 bytes[i * 2] = (value >> 8) & 0xff; // High byte
                 bytes[i * 2 + 1] = value & 0xff; // Low byte
             }
-        } catch (error) {
+        } catch {
             throw new IllegalArgumentError(
                 `${FQP}NetAddr.parseUncompressedIPv6(address: string): Uint8Array`,
                 'Invalid IPv6 address format',

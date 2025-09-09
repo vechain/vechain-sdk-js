@@ -12,7 +12,8 @@ import {
 } from '@thor';
 import { BlockRef, HexUInt } from '@vcdm';
 import { SOLO_NETWORK } from '@utils';
-import { Address, Transaction } from '@vechain/sdk';
+import { Address } from '@vcdm';
+import { Transaction } from '@thor';
 import { describe, expect } from '@jest/globals';
 import * as nc_utils from '@noble/curves/abstract/utils';
 

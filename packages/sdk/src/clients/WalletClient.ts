@@ -94,7 +94,7 @@ class WalletClient extends PublicClient {
                 nonce: request.nonce
             } satisfies TransactionBody;
             return Transaction.of(txBody);
-        } catch (e) {
+        } catch {
             throw new UnsupportedOperationError(
                 `${FQP}WalletClient.prepareTransactionRequest(request: PrepareTransactionRequestRequest): void`,
                 'invalid request',

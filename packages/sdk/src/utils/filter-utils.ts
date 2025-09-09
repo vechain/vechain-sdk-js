@@ -10,7 +10,7 @@ type BlockRevision = bigint | number | string | Uint8Array | Hex;
  * @param blockRevision Block revision to convert
  * @returns Number value or undefined if conversion not possible
  */
-export function convertBlockRevisionToNumber(
+function convertBlockRevisionToNumber(
     blockRevision: BlockRevision
 ): number | undefined {
     if (typeof blockRevision === 'number') {
@@ -30,7 +30,7 @@ export function convertBlockRevisionToNumber(
  * @param address Single address or array of addresses
  * @returns Address string in VeChain format
  */
-export function handleAddressFilter(
+function handleAddressFilter(
     address: Address | Address[] | undefined
 ): string | undefined {
     if (address == null) {
@@ -43,31 +43,12 @@ export function handleAddressFilter(
 }
 
 /**
- * Helper method to handle event arguments (indexed parameters)
- * @param args Array of indexed parameters
- * @returns Record of topic keys and values
- */
-export function handleEventArgs(args?: ThorId[]): Record<string, string> {
-    const topicValues: Record<string, string> = {};
-
-    if (args != null && args.length > 0) {
-        for (let i = 0; i < Math.min(args.length, 3); i++) {
-            if (args[i] != null && Boolean(args[i])) {
-                topicValues[`t${i + 1}`] = String(args[i]);
-            }
-        }
-    }
-
-    return topicValues;
-}
-
-/**
  * Helper method to prepare a block range filter
  * @param fromBlock Starting block revision
  * @param toBlock Ending block revision
  * @returns Range object for the filter request
  */
-export function prepareBlockRange(
+function prepareBlockRange(
     fromBlock?: BlockRevision,
     toBlock?: BlockRevision
 ): Record<string, string | number> {
@@ -96,3 +77,29 @@ export function prepareBlockRange(
 
     return range;
 }
+
+/**
+ * Helper method to handle event arguments (indexed parameters)
+ * @param args Array of indexed parameters
+ * @returns Record of topic keys and values
+ */
+function handleEventArgs(args?: ThorId[]): Record<string, string> {
+    const topicValues: Record<string, string> = {};
+
+    if (args != null && args.length > 0) {
+        for (let i = 0; i < Math.min(args.length, 3); i++) {
+            if (args[i] != null && Boolean(args[i])) {
+                topicValues[`t${i + 1}`] = String(args[i]);
+            }
+        }
+    }
+
+    return topicValues;
+}
+
+export {
+    handleAddressFilter,
+    handleEventArgs,
+    prepareBlockRange,
+    convertBlockRevisionToNumber
+};

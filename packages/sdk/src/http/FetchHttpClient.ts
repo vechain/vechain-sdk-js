@@ -52,12 +52,8 @@ class FetchHttpClient implements HttpClient {
             baseURL.pathname += FetchHttpClient.PATH_SEPARATOR;
         }
         // validate callback functions
-        if (httpOptions.onRequest === undefined) {
-            httpOptions.onRequest = (request) => request;
-        }
-        if (httpOptions.onResponse === undefined) {
-            httpOptions.onResponse = (response) => response;
-        }
+        httpOptions.onRequest ??= (request) => request;
+        httpOptions.onResponse ??= (response) => response;
         // set properties
         this.baseURL = baseURL;
         this.requestConstructor = requestConstructor;

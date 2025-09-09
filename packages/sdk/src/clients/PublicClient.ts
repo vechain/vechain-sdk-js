@@ -687,9 +687,7 @@ class PublicClient {
                         }
 
                         if (txHash != null) {
-                            if (txFilter.txQueue == null) {
-                                txFilter.txQueue = [];
-                            }
+                            txFilter.txQueue ??= [];
                             txFilter.txQueue.push(txHash);
                         }
                     },

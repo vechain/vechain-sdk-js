@@ -134,7 +134,7 @@ class Secp256k1 {
     public static async generatePrivateKey(): Promise<Uint8Array> {
         try {
             return nc_secp256k1.utils.randomPrivateKey();
-        } catch (e) {
+        } catch {
             // Generate an ECDSA key pair
             const cryptoKey = await global.crypto.subtle.generateKey(
                 {
@@ -247,7 +247,7 @@ class Secp256k1 {
     public static randomBytes(bytesLength?: number): Uint8Array {
         try {
             return nh_randomBytes(bytesLength);
-        } catch (e) {
+        } catch {
             return global.crypto.getRandomValues(
                 new Uint8Array(bytesLength ?? 32)
             );

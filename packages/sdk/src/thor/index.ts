@@ -10,5 +10,5 @@ export * from './subscriptions';
 export * from './transactions';
 export * from './utils';
 export * from './ThorError';
-export * from './ThorRequest';
-export * from './ThorResponse';
+export type * from './ThorRequest';
+export type * from './ThorResponse';

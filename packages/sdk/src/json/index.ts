@@ -1,4 +1,4 @@
-export * from '../thor/transactions/json';
-export * from '../thor/blocks/json';
-export * from '../thor/json';
+export type * from '../thor/transactions/json';
+export type * from '../thor/blocks/json';
+export type * from '../thor/json';
 export * from '../thor/logs';

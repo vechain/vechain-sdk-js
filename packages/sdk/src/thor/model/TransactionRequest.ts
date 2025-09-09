@@ -37,6 +37,7 @@ interface TransactionRequestParam {
 
     /**
      * The coefficient used to calculate the final gas price of the transaction.
+     * @deprecated Use maxFeePerGas and maxPriorityFeePerGas for dynamic fee transactions
      */
     gasPriceCoef: bigint;
 
@@ -49,6 +50,18 @@ interface TransactionRequestParam {
      * Indicates if the gas cost transaction is sponsored by a "gas payer".
      */
     isSponsored?: boolean;
+
+    /**
+     * The maximum fee per gas the sender is willing to pay (EIP-1559 dynamic fees).
+     * If specified, this transaction uses dynamic fee pricing instead of gasPriceCoef.
+     */
+    maxFeePerGas?: bigint;
+
+    /**
+     * The maximum priority fee per gas the sender is willing to pay (EIP-1559 dynamic fees).
+     * This is the tip paid to validators for transaction inclusion priority.
+     */
+    maxPriorityFeePerGas?: bigint;
 }
 
 /**
@@ -88,6 +101,7 @@ class TransactionRequest implements TransactionRequestParam {
 
     /**
      * The coefficient used to calculate the final gas price of the transaction.
+     * @deprecated Use maxFeePerGas and maxPriorityFeePerGas for dynamic fee transactions
      */
     public readonly gasPriceCoef: bigint;
 
@@ -100,6 +114,19 @@ class TransactionRequest implements TransactionRequestParam {
      * Indicates if the gas cost transaction is sponsored by a "gas payer".
      */
     public readonly isSponsored: boolean;
+
+    /**
+     * The maximum fee per gas the sender is willing to pay (EIP-1559 dynamic fees).
+     * If specified, this transaction uses dynamic fee pricing instead of gasPriceCoef.
+     */
+    public readonly maxFeePerGas?: bigint;
+
+    /**
+     * The maximum priority fee per gas the sender is willing to pay (EIP-1559 dynamic fees).
+     * This is the tip paid to validators for transaction inclusion priority.
+     */
+    public readonly maxPriorityFeePerGas?: bigint;
+
 
     /**
      * Constructs an instance of the class with the given transaction request parameters.
@@ -127,6 +154,8 @@ class TransactionRequest implements TransactionRequestParam {
         this.gasPriceCoef = params.gasPriceCoef;
         this.nonce = params.nonce;
         this.isSponsored = params.isSponsored ?? false;
+        this.maxFeePerGas = params.maxFeePerGas;
+        this.maxPriorityFeePerGas = params.maxPriorityFeePerGas;
     }
 
     /**
@@ -136,6 +165,16 @@ class TransactionRequest implements TransactionRequestParam {
      */
     public isSigned(): boolean {
         return false;
+    }
+
+    /**
+     * Determines if this is a dynamic fee transaction (EIP-1559).
+     * A transaction is considered dynamic if it has maxFeePerGas or maxPriorityFeePerGas set.
+     *
+     * @return {boolean} `true` if this is a dynamic fee transaction, `false` for legacy.
+     */
+    public isDynamicFee(): boolean {
+        return this.maxFeePerGas !== undefined || this.maxPriorityFeePerGas !== undefined;
     }
 }
 
