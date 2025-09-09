@@ -4,7 +4,7 @@ import { IllegalArgumentError } from '@common/errors';
 /**
  * Full Qualified Path
  */
-const FQP = 'packages/sdk/src/vcdm/UInt.ts!';
+const FQP = 'packages/sdk/src/common/vcdm/UInt.ts!';
 
 /**
  * Represents an unsigned integer, extending the `Int` class.

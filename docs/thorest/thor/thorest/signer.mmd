@@ -1,0 +1,51 @@
+---
+title: "@thor.thorest.signer"
+---
+classDiagram
+    namespace model {
+        class SponsoredTransactionRequest {
+            Address gasPayer
+            Uint8Array gasPayerSignature
+            constructor(SponsoredTransactionRequestParam: param)
+        }
+        class SignedTransactionRequest {
+            Address origin
+            Uint8Array originSignature
+            Uint8Array signature
+            constructor(SignedTransactionRequestParam param)
+        }
+        class TransactionRequest {
+            Hex blockRef
+            number chainTag
+            Clause[] clause
+            Hex|null dependsOn
+            number expiration
+            bigint gas
+            bigint gasPriceCoef
+            number nonce
+            boolean isIntendedToBeSponsored?
+            constructor(TransactionRequestParam param)
+        }
+    }
+    class RLPCodec {
+        Uint8Array encodeSignedTransactionRequest(SignedTransactionRequest transactionRequest)
+        Uint8Array encodeTransactionRequest(TransactionRequest transactionRequest)
+    }
+    class PrivateKeySigner {
+        constructor(Uint8Array privateKey)
+        void()
+    }
+    class Signer {
+        <<interface>>
+        Address address
+        SignedTransactionRequest|SponsoredTransactionRequest sign(TransactionRequest|SignedTransactionRequest request)
+    }
+    note for Signer "As origin/sender, call `SignedTransactionRequest sign(TransactionRequest request)`\nAs gas-payer/sponsor, call `SponsoredTransactionRequest sign(SignedTransactionRequest request)`"
+    TransactionRequest <|-- SignedTransactionRequest
+    SignedTransactionRequest <|-- SponsoredTransactionRequest
+    Signer <|.. PrivateKeySigner
+    PrivateKeySigner --* RLPCodec
+    TransactionRequest "1. SignedTransactionRequest sign(TransactionRequest request)" <-- Signer
+    SignedTransactionRequest --> "2. SignedTransactionRequest sign(TransactionRequest request)" Signer
+    SignedTransactionRequest "3. SponsoredTransactionRequest sign(SignedTransactionRequest request)" <-- Signer
+    SponsoredTransactionRequest "4. SponsoredTransactionRequest sign(SignedTransactionRequest request)" --> Signer

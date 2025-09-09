@@ -7,7 +7,8 @@ import { TransferLogFilter } from '@thor/thor-client/model/logs/TransferLogFilte
 /**
  * Full-Qualified-Path
  */
-const FQP = 'packages/sdk/src/thor/logs/QueryVETTransferEvents.ts!';
+const FQP =
+    'packages/sdk/src/thor/thorest/logs/methods/QueryVETTransferEvents.ts!';
 
 /**
  * [Query VET transfer events](http://localhost:8669/doc/stoplight-ui/#/paths/logs-transfer/post)

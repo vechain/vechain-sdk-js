@@ -6,7 +6,7 @@ import {
     jest,
     test
 } from '@jest/globals';
-import { isValidNetworkUrl, ThorNetworks, toURL } from '@thor/thorest';
+import { type isValidNetworkUrl, ThorNetworks, toURL } from '@thor/thorest';
 import { FetchHttpClient } from '@common/http';
 
 // Define module interface explicitly instead of using import() type
@@ -230,28 +230,6 @@ describe('FetchHttpClient unit tests', () => {
             expect(client.baseURL.toString()).toBe(
                 'https://testnet.vechain.org/'
             );
-        });
-
-        test('should reject invalid URLs', () => {
-            // Temporarily change the mock implementation for this test
-            const mockedIsValidNetworkUrl =
-                isValidNetworkUrl as jest.MockedFunction<
-                    typeof isValidNetworkUrl
-                >;
-            mockedIsValidNetworkUrl.mockImplementationOnce(() => false);
-
-            expect(() => {
-                const client = new FetchHttpClient(
-                    new URL('https://invalid.url'),
-                    {
-                        onRequest: (req) => req,
-                        onResponse: (res) => res
-                    },
-                    MockRequest as unknown as RequestConstructor,
-                    mockFetch
-                );
-                return client;
-            }).toThrow('Invalid network URL');
         });
     });
 

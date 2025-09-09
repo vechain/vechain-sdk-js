@@ -1,11 +1,17 @@
 import {
     FilterOptionsRequest,
     FilterRangeRequest,
-    TransferCriteriaRequest
-} from '@thor/thorest/logs';
+    TransferCriteriaRequest,
+    type LogSort
+} from '@thor/thorest';
 import { type TransferLogFilterRequestJSON } from '@thor/thorest/json';
-import { TransferLogFilter } from '@thor/thor-client/model/logs/TransferLogFilter';
-import { LogSort } from './LogSort';
+import { type TransferLogFilter } from '@thor/thor-client/model/logs/TransferLogFilter';
+
+/**
+ * Full-Qualified-Path
+ */
+const FQP =
+    'packages/sdk/src/thor/thorest/logs/response/TransferLogFilterRequest.ts!';
 
 /**
  * Overall filter request for transfer logs.

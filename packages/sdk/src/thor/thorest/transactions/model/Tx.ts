@@ -6,7 +6,7 @@ import {
     HexUInt32,
     UInt
 } from '@common/vcdm';
-import { Clause } from '@thor/thorest';
+import { Clause } from '@thor/thorest/model/Clause';
 import { type ClauseJSON } from '@thor/thorest/json';
 import { IllegalArgumentError } from '@common/errors';
 import { type TxJSON } from '../json/TxJSON';
@@ -14,7 +14,7 @@ import { type TxJSON } from '../json/TxJSON';
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/sdk/src/thor/transactions/model/Tx.ts!';
+const FQP = 'packages/sdk/src/thor/thorest/transactions/model/Tx.ts!';
 
 /**
  * [Tx](http://localhost:8669/doc/stoplight-ui/#/schemas/Tx)

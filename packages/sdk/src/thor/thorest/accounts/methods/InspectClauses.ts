@@ -10,7 +10,7 @@ import {
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/sdk/src/thor/accounts/InspectClauses.ts!';
+const FQP = 'packages/sdk/src/thor/thorest/accounts/methods/InspectClauses.ts!';
 
 /**
  * Inspect the clauses of a contract identified by its address.

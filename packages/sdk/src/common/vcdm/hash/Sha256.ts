@@ -6,7 +6,7 @@ import { IllegalArgumentError } from '@common/errors';
 /**
  * Full Qualified Path
  */
-const FQP = 'packages/sdk/src/vcdm/hash/Sha256.ts!';
+const FQP = 'packages/sdk/src/common/vcdm/hash/Sha256.ts!';
 
 /**
  * Represents the result of an [SHA256](https://en.wikipedia.org/wiki/SHA-2) hash operation.

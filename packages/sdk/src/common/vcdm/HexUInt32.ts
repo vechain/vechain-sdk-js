@@ -4,7 +4,7 @@ import { IllegalArgumentError } from '@common/errors';
 /**
  * Full Qualified Path
  */
-const FQP = 'packages/sdk/src/vcdm/HexUInt32.ts!';
+const FQP = 'packages/sdk/src/common/vcdm/HexUInt32.ts!';
 
 /**
  * Represents a 32-byte hexadecimal unsigned integer.

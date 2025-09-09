@@ -1,0 +1,112 @@
+---
+title: "@thor.thorest.model"
+---
+classDiagram
+    namespace transactions_model {
+        class TxMeta {
+            Hex blockID
+            number blockNumber
+            number blockTimeStamp
+            constructor(TxMetaJSON json)
+            TxMetaJSON toJSON()
+        }
+    }
+    class Clause {
+        Address|null to
+        bigint value
+        Hex|null data
+        string|null comment
+        string|null abi
+        constructor(Address|null to, bigint value, Hex|null, data, string|null comment, string|null abi)
+        of(ClauseJSON: json)$
+        ClauseJSON toJSON()
+    }
+    class Event {
+        Address address
+        Hex[] topics
+        Hex data
+        constructor(EventJSON event)
+        EventJSON toJSON()
+    }
+    class Output {
+        Address contractAddress
+        Event[] events
+        Transfer[] transfers
+        contructor(OutputJSON json)
+        OutputJSON toJSON()
+    }
+    class Receipt {
+        number|null type
+        bigint gasUsed
+        Address gasPayer
+        bigint paid
+        bigint reward
+        boolean reverted
+        Output[] outputs
+        constructor(ReceiptJSON json)
+        ReceiptJSON toJSON()
+    }
+    class ReceiptMeta {
+        Hex txID
+        Address txOrigin
+        constructor(ReceiptMetaJSON json)
+        ReceiptMetaJSON toJSON()
+    }
+    class SignedTransactionRequest {
+        constructor(SignedTransactionRequestParam param)
+    }
+    class SignedTransactionRequestParam {
+        <<interface>>
+        Address origin
+        Uint8Array originSignature
+        Uint8Array signature
+    }
+    class SponsoredTransactionRequestParam {
+        <<interface>>
+        Address gasPayer
+        Uint8Array gasPayerSignature
+    }
+    class SponsoredTransactionRequest {
+        constructor(SponsoredTransactionRequestParam: param)
+    }
+    class TransactionRequest {
+        constructor(TransactionRequestParam param)
+    }
+    class TransactionRequestParams {
+        <<interface>>
+        Hex blockRef
+        number chainTag
+        Clause[] clause
+        Hex|null dependsOn
+        number expiration
+        bigint gas
+        bigint gasPriceCoef
+        number nonce
+        boolean isIntendedToBeSponsored?
+    }
+    class Transfer {
+        Address sender
+        Address recipient
+        bigint ammount
+        constructor(TransferJSON: json)
+        TransferJSON`toJSON()
+    }
+    namespace signer {
+        class Signer {
+            <<interface>>
+            Address address
+            SignedTransactionRequest|SponsoredTransactionRequest sign(TransactionRequest|SignedTransactionRequest request)
+        }
+    }
+    TransactionRequestParams <|.. TransactionRequest
+    SignedTransactionRequestParam <|.. SignedTransactionRequest
+    SponsoredTransactionRequestParam <|.. SponsoredTransactionRequest
+    TransactionRequest <|-- SignedTransactionRequest
+    SignedTransactionRequest <-- SponsoredTransactionRequest
+    TransactionRequestParams <|-- SignedTransactionRequestParam
+    SignedTransactionRequestParam <|-- SponsoredTransactionRequestParam
+    TxMeta <|-- ReceiptMeta
+    TransactionRequest "1. SignedTransactionRequest sign(TransactionRequest request)" <-- Signer
+    SignedTransactionRequest "3. SponsoredTransactionRequest sign(SignedTransactionRequest request)" <-- Signer
+    SignedTransactionRequest "2. SignedTransactionRequest sign(TransactionRequest request)" --> Signer
+    SponsoredTransactionRequest "4. SponsoredTransactionRequest sign(SignedTransactionRequest request)" --> Signer

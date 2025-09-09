@@ -10,7 +10,7 @@ import {
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/sdk/src/thor/fees/SuggestPriorityFee.ts!';
+const FQP = 'packages/sdk/src/thor/thorest/fees/methods/SuggestPriorityFee.ts!';
 
 /**
  * [Suggest a priority fee for a transaction to be included in a block](http://localhost:8669/doc/stoplight-ui/#/paths/fees-priority/get)

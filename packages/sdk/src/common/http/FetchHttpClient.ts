@@ -4,8 +4,9 @@ import { type HttpQuery, type HttpPath, type HttpClient } from '@common/http';
 import { isValidNetworkUrl } from '@thor/thorest';
 import { type HttpOptions } from './HttpOptions';
 import { CookieStore } from './CookieStore';
+import { log, type LogItem } from '@common/logging';
 
-const FQP = 'packages/sdk/src/http/FetchHttpClient.ts';
+const FQP = 'packages/sdk/src/common/http/FetchHttpClient.ts';
 
 // Types for dependency injection
 type RequestConstructor = typeof Request;
@@ -40,14 +41,6 @@ class FetchHttpClient implements HttpClient {
         requestConstructor: RequestConstructor = Request,
         fetchFunction: FetchFunction = fetch
     ) {
-        // Validate baseURL
-        if (!isValidNetworkUrl(baseURL)) {
-            throw new IllegalArgumentError(
-                `${FQP}FetchHttpClient.constructor(baseURL: URL, onRequest: (request: Request) => Request,onResponse: (response: Response) => Response): FetchHttpClient)`,
-                'Invalid network URL. Only ThorNetworks URLs are allowed.',
-                { baseURL }
-            );
-        }
         if (!baseURL.pathname.endsWith(FetchHttpClient.PATH_SEPARATOR)) {
             baseURL.pathname += FetchHttpClient.PATH_SEPARATOR;
         }
@@ -175,6 +168,7 @@ class FetchHttpClient implements HttpClient {
         const response = await this.fetchFunction(
             this.options.onRequest?.(request) ?? request
         );
+        await this.logResponse(request, response);
         return (
             this.options.onResponse?.(this.processResponse(response)) ??
             response
@@ -209,10 +203,58 @@ class FetchHttpClient implements HttpClient {
         const response = await this.fetchFunction(
             this.options.onRequest?.(request) ?? request
         );
+        await this.logResponse(request, response);
         return (
             this.options.onResponse?.(this.processResponse(response)) ??
             response
         );
+    }
+
+    /**
+     * Logs the request and response details.
+     * @param request - The request to log.
+     * @param response - The response to log.
+     */
+    private async logResponse(
+        request: Request,
+        response: Response
+    ): Promise<void> {
+        try {
+            const requestClone = request != null ? request.clone() : undefined;
+            const responseClone =
+                response != null ? response.clone() : undefined;
+            const requestDetails = {
+                method: requestClone?.method,
+                url: requestClone?.url,
+                body: await requestClone?.text()
+            };
+            const responseDetails = {
+                statusCode: response?.status,
+                statusText: response?.statusText,
+                body: await responseClone?.text()
+            };
+            // compute log level based on response status
+            // if response is undefined, log as warning
+            // if response status is >= 400, log as error
+            // otherwise, log as debug
+            const logLevel =
+                response === undefined
+                    ? 'warn'
+                    : response?.status >= 400
+                      ? 'error'
+                      : 'debug';
+            const logItem: LogItem = {
+                verbosity: logLevel,
+                message: 'HTTP Response',
+                source: 'FetchHttpClient',
+                context: {
+                    data: { request: requestDetails, response: responseDetails }
+                }
+            };
+            log(logItem);
+        } catch (err) {
+            console.error('❌ FetchHttpClient.logResponse failed:', err);
+        }
     }
 }
 

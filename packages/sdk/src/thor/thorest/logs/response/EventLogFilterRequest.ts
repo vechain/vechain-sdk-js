@@ -1,12 +1,17 @@
 import {
     FilterOptionsRequest,
     EventCriteriaRequest,
-    FilterRangeRequest
+    FilterRangeRequest,
+    type LogSort
 } from '@thor/thorest';
 import { type EventLogFilterRequestJSON } from '@thor/thorest/json';
+import { type EventLogFilter } from '@thor/thor-client/model/logs/EventLogFilter';
 
-import { EventLogFilter } from '@thor/thor-client/model/logs/EventLogFilter';
-import { LogSort } from './LogSort';
+/**
+ * Full-Qualified-Path
+ */
+const FQP =
+    'packages/sdk/src/thor/thorest/logs/response/EventLogFilterRequest.ts!';
 
 /**
  * Overall filter request for event logs.

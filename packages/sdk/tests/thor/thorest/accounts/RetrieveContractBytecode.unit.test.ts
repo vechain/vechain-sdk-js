@@ -91,7 +91,7 @@ describe('RetrieveContractBytecode unit tests', () => {
 
                 expect(thorError.message).toBe('Bad response.');
                 expect(thorError.fqn).toBe(
-                    'packages/sdk/src/thor/accounts/RetrieveContractBytecode.ts!askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveContractBytecode, ContractBytecode>>'
+                    'packages/sdk/src/thor/thorest/accounts/methods/RetrieveContractBytecode.ts!askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveContractBytecode, ContractBytecode>>'
                 );
                 expect(thorError.status).toBe(400);
                 expect(thorError.args).toEqual({

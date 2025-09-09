@@ -5,7 +5,7 @@ import { IllegalArgumentError } from '@common/errors';
 /**
  * Full Qualified Path
  */
-const FQP = 'packages/sdk/src/vcdm/Revision.ts!';
+const FQP = 'packages/sdk/src/common/vcdm/Revision.ts!';
 
 /**
  * Represents a revision for a Thor transaction or block.

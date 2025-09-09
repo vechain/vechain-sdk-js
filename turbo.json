@@ -1,32 +1,61 @@
 {
-    "$schema": "https://turbo.build/schema.json",
-    "tasks": {
-        "build": {
-            "dependsOn": ["^build"]
-        },
-        "check:circular-dependencies": {},
-        "test": {
-            "outputs": ["coverage/**"],
-            "dependsOn": ["^build"]
-        },
-        "test:unit": {
-            "outputs": ["coverage/**"],
-            "dependsOn": ["^build"]
-        },
-        "test:browser": {
-            "outputs": ["coverage/**"],
-            "dependsOn": ["^build"]
-        },
-        "test:integration":{
-            "outputs": ["coverage/**"],
-            "dependsOn": ["^build"]
-        },
-        "lint": {
-            "dependsOn": ["^build"]
-        },
-        "format": {},
-        "test:examples": {
-            "dependsOn": ["^build"]
-        }
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "check:circular-dependencies": {},
+    "test": {
+      "outputs": [
+        "coverage/**"
+      ],
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "test:unit": {
+      "outputs": [
+        "coverage/**"
+      ],
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "test:browser": {
+      "outputs": [
+        "coverage/**"
+      ],
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "test:integration": {
+      "outputs": [
+        "coverage/**"
+      ],
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "lint": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "format": {},
+    "test:examples": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
     }
+  }
 }

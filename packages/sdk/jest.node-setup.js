@@ -2,6 +2,7 @@
 require('whatwg-fetch');
 const fetchMock = require('jest-fetch-mock');
 const WebSocket = require('ws');
+const { LoggerRegistry, PrettyLogger } = require('@common/logging');
 
 // Don't auto-enable fetch mocks
 fetchMock.dontMock();
@@ -49,3 +50,15 @@ if (typeof global.CloseEvent === 'undefined') {
         }
     };
 } 
+
+// Setup the logger to use for tests
+beforeAll(() => {
+    LoggerRegistry.getInstance().registerLogger(new PrettyLogger());
+});
+
+// Clear and reset the logger after each test
+// This is to avoid the logger being polluted by other tests
+afterEach(() => {
+    LoggerRegistry.getInstance().clearRegisteredLogger();
+    LoggerRegistry.getInstance().registerLogger(new PrettyLogger());
+});
