@@ -1,10 +1,8 @@
 import fastJsonStableStringify from 'fast-json-stable-stringify';
-import { IllegalArgumentError } from '../errors/IllegalArgumentError';
 import { type HttpQuery, type HttpPath, type HttpClient } from '@common/http';
-import { isValidNetworkUrl } from '@thor/thorest';
 import { type HttpOptions } from './HttpOptions';
 import { CookieStore } from './CookieStore';
-import { log, type LogItem } from '@common/logging';
+import { log, type LogItemWithVerbosity } from '@common/logging';
 
 const FQP = 'packages/sdk/src/common/http/FetchHttpClient.ts';
 
@@ -243,7 +241,7 @@ class FetchHttpClient implements HttpClient {
                     : response?.status >= 400
                       ? 'error'
                       : 'debug';
-            const logItem: LogItem = {
+            const logItem: LogItemWithVerbosity = {
                 verbosity: logLevel,
                 message: 'HTTP Response',
                 source: 'FetchHttpClient',
@@ -251,7 +249,7 @@ class FetchHttpClient implements HttpClient {
                     data: { request: requestDetails, response: responseDetails }
                 }
             };
-            log(logItem);
+            log.raw(logItem);
         } catch (err) {
             console.error('❌ FetchHttpClient.logResponse failed:', err);
         }

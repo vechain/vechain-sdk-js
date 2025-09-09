@@ -13,6 +13,7 @@ import {
     createWalletClient,
     type PrepareTransactionRequestRequest
 } from '@viem/clients';
+import { log } from '@common/logging';
 
 /**
  * @group integration/clients
@@ -73,7 +74,7 @@ describe('WalletClient SOLO tests', () => {
             const raw = await walletClient.signTransaction(tx);
             const txid = (await SendTransaction.of(raw.bytes).askTo(httpClient))
                 .response.id;
-            console.log(txid.toString());
+            log.debug({ message: txid.toString() });
         });
     });
 
@@ -105,7 +106,7 @@ describe('WalletClient SOLO tests', () => {
                 account
             });
             const txid = await walletClient.sendTransaction(request);
-            console.log(txid.toString());
+            log.debug({ message: txid.toString() });
         });
     });
 });

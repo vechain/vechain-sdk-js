@@ -88,13 +88,24 @@ However if your registered logger is using a log framework, you may choose to lo
 An example calling the `log` function:
 
 ```typescript
-log({ verbosity: 'info', message: 'my log message', source: 'test', context: { data: { key: 'value' } } });
+log.raw({ verbosity: 'info', message: 'my log message', source: 'test', context: { data: { key: 'value' } } });
 ```
 
 - `verbosity` : The log level
 - `message` : The log message
 - `source` : (optional) The source of the log message, for example a fully qualified path of the source code
 - `context` : (optional) An object the app was processing at the time
+
+Shortcuts are then available for each log level:
+
+```typescript
+log.debug({message: 'my log message', source: 'test', context: { data: { key: 'value' } } })
+log.info
+log.warn
+log.error
+```
+
+`log.raw` allows to specify the logged verbosity as a parameter
 
 ## On The Fly Config Changes
 
