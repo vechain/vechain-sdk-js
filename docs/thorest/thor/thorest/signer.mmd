@@ -28,7 +28,7 @@ classDiagram
         }
     }
     class RLPCodec {
-        TransactionRequest|SignedTransactionRequest|SponsoredTransactionRequest decode(Uint8Array encded)
+        TransactionRequest|SignedTransactionRequest|SponsoredTransactionRequest decode(Uint8Array encoded)
         Uint8Array encode(TransactionRequest|SignedTransactionRequest|SponsoredTransactionRequest transactionRequest)
     }
     class PrivateKeySigner {
