@@ -5,47 +5,40 @@ import {
     TransferLogsResponse
 } from '@thor/thorest';
 import { FetchHttpClient } from '@common/http';
-import { type TransferLogFilterRequestJSON } from '@thor/thorest/json';
+import { TransferLogFilter } from '@thor/thor-client/model/logs/TransferLogFilter';
+import { FilterRangeUnits } from '@thor/thorest/logs/response/FilterRangeUnits';
+import { FilterRange } from '@thor/thor-client/model/logs/FilterRange';
+import { LogSort } from '@thor/thor-client/model/logs/LogSort';
 
 /**
- * group integration/thor/logs
+ * @group solo
  */
 describe('QueryVETTransferEvents SOLO tests', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
 
     test('ok <- askTo - not empty', async () => {
-        const request = {
-            range: {
-                unit: 'block',
-                from: 0,
-                to: 100
-            },
-            options: {
-                offset: 0,
-                limit: 10,
-                includeIndexes: true
-            },
-            order: 'desc'
-        } satisfies TransferLogFilterRequestJSON;
-        const actual = (
-            await QueryVETTransferEvents.of(request).askTo(httpClient)
-        ).response;
+        const filter = new TransferLogFilter(
+            new FilterRange(FilterRangeUnits.block, 0, 100),
+            null,
+            null,
+            LogSort.desc
+        );
+        const request = QueryVETTransferEvents.of(filter);
+        const actual = (await request.askTo(httpClient)).response;
         expect(actual).toBeDefined();
         expect(actual).toBeInstanceOf(TransferLogsResponse);
         expect(actual.length).toBeGreaterThan(0);
     });
 
     test('ok <- askTo - empty', async () => {
-        const request = {
-            range: {
-                unit: 'block',
-                from: 0,
-                to: 0
-            }
-        } satisfies TransferLogFilterRequestJSON;
-        const actual = (
-            await QueryVETTransferEvents.of(request).askTo(httpClient)
-        ).response;
+        const filter = new TransferLogFilter(
+            new FilterRange(FilterRangeUnits.block, 0, 0),
+            null,
+            null,
+            null
+        );
+        const request = QueryVETTransferEvents.of(filter);
+        const actual = (await request.askTo(httpClient)).response;
         expect(actual).toBeDefined();
         expect(actual).toBeInstanceOf(TransferLogsResponse);
         expect(actual.length).toBe(0);

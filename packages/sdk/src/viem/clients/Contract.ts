@@ -2,14 +2,14 @@ import {
     type Abi,
     encodeFunctionData,
     decodeFunctionResult,
-    getEventSelector
+    toEventSelector
 } from 'viem';
 import { type Address, Hex } from '@common/vcdm';
 import { type PublicClient, type WalletClient } from '@viem/clients';
 import { type ExecuteCodesRequestJSON } from '@thor/thorest/json';
-import { type EventLogResponse } from '@thor/thorest/logs/response';
 import { type SubscriptionEventResponse } from '@thor/thorest/subscriptions/response';
 import { type ExecuteCodesResponse } from '@thor/thorest/accounts/response';
+import { DecodedEventLog } from '@thor/thor-client/model/logs/DecodedEventLog';
 
 // Type alias for hex-convertible values
 type HexConvertible = string | number | bigint;
@@ -88,14 +88,14 @@ export interface Contract<TAbi extends Abi> {
             /** Get historical event logs */
             getLogs: (options?: {
                 args?: FunctionArgs;
-                fromBlock?: string | number;
-                toBlock?: string | number;
-            }) => Promise<EventLogResponse[]>;
+                fromBlock?: bigint;
+                toBlock?: bigint;
+            }) => Promise<DecodedEventLog[]>;
             /** Create event filter */
             createEventFilter: (options?: {
                 args?: FunctionArgs;
-                fromBlock?: string | number;
-                toBlock?: string | number;
+                fromBlock?: bigint;
+                toBlock?: bigint;
             }) => unknown; // EventFilter type
         }
     >;
@@ -171,14 +171,14 @@ function getContract<const TAbi extends Abi>({
             }) => () => void;
             getLogs: (options?: {
                 args?: FunctionArgs;
-                fromBlock?: string | number;
-                toBlock?: string | number;
-            }) => Promise<EventLogResponse[]>;
+                fromBlock?: bigint;
+                toBlock?: bigint;
+            }) => Promise<DecodedEventLog[]>;
             createEventFilter: (options?: {
                 args?: FunctionArgs;
-                fromBlock?: string | number;
-                toBlock?: string | number;
-            }) => unknown;
+                fromBlock?: bigint;
+                toBlock?: bigint;
+            }) => unknown; // EventFilter type
         }
     > = {};
 
@@ -355,7 +355,7 @@ function getContract<const TAbi extends Abi>({
         else if (abiItem.type === 'event' && publicClient != null) {
             const eventName = abiItem.name;
             // Get event signature using viem's getEventSelector
-            const eventSignature = getEventSelector(abiItem);
+            const eventSignature = toEventSelector(abiItem);
 
             contract.events[eventName] = {
                 // Watch for contract events
@@ -403,57 +403,27 @@ function getContract<const TAbi extends Abi>({
                 // Get historical event logs
                 getLogs: async (options = {}) => {
                     const { args, fromBlock, toBlock } = options;
-
-                    // Create topics array starting with event signature
-                    const topics: Array<Hex | null> = [Hex.of(eventSignature)];
-
-                    // Add indexed arguments if provided
-                    if (args != null && args.length > 0) {
-                        const indexedInputs = abiItem.inputs.filter(
-                            (input) => input.indexed
-                        );
-
-                        for (
-                            let i = 0;
-                            i < Math.min(args.length, indexedInputs.length);
-                            i++
-                        ) {
-                            if (args[i] !== undefined) {
-                                topics.push(Hex.of(args[i] as HexConvertible));
-                            } else {
-                                topics.push(null);
-                            }
-                        }
-                    }
-
-                    // Call PublicClient's getLogs with properly typed parameters
-                    return await publicClient.getLogs({
+                    const filter = publicClient.createEventFilter({
                         address,
-                        topics: topics as Hex[],
-                        // Convert block numbers to Hex if provided
-                        fromBlock:
-                            fromBlock !== undefined
-                                ? Hex.of(fromBlock as HexConvertible)
-                                : undefined,
-                        toBlock:
-                            toBlock !== undefined
-                                ? Hex.of(toBlock as HexConvertible)
-                                : undefined
+                        event: abiItem,
+                        args: args as Hex[] | undefined,
+                        fromBlock,
+                        toBlock
                     });
+                    return await publicClient.getLogs(filter);
                 },
 
                 // Create event filter - viem compatibility
                 createEventFilter: (options = {}) => {
                     const { args, fromBlock, toBlock } = options;
-
-                    // Create event filter using PublicClient
-                    return publicClient.createEventFilter({
+                    const filter = publicClient.createEventFilter({
                         address,
-                        event: Hex.of(eventSignature),
+                        event: abiItem,
                         args: args as Hex[] | undefined,
-                        fromBlock: fromBlock as HexConvertible | undefined,
-                        toBlock: toBlock as HexConvertible | undefined
+                        fromBlock,
+                        toBlock
                     });
+                    return filter;
                 }
             };
         }

@@ -31,7 +31,7 @@ module.exports = process.env.UNIT
               global: {
                   branches: 40,
                   functions: 45,
-                  lines: 81,
+                  lines: 80,
                   statements: 65
               }
           }

@@ -86,6 +86,13 @@ class RetrieveAccountDetails
         );
     }
 
+    /**
+     * Creates an instance of RetrieveAccountDetails using the provided address and revision.
+     *
+     * @param {Address} [address] - The address used to generate the account details' path.
+     * @param {Revision} [revision] - The revision to be set. If not provided, no revision query parameter will be added.
+     * @return {RetrieveAccountDetails} A new instance of RetrieveAccountDetails with the specified path and query.
+     */
     static of(address: Address, revision?: Revision): RetrieveAccountDetails {
         return new RetrieveAccountDetails(
             new RetrieveAccountDetailsPath(address),
@@ -94,6 +101,11 @@ class RetrieveAccountDetails
     }
 }
 
+/**
+ * Retrieve Account Details Path
+ *
+ * Represents a path for retrieving account details.
+ */
 class RetrieveAccountDetailsPath implements HttpPath {
     readonly address: Address;
 

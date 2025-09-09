@@ -1,6 +1,7 @@
 import { type RegularBlockResponse } from '@vechain/sdk/thor';
 import * as fs from 'fs';
 import * as path from 'path';
+import { fileURLToPath } from 'url';
 
 // Define the config structure type
 export interface ConfigData {
@@ -12,13 +13,18 @@ export interface ConfigData {
     SEED_VTHO_TX_ID: string;
     SEED_TEST_TOKEN_TX_ID: string;
     TEST_TOKEN_ADDRESS: string;
+    EVENTS_CONTRACT_ADDRESS: string;
+    EVENTS_CONTRACT_ABI: any[];
 }
 
 // Get the config file path in the current working directory
 const getConfigPath = (): string => {
-    // Use the original working directory passed from the CLI, or fall back to current working directory
-    const targetDir = process.env.SOLO_SETUP_ORIGINAL_CWD || process.cwd();
-    return path.join(targetDir, 'config.json');
+    const filename = fileURLToPath(import.meta.url);
+    const dirname = path.dirname(filename);
+    const configPath =
+        process.env.SOLO_SETUP_ORIGINAL_CWD ??
+        path.resolve(dirname, '../config.json');
+    return configPath;
 };
 
 /**
@@ -29,7 +35,7 @@ const getConfigData = (): ConfigData => {
 
     if (!fs.existsSync(configPath)) {
         throw new Error(
-            'Configuration file not found. Please run "solo-setup seed" to deploy contracts and generate configuration.'
+            `Configuration file not found at ${configPath}. Please run "solo-setup seed" to deploy contracts and generate configuration.`
         );
     }
 
@@ -54,10 +60,15 @@ function setConfig(
     seedVetTxId: string,
     seedVthoTxId: string,
     testTokenAddress: string,
-    seedTestTokenTxId: string
+    seedTestTokenTxId: string,
+    eventsContractAddress: string,
+    eventsContractABI: string | any[]
 ): void {
     const parsedAbi = typeof abi === 'string' ? JSON.parse(abi) : abi;
-
+    const parsedEventsContractAbi =
+        typeof eventsContractABI === 'string'
+            ? JSON.parse(eventsContractABI)
+            : eventsContractABI;
     const configData: ConfigData = {
         TESTING_CONTRACT_ADDRESS: address,
         TESTING_CONTRACT_ABI: parsedAbi,
@@ -66,7 +77,9 @@ function setConfig(
         SEED_VET_TX_ID: seedVetTxId,
         SEED_VTHO_TX_ID: seedVthoTxId,
         SEED_TEST_TOKEN_TX_ID: seedTestTokenTxId,
-        TEST_TOKEN_ADDRESS: testTokenAddress
+        TEST_TOKEN_ADDRESS: testTokenAddress,
+        EVENTS_CONTRACT_ADDRESS: eventsContractAddress,
+        EVENTS_CONTRACT_ABI: parsedEventsContractAbi
     };
 
     const configPath = getConfigPath();
