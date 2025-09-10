@@ -54,6 +54,7 @@ classDiagram
     }
     class SignedTransactionRequest {
         constructor(SignedTransactionRequestParam param)
+        SignedTransactionRequestJSON toJSON()
     }
     class SignedTransactionRequestParam {
         <<interface>>
@@ -68,9 +69,11 @@ classDiagram
     }
     class SponsoredTransactionRequest {
         constructor(SponsoredTransactionRequestParam: param)
+        SponsoredTransactionRequestJSON toJSON()
     }
     class TransactionRequest {
         constructor(TransactionRequestParam param)
+        TransactionRequestJSON toJSON()
     }
     class TransactionRequestParams {
         <<interface>>

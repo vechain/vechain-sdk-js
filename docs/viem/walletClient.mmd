@@ -1,0 +1,91 @@
+---
+title: "@viem.clients.walletClient"
+---
+classDiagram
+    class CreateEventFilterParams {
+        Address|Address[] address
+        AbiEvent event
+        Hex[] args
+        bigint fromBlock
+        bigint toBlock
+    }
+    class GetFilterChangesParams {
+        <<interface>>
+        Filter filter
+    }
+    class GetFilterLogParams {
+        <<interface>>
+        Filter filter
+    }
+    class PrepareTransactionRequestRequest {
+        <<interface>>
+        Address to
+        Hex|number value
+        Hex data
+        string comment
+        Hex abi
+        Hex blockRef
+        number chainTag
+        Hex dependsOn
+        number expiration
+        Hex|number gas
+        number gasPriceCoef
+        number nonce
+        boolean isIntendedToBeSponsored
+    }
+    class PublicClient {
+        URL|ThorNetwork network
+        constructor(URL|ThorNetwork network, HttpClient transport)
+        Promise~ExecuteCodesResponse~ call(ExecuteCodesRequestJSON request)
+        Promise~BlockFilter~ createBlockFilter()
+        EventFilter createEventFilter(CreateEventFilterParams params)
+        PendingTransactionFilter createPendingTransactionFilter()
+        Promise~bigint~ getBalance(Address address)
+        Promise~ExpandedBlockResponse|RawTx|RegularBlockResponse|null~ getBlock(BlockRevision revision, BlockReponseType type)
+        Promise~number|undefined~ getBlockNumber(BlockRevision revision)
+        Promise~number|undefined~ getBlockTransactionCount(BlockRevision revision)
+        Promise~Hex|undefined~ getBytecode(Address address)
+        Promise~bigint~ getChainId()
+        Promise~ex|undefined~ getCode(Address address)
+        Promise~FeeHistory~ getFeeHistory(number blockCount)
+        Promise~Array~DecodedEventLog|string~~ getFilterChanges(GetFilterChangesParams params)
+        Promise~DecodedEventLog[]~ getFilterLogs(GetFilterLogParams params)
+        Promise~bigint[]~ getGasPrice()
+        Promise~DecodedEventLog[]~ getLogs(EventFilter eventFilter)
+        Promise~number~ getNonce(Address address)
+        Promise~Hex~ getStorageAt(Address address, Hex slot)
+        Promise~GetTxResponse|null~ getTransaction(hash: Hex)
+        Promise~number~ getTransactionCount(Address address)
+        Promise~GetTxReceiptResponse|null~ getTransactionReceipt(Hex hash)
+        Promise~bigint|undefined~ estimateFeePerGas()
+        Promise~EstimatedGas[]~ estimateGas(ExecuteCodesRequestJSON request)
+        Promise~ExecuteCodesResponse~ simulateCalls(ExecuteCodesRequestJSON request)
+        Promise~bigint~ suggestPriorityFeeRequest()
+        void unistallFilter(BeatsSubscription|BlocksSubscription|EventsSubscription|NewTransactionSubscription|TransfersSubscription subscription)
+        BlocksSubscription watchBlocks(Hex pos)
+        BlocksSubscription watchBlockNumber()
+        void watchEvent(WatchEventParams params)
+    }
+    class WatchEventParams {
+        <<interface>>
+        Function~SubscriptionEventResponse[] logs~ onLogs
+        Function~Error error~ onError
+        Address address;
+        Hex event
+        Hex[] args
+        Hex fromBlock
+    }
+    class WalletClient {
+        constructor(URL|ThorNeetwork network, HttpClient transport, Account|null account)
+        Address[] getAddresses()
+        TransactionRequest prepareTransactionRequest(PrepareTransactionRequestRequest request)
+        Promise~Hex~ sendRawTransaction(Hex raw)
+        Promise~Hex~ sendTransaction(PrepareTransactionRequestRequest|SignedTransactionRequest request)
+        Promise~Hex~ signTransaction(PrepareTransactionRequestRequest|SignedTransactionRequest request)
+    }
+    PublicClient <|-- WalletClient
+    CreateEventFilterParams "PublicClient.createEventFilter(...)" -- PublicClient
+    GetFilterChangesParams "PublicClient.getFilterChanges(...)" -- PublicClient
+    GetFilterLogParams "PublicClient.getFilterLogs(...)" -- PublicClient
+    PrepareTransactionRequestRequest "WalletClient.sendTransaction() WalletClient.signTransaction(...)" -- WalletClient
+    WatchEventParams "PublicClient.watchEvent(...)" -- PublicClient
