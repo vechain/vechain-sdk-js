@@ -118,6 +118,8 @@ class PrivateKeySigner implements Signer {
                 nonce: transactionRequest.nonce,
                 isIntendedToBeSponsored:
                     transactionRequest.isIntendedToBeSponsored,
+                maxFeePerGas: transactionRequest.maxFeePerGas,
+                maxPriorityFeePerGas: transactionRequest.maxPriorityFeePerGas,
                 origin: this.address,
                 originSignature: signature,
                 signature
@@ -200,6 +202,9 @@ class PrivateKeySigner implements Signer {
                     gasPriceCoef: signedTransactionRequest.gasPriceCoef,
                     nonce: signedTransactionRequest.nonce,
                     isIntendedToBeSponsored: true,
+                    maxFeePerGas: signedTransactionRequest.maxFeePerGas,
+                    maxPriorityFeePerGas:
+                        signedTransactionRequest.maxPriorityFeePerGas,
                     origin: signedTransactionRequest.origin,
                     originSignature: signedTransactionRequest.originSignature,
                     gasPayer: this.address,
