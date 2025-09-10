@@ -9,7 +9,7 @@ import { type PublicClient, type WalletClient } from '@viem/clients';
 import { type ExecuteCodesRequestJSON } from '@thor/thorest/json';
 import { type SubscriptionEventResponse } from '@thor/thorest/subscriptions/response';
 import { type ExecuteCodesResponse } from '@thor/thorest/accounts/response';
-import { DecodedEventLog } from '@thor/thor-client/model/logs/DecodedEventLog';
+import { type DecodedEventLog } from '@thor/thor-client/model/logs/DecodedEventLog';
 
 // Type alias for hex-convertible values
 type HexConvertible = string | number | bigint;
@@ -227,11 +227,11 @@ function getContract<const TAbi extends Abi>({
                     // Call the contract
                     const response = await publicClient.call(request);
 
-                    if (response.length === 0) {
+                    if (response.items.length === 0) {
                         throw new Error('No response from contract call');
                     }
 
-                    const result = response[0].data;
+                    const result = response.items[0].data;
 
                     // Decode the result
                     if (abiItem.outputs != null && abiItem.outputs.length > 0) {
