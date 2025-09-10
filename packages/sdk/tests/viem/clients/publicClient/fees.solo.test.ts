@@ -236,24 +236,17 @@ describe('PublicClient - Fee Estimation Methods', () => {
     describe('estimateMaxPriorityFeePerGas', () => {
         test('should estimate max priority fee per gas', async () => {
             const priorityFeeResponse =
-                await publicClient.estimateMaxPriorityFeePerGas();
+                await publicClient.suggestPriorityFeeRequest();
 
             expect(priorityFeeResponse).toBeDefined();
-            expect(typeof priorityFeeResponse).toBe('object');
-            expect(priorityFeeResponse.maxPriorityFeePerGas).toBeDefined();
-            expect(typeof priorityFeeResponse.maxPriorityFeePerGas).toBe(
-                'bigint'
-            );
-            expect(
-                priorityFeeResponse.maxPriorityFeePerGas
-            ).toBeGreaterThanOrEqual(0n);
+            expect(typeof priorityFeeResponse).toBe('bigint');
+            expect(priorityFeeResponse).toBeDefined();
+            expect(priorityFeeResponse).toBeGreaterThanOrEqual(0n);
 
             log.debug({
-                message:
-                    'Priority Fee: ' +
-                    priorityFeeResponse.maxPriorityFeePerGas.toString(),
+                message: 'Priority Fee: ' + priorityFeeResponse.toString(),
                 context: {
-                    data: priorityFeeResponse.maxPriorityFeePerGas.toString()
+                    data: priorityFeeResponse.toString()
                 }
             });
         }, 10000);

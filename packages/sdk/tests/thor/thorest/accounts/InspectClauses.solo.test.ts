@@ -41,12 +41,12 @@ describe('InspectClauses solo tests', () => {
                 FetchHttpClient.at(new URL(ThorNetworks.SOLONET))
             )
         ).response;
-        expect(response.length).toBe(1);
-        expect(response[0].data.toString()).toBe(
+        expect(response.items.length).toBe(1);
+        expect(response.items[0].data.toString()).toBe(
             '0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001d6275696c74696e3a20696e73756666696369656e742062616c616e6365000000'
         );
-        expect(response[0].gasUsed).toBe(1071n);
-        expect(response[0].reverted).toBe(true);
-        expect(response[0].vmError).toBe('execution reverted');
+        expect(response.items[0].gasUsed).toBe(1071n);
+        expect(response.items[0].reverted).toBe(true);
+        expect(response.items[0].vmError).toBe('execution reverted');
     });
 });
