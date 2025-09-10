@@ -54,7 +54,7 @@
     "test:clients": "rm -rf ./coverageClients && jest --coverage --coverageDirectory=coverageClients --group=integration/clients",
     "test:clients:solo": "(yarn start-thor-solo && yarn seed-thor-solo && yarn test:clients && yarn stop-thor-solo) || yarn stop-thor-solo",
     "test:browser": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit --config ./jest.config.browser.js",
-    "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit --group=solo",
+    "test": "rm -rf ./coverage && jest --detectOpenHandles --coverage --coverageDirectory=coverage --group=integration --group=unit --group=solo",
     "test:group:solo": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=solo",
     "test:solo": "(yarn start-thor-solo && yarn seed-thor-solo && yarn test:group:solo && yarn stop-thor-solo) || yarn stop-thor-solo",
     "test:browser:solo": "(yarn start-thor-solo && yarn test:browser && yarn stop-thor-solo) || yarn stop-thor-solo"
