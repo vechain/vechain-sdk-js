@@ -2,6 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import { createPublicClient } from '@viem/clients';
 import { ThorNetworks } from '@thor/thorest';
 import { Hex, Address } from '@common/vcdm';
+import { log } from '@common/logging';
 
 /**
  * Test suite for PublicClient transaction-related functionality
@@ -87,9 +88,10 @@ describe('PublicClient - Transaction Methods', () => {
             expect(typeof count).toBe('number');
             expect(count).toBeGreaterThanOrEqual(0);
 
-            console.log(
-                `Transaction count for ${testAddress.toString()}: ${count}`
-            );
+            log.debug({
+                message: `Transaction count for ${testAddress.toString()}: ${count}`,
+                context: { data: count }
+            });
         });
 
         test('should retrieve transaction count for zero address', async () => {
@@ -99,7 +101,10 @@ describe('PublicClient - Transaction Methods', () => {
             expect(typeof count).toBe('number');
             expect(count).toBe(0);
 
-            console.log(`Transaction count for zero address: ${count}`);
+            log.debug({
+                message: `Transaction count for zero address: ${count}`,
+                context: { data: count }
+            });
         });
 
         test('should handle account not found error', async () => {
@@ -123,7 +128,10 @@ describe('PublicClient - Transaction Methods', () => {
             expect(typeof nonce).toBe('number');
             expect(nonce).toBeGreaterThanOrEqual(0);
 
-            console.log(`Nonce for ${testAddress.toString()}: ${nonce}`);
+            log.debug({
+                message: `Nonce for ${testAddress.toString()}: ${nonce}`,
+                context: { data: nonce }
+            });
         });
 
         test('should return same value as getTransactionCount', async () => {
@@ -144,9 +152,10 @@ describe('PublicClient - Transaction Methods', () => {
                 expect(typeof bytecode.toString()).toBe('string');
             }
 
-            console.log(
-                `Bytecode for ${testAddress.toString()}: ${bytecode?.toString() || 'undefined'}`
-            );
+            log.debug({
+                message: `Bytecode for ${testAddress.toString()}: ${bytecode?.toString() || 'undefined'}`,
+                context: { data: bytecode?.toString() || 'undefined' }
+            });
         });
 
         test('should return undefined for zero address', async () => {
@@ -168,9 +177,10 @@ describe('PublicClient - Transaction Methods', () => {
                 expect(typeof code.toString()).toBe('string');
             }
 
-            console.log(
-                `Code for ${testAddress.toString()}: ${code?.toString() || 'undefined'}`
-            );
+            log.debug({
+                message: `Code for ${testAddress.toString()}: ${code?.toString() || 'undefined'}`,
+                context: { data: code?.toString() || 'undefined' }
+            });
         });
 
         test('should return same value as getBytecode', async () => {
@@ -200,9 +210,10 @@ describe('PublicClient - Transaction Methods', () => {
             expect(typeof storageValue.toString()).toBe('string');
             expect(storageValue.toString()).toMatch(/^0x[0-9a-f]*$/i);
 
-            console.log(
-                `Storage at ${testAddress.toString()}, slot ${storageSlot.toString()}: ${storageValue.toString()}`
-            );
+            log.debug({
+                message: `Storage at ${testAddress.toString()}, slot ${storageSlot.toString()}: ${storageValue.toString()}`,
+                context: { data: storageValue.toString() }
+            });
         });
 
         test('should return default value for zero address', async () => {
@@ -229,7 +240,10 @@ describe('PublicClient - Transaction Methods', () => {
             expect(storageValue).toBeDefined();
             expect(typeof storageValue.toString()).toBe('string');
 
-            console.log(`Storage at slot 1: ${storageValue.toString()}`);
+            log.debug({
+                message: `Storage at slot 1: ${storageValue.toString()}`,
+                context: { data: storageValue.toString() }
+            });
         });
     });
 

@@ -1,7 +1,7 @@
-import { LogMeta } from '@thor/thorest/logs';
 import { Address, HexUInt } from '@common/vcdm';
 import { type SubscriptionTransferResponseJSON } from '@thor/thorest/subscriptions';
 import { IllegalArgumentError } from '@common/errors';
+import { LogMetaResponse } from '@thor/thorest';
 
 /**
  * Full-Qualified Path
@@ -38,7 +38,7 @@ class SubscriptionTransferResponse {
     /**
      * The log metadata associated with the transfer.
      */
-    readonly meta: LogMeta;
+    readonly meta: LogMetaResponse;
 
     /**
      * Constructs a new instance of the class by parsing the provided JSON object.
@@ -52,7 +52,7 @@ class SubscriptionTransferResponse {
             this.recipient = Address.of(json.recipient);
             this.amount = HexUInt.of(json.amount).bi;
             this.obsolete = json.obsolete;
-            this.meta = new LogMeta(json.meta);
+            this.meta = new LogMetaResponse(json.meta);
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: SubscriptionTransferResponseJSON)`,

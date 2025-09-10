@@ -35,6 +35,15 @@ async function main(): Promise<void> {
         const testTokenAddress = await testToken.getAddress();
         console.log(`TestingToken deployed with address: ${testTokenAddress}`);
 
+        // Deploy the events contract
+        const eventsContract = await ethers.deployContract('EventsContract');
+        await eventsContract.waitForDeployment();
+        const eventsContractAddress = await eventsContract.getAddress();
+        console.log(
+            `EventsContract deployed with address: ${eventsContractAddress}`
+        );
+        const eventsContractABI = getABI('EventsContract');
+
         // Initialize variables for network operations
         const genesisBlock = await getGenesisBlock();
 
@@ -56,7 +65,9 @@ async function main(): Promise<void> {
             seedVetTxId,
             seedVthoTxId,
             testTokenAddress,
-            seedTestTokenTxId
+            seedTestTokenTxId,
+            eventsContractAddress,
+            eventsContractABI
         );
 
         // Success summary

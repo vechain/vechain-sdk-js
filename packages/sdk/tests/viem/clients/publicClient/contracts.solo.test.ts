@@ -2,6 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import { createPublicClient } from '@viem/clients';
 import { ThorNetworks } from '@thor/thorest';
 import { type ExecuteCodesRequestJSON } from '@thor/thorest/json';
+import { log } from '@common/logging';
 
 /**
  * Test suite for PublicClient contract/call-related functionality
@@ -72,10 +73,13 @@ describe('PublicClient - Contract/Call Methods', () => {
             expect(firstResult).toHaveProperty('gasUsed');
             expect(firstResult).toHaveProperty('reverted');
 
-            console.log('Contract call result:', {
-                data: firstResult.data,
-                gasUsed: firstResult.gasUsed,
-                reverted: firstResult.reverted
+            log.debug({
+                message: 'Contract call result',
+                context: {
+                    data: firstResult.data,
+                    gasUsed: firstResult.gasUsed,
+                    reverted: firstResult.reverted
+                }
             });
         });
 
@@ -92,10 +96,13 @@ describe('PublicClient - Contract/Call Methods', () => {
                 expect(clauseResult).toHaveProperty('gasUsed');
                 expect(clauseResult).toHaveProperty('reverted');
 
-                console.log(`Clause ${index} result:`, {
-                    data: clauseResult.data,
-                    gasUsed: clauseResult.gasUsed,
-                    reverted: clauseResult.reverted
+                log.debug({
+                    message: `Clause ${index} result`,
+                    context: {
+                        data: clauseResult.data,
+                        gasUsed: clauseResult.gasUsed,
+                        reverted: clauseResult.reverted
+                    }
                 });
             });
         });
@@ -113,10 +120,13 @@ describe('PublicClient - Contract/Call Methods', () => {
             expect(firstResult).toHaveProperty('reverted');
 
             // Transfer might revert in test environment due to insufficient balance
-            console.log('Transfer call result:', {
-                data: firstResult.data,
-                gasUsed: firstResult.gasUsed,
-                reverted: firstResult.reverted
+            log.debug({
+                message: 'Transfer call result',
+                context: {
+                    data: firstResult.data,
+                    gasUsed: firstResult.gasUsed,
+                    reverted: firstResult.reverted
+                }
             });
         });
     });
@@ -135,10 +145,13 @@ describe('PublicClient - Contract/Call Methods', () => {
             expect(firstResult).toHaveProperty('gasUsed');
             expect(firstResult).toHaveProperty('reverted');
 
-            console.log('Contract simulation result:', {
-                data: firstResult.data,
-                gasUsed: firstResult.gasUsed,
-                reverted: firstResult.reverted
+            log.debug({
+                message: 'Contract simulation result',
+                context: {
+                    data: firstResult.data,
+                    gasUsed: firstResult.gasUsed,
+                    reverted: firstResult.reverted
+                }
             });
         });
 
@@ -155,10 +168,13 @@ describe('PublicClient - Contract/Call Methods', () => {
                 expect(clauseResult).toHaveProperty('gasUsed');
                 expect(clauseResult).toHaveProperty('reverted');
 
-                console.log(`Simulation clause ${index} result:`, {
-                    data: clauseResult.data,
-                    gasUsed: clauseResult.gasUsed,
-                    reverted: clauseResult.reverted
+                log.debug({
+                    message: `Simulation clause ${index} result`,
+                    context: {
+                        data: clauseResult.data,
+                        gasUsed: clauseResult.gasUsed,
+                        reverted: clauseResult.reverted
+                    }
                 });
             });
         });
@@ -203,10 +219,13 @@ describe('PublicClient - Contract/Call Methods', () => {
             const firstResult = result[0];
             expect(firstResult).toHaveProperty('reverted');
 
-            console.log('Invalid address call result:', {
-                data: firstResult.data,
-                gasUsed: firstResult.gasUsed,
-                reverted: firstResult.reverted
+            log.debug({
+                message: 'Invalid address call result',
+                context: {
+                    data: firstResult.data,
+                    gasUsed: firstResult.gasUsed,
+                    reverted: firstResult.reverted
+                }
             });
         });
 
@@ -232,10 +251,13 @@ describe('PublicClient - Contract/Call Methods', () => {
             const firstResult = result[0];
             expect(firstResult).toHaveProperty('reverted');
 
-            console.log('Invalid data call result:', {
-                data: firstResult.data,
-                gasUsed: firstResult.gasUsed,
-                reverted: firstResult.reverted
+            log.debug({
+                message: 'Invalid data call result',
+                context: {
+                    data: firstResult.data,
+                    gasUsed: firstResult.gasUsed,
+                    reverted: firstResult.reverted
+                }
             });
         });
 
@@ -261,10 +283,13 @@ describe('PublicClient - Contract/Call Methods', () => {
             const firstResult = result[0];
             expect(firstResult).toHaveProperty('gasUsed');
 
-            console.log('Low gas call result:', {
-                data: firstResult.data,
-                gasUsed: firstResult.gasUsed,
-                reverted: firstResult.reverted
+            log.debug({
+                message: 'Low gas call result',
+                context: {
+                    data: firstResult.data,
+                    gasUsed: firstResult.gasUsed,
+                    reverted: firstResult.reverted
+                }
             });
         });
     });

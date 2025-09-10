@@ -4,7 +4,8 @@ import {
     RetrieveStoragePositionValue,
     RetrieveStoragePositionValuePath,
     GetStorageResponse,
-    ThorError
+    ThorError,
+    RetrieveStoragePositionValueQuery
 } from '@thor/thorest';
 import {
     mockHttpClient,
@@ -85,7 +86,7 @@ describe('RetrieveStoragePositionValue unit tests', () => {
             const getSpy = jest.spyOn(mockClient, 'get');
             expect(getSpy).toHaveBeenCalledWith(
                 expect.any(RetrieveStoragePositionValuePath),
-                { query: '' }
+                expect.any(RetrieveStoragePositionValueQuery)
             );
 
             expect(result.request).toBe(request);

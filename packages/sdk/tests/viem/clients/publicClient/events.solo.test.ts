@@ -2,6 +2,8 @@ import { describe, expect, test } from '@jest/globals';
 import { createPublicClient } from '@viem/clients';
 import { ThorNetworks } from '@thor/thorest';
 import { Address, Hex } from '@common/vcdm';
+import { parseAbiItem } from 'viem';
+import { log } from '@common/logging';
 
 /**
  * Test suite for PublicClient event/log-related functionality
@@ -12,7 +14,7 @@ import { Address, Hex } from '@common/vcdm';
  * - createEventFilter
  * - getFilterLogs
  *
- * @group integration/clients
+ * @group solo
  */
 describe('PublicClient - Events/Logs Methods', () => {
     const publicClient = createPublicClient({
@@ -26,22 +28,24 @@ describe('PublicClient - Events/Logs Methods', () => {
         '0xf077b491b355e64048ce21e3a6fc4751eeea77fa'
     );
 
-    // Transfer event signature: Transfer(address,address,uint256)
-    const transferEventSignature = Hex.of(
-        '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
+    // Transfer event signature
+    const transferEventSignature = parseAbiItem(
+        'event Transfer(address,address,uint256)'
     );
 
     describe('getLogs', () => {
         test('should retrieve logs with address filter', async () => {
-            const logs = await publicClient.getLogs({
+            const filter = publicClient.createEventFilter({
                 address: vthoContract
-                // Note: fromBlock/toBlock removed due to parsing issues with 'best'
             });
-
+            const logs = await publicClient.getLogs(filter);
             expect(logs).toBeDefined();
             expect(Array.isArray(logs)).toBe(true);
 
-            console.log(`Retrieved ${logs.length} logs for VTHO contract`);
+            log.debug({
+                message: `Retrieved ${logs.length} logs for VTHO contract`,
+                context: { data: logs.length }
+            });
 
             if (logs.length > 0) {
                 const firstLog = logs[0];
@@ -50,59 +54,73 @@ describe('PublicClient - Events/Logs Methods', () => {
                 expect(firstLog).toHaveProperty('data');
                 expect(firstLog).toHaveProperty('meta');
 
-                console.log('First log:', {
-                    address: firstLog.address,
-                    topics: firstLog.topics,
-                    data: firstLog.data
+                log.debug({
+                    message: 'First log:',
+                    context: {
+                        data: {
+                            address: firstLog.address,
+                            topics: firstLog.topics,
+                            data: firstLog.data
+                        }
+                    }
                 });
             }
         });
 
         test('should retrieve logs with multiple addresses', async () => {
             const addresses = [vthoContract, testAddress];
-
-            const logs = await publicClient.getLogs({
+            const filter = publicClient.createEventFilter({
                 address: addresses
-                // Note: fromBlock/toBlock removed due to parsing issues
             });
+            const logs = await publicClient.getLogs(filter);
 
             expect(logs).toBeDefined();
             expect(Array.isArray(logs)).toBe(true);
 
-            console.log(`Retrieved ${logs.length} logs for multiple addresses`);
+            log.debug({
+                message: `Retrieved ${logs.length} logs for multiple addresses`,
+                context: { data: logs.length }
+            });
         });
 
         test('should retrieve logs with topic filter', async () => {
-            const logs = await publicClient.getLogs({
+            const filter = publicClient.createEventFilter({
                 address: vthoContract,
-                topics: [transferEventSignature]
-                // Note: fromBlock/toBlock removed due to parsing issues
+                event: transferEventSignature
             });
+            const logs = await publicClient.getLogs(filter);
 
             expect(logs).toBeDefined();
             expect(Array.isArray(logs)).toBe(true);
 
-            console.log(`Retrieved ${logs.length} Transfer event logs`);
+            log.debug({
+                message: `Retrieved ${logs.length} Transfer event logs`,
+                context: { data: logs.length }
+            });
 
             if (logs.length > 0) {
                 const firstLog = logs[0];
-                expect(firstLog.topics[0].toString()).toBe(
-                    transferEventSignature.toString()
+                expect(firstLog.eventLog.topics[0]).toBe(
+                    transferEventSignature
                 );
             }
         });
 
         test('should retrieve logs with block range', async () => {
-            const logs = await publicClient.getLogs({
+            const filter = publicClient.createEventFilter({
                 address: vthoContract,
-                fromBlock: 0,
-                toBlock: 100
+                fromBlock: BigInt(0),
+                toBlock: BigInt(100)
             });
+            const logs = await publicClient.getLogs(filter);
 
             expect(logs).toBeDefined();
             expect(Array.isArray(logs)).toBe(true);
 
-            console.log(`Retrieved ${logs.length} logs from blocks 0-100`);
+            log.debug({
+                message: `Retrieved ${logs.length} logs from blocks 0-100`,
+                context: { data: logs.length }
+            });
         });
 
         test('should handle empty results gracefully', async () => {
@@ -110,11 +128,10 @@ describe('PublicClient - Events/Logs Methods', () => {
             const nonExistentAddress = Address.of(
                 '0x1234567890123456789012345678901234567890'
             );
-
-            const logs = await publicClient.getLogs({
+            const filter = publicClient.createEventFilter({
                 address: nonExistentAddress
-                // Note: fromBlock/toBlock removed due to parsing issues
             });
+            const logs = await publicClient.getLogs(filter);
 
             expect(logs).toBeDefined();
             expect(Array.isArray(logs)).toBe(true);
@@ -123,7 +140,7 @@ describe('PublicClient - Events/Logs Methods', () => {
     });
 
     describe('createEventFilter', () => {
-        test('should create event filter with address', async () => {
+        test('should create event filter with address', () => {
             const filter = publicClient.createEventFilter({
                 address: vthoContract
             });
@@ -131,15 +148,18 @@ describe('PublicClient - Events/Logs Methods', () => {
             expect(filter).toBeDefined();
             expect(filter).toHaveProperty('id');
             expect(filter).toHaveProperty('type');
-            expect(filter).toHaveProperty('request');
+            expect(filter).toHaveProperty('filter');
             expect(filter.type).toBe('event');
             expect(typeof filter.id).toBe('string');
             expect(filter.id).toMatch(/^0x[0-9a-f]+$/i);
 
-            console.log('Created event filter:', filter.id);
+            log.debug({
+                message: 'Created event filter:',
+                context: { data: filter.id }
+            });
         });
 
-        test('should create event filter with event signature', async () => {
+        test('should create event filter with event signature', () => {
             const filter = publicClient.createEventFilter({
                 address: vthoContract,
                 event: transferEventSignature
@@ -147,12 +167,15 @@ describe('PublicClient - Events/Logs Methods', () => {
 
             expect(filter).toBeDefined();
             expect(filter.type).toBe('event');
-            expect(filter.request).toHaveProperty('criteriaSet');
+            expect(filter.filter).toHaveProperty('criteriaSet');
 
-            console.log('Created Transfer event filter:', filter.id);
+            log.debug({
+                message: 'Created Transfer event filter:',
+                context: { data: filter.id }
+            });
         });
 
-        test('should create event filter', async () => {
+        test('should create event filter', () => {
             const filter = publicClient.createEventFilter({
                 address: vthoContract,
                 event: transferEventSignature
@@ -163,10 +186,13 @@ describe('PublicClient - Events/Logs Methods', () => {
             expect(filter.id).toBeDefined();
             expect(typeof filter.id).toBe('string');
 
-            console.log('Event filter created with ID:', filter.id);
+            log.debug({
+                message: 'Event filter created with ID:',
+                context: { data: filter.id }
+            });
         });
 
-        test('should create complex event filter', async () => {
+        test('should create complex event filter', () => {
             const filter = publicClient.createEventFilter({
                 address: vthoContract,
                 event: transferEventSignature
@@ -174,19 +200,25 @@ describe('PublicClient - Events/Logs Methods', () => {
 
             expect(filter).toBeDefined();
             expect(filter.type).toBe('event');
-            expect(filter.request).toHaveProperty('criteriaSet');
+            expect(filter.filter).toHaveProperty('criteriaSet');
 
-            console.log('Created complex event filter:', filter.id);
+            log.debug({
+                message: 'Created complex event filter:',
+                context: { data: filter.id }
+            });
         });
 
-        test('should create filter without parameters', async () => {
+        test('should create filter without parameters', () => {
             const filter = publicClient.createEventFilter();
 
             expect(filter).toBeDefined();
             expect(filter.type).toBe('event');
-            expect(filter.request).toHaveProperty('criteriaSet');
+            expect(filter.filter).toHaveProperty('criteriaSet');
 
-            console.log('Created basic event filter:', filter.id);
+            log.debug({
+                message: 'Created basic event filter:',
+                context: { data: filter.id }
+            });
         });
     });
 
@@ -202,7 +234,10 @@ describe('PublicClient - Events/Logs Methods', () => {
             expect(logs).toBeDefined();
             expect(Array.isArray(logs)).toBe(true);
 
-            console.log('Retrieved logs using filter:', logs.length);
+            log.debug({
+                message: 'Retrieved logs using filter:',
+                context: { data: logs.length }
+            });
 
             if (logs.length > 0) {
                 const firstLog = logs[0];
@@ -216,7 +251,6 @@ describe('PublicClient - Events/Logs Methods', () => {
             const filter = publicClient.createEventFilter({
                 address: vthoContract,
                 event: transferEventSignature
-                // Note: fromBlock/toBlock removed due to parsing issues
             });
 
             const logs = await publicClient.getFilterLogs({ filter });
@@ -224,13 +258,14 @@ describe('PublicClient - Events/Logs Methods', () => {
             expect(logs).toBeDefined();
             expect(Array.isArray(logs)).toBe(true);
 
-            console.log(`Retrieved ${logs.length} Transfer logs using filter`);
+            log.debug({
+                message: `Retrieved ${logs.length} Transfer logs using filter`,
+                context: { data: logs.length }
+            });
 
             // All logs should be Transfer events
             logs.forEach((log) => {
-                expect(log.topics[0].toString()).toBe(
-                    transferEventSignature.toString()
-                );
+                expect(log.eventLog.topics[0]).toBe(transferEventSignature);
             });
         });
 
@@ -253,18 +288,20 @@ describe('PublicClient - Events/Logs Methods', () => {
             // This test verifies the method exists and returns a function
             expect(typeof publicClient.watchEvent).toBe('function');
 
-            console.log(
-                'watchEvent method is available (WebSocket tests skipped in Node.js)'
-            );
+            log.debug({
+                message:
+                    'watchEvent method is available (WebSocket tests skipped in Node.js)'
+            });
         });
 
         test('should handle watcher cleanup concept', () => {
             // Test that the method signature is correct without actually using WebSocket
             expect(typeof publicClient.watchEvent).toBe('function');
 
-            console.log(
-                'watchEvent cleanup concept verified (actual WebSocket tests skipped)'
-            );
+            log.debug({
+                message:
+                    'watchEvent cleanup concept verified (actual WebSocket tests skipped)'
+            });
         });
     });
 
@@ -273,10 +310,10 @@ describe('PublicClient - Events/Logs Methods', () => {
             // This test depends on how Address.of handles invalid inputs
             try {
                 const invalidAddress = Address.of('0xinvalid');
-                const logs = await publicClient.getLogs({
+                const filter = publicClient.createEventFilter({
                     address: invalidAddress
-                    // Note: fromBlock/toBlock removed due to parsing issues
                 });
+                const logs = await publicClient.getLogs(filter);
                 expect(Array.isArray(logs)).toBe(true);
             } catch (error) {
                 expect(error).toBeDefined();
@@ -284,23 +321,26 @@ describe('PublicClient - Events/Logs Methods', () => {
         });
 
         test('should handle invalid block range', async () => {
-            const logs = await publicClient.getLogs({
+            const filter = publicClient.createEventFilter({
                 address: vthoContract,
-                fromBlock: 999999999, // Very high block number
-                toBlock: 999999999
+                fromBlock: BigInt(999999999), // Very high block number
+                toBlock: BigInt(999999999)
             });
+            const logs = await publicClient.getLogs(filter);
 
             expect(logs).toBeDefined();
             expect(Array.isArray(logs)).toBe(true);
             // Should return empty array for non-existent blocks
         });
 
-        test('should handle network errors gracefully', async () => {
+        test('should handle network errors gracefully', () => {
             // Test that error handling methods exist
             expect(typeof publicClient.getLogs).toBe('function');
             expect(typeof publicClient.watchEvent).toBe('function');
 
-            console.log('Network error handling methods are available');
+            log.debug({
+                message: 'Network error handling methods are available'
+            });
         });
     });
 });

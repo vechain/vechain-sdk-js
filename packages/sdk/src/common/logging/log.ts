@@ -1,11 +1,15 @@
 import { LoggerRegistry } from './LoggerRegistry';
-import { type LoggedItem, type LogItem } from './types';
+import {
+    type LoggedItem,
+    type LogItem,
+    type LogItemWithVerbosity
+} from './types';
 
 /**
  * Log an item.
  * @param log - The log item to log.
  */
-function log(entry: LogItem): void {
+function baseLog(entry: LogItemWithVerbosity): void {
     const logger = LoggerRegistry.getInstance().getRegisteredLogger();
     // if no registered logger, return
     if (logger === undefined) return;
@@ -25,5 +29,26 @@ function log(entry: LogItem): void {
         console.error('❌ Logger callback failed:', err);
     }
 }
+
+/**
+ * The log function, with verbosity levels.
+ */
+const log = Object.assign(baseLog, {
+    debug: (entry: LogItem) => {
+        baseLog({ ...entry, verbosity: 'debug' });
+    },
+    info: (entry: LogItem) => {
+        baseLog({ ...entry, verbosity: 'info' });
+    },
+    warn: (entry: LogItem) => {
+        baseLog({ ...entry, verbosity: 'warn' });
+    },
+    error: (entry: LogItem) => {
+        baseLog({ ...entry, verbosity: 'error' });
+    },
+    raw: (entry: LogItemWithVerbosity) => {
+        baseLog(entry);
+    }
+});
 
 export { log };

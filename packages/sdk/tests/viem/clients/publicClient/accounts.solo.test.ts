@@ -2,6 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import { createPublicClient } from '@viem/clients';
 import { ThorNetworks } from '@thor/thorest';
 import { Address } from '@common/vcdm';
+import { log } from '@common/logging';
 
 /**
  * Test suite for PublicClient account-related functionality
@@ -32,9 +33,9 @@ describe('PublicClient - Account Methods', () => {
             expect(typeof balance).toBe('bigint');
             expect(balance).toBeGreaterThanOrEqual(0n);
 
-            console.log(
-                `Balance for ${testAddress.toString()}: ${balance.toString()}`
-            );
+            log.debug({
+                message: `Balance for ${testAddress.toString()}: ${balance.toString()}`
+            });
         });
 
         test('should retrieve zero balance for zero address', async () => {
@@ -44,7 +45,9 @@ describe('PublicClient - Account Methods', () => {
             expect(typeof balance).toBe('bigint');
             expect(balance).toBe(0n);
 
-            console.log(`Balance for zero address: ${balance.toString()}`);
+            log.debug({
+                message: `Balance for zero address: ${balance.toString()}`
+            });
         });
 
         test('should handle different address formats', async () => {
@@ -68,7 +71,7 @@ describe('PublicClient - Account Methods', () => {
             expect(typeof chainId).toBe('bigint');
             expect(chainId).toBeGreaterThan(0n);
 
-            console.log(`Chain ID: ${chainId.toString()}`);
+            log.debug({ message: `Chain ID: ${chainId.toString()}` });
         });
 
         test('should return consistent chain ID across multiple calls', async () => {
@@ -86,7 +89,9 @@ describe('PublicClient - Account Methods', () => {
             expect(typeof chainId).toBe('bigint');
 
             // Log for verification
-            console.log(`Solo network chain ID: ${chainId.toString()}`);
+            log.debug({
+                message: `Solo network chain ID: ${chainId.toString()}`
+            });
         });
     });
 

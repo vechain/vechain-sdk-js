@@ -2,6 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import { createPublicClient } from '@viem/clients';
 import { ThorNetworks } from '@thor/thorest';
 import { type ExecuteCodesRequestJSON } from '@thor/thorest/json';
+import { log } from '@common/logging';
 
 /**
  * Test suite for PublicClient fee estimation functionality
@@ -52,15 +53,22 @@ describe('PublicClient - Fee Estimation Methods', () => {
             expect(feeHistory.baseFeePerGas.length).toBe(blockCount);
             expect(feeHistory.gasUsedRatio.length).toBe(blockCount);
 
-            console.log('Fee History (1 block):');
-            console.log(
-                'Base Fee Per Gas Array Length: ' +
-                    feeHistory.baseFeePerGas.length
-            );
-            console.log(
-                'Gas Used Ratio Array Length: ' + feeHistory.gasUsedRatio.length
-            );
-            console.log('Oldest Block: ' + feeHistory.oldestBlock.toString());
+            log.debug({
+                message: 'Fee History (1 block)',
+                context: { data: feeHistory }
+            });
+            log.debug({
+                message: 'Base Fee Per Gas Array Length',
+                context: { data: feeHistory.baseFeePerGas.length }
+            });
+            log.debug({
+                message: 'Gas Used Ratio Array Length',
+                context: { data: feeHistory.gasUsedRatio.length }
+            });
+            log.debug({
+                message: 'Oldest Block',
+                context: { data: feeHistory.oldestBlock.toString() }
+            });
         }, 10000);
 
         test('should retrieve fee history for multiple blocks', async () => {
@@ -80,10 +88,15 @@ describe('PublicClient - Fee Estimation Methods', () => {
                     feeHistory.gasUsedRatio.length <= blockCount
             ).toBe(true);
 
-            console.log('Fee History (' + blockCount + ' blocks):');
-            console.log(
-                'Data retrieved successfully for ' + blockCount + ' blocks'
-            );
+            log.debug({
+                message: 'Fee History (' + blockCount + ' blocks)',
+                context: { data: feeHistory }
+            });
+            log.debug({
+                message:
+                    'Data retrieved successfully for ' + blockCount + ' blocks',
+                context: { data: blockCount }
+            });
         }, 10000);
     });
 
@@ -99,10 +112,16 @@ describe('PublicClient - Fee Estimation Methods', () => {
             gasPrice.forEach((price, index) => {
                 expect(typeof price).toBe('bigint');
                 expect(price).toBeGreaterThanOrEqual(0n);
-                console.log('Gas Price [' + index + ']: ' + price.toString());
+                log.debug({
+                    message: 'Gas Price [' + index + ']: ' + price.toString(),
+                    context: { data: price.toString() }
+                });
             });
 
-            console.log('Gas Price Array Length: ' + gasPrice.length);
+            log.debug({
+                message: 'Gas Price Array Length: ' + gasPrice.length,
+                context: { data: gasPrice.length }
+            });
         }, 10000);
     });
 
@@ -115,16 +134,24 @@ describe('PublicClient - Fee Estimation Methods', () => {
                 expect(typeof feePerGas).toBe('bigint');
                 expect(feePerGas).toBeGreaterThan(0n);
 
-                console.log(
-                    'Estimated Fee Per Gas: ' + feePerGas.toString() + ' wei'
-                );
-                console.log(
-                    'Fee in VTHO: ' +
+                log.debug({
+                    message:
+                        'Estimated Fee Per Gas: ' +
+                        feePerGas.toString() +
+                        ' wei',
+                    context: { data: feePerGas.toString() }
+                });
+                log.debug({
+                    message:
+                        'Fee in VTHO: ' +
                         (Number(feePerGas) / 1e18).toFixed(8) +
-                        ' VTHO'
-                );
+                        ' VTHO',
+                    context: { data: (Number(feePerGas) / 1e18).toFixed(8) }
+                });
             } else {
-                console.log('Fee per gas estimation returned undefined');
+                log.debug({
+                    message: 'Fee per gas estimation returned undefined'
+                });
             }
         }, 10000);
     });
@@ -146,13 +173,20 @@ describe('PublicClient - Fee Estimation Methods', () => {
             expect(typeof firstResult.gasUsed).toBe('bigint');
             expect(typeof firstResult.reverted).toBe('boolean');
 
-            console.log(
-                'Gas estimate results: ' + gasEstimate.length + ' clauses'
-            );
-            console.log(
-                'First clause gas used: ' + firstResult.gasUsed.toString()
-            );
-            console.log('First clause reverted: ' + firstResult.reverted);
+            log.debug({
+                message:
+                    'Gas estimate results: ' + gasEstimate.length + ' clauses',
+                context: { data: gasEstimate.length }
+            });
+            log.debug({
+                message:
+                    'First clause gas used: ' + firstResult.gasUsed.toString(),
+                context: { data: firstResult.gasUsed.toString() }
+            });
+            log.debug({
+                message: 'First clause reverted: ' + firstResult.reverted,
+                context: { data: firstResult.reverted }
+            });
         }, 10000);
 
         test('should estimate gas for transfer transaction', async () => {
@@ -180,14 +214,21 @@ describe('PublicClient - Fee Estimation Methods', () => {
             // Check if the transaction would succeed or fail
             expect(result.gasUsed).toBeGreaterThanOrEqual(0n);
 
-            console.log('Transfer Gas estimate: ' + result.gasUsed.toString());
-            console.log('Transfer reverted: ' + result.reverted);
+            log.debug({
+                message: 'Transfer Gas estimate: ' + result.gasUsed.toString(),
+                context: { data: result.gasUsed.toString() }
+            });
+            log.debug({
+                message: 'Transfer reverted: ' + result.reverted,
+                context: { data: result.reverted }
+            });
 
             // If it reverted, it might be due to insufficient balance, which is expected in test
             if (result.reverted) {
-                console.log(
-                    'Transfer reverted (likely due to insufficient balance in test environment)'
-                );
+                log.debug({
+                    message:
+                        'Transfer reverted (likely due to insufficient balance in test environment)'
+                });
             }
         }, 10000);
     });
@@ -207,10 +248,14 @@ describe('PublicClient - Fee Estimation Methods', () => {
                 priorityFeeResponse.maxPriorityFeePerGas
             ).toBeGreaterThanOrEqual(0n);
 
-            console.log(
-                'Priority Fee: ' +
-                    priorityFeeResponse.maxPriorityFeePerGas.toString()
-            );
+            log.debug({
+                message:
+                    'Priority Fee: ' +
+                    priorityFeeResponse.maxPriorityFeePerGas.toString(),
+                context: {
+                    data: priorityFeeResponse.maxPriorityFeePerGas.toString()
+                }
+            });
         }, 10000);
     });
 
@@ -230,18 +275,30 @@ describe('PublicClient - Fee Estimation Methods', () => {
                 expect(feePerGas).toBeGreaterThan(0n);
                 expect(totalCost).toBeGreaterThan(0n);
 
-                console.log('Base Fee: ' + feePerGas.toString() + ' wei');
-                console.log('Gas Used: ' + firstClauseGas.toString());
-                console.log('Total Cost: ' + totalCost.toString() + ' wei');
-                console.log(
-                    'Total Cost in VET: ' +
+                log.debug({
+                    message: 'Base Fee: ' + feePerGas.toString() + ' wei',
+                    context: { data: feePerGas.toString() }
+                });
+                log.debug({
+                    message: 'Gas Used: ' + firstClauseGas.toString(),
+                    context: { data: firstClauseGas.toString() }
+                });
+                log.debug({
+                    message: 'Total Cost: ' + totalCost.toString() + ' wei',
+                    context: { data: totalCost.toString() }
+                });
+                log.debug({
+                    message:
+                        'Total Cost in VET: ' +
                         (Number(totalCost) / 1e18).toFixed(8) +
-                        ' VET'
-                );
+                        ' VET',
+                    context: { data: (Number(totalCost) / 1e18).toFixed(8) }
+                });
             } else {
-                console.log(
-                    'Fee per gas estimation returned undefined, cannot calculate total cost'
-                );
+                log.debug({
+                    message:
+                        'Fee per gas estimation returned undefined, cannot calculate total cost'
+                });
             }
         }, 15000);
     });
@@ -255,7 +312,9 @@ describe('PublicClient - Fee Estimation Methods', () => {
                 await publicClient.getFeeHistory(invalidBlockCount);
             }).rejects.toThrow();
 
-            console.log('Invalid fee history request handled correctly');
+            log.debug({
+                message: 'Invalid fee history request handled correctly'
+            });
         }, 10000);
 
         test('should handle invalid gas estimation', async () => {
@@ -276,7 +335,9 @@ describe('PublicClient - Fee Estimation Methods', () => {
                 await publicClient.estimateGas(invalidRequest);
             }).rejects.toThrow();
 
-            console.log('Invalid gas estimation handled correctly');
+            log.debug({
+                message: 'Invalid gas estimation handled correctly'
+            });
         }, 10000);
     });
 });

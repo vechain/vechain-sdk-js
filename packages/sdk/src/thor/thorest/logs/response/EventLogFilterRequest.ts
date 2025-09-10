@@ -1,11 +1,11 @@
 import {
-    EventCriteria,
-    FilterOptions,
-    FilterRange,
-    LogSort
-} from '@thor/thorest/logs';
+    FilterOptionsRequest,
+    EventCriteriaRequest,
+    FilterRangeRequest,
+    type LogSort
+} from '@thor/thorest';
 import { type EventLogFilterRequestJSON } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
+import { type EventLogFilter } from '@thor/thor-client/model/logs/EventLogFilter';
 
 /**
  * Full-Qualified-Path
@@ -14,68 +14,74 @@ const FQP =
     'packages/sdk/src/thor/thorest/logs/response/EventLogFilterRequest.ts!';
 
 /**
- * [EventLogFilterRequest](EventLogFilterRequest)
+ * Overall filter request for event logs.
  */
 class EventLogFilterRequest {
     /**
-     * Defines the range for filtering. Setting values to null indicates the entire range.
+     * The range for filtering
      */
-    readonly range: FilterRange | null;
+    readonly range?: FilterRangeRequest;
 
     /**
-     * Include these parameters to receive filtered results in a paged format.
+     * The options for filtering.
      */
-    readonly options: FilterOptions | null;
+    readonly options?: FilterOptionsRequest;
 
     /**
-     * Criteria to filter events. All fields are joined with the AND operator.
+     * Multiple criteria to filter events.
      */
-    readonly criteriaSet: EventCriteria[] | null;
+    readonly criteriaSet?: EventCriteriaRequest[];
 
     /**
-     * Specifies the order of the results. Use `asc` for ascending order, and `desc` for descending order.S
+     * The order of the results.
      */
-    readonly order: LogSort | null;
+    readonly order?: LogSort;
 
     /**
-     * Constructs an instance of the class with the given filter criteria represented as a JSON object.
+     * Constructs an instance of the class.
      *
-     * @param {EventLogFilterRequestJSON} json - The JSON object containing filter criteria.
-     * Each property in the JSON object is parsed and converted to its respective type.
-     * @throws {IllegalArgumentError} Thrown when the provided JSON object contains invalid or unparsable data.
+     * @param {FilterRangeRequest} range - The range for filtering.
+     * @param {FilterOptionsRequest} options - The options for filtering.
+     * @param {EventCriteriaRequest[]} criteriaSet - The criteria to filter events.
+     * @param {LogSort} order - The order of the results.
      */
-    constructor(json: EventLogFilterRequestJSON) {
-        try {
-            this.range =
-                json.range === undefined ? null : new FilterRange(json.range);
-            this.options =
-                json.options === undefined
-                    ? null
-                    : new FilterOptions(json.options);
-            this.criteriaSet =
-                json.criteriaSet === undefined
-                    ? null
-                    : json.criteriaSet.map(
-                          (criteriaJSON) => new EventCriteria(criteriaJSON)
-                      );
-            this.order =
-                json.order === undefined
-                    ? null
-                    : Object.values(LogSort).includes(json.order as LogSort)
-                      ? (json.order as LogSort)
-                      : null;
-        } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: EventLogFilterRequestJSON)`,
-                'Bad parse',
-                { json },
-                error instanceof Error ? error : undefined
-            );
-        }
+    constructor(
+        range?: FilterRangeRequest,
+        options?: FilterOptionsRequest,
+        criteriaSet?: EventCriteriaRequest[],
+        order?: LogSort
+    ) {
+        this.range = range;
+        this.options = options;
+        this.criteriaSet = criteriaSet;
+        this.order = order;
     }
 
     /**
-     * Converts the current EventLogFilterRequest instance into a JSON representation.
+     * Constructs an instance of the class from an EventLogFilter.
+     *
+     * @param {EventLogFilter} filter - The EventLogFilter to convert to an EventLogFilterRequest.
+     * @return {EventLogFilterRequest} The EventLogFilterRequest instance created from the EventLogFilter.
+     */
+    static of(filter: EventLogFilter): EventLogFilterRequest {
+        return new EventLogFilterRequest(
+            filter.range != null
+                ? FilterRangeRequest.of(filter.range)
+                : undefined,
+            filter.options != null
+                ? FilterOptionsRequest.of(filter.options)
+                : undefined,
+            filter.criteriaSet != null
+                ? filter.criteriaSet.map((criteria) =>
+                      EventCriteriaRequest.of(criteria)
+                  )
+                : undefined,
+            filter.order ?? undefined
+        );
+    }
+
+    /**
+     * Converts the current EventLogFilterRequest instance into a JSON object.
      *
      * @return {EventLogFilterRequestJSON} The JSON object representing the current EventLogFilterRequest instance.
      */

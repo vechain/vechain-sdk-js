@@ -7,7 +7,9 @@ import {
     type LoggedItem,
     type LogItem,
     log,
-    PrettyLogger
+    PrettyLogger,
+    type LogItemWithVerbosity,
+    JSONLogger
 } from '@common/logging';
 
 // example callback logger
@@ -46,12 +48,11 @@ describe('log', () => {
         LoggerRegistry.getInstance().clearRegisteredLogger();
         const consoleSpy = jest.spyOn(console, 'log');
         const logItem: LogItem = {
-            verbosity: 'info',
             message: 'test',
             source: 'test',
             context: { data: { key: 'value' } }
         };
-        log(logItem);
+        log.info(logItem);
         expect(consoleSpy).not.toHaveBeenCalled();
     });
     test('when logger throws an error, it logs the error', () => {
@@ -61,12 +62,11 @@ describe('log', () => {
             .spyOn(console, 'error')
             .mockImplementation(() => {});
         const logItem: LogItem = {
-            verbosity: 'info',
             message: 'test',
             source: 'test',
             context: { data: { key: 'value' } }
         };
-        log(logItem);
+        log.info(logItem);
         const [msg, err] = consoleSpy.mock.calls[0] as [string, Error];
         expect(msg).toContain('Logger callback failed');
         expect(err).toBeInstanceOf(Error);
@@ -81,13 +81,31 @@ describe('log', () => {
         const consoleSpy = jest
             .spyOn(console, 'error')
             .mockImplementation(() => {});
-        const logItem: LogItem = {
+        const logItem: LogItemWithVerbosity = {
             verbosity: 'none',
             message: 'test',
             source: 'test',
             context: { data: { key: 'value' } }
         };
-        log(logItem);
+        log.raw(logItem);
         expect(consoleSpy).not.toHaveBeenCalled();
+    });
+    test('debug shortcut logs the message', () => {
+        const logger = new JSONLogger();
+        LoggerRegistry.getInstance().registerLogger(logger);
+        logger.setConfig({
+            verbosity: 'debug'
+        });
+        const consoleSpy = jest
+            .spyOn(console, 'log')
+            .mockImplementation(() => {});
+        const logItem: LogItem = {
+            message: 'test',
+            source: 'test',
+            context: { data: { key: 'value' } }
+        };
+        log.debug(logItem);
+        expect(consoleSpy).toHaveBeenCalled();
+        expect(consoleSpy.mock.calls[0][0]).toContain('debug');
     });
 });

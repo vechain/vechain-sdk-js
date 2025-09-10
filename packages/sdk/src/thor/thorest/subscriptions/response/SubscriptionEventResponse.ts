@@ -1,7 +1,7 @@
-import { LogMeta } from '@thor/thorest/logs';
 import { Address, type Hex, HexUInt, HexUInt32 } from '@common/vcdm';
 import { type SubscriptionEventResponseJSON } from '@thor/thorest/subscriptions';
 import { IllegalArgumentError } from '@common/errors';
+import { LogMetaResponse } from '@thor/thorest';
 
 /**
  * Full-Qualified Path
@@ -38,7 +38,7 @@ class SubscriptionEventResponse {
     /**
      * The log metadata associated with the event.
      */
-    readonly meta: LogMeta;
+    readonly meta: LogMetaResponse;
 
     /**
      * Constructs a new instance of the class by parsing the provided JSON object.
@@ -54,7 +54,7 @@ class SubscriptionEventResponse {
             );
             this.data = HexUInt.of(json.data);
             this.obsolete = json.obsolete;
-            this.meta = new LogMeta(json.meta);
+            this.meta = new LogMetaResponse(json.meta);
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: SubscriptionEventResponseJSON)`,
