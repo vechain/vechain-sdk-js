@@ -83,7 +83,7 @@ class WalletClient extends PublicClient {
     /**
      * Prepares a transaction request by constructing and returning a `TransactionRequest` object.
      *
-     * @param {PrepareTransactionRequestRequest} request - The request object containing details necessary to prepare the transaction. It includes fields such as `to`, `value`, `data`, `comment`, `abi`, `blockRef`, `chainTag`, `dependsOn`, `expiration`, `gas`, `gasPriceCoef`, `nonce`, and `isIntendedToBeSponsored`.
+     * @param {PrepareTransactionRequestRequest} request - The request object containing details necessary to prepare the transaction.
      * @return {TransactionRequest} The prepared transaction request object with all required properties set, ready for execution.
      * @throws {UnsupportedOperationError} Throws an error if the provided request object is invalid.
      *
@@ -132,7 +132,6 @@ class WalletClient extends PublicClient {
      *
      * This method adapts the [Viem](https://viem.sh/docs/actions/wallet/signTransaction)
      * Ethereum signing algorithm to the Thor signing algorithm.
-     )
      *
      * @param {Uint8Array} hash The hash to be signed.
      * @param {Account} account The account object used for signing the hash.
