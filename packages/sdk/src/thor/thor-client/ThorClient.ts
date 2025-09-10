@@ -13,7 +13,7 @@ class ThorClient {
      */
     public readonly accounts: AccountsModule;
 
-    /**gas instance */
+    /** gas instance */
     public readonly gas: GasModule;
 
     /**
