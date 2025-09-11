@@ -10,6 +10,12 @@ const FQP = 'packages/sdk/src/common/http/FetchHttpClient.ts';
 type RequestConstructor = typeof Request;
 type FetchFunction = typeof fetch;
 
+// Type/interfaces for abort signal with cleanup function
+interface AbortSignalWithCleanup {
+    signal: AbortSignal;
+    cleanup: () => void;
+}
+
 /**
  * HTTP client implementation using the Fetch API.
  * Provides methods for making GET and POST requests to VeChain Thor networks.
@@ -43,12 +49,8 @@ class FetchHttpClient implements HttpClient {
             baseURL.pathname += FetchHttpClient.PATH_SEPARATOR;
         }
         // validate callback functions
-        if (httpOptions.onRequest === undefined) {
-            httpOptions.onRequest = (request) => request;
-        }
-        if (httpOptions.onResponse === undefined) {
-            httpOptions.onResponse = (response) => response;
-        }
+        httpOptions.onRequest ??= (request) => request;
+        httpOptions.onResponse ??= (response) => response;
         // set properties
         this.baseURL = baseURL;
         this.requestConstructor = requestConstructor;
@@ -102,15 +104,22 @@ class FetchHttpClient implements HttpClient {
      * Creates an AbortSignal for timeout functionality.
      * @returns AbortSignal or undefined if no timeout is set.
      */
-    private createAbortSignal(): AbortSignal | undefined {
+    private createAbortSignal(): AbortSignalWithCleanup | undefined {
         if (this.options.timeout === undefined) {
             return undefined;
         }
         const controller = new AbortController();
-        setTimeout(() => {
+        const timer = setTimeout(() => {
             controller.abort();
         }, this.options.timeout);
-        return controller.signal;
+        const cleanup = (): void => {
+            clearTimeout(timer);
+        };
+        controller.signal.addEventListener('abort', cleanup);
+        return {
+            signal: controller.signal,
+            cleanup
+        };
     }
 
     /**
@@ -157,20 +166,25 @@ class FetchHttpClient implements HttpClient {
             input: URL | RequestInfo,
             init?: RequestInit
         ) => Request;
-        const requestInit: RequestInit = {
-            method: 'GET',
-            headers: this.buildHeaders(),
-            signal: this.createAbortSignal()
-        };
-        const request = new RequestClass(pathUrl, requestInit);
-        const response = await this.fetchFunction(
-            this.options.onRequest?.(request) ?? request
-        );
-        await this.logResponse(request, response);
-        return (
-            this.options.onResponse?.(this.processResponse(response)) ??
-            response
-        );
+        const abortSignal = this.createAbortSignal(); // create the abort signal
+        try {
+            const requestInit: RequestInit = {
+                method: 'GET',
+                headers: this.buildHeaders(),
+                signal: abortSignal?.signal ?? null
+            };
+            const request = new RequestClass(pathUrl, requestInit);
+            const response = await this.fetchFunction(
+                this.options.onRequest?.(request) ?? request
+            );
+            await this.logResponse(request, response);
+            return (
+                this.options.onResponse?.(this.processResponse(response)) ??
+                response
+            );
+        } finally {
+            abortSignal?.cleanup(); // cleanup the abort signal
+        }
     }
 
     /**
@@ -190,22 +204,29 @@ class FetchHttpClient implements HttpClient {
             input: URL | RequestInfo,
             init?: RequestInit
         ) => Request;
-        const requestInit: RequestInit = {
-            body:
-                body !== undefined ? fastJsonStableStringify(body) : undefined,
-            method: 'POST',
-            headers: this.buildHeaders(),
-            signal: this.createAbortSignal()
-        };
-        const request = new RequestClass(pathUrl, requestInit);
-        const response = await this.fetchFunction(
-            this.options.onRequest?.(request) ?? request
-        );
-        await this.logResponse(request, response);
-        return (
-            this.options.onResponse?.(this.processResponse(response)) ??
-            response
-        );
+        const abortSignal = this.createAbortSignal(); // create the abort signal
+        try {
+            const requestInit: RequestInit = {
+                body:
+                    body !== undefined
+                        ? fastJsonStableStringify(body)
+                        : undefined,
+                method: 'POST',
+                headers: this.buildHeaders(),
+                signal: abortSignal?.signal ?? null
+            };
+            const request = new RequestClass(pathUrl, requestInit);
+            const response = await this.fetchFunction(
+                this.options.onRequest?.(request) ?? request
+            );
+            await this.logResponse(request, response);
+            return (
+                this.options.onResponse?.(this.processResponse(response)) ??
+                response
+            );
+        } finally {
+            abortSignal?.cleanup(); // cleanup the abort signal
+        }
     }
 
     /**

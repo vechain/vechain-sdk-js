@@ -87,25 +87,27 @@ describe('InspectClauses unit tests', () => {
         ];
 
         // Execute the test
-        const response = await InspectClauses.of(request).askTo(
-            mockHttpClient<ExecuteCodeResponseJSON[]>(mockResponse, 'post')
-        );
+        const response = (
+            await InspectClauses.of(request).askTo(
+                mockHttpClient<ExecuteCodeResponseJSON[]>(mockResponse, 'post')
+            )
+        ).response;
 
         // Verify the response
-        expect(response.response).toBeInstanceOf(Array);
-        expect(response.response.length).toBe(mockResponse.length);
-        expect(response.response[0].data.toString()).toBe(mockResponse[0].data);
-        expect(response.response[0].events[0].address.toString()).toBe(
+        expect(response.items).toBeInstanceOf(Array);
+        expect(response.items.length).toBe(mockResponse.length);
+        expect(response.items[0].data.toString()).toBe(mockResponse[0].data);
+        expect(response.items[0].events[0].address.toString()).toBe(
             mockResponse[0].events[0].address
         );
-        expect(response.response[0].gasUsed.valueOf()).toBe(
+        expect(response.items[0].gasUsed.valueOf()).toBe(
             BigInt(mockResponse[0].gasUsed)
         );
-        expect(response.response[0].reverted).toBe(mockResponse[0].reverted);
-        expect(response.response[0].vmError).toBe(mockResponse[0].vmError);
+        expect(response.items[0].reverted).toBe(mockResponse[0].reverted);
+        expect(response.items[0].vmError).toBe(mockResponse[0].vmError);
 
         // Verify specific aspects of the response
-        const outputs = response.response;
+        const outputs = response.items;
 
         // First clause (token transfer)
         expect(outputs[0].reverted).toBe(false);
@@ -157,12 +159,14 @@ describe('InspectClauses unit tests', () => {
         ];
 
         // Execute the test
-        const response = await InspectClauses.of(request).askTo(
-            mockHttpClient<ExecuteCodeResponseJSON[]>(mockResponse, 'post')
-        );
+        const response = (
+            await InspectClauses.of(request).askTo(
+                mockHttpClient<ExecuteCodeResponseJSON[]>(mockResponse, 'post')
+            )
+        ).response;
 
         // Verify the response
-        const output = response.response[0];
+        const output = response.items[0];
         expect(output.reverted).toBe(true);
         expect(output.vmError).toBe('invalid opcode 0x12');
         expect(output.events).toHaveLength(0);
@@ -185,8 +189,8 @@ describe('InspectClauses unit tests', () => {
         );
 
         // Verify the response
-        expect(response.response).toBeInstanceOf(Array);
-        expect(response.response).toHaveLength(0);
+        expect(response.response.items).toBeInstanceOf(Array);
+        expect(response.response.items).toHaveLength(0);
     });
 
     test('should handle out of gas scenario', async () => {
@@ -218,12 +222,14 @@ describe('InspectClauses unit tests', () => {
         ];
 
         // Execute the test
-        const response = await InspectClauses.of(request).askTo(
-            mockHttpClient<ExecuteCodeResponseJSON[]>(mockResponse, 'post')
-        );
+        const response = (
+            await InspectClauses.of(request).askTo(
+                mockHttpClient<ExecuteCodeResponseJSON[]>(mockResponse, 'post')
+            )
+        ).response;
 
         // Verify the response
-        const output = response.response[0];
+        const output = response.items[0];
         expect(output.reverted).toBe(true);
         expect(output.vmError).toBe('out of gas');
         expect(output.gasUsed.valueOf()).toBe(BigInt(1));

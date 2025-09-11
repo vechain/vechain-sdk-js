@@ -1,12 +1,16 @@
-import { RetrieveHistoricalFeeData, SuggestPriorityFee } from '@thor/thorest';
-import { InspectClauses } from '@thor/thorest';
+import {
+    RetrieveHistoricalFeeData,
+    SuggestPriorityFee,
+    InspectClauses
+} from '@thor/thorest';
 import { Revision } from '@common/vcdm';
 import { Transaction, type TransactionClause } from '@thor/thorest';
 import { IllegalArgumentError, NoSuchElementError } from '@common/errors';
 import { AbstractThorModule } from '@thor/thor-client/AbstractThorModule';
-import { FeeHistory } from '../model/gas/FeeHistory';
-import { EstimatedGas } from '../model/gas/EstimatedGas';
-import { EstimateGas } from '../model/gas/EstimateGas';
+import { type FeeHistory } from '../model/gas/FeeHistory';
+import { type EstimatedGas } from '../model/gas/EstimatedGas';
+import { type EstimateGas } from '../model/gas/EstimateGas';
+import { log } from '@common/logging';
 
 const FQP = 'packages/sdk/src/thor/thor-client/gas/gas-module.ts';
 
@@ -36,26 +40,32 @@ class GasModule extends AbstractThorModule {
     public async estimateGas(
         estimateGas: EstimateGas
     ): Promise<EstimatedGas[]> {
-        const inspectClause: EstimatedGas[] = (await InspectClauses.of(estimateGas).askTo(
-            this.httpClient
-        )).response.map((response) => {
+        const response = (
+            await InspectClauses.of(estimateGas).askTo(this.httpClient)
+        ).response;
+        log.warn({
+            message: 'InspectClauses response',
+            context: { data: response }
+        });
+        const gasEstimates: EstimatedGas[] = response.items.map((response) => {
             return {
                 gasUsed: response.gasUsed,
+                data: response.data,
                 reverted: response.reverted,
                 vmError: response.vmError,
                 transfers: response.transfers?.map((transfer) => ({
                     sender: transfer.sender.toString(),
                     recipient: transfer.recipient.toString(),
-                    amount: transfer.amount.toString(),
+                    amount: transfer.amount.toString()
                 })),
                 events: response.events?.map((event) => ({
                     address: event.address.toString(),
                     topics: event.topics.map((topic) => topic.toString()),
-                    data: event.data.toString(),
-                })),
-            }
-        })
-        return Array.from(inspectClause);
+                    data: event.data.toString()
+                }))
+            };
+        });
+        return gasEstimates;
     }
 
     /**

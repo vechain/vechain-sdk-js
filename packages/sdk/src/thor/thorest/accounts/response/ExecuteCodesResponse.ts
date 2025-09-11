@@ -7,6 +7,7 @@ import {
     type ExecuteCodeResponseJSON,
     type ExecuteCodesResponseJSON
 } from '@thor/thorest/accounts/json';
+import { log } from '@common/logging';
 
 /**
  * Full-Qualified Path
@@ -107,18 +108,17 @@ class ExecuteCodeResponse {
  *
  * Represents a collection of execute code responses.
  */
-class ExecuteCodesResponse extends Array<ExecuteCodeResponse> {
+class ExecuteCodesResponse {
+    readonly items: ExecuteCodeResponse[];
     /**
      * Constructs a new instance of the class by parsing the provided JSON array.
      *
      * @param {ExecuteCodesResponseJSON} json - The JSON array containing execute code response data.
      */
     constructor(json: ExecuteCodesResponseJSON) {
-        super(
-            ...json.map(
-                (json: ExecuteCodeResponseJSON): ExecuteCodeResponse =>
-                    new ExecuteCodeResponse(json)
-            )
+        this.items = json.map(
+            (json: ExecuteCodeResponseJSON): ExecuteCodeResponse =>
+                new ExecuteCodeResponse(json)
         );
     }
 }
