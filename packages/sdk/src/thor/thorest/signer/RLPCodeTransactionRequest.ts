@@ -115,8 +115,8 @@ class RLPCodecTransactionRequest {
                     body,
                     transactionRequest.signature
                 );
-            // For EIP-1559 transactions, prepend the transaction type (0x02)
-            return new Uint8Array([0x02, ...encodedTx]);
+            // For EIP-1559 transactions, prepend the transaction type (0x51)
+            return new Uint8Array([0x51, ...encodedTx]);
         }
 
         return RLPCodecTransactionRequest.encodeSignedBodyField(
@@ -141,8 +141,8 @@ class RLPCodecTransactionRequest {
                 RLPCodecTransactionRequest.encodeUnsignedDynamicFeeBodyField(
                     body
                 );
-            // For EIP-1559 transactions, prepend the transaction type (0x02)
-            return new Uint8Array([0x02, ...encodedTx]);
+            // For EIP-1559 transactions, prepend the transaction type (0x51)
+            return new Uint8Array([0x51, ...encodedTx]);
         }
 
         return RLPCodecTransactionRequest.encodeUnsignedBodyField(body);

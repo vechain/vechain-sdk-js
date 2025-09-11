@@ -37,7 +37,6 @@ interface TransactionRequestParam {
 
     /**
      * The coefficient used to calculate the final gas price of the transaction.
-     * @deprecated Use maxFeePerGas and maxPriorityFeePerGas for dynamic fee transactions
      */
     gasPriceCoef: bigint;
 
@@ -101,7 +100,6 @@ class TransactionRequest implements TransactionRequestParam {
 
     /**
      * The coefficient used to calculate the final gas price of the transaction.
-     * @deprecated Use maxFeePerGas and maxPriorityFeePerGas for dynamic fee transactions
      */
     public readonly gasPriceCoef: bigint;
 

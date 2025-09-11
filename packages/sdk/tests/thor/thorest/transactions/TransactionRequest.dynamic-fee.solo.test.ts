@@ -63,7 +63,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
                 clauses: [createTransferClause()],
                 dependsOn: null,
                 expiration: 32,
-                gas: 21000n,
+                gas: 21000000n,
                 gasPriceCoef: 128n,
                 nonce: Math.floor(Math.random() * 1000000),
                 isIntendedToBeSponsored: false
@@ -85,7 +85,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
                 RLPCodecTransactionRequest.encodeSignedTransactionRequest(
                     signedTx
                 );
-            expect(encoded[0]).not.toBe(0x02);
+            expect(encoded[0]).not.toBe(0x51);
 
             // Send to solo network
             const txResponse =
@@ -122,32 +122,32 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
                 clauses: [createTransferClause()],
                 dependsOn: null,
                 expiration: 32,
-                gas: 21000n,
+                gas: 210000n,
                 gasPriceCoef: 0n, // Can be 0 for dynamic fee
-                maxFeePerGas: 2000000000n, // 2 Gwei
-                maxPriorityFeePerGas: 500000000n, // 0.5 Gwei
+                maxFeePerGas: 20000000000n, // 20 Gwei
+                maxPriorityFeePerGas: 5000000000n, // 5 Gwei
                 nonce: Math.floor(Math.random() * 1000000),
                 isIntendedToBeSponsored: false
             });
 
             // Verify it's detected as dynamic fee
             expect(dynamicTx.isDynamicFee()).toBe(true);
-            expect(dynamicTx.maxFeePerGas).toBe(2000000000n);
-            expect(dynamicTx.maxPriorityFeePerGas).toBe(500000000n);
+            expect(dynamicTx.maxFeePerGas).toBe(20000000000n);
+            expect(dynamicTx.maxPriorityFeePerGas).toBe(5000000000n);
 
             // Sign the transaction
             const signedTx = fromSigner.sign(dynamicTx);
             expect(signedTx.isDynamicFee()).toBe(true);
             expect(signedTx.isSigned()).toBe(true);
-            expect(signedTx.maxFeePerGas).toBe(2000000000n);
-            expect(signedTx.maxPriorityFeePerGas).toBe(500000000n);
+            expect(signedTx.maxFeePerGas).toBe(20000000000n);
+            expect(signedTx.maxPriorityFeePerGas).toBe(5000000000n);
 
-            // Encode and verify 0x02 type prefix
+            // Encode and verify 0x51 type prefix
             const encoded =
                 RLPCodecTransactionRequest.encodeSignedTransactionRequest(
                     signedTx
                 );
-            expect(encoded[0]).toBe(0x02);
+            expect(encoded[0]).toBe(0x51);
 
             // Try to send to solo network (may not be supported yet)
             try {
@@ -197,9 +197,9 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
                 clauses: [createTransferClause()],
                 dependsOn: null,
                 expiration: 32,
-                gas: 21000n,
+                gas: 210000n,
                 gasPriceCoef: 0n,
-                maxFeePerGas: 1500000000n, // 1.5 Gwei
+                maxFeePerGas: 15000000000n, // 15 Gwei
                 // No maxPriorityFeePerGas
                 nonce: Math.floor(Math.random() * 1000000),
                 isIntendedToBeSponsored: false
@@ -207,7 +207,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
 
             // Should still be detected as dynamic fee
             expect(dynamicTx.isDynamicFee()).toBe(true);
-            expect(dynamicTx.maxFeePerGas).toBe(1500000000n);
+            expect(dynamicTx.maxFeePerGas).toBe(15000000000n);
             expect(dynamicTx.maxPriorityFeePerGas).toBeUndefined();
 
             // Sign and encode
@@ -216,7 +216,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
                 RLPCodecTransactionRequest.encodeSignedTransactionRequest(
                     signedTx
                 );
-            expect(encoded[0]).toBe(0x02);
+            expect(encoded[0]).toBe(0x51);
 
             // Try to send to solo network (may not be supported yet)
             try {
@@ -256,7 +256,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
                 clauses: [createTransferClause()],
                 dependsOn: null,
                 expiration: 32,
-                gas: 21000n,
+                gas: 210000n,
                 gasPriceCoef: 255n, // Max legacy coefficient
                 nonce: Math.floor(Math.random() * 1000000),
                 isIntendedToBeSponsored: false
@@ -277,7 +277,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
                 RLPCodecTransactionRequest.encodeSignedTransactionRequest(
                     signedTx
                 );
-            expect(encoded[0]).not.toBe(0x02);
+            expect(encoded[0]).not.toBe(0x51);
 
             // Should send successfully to solo network
             const txResponse =
@@ -314,10 +314,10 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
                 clauses: [createTransferClause()],
                 dependsOn: null,
                 expiration: 32,
-                gas: 21000n,
+                gas: 210000n,
                 gasPriceCoef: 0n,
-                maxFeePerGas: 1800000000n,
-                maxPriorityFeePerGas: 400000000n,
+                maxFeePerGas: 18000000000n,
+                maxPriorityFeePerGas: 4000000000n,
                 nonce: Math.floor(Math.random() * 1000000),
                 isIntendedToBeSponsored: false
             });
@@ -341,8 +341,8 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
                 );
 
             // Verify different encoding
-            expect(legacyEncoded[0]).not.toBe(0x02);
-            expect(dynamicEncoded[0]).toBe(0x02);
+            expect(legacyEncoded[0]).not.toBe(0x51);
+            expect(dynamicEncoded[0]).toBe(0x51);
             expect(legacyEncoded).not.toEqual(dynamicEncoded);
 
             // Send both to solo network
