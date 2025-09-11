@@ -1,14 +1,13 @@
-import { Address, Hex, HexUInt, Quantity } from '@common/vcdm';
-import { type ClauseJSON } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
+import { type Address, type Hex } from '@common/vcdm';
+import { type ClauseData } from '@thor/thorest';
 
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/sdk/src/thor/thorest/model/Clause.ts!';
+const FQP = 'packages/sdk/src/thor/thor-client/model/transactions/Clause.ts!';
 
 /**
- * [Clause](http://localhost:8669/doc/stoplight-ui/#/schemas/Clause)
+ * Clause for a transaction.
  */
 class Clause {
     /**
@@ -28,15 +27,11 @@ class Clause {
 
     /**
      * Optional comment for the clause, helpful for displaying what the clause is doing.
-     *
-     * Not serialized in {@link ClauseJSON}.
      */
     readonly comment: string | null;
 
     /**
      * Optional ABI for the contract method invocation.
-     *
-     * Not serialized in {@link ClauseJSON}.
      */
     readonly abi: string | null;
 
@@ -74,38 +69,14 @@ class Clause {
      * @return {Clause} A new Clause instance created using the data extracted from the provided ClauseJSON object.
      * @throws {IllegalArgumentError} If the provided JSON object contains invalid data or couldn't be properly parsed.
      */
-    public static of(json: ClauseJSON): Clause {
-        try {
-            return new Clause(
-                json.to !== null ? Address.of(json.to) : null,
-                HexUInt.of(json.value).bi,
-                json.data !== undefined ? HexUInt.of(json.data) : null,
-                null,
-                null
-            );
-        } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}of(json ClauseJSON)`,
-                'Bad parse',
-                { json },
-                error instanceof Error ? error : undefined
-            );
-        }
-    }
-
-    /**
-     * Converts the current instance of the class into a ClauseJSON representation.
-     *
-     * No input data is expressed as `0x`.
-     *
-     * @return {ClauseJSON} The JSON object representing the current instance.
-     */
-    toJSON(): ClauseJSON {
-        return {
-            to: this.to !== null ? this.to.toString() : null,
-            value: Quantity.of(this.value).toString(),
-            data: this.data !== null ? this.data.toString() : Hex.PREFIX
-        } satisfies ClauseJSON;
+    public static of(clauseData: ClauseData): Clause {
+        return new Clause(
+            clauseData.to,
+            clauseData.value,
+            clauseData.data,
+            null,
+            null
+        );
     }
 }
 

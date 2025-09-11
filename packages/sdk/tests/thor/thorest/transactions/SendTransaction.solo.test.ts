@@ -12,7 +12,7 @@ import {
     ClauseBuilder
 } from '@thor/thorest';
 import { Address, BlockRef, HexUInt, Revision } from '@common/vcdm';
-import { Transaction, type TransactionBody } from '@thor/thorest/model';
+import { Transaction, type TransactionBody } from '@thor/thorest/common';
 import { SOLO_NETWORK } from '@thor/utils';
 import { expect, test } from '@jest/globals';
 

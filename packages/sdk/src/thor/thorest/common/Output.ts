@@ -1,6 +1,6 @@
 import { Address } from '@common/vcdm';
-import { Event } from '@thor/thorest/model/Event';
-import { Transfer } from '@thor/thorest/model/Transfer';
+import { Event } from '@thor/thorest/common/Event';
+import { Transfer } from '@thor/thorest/common/Transfer';
 import {
     type OutputJSON,
     type EventJSON,

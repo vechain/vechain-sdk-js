@@ -1,5 +1,5 @@
 import { type ClauseJSON } from '../../json';
-import { Clause } from '@thor/thorest';
+import { ClauseData } from '@thor/thorest';
 import { Address, BlockRef, UInt } from '@common/vcdm';
 import { IllegalArgumentError } from '@common/errors';
 import { type ExecuteCodesRequestJSON } from '../json';
@@ -41,7 +41,7 @@ class ExecuteCodesRequest {
     /**
      * The clauses of the request.
      */
-    readonly clauses: Clause[] | null;
+    readonly clauses: ClauseData[] | null;
 
     /**
      * The gas of the request.
@@ -82,8 +82,8 @@ class ExecuteCodesRequest {
             this.clauses =
                 json.clauses != null
                     ? json.clauses.map(
-                          (clauseJSON: ClauseJSON): Clause =>
-                              Clause.of(clauseJSON)
+                          (clauseJSON: ClauseJSON): ClauseData =>
+                              ClauseData.of(clauseJSON)
                       )
                     : null;
             this.gas = typeof json.gas === 'number' ? BigInt(json.gas) : null;

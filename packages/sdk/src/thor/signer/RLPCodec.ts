@@ -2,7 +2,7 @@ import {
     type Clause,
     type SignedTransactionRequest,
     type TransactionRequest
-} from '@thor/thorest/model';
+} from '@thor/thorest/common';
 import {
     BufferKind,
     CompactFixedHexBlobKind,
