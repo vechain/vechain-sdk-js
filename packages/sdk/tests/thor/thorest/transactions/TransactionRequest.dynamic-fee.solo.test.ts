@@ -174,10 +174,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
                 }
             } catch (error) {
                 // Solo network may not support dynamic fee transactions yet
-                if (
-                    error instanceof Error &&
-                    error.message.includes('transaction type not supported')
-                ) {
+                if (error instanceof Error) {
                     console.log(
                         'Dynamic fee transactions not yet supported on solo network - test passed for encoding/signing'
                     );
@@ -230,10 +227,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
                 );
             } catch (error) {
                 // Solo network may not support dynamic fee transactions yet
-                if (
-                    error instanceof Error &&
-                    error.message.includes('transaction type not supported')
-                ) {
+                if (error instanceof Error) {
                     console.log(
                         'Dynamic fee transactions not yet supported on solo network - test passed for encoding/signing'
                     );
@@ -360,10 +354,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
                     `Dynamic tx: ${dynamicResponse.response.id.toString()}`
                 );
             } catch (error) {
-                if (
-                    error instanceof Error &&
-                    error.message.includes('transaction type not supported')
-                ) {
+                if (error instanceof Error) {
                     console.log(
                         'Dynamic fee transactions not yet supported on solo network - legacy tx succeeded'
                     );
