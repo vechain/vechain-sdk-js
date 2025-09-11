@@ -55,7 +55,7 @@ class RetrieveRawBlock implements ThorRequest<RetrieveRawBlock, RawTx | null> {
             } catch (error) {
                 throw new ThorError(
                     fqp,
-                    'Bad response.',
+                    error instanceof Error ? error.message : 'Bad response.',
                     {
                         url: response.url,
                         body: json

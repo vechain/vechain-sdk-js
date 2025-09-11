@@ -65,7 +65,7 @@ class RetrieveAccountDetails
             } catch (error) {
                 throw new ThorError(
                     fqp,
-                    'Bad response.',
+                    error instanceof Error ? error.message : 'Bad response.',
                     {
                         url: response.url,
                         body: json
@@ -77,7 +77,7 @@ class RetrieveAccountDetails
         }
         throw new ThorError(
             fqp,
-            'Bad response.',
+            await response.text(),
             {
                 url: response.url
             },

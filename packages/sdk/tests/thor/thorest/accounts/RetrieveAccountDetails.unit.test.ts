@@ -158,7 +158,7 @@ describe('RetrieveAccountDetails unit tests', () => {
                 expect(error).toBeInstanceOf(ThorError);
                 const thorError = error as ThorError;
 
-                expect(thorError.message).toBe('Bad response.');
+                expect(thorError.message).toBe('"Network error"');
                 expect(thorError.fqn).toBe(
                     'packages/sdk/src/thor/thorest/accounts/methods/RetrieveAccountDetails.ts!askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveAccountDetails, GetAccountResponse>>'
                 );
