@@ -4,7 +4,6 @@ import {
     type ThorRequest,
     type ThorResponse
 } from '@thor/thorest';
-import { type ExpandedBlockResponseJSON } from '@thor/thorest/json';
 import { type HttpClient, type HttpPath } from '@common/http';
 import { type Revision } from '@common/vcdm';
 
@@ -55,8 +54,7 @@ class RetrieveExpandedBlock
             query: '?expanded=true&raw=false'
         });
         if (response.ok) {
-            const json =
-                (await response.json()) as ExpandedBlockResponseJSON | null;
+            const json = await response.json();
             try {
                 return {
                     request: this,

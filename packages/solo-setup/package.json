@@ -45,18 +45,19 @@
     "solo-seed": "yarn build && yarn deploy-solo"
   },
   "dependencies": {
-    "@vechain/sdk-hardhat-plugin": "^2.0.4",
-    "hardhat": "^2.22.15",
-    "@vechain/sdk-network": "^2.0.4"
+    "@vechain/sdk-hardhat-plugin": "2.0.5",
+    "@vechain/sdk-network": "2.0.5",
+    "hardhat": "2.26.3"
   },
   "devDependencies": {
-    "@nomicfoundation/hardhat-ethers": "^3.0.8",
-    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
-    "@typechain/ethers-v6": "^0.5.0",
-    "@typechain/hardhat": "^9.0.0",
-    "@types/mocha": ">=10.0.9",
-    "ts-node": "^10.9.2",
-    "typechain": "^8.3.0",
-    "typescript": "^5.6.3"
+    "@nomicfoundation/hardhat-ethers": "3.1.0",
+    "@nomicfoundation/hardhat-toolbox": "4.0.0",
+    "@typechain/ethers-v6": "0.5.1",
+    "@typechain/hardhat": "9.1.0",
+    "@types/mocha": "10.0.10",
+    "ts-node": "10.9.2",
+    "tsup": "8.5.0",
+    "typechain": "8.3.2",
+    "typescript": "5.9.2"
   }
 }

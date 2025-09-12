@@ -179,7 +179,7 @@ class PrivateKeySigner implements Signer {
         signedTransactionRequest: SignedTransactionRequest
     ): SponsoredTransactionRequest {
         if (this.#privateKey !== null) {
-            if (signedTransactionRequest.isIntendedToBeSponsored) {
+            if (signedTransactionRequest.isIntendedToBeSponsored === true) {
                 const hash = Blake2b256.of(
                     nc_utils.concatBytes(
                         Blake2b256.of(

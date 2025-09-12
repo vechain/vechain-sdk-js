@@ -104,9 +104,10 @@ class RLPCodecTransactionRequest {
         const isDynamicFee = transactionRequest.isDynamicFee();
         const body = {
             ...RLPCodecTransactionRequest.mapBody(transactionRequest),
-            reserved: transactionRequest.isIntendedToBeSponsored
-                ? [Uint8Array.of(1)]
-                : [] // encodeReservedField(tx)
+            reserved:
+                transactionRequest.isIntendedToBeSponsored === true
+                    ? [Uint8Array.of(1)]
+                    : [] // encodeReservedField(tx)
         };
 
         if (isDynamicFee) {
@@ -131,9 +132,10 @@ class RLPCodecTransactionRequest {
         const isDynamicFee = transactionRequest.isDynamicFee();
         const body = {
             ...RLPCodecTransactionRequest.mapBody(transactionRequest),
-            reserved: transactionRequest.isIntendedToBeSponsored
-                ? [Uint8Array.of(1)]
-                : [] // encodeReservedField(tx)
+            reserved:
+                transactionRequest.isIntendedToBeSponsored === true
+                    ? [Uint8Array.of(1)]
+                    : [] // encodeReservedField(tx)
         };
 
         if (isDynamicFee) {

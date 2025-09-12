@@ -1,4 +1,4 @@
-import { HttpQuery, type HttpClient, type HttpPath } from '@common/http';
+import { type HttpQuery, type HttpClient, type HttpPath } from '@common/http';
 import type { Address, Revision } from '@common/vcdm';
 import { type ContractBytecodeJSON } from '@thor/thorest/json';
 import { ContractBytecode } from '@thor/thorest';

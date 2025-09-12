@@ -10,7 +10,6 @@ import {
     type ThorRequest,
     type ThorResponse
 } from '@thor/thorest';
-import { type GetTxResponseJSON } from '@thor/thorest/json';
 import { IllegalArgumentError } from '@common/errors';
 
 /**
@@ -66,7 +65,7 @@ class RetrieveTransactionByID
         const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveTransactionByID, GetTxResponse|null>>`;
         const response = await httpClient.get(this.path, this.query);
         if (response.ok) {
-            const json = (await response.json()) as GetTxResponseJSON | null;
+            const json = await response.json();
             try {
                 return {
                     request: this,

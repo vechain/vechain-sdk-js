@@ -10,8 +10,6 @@ import { type EventLogFilter } from '@thor/thor-client/model/logs/EventLogFilter
 /**
  * Full-Qualified-Path
  */
-const FQP =
-    'packages/sdk/src/thor/thorest/logs/response/EventLogFilterRequest.ts!';
 
 /**
  * Overall filter request for event logs.

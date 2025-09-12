@@ -1,5 +1,4 @@
 import { RawTx, type ThorRequest, type ThorResponse } from '@thor/thorest';
-import { type RawTxJSON } from '@thor/thorest/json';
 import { ThorError } from '@thor/thorest';
 import { type HttpClient, type HttpPath } from '@common/http';
 import { type Revision } from '@common/vcdm';
@@ -46,7 +45,7 @@ class RetrieveRawBlock implements ThorRequest<RetrieveRawBlock, RawTx | null> {
             query: '?raw=true'
         });
         if (response.ok) {
-            const json = (await response.json()) as RawTxJSON | null;
+            const json = await response.json();
             try {
                 return {
                     request: this,

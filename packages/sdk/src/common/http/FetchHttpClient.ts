@@ -4,8 +4,6 @@ import { type HttpOptions } from './HttpOptions';
 import { CookieStore } from './CookieStore';
 import { log, type LogItemWithVerbosity } from '@common/logging';
 
-const FQP = 'packages/sdk/src/common/http/FetchHttpClient.ts';
-
 // Types for dependency injection
 type RequestConstructor = typeof Request;
 type FetchFunction = typeof fetch;
