@@ -27,7 +27,7 @@
         "postinstall": "husky",
         "build": "turbo build",
         "check:circular-dependencies": "turbo check:circular-dependencies",
-        "pre-release": "ts-node scripts/pre-release.ts",
+        "pre-release": "corepack yarn exec ts-node scripts/pre-release.ts",
         "generate:apidocs": "typedoc --options typedoc.json --logLevel Error",
         "generate:apidocs-debug": "typedoc --options typedoc.json --logLevel Verbose --plugin typedoc-plugin-missing-exports --validation.notDocumented",
         "lint": "turbo lint",
@@ -43,8 +43,8 @@
         "test:browser": "turbo test:browser --force && corepack yarn merge-coverage",
         "test:solo": "(corepack yarn start-thor-solo && corepack yarn seed-thor-solo && corepack yarn test && corepack yarn stop-thor-solo) || corepack yarn stop-thor-solo",
         "test:browser:solo": "(corepack yarn start-thor-solo && corepack yarn seed-thor-solo && corepack yarn test:browser && corepack yarn stop-thor-solo) || corepack yarn stop-thor-solo",
-        "merge-coverage": "ts-node scripts/merge-coverage.ts",
-        "check:tests-naming": "ts-node scripts/check-tests-naming.ts"
+        "merge-coverage": "corepack yarn exec ts-node scripts/merge-coverage.ts",
+        "check:tests-naming": "corepack yarn exec ts-node scripts/check-tests-naming.ts"
     },
     "devDependencies": {
         "@changesets/cli": "2.29.7",
