@@ -27,8 +27,6 @@ describe('Clause class tests', () => {
             expect(clause.data?.toString()).toEqual(
                 HexUInt.of('0xdeadbeef').toString()
             );
-            expect(clause.comment).toBeNull();
-            expect(clause.abi).toBeNull();
         });
 
         test('ok< - creates Clause for contract deployment (to = null) and no data field', () => {

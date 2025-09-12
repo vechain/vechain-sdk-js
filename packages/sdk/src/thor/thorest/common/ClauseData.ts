@@ -28,20 +28,6 @@ class ClauseData {
     readonly data: Hex | null;
 
     /**
-     * Optional comment for the clause, helpful for displaying what the clause is doing.
-     *
-     * Not serialized in {@link ClauseJSON}.
-     */
-    readonly comment: string | null;
-
-    /**
-     * Optional ABI for the contract method invocation.
-     *
-     * Not serialized in {@link ClauseJSON}.
-     */
-    readonly abi: string | null;
-
-    /**
      * Constructs an instance representing a transaction or an interaction.
      *
      * @param {Address | null} to - The target address of the transaction. Can be null if not specified.
@@ -51,18 +37,10 @@ class ClauseData {
      * @param {string | null} [abi] - Optional ABI (Application Binary Interface) string defining the structure of the interaction. Defaults to null if not provided.
      * @return {void} Does not return anything.
      */
-    constructor(
-        to: Address | null,
-        value: bigint,
-        data: Hex | null,
-        comment: string | null,
-        abi: string | null
-    ) {
+    constructor(to: Address | null, value: bigint, data: Hex | null) {
         this.to = to;
         this.value = value;
         this.data = data ?? null;
-        this.comment = comment ?? null;
-        this.abi = abi ?? null;
     }
 
     /**
@@ -80,9 +58,7 @@ class ClauseData {
             return new ClauseData(
                 json.to !== null ? Address.of(json.to) : null,
                 HexUInt.of(json.value).bi,
-                json.data !== undefined ? HexUInt.of(json.data) : null,
-                null,
-                null
+                json.data !== undefined ? HexUInt.of(json.data) : null
             );
         } catch (error) {
             throw new IllegalArgumentError(
