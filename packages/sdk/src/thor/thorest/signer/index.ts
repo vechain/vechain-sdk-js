@@ -1,3 +1,3 @@
 export * from './PrivateKeySigner';
-export * from './RLPCodec';
+export * from './RLPCodeTransactionRequest';
 export * from './Signer';

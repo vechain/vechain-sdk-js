@@ -79,7 +79,7 @@ class RLPCodecTransactionRequest {
         ])
     };
 
-    private static readonly RLP_UNSIGNED_TRANSACTION_PROFILE: RLPProfile = {
+    public static readonly RLP_UNSIGNED_TRANSACTION_PROFILE: RLPProfile = {
         name: 'tx',
         kind: RLPCodecTransactionRequest.RLP_FIELDS
     };

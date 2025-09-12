@@ -21,7 +21,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
     const signer = new PrivateKeySigner(privateKey);
 
     // Solo network test addresses
-    const toAddress = '0x435933c8064b4ae76be665428e0307ef2ccfbd68'; // Solo default account[1]
+    const toAddress = '0xf077b491b355e64048ce21e3a6fc4751eeea77fa'; // Solo default account[1]
     const fromKey =
         '99f0500549792796c14fed62011a51081dc5b5e68fe8bd8a13b86be829c4fd36'; // Solo default account[1]
     const fromSigner = new PrivateKeySigner(Hex.of(fromKey).bytes);
@@ -122,25 +122,25 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
                 clauses: [createTransferClause()],
                 dependsOn: null,
                 expiration: 32,
-                gas: 210000n,
+                gas: 25000n,
                 gasPriceCoef: 0n, // Can be 0 for dynamic fee
-                maxFeePerGas: 20000000000n, // 20 Gwei
-                maxPriorityFeePerGas: 5000000000n, // 5 Gwei
+                maxFeePerGas: 10027000000000n, // 20 Gwei
+                maxPriorityFeePerGas: 27000000000n, // 5 Gwei
                 nonce: Math.floor(Math.random() * 1000000),
                 isIntendedToBeSponsored: false
             });
 
             // Verify it's detected as dynamic fee
             expect(dynamicTx.isDynamicFee()).toBe(true);
-            expect(dynamicTx.maxFeePerGas).toBe(20000000000n);
-            expect(dynamicTx.maxPriorityFeePerGas).toBe(5000000000n);
+            expect(dynamicTx.maxFeePerGas).toBe(10027000000000n);
+            expect(dynamicTx.maxPriorityFeePerGas).toBe(27000000000n);
 
             // Sign the transaction
             const signedTx = fromSigner.sign(dynamicTx);
             expect(signedTx.isDynamicFee()).toBe(true);
             expect(signedTx.isSigned()).toBe(true);
-            expect(signedTx.maxFeePerGas).toBe(20000000000n);
-            expect(signedTx.maxPriorityFeePerGas).toBe(5000000000n);
+            expect(signedTx.maxFeePerGas).toBe(10027000000000n);
+            expect(signedTx.maxPriorityFeePerGas).toBe(27000000000n);
 
             // Encode and verify 0x51 type prefix
             const encoded =
@@ -149,39 +149,27 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
                 );
             expect(encoded[0]).toBe(0x51);
 
-            // Try to send to solo network (may not be supported yet)
-            try {
-                const txResponse =
-                    await SendTransaction.of(encoded).askTo(httpClient);
-                expect(txResponse.response).toBeDefined();
-                expect(txResponse.response.id).toBeDefined();
+            // Send to solo network
+            const txResponse =
+                await SendTransaction.of(encoded).askTo(httpClient);
+            expect(txResponse.response).toBeDefined();
+            expect(txResponse.response.id).toBeDefined();
 
+            console.log(
+                `Dynamic fee transaction sent: ${txResponse.response.id.toString()}`
+            );
+
+            // Wait a bit and try to get receipt
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+
+            const receiptResponse = await RetrieveTransactionReceipt.of(
+                txResponse.response.id
+            ).askTo(httpClient);
+            if (receiptResponse.response) {
+                expect(receiptResponse.response.reverted).toBe(false);
                 console.log(
-                    `Dynamic fee transaction sent: ${txResponse.response.id.toString()}`
+                    `Dynamic fee transaction confirmed in block: ${receiptResponse.response.meta.blockID}`
                 );
-
-                // Wait a bit and try to get receipt
-                await new Promise((resolve) => setTimeout(resolve, 2000));
-
-                const receiptResponse = await RetrieveTransactionReceipt.of(
-                    txResponse.response.id
-                ).askTo(httpClient);
-                if (receiptResponse.response) {
-                    expect(receiptResponse.response.reverted).toBe(false);
-                    console.log(
-                        `Dynamic fee transaction confirmed in block: ${receiptResponse.response.meta.blockID}`
-                    );
-                }
-            } catch (error) {
-                // Solo network may not support dynamic fee transactions yet
-                if (error instanceof Error) {
-                    console.log(
-                        'Dynamic fee transactions not yet supported on solo network - test passed for encoding/signing'
-                    );
-                    expect(true).toBe(true); // Test passes for correct encoding
-                } else {
-                    throw error;
-                }
             }
         }, 30000);
 
@@ -194,9 +182,9 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
                 clauses: [createTransferClause()],
                 dependsOn: null,
                 expiration: 32,
-                gas: 210000n,
+                gas: 25000n,
                 gasPriceCoef: 0n,
-                maxFeePerGas: 15000000000n, // 15 Gwei
+                maxFeePerGas: 10027000000000n, // 15 Gwei
                 // No maxPriorityFeePerGas
                 nonce: Math.floor(Math.random() * 1000000),
                 isIntendedToBeSponsored: false
@@ -204,7 +192,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
 
             // Should still be detected as dynamic fee
             expect(dynamicTx.isDynamicFee()).toBe(true);
-            expect(dynamicTx.maxFeePerGas).toBe(15000000000n);
+            expect(dynamicTx.maxFeePerGas).toBe(10027000000000n);
             expect(dynamicTx.maxPriorityFeePerGas).toBeUndefined();
 
             // Sign and encode
@@ -215,27 +203,15 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
                 );
             expect(encoded[0]).toBe(0x51);
 
-            // Try to send to solo network (may not be supported yet)
-            try {
-                const txResponse =
-                    await SendTransaction.of(encoded).askTo(httpClient);
-                expect(txResponse.response).toBeDefined();
-                expect(txResponse.response.id).toBeDefined();
+            // Send to solo network
+            const txResponse =
+                await SendTransaction.of(encoded).askTo(httpClient);
+            expect(txResponse.response).toBeDefined();
+            expect(txResponse.response.id).toBeDefined();
 
-                console.log(
-                    `Dynamic fee (maxFeePerGas only) transaction sent: ${txResponse.response.id.toString()}`
-                );
-            } catch (error) {
-                // Solo network may not support dynamic fee transactions yet
-                if (error instanceof Error) {
-                    console.log(
-                        'Dynamic fee transactions not yet supported on solo network - test passed for encoding/signing'
-                    );
-                    expect(true).toBe(true); // Test passes for correct encoding
-                } else {
-                    throw error;
-                }
-            }
+            console.log(
+                `Dynamic fee (maxFeePerGas only) transaction sent: ${txResponse.response.id.toString()}`
+            );
         }, 30000);
     });
 
@@ -308,10 +284,10 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
                 clauses: [createTransferClause()],
                 dependsOn: null,
                 expiration: 32,
-                gas: 210000n,
+                gas: 25000n,
                 gasPriceCoef: 0n,
-                maxFeePerGas: 18000000000n,
-                maxPriorityFeePerGas: 4000000000n,
+                maxFeePerGas: 10027000000000n,
+                maxPriorityFeePerGas: 27000000000n,
                 nonce: Math.floor(Math.random() * 1000000),
                 isIntendedToBeSponsored: false
             });
@@ -345,24 +321,13 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
             expect(legacyResponse.response).toBeDefined();
             console.log(`Legacy tx: ${legacyResponse.response.id.toString()}`);
 
-            // Try dynamic fee transaction (may not be supported yet)
-            try {
-                const dynamicResponse =
-                    await SendTransaction.of(dynamicEncoded).askTo(httpClient);
-                expect(dynamicResponse.response).toBeDefined();
-                console.log(
-                    `Dynamic tx: ${dynamicResponse.response.id.toString()}`
-                );
-            } catch (error) {
-                if (error instanceof Error) {
-                    console.log(
-                        'Dynamic fee transactions not yet supported on solo network - legacy tx succeeded'
-                    );
-                    expect(true).toBe(true);
-                } else {
-                    throw error;
-                }
-            }
+            // Send dynamic fee transaction
+            const dynamicResponse =
+                await SendTransaction.of(dynamicEncoded).askTo(httpClient);
+            expect(dynamicResponse.response).toBeDefined();
+            console.log(
+                `Dynamic tx: ${dynamicResponse.response.id.toString()}`
+            );
         }, 30000);
     });
 });
