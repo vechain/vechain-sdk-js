@@ -168,7 +168,7 @@ class Tx {
             blockRef: this.blockRef.toString(),
             expiration: this.expiration,
             clauses: this.clauses.map(
-                (clause: Clause): ClauseJSON => clause.toJSON()
+                (clause: ClauseData): ClauseJSON => clause.toJSON()
             ),
             gasPriceCoef:
                 this.gasPriceCoef !== null

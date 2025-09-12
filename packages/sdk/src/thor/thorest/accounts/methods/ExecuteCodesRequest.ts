@@ -116,7 +116,7 @@ class ExecuteCodesRequest {
             gasPayer: this.gasPayer?.toString(),
             expiration: this.expiration?.valueOf(),
             blockRef: this.blockRef?.toString(),
-            clauses: this.clauses?.map((clause: Clause) => clause.toJSON()),
+            clauses: this.clauses?.map((clause: ClauseData) => clause.toJSON()),
             gas: this.gas !== null ? Number(this.gas) : undefined,
             gasPrice: this.gasPrice?.toString(),
             caller: this.caller?.toString()
