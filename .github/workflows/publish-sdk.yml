@@ -16,6 +16,8 @@ jobs:
               with:
                   node-version-file: .nvmrc
                   registry-url: 'https://npm.pkg.github.com/'
+            - name: Enable Corepack
+              run: corepack enable
             - run: corepack yarn install
 
             - name: Install playwright dependencies (for sample Vite dApp tests)

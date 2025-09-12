@@ -31,6 +31,9 @@ jobs:
           node-version: lts/*
           cache: 'npm'
 
+      - name: Enable Corepack
+        run: corepack enable
+
       - name: Cache node_modules
         uses: actions/cache@v4
         with:
@@ -68,6 +71,9 @@ jobs:
         with:
           node-version: lts/*
           cache: 'npm'
+
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: Cache node_modules
         uses: actions/cache@v4
@@ -110,6 +116,9 @@ jobs:
           node-version: lts/*
           cache: 'npm'
 
+      - name: Enable Corepack
+        run: corepack enable
+
       - name: Cache node_modules
         uses: actions/cache@v4
         with:
@@ -131,8 +140,8 @@ jobs:
 
       - name: Start & Seed Thor solo node
         run: |
-          yarn start-thor-solo
-          yarn seed-thor-solo
+          corepack yarn start-thor-solo
+          corepack yarn seed-thor-solo
 
       - name: Integration tests
         run: corepack yarn test:integration
@@ -163,6 +172,9 @@ jobs:
           node-version: lts/*
           cache: 'npm'
 
+      - name: Enable Corepack
+        run: corepack enable
+
       - name: Cache node_modules
         uses: actions/cache@v4
         with:
@@ -184,8 +196,8 @@ jobs:
 
       - name: Start & Seed Thor solo node
         run: |
-          yarn start-thor-solo
-          yarn seed-thor-solo
+          corepack yarn start-thor-solo
+          corepack yarn seed-thor-solo
 
       - name: Clients tests
         run: corepack yarn test:clients
@@ -228,8 +240,8 @@ jobs:
 
       - name: Start & Seed Thor solo node
         run: |
-          yarn start-thor-solo
-          yarn seed-thor-solo
+          corepack yarn start-thor-solo
+          corepack yarn seed-thor-solo
 
       - name: Browser tests
         run: corepack yarn test:browser

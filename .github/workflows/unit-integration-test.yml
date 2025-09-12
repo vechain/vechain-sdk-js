@@ -20,6 +20,9 @@ jobs:
               with:
                   node-version: ${{ matrix.node }}
 
+            - name: Enable Corepack
+              run: corepack enable
+
             - name: Install & Patch packages
               run: corepack yarn install
 

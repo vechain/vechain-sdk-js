@@ -16,6 +16,9 @@ jobs:
               with:
                   node-version: lts/*
 
+            - name: Enable Corepack
+              run: corepack enable
+
             - name: Install & Patch packages
               run: corepack yarn install
 
