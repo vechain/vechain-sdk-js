@@ -10,7 +10,7 @@ import {
     type TransactionBody,
     type TransactionClause
 } from '@thor/thorest/transactions/model';
-import { RLPCodec } from '@thor/thorest/signer';
+import { RLPCodecTransactionRequest } from '@thor/thorest/signer';
 import { TEST_ACCOUNTS } from '../../../fixture';
 
 const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
@@ -53,7 +53,7 @@ export function newTransactionFromTransactionRequest(
 /**
  * @group unit/thor/thorest/signer
  */
-describe('RLPCodec', () => {
+describe('RLPCodecTransactionRequest', () => {
     // Test data setup
     const mockBlockRef = HexUInt.of('0x1234567890abcdef');
     const mockDependsOn = HexUInt.of(
@@ -77,7 +77,8 @@ describe('RLPCodec', () => {
             });
 
             // Call the method
-            const actual = RLPCodec.encodeTransactionRequest(txRequest);
+            const actual =
+                RLPCodecTransactionRequest.encodeTransactionRequest(txRequest);
 
             // Assert actual
             expect(actual.length).toBeGreaterThan(0);
@@ -103,7 +104,8 @@ describe('RLPCodec', () => {
             });
 
             // Call the method
-            const actual = RLPCodec.encodeTransactionRequest(txRequest);
+            const actual =
+                RLPCodecTransactionRequest.encodeTransactionRequest(txRequest);
 
             // Assert actual
             expect(actual.length).toBeGreaterThan(0);
@@ -137,7 +139,8 @@ describe('RLPCodec', () => {
             });
 
             // Call the method
-            const actual = RLPCodec.encodeTransactionRequest(txRequest);
+            const actual =
+                RLPCodecTransactionRequest.encodeTransactionRequest(txRequest);
 
             // Assert actual
             expect(actual.length).toBeGreaterThan(0);
@@ -171,7 +174,8 @@ describe('RLPCodec', () => {
             });
 
             // Call the method
-            const actual = RLPCodec.encodeTransactionRequest(txRequest);
+            const actual =
+                RLPCodecTransactionRequest.encodeTransactionRequest(txRequest);
 
             // Assert actual
             expect(actual.length).toBeGreaterThan(0);
@@ -205,7 +209,8 @@ describe('RLPCodec', () => {
             });
 
             // Call the method
-            const actual = RLPCodec.encodeTransactionRequest(txRequest);
+            const actual =
+                RLPCodecTransactionRequest.encodeTransactionRequest(txRequest);
 
             // Assert actual
             expect(actual.length).toBeGreaterThan(0);
@@ -239,7 +244,8 @@ describe('RLPCodec', () => {
             });
 
             // Call the method
-            const actual = RLPCodec.encodeTransactionRequest(txRequest);
+            const actual =
+                RLPCodecTransactionRequest.encodeTransactionRequest(txRequest);
 
             // Assert actual
             expect(actual.length).toBeGreaterThan(0);
@@ -265,7 +271,8 @@ describe('RLPCodec', () => {
             });
 
             // Call the method
-            const actual = RLPCodec.encodeTransactionRequest(txRequest);
+            const actual =
+                RLPCodecTransactionRequest.encodeTransactionRequest(txRequest);
 
             // Assert actual
             expect(actual.length).toBeGreaterThan(0);
@@ -313,7 +320,9 @@ describe('RLPCodec', () => {
 
             // Call the method
             const actual =
-                RLPCodec.encodeSignedTransactionRequest(signedTxRequest);
+                RLPCodecTransactionRequest.encodeSignedTransactionRequest(
+                    signedTxRequest
+                );
 
             // Assert actual
             expect(actual.length).toBeGreaterThan(0);
@@ -360,7 +369,9 @@ describe('RLPCodec', () => {
 
             // Call the method
             const actual =
-                RLPCodec.encodeSignedTransactionRequest(signedTxRequest);
+                RLPCodecTransactionRequest.encodeSignedTransactionRequest(
+                    signedTxRequest
+                );
 
             // Assert actual
             expect(actual.length).toBeGreaterThan(0);

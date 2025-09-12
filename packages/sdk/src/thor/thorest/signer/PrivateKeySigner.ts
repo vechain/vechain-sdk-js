@@ -10,7 +10,7 @@ import {
     SponsoredTransactionRequest,
     type TransactionRequest
 } from '@thor/thorest/model';
-import { RLPCodec } from './RLPCodec';
+import { RLPCodecTransactionRequest } from './RLPCodeTransactionRequest';
 import { type Signer } from './Signer';
 import * as nc_utils from '@noble/curves/abstract/utils';
 
@@ -104,7 +104,9 @@ class PrivateKeySigner implements Signer {
     ): SignedTransactionRequest {
         if (this.#privateKey !== null) {
             const hash = Blake2b256.of(
-                RLPCodec.encodeTransactionRequest(transactionRequest)
+                RLPCodecTransactionRequest.encodeTransactionRequest(
+                    transactionRequest
+                )
             ).bytes;
             const signature = Secp256k1.sign(hash, this.#privateKey);
             return new SignedTransactionRequest({
@@ -118,6 +120,8 @@ class PrivateKeySigner implements Signer {
                 nonce: transactionRequest.nonce,
                 isIntendedToBeSponsored:
                     transactionRequest.isIntendedToBeSponsored,
+                maxFeePerGas: transactionRequest.maxFeePerGas,
+                maxPriorityFeePerGas: transactionRequest.maxPriorityFeePerGas,
                 origin: this.address,
                 originSignature: signature,
                 signature
@@ -179,7 +183,7 @@ class PrivateKeySigner implements Signer {
                 const hash = Blake2b256.of(
                     nc_utils.concatBytes(
                         Blake2b256.of(
-                            RLPCodec.encodeTransactionRequest(
+                            RLPCodecTransactionRequest.encodeTransactionRequest(
                                 signedTransactionRequest
                             )
                         ).bytes,
@@ -200,6 +204,9 @@ class PrivateKeySigner implements Signer {
                     gasPriceCoef: signedTransactionRequest.gasPriceCoef,
                     nonce: signedTransactionRequest.nonce,
                     isIntendedToBeSponsored: true,
+                    maxFeePerGas: signedTransactionRequest.maxFeePerGas,
+                    maxPriorityFeePerGas:
+                        signedTransactionRequest.maxPriorityFeePerGas,
                     origin: signedTransactionRequest.origin,
                     originSignature: signedTransactionRequest.originSignature,
                     gasPayer: this.address,

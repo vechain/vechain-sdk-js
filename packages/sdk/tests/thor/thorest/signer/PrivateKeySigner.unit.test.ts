@@ -14,7 +14,10 @@ import {
     SponsoredTransactionRequest,
     TransactionRequest
 } from '@thor/thorest/model';
-import { PrivateKeySigner, RLPCodec } from '@thor/thorest/signer';
+import {
+    PrivateKeySigner,
+    RLPCodecTransactionRequest
+} from '@thor/thorest/signer';
 import { newTransactionFromTransactionRequest } from './RLPCodec.unit.test';
 import * as nc_utils from '@noble/curves/abstract/utils';
 
@@ -69,9 +72,10 @@ describe('PrivateKeySigner', () => {
 
         jest.spyOn(Secp256k1, 'sign').mockReturnValue(mockSignature);
 
-        jest.spyOn(RLPCodec, 'encodeTransactionRequest').mockReturnValue(
-            new Uint8Array(10).fill(4)
-        );
+        jest.spyOn(
+            RLPCodecTransactionRequest,
+            'encodeTransactionRequest'
+        ).mockReturnValue(new Uint8Array(10).fill(4));
     });
 
     afterEach(() => {
@@ -164,9 +168,9 @@ describe('PrivateKeySigner', () => {
 
             expect(signedTx).toBeInstanceOf(SignedTransactionRequest);
             // eslint-disable-next-line @typescript-eslint/unbound-method
-            expect(RLPCodec.encodeTransactionRequest).toHaveBeenCalledWith(
-                txRequest
-            );
+            expect(
+                RLPCodecTransactionRequest.encodeTransactionRequest
+            ).toHaveBeenCalledWith(txRequest);
             // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(Blake2b256.of).toHaveBeenCalled();
             // eslint-disable-next-line @typescript-eslint/unbound-method
