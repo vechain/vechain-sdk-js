@@ -20,7 +20,6 @@ describe('TransactionsModule-GetTransaction', () => {
             head: undefined
         });
         expect(txDetails).toBeDefined();
-        console.log(txDetails);
         expect(txDetails?.id.compareTo(txID)).toBe(0);
     });
 });
