@@ -17,3 +17,4 @@ export const getGenesisBlock = async (): Promise<CompressedBlockDetail> => {
         throw error;
     }
 };
+
