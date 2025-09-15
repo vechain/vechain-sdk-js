@@ -137,13 +137,11 @@ import { HomePage } from 'vocs/components'
 
 ```js twoslash
 // 1. Import modules.
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+import { createPublicClient, ThorNetwork } from '@vechain/sdk/viem'
 
-// 2. Set up your client with desired chain & transport.
+// 2. Set up your client with desired network.
 const client = createPublicClient({
-  chain: mainnet,
-  transport: http(),
+  network: ThorNetwork.MAINNET
 })
 
 // 3. Consume an action!
@@ -152,7 +150,7 @@ const blockNumber = await client.getBlockNumber()
 
 # Features
 
-viem supports all these features out-of-the-box:
+Vechain supports all these features out-of-the-box:
 
 - Abstractions over the [JSON-RPC API](https://ethereum.org/en/developers/docs/apis/json-rpc/) to make your life easier
 - First-class APIs for interacting with [Smart Contracts](https://ethereum.org/en/glossary/#smart-contract)
