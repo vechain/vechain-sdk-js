@@ -6,31 +6,32 @@ Creates a **WebAuthn Account** – commonly used for **[Smart Account](/account-
 WebAuthn Account owners are currently supported on the following Smart Account implementations:
 
 - [`toCoinbaseSmartAccount`](/account-abstraction/accounts/smart/toCoinbaseSmartAccount#owners)
-:::
+  :::
 
 ## Import
 
-```ts twoslash
-import { toWebAuthnAccount } from 'viem/account-abstraction'
+```js twoslash
+import { toWebAuthnAccount } from 'viem/account-abstraction';
 ```
 
 ## Usage
 
-```ts twoslash
-import { 
-  createWebAuthnCredential, 
-  toWebAuthnAccount 
-} from 'viem/account-abstraction'
+```js twoslash
+import {
+    createWebAuthnCredential,
+    toWebAuthnAccount
+} from 'viem/account-abstraction';
 
 // Register a credential (ie. passkey).
 const credential = await createWebAuthnCredential({
-  name: 'Example',
-})
+    name: 'Example'
+});
 
 // Create a WebAuthn account from the credential. // [!code focus]
-const account = toWebAuthnAccount({ // [!code focus]
-  credential, // [!code focus]
-}) // [!code focus]
+const account = toWebAuthnAccount({
+    // [!code focus]
+    credential // [!code focus]
+}); // [!code focus]
 ```
 
 ## Returns
@@ -47,16 +48,19 @@ A WebAuthn Account.
 
 A P256 WebAuthn Credential.
 
-```ts twoslash
-import { createWebAuthnCredential, toWebAuthnAccount } from 'viem/account-abstraction'
+```js twoslash
+import {
+    createWebAuthnCredential,
+    toWebAuthnAccount
+} from 'viem/account-abstraction';
 // ---cut---
 const credential = await createWebAuthnCredential({
-  name: 'Example',
-})
+    name: 'Example'
+});
 
 const account = toWebAuthnAccount({
-  credential, // [!code focus]
-})
+    credential // [!code focus]
+});
 ```
 
 ### getFn
@@ -66,20 +70,23 @@ const account = toWebAuthnAccount({
 
 Credential request function. Useful for environments that do not support the WebAuthn API natively (i.e. React Native or testing environments).
 
-```ts twoslash
+```js twoslash
 // @noErrors
-import { createWebAuthnCredential, toWebAuthnAccount } from 'viem/account-abstraction'
+import {
+    createWebAuthnCredential,
+    toWebAuthnAccount
+} from 'viem/account-abstraction';
 // ---cut---
-import * as passkey from 'react-native-passkeys' // [!code focus]
+import * as passkey from 'react-native-passkeys'; // [!code focus]
 
 const credential = await createWebAuthnCredential({
-  name: 'Example',
-})
+    name: 'Example'
+});
 
 const account = toWebAuthnAccount({
-  credential,
-  getFn: passkey.get, // [!code focus]
-})
+    credential,
+    getFn: passkey.get // [!code focus]
+});
 ```
 
 ### rpId
@@ -89,18 +96,21 @@ const account = toWebAuthnAccount({
 
 Relying Party ID.
 
-```ts twoslash
+```js twoslash
 // @noErrors
-import { createWebAuthnCredential, toWebAuthnAccount } from 'viem/account-abstraction'
+import {
+    createWebAuthnCredential,
+    toWebAuthnAccount
+} from 'viem/account-abstraction';
 // ---cut---
-import * as passkey from 'react-native-passkeys' // [!code focus]
+import * as passkey from 'react-native-passkeys'; // [!code focus]
 
 const credential = await createWebAuthnCredential({
-  name: 'Example',
-})
+    name: 'Example'
+});
 
 const account = toWebAuthnAccount({
-  credential,
-  rpId: 'example.com', // [!code focus]
-})
+    credential,
+    rpId: 'example.com' // [!code focus]
+});
 ```

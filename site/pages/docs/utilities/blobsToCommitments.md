@@ -8,29 +8,29 @@ Compute commitments from a list of blobs.
 
 ## Import
 
-```ts twoslash
-import { blobsToCommitments } from 'viem'
+```js twoslash
+import { blobsToCommitments } from 'viem';
 ```
 
 ## Usage
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { blobsToCommitments, toBlobs } from 'viem'
-import { kzg } from './kzg'
+```js twoslash [example.ts]
+import { blobsToCommitments, toBlobs } from 'viem';
+import { kzg } from './kzg';
 
-const blobs = toBlobs({ data: '0x1234' })
-const commitments = blobsToCommitments({ blobs, kzg }) // [!code focus]
+const blobs = toBlobs({ data: '0x1234' });
+const commitments = blobsToCommitments({ blobs, kzg }); // [!code focus]
 ```
 
-```ts twoslash [kzg.ts] filename="kzg.ts"
+```js twoslash [kzg.ts] filename="kzg.ts"
 // @noErrors
-import * as cKzg from 'c-kzg'
-import { setupKzg } from 'viem'
-import { mainnetTrustedSetupPath } from 'viem/node'
+import * as cKzg from 'c-kzg';
+import { setupKzg } from 'viem';
+import { mainnetTrustedSetupPath } from 'viem/node';
 
-export const kzg = setupKzg(cKzg, mainnetTrustedSetupPath)
+export const kzg = setupKzg(cKzg, mainnetTrustedSetupPath);
 ```
 
 :::
@@ -49,17 +49,17 @@ List of commitments corresponding to the input blobs.
 
 List of blobs to transform into commitments.
 
-```ts twoslash
+```js twoslash
 import { defineKzg } from 'viem'
 const kzg = defineKzg({} as any)
 
 // ---cut---
 import { blobsToCommitments, toBlobs } from 'viem'
 
-const commitments = blobsToCommitments({ 
-  blobs: toBlobs({ data: '0x1234' }), // [!code focus]  
-  kzg, 
-}) 
+const commitments = blobsToCommitments({
+  blobs: toBlobs({ data: '0x1234' }), // [!code focus]
+  kzg,
+})
 ```
 
 ### kzg
@@ -68,18 +68,18 @@ const commitments = blobsToCommitments({
 
 KZG implementation. See [`setupKzg`](/docs/utilities/setupKzg) for more information.
 
-```ts twoslash
+```js twoslash
 // @noErrors
-import * as cKzg from 'c-kzg'
-import { blobsToCommitments, setupKzg, toBlobs } from 'viem'
-import { mainnetTrustedSetupPath } from 'viem/node'
+import * as cKzg from 'c-kzg';
+import { blobsToCommitments, setupKzg, toBlobs } from 'viem';
+import { mainnetTrustedSetupPath } from 'viem/node';
 
-const kzg = setupKzg(cKzg, mainnetTrustedSetupPath) // [!code focus]
+const kzg = setupKzg(cKzg, mainnetTrustedSetupPath); // [!code focus]
 
-const commitments = blobsToCommitments({ 
-  blobs: toBlobs({ data: '0x1234' }),  
-  kzg, // [!code focus]
-}) 
+const commitments = blobsToCommitments({
+    blobs: toBlobs({ data: '0x1234' }),
+    kzg // [!code focus]
+});
 ```
 
 ### to
@@ -88,18 +88,18 @@ const commitments = blobsToCommitments({
 
 The output type.
 
-```ts twoslash
+```js twoslash
 import { defineKzg } from 'viem'
 const kzg = defineKzg({} as any)
 
 // ---cut---
 import { blobsToCommitments, toBlobs } from 'viem'
 
-const commitments = blobsToCommitments({ 
+const commitments = blobsToCommitments({
   blobs: toBlobs({ data: '0x1234' }),
-  kzg, 
-  to: 'bytes', // [!code focus]  
-}) 
+  kzg,
+  to: 'bytes', // [!code focus]
+})
 
 commitments // [!code focus]
 // ^?

@@ -14,21 +14,21 @@ Otherwise, the Action will either call [`eth_maxPriorityFeePerGas`](https://gith
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { publicClient } from './client'
+```js twoslash [example.ts]
+import { publicClient } from './client';
 
-const maxPriorityFeePerGas = await publicClient.estimateMaxPriorityFeePerGas()
+const maxPriorityFeePerGas = await publicClient.estimateMaxPriorityFeePerGas();
 // @log: Output: 1_000_000_000n
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash [client.ts] filename="client.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
@@ -48,13 +48,11 @@ An estimate (in wei) for the max priority fee per gas.
 
 Optional Chain override. Used to infer the default `maxPriorityFeePerGas` from [`chain.fees.defaultPriorityFee`](/docs/chains/fees#feesdefaultpriorityfee).
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-import { optimism } from 'viem/chains' // [!code focus]
 
-const maxPriorityFeePerGas = 
-  await publicClient.estimateMaxPriorityFeePerGas({
+const maxPriorityFeePerGas = await publicClient.estimateMaxPriorityFeePerGas({
     chain: optimism // [!code focus]
-  })
+});
 ```

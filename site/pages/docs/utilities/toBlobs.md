@@ -4,7 +4,7 @@ description: Transforms arbitrary data into blobs.
 
 # toBlobs
 
-Transforms arbitrary data into Viem-shaped blobs. 
+Transforms arbitrary data into Viem-shaped blobs.
 
 :::warning
 This function transforms data into Viem-shaped blobs. It is designed to be used with Viem's `fromBlobs` function to convert back to the data.
@@ -12,16 +12,16 @@ This function transforms data into Viem-shaped blobs. It is designed to be used 
 
 ## Import
 
-```ts twoslash
-import { toBlobs } from 'viem'
+```js twoslash
+import { toBlobs } from 'viem';
 ```
 
 ## Usage
 
-```ts twoslash [example.ts]
-import { toBlobs } from 'viem'
+```js twoslash [example.ts]
+import { toBlobs } from 'viem';
 
-const blobs = toBlobs({ data: '0x...' })
+const blobs = toBlobs({ data: '0x...' });
 ```
 
 ## Returns
@@ -38,12 +38,12 @@ Blobs from the input data.
 
 Data to transform into blobs.
 
-```ts twoslash
-import { toBlobs } from 'viem'
+```js twoslash
+import { toBlobs } from 'viem';
 
-const blobs = toBlobs({ 
-  data: '0x...' // [!code focus]
-})
+const blobs = toBlobs({
+    data: '0x...' // [!code focus]
+});
 ```
 
 ### to
@@ -52,16 +52,14 @@ const blobs = toBlobs({
 
 The output type.
 
-```ts twoslash
-import { toBlobs } from 'viem'
+```js twoslash
+import { toBlobs } from 'viem';
 
-const blobs = toBlobs({ 
-  data: '0x...',
-  to: 'bytes' // [!code focus]
-})
+const blobs = toBlobs({
+    data: '0x...',
+    to: 'bytes' // [!code focus]
+});
 
-blobs // [!code focus]
+blobs; // [!code focus]
 // ^?
-
-
 ```

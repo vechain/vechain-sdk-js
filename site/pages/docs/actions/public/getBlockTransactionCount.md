@@ -10,21 +10,21 @@ Returns the number of Transactions at a block number, hash or tag.
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { publicClient } from './client'
+```js twoslash [example.ts]
+import { publicClient } from './client';
 
-const count = await publicClient.getBlockTransactionCount() // [!code focus:99]
+const count = await publicClient.getBlockTransactionCount(); // [!code focus:99]
 // @log: Output: 23
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash [client.ts] filename="client.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
@@ -43,12 +43,13 @@ The block transaction count.
 
 Count at a given block hash.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const count = await publicClient.getBlockTransactionCount({
-  blockHash: '0x89644bbd5c8d682a2e9611170e6c1f02573d866d286f006cbf517eec7254ec2d' // [!code focus]
-})
+    blockHash:
+        '0x89644bbd5c8d682a2e9611170e6c1f02573d866d286f006cbf517eec7254ec2d' // [!code focus]
+});
 ```
 
 ### blockNumber (optional)
@@ -57,12 +58,12 @@ const count = await publicClient.getBlockTransactionCount({
 
 Count at a given block number.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const block = await publicClient.getBlockTransactionCount({
-  blockNumber: 42069n // [!code focus]
-})
+    blockNumber: 42069n // [!code focus]
+});
 ```
 
 ### blockTag (optional)
@@ -72,12 +73,12 @@ const block = await publicClient.getBlockTransactionCount({
 
 Count at a given block tag.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const block = await publicClient.getBlockTransactionCount({
-  blockTag: 'safe' // [!code focus]
-})
+    blockTag: 'safe' // [!code focus]
+});
 ```
 
 ## JSON-RPC Method

@@ -6,23 +6,24 @@ Creates an [EIP-2930](https://eips.ethereum.org/EIPS/eip-2930) access list based
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { account, publicClient } from './config'
+```js twoslash [example.ts]
+import { account, publicClient } from './config';
 
-const result = await publicClient.createAccessList({ // [!code focus:7]
-  data: '0xdeadbeef',
-  to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
-})
+const result = await publicClient.createAccessList({
+    // [!code focus:7]
+    data: '0xdeadbeef',
+    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+});
 ```
 
-```ts twoslash [config.ts] filename="config.ts"
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash [config.ts] filename="config.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
@@ -41,16 +42,16 @@ The access list and gas used.
 
 The Account to create an access list for.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-import { parseEther } from 'viem'
+import { parseEther } from 'viem';
 
 const result = await publicClient.createAccessList({
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266', // [!code focus]
-  data: '0xdeadbeef',
-  to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
-})
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266', // [!code focus]
+    data: '0xdeadbeef',
+    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+});
 ```
 
 ### blockNumber (optional)
@@ -59,16 +60,16 @@ const result = await publicClient.createAccessList({
 
 Block number to create an access list for.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-import { parseEther } from 'viem'
+import { parseEther } from 'viem';
 
 const result = await publicClient.createAccessList({
-  blockNumber: 15121123n, // [!code focus]
-  data: '0xdeadbeef',
-  to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
-})
+    blockNumber: 15121123n, // [!code focus]
+    data: '0xdeadbeef',
+    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+});
 ```
 
 ### blockTag (optional)
@@ -78,17 +79,17 @@ const result = await publicClient.createAccessList({
 
 Block tag to create an access list for.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-import { parseEther } from 'viem'
+import { parseEther } from 'viem';
 
 const result = await publicClient.createAccessList({
-  blockTag: 'safe', // [!code focus]
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-  data: '0xdeadbeef',
-  to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-})
+    blockTag: 'safe', // [!code focus]
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+    data: '0xdeadbeef',
+    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+});
 ```
 
 ### data (optional)
@@ -97,16 +98,16 @@ const result = await publicClient.createAccessList({
 
 Contract function selector with encoded arguments.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-import { parseEther } from 'viem'
+import { parseEther } from 'viem';
 
 const result = await publicClient.createAccessList({
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-  data: '0xdeadbeef', // [!code focus]
-  to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
-})
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+    data: '0xdeadbeef', // [!code focus]
+    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+});
 ```
 
 ### gasPrice (optional)
@@ -115,17 +116,17 @@ const result = await publicClient.createAccessList({
 
 The price (in wei) to pay per gas. Only applies to [Legacy Transactions](/docs/glossary/terms#legacy-transaction).
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-import { parseEther, parseGwei } from 'viem'
+import { parseEther, parseGwei } from 'viem';
 
 const result = await publicClient.createAccessList({
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-  data: '0xdeadbeef',
-  gasPrice: parseGwei('20'), // [!code focus]
-  to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
-})
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+    data: '0xdeadbeef',
+    gasPrice: parseGwei('20'), // [!code focus]
+    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+});
 ```
 
 ### maxFeePerGas (optional)
@@ -134,17 +135,17 @@ const result = await publicClient.createAccessList({
 
 Total fee per gas (in wei), inclusive of `maxPriorityFeePerGas`. Only applies to [EIP-1559 Transactions](/docs/glossary/terms#eip-1559-transaction)
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-import { parseEther, parseGwei } from 'viem'
+import { parseEther, parseGwei } from 'viem';
 
 const result = await publicClient.createAccessList({
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-  data: '0xdeadbeef',
-  maxFeePerGas: parseGwei('20'),  // [!code focus]
-  to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
-})
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+    data: '0xdeadbeef',
+    maxFeePerGas: parseGwei('20'), // [!code focus]
+    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+});
 ```
 
 ### maxPriorityFeePerGas (optional)
@@ -153,18 +154,18 @@ const result = await publicClient.createAccessList({
 
 Max priority fee per gas (in wei). Only applies to [EIP-1559 Transactions](/docs/glossary/terms#eip-1559-transaction)
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-import { parseEther, parseGwei } from 'viem'
+import { parseEther, parseGwei } from 'viem';
 
 const result = await publicClient.createAccessList({
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-  data: '0xdeadbeef',
-  maxFeePerGas: parseGwei('20'),
-  maxPriorityFeePerGas: parseGwei('2'), // [!code focus]
-  to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
-})
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+    data: '0xdeadbeef',
+    maxFeePerGas: parseGwei('20'),
+    maxPriorityFeePerGas: parseGwei('2'), // [!code focus]
+    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+});
 ```
 
 ### to (optional)
@@ -173,16 +174,16 @@ const result = await publicClient.createAccessList({
 
 Transaction recipient.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-import { parseEther } from 'viem'
+import { parseEther } from 'viem';
 
 const result = await publicClient.createAccessList({
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-  data: '0xdeadbeef',
-  to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8', // [!code focus]
-})
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+    data: '0xdeadbeef',
+    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8' // [!code focus]
+});
 ```
 
 ### value (optional)
@@ -191,17 +192,15 @@ const result = await publicClient.createAccessList({
 
 Value (in wei) sent with this transaction.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-import { parseEther } from 'viem'
+import { parseEther } from 'viem';
 
 const result = await publicClient.createAccessList({
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-  data: '0xdeadbeef',
-  to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-  value: parseEther('1') // [!code focus]
-})
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+    data: '0xdeadbeef',
+    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
+    value: parseEther('1') // [!code focus]
+});
 ```
-
-

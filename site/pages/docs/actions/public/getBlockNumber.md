@@ -10,14 +10,14 @@ Returns the number of the most recent block seen.
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { publicClient } from './client'
+```js twoslash [example.ts]
+import { publicClient } from './client';
 
-const blockNumber = await publicClient.getBlockNumber() // [!code focus:99]
+const blockNumber = await publicClient.getBlockNumber(); // [!code focus:99]
 // @log: Output: 69420n
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
+```js twoslash [client.ts] filename="client.ts"
 // [!include ~/snippets/publicClient.ts]
 ```
 
@@ -38,12 +38,12 @@ The number of the block.
 
 Time (in ms) that cached block number will remain in memory.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const block = await publicClient.getBlockNumber({
-  cacheTime: 4_000 // [!code focus]
-})
+    cacheTime: 4_000 // [!code focus]
+});
 ```
 
 By default, block numbers are cached for the period of the [Client's `cacheTime`](/docs/clients/public#cacheTime-optional).

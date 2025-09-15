@@ -10,20 +10,20 @@ Returns the chain ID associated with the bundler
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { bundlerClient } from './client'
+```js twoslash [example.ts]
+import { bundlerClient } from './client';
 
-const chainId = await bundlerClient.getChainId() // [!code focus:99]
+const chainId = await bundlerClient.getChainId(); // [!code focus:99]
 // @log: 1
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
-import { http } from 'viem'
-import { createBundlerClient } from 'viem/account-abstraction'
+```js twoslash [client.ts] filename="client.ts"
+import { http } from 'viem';
+import { createBundlerClient } from 'viem/account-abstraction';
 
 export const bundlerClient = createBundlerClient({
-  transport: http('https://public.pimlico.io/v2/1/rpc')
-})
+    transport: http('https://public.pimlico.io/v2/1/rpc')
+});
 ```
 
 :::

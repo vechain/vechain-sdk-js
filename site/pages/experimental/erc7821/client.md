@@ -4,12 +4,11 @@ To use the experimental functionality of [ERC-7821](https://eips.ethereum.org/EI
 
 ```ts
 import { createClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
 import { erc7821Actions } from 'viem/experimental' // [!code focus]
 
 const client = createClient({
-  chain: mainnet,
-  transport: http(),
+  network: ThorNetworks.MAINNET,
+  network: ThorNetworks.MAINNET,
 }).extend(erc7821Actions()) // [!code focus]
 
 const hash = await client.execute({/* ... */})

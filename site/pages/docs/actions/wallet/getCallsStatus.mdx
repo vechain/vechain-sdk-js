@@ -12,7 +12,7 @@ Returns the status of a call batch that was sent via `sendCalls`.
 
 :::code-group
 
-```ts twoslash [example.ts]
+```js twoslash [example.ts]
 import { walletClient } from './config'
  
 const result = await walletClient.getCallsStatus({ // [!code focus:99]
@@ -28,7 +28,7 @@ const result = await walletClient.getCallsStatus({ // [!code focus:99]
 // @log: }
 ```
 
-```ts twoslash [config.ts] filename="config.ts"
+```js twoslash [config.ts] filename="config.ts"
 import 'viem/window'
 // ---cut---
 import { createWalletClient, custom } from 'viem'

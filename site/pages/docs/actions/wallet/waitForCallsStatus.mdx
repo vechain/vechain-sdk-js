@@ -10,7 +10,7 @@ Waits for a call batch to be confirmed & included on a [Block](/docs/glossary/te
 
 :::code-group
 
-```ts twoslash [example.ts]
+```js twoslash [example.ts]
 import { parseEther } from 'viem'
 import { account, walletClient } from './config'
  
@@ -35,7 +35,7 @@ const result = await walletClient.waitForCallsStatus({ // [!code focus]
 // @log: }
 ```
 
-```ts twoslash [config.ts] filename="config.ts"
+```js twoslash [config.ts] filename="config.ts"
 import 'viem/window'
 // ---cut---
 import { createWalletClient, custom } from 'viem'

@@ -6,53 +6,50 @@ The `createTestClient` function sets up a Test RPC Client with a given [Transpor
 
 ## Import
 
-```ts twoslash
-import { createTestClient } from 'viem'
+```js twoslash
+import { createTestClient } from 'viem';
 ```
 
 ## Usage
 
 Initialize a Client with your desired [Chain](/docs/chains/introduction), [Transport](/docs/clients/intro) (e.g. `http`) and [mode](#mode) (e.g. `"anvil"`).
 
-```ts twoslash
-import { createTestClient, http } from 'viem'
-import { foundry } from 'viem/chains'
+```js twoslash
+import { createTestClient, http } from 'viem';
 
 const client = createTestClient({
-  chain: foundry,
-  mode: 'anvil',
-  transport: http(), 
-})
+    chain: foundry,
+    mode: 'anvil',
+    network: ThorNetworks.MAINNET
+});
 ```
 
 Then you can consume [Test Actions](/docs/actions/test/introduction):
 
-```ts twoslash
-import { createTestClient, http } from 'viem'
-import { foundry } from 'viem/chains'
+```js twoslash
+import { createTestClient, http } from 'viem';
 
 const client = createTestClient({
-  chain: foundry,
-  mode: 'anvil',
-  transport: http(), 
-})
+    chain: foundry,
+    mode: 'anvil',
+    network: ThorNetworks.MAINNET
+});
 // ---cut---
-const mine = await client.mine({ blocks: 1 }) // [!code focus:10]
+const mine = await client.mine({ blocks: 1 }); // [!code focus:10]
 ```
 
 ### Extending with Public & Wallet Actions
 
 When interacting with a Ethereum test node, you may also find yourself wanting to interact with [Public Actions](/docs/actions/public/introduction) and [Wallet Actions](/docs/actions/wallet/introduction) with the same `chain` and `transport`. Instead of creating three different Clients, you can instead just extend the Test Client with those actions:
 
-```ts twoslash
+```js twoslash
 // @noErrors
 import { createTestClient, http, publicActions, walletActions } from 'viem'
-import { foundry } from 'viem/chains'
 
 const client = createTestClient({
   chain: foundry,
   mode: 'anvil',
-  transport: http(), 
+  network: ThorNetworks.MAINNET,
 })
   .extend(publicActions) // [!code hl]
   .extend(walletActions) // [!code hl]
@@ -70,15 +67,14 @@ const mine = await client.mine({ blocks: 1 }) // Test Action
 
 Mode of the Test Client.
 
-```ts twoslash
-import { createTestClient, http } from 'viem'
-import { foundry } from 'viem/chains'
+```js twoslash
+import { createTestClient, http } from 'viem';
 // ---cut---
 const client = createTestClient({
-  chain: foundry,
-  mode: 'anvil', // [!code focus]
-  transport: http(), 
-})
+    chain: foundry,
+    mode: 'anvil', // [!code focus]
+    network: ThorNetworks.MAINNET
+});
 ```
 
 ### transport
@@ -87,15 +83,14 @@ const client = createTestClient({
 
 [Transport](/docs/clients/intro) of the Test Client.
 
-```ts twoslash
-import { createTestClient, http } from 'viem'
-import { foundry } from 'viem/chains'
+```js twoslash
+import { createTestClient, http } from 'viem';
 // ---cut---
 const client = createTestClient({
-  chain: foundry,
-  mode: 'anvil', 
-  transport: http(),  // [!code focus]
-})
+    chain: foundry,
+    mode: 'anvil',
+    network: ThorNetworks.MAINNET // [!code focus]
+});
 ```
 
 ### account (optional)
@@ -106,18 +101,17 @@ The Account to use for the Client. This will be used for Actions that require an
 
 Accepts a [JSON-RPC Account](/docs/accounts/jsonRpc) or [Local Account (Private Key, etc)](/docs/accounts/local/privateKeyToAccount).
 
-```ts twoslash
-import { createTestClient, http } from 'viem'
-import { foundry } from 'viem/chains'
+```js twoslash
+import { createTestClient, http } from 'viem';
 // ---cut---
-import { privateKeyToAccount } from 'viem/accounts'
+import { privateKeyToAccount } from 'viem/accounts';
 
 const client = createTestClient({
-  account: privateKeyToAccount('0x...'), // [!code focus]
-  chain: foundry,
-  mode: 'anvil',
-  transport: http(),
-})
+    account: privateKeyToAccount('0x...'), // [!code focus]
+    chain: foundry,
+    mode: 'anvil',
+    network: ThorNetworks.MAINNET
+});
 ```
 
 ### chain (optional)
@@ -126,15 +120,14 @@ const client = createTestClient({
 
 [Chain](/docs/chains/introduction) of the Test Client.
 
-```ts twoslash
-import { createTestClient, http } from 'viem'
-import { foundry } from 'viem/chains'
+```js twoslash
+import { createTestClient, http } from 'viem';
 // ---cut---
 const client = createTestClient({
-  chain: foundry, // [!code focus]
-  mode: 'anvil',
-  transport: http(), 
-})
+    chain: foundry, // [!code focus]
+    mode: 'anvil',
+    network: ThorNetworks.MAINNET
+});
 ```
 
 ### cacheTime (optional)
@@ -144,16 +137,15 @@ const client = createTestClient({
 
 Time (in ms) that cached data will remain in memory.
 
-```ts twoslash
-import { createTestClient, http } from 'viem'
-import { foundry } from 'viem/chains'
+```js twoslash
+import { createTestClient, http } from 'viem';
 // ---cut---
 const client = createTestClient({
-  cacheTime: 10_000, // [!code focus]
-  chain: foundry,
-  mode: 'anvil',
-  transport: http(),
-})
+    cacheTime: 10_000, // [!code focus]
+    chain: foundry,
+    mode: 'anvil',
+    network: ThorNetworks.MAINNET
+});
 ```
 
 ### name (optional)
@@ -163,16 +155,15 @@ const client = createTestClient({
 
 A name for the Client.
 
-```ts twoslash
-import { createTestClient, http } from 'viem'
-import { foundry } from 'viem/chains'
+```js twoslash
+import { createTestClient, http } from 'viem';
 // ---cut---
 const client = createTestClient({
-  chain: foundry,
-  mode: 'anvil', 
-  name: 'Anvil Client',  // [!code focus]
-  transport: http(),
-})
+    chain: foundry,
+    mode: 'anvil',
+    name: 'Anvil Client', // [!code focus]
+    network: ThorNetworks.MAINNET
+});
 ```
 
 ### pollingInterval (optional)
@@ -182,16 +173,15 @@ const client = createTestClient({
 
 Frequency (in ms) for polling enabled Actions.
 
-```ts twoslash
-import { createTestClient, http } from 'viem'
-import { foundry } from 'viem/chains'
+```js twoslash
+import { createTestClient, http } from 'viem';
 // ---cut---
 const client = createTestClient({
-  chain: foundry,
-  mode: 'anvil', 
-  pollingInterval: 10_000,  // [!code focus]
-  transport: http(),
-})
+    chain: foundry,
+    mode: 'anvil',
+    pollingInterval: 10_000, // [!code focus]
+    network: ThorNetworks.MAINNET
+});
 ```
 
 ### rpcSchema (optional)
@@ -201,9 +191,8 @@ const client = createTestClient({
 
 Typed JSON-RPC schema for the client.
 
-```ts twoslash
+```js twoslash
 import { createTestClient, http } from 'viem'
-import { foundry } from 'viem/chains'
 // @noErrors
 // ---cut---
 import { rpcSchema } from 'viem'
@@ -217,11 +206,11 @@ type CustomRpcSchema = [{ // [!code focus]
 const client = createTestClient({
   chain: foundry,
   rpcSchema: rpcSchema<CustomRpcSchema>(), // [!code focus]
-  transport: http()
+  network: ThorNetworks.MAINNET
 })
 
 const result = await client.request({ // [!code focus]
-  method: 'eth_wa // [!code focus] 
+  method: 'eth_wa // [!code focus]
 //               ^|
   params: ['hello'], // [!code focus]
 }) // [!code focus]

@@ -10,12 +10,13 @@ Returns information about a [Transaction](/docs/glossary/terms#transaction) give
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { publicClient } from './client'
+```js twoslash [example.ts]
+import { publicClient } from './client';
 
-const transaction = await publicClient.getTransaction({ // [!code focus:99]
-  hash: '0x4ca7ee652d57678f26e887c149ab0735f41de37bcad58c9f6d3ed5824f15b74d'
-})
+const transaction = await publicClient.getTransaction({
+    // [!code focus:99]
+    hash: '0x4ca7ee652d57678f26e887c149ab0735f41de37bcad58c9f6d3ed5824f15b74d'
+});
 // @log: {
 // @log:  blockHash: '0xaf1dadb8a98f1282e8f7b42cc3da8847bfa2cf4e227b8220403ae642e1173088',
 // @log:  blockNumber: 15132008n,
@@ -24,14 +25,14 @@ const transaction = await publicClient.getTransaction({ // [!code focus:99]
 // @log: }
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash [client.ts] filename="client.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
@@ -50,12 +51,12 @@ The transaction information.
 
 Get information about a transaction given a transaction hash.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const transaction = await publicClient.getTransaction({
-  hash: '0x4ca7ee652d57678f26e887c149ab0735f41de37bcad58c9f6d3ed5824f15b74d' // [!code focus]
-})
+    hash: '0x4ca7ee652d57678f26e887c149ab0735f41de37bcad58c9f6d3ed5824f15b74d' // [!code focus]
+});
 ```
 
 ### blockHash (optional)
@@ -64,13 +65,14 @@ const transaction = await publicClient.getTransaction({
 
 Get information about a transaction given a block hash (and index).
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const transaction = await publicClient.getTransaction({
-  blockHash: '0x4ca7ee652d57678f26e887c149ab0735f41de37bcad58c9f6d3ed5824f15b74d', // [!code focus:2]
-  index: 0
-})
+    blockHash:
+        '0x4ca7ee652d57678f26e887c149ab0735f41de37bcad58c9f6d3ed5824f15b74d', // [!code focus:2]
+    index: 0
+});
 ```
 
 ### blockNumber (optional)
@@ -79,13 +81,13 @@ const transaction = await publicClient.getTransaction({
 
 Get information about a transaction given a block number (and index).
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const transaction = await publicClient.getTransaction({
-  blockNumber: 69420n, // [!code focus:2]
-  index: 0
-})
+    blockNumber: 69420n, // [!code focus:2]
+    index: 0
+});
 ```
 
 ### blockTag (optional)
@@ -94,13 +96,13 @@ const transaction = await publicClient.getTransaction({
 
 Get information about a transaction given a block tag (and index).
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const transaction = await publicClient.getTransaction({
-  blockTag: 'safe', // [!code focus:2]
-  index: 0
-})
+    blockTag: 'safe', // [!code focus:2]
+    index: 0
+});
 ```
 
 ### index (optional)
@@ -109,13 +111,13 @@ const transaction = await publicClient.getTransaction({
 
 An index to be used with a block identifier (number, hash or tag).
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const transaction = await publicClient.getTransaction({
-  blockTag: 'safe',
-  index: 0 // [!code focus]
-})
+    blockTag: 'safe',
+    index: 0 // [!code focus]
+});
 ```
 
 ## Example

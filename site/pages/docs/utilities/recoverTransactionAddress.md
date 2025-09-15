@@ -10,44 +10,45 @@ Recovers the original signing address from a transaction & signature.
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { recoverTransactionAddress } from 'viem'
-import { walletClient } from './client'
+```js twoslash [example.ts]
+import { recoverTransactionAddress } from 'viem';
+import { walletClient } from './client';
 
 const request = await walletClient.prepareTransactionRequest({
-  to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-  value: 1000000000000000000n
-})
+    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
+    value: 1000000000000000000n
+});
 
-const serializedTransaction = await walletClient.signTransaction(request)
+const serializedTransaction = await walletClient.signTransaction(request);
 
-const address = await recoverTransactionAddress({ // [!code focus:99]
-  serializedTransaction,
-})
+const address = await recoverTransactionAddress({
+    // [!code focus:99]
+    serializedTransaction
+});
 ```
 
 ```ts [client.ts (JSON-RPC Account)]
-import { createWalletClient, custom } from 'viem'
+import { createWalletClient, custom } from 'viem';
 
 // Retrieve Account from an EIP-1193 Provider.
-const [account] = await window.ethereum.request({ 
-  method: 'eth_requestAccounts' 
-})
+const [account] = await window.ethereum.request({
+    method: 'eth_requestAccounts'
+});
 
 export const walletClient = createWalletClient({
-  account,
-  transport: custom(window.ethereum!)
-})
+    account,
+    transport: custom(window.ethereum!)
+});
 ```
 
-```ts twoslash [config.ts (Local Account)] filename="client.ts"
-import { createWalletClient, http } from 'viem'
-import { privateKeyToAccount } from 'viem/accounts'
+```js twoslash [config.ts (Local Account)] filename="client.ts"
+import { createWalletClient, ThorNetworks } from '@vechain/sdk/viem';
+import { privateKeyToAccount } from 'viem/accounts';
 
 export const walletClient = createWalletClient({
-  account: privateKeyToAccount('0x...'),
-  transport: http()
-})
+    account: privateKeyToAccount('0x...'),
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::

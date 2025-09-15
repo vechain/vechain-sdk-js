@@ -10,21 +10,21 @@ Returns the chain ID associated with the current network
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { publicClient } from './client'
+```js twoslash [example.ts]
+import { publicClient } from './client';
 
-const chainId = await publicClient.getChainId() // [!code focus:99]
+const chainId = await publicClient.getChainId(); // [!code focus:99]
 // @log: 1
 ```
 
 ```ts [client.ts] filename="client.ts"
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::

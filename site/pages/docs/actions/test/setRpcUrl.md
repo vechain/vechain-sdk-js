@@ -18,12 +18,11 @@ await testClient.setRpcUrl('https://eth-mainnet.g.alchemy.com/v2') // [!code foc
 
 ```ts [client.ts]
 import { createTestClient, http } from 'viem'
-import { foundry } from 'viem/chains'
 
 export const testClient = createTestClient({
   chain: foundry,
   mode: 'anvil',
-  transport: http(), 
+  network: ThorNetworks.MAINNET, 
 })
 ```
 

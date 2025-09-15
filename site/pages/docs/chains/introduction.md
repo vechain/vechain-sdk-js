@@ -7,12 +7,11 @@ The `viem/chains` entrypoint contains references to popular EVM-compatible chain
 Import your chain from the entrypoint and use them in the consuming viem code:
 
 ```tsx
-import { createPublicClient, http } from 'viem'
-import { zora } from 'viem/chains' // [!code focus]
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem'
 
 const client = createPublicClient({
   chain: zora, // [!code focus]
-  transport: http()
+  network: ThorNetworks.MAINNET
 })
 ```
 

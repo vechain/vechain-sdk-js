@@ -8,47 +8,49 @@ Here is an end-to-end overview of how to broadcast a User Operation with a Smart
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { parseEther } from 'viem'
-import { bundlerClient } from './config.js'
- 
-const hash = await bundlerClient.sendUserOperation({ 
-  account, 
-  calls: [{ 
-    to: '0xcb98643b8786950F0461f3B0edf99D88F274574D', 
-    value: parseEther('0.001') 
-  }] 
-}) 
- 
-const receipt = await bundlerClient.waitForUserOperationReceipt({ hash }) 
+```js twoslash [example.ts]
+import { parseEther } from 'viem';
+import { bundlerClient } from './config.js';
+
+const hash = await bundlerClient.sendUserOperation({
+    account,
+    calls: [
+        {
+            to: '0xcb98643b8786950F0461f3B0edf99D88F274574D',
+            value: parseEther('0.001')
+        }
+    ]
+});
+
+const receipt = await bundlerClient.waitForUserOperationReceipt({ hash });
 ```
 
-```ts twoslash [config.ts] filename="config.ts"
-import { createPublicClient, http } from 'viem'
-import { 
-  createBundlerClient, 
-  toCoinbaseSmartAccount 
-} from 'viem/account-abstraction'
-import { mainnet } from 'viem/chains'
-import { privateKeyToAccount } from 'viem/accounts' 
- 
+```js twoslash [config.ts] filename="config.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+import {
+    createBundlerClient,
+    toCoinbaseSmartAccount
+} from 'viem/account-abstraction';
+
+import { privateKeyToAccount } from 'viem/accounts';
+
 const client = createPublicClient({
-  chain: mainnet,
-  transport: http(),
-})
- 
-const owner = privateKeyToAccount('0x...')
- 
-const account = await toCoinbaseSmartAccount({ 
-  client, 
-  owners: [owner]
-}) 
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
+
+const owner = privateKeyToAccount('0x...');
+
+const account = await toCoinbaseSmartAccount({
+    client,
+    owners: [owner]
+});
 
 export const bundlerClient = createBundlerClient({
-  account,
-  client,
-  transport: http('https://public.pimlico.io/v2/1/rpc'),
-})
+    account,
+    client,
+    transport: http('https://public.pimlico.io/v2/1/rpc')
+});
 ```
 
 :::
@@ -59,15 +61,15 @@ export const bundlerClient = createBundlerClient({
 
 A Smart Account needs access to the Network to query for information about its state (e.g. nonce, address, etc). Let's set up a Client that we can use for the Smart Account:
 
-```ts twoslash
+```js twoslash
 // @noErrors
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 const client = createPublicClient({
-  chain: mainnet,
-  transport: http(),
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 [See `createPublicClient` Docs](/docs/clients/public)
@@ -76,20 +78,21 @@ const client = createPublicClient({
 
 Next, we will need to set up a Bundler Client. A Bundler is required to submit User Operations to the Blockchain for the Smart Account.
 
-```ts twoslash
-import { createPublicClient, http } from 'viem'
-import { createBundlerClient } from 'viem/account-abstraction' // [!code ++] // [!code focus]
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+import { createBundlerClient } from 'viem/account-abstraction'; // [!code ++] // [!code focus]
+
 
 const client = createPublicClient({
-  chain: mainnet,
-  transport: http(),
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 
-const bundlerClient = createBundlerClient({ // [!code ++] // [!code focus]
-  client, // [!code ++] // [!code focus]
-  transport: http('https://public.pimlico.io/v2/1/rpc'), // [!code ++] // [!code focus]
-}) // [!code ++] // [!code focus]
+const bundlerClient = createBundlerClient({
+    // [!code ++] // [!code focus]
+    client, // [!code ++] // [!code focus]
+    transport: http('https://public.pimlico.io/v2/1/rpc') // [!code ++] // [!code focus]
+}); // [!code ++] // [!code focus]
 ```
 
 :::info
@@ -102,24 +105,24 @@ The Bundler URL above is a public endpoint. Please do not use it in production a
 
 We will also need to set up an Owner for the Smart Account which will be used to sign User Operations (transactions) for the Smart Account.
 
-```ts twoslash
+```js twoslash
 // @noErrors
-import { createPublicClient, http } from 'viem'
-import { createBundlerClient } from 'viem/account-abstraction'
-import { mainnet } from 'viem/chains'
-import { privateKeyToAccount } from 'viem/accounts' // [!code ++] // [!code focus]
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+import { createBundlerClient } from 'viem/account-abstraction';
+
+import { privateKeyToAccount } from 'viem/accounts'; // [!code ++] // [!code focus]
 
 const client = createPublicClient({
-  chain: mainnet,
-  transport: http(),
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 
 const bundlerClient = createBundlerClient({
-  client,
-  transport: http('https://public.pimlico.io/v2/1/rpc'),
-})
+    client,
+    transport: http('https://public.pimlico.io/v2/1/rpc')
+});
 
-const owner = privateKeyToAccount('0x...') // [!code ++] // [!code focus]
+const owner = privateKeyToAccount('0x...'); // [!code ++] // [!code focus]
 ```
 
 [See `privateKeyToAccount` Docs](/docs/accounts/local/privateKeyToAccount)
@@ -128,32 +131,34 @@ const owner = privateKeyToAccount('0x...') // [!code ++] // [!code focus]
 
 Next, we will instantiate a Smart Account. For this example, we will use [`toCoinbaseSmartAccount`](/account-abstraction/accounts/smart/toCoinbaseSmartAccount) (Coinbase Smart Wallet).
 
-```ts twoslash
+```js twoslash
 // @noErrors
-import { createPublicClient, http } from 'viem'
-import { // [!code ++] // [!code focus]
-  createBundlerClient, // [!code ++] // [!code focus]
-  toCoinbaseSmartAccount // [!code ++] // [!code focus]
-} from 'viem/account-abstraction' // [!code ++] // [!code focus]
-import { mainnet } from 'viem/chains'
-import { privateKeyToAccount } from 'viem/accounts'
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+import {
+    // [!code ++] // [!code focus]
+    createBundlerClient, // [!code ++] // [!code focus]
+    toCoinbaseSmartAccount // [!code ++] // [!code focus]
+} from 'viem/account-abstraction'; // [!code ++] // [!code focus]
+
+import { privateKeyToAccount } from 'viem/accounts';
 
 const client = createPublicClient({
-  chain: mainnet,
-  transport: http(),
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 
 const bundlerClient = createBundlerClient({
-  client,
-  transport: http('https://public.pimlico.io/v2/1/rpc'),
-})
+    client,
+    transport: http('https://public.pimlico.io/v2/1/rpc')
+});
 
-const owner = privateKeyToAccount('0x...')
+const owner = privateKeyToAccount('0x...');
 
-const account = await toCoinbaseSmartAccount({ // [!code ++] // [!code focus]
-  client, // [!code ++] // [!code focus]
-  owners: [owner] // [!code ++] // [!code focus]
-}) // [!code ++] // [!code focus]
+const account = await toCoinbaseSmartAccount({
+    // [!code ++] // [!code focus]
+    client, // [!code ++] // [!code focus]
+    owners: [owner] // [!code ++] // [!code focus]
+}); // [!code ++] // [!code focus]
 ```
 
 :::tip
@@ -166,41 +171,45 @@ const account = await toCoinbaseSmartAccount({ // [!code ++] // [!code focus]
 
 Next, we will send a User Operation to the Bundler. For the example below, we will send 0.001 ETH to a random address.
 
-```ts twoslash
-import { createPublicClient, http, parseEther } from 'viem'
-import { 
-  createBundlerClient, 
-  toCoinbaseSmartAccount 
-} from 'viem/account-abstraction'
-import { mainnet } from 'viem/chains'
-import { privateKeyToAccount } from 'viem/accounts' 
+```js twoslash
+import { createPublicClient, http, parseEther } from 'viem';
+import {
+    createBundlerClient,
+    toCoinbaseSmartAccount
+} from 'viem/account-abstraction';
+
+import { privateKeyToAccount } from 'viem/accounts';
 
 const client = createPublicClient({
-  chain: mainnet,
-  transport: http(),
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 
 const bundlerClient = createBundlerClient({
-  client,
-  transport: http('https://public.pimlico.io/v2/1/rpc'),
-})
+    client,
+    transport: http('https://public.pimlico.io/v2/1/rpc')
+});
 
-const owner = privateKeyToAccount('0x...')
+const owner = privateKeyToAccount('0x...');
 
-const account = await toCoinbaseSmartAccount({ 
-  client, 
-  owners: [owner]
-}) 
+const account = await toCoinbaseSmartAccount({
+    client,
+    owners: [owner]
+});
 
-const hash = await bundlerClient.sendUserOperation({ // [!code ++] // [!code focus]
-  account, // [!code ++] // [!code focus]
-  calls: [{ // [!code ++] // [!code focus]
-    to: '0xcb98643b8786950F0461f3B0edf99D88F274574D', // [!code ++] // [!code focus]
-    value: parseEther('0.001') // [!code ++] // [!code focus]
-  }] // [!code ++] // [!code focus]
-}) // [!code ++] // [!code focus]
+const hash = await bundlerClient.sendUserOperation({
+    // [!code ++] // [!code focus]
+    account, // [!code ++] // [!code focus]
+    calls: [
+        {
+            // [!code ++] // [!code focus]
+            to: '0xcb98643b8786950F0461f3B0edf99D88F274574D', // [!code ++] // [!code focus]
+            value: parseEther('0.001') // [!code ++] // [!code focus]
+        }
+    ] // [!code ++] // [!code focus]
+}); // [!code ++] // [!code focus]
 
-const receipt = await bundlerClient.waitForUserOperationReceipt({ hash }) // [!code ++] // [!code focus]
+const receipt = await bundlerClient.waitForUserOperationReceipt({ hash }); // [!code ++] // [!code focus]
 ```
 
 :::tip
@@ -213,40 +222,45 @@ const receipt = await bundlerClient.waitForUserOperationReceipt({ hash }) // [!c
 
 If you do not wish to pass an account around to every Action that requires an `account`, you can also hoist the account onto a Wallet Client.
 
-```ts twoslash 
-import { createPublicClient, http, parseEther } from 'viem'
-import { createBundlerClient, toCoinbaseSmartAccount } from 'viem/account-abstraction'
-import { mainnet } from 'viem/chains'
-import { privateKeyToAccount } from 'viem/accounts' 
+```js twoslash
+import { createPublicClient, http, parseEther } from 'viem';
+import {
+    createBundlerClient,
+    toCoinbaseSmartAccount
+} from 'viem/account-abstraction';
+
+import { privateKeyToAccount } from 'viem/accounts';
 
 const client = createPublicClient({
-  chain: mainnet,
-  transport: http(),
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 
-const owner = privateKeyToAccount('0x...')
+const owner = privateKeyToAccount('0x...');
 
-const account = await toCoinbaseSmartAccount({ 
-  client, 
-  owners: [owner]
-}) 
+const account = await toCoinbaseSmartAccount({
+    client,
+    owners: [owner]
+});
 
 const bundlerClient = createBundlerClient({
-  account, // [!code ++]
-  client,
-  transport: http('https://public.pimlico.io/v2/1/rpc'),
-})
+    account, // [!code ++]
+    client,
+    transport: http('https://public.pimlico.io/v2/1/rpc')
+});
 
 const hash = await bundlerClient.sendUserOperation({
-  account, // [!code --]
-  calls: [{
-    to: '0xcb98643b8786950F0461f3B0edf99D88F274574D',
-    value: parseEther('0.001')
-  }]
-})
+    account, // [!code --]
+    calls: [
+        {
+            to: '0xcb98643b8786950F0461f3B0edf99D88F274574D',
+            value: parseEther('0.001')
+        }
+    ]
+});
 ```
 
-### 7. Optional: Sponsor User Operation 
+### 7. Optional: Sponsor User Operation
 
 By using a Paymaster, we can add sponsorship of User Operation fees.
 
@@ -260,37 +274,40 @@ The example below uses [Pimlico's Paymaster API](https://docs.pimlico.io/infra/p
 
 :::code-group
 
-```ts twoslash [example.ts (on Client)]
-import { http } from 'viem'
-import { 
-  createBundlerClient, 
-  createPaymasterClient,
-} from 'viem/account-abstraction'
-import { account, client } from './config.ts'
+```js twoslash [example.ts (on Client)]
+import { http } from 'viem';
+import {
+    createBundlerClient,
+    createPaymasterClient
+} from 'viem/account-abstraction';
+import { account, client } from './config.ts';
 
-const paymasterClient = createPaymasterClient({ // [!code ++]
-  transport: http('https://public.pimlico.io/v2/11155111/rpc'), // [!code ++]
-}) // [!code ++]
+const paymasterClient = createPaymasterClient({
+    // [!code ++]
+    transport: http('https://public.pimlico.io/v2/11155111/rpc') // [!code ++]
+}); // [!code ++]
 
 const bundlerClient = createBundlerClient({
-  account,
-  client,
-  paymaster: paymasterClient, // [!code ++]
-  transport: http('https://public.pimlico.io/v2/1/rpc'),
-})
+    account,
+    client,
+    paymaster: paymasterClient, // [!code ++]
+    transport: http('https://public.pimlico.io/v2/1/rpc')
+});
 
 const hash = await bundlerClient.sendUserOperation({
-  calls: [{
-    to: '0xcb98643b8786950F0461f3B0edf99D88F274574D',
-    value: parseEther('0.001')
-  }]
-})
+    calls: [
+        {
+            to: '0xcb98643b8786950F0461f3B0edf99D88F274574D',
+            value: parseEther('0.001')
+        }
+    ]
+});
 ```
 
-```ts twoslash [example.ts (on Action)]
+```js twoslash [example.ts (on Action)]
 import { http } from 'viem'
-import { 
-  createBundlerClient, 
+import {
+  createBundlerClient,
   createPaymasterClient,
 } from 'viem/account-abstraction'
 import { account, client } from './config.ts'
@@ -314,24 +331,27 @@ const hash = await bundlerClient.sendUserOperation({
 })
 ```
 
-```ts twoslash [config.ts] filename="config.ts"
+```js twoslash [config.ts] filename="config.ts"
 // @noErrors
-import { createPublicClient, http, parseEther } from 'viem'
-import { createBundlerClient, toCoinbaseSmartAccount } from 'viem/account-abstraction'
-import { mainnet } from 'viem/chains'
-import { privateKeyToAccount } from 'viem/accounts' 
+import { createPublicClient, http, parseEther } from 'viem';
+import {
+    createBundlerClient,
+    toCoinbaseSmartAccount
+} from 'viem/account-abstraction';
+
+import { privateKeyToAccount } from 'viem/accounts';
 
 export const client = createPublicClient({
-  chain: mainnet,
-  transport: http(),
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 
-const owner = privateKeyToAccount('0x...')
+const owner = privateKeyToAccount('0x...');
 
-export const account = await toCoinbaseSmartAccount({ 
-  client, 
-  owners: [owner]
-}) 
+export const account = await toCoinbaseSmartAccount({
+    client,
+    owners: [owner]
+});
 ```
 
 :::
@@ -341,31 +361,32 @@ If your Bundler also supports Paymaster sponsorshop (`pm_` JSON-RPC methods), yo
 
 :::code-group
 
-```ts twoslash [example.ts (on Client)]
-import { http } from 'viem'
-import { 
-  createBundlerClient, 
-  createPaymasterClient,
-} from 'viem/account-abstraction'
-import { account, client } from './config.ts'
+```js twoslash [example.ts (on Client)]
+import { http } from 'viem';
+import {
+    createBundlerClient,
+    createPaymasterClient
+} from 'viem/account-abstraction';
+import { account, client } from './config.ts';
 
-const paymasterClient = createPaymasterClient({ // [!code --]
-  transport: http('https://public.pimlico.io/v2/1/rpc'), // [!code --]
-}) // [!code --]
+const paymasterClient = createPaymasterClient({
+    // [!code --]
+    transport: http('https://public.pimlico.io/v2/1/rpc') // [!code --]
+}); // [!code --]
 
 const bundlerClient = createBundlerClient({
-  account,
-  client,
-  paymaster: paymasterClient, // [!code --]
-  paymaster: true, // [!code ++]
-  transport: http('https://public.pimlico.io/v2/1/rpc'),
-})
+    account,
+    client,
+    paymaster: paymasterClient, // [!code --]
+    paymaster: true, // [!code ++]
+    transport: http('https://public.pimlico.io/v2/1/rpc')
+});
 ```
 
-```ts twoslash [example.ts (on Action)]
+```js twoslash [example.ts (on Action)]
 import { http } from 'viem'
-import { 
-  createBundlerClient, 
+import {
+  createBundlerClient,
   createPaymasterClient,
 } from 'viem/account-abstraction'
 import { account, client } from './config.ts'
@@ -390,24 +411,27 @@ const hash = await bundlerClient.sendUserOperation({
 })
 ```
 
-```ts twoslash [config.ts] filename="config.ts"
+```js twoslash [config.ts] filename="config.ts"
 // @noErrors
-import { createPublicClient, http, parseEther } from 'viem'
-import { createBundlerClient, toCoinbaseSmartAccount } from 'viem/account-abstraction'
-import { mainnet } from 'viem/chains'
-import { privateKeyToAccount } from 'viem/accounts' 
+import { createPublicClient, http, parseEther } from 'viem';
+import {
+    createBundlerClient,
+    toCoinbaseSmartAccount
+} from 'viem/account-abstraction';
+
+import { privateKeyToAccount } from 'viem/accounts';
 
 export const client = createPublicClient({
-  chain: mainnet,
-  transport: http(),
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 
-const owner = privateKeyToAccount('0x...')
+const owner = privateKeyToAccount('0x...');
 
-export const account = await toCoinbaseSmartAccount({ 
-  client, 
-  owners: [owner]
-}) 
+export const account = await toCoinbaseSmartAccount({
+    client,
+    owners: [owner]
+});
 ```
 
 :::

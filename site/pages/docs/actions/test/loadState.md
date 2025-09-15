@@ -18,12 +18,11 @@ await testClient.loadState({ state: '0x1f8b08000000000000ffad934d8e1c310885ef52e
 
 ```ts [client.ts]
 import { createTestClient, http } from 'viem'
-import { foundry } from 'viem/chains'
 
 export const testClient = createTestClient({
   chain: foundry,
   mode: 'anvil',
-  transport: http(), 
+  network: ThorNetworks.MAINNET, 
 })
 ```
 

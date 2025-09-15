@@ -11,8 +11,8 @@ The Wallet Client supports signing over:
 
 ## Import
 
-```ts
-import { createWalletClient } from 'viem'
+```js
+import { createWalletClient } from '@vechain/sdk/viem';
 ```
 
 ## JSON-RPC Accounts
@@ -25,35 +25,27 @@ Below is an example of how you can set up a JSON-RPC Account.
 
 Before we set up our Account and start consuming Wallet Actions, we will need to set up our Wallet Client with the [`custom` Transport](/docs/clients/transports/custom), where we will pass in the `window.ethereum` Provider:
 
-```ts twoslash
-import 'viem/window'
-// ---cut---
-import { createWalletClient, custom } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createWalletClient, ThorNetworks } from '@vechain/sdk/viem';
 
 const client = createWalletClient({
-  chain: mainnet,
-  transport: custom(window.ethereum!)
-})
+  network: ThorNetworks.MAINNET
+});
 ```
 
 #### 2: Set up your JSON-RPC Account
 
 We will want to retrieve an address that we can access in our Wallet (e.g. MetaMask).
 
-```ts twoslash
-import 'viem/window'
-// ---cut---
-import { createWalletClient, custom } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createWalletClient, ThorNetworks } from '@vechain/sdk/viem';
 
 const client = createWalletClient({
-  chain: mainnet,
-  transport: custom(window.ethereum!)
-})
+  network: ThorNetworks.MAINNET
+});
 
-const [address] = await client.getAddresses() // [!code focus:10]
-// or: const [address] = await client.requestAddresses() // [!code focus:10]
+const [address] = await client.getAddresses(); // [!code focus:10]
+// or: const [address] = await client.requestAddresses(); // [!code focus:10]
 ```
 
 > Note: Some Wallets (like MetaMask) may require you to request access to Account addresses via [`client.requestAddresses`](/docs/actions/wallet/requestAddresses) first.
@@ -62,49 +54,39 @@ const [address] = await client.getAddresses() // [!code focus:10]
 
 Now you can use that address within Wallet Actions that require a signature from the user:
 
-```ts twoslash
-import 'viem/window'
-// ---cut---
-import { createWalletClient, custom, parseEther } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createWalletClient, ThorNetworks } from '@vechain/sdk/viem';
 
 const client = createWalletClient({
-  chain: mainnet,
-  transport: custom(window.ethereum!)
-})
+  network: ThorNetworks.MAINNET
+});
 
-const [address] = await client.getAddresses()
+const [address] = await client.getAddresses();
 
 const hash = await client.sendTransaction({ // [!code focus:10]
   account: address,
   to: '0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC',
-  value: parseEther('0.001')
-})
+  value: '1000000000000000' // 0.001 VET in wei
+});
 ```
 
 #### Optional: Hoist the Account
 
 If you do not wish to pass an account around to every Action that requires an `account`, you can also hoist the account into the Wallet Client.
 
-```ts twoslash
-import 'viem/window'
-// ---cut---
-import { createWalletClient, http, parseEther } from 'viem'
-import { mainnet } from 'viem/chains'
-
-const [account] = await window.ethereum!.request({ method: 'eth_requestAccounts' })
+```js twoslash
+import { createWalletClient, ThorNetworks } from '@vechain/sdk/viem';
 
 const client = createWalletClient({ // [!code focus:99]
-  account, // [!code ++]
-  chain: mainnet,
-  transport: http()
-})
+  account: '0x...', // [!code ++]
+  network: ThorNetworks.MAINNET
+});
 
 const hash = await client.sendTransaction({
   account, // [!code --]
   to: '0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC',
-  value: parseEther('0.001')
-})
+  value: '1000000000000000' // 0.001 VET in wei
+});
 ```
 
 ## Local Accounts (Private Key, Mnemonic, etc)
@@ -123,78 +105,67 @@ Below are the steps to integrate a **Private Key Account**, but the same steps c
 
 Before we set up our Account and start consuming Wallet Actions, we will need to set up our Wallet Client with the [`http` Transport](/docs/clients/transports/http):
 
-```ts twoslash
-import { createWalletClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createWalletClient, ThorNetworks } from '@vechain/sdk/viem';
 
 const client = createWalletClient({
-  chain: mainnet,
-  transport: http()
-})
+  network: ThorNetworks.MAINNET
+});
 ```
 
 #### 2: Set up your Local Account
 
 Next, we will instantiate a Private Key Account using `privateKeyToAccount`:
 
-```ts twoslash
-import { createWalletClient, http } from 'viem'
-import { privateKeyToAccount } from 'viem/accounts' // [!code focus]
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createWalletClient, privateKeyToAccount, ThorNetworks } from '@vechain/sdk/viem'; // [!code focus]
 
 const client = createWalletClient({
-  chain: mainnet,
-  transport: http()
-})
+  network: ThorNetworks.MAINNET
+});
 
-const account = privateKeyToAccount('0x...') // [!code focus:1]
+const account = privateKeyToAccount('0x...'); // [!code focus:1]
 ```
 
 #### 3: Consume [Wallet Actions](/docs/actions/wallet/introduction)
 
 Now you can use that Account within Wallet Actions that need a signature from the user:
 
-```ts twoslash
-import { createWalletClient, http, parseEther } from 'viem'
-import { privateKeyToAccount } from 'viem/accounts'
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createWalletClient, privateKeyToAccount, ThorNetworks } from '@vechain/sdk/viem';
 
 const client = createWalletClient({
-  chain: mainnet,
-  transport: http()
-})
+  network: ThorNetworks.MAINNET
+});
 
-const account = privateKeyToAccount('0x...')
+const account = privateKeyToAccount('0x...');
 
 const hash = await client.sendTransaction({ // [!code focus:5]
   account,
   to: '0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC',
-  value: parseEther('0.001')
-})
+  value: '1000000000000000' // 0.001 VET in wei
+});
 ```
 
 #### Optional: Hoist the Account
 
 If you do not wish to pass an account around to every Action that requires an `account`, you can also hoist the account into the Wallet Client.
 
-```ts twoslash
-import { createWalletClient, http, parseEther } from 'viem'
-import { privateKeyToAccount } from 'viem/accounts'
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createWalletClient, privateKeyToAccount, ThorNetworks } from '@vechain/sdk/viem';
 
-const account = privateKeyToAccount('0x...')
+const account = privateKeyToAccount('0x...');
 
 const client = createWalletClient({ // [!code focus:99]
   account, // [!code ++]
-  chain: mainnet,
-  transport: http()
-})
+  network: ThorNetworks.MAINNET
+});
 
 const hash = await client.sendTransaction({
   account, // [!code --]
   to: '0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC',
-  value: parseEther('0.001')
-})
+  value: '1000000000000000' // 0.001 VET in wei
+});
 ```
 
 #### Optional: Extend with Public Actions
@@ -203,22 +174,20 @@ When using a Local Account, you may be finding yourself using a [Public Client](
 
 In this case, you can extend your Wallet Client with [Public Actions](/docs/actions/public/introduction) to avoid having to handle multiple Clients.
 
-```ts twoslash
+```js twoslash
 // @noErrors
-import { createWalletClient, http, publicActions } from 'viem'
-import { privateKeyToAccount } from 'viem/accounts'
-import { mainnet } from 'viem/chains'
+import { createWalletClient, privateKeyToAccount, ThorNetworks } from '@vechain/sdk/viem';
 
-const account = privateKeyToAccount('0x...')
+const account = privateKeyToAccount('0x...');
 
 const client = createWalletClient({ // [!code focus]
   account,
-  chain: mainnet,
-  transport: http()
-}).extend(publicActions) // [!code ++] // [!code focus]
+  network: ThorNetworks.MAINNET
+}); // [!code ++] // [!code focus]
 
-const { request } = await client.simulateContract({ ... }) // Public Action // [!code focus]
-const hash = await client.writeContract(request) // Wallet Action // [!code focus]
+// VeChain SDK provides integrated public actions
+const blockNumber = await client.getBlockNumber(); // Public Action // [!code focus]
+const hash = await client.sendTransaction({ /* ... */ }); // Wallet Action // [!code focus]
 ```
 
 ## Parameters
@@ -231,25 +200,21 @@ The Account to use for the Wallet Client. This will be used for Actions that req
 
 Accepts a [JSON-RPC Account](#json-rpc-accounts) or [Local Account (Private Key, etc)](#local-accounts-private-key-mnemonic-etc).
 
-```ts twoslash
-import 'viem/window'
-// ---cut---
-import { createWalletClient, custom, parseEther } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createWalletClient, ThorNetworks } from '@vechain/sdk/viem';
 
 const client = createWalletClient({
   account: '0x...', // [!code focus]
-  chain: mainnet,
-  transport: custom(window.ethereum!)
-})
+  network: ThorNetworks.MAINNET
+});
 
 const hash = await client.sendTransaction({
   to: '0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC',
-  value: parseEther('0.001')
-})
+  value: '1000000000000000' // 0.001 VET in wei
+});
 ```
 
-### chain (optional)
+### network (optional)
 
 - **Type:** [Chain](/docs/glossary/types#chain)
 
@@ -257,15 +222,12 @@ The [Chain](/docs/chains/introduction) of the Wallet Client.
 
 Used in the [`sendTransaction`](/docs/actions/wallet/sendTransaction) & [`writeContract`](/docs/contract/writeContract) Actions to assert that the chain matches the wallet's active chain.
 
-```ts twoslash
-import 'viem/window'
-import { createWalletClient, custom } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createWalletClient, ThorNetworks } from '@vechain/sdk/viem';
 // ---cut---
 const client = createWalletClient({
-  chain: mainnet, // [!code focus]
-  transport: custom(window.ethereum!)
-})
+  network: ThorNetworks.MAINNET // [!code focus]
+});
 ```
 
 ### cacheTime (optional)
@@ -275,16 +237,13 @@ const client = createWalletClient({
 
 Time (in ms) that cached data will remain in memory.
 
-```ts twoslash
-import 'viem/window'
-import { createWalletClient, custom } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createWalletClient, ThorNetworks } from '@vechain/sdk/viem';
 // ---cut---
 const client = createWalletClient({
   cacheTime: 10_000, // [!code focus]
-  chain: mainnet,
-  transport: custom(window.ethereum!)
-})
+  network: ThorNetworks.MAINNET
+});
 ```
 
 ### ccipRead (optional)
@@ -296,14 +255,13 @@ const client = createWalletClient({
 
 CCIP Read is enabled by default, but if set to `false`, the client will not support offchain CCIP lookups.
 
-```ts twoslash
-import 'viem/window'
-import { createWalletClient, custom } from 'viem'
+```js twoslash
+import { createWalletClient, ThorNetworks } from '@vechain/sdk/viem';
 // ---cut---
 const client = createWalletClient({
   ccipRead: false, // [!code focus]
-  transport: custom(window.ethereum!)
-})
+  network: ThorNetworks.MAINNET
+});
 ```
 
 ### ccipRead.request (optional)
@@ -312,10 +270,9 @@ const client = createWalletClient({
 
 A function that will be called to make the [offchain CCIP lookup request](https://eips.ethereum.org/EIPS/eip-3668#client-lookup-protocol).
 
-```ts twoslash
+```js twoslash
 // @noErrors
-import 'viem/window'
-import { createWalletClient, custom } from 'viem'
+import { createWalletClient, ThorNetworks } from '@vechain/sdk/viem';
 // ---cut---
 const client = createWalletClient({
   ccipRead: { // [!code focus]
@@ -323,8 +280,8 @@ const client = createWalletClient({
       // ... // [!code focus]
     } // [!code focus]
   }, // [!code focus]
-  transport: custom(window.ethereum!)
-})
+  network: ThorNetworks.MAINNET
+});
 ```
 
 ### key (optional)
@@ -334,14 +291,13 @@ const client = createWalletClient({
 
 A key for the Client.
 
-```ts twoslash
-import 'viem/window'
-import { createWalletClient, custom } from 'viem'
+```js twoslash
+import { createWalletClient, ThorNetworks } from '@vechain/sdk/viem';
 // ---cut---
 const client = createWalletClient({
   key: 'foo', // [!code focus]
-  transport: custom(window.ethereum!)
-})
+  network: ThorNetworks.MAINNET
+});
 ```
 
 ### name (optional)
@@ -351,14 +307,13 @@ const client = createWalletClient({
 
 A name for the Client.
 
-```ts twoslash
-import 'viem/window'
-import { createWalletClient, custom } from 'viem'
+```js twoslash
+import { createWalletClient, ThorNetworks } from '@vechain/sdk/viem';
 // ---cut---
 const client = createWalletClient({
   name: 'Foo Wallet Client', // [!code focus]
-  transport: custom(window.ethereum!)
-})
+  network: ThorNetworks.MAINNET
+});
 ```
 
 ### pollingInterval (optional)
@@ -368,14 +323,13 @@ const client = createWalletClient({
 
 Frequency (in ms) for polling enabled Actions.
 
-```ts twoslash
-import 'viem/window'
-import { createWalletClient, custom } from 'viem'
+```js twoslash
+import { createWalletClient, ThorNetworks } from '@vechain/sdk/viem';
 // ---cut---
 const client = createWalletClient({
   pollingInterval: 10_000, // [!code focus]
-  transport: custom(window.ethereum!)
-})
+  network: ThorNetworks.MAINNET
+});
 ```
 
 ### rpcSchema (optional)
@@ -385,27 +339,25 @@ const client = createWalletClient({
 
 Typed JSON-RPC schema for the client.
 
-```ts twoslash
-import 'viem/window'
-import { createWalletClient, custom } from 'viem'
+```js twoslash
+import { createWalletClient, ThorNetworks } from '@vechain/sdk/viem';
 // @noErrors
 // ---cut---
-import { rpcSchema } from 'viem'
 
 type CustomRpcSchema = [{ // [!code focus]
-  Method: 'eth_wagmi', // [!code focus]
+  Method: 'thor_wagmi', // [!code focus]
   Parameters: [string] // [!code focus]
   ReturnType: string // [!code focus]
-}] // [!code focus]
+}]; // [!code focus]
 
 const client = createWalletClient({
-  rpcSchema: rpcSchema<CustomRpcSchema>(), // [!code focus]
-  transport: custom(window.ethereum!)
-})
+  rpcSchema: CustomRpcSchema, // [!code focus]
+  network: ThorNetworks.MAINNET
+});
 
 const result = await client.request({ // [!code focus]
-  method: 'eth_wa // [!code focus] 
+  method: 'thor_wa // [!code focus] 
 //               ^|
   params: ['hello'], // [!code focus]
-}) // [!code focus]
+}); // [!code focus]
 ```

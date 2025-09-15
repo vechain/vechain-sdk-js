@@ -8,27 +8,28 @@ This function uses the [`webauthn-p256` library](https://github.com/wevm/webauth
 
 ## Import
 
-```ts twoslash
-import { createWebAuthnCredential } from 'viem/account-abstraction'
+```js twoslash
+import { createWebAuthnCredential } from 'viem/account-abstraction';
 ```
 
 ## Usage
 
-```ts twoslash
-import { 
-  createWebAuthnCredential, 
-  toWebAuthnAccount 
-} from 'viem/account-abstraction'
+```js twoslash
+import {
+    createWebAuthnCredential,
+    toWebAuthnAccount
+} from 'viem/account-abstraction';
 
 // Register a credential (ie. passkey). // [!code focus]
-const credential = await createWebAuthnCredential({ // [!code focus]
-  name: 'Example', // [!code focus]
-}) // [!code focus]
+const credential = await createWebAuthnCredential({
+    // [!code focus]
+    name: 'Example' // [!code focus]
+}); // [!code focus]
 
 // Create a WebAuthn account from the credential.
 const account = toWebAuthnAccount({
-  credential,
-})
+    credential
+});
 ```
 
 ## Returns
@@ -45,13 +46,16 @@ A P-256 WebAuthn Credential.
 
 An `ArrayBuffer`, `TypedArray`, or `DataView` used as a cryptographic challenge.
 
-```ts twoslash
-import { createWebAuthnCredential, toWebAuthnAccount } from 'viem/account-abstraction'
+```js twoslash
+import {
+    createWebAuthnCredential,
+    toWebAuthnAccount
+} from 'viem/account-abstraction';
 // ---cut---
 const credential = await createWebAuthnCredential({
-  challenge: new Uint8Array([1, 2, 3]), // [!code focus]
-  name: 'Example',
-})
+    challenge: new Uint8Array([1, 2, 3]), // [!code focus]
+    name: 'Example'
+});
 ```
 
 ### createFn
@@ -61,20 +65,23 @@ const credential = await createWebAuthnCredential({
 
 Credential creation function. Useful for environments that do not support the WebAuthn API natively (i.e. React Native or testing environments).
 
-```ts twoslash
+```js twoslash
 // @noErrors
-import { createWebAuthnCredential, toWebAuthnAccount } from 'viem/account-abstraction'
+import {
+    createWebAuthnCredential,
+    toWebAuthnAccount
+} from 'viem/account-abstraction';
 // ---cut---
-import * as passkey from 'react-native-passkeys' // [!code focus]
+import * as passkey from 'react-native-passkeys'; // [!code focus]
 
 const credential = await createWebAuthnCredential({
-  name: 'Example',
-  createFn: passkey.create, // [!code focus]
-})
+    name: 'Example',
+    createFn: passkey.create // [!code focus]
+});
 
 const account = toWebAuthnAccount({
-  credential,
-})
+    credential
+});
 ```
 
 ### excludeCredentialIds
@@ -83,13 +90,16 @@ const account = toWebAuthnAccount({
 
 List of credential IDs to exclude from the creation. This property can be used to prevent creation of a credential if it already exists.
 
-```ts twoslash
-import { createWebAuthnCredential, toWebAuthnAccount } from 'viem/account-abstraction'
+```js twoslash
+import {
+    createWebAuthnCredential,
+    toWebAuthnAccount
+} from 'viem/account-abstraction';
 // ---cut---
 const credential = await createWebAuthnCredential({
-  excludeCredentialIds: ['abc', 'def'], // [!code focus]
-  name: 'Example',
-})
+    excludeCredentialIds: ['abc', 'def'], // [!code focus]
+    name: 'Example'
+});
 ```
 
 ### name
@@ -98,16 +108,19 @@ const credential = await createWebAuthnCredential({
 
 Name to identify the credential.
 
-```ts twoslash
-import { createWebAuthnCredential, toWebAuthnAccount } from 'viem/account-abstraction'
+```js twoslash
+import {
+    createWebAuthnCredential,
+    toWebAuthnAccount
+} from 'viem/account-abstraction';
 // ---cut---
 const credential = await createWebAuthnCredential({
-  name: 'Example', // [!code focus]
-})
+    name: 'Example' // [!code focus]
+});
 
 const account = toWebAuthnAccount({
-  credential,
-})
+    credential
+});
 ```
 
 ### rp
@@ -116,20 +129,24 @@ const account = toWebAuthnAccount({
 
 An object describing the relying party that requested the credential creation
 
-```ts twoslash
-import { createWebAuthnCredential, toWebAuthnAccount } from 'viem/account-abstraction'
+```js twoslash
+import {
+    createWebAuthnCredential,
+    toWebAuthnAccount
+} from 'viem/account-abstraction';
 // ---cut---
 const credential = await createWebAuthnCredential({
-  name: 'Example',
-  rp: { // [!code focus]
-    id: 'example.com', // [!code focus]
-    name: 'Example', // [!code focus]
-  }, // [!code focus]
-})
+    name: 'Example',
+    rp: {
+        // [!code focus]
+        id: 'example.com', // [!code focus]
+        name: 'Example' // [!code focus]
+    } // [!code focus]
+});
 
 const account = toWebAuthnAccount({
-  credential,
-})
+    credential
+});
 ```
 
 ### timeout
@@ -138,15 +155,18 @@ const account = toWebAuthnAccount({
 
 A numerical hint, in milliseconds, which indicates the time the calling web app is willing to wait for the creation operation to complete.
 
-```ts twoslash
-import { createWebAuthnCredential, toWebAuthnAccount } from 'viem/account-abstraction'
+```js twoslash
+import {
+    createWebAuthnCredential,
+    toWebAuthnAccount
+} from 'viem/account-abstraction';
 // ---cut---
 const credential = await createWebAuthnCredential({
-  name: 'Example',
-  timeout: 1000, // [!code focus]
-})
+    name: 'Example',
+    timeout: 1000 // [!code focus]
+});
 
 const account = toWebAuthnAccount({
-  credential,
-})
+    credential
+});
 ```

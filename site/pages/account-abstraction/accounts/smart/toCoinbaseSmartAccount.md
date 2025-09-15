@@ -1,46 +1,50 @@
 # Coinbase Smart Wallet
 
-The `toCoinbaseSmartAccount` implementation references the [Coinbase Smart Wallet](https://github.com/coinbase/smart-wallet) contract. 
+The `toCoinbaseSmartAccount` implementation references the [Coinbase Smart Wallet](https://github.com/coinbase/smart-wallet) contract.
 
 ## Usage
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { toCoinbaseSmartAccount } from 'viem/account-abstraction' // [!code focus]
-import { client } from './client.js'
-import { owner } from './owner.js'
+```js twoslash [example.ts]
+import { toCoinbaseSmartAccount } from 'viem/account-abstraction'; // [!code focus]
+import { client } from './client.js';
+import { owner } from './owner.js';
 
-const account = await toCoinbaseSmartAccount({ // [!code focus]
-  client, // [!code focus]
-  owners: [owner], // [!code focus]
-}) // [!code focus]
+const account = await toCoinbaseSmartAccount({
+    // [!code focus]
+    client, // [!code focus]
+    owners: [owner] // [!code focus]
+}); // [!code focus]
 ```
 
-```ts twoslash [client.ts] filename="config.ts"
-import { http, createPublicClient } from 'viem'
-import { mainnet } from 'viem/chains'
- 
+```js twoslash [client.ts] filename="config.ts"
+import { http, createPublicClient } from 'viem';
+
+
 export const client = createPublicClient({
-  chain: mainnet,
-  transport: http(),
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
-```ts twoslash [owner.ts (Private Key)] filename="owner.ts"
-import { privateKeyToAccount } from 'viem/accounts'
- 
-export const owner = privateKeyToAccount('0x...')
+```js twoslash [owner.ts (Private Key)] filename="owner.ts"
+import { privateKeyToAccount } from 'viem/accounts';
+
+export const owner = privateKeyToAccount('0x...');
 ```
 
-```ts twoslash [owner.ts (Passkey)] filename="owner.ts"
-import { createWebAuthnCredential, toWebAuthnAccount } from 'viem/account-abstraction'
+```js twoslash [owner.ts (Passkey)] filename="owner.ts"
+import {
+    createWebAuthnCredential,
+    toWebAuthnAccount
+} from 'viem/account-abstraction';
 
 // Register a credential (ie. passkey).
-const credential = await createWebAuthnCredential({ name: 'Wallet' })
- 
+const credential = await createWebAuthnCredential({ name: 'Wallet' });
+
 // Create a WebAuthn owner account from the credential.
-export const owner = toWebAuthnAccount({ credential })
+export const owner = toWebAuthnAccount({ credential });
 ```
 
 :::
@@ -62,15 +66,16 @@ export const owner = toWebAuthnAccount({ credential })
 Client used to retrieve Smart Account data.
 
 ```ts
-const client = createPublicClient({ // [!code focus]
-  chain: mainnet, // [!code focus]
-  transport: http(), // [!code focus]
-}) // [!code focus]
+const client = createPublicClient({
+    // [!code focus]
+    network: ThorNetworks.MAINNET, // [!code focus]
+    network: ThorNetworks.MAINNET // [!code focus]
+}); // [!code focus]
 
 const account = await toCoinbaseSmartAccount({
-  client, // [!code focus]
-  owners: [owner],
-})
+    client, // [!code focus]
+    owners: [owner]
+});
 ```
 
 ### owners
@@ -81,9 +86,9 @@ Owners of the Smart Account. Can be a [Local Account](/docs/accounts/local) or a
 
 ```ts
 const account = await toCoinbaseSmartAccount({
-  client,
-  owners: [privateKeyToAccount('0x...')], // [!code focus]
-})
+    client,
+    owners: [privateKeyToAccount('0x...')] // [!code focus]
+});
 ```
 
 ### ownerIndex (optional)
@@ -94,10 +99,10 @@ Index of the owner to use for signing messages & User Operations.
 
 ```ts
 const account = await toCoinbaseSmartAccount({
-  client,
-  owners: [privateKeyToAccount('0x...'), privateKeyToAccount('0x...')],
-  ownerIndex: 1, // [!code focus]
-})
+    client,
+    owners: [privateKeyToAccount('0x...'), privateKeyToAccount('0x...')],
+    ownerIndex: 1 // [!code focus]
+});
 ```
 
 ### nonce (optional)
@@ -108,8 +113,8 @@ Nonce to use for the Smart Account.
 
 ```ts
 const account = await toCoinbaseSmartAccount({
-  client,
-  owners: [owner],
-  nonce: 1n, // [!code focus]
-})
+    client,
+    owners: [owner],
+    nonce: 1n // [!code focus]
+});
 ```

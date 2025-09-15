@@ -8,36 +8,33 @@ Transform a commitment to it's versioned hash.
 
 ## Import
 
-```ts twoslash
-import { commitmentToVersionedHash } from 'viem'
+```js twoslash
+import { commitmentToVersionedHash } from 'viem';
 ```
 
 ## Usage
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { 
-  blobsToCommitments, 
-  commitmentToVersionedHash, 
-  toBlobs 
-} from 'viem'
-import { kzg } from './kzg'
+```js twoslash [example.ts]
+import { blobsToCommitments, commitmentToVersionedHash, toBlobs } from 'viem';
+import { kzg } from './kzg';
 
-const blobs = toBlobs({ data: '0x1234' })
-const [commitment] = blobsToCommitments({ blobs, kzg })
-const versionedHashes = commitmentToVersionedHash({  // [!code focus]
-  commitment,  // [!code focus]
-}) // [!code focus]
+const blobs = toBlobs({ data: '0x1234' });
+const [commitment] = blobsToCommitments({ blobs, kzg });
+const versionedHashes = commitmentToVersionedHash({
+    // [!code focus]
+    commitment // [!code focus]
+}); // [!code focus]
 ```
 
-```ts twoslash [kzg.ts] filename="kzg.ts"
+```js twoslash [kzg.ts] filename="kzg.ts"
 // @noErrors
-import * as cKzg from 'c-kzg'
-import { setupKzg } from 'viem'
-import { mainnetTrustedSetupPath } from 'viem/node'
+import * as cKzg from 'c-kzg';
+import { setupKzg } from 'viem';
+import { mainnetTrustedSetupPath } from 'viem/node';
 
-export const kzg = setupKzg(cKzg, mainnetTrustedSetupPath)
+export const kzg = setupKzg(cKzg, mainnetTrustedSetupPath);
 ```
 
 :::
@@ -56,19 +53,15 @@ Versioned hash corresponding to the commitment.
 
 Commitment to transform into a versioned hash.
 
-```ts twoslash
-import { 
-  blobsToCommitments, 
-  commitmentToVersionedHash, 
-  toBlobs 
-} from 'viem'
-import { kzg } from './kzg'
+```js twoslash
+import { blobsToCommitments, commitmentToVersionedHash, toBlobs } from 'viem';
+import { kzg } from './kzg';
 // ---cut---
-const blobs = toBlobs({ data: '0x1234' })
-const [commitment] = blobsToCommitments({ blobs, kzg })
-const versionedHashes = commitmentToVersionedHash({ 
-  commitment,  // [!code focus]
-})
+const blobs = toBlobs({ data: '0x1234' });
+const [commitment] = blobsToCommitments({ blobs, kzg });
+const versionedHashes = commitmentToVersionedHash({
+    commitment // [!code focus]
+});
 ```
 
 ### to
@@ -77,24 +70,18 @@ const versionedHashes = commitmentToVersionedHash({
 
 The output type.
 
-```ts twoslash
-import { 
-  blobsToCommitments, 
-  commitmentToVersionedHash, 
-  toBlobs 
-} from 'viem'
-import { kzg } from './kzg'
+```js twoslash
+import { blobsToCommitments, commitmentToVersionedHash, toBlobs } from 'viem';
+import { kzg } from './kzg';
 // ---cut---
-const blobs = toBlobs({ data: '0x1234' })
-const [commitment] = blobsToCommitments({ blobs, kzg })
-const versionedHashes = commitmentToVersionedHash({ 
-  commitment, 
-  to: 'bytes' // [!code focus]
-})
-versionedHashes // [!code focus]
+const blobs = toBlobs({ data: '0x1234' });
+const [commitment] = blobsToCommitments({ blobs, kzg });
+const versionedHashes = commitmentToVersionedHash({
+    commitment,
+    to: 'bytes' // [!code focus]
+});
+versionedHashes; // [!code focus]
 //  ^?
-
-
 ```
 
 ### version
@@ -104,18 +91,14 @@ versionedHashes // [!code focus]
 
 Version to tag onto the hash. Defaults to `1`.
 
-```ts twoslash
-import { 
-  blobsToCommitments, 
-  commitmentToVersionedHash, 
-  toBlobs 
-} from 'viem'
-import { kzg } from './kzg'
+```js twoslash
+import { blobsToCommitments, commitmentToVersionedHash, toBlobs } from 'viem';
+import { kzg } from './kzg';
 // ---cut---
-const blobs = toBlobs({ data: '0x1234' })
-const [commitment] = blobsToCommitments({ blobs, kzg })
-const versionedHashes = commitmentToVersionedHash({ 
-  commitment, 
-  version: 69, // [!code focus]
-})
+const blobs = toBlobs({ data: '0x1234' });
+const [commitment] = blobsToCommitments({ blobs, kzg });
+const versionedHashes = commitmentToVersionedHash({
+    commitment,
+    version: 69 // [!code focus]
+});
 ```

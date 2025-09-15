@@ -10,14 +10,13 @@ Adds an EVM chain to the wallet.
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { avalanche } from 'viem/chains'
-import { walletClient } from './client'
- 
-await walletClient.addChain({ chain: avalanche }) // [!code focus]
+```js twoslash [example.ts]
+import { walletClient } from './client';
+
+await walletClient.addChain({ chain: avalanche }); // [!code focus]
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
+```js twoslash [client.ts] filename="client.ts"
 // [!include ~/snippets/walletClient.ts]
 ```
 

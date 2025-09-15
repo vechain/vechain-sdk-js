@@ -6,7 +6,6 @@ Extracts a type-safe chain by ID from a set of chains.
 
 ```ts
 import { extractChain } from 'viem'
-import { mainnet, base, optimism, zora } from 'viem/chains'
 
 const optimism = extractChain({
   chains: [mainnet, base, optimism, zora],
@@ -23,8 +22,6 @@ It is also possible to use **all chains** from the `viem/chains` module:
 
 ```ts
 import { extractChain } from 'viem'
-import { mainnet, base, optimism, zora } from 'viem/chains' // [!code --]
-import * as chains from 'viem/chains' // [!code ++]
 
 const optimism = extractChain({
   chains: [mainnet, base, optimism, zora], // [!code --]

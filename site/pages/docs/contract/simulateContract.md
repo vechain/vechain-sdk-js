@@ -15,15 +15,15 @@ The `mint` function accepts no arguments, and returns a token ID.
 :::code-group
 
 ```ts [example.ts]
-import { account, publicClient } from './config'
-import { wagmiAbi } from './abi'
+import { account, publicClient } from './config';
+import { wagmiAbi } from './abi';
 
 const { result } = await publicClient.simulateContract({
-  address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-  abi: wagmiAbi,
-  functionName: 'mint',
-  account,
-})
+    address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+    abi: wagmiAbi,
+    functionName: 'mint',
+    account
+});
 ```
 
 ```ts [abi.ts]
@@ -41,9 +41,8 @@ export const wagmiAbi = [
 ```
 
 ```ts [config.ts]
-import { createPublicClient, http } from 'viem'
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem'
 import { privateKeyToAccount } from 'viem/accounts'
-import { mainnet } from 'viem/chains'
 
 // JSON-RPC Account
 export const [account] = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'
@@ -51,8 +50,8 @@ export const [account] = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'
 export const account = privateKeyToAccount(...)
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
+  network: ThorNetworks.MAINNET,
+  network: ThorNetworks.MAINNET
 })
 ```
 
@@ -69,16 +68,16 @@ For example, the `mint` function name below requires a **tokenId** argument, and
 :::code-group
 
 ```ts [example.ts]
-import { account, publicClient } from './config'
-import { wagmiAbi } from './abi'
+import { account, publicClient } from './config';
+import { wagmiAbi } from './abi';
 
 const { result } = await publicClient.simulateContract({
-  address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-  abi: wagmiAbi,
-  functionName: 'mint',
-  args: [69420], // [!code focus]
-  account,
-})
+    address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+    abi: wagmiAbi,
+    functionName: 'mint',
+    args: [69420], // [!code focus]
+    account
+});
 ```
 
 ```ts [abi.ts]
@@ -96,9 +95,8 @@ export const wagmiAbi = [
 ```
 
 ```ts [config.ts]
-import { createPublicClient, http } from 'viem'
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem'
 import { privateKeyToAccount } from 'viem/accounts'
-import { mainnet } from 'viem/chains'
 
 // JSON-RPC Account
 export const [account] = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'
@@ -106,8 +104,8 @@ export const [account] = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'
 export const account = privateKeyToAccount(...)
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
+  network: ThorNetworks.MAINNET,
+  network: ThorNetworks.MAINNET
 })
 ```
 
@@ -122,16 +120,16 @@ In the example below, we are **validating** if the contract write will be succes
 :::code-group
 
 ```ts [example.ts]
-import { account, walletClient, publicClient } from './config'
-import { wagmiAbi } from './abi'
+import { account, walletClient, publicClient } from './config';
+import { wagmiAbi } from './abi';
 
 const { request } = await publicClient.simulateContract({
-  address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-  abi: wagmiAbi,
-  functionName: 'mint',
-  account,
-})
-const hash = await walletClient.writeContract(request)
+    address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+    abi: wagmiAbi,
+    functionName: 'mint',
+    account
+});
+const hash = await walletClient.writeContract(request);
 ```
 
 ```ts [abi.ts]
@@ -151,7 +149,6 @@ export const wagmiAbi = [
 ```ts [config.ts]
 import { createPublicClient, custom, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
-import { mainnet } from 'viem/chains'
 
 // JSON-RPC Account
 export const [account] = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'
@@ -159,13 +156,13 @@ export const [account] = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'
 export const account = privateKeyToAccount(...)
 
 export const walletClient = createWalletClient({
-  chain: mainnet,
+  network: ThorNetworks.MAINNET,
   transport: custom(window.ethereum)
 })
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
+  network: ThorNetworks.MAINNET,
+  network: ThorNetworks.MAINNET
 })
 ```
 
@@ -181,26 +178,27 @@ You can access the custom error through the `data` attribute of the error:
 
 ```ts [example.ts] {13-27}
 import { BaseError, ContractFunctionRevertedError } from 'viem';
-import { account, walletClient, publicClient } from './config'
-import { wagmiAbi } from './abi'
+import { account, walletClient, publicClient } from './config';
+import { wagmiAbi } from './abi';
 
 try {
-  await publicClient.simulateContract({
-    address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-    abi: wagmiAbi,
-    functionName: 'mint',
-    account,
-  })
+    await publicClient.simulateContract({
+        address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+        abi: wagmiAbi,
+        functionName: 'mint',
+        account
+    });
 } catch (err) {
-  if (err instanceof BaseError) {
-    const revertError = err.walk(err => err instanceof ContractFunctionRevertedError)
-    if (revertError instanceof ContractFunctionRevertedError) {
-      const errorName = revertError.data?.errorName ?? ''
-      // do something with `errorName`
+    if (err instanceof BaseError) {
+        const revertError = err.walk(
+            (err) => err instanceof ContractFunctionRevertedError
+        );
+        if (revertError instanceof ContractFunctionRevertedError) {
+            const errorName = revertError.data?.errorName ?? '';
+            // do something with `errorName`
+        }
     }
-  }
 }
-
 ```
 
 ```ts [abi.ts]
@@ -242,7 +240,6 @@ contract WagmiExample {
 ```ts [config.ts]
 import { createPublicClient, custom, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
-import { mainnet } from 'viem/chains'
 
 // JSON-RPC Account
 export const [account] = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'
@@ -250,13 +247,13 @@ export const [account] = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'
 export const account = privateKeyToAccount(...)
 
 export const walletClient = createWalletClient({
-  chain: mainnet,
+  network: ThorNetworks.MAINNET,
   transport: custom(window.ethereum)
 })
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
+  network: ThorNetworks.MAINNET,
+  network: ThorNetworks.MAINNET
 })
 ```
 
@@ -268,45 +265,49 @@ When using `simulateContract`, there sometimes needs to be an initial state chan
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { account, publicClient } from './config'
-import { abi, address } from './contract'
+```js twoslash [example.ts]
+import { account, publicClient } from './config';
+import { abi, address } from './contract';
 
 // Allowance slot: A 32 bytes hex string representing the allowance slot of the sender.
-const allowanceSlot = '0x....'
+const allowanceSlot = '0x....';
 
 // Max allowance: A 32 bytes hex string representing the maximum allowance (2^256 - 1)
-const maxAllowance = numberToHex(maxUint256)
+const maxAllowance = numberToHex(maxUint256);
 
 const { result } = await publicClient.simulateContract({
-  abi,
-  address,
-  account,
-  functionName: 'transferFrom',
-  args: [
-    '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266', 
-    account.address, 
-    69420n
-  ],
-  stateOverride: [ // [!code hl]
-    { // [!code hl]
-      // modifying the state of the token contract // [!code hl]
-      address, // [!code hl]
-      stateDiff: [ // [!code hl]
-        { // [!code hl]
-          slot: allowanceSlot, // [!code hl]
-          value: maxAllowance, // [!code hl]
-        }, // [!code hl]
-      ], // [!code hl]
-    }, // [!code hl]
-  ], // [!code hl]
-})
+    abi,
+    address,
+    account,
+    functionName: 'transferFrom',
+    args: [
+        '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+        account.address,
+        69420n
+    ],
+    stateOverride: [
+        // [!code hl]
+        {
+            // [!code hl]
+            // modifying the state of the token contract // [!code hl]
+            address, // [!code hl]
+            stateDiff: [
+                // [!code hl]
+                {
+                    // [!code hl]
+                    slot: allowanceSlot, // [!code hl]
+                    value: maxAllowance // [!code hl]
+                } // [!code hl]
+            ] // [!code hl]
+        } // [!code hl]
+    ] // [!code hl]
+});
 
-console.log(result)
+console.log(result);
 // @log: Output: true
 ```
 
-```ts twoslash [contract.ts] filename="contract.ts"
+```js twoslash [contract.ts] filename="contract.ts"
 export const address = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
 
 export const abi = [
@@ -337,17 +338,17 @@ export const abi = [
 ] as const
 ```
 
-```ts twoslash [config.ts] filename="config.ts"
-import { createPublicClient, custom, http } from 'viem'
-import { privateKeyToAccount } from 'viem/accounts'
-import { mainnet } from 'viem/chains'
+```js twoslash [config.ts] filename="config.ts"
+import { createPublicClient, custom, http } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
 
-export const account = privateKeyToAccount('0x...')
- 
+
+export const account = privateKeyToAccount('0x...');
+
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
@@ -366,11 +367,11 @@ The contract address.
 
 ```ts
 const { result } = await publicClient.simulateContract({
-  address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2', // [!code focus]
-  abi: wagmiAbi,
-  functionName: 'mint',
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'
-})
+    address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2', // [!code focus]
+    abi: wagmiAbi,
+    functionName: 'mint',
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'
+});
 ```
 
 ### abi
@@ -381,11 +382,11 @@ The contract's ABI.
 
 ```ts
 const { result } = await publicClient.simulateContract({
-  address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-  abi: wagmiAbi, // [!code focus]
-  functionName: 'mint',
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'
-})
+    address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+    abi: wagmiAbi, // [!code focus]
+    functionName: 'mint',
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'
+});
 ```
 
 ### functionName
@@ -396,11 +397,11 @@ A function to extract from the ABI.
 
 ```ts
 const { result } = await publicClient.simulateContract({
-  address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-  abi: wagmiAbi,
-  functionName: 'mint', // [!code focus]
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'
-})
+    address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+    abi: wagmiAbi,
+    functionName: 'mint', // [!code focus]
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'
+});
 ```
 
 ### account
@@ -413,11 +414,11 @@ Accepts a [JSON-RPC Account](/docs/clients/wallet#json-rpc-accounts) or [Local A
 
 ```ts
 const { result } = await publicClient.simulateContract({
-  address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-  abi: wagmiAbi,
-  functionName: 'mint',
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266' // [!code focus]
-})
+    address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+    abi: wagmiAbi,
+    functionName: 'mint',
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266' // [!code focus]
+});
 ```
 
 ### accessList (optional)
@@ -428,16 +429,19 @@ The access list.
 
 ```ts
 const { result } = await publicClient.simulateContract({
-  address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-  abi: wagmiAbi,
-  functionName: 'mint',
-  args: [69420],
-  accessList: [{ // [!code focus:4]
-    address: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-    storageKeys: ['0x1'],
-  }],
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'
-})
+    address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+    abi: wagmiAbi,
+    functionName: 'mint',
+    args: [69420],
+    accessList: [
+        {
+            // [!code focus:4]
+            address: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+            storageKeys: ['0x1']
+        }
+    ],
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'
+});
 ```
 
 ### authorizationList (optional)
@@ -447,24 +451,25 @@ const { result } = await publicClient.simulateContract({
 Signed EIP-7702 Authorization list.
 
 ```ts
-const authorization = await walletClient.signAuthorization({ 
-  contractAddress: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2', 
-}) 
+const authorization = await walletClient.signAuthorization({
+    contractAddress: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2'
+});
 
 const { result } = await publicClient.simulateContract({
-  address: account.address,
-  abi: wagmiAbi,
-  functionName: 'mint',
-  args: [69420],
-  authorizationList: [authorization], // [!code focus]
-})
+    address: account.address,
+    abi: wagmiAbi,
+    functionName: 'mint',
+    args: [69420],
+    authorizationList: [authorization] // [!code focus]
+});
 ```
 
 :::note
 **References**
+
 - [EIP-7702 Overview](/docs/eip7702)
 - [`signAuthorization` Docs](/docs/eip7702/signAuthorization)
-:::
+  :::
 
 ### args (optional)
 
@@ -474,12 +479,12 @@ Arguments to pass to function call.
 
 ```ts
 const { result } = await publicClient.simulateContract({
-  address: '0x1dfe7ca09e99d10835bf73044a23b73fc20623df',
-  abi: wagmiAbi,
-  functionName: 'balanceOf',
-  args: ['0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC'], // [!code focus]
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'
-})
+    address: '0x1dfe7ca09e99d10835bf73044a23b73fc20623df',
+    abi: wagmiAbi,
+    functionName: 'balanceOf',
+    args: ['0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC'], // [!code focus]
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'
+});
 ```
 
 ### blockNumber (optional)
@@ -523,12 +528,12 @@ Data to append to the end of the calldata. Useful for adding a ["domain" tag](ht
 
 ```ts
 const { result } = await publicClient.simulateContract({
-  address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-  abi: wagmiAbi,
-  functionName: 'mint',
-  args: [69420],
-  dataSuffix: '0xdeadbeef' // [!code focus]
-})
+    address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+    abi: wagmiAbi,
+    functionName: 'mint',
+    args: [69420],
+    dataSuffix: '0xdeadbeef' // [!code focus]
+});
 ```
 
 ### gas (optional)
@@ -539,12 +544,12 @@ The gas limit for the transaction.
 
 ```ts
 await walletClient.writeContract({
-  address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-  abi: wagmiAbi,
-  functionName: 'mint',
-  args: [69420],
-  gas: 69420n, // [!code focus]
-})
+    address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+    abi: wagmiAbi,
+    functionName: 'mint',
+    args: [69420],
+    gas: 69420n // [!code focus]
+});
 ```
 
 ### gasPrice (optional)

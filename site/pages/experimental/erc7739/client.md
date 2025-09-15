@@ -4,11 +4,10 @@ To use the experimental functionality of ERC-7739, you can extend your existing 
 
 ```ts
 import { createPublicClient, createWalletClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
 import { erc7739Actions } from 'viem/experimental' // [!code focus]
 
 const walletClient = createWalletClient({
-  chain: mainnet,
+  network: ThorNetworks.MAINNET,
   transport: custom(window.ethereum!),
 }).extend(erc7739Actions()) // [!code focus]
 

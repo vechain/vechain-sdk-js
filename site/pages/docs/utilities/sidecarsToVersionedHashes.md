@@ -8,29 +8,29 @@ Transforms a list of sidecars to their versioned hashes.
 
 ## Import
 
-```ts twoslash
-import { sidecarsToVersionedHashes } from 'viem'
+```js twoslash
+import { sidecarsToVersionedHashes } from 'viem';
 ```
 
 ## Usage
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { toBlobSidecars, sidecarsToVersionedHashes } from 'viem'
-import { kzg } from './kzg'
+```js twoslash [example.ts]
+import { toBlobSidecars, sidecarsToVersionedHashes } from 'viem';
+import { kzg } from './kzg';
 
-const sidecars = toBlobSidecars({ data: '0x...', kzg })
-const versionedHashes = sidecarsToVersionedHashes({ sidecars }) // [!code focus]
+const sidecars = toBlobSidecars({ data: '0x...', kzg });
+const versionedHashes = sidecarsToVersionedHashes({ sidecars }); // [!code focus]
 ```
 
-```ts twoslash [kzg.ts] filename="kzg.ts"
+```js twoslash [kzg.ts] filename="kzg.ts"
 // @noErrors
-import * as cKzg from 'c-kzg'
-import { setupKzg } from 'viem'
-import { mainnetTrustedSetupPath } from 'viem/node'
+import * as cKzg from 'c-kzg';
+import { setupKzg } from 'viem';
+import { mainnetTrustedSetupPath } from 'viem/node';
 
-export const kzg = setupKzg(cKzg, mainnetTrustedSetupPath)
+export const kzg = setupKzg(cKzg, mainnetTrustedSetupPath);
 ```
 
 :::
@@ -49,15 +49,15 @@ Versioned hashes from the input sidecars.
 
 Sidecars to transform to versioned hashes.
 
-```ts twoslash 
-import { toBlobSidecars, sidecarsToVersionedHashes } from 'viem'
-import { kzg } from './kzg'
+```js twoslash
+import { toBlobSidecars, sidecarsToVersionedHashes } from 'viem';
+import { kzg } from './kzg';
 
-const sidecars = toBlobSidecars({ data: '0x...', kzg })
+const sidecars = toBlobSidecars({ data: '0x...', kzg });
 
-const versionedHashes = sidecarsToVersionedHashes({ 
-  sidecars, // [!code focus]
-})
+const versionedHashes = sidecarsToVersionedHashes({
+    sidecars // [!code focus]
+});
 ```
 
 ### to
@@ -66,20 +66,18 @@ const versionedHashes = sidecarsToVersionedHashes({
 
 Commitments corresponding to the input blobs.
 
-```ts twoslash 
-import { toBlobSidecars, sidecarsToVersionedHashes } from 'viem'
-import { kzg } from './kzg'
+```js twoslash
+import { toBlobSidecars, sidecarsToVersionedHashes } from 'viem';
+import { kzg } from './kzg';
 
-const sidecars = toBlobSidecars({ data: '0x...', kzg })
+const sidecars = toBlobSidecars({ data: '0x...', kzg });
 
-const versionedHashes = sidecarsToVersionedHashes({ 
-  sidecars,
-  to: 'bytes', // [!code focus]
-})
-versionedHashes  // [!code focus]
+const versionedHashes = sidecarsToVersionedHashes({
+    sidecars,
+    to: 'bytes' // [!code focus]
+});
+versionedHashes; // [!code focus]
 // ^?
-
-
 ```
 
 ### version
@@ -89,14 +87,14 @@ versionedHashes  // [!code focus]
 
 Version to tag onto the hashes. Defaults to `1`.
 
-```ts twoslash 
-import { toBlobSidecars, sidecarsToVersionedHashes } from 'viem'
-import { kzg } from './kzg'
+```js twoslash
+import { toBlobSidecars, sidecarsToVersionedHashes } from 'viem';
+import { kzg } from './kzg';
 
-const sidecars = toBlobSidecars({ data: '0x...', kzg })
+const sidecars = toBlobSidecars({ data: '0x...', kzg });
 
-const versionedHashes = sidecarsToVersionedHashes({ 
-  sidecars,
-  version: 69, // [!code focus]
-})
+const versionedHashes = sidecarsToVersionedHashes({
+    sidecars,
+    version: 69 // [!code focus]
+});
 ```

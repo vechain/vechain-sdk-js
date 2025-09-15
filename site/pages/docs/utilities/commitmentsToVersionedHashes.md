@@ -8,36 +8,37 @@ Transform a list of commitments to their versioned hashes.
 
 ## Import
 
-```ts twoslash
-import { commitmentsToVersionedHashes } from 'viem'
+```js twoslash
+import { commitmentsToVersionedHashes } from 'viem';
 ```
 
 ## Usage
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { 
-  blobsToCommitments, 
-  commitmentsToVersionedHashes, 
-  toBlobs 
-} from 'viem'
-import { kzg } from './kzg'
+```js twoslash [example.ts]
+import {
+    blobsToCommitments,
+    commitmentsToVersionedHashes,
+    toBlobs
+} from 'viem';
+import { kzg } from './kzg';
 
-const blobs = toBlobs({ data: '0x1234' })
-const commitments = blobsToCommitments({ blobs, kzg })
-const versionedHashes = commitmentsToVersionedHashes({  // [!code focus]
-  commitments,  // [!code focus]
-}) // [!code focus]
+const blobs = toBlobs({ data: '0x1234' });
+const commitments = blobsToCommitments({ blobs, kzg });
+const versionedHashes = commitmentsToVersionedHashes({
+    // [!code focus]
+    commitments // [!code focus]
+}); // [!code focus]
 ```
 
-```ts twoslash [kzg.ts] filename="kzg.ts"
+```js twoslash [kzg.ts] filename="kzg.ts"
 // @noErrors
-import * as cKzg from 'c-kzg'
-import { setupKzg } from 'viem'
-import { mainnetTrustedSetupPath } from 'viem/node'
+import * as cKzg from 'c-kzg';
+import { setupKzg } from 'viem';
+import { mainnetTrustedSetupPath } from 'viem/node';
 
-export const kzg = setupKzg(cKzg, mainnetTrustedSetupPath)
+export const kzg = setupKzg(cKzg, mainnetTrustedSetupPath);
 ```
 
 :::
@@ -56,20 +57,20 @@ List of versioned hashes corresponding to the input commitments.
 
 List of commitments to transform into versioned hashes.
 
-```ts twoslash
-import { 
-  blobsToCommitments, 
-  commitmentsToVersionedHashes, 
-  toBlobs 
-} from 'viem'
-import { kzg } from './kzg'
+```js twoslash
+import {
+    blobsToCommitments,
+    commitmentsToVersionedHashes,
+    toBlobs
+} from 'viem';
+import { kzg } from './kzg';
 // ---cut---
-const blobs = toBlobs({ data: '0x1234' })
-const commitments = blobsToCommitments({ blobs, kzg })
-const versionedHashes = commitmentsToVersionedHashes({ 
-  commitments,  // [!code focus]
-  kzg, 
-})
+const blobs = toBlobs({ data: '0x1234' });
+const commitments = blobsToCommitments({ blobs, kzg });
+const versionedHashes = commitmentsToVersionedHashes({
+    commitments, // [!code focus]
+    kzg
+});
 ```
 
 ### to
@@ -78,24 +79,22 @@ const versionedHashes = commitmentsToVersionedHashes({
 
 The output type.
 
-```ts twoslash
-import { 
-  blobsToCommitments, 
-  commitmentsToVersionedHashes, 
-  toBlobs 
-} from 'viem'
-import { kzg } from './kzg'
+```js twoslash
+import {
+    blobsToCommitments,
+    commitmentsToVersionedHashes,
+    toBlobs
+} from 'viem';
+import { kzg } from './kzg';
 // ---cut---
-const blobs = toBlobs({ data: '0x1234' })
-const commitments = blobsToCommitments({ blobs, kzg })
-const versionedHashes = commitmentsToVersionedHashes({ 
-  commitments, 
-  to: 'bytes' // [!code focus]
-})
-versionedHashes // [!code focus]
+const blobs = toBlobs({ data: '0x1234' });
+const commitments = blobsToCommitments({ blobs, kzg });
+const versionedHashes = commitmentsToVersionedHashes({
+    commitments,
+    to: 'bytes' // [!code focus]
+});
+versionedHashes; // [!code focus]
 //  ^?
-
-
 ```
 
 ### version
@@ -105,18 +104,18 @@ versionedHashes // [!code focus]
 
 Version to tag onto the hashes. Defaults to `1`.
 
-```ts twoslash
-import { 
-  blobsToCommitments, 
-  commitmentsToVersionedHashes, 
-  toBlobs 
-} from 'viem'
-import { kzg } from './kzg'
+```js twoslash
+import {
+    blobsToCommitments,
+    commitmentsToVersionedHashes,
+    toBlobs
+} from 'viem';
+import { kzg } from './kzg';
 // ---cut---
-const blobs = toBlobs({ data: '0x1234' })
-const commitments = blobsToCommitments({ blobs, kzg })
-const versionedHashes = commitmentsToVersionedHashes({ 
-  commitments, 
-  version: 69, // [!code focus]
-})
+const blobs = toBlobs({ data: '0x1234' });
+const commitments = blobsToCommitments({ blobs, kzg });
+const versionedHashes = commitmentsToVersionedHashes({
+    commitments,
+    version: 69 // [!code focus]
+});
 ```

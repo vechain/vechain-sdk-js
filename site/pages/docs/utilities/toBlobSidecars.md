@@ -8,8 +8,8 @@ Transforms arbitrary data (or blobs, commitments, & proofs) into a blob sidecar 
 
 ## Import
 
-```ts twoslash
-import { toBlobSidecars } from 'viem'
+```js twoslash
+import { toBlobSidecars } from 'viem';
 ```
 
 ## Usage
@@ -20,20 +20,20 @@ You can generate blob sidecars from arbitrary data without having to compute the
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { toBlobSidecars } from 'viem'
-import { kzg } from './kzg'
+```js twoslash [example.ts]
+import { toBlobSidecars } from 'viem';
+import { kzg } from './kzg';
 
-const sidecars = toBlobSidecars({ data: '0x...', kzg }) // [!code focus]
+const sidecars = toBlobSidecars({ data: '0x...', kzg }); // [!code focus]
 ```
 
-```ts twoslash [kzg.ts] filename="kzg.ts"
+```js twoslash [kzg.ts] filename="kzg.ts"
 // @noErrors
-import * as cKzg from 'c-kzg'
-import { setupKzg } from 'viem'
-import { mainnetTrustedSetupPath } from 'viem/node'
+import * as cKzg from 'c-kzg';
+import { setupKzg } from 'viem';
+import { mainnetTrustedSetupPath } from 'viem/node';
 
-export const kzg = setupKzg(cKzg, mainnetTrustedSetupPath)
+export const kzg = setupKzg(cKzg, mainnetTrustedSetupPath);
 ```
 
 :::
@@ -44,28 +44,28 @@ Alternatively, you can reach for the lower-level API and insert the blobs, commi
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { 
-  blobsToCommitments, 
-  blobsToProofs,
-  toBlobSidecars, 
-  toBlobs 
-} from 'viem'
-import { kzg } from './kzg'
+```js twoslash [example.ts]
+import {
+    blobsToCommitments,
+    blobsToProofs,
+    toBlobSidecars,
+    toBlobs
+} from 'viem';
+import { kzg } from './kzg';
 
-const blobs = toBlobs({ data: '0x...' })
-const commitments = blobsToCommitments({ blobs, kzg })
-const proofs = blobsToProofs({ blobs, commitments, kzg })
-const sidecars = toBlobSidecars({ blobs, commitments, proofs }) // [!code focus]
+const blobs = toBlobs({ data: '0x...' });
+const commitments = blobsToCommitments({ blobs, kzg });
+const proofs = blobsToProofs({ blobs, commitments, kzg });
+const sidecars = toBlobSidecars({ blobs, commitments, proofs }); // [!code focus]
 ```
 
-```ts twoslash [kzg.ts] filename="kzg.ts"
+```js twoslash [kzg.ts] filename="kzg.ts"
 // @noErrors
-import * as cKzg from 'c-kzg'
-import { setupKzg } from 'viem'
-import { mainnetTrustedSetupPath } from 'viem/node'
+import * as cKzg from 'c-kzg';
+import { setupKzg } from 'viem';
+import { mainnetTrustedSetupPath } from 'viem/node';
 
-export const kzg = setupKzg(cKzg, mainnetTrustedSetupPath)
+export const kzg = setupKzg(cKzg, mainnetTrustedSetupPath);
 ```
 
 :::
@@ -84,24 +84,24 @@ Blob sidecars from the input data.
 
 Blobs to transform into blob sidecars.
 
-```ts twoslash
-import { 
-  blobsToCommitments, 
-  blobsToProofs,
-  toBlobSidecars, 
-  toBlobs 
-} from 'viem'
-import { kzg } from './kzg'
+```js twoslash
+import {
+    blobsToCommitments,
+    blobsToProofs,
+    toBlobSidecars,
+    toBlobs
+} from 'viem';
+import { kzg } from './kzg';
 
-const blobs = toBlobs({ data: '0x...' }) // [!code focus]
-const commitments = blobsToCommitments({ blobs, kzg })
-const proofs = blobsToProofs({ blobs, commitments, kzg })
+const blobs = toBlobs({ data: '0x...' }); // [!code focus]
+const commitments = blobsToCommitments({ blobs, kzg });
+const proofs = blobsToProofs({ blobs, commitments, kzg });
 
-const sidecars = toBlobSidecars({ 
-  blobs, // [!code focus]
-  commitments,
-  proofs,
-})
+const sidecars = toBlobSidecars({
+    blobs, // [!code focus]
+    commitments,
+    proofs
+});
 ```
 
 ### commitments
@@ -110,24 +110,24 @@ const sidecars = toBlobSidecars({
 
 Commitments corresponding to the input blobs.
 
-```ts twoslash
-import { 
-  blobsToCommitments, 
-  blobsToProofs,
-  toBlobSidecars, 
-  toBlobs 
-} from 'viem'
-import { kzg } from './kzg'
+```js twoslash
+import {
+    blobsToCommitments,
+    blobsToProofs,
+    toBlobSidecars,
+    toBlobs
+} from 'viem';
+import { kzg } from './kzg';
 
-const blobs = toBlobs({ data: '0x...' })
-const commitments = blobsToCommitments({ blobs, kzg }) // [!code focus]
-const proofs = blobsToProofs({ blobs, commitments, kzg })
+const blobs = toBlobs({ data: '0x...' });
+const commitments = blobsToCommitments({ blobs, kzg }); // [!code focus]
+const proofs = blobsToProofs({ blobs, commitments, kzg });
 
-const sidecars = toBlobSidecars({ 
-  blobs,
-  commitments, // [!code focus]
-  proofs,
-})
+const sidecars = toBlobSidecars({
+    blobs,
+    commitments, // [!code focus]
+    proofs
+});
 ```
 
 ### data
@@ -136,14 +136,14 @@ const sidecars = toBlobSidecars({
 
 Data to transform into blob sidecars.
 
-```ts twoslash
-import { toBlobSidecars } from 'viem'
-import { kzg } from './kzg'
+```js twoslash
+import { toBlobSidecars } from 'viem';
+import { kzg } from './kzg';
 
-const sidecars = toBlobSidecars({ 
-  data: '0x...', // [!code focus]
-  kzg,
-})
+const sidecars = toBlobSidecars({
+    data: '0x...', // [!code focus]
+    kzg
+});
 ```
 
 ### kzg
@@ -152,18 +152,18 @@ const sidecars = toBlobSidecars({
 
 KZG implementation. See [`setupKzg`](/docs/utilities/setupKzg) for more information.
 
-```ts twoslash
+```js twoslash
 // @noErrors
-import * as cKzg from 'c-kzg'
-import { toBlobSidecars, setupKzg } from 'viem'
-import { mainnetTrustedSetupPath } from 'viem/node'
+import * as cKzg from 'c-kzg';
+import { toBlobSidecars, setupKzg } from 'viem';
+import { mainnetTrustedSetupPath } from 'viem/node';
 
-const kzg = setupKzg(cKzg, mainnetTrustedSetupPath) // [!code focus]
+const kzg = setupKzg(cKzg, mainnetTrustedSetupPath); // [!code focus]
 
-const sidecars = toBlobSidecars({ 
-  data: '0x...',
-  kzg, // [!code focus]
-}) 
+const sidecars = toBlobSidecars({
+    data: '0x...',
+    kzg // [!code focus]
+});
 ```
 
 ### proofs
@@ -172,24 +172,24 @@ const sidecars = toBlobSidecars({
 
 Proofs corresponding to the input blobs.
 
-```ts twoslash
-import { 
-  blobsToCommitments, 
-  blobsToProofs,
-  toBlobSidecars, 
-  toBlobs 
-} from 'viem'
-import { kzg } from './kzg'
+```js twoslash
+import {
+    blobsToCommitments,
+    blobsToProofs,
+    toBlobSidecars,
+    toBlobs
+} from 'viem';
+import { kzg } from './kzg';
 
-const blobs = toBlobs({ data: '0x...' })
-const commitments = blobsToCommitments({ blobs, kzg })
-const proofs = blobsToProofs({ blobs, commitments, kzg }) // [!code focus]
+const blobs = toBlobs({ data: '0x...' });
+const commitments = blobsToCommitments({ blobs, kzg });
+const proofs = blobsToProofs({ blobs, commitments, kzg }); // [!code focus]
 
-const sidecars = toBlobSidecars({ 
-  blobs,
-  commitments,
-  proofs, // [!code focus]
-})
+const sidecars = toBlobSidecars({
+    blobs,
+    commitments,
+    proofs // [!code focus]
+});
 ```
 
 ### to
@@ -198,18 +198,18 @@ const sidecars = toBlobSidecars({
 
 The output type.
 
-```ts twoslash
+```js twoslash
 import { defineKzg } from 'viem'
 const kzg = defineKzg({} as any)
 
 // ---cut---
 import { toBlobSidecars, toBlobs } from 'viem'
 
-const sidecars = toBlobSidecars({ 
+const sidecars = toBlobSidecars({
   data: '0x1234',
-  kzg, 
-  to: 'bytes', // [!code focus]  
-}) 
+  kzg,
+  to: 'bytes', // [!code focus]
+})
 
 sidecars // [!code focus]
 // ^?

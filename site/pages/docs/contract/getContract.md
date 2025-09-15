@@ -44,17 +44,16 @@ const unwatch = contract.watchEvent.Transfer(
 
 ```ts [client.ts]
 import { createPublicClient, createWalletClient, http, custom } from 'viem'
-import { mainnet } from 'viem/chains'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http(),
+  network: ThorNetworks.MAINNET,
+  network: ThorNetworks.MAINNET,
 })
 
 // eg: Metamask
 export const walletClient = createWalletClient({
-  chain: mainnet,
+  network: ThorNetworks.MAINNET,
   transport: custom(window.ethereum!),
 })
 
@@ -66,7 +65,7 @@ const provider = await EthereumProvider.init({
 })
 
 export const walletClientWC = createWalletClient({
-  chain: mainnet,
+  network: ThorNetworks.MAINNET,
   transport: custom(provider),
 })
 ```

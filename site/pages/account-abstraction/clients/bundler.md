@@ -4,26 +4,27 @@ A Bundler Client is an interface to interact with **ERC-4337 Bundlers** and prov
 
 ## Import
 
-```ts twoslash
-import { createBundlerClient } from 'viem/account-abstraction'
+```js twoslash
+import { createBundlerClient } from 'viem/account-abstraction';
 ```
 
 ## Usage
 
-```ts twoslash
-import { createPublicClient, http } from 'viem'
-import { createBundlerClient } from 'viem/account-abstraction' // [!code focus]
-import { mainnet } from 'viem/chains' // [!code focus]
+```js twoslash
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+import { createBundlerClient } from 'viem/account-abstraction'; // [!code focus]
+ // [!code focus]
 
 const client = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 
-const bundlerClient = createBundlerClient({ // [!code focus]
-  client, // [!code focus]
-  transport: http('https://public.pimlico.io/v2/1/rpc') // [!code focus]
-}) // [!code focus]
+const bundlerClient = createBundlerClient({
+    // [!code focus]
+    client, // [!code focus]
+    transport: http('https://public.pimlico.io/v2/1/rpc') // [!code focus]
+}); // [!code focus]
 ```
 
 :::info
@@ -38,31 +39,32 @@ The Bundler URL above is a public endpoint. Please do not use it in production a
 
 The [Smart Account](/account-abstraction/accounts/smart) to use for the Bundler Client. This will be used for Actions that require an `account` as an argument.
 
-```ts twoslash
-import { createPublicClient, http } from 'viem' 
-import { createBundlerClient } from 'viem/account-abstraction'
-import { mainnet } from 'viem/chains' 
+```js twoslash
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+import { createBundlerClient } from 'viem/account-abstraction';
+
 
 const client = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 // ---cut---
-import { toCoinbaseSmartAccount } from 'viem/account-abstraction' // [!code focus]
-import { privateKeyToAccount } from 'viem/accounts'
+import { toCoinbaseSmartAccount } from 'viem/account-abstraction'; // [!code focus]
+import { privateKeyToAccount } from 'viem/accounts';
 
-const owner = privateKeyToAccount('0x...')
+const owner = privateKeyToAccount('0x...');
 
-const account = await toCoinbaseSmartAccount({ // [!code focus]
-  client, // [!code focus]
-  owners: [owner] // [!code focus]
-}) // [!code focus]
+const account = await toCoinbaseSmartAccount({
+    // [!code focus]
+    client, // [!code focus]
+    owners: [owner] // [!code focus]
+}); // [!code focus]
 
 const bundlerClient = createBundlerClient({
-  account, // [!code focus]
-  client,
-  transport: http('https://public.pimlico.io/v2/1/rpc'),
-})
+    account, // [!code focus]
+    client,
+    transport: http('https://public.pimlico.io/v2/1/rpc')
+});
 ```
 
 ### chain (optional)
@@ -71,21 +73,21 @@ const bundlerClient = createBundlerClient({
 
 The [Chain](/docs/chains/introduction) of the Bundler Client.
 
-```ts twoslash
-import { createPublicClient, http } from 'viem' 
-import { createBundlerClient } from 'viem/account-abstraction'
+```js twoslash
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+import { createBundlerClient } from 'viem/account-abstraction';
 
 const client = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 // ---cut---
-import { mainnet } from 'viem/chains' 
+
 
 const bundlerClient = createBundlerClient({
-  chain: mainnet, // [!code focus]
-  transport: http('https://public.pimlico.io/v2/1/rpc')
-})
+    network: ThorNetworks.MAINNET, // [!code focus]
+    transport: http('https://public.pimlico.io/v2/1/rpc')
+});
 ```
 
 ### client (optional)
@@ -94,21 +96,22 @@ const bundlerClient = createBundlerClient({
 
 The [Client](/docs/clients/public) (pointing to execution RPC) of the Bundler Client.
 
-```ts twoslash
-import { createBundlerClient } from 'viem/account-abstraction'
+```js twoslash
+import { createBundlerClient } from 'viem/account-abstraction';
 // ---cut---
-import { createPublicClient, http } from 'viem' 
-import { mainnet } from 'viem/chains'
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
 
-const client = createPublicClient({ // [!code focus]
-  chain: mainnet, // [!code focus]
-  transport: http() // [!code focus]
-}) // [!code focus]
+
+const client = createPublicClient({
+    // [!code focus]
+    network: ThorNetworks.MAINNET, // [!code focus]
+    network: ThorNetworks.MAINNET // [!code focus]
+}); // [!code focus]
 
 const bundlerClient = createBundlerClient({
-  client, // [!code focus]
-  transport: http('https://public.pimlico.io/v2/1/rpc')
-})
+    client, // [!code focus]
+    transport: http('https://public.pimlico.io/v2/1/rpc')
+});
 ```
 
 ### key (optional)
@@ -118,14 +121,14 @@ const bundlerClient = createBundlerClient({
 
 A key for the Client.
 
-```ts twoslash
-import { createBundlerClient } from 'viem/account-abstraction'
-import { http } from 'viem'
+```js twoslash
+import { createBundlerClient } from 'viem/account-abstraction';
+import { http } from 'viem';
 // ---cut---
 const client = createBundlerClient({
-  key: 'foo', // [!code focus]
-  transport: http('https://public.pimlico.io/v2/1/rpc')
-})
+    key: 'foo', // [!code focus]
+    transport: http('https://public.pimlico.io/v2/1/rpc')
+});
 ```
 
 ### name (optional)
@@ -135,14 +138,14 @@ const client = createBundlerClient({
 
 A name for the Client.
 
-```ts twoslash
-import { createBundlerClient } from 'viem/account-abstraction'
-import { http } from 'viem'
+```js twoslash
+import { createBundlerClient } from 'viem/account-abstraction';
+import { http } from 'viem';
 // ---cut---
 const client = createBundlerClient({
-  name: 'Foo Bundler Client', // [!code focus]
-  transport: http('https://public.pimlico.io/v2/1/rpc')
-})
+    name: 'Foo Bundler Client', // [!code focus]
+    transport: http('https://public.pimlico.io/v2/1/rpc')
+});
 ```
 
 ### paymaster (optional)
@@ -157,37 +160,41 @@ Sets Paymaster configuration for the Bundler Client to be utilized on User Opera
 
 #### Using a Paymaster Client
 
-```ts twoslash
+```js twoslash
 // @noErrors
-import { createPaymasterClient, createBundlerClient } from 'viem/account-abstraction'
-import { http } from 'viem'
-import { mainnet } from 'viem/chains'
-import { client } from './config'
+import {
+    createPaymasterClient,
+    createBundlerClient
+} from 'viem/account-abstraction';
+import { http } from 'viem';
+
+import { client } from './config';
 // ---cut---
-const paymasterClient = createPaymasterClient({ // [!code focus]
-  transport: http('https://public.pimlico.io/v2/11155111/rpc') // [!code focus]
-}) // [!code focus]
+const paymasterClient = createPaymasterClient({
+    // [!code focus]
+    transport: http('https://public.pimlico.io/v2/11155111/rpc') // [!code focus]
+}); // [!code focus]
 
 const bundlerClient = createBundlerClient({
-  chain: mainnet,
-  paymaster: paymasterClient, // [!code focus]
-  transport: http('https://public.pimlico.io/v2/1/rpc'),
-})
+    network: ThorNetworks.MAINNET,
+    paymaster: paymasterClient, // [!code focus]
+    transport: http('https://public.pimlico.io/v2/1/rpc')
+});
 ```
 
 #### Using the Bundler Client as Paymaster
 
-```ts twoslash
+```js twoslash
 // @noErrors
-import { createBundlerClient } from 'viem/account-abstraction'
-import { http } from 'viem'
-import { mainnet } from 'viem/chains'
+import { createBundlerClient } from 'viem/account-abstraction';
+import { http } from 'viem';
+
 // ---cut---
 const bundlerClient = createBundlerClient({
-  chain: mainnet,
-  paymaster: true, // [!code focus]
-  transport: http('https://public.pimlico.io/v2/1/rpc'),
-})
+    network: ThorNetworks.MAINNET,
+    paymaster: true, // [!code focus]
+    transport: http('https://public.pimlico.io/v2/1/rpc')
+});
 ```
 
 #### Using Custom Paymaster Functions
@@ -202,14 +209,13 @@ Retrieves paymaster-related User Operation properties to be used for sending the
 
 [Read more](https://github.com/ethereum/ERCs/blob/master/ERCS/erc-7677.md#pm_getpaymasterdata)
 
-```ts twoslash
+```js twoslash
 // @noErrors
 import { createBundlerClient } from 'viem/account-abstraction'
 import { http } from 'viem'
-import { mainnet } from 'viem/chains'
 // ---cut---
 const bundlerClient = createBundlerClient({
-  chain: mainnet,
+  network: ThorNetworks.MAINNET,
   paymaster: { // [!code focus]
     async getPaymasterData(userOperation) { // [!code focus]
       // Retrieve paymaster properties for the User Operation. // [!code focus]
@@ -233,15 +239,14 @@ Retrieves paymaster-related User Operation properties to be used for gas estimat
 
 [Read more](https://github.com/ethereum/ERCs/blob/master/ERCS/erc-7677.md#pm_getpaymasterstubdata)
 
-```ts twoslash
+```js twoslash
 // @noErrors
 import { createBundlerClient } from 'viem/account-abstraction'
 import { http } from 'viem'
-import { mainnet } from 'viem/chains'
 // ---cut---
 const bundlerClient = createBundlerClient({
-  chain: mainnet,
-  paymaster: { 
+  network: ThorNetworks.MAINNET,
+  paymaster: {
     async getPaymasterStubData(userOperation) { // [!code focus]
       // Retrieve paymaster properties for the User Operation. // [!code focus]
       return { // [!code focus]
@@ -252,7 +257,7 @@ const bundlerClient = createBundlerClient({
       } // [!code focus]
     } // [!code focus]
     async getPaymasterData(userOperation) { /* ... */ }
-  } 
+  }
   transport: http('https://public.pimlico.io/v2/1/rpc'),
 })
 ```
@@ -263,25 +268,29 @@ const bundlerClient = createBundlerClient({
 
 Paymaster specific fields.
 
-```ts twoslash
+```js twoslash
 // @noErrors
-import { createPaymasterClient, createBundlerClient } from 'viem/account-abstraction'
-import { http } from 'viem'
-import { mainnet } from 'viem/chains'
-import { client } from './config'
+import {
+    createPaymasterClient,
+    createBundlerClient
+} from 'viem/account-abstraction';
+import { http } from 'viem';
+
+import { client } from './config';
 // ---cut---
 const paymasterClient = createPaymasterClient({
-  transport: http('https://public.pimlico.io/v2/1/rpc')
-})
+    transport: http('https://public.pimlico.io/v2/1/rpc')
+});
 
 const bundlerClient = createBundlerClient({
-  chain: mainnet,
-  paymaster: paymasterClient,
-  paymasterContext: { // [!code focus]
-    policyId: 'abc123' // [!code focus]
-  }, // [!code focus]
-  transport: http('https://public.pimlico.io/v2/1/rpc'),
-})
+    network: ThorNetworks.MAINNET,
+    paymaster: paymasterClient,
+    paymasterContext: {
+        // [!code focus]
+        policyId: 'abc123' // [!code focus]
+    }, // [!code focus]
+    transport: http('https://public.pimlico.io/v2/1/rpc')
+});
 ```
 
 ### pollingInterval (optional)
@@ -291,14 +300,14 @@ const bundlerClient = createBundlerClient({
 
 Frequency (in ms) for polling enabled Actions.
 
-```ts twoslash
-import { createBundlerClient } from 'viem/account-abstraction'
-import { http } from 'viem'
+```js twoslash
+import { createBundlerClient } from 'viem/account-abstraction';
+import { http } from 'viem';
 // ---cut---
 const client = createBundlerClient({
-  pollingInterval: 10_000, // [!code focus]
-  transport: http('https://public.pimlico.io/v2/1/rpc')
-})
+    pollingInterval: 10_000, // [!code focus]
+    transport: http('https://public.pimlico.io/v2/1/rpc')
+});
 ```
 
 ### rpcSchema (optional)
@@ -308,7 +317,7 @@ const client = createBundlerClient({
 
 Typed JSON-RPC schema for the client.
 
-```ts twoslash
+```js twoslash
 import { createBundlerClient } from 'viem/account-abstraction'
 import { http } from 'viem'
 // @noErrors
@@ -327,7 +336,7 @@ const client = createBundlerClient({
 })
 
 const result = await client.request({ // [!code focus]
-  method: 'eth_wa // [!code focus] 
+  method: 'eth_wa // [!code focus]
 //               ^|
 
   params: ['hello'], // [!code focus]
@@ -340,15 +349,15 @@ const result = await client.request({ // [!code focus]
 
 The Transport of the Bundler Client.
 
-```ts twoslash
-import { createBundlerClient } from 'viem/account-abstraction'
-import { http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createBundlerClient } from 'viem/account-abstraction';
+import { http } from 'viem';
+
 // ---cut---
 const bundlerClient = createBundlerClient({
-  chain: mainnet,
-  transport: http('https://public.pimlico.io/v2/1/rpc'), // [!code focus]
-})
+    network: ThorNetworks.MAINNET,
+    transport: http('https://public.pimlico.io/v2/1/rpc') // [!code focus]
+});
 ```
 
 ### userOperation (optional)
@@ -361,14 +370,13 @@ Configuration for User Operations.
 
 Prepares fee properties for the User Operation request.
 
-```ts twoslash
+```js twoslash
 // @noErrors
 import { createBundlerClient } from 'viem/account-abstraction'
 import { http } from 'viem'
-import { mainnet } from 'viem/chains'
 // ---cut---
 const bundlerClient = createBundlerClient({
-  chain: mainnet,
+  network: ThorNetworks.MAINNET,
   transport: http('https://public.pimlico.io/v2/1/rpc'),
   userOperation: { // [!code focus]
     async estimateFeesPerGas({ account, bundlerClient, userOperation }) { // [!code focus]

@@ -12,7 +12,7 @@ Requests for the wallet to sign and broadcast a batch of calls to the network.
 
 :::code-group
 
-```ts twoslash [example.ts]
+```js twoslash [example.ts]
 import { parseEther } from 'viem'
 import { account, walletClient } from './config'
  
@@ -31,7 +31,7 @@ const { id } = await walletClient.sendCalls({ // [!code focus:99]
 })
 ```
 
-```ts twoslash [config.ts] filename="config.ts"
+```js twoslash [config.ts] filename="config.ts"
 import 'viem/window'
 // ---cut---
 import { createWalletClient, custom } from 'viem'
@@ -61,7 +61,7 @@ If you do not wish to pass an `account` to every `sendCalls`, you can also hoist
 
 :::code-group
 
-```ts twoslash [example.ts]
+```js twoslash [example.ts]
 import { walletClient } from './config'
  
 const { id } = await walletClient.sendCalls({ // [!code focus:99]
@@ -101,7 +101,7 @@ The `calls` property also accepts **Contract Calls**, and can be used via the `a
 
 :::code-group
 
-```ts twoslash [example.ts]
+```js twoslash [example.ts]
 import { parseAbi } from 'viem'
 import { walletClient } from './config'
 
@@ -139,7 +139,7 @@ const { id } = await walletClient.sendCalls({ // [!code focus:99]
 })
 ```
 
-```ts twoslash [abi.ts] filename="abi.ts"
+```js twoslash [abi.ts] filename="abi.ts"
 export const wagmiAbi = [
   // ...
   {
@@ -184,7 +184,7 @@ Action](/docs/actions/wallet/getCallsStatus), it cannot be used with the native 
 
 :::code-group
 
-```ts twoslash [example.ts]
+```js twoslash [example.ts]
 import { parseEther } from 'viem'
 import { account, walletClient } from './config'
  
@@ -204,7 +204,7 @@ const { id } = await walletClient.sendCalls({
 })
 ```
 
-```ts twoslash [config.ts] filename="config.ts"
+```js twoslash [config.ts] filename="config.ts"
 import 'viem/window'
 // ---cut---
 import { createWalletClient, custom } from 'viem'
@@ -236,7 +236,7 @@ The Account to sign & broadcast the call from. If set to `null`, it is assumed t
 
 Accepts a [JSON-RPC Account](/docs/clients/wallet#json-rpc-accounts).
 
-```ts twoslash
+```js twoslash
 import { walletClient } from './config'
 
 const { id } = await walletClient.sendCalls({
@@ -261,7 +261,7 @@ const { id } = await walletClient.sendCalls({
 
 The target chain to broadcast the calls.
 
-```ts twoslash
+```js twoslash
 import { mainnet } from 'viem/chains'
 import { walletClient } from './config'
 
@@ -286,7 +286,7 @@ const { id } = await walletClient.sendCalls({
 
 An array of calls to be signed and broadcasted.
 
-```ts twoslash
+```js twoslash
 import { mainnet } from 'viem/chains'
 import { walletClient } from './config'
 
@@ -311,7 +311,7 @@ const { id } = await walletClient.sendCalls({
 
 Calldata to broadcast (typically a contract function selector with encoded arguments, or contract deployment bytecode).
 
-```ts twoslash
+```js twoslash
 import { mainnet } from 'viem/chains'
 import { walletClient } from './config'
 
@@ -332,7 +332,7 @@ const { id } = await walletClient.sendCalls({
 
 When calling functions on contracts, it may be more convenient to pass in a [Contract Call](#contract-calls), providing the the `abi`, `functionName`, and `args` properties which will then be encoded into the appropriate `calls.data`.
 
-```ts twoslash
+```js twoslash
 import { parseAbi } from 'viem'
 import { walletClient } from './config'
 
@@ -365,7 +365,7 @@ const { id } = await walletClient.sendCalls({
 
 Recipient address of the call.
 
-```ts twoslash
+```js twoslash
 import { mainnet } from 'viem/chains'
 import { walletClient } from './config'
 
@@ -390,7 +390,7 @@ const { id } = await walletClient.sendCalls({
 
 Value to send with the call.
 
-```ts twoslash
+```js twoslash
 import { mainnet } from 'viem/chains'
 import { walletClient } from './config'
 
@@ -415,7 +415,7 @@ const { id } = await walletClient.sendCalls({
 
 Data to append to the end of the calldata. Useful for adding a "domain" tag.
 
-```ts twoslash [example.ts]
+```js twoslash [example.ts]
 import { parseAbi } from 'viem'
 import { walletClient } from './config'
 
@@ -445,7 +445,7 @@ const { id } = await walletClient.sendCalls({
 
 Capability metadata for the calls (e.g. specifying a paymaster).
 
-```ts twoslash
+```js twoslash
 import { walletClient } from './config'
 
 const { id } = await walletClient.sendCalls({
@@ -474,7 +474,7 @@ const { id } = await walletClient.sendCalls({
 
 Force the calls to be executed atomically. [See more](https://eips.ethereum.org/EIPS/eip-5792#call-execution-atomicity)
 
-```ts twoslash
+```js twoslash
 import { walletClient } from './config'
 
 const { id } = await walletClient.sendCalls({
@@ -498,7 +498,7 @@ const { id } = await walletClient.sendCalls({
 
 Attribute the call batch with an identifier.
 
-```ts twoslash
+```js twoslash
 import { walletClient } from './config'
 
 const { id } = await walletClient.sendCalls({

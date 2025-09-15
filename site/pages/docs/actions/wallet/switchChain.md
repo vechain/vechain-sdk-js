@@ -10,19 +10,17 @@ Switch the target chain in a wallet.
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { avalanche } from 'viem/chains'
-import { walletClient } from './client'
- 
-await walletClient.switchChain({ id: avalanche.id }) // [!code focus]
+```js twoslash [example.ts]
+import { walletClient } from './client';
+
+await walletClient.switchChain({ id: avalanche.id }); // [!code focus]
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
+```js twoslash [client.ts] filename="client.ts"
 // [!include ~/snippets/walletClient.ts]
 ```
 
 :::
-
 
 ## Parameters
 

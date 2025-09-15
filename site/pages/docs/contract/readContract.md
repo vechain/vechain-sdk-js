@@ -17,14 +17,14 @@ Below is a very basic example of how to call a read-only function on a contract 
 :::code-group
 
 ```ts [example.ts]
-import { publicClient } from './client'
-import { wagmiAbi } from './abi'
+import { publicClient } from './client';
+import { wagmiAbi } from './abi';
 
 const data = await publicClient.readContract({
-  address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-  abi: wagmiAbi,
-  functionName: 'totalSupply',
-})
+    address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+    abi: wagmiAbi,
+    functionName: 'totalSupply'
+});
 // 69420n
 ```
 
@@ -43,13 +43,13 @@ export const wagmiAbi = [
 ```
 
 ```ts [client.ts]
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
@@ -65,15 +65,15 @@ For example, the `balanceOf` function name below requires an **address** argumen
 :::code-group
 
 ```ts [example.ts] {8}
-import { publicClient } from './client'
-import { wagmiAbi } from './abi'
+import { publicClient } from './client';
+import { wagmiAbi } from './abi';
 
 const data = await publicClient.readContract({
-  address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-  abi: wagmiAbi,
-  functionName: 'balanceOf',
-  args: ['0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC']
-})
+    address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+    abi: wagmiAbi,
+    functionName: 'balanceOf',
+    args: ['0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC']
+});
 ```
 
 ```ts [abi.ts]
@@ -91,13 +91,13 @@ export const wagmiAbi = [
 ```
 
 ```ts [client.ts]
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
@@ -122,25 +122,25 @@ The example below demonstrates how we can utilize a Deployless Call **via Byteco
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { parseAbi } from 'viem'
-import { publicClient } from './config'
+```js twoslash [example.ts]
+import { parseAbi } from 'viem';
+import { publicClient } from './config';
 
 const data = await publicClient.readContract({
-  abi: parseAbi(['function name() view returns (string)']),
-  code: '0x...', // Accessible here: https://etherscan.io/address/0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2#code
-  functionName: 'name'
-})
+    abi: parseAbi(['function name() view returns (string)']),
+    code: '0x...', // Accessible here: https://etherscan.io/address/0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2#code
+    functionName: 'name'
+});
 ```
 
-```ts twoslash [config.ts] filename="config.ts"
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash [config.ts] filename="config.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
@@ -151,31 +151,30 @@ The example below demonstrates how we can utilize a Deployless Call **via a [Dep
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { encodeFunctionData, parseAbi } from 'viem'
-import { account, publicClient } from './config'
+```js twoslash [example.ts]
+import { encodeFunctionData, parseAbi } from 'viem';
+import { account, publicClient } from './config';
 
 const data = await publicClient.readContract({
-  // Address of the Smart Account deployer (factory).
-  factory: '0xE8Df82fA4E10e6A12a9Dab552bceA2acd26De9bb',
+    // Address of the Smart Account deployer (factory).
+    factory: '0xE8Df82fA4E10e6A12a9Dab552bceA2acd26De9bb',
 
-  // Function to execute on the factory to deploy the Smart Account.
-  factoryData: encodeFunctionData({
-    abi: parseAbi(['function createAccount(address owner, uint256 salt)']),
-    functionName: 'createAccount',
-    args: [account, 0n],
-  }),
+    // Function to execute on the factory to deploy the Smart Account.
+    factoryData: encodeFunctionData({
+        abi: parseAbi(['function createAccount(address owner, uint256 salt)']),
+        functionName: 'createAccount',
+        args: [account, 0n]
+    }),
 
-  // Function to call on the Smart Account.
-  abi: account.abi,
-  address: account.address,
-  functionName: 'entryPoint',
-})
+    // Function to call on the Smart Account.
+    abi: account.abi,
+    address: account.address,
+    functionName: 'entryPoint'
+});
 ```
 
-```ts twoslash [config.ts] filename="config.ts"
+```js twoslash [config.ts] filename="config.ts"
 import { createPublicClient, http, parseAbi } from 'viem'
-import { mainnet } from 'viem/chains'
 
 export const account = {
   address: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
@@ -183,8 +182,8 @@ export const account = {
 } as const
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
+  network: ThorNetworks.MAINNET,
+  network: ThorNetworks.MAINNET
 })
 ```
 
@@ -208,10 +207,10 @@ The contract address.
 
 ```ts
 const data = await publicClient.readContract({
-  address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2', // [!code focus]
-  abi: wagmiAbi,
-  functionName: 'totalSupply',
-})
+    address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2', // [!code focus]
+    abi: wagmiAbi,
+    functionName: 'totalSupply'
+});
 ```
 
 ### abi
@@ -222,10 +221,10 @@ The contract's ABI.
 
 ```ts
 const data = await publicClient.readContract({
-  address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-  abi: wagmiAbi, // [!code focus]
-  functionName: 'totalSupply',
-})
+    address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+    abi: wagmiAbi, // [!code focus]
+    functionName: 'totalSupply'
+});
 ```
 
 ### functionName
@@ -236,10 +235,10 @@ A function to extract from the ABI.
 
 ```ts
 const data = await publicClient.readContract({
-  address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-  abi: wagmiAbi,
-  functionName: 'totalSupply', // [!code focus]
-})
+    address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+    abi: wagmiAbi,
+    functionName: 'totalSupply' // [!code focus]
+});
 ```
 
 ### args (optional)
@@ -250,11 +249,11 @@ Arguments to pass to function call.
 
 ```ts
 const data = await publicClient.readContract({
-  address: '0x1dfe7ca09e99d10835bf73044a23b73fc20623df',
-  abi: wagmiAbi,
-  functionName: 'balanceOf',
-  args: ['0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC'] // [!code focus]
-})
+    address: '0x1dfe7ca09e99d10835bf73044a23b73fc20623df',
+    abi: wagmiAbi,
+    functionName: 'balanceOf',
+    args: ['0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC'] // [!code focus]
+});
 ```
 
 ### account (optional)
@@ -267,11 +266,11 @@ Accepts a [JSON-RPC Account](/docs/clients/wallet#json-rpc-accounts) or [Local A
 
 ```ts
 const data = await publicClient.readContract({
-  address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-  abi: wagmiAbi,
-  functionName: 'totalSupply',
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266' // [!code focus]
-})
+    address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+    abi: wagmiAbi,
+    functionName: 'totalSupply',
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266' // [!code focus]
+});
 ```
 
 ### blockNumber (optional)
@@ -282,11 +281,11 @@ The block number to perform the read against.
 
 ```ts
 const data = await publicClient.readContract({
-  address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-  abi: wagmiAbi,
-  functionName: 'totalSupply',
-  blockNumber: 15121123n, // [!code focus]
-})
+    address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+    abi: wagmiAbi,
+    functionName: 'totalSupply',
+    blockNumber: 15121123n // [!code focus]
+});
 ```
 
 ### blockTag (optional)
@@ -298,11 +297,11 @@ The block tag to perform the read against.
 
 ```ts
 const data = await publicClient.readContract({
-  address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-  abi: wagmiAbi,
-  functionName: 'totalSupply',
-  blockTag: 'safe', // [!code focus]
-})
+    address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+    abi: wagmiAbi,
+    functionName: 'totalSupply',
+    blockTag: 'safe' // [!code focus]
+});
 ```
 
 ### factory (optional)
@@ -313,12 +312,12 @@ Contract deployment factory address (ie. Create2 factory, Smart Account factory,
 
 ```ts
 const data = await publicClient.readContract({
-  address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-  abi: wagmiAbi,
-  functionName: 'totalSupply',
-  factory: '0x0000000000ffe8b47b3e2130213b802212439497', // [!code focus]
-  factoryData: '0xdeadbeef',
-})
+    address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+    abi: wagmiAbi,
+    functionName: 'totalSupply',
+    factory: '0x0000000000ffe8b47b3e2130213b802212439497', // [!code focus]
+    factoryData: '0xdeadbeef'
+});
 ```
 
 ### factoryData (optional)
@@ -329,12 +328,12 @@ Calldata to execute on the factory to deploy the contract.
 
 ```ts
 const data = await publicClient.readContract({
-  address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-  abi: wagmiAbi,
-  functionName: 'totalSupply',
-  factory: '0x0000000000ffe8b47b3e2130213b802212439497',
-  factoryData: '0xdeadbeef', // [!code focus]
-})
+    address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+    abi: wagmiAbi,
+    functionName: 'totalSupply',
+    factory: '0x0000000000ffe8b47b3e2130213b802212439497',
+    factoryData: '0xdeadbeef' // [!code focus]
+});
 ```
 
 ### stateOverride (optional)
@@ -345,22 +344,26 @@ The state override set is an optional address-to-state mapping, where each entry
 
 ```ts
 const data = await publicClient.readContract({
-  address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-  abi: wagmiAbi,
-  functionName: 'totalSupply',
-  stateOverride: [ // [!code focus]
-    { // [!code focus]
-      address: '0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC', // [!code focus]
-      balance: parseEther('1'), // [!code focus]
-      stateDiff: [ // [!code focus]
-        { // [!code focus]
-          slot: '0x3ea2f1d0abf3fc66cf29eebb70cbd4e7fe762ef8a09bcc06c8edf641230afec0', // [!code focus]
-          value: '0x00000000000000000000000000000000000000000000000000000000000001a4', // [!code focus]
-        }, // [!code focus]
-      ], // [!code focus]
-    } // [!code focus]
-  ], // [!code focus]
-})
+    address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+    abi: wagmiAbi,
+    functionName: 'totalSupply',
+    stateOverride: [
+        // [!code focus]
+        {
+            // [!code focus]
+            address: '0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC', // [!code focus]
+            balance: parseEther('1'), // [!code focus]
+            stateDiff: [
+                // [!code focus]
+                {
+                    // [!code focus]
+                    slot: '0x3ea2f1d0abf3fc66cf29eebb70cbd4e7fe762ef8a09bcc06c8edf641230afec0', // [!code focus]
+                    value: '0x00000000000000000000000000000000000000000000000000000000000001a4' // [!code focus]
+                } // [!code focus]
+            ] // [!code focus]
+        } // [!code focus]
+    ] // [!code focus]
+});
 ```
 
 ## Live Example

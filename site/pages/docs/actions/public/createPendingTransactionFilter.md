@@ -6,21 +6,21 @@ Creates a Filter to listen for new pending transaction hashes that can be used w
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { publicClient } from './client'
+```js twoslash [example.ts]
+import { publicClient } from './client';
 
-const filter = await publicClient.createPendingTransactionFilter() // [!code focus:99]
+const filter = await publicClient.createPendingTransactionFilter(); // [!code focus:99]
 // @log: Output: { id: "0x345a6572337856574a76364e457a4366", type: 'transaction' }
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash [client.ts] filename="client.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::

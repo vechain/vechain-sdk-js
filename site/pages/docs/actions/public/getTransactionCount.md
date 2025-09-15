@@ -10,12 +10,13 @@ Returns the number of [Transactions](/docs/glossary/terms#transaction) an Accoun
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { publicClient } from './client'
+```js twoslash [example.ts]
+import { publicClient } from './client';
 
-const transactionCount = await publicClient.getTransactionCount({  // [!code focus:99]
-  address: '0xA0Cf798816D4b9b9866b5330EEa46a18382f251e',
-})
+const transactionCount = await publicClient.getTransactionCount({
+    // [!code focus:99]
+    address: '0xA0Cf798816D4b9b9866b5330EEa46a18382f251e'
+});
 // @log: > 420
 ```
 
@@ -29,7 +30,7 @@ const transactionCount = await publicClient.getTransactionCount({  // [!code foc
 
 `number`
 
-The number of transactions an account has sent. 
+The number of transactions an account has sent.
 
 ## Parameters
 
@@ -39,12 +40,12 @@ The number of transactions an account has sent.
 
 The address of the account.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const transactionCount = await publicClient.getTransactionCount({
-  address: '0xA0Cf798816D4b9b9866b5330EEa46a18382f251e', // [!code focus]
-})
+    address: '0xA0Cf798816D4b9b9866b5330EEa46a18382f251e' // [!code focus]
+});
 ```
 
 ### blockNumber (optional)
@@ -53,13 +54,13 @@ const transactionCount = await publicClient.getTransactionCount({
 
 Get the count at a block number.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const transactionCount = await publicClient.getTransactionCount({
-  address: '0xA0Cf798816D4b9b9866b5330EEa46a18382f251e',
-  blockNumber: 69420n  // [!code focus]
-})
+    address: '0xA0Cf798816D4b9b9866b5330EEa46a18382f251e',
+    blockNumber: 69420n // [!code focus]
+});
 ```
 
 ### blockTag (optional)
@@ -68,13 +69,13 @@ const transactionCount = await publicClient.getTransactionCount({
 
 Get the count at a block tag.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const transactionCount = await publicClient.getTransactionCount({
-  address: '0xA0Cf798816D4b9b9866b5330EEa46a18382f251e',
-  blockTag: 'safe'  // [!code focus]
-})
+    address: '0xA0Cf798816D4b9b9866b5330EEa46a18382f251e',
+    blockTag: 'safe' // [!code focus]
+});
 ```
 
 ## Notes

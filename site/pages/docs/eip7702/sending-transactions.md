@@ -8,48 +8,48 @@ Here is an end-to-end overview of how to execute an EIP-7702 Transaction to emit
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { encodeFunctionData } from 'viem'
-import { privateKeyToAccount } from 'viem/accounts'
-import { walletClient } from './config'
-import { abi, contractAddress } from './contract'
+```js twoslash [example.ts]
+import { encodeFunctionData } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
+import { walletClient } from './config';
+import { abi, contractAddress } from './contract';
 
-const eoa = privateKeyToAccount('0x...')
+const eoa = privateKeyToAccount('0x...');
 
 // 1. Authorize designation of the Contract onto the EOA.
 const authorization = await walletClient.signAuthorization({
-  account: eoa,
-  contractAddress,
-})
+    account: eoa,
+    contractAddress
+});
 
-// 2. Designate the Contract on the EOA, and invoke the 
+// 2. Designate the Contract on the EOA, and invoke the
 //    `initialize` function.
 const hash = await walletClient.sendTransaction({
-  authorizationList: [authorization],
-  //                  ↑ 3. Pass the Authorization as a parameter.
-  data: encodeFunctionData({
-    abi,
-    functionName: 'initialize',
-  }),
-  to: eoa.address,
-})
+    authorizationList: [authorization],
+    //                  ↑ 3. Pass the Authorization as a parameter.
+    data: encodeFunctionData({
+        abi,
+        functionName: 'initialize'
+    }),
+    to: eoa.address
+});
 ```
 
-```ts twoslash [config.ts] filename="config.ts"
-import { createWalletClient, http } from 'viem'
-import { sepolia } from 'viem/chains'
-import { privateKeyToAccount } from 'viem/accounts' 
+```js twoslash [config.ts] filename="config.ts"
+import { createWalletClient, ThorNetworks } from '@vechain/sdk/viem';
 
-export const relay = privateKeyToAccount('0x...')
- 
+import { privateKeyToAccount } from 'viem/accounts';
+
+export const relay = privateKeyToAccount('0x...');
+
 export const walletClient = createWalletClient({
-  account: relay,
-  chain: sepolia,
-  transport: http(),
-})
+    account: relay,
+    network: ThorNetworks.TESTNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
-```ts twoslash [contract.ts] filename="contract.ts"
+```js twoslash [contract.ts] filename="contract.ts"
 export const abi = [
   {
     "type": "function",
@@ -117,18 +117,18 @@ contract Delegation {
 
 Next, we will need to set up a Client and a "Relay Account" that will be responsible for executing the EIP-7702 Transaction.
 
-```ts twoslash [config.ts]
-import { createWalletClient, http } from 'viem'
-import { sepolia } from 'viem/chains'
-import { privateKeyToAccount } from 'viem/accounts'
+```js twoslash [config.ts]
+import { createWalletClient, ThorNetworks } from '@vechain/sdk/viem';
 
-export const relay = privateKeyToAccount('0x...')
- 
+import { privateKeyToAccount } from 'viem/accounts';
+
+export const relay = privateKeyToAccount('0x...');
+
 export const walletClient = createWalletClient({
-  account: relay,
-  chain: sepolia,
-  transport: http(),
-})
+    account: relay,
+    network: ThorNetworks.TESTNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::info
@@ -146,19 +146,20 @@ In the example below, we are instantiating an existing EOA (`account`) and using
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { walletClient } from './config'
-import { contractAddress } from './contract'
+```js twoslash [example.ts]
+import { walletClient } from './config';
+import { contractAddress } from './contract';
 
-const eoa = privateKeyToAccount('0x...') // [!code focus]
- 
-const authorization = await walletClient.signAuthorization({ // [!code focus]
-  account: eoa, // [!code focus]
-  contractAddress, // [!code focus]
-}) // [!code focus]
+const eoa = privateKeyToAccount('0x...'); // [!code focus]
+
+const authorization = await walletClient.signAuthorization({
+    // [!code focus]
+    account: eoa, // [!code focus]
+    contractAddress // [!code focus]
+}); // [!code focus]
 ```
 
-```ts twoslash [contract.ts] filename="contract.ts"
+```js twoslash [contract.ts] filename="contract.ts"
 export const abi = [
   {
     "type": "function",
@@ -179,18 +180,18 @@ export const abi = [
 export const contractAddress = '0x...'
 ```
 
-```ts twoslash [config.ts]
-import { createWalletClient, http } from 'viem'
-import { sepolia } from 'viem/chains'
-import { privateKeyToAccount } from 'viem/accounts'
+```js twoslash [config.ts]
+import { createWalletClient, ThorNetworks } from '@vechain/sdk/viem';
 
-export const relay = privateKeyToAccount('0x...')
- 
+import { privateKeyToAccount } from 'viem/accounts';
+
+export const relay = privateKeyToAccount('0x...');
+
 export const walletClient = createWalletClient({
-  account: relay,
-  chain: sepolia,
-  transport: http(),
-})
+    account: relay,
+    network: ThorNetworks.TESTNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
@@ -199,36 +200,37 @@ export const walletClient = createWalletClient({
 If the EOA is also executing the Transaction, you will need to pass `executor: 'self'` to `signAuthorization`. [See more](#note-self-executing-eip-7702).
 :::
 
-
 ### 4. Execute Transaction
 
 We can now designate the Contract on the Account (and execute the `initialize` function) by sending an EIP-7702 Transaction.
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { encodeFunctionData } from 'viem'
-import { walletClient } from './config'
-import { contractAddress } from './contract'
+```js twoslash [example.ts]
+import { encodeFunctionData } from 'viem';
+import { walletClient } from './config';
+import { contractAddress } from './contract';
 
-const eoa = privateKeyToAccount('0x...')
- 
+const eoa = privateKeyToAccount('0x...');
+
 const authorization = await walletClient.signAuthorization({
-  account: eoa,
-  contractAddress,
-})
+    account: eoa,
+    contractAddress
+});
 
-const hash = await walletClient.sendTransaction({ // [!code focus]
-  authorizationList: [authorization], // [!code focus]
-  data: encodeFunctionData({ // [!code focus]
-    abi, // [!code focus]
-    functionName: 'initialize', // [!code focus]
-  }), // [!code focus]
-  to: eoa.address, // [!code focus]
-}) // [!code focus]
+const hash = await walletClient.sendTransaction({
+    // [!code focus]
+    authorizationList: [authorization], // [!code focus]
+    data: encodeFunctionData({
+        // [!code focus]
+        abi, // [!code focus]
+        functionName: 'initialize' // [!code focus]
+    }), // [!code focus]
+    to: eoa.address // [!code focus]
+}); // [!code focus]
 ```
 
-```ts twoslash [contract.ts] filename="contract.ts"
+```js twoslash [contract.ts] filename="contract.ts"
 export const abi = [
   {
     "type": "function",
@@ -249,46 +251,46 @@ export const abi = [
 export const contractAddress = '0x...'
 ```
 
-```ts twoslash [config.ts]
-import { createWalletClient, http } from 'viem'
-import { sepolia } from 'viem/chains'
-import { privateKeyToAccount } from 'viem/accounts'
+```js twoslash [config.ts]
+import { createWalletClient, ThorNetworks } from '@vechain/sdk/viem';
 
-export const relay = privateKeyToAccount('0x...')
- 
+import { privateKeyToAccount } from 'viem/accounts';
+
+export const relay = privateKeyToAccount('0x...');
+
 export const walletClient = createWalletClient({
-  account: relay,
-  chain: sepolia,
-  transport: http(),
-})
+    account: relay,
+    network: ThorNetworks.TESTNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
 
 ### 5. (Optional) Interact with the Delegated Account
 
-Now that we have designated a Contract onto the Account, we can interact with it by invoking its functions. 
+Now that we have designated a Contract onto the Account, we can interact with it by invoking its functions.
 
 Note that we no longer need to use an Authorization!
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { encodeFunctionData } from 'viem'
-import { walletClient } from './config'
+```js twoslash [example.ts]
+import { encodeFunctionData } from 'viem';
+import { walletClient } from './config';
 
-const eoa = privateKeyToAccount('0x...')
+const eoa = privateKeyToAccount('0x...');
 
 const hash = await walletClient.sendTransaction({
-  data: encodeFunctionData({
-    abi,
-    functionName: 'ping',
-  }),
-  to: eoa.address,
-})
+    data: encodeFunctionData({
+        abi,
+        functionName: 'ping'
+    }),
+    to: eoa.address
+});
 ```
 
-```ts twoslash [contract.ts] filename="contract.ts"
+```js twoslash [contract.ts] filename="contract.ts"
 export const abi = [
   {
     "type": "function",
@@ -309,25 +311,25 @@ export const abi = [
 export const contractAddress = '0x...'
 ```
 
-```ts twoslash [config.ts]
-import { createWalletClient, http } from 'viem'
-import { sepolia } from 'viem/chains'
-import { privateKeyToAccount } from 'viem/accounts'
+```js twoslash [config.ts]
+import { createWalletClient, ThorNetworks } from '@vechain/sdk/viem';
 
-export const relay = privateKeyToAccount('0x...')
- 
+import { privateKeyToAccount } from 'viem/accounts';
+
+export const relay = privateKeyToAccount('0x...');
+
 export const walletClient = createWalletClient({
-  account: relay,
-  chain: sepolia,
-  transport: http(),
-})
+    account: relay,
+    network: ThorNetworks.TESTNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
 
 ### Note: Self-executing EIP-7702
 
-If the signer of the Authorization (ie. the EOA) is also executing the Transaction, you will need to pass `executor: 'self'` to `signAuthorization`. 
+If the signer of the Authorization (ie. the EOA) is also executing the Transaction, you will need to pass `executor: 'self'` to `signAuthorization`.
 
 This is because `authorization.nonce` must be incremented by 1 over `transaction.nonce`, so we will need to hint to `signAuthorization` that this is the case.
 
@@ -337,46 +339,46 @@ In the example below, we are attaching an EOA to the Wallet Client (see `config.
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { encodeFunctionData } from 'viem'
-import { walletClient } from './config'
-import { contractAddress } from './contract'
+```js twoslash [example.ts]
+import { encodeFunctionData } from 'viem';
+import { walletClient } from './config';
+import { contractAddress } from './contract';
 
 const authorization = await walletClient.signAuthorization({
-  account: eoa, // [!code --]
-  contractAddress,
-  executor: 'self', // [!code ++]
-})
+    account: eoa, // [!code --]
+    contractAddress,
+    executor: 'self' // [!code ++]
+});
 
 const hash = await walletClient.sendTransaction({
-  authorizationList: [authorization],
-  data: encodeFunctionData({
-    abi,
-    functionName: 'initialize',
-  }),
-  to: eoa.address, // [!code --]
-  to: walletClient.account.address, // [!code ++]
-})
+    authorizationList: [authorization],
+    data: encodeFunctionData({
+        abi,
+        functionName: 'initialize'
+    }),
+    to: eoa.address, // [!code --]
+    to: walletClient.account.address // [!code ++]
+});
 ```
 
-```ts twoslash [config.ts]
+```js twoslash [config.ts]
 // @noErrors
-import { createWalletClient, http } from 'viem'
-import { sepolia } from 'viem/chains'
-import { privateKeyToAccount } from 'viem/accounts'
+import { createWalletClient, ThorNetworks } from '@vechain/sdk/viem';
 
-export const relay = privateKeyToAccount('0x...') // [!code --]
-export const eoa = privateKeyToAccount('0x...') // [!code ++]
- 
+import { privateKeyToAccount } from 'viem/accounts';
+
+export const relay = privateKeyToAccount('0x...'); // [!code --]
+export const eoa = privateKeyToAccount('0x...'); // [!code ++]
+
 export const walletClient = createWalletClient({
-  account: relay, // [!code --]
-  account: eoa, // [!code ++]
-  chain: sepolia,
-  transport: http(),
-})
+    account: relay, // [!code --]
+    account: eoa, // [!code ++]
+    network: ThorNetworks.TESTNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
-```ts twoslash [contract.ts] filename="contract.ts"
+```js twoslash [contract.ts] filename="contract.ts"
 export const abi = [
   {
     "type": "function",

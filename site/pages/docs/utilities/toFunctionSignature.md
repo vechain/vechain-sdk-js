@@ -13,26 +13,26 @@ This only returns the **function signature**. If you need the **full human-reada
 ## Install
 
 ```ts
-import { toFunctionSignature } from 'viem'
+import { toFunctionSignature } from 'viem';
 ```
 
 ## Usage
 
-```ts twoslash
-import { toFunctionSignature } from 'viem'
+```js twoslash
+import { toFunctionSignature } from 'viem';
 
 // from function definition
-const signature_1 = toFunctionSignature('function ownerOf(uint256 tokenId)')
+const signature_1 = toFunctionSignature('function ownerOf(uint256 tokenId)');
 // @log: Output: ownerOf(uint256)
 
 // from an `AbiFunction` on your contract ABI
 const signature_2 = toFunctionSignature({
-  name: 'ownerOf',
-  type: 'function',
-  inputs: [{ name: 'tokenId', type: 'uint256' }],
-  outputs: [],
-  stateMutability: 'view',
-})
+    name: 'ownerOf',
+    type: 'function',
+    inputs: [{ name: 'tokenId', type: 'uint256' }],
+    outputs: [],
+    stateMutability: 'view'
+});
 // @log: Output: ownerOf(uint256)
 ```
 

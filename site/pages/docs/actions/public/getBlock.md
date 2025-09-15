@@ -10,10 +10,10 @@ Returns information about a block at a block number, hash or tag.
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { publicClient } from './client'
+```js twoslash [example.ts]
+import { publicClient } from './client';
 
-const block = await publicClient.getBlock() // [!code focus:99]
+const block = await publicClient.getBlock(); // [!code focus:99]
 // @log: Output: {
 // @log:  baseFeePerGas: 10789405161n,
 // @log:  difficulty: 11569232145203128n,
@@ -22,7 +22,7 @@ const block = await publicClient.getBlock() // [!code focus:99]
 // @log: }
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
+```js twoslash [client.ts] filename="client.ts"
 // [!include ~/snippets/publicClient.ts]
 ```
 
@@ -42,12 +42,13 @@ Information about the block.
 
 Information at a given block hash.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const block = await publicClient.getBlock({
-  blockHash: '0x89644bbd5c8d682a2e9611170e6c1f02573d866d286f006cbf517eec7254ec2d' // [!code focus]
-})
+    blockHash:
+        '0x89644bbd5c8d682a2e9611170e6c1f02573d866d286f006cbf517eec7254ec2d' // [!code focus]
+});
 ```
 
 ### blockNumber (optional)
@@ -56,12 +57,12 @@ const block = await publicClient.getBlock({
 
 Information at a given block number.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const block = await publicClient.getBlock({
-  blockNumber: 42069n // [!code focus]
-})
+    blockNumber: 42069n // [!code focus]
+});
 ```
 
 ### blockTag (optional)
@@ -71,12 +72,12 @@ const block = await publicClient.getBlock({
 
 Information at a given block tag.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const block = await publicClient.getBlock({
-  blockTag: 'safe' // [!code focus]
-})
+    blockTag: 'safe' // [!code focus]
+});
 ```
 
 ### includeTransactions (optional)
@@ -85,12 +86,12 @@ const block = await publicClient.getBlock({
 
 Whether or not to include transactions (as a structured array of `Transaction` objects).
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const block = await publicClient.getBlock({
-  includeTransactions: true // [!code focus]
-})
+    includeTransactions: true // [!code focus]
+});
 ```
 
 ## Example

@@ -10,20 +10,20 @@ Returns the EntryPoints that the bundler supports.
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { bundlerClient } from './client'
+```js twoslash [example.ts]
+import { bundlerClient } from './client';
 
-const entryPoints = await bundlerClient.getSupportedEntryPoints() // [!code focus:99]
+const entryPoints = await bundlerClient.getSupportedEntryPoints(); // [!code focus:99]
 // @log: ["0x0000000071727De22E5E9d8BAf0edAc6f37da032"]
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
-import { http } from 'viem'
-import { createBundlerClient } from 'viem/account-abstraction'
+```js twoslash [client.ts] filename="client.ts"
+import { http } from 'viem';
+import { createBundlerClient } from 'viem/account-abstraction';
 
 export const bundlerClient = createBundlerClient({
-  transport: http('https://public.pimlico.io/v2/1/rpc')
-})
+    transport: http('https://public.pimlico.io/v2/1/rpc')
+});
 ```
 
 :::

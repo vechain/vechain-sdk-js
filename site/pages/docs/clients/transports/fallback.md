@@ -4,74 +4,79 @@ The `fallback` Transport consumes **multiple** Transports. If a Transport reques
 
 ## Import
 
-```ts twoslash
-import { fallback } from 'viem'
+```js twoslash
+import { fallback } from 'viem';
 ```
 
 ## Usage
 
-```ts twoslash 
-import { createPublicClient, fallback, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createPublicClient, fallback, http } from 'viem';
+
 
 const client = createPublicClient({
-  chain: mainnet,
-  transport: fallback([ // [!code focus]
-    http('https://1.rpc.thirdweb.com/...'), // [!code focus]
-    http('https://mainnet.infura.io/v3/...') // [!code focus]
-  ]), // [!code focus]
-})
+    network: ThorNetworks.MAINNET,
+    transport: fallback([
+        // [!code focus]
+        http('https://1.rpc.thirdweb.com/...'), // [!code focus]
+        http('https://mainnet.infura.io/v3/...') // [!code focus]
+    ]) // [!code focus]
+});
 ```
 
 ### Transport Ranking
 
-Transport Ranking enables each of the Transports passed to the `fallback` Transport are automatically ranked based on their **latency** & **stability** via a weighted moving score algorithm. 
+Transport Ranking enables each of the Transports passed to the `fallback` Transport are automatically ranked based on their **latency** & **stability** via a weighted moving score algorithm.
 
-Every 10 seconds (`interval`), the `fallback` Transport will ping each transport in the list. For the past 10 pings (`sampleCount`), they will be ranked based on if they responded (stability) and how fast they responded (latency). The algorithm applies a weight of `0.7` to the stability score, and a weight of `0.3` to the latency score to derive the final score which it is ranked on. 
+Every 10 seconds (`interval`), the `fallback` Transport will ping each transport in the list. For the past 10 pings (`sampleCount`), they will be ranked based on if they responded (stability) and how fast they responded (latency). The algorithm applies a weight of `0.7` to the stability score, and a weight of `0.3` to the latency score to derive the final score which it is ranked on.
 
-The Transport that has the best latency & stability score over the sample period is prioritized first. 
+The Transport that has the best latency & stability score over the sample period is prioritized first.
 
 You can turn on automated ranking with the `rank` option:
 
-```ts twoslash
-import { createPublicClient, fallback, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createPublicClient, fallback, http } from 'viem';
+
 // ---cut---
 const client = createPublicClient({
-  chain: mainnet,
-  transport: fallback([ 
-    http('https://1.rpc.thirdweb.com/...'), 
-    http('https://mainnet.infura.io/v3/...') 
-  ], { rank: true }), // [!code focus]
-})
+    network: ThorNetworks.MAINNET,
+    transport: fallback(
+        [
+            http('https://1.rpc.thirdweb.com/...'),
+            http('https://mainnet.infura.io/v3/...')
+        ],
+        { rank: true }
+    ) // [!code focus]
+});
 ```
 
 You can also modify the default rank config:
 
-```ts twoslash
-import { createPublicClient, fallback, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createPublicClient, fallback, http } from 'viem';
+
 // ---cut---
 const client = createPublicClient({
-  chain: mainnet,
-  transport: fallback(
-    [
-      http('https://1.rpc.thirdweb.com/...'), 
-      http('https://mainnet.infura.io/v3/...') 
-    ],
-    { // [!code focus:9]
-      rank: {
-        interval: 60_000,
-        sampleCount: 5,
-        timeout: 500,
-        weights: {
-          latency: 0.3,
-          stability: 0.7
+    network: ThorNetworks.MAINNET,
+    transport: fallback(
+        [
+            http('https://1.rpc.thirdweb.com/...'),
+            http('https://mainnet.infura.io/v3/...')
+        ],
+        {
+            // [!code focus:9]
+            rank: {
+                interval: 60_000,
+                sampleCount: 5,
+                timeout: 500,
+                weights: {
+                    latency: 0.3,
+                    stability: 0.7
+                }
+            }
         }
-      }
-    }
-  ),
-})
+    )
+});
 ```
 
 ## Parameters
@@ -83,15 +88,15 @@ const client = createPublicClient({
 
 Whether or not to automatically rank the Transports based on their latency & stability. Set to `false` to disable automatic ranking.
 
-```ts twoslash
-import { createPublicClient, fallback, http } from 'viem'
-import { mainnet } from 'viem/chains'
-const thirdweb = http('') 
-const infura = http('') 
+```js twoslash
+import { createPublicClient, fallback, http } from 'viem';
+
+const thirdweb = http('');
+const infura = http('');
 // ---cut---
 const transport = fallback([thirdweb, infura], {
-  rank: false, // [!code focus]
-})
+    rank: false // [!code focus]
+});
 ```
 
 ### rank.interval (optional)
@@ -101,17 +106,18 @@ const transport = fallback([thirdweb, infura], {
 
 The polling interval (in ms) at which the ranker should ping the RPC URL.
 
-```ts twoslash
-import { createPublicClient, fallback, http } from 'viem'
-import { mainnet } from 'viem/chains'
-const thirdweb = http('') 
-const infura = http('') 
+```js twoslash
+import { createPublicClient, fallback, http } from 'viem';
+
+const thirdweb = http('');
+const infura = http('');
 // ---cut---
 const transport = fallback([thirdweb, infura], {
-  rank: { // [!code focus:3]
-    interval: 5_000
-  },
-})
+    rank: {
+        // [!code focus:3]
+        interval: 5_000
+    }
+});
 ```
 
 ### rank.ping (optional)
@@ -121,18 +127,20 @@ const transport = fallback([thirdweb, infura], {
 
 Function to call to ping the Transport. Defaults to calling the `net_listening` method to check if the Transport is online.
 
-```ts twoslash
+```js twoslash
 // @noErrors
-import { createPublicClient, fallback, http } from 'viem'
-import { mainnet } from 'viem/chains'
-const thirdweb = http('') 
-const infura = http('') 
+import { createPublicClient, fallback, http } from 'viem';
+
+const thirdweb = http('');
+const infura = http('');
 // ---cut---
 const transport = fallback([thirdweb, infura], {
-  rank: { // [!code focus:3]
-    ping: ({ transport }) => transport.request({ method: 'eth_blockNumber' })
-  },
-})
+    rank: {
+        // [!code focus:3]
+        ping: ({ transport }) =>
+            transport.request({ method: 'eth_blockNumber' })
+    }
+});
 ```
 
 ### rank.sampleCount (optional)
@@ -142,17 +150,18 @@ const transport = fallback([thirdweb, infura], {
 
 The number of previous samples to perform ranking on.
 
-```ts twoslash
-import { createPublicClient, fallback, http } from 'viem'
-import { mainnet } from 'viem/chains'
-const thirdweb = http('') 
-const infura = http('') 
+```js twoslash
+import { createPublicClient, fallback, http } from 'viem';
+
+const thirdweb = http('');
+const infura = http('');
 // ---cut---
 const transport = fallback([thirdweb, infura], {
-  rank: { // [!code focus:3]
-    sampleCount: 10
-  },
-})
+    rank: {
+        // [!code focus:3]
+        sampleCount: 10
+    }
+});
 ```
 
 ### rank.timeout (optional)
@@ -162,17 +171,18 @@ const transport = fallback([thirdweb, infura], {
 
 Timeout when sampling transports.
 
-```ts twoslash
-import { createPublicClient, fallback, http } from 'viem'
-import { mainnet } from 'viem/chains'
-const thirdweb = http('') 
-const infura = http('') 
+```js twoslash
+import { createPublicClient, fallback, http } from 'viem';
+
+const thirdweb = http('');
+const infura = http('');
 // ---cut---
 const transport = fallback([thirdweb, infura], {
-  rank: { // [!code focus:3]
-    timeout: 500
-  },
-})
+    rank: {
+        // [!code focus:3]
+        timeout: 500
+    }
+});
 ```
 
 ### rank.weights.latency (optional)
@@ -182,20 +192,20 @@ const transport = fallback([thirdweb, infura], {
 
 The weight to apply to the latency score. The weight is proportional to the other values in the `weights` object.
 
-```ts twoslash
-import { createPublicClient, fallback, http } from 'viem'
-import { mainnet } from 'viem/chains'
-const thirdweb = http('') 
-const infura = http('') 
+```js twoslash
+import { createPublicClient, fallback, http } from 'viem';
+
+const thirdweb = http('');
+const infura = http('');
 // ---cut---
 const transport = fallback([thirdweb, infura], {
-  rank: {
-    weights: {
-      latency: 0.4, // [!code focus:3]
-      stability: 0.6
+    rank: {
+        weights: {
+            latency: 0.4, // [!code focus:3]
+            stability: 0.6
+        }
     }
-  },
-})
+});
 ```
 
 ### rank.weights.stability (optional)
@@ -205,20 +215,20 @@ const transport = fallback([thirdweb, infura], {
 
 The weight to apply to the stability score. The weight is proportional to the other values in the `weights` object.
 
-```ts twoslash
-import { createPublicClient, fallback, http } from 'viem'
-import { mainnet } from 'viem/chains'
-const thirdweb = http('') 
-const infura = http('') 
+```js twoslash
+import { createPublicClient, fallback, http } from 'viem';
+
+const thirdweb = http('');
+const infura = http('');
 // ---cut---
 const transport = fallback([thirdweb, infura], {
-  rank: {
-    weights: {
-      latency: 0.4,
-      stability: 0.6 // [!code focus:3]
+    rank: {
+        weights: {
+            latency: 0.4,
+            stability: 0.6 // [!code focus:3]
+        }
     }
-  },
-})
+});
 ```
 
 ### retryCount (optional)
@@ -226,19 +236,19 @@ const transport = fallback([thirdweb, infura], {
 - **Type:** `number`
 - **Default:** `3`
 
-The max number of times to retry when a request fails. 
+The max number of times to retry when a request fails.
 
 > Note: The fallback will first try all the Transports before retrying.
 
-```ts twoslash
-import { createPublicClient, fallback, http } from 'viem'
-import { mainnet } from 'viem/chains'
-const thirdweb = http('') 
-const infura = http('') 
+```js twoslash
+import { createPublicClient, fallback, http } from 'viem';
+
+const thirdweb = http('');
+const infura = http('');
 // ---cut---
 const transport = fallback([thirdweb, infura], {
-  retryCount: 5, // [!code focus]
-})
+    retryCount: 5 // [!code focus]
+});
 ```
 
 ### retryDelay (optional)
@@ -248,15 +258,15 @@ const transport = fallback([thirdweb, infura], {
 
 The base delay (in ms) between retries. By default, the Transport will use [exponential backoff](https://en.wikipedia.org/wiki/Exponential_backoff) (`~~(1 << count) * retryDelay`), which means the time between retries is not constant.
 
-```ts twoslash
-import { createPublicClient, fallback, http } from 'viem'
-import { mainnet } from 'viem/chains'
-const thirdweb = http('') 
-const infura = http('') 
+```js twoslash
+import { createPublicClient, fallback, http } from 'viem';
+
+const thirdweb = http('');
+const infura = http('');
 // ---cut---
 const transport = fallback([thirdweb, infura], {
-  retryDelay: 100, // [!code focus]
-})
+    retryDelay: 100 // [!code focus]
+});
 ```
 
 ### shouldThrow (optional)
@@ -265,11 +275,10 @@ const transport = fallback([thirdweb, infura], {
 
 Whether the `fallback` Transport should immediately throw an error, or continue and try the next Transport.
 
-```ts twoslash
+```js twoslash
 import { createPublicClient, fallback, http } from 'viem'
-import { mainnet } from 'viem/chains'
-const thirdweb = http('') 
-const infura = http('') 
+const thirdweb = http('')
+const infura = http('')
 // ---cut---
 const transport = fallback([thirdweb, infura], {
   shouldThrow: (err: Error) => { // [!code focus]

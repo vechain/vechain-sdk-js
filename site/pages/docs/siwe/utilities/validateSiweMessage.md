@@ -8,26 +8,26 @@ Validates [EIP-4361](https://eips.ethereum.org/EIPS/eip-4361) message.
 
 ## Import
 
-```ts twoslash
-import { validateSiweMessage } from 'viem/siwe'
+```js twoslash
+import { validateSiweMessage } from 'viem/siwe';
 ```
 
 ## Usage
 
-```ts twoslash
-import { validateSiweMessage } from 'viem/siwe'
+```js twoslash
+import { validateSiweMessage } from 'viem/siwe';
 
 const valid = validateSiweMessage({
-  address: '0xd2135CfB216b74109775236E36d4b433F1DF507B',
-  message: {
-    address: '0xA0Cf798816D4b9b9866b5330EEa46a18382f251e',
-    chainId: 1,
-    domain: 'example.com',
-    nonce: 'foobarbaz',
-    uri: 'https://example.com/path',
-    version: '1',
-  },
-})
+    address: '0xd2135CfB216b74109775236E36d4b433F1DF507B',
+    message: {
+        address: '0xA0Cf798816D4b9b9866b5330EEa46a18382f251e',
+        chainId: 1,
+        domain: 'example.com',
+        nonce: 'foobarbaz',
+        uri: 'https://example.com/path',
+        version: '1'
+    }
+});
 ```
 
 ## Returns

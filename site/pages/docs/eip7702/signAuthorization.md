@@ -12,16 +12,17 @@ A Contract can be authorized by supplying a `contractAddress`. By default, it wi
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { privateKeyToAccount } from 'viem/accounts'
-import { walletClient } from './client'
+```js twoslash [example.ts]
+import { privateKeyToAccount } from 'viem/accounts';
+import { walletClient } from './client';
 
-const eoa = privateKeyToAccount('0x...')
- 
-const authorization = await walletClient.signAuthorization({ // [!code focus]
-  account: eoa, // [!code focus]
-  contractAddress: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2', // [!code focus]
-}) // [!code focus]
+const eoa = privateKeyToAccount('0x...');
+
+const authorization = await walletClient.signAuthorization({
+    // [!code focus]
+    account: eoa, // [!code focus]
+    contractAddress: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2' // [!code focus]
+}); // [!code focus]
 // @log: {
 // @log:   chainId: 1,
 // @log:   contractAddress: "0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2",
@@ -32,24 +33,24 @@ const authorization = await walletClient.signAuthorization({ // [!code focus]
 // @log: }
 
 const hash = await walletClient.sendTransaction({
-  authorizationList: [authorization],
-  data: '0xdeadbeef',
-  to: eoa.address,
-})
+    authorizationList: [authorization],
+    data: '0xdeadbeef',
+    to: eoa.address
+});
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
-import { createWalletClient, http } from 'viem'
-import { privateKeyToAccount } from 'viem/accounts'
-import { mainnet } from 'viem/chains'
+```js twoslash [client.ts] filename="client.ts"
+import { createWalletClient, ThorNetworks } from '@vechain/sdk/viem';
+import { privateKeyToAccount } from 'viem/accounts';
 
-const relay = privateKeyToAccount('0x...')
+
+const relay = privateKeyToAccount('0x...');
 
 export const walletClient = createWalletClient({
-  account: relay,
-  chain: mainnet,
-  transport: http(),
-})
+    account: relay,
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
@@ -60,17 +61,17 @@ We can explicitly sign over a provided `nonce` and/or `chainId` by supplying the
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { walletClient } from './client'
+```js twoslash [example.ts]
+import { walletClient } from './client';
 
-const eoa = privateKeyToAccount('0x...')
- 
+const eoa = privateKeyToAccount('0x...');
+
 const authorization = await walletClient.signAuthorization({
-  account: eoa,
-  contractAddress: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-  chainId: 10, // [!code focus]
-  nonce: 420, // [!code focus]
-})
+    account: eoa,
+    contractAddress: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+    chainId: 10, // [!code focus]
+    nonce: 420 // [!code focus]
+});
 // @log: {
 // @log:   chainId: 10,
 // @log:   contractAddress: "0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2",
@@ -81,24 +82,24 @@ const authorization = await walletClient.signAuthorization({
 // @log: }
 
 const hash = await walletClient.sendTransaction({
-  authorizationList: [authorization],
-  data: '0xdeadbeef',
-  to: eoa.address,
-})
+    authorizationList: [authorization],
+    data: '0xdeadbeef',
+    to: eoa.address
+});
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
-import { createWalletClient, http } from 'viem'
-import { privateKeyToAccount } from 'viem/accounts'
-import { mainnet } from 'viem/chains'
+```js twoslash [client.ts] filename="client.ts"
+import { createWalletClient, ThorNetworks } from '@vechain/sdk/viem';
+import { privateKeyToAccount } from 'viem/accounts';
 
-const relay = privateKeyToAccount('0x...')
+
+const relay = privateKeyToAccount('0x...');
 
 export const walletClient = createWalletClient({
-  account: relay,
-  chain: mainnet,
-  transport: http(),
-})
+    account: relay,
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
@@ -119,14 +120,14 @@ Account to use for delegation.
 
 Accepts a [Local Account (Private Key, etc)](/docs/clients/wallet#local-accounts-private-key-mnemonic-etc).
 
-```ts twoslash
-import { privateKeyToAccount } from 'viem/accounts'
-import { walletClient } from './client'
+```js twoslash
+import { privateKeyToAccount } from 'viem/accounts';
+import { walletClient } from './client';
 
 const authorization = await walletClient.signAuthorization({
-  account: privateKeyToAccount('0x...'), // [!code focus]
-  contractAddress: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2'
-}) 
+    account: privateKeyToAccount('0x...'), // [!code focus]
+    contractAddress: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2'
+});
 ```
 
 ### chainId (optional)
@@ -136,15 +137,15 @@ const authorization = await walletClient.signAuthorization({
 
 The Chain ID to scope the Authorization to.
 
-```ts twoslash
-import { privateKeyToAccount } from 'viem/accounts'
-import { walletClient } from './client'
+```js twoslash
+import { privateKeyToAccount } from 'viem/accounts';
+import { walletClient } from './client';
 
 const authorization = await walletClient.signAuthorization({
-  account: privateKeyToAccount('0x...'),
-  contractAddress: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-  chainId: 1, // [!code focus]
-}) 
+    account: privateKeyToAccount('0x...'),
+    contractAddress: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+    chainId: 1 // [!code focus]
+});
 ```
 
 ### contractAddress
@@ -153,14 +154,14 @@ const authorization = await walletClient.signAuthorization({
 
 The target Contract to delegate to the Account.
 
-```ts twoslash
-import { privateKeyToAccount } from 'viem/accounts'
-import { walletClient } from './client'
+```js twoslash
+import { privateKeyToAccount } from 'viem/accounts';
+import { walletClient } from './client';
 
 const authorization = await walletClient.signAuthorization({
-  account: privateKeyToAccount('0x...'),
-  contractAddress: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2' // [!code focus]
-}) 
+    account: privateKeyToAccount('0x...'),
+    contractAddress: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2' // [!code focus]
+});
 ```
 
 ### executor (optional)
@@ -171,15 +172,15 @@ Whether the EIP-7702 Transaction will be executed by the Account that signed the
 
 If not specified, it will be assumed that the EIP-7702 Transaction will be executed by another Account (ie. a relayer Account).
 
-```ts twoslash
-import { privateKeyToAccount } from 'viem/accounts'
-import { walletClient } from './client'
+```js twoslash
+import { privateKeyToAccount } from 'viem/accounts';
+import { walletClient } from './client';
 
 const authorization = await walletClient.signAuthorization({
-  account: privateKeyToAccount('0x...'),
-  contractAddress: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-  executor: 'self', // [!code focus]
-}) 
+    account: privateKeyToAccount('0x...'),
+    contractAddress: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+    executor: 'self' // [!code focus]
+});
 ```
 
 ### nonce (optional)
@@ -189,13 +190,13 @@ const authorization = await walletClient.signAuthorization({
 
 The nonce to scope the Authorization to.
 
-```ts twoslash
-import { privateKeyToAccount } from 'viem/accounts'
-import { walletClient } from './client'
+```js twoslash
+import { privateKeyToAccount } from 'viem/accounts';
+import { walletClient } from './client';
 
 const authorization = await walletClient.signAuthorization({
-  account: privateKeyToAccount('0x...'),
-  contractAddress: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-  nonce: 69, // [!code focus]
-}) 
+    account: privateKeyToAccount('0x...'),
+    contractAddress: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+    nonce: 69 // [!code focus]
+});
 ```

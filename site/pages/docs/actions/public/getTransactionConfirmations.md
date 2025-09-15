@@ -10,24 +10,27 @@ Returns the number of blocks passed (confirmations) since the transaction was pr
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { publicClient } from './client'
+```js twoslash [example.ts]
+import { publicClient } from './client';
 
-const transactionReceipt = await publicClient.getTransactionReceipt({ hash: '...' })
-const confirmations = await publicClient.getTransactionConfirmations({  // [!code focus:99]
-  transactionReceipt
-})
+const transactionReceipt = await publicClient.getTransactionReceipt({
+    hash: '...'
+});
+const confirmations = await publicClient.getTransactionConfirmations({
+    // [!code focus:99]
+    transactionReceipt
+});
 // 15n
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash [client.ts] filename="client.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
@@ -36,23 +39,24 @@ You can also fetch confirmations by Transaction hash:
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { publicClient } from './client'
+```js twoslash [example.ts]
+import { publicClient } from './client';
 
-const confirmations = await publicClient.getTransactionConfirmations({  // [!code focus:99]
-  hash: '0x...'
-})
+const confirmations = await publicClient.getTransactionConfirmations({
+    // [!code focus:99]
+    hash: '0x...'
+});
 // @log: 15n
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash [client.ts] filename="client.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
@@ -71,7 +75,7 @@ The number of blocks passed since the transaction was processed. If confirmation
 
 The transaction receipt.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 // @noErrors
@@ -86,12 +90,12 @@ const balance = await publicClient.getTransactionConfirmations({
 
 The hash of the transaction.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const balance = await publicClient.getTransactionConfirmations({
-  hash: '0x...'  // [!code focus]
-})
+    hash: '0x...' // [!code focus]
+});
 ```
 
 ## Example

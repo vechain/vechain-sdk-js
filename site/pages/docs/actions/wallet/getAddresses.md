@@ -10,14 +10,14 @@ Returns a list of account addresses owned by the wallet or client.
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { walletClient } from './client'
- 
-const accounts = await walletClient.getAddresses() // [!code focus:99]
+```js twoslash [example.ts]
+import { walletClient } from './client';
+
+const accounts = await walletClient.getAddresses(); // [!code focus:99]
 // ['0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC']
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
+```js twoslash [client.ts] filename="client.ts"
 // [!include ~/snippets/walletClient.ts]
 ```
 
@@ -28,7 +28,6 @@ const accounts = await walletClient.getAddresses() // [!code focus:99]
 [`Address[]`](/docs/glossary/types#address)
 
 A list of checksummed addresses.
-
 
 ## JSON-RPC Methods
 

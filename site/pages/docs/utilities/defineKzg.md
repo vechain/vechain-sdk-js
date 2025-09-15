@@ -12,26 +12,27 @@ Defines a [EIP-4844](https://eips.ethereum.org/EIPS/eip-4844) compatible [KZG in
 - `computeBlobKzgProof`: A function that takes a blob and it's commitment, and returns the KZG proof.
 
 A couple of KZG implementations we recommend are:
+
 - [c-kzg](https://github.com/ethereum/c-kzg-4844): Node.js bindings to c-kzg.
 - [kzg-wasm](https://github.com/ethereumjs/kzg-wasm): WebAssembly bindings to c-kzg.
 
 ## Import
 
-```ts twoslash
-import { defineKzg } from 'viem'
+```js twoslash
+import { defineKzg } from 'viem';
 ```
 
 ## Usage
 
-```ts twoslash
+```js twoslash
 // @noErrors
-import * as cKzg from 'c-kzg'
-import { defineKzg } from 'viem'
-import { mainnetTrustedSetupPath } from 'viem/node'
+import * as cKzg from 'c-kzg';
+import { defineKzg } from 'viem';
+import { mainnetTrustedSetupPath } from 'viem/node';
 
-cKzg.loadTrustedSetup(mainnetTrustedSetupPath)
+cKzg.loadTrustedSetup(mainnetTrustedSetupPath);
 
-const kzg = defineKzg(cKzg)
+const kzg = defineKzg(cKzg);
 ```
 
 ## Returns

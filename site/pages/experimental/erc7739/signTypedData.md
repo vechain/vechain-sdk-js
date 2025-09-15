@@ -14,33 +14,34 @@ With the calculated signature, you can use [`verifyTypedData`](/docs/actions/pub
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { account, walletClient } from './config'
-import { domain, types } from './data'
- 
-const signature = await walletClient.signTypedData({ // [!code focus:99]
-  // Account used for signing.
-  account,
-  domain,
-  types,
-  primaryType: 'Mail',
-  message: {
-    from: {
-      name: 'Cow',
-      wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+```js twoslash [example.ts]
+import { account, walletClient } from './config';
+import { domain, types } from './data';
+
+const signature = await walletClient.signTypedData({
+    // [!code focus:99]
+    // Account used for signing.
+    account,
+    domain,
+    types,
+    primaryType: 'Mail',
+    message: {
+        from: {
+            name: 'Cow',
+            wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826'
+        },
+        to: {
+            name: 'Bob',
+            wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB'
+        },
+        contents: 'Hello, Bob!'
     },
-    to: {
-      name: 'Bob',
-      wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
-    },
-    contents: 'Hello, Bob!',
-  },
-  // Verifying contract address (e.g. ERC-4337 Smart Account).
-  verifier: '0xCB9fA1eA9b8A3bf422a8639f23Df77ea66020eC2'
-})
+    // Verifying contract address (e.g. ERC-4337 Smart Account).
+    verifier: '0xCB9fA1eA9b8A3bf422a8639f23Df77ea66020eC2'
+});
 ```
 
-```ts twoslash [data.ts]
+```js twoslash [data.ts]
 // All properties on a domain are optional
 export const domain = {
   name: 'Ether Mail',
@@ -48,7 +49,7 @@ export const domain = {
   chainId: 1,
   verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
 } as const
- 
+
 // The named list of all type definitions
 export const types = {
   Person: [
@@ -63,17 +64,17 @@ export const types = {
 } as const
 ```
 
-```ts twoslash [config.ts] filename="config.ts"
-import { createWalletClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
-import { erc7739Actions } from 'viem/experimental'
+```js twoslash [config.ts] filename="config.ts"
+import { createWalletClient, ThorNetworks } from '@vechain/sdk/viem';
+
+import { erc7739Actions } from 'viem/experimental';
 
 export const walletClient = createWalletClient({
-  chain: mainnet,
-  transport: http(),
-}).extend(erc7739Actions())
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+}).extend(erc7739Actions());
 
-export const [account] = await walletClient.getAddresses()
+export const [account] = await walletClient.getAddresses();
 // @log: ↑ JSON-RPC Account
 
 // export const account = privateKeyToAccount(...)
@@ -90,29 +91,30 @@ If you do not wish to pass an `account` and/or `verifier` to every `signTypedDat
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { walletClient } from './config'
-import { domain, types } from './data'
- 
-const signature = await walletClient.signTypedData({ // [!code focus:99]
-  domain,
-  types,
-  primaryType: 'Mail',
-  message: {
-    from: {
-      name: 'Cow',
-      wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
-    },
-    to: {
-      name: 'Bob',
-      wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
-    },
-    contents: 'Hello, Bob!',
-  },
-})
+```js twoslash [example.ts]
+import { walletClient } from './config';
+import { domain, types } from './data';
+
+const signature = await walletClient.signTypedData({
+    // [!code focus:99]
+    domain,
+    types,
+    primaryType: 'Mail',
+    message: {
+        from: {
+            name: 'Cow',
+            wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826'
+        },
+        to: {
+            name: 'Bob',
+            wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB'
+        },
+        contents: 'Hello, Bob!'
+    }
+});
 ```
 
-```ts twoslash [data.ts]
+```js twoslash [data.ts]
 // All properties on a domain are optional
 export const domain = {
   name: 'Ether Mail',
@@ -120,7 +122,7 @@ export const domain = {
   chainId: 1,
   verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
 } as const
- 
+
 // The named list of all type definitions
 export const types = {
   Person: [
@@ -136,33 +138,37 @@ export const types = {
 ```
 
 ```ts [config.ts (JSON-RPC Account)]
-import { createWalletClient, custom } from 'viem'
-import { erc7739Actions } from 'viem/experimental'
+import { createWalletClient, custom } from 'viem';
+import { erc7739Actions } from 'viem/experimental';
 
 // Retrieve Account from an EIP-1193 Provider.
-const [account] = await window.ethereum.request({ 
-  method: 'eth_requestAccounts' 
-})
+const [account] = await window.ethereum.request({
+    method: 'eth_requestAccounts'
+});
 
 export const walletClient = createWalletClient({
-  account,
-  transport: custom(window.ethereum!)
-}).extend(erc7739Actions({ 
-  verifier: '0xCB9fA1eA9b8A3bf422a8639f23Df77ea66020eC2' 
-}))
+    account,
+    transport: custom(window.ethereum!)
+}).extend(
+    erc7739Actions({
+        verifier: '0xCB9fA1eA9b8A3bf422a8639f23Df77ea66020eC2'
+    })
+);
 ```
 
-```ts twoslash [config.ts (Local Account)] filename="config.ts"
-import { createWalletClient, http } from 'viem'
-import { privateKeyToAccount } from 'viem/accounts'
-import { erc7739Actions } from 'viem/experimental'
+```js twoslash [config.ts (Local Account)] filename="config.ts"
+import { createWalletClient, ThorNetworks } from '@vechain/sdk/viem';
+import { privateKeyToAccount } from 'viem/accounts';
+import { erc7739Actions } from 'viem/experimental';
 
 export const walletClient = createWalletClient({
-  account: privateKeyToAccount('0x...'),
-  transport: http()
-}).extend(erc7739Actions({ 
-  verifier: '0xCB9fA1eA9b8A3bf422a8639f23Df77ea66020eC2' 
-}))
+    account: privateKeyToAccount('0x...'),
+    network: ThorNetworks.MAINNET
+}).extend(
+    erc7739Actions({
+        verifier: '0xCB9fA1eA9b8A3bf422a8639f23Df77ea66020eC2'
+    })
+);
 ```
 
 :::
@@ -183,42 +189,42 @@ Account to used to sign the typed data.
 
 Accepts a [JSON-RPC Account](/docs/clients/wallet#json-rpc-accounts) or [Local Account (Private Key, etc)](/docs/clients/wallet#local-accounts-private-key-mnemonic-etc).
 
-```ts twoslash
-import { walletClient } from './config'
+```js twoslash
+import { walletClient } from './config';
 
 const signature = await walletClient.signTypedData({
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266', // [!code focus:1]
-  domain: {
-    name: 'Ether Mail',
-    version: '1',
-    chainId: 1,
-    verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-  },
-  types: {
-    Person: [
-      { name: 'name', type: 'string' },
-      { name: 'wallet', type: 'address' },
-    ],
-    Mail: [
-      { name: 'from', type: 'Person' },
-      { name: 'to', type: 'Person' },
-      { name: 'contents', type: 'string' },
-    ],
-  },
-  primaryType: 'Mail',
-  message: {
-    from: {
-      name: 'Cow',
-      wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266', // [!code focus:1]
+    domain: {
+        name: 'Ether Mail',
+        version: '1',
+        chainId: 1,
+        verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'
     },
-    to: {
-      name: 'Bob',
-      wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+    types: {
+        Person: [
+            { name: 'name', type: 'string' },
+            { name: 'wallet', type: 'address' }
+        ],
+        Mail: [
+            { name: 'from', type: 'Person' },
+            { name: 'to', type: 'Person' },
+            { name: 'contents', type: 'string' }
+        ]
     },
-    contents: 'Hello, Bob!',
-  },
-  verifier: '0xCB9fA1eA9b8A3bf422a8639f23Df77ea66020eC2'
-})
+    primaryType: 'Mail',
+    message: {
+        from: {
+            name: 'Cow',
+            wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826'
+        },
+        to: {
+            name: 'Bob',
+            wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB'
+        },
+        contents: 'Hello, Bob!'
+    },
+    verifier: '0xCB9fA1eA9b8A3bf422a8639f23Df77ea66020eC2'
+});
 ```
 
 ### domain
@@ -227,83 +233,85 @@ const signature = await walletClient.signTypedData({
 
 The typed data domain.
 
-```ts twoslash
-import { walletClient } from './config'
+```js twoslash
+import { walletClient } from './config';
 
 const signature = await walletClient.signTypedData({
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-  domain: { // [!code focus:6]
-    name: 'Ether Mail',
-    version: '1',
-    chainId: 1,
-    verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-  },
-  types: {
-    Person: [
-      { name: 'name', type: 'string' },
-      { name: 'wallet', type: 'address' },
-    ],
-    Mail: [
-      { name: 'from', type: 'Person' },
-      { name: 'to', type: 'Person' },
-      { name: 'contents', type: 'string' },
-    ],
-  },
-  primaryType: 'Mail',
-  message: {
-    from: {
-      name: 'Cow',
-      wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+    domain: {
+        // [!code focus:6]
+        name: 'Ether Mail',
+        version: '1',
+        chainId: 1,
+        verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'
     },
-    to: {
-      name: 'Bob',
-      wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+    types: {
+        Person: [
+            { name: 'name', type: 'string' },
+            { name: 'wallet', type: 'address' }
+        ],
+        Mail: [
+            { name: 'from', type: 'Person' },
+            { name: 'to', type: 'Person' },
+            { name: 'contents', type: 'string' }
+        ]
     },
-    contents: 'Hello, Bob!',
-  },
-  verifier: '0xCB9fA1eA9b8A3bf422a8639f23Df77ea66020eC2'
-})
+    primaryType: 'Mail',
+    message: {
+        from: {
+            name: 'Cow',
+            wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826'
+        },
+        to: {
+            name: 'Bob',
+            wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB'
+        },
+        contents: 'Hello, Bob!'
+    },
+    verifier: '0xCB9fA1eA9b8A3bf422a8639f23Df77ea66020eC2'
+});
 ```
 
 ### types
 
 The type definitions for the typed data.
 
-```ts twoslash
-import { walletClient } from './config'
+```js twoslash
+import { walletClient } from './config';
 
 const signature = await walletClient.signTypedData({
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-  domain: { 
-    name: 'Ether Mail',
-    version: '1',
-    chainId: 1,
-    verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-  },
-  types: { // [!code focus:11]
-    Person: [
-      { name: 'name', type: 'string' },
-      { name: 'wallet', type: 'address' },
-    ],
-    Mail: [
-      { name: 'from', type: 'Person' },
-      { name: 'to', type: 'Person' },
-      { name: 'contents', type: 'string' },
-    ],
-  },
-  primaryType: 'Mail',
-  message: {
-    from: {
-      name: 'Cow',
-      wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+    domain: {
+        name: 'Ether Mail',
+        version: '1',
+        chainId: 1,
+        verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'
     },
-    to: {
-      name: 'Bob',
-      wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+    types: {
+        // [!code focus:11]
+        Person: [
+            { name: 'name', type: 'string' },
+            { name: 'wallet', type: 'address' }
+        ],
+        Mail: [
+            { name: 'from', type: 'Person' },
+            { name: 'to', type: 'Person' },
+            { name: 'contents', type: 'string' }
+        ]
     },
-    contents: 'Hello, Bob!',
-  },
-})
+    primaryType: 'Mail',
+    message: {
+        from: {
+            name: 'Cow',
+            wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826'
+        },
+        to: {
+            name: 'Bob',
+            wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB'
+        },
+        contents: 'Hello, Bob!'
+    }
+});
 ```
 
 ### primaryType
@@ -312,83 +320,85 @@ const signature = await walletClient.signTypedData({
 
 The primary type to extract from `types` and use in `value`.
 
-```ts twoslash
-import { walletClient } from './config'
+```js twoslash
+import { walletClient } from './config';
 
 const signature = await walletClient.signTypedData({
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-  domain: { 
-    name: 'Ether Mail',
-    version: '1',
-    chainId: 1,
-    verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-  },
-  types: {
-    Person: [
-      { name: 'name', type: 'string' },
-      { name: 'wallet', type: 'address' },
-    ],
-    Mail: [ // [!code focus:5]
-      { name: 'from', type: 'Person' },
-      { name: 'to', type: 'Person' },
-      { name: 'contents', type: 'string' },
-    ],
-  },
-  primaryType: 'Mail', // [!code focus]
-  message: {
-    from: {
-      name: 'Cow',
-      wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+    domain: {
+        name: 'Ether Mail',
+        version: '1',
+        chainId: 1,
+        verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'
     },
-    to: {
-      name: 'Bob',
-      wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+    types: {
+        Person: [
+            { name: 'name', type: 'string' },
+            { name: 'wallet', type: 'address' }
+        ],
+        Mail: [
+            // [!code focus:5]
+            { name: 'from', type: 'Person' },
+            { name: 'to', type: 'Person' },
+            { name: 'contents', type: 'string' }
+        ]
     },
-    contents: 'Hello, Bob!',
-  },
-})
+    primaryType: 'Mail', // [!code focus]
+    message: {
+        from: {
+            name: 'Cow',
+            wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826'
+        },
+        to: {
+            name: 'Bob',
+            wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB'
+        },
+        contents: 'Hello, Bob!'
+    }
+});
 ```
 
 ### message
 
 **Type:** Inferred from `types` & `primaryType`.
 
-```ts twoslash
-import { walletClient } from './config'
+```js twoslash
+import { walletClient } from './config';
 
 const signature = await walletClient.signTypedData({
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-  domain: { 
-    name: 'Ether Mail',
-    version: '1',
-    chainId: 1,
-    verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-  },
-  types: {
-    Person: [
-      { name: 'name', type: 'string' },
-      { name: 'wallet', type: 'address' },
-    ],
-    Mail: [
-      { name: 'from', type: 'Person' },
-      { name: 'to', type: 'Person' },
-      { name: 'contents', type: 'string' },
-    ],
-  },
-  primaryType: 'Mail', 
-  message: { // [!code focus:11]
-    from: {
-      name: 'Cow',
-      wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+    domain: {
+        name: 'Ether Mail',
+        version: '1',
+        chainId: 1,
+        verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'
     },
-    to: {
-      name: 'Bob',
-      wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+    types: {
+        Person: [
+            { name: 'name', type: 'string' },
+            { name: 'wallet', type: 'address' }
+        ],
+        Mail: [
+            { name: 'from', type: 'Person' },
+            { name: 'to', type: 'Person' },
+            { name: 'contents', type: 'string' }
+        ]
     },
-    contents: 'Hello, Bob!',
-  },
-  verifier: '0xCB9fA1eA9b8A3bf422a8639f23Df77ea66020eC2'
-})
+    primaryType: 'Mail',
+    message: {
+        // [!code focus:11]
+        from: {
+            name: 'Cow',
+            wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826'
+        },
+        to: {
+            name: 'Bob',
+            wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB'
+        },
+        contents: 'Hello, Bob!'
+    },
+    verifier: '0xCB9fA1eA9b8A3bf422a8639f23Df77ea66020eC2'
+});
 ```
 
 ### verifier
@@ -397,42 +407,42 @@ const signature = await walletClient.signTypedData({
 
 The address of the verifying contract (e.g. a ERC-4337 Smart Account). Required if `verifierDomain` is not passed.
 
-```ts twoslash
-import { walletClient } from './config'
+```js twoslash
+import { walletClient } from './config';
 
 const signature = await walletClient.signTypedData({
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-  domain: { 
-    name: 'Ether Mail',
-    version: '1',
-    chainId: 1,
-    verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-  },
-  types: {
-    Person: [
-      { name: 'name', type: 'string' },
-      { name: 'wallet', type: 'address' },
-    ],
-    Mail: [
-      { name: 'from', type: 'Person' },
-      { name: 'to', type: 'Person' },
-      { name: 'contents', type: 'string' },
-    ],
-  },
-  primaryType: 'Mail', 
-  message: {
-    from: {
-      name: 'Cow',
-      wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+    domain: {
+        name: 'Ether Mail',
+        version: '1',
+        chainId: 1,
+        verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'
     },
-    to: {
-      name: 'Bob',
-      wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+    types: {
+        Person: [
+            { name: 'name', type: 'string' },
+            { name: 'wallet', type: 'address' }
+        ],
+        Mail: [
+            { name: 'from', type: 'Person' },
+            { name: 'to', type: 'Person' },
+            { name: 'contents', type: 'string' }
+        ]
     },
-    contents: 'Hello, Bob!',
-  },
-  verifier: '0xCB9fA1eA9b8A3bf422a8639f23Df77ea66020eC2' // [!code focus]
-})
+    primaryType: 'Mail',
+    message: {
+        from: {
+            name: 'Cow',
+            wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826'
+        },
+        to: {
+            name: 'Bob',
+            wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB'
+        },
+        contents: 'Hello, Bob!'
+    },
+    verifier: '0xCB9fA1eA9b8A3bf422a8639f23Df77ea66020eC2' // [!code focus]
+});
 ```
 
 ### verifierDomain
@@ -441,45 +451,46 @@ const signature = await walletClient.signTypedData({
 
 Account domain separator. Required if `verifier` is not passed.
 
-```ts twoslash
-import { walletClient } from './config'
+```js twoslash
+import { walletClient } from './config';
 
 const signature = await walletClient.signTypedData({
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-  domain: { 
-    name: 'Ether Mail',
-    version: '1',
-    chainId: 1,
-    verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-  },
-  types: {
-    Person: [
-      { name: 'name', type: 'string' },
-      { name: 'wallet', type: 'address' },
-    ],
-    Mail: [
-      { name: 'from', type: 'Person' },
-      { name: 'to', type: 'Person' },
-      { name: 'contents', type: 'string' },
-    ],
-  },
-  primaryType: 'Mail', 
-  message: {
-    from: {
-      name: 'Cow',
-      wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+    domain: {
+        name: 'Ether Mail',
+        version: '1',
+        chainId: 1,
+        verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'
     },
-    to: {
-      name: 'Bob',
-      wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+    types: {
+        Person: [
+            { name: 'name', type: 'string' },
+            { name: 'wallet', type: 'address' }
+        ],
+        Mail: [
+            { name: 'from', type: 'Person' },
+            { name: 'to', type: 'Person' },
+            { name: 'contents', type: 'string' }
+        ]
     },
-    contents: 'Hello, Bob!',
-  },
-  verifierDomain: { // [!code focus]
-    name: 'SoladyAccount', // [!code focus]
-    version: '1', // [!code focus]
-    chainId: 1, // [!code focus]
-    verifyingContract: '0xCB9fA1eA9b8A3bf422a8639f23Df77ea66020eC2' // [!code focus]
-  }, // [!code focus]
-})
+    primaryType: 'Mail',
+    message: {
+        from: {
+            name: 'Cow',
+            wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826'
+        },
+        to: {
+            name: 'Bob',
+            wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB'
+        },
+        contents: 'Hello, Bob!'
+    },
+    verifierDomain: {
+        // [!code focus]
+        name: 'SoladyAccount', // [!code focus]
+        version: '1', // [!code focus]
+        chainId: 1, // [!code focus]
+        verifyingContract: '0xCB9fA1eA9b8A3bf422a8639f23Df77ea66020eC2' // [!code focus]
+    } // [!code focus]
+});
 ```

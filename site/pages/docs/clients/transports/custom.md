@@ -4,43 +4,42 @@ The `custom` Transport accepts an [EIP-1193 `request` function](https://eips.eth
 
 ## Import
 
-```ts twoslash
-import { custom } from 'viem'
+```js twoslash
+import { custom } from 'viem';
 ```
 
 ## Usage
 
 You can use any [EIP-1193 compatible](https://eips.ethereum.org/EIPS/eip-1193) Ethereum Provider with the `custom` Transport:
 
-```ts twoslash
+```js twoslash
 import 'viem/window'
 // ---cut---
 import { createWalletClient, custom } from 'viem'
-import { mainnet } from 'viem/chains'
 
 const client = createWalletClient({
-  chain: mainnet,
+  network: ThorNetworks.MAINNET,
   transport: custom(window.ethereum!)
 })
 ```
 
 Or you can define your own:
 
-```ts twoslash
+```js twoslash
 // @noErrors
-import { createWalletClient, custom } from 'viem'
-import { mainnet } from 'viem/chains'
-import { customRpc } from './rpc'
+import { createWalletClient, custom } from 'viem';
 
-const client = createWalletClient({ 
-  chain: mainnet,
-  transport: custom({
-    async request({ method, params }) {
-      const response = await customRpc.request(method, params)
-      return response
-    }
-  })
-})
+import { customRpc } from './rpc';
+
+const client = createWalletClient({
+    network: ThorNetworks.MAINNET,
+    transport: custom({
+        async request({ method, params }) {
+            const response = await customRpc.request(method, params);
+            return response;
+        }
+    })
+});
 ```
 
 ## Parameters
@@ -51,18 +50,19 @@ const client = createWalletClient({
 
 An [EIP-1193 `request` function](https://eips.ethereum.org/EIPS/eip-1193#request) function.
 
-```ts twoslash
+```js twoslash
 // @noErrors
-import { custom } from 'viem'
+import { custom } from 'viem';
 // ---cut---
-import { customRpc } from './rpc'
+import { customRpc } from './rpc';
 
 const transport = custom({
-  async request({ method, params }) { // [!code focus:3]
-    const response = await customRpc.request(method, params)
-    return response
-  }
-})
+    async request({ method, params }) {
+        // [!code focus:3]
+        const response = await customRpc.request(method, params);
+        return response;
+    }
+});
 ```
 
 ### key (optional)
@@ -72,13 +72,13 @@ const transport = custom({
 
 A key for the Transport.
 
-```ts twoslash
+```js twoslash
 import 'viem/window'
 import { custom } from 'viem'
 // ---cut---
 const transport = custom(
   window.ethereum!,
-  { 
+  {
     key: 'windowProvider', // [!code focus]
   }
 )
@@ -91,13 +91,13 @@ const transport = custom(
 
 A name for the Transport
 
-```ts twoslash
+```js twoslash
 import 'viem/window'
 import { custom } from 'viem'
 // ---cut---
 const transport = custom(
   window.ethereum!,
-  { 
+  {
     name: 'Window Ethereum Provider', // [!code focus]
   }
 )
@@ -110,7 +110,7 @@ const transport = custom(
 
 The max number of times to retry when a request fails.
 
-```ts twoslash
+```js twoslash
 import 'viem/window'
 import { custom } from 'viem'
 // ---cut---
@@ -126,7 +126,7 @@ const transport = custom(window.ethereum!, {
 
 The base delay (in ms) between retries. By default, the Transport will use [exponential backoff](https://en.wikipedia.org/wiki/Exponential_backoff) (`~~(1 << count) * retryDelay`), which means the time between retries is not constant.
 
-```ts twoslash
+```js twoslash
 import 'viem/window'
 import { custom } from 'viem'
 // ---cut---

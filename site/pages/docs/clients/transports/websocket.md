@@ -4,20 +4,20 @@ The `webSocket` Transport connects to a JSON-RPC API via a WebSocket.
 
 ## Import
 
-```ts twoslash
-import { webSocket } from 'viem'
+```js twoslash
+import { webSocket } from 'viem';
 ```
 
 ## Usage
 
-```ts twoslash {4}
-import { createPublicClient, webSocket } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash {4}
+import { createPublicClient, webSocket } from 'viem';
+
 
 const client = createPublicClient({
-  chain: mainnet, 
-  transport: webSocket('wss://1.rpc.thirdweb.com/...'), // [!code focus]
-})
+    network: ThorNetworks.MAINNET,
+    transport: webSocket('wss://1.rpc.thirdweb.com/...') // [!code focus]
+});
 ```
 
 :::warning[Warning]
@@ -32,10 +32,10 @@ If no `url` is provided, then the transport will fall back to a public RPC URL o
 
 URL of the JSON-RPC API.
 
-```ts twoslash
-import { webSocket } from 'viem'
+```js twoslash
+import { webSocket } from 'viem';
 // ---cut---
-const transport = webSocket('wss://1.rpc.thirdweb.com/...')
+const transport = webSocket('wss://1.rpc.thirdweb.com/...');
 ```
 
 ### keepAlive (optional)
@@ -45,12 +45,12 @@ const transport = webSocket('wss://1.rpc.thirdweb.com/...')
 
 Whether or not to send keep-alive ping messages.
 
-```ts twoslash
-import { webSocket } from 'viem'
+```js twoslash
+import { webSocket } from 'viem';
 // ---cut---
 const transport = webSocket('wss://1.rpc.thirdweb.com/...', {
-  keepAlive: { interval: 1_000 }, // [!code focus]
-})
+    keepAlive: { interval: 1_000 } // [!code focus]
+});
 ```
 
 ### key (optional)
@@ -60,12 +60,12 @@ const transport = webSocket('wss://1.rpc.thirdweb.com/...', {
 
 A key for the Transport.
 
-```ts twoslash
-import { webSocket } from 'viem'
+```js twoslash
+import { webSocket } from 'viem';
 // ---cut---
-const transport = webSocket('wss://1.rpc.thirdweb.com/...', { 
-  key: 'alchemy',  // [!code focus]
-})
+const transport = webSocket('wss://1.rpc.thirdweb.com/...', {
+    key: 'alchemy' // [!code focus]
+});
 ```
 
 ### methods (optional)
@@ -74,14 +74,14 @@ const transport = webSocket('wss://1.rpc.thirdweb.com/...', {
 
 Methods to include or exclude from sending RPC requests.
 
-```ts twoslash
-import { webSocket } from 'viem'
+```js twoslash
+import { webSocket } from 'viem';
 // ---cut---
 const transport = webSocket('wss://1.rpc.thirdweb.com/...', {
-  methods: {
-    include: ['eth_sendTransaction', 'eth_signTypedData_v4'],
-  },
-})
+    methods: {
+        include: ['eth_sendTransaction', 'eth_signTypedData_v4']
+    }
+});
 ```
 
 ### name (optional)
@@ -91,12 +91,12 @@ const transport = webSocket('wss://1.rpc.thirdweb.com/...', {
 
 A name for the Transport
 
-```ts twoslash
-import { webSocket } from 'viem'
+```js twoslash
+import { webSocket } from 'viem';
 // ---cut---
-const transport = webSocket('wss://1.rpc.thirdweb.com/...', { 
-  name: 'Alchemy WebSocket Provider',  // [!code focus]
-})
+const transport = webSocket('wss://1.rpc.thirdweb.com/...', {
+    name: 'Alchemy WebSocket Provider' // [!code focus]
+});
 ```
 
 ### reconnect (optional)
@@ -106,12 +106,12 @@ const transport = webSocket('wss://1.rpc.thirdweb.com/...', {
 
 Whether or not to attempt to reconnect on socket failure.
 
-```ts twoslash
-import { webSocket } from 'viem'
+```js twoslash
+import { webSocket } from 'viem';
 // ---cut---
 const transport = webSocket('wss://1.rpc.thirdweb.com/...', {
-  reconnect: false, // [!code focus]
-})
+    reconnect: false // [!code focus]
+});
 ```
 
 #### reconnect.attempts (optional)
@@ -121,14 +121,14 @@ const transport = webSocket('wss://1.rpc.thirdweb.com/...', {
 
 The max number of times to attempt to reconnect.
 
-```ts twoslash
-import { webSocket } from 'viem'
+```js twoslash
+import { webSocket } from 'viem';
 // ---cut---
 const transport = webSocket('wss://1.rpc.thirdweb.com/...', {
-  reconnect: {
-    attempts: 10, // [!code focus]
-  }
-})
+    reconnect: {
+        attempts: 10 // [!code focus]
+    }
+});
 ```
 
 #### reconnect.delay (optional)
@@ -138,14 +138,14 @@ const transport = webSocket('wss://1.rpc.thirdweb.com/...', {
 
 Retry delay (in ms) between reconnect attempts.
 
-```ts twoslash
-import { webSocket } from 'viem'
+```js twoslash
+import { webSocket } from 'viem';
 // ---cut---
 const transport = webSocket('wss://1.rpc.thirdweb.com/...', {
-  reconnect: {
-    delay: 1_000, // [!code focus]
-  }
-})
+    reconnect: {
+        delay: 1_000 // [!code focus]
+    }
+});
 ```
 
 ### retryCount (optional)
@@ -155,12 +155,12 @@ const transport = webSocket('wss://1.rpc.thirdweb.com/...', {
 
 The max number of times to retry when a request fails.
 
-```ts twoslash
-import { webSocket } from 'viem'
+```js twoslash
+import { webSocket } from 'viem';
 // ---cut---
 const transport = webSocket('wss://1.rpc.thirdweb.com/...', {
-  retryCount: 5, // [!code focus]
-})
+    retryCount: 5 // [!code focus]
+});
 ```
 
 ### retryDelay (optional)
@@ -170,12 +170,12 @@ const transport = webSocket('wss://1.rpc.thirdweb.com/...', {
 
 The base delay (in ms) between retries. By default, the Transport will use [exponential backoff](https://en.wikipedia.org/wiki/Exponential_backoff) (`~~(1 << count) * retryDelay`), which means the time between retries is not constant.
 
-```ts twoslash
-import { webSocket } from 'viem'
+```js twoslash
+import { webSocket } from 'viem';
 // ---cut---
 const transport = webSocket('wss://1.rpc.thirdweb.com/...', {
-  retryDelay: 100, // [!code focus]
-})
+    retryDelay: 100 // [!code focus]
+});
 ```
 
 ### timeout (optional)
@@ -185,10 +185,10 @@ const transport = webSocket('wss://1.rpc.thirdweb.com/...', {
 
 The timeout for async WebSocket requests.
 
-```ts twoslash
-import { webSocket } from 'viem'
+```js twoslash
+import { webSocket } from 'viem';
 // ---cut---
 const transport = webSocket('wss://1.rpc.thirdweb.com/...', {
-  timeout: 60_000, // [!code focus]
-})
+    timeout: 60_000 // [!code focus]
+});
 ```

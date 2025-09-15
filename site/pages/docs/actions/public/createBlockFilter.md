@@ -6,21 +6,21 @@ Creates a Filter to listen for new block hashes that can be used with [`getFilte
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { publicClient } from './client'
+```js twoslash [example.ts]
+import { publicClient } from './client';
 
-const filter = await publicClient.createBlockFilter() // [!code focus:99]
+const filter = await publicClient.createBlockFilter(); // [!code focus:99]
 // @log: { id: "0x345a6572337856574a76364e457a4366", type: 'block' }
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash [client.ts] filename="client.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::

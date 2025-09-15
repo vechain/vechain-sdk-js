@@ -12,8 +12,9 @@
     "react": "^19",
     "react-dom": "^19",
     "tailwindcss": "^4.0.6",
-    "viem": "workspace:*",
-    "@vechain/sdk": "../packages/sdk",
     "vocs": "^1.0.11"
+  },
+  "dependencies": {
+    "@vechain/sdk": "file:../packages/sdk"
   }
 }

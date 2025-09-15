@@ -10,23 +10,24 @@ Retrieves information about a User Operation given a hash.
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { bundlerClient } from './client'
+```js twoslash [example.ts]
+import { bundlerClient } from './client';
 
-const result = await bundlerClient.getUserOperation({ // [!code focus:99]
-  hash: '0x4ca7ee652d57678f26e887c149ab0735f41de37bcad58c9f6d3ed5824f15b74d'
-})
+const result = await bundlerClient.getUserOperation({
+    // [!code focus:99]
+    hash: '0x4ca7ee652d57678f26e887c149ab0735f41de37bcad58c9f6d3ed5824f15b74d'
+});
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
-import { http } from 'viem'
-import { createBundlerClient } from 'viem/account-abstraction'
-import { mainnet } from 'viem/chains'
+```js twoslash [client.ts] filename="client.ts"
+import { http } from 'viem';
+import { createBundlerClient } from 'viem/account-abstraction';
+
 
 export const bundlerClient = createBundlerClient({
-  chain: mainnet,
-  transport: http('https://public.pimlico.io/v2/1/rpc')
-})
+    network: ThorNetworks.MAINNET,
+    transport: http('https://public.pimlico.io/v2/1/rpc')
+});
 ```
 
 :::
@@ -57,10 +58,10 @@ User Operation information.
 
 A User Operation hash.
 
-```ts twoslash
-import { bundlerClient } from './client'
+```js twoslash
+import { bundlerClient } from './client';
 // ---cut---
 const result = await publicClient.getUserOperation({
-  hash: '0x4ca7ee652d57678f26e887c149ab0735f41de37bcad58c9f6d3ed5824f15b74d' // [!code focus]
-})
+    hash: '0x4ca7ee652d57678f26e887c149ab0735f41de37bcad58c9f6d3ed5824f15b74d' // [!code focus]
+});
 ```

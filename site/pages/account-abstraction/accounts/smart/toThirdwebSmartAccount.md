@@ -9,6 +9,7 @@ To implement [Thirdweb Smart Account](https://portal.thirdweb.com/), you can use
 ## Install
 
 :::code-group
+
 ```bash [pnpm]
 pnpm add permissionless
 ```
@@ -24,38 +25,41 @@ yarn add permissionless
 ```bash [bun]
 bun add permissionless
 ```
+
 :::
 
 ## Usage
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { toThirdwebSmartAccount } from 'permissionless/accounts' // [!code focus]
-import { client } from './client.js'
-import { owner } from './owner.js'
+```js twoslash [example.ts]
+import { toThirdwebSmartAccount } from 'permissionless/accounts'; // [!code focus]
+import { client } from './client.js';
+import { owner } from './owner.js';
 
-const account = await toThirdwebSmartAccount({ // [!code focus]
-  client, // [!code focus]
-  owner, // [!code focus]
-}) // [!code focus]
+const account = await toThirdwebSmartAccount({
+    // [!code focus]
+    client, // [!code focus]
+    owner // [!code focus]
+}); // [!code focus]
 ```
 
-```ts twoslash [client.ts] filename="config.ts"
-import { http, createPublicClient } from 'viem'
-import { mainnet } from 'viem/chains'
- 
+```js twoslash [client.ts] filename="config.ts"
+import { http, createPublicClient } from 'viem';
+
+
 export const client = createPublicClient({
-  chain: mainnet,
-  transport: http(),
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
-```ts twoslash [owner.ts (Private Key)] filename="owner.ts"
-import { privateKeyToAccount } from 'viem/accounts'
- 
-export const owner = privateKeyToAccount('0x...')
+```js twoslash [owner.ts (Private Key)] filename="owner.ts"
+import { privateKeyToAccount } from 'viem/accounts';
+
+export const owner = privateKeyToAccount('0x...');
 ```
+
 :::
 
 ## Returns

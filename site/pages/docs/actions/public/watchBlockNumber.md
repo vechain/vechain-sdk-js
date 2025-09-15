@@ -12,25 +12,26 @@ Pass through your Public Client, along with a listener.
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { publicClient } from './client'
+```js twoslash [example.ts]
+import { publicClient } from './client';
 
-const unwatch = publicClient.watchBlockNumber( // [!code focus:99]
-  { onBlockNumber: blockNumber => console.log(blockNumber) }
-)
+const unwatch = publicClient.watchBlockNumber(
+    // [!code focus:99]
+    { onBlockNumber: (blockNumber) => console.log(blockNumber) }
+);
 // @log: > 69420n
 // @log: > 69421n
 // @log: > 69422n
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash [client.ts] filename="client.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
@@ -54,19 +55,17 @@ A function that can be invoked to stop watching for new block numbers.
 - **Type:** `boolean`
 - **Default:** `false`
 
-Whether or not to emit missed block numbers to the callback. 
+Whether or not to emit missed block numbers to the callback.
 
 Missed block numbers may occur in instances where internet connection is lost, or the block time is lesser than the [polling interval](/docs/clients/public#pollinginterval-optional) of the client.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-const unwatch = publicClient.watchBlockNumber(
-  { 
+const unwatch = publicClient.watchBlockNumber({
     emitMissed: true, // [!code focus]
-    onBlockNumber: blockNumber => console.log(blockNumber),
-  }
-)
+    onBlockNumber: (blockNumber) => console.log(blockNumber)
+});
 ```
 
 ### emitOnBegin (optional)
@@ -76,15 +75,13 @@ const unwatch = publicClient.watchBlockNumber(
 
 Whether or not to emit the latest block number to the callback when the subscription opens.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-const unwatch = publicClient.watchBlockNumber(
-  { 
+const unwatch = publicClient.watchBlockNumber({
     emitOnBegin: true, // [!code focus]
-    onBlockNumber: blockNumber => console.log(blockNumber),
-  }
-)
+    onBlockNumber: (blockNumber) => console.log(blockNumber)
+});
 ```
 
 ### poll (optional)
@@ -96,21 +93,19 @@ Whether or not to use a polling mechanism to check for new block numbers instead
 
 This option is only configurable for Clients with a [WebSocket Transport](/docs/clients/transports/websocket).
 
-```ts twoslash
-import { createPublicClient, webSocket } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createPublicClient, webSocket } from 'viem';
+
 
 const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: webSocket()
-})
+    network: ThorNetworks.MAINNET,
+    transport: webSocket()
+});
 
-const unwatch = publicClient.watchBlockNumber(
-  { 
-    onBlockNumber: blockNumber => console.log(blockNumber),
-    poll: true, // [!code focus]
-  }
-)
+const unwatch = publicClient.watchBlockNumber({
+    onBlockNumber: (blockNumber) => console.log(blockNumber),
+    poll: true // [!code focus]
+});
 ```
 
 ### pollingInterval (optional)
@@ -119,15 +114,13 @@ const unwatch = publicClient.watchBlockNumber(
 
 Polling frequency (in ms). Defaults to Client's `pollingInterval` config.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-const unwatch = publicClient.watchBlockNumber(
-  { 
-    onBlockNumber: blockNumber => console.log(blockNumber),
-    pollingInterval: 12_000, // [!code focus]
-  }
-)
+const unwatch = publicClient.watchBlockNumber({
+    onBlockNumber: (blockNumber) => console.log(blockNumber),
+    pollingInterval: 12_000 // [!code focus]
+});
 ```
 
 ## Example
@@ -139,4 +132,4 @@ Check out the usage of `watchBlockNumber` in the live [Watch Block Numbers Examp
 ## JSON-RPC Methods
 
 - When `poll: true`, calls [`eth_blockNumber`](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_blocknumber) on a polling interval.
-- When `poll: false` & WebSocket Transport, uses a WebSocket subscription via [`eth_subscribe`](https://docs.alchemy.com/reference/eth-subscribe-polygon) and the `"newHeads"` event. 
+- When `poll: false` & WebSocket Transport, uses a WebSocket subscription via [`eth_subscribe`](https://docs.alchemy.com/reference/eth-subscribe-polygon) and the `"newHeads"` event.

@@ -6,31 +6,31 @@ Signs typed data and calculates an Ethereum-specific signature in [https://eips.
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { privateKeyToAccount } from 'viem/accounts'
-import { domain, types } from './data'
+```js twoslash [example.ts]
+import { privateKeyToAccount } from 'viem/accounts';
+import { domain, types } from './data';
 
-const account = privateKeyToAccount('0x...')
+const account = privateKeyToAccount('0x...');
 
 const signature = await account.signTypedData({
-  domain,
-  types,
-  primaryType: 'Mail',
-  message: {
-    from: {
-      name: 'Cow',
-      wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
-    },
-    to: {
-      name: 'Bob',
-      wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
-    },
-    contents: 'Hello, Bob!',
-  },
-})
+    domain,
+    types,
+    primaryType: 'Mail',
+    message: {
+        from: {
+            name: 'Cow',
+            wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826'
+        },
+        to: {
+            name: 'Bob',
+            wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB'
+        },
+        contents: 'Hello, Bob!'
+    }
+});
 ```
 
-```ts twoslash [data.ts] filename="data.ts"
+```js twoslash [data.ts] filename="data.ts"
 // All properties on a domain are optional
 export const domain = {
   name: 'Ether Mail',
@@ -38,7 +38,7 @@ export const domain = {
   chainId: 1,
   verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
 } as const
- 
+
 // The named list of all type definitions
 export const types = {
   Person: [
@@ -71,26 +71,27 @@ The typed data domain.
 
 ```ts
 const signature = await account.signTypedData({
-  domain: { // [!code focus:6]
-    name: 'Ether Mail',
-    version: '1',
-    chainId: 1,
-    verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-  },
-  types,
-  primaryType: 'Mail',
-  message: {
-    from: {
-      name: 'Cow',
-      wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+    domain: {
+        // [!code focus:6]
+        name: 'Ether Mail',
+        version: '1',
+        chainId: 1,
+        verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'
     },
-    to: {
-      name: 'Bob',
-      wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
-    },
-    contents: 'Hello, Bob!',
-  },
-})
+    types,
+    primaryType: 'Mail',
+    message: {
+        from: {
+            name: 'Cow',
+            wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826'
+        },
+        to: {
+            name: 'Bob',
+            wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB'
+        },
+        contents: 'Hello, Bob!'
+    }
+});
 ```
 
 ### types
@@ -99,31 +100,32 @@ The type definitions for the typed data.
 
 ```ts
 const signature = await account.signTypedData({
-  domain,
-  types: { // [!code focus:11]
-    Person: [
-      { name: 'name', type: 'string' },
-      { name: 'wallet', type: 'address' },
-    ],
-    Mail: [
-      { name: 'from', type: 'Person' },
-      { name: 'to', type: 'Person' },
-      { name: 'contents', type: 'string' },
-    ],
-  },
-  primaryType: 'Mail',
-  message: {
-    from: {
-      name: 'Cow',
-      wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+    domain,
+    types: {
+        // [!code focus:11]
+        Person: [
+            { name: 'name', type: 'string' },
+            { name: 'wallet', type: 'address' }
+        ],
+        Mail: [
+            { name: 'from', type: 'Person' },
+            { name: 'to', type: 'Person' },
+            { name: 'contents', type: 'string' }
+        ]
     },
-    to: {
-      name: 'Bob',
-      wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
-    },
-    contents: 'Hello, Bob!',
-  },
-})
+    primaryType: 'Mail',
+    message: {
+        from: {
+            name: 'Cow',
+            wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826'
+        },
+        to: {
+            name: 'Bob',
+            wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB'
+        },
+        contents: 'Hello, Bob!'
+    }
+});
 ```
 
 ### primaryType
@@ -134,31 +136,32 @@ The primary type to extract from `types` and use in `value`.
 
 ```ts
 const signature = await account.signTypedData({
-  domain,
-  types: {
-    Person: [
-      { name: 'name', type: 'string' },
-      { name: 'wallet', type: 'address' },
-    ],
-    Mail: [ // [!code focus:5]
-      { name: 'from', type: 'Person' },
-      { name: 'to', type: 'Person' },
-      { name: 'contents', type: 'string' },
-    ],
-  },
-  primaryType: 'Mail', // [!code focus]
-  message: {
-    from: {
-      name: 'Cow',
-      wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+    domain,
+    types: {
+        Person: [
+            { name: 'name', type: 'string' },
+            { name: 'wallet', type: 'address' }
+        ],
+        Mail: [
+            // [!code focus:5]
+            { name: 'from', type: 'Person' },
+            { name: 'to', type: 'Person' },
+            { name: 'contents', type: 'string' }
+        ]
     },
-    to: {
-      name: 'Bob',
-      wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
-    },
-    contents: 'Hello, Bob!',
-  },
-})
+    primaryType: 'Mail', // [!code focus]
+    message: {
+        from: {
+            name: 'Cow',
+            wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826'
+        },
+        to: {
+            name: 'Bob',
+            wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB'
+        },
+        contents: 'Hello, Bob!'
+    }
+});
 ```
 
 ### message
@@ -167,29 +170,30 @@ const signature = await account.signTypedData({
 
 ```ts
 const signature = await account.signTypedData({
-  domain,
-  types: {
-    Person: [
-      { name: 'name', type: 'string' },
-      { name: 'wallet', type: 'address' },
-    ],
-    Mail: [
-      { name: 'from', type: 'Person' },
-      { name: 'to', type: 'Person' },
-      { name: 'contents', type: 'string' },
-    ],
-  },
-  primaryType: 'Mail', 
-  message: { // [!code focus:11]
-    from: {
-      name: 'Cow',
-      wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+    domain,
+    types: {
+        Person: [
+            { name: 'name', type: 'string' },
+            { name: 'wallet', type: 'address' }
+        ],
+        Mail: [
+            { name: 'from', type: 'Person' },
+            { name: 'to', type: 'Person' },
+            { name: 'contents', type: 'string' }
+        ]
     },
-    to: {
-      name: 'Bob',
-      wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
-    },
-    contents: 'Hello, Bob!',
-  },
-})
+    primaryType: 'Mail',
+    message: {
+        // [!code focus:11]
+        from: {
+            name: 'Cow',
+            wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826'
+        },
+        to: {
+            name: 'Bob',
+            wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB'
+        },
+        contents: 'Hello, Bob!'
+    }
+});
 ```

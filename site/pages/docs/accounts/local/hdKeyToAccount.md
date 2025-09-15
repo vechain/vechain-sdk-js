@@ -10,8 +10,8 @@ viem internally uses [`@scure/bip32`](https://github.com/paulmillr/scure-bip32),
 
 ## Import
 
-```ts twoslash
-import { HDKey, hdKeyToAccount } from 'viem/accounts'
+```js twoslash
+import { HDKey, hdKeyToAccount } from 'viem/accounts';
 ```
 
 > Note: viem [re-exports `HDKey`](https://github.com/paulmillr/scure-bip32#usage) from `@scure/bip32`.
@@ -26,11 +26,10 @@ The `HDKey` instance comes with a few static methods to derive a HD Key:
 - `fromExtendedKey`
 - `fromJSON`
 
-```ts twoslash
+```js twoslash
 // @noErrors
-import { createWalletClient, http } from 'viem'
+import { createWalletClient, ThorNetworks } from '@vechain/sdk/viem'
 import { HDKey, hdKeyToAccount } from 'viem/accounts'
-import { mainnet } from 'viem/chains'
 
 const hdKey = HDKey.fromMasterSeed(...) // [!code focus:3]
 const hdKey = HDKey.fromExtendedKey(...)
@@ -40,8 +39,8 @@ const account = hdKeyToAccount(hdKey) // [!code focus]
 
 const client = createWalletClient({
   account,
-  chain: mainnet,
-  transport: http(),
+  network: ThorNetworks.MAINNET,
+  network: ThorNetworks.MAINNET,
 })
 ```
 
@@ -53,7 +52,7 @@ const client = createWalletClient({
 
 The BIP-39 mnemonic phrase.
 
-```ts twoslash
+```js twoslash
 // @noErrors
 import { hdKeyToAccount } from 'viem/accounts'
 // ---cut---
@@ -71,7 +70,7 @@ const account = hdKeyToAccount(
 
 The account index to use in the path (`"m/44'/60'/${accountIndex}'/0/0"`) to derive a private key.
 
-```ts twoslash
+```js twoslash
 // @noErrors
 import { hdKeyToAccount } from 'viem/accounts'
 // ---cut---
@@ -92,7 +91,7 @@ const account = hdKeyToAccount(
 
 The address index to use in the path (`"m/44'/60'/0'/0/${addressIndex}"`) to derive a private key.
 
-```ts twoslash
+```js twoslash
 // @noErrors
 import { hdKeyToAccount } from 'viem/accounts'
 // ---cut---
@@ -114,7 +113,7 @@ const account = hdKeyToAccount(
 
 The change index to use in the path (`"m/44'/60'/0'/${changeIndex}/0"`) to derive a private key.
 
-```ts twoslash
+```js twoslash
 // @noErrors
 import { hdKeyToAccount } from 'viem/accounts'
 // ---cut---
@@ -136,7 +135,7 @@ const account = hdKeyToAccount(
 
 The HD path to use to derive a private key.
 
-```ts twoslash
+```js twoslash
 // @noErrors
 import { hdKeyToAccount } from 'viem/accounts'
 // ---cut---

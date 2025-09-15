@@ -1,9 +1,7 @@
 // [!region imports]
-import { http, createPublicClient } from 'viem'
-import { mainnet } from 'viem/chains'
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
 // [!endregion imports]
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http(),
-})
+    network: ThorNetworks.MAINNET
+});

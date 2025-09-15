@@ -6,31 +6,32 @@ Executes a new message call immediately without submitting a transaction to the 
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { account, publicClient } from './config'
+```js twoslash [example.ts]
+import { account, publicClient } from './config';
 
-const data = await publicClient.call({ // [!code focus:7]
-  account,
-  data: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-  to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-})
+const data = await publicClient.call({
+    // [!code focus:7]
+    account,
+    data: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+});
 ```
 
-```ts twoslash [config.ts] filename="config.ts"
-import { createPublicClient, http } from 'viem'
-import { privateKeyToAccount } from 'viem/accounts'
-import { mainnet } from 'viem/chains'
+```js twoslash [config.ts] filename="config.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+import { privateKeyToAccount } from 'viem/accounts';
+
 
 // @log: ↓ JSON-RPC Account
-export const account = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'
+export const account = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
 
 // @log: ↓ Local Account
 // export const account = privateKeyToAccount(...)
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
@@ -55,29 +56,29 @@ The example below demonstrates how we can utilize a Deployless Call **via Byteco
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { encodeFunctionData, parseAbi } from 'viem'
-import { publicClient } from './config'
+```js twoslash [example.ts]
+import { encodeFunctionData, parseAbi } from 'viem';
+import { publicClient } from './config';
 
 const data = await publicClient.call({
-  // Bytecode of the contract. Accessible here: https://etherscan.io/address/0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2#code
-  code: '0x...',
-  // Function to call on the contract.
-  data: encodeFunctionData({
-    abi: parseAbi(['function name() view returns (string)']),
-    functionName: 'name'
-  }),
-})
+    // Bytecode of the contract. Accessible here: https://etherscan.io/address/0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2#code
+    code: '0x...',
+    // Function to call on the contract.
+    data: encodeFunctionData({
+        abi: parseAbi(['function name() view returns (string)']),
+        functionName: 'name'
+    })
+});
 ```
 
-```ts twoslash [config.ts] filename="config.ts"
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash [config.ts] filename="config.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
@@ -88,42 +89,42 @@ The example below demonstrates how we can utilize a Deployless Call **via a [Dep
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { encodeFunctionData, parseAbi } from 'viem'
-import { owner, publicClient } from './config'
+```js twoslash [example.ts]
+import { encodeFunctionData, parseAbi } from 'viem';
+import { owner, publicClient } from './config';
 
 const data = await publicClient.call({
-  // Address of the contract deployer (e.g. Smart Account Factory).
-  factory: '0xE8Df82fA4E10e6A12a9Dab552bceA2acd26De9bb',
+    // Address of the contract deployer (e.g. Smart Account Factory).
+    factory: '0xE8Df82fA4E10e6A12a9Dab552bceA2acd26De9bb',
 
-  // Function to execute on the factory to deploy the contract.
-  factoryData: encodeFunctionData({
-    abi: parseAbi(['function createAccount(address owner, uint256 salt)']),
-    functionName: 'createAccount',
-    args: [owner, 0n],
-  }),
+    // Function to execute on the factory to deploy the contract.
+    factoryData: encodeFunctionData({
+        abi: parseAbi(['function createAccount(address owner, uint256 salt)']),
+        functionName: 'createAccount',
+        args: [owner, 0n]
+    }),
 
-  // Function to call on the contract (e.g. Smart Account contract).
-  data: encodeFunctionData({
-    abi: parseAbi(['function entryPoint() view returns (address)']),
-    functionName: 'entryPoint'
-  }),
+    // Function to call on the contract (e.g. Smart Account contract).
+    data: encodeFunctionData({
+        abi: parseAbi(['function entryPoint() view returns (address)']),
+        functionName: 'entryPoint'
+    }),
 
-  // Address of the contract.
-  to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-})
+    // Address of the contract.
+    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+});
 ```
 
-```ts twoslash [config.ts] filename="config.ts"
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash [config.ts] filename="config.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
 
-export const owner = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'
+
+export const owner = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
@@ -148,14 +149,14 @@ The Account to call from.
 
 Accepts a [JSON-RPC Account](/docs/clients/wallet#json-rpc-accounts) or [Local Account (Private Key, etc)](/docs/clients/wallet#local-accounts-private-key-mnemonic-etc).
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const data = await publicClient.call({
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266', // [!code focus]
-  data: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-  to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-})
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266', // [!code focus]
+    data: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+});
 ```
 
 ### data
@@ -164,14 +165,14 @@ const data = await publicClient.call({
 
 A contract hashed method call with encoded args.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const data = await publicClient.call({
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-  data: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', // [!code focus]
-  to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-})
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+    data: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', // [!code focus]
+    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+});
 ```
 
 ### to
@@ -180,14 +181,14 @@ const data = await publicClient.call({
 
 The contract address or recipient.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const data = await publicClient.call({
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-  data: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-  to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8', // [!code focus]
-})
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+    data: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8' // [!code focus]
+});
 ```
 
 ### accessList (optional)
@@ -196,20 +197,21 @@ const data = await publicClient.call({
 
 The access list.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const data = await publicClient.call({
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-  accessList: [ // [!code focus:6]
-    {
-      address: '0x1',
-      storageKeys: ['0x1'],
-    },
-  ],
-  data: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-  to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-})
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+    accessList: [
+        // [!code focus:6]
+        {
+            address: '0x1',
+            storageKeys: ['0x1']
+        }
+    ],
+    data: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+});
 ```
 
 ### blockNumber (optional)
@@ -218,15 +220,15 @@ const data = await publicClient.call({
 
 The block number to perform the call against.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const data = await publicClient.call({
-  blockNumber: 15121123n, // [!code focus]
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-  data: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-  to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-})
+    blockNumber: 15121123n, // [!code focus]
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+    data: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+});
 ```
 
 ### blockTag (optional)
@@ -236,15 +238,15 @@ const data = await publicClient.call({
 
 The block tag to perform the call against.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const data = await publicClient.call({
-  blockTag: 'safe', // [!code focus]
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-  data: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-  to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-})
+    blockTag: 'safe', // [!code focus]
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+    data: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+});
 ```
 
 ### code (optional)
@@ -253,13 +255,13 @@ const data = await publicClient.call({
 
 Bytecode to perform the call against.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const data = await publicClient.call({
-  code: '0x...', // [!code focus]
-  data: '0xdeadbeef',
-})
+    code: '0x...', // [!code focus]
+    data: '0xdeadbeef'
+});
 ```
 
 ### factory (optional)
@@ -268,15 +270,15 @@ const data = await publicClient.call({
 
 Contract deployment factory address (ie. Create2 factory, Smart Account factory, etc).
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const data = await publicClient.call({
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-  factory: '0x0000000000ffe8b47b3e2130213b802212439497', // [!code focus]
-  factoryData: '0xdeadbeef',
-  to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-})
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+    factory: '0x0000000000ffe8b47b3e2130213b802212439497', // [!code focus]
+    factoryData: '0xdeadbeef',
+    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+});
 ```
 
 ### factoryData (optional)
@@ -285,15 +287,15 @@ const data = await publicClient.call({
 
 Calldata to execute on the factory to deploy the contract.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const data = await publicClient.call({
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-  factory: '0x0000000000ffe8b47b3e2130213b802212439497',
-  factoryData: '0xdeadbeef', // [!code focus]
-  to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-})
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+    factory: '0x0000000000ffe8b47b3e2130213b802212439497',
+    factoryData: '0xdeadbeef', // [!code focus]
+    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+});
 ```
 
 ### gas (optional)
@@ -302,15 +304,15 @@ const data = await publicClient.call({
 
 The gas provided for transaction execution.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const data = await publicClient.call({
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-  data: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-  gas: 1_000_000n, // [!code focus]
-  to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-})
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+    data: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    gas: 1_000_000n, // [!code focus]
+    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+});
 ```
 
 ### gasPrice (optional)
@@ -319,17 +321,17 @@ const data = await publicClient.call({
 
 The price (in wei) to pay per gas. Only applies to [Legacy Transactions](/docs/glossary/terms#legacy-transaction).
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-import { parseGwei } from 'viem'
+import { parseGwei } from 'viem';
 
 const data = await publicClient.call({
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-  data: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-  gasPrice: parseGwei('20'), // [!code focus]
-  to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-})
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+    data: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    gasPrice: parseGwei('20'), // [!code focus]
+    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+});
 ```
 
 ### maxFeePerGas (optional)
@@ -338,17 +340,17 @@ const data = await publicClient.call({
 
 Total fee per gas (in wei), inclusive of `maxPriorityFeePerGas`. Only applies to [EIP-1559 Transactions](/docs/glossary/terms#eip-1559-transaction).
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-import { parseGwei } from 'viem'
+import { parseGwei } from 'viem';
 
 const data = await publicClient.call({
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-  data: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-  maxFeePerGas: parseGwei('20'), // [!code focus]
-  to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-})
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+    data: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    maxFeePerGas: parseGwei('20'), // [!code focus]
+    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+});
 ```
 
 ### maxPriorityFeePerGas (optional)
@@ -357,18 +359,18 @@ const data = await publicClient.call({
 
 Max priority fee per gas (in wei). Only applies to [EIP-1559 Transactions](/docs/glossary/terms#eip-1559-transaction).
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-import { parseGwei } from 'viem'
+import { parseGwei } from 'viem';
 
 const data = await publicClient.call({
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-  data: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-  maxFeePerGas: parseGwei('20'),
-  maxPriorityFeePerGas: parseGwei('2'), // [!code focus]
-  to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-})
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+    data: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    maxFeePerGas: parseGwei('20'),
+    maxPriorityFeePerGas: parseGwei('2'), // [!code focus]
+    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+});
 ```
 
 ### nonce (optional)
@@ -377,15 +379,15 @@ const data = await publicClient.call({
 
 Unique number identifying this transaction.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const data = await publicClient.call({
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-  data: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-  nonce: 420, // [!code focus]
-  to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-})
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+    data: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    nonce: 420, // [!code focus]
+    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+});
 ```
 
 ### stateOverride (optional)
@@ -396,22 +398,26 @@ The state override set is an optional address-to-state mapping, where each entry
 
 ```ts
 const data = await publicClient.call({
-  account,
-  data: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-  to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-  stateOverride: [ // [!code focus]
-    { // [!code focus]
-      address: '0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC', // [!code focus]
-      balance: parseEther('1'), // [!code focus]
-      stateDiff: [ // [!code focus]
-        { // [!code focus]
-          slot: '0x3ea2f1d0abf3fc66cf29eebb70cbd4e7fe762ef8a09bcc06c8edf641230afec0', // [!code focus]
-          value: '0x00000000000000000000000000000000000000000000000000000000000001a4', // [!code focus]
-        }, // [!code focus]
-      ], // [!code focus]
-    } // [!code focus]
-  ], // [!code focus]
-})
+    account,
+    data: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
+    stateOverride: [
+        // [!code focus]
+        {
+            // [!code focus]
+            address: '0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC', // [!code focus]
+            balance: parseEther('1'), // [!code focus]
+            stateDiff: [
+                // [!code focus]
+                {
+                    // [!code focus]
+                    slot: '0x3ea2f1d0abf3fc66cf29eebb70cbd4e7fe762ef8a09bcc06c8edf641230afec0', // [!code focus]
+                    value: '0x00000000000000000000000000000000000000000000000000000000000001a4' // [!code focus]
+                } // [!code focus]
+            ] // [!code focus]
+        } // [!code focus]
+    ] // [!code focus]
+});
 ```
 
 ### value (optional)
@@ -420,17 +426,17 @@ const data = await publicClient.call({
 
 Value (in wei) sent with this transaction.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-import { parseEther } from 'viem'
+import { parseEther } from 'viem';
 
 const data = await publicClient.call({
-  account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-  data: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-  to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-  value: parseEther('1'), // [!code focus]
-})
+    account: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+    data: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
+    value: parseEther('1') // [!code focus]
+});
 ```
 
 ## JSON-RPC Methods

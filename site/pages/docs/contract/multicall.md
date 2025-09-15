@@ -70,12 +70,11 @@ export const wagmiAbi = [
 ```
 
 ```ts [client.ts]
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem'
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
+  network: ThorNetworks.MAINNET,
+  network: ThorNetworks.MAINNET
 })
 ```
 

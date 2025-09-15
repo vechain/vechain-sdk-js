@@ -13,45 +13,45 @@ WebAuthn Accounts are commonly used for **[Smart Account](/account-abstraction/a
 WebAuthn Account owners are currently supported on the following Smart Account implementations:
 
 - [`toCoinbaseSmartAccount`](/account-abstraction/accounts/smart/toCoinbaseSmartAccount#owners)
-:::
+  :::
 
 ## Usage
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { 
-  createWebAuthnCredential, 
-  toWebAuthnAccount,
-  toCoinbaseSmartAccount 
-} from 'viem/account-abstraction'
-import { client } from './client'
+```js twoslash [example.ts]
+import {
+    createWebAuthnCredential,
+    toWebAuthnAccount,
+    toCoinbaseSmartAccount
+} from 'viem/account-abstraction';
+import { client } from './client';
 
 // 1. Register a credential (ie. passkey).
 const credential = await createWebAuthnCredential({
-  name: 'Example',
-})
+    name: 'Example'
+});
 
 // 2. Create a WebAuthn owner account from the credential.
 const owner = toWebAuthnAccount({
-  credential,
-})
+    credential
+});
 
 // 3. Hook up the owner to a WebAuthn-compatible Smart Account.
 const account = toCoinbaseSmartAccount({
-  client,
-  owners: [owner],
-})
+    client,
+    owners: [owner]
+});
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash [client.ts] filename="client.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 export const client = createPublicClient({
-  chain: mainnet,
-  transport: http(),
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::

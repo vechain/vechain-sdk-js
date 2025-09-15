@@ -16,7 +16,7 @@ This is an experimental action that is not supported in most wallets. It is reco
 
 :::code-group
 
-```ts twoslash [example.ts]
+```js twoslash [example.ts]
 import { parseEther } from 'viem'
 import { account, walletClient } from './config'
  
@@ -42,7 +42,7 @@ const result = await walletClient.grantPermissions({ // [!code focus:99]
 })
 ```
 
-```ts twoslash [config.ts] filename="config.ts"
+```js twoslash [config.ts] filename="config.ts"
 import 'viem/window'
 // ---cut---
 import { createWalletClient, custom } from 'viem'
@@ -73,7 +73,7 @@ Response from the wallet after issuing permissions.
 
 The Account to scope the permissions to.
 
-```ts twoslash
+```js twoslash
 import { parseEther } from 'viem'
 import { account, walletClient } from './config'
  
@@ -105,7 +105,7 @@ const result = await walletClient.grantPermissions({
 
 The timestamp (in seconds) when the permissions will expire.
 
-```ts twoslash
+```js twoslash
 import { parseEther } from 'viem'
 import { account, walletClient } from './config'
  
@@ -137,7 +137,7 @@ const result = await walletClient.grantPermissions({
 
 Set of Permissions & Policies to grant to the user.
 
-```ts twoslash
+```js twoslash
 // @noErrors
 import { parseEther } from 'viem'
 import { account, walletClient } from './config'
@@ -172,7 +172,7 @@ const result = await walletClient.grantPermissions({
 The `type` property is constrained to the canonical set of [Permission & Policy types as 
 defined in ERC-7715](https://github.com/pedrouid/ERCs/blob/19c16341c57f6ac8770cb778d60845dcf30f6a40/ERCS/erc-7715.md#permissions), however, consumers can utilize a `custom` property on `type` as an escape hatch to use custom Permission or Policy types:
 
-```ts twoslash
+```js twoslash
 // @noErrors
 import { parseEther } from 'viem'
 import { account, walletClient } from './config'
@@ -198,7 +198,7 @@ const result = await walletClient.grantPermissions({
 
 Custom signer type to scope the permissions to.
 
-```ts twoslash
+```js twoslash
 import { parseEther } from 'viem'
 import { account, walletClient } from './config'
  

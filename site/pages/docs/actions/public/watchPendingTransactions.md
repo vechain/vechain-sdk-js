@@ -8,30 +8,30 @@ Watches and returns pending transaction hashes.
 
 This Action will batch up all the pending transactions found within the [`pollingInterval`](#pollinginterval-optional), and invoke them via [`onTransactions`](#ontransactions).
 
-
 ## Usage
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { publicClient } from './client'
+```js twoslash [example.ts]
+import { publicClient } from './client';
 
-const unwatch = publicClient.watchPendingTransactions( // [!code focus:99]
-  { onTransactions: hashes => console.log(hashes) }
-)
+const unwatch = publicClient.watchPendingTransactions(
+    // [!code focus:99]
+    { onTransactions: (hashes) => console.log(hashes) }
+);
 // @log: > ['0x...', '0x...', '0x...']
 // @log: > ['0x...', '0x...']
 // @log: > ['0x...', '0x...', '0x...', ...]
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash [client.ts] filename="client.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
@@ -50,12 +50,12 @@ A function that can be invoked to stop watching for new pending transaction hash
 
 The new pending transaction hashes.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const unwatch = publicClient.watchPendingTransactions(
-  { onTransactions: hashes => console.log(hashes) } // [!code focus:1]
-)
+    { onTransactions: (hashes) => console.log(hashes) } // [!code focus:1]
+);
 ```
 
 ### batch (optional)
@@ -65,15 +65,13 @@ const unwatch = publicClient.watchPendingTransactions(
 
 Whether or not to batch the transaction hashes between polling intervals.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-const unwatch = publicClient.watchPendingTransactions(
-  { 
+const unwatch = publicClient.watchPendingTransactions({
     batch: false, // [!code focus]
-    onTransactions: hashes => console.log(hashes),
-  }
-)
+    onTransactions: (hashes) => console.log(hashes)
+});
 ```
 
 ### onError (optional)
@@ -82,16 +80,14 @@ const unwatch = publicClient.watchPendingTransactions(
 
 Error thrown from listening for new pending transactions.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 // @noErrors
-const unwatch = publicClient.watchPendingTransactions(
-  { 
-    onError: error => console.log(error), // [!code focus:1]
-    onTransactions: hashes => console.log(hashes),
-  }
-)
+const unwatch = publicClient.watchPendingTransactions({
+    onError: (error) => console.log(error), // [!code focus:1]
+    onTransactions: (hashes) => console.log(hashes)
+});
 ```
 
 ### poll (optional)
@@ -103,21 +99,19 @@ Whether or not to use a polling mechanism to check for new pending transactions 
 
 This option is only configurable for Clients with a [WebSocket Transport](/docs/clients/transports/websocket).
 
-```ts twoslash
-import { createPublicClient, webSocket } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createPublicClient, webSocket } from 'viem';
+
 
 const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: webSocket()
-})
+    network: ThorNetworks.MAINNET,
+    transport: webSocket()
+});
 
-const unwatch = publicClient.watchPendingTransactions(
-  { 
-    onTransactions: transactions => console.log(transactions),
-    poll: true, // [!code focus]
-  }
-)
+const unwatch = publicClient.watchPendingTransactions({
+    onTransactions: (transactions) => console.log(transactions),
+    poll: true // [!code focus]
+});
 ```
 
 ### pollingInterval (optional)
@@ -126,21 +120,19 @@ const unwatch = publicClient.watchPendingTransactions(
 
 Polling frequency (in ms). Defaults to the Client's `pollingInterval` config.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 // @noErrors
-const unwatch = publicClient.watchPendingTransactions(
-  { 
+const unwatch = publicClient.watchPendingTransactions({
     pollingInterval: 1_000, // [!code focus]
-    onTransactions: hashes => console.log(hashes),
-  }
-)
+    onTransactions: (hashes) => console.log(hashes)
+});
 ```
 
 ## JSON-RPC Methods
 
 - When `poll: true`
-  - Calls [`eth_newPendingTransactionFilter`](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_newpendingtransactionfilter) to initialize the filter.
-  - Calls [`eth_getFilterChanges`](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getFilterChanges) on a polling interval.
-- When `poll: false` & WebSocket Transport, uses a WebSocket subscription via [`eth_subscribe`](https://docs.alchemy.com/reference/eth-subscribe-polygon) and the `"newPendingTransactions"` event. 
+    - Calls [`eth_newPendingTransactionFilter`](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_newpendingtransactionfilter) to initialize the filter.
+    - Calls [`eth_getFilterChanges`](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getFilterChanges) on a polling interval.
+- When `poll: false` & WebSocket Transport, uses a WebSocket subscription via [`eth_subscribe`](https://docs.alchemy.com/reference/eth-subscribe-polygon) and the `"newPendingTransactions"` event.

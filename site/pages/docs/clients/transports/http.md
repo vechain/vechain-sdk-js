@@ -4,20 +4,20 @@ The `http` Transport connects to a JSON-RPC API via HTTP.
 
 ## Import
 
-```ts twoslash
-import { http } from 'viem'
+```js twoslash
+import { http } from 'viem';
 ```
 
 ## Usage
 
-```ts twoslash {4}
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash {4}
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 const client = createPublicClient({
-  chain: mainnet,
-  transport: http('https://1.rpc.thirdweb.com/...'), // [!code focus]
-})
+    network: ThorNetworks.MAINNET,
+    transport: http('https://1.rpc.thirdweb.com/...') // [!code focus]
+});
 ```
 
 :::warning[Warning]
@@ -32,31 +32,33 @@ The Transport will batch up Actions over a given period and execute them in a si
 
 You can enable Batch JSON-RPC by setting the `batch` flag to `true`:
 
-```ts twoslash
-import { http } from 'viem'
+```js twoslash
+import { http } from 'viem';
 // ---cut---
 const transport = http('https://1.rpc.thirdweb.com/...', {
-  batch: true // [!code focus]
-})
+    batch: true // [!code focus]
+});
 ```
 
 Now when you invoke Actions, the `http` Transport will batch and send over those requests at the end of the message queue (or custom time period) in a single Batch JSON-RPC HTTP request:
 
-```ts twoslash
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 const client = createPublicClient({
-  chain: mainnet,
-  transport: http('https://1.rpc.thirdweb.com/...'), 
-})
+    network: ThorNetworks.MAINNET,
+    transport: http('https://1.rpc.thirdweb.com/...')
+});
 // ---cut---
 // The below will send a single Batch JSON-RPC HTTP request to the RPC Provider.
 const [blockNumber, balance, ensName] = await Promise.all([
-  client.getBlockNumber(),
-  client.getBalance({ address: '0xd2135CfB216b74109775236E36d4b433F1DF507B' }),
-  client.getEnsName({ address: '0xd2135CfB216b74109775236E36d4b433F1DF507B' }),
-])
+    client.getBlockNumber(),
+    client.getBalance({
+        address: '0xd2135CfB216b74109775236E36d4b433F1DF507B'
+    }),
+    client.getEnsName({ address: '0xd2135CfB216b74109775236E36d4b433F1DF507B' })
+]);
 ```
 
 ## Parameters
@@ -68,10 +70,10 @@ const [blockNumber, balance, ensName] = await Promise.all([
 
 URL of the JSON-RPC API.
 
-```ts twoslash
-import { http } from 'viem'
+```js twoslash
+import { http } from 'viem';
 // ---cut---
-const transport = http('https://1.rpc.thirdweb.com/...')
+const transport = http('https://1.rpc.thirdweb.com/...');
 ```
 
 ### batch (optional)
@@ -81,12 +83,12 @@ const transport = http('https://1.rpc.thirdweb.com/...')
 
 Toggle to enable Batch JSON-RPC
 
-```ts twoslash
-import { http } from 'viem'
+```js twoslash
+import { http } from 'viem';
 // ---cut---
 const transport = http('https://1.rpc.thirdweb.com/...', {
-  batch: true // [!code focus]
-})
+    batch: true // [!code focus]
+});
 ```
 
 ### batch.batchSize (optional)
@@ -96,14 +98,14 @@ const transport = http('https://1.rpc.thirdweb.com/...', {
 
 The maximum number of JSON-RPC requests to send in a batch.
 
-```ts twoslash
-import { http } from 'viem'
+```js twoslash
+import { http } from 'viem';
 // ---cut---
 const transport = http('https://1.rpc.thirdweb.com/...', {
-  batch: {
-    batchSize: 2_000 // [!code focus]
-  }
-})
+    batch: {
+        batchSize: 2_000 // [!code focus]
+    }
+});
 ```
 
 ### batch.wait (optional)
@@ -113,14 +115,14 @@ const transport = http('https://1.rpc.thirdweb.com/...', {
 
 The maximum number of milliseconds to wait before sending a batch.
 
-```ts twoslash
-import { http } from 'viem'
+```js twoslash
+import { http } from 'viem';
 // ---cut---
 const transport = http('https://1.rpc.thirdweb.com/...', {
-  batch: {
-    wait: 16 // [!code focus]
-  }
-})
+    batch: {
+        wait: 16 // [!code focus]
+    }
+});
 ```
 
 ### fetchOptions (optional)
@@ -129,16 +131,17 @@ const transport = http('https://1.rpc.thirdweb.com/...', {
 
 [Fetch options](https://developer.mozilla.org/en-US/docs/Web/API/fetch) to pass to the internal `fetch` function. Useful for passing auth headers or cache options.
 
-```ts twoslash
-import { http } from 'viem'
+```js twoslash
+import { http } from 'viem';
 // ---cut---
 const transport = http('https://1.rpc.thirdweb.com/...', {
-  fetchOptions: { // [!code focus:5]
-    headers: {
-      'Authorization': 'Bearer ...'
+    fetchOptions: {
+        // [!code focus:5]
+        headers: {
+            Authorization: 'Bearer ...'
+        }
     }
-  }
-})
+});
 ```
 
 ### key (optional)
@@ -148,12 +151,12 @@ const transport = http('https://1.rpc.thirdweb.com/...', {
 
 A key for the Transport.
 
-```ts twoslash
-import { http } from 'viem'
+```js twoslash
+import { http } from 'viem';
 // ---cut---
 const transport = http('https://1.rpc.thirdweb.com/...', {
-  key: 'alchemy', // [!code focus]
-})
+    key: 'alchemy' // [!code focus]
+});
 ```
 
 ### methods (optional)
@@ -162,14 +165,14 @@ const transport = http('https://1.rpc.thirdweb.com/...', {
 
 Methods to include or exclude from sending RPC requests.
 
-```ts twoslash
-import { http } from 'viem'
+```js twoslash
+import { http } from 'viem';
 // ---cut---
 const transport = http('https://1.rpc.thirdweb.com/...', {
-  methods: {
-    include: ['eth_sendTransaction', 'eth_signTypedData_v4'],
-  },
-})
+    methods: {
+        include: ['eth_sendTransaction', 'eth_signTypedData_v4']
+    }
+});
 ```
 
 ### name (optional)
@@ -179,12 +182,12 @@ const transport = http('https://1.rpc.thirdweb.com/...', {
 
 A name for the Transport
 
-```ts twoslash
-import { http } from 'viem'
+```js twoslash
+import { http } from 'viem';
 // ---cut---
 const transport = http('https://1.rpc.thirdweb.com/...', {
-  name: 'Alchemy HTTP Provider', // [!code focus]
-})
+    name: 'Alchemy HTTP Provider' // [!code focus]
+});
 ```
 
 ### onFetchRequest (optional)
@@ -193,14 +196,14 @@ const transport = http('https://1.rpc.thirdweb.com/...', {
 
 A callback to handle the fetch request. Useful for logging or debugging.
 
-```ts twoslash
-import { http } from 'viem'
+```js twoslash
+import { http } from 'viem';
 // ---cut---
 const transport = http('https://1.rpc.thirdweb.com/...', {
-  onFetchRequest(request) {
-    console.log(request) // [!code focus]
-  }
-})
+    onFetchRequest(request) {
+        console.log(request); // [!code focus]
+    }
+});
 ```
 
 ### onFetchResponse (optional)
@@ -209,14 +212,14 @@ const transport = http('https://1.rpc.thirdweb.com/...', {
 
 A callback to handle the fetch response. Useful for logging or debugging.
 
-```ts twoslash
-import { http } from 'viem'
+```js twoslash
+import { http } from 'viem';
 // ---cut---
 const transport = http('https://1.rpc.thirdweb.com/...', {
-  onFetchResponse(response) {
-    console.log(response) // [!code focus]
-  }
-})
+    onFetchResponse(response) {
+        console.log(response); // [!code focus]
+    }
+});
 ```
 
 ### retryCount (optional)
@@ -226,12 +229,12 @@ const transport = http('https://1.rpc.thirdweb.com/...', {
 
 The max number of times to retry when a request fails.
 
-```ts twoslash
-import { http } from 'viem'
+```js twoslash
+import { http } from 'viem';
 // ---cut---
 const transport = http('https://1.rpc.thirdweb.com/...', {
-  retryCount: 5, // [!code focus]
-})
+    retryCount: 5 // [!code focus]
+});
 ```
 
 ### retryDelay (optional)
@@ -241,12 +244,12 @@ const transport = http('https://1.rpc.thirdweb.com/...', {
 
 The base delay (in ms) between retries. By default, the Transport will use [exponential backoff](https://en.wikipedia.org/wiki/Exponential_backoff) (`~~(1 << count) * retryDelay`), which means the time between retries is not constant.
 
-```ts twoslash
-import { http } from 'viem'
+```js twoslash
+import { http } from 'viem';
 // ---cut---
 const transport = http('https://1.rpc.thirdweb.com/...', {
-  retryDelay: 100, // [!code focus]
-})
+    retryDelay: 100 // [!code focus]
+});
 ```
 
 ### timeout (optional)
@@ -256,11 +259,10 @@ const transport = http('https://1.rpc.thirdweb.com/...', {
 
 The timeout for requests.
 
-```ts twoslash
-import { http } from 'viem'
+```js twoslash
+import { http } from 'viem';
 // ---cut---
 const transport = http('https://1.rpc.thirdweb.com/...', {
-  timeout: 60_000, // [!code focus]
-})
+    timeout: 60_000 // [!code focus]
+});
 ```
-

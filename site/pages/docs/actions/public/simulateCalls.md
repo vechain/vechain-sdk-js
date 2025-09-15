@@ -10,25 +10,25 @@ Simulates a set of calls for a block, and optionally provides asset changes. Int
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { parseEther } from 'viem'
-import { client } from './config'
- 
-const { results } = await client.simulateCalls({
-  account: '0x5a0b54d5dc17e482fe8b0bdca5320161b95fb929',
-  calls: [
-    {
-      to: '0xcb98643b8786950F0461f3B0edf99D88F274574D',
-      value: parseEther('2'),
-    },
-    {
-      to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-      value: parseEther('1'),
-    },
-  ],
-})
+```js twoslash [example.ts]
+import { parseEther } from 'viem';
+import { client } from './config';
 
-console.log(results)
+const { results } = await client.simulateCalls({
+    account: '0x5a0b54d5dc17e482fe8b0bdca5320161b95fb929',
+    calls: [
+        {
+            to: '0xcb98643b8786950F0461f3B0edf99D88F274574D',
+            value: parseEther('2')
+        },
+        {
+            to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
+            value: parseEther('1')
+        }
+    ]
+});
+
+console.log(results);
 // @log: [
 // @log:   {
 // @log:     gasUsed: 21000n,
@@ -43,14 +43,14 @@ console.log(results)
 // @log: ]
 ```
 
-```ts twoslash [config.ts] filename="config.ts"
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash [config.ts] filename="config.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 export const client = createPublicClient({
-  chain: mainnet,
-  transport: http(),
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
@@ -61,40 +61,37 @@ The `calls` property also accepts **Contract Calls**, and can be used via the `a
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { parseAbi, parseEther } from 'viem'
-import { client } from './config'
+```js twoslash [example.ts]
+import { parseAbi, parseEther } from 'viem';
+import { client } from './config';
 
 const abi = parseAbi([
-  'function mint()',
-  'function transfer(address, uint256) returns (bool)',
-])
- 
-const { results } = await client.simulateCalls({
-  account: '0x5a0b54d5dc17e482fe8b0bdca5320161b95fb929',
-  calls: [
-    {
-      to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-      value: parseEther('1')
-    },
-    {
-      to: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-      abi,
-      functionName: 'mint',
-    },
-    {
-      to: '0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE',
-      abi,
-      functionName: 'transfer',
-      args: [
-        '0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC',
-        100n
-      ],
-    },
-  ],
-})
+    'function mint()',
+    'function transfer(address, uint256) returns (bool)'
+]);
 
-console.log(results)
+const { results } = await client.simulateCalls({
+    account: '0x5a0b54d5dc17e482fe8b0bdca5320161b95fb929',
+    calls: [
+        {
+            to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
+            value: parseEther('1')
+        },
+        {
+            to: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+            abi,
+            functionName: 'mint'
+        },
+        {
+            to: '0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE',
+            abi,
+            functionName: 'transfer',
+            args: ['0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC', 100n]
+        }
+    ]
+});
+
+console.log(results);
 // @log: [
 // @log:   {
 // @log:     gasUsed: 21000n,
@@ -117,14 +114,14 @@ console.log(results)
 // @log: ]
 ```
 
-```ts twoslash [config.ts] filename="config.ts"
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash [config.ts] filename="config.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 export const client = createPublicClient({
-  chain: mainnet,
-  transport: http(),
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
@@ -135,41 +132,38 @@ Providing the `traceAssetChanges` parameter (with an `account`) will return asse
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { parseAbi, parseEther } from 'viem'
-import { client } from './config'
+```js twoslash [example.ts]
+import { parseAbi, parseEther } from 'viem';
+import { client } from './config';
 
 const abi = parseAbi([
-  'function mint()',
-  'function transfer(address, uint256) returns (bool)',
-])
- 
-const { assetChanges, results } = await client.simulateCalls({
-  account: '0x5a0b54d5dc17e482fe8b0bdca5320161b95fb929',
-  calls: [
-    {
-      to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-      value: parseEther('1.5')
-    },
-    {
-      to: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-      abi,
-      functionName: 'mint',
-    },
-    {
-      to: '0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE',
-      abi,
-      functionName: 'transfer',
-      args: [
-        '0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC',
-        100n
-      ],
-    },
-  ],
-  traceAssetChanges: true, // [!code hl]
-})
+    'function mint()',
+    'function transfer(address, uint256) returns (bool)'
+]);
 
-console.log(assetChanges)
+const { assetChanges, results } = await client.simulateCalls({
+    account: '0x5a0b54d5dc17e482fe8b0bdca5320161b95fb929',
+    calls: [
+        {
+            to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
+            value: parseEther('1.5')
+        },
+        {
+            to: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+            abi,
+            functionName: 'mint'
+        },
+        {
+            to: '0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE',
+            abi,
+            functionName: 'transfer',
+            args: ['0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC', 100n]
+        }
+    ],
+    traceAssetChanges: true // [!code hl]
+});
+
+console.log(assetChanges);
 // @log: [
 // @log:   {
 // @log:     token: {
@@ -210,56 +204,56 @@ console.log(assetChanges)
 // @log: ]
 ```
 
-```ts twoslash [config.ts] filename="config.ts"
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash [config.ts] filename="config.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 export const client = createPublicClient({
-  chain: mainnet,
-  transport: http(),
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
 
 ### Reading Contracts
 
-It is also worth noting that `simulateCalls` also supports "reading" contracts. 
+It is also worth noting that `simulateCalls` also supports "reading" contracts.
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { parseAbi } from 'viem'
-import { client } from './config'
+```js twoslash [example.ts]
+import { parseAbi } from 'viem';
+import { client } from './config';
 
 const abi = parseAbi([
-  'function totalSupply() returns (uint256)',
-  'function ownerOf(uint256) returns (address)',
-])
- 
-const { results } = await client.simulateCalls({
-  calls: [
-    {
-      to: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-      abi,
-      functionName: 'totalSupply',
-    },
-    {
-      to: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-      abi,
-      functionName: 'ownerOf',
-      args: [69420n],
-    },
-    {
-      to: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-      abi,
-      functionName: 'ownerOf',
-      args: [13371337n],
-    },
-  ],
-})
+    'function totalSupply() returns (uint256)',
+    'function ownerOf(uint256) returns (address)'
+]);
 
-console.log(results)
+const { results } = await client.simulateCalls({
+    calls: [
+        {
+            to: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+            abi,
+            functionName: 'totalSupply'
+        },
+        {
+            to: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+            abi,
+            functionName: 'ownerOf',
+            args: [69420n]
+        },
+        {
+            to: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+            abi,
+            functionName: 'ownerOf',
+            args: [13371337n]
+        }
+    ]
+});
+
+console.log(results);
 // @log: [
 // @log:   {
 // @log:     result: 424122n,
@@ -276,18 +270,17 @@ console.log(results)
 // @log: ]
 ```
 
-```ts twoslash [config.ts] filename="config.ts"
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash [config.ts] filename="config.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 export const client = createPublicClient({
-  chain: mainnet,
-  transport: http(),
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
-
 
 ## Return Value
 
@@ -303,23 +296,26 @@ Simulation results.
 
 Calls to simulate.
 
-```ts twoslash
-import { parseEther } from 'viem'
-import { client } from './config'
+```js twoslash
+import { parseEther } from 'viem';
+import { client } from './config';
 // ---cut---
 const { results } = await client.simulateCalls({
-  account: '0x5a0b54d5dc17e482fe8b0bdca5320161b95fb929',
-  calls: [ // [!code focus]
-    { // [!code focus]
-      to: '0xcb98643b8786950F0461f3B0edf99D88F274574D', // [!code focus]
-      value: parseEther('2'), // [!code focus]
-    }, // [!code focus] 
-    { // [!code focus]
-      to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8', // [!code focus]
-      value: parseEther('1'), // [!code focus]
-    }, // [!code focus]
-  ], // [!code focus]
-})
+    account: '0x5a0b54d5dc17e482fe8b0bdca5320161b95fb929',
+    calls: [
+        // [!code focus]
+        {
+            // [!code focus]
+            to: '0xcb98643b8786950F0461f3B0edf99D88F274574D', // [!code focus]
+            value: parseEther('2') // [!code focus]
+        }, // [!code focus]
+        {
+            // [!code focus]
+            to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8', // [!code focus]
+            value: parseEther('1') // [!code focus]
+        } // [!code focus]
+    ] // [!code focus]
+});
 ```
 
 ### calls.data
@@ -328,20 +324,20 @@ const { results } = await client.simulateCalls({
 
 Calldata to broadcast (typically a contract function selector with encoded arguments, or contract deployment bytecode).
 
-```ts twoslash
-import { parseEther } from 'viem'
-import { client } from './config'
+```js twoslash
+import { parseEther } from 'viem';
+import { client } from './config';
 // ---cut---
 const { results } = await client.simulateCalls({
-  account: '0x5a0b54d5dc17e482fe8b0bdca5320161b95fb929',
-  calls: [ 
-    { 
-      data: '0xdeadbeef', // [!code focus]
-      to: '0xcb98643b8786950F0461f3B0edf99D88F274574D', 
-      value: parseEther('2'), 
-    },  
-  ], 
-})
+    account: '0x5a0b54d5dc17e482fe8b0bdca5320161b95fb929',
+    calls: [
+        {
+            data: '0xdeadbeef', // [!code focus]
+            to: '0xcb98643b8786950F0461f3B0edf99D88F274574D',
+            value: parseEther('2')
+        }
+    ]
+});
 ```
 
 ### calls.to
@@ -350,19 +346,19 @@ const { results } = await client.simulateCalls({
 
 The recipient address.
 
-```ts twoslash
-import { parseEther } from 'viem'
-import { client } from './config'
+```js twoslash
+import { parseEther } from 'viem';
+import { client } from './config';
 // ---cut---
 const { results } = await client.simulateCalls({
-  account: '0x5a0b54d5dc17e482fe8b0bdca5320161b95fb929',
-  calls: [ 
-    { 
-      to: '0xcb98643b8786950F0461f3B0edf99D88F274574D', // [!code focus]
-      value: parseEther('2'),
-    },  
-  ], 
-})
+    account: '0x5a0b54d5dc17e482fe8b0bdca5320161b95fb929',
+    calls: [
+        {
+            to: '0xcb98643b8786950F0461f3B0edf99D88F274574D', // [!code focus]
+            value: parseEther('2')
+        }
+    ]
+});
 ```
 
 ### calls.value
@@ -371,19 +367,19 @@ const { results } = await client.simulateCalls({
 
 Value to send with the call.
 
-```ts twoslash
-import { parseEther } from 'viem'
-import { client } from './config'
+```js twoslash
+import { parseEther } from 'viem';
+import { client } from './config';
 // ---cut---
 const { results } = await client.simulateCalls({
-  account: '0x5a0b54d5dc17e482fe8b0bdca5320161b95fb929',
-  calls: [ 
-    { 
-      to: '0xcb98643b8786950F0461f3B0edf99D88F274574D',
-      value: parseEther('2'), // [!code focus]
-    },  
-  ], 
-})
+    account: '0x5a0b54d5dc17e482fe8b0bdca5320161b95fb929',
+    calls: [
+        {
+            to: '0xcb98643b8786950F0461f3B0edf99D88F274574D',
+            value: parseEther('2') // [!code focus]
+        }
+    ]
+});
 ```
 
 #### calls.dataSuffix
@@ -392,30 +388,24 @@ const { results } = await client.simulateCalls({
 
 Data to append to the end of the calldata.
 
-```ts twoslash [example.ts]
-import { parseAbi } from 'viem'
-import { client } from './config'
+```js twoslash [example.ts]
+import { parseAbi } from 'viem';
+import { client } from './config';
 
-const abi = parseAbi([
-  'function approve(address, uint256) returns (bool)',
-])
- // ---cut---
+const abi = parseAbi(['function approve(address, uint256) returns (bool)']);
+// ---cut---
 const { id } = await client.simulateCalls({
-  calls: [
-    {
-      to: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-      abi,
-      functionName: 'approve',
-      args: [
-        '0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC', 
-        100n
-      ],
-      dataSuffix: '0xdeadbeef' // [!code focus]
-    }
-  ],
-})
+    calls: [
+        {
+            to: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+            abi,
+            functionName: 'approve',
+            args: ['0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC', 100n],
+            dataSuffix: '0xdeadbeef' // [!code focus]
+        }
+    ]
+});
 ```
-
 
 ### account (optional)
 
@@ -423,19 +413,19 @@ const { id } = await client.simulateCalls({
 
 The account to simulate the calls from.
 
-```ts twoslash
-import { parseEther } from 'viem'
-import { client } from './config'
+```js twoslash
+import { parseEther } from 'viem';
+import { client } from './config';
 // ---cut---
 const { results } = await client.simulateCalls({
-  account: '0x5a0b54d5dc17e482fe8b0bdca5320161b95fb929', // [!code focus]
-  calls: [ 
-    { 
-      to: '0xcb98643b8786950F0461f3B0edf99D88F274574D',
-      value: parseEther('2'),
-    },  
-  ], 
-})
+    account: '0x5a0b54d5dc17e482fe8b0bdca5320161b95fb929', // [!code focus]
+    calls: [
+        {
+            to: '0xcb98643b8786950F0461f3B0edf99D88F274574D',
+            value: parseEther('2')
+        }
+    ]
+});
 ```
 
 ### blockNumber (optional)
@@ -444,19 +434,19 @@ const { results } = await client.simulateCalls({
 
 The block number to simulate the calls at.
 
-```ts twoslash
-import { parseEther } from 'viem'
-import { client } from './config'
+```js twoslash
+import { parseEther } from 'viem';
+import { client } from './config';
 // ---cut---
 const { results } = await client.simulateCalls({
-  blockNumber: 17030000n, // [!code focus]
-  calls: [ 
-    { 
-      to: '0xcb98643b8786950F0461f3B0edf99D88F274574D',
-      value: parseEther('2'),
-    },  
-  ], 
-})
+    blockNumber: 17030000n, // [!code focus]
+    calls: [
+        {
+            to: '0xcb98643b8786950F0461f3B0edf99D88F274574D',
+            value: parseEther('2')
+        }
+    ]
+});
 ```
 
 ### blockTag (optional)
@@ -465,19 +455,19 @@ const { results } = await client.simulateCalls({
 
 The block tag to simulate the calls at.
 
-```ts twoslash
-import { parseEther } from 'viem'
-import { client } from './config'
+```js twoslash
+import { parseEther } from 'viem';
+import { client } from './config';
 // ---cut---
 const { results } = await client.simulateCalls({
-  blockTag: 'pending', // [!code focus]
-  calls: [ 
-    { 
-      to: '0xcb98643b8786950F0461f3B0edf99D88F274574D',
-      value: parseEther('2'),
-    },  
-  ], 
-})
+    blockTag: 'pending', // [!code focus]
+    calls: [
+        {
+            to: '0xcb98643b8786950F0461f3B0edf99D88F274574D',
+            value: parseEther('2')
+        }
+    ]
+});
 ```
 
 ### stateOverrides (optional)
@@ -486,23 +476,26 @@ const { results } = await client.simulateCalls({
 
 The state overrides to simulate the calls with.
 
-```ts twoslash
-import { parseEther } from 'viem'
-import { client } from './config'
+```js twoslash
+import { parseEther } from 'viem';
+import { client } from './config';
 // ---cut---
 const { results } = await client.simulateCalls({
-  account: '0x5a0b54d5dc17e482fe8b0bdca5320161b95fb929',
-  calls: [ 
-    { 
-      to: '0xcb98643b8786950F0461f3B0edf99D88F274574D',
-      value: parseEther('2'),
-    },  
-  ], 
-  stateOverrides: [{ // [!code focus]
-    address: '0x5a0b54d5dc17e482fe8b0bdca5320161b95fb929', // [!code focus]
-    balance: parseEther('10000'), // [!code focus]
-  }], // [!code focus]
-})
+    account: '0x5a0b54d5dc17e482fe8b0bdca5320161b95fb929',
+    calls: [
+        {
+            to: '0xcb98643b8786950F0461f3B0edf99D88F274574D',
+            value: parseEther('2')
+        }
+    ],
+    stateOverrides: [
+        {
+            // [!code focus]
+            address: '0x5a0b54d5dc17e482fe8b0bdca5320161b95fb929', // [!code focus]
+            balance: parseEther('10000') // [!code focus]
+        }
+    ] // [!code focus]
+});
 ```
 
 ### traceAssetChanges (optional)
@@ -511,20 +504,20 @@ const { results } = await client.simulateCalls({
 
 Whether to trace asset changes.
 
-```ts twoslash
-import { parseEther } from 'viem'
-import { client } from './config'
+```js twoslash
+import { parseEther } from 'viem';
+import { client } from './config';
 // ---cut---
 const { results } = await client.simulateCalls({
-  account: '0x5a0b54d5dc17e482fe8b0bdca5320161b95fb929',
-  calls: [ 
-    { 
-      to: '0xcb98643b8786950F0461f3B0edf99D88F274574D',
-      value: parseEther('2'),
-    },  
-  ], 
-  traceAssetChanges: true, // [!code focus]
-})
+    account: '0x5a0b54d5dc17e482fe8b0bdca5320161b95fb929',
+    calls: [
+        {
+            to: '0xcb98643b8786950F0461f3B0edf99D88F274574D',
+            value: parseEther('2')
+        }
+    ],
+    traceAssetChanges: true // [!code focus]
+});
 ```
 
 ### traceTransfers (optional)
@@ -533,20 +526,20 @@ const { results } = await client.simulateCalls({
 
 Whether to trace transfers.
 
-```ts twoslash
-import { parseEther } from 'viem'
-import { client } from './config'
+```js twoslash
+import { parseEther } from 'viem';
+import { client } from './config';
 // ---cut---
 const { results } = await client.simulateCalls({
-  account: '0x5a0b54d5dc17e482fe8b0bdca5320161b95fb929',
-  calls: [ 
-    { 
-      to: '0xcb98643b8786950F0461f3B0edf99D88F274574D',
-      value: parseEther('2'),
-    },  
-  ], 
-  traceTransfers: true, // [!code focus]
-})
+    account: '0x5a0b54d5dc17e482fe8b0bdca5320161b95fb929',
+    calls: [
+        {
+            to: '0xcb98643b8786950F0461f3B0edf99D88F274574D',
+            value: parseEther('2')
+        }
+    ],
+    traceTransfers: true // [!code focus]
+});
 ```
 
 ### validation (optional)
@@ -555,18 +548,18 @@ const { results } = await client.simulateCalls({
 
 Whether to enable validation mode.
 
-```ts twoslash
-import { parseEther } from 'viem'
-import { client } from './config'
+```js twoslash
+import { parseEther } from 'viem';
+import { client } from './config';
 // ---cut---
 const { results } = await client.simulateCalls({
-  account: '0x5a0b54d5dc17e482fe8b0bdca5320161b95fb929',
-  calls: [ 
-    { 
-      to: '0xcb98643b8786950F0461f3B0edf99D88F274574D',
-      value: parseEther('2'),
-    },  
-  ], 
-  validation: true, // [!code focus]
-})
+    account: '0x5a0b54d5dc17e482fe8b0bdca5320161b95fb929',
+    calls: [
+        {
+            to: '0xcb98643b8786950F0461f3B0edf99D88F274574D',
+            value: parseEther('2')
+        }
+    ],
+    validation: true // [!code focus]
+});
 ```

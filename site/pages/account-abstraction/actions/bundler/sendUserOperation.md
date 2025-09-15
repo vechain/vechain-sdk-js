@@ -10,39 +10,45 @@ Broadcasts a User Operation to the Bundler.
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { parseEther } from 'viem'
-import { account, bundlerClient } from './config'
+```js twoslash [example.ts]
+import { parseEther } from 'viem';
+import { account, bundlerClient } from './config';
 
-const hash = await bundlerClient.sendUserOperation({ // [!code focus:7]
-  account,
-  calls: [{
-    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-    value: parseEther('1')
-  }],
-})
+const hash = await bundlerClient.sendUserOperation({
+    // [!code focus:7]
+    account,
+    calls: [
+        {
+            to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
+            value: parseEther('1')
+        }
+    ]
+});
 ```
 
-```ts twoslash [config.ts] filename="config.ts"
-import { createPublicClient, http } from 'viem'
-import { createBundlerClient, toCoinbaseSmartAccount } from 'viem/account-abstraction'
-import { privateKeyToAccount } from 'viem/accounts'
-import { mainnet } from 'viem/chains'
+```js twoslash [config.ts] filename="config.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+import {
+    createBundlerClient,
+    toCoinbaseSmartAccount
+} from 'viem/account-abstraction';
+import { privateKeyToAccount } from 'viem/accounts';
+
 
 const client = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 
 export const account = await toCoinbaseSmartAccount({
-  client,
-  owners: [privateKeyToAccount('0x...')],
-})
+    client,
+    owners: [privateKeyToAccount('0x...')]
+});
 
 export const bundlerClient = createBundlerClient({
-  client,
-  transport: http('https://public.pimlico.io/v2/1/rpc')
-})
+    client,
+    transport: http('https://public.pimlico.io/v2/1/rpc')
+});
 ```
 
 :::
@@ -59,39 +65,45 @@ If you do not wish to pass an `account` to every `sendUserOperation`, you can al
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { parseEther } from 'viem'
-import { bundlerClient } from './config'
+```js twoslash [example.ts]
+import { parseEther } from 'viem';
+import { bundlerClient } from './config';
 
-const hash = await bundlerClient.sendUserOperation({ // [!code focus:7]
-  calls: [{
-    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-    value: parseEther('1')
-  }],
-})
+const hash = await bundlerClient.sendUserOperation({
+    // [!code focus:7]
+    calls: [
+        {
+            to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
+            value: parseEther('1')
+        }
+    ]
+});
 ```
 
-```ts twoslash [config.ts] filename="config.ts"
-import { createPublicClient, http } from 'viem'
-import { createBundlerClient, toCoinbaseSmartAccount } from 'viem/account-abstraction'
-import { privateKeyToAccount } from 'viem/accounts'
-import { mainnet } from 'viem/chains'
+```js twoslash [config.ts] filename="config.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+import {
+    createBundlerClient,
+    toCoinbaseSmartAccount
+} from 'viem/account-abstraction';
+import { privateKeyToAccount } from 'viem/accounts';
+
 
 const client = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 
 export const account = await toCoinbaseSmartAccount({
-  client,
-  owners: [privateKeyToAccount('0x...')],
-})
+    client,
+    owners: [privateKeyToAccount('0x...')]
+});
 
 export const bundlerClient = createBundlerClient({
-  account, // [!code ++]
-  client,
-  transport: http('https://public.pimlico.io/v2/1/rpc')
-})
+    account, // [!code ++]
+    client,
+    transport: http('https://public.pimlico.io/v2/1/rpc')
+});
 ```
 
 :::
@@ -102,21 +114,24 @@ The `calls` property also accepts **Contract Calls**, and can be used via the `a
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { parseEther } from 'viem'
-import { bundlerClient, publicClient } from './config'
-import { wagmiAbi } from './abi' // [!code focus]
+```js twoslash [example.ts]
+import { parseEther } from 'viem';
+import { bundlerClient, publicClient } from './config';
+import { wagmiAbi } from './abi'; // [!code focus]
 
-const hash = await bundlerClient.sendUserOperation({ // [!code focus:7]
-  calls: [{
-    abi: wagmiAbi,
-    functionName: 'mint',
-    to: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-  }],
-})
+const hash = await bundlerClient.sendUserOperation({
+    // [!code focus:7]
+    calls: [
+        {
+            abi: wagmiAbi,
+            functionName: 'mint',
+            to: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2'
+        }
+    ]
+});
 ```
 
-```ts twoslash [abi.ts] filename="abi.ts"
+```js twoslash [abi.ts] filename="abi.ts"
 export const wagmiAbi = [
   // ...
   {
@@ -130,27 +145,30 @@ export const wagmiAbi = [
 ] as const;
 ```
 
-```ts twoslash [config.ts]
-import { createPublicClient, http } from 'viem'
-import { createBundlerClient, toCoinbaseSmartAccount } from 'viem/account-abstraction'
-import { privateKeyToAccount } from 'viem/accounts'
-import { mainnet } from 'viem/chains'
+```js twoslash [config.ts]
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+import {
+    createBundlerClient,
+    toCoinbaseSmartAccount
+} from 'viem/account-abstraction';
+import { privateKeyToAccount } from 'viem/accounts';
+
 
 const client = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 
 export const account = await toCoinbaseSmartAccount({
-  client,
-  owners: [privateKeyToAccount('0x...')],
-})
+    client,
+    owners: [privateKeyToAccount('0x...')]
+});
 
 export const bundlerClient = createBundlerClient({
-  account,
-  client,
-  transport: http('https://public.pimlico.io/v2/1/rpc')
-})
+    account,
+    client,
+    transport: http('https://public.pimlico.io/v2/1/rpc')
+});
 ```
 
 :::
@@ -169,17 +187,19 @@ The User Operation hash.
 
 The Account to use for User Operation execution.
 
-```ts twoslash
-import { account, bundlerClient } from './config'
-import { parseEther } from 'viem'
+```js twoslash
+import { account, bundlerClient } from './config';
+import { parseEther } from 'viem';
 // ---cut---
 const hash = await bundlerClient.sendUserOperation({
-  account, // [!code focus]
-  calls: [{
-    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-    value: parseEther('1')
-  }]
-})
+    account, // [!code focus]
+    calls: [
+        {
+            to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
+            value: parseEther('1')
+        }
+    ]
+});
 ```
 
 ### calls
@@ -188,35 +208,41 @@ const hash = await bundlerClient.sendUserOperation({
 
 The calls to execute in the User Operation.
 
-```ts twoslash
-import { account, bundlerClient } from './config'
-import { parseEther } from 'viem'
+```js twoslash
+import { account, bundlerClient } from './config';
+import { parseEther } from 'viem';
 // ---cut---
 const hash = await bundlerClient.sendUserOperation({
-  account,
-  calls: [{ // [!code focus]
-    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8', // [!code focus]
-    value: parseEther('1') // [!code focus]
-  }, { // [!code focus]
-    abi: wagmiAbi, // [!code focus]
-    functionName: 'mint', // [!code focus]
-    to: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2', // [!code focus]
-  }] // [!code focus]
-})
+    account,
+    calls: [
+        {
+            // [!code focus]
+            to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8', // [!code focus]
+            value: parseEther('1') // [!code focus]
+        },
+        {
+            // [!code focus]
+            abi: wagmiAbi, // [!code focus]
+            functionName: 'mint', // [!code focus]
+            to: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2' // [!code focus]
+        }
+    ] // [!code focus]
+});
 ```
 
 :::tip
 You can also pass raw call data via the `callData` property:
 
-```ts twoslash
-import { account, bundlerClient } from './config'
-import { parseEther } from 'viem'
+```js twoslash
+import { account, bundlerClient } from './config';
+import { parseEther } from 'viem';
 // ---cut---
 const hash = await bundlerClient.sendUserOperation({
-  account,
-  callData: '0xdeadbeef', // [!code focus]
-})
+    account,
+    callData: '0xdeadbeef' // [!code focus]
+});
 ```
+
 :::
 
 ### callGasLimit (optional)
@@ -225,43 +251,47 @@ const hash = await bundlerClient.sendUserOperation({
 
 The amount of gas to allocate the main execution call.
 
-```ts twoslash
-import { account, bundlerClient } from './config'
-import { parseEther } from 'viem'
+```js twoslash
+import { account, bundlerClient } from './config';
+import { parseEther } from 'viem';
 // ---cut---
 const hash = await bundlerClient.sendUserOperation({
-  account,
-  calls: [{
-    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-    value: parseEther('1')
-  }],
-  callGasLimit: 69420n, // [!code focus]
-})
+    account,
+    calls: [
+        {
+            to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
+            value: parseEther('1')
+        }
+    ],
+    callGasLimit: 69420n // [!code focus]
+});
 ```
 
 ### factory (optional)
 
 - **Type:** `Address`
 
-Account Factory address. 
+Account Factory address.
 
 :::warning
 This property should only be populated when the Smart Account has not been deployed yet.
 :::
 
-```ts twoslash
-import { account, bundlerClient } from './config'
-import { parseEther } from 'viem'
+```js twoslash
+import { account, bundlerClient } from './config';
+import { parseEther } from 'viem';
 // ---cut---
 const hash = await bundlerClient.sendUserOperation({
-  account,
-  calls: [{
-    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-    value: parseEther('1')
-  }],
-  factory: '0x1234567890123456789012345678901234567890', // [!code focus]
-  factoryData: '0xdeadbeef',
-})
+    account,
+    calls: [
+        {
+            to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
+            value: parseEther('1')
+        }
+    ],
+    factory: '0x1234567890123456789012345678901234567890', // [!code focus]
+    factoryData: '0xdeadbeef'
+});
 ```
 
 ### factoryData (optional)
@@ -274,19 +304,21 @@ Call data to execute on the Account Factory to deploy a Smart Account.
 This property should only be populated when the Smart Account has not been deployed yet.
 :::
 
-```ts twoslash
-import { account, bundlerClient } from './config'
-import { parseEther } from 'viem'
+```js twoslash
+import { account, bundlerClient } from './config';
+import { parseEther } from 'viem';
 // ---cut---
 const hash = await bundlerClient.sendUserOperation({
-  account,
-  calls: [{
-    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-    value: parseEther('1')
-  }],
-  factory: '0x1234567890123456789012345678901234567890',
-  factoryData: '0xdeadbeef', // [!code focus]
-})
+    account,
+    calls: [
+        {
+            to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
+            value: parseEther('1')
+        }
+    ],
+    factory: '0x1234567890123456789012345678901234567890',
+    factoryData: '0xdeadbeef' // [!code focus]
+});
 ```
 
 ### maxFeePerGas (optional)
@@ -295,18 +327,20 @@ const hash = await bundlerClient.sendUserOperation({
 
 Maximum fee per gas for User Operation execution.
 
-```ts twoslash
-import { account, bundlerClient } from './config'
-import { parseEther } from 'viem'
+```js twoslash
+import { account, bundlerClient } from './config';
+import { parseEther } from 'viem';
 // ---cut---
 const hash = await bundlerClient.sendUserOperation({
-  account,
-  calls: [{
-    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-    value: parseEther('1')
-  }],
-  maxFeePerGas: 420n, // [!code focus]
-})
+    account,
+    calls: [
+        {
+            to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
+            value: parseEther('1')
+        }
+    ],
+    maxFeePerGas: 420n // [!code focus]
+});
 ```
 
 ### maxPriorityFeePerGas (optional)
@@ -315,19 +349,21 @@ const hash = await bundlerClient.sendUserOperation({
 
 Maximum priority fee per gas for User Operation execution.
 
-```ts twoslash
-import { account, bundlerClient } from './config'
-import { parseEther } from 'viem'
+```js twoslash
+import { account, bundlerClient } from './config';
+import { parseEther } from 'viem';
 // ---cut---
 const hash = await bundlerClient.sendUserOperation({
-  account,
-  calls: [{
-    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-    value: parseEther('1')
-  }],
-  maxPriorityFeePerGas: 420n, 
-  maxFeePerGas: 10n, // [!code focus]
-})
+    account,
+    calls: [
+        {
+            to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
+            value: parseEther('1')
+        }
+    ],
+    maxPriorityFeePerGas: 420n,
+    maxFeePerGas: 10n // [!code focus]
+});
 ```
 
 ### nonce (optional)
@@ -336,18 +372,20 @@ const hash = await bundlerClient.sendUserOperation({
 
 Nonce for the User Operation.
 
-```ts twoslash
-import { account, bundlerClient } from './config'
-import { parseEther } from 'viem'
+```js twoslash
+import { account, bundlerClient } from './config';
+import { parseEther } from 'viem';
 // ---cut---
 const hash = await bundlerClient.sendUserOperation({
-  account,
-  calls: [{
-    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-    value: parseEther('1')
-  }],
-  nonce: 10n, // [!code focus]
-})
+    account,
+    calls: [
+        {
+            to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
+            value: parseEther('1')
+        }
+    ],
+    nonce: 10n // [!code focus]
+});
 ```
 
 ### paymaster (optional)
@@ -363,55 +401,62 @@ Sets Paymaster configuration for the User Operation.
 
 #### Using a Paymaster Contract Address
 
-```ts twoslash
-import { account, bundlerClient } from './config'
-import { parseEther } from 'viem'
+```js twoslash
+import { account, bundlerClient } from './config';
+import { parseEther } from 'viem';
 // ---cut---
 const hash = await bundlerClient.sendUserOperation({
-  account,
-  calls: [{
-    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-    value: parseEther('1')
-  }],
-  paymaster: '0x942fD5017c0F60575930D8574Eaca13BEcD6e1bB', // [!code focus]
-  paymasterData: '0xdeadbeef',
-})
+    account,
+    calls: [
+        {
+            to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
+            value: parseEther('1')
+        }
+    ],
+    paymaster: '0x942fD5017c0F60575930D8574Eaca13BEcD6e1bB', // [!code focus]
+    paymasterData: '0xdeadbeef'
+});
 ```
 
 #### Using a Paymaster Client
 
-```ts twoslash
-import { account, bundlerClient } from './config'
-import { parseEther } from 'viem'
+```js twoslash
+import { account, bundlerClient } from './config';
+import { parseEther } from 'viem';
 // ---cut---
-const paymasterClient = createPaymasterClient({ // [!code focus]
-  transport: http('https://api.pimlico.io/v2/1/rpc?apikey={API_KEY}') // [!code focus]
-}) // [!code focus]
+const paymasterClient = createPaymasterClient({
+    // [!code focus]
+    transport: http('https://api.pimlico.io/v2/1/rpc?apikey={API_KEY}') // [!code focus]
+}); // [!code focus]
 
 const hash = await bundlerClient.sendUserOperation({
-  account,
-  calls: [{
-    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-    value: parseEther('1')
-  }],
-  paymaster: paymasterClient, // [!code focus]
-})
+    account,
+    calls: [
+        {
+            to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
+            value: parseEther('1')
+        }
+    ],
+    paymaster: paymasterClient // [!code focus]
+});
 ```
 
 #### Using the Bundler Client as Paymaster
 
-```ts twoslash
-import { account, bundlerClient } from './config'
-import { parseEther } from 'viem'
+```js twoslash
+import { account, bundlerClient } from './config';
+import { parseEther } from 'viem';
 // ---cut---
 const hash = await bundlerClient.sendUserOperation({
-  account,
-  calls: [{
-    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-    value: parseEther('1')
-  }],
-  paymaster: true, // [!code focus]
-})
+    account,
+    calls: [
+        {
+            to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
+            value: parseEther('1')
+        }
+    ],
+    paymaster: true // [!code focus]
+});
 ```
 
 ### paymasterContext (optional)
@@ -424,25 +469,28 @@ Paymaster specific fields.
 This property is only available if **`paymaster` is a Paymaster Client**.
 :::
 
-```ts twoslash
-import { account, bundlerClient } from './config'
-import { parseEther } from 'viem'
+```js twoslash
+import { account, bundlerClient } from './config';
+import { parseEther } from 'viem';
 // ---cut---
 const paymasterClient = createPaymasterClient({
-  transport: http('https://api.pimlico.io/v2/1/rpc?apikey={API_KEY}')
-})
+    transport: http('https://api.pimlico.io/v2/1/rpc?apikey={API_KEY}')
+});
 
 const hash = await bundlerClient.sendUserOperation({
-  account,
-  calls: [{
-    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-    value: parseEther('1')
-  }],
-  paymaster: paymasterClient,
-  paymasterContext: { // [!code focus]
-    policyId: 'abc123' // [!code focus]
-  }, // [!code focus]
-})
+    account,
+    calls: [
+        {
+            to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
+            value: parseEther('1')
+        }
+    ],
+    paymaster: paymasterClient,
+    paymasterContext: {
+        // [!code focus]
+        policyId: 'abc123' // [!code focus]
+    } // [!code focus]
+});
 ```
 
 ### paymasterData (optional)
@@ -455,19 +503,21 @@ Call data to execute on the Paymaster contract.
 This property is only available if **`paymaster` is an address**.
 :::
 
-```ts twoslash
-import { account, bundlerClient } from './config'
-import { parseEther } from 'viem'
+```js twoslash
+import { account, bundlerClient } from './config';
+import { parseEther } from 'viem';
 // ---cut---
 const hash = await bundlerClient.sendUserOperation({
-  account,
-  calls: [{
-    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-    value: parseEther('1')
-  }],
-  paymaster: '0x942fD5017c0F60575930D8574Eaca13BEcD6e1bB',
-  paymasterData: '0xdeadbeef', // [!code focus]
-})
+    account,
+    calls: [
+        {
+            to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
+            value: parseEther('1')
+        }
+    ],
+    paymaster: '0x942fD5017c0F60575930D8574Eaca13BEcD6e1bB',
+    paymasterData: '0xdeadbeef' // [!code focus]
+});
 ```
 
 ### paymasterPostOpGasLimit (optional)
@@ -476,20 +526,22 @@ const hash = await bundlerClient.sendUserOperation({
 
 The amount of gas to allocate for the Paymaster post-operation code.
 
-```ts twoslash
-import { account, bundlerClient } from './config'
-import { parseEther } from 'viem'
+```js twoslash
+import { account, bundlerClient } from './config';
+import { parseEther } from 'viem';
 // ---cut---
 const hash = await bundlerClient.sendUserOperation({
-  account,
-  calls: [{
-    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-    value: parseEther('1')
-  }],
-  paymaster: '0x942fD5017c0F60575930D8574Eaca13BEcD6e1bB',
-  paymasterData: '0xdeadbeef',
-  paymasterPostOpGasLimit: 69420n, // [!code focus]
-})
+    account,
+    calls: [
+        {
+            to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
+            value: parseEther('1')
+        }
+    ],
+    paymaster: '0x942fD5017c0F60575930D8574Eaca13BEcD6e1bB',
+    paymasterData: '0xdeadbeef',
+    paymasterPostOpGasLimit: 69420n // [!code focus]
+});
 ```
 
 ### paymasterVerificationGasLimit (optional)
@@ -498,20 +550,22 @@ const hash = await bundlerClient.sendUserOperation({
 
 The amount of gas to allocate for the Paymaster validation code.
 
-```ts twoslash
-import { account, bundlerClient } from './config'
-import { parseEther } from 'viem'
+```js twoslash
+import { account, bundlerClient } from './config';
+import { parseEther } from 'viem';
 // ---cut---
 const hash = await bundlerClient.sendUserOperation({
-  account,
-  calls: [{
-    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-    value: parseEther('1')
-  }],
-  paymaster: '0x942fD5017c0F60575930D8574Eaca13BEcD6e1bB',
-  paymasterData: '0xdeadbeef',
-  paymasterVerificationGasLimit: 69420n, // [!code focus]
-})
+    account,
+    calls: [
+        {
+            to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
+            value: parseEther('1')
+        }
+    ],
+    paymaster: '0x942fD5017c0F60575930D8574Eaca13BEcD6e1bB',
+    paymasterData: '0xdeadbeef',
+    paymasterVerificationGasLimit: 69420n // [!code focus]
+});
 ```
 
 ### preVerificationGas (optional)
@@ -520,18 +574,20 @@ const hash = await bundlerClient.sendUserOperation({
 
 Extra gas to pay the Bundler.
 
-```ts twoslash
-import { account, bundlerClient } from './config'
-import { parseEther } from 'viem'
+```js twoslash
+import { account, bundlerClient } from './config';
+import { parseEther } from 'viem';
 // ---cut---
 const hash = await bundlerClient.sendUserOperation({
-  account,
-  calls: [{
-    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-    value: parseEther('1')
-  }],
-  preVerificationGas: 69420n, // [!code focus]
-})
+    account,
+    calls: [
+        {
+            to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
+            value: parseEther('1')
+        }
+    ],
+    preVerificationGas: 69420n // [!code focus]
+});
 ```
 
 ### signature (optional)
@@ -540,18 +596,20 @@ const hash = await bundlerClient.sendUserOperation({
 
 Signature for the User Operation.
 
-```ts twoslash
-import { account, bundlerClient } from './config'
-import { parseEther } from 'viem'
+```js twoslash
+import { account, bundlerClient } from './config';
+import { parseEther } from 'viem';
 // ---cut---
 const hash = await bundlerClient.sendUserOperation({
-  account,
-  calls: [{
-    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-    value: parseEther('1')
-  }],
-  signature: '0x...', // [!code focus]
-})
+    account,
+    calls: [
+        {
+            to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
+            value: parseEther('1')
+        }
+    ],
+    signature: '0x...' // [!code focus]
+});
 ```
 
 ### verificationGasLimit (optional)
@@ -560,16 +618,18 @@ const hash = await bundlerClient.sendUserOperation({
 
 The amount of gas to allocate for the verification step.
 
-```ts twoslash
-import { account, bundlerClient } from './config'
-import { parseEther } from 'viem'
+```js twoslash
+import { account, bundlerClient } from './config';
+import { parseEther } from 'viem';
 // ---cut---
 const hash = await bundlerClient.sendUserOperation({
-  account,
-  calls: [{
-    to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
-    value: parseEther('1')
-  }],
-  verificationGasLimit: 69420n, // [!code focus]
-})
+    account,
+    calls: [
+        {
+            to: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
+            value: parseEther('1')
+        }
+    ],
+    verificationGasLimit: 69420n // [!code focus]
+});
 ```

@@ -4,21 +4,21 @@ The `ipc` Transport connects to a JSON-RPC API via IPC (inter-process communicat
 
 ## Import
 
-```ts twoslash
-import { ipc } from 'viem/node'
+```js twoslash
+import { ipc } from 'viem/node';
 ```
 
 ## Usage
 
-```ts twoslash
-import { createPublicClient } from 'viem'
-import { ipc } from 'viem/node'
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createPublicClient } from 'viem';
+import { ipc } from 'viem/node';
+
 
 const client = createPublicClient({
-  chain: mainnet, 
-  transport: ipc('/tmp/reth.ipc'), // [!code hl]
-})
+    network: ThorNetworks.MAINNET,
+    transport: ipc('/tmp/reth.ipc') // [!code hl]
+});
 ```
 
 ## Parameters
@@ -29,10 +29,10 @@ const client = createPublicClient({
 
 IPC Path the transport should connect to.
 
-```ts twoslash
-import { ipc } from 'viem/node'
+```js twoslash
+import { ipc } from 'viem/node';
 // ---cut---
-const transport = ipc('/tmp/reth.ipc')
+const transport = ipc('/tmp/reth.ipc');
 ```
 
 ### key (optional)
@@ -42,12 +42,12 @@ const transport = ipc('/tmp/reth.ipc')
 
 A key for the Transport.
 
-```ts twoslash
-import { ipc } from 'viem/node'
+```js twoslash
+import { ipc } from 'viem/node';
 // ---cut---
-const transport = ipc('/tmp/reth.ipc', { 
-  key: 'reth-ipc',  // [!code focus]
-})
+const transport = ipc('/tmp/reth.ipc', {
+    key: 'reth-ipc' // [!code focus]
+});
 ```
 
 ### methods (optional)
@@ -56,14 +56,14 @@ const transport = ipc('/tmp/reth.ipc', {
 
 Methods to include or exclude from sending RPC requests.
 
-```ts twoslash
-import { ipc } from 'viem/node'
+```js twoslash
+import { ipc } from 'viem/node';
 // ---cut---
 const transport = ipc('/tmp/reth.ipc', {
-  methods: {
-    include: ['eth_sendTransaction', 'eth_signTypedData_v4'],
-  },
-})
+    methods: {
+        include: ['eth_sendTransaction', 'eth_signTypedData_v4']
+    }
+});
 ```
 
 ### name (optional)
@@ -73,12 +73,12 @@ const transport = ipc('/tmp/reth.ipc', {
 
 A name for the Transport
 
-```ts twoslash
-import { ipc } from 'viem/node'
+```js twoslash
+import { ipc } from 'viem/node';
 // ---cut---
-const transport = ipc('/tmp/reth.ipc', { 
-  name: 'Reth IPC',  // [!code focus]
-})
+const transport = ipc('/tmp/reth.ipc', {
+    name: 'Reth IPC' // [!code focus]
+});
 ```
 
 ### reconnect (optional)
@@ -88,12 +88,12 @@ const transport = ipc('/tmp/reth.ipc', {
 
 Whether or not to attempt to reconnect on socket failure.
 
-```ts twoslash
-import { ipc } from 'viem/node'
+```js twoslash
+import { ipc } from 'viem/node';
 // ---cut---
 const transport = ipc('/tmp/reth.ipc', {
-  reconnect: false, // [!code focus]
-})
+    reconnect: false // [!code focus]
+});
 ```
 
 #### reconnect.attempts (optional)
@@ -103,14 +103,14 @@ const transport = ipc('/tmp/reth.ipc', {
 
 The max number of times to attempt to reconnect.
 
-```ts twoslash
-import { ipc } from 'viem/node'
+```js twoslash
+import { ipc } from 'viem/node';
 // ---cut---
 const transport = ipc('/tmp/reth.ipc', {
-  reconnect: {
-    attempts: 10, // [!code focus]
-  }
-})
+    reconnect: {
+        attempts: 10 // [!code focus]
+    }
+});
 ```
 
 #### reconnect.delay (optional)
@@ -120,14 +120,14 @@ const transport = ipc('/tmp/reth.ipc', {
 
 Retry delay (in ms) between reconnect attempts.
 
-```ts twoslash
-import { ipc } from 'viem/node'
+```js twoslash
+import { ipc } from 'viem/node';
 // ---cut---
 const transport = ipc('/tmp/reth.ipc', {
-  reconnect: {
-    delay: 1_000, // [!code focus]
-  }
-})
+    reconnect: {
+        delay: 1_000 // [!code focus]
+    }
+});
 ```
 
 ### retryCount (optional)
@@ -137,12 +137,12 @@ const transport = ipc('/tmp/reth.ipc', {
 
 The max number of times to retry when a request fails.
 
-```ts twoslash
-import { ipc } from 'viem/node'
+```js twoslash
+import { ipc } from 'viem/node';
 // ---cut---
 const transport = ipc('/tmp/reth.ipc', {
-  retryCount: 5, // [!code focus]
-})
+    retryCount: 5 // [!code focus]
+});
 ```
 
 ### retryDelay (optional)
@@ -152,12 +152,12 @@ const transport = ipc('/tmp/reth.ipc', {
 
 The base delay (in ms) between retries. By default, the Transport will use [exponential backoff](https://en.wikipedia.org/wiki/Exponential_backoff) (`~~(1 << count) * retryDelay`), which means the time between retries is not constant.
 
-```ts twoslash
-import { ipc } from 'viem/node'
+```js twoslash
+import { ipc } from 'viem/node';
 // ---cut---
 const transport = ipc('/tmp/reth.ipc', {
-  retryDelay: 100, // [!code focus]
-})
+    retryDelay: 100 // [!code focus]
+});
 ```
 
 ### timeout (optional)
@@ -167,10 +167,10 @@ const transport = ipc('/tmp/reth.ipc', {
 
 The timeout for async IPC requests.
 
-```ts twoslash
-import { ipc } from 'viem/node'
+```js twoslash
+import { ipc } from 'viem/node';
 // ---cut---
 const transport = ipc('/tmp/reth.ipc', {
-  timeout: 60_000, // [!code focus]
-})
+    timeout: 60_000 // [!code focus]
+});
 ```

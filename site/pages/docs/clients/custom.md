@@ -8,22 +8,22 @@ The `createClient` function sets up a base viem Client with a given [Transport](
 
 ## Import
 
-```ts twoslash
-import { createClient } from 'viem'
+```js twoslash
+import { createClient } from 'viem';
 ```
 
 ## Usage
 
 Initialize a Client with your desired [Chain](/docs/chains/introduction) (e.g. `mainnet`) and [Transport](/docs/clients/intro) (e.g. `http`).
 
-```ts twoslash
-import { createClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createClient, http } from 'viem';
 
-const client = createClient({ 
-  chain: mainnet,
-  transport: http()
-})
+
+const client = createClient({
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 Next, you can either [extend your Client with Actions or configuration](#extending-with-actions-or-configuration), or you can use it as-is for the purpose of [maximizing tree-shaking in your app](#tree-shaking).
@@ -34,19 +34,18 @@ You can extend your Client with custom Actions or configuration by using the `.e
 
 Below is a naive implementation of implementing a [geth Debug](https://geth.ethereum.org/docs/interacting-with-geth/rpc/ns-debug) Client with a `traceCall` Action that uses the `debug_traceCall` RPC method.
 
-```ts twoslash {12-21,23-29}
+```js twoslash {12-21,23-29}
 // @noErrors
-import { 
-  createClient, 
+import {
+  createClient,
   http,
   formatTransactionRequest,
   type CallParameters
 } from 'viem'
-import { mainnet } from 'viem/chains'
 
-const debugClient = createClient({ 
-  chain: mainnet,
-  transport: http(),
+const debugClient = createClient({
+  network: ThorNetworks.MAINNET,
+  network: ThorNetworks.MAINNET,
 }).extend(client => ({
   // ...
   async traceCall(args: CallParameters) {
@@ -75,15 +74,14 @@ You can use the Client as-is, with no decorated Actions, to maximize tree-shakin
 
 In the example below, instead of calling `getBlock` from the Public Client, we are importing the Action directly from `viem` and then injecting our Client as the first parameter to the Action.
 
-```ts twoslash {3,10-11}
+```js twoslash {3,10-11}
 // @noErrors
 import { createClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
 import { getBlock, sendTransaction } from 'viem/actions'
 
-const client = createClient({ 
-  chain: mainnet,
-  transport: http()
+const client = createClient({
+  network: ThorNetworks.MAINNET,
+  network: ThorNetworks.MAINNET
 })
 
 const blockNumber = await getBlock(client, { blockTag: 'latest' })
@@ -98,14 +96,14 @@ const hash = await sendTransaction(client, { ... })
 
 The [Transport](/docs/clients/intro) of the Public Client.
 
-```ts twoslash
-import { createClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createClient, http } from 'viem';
+
 // ---cut---
 const client = createClient({
-  chain: mainnet,
-  transport: http(), // [!code focus]
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET // [!code focus]
+});
 ```
 
 ### account (optional)
@@ -116,17 +114,17 @@ The Account to use for the Client. This will be used for Actions that require an
 
 Accepts a [JSON-RPC Account](/docs/accounts/jsonRpc) or [Local Account (Private Key, etc)](/docs/accounts/local/privateKeyToAccount).
 
-```ts twoslash
-import { createClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createClient, http } from 'viem';
+
 // ---cut---
-import { privateKeyToAccount } from 'viem/accounts'
+import { privateKeyToAccount } from 'viem/accounts';
 
 const client = createClient({
-  account: privateKeyToAccount('0x...'), // [!code focus]
-  chain: mainnet,
-  transport: http(),
-})
+    account: privateKeyToAccount('0x...'), // [!code focus]
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 ### chain (optional)
@@ -135,14 +133,14 @@ const client = createClient({
 
 The [Chain](/docs/chains/introduction) of the Public Client.
 
-```ts twoslash
-import { createClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createClient, http } from 'viem';
+
 // ---cut---
 const client = createClient({
-  chain: mainnet, // [!code focus]
-  transport: http(),
-})
+    network: ThorNetworks.MAINNET, // [!code focus]
+    network: ThorNetworks.MAINNET
+});
 ```
 
 ### batch (optional)
@@ -156,17 +154,17 @@ Flags for batch settings.
 
 Toggle to enable `eth_call` multicall aggregation.
 
-```ts twoslash
-import { createClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createClient, http } from 'viem';
+
 // ---cut---
 const client = createClient({
-  batch: {
-    multicall: true, // [!code focus]
-  },
-  chain: mainnet,
-  transport: http(),
-})
+    batch: {
+        multicall: true // [!code focus]
+    },
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 ### batch.multicall.batchSize (optional)
@@ -178,19 +176,19 @@ The maximum size (in bytes) for each multicall (`aggregate3`) calldata chunk.
 
 > Note: Some RPC Providers limit the amount of calldata that can be sent in a single request. It is best to check with your RPC Provider to see if there are any calldata size limits to `eth_call` requests.
 
-```ts twoslash
-import { createClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createClient, http } from 'viem';
+
 // ---cut---
 const client = createClient({
-  batch: {
-    multicall: {
-      batchSize: 512, // [!code focus]
+    batch: {
+        multicall: {
+            batchSize: 512 // [!code focus]
+        }
     },
-  },
-  chain: mainnet,
-  transport: http(),
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 ### batch.multicall.wait (optional)
@@ -200,19 +198,19 @@ const client = createClient({
 
 The maximum number of milliseconds to wait before sending a batch.
 
-```ts twoslash
-import { createClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createClient, http } from 'viem';
+
 // ---cut---
 const client = createClient({
-  batch: {
-    multicall: {
-      wait: 16, // [!code focus]
+    batch: {
+        multicall: {
+            wait: 16 // [!code focus]
+        }
     },
-  },
-  chain: mainnet,
-  transport: http(),
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 ### key (optional)
@@ -222,15 +220,15 @@ const client = createClient({
 
 A key for the Client.
 
-```ts twoslash
-import { createClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createClient, http } from 'viem';
+
 // ---cut---
 const client = createClient({
-  chain: mainnet,
-  key: 'public', // [!code focus]
-  transport: http(),
-})
+    network: ThorNetworks.MAINNET,
+    key: 'public', // [!code focus]
+    network: ThorNetworks.MAINNET
+});
 ```
 
 ### name (optional)
@@ -240,15 +238,15 @@ const client = createClient({
 
 A name for the Client.
 
-```ts twoslash
-import { createClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createClient, http } from 'viem';
+
 // ---cut---
 const client = createClient({
-  chain: mainnet,
-  name: 'Public Client', // [!code focus]
-  transport: http(),
-})
+    network: ThorNetworks.MAINNET,
+    name: 'Public Client', // [!code focus]
+    network: ThorNetworks.MAINNET
+});
 ```
 
 ### pollingInterval (optional)
@@ -258,15 +256,15 @@ const client = createClient({
 
 Frequency (in ms) for polling enabled Actions.
 
-```ts twoslash
-import { createClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createClient, http } from 'viem';
+
 // ---cut---
 const client = createClient({
-  chain: mainnet,
-  pollingInterval: 10_000, // [!code focus]
-  transport: http(),
-})
+    network: ThorNetworks.MAINNET,
+    pollingInterval: 10_000, // [!code focus]
+    network: ThorNetworks.MAINNET
+});
 ```
 
 ### rpcSchema (optional)
@@ -276,9 +274,8 @@ const client = createClient({
 
 Typed JSON-RPC schema for the client.
 
-```ts twoslash
+```js twoslash
 import { createClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
 // @noErrors
 // ---cut---
 import { rpcSchema } from 'viem'
@@ -290,13 +287,13 @@ type CustomRpcSchema = [{ // [!code focus]
 }] // [!code focus]
 
 const client = createClient({
-  chain: mainnet,
+  network: ThorNetworks.MAINNET,
   rpcSchema: rpcSchema<CustomRpcSchema>(), // [!code focus]
-  transport: http()
+  network: ThorNetworks.MAINNET
 })
 
 const result = await client.request({ // [!code focus]
-  method: 'eth_wa // [!code focus] 
+  method: 'eth_wa // [!code focus]
 //               ^|
   params: ['hello'], // [!code focus]
 }) // [!code focus]

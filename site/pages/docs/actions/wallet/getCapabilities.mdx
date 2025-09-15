@@ -12,7 +12,7 @@ Extract capabilities (grouped by chain ID) that a connected wallet supports (e.g
 
 :::code-group
 
-```ts twoslash [example.ts]
+```js twoslash [example.ts]
 import { account, walletClient } from './config'
  
 const capabilities = await walletClient.getCapabilities({
@@ -35,7 +35,7 @@ const capabilities = await walletClient.getCapabilities({
 // @log: }
 ```
 
-```ts twoslash [config.ts] filename="config.ts"
+```js twoslash [config.ts] filename="config.ts"
 import 'viem/window'
 // ---cut---
 import { createWalletClient, custom } from 'viem'
@@ -59,7 +59,7 @@ If you do not wish to pass an `account` to every `getCapabilities`, you can also
 
 :::code-group
 
-```ts twoslash [example.ts]
+```js twoslash [example.ts]
 import { walletClient } from './config'
  
 const capabilities = await walletClient.getCapabilities()
@@ -96,7 +96,7 @@ Capabilities of the wallet.
 
 The account to get capabilities for.
 
-```ts twoslash [example.ts]
+```js twoslash [example.ts]
 import { walletClient } from './config'
 // ---cut---
 const capabilities = await walletClient.getCapabilities({
@@ -110,7 +110,7 @@ const capabilities = await walletClient.getCapabilities({
 
 The chain ID to get capabilities for.
 
-```ts twoslash [example.ts]
+```js twoslash [example.ts]
 import { walletClient } from './config'
 // ---cut---
 const capabilities = await walletClient.getCapabilities({

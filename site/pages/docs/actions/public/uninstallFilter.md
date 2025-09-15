@@ -14,22 +14,22 @@ Destroys a [`Filter`](/docs/glossary/types#filter) that was created from one of 
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { publicClient } from './client'
+```js twoslash [example.ts]
+import { publicClient } from './client';
 
-const filter = await publicClient.createPendingTransactionFilter()
-const uninstalled = await publicClient.uninstallFilter({ filter }) // [!code focus:99]
+const filter = await publicClient.createPendingTransactionFilter();
+const uninstalled = await publicClient.uninstallFilter({ filter }); // [!code focus:99]
 // true
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash [client.ts] filename="client.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
@@ -48,13 +48,13 @@ A boolean indicating if the Filter was successfully uninstalled.
 
 A created filter.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-const filter = await publicClient.createPendingTransactionFilter()
+const filter = await publicClient.createPendingTransactionFilter();
 const uninstalled = await publicClient.uninstallFilter({
-  filter, // [!code focus]
-})
+    filter // [!code focus]
+});
 ```
 
 ## JSON-RPC Method

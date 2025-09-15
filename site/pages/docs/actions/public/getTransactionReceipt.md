@@ -10,12 +10,13 @@ Returns the [Transaction Receipt](/docs/glossary/terms#transaction-receipt) give
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { publicClient } from './client'
+```js twoslash [example.ts]
+import { publicClient } from './client';
 
-const transaction = await publicClient.getTransactionReceipt({ // [!code focus:99]
-  hash: '0x4ca7ee652d57678f26e887c149ab0735f41de37bcad58c9f6d3ed5824f15b74d'
-})
+const transaction = await publicClient.getTransactionReceipt({
+    // [!code focus:99]
+    hash: '0x4ca7ee652d57678f26e887c149ab0735f41de37bcad58c9f6d3ed5824f15b74d'
+});
 // @log: {
 // @log:  blockHash: '0xaf1dadb8a98f1282e8f7b42cc3da8847bfa2cf4e227b8220403ae642e1173088',
 // @log:  blockNumber: 15132008n,
@@ -25,14 +26,14 @@ const transaction = await publicClient.getTransactionReceipt({ // [!code focus:9
 // @log: }
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash [client.ts] filename="client.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
@@ -51,12 +52,12 @@ The transaction receipt.
 
 A transaction hash.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const transaction = await publicClient.getTransactionReceipt({
-  hash: '0x4ca7ee652d57678f26e887c149ab0735f41de37bcad58c9f6d3ed5824f15b74d' // [!code focus]
-})
+    hash: '0x4ca7ee652d57678f26e887c149ab0735f41de37bcad58c9f6d3ed5824f15b74d' // [!code focus]
+});
 ```
 
 ## Example

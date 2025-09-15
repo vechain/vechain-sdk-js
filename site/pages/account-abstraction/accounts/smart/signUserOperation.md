@@ -6,42 +6,44 @@ Signs a User Operation with the Smart Account's **Owner**.
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { toCoinbaseSmartAccount } from 'viem/account-abstraction'
-import { client, owner } from './config'
+```js twoslash [example.ts]
+import { toCoinbaseSmartAccount } from 'viem/account-abstraction';
+import { client, owner } from './config';
 
 export const account = await toCoinbaseSmartAccount({
-  client,
-  owners: [owner],
-})
+    client,
+    owners: [owner]
+});
 
-const signature = await account.signUserOperation({ // [!code focus:99]
-  callData: '0xdeadbeef',
-  callGasLimit: 141653n,
-  factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e',
-  factoryData: '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000',
-  maxFeePerGas: 15000000000n,
-  maxPriorityFeePerGas: 2000000000n,
-  nonce: 0n,
-  paymasterPostOpGasLimit: 0n,
-  paymasterVerificationGasLimit: 0n,
-  preVerificationGas: 53438n,
-  sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
-  verificationGasLimit: 259350n,
-})
+const signature = await account.signUserOperation({
+    // [!code focus:99]
+    callData: '0xdeadbeef',
+    callGasLimit: 141653n,
+    factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e',
+    factoryData:
+        '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000',
+    maxFeePerGas: 15000000000n,
+    maxPriorityFeePerGas: 2000000000n,
+    nonce: 0n,
+    paymasterPostOpGasLimit: 0n,
+    paymasterVerificationGasLimit: 0n,
+    preVerificationGas: 53438n,
+    sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
+    verificationGasLimit: 259350n
+});
 ```
 
-```ts twoslash [config.ts] filename="config.ts"
-import { createPublicClient, http } from 'viem'
-import { privateKeyToAccount } from 'viem/accounts'
-import { mainnet } from 'viem/chains'
+```js twoslash [config.ts] filename="config.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+import { privateKeyToAccount } from 'viem/accounts';
+
 
 export const client = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 
-export const owner = privateKeyToAccount('0x...')
+export const owner = privateKeyToAccount('0x...');
 ```
 
 :::
@@ -60,29 +62,30 @@ The User Operation signature.
 
 The data to pass to the `sender` during the main execution call.
 
-```ts twoslash
-import { toCoinbaseSmartAccount } from 'viem/account-abstraction'
-import { client, owner } from './config'
+```js twoslash
+import { toCoinbaseSmartAccount } from 'viem/account-abstraction';
+import { client, owner } from './config';
 
 export const account = await toCoinbaseSmartAccount({
-  client,
-  owners: [owner],
-})
+    client,
+    owners: [owner]
+});
 // ---cut---
 const signature = await account.signUserOperation({
-  callData: '0xdeadbeef', // [!code focus]
-  callGasLimit: 141653n,
-  factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e',
-  factoryData: '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000',
-  maxFeePerGas: 15000000000n,
-  maxPriorityFeePerGas: 2000000000n,
-  nonce: 0n,
-  paymasterPostOpGasLimit: 0n,
-  paymasterVerificationGasLimit: 0n,
-  preVerificationGas: 53438n,
-  sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
-  verificationGasLimit: 259350n,
-})
+    callData: '0xdeadbeef', // [!code focus]
+    callGasLimit: 141653n,
+    factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e',
+    factoryData:
+        '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000',
+    maxFeePerGas: 15000000000n,
+    maxPriorityFeePerGas: 2000000000n,
+    nonce: 0n,
+    paymasterPostOpGasLimit: 0n,
+    paymasterVerificationGasLimit: 0n,
+    preVerificationGas: 53438n,
+    sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
+    verificationGasLimit: 259350n
+});
 ```
 
 ### callGasLimit
@@ -91,29 +94,30 @@ const signature = await account.signUserOperation({
 
 The amount of gas to allocate the main execution call.
 
-```ts twoslash
-import { toCoinbaseSmartAccount } from 'viem/account-abstraction'
-import { client, owner } from './config'
+```js twoslash
+import { toCoinbaseSmartAccount } from 'viem/account-abstraction';
+import { client, owner } from './config';
 
 export const account = await toCoinbaseSmartAccount({
-  client,
-  owners: [owner],
-})
+    client,
+    owners: [owner]
+});
 // ---cut---
 const signature = await account.signUserOperation({
-  callData: '0xdeadbeef',
-  callGasLimit: 141653n, // [!code focus]
-  factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e',
-  factoryData: '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000',
-  maxFeePerGas: 15000000000n,
-  maxPriorityFeePerGas: 2000000000n,
-  nonce: 0n,
-  paymasterPostOpGasLimit: 0n,
-  paymasterVerificationGasLimit: 0n,
-  preVerificationGas: 53438n,
-  sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
-  verificationGasLimit: 259350n,
-})
+    callData: '0xdeadbeef',
+    callGasLimit: 141653n, // [!code focus]
+    factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e',
+    factoryData:
+        '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000',
+    maxFeePerGas: 15000000000n,
+    maxPriorityFeePerGas: 2000000000n,
+    nonce: 0n,
+    paymasterPostOpGasLimit: 0n,
+    paymasterVerificationGasLimit: 0n,
+    preVerificationGas: 53438n,
+    sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
+    verificationGasLimit: 259350n
+});
 ```
 
 ### factory
@@ -122,29 +126,30 @@ const signature = await account.signUserOperation({
 
 Account factory. Only for new accounts.
 
-```ts twoslash
-import { toCoinbaseSmartAccount } from 'viem/account-abstraction'
-import { client, owner } from './config'
+```js twoslash
+import { toCoinbaseSmartAccount } from 'viem/account-abstraction';
+import { client, owner } from './config';
 
 export const account = await toCoinbaseSmartAccount({
-  client,
-  owners: [owner],
-})
+    client,
+    owners: [owner]
+});
 // ---cut---
 const signature = await account.signUserOperation({
-  callData: '0xdeadbeef',
-  callGasLimit: 141653n,
-  factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e', // [!code focus]
-  factoryData: '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000',
-  maxFeePerGas: 15000000000n,
-  maxPriorityFeePerGas: 2000000000n,
-  nonce: 0n,
-  paymasterPostOpGasLimit: 0n,
-  paymasterVerificationGasLimit: 0n,
-  preVerificationGas: 53438n,
-  sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
-  verificationGasLimit: 259350n,
-})
+    callData: '0xdeadbeef',
+    callGasLimit: 141653n,
+    factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e', // [!code focus]
+    factoryData:
+        '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000',
+    maxFeePerGas: 15000000000n,
+    maxPriorityFeePerGas: 2000000000n,
+    nonce: 0n,
+    paymasterPostOpGasLimit: 0n,
+    paymasterVerificationGasLimit: 0n,
+    preVerificationGas: 53438n,
+    sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
+    verificationGasLimit: 259350n
+});
 ```
 
 ### factoryData
@@ -153,29 +158,30 @@ const signature = await account.signUserOperation({
 
 Data for account factory.
 
-```ts twoslash
-import { toCoinbaseSmartAccount } from 'viem/account-abstraction'
-import { client, owner } from './config'
+```js twoslash
+import { toCoinbaseSmartAccount } from 'viem/account-abstraction';
+import { client, owner } from './config';
 
 export const account = await toCoinbaseSmartAccount({
-  client,
-  owners: [owner],
-})
+    client,
+    owners: [owner]
+});
 // ---cut---
 const signature = await account.signUserOperation({
-  callData: '0xdeadbeef',
-  callGasLimit: 141653n,
-  factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e',
-  factoryData: '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000', // [!code focus]
-  maxFeePerGas: 15000000000n,
-  maxPriorityFeePerGas: 2000000000n,
-  nonce: 0n,
-  paymasterPostOpGasLimit: 0n,
-  paymasterVerificationGasLimit: 0n,
-  preVerificationGas: 53438n,
-  sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
-  verificationGasLimit: 259350n,
-})
+    callData: '0xdeadbeef',
+    callGasLimit: 141653n,
+    factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e',
+    factoryData:
+        '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000', // [!code focus]
+    maxFeePerGas: 15000000000n,
+    maxPriorityFeePerGas: 2000000000n,
+    nonce: 0n,
+    paymasterPostOpGasLimit: 0n,
+    paymasterVerificationGasLimit: 0n,
+    preVerificationGas: 53438n,
+    sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
+    verificationGasLimit: 259350n
+});
 ```
 
 ### maxFeePerGas
@@ -184,29 +190,30 @@ const signature = await account.signUserOperation({
 
 Maximum fee per gas.
 
-```ts twoslash
-import { toCoinbaseSmartAccount } from 'viem/account-abstraction'
-import { client, owner } from './config'
+```js twoslash
+import { toCoinbaseSmartAccount } from 'viem/account-abstraction';
+import { client, owner } from './config';
 
 export const account = await toCoinbaseSmartAccount({
-  client,
-  owners: [owner],
-})
+    client,
+    owners: [owner]
+});
 // ---cut---
 const signature = await account.signUserOperation({
-  callData: '0xdeadbeef',
-  callGasLimit: 141653n,
-  factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e',
-  factoryData: '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000',
-  maxFeePerGas: 15000000000n, // [!code focus]
-  maxPriorityFeePerGas: 2000000000n,
-  nonce: 0n,
-  paymasterPostOpGasLimit: 0n,
-  paymasterVerificationGasLimit: 0n,
-  preVerificationGas: 53438n,
-  sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
-  verificationGasLimit: 259350n,
-})
+    callData: '0xdeadbeef',
+    callGasLimit: 141653n,
+    factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e',
+    factoryData:
+        '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000',
+    maxFeePerGas: 15000000000n, // [!code focus]
+    maxPriorityFeePerGas: 2000000000n,
+    nonce: 0n,
+    paymasterPostOpGasLimit: 0n,
+    paymasterVerificationGasLimit: 0n,
+    preVerificationGas: 53438n,
+    sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
+    verificationGasLimit: 259350n
+});
 ```
 
 ### maxPriorityFeePerGas
@@ -215,30 +222,31 @@ const signature = await account.signUserOperation({
 
 Maximum priority fee per gas.
 
-```ts twoslash
-import { toCoinbaseSmartAccount } from 'viem/account-abstraction'
-import { client, owner } from './config'
+```js twoslash
+import { toCoinbaseSmartAccount } from 'viem/account-abstraction';
+import { client, owner } from './config';
 
 export const account = await toCoinbaseSmartAccount({
-  client,
-  owners: [owner],
-})
+    client,
+    owners: [owner]
+});
 // ---cut---
 const signature = await account.signUserOperation({
-  callData: '0xdeadbeef',
-  callGasLimit: 141653n,
-  factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e',
-  factoryData: '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000',
-  maxFeePerGas: 15000000000n,
-  maxPriorityFeePerGas: 2000000000n,
-  // [!code focus]
-  nonce: 0n,
-  paymasterPostOpGasLimit: 0n,
-  paymasterVerificationGasLimit: 0n,
-  preVerificationGas: 53438n,
-  sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
-  verificationGasLimit: 259350n,
-})
+    callData: '0xdeadbeef',
+    callGasLimit: 141653n,
+    factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e',
+    factoryData:
+        '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000',
+    maxFeePerGas: 15000000000n,
+    maxPriorityFeePerGas: 2000000000n,
+    // [!code focus]
+    nonce: 0n,
+    paymasterPostOpGasLimit: 0n,
+    paymasterVerificationGasLimit: 0n,
+    preVerificationGas: 53438n,
+    sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
+    verificationGasLimit: 259350n
+});
 ```
 
 ### nonce
@@ -247,29 +255,30 @@ const signature = await account.signUserOperation({
 
 Anti-replay parameter.
 
-```ts twoslash
-import { toCoinbaseSmartAccount } from 'viem/account-abstraction'
-import { client, owner } from './config'
+```js twoslash
+import { toCoinbaseSmartAccount } from 'viem/account-abstraction';
+import { client, owner } from './config';
 
 export const account = await toCoinbaseSmartAccount({
-  client,
-  owners: [owner],
-})
+    client,
+    owners: [owner]
+});
 // ---cut---
 const signature = await account.signUserOperation({
-  callData: '0xdeadbeef',
-  callGasLimit: 141653n,
-  factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e',
-  factoryData: '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000',
-  maxFeePerGas: 15000000000n,
-  maxPriorityFeePerGas: 2000000000n,
-  nonce: 0n, // [!code focus]
-  paymasterPostOpGasLimit: 0n,
-  paymasterVerificationGasLimit: 0n,
-  preVerificationGas: 53438n,
-  sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
-  verificationGasLimit: 259350n,
-})
+    callData: '0xdeadbeef',
+    callGasLimit: 141653n,
+    factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e',
+    factoryData:
+        '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000',
+    maxFeePerGas: 15000000000n,
+    maxPriorityFeePerGas: 2000000000n,
+    nonce: 0n, // [!code focus]
+    paymasterPostOpGasLimit: 0n,
+    paymasterVerificationGasLimit: 0n,
+    preVerificationGas: 53438n,
+    sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
+    verificationGasLimit: 259350n
+});
 ```
 
 ### paymaster
@@ -278,31 +287,32 @@ const signature = await account.signUserOperation({
 
 Address of paymaster contract.
 
-```ts twoslash
-import { toCoinbaseSmartAccount } from 'viem/account-abstraction'
-import { client, owner } from './config'
+```js twoslash
+import { toCoinbaseSmartAccount } from 'viem/account-abstraction';
+import { client, owner } from './config';
 
 export const account = await toCoinbaseSmartAccount({
-  client,
-  owners: [owner],
-})
+    client,
+    owners: [owner]
+});
 // ---cut---
 const signature = await account.signUserOperation({
-  callData: '0xdeadbeef',
-  callGasLimit: 141653n,
-  factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e',
-  factoryData: '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000',
-  maxFeePerGas: 15000000000n,
-  maxPriorityFeePerGas: 2000000000n,
-  nonce: 0n,
-  paymaster: '0xE911628bF8428C23f179a07b081325cAe376DE1f', // [!code focus]
-  paymasterData: '0xdeadbeef',
-  paymasterPostOpGasLimit: 0n,
-  paymasterVerificationGasLimit: 0n,
-  preVerificationGas: 53438n,
-  sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
-  verificationGasLimit: 259350n,
-})
+    callData: '0xdeadbeef',
+    callGasLimit: 141653n,
+    factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e',
+    factoryData:
+        '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000',
+    maxFeePerGas: 15000000000n,
+    maxPriorityFeePerGas: 2000000000n,
+    nonce: 0n,
+    paymaster: '0xE911628bF8428C23f179a07b081325cAe376DE1f', // [!code focus]
+    paymasterData: '0xdeadbeef',
+    paymasterPostOpGasLimit: 0n,
+    paymasterVerificationGasLimit: 0n,
+    preVerificationGas: 53438n,
+    sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
+    verificationGasLimit: 259350n
+});
 ```
 
 ### paymasterData
@@ -311,31 +321,32 @@ const signature = await account.signUserOperation({
 
 Data for paymaster.
 
-```ts twoslash
-import { toCoinbaseSmartAccount } from 'viem/account-abstraction'
-import { client, owner } from './config'
+```js twoslash
+import { toCoinbaseSmartAccount } from 'viem/account-abstraction';
+import { client, owner } from './config';
 
 export const account = await toCoinbaseSmartAccount({
-  client,
-  owners: [owner],
-})
+    client,
+    owners: [owner]
+});
 // ---cut---
 const signature = await account.signUserOperation({
-  callData: '0xdeadbeef',
-  callGasLimit: 141653n,
-  factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e',
-  factoryData: '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000',
-  maxFeePerGas: 15000000000n,
-  maxPriorityFeePerGas: 2000000000n,
-  nonce: 0n,
-  paymaster: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
-  paymasterData: '0xdeadbeef', // [!code focus]
-  paymasterPostOpGasLimit: 0n,
-  paymasterVerificationGasLimit: 0n,
-  preVerificationGas: 53438n,
-  sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
-  verificationGasLimit: 259350n,
-})
+    callData: '0xdeadbeef',
+    callGasLimit: 141653n,
+    factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e',
+    factoryData:
+        '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000',
+    maxFeePerGas: 15000000000n,
+    maxPriorityFeePerGas: 2000000000n,
+    nonce: 0n,
+    paymaster: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
+    paymasterData: '0xdeadbeef', // [!code focus]
+    paymasterPostOpGasLimit: 0n,
+    paymasterVerificationGasLimit: 0n,
+    preVerificationGas: 53438n,
+    sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
+    verificationGasLimit: 259350n
+});
 ```
 
 ### paymasterPostOpGasLimit
@@ -344,31 +355,32 @@ const signature = await account.signUserOperation({
 
 The amount of gas to allocate for the paymaster post-operation code.
 
-```ts twoslash
-import { toCoinbaseSmartAccount } from 'viem/account-abstraction'
-import { client, owner } from './config'
+```js twoslash
+import { toCoinbaseSmartAccount } from 'viem/account-abstraction';
+import { client, owner } from './config';
 
 export const account = await toCoinbaseSmartAccount({
-  client,
-  owners: [owner],
-})
+    client,
+    owners: [owner]
+});
 // ---cut---
 const signature = await account.signUserOperation({
-  callData: '0xdeadbeef',
-  callGasLimit: 141653n,
-  factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e',
-  factoryData: '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000',
-  maxFeePerGas: 15000000000n,
-  maxPriorityFeePerGas: 2000000000n,
-  nonce: 0n,
-  paymaster: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
-  paymasterData: '0xdeadbeef',
-  paymasterPostOpGasLimit: 69420n, // [!code focus]
-  paymasterVerificationGasLimit: 0n,
-  preVerificationGas: 53438n,
-  sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
-  verificationGasLimit: 259350n,
-})
+    callData: '0xdeadbeef',
+    callGasLimit: 141653n,
+    factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e',
+    factoryData:
+        '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000',
+    maxFeePerGas: 15000000000n,
+    maxPriorityFeePerGas: 2000000000n,
+    nonce: 0n,
+    paymaster: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
+    paymasterData: '0xdeadbeef',
+    paymasterPostOpGasLimit: 69420n, // [!code focus]
+    paymasterVerificationGasLimit: 0n,
+    preVerificationGas: 53438n,
+    sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
+    verificationGasLimit: 259350n
+});
 ```
 
 ### paymasterVerificationGasLimit
@@ -377,31 +389,32 @@ const signature = await account.signUserOperation({
 
 The amount of gas to allocate for the paymaster validation code.
 
-```ts twoslash
-import { toCoinbaseSmartAccount } from 'viem/account-abstraction'
-import { client, owner } from './config'
+```js twoslash
+import { toCoinbaseSmartAccount } from 'viem/account-abstraction';
+import { client, owner } from './config';
 
 export const account = await toCoinbaseSmartAccount({
-  client,
-  owners: [owner],
-})
+    client,
+    owners: [owner]
+});
 // ---cut---
 const signature = await account.signUserOperation({
-  callData: '0xdeadbeef',
-  callGasLimit: 141653n,
-  factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e',
-  factoryData: '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000',
-  maxFeePerGas: 15000000000n,
-  maxPriorityFeePerGas: 2000000000n,
-  nonce: 0n,
-  paymaster: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
-  paymasterData: '0xdeadbeef',
-  paymasterPostOpGasLimit: 69420n,
-  paymasterVerificationGasLimit: 69420n, // [!code focus]
-  preVerificationGas: 53438n,
-  sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
-  verificationGasLimit: 259350n,
-})
+    callData: '0xdeadbeef',
+    callGasLimit: 141653n,
+    factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e',
+    factoryData:
+        '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000',
+    maxFeePerGas: 15000000000n,
+    maxPriorityFeePerGas: 2000000000n,
+    nonce: 0n,
+    paymaster: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
+    paymasterData: '0xdeadbeef',
+    paymasterPostOpGasLimit: 69420n,
+    paymasterVerificationGasLimit: 69420n, // [!code focus]
+    preVerificationGas: 53438n,
+    sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
+    verificationGasLimit: 259350n
+});
 ```
 
 ### preVerificationGas
@@ -410,31 +423,32 @@ const signature = await account.signUserOperation({
 
 Extra gas to pay the Bundler.
 
-```ts twoslash
-import { toCoinbaseSmartAccount } from 'viem/account-abstraction'
-import { client, owner } from './config'
+```js twoslash
+import { toCoinbaseSmartAccount } from 'viem/account-abstraction';
+import { client, owner } from './config';
 
 export const account = await toCoinbaseSmartAccount({
-  client,
-  owners: [owner],
-})
+    client,
+    owners: [owner]
+});
 // ---cut---
 const signature = await account.signUserOperation({
-  callData: '0xdeadbeef',
-  callGasLimit: 141653n,
-  factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e',
-  factoryData: '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000',
-  maxFeePerGas: 15000000000n,
-  maxPriorityFeePerGas: 2000000000n,
-  nonce: 0n,
-  paymaster: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
-  paymasterData: '0xdeadbeef',
-  paymasterPostOpGasLimit: 69420n,
-  paymasterVerificationGasLimit: 69420n,
-  preVerificationGas: 53438n, // [!code focus]
-  sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
-  verificationGasLimit: 259350n,
-})
+    callData: '0xdeadbeef',
+    callGasLimit: 141653n,
+    factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e',
+    factoryData:
+        '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000',
+    maxFeePerGas: 15000000000n,
+    maxPriorityFeePerGas: 2000000000n,
+    nonce: 0n,
+    paymaster: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
+    paymasterData: '0xdeadbeef',
+    paymasterPostOpGasLimit: 69420n,
+    paymasterVerificationGasLimit: 69420n,
+    preVerificationGas: 53438n, // [!code focus]
+    sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
+    verificationGasLimit: 259350n
+});
 ```
 
 ### sender
@@ -443,31 +457,32 @@ const signature = await account.signUserOperation({
 
 The account making the operation.
 
-```ts twoslash
-import { toCoinbaseSmartAccount } from 'viem/account-abstraction'
-import { client, owner } from './config'
+```js twoslash
+import { toCoinbaseSmartAccount } from 'viem/account-abstraction';
+import { client, owner } from './config';
 
 export const account = await toCoinbaseSmartAccount({
-  client,
-  owners: [owner],
-})
+    client,
+    owners: [owner]
+});
 // ---cut---
 const signature = await account.signUserOperation({
-  callData: '0xdeadbeef',
-  callGasLimit: 141653n,
-  factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e',
-  factoryData: '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000',
-  maxFeePerGas: 15000000000n,
-  maxPriorityFeePerGas: 2000000000n,
-  nonce: 0n,
-  paymaster: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
-  paymasterData: '0xdeadbeef',
-  paymasterPostOpGasLimit: 69420n,
-  paymasterVerificationGasLimit: 69420n,
-  preVerificationGas: 53438n,
-  sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f', // [!code focus]
-  verificationGasLimit: 259350n,
-})
+    callData: '0xdeadbeef',
+    callGasLimit: 141653n,
+    factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e',
+    factoryData:
+        '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000',
+    maxFeePerGas: 15000000000n,
+    maxPriorityFeePerGas: 2000000000n,
+    nonce: 0n,
+    paymaster: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
+    paymasterData: '0xdeadbeef',
+    paymasterPostOpGasLimit: 69420n,
+    paymasterVerificationGasLimit: 69420n,
+    preVerificationGas: 53438n,
+    sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f', // [!code focus]
+    verificationGasLimit: 259350n
+});
 ```
 
 ### verificationGasLimit
@@ -476,29 +491,30 @@ const signature = await account.signUserOperation({
 
 The amount of gas to allocate for the verification step.
 
-```ts twoslash
-import { toCoinbaseSmartAccount } from 'viem/account-abstraction'
-import { client, owner } from './config'
+```js twoslash
+import { toCoinbaseSmartAccount } from 'viem/account-abstraction';
+import { client, owner } from './config';
 
 export const account = await toCoinbaseSmartAccount({
-  client,
-  owners: [owner],
-})
+    client,
+    owners: [owner]
+});
 // ---cut---
 const signature = await account.signUserOperation({
-  callData: '0xdeadbeef',
-  callGasLimit: 141653n,
-  factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e',
-  factoryData: '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000',
-  maxFeePerGas: 15000000000n,
-  maxPriorityFeePerGas: 2000000000n,
-  nonce: 0n,
-  paymaster: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
-  paymasterData: '0xdeadbeef',
-  paymasterPostOpGasLimit: 69420n,
-  paymasterVerificationGasLimit: 69420n,
-  preVerificationGas: 53438n,
-  sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
-  verificationGasLimit: 259350n, // [!code focus]
-})
+    callData: '0xdeadbeef',
+    callGasLimit: 141653n,
+    factory: '0xfb6dab6200b8958c2655c3747708f82243d3f32e',
+    factoryData:
+        '0xf14ddffc000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000',
+    maxFeePerGas: 15000000000n,
+    maxPriorityFeePerGas: 2000000000n,
+    nonce: 0n,
+    paymaster: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
+    paymasterData: '0xdeadbeef',
+    paymasterPostOpGasLimit: 69420n,
+    paymasterVerificationGasLimit: 69420n,
+    preVerificationGas: 53438n,
+    sender: '0xE911628bF8428C23f179a07b081325cAe376DE1f',
+    verificationGasLimit: 259350n // [!code focus]
+});
 ```

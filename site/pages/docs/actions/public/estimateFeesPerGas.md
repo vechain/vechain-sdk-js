@@ -2,7 +2,7 @@
 description: Returns an estimate for the fees per gas (in wei) for a transaction to be likely included in the next block.
 ---
 
-# estimateFeesPerGas 
+# estimateFeesPerGas
 
 Returns an estimate for the fees per gas (in wei) for a transaction to be likely included in the next block.
 
@@ -14,32 +14,30 @@ Otherwise, for EIP-1559 Transactions, viem will estimate the fees using a combin
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { publicClient } from './client'
+```js twoslash [example.ts]
+import { publicClient } from './client';
 
-const {
-  maxFeePerGas,
-  maxPriorityFeePerGas
-} = await publicClient.estimateFeesPerGas()
+const { maxFeePerGas, maxPriorityFeePerGas } =
+    await publicClient.estimateFeesPerGas();
 // @log: {
 // @log:   maxFeePerGas: 15_000_000_000n,
 // @log:   maxPriorityFeePerGas: 1_000_000_000n,
 // @log: }
 
 const { gasPrice } = await publicClient.estimateFeesPerGas({
-  type: 'legacy'
-})
-// @log: { gasPrice: 15_000_000_000n } 
+    type: 'legacy'
+});
+// @log: { gasPrice: 15_000_000_000n }
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash [client.ts] filename="client.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
@@ -59,15 +57,14 @@ An estimate (in wei) for the fees per gas.
 
 Optional Chain override. Used to infer the fees per gas from [`chain.fees.estimateFeesPerGas`](/docs/actions/public/estimateFeesPerGas).
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-import { optimism } from 'viem/chains' // [!code focus]
 
-const { maxFeePerGas, maxPriorityFeePerGas } = 
-  await publicClient.estimateFeesPerGas({
-    chain: optimism // [!code focus]
-  })
+const { maxFeePerGas, maxPriorityFeePerGas } =
+    await publicClient.estimateFeesPerGas({
+        chain: optimism // [!code focus]
+    });
 ```
 
 ### type (optional)
@@ -75,10 +72,10 @@ const { maxFeePerGas, maxPriorityFeePerGas } =
 - **Type:** `"legacy" | "eip1559"`
 - **Default:** `"eip1559"`
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const { gasPrice } = await publicClient.estimateFeesPerGas({
-  type: 'legacy' // [!code focus]
-})
+    type: 'legacy' // [!code focus]
+});
 ```

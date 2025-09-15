@@ -54,15 +54,14 @@ export const wagmiAbi = [
 ```ts [config.ts]
 import { createWalletClient, custom, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
-import { mainnet } from 'viem/chains'
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
+  network: ThorNetworks.MAINNET,
+  network: ThorNetworks.MAINNET
 })
 
 export const walletClient = createWalletClient({
-  chain: mainnet,
+  network: ThorNetworks.MAINNET,
   transport: custom(window.ethereum)
 })
 
@@ -115,15 +114,14 @@ export const wagmiAbi = [
 ```ts [config.ts]
 import { createWalletClient, custom, http} from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
-import { mainnet } from 'viem/chains'
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
+  network: ThorNetworks.MAINNET,
+  network: ThorNetworks.MAINNET
 })
 
 export const walletClient = createWalletClient({
-  chain: mainnet,
+  network: ThorNetworks.MAINNET,
   transport: custom(window.ethereum)
 })
 
@@ -170,15 +168,14 @@ export const wagmiAbi = [
 ```ts [config.ts]
 import { createWalletClient, custom, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
-import { mainnet } from 'viem/chains'
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
+  network: ThorNetworks.MAINNET,
+  network: ThorNetworks.MAINNET
 })
 
 export const walletClient = createWalletClient({
-  chain: mainnet,
+  network: ThorNetworks.MAINNET,
   transport: custom(window.ethereum)
 })
 
@@ -334,7 +331,6 @@ The target chain. If there is a mismatch between the wallet's current chain & th
 The chain is also used to infer its request type (e.g. the Celo chain has a `gatewayFee` that you can pass through to `sendTransaction`).
 
 ```ts
-import { optimism } from 'viem/chains' // [!code focus]
 
 await walletClient.writeContract({
   address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',

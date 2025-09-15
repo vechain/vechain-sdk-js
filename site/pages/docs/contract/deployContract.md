@@ -36,10 +36,9 @@ export const wagmiAbi = [
 ```ts [client.ts]
 import { createWalletClient, custom } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
-import { mainnet } from 'viem/chains'
 
 export const walletClient = createWalletClient({
-  chain: mainnet,
+  network: ThorNetworks.MAINNET,
   transport: custom(window.ethereum)
 })
 
@@ -83,10 +82,9 @@ export const wagmiAbi = [
 ```ts [client.ts]
 import { createWalletClient, custom } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
-import { mainnet } from 'viem/chains'
 
 export const walletClient = createWalletClient({
-  chain: mainnet,
+  network: ThorNetworks.MAINNET,
   transport: custom(window.ethereum)
 })
 

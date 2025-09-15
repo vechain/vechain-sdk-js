@@ -18,26 +18,26 @@ These events will be batched up into [Event Logs](/docs/glossary/terms#event-log
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { publicClient } from './client'
-import { wagmiAbi } from './abi'
+```js twoslash [example.ts]
+import { publicClient } from './client';
+import { wagmiAbi } from './abi';
 
 const unwatch = publicClient.watchEvent({
-  onLogs: logs => console.log(logs)
-})
+    onLogs: (logs) => console.log(logs)
+});
 // @log: > [{ ... }, { ... }, { ... }]
 // @log: > [{ ... }, { ... }]
 // @log: > [{ ... }, { ... }, { ... }, { ... }]
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash [client.ts] filename="client.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
@@ -52,27 +52,27 @@ You can also scope `watchEvent` to a set of given attributes (listed below).
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { publicClient } from './client'
-import { wagmiAbi } from './abi'
+```js twoslash [example.ts]
+import { publicClient } from './client';
+import { wagmiAbi } from './abi';
 
 const unwatch = publicClient.watchEvent({
-  address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // [!code focus]
-  onLogs: logs => console.log(logs)
-})
+    address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // [!code focus]
+    onLogs: (logs) => console.log(logs)
+});
 // @log: > [{ ... }, { ... }, { ... }]
 // @log: > [{ ... }, { ... }]
 // @log: > [{ ... }, { ... }, { ... }, { ... }]
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash [client.ts] filename="client.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
@@ -85,29 +85,31 @@ The `event` argument takes in an event in ABI format – we have a [`parseAbiIte
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { parseAbiItem } from 'viem' // [!code focus]
-import { publicClient } from './client'
-import { wagmiAbi } from './abi'
+```js twoslash [example.ts]
+import { parseAbiItem } from 'viem'; // [!code focus]
+import { publicClient } from './client';
+import { wagmiAbi } from './abi';
 
 const unwatch = publicClient.watchEvent({
-  address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-  event: parseAbiItem('event Transfer(address indexed from, address indexed to, uint256 value)'), // [!code focus]
-  onLogs: logs => console.log(logs)
-})
+    address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    event: parseAbiItem(
+        'event Transfer(address indexed from, address indexed to, uint256 value)'
+    ), // [!code focus]
+    onLogs: (logs) => console.log(logs)
+});
 // @log: > [{ ... }, { ... }, { ... }]
 // @log: > [{ ... }, { ... }]
 // @log: > [{ ... }, { ... }, { ... }, { ... }]
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash [client.ts] filename="client.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
@@ -116,31 +118,32 @@ By default, `event` accepts the [`AbiEvent`](/docs/glossary/types#abievent) type
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { publicClient } from './client'
+```js twoslash [example.ts]
+import { publicClient } from './client';
 
 const unwatch = publicClient.watchEvent(publicClient, {
-  address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-  event: { // [!code focus:8]
-    name: 'Transfer', 
-    inputs: [
-      { type: 'address', indexed: true, name: 'from' },
-      { type: 'address', indexed: true, name: 'to' },
-      { type: 'uint256', indexed: false, name: 'value' }
-    ] 
-  },
-  onLogs: logs => console.log(logs)
-})
+    address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    event: {
+        // [!code focus:8]
+        name: 'Transfer',
+        inputs: [
+            { type: 'address', indexed: true, name: 'from' },
+            { type: 'address', indexed: true, name: 'to' },
+            { type: 'uint256', indexed: false, name: 'value' }
+        ]
+    },
+    onLogs: (logs) => console.log(logs)
+});
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash [client.ts] filename="client.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
@@ -151,32 +154,35 @@ export const publicClient = createPublicClient({
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { parseAbiItem } from 'viem'
-import { publicClient } from './client'
+```js twoslash [example.ts]
+import { parseAbiItem } from 'viem';
+import { publicClient } from './client';
 
 const unwatch = publicClient.watchEvent({
-  address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-  event: parseAbiItem('event Transfer(address indexed from, address indexed to, uint256 value)'),
-  args: { // [!code focus:4]
-    from: '0xd8da6bf26964af9d7eed9e03e53415d37aa96045',
-    to: '0xa5cc3c03994db5b0d9a5eedd10cabab0813678ac'
-  },
-  onLogs: logs => console.log(logs)
-})
+    address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    event: parseAbiItem(
+        'event Transfer(address indexed from, address indexed to, uint256 value)'
+    ),
+    args: {
+        // [!code focus:4]
+        from: '0xd8da6bf26964af9d7eed9e03e53415d37aa96045',
+        to: '0xa5cc3c03994db5b0d9a5eedd10cabab0813678ac'
+    },
+    onLogs: (logs) => console.log(logs)
+});
 // > [{ ... }, { ... }, { ... }]
 // > [{ ... }, { ... }]
 // > [{ ... }, { ... }, { ... }, { ... }]
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
-import { createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash [client.ts] filename="client.ts"
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem';
+
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
-})
+    network: ThorNetworks.MAINNET,
+    network: ThorNetworks.MAINNET
+});
 ```
 
 :::
@@ -185,42 +191,46 @@ Only indexed arguments in `event` are candidates for `args`.
 
 These arguments can also be an array to indicate that other values can exist in the position:
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-import { parseAbiItem } from 'viem'
+import { parseAbiItem } from 'viem';
 
 const unwatch = publicClient.watchEvent({
-  address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-  event: parseAbiItem('event Transfer(address indexed from, address indexed to, uint256 value)'),
-  args: { // [!code focus:8]
-    // '0xd8da...' OR '0xa5cc...' OR '0xa152...'
-    from: [
-      '0xd8da6bf26964af9d7eed9e03e53415d37aa96045', 
-      '0xa5cc3c03994db5b0d9a5eedd10cabab0813678ac',
-      '0xa152f8bb749c55e9943a3a0a3111d18ee2b3f94e',
-    ],
-  },
-  onLogs: logs => console.log(logs)
-})
+    address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    event: parseAbiItem(
+        'event Transfer(address indexed from, address indexed to, uint256 value)'
+    ),
+    args: {
+        // [!code focus:8]
+        // '0xd8da...' OR '0xa5cc...' OR '0xa152...'
+        from: [
+            '0xd8da6bf26964af9d7eed9e03e53415d37aa96045',
+            '0xa5cc3c03994db5b0d9a5eedd10cabab0813678ac',
+            '0xa152f8bb749c55e9943a3a0a3111d18ee2b3f94e'
+        ]
+    },
+    onLogs: (logs) => console.log(logs)
+});
 ```
 
 ### Multiple Events
 
 `watchEvent` can be scoped to **multiple events**:
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-import { parseAbi } from 'viem'
+import { parseAbi } from 'viem';
 
 const unwatch = publicClient.watchEvent({
-  events: parseAbi([ // [!code focus:5]
-    'event Approval(address indexed owner, address indexed sender, uint256 value)',
-    'event Transfer(address indexed from, address indexed to, uint256 value)',
-  ]),
-  onLogs: logs => console.log(logs)
-})
+    events: parseAbi([
+        // [!code focus:5]
+        'event Approval(address indexed owner, address indexed sender, uint256 value)',
+        'event Transfer(address indexed from, address indexed to, uint256 value)'
+    ]),
+    onLogs: (logs) => console.log(logs)
+});
 ```
 
 Note: `watchEvent` scoped to multiple events cannot be also scoped with [indexed arguments](#arguments) (`args`).
@@ -239,12 +249,12 @@ A function that can be invoked to stop watching for new Event Logs.
 
 The new Event Logs.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
 const unwatch = publicClient.watchEvent(
-  { onLogs: logs => console.log(logs) } // [!code focus:1]
-)
+    { onLogs: (logs) => console.log(logs) } // [!code focus:1]
+);
 ```
 
 ### address (optional)
@@ -253,15 +263,13 @@ const unwatch = publicClient.watchEvent(
 
 The contract address or a list of addresses from which Logs should originate.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-const unwatch = publicClient.watchEvent(
-  { 
+const unwatch = publicClient.watchEvent({
     address: '0xfba3912ca04dd458c843e2ee08967fc04f3579c2', // [!code focus]
-    onLogs: logs => console.log(logs) 
-  }
-)
+    onLogs: (logs) => console.log(logs)
+});
 ```
 
 ### event (optional)
@@ -272,18 +280,18 @@ The event in ABI format.
 
 A [`parseAbiItem` utility](/docs/abi/parseAbiItem) is exported from viem that converts from a human-readable event signature → ABI.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-import { parseAbiItem } from 'viem' // [!code focus]
+import { parseAbiItem } from 'viem'; // [!code focus]
 
-const unwatch = publicClient.watchEvent(
-  { 
+const unwatch = publicClient.watchEvent({
     address: '0xfba3912ca04dd458c843e2ee08967fc04f3579c2',
-    event: parseAbiItem('event Transfer(address indexed from, address indexed to, uint256 value)'), // [!code focus]
-    onLogs: logs => console.log(logs) 
-  }
-)
+    event: parseAbiItem(
+        'event Transfer(address indexed from, address indexed to, uint256 value)'
+    ), // [!code focus]
+    onLogs: (logs) => console.log(logs)
+});
 ```
 
 ### args (optional)
@@ -292,22 +300,23 @@ const unwatch = publicClient.watchEvent(
 
 A list of _indexed_ event arguments.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-import { parseAbiItem } from 'viem'
+import { parseAbiItem } from 'viem';
 
-const unwatch = publicClient.watchEvent(
-  { 
+const unwatch = publicClient.watchEvent({
     address: '0xfba3912ca04dd458c843e2ee08967fc04f3579c2',
-    event: parseAbiItem('event Transfer(address indexed from, address indexed to, uint256 value)'),
-    args: { // [!code focus:4]
-      from: '0xd8da6bf26964af9d7eed9e03e53415d37aa96045',
-      to: '0xa5cc3c03994db5b0d9a5eedd10cabab0813678ac'
+    event: parseAbiItem(
+        'event Transfer(address indexed from, address indexed to, uint256 value)'
+    ),
+    args: {
+        // [!code focus:4]
+        from: '0xd8da6bf26964af9d7eed9e03e53415d37aa96045',
+        to: '0xa5cc3c03994db5b0d9a5eedd10cabab0813678ac'
     },
-    onLogs: logs => console.log(logs) 
-  }
-)
+    onLogs: (logs) => console.log(logs)
+});
 ```
 
 ### batch (optional)
@@ -317,15 +326,13 @@ const unwatch = publicClient.watchEvent(
 
 Whether or not to batch the Event Logs between polling intervals.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-const unwatch = publicClient.watchEvent(
-  { 
+const unwatch = publicClient.watchEvent({
     batch: false, // [!code focus]
-    onLogs: logs => console.log(logs),
-  }
-)
+    onLogs: (logs) => console.log(logs)
+});
 ```
 
 ### onError (optional)
@@ -334,15 +341,13 @@ const unwatch = publicClient.watchEvent(
 
 Error thrown from listening for new Event Logs.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-const unwatch = publicClient.watchEvent(
-  { 
-    onError: error => console.log(error), // [!code focus:1]
-    onLogs: logs => console.log(logs),
-  }
-)
+const unwatch = publicClient.watchEvent({
+    onError: (error) => console.log(error), // [!code focus:1]
+    onLogs: (logs) => console.log(logs)
+});
 ```
 
 ### poll (optional)
@@ -354,21 +359,19 @@ Whether or not to use a polling mechanism to check for new logs instead of a Web
 
 This option is only configurable for Clients with a [WebSocket Transport](/docs/clients/transports/websocket).
 
-```ts twoslash
-import { createPublicClient, webSocket } from 'viem'
-import { mainnet } from 'viem/chains'
+```js twoslash
+import { createPublicClient, webSocket } from 'viem';
+
 
 const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: webSocket()
-})
+    network: ThorNetworks.MAINNET,
+    transport: webSocket()
+});
 
-const unwatch = publicClient.watchEvent(
-  { 
-    onLogs: logs => console.log(logs),
-    poll: true, // [!code focus]
-  }
-)
+const unwatch = publicClient.watchEvent({
+    onLogs: (logs) => console.log(logs),
+    poll: true // [!code focus]
+});
 ```
 
 ### pollingInterval (optional)
@@ -377,15 +380,13 @@ const unwatch = publicClient.watchEvent(
 
 Polling frequency (in ms). Defaults to the Client's `pollingInterval` config.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-const unwatch = publicClient.watchEvent(
-  { 
+const unwatch = publicClient.watchEvent({
     pollingInterval: 1_000, // [!code focus]
-    onLogs: logs => console.log(logs),
-  }
-)
+    onLogs: (logs) => console.log(logs)
+});
 ```
 
 ### fromBlock (optional)
@@ -394,15 +395,13 @@ const unwatch = publicClient.watchEvent(
 
 The block number to start listening for logs from.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/publicClient.ts]
 // ---cut---
-const unwatch = publicClient.watchEvent(
-  { 
+const unwatch = publicClient.watchEvent({
     fromBlock: 1n, // [!code focus]
-    onLogs: logs => console.log(logs),
-  }
-)
+    onLogs: (logs) => console.log(logs)
+});
 ```
 
 ## Live Example

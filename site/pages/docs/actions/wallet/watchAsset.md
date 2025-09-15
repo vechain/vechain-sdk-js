@@ -10,20 +10,21 @@ Requests that the user tracks the token in their wallet. Returns a boolean indic
 
 :::code-group
 
-```ts twoslash [example.ts]
-import { walletClient } from './client'
- 
-const success = await walletClient.watchAsset({ // [!code focus:99]
-  type: 'ERC20',
-  options: {
-    address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-    decimals: 18,
-    symbol: 'WETH',
-  },
-})
+```js twoslash [example.ts]
+import { walletClient } from './client';
+
+const success = await walletClient.watchAsset({
+    // [!code focus:99]
+    type: 'ERC20',
+    options: {
+        address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+        decimals: 18,
+        symbol: 'WETH'
+    }
+});
 ```
 
-```ts twoslash [client.ts] filename="client.ts"
+```js twoslash [client.ts] filename="client.ts"
 // [!include ~/snippets/walletClient.ts]
 ```
 
@@ -43,16 +44,16 @@ Boolean indicating if the token was successfully added.
 
 Token type.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/walletClient.ts]
 // ---cut--
 const success = await walletClient.watchAsset({
-  type: 'ERC20', // [!code focus]
-  options: {
-    address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-    decimals: 18,
-    symbol: 'WETH',
-  },
+    type: 'ERC20', // [!code focus]
+    options: {
+        address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+        decimals: 18,
+        symbol: 'WETH'
+    }
 });
 ```
 
@@ -62,16 +63,16 @@ const success = await walletClient.watchAsset({
 
 The address of the token contract.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/walletClient.ts]
 // ---cut---
 const success = await walletClient.watchAsset({
-  type: 'ERC20',
-  options: {
-    address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', // [!code focus]
-    decimals: 18,
-    symbol: 'WETH',
-  },
+    type: 'ERC20',
+    options: {
+        address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', // [!code focus]
+        decimals: 18,
+        symbol: 'WETH'
+    }
 });
 ```
 
@@ -81,16 +82,16 @@ const success = await walletClient.watchAsset({
 
 The number of token decimals.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/walletClient.ts]
 // ---cut---
 const success = await walletClient.watchAsset({
-  type: 'ERC20',
-  options: {
-    address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-    decimals: 18, // [!code focus]
-    symbol: 'WETH',
-  },
+    type: 'ERC20',
+    options: {
+        address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+        decimals: 18, // [!code focus]
+        symbol: 'WETH'
+    }
 });
 ```
 
@@ -100,17 +101,17 @@ const success = await walletClient.watchAsset({
 
 A ticker symbol or shorthand, up to 11 characters.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/walletClient.ts]
 // ---cut---
 const success = await walletClient.watchAsset({
-  type: 'ERC20',
-  options: {
-    address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-    decimals: 18,
-    symbol: 'WETH', // [!code focus]
-  }
-})
+    type: 'ERC20',
+    options: {
+        address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+        decimals: 18,
+        symbol: 'WETH' // [!code focus]
+    }
+});
 ```
 
 ### options.image
@@ -119,18 +120,18 @@ const success = await walletClient.watchAsset({
 
 A string url of the token logo.
 
-```ts twoslash
+```js twoslash
 // [!include ~/snippets/walletClient.ts]
 // ---cut---
 const success = await walletClient.watchAsset({
-  type: 'ERC20',
-  options: {
-    address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-    decimals: 18,
-    symbol: 'WETH',
-    image: 'https://weth.com/icon.png', // [!code focus]
-  }
-})
+    type: 'ERC20',
+    options: {
+        address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+        decimals: 18,
+        symbol: 'WETH',
+        image: 'https://weth.com/icon.png' // [!code focus]
+    }
+});
 ```
 
 ## JSON-RPC Methods

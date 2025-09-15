@@ -4,12 +4,11 @@ To use the experimental functionality of [ERC-7895](https://github.com/ethereum/
 
 ```ts
 import { createClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
 import { erc7895Actions } from 'viem/experimental' // [!code focus]
 
 const client = createClient({
-  chain: mainnet,
-  transport: http(),
+  network: ThorNetworks.MAINNET,
+  network: ThorNetworks.MAINNET,
 }).extend(erc7895Actions()) // [!code focus]
 
 const subAccount = await client.addSubAccount({

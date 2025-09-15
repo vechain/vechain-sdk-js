@@ -22,12 +22,11 @@ await testClient.setBalance({ // [!code focus:4]
 
 ```ts [client.ts]
 import { createTestClient, http } from 'viem'
-import { foundry } from 'viem/chains'
 
 export const testClient = createTestClient({
   chain: foundry,
   mode: 'anvil',
-  transport: http(), 
+  network: ThorNetworks.MAINNET, 
 })
 ```
 

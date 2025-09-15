@@ -23,7 +23,7 @@ viem can infer types based on [ABI](https://docs.soliditylang.org/en/v0.8.24/abi
 
 For this to work, you must either add [const assertions](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4#const-assertions) to specific configuration parameters (more info on those below) or **define them inline**. For example, [`readContract`](/docs/contract/readContract)'s `abi` configuration parameter:
 
-```ts twoslash
+```js twoslash
 import { createPublicClient, http, parseAbi } from 'viem'
 
 const client = createPublicClient({
@@ -47,7 +47,7 @@ const result = client.readContract({
 })
 ```
 
-```ts twoslash
+```js twoslash
 import { createPublicClient, http, parseAbi } from 'viem'
 
 const client = createPublicClient({
@@ -105,7 +105,7 @@ The following actions and utilities support type inference when you add a const 
 
 For example, `readContract`:
 
-```ts twoslash
+```js twoslash
 // @noErrors
 import { createPublicClient, http, erc20Abi, parseAbi } from 'viem'
 
@@ -135,7 +135,7 @@ const result = await client.readContract({
 
 Adding a const assertion to `types` or defining `types` inline adds type inference to [`signTypedData`](/docs/actions/wallet/signTypedData)'s `value` configuration parameter:
 
-```ts twoslash
+```js twoslash
 import { createWalletClient, http, erc20Abi, parseAbi } from 'viem'
 
 const client = createWalletClient({
@@ -212,7 +212,7 @@ For advanced use-cases, you may want to configure viem's internal types. Most of
 
 By importing the `viem/window` Polyfill, the global `window.ethereum` will typed as an [`EIP1193Provider`](https://github.com/wagmi-dev/viem/blob/4bdbf15be0d61b52a195e11c97201e707fb616cc/src/types/eip1193.ts#L24-L26) (including a fully-typed `request` function & typed events).
 
-```ts twoslash
+```js twoslash
 // @noErrors
 import 'viem/window';
 

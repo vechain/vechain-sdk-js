@@ -23,13 +23,12 @@ const ensText = await publicClient.getEnsAvatar({
 ```
 
 ```ts [client.ts]
-import { createPublicClient, http } from 'viem'
+import { createPublicClient, ThorNetworks } from '@vechain/sdk/viem'
 
-import { mainnet } from 'viem/chains'
 
 export const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http()
+  network: ThorNetworks.MAINNET,
+  network: ThorNetworks.MAINNET
 })
 ```
 

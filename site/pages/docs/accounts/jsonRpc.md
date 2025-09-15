@@ -6,19 +6,18 @@ A JSON-RPC Account is an Account whose signing keys are stored on the external W
 
 A JSON-RPC Account can just be initialized as an [Address](/docs/glossary/types#address) string. In the usage below, we are extracting the address from a Browser Extension Wallet (e.g. MetaMask) with the `window.ethereum` Provider via `eth_requestAccounts`:
 
-```ts twoslash
+```js twoslash
 // @noErrors
 import 'viem/window'
 import { createWalletClient, custom } from 'viem'
-import { mainnet } from 'viem/chains'
 
 const [address] = await window.ethereum.request({ // [!code focus:3]
-  method: 'eth_requestAccounts' 
+  method: 'eth_requestAccounts'
 })
 
 const client = createWalletClient({
   account: address, // [!code focus]
-  chain: mainnet,
+  network: ThorNetworks.MAINNET,
   transport: custom(window.ethereum!)
 })
 ```
