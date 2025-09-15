@@ -5,7 +5,7 @@ import {
     type TransactionBody
 } from '@thor/thorest';
 import { Address, BlockRef, Hex, HexUInt } from '@common/vcdm';
-import { SOLO_NETWORK } from '@thor/utils';
+import { ThorClient } from '../../../src/thor/thor-client/ThorClient';
 import { TEST_ACCOUNTS } from '../../fixture';
 import { privateKeyToAccount } from 'viem/accounts';
 import { expect } from '@jest/globals';
@@ -56,7 +56,7 @@ describe('WalletClient UNIT tests', () => {
                 1n
             );
             const txBody: TransactionBody = {
-                chainTag: SOLO_NETWORK.chainTag,
+                chainTag: 179, // Mock chainTag for unit test
                 blockRef: BlockRef.of(latestBlock.id).toString(),
                 expiration: 32,
                 clauses: [transferClause],
@@ -122,7 +122,7 @@ describe('WalletClient UNIT tests', () => {
                 1n
             );
             const txBody: TransactionBody = {
-                chainTag: SOLO_NETWORK.chainTag,
+                chainTag: 179, // Mock chainTag for unit test
                 blockRef: latestBlock.id.toString().slice(0, 18),
                 expiration: 32,
                 clauses: [transferClause],

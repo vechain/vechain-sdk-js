@@ -9,7 +9,8 @@ const VECHAIN_MAINNET_CHAIN_TAG = 0x4a;
 const VECHAIN_TESTNET_CHAIN_TAG = 0x27;
 
 /**
- * Constant defining VeChain testnet chain tag. The chain tag is the last byte of the genesis block ID
+ * Constant defining VeChain solo chain tag. The chain tag is the last byte of the genesis block ID.
+ * Note: For dynamic applications, prefer using ThorClient.nodes.getChainTag() to get the chainTag dynamically.
  */
 const VECHAIN_SOLO_CHAIN_TAG = 0xf6;
 
@@ -121,8 +122,7 @@ const TESTNET_NETWORK = {
  * Constant defining VeChain solo network information
  */
 const SOLO_NETWORK = {
-    genesisBlock: soloGenesisBlock,
-    chainTag: VECHAIN_SOLO_CHAIN_TAG
+    genesisBlock: soloGenesisBlock
 };
 
 /**

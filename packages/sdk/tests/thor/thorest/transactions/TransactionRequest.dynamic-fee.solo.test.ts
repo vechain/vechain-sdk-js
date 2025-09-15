@@ -10,13 +10,14 @@ import { RetrieveExpandedBlock } from '@thor';
 import { SendTransaction } from '@thor';
 import { RetrieveTransactionReceipt } from '@thor';
 import { Revision } from '@common';
-import { SOLO_NETWORK } from '@thor';
+import { ThorClient } from '../../../../src/thor/thor-client/ThorClient';
 
 /**
  * @group integration/solo
  */
 describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
+    const thorClient = ThorClient.at(httpClient);
     const privateKey = new Uint8Array(32).fill(1);
     const signer = new PrivateKeySigner(privateKey);
 
@@ -54,12 +55,13 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
     };
 
     describe('Legacy Transaction Integration', () => {
-        test('Should create, sign, and send legacy transaction on solo network', async () => {
+        test('should create and send legacy transaction with gasPriceCoef', async () => {
             const blockRef = await getLatestBlockRef();
+            const chainTag = await thorClient.nodes.getChainTag();
 
             const legacyTx = new TransactionRequest({
                 blockRef: HexUInt.of(blockRef),
-                chainTag: SOLO_NETWORK.chainTag,
+                chainTag,
                 clauses: [createTransferClause()],
                 dependsOn: null,
                 expiration: 32,
@@ -113,12 +115,13 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
     });
 
     describe('Dynamic Fee Transaction Integration', () => {
-        test('Should create, sign, and send dynamic fee transaction on solo network', async () => {
+        test('should create and send dynamic fee transaction', async () => {
             const blockRef = await getLatestBlockRef();
+            const chainTag = await thorClient.nodes.getChainTag();
 
             const dynamicTx = new TransactionRequest({
                 blockRef: HexUInt.of(blockRef),
-                chainTag: SOLO_NETWORK.chainTag,
+                chainTag,
                 clauses: [createTransferClause()],
                 dependsOn: null,
                 expiration: 32,
@@ -178,7 +181,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
 
             const dynamicTx = new TransactionRequest({
                 blockRef: HexUInt.of(blockRef),
-                chainTag: SOLO_NETWORK.chainTag,
+                chainTag: await thorClient.nodes.getChainTag(),
                 clauses: [createTransferClause()],
                 dependsOn: null,
                 expiration: 32,
@@ -222,7 +225,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
             // Simulate existing code that only uses gasPriceCoef
             const existingLegacyTx = new TransactionRequest({
                 blockRef: HexUInt.of(blockRef),
-                chainTag: SOLO_NETWORK.chainTag,
+                chainTag: await thorClient.nodes.getChainTag(),
                 clauses: [createTransferClause()],
                 dependsOn: null,
                 expiration: 32,
@@ -268,7 +271,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
             // Create both types
             const legacyTx = new TransactionRequest({
                 blockRef: HexUInt.of(blockRef),
-                chainTag: SOLO_NETWORK.chainTag,
+                chainTag: await thorClient.nodes.getChainTag(),
                 clauses: [createTransferClause()],
                 dependsOn: null,
                 expiration: 32,
@@ -280,7 +283,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
 
             const dynamicTx = new TransactionRequest({
                 blockRef: HexUInt.of(blockRef),
-                chainTag: SOLO_NETWORK.chainTag,
+                chainTag: await thorClient.nodes.getChainTag(),
                 clauses: [createTransferClause()],
                 dependsOn: null,
                 expiration: 32,

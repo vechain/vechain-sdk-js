@@ -3153,10 +3153,34 @@
     fast-json-stable-stringify "^2.1.0"
     viem "^2.21.45"
 
+"@vechain/sdk-core@2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-core/-/sdk-core-2.0.5.tgz#f155e113ac90bfcbd14af77a600530366feb0653"
+  integrity sha512-EEQhORsbS9BPD5ydjTMWaMWODpkQDo75M5Zj6r0zWld0jb5qfFRk/Ll7wEyscbeZ2TqLC+YCEjBTsrd+jf15bQ==
+  dependencies:
+    "@ethereumjs/rlp" "^5.0.2"
+    "@noble/ciphers" "^1.1.1"
+    "@noble/curves" "^1.6.0"
+    "@noble/hashes" "^1.5.0"
+    "@scure/base" "^1.2.4"
+    "@scure/bip32" "^1.4.0"
+    "@scure/bip39" "^1.5.1"
+    "@vechain/sdk-errors" "2.0.5"
+    "@vechain/sdk-logging" "2.0.5"
+    abitype "^1.0.6"
+    ethers "^6.14.0"
+    fast-json-stable-stringify "^2.1.0"
+    viem "^2.21.45"
+
 "@vechain/sdk-errors@2.0.4":
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/@vechain/sdk-errors/-/sdk-errors-2.0.4.tgz#20d84b454382fd05650e2eafdf4587ab339696e4"
   integrity sha512-pdaf1B2TF9Z4QfLU8+sLoyDVAz2f3JsggTf+AxTNSX/WutKQTzi3z069xHYi/DEwSd0YUJR75rx8zBaCy5v++w==
+
+"@vechain/sdk-errors@2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-errors/-/sdk-errors-2.0.5.tgz#34caab28fa7ce172993c70596b4e4026b0958e21"
+  integrity sha512-Yv+jB1unEeHoN+KD1qYNVGgo+wXQLtuuwF+2CAlNuWKS9uJ9aTr9kIbu4C9Lz0QrXwf8XV1t9fyi1LHghWudAQ==
 
 "@vechain/sdk-ethers-adapter@2.0.4":
   version "2.0.4"
@@ -3189,7 +3213,14 @@
   dependencies:
     "@vechain/sdk-errors" "2.0.4"
 
-"@vechain/sdk-network@2.0.4", "@vechain/sdk-network@^2.0.4":
+"@vechain/sdk-logging@2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-logging/-/sdk-logging-2.0.5.tgz#77c41589828788d4965a9bbeb3aead37ea528ef6"
+  integrity sha512-Nbz+QB8WRllP69uSXWGcxHXhhfD+zglxtRwynojLpdLRCzHVpjoSImRr00KBj73KVjM4/RoVKjR3uPaZroH+Jw==
+  dependencies:
+    "@vechain/sdk-errors" "2.0.5"
+
+"@vechain/sdk-network@2.0.4":
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/@vechain/sdk-network/-/sdk-network-2.0.4.tgz#a945b51ccea18413e385eaa23c70715cd6a87fde"
   integrity sha512-U6QvxWSXg2KQesyRagsaqpmr2InfUSVLTkp5p18Te0UKzFkggcDKYBBXV5tsvSmHk1Hah/wTqhfLLpeZKF4zgQ==
@@ -3198,6 +3229,19 @@
     "@vechain/sdk-core" "2.0.4"
     "@vechain/sdk-errors" "2.0.4"
     "@vechain/sdk-logging" "2.0.4"
+    abitype "1.0.8"
+    ethers "^6.14.0"
+    viem "^2.21.54"
+
+"@vechain/sdk-network@^2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-network/-/sdk-network-2.0.5.tgz#3612b449cda53213d52e753b576ed22c20b4d2fe"
+  integrity sha512-y8T1c9Cye97+lHCwl6Hp0tqkMqeAqMfYulLrqRL24WfgtuprfIZR7/cMumGxW3kHvJUvyVXWFyK0YbwsWAmPSQ==
+  dependencies:
+    "@noble/curves" "^1.6.0"
+    "@vechain/sdk-core" "2.0.5"
+    "@vechain/sdk-errors" "2.0.5"
+    "@vechain/sdk-logging" "2.0.5"
     abitype "1.0.8"
     ethers "^6.14.0"
     viem "^2.21.54"
@@ -8933,7 +8977,16 @@ string-length@^4.0.1:
     char-regex "^1.0.2"
     strip-ansi "^6.0.0"
 
-"string-width-cjs@npm:string-width@^4.2.0", string-width@^4.0.0, string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.2, string-width@^4.2.3:
+"string-width-cjs@npm:string-width@^4.2.0":
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
+  integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
+  dependencies:
+    emoji-regex "^8.0.0"
+    is-fullwidth-code-point "^3.0.0"
+    strip-ansi "^6.0.1"
+
+string-width@^4.0.0, string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.2, string-width@^4.2.3:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -9041,7 +9094,14 @@ stringify-entities@^4.0.0:
     character-entities-html4 "^2.0.0"
     character-entities-legacy "^3.0.0"
 
-"strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
+"strip-ansi-cjs@npm:strip-ansi@^6.0.1":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
+  integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
+  dependencies:
+    ansi-regex "^5.0.1"
+
+strip-ansi@^6.0.0, strip-ansi@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
@@ -10057,7 +10117,7 @@ workerpool@^6.5.1:
   resolved "https://registry.yarnpkg.com/workerpool/-/workerpool-6.5.1.tgz#060f73b39d0caf97c6db64da004cd01b4c099544"
   integrity sha512-Fs4dNYcsdpYSAfVxhnl1L5zTksjvOJxtC5hzMNl+1t9B8hTJTdKDyZ5ju7ztgPy+ft9tBFXoOlDNiOT9WUXZlA==
 
-"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
+"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
@@ -10070,6 +10130,15 @@ wrap-ansi@^6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-6.2.0.tgz#e9393ba07102e6c91a3b221478f0257cd2856e53"
   integrity sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA==
+  dependencies:
+    ansi-styles "^4.0.0"
+    string-width "^4.1.0"
+    strip-ansi "^6.0.0"
+
+wrap-ansi@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
+  integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
   dependencies:
     ansi-styles "^4.0.0"
     string-width "^4.1.0"
