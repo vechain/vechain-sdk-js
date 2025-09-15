@@ -49,7 +49,13 @@ class JSONLogger extends Logger {
             // change timestamp to ISO string
             const timestamp = new Date(entry.timestamp).toISOString();
             // log the entry as a json string
-            console.log(JSON.stringify({ ...entry, timestamp }));
+            console.log(
+                JSON.stringify(
+                    { ...entry, timestamp },
+                    (_: string, v: unknown): unknown =>
+                        typeof v === 'bigint' ? v.toString() : v
+                )
+            );
         }
     }
 
