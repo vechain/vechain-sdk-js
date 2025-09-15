@@ -19,7 +19,7 @@ import {
 import { FetchHttpClient, type HttpClient } from '@common/http';
 import { UnsupportedOperationError } from '@common/errors';
 import { PublicClient, type PublicClientConfig } from './PublicClient';
-import { RLPCodecTransactionRequest } from '@thor/thorest/signer';
+import { RLPCodecTransactionRequest } from '@thor/signer';
 
 const FQP = 'packages/sdk/src/viem/clients/WalletClient.ts!';
 

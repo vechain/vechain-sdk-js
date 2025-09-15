@@ -7,7 +7,7 @@ import {
 } from '@thor/thorest';
 import { type EventLogsResponseJSON } from '@thor/thorest/logs/json';
 import { type HttpClient, type HttpPath } from '@common/http';
-import { EventLogFilter } from '@thor/thor-client/model/logs/EventLogFilter';
+import { type EventLogFilter } from '@thor/thor-client/model/logs/EventLogFilter';
 
 /**
  * Full-Qualified-Path

@@ -2,7 +2,7 @@ import {
     type SignedTransactionRequest,
     type SponsoredTransactionRequest,
     type TransactionRequest
-} from '@thor';
+} from '@thor/thor-client/model/transactions';
 import { type Address } from '@common';
 
 /**

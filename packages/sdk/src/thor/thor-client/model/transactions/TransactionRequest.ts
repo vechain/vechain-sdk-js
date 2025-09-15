@@ -1,4 +1,4 @@
-import { type Clause } from '@thor';
+import { type Clause } from './Clause';
 import { type Hex } from '@common';
 
 /**

@@ -13,11 +13,8 @@ import {
     SignedTransactionRequest,
     SponsoredTransactionRequest,
     TransactionRequest
-} from '@thor/thorest/model';
-import {
-    PrivateKeySigner,
-    RLPCodecTransactionRequest
-} from '@thor/thorest/signer';
+} from '@thor/thor-client/model/transactions';
+import { PrivateKeySigner, RLPCodecTransactionRequest } from '@thor/signer';
 import { newTransactionFromTransactionRequest } from './RLPCodec.unit.test';
 import * as nc_utils from '@noble/curves/abstract/utils';
 

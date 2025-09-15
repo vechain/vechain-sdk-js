@@ -1,7 +1,7 @@
 import { describe, expect, jest, test } from '@jest/globals';
 import { GetTxPoolStatus } from '@thor/thorest/node';
 import { type HttpClient } from '@common/http';
-import { Status } from '@thor/thorest';
+import { Status } from '@thor/thorest/node/model';
 import { type StatusJSON } from '@thor/thorest/json';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 

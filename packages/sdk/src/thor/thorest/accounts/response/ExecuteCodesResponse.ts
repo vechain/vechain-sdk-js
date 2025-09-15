@@ -1,7 +1,7 @@
 import { type Hex, HexUInt } from '@common/vcdm';
-import { Transfer } from '@thor/thorest/model/Transfer';
+import { Transfer } from '@thor/thorest/common/Transfer';
 import { type EventJSON, type TransferJSON } from '@thor/thorest/json';
-import { Event } from '@thor/thorest/model';
+import { Event } from '@thor/thorest/common';
 import { IllegalArgumentError } from '@common/errors';
 import {
     type ExecuteCodeResponseJSON,
