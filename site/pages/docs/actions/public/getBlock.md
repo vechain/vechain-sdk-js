@@ -16,8 +16,6 @@ import { publicClient } from './client';
 const block = await publicClient.getBlock(); // [!code focus:99]
 // @log: Output: {
 // @log:  baseFeePerGas: 10789405161n,
-// @log:  difficulty: 11569232145203128n,
-// @log:  extraData: '0x75732d656173742d38',
 // @log:  ...
 // @log: }
 ```
