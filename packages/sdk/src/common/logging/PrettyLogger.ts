@@ -77,18 +77,26 @@ class PrettyLogger extends Logger {
         const timestamp = new Date(entry.timestamp).toISOString();
         // get the icon for the verbosity
         const icon = this.ICONS[entry.verbosity];
+        const jsonContext =
+            entry.context === undefined
+                ? ''
+                : JSON.stringify(
+                      entry.context,
+                      (_: string, v: unknown): unknown =>
+                          typeof v === 'bigint' ? v.toString() : v
+                  );
         if (isBrowser) {
             // log the entry as a CSS string
             const cssColor = this.BROWSER_COLORS[entry.verbosity];
             console.log(
-                `%c${icon}  ${timestamp}  ${entry.message}  ${entry.source}  ${entry.context === undefined ? '' : JSON.stringify(entry.context)}`,
+                `%c${icon}  ${timestamp}  ${entry.message}  ${entry.source}  ${jsonContext}`,
                 cssColor
             );
         } else {
             // log the entry using ANSI colors with a icon
             const ansiColor = this.NODE_COLORS[entry.verbosity];
             console.log(
-                `${ansiColor}${icon}  ${timestamp}  ${entry.message}  ${entry.source}  ${entry.context === undefined ? '' : JSON.stringify(entry.context)} ${this.NODE_RESET_COLOR}`
+                `${ansiColor}${icon}  ${timestamp}  ${entry.message}  ${entry.source}  ${jsonContext} ${this.NODE_RESET_COLOR}`
             );
         }
     }

@@ -32,7 +32,7 @@ type LogItem = Omit<LogItemWithVerbosity, 'verbosity'>;
 /**
  * An expanded log item sent to the logger.
  */
-interface LoggedItem extends LogItem {
+interface LoggedItem extends LogItemWithVerbosity {
     timestamp: number;
 }
 
