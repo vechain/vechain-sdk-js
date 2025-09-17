@@ -1,33 +1,37 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
 import { type Account } from 'viem';
+import { SendTransaction, type ThorNetworks } from '@thor/thorest';
 import {
-    SendTransaction,
-    type ThorNetworks,
-    Transaction,
-    type TransactionBody,
-    type TransactionClause
-} from '@thor/thorest';
-import {
-    Address,
-    Blake2b256,
-    Hex,
-    HexInt,
-    HexUInt,
-    HexUInt32,
-    RLPProfiler
-} from '@common/vcdm';
+    Clause,
+    TransactionRequest,
+    SignedTransactionRequest,
+    SponsoredTransactionRequest
+} from '@thor/thor-client/model/transactions';
+import { Address, Blake2b256, Hex, HexInt, HexUInt } from '@common/vcdm';
 import { FetchHttpClient, type HttpClient } from '@common/http';
-import { UnsupportedOperationError } from '@common/errors';
+import {
+    IllegalArgumentError,
+    UnsupportedOperationError
+} from '@common/errors';
 import { PublicClient, type PublicClientConfig } from './PublicClient';
-import { RLPCodecTransactionRequest } from '@thor/signer';
+import { RLPCodecTransactionRequest } from '@thor';
 
+/**
+ * Fill-Qualified Path
+ */
 const FQP = 'packages/sdk/src/viem/clients/WalletClient.ts!';
 
 /**
- * Used internally to tag a transaction without data.
+ * Creates a new instance of the WalletClient configured with the provided parameters.
+ *
+ * @param {Object} config - Configuration object for the WalletClient.
+ * @param {string} config.network - The network endpoint or base URL for the wallet client.
+ * @param {Object} [config.transport] - Optional transport layer instance for handling network requests.
+ * @param {Object|null} [config.account] - Optional account object associated with the wallet client.
+ * @return {WalletClient} A new instance of WalletClient configured with the specified network, transport, and account.
+ *
+ * @see https://viem.sh/docs/clients/wallet#wallet-client
  */
-const NO_DATA = Hex.PREFIX;
-
 function createWalletClient({
     network,
     transport,
@@ -37,9 +41,26 @@ function createWalletClient({
     return new WalletClient(network, transportLayer, account ?? null);
 }
 
+/**
+ * Represents a client for managing wallet operations, extending the capabilities
+ * of a `PublicClient` to enable account-specific functionalities like signing
+ * and sending transactions.
+ *
+ * @see https://viem.sh/docs/clients/wallet#wallet-client
+ */
 class WalletClient extends PublicClient {
+    /**
+     * Represents a user's account information or null if the account does not exist or is unavailable.
+     */
     private readonly account: Account | null;
 
+    /**
+     * Constructs an instance of the class.
+     *
+     * @param {URL | ThorNetworks} network - The network to be used, either a URL or a ThorNetworks instance.
+     * @param {HttpClient} transport - The HTTP client to handle network communications.
+     * @param {Account | null} account - The account to associate with the instance, or null if no account is provided.
+     */
     constructor(
         network: URL | ThorNetworks,
         transport: HttpClient,
@@ -58,46 +79,45 @@ class WalletClient extends PublicClient {
         return this.account != null ? [Address.of(this.account.address)] : [];
     }
 
+    /**
+     * Prepares a transaction request by constructing and returning a `TransactionRequest` object.
+     *
+     * @param {PrepareTransactionRequestRequest} request - The request object containing details necessary to prepare the transaction.
+     * @return {TransactionRequest} The prepared transaction request object with all required properties set, ready for execution.
+     * @throws {UnsupportedOperationError} Throws an error if the provided request object is invalid.
+     *
+     * @see https://viem.sh/docs/actions/wallet/prepareTransactionRequest
+     */
     public prepareTransactionRequest(
         request: PrepareTransactionRequestRequest
-    ): Transaction {
+    ): TransactionRequest {
         try {
-            const txClause: TransactionClause = {
-                to: request.to !== undefined ? request.to.toString() : null,
-                value:
-                    request.value instanceof Hex
-                        ? HexUInt.of(HexInt.of(request.value)).bi
-                        : BigInt(request.value),
-                data:
-                    request.data instanceof Hex
-                        ? HexUInt.of(request.data).toString()
-                        : NO_DATA,
-                comment: request.comment,
-                abi:
-                    request.abi instanceof Hex
-                        ? HexUInt.of(HexInt.of(request.abi)).toString()
-                        : undefined
-            } satisfies TransactionClause;
-            const txBody: TransactionBody = {
+            const clause = new Clause(
+                request.to ?? null,
+                request.value instanceof Hex
+                    ? HexUInt.of(HexInt.of(request.value)).bi
+                    : BigInt(request.value),
+                request.data instanceof Hex ? HexUInt.of(request.data) : null,
+                request.comment ?? null,
+                request.abi instanceof Hex
+                    ? HexUInt.of(HexInt.of(request.abi)).toString()
+                    : null
+            );
+            return new TransactionRequest({
+                blockRef: request.blockRef,
                 chainTag: request.chainTag,
-                blockRef: HexInt.of(request.blockRef).toString(),
+                clauses: [clause],
+                dependsOn: request.dependsOn ?? null,
                 expiration: request.expiration,
-                clauses: [txClause],
-                gasPriceCoef: request.gasPriceCoef,
-                gas:
-                    request.gas instanceof Hex
-                        ? HexUInt.of(HexInt.of(request.gas)).toString()
-                        : request.gas,
-                dependsOn:
-                    request.dependsOn instanceof Hex
-                        ? HexUInt32.of(HexInt.of(request.dependsOn)).toString()
-                        : null,
-                nonce: request.nonce
-            } satisfies TransactionBody;
-            return Transaction.of(txBody);
+                gas: HexUInt.of(request.gas).bi,
+                gasPriceCoef: BigInt(request.gasPriceCoef),
+                nonce: request.nonce,
+                isIntendedToBeSponsored:
+                    request.isIntendedToBeSponsored ?? false
+            });
         } catch (e) {
             throw new UnsupportedOperationError(
-                `${FQP}WalletClient.prepareTransactionRequest(request: PrepareTransactionRequestRequest): void`,
+                `${FQP}WalletClient.prepareTransactionRequest(request: PrepareTransactionRequestRequest): TransactionRequest`,
                 'invalid request',
                 {
                     request
@@ -106,6 +126,20 @@ class WalletClient extends PublicClient {
         }
     }
 
+    /**
+     * Signs the provided hash using the given account's signing method.
+     *
+     * This method adapts the [Viem](https://viem.sh/docs/actions/wallet/signTransaction)
+     * Ethereum signing algorithm to the Thor signing algorithm.
+     *
+     * @param {Uint8Array} hash The hash to be signed.
+     * @param {Account} account The account object used for signing the hash.
+     * @return {Promise<Uint8Array>} A promise that resolves to the signed hash as a Uint8Array.
+     * @throws {UnsupportedOperationError}
+     *
+     * @remarks Security auditable method, depends on
+     * - {@link Account.sign}
+     */
     private static async signHash(
         hash: Uint8Array,
         account: Account
@@ -135,47 +169,176 @@ class WalletClient extends PublicClient {
         );
     }
 
+    /**
+     * Sends a raw transaction to the network through the provided HTTP client.
+     *
+     * @param {Hex} raw - The raw hexadecimal representation of the transaction to be sent.
+     * @return {Promise<Hex>} A promise that resolves with the transaction ID in hexadecimal format.
+     * @throws ThorError if the response is invalid or the request fails.
+     *
+     * @see https://viem.sh/docs/actions/wallet/sendRawTransaction
+     */
     public async sendRawTransaction(raw: Hex): Promise<Hex> {
         return (await SendTransaction.of(raw.bytes).askTo(this.httpClient))
             .response.id;
     }
 
+    /**
+     * Sends a transaction request to the blockchain network.
+     * The transaction request can either be
+     * - a prepared transaction request to be signed and sent,
+     * - a signed transaction request to be sponsored and sent.
+     *
+     * @param {PrepareTransactionRequestRequest | SignedTransactionRequest} request - The transaction request object.
+     * This can either be a prepared transaction request to be signed or a signed transaction request to be sponsored.
+     * @return {Promise<Hex>} A promise that resolves to the transaction hash (Hex) of the sent transaction.
+     * @throws {ThorError} If the transaction fails to send or the response is invalid.
+     * @throws {UnsupportedOperationError} If the account is not set.
+     *
+     * @see https://viem.sh/docs/actions/wallet/sendTransaction
+     * @see signTransaction
+     * @see sendRawTransaction
+     */
     public async sendTransaction(
-        request: PrepareTransactionRequestRequest
+        request: PrepareTransactionRequestRequest | SignedTransactionRequest
     ): Promise<Hex> {
-        const tx = this.prepareTransactionRequest(request);
-        const raw = await this.signTransaction(tx);
+        const transactionRequest =
+            request instanceof SignedTransactionRequest
+                ? request
+                : this.prepareTransactionRequest(request);
+        const raw = await this.signTransaction(transactionRequest);
         return await this.sendRawTransaction(raw);
     }
 
-    public async signTransaction(tx: Transaction): Promise<Hex> {
+    /**
+     * Signs the given transaction request and returns the resulting hexadecimal representation.
+     * The transaction request can either be
+     * - an unsigned transaction request,
+     * - an unsigned sponsored transaction request this wallet signs as origin/sender,
+     * - a signed sponsored transaction request this wallet sisgns as gas-payer.sponsor.
+     *
+     * @param {TransactionRequest | SignedTransactionRequest} transactionRequest - The transaction request to be signed.
+     * @return {Promise<Hex>} A promise that resolves to the signed transaction in hexadecimal format.
+     * @throws {UnsupportedOperationError} If the account is not set.
+     */
+    public async signTransaction(
+        transactionRequest: TransactionRequest | SignedTransactionRequest
+    ): Promise<Hex> {
         if (this.account !== null) {
-            const encodedTx = RLPProfiler.ofObject(
-                {
-                    // Existing body and the optional `reserved` field if present.
-                    ...tx.body,
-                    /*
-                     * The `body.clauses` property is already an array,
-                     * albeit TypeScript realize; hence cast is needed
-                     * otherwise encodeObject will throw an error.
-                     */
-                    clauses: tx.body.clauses as Array<{
-                        to: string | null;
-                        value: bigint | number;
-                        data: string;
-                    }>,
-                    // New reserved field.
-                    reserved: tx.encodeReservedField()
-                },
-                RLPCodecTransactionRequest.RLP_UNSIGNED_TRANSACTION_PROFILE
-            ).encoded;
-            const txHash = Blake2b256.of(encodedTx).bytes;
-            const signature = await WalletClient.signHash(txHash, this.account);
-            return HexUInt.of(Transaction.of(tx.body, signature).encode(true));
+            if (transactionRequest instanceof SignedTransactionRequest) {
+                return await WalletClient.sponsorTransactionRequest(
+                    transactionRequest,
+                    this.account
+                );
+            }
+            return await WalletClient.signTransactionRequest(
+                transactionRequest,
+                this.account
+            );
         }
         throw new UnsupportedOperationError(
-            `${FQP}WalletClient.signTransaction(encodedTx: Hex): Hex`,
+            `${FQP}WalletClient.signTransaction(transactionRequest: TransactionRequest | SignedTransactionRequest): Hex`,
             'account is not set'
+        );
+    }
+
+    /**
+     * Signs a given transaction request with the provided account and returns the signed transaction in hexadecimal format.
+     *
+     * @param {TransactionRequest} transactionRequest - The transaction request object to be signed.
+     * @param {Account} account - The account object containing the necessary credentials for signing.
+     * @return {Promise<Hex>} A promise that resolves to the signed transaction encoded in hexadecimal format.
+     */
+    private static async signTransactionRequest(
+        transactionRequest: TransactionRequest,
+        account: Account
+    ): Promise<Hex> {
+        const originHash = Blake2b256.of(
+            RLPCodecTransactionRequest.encode(transactionRequest)
+        ).bytes;
+        const originSignature = await WalletClient.signHash(
+            originHash,
+            account
+        );
+        const signedTransactionRequest = new SignedTransactionRequest({
+            ...transactionRequest,
+            origin: Address.of(account.address),
+            originSignature,
+            signature: originSignature
+        });
+        return HexUInt.of(
+            RLPCodecTransactionRequest.encode(signedTransactionRequest)
+        );
+    }
+
+    /**
+     * Sponsors a transaction request and returns the resulting hex-encoded sponsored transaction.
+     *
+     * @param {SignedTransactionRequest} signedTransactionRequest - The signed transaction request to be sponsored.
+     *        Must have the `isIntendedToBeSponsored` flag set to true.
+     * @param {Account} account - The account object providing the gas payer's private key for signing the transaction.
+     * @return {Promise<Hex>} A Promise that resolves to the hex-encoded representation of the sponsored transaction request.
+     * @throws {IllegalArgumentError} If the transaction request is not intended to be sponsored.
+     */
+    private static async sponsorTransactionRequest(
+        signedTransactionRequest: SignedTransactionRequest,
+        account: Account
+    ): Promise<Hex> {
+        if (signedTransactionRequest.isIntendedToBeSponsored) {
+            const originHash = Blake2b256.of(
+                RLPCodecTransactionRequest.encode(
+                    new TransactionRequest({
+                        blockRef: signedTransactionRequest.blockRef,
+                        chainTag: signedTransactionRequest.chainTag,
+                        clauses: signedTransactionRequest.clauses,
+                        dependsOn: signedTransactionRequest.dependsOn,
+                        expiration: signedTransactionRequest.expiration,
+                        gas: signedTransactionRequest.gas,
+                        gasPriceCoef: signedTransactionRequest.gasPriceCoef,
+                        nonce: signedTransactionRequest.nonce,
+                        isIntendedToBeSponsored:
+                            signedTransactionRequest.isIntendedToBeSponsored
+                    })
+                )
+            );
+            const gasPayerHash = Blake2b256.of(
+                nc_utils.concatBytes(
+                    originHash.bytes,
+                    signedTransactionRequest.origin.bytes
+                )
+            );
+            const gasPayerSignature = await WalletClient.signHash(
+                gasPayerHash.bytes,
+                account
+            );
+            const sponsoredTransactionRequest = new SponsoredTransactionRequest(
+                {
+                    blockRef: signedTransactionRequest.blockRef,
+                    chainTag: signedTransactionRequest.chainTag,
+                    clauses: signedTransactionRequest.clauses,
+                    dependsOn: signedTransactionRequest.dependsOn,
+                    expiration: signedTransactionRequest.expiration,
+                    gas: signedTransactionRequest.gas,
+                    gasPriceCoef: signedTransactionRequest.gasPriceCoef,
+                    nonce: signedTransactionRequest.nonce,
+                    isIntendedToBeSponsored: true,
+                    origin: signedTransactionRequest.origin,
+                    originSignature: signedTransactionRequest.originSignature,
+                    gasPayer: Address.of(account.address),
+                    gasPayerSignature,
+                    signature: nc_utils.concatBytes(
+                        signedTransactionRequest.originSignature,
+                        gasPayerSignature
+                    )
+                }
+            );
+            return HexUInt.of(
+                RLPCodecTransactionRequest.encode(sponsoredTransactionRequest)
+            );
+        }
+        throw new IllegalArgumentError(
+            `${FQP}WalletClient.signTransaction(signedTransactionRequest: SignedTransactionRequest): Hex`,
+            'not intended to be sponsored'
         );
     }
 }
@@ -195,6 +358,7 @@ interface PrepareTransactionRequestRequest {
     gas: Hex | number;
     gasPriceCoef: number;
     nonce: number;
+    isIntendedToBeSponsored?: boolean;
 }
 
 interface WalletClientConfig extends PublicClientConfig {

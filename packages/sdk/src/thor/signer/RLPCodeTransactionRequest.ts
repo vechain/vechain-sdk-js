@@ -1,22 +1,54 @@
 import {
-    type Clause,
-    type SignedTransactionRequest,
-    type TransactionRequest
+    Clause,
+    TransactionRequest,
+    SignedTransactionRequest,
+    SponsoredTransactionRequest
 } from '@thor/thor-client/model/transactions';
+import { ClauseData } from '@thor/thorest';
+import * as nc_utils from '@noble/curves/abstract/utils';
 import {
+    Address,
+    Blake2b256,
     BufferKind,
     CompactFixedHexBlobKind,
     Hex,
     HexBlobKind,
+    HexUInt,
+    type HexUInt as HexUintType,
+    IllegalArgumentError,
     NumericKind,
     OptionalFixedHexBlobKind,
+    Quantity,
+    RLP,
     type RLPProfile,
     RLPProfiler,
-    type RLPValidObject
+    type RLPValidObject,
+    Secp256k1
 } from '@common';
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 class RLPCodecTransactionRequest {
+    /**
+     * RLP_FIELDS is an array of objects that defines the structure and encoding scheme
+     * for various components in a transaction using Recursive Length Prefix (RLP) encoding.
+     * Each object in the array represents a field in the transaction, specifying its name and kind.
+     * The `kind` attribute is an instance of an RLP coder that determines how the field is encoded.
+     *
+     * Properties
+     * - `chainTag` - Represent the id of the chain the transaction is sent to.
+     * - `blockRef` - Represent the last block of the chain the transaction is sent to.
+     * - `expiration` -  Represent the expiration date of the transaction.
+     * - `clauses` - List of clause objects, each containing:
+     *   - `to` - Represent the destination of the transaction.
+     *   - `value` - Represent the 'wei' quantity (VET or VTHO) value the transaction is worth.
+     *   - `data` - Represent the content of the transaction.
+     * - `gasPriceCoef` - Represent the gas price coefficient of the transaction.
+     * - `gas` - Represent the gas limit of the transaction.
+     * - `dependsOn` - Represent the hash of the transaction the current transaction depends on.
+     * - `nonce` - Represent the nonce of the transaction.
+     * - `reserved` -  Reserved field.
+     */
+
     private static readonly RLP_FIELDS = [
         { name: 'chainTag', kind: new NumericKind(1) },
         { name: 'blockRef', kind: new CompactFixedHexBlobKind(8) },
@@ -67,10 +99,26 @@ class RLPCodecTransactionRequest {
         { name: 'reserved', kind: { item: new BufferKind() } }
     ];
 
+    /**
+     * Represents a Recursive Length Prefix (RLP) of the transaction signature.
+     *
+     * Properties
+     * - `name` - A string indicating the name of the field in the RLP structure.
+     * - `kind` - RLP profile type.
+     */
+
     private static readonly RLP_SIGNATURE = {
         name: 'signature',
         kind: new BufferKind()
     };
+
+    /**
+     * Represents a Recursive Length Prefix (RLP) of the signed transaction.
+     *
+     * Properties
+     * - `name` - A string indicating the name of the field in the RLP structure.
+     * - `kind` - RLP profile type.
+     */
 
     private static readonly RLP_SIGNED_TRANSACTION_PROFILE: RLPProfile = {
         name: 'tx',
@@ -98,7 +146,139 @@ class RLPCodecTransactionRequest {
             kind: RLPCodecTransactionRequest.RLP_DYNAMIC_FEE_FIELDS
         };
 
-    public static encodeSignedTransactionRequest(
+    /**
+     * Decodes an encoded transaction and returns an instance of a TransactionRequest,
+     * SignedTransactionRequest, or SponsoredTransactionRequest based on the encoded data.
+     *
+     * @param {Uint8Array} encoded - The encoded transaction data to decode.
+     * @return {TransactionRequest | SignedTransactionRequest | SponsoredTransactionRequest}
+     *         Returns a TransactionRequest if the transaction is unsigned.
+     *         Returns a SignedTransactionRequest if the transaction is signed.
+     *         Returns a SponsoredTransactionRequest if the transaction is signed and includes a gas payer.
+     * @throws {IllegalArgumentError} Throws an error if the encoded data is invalid.
+     */
+    public static decode(
+        encoded: Uint8Array
+    ):
+        | TransactionRequest
+        | SignedTransactionRequest
+        | SponsoredTransactionRequest {
+        try {
+            const isSigned =
+                (RLP.ofEncoded(encoded).decoded as unknown[]).length >
+                (
+                    RLPCodecTransactionRequest.RLP_UNSIGNED_TRANSACTION_PROFILE
+                        .kind as []
+                ).length;
+            const decoded = RLPProfiler.ofObjectEncoded(
+                encoded,
+                isSigned
+                    ? RLPCodecTransactionRequest.RLP_SIGNED_TRANSACTION_PROFILE
+                    : RLPCodecTransactionRequest.RLP_UNSIGNED_TRANSACTION_PROFILE
+            ).object as RLPValidObject;
+            const clauses = (decoded.clauses as []).map(
+                (decodedClause: RLPValidObject) => {
+                    return Clause.of({
+                        to: (decodedClause.to as string) ?? null,
+                        value:
+                            typeof decodedClause.value === 'number'
+                                ? Quantity.of(decodedClause.value).toString()
+                                : typeof decodedClause.value === 'string'
+                                  ? Quantity.of(
+                                        HexUInt.of(decodedClause.value).bi
+                                    ).toString()
+                                  : Quantity.PREFIX,
+                        data: (decodedClause.data as string) ?? undefined
+                    });
+                }
+            );
+            const isIntendedToBeSponsored = (decoded.reserved as []).length > 0;
+            const transactionRequest = new TransactionRequest({
+                blockRef: HexUInt.of(decoded.blockRef as string),
+                chainTag: decoded.chainTag as number,
+                clauses,
+                dependsOn:
+                    decoded.dependsOn === null
+                        ? null
+                        : Hex.of(decoded.dependsOn as string),
+                expiration: decoded.expiration as number,
+                gas: BigInt(decoded.gas as bigint), // Double cast needed else a number is returned.
+                gasPriceCoef: BigInt(decoded.gasPriceCoef as bigint), // Double cast needed else a number is returned.
+                nonce: decoded.nonce as number,
+                isIntendedToBeSponsored
+            });
+            if (isSigned) {
+                const signature = decoded.signature as Uint8Array;
+                const encodedTransactionRequest =
+                    RLPCodecTransactionRequest.encodeTransactionRequest(
+                        transactionRequest
+                    );
+                const originSignature = signature.slice(
+                    0,
+                    Secp256k1.SIGNATURE_LENGTH
+                );
+                const originHash = Blake2b256.of(
+                    encodedTransactionRequest
+                ).bytes;
+                const origin = Address.ofPublicKey(
+                    Secp256k1.recover(originHash, originSignature)
+                );
+                const signedTransactionRequest = new SignedTransactionRequest({
+                    ...transactionRequest,
+                    origin,
+                    originSignature,
+                    signature
+                });
+                if (signature.length > Secp256k1.SIGNATURE_LENGTH) {
+                    const gasPayerSignature = signature.slice(
+                        Secp256k1.SIGNATURE_LENGTH,
+                        Secp256k1.SIGNATURE_LENGTH * 2
+                    );
+                    const gasPayerHash = Blake2b256.of(
+                        nc_utils.concatBytes(originHash, origin.bytes)
+                    ).bytes;
+                    const gasPayer = Address.ofPublicKey(
+                        Secp256k1.recover(gasPayerHash, gasPayerSignature)
+                    );
+                    return new SponsoredTransactionRequest({
+                        ...signedTransactionRequest,
+                        gasPayer,
+                        gasPayerSignature
+                    });
+                }
+                return signedTransactionRequest;
+            }
+            return transactionRequest;
+        } catch (error) {
+            throw new IllegalArgumentError(
+                `${RLPCodecTransactionRequest.decode.name}(encoded: Uint8Array)`,
+                'invalid encoded data',
+                { encoded },
+                error as Error
+            );
+        }
+    }
+
+    /**
+     * Encodes a given transaction request into a Uint8Array.
+     *
+     * @param {TransactionRequest | SignedTransactionRequest} transactionRequest - The transaction request to encode, which can be either a TransactionRequest or a SignedTransactionRequest.
+     * @return {Uint8Array} The encoded transaction request as a Uint8Array.
+     */
+    public static encode(
+        transactionRequest: TransactionRequest | SignedTransactionRequest
+    ): Uint8Array {
+        if (transactionRequest instanceof SignedTransactionRequest) {
+            return RLPCodecTransactionRequest.encodeSignedTransactionRequest(
+                transactionRequest
+            );
+        }
+        return RLPCodecTransactionRequest.encodeTransactionRequest(
+            transactionRequest
+        );
+    }
+
+    private static encodeSignedTransactionRequest(
         transactionRequest: SignedTransactionRequest
     ): Uint8Array {
         const isDynamicFee = transactionRequest.isDynamicFee();
@@ -125,7 +305,7 @@ class RLPCodecTransactionRequest {
         );
     }
 
-    public static encodeTransactionRequest(
+    private static encodeTransactionRequest(
         transactionRequest: TransactionRequest
     ): Uint8Array {
         const isDynamicFee = transactionRequest.isDynamicFee();

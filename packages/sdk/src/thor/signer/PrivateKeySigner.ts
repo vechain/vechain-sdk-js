@@ -8,7 +8,7 @@ import {
 import {
     SignedTransactionRequest,
     SponsoredTransactionRequest,
-    type TransactionRequest
+    TransactionRequest
 } from '@thor/thor-client/model/transactions';
 import { RLPCodecTransactionRequest } from './RLPCodeTransactionRequest';
 import { type Signer } from './Signer';
@@ -23,7 +23,7 @@ const FQP = 'packages/sdk/src/thor/thorest/signer/PrivateKeySigner.ts!';
  * The class implements the {@link Signer} interface,
  * to sign transaction requests using the provided private key.
  *
- * @remark Call {@link PrivateKeySigner.disponse} method to dispose the private key
+ * @remark Call {@link PrivateKeySigner.dispose} method to dispose the private key
  * when the signer is not needed anymore.
  * This will clear the private key from memory, minimizing the risk of leaking it.
  *
@@ -41,7 +41,7 @@ class PrivateKeySigner implements Signer {
      * @remark The value should be handled with care, as it may contain sensitive
      * information.
      */
-    #privateKey: Uint8Array | null = null;
+    private privateKey: Uint8Array | null = null;
 
     /**
      * Represents the address of the signer.
@@ -59,7 +59,7 @@ class PrivateKeySigner implements Signer {
     constructor(privateKey: Uint8Array) {
         if (Secp256k1.isValidPrivateKey(privateKey)) {
             // Defensive copies to avoid external mutation.
-            this.#privateKey = new Uint8Array(privateKey);
+            this.privateKey = new Uint8Array(privateKey);
             this.address = Address.ofPrivateKey(privateKey);
         } else {
             throw new InvalidPrivateKeyError(
@@ -75,16 +75,16 @@ class PrivateKeySigner implements Signer {
      *
      * @return {void} This method does not return a value.
      *
-     * @remark Call {@link PrivateKeySigner.disponse} method to dispose the private key
+     * @remark Call {@link PrivateKeySigner.dispose} method to dispose the private key
      * when the signer is not needed anymore.
      * This will clear the private key from memory, minimizing the risk of leaking it.
      * After this call this {@link Signer} instance can't be used anymore.
      */
-    public disponse(): void {
-        if (this.#privateKey !== null) {
-            this.#privateKey.fill(0);
+    public dispose(): void {
+        if (this.privateKey !== null) {
+            this.privateKey.fill(0);
         }
-        this.#privateKey = null;
+        this.privateKey = null;
     }
 
     /**
@@ -102,26 +102,13 @@ class PrivateKeySigner implements Signer {
     private signTransactionRequest(
         transactionRequest: TransactionRequest
     ): SignedTransactionRequest {
-        if (this.#privateKey !== null) {
+        if (this.privateKey !== null) {
             const hash = Blake2b256.of(
-                RLPCodecTransactionRequest.encodeTransactionRequest(
-                    transactionRequest
-                )
+                RLPCodecTransactionRequest.encode(transactionRequest)
             ).bytes;
-            const signature = Secp256k1.sign(hash, this.#privateKey);
+            const signature = Secp256k1.sign(hash, this.privateKey);
             return new SignedTransactionRequest({
-                blockRef: transactionRequest.blockRef,
-                chainTag: transactionRequest.chainTag,
-                clauses: transactionRequest.clauses,
-                dependsOn: transactionRequest.dependsOn,
-                expiration: transactionRequest.expiration,
-                gas: transactionRequest.gas,
-                gasPriceCoef: transactionRequest.gasPriceCoef,
-                nonce: transactionRequest.nonce,
-                isIntendedToBeSponsored:
-                    transactionRequest.isIntendedToBeSponsored,
-                maxFeePerGas: transactionRequest.maxFeePerGas,
-                maxPriorityFeePerGas: transactionRequest.maxPriorityFeePerGas,
+                ...transactionRequest,
                 origin: this.address,
                 originSignature: signature,
                 signature
@@ -178,21 +165,33 @@ class PrivateKeySigner implements Signer {
     private sponsorTransactionRequest(
         signedTransactionRequest: SignedTransactionRequest
     ): SponsoredTransactionRequest {
-        if (this.#privateKey !== null) {
+        if (this.privateKey !== null) {
             if (signedTransactionRequest.isIntendedToBeSponsored) {
-                const hash = Blake2b256.of(
+                const originHash = Blake2b256.of(
+                    RLPCodecTransactionRequest.encode(
+                        new TransactionRequest({
+                            blockRef: signedTransactionRequest.blockRef,
+                            chainTag: signedTransactionRequest.chainTag,
+                            clauses: signedTransactionRequest.clauses,
+                            dependsOn: signedTransactionRequest.dependsOn,
+                            expiration: signedTransactionRequest.expiration,
+                            gas: signedTransactionRequest.gas,
+                            gasPriceCoef: signedTransactionRequest.gasPriceCoef,
+                            nonce: signedTransactionRequest.nonce,
+                            isIntendedToBeSponsored:
+                                signedTransactionRequest.isIntendedToBeSponsored
+                        })
+                    )
+                );
+                const gasPayerHash = Blake2b256.of(
                     nc_utils.concatBytes(
-                        Blake2b256.of(
-                            RLPCodecTransactionRequest.encodeTransactionRequest(
-                                signedTransactionRequest
-                            )
-                        ).bytes,
+                        originHash.bytes,
                         signedTransactionRequest.origin.bytes
                     )
-                ).bytes;
+                );
                 const gasPayerSignature = Secp256k1.sign(
-                    hash,
-                    this.#privateKey
+                    gasPayerHash.bytes,
+                    this.privateKey
                 );
                 return new SponsoredTransactionRequest({
                     blockRef: signedTransactionRequest.blockRef,
@@ -218,12 +217,12 @@ class PrivateKeySigner implements Signer {
                 });
             }
             throw new UnsupportedOperationError(
-                `${FQP}PrivateKeySigner.sign(signedTransactionRequest: SignedTransactionRequest): DelegatedSignedTransactionRequest`,
+                `${FQP}PrivateKeySigner.sign(signedTransactionRequest: SignedTransactionRequest): SponsoredTransactionRequest`,
                 'transaction request is not intended to be sponsored'
             );
         }
         throw new InvalidPrivateKeyError(
-            `${FQP}PrivateKeySigner.sign(signedTransactionRequest: SignedTransactionRequest): DelegatedSignedTransactionRequest`,
+            `${FQP}PrivateKeySigner.sign(signedTransactionRequest: SignedTransactionRequest): SponsoredTransactionRequest`,
             'no private key'
         );
     }

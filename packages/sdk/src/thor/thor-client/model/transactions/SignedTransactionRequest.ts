@@ -3,7 +3,8 @@ import {
     type TransactionRequestParam
 } from './TransactionRequest';
 import type { Address } from '@common';
-
+import { HexUInt } from '@common';
+import { type SignedTransactionRequestJSON } from '@thor/thorest/json';
 /**
  * Represents the parameters required for a signed transaction request.
  * Extends the base `TransactionRequestParam` interface to include fields specific to signed transactions.
@@ -75,6 +76,20 @@ class SignedTransactionRequest
      */
     public isSigned(): boolean {
         return true;
+    }
+
+    /**
+     * Converts the SignedTransactionRequest object into its JSON representation.
+     *
+     * @return {SignedTransactionRequestJSON} The JSON representation of the SignedTransactionRequest object.
+     */
+    public toJSON(): SignedTransactionRequestJSON {
+        return {
+            ...super.toJSON(),
+            origin: this.origin.toString(),
+            originSignature: HexUInt.of(this.originSignature).toString(),
+            signature: HexUInt.of(this.signature).toString()
+        } satisfies SignedTransactionRequestJSON;
     }
 }
 

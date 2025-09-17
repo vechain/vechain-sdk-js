@@ -1,8 +1,9 @@
-import { type Address } from '@common';
+import { type Address, HexUInt } from '@common';
 import {
     SignedTransactionRequest,
     type SignedTransactionRequestParam
-} from './SignedTransactionRequest';
+} from '../../../../../dist/thor';
+import { type SponsoredTransactionRequestJSON } from '@thor/thorest/json';
 
 /**
  * Represents the parameters required for a sponsored transaction request.
@@ -51,6 +52,19 @@ class SponsoredTransactionRequest
         super(params);
         this.gasPayer = params.gasPayer;
         this.gasPayerSignature = new Uint8Array(params.gasPayerSignature);
+    }
+
+    /**
+     * Converts the SponsoredTransactionRequest object into its JSON representation.
+     *
+     * @return {SponsoredTransactionRequestJSON} The JSON representation of the SponsoredTransactionRequest object.
+     */
+    toJSON(): SponsoredTransactionRequestJSON {
+        return {
+            ...super.toJSON(),
+            gasPayer: this.gasPayer.toString(),
+            gasPayerSignature: HexUInt.of(this.gasPayerSignature).toString()
+        } satisfies SponsoredTransactionRequestJSON;
     }
 }
 
