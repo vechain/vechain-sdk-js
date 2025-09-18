@@ -5,6 +5,8 @@ import { RetrieveRegularBlock } from '@thor/thorest/blocks/methods';
 import { IllegalArgumentError } from '@common/errors';
 import { Revision } from '@common/vcdm';
 
+const chainTagCache = new WeakMap<NodesModule, number>();
+
 /**
  * The node health check tolerance in seconds.
  * A node is considered healthy if the latest block timestamp is within this tolerance.
@@ -32,6 +34,42 @@ class NodesModule extends AbstractThorModule {
         return response.response.map((peerStat) =>
             ConnectedPeer.fromPeerStat(peerStat)
         );
+    }
+
+    /**
+     * Retrieves and caches the chainTag from the genesis block of the given ThorClient.
+     * Uses the same short-circuit caching logic as eth_chainId().
+     */
+    public async getChainTag(): Promise<number> {
+        const cached = chainTagCache.get(this);
+
+        if (cached !== undefined) return cached;
+
+        // Retrieve genesis block directly using the blocks API
+        const query = RetrieveRegularBlock.of(Revision.of(0)); // Genesis block is at revision 0
+        const response = await query.askTo(this.httpClient);
+
+        if (response.response === null || !response.response.id) {
+            throw new IllegalArgumentError(
+                'NodesModule.getChainTag()',
+                'The genesis block id is null or undefined. Unable to get the chain tag.',
+                { url: this.httpClient.baseURL }
+            );
+        }
+
+        // derive chainTag from last byte of the genesis block id
+        const blockIdString = response.response.id.toString();
+        const chainTag = Number(`0x${blockIdString.slice(-2)}`);
+        if (Number.isNaN(chainTag)) {
+            throw new IllegalArgumentError(
+                'NodesModule.getChainTag()',
+                'Invalid genesis block id. Unable to derive chain tag.',
+                { id: blockIdString }
+            );
+        }
+
+        chainTagCache.set(this, chainTag);
+        return chainTag;
     }
 
     /**
