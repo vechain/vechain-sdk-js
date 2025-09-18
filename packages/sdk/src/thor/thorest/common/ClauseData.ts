@@ -8,9 +8,10 @@ import { IllegalArgumentError } from '@common/errors';
 const FQP = 'packages/sdk/src/thor/thorest/model/Clause.ts!';
 
 /**
+ * Clause request and response data.
  * [Clause](http://localhost:8669/doc/stoplight-ui/#/schemas/Clause)
  */
-class Clause {
+class ClauseData {
     /**
      * The recipient of the clause. Null indicates contract deployment.
      */
@@ -27,20 +28,6 @@ class Clause {
     readonly data: Hex | null;
 
     /**
-     * Optional comment for the clause, helpful for displaying what the clause is doing.
-     *
-     * Not serialized in {@link ClauseJSON}.
-     */
-    readonly comment: string | null;
-
-    /**
-     * Optional ABI for the contract method invocation.
-     *
-     * Not serialized in {@link ClauseJSON}.
-     */
-    readonly abi: string | null;
-
-    /**
      * Constructs an instance representing a transaction or an interaction.
      *
      * @param {Address | null} to - The target address of the transaction. Can be null if not specified.
@@ -50,18 +37,10 @@ class Clause {
      * @param {string | null} [abi] - Optional ABI (Application Binary Interface) string defining the structure of the interaction. Defaults to null if not provided.
      * @return {void} Does not return anything.
      */
-    constructor(
-        to: Address | null,
-        value: bigint,
-        data: Hex | null,
-        comment: string | null,
-        abi: string | null
-    ) {
+    constructor(to: Address | null, value: bigint, data: Hex | null) {
         this.to = to;
         this.value = value;
         this.data = data ?? null;
-        this.comment = comment ?? null;
-        this.abi = abi ?? null;
     }
 
     /**
@@ -74,14 +53,12 @@ class Clause {
      * @return {Clause} A new Clause instance created using the data extracted from the provided ClauseJSON object.
      * @throws {IllegalArgumentError} If the provided JSON object contains invalid data or couldn't be properly parsed.
      */
-    public static of(json: ClauseJSON): Clause {
+    public static of(json: ClauseJSON): ClauseData {
         try {
-            return new Clause(
+            return new ClauseData(
                 json.to !== null ? Address.of(json.to) : null,
                 HexUInt.of(json.value).bi,
-                json.data !== undefined ? HexUInt.of(json.data) : null,
-                null,
-                null
+                json.data !== undefined ? HexUInt.of(json.data) : null
             );
         } catch (error) {
             throw new IllegalArgumentError(
@@ -109,4 +86,4 @@ class Clause {
     }
 }
 
-export { Clause };
+export { ClauseData };

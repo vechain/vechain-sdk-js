@@ -1,5 +1,5 @@
 import { Address, HexUInt, Quantity, UInt } from '@common/vcdm';
-import { Output } from '@thor/thorest/model/Output';
+import { Output } from '@thor/thorest/common/Output';
 import { type ReceiptJSON, type OutputJSON } from '@thor/thorest/json';
 import { IllegalArgumentError } from '@common/errors';
 

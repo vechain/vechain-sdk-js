@@ -1,6 +1,9 @@
 import { describe, expect, test } from '@jest/globals';
 import { Address, BlockRef, Hex, HexUInt } from '@common';
-import { Clause, TransactionRequest } from '@thor/thorest/model';
+import {
+    Clause,
+    TransactionRequest
+} from '@thor/thor-client/model/transactions';
 
 /*
  * @group unit/thor/thorest/model
@@ -61,7 +64,7 @@ describe('TransactionRequest UNIT tests', () => {
                 gas: validGas,
                 gasPriceCoef: validGasPriceCoef,
                 nonce: validNonce
-            } as any); // Type assertion to test default behavior
+            }); // Type assertion to test default behavior
 
             expect(request.isIntendedToBeSponsored).toBe(false);
         });

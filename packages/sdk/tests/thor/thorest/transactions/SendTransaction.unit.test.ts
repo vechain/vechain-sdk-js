@@ -9,7 +9,7 @@ import {
     type TXIDJSON
 } from '@thor/thorest/json';
 import { Address, BlockRef, HexUInt, Revision } from '@common/vcdm';
-import { Transaction, type TransactionBody } from '@thor/thorest/model';
+import { Transaction, type TransactionBody } from '@thor/thorest';
 import { TEST_ACCOUNTS } from '../../../fixture';
 import { expect } from '@jest/globals';
 import { mockHttpClient } from '../../../MockHttpClient';

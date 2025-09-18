@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { Address, HexUInt, IllegalArgumentError } from '@common';
-import { Clause } from '@thor/thorest/model';
+import { ClauseData } from '@thor/thorest';
 import { type ClauseJSON } from '@thor/thorest/json';
 
 const addrStr = '0x' + '1'.repeat(40); // 20-byte address
@@ -17,9 +17,9 @@ describe('Clause class tests', () => {
                 value: '0x0a',
                 data: '0xdeadbeef'
             };
-            const clause = Clause.of(json);
+            const clause = ClauseData.of(json);
 
-            expect(clause).toBeInstanceOf(Clause);
+            expect(clause).toBeInstanceOf(ClauseData);
             expect(clause.to?.toString()).toEqual(
                 Address.of(addrStr).toString()
             );
@@ -27,8 +27,6 @@ describe('Clause class tests', () => {
             expect(clause.data?.toString()).toEqual(
                 HexUInt.of('0xdeadbeef').toString()
             );
-            expect(clause.comment).toBeNull();
-            expect(clause.abi).toBeNull();
         });
 
         test('ok< - creates Clause for contract deployment (to = null) and no data field', () => {
@@ -37,7 +35,7 @@ describe('Clause class tests', () => {
                 value: '0x00'
                 // data is omitted
             };
-            const clause = Clause.of(json);
+            const clause = ClauseData.of(json);
 
             expect(clause.to).toBeNull();
             expect(clause.value).toEqual(0n);
@@ -49,7 +47,7 @@ describe('Clause class tests', () => {
                 to: addrStr,
                 value: 'notahex'
             } satisfies ClauseJSON;
-            expect(() => Clause.of(bad)).toThrow(IllegalArgumentError);
+            expect(() => ClauseData.of(bad)).toThrow(IllegalArgumentError);
         });
 
         test('err <- throws IllegalArgumentError for invalid address', () => {
@@ -57,7 +55,7 @@ describe('Clause class tests', () => {
                 to: '0xbad_address',
                 value: '0x01'
             } satisfies ClauseJSON;
-            expect(() => Clause.of(bad)).toThrow(IllegalArgumentError);
+            expect(() => ClauseData.of(bad)).toThrow(IllegalArgumentError);
         });
 
         test('err <- throws IllegalArgumentError for invalid data hex', () => {
@@ -66,7 +64,7 @@ describe('Clause class tests', () => {
                 value: '0x01',
                 data: '0xzz'
             } satisfies ClauseJSON;
-            expect(() => Clause.of(bad)).toThrow(IllegalArgumentError);
+            expect(() => ClauseData.of(bad)).toThrow(IllegalArgumentError);
         });
     });
 
@@ -77,7 +75,7 @@ describe('Clause class tests', () => {
                 value: '0x000a'
                 // data omitted -> will be null in instance -> "0x" in JSON
             };
-            const clause = Clause.of(jsonIn);
+            const clause = ClauseData.of(jsonIn);
             const jsonOut = clause.toJSON();
 
             // Address normalized via Address.toString()
@@ -104,7 +102,7 @@ describe('Clause class tests', () => {
                 value: '0x0a',
                 data: '0x'
             };
-            const clause = Clause.of(original);
+            const clause = ClauseData.of(original);
             const roundTrip = clause.toJSON();
 
             // to is normalized, value is normalized, data "0x" remains "0x"
@@ -119,7 +117,7 @@ describe('Clause class tests', () => {
                 value: '0x1',
                 data: '0x00ff'
             };
-            const clause = Clause.of(original);
+            const clause = ClauseData.of(original);
             const json = clause.toJSON();
             expect(json.data).toEqual(HexUInt.of('0x00ff').toString());
         });

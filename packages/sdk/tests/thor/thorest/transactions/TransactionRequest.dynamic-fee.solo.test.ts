@@ -1,15 +1,17 @@
 import { describe, expect, test } from '@jest/globals';
-import { TransactionRequest } from '@thor';
-import { Clause } from '@thor';
-import { PrivateKeySigner } from '@thor/thorest/signer';
-import { RLPCodecTransactionRequest } from '@thor/thorest/signer/RLPCodeTransactionRequest';
-import { Address, Hex, HexUInt } from '@common';
-import { FetchHttpClient } from '@common';
-import { ThorNetworks } from '@thor';
-import { RetrieveExpandedBlock } from '@thor';
-import { SendTransaction } from '@thor';
-import { RetrieveTransactionReceipt } from '@thor';
-import { Revision } from '@common';
+import {
+    TransactionRequest,
+    Clause
+} from '@thor/thor-client/model/transactions';
+import { PrivateKeySigner, RLPCodecTransactionRequest } from '@thor/signer';
+import { Address, Hex, HexUInt, Revision } from '@common/vcdm';
+import { FetchHttpClient } from '@common/http';
+import { ThorNetworks } from '@thor/thorest';
+import { RetrieveExpandedBlock } from '@thor/thorest/blocks';
+import {
+    SendTransaction,
+    RetrieveTransactionReceipt
+} from '@thor/thorest/transactions';
 import { ThorClient } from '@thor/thor-client/ThorClient';
 
 /**

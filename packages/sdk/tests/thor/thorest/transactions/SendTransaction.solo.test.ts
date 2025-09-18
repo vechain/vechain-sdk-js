@@ -12,8 +12,12 @@ import {
     ClauseBuilder
 } from '@thor/thorest';
 import { Address, BlockRef, HexUInt, Revision } from '@common/vcdm';
-import { Transaction, type TransactionBody } from '@thor/thorest/model';
 import { ThorClient } from '@thor/thor-client/ThorClient';
+import {
+    Transaction,
+    type TransactionBody
+} from '@thor/thorest/transactions/model';
+
 import { expect, test } from '@jest/globals';
 
 /**

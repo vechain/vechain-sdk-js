@@ -1,11 +1,11 @@
 import { describe, expect, test, beforeEach } from '@jest/globals';
 import { Address, BlockRef } from '@common';
-import { TransactionRequest } from '@thor/thorest/model/TransactionRequest';
+import { TransactionRequest } from '@thor/thor-client/model/transactions/TransactionRequest';
 import {
     Clause,
     SignedTransactionRequest,
     type SignedTransactionRequestParam
-} from '@thor/thorest/model';
+} from '@thor/thor-client/model/transactions';
 
 /*
  * @group unit/thor/thorest/model

@@ -4,14 +4,14 @@ import {
     Clause,
     SignedTransactionRequest,
     TransactionRequest
-} from '@thor/thorest/model';
+} from '@thor/thor-client/model/transactions';
 import {
     Transaction,
     type TransactionBody,
     type TransactionClause
 } from '@thor/thorest/transactions/model';
-import { RLPCodecTransactionRequest } from '@thor/thorest/signer';
-import { TEST_ACCOUNTS } from '../../../fixture';
+import { RLPCodecTransactionRequest } from '@thor/signer';
+import { TEST_ACCOUNTS } from '../../fixture';
 
 const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
 

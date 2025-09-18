@@ -5,7 +5,7 @@ import {
     SponsoredTransactionRequest,
     type SponsoredTransactionRequestParam,
     TransactionRequest
-} from '@thor/thorest/model'; /*
+} from '@thor/thor-client/model/transactions'; /*
 
 /*
  * @group unit/thor/thorest/model
