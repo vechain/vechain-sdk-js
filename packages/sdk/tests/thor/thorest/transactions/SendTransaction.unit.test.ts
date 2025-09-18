@@ -10,7 +10,6 @@ import {
 } from '@thor/thorest/json';
 import { Address, BlockRef, HexUInt, Revision } from '@common/vcdm';
 import { Transaction, type TransactionBody } from '@thor/thorest/model';
-// Removed SOLO_NETWORK import - using hardcoded chainTag for unit test
 import { TEST_ACCOUNTS } from '../../../fixture';
 import { expect } from '@jest/globals';
 import { mockHttpClient } from '../../../MockHttpClient';

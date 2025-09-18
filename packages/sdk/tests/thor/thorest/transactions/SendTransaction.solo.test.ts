@@ -13,7 +13,7 @@ import {
 } from '@thor/thorest';
 import { Address, BlockRef, HexUInt, Revision } from '@common/vcdm';
 import { Transaction, type TransactionBody } from '@thor/thorest/model';
-import { ThorClient } from '../../../../src/thor/thor-client/ThorClient';
+import { ThorClient } from '@thor/thor-client/ThorClient';
 import { expect, test } from '@jest/globals';
 
 /**

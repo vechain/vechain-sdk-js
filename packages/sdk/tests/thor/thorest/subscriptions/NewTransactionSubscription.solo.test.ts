@@ -10,7 +10,7 @@ import {
 } from '@thor/thorest';
 import { FetchHttpClient } from '@common/http';
 import { Address, BlockRef, HexUInt, Revision } from '@common/vcdm';
-import { ThorClient } from '../../../../src/thor/thor-client/ThorClient';
+import { ThorClient } from '@thor/thor-client/ThorClient';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 

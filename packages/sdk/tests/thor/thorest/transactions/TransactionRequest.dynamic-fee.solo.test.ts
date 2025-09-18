@@ -10,7 +10,7 @@ import { RetrieveExpandedBlock } from '@thor';
 import { SendTransaction } from '@thor';
 import { RetrieveTransactionReceipt } from '@thor';
 import { Revision } from '@common';
-import { ThorClient } from '../../../../src/thor/thor-client/ThorClient';
+import { ThorClient } from '@thor/thor-client/ThorClient';
 
 /**
  * @group integration/solo
