@@ -2,7 +2,7 @@ import { type Address, HexUInt } from '@common';
 import {
     SignedTransactionRequest,
     type SignedTransactionRequestParam
-} from '../../../../../dist/thor';
+} from './SignedTransactionRequest';
 import { type SponsoredTransactionRequestJSON } from '@thor/thorest/json';
 
 /**

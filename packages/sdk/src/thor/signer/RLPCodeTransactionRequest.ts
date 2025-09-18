@@ -164,18 +164,35 @@ class RLPCodecTransactionRequest {
         | SignedTransactionRequest
         | SponsoredTransactionRequest {
         try {
-            const isSigned =
-                (RLP.ofEncoded(encoded).decoded as unknown[]).length >
-                (
-                    RLPCodecTransactionRequest.RLP_UNSIGNED_TRANSACTION_PROFILE
-                        .kind as []
-                ).length;
-            const decoded = RLPProfiler.ofObjectEncoded(
-                encoded,
-                isSigned
+            // Check if this is a dynamic fee transaction (EIP-1559) by looking for 0x51 prefix
+            const isDynamicFee = encoded.length > 0 && encoded[0] === 0x51;
+            
+            // Remove the transaction type prefix if present
+            const rlpData = isDynamicFee ? encoded.slice(1) : encoded;
+            
+            // Determine if transaction is signed by checking RLP structure length
+            const rlpDecoded = RLP.ofEncoded(rlpData).decoded as unknown[];
+            const expectedUnsignedLength = isDynamicFee
+                ? (RLPCodecTransactionRequest.RLP_UNSIGNED_DYNAMIC_FEE_TRANSACTION_PROFILE.kind as []).length
+                : (RLPCodecTransactionRequest.RLP_UNSIGNED_TRANSACTION_PROFILE.kind as []).length;
+            const isSigned = rlpDecoded.length > expectedUnsignedLength;
+            
+            // Select appropriate RLP profile based on transaction type and signature status
+            let profile: RLPProfile;
+            if (isDynamicFee) {
+                profile = isSigned
+                    ? RLPCodecTransactionRequest.RLP_SIGNED_DYNAMIC_FEE_TRANSACTION_PROFILE
+                    : RLPCodecTransactionRequest.RLP_UNSIGNED_DYNAMIC_FEE_TRANSACTION_PROFILE;
+            } else {
+                profile = isSigned
                     ? RLPCodecTransactionRequest.RLP_SIGNED_TRANSACTION_PROFILE
-                    : RLPCodecTransactionRequest.RLP_UNSIGNED_TRANSACTION_PROFILE
-            ).object as RLPValidObject;
+                    : RLPCodecTransactionRequest.RLP_UNSIGNED_TRANSACTION_PROFILE;
+            }
+            
+            // Decode using the appropriate profile
+            const decoded = RLPProfiler.ofObjectEncoded(rlpData, profile).object as RLPValidObject;
+            
+            // Parse clauses
             const clauses = (decoded.clauses as []).map(
                 (decodedClause: RLPValidObject) => {
                     return Clause.of({
@@ -192,21 +209,51 @@ class RLPCodecTransactionRequest {
                     });
                 }
             );
+            
             const isIntendedToBeSponsored = (decoded.reserved as []).length > 0;
-            const transactionRequest = new TransactionRequest({
-                blockRef: HexUInt.of(decoded.blockRef as string),
-                chainTag: decoded.chainTag as number,
-                clauses,
-                dependsOn:
-                    decoded.dependsOn === null
-                        ? null
-                        : Hex.of(decoded.dependsOn as string),
-                expiration: decoded.expiration as number,
-                gas: BigInt(decoded.gas as bigint), // Double cast needed else a number is returned.
-                gasPriceCoef: BigInt(decoded.gasPriceCoef as bigint), // Double cast needed else a number is returned.
-                nonce: decoded.nonce as number,
-                isIntendedToBeSponsored
-            });
+            
+            // Create transaction request with appropriate fields based on transaction type
+            let transactionRequest: TransactionRequest;
+            if (isDynamicFee) {
+                // Dynamic fee transaction - use maxFeePerGas and maxPriorityFeePerGas
+                transactionRequest = new TransactionRequest({
+                    blockRef: HexUInt.of(decoded.blockRef as string),
+                    chainTag: decoded.chainTag as number,
+                    clauses,
+                    dependsOn:
+                        decoded.dependsOn === null
+                            ? null
+                            : Hex.of(decoded.dependsOn as string),
+                    expiration: decoded.expiration as number,
+                    gas: BigInt(decoded.gas as bigint),
+                    gasPriceCoef: 0n, // Dynamic fee transactions use 0 for gasPriceCoef
+                    maxFeePerGas: decoded.maxFeePerGas !== undefined && decoded.maxFeePerGas !== null
+                        ? BigInt(decoded.maxFeePerGas as bigint) 
+                        : undefined,
+                    maxPriorityFeePerGas: decoded.maxPriorityFeePerGas !== undefined && decoded.maxPriorityFeePerGas !== null
+                        ? BigInt(decoded.maxPriorityFeePerGas as bigint) 
+                        : undefined,
+                    nonce: decoded.nonce as number,
+                    isIntendedToBeSponsored
+                });
+            } else {
+                // Legacy transaction - use gasPriceCoef
+                transactionRequest = new TransactionRequest({
+                    blockRef: HexUInt.of(decoded.blockRef as string),
+                    chainTag: decoded.chainTag as number,
+                    clauses,
+                    dependsOn:
+                        decoded.dependsOn === null
+                            ? null
+                            : Hex.of(decoded.dependsOn as string),
+                    expiration: decoded.expiration as number,
+                    gas: BigInt(decoded.gas as bigint),
+                    gasPriceCoef: BigInt(decoded.gasPriceCoef as bigint),
+                    nonce: decoded.nonce as number,
+                    isIntendedToBeSponsored
+                });
+            }
+            
             if (isSigned) {
                 const signature = decoded.signature as Uint8Array;
                 const encodedTransactionRequest =
