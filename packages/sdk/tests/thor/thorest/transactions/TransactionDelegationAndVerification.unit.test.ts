@@ -71,7 +71,7 @@ describe('unit tests', () => {
         } satisfies GetTxReceiptResponseJSON;
 
         const body: TransactionBody = {
-            chainTag: networkInfo.solo.chainTag,
+            chainTag: networkInfo.testnet.chainTag,
             blockRef: BlockRef.of(mockBlockResponse.id).toString(),
             expiration: 0,
             clauses,
@@ -121,7 +121,7 @@ describe('unit tests', () => {
             false
         );
         const txA = Transaction.of({
-            chainTag: networkInfo.solo.chainTag,
+            chainTag: networkInfo.testnet.chainTag,
             blockRef: latestBlock?.id.slice(0, 18) ?? '0x0',
             expiration: 0,
             clauses,
@@ -147,7 +147,7 @@ describe('unit tests', () => {
         expect(isVerifiedA).toBe(true);
 
         const txB = Transaction.of({
-            chainTag: networkInfo.solo.chainTag,
+            chainTag: networkInfo.testnet.chainTag,
             blockRef: BlockRef.of(latestBlock.id).toString(),
             expiration: 0,
             clauses,
