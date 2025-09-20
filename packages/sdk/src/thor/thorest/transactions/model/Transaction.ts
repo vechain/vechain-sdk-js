@@ -224,7 +224,9 @@ class Transaction {
                     this.getTransactionHash(this.origin).bytes,
                     this.gasPayerSignature
                 );
-                return Address.ofPublicKey(gasPayerPublicKey);
+                const a = Address.ofPublicKey(gasPayerPublicKey);
+                console.log('E ' + a.toString());
+                return a;
             }
             throw new NoSuchElementError(
                 `${FQP}<Transaction>.gasPayer(): Address`,
@@ -336,10 +338,11 @@ class Transaction {
      */
     public get origin(): Address {
         if (this.senderSignature !== undefined) {
+            const hash = this.getTransactionHash().bytes;
             return Address.ofPublicKey(
                 // Get the origin public key.
                 Secp256k1.recover(
-                    this.getTransactionHash().bytes,
+                    hash,
                     // Get the (r, s) of ECDSA digital signature without gas payer params.
                     this.senderSignature
                 )

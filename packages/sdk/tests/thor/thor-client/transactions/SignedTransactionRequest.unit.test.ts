@@ -1,5 +1,5 @@
 import { describe, expect, test, beforeEach } from '@jest/globals';
-import { Address, BlockRef } from '@common';
+import { Address, BlockRef, HexUInt } from '@common';
 import { TransactionRequest } from '@thor/thor-client/model/transactions/TransactionRequest';
 import {
     Clause,
@@ -109,6 +109,186 @@ describe('SignedTransactionRequest', () => {
 
             // Verify that the parent class method returns false
             expect(txRequest.isSigned()).toBe(false);
+        });
+    });
+
+    describe('toJSON', () => {
+        test('ok <- should convert SignedTransactionRequest to JSON with all properties including signatures', () => {
+            const json = signedTxRequest.toJSON();
+
+            // Verify all base TransactionRequest properties are included
+            expect(json.blockRef).toBe(mockParams.blockRef.toString());
+            expect(json.chainTag).toBe(mockParams.chainTag);
+            expect(json.clauses).toEqual([]);
+            expect(json.dependsOn).toBeNull();
+            expect(json.expiration).toBe(mockParams.expiration);
+            expect(json.gas).toBe(mockParams.gas);
+            expect(json.gasPriceCoef).toBe(mockParams.gasPriceCoef);
+            expect(json.nonce).toBe(mockParams.nonce);
+            expect(json.isIntendedToBeSponsored).toBe(
+                mockParams.isIntendedToBeSponsored
+            );
+
+            // Verify signed-specific properties
+            expect(json.origin).toBe(mockParams.origin.toString());
+            expect(json.originSignature).toBe('0x0102030405');
+            expect(json.signature).toBe('0x060708090a');
+        });
+
+        test('ok <- should convert SignedTransactionRequest to JSON with clauses', () => {
+            const clauseParams = {
+                ...mockParams,
+                clauses: [new Clause(mockOrigin, 1000n, null, null, null)]
+            };
+            const signedRequestWithClause = new SignedTransactionRequest(
+                clauseParams
+            );
+
+            const json = signedRequestWithClause.toJSON();
+
+            expect(json.clauses).toHaveLength(1);
+            expect(json.clauses[0]).toEqual(clauseParams.clauses[0].toJSON());
+        });
+
+        test('ok <- should convert SignedTransactionRequest to JSON with dependsOn value', () => {
+            const dependsOnValue = BlockRef.of(
+                '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890'
+            );
+            const paramsWithDependsOn = {
+                ...mockParams,
+                dependsOn: dependsOnValue
+            };
+            const signedRequestWithDependsOn = new SignedTransactionRequest(
+                paramsWithDependsOn
+            );
+
+            const json = signedRequestWithDependsOn.toJSON();
+
+            expect(json.dependsOn).toBe(dependsOnValue.toString());
+        });
+
+        test('ok <- should convert SignedTransactionRequest to JSON with isIntendedToBeSponsored true', () => {
+            const sponsoredParams = {
+                ...mockParams,
+                isIntendedToBeSponsored: true
+            };
+            const sponsoredSignedRequest = new SignedTransactionRequest(
+                sponsoredParams
+            );
+
+            const json = sponsoredSignedRequest.toJSON();
+
+            expect(json.isIntendedToBeSponsored).toBe(true);
+        });
+
+        test('ok <- should properly convert Uint8Array signatures to hex strings', () => {
+            const largeOriginSignature = new Uint8Array([
+                255, 254, 253, 252, 251, 0, 1, 2
+            ]);
+            const largeSignature = new Uint8Array([
+                10, 20, 30, 40, 50, 60, 70, 80, 90, 100
+            ]);
+
+            const paramsWithLargeSignatures = {
+                ...mockParams,
+                originSignature: largeOriginSignature,
+                signature: largeSignature
+            };
+            const signedRequestWithLargeSignatures =
+                new SignedTransactionRequest(paramsWithLargeSignatures);
+
+            const json = signedRequestWithLargeSignatures.toJSON();
+
+            expect(json.originSignature).toEqual(
+                HexUInt.of(largeOriginSignature).toString()
+            );
+            expect(json.signature).toEqual(
+                HexUInt.of(largeSignature).toString()
+            );
+            expect(typeof json.originSignature).toBe('string');
+            expect(typeof json.signature).toBe('string');
+        });
+
+        test('ok <- should handle empty signature arrays', () => {
+            const emptySignatureParams = {
+                ...mockParams,
+                originSignature: new Uint8Array([]),
+                signature: new Uint8Array([])
+            };
+            const signedRequestWithEmptySignatures =
+                new SignedTransactionRequest(emptySignatureParams);
+
+            const json = signedRequestWithEmptySignatures.toJSON();
+
+            expect(json.originSignature).toBe('0x');
+            expect(json.signature).toBe('0x');
+        });
+
+        test('ok <- should handle single byte signatures', () => {
+            const singleByteParams = {
+                ...mockParams,
+                originSignature: new Uint8Array([42]),
+                signature: new Uint8Array([123])
+            };
+            const signedRequestWithSingleByte = new SignedTransactionRequest(
+                singleByteParams
+            );
+
+            const json = signedRequestWithSingleByte.toJSON();
+
+            expect(json.originSignature).toBe('0x2a');
+            expect(json.signature).toBe('0x7b');
+        });
+
+        test('ok <- should produce JSON that extends TransactionRequestJSON with signature properties', () => {
+            const json = signedTxRequest.toJSON();
+
+            // Verify all TransactionRequestJSON properties exist
+            expect(json).toHaveProperty('blockRef');
+            expect(json).toHaveProperty('chainTag');
+            expect(json).toHaveProperty('clauses');
+            expect(json).toHaveProperty('dependsOn');
+            expect(json).toHaveProperty('expiration');
+            expect(json).toHaveProperty('gas');
+            expect(json).toHaveProperty('gasPriceCoef');
+            expect(json).toHaveProperty('nonce');
+            expect(json).toHaveProperty('isIntendedToBeSponsored');
+
+            // Verify additional SignedTransactionRequestJSON properties exist
+            expect(json).toHaveProperty('origin');
+            expect(json).toHaveProperty('originSignature');
+            expect(json).toHaveProperty('signature');
+
+            // Verify types
+            expect(typeof json.origin).toBe('string');
+            expect(typeof json.originSignature).toBe('string');
+            expect(typeof json.signature).toBe('string');
+
+            // Verify hex format
+            expect(json.origin.startsWith('0x')).toBe(true);
+            expect(json.originSignature.startsWith('0x')).toBe(true);
+            expect(json.signature.startsWith('0x')).toBe(true);
+        });
+
+        test('ok <- should handle defensive copy mutation protection in JSON conversion', () => {
+            // Modify the original signature arrays after construction
+            const originalOriginSignature = new Uint8Array(
+                mockParams.originSignature
+            );
+            const originalSignature = new Uint8Array(mockParams.signature);
+
+            mockParams.originSignature[0] = 255;
+            mockParams.signature[0] = 255;
+
+            const json = signedTxRequest.toJSON();
+
+            // The JSON should reflect the original values, not the modified ones
+            expect(json.originSignature).toBe('0x0102030405');
+            expect(json.signature).toBe('0x060708090a');
+
+            // Restore original values for other tests
+            mockParams.originSignature.set(originalOriginSignature);
+            mockParams.signature.set(originalSignature);
         });
     });
 });

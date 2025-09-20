@@ -1,8 +1,9 @@
 import { describe, expect, test } from '@jest/globals';
-import { Address, HexUInt } from '@common/vcdm';
+import { Address, HexUInt, Quantity } from '@common/vcdm';
 import {
     Clause,
     SignedTransactionRequest,
+    SponsoredTransactionRequest,
     TransactionRequest
 } from '@thor/thor-client/model/transactions';
 import {
@@ -10,50 +11,16 @@ import {
     type TransactionBody,
     type TransactionClause
 } from '@thor/thorest/transactions/model';
-import { RLPCodecTransactionRequest } from '@thor/signer';
+import { RLPCodecTransactionRequest, PrivateKeySigner } from '@thor/signer';
 import { TEST_ACCOUNTS } from '../../fixture';
+import { IllegalArgumentError } from '@common';
 
 const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
-
-// Temporary until Transaction exists.
-function newTransactionBodyFromTransactionRequest(
-    txRequest: TransactionRequest
-): TransactionBody {
-    return {
-        chainTag: txRequest.chainTag,
-        blockRef: txRequest.blockRef.toString(),
-        dependsOn: txRequest.dependsOn?.toString() ?? null,
-        expiration: txRequest.expiration,
-        clauses: txRequest.clauses.map((clause: Clause): TransactionClause => {
-            return {
-                to: clause.to?.toString() ?? null,
-                value: clause.value,
-                data: clause.data?.toString() ?? '0x',
-                comment: clause.comment ?? undefined,
-                abi: clause.abi ?? undefined
-            } satisfies TransactionClause;
-        }),
-        gasPriceCoef: Number(txRequest.gasPriceCoef),
-        gas: Number(txRequest.gas),
-        nonce: txRequest.nonce,
-        reserved: {
-            features: txRequest.isIntendedToBeSponsored ? 1 : 0,
-            unused: []
-        }
-    } satisfies TransactionBody;
-}
-
-// Temporary until Transaction exists.
-export function newTransactionFromTransactionRequest(
-    txRequest: TransactionRequest
-): Transaction {
-    return Transaction.of(newTransactionBodyFromTransactionRequest(txRequest));
-}
 
 /**
  * @group unit/thor/thorest/signer
  */
-describe('RLPCodecTransactionRequest', () => {
+describe('RLPCodec', () => {
     // Test data setup
     const mockBlockRef = HexUInt.of('0x1234567890abcdef');
     const mockDependsOn = HexUInt.of(
@@ -61,204 +28,248 @@ describe('RLPCodecTransactionRequest', () => {
     );
     const mockGas = 21000n;
 
-    describe('encodeTransactionRequest', () => {
-        test('ok <- should encode a non-sponsored transaction request correctly', () => {
-            // Create a simple transaction request
-            const txRequest = new TransactionRequest({
-                blockRef: mockBlockRef,
-                chainTag: 1,
-                clauses: [],
-                dependsOn: null,
-                expiration: 32,
-                gas: mockGas,
-                gasPriceCoef: 0n,
-                nonce: 1,
-                isIntendedToBeSponsored: false
-            });
+    const mockOrigin = new PrivateKeySigner(
+        HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
+    );
 
-            // Call the method
-            const actual =
-                RLPCodecTransactionRequest.encodeTransactionRequest(txRequest);
+    const mockGasPayer = new PrivateKeySigner(
+        HexUInt.of(TRANSACTION_RECEIVER.privateKey).bytes
+    );
 
-            // Assert actual
-            expect(actual.length).toBeGreaterThan(0);
+    const mockValue = Quantity.of(1000);
 
-            // Temporary until Transaction exists.
-            const expected =
-                newTransactionFromTransactionRequest(txRequest).encode(false);
-            expect(actual).toEqual(expected);
+    describe('decode transaction request', () => {
+        test('err <- invalid input', () => {
+            const expected = mockGasPayer.sign(
+                mockOrigin.sign(
+                    new TransactionRequest({
+                        blockRef: mockBlockRef,
+                        chainTag: 1,
+                        clauses: [
+                            Clause.of({
+                                to: TRANSACTION_RECEIVER.address,
+                                value: mockValue.toString()
+                            })
+                        ],
+                        dependsOn: null,
+                        expiration: 32,
+                        gas: mockGas,
+                        gasPriceCoef: 0n,
+                        nonce: 3,
+                        isIntendedToBeSponsored: true
+                    })
+                )
+            );
+
+            const encoded =
+                RLPCodecTransactionRequest.encode(expected).slice(0);
+            expect(() =>
+                RLPCodecTransactionRequest.decode(
+                    encoded.slice(0, encoded.length / 2)
+                )
+            ).toThrow(IllegalArgumentError);
+        });
+    });
+
+    describe('encode/decode', () => {
+        test('ok <- non-sponsored signed transaction request', () => {
+            const expected = mockOrigin.sign(
+                new TransactionRequest({
+                    blockRef: mockBlockRef,
+                    chainTag: 1,
+                    clauses: [
+                        Clause.of({
+                            to: TRANSACTION_RECEIVER.address,
+                            value: mockValue.toString()
+                        })
+                    ],
+                    dependsOn: null,
+                    expiration: 32,
+                    gas: mockGas,
+                    gasPriceCoef: 0n,
+                    nonce: 3,
+                    isIntendedToBeSponsored: false
+                })
+            );
+            expect(expected.origin.toString()).toEqual(
+                mockOrigin.address.toString()
+            );
+            const encoded = RLPCodecTransactionRequest.encode(expected);
+            const actual = RLPCodecTransactionRequest.decode(encoded);
+            expect(actual.toJSON()).toEqual(expected.toJSON());
         });
 
-        test('ok <- should encode a sponsored transaction request correctly', () => {
-            // Create a simple sponsored transaction request
-            const txRequest = new TransactionRequest({
+        test('ok <- non-sponsored unsigned transaction request', () => {
+            const expected = new TransactionRequest({
                 blockRef: mockBlockRef,
                 chainTag: 1,
-                clauses: [],
+                clauses: [
+                    Clause.of({
+                        to: TRANSACTION_RECEIVER.address,
+                        value: mockValue.toString()
+                    })
+                ],
                 dependsOn: null,
                 expiration: 32,
                 gas: mockGas,
                 gasPriceCoef: 0n,
-                nonce: 2,
+                nonce: 3,
+                isIntendedToBeSponsored: false
+            });
+            const encoded = RLPCodecTransactionRequest.encode(expected);
+            const actual = RLPCodecTransactionRequest.decode(encoded);
+            expect(actual.toJSON()).toEqual(expected.toJSON());
+        });
+
+        test('ok <- sponsored signed transaction request', () => {
+            const txRequest = new TransactionRequest({
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [
+                    Clause.of({
+                        to: TRANSACTION_RECEIVER.address,
+                        value: mockValue.toString()
+                    })
+                ],
+                dependsOn: null,
+                expiration: 32,
+                gas: mockGas,
+                gasPriceCoef: 0n,
+                nonce: 3,
                 isIntendedToBeSponsored: true
             });
-
-            // Call the method
-            const actual =
-                RLPCodecTransactionRequest.encodeTransactionRequest(txRequest);
-
-            // Assert actual
-            expect(actual.length).toBeGreaterThan(0);
-
-            // Temporary until Transaction exists.
-            const expected =
-                newTransactionFromTransactionRequest(txRequest).encode(false);
-            expect(actual).toEqual(expected);
-        });
-
-        test('ok <- should handle transaction without clause.data correctly', () => {
-            // Create a transaction request with clauses
-            const clause = new Clause(
-                Address.of(TRANSACTION_RECEIVER.address),
-                1000n,
-                null,
-                null,
-                null
+            const expected = mockGasPayer.sign(
+                mockOrigin.sign(txRequest)
+            ) as SponsoredTransactionRequest;
+            expect(expected.origin.toString()).toEqual(
+                mockOrigin.address.toString()
+            );
+            expect(expected.gasPayer.toString()).toEqual(
+                mockGasPayer.address.toString()
             );
 
-            const txRequest = new TransactionRequest({
+            const encoded = RLPCodecTransactionRequest.encode(expected);
+            const actual = RLPCodecTransactionRequest.decode(encoded);
+            expect(actual.toJSON()).toEqual(expected.toJSON());
+        });
+
+        test('ok <- sponsored unsigned transaction request', () => {
+            const expected = new TransactionRequest({
                 blockRef: mockBlockRef,
                 chainTag: 1,
-                clauses: [clause],
+                clauses: [
+                    Clause.of({
+                        to: TRANSACTION_RECEIVER.address,
+                        value: mockValue.toString()
+                    })
+                ],
                 dependsOn: null,
                 expiration: 32,
                 gas: mockGas,
                 gasPriceCoef: 0n,
                 nonce: 3,
-                isIntendedToBeSponsored: false
+                isIntendedToBeSponsored: true
             });
-
-            // Call the method
-            const actual =
-                RLPCodecTransactionRequest.encodeTransactionRequest(txRequest);
-
-            // Assert actual
-            expect(actual.length).toBeGreaterThan(0);
-
-            // Temporary until Transaction exists.
-            const expected =
-                newTransactionFromTransactionRequest(txRequest).encode(false);
-            expect(actual).toEqual(expected);
+            const encoded = RLPCodecTransactionRequest.encode(expected);
+            const actual = RLPCodecTransactionRequest.decode(encoded);
+            expect(actual.toJSON()).toEqual(expected.toJSON());
         });
+    });
 
-        test('ok <- should handle transaction without clause.to correctly', () => {
-            // Create a transaction request with clauses
-            const clause = new Clause(
-                null,
-                1000n,
-                HexUInt.of('0xabcdef'),
-                null,
-                null
-            );
-
-            const txRequest = new TransactionRequest({
+    describe('encode/decode transaction request clauses', () => {
+        test('ok <- handle transactions without clauses', () => {
+            const expected = new TransactionRequest({
                 blockRef: mockBlockRef,
                 chainTag: 1,
-                clauses: [clause],
+                clauses: [],
                 dependsOn: null,
                 expiration: 32,
                 gas: mockGas,
                 gasPriceCoef: 0n,
-                nonce: 3,
-                isIntendedToBeSponsored: false
+                nonce: 3
             });
-
-            // Call the method
-            const actual =
-                RLPCodecTransactionRequest.encodeTransactionRequest(txRequest);
-
-            // Assert actual
-            expect(actual.length).toBeGreaterThan(0);
-
-            // Temporary until Transaction exists.
-            const expected =
-                newTransactionFromTransactionRequest(txRequest).encode(false);
-            expect(actual).toEqual(expected);
+            const actual = RLPCodecTransactionRequest.decode(
+                RLPCodecTransactionRequest.encode(expected)
+            );
+            expect(actual.toJSON()).toEqual(expected.toJSON());
         });
 
-        test('ok <- should handle transaction without optional clauses correctly', () => {
-            // Create a transaction request with clauses
-            const clause = new Clause(
-                Address.of(TRANSACTION_RECEIVER.address),
-                1000n,
-                HexUInt.of('0xabcdef'),
-                'test comment',
-                '0xabcdef'
-            );
-
+        test('ok <- handle transaction without clause.data correctly', () => {
             const txRequest = new TransactionRequest({
                 blockRef: mockBlockRef,
                 chainTag: 1,
-                clauses: [clause],
+                clauses: [
+                    Clause.of({
+                        to: TRANSACTION_RECEIVER.address,
+                        value: mockValue.toString()
+                    })
+                ],
                 dependsOn: null,
                 expiration: 32,
                 gas: mockGas,
                 gasPriceCoef: 0n,
-                nonce: 3,
-                isIntendedToBeSponsored: false
+                nonce: 3
             });
 
-            // Call the method
-            const actual =
-                RLPCodecTransactionRequest.encodeTransactionRequest(txRequest);
-
-            // Assert actual
-            expect(actual.length).toBeGreaterThan(0);
-
-            // Temporary until Transaction exists.
-            const expected =
-                newTransactionFromTransactionRequest(txRequest).encode(false);
-            expect(actual).toEqual(expected);
+            const actual = RLPCodecTransactionRequest.decode(
+                RLPCodecTransactionRequest.encode(txRequest)
+            );
+            expect(actual.toJSON()).toEqual(txRequest.toJSON());
         });
 
-        test('ok <- should handle transaction with optional clauses correctly', () => {
-            // Create a transaction request with clauses
-            const clause = new Clause(
-                Address.of(TRANSACTION_RECEIVER.address),
-                1000n,
-                HexUInt.of('0xabcdef'),
-                'test comment',
-                '0xabcdef'
-            );
-
-            const txRequest = new TransactionRequest({
+        test('ok <- handle transaction without clause.to correctly', () => {
+            const expected = new TransactionRequest({
                 blockRef: mockBlockRef,
                 chainTag: 1,
-                clauses: [clause],
+                clauses: [
+                    Clause.of({
+                        to: null,
+                        value: mockValue.toString(),
+                        data: '0xabcdef'
+                    })
+                ],
                 dependsOn: null,
                 expiration: 32,
                 gas: mockGas,
                 gasPriceCoef: 0n,
-                nonce: 3,
-                isIntendedToBeSponsored: false
+                nonce: 3
             });
 
-            // Call the method
-            const actual =
-                RLPCodecTransactionRequest.encodeTransactionRequest(txRequest);
-
-            // Assert actual
-            expect(actual.length).toBeGreaterThan(0);
-
-            // Temporary until Transaction exists.
-            const expected =
-                newTransactionFromTransactionRequest(txRequest).encode(false);
-            expect(actual).toEqual(expected);
+            const actual = RLPCodecTransactionRequest.decode(
+                RLPCodecTransactionRequest.encode(expected)
+            );
+            expect(actual.toJSON()).toEqual(expected.toJSON());
         });
 
-        test('ok <- should handle transaction with dependsOn correctly', () => {
+        test('ok <- handle transaction with optional clause properties correctly', () => {
+            const expected = new TransactionRequest({
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [
+                    new Clause(
+                        Address.of(TRANSACTION_RECEIVER.address),
+                        mockValue.bi,
+                        HexUInt.of('0xabcdef'),
+                        'test comment',
+                        '0xabcdef'
+                    )
+                ],
+                dependsOn: null,
+                expiration: 32,
+                gas: mockGas,
+                gasPriceCoef: 0n,
+                nonce: 3
+            });
+
+            const actual = RLPCodecTransactionRequest.decode(
+                RLPCodecTransactionRequest.encode(expected)
+            );
+            expect(actual.toJSON()).toEqual(expected.toJSON());
+        });
+
+        test('ok <- handle transaction with dependsOn correctly', () => {
             // Create a transaction request with dependsOn
-            const txRequest = new TransactionRequest({
+            const expected = new TransactionRequest({
                 blockRef: mockBlockRef,
                 chainTag: 1,
                 clauses: [],
@@ -271,113 +282,10 @@ describe('RLPCodecTransactionRequest', () => {
             });
 
             // Call the method
-            const actual =
-                RLPCodecTransactionRequest.encodeTransactionRequest(txRequest);
-
-            // Assert actual
-            expect(actual.length).toBeGreaterThan(0);
-
-            // Temporary until Transaction exists.
-            const expected =
-                newTransactionFromTransactionRequest(txRequest).encode(false);
-            expect(actual).toEqual(expected);
-        });
-    });
-
-    describe('encodeSignedTransactionRequest', () => {
-        test('ok <- should encode a non-sponsored signed transaction request correctly', () => {
-            const clause = new Clause(
-                Address.of(TRANSACTION_RECEIVER.address),
-                1000n,
-                HexUInt.of('0xabcdef'),
-                'test comment',
-                '0xabcdef'
+            const actual = RLPCodecTransactionRequest.decode(
+                RLPCodecTransactionRequest.encode(expected)
             );
-
-            // Create a simple signed transaction request
-            const txRequest = new TransactionRequest({
-                blockRef: mockBlockRef,
-                chainTag: 1,
-                clauses: [clause, clause],
-                dependsOn: null,
-                expiration: 32,
-                gas: mockGas,
-                gasPriceCoef: 0n,
-                nonce: 5,
-                isIntendedToBeSponsored: false
-            });
-
-            // Temporary until Transaction exists.
-            const signedTx = newTransactionFromTransactionRequest(
-                txRequest
-            ).sign(HexUInt.of(TRANSACTION_SENDER.privateKey).bytes);
-            const signedTxRequest = new SignedTransactionRequest({
-                ...txRequest,
-                origin: signedTx.origin,
-                originSignature: signedTx.signature as Uint8Array,
-                signature: signedTx.signature as Uint8Array
-            });
-
-            // Call the method
-            const actual =
-                RLPCodecTransactionRequest.encodeSignedTransactionRequest(
-                    signedTxRequest
-                );
-
-            // Assert actual
-            expect(actual.length).toBeGreaterThan(0);
-
-            // Temporary until Transaction exists.
-            expect(actual).toEqual(signedTx.encode(true));
-        });
-
-        test('ok <- should encode a sponsored signed transaction request correctly', () => {
-            const clause = new Clause(
-                Address.of(TRANSACTION_RECEIVER.address),
-                1000n,
-                HexUInt.of('0xabcdef'),
-                'test comment',
-                '0xabcdef'
-            );
-
-            // Create a simple sponsored signed transaction request
-            const txRequest = new TransactionRequest({
-                blockRef: mockBlockRef,
-                chainTag: 1,
-                clauses: [clause, clause],
-                dependsOn: null,
-                expiration: 32,
-                gas: mockGas,
-                gasPriceCoef: 0n,
-                nonce: 6,
-                isIntendedToBeSponsored: true
-            });
-
-            // Temporary until Transaction exists.
-            const signedTx = newTransactionFromTransactionRequest(
-                txRequest
-            ).signAsSenderAndGasPayer(
-                HexUInt.of(TRANSACTION_SENDER.privateKey).bytes,
-                HexUInt.of(TRANSACTION_RECEIVER.privateKey).bytes
-            );
-            const signedTxRequest = new SignedTransactionRequest({
-                ...txRequest,
-                origin: signedTx.origin,
-                originSignature: signedTx.signature as Uint8Array,
-                signature: signedTx.signature as Uint8Array
-            });
-
-            // Call the method
-            const actual =
-                RLPCodecTransactionRequest.encodeSignedTransactionRequest(
-                    signedTxRequest
-                );
-
-            // Assert actual
-            expect(actual.length).toBeGreaterThan(0);
-
-            // Temporary until Transaction exists.
-            expect(actual).toEqual(signedTx.encode(true));
+            expect(actual.toJSON()).toEqual(expected.toJSON());
         });
     });
 });
