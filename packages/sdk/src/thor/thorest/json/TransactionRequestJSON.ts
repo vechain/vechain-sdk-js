@@ -11,8 +11,11 @@ interface TransactionRequestJSON {
     expiration: number;
     gas: bigint;
     gasPriceCoef: bigint;
-    nonce: number;
     isIntendedToBeSponsored: boolean;
+    maxFeePerGasCoef?: bigint;
+    maxPriorityFeePerGasCoef?: bigint;
+    nonce: number;
+    origin?: string;
 }
 
 export { type TransactionRequestJSON };

@@ -1,6 +1,7 @@
 import { type Clause } from './Clause';
-import { type Hex } from '@common';
+import { type Address, type Hex } from '@common';
 import { type TransactionRequestJSON } from '@thor/thorest/json';
+
 /**
  * Represents the parameters required to create a {@link TransactionRequest} instance.
  */
@@ -61,6 +62,11 @@ interface TransactionRequestParam {
      * This is the tip paid to validators for transaction inclusion priority.
      */
     maxPriorityFeePerGas?: bigint;
+
+    /**
+     * The address of the origin account sending and signing the transaction.
+     */
+    origin?: Address;
 }
 
 /**
@@ -126,20 +132,27 @@ class TransactionRequest implements TransactionRequestParam {
     public readonly maxPriorityFeePerGas?: bigint;
 
     /**
-     * Constructs an instance of the class with the given transaction request parameters.
+     * The address of the origin account sending and signing the transaction.
+     */
+    public readonly origin?: Address;
+
+    /**
+     * Constructs a new instance of the class using the provided transaction parameters.
      *
-     * @param {TransactionRequestParam} params - An object containing the parameters for the transaction request.
-     * @param {string} params.blockRef - Reference to the specific block.
-     * @param {string} params.chainTag - Identifier for the blockchain network.
-     * @param {Array} params.clauses - Array of clauses representing transaction actions.
-     * @param {string|null} params.dependsOn - Reference to a dependent transaction if present.
-     * @param {number} params.expiration - Number of blocks after which the transaction expires.
+     * @param {TransactionRequestParam} params - The transaction request parameters.
+     * @param {string} params.blockRef - The reference to the block.
+     * @param {number} params.chainTag - The chain tag associated with the transaction.
+     * @param {Array} params.clauses - The clauses defining the transaction.
+     * @param {string} [params.dependsOn] - The ID of a transaction this transaction depends on.
+     * @param {number} params.expiration - The number of blocks before the transaction expires.
      * @param {number} params.gas - The gas limit for the transaction.
-     * @param {number} params.gasPriceCoef - Coefficient for the gas price.
-     * @param {string} params.nonce - Unique value to ensure transaction uniqueness.
-     * @param {boolean} params.isIntendedToBeSponsored: boolean; - Indicates if the transaction is sponsored.
+     * @param {number} params.gasPriceCoef - The gas price coefficient.
+     * @param {string} params.nonce - The unique identifier for the transaction.
+     * @param {boolean} [params.isIntendedToBeSponsored=false] - Specifies if the transaction is intended to be sponsored.
+     * @param {number} [params.maxFeePerGas] - The maximum fee per unit of gas.
+     * @param {number} [params.maxPriorityFeePerGas] - The maximum priority fee per unit of gas.
      *
-     * @return {void} This constructor does not return a value.
+     * @return {void} This is a constructor and does not return a value.
      */
     public constructor(params: TransactionRequestParam) {
         this.blockRef = params.blockRef;
@@ -153,6 +166,20 @@ class TransactionRequest implements TransactionRequestParam {
         this.isIntendedToBeSponsored = params.isIntendedToBeSponsored ?? false;
         this.maxFeePerGas = params.maxFeePerGas;
         this.maxPriorityFeePerGas = params.maxPriorityFeePerGas;
+        this.origin = params.origin;
+    }
+
+    /**
+     * Determines if this is a dynamic fee transaction (EIP-1559).
+     * A transaction is considered dynamic if it has maxFeePerGas or maxPriorityFeePerGas set.
+     *
+     * @return {boolean} `true` if this is a dynamic fee transaction, `false` for legacy.
+     */
+    public isDynamicFee(): boolean {
+        return (
+            this.maxFeePerGas !== undefined ||
+            this.maxPriorityFeePerGas !== undefined
+        );
     }
 
     /**
@@ -176,24 +203,24 @@ class TransactionRequest implements TransactionRequestParam {
             clauses: this.clauses.map((clause: Clause) => clause.toJSON()),
             dependsOn: this.dependsOn?.toString() ?? null,
             expiration: this.expiration,
+            isIntendedToBeSponsored: this.isIntendedToBeSponsored ?? false,
             gas: this.gas,
             gasPriceCoef: this.gasPriceCoef,
+            maxFeePerGasCoef:
+                this.maxFeePerGas === undefined
+                    ? undefined
+                    : this.maxFeePerGas > 0n
+                      ? this.maxFeePerGas
+                      : undefined,
+            maxPriorityFeePerGasCoef:
+                this.maxPriorityFeePerGas === undefined
+                    ? undefined
+                    : this.maxPriorityFeePerGas > 0n
+                      ? this.maxPriorityFeePerGas
+                      : undefined,
             nonce: this.nonce,
-            isIntendedToBeSponsored: this.isIntendedToBeSponsored ?? false
+            origin: this.origin?.toString()
         } satisfies TransactionRequestJSON;
-    }
-
-    /**
-     * Determines if this is a dynamic fee transaction (EIP-1559).
-     * A transaction is considered dynamic if it has maxFeePerGas or maxPriorityFeePerGas set.
-     *
-     * @return {boolean} `true` if this is a dynamic fee transaction, `false` for legacy.
-     */
-    public isDynamicFee(): boolean {
-        return (
-            this.maxFeePerGas !== undefined ||
-            this.maxPriorityFeePerGas !== undefined
-        );
     }
 }
 
