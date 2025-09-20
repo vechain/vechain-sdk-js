@@ -10,7 +10,7 @@ import {
 } from '@thor/thorest';
 import { FetchHttpClient } from '@common/http';
 import { Address, BlockRef, HexUInt, Revision } from '@common/vcdm';
-import { SOLO_NETWORK } from '@thor/utils/const/network';
+import { ThorClient } from '@thor/thor-client/ThorClient';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 
@@ -22,6 +22,7 @@ import fastJsonStableStringify from 'fast-json-stable-stringify';
 describe('NewTransactionSubscription solo tests', () => {
     let subscription: NewTransactionSubscription;
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
+    const thorClient = ThorClient.at(httpClient);
 
     // Account seeded by solo setup (default account[1])
     const toAddress = '0x435933c8064b4ae76be665428e0307ef2ccfbd68';
@@ -60,8 +61,9 @@ describe('NewTransactionSubscription solo tests', () => {
                             )
                         ).response;
 
+                        const chainTag = await thorClient.nodes.getChainTag();
                         const txBody = {
-                            chainTag: SOLO_NETWORK.chainTag,
+                            chainTag,
                             blockRef:
                                 latestBlock !== null
                                     ? BlockRef.of(latestBlock.id).toString()
