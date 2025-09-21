@@ -2,7 +2,7 @@ import { describe, expect } from '@jest/globals';
 import { Address, BlockRef, HexUInt } from '@common';
 import {
     Clause,
-    SignedTransactionRequest,
+    OriginSignedTransactionRequest,
     SponsoredTransactionRequest,
     type SponsoredTransactionRequestParam,
     TransactionRequest
@@ -56,7 +56,9 @@ describe('SponsoredTransactionRequest', () => {
         });
 
         test('ok <- should inherit from SignedTransactionRequest', () => {
-            expect(sponsoredTxRequest).toBeInstanceOf(SignedTransactionRequest);
+            expect(sponsoredTxRequest).toBeInstanceOf(
+                OriginSignedTransactionRequest
+            );
         });
 
         test('ok <- should inherit from TransactionRequest', () => {

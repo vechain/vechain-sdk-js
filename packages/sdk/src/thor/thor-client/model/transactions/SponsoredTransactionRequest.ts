@@ -1,8 +1,8 @@
 import { type Address, HexUInt } from '@common';
 import {
-    SignedTransactionRequest,
-    type SignedTransactionRequestParam
-} from './SignedTransactionRequest';
+    OriginSignedTransactionRequest,
+    type OriginSignedTransactionRequestParam
+} from './OriginSignedTransactionRequest';
 import { type SponsoredTransactionRequestJSON } from '@thor/thorest/json';
 
 /**
@@ -10,7 +10,7 @@ import { type SponsoredTransactionRequestJSON } from '@thor/thorest/json';
  * Extends the base `SignedTransactionRequest` class with additional properties specific to sponsored transactions.
  */
 interface SponsoredTransactionRequestParam
-    extends SignedTransactionRequestParam {
+    extends OriginSignedTransactionRequestParam {
     /**
      * The address of the sponsor delegated to pay the gas to execute the transaction request.
      */
@@ -23,11 +23,11 @@ interface SponsoredTransactionRequestParam
 }
 
 /**
- * Represents a sponsored transaction request extending {@link SignedTransactionRequest}
+ * Represents a sponsored transaction request extending {@link OriginSignedTransactionRequest}
  * with the additional properties required to represent a sponsored transaction request.
  */
 class SponsoredTransactionRequest
-    extends SignedTransactionRequest
+    extends OriginSignedTransactionRequest
     implements SponsoredTransactionRequestParam
 {
     /**

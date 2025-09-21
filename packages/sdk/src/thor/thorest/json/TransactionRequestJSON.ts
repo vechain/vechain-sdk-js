@@ -12,8 +12,8 @@ interface TransactionRequestJSON {
     gas: bigint;
     gasPriceCoef: bigint;
     isIntendedToBeSponsored: boolean;
-    maxFeePerGasCoef?: bigint;
-    maxPriorityFeePerGasCoef?: bigint;
+    maxFeePerGas?: bigint;
+    maxPriorityFeePerGas?: bigint;
     nonce: number;
     origin?: string;
 }

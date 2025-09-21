@@ -10,7 +10,7 @@ import { Blake2b256 } from '@common/vcdm/hash/Blake2b256';
 import { Secp256k1 } from '@common/cryptography/secp256k1';
 import {
     Clause,
-    SignedTransactionRequest,
+    OriginSignedTransactionRequest,
     SponsoredTransactionRequest,
     TransactionRequest
 } from '@thor/thor-client/model/transactions';
@@ -149,7 +149,7 @@ describe('PrivateKeySigner', () => {
 
             const signedTx = originSigner.sign(txRequest);
 
-            expect(signedTx).toBeInstanceOf(SignedTransactionRequest);
+            expect(signedTx).toBeInstanceOf(OriginSignedTransactionRequest);
             // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(RLPCodecTransactionRequest.encode).toHaveBeenCalledWith(
                 txRequest
@@ -183,7 +183,7 @@ describe('PrivateKeySigner', () => {
 
             const signedTx = originSigner.sign(txRequest);
 
-            expect(signedTx).toBeInstanceOf(SignedTransactionRequest);
+            expect(signedTx).toBeInstanceOf(OriginSignedTransactionRequest);
             expect(signedTx.isIntendedToBeSponsored).toBe(true);
 
             expect(signedTx.originSignature).toEqual(signedTx.signature);

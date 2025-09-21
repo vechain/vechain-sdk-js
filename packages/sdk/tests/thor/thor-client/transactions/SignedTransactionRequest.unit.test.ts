@@ -3,8 +3,8 @@ import { Address, BlockRef, HexUInt } from '@common';
 import { TransactionRequest } from '@thor/thor-client/model/transactions/TransactionRequest';
 import {
     Clause,
-    SignedTransactionRequest,
-    type SignedTransactionRequestParam
+    OriginSignedTransactionRequest,
+    type OriginSignedTransactionRequestParam
 } from '@thor/thor-client/model/transactions';
 
 /*
@@ -32,12 +32,12 @@ describe('SignedTransactionRequest', () => {
         origin: mockOrigin,
         originSignature: mockOriginSignature,
         signature: mockSignature
-    } satisfies SignedTransactionRequestParam;
+    } satisfies OriginSignedTransactionRequestParam;
 
-    let signedTxRequest: SignedTransactionRequest;
+    let signedTxRequest: OriginSignedTransactionRequest;
 
     beforeEach(() => {
-        signedTxRequest = new SignedTransactionRequest(mockParams);
+        signedTxRequest = new OriginSignedTransactionRequest(mockParams);
     });
 
     describe('constructor', () => {
@@ -73,7 +73,9 @@ describe('SignedTransactionRequest', () => {
 
         test('ok <- should make defensive copies of Uint8Array properties', () => {
             // Create a new instance with the same parameters
-            const newRequest = new SignedTransactionRequest(signedTxRequest);
+            const newRequest = new OriginSignedTransactionRequest(
+                signedTxRequest
+            );
 
             // Modify the original arrays
             signedTxRequest.originSignature[0] = 99;
@@ -140,7 +142,7 @@ describe('SignedTransactionRequest', () => {
                 ...mockParams,
                 clauses: [new Clause(mockOrigin, 1000n, null, null, null)]
             };
-            const signedRequestWithClause = new SignedTransactionRequest(
+            const signedRequestWithClause = new OriginSignedTransactionRequest(
                 clauseParams
             );
 
@@ -158,9 +160,8 @@ describe('SignedTransactionRequest', () => {
                 ...mockParams,
                 dependsOn: dependsOnValue
             };
-            const signedRequestWithDependsOn = new SignedTransactionRequest(
-                paramsWithDependsOn
-            );
+            const signedRequestWithDependsOn =
+                new OriginSignedTransactionRequest(paramsWithDependsOn);
 
             const json = signedRequestWithDependsOn.toJSON();
 
@@ -172,7 +173,7 @@ describe('SignedTransactionRequest', () => {
                 ...mockParams,
                 isIntendedToBeSponsored: true
             };
-            const sponsoredSignedRequest = new SignedTransactionRequest(
+            const sponsoredSignedRequest = new OriginSignedTransactionRequest(
                 sponsoredParams
             );
 
@@ -195,7 +196,7 @@ describe('SignedTransactionRequest', () => {
                 signature: largeSignature
             };
             const signedRequestWithLargeSignatures =
-                new SignedTransactionRequest(paramsWithLargeSignatures);
+                new OriginSignedTransactionRequest(paramsWithLargeSignatures);
 
             const json = signedRequestWithLargeSignatures.toJSON();
 
@@ -216,7 +217,7 @@ describe('SignedTransactionRequest', () => {
                 signature: new Uint8Array([])
             };
             const signedRequestWithEmptySignatures =
-                new SignedTransactionRequest(emptySignatureParams);
+                new OriginSignedTransactionRequest(emptySignatureParams);
 
             const json = signedRequestWithEmptySignatures.toJSON();
 
@@ -230,9 +231,8 @@ describe('SignedTransactionRequest', () => {
                 originSignature: new Uint8Array([42]),
                 signature: new Uint8Array([123])
             };
-            const signedRequestWithSingleByte = new SignedTransactionRequest(
-                singleByteParams
-            );
+            const signedRequestWithSingleByte =
+                new OriginSignedTransactionRequest(singleByteParams);
 
             const json = signedRequestWithSingleByte.toJSON();
 

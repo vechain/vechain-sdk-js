@@ -2,15 +2,9 @@ import { describe, expect, test } from '@jest/globals';
 import { Address, HexUInt, Quantity } from '@common/vcdm';
 import {
     Clause,
-    SignedTransactionRequest,
-    SponsoredTransactionRequest,
+    type SponsoredTransactionRequest,
     TransactionRequest
 } from '@thor/thor-client/model/transactions';
-import {
-    Transaction,
-    type TransactionBody,
-    type TransactionClause
-} from '@thor/thorest/transactions/model';
 import { RLPCodecTransactionRequest, PrivateKeySigner } from '@thor/signer';
 import { TEST_ACCOUNTS } from '../../fixture';
 import { IllegalArgumentError } from '@common';

@@ -1,4 +1,4 @@
 export * from './Clause';
-export * from './SignedTransactionRequest';
+export * from './OriginSignedTransactionRequest';
 export * from './SponsoredTransactionRequest';
 export * from './TransactionRequest';

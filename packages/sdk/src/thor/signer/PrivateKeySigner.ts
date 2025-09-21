@@ -6,7 +6,7 @@ import {
     UnsupportedOperationError
 } from '@common';
 import {
-    SignedTransactionRequest,
+    OriginSignedTransactionRequest,
     SponsoredTransactionRequest,
     TransactionRequest
 } from '@thor/thor-client/model/transactions';
@@ -91,7 +91,7 @@ class PrivateKeySigner implements Signer {
      * Signs a transaction request using the private key associated with the signer.
      *
      * @param {TransactionRequest} transactionRequest - The transaction request to be signed.
-     * @return {SignedTransactionRequest} A signed transaction request containing the original transaction details along with the generated signatures and the signing origin.
+     * @return {OriginSignedTransactionRequest} A signed transaction request containing the original transaction details along with the generated signatures and the signing origin.
      * @throws {InvalidPrivateKeyError} Throws an error if the private key is not set or invalid.
      *
      * @remarks Security audited class, depends on
@@ -101,13 +101,13 @@ class PrivateKeySigner implements Signer {
      */
     private signTransactionRequest(
         transactionRequest: TransactionRequest
-    ): SignedTransactionRequest {
+    ): OriginSignedTransactionRequest {
         if (this.#privateKey !== null) {
             const hash = Blake2b256.of(
                 RLPCodecTransactionRequest.encode(transactionRequest)
             ).bytes;
             const signature = Secp256k1.sign(hash, this.#privateKey);
-            return new SignedTransactionRequest({
+            return new OriginSignedTransactionRequest({
                 ...transactionRequest,
                 origin: this.address,
                 originSignature: signature,
@@ -123,11 +123,11 @@ class PrivateKeySigner implements Signer {
     /**
      * Signs a given transaction request and returns the appropriate signed or sponsored transaction request.
      *
-     * @param {TransactionRequest | SignedTransactionRequest} transactionRequest - The transaction request to be signed.
+     * @param {TransactionRequest | OriginSignedTransactionRequest} transactionRequest - The transaction request to be signed.
      * It can be either an unsigned transaction request or an already signed transaction request.
      * - If the request is an unsigned transaction request, it will be signed using the private key associated with the signer as origin/sender of the transaction.
      * - If the request is already signed, it will be sponsored and signed as gas payer, if it is eligible for sponsorship.
-     * @return {SignedTransactionRequest | SponsoredTransactionRequest} A signed or sponsored transaction request resulting from the provided transaction request.
+     * @return {OriginSignedTransactionRequest | SponsoredTransactionRequest} A signed or sponsored transaction request resulting from the provided transaction request.
      *
      * @throws {InvalidPrivateKeyError} If the private key is null or invalid for signing the transaction.
      * @throws {UnsupportedOperationError} If the transaction request is not intended to be sponsored.
@@ -138,9 +138,9 @@ class PrivateKeySigner implements Signer {
      * - Follow links for additional security notes.
      */
     public sign(
-        transactionRequest: TransactionRequest | SignedTransactionRequest
-    ): SignedTransactionRequest | SponsoredTransactionRequest {
-        if (transactionRequest instanceof SignedTransactionRequest) {
+        transactionRequest: TransactionRequest | OriginSignedTransactionRequest
+    ): OriginSignedTransactionRequest | SponsoredTransactionRequest {
+        if (transactionRequest instanceof OriginSignedTransactionRequest) {
             return this.sponsorTransactionRequest(transactionRequest);
         }
         return this.signTransactionRequest(transactionRequest);
@@ -149,7 +149,7 @@ class PrivateKeySigner implements Signer {
     /**
      * Signs and sponsors as gas-payer a given transaction request if it is eligible for sponsorship.
      *
-     * @param {SignedTransactionRequest} signedTransactionRequest - The signed transaction request to be sponsored.
+     * @param {OriginSignedTransactionRequest} signedTransactionRequest - The signed transaction request to be sponsored.
      * This request must already include all necessary fields and signatures from the transaction originator.
      * @return {SponsoredTransactionRequest} The sponsored transaction request, which includes the signature from the gas payer,
      * as well as all relevant transaction details.
@@ -163,7 +163,7 @@ class PrivateKeySigner implements Signer {
      * - Follow links for additional security notes.
      */
     private sponsorTransactionRequest(
-        signedTransactionRequest: SignedTransactionRequest
+        signedTransactionRequest: OriginSignedTransactionRequest
     ): SponsoredTransactionRequest {
         if (this.#privateKey !== null) {
             if (signedTransactionRequest.isIntendedToBeSponsored) {

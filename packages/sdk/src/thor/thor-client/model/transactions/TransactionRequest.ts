@@ -151,6 +151,7 @@ class TransactionRequest implements TransactionRequestParam {
      * @param {boolean} [params.isIntendedToBeSponsored=false] - Specifies if the transaction is intended to be sponsored.
      * @param {number} [params.maxFeePerGas] - The maximum fee per unit of gas.
      * @param {number} [params.maxPriorityFeePerGas] - The maximum priority fee per unit of gas.
+     * @param {string} [params.origin] - The origin of the transaction.
      *
      * @return {void} This is a constructor and does not return a value.
      */
@@ -206,13 +207,13 @@ class TransactionRequest implements TransactionRequestParam {
             isIntendedToBeSponsored: this.isIntendedToBeSponsored ?? false,
             gas: this.gas,
             gasPriceCoef: this.gasPriceCoef,
-            maxFeePerGasCoef:
+            maxFeePerGas:
                 this.maxFeePerGas === undefined
                     ? undefined
                     : this.maxFeePerGas > 0n
                       ? this.maxFeePerGas
                       : undefined,
-            maxPriorityFeePerGasCoef:
+            maxPriorityFeePerGas:
                 this.maxPriorityFeePerGas === undefined
                     ? undefined
                     : this.maxPriorityFeePerGas > 0n

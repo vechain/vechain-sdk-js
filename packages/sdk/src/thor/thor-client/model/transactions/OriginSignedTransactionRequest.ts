@@ -9,7 +9,7 @@ import { type SignedTransactionRequestJSON } from '@thor/thorest/json';
  * Represents the parameters required for a signed transaction request.
  * Extends the base `TransactionRequestParam` interface to include fields specific to signed transactions.
  */
-interface SignedTransactionRequestParam extends TransactionRequestParam {
+interface OriginSignedTransactionRequestParam extends TransactionRequestParam {
     /**
      * The address of the origin account sending and signing the transaction.
      */
@@ -33,9 +33,9 @@ interface SignedTransactionRequestParam extends TransactionRequestParam {
  * The SignedTransactionRequest is immutable and guarantees defensive copying
  * of input data for its cryptographic signatures.
  */
-class SignedTransactionRequest
+class OriginSignedTransactionRequest
     extends TransactionRequest
-    implements SignedTransactionRequestParam
+    implements OriginSignedTransactionRequestParam
 {
     /**
      * The address of the origin account sending and signing the transaction.
@@ -55,13 +55,13 @@ class SignedTransactionRequest
     /**
      * Constructor for initializing a new instance of the class with the given parameters.
      *
-     * @param {SignedTransactionRequestParam} params - An object containing the parameters required to initialize the class.
+     * @param {OriginSignedTransactionRequestParam} params - An object containing the parameters required to initialize the class.
      * @param {string} params.origin - The origin information for the signed transaction.
      * @param {Uint8Array} params.originSignature - The signature of the origin, provided as an array of unsigned integers.
      * @param {Uint8Array} params.signature - The signed transaction, provided as an array of unsigned integers.
      * @return {void}
      */
-    public constructor(params: SignedTransactionRequestParam) {
+    public constructor(params: OriginSignedTransactionRequestParam) {
         super(params);
         this.origin = params.origin;
         // Defensive copies to avoid external mutation.
@@ -93,4 +93,7 @@ class SignedTransactionRequest
     }
 }
 
-export { type SignedTransactionRequestParam, SignedTransactionRequest };
+export {
+    type OriginSignedTransactionRequestParam,
+    OriginSignedTransactionRequest
+};

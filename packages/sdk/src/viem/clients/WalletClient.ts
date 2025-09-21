@@ -4,7 +4,7 @@ import { SendTransaction, type ThorNetworks } from '@thor/thorest';
 import {
     Clause,
     TransactionRequest,
-    SignedTransactionRequest,
+    OriginSignedTransactionRequest,
     SponsoredTransactionRequest
 } from '@thor/thor-client/model/transactions';
 import { Address, Blake2b256, Hex, HexInt, HexUInt } from '@common/vcdm';
@@ -189,7 +189,7 @@ class WalletClient extends PublicClient {
      * - a prepared transaction request to be signed and sent,
      * - a signed transaction request to be sponsored and sent.
      *
-     * @param {PrepareTransactionRequestRequest | SignedTransactionRequest} request - The transaction request object.
+     * @param {PrepareTransactionRequestRequest | OriginSignedTransactionRequest} request - The transaction request object.
      * This can either be a prepared transaction request to be signed or a signed transaction request to be sponsored.
      * @return {Promise<Hex>} A promise that resolves to the transaction hash (Hex) of the sent transaction.
      * @throws {ThorError} If the transaction fails to send or the response is invalid.
@@ -200,10 +200,10 @@ class WalletClient extends PublicClient {
      * @see sendRawTransaction
      */
     public async sendTransaction(
-        request: PrepareTransactionRequestRequest | SignedTransactionRequest
+        request: PrepareTransactionRequestRequest | OriginSignedTransactionRequest
     ): Promise<Hex> {
         const transactionRequest =
-            request instanceof SignedTransactionRequest
+            request instanceof OriginSignedTransactionRequest
                 ? request
                 : this.prepareTransactionRequest(request);
         const raw = await this.signTransaction(transactionRequest);
@@ -217,15 +217,15 @@ class WalletClient extends PublicClient {
      * - an unsigned sponsored transaction request this wallet signs as origin/sender,
      * - a signed sponsored transaction request this wallet sisgns as gas-payer.sponsor.
      *
-     * @param {TransactionRequest | SignedTransactionRequest} transactionRequest - The transaction request to be signed.
+     * @param {TransactionRequest | OriginSignedTransactionRequest} transactionRequest - The transaction request to be signed.
      * @return {Promise<Hex>} A promise that resolves to the signed transaction in hexadecimal format.
      * @throws {UnsupportedOperationError} If the account is not set.
      */
     public async signTransaction(
-        transactionRequest: TransactionRequest | SignedTransactionRequest
+        transactionRequest: TransactionRequest | OriginSignedTransactionRequest
     ): Promise<Hex> {
         if (this.account !== null) {
-            if (transactionRequest instanceof SignedTransactionRequest) {
+            if (transactionRequest instanceof OriginSignedTransactionRequest) {
                 return await WalletClient.sponsorTransactionRequest(
                     transactionRequest,
                     this.account
@@ -260,7 +260,7 @@ class WalletClient extends PublicClient {
             originHash,
             account
         );
-        const signedTransactionRequest = new SignedTransactionRequest({
+        const signedTransactionRequest = new OriginSignedTransactionRequest({
             ...transactionRequest,
             origin: Address.of(account.address),
             originSignature,
@@ -274,14 +274,14 @@ class WalletClient extends PublicClient {
     /**
      * Sponsors a transaction request and returns the resulting hex-encoded sponsored transaction.
      *
-     * @param {SignedTransactionRequest} signedTransactionRequest - The signed transaction request to be sponsored.
+     * @param {OriginSignedTransactionRequest} signedTransactionRequest - The signed transaction request to be sponsored.
      *        Must have the `isIntendedToBeSponsored` flag set to true.
      * @param {Account} account - The account object providing the gas payer's private key for signing the transaction.
      * @return {Promise<Hex>} A Promise that resolves to the hex-encoded representation of the sponsored transaction request.
      * @throws {IllegalArgumentError} If the transaction request is not intended to be sponsored.
      */
     private static async sponsorTransactionRequest(
-        signedTransactionRequest: SignedTransactionRequest,
+        signedTransactionRequest: OriginSignedTransactionRequest,
         account: Account
     ): Promise<Hex> {
         if (signedTransactionRequest.isIntendedToBeSponsored) {

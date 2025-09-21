@@ -1,10 +1,9 @@
 import {
     Clause,
     TransactionRequest,
-    SignedTransactionRequest,
+    OriginSignedTransactionRequest,
     SponsoredTransactionRequest
 } from '@thor/thor-client/model/transactions';
-import { ClauseData } from '@thor/thorest';
 import * as nc_utils from '@noble/curves/abstract/utils';
 import {
     Address,
@@ -151,7 +150,7 @@ class RLPCodecTransactionRequest {
      * SignedTransactionRequest, or SponsoredTransactionRequest based on the encoded data.
      *
      * @param {Uint8Array} encoded - The encoded transaction data to decode.
-     * @return {TransactionRequest | SignedTransactionRequest | SponsoredTransactionRequest}
+     * @return {TransactionRequest | OriginSignedTransactionRequest | SponsoredTransactionRequest}
      *         Returns a TransactionRequest if the transaction is unsigned.
      *         Returns a SignedTransactionRequest if the transaction is signed.
      *         Returns a SponsoredTransactionRequest if the transaction is signed and includes a gas payer.
@@ -161,22 +160,29 @@ class RLPCodecTransactionRequest {
         encoded: Uint8Array
     ):
         | TransactionRequest
-        | SignedTransactionRequest
+        | OriginSignedTransactionRequest
         | SponsoredTransactionRequest {
         try {
             // Check if this is a dynamic fee transaction (EIP-1559) by looking for 0x51 prefix
             const isDynamicFee = encoded.length > 0 && encoded[0] === 0x51;
-            
+
             // Remove the transaction type prefix if present
             const rlpData = isDynamicFee ? encoded.slice(1) : encoded;
-            
+
             // Determine if transaction is signed by checking RLP structure length
             const rlpDecoded = RLP.ofEncoded(rlpData).decoded as unknown[];
             const expectedUnsignedLength = isDynamicFee
-                ? (RLPCodecTransactionRequest.RLP_UNSIGNED_DYNAMIC_FEE_TRANSACTION_PROFILE.kind as []).length
-                : (RLPCodecTransactionRequest.RLP_UNSIGNED_TRANSACTION_PROFILE.kind as []).length;
+                ? (
+                      RLPCodecTransactionRequest
+                          .RLP_UNSIGNED_DYNAMIC_FEE_TRANSACTION_PROFILE
+                          .kind as []
+                  ).length
+                : (
+                      RLPCodecTransactionRequest
+                          .RLP_UNSIGNED_TRANSACTION_PROFILE.kind as []
+                  ).length;
             const isSigned = rlpDecoded.length > expectedUnsignedLength;
-            
+
             // Select appropriate RLP profile based on transaction type and signature status
             let profile: RLPProfile;
             if (isDynamicFee) {
@@ -188,10 +194,11 @@ class RLPCodecTransactionRequest {
                     ? RLPCodecTransactionRequest.RLP_SIGNED_TRANSACTION_PROFILE
                     : RLPCodecTransactionRequest.RLP_UNSIGNED_TRANSACTION_PROFILE;
             }
-            
+
             // Decode using the appropriate profile
-            const decoded = RLPProfiler.ofObjectEncoded(rlpData, profile).object as RLPValidObject;
-            
+            const decoded = RLPProfiler.ofObjectEncoded(rlpData, profile)
+                .object as RLPValidObject;
+
             // Parse clauses
             const clauses = (decoded.clauses as []).map(
                 (decodedClause: RLPValidObject) => {
@@ -209,9 +216,9 @@ class RLPCodecTransactionRequest {
                     });
                 }
             );
-            
+
             const isIntendedToBeSponsored = (decoded.reserved as []).length > 0;
-            
+
             // Create transaction request with appropriate fields based on transaction type
             let transactionRequest: TransactionRequest;
             if (isDynamicFee) {
@@ -227,12 +234,16 @@ class RLPCodecTransactionRequest {
                     expiration: decoded.expiration as number,
                     gas: BigInt(decoded.gas as bigint),
                     gasPriceCoef: 0n, // Dynamic fee transactions use 0 for gasPriceCoef
-                    maxFeePerGas: decoded.maxFeePerGas !== undefined && decoded.maxFeePerGas !== null
-                        ? BigInt(decoded.maxFeePerGas as bigint) 
-                        : undefined,
-                    maxPriorityFeePerGas: decoded.maxPriorityFeePerGas !== undefined && decoded.maxPriorityFeePerGas !== null
-                        ? BigInt(decoded.maxPriorityFeePerGas as bigint) 
-                        : undefined,
+                    maxFeePerGas:
+                        decoded.maxFeePerGas !== undefined &&
+                        decoded.maxFeePerGas !== null
+                            ? BigInt(decoded.maxFeePerGas as bigint)
+                            : undefined,
+                    maxPriorityFeePerGas:
+                        decoded.maxPriorityFeePerGas !== undefined &&
+                        decoded.maxPriorityFeePerGas !== null
+                            ? BigInt(decoded.maxPriorityFeePerGas as bigint)
+                            : undefined,
                     nonce: decoded.nonce as number,
                     isIntendedToBeSponsored
                 });
@@ -253,7 +264,7 @@ class RLPCodecTransactionRequest {
                     isIntendedToBeSponsored
                 });
             }
-            
+
             if (isSigned) {
                 const signature = decoded.signature as Uint8Array;
                 const encodedTransactionRequest =
@@ -270,12 +281,13 @@ class RLPCodecTransactionRequest {
                 const origin = Address.ofPublicKey(
                     Secp256k1.recover(originHash, originSignature)
                 );
-                const signedTransactionRequest = new SignedTransactionRequest({
-                    ...transactionRequest,
-                    origin,
-                    originSignature,
-                    signature
-                });
+                const signedTransactionRequest =
+                    new OriginSignedTransactionRequest({
+                        ...transactionRequest,
+                        origin,
+                        originSignature,
+                        signature
+                    });
                 if (signature.length > Secp256k1.SIGNATURE_LENGTH) {
                     const gasPayerSignature = signature.slice(
                         Secp256k1.SIGNATURE_LENGTH,
@@ -309,13 +321,13 @@ class RLPCodecTransactionRequest {
     /**
      * Encodes a given transaction request into a Uint8Array.
      *
-     * @param {TransactionRequest | SignedTransactionRequest} transactionRequest - The transaction request to encode, which can be either a TransactionRequest or a SignedTransactionRequest.
+     * @param {TransactionRequest | OriginSignedTransactionRequest} transactionRequest - The transaction request to encode, which can be either a TransactionRequest or a SignedTransactionRequest.
      * @return {Uint8Array} The encoded transaction request as a Uint8Array.
      */
     public static encode(
-        transactionRequest: TransactionRequest | SignedTransactionRequest
+        transactionRequest: TransactionRequest | OriginSignedTransactionRequest
     ): Uint8Array {
-        if (transactionRequest instanceof SignedTransactionRequest) {
+        if (transactionRequest instanceof OriginSignedTransactionRequest) {
             return RLPCodecTransactionRequest.encodeSignedTransactionRequest(
                 transactionRequest
             );
@@ -326,7 +338,7 @@ class RLPCodecTransactionRequest {
     }
 
     private static encodeSignedTransactionRequest(
-        transactionRequest: SignedTransactionRequest
+        transactionRequest: OriginSignedTransactionRequest
     ): Uint8Array {
         const isDynamicFee = transactionRequest.isDynamicFee();
         const body = {

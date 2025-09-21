@@ -1,6 +1,6 @@
 import {
     Clause,
-    SignedTransactionRequest,
+    OriginSignedTransactionRequest,
     TransactionRequest
 } from '@thor/thor-client/model/transactions';
 import { ThorError } from '@thor/thorest';
@@ -609,7 +609,7 @@ describe('WalletClient UNIT tests', () => {
             });
 
             // Create a signed transaction request that is not intended to be sponsored
-            const signedTxRequest = new SignedTransactionRequest({
+            const signedTxRequest = new OriginSignedTransactionRequest({
                 blockRef: mockBlockRef,
                 chainTag: 1,
                 clauses: [

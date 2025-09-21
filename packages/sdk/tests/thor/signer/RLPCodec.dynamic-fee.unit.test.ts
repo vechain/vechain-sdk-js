@@ -2,7 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import { HexUInt, Quantity } from '@common/vcdm';
 import {
     Clause,
-    SignedTransactionRequest,
+    OriginSignedTransactionRequest,
     SponsoredTransactionRequest,
     TransactionRequest
 } from '@thor/thor-client/model/transactions';
@@ -111,8 +111,8 @@ describe('RLPCodec Dynamic Fee Support', () => {
             expect(actual.gasPriceCoef).toBe(0n);
 
             // Verify it's properly signed
-            expect(actual instanceof SignedTransactionRequest).toBe(true);
-            if (actual instanceof SignedTransactionRequest) {
+            expect(actual instanceof OriginSignedTransactionRequest).toBe(true);
+            if (actual instanceof OriginSignedTransactionRequest) {
                 expect(actual.isSigned()).toBe(true);
                 expect(actual.origin.toString()).toEqual(
                     expected.origin.toString()
