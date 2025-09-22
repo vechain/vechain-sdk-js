@@ -66,7 +66,24 @@ class InspectClauses
                 this.query,
                 this.request.toJSON()
             );
-            const json = (await response.json()) as ExecuteCodesResponseJSON;
+            let json: ExecuteCodesResponseJSON;
+            try {
+                json = (await response.json()) as ExecuteCodesResponseJSON;
+            } catch (parseErr) {
+                const body = await response.text().catch(() => undefined);
+                throw new ThorError(
+                    fqp,
+                    parseErr instanceof Error ? parseErr.message : 'Bad response.',
+                    {
+                        url: response.url,
+                        status: response.status,
+                        statusText: response.statusText,
+                        body
+                    },
+                    parseErr instanceof Error ? parseErr : undefined,
+                    response.status
+                );
+            }
             try {
                 return {
                     request: this,
@@ -78,6 +95,8 @@ class InspectClauses
                     error instanceof Error ? error.message : 'Bad response.',
                     {
                         url: response.url,
+                        status: response.status,
+                        statusText: response.statusText,
                         body: json
                     },
                     error instanceof Error ? error : undefined,
