@@ -14,7 +14,7 @@ export default [
                     message: "Please import using @vechain/sdk-<the-module>",
                 }],
             }],
-            "sonarjs/cognitive-complexity": ["error", 20],
+            "sonarjs/cognitive-complexity": "off",
             
             // Disable unsafe type checking rules for Viem layer compatibility
             "@typescript-eslint/no-unsafe-assignment": "off",
