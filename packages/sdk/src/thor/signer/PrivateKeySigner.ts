@@ -166,7 +166,7 @@ class PrivateKeySigner implements Signer {
         signedTransactionRequest: SignedTransactionRequest
     ): SponsoredTransactionRequest {
         if (this.#privateKey !== null) {
-            if (signedTransactionRequest.isIntendedToBeSponsored) {
+            if (signedTransactionRequest.isIntendedToBeSponsored === true) {
                 const originHash = Blake2b256.of(
                     RLPCodecTransactionRequest.encode(
                         new TransactionRequest({
