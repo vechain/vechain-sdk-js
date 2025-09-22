@@ -62,8 +62,10 @@ class SendTransaction implements ThorRequest<SendTransaction, TXID> {
                     raw: HexUInt.of(this.encodedTransaction).toString()
                 }
             );
-            const json = (await response.json()) as TXIDJSON;
+            let raw: string | undefined;
             try {
+                raw = await response.text();
+                const json = JSON.parse(raw) as TXIDJSON;
                 return {
                     request: this,
                     response: new TXID(json)
@@ -74,7 +76,8 @@ class SendTransaction implements ThorRequest<SendTransaction, TXID> {
                     error instanceof Error ? error.message : 'Bad response.',
                     {
                         url: response.url,
-                        body: json
+                        // include raw payload to aid debugging (may be non‑JSON)
+                        body: typeof raw !== 'undefined' ? raw : undefined
                     },
                     error instanceof Error ? error : undefined,
                     response.status

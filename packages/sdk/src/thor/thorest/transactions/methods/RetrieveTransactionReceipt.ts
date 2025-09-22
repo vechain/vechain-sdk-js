@@ -63,9 +63,10 @@ class RetrieveTransactionReceipt
         const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveTransactionReceipt, GetTxReceiptResponse|null>>`;
         try {
             const response = await httpClient.get(this.path, this.query);
-            const json =
-                (await response.json()) as GetTxReceiptResponseJSON | null;
+            let raw: string | undefined;
             try {
+                raw = await response.text();
+                const json = JSON.parse(raw) as GetTxReceiptResponseJSON | null;
                 return {
                     request: this,
                     response:
@@ -77,7 +78,8 @@ class RetrieveTransactionReceipt
                     error instanceof Error ? error.message : 'Bad response.',
                     {
                         url: response.url,
-                        body: json
+                        // include raw payload to aid debugging (may be non‑JSON)
+                        body: typeof raw !== 'undefined' ? raw : undefined
                     },
                     error instanceof Error ? error : undefined,
                     response.status
