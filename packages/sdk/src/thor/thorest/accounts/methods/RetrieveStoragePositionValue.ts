@@ -58,7 +58,6 @@ class RetrieveStoragePositionValue
             const response = await httpClient.get(this.path, this.query);
             const json = (await response.json()) as GetStorageResponseJSON;
             try {
-                console.log(`${FQP} json: ${JSON.stringify(json)}`);
                 return {
                     request: this,
                     response: new GetStorageResponse(json)
