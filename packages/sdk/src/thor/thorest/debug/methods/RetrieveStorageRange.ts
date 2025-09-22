@@ -1,4 +1,5 @@
 import type { HttpClient, HttpPath } from '@common/http';
+import { handleHttpError } from '@thor/thorest/utils';
 import { StorageRange, StorageRangeOption } from '@thor/thorest/debug';
 import {
     type StorageRangeJSON,
@@ -54,12 +55,12 @@ class RetrieveStorageRange
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveStorageRange, StorageRange>> {
         const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveStorageRange, StorageRange>>`;
-        const response = await httpClient.post(
-            RetrieveStorageRange.PATH,
-            { query: '' },
-            this.request.toJSON()
-        );
-        if (response.ok) {
+        try {
+            const response = await httpClient.post(
+                RetrieveStorageRange.PATH,
+                { query: '' },
+                this.request.toJSON()
+            );
             const json = (await response.json()) as StorageRangeJSON;
             try {
                 return {
@@ -78,16 +79,8 @@ class RetrieveStorageRange
                     response.status
                 );
             }
-        } else {
-            throw new ThorError(
-                fqp,
-                await response.text(),
-                {
-                    url: response.url
-                },
-                undefined,
-                response.status
-            );
+        } catch (error) {
+            throw handleHttpError(fqp, error);
         }
     }
 

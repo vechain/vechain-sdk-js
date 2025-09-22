@@ -1,4 +1,4 @@
-import { FetchHttpClient } from '@common/http';
+import { FetchHttpClient, HttpException } from '@common/http';
 import { JSONLogger, LoggerRegistry, type LogItem } from '@common/logging';
 import { describe, expect, jest, test } from '@jest/globals';
 
@@ -39,14 +39,22 @@ describe('FetchHttpClient logging', () => {
         const httpClient = new FetchHttpClient(
             new URL('https://mainnet.vechain.org/invalid')
         );
-        const response = await httpClient.get();
-        expect(response.status).toBe(403);
-        const callArgs = loggerSpy.mock.calls[0][0];
-        expect(callArgs).toMatchObject({
-            verbosity: 'error',
-            message: 'HTTP Response',
-            source: 'FetchHttpClient'
-        });
-        expect(callArgs.context).toBeDefined();
+        try {
+            await httpClient.get();
+            throw new Error('Should not reach here');
+        } catch (error) {
+            expect(error).toBeInstanceOf(HttpException);
+            const httpError = error as HttpException;
+            expect(httpError.status).toBe(403);
+            
+            // Check that error logging was called
+            const callArgs = loggerSpy.mock.calls[0][0];
+            expect(callArgs).toMatchObject({
+                verbosity: 'error',
+                message: 'HTTP Response',
+                source: 'FetchHttpClient'
+            });
+            expect(callArgs.context).toBeDefined();
+        }
     });
 });

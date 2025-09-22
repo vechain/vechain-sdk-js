@@ -3,7 +3,8 @@ import {
     log,
     LoggerRegistry,
     PrettyLogger,
-    type LogItem
+    type LogItem,
+    type LogItemWithVerbosity
 } from '@common/logging';
 
 /**
@@ -37,7 +38,7 @@ describe('PrettyLogger', () => {
         const consoleSpy = jest
             .spyOn(console, 'log')
             .mockImplementation(() => {});
-        const logEntry: LogItem = {
+        const logEntry: LogItemWithVerbosity = {
             verbosity: 'info',
             message: 'the message',
             source: 'test',

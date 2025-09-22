@@ -72,7 +72,7 @@ describe('RetrieveRawTransactionByID UNIT tests', () => {
         );
         const actual = (
             await RetrieveRawTransactionByID.of(txId).askTo(
-                mockHttpClient(expected, 'get', true, 200)
+                mockHttpClient(expected, 'get')
             )
         ).response;
         expect(actual).toBeDefined();
@@ -93,7 +93,7 @@ describe('RetrieveRawTransactionByID UNIT tests', () => {
         const actual = (
             await RetrieveRawTransactionByID.of(txId)
                 .withHead(head)
-                .askTo(mockHttpClient(expected, 'get', true, 200))
+                .askTo(mockHttpClient(expected, 'get'))
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toBeInstanceOf(GetRawTxResponse);
@@ -113,7 +113,7 @@ describe('RetrieveRawTransactionByID UNIT tests', () => {
         const actual = (
             await RetrieveRawTransactionByID.of(txId)
                 .withPending(false)
-                .askTo(mockHttpClient(expected, 'get', true, 200))
+                .askTo(mockHttpClient(expected, 'get'))
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toBeInstanceOf(GetRawTxResponse);
@@ -134,7 +134,7 @@ describe('RetrieveRawTransactionByID UNIT tests', () => {
             await RetrieveRawTransactionByID.of(txId)
                 .withHead(head)
                 .withPending(false)
-                .askTo(mockHttpClient(expected, 'get', true, 200))
+                .askTo(mockHttpClient(expected, 'get'))
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toBeInstanceOf(GetRawTxResponse);
@@ -147,7 +147,7 @@ describe('RetrieveRawTransactionByID UNIT tests', () => {
         );
         const actual = (
             await RetrieveRawTransactionByID.of(txId).askTo(
-                mockHttpClient(null, 'get', true, 200)
+                mockHttpClient(null, 'get')
             )
         ).response;
         expect(actual).toBeNull();

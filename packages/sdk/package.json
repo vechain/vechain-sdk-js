@@ -74,13 +74,13 @@
     "ws": "^8.18.0"
   },
   "devDependencies": {
+    "@types/ws": "^8.5.13",
+    "@vechain/sdk-solo-setup": "3.0.0-beta.1",
     "bignumber.js": "^9.1.2",
+    "jest-fetch-mock": "^3.0.3",
+    "loglevel": "^1.9.2",
     "thor-devkit": "^2.0.9",
     "tsd": "^0.31.2",
-    "@types/ws": "^8.5.13",
-    "loglevel": "^1.9.2",
-    "jest-fetch-mock": "^3.0.3",
-    "whatwg-fetch": "^3.6.20",
-    "@vechain/sdk-solo-setup": "3.0.0-beta.1"
+    "whatwg-fetch": "^3.6.20"
   }
 }

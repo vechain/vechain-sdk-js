@@ -1,5 +1,6 @@
 import { type Hex, HexUInt32 } from '@common/vcdm';
 import { type HttpClient, type HttpPath, type HttpQuery } from '@common/http';
+import { handleHttpError } from '@thor/thorest/utils';
 import {
     GetTxReceiptResponse,
     ThorError,
@@ -60,8 +61,8 @@ class RetrieveTransactionReceipt
         ThorResponse<RetrieveTransactionReceipt, GetTxReceiptResponse | null>
     > {
         const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveTransactionReceipt, GetTxReceiptResponse|null>>`;
-        const response = await httpClient.get(this.path, this.query);
-        if (response.ok) {
+        try {
+            const response = await httpClient.get(this.path, this.query);
             const json =
                 (await response.json()) as GetTxReceiptResponseJSON | null;
             try {
@@ -82,16 +83,8 @@ class RetrieveTransactionReceipt
                     response.status
                 );
             }
-        } else {
-            throw new ThorError(
-                fqp,
-                await response.text(),
-                {
-                    url: response.url
-                },
-                undefined,
-                response.status
-            );
+        } catch (error) {
+            throw handleHttpError(fqp, error);
         }
     }
 

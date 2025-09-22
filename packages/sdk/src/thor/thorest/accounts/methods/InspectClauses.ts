@@ -1,4 +1,5 @@
 import { type HttpClient, type HttpPath, type HttpQuery } from '@common/http';
+import { handleHttpError } from '@thor/thorest/utils';
 import { ExecuteCodesResponse, ExecuteCodesRequest } from '@thor/thorest';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
 import { Revision } from '@common/vcdm';
@@ -59,12 +60,12 @@ class InspectClauses
         httpClient: HttpClient
     ): Promise<ThorResponse<InspectClauses, ExecuteCodesResponse>> {
         const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<InspectClauses, ExecuteCodesResponse>>`;
-        const response = await httpClient.post(
-            InspectClauses.PATH,
-            this.query,
-            this.request.toJSON()
-        );
-        if (response.ok) {
+        try {
+            const response = await httpClient.post(
+                InspectClauses.PATH,
+                this.query,
+                this.request.toJSON()
+            );
             const json = (await response.json()) as ExecuteCodesResponseJSON;
             try {
                 return {
@@ -83,16 +84,9 @@ class InspectClauses
                     response.status
                 );
             }
+        } catch (error) {
+            throw handleHttpError(fqp, error);
         }
-        throw new ThorError(
-            fqp,
-            await response.text(),
-            {
-                url: response.url
-            },
-            undefined,
-            response.status
-        );
     }
 
     /**

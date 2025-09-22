@@ -7,6 +7,7 @@ import {
     TXID
 } from '@thor/thorest';
 import { type TXIDJSON } from '@thor/thorest/json';
+import { handleHttpError } from '@thor/thorest/utils';
 
 /**
  * Full-Qualified Path
@@ -53,14 +54,14 @@ class SendTransaction implements ThorRequest<SendTransaction, TXID> {
         httpClient: HttpClient
     ): Promise<ThorResponse<SendTransaction, TXID>> {
         const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<SendTransaction, TXID>>`;
-        const response = await httpClient.post(
-            SendTransaction.PATH,
-            { query: '' },
-            {
-                raw: HexUInt.of(this.encodedTransaction).toString()
-            }
-        );
-        if (response.ok) {
+        try {
+            const response = await httpClient.post(
+                SendTransaction.PATH,
+                { query: '' },
+                {
+                    raw: HexUInt.of(this.encodedTransaction).toString()
+                }
+            );
             const json = (await response.json()) as TXIDJSON;
             try {
                 return {
@@ -79,16 +80,8 @@ class SendTransaction implements ThorRequest<SendTransaction, TXID> {
                     response.status
                 );
             }
-        } else {
-            throw new ThorError(
-                fqp,
-                await response.text(),
-                {
-                    url: response.url
-                },
-                undefined,
-                response.status
-            );
+        } catch (error) {
+            throw handleHttpError(fqp, error);
         }
     }
 
