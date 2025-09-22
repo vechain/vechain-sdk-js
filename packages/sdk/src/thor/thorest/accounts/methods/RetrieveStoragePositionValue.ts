@@ -75,6 +75,7 @@ class RetrieveStoragePositionValue
                 );
             }
         } catch (error) {
+            if (error instanceof ThorError) throw error;
             throw handleHttpError(fqp, error);
         }
     }
