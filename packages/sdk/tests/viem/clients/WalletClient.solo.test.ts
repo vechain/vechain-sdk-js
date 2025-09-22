@@ -7,7 +7,7 @@ import {
 } from '@thor/thorest';
 import { Address, BlockRef, Hex, Revision } from '@common/vcdm';
 import { FetchHttpClient } from '@common/http';
-import { SOLO_NETWORK } from '@thor/utils';
+import { ThorClient } from '../../../src/thor/thor-client/ThorClient';
 import { privateKeyToAccount } from 'viem/accounts';
 import {
     createWalletClient,
@@ -20,6 +20,7 @@ import { log } from '@common/logging';
  */
 describe('WalletClient SOLO tests', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
+    const thorClient = ThorClient.at(httpClient);
 
     // TO BE FIXED: DYNAMIC ACCOUNT IS NOT SEEDED YET WHEN THIS TESTS RUNS IN SOLO
     const toAddress = '0x435933c8064b4ae76be665428e0307ef2ccfbd68'; // THIS SOLO DEFAULT ACCOUNT[1]
@@ -43,8 +44,9 @@ describe('WalletClient SOLO tests', () => {
                 Address.of(toAddress),
                 10n ** 18n
             );
+            const chainTag = await thorClient.nodes.getChainTag();
             const txBody: TransactionBody = {
-                chainTag: SOLO_NETWORK.chainTag,
+                chainTag,
                 blockRef: BlockRef.of(latestBlock.id).toString(),
                 expiration: 32,
                 clauses: [transferClause],
@@ -89,11 +91,12 @@ describe('WalletClient SOLO tests', () => {
                     'Failed to retrieve latest block from Thor network.'
                 );
 
+            const chainTag = await thorClient.nodes.getChainTag();
             const request: PrepareTransactionRequestRequest = {
                 to: Address.of(toAddress),
                 value: Hex.of(10n ** 18n),
                 blockRef: BlockRef.of(latestBlock.id),
-                chainTag: SOLO_NETWORK.chainTag,
+                chainTag,
                 expiration: 32,
                 gas: 100000,
                 nonce: 8,

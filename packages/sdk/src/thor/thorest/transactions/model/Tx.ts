@@ -6,7 +6,7 @@ import {
     HexUInt32,
     UInt
 } from '@common/vcdm';
-import { Clause } from '@thor/thorest/model/Clause';
+import { ClauseData } from '@thor/thorest/common/ClauseData';
 import { type ClauseJSON } from '@thor/thorest/json';
 import { IllegalArgumentError } from '@common/errors';
 import { type TxJSON } from '../json/TxJSON';
@@ -71,7 +71,7 @@ class Tx {
     /**
      * An array of clauses that are executed by the transaction.
      */
-    readonly clauses: Clause[];
+    readonly clauses: ClauseData[];
 
     /**
      * The coefficient used to calculate the final gas price of the transaction.
@@ -122,7 +122,7 @@ class Tx {
             this.blockRef = HexUInt.of(json.blockRef);
             this.expiration = UInt.of(json.expiration).valueOf();
             this.clauses = json.clauses.map(
-                (clause: ClauseJSON): Clause => Clause.of(clause)
+                (clause: ClauseJSON): ClauseData => ClauseData.of(clause)
             );
             this.gasPriceCoef =
                 json.gasPriceCoef !== null && json.gasPriceCoef !== undefined
@@ -168,7 +168,7 @@ class Tx {
             blockRef: this.blockRef.toString(),
             expiration: this.expiration,
             clauses: this.clauses.map(
-                (clause: Clause): ClauseJSON => clause.toJSON()
+                (clause: ClauseData): ClauseJSON => clause.toJSON()
             ),
             gasPriceCoef:
                 this.gasPriceCoef !== null

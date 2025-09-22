@@ -13,12 +13,8 @@ import {
     SignedTransactionRequest,
     SponsoredTransactionRequest,
     TransactionRequest
-} from '@thor/thorest/model';
-import {
-    PrivateKeySigner,
-    RLPCodecTransactionRequest
-} from '@thor/thorest/signer';
-import { newTransactionFromTransactionRequest } from './RLPCodec.unit.test';
+} from '@thor/thor-client/model/transactions';
+import { PrivateKeySigner, RLPCodecTransactionRequest } from '@thor/signer';
 import * as nc_utils from '@noble/curves/abstract/utils';
 
 /**
@@ -33,18 +29,6 @@ describe('PrivateKeySigner', () => {
     );
     const mockHash = new Uint8Array(32).fill(2);
     const mockSignature = new Uint8Array(65).fill(3);
-
-    const mockSender = {
-        privateKey: HexUInt.of(
-            'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5'
-        ).bytes
-    };
-
-    const mockGasPayer = {
-        privateKey: HexUInt.of(
-            '432f38bcf338c374523e83fdb2ebe1030aba63c7f1e81f7d76c5f53f4d42e766'
-        ).bytes
-    };
 
     // Common transaction request parameters
     const transactionParams = {
@@ -72,40 +56,13 @@ describe('PrivateKeySigner', () => {
 
         jest.spyOn(Secp256k1, 'sign').mockReturnValue(mockSignature);
 
-        jest.spyOn(
-            RLPCodecTransactionRequest,
-            'encodeTransactionRequest'
-        ).mockReturnValue(new Uint8Array(10).fill(4));
+        jest.spyOn(RLPCodecTransactionRequest, 'encode').mockReturnValue(
+            new Uint8Array(10).fill(4)
+        );
     });
 
     afterEach(() => {
         jest.restoreAllMocks();
-    });
-
-    describe('disponse method', () => {
-        test('ok <- clear the private key and set it to null', () => {
-            const privateKey = new Uint8Array(32).fill(1);
-            const signer = new PrivateKeySigner(privateKey);
-
-            signer.disponse();
-
-            // Attempt to sign to verify the private key is cleared
-            const txRequest = new TransactionRequest(transactionParams);
-            expect(() => signer.sign(txRequest)).toThrow(
-                InvalidPrivateKeyError
-            );
-        });
-
-        test('ok <- should be safe to call disponse multiple times', () => {
-            const signer = new PrivateKeySigner(validPrivateKey);
-
-            signer.disponse();
-            signer.disponse(); // Second call should not throw
-
-            expect(() => {
-                signer.disponse();
-            }).not.toThrow();
-        });
     });
 
     describe('constructor', () => {
@@ -156,21 +113,47 @@ describe('PrivateKeySigner', () => {
         });
     });
 
-    describe('sign method with TransactionRequest', () => {
-        test('ok <- sign a regular transaction request', () => {
+    describe('dispose method', () => {
+        test('ok <- clear the private key and set it to null', () => {
+            const privateKey = new Uint8Array(32).fill(1);
+            const signer = new PrivateKeySigner(privateKey);
+
+            signer.dispose();
+
+            // Attempt to sign to verify the private key is cleared
+            const txRequest = new TransactionRequest(transactionParams);
+            expect(() => signer.sign(txRequest)).toThrow(
+                InvalidPrivateKeyError
+            );
+        });
+
+        test('ok <- should be safe to call dispose multiple times', () => {
             const signer = new PrivateKeySigner(validPrivateKey);
+
+            signer.dispose();
+            signer.dispose(); // Second call should not throw
+
+            expect(() => {
+                signer.dispose();
+            }).not.toThrow();
+        });
+    });
+
+    describe('sign', () => {
+        test('ok <- sign a not-sponsored unsigned transaction request', () => {
+            const originSigner = new PrivateKeySigner(validPrivateKey);
             const txRequest = new TransactionRequest({
                 ...transactionParams,
                 isIntendedToBeSponsored: false
             });
 
-            const signedTx = signer.sign(txRequest);
+            const signedTx = originSigner.sign(txRequest);
 
             expect(signedTx).toBeInstanceOf(SignedTransactionRequest);
             // eslint-disable-next-line @typescript-eslint/unbound-method
-            expect(
-                RLPCodecTransactionRequest.encodeTransactionRequest
-            ).toHaveBeenCalledWith(txRequest);
+            expect(RLPCodecTransactionRequest.encode).toHaveBeenCalledWith(
+                txRequest
+            );
             // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(Blake2b256.of).toHaveBeenCalled();
             // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -187,50 +170,41 @@ describe('PrivateKeySigner', () => {
             expect(signedTx.chainTag).toBe(txRequest.chainTag);
             expect(signedTx.clauses).toBe(txRequest.clauses);
             expect(signedTx.isIntendedToBeSponsored).toBe(false);
-        });
 
-        test('ok <- signature clones the origin signature', () => {
-            const txRequest = new TransactionRequest(transactionParams);
-            const sender = new PrivateKeySigner(mockSender.privateKey);
-            const signedTx = sender.sign(txRequest);
             expect(signedTx.originSignature).toEqual(signedTx.signature);
-
-            // Temporary until Transaction exists.
-            const expectedSignedTx = newTransactionFromTransactionRequest(
-                txRequest
-            ).sign(mockSender.privateKey);
-            expect(signedTx.signature).toEqual(expectedSignedTx.signature);
         });
 
-        test('ok <- sign a transaction request marked for sponsorship', () => {
-            const signer = new PrivateKeySigner(validPrivateKey);
+        test('ok <- sign a sponsored unsigned transaction request', () => {
+            const originSigner = new PrivateKeySigner(validPrivateKey);
             const txRequest = new TransactionRequest({
                 ...transactionParams,
                 isIntendedToBeSponsored: true
             });
 
-            const signedTx = signer.sign(txRequest);
+            const signedTx = originSigner.sign(txRequest);
 
             expect(signedTx).toBeInstanceOf(SignedTransactionRequest);
             expect(signedTx.isIntendedToBeSponsored).toBe(true);
+
+            expect(signedTx.originSignature).toEqual(signedTx.signature);
         });
 
-        test('err <- throw error if private key is voided before signing', () => {
-            const signer = new PrivateKeySigner(validPrivateKey);
+        test('err <- throw error if private key is disposed before signing', () => {
+            const originSigner = new PrivateKeySigner(validPrivateKey);
             const txRequest = new TransactionRequest(transactionParams);
 
-            signer.disponse();
+            originSigner.dispose();
 
-            expect(() => signer.sign(txRequest)).toThrow(
+            expect(() => originSigner.sign(txRequest)).toThrow(
                 InvalidPrivateKeyError
             );
         });
-    });
 
-    describe('sign method with SignedTransactionRequest (sponsoring)', () => {
-        test('ok <- sponsor a signed transaction request', () => {
-            const sender = new PrivateKeySigner(new Uint8Array(32).fill(5));
-            const gasPayer = new PrivateKeySigner(validPrivateKey);
+        test('ok <- sponsor a sponsored signed transaction request', () => {
+            const originSigner = new PrivateKeySigner(
+                new Uint8Array(32).fill(5)
+            );
+            const gasPayerSigner = new PrivateKeySigner(validPrivateKey);
 
             // Create a transaction request marked for sponsorship
             const txRequest = new TransactionRequest({
@@ -238,8 +212,8 @@ describe('PrivateKeySigner', () => {
                 isIntendedToBeSponsored: true
             });
 
-            // Sign it with the origin gasPayer
-            const signedTx = sender.sign(txRequest);
+            // Sign it with the origin gasPayerSigner
+            const signedTx = originSigner.sign(txRequest);
 
             // Mock the concatenated hash
             jest.spyOn(nc_utils, 'concatBytes').mockImplementation(
@@ -247,7 +221,7 @@ describe('PrivateKeySigner', () => {
             );
 
             // Sponsor the transaction
-            const sponsoredTx = gasPayer.sign(
+            const sponsoredTx = gasPayerSigner.sign(
                 signedTx
             ) as SponsoredTransactionRequest;
 
@@ -268,45 +242,17 @@ describe('PrivateKeySigner', () => {
                 signedTx.originSignature,
                 mockSignature
             );
-        });
 
-        test('ok <- signature combines origin and gas payer signatures', () => {
-            const txRequest = new TransactionRequest({
-                ...transactionParams,
-                isIntendedToBeSponsored: true
-            });
-            const sender = new PrivateKeySigner(mockSender.privateKey);
-            const signedTx = sender.sign(txRequest);
-            const gasPayer: PrivateKeySigner = new PrivateKeySigner(
-                mockGasPayer.privateKey
-            );
-            const sponsoredTx = gasPayer.sign(signedTx);
             expect(sponsoredTx.signature).toEqual(
                 nc_utils.concatBytes(
                     signedTx.signature,
-                    (sponsoredTx as SponsoredTransactionRequest)
-                        .gasPayerSignature
+                    sponsoredTx.gasPayerSignature
                 )
-            );
-
-            // Temporary until Transaction exists.
-            const expectedSignedTx = newTransactionFromTransactionRequest(
-                txRequest
-            ).signAsSender(mockSender.privateKey);
-            expect(sponsoredTx.originSignature).toEqual(
-                expectedSignedTx.signature
-            );
-            const expectedSponsoredTx = expectedSignedTx.signAsGasPayer(
-                sender.address,
-                mockGasPayer.privateKey
-            );
-            expect(sponsoredTx.signature).toEqual(
-                expectedSponsoredTx.signature
             );
         });
 
         test('err <- throw UnsupportedOperationError when sponsoring non-sponsored transaction', () => {
-            const signer = new PrivateKeySigner(validPrivateKey);
+            const gasPayerSigner = new PrivateKeySigner(validPrivateKey);
             const originSigner = new PrivateKeySigner(
                 new Uint8Array(32).fill(5)
             );
@@ -317,17 +263,17 @@ describe('PrivateKeySigner', () => {
                 isIntendedToBeSponsored: false
             });
 
-            // Sign it with the origin signer
+            // Sign it with the origin gasPayerSigner
             const signedTx = originSigner.sign(txRequest);
 
             // Attempt to sponsor the transaction
-            expect(() => signer.sign(signedTx)).toThrow(
+            expect(() => gasPayerSigner.sign(signedTx)).toThrow(
                 UnsupportedOperationError
             );
         });
 
         test('err <- throw InvalidPrivateKeyError if private key is voided before sponsoring', () => {
-            const signer = new PrivateKeySigner(validPrivateKey);
+            const gasPayerSigner = new PrivateKeySigner(validPrivateKey);
             const originSigner = new PrivateKeySigner(
                 new Uint8Array(32).fill(5)
             );
@@ -338,14 +284,16 @@ describe('PrivateKeySigner', () => {
                 isIntendedToBeSponsored: true
             });
 
-            // Sign it with the origin signer
+            // Sign it with the origin gasPayerSigner
             const signedTx = originSigner.sign(txRequest);
 
-            // Void the signer's private key
-            signer.disponse();
+            // Void the gasPayerSigner's private key
+            gasPayerSigner.dispose();
 
             // Attempt to sponsor the transaction
-            expect(() => signer.sign(signedTx)).toThrow(InvalidPrivateKeyError);
+            expect(() => gasPayerSigner.sign(signedTx)).toThrow(
+                InvalidPrivateKeyError
+            );
         });
     });
 });
