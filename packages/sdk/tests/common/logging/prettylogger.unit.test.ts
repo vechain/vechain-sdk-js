@@ -90,4 +90,18 @@ describe('PrettyLogger', () => {
             verbosity: 'info'
         });
     });
+    test('bigint should be converted to string', () => {
+        const testLogger = new PrettyLogger();
+        testLogger.register();
+        const consoleSpy = jest
+            .spyOn(console, 'log')
+            .mockImplementation(() => {});
+        log({
+            verbosity: 'info',
+            message: 'bigint',
+            context: { data: { key: BigInt(123) } }
+        });
+        expect(consoleSpy).toHaveBeenCalled();
+        expect(consoleSpy.mock.calls[0][0]).toContain('123');
+    });
 });

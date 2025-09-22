@@ -1,10 +1,6 @@
 import { type HttpClient, type HttpPath } from '@common/http';
-import {
-    Status,
-    ThorError,
-    type ThorRequest,
-    type ThorResponse
-} from '@thor/thorest';
+import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
+import { Status } from '@thor/thorest/node/model';
 import { type StatusJSON } from '@thor/thorest/json';
 
 /**
@@ -42,8 +38,8 @@ class GetTxPoolStatus implements ThorRequest<GetTxPoolStatus, Status> {
             query: ''
         });
         if (response.ok) {
+            const json = (await response.json()) as StatusJSON;
             try {
-                const json = (await response.json()) as StatusJSON;
                 return {
                     request: this,
                     response: new Status(json)
@@ -54,7 +50,7 @@ class GetTxPoolStatus implements ThorRequest<GetTxPoolStatus, Status> {
                     error instanceof Error ? error.message : 'Bad response.',
                     {
                         url: response.url,
-                        body: await response.text()
+                        body: json
                     },
                     error instanceof Error ? error : undefined,
                     response.status

@@ -2,7 +2,7 @@ import { Address, HexUInt, Quantity } from '@common/vcdm';
 import { type OutputJSON, type TxWithReceiptJSON } from '@thor/thorest/json';
 import { Tx } from '@thor/thorest/transactions/model/Tx';
 import { IllegalArgumentError } from '@common/errors';
-import { Output } from '@thor/thorest/model';
+import { Output } from '@thor/thorest/common';
 
 /**
  * Full-Qualified Path

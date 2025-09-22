@@ -3175,6 +3175,7 @@
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/@vechain/sdk-ethers-adapter/-/sdk-ethers-adapter-2.0.5.tgz#9f283251100b1a9f0281b87db698f0290ccee7c1"
   integrity sha512-YuRqEJkDqFE8C3X6cqAgw8u7/ic257LVIVWjA/79Wy0YpFPhkdKehBI1XSL6Rcvk895+qdlCNUj1dX60EfhueQ==
+
   dependencies:
     "@vechain/sdk-core" "2.0.5"
     "@vechain/sdk-errors" "2.0.5"
@@ -3203,6 +3204,19 @@
     "@vechain/sdk-errors" "2.0.5"
 
 "@vechain/sdk-network@2.0.5", "@vechain/sdk-network@^2.0.4":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-network/-/sdk-network-2.0.5.tgz#3612b449cda53213d52e753b576ed22c20b4d2fe"
+  integrity sha512-y8T1c9Cye97+lHCwl6Hp0tqkMqeAqMfYulLrqRL24WfgtuprfIZR7/cMumGxW3kHvJUvyVXWFyK0YbwsWAmPSQ==
+
+    "@noble/curves" "^1.6.0"
+    "@vechain/sdk-core" "2.0.5"
+    "@vechain/sdk-errors" "2.0.5"
+    "@vechain/sdk-logging" "2.0.5"
+    abitype "1.0.8"
+    ethers "^6.14.0"
+    viem "^2.21.54"
+
+"@vechain/sdk-network@^2.0.5":
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/@vechain/sdk-network/-/sdk-network-2.0.5.tgz#3612b449cda53213d52e753b576ed22c20b4d2fe"
   integrity sha512-y8T1c9Cye97+lHCwl6Hp0tqkMqeAqMfYulLrqRL24WfgtuprfIZR7/cMumGxW3kHvJUvyVXWFyK0YbwsWAmPSQ==
