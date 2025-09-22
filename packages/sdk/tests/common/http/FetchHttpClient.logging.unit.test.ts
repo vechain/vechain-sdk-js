@@ -46,7 +46,7 @@ describe('FetchHttpClient logging', () => {
             expect(error).toBeInstanceOf(HttpException);
             const httpError = error as HttpException;
             expect(httpError.status).toBe(403);
-            
+
             // Check that error logging was called
             const callArgs = loggerSpy.mock.calls[0][0];
             expect(callArgs).toMatchObject({
