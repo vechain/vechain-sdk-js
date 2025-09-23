@@ -47,7 +47,7 @@
   "dependencies": {
     "@vechain/sdk-hardhat-plugin": "^2.0.4",
     "hardhat": "^2.22.15",
-    "@vechain/sdk-network": "^2.0.4"
+  "@vechain/sdk-network": "^2.0.5"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-ethers": "^3.0.8",

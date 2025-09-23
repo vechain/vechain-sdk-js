@@ -12,11 +12,12 @@ import {
     ClauseBuilder
 } from '@thor/thorest';
 import { Address, BlockRef, HexUInt, Revision } from '@common/vcdm';
+import { ThorClient } from '@thor/thor-client/ThorClient';
 import {
     Transaction,
     type TransactionBody
 } from '@thor/thorest/transactions/model';
-import { SOLO_NETWORK } from '@thor/utils';
+
 import { expect, test } from '@jest/globals';
 
 /**
@@ -24,6 +25,7 @@ import { expect, test } from '@jest/globals';
  */
 describe('RetrieveTransactionReceipt SOLO tests', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
+    const thorClient = ThorClient.at(httpClient);
 
     // TO BE FIXED: DYNAMIC ACCOUNT IS NOT SEEDED YET WHEN THIS TESTS RUNS IN SOLO
     const toAddress = '0x435933c8064b4ae76be665428e0307ef2ccfbd68'; // THIS SOLO DEFAULT ACCOUNT[1]
@@ -42,8 +44,9 @@ describe('RetrieveTransactionReceipt SOLO tests', () => {
             await RetrieveExpandedBlock.of(Revision.BEST).askTo(httpClient)
         ).response;
 
+        const chainTag = await thorClient.nodes.getChainTag();
         const expectedTxBody: TransactionBody = {
-            chainTag: SOLO_NETWORK.chainTag,
+            chainTag,
             blockRef:
                 latestBlock !== null
                     ? BlockRef.of(latestBlock.id).toString()

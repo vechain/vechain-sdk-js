@@ -1,6 +1,6 @@
 import { type Clause } from './Clause';
 import { type Hex } from '@common';
-
+import { type TransactionRequestJSON } from '@thor/thorest/json';
 /**
  * Represents the parameters required to create a {@link TransactionRequest} instance.
  */
@@ -162,6 +162,25 @@ class TransactionRequest implements TransactionRequestParam {
      */
     public isSigned(): boolean {
         return false;
+    }
+
+    /**
+     * Converts the TransactionRequest object into a JSON representation.
+     *
+     * @return {TransactionRequestJSON} The JSON representation of the TransactionRequest object.
+     */
+    public toJSON(): TransactionRequestJSON {
+        return {
+            blockRef: this.blockRef.toString(),
+            chainTag: this.chainTag,
+            clauses: this.clauses.map((clause: Clause) => clause.toJSON()),
+            dependsOn: this.dependsOn?.toString() ?? null,
+            expiration: this.expiration,
+            gas: this.gas,
+            gasPriceCoef: this.gasPriceCoef,
+            nonce: this.nonce,
+            isIntendedToBeSponsored: this.isIntendedToBeSponsored ?? false
+        } satisfies TransactionRequestJSON;
     }
 
     /**

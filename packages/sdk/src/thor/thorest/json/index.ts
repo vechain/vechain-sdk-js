@@ -11,3 +11,6 @@ export * from '../debug/json';
 export * from '../node/json';
 export * from '../accounts/json';
 export * from '../logs/json';
+export * from './TransactionRequestJSON';
+export * from './SignedTransactionRequestJSON';
+export * from './SponsoredTransactionRequestJSON';
