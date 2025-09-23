@@ -115,17 +115,13 @@ const TESTNET_NETWORK = {
 /**
  * Constant defining VeChain solo network information
  */
-const SOLO_NETWORK = {
-    genesisBlock: soloGenesisBlock
-};
 
 /**
  * Constant defining VeChain mainnet and testnet network information
  */
 const networkInfo = {
     mainnet: MAINNET_NETWORK,
-    testnet: TESTNET_NETWORK,
-    solo: SOLO_NETWORK
+    testnet: TESTNET_NETWORK
 };
 
 export {
@@ -133,6 +129,5 @@ export {
     VTHO_ADDRESS,
     ZERO_ADDRESS,
     MAINNET_NETWORK,
-    TESTNET_NETWORK,
-    SOLO_NETWORK
+    TESTNET_NETWORK
 };
