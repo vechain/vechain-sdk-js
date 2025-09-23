@@ -3,16 +3,16 @@ import { resolve } from 'path';
 
 export default defineConfig({
     entry: {
-        common: './packages/sdk/src/common/index.ts',
-        thor: './packages/sdk/src/thor/index.ts',
-        viem: './packages/sdk/src/viem/index.ts',
+        common: resolve(__dirname, 'src/common/index.ts'),
+        thor: resolve(__dirname, 'src/thor/index.ts'),
+        viem: resolve(__dirname, 'src/viem/index.ts'),
     },
     format: ['cjs', 'esm'],
-    dts: false,
+    dts: true,
     sourcemap: true,
     treeshake: true,
     minify: true,
-    outDir: './packages/sdk/dist',
+    outDir: './dist',
     esbuildOptions(options) {
         // Configure path alias resolution for esbuild
         options.alias = {
@@ -23,8 +23,12 @@ export default defineConfig({
             '@common/logging': resolve(__dirname, './src/common/logging'),
             '@common/cryptography/secp256k1': resolve(__dirname, './src/common/cryptography/secp256k1'),
             '@common/cryptography/hdkey': resolve(__dirname, './src/common/cryptography/hdkey'),
+            '@viem/clients': resolve(__dirname, './src/viem/clients'),
             '@thor': resolve(__dirname, './src/thor'),
             '@thor/thorest': resolve(__dirname, './src/thor/thorest'),
+            '@thor/thorest/json': resolve(__dirname, './src/thor/thorest/json'),
+            '@thor/thorest/subscriptions/response': resolve(__dirname, './src/thor/thorest/subscriptions/response'),
+            '@thor/thorest/accounts/response': resolve(__dirname, './src/thor/thorest/accounts/response'),
             '@thor/thorest/model': resolve(__dirname, './src/thor/thorest/model'),
             '@thor/thorest/model/Transfer': resolve(__dirname, './src/thor/thorest/model/Transfer'),
             '@thor/thorest/model/Clause': resolve(__dirname, './src/thor/thorest/model/Clause'),
@@ -39,6 +43,7 @@ export default defineConfig({
             '@thor/thor-client/model/logs/FilterRangeUnits': resolve(__dirname, './src/thor/thor-client/model/logs/FilterRangeUnits'),
             '@thor/thor-client/model/logs/FilterOptions': resolve(__dirname, './src/thor/thor-client/model/logs/FilterOptions'),
             '@thor/thor-client/model/logs/EventCriteria': resolve(__dirname, './src/thor/thor-client/model/logs/EventCriteria'),
+            '@thor/thor-client/model/logs/DecodedEventLog': resolve(__dirname, './src/thor/thor-client/model/logs/DecodedEventLog'),
             '@thor/ws': resolve(__dirname, './src/thor/ws'),
             '@thor/utils': resolve(__dirname, './src/thor/utils'),
         };
