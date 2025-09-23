@@ -3,7 +3,7 @@ import { ThorError } from '../ThorError';
 
 /**
  * Utility function to handle HTTP exceptions from FetchHttpClient and wrap them in ThorError.
- * 
+ *
  * @param fqp - The fully qualified path for error reporting
  * @param error - The error to handle
  * @returns A ThorError instance
@@ -24,7 +24,7 @@ export function handleHttpError(fqp: string, error: unknown): ThorError {
             error.status
         );
     }
-    
+
     // Handle network exceptions from FetchHttpClient
     if (error instanceof HttpNetworkException) {
         return new ThorError(
@@ -38,7 +38,7 @@ export function handleHttpError(fqp: string, error: unknown): ThorError {
             0 // No HTTP status for network errors
         );
     }
-    
+
     // Re-throw other errors
     throw error;
 }

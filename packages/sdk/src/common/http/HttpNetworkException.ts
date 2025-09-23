@@ -12,7 +12,11 @@ class HttpNetworkException extends VeChainSDKError {
     /**
      * The type of network error that occurred.
      */
-    readonly networkErrorType: 'timeout' | 'connection' | 'no_response' | 'abort';
+    readonly networkErrorType:
+        | 'timeout'
+        | 'connection'
+        | 'no_response'
+        | 'abort';
 
     /**
      * The URL that was requested.

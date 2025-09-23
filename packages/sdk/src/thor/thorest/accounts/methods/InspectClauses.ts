@@ -73,7 +73,9 @@ class InspectClauses
                 const body = await response.text().catch(() => undefined);
                 throw new ThorError(
                     fqp,
-                    parseErr instanceof Error ? parseErr.message : 'Bad response.',
+                    parseErr instanceof Error
+                        ? parseErr.message
+                        : 'Bad response.',
                     {
                         url: response.url,
                         status: response.status,

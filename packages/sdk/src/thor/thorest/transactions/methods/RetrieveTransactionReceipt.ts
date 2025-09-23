@@ -7,6 +7,7 @@ import {
     type ThorRequest,
     type ThorResponse
 } from '@thor/thorest';
+import { type GetTxReceiptResponseJSON } from '@thor/thorest/json';
 import { IllegalArgumentError } from '@common/errors';
 
 /**

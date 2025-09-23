@@ -4,6 +4,7 @@ import {
     type ThorRequest,
     type ThorResponse
 } from '@thor/thorest';
+import { type RegularBlockResponseJSON } from '@thor/thorest/json';
 import { type HttpClient, type HttpPath } from '@common/http';
 import { handleHttpError } from '@thor/thorest/utils';
 import { type Revision } from '@common/vcdm';

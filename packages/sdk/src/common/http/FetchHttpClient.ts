@@ -6,6 +6,11 @@ import { log, type LogItemWithVerbosity } from '@common/logging';
 import { HttpException } from './HttpException';
 import { HttpNetworkException } from './HttpNetworkException';
 
+/**
+ * Full-Qualified Path
+ */
+const FQP = 'packages/sdk/src/common/http/FetchHttpClient.ts!';
+
 // Types for dependency injection
 type RequestConstructor = typeof Request;
 type FetchFunction = typeof fetch;
@@ -180,7 +185,7 @@ class FetchHttpClient implements HttpClient {
                 this.options.onRequest?.(request) ?? request
             );
             await this.logResponse(request, response);
-            
+
             // Check for non-200 responses and raise HttpException
             if (!response.ok) {
                 const responseBody = await response.text();
@@ -198,7 +203,7 @@ class FetchHttpClient implements HttpClient {
                     }
                 );
             }
-            
+
             return (
                 this.options.onResponse?.(this.processResponse(response)) ??
                 response
@@ -208,7 +213,7 @@ class FetchHttpClient implements HttpClient {
             if (error instanceof HttpException) {
                 throw error; // Re-throw HTTP exceptions
             }
-            
+
             // Handle abort signal (timeout)
             if (error instanceof Error && error.name === 'AbortError') {
                 throw new HttpNetworkException(
@@ -225,11 +230,13 @@ class FetchHttpClient implements HttpClient {
                     error
                 );
             }
-            
+
             // Handle other network errors
             throw new HttpNetworkException(
                 `${FQP}get(httpPath: HttpPath, httpQuery: HttpQuery): Promise<Response>`,
-                error instanceof Error ? error.message : 'Network request failed',
+                error instanceof Error
+                    ? error.message
+                    : 'Network request failed',
                 'connection',
                 pathUrl.toString(),
                 {
@@ -279,7 +286,7 @@ class FetchHttpClient implements HttpClient {
                 this.options.onRequest?.(request) ?? request
             );
             await this.logResponse(request, response);
-            
+
             // Check for non-200 responses and raise HttpException
             if (!response.ok) {
                 const responseBody = await response.text();
@@ -298,7 +305,7 @@ class FetchHttpClient implements HttpClient {
                     }
                 );
             }
-            
+
             return (
                 this.options.onResponse?.(this.processResponse(response)) ??
                 response
@@ -308,7 +315,7 @@ class FetchHttpClient implements HttpClient {
             if (error instanceof HttpException) {
                 throw error; // Re-throw HTTP exceptions
             }
-            
+
             // Handle abort signal (timeout)
             if (error instanceof Error && error.name === 'AbortError') {
                 throw new HttpNetworkException(
@@ -326,11 +333,13 @@ class FetchHttpClient implements HttpClient {
                     error
                 );
             }
-            
+
             // Handle other network errors
             throw new HttpNetworkException(
                 `${FQP}post(httpPath: HttpPath, httpQuery: HttpQuery, body?: unknown): Promise<Response>`,
-                error instanceof Error ? error.message : 'Network request failed',
+                error instanceof Error
+                    ? error.message
+                    : 'Network request failed',
                 'connection',
                 pathUrl.toString(),
                 {
