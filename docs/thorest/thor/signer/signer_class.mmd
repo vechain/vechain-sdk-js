@@ -1,0 +1,43 @@
+---
+title: Signer Class Diagram - VIP-191
+---
+classDiagram
+    namespace model {
+        class SignedTransactionRequest {
+            Uint8Array signature
+            SignedTransactionRequestJSON toJSON()
+        }
+        class TransactionRequest {
+            UInt8Array|null gasPayerSignature
+            Uint8Array|null originSignature
+            constructor(TransactionRequestParameter param)
+            Address|null gasPayer()
+            boolean isDynamicFee()
+            boolean isSigned()
+            Address|null origin()
+            TransactionRequestJSON toJSON()
+        }
+        class TransactionRequestParam {
+            <<interface>>
+            Address? beggar
+            Hex blockRef
+            number chainTag
+            Clause[] clauses
+            Hex|null dependsOn
+            number expiration
+            bigint gas
+            bigint gasPriceCoef
+            boolean? isIntededToBeSponsored
+            bigint? maxFeePerGas
+            bigint? maxPriorityFeePerGas
+            number nonce
+        }
+    }
+    class Signer {
+        Address address
+        TrasactionRequest|SignedTransactionRequest sign(TransactionRequest request)
+    }
+    TransactionRequestParam <|.. TransactionRequest
+    TransactionRequest <|-- SignedTransactionRequest
+    TransactionRequest <-- "sign(SignedTransactionRequest request)" Signer
+    SignedTransactionRequest "sign(SignedTransactionRequest request)" <--  Signer

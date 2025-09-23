@@ -1,0 +1,51 @@
+---
+title: TransactionRequest State Diagram - VIP-191
+---
+stateDiagram-v2
+    state "TransactionRequest" as TXR
+    state IS_INTENDED_TO_BE_SPONORED <<fork>>
+    state "TransactionRequest\n.beggar = NULL" as TXR_BF
+    note left of TXR_BF
+        Not intended to be sponsored.
+    end note
+    state "TransactionRequest\n.beggar = NULL\n.origin <- SIGNED" as TXR_BF_OS
+    state SIGNED_NOT_SPONSORED <<join>>
+    state "SignedTransactionRequest\n.begger = NULL\n.signature = ORIGIN SIGNATURE" as STXR_BF_OS
+    state "TransactionRequest\n.beggar != NULL" as TXR_BT
+    note right of TXR_BT
+        Intended to be sponsored.
+    end note
+    state "TransactionRequest\n.beggar = SIGNER" as TXR_BT_SIGNER
+    note left of TXR_BT_SIGNER
+        Orgin signs first, then Gas-Payer signs.
+    end note
+    state "TransactionRequest\n.beggar != SIGNER" as TXR_BT_ALIEN
+    note left of TXR_BT_ALIEN
+        Gas-Payer signs first, the Origin signs.
+    end note
+    state "TransactionRequest\n.beggar = ORIGIN\n.origin <- SIGNED" as TXR_BT_OS
+    state "TransactionRequest\n.beggar = ORIGIN\n.origin <-SIGNED\n.gasPayer <- SIGNED" as TXR_BT_OS_GPS
+    state "TransactionRequesr\n.beggar != GAS PAYER\n.gasPayerSignature <- SIGNED" as TXR_BT_GPS
+    state "TransactionRequest\n.beggar != GAS PAYER\n.gasPayer <- SIGNED\n.origin <-SIGNED" as TXR_BT_GPS_OS
+    state SIGNED_AND_SPONSORED <<join>>
+    state "SignedTransactionRequest\n.beggar = ORIGIN\n.signature = ORIGIN & GAS PAYER SIGNATURES" as STXR_BT_OS_GPS
+    [*] --> TXR
+    TXR --> IS_INTENDED_TO_BE_SPONORED
+    IS_INTENDED_TO_BE_SPONORED --> TXR_BF
+    IS_INTENDED_TO_BE_SPONORED --> TXR_BT
+    TXR_BF --> TXR_BF_OS: ORIGIN signs
+    TXR_BF_OS --> SIGNED_NOT_SPONSORED
+    SIGNED_NOT_SPONSORED -->  STXR_BF_OS
+    STXR_BF_OS --> [*]
+    TXR_BT --> TXR_BT_SIGNER
+    TXR_BT --> TXR_BT_ALIEN
+    TXR_BT_SIGNER --> TXR_BT_OS: ORIGIN signs
+    TXR_BT_OS --> TXR_BT_OS_GPS: GAS PAYER signs
+    TXR_BT_OS_GPS --> SIGNED_AND_SPONSORED
+    TXR_BT_ALIEN --> TXR_BT_GPS: GAS-PAYER signs
+    TXR_BT_GPS --> TXR_BT_GPS_OS: ORIGIN signs
+    TXR_BT_GPS_OS --> SIGNED_AND_SPONSORED
+    SIGNED_AND_SPONSORED --> STXR_BT_OS_GPS
+    STXR_BT_OS_GPS --> [*]
+
+

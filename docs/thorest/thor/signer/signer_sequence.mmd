@@ -1,0 +1,50 @@
+---
+title: Signer Sequence Diagram - VIP-191
+---
+sequenceDiagram
+    participant TransactionRequest
+    actor Signer
+    participant SignedTransactionRequest
+    alt .beggar = null
+        TransactionRequest ->> Signer: Signer.sign()
+        Signer ->> SignedTransactionRequest: Signer.sign() as ORIGIN
+    else .beggar != null
+        alt .gasPayer = null
+            alt .origin = null
+              alt .beggar = SIGNER
+                TransactionRequest ->> Signer: Signer.sign()
+                Signer ->> TransactionRequest: Signer.sign() as ORIGIN
+              else .beggar != SIGNER
+                TransactionRequest ->> Signer: Signer.sign()
+                Signer ->>TransactionRequest: Signer.sign() as GAS PAYER
+              end
+            else .origin != null
+                TransactionRequest --> Signer: Signer.sign()
+                Signer ->> SignedTransactionRequest: Signer.sign() as GAS PAYER
+            end
+        else .gasPayer != null
+            TransactionRequest ->> Signer: Signer.sign()
+            Signer ->> SignedTransactionRequest: Signer.sign() as ORIGIN
+        end
+    end
+%%    alt <TransactionRequest>.isIntendedToBeSponsored = false
+%%        TransactionRequest ->> Signer: <Signer>.sign(TransactionRequest request)
+%%        Signer ->> Signer: Sign as origin. Set <TransactionRequest>{.origin, .originSignature, .signature}
+%%        Signer ->> SignedTransactionRequest: SignedTransactionRequest <Signer>.sign(TransactionRequest request)
+%%    else <TransactionRequest>.isIntendedToBeSponsord = true
+%%        TransactionRequest ->> Signer: <Signer>.sign{TransactionRequest request)
+%%        alt <TransactionRequest>.origin = null
+%%            alt <TransactionRequest>.gasPayer = null
+%%                Signer ->> Signer: Sign as gas-payer. Set <TransactionRequest>{.gasPayer, .gasPayer}
+%%                Signer ->> TransactionRequest: TransactionRequest <Signer>.sign(TransactionRequest request)
+%%            else <TransactionRequest>.gasPayer != null
+%%                Signer ->> Signer: Sign as origin. Set <TransactionRequest>{.orgin, originSignature, .signature}
+%%                Signer ->> SignedTransactionRequest: SignedTransactionRequest <Signer>.sign(TransactionRequest request)
+%%            end
+%%        else <TransactionRequest>.origin != null
+%%            Signer ->> Signer: Sign as gas-payer: set {.gasPayer, .gasPayerSignature}
+%%            Signer ->> TransactionRequest: TransactionRequest <Signer>.sign(TransactionRequest request)
+%%        end
+%%    end
+
+

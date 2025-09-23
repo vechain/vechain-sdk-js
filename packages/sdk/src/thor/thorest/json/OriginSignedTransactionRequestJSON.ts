@@ -3,10 +3,9 @@ import { type TransactionRequestJSON } from '@thor/thorest/json/TransactionReque
 /**
  * Represents the content of a {@link SignedTransactionRequest} object in JSON format.
  */
-interface SignedTransactionRequestJSON extends TransactionRequestJSON {
-    origin: string; // hex address
+interface OriginSignedTransactionRequestJSON extends TransactionRequestJSON {
     originSignature: string; // hex origin signature
     signature: string; // hex signature
 }
 
-export { type SignedTransactionRequestJSON };
+export { type OriginSignedTransactionRequestJSON };
