@@ -4,3 +4,5 @@ export type { HttpClientFactory } from './HttpClientFactory';
 export { DefaultHttpClientFactory } from './HttpClientFactory';
 export type { HttpPath } from './HttpPath';
 export type { HttpQuery } from './HttpQuery';
+export { HttpException } from './HttpException';
+export { HttpNetworkException } from './HttpNetworkException';

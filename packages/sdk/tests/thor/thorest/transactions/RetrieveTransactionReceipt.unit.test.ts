@@ -69,7 +69,7 @@ describe('RetrieveTransactionReceipt UNIT tests', () => {
         const actual = (
             await RetrieveTransactionReceipt.of(
                 Hex.of(expected.meta.txID)
-            ).askTo(mockHttpClient(expected, 'get', true, 200))
+            ).askTo(mockHttpClient(expected, 'get'))
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toBeInstanceOf(GetTxReceiptResponse);
@@ -113,7 +113,7 @@ describe('RetrieveTransactionReceipt UNIT tests', () => {
         const actual = (
             await RetrieveTransactionReceipt.of(Hex.of(expected.meta.txID))
                 .withHead(Hex.of(expected.meta.blockID))
-                .askTo(mockHttpClient(expected, 'get', true, 200))
+                .askTo(mockHttpClient(expected, 'get'))
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toBeInstanceOf(GetTxReceiptResponse);
@@ -126,7 +126,7 @@ describe('RetrieveTransactionReceipt UNIT tests', () => {
         );
         const actual = (
             await RetrieveTransactionReceipt.of(txId).askTo(
-                mockHttpClient(null, 'get', true, 200)
+                mockHttpClient(null, 'get')
             )
         ).response;
         expect(actual).toBeNull();

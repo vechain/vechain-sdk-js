@@ -3,6 +3,7 @@ import { Revision, type Address, type Hex } from '@common/vcdm';
 import { GetStorageResponse } from '@thor/thorest';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
 import { type GetStorageResponseJSON } from '@thor/thorest/json';
+import { handleHttpError } from '@thor/thorest/utils';
 
 /**
  * Full-Qualified Path
@@ -53,11 +54,10 @@ class RetrieveStoragePositionValue
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveStoragePositionValue, GetStorageResponse>> {
         const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveStoragePositionValue, GetStorageResponse>>`;
-        const response = await httpClient.get(this.path, this.query);
-        if (response.ok) {
+        try {
+            const response = await httpClient.get(this.path, this.query);
             const json = (await response.json()) as GetStorageResponseJSON;
             try {
-                console.log(`${FQP} json: ${JSON.stringify(json)}`);
                 return {
                     request: this,
                     response: new GetStorageResponse(json)
@@ -65,7 +65,7 @@ class RetrieveStoragePositionValue
             } catch (error) {
                 throw new ThorError(
                     fqp,
-                    'Bad response.',
+                    error instanceof Error ? error.message : 'Bad response.',
                     {
                         url: response.url,
                         body: json
@@ -74,19 +74,10 @@ class RetrieveStoragePositionValue
                     response.status
                 );
             }
+        } catch (error) {
+            if (error instanceof ThorError) throw error;
+            throw handleHttpError(fqp, error);
         }
-        console.log(
-            `${FQP} response: ${response.status}: path: ${this.path.path}: query: ${this.query.query}`
-        );
-        throw new ThorError(
-            fqp,
-            'Bad response.',
-            {
-                url: response.url
-            },
-            undefined,
-            response.status
-        );
     }
 
     /**

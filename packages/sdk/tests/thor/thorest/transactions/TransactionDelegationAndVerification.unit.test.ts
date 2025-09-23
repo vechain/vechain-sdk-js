@@ -140,7 +140,7 @@ describe('unit tests', () => {
         );
         const hashA = ap.getTransactionHash(sender.address).bytes;
         const isVerifiedA = nc_secp256k1.verify(
-            sigmaA,
+            sigmaA.toBytes(),
             hashA,
             gasPayerPublicKey
         );
@@ -166,14 +166,14 @@ describe('unit tests', () => {
         );
         const hashB = bp.getTransactionHash(sender.address).bytes;
         const isVerifiedB = nc_secp256k1.verify(
-            sigmaB,
+            sigmaB.toBytes(),
             hashB,
             gasPayerPublicKey
         );
         expect(isVerifiedB).toBe(true);
 
         const isVerifiedForge = nc_secp256k1.verify(
-            sigmaA,
+            sigmaA.toBytes(),
             hashB,
             gasPayerPublicKey
         );

@@ -1,4 +1,5 @@
 import { HttpQuery, type HttpClient, type HttpPath } from '@common/http';
+import { handleHttpError } from '@thor/thorest/utils';
 import type { Address, Revision } from '@common/vcdm';
 import { type ContractBytecodeJSON } from '@thor/thorest/json';
 import { ContractBytecode } from '@thor/thorest';
@@ -53,8 +54,8 @@ class RetrieveContractBytecode
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveContractBytecode, ContractBytecode>> {
         const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveContractBytecode, ContractBytecode>>`;
-        const response = await httpClient.get(this.path, this.query);
-        if (response.ok) {
+        try {
+            const response = await httpClient.get(this.path, this.query);
             const json = (await response.json()) as ContractBytecodeJSON;
             try {
                 return {
@@ -64,7 +65,7 @@ class RetrieveContractBytecode
             } catch (error) {
                 throw new ThorError(
                     fqp,
-                    'Bad response.',
+                    error instanceof Error ? error.message : 'Bad response.',
                     {
                         url: response.url,
                         body: json
@@ -73,16 +74,9 @@ class RetrieveContractBytecode
                     response.status
                 );
             }
+        } catch (error) {
+            throw handleHttpError(fqp, error);
         }
-        throw new ThorError(
-            fqp,
-            'Bad response.',
-            {
-                url: response.url
-            },
-            undefined,
-            response.status
-        );
     }
 
     /**

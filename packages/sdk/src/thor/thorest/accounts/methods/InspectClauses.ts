@@ -1,4 +1,5 @@
 import { type HttpClient, type HttpPath, type HttpQuery } from '@common/http';
+import { handleHttpError } from '@thor/thorest/utils';
 import { ExecuteCodesResponse, ExecuteCodesRequest } from '@thor/thorest';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
 import { Revision } from '@common/vcdm';
@@ -59,13 +60,30 @@ class InspectClauses
         httpClient: HttpClient
     ): Promise<ThorResponse<InspectClauses, ExecuteCodesResponse>> {
         const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<InspectClauses, ExecuteCodesResponse>>`;
-        const response = await httpClient.post(
-            InspectClauses.PATH,
-            this.query,
-            this.request.toJSON()
-        );
-        if (response.ok) {
-            const json = (await response.json()) as ExecuteCodesResponseJSON;
+        try {
+            const response = await httpClient.post(
+                InspectClauses.PATH,
+                this.query,
+                this.request.toJSON()
+            );
+            let json: ExecuteCodesResponseJSON;
+            try {
+                json = (await response.json()) as ExecuteCodesResponseJSON;
+            } catch (parseErr) {
+                const body = await response.text().catch(() => undefined);
+                throw new ThorError(
+                    fqp,
+                    parseErr instanceof Error ? parseErr.message : 'Bad response.',
+                    {
+                        url: response.url,
+                        status: response.status,
+                        statusText: response.statusText,
+                        body
+                    },
+                    parseErr instanceof Error ? parseErr : undefined,
+                    response.status
+                );
+            }
             try {
                 return {
                     request: this,
@@ -74,25 +92,20 @@ class InspectClauses
             } catch (error) {
                 throw new ThorError(
                     fqp,
-                    'Bad response.',
+                    error instanceof Error ? error.message : 'Bad response.',
                     {
                         url: response.url,
+                        status: response.status,
+                        statusText: response.statusText,
                         body: json
                     },
                     error instanceof Error ? error : undefined,
                     response.status
                 );
             }
+        } catch (error) {
+            throw handleHttpError(fqp, error);
         }
-        throw new ThorError(
-            fqp,
-            'Bad response.',
-            {
-                url: response.url
-            },
-            undefined,
-            response.status
-        );
     }
 
     /**
