@@ -1,6 +1,6 @@
-import { Address, Hex, HexUInt, Quantity } from '@common/vcdm';
+import { type Address, Hex, Quantity } from '@common/vcdm';
 import { type ClauseJSON } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
+import { type ClauseData } from '@thor/thorest/common';
 
 /**
  * Full-Qualified Path
@@ -53,9 +53,9 @@ class Clause {
     constructor(
         to: Address | null,
         value: bigint,
-        data: Hex | null,
-        comment: string | null,
-        abi: string | null
+        data?: Hex | null,
+        comment?: string | null,
+        abi?: string | null
     ) {
         this.to = to;
         this.value = value;
@@ -65,39 +65,24 @@ class Clause {
     }
 
     /**
-     * Creates a new Clause instance from the given ClauseJSON object.
+     * Creates a new Clause instance from the given ClauseData object.
      *
-     * @param {ClauseJSON} json - The JSON object containing the input data to construct a Clause.
-     *                             The `to` property represents the target address and is processed as an Address instance.
-     *                             The `value` property is expected to be a hexadecimal value, parsed as a BigInt.
-     *                             The `data` property is optional and, if present, is parsed as a HexUInt instance.
+     * @param {ClauseData} clauseData - The ClauseData object containing the input data to construct a Clause.
      * @return {Clause} A new Clause instance created using the data extracted from the provided ClauseJSON object.
-     * @throws {IllegalArgumentError} If the provided JSON object contains invalid data or couldn't be properly parsed.
      */
-    public static of(json: ClauseJSON): Clause {
-        try {
-            return new Clause(
-                json.to !== null ? Address.of(json.to) : null,
-                HexUInt.of(json.value).bi,
-                json.data !== undefined ? HexUInt.of(json.data) : null,
-                null,
-                null
-            );
-        } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}of(json ClauseJSON)`,
-                'Bad parse',
-                { json },
-                error instanceof Error ? error : undefined
-            );
-        }
+    public static of(clauseData: ClauseData): Clause {
+        return new Clause(
+            clauseData.to,
+            clauseData.value,
+            clauseData.data,
+            null,
+            null
+        );
     }
 
     /**
      * Converts the current instance of the class into a ClauseJSON representation.
-     *
      * No input data is expressed as `0x`.
-     *
      * @return {ClauseJSON} The JSON object representing the current instance.
      */
     toJSON(): ClauseJSON {

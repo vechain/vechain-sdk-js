@@ -5,3 +5,4 @@ export * from './TransactionRequest';
 export * from './TransactionMeta';
 export * from './Transaction';
 export * from './GetTransactionOptions';
+export * from './RawTransaction';
