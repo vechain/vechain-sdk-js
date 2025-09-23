@@ -5,7 +5,6 @@ import {
 } from '@thor/thor-client/model/transactions';
 import { ThorError } from '@thor/thorest';
 import { Address, BlockRef, Hex, HexUInt, Quantity } from '@common/vcdm';
-import { SOLO_NETWORK } from '@thor/utils';
 import { TEST_ACCOUNTS } from '../../fixture';
 import { privateKeyToAccount } from 'viem/accounts';
 import { describe, expect, test } from '@jest/globals';
@@ -29,6 +28,7 @@ describe('WalletClient UNIT tests', () => {
     const mockBlockRef = BlockRef.of('0x1234567890abcdef');
     const mockGas = 21000n;
     const mockValue = Quantity.of(1000);
+    const mockChainTag = 0xf6;
 
     const mockOriginSigner = new PrivateKeySigner(
         HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
@@ -128,7 +128,7 @@ describe('WalletClient UNIT tests', () => {
         test('ok <- test Viem PrepareTransactionRequestRequest and Thor TransactionRequest equivalence', () => {
             const expected = new TransactionRequest({
                 blockRef: mockBlockRef,
-                chainTag: SOLO_NETWORK.chainTag,
+                chainTag: mockChainTag,
                 clauses: [
                     Clause.of({
                         to: TRANSACTION_RECEIVER.address,
@@ -178,7 +178,7 @@ describe('WalletClient UNIT tests', () => {
                 to: Address.of(TRANSACTION_RECEIVER.address),
                 value: 1000,
                 blockRef: mockBlockRef,
-                chainTag: SOLO_NETWORK.chainTag,
+                chainTag: mockChainTag,
                 expiration: 32,
                 gas: 21000,
                 nonce: 3,
@@ -212,7 +212,7 @@ describe('WalletClient UNIT tests', () => {
                 comment,
                 abi,
                 blockRef: mockBlockRef,
-                chainTag: SOLO_NETWORK.chainTag,
+                chainTag: mockChainTag,
                 dependsOn,
                 expiration: 32,
                 gas: HexUInt.of(21000),
@@ -244,7 +244,7 @@ describe('WalletClient UNIT tests', () => {
             const invalidRequest = {
                 value: 'invalid', // This should cause an error
                 blockRef: mockBlockRef,
-                chainTag: SOLO_NETWORK.chainTag,
+                chainTag: mockChainTag,
                 expiration: 32,
                 gas: 21000,
                 nonce: 3,
@@ -270,7 +270,7 @@ describe('WalletClient UNIT tests', () => {
             const request: PrepareTransactionRequestRequest = {
                 value: 1000,
                 blockRef: mockBlockRef,
-                chainTag: SOLO_NETWORK.chainTag,
+                chainTag: mockChainTag,
                 expiration: 32,
                 gas: 21000,
                 nonce: 3,
@@ -308,7 +308,7 @@ describe('WalletClient UNIT tests', () => {
                 to: Address.of(TRANSACTION_RECEIVER.address),
                 value: 1000,
                 blockRef: mockBlockRef,
-                chainTag: SOLO_NETWORK.chainTag,
+                chainTag: mockChainTag,
                 expiration: 32,
                 gas: 21000,
                 nonce: 3,
@@ -371,7 +371,7 @@ describe('WalletClient UNIT tests', () => {
                 to: Address.of(TRANSACTION_RECEIVER.address),
                 value: 1000,
                 blockRef: mockBlockRef,
-                chainTag: SOLO_NETWORK.chainTag,
+                chainTag: mockChainTag,
                 expiration: 32,
                 gas: 21000,
                 nonce: 3,
@@ -431,7 +431,7 @@ describe('WalletClient UNIT tests', () => {
         test('ok <- sign a not-sponsored unsigned transaction request', async () => {
             const txRequest = new TransactionRequest({
                 blockRef: mockBlockRef,
-                chainTag: SOLO_NETWORK.chainTag,
+                chainTag: mockChainTag,
                 clauses: [
                     Clause.of({
                         to: TRANSACTION_RECEIVER.address,
@@ -546,7 +546,7 @@ describe('WalletClient UNIT tests', () => {
 
             const txRequest = new TransactionRequest({
                 blockRef: mockBlockRef,
-                chainTag: SOLO_NETWORK.chainTag,
+                chainTag: mockChainTag,
                 clauses: [
                     Clause.of({
                         to: TRANSACTION_RECEIVER.address,
@@ -580,7 +580,7 @@ describe('WalletClient UNIT tests', () => {
 
             const txRequest = new TransactionRequest({
                 blockRef: mockBlockRef,
-                chainTag: SOLO_NETWORK.chainTag,
+                chainTag: mockChainTag,
                 clauses: [
                     Clause.of({
                         to: TRANSACTION_RECEIVER.address,

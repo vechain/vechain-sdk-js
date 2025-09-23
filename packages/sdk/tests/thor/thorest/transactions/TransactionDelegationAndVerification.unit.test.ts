@@ -36,6 +36,8 @@ describe('unit tests', () => {
         ),
         address: Address.of('0x88b2551c3ed42ca663796c10ce68c88a65f73fe2')
     };
+    const mockChainTag = 0xf6;
+
     const OneVET = 10n ** 18n;
     const clauses = [ClauseBuilder.transferVET(receiver.address, OneVET)];
 
@@ -71,7 +73,7 @@ describe('unit tests', () => {
         } satisfies GetTxReceiptResponseJSON;
 
         const body: TransactionBody = {
-            chainTag: networkInfo.solo.chainTag,
+            chainTag: mockChainTag,
             blockRef: BlockRef.of(mockBlockResponse.id).toString(),
             expiration: 0,
             clauses,
@@ -121,7 +123,7 @@ describe('unit tests', () => {
             false
         );
         const txA = Transaction.of({
-            chainTag: networkInfo.solo.chainTag,
+            chainTag: mockChainTag,
             blockRef: latestBlock?.id.slice(0, 18) ?? '0x0',
             expiration: 0,
             clauses,
@@ -147,7 +149,7 @@ describe('unit tests', () => {
         expect(isVerifiedA).toBe(true);
 
         const txB = Transaction.of({
-            chainTag: networkInfo.solo.chainTag,
+            chainTag: mockChainTag,
             blockRef: BlockRef.of(latestBlock.id).toString(),
             expiration: 0,
             clauses,
