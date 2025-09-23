@@ -2,6 +2,7 @@ import { RawTx, type ThorRequest, type ThorResponse } from '@thor/thorest';
 import { type RawTxJSON } from '@thor/thorest/json';
 import { ThorError } from '@thor/thorest';
 import { type HttpClient, type HttpPath } from '@common/http';
+import { handleHttpError } from '@thor/thorest/utils';
 import { type Revision } from '@common/vcdm';
 
 /**
@@ -42,10 +43,10 @@ class RetrieveRawBlock implements ThorRequest<RetrieveRawBlock, RawTx | null> {
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveRawBlock, RawTx | null>> {
         const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveRawBlock, TxRaw | null>>`;
-        const response = await httpClient.get(this.path, {
-            query: '?raw=true'
-        });
-        if (response.ok) {
+        try {
+            const response = await httpClient.get(this.path, {
+                query: '?raw=true'
+            });
             const json = (await response.json()) as RawTxJSON | null;
             try {
                 return {
@@ -55,7 +56,7 @@ class RetrieveRawBlock implements ThorRequest<RetrieveRawBlock, RawTx | null> {
             } catch (error) {
                 throw new ThorError(
                     fqp,
-                    'Bad response.',
+                    error instanceof Error ? error.message : 'Bad response.',
                     {
                         url: response.url,
                         body: json
@@ -64,16 +65,8 @@ class RetrieveRawBlock implements ThorRequest<RetrieveRawBlock, RawTx | null> {
                     response.status
                 );
             }
-        } else {
-            throw new ThorError(
-                fqp,
-                await response.text(),
-                {
-                    url: response.url
-                },
-                undefined,
-                response.status
-            );
+        } catch (error) {
+            throw handleHttpError(fqp, error);
         }
     }
 
