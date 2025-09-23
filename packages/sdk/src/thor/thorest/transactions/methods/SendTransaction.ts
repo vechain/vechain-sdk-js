@@ -7,6 +7,7 @@ import {
     TXID
 } from '@thor/thorest';
 import { type TXIDJSON } from '@thor/thorest/json';
+import { handleHttpError } from '@thor/thorest/utils';
 
 /**
  * Full-Qualified Path
@@ -53,16 +54,18 @@ class SendTransaction implements ThorRequest<SendTransaction, TXID> {
         httpClient: HttpClient
     ): Promise<ThorResponse<SendTransaction, TXID>> {
         const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<SendTransaction, TXID>>`;
-        const response = await httpClient.post(
-            SendTransaction.PATH,
-            { query: '' },
-            {
-                raw: HexUInt.of(this.encodedTransaction).toString()
-            }
-        );
-        if (response.ok) {
-            const json = (await response.json()) as TXIDJSON;
+        try {
+            const response = await httpClient.post(
+                SendTransaction.PATH,
+                { query: '' },
+                {
+                    raw: HexUInt.of(this.encodedTransaction).toString()
+                }
+            );
+            let raw: string | undefined;
             try {
+                raw = await response.text();
+                const json = JSON.parse(raw) as TXIDJSON;
                 return {
                     request: this,
                     response: new TXID(json)
@@ -70,25 +73,18 @@ class SendTransaction implements ThorRequest<SendTransaction, TXID> {
             } catch (error) {
                 throw new ThorError(
                     fqp,
-                    'Bad response.',
+                    error instanceof Error ? error.message : 'Bad response.',
                     {
                         url: response.url,
-                        body: json
+                        // include raw payload to aid debugging (may be non‑JSON)
+                        body: typeof raw !== 'undefined' ? raw : undefined
                     },
                     error instanceof Error ? error : undefined,
                     response.status
                 );
             }
-        } else {
-            throw new ThorError(
-                fqp,
-                await response.text(),
-                {
-                    url: response.url
-                },
-                undefined,
-                response.status
-            );
+        } catch (error) {
+            throw handleHttpError(fqp, error);
         }
     }
 

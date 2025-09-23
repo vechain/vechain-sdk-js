@@ -1,5 +1,6 @@
 import { type Hex, HexUInt32 } from '@common/vcdm';
 import { type HttpClient, type HttpPath, type HttpQuery } from '@common/http';
+import { handleHttpError } from '@thor/thorest/utils';
 import {
     GetTxReceiptResponse,
     ThorError,
@@ -59,10 +60,12 @@ class RetrieveTransactionReceipt
         ThorResponse<RetrieveTransactionReceipt, GetTxReceiptResponse | null>
     > {
         const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveTransactionReceipt, GetTxReceiptResponse|null>>`;
-        const response = await httpClient.get(this.path, this.query);
-        if (response.ok) {
-            const json = await response.json();
+        try {
+            const response = await httpClient.get(this.path, this.query);
+            let raw: string | undefined;
             try {
+                raw = await response.text();
+                const json = JSON.parse(raw) as GetTxReceiptResponseJSON | null;
                 return {
                     request: this,
                     response:
@@ -71,25 +74,18 @@ class RetrieveTransactionReceipt
             } catch (error) {
                 throw new ThorError(
                     fqp,
-                    'Bad response.',
+                    error instanceof Error ? error.message : 'Bad response.',
                     {
                         url: response.url,
-                        body: json
+                        // include raw payload to aid debugging (may be non‑JSON)
+                        body: typeof raw !== 'undefined' ? raw : undefined
                     },
                     error instanceof Error ? error : undefined,
                     response.status
                 );
             }
-        } else {
-            throw new ThorError(
-                fqp,
-                await response.text(),
-                {
-                    url: response.url
-                },
-                undefined,
-                response.status
-            );
+        } catch (error) {
+            throw handleHttpError(fqp, error);
         }
     }
 

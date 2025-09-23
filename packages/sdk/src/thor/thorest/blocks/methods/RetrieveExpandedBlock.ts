@@ -5,6 +5,7 @@ import {
     type ThorResponse
 } from '@thor/thorest';
 import { type HttpClient, type HttpPath } from '@common/http';
+import { handleHttpError } from '@thor/thorest/utils';
 import { type Revision } from '@common/vcdm';
 
 /**
@@ -50,11 +51,12 @@ class RetrieveExpandedBlock
         ThorResponse<RetrieveExpandedBlock, ExpandedBlockResponse | null>
     > {
         const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveExpandedBlock, ExpandedBlockResponse>>`;
-        const response = await httpClient.get(this.path, {
-            query: '?expanded=true&raw=false'
-        });
-        if (response.ok) {
-            const json = await response.json();
+        try {
+            const response = await httpClient.get(this.path, {
+                query: '?expanded=true&raw=false'
+            });
+            const json =
+                (await response.json()) as ExpandedBlockResponseJSON | null;
             try {
                 return {
                     request: this,
@@ -64,7 +66,7 @@ class RetrieveExpandedBlock
             } catch (error) {
                 throw new ThorError(
                     fqp,
-                    'Bad response.',
+                    error instanceof Error ? error.message : 'Bad response.',
                     {
                         url: response.url,
                         body: json
@@ -73,16 +75,8 @@ class RetrieveExpandedBlock
                     response.status
                 );
             }
-        } else {
-            throw new ThorError(
-                fqp,
-                await response.text(),
-                {
-                    url: response.url
-                },
-                undefined,
-                response.status
-            );
+        } catch (error) {
+            throw handleHttpError(fqp, error);
         }
     }
 

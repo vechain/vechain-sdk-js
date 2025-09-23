@@ -1,6 +1,7 @@
 import { GetPeersResponse } from '@thor/thorest/node';
 import { type GetPeersResponseJSON } from '@thor/thorest/json';
 import { type HttpClient, type HttpPath } from '@common/http';
+import { handleHttpError } from '@thor/thorest/utils';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
 
 /**
@@ -44,10 +45,10 @@ class RetrieveConnectedPeers
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveConnectedPeers, GetPeersResponse | null>> {
         const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveConnectedPeers, GetPeersResponse | null>>`;
-        const response = await httpClient.get(RetrieveConnectedPeers.PATH, {
-            query: ''
-        });
-        if (response.ok) {
+        try {
+            const response = await httpClient.get(RetrieveConnectedPeers.PATH, {
+                query: ''
+            });
             const json: GetPeersResponseJSON | null =
                 (await response.json()) as GetPeersResponseJSON;
             try {
@@ -58,7 +59,7 @@ class RetrieveConnectedPeers
             } catch (error) {
                 throw new ThorError(
                     fqp,
-                    'Bad response.',
+                    error instanceof Error ? error.message : 'Bad response.',
                     {
                         url: response.url,
                         body: json
@@ -67,16 +68,8 @@ class RetrieveConnectedPeers
                     response.status
                 );
             }
-        } else {
-            throw new ThorError(
-                fqp,
-                await response.text(),
-                {
-                    url: response.url
-                },
-                undefined,
-                response.status
-            );
+        } catch (error) {
+            throw handleHttpError(fqp, error);
         }
     }
 

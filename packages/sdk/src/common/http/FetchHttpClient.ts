@@ -3,6 +3,8 @@ import { type HttpQuery, type HttpPath, type HttpClient } from '@common/http';
 import { type HttpOptions } from './HttpOptions';
 import { CookieStore } from './CookieStore';
 import { log, type LogItemWithVerbosity } from '@common/logging';
+import { HttpException } from './HttpException';
+import { HttpNetworkException } from './HttpNetworkException';
 
 // Types for dependency injection
 type RequestConstructor = typeof Request;
@@ -154,6 +156,8 @@ class FetchHttpClient implements HttpClient {
      * @param httpPath - The path of the request.
      * @param httpQuery - The query parameters of the request.
      * @returns The response from the request.
+     * @throws HttpException for non-200 responses
+     * @throws HttpNetworkException for network issues
      */
     async get(
         httpPath: HttpPath = { path: '' },
@@ -176,9 +180,64 @@ class FetchHttpClient implements HttpClient {
                 this.options.onRequest?.(request) ?? request
             );
             await this.logResponse(request, response);
+            
+            // Check for non-200 responses and raise HttpException
+            if (!response.ok) {
+                const responseBody = await response.text();
+                throw new HttpException(
+                    `${FQP}get(httpPath: HttpPath, httpQuery: HttpQuery): Promise<Response>`,
+                    `HTTP request failed with status ${response.status}`,
+                    response.status,
+                    response.statusText,
+                    responseBody,
+                    response.url,
+                    {
+                        method: 'GET',
+                        path: httpPath.path,
+                        query: httpQuery.query
+                    }
+                );
+            }
+            
             return (
                 this.options.onResponse?.(this.processResponse(response)) ??
                 response
+            );
+        } catch (error) {
+            // Handle network errors and timeouts
+            if (error instanceof HttpException) {
+                throw error; // Re-throw HTTP exceptions
+            }
+            
+            // Handle abort signal (timeout)
+            if (error instanceof Error && error.name === 'AbortError') {
+                throw new HttpNetworkException(
+                    `${FQP}get(httpPath: HttpPath, httpQuery: HttpQuery): Promise<Response>`,
+                    'Request timed out',
+                    'timeout',
+                    pathUrl.toString(),
+                    {
+                        method: 'GET',
+                        path: httpPath.path,
+                        query: httpQuery.query,
+                        timeout: this.options.timeout
+                    },
+                    error
+                );
+            }
+            
+            // Handle other network errors
+            throw new HttpNetworkException(
+                `${FQP}get(httpPath: HttpPath, httpQuery: HttpQuery): Promise<Response>`,
+                error instanceof Error ? error.message : 'Network request failed',
+                'connection',
+                pathUrl.toString(),
+                {
+                    method: 'GET',
+                    path: httpPath.path,
+                    query: httpQuery.query
+                },
+                error instanceof Error ? error : undefined
             );
         } finally {
             abortSignal?.cleanup(); // cleanup the abort signal
@@ -191,6 +250,8 @@ class FetchHttpClient implements HttpClient {
      * @param httpQuery - The query parameters of the request.
      * @param body - The body of the request.
      * @returns The response from the request.
+     * @throws HttpException for non-200 responses
+     * @throws HttpNetworkException for network issues
      */
     async post(
         httpPath: HttpPath = { path: '' },
@@ -218,9 +279,67 @@ class FetchHttpClient implements HttpClient {
                 this.options.onRequest?.(request) ?? request
             );
             await this.logResponse(request, response);
+            
+            // Check for non-200 responses and raise HttpException
+            if (!response.ok) {
+                const responseBody = await response.text();
+                throw new HttpException(
+                    `${FQP}post(httpPath: HttpPath, httpQuery: HttpQuery, body?: unknown): Promise<Response>`,
+                    `HTTP request failed with status ${response.status}`,
+                    response.status,
+                    response.statusText,
+                    responseBody,
+                    response.url,
+                    {
+                        method: 'POST',
+                        path: httpPath.path,
+                        query: httpQuery.query,
+                        body: body
+                    }
+                );
+            }
+            
             return (
                 this.options.onResponse?.(this.processResponse(response)) ??
                 response
+            );
+        } catch (error) {
+            // Handle network errors and timeouts
+            if (error instanceof HttpException) {
+                throw error; // Re-throw HTTP exceptions
+            }
+            
+            // Handle abort signal (timeout)
+            if (error instanceof Error && error.name === 'AbortError') {
+                throw new HttpNetworkException(
+                    `${FQP}post(httpPath: HttpPath, httpQuery: HttpQuery, body?: unknown): Promise<Response>`,
+                    'Request timed out',
+                    'timeout',
+                    pathUrl.toString(),
+                    {
+                        method: 'POST',
+                        path: httpPath.path,
+                        query: httpQuery.query,
+                        body: body,
+                        timeout: this.options.timeout
+                    },
+                    error
+                );
+            }
+            
+            // Handle other network errors
+            throw new HttpNetworkException(
+                `${FQP}post(httpPath: HttpPath, httpQuery: HttpQuery, body?: unknown): Promise<Response>`,
+                error instanceof Error ? error.message : 'Network request failed',
+                'connection',
+                pathUrl.toString(),
+                {
+                    method: 'POST',
+                    path: httpPath.path,
+                    query: httpQuery.query,
+                    body: body
+                },
+                error instanceof Error ? error : undefined
             );
         } finally {
             abortSignal?.cleanup(); // cleanup the abort signal

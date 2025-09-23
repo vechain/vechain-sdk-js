@@ -3,6 +3,7 @@ import { GetAccountResponse } from '@thor/thorest';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
 import { type Address, type Revision } from '@common/vcdm';
 import { type GetAccountResponseJSON } from '../json';
+import { handleHttpError } from '@thor/thorest/utils';
 
 /**
  * Full-Qualified Path
@@ -54,8 +55,8 @@ class RetrieveAccountDetails
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveAccountDetails, GetAccountResponse>> {
         const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveAccountDetails, GetAccountResponse>>`;
-        const response = await httpClient.get(this.path, this.query);
-        if (response.ok) {
+        try {
+            const response = await httpClient.get(this.path, this.query);
             const json = (await response.json()) as GetAccountResponseJSON;
             try {
                 return {
@@ -65,7 +66,7 @@ class RetrieveAccountDetails
             } catch (error) {
                 throw new ThorError(
                     fqp,
-                    'Bad response.',
+                    error instanceof Error ? error.message : 'Bad response.',
                     {
                         url: response.url,
                         body: json
@@ -74,16 +75,9 @@ class RetrieveAccountDetails
                     response.status
                 );
             }
+        } catch (error) {
+            throw handleHttpError(fqp, error);
         }
-        throw new ThorError(
-            fqp,
-            'Bad response.',
-            {
-                url: response.url
-            },
-            undefined,
-            response.status
-        );
     }
 
     /**

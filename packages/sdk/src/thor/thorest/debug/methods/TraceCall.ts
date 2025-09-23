@@ -1,4 +1,5 @@
 import { type HttpClient, type HttpPath, type HttpQuery } from '@common/http';
+import { handleHttpError } from '@thor/thorest/utils';
 import { PostDebugTracerCallRequest } from '@thor/thorest/debug';
 import { type PostDebugTracerCallRequestJSON } from '@thor/thorest/json';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
@@ -52,27 +53,19 @@ class TraceCall implements ThorRequest<TraceCall, unknown> {
         httpClient: HttpClient
     ): Promise<ThorResponse<TraceCall, unknown>> {
         const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<TraceCall, undefined>>`;
-        const response = await httpClient.post(
-            TraceCall.PATH,
-            this.query,
-            this.request.toJSON()
-        );
-        if (response.ok) {
+        try {
+            const response = await httpClient.post(
+                TraceCall.PATH,
+                this.query,
+                this.request.toJSON()
+            );
             const json: unknown = await response.json();
             return {
                 request: this,
                 response: json
             };
-        } else {
-            throw new ThorError(
-                fqp,
-                await response.text(),
-                {
-                    url: response.url
-                },
-                undefined,
-                response.status
-            );
+        } catch (error) {
+            throw handleHttpError(fqp, error);
         }
     }
 
