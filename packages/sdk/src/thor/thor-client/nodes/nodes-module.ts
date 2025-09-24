@@ -49,7 +49,7 @@ class NodesModule extends AbstractThorModule {
         const query = RetrieveRegularBlock.of(Revision.of(0)); // Genesis block is at revision 0
         const response = await query.askTo(this.httpClient);
 
-        if (response.response === null || !response.response.id) {
+        if (response.response?.id === undefined) {
             throw new IllegalArgumentError(
                 'NodesModule.getChainTag()',
                 'The genesis block id is null or undefined. Unable to get the chain tag.',

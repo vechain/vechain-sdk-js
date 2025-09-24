@@ -7,7 +7,6 @@ import {
     type ExecuteCodeResponseJSON,
     type ExecuteCodesResponseJSON
 } from '@thor/thorest/accounts/json';
-import { log } from '@common/logging';
 
 /**
  * Full-Qualified Path

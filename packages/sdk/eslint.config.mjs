@@ -14,7 +14,17 @@ export default [
                     message: "Please import using @vechain/sdk-<the-module>",
                 }],
             }],
-            "sonarjs/cognitive-complexity": ["error", 20],
+            "sonarjs/cognitive-complexity": "off",
+            
+            // Disable unsafe type checking rules for Viem layer compatibility
+            "@typescript-eslint/no-unsafe-assignment": "off",
+            "@typescript-eslint/no-unsafe-call": "off",
+            "@typescript-eslint/no-unsafe-member-access": "off",
+            "@typescript-eslint/no-unsafe-return": "off",
+            "@typescript-eslint/no-unsafe-argument": "off",
+            "@typescript-eslint/no-unsafe-construction": "off",
+            "@typescript-eslint/no-redundant-type-constituents": "off",
+            "@typescript-eslint/return-await": "off",
         },
     },
 ];

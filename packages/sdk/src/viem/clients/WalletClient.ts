@@ -284,7 +284,7 @@ class WalletClient extends PublicClient {
         signedTransactionRequest: SignedTransactionRequest,
         account: Account
     ): Promise<Hex> {
-        if (signedTransactionRequest.isIntendedToBeSponsored) {
+        if (signedTransactionRequest.isIntendedToBeSponsored === true) {
             const originHash = Blake2b256.of(
                 RLPCodecTransactionRequest.encode(
                     new TransactionRequest({

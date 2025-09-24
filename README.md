@@ -42,8 +42,11 @@ Explore, experiment, and let the VeChain SDK empower your blockchain adventures!
 > Docker is required for setting up a local thor-solo node for integration testing.
  - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
  - [Node.js](https://nodejs.org/en): versions 18, 19, 20 (LTS), 21 (latest)
- - [Yarn](https://classic.yarnpkg.com/en/docs/install)
+ - [Corepack](https://nodejs.org/api/corepack.html) (included with Node.js 16.10+)
  - [Docker](https://docs.docker.com/get-docker/)
+
+> **Important** <br />
+> This project uses **Yarn 4** (version 4.9.4) as specified in the `packageManager` field. Corepack will automatically manage the correct Yarn version for you.
 
 #### Additional prerequisites for Windows 10
 
@@ -87,10 +90,77 @@ please, follow the instructions below.
       Git Bash is installed, by default set to `C:\Program Files\Git\bin\bash.exe`.
 - Opening new **Terminal** panes in the IDE will use Git Bash.
 
+### Using Yarn 4 Locally
+
+This project uses **Yarn 4** (Berry) with Corepack for package management. Here's how to set it up and use it locally:
+
+#### Enable Corepack
+
+First, enable Corepack (included with Node.js 16.10+):
+
+```bash
+corepack enable
+```
+
+#### Install Dependencies
+
+The project will automatically use the correct Yarn version (4.9.4) as specified in the `packageManager` field:
+
+```bash
+corepack yarn install
+```
+
+#### Key Yarn 4 Commands
+
+All commands in this project use `corepack yarn` to ensure the correct version:
+
+```bash
+# Install dependencies
+corepack yarn install
+
+# Add a new dependency
+corepack yarn add <package-name>
+
+# Add a dev dependency
+corepack yarn add -D <package-name>
+
+# Run scripts
+corepack yarn <script-name>
+
+# Run workspace-specific commands
+corepack yarn workspace <workspace-name> <command>
+```
+
+#### Yarn 4 Configuration
+
+The project uses the following Yarn 4 configuration (`.yarnrc.yml`):
+
+```yaml
+nodeLinker: node-modules
+```
+
+This configuration uses the traditional `node_modules` folder structure for compatibility with existing tooling.
+
+#### Workspace Management
+
+This is a monorepo with workspaces. Yarn 4 handles workspace dependencies automatically:
+
+```bash
+# Install all workspace dependencies
+corepack yarn install
+
+# Run a command in a specific workspace
+corepack yarn workspace @vechain/sdk build
+
+# Run a command in all workspaces
+corepack yarn workspaces foreach run build
+```
+
 ### Getting Started
 1. Clone your forked repository.
 2. Navigate to the project directory.
-3. Run `yarn install` to install all dependencies.
+3. Enable Corepack: `corepack enable`
+4. Run `corepack yarn install` to install all dependencies.
 
 ### Official Documentation
 
@@ -98,11 +168,15 @@ Explore the full documentation and access example use cases by visiting the [VeC
 
 ### Commands
 
-- **Build**: Execute `yarn build` to build the project.
-- **Test**: Execute `yarn test:solo` to run all tests.
+All commands use `corepack yarn` to ensure the correct Yarn 4 version:
+
+- **Build**: Execute `corepack yarn build` to build the project.
+- **Test**: Execute `corepack yarn test:solo` to run all tests.
   - **NOTE**: Integration tests require a local thor-solo node. See the [Integration Testing](#integration-testing) section for more details. 
-- **Lint**: Execute `yarn lint` to lint all packages.
-- **Format**: Execute `yarn format` to format all packages.
+- **Lint**: Execute `corepack yarn lint` to lint all packages.
+- **Format**: Execute `corepack yarn format` to format all packages.
+
+> **Note**: You can also use `yarn` directly if you have Yarn 4 installed globally, but using `corepack yarn` ensures version consistency across different environments.
 
 ## Integration Testing
 
@@ -228,6 +302,56 @@ keystore.useExperimentalCryptography(true)
 ```
 
 ## Troubleshooting
+
+### Yarn 4 Issues
+
+#### Corepack Not Found
+If you get a "corepack: command not found" error:
+
+```bash
+# On macOS/Linux
+npm install -g corepack
+
+# On Windows (as Administrator)
+npm install -g corepack
+```
+
+#### Wrong Yarn Version
+If you're using the wrong Yarn version:
+
+```bash
+# Check current Yarn version
+yarn --version
+
+# Force Corepack to use the project's specified version
+corepack prepare yarn@4.9.4 --activate
+
+# Or simply run commands with corepack
+corepack yarn --version
+```
+
+#### Node Modules Issues
+If you encounter issues with `node_modules`:
+
+```bash
+# Clear Yarn cache
+corepack yarn cache clean
+
+# Remove node_modules and reinstall
+rm -rf node_modules
+corepack yarn install
+```
+
+#### Workspace Issues
+If workspace commands don't work:
+
+```bash
+# Verify workspace configuration
+corepack yarn workspaces list
+
+# Run commands with explicit workspace syntax
+corepack yarn workspace @vechain/sdk <command>
+```
 
 ### Next.js
 

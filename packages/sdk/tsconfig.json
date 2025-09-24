@@ -14,7 +14,27 @@
       "@thor": ["./src/thor"],
       "@thor/*": ["./src/thor/*"],
       "@ws": ["./src/ws"],
-      "@ws/*": ["./src/ws/*"]
+      "@ws/*": ["./src/ws/*"],
+      "@common": ["./src/common"],
+      "@common/*": ["./src/common/*"],
+      "@common/errors": ["./src/common/errors"],
+      "@common/vcdm": ["./src/common/vcdm"],
+      "@common/http": ["./src/common/http"],
+      "@common/logging": ["./src/common/logging"],
+      "@common/cryptography/secp256k1": ["./src/common/cryptography/secp256k1"],
+      "@common/cryptography/hdkey": ["./src/common/cryptography/hdkey"],
+      "@thor/thorest": ["./src/thor/thorest"],
+      "@thor/thorest/*": ["./src/thor/thorest/*"],
+      "@thor/thor-client": ["./src/thor/thor-client"],
+      "@thor/thor-client/*": ["./src/thor/thor-client/*"],
+      "@thor/utils": ["./src/thor/utils"],
+      "@viem": ["./src/viem"],
+      "@viem/*": ["./src/viem/*"],
+      "@viem/clients": ["./src/viem/clients"],
+      "@thor/thorest/json": ["./src/thor/thorest/json"],
+      "@thor/thorest/subscriptions/response": ["./src/thor/thorest/subscriptions/response"],
+      "@thor/thorest/accounts/response": ["./src/thor/thorest/accounts/response"],
+      "@thor/thor-client/model/logs/DecodedEventLog": ["./src/thor/thor-client/model/logs/DecodedEventLog"]
     }
   },
   "include": [

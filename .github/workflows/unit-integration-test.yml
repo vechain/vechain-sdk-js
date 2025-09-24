@@ -20,24 +20,27 @@ jobs:
               with:
                   node-version: ${{ matrix.node }}
 
+            - name: Enable Corepack
+              run: corepack enable
+
             - name: Install & Patch packages
-              run: yarn install
+              run: corepack yarn install
 
             - name: Preliminary Stop of Thor solo node
               id: preliminary-stop-solo
-              run: yarn stop-thor-solo
+              run: corepack yarn stop-thor-solo
 
             - name: Start Thor solo node
               id: start-solo
-              run: yarn start-thor-solo
+              run: corepack yarn start-thor-solo
 
             - name: Test
               id: unit-test
-              run: yarn test
+              run: corepack yarn test
 
             - name: Stop Thor solo node
               id: stop-solo
-              run: yarn stop-thor-solo
+              run: corepack yarn stop-thor-solo
 
             - name: Jest Coverage Comment
               if: matrix.node == 'lts/*'

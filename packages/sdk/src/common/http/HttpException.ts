@@ -42,6 +42,7 @@ class HttpException extends VeChainSDKError {
      * @param {Record<string, unknown>} [args] - Optional additional arguments related to the instance.
      * @param {Error} [cause] - Optional underlying error that caused the issue.
      */
+    // eslint-disable-next-line sonarjs/sonar-max-params
     constructor(
         fqn: string,
         message: string,

@@ -82,45 +82,20 @@ class PostDebugTracerCallRequest {
      */
     constructor(json: PostDebugTracerCallRequestJSON) {
         try {
-            this.name =
-                json.name !== undefined && json.name !== null
-                    ? (json.name as TracerName)
-                    : null;
+            this.name = this.parseOptionalString(
+                json.name
+            ) as TracerName | null;
             this.config = json.config ?? null;
             this.value = BigInt(json.value);
             this.data = HexUInt.of(json.data);
-            this.to =
-                json.to !== undefined && json.to !== null
-                    ? Address.of(json.to)
-                    : null;
-            this.gas =
-                json.gas !== undefined && json.gas !== null
-                    ? BigInt(json.gas)
-                    : null;
-            this.gasPrice =
-                json.gasPrice !== undefined && json.gasPrice !== null
-                    ? BigInt(json.gasPrice)
-                    : null;
-            this.caller =
-                json.caller !== undefined && json.caller !== null
-                    ? Address.of(json.caller)
-                    : null;
-            this.provedWork =
-                json.provedWork !== undefined && json.provedWork !== null
-                    ? UInt.of(Number(json.provedWork)).valueOf()
-                    : null;
-            this.gasPayer =
-                json.gasPayer !== undefined && json.provedWork !== null
-                    ? Address.of(json.gasPayer)
-                    : null;
-            this.expiration =
-                json.expiration !== undefined && json.expiration !== null
-                    ? UInt.of(Number(json.expiration)).valueOf()
-                    : null;
-            this.blockRef =
-                json.blockRef !== undefined && json.blockRef !== null
-                    ? HexUInt.of(json.blockRef)
-                    : null;
+            this.to = this.parseOptionalAddress(json.to);
+            this.gas = this.parseOptionalBigInt(json.gas);
+            this.gasPrice = this.parseOptionalBigInt(json.gasPrice);
+            this.caller = this.parseOptionalAddress(json.caller);
+            this.provedWork = this.parseOptionalUInt(json.provedWork);
+            this.gasPayer = this.parseOptionalAddress(json.gasPayer);
+            this.expiration = this.parseOptionalUInt(json.expiration);
+            this.blockRef = this.parseOptionalHexUInt(json.blockRef);
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: PostDebugTracerCallRequestJSON)`,
@@ -157,6 +132,34 @@ class PostDebugTracerCallRequest {
             blockRef:
                 this.blockRef !== null ? this.blockRef.toString() : undefined
         };
+    }
+
+    private parseOptionalString(value: unknown): string | null {
+        return value !== undefined && value !== null ? (value as string) : null;
+    }
+
+    private parseOptionalAddress(value: unknown): Address | null {
+        return value !== undefined && value !== null
+            ? Address.of(value as string)
+            : null;
+    }
+
+    private parseOptionalBigInt(value: unknown): bigint | null {
+        return value !== undefined && value !== null
+            ? BigInt(value as string)
+            : null;
+    }
+
+    private parseOptionalUInt(value: unknown): number | null {
+        return value !== undefined && value !== null
+            ? UInt.of(Number(value)).valueOf()
+            : null;
+    }
+
+    private parseOptionalHexUInt(value: unknown): HexUInt | null {
+        return value !== undefined && value !== null
+            ? HexUInt.of(value as string)
+            : null;
     }
 }
 

@@ -4,7 +4,6 @@ import {
     SignedTransactionRequest,
     SponsoredTransactionRequest
 } from '@thor/thor-client/model/transactions';
-import { ClauseData } from '@thor/thorest';
 import * as nc_utils from '@noble/curves/abstract/utils';
 import {
     Address,
@@ -14,7 +13,6 @@ import {
     Hex,
     HexBlobKind,
     HexUInt,
-    type HexUInt as HexUintType,
     IllegalArgumentError,
     NumericKind,
     OptionalFixedHexBlobKind,
@@ -166,17 +164,24 @@ class RLPCodecTransactionRequest {
         try {
             // Check if this is a dynamic fee transaction (EIP-1559) by looking for 0x51 prefix
             const isDynamicFee = encoded.length > 0 && encoded[0] === 0x51;
-            
+
             // Remove the transaction type prefix if present
             const rlpData = isDynamicFee ? encoded.slice(1) : encoded;
-            
+
             // Determine if transaction is signed by checking RLP structure length
             const rlpDecoded = RLP.ofEncoded(rlpData).decoded as unknown[];
             const expectedUnsignedLength = isDynamicFee
-                ? (RLPCodecTransactionRequest.RLP_UNSIGNED_DYNAMIC_FEE_TRANSACTION_PROFILE.kind as []).length
-                : (RLPCodecTransactionRequest.RLP_UNSIGNED_TRANSACTION_PROFILE.kind as []).length;
+                ? (
+                      RLPCodecTransactionRequest
+                          .RLP_UNSIGNED_DYNAMIC_FEE_TRANSACTION_PROFILE
+                          .kind as []
+                  ).length
+                : (
+                      RLPCodecTransactionRequest
+                          .RLP_UNSIGNED_TRANSACTION_PROFILE.kind as []
+                  ).length;
             const isSigned = rlpDecoded.length > expectedUnsignedLength;
-            
+
             // Select appropriate RLP profile based on transaction type and signature status
             let profile: RLPProfile;
             if (isDynamicFee) {
@@ -188,10 +193,11 @@ class RLPCodecTransactionRequest {
                     ? RLPCodecTransactionRequest.RLP_SIGNED_TRANSACTION_PROFILE
                     : RLPCodecTransactionRequest.RLP_UNSIGNED_TRANSACTION_PROFILE;
             }
-            
+
             // Decode using the appropriate profile
-            const decoded = RLPProfiler.ofObjectEncoded(rlpData, profile).object as RLPValidObject;
-            
+            const decoded = RLPProfiler.ofObjectEncoded(rlpData, profile)
+                .object as RLPValidObject;
+
             // Parse clauses
             const clauses = (decoded.clauses as []).map(
                 (decodedClause: RLPValidObject) => {
@@ -209,9 +215,9 @@ class RLPCodecTransactionRequest {
                     });
                 }
             );
-            
+
             const isIntendedToBeSponsored = (decoded.reserved as []).length > 0;
-            
+
             // Create transaction request with appropriate fields based on transaction type
             let transactionRequest: TransactionRequest;
             if (isDynamicFee) {
@@ -227,12 +233,16 @@ class RLPCodecTransactionRequest {
                     expiration: decoded.expiration as number,
                     gas: BigInt(decoded.gas as bigint),
                     gasPriceCoef: 0n, // Dynamic fee transactions use 0 for gasPriceCoef
-                    maxFeePerGas: decoded.maxFeePerGas !== undefined && decoded.maxFeePerGas !== null
-                        ? BigInt(decoded.maxFeePerGas as bigint) 
-                        : undefined,
-                    maxPriorityFeePerGas: decoded.maxPriorityFeePerGas !== undefined && decoded.maxPriorityFeePerGas !== null
-                        ? BigInt(decoded.maxPriorityFeePerGas as bigint) 
-                        : undefined,
+                    maxFeePerGas:
+                        decoded.maxFeePerGas !== undefined &&
+                        decoded.maxFeePerGas !== null
+                            ? BigInt(decoded.maxFeePerGas as bigint)
+                            : undefined,
+                    maxPriorityFeePerGas:
+                        decoded.maxPriorityFeePerGas !== undefined &&
+                        decoded.maxPriorityFeePerGas !== null
+                            ? BigInt(decoded.maxPriorityFeePerGas as bigint)
+                            : undefined,
                     nonce: decoded.nonce as number,
                     isIntendedToBeSponsored
                 });
@@ -253,7 +263,7 @@ class RLPCodecTransactionRequest {
                     isIntendedToBeSponsored
                 });
             }
-            
+
             if (isSigned) {
                 const signature = decoded.signature as Uint8Array;
                 const encodedTransactionRequest =
@@ -331,9 +341,10 @@ class RLPCodecTransactionRequest {
         const isDynamicFee = transactionRequest.isDynamicFee();
         const body = {
             ...RLPCodecTransactionRequest.mapBody(transactionRequest),
-            reserved: transactionRequest.isIntendedToBeSponsored
-                ? [Uint8Array.of(1)]
-                : [] // encodeReservedField(tx)
+            reserved:
+                transactionRequest.isIntendedToBeSponsored === true
+                    ? [Uint8Array.of(1)]
+                    : [] // encodeReservedField(tx)
         };
 
         if (isDynamicFee) {
@@ -358,9 +369,10 @@ class RLPCodecTransactionRequest {
         const isDynamicFee = transactionRequest.isDynamicFee();
         const body = {
             ...RLPCodecTransactionRequest.mapBody(transactionRequest),
-            reserved: transactionRequest.isIntendedToBeSponsored
-                ? [Uint8Array.of(1)]
-                : [] // encodeReservedField(tx)
+            reserved:
+                transactionRequest.isIntendedToBeSponsored === true
+                    ? [Uint8Array.of(1)]
+                    : [] // encodeReservedField(tx)
         };
 
         if (isDynamicFee) {

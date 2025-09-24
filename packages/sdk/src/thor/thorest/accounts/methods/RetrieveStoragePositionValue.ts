@@ -1,5 +1,5 @@
-import { HttpQuery, type HttpClient, type HttpPath } from '@common/http';
-import { Revision, type Address, type Hex } from '@common/vcdm';
+import { type HttpQuery, type HttpClient, type HttpPath } from '@common/http';
+import { type Revision, type Address, type Hex } from '@common/vcdm';
 import { GetStorageResponse } from '@thor/thorest';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
 import { type GetStorageResponseJSON } from '@thor/thorest/json';
