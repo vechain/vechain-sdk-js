@@ -114,7 +114,11 @@ class GasModule extends AbstractThorModule {
             query = query.withNewestBlock(newestBlock);
         }
 
-        if (rewardPercentiles && rewardPercentiles.length > 0) {
+        if (
+            rewardPercentiles !== null &&
+            rewardPercentiles !== undefined &&
+            rewardPercentiles.length > 0
+        ) {
             query = query.withRewardPercentiles(rewardPercentiles);
         }
 

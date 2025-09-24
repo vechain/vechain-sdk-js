@@ -10,8 +10,6 @@ import { type TransferLogFilter } from '@thor/thor-client/model/logs/TransferLog
 /**
  * Full-Qualified-Path
  */
-const FQP =
-    'packages/sdk/src/thor/thorest/logs/response/TransferLogFilterRequest.ts!';
 
 /**
  * Overall filter request for transfer logs.

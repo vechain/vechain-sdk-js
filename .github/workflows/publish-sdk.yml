@@ -16,37 +16,39 @@ jobs:
               with:
                   node-version-file: .nvmrc
                   registry-url: 'https://npm.pkg.github.com/'
-            - run: yarn install
+            - name: Enable Corepack
+              run: corepack enable
+            - run: corepack yarn install
 
             - name: Install playwright dependencies (for sample Vite dApp tests)
-              run: yarn playwright install
+              run: corepack yarn playwright install
 
-            - run: yarn build
+            - run: corepack yarn build
 
             - name: Start Thor solo node
               id: start-solo
-              run: yarn start-thor-solo
+              run: corepack yarn start-thor-solo
 
             - name: Run Unit & Integration tests
-              run: yarn test
+              run: corepack yarn test
 
             - name: Stop Thor solo node
               id: stop-solo
-              run: yarn stop-thor-solo
+              run: corepack yarn stop-thor-solo
 
             - name: Publish core
               run: |
                   cd packages/core
-                  yarn version --no-git-tag-version --new-version ${{ github.ref_name }}
-                  yarn publish
+                  corepack yarn version --no-git-tag-version --new-version ${{ github.ref_name }}
+                  corepack yarn publish
               env:
                   NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
             - name: Publish logging
               run: |
                 cd packages/logging
-                yarn version --no-git-tag-version --new-version ${{ github.ref_name }}
-                yarn publish
+                corepack yarn version --no-git-tag-version --new-version ${{ github.ref_name }}
+                corepack yarn publish
               env:
                 NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 

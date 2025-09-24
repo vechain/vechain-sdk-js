@@ -16,14 +16,17 @@ jobs:
               with:
                   node-version: lts/*
 
+            - name: Enable Corepack
+              run: corepack enable
+
             - name: Install & Patch packages
-              run: yarn install
+              run: corepack yarn install
 
             - name: Lint
-              run: yarn lint
+              run: corepack yarn lint
 
             - name: Circular dependencies check
-              run: yarn check:circular-dependencies
+              run: corepack yarn check:circular-dependencies
 
             - name: Build
-              run: yarn build
+              run: corepack yarn build

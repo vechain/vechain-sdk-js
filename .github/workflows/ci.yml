@@ -29,7 +29,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
-          cache: yarn
+          cache: 'npm'
+
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: Cache node_modules
         uses: actions/cache@v4
@@ -37,7 +40,7 @@ jobs:
           path: |
             node_modules
             packages/*/node_modules
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}-yarn4
           restore-keys: |
             ${{ runner.os }}-modules-
 
@@ -50,10 +53,10 @@ jobs:
             ${{ runner.os }}-turbo-
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: corepack yarn install --immutable
 
       - name: Lint
-        run: yarn lint
+        run: corepack yarn lint
 
   tests_unit:
     name: Tests • Unit (Node)
@@ -67,7 +70,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
-          cache: yarn
+          cache: 'npm'
+
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: Cache node_modules
         uses: actions/cache@v4
@@ -75,18 +81,18 @@ jobs:
           path: |
             node_modules
             packages/*/node_modules
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}-yarn4
           restore-keys: |
             ${{ runner.os }}-modules-
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: corepack yarn install --immutable
 
       - name: Build
-        run: yarn build
+        run: corepack yarn build
 
       - name: Unit tests
-        run: yarn test:unit
+        run: corepack yarn test:unit
 
       - name: Archive coverage (unit)
         if: always()
@@ -108,7 +114,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
-          cache: yarn
+          cache: 'npm'
+
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: Cache node_modules
         uses: actions/cache@v4
@@ -116,30 +125,30 @@ jobs:
           path: |
             node_modules
             packages/*/node_modules
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}-yarn4
           restore-keys: |
             ${{ runner.os }}-modules-
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: corepack yarn install --immutable
 
       - name: Build
-        run: yarn build
+        run: corepack yarn build
 
       - name: Preliminary Stop of Thor solo node
-        run: yarn stop-thor-solo || true
+        run: corepack yarn stop-thor-solo || true
 
       - name: Start & Seed Thor solo node
         run: |
-          yarn start-thor-solo
-          yarn seed-thor-solo
+          corepack yarn start-thor-solo
+          corepack yarn seed-thor-solo
 
       - name: Integration tests
-        run: yarn test:integration
+        run: corepack yarn test:integration
 
       - name: Stop Thor solo node
         if: always()
-        run: yarn stop-thor-solo || true
+        run: corepack yarn stop-thor-solo || true
 
       - name: Archive coverage (integration)
         if: always()
@@ -161,7 +170,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
-          cache: yarn
+          cache: 'npm'
+
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: Cache node_modules
         uses: actions/cache@v4
@@ -169,30 +181,30 @@ jobs:
           path: |
             node_modules
             packages/*/node_modules
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}-yarn4
           restore-keys: |
             ${{ runner.os }}-modules-
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: corepack yarn install --immutable
 
       - name: Build
-        run: yarn build
+        run: corepack yarn build
 
       - name: Preliminary Stop of Thor solo node
-        run: yarn stop-thor-solo || true
+        run: corepack yarn stop-thor-solo || true
 
       - name: Start & Seed Thor solo node
         run: |
-          yarn start-thor-solo
-          yarn seed-thor-solo
+          corepack yarn start-thor-solo
+          corepack yarn seed-thor-solo
 
       - name: Clients tests
-        run: yarn test:clients
+        run: corepack yarn test:clients
 
       - name: Stop Thor solo node
         if: always()
-        run: yarn stop-thor-solo || true
+        run: corepack yarn stop-thor-solo || true
 
       - name: Archive coverage (clients)
         if: always()
@@ -215,28 +227,28 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
-          cache: yarn
+          cache: 'npm'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: corepack yarn install --immutable
 
       - name: Build
-        run: yarn build
+        run: corepack yarn build
 
       - name: Preliminary Stop of Thor solo node
-        run: yarn stop-thor-solo || true
+        run: corepack yarn stop-thor-solo || true
 
       - name: Start & Seed Thor solo node
         run: |
-          yarn start-thor-solo
-          yarn seed-thor-solo
+          corepack yarn start-thor-solo
+          corepack yarn seed-thor-solo
 
       - name: Browser tests
-        run: yarn test:browser
+        run: corepack yarn test:browser
 
       - name: Stop Thor solo node
         if: always()
-        run: yarn stop-thor-solo || true
+        run: corepack yarn stop-thor-solo || true
 
       - name: Archive coverage (browser)
         if: always()
