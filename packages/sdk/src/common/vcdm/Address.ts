@@ -1,7 +1,7 @@
 import { HDKey } from '@common/cryptography/hdkey';
 import { IllegalArgumentError } from '@common/errors';
 import { Secp256k1 } from '@common/cryptography/secp256k1';
-import { Txt, Hex, Keccak256 } from '@common/vcdm';
+import { Hex, Keccak256, Txt } from '@common/vcdm';
 import { HexUInt } from './HexUInt';
 
 /**
@@ -121,6 +121,8 @@ class Address extends HexUInt {
      * @param {Uint8Array} publicKey - The public key to convert.
      *
      * @returns {Address} The converted address.
+     *
+     * @throws {IllegalArgumentError} If the `publicKey` is invalid.
      *
      * @remarks Security audited method, depends on
      * * {@link Secp256k1.inflatePublicKey}.

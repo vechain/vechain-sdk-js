@@ -7,6 +7,11 @@ import { type TransactionRequestJSON } from '@thor/thorest/json';
  */
 interface TransactionRequestParam {
     /**
+     * The address of the account begging to pay the gas fee.
+     */
+    beggar?: Address;
+
+    /**
      * The first 8 bytes of the referenced block ID.
      */
     blockRef: Hex;
@@ -47,11 +52,6 @@ interface TransactionRequestParam {
     nonce: number;
 
     /**
-     * Indicates if the gas cost transaction is sponsored by a "gas payer".
-     */
-    isIntendedToBeSponsored?: boolean;
-
-    /**
      * The maximum fee per gas the sender is willing to pay (EIP-1559 dynamic fees).
      * If specified, this transaction uses dynamic fee pricing instead of gasPriceCoef.
      */
@@ -62,11 +62,6 @@ interface TransactionRequestParam {
      * This is the tip paid to validators for transaction inclusion priority.
      */
     maxPriorityFeePerGas?: bigint;
-
-    /**
-     * The address of the origin account sending and signing the transaction.
-     */
-    origin?: Address;
 }
 
 /**
@@ -74,6 +69,13 @@ interface TransactionRequestParam {
  * Encapsulates all information required to process and execute a transaction.
  */
 class TransactionRequest implements TransactionRequestParam {
+    // Inherited from TransactionRequestParam
+
+    /**
+     * The address of the account begging to pay the gas fee.
+     */
+    public readonly beggar?: Address;
+
     /**
      * The first 8 bytes of the referenced block ID.
      */
@@ -115,11 +117,6 @@ class TransactionRequest implements TransactionRequestParam {
     public readonly nonce: number;
 
     /**
-     * Indicates if the gas cost transaction is sponsored by a "gas payer".
-     */
-    isIntendedToBeSponsored?: boolean;
-
-    /**
      * The maximum fee per gas the sender is willing to pay (EIP-1559 dynamic fees).
      * If specified, this transaction uses dynamic fee pricing instead of gasPriceCoef.
      */
@@ -131,31 +128,31 @@ class TransactionRequest implements TransactionRequestParam {
      */
     public readonly maxPriorityFeePerGas?: bigint;
 
+    // TransactionRequest specific properties
+
+    /**
+     * The address of the sponsor delegated to pay the gas to execute the transaction request.
+     */
+    public readonly gasPayerSignature: Uint8Array;
+
     /**
      * The address of the origin account sending and signing the transaction.
      */
-    public readonly origin?: Address;
+    public readonly originSignature: Uint8Array;
 
     /**
-     * Constructs a new instance of the class using the provided transaction parameters.
+     * Constructs a new instance of the class with the provided parameters.
      *
      * @param {TransactionRequestParam} params - The transaction request parameters.
-     * @param {string} params.blockRef - The reference to the block.
-     * @param {number} params.chainTag - The chain tag associated with the transaction.
-     * @param {Array} params.clauses - The clauses defining the transaction.
-     * @param {string} [params.dependsOn] - The ID of a transaction this transaction depends on.
-     * @param {number} params.expiration - The number of blocks before the transaction expires.
-     * @param {number} params.gas - The gas limit for the transaction.
-     * @param {number} params.gasPriceCoef - The gas price coefficient.
-     * @param {string} params.nonce - The unique identifier for the transaction.
-     * @param {boolean} [params.isIntendedToBeSponsored=false] - Specifies if the transaction is intended to be sponsored.
-     * @param {number} [params.maxFeePerGas] - The maximum fee per unit of gas.
-     * @param {number} [params.maxPriorityFeePerGas] - The maximum priority fee per unit of gas.
-     * @param {string} [params.origin] - The origin of the transaction.
-     *
-     * @return {void} This is a constructor and does not return a value.
+     * @param {Uint8Array} [originSignature] - Optional origin signature for the transaction.
+     * @param {Uint8Array} [gasPayerSignature] - Optional gas payer signature for the transaction.
      */
-    public constructor(params: TransactionRequestParam) {
+    public constructor(
+        params: TransactionRequestParam,
+        originSignature?: Uint8Array,
+        gasPayerSignature?: Uint8Array
+    ) {
+        this.beggar = params.beggar;
         this.blockRef = params.blockRef;
         this.chainTag = params.chainTag;
         this.clauses = params.clauses;
@@ -164,10 +161,12 @@ class TransactionRequest implements TransactionRequestParam {
         this.gas = params.gas;
         this.gasPriceCoef = params.gasPriceCoef;
         this.nonce = params.nonce;
-        this.isIntendedToBeSponsored = params.isIntendedToBeSponsored ?? false;
         this.maxFeePerGas = params.maxFeePerGas;
         this.maxPriorityFeePerGas = params.maxPriorityFeePerGas;
-        this.origin = params.origin;
+        // Defensive copy of the signatures to prevent accidental mutation.
+        this.originSignature = new Uint8Array(originSignature ?? []);
+        // Defensive copy of the signatures to prevent accidental mutation.
+        this.gasPayerSignature = new Uint8Array(gasPayerSignature ?? []);
     }
 
     /**
@@ -176,7 +175,7 @@ class TransactionRequest implements TransactionRequestParam {
      *
      * @return {boolean} `true` if this is a dynamic fee transaction, `false` for legacy.
      */
-    public isDynamicFee(): boolean {
+    public get isDynamicFee(): boolean {
         return (
             this.maxFeePerGas !== undefined ||
             this.maxPriorityFeePerGas !== undefined
@@ -184,12 +183,26 @@ class TransactionRequest implements TransactionRequestParam {
     }
 
     /**
-     * Checks if the transaction request is signed.
-     *
-     * @return {boolean} `false`, because a `TransactionRequest` instance is not signed yet.
+     * Indicates if the `beggar` address asks the gas cost transaction is sponsored by a "gas payer".
      */
-    public isSigned(): boolean {
-        return false;
+    public get isIntendedToBeSponsored(): boolean {
+        return this.beggar !== undefined;
+    }
+
+    /**
+     * Determines whether the instance is signed by verifying the presence of signatures.
+     *
+     * @return {boolean} True if the required signatures are present, otherwise false.
+     * - If `beggar` is defined, the transaction is signed if both `originSignature` and `gasPayerSignature` are present.
+     * - If `beggar` is undefined, the transaction is signed if `originSignature` is present.
+     */
+    public get isSigned(): boolean {
+        if (this.beggar === undefined) {
+            return this.originSignature.length > 0;
+        }
+        return (
+            this.originSignature.length > 0 && this.gasPayerSignature.length > 0
+        );
     }
 
     /**
@@ -199,6 +212,7 @@ class TransactionRequest implements TransactionRequestParam {
      */
     public toJSON(): TransactionRequestJSON {
         return {
+            beggar: this.beggar?.toString(),
             blockRef: this.blockRef.toString(),
             chainTag: this.chainTag,
             clauses: this.clauses.map((clause: Clause) => clause.toJSON()),
@@ -206,6 +220,10 @@ class TransactionRequest implements TransactionRequestParam {
             expiration: this.expiration,
             isIntendedToBeSponsored: this.isIntendedToBeSponsored ?? false,
             gas: this.gas,
+            gasPayerSignature:
+                this.gasPayerSignature.length > 0
+                    ? this.gasPayerSignature.toString()
+                    : undefined,
             gasPriceCoef: this.gasPriceCoef,
             maxFeePerGas:
                 this.maxFeePerGas === undefined
@@ -220,7 +238,10 @@ class TransactionRequest implements TransactionRequestParam {
                       ? this.maxPriorityFeePerGas
                       : undefined,
             nonce: this.nonce,
-            origin: this.origin?.toString()
+            originSignature:
+                this.originSignature.length > 0
+                    ? this.originSignature.toString()
+                    : undefined
         } satisfies TransactionRequestJSON;
     }
 }

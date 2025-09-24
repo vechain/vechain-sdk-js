@@ -2,17 +2,13 @@ import {
     Address,
     Blake2b256,
     InvalidPrivateKeyError,
-    Secp256k1,
-    UnsupportedOperationError
+    Secp256k1
 } from '@common';
 import {
-    OriginSignedTransactionRequest,
-    SponsoredTransactionRequest,
-    TransactionRequest
+    type SignedTransactionRequest,
+    type TransactionRequest
 } from '@thor/thor-client/model/transactions';
-import { RLPCodecTransactionRequest } from './RLPCodeTransactionRequest';
 import { type Signer } from './Signer';
-import * as nc_utils from '@noble/curves/abstract/utils';
 
 /**
  * Full-Qualified Path
@@ -101,19 +97,17 @@ class PrivateKeySigner implements Signer {
      */
     private signTransactionRequest(
         transactionRequest: TransactionRequest
-    ): OriginSignedTransactionRequest {
-        if (this.#privateKey !== null) {
-            const hash = Blake2b256.of(
-                RLPCodecTransactionRequest.encode(transactionRequest)
-            ).bytes;
-            const signature = Secp256k1.sign(hash, this.#privateKey);
-            return new OriginSignedTransactionRequest({
-                ...transactionRequest,
-                origin: this.address,
-                originSignature: signature,
-                signature
-            });
-        }
+    ): TransactionRequest {
+        // if (this.#privateKey !== null) {
+        //     const hash = Blake2b256.of(
+        //         RLPCodecTransactionRequest.encode(transactionRequest)
+        //     ).bytes;
+        //     const originSignature = Secp256k1.sign(hash, this.#privateKey);
+        //     return new SignedTransactionRequest(
+        //         new TransactionRequest(transactionRequest, originSignature),
+        //         originSignature
+        //     );
+        // }
         throw new InvalidPrivateKeyError(
             `${FQP}PrivateKeySigner.sign(transactionRequest: TransactionRequest): SignedTransactionRequest`,
             'no private key'
@@ -138,11 +132,11 @@ class PrivateKeySigner implements Signer {
      * - Follow links for additional security notes.
      */
     public sign(
-        transactionRequest: TransactionRequest | OriginSignedTransactionRequest
-    ): OriginSignedTransactionRequest | SponsoredTransactionRequest {
-        if (transactionRequest instanceof OriginSignedTransactionRequest) {
-            return this.sponsorTransactionRequest(transactionRequest);
-        }
+        transactionRequest: TransactionRequest
+    ): TransactionRequest | SignedTransactionRequest {
+        // if (transactionRequest instanceof OriginSignedTransactionRequest) {
+        //     return this.sponsorTransactionRequest(transactionRequest);
+        // }
         return this.signTransactionRequest(transactionRequest);
     }
 
@@ -162,70 +156,70 @@ class PrivateKeySigner implements Signer {
      * - {@link Secp256k1.sign}.
      * - Follow links for additional security notes.
      */
-    private sponsorTransactionRequest(
-        signedTransactionRequest: OriginSignedTransactionRequest
-    ): SponsoredTransactionRequest {
-        if (this.#privateKey !== null) {
-            if (signedTransactionRequest.isIntendedToBeSponsored) {
-                const originHash = Blake2b256.of(
-                    RLPCodecTransactionRequest.encode(
-                        new TransactionRequest({
-                            blockRef: signedTransactionRequest.blockRef,
-                            chainTag: signedTransactionRequest.chainTag,
-                            clauses: signedTransactionRequest.clauses,
-                            dependsOn: signedTransactionRequest.dependsOn,
-                            expiration: signedTransactionRequest.expiration,
-                            gas: signedTransactionRequest.gas,
-                            gasPriceCoef: signedTransactionRequest.gasPriceCoef,
-                            nonce: signedTransactionRequest.nonce,
-                            isIntendedToBeSponsored:
-                                signedTransactionRequest.isIntendedToBeSponsored
-                        })
-                    )
-                );
-                const gasPayerHash = Blake2b256.of(
-                    nc_utils.concatBytes(
-                        originHash.bytes,
-                        signedTransactionRequest.origin.bytes
-                    )
-                );
-                const gasPayerSignature = Secp256k1.sign(
-                    gasPayerHash.bytes,
-                    this.#privateKey
-                );
-                return new SponsoredTransactionRequest({
-                    blockRef: signedTransactionRequest.blockRef,
-                    chainTag: signedTransactionRequest.chainTag,
-                    clauses: signedTransactionRequest.clauses,
-                    dependsOn: signedTransactionRequest.dependsOn,
-                    expiration: signedTransactionRequest.expiration,
-                    gas: signedTransactionRequest.gas,
-                    gasPriceCoef: signedTransactionRequest.gasPriceCoef,
-                    nonce: signedTransactionRequest.nonce,
-                    isIntendedToBeSponsored: true,
-                    maxFeePerGas: signedTransactionRequest.maxFeePerGas,
-                    maxPriorityFeePerGas:
-                        signedTransactionRequest.maxPriorityFeePerGas,
-                    origin: signedTransactionRequest.origin,
-                    originSignature: signedTransactionRequest.originSignature,
-                    gasPayer: this.address,
-                    gasPayerSignature,
-                    signature: nc_utils.concatBytes(
-                        signedTransactionRequest.originSignature,
-                        gasPayerSignature
-                    )
-                });
-            }
-            throw new UnsupportedOperationError(
-                `${FQP}PrivateKeySigner.sign(signedTransactionRequest: SignedTransactionRequest): SponsoredTransactionRequest`,
-                'transaction request is not intended to be sponsored'
-            );
-        }
-        throw new InvalidPrivateKeyError(
-            `${FQP}PrivateKeySigner.sign(signedTransactionRequest: SignedTransactionRequest): SponsoredTransactionRequest`,
-            'no private key'
-        );
-    }
+    // private sponsorTransactionRequest(
+    //     signedTransactionRequest: OriginSignedTransactionRequest
+    // ): SponsoredTransactionRequest {
+    //     if (this.#privateKey !== null) {
+    //         if (signedTransactionRequest.isIntendedToBeSponsored) {
+    //             const originHash = Blake2b256.of(
+    //                 RLPCodecTransactionRequest.encode(
+    //                     new TransactionRequest({
+    //                         blockRef: signedTransactionRequest.blockRef,
+    //                         chainTag: signedTransactionRequest.chainTag,
+    //                         clauses: signedTransactionRequest.clauses,
+    //                         dependsOn: signedTransactionRequest.dependsOn,
+    //                         expiration: signedTransactionRequest.expiration,
+    //                         gas: signedTransactionRequest.gas,
+    //                         gasPriceCoef: signedTransactionRequest.gasPriceCoef,
+    //                         nonce: signedTransactionRequest.nonce,
+    //                         isIntendedToBeSponsored:
+    //                             signedTransactionRequest.isIntendedToBeSponsored
+    //                     })
+    //                 )
+    //             );
+    //             const gasPayerHash = Blake2b256.of(
+    //                 nc_utils.concatBytes(
+    //                     originHash.bytes,
+    //                     signedTransactionRequest.origin.bytes
+    //                 )
+    //             );
+    //             const gasPayerSignature = Secp256k1.sign(
+    //                 gasPayerHash.bytes,
+    //                 this.#privateKey
+    //             );
+    //             return new SponsoredTransactionRequest({
+    //                 blockRef: signedTransactionRequest.blockRef,
+    //                 chainTag: signedTransactionRequest.chainTag,
+    //                 clauses: signedTransactionRequest.clauses,
+    //                 dependsOn: signedTransactionRequest.dependsOn,
+    //                 expiration: signedTransactionRequest.expiration,
+    //                 gas: signedTransactionRequest.gas,
+    //                 gasPriceCoef: signedTransactionRequest.gasPriceCoef,
+    //                 nonce: signedTransactionRequest.nonce,
+    //                 isIntendedToBeSponsored: true,
+    //                 maxFeePerGas: signedTransactionRequest.maxFeePerGas,
+    //                 maxPriorityFeePerGas:
+    //                     signedTransactionRequest.maxPriorityFeePerGas,
+    //                 origin: signedTransactionRequest.origin,
+    //                 originSignature: signedTransactionRequest.originSignature,
+    //                 gasPayer: this.address,
+    //                 gasPayerSignature,
+    //                 signature: nc_utils.concatBytes(
+    //                     signedTransactionRequest.originSignature,
+    //                     gasPayerSignature
+    //                 )
+    //             });
+    //         }
+    //         throw new UnsupportedOperationError(
+    //             `${FQP}PrivateKeySigner.sign(signedTransactionRequest: SignedTransactionRequest): SponsoredTransactionRequest`,
+    //             'transaction request is not intended to be sponsored'
+    //         );
+    //     }
+    //     throw new InvalidPrivateKeyError(
+    //         `${FQP}PrivateKeySigner.sign(signedTransactionRequest: SignedTransactionRequest): SponsoredTransactionRequest`,
+    //         'no private key'
+    //     );
+    // }
 }
 
 export { PrivateKeySigner };
