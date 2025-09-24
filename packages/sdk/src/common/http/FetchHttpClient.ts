@@ -301,7 +301,7 @@ class FetchHttpClient implements HttpClient {
                         method: 'POST',
                         path: httpPath.path,
                         query: httpQuery.query,
-                        body: body
+                        body
                     }
                 );
             }
@@ -327,7 +327,7 @@ class FetchHttpClient implements HttpClient {
                         method: 'POST',
                         path: httpPath.path,
                         query: httpQuery.query,
-                        body: body,
+                        body,
                         timeout: this.options.timeout
                     },
                     error
@@ -346,7 +346,7 @@ class FetchHttpClient implements HttpClient {
                     method: 'POST',
                     path: httpPath.path,
                     query: httpQuery.query,
-                    body: body
+                    body
                 },
                 error instanceof Error ? error : undefined
             );
