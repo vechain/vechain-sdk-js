@@ -8,7 +8,6 @@ import {
     type ExpandedBlockResponse,
     InspectClauses,
     NewTransactionSubscription,
-    type RawTx,
     type RegularBlockResponse,
     RetrieveAccountDetails,
     RetrieveContractBytecode,

@@ -16,7 +16,6 @@ import {
     IllegalArgumentError,
     NumericKind,
     OptionalFixedHexBlobKind,
-    Quantity,
     RLP,
     type RLPProfile,
     RLPProfiler,

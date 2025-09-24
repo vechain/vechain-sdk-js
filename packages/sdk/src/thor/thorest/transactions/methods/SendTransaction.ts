@@ -8,7 +8,6 @@ import {
 } from '@thor/thorest';
 import { type TXIDJSON } from '@thor/thorest/json';
 import { handleHttpError } from '@thor/thorest/utils';
-import { log } from '@common/logging';
 
 /**
  * Full-Qualified Path

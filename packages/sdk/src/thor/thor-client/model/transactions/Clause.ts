@@ -3,11 +3,6 @@ import { type ClauseJSON } from '@thor/thorest/json';
 import { type ClauseData } from '@thor/thorest/common';
 
 /**
- * Full-Qualified Path
- */
-const FQP = 'packages/sdk/src/thor/thorest/model/Clause.ts!';
-
-/**
  * [Clause](http://localhost:8669/doc/stoplight-ui/#/schemas/Clause)
  */
 class Clause {
