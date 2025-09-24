@@ -3,10 +3,10 @@ interface EstimateGas {
     gasPayer?: string;
     expiration?: number;
     blockRef?: string;
-    clauses?: {
+    clauses?: Array<{
         to: string | null;
         value: string;
-    }[];
+    }>;
     gas?: number;
     gasPrice?: string;
     caller?: string;

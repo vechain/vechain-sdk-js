@@ -1,13 +1,14 @@
 import { Revision } from '@common/vcdm';
 import { FetchHttpClient } from '@common/http';
 import {
+    RawBlockResponse,
     RawTx,
     RetrieveRawBlock,
     ThorError,
     ThorNetworks
 } from '@thor/thorest';
 import { expect } from '@jest/globals';
-import { type RawTxJSON } from '@thor/thorest/json';
+import { type RawBlockJSON } from '@thor/thorest/json';
 
 class InvalidRevision extends Revision {
     constructor() {
@@ -38,12 +39,12 @@ describe('RetrieveRawBlock SOLO tests', () => {
     test('ok <- block 0', async () => {
         const expected = {
             raw: '0xf8a5a0ffffffff00000000000000000000000000000000000000000000000000000000845afb0400839896809400000000000000000000000000000000000000008080a045b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0a093de0ffb1f33bc0af053abc2a87c4af44594f5dcb1cb879dd823686a15d68550a045b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c080'
-        } satisfies RawTxJSON;
+        } satisfies RawBlockJSON;
         const actual = (
             await RetrieveRawBlock.of(Revision.of(0)).askTo(httpClient)
         ).response;
         expect(actual).toBeDefined();
-        expect(actual).toBeInstanceOf(RawTx);
+        expect(actual).toBeInstanceOf(RawBlockResponse);
         expect(actual?.toJSON()).toEqual(expected);
     });
 
@@ -52,7 +53,7 @@ describe('RetrieveRawBlock SOLO tests', () => {
             await RetrieveRawBlock.of(Revision.of(1)).askTo(httpClient)
         ).response;
         expect(actual).toBeDefined();
-        expect(actual).toBeInstanceOf(RawTx);
+        expect(actual).toBeInstanceOf(RawBlockResponse);
     });
 
     test('ok <- block BEST', async () => {
@@ -60,19 +61,19 @@ describe('RetrieveRawBlock SOLO tests', () => {
             await RetrieveRawBlock.of(Revision.BEST).askTo(httpClient)
         ).response;
         expect(actual).toBeDefined();
-        expect(actual).toBeInstanceOf(RawTx);
+        expect(actual).toBeInstanceOf(RawBlockResponse);
     });
 
     test('ok <- block FINALIZED', async () => {
         const expected = {
             raw: '0xf8a5a0ffffffff00000000000000000000000000000000000000000000000000000000845afb0400839896809400000000000000000000000000000000000000008080a045b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0a093de0ffb1f33bc0af053abc2a87c4af44594f5dcb1cb879dd823686a15d68550a045b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c080'
-        } satisfies RawTxJSON;
+        } satisfies RawBlockJSON;
         const actual = (
             await RetrieveRawBlock.of(Revision.FINALIZED).askTo(httpClient)
         ).response;
         expect(actual).toBeDefined();
-        expect(actual).toBeInstanceOf(RawTx);
-        expect(actual).toEqual(new RawTx(expected));
+        expect(actual).toBeInstanceOf(RawBlockResponse);
+        expect(actual).toEqual(new RawBlockResponse(expected));
     });
 
     test('null <- block not found', async () => {

@@ -4,7 +4,6 @@ import {
     SignedTransactionRequest,
     SponsoredTransactionRequest
 } from '@thor/thor-client/model/transactions';
-import { ClauseData } from '@thor/thorest';
 import * as nc_utils from '@noble/curves/abstract/utils';
 import {
     Address,
@@ -14,7 +13,6 @@ import {
     Hex,
     HexBlobKind,
     HexUInt,
-    type HexUInt as HexUintType,
     IllegalArgumentError,
     NumericKind,
     OptionalFixedHexBlobKind,
@@ -203,18 +201,13 @@ class RLPCodecTransactionRequest {
             // Parse clauses
             const clauses = (decoded.clauses as []).map(
                 (decodedClause: RLPValidObject) => {
-                    return ClauseData.of({
-                        to: (decodedClause.to as string) ?? null,
-                        value:
-                            typeof decodedClause.value === 'number'
-                                ? Quantity.of(decodedClause.value).toString()
-                                : typeof decodedClause.value === 'string'
-                                  ? Quantity.of(
-                                        HexUInt.of(decodedClause.value).bi
-                                    ).toString()
-                                  : Quantity.PREFIX,
-                        data: (decodedClause.data as string) ?? undefined
-                    });
+                    return new Clause(
+                        (decodedClause.to as string) != null
+                            ? Address.of(decodedClause.to as string)
+                            : null,
+                        BigInt(decodedClause.value as string),
+                        Hex.of(decodedClause.data as string) ?? undefined
+                    );
                 }
             );
 
@@ -343,9 +336,10 @@ class RLPCodecTransactionRequest {
         const isDynamicFee = transactionRequest.isDynamicFee();
         const body = {
             ...RLPCodecTransactionRequest.mapBody(transactionRequest),
-            reserved: transactionRequest.isIntendedToBeSponsored
-                ? [Uint8Array.of(1)]
-                : [] // encodeReservedField(tx)
+            reserved:
+                transactionRequest.isIntendedToBeSponsored === true
+                    ? [Uint8Array.of(1)]
+                    : [] // encodeReservedField(tx)
         };
 
         if (isDynamicFee) {
@@ -370,9 +364,10 @@ class RLPCodecTransactionRequest {
         const isDynamicFee = transactionRequest.isDynamicFee();
         const body = {
             ...RLPCodecTransactionRequest.mapBody(transactionRequest),
-            reserved: transactionRequest.isIntendedToBeSponsored
-                ? [Uint8Array.of(1)]
-                : [] // encodeReservedField(tx)
+            reserved:
+                transactionRequest.isIntendedToBeSponsored === true
+                    ? [Uint8Array.of(1)]
+                    : [] // encodeReservedField(tx)
         };
 
         if (isDynamicFee) {

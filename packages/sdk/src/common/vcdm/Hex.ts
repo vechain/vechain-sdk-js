@@ -364,6 +364,15 @@ class Hex implements VeChainDataModel<Hex> {
     public toString(): string {
         return (this.sign < 0 ? '-0x' : '0x') + this.digits;
     }
+
+    /**
+     * Returns a JSON representation of the object.
+     *
+     * @return {string} The JSON representation of the object.
+     */
+    public toJSON(): string {
+        return this.toString();
+    }
 }
 
 export { Hex };

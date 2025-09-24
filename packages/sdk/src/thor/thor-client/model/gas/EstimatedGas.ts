@@ -17,20 +17,20 @@ interface EstimatedGas {
     /**
      * The transfers of the response.
      */
-    transfers?: {
+    transfers?: Array<{
         sender: string;
         recipient: string;
         amount: string;
-    }[];
+    }>;
 
     /**
      * The events of the response.
      */
-    events?: {
+    events?: Array<{
         address: string;
         topics: string[];
         data: string;
-    }[];
+    }>;
 }
 
 export type { EstimatedGas };

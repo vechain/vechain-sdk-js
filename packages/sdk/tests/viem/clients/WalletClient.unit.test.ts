@@ -291,7 +291,7 @@ describe('WalletClient UNIT tests', () => {
             const expected = {
                 id: Hex.of(
                     '0x0000000000000000000000000000000000000000000000001234567890abcdef'
-                )
+                ).toString()
             };
             const transport = mockHttpClient(expected, 'post');
 
@@ -323,7 +323,7 @@ describe('WalletClient UNIT tests', () => {
             const expected = {
                 id: Hex.of(
                     '0x0000000000000000000000000000000000000000000000001234567890abcdef'
-                )
+                ).toString()
             };
             const transport = mockHttpClient(expected, 'post');
 
@@ -389,7 +389,7 @@ describe('WalletClient UNIT tests', () => {
             const expected = {
                 id: Hex.of(
                     '0x0000000000000000000000000000000000000000000000001234567890abcdef'
-                )
+                ).toString()
             };
             const transport = mockHttpClient(expected, 'post');
 

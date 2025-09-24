@@ -2,7 +2,7 @@ import { type HttpClient, type HttpPath } from '@common/http';
 import { handleHttpError } from '@thor/thorest/utils';
 import { PostDebugTracerRequest } from '@thor/thorest/debug';
 import { type PostDebugTracerRequestJSON } from '@thor/thorest/json';
-import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
+import { type ThorRequest, type ThorResponse } from '@thor/thorest';
 import { IllegalArgumentError } from '@common/errors';
 
 /**

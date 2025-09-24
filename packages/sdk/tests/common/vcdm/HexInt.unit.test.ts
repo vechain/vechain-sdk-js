@@ -59,6 +59,13 @@ describe('HexInt class tests', () => {
             expect(hex).toBeInstanceOf(HexInt);
         });
 
+        test('Return a HexInt instance if the passed argunement is a transaction id', () => {
+            const exp =
+                '0x0000000000000000000000000000000000000000000000001234567890abcdef';
+            const hex = HexInt.of(exp);
+            expect(hex).toBeInstanceOf(HexInt);
+        });
+
         test('Return an HexInt instance if the passed argument is an Hex', () => {
             const exp = Hex.of(-789514n);
             const hex = HexInt.of(exp);

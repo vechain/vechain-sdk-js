@@ -1,5 +1,5 @@
-yarn build
-yarn lint
-yarn check:circular-dependencies
-yarn test:unit
-yarn check:tests-naming
+corepack yarn build
+corepack yarn lint
+corepack yarn check:circular-dependencies
+corepack yarn test:unit
+corepack yarn check:tests-naming
