@@ -1,4 +1,11 @@
 <div align="center">
+  <p align="center">
+    <a href="https://www.vechain.org/vechainthor/">
+      <picture style="padding: 80px;">
+          <img src="assets/bannerGH.png" style="padding: 20px;">
+      </picture>
+    </a>
+  </p>
   <h1><code>vechain-sdk-js</code></h1>
   <p>
     <strong>The official JavaScript SDK for VeChain.</strong>
@@ -11,6 +18,15 @@
     <a href="https://sonarcloud.io/project/overview?id=vechain_vechain-sdk"><img src="https://sonarcloud.io/api/project_badges/measure?project=vechain_vechain-sdk&metric=sqale_rating&token=c67db88ec1549a9d15bb1bcc9bafc8ca8b1dbfcb" alt="Maintainability Rating"></a>
     <a href="https://github.com/vechain/vechain-sdk-js/blob/main/.github/LICENSE.md"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
   </p>
+  <div>
+    :question: Have questions? Reach out to one of our community channels below!
+
+    <p align="center">
+        <a href="https://discord.gg/vechain"><img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" /></a>
+        <a href="https://t.me/vechainandfriends"><img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white" /></a>
+        <a href="https://www.reddit.com/r/Vechain"><img src="https://img.shields.io/badge/Reddit-FF4500?style=for-the-badge&logo=reddit&logoColor=white"/></a>
+    </p>
+  </div>
 </div>
 
 ## Introduction
@@ -26,6 +42,7 @@
 | [Documentation and Examples](./readme/docsAndExamples.md) | Information about SDK documentation, code examples, templates, and architecture diagrams. |
 | [Integration Testing](./readme/integrationTesting.md) | Instructions for running integration tests using thor-solo node and setting up custom test environments. |
 | [Troubleshooting](./readme/troubleshooting.md) | Solutions for common issues, particularly focused on Next.js configuration and compatibility. |
+| [CONTRIBUTING](./.github/CONTRIBUTING.md) | If you want to contribute to this project and make it better, your help is very welcome.  |
 
 
 ## Experimental Features
@@ -37,12 +54,6 @@ For example:
 ```typescript
 keystore.useExperimentalCryptography(true)
 ```
-
-## Contributing
-
-If you want to contribute to this project and make it better, your help is very welcome. Contributing is also a great way to learn more about social coding on GitHub, new technologies and their ecosystems and how to make constructive, helpful bug reports, feature requests and the noblest of all contributions: a good, clean pull request.
-
-For more details and guidelines on how to contribute, refer to [CONTRIBUTING](./.github/CONTRIBUTING.md).
 
 ## License
 
