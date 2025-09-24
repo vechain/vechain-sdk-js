@@ -1,5 +1,5 @@
 import { type Clause } from './Clause';
-import { type Address, type Hex } from '@common';
+import { type Address, type Hex, HexUInt } from '@common';
 import { type TransactionRequestJSON } from '@thor/thorest/json';
 
 /**
@@ -218,11 +218,10 @@ class TransactionRequest implements TransactionRequestParam {
             clauses: this.clauses.map((clause: Clause) => clause.toJSON()),
             dependsOn: this.dependsOn?.toString() ?? null,
             expiration: this.expiration,
-            isIntendedToBeSponsored: this.isIntendedToBeSponsored ?? false,
             gas: this.gas,
             gasPayerSignature:
                 this.gasPayerSignature.length > 0
-                    ? this.gasPayerSignature.toString()
+                    ? HexUInt.of(this.gasPayerSignature).toString()
                     : undefined,
             gasPriceCoef: this.gasPriceCoef,
             maxFeePerGas:
@@ -240,7 +239,7 @@ class TransactionRequest implements TransactionRequestParam {
             nonce: this.nonce,
             originSignature:
                 this.originSignature.length > 0
-                    ? this.originSignature.toString()
+                    ? HexUInt.of(this.originSignature).toString()
                     : undefined
         } satisfies TransactionRequestJSON;
     }

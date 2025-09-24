@@ -13,7 +13,6 @@ interface TransactionRequestJSON {
     gas: bigint;
     gasPayerSignature?: string; // hex string
     gasPriceCoef: bigint;
-    isIntendedToBeSponsored: boolean;
     maxFeePerGas?: bigint;
     maxPriorityFeePerGas?: bigint;
     nonce: number;

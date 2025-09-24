@@ -2,7 +2,7 @@ import {
     Clause,
     TransactionRequest
 } from '@thor/thor-client/model/transactions';
-import { Address, Hex } from '@common';
+import { Address, Hex, HexUInt } from '@common';
 import { describe, expect } from '@jest/globals';
 
 describe('TransactionRequest', () => {
@@ -203,6 +203,7 @@ describe('TransactionRequest', () => {
                 )
             ];
             const params = {
+                beggar: Address.of('0xbadbabe'),
                 blockRef: Hex.of('0x12345678'),
                 chainTag: 42,
                 clauses,
@@ -216,31 +217,31 @@ describe('TransactionRequest', () => {
                 maxPriorityFeePerGas: 50n
             };
 
-            const originSignature = new Uint8Array([1, 2, 3]);
-            const gasPayerSignature = new Uint8Array([4, 5, 6]);
+            const originSignature = HexUInt.of('0x012346');
+            const gasPayerSignature = HexUInt.of('0x56789a');
 
             const transactionRequest = new TransactionRequest(
                 params,
-                originSignature,
-                gasPayerSignature
+                originSignature.bytes,
+                gasPayerSignature.bytes
             );
 
             const json = transactionRequest.toJSON();
 
             expect(json).toEqual({
-                beggar: undefined,
+                beggar: params.beggar.toString(),
                 blockRef: '0x12345678',
                 chainTag: 42,
                 clauses: clauses.map((clause) => clause.toJSON()),
                 dependsOn: null,
                 expiration: 100,
                 gas: 50000n,
-                gasPayerSignature: '4,5,6',
+                gasPayerSignature: gasPayerSignature.toString(),
                 gasPriceCoef: 1n,
                 maxFeePerGas: 100n,
                 maxPriorityFeePerGas: 50n,
                 nonce: 1234,
-                originSignature: '1,2,3'
+                originSignature: originSignature.toString()
             });
         });
     });
