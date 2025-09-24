@@ -5,6 +5,9 @@ import {
 import { Address, Hex, HexUInt } from '@common';
 import { describe, expect } from '@jest/globals';
 
+/*
+ * @group unit/thor/thorest/model
+ */
 describe('TransactionRequest', () => {
     describe('constructor', () => {
         test('ok <- initialize required properties from params', () => {
