@@ -6,7 +6,7 @@ import { Address, Hex, HexUInt } from '@common';
 import { describe, expect } from '@jest/globals';
 
 /*
- * @group unit/thor/thorest/model
+ * @group unit/thor/thor-client/transactions
  */
 describe('TransactionRequest', () => {
     describe('constructor', () => {
@@ -195,7 +195,7 @@ describe('TransactionRequest', () => {
     });
 
     describe('toJSON', () => {
-        test('ok <- convert to JSON representation', () => {
+        test('ok <- convert all properties to JSON representation', () => {
             const clauses = [
                 new Clause(
                     Address.of('0x123'),
@@ -243,6 +243,102 @@ describe('TransactionRequest', () => {
                 gasPriceCoef: 1n,
                 maxFeePerGas: 100n,
                 maxPriorityFeePerGas: 50n,
+                nonce: 1234,
+                originSignature: originSignature.toString()
+            });
+        });
+
+        test('ok <- ignore undefined properties to JSON representation', () => {
+            const clauses = [
+                new Clause(
+                    Address.of('0x123'),
+                    1000n,
+                    Hex.of('0xabcd'),
+                    null,
+                    null
+                )
+            ];
+            const params = {
+                blockRef: Hex.of('0x12345678'),
+                chainTag: 42,
+                clauses,
+                dependsOn: null,
+                expiration: 100,
+                gas: 50000n,
+                gasPriceCoef: 1n,
+                nonce: 1234,
+                isIntendedToBeSponsored: true
+            };
+
+            const originSignature = HexUInt.of('0x012346');
+            const gasPayerSignature = HexUInt.of('0x56789a');
+
+            const transactionRequest = new TransactionRequest(
+                params,
+                originSignature.bytes,
+                gasPayerSignature.bytes
+            );
+
+            const json = transactionRequest.toJSON();
+
+            expect(json).toEqual({
+                blockRef: '0x12345678',
+                chainTag: 42,
+                clauses: clauses.map((clause) => clause.toJSON()),
+                dependsOn: null,
+                expiration: 100,
+                gas: 50000n,
+                gasPayerSignature: gasPayerSignature.toString(),
+                gasPriceCoef: 1n,
+                nonce: 1234,
+                originSignature: originSignature.toString()
+            });
+        });
+
+        test('ok <- ignore maxFeePerGas=0 and maxPriorityFeePerGas=0 properties to JSON representation', () => {
+            const clauses = [
+                new Clause(
+                    Address.of('0x123'),
+                    1000n,
+                    Hex.of('0xabcd'),
+                    null,
+                    null
+                )
+            ];
+            const params = {
+                blockRef: Hex.of('0x12345678'),
+                chainTag: 42,
+                clauses,
+                dependsOn: null,
+                expiration: 100,
+                gas: 50000n,
+                gasPriceCoef: 1n,
+                nonce: 1234,
+                isIntendedToBeSponsored: true,
+                maxFeePerGas: 0n,
+                maxPriorityFeePerGas: 0n
+            };
+
+            const originSignature = HexUInt.of('0x012346');
+            const gasPayerSignature = HexUInt.of('0x56789a');
+
+            const transactionRequest = new TransactionRequest(
+                params,
+                originSignature.bytes,
+                gasPayerSignature.bytes
+            );
+
+            const json = transactionRequest.toJSON();
+
+            expect(json).toEqual({
+                blockRef: '0x12345678',
+                chainTag: 42,
+                clauses: clauses.map((clause) => clause.toJSON()),
+                dependsOn: null,
+                expiration: 100,
+                gas: 50000n,
+                gasPayerSignature: gasPayerSignature.toString(),
+                gasPriceCoef: 1n,
                 nonce: 1234,
                 originSignature: originSignature.toString()
             });

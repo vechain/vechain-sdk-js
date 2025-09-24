@@ -1,9 +1,10 @@
-// Clause.test.ts
-
 import { Address, Hex } from '@common';
 import { Clause } from '@thor/thor-client/model/transactions';
 import { expect } from '@jest/globals';
 
+/*
+ * @group unit/thor/thor-client/transactions
+ */
 describe('Clause', () => {
     describe('Constructor', () => {
         it('ok <- initialize with all parameters', () => {
