@@ -21,7 +21,7 @@ In the `./docs/templates` folder, you'll find markdown files used to build our f
 
 For instance:
 
-\[example](examples/accounts/bip39.ts)
+\[example](../docs/examples/accounts/bip39.ts)
 
 The above link, when processed during documentation build, expands into the content of the linked file, ensuring our documentation is as practical as possible.
 
@@ -31,7 +31,7 @@ Note: links that are to be expanded must have a text \[example]
 
 It's also possible to include just a code snippet from an example file. For instance:
 
-[DeployContractSnippet](examples/contracts/contract-create-ERC20-token.ts)
+[DeployContractSnippet](../docs/examples/contracts/contract-create-ERC20-token.ts)
 
 Will just include into the documentation the code snippet between the comments `// START_SNIPPET: DeployContractSnippet` and `// END_SNIPPET: DeployContractSnippet` in the file `examples/contracts/contract-create-ERC20-token.ts`.
 
@@ -49,6 +49,6 @@ yarn build
 
 ### Architecture diagrams
 
-For a comprehensive overview of the package structure, please refer to our [Architecture Diagrams](./docs/diagrams/) located in the documentation directory.
+For a comprehensive overview of the package structure, please refer to our [Architecture Diagrams](../docs/diagrams/) located in the documentation directory.
 
 - You can also create and test your examples using `yarn test:examples` command (with solo `yarn test:examples:solo`).

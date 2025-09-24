@@ -11,8 +11,8 @@
 
 #### Additional prerequisites for Windows 10
 
-[Docker Desktop](https://www.docker.com/products/docker-desktop/) needs the run on *Windows 10* patched
-at the level **21H2 (19044 build)**. The last level provided by *Windows 10* automatic upgrade is **21H1 (1043 build)**.
+[Docker Desktop](https://www.docker.com/products/docker-desktop/) needs to run on *Windows 10* patched
+at the level **21H2 (19044 build)**. The last level provided by *Windows 10* automatic upgrade is **21H1 (19043 build)**.
 To install *Docker Desktop* to run *Thor Solo* to develop with this SDK, and *Windows 10* is not patched with a build
 higher than 19043, follows the instructions published in the 
 [KB5015684 Featured Update Windows 10 to 22H2](https://support.microsoft.com/en-us/topic/kb5015684-featured-update-to-windows-10-version-22h2-by-using-an-enablement-package-09d43632-f438-47b5-985e-d6fd704eee61)
@@ -64,6 +64,6 @@ Explore the full documentation and access example use cases by visiting the [VeC
 
 - **Build**: Execute `yarn build` to build the project.
 - **Test**: Execute `yarn test:solo` to run all tests.
-  - **NOTE**: Integration tests require a local thor-solo node. See the [Integration Testing](#integration-testing) section for more details. 
+  - **NOTE**: Integration tests require a local thor-solo node. See the [Integration Testing](./integrationTesting.md) section for more details. 
 - **Lint**: Execute `yarn lint` to lint all packages.
 - **Format**: Execute `yarn format` to format all packages.

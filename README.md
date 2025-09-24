@@ -1,8 +1,8 @@
 <div align="center">
   <p align="center">
     <a href="https://www.vechain.org/vechainthor/">
-      <picture style="padding: 80px;">
-          <img src="assets/bannerGH.png" style="padding: 20px;">
+      <picture>
+          <img src="assets/bannerGH.png" alt="VeChain SDK Banner" style="padding: 20px;">
       </picture>
     </a>
   </p>
@@ -23,9 +23,9 @@
     ❓ Have questions? Reach out to one of our community channels below!
     </p>
     <p align="center">
-        <a href="https://discord.gg/vechain"><img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" /></a>
-        <a href="https://t.me/vechainandfriends"><img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white" /></a>
-        <a href="https://www.reddit.com/r/Vechain"><img src="https://img.shields.io/badge/Reddit-FF4500?style=for-the-badge&logo=reddit&logoColor=white"/></a>
+        <a href="https://discord.gg/vechain"><img alt="Discord" src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" /></a>
+        <a href="https://t.me/vechainandfriends"><img alt="Telegram" src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white" /></a>
+        <a href="https://www.reddit.com/r/Vechain"><img alt="Reddit" src="https://img.shields.io/badge/Reddit-FF4500?style=for-the-badge&logo=reddit&logoColor=white"/></a>
     </p>
   </div>
 </div>

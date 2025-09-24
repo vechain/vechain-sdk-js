@@ -18,8 +18,8 @@ to define the runtime and the test framework to be compatible with the
 [ECMAScript 2020](https://262.ecma-international.org/11.0/)
 language specifications.
 
-An example of **Next.js** [tsconfig.json](apps/sdk-nextjs-integration/tsconfig.json) is available in
-the module [sdk-nextjs-integration](apps/sdk-nextjs-integration).
+An example of **Next.js** [tsconfig.json](../apps/sdk-nextjs-integration/tsconfig.json) is available in
+the module [sdk-nextjs-integration](../apps/sdk-nextjs-integration).
 
 **Next.js** caches data types when dependencies are installed and the project is built. To be sure
 the options defined in `tsconfig.json` are effective when changed,
