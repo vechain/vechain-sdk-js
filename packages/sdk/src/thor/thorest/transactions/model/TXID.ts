@@ -1,6 +1,7 @@
 import { type TXIDJSON } from '@thor/thorest/json';
 import { type Hex, HexUInt32 } from '@common/vcdm';
 import { IllegalArgumentError } from '@common/errors';
+import { log } from '@common/logging';
 
 /**
  * Full-Qualified Path
@@ -22,6 +23,12 @@ class TXID {
         try {
             this.id = HexUInt32.of(json.id);
         } catch (error) {
+            log.error({
+                message: 'TXID constructor failure',
+                context: {
+                    json
+                }
+            });
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: TXIDJSON)`,
                 'Bad parse',

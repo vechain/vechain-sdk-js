@@ -8,7 +8,6 @@ import {
     type ExpandedBlockResponse,
     InspectClauses,
     NewTransactionSubscription,
-    type RawTx,
     type RegularBlockResponse,
     RetrieveAccountDetails,
     RetrieveContractBytecode,
@@ -24,7 +23,8 @@ import {
     type GetTxResponse,
     type GetTxReceiptResponse,
     type TransfersSubscription,
-    type TXID
+    type TXID,
+    type RawBlockResponse
 } from '@thor/thorest';
 import { MozillaWebSocketClient, type WebSocketListener } from '@thor/ws';
 import {
@@ -146,7 +146,9 @@ class PublicClient {
     public async getBlock(
         revision: BlockRevision = 'best', // viem specific
         type: BlockReponseType = BlockReponseType.regular // vechain specific
-    ): Promise<ExpandedBlockResponse | RawTx | RegularBlockResponse | null> {
+    ): Promise<
+        ExpandedBlockResponse | RawBlockResponse | RegularBlockResponse | null
+    > {
         const blockNumber =
             typeof revision === 'number'
                 ? BigInt(revision)

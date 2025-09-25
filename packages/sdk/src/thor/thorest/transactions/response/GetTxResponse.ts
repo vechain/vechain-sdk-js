@@ -1,4 +1,4 @@
-import { Tx, TxMeta } from '@thor/thorest/transactions/model';
+import { Tx, TxMetaResponse } from '@thor/thorest/transactions/model';
 import { type GetTxResponseJSON } from '@thor/thorest/json';
 import { IllegalArgumentError } from '@common/errors';
 
@@ -12,7 +12,7 @@ class GetTxResponse extends Tx {
     /**
      * Transaction metadata such as block number, block timestamp, etc.
      */
-    meta: TxMeta;
+    meta: TxMetaResponse;
 
     /**
      * Constructs an instance of the class using the provided JSON object.
@@ -23,7 +23,7 @@ class GetTxResponse extends Tx {
     constructor(json: GetTxResponseJSON) {
         try {
             super(json);
-            this.meta = new TxMeta(json.meta);
+            this.meta = new TxMetaResponse(json.meta);
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: GetTxResponseJSON)`,

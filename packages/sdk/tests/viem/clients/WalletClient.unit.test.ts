@@ -130,10 +130,10 @@ describe('WalletClient UNIT tests', () => {
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
-                    Clause.of({
-                        to: TRANSACTION_RECEIVER.address,
-                        value: mockValue.toString()
-                    })
+                    new Clause(
+                        Address.of(TRANSACTION_RECEIVER.address),
+                        mockValue.bi
+                    )
                 ],
                 dependsOn: null,
                 expiration: 32,
@@ -342,10 +342,10 @@ describe('WalletClient UNIT tests', () => {
                     blockRef: mockBlockRef,
                     chainTag: 1,
                     clauses: [
-                        Clause.of({
-                            to: TRANSACTION_RECEIVER.address,
-                            value: '1000'
-                        })
+                        new Clause(
+                            Address.of(TRANSACTION_RECEIVER.address),
+                            mockValue.bi
+                        )
                     ],
                     dependsOn: null,
                     expiration: 32,
@@ -409,7 +409,7 @@ describe('WalletClient UNIT tests', () => {
         });
 
         test('err <- throw ThorError when sending raw transaction fails', async () => {
-            const transport = mockHttpClient(null, 'post', true); // Mock error
+            const transport = mockHttpClient(null, 'post'); // Mock error
 
             const account = privateKeyToAccount(
                 `0x${TRANSACTION_SENDER.privateKey}`
@@ -433,10 +433,10 @@ describe('WalletClient UNIT tests', () => {
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
-                    Clause.of({
-                        to: TRANSACTION_RECEIVER.address,
-                        value: mockValue.toString()
-                    })
+                    new Clause(
+                        Address.of(TRANSACTION_RECEIVER.address),
+                        mockValue.bi
+                    )
                 ],
                 dependsOn: null,
                 expiration: 32,
@@ -463,10 +463,10 @@ describe('WalletClient UNIT tests', () => {
                 blockRef: mockBlockRef,
                 chainTag: 1,
                 clauses: [
-                    Clause.of({
-                        to: TRANSACTION_RECEIVER.address,
-                        value: mockValue.toString()
-                    })
+                    new Clause(
+                        Address.of(TRANSACTION_RECEIVER.address),
+                        mockValue.bi
+                    )
                 ],
                 dependsOn: null,
                 expiration: 32,
@@ -496,10 +496,10 @@ describe('WalletClient UNIT tests', () => {
                 blockRef: mockBlockRef,
                 chainTag: 1,
                 clauses: [
-                    Clause.of({
-                        to: TRANSACTION_RECEIVER.address,
-                        value: mockValue.toString()
-                    })
+                    new Clause(
+                        Address.of(TRANSACTION_RECEIVER.address),
+                        mockValue.bi
+                    )
                 ],
                 dependsOn: null,
                 expiration: 32,
@@ -548,10 +548,10 @@ describe('WalletClient UNIT tests', () => {
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
-                    Clause.of({
-                        to: TRANSACTION_RECEIVER.address,
-                        value: '1000'
-                    })
+                    new Clause(
+                        Address.of(TRANSACTION_RECEIVER.address),
+                        mockValue.bi
+                    )
                 ],
                 dependsOn: null,
                 expiration: 32,
@@ -582,10 +582,10 @@ describe('WalletClient UNIT tests', () => {
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
-                    Clause.of({
-                        to: TRANSACTION_RECEIVER.address,
-                        value: '1000'
-                    })
+                    new Clause(
+                        Address.of(TRANSACTION_RECEIVER.address),
+                        mockValue.bi
+                    )
                 ],
                 dependsOn: null,
                 expiration: 32,
@@ -614,10 +614,10 @@ describe('WalletClient UNIT tests', () => {
                 blockRef: mockBlockRef,
                 chainTag: 1,
                 clauses: [
-                    Clause.of({
-                        to: TRANSACTION_RECEIVER.address,
-                        value: '1000'
-                    })
+                    new Clause(
+                        Address.of(TRANSACTION_RECEIVER.address),
+                        mockValue.bi
+                    )
                 ],
                 dependsOn: null,
                 expiration: 32,

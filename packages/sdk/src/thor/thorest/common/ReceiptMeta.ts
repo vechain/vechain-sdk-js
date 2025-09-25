@@ -1,7 +1,6 @@
 import { Address, type Hex, HexUInt32 } from '@common/vcdm';
-
 import { IllegalArgumentError } from '@common/errors';
-import { TxMeta } from '../transactions/model/TxMeta';
+import { TxMetaResponse } from '../transactions/model/TxMetaResponse';
 import { type ReceiptMetaJSON } from '@thor/thorest/json';
 
 /**
@@ -12,7 +11,7 @@ const FQP = 'packages/sdk/src/thor/thorest/model/ReceiptMeta.ts!';
 /**
  * [ReceiptMeta](http://localhost:8669/doc/stoplight-ui/#/schemas/ReceiptMeta)
  */
-class ReceiptMeta extends TxMeta {
+class ReceiptMeta extends TxMetaResponse {
     /**
      * The transaction identifier.
      *
