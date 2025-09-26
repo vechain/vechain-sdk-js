@@ -25,3 +25,7 @@ the module [sdk-nextjs-integration](../apps/sdk-nextjs-integration).
 the options defined in `tsconfig.json` are effective when changed,
 delete the directories `.next`, `node_modules` and the file `next-env.d.ts`
 from the root directory of the project, then rebuild the project.
+
+### HTTP Tracing
+
+To aid debugging of http request to thor blockchain, if the environment variable: `SDK_TRACE` is set to `true`, each http request and response will be logged to console.
