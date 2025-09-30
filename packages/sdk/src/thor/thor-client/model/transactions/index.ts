@@ -8,4 +8,3 @@ export * from './GetTransactionOptions';
 export * from './RawTransaction';
 export * from './ClauseSimulationResult';
 export * from './SimulateTransactionOptions';
-export * from './ClauseSimulationResult';
