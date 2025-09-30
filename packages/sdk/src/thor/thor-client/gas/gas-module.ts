@@ -1,16 +1,18 @@
-import {
-    RetrieveHistoricalFeeData,
-    SuggestPriorityFee,
-    InspectClauses
-} from '@thor/thorest';
-import { Revision } from '@common/vcdm';
-import { Transaction, type TransactionClause } from '@thor/thorest';
+import { RetrieveHistoricalFeeData, SuggestPriorityFee } from '@thor/thorest';
+import { type Address, Revision } from '@common/vcdm';
 import { IllegalArgumentError, NoSuchElementError } from '@common/errors';
 import { AbstractThorModule } from '@thor/thor-client/AbstractThorModule';
 import { type FeeHistory } from '../model/gas/FeeHistory';
-import { type EstimatedGas } from '../model/gas/EstimatedGas';
-import { type EstimateGas } from '../model/gas/EstimateGas';
-import { log } from '@common/logging';
+import {
+    type ClauseSimulationResult,
+    type SimulateTransactionOptions,
+    type Clause
+} from '@thor/thor-client/model/transactions';
+import {
+    type EstimateGasResult,
+    type EstimateGasOptions
+} from '@thor/thor-client/model/gas';
+import { decodeRevertReason } from './helpers/decode-evm-error';
 
 const FQP = 'packages/sdk/src/thor/thor-client/gas/gas-module.ts';
 
@@ -20,15 +22,53 @@ const FQP = 'packages/sdk/src/thor/thor-client/gas/gas-module.ts';
  */
 class GasModule extends AbstractThorModule {
     /**
-     * Calculates the intrinsic gas required for the given transaction clauses.
-     * This is the minimum gas required for a transaction.
+     * A collection of constants used for gas calculations in transactions.
      *
-     * @param clauses - The transaction clauses to calculate intrinsic gas for.
-     * @returns The intrinsic gas required.
-     * @throws {IllegalArgumentError} If clauses contain invalid data.
+     * Properties
+     * - `TX_GAS` - The base gas cost for a transaction.
+     * - `CLAUSE_GAS` - The gas cost for executing a clause in a transaction.
+     * - `CLAUSE_GAS_CONTRACT_CREATION` - The gas cost for creating a contract via a clause.
+     * - `ZERO_GAS_DATA` - The gas cost for transmitting zero bytes of data.
+     * - `NON_ZERO_GAS_DATA` - The gas cost for transmitting non-zero bytes of data.
      */
-    public calculateIntrinsicGas(clauses: TransactionClause[]): bigint {
-        return Transaction.intrinsicGas(clauses);
+    public static readonly GAS_CONSTANTS = {
+        TX_GAS: 5000n,
+        CLAUSE_GAS: 16000n,
+        CLAUSE_GAS_CONTRACT_CREATION: 48000n,
+        ZERO_GAS_DATA: 4n,
+        NON_ZERO_GAS_DATA: 68n
+    };
+
+    /**
+     * Calculates the intrinsic gas required for the given clauses.
+     *
+     * @param {TransactionClause[]} clauses - An array of transaction clauses to calculate the intrinsic gas for.
+     * @return {bigint} The total intrinsic gas required for the provided clauses.
+     * @throws {IllegalArgumentError} If clauses have invalid data as invalid addresses.
+     */
+    public static computeIntrinsicGas(clauses: Clause[]): bigint {
+        if (clauses.length > 0) {
+            const totalGas = clauses.reduce((sum: bigint, clause: Clause) => {
+                if (clause.to !== null) {
+                    sum += this.GAS_CONSTANTS.CLAUSE_GAS;
+                } else {
+                    sum += this.GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION;
+                }
+                const data = clause.data;
+                if (data !== null) {
+                    sum +=
+                        this.GAS_CONSTANTS.ZERO_GAS_DATA *
+                        BigInt(data.countZeroBytes());
+                    sum +=
+                        this.GAS_CONSTANTS.NON_ZERO_GAS_DATA *
+                        BigInt(data.countNonZeroBytes());
+                }
+                return sum;
+            }, this.GAS_CONSTANTS.TX_GAS);
+            return totalGas;
+        }
+        // No clauses.
+        return this.GAS_CONSTANTS.TX_GAS + this.GAS_CONSTANTS.CLAUSE_GAS;
     }
 
     /**
@@ -38,34 +78,79 @@ class GasModule extends AbstractThorModule {
      * @returns The execution response containing gas usage and other details.
      */
     public async estimateGas(
-        estimateGas: EstimateGas
-    ): Promise<EstimatedGas[]> {
-        const response = (
-            await InspectClauses.of(estimateGas).askTo(this.httpClient)
-        ).response;
-        log.warn({
-            message: 'InspectClauses response',
-            context: { data: response }
-        });
-        const gasEstimates: EstimatedGas[] = response.items.map((response) => {
-            return {
-                gasUsed: response.gasUsed,
-                data: response.data,
-                reverted: response.reverted,
-                vmError: response.vmError,
-                transfers: response.transfers?.map((transfer) => ({
-                    sender: transfer.sender.toString(),
-                    recipient: transfer.recipient.toString(),
-                    amount: transfer.amount.toString()
-                })),
-                events: response.events?.map((event) => ({
-                    address: event.address.toString(),
-                    topics: event.topics.map((topic) => topic.toString()),
-                    data: event.data.toString()
-                }))
-            };
-        });
-        return gasEstimates;
+        clauses: Clause[],
+        caller: Address,
+        options?: EstimateGasOptions
+    ): Promise<EstimateGasResult> {
+        // check if clauses are empty
+        if (clauses.length === 0) {
+            throw new IllegalArgumentError(
+                `${FQP}.estimateGas()`,
+                'Clauses cannot be empty.',
+                { clauses }
+            );
+        }
+        // check if options are valid
+        if (options !== undefined) {
+            if (options.gasPadding !== undefined) {
+                if (options.gasPadding > 1 || options.gasPadding <= 0) {
+                    throw new IllegalArgumentError(
+                        `${FQP}.estimateGas()`,
+                        'Gas padding must be between 0 and 1.',
+                        { gasPadding: options.gasPadding }
+                    );
+                }
+            }
+        }
+        // simulate the clauses
+        const simulationOptions: SimulateTransactionOptions = {
+            caller,
+            revision: options?.revision,
+            gas: options?.gas,
+            gasPrice: options?.gasPrice
+        };
+        const simulationResult =
+            await this.thorClient.transactions.simulateTransaction(
+                clauses,
+                simulationOptions
+            );
+        // sum the gas used of each clause
+        const evmGasUsed = simulationResult.reduce(
+            (sum: bigint, item: ClauseSimulationResult) => {
+                return sum + item.gasUsed;
+            },
+            0n
+        );
+        // add the intrinsic gas
+        const intrinsicGas = GasModule.computeIntrinsicGas(clauses);
+        // add the gas padding
+        const gasPadding =
+            options?.gasPadding !== undefined ? BigInt(options.gasPadding) : 0n;
+        // total gas used
+        const totalGasUsed = evmGasUsed * (1n + gasPadding) + intrinsicGas;
+        // aggregate the reverted flag for all clauses
+        const reverted = simulationResult.some(
+            (item: ClauseSimulationResult) => item.reverted
+        );
+        // return the result, if reverted, return the reverted reason and vm errors
+        const result = reverted
+            ? {
+                  totalGas: totalGasUsed,
+                  reverted: true,
+                  revertReasons: simulationResult.map((simulation) => {
+                      return decodeRevertReason(simulation.data) ?? '';
+                  }),
+                  vmErrors: simulationResult.map((simulation) => {
+                      return simulation.vmError;
+                  })
+              }
+            : {
+                  totalGas: totalGasUsed,
+                  reverted: false,
+                  revertReasons: [],
+                  vmErrors: []
+              };
+        return result;
     }
 
     /**

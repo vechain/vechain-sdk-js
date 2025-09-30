@@ -1,11 +1,17 @@
 import {
     type GetTransactionOptions,
     Transaction,
-    RawTransaction
+    RawTransaction,
+    type Clause,
+    type SimulateTransactionOptions,
+    ClauseSimulationResult
 } from '@thor/thor-client/model/transactions';
 import { AbstractThorModule } from '../AbstractThorModule';
-import { type Hex } from '@common/vcdm';
+import { Revision, type Hex } from '@common/vcdm';
 import {
+    type ExecuteCodeResponse,
+    ExecuteCodesRequest,
+    InspectClauses,
     RetrieveRawTransactionByID,
     RetrieveTransactionByID
 } from '@thor/thorest';
@@ -49,6 +55,34 @@ class TransactionsModule extends AbstractThorModule {
         return thorResponse.response !== null
             ? RawTransaction.of(thorResponse.response)
             : null;
+    }
+
+    /**
+     * Simulates the execution of a transaction.
+     * Simulation allows to:
+     * - Estimate the gas cost of a transaction without sending it
+     * - Call read-only contract functions
+     * - Read simulated events and transfers
+     * - Check if the transaction will be successful
+     *
+     * @param clauses - The clauses of the transaction to simulate.
+     * @param options - (Optional) The options for simulating the transaction.
+     * @returns A promise that resolves to an array of simulation results.
+     *          Each element of the array represents the result of simulating a clause.
+     * @throws {InvalidDataType}
+     */
+    public async simulateTransaction(
+        clauses: Clause[],
+        options?: SimulateTransactionOptions
+    ): Promise<ClauseSimulationResult[]> {
+        const request = new ExecuteCodesRequest(clauses, options);
+        const query = InspectClauses.of(request).withRevision(
+            options?.revision ?? Revision.BEST
+        );
+        const thorResponse = await query.askTo(this.httpClient);
+        return thorResponse.response.items.map(
+            (resp: ExecuteCodeResponse) => new ClauseSimulationResult(resp)
+        );
     }
 }
 

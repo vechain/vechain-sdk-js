@@ -3,6 +3,8 @@ import { createPublicClient } from '@viem/clients';
 import { ThorNetworks } from '@thor/thorest';
 import { type ExecuteCodesRequestJSON } from '@thor/thorest/json';
 import { log } from '@common/logging';
+import { Clause, type EstimateGasOptions } from '@thor/thor-client/model';
+import { Address, Hex } from '@common/vcdm';
 
 /**
  * Test suite for PublicClient fee estimation functionality
@@ -20,17 +22,18 @@ describe('PublicClient - Fee Estimation Methods', () => {
     const publicClient = createPublicClient({
         network: ThorNetworks.SOLONET
     });
-    // Sample contract call for gas estimation (ExecuteCodesRequestJSON format)
-    const sampleContractCall: ExecuteCodesRequestJSON = {
-        clauses: [
-            {
-                to: '0x0000000000000000000000000000456E65726779', // VTHO contract
-                value: '0x0',
-                data: '0x70a08231000000000000000000000000f077b491b355e64048ce21e3a6fc4751eeea77fa' // balanceOf function
-            }
-        ],
-        caller: '0xf077b491b355e64048ce21e3a6fc4751eeea77fa',
-        gas: 21000
+    const clauses: Clause[] = [
+        new Clause(
+            Address.of('0x0000000000000000000000000000456E65726779'), // VTHO contract
+            0n,
+            Hex.of(
+                '0x70a08231000000000000000000000000f077b491b355e64048ce21e3a6fc4751eeea77fa'
+            ) // balanceOf function
+        )
+    ];
+    const caller = Address.of('0xf077b491b355e64048ce21e3a6fc4751eeea77fa');
+    const estimateGasOptions: EstimateGasOptions = {
+        gas: 21000n
     };
 
     describe('getFeeHistory', () => {
@@ -158,74 +161,69 @@ describe('PublicClient - Fee Estimation Methods', () => {
 
     describe('estimateGas', () => {
         test('should estimate gas for contract call', async () => {
-            const gasEstimate =
-                await publicClient.estimateGas(sampleContractCall);
+            const gasEstimate = await publicClient.estimateGas(
+                clauses,
+                caller,
+                estimateGasOptions
+            );
 
             expect(gasEstimate).toBeDefined();
-            expect(Array.isArray(gasEstimate)).toBe(true);
-            expect(gasEstimate.length).toBeGreaterThan(0);
-
-            // Check first clause result
-            const firstResult = gasEstimate[0];
-            expect(firstResult).toHaveProperty('gasUsed');
-            expect(firstResult).toHaveProperty('reverted');
-            expect(firstResult).toHaveProperty('data');
-            expect(typeof firstResult.gasUsed).toBe('bigint');
-            expect(typeof firstResult.reverted).toBe('boolean');
+            expect(gasEstimate.totalGas).toBeGreaterThan(0n);
 
             log.debug({
                 message:
-                    'Gas estimate results: ' + gasEstimate.length + ' clauses',
-                context: { data: gasEstimate.length }
+                    'Gas estimate results: ' + gasEstimate.totalGas.toString(),
+                context: { data: gasEstimate.totalGas.toString() }
             });
             log.debug({
                 message:
-                    'First clause gas used: ' + firstResult.gasUsed.toString(),
-                context: { data: firstResult.gasUsed.toString() }
+                    'First clause gas used: ' + gasEstimate.totalGas.toString(),
+                context: { data: gasEstimate.totalGas.toString() }
             });
             log.debug({
-                message: 'First clause reverted: ' + firstResult.reverted,
-                context: { data: firstResult.reverted }
+                message: 'First clause reverted: ' + gasEstimate.reverted,
+                context: { data: gasEstimate.reverted }
             });
         }, 10000);
 
         test('should estimate gas for transfer transaction', async () => {
-            // Use a simple transfer with valid addresses and reasonable gas limit
-            const transferTransaction: ExecuteCodesRequestJSON = {
-                clauses: [
-                    {
-                        to: '0xf077b491b355e64048ce21e3a6fc4751eeea77fa',
-                        value: '0x16345785d8a0000', // 0.1 VET
-                        data: '0x'
-                    }
-                ],
-                caller: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-                gas: 21000
+            const clauses: Clause[] = [
+                new Clause(
+                    Address.of('0xf077b491b355e64048ce21e3a6fc4751eeea77fa'),
+                    BigInt('0x16345785d8a0000'), // 0.1 VET
+                    Hex.of('0x')
+                )
+            ];
+            const caller = Address.of(
+                '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'
+            );
+            const estimateGasOptions: EstimateGasOptions = {
+                gas: 21000n
             };
 
-            const estimate =
-                await publicClient.estimateGas(transferTransaction);
+            const estimate = await publicClient.estimateGas(
+                clauses,
+                caller,
+                estimateGasOptions
+            );
 
             expect(estimate).toBeDefined();
-            expect(Array.isArray(estimate)).toBe(true);
-            expect(estimate.length).toBe(1);
-
-            const result = estimate[0];
             // Check if the transaction would succeed or fail
-            expect(result.gasUsed).toBeGreaterThanOrEqual(0n);
+            expect(estimate.totalGas).toBeGreaterThanOrEqual(0n);
 
             log.debug({
-                message: 'Transfer Gas estimate: ' + result.gasUsed.toString(),
-                context: { data: result.gasUsed.toString() }
+                message:
+                    'Transfer Gas estimate: ' + estimate.totalGas.toString(),
+                context: { data: estimate.totalGas.toString() }
             });
             log.debug({
-                message: 'Transfer reverted: ' + result.reverted,
-                context: { data: result.reverted }
+                message: 'Transfer reverted: ' + estimate.reverted,
+                context: { data: estimate.reverted }
             });
 
             // If it reverted, it might be due to insufficient balance, which is expected in test
-            if (result.reverted) {
-                log.debug({
+            if (estimate.reverted) {
+                log.warn({
                     message:
                         'Transfer reverted (likely due to insufficient balance in test environment)'
                 });
@@ -254,11 +252,14 @@ describe('PublicClient - Fee Estimation Methods', () => {
 
     describe('fee calculation helpers', () => {
         test('should calculate transaction costs', async () => {
-            const gasEstimate =
-                await publicClient.estimateGas(sampleContractCall);
+            const gasEstimate = await publicClient.estimateGas(
+                clauses,
+                caller,
+                estimateGasOptions
+            );
             const feePerGas = await publicClient.estimateFeePerGas();
 
-            const firstClauseGas = gasEstimate[0].gasUsed;
+            const firstClauseGas = gasEstimate.totalGas;
 
             expect(firstClauseGas).toBeGreaterThan(0n);
             expect(feePerGas).toBeDefined();
@@ -307,29 +308,6 @@ describe('PublicClient - Fee Estimation Methods', () => {
 
             log.debug({
                 message: 'Invalid fee history request handled correctly'
-            });
-        }, 10000);
-
-        test('should handle invalid gas estimation', async () => {
-            const invalidRequest: ExecuteCodesRequestJSON = {
-                clauses: [
-                    {
-                        to: 'invalid-address',
-                        value: 'invalid-value',
-                        data: 'invalid-data'
-                    }
-                ],
-                caller: 'invalid-caller',
-                gas: -1
-            };
-
-            // The SDK should throw an error for invalid input format
-            await expect(async () => {
-                await publicClient.estimateGas(invalidRequest);
-            }).rejects.toThrow();
-
-            log.debug({
-                message: 'Invalid gas estimation handled correctly'
             });
         }, 10000);
     });

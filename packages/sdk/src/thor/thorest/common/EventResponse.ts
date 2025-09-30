@@ -11,7 +11,7 @@ const FQP = 'packages/sdk/src/thor/thorest/model/Event.ts!';
  * [Event](http://localhost:8669/doc/stoplight-ui/#/schemas/Event)
  */
 
-class Event {
+class EventResponse {
     /**
      * The address of the contract that produces the event (bytes20).
      */
@@ -66,4 +66,4 @@ class Event {
     }
 }
 
-export { Event };
+export { EventResponse };

@@ -1,6 +1,6 @@
 import { Address } from '@common/vcdm';
-import { Event } from '@thor/thorest/common/Event';
-import { Transfer } from '@thor/thorest/common/Transfer';
+import { EventResponse } from '@thor/thorest/common/EventResponse';
+import { TransferResponse } from '@thor/thorest/common/TransferResponse';
 import {
     type OutputJSON,
     type EventJSON,
@@ -25,12 +25,12 @@ class Output {
     /**
      * An array of events emitted by the corresponding clause.
      */
-    readonly events: Event[];
+    readonly events: EventResponse[];
 
     /**
      * An array of transfers made by the corresponding clause.
      */
-    readonly transfers: Transfer[];
+    readonly transfers: TransferResponse[];
 
     /**
      * Constructs an instance of the class using the provided OutputJSON object.
@@ -45,10 +45,11 @@ class Output {
                     ? Address.of(json.contractAddress)
                     : undefined;
             this.events = json.events.map(
-                (event: EventJSON): Event => new Event(event)
+                (event: EventJSON): EventResponse => new EventResponse(event)
             );
             this.transfers = json.transfers.map(
-                (transfer: TransferJSON): Transfer => new Transfer(transfer)
+                (transfer: TransferJSON): TransferResponse =>
+                    new TransferResponse(transfer)
             );
         } catch (error) {
             throw new IllegalArgumentError(
@@ -72,10 +73,10 @@ class Output {
                     ? this.contractAddress.toString()
                     : null,
             events: this.events.map(
-                (event: Event): EventJSON => event.toJSON()
+                (event: EventResponse): EventJSON => event.toJSON()
             ),
             transfers: this.transfers.map(
-                (transfer: Transfer): TransferJSON => transfer.toJSON()
+                (transfer: TransferResponse): TransferJSON => transfer.toJSON()
             )
         } satisfies OutputJSON;
     }
