@@ -177,7 +177,7 @@ describe('PublicClient - Fee Estimation Methods', () => {
             });
             log.debug({
                 message:
-                    'First clause gas used: ' + gasEstimate.totalGas.toString(),
+                    'Total gas used: ' + gasEstimate.totalGas.toString(),
                 context: { data: gasEstimate.totalGas.toString() }
             });
             log.debug({
