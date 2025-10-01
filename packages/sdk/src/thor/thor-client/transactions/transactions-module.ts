@@ -69,7 +69,7 @@ class TransactionsModule extends AbstractThorModule {
      * @param options - (Optional) The options for simulating the transaction.
      * @returns A promise that resolves to an array of simulation results.
      *          Each element of the array represents the result of simulating a clause.
-     * @throws {InvalidDataType}
+     * @throws {ThorError}
      */
     public async simulateTransaction(
         clauses: Clause[],

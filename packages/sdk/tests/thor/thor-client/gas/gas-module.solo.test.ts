@@ -3,7 +3,6 @@ import { ThorClient } from '@thor/thor-client/ThorClient';
 import { ThorNetworks } from '@thor/thorest';
 import { FetchHttpClient } from '@common/http';
 import { Address, Hex, Revision } from '@common/vcdm';
-import { type ExecuteCodesRequestJSON } from '@thor/thorest/json';
 import { GasModule } from '@thor/thor-client/gas/gas-module';
 import { Clause, type EstimateGasOptions } from '@thor/thor-client/model';
 import {
@@ -91,6 +90,27 @@ describe('GasModule Solo Tests', () => {
                 Address.of(testAccount.address)
             );
             expect(result.totalGas).toBeGreaterThanOrEqual(21000n);
+            expect(result.reverted).toBe(false);
+            expect(result.revertReasons).toHaveLength(0);
+            expect(result.vmErrors).toHaveLength(0);
+        });
+
+        test('should estimate gas for simple VET transfer with gas padding', async () => {
+            const clauses: Clause[] = [
+                new Clause(
+                    Address.of('0x435933c8064b4ae76be665428e0307ef2ccfbd68'),
+                    BigInt('0x1'),
+                    null
+                ) // 1 wei VET transfer
+            ];
+            const result = await gasModule.estimateGas(
+                clauses,
+                Address.of(testAccount.address),
+                {
+                    gasPadding: 0.1
+                }
+            );
+            expect(result.totalGas).toBeGreaterThanOrEqual(23000n);
             expect(result.reverted).toBe(false);
             expect(result.revertReasons).toHaveLength(0);
             expect(result.vmErrors).toHaveLength(0);

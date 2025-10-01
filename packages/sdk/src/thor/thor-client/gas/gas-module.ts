@@ -39,6 +39,8 @@ class GasModule extends AbstractThorModule {
         NON_ZERO_GAS_DATA: 68n
     };
 
+    private static readonly GAS_PADDING_SCALE = 1_000_000n; // 6 decimal places of precision
+
     /**
      * Calculates the intrinsic gas required for the given clauses.
      *
@@ -124,10 +126,11 @@ class GasModule extends AbstractThorModule {
         // add the intrinsic gas
         const intrinsicGas = GasModule.computeIntrinsicGas(clauses);
         // add the gas padding
-        const gasPadding =
-            options?.gasPadding !== undefined ? BigInt(options.gasPadding) : 0n;
-        // total gas used
-        const totalGasUsed = evmGasUsed * (1n + gasPadding) + intrinsicGas;
+        const totalGasUsed = GasModule.computeGasWithPadding(
+            options?.gasPadding ?? 0,
+            evmGasUsed,
+            intrinsicGas
+        );
         // aggregate the reverted flag for all clauses
         const reverted = simulationResult.some(
             (item: ClauseSimulationResult) => item.reverted
@@ -151,6 +154,29 @@ class GasModule extends AbstractThorModule {
                   vmErrors: []
               };
         return result;
+    }
+
+    /**
+     * Computes the total gas with gas padding for the given gas padding percentage and EVM gas used.
+     *
+     * @param gasPadding - The gas padding percentage.
+     * @param evmGasUsed - The EVM gas used.
+     * @param intrinsicGas - The intrinsic gas.
+     * @returns The total gas with gas padding.
+     */
+    public static _computeGasWithPadding(
+        gasPadding: number,
+        evmGasUsed: bigint,
+        intrinsicGas: bigint
+    ): bigint {
+        const totalGas = evmGasUsed + intrinsicGas;
+        const gasPaddingBigInt = BigInt(
+            gasPadding * Number(GasModule.GAS_PADDING_SCALE)
+        );
+        return (
+            (totalGas * (GasModule.GAS_PADDING_SCALE + gasPaddingBigInt)) /
+            GasModule.GAS_PADDING_SCALE
+        );
     }
 
     /**

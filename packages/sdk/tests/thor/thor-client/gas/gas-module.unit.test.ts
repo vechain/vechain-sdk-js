@@ -39,4 +39,18 @@ describe('GasModule Unit Tests', () => {
             expect(result).toBe(53208n);
         });
     });
+    describe('computeGasWithPadding method tests', () => {
+        test('should compute total gas with gas padding', () => {
+            const result = GasModule._computeGasWithPadding(
+                0.1,
+                10000n,
+                21000n
+            );
+            expect(result).toBe(34100n);
+        });
+        test('should compute total gas with no gas padding', () => {
+            const result = GasModule._computeGasWithPadding(0, 10000n, 21000n);
+            expect(result).toBe(31000n);
+        });
+    });
 });

@@ -412,6 +412,13 @@ class Hex implements VeChainDataModel<Hex> {
      * @returns {`0x${string}`} The hexadecimal string representation of this Hex instance.
      */
     public asHex(): `0x${string}` {
+        if (this.sign < 0) {
+            throw new UnsupportedOperationError(
+                `${FQP}<Hex>.asHex(): \`0x\${string}\``,
+                'negative values cannot be represented as 0x-prefixed hex strings',
+                { hex: this.toString() }
+            );
+        }
         return this.toString() as `0x${string}`;
     }
 }
