@@ -28,30 +28,3 @@ The SDK fully support execution in a browser environment. To run the tests in a 
 Alternatively, you can run the tests with thor-solo by using the `yarn test:browser:solo` command. This command will start thor-solo, run the tests, and stop thor-solo at the end.
 
 
-### Custom thor-solo Data Starting Point
-
-For advanced testing scenarios, you may require a custom data starting point with thor-solo. This involves creating a custom snapshot of thor's LevelDB.
-
-#### Creating a Custom LevelDB Snapshot
-
-1. **Start thor-solo with Persistence**:
-   - Launch thor-solo using Docker with the `--persist` flag. This enables data persistence.
-   - Use the `--data-dir` flag to specify the directory where thor-solo will store its data.
-
-2. **Perform Transactions**:
-   - Execute the necessary transactions or operations in thor-solo. These transactions will be recorded in the specified data directory.
-   - An example of transactions performed to seed the 20 accounts is found in the `thor-solo-seeding.ts` file
-
-3. **Export LevelDB**:
-   - Once you've completed the transactions, use a tool like `docker cp` to export the LevelDB directory (i.e., `instance-a4988aba7aea69f6-v3`) from the Docker container.
-
-#### Using the Custom Snapshot
-
-1. **Prepare the Dockerfile**:
-   - Modify the Dockerfile used for building the thor-solo container. Ensure it copies the exported LevelDB snapshot into the correct path within the container.
-
-2. **Update Data Directory Path**:
-   - Adjust the `--data-dir` flag in your thor-solo startup script or Docker command to point to the new LevelDB snapshot location within the container.
-
-3. **Restart thor-solo**:
-   - Rebuild and restart the thor-solo container with the updated Dockerfile. This will launch thor-solo with your custom data starting point.
