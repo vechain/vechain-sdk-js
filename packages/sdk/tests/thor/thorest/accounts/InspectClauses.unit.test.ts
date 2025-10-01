@@ -10,6 +10,7 @@ import {
     Clause,
     type SimulateTransactionOptions
 } from '@thor/thor-client/model/transactions';
+import { IllegalArgumentError } from '@common/errors';
 
 /**
  * VeChain inspect clauses - unit
@@ -193,13 +194,11 @@ describe('InspectClauses unit tests', () => {
             blockRef: BlockRef.of('0x00000000851caf3c')
         };
         // Execute the test
-        const response = await InspectClauses.of(
-            new ExecuteCodesRequest(clauses, options)
-        ).askTo(mockHttpClient<ExecuteCodeResponseJSON[]>([], 'post'));
-
-        // Verify the response
-        expect(response.response.items).toBeInstanceOf(Array);
-        expect(response.response.items).toHaveLength(0);
+        await expect(async () =>
+            InspectClauses.of(new ExecuteCodesRequest(clauses, options)).askTo(
+                mockHttpClient<ExecuteCodeResponseJSON[]>([], 'post')
+            )
+        ).rejects.toThrow(IllegalArgumentError);
     });
 
     test('should handle out of gas scenario', async () => {
