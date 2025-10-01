@@ -20,7 +20,7 @@ describe('GasModule Unit Tests', () => {
             const result = GasModule.computeIntrinsicGas(clauses);
             expect(result).toBe(21000n);
         });
-        test('should compute instrinsic gas for a contract call with data', () => {
+        test('should compute intrinsic gas for a contract call with data', () => {
             const clauses: Clause[] = [
                 new Clause(
                     Address.of('0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa'),
