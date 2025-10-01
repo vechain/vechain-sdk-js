@@ -1,5 +1,9 @@
-import { RetrieveHistoricalFeeData, SuggestPriorityFee } from '@thor/thorest';
-import { type Address, Revision } from '@common/vcdm';
+import {
+    RetrieveHistoricalFeeData,
+    SuggestPriorityFee,
+    ThorError
+} from '@thor/thorest';
+import { type Address, HexUInt, Revision } from '@common/vcdm';
 import { IllegalArgumentError, NoSuchElementError } from '@common/errors';
 import { AbstractThorModule } from '@thor/thor-client/AbstractThorModule';
 import { type FeeHistory } from '../model/gas/FeeHistory';
@@ -10,7 +14,8 @@ import {
 } from '@thor/thor-client/model/transactions';
 import {
     type EstimateGasResult,
-    type EstimateGasOptions
+    type EstimateGasOptions,
+    type MaxFeePrices
 } from '@thor/thor-client/model/gas';
 import { decodeRevertReason } from './helpers/decode-evm-error';
 
@@ -181,14 +186,117 @@ class GasModule extends AbstractThorModule {
 
     /**
      * Returns the suggested priority fee per gas.
-     * This is calculated based on the current base fee and network conditions.
+     * This comes directly from the /fees/priority endpoint.
+     * And represents the maximum priority fee to be included in the next block.
      *
      * @returns The suggested priority fee per gas as a bigint.
      */
-    public async getMaxPriorityFeePerGas(): Promise<bigint> {
+    public async getSuggestedMaxPriorityFeePerGas(): Promise<bigint> {
         const query = SuggestPriorityFee.of();
         const response = (await query.askTo(this.httpClient)).response;
         return response.maxPriorityFeePerGas;
+    }
+
+    /**
+     * Computes maxFeePerGas and maxPriorityFeePerGas for a transaction.
+     * This is based on the current block base fee and fee history.
+     *
+     * @returns {MaxFeePrices} The maximum fee prices
+     */
+    public async computeMaxFeePrices(): Promise<{
+        maxFeePerGas: bigint;
+        maxPriorityFeePerGas: bigint;
+    }> {
+        // get next block base fee
+        const nextBlockBaseFee = await this.getNextBlockBaseFeePerGas();
+        if (nextBlockBaseFee === null) {
+            throw new IllegalArgumentError(
+                `${FQP}.computeMaxFeePrices()`,
+                'Next block base fee is not available.',
+                { newestBlock: 'next' }
+            );
+        }
+        const maxPriorityFeePerGas =
+            await this.calculateMaxPriorityFeePerGas(nextBlockBaseFee);
+        // maxFeePerGas = 1.12 * baseFeePerGas + maxPriorityFeePerGas
+        const maxFeePerGas =
+            (112n * nextBlockBaseFee) / 100n + maxPriorityFeePerGas;
+        return {
+            maxFeePerGas,
+            maxPriorityFeePerGas
+        };
+    }
+
+    /**
+     * Calculates the default max priority fee per gas based on the current base fee
+     * and historical 75th percentile rewards.
+     *
+     * Uses the FAST (HIGH) speed threshold: min(0.046*baseFee, 75_percentile)
+     *
+     * @param baseFee - The current base fee per gas
+     * @returns A promise that resolves to the default max priority fee per gas as a hex string
+     */
+    private async calculateMaxPriorityFeePerGas(
+        baseFee: bigint
+    ): Promise<bigint> {
+        // Get fee history for recent blocks
+        const feeHistory = await this.getFeeHistory(
+            10,
+            Revision.BEST,
+            [25, 50, 75]
+        );
+
+        // Get the 75th percentile reward from the most recent block
+        let percentile75: bigint;
+
+        if (
+            feeHistory.reward !== null &&
+            feeHistory.reward !== undefined &&
+            feeHistory.reward.length > 0
+        ) {
+            const latestBlockRewards =
+                feeHistory.reward[feeHistory.reward.length - 1];
+            const equalRewardsOnLastBlock =
+                new Set(latestBlockRewards).size === 3;
+
+            // If rewards are equal in the last block, use the first one (75th percentile)
+            // Otherwise, calculate the average of 75th percentiles across blocks
+            if (equalRewardsOnLastBlock) {
+                percentile75 = HexUInt.of(latestBlockRewards[2]).bi; // 75th percentile at index 2
+            } else {
+                // Calculate average of 75th percentiles across blocks
+                let sum = 0n;
+                let count = 0;
+
+                for (const blockRewards of feeHistory.reward) {
+                    if (
+                        blockRewards.length !== null &&
+                        blockRewards.length > 2 &&
+                        blockRewards[2] !== null &&
+                        blockRewards[2] !== undefined
+                    ) {
+                        sum += HexUInt.of(blockRewards[2]).bi;
+                        count++;
+                    }
+                }
+
+                percentile75 = count > 0 ? sum / BigInt(count) : 0n;
+            }
+        } else {
+            // Fallback to getMaxPriorityFeePerGas if fee history is not available
+            percentile75 = HexUInt.of(
+                await this.getSuggestedMaxPriorityFeePerGas()
+            ).bi;
+        }
+
+        // Calculate 4.6% of base fee (HIGH speed threshold)
+        const baseFeeCap = (baseFee * 46n) / 1000n; // 0.046 * baseFee
+
+        // Use the minimum of the two values
+        const priorityFee =
+            baseFeeCap < percentile75 ? baseFeeCap : percentile75;
+
+        return HexUInt.of(priorityFee).bi;
     }
 
     /**
@@ -258,6 +366,58 @@ class GasModule extends AbstractThorModule {
         }
 
         return feeHistory.baseFeePerGas[0];
+    }
+
+    /**
+     * Returns the base fee per gas of the given revision.
+     *
+     * @param {Revision} revision - The revision to get the base fee per gas for.
+     * @returns {bigint} The base fee per gas of the given revision.
+     * @throws {IllegalArgumentError} If the revision is NEXT
+     */
+    public async getBaseFeePerGas(
+        revision: Revision = Revision.BEST
+    ): Promise<bigint> {
+        if (revision === Revision.NEXT) {
+            throw new IllegalArgumentError(
+                `${FQP}.getBaseFeePerGas()`,
+                'Next block base fee is not available.',
+                { revision }
+            );
+        }
+        // this needs changing eventually to use the blocks module
+        const response = await this.httpClient.get(
+            { path: `/blocks/${revision}` },
+            { query: '' }
+        );
+        if (!response.ok) {
+            throw new ThorError(
+                'GasModule.getBaseFeePerGas()',
+                'Network error: failed to get base fee per gas',
+                { revision },
+                undefined,
+                response.status
+            );
+        }
+        const blockData = await response.json();
+        return BigInt(blockData.baseFeePerGas);
+    }
+
+    /**
+     * Returns the base fee per gas of the next block.
+     * This is a convenience method that calls getFeeHistory
+     * @returns The base fee per gas of the next block.
+     */
+    public async getNextBlockBaseFeePerGas(): Promise<bigint | null> {
+        const feeHistory = await this.getFeeHistory(1, Revision.NEXT);
+        if (
+            feeHistory.baseFeePerGas === null ||
+            feeHistory.baseFeePerGas === undefined ||
+            feeHistory.baseFeePerGas.length === 0
+        ) {
+            return null;
+        }
+        return HexUInt.of(feeHistory.baseFeePerGas[0]).bi;
     }
 }
 

@@ -1,13 +1,13 @@
 import { describe, expect, test, beforeEach } from '@jest/globals';
-import { ForkDetector } from '@thor/thorest/fork';
+import { ForkDetector } from '@thor/thor-client/nodes';
 import {
     mockHttpClient,
     mockHttpClientWithError
 } from '../../../MockHttpClient';
-import { IllegalArgumentError } from '@common/errors';
+import { Revision } from '@common/vcdm';
 
 /**
- * @group unit/thor/fork
+ * @group unit
  */
 describe('ForkDetector unit tests', () => {
     beforeEach(() => {
@@ -29,7 +29,7 @@ describe('ForkDetector unit tests', () => {
             const client = mockHttpClient({ baseFeePerGas: '0x1' }, 'get');
             const detector = new ForkDetector(client);
 
-            const result = await detector.isGalacticaForked('best');
+            const result = await detector.isGalacticaForked(Revision.BEST);
 
             expect(result).toBe(true);
         });
@@ -38,7 +38,7 @@ describe('ForkDetector unit tests', () => {
             const client = mockHttpClient({ baseFeePerGas: undefined }, 'get');
             const detector = new ForkDetector(client);
 
-            const result = await detector.isGalacticaForked('best');
+            const result = await detector.isGalacticaForked(Revision.BEST);
 
             expect(result).toBe(false);
         });
@@ -46,19 +46,10 @@ describe('ForkDetector unit tests', () => {
         test('should return false when block is null', async () => {
             const client = mockHttpClient(null, 'get');
             const detector = new ForkDetector(client);
-
-            const result = await detector.isGalacticaForked(999999);
-
+            const result = await detector.isGalacticaForked(
+                Revision.of(999999)
+            );
             expect(result).toBe(false);
-        });
-
-        test('should throw IllegalArgumentError for invalid revision', async () => {
-            const client = mockHttpClient({ baseFeePerGas: undefined }, 'get');
-            const detector = new ForkDetector(client);
-
-            await expect(
-                detector.isGalacticaForked('invalid-revision')
-            ).rejects.toThrow(IllegalArgumentError);
         });
 
         test('should use "best" as default revision', async () => {
@@ -77,7 +68,9 @@ describe('ForkDetector unit tests', () => {
             const client = mockHttpClient({ baseFeePerGas: '0x1' }, 'get');
             const detector = new ForkDetector(client);
 
-            const result = await detector.isGalacticaForked(123456);
+            const result = await detector.isGalacticaForked(
+                Revision.of(123456)
+            );
 
             expect(result).toBe(true);
             expect(client.get).toHaveBeenCalledWith(
@@ -90,8 +83,8 @@ describe('ForkDetector unit tests', () => {
             const client = mockHttpClient({ baseFeePerGas: '0x1' }, 'get');
             const detector = new ForkDetector(client);
 
-            await detector.isGalacticaForked('best');
-            await detector.isGalacticaForked('best');
+            await detector.isGalacticaForked(Revision.BEST);
+            await detector.isGalacticaForked(Revision.BEST);
 
             expect(client.get).toHaveBeenCalledTimes(1);
         });
@@ -100,8 +93,8 @@ describe('ForkDetector unit tests', () => {
             const client = mockHttpClient({ baseFeePerGas: undefined }, 'get');
             const detector = new ForkDetector(client);
 
-            await detector.isGalacticaForked('best');
-            await detector.isGalacticaForked('best');
+            await detector.isGalacticaForked(Revision.BEST);
+            await detector.isGalacticaForked(Revision.BEST);
 
             expect(client.get).toHaveBeenCalledTimes(1);
         });
@@ -110,33 +103,9 @@ describe('ForkDetector unit tests', () => {
             const client = mockHttpClientWithError('Network error', 'get');
             const detector = new ForkDetector(client);
 
-            await expect(detector.isGalacticaForked('best')).rejects.toThrow(
-                'HTTP request failed with status 400'
-            );
-        });
-    });
-
-    describe('detectGalactica', () => {
-        test('should be an alias for isGalacticaForked', async () => {
-            const client = mockHttpClient({ baseFeePerGas: '0x1' }, 'get');
-            const detector = new ForkDetector(client);
-
-            const result = await detector.detectGalactica();
-
-            expect(result).toBe(true);
-        });
-
-        test('should accept custom revision', async () => {
-            const client = mockHttpClient({ baseFeePerGas: undefined }, 'get');
-            const detector = new ForkDetector(client);
-
-            const result = await detector.detectGalactica('finalized');
-
-            expect(result).toBe(false);
-            expect(client.get).toHaveBeenCalledWith(
-                { path: '/blocks/finalized' },
-                { query: '' }
-            );
+            await expect(
+                detector.isGalacticaForked(Revision.BEST)
+            ).rejects.toThrow('HTTP request failed with status 400');
         });
     });
 
@@ -145,9 +114,9 @@ describe('ForkDetector unit tests', () => {
             const client = mockHttpClient({ baseFeePerGas: '0x1' }, 'get');
             const detector = new ForkDetector(client);
 
-            await detector.isGalacticaForked('best');
+            await detector.isGalacticaForked(Revision.BEST);
             detector.clearCache();
-            await detector.isGalacticaForked('best');
+            await detector.isGalacticaForked(Revision.BEST);
 
             expect(client.get).toHaveBeenCalledTimes(2);
         });

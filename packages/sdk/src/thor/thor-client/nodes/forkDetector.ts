@@ -1,21 +1,22 @@
 import { Revision } from '@common/vcdm';
 import { type HttpClient } from '@common/http';
 import { ThorError } from '@thor/thorest';
-import { IllegalArgumentError } from '@common/errors';
 
 // In-memory cache for fork detection results
 interface CacheEntry {
     result: boolean;
     timestamp: number;
 }
-const galacticaForkCache = new Map<string, CacheEntry>();
-// Cache TTL in milliseconds for negative results (5 minutes)
-const NEGATIVE_CACHE_TTL = 5 * 60 * 1000;
-// Track if we've found the Galactica fork on any revision
-let galacticaForkDetected = false;
 
 class ForkDetector {
     constructor(private readonly httpClient: HttpClient) {}
+
+    private static readonly galacticaForkCache = new Map<
+        Revision,
+        CacheEntry
+    >();
+    private static readonly NEGATIVE_CACHE_TTL = 5 * 60 * 1000;
+    private static galacticaForkDetected = false;
 
     /**
      * Checks if the given block is Galactica-forked by inspecting the block details.
@@ -25,48 +26,36 @@ class ForkDetector {
      *
      * @param revision Block number or ID (e.g., 'best', 'finalized', or numeric).
      * @returns `true` if Galactica-forked, otherwise `false`.
-     * @throws {IllegalArgumentError} If the revision is invalid.
+     * @throws {ThorError} If unable to get block details.
      */
-    public async isGalacticaForked(
-        revision?: string | number
-    ): Promise<boolean> {
+    public async isGalacticaForked(revision?: Revision): Promise<boolean> {
         // If we've already detected Galactica fork on any revision, return true immediately
         // This is because once a hard fork happens, it's permanent
-        if (galacticaForkDetected) {
+        if (ForkDetector.galacticaForkDetected) {
             return true;
         }
-
         if (revision === undefined) {
-            revision = 'best';
+            revision = Revision.BEST;
         }
-        if (!Revision.isValid(revision)) {
-            throw new IllegalArgumentError(
-                'GalacticaForkDetector.isGalacticaForked()',
-                'Invalid revision. Must be a valid block number or ID.',
-                { revision }
-            );
-        }
-
-        const revisionKey = String(revision);
-
         // Check cache first
-        const cachedResult = galacticaForkCache.get(revisionKey);
+        const cachedResult = ForkDetector.galacticaForkCache.get(revision);
         const now = Date.now();
 
         // If we have a cached positive result or a non-expired negative result
         if (cachedResult !== undefined) {
             // Positive results are kept indefinitely
             if (cachedResult.result) {
-                galacticaForkDetected = true;
+                ForkDetector.galacticaForkDetected = true;
                 return true;
             }
-
             // Negative results expire after TTL
-            if (now - cachedResult.timestamp < NEGATIVE_CACHE_TTL) {
+            if (
+                now - cachedResult.timestamp <
+                ForkDetector.NEGATIVE_CACHE_TTL
+            ) {
                 return false;
             }
         }
-
         // If cache miss or expired negative result, make the request
         const response = await this.httpClient.get(
             { path: `/blocks/${revision}` },
@@ -86,7 +75,7 @@ class ForkDetector {
 
         if (response === null) {
             // Cache the negative result with TTL
-            galacticaForkCache.set(revisionKey, {
+            ForkDetector.galacticaForkCache.set(revision, {
                 result: false,
                 timestamp: now
             });
@@ -97,7 +86,7 @@ class ForkDetector {
 
         if (blockData === null) {
             // Cache the negative result with TTL
-            galacticaForkCache.set(revisionKey, {
+            ForkDetector.galacticaForkCache.set(revision, {
                 result: false,
                 timestamp: now
             });
@@ -107,27 +96,17 @@ class ForkDetector {
         const result = blockData.baseFeePerGas !== undefined;
 
         // Cache the result
-        galacticaForkCache.set(revisionKey, { result, timestamp: now });
+        ForkDetector.galacticaForkCache.set(revision, {
+            result,
+            timestamp: now
+        });
 
         // If fork is detected, set the global flag
-        if (result) {
-            galacticaForkDetected = true;
+        if (ForkDetector.galacticaForkDetected) {
+            ForkDetector.galacticaForkDetected = true;
         }
 
         return result;
-    }
-
-    /**
-     * Detects if the current network is on the Galactica fork by checking the best block.
-     * This is an alias for isGalacticaForked('best').
-     *
-     * @param {string | number} revision - Block number or ID (e.g., 'best', 'finalized', or numeric)
-     * @returns {Promise<boolean>} A promise that resolves to true if Galactica fork is detected, false otherwise.
-     */
-    public async detectGalactica(
-        revision: string | number = 'best'
-    ): Promise<boolean> {
-        return await this.isGalacticaForked(revision);
     }
 
     /**
@@ -135,8 +114,8 @@ class ForkDetector {
      * This is mainly useful for testing purposes.
      */
     public clearCache(): void {
-        galacticaForkCache.clear();
-        galacticaForkDetected = false;
+        ForkDetector.galacticaForkCache.clear();
+        ForkDetector.galacticaForkDetected = false;
     }
 }
 

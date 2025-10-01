@@ -1,8 +1,9 @@
 import { describe, expect, test, beforeEach } from '@jest/globals';
-import { ForkDetector } from '@thor/thorest/fork';
+import { ForkDetector } from '@thor/thor-client/nodes';
 import { FetchHttpClient } from '@common/http';
 import { ThorNetworks } from '@thor/thorest';
 import { IllegalArgumentError } from '@common/errors';
+import { Revision } from '@common/vcdm';
 
 /**
  * @group integration/thor/fork
@@ -19,14 +20,14 @@ describe('ForkDetector SOLO tests', () => {
 
     describe('isGalacticaForked', () => {
         test('should detect fork status for genesis block (block 0)', async () => {
-            const result = await forkDetector.isGalacticaForked(0);
+            const result = await forkDetector.isGalacticaForked(Revision.of(0));
 
             // Genesis block should not have Galactica fork features
             expect(result).toBe(false);
         });
 
         test('should detect fork status for best block', async () => {
-            const result = await forkDetector.isGalacticaForked('best');
+            const result = await forkDetector.isGalacticaForked(Revision.BEST);
 
             expect(result).toBe(true);
         });
@@ -36,12 +37,6 @@ describe('ForkDetector SOLO tests', () => {
             expect(result).toBe(false);
         });
 
-        test('should throw IllegalArgumentError for invalid revision', async () => {
-            await expect(
-                forkDetector.isGalacticaForked('invalid-revision')
-            ).rejects.toThrow(IllegalArgumentError);
-        });
-
         test('should use default (best)revision when undefined', async () => {
             const result = await forkDetector.isGalacticaForked();
 
@@ -49,10 +44,15 @@ describe('ForkDetector SOLO tests', () => {
         });
 
         test('should handle different revisions independently', async () => {
-            const bestResult = await forkDetector.isGalacticaForked('best');
-            const finalizedResult =
-                await forkDetector.isGalacticaForked('finalized');
-            const block0Result = await forkDetector.isGalacticaForked(0);
+            const bestResult = await forkDetector.isGalacticaForked(
+                Revision.BEST
+            );
+            const finalizedResult = await forkDetector.isGalacticaForked(
+                Revision.FINALIZED
+            );
+            const block0Result = await forkDetector.isGalacticaForked(
+                Revision.of(0)
+            );
 
             // All should return boolean values
             expect(typeof bestResult).toBe('boolean');
@@ -61,41 +61,16 @@ describe('ForkDetector SOLO tests', () => {
         });
     });
 
-    describe('detectGalactica', () => {
-        test('should work as alias for isGalacticaForked with default revision', async () => {
-            const directResult = await forkDetector.isGalacticaForked('best');
-
-            // Clear cache to ensure fresh call
-            forkDetector.clearCache();
-
-            const aliasResult = await forkDetector.detectGalactica();
-
-            expect(aliasResult).toBe(directResult);
-        });
-
-        test('should accept custom revision parameter', async () => {
-            const result = await forkDetector.detectGalactica('finalized');
-
-            expect(typeof result).toBe('boolean');
-        });
-
-        test('should work with numeric revision', async () => {
-            const result = await forkDetector.detectGalactica(0);
-
-            expect(typeof result).toBe('boolean');
-        });
-    });
-
     describe('clearCache', () => {
         test('should reset cache and allow fresh network calls', async () => {
             // First call to populate cache
-            await forkDetector.isGalacticaForked('best');
+            await forkDetector.isGalacticaForked(Revision.BEST);
 
             // Clear cache
             forkDetector.clearCache();
 
             // Second call should work correctly (making fresh network request)
-            const result = await forkDetector.isGalacticaForked('best');
+            const result = await forkDetector.isGalacticaForked(Revision.BEST);
 
             expect(typeof result).toBe('boolean');
         });
@@ -104,9 +79,9 @@ describe('ForkDetector SOLO tests', () => {
     describe('edge cases', () => {
         test('should handle rapid sequential calls', async () => {
             const promises = [
-                forkDetector.isGalacticaForked('best'),
-                forkDetector.isGalacticaForked('best'),
-                forkDetector.isGalacticaForked('best')
+                forkDetector.isGalacticaForked(Revision.BEST),
+                forkDetector.isGalacticaForked(Revision.BEST),
+                forkDetector.isGalacticaForked(Revision.BEST)
             ];
 
             const results = await Promise.all(promises);
@@ -118,9 +93,9 @@ describe('ForkDetector SOLO tests', () => {
 
         test('should handle mixed revision types', async () => {
             const results = await Promise.all([
-                forkDetector.isGalacticaForked(0),
-                forkDetector.isGalacticaForked('best'),
-                forkDetector.isGalacticaForked('finalized')
+                forkDetector.isGalacticaForked(Revision.of(0)),
+                forkDetector.isGalacticaForked(Revision.BEST),
+                forkDetector.isGalacticaForked(Revision.FINALIZED)
             ]);
 
             // All should return boolean values
@@ -133,8 +108,8 @@ describe('ForkDetector SOLO tests', () => {
             const detector1 = new ForkDetector(httpClient);
             const detector2 = new ForkDetector(httpClient);
 
-            const result1 = await detector1.isGalacticaForked('best');
-            const result2 = await detector2.isGalacticaForked('best');
+            const result1 = await detector1.isGalacticaForked(Revision.BEST);
+            const result2 = await detector2.isGalacticaForked(Revision.BEST);
 
             // Both detectors should give the same result for the same revision
             expect(result1).toBe(result2);
@@ -150,7 +125,9 @@ describe('ForkDetector SOLO tests', () => {
                 }, 10000); // 10 second timeout
             });
 
-            const detectorPromise = forkDetector.isGalacticaForked('best');
+            const detectorPromise = forkDetector.isGalacticaForked(
+                Revision.BEST
+            );
 
             await expect(
                 Promise.race([detectorPromise, timeoutPromise])
