@@ -126,7 +126,7 @@ class GasModule extends AbstractThorModule {
         // add the intrinsic gas
         const intrinsicGas = GasModule.computeIntrinsicGas(clauses);
         // add the gas padding
-        const totalGasUsed = GasModule.computeGasWithPadding(
+        const totalGasUsed = GasModule._computeGasWithPadding(
             options?.gasPadding ?? 0,
             evmGasUsed,
             intrinsicGas
