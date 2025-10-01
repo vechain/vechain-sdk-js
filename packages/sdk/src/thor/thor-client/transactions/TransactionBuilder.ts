@@ -120,13 +120,11 @@ class TransactionBuilder {
     }
 
     public withDefaultExpiration(): this {
-        // 10 minutes
         this.params.expiration = 32;
         return this;
     }
 
     public withRandomNonce(): this {
-        // random nonce
         this.params.nonce = Hex.random(8).n;
         return this;
     }

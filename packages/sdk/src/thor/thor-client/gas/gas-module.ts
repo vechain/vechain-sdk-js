@@ -14,8 +14,7 @@ import {
 } from '@thor/thor-client/model/transactions';
 import {
     type EstimateGasResult,
-    type EstimateGasOptions,
-    type MaxFeePrices
+    type EstimateGasOptions
 } from '@thor/thor-client/model/gas';
 import { decodeRevertReason } from './helpers/decode-evm-error';
 
