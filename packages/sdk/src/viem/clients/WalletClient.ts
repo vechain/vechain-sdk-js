@@ -6,7 +6,7 @@ import {
     TransactionRequest,
     SignedTransactionRequest,
     SponsoredTransactionRequest
-} from '@thor/thor-client/model/transactions';
+} from '../../thor/thor-client/model/transactions';
 import { Address, Blake2b256, Hex, HexInt, HexUInt } from '@common/vcdm';
 import { FetchHttpClient, type HttpClient } from '@common/http';
 import {

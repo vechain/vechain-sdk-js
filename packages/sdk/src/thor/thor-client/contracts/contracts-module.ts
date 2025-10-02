@@ -1,63 +1,46 @@
 import { type Abi } from 'abitype';
-import { type Signer } from '@thor/signer';
-import { type Address } from '@common/vcdm';
-import { type PublicClient, type WalletClient } from '@viem/clients';
+import { type Signer } from '../../../thor/signer';
+import { type Address } from '../../../common/vcdm';
+import { type HttpClient } from '@common/http';
+import { AbstractThorModule } from '../AbstractThorModule';
 import { Contract, ContractFactory } from './model';
 
 /**
  * Represents a module for interacting with smart contracts on the blockchain.
- * This is the middle-layer contracts module that delegates to viem clients.
+ * This is the middle-layer contracts module that works directly with ThorClient.
+ *
+ * This follows the official VeChain SDK pattern where ContractsModule
+ * is a ThorModule that provides contract interaction capabilities.
  */
-class ContractsModule {
-    private publicClient?: PublicClient;
-    private walletClient?: WalletClient;
-
+class ContractsModule extends AbstractThorModule {
     /**
      * Creates a new ContractsModule instance
-     * @param publicClient - Optional PublicClient for read operations
-     * @param walletClient - Optional WalletClient for write operations
+     * @param httpClient - The HTTP client for blockchain communication
      */
-    constructor(publicClient?: PublicClient, walletClient?: WalletClient) {
-        this.publicClient = publicClient;
-        this.walletClient = walletClient;
-    }
-
-    /**
-     * Gets the PublicClient instance
-     */
-    public getPublicClient(): PublicClient | undefined {
-        return this.publicClient;
-    }
-
-    /**
-     * Gets the WalletClient instance
-     */
-    public getWalletClient(): WalletClient | undefined {
-        return this.walletClient;
-    }
-
-    /**
-     * Sets the PublicClient instance
-     */
-    public setPublicClient(publicClient: PublicClient): void {
-        this.publicClient = publicClient;
-    }
-
-    /**
-     * Sets the WalletClient instance
-     */
-    public setWalletClient(walletClient: WalletClient): void {
-        this.walletClient = walletClient;
+    constructor(httpClient: HttpClient) {
+        super(httpClient);
     }
 
     /**
      * Creates a new instance of `ContractFactory` configured with the specified ABI, bytecode, and signer.
-     * This factory is used to deploy new smart contracts to the blockchain network.
+     * This factory is used to deploy new smart contracts to the blockchain network using VeChain's official Clause pattern.
      *
      * @param abi - The Application Binary Interface (ABI) of the contract.
      * @param bytecode - The compiled bytecode of the contract.
      * @param signer - The signer used for signing transactions during contract deployment.
      * @returns An instance of `ContractFactory` configured with the provided parameters.
+     *
+     * @example
+     * ```typescript
+     * const thorClient = ThorClient.at('https://mainnet.vechain.org');
+     * const factory = thorClient.contracts.createContractFactory(abi, bytecode, signer);
+     *
+     * // Create deployment clause
+     * const deployClause = factory.createDeploymentClause([constructorArg1, constructorArg2]);
+     *
+     * // Deploy contract (when ThorClient transaction sending is implemented)
+     * const contract = await factory.deploy([constructorArg1, constructorArg2]);
+     * ```
      */
     public createContractFactory<TAbi extends Abi>(
         abi: TAbi,
@@ -81,20 +64,6 @@ class ContractsModule {
         signer?: Signer
     ): Contract<TAbi> {
         return new Contract<TAbi>(address, abi, this, signer);
-    }
-
-    /**
-     * Checks if the module has a PublicClient for read operations
-     */
-    public hasPublicClient(): boolean {
-        return this.publicClient !== undefined;
-    }
-
-    /**
-     * Checks if the module has a WalletClient for write operations
-     */
-    public hasWalletClient(): boolean {
-        return this.walletClient !== undefined;
     }
 }
 

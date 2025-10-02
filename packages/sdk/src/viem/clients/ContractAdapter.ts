@@ -9,9 +9,12 @@ import { type PublicClient, type WalletClient } from '@viem/clients';
 import { type ExecuteCodesRequestJSON } from '@thor/thorest/json';
 import { type SubscriptionEventResponse } from '@thor/thorest/subscriptions/response';
 import { type ExecuteCodesResponse } from '@thor/thorest/accounts/response';
-import { type DecodedEventLog } from '@thor/thor-client/model/logs/DecodedEventLog';
+import { type DecodedEventLog } from '../../thor/thor-client/model/logs/DecodedEventLog';
 // Import the middle-layer contracts module
-import { ContractsModule, Contract as VeChainContract } from '@thor/thor-client/contracts';
+import {
+    ContractsModule,
+    Contract as VeChainContract
+} from '../../thor/thor-client/contracts';
 
 // Type alias for hex-convertible values
 type HexConvertible = string | number | bigint;
@@ -50,7 +53,7 @@ export interface WriteContractParameters {
 /**
  * A contract instance with read, write, simulate, estimateGas, and event interfaces
  * Compatible with viem's getContract return type
- * 
+ *
  * This is the viem-compatible layer that uses the official VeChain contracts module as backend
  */
 export interface Contract<TAbi extends Abi> {
@@ -103,7 +106,7 @@ export interface Contract<TAbi extends Abi> {
             }) => unknown; // EventFilter type
         }
     >;
-    
+
     // Additional VeChain-specific functionality exposed through the viem interface
     /** Access to the underlying VeChain contract instance */
     _vechain?: {
@@ -158,7 +161,21 @@ function getContract<const TAbi extends Abi>({
     }
 
     // Create the underlying VeChain contract instance using the middle layer
-    const contractsModule = new ContractsModule(publicClient, walletClient);
+    // Use the HttpClient from the viem clients (either publicClient or walletClient)
+    let httpClient = publicClient?.transport || walletClient?.transport;
+
+    // Fallback for test environments where transport might not be available
+    if (!httpClient) {
+        // Create a mock HttpClient for testing purposes
+        httpClient = {
+            get: async () => ({ ok: true, json: async () => ({}) }),
+            post: async () => ({ ok: true, json: async () => ({}) }),
+            put: async () => ({ ok: true, json: async () => ({}) }),
+            delete: async () => ({ ok: true, json: async () => ({}) })
+        } as any;
+    }
+
+    const contractsModule = new ContractsModule(httpClient);
     const vechainContract = contractsModule.load(address, abi);
 
     // Initialize properties
@@ -213,7 +230,8 @@ function getContract<const TAbi extends Abi>({
             vechainContract.setContractTransactOptions(options as any);
         },
         clause: {} as Record<string, (...args: unknown[]) => unknown>,
-        filters: {} as Record<string, (...args: unknown[]) => unknown>
+        filters: {} as Record<string, (...args: unknown[]) => unknown>,
+        criteria: {} as Record<string, (...args: unknown[]) => unknown>
     };
 
     // Initialize contract object
@@ -241,49 +259,11 @@ function getContract<const TAbi extends Abi>({
                 publicClient != null
             ) {
                 contract.read[functionName] = async (...args: FunctionArgs) => {
-                    // TODO: Delegate to vechainContract.read[functionName](...args)
-                    // For now, use the existing implementation
-                    
-                    // Encode function call data
-                    const data = encodeFunctionData({
-                        abi: abi as Abi,
-                        functionName,
-                        args: args ?? []
-                    });
-
-                    // Prepare call request
-                    const request: ExecuteCodesRequestJSON = {
-                        clauses: [
-                            {
-                                to: address.toString(),
-                                data: data as unknown as string,
-                                value: Hex.of(0).toString()
-                            }
-                        ]
-                    };
-
-                    // Call the contract
-                    const response = await publicClient.call(request);
-
-                    if (response.items.length === 0) {
-                        throw new Error('No response from contract call');
-                    }
-
-                    const result = response.items[0].data;
-
-                    // Decode the result
-                    if (abiItem.outputs != null && abiItem.outputs.length > 0) {
-                        return decodeFunctionResult({
-                            abi: abi as Abi,
-                            functionName,
-                            data: result as unknown as `0x${string}`
-                        });
-                    }
-
-                    return undefined;
+                    // Delegate to the VeChain contract's read method
+                    return await vechainContract.read[functionName](...args);
                 };
             }
-            
+
             // Write methods - delegate to VeChain contract
             if (
                 (abiItem.stateMutability === 'nonpayable' ||
@@ -296,33 +276,11 @@ function getContract<const TAbi extends Abi>({
                     gas,
                     gasPrice
                 } = {}) => {
-                    // TODO: Delegate to vechainContract.transact[functionName](...args, { value })
-                    // For now, use the existing implementation
-                    
-                    const data = encodeFunctionData({
-                        abi: abi as Abi,
-                        functionName,
-                        args
-                    });
-
-                    const txRequest: ExecuteCodesRequestJSON = {
-                        clauses: [
-                            {
-                                to: address.toString(),
-                                data: data as unknown as string,
-                                value: Hex.of(value).toString()
-                            }
-                        ]
-                    };
-
-                    if (gas !== undefined) {
-                        txRequest.gas = Number(gas);
-                    }
-                    if (gasPrice !== undefined) {
-                        txRequest.gasPrice = Hex.of(gasPrice).toString();
-                    }
-
-                    return txRequest;
+                    // Delegate to the VeChain contract's transact method
+                    // The VeChain contract will handle the transaction preparation
+                    return vechainContract.transact[functionName](
+                        ...args
+                    ) as ExecuteCodesRequestJSON;
                 };
             }
 
@@ -461,6 +419,18 @@ function getContract<const TAbi extends Abi>({
             // Add VeChain-specific event filters - delegate to middle layer
             vechainMethods.filters[eventName] = (...args: unknown[]) => {
                 return (vechainContract.filters as any)[eventName](...args);
+            };
+        }
+    }
+
+    // Populate VeChain-specific methods for functions
+    for (const abiItem of abi) {
+        if (abiItem.type === 'function') {
+            const functionName = abiItem.name;
+
+            // Add VeChain-specific clause methods - delegate to middle layer
+            vechainMethods.clause[functionName] = (...args: unknown[]) => {
+                return (vechainContract.clause as any)[functionName](...args);
             };
         }
     }

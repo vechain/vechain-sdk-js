@@ -3,21 +3,11 @@ import {
     type ExtractAbiEventNames,
     type ExtractAbiFunctionNames
 } from 'abitype';
-import {
-    encodeFunctionData,
-    toEventSelector
-} from 'viem';
+import { encodeFunctionData, toEventSelector } from 'viem';
 import { type Signer } from '@thor/signer';
-import { type Address, Hex } from '@common/vcdm';
+import { type Address } from '@common';
 import type { ContractCallOptions, ContractTransactionOptions } from '../types';
-
-// Forward declaration to avoid circular imports
-interface ContractsModule {
-    getPublicClient(): unknown;
-    getWalletClient(): unknown;
-    hasPublicClient(): boolean;
-    hasWalletClient(): boolean;
-}
+import type { ContractsModule } from '../interfaces';
 
 /**
  * A class representing a smart contract deployed on the blockchain.
@@ -29,8 +19,10 @@ class Contract<TAbi extends Abi> {
     readonly abi: TAbi;
     private signer?: Signer;
 
-    public read: Record<string, (...args: unknown[]) => Promise<unknown[]>> = {};
-    public transact: Record<string, (...args: unknown[]) => Promise<unknown>> = {};
+    public read: Record<string, (...args: unknown[]) => Promise<unknown[]>> =
+        {};
+    public transact: Record<string, (...args: unknown[]) => Promise<unknown>> =
+        {};
     public filters: Record<string, (...args: unknown[]) => unknown> = {};
     public clause: Record<string, (...args: unknown[]) => unknown> = {};
     public criteria: Record<string, (...args: unknown[]) => unknown> = {};
@@ -130,22 +122,6 @@ class Contract<TAbi extends Abi> {
     }
 
     /**
-     * Gets the PublicClient from the contracts module (if available)
-     * This allows the contract to delegate operations to the viem layer
-     */
-    public getPublicClient(): unknown {
-        return this.contractsModule.getPublicClient?.();
-    }
-
-    /**
-     * Gets the WalletClient from the contracts module (if available)
-     * This allows the contract to delegate operations to the viem layer
-     */
-    public getWalletClient(): unknown {
-        return this.contractsModule.getWalletClient?.();
-    }
-
-    /**
      * Retrieves the function ABI for the specified function name.
      * Uses viem's ABI parsing instead of ABIContract from core
      * @param prop - The name of the function.
@@ -156,11 +132,11 @@ class Contract<TAbi extends Abi> {
         const functionAbi = this.abi.find(
             (item) => item.type === 'function' && item.name === functionName
         );
-        
+
         if (!functionAbi) {
             throw new Error(`Function ${functionName} not found in ABI`);
         }
-        
+
         return functionAbi;
     }
 
@@ -175,11 +151,11 @@ class Contract<TAbi extends Abi> {
         const eventAbi = this.abi.find(
             (item) => item.type === 'event' && item.name === name
         );
-        
+
         if (!eventAbi) {
             throw new Error(`Event ${name} not found in ABI`);
         }
-        
+
         return eventAbi;
     }
 
@@ -192,48 +168,67 @@ class Contract<TAbi extends Abi> {
         for (const abiItem of this.abi) {
             if (abiItem.type === 'function') {
                 const functionName = abiItem.name;
-                
-                // Read methods (view/pure)
-                if (abiItem.stateMutability === 'view' || abiItem.stateMutability === 'pure') {
+
+                // Read methods (view/pure) - use ThorClient for blockchain calls
+                if (
+                    abiItem.stateMutability === 'view' ||
+                    abiItem.stateMutability === 'pure'
+                ) {
                     this.read[functionName] = async (...args: unknown[]) => {
-                        // Stub implementation - would delegate to PublicClient
-                        console.log(`Reading ${functionName} with args:`, args);
-                        return ['stub_result'];
+                        // Use ThorClient for contract calls
+                        const data = this.encodeFunctionData(
+                            functionName,
+                            args
+                        );
+                        // TODO: Integrate with ThorClient.accounts.getAccount or similar
+                        // For now, return empty result as this is a stub
+                        return [];
                     };
                 }
-                
-                // Transact methods (payable/nonpayable)
-                if (abiItem.stateMutability === 'payable' || abiItem.stateMutability === 'nonpayable') {
-                    this.transact[functionName] = async (...args: unknown[]) => {
-                        // Stub implementation - would delegate to WalletClient
-                        console.log(`Transacting ${functionName} with args:`, args);
+
+                // Transact methods (payable/nonpayable) - use ThorClient for transactions
+                if (
+                    abiItem.stateMutability === 'payable' ||
+                    abiItem.stateMutability === 'nonpayable'
+                ) {
+                    this.transact[functionName] = async (
+                        ...args: unknown[]
+                    ) => {
+                        // TODO: Integrate with ThorClient.transactions.sendTransaction
+                        // For now, return empty result as this is a stub
                         return { transactionId: 'stub_tx_id' };
                     };
                 }
-                
-                // Clause building
+
+                // Clause building - create VeChain transaction clauses
                 this.clause[functionName] = (...args: unknown[]) => {
-                    console.log(`Building clause for ${functionName} with args:`, args);
+                    const data = this.encodeFunctionData(functionName, args);
                     return {
                         to: this.address.toString(),
-                        data: '0x' + functionName, // Simplified
+                        data: data,
                         value: '0x0',
                         comment: undefined
                     };
                 };
             }
-            
-            // Event filters
+
+            // Event filters - use ThorClient for event filtering
             if (abiItem.type === 'event') {
                 const eventName = abiItem.name;
                 this.filters[eventName] = (...args: unknown[]) => {
-                    console.log(`Creating filter for ${eventName} with args:`, args);
-                    return { eventName, args };
+                    // TODO: Integrate with ThorClient.logs.getLogs or similar
+                    return {
+                        address: this.address.toString(),
+                        topics: [this.getEventSelector(eventName)]
+                    };
                 };
-                
+
                 this.criteria[eventName] = (...args: unknown[]) => {
-                    console.log(`Creating criteria for ${eventName} with args:`, args);
-                    return { eventName, args };
+                    // TODO: Integrate with ThorClient.logs.createEventFilter or similar
+                    return {
+                        address: this.address.toString(),
+                        topics: [this.getEventSelector(eventName)]
+                    };
                 };
             }
         }
@@ -245,7 +240,10 @@ class Contract<TAbi extends Abi> {
      * @param args - The function arguments
      * @returns The encoded function data
      */
-    public encodeFunctionData(functionName: string, args: unknown[] = []): string {
+    public encodeFunctionData(
+        functionName: string,
+        args: unknown[] = []
+    ): string {
         try {
             return encodeFunctionData({
                 abi: this.abi as any,

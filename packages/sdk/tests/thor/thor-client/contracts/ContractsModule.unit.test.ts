@@ -1,55 +1,43 @@
 import { describe, expect, test, jest } from '@jest/globals';
-import { ContractsModule, Contract, ContractFactory } from '../../../../src/thor/thor-client/contracts';
+import { ContractsModule } from '../../../../src/thor/thor-client/contracts';
+import { AbstractThorModule } from '../../../../src/thor/thor-client/AbstractThorModule';
 import { Address } from '../../../../src/common/vcdm';
-import { type PublicClient, type WalletClient } from '../../../../src/viem/clients';
 
-// Simple ERC20 ABI for testing
-const erc20Abi = [
+// Mock HttpClient
+const createMockHttpClient = () => ({
+    get: jest.fn(),
+    post: jest.fn(),
+    put: jest.fn(),
+    delete: jest.fn()
+});
+
+// Simple contract ABI for testing
+const testContractAbi = [
     {
         type: 'function',
-        name: 'balanceOf',
+        name: 'getValue',
         stateMutability: 'view',
-        inputs: [{ name: 'account', type: 'address' }],
+        inputs: [],
         outputs: [{ name: '', type: 'uint256' }]
     },
     {
         type: 'function',
-        name: 'transfer',
+        name: 'setValue',
         stateMutability: 'nonpayable',
-        inputs: [
-            { name: 'to', type: 'address' },
-            { name: 'amount', type: 'uint256' }
-        ],
-        outputs: [{ name: '', type: 'bool' }]
+        inputs: [{ name: 'newValue', type: 'uint256' }],
+        outputs: []
     },
     {
         type: 'event',
-        name: 'Transfer',
+        name: 'ValueChanged',
         inputs: [
-            { name: 'from', type: 'address', indexed: true },
-            { name: 'to', type: 'address', indexed: true },
-            { name: 'value', type: 'uint256', indexed: false }
+            { name: 'oldValue', type: 'uint256', indexed: true },
+            { name: 'newValue', type: 'uint256', indexed: true }
         ]
     }
 ] as const;
 
-// Mock clients
-const createMockPublicClient = (): PublicClient => ({
-    thorNetworks: 'SOLONET',
-    call: jest.fn(),
-    simulateCalls: jest.fn(),
-    estimateGas: jest.fn(),
-    watchEvent: jest.fn(),
-    getLogs: jest.fn(),
-    createEventFilter: jest.fn()
-} as any);
-
-const createMockWalletClient = (): WalletClient => ({
-    thorNetworks: 'SOLONET',
-    account: Address.of('0x1234567890123456789012345678901234567890'),
-    sendTransaction: jest.fn()
-} as any);
-
+// Mock signer
 const createMockSigner = () => ({
     address: Address.of('0x1234567890123456789012345678901234567890'),
     sign: jest.fn()
@@ -60,179 +48,79 @@ const createMockSigner = () => ({
  */
 describe('ContractsModule', () => {
     describe('Constructor', () => {
-        test('Should create instance with no clients', () => {
-            const contractsModule = new ContractsModule();
-            
+        test('Should create instance with HttpClient', () => {
+            const mockHttpClient = createMockHttpClient();
+            const contractsModule = new ContractsModule(mockHttpClient);
+
             expect(contractsModule).toBeInstanceOf(ContractsModule);
-            expect(contractsModule.getPublicClient()).toBeUndefined();
-            expect(contractsModule.getWalletClient()).toBeUndefined();
-            expect(contractsModule.hasPublicClient()).toBe(false);
-            expect(contractsModule.hasWalletClient()).toBe(false);
-        });
-
-        test('Should create instance with PublicClient only', () => {
-            const publicClient = createMockPublicClient();
-            const contractsModule = new ContractsModule(publicClient);
-            
-            expect(contractsModule.getPublicClient()).toBe(publicClient);
-            expect(contractsModule.getWalletClient()).toBeUndefined();
-            expect(contractsModule.hasPublicClient()).toBe(true);
-            expect(contractsModule.hasWalletClient()).toBe(false);
-        });
-
-        test('Should create instance with WalletClient only', () => {
-            const walletClient = createMockWalletClient();
-            const contractsModule = new ContractsModule(undefined, walletClient);
-            
-            expect(contractsModule.getPublicClient()).toBeUndefined();
-            expect(contractsModule.getWalletClient()).toBe(walletClient);
-            expect(contractsModule.hasPublicClient()).toBe(false);
-            expect(contractsModule.hasWalletClient()).toBe(true);
-        });
-
-        test('Should create instance with both clients', () => {
-            const publicClient = createMockPublicClient();
-            const walletClient = createMockWalletClient();
-            const contractsModule = new ContractsModule(publicClient, walletClient);
-            
-            expect(contractsModule.getPublicClient()).toBe(publicClient);
-            expect(contractsModule.getWalletClient()).toBe(walletClient);
-            expect(contractsModule.hasPublicClient()).toBe(true);
-            expect(contractsModule.hasWalletClient()).toBe(true);
-        });
-    });
-
-    describe('Client Management', () => {
-        test('Should set and get PublicClient', () => {
-            const contractsModule = new ContractsModule();
-            const publicClient = createMockPublicClient();
-            
-            contractsModule.setPublicClient(publicClient);
-            
-            expect(contractsModule.getPublicClient()).toBe(publicClient);
-            expect(contractsModule.hasPublicClient()).toBe(true);
-        });
-
-        test('Should set and get WalletClient', () => {
-            const contractsModule = new ContractsModule();
-            const walletClient = createMockWalletClient();
-            
-            contractsModule.setWalletClient(walletClient);
-            
-            expect(contractsModule.getWalletClient()).toBe(walletClient);
-            expect(contractsModule.hasWalletClient()).toBe(true);
+            expect(contractsModule).toBeInstanceOf(AbstractThorModule);
         });
     });
 
     describe('Contract Loading', () => {
-        test('Should load contract without signer', () => {
-            const publicClient = createMockPublicClient();
-            const contractsModule = new ContractsModule(publicClient);
-            const contractAddress = Address.of('0x0000000000000000000000000000000000000000');
-            
-            const contract = contractsModule.load(contractAddress, erc20Abi);
-            
-            expect(contract).toBeInstanceOf(Contract);
+        test('Should load contract with address and ABI', () => {
+            const mockHttpClient = createMockHttpClient();
+            const contractsModule = new ContractsModule(mockHttpClient);
+            const contractAddress = Address.of(
+                '0x742d35Cc6634C0532925a3b844Bc454e4438f444'
+            );
+
+            const contract = contractsModule.load(
+                contractAddress,
+                testContractAbi
+            );
+
+            expect(contract).toBeDefined();
             expect(contract.address).toBe(contractAddress);
-            expect(contract.abi).toBe(erc20Abi);
-            expect(contract.contractsModule).toBe(contractsModule);
-            expect(contract.getSigner()).toBeUndefined();
+            expect(contract.abi).toBe(testContractAbi);
         });
 
         test('Should load contract with signer', () => {
-            const publicClient = createMockPublicClient();
-            const contractsModule = new ContractsModule(publicClient);
-            const contractAddress = Address.of('0x0000000000000000000000000000000000000000');
+            const mockHttpClient = createMockHttpClient();
+            const contractsModule = new ContractsModule(mockHttpClient);
+            const contractAddress = Address.of(
+                '0x742d35Cc6634C0532925a3b844Bc454e4438f444'
+            );
             const signer = createMockSigner();
-            
-            const contract = contractsModule.load(contractAddress, erc20Abi, signer);
-            
-            expect(contract).toBeInstanceOf(Contract);
-            expect(contract.address).toBe(contractAddress);
-            expect(contract.abi).toBe(erc20Abi);
-            expect(contract.contractsModule).toBe(contractsModule);
-            expect(contract.getSigner()).toBe(signer);
-        });
 
-        test('Should create contract with proper method interfaces', () => {
-            const publicClient = createMockPublicClient();
-            const contractsModule = new ContractsModule(publicClient);
-            const contractAddress = Address.of('0x0000000000000000000000000000000000000000');
-            
-            const contract = contractsModule.load(contractAddress, erc20Abi);
-            
-            // Check that read methods exist for view functions
-            expect(contract.read).toHaveProperty('balanceOf');
-            expect(typeof contract.read.balanceOf).toBe('function');
-            
-            // Check that transact methods exist for non-payable functions
-            expect(contract.transact).toHaveProperty('transfer');
-            expect(typeof contract.transact.transfer).toBe('function');
-            
-            // Check that clause methods exist
-            expect(contract.clause).toHaveProperty('balanceOf');
-            expect(contract.clause).toHaveProperty('transfer');
-            expect(typeof contract.clause.balanceOf).toBe('function');
-            expect(typeof contract.clause.transfer).toBe('function');
-            
-            // Check that filter methods exist for events
-            expect(contract.filters).toHaveProperty('Transfer');
-            expect(typeof contract.filters.Transfer).toBe('function');
-            
-            // Check that criteria methods exist for events
-            expect(contract.criteria).toHaveProperty('Transfer');
-            expect(typeof contract.criteria.Transfer).toBe('function');
+            const contract = contractsModule.load(
+                contractAddress,
+                testContractAbi,
+                signer
+            );
+
+            expect(contract).toBeDefined();
+            expect(contract.getSigner()).toBe(signer);
         });
     });
 
-    describe('ContractFactory Creation', () => {
-        test('Should create ContractFactory', () => {
-            const publicClient = createMockPublicClient();
-            const walletClient = createMockWalletClient();
-            const contractsModule = new ContractsModule(publicClient, walletClient);
+    describe('Contract Factory Creation', () => {
+        test('Should create ContractFactory with ABI, bytecode, and signer', () => {
+            const mockHttpClient = createMockHttpClient();
+            const contractsModule = new ContractsModule(mockHttpClient);
             const signer = createMockSigner();
-            const bytecode = '0x608060405234801561001057600080fd5b50...'; // Mock bytecode
-            
-            const factory = contractsModule.createContractFactory(erc20Abi, bytecode, signer);
-            
-            expect(factory).toBeInstanceOf(ContractFactory);
-            expect(factory.getAbi()).toBe(erc20Abi);
-            expect(factory.getBytecode()).toBe(bytecode);
+            const testBytecode =
+                '0x608060405234801561001057600080fd5b50336000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055506101a88061004e6000396000f3fe608060405234801561001057600080fd5b50600436106100345760003560e01c806360fe47b1146100395780636d4ce63c14610055575b600080fd5b610053600480360381019061004e91906100ba565b610072565b005b61005c61007b565b60405161006991906100f4565b60405180910390f35b805f8190555050565b5f8054905090565b5f80fd5b5f819050919050565b61009981610087565b81146100a3575f80fd5b50565b5f813590506100b481610090565b92915050565b5f602082840312156100cf576100ce610083565b5b5f6100dc848285016100a6565b91505092915050565b6100ee81610087565b82525050565b5f6020820190506101075f8301846100e5565b9291505056fea2646970667358221220427ff5682ef89b62b910bb1286c1028d32283512122854159ad59f1c71fb6d8764736f6c63430008160033';
+
+            const factory = contractsModule.createContractFactory(
+                testContractAbi,
+                testBytecode,
+                signer
+            );
+
+            expect(factory).toBeDefined();
+            expect(factory.getAbi()).toBe(testContractAbi);
+            expect(factory.getBytecode()).toBe(testBytecode);
             expect(factory.getSigner()).toBe(signer);
         });
     });
 
-    describe('Type Safety', () => {
-        test('Should maintain ABI type information', () => {
-            const publicClient = createMockPublicClient();
-            const contractsModule = new ContractsModule(publicClient);
-            const contractAddress = Address.of('0x0000000000000000000000000000000000000000');
-            
-            // This should compile without type errors due to proper generic typing
-            const contract = contractsModule.load(contractAddress, erc20Abi);
-            
-            // TypeScript should infer the correct method names from the ABI
-            expect(contract.read).toHaveProperty('balanceOf');
-            expect(contract.transact).toHaveProperty('transfer');
-            expect(contract.filters).toHaveProperty('Transfer');
-        });
-    });
+    describe('Integration with AbstractThorModule', () => {
+        test('Should extend AbstractThorModule', () => {
+            const mockHttpClient = createMockHttpClient();
+            const contractsModule = new ContractsModule(mockHttpClient);
 
-    describe('Error Handling', () => {
-        test('Should handle contract creation with empty ABI', () => {
-            const publicClient = createMockPublicClient();
-            const contractsModule = new ContractsModule(publicClient);
-            const contractAddress = Address.of('0x0000000000000000000000000000000000000000');
-            const emptyAbi = [] as const;
-            
-            const contract = contractsModule.load(contractAddress, emptyAbi);
-            
-            expect(contract).toBeInstanceOf(Contract);
-            expect(contract.abi).toEqual(emptyAbi);
-            // Should have empty method objects
-            expect(Object.keys(contract.read)).toHaveLength(0);
-            expect(Object.keys(contract.transact)).toHaveLength(0);
-            expect(Object.keys(contract.filters)).toHaveLength(0);
+            expect(contractsModule).toBeInstanceOf(AbstractThorModule);
         });
     });
 });

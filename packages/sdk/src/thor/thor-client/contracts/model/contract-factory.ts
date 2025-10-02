@@ -1,16 +1,14 @@
 import type { Abi } from 'abitype';
 import { type Signer } from '@thor/signer';
-import { type Address } from '@common/vcdm';
-import type { ContractTransactionOptions } from '../types';
+import { HexUInt } from '@common/vcdm';
+import { ClauseBuilder } from '@thor/thorest/transactions/model/ClauseBuilder';
+import { encodeAbiParameters, parseAbiParameters } from 'viem';
+import type {
+    ContractTransactionOptions,
+    SimulateTransactionOptions
+} from '../types';
+import type { ContractsModule } from '../interfaces';
 import { Contract } from './contract';
-
-// Forward declaration to avoid circular imports
-interface ContractsModule {
-    getPublicClient(): unknown;
-    getWalletClient(): unknown;
-    hasPublicClient(): boolean;
-    hasWalletClient(): boolean;
-}
 
 /**
  * A factory class for deploying smart contracts to the blockchain.
@@ -66,7 +64,64 @@ class ContractFactory<TAbi extends Abi> {
     }
 
     /**
-     * Deploys the contract to the blockchain.
+     * Creates a deployment clause using VeChain's official ClauseBuilder pattern.
+     * This method can be used to create clauses for manual transaction building.
+     * @param constructorArgs - Arguments to pass to the contract constructor.
+     * @param options - Optional clause options.
+     * @returns A ClauseBuilder instance for contract deployment.
+     */
+    public createDeploymentClause(
+        constructorArgs: unknown[] = [],
+        options?: { comment?: string }
+    ): ClauseBuilder {
+        try {
+            // 1. Convert bytecode to HexUInt (VeChain format)
+            const contractBytecode = HexUInt.of(this.bytecode);
+
+            // 2. Find constructor ABI
+            const constructorAbi = this.abi.find(
+                (item) => item.type === 'constructor'
+            );
+
+            // 3. Prepare deployment parameters if constructor exists and has args
+            let deployParams;
+            if (
+                constructorAbi &&
+                constructorAbi.inputs &&
+                constructorAbi.inputs.length > 0
+            ) {
+                if (constructorArgs.length !== constructorAbi.inputs.length) {
+                    throw new Error(
+                        `Constructor expects ${constructorAbi.inputs.length} arguments, but ${constructorArgs.length} were provided`
+                    );
+                }
+
+                deployParams = {
+                    types: constructorAbi.inputs,
+                    values: constructorArgs
+                };
+            }
+
+            // 4. Create and return deployment clause using VeChain's official ClauseBuilder
+            return ClauseBuilder.deployContract(
+                contractBytecode,
+                deployParams,
+                options?.comment ? { comment: options.comment } : undefined
+            );
+        } catch (error) {
+            if (error instanceof Error) {
+                throw new Error(
+                    `Failed to create deployment clause: ${error.message}`
+                );
+            }
+            throw new Error(
+                'Failed to create deployment clause with unknown error'
+            );
+        }
+    }
+
+    /**
+     * Deploys the contract to the blockchain using VeChain's official Clause pattern.
      * @param constructorArgs - Arguments to pass to the contract constructor.
      * @param options - Optional deployment options.
      * @returns A Promise that resolves to the deployed Contract instance.
@@ -75,51 +130,181 @@ class ContractFactory<TAbi extends Abi> {
         constructorArgs: unknown[] = [],
         options?: ContractTransactionOptions
     ): Promise<Contract<TAbi>> {
-        // This is a stub implementation
-        // Full deployment would:
-        // 1. Encode constructor arguments with the bytecode
-        // 2. Create a deployment transaction
-        // 3. Send the transaction using the signer
-        // 4. Wait for the transaction receipt
-        // 5. Extract the contract address from the receipt
-        // 6. Return a new Contract instance
+        try {
+            // 1. Convert bytecode to HexUInt (VeChain format)
+            const contractBytecode = HexUInt.of(this.bytecode);
 
-        throw new Error(
-            'ContractFactory.deploy() is not yet implemented. ' +
-            'This requires full deployment logic integration with the VeChain network.'
-        );
+            // 2. Find constructor ABI
+            const constructorAbi = this.abi.find(
+                (item) => item.type === 'constructor'
+            );
+
+            // 3. Prepare deployment parameters if constructor exists and has args
+            let deployParams;
+            if (
+                constructorAbi &&
+                constructorAbi.inputs &&
+                constructorAbi.inputs.length > 0
+            ) {
+                if (constructorArgs.length !== constructorAbi.inputs.length) {
+                    throw new Error(
+                        `Constructor expects ${constructorAbi.inputs.length} arguments, but ${constructorArgs.length} were provided`
+                    );
+                }
+
+                deployParams = {
+                    types: constructorAbi.inputs,
+                    values: constructorArgs
+                };
+            }
+
+            // 4. Create deployment clause using VeChain's official ClauseBuilder
+            const deployClause = ClauseBuilder.deployContract(
+                contractBytecode,
+                deployParams,
+                options?.comment ? { comment: options.comment } : undefined
+            );
+
+            // 5. TODO: Create and send transaction using ThorClient
+            // This would involve:
+            // - Creating a transaction with the deployment clause
+            // - Signing the transaction with the signer
+            // - Sending the transaction via ThorClient
+            // - Waiting for transaction receipt
+            // - Extracting contract address from receipt
+
+            // For now, throw a more informative error
+            throw new Error(
+                'ContractFactory.deploy() requires ThorClient transaction sending implementation. ' +
+                    "The deployment clause has been created successfully using VeChain's official ClauseBuilder.deployContract() method. " +
+                    'Next step: integrate with ThorClient transaction sending.'
+            );
+        } catch (error) {
+            if (error instanceof Error) {
+                throw new Error(`Contract deployment failed: ${error.message}`);
+            }
+            throw new Error('Contract deployment failed with unknown error');
+        }
     }
 
     /**
-     * Estimates the gas required for contract deployment.
+     * Estimates the gas required for contract deployment using VeChain's official pattern.
      * @param constructorArgs - Arguments to pass to the contract constructor.
      * @param options - Optional estimation options.
      * @returns A Promise that resolves to the estimated gas amount.
      */
     public async estimateDeploymentGas(
         constructorArgs: unknown[] = [],
-        options?: ContractTransactionOptions
+        options?: { comment?: string }
     ): Promise<bigint> {
-        // This is a stub implementation
-        throw new Error(
-            'ContractFactory.estimateDeploymentGas() is not yet implemented.'
-        );
+        try {
+            // 1. Create the deployment clause (same as deploy method)
+            const contractBytecode = HexUInt.of(this.bytecode);
+            const constructorAbi = this.abi.find(
+                (item) => item.type === 'constructor'
+            );
+
+            let deployParams;
+            if (
+                constructorAbi &&
+                constructorAbi.inputs &&
+                constructorAbi.inputs.length > 0
+            ) {
+                if (constructorArgs.length !== constructorAbi.inputs.length) {
+                    throw new Error(
+                        `Constructor expects ${constructorAbi.inputs.length} arguments, but ${constructorArgs.length} were provided`
+                    );
+                }
+
+                deployParams = {
+                    types: constructorAbi.inputs,
+                    values: constructorArgs
+                };
+            }
+
+            const deployClause = ClauseBuilder.deployContract(
+                contractBytecode,
+                deployParams,
+                options?.comment ? { comment: options.comment } : undefined
+            );
+
+            // 2. TODO: Use ThorClient to estimate gas for the deployment clause
+            // This would involve:
+            // - Creating a transaction with the deployment clause
+            // - Using ThorClient.gas.estimateGas() to estimate gas
+            // - Returning the estimated gas amount
+
+            throw new Error(
+                'ContractFactory.estimateDeploymentGas() requires ThorClient gas estimation implementation. ' +
+                    "The deployment clause has been created successfully using VeChain's official ClauseBuilder.deployContract() method. " +
+                    'Next step: integrate with ThorClient gas estimation.'
+            );
+        } catch (error) {
+            if (error instanceof Error) {
+                throw new Error(`Gas estimation failed: ${error.message}`);
+            }
+            throw new Error('Gas estimation failed with unknown error');
+        }
     }
 
     /**
-     * Simulates contract deployment without actually deploying.
+     * Simulates contract deployment without actually deploying using VeChain's official pattern.
      * @param constructorArgs - Arguments to pass to the contract constructor.
      * @param options - Optional simulation options.
      * @returns A Promise that resolves to the simulation result.
      */
     public async simulateDeployment(
         constructorArgs: unknown[] = [],
-        options?: ContractTransactionOptions
+        options?: SimulateTransactionOptions
     ): Promise<unknown> {
-        // This is a stub implementation
-        throw new Error(
-            'ContractFactory.simulateDeployment() is not yet implemented.'
-        );
+        try {
+            // 1. Create the deployment clause (same as deploy method)
+            const contractBytecode = HexUInt.of(this.bytecode);
+            const constructorAbi = this.abi.find(
+                (item) => item.type === 'constructor'
+            );
+
+            let deployParams;
+            if (
+                constructorAbi &&
+                constructorAbi.inputs &&
+                constructorAbi.inputs.length > 0
+            ) {
+                if (constructorArgs.length !== constructorAbi.inputs.length) {
+                    throw new Error(
+                        `Constructor expects ${constructorAbi.inputs.length} arguments, but ${constructorArgs.length} were provided`
+                    );
+                }
+
+                deployParams = {
+                    types: constructorAbi.inputs,
+                    values: constructorArgs
+                };
+            }
+
+            const deployClause = ClauseBuilder.deployContract(
+                contractBytecode,
+                deployParams,
+                options?.comment ? { comment: options.comment } : undefined
+            );
+
+            // 2. TODO: Use ThorClient to simulate the deployment clause
+            // This would involve:
+            // - Creating a transaction with the deployment clause
+            // - Using ThorClient to simulate the transaction
+            // - Returning the simulation result
+
+            throw new Error(
+                'ContractFactory.simulateDeployment() requires ThorClient simulation implementation. ' +
+                    "The deployment clause has been created successfully using VeChain's official ClauseBuilder.deployContract() method. " +
+                    'Next step: integrate with ThorClient simulation.'
+            );
+        } catch (error) {
+            if (error instanceof Error) {
+                throw new Error(`Simulation failed: ${error.message}`);
+            }
+            throw new Error('Simulation failed with unknown error');
+        }
     }
 }
 
