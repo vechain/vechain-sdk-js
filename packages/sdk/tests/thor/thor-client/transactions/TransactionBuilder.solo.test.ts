@@ -15,7 +15,7 @@ describe('TransactionBuilder SOLO tests', () => {
         );
         // receiver is 1st solo account
         // sender is 2nd solo account
-        const sender = Address.of('0xf077b491b355e64048ce21e3a6fc4751eeea77fa');
+        const sender = Address.of('0x435933c8064b4ae76be665428e0307ef2ccfbd68');
         const receiver = Address.of(
             '0xf077b491b355e64048ce21e3a6fc4751eeea77fa'
         );
