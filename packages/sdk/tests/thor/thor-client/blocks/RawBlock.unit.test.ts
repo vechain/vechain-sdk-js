@@ -13,12 +13,11 @@ describe('RawBlock', () => {
         expect(RawBlock.fromResponse(null)).toBeNull();
     });
 
-    test('fromResponse wraps raw response into domain model', () => {
+    test('fromResponse mirrors raw response into domain model', () => {
         const response = new RawBlockResponse(BASIC_RAW_BLOCK);
         const block = RawBlock.fromResponse(response);
 
         expect(block).not.toBeNull();
-        expect(block?.data).toEqual(response);
         expect(block?.raw).toBe('0x1234');
     });
 });

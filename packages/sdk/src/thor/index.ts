@@ -4,7 +4,5 @@ export * from './thorest';
 export * from './thor-client/ThorClient';
 export * from './thor-client/accounts';
 export * from './thor-client/gas';
-export * from './thor-client/model/accounts';
-export * from './thor-client/model/nodes';
 export * from './utils';
 export * from './ws';

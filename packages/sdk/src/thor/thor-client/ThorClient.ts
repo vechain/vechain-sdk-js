@@ -1,5 +1,6 @@
 import { AccountsModule } from './accounts/accounts-module';
 import { FetchHttpClient, type HttpClient } from '@common/http';
+import { BlocksModule } from './blocks/blocks-module';
 import { LogsModule } from './logs/logs-module';
 import { GasModule } from './gas/gas-module';
 import { NodesModule } from './nodes/nodes-module';
@@ -13,6 +14,9 @@ class ThorClient {
      * The `AccountsModule` instance
      */
     public readonly accounts: AccountsModule;
+
+    /** blocks instance */
+    public readonly blocks: BlocksModule;
 
     /** gas instance */
     public readonly gas: GasModule;
@@ -48,6 +52,7 @@ class ThorClient {
         // modules should expect thorClient to be set after construction
         this.httpClient = httpClient;
         this.accounts = new AccountsModule(httpClient);
+        this.blocks = new BlocksModule(httpClient);
         this.gas = new GasModule(httpClient);
         this.logs = new LogsModule(httpClient);
         this.nodes = new NodesModule(httpClient);
@@ -55,6 +60,7 @@ class ThorClient {
 
         // set thorClient to modules for cross-module communication
         this.accounts.setThorClient(this);
+        this.blocks.setThorClient(this);
         this.gas.setThorClient(this);
         this.logs.setThorClient(this);
         this.nodes.setThorClient(this);

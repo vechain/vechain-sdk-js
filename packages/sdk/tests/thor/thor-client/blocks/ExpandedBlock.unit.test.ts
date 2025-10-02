@@ -34,14 +34,30 @@ describe('ExpandedBlock', () => {
         expect(ExpandedBlock.fromResponse(null)).toBeNull();
     });
 
-    test('fromResponse wraps expanded response into domain model', () => {
+    test('fromResponse mirrors expanded response into domain model', () => {
         const response = new ExpandedBlockResponse(BASIC_EXPANDED_BLOCK);
         const block = ExpandedBlock.fromResponse(response);
 
         expect(block).not.toBeNull();
-        expect(block?.data).toEqual(response);
         expect(block?.number).toBe(BASIC_EXPANDED_BLOCK.number);
+        expect(block?.id).toBe(BASIC_EXPANDED_BLOCK.id);
+        expect(block?.size).toBe(BASIC_EXPANDED_BLOCK.size);
+        expect(block?.parentID).toBe(BASIC_EXPANDED_BLOCK.parentID);
+        expect(block?.timestamp).toBe(BASIC_EXPANDED_BLOCK.timestamp);
+        expect(block?.gasLimit).toBe(BigInt(BASIC_EXPANDED_BLOCK.gasLimit));
+        expect(block?.beneficiary).toBe(BASIC_EXPANDED_BLOCK.beneficiary);
+        expect(block?.gasUsed).toBe(BigInt(BASIC_EXPANDED_BLOCK.gasUsed));
+        expect(block?.baseFeePerGas).toBeUndefined();
+        expect(block?.totalScore).toBe(BASIC_EXPANDED_BLOCK.totalScore);
+        expect(block?.txsRoot).toBe(BASIC_EXPANDED_BLOCK.txsRoot);
+        expect(block?.txsFeatures).toBe(BASIC_EXPANDED_BLOCK.txsFeatures);
+        expect(block?.stateRoot).toBe(BASIC_EXPANDED_BLOCK.stateRoot);
+        expect(block?.receiptsRoot).toBe(BASIC_EXPANDED_BLOCK.receiptsRoot);
+        expect(block?.com).toBe(BASIC_EXPANDED_BLOCK.com);
+        expect(block?.signer).toBe(BASIC_EXPANDED_BLOCK.signer);
         expect(block?.transactions).toEqual([]);
+        expect(block?.isTrunk).toBe(true);
+        expect(block?.isFinalized).toBe(false);
     });
 });
 

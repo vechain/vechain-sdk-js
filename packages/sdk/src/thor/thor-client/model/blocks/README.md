@@ -18,19 +18,20 @@ keeps the mapping logic centralised and consistent across the SDK.
 ## Classes Overview
 
 ### `Block`
-- Wraps a `RegularBlockResponse`.
-- Provides convenient getters for `number`, `id`, `baseFeePerGas`,
-  `transactions`, `isTrunk`, and `isFinalized` while still exposing the raw
-  response under the `data` property for advanced use cases.
+- Mirrors a `RegularBlockResponse`, copying all fields directly into the
+  domain object.
+- Exposes friendly properties (`number`, `id`, `gasLimit`, `transactions`,
+  ecc.) ready for SDK consumers.
 
 ### `ExpandedBlock`
-- Wraps an `ExpandedBlockResponse` and exposes all expanded transactions.
-- Mirrors the getter API of `Block` (including `number`, `id`, `baseFeePerGas`,
-  `isTrunk`, and `isFinalized`).
+- Mirrors an `ExpandedBlockResponse`, including the list of
+  `TxWithReceipt` elementi.
+- Condivide la stessa superficie (`number`, `gasLimit`, `isFinalized`, ecc.) di
+  `Block` per coerenza.
 
 ### `RawBlock`
-- Wraps a `RawBlockResponse` and exposes the RLP-encoded block via the `raw`
-  getter.
+- Copia il contenuto di `RawBlockResponse` esponendo la proprietà `raw` già
+  convertita in stringa.
 
 ## Usage Example
 
