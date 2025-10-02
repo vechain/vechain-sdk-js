@@ -1,6 +1,6 @@
 import { describe, expect, jest, test } from '@jest/globals';
 import { BlocksModule } from '@thor/thor-client/blocks/blocks-module';
-import { Block, ExpandedBlock, RawBlock } from '@thor/thor-client/model';
+import { Block, ExpandedBlock, RawBlock } from '@thor/thor-client/model/blocks';
 import { IllegalArgumentError } from '@common/errors';
 import { Revision } from '@common/vcdm';
 import { type HttpClient, type HttpRequest, type HttpResponse } from '@common/http';

@@ -2,7 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import { RegularBlockResponse } from '@thor/thorest/blocks/response';
 import { type RegularBlockResponseJSON } from '@thor/thorest/json';
 
-import { Block } from '@thor/thor-client/model';
+import { Block } from '@thor/thor-client/model/blocks';
 
 const BASIC_BLOCK_JSON: RegularBlockResponseJSON = {
     number: 1,
