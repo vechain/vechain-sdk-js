@@ -1,6 +1,6 @@
 import { IllegalArgumentError } from '@common';
-import { BlockRef, Hex, Revision } from '@common/vcdm';
-import { type ThorClient } from '@thor/thor-client';
+import { type Address, BlockRef, Hex, Revision } from '@common/vcdm';
+import { type EstimateGasOptions, type ThorClient } from '@thor/thor-client';
 import {
     TransactionRequest,
     type Clause,
@@ -12,6 +12,8 @@ class TransactionBuilder {
     private readonly params: TransactionRequestParam;
     private readonly thorClient: ThorClient;
 
+    public static readonly DEFAULT_EXPIRATION = 32;
+
     private constructor(thorClient: ThorClient) {
         this.thorClient = thorClient;
         this.params = {
@@ -19,9 +21,9 @@ class TransactionBuilder {
             chainTag: 0,
             clauses: [],
             dependsOn: null,
-            expiration: 0,
+            expiration: TransactionBuilder.DEFAULT_EXPIRATION,
             gas: 0n,
-            gasPriceCoef: 0n,
+            gasPriceCoef: undefined,
             nonce: 0,
             isIntendedToBeSponsored: false,
             maxFeePerGas: undefined,
@@ -85,13 +87,13 @@ class TransactionBuilder {
 
     public withMaxFeePerGas(v: bigint): this {
         this.params.maxFeePerGas = v;
-        this.params.gasPriceCoef = 0n;
+        this.params.gasPriceCoef = undefined;
         return this;
     }
 
     public withMaxPriorityFeePerGas(v: bigint): this {
         this.params.maxPriorityFeePerGas = v;
-        this.params.gasPriceCoef = 0n;
+        this.params.gasPriceCoef = undefined;
         return this;
     }
 
@@ -120,12 +122,12 @@ class TransactionBuilder {
     }
 
     public withDefaultExpiration(): this {
-        this.params.expiration = 32;
+        this.params.expiration = TransactionBuilder.DEFAULT_EXPIRATION;
         return this;
     }
 
     public withRandomNonce(): this {
-        this.params.nonce = Hex.random(8).n;
+        this.params.nonce = Number(Hex.random(8).toString());
         return this;
     }
 
@@ -134,7 +136,20 @@ class TransactionBuilder {
             await this.thorClient.gas.computeMaxFeePrices();
         this.params.maxFeePerGas = maxFeePerGas;
         this.params.maxPriorityFeePerGas = maxPriorityFeePerGas;
-        this.params.gasPriceCoef = 0n;
+        this.params.gasPriceCoef = undefined;
+        return this;
+    }
+
+    public async withEstimatedGas(
+        caller: Address,
+        options: EstimateGasOptions
+    ): Promise<this> {
+        const estimate = await this.thorClient.gas.estimateGas(
+            this.params.clauses,
+            caller,
+            options
+        );
+        this.params.gas = estimate.totalGas;
         return this;
     }
 

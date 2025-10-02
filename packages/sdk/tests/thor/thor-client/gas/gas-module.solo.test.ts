@@ -358,4 +358,21 @@ describe('GasModule Solo Tests', () => {
             expect(result).toBeGreaterThanOrEqual(10000n);
         });
     });
+
+    describe('suggestPriorityFeeRequest', () => {
+        test('should suggest priority fee request', async () => {
+            const result = await gasModule.suggestPriorityFeeRequest();
+            expect(typeof result).toBe('bigint');
+            expect(result).toBeGreaterThanOrEqual(0n);
+        });
+    });
+
+    describe('computeMaxFeePrices', () => {
+        test('should compute max fee prices', async () => {
+            const result = await gasModule.computeMaxFeePrices();
+            expect(typeof result).toBe('object');
+            expect(result.maxFeePerGas).toBeGreaterThanOrEqual(0n);
+            expect(result.maxPriorityFeePerGas).toBeGreaterThanOrEqual(0n);
+        });
+    });
 });

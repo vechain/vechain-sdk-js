@@ -1,0 +1,63 @@
+import { FetchHttpClient, Hex } from '@common';
+import { describe, expect, test } from '@jest/globals';
+import { ThorClient } from '@thor/thor-client';
+import { TransactionBuilder } from '@thor/thor-client/transactions/TransactionBuilder';
+import { Clause } from '@thor/thor-client/model/transactions';
+import { Address } from '@common/vcdm';
+
+/**
+ * @group unit
+ */
+describe('TransactionBuilder UNIT tests', () => {
+    test('legacy tx with explicit parameters', () => {
+        const thorClient = ThorClient.at(
+            FetchHttpClient.at(new URL('http://localhost:8669'))
+        );
+        const builder = TransactionBuilder.create(thorClient);
+        const transaction = builder
+            .withBlockRef(Hex.of('0x1234'))
+            .withChainTag(1)
+            .withClauses([new Clause(Address.of('0x0'), 1n, null, null, null)])
+            .withDependsOn(Hex.of('0x4321'))
+            .withExpiration(1)
+            .withGas(1n)
+            .withGasPriceCoef(2n)
+            .withNonce(9)
+            .withIsIntendedToBeSponsored(true)
+            .build();
+        expect(transaction.blockRef.toString()).toBe('0x1234');
+        expect(transaction.chainTag).toBe(1);
+        expect(transaction.clauses).toHaveLength(1);
+        expect(transaction.dependsOn?.toString()).toBe('0x4321');
+        expect(transaction.expiration).toBe(1);
+        expect(transaction.gas).toBe(1n);
+        expect(transaction.gasPriceCoef).toBe(2n);
+        expect(transaction.nonce).toBe(9);
+        expect(transaction.isIntendedToBeSponsored).toBe(true);
+        expect(transaction.maxFeePerGas).toBeUndefined();
+        expect(transaction.maxPriorityFeePerGas).toBeUndefined();
+    });
+    test('dynamic fee gasPriceCoef is undefined', () => {
+        const thorClient = ThorClient.at(
+            FetchHttpClient.at(new URL('http://localhost:8669'))
+        );
+        const builder = TransactionBuilder.create(thorClient);
+        const transaction = builder
+            .withMaxFeePerGas(1n)
+            .withMaxPriorityFeePerGas(6n)
+            .build();
+        expect(transaction.maxFeePerGas).toBe(1n);
+        expect(transaction.maxPriorityFeePerGas).toBe(6n);
+        expect(transaction.gasPriceCoef).toBeUndefined();
+    });
+    test('default expiration', () => {
+        const thorClient = ThorClient.at(
+            FetchHttpClient.at(new URL('http://localhost:8669'))
+        );
+        const builder = TransactionBuilder.create(thorClient);
+        const transaction = builder.build();
+        expect(transaction.expiration).toBe(
+            TransactionBuilder.DEFAULT_EXPIRATION
+        );
+    });
+});
