@@ -17,10 +17,6 @@ class ExpandedBlock {
         return this.data.number;
     }
 
-    public get transactions() {
-        return this.data.transactions;
-    }
-
     public get id(): string {
         return this.data.id.toString();
     }
@@ -28,7 +24,18 @@ class ExpandedBlock {
     public get baseFeePerGas(): bigint | undefined {
         return this.data.baseFeePerGas;
     }
+
+    public get transactions(): ExpandedBlockResponse['transactions'] {
+        return this.data.transactions;
+    }
+
+    public get isTrunk(): boolean {
+        return this.data.isTrunk;
+    }
+
+    public get isFinalized(): boolean {
+        return this.data.isFinalized;
+    }
 }
 
 export { ExpandedBlock };
-

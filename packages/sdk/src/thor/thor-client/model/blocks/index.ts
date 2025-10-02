@@ -1,4 +1,3 @@
-export * from './CompressedBlock';
+export * from './Block';
 export * from './ExpandedBlock';
 export * from './RawBlock';
-

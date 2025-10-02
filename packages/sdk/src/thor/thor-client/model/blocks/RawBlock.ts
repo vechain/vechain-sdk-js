@@ -7,7 +7,9 @@ class RawBlock {
         this.data = response;
     }
 
-    public static fromResponse(response: RawBlockResponse | null): RawBlock | null {
+    public static fromResponse(
+        response: RawBlockResponse | null
+    ): RawBlock | null {
         return response === null ? null : new RawBlock(response);
     }
 
@@ -17,4 +19,3 @@ class RawBlock {
 }
 
 export { RawBlock };
-

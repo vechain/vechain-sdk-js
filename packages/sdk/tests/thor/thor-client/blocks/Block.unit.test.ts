@@ -2,7 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import { RegularBlockResponse } from '@thor/thorest/blocks/response';
 import { type RegularBlockResponseJSON } from '@thor/thorest/json';
 
-import { CompressedBlock } from '@thor/thor-client/model';
+import { Block } from '@thor/thor-client/model';
 
 const BASIC_BLOCK_JSON: RegularBlockResponseJSON = {
     number: 1,
@@ -29,18 +29,21 @@ const BASIC_BLOCK_JSON: RegularBlockResponseJSON = {
     transactions: []
 };
 
-describe('CompressedBlock', () => {
-    test('fromResponse returns null for null input', () => {
-        expect(CompressedBlock.fromResponse(null)).toBeNull();
+describe('Block', () => {
+    test('fromResponse returns null when response is null', () => {
+        expect(Block.fromResponse(null)).toBeNull();
     });
 
-    test('fromResponse wraps response into domain model', () => {
+    test('fromResponse wraps regular block response', () => {
         const response = new RegularBlockResponse(BASIC_BLOCK_JSON);
-        const block = CompressedBlock.fromResponse(response);
+        const block = Block.fromResponse(response);
 
         expect(block).not.toBeNull();
         expect(block?.data).toEqual(response);
         expect(block?.number).toBe(BASIC_BLOCK_JSON.number);
+        expect(block?.transactions).toEqual([]);
+        expect(block?.isTrunk).toBe(true);
+        expect(block?.isFinalized).toBe(false);
     });
 });
 
