@@ -2,7 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import { ExpandedBlockResponse } from '@thor/thorest/blocks/response';
 import { type ExpandedBlockResponseJSON } from '@thor/thorest/json';
 
-import { ExpandedBlock } from '@thor/thor-client/model/blocks';
+import { ExpandedBlock } from '@thor/thor-client/model/blocks/ExpandedBlock';
 
 const BASIC_EXPANDED_BLOCK: ExpandedBlockResponseJSON = {
     number: 2,

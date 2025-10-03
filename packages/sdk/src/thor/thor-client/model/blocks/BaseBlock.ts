@@ -19,6 +19,27 @@ interface BaseBlockSnapshot {
     isFinalized: boolean;
 }
 
+interface BlockResponseLike {
+    number: number;
+    id: { toString: () => string };
+    size: number;
+    parentID: { toString: () => string };
+    timestamp: number;
+    gasLimit: bigint;
+    beneficiary: { toString: () => string };
+    gasUsed: bigint;
+    baseFeePerGas?: bigint;
+    totalScore: number;
+    txsRoot: { toString: () => string };
+    txsFeatures: number;
+    stateRoot: { toString: () => string };
+    receiptsRoot: { toString: () => string };
+    com: boolean;
+    signer: { toString: () => string };
+    isTrunk: boolean;
+    isFinalized: boolean;
+}
+
 class BaseBlock {
     readonly number: number;
 
@@ -76,6 +97,31 @@ class BaseBlock {
         this.isTrunk = snapshot.isTrunk;
         this.isFinalized = snapshot.isFinalized;
     }
+
+    protected static snapshotFromResponse(
+        response: BlockResponseLike
+    ): BaseBlockSnapshot {
+        return {
+            number: response.number,
+            id: response.id.toString(),
+            size: response.size,
+            parentID: response.parentID.toString(),
+            timestamp: response.timestamp,
+            gasLimit: response.gasLimit,
+            beneficiary: response.beneficiary.toString(),
+            gasUsed: response.gasUsed,
+            baseFeePerGas: response.baseFeePerGas,
+            totalScore: response.totalScore,
+            txsRoot: response.txsRoot.toString(),
+            txsFeatures: response.txsFeatures,
+            stateRoot: response.stateRoot.toString(),
+            receiptsRoot: response.receiptsRoot.toString(),
+            com: response.com,
+            signer: response.signer.toString(),
+            isTrunk: response.isTrunk,
+            isFinalized: response.isFinalized
+        };
+    }
 }
 
-export { BaseBlock, type BaseBlockSnapshot };
+export { BaseBlock, type BaseBlockSnapshot, type BlockResponseLike };
