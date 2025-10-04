@@ -53,9 +53,9 @@ class Clause {
     constructor(
         to: Address | null,
         value: bigint,
-        data: Hex | null,
-        comment: string | null,
-        abi: string | null
+        data?: Hex | null,
+        comment?: string | null,
+        abi?: string | null
     ) {
         this.to = to;
         this.value = value;

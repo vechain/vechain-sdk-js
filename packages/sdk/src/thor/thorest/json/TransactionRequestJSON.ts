@@ -12,7 +12,7 @@ interface TransactionRequestJSON {
     expiration: number;
     gas: bigint;
     gasPayerSignature?: string; // hex string
-    gasPriceCoef: bigint;
+    gasPriceCoef?: bigint;
     maxFeePerGas?: bigint;
     maxPriorityFeePerGas?: bigint;
     nonce: number;
