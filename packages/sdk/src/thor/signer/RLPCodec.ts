@@ -14,7 +14,7 @@ import {
     type RLPProfile,
     RLPProfiler,
     type RLPValidObject
-} from '@common';
+} from '@common'; // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 class RLPCodec {
@@ -181,7 +181,11 @@ class RLPCodec {
                 ? [Uint8Array.of(1)]
                 : [] // encodeReservedField(tx)
         };
-
+        if (transactionRequest.isDynamicFee) {
+            const encodedTx = RLPCodec.encodeUnsignedDynamicFeeBodyField(body);
+            // For EIP-1559 transactions, prepend the transaction type (0x51)
+            return new Uint8Array([0x51, ...encodedTx]);
+        }
         return RLPCodec.encodeUnsignedBodyField(body);
     }
 
@@ -189,6 +193,15 @@ class RLPCodec {
         return RLPProfiler.ofObject(
             body,
             RLPCodec.RLP_UNSIGNED_TRANSACTION_PROFILE
+        ).encoded;
+    }
+
+    private static encodeUnsignedDynamicFeeBodyField(
+        body: RLPValidObject
+    ): Uint8Array {
+        return RLPProfiler.ofObject(
+            body,
+            RLPCodec.RLP_UNSIGNED_DYNAMIC_FEE_TRANSACTION_PROFILE
         ).encoded;
     }
 
