@@ -5,15 +5,17 @@ import { ExpandedBlock } from '@thor/thor-client/model/blocks/ExpandedBlock';
 import { RawBlock } from '@thor/thor-client/model/blocks/RawBlock';
 import { IllegalArgumentError } from '@common/errors';
 import { Revision } from '@common/vcdm';
-import { type HttpClient, type HttpRequest, type HttpResponse } from '@common/http';
+import type { HttpClient, HttpRequest, HttpResponse } from '@common/http';
 import {
     RetrieveRegularBlock,
     RetrieveExpandedBlock,
-    RetrieveRawBlock,
-    type RegularBlockResponseJSON,
-    type ExpandedBlockResponseJSON,
-    type RawBlockJSON
+    RetrieveRawBlock
 } from '@thor/thorest';
+import type {
+    RegularBlockResponseJSON,
+    ExpandedBlockResponseJSON,
+    RawBlockJSON
+} from '@thor/thorest/json';
 
 jest.mock('@thor/thorest', () => {
     const actual = jest.requireActual('@thor/thorest');
@@ -31,7 +33,9 @@ jest.mock('@thor/thorest', () => {
     };
 });
 
-const mockAskTo = <T>(response: T) => jest.fn().mockResolvedValue({ response });
+function mockAskTo<T>(response: T) {
+    return jest.fn().mockResolvedValue({ response });
+}
 
 const createModule = (): BlocksModule => {
     const httpClient: HttpClient = {
@@ -47,7 +51,7 @@ describe('BlocksModule', () => {
         jest.resetAllMocks();
     });
 
-    test('getBlockRegular returns mirrored block', async () => {
+    test('getBlock returns mirrored block', async () => {
         const payload: RegularBlockResponseJSON = {
             number: 1,
             id: '0x01',
@@ -75,11 +79,76 @@ describe('BlocksModule', () => {
         });
 
         const module = createModule();
-        const block = await module.getBlockRegular('best');
+        const block = await module.getBlock('best');
 
         expect(block).toBeInstanceOf(Block);
         expect(block?.id).toBe(payload.id);
         expect(block?.transactions).toEqual(payload.transactions);
+    });
+
+    test('getBestBlockRef returns prefix of best block id', async () => {
+        const payload: RegularBlockResponseJSON = {
+            number: 1,
+            id: '0x0123456789abcdef0123456789abcdef',
+            size: 1,
+            parentID: '0x0',
+            timestamp: 0,
+            gasLimit: '0',
+            beneficiary: '0x0',
+            gasUsed: '0',
+            totalScore: 0,
+            txsRoot: '0x0',
+            txsFeatures: 0,
+            stateRoot: '0x0',
+            receiptsRoot: '0x0',
+            com: false,
+            signer: '0x0',
+            isTrunk: true,
+            isFinalized: false,
+            transactions: []
+        };
+
+        (RetrieveRegularBlock.of as jest.Mock).mockReturnValue({
+            askTo: mockAskTo(payload)
+        });
+
+        const module = createModule();
+        const ref = await module.getBestBlockRef();
+
+        expect(ref).toBe('0x0123456789abcdef');
+    });
+
+    test('getGenesisBlock delegates to numeric revision', async () => {
+        const payload: RegularBlockResponseJSON = {
+            number: 0,
+            id: '0xgenesis',
+            size: 1,
+            parentID: '0x0',
+            timestamp: 0,
+            gasLimit: '0',
+            beneficiary: '0x0',
+            gasUsed: '0',
+            totalScore: 0,
+            txsRoot: '0x0',
+            txsFeatures: 0,
+            stateRoot: '0x0',
+            receiptsRoot: '0x0',
+            com: false,
+            signer: '0x0',
+            isTrunk: true,
+            isFinalized: true,
+            transactions: []
+        };
+
+        (RetrieveRegularBlock.of as jest.Mock).mockReturnValue({
+            askTo: mockAskTo(payload)
+        });
+
+        const module = createModule();
+        const block = await module.getGenesisBlock();
+
+        expect(block?.number).toBe(0);
+        expect(block?.id).toBe('0xgenesis');
     });
 
     test('getBlockExpanded returns mirrored expanded block', async () => {
@@ -160,7 +229,7 @@ describe('BlocksModule', () => {
 
         const module = createModule();
 
-        await expect(module.getBlockRegular(1)).rejects.toBeInstanceOf(
+        await expect(module.getBlock(1)).rejects.toBeInstanceOf(
             IllegalArgumentError
         );
     });

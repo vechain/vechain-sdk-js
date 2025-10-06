@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { ExpandedBlockResponse } from '@thor/thorest/blocks/response';
-import { type ExpandedBlockResponseJSON } from '@thor/thorest/json';
+import { ExpandedBlockResponseJSON } from '@thor/thorest/json/ExpandedBlockResponseJSON';
 
 import { ExpandedBlock } from '@thor/thor-client/model/blocks/ExpandedBlock';
 

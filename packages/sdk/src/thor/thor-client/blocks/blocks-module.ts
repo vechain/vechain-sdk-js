@@ -14,10 +14,10 @@ import { Block, ExpandedBlock, RawBlock } from '../model/blocks';
 type RevisionInput = Parameters<typeof Revision.of>[0];
 
 class BlocksModule extends AbstractThorModule {
-    public async getBlockRegular(
+    public async getBlock(
         revision: RevisionInput = 'best'
     ): Promise<Block | null> {
-        const response = await this.fetchRegularBlock(revision);
+        const response = await this.fetchBlock(revision);
         return Block.fromResponse(response);
     }
 
@@ -35,7 +35,22 @@ class BlocksModule extends AbstractThorModule {
         return RawBlock.fromResponse(response);
     }
 
-    private async fetchRegularBlock(
+    public async getBestBlockRef(): Promise<string | null> {
+        const block = await this.getBlock('best');
+        if (block === null) {
+            return null;
+        }
+        const prefixLength = 18;
+        return block.id.length <= prefixLength
+            ? block.id
+            : block.id.slice(0, prefixLength);
+    }
+
+    public async getGenesisBlock(): Promise<Block | null> {
+        return await this.getBlock(0);
+    }
+
+    private async fetchBlock(
         revision: RevisionInput
     ): Promise<RegularBlockResponse | null> {
         const query = RetrieveRegularBlock.of(Revision.of(revision));

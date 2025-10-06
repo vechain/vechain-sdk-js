@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { RegularBlockResponse } from '@thor/thorest/blocks/response';
-import { type RegularBlockResponseJSON } from '@thor/thorest/json';
+import { RegularBlockResponseJSON } from '@thor/thorest/json/RegularBlockResponseJSON';
 
 import { Block } from '@thor/thor-client/model/blocks/Block';
 
