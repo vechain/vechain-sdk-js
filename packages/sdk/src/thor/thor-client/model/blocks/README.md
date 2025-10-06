@@ -31,8 +31,8 @@ keeps the mapping logic centralised and consistent across the SDK.
   `Block` for consistency.
 
 ### `RawBlock`
-- Copia il contenuto di `RawBlockResponse` esponendo la proprietà `raw` già
-  convertita in stringa.
+- Mirrors the content of `RawBlockResponse` by exposing the `raw` property
+  already converted to a string.
 
 ## Usage Example
 
