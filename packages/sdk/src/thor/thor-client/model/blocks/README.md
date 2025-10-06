@@ -24,10 +24,11 @@ keeps the mapping logic centralised and consistent across the SDK.
   ecc.) ready for SDK consumers.
 
 ### `ExpandedBlock`
+### `ExpandedBlock`
 - Mirrors an `ExpandedBlockResponse`, including the list of
-  `TxWithReceipt` elementi.
-- Condivide la stessa superficie (`number`, `gasLimit`, `isFinalized`, ecc.) di
-  `Block` per coerenza.
+  `TxWithReceipt` elements.
+- Shares the same surface (`number`, `gasLimit`, `isFinalized`, etc.) as
+  `Block` for consistency.
 
 ### `RawBlock`
 - Copia il contenuto di `RawBlockResponse` esponendo la proprietà `raw` già
