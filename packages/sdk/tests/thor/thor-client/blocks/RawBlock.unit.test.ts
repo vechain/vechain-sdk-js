@@ -18,7 +18,7 @@ describe('RawBlock', () => {
         const block = RawBlock.fromResponse(response);
 
         expect(block).not.toBeNull();
-        expect(block?.raw).toBe('0x1234');
+        expect(block?.raw.toString()).toBe('0x1234');
     });
 });
 
