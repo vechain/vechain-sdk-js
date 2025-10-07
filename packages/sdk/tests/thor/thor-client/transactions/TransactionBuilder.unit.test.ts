@@ -1,9 +1,10 @@
 import { FetchHttpClient, Hex } from '@common';
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, jest, test } from '@jest/globals';
 import { ThorClient } from '@thor/thor-client';
 import { TransactionBuilder } from '@thor/thor-client/transactions/TransactionBuilder';
 import { Clause } from '@thor/thor-client/model/transactions';
-import { Address } from '@common/vcdm';
+import { Address, Revision } from '@common/vcdm';
+import { RetrieveRegularBlock } from '@thor/thorest/blocks';
 
 /**
  * @group unit
@@ -59,5 +60,23 @@ describe('TransactionBuilder UNIT tests', () => {
         expect(transaction.expiration).toBe(
             TransactionBuilder.DEFAULT_EXPIRATION
         );
+    });
+    test('with default BlockRef throws error if best block is not available', async () => {
+        const thorClient = ThorClient.at(
+            FetchHttpClient.at(new URL('http://localhost:8669'))
+        );
+        // mock the retrieveRegularBlock method to return null
+        const query = RetrieveRegularBlock.of(Revision.BEST);
+        const mockRetrieveRegularBlock = jest.spyOn(query, 'askTo');
+        mockRetrieveRegularBlock.mockResolvedValue({
+            request: RetrieveRegularBlock.of(Revision.BEST),
+            response: null
+        });
+        // inject the mock query into the RetrieveRegularBlock.of method
+        const RetrieveRegularBlockOf = jest.spyOn(RetrieveRegularBlock, 'of');
+        RetrieveRegularBlockOf.mockReturnValue(query);
+        // create the builder and try to set the default block ref
+        const builder = TransactionBuilder.create(thorClient);
+        await expect(builder.withDefaultBlockRef()).rejects.toThrow();
     });
 });
