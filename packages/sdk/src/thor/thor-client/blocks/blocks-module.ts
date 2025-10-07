@@ -1,5 +1,5 @@
 import { IllegalArgumentError } from '@common/errors';
-import { Revision } from '@common/vcdm';
+import { BlockRef, Revision } from '@common/vcdm';
 import { AbstractThorModule } from '../AbstractThorModule';
 import {
     RetrieveExpandedBlock,
@@ -14,6 +14,10 @@ import { Block, ExpandedBlock, RawBlock } from '../model/blocks';
 type RevisionInput = Parameters<typeof Revision.of>[0];
 
 class BlocksModule extends AbstractThorModule {
+    /**
+     * Retrieves a regular (compressed) block for the provided revision.
+     * Defaults to the best block when no revision is supplied.
+     */
     public async getBlock(
         revision: RevisionInput = 'best'
     ): Promise<Block | null> {
@@ -21,6 +25,10 @@ class BlocksModule extends AbstractThorModule {
         return Block.fromResponse(response);
     }
 
+    /**
+     * Retrieves an expanded block (including full transactions) for a revision.
+     * Defaults to the best block when no revision is supplied.
+     */
     public async getBlockExpanded(
         revision: RevisionInput = 'best'
     ): Promise<ExpandedBlock | null> {
@@ -28,6 +36,10 @@ class BlocksModule extends AbstractThorModule {
         return ExpandedBlock.fromResponse(response);
     }
 
+    /**
+     * Retrieves the raw block payload for a revision.
+     * Defaults to the best block when no revision is supplied.
+     */
     public async getBlockRaw(
         revision: RevisionInput = 'best'
     ): Promise<RawBlock | null> {
@@ -35,17 +47,20 @@ class BlocksModule extends AbstractThorModule {
         return RawBlock.fromResponse(response);
     }
 
-    public async getBestBlockRef(): Promise<string | null> {
+    /**
+     * Returns the `BlockRef` for the current best block.
+     */
+    public async getBestBlockRef(): Promise<BlockRef | null> {
         const block = await this.getBlock('best');
         if (block === null) {
             return null;
         }
-        const prefixLength = 18;
-        return block.id.length <= prefixLength
-            ? block.id
-            : block.id.slice(0, prefixLength);
+        return BlockRef.of(block.id);
     }
 
+    /**
+     * Retrieves the genesis block (revision 0).
+     */
     public async getGenesisBlock(): Promise<Block | null> {
         return await this.getBlock(0);
     }

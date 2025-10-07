@@ -1,14 +1,14 @@
-import { type Hex } from '@common/vcdm';
+import { HexUInt32, type Hex } from '@common/vcdm';
 import { type RegularBlockResponse } from '@thor/thorest/blocks/response';
 import { BaseBlock } from './BaseBlock';
 
 class Block extends BaseBlock {
-    readonly transactions: string[];
+    readonly transactions: HexUInt32[];
 
     private constructor(response: RegularBlockResponse) {
         super(BaseBlock.snapshotFromResponse(response));
         this.transactions = response.transactions.map((hex: Hex) =>
-            hex.toString()
+            HexUInt32.of(hex)
         );
     }
 

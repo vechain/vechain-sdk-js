@@ -4,7 +4,7 @@ import { Block } from '@thor/thor-client/model/blocks/Block';
 import { ExpandedBlock } from '@thor/thor-client/model/blocks/ExpandedBlock';
 import { RawBlock } from '@thor/thor-client/model/blocks/RawBlock';
 import { IllegalArgumentError } from '@common/errors';
-import { Revision } from '@common/vcdm';
+import { BlockRef, Revision } from '@common/vcdm';
 import type { HttpClient, HttpRequest, HttpResponse } from '@common/http';
 import {
     RetrieveRegularBlock,
@@ -82,11 +82,11 @@ describe('BlocksModule', () => {
         const block = await module.getBlock('best');
 
         expect(block).toBeInstanceOf(Block);
-        expect(block?.id).toBe(payload.id);
+        expect(block?.id.toString()).toBe(payload.id);
         expect(block?.transactions).toEqual(payload.transactions);
     });
 
-    test('getBestBlockRef returns prefix of best block id', async () => {
+    test('getBestBlockRef returns BlockRef for best block', async () => {
         const payload: RegularBlockResponseJSON = {
             number: 1,
             id: '0x0123456789abcdef0123456789abcdef',
@@ -115,7 +115,8 @@ describe('BlocksModule', () => {
         const module = createModule();
         const ref = await module.getBestBlockRef();
 
-        expect(ref).toBe('0x0123456789abcdef');
+        expect(ref).toBeInstanceOf(BlockRef);
+        expect(ref?.toString()).toBe('0x0123456789abcdef');
     });
 
     test('getGenesisBlock delegates to numeric revision', async () => {
@@ -148,7 +149,7 @@ describe('BlocksModule', () => {
         const block = await module.getGenesisBlock();
 
         expect(block?.number).toBe(0);
-        expect(block?.id).toBe('0xgenesis');
+        expect(block?.id.toString()).toBe('0xgenesis');
     });
 
     test('getBlockExpanded returns mirrored expanded block', async () => {

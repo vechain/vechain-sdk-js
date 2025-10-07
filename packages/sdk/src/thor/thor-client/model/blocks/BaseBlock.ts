@@ -1,59 +1,50 @@
+import type { Address, HexUInt, HexUInt32 } from '@common/vcdm';
+import type {
+    ExpandedBlockResponse,
+    RegularBlockResponse
+} from '@thor/thorest/blocks/response';
+
 interface BaseBlockSnapshot {
     number: number;
-    id: string;
+    id: HexUInt32;
     size: number;
-    parentID: string;
+    parentID: HexUInt;
     timestamp: number;
     gasLimit: bigint;
-    beneficiary: string;
+    beneficiary: Address;
     gasUsed: bigint;
     baseFeePerGas?: bigint;
     totalScore: number;
-    txsRoot: string;
+    txsRoot: HexUInt32;
     txsFeatures: number;
-    stateRoot: string;
-    receiptsRoot: string;
+    stateRoot: HexUInt32;
+    receiptsRoot: HexUInt32;
     com: boolean;
-    signer: string;
+    signer: Address;
     isTrunk: boolean;
     isFinalized: boolean;
 }
 
-interface BlockResponseLike {
-    number: number;
-    id: { toString: () => string };
-    size: number;
-    parentID: { toString: () => string };
-    timestamp: number;
-    gasLimit: bigint;
-    beneficiary: { toString: () => string };
-    gasUsed: bigint;
-    baseFeePerGas?: bigint;
-    totalScore: number;
-    txsRoot: { toString: () => string };
-    txsFeatures: number;
-    stateRoot: { toString: () => string };
-    receiptsRoot: { toString: () => string };
-    com: boolean;
-    signer: { toString: () => string };
-    isTrunk: boolean;
-    isFinalized: boolean;
-}
+/**
+ * Helper union covering the common fields returned by the thorest regular/expanded block DTOs.
+ * We keep it to avoid duplicating two near-identical mapping functions in the domain layer.
+ */
+type BlockResponseShape = RegularBlockResponse | ExpandedBlockResponse;
 
 class BaseBlock {
     readonly number: number;
 
-    readonly id: string;
+    readonly id: HexUInt32;
 
     readonly size: number;
 
-    readonly parentID: string;
+    readonly parentID: HexUInt;
 
     readonly timestamp: number;
 
     readonly gasLimit: bigint;
 
-    readonly beneficiary: string;
+    readonly beneficiary: Address;
 
     readonly gasUsed: bigint;
 
@@ -61,17 +52,17 @@ class BaseBlock {
 
     readonly totalScore: number;
 
-    readonly txsRoot: string;
+    readonly txsRoot: HexUInt32;
 
     readonly txsFeatures: number;
 
-    readonly stateRoot: string;
+    readonly stateRoot: HexUInt32;
 
-    readonly receiptsRoot: string;
+    readonly receiptsRoot: HexUInt32;
 
     readonly com: boolean;
 
-    readonly signer: string;
+    readonly signer: Address;
 
     readonly isTrunk: boolean;
 
@@ -98,30 +89,33 @@ class BaseBlock {
         this.isFinalized = snapshot.isFinalized;
     }
 
+    /**
+     * Normalizes a thorest block response (regular or expanded) into the internal snapshot format.
+     */
     protected static snapshotFromResponse(
-        response: BlockResponseLike
+        response: BlockResponseShape
     ): BaseBlockSnapshot {
         return {
             number: response.number,
-            id: response.id.toString(),
+            id: response.id,
             size: response.size,
-            parentID: response.parentID.toString(),
+            parentID: response.parentID,
             timestamp: response.timestamp,
             gasLimit: response.gasLimit,
-            beneficiary: response.beneficiary.toString(),
+            beneficiary: response.beneficiary,
             gasUsed: response.gasUsed,
             baseFeePerGas: response.baseFeePerGas,
             totalScore: response.totalScore,
-            txsRoot: response.txsRoot.toString(),
+            txsRoot: response.txsRoot,
             txsFeatures: response.txsFeatures,
-            stateRoot: response.stateRoot.toString(),
-            receiptsRoot: response.receiptsRoot.toString(),
+            stateRoot: response.stateRoot,
+            receiptsRoot: response.receiptsRoot,
             com: response.com,
-            signer: response.signer.toString(),
+            signer: response.signer,
             isTrunk: response.isTrunk,
             isFinalized: response.isFinalized
         };
     }
 }
 
-export { BaseBlock, type BaseBlockSnapshot, type BlockResponseLike };
+export { BaseBlock, type BaseBlockSnapshot };
