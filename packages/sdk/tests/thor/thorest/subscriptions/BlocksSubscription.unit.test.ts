@@ -299,4 +299,38 @@ describe('BlocksSubscription unit tests', () => {
         // Verify the result matches our original data
         expect(jsonResult).toEqual(mockBlockData);
     });
+
+    test('should handle baseFeePerGas field when present', () => {
+        // Create mock data with baseFeePerGas
+        const mockBlockDataWithBaseFee = {
+            ...mockBlockData,
+            baseFeePerGas: '0x9184e72a000' // 100 gwei in hex
+        };
+
+        // Create the response object
+        const response = new SubscriptionBlockResponse(mockBlockDataWithBaseFee);
+
+        // Verify the baseFeePerGas field is correctly parsed
+        expect(response.baseFeePerGas).toBe(BigInt('0x9184e72a000'));
+
+        // Convert back to JSON
+        const jsonResult = response.toJSON();
+
+        // Verify the result includes baseFeePerGas
+        expect(jsonResult.baseFeePerGas).toBe('0x9184e72a000');
+    });
+
+    test('should handle baseFeePerGas field when absent', () => {
+        // Create the response object without baseFeePerGas
+        const response = new SubscriptionBlockResponse(mockBlockData);
+
+        // Verify the baseFeePerGas field is undefined
+        expect(response.baseFeePerGas).toBeUndefined();
+
+        // Convert back to JSON
+        const jsonResult = response.toJSON();
+
+        // Verify the result does not include baseFeePerGas
+        expect(jsonResult.baseFeePerGas).toBeUndefined();
+    });
 });

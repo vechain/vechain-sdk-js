@@ -263,4 +263,5 @@ describe('BeatsSubscription unit tests', () => {
         // Verify the result matches our original data
         expect(jsonResult).toEqual(mockBeatData);
     });
+
 });

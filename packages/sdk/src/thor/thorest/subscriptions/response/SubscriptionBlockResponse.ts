@@ -1,4 +1,4 @@
-import { Address, type Hex, HexUInt32, UInt } from '@common/vcdm';
+import { Address, type Hex, HexUInt, HexUInt32, UInt } from '@common/vcdm';
 import { type SubscriptionBlockResponseJSON } from '@thor/thorest/subscriptions';
 import { IllegalArgumentError } from '@common/errors';
 
@@ -54,6 +54,11 @@ class SubscriptionBlockResponse {
      * The actual amount of gas used within the block.
      */
     readonly gasUsed: bigint;
+
+    /**
+     * The minimum amount of fee required to include a transaction in the current block.
+     */
+    readonly baseFeePerGas?: bigint;
 
     /**
      * The accumulated witness number of the chain branch headed by the block.
@@ -116,6 +121,10 @@ class SubscriptionBlockResponse {
             this.gasLimit = BigInt(json.gasLimit);
             this.beneficiary = Address.of(json.beneficiary);
             this.gasUsed = BigInt(json.gasUsed);
+            this.baseFeePerGas =
+                json.baseFeePerGas !== undefined
+                    ? HexUInt.of(json.baseFeePerGas).bi
+                    : undefined;
             this.totalScore = UInt.of(json.totalScore).valueOf();
             this.txsRoot = HexUInt32.of(json.txsRoot);
             this.txsFeatures = UInt.of(json.txsFeatures).valueOf();
@@ -152,6 +161,10 @@ class SubscriptionBlockResponse {
             gasLimit: Number(this.gasLimit),
             beneficiary: this.beneficiary.toString(),
             gasUsed: Number(this.gasUsed),
+            baseFeePerGas:
+                this.baseFeePerGas !== undefined
+                    ? `0x${this.baseFeePerGas.toString(16)}`
+                    : undefined,
             totalScore: this.totalScore,
             txsRoot: this.txsRoot.toString(),
             txsFeatures: this.txsFeatures,
