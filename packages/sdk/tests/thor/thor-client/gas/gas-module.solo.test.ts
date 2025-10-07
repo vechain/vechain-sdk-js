@@ -157,7 +157,7 @@ describe('GasModule Solo Tests', () => {
         });
 
         test('should estimate gas for multiple clauses', async () => {
-            // vet transfer and vtho transfer
+            // contract deploy and vtho transfer
             const clauses: Clause[] = [
                 new Clause(null, BigInt('0x1'), Hex.of('0x')),
                 new Clause(

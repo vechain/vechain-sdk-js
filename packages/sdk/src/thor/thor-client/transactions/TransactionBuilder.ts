@@ -127,7 +127,7 @@ class TransactionBuilder {
     }
 
     public withRandomNonce(): this {
-        this.params.nonce = Number(Hex.random(8).toString());
+        this.params.nonce = Number(Hex.random(4).toString());
         return this;
     }
 

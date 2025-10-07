@@ -56,25 +56,27 @@ class GasModule extends AbstractThorModule {
         if (clauses.length > 0) {
             const totalGas = clauses.reduce((sum: bigint, clause: Clause) => {
                 if (clause.to !== null) {
-                    sum += this.GAS_CONSTANTS.CLAUSE_GAS;
+                    sum += GasModule.GAS_CONSTANTS.CLAUSE_GAS;
                 } else {
-                    sum += this.GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION;
+                    sum += GasModule.GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION;
                 }
                 const data = clause.data;
                 if (data !== null) {
                     sum +=
-                        this.GAS_CONSTANTS.ZERO_GAS_DATA *
+                        GasModule.GAS_CONSTANTS.ZERO_GAS_DATA *
                         BigInt(data.countZeroBytes());
                     sum +=
-                        this.GAS_CONSTANTS.NON_ZERO_GAS_DATA *
+                        GasModule.GAS_CONSTANTS.NON_ZERO_GAS_DATA *
                         BigInt(data.countNonZeroBytes());
                 }
                 return sum;
-            }, this.GAS_CONSTANTS.TX_GAS);
+            }, GasModule.GAS_CONSTANTS.TX_GAS);
             return totalGas;
         }
         // No clauses.
-        return this.GAS_CONSTANTS.TX_GAS + this.GAS_CONSTANTS.CLAUSE_GAS;
+        return (
+            GasModule.GAS_CONSTANTS.TX_GAS + GasModule.GAS_CONSTANTS.CLAUSE_GAS
+        );
     }
 
     /**
@@ -99,7 +101,7 @@ class GasModule extends AbstractThorModule {
         // check if options are valid
         if (options !== undefined) {
             if (options.gasPadding !== undefined) {
-                if (options.gasPadding > 1 || options.gasPadding <= 0) {
+                if (options.gasPadding > 1 || options.gasPadding < 0) {
                     throw new IllegalArgumentError(
                         `${FQP}.estimateGas()`,
                         'Gas padding must be between 0 and 1.',
@@ -175,7 +177,7 @@ class GasModule extends AbstractThorModule {
     ): bigint {
         const totalGas = evmGasUsed + intrinsicGas;
         const gasPaddingBigInt = BigInt(
-            gasPadding * Number(GasModule.GAS_PADDING_SCALE)
+            Math.round(gasPadding * Number(GasModule.GAS_PADDING_SCALE))
         );
         return (
             (totalGas * (GasModule.GAS_PADDING_SCALE + gasPaddingBigInt)) /
