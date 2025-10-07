@@ -1,0 +1,53 @@
+import type { Abi } from 'abitype';
+import type { Contract } from './contract';
+
+/**
+ * Contract filter for event filtering
+ */
+class ContractFilter<TAbi extends Abi> {
+    private readonly contract: Contract<TAbi>;
+    private readonly criteria: unknown[];
+
+    constructor(contract: Contract<TAbi>, criteria: unknown[] = []) {
+        this.contract = contract;
+        this.criteria = criteria;
+    }
+
+    /**
+     * Gets historical event logs matching the filter criteria
+     */
+    public async getLogs(): Promise<unknown[]> {
+        // Simplified implementation - would integrate with actual event log retrieval
+        // This would use the contract's event subscription system
+        return [];
+    }
+
+    /**
+     * Creates a subscription to watch for events matching this filter.
+     * @param callback - Function to call when matching events are found.
+     * @returns A function to unsubscribe from the event watching.
+     */
+    public watch(callback: (events: unknown[]) => void): () => void {
+        // Simplified implementation - would integrate with actual event watching
+        // This would use the contract's event subscription system
+        return () => {
+            // Unsubscribe logic
+        };
+    }
+
+    /**
+     * Gets the contract associated with this filter
+     */
+    public getContract(): Contract<TAbi> {
+        return this.contract;
+    }
+
+    /**
+     * Gets the filter criteria
+     */
+    public getCriteria(): unknown[] {
+        return [...this.criteria];
+    }
+}
+
+export { ContractFilter };
