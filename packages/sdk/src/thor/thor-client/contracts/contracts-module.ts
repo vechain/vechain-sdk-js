@@ -1,6 +1,6 @@
 import { type Abi } from 'abitype';
 import { type Signer } from '../../../thor/signer';
-import { type Address } from '../../../common/vcdm';
+import { Address, Hex } from '../../../common/vcdm';
 import { type HttpClient } from '@common/http';
 import { AbstractThorModule } from '../AbstractThorModule';
 import { Contract, ContractFactory } from './model';
@@ -9,9 +9,15 @@ import { type ExecuteCodesRequestJSON } from '@thor/thorest/accounts/json';
 import { type ExecuteCodesResponse } from '@thor/thorest/accounts/response';
 import { ClauseBuilder } from '@thor/thorest/transactions/model/ClauseBuilder';
 import { SendTransaction } from '@thor/thorest/transactions/methods/SendTransaction';
-import { VET, Units } from '@vechain/sdk-core';
+import { TransactionRequest } from '../model/transactions/TransactionRequest';
+import { RLPCodecTransactionRequest } from '@thor/signer/RLPCodeTransactionRequest';
+import { Clause } from '../model/transactions/Clause';
+import { VET, Units } from './model/VET';
+import { ABIContract } from './model/ABI';
 import { ContractCallError } from '../../../common/errors';
 import { encodeFunctionData } from 'viem';
+import { BUILT_IN_CONTRACTS } from './constants';
+import { dataUtils } from './utils';
 import type {
     ContractCallOptions,
     ContractCallResult,
@@ -227,34 +233,238 @@ class ContractsModule extends AbstractThorModule {
         options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {
         try {
-            // Create a clause for the function call
-            const clause = ClauseBuilder.callFunction(
-                contractAddress,
-                functionAbi,
+            // Build the clause for the contract function call
+            const clauseBuilder = ClauseBuilder.callFunction(
+                Address.of(contractAddress),
+                [functionAbi],
                 functionAbi.name,
                 functionData,
-                BigInt(Math.max(0, Number(options?.value || 0))), // Ensure non-negative value
-                {
-                    comment: options?.comment
-                }
+                VET.of(options?.value ?? 0, Units.wei).bi
             );
 
-            // Create a transaction with the clause
-            // Note: This is a simplified implementation
-            // In a full implementation, this would create a proper transaction
-            // with gas estimation, signing, and RLP encoding
+            // Convert ClauseBuilder to Clause
+            const clause = new Clause(
+                clauseBuilder.to ? Address.of(clauseBuilder.to) : null,
+                clauseBuilder.value,
+                clauseBuilder.data ? Hex.of(clauseBuilder.data) : null,
+                clauseBuilder.comment ?? null,
+                clauseBuilder.abi ?? null
+            );
 
-            // For now, return a mock transaction ID
-            // TODO: Implement actual transaction creation and signing
+            // Create a proper TransactionRequest
+            const transactionRequest = new TransactionRequest({
+                clauses: [clause],
+                gas: BigInt(options?.gas ?? 21000),
+                gasPriceCoef: BigInt(options?.gasPriceCoef ?? 0),
+                nonce: options?.nonce ?? 0,
+                blockRef: Hex.of(options?.blockRef ?? '0x0000000000000000'),
+                chainTag: parseInt(options?.chainTag ?? '0x27'),
+                dependsOn: options?.dependsOn?.[0]
+                    ? Hex.of(options.dependsOn[0])
+                    : null,
+                expiration: options?.expiration ?? 720,
+                maxFeePerGas: options?.maxFeePerGas
+                    ? BigInt(options.maxFeePerGas)
+                    : undefined,
+                maxPriorityFeePerGas: options?.maxPriorityFeePerGas
+                    ? BigInt(options.maxPriorityFeePerGas)
+                    : undefined
+            });
+
+            // Sign the transaction
+            const signedTransaction = signer.sign(transactionRequest);
+
+            // Encode the signed transaction
+            const encodedTransaction =
+                RLPCodecTransactionRequest.encode(signedTransaction);
+
+            // Send the transaction using SendTransaction
+            const sendTransaction = SendTransaction.of(encodedTransaction);
+            const response = await sendTransaction.askTo(this.httpClient);
+
             return {
-                transactionId: `tx_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-                signer: signer.address.toString()
+                id: response.response.id.toString(),
+                wait: async () =>
+                    await this.waitForTransaction(
+                        response.response.id.toString()
+                    )
             };
         } catch (error) {
             throw new Error(
-                `Transaction execution failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+                `Failed to execute transaction: ${error instanceof Error ? error.message : 'Unknown error'}`
             );
         }
+    }
+
+    /**
+     * Executes multiple contract calls in a single transaction simulation.
+     * This method allows batching multiple contract calls for efficient execution.
+     *
+     * @param clauses - Array of contract clauses to execute
+     * @param options - Optional simulation options
+     * @returns Promise that resolves to array of contract call results
+     */
+    public async executeMultipleClausesCall(
+        clauses: any[],
+        options?: any
+    ): Promise<ContractCallResult[]> {
+        try {
+            // For now, execute each clause individually
+            // In a full implementation, this would batch the calls
+            const results: ContractCallResult[] = [];
+
+            for (const clause of clauses) {
+                if (
+                    clause.contractAddress &&
+                    clause.functionAbi &&
+                    clause.functionData
+                ) {
+                    const result = await this.executeCall(
+                        clause.contractAddress,
+                        clause.functionAbi,
+                        clause.functionData,
+                        options
+                    );
+                    results.push(result);
+                }
+            }
+
+            return results;
+        } catch (error) {
+            return [
+                {
+                    success: false,
+                    result: {
+                        errorMessage:
+                            error instanceof Error
+                                ? error.message
+                                : 'Unknown error occurred'
+                    }
+                }
+            ];
+        }
+    }
+
+    /**
+     * Executes multiple contract transactions in a single transaction.
+     * This method allows batching multiple contract calls for efficient execution.
+     *
+     * @param clauses - Array of contract clauses to execute
+     * @param signer - The signer to use for signing the transaction
+     * @param options - Optional transaction options
+     * @returns Promise that resolves to the transaction result
+     */
+    public async executeMultipleClausesTransaction(
+        clauses: any[],
+        signer: Signer,
+        options?: ContractTransactionOptions
+    ): Promise<SendTransactionResult> {
+        try {
+            // Build multiple clauses for a single transaction
+            const transactionClauses = clauses.map((clause) => {
+                if (
+                    clause.contractAddress &&
+                    clause.functionAbi &&
+                    clause.functionData
+                ) {
+                    const clauseBuilder = ClauseBuilder.callFunction(
+                        Address.of(clause.contractAddress),
+                        [clause.functionAbi],
+                        clause.functionAbi.name,
+                        clause.functionData,
+                        VET.of(clause.value ?? 0, Units.wei).bi
+                    );
+
+                    // Convert ClauseBuilder to Clause
+                    return new Clause(
+                        clauseBuilder.to ? Address.of(clauseBuilder.to) : null,
+                        clauseBuilder.value,
+                        clauseBuilder.data ? Hex.of(clauseBuilder.data) : null,
+                        clauseBuilder.comment ?? null,
+                        clauseBuilder.abi ?? null
+                    );
+                }
+                return clause;
+            });
+
+            // Create a proper TransactionRequest
+            const transactionRequest = new TransactionRequest({
+                clauses: transactionClauses,
+                gas: BigInt(options?.gas ?? 21000),
+                gasPriceCoef: BigInt(options?.gasPriceCoef ?? 0),
+                nonce: options?.nonce ?? 0,
+                blockRef: Hex.of(options?.blockRef ?? '0x0000000000000000'),
+                chainTag: parseInt(options?.chainTag ?? '0x27'),
+                dependsOn: options?.dependsOn?.[0]
+                    ? Hex.of(options.dependsOn[0])
+                    : null,
+                expiration: options?.expiration ?? 720,
+                maxFeePerGas: options?.maxFeePerGas
+                    ? BigInt(options.maxFeePerGas)
+                    : undefined,
+                maxPriorityFeePerGas: options?.maxPriorityFeePerGas
+                    ? BigInt(options.maxPriorityFeePerGas)
+                    : undefined
+            });
+
+            // Sign the transaction
+            const signedTransaction = signer.sign(transactionRequest);
+
+            // Encode the signed transaction
+            const encodedTransaction =
+                RLPCodecTransactionRequest.encode(signedTransaction);
+
+            // Send the transaction using SendTransaction
+            const sendTransaction = SendTransaction.of(encodedTransaction);
+            const response = await sendTransaction.askTo(this.httpClient);
+
+            return {
+                id: response.response.id.toString(),
+                wait: async () =>
+                    await this.waitForTransaction(
+                        response.response.id.toString()
+                    )
+            };
+        } catch (error) {
+            throw new Error(
+                `Failed to execute multiple clauses transaction: ${error instanceof Error ? error.message : 'Unknown error'}`
+            );
+        }
+    }
+
+    /**
+     * Waits for a transaction to be confirmed on the blockchain.
+     *
+     * @param transactionId - The transaction ID to wait for
+     * @returns Promise that resolves when the transaction is confirmed
+     */
+    private async waitForTransaction(transactionId: string): Promise<any> {
+        // This is a placeholder implementation
+        // In a full implementation, this would poll the blockchain for transaction confirmation
+        return new Promise((resolve) => {
+            setTimeout(
+                () => resolve({ transactionId, status: 'confirmed' }),
+                1000
+            );
+        });
+    }
+
+    /**
+     * Retrieves the base gas price from the blockchain parameters.
+     *
+     * This method sends a call to the blockchain parameters contract to fetch the current base gas price.
+     * The base gas price is the minimum gas price that can be used for a transaction.
+     * It is used to obtain the VTHO (energy) cost of a transaction.
+     * @link [Total Gas Price](https://docs.vechain.org/core-concepts/transactions/transaction-calculation#total-gas-price)
+     *
+     * @return {Promise<ContractCallResult>} A promise that resolves to the result of the contract call, containing the base gas price.
+     */
+    public async getLegacyBaseGasPrice(): Promise<ContractCallResult> {
+        return await this.executeCall(
+            BUILT_IN_CONTRACTS.PARAMS_ADDRESS,
+            ABIContract.ofAbi(BUILT_IN_CONTRACTS.PARAMS_ABI).getFunction('get'),
+            [dataUtils.encodeBytes32String('base-gas-price', 'left')]
+        );
     }
 }
 

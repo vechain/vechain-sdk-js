@@ -24,11 +24,28 @@ type ContractTransactionOptions = {
      * Gas limit for the transaction
      */
     gas?: number;
+    gasLimit?: number;
 
     /**
      * Gas price for the transaction
      */
     gasPrice?: string;
+    gasPriceCoef?: number;
+
+    /**
+     * Max fee per gas (EIP-1559)
+     */
+    maxFeePerGas?: string | number | bigint;
+
+    /**
+     * Max priority fee per gas (EIP-1559)
+     */
+    maxPriorityFeePerGas?: string | number | bigint;
+
+    /**
+     * Transaction nonce
+     */
+    nonce?: number;
 
     /**
      * Transaction expiration
@@ -39,6 +56,16 @@ type ContractTransactionOptions = {
      * Block reference
      */
     blockRef?: string;
+
+    /**
+     * Chain tag
+     */
+    chainTag?: string;
+
+    /**
+     * Dependencies
+     */
+    dependsOn?: string[];
 
     /**
      * Comment for the transaction
@@ -119,8 +146,8 @@ interface ContractCallResult {
  * Send transaction result
  */
 interface SendTransactionResult {
-    transactionId: string;
-    signer: string;
+    id: string;
+    wait: () => Promise<any>;
 }
 
 /**
