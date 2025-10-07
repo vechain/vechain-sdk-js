@@ -162,7 +162,8 @@ function getContract<const TAbi extends Abi>({
 
     // Create the underlying VeChain contract instance using the middle layer
     // Use the HttpClient from the viem clients (either publicClient or walletClient)
-    let httpClient = publicClient?.transport || walletClient?.transport;
+    let httpClient =
+        (publicClient as any)?.transport || (walletClient as any)?.transport;
 
     // Fallback for test environments where transport might not be available
     if (!httpClient) {
@@ -264,7 +265,7 @@ function getContract<const TAbi extends Abi>({
                 };
             }
 
-            // Write methods - delegate to VeChain contract
+            // Write methods - delegate to VeChain contract clause building
             if (
                 (abiItem.stateMutability === 'nonpayable' ||
                     abiItem.stateMutability === 'payable') &&
@@ -276,11 +277,20 @@ function getContract<const TAbi extends Abi>({
                     gas,
                     gasPrice
                 } = {}) => {
-                    // Delegate to the VeChain contract's transact method
-                    // The VeChain contract will handle the transaction preparation
-                    return vechainContract.transact[functionName](
-                        ...args
-                    ) as ExecuteCodesRequestJSON;
+                    // Use the VeChain contract's clause building for transaction preparation
+                    // Pass value as part of the args if it's not zero
+                    const clauseArgs =
+                        value > 0n ? [...args, { value: value }] : args;
+                    const clause = vechainContract.clause[functionName](
+                        ...clauseArgs
+                    );
+
+                    // Return as ExecuteCodesRequestJSON format
+                    return {
+                        clauses: [clause],
+                        gas: gas ? Number(gas) : undefined,
+                        gasPrice: gasPrice ? gasPrice.toString() : undefined
+                    } as ExecuteCodesRequestJSON;
                 };
             }
 

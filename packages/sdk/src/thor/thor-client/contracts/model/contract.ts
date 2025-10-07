@@ -36,12 +36,14 @@ class Contract<TAbi extends Abi> {
      * @param abi The Application Binary Interface (ABI) of the contract.
      * @param contractsModule The contracts module for blockchain interaction.
      * @param signer The signer used for signing transactions.
+     * @param deployTransactionReceipt Optional transaction receipt from deployment.
      */
     constructor(
         address: Address,
         abi: TAbi,
         contractsModule: ContractsModule,
-        signer?: Signer
+        signer?: Signer,
+        deployTransactionReceipt?: any
     ) {
         this.abi = abi;
         this.address = address;
@@ -175,14 +177,37 @@ class Contract<TAbi extends Abi> {
                     abiItem.stateMutability === 'pure'
                 ) {
                     this.read[functionName] = async (...args: unknown[]) => {
-                        // Use ThorClient for contract calls
-                        const data = this.encodeFunctionData(
-                            functionName,
-                            args
-                        );
-                        // TODO: Integrate with ThorClient.accounts.getAccount or similar
-                        // For now, return empty result as this is a stub
-                        return [];
+                        try {
+                            // Use the contracts module's executeCall method
+                            const result =
+                                await this.contractsModule.executeCall(
+                                    this.address,
+                                    abiItem,
+                                    args,
+                                    {
+                                        caller: this.signer
+                                            ? this.signer.address.toString()
+                                            : undefined,
+                                        value: 0, // Read operations don't send value
+                                        ...this.contractCallOptions
+                                    }
+                                );
+
+                            if (!result.success) {
+                                throw new Error(
+                                    result.result.errorMessage ||
+                                        'Contract call failed'
+                                );
+                            }
+
+                            return result.result.array || [];
+                        } catch (error) {
+                            console.error(
+                                `Error calling ${functionName}:`,
+                                error
+                            );
+                            throw error;
+                        }
                     };
                 }
 
@@ -194,19 +219,62 @@ class Contract<TAbi extends Abi> {
                     this.transact[functionName] = async (
                         ...args: unknown[]
                     ) => {
-                        // TODO: Integrate with ThorClient.transactions.sendTransaction
-                        // For now, return empty result as this is a stub
-                        return { transactionId: 'stub_tx_id' };
+                        if (!this.signer) {
+                            throw new Error(
+                                'Signer is required for transaction execution'
+                            );
+                        }
+
+                        try {
+                            // Use the contracts module's executeTransaction method
+                            const result =
+                                await this.contractsModule.executeTransaction(
+                                    this.signer,
+                                    this.address,
+                                    abiItem,
+                                    args,
+                                    this.contractTransactionOptions
+                                );
+
+                            return result;
+                        } catch (error) {
+                            console.error(
+                                `Error executing transaction ${functionName}:`,
+                                error
+                            );
+                            throw error;
+                        }
                     };
                 }
 
                 // Clause building - create VeChain transaction clauses
                 this.clause[functionName] = (...args: unknown[]) => {
-                    const data = this.encodeFunctionData(functionName, args);
+                    // Extract value from args if provided as last argument object
+                    let value = '0x0';
+                    let actualArgs = args;
+
+                    if (
+                        args.length > 0 &&
+                        typeof args[args.length - 1] === 'object' &&
+                        args[args.length - 1] !== null
+                    ) {
+                        const lastArg = args[args.length - 1] as any;
+                        if ('value' in lastArg) {
+                            value = lastArg.value
+                                ? `0x${lastArg.value.toString(16)}`
+                                : '0x0';
+                            actualArgs = args.slice(0, -1);
+                        }
+                    }
+
+                    const data = this.encodeFunctionData(
+                        functionName,
+                        actualArgs
+                    );
                     return {
                         to: this.address.toString(),
                         data: data,
-                        value: '0x0',
+                        value: value,
                         comment: undefined
                     };
                 };
@@ -216,16 +284,18 @@ class Contract<TAbi extends Abi> {
             if (abiItem.type === 'event') {
                 const eventName = abiItem.name;
                 this.filters[eventName] = (...args: unknown[]) => {
-                    // TODO: Integrate with ThorClient.logs.getLogs or similar
                     return {
+                        eventName: eventName,
+                        args: args,
                         address: this.address.toString(),
                         topics: [this.getEventSelector(eventName)]
                     };
                 };
 
                 this.criteria[eventName] = (...args: unknown[]) => {
-                    // TODO: Integrate with ThorClient.logs.createEventFilter or similar
                     return {
+                        eventName: eventName,
+                        args: args,
                         address: this.address.toString(),
                         topics: [this.getEventSelector(eventName)]
                     };

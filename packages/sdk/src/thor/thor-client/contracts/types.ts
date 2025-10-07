@@ -9,12 +9,6 @@ declare module 'abitype' {
     }
 }
 
-declare module 'viem/node_modules/abitype' {
-    export interface Register {
-        AddressType: Address;
-    }
-}
-
 /* --------- Input types Start --------- */
 
 /**

@@ -1,6 +1,9 @@
 import { describe, expect, test } from '@jest/globals';
 import { getContract } from '../../../src/viem/clients/Contract';
-import { createPublicClient, createWalletClient } from '../../../src/viem/clients';
+import {
+    createPublicClient,
+    createWalletClient
+} from '../../../src/viem/clients';
 import { Address } from '../../../src/common/vcdm';
 import { privateKeyToAccount } from 'viem/accounts';
 import { FetchHttpClient } from '../../../src/common/http';
@@ -67,7 +70,7 @@ const testingContractAbi = [
     {
         type: 'function',
         name: 'testRequireError',
-        stateMutability: 'pure',
+        stateMutability: 'nonpayable',
         inputs: [{ name: '_value', type: 'uint256' }],
         outputs: []
     },
@@ -88,14 +91,17 @@ const testingContractAbi = [
  */
 describe('Contract Viem Integration Tests', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
-    
+
     // Solo network test accounts
-    const testPrivateKey = '99f0500549792796c14fed62011a51081dc5b5e68fe8bd8a13b86be829c4fd36';
+    const testPrivateKey =
+        '99f0500549792796c14fed62011a51081dc5b5e68fe8bd8a13b86be829c4fd36';
     const testAccount = privateKeyToAccount(`0x${testPrivateKey}`);
-    
+
     // Contract address (from solo-setup)
-    const testingContractAddress = Address.of('0x8384738C995D49C5b692560ae688fc8b51af1059');
-    
+    const testingContractAddress = Address.of(
+        '0x8384738C995D49C5b692560ae688fc8b51af1059'
+    );
+
     let publicClient: ReturnType<typeof createPublicClient>;
     let walletClient: ReturnType<typeof createWalletClient>;
 
@@ -103,7 +109,7 @@ describe('Contract Viem Integration Tests', () => {
         publicClient = createPublicClient({
             network: httpClient.baseURL
         });
-        
+
         walletClient = createWalletClient({
             network: httpClient.baseURL,
             account: testAccount
@@ -146,7 +152,7 @@ describe('Contract Viem Integration Tests', () => {
 
             expect(contract.address).toBe(testingContractAddress);
             expect(contract.abi).toBe(testingContractAbi);
-            
+
             // Should have both read and write capabilities
             expect(contract.read).toHaveProperty('stateVariable');
             expect(contract.write).toHaveProperty('setStateVariable');
@@ -158,7 +164,9 @@ describe('Contract Viem Integration Tests', () => {
                     address: testingContractAddress,
                     abi: testingContractAbi
                 });
-            }).toThrow('At least one of publicClient or walletClient must be provided');
+            }).toThrow(
+                'At least one of publicClient or walletClient must be provided'
+            );
         });
     });
 
@@ -185,7 +193,7 @@ describe('Contract Viem Integration Tests', () => {
             expect(contract.read).toHaveProperty('uintData');
             expect(contract.read).toHaveProperty('addressData');
             expect(contract.read).toHaveProperty('stringData');
-            
+
             expect(typeof contract.read.boolData).toBe('function');
             expect(typeof contract.read.uintData).toBe('function');
             expect(typeof contract.read.addressData).toBe('function');
@@ -195,7 +203,7 @@ describe('Contract Viem Integration Tests', () => {
         test('Should execute read operations', async () => {
             // Note: These will use the current viem implementation, not the stub
             // The actual behavior depends on the contract deployment and network state
-            
+
             try {
                 const result = await contract.read.stateVariable();
                 expect(result).toBeDefined();
@@ -232,11 +240,11 @@ describe('Contract Viem Integration Tests', () => {
 
         test('Should create transaction requests', () => {
             const txRequest = contract.write.setStateVariable({ args: [42] });
-            
+
             expect(txRequest).toHaveProperty('clauses');
             expect(Array.isArray(txRequest.clauses)).toBe(true);
             expect(txRequest.clauses).toHaveLength(1);
-            
+
             const clause = txRequest.clauses[0];
             expect(clause).toHaveProperty('to');
             expect(clause).toHaveProperty('data');
@@ -245,11 +253,11 @@ describe('Contract Viem Integration Tests', () => {
         });
 
         test('Should create transaction requests with value', () => {
-            const txRequest = contract.write.deposit({ 
-                args: [1000], 
-                value: 1000n 
+            const txRequest = contract.write.deposit({
+                args: [1000],
+                value: 1000n
             });
-            
+
             expect(txRequest).toHaveProperty('clauses');
             const clause = txRequest.clauses[0];
             expect(clause.value).not.toBe('0x0'); // Should have value
@@ -272,7 +280,7 @@ describe('Contract Viem Integration Tests', () => {
             expect(contract.simulate).toHaveProperty('setStateVariable');
             expect(contract.simulate).toHaveProperty('boolData');
             expect(contract.simulate).toHaveProperty('deposit');
-            
+
             expect(typeof contract.simulate.stateVariable).toBe('function');
             expect(typeof contract.simulate.setStateVariable).toBe('function');
             expect(typeof contract.simulate.boolData).toBe('function');
@@ -281,7 +289,9 @@ describe('Contract Viem Integration Tests', () => {
 
         test('Should execute simulation operations', async () => {
             try {
-                const result = await contract.simulate.boolData({ args: [true] });
+                const result = await contract.simulate.boolData({
+                    args: [true]
+                });
                 expect(result).toBeDefined();
             } catch (error) {
                 // Expected if network issues or contract not deployed
@@ -306,16 +316,20 @@ describe('Contract Viem Integration Tests', () => {
             expect(contract.estimateGas).toHaveProperty('setStateVariable');
             expect(contract.estimateGas).toHaveProperty('boolData');
             expect(contract.estimateGas).toHaveProperty('deposit');
-            
+
             expect(typeof contract.estimateGas.stateVariable).toBe('function');
-            expect(typeof contract.estimateGas.setStateVariable).toBe('function');
+            expect(typeof contract.estimateGas.setStateVariable).toBe(
+                'function'
+            );
             expect(typeof contract.estimateGas.boolData).toBe('function');
             expect(typeof contract.estimateGas.deposit).toBe('function');
         });
 
         test('Should execute gas estimation operations', async () => {
             try {
-                const gasEstimate = await contract.estimateGas.boolData({ args: [true] });
+                const gasEstimate = await contract.estimateGas.boolData({
+                    args: [true]
+                });
                 expect(typeof gasEstimate).toBe('bigint');
                 expect(gasEstimate).toBeGreaterThan(0n);
             } catch (error) {
@@ -338,12 +352,12 @@ describe('Contract Viem Integration Tests', () => {
 
         test('Should have event methods', () => {
             expect(contract.events).toHaveProperty('StateChanged');
-            
+
             const stateChangedEvent = contract.events.StateChanged;
             expect(stateChangedEvent).toHaveProperty('watch');
             expect(stateChangedEvent).toHaveProperty('getLogs');
             expect(stateChangedEvent).toHaveProperty('createEventFilter');
-            
+
             expect(typeof stateChangedEvent.watch).toBe('function');
             expect(typeof stateChangedEvent.getLogs).toBe('function');
             expect(typeof stateChangedEvent.createEventFilter).toBe('function');
@@ -353,7 +367,7 @@ describe('Contract Viem Integration Tests', () => {
             const filter = contract.events.StateChanged.createEventFilter({
                 args: [42n, 0n, testAccount.address]
             });
-            
+
             expect(filter).toBeDefined();
         });
 
@@ -363,7 +377,7 @@ describe('Contract Viem Integration Tests', () => {
                     fromBlock: 0n,
                     toBlock: 'latest' as any
                 });
-                
+
                 expect(Array.isArray(logs)).toBe(true);
             } catch (error) {
                 // Expected if network issues or no events
@@ -404,17 +418,23 @@ describe('Contract Viem Integration Tests', () => {
 
         test('Should have clause building methods', () => {
             expect(contract._vechain?.clause).toHaveProperty('stateVariable');
-            expect(contract._vechain?.clause).toHaveProperty('setStateVariable');
+            expect(contract._vechain?.clause).toHaveProperty(
+                'setStateVariable'
+            );
             expect(contract._vechain?.clause).toHaveProperty('deposit');
-            
-            expect(typeof contract._vechain?.clause.stateVariable).toBe('function');
-            expect(typeof contract._vechain?.clause.setStateVariable).toBe('function');
+
+            expect(typeof contract._vechain?.clause.stateVariable).toBe(
+                'function'
+            );
+            expect(typeof contract._vechain?.clause.setStateVariable).toBe(
+                'function'
+            );
             expect(typeof contract._vechain?.clause.deposit).toBe('function');
         });
 
         test('Should build clauses', () => {
             const clause = contract._vechain?.clause.setStateVariable(42);
-            
+
             expect(clause).toHaveProperty('to');
             expect(clause).toHaveProperty('data');
             expect(clause).toHaveProperty('value');
@@ -423,12 +443,17 @@ describe('Contract Viem Integration Tests', () => {
 
         test('Should have event filter methods', () => {
             expect(contract._vechain?.filters).toHaveProperty('StateChanged');
-            expect(typeof contract._vechain?.filters.StateChanged).toBe('function');
+            expect(typeof contract._vechain?.filters.StateChanged).toBe(
+                'function'
+            );
         });
 
         test('Should create event filters', () => {
-            const filter = contract._vechain?.filters.StateChanged('0x123', '0x456');
-            
+            const filter = contract._vechain?.filters.StateChanged(
+                '0x123',
+                '0x456'
+            );
+
             expect(filter).toBeDefined();
             expect(filter).toHaveProperty('eventName');
             expect(filter).toHaveProperty('args');
@@ -440,7 +465,8 @@ describe('Contract Viem Integration Tests', () => {
             const contract = getContract({
                 address: testingContractAddress,
                 abi: testingContractAbi,
-                publicClient
+                publicClient,
+                walletClient
             });
 
             // TypeScript should infer these method names from the ABI
@@ -461,8 +487,10 @@ describe('Contract Viem Integration Tests', () => {
 
     describe('Error Handling', () => {
         test('Should handle invalid contract address', () => {
-            const invalidAddress = Address.of('0x0000000000000000000000000000000000000000');
-            
+            const invalidAddress = Address.of(
+                '0x0000000000000000000000000000000000000000'
+            );
+
             expect(() => {
                 getContract({
                     address: invalidAddress,
@@ -474,7 +502,7 @@ describe('Contract Viem Integration Tests', () => {
 
         test('Should handle empty ABI', () => {
             const emptyAbi = [] as const;
-            
+
             const contract = getContract({
                 address: testingContractAddress,
                 abi: emptyAbi,

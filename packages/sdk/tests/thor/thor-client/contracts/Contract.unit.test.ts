@@ -8,7 +8,23 @@ import { Address } from '../../../../src/common/vcdm';
 // Mock HttpClient
 const createMockHttpClient = () => ({
     get: jest.fn(),
-    post: jest.fn(),
+    post: jest.fn().mockResolvedValue({
+        json: jest.fn().mockResolvedValue({
+            clauses: [
+                {
+                    reverted: false,
+                    data: '0x0000000000000000000000000000000000000000000000000000000000000000',
+                    gasUsed: 21000,
+                    vmError: null
+                }
+            ]
+        }),
+        text: jest
+            .fn()
+            .mockResolvedValue(
+                '{"clauses":[{"reverted":false,"data":"0x0000000000000000000000000000000000000000000000000000000000000000","gasUsed":21000,"vmError":null}]}'
+            )
+    }),
     put: jest.fn(),
     delete: jest.fn()
 });
