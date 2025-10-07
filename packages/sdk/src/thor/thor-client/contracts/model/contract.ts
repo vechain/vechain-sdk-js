@@ -5,7 +5,7 @@ import {
 } from 'abitype';
 import { encodeFunctionData, toEventSelector } from 'viem';
 import { type Signer } from '@thor/signer';
-import { type Address } from '@common';
+import { type Address, Revision } from '@common';
 import type { ContractCallOptions, ContractTransactionOptions } from '../types';
 import type { ContractsModule } from '../interfaces';
 
@@ -178,18 +178,23 @@ class Contract<TAbi extends Abi> {
                 ) {
                     this.read[functionName] = async (...args: unknown[]) => {
                         try {
+                            // Extract additional options from args if provided
+                            const { args: cleanArgs, options } =
+                                this.extractAdditionalOptions(args);
+
                             // Use the contracts module's executeCall method
                             const result =
                                 await this.contractsModule.executeCall(
                                     this.address,
                                     abiItem,
-                                    args,
+                                    cleanArgs,
                                     {
                                         caller: this.signer
                                             ? this.signer.address.toString()
                                             : undefined,
-                                        value: 0, // Read operations don't send value
-                                        ...this.contractCallOptions
+                                        // Read operations don't send value, so omit value field
+                                        ...this.contractCallOptions,
+                                        ...options
                                     }
                                 );
 
@@ -226,14 +231,21 @@ class Contract<TAbi extends Abi> {
                         }
 
                         try {
+                            // Extract additional options from args if provided
+                            const { args: cleanArgs, options } =
+                                this.extractAdditionalOptions(args);
+
                             // Use the contracts module's executeTransaction method
                             const result =
                                 await this.contractsModule.executeTransaction(
                                     this.signer,
                                     this.address,
                                     abiItem,
-                                    args,
-                                    this.contractTransactionOptions
+                                    cleanArgs,
+                                    {
+                                        ...this.contractTransactionOptions,
+                                        ...options
+                                    }
                                 );
 
                             return result;
@@ -250,32 +262,18 @@ class Contract<TAbi extends Abi> {
                 // Clause building - create VeChain transaction clauses
                 this.clause[functionName] = (...args: unknown[]) => {
                     // Extract value from args if provided as last argument object
-                    let value = '0x0';
-                    let actualArgs = args;
-
-                    if (
-                        args.length > 0 &&
-                        typeof args[args.length - 1] === 'object' &&
-                        args[args.length - 1] !== null
-                    ) {
-                        const lastArg = args[args.length - 1] as any;
-                        if ('value' in lastArg) {
-                            value = lastArg.value
-                                ? `0x${lastArg.value.toString(16)}`
-                                : '0x0';
-                            actualArgs = args.slice(0, -1);
-                        }
-                    }
+                    const { args: cleanArgs, options } =
+                        this.extractAdditionalOptions(args);
 
                     const data = this.encodeFunctionData(
                         functionName,
-                        actualArgs
+                        cleanArgs
                     );
                     return {
                         to: this.address.toString(),
                         data: data,
-                        value: value,
-                        comment: undefined
+                        value: options.value || '0x0',
+                        comment: options.comment
                     };
                 };
             }
@@ -302,6 +300,81 @@ class Contract<TAbi extends Abi> {
                 };
             }
         }
+    }
+
+    /**
+     * Extracts additional options from function arguments
+     * @param args - The function arguments
+     * @returns Clean arguments and extracted options
+     */
+    private extractAdditionalOptions(args: unknown[]): {
+        args: unknown[];
+        options: {
+            value?: string | number | bigint;
+            comment?: string;
+            revision?: Revision;
+        };
+    } {
+        // Check if the last argument is an options object
+        if (
+            args.length > 0 &&
+            typeof args[args.length - 1] === 'object' &&
+            args[args.length - 1] !== null
+        ) {
+            const lastArg = args[args.length - 1] as Record<string, unknown>;
+
+            // Check if it contains contract-related options
+            if (
+                'value' in lastArg ||
+                'comment' in lastArg ||
+                'revision' in lastArg
+            ) {
+                const options: any = {};
+
+                if ('value' in lastArg) {
+                    // Convert value to proper format
+                    const value = lastArg.value;
+                    if (typeof value === 'number') {
+                        options.value = `0x${value.toString(16)}`;
+                    } else if (typeof value === 'bigint') {
+                        options.value = `0x${value.toString(16)}`;
+                    } else if (typeof value === 'string') {
+                        options.value = value.startsWith('0x')
+                            ? value
+                            : `0x${value}`;
+                    } else {
+                        options.value = '0x0';
+                    }
+                }
+
+                if (
+                    'comment' in lastArg &&
+                    typeof lastArg.comment === 'string'
+                ) {
+                    options.comment = lastArg.comment;
+                }
+
+                if ('revision' in lastArg) {
+                    const revision = lastArg.revision;
+                    if (
+                        typeof revision === 'string' ||
+                        typeof revision === 'number'
+                    ) {
+                        options.revision = Revision.of(String(revision));
+                    }
+                }
+
+                return {
+                    args: args.slice(0, -1),
+                    options
+                };
+            }
+        }
+
+        return {
+            args,
+            options: {}
+        };
     }
 
     /**

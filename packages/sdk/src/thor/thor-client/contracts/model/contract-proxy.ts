@@ -1,11 +1,13 @@
-import { Address, Hex } from '@common/vcdm';
+import { Address, Hex, Revision } from '@common/vcdm';
 import { VET, Units } from './VET';
 import { Clause } from './Clause';
 import { ContractFilter } from './ContractFilter';
 import type {
     Abi,
     ExtractAbiEventNames,
-    ExtractAbiFunctionNames
+    ExtractAbiFunctionNames,
+    ExtractAbiFunction,
+    AbiParametersToPrimitiveTypes
 } from 'abitype';
 import type { Contract } from './contract';
 import type {
@@ -72,21 +74,50 @@ function getReadProxy<TAbi extends Abi>(
 ): ContractFunctionRead<TAbi, ExtractAbiFunctionNames<TAbi, 'pure' | 'view'>> {
     return new Proxy(contract.read, {
         get: (_target, prop) => {
-            return async (...args: unknown[]): Promise<unknown[]> => {
-                // Extract additional options if provided
-                const extractResult = extractAndRemoveAdditionalOptions(args);
-                const options = extractResult.clauseAdditionalOptions;
+            return async (
+                ...args: AbiParametersToPrimitiveTypes<
+                    ExtractAbiFunction<TAbi, 'balanceOf'>['inputs'],
+                    'inputs'
+                >
+            ): Promise<unknown[]> => {
+                // Check if the clause comment is provided as an argument
+                const extractOptionsResult = extractAndRemoveAdditionalOptions(
+                    args as unknown[]
+                );
 
-                // Get the function ABI
+                const clauseComment =
+                    extractOptionsResult.clauseAdditionalOptions?.comment;
+                const revisionValue =
+                    extractOptionsResult.clauseAdditionalOptions?.revision;
+
                 const functionAbi = contract.getFunctionAbi(prop);
 
-                // Use the contract's read method directly
-                const readMethod = contract.read[prop.toString()];
-                if (!readMethod) {
-                    throw new Error(`Read method ${prop.toString()} not found`);
+                const executeCallResult =
+                    await contract.contractsModule.executeCall(
+                        contract.address,
+                        functionAbi,
+                        extractOptionsResult.args,
+                        {
+                            caller:
+                                contract.getSigner() !== undefined
+                                    ? contract.getSigner()?.address?.toString()
+                                    : undefined,
+                            ...contract.getContractReadOptions(),
+                            comment: clauseComment,
+                            revision: revisionValue
+                                ? Revision.of(String(revisionValue))
+                                : undefined
+                        }
+                    );
+
+                if (!executeCallResult.success) {
+                    throw new Error(
+                        `Contract call failed: ${executeCallResult.result.errorMessage || 'Unknown error'}`
+                    );
                 }
 
-                return await readMethod(...extractResult.args);
+                // Return the properly typed result based on the function's outputs
+                return executeCallResult.result.array ?? [];
             };
         }
     }) as ContractFunctionRead<
@@ -108,23 +139,44 @@ function getTransactProxy<TAbi extends Abi>(
 > {
     return new Proxy(contract.transact, {
         get: (_target, prop) => {
-            return async (...args: unknown[]): Promise<unknown> => {
-                // Extract additional options if provided
-                const extractResult = extractAndRemoveAdditionalOptions(args);
-                const options = extractResult.clauseAdditionalOptions;
-
-                // Get the function ABI
-                const functionAbi = contract.getFunctionAbi(prop);
-
-                // Use the contract's transact method directly
-                const transactMethod = contract.transact[prop.toString()];
-                if (!transactMethod) {
+            return async (...args: unknown[]) => {
+                if (contract.getSigner() === undefined) {
                     throw new Error(
-                        `Transact method ${prop.toString()} not found`
+                        'Caller signer is required to transact with the contract.'
                     );
                 }
 
-                return await transactMethod(...extractResult.args);
+                // Get the transaction options for the contract
+                const transactionOptions =
+                    contract.getContractTransactOptions();
+
+                // Check if the transaction value is provided as an argument
+                const extractAdditionalOptionsResult =
+                    extractAndRemoveAdditionalOptions(args);
+
+                const transactionValue =
+                    extractAdditionalOptionsResult.clauseAdditionalOptions
+                        ?.value;
+                const clauseComment =
+                    extractAdditionalOptionsResult.clauseAdditionalOptions
+                        ?.comment;
+
+                args = extractAdditionalOptionsResult.args;
+
+                return await contract.contractsModule.executeTransaction(
+                    contract.getSigner()!,
+                    contract.address,
+                    contract.getFunctionAbi(prop),
+                    args,
+                    {
+                        ...transactionOptions,
+                        value:
+                            transactionOptions.value ??
+                            transactionValue ??
+                            '0x0',
+                        comment: clauseComment
+                    }
+                );
             };
         }
     }) as ContractFunctionTransact<
