@@ -6,6 +6,7 @@ import {
 } from '@thor/thorest';
 import { type RegularBlockResponseJSON } from '@thor/thorest/json';
 import { type HttpClient, type HttpPath } from '@common/http';
+import { handleHttpError } from '@thor/thorest/utils';
 import { type Revision } from '@common/vcdm';
 
 /**
@@ -51,10 +52,10 @@ class RetrieveRegularBlock
         ThorResponse<RetrieveRegularBlock, RegularBlockResponse | null>
     > {
         const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveRegularBlock, RegularBlockResponse | null>>`;
-        const response = await httpClient.get(this.path, {
-            query: '?raw=false'
-        });
-        if (response.ok) {
+        try {
+            const response = await httpClient.get(this.path, {
+                query: '?raw=false'
+            });
             const json =
                 (await response.json()) as RegularBlockResponseJSON | null;
             try {
@@ -66,7 +67,7 @@ class RetrieveRegularBlock
             } catch (error) {
                 throw new ThorError(
                     fqp,
-                    'Bad response.',
+                    error instanceof Error ? error.message : 'Bad response.',
                     {
                         url: response.url,
                         body: json
@@ -75,16 +76,8 @@ class RetrieveRegularBlock
                     response.status
                 );
             }
-        } else {
-            throw new ThorError(
-                fqp,
-                await response.text(),
-                {
-                    url: response.url
-                },
-                undefined,
-                response.status
-            );
+        } catch (error) {
+            throw handleHttpError(fqp, error);
         }
     }
 

@@ -116,15 +116,17 @@ describe('RetrieveStoragePositionValue unit tests', () => {
                 expect(error).toBeInstanceOf(ThorError);
                 const thorError = error as ThorError;
 
-                expect(thorError.message).toBe('Bad response.');
+                expect(thorError.message).toBe('"Network error"');
                 expect(thorError.fqn).toBe(
                     'packages/sdk/src/thor/thorest/accounts/methods/RetrieveStoragePositionValue.ts!askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveStoragePositionValue, GetStorageResponse>>'
                 );
                 expect(thorError.status).toBe(400);
                 expect(thorError.args).toEqual({
-                    url: expect.any(String)
+                    url: expect.any(String),
+                    status: 400,
+                    statusText: 'Bad Request'
                 });
-                expect(thorError.cause).toBeUndefined();
+                expect(thorError.cause).toBeInstanceOf(Error);
                 expect(thorError).toBeInstanceOf(Error);
             }
         });

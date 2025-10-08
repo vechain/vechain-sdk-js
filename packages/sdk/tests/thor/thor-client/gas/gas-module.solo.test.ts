@@ -1,9 +1,14 @@
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, test, beforeAll } from '@jest/globals';
 import { ThorClient } from '@thor/thor-client/ThorClient';
 import { ThorNetworks } from '@thor/thorest';
 import { FetchHttpClient } from '@common/http';
-import { Revision } from '@common/vcdm';
-import { type ExecuteCodesRequestJSON } from '@thor/thorest/json';
+import { Address, Hex, Revision } from '@common/vcdm';
+import { GasModule } from '@thor/thor-client/gas/gas-module';
+import { Clause, type EstimateGasOptions } from '@thor/thor-client/model';
+import {
+    AccountDispatcher,
+    type ThorSoloAccount
+} from '@vechain/sdk-solo-setup';
 
 /**
  * GasModule solo network tests
@@ -17,45 +22,49 @@ describe('GasModule Solo Tests', () => {
 
     describe('calculateIntrinsicGas', () => {
         test('should calculate intrinsic gas for simple transfer', () => {
-            const clauses = [
-                {
-                    to: '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa',
-                    value: BigInt('0x1000000000000000000'),
-                    data: '0x'
-                }
+            const clauses: Clause[] = [
+                new Clause(
+                    Address.of('0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa'),
+                    BigInt('0x1000000000000000000'),
+                    Hex.of('0x')
+                )
             ];
 
-            const result = gasModule.calculateIntrinsicGas(clauses);
+            const result = GasModule.computeIntrinsicGas(clauses);
 
             expect(typeof result).toBe('bigint');
             expect(result).toBe(21000n); // Standard transfer gas
         });
 
         test('should calculate intrinsic gas for contract call with data', () => {
-            const clauses = [
-                {
-                    to: '0x0000000000000000000000000000456E65726779', // Energy contract
-                    value: 0n,
-                    data: '0xa9059cbb0000000000000000000000000f872421dc479f3c11edd89512731814d0598db50000000000000000000000000000000000000000000000013f306a2409fc0000'
-                }
+            const clauses: Clause[] = [
+                new Clause(
+                    Address.of('0x0000000000000000000000000000456E65726779'), // Energy contract
+                    0n,
+                    Hex.of(
+                        '0xa9059cbb0000000000000000000000000f872421dc479f3c11edd89512731814d0598db50000000000000000000000000000000000000000000000013f306a2409fc0000'
+                    )
+                )
             ];
 
-            const result = gasModule.calculateIntrinsicGas(clauses);
+            const result = GasModule.computeIntrinsicGas(clauses);
 
             expect(typeof result).toBe('bigint');
             expect(result).toBeGreaterThan(21000n); // Should be more than basic transfer
         });
 
         test('should calculate intrinsic gas for contract deployment', () => {
-            const clauses = [
-                {
-                    to: null, // Contract deployment
-                    value: 0n,
-                    data: '0x608060405234801561001057600080fd5b50600a60008190555050'
-                }
+            const clauses: Clause[] = [
+                new Clause(
+                    null,
+                    0n,
+                    Hex.of(
+                        '0x608060405234801561001057600080fd5b50600a60008190555050'
+                    )
+                )
             ];
 
-            const result = gasModule.calculateIntrinsicGas(clauses);
+            const result = GasModule.computeIntrinsicGas(clauses);
 
             expect(typeof result).toBe('bigint');
             expect(result).toBeGreaterThan(50000n); // Contract creation is more expensive
@@ -63,66 +72,69 @@ describe('GasModule Solo Tests', () => {
     });
 
     describe('estimateGas', () => {
+        // get a random funded test account
+        let testAccount: ThorSoloAccount;
+        beforeAll(() => {
+            testAccount = AccountDispatcher.getInstance().getNextAccount();
+        });
         test('should estimate gas for simple VET transfer', async () => {
-            const request: ExecuteCodesRequestJSON = {
-                gas: 50000,
-                gasPrice: '1000000000000000',
-                caller: '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa', // First solo account
-                clauses: [
-                    {
-                        to: '0x2669514f9fe96bc7301177ba774d3da8a06cace4', // Second solo account
-                        value: '0x1000000000000000000', // 1 VET
-                        data: '0x'
-                    }
-                ]
-            };
-
-            const result = await gasModule.estimateGas(request);
-
-            expect(result).toBeInstanceOf(Array);
-            expect(result.length).toBe(1);
-
-            // VeChain solo network may return 0 gas for simple VET transfers
-            // This is different from Ethereum where gas estimation returns estimated gas
-            expect(result[0].gasUsed.valueOf()).toBeGreaterThanOrEqual(
-                BigInt(0)
+            const clauses: Clause[] = [
+                new Clause(
+                    Address.of('0x435933c8064b4ae76be665428e0307ef2ccfbd68'),
+                    BigInt('0x1'),
+                    null
+                ) // 1 wei VET transfer
+            ];
+            const result = await gasModule.estimateGas(
+                clauses,
+                Address.of(testAccount.address)
             );
-            expect(result[0].reverted).toBe(false);
-            expect(result[0].vmError).toBe('');
-            expect(result[0].transfers).toHaveLength(1);
-            expect(
-                result[0].transfers![0].sender.toString().toLowerCase()
-            ).toBe('0xf077b491b355e64048ce21e3a6fc4751eeea77fa');
-            expect(
-                result[0].transfers![0].recipient.toString().toLowerCase()
-            ).toBe('0x2669514f9fe96bc7301177ba774d3da8a06cace4');
+            expect(result.totalGas).toBeGreaterThanOrEqual(21000n);
+            expect(result.reverted).toBe(false);
+            expect(result.revertReasons).toHaveLength(0);
+            expect(result.vmErrors).toHaveLength(0);
+        });
+
+        test('should estimate gas for simple VET transfer with gas padding', async () => {
+            const clauses: Clause[] = [
+                new Clause(
+                    Address.of('0x435933c8064b4ae76be665428e0307ef2ccfbd68'),
+                    BigInt('0x1'),
+                    null
+                ) // 1 wei VET transfer
+            ];
+            const result = await gasModule.estimateGas(
+                clauses,
+                Address.of(testAccount.address),
+                {
+                    gasPadding: 0.1
+                }
+            );
+            expect(result.totalGas).toBeGreaterThanOrEqual(23000n);
+            expect(result.reverted).toBe(false);
+            expect(result.revertReasons).toHaveLength(0);
+            expect(result.vmErrors).toHaveLength(0);
         });
 
         test('should estimate gas for VTHO transfer', async () => {
-            const request: ExecuteCodesRequestJSON = {
-                gas: 50000,
-                gasPrice: '1000000000000000',
-                caller: '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa',
-                clauses: [
-                    {
-                        to: '0x0000000000000000000000000000456E65726779', // VTHO contract
-                        value: '0x0',
-                        data: '0xa9059cbb0000000000000000000000002669514f9fe96bc7301177ba774d3da8a06cace40000000000000000000000000000000000000000000000000de0b6b3a7640000' // transfer(address,uint256)
-                    }
-                ]
-            };
-
-            const result = await gasModule.estimateGas(request);
-
-            expect(result).toBeInstanceOf(Array);
-            expect(result.length).toBe(1);
-            expect(result[0].gasUsed.valueOf()).toBeGreaterThan(BigInt(10000)); // VTHO transfer gas
-            expect(result[0].reverted).toBe(false);
-            expect(result[0].vmError).toBe('');
-            expect(result[0].events).toHaveLength(1); // Transfer event
-            expect(result[0].events![0].address.toString().toLowerCase()).toBe(
-                '0x0000000000000000000000000000456e65726779'
+            // transfer 1 wei VTHO to the test account
+            const clauses: Clause[] = [
+                new Clause(
+                    Address.of('0x0000000000000000000000000000456E65726779'),
+                    BigInt(0n),
+                    Hex.of(
+                        '0xa9059cbb000000000000000000000000f077b491b355e64048ce21e3a6fc4751eeea77fa0000000000000000000000000000000000000000000000000000000000000001'
+                    )
+                )
+            ];
+            const result = await gasModule.estimateGas(
+                clauses,
+                Address.of(testAccount.address)
             );
+            expect(result.totalGas).toBeGreaterThan(1000n);
+            expect(result.reverted).toBe(false);
+            expect(result.revertReasons).toHaveLength(0);
+            expect(result.vmErrors).toHaveLength(0);
         });
 
         test('should estimate gas for contract deployment', async () => {
@@ -130,113 +142,88 @@ describe('GasModule Solo Tests', () => {
             const contractBytecode =
                 '0x608060405234801561001057600080fd5b50600a60008190555034801561002557600080fd5b5060c9806100346000396000f3fe6080604052348015600f57600080fd5b506004361060325760003560e01c80632e64cec11460375780636057361d146051575b600080fd5b60005460405190815260200160405180910390f35b6061605c3660046084565b606b565b005b600055565b60405190815260200160405180910390f35b600060208284031215609557600080fd5b503591905056fea2646970667358221220';
 
-            const request: ExecuteCodesRequestJSON = {
-                gas: 200000,
-                gasPrice: '1000000000000000',
-                caller: '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa',
-                clauses: [
-                    {
-                        to: null, // Contract deployment
-                        value: '0x0',
-                        data: contractBytecode
-                    }
-                ]
-            };
-
-            const result = await gasModule.estimateGas(request);
-
-            expect(result).toBeInstanceOf(Array);
-            expect(result.length).toBe(1);
-            expect(result[0].gasUsed.valueOf()).toBeGreaterThan(BigInt(50000));
-            expect(result[0].reverted).toBe(false);
-            expect(result[0].vmError).toBe('');
+            const clauses: Clause[] = [
+                new Clause(null, BigInt('0x0'), Hex.of(contractBytecode))
+            ];
+            const result = await gasModule.estimateGas(
+                clauses,
+                Address.of(testAccount.address)
+            );
+            expect(result.totalGas).toBeGreaterThan(48000n);
+            expect(result.reverted).toBe(false);
+            expect(result.revertReasons).toHaveLength(0);
+            expect(result.vmErrors).toHaveLength(0);
         });
 
         test('should estimate gas for multiple clauses', async () => {
-            const request: ExecuteCodesRequestJSON = {
-                gas: 100000,
-                gasPrice: '1000000000000000',
-                caller: '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa',
-                clauses: [
-                    {
-                        // First clause: VET transfer
-                        to: '0x2669514f9fe96bc7301177ba774d3da8a06cace4',
-                        value: '0x1000000000000000000',
-                        data: '0x'
-                    },
-                    {
-                        // Second clause: VTHO transfer
-                        to: '0x0000000000000000000000000000456E65726779',
-                        value: '0x0',
-                        data: '0xa9059cbb0000000000000000000000002669514f9fe96bc7301177ba774d3da8a06cace40000000000000000000000000000000000000000000000000de0b6b3a7640000'
-                    }
-                ]
-            };
+            // vet transfer and vtho transfer
+            const clauses: Clause[] = [
+                new Clause(null, BigInt('0x1'), Hex.of('0x')),
+                new Clause(
+                    Address.of('0x0000000000000000000000000000456E65726779'),
+                    BigInt(0n),
+                    Hex.of(
+                        '0xa9059cbb000000000000000000000000f077b491b355e64048ce21e3a6fc4751eeea77fa0000000000000000000000000000000000000000000000000000000000000001'
+                    )
+                )
+            ];
 
-            const result = await gasModule.estimateGas(request);
-
-            expect(result).toBeInstanceOf(Array);
-            expect(result.length).toBe(2);
-
-            // First clause (VET transfer) - VeChain solo may return 0 gas for VET transfers
-            expect(result[0].gasUsed.valueOf()).toBeGreaterThanOrEqual(
-                BigInt(0)
+            const result = await gasModule.estimateGas(
+                clauses,
+                Address.of(testAccount.address)
             );
-            expect(result[0].reverted).toBe(false);
-            expect(result[0].transfers).toHaveLength(1);
-
-            // Second clause (VTHO transfer) - Should use more gas than simple transfer
-            expect(result[1].gasUsed.valueOf()).toBeGreaterThanOrEqual(
-                BigInt(0)
-            ); // Allow for low gas
-            if (!result[1].reverted) {
-                expect(result[1].events).toHaveLength(1);
-            }
+            expect(result.totalGas).toBeGreaterThan(80000n);
+            expect(result.reverted).toBe(false);
+            expect(result.revertReasons).toHaveLength(0);
+            expect(result.vmErrors).toHaveLength(0);
         });
 
         test('should handle insufficient balance scenario', async () => {
             // Try to send more VET than the account has
-            const request: ExecuteCodesRequestJSON = {
-                gas: 50000,
-                gasPrice: '1000000000000000',
-                caller: '0x0000000000000000000000000000000000000000', // Zero address with no balance
-                clauses: [
-                    {
-                        to: '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa',
-                        value: '0x3635c9adc5dea00000', // Large amount
-                        data: '0x'
-                    }
-                ]
-            };
-
-            const result = await gasModule.estimateGas(request);
-
-            expect(result).toBeInstanceOf(Array);
-            expect(result.length).toBe(1);
-            expect(result[0].reverted).toBe(true);
-            expect(result[0].vmError).toBeTruthy();
+            const clauses: Clause[] = [
+                new Clause(
+                    Address.of('0x435933c8064b4ae76be665428e0307ef2ccfbd68'),
+                    BigInt(400000000000000000000000005n),
+                    null
+                )
+            ];
+            const result = await gasModule.estimateGas(
+                clauses,
+                Address.of(testAccount.address)
+            );
+            expect(result.reverted).toBe(true);
+            expect(result.revertReasons).toHaveLength(1);
+            expect(result.revertReasons[0]).toBe('');
+            expect(result.vmErrors).toHaveLength(1);
+            expect(result.vmErrors[0]).toContain(
+                'insufficient balance for transfer'
+            );
         });
 
-        test('should handle out of gas scenario', async () => {
-            const request: ExecuteCodesRequestJSON = {
-                gas: 1000, // Very low gas limit
-                gasPrice: '1000000000000000',
-                caller: '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa',
-                clauses: [
-                    {
-                        to: '0x0000000000000000000000000000456E65726779',
-                        value: '0x0',
-                        data: '0xa9059cbb0000000000000000000000002669514f9fe96bc7301177ba774d3da8a06cace40000000000000000000000000000000000000000000000000de0b6b3a7640000'
-                    }
-                ]
+        test('should handle insufficient gas scenario', async () => {
+            // Simple counter contract bytecode
+            const contractBytecode =
+                '0x608060405234801561001057600080fd5b50600a60008190555034801561002557600080fd5b5060c9806100346000396000f3fe6080604052348015600f57600080fd5b506004361060325760003560e01c80632e64cec11460375780636057361d146051575b600080fd5b60005460405190815260200160405180910390f35b6061605c3660046084565b606b565b005b600055565b60405190815260200160405180910390f35b600060208284031215609557600080fd5b503591905056fea2646970667358221220';
+            const clauses: Clause[] = [
+                new Clause(null, BigInt('0x0'), Hex.of(contractBytecode))
+            ];
+            const addresswithZeroVTHO = Address.of(
+                '0x15c4cD94a5dE2ecE0185d057128daDfd9f54dc11'
+            );
+            // override the offered gas to be smaller than the intrinsic gas
+            const options: EstimateGasOptions = {
+                gas: BigInt(1n)
             };
-
-            const result = await gasModule.estimateGas(request);
-
-            expect(result).toBeInstanceOf(Array);
-            expect(result.length).toBe(1);
-            expect(result[0].reverted).toBe(true);
-            expect(result[0].vmError).toContain('out of gas');
+            const result = await gasModule.estimateGas(
+                clauses,
+                addresswithZeroVTHO,
+                options
+            );
+            expect(result.reverted).toBe(true);
+            expect(result.revertReasons).toHaveLength(1);
+            // expect(result.revertReasons[0]).toContain('out of gas');
+            expect(result.vmErrors).toHaveLength(1);
+            expect(result.vmErrors[0]).toContain('out of gas');
         });
     });
 

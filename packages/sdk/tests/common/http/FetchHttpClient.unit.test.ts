@@ -560,13 +560,7 @@ describe('FetchHttpClient unit tests', () => {
                 mockFetch
             );
 
-            const response = await client.post({ path: 'transactions' });
-
-            expect(response.ok).toBe(false);
-            expect(response.status).toBe(400);
-
-            const data = (await response.json()) as typeof errorResponse;
-            expect(data).toEqual(errorResponse);
+            await expect(client.post({ path: 'transactions' })).rejects.toThrow('HTTP request failed with status 400');
         });
     });
 
@@ -648,6 +642,11 @@ describe('FetchHttpClient unit tests', () => {
         });
         test('should send cookies in requests', async () => {
             let cookieWasSent = false;
+            
+            // Mock fetch to return a valid response
+            (mockFetch as jest.Mock).mockResolvedValueOnce(
+                createMockResponse({ status: 'success' }) as never
+            );
 
             const client = new FetchHttpClient(
                 toURL(ThorNetworks.TESTNET),

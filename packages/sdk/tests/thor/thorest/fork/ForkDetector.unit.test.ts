@@ -111,7 +111,7 @@ describe('ForkDetector unit tests', () => {
             const detector = new ForkDetector(client);
 
             await expect(detector.isGalacticaForked('best')).rejects.toThrow(
-                'Network error: failed to get block details and no cached result found'
+                'HTTP request failed with status 400'
             );
         });
     });

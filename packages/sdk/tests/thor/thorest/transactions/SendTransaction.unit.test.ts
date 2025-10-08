@@ -53,7 +53,7 @@ describe('RetrieveTransactionReceipt UNIT tests', () => {
         } satisfies TXIDJSON;
         const latestBlock = (
             await RetrieveExpandedBlock.of(Revision.BEST).askTo(
-                mockHttpClient(expectedBlock, 'get', true, 200)
+                mockHttpClient(expectedBlock, 'get')
             )
         ).response;
         expect(latestBlock).toBeDefined();
@@ -79,7 +79,7 @@ describe('RetrieveTransactionReceipt UNIT tests', () => {
         );
         const actualTXID = (
             await SendTransaction.of(signedTx.encoded).askTo(
-                mockHttpClient(expectedTXID, 'post', true, 200)
+                mockHttpClient(expectedTXID, 'post')
             )
         ).response;
         expect(actualTXID).toBeDefined();

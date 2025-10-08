@@ -1,104 +1,411 @@
-import { Address, Hex } from '@common';
+import { Address, Hex, HexUInt, Quantity } from '@common';
 import { Clause } from '@thor/thor-client/model/transactions';
 import { expect } from '@jest/globals';
 
-/*
+/**
  * @group unit/thor/thor-client/transactions
  */
 describe('Clause', () => {
-    describe('Constructor', () => {
-        it('ok <- initialize with all parameters', () => {
-            const mockTo = Address.of(
-                '0x0123456789abcdef0123456789abcdef01234567'
-            );
-            const mockValue = BigInt('1000000000000000000'); // 1 VET
-            const mockData = Hex.of('0xdeadbeef');
-            const comment = 'Test transaction';
-            const abi = 'mockAbi';
+    // Test data setup
+    const mockAddress = Address.of(
+        '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed'
+    );
+    const mockValue = 1000n;
+    const mockData = HexUInt.of('0xabcdef1234567890');
+    const mockComment = 'Test comment for clause';
+    const mockAbi = '{"type":"function","name":"transfer","inputs":[]}';
 
-            const clause = new Clause(
-                mockTo,
-                mockValue,
-                mockData,
-                comment,
-                abi
-            );
+    describe('constructor', () => {
+        test('ok <- with minimal parameters', () => {
+            const clause = new Clause(mockAddress, mockValue);
 
-            expect(clause.to).toBe(mockTo);
-            expect(clause.value).toBe(mockValue);
-            expect(clause.data).toBe(mockData);
-            expect(clause.comment).toBe(comment);
-            expect(clause.abi).toBe(abi);
-        });
-
-        it('ok <- handle nullable parameters correctly', () => {
-            const mockValue = BigInt(0);
-
-            const clause = new Clause(null, mockValue, null, null, null);
-
-            expect(clause.to).toBeNull();
+            expect(clause.to).toBe(mockAddress);
             expect(clause.value).toBe(mockValue);
             expect(clause.data).toBeNull();
             expect(clause.comment).toBeNull();
             expect(clause.abi).toBeNull();
         });
-    });
 
-    describe('of', () => {
-        it('ok <- create a Clause instance from ClauseJSON', () => {
-            const mockJson = {
-                to: '0x0123456789abcDEF0123456789abCDef01234567',
-                value: '0xde0b6b3a7640000', // 1 VET in hexadecimal
-                data: '0xdeadbeef'
-            };
+        test('ok <- with all parameters', () => {
+            const clause = new Clause(
+                mockAddress,
+                mockValue,
+                mockData,
+                mockComment,
+                mockAbi
+            );
 
-            const clause = Clause.of(mockJson);
+            expect(clause.to).toBe(mockAddress);
+            expect(clause.value).toBe(mockValue);
+            expect(clause.data).toBe(mockData);
+            expect(clause.comment).toBe(mockComment);
+            expect(clause.abi).toBe(mockAbi);
+        });
 
-            expect(clause.to?.toString()).toBe(mockJson.to);
-            expect(clause.value).toBe(BigInt('0xde0b6b3a7640000'));
-            expect(clause.data?.toString()).toBe(mockJson.data);
+        test('ok <- with null recipient for contract deployment', () => {
+            const clause = new Clause(null, mockValue, mockData);
+
+            expect(clause.to).toBeNull();
+            expect(clause.value).toBe(mockValue);
+            expect(clause.data).toBe(mockData);
             expect(clause.comment).toBeNull();
             expect(clause.abi).toBeNull();
         });
 
-        it('err <- invalid ClauseJSON input', () => {
-            const invalidJson = {
-                to: 'invalid_address',
-                value: 'not_hex'
-            };
+        test('ok <- handle zero value', () => {
+            const clause = new Clause(mockAddress, 0n);
 
-            expect(() => Clause.of(invalidJson as any)).toThrowError();
+            expect(clause.to).toBe(mockAddress);
+            expect(clause.value).toBe(0n);
+            expect(clause.data).toBeNull();
+            expect(clause.comment).toBeNull();
+            expect(clause.abi).toBeNull();
+        });
+
+        test('ok <-handle large values', () => {
+            const largeValue = BigInt(Number.MAX_SAFE_INTEGER) * 1000n;
+            const clause = new Clause(mockAddress, largeValue);
+
+            expect(clause.to).toBe(mockAddress);
+            expect(clause.value).toBe(largeValue);
+        });
+
+        test('ok <- handle undefined optional parameters as null', () => {
+            const clause = new Clause(
+                mockAddress,
+                mockValue,
+                undefined,
+                undefined,
+                undefined
+            );
+
+            expect(clause.to).toBe(mockAddress);
+            expect(clause.value).toBe(mockValue);
+            expect(clause.data).toBeNull();
+            expect(clause.comment).toBeNull();
+            expect(clause.abi).toBeNull();
+        });
+
+        test('ok <- handle mixed null and defined optional parameters', () => {
+            const clause = new Clause(
+                mockAddress,
+                mockValue,
+                mockData,
+                null,
+                mockAbi
+            );
+
+            expect(clause.to).toBe(mockAddress);
+            expect(clause.value).toBe(mockValue);
+            expect(clause.data).toBe(mockData);
+            expect(clause.comment).toBeNull();
+            expect(clause.abi).toBe(mockAbi);
+        });
+
+        test('ok <- handle empty strings for optional parameters', () => {
+            const clause = new Clause(
+                mockAddress,
+                mockValue,
+                HexUInt.of('0x'),
+                '',
+                ''
+            );
+
+            expect(clause.to).toBe(mockAddress);
+            expect(clause.value).toBe(mockValue);
+            expect(clause.data).toEqual(HexUInt.of('0x'));
+            expect(clause.comment).toBe('');
+            expect(clause.abi).toBe('');
         });
     });
 
-    describe('toJSON', () => {
-        it('ok <- serialize to ClauseJSON format', () => {
-            const mockTo = Address.of(
-                '0x0123456789abcdef0123456789abcdef01234567'
-            );
-            const mockValue = BigInt('1000000000000000000'); // 1 VET
-            const mockData = Hex.of('0xdeadbeef');
+    describe('static of method', () => {
+        test('ok <- from ClauseData with all fields', () => {
+            const clauseData = {
+                to: mockAddress,
+                value: mockValue,
+                data: mockData
+            };
 
-            const clause = new Clause(mockTo, mockValue, mockData, null, null);
+            const clause = Clause.of(clauseData);
+
+            expect(clause.to).toBe(mockAddress);
+            expect(clause.value).toBe(mockValue);
+            expect(clause.data).toBe(mockData);
+            expect(clause.comment).toBeNull();
+            expect(clause.abi).toBeNull();
+        });
+
+        test('ok <- from ClauseData with null recipient', () => {
+            const clauseData = {
+                to: null,
+                value: mockValue,
+                data: mockData
+            };
+
+            const clause = Clause.of(clauseData);
+
+            expect(clause.to).toBeNull();
+            expect(clause.value).toBe(mockValue);
+            expect(clause.data).toBe(mockData);
+            expect(clause.comment).toBeNull();
+            expect(clause.abi).toBeNull();
+        });
+
+        test('ok <- from ClauseData with null data', () => {
+            const clauseData = {
+                to: mockAddress,
+                value: mockValue,
+                data: null
+            };
+
+            const clause = Clause.of(clauseData);
+
+            expect(clause.to).toBe(mockAddress);
+            expect(clause.value).toBe(mockValue);
+            expect(clause.data).toBeNull();
+            expect(clause.comment).toBeNull();
+            expect(clause.abi).toBeNull();
+        });
+
+        test('ok <- from ClauseData with zero value', () => {
+            const clauseData = {
+                to: mockAddress,
+                value: 0n,
+                data: null
+            };
+
+            const clause = Clause.of(clauseData);
+
+            expect(clause.to).toBe(mockAddress);
+            expect(clause.value).toBe(0n);
+            expect(clause.data).toBeNull();
+        });
+    });
+
+    describe('toJSON method', () => {
+        test('ok <- with all fields to JSON', () => {
+            const clause = new Clause(
+                mockAddress,
+                mockValue,
+                mockData,
+                mockComment,
+                mockAbi
+            );
+
             const json = clause.toJSON();
 
-            expect(json.to).toBe(mockTo.toString());
-            expect(json.value).toBe('0xde0b6b3a7640000');
+            expect(json.to).toBe(mockAddress.toString());
+            expect(json.value).toBe(Quantity.of(mockValue).toString());
             expect(json.data).toBe(mockData.toString());
         });
 
-        it('ok <- serialize null data as "0x"', () => {
-            const mockTo = Address.of(
-                '0x0123456789abcdef0123456789abcdef01234567'
-            );
-            const mockValue = BigInt('0');
+        test('ok <- with null recipient to JSON', () => {
+            const clause = new Clause(null, mockValue, mockData);
 
-            const clause = new Clause(mockTo, mockValue, null, null, null);
             const json = clause.toJSON();
 
-            expect(json.to).toBe(mockTo.toString());
-            expect(json.value).toBe('0x0');
+            expect(json.to).toBeNull();
+            expect(json.value).toBe(Quantity.of(mockValue).toString());
+            expect(json.data).toBe(mockData.toString());
+        });
+
+        test('ok <- with null data to JSON using 0x prefix', () => {
+            const clause = new Clause(mockAddress, mockValue, null);
+
+            const json = clause.toJSON();
+
+            expect(json.to).toBe(mockAddress.toString());
+            expect(json.value).toBe(Quantity.of(mockValue).toString());
+            expect(json.data).toBe(Hex.PREFIX); // Should be "0x"
+        });
+
+        test('ok <- clause with zero value to JSON', () => {
+            const clause = new Clause(mockAddress, 0n);
+
+            const json = clause.toJSON();
+
+            expect(json.to).toBe(mockAddress.toString());
+            expect(json.value).toBe(Quantity.of(0n).toString());
+            expect(json.data).toBe(Hex.PREFIX);
+        });
+
+        test('ok <- with large value to JSON', () => {
+            const largeValue = BigInt(Number.MAX_SAFE_INTEGER) * 1000n;
+            const clause = new Clause(mockAddress, largeValue);
+
+            const json = clause.toJSON();
+
+            expect(json.to).toBe(mockAddress.toString());
+            expect(json.value).toBe(Quantity.of(largeValue).toString());
+            expect(json.data).toBe(Hex.PREFIX);
+        });
+
+        test('ok <- not include comment in JSON serialization', () => {
+            const clause = new Clause(
+                mockAddress,
+                mockValue,
+                mockData,
+                mockComment
+            );
+
+            const json = clause.toJSON();
+
+            expect(json).not.toHaveProperty('comment');
+            expect('comment' in json).toBe(false);
+        });
+
+        test('ok <- not include abi in JSON serialization', () => {
+            const clause = new Clause(
+                mockAddress,
+                mockValue,
+                mockData,
+                mockComment,
+                mockAbi
+            );
+
+            const json = clause.toJSON();
+
+            expect(json).not.toHaveProperty('abi');
+            expect('abi' in json).toBe(false);
+        });
+
+        test('ok <- handle empty hex data correctly', () => {
+            const emptyData = HexUInt.of('0x');
+            const clause = new Clause(mockAddress, mockValue, emptyData);
+
+            const json = clause.toJSON();
+
+            expect(json.to).toBe(mockAddress.toString());
+            expect(json.value).toBe(Quantity.of(mockValue).toString());
             expect(json.data).toBe('0x');
+        });
+    });
+
+    describe('edge cases and immutability', () => {
+        test('ok <- handle contract deployment scenario', () => {
+            // Contract deployment typically has null recipient and data payload
+            const deploymentData = HexUInt.of(
+                '0x608060405234801561001057600080fd5b50'
+            );
+            const clause = new Clause(
+                null,
+                0n,
+                deploymentData,
+                'Contract deployment'
+            );
+
+            expect(clause.to).toBeNull();
+            expect(clause.value).toBe(0n);
+            expect(clause.data).toBe(deploymentData);
+            expect(clause.comment).toBe('Contract deployment');
+
+            const json = clause.toJSON();
+            expect(json.to).toBeNull();
+            expect(json.value).toBe('0x0');
+            expect(json.data).toBe(deploymentData.toString());
+        });
+
+        test('ok <- handle simple VET transfer scenario', () => {
+            // Simple VET transfer has recipient, value, but no data
+            const transferAmount = 1000000000000000000n; // 1 VET in wei
+            const clause = new Clause(
+                mockAddress,
+                transferAmount,
+                null,
+                'VET transfer'
+            );
+
+            expect(clause.to).toBe(mockAddress);
+            expect(clause.value).toBe(transferAmount);
+            expect(clause.data).toBeNull();
+            expect(clause.comment).toBe('VET transfer');
+
+            const json = clause.toJSON();
+            expect(json.to).toBe(mockAddress.toString());
+            expect(json.value).toBe(Quantity.of(transferAmount).toString());
+            expect(json.data).toBe(Hex.PREFIX);
+        });
+
+        test('ok <- handle contract method call scenario', () => {
+            // Contract method call has recipient, possible value, and data
+            const methodCallData = HexUInt.of(
+                '0xa9059cbb000000000000000000000000742d35cc'
+            );
+            const clause = new Clause(
+                mockAddress,
+                0n,
+                methodCallData,
+                'Token transfer',
+                mockAbi
+            );
+
+            expect(clause.to).toBe(mockAddress);
+            expect(clause.value).toBe(0n);
+            expect(clause.data).toBe(methodCallData);
+            expect(clause.comment).toBe('Token transfer');
+            expect(clause.abi).toBe(mockAbi);
+
+            const json = clause.toJSON();
+            expect(json.to).toBe(mockAddress.toString());
+            expect(json.value).toBe('0x0');
+            expect(json.data).toBe(methodCallData.toString());
+        });
+
+        test('ok <- handle roundtrip consistency', () => {
+            const originalClause = new Clause(
+                mockAddress,
+                mockValue,
+                mockData,
+                mockComment,
+                mockAbi
+            );
+
+            const json = originalClause.toJSON();
+
+            // Verify JSON structure
+            expect(json.to).toBe(mockAddress.toString());
+            expect(json.value).toBe(Quantity.of(mockValue).toString());
+            expect(json.data).toBe(mockData.toString());
+
+            // Note: comment and abi are not included in JSON, so perfect roundtrip
+            // would require preserving them separately if needed
+        });
+    });
+
+    describe('type validation and constraints', () => {
+        test('ok <- handle maximum safe integer value', () => {
+            const maxValue = BigInt(Number.MAX_SAFE_INTEGER);
+            const clause = new Clause(mockAddress, maxValue);
+
+            expect(clause.value).toBe(maxValue);
+            expect(clause.toJSON().value).toBe(
+                Quantity.of(maxValue).toString()
+            );
+        });
+
+        test('ok <- handle values beyond JavaScript safe integer range', () => {
+            const hugeValue = BigInt('999999999999999999999999999999999999999');
+            const clause = new Clause(mockAddress, hugeValue);
+
+            expect(clause.value).toBe(hugeValue);
+            expect(clause.toJSON().value).toBe(
+                Quantity.of(hugeValue).toString()
+            );
+        });
+
+        test('ok <- handle various data formats', () => {
+            const testCases = [
+                { data: HexUInt.of('0x'), expected: '0x' },
+                { data: HexUInt.of('0x00'), expected: '0x00' },
+                { data: HexUInt.of('0xabcdef'), expected: '0xabcdef' },
+                { data: null, expected: Hex.PREFIX }
+            ];
+
+            testCases.forEach(({ data, expected }) => {
+                const clause = new Clause(mockAddress, mockValue, data);
+                expect(clause.toJSON().data).toBe(expected);
+            });
         });
     });
 });

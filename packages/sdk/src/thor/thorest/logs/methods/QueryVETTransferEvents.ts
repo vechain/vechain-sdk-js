@@ -2,7 +2,7 @@ import { type HttpClient, type HttpPath } from '@common/http';
 import { TransferLogFilterRequest, TransferLogsResponse } from '@thor/thorest';
 import { type TransferLogsResponseJSON } from '@thor/thorest/json';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
-import { TransferLogFilter } from '@thor/thor-client/model/logs/TransferLogFilter';
+import { type TransferLogFilter } from '@thor/thor-client/model/logs/TransferLogFilter';
 
 /**
  * Full-Qualified-Path
@@ -65,7 +65,7 @@ class QueryVETTransferEvents
             } catch (error) {
                 throw new ThorError(
                     fqp,
-                    'Bad response.',
+                    error instanceof Error ? error.message : 'Bad response.',
                     {
                         url: response.url,
                         body: json

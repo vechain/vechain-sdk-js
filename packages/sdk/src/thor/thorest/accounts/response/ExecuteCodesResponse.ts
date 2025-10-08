@@ -1,13 +1,12 @@
 import { type Hex, HexUInt } from '@common/vcdm';
-import { Transfer } from '@thor/thorest/common/Transfer';
+import { TransferResponse } from '@thor/thorest/common/TransferResponse';
 import { type EventJSON, type TransferJSON } from '@thor/thorest/json';
-import { Event } from '@thor/thorest/common';
+import { EventResponse } from '@thor/thorest/common/EventResponse';
 import { IllegalArgumentError } from '@common/errors';
 import {
     type ExecuteCodeResponseJSON,
     type ExecuteCodesResponseJSON
 } from '@thor/thorest/accounts/json';
-import { log } from '@common/logging';
 
 /**
  * Full-Qualified Path
@@ -31,12 +30,12 @@ class ExecuteCodeResponse {
     /**
      * The events of the response.
      */
-    readonly events: Event[];
+    readonly events: EventResponse[];
 
     /**
      * The transfers of the response.
      */
-    readonly transfers: Transfer[];
+    readonly transfers: TransferResponse[];
 
     /**
      * The gas used of the response.
@@ -63,11 +62,12 @@ class ExecuteCodeResponse {
         try {
             this.data = HexUInt.of(json.data);
             this.events = json.events.map(
-                (eventJSON: EventJSON): Event => new Event(eventJSON)
+                (eventJSON: EventJSON): EventResponse =>
+                    new EventResponse(eventJSON)
             );
             this.transfers = json.transfers.map(
-                (transferJSON: TransferJSON): Transfer =>
-                    new Transfer(transferJSON)
+                (transferJSON: TransferJSON): TransferResponse =>
+                    new TransferResponse(transferJSON)
             );
             this.gasUsed = BigInt(json.gasUsed);
             this.reverted = json.reverted;
@@ -91,10 +91,10 @@ class ExecuteCodeResponse {
         return {
             data: this.data.toString(),
             events: this.events.map(
-                (event: Event): EventJSON => event.toJSON()
+                (event: EventResponse): EventJSON => event.toJSON()
             ),
             transfers: this.transfers.map(
-                (transfer: Transfer): TransferJSON => transfer.toJSON()
+                (transfer: TransferResponse): TransferJSON => transfer.toJSON()
             ),
             gasUsed: Number(this.gasUsed),
             reverted: this.reverted,

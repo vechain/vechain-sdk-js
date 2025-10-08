@@ -58,9 +58,9 @@ describe('PublicClient - Events/Logs Methods', () => {
                     message: 'First log:',
                     context: {
                         data: {
-                            address: firstLog.address,
-                            topics: firstLog.topics,
-                            data: firstLog.data
+                            address: firstLog.eventLog.address,
+                            topics: firstLog.eventLog.topics,
+                            data: firstLog.eventLog.data
                         }
                     }
                 });

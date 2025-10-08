@@ -1,4 +1,4 @@
-import { type Hex, NetAddr } from '@common/vcdm';
+import { type Hex, type NetAddr } from '@common/vcdm';
 
 /**
  * Represents a connected peer in the VeChainThor network.

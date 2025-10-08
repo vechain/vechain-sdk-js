@@ -1,9 +1,9 @@
+import { expect } from '@jest/globals';
 import { Address, HexUInt, Quantity } from '@common';
 import {
-    TransactionRequest,
-    Clause
+    Clause,
+    TransactionRequest
 } from '@thor/thor-client/model/transactions';
-import { expect } from '@jest/globals';
 
 /**
  * @group unit/thor/thor-client/transactions

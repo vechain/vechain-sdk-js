@@ -10,6 +10,7 @@ interface SubscriptionBlockResponseJSON {
     gasLimit: number;
     beneficiary: string;
     gasUsed: number;
+    baseFeePerGas?: string;
     totalScore: number;
     txsRoot: string;
     txsFeatures: number;

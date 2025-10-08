@@ -4,11 +4,8 @@ import {
     type BeatsSubscription,
     BlocksSubscription,
     EventsSubscription,
-    type ExecuteCodesResponse,
     type ExpandedBlockResponse,
-    InspectClauses,
     NewTransactionSubscription,
-    type RawTx,
     type RegularBlockResponse,
     RetrieveAccountDetails,
     RetrieveContractBytecode,
@@ -24,7 +21,8 @@ import {
     type GetTxResponse,
     type GetTxReceiptResponse,
     type TransfersSubscription,
-    type TXID
+    type TXID,
+    type RawBlockResponse
 } from '@thor/thorest';
 import { MozillaWebSocketClient, type WebSocketListener } from '@thor/ws';
 import {
@@ -37,7 +35,6 @@ import {
     WebSocketRequestError,
     BaseError
 } from 'viem';
-import { type ExecuteCodesRequestJSON } from '@thor/thorest/json';
 import { ThorClient } from '@thor/thor-client/ThorClient';
 import { EventLogFilter } from '@thor/thor-client/model/logs/EventLogFilter';
 import { type DecodedEventLog } from '@thor/thor-client/model/logs/DecodedEventLog';
@@ -46,8 +43,16 @@ import { FilterRangeUnits } from '@thor/thor-client/model/logs/FilterRangeUnits'
 import { FilterOptions } from '@thor/thor-client/model/logs/FilterOptions';
 import { EventCriteria } from '@thor/thor-client/model/logs/EventCriteria';
 import { type AbiEvent, toEventSelector } from 'viem';
-import type { EstimatedGas } from '@thor/thor-client/model/gas/EstimatedGas';
 import type { FeeHistory } from '@thor/thor-client/model/gas/FeeHistory';
+import {
+    type ClauseSimulationResult,
+    type Clause,
+    type SimulateTransactionOptions
+} from '@thor/thor-client/model/transactions';
+import {
+    type EstimateGasOptions,
+    type EstimateGasResult
+} from '@thor/thor-client/model';
 
 /**
  * Filter types for viem compatibility.
@@ -146,7 +151,9 @@ class PublicClient {
     public async getBlock(
         revision: BlockRevision = 'best', // viem specific
         type: BlockReponseType = BlockReponseType.regular // vechain specific
-    ): Promise<ExpandedBlockResponse | RawTx | RegularBlockResponse | null> {
+    ): Promise<
+        ExpandedBlockResponse | RawBlockResponse | RegularBlockResponse | null
+    > {
         const blockNumber =
             typeof revision === 'number'
                 ? BigInt(revision)
@@ -232,27 +239,28 @@ class PublicClient {
     }
 
     public async simulateCalls(
-        request: ExecuteCodesRequestJSON
-    ): Promise<ExecuteCodesResponse> {
+        clauses: Clause[],
+        options?: SimulateTransactionOptions
+    ): Promise<ClauseSimulationResult[]> {
         // this and call are the same because ETH doesn't support multi-call and they have explicit functions for this.
         // viem specific
-        const inspectClause = await InspectClauses.of(request).askTo(
-            this.httpClient
+        const results = await this.thorClient.transactions.simulateTransaction(
+            clauses,
+            options
         );
-        const clause = inspectClause.response;
-        return clause;
+        return results;
     }
 
     // eslint-disable-next-line sonarjs/no-identical-functions
     public async call(
-        request: ExecuteCodesRequestJSON
-    ): Promise<ExecuteCodesResponse> {
-        // viem specific
-        const inspectClause = await InspectClauses.of(request).askTo(
-            this.httpClient
+        clause: Clause,
+        options?: SimulateTransactionOptions
+    ): Promise<ClauseSimulationResult> {
+        const result = await this.thorClient.transactions.simulateTransaction(
+            [clause],
+            options
         );
-        const clause = inspectClause.response;
-        return clause;
+        return result[0];
     }
 
     public async getFeeHistory(blockCount: number): Promise<FeeHistory> {
@@ -281,11 +289,13 @@ class PublicClient {
     }
 
     public async estimateGas(
-        request: ExecuteCodesRequestJSON
-    ): Promise<EstimatedGas[]> {
+        clauses: Clause[],
+        caller: Address,
+        options?: EstimateGasOptions
+    ): Promise<EstimateGasResult> {
         const thorClient = ThorClient.at(this.httpClient);
         const gasModule = thorClient.gas;
-        const gas = await gasModule.estimateGas(request);
+        const gas = await gasModule.estimateGas(clauses, caller, options);
         return gas;
     }
 

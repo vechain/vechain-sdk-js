@@ -1,6 +1,6 @@
 import { type Hex, HexUInt } from '@common/vcdm';
 import { type GetRawTxResponseJSON } from '@thor/thorest/json';
-import { TxMeta } from '@thor/thorest/transactions/model';
+import { TxMetaResponse } from '@thor/thorest/transactions/model';
 import { IllegalArgumentError } from '@common/errors';
 
 /**
@@ -23,7 +23,7 @@ class GetRawTxResponse {
     /**
      * Transaction metadata such as block number, block timestamp, etc.
      */
-    readonly meta: TxMeta;
+    readonly meta: TxMetaResponse;
 
     /**
      * Constructs an instance of the class using the provided JSON object.
@@ -34,7 +34,7 @@ class GetRawTxResponse {
     constructor(json: GetRawTxResponseJSON) {
         try {
             this.raw = HexUInt.of(json.raw);
-            this.meta = new TxMeta(json.meta);
+            this.meta = new TxMetaResponse(json.meta);
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: GetRawTxResponseJSON)`,

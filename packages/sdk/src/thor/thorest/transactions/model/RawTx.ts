@@ -1,6 +1,7 @@
 import { HexUInt } from '@common/vcdm';
 import { type RawTxJSON } from '@thor/thorest/json';
 import { IllegalArgumentError } from '@common/errors';
+import { TxMetaResponse } from './TxMetaResponse';
 
 /**
  * Full-Qualified Path
@@ -17,6 +18,11 @@ class RawTx {
     raw: HexUInt;
 
     /**
+     * Transaction metadata such as block number, block timestamp, etc.
+     */
+    meta: TxMetaResponse;
+
+    /**
      * Constructs an instance of the class by parsing the provided raw transaction JSON.
      *
      * @param {RawTxJSON} json - The raw transaction JSON object containing the transaction data to be parsed and validated.
@@ -25,6 +31,7 @@ class RawTx {
     constructor(json: RawTxJSON) {
         try {
             this.raw = HexUInt.of(json.raw);
+            this.meta = new TxMetaResponse(json.meta);
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: BlockJSON)`,
@@ -42,7 +49,8 @@ class RawTx {
      */
     toJSON(): RawTxJSON {
         return {
-            raw: this.raw.toString()
+            raw: this.raw.toString(),
+            meta: this.meta.toJSON()
         } satisfies RawTxJSON;
     }
 }

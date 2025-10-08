@@ -1,7 +1,8 @@
 import { type HttpClient, type HttpPath } from '@common/http';
+import { handleHttpError } from '@thor/thorest/utils';
 import { PostDebugTracerRequest } from '@thor/thorest/debug';
 import { type PostDebugTracerRequestJSON } from '@thor/thorest/json';
-import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
+import { type ThorRequest, type ThorResponse } from '@thor/thorest';
 import { IllegalArgumentError } from '@common/errors';
 
 /**
@@ -47,27 +48,19 @@ class TraceTransactionClause
         httpClient: HttpClient
     ): Promise<ThorResponse<TraceTransactionClause, unknown>> {
         const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<TraceTransactionClause, unknown>>`;
-        const response = await httpClient.post(
-            TraceTransactionClause.PATH,
-            { query: '' },
-            this.request.toJSON()
-        );
-        if (response.ok) {
+        try {
+            const response = await httpClient.post(
+                TraceTransactionClause.PATH,
+                { query: '' },
+                this.request.toJSON()
+            );
             const json: unknown = await response.json();
             return {
                 request: this,
                 response: json
             };
-        } else {
-            throw new ThorError(
-                fqp,
-                await response.text(),
-                {
-                    url: response.url
-                },
-                undefined,
-                response.status
-            );
+        } catch (error) {
+            throw handleHttpError(fqp, error);
         }
     }
 
