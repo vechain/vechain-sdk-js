@@ -6,10 +6,13 @@ import {
 } from 'viem';
 import { type Address, Hex } from '@common/vcdm';
 import { type PublicClient, type WalletClient } from '@viem/clients';
-import { type ExecuteCodesRequestJSON } from '@thor/thorest/json';
 import { type SubscriptionEventResponse } from '@thor/thorest/subscriptions/response';
-import { type ExecuteCodesResponse } from '@thor/thorest/accounts/response';
 import { type DecodedEventLog } from '@thor/thor-client/model/logs/DecodedEventLog';
+import {
+    Clause,
+    type SimulateTransactionOptions,
+    type ClauseSimulationResult
+} from '@thor/thor-client';
 
 // Type alias for hex-convertible values
 type HexConvertible = string | number | bigint;
@@ -56,23 +59,22 @@ export interface Contract<TAbi extends Abi> {
     abi: TAbi;
     /** Read-only contract methods (view/pure) - available when publicClient provided */
     read: Record<string, (...args: FunctionArgs) => Promise<unknown>>;
-    /** State-changing contract methods - available when walletClient provided */
-    write: Record<
-        string,
-        (params?: WriteContractParameters) => ExecuteCodesRequestJSON
-    >;
     /** Simulate contract method calls - available when publicClient provided */
     simulate: Record<
         string,
         (params?: {
             args?: FunctionArgs;
             value?: bigint;
-        }) => Promise<ExecuteCodesResponse>
+            options?: SimulateTransactionOptions;
+        }) => Promise<ClauseSimulationResult[]>
     >;
     /** Estimate gas for contract method calls - available when publicClient provided */
     estimateGas: Record<
         string,
-        (params?: { args?: FunctionArgs; value?: bigint }) => Promise<bigint>
+        (
+            caller: Address,
+            params?: { args?: FunctionArgs; value?: bigint }
+        ) => Promise<bigint>
     >;
     /** Contract event interfaces - available when publicClient provided */
     events: Record<
@@ -145,20 +147,19 @@ function getContract<const TAbi extends Abi>({
         string,
         (...args: FunctionArgs) => Promise<unknown>
     > = {};
-    const writeMethods: Record<
-        string,
-        (params?: WriteContractParameters) => ExecuteCodesRequestJSON
-    > = {};
     const simulateMethods: Record<
         string,
         (params?: {
             args?: FunctionArgs;
             value?: bigint;
-        }) => Promise<ExecuteCodesResponse>
+        }) => Promise<ClauseSimulationResult[]>
     > = {};
     const estimateGasMethods: Record<
         string,
-        (params?: { args?: FunctionArgs; value?: bigint }) => Promise<bigint>
+        (
+            caller: Address,
+            params?: { args?: FunctionArgs; value?: bigint }
+        ) => Promise<bigint>
     > = {};
     const eventMethods: Record<
         string,
@@ -187,7 +188,6 @@ function getContract<const TAbi extends Abi>({
         address,
         abi,
         read: readMethods,
-        write: writeMethods,
         simulate: simulateMethods,
         estimateGas: estimateGasMethods,
         events: eventMethods
@@ -214,24 +214,16 @@ function getContract<const TAbi extends Abi>({
                     });
 
                     // Prepare call request
-                    const request: ExecuteCodesRequestJSON = {
-                        clauses: [
-                            {
-                                to: address.toString(),
-                                data: data as unknown as string,
-                                value: Hex.of(0).toString()
-                            }
-                        ]
-                    };
+                    const clause: Clause = new Clause(
+                        address,
+                        0n,
+                        Hex.of(data)
+                    );
 
                     // Call the contract
-                    const response = await publicClient.call(request);
+                    const response = await publicClient.call(clause);
 
-                    if (response.items.length === 0) {
-                        throw new Error('No response from contract call');
-                    }
-
-                    const result = response.items[0].data;
+                    const result = response.data;
 
                     // Decode the result
                     if (abiItem.outputs != null && abiItem.outputs.length > 0) {
@@ -246,49 +238,6 @@ function getContract<const TAbi extends Abi>({
                     return undefined;
                 };
             }
-            // Write methods (nonpayable/payable) - only available with walletClient
-            if (
-                (abiItem.stateMutability === 'nonpayable' ||
-                    abiItem.stateMutability === 'payable') &&
-                walletClient != null
-            ) {
-                contract.write[functionName] = ({
-                    args = [],
-                    value = 0n,
-                    gas,
-                    gasPrice
-                } = {}) => {
-                    // Encode function call data
-                    const data = encodeFunctionData({
-                        abi: abi as Abi,
-                        functionName,
-                        args
-                    });
-
-                    // Return transaction request that can be signed by wallet
-                    const txRequest: ExecuteCodesRequestJSON = {
-                        clauses: [
-                            {
-                                to: address.toString(),
-                                data: data as unknown as string,
-                                // Convert bigint to hex string using Hex.of
-                                value: Hex.of(value).toString()
-                            }
-                        ]
-                    };
-
-                    // Add gas parameters if provided
-                    if (gas !== undefined) {
-                        txRequest.gas = Number(gas);
-                    }
-                    if (gasPrice !== undefined) {
-                        txRequest.gasPrice = Hex.of(gasPrice).toString();
-                    }
-
-                    return txRequest;
-                };
-            }
-
             // Simulate methods - available with publicClient for all functions
             if (publicClient != null) {
                 contract.simulate[functionName] = async ({
@@ -301,53 +250,39 @@ function getContract<const TAbi extends Abi>({
                         functionName,
                         args
                     });
-
-                    // Prepare simulation request
-                    const request: ExecuteCodesRequestJSON = {
-                        clauses: [
-                            {
-                                to: address.toString(),
-                                data: data as unknown as string,
-                                value: Hex.of(value).toString()
-                            }
-                        ]
-                    };
+                    const clause: Clause = new Clause(
+                        address,
+                        value,
+                        Hex.of(data)
+                    );
 
                     // Simulate the contract call
-                    return await publicClient.simulateCalls(request);
+                    return await publicClient.simulateCalls([clause]);
                 };
 
                 // EstimateGas methods - available with publicClient for all functions
-                contract.estimateGas[functionName] = async ({
-                    args = [],
-                    value = 0n
-                } = {}) => {
+                contract.estimateGas[functionName] = async (
+                    caller: Address,
+                    { args = [], value = 0n } = {}
+                ) => {
                     // Encode function call data
                     const data = encodeFunctionData({
                         abi: abi as Abi,
                         functionName,
                         args
                     });
-
-                    // Prepare estimation request
-                    const request: ExecuteCodesRequestJSON = {
-                        clauses: [
-                            {
-                                to: address.toString(),
-                                data: data as unknown as string,
-                                value: Hex.of(value).toString()
-                            }
-                        ]
-                    };
+                    const clause: Clause = new Clause(
+                        address,
+                        value,
+                        Hex.of(data)
+                    );
 
                     // Estimate gas for the contract call
-                    const response = await publicClient.estimateGas(request);
-
-                    if (response.length === 0) {
-                        throw new Error('No response from gas estimation');
-                    }
-
-                    return BigInt(response[0].gasUsed);
+                    const response = await publicClient.estimateGas(
+                        [clause],
+                        caller
+                    );
+                    return response.totalGas;
                 };
             }
         }

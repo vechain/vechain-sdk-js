@@ -1,5 +1,5 @@
-import * as nc_utils from '@noble/curves/abstract/utils';
 import * as nh_utils from '@noble/hashes/utils';
+import * as nc_utils from '@noble/curves/utils';
 import {
     IllegalArgumentError,
     UnsupportedOperationError
@@ -372,6 +372,54 @@ class Hex implements VeChainDataModel<Hex> {
      */
     public toJSON(): string {
         return this.toString();
+    }
+
+    /**
+     * Counts the number of zero bytes in the hexadecimal string.
+     *
+     * @returns {number} The number of zero bytes in the hexadecimal string.
+     */
+    public countZeroBytes(): number {
+        const bytes = this.bytes;
+        let count = 0;
+        for (const byte of bytes) {
+            if (byte === 0) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Counts the number of non-zero bytes in the hexadecimal string.
+     *
+     * @returns {number} The number of non-zero bytes in the hexadecimal string.
+     */
+    public countNonZeroBytes(): number {
+        const bytes = this.bytes;
+        let count = 0;
+        for (const byte of bytes) {
+            if (byte !== 0) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Returns the hexadecimal string representation of this Hex instance.
+     *
+     * @returns {`0x${string}`} The hexadecimal string representation of this Hex instance.
+     */
+    public asHex(): `0x${string}` {
+        if (this.sign < 0) {
+            throw new UnsupportedOperationError(
+                `${FQP}<Hex>.asHex(): \`0x\${string}\``,
+                'negative values cannot be represented as 0x-prefixed hex strings',
+                { hex: this.toString() }
+            );
+        }
+        return this.toString() as `0x${string}`;
     }
 }
 
