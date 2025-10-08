@@ -4,7 +4,6 @@ import { RetrieveConnectedPeers } from '@thor/thorest/node/methods';
 import { RetrieveRegularBlock } from '@thor/thorest/blocks/methods';
 import { IllegalArgumentError } from '@common/errors';
 import { Revision } from '@common/vcdm';
-import { ForkDetector } from './forkDetector';
 
 const chainTagCache = new WeakMap<NodesModule, number>();
 
@@ -116,19 +115,6 @@ class NodesModule extends AbstractThorModule {
             // If we can't check health, assume unhealthy
             return false;
         }
-    }
-
-    /**
-     * Detects if the current network is on the Galactica fork.
-     *
-     * @param {Revision} revision - Block number or ID (e.g., 'best', 'finalized', or numeric)
-     * @returns {Promise<boolean>} A promise that resolves to true if Galactica fork is detected, false otherwise.
-     */
-    public async isGalacticaForked(
-        revision: Revision = Revision.BEST
-    ): Promise<boolean> {
-        const forkDetector = new ForkDetector(this.httpClient);
-        return await forkDetector.isGalacticaForked(revision);
     }
 
     /**

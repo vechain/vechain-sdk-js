@@ -47,17 +47,4 @@ describe('NodesModule', () => {
             expect(isHealthy).toBe(true);
         });
     });
-
-    describe('isGalacticaForked', () => {
-        test('should be able to check if the network is on the Galactica fork', async () => {
-            const thorClient = ThorClient.at(
-                FetchHttpClient.at(new URL(ThorNetworks.SOLONET))
-            );
-            const isGalacticaForked =
-                await thorClient.nodes.isGalacticaForked();
-            expect(typeof isGalacticaForked).toBe('boolean');
-            // Solo network should be on the Galactica fork from
-            expect(isGalacticaForked).toBe(true);
-        });
-    });
 });
