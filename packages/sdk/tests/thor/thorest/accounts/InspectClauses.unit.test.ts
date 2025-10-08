@@ -1,11 +1,16 @@
 import { describe, expect, test } from '@jest/globals';
-import { InspectClauses } from '@thor/thorest';
+import { ExecuteCodesRequest, InspectClauses } from '@thor/thorest';
 import {
     type ExecuteCodeResponseJSON,
     type ExecuteCodesRequestJSON
 } from '@thor/thorest/json';
-import { HexUInt } from '@common/vcdm';
+import { Address, BlockRef, Hex, HexUInt } from '@common/vcdm';
 import { mockHttpClient } from '../../../MockHttpClient';
+import {
+    Clause,
+    type SimulateTransactionOptions
+} from '@thor/thor-client/model/transactions';
+import { IllegalArgumentError } from '@common/errors';
 
 /**
  * VeChain inspect clauses - unit
@@ -15,33 +20,36 @@ import { mockHttpClient } from '../../../MockHttpClient';
 describe('InspectClauses unit tests', () => {
     test('should inspect clauses successfully', async () => {
         // Mock request data
-        const request = {
-            gas: 50000,
-            gasPrice: '1000000000000000',
-            caller: '0x6d95e6dca01d109882fe1726a2fb9865fa41e7aa',
+        const clauses = [
+            new Clause(
+                Address.of('0x0000000000000000000000000000456E65726779'),
+                0n,
+                Hex.of(
+                    '0xa9059cbb0000000000000000000000000f872421dc479f3c11edd89512731814d0598db50000000000000000000000000000000000000000000000013f306a2409fc0000'
+                )
+            ),
+            new Clause(
+                Address.of('0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa'),
+                HexUInt.of('0x6124fee993bc00000').bi,
+                Hex.of('0x')
+            ),
+            new Clause(
+                null,
+                0n,
+                Hex.of(
+                    '0x6080604052348015600f57600080fd5b50609f8061001e6000396000f300608060405260043610603f576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680631820cabb146044575b600080fd5b348015604f57600080fd5b506056606c565b6040518082815260200191505060405180910390f35b62015180815600a165627a7a723058200ac7475da248e2fc26c057319e296e90c24d5f8b9bf956fb3b77545642cad3b10029'
+                )
+            )
+        ];
+        const options: SimulateTransactionOptions = {
+            gas: 50000n,
+            gasPrice: 1000000000000000n,
+            caller: Address.of('0x6d95e6dca01d109882fe1726a2fb9865fa41e7aa'),
             provedWork: '1000',
-            gasPayer: '0xd3ae78222beadb038203be21ed5ce7c9b1bff602',
+            gasPayer: Address.of('0xd3ae78222beadb038203be21ed5ce7c9b1bff602'),
             expiration: 1000,
-            blockRef: '0x00000000851caf3c',
-            clauses: [
-                {
-                    to: '0x0000000000000000000000000000456E65726779',
-                    value: '0x0',
-                    data: '0xa9059cbb0000000000000000000000000f872421dc479f3c11edd89512731814d0598db50000000000000000000000000000000000000000000000013f306a2409fc0000'
-                },
-                {
-                    to: '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa',
-                    value: '0x6124fee993bc00000',
-                    data: '0x'
-                },
-                {
-                    to: null,
-                    value: '0x0',
-                    data: '0x6080604052348015600f57600080fd5b50609f8061001e6000396000f300608060405260043610603f576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680631820cabb146044575b600080fd5b348015604f57600080fd5b506056606c565b6040518082815260200191505060405180910390f35b62015180815600a165627a7a723058200ac7475da248e2fc26c057319e296e90c24d5f8b9bf956fb3b77545642cad3b10029'
-                }
-            ]
-        } satisfies ExecuteCodesRequestJSON;
-
+            blockRef: BlockRef.of('0x00000000851caf3c')
+        };
         // Mock response data
         const mockResponse: ExecuteCodeResponseJSON[] = [
             {
@@ -88,7 +96,9 @@ describe('InspectClauses unit tests', () => {
 
         // Execute the test
         const response = (
-            await InspectClauses.of(request).askTo(
+            await InspectClauses.of(
+                new ExecuteCodesRequest(clauses, options)
+            ).askTo(
                 mockHttpClient<ExecuteCodeResponseJSON[]>(mockResponse, 'post')
             )
         ).response;
@@ -132,20 +142,19 @@ describe('InspectClauses unit tests', () => {
 
     test('should handle reverted transaction', async () => {
         // Mock request with invalid data that should cause reversion
-        const request = {
-            gas: 50000,
-            gasPrice: '1000000000000000',
-            caller: '0x6d95e6dca01d109882fe1726a2fb9865fa41e7aa',
-            blockRef: '0x00000000851caf3c',
-            clauses: [
-                {
-                    to: '0x0000000000000000000000000000456E65726779',
-                    value: '0x0',
-                    data: '0x1234'
-                }
-            ]
-        } satisfies ExecuteCodesRequestJSON;
-
+        const clauses = [
+            new Clause(
+                Address.of('0x0000000000000000000000000000456E65726779'),
+                0n,
+                Hex.of('0x1234')
+            )
+        ];
+        const options: SimulateTransactionOptions = {
+            gas: 50000n,
+            gasPrice: 1000000000000000n,
+            caller: Address.of('0x6d95e6dca01d109882fe1726a2fb9865fa41e7aa'),
+            blockRef: BlockRef.of('0x00000000851caf3c')
+        };
         // Mock response for reverted transaction
         const mockResponse: ExecuteCodeResponseJSON[] = [
             {
@@ -160,7 +169,9 @@ describe('InspectClauses unit tests', () => {
 
         // Execute the test
         const response = (
-            await InspectClauses.of(request).askTo(
+            await InspectClauses.of(
+                new ExecuteCodesRequest(clauses, options)
+            ).askTo(
                 mockHttpClient<ExecuteCodeResponseJSON[]>(mockResponse, 'post')
             )
         ).response;
@@ -175,40 +186,38 @@ describe('InspectClauses unit tests', () => {
 
     test('should handle empty clauses array', async () => {
         // Mock request with empty clauses
-        const request = {
-            gas: 50000,
-            gasPrice: '1000000000000000',
-            caller: '0x6d95e6dca01d109882fe1726a2fb9865fa41e7aa',
-            blockRef: '0x00000000851caf3c',
-            clauses: []
-        } satisfies ExecuteCodesRequestJSON;
-
+        const clauses: Clause[] = [];
+        const options: SimulateTransactionOptions = {
+            gas: 50000n,
+            gasPrice: 1000000000000000n,
+            caller: Address.of('0x6d95e6dca01d109882fe1726a2fb9865fa41e7aa'),
+            blockRef: BlockRef.of('0x00000000851caf3c')
+        };
         // Execute the test
-        const response = await InspectClauses.of(request).askTo(
-            mockHttpClient<ExecuteCodeResponseJSON[]>([], 'post')
-        );
-
-        // Verify the response
-        expect(response.response.items).toBeInstanceOf(Array);
-        expect(response.response.items).toHaveLength(0);
+        await expect(async () =>
+            InspectClauses.of(new ExecuteCodesRequest(clauses, options)).askTo(
+                mockHttpClient<ExecuteCodeResponseJSON[]>([], 'post')
+            )
+        ).rejects.toThrow(IllegalArgumentError);
     });
 
     test('should handle out of gas scenario', async () => {
         // Mock request with very low gas
-        const request = {
-            gas: 1, // Very low gas that should cause out of gas error
-            gasPrice: '1000000000000000',
-            caller: '0x6d95e6dca01d109882fe1726a2fb9865fa41e7aa',
-            blockRef: '0x00000000851caf3c',
-            clauses: [
-                {
-                    to: '0x0000000000000000000000000000456E65726779',
-                    value: '0x0',
-                    data: '0xa9059cbb0000000000000000000000000f872421dc479f3c11edd89512731814d0598db50000000000000000000000000000000000000000000000013f306a2409fc0000'
-                }
-            ]
-        } satisfies ExecuteCodesRequestJSON;
-
+        const clauses = [
+            new Clause(
+                Address.of('0x0000000000000000000000000000456E65726779'),
+                0n,
+                Hex.of(
+                    '0xa9059cbb0000000000000000000000000f872421dc479f3c11edd89512731814d0598db50000000000000000000000000000000000000000000000013f306a2409fc0000'
+                )
+            )
+        ];
+        const options: SimulateTransactionOptions = {
+            gas: 1n,
+            gasPrice: 1000000000000000n,
+            caller: Address.of('0x6d95e6dca01d109882fe1726a2fb9865fa41e7aa'),
+            blockRef: BlockRef.of('0x00000000851caf3c')
+        };
         // Mock response for out of gas scenario
         const mockResponse: ExecuteCodeResponseJSON[] = [
             {
@@ -223,7 +232,9 @@ describe('InspectClauses unit tests', () => {
 
         // Execute the test
         const response = (
-            await InspectClauses.of(request).askTo(
+            await InspectClauses.of(
+                new ExecuteCodesRequest(clauses, options)
+            ).askTo(
                 mockHttpClient<ExecuteCodeResponseJSON[]>(mockResponse, 'post')
             )
         ).response;
