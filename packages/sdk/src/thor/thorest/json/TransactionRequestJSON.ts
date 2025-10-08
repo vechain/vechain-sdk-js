@@ -10,7 +10,7 @@ interface TransactionRequestJSON {
     dependsOn: string | null;
     expiration: number;
     gas: bigint;
-    gasPriceCoef: bigint;
+    gasPriceCoef?: bigint;
     nonce: number;
     isIntendedToBeSponsored: boolean;
 }
