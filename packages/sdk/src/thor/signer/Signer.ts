@@ -1,7 +1,4 @@
-import {
-    type SignedTransactionRequest,
-    type TransactionRequest
-} from '@thor/thor-client/model/transactions';
+import { type TransactionRequest } from '@thor/thor-client/model/transactions';
 import { type Address } from '@common';
 
 /**
@@ -14,9 +11,7 @@ interface Signer {
      */
     address: Address;
 
-    sign: (
-        transactionRequest: TransactionRequest
-    ) => TransactionRequest | SignedTransactionRequest;
+    sign: (transactionRequest: TransactionRequest) => TransactionRequest;
 }
 
 export { type Signer };

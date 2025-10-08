@@ -17,6 +17,7 @@ interface TransactionRequestJSON {
     maxPriorityFeePerGas?: bigint;
     nonce: number;
     originSignature?: string; // hex string
+    signature?: string; // hex string
 }
 
 export { type TransactionRequestJSON };

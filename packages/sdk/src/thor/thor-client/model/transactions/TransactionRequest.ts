@@ -69,7 +69,7 @@ interface TransactionRequestParam {
  * Encapsulates all information required to process and execute a transaction.
  */
 class TransactionRequest implements TransactionRequestParam {
-    // Inherited from TransactionRequestParam
+    // Inherited from TransactionRequestParam, used to compute the transaction request signature.
 
     /**
      * The address of the account begging to pay the gas fee.
@@ -141,16 +141,27 @@ class TransactionRequest implements TransactionRequestParam {
     public readonly originSignature: Uint8Array;
 
     /**
+     * The transaction signature, equal to
+     * - originSignature, if the transaction is not inteded to be sponsored, hence beggar is undefined;
+     * - originSignature concatenated with gasPayerSignature, if the transaction is intended to be sponsored, hence beggar is defined.
+     */
+    public readonly signature: Uint8Array;
+
+    /**
      * Constructs a new instance of the class with the provided parameters.
      *
      * @param {TransactionRequestParam} params - The transaction request parameters.
      * @param {Uint8Array} [originSignature] - Optional origin signature for the transaction.
      * @param {Uint8Array} [gasPayerSignature] - Optional gas payer signature for the transaction.
+     * @param {Uint8Array} [signature] - Optional transaction signature
+     * - If `beggar` is defined, the transaction is signed if both `originSignature` and `gasPayerSignature` are present.
+     * - If `beggar` is undefined, the transaction is signed if `originSignature` is present.
      */
     public constructor(
         params: TransactionRequestParam,
         originSignature?: Uint8Array,
-        gasPayerSignature?: Uint8Array
+        gasPayerSignature?: Uint8Array,
+        signature?: Uint8Array
     ) {
         this.beggar = params.beggar;
         this.blockRef = params.blockRef;
@@ -167,6 +178,8 @@ class TransactionRequest implements TransactionRequestParam {
         this.originSignature = new Uint8Array(originSignature ?? []);
         // Defensive copy of the signatures to prevent accidental mutation.
         this.gasPayerSignature = new Uint8Array(gasPayerSignature ?? []);
+        // Defensive copy of the signatures to prevent accidental mutation.
+        this.signature = new Uint8Array(signature ?? []);
     }
 
     /**
@@ -198,10 +211,16 @@ class TransactionRequest implements TransactionRequestParam {
      */
     public get isSigned(): boolean {
         if (this.beggar === undefined) {
-            return this.originSignature.length > 0;
+            return (
+                this.originSignature.length > 0 &&
+                this.signature.length === this.originSignature.length
+            );
         }
         return (
-            this.originSignature.length > 0 && this.gasPayerSignature.length > 0
+            this.originSignature.length > 0 &&
+            this.gasPayerSignature.length > 0 &&
+            this.signature.length ===
+                this.originSignature.length + this.gasPayerSignature.length
         );
     }
 
@@ -240,6 +259,10 @@ class TransactionRequest implements TransactionRequestParam {
             originSignature:
                 this.originSignature.length > 0
                     ? HexUInt.of(this.originSignature).toString()
+                    : undefined,
+            signature:
+                this.signature.length > 0
+                    ? HexUInt.of(this.signature).toString()
                     : undefined
         } satisfies TransactionRequestJSON;
     }

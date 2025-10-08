@@ -1,5 +1,10 @@
-import { Address, Blake2b256, InvalidPrivateKeyError, Secp256k1 } from '@common';
-import { SignedTransactionRequest, TransactionRequest } from '@thor/thor-client/model/transactions';
+import {
+    Address,
+    Blake2b256,
+    InvalidPrivateKeyError,
+    Secp256k1
+} from '@common';
+import { TransactionRequest } from '@thor/thor-client/model/transactions';
 import { type Signer } from './Signer';
 import { RLPCodec } from '@thor';
 
@@ -80,10 +85,10 @@ class PrivateKeySigner implements Signer {
     ): TransactionRequest {
         if (this.#privateKey !== null) {
             const hash = Blake2b256.of(
-                RLPCodec.encode(transactionRequest)
+                RLPCodec.encodeToSign(transactionRequest)
             ).bytes;
             const originSignature = Secp256k1.sign(hash, this.#privateKey);
-            return new SignedTransactionRequest(
+            return new TransactionRequest(
                 new TransactionRequest(transactionRequest, originSignature),
                 originSignature
             );
@@ -94,16 +99,16 @@ class PrivateKeySigner implements Signer {
         );
     }
 
-    public sign(
-        transactionRequest: TransactionRequest
-    ): TransactionRequest | SignedTransactionRequest {
+    public sign(transactionRequest: TransactionRequest): TransactionRequest {
         if (transactionRequest.beggar !== undefined) {
             if (transactionRequest.beggar.isEqual(this.address)) {
                 // sign as origin
             }
             // sign as gas payer
         }
-        return this.signNotIntendedToBeSponsoredTransactionRequest(transactionRequest);
+        return this.signNotIntendedToBeSponsoredTransactionRequest(
+            transactionRequest
+        );
     }
 }
 

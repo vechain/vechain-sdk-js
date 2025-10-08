@@ -1,16 +1,17 @@
 import { TEST_ACCOUNTS } from '../../fixture';
-import { Address, Hex, HexUInt, Quantity } from '@common';
+import { Address, HexUInt, Quantity } from '@common';
 import {
     Clause,
     TransactionRequest
 } from '@thor/thor-client/model/transactions';
 import { RLPCodec } from '@thor';
 import { expect } from '@jest/globals';
+import { concatBytes } from '@noble/curves/utils.js';
 
 const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
 
 /**
- * @group unit/thor/thorest/signer
+ * @group unit/thor/signer
  */
 describe('RLPCodec', () => {
     // Test data setup
@@ -25,9 +26,49 @@ describe('RLPCodec', () => {
     const mockMaxPriorityFeePerGas = 27000000000n; // 5 Gwei
     const mockNonce = 3;
     const mockValue = Quantity.of(1000);
+    const mockGasPayerSignature = new Uint8Array(65).fill(0xbe);
+    const mockOriginSignature = new Uint8Array(65).fill(0xba);
+    const mockSignature = concatBytes(
+        mockOriginSignature,
+        mockGasPayerSignature
+    );
 
-    describe('encode/decode', () => {
-        test('ok <- dynamic - all properties', () => {
+    describe('encode/decode dynamic', () => {
+        test('ok <- all properties', () => {
+            const expected = new TransactionRequest(
+                {
+                    beggar: Address.of(TRANSACTION_SENDER.address),
+                    blockRef: mockBlockRef,
+                    chainTag: 1,
+                    clauses: [
+                        new Clause(
+                            Address.of(TRANSACTION_RECEIVER.address),
+                            mockValue.bi
+                        )
+                    ],
+                    dependsOn: mockDependsOn,
+                    expiration: mockExpiration,
+                    gas: mockGas,
+                    gasPriceCoef: 0n, // Dynamic fee transactions use 0
+                    maxFeePerGas: mockMaxFeePerGas,
+                    maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
+                    nonce: mockNonce
+                },
+                mockOriginSignature,
+                mockGasPayerSignature,
+                mockSignature
+            );
+            const encoded = RLPCodec.encode(expected);
+            // Verify 0x51 prefix is present
+            expect(encoded[0]).toBe(0x51);
+            const actual = RLPCodec.decode(encoded);
+            expect(actual.isDynamicFee).toBe(true);
+            expect(actual.isIntendedToBeSponsored).toBe(true);
+            expect(actual.isSigned).toBe(true);
+            expect(actual.toJSON()).toEqual(expected.toJSON());
+        });
+
+        test('ok <- minimal properties', () => {
             const expected = new TransactionRequest({
                 blockRef: mockBlockRef,
                 chainTag: 1,
@@ -37,7 +78,7 @@ describe('RLPCodec', () => {
                         mockValue.bi
                     )
                 ],
-                dependsOn: mockDependsOn,
+                dependsOn: null,
                 expiration: mockExpiration,
                 gas: mockGas,
                 gasPriceCoef: 0n, // Dynamic fee transactions use 0
@@ -50,10 +91,46 @@ describe('RLPCodec', () => {
             expect(encoded[0]).toBe(0x51);
             const actual = RLPCodec.decode(encoded);
             expect(actual.isDynamicFee).toBe(true);
+            expect(actual.isIntendedToBeSponsored).toBe(false);
+            expect(actual.isSigned).toBe(false);
+            expect(actual.toJSON()).toEqual(expected.toJSON());
+        });
+    });
+
+    describe('encode/decode legacy', () => {
+        test('ok <- legacy - all properties', () => {
+            const expected = new TransactionRequest(
+                {
+                    beggar: Address.of(TRANSACTION_SENDER.address),
+                    blockRef: mockBlockRef,
+                    chainTag: 1,
+                    clauses: [
+                        new Clause(
+                            Address.of(TRANSACTION_RECEIVER.address),
+                            mockValue.bi
+                        )
+                    ],
+                    dependsOn: mockDependsOn,
+                    expiration: mockExpiration,
+                    gas: mockGas,
+                    gasPriceCoef: mockGasPriceCoef,
+                    nonce: mockNonce
+                },
+                mockOriginSignature,
+                mockGasPayerSignature,
+                mockSignature
+            );
+            const encoded = RLPCodec.encode(expected);
+            // Verify no 0x51 is not present
+            expect(encoded[0]).not.toBe(0x51);
+            const actual = RLPCodec.decode(encoded);
+            expect(actual.isDynamicFee).toBe(false);
+            expect(actual.isIntendedToBeSponsored).toBe(true);
+            expect(actual.isSigned).toBe(true);
             expect(actual.toJSON()).toEqual(expected.toJSON());
         });
 
-        test('ok <- legacy - no optional properties', () => {
+        test('ok <- legacy - minimal properties', () => {
             const expected = new TransactionRequest({
                 blockRef: mockBlockRef,
                 chainTag: 1,
@@ -74,6 +151,8 @@ describe('RLPCodec', () => {
             expect(encoded[0]).not.toBe(0x51);
             const actual = RLPCodec.decode(encoded);
             expect(actual.isDynamicFee).toBe(false);
+            expect(actual.isIntendedToBeSponsored).toBe(false);
+            expect(actual.isSigned).toBe(false);
             expect(actual.toJSON()).toEqual(expected.toJSON());
         });
     });
@@ -94,32 +173,11 @@ describe('RLPCodec', () => {
             expect(actual.toJSON()).toEqual(expected.toJSON());
         });
 
-        test('ok <- no clause.data', () => {
+        test('ok <- minimal properties', () => {
             const expected = new TransactionRequest({
                 blockRef: mockBlockRef,
                 chainTag: 1,
-                clauses: [
-                    new Clause(
-                        Address.of(TRANSACTION_RECEIVER.address),
-                        mockValue.bi
-                    )
-                ],
-                dependsOn: null,
-                expiration: mockExpiration,
-                gas: mockGas,
-                gasPriceCoef: 0n,
-                nonce: mockNonce
-            });
-
-            const actual = RLPCodec.decode(RLPCodec.encode(expected));
-            expect(actual.toJSON()).toEqual(expected.toJSON());
-        });
-
-        test('ok <- no clause.to', () => {
-            const expected = new TransactionRequest({
-                blockRef: mockBlockRef,
-                chainTag: 1,
-                clauses: [new Clause(null, mockValue.bi, Hex.of('0xabcdef'))],
+                clauses: [new Clause(null, mockValue.bi)],
                 dependsOn: null,
                 expiration: mockExpiration,
                 gas: mockGas,
