@@ -14,7 +14,10 @@ import { RLPCodecTransactionRequest } from '@thor/signer/RLPCodeTransactionReque
 import { Clause } from '../model/transactions/Clause';
 import { VET, Units } from './model/VET';
 import { ABIContract } from './model/ABI';
-import { ContractCallError } from '../../../common/errors';
+import {
+    ContractCallError,
+    IllegalArgumentError
+} from '../../../common/errors';
 import { encodeFunctionData } from 'viem';
 import { BUILT_IN_CONTRACTS } from './constants';
 import { dataUtils } from './utils';
@@ -290,8 +293,18 @@ class ContractsModule extends AbstractThorModule {
                     )
             };
         } catch (error) {
-            throw new Error(
-                `Failed to execute transaction: ${error instanceof Error ? error.message : 'Unknown error'}`
+            throw new IllegalArgumentError(
+                'ContractsModule.executeTransaction',
+                'Failed to execute transaction',
+                {
+                    error:
+                        error instanceof Error
+                            ? error.message
+                            : 'Unknown error',
+                    contractAddress: contractAddress.toString(),
+                    functionAbi,
+                    functionData
+                }
             );
         }
     }
@@ -426,8 +439,17 @@ class ContractsModule extends AbstractThorModule {
                     )
             };
         } catch (error) {
-            throw new Error(
-                `Failed to execute multiple clauses transaction: ${error instanceof Error ? error.message : 'Unknown error'}`
+            throw new IllegalArgumentError(
+                'ContractsModule.executeMultipleClausesTransaction',
+                'Failed to execute multiple clauses transaction',
+                {
+                    error:
+                        error instanceof Error
+                            ? error.message
+                            : 'Unknown error',
+                    clausesCount: clauses.length,
+                    signer: signer
+                }
             );
         }
     }

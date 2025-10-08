@@ -1,4 +1,5 @@
 import { Address, Hex, Revision } from '@common/vcdm';
+import { IllegalArgumentError, InvalidTransactionField } from '@common/errors';
 import { VET, Units } from './VET';
 import { Clause } from './Clause';
 import { ContractFilter } from './ContractFilter';
@@ -111,8 +112,16 @@ function getReadProxy<TAbi extends Abi>(
                     );
 
                 if (!executeCallResult.success) {
-                    throw new Error(
-                        `Contract call failed: ${executeCallResult.result.errorMessage || 'Unknown error'}`
+                    throw new IllegalArgumentError(
+                        'ContractProxy.getReadProxy',
+                        'Contract call failed',
+                        {
+                            functionName: prop.toString(),
+                            errorMessage:
+                                executeCallResult.result.errorMessage ||
+                                'Unknown error',
+                            contractAddress: contract.address.toString()
+                        }
                     );
                 }
 
@@ -141,8 +150,10 @@ function getTransactProxy<TAbi extends Abi>(
         get: (_target, prop) => {
             return async (...args: unknown[]) => {
                 if (contract.getSigner() === undefined) {
-                    throw new Error(
-                        'Caller signer is required to transact with the contract.'
+                    throw new InvalidTransactionField(
+                        'ContractProxy.getTransactProxy',
+                        'Caller signer is required to transact with the contract.',
+                        { fieldName: 'signer', functionName: prop.toString() }
                     );
                 }
 

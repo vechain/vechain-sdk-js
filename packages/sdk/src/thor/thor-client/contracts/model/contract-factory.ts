@@ -1,6 +1,7 @@
 import type { Abi } from 'abitype';
 import { type Signer } from '@thor/signer';
 import { HexUInt, Address } from '@common/vcdm';
+import { IllegalArgumentError } from '@common/errors';
 import { ClauseBuilder } from '@thor/thorest/transactions/model/ClauseBuilder';
 import { encodeAbiParameters, parseAbiParameters } from 'viem';
 import type {
@@ -91,8 +92,14 @@ class ContractFactory<TAbi extends Abi> {
                 constructorAbi.inputs.length > 0
             ) {
                 if (constructorArgs.length !== constructorAbi.inputs.length) {
-                    throw new Error(
-                        `Constructor expects ${constructorAbi.inputs.length} arguments, but ${constructorArgs.length} were provided`
+                    throw new IllegalArgumentError(
+                        'ContractFactory.createDeploymentClause',
+                        'Constructor argument count mismatch',
+                        {
+                            expected: constructorAbi.inputs.length,
+                            provided: constructorArgs.length,
+                            constructorAbi: constructorAbi.inputs
+                        }
                     );
                 }
 
@@ -147,8 +154,14 @@ class ContractFactory<TAbi extends Abi> {
                 constructorAbi.inputs.length > 0
             ) {
                 if (constructorArgs.length !== constructorAbi.inputs.length) {
-                    throw new Error(
-                        `Constructor expects ${constructorAbi.inputs.length} arguments, but ${constructorArgs.length} were provided`
+                    throw new IllegalArgumentError(
+                        'ContractFactory.createDeploymentClause',
+                        'Constructor argument count mismatch',
+                        {
+                            expected: constructorAbi.inputs.length,
+                            provided: constructorArgs.length,
+                            constructorAbi: constructorAbi.inputs
+                        }
                     );
                 }
 
@@ -225,8 +238,14 @@ class ContractFactory<TAbi extends Abi> {
                 constructorAbi.inputs.length > 0
             ) {
                 if (constructorArgs.length !== constructorAbi.inputs.length) {
-                    throw new Error(
-                        `Constructor expects ${constructorAbi.inputs.length} arguments, but ${constructorArgs.length} were provided`
+                    throw new IllegalArgumentError(
+                        'ContractFactory.createDeploymentClause',
+                        'Constructor argument count mismatch',
+                        {
+                            expected: constructorAbi.inputs.length,
+                            provided: constructorArgs.length,
+                            constructorAbi: constructorAbi.inputs
+                        }
                     );
                 }
 
@@ -248,10 +267,14 @@ class ContractFactory<TAbi extends Abi> {
             // - Using ThorClient.gas.estimateGas() to estimate gas
             // - Returning the estimated gas amount
 
-            throw new Error(
-                'ContractFactory.estimateDeploymentGas() requires ThorClient gas estimation implementation. ' +
-                    "The deployment clause has been created successfully using VeChain's official ClauseBuilder.deployContract() method. " +
-                    'Next step: integrate with ThorClient gas estimation.'
+            throw new IllegalArgumentError(
+                'ContractFactory.estimateDeploymentGas',
+                'ThorClient gas estimation implementation required',
+                {
+                    message:
+                        "The deployment clause has been created successfully using VeChain's official ClauseBuilder.deployContract() method. Next step: integrate with ThorClient gas estimation.",
+                    deployClause: deployClause
+                }
             );
         } catch (error) {
             if (error instanceof Error) {
@@ -285,8 +308,14 @@ class ContractFactory<TAbi extends Abi> {
                 constructorAbi.inputs.length > 0
             ) {
                 if (constructorArgs.length !== constructorAbi.inputs.length) {
-                    throw new Error(
-                        `Constructor expects ${constructorAbi.inputs.length} arguments, but ${constructorArgs.length} were provided`
+                    throw new IllegalArgumentError(
+                        'ContractFactory.createDeploymentClause',
+                        'Constructor argument count mismatch',
+                        {
+                            expected: constructorAbi.inputs.length,
+                            provided: constructorArgs.length,
+                            constructorAbi: constructorAbi.inputs
+                        }
                     );
                 }
 
@@ -308,10 +337,14 @@ class ContractFactory<TAbi extends Abi> {
             // - Using ThorClient to simulate the transaction
             // - Returning the simulation result
 
-            throw new Error(
-                'ContractFactory.simulateDeployment() requires ThorClient simulation implementation. ' +
-                    "The deployment clause has been created successfully using VeChain's official ClauseBuilder.deployContract() method. " +
-                    'Next step: integrate with ThorClient simulation.'
+            throw new IllegalArgumentError(
+                'ContractFactory.simulateDeployment',
+                'ThorClient simulation implementation required',
+                {
+                    message:
+                        "The deployment clause has been created successfully using VeChain's official ClauseBuilder.deployContract() method. Next step: integrate with ThorClient simulation.",
+                    deployClause: deployClause
+                }
             );
         } catch (error) {
             if (error instanceof Error) {

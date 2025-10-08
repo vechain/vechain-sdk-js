@@ -5,7 +5,8 @@ import {
 } from 'abitype';
 import { encodeFunctionData, toEventSelector } from 'viem';
 import { type Signer } from '@thor/signer';
-import { type Address, Revision } from '@common';
+import { type Address, Revision } from '@common/vcdm';
+import { IllegalArgumentError } from '@common/errors';
 import type { ContractCallOptions, ContractTransactionOptions } from '../types';
 import type { ContractsModule } from '../interfaces';
 
@@ -136,7 +137,11 @@ class Contract<TAbi extends Abi> {
         );
 
         if (!functionAbi) {
-            throw new Error(`Function ${functionName} not found in ABI`);
+            throw new IllegalArgumentError(
+                'Contract.getFunctionAbi',
+                'Function not found in ABI',
+                { functionName, abi: this.abi }
+            );
         }
 
         return functionAbi;
@@ -155,7 +160,11 @@ class Contract<TAbi extends Abi> {
         );
 
         if (!eventAbi) {
-            throw new Error(`Event ${name} not found in ABI`);
+            throw new IllegalArgumentError(
+                'Contract.getEventAbi',
+                'Event not found in ABI',
+                { eventName: name, abi: this.abi }
+            );
         }
 
         return eventAbi;
@@ -199,9 +208,16 @@ class Contract<TAbi extends Abi> {
                                 );
 
                             if (!result.success) {
-                                throw new Error(
-                                    result.result.errorMessage ||
-                                        'Contract call failed'
+                                throw new IllegalArgumentError(
+                                    'Contract.initializeProxies',
+                                    'Contract call failed',
+                                    {
+                                        functionName,
+                                        errorMessage:
+                                            result.result.errorMessage ||
+                                            'Unknown error',
+                                        contractAddress: this.address.toString()
+                                    }
                                 );
                             }
 
@@ -225,8 +241,13 @@ class Contract<TAbi extends Abi> {
                         ...args: unknown[]
                     ) => {
                         if (!this.signer) {
-                            throw new Error(
-                                'Signer is required for transaction execution'
+                            throw new IllegalArgumentError(
+                                'Contract.initializeProxies',
+                                'Signer is required for transaction execution',
+                                {
+                                    functionName,
+                                    contractAddress: this.address.toString()
+                                }
                             );
                         }
 

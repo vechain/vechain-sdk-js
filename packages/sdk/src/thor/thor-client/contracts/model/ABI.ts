@@ -1,4 +1,5 @@
 import { VeChainDataModel } from '@common/vcdm';
+import { IllegalArgumentError } from '@common/errors';
 import {
     encodeAbiParameters,
     decodeAbiParameters,
@@ -325,7 +326,11 @@ class ABIContract<TAbi extends readonly any[] = readonly any[]> extends ABI {
         );
 
         if (!functionAbi) {
-            throw new Error(`Function ${name} not found in ABI`);
+            throw new IllegalArgumentError(
+                'ABIContract.getFunction',
+                'Function not found in ABI',
+                { functionName: name, abi: this._viemABI }
+            );
         }
 
         const signature = `${name}(${functionAbi.inputs?.map((input: any) => input.type).join(',') || ''})`;
@@ -343,7 +348,11 @@ class ABIContract<TAbi extends readonly any[] = readonly any[]> extends ABI {
         );
 
         if (!eventAbi) {
-            throw new Error(`Event ${name} not found in ABI`);
+            throw new IllegalArgumentError(
+                'ABIContract.getEvent',
+                'Event not found in ABI',
+                { eventName: name, abi: this._viemABI }
+            );
         }
 
         const signature = `${name}(${eventAbi.inputs?.map((input: any) => input.type).join(',') || ''})`;
