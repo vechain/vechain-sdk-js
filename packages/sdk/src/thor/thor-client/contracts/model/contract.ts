@@ -117,14 +117,6 @@ class Contract<TAbi extends Abi> {
     }
 
     /**
-     * Get the signer used for signing transactions.
-     * @returns The signer used for signing transactions.
-     */
-    public getSigner(): Signer | undefined {
-        return this.signer;
-    }
-
-    /**
      * Retrieves the function ABI for the specified function name.
      * Uses viem's ABI parsing instead of ABIContract from core
      * @param prop - The name of the function.
@@ -139,7 +131,7 @@ class Contract<TAbi extends Abi> {
         if (!functionAbi) {
             throw new IllegalArgumentError(
                 'Contract.getFunctionAbi',
-                'Function not found in ABI',
+                `Function ${functionName} not found in ABI`,
                 { functionName, abi: this.abi }
             );
         }
@@ -162,7 +154,7 @@ class Contract<TAbi extends Abi> {
         if (!eventAbi) {
             throw new IllegalArgumentError(
                 'Contract.getEventAbi',
-                'Event not found in ABI',
+                `Event ${name} not found in ABI`,
                 { eventName: name, abi: this.abi }
             );
         }
@@ -304,8 +296,6 @@ class Contract<TAbi extends Abi> {
                 const eventName = abiItem.name;
                 this.filters[eventName] = (...args: unknown[]) => {
                     return {
-                        eventName: eventName,
-                        args: args,
                         address: this.address.toString(),
                         topics: [this.getEventSelector(eventName)]
                     };
@@ -433,6 +423,104 @@ class Contract<TAbi extends Abi> {
             console.warn('Failed to get event selector:', error);
             return '0x' + eventName; // Fallback
         }
+    }
+
+    /**
+     * Gets the public client (if available)
+     * @returns The public client or undefined
+     */
+    public getPublicClient(): any {
+        return this.contractsModule.getPublicClient();
+    }
+
+    /**
+     * Gets the wallet client (if available)
+     * @returns The wallet client or undefined
+     */
+    public getWalletClient(): any {
+        return this.contractsModule.getWalletClient();
+    }
+
+    /**
+     * Sets read options for contract calls.
+     * @param options - The contract call options to set.
+     */
+    public setReadOptions(options: ContractCallOptions): void {
+        this.contractCallOptions = options;
+    }
+
+    /**
+     * Sets transaction options for contract transactions.
+     * @param options - The contract transaction options to set.
+     */
+    public setTransactOptions(options: ContractTransactionOptions): void {
+        this.contractTransactionOptions = options;
+    }
+
+    /**
+     * Gets the contract address as a string.
+     * @returns The contract address as a string.
+     */
+    public getAddress(): string {
+        return this.address.toString();
+    }
+
+    /**
+     * Gets the contract ABI.
+     * @returns The contract ABI.
+     */
+    public getABI(): TAbi {
+        return this.abi;
+    }
+
+    /**
+     * Checks if the contract has a specific function.
+     * @param functionName - The name of the function to check.
+     * @returns True if the function exists, false otherwise.
+     */
+    public hasFunction(functionName: string): boolean {
+        return this.abi.some(
+            (item) => item.type === 'function' && item.name === functionName
+        );
+    }
+
+    /**
+     * Checks if the contract has a specific event.
+     * @param eventName - The name of the event to check.
+     * @returns True if the event exists, false otherwise.
+     */
+    public hasEvent(eventName: string): boolean {
+        return this.abi.some(
+            (item) => item.type === 'event' && item.name === eventName
+        );
+    }
+
+    /**
+     * Gets all function names from the ABI.
+     * @returns Array of function names.
+     */
+    public getFunctionNames(): string[] {
+        return this.abi
+            .filter((item) => item.type === 'function')
+            .map((item) => item.name);
+    }
+
+    /**
+     * Gets all event names from the ABI.
+     * @returns Array of event names.
+     */
+    public getEventNames(): string[] {
+        return this.abi
+            .filter((item) => item.type === 'event')
+            .map((item) => item.name);
+    }
+
+    /**
+     * Gets the contract's signer.
+     * @returns The signer or undefined.
+     */
+    public getSigner(): Signer | undefined {
+        return this.signer;
     }
 }
 

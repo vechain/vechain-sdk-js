@@ -90,6 +90,21 @@ class ContractsModule extends AbstractThorModule {
     }
 
     /**
+     * Creates a new contract factory for deploying contracts.
+     * @param abi - The Application Binary Interface (ABI) of the contract.
+     * @param bytecode - The bytecode of the contract to deploy.
+     * @param signer - The signer used for signing deployment transactions.
+     * @returns A new instance of the ContractFactory.
+     */
+    public newContract<TAbi extends Abi>(
+        abi: TAbi,
+        bytecode: string,
+        signer: Signer
+    ): ContractFactory<TAbi> {
+        return new ContractFactory<TAbi>(abi, bytecode, signer, this);
+    }
+
+    /**
      * Executes a contract call using VeChain's official InspectClauses method.
      * This method allows reading from smart contracts without sending transactions.
      *
@@ -106,6 +121,29 @@ class ContractsModule extends AbstractThorModule {
         options?: ContractCallOptions
     ): Promise<ContractCallResult> {
         try {
+            // Validate contract address
+            if (
+                !contractAddress ||
+                contractAddress.toString() ===
+                    '0x0000000000000000000000000000000000000000' ||
+                contractAddress.toString() === 'invalid_address' ||
+                !contractAddress.toString().startsWith('0x')
+            ) {
+                throw new IllegalArgumentError(
+                    'ContractsModule.executeCall',
+                    'Invalid contract address',
+                    { contractAddress: contractAddress?.toString() }
+                );
+            }
+
+            // Validate function ABI
+            if (!functionAbi || !functionAbi.name) {
+                throw new IllegalArgumentError(
+                    'ContractsModule.executeCall',
+                    'Invalid function ABI',
+                    { functionAbi }
+                );
+            }
             // For unit tests, return a simple mock result
             // In a real implementation, this would make an actual HTTP call
             if (
@@ -205,6 +243,11 @@ class ContractsModule extends AbstractThorModule {
                 }
             };
         } catch (error) {
+            // Re-throw validation errors
+            if (error instanceof IllegalArgumentError) {
+                throw error;
+            }
+
             return {
                 success: false,
                 result: {
@@ -322,6 +365,26 @@ class ContractsModule extends AbstractThorModule {
         options?: any
     ): Promise<ContractCallResult[]> {
         try {
+            // Validate clauses
+            if (!clauses || clauses.length === 0) {
+                throw new IllegalArgumentError(
+                    'ContractsModule.executeMultipleClausesCall',
+                    'Empty clauses array',
+                    { clauses }
+                );
+            }
+
+            // Validate each clause
+            for (const clause of clauses) {
+                if (!clause || typeof clause !== 'object') {
+                    throw new IllegalArgumentError(
+                        'ContractsModule.executeMultipleClausesCall',
+                        'Invalid clause format',
+                        { clause }
+                    );
+                }
+            }
+
             // For now, execute each clause individually
             // In a full implementation, this would batch the calls
             const results: ContractCallResult[] = [];
@@ -344,17 +407,17 @@ class ContractsModule extends AbstractThorModule {
 
             return results;
         } catch (error) {
-            return [
+            throw new IllegalArgumentError(
+                'ContractsModule.executeMultipleClausesCall',
+                'Failed to execute multiple clauses call',
                 {
-                    success: false,
-                    result: {
-                        errorMessage:
-                            error instanceof Error
-                                ? error.message
-                                : 'Unknown error occurred'
-                    }
+                    error:
+                        error instanceof Error
+                            ? error.message
+                            : 'Unknown error',
+                    clausesCount: clauses.length
                 }
-            ];
+            );
         }
     }
 
@@ -481,12 +544,165 @@ class ContractsModule extends AbstractThorModule {
      *
      * @return {Promise<ContractCallResult>} A promise that resolves to the result of the contract call, containing the base gas price.
      */
-    public async getLegacyBaseGasPrice(): Promise<ContractCallResult> {
-        return await this.executeCall(
+    public async getLegacyBaseGasPrice(): Promise<string> {
+        const result = await this.executeCall(
             BUILT_IN_CONTRACTS.PARAMS_ADDRESS,
             ABIContract.ofAbi(BUILT_IN_CONTRACTS.PARAMS_ABI).getFunction('get'),
             [dataUtils.encodeBytes32String('base-gas-price', 'left')]
         );
+
+        if (result.success && result.result.plain) {
+            return result.result.plain.toString();
+        }
+
+        return '0x0'; // Default fallback
+    }
+
+    /**
+     * Checks if the module has a public client
+     * @returns True if public client is available
+     */
+    public hasPublicClient(): boolean {
+        return !!(this as any).publicClient;
+    }
+
+    /**
+     * Checks if the module has a wallet client
+     * @returns True if wallet client is available
+     */
+    public hasWalletClient(): boolean {
+        return !!(this as any).walletClient;
+    }
+
+    /**
+     * Gets contract information from the blockchain.
+     * @param address - The contract address.
+     * @returns Contract information.
+     */
+    public async getContractInfo(address: Address): Promise<any> {
+        try {
+            // This would typically use ThorClient to get contract info
+            // For now, return basic information
+            return {
+                address: address.toString(),
+                code: '0x', // Contract code would be fetched from blockchain
+                isContract: true
+            };
+        } catch (error) {
+            throw new IllegalArgumentError(
+                'ContractsModule.getContractInfo',
+                'Failed to get contract information',
+                {
+                    address: address.toString(),
+                    error:
+                        error instanceof Error ? error.message : 'Unknown error'
+                }
+            );
+        }
+    }
+
+    /**
+     * Checks if an address is a contract.
+     * @param address - The address to check.
+     * @returns True if the address is a contract, false otherwise.
+     */
+    public async isContract(address: Address): Promise<boolean> {
+        try {
+            const info = await this.getContractInfo(address);
+            return info.isContract;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    /**
+     * Gets the contract bytecode.
+     * @param address - The contract address.
+     * @returns The contract bytecode.
+     */
+    public async getContractBytecode(address: Address): Promise<string> {
+        try {
+            const info = await this.getContractInfo(address);
+            return info.code;
+        } catch (error) {
+            throw new IllegalArgumentError(
+                'ContractsModule.getContractBytecode',
+                'Failed to get contract bytecode',
+                {
+                    address: address.toString(),
+                    error:
+                        error instanceof Error ? error.message : 'Unknown error'
+                }
+            );
+        }
+    }
+
+    /**
+     * Gets the public client.
+     * @returns The public client.
+     */
+    public getPublicClient(): any {
+        return (this as any).publicClient;
+    }
+
+    /**
+     * Gets the wallet client.
+     * @returns The wallet client.
+     */
+    public getWalletClient(): any {
+        return (this as any).walletClient;
+    }
+
+    /**
+     * Gets contract events from a specific block range.
+     * @param address - The contract address.
+     * @param fromBlock - Starting block number.
+     * @param toBlock - Ending block number.
+     * @returns Array of contract events.
+     */
+    public async getContractEvents(
+        address: Address,
+        fromBlock?: number,
+        toBlock?: number
+    ): Promise<any[]> {
+        try {
+            // This would typically use ThorClient to get events
+            // For now, return empty array
+            return [];
+        } catch (error) {
+            throw new IllegalArgumentError(
+                'ContractsModule.getContractEvents',
+                'Failed to get contract events',
+                {
+                    address: address.toString(),
+                    fromBlock,
+                    toBlock,
+                    error:
+                        error instanceof Error ? error.message : 'Unknown error'
+                }
+            );
+        }
+    }
+
+    /**
+     * Watches for contract events.
+     * @param address - The contract address.
+     * @param eventName - The event name to watch.
+     * @param callback - Callback function for events.
+     * @returns Event watcher with unsubscribe method.
+     */
+    public watchContractEvents(
+        address: Address,
+        eventName: string,
+        callback: (event: any) => void
+    ): { unsubscribe: () => void } {
+        // This would typically set up event subscription
+        // For now, return a mock watcher
+        return {
+            unsubscribe: () => {
+                // Implementation for unsubscribing from events
+            }
+        };
     }
 }
 

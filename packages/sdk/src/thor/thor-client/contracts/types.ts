@@ -3,6 +3,101 @@ import { type Address } from '@common/vcdm';
 import { type EstimateGasOptions } from '../../thor-client/model/gas/EstimateGasOptions';
 import { type ClauseOptions } from '@thor/thorest/transactions/model/ClauseOptions';
 
+/* --------- Viem Compatibility Types Start --------- */
+
+/**
+ * Parameters for writing to a contract (viem compatibility)
+ */
+export interface WriteContractParameters {
+    /**
+     * The function arguments
+     */
+    args?: unknown[];
+
+    /**
+     * The value to send with the transaction
+     */
+    value?: bigint;
+
+    /**
+     * Gas limit for the transaction
+     */
+    gas?: bigint;
+
+    /**
+     * Gas price for the transaction
+     */
+    gasPrice?: bigint;
+}
+
+/**
+ * Event filter for contract events (viem compatibility)
+ */
+export interface EventFilter {
+    /**
+     * The contract address
+     */
+    address?: string;
+
+    /**
+     * The event topics
+     */
+    topics?: string[];
+
+    /**
+     * Block range for filtering
+     */
+    fromBlock?: string | number;
+    toBlock?: string | number;
+}
+
+/**
+ * Contract simulation result
+ */
+export interface SimulationResult {
+    /**
+     * Whether the simulation was successful
+     */
+    success: boolean;
+
+    /**
+     * The simulation result data
+     */
+    result: unknown;
+
+    /**
+     * Gas used in the simulation
+     */
+    gasUsed?: bigint;
+
+    /**
+     * Any error that occurred during simulation
+     */
+    error?: string;
+}
+
+/**
+ * Contract deployment options
+ */
+export interface ContractDeploymentOptions {
+    /**
+     * Constructor arguments
+     */
+    constructorArgs?: unknown[];
+
+    /**
+     * Transaction options
+     */
+    transactionOptions?: ContractTransactionOptions;
+
+    /**
+     * Comment for the deployment
+     */
+    comment?: string;
+}
+
+/* --------- Viem Compatibility Types End --------- */
+
 declare module 'abitype' {
     export interface Register {
         AddressType: Address;

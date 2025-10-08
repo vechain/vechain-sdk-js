@@ -94,7 +94,7 @@ class ContractFactory<TAbi extends Abi> {
                 if (constructorArgs.length !== constructorAbi.inputs.length) {
                     throw new IllegalArgumentError(
                         'ContractFactory.createDeploymentClause',
-                        'Constructor argument count mismatch',
+                        `Constructor expects ${constructorAbi.inputs.length} arguments, but ${constructorArgs.length} were provided`,
                         {
                             expected: constructorAbi.inputs.length,
                             provided: constructorArgs.length,
@@ -117,12 +117,20 @@ class ContractFactory<TAbi extends Abi> {
             );
         } catch (error) {
             if (error instanceof Error) {
-                throw new Error(
-                    `Failed to create deployment clause: ${error.message}`
+                throw new IllegalArgumentError(
+                    'ContractFactory.createDeploymentClause',
+                    'Failed to create deployment clause',
+                    {
+                        error: error.message,
+                        constructorArgs,
+                        options
+                    }
                 );
             }
-            throw new Error(
-                'Failed to create deployment clause with unknown error'
+            throw new IllegalArgumentError(
+                'ContractFactory.createDeploymentClause',
+                'Failed to create deployment clause with unknown error',
+                { constructorArgs, options }
             );
         }
     }
@@ -138,16 +146,12 @@ class ContractFactory<TAbi extends Abi> {
         options?: ContractTransactionOptions
     ): Promise<Contract<TAbi>> {
         try {
-            // 1. Convert bytecode to HexUInt (VeChain format)
-            const contractBytecode = HexUInt.of(this.bytecode);
-
-            // 2. Find constructor ABI
+            // 1. Find constructor ABI and validate arguments first
             const constructorAbi = this.abi.find(
                 (item) => item.type === 'constructor'
             );
 
-            // 3. Prepare deployment parameters if constructor exists and has args
-            let deployParams;
+            // 2. Validate constructor arguments before attempting deployment
             if (
                 constructorAbi &&
                 constructorAbi.inputs &&
@@ -155,8 +159,8 @@ class ContractFactory<TAbi extends Abi> {
             ) {
                 if (constructorArgs.length !== constructorAbi.inputs.length) {
                     throw new IllegalArgumentError(
-                        'ContractFactory.createDeploymentClause',
-                        'Constructor argument count mismatch',
+                        'ContractFactory.deploy',
+                        `Constructor expects ${constructorAbi.inputs.length} arguments, but ${constructorArgs.length} were provided`,
                         {
                             expected: constructorAbi.inputs.length,
                             provided: constructorArgs.length,
@@ -164,7 +168,18 @@ class ContractFactory<TAbi extends Abi> {
                         }
                     );
                 }
+            }
 
+            // 3. Convert bytecode to HexUInt (VeChain format)
+            const contractBytecode = HexUInt.of(this.bytecode);
+
+            // 4. Prepare deployment parameters if constructor exists and has args
+            let deployParams;
+            if (
+                constructorAbi &&
+                constructorAbi.inputs &&
+                constructorAbi.inputs.length > 0
+            ) {
                 deployParams = {
                     types: constructorAbi.inputs as any,
                     values: constructorArgs.map((arg) => String(arg))
@@ -179,7 +194,7 @@ class ContractFactory<TAbi extends Abi> {
             );
 
             // 5. Create and send transaction using ThorClient
-            // For now, we'll simulate the deployment process
+            // For now, we'll throw an error indicating ThorClient is required
             // In a full implementation, this would:
             // - Create a transaction with the deployment clause
             // - Sign the transaction with the signer
@@ -187,30 +202,31 @@ class ContractFactory<TAbi extends Abi> {
             // - Wait for transaction receipt
             // - Extract contract address from receipt
 
-            // Simulate deployment by creating a mock contract address
-            const mockContractAddress = `0x${Math.random().toString(16).substr(2, 40)}`;
-
-            // Create a mock transaction receipt
-            const mockReceipt = {
-                transactionId: `deploy_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-                contractAddress: mockContractAddress,
-                gasUsed: 1000000,
-                status: 'success'
-            };
-
-            // Return the deployed contract instance
-            return new Contract(
-                Address.of(mockContractAddress),
-                this.abi,
-                this.contractsModule,
-                this.signer,
-                mockReceipt
+            throw new IllegalArgumentError(
+                'ContractFactory.deploy',
+                'ContractFactory.deploy() requires ThorClient transaction sending implementation',
+                {
+                    constructorArgs,
+                    options
+                }
             );
         } catch (error) {
             if (error instanceof Error) {
-                throw new Error(`Contract deployment failed: ${error.message}`);
+                throw new IllegalArgumentError(
+                    'ContractFactory.deploy',
+                    'ContractFactory.deploy() requires ThorClient transaction sending implementation',
+                    {
+                        error: error.message,
+                        constructorArgs,
+                        options
+                    }
+                );
             }
-            throw new Error('Contract deployment failed with unknown error');
+            throw new IllegalArgumentError(
+                'ContractFactory.deploy',
+                'Contract deployment failed with unknown error',
+                { constructorArgs, options }
+            );
         }
     }
 
@@ -225,13 +241,12 @@ class ContractFactory<TAbi extends Abi> {
         options?: { comment?: string }
     ): Promise<bigint> {
         try {
-            // 1. Create the deployment clause (same as deploy method)
-            const contractBytecode = HexUInt.of(this.bytecode);
+            // 1. Find constructor ABI and validate arguments first
             const constructorAbi = this.abi.find(
                 (item) => item.type === 'constructor'
             );
 
-            let deployParams;
+            // 2. Validate constructor arguments before attempting gas estimation
             if (
                 constructorAbi &&
                 constructorAbi.inputs &&
@@ -239,8 +254,8 @@ class ContractFactory<TAbi extends Abi> {
             ) {
                 if (constructorArgs.length !== constructorAbi.inputs.length) {
                     throw new IllegalArgumentError(
-                        'ContractFactory.createDeploymentClause',
-                        'Constructor argument count mismatch',
+                        'ContractFactory.estimateDeploymentGas',
+                        `Constructor expects ${constructorAbi.inputs.length} arguments, but ${constructorArgs.length} were provided`,
                         {
                             expected: constructorAbi.inputs.length,
                             provided: constructorArgs.length,
@@ -248,7 +263,17 @@ class ContractFactory<TAbi extends Abi> {
                         }
                     );
                 }
+            }
 
+            // 3. Create the deployment clause (same as deploy method)
+            const contractBytecode = HexUInt.of(this.bytecode);
+
+            let deployParams;
+            if (
+                constructorAbi &&
+                constructorAbi.inputs &&
+                constructorAbi.inputs.length > 0
+            ) {
                 deployParams = {
                     types: constructorAbi.inputs as any,
                     values: constructorArgs.map((arg) => String(arg))
@@ -278,9 +303,21 @@ class ContractFactory<TAbi extends Abi> {
             );
         } catch (error) {
             if (error instanceof Error) {
-                throw new Error(`Gas estimation failed: ${error.message}`);
+                throw new IllegalArgumentError(
+                    'ContractFactory.estimateDeploymentGas',
+                    'ContractFactory.estimateDeploymentGas() requires ThorClient gas estimation implementation',
+                    {
+                        error: error.message,
+                        constructorArgs,
+                        options
+                    }
+                );
             }
-            throw new Error('Gas estimation failed with unknown error');
+            throw new IllegalArgumentError(
+                'ContractFactory.estimateDeploymentGas',
+                'Gas estimation failed with unknown error',
+                { constructorArgs, options }
+            );
         }
     }
 
@@ -295,13 +332,12 @@ class ContractFactory<TAbi extends Abi> {
         options?: SimulateTransactionOptions
     ): Promise<unknown> {
         try {
-            // 1. Create the deployment clause (same as deploy method)
-            const contractBytecode = HexUInt.of(this.bytecode);
+            // 1. Find constructor ABI and validate arguments first
             const constructorAbi = this.abi.find(
                 (item) => item.type === 'constructor'
             );
 
-            let deployParams;
+            // 2. Validate constructor arguments before attempting simulation
             if (
                 constructorAbi &&
                 constructorAbi.inputs &&
@@ -309,8 +345,8 @@ class ContractFactory<TAbi extends Abi> {
             ) {
                 if (constructorArgs.length !== constructorAbi.inputs.length) {
                     throw new IllegalArgumentError(
-                        'ContractFactory.createDeploymentClause',
-                        'Constructor argument count mismatch',
+                        'ContractFactory.simulateDeployment',
+                        `Constructor expects ${constructorAbi.inputs.length} arguments, but ${constructorArgs.length} were provided`,
                         {
                             expected: constructorAbi.inputs.length,
                             provided: constructorArgs.length,
@@ -318,7 +354,17 @@ class ContractFactory<TAbi extends Abi> {
                         }
                     );
                 }
+            }
 
+            // 3. Create the deployment clause (same as deploy method)
+            const contractBytecode = HexUInt.of(this.bytecode);
+
+            let deployParams;
+            if (
+                constructorAbi &&
+                constructorAbi.inputs &&
+                constructorAbi.inputs.length > 0
+            ) {
                 deployParams = {
                     types: constructorAbi.inputs as any,
                     values: constructorArgs.map((arg) => String(arg))
@@ -339,18 +385,29 @@ class ContractFactory<TAbi extends Abi> {
 
             throw new IllegalArgumentError(
                 'ContractFactory.simulateDeployment',
-                'ThorClient simulation implementation required',
+                'ContractFactory.simulateDeployment() requires ThorClient simulation implementation',
                 {
-                    message:
-                        "The deployment clause has been created successfully using VeChain's official ClauseBuilder.deployContract() method. Next step: integrate with ThorClient simulation.",
-                    deployClause: deployClause
+                    constructorArgs,
+                    options
                 }
             );
         } catch (error) {
             if (error instanceof Error) {
-                throw new Error(`Simulation failed: ${error.message}`);
+                throw new IllegalArgumentError(
+                    'ContractFactory.simulateDeployment',
+                    'ContractFactory.simulateDeployment() requires ThorClient simulation implementation',
+                    {
+                        error: error.message,
+                        constructorArgs,
+                        options
+                    }
+                );
             }
-            throw new Error('Simulation failed with unknown error');
+            throw new IllegalArgumentError(
+                'ContractFactory.simulateDeployment',
+                'Simulation failed with unknown error',
+                { constructorArgs, options }
+            );
         }
     }
 }

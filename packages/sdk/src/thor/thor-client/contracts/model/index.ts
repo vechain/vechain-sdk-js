@@ -17,3 +17,7 @@ export {
     getClauseProxy,
     getCriteriaProxy
 } from './contract-proxy';
+
+// Viem compatibility exports
+export { createViemContract, getContract } from '../viem-adapter';
+export type { ViemContract } from '../viem-adapter';

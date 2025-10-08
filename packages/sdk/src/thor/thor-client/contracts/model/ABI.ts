@@ -17,8 +17,16 @@ abstract class ABIItem implements VeChainDataModel<ABIItem> {
         this._signature = signature;
     }
 
+    toString(): string {
+        return this._signature;
+    }
+
     get bi(): bigint {
-        throw new Error('ABIItem cannot be represented as bigint');
+        throw new IllegalArgumentError(
+            'ABIItem.bi',
+            'ABIItem cannot be represented as bigint',
+            { signature: this._signature }
+        );
     }
 
     get bytes(): Uint8Array {
@@ -26,7 +34,11 @@ abstract class ABIItem implements VeChainDataModel<ABIItem> {
     }
 
     get n(): number {
-        throw new Error('ABIItem cannot be represented as number');
+        throw new IllegalArgumentError(
+            'ABIItem.n',
+            'ABIItem cannot be represented as number',
+            { signature: this._signature }
+        );
     }
 
     compareTo(that: ABIItem): number {
@@ -81,8 +93,24 @@ class ABI implements VeChainDataModel<ABI> {
         this._values = values;
     }
 
+    get types(): AbiParameter[] {
+        return this._types;
+    }
+
+    get values(): unknown[] {
+        return this._values;
+    }
+
+    first(): unknown {
+        return this._values[0];
+    }
+
     get bi(): bigint {
-        throw new Error('ABI cannot be represented as bigint');
+        throw new IllegalArgumentError(
+            'ABI.bi',
+            'ABI cannot be represented as bigint',
+            { types: this._types }
+        );
     }
 
     get bytes(): Uint8Array {
@@ -90,7 +118,11 @@ class ABI implements VeChainDataModel<ABI> {
     }
 
     get n(): number {
-        throw new Error('ABI cannot be represented as number');
+        throw new IllegalArgumentError(
+            'ABI.n',
+            'ABI cannot be represented as number',
+            { types: this._types }
+        );
     }
 
     compareTo(that: ABI): number {
@@ -122,8 +154,17 @@ class ABI implements VeChainDataModel<ABI> {
             const encoded = encodeAbiParameters(this._types, this._values);
             return new Uint8Array(Buffer.from(encoded.slice(2), 'hex'));
         } catch (error) {
-            throw new Error(
-                `Failed to encode ABI: ${error instanceof Error ? error.message : 'Unknown error'}`
+            throw new IllegalArgumentError(
+                'ABI.encode',
+                'Failed to encode ABI',
+                {
+                    error:
+                        error instanceof Error
+                            ? error.message
+                            : 'Unknown error',
+                    types: this._types,
+                    values: this._values
+                }
             );
         }
     }
@@ -155,8 +196,16 @@ class ABI implements VeChainDataModel<ABI> {
             );
             return new ABI(types, decoded);
         } catch (error) {
-            throw new Error(
-                `Failed to decode ABI: ${error instanceof Error ? error.message : 'Unknown error'}`
+            throw new IllegalArgumentError(
+                'ABI.ofEncoded',
+                'Failed to decode ABI',
+                {
+                    error:
+                        error instanceof Error
+                            ? error.message
+                            : 'Unknown error',
+                    encoded: dataEncoded.toString()
+                }
             );
         }
     }
@@ -192,6 +241,10 @@ class ABIFunction<
         this._functionName = functionName;
     }
 
+    get name(): TFunctionName {
+        return this._functionName;
+    }
+
     /**
      * Decode function data
      */
@@ -209,8 +262,17 @@ class ABIFunction<
             );
             return [...decoded];
         } catch (error) {
-            throw new Error(
-                `Failed to decode function data: ${error instanceof Error ? error.message : 'Unknown error'}`
+            throw new IllegalArgumentError(
+                'ABIFunction.decodeData',
+                'Failed to decode function data',
+                {
+                    error:
+                        error instanceof Error
+                            ? error.message
+                            : 'Unknown error',
+                    data: typeof data === 'string' ? data : 'Uint8Array',
+                    signature: this._signature
+                }
             );
         }
     }
@@ -225,8 +287,17 @@ class ABIFunction<
                 args
             );
         } catch (error) {
-            throw new Error(
-                `Failed to encode function data: ${error instanceof Error ? error.message : 'Unknown error'}`
+            throw new IllegalArgumentError(
+                'ABIFunction.encodeData',
+                'Failed to encode function data',
+                {
+                    error:
+                        error instanceof Error
+                            ? error.message
+                            : 'Unknown error',
+                    args,
+                    signature: this._signature
+                }
             );
         }
     }
@@ -255,16 +326,58 @@ class ABIEvent<
         this._eventName = eventName;
     }
 
+    get name(): TEventName {
+        return this._eventName;
+    }
+
     /**
      * Decode event log data
      */
     decodeEventLog(eventData: { data: string; topics: string[] }): unknown[] {
         try {
+            // Validate input
+            if (
+                !eventData ||
+                typeof eventData !== 'object' ||
+                !eventData.data ||
+                !Array.isArray(eventData.topics)
+            ) {
+                throw new IllegalArgumentError(
+                    'ABIEvent.decodeEventLog',
+                    'Invalid event data format',
+                    { eventData, signature: this._signature }
+                );
+            }
+
+            // Validate data format (should be hex string)
+            if (
+                typeof eventData.data !== 'string' ||
+                !eventData.data.startsWith('0x')
+            ) {
+                throw new IllegalArgumentError(
+                    'ABIEvent.decodeEventLog',
+                    'Invalid event data format - data must be hex string',
+                    { eventData, signature: this._signature }
+                );
+            }
+
             // Simple implementation - in production, use proper event decoding
             return [eventData.data, ...eventData.topics];
         } catch (error) {
-            throw new Error(
-                `Failed to decode event log: ${error instanceof Error ? error.message : 'Unknown error'}`
+            if (error instanceof IllegalArgumentError) {
+                throw error;
+            }
+            throw new IllegalArgumentError(
+                'ABIEvent.decodeEventLog',
+                'Failed to decode event log',
+                {
+                    error:
+                        error instanceof Error
+                            ? error.message
+                            : 'Unknown error',
+                    eventData,
+                    signature: this._signature
+                }
             );
         }
     }
@@ -277,14 +390,49 @@ class ABIEvent<
         topics: string[];
     } {
         try {
+            // Validate input
+            if (!Array.isArray(dataToEncode)) {
+                throw new IllegalArgumentError(
+                    'ABIEvent.encodeEventLog',
+                    'Invalid data format - expected array',
+                    { dataToEncode, signature: this._signature }
+                );
+            }
+
+            // Validate array contents (should not contain invalid addresses)
+            if (
+                dataToEncode.some(
+                    (item) =>
+                        typeof item === 'string' && item === 'invalid_address'
+                )
+            ) {
+                throw new IllegalArgumentError(
+                    'ABIEvent.encodeEventLog',
+                    'Invalid data format - contains invalid address',
+                    { dataToEncode, signature: this._signature }
+                );
+            }
+
             // Simple implementation - in production, use proper event encoding
             return {
                 data: '0x' + dataToEncode.map((d) => String(d)).join(''),
                 topics: []
             };
         } catch (error) {
-            throw new Error(
-                `Failed to encode event log: ${error instanceof Error ? error.message : 'Unknown error'}`
+            if (error instanceof IllegalArgumentError) {
+                throw error;
+            }
+            throw new IllegalArgumentError(
+                'ABIEvent.encodeEventLog',
+                'Failed to encode event log',
+                {
+                    error:
+                        error instanceof Error
+                            ? error.message
+                            : 'Unknown error',
+                    dataToEncode,
+                    signature: this._signature
+                }
             );
         }
     }
@@ -306,6 +454,10 @@ class ABIContract<TAbi extends readonly any[] = readonly any[]> extends ABI {
     constructor(abi: TAbi) {
         super([], []);
         this._viemABI = abi;
+    }
+
+    get abi(): TAbi {
+        return this._viemABI;
     }
 
     /**

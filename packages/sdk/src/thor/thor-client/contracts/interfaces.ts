@@ -44,5 +44,8 @@ export interface ContractsModule {
         options?: ContractTransactionOptions
     ): Promise<SendTransactionResult>;
 
-    getLegacyBaseGasPrice(): Promise<ContractCallResult>;
+    getLegacyBaseGasPrice(): Promise<string>;
+
+    getPublicClient(): any;
+    getWalletClient(): any;
 }
