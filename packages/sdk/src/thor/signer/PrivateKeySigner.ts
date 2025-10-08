@@ -6,7 +6,7 @@ import {
 } from '@common';
 import { TransactionRequest } from '@thor/thor-client/model/transactions';
 import { type Signer } from './Signer';
-import { RLPCodec } from '@thor';
+import { TransactionRequestRLPCodec } from '@thor';
 
 /**
  * Full-Qualified Path
@@ -85,11 +85,13 @@ class PrivateKeySigner implements Signer {
     ): TransactionRequest {
         if (this.#privateKey !== null) {
             const hash = Blake2b256.of(
-                RLPCodec.encodeToSign(transactionRequest)
+                TransactionRequestRLPCodec.encodeToSign(transactionRequest)
             ).bytes;
             const originSignature = Secp256k1.sign(hash, this.#privateKey);
             return new TransactionRequest(
-                new TransactionRequest(transactionRequest, originSignature),
+                { ...transactionRequest, beggar: undefined },
+                originSignature,
+                undefined,
                 originSignature
             );
         }

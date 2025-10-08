@@ -12,7 +12,7 @@ import {
     UnsupportedOperationError
 } from '@common/errors';
 import { PublicClient, type PublicClientConfig } from './PublicClient';
-import { RLPCodec } from '@thor';
+import { TransactionRequestRLPCodec } from '@thor';
 
 /**
  * Fill-Qualified Path
@@ -252,7 +252,7 @@ class WalletClient extends PublicClient {
         account: Account
     ): Promise<Hex> {
         const originHash = Blake2b256.of(
-            RLPCodec.encode(transactionRequest)
+            TransactionRequestRLPCodec.encode(transactionRequest)
         ).bytes;
         const originSignature = await WalletClient.signHash(
             originHash,
@@ -266,7 +266,9 @@ class WalletClient extends PublicClient {
             undefined,
             originSignature
         );
-        return HexUInt.of(RLPCodec.encode(signedTransactionRequest));
+        return HexUInt.of(
+            TransactionRequestRLPCodec.encode(signedTransactionRequest)
+        );
     }
 
     /**
@@ -284,7 +286,7 @@ class WalletClient extends PublicClient {
     ): Promise<Hex> {
         if (signedTransactionRequest.isIntendedToBeSponsored) {
             const originHash = Blake2b256.of(
-                RLPCodec.encode(
+                TransactionRequestRLPCodec.encode(
                     new TransactionRequest({
                         blockRef: signedTransactionRequest.blockRef,
                         chainTag: signedTransactionRequest.chainTag,
@@ -325,7 +327,9 @@ class WalletClient extends PublicClient {
                     gasPayerSignature
                 )
             );
-            return HexUInt.of(RLPCodec.encode(sponsoredTransactionRequest));
+            return HexUInt.of(
+                TransactionRequestRLPCodec.encode(sponsoredTransactionRequest)
+            );
         }
         throw new IllegalArgumentError(
             `${FQP}WalletClient.signTransaction(signedTransactionRequest: SignedTransactionRequest): Hex`,

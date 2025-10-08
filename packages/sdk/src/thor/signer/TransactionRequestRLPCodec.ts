@@ -17,7 +17,7 @@ import {
 } from '@common'; // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
-class RLPCodec {
+class TransactionRequestRLPCodec {
     // EIP-1559 dynamic fee transaction fields (type 2)
     private static readonly RLP_DYNAMIC_FEE_CRYPTO_FIELDS = [
         { name: 'chainTag', kind: new NumericKind(1) },
@@ -45,7 +45,7 @@ class RLPCodec {
     ];
 
     private static readonly RLP_DYNAMIC_FEE_REQUEST_FIELDS = [
-        ...RLPCodec.RLP_DYNAMIC_FEE_CRYPTO_FIELDS,
+        ...TransactionRequestRLPCodec.RLP_DYNAMIC_FEE_CRYPTO_FIELDS,
         {
             name: 'beggar',
             kind: new OptionalFixedHexBlobKind(Address.DIGITS / 2)
@@ -66,8 +66,17 @@ class RLPCodec {
 
     private static readonly RLP_DYNAMIC_FEE_REQUEST_PROFILE: RLPProfile = {
         name: 'tx',
-        kind: RLPCodec.RLP_DYNAMIC_FEE_REQUEST_FIELDS
+        kind: TransactionRequestRLPCodec.RLP_DYNAMIC_FEE_REQUEST_FIELDS
     };
+
+    private static readonly RLP_DYNAMIC_FEE_SIGNED_REQUEST_PROFILE: RLPProfile =
+        {
+            name: 'tx',
+            kind: [
+                ...TransactionRequestRLPCodec.RLP_DYNAMIC_FEE_CRYPTO_FIELDS,
+                { name: 'signature', kind: new BufferKind() }
+            ]
+        };
 
     private static readonly RLP_LEGACY_CRYPTO_FIELDS = [
         { name: 'chainTag', kind: new NumericKind(1) },
@@ -94,7 +103,7 @@ class RLPCodec {
     ];
 
     private static readonly RLP_LEGACY_REQUEST_FIELDS = [
-        ...RLPCodec.RLP_LEGACY_CRYPTO_FIELDS,
+        ...TransactionRequestRLPCodec.RLP_LEGACY_CRYPTO_FIELDS,
         {
             name: 'beggar',
             kind: new OptionalFixedHexBlobKind(Address.DIGITS / 2)
@@ -115,7 +124,15 @@ class RLPCodec {
 
     private static readonly RLP_LEGACY_REQUEST_PROFILE: RLPProfile = {
         name: 'tx',
-        kind: RLPCodec.RLP_LEGACY_REQUEST_FIELDS
+        kind: TransactionRequestRLPCodec.RLP_LEGACY_REQUEST_FIELDS
+    };
+
+    private static readonly RLP_LEGACY_SIGNED_REQUEST_PROFILE: RLPProfile = {
+        name: 'tx',
+        kind: [
+            ...TransactionRequestRLPCodec.RLP_LEGACY_CRYPTO_FIELDS,
+            { name: 'signature', kind: new BufferKind() }
+        ]
     };
 
     public static decode(encoded: Uint8Array): TransactionRequest {
@@ -128,9 +145,10 @@ class RLPCodec {
         // Select the appropriate RLP profile based on transaction type and signature status
         let profile: RLPProfile;
         if (isDynamicFee) {
-            profile = RLPCodec.RLP_DYNAMIC_FEE_REQUEST_PROFILE;
+            profile =
+                TransactionRequestRLPCodec.RLP_DYNAMIC_FEE_REQUEST_PROFILE;
         } else {
-            profile = RLPCodec.RLP_LEGACY_REQUEST_PROFILE;
+            profile = TransactionRequestRLPCodec.RLP_LEGACY_REQUEST_PROFILE;
         }
 
         // Decode using the appropriate profile
@@ -139,10 +157,10 @@ class RLPCodec {
 
         if (isDynamicFee) {
             // Dynamic fee transaction - use maxFeePerGas and maxPriorityFeePerGas
-            return RLPCodec.decodeDynamicFee(decoded);
+            return TransactionRequestRLPCodec.decodeDynamicFee(decoded);
         } else {
             // Legacy transaction - use gasPriceCoef
-            return RLPCodec.decodeLegacy(decoded);
+            return TransactionRequestRLPCodec.decodeLegacy(decoded);
         }
     }
 
@@ -162,7 +180,7 @@ class RLPCodec {
     private static decodeDynamicFee(
         decoded: RLPValidObject
     ): TransactionRequest {
-        const clauses = RLPCodec.decodeClauses(decoded);
+        const clauses = TransactionRequestRLPCodec.decodeClauses(decoded);
         return new TransactionRequest(
             {
                 beggar:
@@ -205,7 +223,7 @@ class RLPCodec {
 
     // Legacy transaction - use gasPriceCoef
     private static decodeLegacy(decoded: RLPValidObject): TransactionRequest {
-        const clauses = RLPCodec.decodeClauses(decoded);
+        const clauses = TransactionRequestRLPCodec.decodeClauses(decoded);
         return new TransactionRequest(
             {
                 beggar:
@@ -237,19 +255,21 @@ class RLPCodec {
     }
 
     public static encode(transactionRequest: TransactionRequest): Uint8Array {
-        const body = { ...RLPCodec.mapRequestBody(transactionRequest) };
+        const body = {
+            ...TransactionRequestRLPCodec.mapRequestBody(transactionRequest)
+        };
         if (transactionRequest.isDynamicFee) {
             return new Uint8Array([
                 0x51,
                 ...RLPProfiler.ofObject(body, {
                     name: 'tx',
-                    kind: RLPCodec.RLP_DYNAMIC_FEE_REQUEST_FIELDS
+                    kind: TransactionRequestRLPCodec.RLP_DYNAMIC_FEE_REQUEST_FIELDS
                 }).encoded
             ]);
         }
         return RLPProfiler.ofObject(body, {
             name: 'tx',
-            kind: RLPCodec.RLP_LEGACY_REQUEST_FIELDS
+            kind: TransactionRequestRLPCodec.RLP_LEGACY_REQUEST_FIELDS
         }).encoded;
     }
 
@@ -257,7 +277,7 @@ class RLPCodec {
         transactionRequest: TransactionRequest
     ): Uint8Array {
         const body = {
-            ...RLPCodec.mapCryptoBody(transactionRequest),
+            ...TransactionRequestRLPCodec.mapCryptoBody(transactionRequest),
             beggar: undefined,
             gasPayerSignature: undefined,
             originSignature: undefined,
@@ -269,14 +289,39 @@ class RLPCodec {
                 0x51,
                 ...RLPProfiler.ofObject(body, {
                     name: 'tx',
-                    kind: RLPCodec.RLP_DYNAMIC_FEE_CRYPTO_FIELDS
+                    kind: TransactionRequestRLPCodec.RLP_DYNAMIC_FEE_CRYPTO_FIELDS
                 }).encoded
             ]);
         }
         return RLPProfiler.ofObject(body, {
             name: 'tx',
-            kind: RLPCodec.RLP_LEGACY_CRYPTO_FIELDS
+            kind: TransactionRequestRLPCodec.RLP_LEGACY_CRYPTO_FIELDS
         }).encoded;
+    }
+
+    public static encodeToSend(
+        transactionRequest: TransactionRequest
+    ): Uint8Array {
+        const body = {
+            ...TransactionRequestRLPCodec.mapSignedBody(transactionRequest),
+            beggar: undefined,
+            gasPayerSignature: undefined,
+            originSignature: undefined
+        };
+        if (transactionRequest.isDynamicFee) {
+            // For EIP-1559 transactions, prepend the transaction type (0x51)
+            return new Uint8Array([
+                0x51,
+                ...RLPProfiler.ofObject(
+                    body,
+                    TransactionRequestRLPCodec.RLP_DYNAMIC_FEE_SIGNED_REQUEST_PROFILE
+                ).encoded
+            ]);
+        }
+        return RLPProfiler.ofObject(
+            body,
+            TransactionRequestRLPCodec.RLP_LEGACY_SIGNED_REQUEST_PROFILE
+        ).encoded;
     }
 
     private static mapClauses(transactionRequest: TransactionRequest): Array<{
@@ -303,7 +348,7 @@ class RLPCodec {
         const baseBody = {
             blockRef: transactionRequest.blockRef.toString(),
             chainTag: transactionRequest.chainTag,
-            clauses: RLPCodec.mapClauses(transactionRequest),
+            clauses: TransactionRequestRLPCodec.mapClauses(transactionRequest),
             dependsOn:
                 transactionRequest.dependsOn !== null
                     ? transactionRequest.dependsOn.toString()
@@ -337,12 +382,21 @@ class RLPCodec {
         transactionRequest: TransactionRequest
     ): RequestBody {
         return {
-            ...RLPCodec.mapCryptoBody(transactionRequest),
+            ...TransactionRequestRLPCodec.mapCryptoBody(transactionRequest),
             beggar: transactionRequest.beggar?.toString(),
             gasPayerSignature: transactionRequest.gasPayerSignature,
             originSignature: transactionRequest.originSignature,
             signature: transactionRequest.signature
         } satisfies RequestBody;
+    }
+
+    private static mapSignedBody(
+        transactionRequest: TransactionRequest
+    ): SignedBody {
+        return {
+            ...TransactionRequestRLPCodec.mapCryptoBody(transactionRequest),
+            signature: transactionRequest.signature
+        } satisfies SignedBody;
     }
 }
 
@@ -371,4 +425,8 @@ interface RequestBody extends CryptoBody {
     signature?: Uint8Array;
 }
 
-export { RLPCodec };
+interface SignedBody extends CryptoBody {
+    signature?: Uint8Array;
+}
+
+export { TransactionRequestRLPCodec };

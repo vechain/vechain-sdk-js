@@ -4,7 +4,7 @@ import {
     Clause,
     TransactionRequest
 } from '@thor/thor-client/model/transactions';
-import { RLPCodec } from '@thor';
+import { TransactionRequestRLPCodec } from '@thor';
 import { expect } from '@jest/globals';
 import { concatBytes } from '@noble/curves/utils.js';
 
@@ -58,10 +58,10 @@ describe('RLPCodec', () => {
                 mockGasPayerSignature,
                 mockSignature
             );
-            const encoded = RLPCodec.encode(expected);
+            const encoded = TransactionRequestRLPCodec.encode(expected);
             // Verify 0x51 prefix is present
             expect(encoded[0]).toBe(0x51);
-            const actual = RLPCodec.decode(encoded);
+            const actual = TransactionRequestRLPCodec.decode(encoded);
             expect(actual.isDynamicFee).toBe(true);
             expect(actual.isIntendedToBeSponsored).toBe(true);
             expect(actual.isSigned).toBe(true);
@@ -86,10 +86,10 @@ describe('RLPCodec', () => {
                 maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
                 nonce: mockNonce
             });
-            const encoded = RLPCodec.encode(expected);
+            const encoded = TransactionRequestRLPCodec.encode(expected);
             // Verify 0x51 prefix is present
             expect(encoded[0]).toBe(0x51);
-            const actual = RLPCodec.decode(encoded);
+            const actual = TransactionRequestRLPCodec.decode(encoded);
             expect(actual.isDynamicFee).toBe(true);
             expect(actual.isIntendedToBeSponsored).toBe(false);
             expect(actual.isSigned).toBe(false);
@@ -120,10 +120,10 @@ describe('RLPCodec', () => {
                 mockGasPayerSignature,
                 mockSignature
             );
-            const encoded = RLPCodec.encode(expected);
+            const encoded = TransactionRequestRLPCodec.encode(expected);
             // Verify no 0x51 is not present
             expect(encoded[0]).not.toBe(0x51);
-            const actual = RLPCodec.decode(encoded);
+            const actual = TransactionRequestRLPCodec.decode(encoded);
             expect(actual.isDynamicFee).toBe(false);
             expect(actual.isIntendedToBeSponsored).toBe(true);
             expect(actual.isSigned).toBe(true);
@@ -146,10 +146,10 @@ describe('RLPCodec', () => {
                 gasPriceCoef: mockGasPriceCoef,
                 nonce: mockNonce
             });
-            const encoded = RLPCodec.encode(expected);
+            const encoded = TransactionRequestRLPCodec.encode(expected);
             // Verify no 0x51 is not present
             expect(encoded[0]).not.toBe(0x51);
-            const actual = RLPCodec.decode(encoded);
+            const actual = TransactionRequestRLPCodec.decode(encoded);
             expect(actual.isDynamicFee).toBe(false);
             expect(actual.isIntendedToBeSponsored).toBe(false);
             expect(actual.isSigned).toBe(false);
@@ -169,7 +169,9 @@ describe('RLPCodec', () => {
                 gasPriceCoef: 0n,
                 nonce: mockNonce
             });
-            const actual = RLPCodec.decode(RLPCodec.encode(expected));
+            const actual = TransactionRequestRLPCodec.decode(
+                TransactionRequestRLPCodec.encode(expected)
+            );
             expect(actual.toJSON()).toEqual(expected.toJSON());
         });
 
@@ -185,7 +187,9 @@ describe('RLPCodec', () => {
                 nonce: mockNonce
             });
 
-            const actual = RLPCodec.decode(RLPCodec.encode(expected));
+            const actual = TransactionRequestRLPCodec.decode(
+                TransactionRequestRLPCodec.encode(expected)
+            );
             expect(actual.toJSON()).toEqual(expected.toJSON());
         });
 
@@ -209,7 +213,9 @@ describe('RLPCodec', () => {
                 nonce: mockNonce
             });
 
-            const actual = RLPCodec.decode(RLPCodec.encode(expected));
+            const actual = TransactionRequestRLPCodec.decode(
+                TransactionRequestRLPCodec.encode(expected)
+            );
             expect(actual.toJSON()).toEqual(expected.toJSON());
         });
     });

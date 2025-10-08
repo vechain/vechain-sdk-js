@@ -1,6 +1,7 @@
 import { Address, Hex, HexUInt, Quantity } from '@common';
 import { Clause } from '@thor/thor-client/model/transactions';
 import { expect } from '@jest/globals';
+import { type ClauseData } from '@thor';
 
 /**
  * @group unit/thor/thor-client/transactions
@@ -127,7 +128,7 @@ describe('Clause', () => {
                 data: mockData
             };
 
-            const clause = Clause.of(clauseData);
+            const clause = Clause.of(clauseData as ClauseData);
 
             expect(clause.to).toBe(mockAddress);
             expect(clause.value).toBe(mockValue);
@@ -143,7 +144,7 @@ describe('Clause', () => {
                 data: mockData
             };
 
-            const clause = Clause.of(clauseData);
+            const clause = Clause.of(clauseData as ClauseData);
 
             expect(clause.to).toBeNull();
             expect(clause.value).toBe(mockValue);
@@ -159,7 +160,7 @@ describe('Clause', () => {
                 data: null
             };
 
-            const clause = Clause.of(clauseData);
+            const clause = Clause.of(clauseData as ClauseData);
 
             expect(clause.to).toBe(mockAddress);
             expect(clause.value).toBe(mockValue);
@@ -175,7 +176,7 @@ describe('Clause', () => {
                 data: null
             };
 
-            const clause = Clause.of(clauseData);
+            const clause = Clause.of(clauseData as ClauseData);
 
             expect(clause.to).toBe(mockAddress);
             expect(clause.value).toBe(0n);
