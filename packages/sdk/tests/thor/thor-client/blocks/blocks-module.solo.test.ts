@@ -47,7 +47,7 @@ describe('BlocksModule (solo)', () => {
         const raw = await client.blocks.getBlockRaw();
 
         expect(raw).not.toBeNull();
-        expect(raw?.raw.length).toBeGreaterThan(0);
+        expect(raw?.raw.toString().length).toBeGreaterThan(0);
     });
 
     test('getBestBlockRef returns a valid BlockRef instance', async () => {

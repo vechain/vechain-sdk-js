@@ -3,6 +3,7 @@ import { BlocksModule } from '@thor/thor-client/blocks/blocks-module';
 import { Block } from '@thor/thor-client/model/blocks/Block';
 import { ExpandedBlock } from '@thor/thor-client/model/blocks/ExpandedBlock';
 import { RawBlock } from '@thor/thor-client/model/blocks/RawBlock';
+import { BlockTransaction } from '@thor/thor-client/model/blocks/transaction/BlockTransaction';
 import { IllegalArgumentError } from '@common/errors';
 import { BlockRef, Revision } from '@common/vcdm';
 import type { HttpClient, HttpRequest, HttpResponse } from '@common/http';
@@ -14,7 +15,8 @@ import {
 import type {
     RegularBlockResponseJSON,
     ExpandedBlockResponseJSON,
-    RawBlockJSON
+    RawBlockJSON,
+    TxWithReceiptJSON
 } from '@thor/thorest/json';
 
 jest.mock('@thor/thorest', () => {
@@ -153,6 +155,30 @@ describe('BlocksModule', () => {
     });
 
     test('getBlockExpanded returns mirrored expanded block', async () => {
+        const tx: TxWithReceiptJSON = {
+            id: '0x01',
+            type: null,
+            origin: '0x0',
+            delegator: null,
+            size: 10,
+            chainTag: 1,
+            blockRef: '0x0',
+            expiration: 10,
+            clauses: [],
+            gasPriceCoef: null,
+            maxFeePerGas: null,
+            maxPriorityFeePerGas: null,
+            gas: '0x1',
+            dependsOn: null,
+            nonce: '0x1',
+            gasUsed: 1,
+            gasPayer: '0x0',
+            paid: '0x1',
+            reward: '0x1',
+            reverted: false,
+            outputs: []
+        };
+
         const payload: ExpandedBlockResponseJSON = {
             number: 1,
             id: '0x01',
@@ -172,7 +198,7 @@ describe('BlocksModule', () => {
             signer: '0xsigner',
             isTrunk: false,
             isFinalized: true,
-            transactions: []
+            transactions: [tx]
         };
 
         (RetrieveExpandedBlock.of as jest.Mock).mockReturnValue({
@@ -184,6 +210,7 @@ describe('BlocksModule', () => {
 
         expect(block).toBeInstanceOf(ExpandedBlock);
         expect(block?.isFinalized).toBe(true);
+        expect(block?.transactions.at(0)).toBeInstanceOf(BlockTransaction);
     });
 
     test('getBlockRaw returns mirrored raw block', async () => {

@@ -1,6 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { RegularBlockResponse } from '@thor/thorest/blocks/response';
 import { RegularBlockResponseJSON } from '@thor/thorest/json/RegularBlockResponseJSON';
+import { BlockRef } from '@common/vcdm';
 
 import { Block } from '@thor/thor-client/model/blocks/Block';
 
@@ -58,6 +59,7 @@ describe('Block', () => {
         expect(block?.transactions).toEqual([]);
         expect(block?.isTrunk).toBe(true);
         expect(block?.isFinalized).toBe(false);
+        expect(block?.getBlockRef()).toEqual(BlockRef.of(BASIC_BLOCK_JSON.id));
     });
 });
 

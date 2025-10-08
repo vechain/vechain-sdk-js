@@ -1,4 +1,4 @@
-import { HexUInt32, type Hex } from '@common/vcdm';
+import { BlockRef, HexUInt32, type Hex } from '@common/vcdm';
 import { type RegularBlockResponse } from '@thor/thorest/blocks/response';
 import { BaseBlock } from './BaseBlock';
 
@@ -10,6 +10,10 @@ class Block extends BaseBlock {
         this.transactions = response.transactions.map((hex: Hex) =>
             HexUInt32.of(hex)
         );
+    }
+
+    public getBlockRef(): BlockRef {
+        return BlockRef.of(this.id);
     }
 
     public static fromResponse(

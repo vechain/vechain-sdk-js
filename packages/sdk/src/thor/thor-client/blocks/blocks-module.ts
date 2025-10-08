@@ -1,5 +1,5 @@
 import { IllegalArgumentError } from '@common/errors';
-import { BlockRef, Revision } from '@common/vcdm';
+import { type BlockRef, Revision } from '@common/vcdm';
 import { AbstractThorModule } from '../AbstractThorModule';
 import {
     RetrieveExpandedBlock,
@@ -55,7 +55,7 @@ class BlocksModule extends AbstractThorModule {
         if (block === null) {
             return null;
         }
-        return BlockRef.of(block.id);
+        return block.getBlockRef();
     }
 
     /**

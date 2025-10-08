@@ -24,15 +24,25 @@ keeps the mapping logic centralised and consistent across the SDK.
   ecc.) ready for SDK consumers.
 
 ### `ExpandedBlock`
-### `ExpandedBlock`
 - Mirrors an `ExpandedBlockResponse`, including the list of
-  `TxWithReceipt` elements.
+-  `BlockTransaction` elements materialised from the underlying `TxWithReceipt`
+-  DTOs via `BlockTransaction.fromThorest`.
 - Shares the same surface (`number`, `gasLimit`, `isFinalized`, etc.) as
-  `Block` for consistency.
+- `Block` for consistency.
+
+### `BlockTransaction`
+- Domain-level mirror of a `TxWithReceipt` coming from thorest.
+- Created through `BlockTransaction.fromThorest`, which performs a
+-  lossless conversion while reusing existing SDK models (`Clause`, `Event`,
+-  `Transfer`).
 
 ### `RawBlock`
 - Mirrors the content of `RawBlockResponse` by exposing the `raw` property
-  already converted to a string.
+- already converted to a string.
+
+### Convenience Helpers
+- `Block#getBlockRef()` wraps the common `BlockRef.of(block.id)` pattern for
+-  better discoverability and reuse inside the SDK modules.
 
 ## Usage Example
 
