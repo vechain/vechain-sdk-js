@@ -44,7 +44,7 @@ interface TransactionRequestParam {
     /**
      * The coefficient used to calculate the final gas price of the transaction.
      */
-    gasPriceCoef: bigint;
+    gasPriceCoef?: bigint;
 
     /**
      * The transaction nonce is a 64-bit unsigned integer that is determined by the transaction sender.
@@ -109,7 +109,7 @@ class TransactionRequest implements TransactionRequestParam {
     /**
      * The coefficient used to calculate the final gas price of the transaction.
      */
-    public readonly gasPriceCoef: bigint;
+    public readonly gasPriceCoef?: bigint;
 
     /**
      * The transaction nonce is a 64-bit unsigned integer that is determined by the transaction sender.
