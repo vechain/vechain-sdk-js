@@ -21,7 +21,7 @@ class TransactionReceiptOutput {
     /**
      * Constructs an instance of the class using the provided parameters.
      *
-     * @param {Address} contractAddress - The address of the deployed contract.
+     * @param {Address | undefined} contractAddress - The address of the deployed contract.
      * @param {Event[]} events - An array of events emitted by the transaction clause.
      * @param {Transfer[]} transfers - An array of transfers made by the corresponding clause.
      * @throws {IllegalArgumentError} If the JSON object cannot be parsed or contains invalid values.
