@@ -2,7 +2,7 @@ import { Address, HexUInt, Quantity } from '@common/vcdm';
 import { type OutputJSON, type TxWithReceiptJSON } from '@thor/thorest/json';
 import { Tx } from '@thor/thorest/transactions/model/Tx';
 import { IllegalArgumentError } from '@common/errors';
-import { Output } from '@thor/thorest/common';
+import { OutputResponse } from '@thor/thorest/common';
 
 /**
  * Full-Qualified Path
@@ -47,7 +47,7 @@ class TxWithReceipt extends Tx {
     /**
      * An array of outputs produced by the transaction.
      */
-    readonly outputs: Output[];
+    readonly outputs: OutputResponse[];
 
     /**
      * Constructs an instance of the class using the provided JSON object.
@@ -64,7 +64,8 @@ class TxWithReceipt extends Tx {
             this.reward = HexUInt.of(json.reward).bi;
             this.reverted = json.reverted;
             this.outputs = json.outputs.map(
-                (output: OutputJSON): Output => new Output(output)
+                (output: OutputJSON): OutputResponse =>
+                    new OutputResponse(output)
             );
         } catch (error) {
             throw new IllegalArgumentError(
@@ -90,7 +91,7 @@ class TxWithReceipt extends Tx {
             reward: Quantity.of(this.reward).toString(), // trim not significant zeros
             reverted: this.reverted,
             outputs: this.outputs.map(
-                (output: Output): OutputJSON => output.toJSON()
+                (output: OutputResponse): OutputJSON => output.toJSON()
             )
         } satisfies TxWithReceiptJSON;
     }

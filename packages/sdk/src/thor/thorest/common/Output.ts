@@ -16,7 +16,7 @@ const FQP = 'packages/sdk/src/thor/thorest/model/Output.ts!';
 /**
  * [Receipt.outputs](http://localhost:8669/doc/stoplight-ui/#/schemas/Receipt)
  */
-class Output {
+class OutputResponse {
     /**
      * The address of the deployed contract, if the corresponding clause is a contract deployment clause.
      */
@@ -82,4 +82,4 @@ class Output {
     }
 }
 
-export { Output };
+export { OutputResponse };

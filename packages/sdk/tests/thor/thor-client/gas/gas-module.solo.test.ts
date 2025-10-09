@@ -9,6 +9,7 @@ import {
     AccountDispatcher,
     type ThorSoloAccount
 } from '@vechain/sdk-solo-setup';
+import { IllegalArgumentError } from '@common/errors';
 
 /**
  * GasModule solo network tests
@@ -156,7 +157,7 @@ describe('GasModule Solo Tests', () => {
         });
 
         test('should estimate gas for multiple clauses', async () => {
-            // vet transfer and vtho transfer
+            // contract deploy and vtho transfer
             const clauses: Clause[] = [
                 new Clause(null, BigInt('0x1'), Hex.of('0x')),
                 new Clause(
@@ -221,7 +222,6 @@ describe('GasModule Solo Tests', () => {
             );
             expect(result.reverted).toBe(true);
             expect(result.revertReasons).toHaveLength(1);
-            // expect(result.revertReasons[0]).toContain('out of gas');
             expect(result.vmErrors).toHaveLength(1);
             expect(result.vmErrors[0]).toContain('out of gas');
         });
@@ -229,7 +229,7 @@ describe('GasModule Solo Tests', () => {
 
     describe('getMaxPriorityFeePerGas', () => {
         test('should get max priority fee per gas from solo network', async () => {
-            const result = await gasModule.getMaxPriorityFeePerGas();
+            const result = await gasModule.getSuggestedMaxPriorityFeePerGas();
 
             expect(typeof result).toBe('bigint');
             expect(result).toBeGreaterThanOrEqual(0n);
@@ -337,14 +337,42 @@ describe('GasModule Solo Tests', () => {
         });
     });
 
+    describe('getBaseFeePerGas', () => {
+        test('should get best block base fee per gas', async () => {
+            const result = await gasModule.getBaseFeePerGas(Revision.BEST);
+            expect(typeof result).toBe('bigint');
+            expect(result).toBeGreaterThanOrEqual(10000n);
+        });
+
+        test('should throw IllegalArgumentError for NEXT revision', async () => {
+            await expect(
+                gasModule.getBaseFeePerGas(Revision.NEXT)
+            ).rejects.toThrow(IllegalArgumentError);
+        });
+    });
+
     describe('getNextBlockBaseFeePerGas', () => {
         test('should get next block base fee per gas', async () => {
-            const result = await gasModule.suggestPriorityFeeRequest();
+            const result = await gasModule.getNextBlockBaseFeePerGas();
+            expect(typeof result).toBe('bigint');
+            expect(result).toBeGreaterThanOrEqual(10000n);
+        });
+    });
 
+    describe('suggestPriorityFeeRequest', () => {
+        test('should suggest priority fee request', async () => {
+            const result = await gasModule.suggestPriorityFeeRequest();
             expect(typeof result).toBe('bigint');
             expect(result).toBeGreaterThanOrEqual(0n);
-            // Solo network typically has a base fee
-            expect(result).toBeGreaterThan(0n);
+        });
+    });
+
+    describe('computeMaxFeePrices', () => {
+        test('should compute max fee prices', async () => {
+            const result = await gasModule.computeMaxFeePrices();
+            expect(typeof result).toBe('object');
+            expect(result.maxFeePerGas).toBeGreaterThanOrEqual(0n);
+            expect(result.maxPriorityFeePerGas).toBeGreaterThanOrEqual(0n);
         });
     });
 });

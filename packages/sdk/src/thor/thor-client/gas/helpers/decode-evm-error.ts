@@ -6,6 +6,9 @@ import { log } from '@common/logging';
 
 const FQP = 'thor-client/gas/helpers/decode-evm-error';
 
+const PANIC_SELECTOR = '0x4e487b71'; // Panic(uint256) selector
+const ERROR_SELECTOR = '0x08c379a0'; // Error(string)
+
 /**
  * Decodes a revert reason/error data returned by an EVM node.
  * - If it's Error(string), returns the message
@@ -17,6 +20,18 @@ function decodeRevertReason(data: Hex, abi?: Abi): string | undefined {
     try {
         if (data.asHex() === '0x') {
             return undefined;
+        }
+        const selector = data.asHex().slice(0, 10).toLowerCase();
+        // If no ABI and not a standard selector, its a custom error -> need ABI
+        if (
+            abi === undefined &&
+            selector !== PANIC_SELECTOR &&
+            selector !== ERROR_SELECTOR
+        ) {
+            throw new ABIDecodeError(
+                `${FQP}.decodeRevertReason()`,
+                'No ABI for custom error'
+            );
         }
         // decode using viem
         const { errorName, args } = decodeErrorResult({

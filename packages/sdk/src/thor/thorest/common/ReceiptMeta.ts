@@ -11,7 +11,7 @@ const FQP = 'packages/sdk/src/thor/thorest/model/ReceiptMeta.ts!';
 /**
  * [ReceiptMeta](http://localhost:8669/doc/stoplight-ui/#/schemas/ReceiptMeta)
  */
-class ReceiptMeta extends TxMetaResponse {
+class ReceiptMetaResponse extends TxMetaResponse {
     /**
      * The transaction identifier.
      *
@@ -61,4 +61,4 @@ class ReceiptMeta extends TxMetaResponse {
     }
 }
 
-export { ReceiptMeta };
+export { ReceiptMetaResponse };

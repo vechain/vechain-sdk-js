@@ -1,6 +1,3 @@
-/**
- * @group integration/transactions
- */
 import { FetchHttpClient } from '@common/http';
 import {
     GetTxResponse,

@@ -53,6 +53,7 @@ import {
     type EstimateGasOptions,
     type EstimateGasResult
 } from '@thor/thor-client/model';
+import { RevisionType } from '@common/vcdm/RevisionType';
 
 /**
  * Filter types for viem compatibility.
@@ -113,11 +114,6 @@ enum BlockReponseType {
     regular = 'regular' // vechain specific
 }
 
-// TO DO: remove string and add harcoded revision values
-
-// Revision type for viem
-type BlockRevision = bigint | number | string | Uint8Array | Hex;
-
 function createPublicClient({
     network,
     transport
@@ -149,28 +145,26 @@ class PublicClient {
     }
 
     public async getBlock(
-        revision: BlockRevision = 'best', // viem specific
+        revision: Revision = Revision.BEST, // vechain specific
         type: BlockReponseType = BlockReponseType.regular // vechain specific
     ): Promise<
         ExpandedBlockResponse | RawBlockResponse | RegularBlockResponse | null
     > {
         const blockNumber =
-            typeof revision === 'number'
-                ? BigInt(revision)
-                : typeof revision === 'string' && /^\d+$/.test(revision)
-                  ? BigInt(revision)
-                  : undefined;
+            revision.revisionType === RevisionType.BlockNumber
+                ? BigInt(revision.toString())
+                : undefined;
 
         if (type === BlockReponseType.expanded) {
-            const data = await RetrieveExpandedBlock.of(
-                Revision.of(revision)
-            ).askTo(this.httpClient);
+            const data = await RetrieveExpandedBlock.of(revision).askTo(
+                this.httpClient
+            );
             if (data.response === null) {
                 throw new BlockNotFoundError({ blockNumber });
             }
             return data.response;
         } else if (type === BlockReponseType.raw) {
-            const data = await RetrieveRawBlock.of(Revision.of(revision)).askTo(
+            const data = await RetrieveRawBlock.of(revision).askTo(
                 this.httpClient
             );
             if (data.response === null) {
@@ -178,9 +172,9 @@ class PublicClient {
             }
             return data.response;
         } else {
-            const data = await RetrieveRegularBlock.of(
-                Revision.of(revision)
-            ).askTo(this.httpClient);
+            const data = await RetrieveRegularBlock.of(revision).askTo(
+                this.httpClient
+            );
             if (data.response === null) {
                 throw new BlockNotFoundError({ blockNumber });
             }
@@ -189,38 +183,34 @@ class PublicClient {
     }
 
     public async getBlockNumber(
-        revision: BlockRevision = 'best' // viem specific
+        revision: Revision = Revision.BEST // vechain specific
     ): Promise<number | undefined> {
-        const selectedBlock = await RetrieveRegularBlock.of(
-            Revision.of(revision)
-        ).askTo(this.httpClient);
+        const selectedBlock = await RetrieveRegularBlock.of(revision).askTo(
+            this.httpClient
+        );
         const blockNumber = selectedBlock?.response?.number;
         if (blockNumber === null) {
             const notFoundRevision =
-                typeof revision === 'number'
-                    ? BigInt(revision)
-                    : typeof revision === 'string' && /^\d+$/.test(revision)
-                      ? BigInt(revision)
-                      : undefined;
+                revision.revisionType === RevisionType.BlockNumber
+                    ? BigInt(revision.toString())
+                    : undefined;
             throw new BlockNotFoundError({ blockNumber: notFoundRevision });
         }
         return blockNumber;
     }
 
     public async getBlockTransactionCount(
-        revision: BlockRevision = 'best' // viem specific
+        revision: Revision = Revision.BEST // vechain specific
     ): Promise<number | undefined> {
-        const selectedBlock = await RetrieveRegularBlock.of(
-            Revision.of(revision)
-        ).askTo(this.httpClient);
+        const selectedBlock = await RetrieveRegularBlock.of(revision).askTo(
+            this.httpClient
+        );
         const trxCount = selectedBlock?.response?.transactions.length;
         if (trxCount === null) {
             const notFoundRevision =
-                typeof revision === 'number'
-                    ? BigInt(revision)
-                    : typeof revision === 'string' && /^\d+$/.test(revision)
-                      ? BigInt(revision)
-                      : undefined;
+                revision.revisionType === RevisionType.BlockNumber
+                    ? BigInt(revision.toString())
+                    : undefined;
             throw new BlockNotFoundError({ blockNumber: notFoundRevision });
         }
         return trxCount;
@@ -621,7 +611,7 @@ class PublicClient {
                 blockNum <= currentBlock;
                 blockNum++
             ) {
-                const block = await this.getBlock(blockNum);
+                const block = await this.getBlock(Revision.of(blockNum));
                 if (
                     block !== null &&
                     block !== undefined &&
