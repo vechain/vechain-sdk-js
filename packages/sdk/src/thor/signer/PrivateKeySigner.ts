@@ -2,11 +2,13 @@ import {
     Address,
     Blake2b256,
     InvalidPrivateKeyError,
-    Secp256k1
+    Secp256k1,
+    VeChainSDKError
 } from '@common';
 import { TransactionRequest } from '@thor/thor-client/model/transactions';
 import { type Signer } from './Signer';
 import { TransactionRequestRLPCodec } from '@thor';
+import { concatBytes } from '@noble/curves/utils.js';
 
 /**
  * Full-Qualified Path
@@ -80,7 +82,92 @@ class PrivateKeySigner implements Signer {
         }
         this.#privateKey = null;
     }
-    private signNotIntendedToBeSponsoredTransactionRequest(
+
+    /**
+     * Finalizes the transaction request based on its sponsorship intent and signature availability.
+     *
+     * - If the `transactionRequest` is intended to be sponsored and has both origin and gas payer signatures,
+     *   a new `TransactionRequest` is created, combining these signatures;
+     *   if only one or neither signature is present, the original `transactionRequest` is returned unmodified.
+     *
+     * - If the `transactionRequest` is not intended to be sponsored,
+     *   if the origin signature is present, a new `TransactionRequest` is created based on the origin signature;
+     *   otherwise, the original request is returned as-is.
+     *
+     * @param {TransactionRequest} transactionRequest - The transaction request to be finalized, which includes
+     * details of the transaction, its signatures (if available), and its sponsorship intent.
+     * @return {TransactionRequest} The finalized `TransactionRequest` object, updated based on the sponsorship
+     * intent and available signatures.
+     */
+    private static finalize(
+        transactionRequest: TransactionRequest
+    ): TransactionRequest {
+        if (transactionRequest.isIntendedToBeSponsored) {
+            // Intended to be sponsored.
+            if (
+                transactionRequest.originSignature.length > 0 &&
+                transactionRequest.gasPayerSignature.length > 0
+            ) {
+                // Both origin and gas payer signed.
+                return new TransactionRequest(
+                    { ...transactionRequest },
+                    transactionRequest.originSignature,
+                    transactionRequest.gasPayerSignature,
+                    concatBytes(
+                        transactionRequest.originSignature,
+                        transactionRequest.gasPayerSignature
+                    )
+                );
+            }
+            // Not both origin and gas payer signed.
+            return transactionRequest;
+        }
+        // Not intended to be sponsored.
+        if (transactionRequest.originSignature.length > 0) {
+            // Origin signed.
+            return new TransactionRequest(
+                { ...transactionRequest },
+                transactionRequest.originSignature,
+                transactionRequest.gasPayerSignature,
+                transactionRequest.originSignature
+            );
+        }
+        // Not intended to be sponsored, no origin signature.
+        return transactionRequest;
+    }
+
+    public sign(transactionRequest: TransactionRequest): TransactionRequest {
+        try {
+            if (transactionRequest.beggar !== undefined) {
+                if (transactionRequest.beggar.isEqual(this.address)) {
+                    return PrivateKeySigner.finalize(
+                        this.signAsOrigin(transactionRequest)
+                    );
+                }
+                return PrivateKeySigner.finalize(
+                    this.signAsGasPayer(transactionRequest)
+                );
+            }
+            return PrivateKeySigner.finalize(
+                this.signAsOrigin(transactionRequest)
+            );
+        } catch (error) {
+            throw new VeChainSDKError(
+                `${FQP}PrivateKeySigner.sign(transactionRequest: TransactionRequest): TransactionRequest`,
+                'unable to sign',
+                { transactionRequest },
+                error instanceof Error ? error : undefined
+            );
+        }
+    }
+
+    private signAsGasPayer(
+        transactionRequest: TransactionRequest
+    ): TransactionRequest {
+        return transactionRequest;
+    }
+
+    private signAsOrigin(
         transactionRequest: TransactionRequest
     ): TransactionRequest {
         if (this.#privateKey !== null) {
@@ -91,25 +178,13 @@ class PrivateKeySigner implements Signer {
             return new TransactionRequest(
                 { ...transactionRequest, beggar: undefined },
                 originSignature,
-                undefined,
+                transactionRequest.gasPayerSignature,
                 originSignature
             );
         }
         throw new InvalidPrivateKeyError(
-            `${FQP}PrivateKeySigner.sign(transactionRequest: TransactionRequest): SignedTransactionRequest`,
+            `${FQP}PrivateKeySigner.signAsOrigin(transactionRequest: TransactionRequest): TransactionRequest`,
             'no private key'
-        );
-    }
-
-    public sign(transactionRequest: TransactionRequest): TransactionRequest {
-        if (transactionRequest.beggar !== undefined) {
-            if (transactionRequest.beggar.isEqual(this.address)) {
-                // sign as origin
-            }
-            // sign as gas payer
-        }
-        return this.signNotIntendedToBeSponsoredTransactionRequest(
-            transactionRequest
         );
     }
 }
