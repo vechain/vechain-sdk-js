@@ -2,7 +2,7 @@ import { type Hex } from '@common/vcdm';
 import { type RawBlockResponse } from '@thor/thorest/blocks/response';
 
 /**
- * A raw block that contains the raw encodedblock data.
+ * A raw block that contains the raw encoded block data.
  */
 class RawBlock {
     readonly raw: Hex;
