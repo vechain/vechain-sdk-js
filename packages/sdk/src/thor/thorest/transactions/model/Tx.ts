@@ -173,7 +173,7 @@ class Tx {
             gasPriceCoef:
                 this.gasPriceCoef !== null
                     ? this.gasPriceCoef.toString()
-                    : null,
+                    : undefined,
             maxFeePerGas:
                 this.maxFeePerGas !== null
                     ? HexInt.of(this.maxFeePerGas).toString()
