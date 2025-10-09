@@ -2,7 +2,8 @@ import { describe, expect, test } from '@jest/globals';
 import { ThorClient } from '@thor/thor-client/ThorClient';
 import { FetchHttpClient } from '@common/http';
 import { ThorNetworks } from '@thor/thorest';
-import { BlockRef, Revision } from '@common/vcdm';
+import { BlockRef, Hex, Revision } from '@common/vcdm';
+import { getConfigData } from '@vechain/sdk-solo-setup';
 
 const createThorClient = (): ThorClient =>
     ThorClient.at(FetchHttpClient.at(new URL(ThorNetworks.SOLONET)));
@@ -61,5 +62,22 @@ describe('BlocksModule (solo)', () => {
         const genesis = await client.blocks.getBlock(Revision.GENESIS);
         expect(genesis).not.toBeNull();
         expect(genesis?.number).toBe(0);
+    });
+
+    test('get block for solo token seeding', async () => {
+        const client = createThorClient();
+        const soloConfig = getConfigData();
+        const seedTxId = Hex.of(soloConfig.SEED_TEST_TOKEN_TX_ID);
+        const txReceipt =
+            await client.transactions.getTransactionReceipt(seedTxId);
+        const blockId = txReceipt?.meta.blockID;
+        expect(blockId).toBeDefined();
+        const block = await client.blocks.getBlock(
+            Revision.of(blockId ?? Hex.of(0))
+        );
+        expect(block).not.toBeNull();
+        expect(block?.number).toBe(txReceipt?.meta.blockNumber);
+        expect(block?.transactions).toBeDefined();
+        expect(block?.transactions?.length).toBeGreaterThan(0);
     });
 });
