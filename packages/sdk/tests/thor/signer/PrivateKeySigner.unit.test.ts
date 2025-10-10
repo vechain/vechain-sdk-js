@@ -1,11 +1,9 @@
 import { describe, expect, test } from '@jest/globals';
-import { Address, Hex, HexUInt } from '@common';
+import { Address, Hex, HexUInt, Secp256k1 } from '@common';
 import { PrivateKeySigner, Transaction } from '@thor';
 import { Clause, TransactionRequest } from '@thor/thor-client';
-import { TEST_ACCOUNTS } from '../../fixture';
-import { ThorSoloAccount } from '@vechain/sdk-solo-setup';
-
-const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
+import { type ThorSoloAccount } from '@vechain/sdk-solo-setup';
+import { concatBytes } from '@noble/curves/utils.js';
 
 /**
  * @group unit/thor/signer
@@ -33,7 +31,7 @@ describe('PrivateKeySigner UNIT test', () => {
     const mockValue = 10n ** 15n; // .001 VET
 
     describe('sign', () => {
-        test('ok <- dynamic fee - no sponsored', async () => {
+        test('ok <- dynamic fee - no sponsored', () => {
             const txRequest = new TransactionRequest({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
@@ -52,13 +50,144 @@ describe('PrivateKeySigner UNIT test', () => {
                 nonce: mockNonce
             });
             expect(txRequest.isSigned).toBe(false);
+            // Sign as Sender. Finalized signature.
             const signer = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const signedTxRequest = signer.sign(txRequest);
-            expect(signedTxRequest.isSigned).toBe(true);
-            expect(signedTxRequest.originSignature).toEqual(
-                signedTxRequest.signature
+            const txRequestSaS = signer.sign(txRequest);
+            expect(txRequestSaS.isSigned).toBe(true);
+            expect(txRequestSaS.originSignature).toEqual(
+                txRequestSaS.signature
+            );
+        });
+
+        test('ok <- dynamic fee - signed then sponsored', () => {
+            const txRequest = new TransactionRequest({
+                beggar: Address.of(mockSenderAccount.address),
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [
+                    new Clause(
+                        Address.of(mockReceiverAccount.address),
+                        mockValue
+                    )
+                ],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: 0n, // Dynamic fee transactions use 0
+                maxFeePerGas: mockMaxFeePerGas,
+                maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
+                nonce: mockNonce
+            });
+            expect(txRequest.isSigned).toBe(false);
+            expect(txRequest.isSigned).toBe(false);
+            // Sign as Sender. Partial signature.
+            const senderSigner = new PrivateKeySigner(
+                HexUInt.of(mockSenderAccount.privateKey).bytes
+            );
+            const txRequestSaS = senderSigner.sign(txRequest);
+            expect(txRequestSaS.originSignature.length).toBe(
+                Secp256k1.SIGNATURE_LENGTH
+            );
+            expect(txRequestSaS.isSigned).toBe(false);
+            // Sign as Gas Payer. Finalized signature.
+            const gasPayerSigner = new PrivateKeySigner(
+                HexUInt.of(mockReceiverAccount.privateKey).bytes
+            );
+            const txRequestSaGP = gasPayerSigner.sign(txRequestSaS);
+            expect(txRequestSaGP.gasPayerSignature.length).toBe(
+                Secp256k1.SIGNATURE_LENGTH
+            );
+            expect(txRequestSaGP.isSigned).toBe(true);
+            expect(txRequestSaGP.signature).toEqual(
+                concatBytes(
+                    txRequestSaGP.originSignature,
+                    txRequestSaGP.gasPayerSignature
+                )
+            );
+        });
+
+        test('ok <- dynamic fee - sponsored than signed', () => {
+            const txRequest = new TransactionRequest({
+                beggar: Address.of(mockSenderAccount.address),
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [
+                    new Clause(
+                        Address.of(mockReceiverAccount.address),
+                        mockValue
+                    )
+                ],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: 0n, // Dynamic fee transactions use 0
+                maxFeePerGas: mockMaxFeePerGas,
+                maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
+                nonce: mockNonce
+            });
+            // Sign as Gas Payer. Partial signature.
+            const gasPayerSigner = new PrivateKeySigner(
+                HexUInt.of(mockReceiverAccount.privateKey).bytes
+            );
+            const txRequestSaGP = gasPayerSigner.sign(txRequest);
+            expect(txRequestSaGP.gasPayerSignature.length).toBe(
+                Secp256k1.SIGNATURE_LENGTH
+            );
+            expect(txRequestSaGP.isSigned).toBe(false);
+            // SIgn as Sender. Finalized signature.
+            const senderSigner = new PrivateKeySigner(
+                HexUInt.of(mockSenderAccount.privateKey).bytes
+            );
+            const txRequestSaS = senderSigner.sign(txRequestSaGP);
+            expect(txRequestSaS.originSignature.length).toBe(
+                Secp256k1.SIGNATURE_LENGTH
+            );
+            expect(txRequestSaS.isSigned).toBe(true);
+            expect(txRequestSaS.signature).toEqual(
+                concatBytes(
+                    txRequestSaS.originSignature,
+                    txRequestSaS.gasPayerSignature
+                )
+            );
+        });
+
+        test('ok <- dynamic fee - x-flow aka ghostbuster test', () => {
+            const txRequest = new TransactionRequest({
+                beggar: Address.of(mockSenderAccount.address),
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [
+                    new Clause(
+                        Address.of(mockReceiverAccount.address),
+                        mockValue
+                    )
+                ],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: 0n, // Dynamic fee transactions use 0
+                maxFeePerGas: mockMaxFeePerGas,
+                maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
+                nonce: mockNonce
+            });
+
+            // Sign as Gas Payer. Partial signature.
+            const gasPayerSigner = new PrivateKeySigner(
+                HexUInt.of(mockReceiverAccount.privateKey).bytes
+            );
+            const senderSigner = new PrivateKeySigner(
+                HexUInt.of(mockSenderAccount.privateKey).bytes
+            );
+            const sponsoredAndSigned = senderSigner.sign(
+                gasPayerSigner.sign(txRequest)
+            );
+            const signedAnsSponsored = gasPayerSigner.sign(
+                senderSigner.sign(txRequest)
+            );
+            expect(sponsoredAndSigned.toJSON()).toEqual(
+                signedAnsSponsored.toJSON()
             );
         });
 
@@ -75,21 +204,22 @@ describe('PrivateKeySigner UNIT test', () => {
                 dependsOn: null,
                 expiration: mockExpiration,
                 gas: mockGas,
-                gasPriceCoef: mockGasPriceCoef, // Dynamic fee transactions use 0
+                gasPriceCoef: mockGasPriceCoef,
                 nonce: mockNonce
             });
             expect(txRequest.isSigned).toBe(false);
+            // Sign as Sender. Finalized signature.
             const signer = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const signedTxRequest = signer.sign(txRequest);
-            expect(signedTxRequest.isSigned).toBe(true);
-            expect(signedTxRequest.originSignature).toEqual(
-                signedTxRequest.signature
+            const txRequestSaS = signer.sign(txRequest);
+            expect(txRequestSaS.isSigned).toBe(true);
+            expect(txRequestSaS.originSignature).toEqual(
+                txRequestSaS.signature
             );
         });
 
-        test('ok <- legacy - sponsored', () => {
+        test('ok <- legacy - signed then sponsored', () => {
             const txRequest = new TransactionRequest({
                 beggar: Address.of(mockSenderAccount.address),
                 blockRef: mockBlockRef,
@@ -103,7 +233,132 @@ describe('PrivateKeySigner UNIT test', () => {
                 dependsOn: null,
                 expiration: mockExpiration,
                 gas: mockGas,
-                gasPriceCoef: mockGasPriceCoef, // Dynamic fee transactions use 0
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            });
+            expect(txRequest.isSigned).toBe(false);
+            // Sign as Sender. Partial signature.
+            const senderSigner = new PrivateKeySigner(
+                HexUInt.of(mockSenderAccount.privateKey).bytes
+            );
+            const txRequestSaS = senderSigner.sign(txRequest);
+            expect(txRequestSaS.originSignature.length).toBe(
+                Secp256k1.SIGNATURE_LENGTH
+            );
+            expect(txRequestSaS.isSigned).toBe(false);
+            // Sign as Gas Payer. Finalized signature.
+            const gasPayerSigner = new PrivateKeySigner(
+                HexUInt.of(mockReceiverAccount.privateKey).bytes
+            );
+            const txRequestSaGP = gasPayerSigner.sign(txRequestSaS);
+            expect(txRequestSaGP.gasPayerSignature.length).toBe(
+                Secp256k1.SIGNATURE_LENGTH
+            );
+            expect(txRequestSaGP.isSigned).toBe(true);
+            expect(txRequestSaGP.signature).toEqual(
+                concatBytes(
+                    txRequestSaGP.originSignature,
+                    txRequestSaGP.gasPayerSignature
+                )
+            );
+        });
+
+        test('ok <- legacy - sponsored then signed', () => {
+            const txRequest = new TransactionRequest({
+                beggar: Address.of(mockSenderAccount.address),
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [
+                    new Clause(
+                        Address.of(mockReceiverAccount.address),
+                        mockValue
+                    )
+                ],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            });
+            expect(txRequest.isSigned).toBe(false);
+            // Sign as Gas Payer. Partial signature.
+            const gasPayerSigner = new PrivateKeySigner(
+                HexUInt.of(mockReceiverAccount.privateKey).bytes
+            );
+            const txRequestSaGP = gasPayerSigner.sign(txRequest);
+            expect(txRequestSaGP.gasPayerSignature.length).toBe(
+                Secp256k1.SIGNATURE_LENGTH
+            );
+            expect(txRequestSaGP.isSigned).toBe(false);
+            // SIgn as Sender. Finalized signature.
+            const senderSigner = new PrivateKeySigner(
+                HexUInt.of(mockSenderAccount.privateKey).bytes
+            );
+            const txRequestSaS = senderSigner.sign(txRequestSaGP);
+            expect(txRequestSaS.originSignature.length).toBe(
+                Secp256k1.SIGNATURE_LENGTH
+            );
+            expect(txRequestSaS.isSigned).toBe(true);
+            expect(txRequestSaS.signature).toEqual(
+                concatBytes(
+                    txRequestSaS.originSignature,
+                    txRequestSaS.gasPayerSignature
+                )
+            );
+        });
+
+        test('ok <- legacy - x-flow aka ghostbuster test', () => {
+            const txRequest = new TransactionRequest({
+                beggar: Address.of(mockSenderAccount.address),
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [
+                    new Clause(
+                        Address.of(mockReceiverAccount.address),
+                        mockValue
+                    )
+                ],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            });
+
+            // Sign as Gas Payer. Partial signature.
+            const gasPayerSigner = new PrivateKeySigner(
+                HexUInt.of(mockReceiverAccount.privateKey).bytes
+            );
+            const senderSigner = new PrivateKeySigner(
+                HexUInt.of(mockSenderAccount.privateKey).bytes
+            );
+            const sponsoredAndSigned = senderSigner.sign(
+                gasPayerSigner.sign(txRequest)
+            );
+            const signedAnsSponsored = gasPayerSigner.sign(
+                senderSigner.sign(txRequest)
+            );
+            expect(sponsoredAndSigned.toJSON()).toEqual(
+                signedAnsSponsored.toJSON()
+            );
+        });
+
+
+        test('OLD VS NEW MODEL COMPATIBILITY', () => {
+            const txRequest = new TransactionRequest({
+                beggar: Address.of(mockSenderAccount.address),
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [
+                    new Clause(
+                        Address.of(mockReceiverAccount.address),
+                        mockValue
+                    )
+                ],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
                 nonce: mockNonce
             });
 
@@ -124,15 +379,28 @@ describe('PrivateKeySigner UNIT test', () => {
                     features: 1
                 }
             });
+            // Sign as Sender. Partial signature.
             const txSaS = tx.signAsSender(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            console.log(txSaS.senderSignature);
             const senderSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
             const txRequestSaS = senderSigner.sign(txRequest);
-            console.log(txRequestSaS.originSignature);
+            expect(txSaS.senderSignature).toEqual(txRequestSaS.originSignature);
+            // Sign as Gas Payer. Finalized signature.
+            const txSaGP = txSaS.signAsGasPayer(
+                Address.of(mockSenderAccount.address),
+                HexUInt.of(mockReceiverAccount.privateKey).bytes
+            );
+            const gasPayerSigner = new PrivateKeySigner(
+                HexUInt.of(mockReceiverAccount.privateKey).bytes
+            );
+            const txRequestSaGP = gasPayerSigner.sign(txRequestSaS);
+            expect(txSaGP.gasPayerSignature).toEqual(
+                txRequestSaGP.gasPayerSignature
+            );
+            expect(txSaGP.signature).toEqual(txRequestSaGP.signature);
         });
     });
 });

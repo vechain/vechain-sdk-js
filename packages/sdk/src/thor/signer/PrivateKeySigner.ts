@@ -164,19 +164,46 @@ class PrivateKeySigner implements Signer {
     private signAsGasPayer(
         transactionRequest: TransactionRequest
     ): TransactionRequest {
-        return transactionRequest;
+        if (this.#privateKey !== null) {
+            const originHash = Blake2b256.of(
+                TransactionRequestRLPCodec.encodeToSign(transactionRequest)
+            ).bytes;
+            const gasPayerHash = Blake2b256.of(
+                concatBytes(
+                    originHash,
+                    transactionRequest.beggar?.bytes ?? new Uint8Array()
+                )
+            ).bytes;
+            const gasPayerSignature = Secp256k1.sign(
+                gasPayerHash,
+                this.#privateKey
+            );
+            return new TransactionRequest(
+                { ...transactionRequest },
+                transactionRequest.originSignature,
+                gasPayerSignature,
+                transactionRequest.signature
+            );
+        }
+        throw new InvalidPrivateKeyError(
+            `${FQP}PrivateKeySigner.signAsGasPayer(transactionRequest: TransactionRequest): TransactionRequest`,
+            'no private key'
+        );
     }
 
     private signAsOrigin(
         transactionRequest: TransactionRequest
     ): TransactionRequest {
         if (this.#privateKey !== null) {
-            const hash = Blake2b256.of(
+            const originHash = Blake2b256.of(
                 TransactionRequestRLPCodec.encodeToSign(transactionRequest)
             ).bytes;
-            const originSignature = Secp256k1.sign(hash, this.#privateKey);
+            const originSignature = Secp256k1.sign(
+                originHash,
+                this.#privateKey
+            );
             return new TransactionRequest(
-                { ...transactionRequest, beggar: undefined },
+                { ...transactionRequest },
                 originSignature,
                 transactionRequest.gasPayerSignature,
                 originSignature
