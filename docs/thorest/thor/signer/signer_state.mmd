@@ -10,7 +10,7 @@ stateDiagram-v2
     end note
     state "TransactionRequest\n.beggar = NULL\n.origin <- SIGNED" as TXR_BF_OS
     state SIGNED_NOT_SPONSORED <<join>>
-    state "SignedTransactionRequest\n.begger = NULL\n.signature = ORIGIN SIGNATURE" as STXR_BF_OS
+    state "TransactionRequest\n.beggar = NULL\n.signature = ORIGIN SIGNATURE\n.isSigned=true" as STXR_BF_OS
     state "TransactionRequest\n.beggar != NULL" as TXR_BT
     note right of TXR_BT
         Intended to be sponsored.
@@ -28,7 +28,7 @@ stateDiagram-v2
     state "TransactionRequesr\n.beggar != GAS PAYER\n.gasPayerSignature <- SIGNED" as TXR_BT_GPS
     state "TransactionRequest\n.beggar != GAS PAYER\n.gasPayer <- SIGNED\n.origin <-SIGNED" as TXR_BT_GPS_OS
     state SIGNED_AND_SPONSORED <<join>>
-    state "SignedTransactionRequest\n.beggar = ORIGIN\n.signature = ORIGIN & GAS PAYER SIGNATURES" as STXR_BT_OS_GPS
+    state "TransactionRequest\n.beggar = ORIGIN\n.signature = ORIGIN & GAS PAYER SIGNATURES\n.isSigned=true" as STXR_BT_OS_GPS
     [*] --> TXR
     TXR --> IS_INTENDED_TO_BE_SPONORED
     IS_INTENDED_TO_BE_SPONORED --> TXR_BF

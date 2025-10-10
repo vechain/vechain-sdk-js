@@ -51,17 +51,106 @@ describe('PrivateKeySigner SOLO test', () => {
             maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
             nonce: mockNonce
         });
+        // Sign as Sender. Finalized signature.
         const signer = new PrivateKeySigner(
             HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
         );
-        const signedTxRequest = signer.sign(txRequest);
-        const encodedTx =
-            TransactionRequestRLPCodec.encodeToSend(signedTxRequest);
+        const txRequestSaS = signer.sign(txRequest);
+        const encodedTx = TransactionRequestRLPCodec.encodeToSend(txRequestSaS);
         console.log(HexUInt.of(encodedTx).toString());
-        expect(signedTxRequest.isSigned).toBe(true);
-        expect(signedTxRequest.originSignature).toEqual(
-            signedTxRequest.signature
+
+        const txId = (await SendTransaction.of(encodedTx).askTo(httpClient))
+            .response;
+        expect(txId).toBeDefined();
+        expect(txId).toBeInstanceOf(TXID);
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+        const tx = (await RetrieveTransactionByID.of(txId.id).askTo(httpClient))
+            .response;
+        console.log(tx?.toJSON());
+    });
+
+    test('ok <- dynamic fee, signed then sponsored', async () => {
+        const latestBlock = (
+            await RetrieveExpandedBlock.of(Revision.BEST).askTo(httpClient)
+        ).response;
+        if (latestBlock === null || latestBlock === undefined) {
+            throw new Error('Failed to retrieve latest block');
+        }
+        const chainTag = await thorClient.nodes.getChainTag();
+        const txRequest = new TransactionRequest({
+            beggar: Address.of(TRANSACTION_SENDER.address),
+            blockRef: BlockRef.of(latestBlock.id),
+            chainTag: chainTag,
+            clauses: [
+                new Clause(Address.of(TRANSACTION_RECEIVER.address), mockValue)
+            ],
+            dependsOn: null,
+            expiration: mockExpiration,
+            gas: mockGas,
+            gasPriceCoef: 0n, // Dynamic fee transactions use 0
+            maxFeePerGas: mockMaxFeePerGas,
+            maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
+            nonce: mockNonce
+        });
+        // Sign as Sender. Partial signature.
+        const senderSigner = new PrivateKeySigner(
+            HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
         );
+        const txRequestSaS = senderSigner.sign(txRequest);
+        // Sign as Gas Payer. Finalized signature.
+        const gasPayerSigner = new PrivateKeySigner(
+            HexUInt.of(TRANSACTION_RECEIVER.privateKey).bytes
+        );
+        const txRequestSaGP = gasPayerSigner.sign(txRequestSaS);
+        const encodedTx =
+            TransactionRequestRLPCodec.encodeToSend(txRequestSaGP);
+        console.log(HexUInt.of(encodedTx).toString());
+
+        const txId = (await SendTransaction.of(encodedTx).askTo(httpClient))
+            .response;
+        expect(txId).toBeDefined();
+        expect(txId).toBeInstanceOf(TXID);
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+        const tx = (await RetrieveTransactionByID.of(txId.id).askTo(httpClient))
+            .response;
+        console.log(tx?.toJSON());
+    });
+
+    test('ok <- dynamic fee - sponsored than signed', async () => {
+        const latestBlock = (
+            await RetrieveExpandedBlock.of(Revision.BEST).askTo(httpClient)
+        ).response;
+        if (latestBlock === null || latestBlock === undefined) {
+            throw new Error('Failed to retrieve latest block');
+        }
+        const chainTag = await thorClient.nodes.getChainTag();
+        const txRequest = new TransactionRequest({
+            beggar: Address.of(TRANSACTION_SENDER.address),
+            blockRef: BlockRef.of(latestBlock.id),
+            chainTag: chainTag,
+            clauses: [
+                new Clause(Address.of(TRANSACTION_RECEIVER.address), mockValue)
+            ],
+            dependsOn: null,
+            expiration: mockExpiration,
+            gas: mockGas,
+            gasPriceCoef: 0n, // Dynamic fee transactions use 0
+            maxFeePerGas: mockMaxFeePerGas,
+            maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
+            nonce: mockNonce
+        });
+        // Sign as Gas Payer. Partial signature.
+        const gasPayerSigner = new PrivateKeySigner(
+            HexUInt.of(TRANSACTION_RECEIVER.privateKey).bytes
+        );
+        const txRequestSaGP = gasPayerSigner.sign(txRequest);
+        // SIgn as Sender. Finalized signature.
+        const senderSigner = new PrivateKeySigner(
+            HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
+        );
+        const txRequestSaS = senderSigner.sign(txRequestSaGP);
+        const encodedTx = TransactionRequestRLPCodec.encodeToSend(txRequestSaS);
+        console.log(HexUInt.of(encodedTx).toString());
 
         const txId = (await SendTransaction.of(encodedTx).askTo(httpClient))
             .response;
@@ -96,19 +185,100 @@ describe('PrivateKeySigner SOLO test', () => {
         const signer = new PrivateKeySigner(
             HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
         );
-        const signedTxRequest = signer.sign(txRequest);
-        const encodedTx =
-            TransactionRequestRLPCodec.encodeToSend(signedTxRequest);
+        // Sign as Sender. Finalized signature.
+        const txRequestSaS = signer.sign(txRequest);
+        const encodedTx = TransactionRequestRLPCodec.encodeToSend(txRequestSaS);
         console.log(HexUInt.of(encodedTx).toString());
-        expect(signedTxRequest.isSigned).toBe(true);
-        expect(signedTxRequest.originSignature).toEqual(
-            signedTxRequest.signature
-        );
 
         const txId = (await SendTransaction.of(encodedTx).askTo(httpClient))
             .response;
-        expect(txId).toBeDefined();
-        expect(txId).toBeInstanceOf(TXID);
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+        const tx = (await RetrieveTransactionByID.of(txId.id).askTo(httpClient))
+            .response;
+        console.log(tx?.toJSON());
+    });
+
+    test('ok <- legacy - signed then sponsored', async () => {
+        const latestBlock = (
+            await RetrieveExpandedBlock.of(Revision.BEST).askTo(httpClient)
+        ).response;
+        if (latestBlock === null || latestBlock === undefined) {
+            throw new Error('Failed to retrieve latest block');
+        }
+        const chainTag = await thorClient.nodes.getChainTag();
+        const txRequest = new TransactionRequest({
+            beggar: Address.of(TRANSACTION_SENDER.address),
+            blockRef: BlockRef.of(latestBlock.id),
+            chainTag: chainTag,
+            clauses: [
+                new Clause(Address.of(TRANSACTION_RECEIVER.address), mockValue)
+            ],
+            dependsOn: null,
+            expiration: mockExpiration,
+            gas: mockGas,
+            gasPriceCoef: mockGasPriceCoef,
+            nonce: mockNonce
+        });
+        expect(txRequest.isSigned).toBe(false);
+        // Sign as Sender. Partial signature.
+        const senderSigner = new PrivateKeySigner(
+            HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
+        );
+        const txRequestSaS = senderSigner.sign(txRequest);
+        // Sign as Gas Payer. Finalized signature.
+        const gasPayerSigner = new PrivateKeySigner(
+            HexUInt.of(TRANSACTION_RECEIVER.privateKey).bytes
+        );
+        const txRequestSaGP = gasPayerSigner.sign(txRequestSaS);
+        const encodedTx =
+            TransactionRequestRLPCodec.encodeToSend(txRequestSaGP);
+        console.log(HexUInt.of(encodedTx).toString());
+
+        const txId = (await SendTransaction.of(encodedTx).askTo(httpClient))
+            .response;
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+        const tx = (await RetrieveTransactionByID.of(txId.id).askTo(httpClient))
+            .response;
+        console.log(tx?.toJSON());
+    });
+
+    test('ok <- legacy - sponsored then signed', async () => {
+        const latestBlock = (
+            await RetrieveExpandedBlock.of(Revision.BEST).askTo(httpClient)
+        ).response;
+        if (latestBlock === null || latestBlock === undefined) {
+            throw new Error('Failed to retrieve latest block');
+        }
+        const chainTag = await thorClient.nodes.getChainTag();
+        const txRequest = new TransactionRequest({
+            beggar: Address.of(TRANSACTION_SENDER.address),
+            blockRef: BlockRef.of(latestBlock.id),
+            chainTag: chainTag,
+            clauses: [
+                new Clause(Address.of(TRANSACTION_RECEIVER.address), mockValue)
+            ],
+            dependsOn: null,
+            expiration: mockExpiration,
+            gas: mockGas,
+            gasPriceCoef: mockGasPriceCoef,
+            nonce: mockNonce
+        });
+        expect(txRequest.isSigned).toBe(false);
+        // Sign as Gas Payer. Partial signature.
+        const gasPayerSigner = new PrivateKeySigner(
+            HexUInt.of(TRANSACTION_RECEIVER.privateKey).bytes
+        );
+        const txRequestSaGP = gasPayerSigner.sign(txRequest);
+        // SIgn as Sender. Finalized signature.
+        const senderSigner = new PrivateKeySigner(
+            HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
+        );
+        const txRequestSaS = senderSigner.sign(txRequestSaGP);
+        const encodedTx = TransactionRequestRLPCodec.encodeToSend(txRequestSaS);
+        console.log(HexUInt.of(encodedTx).toString());
+
+        const txId = (await SendTransaction.of(encodedTx).askTo(httpClient))
+            .response;
         await new Promise((resolve) => setTimeout(resolve, 3000));
         const tx = (await RetrieveTransactionByID.of(txId.id).askTo(httpClient))
             .response;

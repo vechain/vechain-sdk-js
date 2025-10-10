@@ -3,13 +3,10 @@ title: Signer Class Diagram - VIP-191
 ---
 classDiagram
     namespace model {
-        class SignedTransactionRequest {
-            Uint8Array signature
-            SignedTransactionRequestJSON toJSON()
-        }
         class TransactionRequest {
             UInt8Array gasPayerSignature
             Uint8Array originSignature
+            Uint8Array signature
             constructor(TransactionRequestParameter param)
             boolean isDynamicFee()
             boolean isIntendedToBeSponsored()
@@ -36,6 +33,6 @@ classDiagram
         TrasactionRequest|SignedTransactionRequest sign(TransactionRequest request)
     }
     TransactionRequestParam <|.. TransactionRequest
-    TransactionRequest <|-- SignedTransactionRequest
+
     TransactionRequest <-- "sign(SignedTransactionRequest request)" Signer
-    SignedTransactionRequest "sign(SignedTransactionRequest request)" <-- Signer
+
