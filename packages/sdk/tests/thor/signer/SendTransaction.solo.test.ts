@@ -269,7 +269,7 @@ describe('PrivateKeySigner SOLO test', () => {
             HexUInt.of(TRANSACTION_RECEIVER.privateKey).bytes
         );
         const txRequestSaGP = gasPayerSigner.sign(txRequest);
-        // SIgn as Sender. Finalized signature.
+        // Sign as Sender. Finalized signature.
         const senderSigner = new PrivateKeySigner(
             HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
         );

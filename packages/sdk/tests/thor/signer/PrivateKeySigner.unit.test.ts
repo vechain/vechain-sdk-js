@@ -136,7 +136,7 @@ describe('PrivateKeySigner UNIT test', () => {
                 Secp256k1.SIGNATURE_LENGTH
             );
             expect(txRequestSaGP.isSigned).toBe(false);
-            // SIgn as Sender. Finalized signature.
+            // Sign as Sender. Finalized signature.
             const senderSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
@@ -290,7 +290,7 @@ describe('PrivateKeySigner UNIT test', () => {
                 Secp256k1.SIGNATURE_LENGTH
             );
             expect(txRequestSaGP.isSigned).toBe(false);
-            // SIgn as Sender. Finalized signature.
+            // Sign as Sender. Finalized signature.
             const senderSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
