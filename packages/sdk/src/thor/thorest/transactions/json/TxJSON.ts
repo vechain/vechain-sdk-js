@@ -13,7 +13,7 @@ interface TxJSON {
     blockRef: string; // hex ^0x[0-9a-f]{64}$
     expiration: number; // int
     clauses: ClauseJSON[]; // Clause[]
-    gasPriceCoef: string | null; // int
+    gasPriceCoef?: string; // int
     maxFeePerGas: string | null; // hex
     maxPriorityFeePerGas: string | null; // hex
     gas: string; // int

@@ -113,6 +113,11 @@ class Revision {
      * Return the `justified` revision instance.
      */
     public static readonly JUSTIFIED: Revision = Revision.of('justified');
+
+    /**
+     * Return the `genesis` revision instance.
+     */
+    public static readonly GENESIS: Revision = Revision.of(0);
 }
 
 export { Revision };
