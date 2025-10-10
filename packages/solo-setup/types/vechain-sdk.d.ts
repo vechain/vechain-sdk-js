@@ -23,8 +23,10 @@ declare module '@vechain/sdk/thor' {
     // Transaction types
     export interface TransactionClause {
         to: string | null;
-        value: string;
+        value: bigint;
         data: string;
+        comment?: string;
+        abi?: string;
     }
 
     export interface TransactionBody {
@@ -46,10 +48,39 @@ declare module '@vechain/sdk/thor' {
         toString(): string;
     }
 
-    export class ClauseBuilder {
-        static transferVET(to: Address, amount: bigint): TransactionClause;
-        static transferToken(tokenAddress: Address, to: Address, amount: bigint): TransactionClause;
-    }
+    export const ClauseBuilder: {
+        callFunction(
+            contractAddress: Address,
+            contractAbi: unknown,
+            functionName: string,
+            args: unknown[],
+            value?: bigint,
+            metadata?: { comment?: string; includeAbi?: boolean }
+        ): TransactionClause;
+        deployContract(
+            contractBytecode: HexUInt,
+            deployParams?: { types: string | unknown[]; values: string[] },
+            metadata?: { comment?: string; includeAbi?: boolean }
+        ): TransactionClause;
+        transferNFT(
+            contractAddress: Address,
+            senderAddress: Address,
+            recipientAddress: Address,
+            tokenId: bigint,
+            metadata?: { comment?: string; includeAbi?: boolean }
+        ): TransactionClause;
+        transferToken(
+            tokenAddress: Address,
+            recipientAddress: Address,
+            amount: bigint,
+            metadata?: { comment?: string; includeAbi?: boolean }
+        ): TransactionClause;
+        transferVET(
+            recipientAddress: Address,
+            amount: bigint,
+            metadata?: { comment?: string; includeAbi?: boolean }
+        ): TransactionClause;
+    };
 
     export class FetchHttpClient {
         static at(url: URL, options: any): FetchHttpClient;

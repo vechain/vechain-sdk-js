@@ -1,10 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { Address, BlockRef, HexUInt } from '@common/vcdm';
-import {
-    ClauseBuilder,
-    Transaction,
-    type TransactionBody
-} from '@thor/thorest';
+import { Transaction, type TransactionBody } from '@thor/thorest';
+import { ClauseBuilder } from '@thor/thor-client/transactions';
 import { networkInfo } from '@thor/utils';
 import { Secp256k1 } from '@common/cryptography/secp256k1';
 import {

@@ -5,9 +5,9 @@ import {
     RetrieveTransactionByID,
     SendTransaction,
     ThorNetworks,
-    TXID,
-    ClauseBuilder
+    TXID
 } from '@thor/thorest';
+import { ClauseBuilder } from '@thor/thor-client/transactions';
 import { Address, BlockRef, HexUInt, Revision } from '@common/vcdm';
 import { ThorClient } from '@thor/thor-client/ThorClient';
 import {

@@ -1,9 +1,5 @@
-import {
-    RetrieveExpandedBlock,
-    SendTransaction,
-    TXID,
-    ClauseBuilder
-} from '@thor/thorest';
+import { RetrieveExpandedBlock, SendTransaction, TXID } from '@thor/thorest';
+import { ClauseBuilder } from '@thor/thor-client/transactions';
 import {
     type RegularBlockResponseJSON,
     type TXIDJSON

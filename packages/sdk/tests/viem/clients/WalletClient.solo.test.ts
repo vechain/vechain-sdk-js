@@ -1,10 +1,10 @@
 import {
-    ClauseBuilder,
     RetrieveExpandedBlock,
     SendTransaction,
     ThorNetworks,
     type TransactionBody
 } from '@thor/thorest';
+import { ClauseBuilder } from '@thor/thor-client/transactions';
 import { Address, BlockRef, Hex, Revision } from '@common/vcdm';
 import { FetchHttpClient } from '@common/http';
 import { ThorClient } from '../../../src/thor/thor-client/ThorClient';
