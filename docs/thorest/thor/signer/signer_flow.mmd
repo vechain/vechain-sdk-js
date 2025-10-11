@@ -3,7 +3,7 @@ title: Signer Flow Diagram - VIP-191
 ---
 flowchart TB
     START(("Start"))
-    TXR("`**TransactionRequest**`")
+    TXR("`**TransactionRequest.isSigned=false**`")
     TXR_B{.beggar=null?}
     OS_TXR["Signer.sign() as ORIGIN"]
     TXR_BS{.beggar=SIGNER?}
@@ -12,7 +12,7 @@ flowchart TB
     TXR_G{.gasPayer=null?}
     TXR_O{.origin=null?}
     TXR_S{".gasPayer!=null AND .origin!=null"}
-    STXR("`**SignedTransactionRequest**`")
+    STXR("`**TransactionRequest.isSigned=true**`")
     STOP(("Stop"))
     START --> TXR
     TXR --> TXR_B

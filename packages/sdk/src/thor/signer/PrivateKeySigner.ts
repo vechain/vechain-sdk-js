@@ -166,7 +166,7 @@ class PrivateKeySigner implements Signer {
     ): TransactionRequest {
         if (this.#privateKey !== null) {
             const originHash = Blake2b256.of(
-                TransactionRequestRLPCodec.encodeToSign(transactionRequest)
+                TransactionRequestRLPCodec.encode(transactionRequest, true)
             ).bytes;
             const gasPayerHash = Blake2b256.of(
                 concatBytes(
@@ -196,7 +196,7 @@ class PrivateKeySigner implements Signer {
     ): TransactionRequest {
         if (this.#privateKey !== null) {
             const originHash = Blake2b256.of(
-                TransactionRequestRLPCodec.encodeToSign(transactionRequest)
+                TransactionRequestRLPCodec.encode(transactionRequest, true)
             ).bytes;
             const originSignature = Secp256k1.sign(
                 originHash,
