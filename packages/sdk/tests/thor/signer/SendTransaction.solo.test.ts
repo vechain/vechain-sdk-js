@@ -93,10 +93,10 @@ describe('PrivateKeySigner SOLO test', () => {
             nonce: mockNonce
         });
         // Sign as Sender. Partial signature.
-        const senderSigner = new PrivateKeySigner(
+        const originSIgner = new PrivateKeySigner(
             HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
         );
-        const txRequestSaS = senderSigner.sign(txRequest);
+        const txRequestSaS = originSIgner.sign(txRequest);
         // Sign as Gas Payer. Finalized signature.
         const gasPayerSigner = new PrivateKeySigner(
             HexUInt.of(TRANSACTION_RECEIVER.privateKey).bytes
@@ -144,10 +144,10 @@ describe('PrivateKeySigner SOLO test', () => {
         );
         const txRequestSaGP = gasPayerSigner.sign(txRequest);
         // SIgn as Sender. Finalized signature.
-        const senderSigner = new PrivateKeySigner(
+        const originSIgner = new PrivateKeySigner(
             HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
         );
-        const txRequestSaS = senderSigner.sign(txRequestSaGP);
+        const txRequestSaS = originSIgner.sign(txRequestSaGP);
         const encodedTx = TransactionRequestRLPCodec.encode(txRequestSaS);
         console.log(HexUInt.of(encodedTx).toString());
 
@@ -220,10 +220,10 @@ describe('PrivateKeySigner SOLO test', () => {
         });
         expect(txRequest.isSigned).toBe(false);
         // Sign as Sender. Partial signature.
-        const senderSigner = new PrivateKeySigner(
+        const originSIgner = new PrivateKeySigner(
             HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
         );
-        const txRequestSaS = senderSigner.sign(txRequest);
+        const txRequestSaS = originSIgner.sign(txRequest);
         // Sign as Gas Payer. Finalized signature.
         const gasPayerSigner = new PrivateKeySigner(
             HexUInt.of(TRANSACTION_RECEIVER.privateKey).bytes
@@ -268,10 +268,10 @@ describe('PrivateKeySigner SOLO test', () => {
         );
         const txRequestSaGP = gasPayerSigner.sign(txRequest);
         // Sign as Sender. Finalized signature.
-        const senderSigner = new PrivateKeySigner(
+        const originSIgner = new PrivateKeySigner(
             HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
         );
-        const txRequestSaS = senderSigner.sign(txRequestSaGP);
+        const txRequestSaS = originSIgner.sign(txRequestSaGP);
         const encodedTx = TransactionRequestRLPCodec.encode(txRequestSaS);
         console.log(HexUInt.of(encodedTx).toString());
 

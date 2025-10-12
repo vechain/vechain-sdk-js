@@ -206,7 +206,7 @@ class PrivateKeySigner implements Signer {
                 { ...transactionRequest },
                 originSignature,
                 transactionRequest.gasPayerSignature,
-                originSignature
+                transactionRequest.signature
             );
         }
         throw new InvalidPrivateKeyError(
