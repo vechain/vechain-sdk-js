@@ -134,6 +134,7 @@ class WalletClient extends PublicClient {
                     : null
             );
             return new TransactionRequest({
+                beggar: request.beggar,
                 blockRef: request.blockRef,
                 chainTag: request.chainTag,
                 clauses: [clause],
@@ -141,9 +142,9 @@ class WalletClient extends PublicClient {
                 expiration: request.expiration,
                 gas: HexUInt.of(request.gas).bi,
                 gasPriceCoef: BigInt(request.gasPriceCoef),
+                maxFeePerGas: request.maxFeePerGas,
+                maxPriorityFeePerGas: request.maxPriorityFeePerGas,
                 nonce: request.nonce
-                // isIntendedToBeSponsored:
-                //     request.isIntendedToBeSponsored ?? false
             });
         } catch (e) {
             throw new UnsupportedOperationError(
@@ -170,7 +171,7 @@ class WalletClient extends PublicClient {
      * @remarks Security auditable method, depends on
      * - {@link Account.sign}
      */
-    private static async signHash(
+    public static async signHash(
         hash: Uint8Array,
         account: Account
     ): Promise<Uint8Array> {
@@ -319,7 +320,7 @@ class WalletClient extends PublicClient {
         account: Account
     ): Promise<TransactionRequest> {
         const originHash = Blake2b256.of(
-            TransactionRequestRLPCodec.encode(transactionRequest)
+            TransactionRequestRLPCodec.encode(transactionRequest, true)
         ).bytes;
         const originSignature = await WalletClient.signHash(
             originHash,
@@ -342,14 +343,17 @@ interface PrepareTransactionRequestRequest {
     comment?: string;
     abi?: Hex;
     // Transaction body
+    beggar?: Address;
     blockRef: Hex;
     chainTag: number;
     dependsOn?: Hex;
     expiration: number;
     gas: Hex | number;
     gasPriceCoef: number;
-    nonce: number;
+    maxFeePerGas?: bigint;
+    maxPriorityFeePerGas?: bigint;
     isIntendedToBeSponsored?: boolean;
+    nonce: number;
 }
 
 interface WalletClientConfig extends PublicClientConfig {

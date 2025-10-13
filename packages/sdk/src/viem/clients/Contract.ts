@@ -1,7 +1,7 @@
 import {
     type Abi,
-    encodeFunctionData,
     decodeFunctionResult,
+    encodeFunctionData,
     toEventSelector
 } from 'viem';
 import { type Address, Hex } from '@common/vcdm';
@@ -10,8 +10,8 @@ import { type SubscriptionEventResponse } from '@thor/thorest/subscriptions/resp
 import { type DecodedEventLog } from '@thor/thor-client/model/logs/DecodedEventLog';
 import {
     Clause,
-    type SimulateTransactionOptions,
-    type ClauseSimulationResult
+    type ClauseSimulationResult,
+    type SimulateTransactionOptions
 } from '@thor/thor-client';
 
 // Type alias for hex-convertible values

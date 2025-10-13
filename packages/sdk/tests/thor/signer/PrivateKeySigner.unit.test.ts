@@ -3,7 +3,7 @@ import { Address, Hex, HexUInt, Secp256k1 } from '@common';
 import { PrivateKeySigner, Transaction } from '@thor';
 import { Clause, TransactionRequest } from '@thor/thor-client';
 import { type ThorSoloAccount } from '@vechain/sdk-solo-setup';
-import { concatBytes } from '@noble/curves/utils.js';
+import * as nc_utils from '@noble/curves/utils.js';
 
 /**
  * @group unit/thor/signer
@@ -51,10 +51,10 @@ describe('PrivateKeySigner UNIT test', () => {
             });
             expect(txRequest.isSigned).toBe(false);
             // Sign as Sender. Finalized signature.
-            const signer = new PrivateKeySigner(
+            const originSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const txRequestSaS = signer.sign(txRequest);
+            const txRequestSaS = originSigner.sign(txRequest);
             expect(txRequestSaS.isSigned).toBe(true);
             expect(txRequestSaS.originSignature).toEqual(
                 txRequestSaS.signature
@@ -83,10 +83,10 @@ describe('PrivateKeySigner UNIT test', () => {
             expect(txRequest.isSigned).toBe(false);
             expect(txRequest.isSigned).toBe(false);
             // Sign as Sender. Partial signature.
-            const originSIgner = new PrivateKeySigner(
+            const originSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const txRequestSaS = originSIgner.sign(txRequest);
+            const txRequestSaS = originSigner.sign(txRequest);
             expect(txRequestSaS.originSignature.length).toBe(
                 Secp256k1.SIGNATURE_LENGTH
             );
@@ -101,7 +101,7 @@ describe('PrivateKeySigner UNIT test', () => {
             );
             expect(txRequestSaGP.isSigned).toBe(true);
             expect(txRequestSaGP.signature).toEqual(
-                concatBytes(
+                nc_utils.concatBytes(
                     txRequestSaGP.originSignature,
                     txRequestSaGP.gasPayerSignature
                 )
@@ -137,16 +137,16 @@ describe('PrivateKeySigner UNIT test', () => {
             );
             expect(txRequestSaGP.isSigned).toBe(false);
             // Sign as Sender. Finalized signature.
-            const originSIgner = new PrivateKeySigner(
+            const originSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const txRequestSaS = originSIgner.sign(txRequestSaGP);
+            const txRequestSaS = originSigner.sign(txRequestSaGP);
             expect(txRequestSaS.originSignature.length).toBe(
                 Secp256k1.SIGNATURE_LENGTH
             );
             expect(txRequestSaS.isSigned).toBe(true);
             expect(txRequestSaS.signature).toEqual(
-                concatBytes(
+                nc_utils.concatBytes(
                     txRequestSaS.originSignature,
                     txRequestSaS.gasPayerSignature
                 )
@@ -177,14 +177,14 @@ describe('PrivateKeySigner UNIT test', () => {
             const gasPayerSigner = new PrivateKeySigner(
                 HexUInt.of(mockReceiverAccount.privateKey).bytes
             );
-            const originSIgner = new PrivateKeySigner(
+            const originSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const sponsoredAndSigned = originSIgner.sign(
+            const sponsoredAndSigned = originSigner.sign(
                 gasPayerSigner.sign(txRequest)
             );
             const signedAnsSponsored = gasPayerSigner.sign(
-                originSIgner.sign(txRequest)
+                originSigner.sign(txRequest)
             );
             expect(sponsoredAndSigned.toJSON()).toEqual(
                 signedAnsSponsored.toJSON()
@@ -209,10 +209,10 @@ describe('PrivateKeySigner UNIT test', () => {
             });
             expect(txRequest.isSigned).toBe(false);
             // Sign as Sender. Finalized signature.
-            const signer = new PrivateKeySigner(
+            const originSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const txRequestSaS = signer.sign(txRequest);
+            const txRequestSaS = originSigner.sign(txRequest);
             expect(txRequestSaS.isSigned).toBe(true);
             expect(txRequestSaS.originSignature).toEqual(
                 txRequestSaS.signature
@@ -238,10 +238,10 @@ describe('PrivateKeySigner UNIT test', () => {
             });
             expect(txRequest.isSigned).toBe(false);
             // Sign as Sender. Partial signature.
-            const originSIgner = new PrivateKeySigner(
+            const originSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const txRequestSaS = originSIgner.sign(txRequest);
+            const txRequestSaS = originSigner.sign(txRequest);
             expect(txRequestSaS.originSignature.length).toBe(
                 Secp256k1.SIGNATURE_LENGTH
             );
@@ -256,7 +256,7 @@ describe('PrivateKeySigner UNIT test', () => {
             );
             expect(txRequestSaGP.isSigned).toBe(true);
             expect(txRequestSaGP.signature).toEqual(
-                concatBytes(
+                nc_utils.concatBytes(
                     txRequestSaGP.originSignature,
                     txRequestSaGP.gasPayerSignature
                 )
@@ -291,16 +291,16 @@ describe('PrivateKeySigner UNIT test', () => {
             );
             expect(txRequestSaGP.isSigned).toBe(false);
             // Sign as Sender. Finalized signature.
-            const originSIgner = new PrivateKeySigner(
+            const originSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const txRequestSaS = originSIgner.sign(txRequestSaGP);
+            const txRequestSaS = originSigner.sign(txRequestSaGP);
             expect(txRequestSaS.originSignature.length).toBe(
                 Secp256k1.SIGNATURE_LENGTH
             );
             expect(txRequestSaS.isSigned).toBe(true);
             expect(txRequestSaS.signature).toEqual(
-                concatBytes(
+                nc_utils.concatBytes(
                     txRequestSaS.originSignature,
                     txRequestSaS.gasPayerSignature
                 )
@@ -329,20 +329,19 @@ describe('PrivateKeySigner UNIT test', () => {
             const gasPayerSigner = new PrivateKeySigner(
                 HexUInt.of(mockReceiverAccount.privateKey).bytes
             );
-            const originSIgner = new PrivateKeySigner(
+            const originSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const sponsoredAndSigned = originSIgner.sign(
+            const sponsoredAndSigned = originSigner.sign(
                 gasPayerSigner.sign(txRequest)
             );
             const signedAnsSponsored = gasPayerSigner.sign(
-                originSIgner.sign(txRequest)
+                originSigner.sign(txRequest)
             );
             expect(sponsoredAndSigned.toJSON()).toEqual(
                 signedAnsSponsored.toJSON()
             );
         });
-
 
         test('OLD VS NEW MODEL COMPATIBILITY', () => {
             const txRequest = new TransactionRequest({
@@ -383,10 +382,10 @@ describe('PrivateKeySigner UNIT test', () => {
             const txSaS = tx.signAsSender(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const originSIgner = new PrivateKeySigner(
+            const originSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const txRequestSaS = originSIgner.sign(txRequest);
+            const txRequestSaS = originSigner.sign(txRequest);
             expect(txSaS.senderSignature).toEqual(txRequestSaS.originSignature);
             // Sign as Gas Payer. Finalized signature.
             const txSaGP = txSaS.signAsGasPayer(

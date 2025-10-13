@@ -47,11 +47,6 @@ interface TransactionRequestParam {
     gasPriceCoef?: bigint;
 
     /**
-     * The transaction nonce is a 64-bit unsigned integer that is determined by the transaction sender.
-     */
-    nonce: number;
-
-    /**
      * The maximum fee per gas the sender is willing to pay (EIP-1559 dynamic fees).
      * If specified, this transaction uses dynamic fee pricing instead of gasPriceCoef.
      */
@@ -62,6 +57,11 @@ interface TransactionRequestParam {
      * This is the tip paid to validators for transaction inclusion priority.
      */
     maxPriorityFeePerGas?: bigint;
+
+    /**
+     * The transaction nonce is a 64-bit unsigned integer that is determined by the transaction sender.
+     */
+    nonce: number;
 }
 
 /**
