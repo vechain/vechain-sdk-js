@@ -1,16 +1,11 @@
-import * as nc_utils from '@noble/curves/abstract/utils';
+import * as nc_utils from '@noble/curves/utils';
+import { concatBytes } from '@noble/curves/utils';
 import { type Account } from 'viem';
 import { SendTransaction, type ThorNetworks } from '@thor/thorest';
-import {
-    Clause,
-    TransactionRequest
-} from '@thor/thor-client/model/transactions';
+import { Clause, TransactionRequest } from '@thor/thor-client/model/transactions';
 import { Address, Blake2b256, Hex, HexInt, HexUInt } from '@common/vcdm';
 import { FetchHttpClient, type HttpClient } from '@common/http';
-import {
-    IllegalArgumentError,
-    UnsupportedOperationError
-} from '@common/errors';
+import { UnsupportedOperationError } from '@common/errors';
 import { PublicClient, type PublicClientConfig } from './PublicClient';
 import { TransactionRequestRLPCodec } from '@thor';
 
@@ -66,6 +61,43 @@ class WalletClient extends PublicClient {
     ) {
         super(network, transport);
         this.account = account;
+    }
+
+    private static finalize(
+        transactionRequest: TransactionRequest
+    ): TransactionRequest {
+        if (transactionRequest.isIntendedToBeSponsored) {
+            // Intended to be sponsored.
+            if (
+                transactionRequest.originSignature.length > 0 &&
+                transactionRequest.gasPayerSignature.length > 0
+            ) {
+                // Both origin and gas payer signed.
+                return new TransactionRequest(
+                    { ...transactionRequest },
+                    transactionRequest.originSignature,
+                    transactionRequest.gasPayerSignature,
+                    concatBytes(
+                        transactionRequest.originSignature,
+                        transactionRequest.gasPayerSignature
+                    )
+                );
+            }
+            // Not both origin and gas payer signed.
+            return transactionRequest;
+        }
+        // Not intended to be sponsored.
+        if (transactionRequest.originSignature.length > 0) {
+            // Origin signed.
+            return new TransactionRequest(
+                { ...transactionRequest },
+                transactionRequest.originSignature,
+                transactionRequest.gasPayerSignature,
+                transactionRequest.originSignature
+            );
+        }
+        // Not intended to be sponsored, no origin signature.
+        return transactionRequest;
     }
 
     /**
@@ -208,49 +240,84 @@ class WalletClient extends PublicClient {
         return await this.sendRawTransaction(raw);
     }
 
-    /**
-     * Signs the given transaction request and returns the resulting hexadecimal representation.
-     * The transaction request can either be
-     * - an unsigned transaction request,
-     * - an unsigned sponsored transaction request this wallet signs as origin/sender,
-     * - a signed sponsored transaction request this wallet sisgns as gas-payer.sponsor.
-     *
-     * @param {TransactionRequest | TransactionRequest} transactionRequest - The transaction request to be signed.
-     * @return {Promise<Hex>} A promise that resolves to the signed transaction in hexadecimal format.
-     * @throws {UnsupportedOperationError} If the account is not set.
-     */
     public async signTransaction(
         transactionRequest: TransactionRequest
     ): Promise<Hex> {
         if (this.account !== null) {
-            if (transactionRequest instanceof TransactionRequest) {
-                return await WalletClient.sponsorTransactionRequest(
-                    transactionRequest,
-                    this.account
+            if (transactionRequest.beggar !== undefined) {
+                if (
+                    transactionRequest.beggar.isEqual(
+                        Address.of(this.account.address)
+                    )
+                ) {
+                    return HexUInt.of(
+                        TransactionRequestRLPCodec.encode(
+                            WalletClient.finalize(
+                                await WalletClient.signAsOrigin(
+                                    transactionRequest,
+                                    this.account
+                                )
+                            )
+                        )
+                    );
+                }
+                return HexUInt.of(
+                    TransactionRequestRLPCodec.encode(
+                        WalletClient.finalize(
+                            await WalletClient.signAsGasPayer(
+                                transactionRequest,
+                                this.account
+                            )
+                        )
+                    )
                 );
             }
-            return await WalletClient.signTransactionRequest(
-                transactionRequest,
-                this.account
+            return HexUInt.of(
+                TransactionRequestRLPCodec.encode(
+                    WalletClient.finalize(
+                        await WalletClient.signAsOrigin(
+                            transactionRequest,
+                            this.account
+                        )
+                    )
+                )
             );
         }
         throw new UnsupportedOperationError(
-            `${FQP}WalletClient.signTransaction(transactionRequest: TransactionRequest | SignedTransactionRequest): Hex`,
+            `${FQP}WalletClient.signTransaction(transactionRequest: TransactionRequest): Hex`,
             'account is not set'
         );
     }
 
-    /**
-     * Signs a given transaction request with the provided account and returns the signed transaction in hexadecimal format.
-     *
-     * @param {TransactionRequest} transactionRequest - The transaction request object to be signed.
-     * @param {Account} account - The account object containing the necessary credentials for signing.
-     * @return {Promise<Hex>} A promise that resolves to the signed transaction encoded in hexadecimal format.
-     */
-    private static async signTransactionRequest(
+    private static async signAsGasPayer(
         transactionRequest: TransactionRequest,
         account: Account
-    ): Promise<Hex> {
+    ): Promise<TransactionRequest> {
+        const originHash = Blake2b256.of(
+            TransactionRequestRLPCodec.encode(transactionRequest, true)
+        ).bytes;
+        const gasPayerHash = Blake2b256.of(
+            concatBytes(
+                originHash,
+                transactionRequest.beggar?.bytes ?? new Uint8Array()
+            )
+        ).bytes;
+        const gasPayerSignature = await WalletClient.signHash(
+            gasPayerHash,
+            account
+        );
+        return new TransactionRequest(
+            { ...transactionRequest },
+            transactionRequest.originSignature,
+            gasPayerSignature,
+            transactionRequest.signature
+        );
+    }
+
+    private static async signAsOrigin(
+        transactionRequest: TransactionRequest,
+        account: Account
+    ): Promise<TransactionRequest> {
         const originHash = Blake2b256.of(
             TransactionRequestRLPCodec.encode(transactionRequest)
         ).bytes;
@@ -258,82 +325,11 @@ class WalletClient extends PublicClient {
             originHash,
             account
         );
-        const signedTransactionRequest = new TransactionRequest(
-            {
-                ...transactionRequest
-            },
+        return new TransactionRequest(
+            { ...transactionRequest },
             originSignature,
-            undefined,
-            originSignature
-        );
-        return HexUInt.of(
-            TransactionRequestRLPCodec.encode(signedTransactionRequest)
-        );
-    }
-
-    /**
-     * Sponsors a transaction request and returns the resulting hex-encoded sponsored transaction.
-     *
-     * @param {TransactionRequest} signedTransactionRequest - The signed transaction request to be sponsored.
-     *        Must have the `isIntendedToBeSponsored` flag set to true.
-     * @param {Account} account - The account object providing the gas payer's private key for signing the transaction.
-     * @return {Promise<Hex>} A Promise that resolves to the hex-encoded representation of the sponsored transaction request.
-     * @throws {IllegalArgumentError} If the transaction request is not intended to be sponsored.
-     */
-    private static async sponsorTransactionRequest(
-        signedTransactionRequest: TransactionRequest,
-        account: Account
-    ): Promise<Hex> {
-        if (signedTransactionRequest.isIntendedToBeSponsored) {
-            const originHash = Blake2b256.of(
-                TransactionRequestRLPCodec.encode(
-                    new TransactionRequest({
-                        blockRef: signedTransactionRequest.blockRef,
-                        chainTag: signedTransactionRequest.chainTag,
-                        clauses: signedTransactionRequest.clauses,
-                        dependsOn: signedTransactionRequest.dependsOn,
-                        expiration: signedTransactionRequest.expiration,
-                        gas: signedTransactionRequest.gas,
-                        gasPriceCoef: signedTransactionRequest.gasPriceCoef,
-                        nonce: signedTransactionRequest.nonce
-                    })
-                )
-            );
-            const gasPayerHash = Blake2b256.of(
-                nc_utils.concatBytes(
-                    originHash.bytes //,
-                    // signedTransactionRequest.origin.bytes
-                )
-            );
-            const gasPayerSignature = await WalletClient.signHash(
-                gasPayerHash.bytes,
-                account
-            );
-            const sponsoredTransactionRequest = new TransactionRequest(
-                {
-                    blockRef: signedTransactionRequest.blockRef,
-                    chainTag: signedTransactionRequest.chainTag,
-                    clauses: signedTransactionRequest.clauses,
-                    dependsOn: signedTransactionRequest.dependsOn,
-                    expiration: signedTransactionRequest.expiration,
-                    gas: signedTransactionRequest.gas,
-                    gasPriceCoef: signedTransactionRequest.gasPriceCoef,
-                    nonce: signedTransactionRequest.nonce
-                },
-                signedTransactionRequest.originSignature,
-                gasPayerSignature,
-                nc_utils.concatBytes(
-                    signedTransactionRequest.originSignature,
-                    gasPayerSignature
-                )
-            );
-            return HexUInt.of(
-                TransactionRequestRLPCodec.encode(sponsoredTransactionRequest)
-            );
-        }
-        throw new IllegalArgumentError(
-            `${FQP}WalletClient.signTransaction(signedTransactionRequest: SignedTransactionRequest): Hex`,
-            'not intended to be sponsored'
+            transactionRequest.gasPayerSignature,
+            transactionRequest.signature
         );
     }
 }
