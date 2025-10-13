@@ -113,7 +113,54 @@ class TransactionRequestRLPCodec {
             encoded[0] === TransactionRequestRLPCodec.DYNAMIC_FEE_PREFIX;
         // Remove the transaction type prefix if present
         const encodedData = isDynamicFee ? encoded.slice(1) : encoded;
-        return TransactionRequestRLPCodec.decodeDynamicFee(encodedData);
+        return isDynamicFee
+            ? TransactionRequestRLPCodec.decodeDynamicFee(encodedData)
+            : TransactionRequestRLPCodec.decodeLegacy(encodedData);
+    }
+
+    private static decodeBody(decoded: RLPValidObject): Body {
+        const clauses: Array<{
+            to: string | null;
+            value: bigint;
+            data: string;
+        }> = (decoded.clauses as RLPValidObject[]).map(
+            (decodedClause: RLPValidObject) => ({
+                to: (decodedClause.to as string) ?? null,
+                value: BigInt(decodedClause.value as string),
+                data: (decodedClause.data as string) ?? Hex.PREFIX
+            })
+        );
+        return {
+            blockRef: decoded.blockRef as string,
+            chainTag: decoded.chainTag as number,
+            clauses,
+            dependsOn:
+                decoded.dependsOn === null
+                    ? null
+                    : (decoded.dependsOn as string),
+            expiration: decoded.expiration as number,
+            gas: BigInt(decoded.gas as number),
+            gasPriceCoef:
+                decoded.gasPriceCoef !== null &&
+                decoded.gasPriceCoef !== undefined
+                    ? BigInt(decoded.gasPriceCoef as number)
+                    : 0n,
+            gasPayerSignature: decoded.gasPayerSignature as Uint8Array,
+            maxFeePerGas:
+                decoded.maxFeePerGas !== undefined &&
+                decoded.maxFeePerGas !== null
+                    ? BigInt(decoded.maxFeePerGas as bigint)
+                    : undefined,
+            maxPriorityFeePerGas:
+                decoded.maxPriorityFeePerGas !== undefined &&
+                decoded.maxPriorityFeePerGas !== null
+                    ? BigInt(decoded.maxPriorityFeePerGas as bigint)
+                    : undefined,
+            nonce: decoded.nonce as number,
+            originSignature: Uint8Array.of(),
+            reserved: decoded.reserved as Uint8Array[],
+            signature: decoded.signature as Uint8Array
+        } satisfies Body;
     }
 
     // Dynamic fee transaction - use maxFeePerGas and maxPriorityFeePerGas
@@ -185,72 +232,70 @@ class TransactionRequestRLPCodec {
         );
     }
 
-    private static decodeBody(decoded: RLPValidObject): Body {
-        const clauses: Array<{
-            to: string | null;
-            value: bigint;
-            data: string;
-        }> = (decoded.clauses as RLPValidObject[]).map(
-            (decodedClause: RLPValidObject) => ({
-                to: (decodedClause.to as string) ?? null,
-                value: BigInt(decodedClause.value as string),
-                data: (decodedClause.data as string) ?? Hex.PREFIX
-            })
-        );
-        return {
-            blockRef: decoded.blockRef as string,
-            chainTag: decoded.chainTag as number,
-            clauses,
-            dependsOn:
-                decoded.dependsOn === null
-                    ? null
-                    : (decoded.dependsOn as string),
-            expiration: decoded.expiration as number,
-            gas: BigInt(decoded.gas as bigint),
-            gasPriceCoef: 0n, // Dynamic fee transactions use 0 for gasPriceCoef
-            gasPayerSignature: decoded.gasPayerSignature as Uint8Array,
-            maxFeePerGas:
-                decoded.maxFeePerGas !== undefined &&
-                decoded.maxFeePerGas !== null
-                    ? BigInt(decoded.maxFeePerGas as bigint)
-                    : undefined,
-            maxPriorityFeePerGas:
-                decoded.maxPriorityFeePerGas !== undefined &&
-                decoded.maxPriorityFeePerGas !== null
-                    ? BigInt(decoded.maxPriorityFeePerGas as bigint)
-                    : undefined,
-            nonce: decoded.nonce as number,
-            originSignature: Uint8Array.of(),
-            reserved: decoded.reserved as Uint8Array[],
-            signature: decoded.signature as Uint8Array
-        } satisfies Body;
-    }
-
     // Legacy transaction - use gasPriceCoef
-    private static decodeLegacy(decoded: unknown[]): number {
-        return decoded.length;
+    private static decodeLegacy(encoded: Uint8Array): TransactionRequest {
+        let rlpProfile: RLPProfile;
+        const size = (RLP.ofEncoded(encoded).decoded as unknown[]).length;
+        if (
+            TransactionRequestRLPCodec.RLP_LEGACY_SIGNED_REQUEST.length === size
+        ) {
+            rlpProfile = {
+                name: 'tx',
+                kind: TransactionRequestRLPCodec.RLP_LEGACY_SIGNED_REQUEST
+            } satisfies RLPProfile;
+        } else if (
+            TransactionRequestRLPCodec.RLP_LEGACY_UNSIGNED_REQUEST.length ===
+            size
+        ) {
+            rlpProfile = {
+                name: 'tx',
+                kind: TransactionRequestRLPCodec.RLP_LEGACY_UNSIGNED_REQUEST
+            } satisfies RLPProfile;
+        } else {
+            throw new InvalidEncodingError(
+                `${FQP}TransactionRequestRLPCodec.decodeLegacy(encoded: Uint8Array): TransactionRequest`,
+                `invalid encoded transaction request`
+            );
+        }
+        const decoded = RLPProfiler.ofObjectEncoded(encoded, rlpProfile)
+            .object as RLPValidObject;
+        const body = TransactionRequestRLPCodec.decodeBody(decoded);
+        const signature = decoded.signature as Uint8Array;
+        const gasPayerSignature =
+            signature !== null && signature !== undefined
+                ? signature.slice(Secp256k1.SIGNATURE_LENGTH, signature.length)
+                : (decoded.gasPayerSignature as Uint8Array);
+        const originSignature =
+            signature !== null && signature !== undefined
+                ? signature.slice(0, Secp256k1.SIGNATURE_LENGTH)
+                : (decoded.originSignature as Uint8Array);
+        let beggar: Address | undefined;
+        if (decoded.beggar !== null && decoded.beggar !== undefined) {
+            beggar = Address.of(decoded.beggar as string);
+        } else if (signature?.length === Secp256k1.SIGNATURE_LENGTH * 2) {
+            const originHash = Blake2b256.of(
+                RLPProfiler.ofObject(
+                    { ...body },
+                    {
+                        name: 'tx',
+                        kind: TransactionRequestRLPCodec.RLP_LEGACY_TO_HASH
+                    }
+                ).encoded
+            ).bytes;
+            beggar = Address.ofPublicKey(
+                Secp256k1.recover(originHash, originSignature)
+            );
+        }
+        return new TransactionRequest(
+            {
+                ...TransactionRequestRLPCodec.mapBodyToTransactionRequest(body),
+                beggar
+            },
+            originSignature,
+            gasPayerSignature,
+            signature
+        );
     }
-
-    // private static decodeLegacy(decoded: RLPValidObject): TransactionRequest {
-    //     const clauses = TransactionRequestRLPCodec.decodeClauses(decoded);
-    //     return new TransactionRequest({
-    //         beggar:
-    //             decoded.beggar !== null
-    //                 ? Address.of(decoded.beggar as string)
-    //                 : undefined,
-    //         blockRef: HexUInt.of(decoded.blockRef as string),
-    //         chainTag: decoded.chainTag as number,
-    //         clauses,
-    //         dependsOn:
-    //             decoded.dependsOn === null
-    //                 ? null
-    //                 : Hex.of(decoded.dependsOn as string),
-    //         expiration: decoded.expiration as number,
-    //         gas: BigInt(decoded.gas as bigint),
-    //         gasPriceCoef: BigInt(decoded.gasPriceCoef as bigint),
-    //         nonce: decoded.nonce as number
-    //     });
-    // }
 
     public static encode(
         transactionRequest: TransactionRequest,

@@ -13,7 +13,7 @@ const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
 /**
  * @group unit/thor/signer
  */
-describe('RLPCodec', () => {
+describe('TransactionRequestRLPCodec UNIT tests', () => {
     const mockSenderAccount = {
         privateKey:
             '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
@@ -38,7 +38,6 @@ describe('RLPCodec', () => {
     const mockNonce = 3;
     const mockValue = 10n ** 15n; // .001 VET
 
-
     describe('encode/decode dynamic', () => {
         test('ok <- dynamic fee - no sponsored - unsigned', () => {
             const txRequest = new TransactionRequest({
@@ -58,14 +57,13 @@ describe('RLPCodec', () => {
                 maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
                 nonce: mockNonce
             });
-            const expected = txRequest;
             const actual = TransactionRequestRLPCodec.decode(
-                TransactionRequestRLPCodec.encode(expected)
+                TransactionRequestRLPCodec.encode(txRequest)
             );
             expect(actual.isDynamicFee).toBe(true);
             expect(actual.isIntendedToBeSponsored).toBe(false);
             expect(actual.isSigned).toBe(false);
-            expect(actual.toJSON()).toEqual(expected.toJSON());
+            expect(actual.toJSON()).toEqual(txRequest.toJSON());
         });
 
         test('ok <- dynamic fee - no sponsored - signed', () => {
@@ -96,6 +94,35 @@ describe('RLPCodec', () => {
             expect(actual.isDynamicFee).toBe(true);
             expect(actual.isIntendedToBeSponsored).toBe(false);
             expect(actual.isSigned).toBe(true);
+            expect(actual.toJSON()).toEqual(expected.toJSON());
+        });
+
+        test('ok <- dynamic fee - sponsored - unsigned', () => {
+            const txRequest = new TransactionRequest({
+                beggar: Address.of(mockSenderAccount.address),
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [
+                    new Clause(
+                        Address.of(mockReceiverAccount.address),
+                        mockValue
+                    )
+                ],
+                dependsOn: mockDependsOn,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: 0n, // Dynamic fee transactions use 0
+                maxFeePerGas: mockMaxFeePerGas,
+                maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
+                nonce: mockNonce
+            });
+            const expected = txRequest;
+            const actual = TransactionRequestRLPCodec.decode(
+                TransactionRequestRLPCodec.encode(expected)
+            );
+            expect(actual.isDynamicFee).toBe(true);
+            expect(actual.isIntendedToBeSponsored).toBe(true);
+            expect(actual.isSigned).toBe(false);
             expect(actual.toJSON()).toEqual(expected.toJSON());
         });
 
@@ -213,12 +240,20 @@ describe('RLPCodec', () => {
                         mockValue
                     )
                 ],
-                dependsOn: null,
+                dependsOn: mockDependsOn,
                 expiration: mockExpiration,
                 gas: mockGas,
                 gasPriceCoef: mockGasPriceCoef,
                 nonce: mockNonce
             });
+            const expected = txRequest;
+            const actual = TransactionRequestRLPCodec.decode(
+                TransactionRequestRLPCodec.encode(expected)
+            );
+            expect(actual.isDynamicFee).toBe(false);
+            expect(actual.isIntendedToBeSponsored).toBe(false);
+            expect(actual.isSigned).toBe(false);
+            expect(actual.toJSON()).toEqual(expected.toJSON());
         });
 
         test('ok <- legacy - no sponsored - signed', () => {
@@ -237,11 +272,43 @@ describe('RLPCodec', () => {
                 gasPriceCoef: mockGasPriceCoef,
                 nonce: mockNonce
             });
-            const expected = txRequest;
+            const originSigner = new PrivateKeySigner(
+                HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
+            );
+            const expected = originSigner.sign(txRequest);
             const actual = TransactionRequestRLPCodec.decode(
                 TransactionRequestRLPCodec.encode(expected)
             );
-            console.log(actual);
+            expect(actual.isDynamicFee).toBe(false);
+            expect(actual.isIntendedToBeSponsored).toBe(false);
+            expect(actual.isSigned).toBe(true);
+            expect(actual.toJSON()).toEqual(expected.toJSON());
+        });
+
+        test('ok <- legacy - - sponsored - unsigned', () => {
+            const txRequest = new TransactionRequest({
+                beggar: Address.of(mockSenderAccount.address),
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [
+                    new Clause(
+                        Address.of(mockReceiverAccount.address),
+                        mockValue
+                    )
+                ],
+                dependsOn: mockDependsOn,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            });
+            const actual = TransactionRequestRLPCodec.decode(
+                TransactionRequestRLPCodec.encode(txRequest)
+            );
+            expect(actual.isDynamicFee).toBe(false);
+            expect(actual.isIntendedToBeSponsored).toBe(true);
+            expect(actual.isSigned).toBe(false);
+            expect(actual.toJSON()).toEqual(txRequest.toJSON());
         });
 
         test('ok <- legacy - - sponsored - gas payer signed', () => {
@@ -268,7 +335,10 @@ describe('RLPCodec', () => {
             const actual = TransactionRequestRLPCodec.decode(
                 TransactionRequestRLPCodec.encode(expected)
             );
-            console.log(actual);
+            expect(actual.isDynamicFee).toBe(false);
+            expect(actual.isIntendedToBeSponsored).toBe(true);
+            expect(actual.isSigned).toBe(false);
+            expect(actual.toJSON()).toEqual(expected.toJSON());
         });
 
         test('ok <- legacy - sponsored - origin signed', () => {
@@ -295,7 +365,10 @@ describe('RLPCodec', () => {
             const actual = TransactionRequestRLPCodec.decode(
                 TransactionRequestRLPCodec.encode(expected)
             );
-            console.log(actual);
+            expect(actual.isDynamicFee).toBe(false);
+            expect(actual.isIntendedToBeSponsored).toBe(true);
+            expect(actual.isSigned).toBe(false);
+            expect(actual.toJSON()).toEqual(expected.toJSON());
         });
 
         test('ok <- legacy - sponsored - both signed', () => {
@@ -325,70 +398,73 @@ describe('RLPCodec', () => {
             const actual = TransactionRequestRLPCodec.decode(
                 TransactionRequestRLPCodec.encode(expected)
             );
-            console.log(actual);
+            expect(actual.isDynamicFee).toBe(false);
+            expect(actual.isIntendedToBeSponsored).toBe(true);
+            expect(actual.isSigned).toBe(true);
+            expect(actual.toJSON()).toEqual(expected.toJSON());
         });
     });
 
-    // describe('encode/decode clauses', () => {
-    //     test('ok <- no clauses', () => {
-    //         const expected = new TransactionRequest({
-    //             blockRef: mockBlockRef,
-    //             chainTag: 1,
-    //             clauses: [],
-    //             dependsOn: null,
-    //             expiration: mockExpiration,
-    //             gas: mockGas,
-    //             gasPriceCoef: 0n,
-    //             nonce: mockNonce
-    //         });
-    //         const actual = TransactionRequestRLPCodec.decode(
-    //             TransactionRequestRLPCodec.encode(expected)
-    //         );
-    //         // expect(actual.toJSON()).toEqual(expected.toJSON());
-    //     });
-    //
-    //     test('ok <- minimal properties', () => {
-    //         const expected = new TransactionRequest({
-    //             blockRef: mockBlockRef,
-    //             chainTag: 1,
-    //             clauses: [new Clause(null, mockValue.bi)],
-    //             dependsOn: null,
-    //             expiration: mockExpiration,
-    //             gas: mockGas,
-    //             gasPriceCoef: 0n,
-    //             nonce: mockNonce
-    //         });
-    //
-    //         const actual = TransactionRequestRLPCodec.decode(
-    //             TransactionRequestRLPCodec.encode(expected)
-    //         );
-    //         // expect(actual.toJSON()).toEqual(expected.toJSON());
-    //     });
-    //
-    //     test('ok <- all properties', () => {
-    //         const expected = new TransactionRequest({
-    //             blockRef: mockBlockRef,
-    //             chainTag: 1,
-    //             clauses: [
-    //                 new Clause(
-    //                     Address.of(TRANSACTION_RECEIVER.address),
-    //                     mockValue.bi,
-    //                     HexUInt.of('0xabcdef'),
-    //                     'test comment',
-    //                     '0xabcdef'
-    //                 )
-    //             ],
-    //             dependsOn: null,
-    //             expiration: mockExpiration,
-    //             gas: mockGas,
-    //             gasPriceCoef: 0n,
-    //             nonce: mockNonce
-    //         });
-    //
-    //         const actual = TransactionRequestRLPCodec.decode(
-    //             TransactionRequestRLPCodec.encode(expected)
-    //         );
-    //         // expect(actual.toJSON()).toEqual(expected.toJSON());
-    //     });
-    // });
+    describe('encode/decode clauses', () => {
+        test('ok <- no clauses', () => {
+            const expected = new TransactionRequest({
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: 0n,
+                nonce: mockNonce
+            });
+            const actual = TransactionRequestRLPCodec.decode(
+                TransactionRequestRLPCodec.encode(expected)
+            );
+            expect(actual.toJSON()).toEqual(expected.toJSON());
+        });
+
+        test('ok <- minimal properties', () => {
+            const expected = new TransactionRequest({
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [new Clause(null, mockValue)],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: 0n,
+                nonce: mockNonce
+            });
+
+            const actual = TransactionRequestRLPCodec.decode(
+                TransactionRequestRLPCodec.encode(expected)
+            );
+            expect(actual.toJSON()).toEqual(expected.toJSON());
+        });
+
+        test('ok <- all properties', () => {
+            const expected = new TransactionRequest({
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [
+                    new Clause(
+                        Address.of(TRANSACTION_RECEIVER.address),
+                        mockValue,
+                        HexUInt.of('0xabcdef'),
+                        'test comment',
+                        '0xabcdef'
+                    )
+                ],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: 0n,
+                nonce: mockNonce
+            });
+
+            const actual = TransactionRequestRLPCodec.decode(
+                TransactionRequestRLPCodec.encode(expected)
+            );
+            expect(actual.toJSON()).toEqual(expected.toJSON());
+        });
+    });
 });
