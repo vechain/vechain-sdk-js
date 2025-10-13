@@ -8,7 +8,7 @@ import type {
     ContractTransactionOptions,
     SimulateTransactionOptions
 } from '../types';
-import type { ContractsModule } from '../interfaces';
+import type { ContractsModule } from '../contracts-module';
 import { Contract } from './contract';
 
 // Proper function arguments type using VeChain SDK types

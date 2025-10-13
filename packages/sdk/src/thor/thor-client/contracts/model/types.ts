@@ -4,32 +4,28 @@ import type {
     ExtractAbiEvent,
     ExtractAbiFunction
 } from 'abitype';
-import type { ContractClause } from './Clause';
+import type { Clause } from '@thor/thor-client/model/transactions/Clause';
+import type { ClauseOptions } from '@thor/thorest/transactions/model/ClauseOptions';
 
 /**
- * Additional options that can be passed to contract function calls
+ * Transaction value type
  */
-export interface ClauseAdditionalOptions {
+export type TransactionValue = string | number | bigint;
+
+/**
+ * Contract-specific clause options that extend the main SDK's ClauseOptions
+ */
+export interface ContractClauseOptions extends ClauseOptions {
     /**
      * The value to send with the transaction (in wei)
      */
-    value?: string | number | bigint;
-
-    /**
-     * A comment to include with the clause
-     */
-    comment?: string;
+    value?: bigint;
 
     /**
      * The revision to use for the call
      */
     revision?: string | number;
 }
-
-/**
- * Transaction value type
- */
-export type TransactionValue = string | number | bigint;
 
 /**
  * Clause comment type
@@ -85,7 +81,7 @@ export type ContractFunctionClause<
     TAbi extends Abi,
     TFunctionNames extends string
 > = {
-    [K in TFunctionNames]: (...args: unknown[]) => ContractClause;
+    [K in TFunctionNames]: (...args: unknown[]) => Clause;
 };
 
 /**

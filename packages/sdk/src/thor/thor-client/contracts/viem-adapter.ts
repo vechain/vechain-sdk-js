@@ -1,6 +1,7 @@
 import type { Abi, AbiParameter } from 'abitype';
 import { type Address, type Hex } from '@common/vcdm';
 import { type Signer } from '@thor/signer';
+import { toEventSelector } from 'viem';
 import { type Contract } from './model/contract';
 import { type ContractsModule } from './contracts-module';
 import type {
@@ -169,13 +170,13 @@ export function createViemContract<TAbi extends Abi>(
                 const options: ContractTransactionOptions = {};
 
                 if (params?.value) {
-                    options.value = params.value.toString();
+                    options.value = params.value;
                 }
                 if (params?.gas) {
-                    options.gasLimit = Number(params.gas);
+                    options.gasLimit = params.gas;
                 }
                 if (params?.gasPrice) {
-                    options.gasPrice = params.gasPrice.toString();
+                    options.gasPrice = params.gasPrice;
                 }
 
                 // Set transaction options if provided
@@ -243,9 +244,10 @@ export function createViemContract<TAbi extends Abi>(
     // Create event methods
     for (const abiItem of contract.abi) {
         if (abiItem.type === 'event') {
+            const eventAbi = contract.getEventAbi(abiItem.name);
             viemContract.events[abiItem.name] = {
                 address: contract.address.toString(),
-                topics: [contract.getEventSelector(abiItem.name)]
+                topics: [toEventSelector(eventAbi as any)]
             };
         }
     }

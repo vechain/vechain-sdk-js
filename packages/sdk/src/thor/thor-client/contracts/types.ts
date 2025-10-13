@@ -1,5 +1,5 @@
 import type { Abi, AbiParameter } from 'abitype';
-import { type Address, type Hex } from '@common/vcdm';
+import { BlockRef, type Address, type Hex } from '@common/vcdm';
 import { type EstimateGasOptions } from '../../thor-client/model/gas/EstimateGasOptions';
 import { type ClauseOptions } from '@thor/thorest/transactions/model/ClauseOptions';
 
@@ -124,29 +124,29 @@ type ContractTransactionOptions = {
     /**
      * The value to send with the transaction (in wei)
      */
-    value?: string | number | bigint;
+    value?: bigint;
 
     /**
      * Gas limit for the transaction
      */
-    gas?: number;
-    gasLimit?: number;
+    gas?: bigint;
+    gasLimit?: bigint;
 
     /**
      * Gas price for the transaction
      */
-    gasPrice?: string;
+    gasPrice?: bigint;
     gasPriceCoef?: number;
 
     /**
      * Max fee per gas (EIP-1559)
      */
-    maxFeePerGas?: string | number | bigint;
+    maxFeePerGas?: bigint;
 
     /**
      * Max priority fee per gas (EIP-1559)
      */
-    maxPriorityFeePerGas?: string | number | bigint;
+    maxPriorityFeePerGas?: bigint;
 
     /**
      * Transaction nonce
@@ -161,7 +161,7 @@ type ContractTransactionOptions = {
     /**
      * Block reference
      */
-    blockRef?: string;
+    blockRef?: BlockRef;
 
     /**
      * Chain tag
@@ -191,7 +191,7 @@ type ContractCallOptions = EstimateGasOptions & {
     /**
      * Caller address
      */
-    caller?: string;
+    caller?: Address;
 
     /**
      * Comment for the call
@@ -216,17 +216,17 @@ interface SimulateTransactionOptions {
     /**
      * Caller address
      */
-    caller?: string;
+    caller?: Address;
 
     /**
      * Gas limit for simulation
      */
-    gas?: number;
+    gas?: bigint;
 
     /**
      * Gas price for simulation
      */
-    gasPrice?: string;
+    gasPrice?: bigint;
 
     /**
      * Comment for the simulation

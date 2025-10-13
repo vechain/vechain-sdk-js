@@ -290,7 +290,7 @@ describe('Read-Only Contract', () => {
             expect(clause).toEqual({
                 to: contractAddress.toString(),
                 data: expect.stringMatching(/^0x[a-fA-F0-9]+$/),
-                value: '0x0',
+                value: 0n,
                 comment: undefined
             });
         });
@@ -310,7 +310,7 @@ describe('Read-Only Contract', () => {
             expect(clause).toEqual({
                 to: contractAddress.toString(),
                 data: expect.stringMatching(/^0x[a-fA-F0-9]+$/),
-                value: '0x0',
+                value: 0n,
                 comment: undefined
             });
         });
@@ -329,7 +329,7 @@ describe('Read-Only Contract', () => {
             expect(clause).toEqual({
                 to: contractAddress.toString(),
                 data: expect.stringMatching(/^0x[a-fA-F0-9]+$/),
-                value: '0x0',
+                value: 0n,
                 comment: undefined
             });
         });

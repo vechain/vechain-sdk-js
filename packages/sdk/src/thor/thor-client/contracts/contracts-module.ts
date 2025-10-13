@@ -18,12 +18,8 @@ import {
     ContractCallError,
     IllegalArgumentError
 } from '../../../common/errors';
-import {
-    encodeFunctionData,
-    encodeAbiParameters,
-    toFunctionSelector,
-    type AbiParameter
-} from 'viem';
+import { log } from '@common/logging';
+import { encodeFunctionData, type AbiParameter } from 'viem';
 import { BUILT_IN_CONTRACTS } from './constants';
 import { dataUtils } from './utils';
 import type {
@@ -52,27 +48,6 @@ class ContractsModule extends AbstractThorModule {
         super(httpClient);
     }
 
-    /**
-     * Creates a new instance of `ContractFactory` configured with the specified ABI, bytecode, and signer.
-     * This factory is used to deploy new smart contracts to the blockchain network using VeChain's official Clause pattern.
-     *
-     * @param abi - The Application Binary Interface (ABI) of the contract.
-     * @param bytecode - The compiled bytecode of the contract.
-     * @param signer - The signer used for signing transactions during contract deployment.
-     * @returns An instance of `ContractFactory` configured with the provided parameters.
-     *
-     * @example
-     * ```typescript
-     * const thorClient = ThorClient.at('https://mainnet.vechain.org');
-     * const factory = thorClient.contracts.createContractFactory(abi, bytecode, signer);
-     *
-     * // Create deployment clause
-     * const deployClause = factory.createDeploymentClause([constructorArg1, constructorArg2]);
-     *
-     * // Deploy contract (when ThorClient transaction sending is implemented)
-     * const contract = await factory.deploy([constructorArg1, constructorArg2]);
-     * ```
-     */
     public createContractFactory<TAbi extends Abi>(
         abi: TAbi,
         bytecode: string,
@@ -193,28 +168,37 @@ class ContractsModule extends AbstractThorModule {
                 return arg;
             });
 
-            console.log('encodeFunctionData inputs:', {
-                abi: [functionAbi],
-                functionName: functionAbi.name,
-                args: processedArgs
+            log.debug({
+                message: 'encodeFunctionData inputs',
+                context: {
+                    abi: [functionAbi],
+                    functionName: functionAbi.name,
+                    args: processedArgs
+                }
             });
-            console.log('functionAbi inputs:', functionAbi.inputs);
+            log.debug({
+                message: 'functionAbi inputs',
+                context: { inputs: functionAbi.inputs }
+            });
 
-            // Use VeChain SDK's own encoding instead of viem
+            // Use viem's encodeFunctionData directly
             let data: string;
             try {
-                const encodedParams = encodeAbiParameters(
-                    functionAbi.inputs as readonly AbiParameter[],
-                    processedArgs
-                );
+                data = encodeFunctionData({
+                    abi: [functionAbi] as any,
+                    functionName: functionAbi.name as any,
+                    args: processedArgs as any
+                });
 
-                // Add function selector
-                const functionSelector = toFunctionSelector(functionAbi);
-                data = functionSelector + encodedParams.slice(2);
-
-                console.log('Successfully encoded data:', data);
+                log.debug({
+                    message: 'Successfully encoded data',
+                    context: { data }
+                });
             } catch (error) {
-                console.error('Error in encodeAbiParameters:', error);
+                log.error({
+                    message: 'Error in encodeFunctionData',
+                    context: { error }
+                });
                 throw error;
             }
 
@@ -228,21 +212,34 @@ class ContractsModule extends AbstractThorModule {
             // Create the execute codes request
             const request: ExecuteCodesRequestJSON = {
                 clauses: [clause],
-                caller: options?.caller
+                caller: options?.caller?.toString()
             };
 
             // Execute the call using InspectClauses
-            console.log('Creating InspectClauses with request:', request);
+            log.debug({
+                message: 'Creating InspectClauses with request',
+                context: { request }
+            });
             const inspectClauses = InspectClauses.of(request);
-            console.log('InspectClauses created successfully');
+            log.debug({
+                message: 'InspectClauses created successfully'
+            });
 
-            console.log('Making HTTP request...');
+            log.debug({
+                message: 'Making HTTP request'
+            });
             const response = await inspectClauses.askTo(this.httpClient);
-            console.log('HTTP response received:', response);
+            log.debug({
+                message: 'HTTP response received',
+                context: { response }
+            });
 
             // Process the response
             const result = response.response;
-            console.log('Processing response result:', result);
+            log.debug({
+                message: 'Processing response result',
+                context: { result }
+            });
 
             if (result.items && result.items.length > 0) {
                 const clauseResult = result.items[0];
@@ -275,10 +272,10 @@ class ContractsModule extends AbstractThorModule {
                         // this would be decoded using the function's output ABI
                         decodedResult = [clauseResult.data];
                     } catch (error) {
-                        console.warn(
-                            'Failed to decode contract call result:',
-                            error
-                        );
+                        log.warn({
+                            message: 'Failed to decode contract call result',
+                            context: { error }
+                        });
                         decodedResult = [clauseResult.data];
                     }
                 }
@@ -362,7 +359,9 @@ class ContractsModule extends AbstractThorModule {
                 gas: BigInt(options?.gas ?? 21000),
                 gasPriceCoef: BigInt(options?.gasPriceCoef ?? 0),
                 nonce: options?.nonce ?? 0,
-                blockRef: Hex.of(options?.blockRef ?? '0x0000000000000000'),
+                blockRef: Hex.of(
+                    String(options?.blockRef ?? '0x0000000000000000')
+                ),
                 chainTag: parseInt(options?.chainTag ?? '0x27'),
                 dependsOn: options?.dependsOn?.[0]
                     ? Hex.of(options.dependsOn[0])
@@ -391,7 +390,7 @@ class ContractsModule extends AbstractThorModule {
                 id: response.response.id.toString(),
                 wait: async () =>
                     await this.waitForTransaction(
-                        response.response.id.toString()
+                        Hex.of(response.response.id.toString())
                     )
             };
         } catch (error) {
@@ -423,12 +422,12 @@ class ContractsModule extends AbstractThorModule {
         clauses: {
             to: Address;
             data: string;
-            value: string;
+            value: bigint;
             contractAddress?: Address;
             functionAbi?: AbiFunction;
             functionData?: FunctionArgs;
         }[],
-        options?: { caller?: string; revision?: Revision }
+        options?: { caller?: Address; revision?: Revision }
     ): Promise<ContractCallResult[]> {
         try {
             // Validate clauses
@@ -500,7 +499,7 @@ class ContractsModule extends AbstractThorModule {
         clauses: {
             to: Address;
             data: string;
-            value: string;
+            value: bigint;
             contractAddress?: Address;
             functionAbi?: AbiFunction;
             functionData?: FunctionArgs;
@@ -512,7 +511,7 @@ class ContractsModule extends AbstractThorModule {
             // Build multiple clauses for a single transaction
             const transactionClauses: (
                 | Clause
-                | { to: Address; data: string; value: string }
+                | { to: Address; data: string; value: bigint }
             )[] = clauses.map((clause) => {
                 if (
                     clause.contractAddress &&
@@ -524,7 +523,7 @@ class ContractsModule extends AbstractThorModule {
                         [clause.functionAbi],
                         clause.functionAbi.name,
                         clause.functionData,
-                        VET.of(clause.value ?? 0, Units.wei).bi
+                        clause.value ?? 0n
                     );
 
                     // Convert ClauseBuilder to Clause
@@ -545,7 +544,9 @@ class ContractsModule extends AbstractThorModule {
                 gas: BigInt(options?.gas ?? 21000),
                 gasPriceCoef: BigInt(options?.gasPriceCoef ?? 0),
                 nonce: options?.nonce ?? 0,
-                blockRef: Hex.of(options?.blockRef ?? '0x0000000000000000'),
+                blockRef: Hex.of(
+                    String(options?.blockRef ?? '0x0000000000000000')
+                ),
                 chainTag: parseInt(options?.chainTag ?? '0x27'),
                 dependsOn: options?.dependsOn?.[0]
                     ? Hex.of(options.dependsOn[0])
@@ -574,7 +575,7 @@ class ContractsModule extends AbstractThorModule {
                 id: response.response.id.toString(),
                 wait: async () =>
                     await this.waitForTransaction(
-                        response.response.id.toString()
+                        Hex.of(response.response.id.toString())
                     )
             };
         } catch (error) {
@@ -600,7 +601,7 @@ class ContractsModule extends AbstractThorModule {
      * @returns Promise that resolves when the transaction is confirmed
      */
     private async waitForTransaction(
-        transactionId: string
+        transactionId: Hex
     ): Promise<{ id: string; blockNumber: number; blockHash: string }> {
         // This is a placeholder implementation
         // In a full implementation, this would poll the blockchain for transaction confirmation
@@ -608,7 +609,7 @@ class ContractsModule extends AbstractThorModule {
             setTimeout(
                 () =>
                     resolve({
-                        id: transactionId,
+                        id: transactionId.toString(),
                         blockNumber: 0,
                         blockHash: '0x'
                     }),

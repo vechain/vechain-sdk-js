@@ -2,7 +2,6 @@ import { Address, Hex, HexUInt, Quantity } from '@common/vcdm';
 import type { AbiParameter, AbiFunction } from 'abitype';
 import { type ClauseJSON } from '@thor/thorest/json';
 import { IllegalArgumentError } from '@common/errors';
-import { type TransactionClause } from '@thor/thorest/transactions/model/TransactionClause';
 
 // Proper function arguments type using VeChain SDK types
 type FunctionArgs = AbiParameter[];
@@ -14,39 +13,6 @@ const FQP = 'packages/sdk/src/thor/thor-client/contracts/model/Clause.ts!';
 
 // Re-export the existing ClauseOptions from the SDK
 export { type ClauseOptions } from '@thor/thorest/transactions/model/ClauseOptions';
-
-/**
- * Contract clause interface - using existing SDK types
- */
-export interface ContractClause {
-    /**
-     * Contract address
-     */
-    contractAddress: string;
-
-    /**
-     * Function ABI
-     */
-    functionAbi: AbiFunction;
-
-    /**
-     * Function data/arguments
-     */
-    functionData: FunctionArgs;
-
-    /**
-     * Value to send
-     */
-    value?: string | number | bigint;
-
-    /**
-     * Optional comment
-     */
-    comment?: string;
-}
-
-// Re-export the existing TransactionClause from the SDK
-export { type TransactionClause };
 
 /**
  * [Clause](http://localhost:8669/doc/stoplight-ui/#/schemas/Clause)

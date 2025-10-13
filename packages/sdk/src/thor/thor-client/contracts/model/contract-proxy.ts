@@ -1,6 +1,8 @@
 import { Address, Hex, Revision } from '@common/vcdm';
 import type { AbiParameter } from 'abitype';
 import { IllegalArgumentError, InvalidTransactionField } from '@common/errors';
+import { log } from '@common/logging';
+import { encodeFunctionData } from 'viem';
 import { VET, Units } from './VET';
 import { Clause } from './Clause';
 import { ContractFilter } from './ContractFilter';
@@ -13,7 +15,7 @@ import type {
 } from 'abitype';
 import type { Contract } from './contract';
 import type {
-    ClauseAdditionalOptions,
+    ContractClauseOptions,
     ContractFunctionClause,
     ContractFunctionCriteria,
     ContractFunctionFilter,
@@ -26,14 +28,14 @@ import type {
  */
 function extractAndRemoveAdditionalOptions(args: AbiParameter[]): {
     args: AbiParameter[];
-    clauseAdditionalOptions?: ClauseAdditionalOptions;
+    clauseAdditionalOptions?: ContractClauseOptions;
 } {
     // Ensure args is an array
     if (!Array.isArray(args)) {
-        console.error(
-            'extractAndRemoveAdditionalOptions: args is not an array:',
-            args
-        );
+        log.error({
+            message: 'extractAndRemoveAdditionalOptions: args is not an array',
+            context: { args }
+        });
         return { args: [] };
     }
 
@@ -55,7 +57,7 @@ function extractAndRemoveAdditionalOptions(args: AbiParameter[]): {
         ) {
             return {
                 args: args.slice(0, -1),
-                clauseAdditionalOptions: lastArg as ClauseAdditionalOptions
+                clauseAdditionalOptions: lastArg as ContractClauseOptions
             };
         }
     }
@@ -131,10 +133,7 @@ function getReadProxy<TAbi extends Abi>(
                         functionAbi,
                         extractOptionsResult.args as any,
                         {
-                            caller:
-                                contract.getSigner() !== undefined
-                                    ? contract.getSigner()?.address?.toString()
-                                    : undefined,
+                            caller: contract.getSigner()?.address,
                             ...contract.getContractReadOptions(),
                             comment: clauseComment,
                             revision: revisionValue
@@ -224,8 +223,10 @@ function getTransactProxy<TAbi extends Abi>(
                         ...transactionOptions,
                         value:
                             transactionOptions.value ??
-                            transactionValue ??
-                            '0x0',
+                            (typeof transactionValue === 'string'
+                                ? BigInt(transactionValue)
+                                : transactionValue) ??
+                            0n,
                         comment: clauseComment
                     }
                 );
@@ -275,7 +276,7 @@ function getClauseProxy<TAbi extends Abi>(
             ): {
                 to: string;
                 data: string;
-                value: string | number | bigint;
+                value: bigint;
                 comment?: string;
             } => {
                 // Get the transaction options for the contract
@@ -299,9 +300,14 @@ function getClauseProxy<TAbi extends Abi>(
                 const functionAbi = contract.getFunctionAbi(prop);
 
                 // Create the clause
+                const encodedData = encodeFunctionData({
+                    abi: contract.abi as any,
+                    functionName: prop.toString() as any,
+                    args: args as any
+                });
                 const clause = Clause.callFunction(
                     Address.of(contract.address),
-                    contract.encodeFunctionData(prop.toString(), args as any),
+                    encodedData,
                     VET.of(
                         transactionOptions.value ?? transactionValue ?? 0,
                         Units.wei

@@ -10,12 +10,13 @@ import { encodeFunctionData, toEventSelector } from 'viem';
 import { type Signer } from '@thor/signer';
 import { type Address, type Hex, Revision } from '@common/vcdm';
 import { IllegalArgumentError } from '@common/errors';
+import { log } from '@common/logging';
 import type {
     ContractCallOptions,
     ContractTransactionOptions,
     SendTransactionResult
 } from '../types';
-import type { ContractsModule } from '../interfaces';
+import type { ContractsModule } from '../contracts-module';
 
 // Proper function arguments type using VeChain SDK types
 type FunctionArgs = AbiParameter[];
@@ -49,7 +50,7 @@ class Contract<TAbi extends Abi> {
         (...args: FunctionArgs) => {
             to: string;
             data: string;
-            value: string | number | bigint;
+            value: bigint;
             comment?: string;
         }
     > = {};
@@ -78,12 +79,7 @@ class Contract<TAbi extends Abi> {
         address: Address,
         abi: TAbi,
         contractsModule: ContractsModule,
-        signer?: Signer,
-        deployTransactionReceipt?: {
-            id: string;
-            blockNumber: number;
-            blockHash: string;
-        }
+        signer?: Signer
     ) {
         this.abi = abi;
         this.address = address;
@@ -229,9 +225,7 @@ class Contract<TAbi extends Abi> {
                                     abiItem,
                                     cleanArgs,
                                     {
-                                        caller: this.signer
-                                            ? this.signer.address.toString()
-                                            : undefined,
+                                        caller: this.signer?.address,
                                         // Read operations don't send value, so omit value field
                                         ...this.contractCallOptions,
                                         ...options
@@ -254,10 +248,10 @@ class Contract<TAbi extends Abi> {
 
                             return result.result.array || [];
                         } catch (error) {
-                            console.error(
-                                `Error calling ${functionName}:`,
-                                error
-                            );
+                            log.error({
+                                message: `Error calling ${functionName}`,
+                                context: { functionName, error }
+                            });
                             throw error;
                         }
                     };
@@ -302,10 +296,10 @@ class Contract<TAbi extends Abi> {
 
                             return result;
                         } catch (error) {
-                            console.error(
-                                `Error executing transaction ${functionName}:`,
-                                error
-                            );
+                            log.error({
+                                message: `Error executing transaction ${functionName}`,
+                                context: { functionName, error }
+                            });
                             throw error;
                         }
                     };
@@ -317,14 +311,15 @@ class Contract<TAbi extends Abi> {
                     const { args: cleanArgs, options } =
                         this.extractAdditionalOptions(args);
 
-                    const data = this.encodeFunctionData(
-                        functionName,
-                        cleanArgs
-                    );
+                    const data = encodeFunctionData({
+                        abi: this.abi as any,
+                        functionName: functionName as any,
+                        args: cleanArgs as any
+                    });
                     return {
                         to: this.address.toString(),
                         data: data,
-                        value: options.value || '0x0',
+                        value: options.value || 0n,
                         comment: options.comment
                     };
                 };
@@ -334,18 +329,20 @@ class Contract<TAbi extends Abi> {
             if (abiItem.type === 'event') {
                 const eventName = abiItem.name;
                 this.filters[eventName] = (...args: FunctionArgs) => {
+                    const eventAbi = this.getEventAbi(eventName);
                     return {
                         address: this.address.toString(),
-                        topics: [this.getEventSelector(eventName)]
+                        topics: [toEventSelector(eventAbi as any)]
                     };
                 };
 
                 this.criteria[eventName] = (...args: FunctionArgs) => {
+                    const eventAbi = this.getEventAbi(eventName);
                     return {
                         eventName: eventName,
                         args: args,
                         address: this.address.toString(),
-                        topics: [this.getEventSelector(eventName)]
+                        topics: [toEventSelector(eventAbi as any)]
                     };
                 };
             }
@@ -360,13 +357,19 @@ class Contract<TAbi extends Abi> {
     private extractAdditionalOptions(args: FunctionArgs): {
         args: FunctionArgs;
         options: {
-            value?: string | number | bigint;
+            value?: bigint;
             comment?: string;
             revision?: Revision;
         };
     } {
-        console.log('extractAdditionalOptions called with args:', args);
-        console.log('args is array:', Array.isArray(args));
+        log.debug({
+            message: 'extractAdditionalOptions called with args',
+            context: { args }
+        });
+        log.debug({
+            message: 'args is array',
+            context: { isArray: Array.isArray(args) }
+        });
 
         // Check if the last argument is an options object
         if (
@@ -386,24 +389,24 @@ class Contract<TAbi extends Abi> {
                 'revision' in lastArg
             ) {
                 const options: {
-                    value?: string | number | bigint;
+                    value?: bigint;
                     comment?: string;
                     revision?: Revision;
                 } = {};
 
                 if ('value' in lastArg) {
-                    // Convert value to proper format
+                    // Convert value to bigint
                     const value = lastArg.value;
                     if (typeof value === 'number') {
-                        options.value = `0x${value.toString(16)}`;
+                        options.value = BigInt(value);
                     } else if (typeof value === 'bigint') {
-                        options.value = `0x${value.toString(16)}`;
+                        options.value = value;
                     } else if (typeof value === 'string') {
-                        options.value = value.startsWith('0x')
-                            ? value
-                            : `0x${value}`;
+                        options.value = BigInt(
+                            value.startsWith('0x') ? value : `0x${value}`
+                        );
                     } else {
-                        options.value = '0x0';
+                        options.value = 0n;
                     }
                 }
 
@@ -435,43 +438,6 @@ class Contract<TAbi extends Abi> {
             args,
             options: {}
         };
-    }
-
-    /**
-     * Encodes function data for a given function name and arguments
-     * @param functionName - The function name
-     * @param args - The function arguments
-     * @returns The encoded function data
-     */
-    public encodeFunctionData(
-        functionName: string,
-        args: FunctionArgs = []
-    ): string {
-        try {
-            return encodeFunctionData({
-                abi: this.abi as any,
-                functionName: functionName as any,
-                args: args as any
-            });
-        } catch (error) {
-            console.warn('Failed to encode function data:', error);
-            return '0x' + functionName; // Fallback
-        }
-    }
-
-    /**
-     * Gets the event selector for a given event name
-     * @param eventName - The event name
-     * @returns The event selector
-     */
-    public getEventSelector(eventName: string): string {
-        try {
-            const eventAbi = this.getEventAbi(eventName);
-            return toEventSelector(eventAbi as any);
-        } catch (error) {
-            console.warn('Failed to get event selector:', error);
-            return '0x' + eventName; // Fallback
-        }
     }
 
     /**
