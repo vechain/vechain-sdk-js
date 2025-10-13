@@ -189,7 +189,17 @@ export async function waitUntil<T>(options: WaitUntilOptions<T>): Promise<T> {
                     throw wrapError(error);
                 }
             }
-            await delay(intervalMs, controller.signal);
+            try {
+                await delay(intervalMs, controller.signal);
+            } catch (error) {
+                if (controller.signal.aborted) {
+                    throw new IllegalArgumentError(
+                        'waitUntil()',
+                        'Timed out while waiting for predicate'
+                    );
+                }
+                throw wrapError(error);
+            }
         }
     } finally {
         if (timeout !== undefined) {

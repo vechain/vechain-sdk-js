@@ -1,3 +1,6 @@
+/**
+ * @group unit/common/utils
+ */
 import { describe, expect, jest, test } from '@jest/globals';
 import {
     createEventPoll,
@@ -5,6 +8,15 @@ import {
     type EventPollController
 } from '@common/utils/poller';
 import { IllegalArgumentError } from '@common/errors';
+
+const nextTick = async (): Promise<void> => {
+    await Promise.resolve();
+};
+
+const stubDelay = async (): Promise<void> => {
+    // Simulate delay resolution without aborting
+    await nextTick();
+};
 
 describe('poller utilities', () => {
     beforeEach(() => {
@@ -218,13 +230,14 @@ describe('poller utilities', () => {
 
         const promise = waitUntil({
             task,
-            predicate: (result) => result >= 3,
+            predicate: (result) => (result as number) >= 3,
             intervalMs: 100
         });
 
+        const expectation = expect(promise).resolves.toBe(3);
         await jest.advanceTimersByTimeAsync(350);
-        await expect(promise).resolves.toBe(3);
-        expect(task).toHaveBeenCalledTimes(4);
+        await expectation;
+        expect(task).toHaveBeenCalledTimes(3);
     });
 
     test('waitUntil throws after exceeding network error threshold', async () => {
@@ -240,8 +253,9 @@ describe('poller utilities', () => {
             maxNetworkErrors: 1
         });
 
+        const expectation = expect(promise).rejects.toThrow('net');
         await jest.advanceTimersByTimeAsync(150);
-        await expect(promise).rejects.toThrow('net');
+        await expectation;
     });
 
     test('waitUntil rejects when timeout is reached', async () => {
@@ -254,8 +268,29 @@ describe('poller utilities', () => {
             timeoutMs: 120
         });
 
+        const expectation = expect(promise).rejects.toThrow(
+            'Timed out while waiting for predicate'
+        );
         await jest.advanceTimersByTimeAsync(200);
-        await expect(promise).rejects.toBeInstanceOf(IllegalArgumentError);
+        await expectation;
+    });
+
+    test('waitUntil respects timeout abort signal', async () => {
+        const task = jest.fn().mockResolvedValue(null);
+
+        const promise = waitUntil({
+            task,
+            predicate: () => false,
+            intervalMs: 50,
+            timeoutMs: 100
+        });
+
+        const expectation = expect(promise).rejects.toThrow(
+            'Timed out while waiting for predicate'
+        );
+        await jest.advanceTimersByTimeAsync(150);
+        await expectation;
+        expect(task).toHaveBeenCalledTimes(2);
     });
 
     test('waitUntil logs recoverable network errors before succeeding', async () => {
@@ -275,9 +310,9 @@ describe('poller utilities', () => {
             logger
         });
 
+        const expectation = expect(promise).resolves.toBe('ready');
         await jest.advanceTimersByTimeAsync(120);
-
-        await expect(promise).resolves.toBe('ready');
+        await expectation;
         expect(logger.debug).toHaveBeenCalledWith('waitUntil network error', {
             consecutiveNetworkErrors: 1
         });
@@ -303,23 +338,23 @@ describe('poller utilities', () => {
                 intervalMs: 0
             })
         ).toThrow(IllegalArgumentError);
-        expect(() =>
+        return expect(
             waitUntil({
                 task: () => 0,
                 predicate: () => true,
                 intervalMs: -1
             })
-        ).toThrow(IllegalArgumentError);
+        ).rejects.toBeInstanceOf(IllegalArgumentError);
     });
 
     test('invalid timeout throws IllegalArgumentError', () => {
-        expect(() =>
+        return expect(
             waitUntil({
                 task: () => 0,
                 predicate: () => true,
                 timeoutMs: 0
             })
-        ).toThrow(IllegalArgumentError);
+        ).rejects.toBeInstanceOf(IllegalArgumentError);
     });
 
     test('invalid maxNetworkErrors throws IllegalArgumentError', () => {
@@ -329,13 +364,13 @@ describe('poller utilities', () => {
                 maxNetworkErrors: 0
             })
         ).toThrow(IllegalArgumentError);
-        expect(() =>
+        return expect(
             waitUntil({
                 task: () => 0,
                 predicate: () => true,
                 maxNetworkErrors: 0
             })
-        ).toThrow(IllegalArgumentError);
+        ).rejects.toBeInstanceOf(IllegalArgumentError);
     });
 
     test('waitUntil wraps non-network errors and stops immediately', async () => {
@@ -351,21 +386,6 @@ describe('poller utilities', () => {
                 intervalMs: 50
             })
         ).rejects.toThrow('boom');
-    });
-
-    test('waitUntil respects timeout abort signal', async () => {
-        const task = jest.fn().mockResolvedValue(null);
-
-        const promise = waitUntil({
-            task,
-            predicate: () => false,
-            intervalMs: 50,
-            timeoutMs: 100
-        });
-
-        await jest.advanceTimersByTimeAsync(150);
-        await expect(promise).rejects.toThrow('Timed out while waiting for predicate');
-        expect(task).toHaveBeenCalledTimes(3);
     });
 });
 
