@@ -1,14 +1,24 @@
 import {
     type Abi,
     type ExtractAbiEventNames,
-    type ExtractAbiFunctionNames
+    type ExtractAbiFunctionNames,
+    type AbiFunction,
+    type AbiEvent,
+    type AbiParameter
 } from 'abitype';
 import { encodeFunctionData, toEventSelector } from 'viem';
 import { type Signer } from '@thor/signer';
-import { type Address, Revision } from '@common/vcdm';
+import { type Address, type Hex, Revision } from '@common/vcdm';
 import { IllegalArgumentError } from '@common/errors';
-import type { ContractCallOptions, ContractTransactionOptions } from '../types';
+import type {
+    ContractCallOptions,
+    ContractTransactionOptions,
+    SendTransactionResult
+} from '../types';
 import type { ContractsModule } from '../interfaces';
+
+// Proper function arguments type using VeChain SDK types
+type FunctionArgs = AbiParameter[];
 
 /**
  * A class representing a smart contract deployed on the blockchain.
@@ -20,13 +30,38 @@ class Contract<TAbi extends Abi> {
     readonly abi: TAbi;
     private signer?: Signer;
 
-    public read: Record<string, (...args: unknown[]) => Promise<unknown[]>> =
-        {};
-    public transact: Record<string, (...args: unknown[]) => Promise<unknown>> =
-        {};
-    public filters: Record<string, (...args: unknown[]) => unknown> = {};
-    public clause: Record<string, (...args: unknown[]) => unknown> = {};
-    public criteria: Record<string, (...args: unknown[]) => unknown> = {};
+    public read: Record<
+        string,
+        (
+            ...args: FunctionArgs
+        ) => Promise<(string | number | bigint | boolean | Address | Hex)[]>
+    > = {};
+    public transact: Record<
+        string,
+        (...args: FunctionArgs) => Promise<SendTransactionResult>
+    > = {};
+    public filters: Record<
+        string,
+        (...args: FunctionArgs) => { address: string; topics: string[] }
+    > = {};
+    public clause: Record<
+        string,
+        (...args: FunctionArgs) => {
+            to: string;
+            data: string;
+            value: string | number | bigint;
+            comment?: string;
+        }
+    > = {};
+    public criteria: Record<
+        string,
+        (...args: FunctionArgs) => {
+            eventName: string;
+            args: FunctionArgs;
+            address: string;
+            topics: string[];
+        }
+    > = {};
 
     private contractCallOptions: ContractCallOptions = {};
     private contractTransactionOptions: ContractTransactionOptions = {};
@@ -44,7 +79,11 @@ class Contract<TAbi extends Abi> {
         abi: TAbi,
         contractsModule: ContractsModule,
         signer?: Signer,
-        deployTransactionReceipt?: any
+        deployTransactionReceipt?: {
+            id: string;
+            blockNumber: number;
+            blockHash: string;
+        }
     ) {
         this.abi = abi;
         this.address = address;
@@ -122,7 +161,7 @@ class Contract<TAbi extends Abi> {
      * @param prop - The name of the function.
      * @return The function ABI for the specified function name.
      */
-    public getFunctionAbi(prop: string | symbol): unknown {
+    public getFunctionAbi(prop: string | symbol): AbiFunction | undefined {
         const functionName = prop.toString();
         const functionAbi = this.abi.find(
             (item) => item.type === 'function' && item.name === functionName
@@ -136,7 +175,7 @@ class Contract<TAbi extends Abi> {
             );
         }
 
-        return functionAbi;
+        return functionAbi as AbiFunction;
     }
 
     /**
@@ -145,7 +184,7 @@ class Contract<TAbi extends Abi> {
      * @param eventName - The name of the event.
      * @return The event ABI for the specified event name.
      */
-    public getEventAbi(eventName: string | symbol): unknown {
+    public getEventAbi(eventName: string | symbol): AbiEvent | undefined {
         const name = eventName.toString();
         const eventAbi = this.abi.find(
             (item) => item.type === 'event' && item.name === name
@@ -159,7 +198,7 @@ class Contract<TAbi extends Abi> {
             );
         }
 
-        return eventAbi;
+        return eventAbi as AbiEvent;
     }
 
     /**
@@ -177,7 +216,7 @@ class Contract<TAbi extends Abi> {
                     abiItem.stateMutability === 'view' ||
                     abiItem.stateMutability === 'pure'
                 ) {
-                    this.read[functionName] = async (...args: unknown[]) => {
+                    this.read[functionName] = async (...args: FunctionArgs) => {
                         try {
                             // Extract additional options from args if provided
                             const { args: cleanArgs, options } =
@@ -230,7 +269,7 @@ class Contract<TAbi extends Abi> {
                     abiItem.stateMutability === 'nonpayable'
                 ) {
                     this.transact[functionName] = async (
-                        ...args: unknown[]
+                        ...args: FunctionArgs
                     ) => {
                         if (!this.signer) {
                             throw new IllegalArgumentError(
@@ -273,7 +312,7 @@ class Contract<TAbi extends Abi> {
                 }
 
                 // Clause building - create VeChain transaction clauses
-                this.clause[functionName] = (...args: unknown[]) => {
+                this.clause[functionName] = (...args: FunctionArgs) => {
                     // Extract value from args if provided as last argument object
                     const { args: cleanArgs, options } =
                         this.extractAdditionalOptions(args);
@@ -294,14 +333,14 @@ class Contract<TAbi extends Abi> {
             // Event filters - use ThorClient for event filtering
             if (abiItem.type === 'event') {
                 const eventName = abiItem.name;
-                this.filters[eventName] = (...args: unknown[]) => {
+                this.filters[eventName] = (...args: FunctionArgs) => {
                     return {
                         address: this.address.toString(),
                         topics: [this.getEventSelector(eventName)]
                     };
                 };
 
-                this.criteria[eventName] = (...args: unknown[]) => {
+                this.criteria[eventName] = (...args: FunctionArgs) => {
                     return {
                         eventName: eventName,
                         args: args,
@@ -318,21 +357,27 @@ class Contract<TAbi extends Abi> {
      * @param args - The function arguments
      * @returns Clean arguments and extracted options
      */
-    private extractAdditionalOptions(args: unknown[]): {
-        args: unknown[];
+    private extractAdditionalOptions(args: FunctionArgs): {
+        args: FunctionArgs;
         options: {
             value?: string | number | bigint;
             comment?: string;
             revision?: Revision;
         };
     } {
+        console.log('extractAdditionalOptions called with args:', args);
+        console.log('args is array:', Array.isArray(args));
+
         // Check if the last argument is an options object
         if (
             args.length > 0 &&
             typeof args[args.length - 1] === 'object' &&
             args[args.length - 1] !== null
         ) {
-            const lastArg = args[args.length - 1] as Record<string, unknown>;
+            const lastArg = args[args.length - 1] as Record<
+                string,
+                string | number | bigint | boolean
+            >;
 
             // Check if it contains contract-related options
             if (
@@ -340,7 +385,11 @@ class Contract<TAbi extends Abi> {
                 'comment' in lastArg ||
                 'revision' in lastArg
             ) {
-                const options: any = {};
+                const options: {
+                    value?: string | number | bigint;
+                    comment?: string;
+                    revision?: Revision;
+                } = {};
 
                 if ('value' in lastArg) {
                     // Convert value to proper format
@@ -396,13 +445,13 @@ class Contract<TAbi extends Abi> {
      */
     public encodeFunctionData(
         functionName: string,
-        args: unknown[] = []
+        args: FunctionArgs = []
     ): string {
         try {
             return encodeFunctionData({
                 abi: this.abi as any,
                 functionName: functionName as any,
-                args
+                args: args as any
             });
         } catch (error) {
             console.warn('Failed to encode function data:', error);
@@ -429,7 +478,17 @@ class Contract<TAbi extends Abi> {
      * Gets the public client (if available)
      * @returns The public client or undefined
      */
-    public getPublicClient(): any {
+    public getPublicClient():
+        | {
+              call: Function;
+              estimateGas: Function;
+              createEventFilter: Function;
+              getLogs: Function;
+              simulateCalls: Function;
+              watchEvent: Function;
+              thorNetworks: string;
+          }
+        | undefined {
         return this.contractsModule.getPublicClient();
     }
 
@@ -437,7 +496,13 @@ class Contract<TAbi extends Abi> {
      * Gets the wallet client (if available)
      * @returns The wallet client or undefined
      */
-    public getWalletClient(): any {
+    public getWalletClient():
+        | {
+              account: { digits: string; sign: number };
+              sendTransaction: Function;
+              thorNetworks: string;
+          }
+        | undefined {
         return this.contractsModule.getWalletClient();
     }
 

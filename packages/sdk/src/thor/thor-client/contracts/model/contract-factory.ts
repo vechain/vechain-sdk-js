@@ -1,4 +1,4 @@
-import type { Abi } from 'abitype';
+import type { Abi, AbiParameter } from 'abitype';
 import { type Signer } from '@thor/signer';
 import { HexUInt, Address } from '@common/vcdm';
 import { IllegalArgumentError } from '@common/errors';
@@ -10,6 +10,9 @@ import type {
 } from '../types';
 import type { ContractsModule } from '../interfaces';
 import { Contract } from './contract';
+
+// Proper function arguments type using VeChain SDK types
+type FunctionArgs = AbiParameter[];
 
 /**
  * A factory class for deploying smart contracts to the blockchain.
@@ -72,7 +75,7 @@ class ContractFactory<TAbi extends Abi> {
      * @returns A ClauseBuilder instance for contract deployment.
      */
     public createDeploymentClause(
-        constructorArgs: unknown[] = [],
+        constructorArgs: FunctionArgs = [],
         options?: { comment?: string }
     ): ClauseBuilder {
         try {
@@ -104,7 +107,7 @@ class ContractFactory<TAbi extends Abi> {
                 }
 
                 deployParams = {
-                    types: constructorAbi.inputs as any,
+                    types: constructorAbi.inputs as AbiParameter[],
                     values: constructorArgs.map((arg) => String(arg))
                 };
             }
@@ -129,7 +132,7 @@ class ContractFactory<TAbi extends Abi> {
             }
             throw new IllegalArgumentError(
                 'ContractFactory.createDeploymentClause',
-                'Failed to create deployment clause with unknown error',
+                'Failed to create deployment clause with error',
                 { constructorArgs, options }
             );
         }
@@ -142,7 +145,7 @@ class ContractFactory<TAbi extends Abi> {
      * @returns A Promise that resolves to the deployed Contract instance.
      */
     public async deploy(
-        constructorArgs: unknown[] = [],
+        constructorArgs: FunctionArgs = [],
         options?: ContractTransactionOptions
     ): Promise<Contract<TAbi>> {
         try {
@@ -181,7 +184,7 @@ class ContractFactory<TAbi extends Abi> {
                 constructorAbi.inputs.length > 0
             ) {
                 deployParams = {
-                    types: constructorAbi.inputs as any,
+                    types: constructorAbi.inputs as AbiParameter[],
                     values: constructorArgs.map((arg) => String(arg))
                 };
             }
@@ -224,7 +227,7 @@ class ContractFactory<TAbi extends Abi> {
             }
             throw new IllegalArgumentError(
                 'ContractFactory.deploy',
-                'Contract deployment failed with unknown error',
+                'Contract deployment failed with error',
                 { constructorArgs, options }
             );
         }
@@ -237,7 +240,7 @@ class ContractFactory<TAbi extends Abi> {
      * @returns A Promise that resolves to the estimated gas amount.
      */
     public async estimateDeploymentGas(
-        constructorArgs: unknown[] = [],
+        constructorArgs: FunctionArgs = [],
         options?: { comment?: string }
     ): Promise<bigint> {
         try {
@@ -275,7 +278,7 @@ class ContractFactory<TAbi extends Abi> {
                 constructorAbi.inputs.length > 0
             ) {
                 deployParams = {
-                    types: constructorAbi.inputs as any,
+                    types: constructorAbi.inputs as AbiParameter[],
                     values: constructorArgs.map((arg) => String(arg))
                 };
             }
@@ -315,7 +318,7 @@ class ContractFactory<TAbi extends Abi> {
             }
             throw new IllegalArgumentError(
                 'ContractFactory.estimateDeploymentGas',
-                'Gas estimation failed with unknown error',
+                'Gas estimation failed with error',
                 { constructorArgs, options }
             );
         }
@@ -328,9 +331,16 @@ class ContractFactory<TAbi extends Abi> {
      * @returns A Promise that resolves to the simulation result.
      */
     public async simulateDeployment(
-        constructorArgs: unknown[] = [],
+        constructorArgs: FunctionArgs = [],
         options?: SimulateTransactionOptions
-    ): Promise<unknown> {
+    ): Promise<{
+        success: boolean;
+        result: {
+            plain?: string | number | bigint | boolean;
+            array?: (string | number | bigint | boolean)[];
+            errorMessage?: string;
+        };
+    }> {
         try {
             // 1. Find constructor ABI and validate arguments first
             const constructorAbi = this.abi.find(
@@ -366,7 +376,7 @@ class ContractFactory<TAbi extends Abi> {
                 constructorAbi.inputs.length > 0
             ) {
                 deployParams = {
-                    types: constructorAbi.inputs as any,
+                    types: constructorAbi.inputs as AbiParameter[],
                     values: constructorArgs.map((arg) => String(arg))
                 };
             }
@@ -405,7 +415,7 @@ class ContractFactory<TAbi extends Abi> {
             }
             throw new IllegalArgumentError(
                 'ContractFactory.simulateDeployment',
-                'Simulation failed with unknown error',
+                'Simulation failed with error',
                 { constructorArgs, options }
             );
         }

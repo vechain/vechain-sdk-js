@@ -1,5 +1,6 @@
-import type { Abi } from 'abitype';
-import { type Address } from '@common/vcdm';
+import type { Abi, AbiParameter } from 'abitype';
+import { type Address, type Hex } from '@common/vcdm';
+import { type Signer } from '@thor/signer';
 import { type Contract } from './model/contract';
 import { type ContractsModule } from './contracts-module';
 import type {
@@ -9,6 +10,9 @@ import type {
     ContractCallOptions,
     ContractTransactionOptions
 } from './types';
+
+// Proper function arguments type using VeChain SDK types
+type FunctionArgs = AbiParameter[];
 
 /**
  * Viem-compatible contract interface
@@ -27,12 +31,20 @@ export interface ViemContract<TAbi extends Abi> {
     /**
      * Read methods for view/pure functions
      */
-    read: Record<string, (...args: unknown[]) => Promise<unknown>>;
+    read: Record<
+        string,
+        (
+            ...args: FunctionArgs
+        ) => Promise<(string | number | bigint | boolean | Address | Hex)[]>
+    >;
 
     /**
      * Write methods for state-changing functions
      */
-    write: Record<string, (params?: WriteContractParameters) => Promise<any>>;
+    write: Record<
+        string,
+        (params?: WriteContractParameters) => Promise<string>
+    >;
 
     /**
      * Simulation methods for testing
@@ -40,7 +52,7 @@ export interface ViemContract<TAbi extends Abi> {
     simulate: Record<
         string,
         (params?: {
-            args?: unknown[];
+            args?: FunctionArgs;
             value?: bigint;
         }) => Promise<SimulationResult>
     >;
@@ -50,7 +62,7 @@ export interface ViemContract<TAbi extends Abi> {
      */
     estimateGas: Record<
         string,
-        (params?: { args?: unknown[]; value?: bigint }) => Promise<bigint>
+        (params?: { args?: FunctionArgs; value?: bigint }) => Promise<bigint>
     >;
 
     /**
@@ -64,8 +76,23 @@ export interface ViemContract<TAbi extends Abi> {
     _vechain?: {
         setReadOptions: (options: ContractCallOptions) => void;
         setTransactOptions: (options: ContractTransactionOptions) => void;
-        clause: Record<string, (...args: unknown[]) => unknown>;
-        criteria: Record<string, (...args: unknown[]) => unknown>;
+        clause: Record<
+            string,
+            (...args: FunctionArgs) => {
+                to: Address;
+                data: string;
+                value: string;
+            }
+        >;
+        criteria: Record<
+            string,
+            (...args: FunctionArgs) => {
+                eventName: string;
+                args: FunctionArgs;
+                address: string;
+                topics: string[];
+            }
+        >;
     };
 }
 
@@ -80,21 +107,29 @@ export function createViemContract<TAbi extends Abi>(
     const viemContract: ViemContract<TAbi> = {
         address: contract.address,
         abi: contract.abi,
-        read: {} as Record<string, (...args: unknown[]) => Promise<unknown>>,
+        read: {} as Record<
+            string,
+            (
+                ...args: FunctionArgs
+            ) => Promise<(string | number | bigint | boolean | Address | Hex)[]>
+        >,
         write: {} as Record<
             string,
-            (params?: WriteContractParameters) => Promise<any>
+            (params?: WriteContractParameters) => Promise<string>
         >,
         simulate: {} as Record<
             string,
             (params?: {
-                args?: unknown[];
+                args?: FunctionArgs;
                 value?: bigint;
             }) => Promise<SimulationResult>
         >,
         estimateGas: {} as Record<
             string,
-            (params?: { args?: unknown[]; value?: bigint }) => Promise<bigint>
+            (params?: {
+                args?: FunctionArgs;
+                value?: bigint;
+            }) => Promise<bigint>
         >,
         events: {} as Record<string, EventFilter>,
         _vechain: {
@@ -102,7 +137,7 @@ export function createViemContract<TAbi extends Abi>(
                 contract.setReadOptions(options),
             setTransactOptions: (options: ContractTransactionOptions) =>
                 contract.setTransactOptions(options),
-            clause: contract.clause,
+            clause: contract.clause as any,
             criteria: contract.criteria
         }
     };
@@ -114,7 +149,7 @@ export function createViemContract<TAbi extends Abi>(
             (abiItem.stateMutability === 'view' ||
                 abiItem.stateMutability === 'pure')
         ) {
-            viemContract.read[abiItem.name] = async (...args: unknown[]) => {
+            viemContract.read[abiItem.name] = async (...args: FunctionArgs) => {
                 return await contract.read[abiItem.name](...args);
             };
         }
@@ -148,7 +183,8 @@ export function createViemContract<TAbi extends Abi>(
                     contract.setTransactOptions(options);
                 }
 
-                return await contract.transact[abiItem.name](...args);
+                const result = await contract.transact[abiItem.name](...args);
+                return result.id;
             };
         }
     }
@@ -161,7 +197,7 @@ export function createViemContract<TAbi extends Abi>(
                 abiItem.stateMutability === 'payable')
         ) {
             viemContract.simulate[abiItem.name] = async (params?: {
-                args?: unknown[];
+                args?: FunctionArgs;
                 value?: bigint;
             }) => {
                 try {
@@ -176,12 +212,12 @@ export function createViemContract<TAbi extends Abi>(
                 } catch (error) {
                     return {
                         success: false,
-                        result: null,
+                        result: [],
                         error:
                             error instanceof Error
                                 ? error.message
                                 : 'Unknown error'
-                    };
+                    } as SimulationResult;
                 }
             };
         }
@@ -195,7 +231,7 @@ export function createViemContract<TAbi extends Abi>(
                 abiItem.stateMutability === 'payable')
         ) {
             viemContract.estimateGas[abiItem.name] = async (params?: {
-                args?: unknown[];
+                args?: FunctionArgs;
                 value?: bigint;
             }) => {
                 // Default gas estimation - in a real implementation, this would use ThorClient
@@ -229,7 +265,7 @@ export function getContract<TAbi extends Abi>(
     contractsModule: ContractsModule,
     address: Address,
     abi: TAbi,
-    signer?: any
+    signer?: Signer
 ): ViemContract<TAbi> {
     const contract = contractsModule.load(address, abi, signer);
     return createViemContract(contract);

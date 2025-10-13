@@ -1,6 +1,6 @@
-import { type Abi } from 'abitype';
+import { type Abi, type AbiFunction } from 'abitype';
 import { type Signer } from '../../../thor/signer';
-import { Address, Hex } from '../../../common/vcdm';
+import { Address, Hex, Revision } from '../../../common/vcdm';
 import { type HttpClient } from '@common/http';
 import { AbstractThorModule } from '../AbstractThorModule';
 import { Contract, ContractFactory } from './model';
@@ -18,7 +18,12 @@ import {
     ContractCallError,
     IllegalArgumentError
 } from '../../../common/errors';
-import { encodeFunctionData } from 'viem';
+import {
+    encodeFunctionData,
+    encodeAbiParameters,
+    toFunctionSelector,
+    type AbiParameter
+} from 'viem';
 import { BUILT_IN_CONTRACTS } from './constants';
 import { dataUtils } from './utils';
 import type {
@@ -27,6 +32,9 @@ import type {
     ContractTransactionOptions,
     SendTransactionResult
 } from './types';
+
+// Proper function arguments type using VeChain SDK types
+type FunctionArgs = AbiParameter[];
 
 /**
  * Represents a module for interacting with smart contracts on the blockchain.
@@ -116,8 +124,8 @@ class ContractsModule extends AbstractThorModule {
      */
     public async executeCall(
         contractAddress: Address,
-        functionAbi: any,
-        functionData: unknown[],
+        functionAbi: AbiFunction,
+        functionData: FunctionArgs,
         options?: ContractCallOptions
     ): Promise<ContractCallResult> {
         try {
@@ -148,16 +156,17 @@ class ContractsModule extends AbstractThorModule {
             // In a real implementation, this would make an actual HTTP call
             if (
                 this.httpClient &&
-                typeof (this.httpClient as any).post === 'function'
+                typeof (this.httpClient as { post?: Function }).post ===
+                    'function'
             ) {
-                const mockPost = (this.httpClient as any).post;
-                if (mockPost.mockResolvedValue) {
+                const mockPost = (this.httpClient as { post: Function }).post;
+                if ((mockPost as any).mockResolvedValue) {
                     // This is a mock HTTP client, return mock data
                     return {
                         success: true,
                         result: {
                             array: [],
-                            plain: null
+                            plain: undefined
                         }
                     };
                 }
@@ -166,11 +175,48 @@ class ContractsModule extends AbstractThorModule {
             // For read operations, we need to use a different approach
             // since ClauseBuilder.callFunction requires a positive amount
             // We'll create a simple clause for read operations
-            const data = encodeFunctionData({
+
+            // Convert Address objects to strings for viem compatibility
+            const processedArgs = functionData.map((arg) => {
+                if (
+                    arg &&
+                    typeof arg === 'object' &&
+                    'toString' in arg &&
+                    typeof arg.toString === 'function'
+                ) {
+                    // Check if it's an Address object by checking for toString method and if it returns a hex string
+                    const str = arg.toString();
+                    if (str.startsWith('0x') && str.length === 42) {
+                        return str;
+                    }
+                }
+                return arg;
+            });
+
+            console.log('encodeFunctionData inputs:', {
                 abi: [functionAbi],
                 functionName: functionAbi.name,
-                args: functionData
+                args: processedArgs
             });
+            console.log('functionAbi inputs:', functionAbi.inputs);
+
+            // Use VeChain SDK's own encoding instead of viem
+            let data: string;
+            try {
+                const encodedParams = encodeAbiParameters(
+                    functionAbi.inputs as readonly AbiParameter[],
+                    processedArgs
+                );
+
+                // Add function selector
+                const functionSelector = toFunctionSelector(functionAbi);
+                data = functionSelector + encodedParams.slice(2);
+
+                console.log('Successfully encoded data:', data);
+            } catch (error) {
+                console.error('Error in encodeAbiParameters:', error);
+                throw error;
+            }
 
             const clause = {
                 to: contractAddress.toString(),
@@ -186,11 +232,17 @@ class ContractsModule extends AbstractThorModule {
             };
 
             // Execute the call using InspectClauses
+            console.log('Creating InspectClauses with request:', request);
             const inspectClauses = InspectClauses.of(request);
+            console.log('InspectClauses created successfully');
+
+            console.log('Making HTTP request...');
             const response = await inspectClauses.askTo(this.httpClient);
+            console.log('HTTP response received:', response);
 
             // Process the response
             const result = response.response;
+            console.log('Processing response result:', result);
 
             if (result.items && result.items.length > 0) {
                 const clauseResult = result.items[0];
@@ -206,7 +258,14 @@ class ContractsModule extends AbstractThorModule {
                 }
 
                 // Decode the return data if available
-                let decodedResult: unknown[] = [];
+                let decodedResult: (
+                    | string
+                    | number
+                    | bigint
+                    | boolean
+                    | Address
+                    | Hex
+                )[] = [];
                 if (
                     clauseResult.data &&
                     clauseResult.data.toString() !== '0x'
@@ -274,8 +333,8 @@ class ContractsModule extends AbstractThorModule {
     public async executeTransaction(
         signer: Signer,
         contractAddress: Address,
-        functionAbi: any,
-        functionData: unknown[],
+        functionAbi: AbiFunction,
+        functionData: FunctionArgs,
         options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {
         try {
@@ -361,8 +420,15 @@ class ContractsModule extends AbstractThorModule {
      * @returns Promise that resolves to array of contract call results
      */
     public async executeMultipleClausesCall(
-        clauses: any[],
-        options?: any
+        clauses: {
+            to: Address;
+            data: string;
+            value: string;
+            contractAddress?: Address;
+            functionAbi?: AbiFunction;
+            functionData?: FunctionArgs;
+        }[],
+        options?: { caller?: string; revision?: Revision }
     ): Promise<ContractCallResult[]> {
         try {
             // Validate clauses
@@ -431,13 +497,23 @@ class ContractsModule extends AbstractThorModule {
      * @returns Promise that resolves to the transaction result
      */
     public async executeMultipleClausesTransaction(
-        clauses: any[],
+        clauses: {
+            to: Address;
+            data: string;
+            value: string;
+            contractAddress?: Address;
+            functionAbi?: AbiFunction;
+            functionData?: FunctionArgs;
+        }[],
         signer: Signer,
         options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {
         try {
             // Build multiple clauses for a single transaction
-            const transactionClauses = clauses.map((clause) => {
+            const transactionClauses: (
+                | Clause
+                | { to: Address; data: string; value: string }
+            )[] = clauses.map((clause) => {
                 if (
                     clause.contractAddress &&
                     clause.functionAbi &&
@@ -465,7 +541,7 @@ class ContractsModule extends AbstractThorModule {
 
             // Create a proper TransactionRequest
             const transactionRequest = new TransactionRequest({
-                clauses: transactionClauses,
+                clauses: transactionClauses as Clause[],
                 gas: BigInt(options?.gas ?? 21000),
                 gasPriceCoef: BigInt(options?.gasPriceCoef ?? 0),
                 nonce: options?.nonce ?? 0,
@@ -523,12 +599,19 @@ class ContractsModule extends AbstractThorModule {
      * @param transactionId - The transaction ID to wait for
      * @returns Promise that resolves when the transaction is confirmed
      */
-    private async waitForTransaction(transactionId: string): Promise<any> {
+    private async waitForTransaction(
+        transactionId: string
+    ): Promise<{ id: string; blockNumber: number; blockHash: string }> {
         // This is a placeholder implementation
         // In a full implementation, this would poll the blockchain for transaction confirmation
         return new Promise((resolve) => {
             setTimeout(
-                () => resolve({ transactionId, status: 'confirmed' }),
+                () =>
+                    resolve({
+                        id: transactionId,
+                        blockNumber: 0,
+                        blockHash: '0x'
+                    }),
                 1000
             );
         });
@@ -547,8 +630,10 @@ class ContractsModule extends AbstractThorModule {
     public async getLegacyBaseGasPrice(): Promise<string> {
         const result = await this.executeCall(
             BUILT_IN_CONTRACTS.PARAMS_ADDRESS,
-            ABIContract.ofAbi(BUILT_IN_CONTRACTS.PARAMS_ABI).getFunction('get'),
-            [dataUtils.encodeBytes32String('base-gas-price', 'left')]
+            ABIContract.ofAbi(BUILT_IN_CONTRACTS.PARAMS_ABI).getFunction(
+                'get'
+            ) as any,
+            [dataUtils.encodeBytes32String('base-gas-price', 'left')] as any
         );
 
         if (result.success && result.result.plain) {
@@ -563,7 +648,19 @@ class ContractsModule extends AbstractThorModule {
      * @returns True if public client is available
      */
     public hasPublicClient(): boolean {
-        return !!(this as any).publicClient;
+        return !!(
+            this as ContractsModule & {
+                publicClient?: {
+                    call: Function;
+                    estimateGas: Function;
+                    createEventFilter: Function;
+                    getLogs: Function;
+                    simulateCalls: Function;
+                    watchEvent: Function;
+                    thorNetworks: string;
+                };
+            }
+        ).publicClient;
     }
 
     /**
@@ -571,7 +668,15 @@ class ContractsModule extends AbstractThorModule {
      * @returns True if wallet client is available
      */
     public hasWalletClient(): boolean {
-        return !!(this as any).walletClient;
+        return !!(
+            this as ContractsModule & {
+                walletClient?: {
+                    account: { digits: string; sign: number };
+                    sendTransaction: Function;
+                    thorNetworks: string;
+                };
+            }
+        ).walletClient;
     }
 
     /**
@@ -579,7 +684,13 @@ class ContractsModule extends AbstractThorModule {
      * @param address - The contract address.
      * @returns Contract information.
      */
-    public async getContractInfo(address: Address): Promise<any> {
+    public async getContractInfo(address: Address): Promise<{
+        address: string;
+        bytecode?: string;
+        abi?: Abi;
+        code?: string;
+        isContract?: boolean;
+    }> {
         try {
             // This would typically use ThorClient to get contract info
             // For now, return basic information
@@ -609,7 +720,7 @@ class ContractsModule extends AbstractThorModule {
     public async isContract(address: Address): Promise<boolean> {
         try {
             const info = await this.getContractInfo(address);
-            return info.isContract;
+            return info.isContract ?? false;
         } catch (error) {
             return false;
         }
@@ -623,7 +734,7 @@ class ContractsModule extends AbstractThorModule {
     public async getContractBytecode(address: Address): Promise<string> {
         try {
             const info = await this.getContractInfo(address);
-            return info.code;
+            return info.code ?? '';
         } catch (error) {
             throw new IllegalArgumentError(
                 'ContractsModule.getContractBytecode',
@@ -641,16 +752,52 @@ class ContractsModule extends AbstractThorModule {
      * Gets the public client.
      * @returns The public client.
      */
-    public getPublicClient(): any {
-        return (this as any).publicClient;
+    public getPublicClient():
+        | {
+              call: Function;
+              estimateGas: Function;
+              createEventFilter: Function;
+              getLogs: Function;
+              simulateCalls: Function;
+              watchEvent: Function;
+              thorNetworks: string;
+          }
+        | undefined {
+        return (
+            this as ContractsModule & {
+                publicClient?: {
+                    call: Function;
+                    estimateGas: Function;
+                    createEventFilter: Function;
+                    getLogs: Function;
+                    simulateCalls: Function;
+                    watchEvent: Function;
+                    thorNetworks: string;
+                };
+            }
+        ).publicClient;
     }
 
     /**
      * Gets the wallet client.
      * @returns The wallet client.
      */
-    public getWalletClient(): any {
-        return (this as any).walletClient;
+    public getWalletClient():
+        | {
+              account: { digits: string; sign: number };
+              sendTransaction: Function;
+              thorNetworks: string;
+          }
+        | undefined {
+        return (
+            this as ContractsModule & {
+                walletClient?: {
+                    account: { digits: string; sign: number };
+                    sendTransaction: Function;
+                    thorNetworks: string;
+                };
+            }
+        ).walletClient;
     }
 
     /**
@@ -664,7 +811,15 @@ class ContractsModule extends AbstractThorModule {
         address: Address,
         fromBlock?: number,
         toBlock?: number
-    ): Promise<any[]> {
+    ): Promise<
+        {
+            address: string;
+            topics: string[];
+            data: string;
+            blockNumber: number;
+            transactionHash: string;
+        }[]
+    > {
         try {
             // This would typically use ThorClient to get events
             // For now, return empty array
@@ -694,7 +849,13 @@ class ContractsModule extends AbstractThorModule {
     public watchContractEvents(
         address: Address,
         eventName: string,
-        callback: (event: any) => void
+        callback: (event: {
+            address: string;
+            topics: string[];
+            data: string;
+            blockNumber: number;
+            transactionHash: string;
+        }) => void
     ): { unsubscribe: () => void } {
         // This would typically set up event subscription
         // For now, return a mock watcher

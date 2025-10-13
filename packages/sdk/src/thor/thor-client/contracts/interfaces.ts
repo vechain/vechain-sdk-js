@@ -1,7 +1,9 @@
 /**
  * Shared interfaces for the contracts module
  */
-import type { Address } from '@common/vcdm';
+import type { AbiParameter, AbiFunction } from 'abitype';
+import type { Address, Revision } from '@common/vcdm';
+import type { HttpClient } from '@common/http';
 import type { Signer } from '@thor/signer';
 import type {
     ContractCallResult,
@@ -10,42 +12,82 @@ import type {
     SendTransactionResult
 } from './types';
 
+// Proper function arguments type using VeChain SDK types
+type FunctionArgs = AbiParameter[];
+
 /**
  * Interface for the ContractsModule to avoid circular imports
  */
 export interface ContractsModule {
-    httpClient: any;
-    thorClient: any;
+    httpClient: HttpClient;
+    thorClient: {
+        accounts: unknown;
+        gas: unknown;
+        logs: unknown;
+        nodes: unknown;
+        contracts: unknown;
+        httpClient: unknown;
+    };
 
     // Contract interaction methods
     executeCall(
         contractAddress: Address,
-        functionAbi: any,
-        functionData: unknown[],
+        functionAbi: AbiFunction,
+        functionData: FunctionArgs,
         options?: ContractCallOptions
     ): Promise<ContractCallResult>;
 
     executeTransaction(
         signer: Signer,
         contractAddress: Address,
-        functionAbi: any,
-        functionData: unknown[],
+        functionAbi: AbiFunction,
+        functionData: FunctionArgs,
         options?: ContractTransactionOptions
     ): Promise<SendTransactionResult>;
 
     executeMultipleClausesCall(
-        clauses: any[],
-        options?: any
+        clauses: {
+            to: Address;
+            data: string;
+            value: string;
+            contractAddress?: Address;
+            functionAbi?: AbiFunction;
+            functionData?: FunctionArgs;
+        }[],
+        options?: { caller?: string; revision?: Revision }
     ): Promise<ContractCallResult[]>;
 
     executeMultipleClausesTransaction(
-        clauses: any[],
+        clauses: {
+            to: Address;
+            data: string;
+            value: string;
+            contractAddress?: Address;
+            functionAbi?: AbiFunction;
+            functionData?: FunctionArgs;
+        }[],
         signer: Signer,
         options?: ContractTransactionOptions
     ): Promise<SendTransactionResult>;
 
     getLegacyBaseGasPrice(): Promise<string>;
 
-    getPublicClient(): any;
-    getWalletClient(): any;
+    getPublicClient():
+        | {
+              call: Function;
+              estimateGas: Function;
+              createEventFilter: Function;
+              getLogs: Function;
+              simulateCalls: Function;
+              watchEvent: Function;
+              thorNetworks: string;
+          }
+        | undefined;
+    getWalletClient():
+        | {
+              account: { digits: string; sign: number };
+              sendTransaction: Function;
+              thorNetworks: string;
+          }
+        | undefined;
 }

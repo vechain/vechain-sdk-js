@@ -163,17 +163,25 @@ function getContract<const TAbi extends Abi>({
     // Create the underlying VeChain contract instance using the middle layer
     // Use the HttpClient from the viem clients (either publicClient or walletClient)
     let httpClient =
-        (publicClient as any)?.transport || (walletClient as any)?.transport;
+        (publicClient as any)?.httpClient || (walletClient as any)?.httpClient;
 
-    // Fallback for test environments where transport might not be available
+    // Fallback: create a real FetchHttpClient instead of mock
     if (!httpClient) {
-        // Create a mock HttpClient for testing purposes
-        httpClient = {
-            get: async () => ({ ok: true, json: async () => ({}) }),
-            post: async () => ({ ok: true, json: async () => ({}) }),
-            put: async () => ({ ok: true, json: async () => ({}) }),
-            delete: async () => ({ ok: true, json: async () => ({}) })
-        } as any;
+        // Get the network URL from the clients
+        const networkUrl =
+            (publicClient as any)?.network || (walletClient as any)?.network;
+        if (networkUrl) {
+            const { FetchHttpClient } = require('@common/http');
+            httpClient = new FetchHttpClient(new URL(networkUrl));
+        } else {
+            // Create a mock HttpClient for testing purposes
+            httpClient = {
+                get: async () => ({ ok: true, json: async () => ({}) }),
+                post: async () => ({ ok: true, json: async () => ({}) }),
+                put: async () => ({ ok: true, json: async () => ({}) }),
+                delete: async () => ({ ok: true, json: async () => ({}) })
+            } as any;
+        }
     }
 
     const contractsModule = new ContractsModule(httpClient);
@@ -260,8 +268,27 @@ function getContract<const TAbi extends Abi>({
                 publicClient != null
             ) {
                 contract.read[functionName] = async (...args: FunctionArgs) => {
+                    // Preprocess arguments to convert Address objects to strings
+                    const processedArgs = args.map((arg) => {
+                        if (
+                            arg &&
+                            typeof arg === 'object' &&
+                            'toString' in arg &&
+                            typeof arg.toString === 'function'
+                        ) {
+                            // Check if it's an Address object by checking for toString method and if it returns a hex string
+                            const str = arg.toString();
+                            if (str.startsWith('0x') && str.length === 42) {
+                                return str;
+                            }
+                        }
+                        return arg;
+                    });
+
                     // Delegate to the VeChain contract's read method
-                    return await vechainContract.read[functionName](...args);
+                    return await vechainContract.read[functionName](
+                        ...(processedArgs as any)
+                    );
                 };
             }
 
@@ -282,12 +309,12 @@ function getContract<const TAbi extends Abi>({
                     const clauseArgs =
                         value > 0n ? [...args, { value: value }] : args;
                     const clause = vechainContract.clause[functionName](
-                        ...clauseArgs
+                        ...(clauseArgs as any)
                     );
 
                     // Return as ExecuteCodesRequestJSON format
                     return {
-                        clauses: [clause],
+                        clauses: [clause] as any,
                         gas: gas ? Number(gas) : undefined,
                         gasPrice: gasPrice ? gasPrice.toString() : undefined
                     } as ExecuteCodesRequestJSON;

@@ -1,4 +1,5 @@
 import { Address, Hex, Revision } from '@common/vcdm';
+import type { AbiParameter } from 'abitype';
 import { IllegalArgumentError, InvalidTransactionField } from '@common/errors';
 import { VET, Units } from './VET';
 import { Clause } from './Clause';
@@ -23,10 +24,19 @@ import type {
 /**
  * Extracts and removes additional options from function arguments
  */
-function extractAndRemoveAdditionalOptions(args: unknown[]): {
-    args: unknown[];
+function extractAndRemoveAdditionalOptions(args: AbiParameter[]): {
+    args: AbiParameter[];
     clauseAdditionalOptions?: ClauseAdditionalOptions;
 } {
+    // Ensure args is an array
+    if (!Array.isArray(args)) {
+        console.error(
+            'extractAndRemoveAdditionalOptions: args is not an array:',
+            args
+        );
+        return { args: [] };
+    }
+
     // Simple implementation - in a full version this would be more sophisticated
     // For now, assume additional options are passed as the last argument if it's an object
     if (
@@ -34,7 +44,10 @@ function extractAndRemoveAdditionalOptions(args: unknown[]): {
         typeof args[args.length - 1] === 'object' &&
         args[args.length - 1] !== null
     ) {
-        const lastArg = args[args.length - 1] as Record<string, unknown>;
+        const lastArg = args[args.length - 1] as Record<
+            string,
+            string | number | bigint | boolean
+        >;
         if (
             'value' in lastArg ||
             'comment' in lastArg ||
@@ -55,13 +68,23 @@ function extractAndRemoveAdditionalOptions(args: unknown[]): {
 function buildCriteria<TAbi extends Abi>(
     contract: Contract<TAbi>,
     eventName: string | symbol,
-    args?: Record<string, unknown> | unknown[] | undefined
-): unknown {
+    args?:
+        | Record<string, string | number | bigint | boolean>
+        | AbiParameter[]
+        | undefined
+): {
+    eventName: string;
+    args: AbiParameter[];
+    address: string;
+    topics: string[];
+} {
     // Simplified implementation - would build proper event criteria
+    const processedArgs = Array.isArray(args) ? args : [];
     return {
-        contract: contract.address,
-        event: eventName.toString(),
-        args: args || []
+        eventName: eventName.toString(),
+        args: processedArgs,
+        address: contract.address.toString(),
+        topics: []
     };
 }
 
@@ -80,10 +103,12 @@ function getReadProxy<TAbi extends Abi>(
                     ExtractAbiFunction<TAbi, 'balanceOf'>['inputs'],
                     'inputs'
                 >
-            ): Promise<unknown[]> => {
+            ): Promise<
+                (string | number | bigint | boolean | Address | Hex)[]
+            > => {
                 // Check if the clause comment is provided as an argument
                 const extractOptionsResult = extractAndRemoveAdditionalOptions(
-                    args as unknown[]
+                    args as AbiParameter[]
                 );
 
                 const clauseComment =
@@ -92,12 +117,19 @@ function getReadProxy<TAbi extends Abi>(
                     extractOptionsResult.clauseAdditionalOptions?.revision;
 
                 const functionAbi = contract.getFunctionAbi(prop);
+                if (!functionAbi) {
+                    throw new IllegalArgumentError(
+                        'ContractProxy.getReadProxy',
+                        'Function ABI not found',
+                        { functionName: prop.toString() }
+                    );
+                }
 
                 const executeCallResult =
                     await contract.contractsModule.executeCall(
                         contract.address,
                         functionAbi,
-                        extractOptionsResult.args,
+                        extractOptionsResult.args as any,
                         {
                             caller:
                                 contract.getSigner() !== undefined
@@ -148,7 +180,7 @@ function getTransactProxy<TAbi extends Abi>(
 > {
     return new Proxy(contract.transact, {
         get: (_target, prop) => {
-            return async (...args: unknown[]) => {
+            return async (...args: AbiParameter[]) => {
                 if (contract.getSigner() === undefined) {
                     throw new InvalidTransactionField(
                         'ContractProxy.getTransactProxy',
@@ -174,11 +206,20 @@ function getTransactProxy<TAbi extends Abi>(
 
                 args = extractAdditionalOptionsResult.args;
 
+                const functionAbi = contract.getFunctionAbi(prop);
+                if (!functionAbi) {
+                    throw new IllegalArgumentError(
+                        'ContractProxy.getTransactProxy',
+                        'Function ABI not found',
+                        { functionName: prop.toString() }
+                    );
+                }
+
                 return await contract.contractsModule.executeTransaction(
                     contract.getSigner()!,
                     contract.address,
-                    contract.getFunctionAbi(prop),
-                    args,
+                    functionAbi,
+                    args as any,
                     {
                         ...transactionOptions,
                         value:
@@ -207,7 +248,10 @@ function getFilterProxy<TAbi extends Abi>(
     return new Proxy(contract.filters, {
         get: (_target, prop) => {
             return (
-                args?: Record<string, unknown> | unknown[] | undefined
+                args?:
+                    | Record<string, string | number | bigint | boolean>
+                    | AbiParameter[]
+                    | undefined
             ): ContractFilter<TAbi> => {
                 const criteriaSet = buildCriteria(contract, prop, args);
                 return new ContractFilter<TAbi>(contract, [criteriaSet]);
@@ -224,9 +268,16 @@ function getFilterProxy<TAbi extends Abi>(
 function getClauseProxy<TAbi extends Abi>(
     contract: Contract<TAbi>
 ): ContractFunctionClause<TAbi, ExtractAbiFunctionNames<TAbi>> {
-    return new Proxy(contract.clause, {
+    return new Proxy(contract.clause as any, {
         get: (_target, prop) => {
-            return (...args: unknown[]): any => {
+            return (
+                ...args: AbiParameter[]
+            ): {
+                to: string;
+                data: string;
+                value: string | number | bigint;
+                comment?: string;
+            } => {
                 // Get the transaction options for the contract
                 const transactionOptions =
                     contract.getContractTransactOptions();
@@ -250,7 +301,7 @@ function getClauseProxy<TAbi extends Abi>(
                 // Create the clause
                 const clause = Clause.callFunction(
                     Address.of(contract.address),
-                    contract.encodeFunctionData(prop.toString(), args),
+                    contract.encodeFunctionData(prop.toString(), args as any),
                     VET.of(
                         transactionOptions.value ?? transactionValue ?? 0,
                         Units.wei
@@ -260,8 +311,10 @@ function getClauseProxy<TAbi extends Abi>(
 
                 // Return the contract clause
                 return {
-                    clause,
-                    functionAbi
+                    to: clause.to?.toString() ?? '',
+                    data: clause.data?.toString() ?? '',
+                    value: clause.value ?? 0n,
+                    comment: clause.comment ?? undefined
                 };
             };
         }
@@ -279,8 +332,16 @@ function getCriteriaProxy<TAbi extends Abi>(
     return new Proxy(contract.criteria, {
         get: (_target, prop) => {
             return (
-                args?: Record<string, unknown> | unknown[] | undefined
-            ): unknown => {
+                args?:
+                    | Record<string, string | number | bigint | boolean>
+                    | AbiParameter[]
+                    | undefined
+            ): {
+                eventName: string;
+                args: AbiParameter[];
+                address: string;
+                topics: string[];
+            } => {
                 return buildCriteria(contract, prop, args);
             };
         }

@@ -1,7 +1,10 @@
-import type { Abi } from 'abitype';
-import { type Address } from '@common/vcdm';
+import type { Abi, AbiParameter } from 'abitype';
+import { type Address, type Hex } from '@common/vcdm';
 import { type EstimateGasOptions } from '../../thor-client/model/gas/EstimateGasOptions';
 import { type ClauseOptions } from '@thor/thorest/transactions/model/ClauseOptions';
+
+// Proper function arguments type using VeChain SDK types
+type FunctionArgs = AbiParameter[];
 
 /* --------- Viem Compatibility Types Start --------- */
 
@@ -12,7 +15,7 @@ export interface WriteContractParameters {
     /**
      * The function arguments
      */
-    args?: unknown[];
+    args?: FunctionArgs;
 
     /**
      * The value to send with the transaction
@@ -63,7 +66,14 @@ export interface SimulationResult {
     /**
      * The simulation result data
      */
-    result: unknown;
+    result:
+        | string
+        | number
+        | bigint
+        | boolean
+        | Address
+        | Hex
+        | (string | number | bigint | boolean | Address | Hex)[];
 
     /**
      * Gas used in the simulation
@@ -83,7 +93,7 @@ export interface ContractDeploymentOptions {
     /**
      * Constructor arguments
      */
-    constructorArgs?: unknown[];
+    constructorArgs?: FunctionArgs;
 
     /**
      * Transaction options
@@ -108,6 +118,7 @@ declare module 'abitype' {
 
 /**
  * Defines the options for executing a contract transaction.
+ * Based on existing SDK TransactionRequestParam but adapted for contract operations.
  */
 type ContractTransactionOptions = {
     /**
@@ -231,8 +242,15 @@ interface SimulateTransactionOptions {
 interface ContractCallResult {
     success: boolean;
     result: {
-        plain?: unknown; // Success result as a plain value (might be literal or object).
-        array?: unknown[]; // Success result as an array (values are the same as in plain).
+        plain?:
+            | string
+            | number
+            | bigint
+            | boolean
+            | Address
+            | Hex
+            | (string | number | bigint | boolean | Address | Hex)[]; // Success result as a plain value or array
+        array?: (string | number | bigint | boolean | Address | Hex)[]; // Success result as an array
         errorMessage?: string;
     };
 }
@@ -242,17 +260,7 @@ interface ContractCallResult {
  */
 interface SendTransactionResult {
     id: string;
-    wait: () => Promise<any>;
-}
-
-/**
- * Contract clause for transaction building
- */
-interface ContractClause {
-    to: string;
-    data: string;
-    value: string;
-    comment?: string;
+    wait: () => Promise<{ id: string; blockNumber: number; blockHash: string }>;
 }
 
 export type {
@@ -260,6 +268,5 @@ export type {
     ContractCallResult,
     ContractTransactionOptions,
     SendTransactionResult,
-    ContractClause,
     SimulateTransactionOptions
 };

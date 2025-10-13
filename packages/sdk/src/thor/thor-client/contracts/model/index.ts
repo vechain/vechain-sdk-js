@@ -1,13 +1,10 @@
 export { Contract } from './contract';
 export { ContractFactory } from './contract-factory';
 export { VET, Units } from './VET';
+export { VTHO } from './VTHO';
 export { ABI, ABIItem, ABIFunction, ABIEvent, ABIContract } from './ABI';
 export { Clause } from './Clause';
-export type {
-    ClauseOptions,
-    ContractClause,
-    TransactionClause
-} from './Clause';
+export type { ContractClause, TransactionClause } from './Clause';
 export { ContractFilter } from './ContractFilter';
 export * from './types';
 export {

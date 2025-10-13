@@ -1,29 +1,22 @@
 import { Address, Hex, HexUInt, Quantity } from '@common/vcdm';
+import type { AbiParameter, AbiFunction } from 'abitype';
 import { type ClauseJSON } from '@thor/thorest/json';
 import { IllegalArgumentError } from '@common/errors';
+import { type TransactionClause } from '@thor/thorest/transactions/model/TransactionClause';
+
+// Proper function arguments type using VeChain SDK types
+type FunctionArgs = AbiParameter[];
 
 /**
  * Full-Qualified Path
  */
 const FQP = 'packages/sdk/src/thor/thor-client/contracts/model/Clause.ts!';
 
-/**
- * Clause options for contract interactions
- */
-export interface ClauseOptions {
-    /**
-     * Optional comment for the clause
-     */
-    comment?: string;
-
-    /**
-     * Include ABI in response
-     */
-    includeABI?: boolean;
-}
+// Re-export the existing ClauseOptions from the SDK
+export { type ClauseOptions } from '@thor/thorest/transactions/model/ClauseOptions';
 
 /**
- * Contract clause interface
+ * Contract clause interface - using existing SDK types
  */
 export interface ContractClause {
     /**
@@ -34,12 +27,12 @@ export interface ContractClause {
     /**
      * Function ABI
      */
-    functionAbi: any;
+    functionAbi: AbiFunction;
 
     /**
      * Function data/arguments
      */
-    functionData: unknown[];
+    functionData: FunctionArgs;
 
     /**
      * Value to send
@@ -52,35 +45,8 @@ export interface ContractClause {
     comment?: string;
 }
 
-/**
- * Transaction clause interface
- */
-export interface TransactionClause {
-    /**
-     * The recipient of the clause. Null indicates contract deployment.
-     */
-    readonly to: string | null;
-
-    /**
-     * The amount (wei) of VET to be transferred.
-     */
-    readonly value: bigint;
-
-    /**
-     * The input data for the clause (in bytes).
-     */
-    readonly data: string;
-
-    /**
-     * An optional comment to describe the purpose of the clause.
-     */
-    readonly comment?: string;
-
-    /**
-     * An optional ABI for the contract method invocation.
-     */
-    readonly abi?: string;
-}
+// Re-export the existing TransactionClause from the SDK
+export { type TransactionClause };
 
 /**
  * [Clause](http://localhost:8669/doc/stoplight-ui/#/schemas/Clause)
@@ -222,6 +188,29 @@ class Clause {
         abi?: string
     ): Clause {
         return new Clause(null, 0n, Hex.of(data), comment ?? null, abi ?? null);
+    }
+
+    /**
+     * Creates a clause for transferring VTHO tokens
+     */
+    public static transferVTHOToken(
+        recipientAddress: Address,
+        amount: bigint,
+        comment?: string
+    ): { clause: Clause } {
+        // VTHO is a VIP180 token, so we need to call the transfer function on the VTHO contract
+        const VTHO_ADDRESS = '0x0000000000000000000000000000456e65726779'; // Energy contract address
+        const transferData = `0xa9059cbb${recipientAddress.toString().slice(2).padStart(64, '0')}${amount.toString(16).padStart(64, '0')}`;
+
+        const clause = new Clause(
+            Address.of(VTHO_ADDRESS),
+            0n,
+            Hex.of(transferData),
+            comment ?? null,
+            null
+        );
+
+        return { clause };
     }
 }
 
