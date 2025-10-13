@@ -4,16 +4,16 @@ import {
 } from '@thor/thor-client/model/transactions';
 import {
     Address,
+    Blake2b256,
     BufferKind,
     CompactFixedHexBlobKind,
     Hex,
     HexBlobKind,
-    HexUInt,
     InvalidEncodingError,
     NumericKind,
     OptionalFixedHexBlobKind,
     RLP,
-    RLPProfile,
+    type RLPProfile,
     RLPProfiler,
     type RLPValidObject,
     Secp256k1
@@ -116,18 +116,6 @@ class TransactionRequestRLPCodec {
         return TransactionRequestRLPCodec.decodeDynamicFee(encodedData);
     }
 
-    private static decodeClauses(decoded: RLPValidObject): Clause[] {
-        return (decoded.clauses as []).map((decodedClause: RLPValidObject) => {
-            return new Clause(
-                (decodedClause.to as string) != null
-                    ? Address.of(decodedClause.to as string)
-                    : null,
-                BigInt(decodedClause.value as string),
-                Hex.of(decodedClause.data as string) ?? undefined
-            );
-        });
-    }
-
     // Dynamic fee transaction - use maxFeePerGas and maxPriorityFeePerGas
     private static decodeDynamicFee(encoded: Uint8Array): TransactionRequest {
         let rlpProfile: RLPProfile;
@@ -156,7 +144,7 @@ class TransactionRequestRLPCodec {
         }
         const decoded = RLPProfiler.ofObjectEncoded(encoded, rlpProfile)
             .object as RLPValidObject;
-        const clauses = TransactionRequestRLPCodec.decodeClauses(decoded);
+        const body = TransactionRequestRLPCodec.decodeBody(decoded);
         const signature = decoded.signature as Uint8Array;
         const gasPayerSignature =
             signature !== null && signature !== undefined
@@ -166,38 +154,76 @@ class TransactionRequestRLPCodec {
             signature !== null && signature !== undefined
                 ? signature.slice(0, Secp256k1.SIGNATURE_LENGTH)
                 : (decoded.originSignature as Uint8Array);
+        let beggar: Address | undefined;
+        if (decoded.beggar !== null && decoded.beggar !== undefined) {
+            beggar = Address.of(decoded.beggar as string);
+        } else if (signature?.length === Secp256k1.SIGNATURE_LENGTH * 2) {
+            const originHash = Blake2b256.of(
+                new Uint8Array([
+                    TransactionRequestRLPCodec.DYNAMIC_FEE_PREFIX,
+                    ...RLPProfiler.ofObject(
+                        { ...body },
+                        {
+                            name: 'tx',
+                            kind: TransactionRequestRLPCodec.RLP_DYNAMIC_FEE_TO_HASH
+                        }
+                    ).encoded
+                ])
+            ).bytes;
+            beggar = Address.ofPublicKey(
+                Secp256k1.recover(originHash, originSignature)
+            );
+        }
         return new TransactionRequest(
             {
-                beggar:
-                    decoded.beggar !== null && decoded.beggar !== undefined
-                        ? Address.of(decoded.beggar as string)
-                        : undefined,
-                blockRef: HexUInt.of(decoded.blockRef as string),
-                chainTag: decoded.chainTag as number,
-                clauses,
-                dependsOn:
-                    decoded.dependsOn === null
-                        ? null
-                        : Hex.of(decoded.dependsOn as string),
-                expiration: decoded.expiration as number,
-                gas: BigInt(decoded.gas as bigint),
-                gasPriceCoef: 0n, // Dynamic fee transactions use 0 for gasPriceCoef
-                maxFeePerGas:
-                    decoded.maxFeePerGas !== undefined &&
-                    decoded.maxFeePerGas !== null
-                        ? BigInt(decoded.maxFeePerGas as bigint)
-                        : undefined,
-                maxPriorityFeePerGas:
-                    decoded.maxPriorityFeePerGas !== undefined &&
-                    decoded.maxPriorityFeePerGas !== null
-                        ? BigInt(decoded.maxPriorityFeePerGas as bigint)
-                        : undefined,
-                nonce: decoded.nonce as number
+                ...TransactionRequestRLPCodec.mapBodyToTransactionRequest(body),
+                beggar
             },
             originSignature,
             gasPayerSignature,
             signature
         );
+    }
+
+    private static decodeBody(decoded: RLPValidObject): Body {
+        const clauses: Array<{
+            to: string | null;
+            value: bigint;
+            data: string;
+        }> = (decoded.clauses as RLPValidObject[]).map(
+            (decodedClause: RLPValidObject) => ({
+                to: (decodedClause.to as string) ?? null,
+                value: BigInt(decodedClause.value as string),
+                data: (decodedClause.data as string) ?? Hex.PREFIX
+            })
+        );
+        return {
+            blockRef: decoded.blockRef as string,
+            chainTag: decoded.chainTag as number,
+            clauses,
+            dependsOn:
+                decoded.dependsOn === null
+                    ? null
+                    : (decoded.dependsOn as string),
+            expiration: decoded.expiration as number,
+            gas: BigInt(decoded.gas as bigint),
+            gasPriceCoef: 0n, // Dynamic fee transactions use 0 for gasPriceCoef
+            gasPayerSignature: decoded.gasPayerSignature as Uint8Array,
+            maxFeePerGas:
+                decoded.maxFeePerGas !== undefined &&
+                decoded.maxFeePerGas !== null
+                    ? BigInt(decoded.maxFeePerGas as bigint)
+                    : undefined,
+            maxPriorityFeePerGas:
+                decoded.maxPriorityFeePerGas !== undefined &&
+                decoded.maxPriorityFeePerGas !== null
+                    ? BigInt(decoded.maxPriorityFeePerGas as bigint)
+                    : undefined,
+            nonce: decoded.nonce as number,
+            originSignature: Uint8Array.of(),
+            reserved: decoded.reserved as Uint8Array[],
+            signature: decoded.signature as Uint8Array
+        } satisfies Body;
     }
 
     // Legacy transaction - use gasPriceCoef
@@ -231,7 +257,9 @@ class TransactionRequestRLPCodec {
         isToHash: boolean = false
     ): Uint8Array {
         const body = {
-            ...TransactionRequestRLPCodec.mapBody(transactionRequest)
+            ...TransactionRequestRLPCodec.mapTransactionRequestToBody(
+                transactionRequest
+            )
         };
         if (transactionRequest.isDynamicFee) {
             // For EIP-1559 transactions, prepend the transaction type (0x51)
@@ -257,12 +285,62 @@ class TransactionRequestRLPCodec {
         }).encoded;
     }
 
-    private static mapBody(transactionRequest: TransactionRequest): Body {
+    private static mapBodyToTransactionRequest(body: Body): TransactionRequest {
+        // Convert clause data back to Clause objects.
+        const clauses: Clause[] = body.clauses.map((clauseData) => {
+            return new Clause(
+                clauseData.to !== null ? Address.of(clauseData.to) : null,
+                clauseData.value,
+                clauseData.data !== Hex.PREFIX ? Hex.of(clauseData.data) : null
+            );
+        });
+        // Create TransactionRequestParam object.
+        const params = {
+            beggar:
+                body.beggar !== undefined ? Address.of(body.beggar) : undefined,
+            blockRef: Hex.of(body.blockRef),
+            chainTag: body.chainTag,
+            clauses,
+            dependsOn: body.dependsOn !== null ? Hex.of(body.dependsOn) : null,
+            expiration: body.expiration,
+            gas: body.gas,
+            gasPriceCoef: body.gasPriceCoef,
+            nonce: body.nonce,
+            maxFeePerGas: body.maxFeePerGas,
+            maxPriorityFeePerGas: body.maxPriorityFeePerGas
+        };
+        // Create and return TransactionRequest with signatures.
+        return new TransactionRequest(
+            params,
+            body.originSignature,
+            body.gasPayerSignature,
+            body.signature
+        );
+    }
+
+    private static mapTransactionRequestToBody(
+        transactionRequest: TransactionRequest
+    ): Body {
+        const clauses: Array<{
+            to: string | null;
+            value: bigint;
+            data: string;
+        }> = transactionRequest.clauses.map(
+            (
+                clause: Clause
+            ): { to: string | null; value: bigint; data: string } => {
+                return {
+                    to: clause.to?.toString() ?? null,
+                    value: clause.value,
+                    data: clause.data?.toString() ?? Hex.PREFIX
+                };
+            }
+        );
         const baseBody = {
             beggar: transactionRequest.beggar?.toString(),
             blockRef: transactionRequest.blockRef.toString(),
             chainTag: transactionRequest.chainTag,
-            clauses: TransactionRequestRLPCodec.mapClauses(transactionRequest),
+            clauses: clauses,
             dependsOn:
                 transactionRequest.dependsOn !== null
                     ? transactionRequest.dependsOn.toString()
@@ -294,24 +372,6 @@ class TransactionRequestRLPCodec {
             gasPriceCoef: transactionRequest.gasPriceCoef
         } satisfies Body;
     }
-
-    private static mapClauses(transactionRequest: TransactionRequest): Array<{
-        to: string | null;
-        value: bigint;
-        data: string;
-    }> {
-        return transactionRequest.clauses.map(
-            (
-                clause: Clause
-            ): { to: string | null; value: bigint; data: string } => {
-                return {
-                    to: clause.to?.toString() ?? null,
-                    value: clause.value,
-                    data: clause.data?.toString() ?? Hex.PREFIX
-                };
-            }
-        );
-    }
 }
 
 interface Body {
@@ -326,7 +386,7 @@ interface Body {
     dependsOn: string | null;
     expiration: number;
     gas: bigint;
-    gasPayerSignature?: Uint8Array;
+    gasPayerSignature: Uint8Array;
     gasPriceCoef?: bigint; // Optional for dynamic fee transactions
     nonce: number;
     maxFeePerGas?: bigint; // For EIP-1559 dynamic fee transactions
