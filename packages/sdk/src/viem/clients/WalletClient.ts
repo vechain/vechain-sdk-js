@@ -2,7 +2,10 @@ import * as nc_utils from '@noble/curves/utils';
 import { concatBytes } from '@noble/curves/utils';
 import { type Account } from 'viem';
 import { SendTransaction, type ThorNetworks } from '@thor/thorest';
-import { Clause, TransactionRequest } from '@thor/thor-client/model/transactions';
+import {
+    Clause,
+    TransactionRequest
+} from '@thor/thor-client/model/transactions';
 import { Address, Blake2b256, Hex, HexInt, HexUInt } from '@common/vcdm';
 import { FetchHttpClient, type HttpClient } from '@common/http';
 import { UnsupportedOperationError } from '@common/errors';

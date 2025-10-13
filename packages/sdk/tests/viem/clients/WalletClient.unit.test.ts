@@ -99,9 +99,8 @@ describe('WalletClient UNIT tests', () => {
                 mockHttpClient({}, 'post'),
                 privateKeyToAccount(`0x${mockSenderAccount.privateKey}`)
             );
-            const encodedSaS = (
-                await originWallet.signTransaction(txRequestSaS)
-            ).bytes;
+            const encodedSaS = (await originWallet.signTransaction(txRequest))
+                .bytes;
             expect(encodedSaS).toEqual(
                 TransactionRequestRLPCodec.encode(txRequestSaS)
             );
@@ -155,7 +154,7 @@ describe('WalletClient UNIT tests', () => {
                 privateKeyToAccount(`0x${mockReceiverAccount.privateKey}`)
             );
             const encodedSaGP = (
-                await gasPayerWallet.signTransaction(txRequestSaGP)
+                await gasPayerWallet.signTransaction(txRequest)
             ).bytes;
             expect(encodedSaGP).toEqual(
                 TransactionRequestRLPCodec.encode(txRequestSaGP)
@@ -240,9 +239,8 @@ describe('WalletClient UNIT tests', () => {
                 mockHttpClient({}, 'post'),
                 privateKeyToAccount(`0x${mockSenderAccount.privateKey}`)
             );
-            const encodedSaS = (
-                await originWallet.signTransaction(txRequestSaS)
-            ).bytes;
+            const encodedSaS = (await originWallet.signTransaction(txRequest))
+                .bytes;
             expect(encodedSaS).toEqual(
                 TransactionRequestRLPCodec.encode(txRequestSaS)
             );
@@ -294,7 +292,7 @@ describe('WalletClient UNIT tests', () => {
                 privateKeyToAccount(`0x${mockReceiverAccount.privateKey}`)
             );
             const encodedSaGP = (
-                await gasPayerWallet.signTransaction(txRequestSaGP)
+                await gasPayerWallet.signTransaction(txRequest)
             ).bytes;
             expect(encodedSaGP).toEqual(
                 TransactionRequestRLPCodec.encode(txRequestSaGP)

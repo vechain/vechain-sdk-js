@@ -80,7 +80,7 @@ describe('PrivateKeySigner SOLO test', () => {
         const txRequest = new TransactionRequest({
             beggar: Address.of(TRANSACTION_SENDER.address),
             blockRef: BlockRef.of(latestBlock.id),
-            chainTag: chainTag,
+            chainTag,
             clauses: [
                 new Clause(Address.of(TRANSACTION_RECEIVER.address), mockValue)
             ],
@@ -93,10 +93,10 @@ describe('PrivateKeySigner SOLO test', () => {
             nonce: mockNonce
         });
         // Sign as Sender. Partial signature.
-        const originSIgner = new PrivateKeySigner(
+        const originSigner = new PrivateKeySigner(
             HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
         );
-        const txRequestSaS = originSIgner.sign(txRequest);
+        const txRequestSaS = originSigner.sign(txRequest);
         // Sign as Gas Payer. Finalized signature.
         const gasPayerSigner = new PrivateKeySigner(
             HexUInt.of(TRANSACTION_RECEIVER.privateKey).bytes
@@ -126,7 +126,7 @@ describe('PrivateKeySigner SOLO test', () => {
         const txRequest = new TransactionRequest({
             beggar: Address.of(TRANSACTION_SENDER.address),
             blockRef: BlockRef.of(latestBlock.id),
-            chainTag: chainTag,
+            chainTag,
             clauses: [
                 new Clause(Address.of(TRANSACTION_RECEIVER.address), mockValue)
             ],
@@ -144,10 +144,10 @@ describe('PrivateKeySigner SOLO test', () => {
         );
         const txRequestSaGP = gasPayerSigner.sign(txRequest);
         // SIgn as Sender. Finalized signature.
-        const originSIgner = new PrivateKeySigner(
+        const originSigner = new PrivateKeySigner(
             HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
         );
-        const txRequestSaS = originSIgner.sign(txRequestSaGP);
+        const txRequestSaS = originSigner.sign(txRequestSaGP);
         const encodedTx = TransactionRequestRLPCodec.encode(txRequestSaS);
         console.log(HexUInt.of(encodedTx).toString());
 
@@ -171,7 +171,7 @@ describe('PrivateKeySigner SOLO test', () => {
         const chainTag = await thorClient.nodes.getChainTag();
         const txRequest = new TransactionRequest({
             blockRef: BlockRef.of(latestBlock.id),
-            chainTag: chainTag,
+            chainTag,
             clauses: [
                 new Clause(Address.of(TRANSACTION_RECEIVER.address), mockValue)
             ],
@@ -181,10 +181,10 @@ describe('PrivateKeySigner SOLO test', () => {
             gasPriceCoef: mockGasPriceCoef,
             nonce: mockNonce
         });
+        // Sign as Sender. Finalized signature.
         const signer = new PrivateKeySigner(
             HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
         );
-        // Sign as Sender. Finalized signature.
         const txRequestSaS = signer.sign(txRequest);
         const encodedTx = TransactionRequestRLPCodec.encode(txRequestSaS);
         console.log(HexUInt.of(encodedTx).toString());
@@ -208,7 +208,7 @@ describe('PrivateKeySigner SOLO test', () => {
         const txRequest = new TransactionRequest({
             beggar: Address.of(TRANSACTION_SENDER.address),
             blockRef: BlockRef.of(latestBlock.id),
-            chainTag: chainTag,
+            chainTag,
             clauses: [
                 new Clause(Address.of(TRANSACTION_RECEIVER.address), mockValue)
             ],
@@ -220,10 +220,10 @@ describe('PrivateKeySigner SOLO test', () => {
         });
         expect(txRequest.isSigned).toBe(false);
         // Sign as Sender. Partial signature.
-        const originSIgner = new PrivateKeySigner(
+        const originSigner = new PrivateKeySigner(
             HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
         );
-        const txRequestSaS = originSIgner.sign(txRequest);
+        const txRequestSaS = originSigner.sign(txRequest);
         // Sign as Gas Payer. Finalized signature.
         const gasPayerSigner = new PrivateKeySigner(
             HexUInt.of(TRANSACTION_RECEIVER.privateKey).bytes
@@ -251,7 +251,7 @@ describe('PrivateKeySigner SOLO test', () => {
         const txRequest = new TransactionRequest({
             beggar: Address.of(TRANSACTION_SENDER.address),
             blockRef: BlockRef.of(latestBlock.id),
-            chainTag: chainTag,
+            chainTag,
             clauses: [
                 new Clause(Address.of(TRANSACTION_RECEIVER.address), mockValue)
             ],
@@ -268,10 +268,10 @@ describe('PrivateKeySigner SOLO test', () => {
         );
         const txRequestSaGP = gasPayerSigner.sign(txRequest);
         // Sign as Sender. Finalized signature.
-        const originSIgner = new PrivateKeySigner(
+        const originSigner = new PrivateKeySigner(
             HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
         );
-        const txRequestSaS = originSIgner.sign(txRequestSaGP);
+        const txRequestSaS = originSigner.sign(txRequestSaGP);
         const encodedTx = TransactionRequestRLPCodec.encode(txRequestSaS);
         console.log(HexUInt.of(encodedTx).toString());
 

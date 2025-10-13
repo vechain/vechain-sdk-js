@@ -385,7 +385,7 @@ class TransactionRequestRLPCodec {
             beggar: transactionRequest.beggar?.toString(),
             blockRef: transactionRequest.blockRef.toString(),
             chainTag: transactionRequest.chainTag,
-            clauses: clauses,
+            clauses,
             dependsOn:
                 transactionRequest.dependsOn !== null
                     ? transactionRequest.dependsOn.toString()
