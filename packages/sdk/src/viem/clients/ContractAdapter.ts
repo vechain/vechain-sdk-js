@@ -1,5 +1,6 @@
 import {
     type Abi,
+    type AbiParameter,
     encodeFunctionData,
     decodeFunctionResult,
     toEventSelector
@@ -9,18 +10,22 @@ import { type PublicClient, type WalletClient } from '@viem/clients';
 import { type ExecuteCodesRequestJSON } from '@thor/thorest/json';
 import { type SubscriptionEventResponse } from '@thor/thorest/subscriptions/response';
 import { type ExecuteCodesResponse } from '@thor/thorest/accounts/response';
-import { type DecodedEventLog } from '../../thor/thor-client/model/logs/DecodedEventLog';
+import { type DecodedEventLog } from '@thor/thor-client/model/logs/DecodedEventLog';
 // Import the middle-layer contracts module
 import {
     ContractsModule,
     Contract as VeChainContract
-} from '../../thor/thor-client/contracts';
+} from '@thor/thor-client/contracts';
+import {
+    ContractCallOptions,
+    ContractTransactionOptions
+} from '@thor/thor-client/contracts/types';
 
 // Type alias for hex-convertible values
 type HexConvertible = string | number | bigint;
 
 // Type alias for function arguments
-type FunctionArgs = unknown[];
+type FunctionArgs = AbiParameter[];
 
 /**
  * Configuration for creating a contract instance
@@ -113,13 +118,24 @@ export interface Contract<TAbi extends Abi> {
         /** The official VeChain contract instance */
         contract: VeChainContract<TAbi>;
         /** Set contract read options */
-        setReadOptions: (options: unknown) => void;
+        setReadOptions: (options: ContractCallOptions) => void;
         /** Set contract transaction options */
-        setTransactOptions: (options: unknown) => void;
+        setTransactOptions: (options: ContractTransactionOptions) => void;
         /** Access to clause building */
-        clause: Record<string, (...args: unknown[]) => unknown>;
+        clause: Record<
+            string,
+            (...args: AbiParameter[]) => {
+                to: string;
+                data: string;
+                value: bigint;
+                comment?: string;
+            }
+        >;
         /** Access to event filters */
-        filters: Record<string, (...args: unknown[]) => unknown>;
+        filters: Record<
+            string,
+            (...args: AbiParameter[]) => { address: string; topics: string[] }
+        >;
     };
 }
 
@@ -238,9 +254,28 @@ function getContract<const TAbi extends Abi>({
         setTransactOptions: (options: unknown) => {
             vechainContract.setContractTransactOptions(options as any);
         },
-        clause: {} as Record<string, (...args: unknown[]) => unknown>,
-        filters: {} as Record<string, (...args: unknown[]) => unknown>,
-        criteria: {} as Record<string, (...args: unknown[]) => unknown>
+        clause: {} as Record<
+            string,
+            (...args: AbiParameter[]) => {
+                to: string;
+                data: string;
+                value: bigint;
+                comment?: string;
+            }
+        >,
+        filters: {} as Record<
+            string,
+            (...args: AbiParameter[]) => { address: string; topics: string[] }
+        >,
+        criteria: {} as Record<
+            string,
+            (...args: AbiParameter[]) => {
+                eventName: string;
+                args: AbiParameter[];
+                address: string;
+                topics: string[];
+            }
+        >
     };
 
     // Initialize contract object
@@ -380,7 +415,7 @@ function getContract<const TAbi extends Abi>({
             }
 
             // Add VeChain-specific clause building - delegate to middle layer
-            vechainMethods.clause[functionName] = (...args: unknown[]) => {
+            vechainMethods.clause[functionName] = (...args: AbiParameter[]) => {
                 return (vechainContract.clause as any)[functionName](...args);
             };
         }
@@ -405,7 +440,7 @@ function getContract<const TAbi extends Abi>({
                         for (let i = 0; i < indexedInputs.length; i++) {
                             if (i < args.length && args[i] !== undefined) {
                                 indexedArgs.push(
-                                    Hex.of(args[i] as HexConvertible)
+                                    Hex.of(args[i] as unknown as HexConvertible)
                                 );
                             } else {
                                 indexedArgs.push(Hex.of('0'));
@@ -454,7 +489,7 @@ function getContract<const TAbi extends Abi>({
             };
 
             // Add VeChain-specific event filters - delegate to middle layer
-            vechainMethods.filters[eventName] = (...args: unknown[]) => {
+            vechainMethods.filters[eventName] = (...args: AbiParameter[]) => {
                 return (vechainContract.filters as any)[eventName](...args);
             };
         }
@@ -466,7 +501,7 @@ function getContract<const TAbi extends Abi>({
             const functionName = abiItem.name;
 
             // Add VeChain-specific clause methods - delegate to middle layer
-            vechainMethods.clause[functionName] = (...args: unknown[]) => {
+            vechainMethods.clause[functionName] = (...args: AbiParameter[]) => {
                 return (vechainContract.clause as any)[functionName](...args);
             };
         }

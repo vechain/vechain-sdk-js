@@ -1,7 +1,5 @@
 import {
     type Abi,
-    type ExtractAbiEventNames,
-    type ExtractAbiFunctionNames,
     type AbiFunction,
     type AbiEvent,
     type AbiParameter
@@ -11,11 +9,8 @@ import { type Signer } from '@thor/signer';
 import { type Address, type Hex, Revision } from '@common/vcdm';
 import { IllegalArgumentError } from '@common/errors';
 import { log } from '@common/logging';
-import type {
-    ContractCallOptions,
-    ContractTransactionOptions,
-    SendTransactionResult
-} from '../types';
+import type { ContractCallOptions, ContractTransactionOptions } from '../types';
+import type { SendTransactionResult } from './types';
 import type { ContractsModule } from '../contracts-module';
 
 // Proper function arguments type using VeChain SDK types

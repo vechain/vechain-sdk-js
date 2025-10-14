@@ -38,16 +38,16 @@ import {
     BaseError
 } from 'viem';
 import { type ExecuteCodesRequestJSON } from '@thor/thorest/json';
-import { ThorClient } from '../../thor/thor-client/ThorClient';
-import { EventLogFilter } from '../../thor/thor-client/model/logs/EventLogFilter';
-import { type DecodedEventLog } from '../../thor/thor-client/model/logs/DecodedEventLog';
-import { FilterRange } from '../../thor/thor-client/model/logs/FilterRange';
-import { FilterRangeUnits } from '../../thor/thor-client/model/logs/FilterRangeUnits';
-import { FilterOptions } from '../../thor/thor-client/model/logs/FilterOptions';
-import { EventCriteria } from '../../thor/thor-client/model/logs/EventCriteria';
+import { ThorClient } from '@thor/thor-client/ThorClient';
+import { EventLogFilter } from '@thor/thor-client/model/logs/EventLogFilter';
+import { type DecodedEventLog } from '@thor/thor-client/model/logs/DecodedEventLog';
+import { FilterRange } from '@thor/thor-client/model/logs/FilterRange';
+import { FilterRangeUnits } from '@thor/thor-client/model/logs/FilterRangeUnits';
+import { FilterOptions } from '@thor/thor-client/model/logs/FilterOptions';
+import { EventCriteria } from '@thor/thor-client/model/logs/EventCriteria';
 import { type AbiEvent, toEventSelector } from 'viem';
-import type { EstimatedGas } from '../../thor/thor-client/model/gas/EstimatedGas';
-import type { FeeHistory } from '../../thor/thor-client/model/gas/FeeHistory';
+import type { EstimatedGas } from '@thor/thor-client/model/gas/EstimatedGas';
+import type { FeeHistory } from '@thor/thor-client/model/gas/FeeHistory';
 
 /**
  * Filter types for viem compatibility.

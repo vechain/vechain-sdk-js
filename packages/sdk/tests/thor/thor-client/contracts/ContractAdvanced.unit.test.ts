@@ -1,8 +1,17 @@
 import { describe, expect, test, jest } from '@jest/globals';
-import { Contract, ContractsModule } from '../../../../src/thor/thor-client/contracts';
+import {
+    Contract,
+    ContractsModule
+} from '../../../../src/thor/thor-client/contracts';
 import { Address } from '../../../../src/common/vcdm';
-import { type PublicClient, type WalletClient } from '../../../../src/viem/clients';
-import { ContractCallError, InvalidTransactionField } from '../../../../src/common/errors';
+import {
+    type PublicClient,
+    type WalletClient
+} from '../../../../src/viem/clients';
+import {
+    ContractCallError,
+    InvalidTransactionField
+} from '../../../../src/common/errors';
 
 // Complex contract ABI for testing
 const complexContractAbi = [
@@ -60,21 +69,23 @@ const complexContractAbi = [
 ] as const;
 
 // Mock clients
-const createMockPublicClient = (): PublicClient => ({
-    thorNetworks: 'SOLONET',
-    call: jest.fn(),
-    simulateCalls: jest.fn(),
-    estimateGas: jest.fn(),
-    watchEvent: jest.fn(),
-    getLogs: jest.fn(),
-    createEventFilter: jest.fn()
-} as any);
+const createMockPublicClient = (): PublicClient =>
+    ({
+        thorNetworks: 'SOLONET',
+        call: jest.fn(),
+        simulateCalls: jest.fn(),
+        estimateGas: jest.fn(),
+        watchEvent: jest.fn(),
+        getLogs: jest.fn(),
+        createEventFilter: jest.fn()
+    }) as any;
 
-const createMockWalletClient = (): WalletClient => ({
-    thorNetworks: 'SOLONET',
-    account: Address.of('0x1234567890123456789012345678901234567890'),
-    sendTransaction: jest.fn()
-} as any);
+const createMockWalletClient = (): WalletClient =>
+    ({
+        thorNetworks: 'SOLONET',
+        account: Address.of('0x1234567890123456789012345678901234567890'),
+        sendTransaction: jest.fn()
+    }) as any;
 
 const createMockSigner = () => ({
     address: Address.of('0x1234567890123456789012345678901234567890'),
@@ -85,7 +96,9 @@ const createMockSigner = () => ({
  * @group unit/contracts
  */
 describe('Contract Advanced Functionality', () => {
-    const contractAddress = Address.of('0x0000000000000000000000000000000000000000');
+    const contractAddress = Address.of(
+        '0x0000000000000000000000000000000000000000'
+    );
     let publicClient: PublicClient;
     let walletClient: WalletClient;
     let contractsModule: ContractsModule;
@@ -100,8 +113,12 @@ describe('Contract Advanced Functionality', () => {
 
     describe('Method Generation and Classification', () => {
         test('Should generate read methods for view functions', () => {
-            const contract = new Contract(contractAddress, complexContractAbi, contractsModule);
-            
+            const contract = new Contract(
+                contractAddress,
+                complexContractAbi,
+                contractsModule
+            );
+
             expect(contract.read).toHaveProperty('balanceOf');
             expect(contract.read).toHaveProperty('calculate');
             expect(typeof contract.read.balanceOf).toBe('function');
@@ -109,8 +126,12 @@ describe('Contract Advanced Functionality', () => {
         });
 
         test('Should generate transact methods for nonpayable and payable functions', () => {
-            const contract = new Contract(contractAddress, complexContractAbi, contractsModule);
-            
+            const contract = new Contract(
+                contractAddress,
+                complexContractAbi,
+                contractsModule
+            );
+
             expect(contract.transact).toHaveProperty('transfer');
             expect(contract.transact).toHaveProperty('deposit');
             expect(typeof contract.transact.transfer).toBe('function');
@@ -118,8 +139,12 @@ describe('Contract Advanced Functionality', () => {
         });
 
         test('Should generate clause methods for all functions', () => {
-            const contract = new Contract(contractAddress, complexContractAbi, contractsModule);
-            
+            const contract = new Contract(
+                contractAddress,
+                complexContractAbi,
+                contractsModule
+            );
+
             expect(contract.clause).toHaveProperty('balanceOf');
             expect(contract.clause).toHaveProperty('transfer');
             expect(contract.clause).toHaveProperty('deposit');
@@ -131,8 +156,12 @@ describe('Contract Advanced Functionality', () => {
         });
 
         test('Should generate filter methods for events', () => {
-            const contract = new Contract(contractAddress, complexContractAbi, contractsModule);
-            
+            const contract = new Contract(
+                contractAddress,
+                complexContractAbi,
+                contractsModule
+            );
+
             expect(contract.filters).toHaveProperty('Transfer');
             expect(contract.filters).toHaveProperty('Deposit');
             expect(typeof contract.filters.Transfer).toBe('function');
@@ -140,8 +169,12 @@ describe('Contract Advanced Functionality', () => {
         });
 
         test('Should generate criteria methods for events', () => {
-            const contract = new Contract(contractAddress, complexContractAbi, contractsModule);
-            
+            const contract = new Contract(
+                contractAddress,
+                complexContractAbi,
+                contractsModule
+            );
+
             expect(contract.criteria).toHaveProperty('Transfer');
             expect(contract.criteria).toHaveProperty('Deposit');
             expect(typeof contract.criteria.Transfer).toBe('function');
@@ -151,13 +184,17 @@ describe('Contract Advanced Functionality', () => {
 
     describe('ABI Method Resolution', () => {
         test('Should resolve function ABI correctly', () => {
-            const contract = new Contract(contractAddress, complexContractAbi, contractsModule);
-            
+            const contract = new Contract(
+                contractAddress,
+                complexContractAbi,
+                contractsModule
+            );
+
             const balanceOfAbi = contract.getFunctionAbi('balanceOf');
             expect(balanceOfAbi).toBeDefined();
             expect(balanceOfAbi.name).toBe('balanceOf');
             expect(balanceOfAbi.stateMutability).toBe('view');
-            
+
             const transferAbi = contract.getFunctionAbi('transfer');
             expect(transferAbi).toBeDefined();
             expect(transferAbi.name).toBe('transfer');
@@ -165,13 +202,17 @@ describe('Contract Advanced Functionality', () => {
         });
 
         test('Should resolve event ABI correctly', () => {
-            const contract = new Contract(contractAddress, complexContractAbi, contractsModule);
-            
+            const contract = new Contract(
+                contractAddress,
+                complexContractAbi,
+                contractsModule
+            );
+
             const transferEventAbi = contract.getEventAbi('Transfer');
             expect(transferEventAbi).toBeDefined();
             expect(transferEventAbi.name).toBe('Transfer');
             expect(transferEventAbi.type).toBe('event');
-            
+
             const depositEventAbi = contract.getEventAbi('Deposit');
             expect(depositEventAbi).toBeDefined();
             expect(depositEventAbi.name).toBe('Deposit');
@@ -179,16 +220,24 @@ describe('Contract Advanced Functionality', () => {
         });
 
         test('Should throw error for non-existent function', () => {
-            const contract = new Contract(contractAddress, complexContractAbi, contractsModule);
-            
-            expect(() => contract.getFunctionAbi('nonExistentFunction')).toThrow(
-                'Function nonExistentFunction not found in ABI'
+            const contract = new Contract(
+                contractAddress,
+                complexContractAbi,
+                contractsModule
             );
+
+            expect(() =>
+                contract.getFunctionAbi('nonExistentFunction')
+            ).toThrow('Function nonExistentFunction not found in ABI');
         });
 
         test('Should throw error for non-existent event', () => {
-            const contract = new Contract(contractAddress, complexContractAbi, contractsModule);
-            
+            const contract = new Contract(
+                contractAddress,
+                complexContractAbi,
+                contractsModule
+            );
+
             expect(() => contract.getEventAbi('NonExistentEvent')).toThrow(
                 'Event NonExistentEvent not found in ABI'
             );
@@ -196,93 +245,49 @@ describe('Contract Advanced Functionality', () => {
     });
 
     describe('Function Data Encoding', () => {
-        test('Should encode function data correctly', () => {
-            const contract = new Contract(contractAddress, complexContractAbi, contractsModule);
-            
-            const encodedData = contract.encodeFunctionData('balanceOf', [
-                '0x1234567890123456789012345678901234567890'
-            ]);
-            
-            expect(encodedData).toMatch(/^0x/);
-            expect(encodedData.length).toBeGreaterThanOrEqual(10); // Should be a proper hex string
-        });
-
-        test('Should encode function data with multiple parameters', () => {
-            const contract = new Contract(contractAddress, complexContractAbi, contractsModule);
-            
-            const encodedData = contract.encodeFunctionData('transfer', [
-                '0x1234567890123456789012345678901234567890',
-                '1000'
-            ]);
-            
-            expect(encodedData).toMatch(/^0x/);
-            expect(encodedData.length).toBeGreaterThanOrEqual(10);
-        });
-
-        test('Should handle function data encoding with empty args', () => {
-            const contract = new Contract(contractAddress, complexContractAbi, contractsModule);
-            
-            const encodedData = contract.encodeFunctionData('deposit', []);
-            
-            expect(encodedData).toMatch(/^0x/);
-            expect(encodedData.length).toBeGreaterThanOrEqual(10);
-        });
-
-        test('Should handle encoding errors gracefully', () => {
-            const contract = new Contract(contractAddress, complexContractAbi, contractsModule);
-            
-            // This should not throw but return a fallback
-            const encodedData = contract.encodeFunctionData('invalidFunction', []);
-            
-            expect(encodedData).toMatch(/^0x/);
-        });
+        // Note: encodeFunctionData method was removed as it's now handled directly by viem
+        // Note: encodeFunctionData method was removed as it's now handled directly by viem
+        // Note: encodeFunctionData method was removed as it's now handled directly by viem
     });
 
     describe('Event Selector Generation', () => {
-        test('Should generate event selector correctly', () => {
-            const contract = new Contract(contractAddress, complexContractAbi, contractsModule);
-            
-            const transferSelector = contract.getEventSelector('Transfer');
-            expect(transferSelector).toMatch(/^0x/);
-            expect(transferSelector.length).toBeGreaterThan(10); // Should be a proper hex string
-            
-            const depositSelector = contract.getEventSelector('Deposit');
-            expect(depositSelector).toMatch(/^0x/);
-            expect(depositSelector.length).toBeGreaterThan(10);
-        });
-
-        test('Should handle event selector generation errors gracefully', () => {
-            const contract = new Contract(contractAddress, complexContractAbi, contractsModule);
-            
-            // This should not throw but return a fallback
-            const selector = contract.getEventSelector('NonExistentEvent');
-            
-            expect(selector).toMatch(/^0x/);
-        });
+        // Note: getEventSelector method was removed as it's now handled directly by viem
     });
 
     describe('Client Access', () => {
         test('Should provide access to PublicClient', () => {
-            const contract = new Contract(contractAddress, complexContractAbi, contractsModule);
-            
+            const contract = new Contract(
+                contractAddress,
+                complexContractAbi,
+                contractsModule
+            );
+
             const client = contract.getPublicClient();
             expect(client).toBe(publicClient);
         });
 
         test('Should provide access to WalletClient', () => {
-            const contract = new Contract(contractAddress, complexContractAbi, contractsModule);
-            
+            const contract = new Contract(
+                contractAddress,
+                complexContractAbi,
+                contractsModule
+            );
+
             const client = contract.getWalletClient();
             expect(client).toBe(walletClient);
         });
 
         test('Should handle missing clients gracefully', () => {
             const contractsModuleWithoutClients = new ContractsModule();
-            const contract = new Contract(contractAddress, complexContractAbi, contractsModuleWithoutClients);
-            
+            const contract = new Contract(
+                contractAddress,
+                complexContractAbi,
+                contractsModuleWithoutClients
+            );
+
             const publicClient = contract.getPublicClient();
             const walletClient = contract.getWalletClient();
-            
+
             expect(publicClient).toBeUndefined();
             expect(walletClient).toBeUndefined();
         });
@@ -290,41 +295,64 @@ describe('Contract Advanced Functionality', () => {
 
     describe('Options Management', () => {
         test('Should manage contract call options', () => {
-            const contract = new Contract(contractAddress, complexContractAbi, contractsModule);
-            
-            const options = { caller: '0x1234567890123456789012345678901234567890', gas: 1000000 };
+            const contract = new Contract(
+                contractAddress,
+                complexContractAbi,
+                contractsModule
+            );
+
+            const options = {
+                caller: '0x1234567890123456789012345678901234567890',
+                gas: 1000000
+            };
             contract.setContractReadOptions(options);
-            
+
             const retrievedOptions = contract.getContractReadOptions();
             expect(retrievedOptions).toEqual(options);
         });
 
         test('Should manage contract transaction options', () => {
-            const contract = new Contract(contractAddress, complexContractAbi, contractsModule);
-            
+            const contract = new Contract(
+                contractAddress,
+                complexContractAbi,
+                contractsModule
+            );
+
             const options = { value: '1000000000000000000', gas: 2000000 };
             contract.setContractTransactOptions(options);
-            
+
             const retrievedOptions = contract.getContractTransactOptions();
             expect(retrievedOptions).toEqual(options);
         });
 
         test('Should clear contract call options', () => {
-            const contract = new Contract(contractAddress, complexContractAbi, contractsModule);
-            
-            contract.setContractReadOptions({ caller: '0x1234567890123456789012345678901234567890' });
+            const contract = new Contract(
+                contractAddress,
+                complexContractAbi,
+                contractsModule
+            );
+
+            contract.setContractReadOptions({
+                caller: '0x1234567890123456789012345678901234567890'
+            });
             contract.clearContractReadOptions();
-            
+
             const options = contract.getContractReadOptions();
             expect(options).toEqual({});
         });
 
         test('Should clear contract transaction options', () => {
-            const contract = new Contract(contractAddress, complexContractAbi, contractsModule);
-            
-            contract.setContractTransactOptions({ value: '1000000000000000000' });
+            const contract = new Contract(
+                contractAddress,
+                complexContractAbi,
+                contractsModule
+            );
+
+            contract.setContractTransactOptions({
+                value: '1000000000000000000'
+            });
             contract.clearContractTransactOptions();
-            
+
             const options = contract.getContractTransactOptions();
             expect(options).toEqual({});
         });
@@ -332,21 +360,29 @@ describe('Contract Advanced Functionality', () => {
 
     describe('Signer Management', () => {
         test('Should set and get signer', () => {
-            const contract = new Contract(contractAddress, complexContractAbi, contractsModule);
-            
+            const contract = new Contract(
+                contractAddress,
+                complexContractAbi,
+                contractsModule
+            );
+
             contract.setSigner(signer);
             const retrievedSigner = contract.getSigner();
-            
+
             expect(retrievedSigner).toBe(signer);
         });
 
         test('Should handle signer changes', () => {
-            const contract = new Contract(contractAddress, complexContractAbi, contractsModule);
+            const contract = new Contract(
+                contractAddress,
+                complexContractAbi,
+                contractsModule
+            );
             const newSigner = createMockSigner();
-            
+
             contract.setSigner(signer);
             expect(contract.getSigner()).toBe(signer);
-            
+
             contract.setSigner(newSigner);
             expect(contract.getSigner()).toBe(newSigner);
         });
@@ -355,8 +391,12 @@ describe('Contract Advanced Functionality', () => {
     describe('Error Handling', () => {
         test('Should handle empty ABI gracefully', () => {
             const emptyAbi = [] as const;
-            const contract = new Contract(contractAddress, emptyAbi, contractsModule);
-            
+            const contract = new Contract(
+                contractAddress,
+                emptyAbi,
+                contractsModule
+            );
+
             expect(contract.abi).toEqual(emptyAbi);
             expect(Object.keys(contract.read)).toHaveLength(0);
             expect(Object.keys(contract.transact)).toHaveLength(0);
@@ -369,9 +409,13 @@ describe('Contract Advanced Functionality', () => {
             const malformedAbi = [
                 { type: 'function', name: 'test' } // Missing required fields
             ] as any;
-            
-            const contract = new Contract(contractAddress, malformedAbi, contractsModule);
-            
+
+            const contract = new Contract(
+                contractAddress,
+                malformedAbi,
+                contractsModule
+            );
+
             expect(contract.abi).toBe(malformedAbi);
             // Should not throw during initialization
         });

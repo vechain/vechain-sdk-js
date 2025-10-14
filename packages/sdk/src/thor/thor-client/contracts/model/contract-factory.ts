@@ -1,9 +1,8 @@
 import type { Abi, AbiParameter } from 'abitype';
 import { type Signer } from '@thor/signer';
-import { HexUInt, Address } from '@common/vcdm';
+import { HexUInt } from '@common/vcdm';
 import { IllegalArgumentError } from '@common/errors';
 import { ClauseBuilder } from '@thor/thorest/transactions/model/ClauseBuilder';
-import { encodeAbiParameters, parseAbiParameters } from 'viem';
 import type {
     ContractTransactionOptions,
     SimulateTransactionOptions

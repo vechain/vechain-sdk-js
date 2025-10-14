@@ -86,9 +86,9 @@ abstract class ABIItem implements VeChainDataModel<ABIItem> {
  */
 class ABI implements VeChainDataModel<ABI> {
     private readonly _types: AbiParameter[];
-    private readonly _values: unknown[];
+    private readonly _values: AbiParameter[];
 
-    constructor(types: AbiParameter[], values: unknown[]) {
+    constructor(types: AbiParameter[], values: AbiParameter[]) {
         this._types = types;
         this._values = values;
     }
@@ -97,7 +97,7 @@ class ABI implements VeChainDataModel<ABI> {
         return this._types;
     }
 
-    get values(): unknown[] {
+    get values(): AbiParameter[] {
         return this._values;
     }
 
@@ -172,7 +172,7 @@ class ABI implements VeChainDataModel<ABI> {
     /**
      * Create ABI from types and values
      */
-    static of(types: AbiParameter[], values: unknown[]): ABI {
+    static of(types: AbiParameter[], values: AbiParameter[]): ABI {
         return new ABI(types, values);
     }
 
@@ -194,7 +194,7 @@ class ABI implements VeChainDataModel<ABI> {
                     ? (data as `0x${string}`)
                     : (`0x${data}` as `0x${string}`)
             );
-            return new ABI(types, decoded);
+            return new ABI(types, decoded as AbiParameter[]);
         } catch (error) {
             throw new IllegalArgumentError(
                 'ABI.ofEncoded',
@@ -220,7 +220,7 @@ class ABI implements VeChainDataModel<ABI> {
     /**
      * Get all decoded values
      */
-    getValues(): unknown[] {
+    getValues(): AbiParameter[] {
         return [...this._values];
     }
 }
@@ -248,7 +248,7 @@ class ABIFunction<
     /**
      * Decode function data
      */
-    decodeData(data: string | Uint8Array): unknown[] {
+    decodeData(data: string | Uint8Array): AbiParameter[] {
         try {
             const dataStr =
                 typeof data === 'string'
@@ -260,7 +260,7 @@ class ABIFunction<
                     ? (dataStr as `0x${string}`)
                     : (`0x${dataStr}` as `0x${string}`)
             );
-            return [...decoded];
+            return [...(decoded as AbiParameter[])];
         } catch (error) {
             throw new IllegalArgumentError(
                 'ABIFunction.decodeData',
@@ -280,7 +280,7 @@ class ABIFunction<
     /**
      * Encode function data
      */
-    encodeData(args: unknown[]): string {
+    encodeData(args: AbiParameter[]): string {
         try {
             return encodeAbiParameters(
                 this._abi as readonly AbiParameter[],
@@ -333,7 +333,10 @@ class ABIEvent<
     /**
      * Decode event log data
      */
-    decodeEventLog(eventData: { data: string; topics: string[] }): unknown[] {
+    decodeEventLog(eventData: {
+        data: string;
+        topics: string[];
+    }): AbiParameter[] {
         try {
             // Validate input
             if (
@@ -362,7 +365,10 @@ class ABIEvent<
             }
 
             // Simple implementation - in production, use proper event decoding
-            return [eventData.data, ...eventData.topics];
+            return [
+                eventData.data,
+                ...eventData.topics
+            ] as unknown as AbiParameter[];
         } catch (error) {
             if (error instanceof IllegalArgumentError) {
                 throw error;
@@ -385,7 +391,7 @@ class ABIEvent<
     /**
      * Encode event log data
      */
-    encodeEventLog(dataToEncode: unknown[]): {
+    encodeEventLog(dataToEncode: AbiParameter[]): {
         data: string;
         topics: string[];
     } {
@@ -516,7 +522,7 @@ class ABIContract<TAbi extends readonly any[] = readonly any[]> extends ABI {
      */
     encodeFunctionData<TFunctionName extends string>(
         functionName: TFunctionName,
-        args: unknown[]
+        args: AbiParameter[]
     ): string {
         const func = this.getFunction(functionName);
         return func.encodeData(args);
@@ -528,7 +534,7 @@ class ABIContract<TAbi extends readonly any[] = readonly any[]> extends ABI {
     decodeFunctionData<TFunctionName extends string>(
         functionName: TFunctionName,
         data: string | Uint8Array
-    ): unknown[] {
+    ): AbiParameter[] {
         const func = this.getFunction(functionName);
         return func.decodeData(data);
     }
@@ -538,7 +544,7 @@ class ABIContract<TAbi extends readonly any[] = readonly any[]> extends ABI {
      */
     encodeEventLog<TEventName extends string>(
         eventName: TEventName,
-        eventArgs: unknown[]
+        eventArgs: AbiParameter[]
     ): { data: string; topics: string[] } {
         const event = this.getEvent(eventName);
         return event.encodeEventLog(eventArgs);
@@ -550,7 +556,7 @@ class ABIContract<TAbi extends readonly any[] = readonly any[]> extends ABI {
     decodeEventLog<TEventName extends string>(
         eventName: TEventName,
         eventToDecode: { data: string; topics: string[] }
-    ): unknown[] {
+    ): AbiParameter[] {
         const event = this.getEvent(eventName);
         return event.decodeEventLog(eventToDecode);
     }

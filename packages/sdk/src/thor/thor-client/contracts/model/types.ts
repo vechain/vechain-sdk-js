@@ -1,16 +1,26 @@
 import type {
     Abi,
+    AbiParameter,
     AbiParametersToPrimitiveTypes,
-    ExtractAbiEvent,
     ExtractAbiFunction
 } from 'abitype';
+import type { Address, Hex } from '@common/vcdm';
 import type { Clause } from '@thor/thor-client/model/transactions/Clause';
 import type { ClauseOptions } from '@thor/thorest/transactions/model/ClauseOptions';
+import type { ContractFilter } from './ContractFilter';
 
 /**
  * Transaction value type
  */
 export type TransactionValue = string | number | bigint;
+
+/**
+ * Send transaction result
+ */
+export interface SendTransactionResult {
+    id: string;
+    wait: () => Promise<{ id: string; blockNumber: number; blockHash: string }>;
+}
 
 /**
  * Contract-specific clause options that extend the main SDK's ClauseOptions
@@ -49,7 +59,7 @@ export type ContractFunctionRead<
             ExtractAbiFunction<TAbi, K>['inputs'],
             'inputs'
         >
-    ) => Promise<unknown[]>;
+    ) => Promise<(string | number | bigint | boolean | Address | Hex)[]>;
 };
 
 /**
@@ -59,7 +69,9 @@ export type ContractFunctionTransact<
     TAbi extends Abi,
     TFunctionNames extends string
 > = {
-    [K in TFunctionNames]: (...args: unknown[]) => Promise<unknown>; // SendTransactionResult type
+    [K in TFunctionNames]: (
+        ...args: AbiParameter[]
+    ) => Promise<SendTransactionResult>;
 };
 
 /**
@@ -70,8 +82,11 @@ export type ContractFunctionFilter<
     TEventNames extends string
 > = {
     [K in TEventNames]: (
-        args?: Record<string, unknown> | unknown[] | undefined
-    ) => unknown; // ContractFilter type
+        args?:
+            | Record<string, string | number | bigint | boolean>
+            | AbiParameter[]
+            | undefined
+    ) => ContractFilter<TAbi>;
 };
 
 /**
@@ -81,7 +96,7 @@ export type ContractFunctionClause<
     TAbi extends Abi,
     TFunctionNames extends string
 > = {
-    [K in TFunctionNames]: (...args: unknown[]) => Clause;
+    [K in TFunctionNames]: (...args: AbiParameter[]) => Clause;
 };
 
 /**
@@ -92,6 +107,14 @@ export type ContractFunctionCriteria<
     TEventNames extends string
 > = {
     [K in TEventNames]: (
-        args?: Record<string, unknown> | unknown[] | undefined
-    ) => unknown; // FilterCriteria type
+        args?:
+            | Record<string, string | number | bigint | boolean>
+            | AbiParameter[]
+            | undefined
+    ) => {
+        eventName: string;
+        args: AbiParameter[];
+        address: string;
+        topics: string[];
+    };
 };

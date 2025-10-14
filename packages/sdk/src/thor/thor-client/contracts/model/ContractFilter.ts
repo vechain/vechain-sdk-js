@@ -1,4 +1,4 @@
-import type { Abi } from 'abitype';
+import type { Abi, AbiParameter } from 'abitype';
 import type { Contract } from './contract';
 
 /**
@@ -6,9 +6,9 @@ import type { Contract } from './contract';
  */
 class ContractFilter<TAbi extends Abi> {
     private readonly contract: Contract<TAbi>;
-    private readonly criteria: unknown[];
+    private readonly criteria: AbiParameter[];
 
-    constructor(contract: Contract<TAbi>, criteria: unknown[] = []) {
+    constructor(contract: Contract<TAbi>, criteria: AbiParameter[] = []) {
         this.contract = contract;
         this.criteria = criteria;
     }
@@ -16,7 +16,7 @@ class ContractFilter<TAbi extends Abi> {
     /**
      * Gets historical event logs matching the filter criteria
      */
-    public async getLogs(): Promise<unknown[]> {
+    public async getLogs(): Promise<AbiParameter[]> {
         // Simplified implementation - would integrate with actual event log retrieval
         // This would use the contract's event subscription system
         return [];
@@ -27,7 +27,7 @@ class ContractFilter<TAbi extends Abi> {
      * @param callback - Function to call when matching events are found.
      * @returns A function to unsubscribe from the event watching.
      */
-    public watch(callback: (events: unknown[]) => void): () => void {
+    public watch(callback: (events: AbiParameter[]) => void): () => void {
         // Simplified implementation - would integrate with actual event watching
         // This would use the contract's event subscription system
         return () => {
@@ -45,7 +45,7 @@ class ContractFilter<TAbi extends Abi> {
     /**
      * Gets the filter criteria
      */
-    public getCriteria(): unknown[] {
+    public getCriteria(): AbiParameter[] {
         return [...this.criteria];
     }
 }

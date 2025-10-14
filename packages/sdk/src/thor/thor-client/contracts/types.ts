@@ -1,7 +1,6 @@
 import type { Abi, AbiParameter } from 'abitype';
 import { BlockRef, type Address, type Hex } from '@common/vcdm';
 import { type EstimateGasOptions } from '../../thor-client/model/gas/EstimateGasOptions';
-import { type ClauseOptions } from '@thor/thorest/transactions/model/ClauseOptions';
 
 // Proper function arguments type using VeChain SDK types
 type FunctionArgs = AbiParameter[];
@@ -255,18 +254,11 @@ interface ContractCallResult {
     };
 }
 
-/**
- * Send transaction result
- */
-interface SendTransactionResult {
-    id: string;
-    wait: () => Promise<{ id: string; blockNumber: number; blockHash: string }>;
-}
+// SendTransactionResult is now defined in model/types.ts
 
 export type {
     ContractCallOptions,
     ContractCallResult,
     ContractTransactionOptions,
-    SendTransactionResult,
     SimulateTransactionOptions
 };

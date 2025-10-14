@@ -1,5 +1,6 @@
 import {
     type Abi,
+    type AbiParameter,
     encodeFunctionData,
     decodeFunctionResult,
     toEventSelector
@@ -9,7 +10,7 @@ import { type PublicClient, type WalletClient } from '@viem/clients';
 import { type ExecuteCodesRequestJSON } from '@thor/thorest/json';
 import { type SubscriptionEventResponse } from '@thor/thorest/subscriptions/response';
 import { type ExecuteCodesResponse } from '@thor/thorest/accounts/response';
-import { type DecodedEventLog } from '../../thor/thor-client/model/logs/DecodedEventLog';
+import { type DecodedEventLog } from '@/thor/thor-client/model/logs/DecodedEventLog';
 // Import the new adapter layer
 import {
     getContract as getContractAdapter,
@@ -17,10 +18,9 @@ import {
 } from './ContractAdapter';
 
 // Type alias for hex-convertible values
-type HexConvertible = string | number | bigint;
 
 // Type alias for function arguments
-type FunctionArgs = unknown[];
+type FunctionArgs = AbiParameter[];
 
 /**
  * Configuration for creating a contract instance

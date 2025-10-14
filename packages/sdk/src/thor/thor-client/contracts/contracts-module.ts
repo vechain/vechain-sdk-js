@@ -25,9 +25,9 @@ import { dataUtils } from './utils';
 import type {
     ContractCallOptions,
     ContractCallResult,
-    ContractTransactionOptions,
-    SendTransactionResult
+    ContractTransactionOptions
 } from './types';
+import type { SendTransactionResult } from './model/types';
 
 // Proper function arguments type using VeChain SDK types
 type FunctionArgs = AbiParameter[];

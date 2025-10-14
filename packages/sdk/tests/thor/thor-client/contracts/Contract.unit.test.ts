@@ -404,7 +404,7 @@ describe('Contract', () => {
             expect(result).toEqual({
                 to: contractAddress.toString(),
                 data: expect.stringMatching(/^0x[a-fA-F0-9]+$/), // Encoded function call
-                value: '0x0',
+                value: 0n,
                 comment: undefined
             });
 
@@ -434,53 +434,8 @@ describe('Contract', () => {
     });
 
     describe('Utility Methods', () => {
-        test('Should encode function data with fallback', () => {
-            const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
-            const contract = new Contract(
-                contractAddress,
-                testingContractAbi,
-                contractsModule
-            );
-
-            const consoleWarnSpy = jest
-                .spyOn(console, 'warn')
-                .mockImplementation();
-
-            // This will likely fail due to viem encoding issues, so should fallback
-            const result = contract.encodeFunctionData('setStateVariable', [
-                42
-            ]);
-
-            // Should either return encoded data or fallback
-            expect(typeof result).toBe('string');
-            expect(result.startsWith('0x')).toBe(true);
-
-            consoleWarnSpy.mockRestore();
-        });
-
-        test('Should get event selector with fallback', () => {
-            const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
-            const contract = new Contract(
-                contractAddress,
-                testingContractAbi,
-                contractsModule
-            );
-
-            const consoleWarnSpy = jest
-                .spyOn(console, 'warn')
-                .mockImplementation();
-
-            // This will likely fail due to viem encoding issues, so should fallback
-            const result = contract.getEventSelector('StateChanged');
-
-            // Should either return event selector or fallback
-            expect(typeof result).toBe('string');
-            expect(result.startsWith('0x')).toBe(true);
-
-            consoleWarnSpy.mockRestore();
-        });
+        // Note: encodeFunctionData and getEventSelector methods were removed
+        // as they are now handled directly by viem functions
     });
 
     describe('VeChain SDK Integration', () => {
