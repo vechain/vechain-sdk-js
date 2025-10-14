@@ -28,7 +28,7 @@ const TRANSFER_NFT_FUNCTION = 'transferFrom';
 
 const TRANSFER_TOKEN_FUNCTION = 'transfer';
 
-const toChecksum = (address: Address | null): string | null =>
+const toLowercaseAddress = (address: Address | null): string | null =>
     address === null ? null : address.toString().toLowerCase();
 
 const withAbi = (
@@ -63,7 +63,7 @@ const callFunction = (
     }
 
     return {
-        to: toChecksum(contractAddress),
+        to: toLowercaseAddress(contractAddress),
         value,
         data: encodeFunctionData({
             abi: contractAbi,
@@ -157,7 +157,7 @@ const transferVET = (
     }
 
     return {
-        to: toChecksum(recipientAddress),
+        to: toLowercaseAddress(recipientAddress),
         value,
         data: NO_DATA,
         comment: metadata?.comment

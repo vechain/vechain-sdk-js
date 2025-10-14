@@ -49,37 +49,37 @@ declare module '@vechain/sdk/thor' {
     }
 
     export const ClauseBuilder: {
-        callFunction(
+        callFunction: (
             contractAddress: Address,
             contractAbi: unknown,
             functionName: string,
             args: unknown[],
             value?: bigint,
             metadata?: { comment?: string; includeAbi?: boolean }
-        ): TransactionClause;
-        deployContract(
+        ) => TransactionClause;
+        deployContract: (
             contractBytecode: HexUInt,
             deployParams?: { types: string | unknown[]; values: string[] },
             metadata?: { comment?: string; includeAbi?: boolean }
-        ): TransactionClause;
-        transferNFT(
+        ) => TransactionClause;
+        transferNFT: (
             contractAddress: Address,
             senderAddress: Address,
             recipientAddress: Address,
             tokenId: bigint,
             metadata?: { comment?: string; includeAbi?: boolean }
-        ): TransactionClause;
-        transferToken(
+        ) => TransactionClause;
+        transferToken: (
             tokenAddress: Address,
             recipientAddress: Address,
             amount: bigint,
             metadata?: { comment?: string; includeAbi?: boolean }
-        ): TransactionClause;
-        transferVET(
+        ) => TransactionClause;
+        transferVET: (
             recipientAddress: Address,
             amount: bigint,
             metadata?: { comment?: string; includeAbi?: boolean }
-        ): TransactionClause;
+        ) => TransactionClause;
     };
 
     export class FetchHttpClient {
