@@ -220,7 +220,7 @@ function validateInterval(value: number, context: string): number {
 }
 
 async function delay(ms: number, signal: AbortSignal): Promise<void> {
-    await new Promise<void>((resolve, reject) => {
+    await new Promise<void>((resolve) => {
         const timer = setTimeout(() => {
             signal.removeEventListener('abort', onAbort);
             resolve();
@@ -228,7 +228,8 @@ async function delay(ms: number, signal: AbortSignal): Promise<void> {
 
         const onAbort = (): void => {
             clearTimeout(timer);
-            reject(new Error('aborted'));
+            signal.removeEventListener('abort', onAbort);
+            resolve();
         };
 
         signal.addEventListener('abort', onAbort, { once: true });
