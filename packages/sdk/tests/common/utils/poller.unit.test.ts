@@ -13,10 +13,7 @@ const nextTick = async (): Promise<void> => {
     await Promise.resolve();
 };
 
-const stubDelay = async (): Promise<void> => {
-    // Simulate delay resolution without aborting
-    await nextTick();
-};
+// Removed unused helpers
 
 describe('poller utilities', () => {
     beforeEach(() => {
