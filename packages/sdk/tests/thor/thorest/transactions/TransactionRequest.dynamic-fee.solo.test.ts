@@ -1,17 +1,11 @@
 import { describe, expect, test } from '@jest/globals';
-import {
-    TransactionRequest,
-    Clause
-} from '@thor/thor-client/model/transactions';
+import { Clause, TransactionRequest } from '@thor/thor-client/model/transactions';
 import { PrivateKeySigner, RLPCodecTransactionRequest } from '@thor/signer';
 import { Address, Hex, HexUInt, Revision } from '@common/vcdm';
 import { FetchHttpClient } from '@common/http';
 import { ThorNetworks } from '@thor/thorest';
 import { RetrieveExpandedBlock } from '@thor/thorest/blocks';
-import {
-    SendTransaction,
-    RetrieveTransactionReceipt
-} from '@thor/thorest/transactions';
+import { RetrieveTransactionReceipt, SendTransaction } from '@thor/thorest/transactions';
 import { ThorClient } from '@thor/thor-client/ThorClient';
 
 /**
@@ -74,14 +68,14 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
             });
 
             // Verify it's detected as legacy
-            expect(legacyTx.isDynamicFee()).toBe(false);
+            expect(legacyTx.isDynamicFee).toBe(false);
             expect(legacyTx.gasPriceCoef).toBe(128n);
             expect(legacyTx.maxFeePerGas).toBeUndefined();
             expect(legacyTx.maxPriorityFeePerGas).toBeUndefined();
 
             // Sign the transaction
             const signedTx = fromSigner.sign(legacyTx);
-            expect(signedTx.isDynamicFee()).toBe(false);
+            expect(signedTx.isDynamicFee).toBe(false);
             expect(signedTx.isSigned()).toBe(true);
 
             // Encode and verify no type prefix
@@ -136,13 +130,13 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
             });
 
             // Verify it's detected as dynamic fee
-            expect(dynamicTx.isDynamicFee()).toBe(true);
+            expect(dynamicTx.isDynamicFee).toBe(true);
             expect(dynamicTx.maxFeePerGas).toBe(10027000000000n);
             expect(dynamicTx.maxPriorityFeePerGas).toBe(27000000000n);
 
             // Sign the transaction
             const signedTx = fromSigner.sign(dynamicTx);
-            expect(signedTx.isDynamicFee()).toBe(true);
+            expect(signedTx.isDynamicFee).toBe(true);
             expect(signedTx.isSigned()).toBe(true);
             expect(signedTx.maxFeePerGas).toBe(10027000000000n);
             expect(signedTx.maxPriorityFeePerGas).toBe(27000000000n);
@@ -196,7 +190,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
             });
 
             // Should still be detected as dynamic fee
-            expect(dynamicTx.isDynamicFee()).toBe(true);
+            expect(dynamicTx.isDynamicFee).toBe(true);
             expect(dynamicTx.maxFeePerGas).toBe(10027000000000n);
             expect(dynamicTx.maxPriorityFeePerGas).toBeUndefined();
 
@@ -239,12 +233,12 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
             });
 
             // Should be detected as legacy
-            expect(existingLegacyTx.isDynamicFee()).toBe(false);
+            expect(existingLegacyTx.isDynamicFee).toBe(false);
             expect(existingLegacyTx.gasPriceCoef).toBe(255n);
 
             // Should work with existing signer patterns
             const signedTx = fromSigner.sign(existingLegacyTx);
-            expect(signedTx.isDynamicFee()).toBe(false);
+            expect(signedTx.isDynamicFee).toBe(false);
             expect(signedTx.gasPriceCoef).toBe(255n);
 
             // Should encode without type prefix
@@ -298,8 +292,8 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
             });
 
             // Verify different detection
-            expect(legacyTx.isDynamicFee()).toBe(false);
-            expect(dynamicTx.isDynamicFee()).toBe(true);
+            expect(legacyTx.isDynamicFee).toBe(false);
+            expect(dynamicTx.isDynamicFee).toBe(true);
 
             // Sign both
             const signedLegacy = fromSigner.sign(legacyTx);

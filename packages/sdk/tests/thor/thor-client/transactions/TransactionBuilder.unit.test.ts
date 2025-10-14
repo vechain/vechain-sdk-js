@@ -16,6 +16,9 @@ describe('TransactionBuilder UNIT tests', () => {
         );
         const builder = TransactionBuilder.create(thorClient);
         const transaction = builder
+            .withBeggar(
+                Address.of('0x05b0f21cCcF4c6AAbcA8Fe90904f878BeE47938A')
+            )
             .withBlockRef(Hex.of('0x1234'))
             .withChainTag(1)
             .withClauses([new Clause(Address.of('0x0'), 1n, null, null, null)])
@@ -24,7 +27,6 @@ describe('TransactionBuilder UNIT tests', () => {
             .withGas(1n)
             .withGasPriceCoef(2n)
             .withNonce(9)
-            .withIsIntendedToBeSponsored(true)
             .build();
         expect(transaction.blockRef.toString()).toBe('0x1234');
         expect(transaction.chainTag).toBe(1);
