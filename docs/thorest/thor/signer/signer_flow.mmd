@@ -9,9 +9,9 @@ flowchart TB
     TXR_BS{.beggar=SIGNER?}
     OS_TXR_BST["Signer.sign() as ORIGIN"]
     GS_TXR_BSF["Signer.sign() as GAS PAYER"]
-    TXR_G{.gasPayer=null?}
-    TXR_O{.origin=null?}
-    TXR_S{".gasPayer!=null AND .origin!=null"}
+    TXR_G{.gasPayerSignature=null?}
+    TXR_O{.originSignature=null?}
+    TXR_S{".gasPayerSignature!=null AND .originSignature!=null"}
     STXR("`**TransactionRequest.isSigned=true**`")
     STOP(("Stop"))
     START --> TXR
