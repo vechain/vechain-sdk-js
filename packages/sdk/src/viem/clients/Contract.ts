@@ -106,35 +106,6 @@ export interface Contract<TAbi extends Abi> {
     >;
 }
 
-/**
- * Creates a viem-compatible contract instance powered by VeChain's official contracts module
- *
- * This function provides a layered architecture:
- * - Top Layer: viem-compatible interface (this function)
- * - Middle Layer: Official VeChain SDK contracts module
- * - Bottom Layer: VeChain blockchain interaction
- *
- * @param config Contract configuration including address, ABI and clients
- * @returns A viem-compatible contract instance with VeChain backend
- *
- * @example
- * ```ts
- * import { getContract } from '@vechain/sdk';
- *
- * const contract = getContract({
- *   address: '0x...',
- *   abi: [...],
- *   publicClient,
- * });
- *
- * // viem-compatible interface
- * const value = await contract.read.balanceOf(['0x...']);
- *
- * // VeChain-specific features
- * contract._vechain?.setReadOptions({ revision: 'best' });
- * const clause = contract._vechain?.clause.transfer('0x...', 100n);
- * ```
- */
 function getContract<const TAbi extends Abi>({
     address,
     abi,
