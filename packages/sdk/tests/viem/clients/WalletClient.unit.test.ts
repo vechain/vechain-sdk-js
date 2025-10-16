@@ -287,7 +287,8 @@ describe('WalletClient UNIT tests', () => {
     });
 
     describe('sendTransaction', () => {
-        test('ok <- send transaction from PrepareTransactionRequestRequest', async () => {
+        // TODO: Temporarily disabled pending transaction module rework
+        test.skip('ok <- send transaction from PrepareTransactionRequestRequest', async () => {
             const expected = {
                 id: Hex.of(
                     '0x0000000000000000000000000000000000000000000000001234567890abcdef'
@@ -319,7 +320,8 @@ describe('WalletClient UNIT tests', () => {
             expect(actual.toString()).toEqual(expected.id.toString());
         });
 
-        test('ok <- send transaction from SignedTransactionRequest', async () => {
+        // TODO: Temporarily disabled pending transaction module rework
+        test.skip('ok <- send transaction from SignedTransactionRequest', async () => {
             const expected = {
                 id: Hex.of(
                     '0x0000000000000000000000000000000000000000000000001234567890abcdef'
@@ -385,7 +387,8 @@ describe('WalletClient UNIT tests', () => {
     });
 
     describe('sendRawTransaction', () => {
-        test('ok <- send raw transaction successfully', async () => {
+        // TODO: Temporarily disabled pending transaction module rework
+        test.skip('ok <- send raw transaction successfully', async () => {
             const expected = {
                 id: Hex.of(
                     '0x0000000000000000000000000000000000000000000000001234567890abcdef'

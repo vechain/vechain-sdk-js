@@ -72,6 +72,7 @@ class VeChainSDKError extends Error {
     ) {
         super(message, { cause });
         this.args = args;
+        this.cause = cause;
         this.fqn = fqn;
         this.tag = tag;
     }

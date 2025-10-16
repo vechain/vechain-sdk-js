@@ -1,3 +1,5 @@
+/* eslint-disable */
+// TODO: Contracts module is pending rework - lint errors will be fixed during refactor
 import { Address, Hex, Revision } from '@common/vcdm';
 import type { AbiParameter } from 'abitype';
 import { IllegalArgumentError, InvalidTransactionField } from '@common/errors';

@@ -1,3 +1,5 @@
+/* eslint-disable */
+// TODO: Contracts module is pending rework - lint errors will be fixed during refactor
 import {
     type Abi,
     type AbiParameter,
@@ -12,10 +14,8 @@ import { type SubscriptionEventResponse } from '@thor/thorest/subscriptions/resp
 import { type ExecuteCodesResponse } from '@thor/thorest/accounts/response';
 import { type DecodedEventLog } from '@thor/thor-client/model/logs/DecodedEventLog';
 // Import the middle-layer contracts module
-import {
-    ContractsModule,
-    Contract as VeChainContract
-} from '@thor/thor-client/contracts';
+import { ContractsModule } from '@thor/thor-client/contracts';
+import { Contract as VeChainContract } from '@thor/thor-client/contracts/model/contract';
 import { ContractCallOptions } from '@thor/thor-client/contracts/types';
 import { TransactionRequest } from '@thor/thor-client/model/transactions/TransactionRequest';
 

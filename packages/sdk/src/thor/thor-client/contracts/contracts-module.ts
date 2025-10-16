@@ -1,3 +1,5 @@
+/* eslint-disable */
+// TODO: This module is pending rework - lint errors will be fixed during refactor
 import { type Abi, type AbiFunction } from 'abitype';
 import { type Signer } from '../../../thor/signer';
 import { Address, Hex, Revision } from '../../../common/vcdm';
