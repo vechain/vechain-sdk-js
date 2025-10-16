@@ -11,6 +11,7 @@ import {
     TXID
 } from '@thor';
 import { TEST_ACCOUNTS } from '../../fixture';
+import { log } from '@common/logging';
 
 const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
 
@@ -46,7 +47,6 @@ describe('PrivateKeySigner SOLO test', () => {
             dependsOn: null,
             expiration: mockExpiration,
             gas: mockGas,
-            gasPriceCoef: 0n, // Dynamic fee transactions use 0
             maxFeePerGas: mockMaxFeePerGas,
             maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
             nonce: mockNonce
@@ -57,7 +57,7 @@ describe('PrivateKeySigner SOLO test', () => {
         );
         const txRequestSaS = signer.sign(txRequest);
         const encodedTx = TransactionRequestRLPCodec.encode(txRequestSaS);
-        console.log(HexUInt.of(encodedTx).toString());
+        log.debug({ message: HexUInt.of(encodedTx).toString() });
 
         const txId = (await SendTransaction.of(encodedTx).askTo(httpClient))
             .response;
@@ -66,7 +66,8 @@ describe('PrivateKeySigner SOLO test', () => {
         await new Promise((resolve) => setTimeout(resolve, 3000));
         const tx = (await RetrieveTransactionByID.of(txId.id).askTo(httpClient))
             .response;
-        console.log(tx?.toJSON());
+        expect(tx).not.toBeNull();
+        log.debug({ message: `${tx?.toJSON()}` });
     });
 
     test('ok <- dynamic fee, signed then sponsored', async () => {
@@ -87,7 +88,6 @@ describe('PrivateKeySigner SOLO test', () => {
             dependsOn: null,
             expiration: mockExpiration,
             gas: mockGas,
-            gasPriceCoef: 0n, // Dynamic fee transactions use 0
             maxFeePerGas: mockMaxFeePerGas,
             maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
             nonce: mockNonce
@@ -103,7 +103,7 @@ describe('PrivateKeySigner SOLO test', () => {
         );
         const txRequestSaGP = gasPayerSigner.sign(txRequestSaS);
         const encodedTx = TransactionRequestRLPCodec.encode(txRequestSaGP);
-        console.log(HexUInt.of(encodedTx).toString());
+        log.debug({ message: HexUInt.of(encodedTx).toString() });
 
         const txId = (await SendTransaction.of(encodedTx).askTo(httpClient))
             .response;
@@ -112,7 +112,8 @@ describe('PrivateKeySigner SOLO test', () => {
         await new Promise((resolve) => setTimeout(resolve, 3000));
         const tx = (await RetrieveTransactionByID.of(txId.id).askTo(httpClient))
             .response;
-        console.log(tx?.toJSON());
+        expect(tx).not.toBeNull();
+        log.debug({ message: `${tx?.toJSON()}` });
     });
 
     test('ok <- dynamic fee - sponsored than signed', async () => {
@@ -133,7 +134,6 @@ describe('PrivateKeySigner SOLO test', () => {
             dependsOn: null,
             expiration: mockExpiration,
             gas: mockGas,
-            gasPriceCoef: 0n, // Dynamic fee transactions use 0
             maxFeePerGas: mockMaxFeePerGas,
             maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
             nonce: mockNonce
@@ -149,7 +149,7 @@ describe('PrivateKeySigner SOLO test', () => {
         );
         const txRequestSaS = originSigner.sign(txRequestSaGP);
         const encodedTx = TransactionRequestRLPCodec.encode(txRequestSaS);
-        console.log(HexUInt.of(encodedTx).toString());
+        log.debug({ message: HexUInt.of(encodedTx).toString() });
 
         const txId = (await SendTransaction.of(encodedTx).askTo(httpClient))
             .response;
@@ -158,7 +158,8 @@ describe('PrivateKeySigner SOLO test', () => {
         await new Promise((resolve) => setTimeout(resolve, 3000));
         const tx = (await RetrieveTransactionByID.of(txId.id).askTo(httpClient))
             .response;
-        console.log(tx?.toJSON());
+        expect(tx).not.toBeNull();
+        log.debug({ message: `${tx?.toJSON()}` });
     });
 
     test('ok <- legacy - no sponsored', async () => {
@@ -187,14 +188,15 @@ describe('PrivateKeySigner SOLO test', () => {
         );
         const txRequestSaS = signer.sign(txRequest);
         const encodedTx = TransactionRequestRLPCodec.encode(txRequestSaS);
-        console.log(HexUInt.of(encodedTx).toString());
+        log.debug({ message: HexUInt.of(encodedTx).toString() });
 
         const txId = (await SendTransaction.of(encodedTx).askTo(httpClient))
             .response;
         await new Promise((resolve) => setTimeout(resolve, 3000));
         const tx = (await RetrieveTransactionByID.of(txId.id).askTo(httpClient))
             .response;
-        console.log(tx?.toJSON());
+        expect(tx).not.toBeNull();
+        log.debug({ message: `${tx?.toJSON()}` });
     });
 
     test('ok <- legacy - signed then sponsored', async () => {
@@ -230,14 +232,15 @@ describe('PrivateKeySigner SOLO test', () => {
         );
         const txRequestSaGP = gasPayerSigner.sign(txRequestSaS);
         const encodedTx = TransactionRequestRLPCodec.encode(txRequestSaGP);
-        console.log(HexUInt.of(encodedTx).toString());
+        log.debug({ message: HexUInt.of(encodedTx).toString() });
 
         const txId = (await SendTransaction.of(encodedTx).askTo(httpClient))
             .response;
         await new Promise((resolve) => setTimeout(resolve, 3000));
         const tx = (await RetrieveTransactionByID.of(txId.id).askTo(httpClient))
             .response;
-        console.log(tx?.toJSON());
+        expect(tx).not.toBeNull();
+        log.debug({ message: `${tx?.toJSON()}` });
     });
 
     test('ok <- legacy - sponsored then signed', async () => {
@@ -273,13 +276,14 @@ describe('PrivateKeySigner SOLO test', () => {
         );
         const txRequestSaS = originSigner.sign(txRequestSaGP);
         const encodedTx = TransactionRequestRLPCodec.encode(txRequestSaS);
-        console.log(HexUInt.of(encodedTx).toString());
+        log.debug({ message: HexUInt.of(encodedTx).toString() });
 
         const txId = (await SendTransaction.of(encodedTx).askTo(httpClient))
             .response;
         await new Promise((resolve) => setTimeout(resolve, 3000));
         const tx = (await RetrieveTransactionByID.of(txId.id).askTo(httpClient))
             .response;
-        console.log(tx?.toJSON());
+        expect(tx).not.toBeNull();
+        log.debug({ message: `${tx?.toJSON()}` });
     });
 });

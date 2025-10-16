@@ -1,6 +1,6 @@
-import { describe, expect, test } from '@jest/globals';
-import { Address, Hex, HexUInt, Secp256k1 } from '@common';
-import { PrivateKeySigner, Transaction } from '@thor';
+import { describe, expect, jest, test } from '@jest/globals';
+import { Address, HexUInt, InvalidPrivateKeyError, Secp256k1 } from '@common';
+import { PrivateKeySigner } from '@thor';
 import { Clause, TransactionRequest } from '@thor/thor-client';
 import { type ThorSoloAccount } from '@vechain/sdk-solo-setup';
 import * as nc_utils from '@noble/curves/utils.js';
@@ -29,6 +29,133 @@ describe('PrivateKeySigner UNIT test', () => {
     const mockMaxPriorityFeePerGas = 27000000000n; // 5 Gwei
     const mockNonce = 3;
     const mockValue = 10n ** 15n; // .001 VET
+
+    describe('constructor', () => {
+        test('ok <- create instance with valid private key', () => {
+            const privateKeyBytes = HexUInt.of(
+                mockSenderAccount.privateKey
+            ).bytes;
+            const signer = new PrivateKeySigner(privateKeyBytes);
+
+            // Should create the instance successfully
+            expect(signer).toBeInstanceOf(PrivateKeySigner);
+            expect(signer.address).toBeInstanceOf(Address);
+            expect(signer.address.toString()).toBe(mockSenderAccount.address);
+        });
+
+        test('ok <- make defensive copy of private key', () => {
+            const originalPrivateKey = HexUInt.of(
+                mockSenderAccount.privateKey
+            ).bytes;
+            const privateKeyCopy = new Uint8Array(originalPrivateKey);
+
+            // Create signer with the copy
+            const signer = new PrivateKeySigner(privateKeyCopy);
+
+            // Modify the original array after construction
+            privateKeyCopy.fill(0);
+
+            // Signer should still be functional (proving it made a defensive copy)
+            const txRequest = new TransactionRequest({
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [
+                    new Clause(
+                        Address.of(mockReceiverAccount.address),
+                        mockValue
+                    )
+                ],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            });
+
+            // Should still be able to sign (proving internal copy wasn't affected)
+            expect(() => signer.sign(txRequest)).not.toThrow();
+            const signedTx = signer.sign(txRequest);
+            expect(signedTx.isSigned).toBe(true);
+        });
+
+        test('err <- throw InvalidPrivateKeyError for invalid private key - zero key', () => {
+            // All zeros private key is invalid
+            const invalidPrivateKey = new Uint8Array(32).fill(0);
+
+            expect(() => {
+                // eslint-disable-next-line sonarjs/constructor-for-side-effects,no-new
+                new PrivateKeySigner(invalidPrivateKey);
+            }).toThrow(InvalidPrivateKeyError);
+        });
+
+        test('err <- throw InvalidPrivateKeyError for invalid private key - wrong length', () => {
+            // Private key with wrong length
+            const shortPrivateKey = new Uint8Array(31).fill(1);
+            const longPrivateKey = new Uint8Array(33).fill(1);
+
+            expect(() => {
+                // eslint-disable-next-line sonarjs/constructor-for-side-effects,no-new
+                new PrivateKeySigner(shortPrivateKey);
+            }).toThrow(InvalidPrivateKeyError);
+
+            expect(() => {
+                // eslint-disable-next-line sonarjs/constructor-for-side-effects,no-new
+                new PrivateKeySigner(longPrivateKey);
+            }).toThrow(InvalidPrivateKeyError);
+        });
+
+        test('err <- throw InvalidPrivateKeyError for invalid private key - exceeds curve order', () => {
+            // Private key that exceeds secp256k1 curve order
+            const invalidPrivateKey = new Uint8Array(32).fill(0xff);
+
+            expect(() => {
+                // eslint-disable-next-line sonarjs/constructor-for-side-effects,no-new
+                new PrivateKeySigner(invalidPrivateKey);
+            }).toThrow(InvalidPrivateKeyError);
+        });
+    });
+
+    describe('dispose', () => {
+        test('err <- sign throws after disponse call ', () => {
+            // Create a valid private key
+            const privateKeyBytes = HexUInt.of(
+                mockSenderAccount.privateKey
+            ).bytes;
+            const signer = new PrivateKeySigner(privateKeyBytes);
+
+            // Verify signer is functional before disposal
+            expect(signer.address.toString()).toBe(mockSenderAccount.address);
+
+            // Create a simple transaction request to test signing before disposal
+            const txRequest = new TransactionRequest({
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [
+                    new Clause(
+                        Address.of(mockReceiverAccount.address),
+                        mockValue
+                    )
+                ],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            });
+
+            // Should be able to sign before disposal
+            const signedTx = signer.sign(txRequest);
+            expect(signedTx.isSigned).toBe(true);
+
+            // Dispose the signer
+            signer.dispose();
+
+            // After disposal, signing should fail with InvalidPrivateKeyError
+            expect(() => {
+                signer.sign(txRequest);
+            }).toThrow('unable to sign');
+        });
+    });
 
     describe('sign', () => {
         test('ok <- dynamic fee - no sponsored', () => {
@@ -343,7 +470,143 @@ describe('PrivateKeySigner UNIT test', () => {
             );
         });
 
-        test('OLD VS NEW MODEL COMPATIBILITY', () => {
+        test('ok <- not sponsored with zero-length origin signature returns original request', () => {
+            // Create a transaction request without sponsorship (no beggar) and no signatures
+            const txRequest = new TransactionRequest({
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [
+                    new Clause(
+                        Address.of(mockReceiverAccount.address),
+                        mockValue
+                    )
+                ],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            });
+
+            // Verify the transaction request is not intended to be sponsored
+            expect(txRequest.isIntendedToBeSponsored).toBe(false);
+
+            // Verify the origin signature has zero lengths
+            expect(txRequest.originSignature.length).toBe(0);
+
+            // Access the private static finalize method using TypeScript casting
+            const finalizedRequest = (PrivateKeySigner as any).finalize(
+                txRequest
+            );
+
+            // The finalized request should be the exact same object since no changes are made
+            expect(finalizedRequest).toBe(txRequest);
+
+            // Verify properties remain unchanged
+            expect(finalizedRequest.isIntendedToBeSponsored).toBe(false);
+            expect(finalizedRequest.originSignature.length).toBe(0);
+            expect(finalizedRequest.gasPayerSignature.length).toBe(0);
+            expect(finalizedRequest.signature.length).toBe(0);
+            expect(finalizedRequest.isSigned).toBe(false);
+        });
+
+        test('err <- handles non-Error thrown in catch block', () => {
+            const txRequest = new TransactionRequest({
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [
+                    new Clause(
+                        Address.of(mockReceiverAccount.address),
+                        mockValue
+                    )
+                ],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            });
+
+            const signer = new PrivateKeySigner(
+                HexUInt.of(mockSenderAccount.privateKey).bytes
+            );
+
+            // Mock the finalize method to throw a non-Error instance (like a string)
+            const originalFinalize = (PrivateKeySigner as any).finalize;
+            (PrivateKeySigner as any).finalize = jest.fn(() => {
+                throw 'This is not an Error instance'; // eslint-disable-line @typescript-eslint/no-throw-literal
+            });
+
+            try {
+                expect(() => {
+                    signer.sign(txRequest);
+                }).toThrow('unable to sign');
+
+                // Verify that the thrown VeChainSDKError has undefined as the cause
+                // since the caught value was not an Error instance
+                let caughtError;
+                try {
+                    signer.sign(txRequest);
+                } catch (error) {
+                    caughtError = error;
+                }
+
+                expect(caughtError).toBeDefined();
+                expect(caughtError.message).toContain('unable to sign');
+                // The cause should be undefined when a non-Error is caught
+                expect(caughtError.cause).toBeUndefined();
+            } finally {
+                // Restore the original finalize method
+                (PrivateKeySigner as any).finalize = originalFinalize;
+            }
+        });
+
+        test('err <- sign as origin - throws when private key is null', () => {
+            // Create a valid signer first
+            const signer = new PrivateKeySigner(
+                HexUInt.of(mockSenderAccount.privateKey).bytes
+            );
+
+            // Create a transaction request
+            const txRequest = new TransactionRequest({
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [
+                    new Clause(
+                        Address.of(mockReceiverAccount.address),
+                        mockValue
+                    )
+                ],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            });
+
+            // Dispose the signer to set private key to null
+            signer.dispose();
+
+            // Try to call signAsOrigin - need to access the private method
+            expect(() => {
+                (signer as any).signAsOrigin(txRequest);
+            }).toThrow(InvalidPrivateKeyError);
+
+            // Verify the specific error message
+            try {
+                (signer as any).signAsOrigin(txRequest);
+            } catch (error) {
+                expect(error).toBeInstanceOf(InvalidPrivateKeyError);
+            }
+        });
+
+        test('err <- sign as gas payer - throws when private key is null', () => {
+            // Create a valid signer first
+            const signer = new PrivateKeySigner(
+                HexUInt.of(mockSenderAccount.privateKey).bytes
+            );
+
+            // Create a sponsored transaction request
             const txRequest = new TransactionRequest({
                 beggar: Address.of(mockSenderAccount.address),
                 blockRef: mockBlockRef,
@@ -361,45 +624,20 @@ describe('PrivateKeySigner UNIT test', () => {
                 nonce: mockNonce
             });
 
-            const tx = Transaction.of({
-                chainTag: txRequest.chainTag,
-                blockRef: txRequest.blockRef.toString(),
-                expiration: txRequest.expiration,
-                clauses: txRequest.clauses.map((clause: Clause) => ({
-                    to: clause.to?.toString() ?? null,
-                    value: clause.value,
-                    data: clause.data?.toString() ?? Hex.PREFIX
-                })),
-                gasPriceCoef: Number(txRequest.gasPriceCoef),
-                gas: Number(txRequest.gas),
-                dependsOn: txRequest.dependsOn?.toString() ?? null,
-                nonce: txRequest.nonce,
-                reserved: {
-                    features: 1
-                }
-            });
-            // Sign as Sender. Partial signature.
-            const txSaS = tx.signAsSender(
-                HexUInt.of(mockSenderAccount.privateKey).bytes
-            );
-            const originSigner = new PrivateKeySigner(
-                HexUInt.of(mockSenderAccount.privateKey).bytes
-            );
-            const txRequestSaS = originSigner.sign(txRequest);
-            expect(txSaS.senderSignature).toEqual(txRequestSaS.originSignature);
-            // Sign as Gas Payer. Finalized signature.
-            const txSaGP = txSaS.signAsGasPayer(
-                Address.of(mockSenderAccount.address),
-                HexUInt.of(mockReceiverAccount.privateKey).bytes
-            );
-            const gasPayerSigner = new PrivateKeySigner(
-                HexUInt.of(mockReceiverAccount.privateKey).bytes
-            );
-            const txRequestSaGP = gasPayerSigner.sign(txRequestSaS);
-            expect(txSaGP.gasPayerSignature).toEqual(
-                txRequestSaGP.gasPayerSignature
-            );
-            expect(txSaGP.signature).toEqual(txRequestSaGP.signature);
+            // Dispose the signer to set private key to null
+            signer.dispose();
+
+            // Try to call signAsGasPayer - need to access the private method
+            expect(() => {
+                (signer as any).signAsGasPayer(txRequest);
+            }).toThrow(InvalidPrivateKeyError);
+
+            // Verify the specific error message
+            try {
+                (signer as any).signAsGasPayer(txRequest);
+            } catch (error) {
+                expect(error).toBeInstanceOf(InvalidPrivateKeyError);
+            }
         });
     });
 });

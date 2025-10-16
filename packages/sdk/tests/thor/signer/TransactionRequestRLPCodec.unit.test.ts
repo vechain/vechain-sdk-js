@@ -1,5 +1,5 @@
 import { TEST_ACCOUNTS } from '../../fixture';
-import { Address, HexUInt } from '@common';
+import { Address, HexUInt, InvalidEncodingError } from '@common';
 import {
     Clause,
     TransactionRequest
@@ -227,6 +227,22 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
             expect(actual.isSigned).toBe(true);
             expect(actual.toJSON()).toEqual(expected.toJSON());
         });
+
+        test('err <- dynamic fee - throw for incorrect encoded size', () => {
+            // Create a malformed dynamic fee transaction (starts with 0x51 prefix)
+            // but has incorrect number of fields in the RLP structure
+            const malformedDynamicFeeData = new Uint8Array([
+                0x51, // Dynamic fee prefix
+                0xc3, // RLP list with 3 bytes of data
+                0x01, // First element: 1
+                0x02, // Second element: 2
+                0x03 // Third element: 3
+            ]);
+
+            expect(() => {
+                TransactionRequestRLPCodec.decode(malformedDynamicFeeData);
+            }).toThrow('invalid encoded transaction request');
+        });
     });
 
     describe('encode/decode legacy', () => {
@@ -403,6 +419,21 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
             expect(actual.isSigned).toBe(true);
             expect(actual.toJSON()).toEqual(expected.toJSON());
         });
+
+        test('err <- legacy - throws for incorrect encoded size', () => {
+            // Create a malformed RLP encoded array with incorrect number of fields
+            // This will have a size that doesn't match any expected RLP profile length
+            const malformedEncodedData = new Uint8Array([
+                0xc3, // RLP list with 3 bytes of data
+                0x01, // First element: 1
+                0x02, // Second element: 2
+                0x03 // Third element: 3
+            ]);
+
+            expect(() => {
+                TransactionRequestRLPCodec.decode(malformedEncodedData);
+            }).toThrow(InvalidEncodingError);
+        });
     });
 
     describe('encode/decode clauses', () => {
@@ -420,6 +451,34 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
             const actual = TransactionRequestRLPCodec.decode(
                 TransactionRequestRLPCodec.encode(expected)
             );
+            expect(actual.toJSON()).toEqual(expected.toJSON());
+        });
+
+        test('ok <- clause with empty data defaults to Hex.PREFIX', () => {
+            const expected = new TransactionRequest({
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [
+                    new Clause(
+                        Address.of(mockReceiverAccount.address),
+                        mockValue,
+                        null // Empty data should result in Hex.PREFIX
+                    )
+                ],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: 0n,
+                nonce: mockNonce
+            });
+
+            const actual = TransactionRequestRLPCodec.decode(
+                TransactionRequestRLPCodec.encode(expected)
+            );
+
+            expect(actual.clauses).toHaveLength(1);
+            expect(actual.clauses[0].data).toBeNull();
+            expect(actual.clauses[0].toJSON().data).toBe('0x'); // Should be Hex.PREFIX
             expect(actual.toJSON()).toEqual(expected.toJSON());
         });
 
@@ -465,6 +524,70 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
                 TransactionRequestRLPCodec.encode(expected)
             );
             expect(actual.toJSON()).toEqual(expected.toJSON());
+        });
+
+        test('ok <- body.beggar defined creates Address using Address.of', () => {
+            // Create a transaction request with beggar address defined
+            const expectedBeggarAddress = Address.of(mockSenderAccount.address);
+            const txRequest = new TransactionRequest({
+                beggar: expectedBeggarAddress,
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [
+                    new Clause(
+                        Address.of(mockReceiverAccount.address),
+                        mockValue
+                    )
+                ],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            });
+
+            // Encode and then decode to test the mapBodyToTransactionRequest method
+            const encoded = TransactionRequestRLPCodec.encode(txRequest);
+            const decoded = TransactionRequestRLPCodec.decode(encoded);
+
+            // Verify that the beggar address is properly reconstructed using Address.of
+            expect(decoded.beggar).toBeDefined();
+            expect(decoded.beggar?.toString()).toBe(
+                expectedBeggarAddress.toString()
+            );
+            expect(decoded.isIntendedToBeSponsored).toBe(true);
+            expect(decoded.toJSON().beggar).toBe(
+                expectedBeggarAddress.toString()
+            );
+        });
+
+        test('ok <- body.beggar undefined results in params.beggar as undefined', () => {
+            // Create a transaction request without beggar address
+            const txRequest = new TransactionRequest({
+                // beggar intentionally omitted
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [
+                    new Clause(
+                        Address.of(mockReceiverAccount.address),
+                        mockValue
+                    )
+                ],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            });
+
+            // Encode and then decode to test the mapBodyToTransactionRequest method
+            const encoded = TransactionRequestRLPCodec.encode(txRequest);
+            const decoded = TransactionRequestRLPCodec.decode(encoded);
+
+            // Verify that the beggar address is undefined
+            expect(decoded.beggar).toBeUndefined();
+            expect(decoded.isIntendedToBeSponsored).toBe(false);
+            expect(decoded.toJSON().beggar).toBeUndefined();
         });
     });
 });

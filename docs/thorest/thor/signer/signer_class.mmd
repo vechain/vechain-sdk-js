@@ -2,7 +2,7 @@
 title: Signer Class Diagram - VIP-191
 ---
 classDiagram
-    namespace model {
+    namespace thor_thor_client_model_transactions {
         class TransactionRequest {
             UInt8Array gasPayerSignature
             Uint8Array originSignature
@@ -22,7 +22,7 @@ classDiagram
             Hex|null dependsOn
             number expiration
             bigint gas
-            bigint gasPriceCoef
+            bigint? gasPriceCoef
             bigint? maxFeePerGas
             bigint? maxPriorityFeePerGas
             number nonce
@@ -30,8 +30,13 @@ classDiagram
     }
     class Signer {
         Address address
-        TrasactionRequest|SignedTransactionRequest sign(TransactionRequest request)
+        TrasactionRequest sign(TransactionRequest request)
     }
+    class PrivateKeySigner {
+        constructor(UInt8Array orivateKey)
+        dispose()
+    }
+    Signer <|-- PrivateKeySigner
     TransactionRequestParam <|.. TransactionRequest
-    TransactionRequest <-- "sign(SignedTransactionRequest request)" Signer
+    TransactionRequest <-- "sign(TransactionRequest request)" Signer
 

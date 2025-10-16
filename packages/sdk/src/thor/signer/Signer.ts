@@ -11,6 +11,12 @@ interface Signer {
      */
     address: Address;
 
+    /**
+     * Signs a given transaction request.
+     *
+     * @param {TransactionRequest} transactionRequest - The transaction request object to be signed.
+     * @returns {TransactionRequest} The signed transaction request object.
+     */
     sign: (transactionRequest: TransactionRequest) => TransactionRequest;
 }
 

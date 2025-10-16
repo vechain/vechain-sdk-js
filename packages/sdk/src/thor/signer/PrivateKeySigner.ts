@@ -98,6 +98,9 @@ class PrivateKeySigner implements Signer {
      * details of the transaction, its signatures (if available), and its sponsorship intent.
      * @return {TransactionRequest} The finalized `TransactionRequest` object, updated based on the sponsorship
      * intent and available signatures.
+     *
+     * @remarks Security auditable method, depends on
+     * - concatBytes from [noble-curves](https://github.com/paulmillr/noble-curves).
      */
     private static finalize(
         transactionRequest: TransactionRequest
@@ -136,6 +139,22 @@ class PrivateKeySigner implements Signer {
         return transactionRequest;
     }
 
+    /**
+     * Signs a transaction request.
+     * - If the transaction is intended to be sponsored,
+     *   - if the beggar address is equal to the signer address, signs as origin/sender;
+     *   - if the beggar address differs from the signer address, signs as gas payer.
+     * - If the transaction is not intended to be sponsored, signs as origin/sender.
+     *
+     * @param {TransactionRequest} transactionRequest - The transaction request object to be signed.
+     * @return {TransactionRequest} The signed transaction request object.
+     * @throws {VeChainSDKError} Throws an error if the signing process fails.
+     *
+     * @security Security auditable method, depends on
+     * - {@link PrivateKeySigner.finalize};
+     * - {@link PrivateKeySigner.signAsGasPayer};
+     * - {@link PrivateKeySigner.signAsOrigin}.
+     */
     public sign(transactionRequest: TransactionRequest): TransactionRequest {
         try {
             if (transactionRequest.beggar !== undefined) {
@@ -161,6 +180,19 @@ class PrivateKeySigner implements Signer {
         }
     }
 
+    /**
+     * Signs a transaction request as a gas payer using a private key.
+     *
+     * @param {TransactionRequest} transactionRequest - The transaction request to sign,
+     * which includes all necessary transaction details.
+     * @return {TransactionRequest} The signed transaction request with updated gas payer signature.
+     * @throws {InvalidPrivateKeyError} Throws an error if the private key is not available.
+     *
+     * @remarks Security auditable method, depends on
+     * - {@link Blake2b256.of};
+     * - concatBytes from [noble-curves](https://github.com/paulmillr/noble-curves);
+     * - {@link Secp256k1.sign}.
+     */
     private signAsGasPayer(
         transactionRequest: TransactionRequest
     ): TransactionRequest {
@@ -191,6 +223,18 @@ class PrivateKeySigner implements Signer {
         );
     }
 
+    /**
+     * Signs the given transaction request as the origin using the private key.
+     *
+     * @param {TransactionRequest} transactionRequest - The transaction request to be signed.
+     * @return {TransactionRequest} A new instance of TransactionRequest with the origin signature included.
+     * @throws {InvalidPrivateKeyError} If no private key is available for signing.
+     *
+     * @remarks Security auditable method, depends on
+     * - {@link Blake2b256.of};
+     * - concatBytes from [noble-curves](https://github.com/paulmillr/noble-curves);
+     * - {@link Secp256k1.sign}.
+     */
     private signAsOrigin(
         transactionRequest: TransactionRequest
     ): TransactionRequest {

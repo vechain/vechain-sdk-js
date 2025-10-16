@@ -21,22 +21,38 @@ import {
 
 const FQP = 'packages/sdk/src/thor/signer/TransactionRequestRLPCodec.ts!';
 
+/**
+ * Class representing a codec for encoding and decoding transaction requests using Recursive Length Prefix (RLP) encoding.
+ */
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 class TransactionRequestRLPCodec {
+    /**
+     * The prefix for dynamic fee transactions request.
+     */
     private static readonly DYNAMIC_FEE_PREFIX = 0x51;
 
+    /**
+     * The RLP profile for signed transaction request fields.
+     */
     private static readonly RLP_SIGNED_STATE = {
         name: 'signature',
         kind: new BufferKind()
     };
 
+    /**
+     * The RLP profile for sponsored albeit unsigned transaction request fields.
+     */
     private static readonly RLP_UNSIGNED_STATE = [
         { name: 'beggar', kind: new OptionalFixedHexBlobKind(20) },
         { name: 'originSignature', kind: new BufferKind() },
         { name: 'gasPayerSignature', kind: new BufferKind() }
     ];
 
-    // EIP-1559 dynamic fee transaction fields (type 2)
+    /**
+     * The RLP profile for the
+     * [EIP-1559](https://eips.ethereum.org/EIPS/eip-1559)
+     * dynamic fee transaction request fields subject to be hashed to compute signatures.
+     */
     private static readonly RLP_DYNAMIC_FEE_TO_HASH = [
         { name: 'chainTag', kind: new NumericKind(1) },
         { name: 'blockRef', kind: new CompactFixedHexBlobKind(8) },
@@ -62,16 +78,37 @@ class TransactionRequestRLPCodec {
         { name: 'reserved', kind: { item: new BufferKind() } }
     ];
 
+    /**
+     * The RLP profile for the
+     * [EIP-1559](https://eips.ethereum.org/EIPS/eip-1559)
+     * dynamic fee transaction request once both the gas payer and origin signed.
+     *
+     * The `signature` field is included,
+     * the `gasPayerSignature` and `originSignature` fields are removed.
+     */
     private static readonly RLP_DYNAMIC_FEE_SIGNED_REQUEST =
         TransactionRequestRLPCodec.RLP_DYNAMIC_FEE_TO_HASH.concat(
             TransactionRequestRLPCodec.RLP_SIGNED_STATE
         );
 
+    /**
+     * The RLP profile for the
+     * [EIP-1559](https://eips.ethereum.org/EIPS/eip-1559)
+     * dynamic fee transaction request while both
+     * the gas payer and origin haven't signed yet.
+     *
+     * The `beggar`, `gasPayerSigture` and `originSignature` fields are included;
+     * the `signature` field is removed.
+     */
     private static readonly RLP_DYNAMIC_FEE_UNSIGNED_REQUEST =
         TransactionRequestRLPCodec.RLP_DYNAMIC_FEE_TO_HASH.concat(
             TransactionRequestRLPCodec.RLP_UNSIGNED_STATE
         );
 
+    /**
+     * The RLP profile for the
+     * legacy transaction request fields subject to be hashed to compute signatures.
+     */
     private static readonly RLP_LEGACY_TO_HASH = [
         { name: 'chainTag', kind: new NumericKind(1) },
         { name: 'blockRef', kind: new CompactFixedHexBlobKind(8) },
@@ -96,16 +133,38 @@ class TransactionRequestRLPCodec {
         { name: 'reserved', kind: { item: new BufferKind() } }
     ];
 
+    /**
+     * The RLP profile for the
+     * legacy transaction request once both the gas payer and origin signed.
+     *
+     * The `signature` field is included,
+     * the `gasPayerSignature` and `originSignature` fields are removed.
+     */
     private static readonly RLP_LEGACY_SIGNED_REQUEST =
         TransactionRequestRLPCodec.RLP_LEGACY_TO_HASH.concat(
             TransactionRequestRLPCodec.RLP_SIGNED_STATE
         );
 
+    /**
+     * The RLP profile for the
+     * legacy transaction request while both
+     * the gas payer and origin haven't signed yet.
+     *
+     * The `beggar`, `gasPayerSigture` and `originSignature` fields are included;
+     * the `signature` field is removed.
+     */
     private static readonly RLP_LEGACY_UNSIGNED_REQUEST =
         TransactionRequestRLPCodec.RLP_LEGACY_TO_HASH.concat(
             TransactionRequestRLPCodec.RLP_UNSIGNED_STATE
         );
 
+    /**
+     * Decodes an encoded transaction request into a TransactionRequest object.
+     *
+     * @param {Uint8Array} encoded - The encoded transaction request as a Uint8Array.
+     * @return {TransactionRequest} The decoded transaction request.
+     * @throws {InvalidEncodingError} If the encoded data does not match the expected format.
+     */
     public static decode(encoded: Uint8Array): TransactionRequest {
         // Check if this is a dynamic fee transaction (EIP-1559) by looking for 0x51 prefix
         const isDynamicFee =
@@ -118,6 +177,12 @@ class TransactionRequestRLPCodec {
             : TransactionRequestRLPCodec.decodeLegacy(encodedData);
     }
 
+    /**
+     * Decodes the given RLPValidObject into a {@link Body} object.
+     *
+     * @param {RLPValidObject} decoded - The object containing the encoded transaction data to decode.
+     * @return {Body} The decoded Body object containing all transaction details.
+     */
     private static decodeBody(decoded: RLPValidObject): Body {
         const clauses: Array<{
             to: string | null;
@@ -163,140 +228,71 @@ class TransactionRequestRLPCodec {
         } satisfies Body;
     }
 
-    // Dynamic fee transaction - use maxFeePerGas and maxPriorityFeePerGas
+    /**
+     * Decodes a dynamic fee transaction request from its encoded representation.
+     *
+     * The [EIP-1559](https://eips.ethereum.org/EIPS/eip-1559) dynamic fee
+     * transaction request uses `maxFeePerGas` and `maxPriorityFeePerGas`
+     * properties.
+     *
+     * @param {Uint8Array} encoded - The encoded dynamic fee transaction request.
+     * @return {TransactionRequest} The decoded transaction request object.
+     * @throws {InvalidEncodingError} If the encoded data does not match the expected format.
+     */
     private static decodeDynamicFee(encoded: Uint8Array): TransactionRequest {
-        let rlpProfile: RLPProfile;
-        const size = (RLP.ofEncoded(encoded).decoded as unknown[]).length;
-        if (
-            TransactionRequestRLPCodec.RLP_DYNAMIC_FEE_SIGNED_REQUEST.length ===
-            size
-        ) {
-            rlpProfile = {
-                name: 'tx',
-                kind: TransactionRequestRLPCodec.RLP_DYNAMIC_FEE_SIGNED_REQUEST
-            } satisfies RLPProfile;
-        } else if (
-            TransactionRequestRLPCodec.RLP_DYNAMIC_FEE_UNSIGNED_REQUEST
-                .length === size
-        ) {
-            rlpProfile = {
-                name: 'tx',
-                kind: TransactionRequestRLPCodec.RLP_DYNAMIC_FEE_UNSIGNED_REQUEST
-            } satisfies RLPProfile;
-        } else {
-            throw new InvalidEncodingError(
-                `${FQP}TransactionRequestRLPCodec.decodeDynamicFee(encoded: Uint8Array): TransactionRequest`,
-                `invalid encoded transaction request`
-            );
-        }
+        const rlpProfile = TransactionRequestRLPCodec.getRLPProfile(
+            encoded,
+            TransactionRequestRLPCodec.RLP_DYNAMIC_FEE_SIGNED_REQUEST,
+            TransactionRequestRLPCodec.RLP_DYNAMIC_FEE_UNSIGNED_REQUEST,
+            `${FQP}TransactionRequestRLPCodec.decode(encoded: Uint8Array): TransactionRequest`
+        );
+
         const decoded = RLPProfiler.ofObjectEncoded(encoded, rlpProfile)
             .object as RLPValidObject;
         const body = TransactionRequestRLPCodec.decodeBody(decoded);
-        const signature = decoded.signature as Uint8Array;
-        const gasPayerSignature =
-            signature !== null && signature !== undefined
-                ? signature.slice(Secp256k1.SIGNATURE_LENGTH, signature.length)
-                : (decoded.gasPayerSignature as Uint8Array);
-        const originSignature =
-            signature !== null && signature !== undefined
-                ? signature.slice(0, Secp256k1.SIGNATURE_LENGTH)
-                : (decoded.originSignature as Uint8Array);
-        let beggar: Address | undefined;
-        if (decoded.beggar !== null && decoded.beggar !== undefined) {
-            beggar = Address.of(decoded.beggar as string);
-        } else if (signature?.length === Secp256k1.SIGNATURE_LENGTH * 2) {
-            const originHash = Blake2b256.of(
-                new Uint8Array([
-                    TransactionRequestRLPCodec.DYNAMIC_FEE_PREFIX,
-                    ...RLPProfiler.ofObject(
-                        { ...body },
-                        {
-                            name: 'tx',
-                            kind: TransactionRequestRLPCodec.RLP_DYNAMIC_FEE_TO_HASH
-                        }
-                    ).encoded
-                ])
-            ).bytes;
-            beggar = Address.ofPublicKey(
-                Secp256k1.recover(originHash, originSignature)
-            );
-        }
-        return new TransactionRequest(
-            {
-                ...TransactionRequestRLPCodec.mapBodyToTransactionRequest(body),
-                beggar
-            },
-            originSignature,
-            gasPayerSignature,
-            signature
+
+        return TransactionRequestRLPCodec.finalizeDecodedObject(
+            decoded,
+            body,
+            TransactionRequestRLPCodec.RLP_DYNAMIC_FEE_TO_HASH,
+            true
         );
     }
 
-    // Legacy transaction - use gasPriceCoef
+    /**
+     * Decodes a legacy transaction request from the provided encoded data.
+     *
+     * @param {Uint8Array} encoded The encoded transaction data to be decoded.
+     * @return {TransactionRequest} The decoded transaction request object.
+     * @throws {InvalidEncodingError} If the encoded data does not match the expected format.
+     */
     private static decodeLegacy(encoded: Uint8Array): TransactionRequest {
-        let rlpProfile: RLPProfile;
-        const size = (RLP.ofEncoded(encoded).decoded as unknown[]).length;
-        if (
-            TransactionRequestRLPCodec.RLP_LEGACY_SIGNED_REQUEST.length === size
-        ) {
-            rlpProfile = {
-                name: 'tx',
-                kind: TransactionRequestRLPCodec.RLP_LEGACY_SIGNED_REQUEST
-            } satisfies RLPProfile;
-        } else if (
-            TransactionRequestRLPCodec.RLP_LEGACY_UNSIGNED_REQUEST.length ===
-            size
-        ) {
-            rlpProfile = {
-                name: 'tx',
-                kind: TransactionRequestRLPCodec.RLP_LEGACY_UNSIGNED_REQUEST
-            } satisfies RLPProfile;
-        } else {
-            throw new InvalidEncodingError(
-                `${FQP}TransactionRequestRLPCodec.decodeLegacy(encoded: Uint8Array): TransactionRequest`,
-                `invalid encoded transaction request`
-            );
-        }
+        const rlpProfile = TransactionRequestRLPCodec.getRLPProfile(
+            encoded,
+            TransactionRequestRLPCodec.RLP_LEGACY_SIGNED_REQUEST,
+            TransactionRequestRLPCodec.RLP_LEGACY_UNSIGNED_REQUEST,
+            `${FQP}TransactionRequestRLPCodec.decode(encoded: Uint8Array): TransactionRequest`
+        );
+
         const decoded = RLPProfiler.ofObjectEncoded(encoded, rlpProfile)
             .object as RLPValidObject;
         const body = TransactionRequestRLPCodec.decodeBody(decoded);
-        const signature = decoded.signature as Uint8Array;
-        const gasPayerSignature =
-            signature !== null && signature !== undefined
-                ? signature.slice(Secp256k1.SIGNATURE_LENGTH, signature.length)
-                : (decoded.gasPayerSignature as Uint8Array);
-        const originSignature =
-            signature !== null && signature !== undefined
-                ? signature.slice(0, Secp256k1.SIGNATURE_LENGTH)
-                : (decoded.originSignature as Uint8Array);
-        let beggar: Address | undefined;
-        if (decoded.beggar !== null && decoded.beggar !== undefined) {
-            beggar = Address.of(decoded.beggar as string);
-        } else if (signature?.length === Secp256k1.SIGNATURE_LENGTH * 2) {
-            const originHash = Blake2b256.of(
-                RLPProfiler.ofObject(
-                    { ...body },
-                    {
-                        name: 'tx',
-                        kind: TransactionRequestRLPCodec.RLP_LEGACY_TO_HASH
-                    }
-                ).encoded
-            ).bytes;
-            beggar = Address.ofPublicKey(
-                Secp256k1.recover(originHash, originSignature)
-            );
-        }
-        return new TransactionRequest(
-            {
-                ...TransactionRequestRLPCodec.mapBodyToTransactionRequest(body),
-                beggar
-            },
-            originSignature,
-            gasPayerSignature,
-            signature
+
+        return TransactionRequestRLPCodec.finalizeDecodedObject(
+            decoded,
+            body,
+            TransactionRequestRLPCodec.RLP_LEGACY_TO_HASH,
+            false
         );
     }
 
+    /**
+     * Encodes a given transaction request into a RLP serialized format.
+     *
+     * @param {TransactionRequest} transactionRequest - The transaction request object to be encoded.
+     * @param {boolean} [isToHash=false] - Specifies whether the encoded output should be prepared for hashing.
+     * @return {Uint8Array} The serialized and encoded transaction request.
+     */
     public static encode(
         transactionRequest: TransactionRequest,
         isToHash: boolean = false
@@ -330,6 +326,103 @@ class TransactionRequestRLPCodec {
         }).encoded;
     }
 
+    /**
+     * Processes and retrieves the appropriate RLP profile based on the sizes of the signed and unsigned requests.
+     *
+     * @param {Uint8Array} encoded - The encoded data to be processed.
+     * @param {RLPProfile[]} signedRequest - Array of signed requests used for determining the profile match if the sizes align.
+     * @param {RLPProfile[]} unsignedRequest - Array of unsigned requests used for determining the profile match if the sizes align.
+     * @param {string} fqn - The full qualified name of the invoking method used for error reporting.
+     * @return {RLPProfile} The matched RLP profile based on the size comparison, or throws an error if no match is found.
+     * @throws {InvalidEncodingError} If the sizes of the provided requests do not match the expected encoded data size.
+     */
+    private static getRLPProfile(
+        encoded: Uint8Array,
+        signedRequest: RLPProfile[],
+        unsignedRequest: RLPProfile[],
+        fqn: string
+    ): RLPProfile {
+        const size = (RLP.ofEncoded(encoded).decoded as unknown[]).length;
+
+        if (signedRequest.length === size) {
+            return { name: 'tx', kind: signedRequest } satisfies RLPProfile;
+        } else if (unsignedRequest.length === size) {
+            return { name: 'tx', kind: unsignedRequest } satisfies RLPProfile;
+        } else {
+            throw new InvalidEncodingError(
+                fqn,
+                `invalid encoded transaction request`
+            );
+        }
+    }
+
+    /**
+     * Finalizes a decoded object into a TransactionRequest by processing the required fields,
+     * including the signature components and optionally calculating the beggar address
+     * if it is not explicitly provided in the decoded data.
+     *
+     * @param {RLPValidObject} decoded - The decoded RLP object containing the transaction details and signatures.
+     * @param {Body} body - The transaction body with the essential fields to be mapped into the TransactionRequest.
+     * @param {RLPProfile[]} toHashProfile - The RLP profiling rules for determining how the transaction should be encoded for hashing.
+     * @param {boolean} isDynamicFee - A flag indicating whether dynamic fee rules should be applied when computing the hash.
+     *
+     * @return {TransactionRequest} The finalized transaction request, containing the mapped body, signatures, and optionally derived beggar address.
+     */
+    private static finalizeDecodedObject(
+        decoded: RLPValidObject,
+        body: Body,
+        toHashProfile: RLPProfile[],
+        isDynamicFee: boolean
+    ): TransactionRequest {
+        const signature = decoded.signature as Uint8Array;
+        const gasPayerSignature =
+            signature !== null && signature !== undefined
+                ? signature.slice(Secp256k1.SIGNATURE_LENGTH, signature.length)
+                : (decoded.gasPayerSignature as Uint8Array);
+        const originSignature =
+            signature !== null && signature !== undefined
+                ? signature.slice(0, Secp256k1.SIGNATURE_LENGTH)
+                : (decoded.originSignature as Uint8Array);
+
+        let beggar: Address | undefined;
+        if (decoded.beggar !== null && decoded.beggar !== undefined) {
+            beggar = Address.of(decoded.beggar as string);
+        } else if (signature?.length === Secp256k1.SIGNATURE_LENGTH * 2) {
+            const hashData = isDynamicFee
+                ? new Uint8Array([
+                      TransactionRequestRLPCodec.DYNAMIC_FEE_PREFIX,
+                      ...RLPProfiler.ofObject(
+                          { ...body },
+                          { name: 'tx', kind: toHashProfile }
+                      ).encoded
+                  ])
+                : RLPProfiler.ofObject(
+                      { ...body },
+                      { name: 'tx', kind: toHashProfile }
+                  ).encoded;
+
+            const originHash = Blake2b256.of(hashData).bytes;
+            beggar = Address.ofPublicKey(
+                Secp256k1.recover(originHash, originSignature)
+            );
+        }
+        return new TransactionRequest(
+            {
+                ...TransactionRequestRLPCodec.mapBodyToTransactionRequest(body),
+                beggar
+            },
+            originSignature,
+            gasPayerSignature,
+            signature
+        );
+    }
+
+    /**
+     * Maps the provided body object into a TransactionRequest object.
+     *
+     * @param {Body} body - The input body containing transaction details, including clauses, chain information, signatures, and related parameters.
+     * @return {TransactionRequest} A TransactionRequest object created from the input body, containing transaction details and signatures.
+     */
     private static mapBodyToTransactionRequest(body: Body): TransactionRequest {
         // Convert clause data back to Clause objects.
         const clauses: Clause[] = body.clauses.map((clauseData) => {
@@ -363,6 +456,12 @@ class TransactionRequestRLPCodec {
         );
     }
 
+    /**
+     * Maps a TransactionRequest object to a {@link Body} object for transaction creation.
+     *
+     * @param {TransactionRequest} transactionRequest - The transaction request containing all necessary properties such as clauses, gas, signature, and more.
+     * @return {Body} A Body object that represents the structured transaction data ready for use, with properties like clauses, gas, signatures, and appropriate fee configurations based on transaction type.
+     */
     private static mapTransactionRequestToBody(
         transactionRequest: TransactionRequest
     ): Body {
@@ -405,9 +504,8 @@ class TransactionRequestRLPCodec {
         if (transactionRequest.isDynamicFee) {
             return {
                 ...baseBody,
-                maxFeePerGas: transactionRequest.maxFeePerGas ?? 0n,
-                maxPriorityFeePerGas:
-                    transactionRequest.maxPriorityFeePerGas ?? 0n
+                maxFeePerGas: transactionRequest.maxFeePerGas,
+                maxPriorityFeePerGas: transactionRequest.maxPriorityFeePerGas
             } satisfies Body;
         }
 
@@ -419,6 +517,13 @@ class TransactionRequestRLPCodec {
     }
 }
 
+/**
+ * Interface representing the body of a transaction request.
+ * Used for RLP encoding/decoding only, hence using only
+ * JS primitive type.
+ *
+ * @remarks Not intended to be exported.
+ */
 interface Body {
     beggar?: string;
     blockRef: string;
