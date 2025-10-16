@@ -4364,7 +4364,6 @@ __metadata:
     "@typechain/ethers-v6": "npm:0.5.1"
     "@typechain/hardhat": "npm:9.1.0"
     "@types/mocha": "npm:10.0.10"
-    "@vechain/sdk": "workspace:*"
     "@vechain/sdk-hardhat-plugin": "npm:2.0.5"
     "@vechain/sdk-network": "npm:2.0.5"
     hardhat: "npm:2.26.3"
@@ -4377,7 +4376,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vechain/sdk@workspace:*, @vechain/sdk@workspace:packages/sdk":
+"@vechain/sdk@workspace:packages/sdk":
   version: 0.0.0-use.local
   resolution: "@vechain/sdk@workspace:packages/sdk"
   dependencies:
