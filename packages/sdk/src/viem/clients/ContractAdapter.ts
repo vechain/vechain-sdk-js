@@ -19,9 +19,6 @@ import { Contract as VeChainContract } from '@thor/thor-client/contracts/model/c
 import { ContractCallOptions } from '@thor/thor-client/contracts/types';
 import { TransactionRequest } from '@thor/thor-client/model/transactions/TransactionRequest';
 
-// Type alias for hex-convertible values
-type HexConvertible = string | number | bigint;
-
 // Type alias for function arguments
 type FunctionArgs = AbiParameter[];
 
@@ -49,8 +46,12 @@ export interface WriteContractParameters {
     value?: bigint;
     /** Gas limit for the transaction */
     gas?: bigint;
-    /** Gas price for the transaction */
-    gasPrice?: bigint;
+    /** Gas price coefficient for the transaction (VeChain specific) */
+    gasPriceCoef?: bigint;
+    /** Maximum fee per gas (EIP-1559 dynamic fees) */
+    maxFeePerGas?: bigint;
+    /** Maximum priority fee per gas (EIP-1559 dynamic fees) */
+    maxPriorityFeePerGas?: bigint;
 }
 
 /**
@@ -335,7 +336,9 @@ function getContract<const TAbi extends Abi>({
                     args = [],
                     value = 0n,
                     gas,
-                    gasPrice
+                    gasPriceCoef,
+                    maxFeePerGas,
+                    maxPriorityFeePerGas
                 } = {}) => {
                     // Use the VeChain contract's clause building for transaction preparation
                     // Pass value as part of the args if it's not zero
@@ -349,7 +352,15 @@ function getContract<const TAbi extends Abi>({
                     return {
                         clauses: [clause] as any,
                         gas: gas ? Number(gas) : undefined,
-                        gasPrice: gasPrice ? gasPrice.toString() : undefined
+                        gasPriceCoef: gasPriceCoef
+                            ? Number(gasPriceCoef)
+                            : undefined,
+                        maxFeePerGas: maxFeePerGas
+                            ? maxFeePerGas.toString()
+                            : undefined,
+                        maxPriorityFeePerGas: maxPriorityFeePerGas
+                            ? maxPriorityFeePerGas.toString()
+                            : undefined
                     } as ExecuteCodesRequestJSON;
                 };
             }
@@ -438,7 +449,13 @@ function getContract<const TAbi extends Abi>({
                         for (let i = 0; i < indexedInputs.length; i++) {
                             if (i < args.length && args[i] !== undefined) {
                                 indexedArgs.push(
-                                    Hex.of(args[i] as unknown as HexConvertible)
+                                    Hex.of(
+                                        args[i] as unknown as
+                                            | bigint
+                                            | number
+                                            | string
+                                            | Uint8Array
+                                    )
                                 );
                             } else {
                                 indexedArgs.push(Hex.of('0'));
@@ -452,7 +469,13 @@ function getContract<const TAbi extends Abi>({
                         args: indexedArgs,
                         fromBlock:
                             fromBlock !== undefined
-                                ? Hex.of(fromBlock as HexConvertible)
+                                ? Hex.of(
+                                      fromBlock as unknown as
+                                          | bigint
+                                          | number
+                                          | string
+                                          | Uint8Array
+                                  )
                                 : undefined,
                         onLogs,
                         onError

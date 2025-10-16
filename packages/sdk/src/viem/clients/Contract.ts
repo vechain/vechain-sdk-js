@@ -52,8 +52,12 @@ export interface WriteContractParameters {
     value?: bigint;
     /** Gas limit for the transaction */
     gas?: bigint;
-    /** Gas price for the transaction */
-    gasPrice?: bigint;
+    /** Gas price coefficient for the transaction (VeChain specific) */
+    gasPriceCoef?: bigint;
+    /** Maximum fee per gas (EIP-1559 dynamic fees) */
+    maxFeePerGas?: bigint;
+    /** Maximum priority fee per gas (EIP-1559 dynamic fees) */
+    maxPriorityFeePerGas?: bigint;
 }
 
 /**
@@ -67,6 +71,11 @@ export interface Contract<TAbi extends Abi> {
     abi: TAbi;
     /** Read-only contract methods (view/pure) - available when publicClient provided */
     read: Record<string, (...args: FunctionArgs) => Promise<unknown>>;
+    /** State-changing contract methods - available when walletClient provided */
+    write: Record<
+        string,
+        (params?: WriteContractParameters) => Promise<string>
+    >;
     /** Simulate contract method calls - available when publicClient provided */
     simulate: Record<
         string,
@@ -116,7 +125,6 @@ function getContract<const TAbi extends Abi>({
     abi,
     publicClient,
     walletClient
-
 }: ContractConfig<TAbi>): Contract<TAbi> {
     // Validate that at least one client is provided
     if (publicClient == null && walletClient == null) {
@@ -129,6 +137,10 @@ function getContract<const TAbi extends Abi>({
     const readMethods: Record<
         string,
         (...args: FunctionArgs) => Promise<unknown>
+    > = {};
+    const writeMethods: Record<
+        string,
+        (params?: WriteContractParameters) => Promise<string>
     > = {};
     const simulateMethods: Record<
         string,
@@ -171,6 +183,7 @@ function getContract<const TAbi extends Abi>({
         address,
         abi,
         read: readMethods,
+        write: writeMethods,
         simulate: simulateMethods,
         estimateGas: estimateGasMethods,
         events: eventMethods
@@ -221,6 +234,46 @@ function getContract<const TAbi extends Abi>({
                     return undefined;
                 };
             }
+
+            // Write methods - available with walletClient for state-changing functions
+            if (
+                (abiItem.stateMutability === 'nonpayable' ||
+                    abiItem.stateMutability === 'payable') &&
+                walletClient != null
+            ) {
+                contract.write[functionName] = async ({
+                    args = [],
+                    value = 0n,
+                    gas,
+                    gasPriceCoef
+                } = {}) => {
+                    // Encode function call data
+                    const data = encodeFunctionData({
+                        abi: abi as Abi,
+                        functionName,
+                        args: args ?? []
+                    });
+
+                    // Prepare transaction clause
+                    const clause: Clause = new Clause(
+                        address,
+                        value,
+                        Hex.of(data)
+                    );
+
+                    // Send the transaction
+                    const txId = await walletClient.sendTransaction({
+                        clauses: [clause],
+                        gas: gas ? Number(gas) : undefined,
+                        gasPriceCoef: gasPriceCoef
+                            ? Number(gasPriceCoef)
+                            : undefined
+                    } as any);
+
+                    return txId.toString();
+                };
+            }
+
             // Simulate methods - available with publicClient for all functions
             if (publicClient != null) {
                 contract.simulate[functionName] = async ({
@@ -293,7 +346,13 @@ function getContract<const TAbi extends Abi>({
                         for (let i = 0; i < indexedInputs.length; i++) {
                             if (i < args.length && args[i] !== undefined) {
                                 indexedArgs.push(
-                                    Hex.of(args[i] as HexConvertible)
+                                    Hex.of(
+                                        args[i] as unknown as
+                                            | bigint
+                                            | number
+                                            | string
+                                            | Uint8Array
+                                    )
                                 );
                             } else {
                                 // Use 0x0 for missing arguments
@@ -311,7 +370,13 @@ function getContract<const TAbi extends Abi>({
                         // Convert fromBlock to Hex if provided
                         fromBlock:
                             fromBlock !== undefined
-                                ? Hex.of(fromBlock as HexConvertible)
+                                ? Hex.of(
+                                      fromBlock as unknown as
+                                          | bigint
+                                          | number
+                                          | string
+                                          | Uint8Array
+                                  )
                                 : undefined,
                         onLogs,
                         onError

@@ -7,6 +7,7 @@ import { type HttpClient } from '@common/http';
 import { AbstractThorModule } from '../AbstractThorModule';
 import { Contract, ContractFactory } from './model';
 import { InspectClauses } from '@thor/thorest/accounts/methods/InspectClauses';
+import { ExecuteCodesRequest } from '@thor/thorest/accounts/methods/ExecuteCodesRequest';
 import { type ExecuteCodesRequestJSON } from '@thor/thorest/accounts/json';
 import { type ExecuteCodesResponse } from '@thor/thorest/accounts/response';
 import { ClauseBuilder } from '@thor/thorest/transactions/model/ClauseBuilder';
@@ -211,23 +212,23 @@ class ContractsModule extends AbstractThorModule {
                 throw error;
             }
 
-            const clause = {
-                to: contractAddress.toString(),
-                data: data,
-                value: '0x0',
-                comment: options?.comment
-            };
+            const clause = new Clause(
+                contractAddress,
+                0n,
+                Hex.of(data),
+                options?.comment ?? null,
+                null
+            );
 
             // Create the execute codes request
-            const request: ExecuteCodesRequestJSON = {
-                clauses: [clause],
-                caller: options?.caller?.toString()
-            };
+            const request = new ExecuteCodesRequest([clause], {
+                caller: options?.caller
+            });
 
             // Execute the call using InspectClauses
             log.debug({
                 message: 'Creating InspectClauses with request',
-                context: { request }
+                context: { request: request.toJSON() }
             });
             const inspectClauses = InspectClauses.of(request);
             log.debug({
