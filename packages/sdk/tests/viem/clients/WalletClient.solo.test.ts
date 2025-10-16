@@ -11,6 +11,7 @@ import { TEST_ACCOUNTS } from '../../fixture';
 import { Clause, TransactionRequest } from '@thor/thor-client';
 import { createWalletClient } from '@viem/clients';
 import { privateKeyToAccount } from 'viem/accounts';
+import { log } from '@common/logging';
 
 const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
 
@@ -67,7 +68,8 @@ describe('WalletClient SOLO tests', () => {
             const tx = (
                 await RetrieveTransactionByID.of(txid).askTo(httpClient)
             ).response;
-            console.log(tx?.toJSON());
+            expect(tx).not.toBeNull();
+            log.debug({ message: `${tx?.toJSON()}` });
         });
 
         test('ok <- dynamic fee, signed then sponsored', async () => {
@@ -118,7 +120,8 @@ describe('WalletClient SOLO tests', () => {
             const tx = (
                 await RetrieveTransactionByID.of(txid).askTo(httpClient)
             ).response;
-            console.log(tx?.toJSON());
+            expect(tx).not.toBeNull();
+            log.debug({ message: `${tx?.toJSON()}` });
         });
 
         test('ok <- dynamic fee - sponsored than signed', async () => {
@@ -171,7 +174,8 @@ describe('WalletClient SOLO tests', () => {
             const tx = (
                 await RetrieveTransactionByID.of(txid).askTo(httpClient)
             ).response;
-            console.log(tx?.toJSON());
+            expect(tx).not.toBeNull();
+            log.debug({ message: `${tx?.toJSON()}` });
         });
 
         test('ok <- legacy - no sponsored', async () => {
@@ -210,7 +214,8 @@ describe('WalletClient SOLO tests', () => {
             const tx = (
                 await RetrieveTransactionByID.of(txid).askTo(httpClient)
             ).response;
-            console.log(tx?.toJSON());
+            expect(tx).not.toBeNull();
+            log.debug({ message: `${tx?.toJSON()}` });
         });
 
         test('ok <- legacy - signed then sponsored', async () => {
@@ -260,7 +265,8 @@ describe('WalletClient SOLO tests', () => {
             const tx = (
                 await RetrieveTransactionByID.of(txid).askTo(httpClient)
             ).response;
-            console.log(tx?.toJSON());
+            expect(tx).not.toBeNull();
+            log.debug({ message: `${tx?.toJSON()}` });
         });
 
         test('ok <- legacy - sponsored then signed', async () => {
@@ -312,7 +318,8 @@ describe('WalletClient SOLO tests', () => {
             const tx = (
                 await RetrieveTransactionByID.of(txid).askTo(httpClient)
             ).response;
-            console.log(tx?.toJSON());
+            expect(tx).not.toBeNull();
+            log.debug({ message: `${tx?.toJSON()}` });
         });
     });
 });
