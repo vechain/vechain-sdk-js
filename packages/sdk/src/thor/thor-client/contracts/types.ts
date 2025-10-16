@@ -4,6 +4,7 @@ import type { Abi, AbiParameter } from 'abitype';
 import { BlockRef, type Address, type Hex } from '@common/vcdm';
 import { type EstimateGasOptions } from '../../thor-client/model/gas/EstimateGasOptions';
 import { type TransactionRequest } from '../../thor-client/model/transactions/TransactionRequest';
+import { type SimulateTransactionOptions } from '../../thor-client/model/transactions/SimulateTransactionOptions';
 
 // Proper function arguments type using VeChain SDK types
 type FunctionArgs = AbiParameter[];
@@ -148,45 +149,7 @@ type ContractCallOptions = EstimateGasOptions & {
     includeABI?: boolean;
 };
 
-/**
- * Defines the options for simulating a contract transaction.
- */
-interface SimulateTransactionOptions {
-    /**
-     * Revision to use for the simulation
-     */
-    revision?: string | number;
-
-    /**
-     * Caller address
-     */
-    caller?: Address;
-
-    /**
-     * Gas limit for simulation
-     */
-    gas?: bigint;
-
-    /**
-     * Gas price coefficient for simulation (VeChain specific)
-     */
-    gasPriceCoef?: bigint;
-
-    /**
-     * Maximum fee per gas (EIP-1559 dynamic fees)
-     */
-    maxFeePerGas?: bigint;
-
-    /**
-     * Maximum priority fee per gas (EIP-1559 dynamic fees)
-     */
-    maxPriorityFeePerGas?: bigint;
-
-    /**
-     * Comment for the simulation
-     */
-    comment?: string;
-}
+// SimulateTransactionOptions is imported from model/transactions/SimulateTransactionOptions
 
 /* --------- Input types End --------- */
 
