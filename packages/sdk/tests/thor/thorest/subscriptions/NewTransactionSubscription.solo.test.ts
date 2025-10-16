@@ -50,7 +50,8 @@ describe('NewTransactionSubscription solo tests', () => {
                 onOpen: () => {
                     // Trigger a tx so that txpool emits a message
                     void (async () => {
-                        const transferClause = ClauseBuilder.transferVET(
+                        const transferClause =
+                            ClauseBuilder.getTransferVetClause(
                             Address.of(toAddress),
                             1n // minimal amount
                         );

@@ -32,7 +32,7 @@ describe('RetrieveTransactionReceipt SOLO tests', () => {
         '99f0500549792796c14fed62011a51081dc5b5e68fe8bd8a13b86be829c4fd36'; // THIS SOLO DEFAULT ACCOUNT[1]
 
     test('ok <- transfer VET', async () => {
-        const transferClause = ClauseBuilder.transferVET(
+        const transferClause = ClauseBuilder.getTransferVetClause(
             Address.of(toAddress),
             10n ** 18n
         );

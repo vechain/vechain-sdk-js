@@ -40,7 +40,7 @@ describe('WalletClient SOLO tests', () => {
                     'Failed to retrieve latest block from Thor network.'
                 );
 
-            const transferClause = ClauseBuilder.transferVET(
+            const transferClause = ClauseBuilder.getTransferVetClause(
                 Address.of(toAddress),
                 10n ** 18n
             );

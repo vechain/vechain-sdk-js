@@ -53,7 +53,7 @@ describe('RetrieveTransactionReceipt UNIT tests', () => {
             )
         ).response;
         expect(latestBlock).toBeDefined();
-        const transferClause = ClauseBuilder.transferVET(
+        const transferClause = ClauseBuilder.getTransferVetClause(
             Address.of(TRANSACTION_RECEIVER.address),
             OneVET
         );

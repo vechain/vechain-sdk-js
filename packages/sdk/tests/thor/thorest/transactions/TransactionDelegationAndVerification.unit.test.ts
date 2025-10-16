@@ -36,7 +36,9 @@ describe('unit tests', () => {
     const mockChainTag = 0xf6;
 
     const OneVET = 10n ** 18n;
-    const clauses = [ClauseBuilder.transferVET(receiver.address, OneVET)];
+    const clauses = [
+        ClauseBuilder.getTransferVetClause(receiver.address, OneVET)
+    ];
 
     test('Delegated Tx', async () => {
         const mockBlockResponse = {

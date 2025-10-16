@@ -13,6 +13,9 @@ import {
     type TransactionClause
 } from '@thor/thorest/transactions/model';
 
+/**
+ * Additional metadata that callers can attach to a clause.
+ */
 interface ClauseMetadata {
     comment?: string;
     includeAbi?: boolean;
@@ -28,9 +31,15 @@ const TRANSFER_NFT_FUNCTION = 'transferFrom';
 
 const TRANSFER_TOKEN_FUNCTION = 'transfer';
 
+/**
+ * Normalizes an address by returning the lowercase string representation or null.
+ */
 const toLowercaseAddress = (address: Address | null): string | null =>
     address === null ? null : address.toString().toLowerCase();
 
+/**
+ * Optionally attach the ABI definition of the invoked function when requested.
+ */
 const withAbi = (
     abi: Abi,
     functionName: string,
@@ -46,7 +55,10 @@ const withAbi = (
     return functionAbi !== undefined ? JSON.stringify(functionAbi) : undefined;
 };
 
-const callFunction = (
+/**
+ * Builds a clause that invokes a smart-contract function with the provided arguments.
+ */
+const getFunctionCallClause = (
     contractAddress: Address,
     contractAbi: Abi,
     functionName: string,
@@ -75,14 +87,17 @@ const callFunction = (
     } satisfies TransactionClause;
 };
 
-const deployContract = (
+/**
+ * Builds a clause that deploys bytecode with optional constructor parameters.
+ */
+const getDeployContractClause = (
     contractBytecode: HexUInt,
     deployParams?: DeployParams,
     metadata?: ClauseMetadata
 ): TransactionClause => {
     let data = contractBytecode.digits;
 
-    if (deployParams !== undefined && deployParams !== null) {
+    if (deployParams !== undefined) {
         const abiParams =
             typeof deployParams.types === 'string'
                 ? parseAbiParameters(deployParams.types)
@@ -103,14 +118,17 @@ const deployContract = (
     } satisfies TransactionClause;
 };
 
-const transferNFT = (
+/**
+ * Builds a clause that transfers an NFT using the standard ERC-721 ABI.
+ */
+const getTransferNftClause = (
     contractAddress: Address,
     senderAddress: Address,
     recipientAddress: Address,
     tokenId: bigint,
     metadata?: ClauseMetadata
 ): TransactionClause =>
-    callFunction(
+    getFunctionCallClause(
         contractAddress,
         ERC721_ABI,
         TRANSFER_NFT_FUNCTION,
@@ -119,7 +137,10 @@ const transferNFT = (
         metadata
     );
 
-const transferToken = (
+/**
+ * Builds a clause that transfers VIP-180 tokens to a recipient.
+ */
+const getTransferTokenClause = (
     tokenAddress: Address,
     recipientAddress: Address,
     value: bigint,
@@ -133,7 +154,7 @@ const transferToken = (
         );
     }
 
-    return callFunction(
+    return getFunctionCallClause(
         tokenAddress,
         VIP180_ABI,
         TRANSFER_TOKEN_FUNCTION,
@@ -143,7 +164,10 @@ const transferToken = (
     );
 };
 
-const transferVET = (
+/**
+ * Builds a clause that transfers native VET to a recipient.
+ */
+const getTransferVetClause = (
     recipientAddress: Address,
     value: bigint,
     metadata?: ClauseMetadata
@@ -164,12 +188,20 @@ const transferVET = (
     } satisfies TransactionClause;
 };
 
+/**
+ * Helper functions for constructing common transaction clauses.
+ */
 const ClauseBuilder = {
-    callFunction,
-    deployContract,
-    transferNFT,
-    transferToken,
-    transferVET
+    callFunction: getFunctionCallClause,
+    deployContract: getDeployContractClause,
+    transferNFT: getTransferNftClause,
+    transferToken: getTransferTokenClause,
+    transferVET: getTransferVetClause,
+    getFunctionCallClause,
+    getDeployContractClause,
+    getTransferNftClause,
+    getTransferTokenClause,
+    getTransferVetClause
 } as const;
 
 export { ClauseBuilder };
