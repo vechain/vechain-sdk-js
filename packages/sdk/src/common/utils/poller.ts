@@ -10,10 +10,32 @@ interface EventPollHandlers<T> {
     onError: (handler: ErrorConsumer) => EventPollController<T>;
 }
 
+/**
+ * Options for configuring the event poller.
+ *
+ * @template T The type of data produced by the poller.
+ */
 interface EventPollOptions<T> {
+    /**
+     * The function that produces the value to be polled.
+     */
     producer: Producer<T>;
+    /**
+     * The interval in milliseconds between polling attempts.
+     * Defaults to 1000 ms if not specified.
+     */
     intervalMs?: number;
+    /**
+     * Whether to stop polling on error.
+     * If true or omitted, polling stops on any non-network error.
+     * For network errors, polling continues until `maxNetworkErrors` is exceeded.
+     * If false, polling continues on non-network errors as well.
+     */
     stopOnError?: boolean;
+    /**
+     * The maximum number of consecutive network errors allowed before stopping polling.
+     * Defaults to 5 if not specified.
+     */
     maxNetworkErrors?: number;
 }
 
