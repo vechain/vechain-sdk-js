@@ -60,6 +60,7 @@ interface WaitUntilOptions<T> {
 
 const DEFAULT_INTERVAL_MS = 1_000;
 const DEFAULT_MAX_NETWORK_ERRORS = 5;
+const DEFAULT_TIMEOUT_FACTOR = 5;
 
 /**
  * Creates an event poller that periodically invokes a producer function and emits results or errors.
@@ -109,12 +110,33 @@ export function createEventPoll<T>(
         );
     }
 
-    let timer: ReturnType<typeof setInterval> | undefined;
     let iterations = 0;
     let running = false;
     let consecutiveNetworkErrors = 0;
     let dataHandler: Consumer<T> | undefined;
     let errorHandler: ErrorConsumer | undefined;
+    let scheduleController: AbortController | undefined;
+
+    const loop = async (controller: AbortController): Promise<void> => {
+        while (true) {
+            if (!running) {
+                return;
+            }
+
+            const startedAt = Date.now();
+            await execute();
+
+            if (!running) {
+                return;
+            }
+
+            const elapsed = Date.now() - startedAt;
+            const remaining = Math.max(intervalMs - elapsed, 0);
+            if (remaining > 0) {
+                await delay(remaining, controller.signal);
+            }
+        }
+    };
 
     const execute = async (): Promise<void> => {
         try {
@@ -151,10 +173,8 @@ export function createEventPoll<T>(
             return;
         }
         running = true;
-        void execute();
-        timer = setInterval(() => {
-            void execute();
-        }, intervalMs);
+        scheduleController = new AbortController();
+        void loop(scheduleController);
     };
 
     const stop = (): void => {
@@ -162,9 +182,9 @@ export function createEventPoll<T>(
             return;
         }
         running = false;
-        if (timer !== undefined) {
-            clearInterval(timer);
-            timer = undefined;
+        if (scheduleController !== undefined) {
+            scheduleController.abort();
+            scheduleController = undefined;
         }
     };
 
@@ -191,7 +211,7 @@ export function createEventPoll<T>(
  * @param {Producer<T>} options.task - The asynchronous or synchronous task to execute on each poll.
  * @param {(result: T) => boolean} options.predicate - Function to test if the result satisfies the completion condition.
  * @param {number} [options.intervalMs] - Interval in milliseconds between polls. Defaults to 1000ms.
- * @param {number} [options.timeoutMs] - Maximum time in milliseconds to wait before aborting. If omitted, waits indefinitely.
+ * @param {number} [options.timeoutMs] - Maximum time in milliseconds to wait before aborting. Defaults to `intervalMs * (maxNetworkErrors + 1) * 5`.
  * @param {number} [options.maxNetworkErrors] - Maximum consecutive network errors allowed before aborting. Defaults to 5.
  * @returns {Promise<T>} Resolves with the result when the predicate returns true.
  * @throws {IllegalArgumentError} If timeoutMs or maxNetworkErrors are invalid, or if the operation times out.
@@ -211,14 +231,6 @@ export async function waitUntil<T>(options: WaitUntilOptions<T>): Promise<T> {
         options.intervalMs ?? DEFAULT_INTERVAL_MS,
         'waitUntil(options.intervalMs)'
     );
-    const timeoutMs = options.timeoutMs;
-    if (timeoutMs !== undefined && timeoutMs <= 0) {
-        throw new IllegalArgumentError(
-            'waitUntil(options.timeoutMs)',
-            'timeoutMs must be greater than zero',
-            { timeoutMs }
-        );
-    }
     const maxNetworkErrors =
         options.maxNetworkErrors ?? DEFAULT_MAX_NETWORK_ERRORS;
     if (maxNetworkErrors <= 0) {
@@ -226,6 +238,16 @@ export async function waitUntil<T>(options: WaitUntilOptions<T>): Promise<T> {
             'waitUntil(options.maxNetworkErrors)',
             'maxNetworkErrors must be greater than zero',
             { maxNetworkErrors }
+        );
+    }
+    const timeoutMs =
+        options.timeoutMs ??
+        intervalMs * (maxNetworkErrors + 1) * DEFAULT_TIMEOUT_FACTOR;
+    if (timeoutMs !== undefined && timeoutMs <= 0) {
+        throw new IllegalArgumentError(
+            'waitUntil(options.timeoutMs)',
+            'timeoutMs must be greater than zero',
+            { timeoutMs }
         );
     }
 

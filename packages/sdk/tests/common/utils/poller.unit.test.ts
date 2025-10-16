@@ -224,6 +224,37 @@ describe('poller utilities', () => {
         expect(() => poller.stop()).not.toThrow();
     });
 
+    test('createEventPoll avoids overlapping producer executions', async () => {
+        let concurrent = 0;
+        let maxConcurrent = 0;
+        const producer = jest.fn().mockImplementation(() => {
+            concurrent += 1;
+            maxConcurrent = Math.max(maxConcurrent, concurrent);
+            return new Promise<string>((resolve) => {
+                setTimeout(() => {
+                    concurrent -= 1;
+                    resolve('payload');
+                }, 1_000);
+            });
+        });
+
+        const poller = createEventPoll({
+            producer,
+            intervalMs: 500
+        });
+
+        poller.start();
+
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        poller.stop();
+        await jest.runOnlyPendingTimersAsync();
+
+        expect(maxConcurrent).toBe(1);
+        expect(producer).toHaveBeenCalled();
+        expect(concurrent).toBe(0);
+    });
+
     test('waitUntil resolves when predicate becomes true', async () => {
         let value = 0;
         const task = jest.fn().mockImplementation(async () => {
@@ -234,7 +265,8 @@ describe('poller utilities', () => {
         const promise = waitUntil({
             task,
             predicate: (result) => (result as number) >= 3,
-            intervalMs: 100
+            intervalMs: 100,
+            timeoutMs: 1_000
         });
 
         const expectation = expect(promise).resolves.toBe(3);
@@ -253,7 +285,8 @@ describe('poller utilities', () => {
             task,
             predicate: () => false,
             intervalMs: 50,
-            maxNetworkErrors: 1
+            maxNetworkErrors: 1,
+            timeoutMs: 1_000
         });
 
         const expectation = expect(promise).rejects.toThrow('net');
@@ -308,7 +341,8 @@ describe('poller utilities', () => {
         const promise = waitUntil({
             task,
             predicate: (value) => value === 'ready',
-            intervalMs: 50
+            intervalMs: 50,
+            timeoutMs: 1_000
         });
 
         const debugSpy = jest
@@ -332,7 +366,8 @@ describe('poller utilities', () => {
         const result = await waitUntil({
             task,
             predicate: (value) => value === 42,
-            intervalMs: 100
+            intervalMs: 100,
+            timeoutMs: 1_000
         });
 
         expect(result).toBe(42);
@@ -350,7 +385,8 @@ describe('poller utilities', () => {
             waitUntil({
                 task: () => 0,
                 predicate: () => true,
-                intervalMs: -1
+                intervalMs: -1,
+                timeoutMs: 1_000
             })
         ).rejects.toBeInstanceOf(IllegalArgumentError);
     });
@@ -376,7 +412,8 @@ describe('poller utilities', () => {
             waitUntil({
                 task: () => 0,
                 predicate: () => true,
-                maxNetworkErrors: 0
+                maxNetworkErrors: 0,
+                timeoutMs: 1_000
             })
         ).rejects.toBeInstanceOf(IllegalArgumentError);
     });
@@ -391,7 +428,8 @@ describe('poller utilities', () => {
             waitUntil({
                 task,
                 predicate: () => false,
-                intervalMs: 50
+                intervalMs: 50,
+                timeoutMs: 1_000
             })
         ).rejects.toThrow('boom');
     });
