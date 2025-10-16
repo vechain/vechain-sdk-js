@@ -152,6 +152,29 @@ export function createEventPoll<T>(
     };
 }
 
+/**
+ * Repeatedly executes a task until a specified predicate returns true, or a timeout/error condition occurs.
+ *
+ * @template T The type of the result produced by the task.
+ * @param {WaitUntilOptions<T>} options - Configuration options for polling.
+ * @param {Producer<T>} options.task - The asynchronous or synchronous task to execute on each poll.
+ * @param {(result: T) => boolean} options.predicate - Function to test if the result satisfies the completion condition.
+ * @param {number} [options.intervalMs] - Interval in milliseconds between polls. Defaults to 1000ms.
+ * @param {number} [options.timeoutMs] - Maximum time in milliseconds to wait before aborting. If omitted, waits indefinitely.
+ * @param {number} [options.maxNetworkErrors] - Maximum consecutive network errors allowed before aborting. Defaults to 5.
+ * @returns {Promise<T>} Resolves with the result when the predicate returns true.
+ * @throws {IllegalArgumentError} If timeoutMs or maxNetworkErrors are invalid, or if the operation times out.
+ * @throws {Error} If the task throws a non-network error, or if network errors exceed the allowed maximum.
+ *
+ * @example
+ * // Wait until a resource is available
+ * await waitUntil({
+ *   task: fetchResource,
+ *   predicate: (res) => res.status === 'ready',
+ *   intervalMs: 2000,
+ *   timeoutMs: 10000
+ * });
+ */
 export async function waitUntil<T>(options: WaitUntilOptions<T>): Promise<T> {
     const intervalMs = validateInterval(
         options.intervalMs ?? DEFAULT_INTERVAL_MS,
