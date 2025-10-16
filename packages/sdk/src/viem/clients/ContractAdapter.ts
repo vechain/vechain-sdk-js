@@ -11,7 +11,10 @@ import { Address, Hex } from '@common/vcdm';
 import { type PublicClient, type WalletClient } from '@viem/clients';
 import { type ExecuteCodesRequestJSON } from '@thor/thorest/json';
 import { type SubscriptionEventResponse } from '@thor/thorest/subscriptions/response';
-import { type ExecuteCodesResponse } from '@thor/thorest/accounts/response';
+import {
+    ExecuteCodesResponse,
+    ExecuteCodeResponse
+} from '@thor/thorest/accounts/response';
 import { type DecodedEventLog } from '@thor/thor-client/model/logs/DecodedEventLog';
 import { Clause } from '@thor/thor-client/model/transactions/Clause';
 // Import the middle-layer contracts module
@@ -384,24 +387,24 @@ function getContract<const TAbi extends Abi>({
                     const results = await publicClient.simulateCalls([clause]);
 
                     // Convert ClauseSimulationResult[] to ExecuteCodesResponse
-                    return {
-                        items: results.map((result) => ({
-                            data: result.data,
-                            events: result.events.map((e) => ({
-                                address: e.address,
-                                topics: e.topics,
-                                data: e.data
-                            })),
-                            transfers: result.transfers.map((t) => ({
-                                sender: t.sender,
-                                recipient: t.recipient,
-                                amount: t.amount
-                            })),
-                            gasUsed: result.gasUsed,
-                            reverted: result.reverted,
-                            vmError: result.vmError
-                        }))
-                    };
+                    const responseJSON = results.map((result) => ({
+                        data: result.data.toString(),
+                        events: result.events.map((e) => ({
+                            address: e.address.toString(),
+                            topics: e.topics.map((t) => t.toString()),
+                            data: e.data.toString()
+                        })),
+                        transfers: result.transfers.map((t) => ({
+                            sender: t.sender.toString(),
+                            recipient: t.recipient.toString(),
+                            amount: t.amount.toString()
+                        })),
+                        gasUsed: Number(result.gasUsed),
+                        reverted: result.reverted,
+                        vmError: result.vmError
+                    }));
+
+                    return new ExecuteCodesResponse(responseJSON);
                 };
 
                 // EstimateGas methods - delegate to VeChain contract
