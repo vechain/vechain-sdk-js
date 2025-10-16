@@ -1,4 +1,5 @@
 import { IllegalArgumentError } from '@common/errors';
+import { log } from '@common/logging';
 
 type Producer<T> = () => Promise<T> | T;
 type Consumer<T> = (value: T) => void;
@@ -14,7 +15,6 @@ interface EventPollOptions<T> {
     intervalMs?: number;
     stopOnError?: boolean;
     maxNetworkErrors?: number;
-    logger?: { debug?: (message: string, meta?: unknown) => void };
 }
 
 interface EventPollController<T> extends EventPollHandlers<T> {
@@ -34,7 +34,6 @@ interface WaitUntilOptions<T> {
     intervalMs?: number;
     timeoutMs?: number;
     maxNetworkErrors?: number;
-    logger?: { debug?: (message: string, meta?: unknown) => void };
 }
 
 const DEFAULT_INTERVAL_MS = 1_000;
@@ -57,7 +56,7 @@ export function createEventPoll<T>(
         );
     }
 
-    let timer: NodeJS.Timeout | undefined;
+    let timer: ReturnType<typeof setInterval> | undefined;
     let iterations = 0;
     let running = false;
     let consecutiveNetworkErrors = 0;
@@ -72,11 +71,12 @@ export function createEventPoll<T>(
         } catch (error) {
             if (isNetworkError(error)) {
                 consecutiveNetworkErrors += 1;
-                options.logger?.debug?.('poller network error', {
+                debugNetworkError('poller', 'poller network error', {
                     consecutiveNetworkErrors
                 });
                 if (consecutiveNetworkErrors > maxNetworkErrors) {
-                    options.logger?.debug?.(
+                    debugNetworkError(
+                        'poller',
                         'poller max network errors reached'
                     );
                     stop();
@@ -154,7 +154,7 @@ export async function waitUntil<T>(options: WaitUntilOptions<T>): Promise<T> {
     }
 
     const controller = new AbortController();
-    let timeout: NodeJS.Timeout | undefined;
+    let timeout: ReturnType<typeof setTimeout> | undefined;
     if (timeoutMs !== undefined) {
         timeout = setTimeout(() => {
             controller.abort();
@@ -179,7 +179,7 @@ export async function waitUntil<T>(options: WaitUntilOptions<T>): Promise<T> {
             } catch (error) {
                 if (isNetworkError(error)) {
                     consecutiveNetworkErrors += 1;
-                    options.logger?.debug?.('waitUntil network error', {
+                    debugNetworkError('waitUntil', 'waitUntil network error', {
                         consecutiveNetworkErrors
                     });
                     if (consecutiveNetworkErrors > maxNetworkErrors) {
@@ -236,8 +236,41 @@ async function delay(ms: number, signal: AbortSignal): Promise<void> {
     });
 }
 
+function extractStatusCode(error: unknown): number | undefined {
+    if (typeof error === 'object' && error !== null) {
+        const status = (error as { statusCode?: unknown }).statusCode;
+        if (typeof status === 'number') {
+            return status;
+        }
+        const responseStatus = (error as { response?: { status?: unknown } })
+            .response?.status;
+        if (typeof responseStatus === 'number') {
+            return responseStatus;
+        }
+    }
+    return undefined;
+}
+
 function isNetworkError(error: unknown): boolean {
-    return error instanceof Error && 'statusCode' in error;
+    return extractStatusCode(error) !== undefined;
+}
+
+function debugNetworkError(
+    scope: 'poller' | 'waitUntil',
+    message: string,
+    meta?: unknown
+): void {
+    const context =
+        meta !== undefined && typeof meta === 'object' && meta !== null
+            ? (meta as Record<string, unknown>)
+            : meta !== undefined
+              ? { value: meta }
+              : undefined;
+    log.debug({
+        source: `poller:${scope}`,
+        message,
+        context
+    });
 }
 
 function wrapError(error: unknown): Error {

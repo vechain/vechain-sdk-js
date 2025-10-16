@@ -7,6 +7,7 @@ import {
     waitUntil,
     type EventPollController
 } from '@common/utils/poller';
+import { log } from '@common/logging';
 import { IllegalArgumentError } from '@common/errors';
 
 const nextTick = async (): Promise<void> => {
@@ -156,28 +157,33 @@ describe('poller utilities', () => {
             .fn()
             .mockRejectedValueOnce(networkError)
             .mockResolvedValueOnce('ok');
-        const logger = { debug: jest.fn() };
         const onData = jest.fn();
         const onError = jest.fn();
 
         const poller = createEventPoll({
             producer,
             intervalMs: 50,
-            maxNetworkErrors: 3,
-            logger
+            maxNetworkErrors: 3
         })
             .onData(onData)
             .onError(onError);
 
+        const debugSpy = jest
+            .spyOn(log, 'debug')
+            .mockImplementation(() => undefined);
+
         poller.start();
         await jest.advanceTimersByTimeAsync(120);
 
-        expect(logger.debug).toHaveBeenCalledWith('poller network error', {
-            consecutiveNetworkErrors: 1
+        expect(debugSpy).toHaveBeenCalledWith({
+            source: 'poller:poller',
+            message: 'poller network error',
+            context: { consecutiveNetworkErrors: 1 }
         });
         expect(onError).not.toHaveBeenCalled();
         expect(onData).toHaveBeenCalledWith('ok');
         poller.stop();
+        debugSpy.mockRestore();
     });
 
     test('createEventPoll start is idempotent', async () => {
@@ -301,21 +307,26 @@ describe('poller utilities', () => {
             .fn()
             .mockRejectedValueOnce(networkError)
             .mockResolvedValueOnce('ready');
-        const logger = { debug: jest.fn() };
 
         const promise = waitUntil({
             task,
             predicate: (value) => value === 'ready',
-            intervalMs: 50,
-            logger
+            intervalMs: 50
         });
+
+        const debugSpy = jest
+            .spyOn(log, 'debug')
+            .mockImplementation(() => undefined);
 
         const expectation = expect(promise).resolves.toBe('ready');
         await jest.advanceTimersByTimeAsync(120);
         await expectation;
-        expect(logger.debug).toHaveBeenCalledWith('waitUntil network error', {
-            consecutiveNetworkErrors: 1
+        expect(debugSpy).toHaveBeenCalledWith({
+            source: 'poller:waitUntil',
+            message: 'waitUntil network error',
+            context: { consecutiveNetworkErrors: 1 }
         });
+        debugSpy.mockRestore();
     });
 
     test('waitUntil resolves immediately when predicate is satisfied at first run', async () => {
