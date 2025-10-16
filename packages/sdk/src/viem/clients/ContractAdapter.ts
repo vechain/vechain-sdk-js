@@ -7,12 +7,13 @@ import {
     decodeFunctionResult,
     toEventSelector
 } from 'viem';
-import { type Address, Hex } from '@common/vcdm';
+import { Address, Hex } from '@common/vcdm';
 import { type PublicClient, type WalletClient } from '@viem/clients';
 import { type ExecuteCodesRequestJSON } from '@thor/thorest/json';
 import { type SubscriptionEventResponse } from '@thor/thorest/subscriptions/response';
 import { type ExecuteCodesResponse } from '@thor/thorest/accounts/response';
 import { type DecodedEventLog } from '@thor/thor-client/model/logs/DecodedEventLog';
+import { Clause } from '@thor/thor-client/model/transactions/Clause';
 // Import the middle-layer contracts module
 import { ContractsModule } from '@thor/thor-client/contracts';
 import { Contract as VeChainContract } from '@thor/thor-client/contracts/model/contract';
@@ -378,17 +379,29 @@ function getContract<const TAbi extends Abi>({
                         args
                     });
 
-                    const request: ExecuteCodesRequestJSON = {
-                        clauses: [
-                            {
-                                to: address.toString(),
-                                data: data as unknown as string,
-                                value: Hex.of(value).toString()
-                            }
-                        ]
-                    };
+                    const clause = new Clause(address, value, Hex.of(data));
 
-                    return await publicClient.simulateCalls(request);
+                    const results = await publicClient.simulateCalls([clause]);
+
+                    // Convert ClauseSimulationResult[] to ExecuteCodesResponse
+                    return {
+                        items: results.map((result) => ({
+                            data: result.data,
+                            events: result.events.map((e) => ({
+                                address: e.address,
+                                topics: e.topics,
+                                data: e.data
+                            })),
+                            transfers: result.transfers.map((t) => ({
+                                sender: t.sender,
+                                recipient: t.recipient,
+                                amount: t.amount
+                            })),
+                            gasUsed: result.gasUsed,
+                            reverted: result.reverted,
+                            vmError: result.vmError
+                        }))
+                    };
                 };
 
                 // EstimateGas methods - delegate to VeChain contract
@@ -403,23 +416,21 @@ function getContract<const TAbi extends Abi>({
                         args
                     });
 
-                    const request: ExecuteCodesRequestJSON = {
-                        clauses: [
-                            {
-                                to: address.toString(),
-                                data: data as unknown as string,
-                                value: Hex.of(value).toString()
-                            }
-                        ]
-                    };
+                    const clause = new Clause(address, value, Hex.of(data));
 
-                    const response = await publicClient.estimateGas(request);
+                    // estimateGas requires a caller address, use a default zero address if not provided
+                    const caller =
+                        (publicClient as any).account?.address ||
+                        Address.of(
+                            '0x0000000000000000000000000000000000000000'
+                        );
 
-                    if (response.length === 0) {
-                        throw new Error('No response from gas estimation');
-                    }
+                    const response = await publicClient.estimateGas(
+                        [clause],
+                        caller
+                    );
 
-                    return BigInt(response[0].gasUsed);
+                    return response.totalGas;
                 };
             }
 
