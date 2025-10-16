@@ -100,7 +100,7 @@ class PrivateKeySigner implements Signer {
      * intent and available signatures.
      *
      * @remarks Security auditable method, depends on
-     * - concatBytes from [noble-curves](https://github.com/paulmillr/noble-curves).
+     * - `concatBytes` from [noble-curves](https://github.com/paulmillr/noble-curves).
      */
     private static finalize(
         transactionRequest: TransactionRequest
@@ -181,7 +181,7 @@ class PrivateKeySigner implements Signer {
     }
 
     /**
-     * Signs a transaction request as a gas payer using a private key.
+     * Signs the given transaction request as a gas payer using a private key.
      *
      * @param {TransactionRequest} transactionRequest - The transaction request to sign,
      * which includes all necessary transaction details.
@@ -190,7 +190,7 @@ class PrivateKeySigner implements Signer {
      *
      * @remarks Security auditable method, depends on
      * - {@link Blake2b256.of};
-     * - concatBytes from [noble-curves](https://github.com/paulmillr/noble-curves);
+     * - `concatBytes` from [noble-curves](https://github.com/paulmillr/noble-curves);
      * - {@link Secp256k1.sign}.
      */
     private signAsGasPayer(
@@ -232,7 +232,7 @@ class PrivateKeySigner implements Signer {
      *
      * @remarks Security auditable method, depends on
      * - {@link Blake2b256.of};
-     * - concatBytes from [noble-curves](https://github.com/paulmillr/noble-curves);
+     * - `concatBytes` from [noble-curves](https://github.com/paulmillr/noble-curves);
      * - {@link Secp256k1.sign}.
      */
     private signAsOrigin(

@@ -66,6 +66,25 @@ class WalletClient extends PublicClient {
         this.account = account;
     }
 
+    /**
+     * Finalizes the transaction request based on its sponsorship intent and signature availability.
+     *
+     * - If the `transactionRequest` is intended to be sponsored and has both origin and gas payer signatures,
+     *   a new `TransactionRequest` is created, combining these signatures;
+     *   if only one or neither signature is present, the original `transactionRequest` is returned unmodified.
+     *
+     * - If the `transactionRequest` is not intended to be sponsored,
+     *   if the origin signature is present, a new `TransactionRequest` is created based on the origin signature;
+     *   otherwise, the original request is returned as-is.
+     *
+     * @param {TransactionRequest} transactionRequest - The transaction request to be finalized, which includes
+     * details of the transaction, its signatures (if available), and its sponsorship intent.
+     * @return {TransactionRequest} The finalized `TransactionRequest` object, updated based on the sponsorship
+     * intent and available signatures.
+     *
+     * @remarks Security auditable method, depends on
+     * - `concatBytes` from [noble-curves](https://github.com/paulmillr/noble-curves).
+     */
     private static finalize(
         transactionRequest: TransactionRequest
     ): TransactionRequest {
@@ -174,7 +193,7 @@ class WalletClient extends PublicClient {
      * @remarks Security auditable method, depends on
      * - {@link Account.sign}
      */
-    public static async signHash(
+    private static async signHash(
         hash: Uint8Array,
         account: Account
     ): Promise<Uint8Array> {
@@ -244,6 +263,22 @@ class WalletClient extends PublicClient {
         return await this.sendRawTransaction(raw);
     }
 
+    /**
+     * Signs a transaction request.
+     * - If the transaction is intended to be sponsored,
+     *   - if the beggar address is equal to the signer address, signs as origin/sender;
+     *   - if the beggar address differs from the signer address, signs as gas payer.
+     * - If the transaction is not intended to be sponsored, signs as origin/sender.
+     *
+     * @param {TransactionRequest} transactionRequest - The transaction request object to be signed.
+     * @return {TransactionRequest} The hexadecimal expression of the RLP encoded signed transaction request object.
+     * @throws {VeChainSDKError} Throws an error if the signing process fails.
+     *
+     * @security Security auditable method, depends on
+     * - {@link WalletClient.finalize};
+     * - {@link WalletClient.signAsGasPayer};
+     * - {@link WalletClient.signAsOrigin}.
+     */
     public async signTransaction(
         transactionRequest: TransactionRequest
     ): Promise<Hex> {
@@ -293,6 +328,20 @@ class WalletClient extends PublicClient {
         );
     }
 
+    /**
+     * Signs the given transaction request as a gas payer.
+     *
+     * @param {TransactionRequest} transactionRequest - The transaction request to sign,
+     * which includes all necessary transaction details.
+     * @param {Account} account - The account object used for signing the transaction.
+     * @return {TransactionRequest} The signed transaction request with updated gas payer signature.
+     * @throws {InvalidPrivateKeyError} Throws an error if the private key is not available.
+     *
+     * @remarks Security auditable method, depends on
+     * - {@link Blake2b256.of};
+     * - `concatBytes` from [noble-curves](https://github.com/paulmillr/noble-curves);
+     * - {@link Secp256k1.sign}.
+     */
     private static async signAsGasPayer(
         transactionRequest: TransactionRequest,
         account: Account
@@ -318,6 +367,19 @@ class WalletClient extends PublicClient {
         );
     }
 
+    /**
+     * Signs the given transaction request as the origin using the private key.
+     *
+     * @param {TransactionRequest} transactionRequest - The transaction request to be signed.
+     * @param {Account} account - The account object used for signing the transaction.
+     * @return {TransactionRequest} A new instance of TransactionRequest with the origin signature included.
+     * @throws {InvalidPrivateKeyError} If no private key is available for signing.
+     *
+     * @remarks Security auditable method, depends on
+     * - {@link Blake2b256.of};
+     * - `concatBytes` from [noble-curves](https://github.com/paulmillr/noble-curves);
+     * - {@link Secp256k1.sign}.
+     */
     private static async signAsOrigin(
         transactionRequest: TransactionRequest,
         account: Account
@@ -338,6 +400,12 @@ class WalletClient extends PublicClient {
     }
 }
 
+/**
+ *
+ * Define an object compatible with
+ * [Viem prepareTransactionRequest](https://www.viem.sh/docs/actions/wallet/prepareTransactionRequest)
+ * argument.
+ */
 interface PrepareTransactionRequestRequest {
     // Clause
     to?: Address;
@@ -359,6 +427,9 @@ interface PrepareTransactionRequestRequest {
     nonce: number;
 }
 
+/**
+ * Configuration object for the WalletClient.
+ */
 interface WalletClientConfig extends PublicClientConfig {
     account?: Account;
 }
