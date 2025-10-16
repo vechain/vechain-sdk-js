@@ -61,6 +61,37 @@ interface WaitUntilOptions<T> {
 const DEFAULT_INTERVAL_MS = 1_000;
 const DEFAULT_MAX_NETWORK_ERRORS = 5;
 
+/**
+ * Creates an event poller that periodically invokes a producer function and emits results or errors.
+ *
+ * @template T The type of data produced by the poller.
+ * @param {EventPollOptions<T>} options - Configuration options for the poller.
+ * @param {Producer<T>} options.producer - The function to invoke on each poll iteration.
+ * @param {number} [options.intervalMs=1000] - The polling interval in milliseconds.
+ * @param {boolean} [options.stopOnError=true] - Whether to stop polling on non-network errors.
+ * @param {number} [options.maxNetworkErrors=5] - Maximum consecutive network errors before stopping.
+ * @returns {EventPollController<T>} An object to control the poller and register handlers.
+ *
+ * @example
+ * const poller = createEventPoll({
+ *   producer: async () => await fetchData(),
+ *   intervalMs: 2000,
+ *   stopOnError: false,
+ *   maxNetworkErrors: 3
+ * });
+ *
+ * poller
+ *   .onData(data => {
+ *     console.log('Received data:', data);
+ *   })
+ *   .onError(error => {
+ *     console.error('Polling error:', error);
+ *   });
+ *
+ * poller.start();
+ * // ... later
+ * poller.stop();
+ */
 export function createEventPoll<T>(
     options: EventPollOptions<T>
 ): EventPollController<T> {
