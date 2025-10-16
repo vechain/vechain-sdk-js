@@ -7,7 +7,6 @@ import { NodesModule } from './nodes/nodes-module';
 import { ContractsModule } from './contracts/contracts-module';
 import { TransactionsModule } from './transactions/transactions-module';
 
-
 /**
  * The `ThorClient` class serves as an abstractedinterface to interact with the VeChainThor blockchain.
  */
@@ -39,10 +38,9 @@ class ThorClient {
      */
     public readonly contracts: ContractsModule;
 
-     // The `TransactionsModule` instance
-     
-    public readonly transactions: TransactionsModule;
+    // The `TransactionsModule` instance
 
+    public readonly transactions: TransactionsModule;
 
     /**
      * The `HttpClient` instance used for making network requests.
