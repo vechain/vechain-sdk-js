@@ -57,7 +57,7 @@ describe('RetrieveHistoricalFeeData SOLO tests', () => {
 
     test('ok <- .withNewestBlock(hex)', async () => {
         const block = (
-            await RetrieveRegularBlock.of(Revision.of(0)).askTo(httpClient)
+            await RetrieveRegularBlock.of(Revision.BEST).askTo(httpClient)
         ).response;
         expect(block?.id).toBeDefined();
         const blockCount = 10;
@@ -72,7 +72,7 @@ describe('RetrieveHistoricalFeeData SOLO tests', () => {
 
     test('ok <- .withNewestBlock(number)', async () => {
         const block = (
-            await RetrieveRegularBlock.of(Revision.of(0)).askTo(httpClient)
+            await RetrieveRegularBlock.of(Revision.BEST).askTo(httpClient)
         ).response;
         expect(block?.number).toBeDefined();
         const newestBlock = Revision.of(block?.number as number);
