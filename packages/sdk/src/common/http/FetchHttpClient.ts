@@ -398,7 +398,10 @@ class FetchHttpClient implements HttpClient {
             };
             log.raw(logItem);
         } catch (err) {
-            console.error('❌ FetchHttpClient.logResponse failed:', err);
+            log.error({
+                message: 'FetchHttpClient.logResponse failed',
+                context: { error: err }
+            });
         }
     }
 }
