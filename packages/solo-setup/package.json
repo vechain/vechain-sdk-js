@@ -45,7 +45,6 @@
     "solo-seed": "yarn build && yarn deploy-solo"
   },
   "dependencies": {
-    "@vechain/sdk": "workspace:*",
     "@vechain/sdk-hardhat-plugin": "2.0.5",
     "@vechain/sdk-network": "2.0.5",
     "hardhat": "2.26.3"
