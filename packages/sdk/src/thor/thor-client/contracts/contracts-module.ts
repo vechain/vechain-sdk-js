@@ -12,7 +12,6 @@ import { SendTransaction } from '@thor/thorest/transactions/methods/SendTransact
 import { TransactionRequest } from '../model/transactions/TransactionRequest';
 import { RLPCodecTransactionRequest } from '@thor/signer/RLPCodeTransactionRequest';
 import { Clause } from '../model/transactions/Clause';
-import { VET, Units } from './model/VET';
 import { ABIContract } from './model/ABI';
 import {
     ContractCallError,
@@ -22,13 +21,10 @@ import { log } from '@common/logging';
 import { encodeFunctionData, type AbiParameter } from 'viem';
 import { BUILT_IN_CONTRACTS } from './constants';
 import { dataUtils } from './utils';
-import type {
-    ContractCallOptions,
-    ContractCallResult,
-    ContractTransactionOptions
-} from './types';
+import type { ContractCallOptions, ContractCallResult } from './types';
 import type { SendTransactionResult } from './model/types';
 
+// WHOLE MODULE IS IN PENDING TILL MERGED AND REWORKED THE TRANSACTIONS
 // Proper function arguments type using VeChain SDK types
 type FunctionArgs = AbiParameter[];
 
@@ -53,7 +49,12 @@ class ContractsModule extends AbstractThorModule {
         bytecode: string,
         signer: Signer
     ): ContractFactory<TAbi> {
-        return new ContractFactory<TAbi>(abi, bytecode, signer, this);
+        return new ContractFactory<TAbi>(
+            abi,
+            bytecode as `0x${string}`,
+            signer,
+            this
+        );
     }
 
     /**
@@ -84,9 +85,15 @@ class ContractsModule extends AbstractThorModule {
         bytecode: string,
         signer: Signer
     ): ContractFactory<TAbi> {
-        return new ContractFactory<TAbi>(abi, bytecode, signer, this);
+        return new ContractFactory<TAbi>(
+            abi,
+            bytecode as `0x${string}`,
+            signer,
+            this
+        );
     }
 
+    //PENDING
     /**
      * Executes a contract call using VeChain's official InspectClauses method.
      * This method allows reading from smart contracts without sending transactions.
@@ -316,6 +323,7 @@ class ContractsModule extends AbstractThorModule {
         }
     }
 
+    //PENDING
     /**
      * Executes a contract transaction using VeChain's official transaction system.
      * This method sends a transaction to the blockchain.
@@ -332,7 +340,8 @@ class ContractsModule extends AbstractThorModule {
         contractAddress: Address,
         functionAbi: AbiFunction,
         functionData: FunctionArgs,
-        options?: ContractTransactionOptions
+        transactionRequest?: TransactionRequest,
+        value?: bigint
     ): Promise<SendTransactionResult> {
         try {
             // Build the clause for the contract function call
@@ -341,7 +350,7 @@ class ContractsModule extends AbstractThorModule {
                 [functionAbi],
                 functionAbi.name,
                 functionData,
-                VET.of(options?.value ?? 0, Units.wei).bi
+                value ?? 0n
             );
 
             // Convert ClauseBuilder to Clause
@@ -353,34 +362,31 @@ class ContractsModule extends AbstractThorModule {
                 clauseBuilder.abi ?? null
             );
 
-            // Create a proper TransactionRequest
-            const transactionRequest = new TransactionRequest({
-                clauses: [clause],
-                gas: BigInt(options?.gas ?? 21000),
-                gasPriceCoef: BigInt(options?.gasPriceCoef ?? 0),
-                nonce: options?.nonce ?? 0,
-                blockRef: Hex.of(
-                    String(options?.blockRef ?? '0x0000000000000000')
-                ),
-                chainTag: parseInt(options?.chainTag ?? '0x27'),
-                dependsOn: options?.dependsOn?.[0]
-                    ? Hex.of(options.dependsOn[0])
-                    : null,
-                expiration: options?.expiration ?? 720,
-                maxFeePerGas: options?.maxFeePerGas
-                    ? BigInt(options.maxFeePerGas)
-                    : undefined,
-                maxPriorityFeePerGas: options?.maxPriorityFeePerGas
-                    ? BigInt(options.maxPriorityFeePerGas)
-                    : undefined
-            });
+            // Use provided TransactionRequest or create a default one
+            const finalTransactionRequest = transactionRequest
+                ? new TransactionRequest({
+                      ...transactionRequest,
+                      clauses: [clause] // Override clauses with our contract call
+                  })
+                : new TransactionRequest({
+                      clauses: [clause],
+                      gas: 21000n,
+                      gasPriceCoef: 0n,
+                      nonce: 0,
+                      blockRef: Hex.of('0x0000000000000000'),
+                      chainTag: 0x27,
+                      dependsOn: null,
+                      expiration: 720
+                  });
 
             // Sign the transaction
-            const signedTransaction = signer.sign(transactionRequest);
+            const signedTransaction = signer.sign(finalTransactionRequest);
 
             // Encode the signed transaction
             const encodedTransaction =
                 RLPCodecTransactionRequest.encode(signedTransaction);
+
+            //  PENDING - update to use thor client transaction module sendTransaction
 
             // Send the transaction using SendTransaction
             const sendTransaction = SendTransaction.of(encodedTransaction);
@@ -410,6 +416,7 @@ class ContractsModule extends AbstractThorModule {
         }
     }
 
+    //PENDING
     /**
      * Executes multiple contract calls in a single transaction simulation.
      * This method allows batching multiple contract calls for efficient execution.
@@ -505,7 +512,7 @@ class ContractsModule extends AbstractThorModule {
             functionData?: FunctionArgs;
         }[],
         signer: Signer,
-        options?: ContractTransactionOptions
+        transactionRequest?: TransactionRequest
     ): Promise<SendTransactionResult> {
         try {
             // Build multiple clauses for a single transaction
@@ -538,30 +545,27 @@ class ContractsModule extends AbstractThorModule {
                 return clause;
             });
 
-            // Create a proper TransactionRequest
-            const transactionRequest = new TransactionRequest({
-                clauses: transactionClauses as Clause[],
-                gas: BigInt(options?.gas ?? 21000),
-                gasPriceCoef: BigInt(options?.gasPriceCoef ?? 0),
-                nonce: options?.nonce ?? 0,
-                blockRef: Hex.of(
-                    String(options?.blockRef ?? '0x0000000000000000')
-                ),
-                chainTag: parseInt(options?.chainTag ?? '0x27'),
-                dependsOn: options?.dependsOn?.[0]
-                    ? Hex.of(options.dependsOn[0])
-                    : null,
-                expiration: options?.expiration ?? 720,
-                maxFeePerGas: options?.maxFeePerGas
-                    ? BigInt(options.maxFeePerGas)
-                    : undefined,
-                maxPriorityFeePerGas: options?.maxPriorityFeePerGas
-                    ? BigInt(options.maxPriorityFeePerGas)
-                    : undefined
-            });
+            //PENDING comment to come back and use transaction builder
+
+            // Use provided TransactionRequest or create a default one
+            const finalTransactionRequest = transactionRequest
+                ? new TransactionRequest({
+                      ...transactionRequest,
+                      clauses: transactionClauses as Clause[] // Override clauses with our contract calls
+                  })
+                : new TransactionRequest({
+                      clauses: transactionClauses as Clause[],
+                      gas: 21000n,
+                      gasPriceCoef: 0n,
+                      nonce: 0,
+                      blockRef: Hex.of('0x0000000000000000'),
+                      chainTag: 0x27,
+                      dependsOn: null,
+                      expiration: 720
+                  });
 
             // Sign the transaction
-            const signedTransaction = signer.sign(transactionRequest);
+            const signedTransaction = signer.sign(finalTransactionRequest);
 
             // Encode the signed transaction
             const encodedTransaction =
@@ -594,6 +598,7 @@ class ContractsModule extends AbstractThorModule {
         }
     }
 
+    //PENDING comment to remove when the same function is in the transaction module
     /**
      * Waits for a transaction to be confirmed on the blockchain.
      *
@@ -618,68 +623,7 @@ class ContractsModule extends AbstractThorModule {
         });
     }
 
-    /**
-     * Retrieves the base gas price from the blockchain parameters.
-     *
-     * This method sends a call to the blockchain parameters contract to fetch the current base gas price.
-     * The base gas price is the minimum gas price that can be used for a transaction.
-     * It is used to obtain the VTHO (energy) cost of a transaction.
-     * @link [Total Gas Price](https://docs.vechain.org/core-concepts/transactions/transaction-calculation#total-gas-price)
-     *
-     * @return {Promise<ContractCallResult>} A promise that resolves to the result of the contract call, containing the base gas price.
-     */
-    public async getLegacyBaseGasPrice(): Promise<string> {
-        const result = await this.executeCall(
-            BUILT_IN_CONTRACTS.PARAMS_ADDRESS,
-            ABIContract.ofAbi(BUILT_IN_CONTRACTS.PARAMS_ABI).getFunction(
-                'get'
-            ) as any,
-            [dataUtils.encodeBytes32String('base-gas-price', 'left')] as any
-        );
-
-        if (result.success && result.result.plain) {
-            return result.result.plain.toString();
-        }
-
-        return '0x0'; // Default fallback
-    }
-
-    /**
-     * Checks if the module has a public client
-     * @returns True if public client is available
-     */
-    public hasPublicClient(): boolean {
-        return !!(
-            this as ContractsModule & {
-                publicClient?: {
-                    call: Function;
-                    estimateGas: Function;
-                    createEventFilter: Function;
-                    getLogs: Function;
-                    simulateCalls: Function;
-                    watchEvent: Function;
-                    thorNetworks: string;
-                };
-            }
-        ).publicClient;
-    }
-
-    /**
-     * Checks if the module has a wallet client
-     * @returns True if wallet client is available
-     */
-    public hasWalletClient(): boolean {
-        return !!(
-            this as ContractsModule & {
-                walletClient?: {
-                    account: { digits: string; sign: number };
-                    sendTransaction: Function;
-                    thorNetworks: string;
-                };
-            }
-        ).walletClient;
-    }
-
+    // PENDING
     /**
      * Gets contract information from the blockchain.
      * @param address - The contract address.
@@ -727,6 +671,7 @@ class ContractsModule extends AbstractThorModule {
         }
     }
 
+    // PENDING
     /**
      * Gets the contract bytecode.
      * @param address - The contract address.
@@ -749,58 +694,7 @@ class ContractsModule extends AbstractThorModule {
         }
     }
 
-    /**
-     * Gets the public client.
-     * @returns The public client.
-     */
-    public getPublicClient():
-        | {
-              call: Function;
-              estimateGas: Function;
-              createEventFilter: Function;
-              getLogs: Function;
-              simulateCalls: Function;
-              watchEvent: Function;
-              thorNetworks: string;
-          }
-        | undefined {
-        return (
-            this as ContractsModule & {
-                publicClient?: {
-                    call: Function;
-                    estimateGas: Function;
-                    createEventFilter: Function;
-                    getLogs: Function;
-                    simulateCalls: Function;
-                    watchEvent: Function;
-                    thorNetworks: string;
-                };
-            }
-        ).publicClient;
-    }
-
-    /**
-     * Gets the wallet client.
-     * @returns The wallet client.
-     */
-    public getWalletClient():
-        | {
-              account: { digits: string; sign: number };
-              sendTransaction: Function;
-              thorNetworks: string;
-          }
-        | undefined {
-        return (
-            this as ContractsModule & {
-                walletClient?: {
-                    account: { digits: string; sign: number };
-                    sendTransaction: Function;
-                    thorNetworks: string;
-                };
-            }
-        ).walletClient;
-    }
-
+    // PENDING
     /**
      * Gets contract events from a specific block range.
      * @param address - The contract address.

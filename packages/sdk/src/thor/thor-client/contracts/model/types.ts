@@ -4,15 +4,10 @@ import type {
     AbiParametersToPrimitiveTypes,
     ExtractAbiFunction
 } from 'abitype';
-import type { Address, Hex } from '@common/vcdm';
+import type { Address, Hex, Revision } from '@common/vcdm';
 import type { Clause } from '@thor/thor-client/model/transactions/Clause';
 import type { ClauseOptions } from '@thor/thorest/transactions/model/ClauseOptions';
 import type { ContractFilter } from './ContractFilter';
-
-/**
- * Transaction value type
- */
-export type TransactionValue = string | number | bigint;
 
 /**
  * Send transaction result
@@ -41,11 +36,6 @@ export interface ContractClauseOptions extends ClauseOptions {
  * Clause comment type
  */
 export type ClauseComment = string;
-
-/**
- * Clause revision type
- */
-export type ClauseRevision = string | number;
 
 /**
  * Contract function read interface - for view/pure functions

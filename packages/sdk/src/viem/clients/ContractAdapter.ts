@@ -16,10 +16,8 @@ import {
     ContractsModule,
     Contract as VeChainContract
 } from '@thor/thor-client/contracts';
-import {
-    ContractCallOptions,
-    ContractTransactionOptions
-} from '@thor/thor-client/contracts/types';
+import { ContractCallOptions } from '@thor/thor-client/contracts/types';
+import { TransactionRequest } from '@thor/thor-client/model/transactions/TransactionRequest';
 
 // Type alias for hex-convertible values
 type HexConvertible = string | number | bigint;
@@ -120,7 +118,7 @@ export interface Contract<TAbi extends Abi> {
         /** Set contract read options */
         setReadOptions: (options: ContractCallOptions) => void;
         /** Set contract transaction options */
-        setTransactOptions: (options: ContractTransactionOptions) => void;
+        setTransactOptions: (transactionRequest: TransactionRequest) => void;
         /** Access to clause building */
         clause: Record<
             string,
@@ -321,7 +319,7 @@ function getContract<const TAbi extends Abi>({
                     });
 
                     // Delegate to the VeChain contract's read method
-                    return await vechainContract.read[functionName](
+                    return await (vechainContract.read as any)[functionName](
                         ...(processedArgs as any)
                     );
                 };
@@ -343,9 +341,9 @@ function getContract<const TAbi extends Abi>({
                     // Pass value as part of the args if it's not zero
                     const clauseArgs =
                         value > 0n ? [...args, { value: value }] : args;
-                    const clause = vechainContract.clause[functionName](
-                        ...(clauseArgs as any)
-                    );
+                    const clause = (vechainContract.clause as any)[
+                        functionName
+                    ](...(clauseArgs as any));
 
                     // Return as ExecuteCodesRequestJSON format
                     return {

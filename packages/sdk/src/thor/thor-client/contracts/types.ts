@@ -1,6 +1,7 @@
 import type { Abi, AbiParameter } from 'abitype';
 import { BlockRef, type Address, type Hex } from '@common/vcdm';
 import { type EstimateGasOptions } from '../../thor-client/model/gas/EstimateGasOptions';
+import { type TransactionRequest } from '../../thor-client/model/transactions/TransactionRequest';
 
 // Proper function arguments type using VeChain SDK types
 type FunctionArgs = AbiParameter[];
@@ -27,9 +28,19 @@ export interface WriteContractParameters {
     gas?: bigint;
 
     /**
-     * Gas price for the transaction
+     * Gas price coefficient for the transaction (VeChain specific)
      */
-    gasPrice?: bigint;
+    gasPriceCoef?: bigint;
+
+    /**
+     * Maximum fee per gas (EIP-1559 dynamic fees)
+     */
+    maxFeePerGas?: bigint;
+
+    /**
+     * Maximum priority fee per gas (EIP-1559 dynamic fees)
+     */
+    maxPriorityFeePerGas?: bigint;
 }
 
 /**
@@ -95,9 +106,9 @@ export interface ContractDeploymentOptions {
     constructorArgs?: FunctionArgs;
 
     /**
-     * Transaction options
+     * Transaction request for the deployment
      */
-    transactionOptions?: ContractTransactionOptions;
+    transactionRequest?: TransactionRequest;
 
     /**
      * Comment for the deployment
@@ -114,74 +125,6 @@ declare module 'abitype' {
 }
 
 /* --------- Input types Start --------- */
-
-/**
- * Defines the options for executing a contract transaction.
- * Based on existing SDK TransactionRequestParam but adapted for contract operations.
- */
-type ContractTransactionOptions = {
-    /**
-     * The value to send with the transaction (in wei)
-     */
-    value?: bigint;
-
-    /**
-     * Gas limit for the transaction
-     */
-    gas?: bigint;
-    gasLimit?: bigint;
-
-    /**
-     * Gas price for the transaction
-     */
-    gasPrice?: bigint;
-    gasPriceCoef?: number;
-
-    /**
-     * Max fee per gas (EIP-1559)
-     */
-    maxFeePerGas?: bigint;
-
-    /**
-     * Max priority fee per gas (EIP-1559)
-     */
-    maxPriorityFeePerGas?: bigint;
-
-    /**
-     * Transaction nonce
-     */
-    nonce?: number;
-
-    /**
-     * Transaction expiration
-     */
-    expiration?: number;
-
-    /**
-     * Block reference
-     */
-    blockRef?: BlockRef;
-
-    /**
-     * Chain tag
-     */
-    chainTag?: string;
-
-    /**
-     * Dependencies
-     */
-    dependsOn?: string[];
-
-    /**
-     * Comment for the transaction
-     */
-    comment?: string;
-
-    /**
-     * The delegation URL to use to sponsor the transaction.
-     */
-    delegationUrl?: string;
-};
 
 /**
  * Defines the options for executing a contract call within a blockchain environment.
@@ -223,9 +166,19 @@ interface SimulateTransactionOptions {
     gas?: bigint;
 
     /**
-     * Gas price for simulation
+     * Gas price coefficient for simulation (VeChain specific)
      */
-    gasPrice?: bigint;
+    gasPriceCoef?: bigint;
+
+    /**
+     * Maximum fee per gas (EIP-1559 dynamic fees)
+     */
+    maxFeePerGas?: bigint;
+
+    /**
+     * Maximum priority fee per gas (EIP-1559 dynamic fees)
+     */
+    maxPriorityFeePerGas?: bigint;
 
     /**
      * Comment for the simulation
@@ -259,6 +212,5 @@ interface ContractCallResult {
 export type {
     ContractCallOptions,
     ContractCallResult,
-    ContractTransactionOptions,
     SimulateTransactionOptions
 };

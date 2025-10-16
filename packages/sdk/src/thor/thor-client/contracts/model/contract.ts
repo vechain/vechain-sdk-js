@@ -2,16 +2,35 @@ import {
     type Abi,
     type AbiFunction,
     type AbiEvent,
-    type AbiParameter
+    type AbiParameter,
+    type ExtractAbiFunctionNames,
+    type ExtractAbiEventNames,
+    type AbiParametersToPrimitiveTypes,
+    type ExtractAbiFunction
 } from 'abitype';
+
+// Custom type to handle single vs multiple outputs like viem
+type ContractReadResult<
+    TAbi extends Abi,
+    TFunctionName extends ExtractAbiFunctionNames<TAbi, 'view' | 'pure'>
+> = ExtractAbiFunction<TAbi, TFunctionName>['outputs'] extends readonly [any]
+    ? AbiParametersToPrimitiveTypes<
+          ExtractAbiFunction<TAbi, TFunctionName>['outputs'],
+          'outputs'
+      >[0]
+    : AbiParametersToPrimitiveTypes<
+          ExtractAbiFunction<TAbi, TFunctionName>['outputs'],
+          'outputs'
+      >;
 import { encodeFunctionData, toEventSelector } from 'viem';
 import { type Signer } from '@thor/signer';
 import { type Address, type Hex, Revision } from '@common/vcdm';
 import { IllegalArgumentError } from '@common/errors';
 import { log } from '@common/logging';
-import type { ContractCallOptions, ContractTransactionOptions } from '../types';
+import type { ContractCallOptions } from '../types';
 import type { SendTransactionResult } from './types';
 import type { ContractsModule } from '../contracts-module';
+import type { TransactionRequest } from '../../model/transactions/TransactionRequest';
 
 // Proper function arguments type using VeChain SDK types
 type FunctionArgs = AbiParameter[];
@@ -26,41 +45,67 @@ class Contract<TAbi extends Abi> {
     readonly abi: TAbi;
     private signer?: Signer;
 
-    public read: Record<
-        string,
-        (
-            ...args: FunctionArgs
-        ) => Promise<(string | number | bigint | boolean | Address | Hex)[]>
-    > = {};
-    public transact: Record<
-        string,
-        (...args: FunctionArgs) => Promise<SendTransactionResult>
-    > = {};
-    public filters: Record<
-        string,
-        (...args: FunctionArgs) => { address: string; topics: string[] }
-    > = {};
-    public clause: Record<
-        string,
-        (...args: FunctionArgs) => {
+    public read: {
+        [K in ExtractAbiFunctionNames<TAbi, 'view' | 'pure'>]: (
+            ...args: AbiParametersToPrimitiveTypes<
+                ExtractAbiFunction<TAbi, K>['inputs'],
+                'inputs'
+            >
+        ) => Promise<ContractReadResult<TAbi, K>>;
+    } = {} as any;
+    public transact: {
+        [K in ExtractAbiFunctionNames<TAbi, 'payable' | 'nonpayable'>]: (
+            ...args: AbiParametersToPrimitiveTypes<
+                ExtractAbiFunction<TAbi, K>['inputs'],
+                'inputs'
+            >
+        ) => Promise<SendTransactionResult>;
+    } = {} as any;
+    public write: {
+        [K in ExtractAbiFunctionNames<TAbi, 'payable' | 'nonpayable'>]: (
+            ...args: AbiParametersToPrimitiveTypes<
+                ExtractAbiFunction<TAbi, K>['inputs'],
+                'inputs'
+            >
+        ) => Promise<SendTransactionResult>;
+    } = {} as any;
+    public filters: {
+        [K in ExtractAbiEventNames<TAbi>]: (
+            ...args: AbiParametersToPrimitiveTypes<
+                ExtractAbiFunction<TAbi, K>['inputs'],
+                'inputs'
+            >
+        ) => { address: string; topics: string[] };
+    } = {} as any;
+    public clause: {
+        [K in ExtractAbiFunctionNames<TAbi>]: (
+            ...args: AbiParametersToPrimitiveTypes<
+                ExtractAbiFunction<TAbi, K>['inputs'],
+                'inputs'
+            >
+        ) => {
             to: string;
             data: string;
             value: bigint;
             comment?: string;
-        }
-    > = {};
-    public criteria: Record<
-        string,
-        (...args: FunctionArgs) => {
+        };
+    } = {} as any;
+    public criteria: {
+        [K in ExtractAbiEventNames<TAbi>]: (
+            ...args: AbiParametersToPrimitiveTypes<
+                ExtractAbiFunction<TAbi, K>['inputs'],
+                'inputs'
+            >
+        ) => {
             eventName: string;
-            args: FunctionArgs;
+            args: AbiParameter[];
             address: string;
             topics: string[];
-        }
-    > = {};
+        };
+    } = {} as any;
 
     private contractCallOptions: ContractCallOptions = {};
-    private contractTransactionOptions: ContractTransactionOptions = {};
+    private contractTransactionRequest?: TransactionRequest;
 
     /**
      * Initializes a new instance of the `Contract` class.
@@ -116,25 +161,25 @@ class Contract<TAbi extends Abi> {
      * @returns The updated contract transaction options.
      */
     public setContractTransactOptions(
-        options: ContractTransactionOptions
-    ): ContractTransactionOptions {
-        this.contractTransactionOptions = options;
-        return this.contractTransactionOptions;
+        transactionRequest: TransactionRequest
+    ): TransactionRequest {
+        this.contractTransactionRequest = transactionRequest;
+        return this.contractTransactionRequest;
     }
 
     /**
-     * Gets the current contract transaction options.
-     * @returns The current contract transaction options.
+     * Gets the current contract transaction request.
+     * @returns The current contract transaction request.
      */
-    public getContractTransactOptions(): ContractTransactionOptions {
-        return this.contractTransactionOptions;
+    public getContractTransactOptions(): TransactionRequest | undefined {
+        return this.contractTransactionRequest;
     }
 
     /**
-     * Clears the current contract transaction options, resetting them to an empty object.
+     * Clears the current contract transaction request, resetting it to undefined.
      */
     public clearContractTransactOptions(): void {
-        this.contractTransactionOptions = {};
+        this.contractTransactionRequest = undefined;
     }
 
     /**
@@ -207,7 +252,9 @@ class Contract<TAbi extends Abi> {
                     abiItem.stateMutability === 'view' ||
                     abiItem.stateMutability === 'pure'
                 ) {
-                    this.read[functionName] = async (...args: FunctionArgs) => {
+                    (this.read as any)[functionName] = async (
+                        ...args: any[]
+                    ) => {
                         try {
                             // Extract additional options from args if provided
                             const { args: cleanArgs, options } =
@@ -241,7 +288,11 @@ class Contract<TAbi extends Abi> {
                                 );
                             }
 
-                            return result.result.array || [];
+                            // Return single value if array has one element, otherwise return the array
+                            const resultArray = result.result.array || [];
+                            return resultArray.length === 1
+                                ? resultArray[0]
+                                : resultArray;
                         } catch (error) {
                             log.error({
                                 message: `Error calling ${functionName}`,
@@ -257,8 +308,8 @@ class Contract<TAbi extends Abi> {
                     abiItem.stateMutability === 'payable' ||
                     abiItem.stateMutability === 'nonpayable'
                 ) {
-                    this.transact[functionName] = async (
-                        ...args: FunctionArgs
+                    (this.transact as any)[functionName] = async (
+                        ...args: any[]
                     ) => {
                         if (!this.signer) {
                             throw new IllegalArgumentError(
@@ -283,10 +334,54 @@ class Contract<TAbi extends Abi> {
                                     this.address,
                                     abiItem,
                                     cleanArgs,
-                                    {
-                                        ...this.contractTransactionOptions,
-                                        ...options
-                                    }
+                                    this.contractTransactionRequest,
+                                    options.value
+                                );
+
+                            return result;
+                        } catch (error) {
+                            log.error({
+                                message: `Error executing transaction ${functionName}`,
+                                context: { functionName, error }
+                            });
+                            throw error;
+                        }
+                    };
+                }
+
+                // Write methods - alias to transact for consistency
+                if (
+                    abiItem.stateMutability === 'payable' ||
+                    abiItem.stateMutability === 'nonpayable'
+                ) {
+                    (this.write as any)[functionName] = async (
+                        ...args: any[]
+                    ) => {
+                        if (!this.signer) {
+                            throw new IllegalArgumentError(
+                                'Contract.initializeProxies',
+                                'Signer is required for transaction execution',
+                                {
+                                    functionName,
+                                    contractAddress: this.address.toString()
+                                }
+                            );
+                        }
+
+                        try {
+                            // Extract additional options from args if provided
+                            const { args: cleanArgs, options } =
+                                this.extractAdditionalOptions(args);
+
+                            // Use the contracts module's executeTransaction method
+                            const result =
+                                await this.contractsModule.executeTransaction(
+                                    this.signer!,
+                                    this.address,
+                                    abiItem,
+                                    cleanArgs,
+                                    this.contractTransactionRequest,
+                                    options.value
                                 );
 
                             return result;
@@ -301,7 +396,7 @@ class Contract<TAbi extends Abi> {
                 }
 
                 // Clause building - create VeChain transaction clauses
-                this.clause[functionName] = (...args: FunctionArgs) => {
+                (this.clause as any)[functionName] = (...args: any[]) => {
                     // Extract value from args if provided as last argument object
                     const { args: cleanArgs, options } =
                         this.extractAdditionalOptions(args);
@@ -323,7 +418,7 @@ class Contract<TAbi extends Abi> {
             // Event filters - use ThorClient for event filtering
             if (abiItem.type === 'event') {
                 const eventName = abiItem.name;
-                this.filters[eventName] = (...args: FunctionArgs) => {
+                (this.filters as any)[eventName] = (...args: any[]) => {
                     const eventAbi = this.getEventAbi(eventName);
                     return {
                         address: this.address.toString(),
@@ -331,7 +426,7 @@ class Contract<TAbi extends Abi> {
                     };
                 };
 
-                this.criteria[eventName] = (...args: FunctionArgs) => {
+                (this.criteria as any)[eventName] = (...args: any[]) => {
                     const eventAbi = this.getEventAbi(eventName);
                     return {
                         eventName: eventName,
@@ -436,38 +531,6 @@ class Contract<TAbi extends Abi> {
     }
 
     /**
-     * Gets the public client (if available)
-     * @returns The public client or undefined
-     */
-    public getPublicClient():
-        | {
-              call: Function;
-              estimateGas: Function;
-              createEventFilter: Function;
-              getLogs: Function;
-              simulateCalls: Function;
-              watchEvent: Function;
-              thorNetworks: string;
-          }
-        | undefined {
-        return this.contractsModule.getPublicClient();
-    }
-
-    /**
-     * Gets the wallet client (if available)
-     * @returns The wallet client or undefined
-     */
-    public getWalletClient():
-        | {
-              account: { digits: string; sign: number };
-              sendTransaction: Function;
-              thorNetworks: string;
-          }
-        | undefined {
-        return this.contractsModule.getWalletClient();
-    }
-
-    /**
      * Sets read options for contract calls.
      * @param options - The contract call options to set.
      */
@@ -477,10 +540,10 @@ class Contract<TAbi extends Abi> {
 
     /**
      * Sets transaction options for contract transactions.
-     * @param options - The contract transaction options to set.
+     * @param transactionRequest - The transaction request to set.
      */
-    public setTransactOptions(options: ContractTransactionOptions): void {
-        this.contractTransactionOptions = options;
+    public setTransactOptions(transactionRequest: TransactionRequest): void {
+        this.contractTransactionRequest = transactionRequest;
     }
 
     /**

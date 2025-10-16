@@ -1,5 +1,5 @@
 import type { Abi, AbiParameter } from 'abitype';
-import { type Address, type Hex } from '@common/vcdm';
+import { Address, Hex } from '@common/vcdm';
 import { type Signer } from '@thor/signer';
 import { toEventSelector } from 'viem';
 import { type Contract } from './model/contract';
@@ -8,9 +8,9 @@ import type {
     WriteContractParameters,
     EventFilter,
     SimulationResult,
-    ContractCallOptions,
-    ContractTransactionOptions
+    ContractCallOptions
 } from './types';
+import { TransactionRequest } from '../../thor-client/model/transactions/TransactionRequest';
 
 // Proper function arguments type using VeChain SDK types
 type FunctionArgs = AbiParameter[];
@@ -76,7 +76,7 @@ export interface ViemContract<TAbi extends Abi> {
      */
     _vechain?: {
         setReadOptions: (options: ContractCallOptions) => void;
-        setTransactOptions: (options: ContractTransactionOptions) => void;
+        setTransactOptions: (options: TransactionRequest) => void;
         clause: Record<
             string,
             (...args: FunctionArgs) => {
@@ -136,10 +136,10 @@ export function createViemContract<TAbi extends Abi>(
         _vechain: {
             setReadOptions: (options: ContractCallOptions) =>
                 contract.setReadOptions(options),
-            setTransactOptions: (options: ContractTransactionOptions) =>
+            setTransactOptions: (options: TransactionRequest) =>
                 contract.setTransactOptions(options),
             clause: contract.clause as any,
-            criteria: contract.criteria
+            criteria: contract.criteria as any
         }
     };
 
@@ -150,8 +150,10 @@ export function createViemContract<TAbi extends Abi>(
             (abiItem.stateMutability === 'view' ||
                 abiItem.stateMutability === 'pure')
         ) {
-            viemContract.read[abiItem.name] = async (...args: FunctionArgs) => {
-                return await contract.read[abiItem.name](...args);
+            (viemContract.read as any)[abiItem.name] = async (
+                ...args: FunctionArgs
+            ) => {
+                return await (contract.read as any)[abiItem.name](...args);
             };
         }
     }
@@ -163,28 +165,38 @@ export function createViemContract<TAbi extends Abi>(
             (abiItem.stateMutability === 'nonpayable' ||
                 abiItem.stateMutability === 'payable')
         ) {
-            viemContract.write[abiItem.name] = async (
+            (viemContract.write as any)[abiItem.name] = async (
                 params?: WriteContractParameters
             ) => {
                 const args = params?.args || [];
-                const options: ContractTransactionOptions = {};
 
-                if (params?.value) {
-                    options.value = params.value;
-                }
-                if (params?.gas) {
-                    options.gasLimit = params.gas;
-                }
-                if (params?.gasPrice) {
-                    options.gasPrice = params.gasPrice;
+                // Create a TransactionRequest if any params are provided
+                if (
+                    params &&
+                    (params.value ||
+                        params.gas ||
+                        params.gasPriceCoef ||
+                        params.maxFeePerGas ||
+                        params.maxPriorityFeePerGas)
+                ) {
+                    const transactionRequest = new TransactionRequest({
+                        clauses: [], // Will be set by the contract method
+                        gas: params.gas ?? 21000n,
+                        gasPriceCoef: params.gasPriceCoef ?? 0n,
+                        nonce: 0,
+                        blockRef: Hex.of('0x0000000000000000'),
+                        chainTag: 0x27,
+                        dependsOn: null,
+                        expiration: 720,
+                        maxFeePerGas: params.maxFeePerGas,
+                        maxPriorityFeePerGas: params.maxPriorityFeePerGas
+                    });
+                    contract.setTransactOptions(transactionRequest);
                 }
 
-                // Set transaction options if provided
-                if (Object.keys(options).length > 0) {
-                    contract.setTransactOptions(options);
-                }
-
-                const result = await contract.transact[abiItem.name](...args);
+                const result = await (contract.transact as any)[abiItem.name](
+                    ...args
+                );
                 return result.id;
             };
         }
@@ -203,7 +215,9 @@ export function createViemContract<TAbi extends Abi>(
             }) => {
                 try {
                     const args = params?.args || [];
-                    const result = await contract.read[abiItem.name](...args);
+                    const result = await (contract.read as any)[abiItem.name](
+                        ...args
+                    );
 
                     return {
                         success: true,

@@ -3,12 +3,11 @@ import { type Signer } from '@thor/signer';
 import { HexUInt } from '@common/vcdm';
 import { IllegalArgumentError } from '@common/errors';
 import { ClauseBuilder } from '@thor/thorest/transactions/model/ClauseBuilder';
-import type {
-    ContractTransactionOptions,
-    SimulateTransactionOptions
-} from '../types';
+import type { SimulateTransactionOptions } from '../types';
+import type { TransactionRequest } from '../../model/transactions/TransactionRequest';
 import type { ContractsModule } from '../contracts-module';
 import { Contract } from './contract';
+import { Hex } from 'viem';
 
 // Proper function arguments type using VeChain SDK types
 type FunctionArgs = AbiParameter[];
@@ -19,7 +18,7 @@ type FunctionArgs = AbiParameter[];
  */
 class ContractFactory<TAbi extends Abi> {
     private readonly abi: TAbi;
-    private readonly bytecode: string;
+    private readonly bytecode: Hex;
     private readonly signer: Signer;
     private readonly contractsModule: ContractsModule;
 
@@ -32,7 +31,7 @@ class ContractFactory<TAbi extends Abi> {
      */
     constructor(
         abi: TAbi,
-        bytecode: string,
+        bytecode: Hex,
         signer: Signer,
         contractsModule: ContractsModule
     ) {
@@ -145,7 +144,7 @@ class ContractFactory<TAbi extends Abi> {
      */
     public async deploy(
         constructorArgs: FunctionArgs = [],
-        options?: ContractTransactionOptions
+        transactionRequest?: TransactionRequest
     ): Promise<Contract<TAbi>> {
         try {
             // 1. Find constructor ABI and validate arguments first
@@ -192,7 +191,7 @@ class ContractFactory<TAbi extends Abi> {
             const deployClause = ClauseBuilder.deployContract(
                 contractBytecode,
                 deployParams,
-                options?.comment ? { comment: options.comment } : undefined
+                undefined // Comment can be added to TransactionRequest if needed
             );
 
             // 5. Create and send transaction using ThorClient
@@ -209,7 +208,7 @@ class ContractFactory<TAbi extends Abi> {
                 'ContractFactory.deploy() requires ThorClient transaction sending implementation',
                 {
                     constructorArgs,
-                    options
+                    transactionRequest
                 }
             );
         } catch (error) {
@@ -220,14 +219,14 @@ class ContractFactory<TAbi extends Abi> {
                     {
                         error: error.message,
                         constructorArgs,
-                        options
+                        transactionRequest
                     }
                 );
             }
             throw new IllegalArgumentError(
                 'ContractFactory.deploy',
                 'Contract deployment failed with error',
-                { constructorArgs, options }
+                { constructorArgs, transactionRequest }
             );
         }
     }

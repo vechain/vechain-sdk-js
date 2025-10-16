@@ -3,7 +3,6 @@ import type { AbiParameter } from 'abitype';
 import { IllegalArgumentError, InvalidTransactionField } from '@common/errors';
 import { log } from '@common/logging';
 import { encodeFunctionData } from 'viem';
-import { VET, Units } from './VET';
 import { Clause } from '@thor/thor-client/model/transactions/Clause';
 import { ContractFilter } from './ContractFilter';
 import type {
@@ -232,16 +231,10 @@ function getTransactProxy<TAbi extends Abi>(
                     contract.address,
                     functionAbi,
                     args as any,
-                    {
-                        ...transactionOptions,
-                        value:
-                            transactionOptions.value ??
-                            (typeof transactionValue === 'string'
-                                ? BigInt(transactionValue)
-                                : transactionValue) ??
-                            0n,
-                        comment: clauseComment
-                    }
+                    transactionOptions,
+                    typeof transactionValue === 'string'
+                        ? BigInt(transactionValue)
+                        : (transactionValue ?? 0n)
                 );
             };
         }
@@ -320,10 +313,7 @@ function getClauseProxy<TAbi extends Abi>(
                 });
                 const clause = new Clause(
                     Address.of(contract.address),
-                    VET.of(
-                        transactionOptions.value ?? transactionValue ?? 0,
-                        Units.wei
-                    ).bi,
+                    BigInt(transactionValue ?? 0),
                     Hex.of(encodedData),
                     clauseComment ?? null,
                     null

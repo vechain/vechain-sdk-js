@@ -13,6 +13,7 @@ class ContractFilter<TAbi extends Abi> {
         this.criteria = criteria;
     }
 
+    //PENDING
     /**
      * Gets historical event logs matching the filter criteria
      */
@@ -22,6 +23,7 @@ class ContractFilter<TAbi extends Abi> {
         return [];
     }
 
+    //PENDING
     /**
      * Creates a subscription to watch for events matching this filter.
      * @param callback - Function to call when matching events are found.
