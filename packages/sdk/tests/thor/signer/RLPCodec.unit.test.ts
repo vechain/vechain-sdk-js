@@ -1,16 +1,10 @@
 import { describe, expect, test } from '@jest/globals';
-import { Address, HexUInt, Quantity } from '@common/vcdm';
+import { Address, Hex, HexUInt, Quantity } from '@common/vcdm';
 import {
     Clause,
-    SignedTransactionRequest,
-    SponsoredTransactionRequest,
+    type SponsoredTransactionRequest,
     TransactionRequest
 } from '@thor/thor-client/model/transactions';
-import {
-    Transaction,
-    type TransactionBody,
-    type TransactionClause
-} from '@thor/thorest/transactions/model';
 import { RLPCodecTransactionRequest, PrivateKeySigner } from '@thor/signer';
 import { TEST_ACCOUNTS } from '../../fixture';
 import { IllegalArgumentError } from '@common';
@@ -46,10 +40,10 @@ describe('RLPCodec', () => {
                         blockRef: mockBlockRef,
                         chainTag: 1,
                         clauses: [
-                            Clause.of({
-                                to: TRANSACTION_RECEIVER.address,
-                                value: mockValue.toString()
-                            })
+                            new Clause(
+                                Address.of(TRANSACTION_RECEIVER.address),
+                                mockValue.bi
+                            )
                         ],
                         dependsOn: null,
                         expiration: 32,
@@ -78,10 +72,10 @@ describe('RLPCodec', () => {
                     blockRef: mockBlockRef,
                     chainTag: 1,
                     clauses: [
-                        Clause.of({
-                            to: TRANSACTION_RECEIVER.address,
-                            value: mockValue.toString()
-                        })
+                        new Clause(
+                            Address.of(TRANSACTION_RECEIVER.address),
+                            mockValue.bi
+                        )
                     ],
                     dependsOn: null,
                     expiration: 32,
@@ -104,10 +98,10 @@ describe('RLPCodec', () => {
                 blockRef: mockBlockRef,
                 chainTag: 1,
                 clauses: [
-                    Clause.of({
-                        to: TRANSACTION_RECEIVER.address,
-                        value: mockValue.toString()
-                    })
+                    new Clause(
+                        Address.of(TRANSACTION_RECEIVER.address),
+                        mockValue.bi
+                    )
                 ],
                 dependsOn: null,
                 expiration: 32,
@@ -126,10 +120,10 @@ describe('RLPCodec', () => {
                 blockRef: mockBlockRef,
                 chainTag: 1,
                 clauses: [
-                    Clause.of({
-                        to: TRANSACTION_RECEIVER.address,
-                        value: mockValue.toString()
-                    })
+                    new Clause(
+                        Address.of(TRANSACTION_RECEIVER.address),
+                        mockValue.bi
+                    )
                 ],
                 dependsOn: null,
                 expiration: 32,
@@ -158,10 +152,10 @@ describe('RLPCodec', () => {
                 blockRef: mockBlockRef,
                 chainTag: 1,
                 clauses: [
-                    Clause.of({
-                        to: TRANSACTION_RECEIVER.address,
-                        value: mockValue.toString()
-                    })
+                    new Clause(
+                        Address.of(TRANSACTION_RECEIVER.address),
+                        mockValue.bi
+                    )
                 ],
                 dependsOn: null,
                 expiration: 32,
@@ -199,10 +193,10 @@ describe('RLPCodec', () => {
                 blockRef: mockBlockRef,
                 chainTag: 1,
                 clauses: [
-                    Clause.of({
-                        to: TRANSACTION_RECEIVER.address,
-                        value: mockValue.toString()
-                    })
+                    new Clause(
+                        Address.of(TRANSACTION_RECEIVER.address),
+                        mockValue.bi
+                    )
                 ],
                 dependsOn: null,
                 expiration: 32,
@@ -221,13 +215,7 @@ describe('RLPCodec', () => {
             const expected = new TransactionRequest({
                 blockRef: mockBlockRef,
                 chainTag: 1,
-                clauses: [
-                    Clause.of({
-                        to: null,
-                        value: mockValue.toString(),
-                        data: '0xabcdef'
-                    })
-                ],
+                clauses: [new Clause(null, mockValue.bi, Hex.of('0xabcdef'))],
                 dependsOn: null,
                 expiration: 32,
                 gas: mockGas,

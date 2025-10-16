@@ -7,7 +7,10 @@ const mockHttpClient = <T>(
     httpMethod: 'get' | 'post'
 ): HttpClient => {
     // Check if response contains error information
-    const isError = typeof response === 'object' && response !== null && 'error' in response;
+    const isError =
+        typeof response === 'object' &&
+        response !== null &&
+        'error' in response;
     const ok = !isError;
     const status = isError ? 400 : 200;
     return {
@@ -23,7 +26,7 @@ const mockHttpClient = <T>(
                     'https://mock-url'
                 );
             }
-            
+
             // For successful responses, return a proper Response object
             const mockResponse = {
                 ok: true,
@@ -31,9 +34,10 @@ const mockHttpClient = <T>(
                 statusText: 'OK',
                 url: 'https://mock-url',
                 json: async () => await Promise.resolve(response satisfies T),
-                text: async () => await Promise.resolve(JSON.stringify(response))
+                text: async () =>
+                    await Promise.resolve(JSON.stringify(response))
             };
-            
+
             return mockResponse as unknown as Response;
         })
     } as unknown as HttpClient;
@@ -45,7 +49,10 @@ const mockHttpClientForDebug = <T>(
     httpMethod: 'get' | 'post'
 ): HttpClient => {
     // Check if response contains error information
-    const isError = typeof response === 'object' && response !== null && 'error' in response;
+    const isError =
+        typeof response === 'object' &&
+        response !== null &&
+        'error' in response;
     const ok = !isError;
     const status = isError ? 400 : 200;
     return {
@@ -61,7 +68,7 @@ const mockHttpClientForDebug = <T>(
                     'https://mock-url'
                 );
             }
-            
+
             // For successful responses, return the JSON directly
             return response as unknown as Response;
         })
@@ -74,18 +81,16 @@ const mockHttpClientWithError = (
 ): HttpClient => {
     // Mock that throws HttpException directly, simulating FetchHttpClient behavior
     return {
-        [httpMethod]: jest.fn(
-            async () => {
-                throw new HttpException(
-                    'MockHttpClient',
-                    `HTTP request failed with status 400`,
-                    400,
-                    'Bad Request',
-                    fastJsonStableStringify(error), // Response body
-                    'https://mock-url'
-                );
-            }
-        )
+        [httpMethod]: jest.fn(async () => {
+            throw new HttpException(
+                'MockHttpClient',
+                `HTTP request failed with status 400`,
+                400,
+                'Bad Request',
+                fastJsonStableStringify(error), // Response body
+                'https://mock-url'
+            );
+        })
     } as unknown as HttpClient;
 };
 

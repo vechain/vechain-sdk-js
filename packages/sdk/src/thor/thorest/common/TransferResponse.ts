@@ -11,7 +11,7 @@ const FQP = 'packages/sdk/src/thor/thorest/model/Transfer.ts!';
  * [Transfer](http://localhost:8669/doc/stoplight-ui/#/schemas/Transfer)
  */
 
-class Transfer {
+class TransferResponse {
     /**
      * The address that sent the VET.
      */
@@ -62,4 +62,4 @@ class Transfer {
     }
 }
 
-export { Transfer };
+export { TransferResponse };

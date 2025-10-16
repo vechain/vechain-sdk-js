@@ -16,7 +16,6 @@ import {
     IllegalArgumentError,
     NumericKind,
     OptionalFixedHexBlobKind,
-    Quantity,
     RLP,
     type RLPProfile,
     RLPProfiler,
@@ -201,18 +200,13 @@ class RLPCodecTransactionRequest {
             // Parse clauses
             const clauses = (decoded.clauses as []).map(
                 (decodedClause: RLPValidObject) => {
-                    return Clause.of({
-                        to: (decodedClause.to as string) ?? null,
-                        value:
-                            typeof decodedClause.value === 'number'
-                                ? Quantity.of(decodedClause.value).toString()
-                                : typeof decodedClause.value === 'string'
-                                  ? Quantity.of(
-                                        HexUInt.of(decodedClause.value).bi
-                                    ).toString()
-                                  : Quantity.PREFIX,
-                        data: (decodedClause.data as string) ?? undefined
-                    });
+                    return new Clause(
+                        (decodedClause.to as string) != null
+                            ? Address.of(decodedClause.to as string)
+                            : null,
+                        BigInt(decodedClause.value as string),
+                        Hex.of(decodedClause.data as string) ?? undefined
+                    );
                 }
             );
 
@@ -225,7 +219,7 @@ class RLPCodecTransactionRequest {
                 transactionRequest = new TransactionRequest({
                     blockRef: HexUInt.of(decoded.blockRef as string),
                     chainTag: decoded.chainTag as number,
-                    clauses,
+                    clauses: clauses.map((clause) => Clause.of(clause)),
                     dependsOn:
                         decoded.dependsOn === null
                             ? null
@@ -251,7 +245,7 @@ class RLPCodecTransactionRequest {
                 transactionRequest = new TransactionRequest({
                     blockRef: HexUInt.of(decoded.blockRef as string),
                     chainTag: decoded.chainTag as number,
-                    clauses,
+                    clauses: clauses.map((clause) => Clause.of(clause)),
                     dependsOn:
                         decoded.dependsOn === null
                             ? null

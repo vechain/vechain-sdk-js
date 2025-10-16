@@ -1,9 +1,12 @@
 import { AccountsModule } from './accounts/accounts-module';
 import { FetchHttpClient, type HttpClient } from '@common/http';
+import { BlocksModule } from './blocks/blocks-module';
 import { LogsModule } from './logs/logs-module';
 import { GasModule } from './gas/gas-module';
 import { NodesModule } from './nodes/nodes-module';
 import { ContractsModule } from './contracts/contracts-module';
+import { TransactionsModule } from './transactions/transactions-module';
+
 
 /**
  * The `ThorClient` class serves as an abstractedinterface to interact with the VeChainThor blockchain.
@@ -13,6 +16,9 @@ class ThorClient {
      * The `AccountsModule` instance
      */
     public readonly accounts: AccountsModule;
+
+    /** blocks instance */
+    public readonly blocks: BlocksModule;
 
     /** gas instance */
     public readonly gas: GasModule;
@@ -28,9 +34,15 @@ class ThorClient {
     public readonly nodes: NodesModule;
 
     /**
+
      * The `ContractsModule` instance
      */
     public readonly contracts: ContractsModule;
+
+     // The `TransactionsModule` instance
+     
+    public readonly transactions: TransactionsModule;
+
 
     /**
      * The `HttpClient` instance used for making network requests.
@@ -48,13 +60,16 @@ class ThorClient {
         // modules should expect thorClient to be set after construction
         this.httpClient = httpClient;
         this.accounts = new AccountsModule(httpClient);
+        this.blocks = new BlocksModule(httpClient);
         this.gas = new GasModule(httpClient);
         this.logs = new LogsModule(httpClient);
         this.nodes = new NodesModule(httpClient);
         this.contracts = new ContractsModule(httpClient);
+        this.transactions = new TransactionsModule(httpClient);
 
         // set thorClient to modules for cross-module communication
         this.accounts.setThorClient(this);
+        this.blocks.setThorClient(this);
         this.gas.setThorClient(this);
         this.logs.setThorClient(this);
         this.nodes.setThorClient(this);
