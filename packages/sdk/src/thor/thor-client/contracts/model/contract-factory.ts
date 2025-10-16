@@ -384,7 +384,7 @@ class ContractFactory<TAbi extends Abi> {
             const deployClause = ClauseBuilder.deployContract(
                 contractBytecode,
                 deployParams,
-                options?.comment ? { comment: options.comment } : undefined
+                undefined // Comment is not part of simulation options
             );
 
             // 2. TODO: Use ThorClient to simulate the deployment clause
