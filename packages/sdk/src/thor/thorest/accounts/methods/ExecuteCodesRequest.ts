@@ -1,12 +1,12 @@
-import { type ClauseJSON } from '../../json';
 import { ClauseData } from '@thor/thorest';
-import { Address, BlockRef, UInt } from '@common/vcdm';
-import { IllegalArgumentError } from '@common/errors';
+import { type Address, type BlockRef } from '@common/vcdm';
 import { type ExecuteCodesRequestJSON } from '../json';
+import {
+    type Clause,
+    type SimulateTransactionOptions
+} from '@thor/thor-client/model/transactions';
+import { IllegalArgumentError } from '@common';
 
-/**
- * Full-Qualified Path
- */
 const FQP =
     'packages/sdk/src/thor/thorest/accounts/methods/ExecuteCodesRequest.ts!';
 
@@ -59,50 +59,29 @@ class ExecuteCodesRequest {
     readonly caller: Address | null;
 
     /**
-     * Constructs a new instance of the class by parsing the provided JSON object.
+     * Constructs a new instance of the class from the given clauses and options.
      *
-     * @param {ExecuteCodesRequestJSON} json - The JSON object containing execute codes request data.
-     * @throws {IllegalArgumentError} If the parsing of the JSON object fails.
+     * @param {Clause[]} clauses - The clauses to execute.
+     * @param {SimulateTransactionOptions} options - The options for the request.
      */
-    constructor(json: ExecuteCodesRequestJSON) {
-        try {
-            this.provedWork = json.provedWork ?? null;
-            this.gasPayer =
-                typeof json.gasPayer === 'string'
-                    ? Address.of(json.gasPayer)
-                    : null;
-            this.expiration =
-                typeof json.expiration === 'number'
-                    ? UInt.of(json.expiration).valueOf()
-                    : null;
-            this.blockRef =
-                typeof json.blockRef === 'string'
-                    ? BlockRef.of(json.blockRef)
-                    : null;
-            this.clauses =
-                json.clauses != null
-                    ? json.clauses.map(
-                          (clauseJSON: ClauseJSON): ClauseData =>
-                              ClauseData.of(clauseJSON)
-                      )
-                    : null;
-            this.gas = typeof json.gas === 'number' ? BigInt(json.gas) : null;
-            this.gasPrice =
-                typeof json.gasPrice === 'string'
-                    ? BigInt(json.gasPrice)
-                    : null;
-            this.caller =
-                typeof json.caller === 'string'
-                    ? Address.of(json.caller)
-                    : null;
-        } catch (error) {
+    constructor(clauses: Clause[], options?: SimulateTransactionOptions) {
+        if (clauses.length === 0) {
             throw new IllegalArgumentError(
-                `${FQP}constructor(json: ExecuteCodesRequestJSON)`,
-                'Bad parse',
-                { json },
-                error instanceof Error ? error : undefined
+                `${FQP}<ExecuteCodesRequest>.constructor()`,
+                'clauses must not be empty'
             );
         }
+        this.provedWork = options?.provedWork ?? null;
+        this.gasPayer = options?.gasPayer ?? null;
+        this.expiration = options?.expiration ?? null;
+        this.blockRef = options?.blockRef ?? null;
+        this.clauses = clauses.map(
+            (clause: Clause) =>
+                new ClauseData(clause.to, clause.value, clause.data)
+        );
+        this.gas = options?.gas ?? null;
+        this.gasPrice = options?.gasPrice ?? null;
+        this.caller = options?.caller ?? null;
     }
 
     /**

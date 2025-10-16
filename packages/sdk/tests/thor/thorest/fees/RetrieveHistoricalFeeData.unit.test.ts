@@ -7,7 +7,7 @@ import {
     RetrieveHistoricalFeeData,
     ThorError
 } from '@thor/thorest';
-import { HexUInt32, Revision } from '@common/vcdm';
+import { Hex, HexUInt32, Revision } from '@common/vcdm';
 
 const mockHttpClient = <T>(response: T): HttpClient => {
     return {
@@ -127,7 +127,9 @@ describe('RetrieveHistoricalFeeData UNIT tests', () => {
             gasUsedRatio: [0, 0.00029862666666666666]
         } satisfies GetFeesHistoryResponseJSON;
         const newestBlock = Revision.of(
-            '0x000004108e6fe2b6426157dbe03775365f39a6e6125d7393c1e9c25c3fdbaf77'
+            Hex.of(
+                '0x000004108e6fe2b6426157dbe03775365f39a6e6125d7393c1e9c25c3fdbaf77'
+            )
         );
         const blockCount = 1;
         const actual = (

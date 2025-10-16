@@ -10,7 +10,7 @@ const FQP = 'packages/sdk/src/thor/thorest/transactions/model/TxMeta.ts!';
 /**
  * [TxMeta](http://localhost:8669/doc/stoplight-ui/#/schemas/TxMeta)
  */
-class TxMeta {
+class TxMetaResponse {
     /**
      * The block identifier in which the transaction was included.
      *
@@ -63,4 +63,4 @@ class TxMeta {
     }
 }
 
-export { TxMeta };
+export { TxMetaResponse };

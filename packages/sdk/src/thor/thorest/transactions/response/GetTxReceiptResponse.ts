@@ -1,5 +1,5 @@
 import { Address, HexUInt, Quantity, UInt } from '@common/vcdm';
-import { Output, ReceiptMeta } from '@thor/thorest';
+import { OutputResponse, ReceiptMetaResponse } from '@thor/thorest/common';
 
 import {
     type GetTxReceiptResponseJSON,
@@ -50,12 +50,12 @@ class GetTxReceiptResponse {
     /**
      * An array of outputs produced by the transaction.
      */
-    readonly outputs: Output[];
+    readonly outputs: OutputResponse[];
 
     /**
      * The transaction receipt metadata such as block number, block timestamp, etc.
      */
-    readonly meta: ReceiptMeta;
+    readonly meta: ReceiptMetaResponse;
 
     constructor(json: GetTxReceiptResponseJSON) {
         try {
@@ -69,9 +69,10 @@ class GetTxReceiptResponse {
             this.reward = HexUInt.of(json.reward).bi;
             this.reverted = json.reverted;
             this.outputs = json.outputs.map(
-                (outputJSON: OutputJSON): Output => new Output(outputJSON)
+                (outputJSON: OutputJSON): OutputResponse =>
+                    new OutputResponse(outputJSON)
             );
-            this.meta = new ReceiptMeta(json.meta);
+            this.meta = new ReceiptMetaResponse(json.meta);
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: GetTxReceiptResponseJSON)`,
@@ -96,7 +97,7 @@ class GetTxReceiptResponse {
             reward: Quantity.of(this.reward).toString(),
             reverted: this.reverted,
             outputs: this.outputs.map(
-                (output: Output): OutputJSON => output.toJSON()
+                (output: OutputResponse): OutputJSON => output.toJSON()
             ),
             meta: this.meta.toJSON()
         } satisfies GetTxReceiptResponseJSON;

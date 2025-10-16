@@ -9,12 +9,6 @@ import {
 } from '@thor/thorest';
 import { type RegularBlockResponseJSON } from '@thor/thorest/json';
 
-class InvalidRevision extends Revision {
-    constructor() {
-        super('invalid');
-    }
-}
-
 const mockHttpClient = <T>(response: T): HttpClient => {
     return {
         get: jest.fn().mockReturnValue(response)
@@ -38,7 +32,7 @@ describe('RetrieveRegularBlock UNIT tests', () => {
     test('err: <- bad revision', async () => {
         const status = 400;
         try {
-            await RetrieveRegularBlock.of(new InvalidRevision()).askTo(
+            await RetrieveRegularBlock.of(Revision.of('best')).askTo(
                 mockHttpClient<Response>(
                     mockResponse(
                         'revision: strconv.ParseUint: parsing "invalid": invalid syntax',

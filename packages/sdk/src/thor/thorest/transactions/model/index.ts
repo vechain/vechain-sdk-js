@@ -7,5 +7,5 @@ export * from './Transaction';
 export * from './TransactionBody';
 export * from './TransactionClause';
 export * from './Tx';
-export * from './TxMeta';
+export * from './TxMetaResponse';
 export * from './TxWithReceipt';

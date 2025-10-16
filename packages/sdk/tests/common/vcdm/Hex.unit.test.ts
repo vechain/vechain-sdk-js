@@ -325,4 +325,18 @@ describe('Hex class tests', () => {
             expect(() => Hex.random(0)).toThrow(IllegalArgumentError);
         });
     });
+
+    describe('countZeroBytes method tests', () => {
+        test('Return the number of zero bytes in the hexadecimal string', () => {
+            const hex = Hex.of('0x000000000000000000000000000caca0');
+            expect(hex.countZeroBytes()).toEqual(13);
+        });
+    });
+
+    describe('countNonZeroBytes method tests', () => {
+        test('Return the number of non-zero bytes in the hexadecimal string', () => {
+            const hex = Hex.of('0x000000000000000000000000000caca0');
+            expect(hex.countNonZeroBytes()).toEqual(3);
+        });
+    });
 });

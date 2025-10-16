@@ -1,6 +1,10 @@
-import { RawTx, type ThorRequest, type ThorResponse } from '@thor/thorest';
+import {
+    RawBlockResponse,
+    type ThorRequest,
+    type ThorResponse
+} from '@thor/thorest';
+import { type RawBlockJSON } from '@thor/thorest/blocks/json/RawBlockJSON';
 import { ThorError } from '@thor/thorest';
-import { type RawTxJSON } from '@thor/thorest/json';
 import { type HttpClient, type HttpPath } from '@common/http';
 import { handleHttpError } from '@thor/thorest/utils';
 import { type Revision } from '@common/vcdm';
@@ -16,7 +20,9 @@ const FQP = 'packages/sdk/src/thor/thorest/blocks/methods/RetrieveRawBlock.ts!';
  * Retrieve information about a block identified by its revision.
  * If the provided revision is not found, the response will be `null`
  */
-class RetrieveRawBlock implements ThorRequest<RetrieveRawBlock, RawTx | null> {
+class RetrieveRawBlock
+    implements ThorRequest<RetrieveRawBlock, RawBlockResponse | null>
+{
     /**
      * Represents the HTTP path for this specific API endpoint.
      */
@@ -41,17 +47,17 @@ class RetrieveRawBlock implements ThorRequest<RetrieveRawBlock, RawTx | null> {
      */
     async askTo(
         httpClient: HttpClient
-    ): Promise<ThorResponse<RetrieveRawBlock, RawTx | null>> {
-        const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveRawBlock, TxRaw | null>>`;
+    ): Promise<ThorResponse<RetrieveRawBlock, RawBlockResponse | null>> {
+        const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveRawBlock, RawBlockResponse | null>>`;
         try {
             const response = await httpClient.get(this.path, {
                 query: '?raw=true'
             });
-            const json = (await response.json()) as RawTxJSON | null;
+            const json = (await response.json()) as RawBlockJSON | null;
             try {
                 return {
                     request: this,
-                    response: json === null ? null : new RawTx(json)
+                    response: json === null ? null : new RawBlockResponse(json)
                 };
             } catch (error) {
                 throw new ThorError(
