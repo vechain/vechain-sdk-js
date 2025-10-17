@@ -3,6 +3,7 @@ export * from './signer';
 export * from './thorest';
 export * from './thor-client/ThorClient';
 export * from './thor-client/accounts';
+export * from './thor-client/contracts';
 export * from './thor-client/gas';
 export * from './utils';
 export * from './ws';
