@@ -1,11 +1,17 @@
 import { describe, expect, test } from '@jest/globals';
-import { Clause, TransactionRequest } from '@thor/thor-client/model/transactions';
+import {
+    Clause,
+    TransactionRequest
+} from '@thor/thor-client/model/transactions';
 import { PrivateKeySigner, TransactionRequestRLPCodec } from '@thor/signer';
 import { Address, Hex, HexUInt, Revision } from '@common/vcdm';
 import { FetchHttpClient } from '@common/http';
 import { ThorNetworks } from '@thor/thorest';
 import { RetrieveExpandedBlock } from '@thor/thorest/blocks';
-import { RetrieveTransactionReceipt, SendTransaction } from '@thor/thorest/transactions';
+import {
+    RetrieveTransactionReceipt,
+    SendTransaction
+} from '@thor/thorest/transactions';
 import { ThorClient } from '@thor/thor-client/ThorClient';
 
 /**
@@ -14,8 +20,6 @@ import { ThorClient } from '@thor/thor-client/ThorClient';
 describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
     const thorClient = ThorClient.at(httpClient);
-    const privateKey = new Uint8Array(32).fill(1);
-    const signer = new PrivateKeySigner(privateKey);
 
     // Solo network test addresses
     const toAddress = '0xf077b491b355e64048ce21e3a6fc4751eeea77fa'; // Solo default account[1]
@@ -29,7 +33,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
             await RetrieveExpandedBlock.of(Revision.BEST).askTo(httpClient)
         ).response;
 
-        if (!latestBlock) {
+        if (latestBlock == null) {
             throw new Error(
                 'Failed to retrieve latest block from Thor network.'
             );
@@ -63,8 +67,8 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
                 expiration: 32,
                 gas: 21000000n,
                 gasPriceCoef: 128n,
-                nonce: Math.floor(Math.random() * 1000000),
-                isIntendedToBeSponsored: false
+                // eslint-disable-next-line sonarjs/pseudo-random
+                nonce: Math.floor(Math.random() * 1000000)
             });
 
             // Verify it's detected as legacy
@@ -76,13 +80,10 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
             // Sign the transaction
             const signedTx = fromSigner.sign(legacyTx);
             expect(signedTx.isDynamicFee).toBe(false);
-            expect(signedTx.isSigned()).toBe(true);
+            expect(signedTx.isSigned).toBe(true);
 
             // Encode and verify no type prefix
-            const encoded =
-                TransactionRequestRLPCodec.encodeSignedTransactionRequest(
-                    signedTx
-                );
+            const encoded = TransactionRequestRLPCodec.encode(signedTx);
             expect(encoded[0]).not.toBe(0x51);
 
             // Send to solo network
@@ -101,7 +102,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
             const receiptResponse = await RetrieveTransactionReceipt.of(
                 txResponse.response.id
             ).askTo(httpClient);
-            if (receiptResponse.response) {
+            if (receiptResponse.response != null) {
                 expect(receiptResponse.response.reverted).toBe(false);
                 console.log(
                     `Legacy transaction confirmed in block: ${receiptResponse.response.meta.blockID}`
@@ -125,8 +126,8 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
                 gasPriceCoef: 0n, // Can be 0 for dynamic fee
                 maxFeePerGas: 10027000000000n, // 20 Gwei
                 maxPriorityFeePerGas: 27000000000n, // 5 Gwei
-                nonce: Math.floor(Math.random() * 1000000),
-                isIntendedToBeSponsored: false
+                // eslint-disable-next-line sonarjs/pseudo-random
+                nonce: Math.floor(Math.random() * 1000000)
             });
 
             // Verify it's detected as dynamic fee
@@ -137,15 +138,12 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
             // Sign the transaction
             const signedTx = fromSigner.sign(dynamicTx);
             expect(signedTx.isDynamicFee).toBe(true);
-            expect(signedTx.isSigned()).toBe(true);
+            expect(signedTx.isSigned).toBe(true);
             expect(signedTx.maxFeePerGas).toBe(10027000000000n);
             expect(signedTx.maxPriorityFeePerGas).toBe(27000000000n);
 
             // Encode and verify 0x51 type prefix
-            const encoded =
-                TransactionRequestRLPCodec.encodeSignedTransactionRequest(
-                    signedTx
-                );
+            const encoded = TransactionRequestRLPCodec.encode(signedTx);
             expect(encoded[0]).toBe(0x51);
 
             // Send to solo network
@@ -164,7 +162,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
             const receiptResponse = await RetrieveTransactionReceipt.of(
                 txResponse.response.id
             ).askTo(httpClient);
-            if (receiptResponse.response) {
+            if (receiptResponse.response != null) {
                 expect(receiptResponse.response.reverted).toBe(false);
                 console.log(
                     `Dynamic fee transaction confirmed in block: ${receiptResponse.response.meta.blockID}`
@@ -185,8 +183,8 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
                 gasPriceCoef: 0n,
                 maxFeePerGas: 10027000000000n, // 15 Gwei
                 // No maxPriorityFeePerGas
-                nonce: Math.floor(Math.random() * 1000000),
-                isIntendedToBeSponsored: false
+                // eslint-disable-next-line sonarjs/pseudo-random
+                nonce: Math.floor(Math.random() * 1000000)
             });
 
             // Should still be detected as dynamic fee
@@ -196,10 +194,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
 
             // Sign and encode
             const signedTx = fromSigner.sign(dynamicTx);
-            const encoded =
-                TransactionRequestRLPCodec.encodeSignedTransactionRequest(
-                    signedTx
-                );
+            const encoded = TransactionRequestRLPCodec.encode(signedTx);
             expect(encoded[0]).toBe(0x51);
 
             // Send to solo network
@@ -227,8 +222,8 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
                 expiration: 32,
                 gas: 210000n,
                 gasPriceCoef: 255n, // Max legacy coefficient
-                nonce: Math.floor(Math.random() * 1000000),
-                isIntendedToBeSponsored: false
+                // eslint-disable-next-line sonarjs/pseudo-random
+                nonce: Math.floor(Math.random() * 1000000)
                 // No dynamic fee fields at all
             });
 
@@ -242,10 +237,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
             expect(signedTx.gasPriceCoef).toBe(255n);
 
             // Should encode without type prefix
-            const encoded =
-                TransactionRequestRLPCodec.encodeSignedTransactionRequest(
-                    signedTx
-                );
+            const encoded = TransactionRequestRLPCodec.encode(signedTx);
             expect(encoded[0]).not.toBe(0x51);
 
             // Should send successfully to solo network
@@ -273,8 +265,8 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
                 expiration: 32,
                 gas: 21000n,
                 gasPriceCoef: 100n,
-                nonce: Math.floor(Math.random() * 1000000),
-                isIntendedToBeSponsored: false
+                // eslint-disable-next-line sonarjs/pseudo-random
+                nonce: Math.floor(Math.random() * 1000000)
             });
 
             const dynamicTx = new TransactionRequest({
@@ -287,8 +279,8 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
                 gasPriceCoef: 0n,
                 maxFeePerGas: 10027000000000n,
                 maxPriorityFeePerGas: 27000000000n,
-                nonce: Math.floor(Math.random() * 1000000),
-                isIntendedToBeSponsored: false
+                // eslint-disable-next-line sonarjs/pseudo-random
+                nonce: Math.floor(Math.random() * 1000000)
             });
 
             // Verify different detection
@@ -301,13 +293,9 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
 
             // Encode both
             const legacyEncoded =
-                TransactionRequestRLPCodec.encodeSignedTransactionRequest(
-                    signedLegacy
-                );
+                TransactionRequestRLPCodec.encode(signedLegacy);
             const dynamicEncoded =
-                TransactionRequestRLPCodec.encodeSignedTransactionRequest(
-                    signedDynamic
-                );
+                TransactionRequestRLPCodec.encode(signedDynamic);
 
             // Verify different encoding
             expect(legacyEncoded[0]).not.toBe(0x51);
