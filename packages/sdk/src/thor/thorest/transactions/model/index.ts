@@ -1,5 +1,3 @@
-export * from './ClauseBuilder';
-export * from './ClauseOptions';
 export * from './DeployParams';
 export * from './RawTx';
 export * from './TXID';
