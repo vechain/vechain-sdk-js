@@ -2,9 +2,12 @@ import { IllegalArgumentError } from '@common/errors';
 import { log } from '@common/logging';
 
 type Producer<T> = () => Promise<T> | T;
+/** Consumer invoked when the poller produces a new value. */
 type Consumer<T> = (value: T) => void;
+/** Consumer invoked when the poller encounters an error. */
 type ErrorConsumer = (error: Error) => void;
 
+/** Handlers that can be attached to an event poller instance. */
 interface EventPollHandlers<T> {
     onData: (handler: Consumer<T>) => EventPollController<T>;
     onError: (handler: ErrorConsumer) => EventPollController<T>;
@@ -45,11 +48,17 @@ interface EventPollController<T> extends EventPollHandlers<T> {
     getState: () => EventPollState;
 }
 
+/**
+ * Runtime state tracked by {@link EventPollController}.
+ */
 interface EventPollState {
     iterations: number;
     isRunning: boolean;
 }
 
+/**
+ * Options accepted by {@link waitUntil} while polling for a condition.
+ */
 interface WaitUntilOptions<T> {
     task: Producer<T>;
     predicate: (result: T) => boolean;
@@ -117,6 +126,7 @@ export function createEventPoll<T>(
     let errorHandler: ErrorConsumer | undefined;
     let scheduleController: AbortController | undefined;
 
+    // Sequentially run producer executions, spacing them with the configured interval.
     const loop = async (controller: AbortController): Promise<void> => {
         while (true) {
             if (!running) {
@@ -263,6 +273,7 @@ export async function waitUntil<T>(options: WaitUntilOptions<T>): Promise<T> {
     try {
         while (true) {
             if (controller.signal.aborted) {
+                // Timeout paths surface as IllegalArgumentError so callers can distinguish them from other failures.
                 throw new IllegalArgumentError(
                     'waitUntil()',
                     'Timed out while waiting for predicate'
@@ -306,6 +317,9 @@ export async function waitUntil<T>(options: WaitUntilOptions<T>): Promise<T> {
     }
 }
 
+/**
+ * Validates that an interval is a positive, finite number.
+ */
 function validateInterval(value: number, context: string): number {
     if (!Number.isFinite(value) || value <= 0) {
         throw new IllegalArgumentError(
@@ -317,6 +331,9 @@ function validateInterval(value: number, context: string): number {
     return value;
 }
 
+/**
+ * Resolves after the specified delay, or sooner if the signal aborts.
+ */
 async function delay(ms: number, signal: AbortSignal): Promise<void> {
     await new Promise<void>((resolve) => {
         const timer = setTimeout(() => {
@@ -334,6 +351,9 @@ async function delay(ms: number, signal: AbortSignal): Promise<void> {
     });
 }
 
+/**
+ * Attempts to extract an HTTP status code from an unknown error object.
+ */
 function extractStatusCode(error: unknown): number | undefined {
     if (typeof error === 'object' && error !== null) {
         const status = (error as { statusCode?: unknown }).statusCode;
@@ -349,10 +369,16 @@ function extractStatusCode(error: unknown): number | undefined {
     return undefined;
 }
 
+/**
+ * Determines whether the error represents a recoverable network failure.
+ */
 function isNetworkError(error: unknown): boolean {
     return extractStatusCode(error) !== undefined;
 }
 
+/**
+ * Emits a debug log for a network error using the shared logger.
+ */
 function debugNetworkError(
     scope: 'poller' | 'waitUntil',
     message: string,
@@ -371,6 +397,9 @@ function debugNetworkError(
     });
 }
 
+/**
+ * Normalises unknown errors into Error instances.
+ */
 function wrapError(error: unknown): Error {
     return error instanceof Error ? error : new Error(String(error));
 }
