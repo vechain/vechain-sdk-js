@@ -179,7 +179,9 @@ class TransactionRequest implements TransactionRequestParam {
             gas: this.gas,
             gasPriceCoef: this.gasPriceCoef,
             nonce: this.nonce,
-            isIntendedToBeSponsored: this.isIntendedToBeSponsored ?? false
+            isIntendedToBeSponsored: this.isIntendedToBeSponsored ?? false,
+            maxFeePerGas: this.maxFeePerGas,
+            maxPriorityFeePerGas: this.maxPriorityFeePerGas
         } satisfies TransactionRequestJSON;
     }
 
