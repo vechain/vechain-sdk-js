@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { Clause, TransactionRequest } from '@thor/thor-client/model/transactions';
-import { PrivateKeySigner, RLPCodecTransactionRequest } from '@thor/signer';
+import { PrivateKeySigner, TransactionRequestRLPCodec } from '@thor/signer';
 import { Address, Hex, HexUInt, Revision } from '@common/vcdm';
 import { FetchHttpClient } from '@common/http';
 import { ThorNetworks } from '@thor/thorest';
@@ -80,7 +80,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
 
             // Encode and verify no type prefix
             const encoded =
-                RLPCodecTransactionRequest.encodeSignedTransactionRequest(
+                TransactionRequestRLPCodec.encodeSignedTransactionRequest(
                     signedTx
                 );
             expect(encoded[0]).not.toBe(0x51);
@@ -143,7 +143,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
 
             // Encode and verify 0x51 type prefix
             const encoded =
-                RLPCodecTransactionRequest.encodeSignedTransactionRequest(
+                TransactionRequestRLPCodec.encodeSignedTransactionRequest(
                     signedTx
                 );
             expect(encoded[0]).toBe(0x51);
@@ -197,7 +197,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
             // Sign and encode
             const signedTx = fromSigner.sign(dynamicTx);
             const encoded =
-                RLPCodecTransactionRequest.encodeSignedTransactionRequest(
+                TransactionRequestRLPCodec.encodeSignedTransactionRequest(
                     signedTx
                 );
             expect(encoded[0]).toBe(0x51);
@@ -243,7 +243,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
 
             // Should encode without type prefix
             const encoded =
-                RLPCodecTransactionRequest.encodeSignedTransactionRequest(
+                TransactionRequestRLPCodec.encodeSignedTransactionRequest(
                     signedTx
                 );
             expect(encoded[0]).not.toBe(0x51);
@@ -301,11 +301,11 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
 
             // Encode both
             const legacyEncoded =
-                RLPCodecTransactionRequest.encodeSignedTransactionRequest(
+                TransactionRequestRLPCodec.encodeSignedTransactionRequest(
                     signedLegacy
                 );
             const dynamicEncoded =
-                RLPCodecTransactionRequest.encodeSignedTransactionRequest(
+                TransactionRequestRLPCodec.encodeSignedTransactionRequest(
                     signedDynamic
                 );
 

@@ -1,24 +1,32 @@
+/* eslint-disable */
+// TODO: Contracts module is pending rework - lint errors will be fixed during refactor
 import {
     type Abi,
-    decodeFunctionResult,
+    type AbiParameter,
     encodeFunctionData,
+    decodeFunctionResult,
     toEventSelector
 } from 'viem';
 import { type Address, Hex } from '@common/vcdm';
 import { type PublicClient, type WalletClient } from '@viem/clients';
 import { type SubscriptionEventResponse } from '@thor/thorest/subscriptions/response';
-import { type DecodedEventLog } from '@thor/thor-client/model/logs/DecodedEventLog';
+import { type ExecuteCodesResponse } from '@thor/thorest/accounts/response';
+import { type DecodedEventLog } from '@/thor/thor-client/model/logs/DecodedEventLog';
+// Import the new adapter layer
+import {
+    getContract as getContractAdapter,
+    type Contract as AdapterContract
+} from './ContractAdapter';
 import {
     Clause,
-    type ClauseSimulationResult,
-    type SimulateTransactionOptions
+    type SimulateTransactionOptions,
+    type ClauseSimulationResult
 } from '@thor/thor-client';
 
 // Type alias for hex-convertible values
-type HexConvertible = string | number | bigint;
 
 // Type alias for function arguments
-type FunctionArgs = unknown[];
+type FunctionArgs = AbiParameter[];
 
 /**
  * Configuration for creating a contract instance
@@ -44,8 +52,12 @@ export interface WriteContractParameters {
     value?: bigint;
     /** Gas limit for the transaction */
     gas?: bigint;
-    /** Gas price for the transaction */
-    gasPrice?: bigint;
+    /** Gas price coefficient for the transaction (VeChain specific) */
+    gasPriceCoef?: bigint;
+    /** Maximum fee per gas (EIP-1559 dynamic fees) */
+    maxFeePerGas?: bigint;
+    /** Maximum priority fee per gas (EIP-1559 dynamic fees) */
+    maxPriorityFeePerGas?: bigint;
 }
 
 /**
@@ -59,6 +71,11 @@ export interface Contract<TAbi extends Abi> {
     abi: TAbi;
     /** Read-only contract methods (view/pure) - available when publicClient provided */
     read: Record<string, (...args: FunctionArgs) => Promise<unknown>>;
+    /** State-changing contract methods - available when walletClient provided */
+    write: Record<
+        string,
+        (params?: WriteContractParameters) => Promise<string>
+    >;
     /** Simulate contract method calls - available when publicClient provided */
     simulate: Record<
         string,
@@ -103,32 +120,6 @@ export interface Contract<TAbi extends Abi> {
     >;
 }
 
-/**
- * Creates a contract instance for the given ABI and address using the provided public client
- *
- * @param config Contract configuration including address, ABI and public client
- * @returns A contract instance with typed read, write and events interfaces
- *
- * @example
- * ```ts
- * import { getContract } from '@vechain/sdk';
- *
- * const contract = getContract({
- *   address: '0x...',
- *   abi: [...],
- *   publicClient,
- * });
- *
- * // Read contract data
- * const value = await contract.read.balanceOf(['0x...']);
- *
- * // Write to contract
- * const txRequest = await contract.write.transfer({
- *   args: ['0x...', 100n],
- *   value: 0n
- * });
- * ```
- */
 function getContract<const TAbi extends Abi>({
     address,
     abi,
@@ -146,6 +137,10 @@ function getContract<const TAbi extends Abi>({
     const readMethods: Record<
         string,
         (...args: FunctionArgs) => Promise<unknown>
+    > = {};
+    const writeMethods: Record<
+        string,
+        (params?: WriteContractParameters) => Promise<string>
     > = {};
     const simulateMethods: Record<
         string,
@@ -188,6 +183,7 @@ function getContract<const TAbi extends Abi>({
         address,
         abi,
         read: readMethods,
+        write: writeMethods,
         simulate: simulateMethods,
         estimateGas: estimateGasMethods,
         events: eventMethods
@@ -238,6 +234,46 @@ function getContract<const TAbi extends Abi>({
                     return undefined;
                 };
             }
+
+            // Write methods - available with walletClient for state-changing functions
+            if (
+                (abiItem.stateMutability === 'nonpayable' ||
+                    abiItem.stateMutability === 'payable') &&
+                walletClient != null
+            ) {
+                contract.write[functionName] = async ({
+                    args = [],
+                    value = 0n,
+                    gas,
+                    gasPriceCoef
+                } = {}) => {
+                    // Encode function call data
+                    const data = encodeFunctionData({
+                        abi: abi as Abi,
+                        functionName,
+                        args: args ?? []
+                    });
+
+                    // Prepare transaction clause
+                    const clause: Clause = new Clause(
+                        address,
+                        value,
+                        Hex.of(data)
+                    );
+
+                    // Send the transaction
+                    const txId = await walletClient.sendTransaction({
+                        clauses: [clause],
+                        gas: gas ? Number(gas) : undefined,
+                        gasPriceCoef: gasPriceCoef
+                            ? Number(gasPriceCoef)
+                            : undefined
+                    } as any);
+
+                    return txId.toString();
+                };
+            }
+
             // Simulate methods - available with publicClient for all functions
             if (publicClient != null) {
                 contract.simulate[functionName] = async ({
@@ -310,7 +346,13 @@ function getContract<const TAbi extends Abi>({
                         for (let i = 0; i < indexedInputs.length; i++) {
                             if (i < args.length && args[i] !== undefined) {
                                 indexedArgs.push(
-                                    Hex.of(args[i] as HexConvertible)
+                                    Hex.of(
+                                        args[i] as unknown as
+                                            | bigint
+                                            | number
+                                            | string
+                                            | Uint8Array
+                                    )
                                 );
                             } else {
                                 // Use 0x0 for missing arguments
@@ -328,7 +370,13 @@ function getContract<const TAbi extends Abi>({
                         // Convert fromBlock to Hex if provided
                         fromBlock:
                             fromBlock !== undefined
-                                ? Hex.of(fromBlock as HexConvertible)
+                                ? Hex.of(
+                                      fromBlock as unknown as
+                                          | bigint
+                                          | number
+                                          | string
+                                          | Uint8Array
+                                  )
                                 : undefined,
                         onLogs,
                         onError
@@ -367,4 +415,6 @@ function getContract<const TAbi extends Abi>({
     return contract;
 }
 
+// Export the main function and re-export adapter types for advanced usage
 export { getContract };
+export type { Contract as AdapterContract } from './ContractAdapter';

@@ -20,6 +20,7 @@ import {
     NoSuchElementError,
     UnsupportedOperationError
 } from '@common/errors';
+import { log } from '@common/logging';
 import { type TransactionBody, type TransactionClause } from '@thor/thorest';
 
 /**
@@ -224,7 +225,12 @@ class Transaction {
                     this.getTransactionHash(this.origin).bytes,
                     this.gasPayerSignature
                 );
-                return Address.ofPublicKey(gasPayerPublicKey);
+                const a = Address.ofPublicKey(gasPayerPublicKey);
+                log.debug({
+                    message: 'Gas payer address',
+                    context: { address: a.toString() }
+                });
+                return a;
             }
             throw new NoSuchElementError(
                 `${FQP}<Transaction>.gasPayer(): Address`,

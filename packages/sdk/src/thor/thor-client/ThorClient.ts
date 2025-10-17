@@ -4,6 +4,7 @@ import { BlocksModule } from './blocks/blocks-module';
 import { LogsModule } from './logs/logs-module';
 import { GasModule } from './gas/gas-module';
 import { NodesModule } from './nodes/nodes-module';
+import { ContractsModule } from './contracts/contracts-module';
 import { TransactionsModule } from './transactions/transactions-module';
 
 /**
@@ -32,8 +33,13 @@ class ThorClient {
     public readonly nodes: NodesModule;
 
     /**
-     * The `TransactionsModule` instance
+
+     * The `ContractsModule` instance
      */
+    public readonly contracts: ContractsModule;
+
+    // The `TransactionsModule` instance
+
     public readonly transactions: TransactionsModule;
 
     /**
@@ -56,6 +62,7 @@ class ThorClient {
         this.gas = new GasModule(httpClient);
         this.logs = new LogsModule(httpClient);
         this.nodes = new NodesModule(httpClient);
+        this.contracts = new ContractsModule(httpClient);
         this.transactions = new TransactionsModule(httpClient);
 
         // set thorClient to modules for cross-module communication
@@ -64,6 +71,7 @@ class ThorClient {
         this.gas.setThorClient(this);
         this.logs.setThorClient(this);
         this.nodes.setThorClient(this);
+        this.contracts.setThorClient(this);
     }
 
     /**
