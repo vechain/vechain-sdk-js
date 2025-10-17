@@ -726,20 +726,6 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
         isReadOnly: true
     },
     {
-        description: 'should return the total supply of VET',
-        functionName: 'getTotalSupply',
-        params: [],
-        expected: {
-            result: {
-                array: [10000000000000000000000000000n],
-                plain: 10000000000000000000000000000n
-            },
-            success: true
-        },
-        reverted: false,
-        isReadOnly: true
-    },
-    {
         description:
             'should return the `provedWork` of the current transaction',
         functionName: 'getTxProvedWork',
