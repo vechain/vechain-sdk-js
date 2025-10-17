@@ -6,8 +6,8 @@ import {
     VeChainSDKError
 } from '@common';
 import { TransactionRequest } from '@thor/thor-client/model/transactions';
+import { TransactionRequestRLPCodec } from './TransactionRequestRLPCodec';
 import { type Signer } from './Signer';
-import { TransactionRequestRLPCodec } from '@thor';
 import { concatBytes } from '@noble/curves/utils.js';
 
 /**

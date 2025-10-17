@@ -2,7 +2,10 @@ import { describe, expect, test } from '@jest/globals';
 import type { ThorSoloAccount } from '@vechain/sdk-solo-setup';
 import { Address, HexUInt } from '@common';
 import { Clause, TransactionRequest } from '@thor/thor-client';
-import { PrivateKeySigner, TransactionRequestRLPCodec } from '@thor';
+import {
+    PrivateKeySigner,
+    TransactionRequestRLPCodec
+} from '../../../src/thor/signer';
 import { privateKeyToAccount } from 'viem/accounts';
 import { WalletClient } from '@viem';
 import { mockHttpClient } from '../../MockHttpClient';
