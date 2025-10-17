@@ -2,10 +2,7 @@ import * as nc_utils from '@noble/curves/utils';
 import { concatBytes } from '@noble/curves/utils';
 import { type Account } from 'viem';
 import { SendTransaction, type ThorNetworks } from '@thor/thorest';
-import {
-    Clause,
-    TransactionRequest
-} from '@thor/thor-client/model/transactions';
+import { Clause, TransactionRequest } from '@thor/thor-client/model/transactions';
 import { Address, Blake2b256, Hex, HexInt, HexUInt } from '@common/vcdm';
 import { FetchHttpClient, type HttpClient } from '@common/http';
 import { UnsupportedOperationError } from '@common/errors';
@@ -271,7 +268,7 @@ class WalletClient extends PublicClient {
      * - If the transaction is not intended to be sponsored, signs as origin/sender.
      *
      * @param {TransactionRequest} transactionRequest - The transaction request object to be signed.
-     * @return {TransactionRequest} The hexadecimal expression of the RLP encoded signed transaction request object.
+     * @return {Promise<Hex>} The hexadecimal expression of the RLP encoded signed transaction request object.
      * @throws {VeChainSDKError} Throws an error if the signing process fails.
      *
      * @security Security auditable method, depends on
@@ -423,7 +420,6 @@ interface PrepareTransactionRequestRequest {
     gasPriceCoef: number;
     maxFeePerGas?: bigint;
     maxPriorityFeePerGas?: bigint;
-    isIntendedToBeSponsored?: boolean;
     nonce: number;
 }
 

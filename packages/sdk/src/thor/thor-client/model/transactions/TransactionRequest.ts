@@ -131,12 +131,12 @@ class TransactionRequest implements TransactionRequestParam {
     // TransactionRequest specific properties
 
     /**
-     * The address of the sponsor delegated to pay the gas to execute the transaction request.
+     * The signature of the sponsor delegated to pay the gas to execute the transaction request.
      */
     public readonly gasPayerSignature: Uint8Array;
 
     /**
-     * The address of the origin account sending and signing the transaction.
+     * The signature of the origin account sending and signing the transaction.
      */
     public readonly originSignature: Uint8Array;
 
@@ -154,8 +154,8 @@ class TransactionRequest implements TransactionRequestParam {
      * @param {Uint8Array} [originSignature] - Optional origin signature for the transaction.
      * @param {Uint8Array} [gasPayerSignature] - Optional gas payer signature for the transaction.
      * @param {Uint8Array} [signature] - Optional transaction signature
-     * - If `beggar` is defined, the transaction is signed if both `originSignature` and `gasPayerSignature` are present.
-     * - If `beggar` is undefined, the transaction is signed if `originSignature` is present.
+     * - If `beggar` is defined, the transaction is signed when both `originSignature` and `gasPayerSignature` are present.
+     * - If `beggar` is undefined, the transaction is signed when `originSignature` is present.
      */
     public constructor(
         params: TransactionRequestParam,

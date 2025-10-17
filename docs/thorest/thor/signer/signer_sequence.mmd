@@ -16,7 +16,7 @@ sequenceDiagram
                 TransactionRequest ->> Signer: Signer.sign(...)
                 Signer ->> TransactionRequest: Signer.sign(...) AS ORIGIN: SIGNATURE COMPLETE
             end
-        else TransactionRequest.beggar != Signer.addess
+        else TransactionRequest.beggar != Signer.address
             alt TransactionRequest.originSignature = null
                 TransactionRequest ->> Signer: Signer.sign(...)
                 Signer ->> TransactionRequest: Signer.sign(...) AS GAS PAYER

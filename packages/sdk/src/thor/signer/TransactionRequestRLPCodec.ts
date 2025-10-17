@@ -542,7 +542,7 @@ interface Body {
     maxFeePerGas?: bigint; // For EIP-1559 dynamic fee transactions
     maxPriorityFeePerGas?: bigint; // For EIP-1559 dynamic fee transactions
     originSignature: Uint8Array;
-    reserved: Uint8Array[]; // For VIP-191 transactions is the beggar address encoded prefixed with one byte valued 1.
+    reserved: Uint8Array[]; // For VIP-191 transactions, having one element = 1 to flag the transaction as intended to be sponsored.
     signature: Uint8Array;
 }
 
