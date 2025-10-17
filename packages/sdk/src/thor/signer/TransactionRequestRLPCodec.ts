@@ -504,8 +504,9 @@ class TransactionRequestRLPCodec {
         if (transactionRequest.isDynamicFee) {
             return {
                 ...baseBody,
-                maxFeePerGas: transactionRequest.maxFeePerGas,
-                maxPriorityFeePerGas: transactionRequest.maxPriorityFeePerGas
+                maxFeePerGas: transactionRequest.maxFeePerGas ?? 0n,
+                maxPriorityFeePerGas:
+                    transactionRequest.maxPriorityFeePerGas ?? 0n
             } satisfies Body;
         }
 
