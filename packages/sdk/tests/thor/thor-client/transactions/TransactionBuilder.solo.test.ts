@@ -24,7 +24,7 @@ describe('TransactionBuilder SOLO tests', () => {
         const builder = TransactionBuilder.create(thorClient);
         const transaction = await builder
             .withClauses(clauses)
-            .withDefaults()
+            .withDynFeeTxDefaults()
             .then(async (builder) => {
                 return await builder.withEstimatedGas(sender, {
                     revision: Revision.BEST

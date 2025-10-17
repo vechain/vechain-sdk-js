@@ -13,6 +13,8 @@ interface TransactionRequestJSON {
     gasPriceCoef?: bigint;
     nonce: number;
     isIntendedToBeSponsored: boolean;
+    maxFeePerGas?: bigint;
+    maxPriorityFeePerGas?: bigint;
 }
 
 export { type TransactionRequestJSON };

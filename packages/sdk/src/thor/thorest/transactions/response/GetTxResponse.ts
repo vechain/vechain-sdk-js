@@ -12,7 +12,7 @@ class GetTxResponse extends Tx {
     /**
      * Transaction metadata such as block number, block timestamp, etc.
      */
-    meta: TxMetaResponse;
+    meta: TxMetaResponse | null;
 
     /**
      * Constructs an instance of the class using the provided JSON object.
@@ -23,7 +23,8 @@ class GetTxResponse extends Tx {
     constructor(json: GetTxResponseJSON) {
         try {
             super(json);
-            this.meta = new TxMetaResponse(json.meta);
+            this.meta =
+                json.meta !== null ? new TxMetaResponse(json.meta) : null;
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: GetTxResponseJSON)`,
