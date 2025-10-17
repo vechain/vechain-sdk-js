@@ -1,7 +1,5 @@
 import fastJsonStableStringify from 'fast-json-stable-stringify';
-import pkg from '../../../package.json';
-
-/**
+import pkg from '../../../package.json'; /**
  * Class representing errors specific to the VeChain SDK.
  * This class extends the native JavaScript `Error` object, providing additional
  * context and utility functions for debugging and error handling within the SDK.
@@ -15,7 +13,6 @@ class VeChainSDKError extends Error {
      * helping developers to identify and trace operations or issues related to this specific SDK version in the application.
      */
     static readonly TAG = `vechain-sdk-js:${pkg.version}`;
-
     /**
      * Optional parameter to represent a set of key-value pairs representing the arguments originating the error.
      *
@@ -29,7 +26,6 @@ class VeChainSDKError extends Error {
      * about the cause of an encountered issue.
      */
     override readonly cause?: Error;
-
     /**
      * Fully qualified name of the element throwing this error, represented as a string in hierarchical form.
      *
@@ -74,7 +70,7 @@ class VeChainSDKError extends Error {
         cause?: Error,
         tag: string = VeChainSDKError.TAG
     ) {
-        super(message, cause);
+        super(message, { cause });
         this.args = args;
         this.cause = cause;
         this.fqn = fqn;
