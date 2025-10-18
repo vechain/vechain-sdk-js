@@ -194,10 +194,25 @@ class TransactionRequest implements TransactionRequestParam {
         return TransactionRequestRLPCodec.decode(encoded);
     }
 
+    /**
+     * Encodes a given transaction request into a RLP serialized format.
+     *
+     * @return {Uint8Array} The serialized and encoded transaction request.
+     */
     public get encoded(): Uint8Array {
         return TransactionRequestRLPCodec.encode(this);
     }
 
+    /**
+     * Computes and retrieves the Blake2b256 hash of the transaction request.
+     *
+     * The hash ignores the `beggar`, `gasPayerSignature`, `originSignature` and `signature` fields
+     * because the signature fields need the hash to be computed beforehand;
+     * the `beggar` field is not part of the Thor protocol to accept a transaction request,
+     * the `beggar` address is encoded in the `signature` field once the transaction is signed.
+     *
+     * @return {Blake2b256} The Blake2b256 hash generated from the encoded transaction request.
+     */
     public get hash(): Blake2b256 {
         return Blake2b256.of(TransactionRequestRLPCodec.encode(this, true));
     }

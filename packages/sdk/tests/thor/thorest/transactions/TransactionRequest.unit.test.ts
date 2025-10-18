@@ -1,4 +1,4 @@
-import { TEST_ACCOUNTS } from '../../fixture';
+import { TEST_ACCOUNTS } from '../../../fixture';
 import { Address, HexUInt, InvalidEncodingError } from '@common';
 import {
     Clause,
@@ -13,7 +13,7 @@ const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
 /**
  * @group unit/thor/signer
  */
-describe('TransactionRequestRLPCodec UNIT tests', () => {
+describe('TransactionRequest UNIT tests', () => {
     const mockSenderAccount = {
         privateKey:
             '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
@@ -38,7 +38,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
     const mockNonce = 3;
     const mockValue = 10n ** 15n; // .001 VET
 
-    describe('encode/decode dynamic', () => {
+    describe('encode/decode/hash dynamic', () => {
         test('ok <- dynamic fee - no sponsored - unsigned', () => {
             const txRequest = new TransactionRequest({
                 blockRef: mockBlockRef,
@@ -58,6 +58,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
                 nonce: mockNonce
             });
             const actual = TransactionRequest.decode(txRequest.encoded);
+            expect(actual.hash.bytes).toEqual(txRequest.hash.bytes);
             expect(actual.isDynamicFee).toBe(true);
             expect(actual.isIntendedToBeSponsored).toBe(false);
             expect(actual.isSigned).toBe(false);
@@ -87,6 +88,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
             );
             const expected = originSigner.sign(txRequest);
             const actual = TransactionRequest.decode(expected.encoded);
+            expect(actual.hash.bytes).toEqual(txRequest.hash.bytes);
             expect(actual.isDynamicFee).toBe(true);
             expect(actual.isIntendedToBeSponsored).toBe(false);
             expect(actual.isSigned).toBe(true);
@@ -114,6 +116,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
             });
             const expected = txRequest;
             const actual = TransactionRequest.decode(expected.encoded);
+            expect(actual.hash.bytes).toEqual(txRequest.hash.bytes);
             expect(actual.isDynamicFee).toBe(true);
             expect(actual.isIntendedToBeSponsored).toBe(true);
             expect(actual.isSigned).toBe(false);
@@ -145,6 +148,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
             );
             const expected = gasPayerSigner.sign(txRequest);
             const actual = TransactionRequest.decode(expected.encoded);
+            expect(actual.hash.bytes).toEqual(txRequest.hash.bytes);
             expect(actual.isDynamicFee).toBe(true);
             expect(actual.isIntendedToBeSponsored).toBe(true);
             expect(actual.isSigned).toBe(false);
@@ -176,6 +180,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
             );
             const expected = originSIgner.sign(txRequest);
             const actual = TransactionRequest.decode(expected.encoded);
+            expect(actual.hash.bytes).toEqual(txRequest.hash.bytes);
             expect(actual.isDynamicFee).toBe(true);
             expect(actual.isIntendedToBeSponsored).toBe(true);
             expect(actual.isSigned).toBe(false);
@@ -210,6 +215,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
             );
             const expected = originSigner.sign(gasPayerSigner.sign(txRequest));
             const actual = TransactionRequest.decode(expected.encoded);
+            expect(actual.hash.bytes).toEqual(txRequest.hash.bytes);
             expect(actual.isDynamicFee).toBe(true);
             expect(actual.isIntendedToBeSponsored).toBe(true);
             expect(actual.isSigned).toBe(true);
@@ -233,7 +239,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
         });
     });
 
-    describe('encode/decode legacy', () => {
+    describe('encode/decode/hash legacy', () => {
         test('ok <- legacy - no sponsored - unsigned', () => {
             const txRequest = new TransactionRequest({
                 blockRef: mockBlockRef,
@@ -252,6 +258,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
             });
             const expected = txRequest;
             const actual = TransactionRequest.decode(expected.encoded);
+            expect(actual.hash.bytes).toEqual(txRequest.hash.bytes);
             expect(actual.isDynamicFee).toBe(false);
             expect(actual.isIntendedToBeSponsored).toBe(false);
             expect(actual.isSigned).toBe(false);
@@ -279,6 +286,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
             );
             const expected = originSigner.sign(txRequest);
             const actual = TransactionRequest.decode(expected.encoded);
+            expect(actual.hash.bytes).toEqual(txRequest.hash.bytes);
             expect(actual.isDynamicFee).toBe(false);
             expect(actual.isIntendedToBeSponsored).toBe(false);
             expect(actual.isSigned).toBe(true);
@@ -303,6 +311,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
                 nonce: mockNonce
             });
             const actual = TransactionRequest.decode(txRequest.encoded);
+            expect(actual.hash.bytes).toEqual(txRequest.hash.bytes);
             expect(actual.isDynamicFee).toBe(false);
             expect(actual.isIntendedToBeSponsored).toBe(true);
             expect(actual.isSigned).toBe(false);
@@ -331,6 +340,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
             );
             const expected = gasPayerSigner.sign(txRequest);
             const actual = TransactionRequest.decode(expected.encoded);
+            expect(actual.hash.bytes).toEqual(txRequest.hash.bytes);
             expect(actual.isDynamicFee).toBe(false);
             expect(actual.isIntendedToBeSponsored).toBe(true);
             expect(actual.isSigned).toBe(false);
@@ -359,6 +369,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
             );
             const expected = originSIgner.sign(txRequest);
             const actual = TransactionRequest.decode(expected.encoded);
+            expect(actual.hash.bytes).toEqual(txRequest.hash.bytes);
             expect(actual.isDynamicFee).toBe(false);
             expect(actual.isIntendedToBeSponsored).toBe(true);
             expect(actual.isSigned).toBe(false);
@@ -390,6 +401,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
             );
             const expected = originSigner.sign(gasPayerSigner.sign(txRequest));
             const actual = TransactionRequest.decode(expected.encoded);
+            expect(actual.hash.bytes).toEqual(txRequest.hash.bytes);
             expect(actual.isDynamicFee).toBe(false);
             expect(actual.isIntendedToBeSponsored).toBe(true);
             expect(actual.isSigned).toBe(true);
@@ -447,7 +459,6 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
             });
 
             const actual = TransactionRequest.decode(expected.encoded);
-
             expect(actual.clauses).toHaveLength(1);
             expect(actual.clauses[0].data).toBeNull();
             expect(actual.clauses[0].toJSON().data).toBe('0x'); // Should be Hex.PREFIX
