@@ -1,7 +1,7 @@
 import {
     Clause,
     TransactionRequest
-} from '@thor/thor-client/model/transactions';
+} from '@thor/thor-client/model/transactions/index';
 import {
     Address,
     Blake2b256,
@@ -291,6 +291,8 @@ class TransactionRequestRLPCodec {
      *
      * @param {TransactionRequest} transactionRequest - The transaction request object to be encoded.
      * @param {boolean} [isToHash=false] - Specifies whether the encoded output should be prepared for hashing.
+     *        If true, the ecoding ignore the `signature` field and only encodes the `clauses` and `reserved` fields.
+     *        If false, the encoding includes the `signature` field.
      * @return {Uint8Array} The serialized and encoded transaction request.
      */
     public static encode(

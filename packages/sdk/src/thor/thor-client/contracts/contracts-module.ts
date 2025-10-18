@@ -1,7 +1,7 @@
 /* eslint-disable */
 // TODO: This module is pending rework - lint errors will be fixed during refactor
 import { type Abi, type AbiFunction } from 'abitype';
-import { type Signer, TransactionRequestRLPCodec } from '../../../thor/signer';
+import { type Signer } from '../../../thor/signer';
 import { Address, Hex, Revision } from '../../../common/vcdm';
 import { type HttpClient } from '@common/http';
 import { AbstractThorModule } from '../AbstractThorModule';
@@ -377,8 +377,7 @@ class ContractsModule extends AbstractThorModule {
             const signedTransaction = signer.sign(finalTransactionRequest);
 
             // Encode the signed transaction
-            const encodedTransaction =
-                TransactionRequestRLPCodec.encode(signedTransaction);
+            const encodedTransaction = signedTransaction.encoded;
 
             //  PENDING - update to use thor client transaction module sendTransaction
 
@@ -562,8 +561,7 @@ class ContractsModule extends AbstractThorModule {
             const signedTransaction = signer.sign(finalTransactionRequest);
 
             // Encode the signed transaction
-            const encodedTransaction =
-                TransactionRequestRLPCodec.encode(signedTransaction);
+            const encodedTransaction = signedTransaction.encoded;
 
             // Send the transaction using SendTransaction
             const sendTransaction = SendTransaction.of(encodedTransaction);

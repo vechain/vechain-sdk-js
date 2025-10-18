@@ -6,7 +6,6 @@ import {
     VeChainSDKError
 } from '@common';
 import { TransactionRequest } from '@thor/thor-client/model/transactions';
-import { TransactionRequestRLPCodec } from './TransactionRequestRLPCodec';
 import { type Signer } from './Signer';
 import { concatBytes } from '@noble/curves/utils.js';
 
@@ -197,12 +196,9 @@ class PrivateKeySigner implements Signer {
         transactionRequest: TransactionRequest
     ): TransactionRequest {
         if (this.#privateKey !== null) {
-            const originHash = Blake2b256.of(
-                TransactionRequestRLPCodec.encode(transactionRequest, true)
-            ).bytes;
             const gasPayerHash = Blake2b256.of(
                 concatBytes(
-                    originHash,
+                    transactionRequest.hash.bytes, // Origin hash.
                     transactionRequest.beggar?.bytes ?? new Uint8Array()
                 )
             ).bytes;
@@ -239,11 +235,8 @@ class PrivateKeySigner implements Signer {
         transactionRequest: TransactionRequest
     ): TransactionRequest {
         if (this.#privateKey !== null) {
-            const originHash = Blake2b256.of(
-                TransactionRequestRLPCodec.encode(transactionRequest, true)
-            ).bytes;
             const originSignature = Secp256k1.sign(
-                originHash,
+                transactionRequest.hash.bytes, // Origin hash.
                 this.#privateKey
             );
             return new TransactionRequest(

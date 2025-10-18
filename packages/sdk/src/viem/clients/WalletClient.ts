@@ -10,7 +10,6 @@ import { Address, Blake2b256, Hex, HexInt, HexUInt } from '@common/vcdm';
 import { FetchHttpClient, type HttpClient } from '@common/http';
 import { UnsupportedOperationError } from '@common/errors';
 import { PublicClient, type PublicClientConfig } from './PublicClient';
-import { TransactionRequestRLPCodec } from '@thor';
 
 /**
  * Fill-Qualified Path
@@ -290,36 +289,30 @@ class WalletClient extends PublicClient {
                     )
                 ) {
                     return HexUInt.of(
-                        TransactionRequestRLPCodec.encode(
-                            WalletClient.finalize(
-                                await WalletClient.signAsOrigin(
-                                    transactionRequest,
-                                    this.account
-                                )
-                            )
-                        )
-                    );
-                }
-                return HexUInt.of(
-                    TransactionRequestRLPCodec.encode(
                         WalletClient.finalize(
-                            await WalletClient.signAsGasPayer(
+                            await WalletClient.signAsOrigin(
                                 transactionRequest,
                                 this.account
                             )
-                        )
-                    )
-                );
-            }
-            return HexUInt.of(
-                TransactionRequestRLPCodec.encode(
+                        ).encoded
+                    );
+                }
+                return HexUInt.of(
                     WalletClient.finalize(
-                        await WalletClient.signAsOrigin(
+                        await WalletClient.signAsGasPayer(
                             transactionRequest,
                             this.account
                         )
+                    ).encoded
+                );
+            }
+            return HexUInt.of(
+                WalletClient.finalize(
+                    await WalletClient.signAsOrigin(
+                        transactionRequest,
+                        this.account
                     )
-                )
+                ).encoded
             );
         }
         throw new UnsupportedOperationError(
@@ -346,12 +339,9 @@ class WalletClient extends PublicClient {
         transactionRequest: TransactionRequest,
         account: Account
     ): Promise<TransactionRequest> {
-        const originHash = Blake2b256.of(
-            TransactionRequestRLPCodec.encode(transactionRequest, true)
-        ).bytes;
         const gasPayerHash = Blake2b256.of(
             concatBytes(
-                originHash,
+                transactionRequest.hash.bytes, // Origin hash.
                 transactionRequest.beggar?.bytes ?? new Uint8Array()
             )
         ).bytes;
@@ -384,11 +374,8 @@ class WalletClient extends PublicClient {
         transactionRequest: TransactionRequest,
         account: Account
     ): Promise<TransactionRequest> {
-        const originHash = Blake2b256.of(
-            TransactionRequestRLPCodec.encode(transactionRequest, true)
-        ).bytes;
         const originSignature = await WalletClient.signHash(
-            originHash,
+            transactionRequest.hash.bytes, // Origin hash.
             account
         );
         return new TransactionRequest(

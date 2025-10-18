@@ -2,15 +2,18 @@
 title: Signer Class Diagram - VIP-191
 ---
 classDiagram
-    namespace thor_thor_client_model_transactions {
+    namespace thor_thor-client_model_transactions {
         class TransactionRequest {
-            UInt8Array gasPayerSignature
+            constructor(TransactionRequestParam param)
+            Uint8Array encoded
+            Uint8Array gasPayerSignature
+            Blake2b256 hash
+            boolean isDynamicFee
+            boolean isIntendedToBeSponsored
+            boolean isSigned
             Uint8Array originSignature
             Uint8Array signature
-            constructor(TransactionRequestParameter param)
-            boolean isDynamicFee()
-            boolean isIntendedToBeSponsored()
-            boolean isSigned()
+            TransactionRequest decode(Uint8Array encoded)$
             TransactionRequestJSON toJSON()
         }
         class TransactionRequestParam {

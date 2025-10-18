@@ -3,7 +3,7 @@ import {
     Clause,
     TransactionRequest
 } from '@thor/thor-client/model/transactions';
-import { PrivateKeySigner, TransactionRequestRLPCodec } from '@thor/signer';
+import { PrivateKeySigner } from '@thor/signer';
 import { Address, Hex, HexUInt, Revision } from '@common/vcdm';
 import { FetchHttpClient } from '@common/http';
 import { ThorNetworks } from '@thor/thorest';
@@ -83,7 +83,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
             expect(signedTx.isSigned).toBe(true);
 
             // Encode and verify no type prefix
-            const encoded = TransactionRequestRLPCodec.encode(signedTx);
+            const encoded = signedTx.encoded;
             expect(encoded[0]).not.toBe(0x51);
 
             // Send to solo network
@@ -143,7 +143,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
             expect(signedTx.maxPriorityFeePerGas).toBe(27000000000n);
 
             // Encode and verify 0x51 type prefix
-            const encoded = TransactionRequestRLPCodec.encode(signedTx);
+            const encoded = signedTx.encoded;
             expect(encoded[0]).toBe(0x51);
 
             // Send to solo network
@@ -194,7 +194,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
 
             // Sign and encode
             const signedTx = fromSigner.sign(dynamicTx);
-            const encoded = TransactionRequestRLPCodec.encode(signedTx);
+            const encoded = signedTx.encoded;
             expect(encoded[0]).toBe(0x51);
 
             // Send to solo network
@@ -237,7 +237,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
             expect(signedTx.gasPriceCoef).toBe(255n);
 
             // Should encode without type prefix
-            const encoded = TransactionRequestRLPCodec.encode(signedTx);
+            const encoded = signedTx.encoded;
             expect(encoded[0]).not.toBe(0x51);
 
             // Should send successfully to solo network
@@ -292,10 +292,8 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
             const signedDynamic = fromSigner.sign(dynamicTx);
 
             // Encode both
-            const legacyEncoded =
-                TransactionRequestRLPCodec.encode(signedLegacy);
-            const dynamicEncoded =
-                TransactionRequestRLPCodec.encode(signedDynamic);
+            const legacyEncoded = signedLegacy.encoded;
+            const dynamicEncoded = signedDynamic.encoded;
 
             // Verify different encoding
             expect(legacyEncoded[0]).not.toBe(0x51);

@@ -7,7 +7,6 @@ import {
     RetrieveTransactionByID,
     SendTransaction,
     ThorNetworks,
-    TransactionRequestRLPCodec,
     TXID
 } from '@thor';
 import { TEST_ACCOUNTS } from '../../fixture';
@@ -56,7 +55,7 @@ describe('PrivateKeySigner SOLO test', () => {
             HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
         );
         const txRequestSaS = signer.sign(txRequest);
-        const encodedTx = TransactionRequestRLPCodec.encode(txRequestSaS);
+        const encodedTx = txRequestSaS.encoded;
         log.debug({ message: HexUInt.of(encodedTx).toString() });
 
         const txId = (await SendTransaction.of(encodedTx).askTo(httpClient))
@@ -102,7 +101,7 @@ describe('PrivateKeySigner SOLO test', () => {
             HexUInt.of(TRANSACTION_RECEIVER.privateKey).bytes
         );
         const txRequestSaGP = gasPayerSigner.sign(txRequestSaS);
-        const encodedTx = TransactionRequestRLPCodec.encode(txRequestSaGP);
+        const encodedTx = txRequestSaGP.encoded;
         log.debug({ message: HexUInt.of(encodedTx).toString() });
 
         const txId = (await SendTransaction.of(encodedTx).askTo(httpClient))
@@ -148,7 +147,7 @@ describe('PrivateKeySigner SOLO test', () => {
             HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
         );
         const txRequestSaS = originSigner.sign(txRequestSaGP);
-        const encodedTx = TransactionRequestRLPCodec.encode(txRequestSaS);
+        const encodedTx = txRequestSaS.encoded;
         log.debug({ message: HexUInt.of(encodedTx).toString() });
 
         const txId = (await SendTransaction.of(encodedTx).askTo(httpClient))
@@ -187,7 +186,7 @@ describe('PrivateKeySigner SOLO test', () => {
             HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
         );
         const txRequestSaS = signer.sign(txRequest);
-        const encodedTx = TransactionRequestRLPCodec.encode(txRequestSaS);
+        const encodedTx = txRequestSaS.encoded;
         log.debug({ message: HexUInt.of(encodedTx).toString() });
 
         const txId = (await SendTransaction.of(encodedTx).askTo(httpClient))
@@ -231,7 +230,7 @@ describe('PrivateKeySigner SOLO test', () => {
             HexUInt.of(TRANSACTION_RECEIVER.privateKey).bytes
         );
         const txRequestSaGP = gasPayerSigner.sign(txRequestSaS);
-        const encodedTx = TransactionRequestRLPCodec.encode(txRequestSaGP);
+        const encodedTx = txRequestSaGP.encoded;
         log.debug({ message: HexUInt.of(encodedTx).toString() });
 
         const txId = (await SendTransaction.of(encodedTx).askTo(httpClient))
@@ -275,7 +274,7 @@ describe('PrivateKeySigner SOLO test', () => {
             HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
         );
         const txRequestSaS = originSigner.sign(txRequestSaGP);
-        const encodedTx = TransactionRequestRLPCodec.encode(txRequestSaS);
+        const encodedTx = txRequestSaS.encoded;
         log.debug({ message: HexUInt.of(encodedTx).toString() });
 
         const txId = (await SendTransaction.of(encodedTx).askTo(httpClient))

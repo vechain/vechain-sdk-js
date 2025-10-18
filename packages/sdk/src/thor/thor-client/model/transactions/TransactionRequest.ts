@@ -1,6 +1,7 @@
 import { type Clause } from './Clause';
-import { type Address, type Hex, HexUInt } from '@common';
+import { type Address, Blake2b256, type Hex, HexUInt } from '@common';
 import { type TransactionRequestJSON } from '@thor/thorest/json';
+import { TransactionRequestRLPCodec } from '@thor/thor-client/model/transactions/TransactionRequestRLPCodec';
 
 /**
  * Represents the parameters required to create a {@link TransactionRequest} instance.
@@ -180,6 +181,25 @@ class TransactionRequest implements TransactionRequestParam {
         this.gasPayerSignature = new Uint8Array(gasPayerSignature ?? []);
         // Defensive copy of the signatures to prevent accidental mutation.
         this.signature = new Uint8Array(signature ?? []);
+    }
+
+    /**
+     * Decodes an encoded transaction request into a TransactionRequest object.
+     *
+     * @param {Uint8Array} encoded - The encoded transaction request as a Uint8Array.
+     * @return {TransactionRequest} The decoded transaction request.
+     * @throws {InvalidEncodingError} If the encoded data does not match the expected format.
+     */
+    public static decode(encoded: Uint8Array): TransactionRequest {
+        return TransactionRequestRLPCodec.decode(encoded);
+    }
+
+    public get encoded(): Uint8Array {
+        return TransactionRequestRLPCodec.encode(this);
+    }
+
+    public get hash(): Blake2b256 {
+        return Blake2b256.of(TransactionRequestRLPCodec.encode(this, true));
     }
 
     /**

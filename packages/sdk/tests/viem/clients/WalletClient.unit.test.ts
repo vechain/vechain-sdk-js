@@ -2,10 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import type { ThorSoloAccount } from '@vechain/sdk-solo-setup';
 import { Address, HexUInt } from '@common';
 import { Clause, TransactionRequest } from '@thor/thor-client';
-import {
-    PrivateKeySigner,
-    TransactionRequestRLPCodec
-} from '../../../src/thor/signer';
+import { PrivateKeySigner } from '../../../src/thor/signer';
 import { privateKeyToAccount } from 'viem/accounts';
 import { WalletClient } from '@viem';
 import { mockHttpClient } from '../../MockHttpClient';
@@ -65,9 +62,7 @@ describe('WalletClient UNIT tests', () => {
                 mockHttpClient({}, 'post'),
                 privateKeyToAccount(`0x${mockSenderAccount.privateKey}`)
             );
-            const expected = TransactionRequestRLPCodec.encode(
-                originSigner.sign(txRequest)
-            );
+            const expected = originSigner.sign(txRequest).encoded;
             const actual = (await originWallet.signTransaction(txRequest))
                 .bytes;
             expect(actual).toEqual(expected);
@@ -104,9 +99,7 @@ describe('WalletClient UNIT tests', () => {
             );
             const encodedSaS = (await originWallet.signTransaction(txRequest))
                 .bytes;
-            expect(encodedSaS).toEqual(
-                TransactionRequestRLPCodec.encode(txRequestSaS)
-            );
+            expect(encodedSaS).toEqual(txRequestSaS.encoded);
             // Sign as Gas Payer. Finalized signature.
             const gasPayerSigner = new PrivateKeySigner(
                 HexUInt.of(mockReceiverAccount.privateKey).bytes
@@ -119,12 +112,10 @@ describe('WalletClient UNIT tests', () => {
             );
             const encodedSaGP = (
                 await gasPayerWallet.signTransaction(
-                    TransactionRequestRLPCodec.decode(encodedSaS)
+                    TransactionRequest.decode(encodedSaS)
                 )
             ).bytes;
-            expect(encodedSaGP).toEqual(
-                TransactionRequestRLPCodec.encode(txRequestSaGP)
-            );
+            expect(encodedSaGP).toEqual(txRequestSaGP.encoded);
         });
 
         test('ok <- dynamic fee - sponsored than signed', async () => {
@@ -159,9 +150,7 @@ describe('WalletClient UNIT tests', () => {
             const encodedSaGP = (
                 await gasPayerWallet.signTransaction(txRequest)
             ).bytes;
-            expect(encodedSaGP).toEqual(
-                TransactionRequestRLPCodec.encode(txRequestSaGP)
-            );
+            expect(encodedSaGP).toEqual(txRequestSaGP.encoded);
             // Sign as Sender. Finalized signature.
             const originSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
@@ -174,12 +163,10 @@ describe('WalletClient UNIT tests', () => {
             );
             const encodedSaS = (
                 await originWallet.signTransaction(
-                    TransactionRequestRLPCodec.decode(encodedSaGP)
+                    TransactionRequest.decode(encodedSaGP)
                 )
             ).bytes;
-            expect(encodedSaS).toEqual(
-                TransactionRequestRLPCodec.encode(txRequestSaS)
-            );
+            expect(encodedSaS).toEqual(txRequestSaS.encoded);
         });
 
         test('ok <- legacy - no sponsored', async () => {
@@ -207,9 +194,7 @@ describe('WalletClient UNIT tests', () => {
                 mockHttpClient({}, 'post'),
                 privateKeyToAccount(`0x${mockSenderAccount.privateKey}`)
             );
-            const expected = TransactionRequestRLPCodec.encode(
-                originSigner.sign(txRequest)
-            );
+            const expected = originSigner.sign(txRequest).encoded;
             const actual = (await originWallet.signTransaction(txRequest))
                 .bytes;
             expect(actual).toEqual(expected);
@@ -244,9 +229,7 @@ describe('WalletClient UNIT tests', () => {
             );
             const encodedSaS = (await originWallet.signTransaction(txRequest))
                 .bytes;
-            expect(encodedSaS).toEqual(
-                TransactionRequestRLPCodec.encode(txRequestSaS)
-            );
+            expect(encodedSaS).toEqual(txRequestSaS.encoded);
             // Sign as Gas Payer. Finalized signature.
             const gasPayerSigner = new PrivateKeySigner(
                 HexUInt.of(mockReceiverAccount.privateKey).bytes
@@ -259,12 +242,10 @@ describe('WalletClient UNIT tests', () => {
             );
             const encodedSaGP = (
                 await gasPayerWallet.signTransaction(
-                    TransactionRequestRLPCodec.decode(encodedSaS)
+                    TransactionRequest.decode(encodedSaS)
                 )
             ).bytes;
-            expect(encodedSaGP).toEqual(
-                TransactionRequestRLPCodec.encode(txRequestSaGP)
-            );
+            expect(encodedSaGP).toEqual(txRequestSaGP.encoded);
         });
 
         test('ok <- legacy - sponsored then signed', async () => {
@@ -297,9 +278,7 @@ describe('WalletClient UNIT tests', () => {
             const encodedSaGP = (
                 await gasPayerWallet.signTransaction(txRequest)
             ).bytes;
-            expect(encodedSaGP).toEqual(
-                TransactionRequestRLPCodec.encode(txRequestSaGP)
-            );
+            expect(encodedSaGP).toEqual(txRequestSaGP.encoded);
             // Sign as Sender. Finalized signature.
             const originSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
@@ -312,12 +291,10 @@ describe('WalletClient UNIT tests', () => {
             );
             const encodedSaS = (
                 await originWallet.signTransaction(
-                    TransactionRequestRLPCodec.decode(encodedSaGP)
+                    TransactionRequest.decode(encodedSaGP)
                 )
             ).bytes;
-            expect(encodedSaS).toEqual(
-                TransactionRequestRLPCodec.encode(txRequestSaS)
-            );
+            expect(encodedSaS).toEqual(txRequestSaS.encoded);
         });
     });
 });

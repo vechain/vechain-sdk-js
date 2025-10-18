@@ -4,7 +4,7 @@ import {
     Clause,
     TransactionRequest
 } from '@thor/thor-client/model/transactions';
-import { PrivateKeySigner, TransactionRequestRLPCodec } from '@thor';
+import { PrivateKeySigner } from '@thor';
 import { describe, expect, test } from '@jest/globals';
 import type { ThorSoloAccount } from '@vechain/sdk-solo-setup';
 
@@ -57,9 +57,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
                 maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
                 nonce: mockNonce
             });
-            const actual = TransactionRequestRLPCodec.decode(
-                TransactionRequestRLPCodec.encode(txRequest)
-            );
+            const actual = TransactionRequest.decode(txRequest.encoded);
             expect(actual.isDynamicFee).toBe(true);
             expect(actual.isIntendedToBeSponsored).toBe(false);
             expect(actual.isSigned).toBe(false);
@@ -88,9 +86,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
                 HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
             );
             const expected = originSigner.sign(txRequest);
-            const actual = TransactionRequestRLPCodec.decode(
-                TransactionRequestRLPCodec.encode(expected)
-            );
+            const actual = TransactionRequest.decode(expected.encoded);
             expect(actual.isDynamicFee).toBe(true);
             expect(actual.isIntendedToBeSponsored).toBe(false);
             expect(actual.isSigned).toBe(true);
@@ -117,9 +113,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
                 nonce: mockNonce
             });
             const expected = txRequest;
-            const actual = TransactionRequestRLPCodec.decode(
-                TransactionRequestRLPCodec.encode(expected)
-            );
+            const actual = TransactionRequest.decode(expected.encoded);
             expect(actual.isDynamicFee).toBe(true);
             expect(actual.isIntendedToBeSponsored).toBe(true);
             expect(actual.isSigned).toBe(false);
@@ -150,9 +144,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
                 HexUInt.of(mockReceiverAccount.privateKey).bytes
             );
             const expected = gasPayerSigner.sign(txRequest);
-            const actual = TransactionRequestRLPCodec.decode(
-                TransactionRequestRLPCodec.encode(expected)
-            );
+            const actual = TransactionRequest.decode(expected.encoded);
             expect(actual.isDynamicFee).toBe(true);
             expect(actual.isIntendedToBeSponsored).toBe(true);
             expect(actual.isSigned).toBe(false);
@@ -183,9 +175,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
             const expected = originSIgner.sign(txRequest);
-            const actual = TransactionRequestRLPCodec.decode(
-                TransactionRequestRLPCodec.encode(expected)
-            );
+            const actual = TransactionRequest.decode(expected.encoded);
             expect(actual.isDynamicFee).toBe(true);
             expect(actual.isIntendedToBeSponsored).toBe(true);
             expect(actual.isSigned).toBe(false);
@@ -219,9 +209,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
             const expected = originSigner.sign(gasPayerSigner.sign(txRequest));
-            const actual = TransactionRequestRLPCodec.decode(
-                TransactionRequestRLPCodec.encode(expected)
-            );
+            const actual = TransactionRequest.decode(expected.encoded);
             expect(actual.isDynamicFee).toBe(true);
             expect(actual.isIntendedToBeSponsored).toBe(true);
             expect(actual.isSigned).toBe(true);
@@ -240,7 +228,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
             ]);
 
             expect(() => {
-                TransactionRequestRLPCodec.decode(malformedDynamicFeeData);
+                TransactionRequest.decode(malformedDynamicFeeData);
             }).toThrow('invalid encoded transaction request');
         });
     });
@@ -263,9 +251,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
                 nonce: mockNonce
             });
             const expected = txRequest;
-            const actual = TransactionRequestRLPCodec.decode(
-                TransactionRequestRLPCodec.encode(expected)
-            );
+            const actual = TransactionRequest.decode(expected.encoded);
             expect(actual.isDynamicFee).toBe(false);
             expect(actual.isIntendedToBeSponsored).toBe(false);
             expect(actual.isSigned).toBe(false);
@@ -292,9 +278,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
                 HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
             );
             const expected = originSigner.sign(txRequest);
-            const actual = TransactionRequestRLPCodec.decode(
-                TransactionRequestRLPCodec.encode(expected)
-            );
+            const actual = TransactionRequest.decode(expected.encoded);
             expect(actual.isDynamicFee).toBe(false);
             expect(actual.isIntendedToBeSponsored).toBe(false);
             expect(actual.isSigned).toBe(true);
@@ -318,9 +302,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
                 gasPriceCoef: mockGasPriceCoef,
                 nonce: mockNonce
             });
-            const actual = TransactionRequestRLPCodec.decode(
-                TransactionRequestRLPCodec.encode(txRequest)
-            );
+            const actual = TransactionRequest.decode(txRequest.encoded);
             expect(actual.isDynamicFee).toBe(false);
             expect(actual.isIntendedToBeSponsored).toBe(true);
             expect(actual.isSigned).toBe(false);
@@ -348,9 +330,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
                 HexUInt.of(TRANSACTION_RECEIVER.privateKey).bytes
             );
             const expected = gasPayerSigner.sign(txRequest);
-            const actual = TransactionRequestRLPCodec.decode(
-                TransactionRequestRLPCodec.encode(expected)
-            );
+            const actual = TransactionRequest.decode(expected.encoded);
             expect(actual.isDynamicFee).toBe(false);
             expect(actual.isIntendedToBeSponsored).toBe(true);
             expect(actual.isSigned).toBe(false);
@@ -378,9 +358,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
                 HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
             );
             const expected = originSIgner.sign(txRequest);
-            const actual = TransactionRequestRLPCodec.decode(
-                TransactionRequestRLPCodec.encode(expected)
-            );
+            const actual = TransactionRequest.decode(expected.encoded);
             expect(actual.isDynamicFee).toBe(false);
             expect(actual.isIntendedToBeSponsored).toBe(true);
             expect(actual.isSigned).toBe(false);
@@ -411,9 +389,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
                 HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
             );
             const expected = originSigner.sign(gasPayerSigner.sign(txRequest));
-            const actual = TransactionRequestRLPCodec.decode(
-                TransactionRequestRLPCodec.encode(expected)
-            );
+            const actual = TransactionRequest.decode(expected.encoded);
             expect(actual.isDynamicFee).toBe(false);
             expect(actual.isIntendedToBeSponsored).toBe(true);
             expect(actual.isSigned).toBe(true);
@@ -431,7 +407,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
             ]);
 
             expect(() => {
-                TransactionRequestRLPCodec.decode(malformedEncodedData);
+                TransactionRequest.decode(malformedEncodedData);
             }).toThrow(InvalidEncodingError);
         });
     });
@@ -448,9 +424,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
                 gasPriceCoef: 0n,
                 nonce: mockNonce
             });
-            const actual = TransactionRequestRLPCodec.decode(
-                TransactionRequestRLPCodec.encode(expected)
-            );
+            const actual = TransactionRequest.decode(expected.encoded);
             expect(actual.toJSON()).toEqual(expected.toJSON());
         });
 
@@ -472,9 +446,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
                 nonce: mockNonce
             });
 
-            const actual = TransactionRequestRLPCodec.decode(
-                TransactionRequestRLPCodec.encode(expected)
-            );
+            const actual = TransactionRequest.decode(expected.encoded);
 
             expect(actual.clauses).toHaveLength(1);
             expect(actual.clauses[0].data).toBeNull();
@@ -494,9 +466,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
                 nonce: mockNonce
             });
 
-            const actual = TransactionRequestRLPCodec.decode(
-                TransactionRequestRLPCodec.encode(expected)
-            );
+            const actual = TransactionRequest.decode(expected.encoded);
             expect(actual.toJSON()).toEqual(expected.toJSON());
         });
 
@@ -520,9 +490,7 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
                 nonce: mockNonce
             });
 
-            const actual = TransactionRequestRLPCodec.decode(
-                TransactionRequestRLPCodec.encode(expected)
-            );
+            const actual = TransactionRequest.decode(expected.encoded);
             expect(actual.toJSON()).toEqual(expected.toJSON());
         });
 
@@ -547,8 +515,8 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
             });
 
             // Encode and then decode to test the mapBodyToTransactionRequest method
-            const encoded = TransactionRequestRLPCodec.encode(txRequest);
-            const decoded = TransactionRequestRLPCodec.decode(encoded);
+            const encoded = txRequest.encoded;
+            const decoded = TransactionRequest.decode(encoded);
 
             // Verify that the beggar address is properly reconstructed using Address.of
             expect(decoded.beggar).toBeDefined();
@@ -581,8 +549,8 @@ describe('TransactionRequestRLPCodec UNIT tests', () => {
             });
 
             // Encode and then decode to test the mapBodyToTransactionRequest method
-            const encoded = TransactionRequestRLPCodec.encode(txRequest);
-            const decoded = TransactionRequestRLPCodec.decode(encoded);
+            const encoded = txRequest.encoded;
+            const decoded = TransactionRequest.decode(encoded);
 
             // Verify that the beggar address is undefined
             expect(decoded.beggar).toBeUndefined();

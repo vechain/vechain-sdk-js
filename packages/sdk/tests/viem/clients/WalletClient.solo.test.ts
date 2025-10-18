@@ -3,8 +3,7 @@ import {
     RetrieveExpandedBlock,
     RetrieveTransactionByID,
     ThorClient,
-    ThorNetworks,
-    TransactionRequestRLPCodec
+    ThorNetworks
 } from '@thor';
 import { Address, BlockRef, FetchHttpClient, Revision } from '@common';
 import { TEST_ACCOUNTS } from '../../fixture';
@@ -113,7 +112,7 @@ describe('WalletClient SOLO tests', () => {
                 )
             });
             const txid = await gasPayerWallet.sendTransaction(
-                TransactionRequestRLPCodec.decode(encodedSaS)
+                TransactionRequest.decode(encodedSaS)
             );
             expect(txid).toBeDefined();
             await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -167,7 +166,7 @@ describe('WalletClient SOLO tests', () => {
                 )
             });
             const txid = await originWallet.sendTransaction(
-                TransactionRequestRLPCodec.decode(encodedSaGP)
+                TransactionRequest.decode(encodedSaGP)
             );
             expect(txid).toBeDefined();
             await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -258,7 +257,7 @@ describe('WalletClient SOLO tests', () => {
                 )
             });
             const txid = await gasPayerWallet.sendTransaction(
-                TransactionRequestRLPCodec.decode(encodedSaS)
+                TransactionRequest.decode(encodedSaS)
             );
             expect(txid).toBeDefined();
             await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -311,7 +310,7 @@ describe('WalletClient SOLO tests', () => {
                 )
             });
             const txid = await originWallet.sendTransaction(
-                TransactionRequestRLPCodec.decode(encodedSaGP)
+                TransactionRequest.decode(encodedSaGP)
             );
             expect(txid).toBeDefined();
             await new Promise((resolve) => setTimeout(resolve, 3000));
