@@ -8,22 +8,13 @@ import { AbstractThorModule } from '../AbstractThorModule';
 import { Contract, ContractFactory } from './model';
 import { InspectClauses } from '@thor/thorest/accounts/methods/InspectClauses';
 import { ExecuteCodesRequest } from '@thor/thorest/accounts/methods/ExecuteCodesRequest';
-import { type ExecuteCodesRequestJSON } from '@thor/thorest/accounts/json';
-import { type ExecuteCodesResponse } from '@thor/thorest/accounts/response';
 import { ClauseBuilder } from '@thor/thorest/transactions/model/ClauseBuilder';
 import { SendTransaction } from '@thor/thorest/transactions/methods/SendTransaction';
 import { TransactionRequest } from '../model/transactions/TransactionRequest';
-import { RLPCodecTransactionRequest } from '@thor/signer/RLPCodeTransactionRequest';
 import { Clause } from '../model/transactions/Clause';
-import { ABIContract } from './model/ABI';
-import {
-    ContractCallError,
-    IllegalArgumentError
-} from '../../../common/errors';
+import { IllegalArgumentError } from '../../../common/errors';
 import { log } from '@common/logging';
-import { encodeFunctionData, type AbiParameter } from 'viem';
-import { BUILT_IN_CONTRACTS } from './constants';
-import { dataUtils } from './utils';
+import { type AbiParameter, encodeFunctionData } from 'viem';
 import type { ContractCallOptions, ContractCallResult } from './types';
 import type { SendTransactionResult } from './model/types';
 
@@ -386,8 +377,7 @@ class ContractsModule extends AbstractThorModule {
             const signedTransaction = signer.sign(finalTransactionRequest);
 
             // Encode the signed transaction
-            const encodedTransaction =
-                RLPCodecTransactionRequest.encode(signedTransaction);
+            const encodedTransaction = signedTransaction.encoded;
 
             //  PENDING - update to use thor client transaction module sendTransaction
 
@@ -571,8 +561,7 @@ class ContractsModule extends AbstractThorModule {
             const signedTransaction = signer.sign(finalTransactionRequest);
 
             // Encode the signed transaction
-            const encodedTransaction =
-                RLPCodecTransactionRequest.encode(signedTransaction);
+            const encodedTransaction = signedTransaction.encoded;
 
             // Send the transaction using SendTransaction
             const sendTransaction = SendTransaction.of(encodedTransaction);
