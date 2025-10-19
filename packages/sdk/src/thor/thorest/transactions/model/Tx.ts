@@ -6,7 +6,7 @@ import {
     HexUInt32,
     UInt
 } from '@common/vcdm';
-import { Clause } from '@thor';
+import { Clause } from '@thor/thor-client/model/transactions';
 import { IllegalArgumentError } from '@common/errors';
 import { type ClauseJSON } from '@thor/thorest/json';
 import { type TxJSON } from '../json/TxJSON';

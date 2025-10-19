@@ -1,7 +1,7 @@
 import { Address, Hex, HexUInt, Quantity } from '@common';
 import { Clause } from '@thor/thor-client/model/transactions';
 import { expect } from '@jest/globals';
-import { type ClauseData } from '@thor';
+import { type ClauseJSON } from '@thor/thorest/json';
 
 /**
  * @group unit/thor/thor-client/transactions
@@ -121,65 +121,63 @@ describe('Clause', () => {
     });
 
     describe('static of method', () => {
-        test('ok <- from ClauseData with all fields', () => {
+        test('ok <- from ClauseJSON with all fields', () => {
             const clauseData = {
-                to: mockAddress,
-                value: mockValue,
-                data: mockData
-            };
+                to: mockAddress.toString(),
+                value: HexUInt.of(mockValue).toString(),
+                data: mockData.toString()
+            } satisfies ClauseJSON;
 
-            const clause = Clause.of(clauseData as ClauseData);
+            const clause = Clause.of(clauseData);
 
-            expect(clause.to).toBe(mockAddress);
-            expect(clause.value).toBe(mockValue);
-            expect(clause.data).toBe(mockData);
+            expect(clause.to).toEqual(mockAddress);
+            expect(clause.value).toEqual(mockValue);
+            expect(clause.data).toEqual(mockData);
             expect(clause.comment).toBeNull();
             expect(clause.abi).toBeNull();
         });
 
-        test('ok <- from ClauseData with null recipient', () => {
+        test('ok <- from ClauseJSON with null recipient', () => {
             const clauseData = {
                 to: null,
-                value: mockValue,
-                data: mockData
-            };
+                value: HexUInt.of(mockValue).toString(),
+                data: mockData.toString()
+            } satisfies ClauseJSON;
 
-            const clause = Clause.of(clauseData as ClauseData);
+            const clause = Clause.of(clauseData);
 
             expect(clause.to).toBeNull();
-            expect(clause.value).toBe(mockValue);
-            expect(clause.data).toBe(mockData);
+            expect(clause.value).toEqual(mockValue);
+            expect(clause.data).toEqual(mockData);
             expect(clause.comment).toBeNull();
             expect(clause.abi).toBeNull();
         });
 
-        test('ok <- from ClauseData with null data', () => {
+        test('ok <- from ClauseJSON with no data', () => {
             const clauseData = {
-                to: mockAddress,
-                value: mockValue,
-                data: null
-            };
+                to: mockAddress.toString(),
+                value: HexUInt.of(mockValue).toString()
+            } satisfies ClauseJSON;
 
-            const clause = Clause.of(clauseData as ClauseData);
+            const clause = Clause.of(clauseData);
 
-            expect(clause.to).toBe(mockAddress);
-            expect(clause.value).toBe(mockValue);
+            expect(clause.to).toEqual(mockAddress);
+            expect(clause.value).toEqual(mockValue);
             expect(clause.data).toBeNull();
             expect(clause.comment).toBeNull();
             expect(clause.abi).toBeNull();
         });
 
-        test('ok <- from ClauseData with zero value', () => {
+        test('ok <- from ClauseJSON with zero value', () => {
             const clauseData = {
-                to: mockAddress,
-                value: 0n,
-                data: null
-            };
+                to: mockAddress.toString(),
+                value: HexUInt.of(0).toString()
+            } satisfies ClauseJSON;
 
-            const clause = Clause.of(clauseData as ClauseData);
+            const clause = Clause.of(clauseData);
 
-            expect(clause.to).toBe(mockAddress);
-            expect(clause.value).toBe(0n);
+            expect(clause.to).toEqual(mockAddress);
+            expect(clause.value).toEqual(0n);
             expect(clause.data).toBeNull();
         });
     });
