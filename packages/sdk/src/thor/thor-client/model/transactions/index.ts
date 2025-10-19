@@ -1,4 +1,6 @@
 export * from './Clause';
+export * from './ClauseBuilder';
+export * from './ClauseOptions';
 export * from './TransactionRequest';
 export * from './TransactionMeta';
 export * from './Transaction';

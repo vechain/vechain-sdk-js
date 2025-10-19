@@ -1,18 +1,18 @@
 import {
     RetrieveExpandedBlock,
     SendTransaction,
-    TXID,
-    ClauseBuilder
+    TXID
 } from '@thor/thorest';
 import {
     type RegularBlockResponseJSON,
     type TXIDJSON
 } from '@thor/thorest/json';
 import { Address, BlockRef, HexUInt, Revision } from '@common/vcdm';
-import { Transaction, type TransactionBody } from '@thor/thorest';
 import { TEST_ACCOUNTS } from '../../../fixture';
 import { expect } from '@jest/globals';
 import { mockHttpClient } from '../../../MockHttpClient';
+import { ClauseBuilder, TransactionRequest } from '@thor/thor-client';
+import { PrivateKeySigner } from '@thor';
 
 const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
 
@@ -61,22 +61,23 @@ describe('RetrieveTransactionReceipt UNIT tests', () => {
             Address.of(TRANSACTION_RECEIVER.address),
             OneVET
         );
-        const expectedTxBody: TransactionBody = {
+        const expectedTxBody = new TransactionRequest({
             chainTag: 179, // Mock chainTag for unit test
             blockRef:
                 latestBlock !== null
-                    ? BlockRef.of(latestBlock.id).toString()
-                    : '0x0',
+                    ? BlockRef.of(latestBlock.id)
+                    : BlockRef.of(0),
             expiration: 32,
             clauses: [transferClause],
-            gasPriceCoef: 0,
-            gas: 100000,
+            gasPriceCoef: 0n,
+            gas: 100000n,
             dependsOn: null,
             nonce: 8
-        };
-        const signedTx = Transaction.of(expectedTxBody).sign(
+        });
+        const signer = new PrivateKeySigner(
             HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
         );
+        const signedTx = signer.sign(expectedTxBody);
         const actualTXID = (
             await SendTransaction.of(signedTx.encoded).askTo(
                 mockHttpClient(expectedTXID, 'post')

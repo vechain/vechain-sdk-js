@@ -1,11 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
 import { Address, BlockRef, HexUInt } from '@common/vcdm';
-import {
-    ClauseBuilder,
-    Transaction,
-    type TransactionBody
-} from '@thor/thorest';
-import { networkInfo } from '@thor/utils';
 import { Secp256k1 } from '@common/cryptography/secp256k1';
 import {
     type GetTxReceiptResponseJSON,
@@ -14,6 +8,8 @@ import {
 import { type HttpPath } from '@common/http';
 import { mockHttpClient } from '../../../MockHttpClient';
 import { secp256k1 as nc_secp256k1 } from '@noble/curves/secp256k1';
+import { ClauseBuilder, TransactionRequest } from '@thor/thor-client';
+import { PrivateKeySigner } from '@thor';
 
 /**
  * VeChain transaction - unit
@@ -72,30 +68,29 @@ describe('unit tests', () => {
             outputs: []
         } satisfies GetTxReceiptResponseJSON;
 
-        const body: TransactionBody = {
+        const txRequest = new TransactionRequest({
+            beggar: sender.address,
             chainTag: mockChainTag,
-            blockRef: BlockRef.of(mockBlockResponse.id).toString(),
+            blockRef: BlockRef.of(mockBlockResponse.id),
             expiration: 0,
             clauses,
-            gasPriceCoef: 0,
-            gas: mockGasResponse.totalGas,
+            gasPriceCoef: 0n,
+            gas: BigInt(mockGasResponse.totalGas),
             dependsOn: null,
-            nonce: 2,
-            reserved: {
-                features: 1
-            }
-        };
+            nonce: 2
+        });
 
-        const tx = Transaction.of(body).signAsSenderAndGasPayer(
-            sender.privateKey.bytes,
-            gasPayer.privateKey.bytes
+        const senderSigner = new PrivateKeySigner(sender.privateKey.bytes);
+        const gasPayerSigner = new PrivateKeySigner(gasPayer.privateKey.bytes);
+        const signedTxRequest = gasPayerSigner.sign(
+            senderSigner.sign(txRequest)
         );
 
         const mockClient = mockHttpClient<TXIDJSON>(mockTxResponse, 'post');
         const txResult = await mockClient.post(
             '/transactions' as unknown as HttpPath,
             {
-                query: HexUInt.of(tx.encoded).toString()
+                query: HexUInt.of(signedTxRequest.encoded).toString()
             }
         );
         expect(await txResult.json()).toEqual(mockTxResponse);
@@ -122,25 +117,25 @@ describe('unit tests', () => {
             gasPayer.privateKey.bytes,
             false
         );
-        const txA = Transaction.of({
+        const txA = new TransactionRequest({
+            beggar: sender.address,
             chainTag: mockChainTag,
-            blockRef: latestBlock?.id.slice(0, 18) ?? '0x0',
+            blockRef: BlockRef.of(latestBlock.id),
             expiration: 0,
             clauses,
-            gasPriceCoef: 0,
-            gas: gasToPay.totalGas,
+            gasPriceCoef: 0n,
+            gas: BigInt(gasToPay.totalGas),
             dependsOn: null,
-            nonce: 1,
-            reserved: {
-                features: 1 // set the transaction to be delegated
-            }
+            nonce: 1
         });
-        const as = txA.signAsSender(sender.privateKey.bytes);
-        const ap = as.signAsGasPayer(sender.address, gasPayer.privateKey.bytes);
+        const senderSigner = new PrivateKeySigner(sender.privateKey.bytes);
+        const gasPayerSigner = new PrivateKeySigner(gasPayer.privateKey.bytes);
+        const as = senderSigner.sign(txA);
+        const ap = gasPayerSigner.sign(as);
         const sigmaA = nc_secp256k1.Signature.fromCompact(
             ap.signature?.slice(-65).slice(0, 64) as Uint8Array
         );
-        const hashA = ap.getTransactionHash(sender.address).bytes;
+        const hashA = ap.hash.bytes;
         const isVerifiedA = nc_secp256k1.verify(
             sigmaA.toBytes(),
             hashA,
@@ -148,25 +143,23 @@ describe('unit tests', () => {
         );
         expect(isVerifiedA).toBe(true);
 
-        const txB = Transaction.of({
+        const txB = new TransactionRequest({
+            beggar: sender.address,
             chainTag: mockChainTag,
-            blockRef: BlockRef.of(latestBlock.id).toString(),
+            blockRef: BlockRef.of(latestBlock.id),
             expiration: 0,
             clauses,
-            gasPriceCoef: 0,
-            gas: gasToPay.totalGas,
+            gasPriceCoef: 0n,
+            gas: BigInt(gasToPay.totalGas),
             dependsOn: null,
-            nonce: 2,
-            reserved: {
-                features: 1 // set the transaction to be delegated
-            }
+            nonce: 2
         });
-        const bs = txB.signAsSender(sender.privateKey.bytes);
-        const bp = bs.signAsGasPayer(sender.address, gasPayer.privateKey.bytes);
+        const bs = senderSigner.sign(txB);
+        const bp = gasPayerSigner.sign(bs);
         const sigmaB = nc_secp256k1.Signature.fromCompact(
             bp.signature?.slice(-65).slice(0, 64) as Uint8Array
         );
-        const hashB = bp.getTransactionHash(sender.address).bytes;
+        const hashB = bp.hash.bytes;
         const isVerifiedB = nc_secp256k1.verify(
             sigmaB.toBytes(),
             hashB,
