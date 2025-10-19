@@ -1,18 +1,14 @@
 import { afterEach, beforeEach, describe, test } from '@jest/globals';
 import { MozillaWebSocketClient, type WebSocketListener } from '@thor/ws';
 import { NewTransactionSubscription } from '@thor/thorest/subscriptions';
-import {
-    ClauseBuilder,
-    RetrieveExpandedBlock,
-    ThorNetworks,
-    Transaction,
-    type TXID
-} from '@thor/thorest';
+import { RetrieveExpandedBlock, ThorNetworks, type TXID } from '@thor/thorest';
 import { FetchHttpClient } from '@common/http';
 import { Address, BlockRef, HexUInt, Revision } from '@common/vcdm';
 import { ThorClient } from '@thor/thor-client/ThorClient';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
+import { ClauseBuilder, TransactionRequest } from '@thor/thor-client';
+import { PrivateKeySigner } from '@thor';
 
 /**
  * VeChain beats subscription - integration
@@ -41,7 +37,7 @@ describe('NewTransactionSubscription solo tests', () => {
                 onMessage: (message) => {
                     const data = message.data;
                     log.debug(fastJsonStableStringify(data));
-                    if (fallbackTimer) clearTimeout(fallbackTimer);
+                    if (fallbackTimer != null) clearTimeout(fallbackTimer);
                     subscription.close();
                     done();
                 },
@@ -60,30 +56,31 @@ describe('NewTransactionSubscription solo tests', () => {
                                 httpClient
                             )
                         ).response;
+                        if (latestBlock === null || latestBlock === undefined) {
+                            throw new Error('Failed to retrieve latest block');
+                        }
 
                         const chainTag = await thorClient.nodes.getChainTag();
-                        const txBody = {
+                        const txRequest = new TransactionRequest({
                             chainTag,
-                            blockRef:
-                                latestBlock !== null
-                                    ? BlockRef.of(latestBlock.id).toString()
-                                    : '0x0',
+                            blockRef: BlockRef.of(latestBlock.id),
                             expiration: 32,
                             clauses: [transferClause],
-                            gasPriceCoef: 0,
-                            gas: 100000,
+                            gasPriceCoef: 0n,
+                            gas: 100000n,
                             dependsOn: null,
                             nonce: 9
-                        };
+                        });
 
-                        const signedTx = Transaction.of(txBody).sign(
+                        const signer = new PrivateKeySigner(
                             HexUInt.of(fromKey).bytes
                         );
+                        const signedTxRequest = signer.sign(txRequest);
 
                         // Fire and forget; we only need the tx to hit txpool
                         await (
                             await import('@thor/thorest')
-                        ).SendTransaction.of(signedTx.encoded).askTo(
+                        ).SendTransaction.of(signedTxRequest.encoded).askTo(
                             httpClient
                         );
                     })();

@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { Address, BlockRef, HexUInt } from '@common/vcdm';
+import { Address, Blake2b256, BlockRef, HexUInt } from '@common/vcdm';
 import { Secp256k1 } from '@common/cryptography/secp256k1';
 import {
     type GetTxReceiptResponseJSON,
@@ -10,6 +10,7 @@ import { mockHttpClient } from '../../../MockHttpClient';
 import { secp256k1 as nc_secp256k1 } from '@noble/curves/secp256k1';
 import { ClauseBuilder, TransactionRequest } from '@thor/thor-client';
 import { PrivateKeySigner } from '@thor';
+import { concatBytes } from '@noble/curves/utils';
 
 /**
  * VeChain transaction - unit
@@ -135,7 +136,12 @@ describe('unit tests', () => {
         const sigmaA = nc_secp256k1.Signature.fromCompact(
             ap.signature?.slice(-65).slice(0, 64) as Uint8Array
         );
-        const hashA = ap.hash.bytes;
+        const hashA = Blake2b256.of(
+            concatBytes(
+                ap.hash.bytes, // Origin hash.
+                ap.beggar?.bytes ?? new Uint8Array()
+            )
+        ).bytes; // Gas payer hash.
         const isVerifiedA = nc_secp256k1.verify(
             sigmaA.toBytes(),
             hashA,
@@ -159,7 +165,12 @@ describe('unit tests', () => {
         const sigmaB = nc_secp256k1.Signature.fromCompact(
             bp.signature?.slice(-65).slice(0, 64) as Uint8Array
         );
-        const hashB = bp.hash.bytes;
+        const hashB = Blake2b256.of(
+            concatBytes(
+                bp.hash.bytes, // Origin hash.
+                bp.beggar?.bytes ?? new Uint8Array()
+            )
+        ).bytes; // Gas payer hash.
         const isVerifiedB = nc_secp256k1.verify(
             sigmaB.toBytes(),
             hashB,

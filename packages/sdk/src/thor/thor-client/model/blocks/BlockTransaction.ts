@@ -1,8 +1,8 @@
 import { type Address, type Hex } from '@common/vcdm';
-import { Clause } from '../transactions/Clause';
-import type { TxWithReceipt } from '@thor/thorest/transactions/model';
+import { type Clause } from '@thor/thor-client/model/transactions';
+import { type TxWithReceipt } from '@thor/thorest/transactions/model';
 import { TransactionReceiptOutput } from '@thor/thor-client/model/transactions';
-import { OutputResponse } from '@thor';
+import { type OutputResponse } from '@thor/thorest/common';
 
 /**
  * A transaction contained in an expanded block.
