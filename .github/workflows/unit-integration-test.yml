@@ -71,7 +71,7 @@ jobs:
 
             - name: Jest Coverage Comment
               if: matrix.node == 'lts/*'
-              uses: MishaKav/jest-coverage-comment@174f9cbf582b7cc2a7a3acce14dcfc8362e9d37f # main
+              uses: MishaKav/jest-coverage-comment@174f9cbf582b7cc2a7a3acce14dcfc8362e9d37f # v1.0.29
               with:
                 title: Test Coverage
                 summary-title: Summary
