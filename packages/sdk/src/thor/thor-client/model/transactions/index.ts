@@ -12,3 +12,4 @@ export * from './GetTransactionReceiptOptions';
 export * from './TransactionReceipt';
 export * from './TransactionReceiptMeta';
 export * from './TransactionReceiptOutput';
+export * from './WaitForTransactionReceiptOptions';
