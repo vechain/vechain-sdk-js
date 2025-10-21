@@ -3,7 +3,7 @@ import { MozillaWebSocketClient } from '@thor/ws';
 import log from 'loglevel';
 
 /*
- * @group integration/ws/MozillaWebSocketClient
+ * @group solo/ws/MozillaWebSocketClient
  */
 describe('MozillaWebSocketClient solo tests', () => {
     let wsc: MozillaWebSocketClient;

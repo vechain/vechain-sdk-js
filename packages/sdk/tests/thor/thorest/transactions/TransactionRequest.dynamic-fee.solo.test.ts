@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/pseudo-random */
 import { describe, expect, test } from '@jest/globals';
 import {
     TransactionRequest,
@@ -15,13 +16,11 @@ import {
 import { ThorClient } from '@thor/thor-client/ThorClient';
 
 /**
- * @group integration/solo
+ * @group solo
  */
-describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
+describe('TransactionRequest Dynamic Fee Support - Solo', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
     const thorClient = ThorClient.at(httpClient);
-    const privateKey = new Uint8Array(32).fill(1);
-    const signer = new PrivateKeySigner(privateKey);
 
     // Solo network test addresses
     const toAddress = '0xf077b491b355e64048ce21e3a6fc4751eeea77fa'; // Solo default account[1]

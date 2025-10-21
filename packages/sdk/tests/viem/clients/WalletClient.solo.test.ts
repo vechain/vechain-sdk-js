@@ -16,7 +16,7 @@ import {
 import { log } from '@common/logging';
 
 /**
- * @group integration/clients
+ * @group solo/viem/clients
  */
 describe('WalletClient SOLO tests', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));

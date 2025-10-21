@@ -5,7 +5,6 @@ import {
     ThorNetworks
 } from '@thor/thorest';
 import { FetchHttpClient } from '@common/http';
-import { type ExecuteCodesRequestJSON } from '@thor/thorest/json';
 import { Address, BlockRef, Hex, HexUInt } from '@common/vcdm';
 import {
     Clause,
@@ -15,7 +14,7 @@ import {
 /**
  * VeChain inspect clauses - solo
  *
- * @group integration/thor/accounts
+ * @group solo/thor/accounts
  */
 describe('InspectClauses solo tests', () => {
     test('ok <- askTo', async () => {

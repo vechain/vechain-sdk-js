@@ -1,13 +1,10 @@
-/**
- * @group integration/debug
- */
 import { FetchHttpClient } from '@common/http';
 import { ThorError, ThorNetworks, TraceTransactionClause } from '@thor/thorest';
 import { type PostDebugTracerRequestJSON } from '@thor/thorest/json';
 import { expect } from '@jest/globals';
 
 /**
- * @group integration/thor/debug
+ * @group solo/thor/debug
  */
 describe('TraceTransactionClause SOLO tests', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));

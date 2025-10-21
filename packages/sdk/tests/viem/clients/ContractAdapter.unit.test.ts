@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, expect, test } from '@jest/globals';
 import { getContract } from '../../../src/viem/clients/Contract';
 import { Address } from '../../../src/common/vcdm';
@@ -134,7 +135,9 @@ describe('ContractAdapter Integration', () => {
         expect(contract.events.Transfer).toHaveProperty('createEventFilter');
         expect(typeof contract.events.Transfer.watch).toBe('function');
         expect(typeof contract.events.Transfer.getLogs).toBe('function');
-        expect(typeof contract.events.Transfer.createEventFilter).toBe('function');
+        expect(typeof contract.events.Transfer.createEventFilter).toBe(
+            'function'
+        );
     });
 
     test('Should have VeChain-specific clause methods', () => {
@@ -164,10 +167,14 @@ describe('ContractAdapter Integration', () => {
     test('Should throw error when no clients provided', () => {
         expect(() => {
             getContract({
-                address: Address.of('0x0000000000000000000000000000000000000000'),
+                address: Address.of(
+                    '0x0000000000000000000000000000000000000000'
+                ),
                 abi: erc20Abi
             });
-        }).toThrow('At least one of publicClient or walletClient must be provided');
+        }).toThrow(
+            'At least one of publicClient or walletClient must be provided'
+        );
     });
 
     test('VeChain-specific methods should work', () => {
@@ -180,7 +187,7 @@ describe('ContractAdapter Integration', () => {
         // Test VeChain-specific functionality
         expect(contract._vechain).toBeDefined();
         expect(contract._vechain?.contract).toBeDefined();
-        
+
         // Test setReadOptions
         expect(() => {
             contract._vechain?.setReadOptions({ revision: 'best' });
@@ -194,11 +201,11 @@ describe('ContractAdapter Integration', () => {
         // Test that clause and filters objects exist
         expect(contract._vechain?.clause).toBeDefined();
         expect(contract._vechain?.filters).toBeDefined();
-        
+
         // Test that clause methods exist for functions
         expect(contract._vechain?.clause).toHaveProperty('balanceOf');
         expect(contract._vechain?.clause).toHaveProperty('transfer');
-        
+
         // Test that filter methods exist for events
         expect(contract._vechain?.filters).toHaveProperty('Transfer');
     });
