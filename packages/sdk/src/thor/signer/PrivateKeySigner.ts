@@ -104,15 +104,11 @@ class PrivateKeySigner implements Signer {
     private static finalize(
         transactionRequest: TransactionRequest
     ): TransactionRequest {
+        // Handle sponsored transactions
         if (transactionRequest.isIntendedToBeSponsored) {
-            // Intended to be sponsored.
-            if (
-                transactionRequest.originSignature.length > 0 &&
-                transactionRequest.gasPayerSignature.length > 0
-            ) {
-                // Both origin and gas payer signed.
+            if (this.hasRequiredSignatures(transactionRequest)) {
                 return new TransactionRequest(
-                    { ...transactionRequest },
+                    transactionRequest,
                     transactionRequest.originSignature,
                     transactionRequest.gasPayerSignature,
                     concatBytes(
@@ -121,21 +117,36 @@ class PrivateKeySigner implements Signer {
                     )
                 );
             }
-            // Not both origin and gas payer signed.
             return transactionRequest;
         }
-        // Not intended to be sponsored.
-        if (transactionRequest.originSignature.length > 0) {
-            // Origin signed.
+        // Handle regular transactions
+        if (this.hasRequiredSignatures(transactionRequest)) {
             return new TransactionRequest(
-                { ...transactionRequest },
+                transactionRequest,
                 transactionRequest.originSignature,
-                transactionRequest.gasPayerSignature,
+                transactionRequest.gasPayerSignature, // This is an empty array for regular transactions.
                 transactionRequest.originSignature
             );
         }
-        // Not intended to be sponsored, no origin signature.
         return transactionRequest;
+    }
+
+    /**
+     * Checks if the required signatures are present for the transaction type.
+     *
+     * @param transactionRequest - The transaction request to check
+     * @returns true if all required signatures are present, false otherwise
+     */
+    private static hasRequiredSignatures(
+        transactionRequest: TransactionRequest
+    ): boolean {
+        if (transactionRequest.isIntendedToBeSponsored) {
+            return (
+                transactionRequest.originSignature.length > 0 &&
+                transactionRequest.gasPayerSignature.length > 0
+            );
+        }
+        return transactionRequest.originSignature.length > 0;
     }
 
     /**
@@ -202,14 +213,10 @@ class PrivateKeySigner implements Signer {
                     transactionRequest.beggar?.bytes ?? new Uint8Array()
                 )
             ).bytes;
-            const gasPayerSignature = Secp256k1.sign(
-                gasPayerHash,
-                this.#privateKey
-            );
             return new TransactionRequest(
                 { ...transactionRequest },
                 transactionRequest.originSignature,
-                gasPayerSignature,
+                Secp256k1.sign(gasPayerHash, this.#privateKey),
                 transactionRequest.signature
             );
         }
@@ -235,13 +242,12 @@ class PrivateKeySigner implements Signer {
         transactionRequest: TransactionRequest
     ): TransactionRequest {
         if (this.#privateKey !== null) {
-            const originSignature = Secp256k1.sign(
-                transactionRequest.hash.bytes, // Origin hash.
-                this.#privateKey
-            );
             return new TransactionRequest(
                 { ...transactionRequest },
-                originSignature,
+                Secp256k1.sign(
+                    transactionRequest.hash.bytes, // Origin hash.
+                    this.#privateKey
+                ),
                 transactionRequest.gasPayerSignature,
                 transactionRequest.signature
             );
