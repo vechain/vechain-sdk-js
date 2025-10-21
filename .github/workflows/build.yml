@@ -1,0 +1,45 @@
+name: Build
+
+on:
+    workflow_call:
+
+jobs:
+    build:
+      name: Build
+      runs-on: ubuntu-latest
+      steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node (LTS)
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: 'npm'
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            packages/*/node_modules
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}-yarn4
+          restore-keys: |
+            ${{ runner.os }}-modules-
+
+      - name: Cache Turborepo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      - name: Install dependencies
+        run: corepack yarn install --immutable
+
+      - name: Build
+        run: corepack yarn build
