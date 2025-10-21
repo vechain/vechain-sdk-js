@@ -71,7 +71,7 @@ jobs:
 
             - name: Jest Coverage Comment
               if: matrix.node == 'lts/*'
-              uses: MishaKav/jest-coverage-comment@main
+              uses: MishaKav/jest-coverage-comment@174f9cbf582b7cc2a7a3acce14dcfc8362e9d37f # v1.0.29
               with:
                 title: Test Coverage
                 summary-title: Summary
@@ -101,7 +101,7 @@ jobs:
             
             - name: Post unit test results to slack
               if: always() && github.ref == 'refs/heads/main' && (steps.all-tests.outcome == 'failure')
-              uses: slackapi/slack-github-action@v2.0.0
+              uses: slackapi/slack-github-action@485a9d42d3a73031f12ec201c457e2162c45d02d # v2.0.0
               with:
                 webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
                 webhook-type: webhook-trigger
