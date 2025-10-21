@@ -7,7 +7,7 @@ import {
     decodeFunctionResult,
     toEventSelector
 } from 'viem';
-import { type Address, Hex } from '@common/vcdm';
+import { type Address, Hex, Revision } from '@common/vcdm';
 import { type PublicClient, type WalletClient } from '@viem/clients';
 import { type SubscriptionEventResponse } from '@thor/thorest/subscriptions/response';
 import { type ExecuteCodesResponse } from '@thor/thorest/accounts/response';
@@ -90,7 +90,11 @@ export interface Contract<TAbi extends Abi> {
         string,
         (
             caller: Address,
-            params?: { args?: FunctionArgs; value?: bigint }
+            params?: {
+                args?: FunctionArgs;
+                value?: bigint;
+                revision?: string | number | bigint | Revision;
+            }
         ) => Promise<bigint>
     >;
     /** Contract event interfaces - available when publicClient provided */
@@ -202,11 +206,51 @@ function getContract<const TAbi extends Abi>({
                 publicClient != null
             ) {
                 contract.read[functionName] = async (...args: FunctionArgs) => {
+                    // Extract options if the last argument is an options object
+                    let functionArgs = args ?? [];
+                    let options: SimulateTransactionOptions | undefined;
+
+                    if (
+                        functionArgs.length > 0 &&
+                        typeof functionArgs[functionArgs.length - 1] ===
+                            'object' &&
+                        functionArgs[functionArgs.length - 1] !== null
+                    ) {
+                        const lastArg = functionArgs[
+                            functionArgs.length - 1
+                        ] as Record<string, unknown>;
+                        // Check if it contains contract call options (like revision)
+                        if (
+                            'revision' in lastArg ||
+                            'caller' in lastArg ||
+                            'gas' in lastArg
+                        ) {
+                            options = {
+                                ...lastArg
+                            } as SimulateTransactionOptions;
+
+                            // Convert revision to Revision object if needed
+                            if (
+                                'revision' in lastArg &&
+                                lastArg.revision != null
+                            ) {
+                                const revision = lastArg.revision;
+                                if (!(revision instanceof Revision)) {
+                                    options.revision = Revision.of(
+                                        revision as string | number | bigint
+                                    );
+                                }
+                            }
+
+                            functionArgs = functionArgs.slice(0, -1);
+                        }
+                    }
+
                     // Encode function call data
                     const data = encodeFunctionData({
                         abi: abi as Abi,
                         functionName,
-                        args: args ?? []
+                        args: functionArgs
                     });
 
                     // Prepare call request
@@ -216,8 +260,8 @@ function getContract<const TAbi extends Abi>({
                         Hex.of(data)
                     );
 
-                    // Call the contract
-                    const response = await publicClient.call(clause);
+                    // Call the contract with options
+                    const response = await publicClient.call(clause, options);
 
                     const result = response.data;
 
@@ -278,7 +322,8 @@ function getContract<const TAbi extends Abi>({
             if (publicClient != null) {
                 contract.simulate[functionName] = async ({
                     args = [],
-                    value = 0n
+                    value = 0n,
+                    options
                 } = {}) => {
                     // Encode function call data
                     const data = encodeFunctionData({
@@ -292,14 +337,14 @@ function getContract<const TAbi extends Abi>({
                         Hex.of(data)
                     );
 
-                    // Simulate the contract call
-                    return await publicClient.simulateCalls([clause]);
+                    // Simulate the contract call with options
+                    return await publicClient.simulateCalls([clause], options);
                 };
 
                 // EstimateGas methods - available with publicClient for all functions
                 contract.estimateGas[functionName] = async (
                     caller: Address,
-                    { args = [], value = 0n } = {}
+                    { args = [], value = 0n, revision } = {}
                 ) => {
                     // Encode function call data
                     const data = encodeFunctionData({
@@ -313,10 +358,20 @@ function getContract<const TAbi extends Abi>({
                         Hex.of(data)
                     );
 
-                    // Estimate gas for the contract call
+                    // Convert revision to Revision object if needed
+                    let revisionObj: Revision | undefined;
+                    if (revision != null) {
+                        revisionObj =
+                            revision instanceof Revision
+                                ? revision
+                                : Revision.of(revision);
+                    }
+
+                    // Estimate gas for the contract call with revision
                     const response = await publicClient.estimateGas(
                         [clause],
-                        caller
+                        caller,
+                        revisionObj ? { revision: revisionObj } : undefined
                     );
                     return response.totalGas;
                 };

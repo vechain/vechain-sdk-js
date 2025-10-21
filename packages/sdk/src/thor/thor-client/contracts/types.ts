@@ -1,7 +1,7 @@
 /* eslint-disable */
 // TODO: Contracts module is pending rework - lint errors will be fixed during refactor
 import type { Abi, AbiParameter } from 'abitype';
-import { BlockRef, type Address, type Hex } from '@common/vcdm';
+import { BlockRef, type Address, type Hex, type Revision } from '@common/vcdm';
 import { type EstimateGasOptions } from '../../thor-client/model/gas/EstimateGasOptions';
 import { type TransactionRequest } from '../../thor-client/model/transactions/TransactionRequest';
 import { type SimulateTransactionOptions } from '../../thor-client/model/transactions/SimulateTransactionOptions';
@@ -147,6 +147,14 @@ type ContractCallOptions = EstimateGasOptions & {
      * Include ABI in response
      */
     includeABI?: boolean;
+
+    /**
+     * The revision to query the contract state at (block number, block ID, or label like "best")
+     * Can be a string, number, bigint, Hex, or Revision object
+     * Strings can be: "best", "finalized", "justified", "next", or a block ID
+     * Numbers/bigints represent block numbers
+     */
+    revision?: string | number | bigint | Revision;
 };
 
 // SimulateTransactionOptions is imported from model/transactions/SimulateTransactionOptions

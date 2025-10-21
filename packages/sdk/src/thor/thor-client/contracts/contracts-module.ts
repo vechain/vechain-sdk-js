@@ -230,7 +230,17 @@ class ContractsModule extends AbstractThorModule {
                 message: 'Creating InspectClauses with request',
                 context: { request: request.toJSON() }
             });
-            const inspectClauses = InspectClauses.of(request);
+            let inspectClauses = InspectClauses.of(request);
+
+            // Apply revision if provided (convert to Revision object if needed)
+            if (options?.revision) {
+                const revision =
+                    options.revision instanceof Revision
+                        ? options.revision
+                        : Revision.of(options.revision);
+                inspectClauses = inspectClauses.withRevision(revision);
+            }
+
             log.debug({
                 message: 'InspectClauses created successfully'
             });

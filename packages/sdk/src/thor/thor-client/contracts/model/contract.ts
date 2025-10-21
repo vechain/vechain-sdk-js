@@ -510,12 +510,16 @@ class Contract<TAbi extends Abi> {
                 }
 
                 if ('revision' in lastArg) {
-                    const revision = lastArg.revision;
-                    if (
+                    const revision: any = lastArg.revision;
+                    // Convert to Revision object if not already one
+                    if (revision instanceof Revision) {
+                        options.revision = revision;
+                    } else if (
                         typeof revision === 'string' ||
-                        typeof revision === 'number'
+                        typeof revision === 'number' ||
+                        typeof revision === 'bigint'
                     ) {
-                        options.revision = Revision.of(String(revision));
+                        options.revision = Revision.of(revision);
                     }
                 }
 
