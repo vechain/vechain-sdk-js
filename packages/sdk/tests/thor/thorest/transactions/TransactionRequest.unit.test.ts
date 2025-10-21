@@ -1,12 +1,19 @@
 import { TEST_ACCOUNTS } from '../../../fixture';
-import { Address, HexUInt, InvalidEncodingError } from '@common';
+import {
+    Address,
+    HexUInt,
+    InvalidEncodingError,
+    InvalidTransactionField
+} from '@common';
 import {
     Clause,
-    TransactionRequest
+    TransactionRequest,
+    type TransactionRequestParam
 } from '@thor/thor-client/model/transactions';
 import { PrivateKeySigner } from '@thor';
 import { describe, expect, test } from '@jest/globals';
 import type { ThorSoloAccount } from '@vechain/sdk-solo-setup';
+import { fail } from 'assert';
 
 const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
 
@@ -38,6 +45,448 @@ describe('TransactionRequest UNIT tests', () => {
     const mockNonce = 3;
     const mockValue = 10n ** 15n; // .001 VET
 
+    describe('constructor', () => {
+        test('ok <- legacy transaction with all parameters', () => {
+            const params = {
+                beggar: Address.of(mockSenderAccount.address),
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [
+                    new Clause(
+                        Address.of(mockReceiverAccount.address),
+                        mockValue
+                    )
+                ],
+                dependsOn: HexUInt.of(
+                    '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890'
+                ),
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            } satisfies TransactionRequestParam;
+
+            const originSig = new Uint8Array([1, 2, 3]);
+            const gasPayerSig = new Uint8Array([4, 5, 6]);
+            const signature = new Uint8Array([7, 8, 9]);
+
+            const txRequest = new TransactionRequest(
+                params,
+                originSig,
+                gasPayerSig,
+                signature
+            );
+
+            expect(txRequest.beggar).toBe(params.beggar);
+            expect(txRequest.blockRef).toBe(params.blockRef);
+            expect(txRequest.chainTag).toBe(params.chainTag);
+            expect(txRequest.clauses).toEqual(params.clauses);
+            expect(txRequest.dependsOn).toBe(params.dependsOn);
+            expect(txRequest.expiration).toBe(params.expiration);
+            expect(txRequest.gas).toBe(params.gas);
+            expect(txRequest.gasPriceCoef).toBe(params.gasPriceCoef);
+            expect(txRequest.maxFeePerGas).toBeUndefined();
+            expect(txRequest.maxPriorityFeePerGas).toBeUndefined();
+            expect(txRequest.nonce).toBe(params.nonce);
+            expect(txRequest.isDynamicFee).toBe(false);
+            expect(txRequest.isLegacy).toBe(true);
+        });
+
+        test('ok <- dynamic fee transaction with all parameters', () => {
+            const params = {
+                beggar: Address.of(mockSenderAccount.address),
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [
+                    new Clause(
+                        Address.of(mockReceiverAccount.address),
+                        mockValue
+                    )
+                ],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: undefined,
+                maxFeePerGas: mockMaxFeePerGas,
+                maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
+                nonce: mockNonce
+            } satisfies TransactionRequestParam;
+
+            const txRequest = new TransactionRequest(params);
+
+            expect(txRequest.beggar).toBe(params.beggar);
+            expect(txRequest.blockRef).toBe(params.blockRef);
+            expect(txRequest.chainTag).toBe(params.chainTag);
+            expect(txRequest.clauses).toEqual(params.clauses);
+            expect(txRequest.dependsOn).toBe(params.dependsOn);
+            expect(txRequest.expiration).toBe(params.expiration);
+            expect(txRequest.gas).toBe(params.gas);
+            expect(txRequest.gasPriceCoef).toBeUndefined();
+            expect(txRequest.maxFeePerGas).toBe(params.maxFeePerGas);
+            expect(txRequest.maxPriorityFeePerGas).toBe(
+                params.maxPriorityFeePerGas
+            );
+            expect(txRequest.nonce).toBe(params.nonce);
+            expect(txRequest.isDynamicFee).toBe(true);
+            expect(txRequest.isLegacy).toBe(false);
+        });
+
+        test('ok <- minimal legacy transaction without optional parameters', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: 0n,
+                nonce: mockNonce
+            } satisfies TransactionRequestParam;
+
+            const txRequest = new TransactionRequest(params);
+
+            expect(txRequest.beggar).toBeUndefined();
+            expect(txRequest.blockRef).toBe(params.blockRef);
+            expect(txRequest.chainTag).toBe(params.chainTag);
+            expect(txRequest.clauses).toEqual(params.clauses);
+            expect(txRequest.dependsOn).toBe(params.dependsOn);
+            expect(txRequest.expiration).toBe(params.expiration);
+            expect(txRequest.gas).toBe(params.gas);
+            expect(txRequest.gasPriceCoef).toBe(params.gasPriceCoef);
+            expect(txRequest.maxFeePerGas).toBeUndefined();
+            expect(txRequest.maxPriorityFeePerGas).toBeUndefined();
+            expect(txRequest.nonce).toBe(params.nonce);
+            expect(txRequest.isDynamicFee).toBe(false);
+            expect(txRequest.isLegacy).toBe(true);
+        });
+
+        test('ok <- minimal dynamic fee transaction', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: undefined,
+                maxFeePerGas: 1n,
+                maxPriorityFeePerGas: 0n,
+                nonce: mockNonce
+            };
+
+            const txRequest = new TransactionRequest(params);
+
+            expect(txRequest.maxFeePerGas).toBe(1n);
+            expect(txRequest.maxPriorityFeePerGas).toBe(0n);
+            expect(txRequest.gasPriceCoef).toBeUndefined();
+            expect(txRequest.isDynamicFee).toBe(true);
+            expect(txRequest.isLegacy).toBe(false);
+        });
+
+        test('ok <- handles undefined signatures with empty arrays', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            };
+
+            const txRequest = new TransactionRequest(params);
+
+            expect(txRequest.originSignature).toEqual(new Uint8Array([]));
+            expect(txRequest.gasPayerSignature).toEqual(new Uint8Array([]));
+            expect(txRequest.signature).toEqual(new Uint8Array([]));
+        });
+
+        test('ok <- legacy transaction with gasPriceCoef = 0', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: 0n,
+                nonce: mockNonce
+            };
+
+            const txRequest = new TransactionRequest(params);
+            expect(txRequest.gasPriceCoef).toBe(0n);
+            expect(txRequest.isLegacy).toBe(true);
+            expect(txRequest.isDynamicFee).toBe(false);
+        });
+
+        test('ok <- dynamic fee transaction with maxPriorityFeePerGas = 0', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: undefined,
+                maxFeePerGas: 1n,
+                maxPriorityFeePerGas: 0n,
+                nonce: mockNonce
+            };
+
+            const txRequest = new TransactionRequest(params);
+            expect(txRequest.maxPriorityFeePerGas).toBe(0n);
+            expect(txRequest.isDynamicFee).toBe(true);
+            expect(txRequest.isLegacy).toBe(false);
+        });
+
+        test('err <- throws InvalidTransactionField for invalid fee configuration - no gas pricing', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: undefined,
+                maxFeePerGas: undefined,
+                maxPriorityFeePerGas: undefined,
+                nonce: mockNonce
+            };
+
+            expect(() => {
+                // eslint-disable-next-line no-new,sonarjs/constructor-for-side-effects
+                new TransactionRequest(params);
+            }).toThrow(InvalidTransactionField);
+        });
+
+        test('err <- throws InvalidTransactionField for mixed fee configuration - legacy and dynamic', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                maxFeePerGas: mockMaxFeePerGas,
+                maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
+                nonce: mockNonce
+            };
+
+            expect(() => {
+                // eslint-disable-next-line no-new,sonarjs/constructor-for-side-effects
+                new TransactionRequest(params);
+            }).toThrow(InvalidTransactionField);
+        });
+
+        test('err <- throws InvalidTransactionField for negative gasPriceCoef', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: -1n,
+                nonce: mockNonce
+            };
+
+            expect(() => {
+                // eslint-disable-next-line no-new,sonarjs/constructor-for-side-effects
+                new TransactionRequest(params);
+            }).toThrow(InvalidTransactionField);
+        });
+
+        test('err <- throws InvalidTransactionField for zero maxFeePerGas', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: undefined,
+                maxFeePerGas: 0n,
+                maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
+                nonce: mockNonce
+            };
+
+            expect(() => {
+                // eslint-disable-next-line no-new,sonarjs/constructor-for-side-effects
+                new TransactionRequest(params);
+            }).toThrow(InvalidTransactionField);
+        });
+
+        test('err <- throws InvalidTransactionField for negative maxPriorityFeePerGas', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: undefined,
+                maxFeePerGas: mockMaxFeePerGas,
+                maxPriorityFeePerGas: -1n,
+                nonce: mockNonce
+            };
+
+            expect(() => {
+                // eslint-disable-next-line no-new,sonarjs/constructor-for-side-effects
+                new TransactionRequest(params);
+            }).toThrow(InvalidTransactionField);
+        });
+
+        test('err <- throws InvalidTransactionField for partial dynamic fee configuration - only maxFeePerGas', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: undefined,
+                maxFeePerGas: mockMaxFeePerGas,
+                maxPriorityFeePerGas: undefined,
+                nonce: mockNonce
+            };
+
+            expect(() => {
+                // eslint-disable-next-line no-new,sonarjs/constructor-for-side-effects
+                new TransactionRequest(params);
+            }).toThrow(InvalidTransactionField);
+        });
+
+        test('err <- throws InvalidTransactionField for partial dynamic fee configuration - only maxPriorityFeePerGas', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: undefined,
+                maxFeePerGas: undefined,
+                maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
+                nonce: mockNonce
+            };
+
+            expect(() => {
+                // eslint-disable-next-line no-new,sonarjs/constructor-for-side-effects
+                new TransactionRequest(params);
+            }).toThrow(InvalidTransactionField);
+        });
+
+        test('err <- verifies error message and context', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: undefined,
+                maxFeePerGas: undefined,
+                maxPriorityFeePerGas: undefined,
+                nonce: mockNonce
+            };
+
+            try {
+                // eslint-disable-next-line no-new,sonarjs/constructor-for-side-effects
+                new TransactionRequest(params);
+                fail('Expected InvalidTransactionField to be thrown');
+            } catch (error) {
+                expect(error).toBeInstanceOf(InvalidTransactionField);
+                const invalidFieldError = error as InvalidTransactionField;
+                expect(invalidFieldError.message).toContain(
+                    'Invalid parameters'
+                );
+                expect(invalidFieldError.args).toEqual({ params });
+            }
+        });
+    });
+
+    describe('defensive copying of signatures', () => {
+        test('ok <- creates defensive copy of originSignature', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            };
+
+            const originalSig = new Uint8Array([1, 2, 3]);
+            const txRequest = new TransactionRequest(params, originalSig);
+
+            // Modify original array
+            originalSig[0] = 99;
+
+            // Should not affect the transaction request
+            expect(txRequest.originSignature[0]).toBe(1);
+            expect(txRequest.originSignature).not.toBe(originalSig);
+        });
+
+        test('ok <- creates defensive copy of gasPayerSignature', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            };
+
+            const gasPayerSig = new Uint8Array([4, 5, 6]);
+            const txRequest = new TransactionRequest(
+                params,
+                undefined,
+                gasPayerSig
+            );
+
+            // Modify original array
+            gasPayerSig[0] = 99;
+
+            // Should not affect the transaction request
+            expect(txRequest.gasPayerSignature[0]).toBe(4);
+            expect(txRequest.gasPayerSignature).not.toBe(gasPayerSig);
+        });
+
+        test('ok <- creates defensive copy of signature', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            };
+
+            const signature = new Uint8Array([7, 8, 9]);
+            const txRequest = new TransactionRequest(
+                params,
+                undefined,
+                undefined,
+                signature
+            );
+
+            // Modify original array
+            signature[0] = 99;
+
+            // Should not affect the transaction request
+            expect(txRequest.signature[0]).toBe(7);
+            expect(txRequest.signature).not.toBe(signature);
+        });
+    });
+
     describe('encode/decode/hash dynamic', () => {
         test('ok <- dynamic fee - no sponsored - unsigned', () => {
             const txRequest = new TransactionRequest({
@@ -52,7 +501,6 @@ describe('TransactionRequest UNIT tests', () => {
                 dependsOn: mockDependsOn,
                 expiration: mockExpiration,
                 gas: mockGas,
-                gasPriceCoef: 0n, // Dynamic fee transactions use 0
                 maxFeePerGas: mockMaxFeePerGas,
                 maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
                 nonce: mockNonce
@@ -78,7 +526,6 @@ describe('TransactionRequest UNIT tests', () => {
                 dependsOn: null,
                 expiration: mockExpiration,
                 gas: mockGas,
-                gasPriceCoef: 0n, // Dynamic fee transactions use 0
                 maxFeePerGas: mockMaxFeePerGas,
                 maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
                 nonce: mockNonce
@@ -109,7 +556,6 @@ describe('TransactionRequest UNIT tests', () => {
                 dependsOn: mockDependsOn,
                 expiration: mockExpiration,
                 gas: mockGas,
-                gasPriceCoef: 0n, // Dynamic fee transactions use 0
                 maxFeePerGas: mockMaxFeePerGas,
                 maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
                 nonce: mockNonce
@@ -137,7 +583,6 @@ describe('TransactionRequest UNIT tests', () => {
                 dependsOn: null,
                 expiration: mockExpiration,
                 gas: mockGas,
-                gasPriceCoef: 0n, // Dynamic fee transactions use 0
                 maxFeePerGas: mockMaxFeePerGas,
                 maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
                 nonce: mockNonce
@@ -169,7 +614,6 @@ describe('TransactionRequest UNIT tests', () => {
                 dependsOn: null,
                 expiration: mockExpiration,
                 gas: mockGas,
-                gasPriceCoef: 0n, // Dynamic fee transactions use 0
                 maxFeePerGas: mockMaxFeePerGas,
                 maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
                 nonce: mockNonce
@@ -201,7 +645,6 @@ describe('TransactionRequest UNIT tests', () => {
                 dependsOn: null,
                 expiration: mockExpiration,
                 gas: mockGas,
-                gasPriceCoef: 0n, // Dynamic fee transactions use 0
                 maxFeePerGas: mockMaxFeePerGas,
                 maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
                 nonce: mockNonce
