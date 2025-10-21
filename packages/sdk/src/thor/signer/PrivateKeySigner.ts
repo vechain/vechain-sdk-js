@@ -49,7 +49,6 @@ class PrivateKeySigner implements Signer {
      *
      * @param {Uint8Array} privateKey The private key to be used for signing. Must be a valid Secp256k1 private key.
      * @throws {InvalidPrivateKeyError} Throws an error if the provided private key is invalid.
-     * @return {PrivateKeySigner} A new instance of PrivateKeySigner.
      */
     constructor(privateKey: Uint8Array) {
         if (Secp256k1.isValidPrivateKey(privateKey)) {
