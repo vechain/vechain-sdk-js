@@ -471,7 +471,7 @@ class Contract<TAbi extends Abi> {
         ) {
             const lastArg = args[args.length - 1] as Record<
                 string,
-                string | number | bigint | boolean
+                string | number | bigint | boolean | Revision
             >;
 
             // Check if it contains contract-related options
@@ -510,17 +510,9 @@ class Contract<TAbi extends Abi> {
                 }
 
                 if ('revision' in lastArg) {
-                    const revision: any = lastArg.revision;
+                    const revision = lastArg.revision as Revision;
                     // Convert to Revision object if not already one
-                    if (revision instanceof Revision) {
-                        options.revision = revision;
-                    } else if (
-                        typeof revision === 'string' ||
-                        typeof revision === 'number' ||
-                        typeof revision === 'bigint'
-                    ) {
-                        options.revision = Revision.of(revision);
-                    }
+                    options.revision = revision;
                 }
 
                 return {

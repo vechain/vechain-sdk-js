@@ -224,13 +224,9 @@ class ContractsModule extends AbstractThorModule {
             });
             let inspectClauses = InspectClauses.of(request);
 
-            // Apply revision if provided (convert to Revision object if needed)
+            // Apply revision if provided
             if (options?.revision) {
-                const revision =
-                    options.revision instanceof Revision
-                        ? options.revision
-                        : Revision.of(options.revision);
-                inspectClauses = inspectClauses.withRevision(revision);
+                inspectClauses = inspectClauses.withRevision(options.revision);
             }
 
             log.debug({

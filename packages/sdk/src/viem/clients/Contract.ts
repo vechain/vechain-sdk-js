@@ -93,7 +93,7 @@ export interface Contract<TAbi extends Abi> {
             params?: {
                 args?: FunctionArgs;
                 value?: bigint;
-                revision?: string | number | bigint | Revision;
+                revision?: Revision;
             }
         ) => Promise<bigint>
     >;
@@ -225,23 +225,7 @@ function getContract<const TAbi extends Abi>({
                             'caller' in lastArg ||
                             'gas' in lastArg
                         ) {
-                            options = {
-                                ...lastArg
-                            } as SimulateTransactionOptions;
-
-                            // Convert revision to Revision object if needed
-                            if (
-                                'revision' in lastArg &&
-                                lastArg.revision != null
-                            ) {
-                                const revision = lastArg.revision;
-                                if (!(revision instanceof Revision)) {
-                                    options.revision = Revision.of(
-                                        revision as string | number | bigint
-                                    );
-                                }
-                            }
-
+                            options = lastArg as SimulateTransactionOptions;
                             functionArgs = functionArgs.slice(0, -1);
                         }
                     }
@@ -358,20 +342,11 @@ function getContract<const TAbi extends Abi>({
                         Hex.of(data)
                     );
 
-                    // Convert revision to Revision object if needed
-                    let revisionObj: Revision | undefined;
-                    if (revision != null) {
-                        revisionObj =
-                            revision instanceof Revision
-                                ? revision
-                                : Revision.of(revision);
-                    }
-
                     // Estimate gas for the contract call with revision
                     const response = await publicClient.estimateGas(
                         [clause],
                         caller,
-                        revisionObj ? { revision: revisionObj } : undefined
+                        revision ? { revision } : undefined
                     );
                     return response.totalGas;
                 };
