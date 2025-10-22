@@ -12,29 +12,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Download unit coverage
+      - name: Download coverage
         uses: actions/download-artifact@v4
         with:
-          name: coverage-unit
-          path: coverage/unit
-
-      - name: Download integration coverage
-        uses: actions/download-artifact@v4
-        with:
-          name: coverage-integration
-          path: coverage/integration
-
-      - name: Download clients coverage
-        uses: actions/download-artifact@v4
-        with:
-          name: coverage-clients
-          path: coverage/clients
-
-      - name: Download browser coverage
-        uses: actions/download-artifact@v4
-        with:
-          name: coverage-browser
-          path: coverage/browser
+          name: coverageNode
+          path: coverage/node
 
       - name: SonarCloud Scan
         id: sonarcloud-scan
