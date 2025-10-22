@@ -57,7 +57,8 @@ describe('TransactionBuilder UNIT tests', () => {
         const thorClient = ThorClient.at(
             FetchHttpClient.at(new URL('http://localhost:8669'))
         );
-        const builder = TransactionBuilder.create(thorClient);
+        const builder =
+            TransactionBuilder.create(thorClient).withGasPriceCoef(0n); // Legacy (as this one) or dynamic transaction parameters must be set before the transaction is built.
         const transaction = builder.build();
         expect(transaction.expiration).toBe(
             TransactionBuilder.DEFAULT_EXPIRATION

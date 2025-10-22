@@ -1,9 +1,6 @@
 import { expect } from '@jest/globals';
-import { Address, HexUInt, Quantity } from '@common';
-import {
-    Clause,
-    TransactionRequest
-} from '@thor/thor-client/model/transactions';
+import { Address, HexUInt, InvalidTransactionField, Quantity } from '@common';
+import { Clause, TransactionRequest } from '@thor/thor-client/model/transactions';
 
 /**
  * @group unit/thor/thor-client/transactions
@@ -60,7 +57,7 @@ describe('TransactionRequest', () => {
             expect(transaction.maxPriorityFeePerGas).toBeUndefined();
         });
 
-        test('ok <- with all parameters', () => {
+        test('ok <- dynamic with all parameters', () => {
             const params = {
                 beggar: mockBeggar,
                 blockRef: mockBlockRef,
@@ -69,7 +66,6 @@ describe('TransactionRequest', () => {
                 dependsOn: mockDependsOn,
                 expiration: mockExpiration,
                 gas: mockGas,
-                gasPriceCoef: mockGasPriceCoef,
                 nonce: mockNonce,
                 maxFeePerGas: mockMaxFeePerGas,
                 maxPriorityFeePerGas: mockMaxPriorityFeePerGas
@@ -89,12 +85,45 @@ describe('TransactionRequest', () => {
             expect(transaction.dependsOn).toBe(mockDependsOn);
             expect(transaction.expiration).toBe(mockExpiration);
             expect(transaction.gas).toBe(mockGas);
-            expect(transaction.gasPriceCoef).toBe(mockGasPriceCoef);
+            expect(transaction.gasPriceCoef).toBe(undefined);
             expect(transaction.nonce).toBe(mockNonce);
             expect(transaction.maxFeePerGas).toBe(mockMaxFeePerGas);
             expect(transaction.maxPriorityFeePerGas).toBe(
                 mockMaxPriorityFeePerGas
             );
+        });
+
+        test('ok <- legacy with all parameters', () => {
+            const params = {
+                beggar: mockBeggar,
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [new Clause(mockAddress, mockValue.bi)],
+                dependsOn: mockDependsOn,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            };
+
+            const transaction = new TransactionRequest(
+                params,
+                mockOriginSignature,
+                mockGasPayerSignature,
+                mockSignature
+            );
+
+            expect(transaction.beggar).toBe(mockBeggar);
+            expect(transaction.blockRef).toBe(mockBlockRef);
+            expect(transaction.chainTag).toBe(1);
+            expect(transaction.clauses).toHaveLength(1);
+            expect(transaction.dependsOn).toBe(mockDependsOn);
+            expect(transaction.expiration).toBe(mockExpiration);
+            expect(transaction.gas).toBe(mockGas);
+            expect(transaction.gasPriceCoef).toBe(mockGasPriceCoef);
+            expect(transaction.nonce).toBe(mockNonce);
+            expect(transaction.maxFeePerGas).toBe(undefined);
+            expect(transaction.maxPriorityFeePerGas).toBe(undefined);
         });
 
         test('ok <- create defensive copies of signatures', () => {
@@ -152,40 +181,6 @@ describe('TransactionRequest', () => {
     });
 
     describe('isDynamicFee getter', () => {
-        test('true <- when maxFeePerGas is set', () => {
-            const params = {
-                blockRef: mockBlockRef,
-                chainTag: 1,
-                clauses: [],
-                dependsOn: null,
-                expiration: mockExpiration,
-                gas: mockGas,
-                gasPriceCoef: 0n,
-                nonce: mockNonce,
-                maxFeePerGas: mockMaxFeePerGas
-            };
-
-            const transaction = new TransactionRequest(params);
-            expect(transaction.isDynamicFee).toBe(true);
-        });
-
-        test('true <- when maxPriorityFeePerGas is set', () => {
-            const params = {
-                blockRef: mockBlockRef,
-                chainTag: 1,
-                clauses: [],
-                dependsOn: null,
-                expiration: mockExpiration,
-                gas: mockGas,
-                gasPriceCoef: 0n,
-                nonce: mockNonce,
-                maxPriorityFeePerGas: mockMaxPriorityFeePerGas
-            };
-
-            const transaction = new TransactionRequest(params);
-            expect(transaction.isDynamicFee).toBe(true);
-        });
-
         test('true <- when both dynamic fee fields are set', () => {
             const params = {
                 blockRef: mockBlockRef,
@@ -194,7 +189,6 @@ describe('TransactionRequest', () => {
                 dependsOn: null,
                 expiration: mockExpiration,
                 gas: mockGas,
-                gasPriceCoef: 0n,
                 nonce: mockNonce,
                 maxFeePerGas: mockMaxFeePerGas,
                 maxPriorityFeePerGas: mockMaxPriorityFeePerGas
@@ -423,7 +417,7 @@ describe('TransactionRequest', () => {
             expect(json.signature).toBeUndefined();
         });
 
-        test('ok <- full transaction to JSON', () => {
+        test('ok <- full dynamic transaction to JSON', () => {
             const params = {
                 beggar: mockBeggar,
                 blockRef: mockBlockRef,
@@ -432,7 +426,6 @@ describe('TransactionRequest', () => {
                 dependsOn: mockDependsOn,
                 expiration: mockExpiration,
                 gas: mockGas,
-                gasPriceCoef: mockGasPriceCoef,
                 nonce: mockNonce,
                 maxFeePerGas: mockMaxFeePerGas,
                 maxPriorityFeePerGas: mockMaxPriorityFeePerGas
@@ -453,10 +446,50 @@ describe('TransactionRequest', () => {
             expect(json.dependsOn).toBe(mockDependsOn.toString());
             expect(json.expiration).toBe(mockExpiration);
             expect(json.gas).toBe(mockGas);
+            expect(json.gasPriceCoef).toBe(undefined);
+            expect(json.nonce).toBe(mockNonce);
+            expect(json.maxPriorityFeePerGas).toBe(mockMaxPriorityFeePerGas);
+            expect(json.originSignature).toBe(
+                HexUInt.of(mockOriginSignature).toString()
+            );
+            expect(json.gasPayerSignature).toBe(
+                HexUInt.of(mockGasPayerSignature).toString()
+            );
+            expect(json.signature).toBe(HexUInt.of(mockSignature).toString());
+        });
+
+        test('ok <- full legacy transaction to JSON', () => {
+            const params = {
+                beggar: mockBeggar,
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [new Clause(mockAddress, mockValue.bi)],
+                dependsOn: mockDependsOn,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            };
+
+            const transaction = new TransactionRequest(
+                params,
+                mockOriginSignature,
+                mockGasPayerSignature,
+                mockSignature
+            );
+            const json = transaction.toJSON();
+
+            expect(json.beggar).toBe(mockBeggar.toString());
+            expect(json.blockRef).toBe(mockBlockRef.toString());
+            expect(json.chainTag).toBe(1);
+            expect(json.clauses).toHaveLength(1);
+            expect(json.dependsOn).toBe(mockDependsOn.toString());
+            expect(json.expiration).toBe(mockExpiration);
+            expect(json.gas).toBe(mockGas);
             expect(json.gasPriceCoef).toBe(mockGasPriceCoef);
             expect(json.nonce).toBe(mockNonce);
-            expect(json.maxFeePerGas).toBe(mockMaxFeePerGas);
-            expect(json.maxPriorityFeePerGas).toBe(mockMaxPriorityFeePerGas);
+            expect(json.maxFeePerGas).toBe(undefined);
+            expect(json.maxPriorityFeePerGas).toBe(undefined);
             expect(json.originSignature).toBe(
                 HexUInt.of(mockOriginSignature).toString()
             );
@@ -480,11 +513,9 @@ describe('TransactionRequest', () => {
                 maxPriorityFeePerGas: 0n
             };
 
-            const transaction = new TransactionRequest(params);
-            const json = transaction.toJSON();
-
-            expect(json.maxFeePerGas).toBeUndefined();
-            expect(json.maxPriorityFeePerGas).toBeUndefined();
+            expect(() => new TransactionRequest(params)).toThrowError(
+                InvalidTransactionField
+            );
         });
 
         test('ok <- handle positive dynamic fees correctly', () => {
@@ -495,7 +526,6 @@ describe('TransactionRequest', () => {
                 dependsOn: null,
                 expiration: mockExpiration,
                 gas: mockGas,
-                gasPriceCoef: 0n,
                 nonce: mockNonce,
                 maxFeePerGas: mockMaxFeePerGas,
                 maxPriorityFeePerGas: mockMaxPriorityFeePerGas

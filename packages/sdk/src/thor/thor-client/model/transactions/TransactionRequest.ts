@@ -7,7 +7,7 @@ import {
     InvalidTransactionField
 } from '@common';
 import { TransactionRequestRLPCodec } from '@thor/thor-client/model/transactions/TransactionRequestRLPCodec';
-import { TransactionRequestJSON } from '@thor/thorest/json';
+import { type TransactionRequestJSON } from '@thor/thorest/json';
 
 const FQP =
     'packages/sdk/src/thor/thor-client/model/transactions/TransactionRequest.ts!';
@@ -198,7 +198,7 @@ class TransactionRequest implements TransactionRequestParam {
             throw new InvalidTransactionField(
                 `${FQP}constructor(params: TransactionRequestParam, originSignature? Uint8Array, gasPayerSignature? Uint8Array, signature?: Uint8Array)`,
                 'Invalid parameters: or gasPriceCoef >= 0 or maxFeePerGas > 0 or maxPriorityFeePerGas >= 0',
-                { params: params }
+                { params }
             );
         }
     }
