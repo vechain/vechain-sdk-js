@@ -45,7 +45,7 @@ jobs:
               corepack yarn start-thor-solo
               corepack yarn seed-thor-solo
 
-          - name: Integration tests
+          - name: Tests on Node
             run: corepack yarn test:node
 
           - name: Stop Thor solo node
@@ -56,6 +56,6 @@ jobs:
             if: always()
             uses: actions/upload-artifact@v4
             with:
-              name: coverage
+              name: coverageNode
               path: |
                 packages/**/coverage/lcov.info

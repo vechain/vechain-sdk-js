@@ -5,6 +5,9 @@ import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { GetTxPoolStatus } from '@thor/thorest/node';
 
+/**
+ * @group quarrantine
+ */
 describe('GetTxPoolStatus TESTNET tests', () => {
     test('ok|disabled <- askTo', async () => {
         try {

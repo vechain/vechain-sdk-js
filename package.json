@@ -53,7 +53,8 @@
         "test:node:e2e": "turbo test:node:e2e",
         "test:browser:e2e": "turbo test:browser:e2e",
         "merge-coverage": "corepack yarn exec ts-node scripts/merge-coverage.ts",
-        "check:tests-naming": "corepack yarn exec ts-node scripts/check-tests-naming.ts"
+        "check:tests-naming": "corepack yarn exec ts-node scripts/check-tests-naming.ts",
+        "count-quarrantine": "grep -r '@group quarrantine' packages/sdk/tests/ --include='*.test.*' | wc -l"
     },
     "devDependencies": {
         "@changesets/cli": "2.29.7",

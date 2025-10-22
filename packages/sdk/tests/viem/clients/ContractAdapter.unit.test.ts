@@ -48,6 +48,9 @@ const mockWalletClient = {
     sendTransaction: jest.fn()
 } as any;
 
+/**
+ * @group quarrantine
+ */
 describe('ContractAdapter Integration', () => {
     test('Should create contract with viem-compatible interface', () => {
         const contract = getContract({

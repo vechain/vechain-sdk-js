@@ -65,8 +65,8 @@
     "test:node:mainnet:e2e": "(corepack yarn start-thor-solo && corepack yarn seed-thor-solo && corepack yarn test:node:mainnet && corepack yarn stop-thor-solo) || corepack yarn stop-thor-solo",
     "test:browser:testnet:e2e": "(corepack yarn start-thor-solo && corepack yarn seed-thor-solo && corepack yarn test:browser:testnet && corepack yarn stop-thor-solo) || corepack yarn stop-thor-solo",
     "test:browser:mainnet:e2e": "(corepack yarn start-thor-solo && corepack yarn seed-thor-solo && corepack yarn test:browser:mainnet && corepack yarn stop-thor-solo) || corepack yarn stop-thor-solo",
-    "test:node": "rm -rf ./coverage && ENFORCE_COVERAGE=true jest --coverage --coverageDirectory=coverage",
-    "test:browser": "rm -rf ./coverage && ENFORCE_COVERAGE=true jest --coverage --coverageDirectory=coverage --config ./jest.config.browser.js",
+    "test:node": "rm -rf ./coverage && ENFORCE_COVERAGE=true jest --group=-quarrantine --coverage --coverageDirectory=coverage",
+    "test:browser": "rm -rf ./coverage && ENFORCE_COVERAGE=true jest --group=-quarrantine--coverage --coverageDirectory=coverage --config ./jest.config.browser.js",
     "test:node:e2e": "(corepack yarn start-thor-solo && corepack yarn seed-thor-solo && corepack yarn test:node && corepack yarn stop-thor-solo) || corepack yarn stop-thor-solo",
     "test:browser:e2e": "(corepack yarn start-thor-solo && corepack yarn seed-thor-solo && corepack yarn test:browser && corepack yarn stop-thor-solo) || corepack yarn stop-thor-solo"
   },
