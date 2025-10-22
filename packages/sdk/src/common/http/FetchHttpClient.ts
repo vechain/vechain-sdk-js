@@ -60,6 +60,10 @@ class FetchHttpClient implements HttpClient {
     // Cookie store
     private readonly cookieStore: CookieStore;
 
+    // Socket retry settings
+    private readonly shouldRetrySocketError: boolean;
+    private readonly retrySocketErrorCount: number;
+
     constructor(
         baseURL: URL,
         httpOptions: HttpOptions = {},
@@ -79,6 +83,17 @@ class FetchHttpClient implements HttpClient {
         this.fetchFunction = fetchFunction;
         this.options = httpOptions;
         this.cookieStore = new CookieStore();
+        // initialize socket error retry settings
+        if (this.options.retrySocketError === undefined) {
+            this.options.retrySocketError =
+                FetchHttpClient.DEFAULT_RETRY_SOCKET_ERROR;
+            this.options.retrySockerErrorCount =
+                FetchHttpClient.DEFAULT_RETRY_SOCKET_ERROR_COUNT;
+        }
+        this.shouldRetrySocketError = this.options.retrySocketError ?? false;
+        this.retrySocketErrorCount = this.shouldRetrySocketError
+            ? (this.options.retrySockerErrorCount ?? 0)
+            : 0;
     }
 
     /**
@@ -191,17 +206,7 @@ class FetchHttpClient implements HttpClient {
             init?: RequestInit
         ) => Request;
         const abortSignal = this.createAbortSignal(); // create the abort signal
-        // default socket error retry settings
-        if (this.options.retrySocketError === undefined) {
-            this.options.retrySocketError =
-                FetchHttpClient.DEFAULT_RETRY_SOCKET_ERROR;
-            this.options.retrySockerErrorCount =
-                FetchHttpClient.DEFAULT_RETRY_SOCKET_ERROR_COUNT;
-        }
-        const shouldRetrySocketError = this.options.retrySocketError ?? false;
-        const retrySocketErrorCount = shouldRetrySocketError
-            ? (this.options.retrySockerErrorCount ?? 0)
-            : 0;
+        // socket error retry counter
         let retryCount = 0;
         // execute request at least once, then retry if a socket error is encountered
         do {
@@ -242,7 +247,7 @@ class FetchHttpClient implements HttpClient {
             } catch (error) {
                 // Check for socket errors and retry if enabled
                 const isSocketError =
-                    shouldRetrySocketError && this.isSocketError(error);
+                    this.shouldRetrySocketError && this.isSocketError(error);
                 if (isSocketError) {
                     retryCount++;
                     continue;
@@ -288,14 +293,14 @@ class FetchHttpClient implements HttpClient {
             } finally {
                 abortSignal?.cleanup(); // cleanup the abort signal
             }
-        } while (retryCount < retrySocketErrorCount);
+        } while (retryCount < this.retrySocketErrorCount);
         // if we get here, we have retried the maximum number of times and failed
         // log the error and throw an exception
         log.error({
             message: 'Http Socket error detected after retries',
             context: {
                 retryCount,
-                retrySocketErrorCount
+                retrySocketErrorCount: this.retrySocketErrorCount
             }
         });
         throw new HttpNetworkException(
@@ -331,17 +336,7 @@ class FetchHttpClient implements HttpClient {
             init?: RequestInit
         ) => Request;
         const abortSignal = this.createAbortSignal(); // create the abort signal
-        // default socket error retry settings
-        if (this.options.retrySocketError === undefined) {
-            this.options.retrySocketError =
-                FetchHttpClient.DEFAULT_RETRY_SOCKET_ERROR;
-            this.options.retrySockerErrorCount =
-                FetchHttpClient.DEFAULT_RETRY_SOCKET_ERROR_COUNT;
-        }
-        const shouldRetrySocketError = this.options.retrySocketError ?? false;
-        const retrySocketErrorCount = shouldRetrySocketError
-            ? (this.options.retrySockerErrorCount ?? 0)
-            : 0;
+        // socket error retry counter
         let retryCount = 0;
         // execute request at least once, then retry if a socket error is encountered
         do {
@@ -387,7 +382,7 @@ class FetchHttpClient implements HttpClient {
             } catch (error) {
                 // Check for socket errors and retry if enabled
                 const isSocketError =
-                    shouldRetrySocketError && this.isSocketError(error);
+                    this.shouldRetrySocketError && this.isSocketError(error);
                 if (isSocketError) {
                     retryCount++;
                     continue;
@@ -434,14 +429,14 @@ class FetchHttpClient implements HttpClient {
             } finally {
                 abortSignal?.cleanup(); // cleanup the abort signal
             }
-        } while (retryCount < retrySocketErrorCount);
+        } while (retryCount < this.retrySocketErrorCount);
         // if we get here, we have retried the maximum number of times and failed
         // log the error and throw an exception
         log.error({
             message: 'Http Socket error detected after retries',
             context: {
                 retryCount,
-                retrySocketErrorCount
+                retrySocketErrorCount: this.retrySocketErrorCount
             }
         });
         throw new HttpNetworkException(
