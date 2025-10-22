@@ -89,13 +89,10 @@ class WalletClient extends PublicClient {
     ): TransactionRequest {
         if (transactionRequest.isIntendedToBeSponsored) {
             // Intended to be sponsored.
-            if (
-                transactionRequest.originSignature.length > 0 &&
-                transactionRequest.gasPayerSignature.length > 0
-            ) {
+            if (WalletClient.hasRequiredSignatures(transactionRequest)) {
                 // Both origin and gas payer signed.
                 return new TransactionRequest(
-                    { ...transactionRequest },
+                    transactionRequest,
                     transactionRequest.originSignature,
                     transactionRequest.gasPayerSignature,
                     concatBytes(
@@ -108,7 +105,7 @@ class WalletClient extends PublicClient {
             return transactionRequest;
         }
         // Not intended to be sponsored.
-        if (transactionRequest.originSignature.length > 0) {
+        if (WalletClient.hasRequiredSignatures(transactionRequest)) {
             // Origin signed.
             return new TransactionRequest(
                 { ...transactionRequest },
@@ -128,6 +125,24 @@ class WalletClient extends PublicClient {
      */
     public getAddresses(): Address[] {
         return this.account != null ? [Address.of(this.account.address)] : [];
+    }
+
+    /**
+     * Checks if the required signatures are present for the transaction type.
+     *
+     * @param transactionRequest - The transaction request to check
+     * @returns true if all required signatures are present, false otherwise
+     */
+    private static hasRequiredSignatures(
+        transactionRequest: TransactionRequest
+    ): boolean {
+        if (transactionRequest.isIntendedToBeSponsored) {
+            return (
+                transactionRequest.originSignature.length > 0 &&
+                transactionRequest.gasPayerSignature.length > 0
+            );
+        }
+        return transactionRequest.originSignature.length > 0;
     }
 
     /**
