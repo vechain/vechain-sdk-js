@@ -37,6 +37,7 @@ jobs:
 
   sonar:
     name: SonarCloud
+    needs: [tests_node]
     if: always()
     uses: ./.github/workflows/sonar.yml
     secrets: inherit
