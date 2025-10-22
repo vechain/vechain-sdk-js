@@ -19,12 +19,7 @@ export interface ConfigData {
 
 // Get the config file path in the current working directory
 const getConfigPath = (): string => {
-    const filename = fileURLToPath(import.meta.url);
-    const dirname = path.dirname(filename);
-    const configPath =
-        process.env.SOLO_SETUP_ORIGINAL_CWD ??
-        path.resolve(dirname, '../config.json');
-    return configPath;
+    return path.resolve(__dirname, '../config.json');
 };
 
 /**
@@ -41,7 +36,7 @@ const getConfigData = (): ConfigData => {
 
     try {
         const configContent = fs.readFileSync(configPath, 'utf8');
-        return JSON.parse(configContent);
+        return JSON.parse(configContent) as unknown as ConfigData;
     } catch (error) {
         throw new Error(
             `Failed to read configuration file: ${error instanceof Error ? error.message : 'Unknown error'}`
