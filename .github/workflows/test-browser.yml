@@ -1,11 +1,14 @@
 name: Test on Browser
 
+permissions:
+  contents: read
+
 on:
     workflow_call:
 
 jobs:
     tests_browser:
-        name: Tests on Node
+        name: Tests on Browser
         runs-on: ubuntu-latest
         timeout-minutes: 25
         steps:
@@ -45,7 +48,7 @@ jobs:
               corepack yarn start-thor-solo
               corepack yarn seed-thor-solo
 
-          - name: Integration tests
+          - name: Tests on Browser
             run: corepack yarn test:browser
 
           - name: Stop Thor solo node
