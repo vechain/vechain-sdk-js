@@ -1,17 +1,14 @@
 import { describe, expect, test } from '@jest/globals';
 import { Address, HexUInt32 } from '@common/vcdm';
-import {
-    RetrieveStoragePositionValue,
-    ThorNetworks
-} from '@thor/thorest';
+import { RetrieveStoragePositionValue, ThorNetworks } from '@thor/thorest';
 import { FetchHttpClient } from '@common/http';
 
 /**
  * VeChain retrieve storage position value - solo
  *
- * @group integration/thor/accounts
+ * @group solo/thor/accounts
  */
-describe('RetrieveStoragePositionValue testnet tests', () => {
+describe('RetrieveStoragePositionValue solo tests', () => {
     test('ok <- askTo', async () => {
         const response = (
             await RetrieveStoragePositionValue.of(

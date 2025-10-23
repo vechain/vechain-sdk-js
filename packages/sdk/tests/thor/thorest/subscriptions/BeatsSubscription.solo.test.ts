@@ -10,7 +10,7 @@ import fastJsonStableStringify from 'fast-json-stable-stringify';
 /**
  * VeChain beats subscription - unit
  *
- * @group integration/thor/subscriptions
+ * @group solo/thor/subscriptions
  */
 describe('BlocksSubscription solo tests', () => {
     let subscription: BeatsSubscription;

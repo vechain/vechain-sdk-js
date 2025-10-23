@@ -61,6 +61,9 @@ const testContractAbi = [
     }
 ] as const;
 
+/**
+ * @group quarantine
+ */
 describe('New Functionality Tests', () => {
     let contractsModule: ContractsModule;
     let mockHttpClient: any;

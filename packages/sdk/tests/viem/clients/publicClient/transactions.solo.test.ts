@@ -16,7 +16,7 @@ import { log } from '@common/logging';
  * - getCode
  * - getStorageAt
  *
- * @group integration/clients
+ * @group solo/viem/clients
  */
 describe('PublicClient - Transaction Methods', () => {
     const publicClient = createPublicClient({
@@ -42,7 +42,7 @@ describe('PublicClient - Transaction Methods', () => {
             await expect(
                 publicClient.getTransaction(invalidTxHash)
             ).rejects.toThrow(
-                'Transaction with hash \"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef\" could not be found.'
+                'Transaction with hash "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef" could not be found.'
             );
         });
 
@@ -63,7 +63,7 @@ describe('PublicClient - Transaction Methods', () => {
             await expect(
                 publicClient.getTransactionReceipt(invalidTxHash)
             ).rejects.toThrow(
-                'Transaction receipt with hash \"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef\" could not be found. The Transaction may not be processed on a block yet.'
+                'Transaction receipt with hash "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef" could not be found. The Transaction may not be processed on a block yet.'
             );
         });
 

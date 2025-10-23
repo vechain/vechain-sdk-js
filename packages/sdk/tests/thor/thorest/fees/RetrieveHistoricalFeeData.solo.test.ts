@@ -10,35 +10,45 @@ import {
 } from '@thor/thorest';
 
 /**
- * @group integration/thor/fees
+ * @group solo/thor/fees
  */
 describe('RetrieveHistoricalFeeData SOLO tests', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
 
     test('err <- of(not integer)', async () => {
-                const blockCount = 1.2;
+        const blockCount = 1.2;
         try {
             await RetrieveHistoricalFeeData.of(blockCount).askTo(httpClient);
             // noinspection ExceptionCaughtLocallyJS
             throw new Error('Should not reach here.');
         } catch (error) {
             // Can receive either HttpException (direct from FetchHttpClient) or ThorError (wrapped)
-            expect([HttpException, ThorError]).toContain((error as Error).constructor);
-            const errorStatus = error instanceof HttpException ? error.status : (error as ThorError).status;
+            expect([HttpException, ThorError]).toContain(
+                (error as Error).constructor
+            );
+            const errorStatus =
+                error instanceof HttpException
+                    ? error.status
+                    : (error as ThorError).status;
             expect([0, 400]).toContain(errorStatus);
         }
     });
 
     test('err <- of(< 1)', async () => {
-                const blockCount = 0;
+        const blockCount = 0;
         try {
             await RetrieveHistoricalFeeData.of(blockCount).askTo(httpClient);
             // noinspection ExceptionCaughtLocallyJS
             throw new Error('Should not reach here.');
         } catch (error) {
             // Can receive either HttpException (direct from FetchHttpClient) or ThorError (wrapped)
-            expect([HttpException, ThorError]).toContain((error as Error).constructor);
-            const errorStatus = error instanceof HttpException ? error.status : (error as ThorError).status;
+            expect([HttpException, ThorError]).toContain(
+                (error as Error).constructor
+            );
+            const errorStatus =
+                error instanceof HttpException
+                    ? error.status
+                    : (error as ThorError).status;
             expect([0, 400]).toContain(errorStatus);
         }
     });

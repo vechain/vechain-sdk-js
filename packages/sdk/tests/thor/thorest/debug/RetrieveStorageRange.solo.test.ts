@@ -4,7 +4,7 @@ import { FetchHttpClient } from '@common/http';
 import { type StorageRangeOptionJSON } from '@thor/thorest/json';
 
 /**
- * @group integration/thor/debug
+ * @group solo/thor/debug
  */
 describe('RetrieveStorageRange SOLO tests', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
