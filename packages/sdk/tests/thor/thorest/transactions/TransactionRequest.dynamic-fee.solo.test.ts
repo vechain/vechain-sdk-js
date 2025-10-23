@@ -1,17 +1,17 @@
 /* eslint-disable sonarjs/pseudo-random */
 import { describe, expect, test } from '@jest/globals';
 import {
-    TransactionRequest,
-    Clause
+    Clause,
+    TransactionRequest
 } from '@thor/thor-client/model/transactions';
-import { PrivateKeySigner, RLPCodecTransactionRequest } from '@thor/signer';
+import { PrivateKeySigner } from '@thor/signer';
 import { Address, Hex, HexUInt, Revision } from '@common/vcdm';
 import { FetchHttpClient } from '@common/http';
 import { ThorNetworks } from '@thor/thorest';
 import { RetrieveExpandedBlock } from '@thor/thorest/blocks';
 import {
-    SendTransaction,
-    RetrieveTransactionReceipt
+    RetrieveTransactionReceipt,
+    SendTransaction
 } from '@thor/thorest/transactions';
 import { ThorClient } from '@thor/thor-client/ThorClient';
 
@@ -34,7 +34,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
             await RetrieveExpandedBlock.of(Revision.BEST).askTo(httpClient)
         ).response;
 
-        if (!latestBlock) {
+        if (latestBlock == null) {
             throw new Error(
                 'Failed to retrieve latest block from Thor network.'
             );
@@ -68,26 +68,23 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
                 expiration: 32,
                 gas: 21000000n,
                 gasPriceCoef: 128n,
-                nonce: Math.floor(Math.random() * 1000000),
-                isIntendedToBeSponsored: false
+                // eslint-disable-next-line sonarjs/pseudo-random
+                nonce: Math.floor(Math.random() * 1000000)
             });
 
             // Verify it's detected as legacy
-            expect(legacyTx.isDynamicFee()).toBe(false);
+            expect(legacyTx.isDynamicFee).toBe(false);
             expect(legacyTx.gasPriceCoef).toBe(128n);
             expect(legacyTx.maxFeePerGas).toBeUndefined();
             expect(legacyTx.maxPriorityFeePerGas).toBeUndefined();
 
             // Sign the transaction
             const signedTx = fromSigner.sign(legacyTx);
-            expect(signedTx.isDynamicFee()).toBe(false);
-            expect(signedTx.isSigned()).toBe(true);
+            expect(signedTx.isDynamicFee).toBe(false);
+            expect(signedTx.isSigned).toBe(true);
 
             // Encode and verify no type prefix
-            const encoded =
-                RLPCodecTransactionRequest.encodeSignedTransactionRequest(
-                    signedTx
-                );
+            const encoded = signedTx.encoded;
             expect(encoded[0]).not.toBe(0x51);
 
             // Send to solo network
@@ -106,7 +103,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
             const receiptResponse = await RetrieveTransactionReceipt.of(
                 txResponse.response.id
             ).askTo(httpClient);
-            if (receiptResponse.response) {
+            if (receiptResponse.response != null) {
                 expect(receiptResponse.response.reverted).toBe(false);
                 console.log(
                     `Legacy transaction confirmed in block: ${receiptResponse.response.meta.blockID}`
@@ -127,30 +124,26 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
                 dependsOn: null,
                 expiration: 32,
                 gas: 25000n,
-                gasPriceCoef: 0n, // Can be 0 for dynamic fee
                 maxFeePerGas: 10027000000000n, // 20 Gwei
                 maxPriorityFeePerGas: 27000000000n, // 5 Gwei
-                nonce: Math.floor(Math.random() * 1000000),
-                isIntendedToBeSponsored: false
+                // eslint-disable-next-line sonarjs/pseudo-random
+                nonce: Math.floor(Math.random() * 1000000)
             });
 
             // Verify it's detected as dynamic fee
-            expect(dynamicTx.isDynamicFee()).toBe(true);
+            expect(dynamicTx.isDynamicFee).toBe(true);
             expect(dynamicTx.maxFeePerGas).toBe(10027000000000n);
             expect(dynamicTx.maxPriorityFeePerGas).toBe(27000000000n);
 
             // Sign the transaction
             const signedTx = fromSigner.sign(dynamicTx);
-            expect(signedTx.isDynamicFee()).toBe(true);
-            expect(signedTx.isSigned()).toBe(true);
+            expect(signedTx.isDynamicFee).toBe(true);
+            expect(signedTx.isSigned).toBe(true);
             expect(signedTx.maxFeePerGas).toBe(10027000000000n);
             expect(signedTx.maxPriorityFeePerGas).toBe(27000000000n);
 
             // Encode and verify 0x51 type prefix
-            const encoded =
-                RLPCodecTransactionRequest.encodeSignedTransactionRequest(
-                    signedTx
-                );
+            const encoded = signedTx.encoded;
             expect(encoded[0]).toBe(0x51);
 
             // Send to solo network
@@ -169,7 +162,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
             const receiptResponse = await RetrieveTransactionReceipt.of(
                 txResponse.response.id
             ).askTo(httpClient);
-            if (receiptResponse.response) {
+            if (receiptResponse.response != null) {
                 expect(receiptResponse.response.reverted).toBe(false);
                 console.log(
                     `Dynamic fee transaction confirmed in block: ${receiptResponse.response.meta.blockID}`
@@ -187,24 +180,20 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
                 dependsOn: null,
                 expiration: 32,
                 gas: 25000n,
-                gasPriceCoef: 0n,
-                maxFeePerGas: 10027000000000n, // 15 Gwei
-                // No maxPriorityFeePerGas
-                nonce: Math.floor(Math.random() * 1000000),
-                isIntendedToBeSponsored: false
+                maxFeePerGas: 10027000000000n, // 15 Gwei,
+                maxPriorityFeePerGas: 0n,
+                // eslint-disable-next-line sonarjs/pseudo-random
+                nonce: Math.floor(Math.random() * 1000000)
             });
 
             // Should still be detected as dynamic fee
-            expect(dynamicTx.isDynamicFee()).toBe(true);
+            expect(dynamicTx.isDynamicFee).toBe(true);
             expect(dynamicTx.maxFeePerGas).toBe(10027000000000n);
-            expect(dynamicTx.maxPriorityFeePerGas).toBeUndefined();
+            expect(dynamicTx.maxPriorityFeePerGas).not.toBeUndefined();
 
             // Sign and encode
             const signedTx = fromSigner.sign(dynamicTx);
-            const encoded =
-                RLPCodecTransactionRequest.encodeSignedTransactionRequest(
-                    signedTx
-                );
+            const encoded = signedTx.encoded;
             expect(encoded[0]).toBe(0x51);
 
             // Send to solo network
@@ -232,25 +221,22 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
                 expiration: 32,
                 gas: 210000n,
                 gasPriceCoef: 255n, // Max legacy coefficient
-                nonce: Math.floor(Math.random() * 1000000),
-                isIntendedToBeSponsored: false
+                // eslint-disable-next-line sonarjs/pseudo-random
+                nonce: Math.floor(Math.random() * 1000000)
                 // No dynamic fee fields at all
             });
 
             // Should be detected as legacy
-            expect(existingLegacyTx.isDynamicFee()).toBe(false);
+            expect(existingLegacyTx.isDynamicFee).toBe(false);
             expect(existingLegacyTx.gasPriceCoef).toBe(255n);
 
             // Should work with existing signer patterns
             const signedTx = fromSigner.sign(existingLegacyTx);
-            expect(signedTx.isDynamicFee()).toBe(false);
+            expect(signedTx.isDynamicFee).toBe(false);
             expect(signedTx.gasPriceCoef).toBe(255n);
 
             // Should encode without type prefix
-            const encoded =
-                RLPCodecTransactionRequest.encodeSignedTransactionRequest(
-                    signedTx
-                );
+            const encoded = signedTx.encoded;
             expect(encoded[0]).not.toBe(0x51);
 
             // Should send successfully to solo network
@@ -278,8 +264,8 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
                 expiration: 32,
                 gas: 21000n,
                 gasPriceCoef: 100n,
-                nonce: Math.floor(Math.random() * 1000000),
-                isIntendedToBeSponsored: false
+                // eslint-disable-next-line sonarjs/pseudo-random
+                nonce: Math.floor(Math.random() * 1000000)
             });
 
             const dynamicTx = new TransactionRequest({
@@ -289,30 +275,23 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
                 dependsOn: null,
                 expiration: 32,
                 gas: 25000n,
-                gasPriceCoef: 0n,
                 maxFeePerGas: 10027000000000n,
                 maxPriorityFeePerGas: 27000000000n,
-                nonce: Math.floor(Math.random() * 1000000),
-                isIntendedToBeSponsored: false
+                // eslint-disable-next-line sonarjs/pseudo-random
+                nonce: Math.floor(Math.random() * 1000000)
             });
 
             // Verify different detection
-            expect(legacyTx.isDynamicFee()).toBe(false);
-            expect(dynamicTx.isDynamicFee()).toBe(true);
+            expect(legacyTx.isDynamicFee).toBe(false);
+            expect(dynamicTx.isDynamicFee).toBe(true);
 
             // Sign both
             const signedLegacy = fromSigner.sign(legacyTx);
             const signedDynamic = fromSigner.sign(dynamicTx);
 
             // Encode both
-            const legacyEncoded =
-                RLPCodecTransactionRequest.encodeSignedTransactionRequest(
-                    signedLegacy
-                );
-            const dynamicEncoded =
-                RLPCodecTransactionRequest.encodeSignedTransactionRequest(
-                    signedDynamic
-                );
+            const legacyEncoded = signedLegacy.encoded;
+            const dynamicEncoded = signedDynamic.encoded;
 
             // Verify different encoding
             expect(legacyEncoded[0]).not.toBe(0x51);

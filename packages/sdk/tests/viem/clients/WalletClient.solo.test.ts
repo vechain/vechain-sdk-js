@@ -1,115 +1,324 @@
+import { describe, expect, test } from '@jest/globals';
 import {
-    ClauseBuilder,
     RetrieveExpandedBlock,
-    SendTransaction,
-    ThorNetworks,
-    type TransactionBody
-} from '@thor/thorest';
-import { Address, BlockRef, Hex, Revision } from '@common/vcdm';
-import { FetchHttpClient } from '@common/http';
-import { ThorClient } from '../../../src/thor/thor-client/ThorClient';
+    RetrieveTransactionByID,
+    ThorClient,
+    ThorNetworks
+} from '@thor';
+import { Address, BlockRef, FetchHttpClient, Revision } from '@common';
+import { TEST_ACCOUNTS } from '../../fixture';
+import { Clause, TransactionRequest } from '@thor/thor-client';
+import { createWalletClient } from '@viem/clients';
 import { privateKeyToAccount } from 'viem/accounts';
-import {
-    createWalletClient,
-    type PrepareTransactionRequestRequest
-} from '@viem/clients';
 import { log } from '@common/logging';
+
+const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
 
 /**
  * @group solo/viem/clients
  */
 describe('WalletClient SOLO tests', () => {
+    const mockExpiration = 32;
+    const mockGas = 25000n;
+    const mockGasPriceCoef = 128n;
+    const mockMaxFeePerGas = 10027000000000n; // 20 Gwei
+    const mockMaxPriorityFeePerGas = 27000000000n; // 5 Gwei
+    const mockNonce = 3;
+    const mockValue = 10n ** 15n; // 0.001 VET
+
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
     const thorClient = ThorClient.at(httpClient);
 
-    // TO BE FIXED: DYNAMIC ACCOUNT IS NOT SEEDED YET WHEN THIS TESTS RUNS IN SOLO
-    const toAddress = '0x435933c8064b4ae76be665428e0307ef2ccfbd68'; // THIS SOLO DEFAULT ACCOUNT[1]
-
-    // TO BE FIXED: DYNAMIC ACCOUNT IS NOT SEEDED YET WHEN THIS TESTS RUNS IN SOLO
-    const fromKey =
-        '99f0500549792796c14fed62011a51081dc5b5e68fe8bd8a13b86be829c4fd36'; // THIS SOLO DEFAULT ACCOUNT[1]
-
-    describe('sendRawTransaction', () => {
-        test('ok <- transfer VET', async () => {
-            const latestBlock = (
-                await RetrieveExpandedBlock.of(Revision.BEST).askTo(httpClient)
-            ).response;
-
-            if (latestBlock === undefined || latestBlock === null)
-                throw new Error(
-                    'Failed to retrieve latest block from Thor network.'
-                );
-
-            const transferClause = ClauseBuilder.transferVET(
-                Address.of(toAddress),
-                10n ** 18n
-            );
-            const chainTag = await thorClient.nodes.getChainTag();
-            const txBody: TransactionBody = {
-                chainTag,
-                blockRef: BlockRef.of(latestBlock.id).toString(),
-                expiration: 32,
-                clauses: [transferClause],
-                gasPriceCoef: 0,
-                gas: 100000,
-                dependsOn: null,
-                nonce: 8
-            };
-
-            const request: PrepareTransactionRequestRequest = {
-                to: Address.of(transferClause.to as string),
-                value: Hex.of(transferClause.value),
-                blockRef: Hex.of(txBody.blockRef),
-                chainTag: txBody.chainTag,
-                expiration: txBody.expiration,
-                gas: txBody.gas as number,
-                nonce: txBody.nonce,
-                gasPriceCoef: 0
-            } satisfies PrepareTransactionRequestRequest;
-
-            const account = privateKeyToAccount(`0x${fromKey}`);
-            const walletClient = createWalletClient({
-                network: httpClient.baseURL,
-                account
-            });
-            const tx = walletClient.prepareTransactionRequest(request);
-            const raw = await walletClient.signTransaction(tx);
-            const txid = (await SendTransaction.of(raw.bytes).askTo(httpClient))
-                .response.id;
-            log.debug({ message: txid.toString() });
-        });
-    });
-
     describe('sendTransaction', () => {
-        test('ok <- transfer VET', async () => {
+        test('ok <- dynamic fee - no sponsored', async () => {
             const latestBlock = (
                 await RetrieveExpandedBlock.of(Revision.BEST).askTo(httpClient)
             ).response;
-
-            if (latestBlock === undefined || latestBlock === null)
-                throw new Error(
-                    'Failed to retrieve latest block from Thor network.'
-                );
-
+            if (latestBlock === null || latestBlock === undefined) {
+                throw new Error('Failed to retrieve latest block');
+            }
             const chainTag = await thorClient.nodes.getChainTag();
-            const request: PrepareTransactionRequestRequest = {
-                to: Address.of(toAddress),
-                value: Hex.of(10n ** 18n),
+            const txRequest = new TransactionRequest({
                 blockRef: BlockRef.of(latestBlock.id),
                 chainTag,
-                expiration: 32,
-                gas: 100000,
-                nonce: 8,
-                gasPriceCoef: 0
-            } satisfies PrepareTransactionRequestRequest;
-
-            const account = privateKeyToAccount(`0x${fromKey}`);
-            const walletClient = createWalletClient({
-                network: httpClient.baseURL,
-                account
+                clauses: [
+                    new Clause(
+                        Address.of(TRANSACTION_RECEIVER.address),
+                        mockValue
+                    )
+                ],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                maxFeePerGas: mockMaxFeePerGas,
+                maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
+                nonce: mockNonce
             });
-            const txid = await walletClient.sendTransaction(request);
-            log.debug({ message: txid.toString() });
+            // Sign as Sender. Finalized signature.
+            const originWallet = createWalletClient({
+                network: httpClient.baseURL,
+                account: privateKeyToAccount(
+                    `0x${TRANSACTION_SENDER.privateKey}`
+                )
+            });
+            const txid = await originWallet.sendTransaction(txRequest);
+            expect(txid).toBeDefined();
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+            const tx = (
+                await RetrieveTransactionByID.of(txid).askTo(httpClient)
+            ).response;
+            expect(tx).not.toBeNull();
+            log.debug({ message: `${tx?.toJSON()}` });
+        });
+
+        test('ok <- dynamic fee, signed then sponsored', async () => {
+            const latestBlock = (
+                await RetrieveExpandedBlock.of(Revision.BEST).askTo(httpClient)
+            ).response;
+            if (latestBlock === null || latestBlock === undefined) {
+                throw new Error('Failed to retrieve latest block');
+            }
+            const chainTag = await thorClient.nodes.getChainTag();
+            const txRequest = new TransactionRequest({
+                beggar: Address.of(TRANSACTION_SENDER.address),
+                blockRef: BlockRef.of(latestBlock.id),
+                chainTag,
+                clauses: [
+                    new Clause(
+                        Address.of(TRANSACTION_RECEIVER.address),
+                        mockValue
+                    )
+                ],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                maxFeePerGas: mockMaxFeePerGas,
+                maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
+                nonce: mockNonce
+            });
+            // Sign as Sender. Partial signature.
+            const originWallet = createWalletClient({
+                network: httpClient.baseURL,
+                account: privateKeyToAccount(
+                    `0x${TRANSACTION_SENDER.privateKey}`
+                )
+            });
+            const encodedSaS = (await originWallet.signTransaction(txRequest))
+                .bytes;
+            const gasPayerWallet = createWalletClient({
+                network: httpClient.baseURL,
+                account: privateKeyToAccount(
+                    `0x${TRANSACTION_RECEIVER.privateKey}`
+                )
+            });
+            const txid = await gasPayerWallet.sendTransaction(
+                TransactionRequest.decode(encodedSaS)
+            );
+            expect(txid).toBeDefined();
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+            const tx = (
+                await RetrieveTransactionByID.of(txid).askTo(httpClient)
+            ).response;
+            expect(tx).not.toBeNull();
+            log.debug({ message: `${tx?.toJSON()}` });
+        });
+
+        test('ok <- dynamic fee - sponsored than signed', async () => {
+            const latestBlock = (
+                await RetrieveExpandedBlock.of(Revision.BEST).askTo(httpClient)
+            ).response;
+            if (latestBlock === null || latestBlock === undefined) {
+                throw new Error('Failed to retrieve latest block');
+            }
+            const chainTag = await thorClient.nodes.getChainTag();
+            const txRequest = new TransactionRequest({
+                beggar: Address.of(TRANSACTION_SENDER.address),
+                blockRef: BlockRef.of(latestBlock.id),
+                chainTag,
+                clauses: [
+                    new Clause(
+                        Address.of(TRANSACTION_RECEIVER.address),
+                        mockValue
+                    )
+                ],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                maxFeePerGas: mockMaxFeePerGas,
+                maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
+                nonce: mockNonce
+            });
+            // Sign as Gas Payer. Partial signature.
+            const gasPayerWallet = createWalletClient({
+                network: httpClient.baseURL,
+                account: privateKeyToAccount(
+                    `0x${TRANSACTION_RECEIVER.privateKey}`
+                )
+            });
+            const encodedSaGP = (
+                await gasPayerWallet.signTransaction(txRequest)
+            ).bytes;
+            // Sign as Sender. Finalized signature.
+            const originWallet = createWalletClient({
+                network: httpClient.baseURL,
+                account: privateKeyToAccount(
+                    `0x${TRANSACTION_SENDER.privateKey}`
+                )
+            });
+            const txid = await originWallet.sendTransaction(
+                TransactionRequest.decode(encodedSaGP)
+            );
+            expect(txid).toBeDefined();
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+            const tx = (
+                await RetrieveTransactionByID.of(txid).askTo(httpClient)
+            ).response;
+            expect(tx).not.toBeNull();
+            log.debug({ message: `${tx?.toJSON()}` });
+        });
+
+        test('ok <- legacy - no sponsored', async () => {
+            const latestBlock = (
+                await RetrieveExpandedBlock.of(Revision.BEST).askTo(httpClient)
+            ).response;
+            if (latestBlock === null || latestBlock === undefined) {
+                throw new Error('Failed to retrieve latest block');
+            }
+            const chainTag = await thorClient.nodes.getChainTag();
+            const txRequest = new TransactionRequest({
+                blockRef: BlockRef.of(latestBlock.id),
+                chainTag,
+                clauses: [
+                    new Clause(
+                        Address.of(TRANSACTION_RECEIVER.address),
+                        mockValue
+                    )
+                ],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            });
+            // Sign as Sender. Finalized signature.
+            const originWallet = createWalletClient({
+                network: httpClient.baseURL,
+                account: privateKeyToAccount(
+                    `0x${TRANSACTION_SENDER.privateKey}`
+                )
+            });
+            const txid = await originWallet.sendTransaction(txRequest);
+            expect(txid).toBeDefined();
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+            const tx = (
+                await RetrieveTransactionByID.of(txid).askTo(httpClient)
+            ).response;
+            expect(tx).not.toBeNull();
+            log.debug({ message: `${tx?.toJSON()}` });
+        });
+
+        test('ok <- legacy - signed then sponsored', async () => {
+            const latestBlock = (
+                await RetrieveExpandedBlock.of(Revision.BEST).askTo(httpClient)
+            ).response;
+            if (latestBlock === null || latestBlock === undefined) {
+                throw new Error('Failed to retrieve latest block');
+            }
+            const chainTag = await thorClient.nodes.getChainTag();
+            const txRequest = new TransactionRequest({
+                beggar: Address.of(TRANSACTION_SENDER.address),
+                blockRef: BlockRef.of(latestBlock.id),
+                chainTag,
+                clauses: [
+                    new Clause(
+                        Address.of(TRANSACTION_RECEIVER.address),
+                        mockValue
+                    )
+                ],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            });
+            // Sign as Sender. Partial signature.
+            const originWallet = createWalletClient({
+                network: httpClient.baseURL,
+                account: privateKeyToAccount(
+                    `0x${TRANSACTION_SENDER.privateKey}`
+                )
+            });
+            const encodedSaS = (await originWallet.signTransaction(txRequest))
+                .bytes;
+            const gasPayerWallet = createWalletClient({
+                network: httpClient.baseURL,
+                account: privateKeyToAccount(
+                    `0x${TRANSACTION_RECEIVER.privateKey}`
+                )
+            });
+            const txid = await gasPayerWallet.sendTransaction(
+                TransactionRequest.decode(encodedSaS)
+            );
+            expect(txid).toBeDefined();
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+            const tx = (
+                await RetrieveTransactionByID.of(txid).askTo(httpClient)
+            ).response;
+            expect(tx).not.toBeNull();
+            log.debug({ message: `${tx?.toJSON()}` });
+        });
+
+        test('ok <- legacy - sponsored then signed', async () => {
+            const latestBlock = (
+                await RetrieveExpandedBlock.of(Revision.BEST).askTo(httpClient)
+            ).response;
+            if (latestBlock === null || latestBlock === undefined) {
+                throw new Error('Failed to retrieve latest block');
+            }
+            const chainTag = await thorClient.nodes.getChainTag();
+            const txRequest = new TransactionRequest({
+                beggar: Address.of(TRANSACTION_SENDER.address),
+                blockRef: BlockRef.of(latestBlock.id),
+                chainTag,
+                clauses: [
+                    new Clause(
+                        Address.of(TRANSACTION_RECEIVER.address),
+                        mockValue
+                    )
+                ],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            });
+            // Sign as Gas Payer. Partial signature.
+            const gasPayerWallet = createWalletClient({
+                network: httpClient.baseURL,
+                account: privateKeyToAccount(
+                    `0x${TRANSACTION_RECEIVER.privateKey}`
+                )
+            });
+            const encodedSaGP = (
+                await gasPayerWallet.signTransaction(txRequest)
+            ).bytes;
+            // Sign as Sender. Finalized signature.
+            const originWallet = createWalletClient({
+                network: httpClient.baseURL,
+                account: privateKeyToAccount(
+                    `0x${TRANSACTION_SENDER.privateKey}`
+                )
+            });
+            const txid = await originWallet.sendTransaction(
+                TransactionRequest.decode(encodedSaGP)
+            );
+            expect(txid).toBeDefined();
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+            const tx = (
+                await RetrieveTransactionByID.of(txid).askTo(httpClient)
+            ).response;
+            expect(tx).not.toBeNull();
+            log.debug({ message: `${tx?.toJSON()}` });
         });
     });
 });

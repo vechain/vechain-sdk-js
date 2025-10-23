@@ -1,351 +1,644 @@
-import { describe, expect, test } from '@jest/globals';
-import { Address, BlockRef, Hex, HexUInt } from '@common';
-import {
-    Clause,
-    TransactionRequest
-} from '@thor/thor-client/model/transactions';
+import { expect } from '@jest/globals';
+import { Address, HexUInt, InvalidTransactionField, Quantity } from '@common';
+import { Clause, TransactionRequest } from '@thor/thor-client/model/transactions';
 
-/*
- * @group unit/thor/thorest/model
+/**
+ * @group unit/thor/thor-client/transactions
  */
-describe('TransactionRequest UNIT tests', () => {
-    // Common test values
-    const validBlockRef = BlockRef.of(
-        '0x00000058f9f240032e073f4a078c5f0f3e04ae7272e4550de41f10723d6f8b2e'
+describe('TransactionRequest', () => {
+    // Test data setup
+    const mockAddress = Address.of(
+        '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed'
     );
-    const validChainTag = 27;
-    const validClause = new Clause(
-        Address.of('0x9e7911de289c3c856ce7f421034f66b6cde49c39'),
-        1n,
-        null,
-        null,
-        null
+    const mockBeggar = Address.of('0x1234567890123456789012345678901234567890');
+    const mockBlockRef = HexUInt.of('0x1234567890abcdef');
+    const mockDependsOn = HexUInt.of(
+        '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890'
     );
-
-    const validClauses = [validClause];
-    const validDependsOn = Hex.of('0x123456789abcdef');
-    const validExpiration = 32;
-    const validGas = 100000n;
-    const validGasPriceCoef = 0n;
-    const validNonce = 8;
+    const mockExpiration = 32;
+    const mockGas = 25000n;
+    const mockGasPriceCoef = 123n;
+    const mockMaxFeePerGas = 20000000000n; // 20 Gwei
+    const mockMaxPriorityFeePerGas = 5000000000n; // 5 Gwei
+    const mockNonce = 3;
+    const mockValue = Quantity.of(1000);
+    const mockGasPayerSignature = new Uint8Array(65).fill(0xbe);
+    const mockOriginSignature = new Uint8Array(65).fill(0xba);
+    const mockSignature = new Uint8Array([
+        ...mockOriginSignature,
+        ...mockGasPayerSignature
+    ]);
 
     describe('constructor', () => {
-        test('ok <- should create a TransactionRequest with all required parameters', () => {
-            const request = new TransactionRequest({
-                blockRef: validBlockRef,
-                chainTag: validChainTag,
-                clauses: validClauses,
-                dependsOn: validDependsOn,
-                expiration: validExpiration,
-                gas: validGas,
-                gasPriceCoef: validGasPriceCoef,
-                nonce: validNonce,
-                isIntendedToBeSponsored: true
-            });
-
-            expect(request.blockRef).toBe(validBlockRef);
-            expect(request.chainTag).toBe(validChainTag);
-            expect(request.clauses).toBe(validClauses);
-            expect(request.dependsOn).toBe(validDependsOn);
-            expect(request.expiration).toBe(validExpiration);
-            expect(request.gas).toBe(validGas);
-            expect(request.gasPriceCoef).toBe(validGasPriceCoef);
-            expect(request.nonce).toBe(validNonce);
-            expect(request.isIntendedToBeSponsored).toBe(true);
-        });
-
-        test('ok <- should create a TransactionRequest with isSponsored defaulting to false when not provided', () => {
-            const request = new TransactionRequest({
-                blockRef: validBlockRef,
-                chainTag: validChainTag,
-                clauses: validClauses,
-                dependsOn: validDependsOn,
-                expiration: validExpiration,
-                gas: validGas,
-                gasPriceCoef: validGasPriceCoef,
-                nonce: validNonce
-            }); // Type assertion to test default behavior
-
-            expect(request.isIntendedToBeSponsored).toBe(false);
-        });
-
-        test('ok <- should handle null dependsOn', () => {
-            const request = new TransactionRequest({
-                blockRef: validBlockRef,
-                chainTag: validChainTag,
-                clauses: validClauses,
+        test('ok <- with minimal parameters', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [new Clause(mockAddress, mockValue.bi)],
                 dependsOn: null,
-                expiration: validExpiration,
-                gas: validGas,
-                gasPriceCoef: validGasPriceCoef,
-                nonce: validNonce
-            });
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            };
 
-            expect(request.dependsOn).toBeNull();
+            const transaction = new TransactionRequest(params);
+
+            expect(transaction.blockRef).toBe(mockBlockRef);
+            expect(transaction.chainTag).toBe(1);
+            expect(transaction.clauses).toHaveLength(1);
+            expect(transaction.dependsOn).toBeNull();
+            expect(transaction.expiration).toBe(mockExpiration);
+            expect(transaction.gas).toBe(mockGas);
+            expect(transaction.gasPriceCoef).toBe(mockGasPriceCoef);
+            expect(transaction.nonce).toBe(mockNonce);
+            expect(transaction.beggar).toBeUndefined();
+            expect(transaction.maxFeePerGas).toBeUndefined();
+            expect(transaction.maxPriorityFeePerGas).toBeUndefined();
         });
 
-        test('ok <- should accept empty clauses array', () => {
-            const request = new TransactionRequest({
-                blockRef: validBlockRef,
-                chainTag: validChainTag,
+        test('ok <- dynamic with all parameters', () => {
+            const params = {
+                beggar: mockBeggar,
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [new Clause(mockAddress, mockValue.bi)],
+                dependsOn: mockDependsOn,
+                expiration: mockExpiration,
+                gas: mockGas,
+                nonce: mockNonce,
+                maxFeePerGas: mockMaxFeePerGas,
+                maxPriorityFeePerGas: mockMaxPriorityFeePerGas
+            };
+
+            const transaction = new TransactionRequest(
+                params,
+                mockOriginSignature,
+                mockGasPayerSignature,
+                mockSignature
+            );
+
+            expect(transaction.beggar).toBe(mockBeggar);
+            expect(transaction.blockRef).toBe(mockBlockRef);
+            expect(transaction.chainTag).toBe(1);
+            expect(transaction.clauses).toHaveLength(1);
+            expect(transaction.dependsOn).toBe(mockDependsOn);
+            expect(transaction.expiration).toBe(mockExpiration);
+            expect(transaction.gas).toBe(mockGas);
+            expect(transaction.gasPriceCoef).toBe(undefined);
+            expect(transaction.nonce).toBe(mockNonce);
+            expect(transaction.maxFeePerGas).toBe(mockMaxFeePerGas);
+            expect(transaction.maxPriorityFeePerGas).toBe(
+                mockMaxPriorityFeePerGas
+            );
+        });
+
+        test('ok <- legacy with all parameters', () => {
+            const params = {
+                beggar: mockBeggar,
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [new Clause(mockAddress, mockValue.bi)],
+                dependsOn: mockDependsOn,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            };
+
+            const transaction = new TransactionRequest(
+                params,
+                mockOriginSignature,
+                mockGasPayerSignature,
+                mockSignature
+            );
+
+            expect(transaction.beggar).toBe(mockBeggar);
+            expect(transaction.blockRef).toBe(mockBlockRef);
+            expect(transaction.chainTag).toBe(1);
+            expect(transaction.clauses).toHaveLength(1);
+            expect(transaction.dependsOn).toBe(mockDependsOn);
+            expect(transaction.expiration).toBe(mockExpiration);
+            expect(transaction.gas).toBe(mockGas);
+            expect(transaction.gasPriceCoef).toBe(mockGasPriceCoef);
+            expect(transaction.nonce).toBe(mockNonce);
+            expect(transaction.maxFeePerGas).toBe(undefined);
+            expect(transaction.maxPriorityFeePerGas).toBe(undefined);
+        });
+
+        test('ok <- create defensive copies of signatures', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [new Clause(mockAddress, mockValue.bi)],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            };
+
+            const originalOriginSig = new Uint8Array([1, 2, 3]);
+            const originalGasPayerSig = new Uint8Array([4, 5, 6]);
+            const originalSig = new Uint8Array([7, 8, 9]);
+
+            const transaction = new TransactionRequest(
+                params,
+                originalOriginSig,
+                originalGasPayerSig,
+                originalSig
+            );
+
+            // Modify original arrays
+            originalOriginSig[0] = 99;
+            originalGasPayerSig[0] = 99;
+            originalSig[0] = 99;
+
+            // Transaction should still have original values
+            expect(transaction.originSignature[0]).toBe(1);
+            expect(transaction.gasPayerSignature[0]).toBe(4);
+            expect(transaction.signature[0]).toBe(7);
+        });
+
+        test('ok <- handle undefined signatures', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: 1,
                 clauses: [],
                 dependsOn: null,
-                expiration: validExpiration,
-                gas: validGas,
-                gasPriceCoef: validGasPriceCoef,
-                nonce: validNonce
-            });
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            };
 
-            expect(request.clauses).toEqual([]);
-        });
+            const transaction = new TransactionRequest(params);
 
-        test('ok <- should accept multiple clauses', () => {
-            const clause1 = new Clause(
-                Address.of('0x9e7911de289c3c856ce7f421034f66b6cde49c39'),
-                1n,
-                null,
-                null,
-                null
-            );
-            const clause2 = new Clause(
-                Address.of('0x8e7911de289c3c856ce7f421034f66b6cde49c38'),
-                2n,
-                HexUInt.of('0x12345'),
-                'Test clause',
-                null
-            );
-
-            const request = new TransactionRequest({
-                blockRef: validBlockRef,
-                chainTag: validChainTag,
-                clauses: [clause1, clause2],
-                dependsOn: null,
-                expiration: validExpiration,
-                gas: validGas,
-                gasPriceCoef: validGasPriceCoef,
-                nonce: validNonce
-            });
-
-            expect(request.clauses.length).toBe(2);
-            expect(request.clauses[0]).toBe(clause1);
-            expect(request.clauses[1]).toBe(clause2);
+            expect(transaction.originSignature).toEqual(new Uint8Array([]));
+            expect(transaction.gasPayerSignature).toEqual(new Uint8Array([]));
+            expect(transaction.signature).toEqual(new Uint8Array([]));
         });
     });
 
-    describe('isSigned', () => {
-        test('ok <- should return false', () => {
-            const request = new TransactionRequest({
-                blockRef: validBlockRef,
-                chainTag: validChainTag,
-                clauses: validClauses,
+    describe('isDynamicFee getter', () => {
+        test('true <- when both dynamic fee fields are set', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [],
                 dependsOn: null,
-                expiration: validExpiration,
-                gas: validGas,
-                gasPriceCoef: validGasPriceCoef,
-                nonce: validNonce
-            });
+                expiration: mockExpiration,
+                gas: mockGas,
+                nonce: mockNonce,
+                maxFeePerGas: mockMaxFeePerGas,
+                maxPriorityFeePerGas: mockMaxPriorityFeePerGas
+            };
 
-            expect(request.isSigned()).toBe(false);
+            const transaction = new TransactionRequest(params);
+            expect(transaction.isDynamicFee).toBe(true);
+        });
+
+        test('false <- for legacy transaction', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            };
+
+            const transaction = new TransactionRequest(params);
+            expect(transaction.isDynamicFee).toBe(false);
         });
     });
 
-    describe('toJSON', () => {
-        test('ok <- should convert TransactionRequest to JSON with all properties', () => {
-            const request = new TransactionRequest({
-                blockRef: validBlockRef,
-                chainTag: validChainTag,
-                clauses: validClauses,
-                dependsOn: validDependsOn,
-                expiration: validExpiration,
-                gas: validGas,
-                gasPriceCoef: validGasPriceCoef,
-                nonce: validNonce,
-                isIntendedToBeSponsored: true
-            });
+    describe('isIntendedToBeSponsored getter', () => {
+        test('true <- when beggar is defined', () => {
+            const params = {
+                beggar: mockBeggar,
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            };
 
-            const json = request.toJSON();
+            const transaction = new TransactionRequest(params);
+            expect(transaction.isIntendedToBeSponsored).toBe(true);
+        });
 
-            expect(json.blockRef).toBe(validBlockRef.toString());
-            expect(json.chainTag).toBe(validChainTag);
+        test('false <- when beggar is undefined', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            };
+
+            const transaction = new TransactionRequest(params);
+            expect(transaction.isIntendedToBeSponsored).toBe(false);
+        });
+    });
+
+    describe('isSigned getter', () => {
+        test('false <- for unsigned transaction without beggar', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            };
+
+            const transaction = new TransactionRequest(params);
+            expect(transaction.isSigned).toBe(false);
+        });
+
+        test('true <- for signed transaction without beggar', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            };
+
+            const transaction = new TransactionRequest(
+                params,
+                mockOriginSignature,
+                undefined,
+                mockOriginSignature
+            );
+            expect(transaction.isSigned).toBe(true);
+        });
+
+        test('false <- for partially signed sponsored transaction', () => {
+            const params = {
+                beggar: mockBeggar,
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            };
+
+            // Only origin signature
+            const transaction1 = new TransactionRequest(
+                params,
+                mockOriginSignature
+            );
+            expect(transaction1.isSigned).toBe(false);
+
+            // Only gas payer signature
+            const transaction2 = new TransactionRequest(
+                params,
+                undefined,
+                mockGasPayerSignature
+            );
+            expect(transaction2.isSigned).toBe(false);
+        });
+
+        test('true <- for fully signed sponsored transaction', () => {
+            const params = {
+                beggar: mockBeggar,
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            };
+
+            const transaction = new TransactionRequest(
+                params,
+                mockOriginSignature,
+                mockGasPayerSignature,
+                mockSignature
+            );
+            expect(transaction.isSigned).toBe(true);
+        });
+
+        test('false <- when signature length mismatch for non-sponsored', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            };
+
+            const wrongSignature = new Uint8Array([1, 2, 3]); // Different length
+            const transaction = new TransactionRequest(
+                params,
+                mockOriginSignature,
+                undefined,
+                wrongSignature
+            );
+            expect(transaction.isSigned).toBe(false);
+        });
+
+        test('false <- when signature length mismatch for sponsored', () => {
+            const params = {
+                beggar: mockBeggar,
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            };
+
+            const wrongSignature = new Uint8Array([1, 2, 3]); // Different length
+            const transaction = new TransactionRequest(
+                params,
+                mockOriginSignature,
+                mockGasPayerSignature,
+                wrongSignature
+            );
+            expect(transaction.isSigned).toBe(false);
+        });
+    });
+
+    describe('toJSON method', () => {
+        test('ok <- minimal transaction to JSON', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [new Clause(mockAddress, mockValue.bi)],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            };
+
+            const transaction = new TransactionRequest(params);
+            const json = transaction.toJSON();
+
+            expect(json.beggar).toBeUndefined();
+            expect(json.blockRef).toBe(mockBlockRef.toString());
+            expect(json.chainTag).toBe(1);
             expect(json.clauses).toHaveLength(1);
-            expect(json.clauses[0]).toEqual(validClause.toJSON());
-            expect(json.dependsOn).toBe(validDependsOn.toString());
-            expect(json.expiration).toBe(validExpiration);
-            expect(json.gas).toBe(validGas);
-            expect(json.gasPriceCoef).toBe(validGasPriceCoef);
-            expect(json.nonce).toBe(validNonce);
-            expect(json.isIntendedToBeSponsored).toBe(true);
-        });
-
-        test('ok <- should convert TransactionRequest to JSON with null dependsOn', () => {
-            const request = new TransactionRequest({
-                blockRef: validBlockRef,
-                chainTag: validChainTag,
-                clauses: validClauses,
-                dependsOn: null,
-                expiration: validExpiration,
-                gas: validGas,
-                gasPriceCoef: validGasPriceCoef,
-                nonce: validNonce,
-                isIntendedToBeSponsored: false
-            });
-
-            const json = request.toJSON();
-
             expect(json.dependsOn).toBeNull();
-            expect(json.isIntendedToBeSponsored).toBe(false);
+            expect(json.expiration).toBe(mockExpiration);
+            expect(json.gas).toBe(mockGas);
+            expect(json.gasPriceCoef).toBe(mockGasPriceCoef);
+            expect(json.nonce).toBe(mockNonce);
+            expect(json.maxFeePerGas).toBeUndefined();
+            expect(json.maxPriorityFeePerGas).toBeUndefined();
+            expect(json.originSignature).toBeUndefined();
+            expect(json.gasPayerSignature).toBeUndefined();
+            expect(json.signature).toBeUndefined();
         });
 
-        test('ok <- should convert TransactionRequest to JSON with empty clauses array', () => {
-            const request = new TransactionRequest({
-                blockRef: validBlockRef,
-                chainTag: validChainTag,
+        test('ok <- full dynamic transaction to JSON', () => {
+            const params = {
+                beggar: mockBeggar,
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [new Clause(mockAddress, mockValue.bi)],
+                dependsOn: mockDependsOn,
+                expiration: mockExpiration,
+                gas: mockGas,
+                nonce: mockNonce,
+                maxFeePerGas: mockMaxFeePerGas,
+                maxPriorityFeePerGas: mockMaxPriorityFeePerGas
+            };
+
+            const transaction = new TransactionRequest(
+                params,
+                mockOriginSignature,
+                mockGasPayerSignature,
+                mockSignature
+            );
+            const json = transaction.toJSON();
+
+            expect(json.beggar).toBe(mockBeggar.toString());
+            expect(json.blockRef).toBe(mockBlockRef.toString());
+            expect(json.chainTag).toBe(1);
+            expect(json.clauses).toHaveLength(1);
+            expect(json.dependsOn).toBe(mockDependsOn.toString());
+            expect(json.expiration).toBe(mockExpiration);
+            expect(json.gas).toBe(mockGas);
+            expect(json.gasPriceCoef).toBe(undefined);
+            expect(json.nonce).toBe(mockNonce);
+            expect(json.maxPriorityFeePerGas).toBe(mockMaxPriorityFeePerGas);
+            expect(json.originSignature).toBe(
+                HexUInt.of(mockOriginSignature).toString()
+            );
+            expect(json.gasPayerSignature).toBe(
+                HexUInt.of(mockGasPayerSignature).toString()
+            );
+            expect(json.signature).toBe(HexUInt.of(mockSignature).toString());
+        });
+
+        test('ok <- full legacy transaction to JSON', () => {
+            const params = {
+                beggar: mockBeggar,
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [new Clause(mockAddress, mockValue.bi)],
+                dependsOn: mockDependsOn,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            };
+
+            const transaction = new TransactionRequest(
+                params,
+                mockOriginSignature,
+                mockGasPayerSignature,
+                mockSignature
+            );
+            const json = transaction.toJSON();
+
+            expect(json.beggar).toBe(mockBeggar.toString());
+            expect(json.blockRef).toBe(mockBlockRef.toString());
+            expect(json.chainTag).toBe(1);
+            expect(json.clauses).toHaveLength(1);
+            expect(json.dependsOn).toBe(mockDependsOn.toString());
+            expect(json.expiration).toBe(mockExpiration);
+            expect(json.gas).toBe(mockGas);
+            expect(json.gasPriceCoef).toBe(mockGasPriceCoef);
+            expect(json.nonce).toBe(mockNonce);
+            expect(json.maxFeePerGas).toBe(undefined);
+            expect(json.maxPriorityFeePerGas).toBe(undefined);
+            expect(json.originSignature).toBe(
+                HexUInt.of(mockOriginSignature).toString()
+            );
+            expect(json.gasPayerSignature).toBe(
+                HexUInt.of(mockGasPayerSignature).toString()
+            );
+            expect(json.signature).toBe(HexUInt.of(mockSignature).toString());
+        });
+
+        test('ok <- handle zero dynamic fees correctly', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: 1,
                 clauses: [],
                 dependsOn: null,
-                expiration: validExpiration,
-                gas: validGas,
-                gasPriceCoef: validGasPriceCoef,
-                nonce: validNonce
-            });
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: 0n,
+                nonce: mockNonce,
+                maxFeePerGas: 0n,
+                maxPriorityFeePerGas: 0n
+            };
 
-            const json = request.toJSON();
+            expect(() => new TransactionRequest(params)).toThrowError(
+                InvalidTransactionField
+            );
+        });
+
+        test('ok <- handle positive dynamic fees correctly', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                nonce: mockNonce,
+                maxFeePerGas: mockMaxFeePerGas,
+                maxPriorityFeePerGas: mockMaxPriorityFeePerGas
+            };
+
+            const transaction = new TransactionRequest(params);
+            const json = transaction.toJSON();
+
+            expect(json.maxFeePerGas).toBe(mockMaxFeePerGas);
+            expect(json.maxPriorityFeePerGas).toBe(mockMaxPriorityFeePerGas);
+        });
+
+        test('ok <- handle empty clauses array', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            };
+
+            const transaction = new TransactionRequest(params);
+            const json = transaction.toJSON();
 
             expect(json.clauses).toEqual([]);
-            expect(Array.isArray(json.clauses)).toBe(true);
         });
 
-        test('ok <- should convert TransactionRequest to JSON with multiple clauses', () => {
-            const clause1 = new Clause(
-                Address.of('0x9e7911de289c3c856ce7f421034f66b6cde49c39'),
-                1n,
-                null,
-                null,
-                null
-            );
-            const clause2 = new Clause(
-                Address.of('0x8e7911de289c3c856ce7f421034f66b6cde49c38'),
-                2n,
-                HexUInt.of('0x12345'),
-                'Test clause',
-                null
-            );
-
-            const request = new TransactionRequest({
-                blockRef: validBlockRef,
-                chainTag: validChainTag,
+        test('ok <- handle multiple clauses', () => {
+            const clause1 = new Clause(mockAddress, mockValue.bi);
+            const clause2 = new Clause(mockBeggar, mockValue.bi * 2n);
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: 1,
                 clauses: [clause1, clause2],
                 dependsOn: null,
-                expiration: validExpiration,
-                gas: validGas,
-                gasPriceCoef: validGasPriceCoef,
-                nonce: validNonce
-            });
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            };
 
-            const json = request.toJSON();
+            const transaction = new TransactionRequest(params);
+            const json = transaction.toJSON();
 
             expect(json.clauses).toHaveLength(2);
             expect(json.clauses[0]).toEqual(clause1.toJSON());
             expect(json.clauses[1]).toEqual(clause2.toJSON());
         });
+    });
 
-        test('ok <- should convert TransactionRequest to JSON with default isIntendedToBeSponsored', () => {
-            const request = new TransactionRequest({
-                blockRef: validBlockRef,
-                chainTag: validChainTag,
-                clauses: validClauses,
+    describe('edge cases', () => {
+        test('ok <- handle transaction with all optional fields undefined', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [],
                 dependsOn: null,
-                expiration: validExpiration,
-                gas: validGas,
-                gasPriceCoef: validGasPriceCoef,
-                nonce: validNonce
-                // isIntendedToBeSponsored not provided, should default to false
-            });
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            };
 
-            const json = request.toJSON();
+            const transaction = new TransactionRequest(params);
 
-            expect(json.isIntendedToBeSponsored).toBe(false);
+            expect(transaction.beggar).toBeUndefined();
+            expect(transaction.dependsOn).toBeNull();
+            expect(transaction.maxFeePerGas).toBeUndefined();
+            expect(transaction.maxPriorityFeePerGas).toBeUndefined();
+            expect(transaction.isDynamicFee).toBe(false);
+            expect(transaction.isIntendedToBeSponsored).toBe(false);
+            expect(transaction.isSigned).toBe(false);
         });
 
-        test('ok <- should convert TransactionRequest to JSON with bigint values preserved', () => {
-            const largeGas = 999999999999999999n;
-            const largeGasPriceCoef = 123456789n;
-
-            const request = new TransactionRequest({
-                blockRef: validBlockRef,
-                chainTag: validChainTag,
-                clauses: validClauses,
+        test('ok <- handle very large gas values', () => {
+            const largeGas = BigInt(Number.MAX_SAFE_INTEGER) * 2n;
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [],
                 dependsOn: null,
-                expiration: validExpiration,
+                expiration: mockExpiration,
                 gas: largeGas,
-                gasPriceCoef: largeGasPriceCoef,
-                nonce: validNonce
-            });
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce
+            };
 
-            const json = request.toJSON();
-
-            expect(json.gas).toBe(largeGas);
-            expect(json.gasPriceCoef).toBe(largeGasPriceCoef);
-            expect(typeof json.gas).toBe('bigint');
-            expect(typeof json.gasPriceCoef).toBe('bigint');
+            const transaction = new TransactionRequest(params);
+            expect(transaction.gas).toBe(largeGas);
+            expect(transaction.toJSON().gas).toBe(largeGas);
         });
 
-        test('ok <- should convert TransactionRequest to JSON with all string values properly formatted', () => {
-            const request = new TransactionRequest({
-                blockRef: validBlockRef,
-                chainTag: validChainTag,
-                clauses: validClauses,
-                dependsOn: validDependsOn,
-                expiration: validExpiration,
-                gas: validGas,
-                gasPriceCoef: validGasPriceCoef,
-                nonce: validNonce
-            });
+        test('ok <- handle zero values correctly', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: 0,
+                clauses: [],
+                dependsOn: null,
+                expiration: 0,
+                gas: 0n,
+                gasPriceCoef: 0n,
+                nonce: 0
+            };
 
-            const json = request.toJSON();
-
-            expect(typeof json.blockRef).toBe('string');
-            expect(typeof json.dependsOn).toBe('string');
-            expect(json.blockRef.startsWith('0x')).toBe(true);
-            expect(json.dependsOn?.startsWith('0x')).toBe(true);
-        });
-
-        test('ok <- should produce JSON that satisfies TransactionRequestJSON interface', () => {
-            const request = new TransactionRequest({
-                blockRef: validBlockRef,
-                chainTag: validChainTag,
-                clauses: validClauses,
-                dependsOn: validDependsOn,
-                expiration: validExpiration,
-                gas: validGas,
-                gasPriceCoef: validGasPriceCoef,
-                nonce: validNonce,
-                isIntendedToBeSponsored: true
-            });
-
-            const json = request.toJSON();
-
-            // Verify all required properties exist and have correct types
-            expect(json).toHaveProperty('blockRef');
-            expect(json).toHaveProperty('chainTag');
-            expect(json).toHaveProperty('clauses');
-            expect(json).toHaveProperty('dependsOn');
-            expect(json).toHaveProperty('expiration');
-            expect(json).toHaveProperty('gas');
-            expect(json).toHaveProperty('gasPriceCoef');
-            expect(json).toHaveProperty('nonce');
-            expect(json).toHaveProperty('isIntendedToBeSponsored');
-
-            expect(typeof json.blockRef).toBe('string');
-            expect(typeof json.chainTag).toBe('number');
-            expect(Array.isArray(json.clauses)).toBe(true);
-            expect(
-                typeof json.dependsOn === 'string' || json.dependsOn === null
-            ).toBe(true);
-            expect(typeof json.expiration).toBe('number');
-            expect(typeof json.gas).toBe('bigint');
-            expect(typeof json.gasPriceCoef).toBe('bigint');
-            expect(typeof json.nonce).toBe('number');
-            expect(typeof json.isIntendedToBeSponsored).toBe('boolean');
+            const transaction = new TransactionRequest(params);
+            expect(transaction.chainTag).toBe(0);
+            expect(transaction.expiration).toBe(0);
+            expect(transaction.gas).toBe(0n);
+            expect(transaction.gasPriceCoef).toBe(0n);
+            expect(transaction.nonce).toBe(0);
         });
     });
 });
