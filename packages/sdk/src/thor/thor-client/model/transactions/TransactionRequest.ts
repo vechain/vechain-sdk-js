@@ -1,7 +1,16 @@
 import { type Clause } from './Clause';
-import { type Address, Blake2b256, type Hex, HexUInt } from '@common';
-import { type TransactionRequestJSON } from '@thor/thorest/json';
+import {
+    type Address,
+    Blake2b256,
+    type Hex,
+    HexUInt,
+    InvalidTransactionField
+} from '@common';
 import { TransactionRequestRLPCodec } from '@thor/thor-client/model/transactions/TransactionRequestRLPCodec';
+import { type TransactionRequestJSON } from '@thor/thorest/json';
+
+const FQP =
+    'packages/sdk/src/thor/thor-client/model/transactions/TransactionRequest.ts!';
 
 /**
  * Represents the parameters required to create a {@link TransactionRequest} instance.
@@ -143,7 +152,7 @@ class TransactionRequest implements TransactionRequestParam {
 
     /**
      * The transaction signature, equal to
-     * - originSignature, if the transaction is not inteded to be sponsored, hence beggar is undefined;
+     * - originSignature, if the transaction is not intended to be sponsored, hence beggar is undefined;
      * - originSignature concatenated with gasPayerSignature, if the transaction is intended to be sponsored, hence beggar is defined.
      */
     public readonly signature: Uint8Array;
@@ -164,23 +173,34 @@ class TransactionRequest implements TransactionRequestParam {
         gasPayerSignature?: Uint8Array,
         signature?: Uint8Array
     ) {
-        this.beggar = params.beggar;
-        this.blockRef = params.blockRef;
-        this.chainTag = params.chainTag;
-        this.clauses = params.clauses;
-        this.dependsOn = params.dependsOn;
-        this.expiration = params.expiration;
-        this.gas = params.gas;
-        this.gasPriceCoef = params.gasPriceCoef;
-        this.nonce = params.nonce;
-        this.maxFeePerGas = params.maxFeePerGas;
-        this.maxPriorityFeePerGas = params.maxPriorityFeePerGas;
-        // Defensive copy of the signatures to prevent accidental mutation.
-        this.originSignature = new Uint8Array(originSignature ?? []);
-        // Defensive copy of the signatures to prevent accidental mutation.
-        this.gasPayerSignature = new Uint8Array(gasPayerSignature ?? []);
-        // Defensive copy of the signatures to prevent accidental mutation.
-        this.signature = new Uint8Array(signature ?? []);
+        if (
+            TransactionRequest.isLegacy(params) ||
+            TransactionRequest.isDynamicFee(params)
+        ) {
+            this.beggar = params.beggar;
+            this.blockRef = params.blockRef;
+            this.chainTag = params.chainTag;
+            this.clauses = params.clauses;
+            this.dependsOn = params.dependsOn;
+            this.expiration = params.expiration;
+            this.gas = params.gas;
+            this.gasPriceCoef = params.gasPriceCoef;
+            this.nonce = params.nonce;
+            this.maxFeePerGas = params.maxFeePerGas;
+            this.maxPriorityFeePerGas = params.maxPriorityFeePerGas;
+            // Defensive copy of the signatures to prevent accidental mutation.
+            this.originSignature = new Uint8Array(originSignature ?? []);
+            // Defensive copy of the signatures to prevent accidental mutation.
+            this.gasPayerSignature = new Uint8Array(gasPayerSignature ?? []);
+            // Defensive copy of the signatures to prevent accidental mutation.
+            this.signature = new Uint8Array(signature ?? []);
+        } else {
+            throw new InvalidTransactionField(
+                `${FQP}constructor(params: TransactionRequestParam, originSignature? Uint8Array, gasPayerSignature? Uint8Array, signature?: Uint8Array)`,
+                'Invalid parameters: or gasPriceCoef >= 0 or maxFeePerGas > 0 or maxPriorityFeePerGas >= 0',
+                { params }
+            );
+        }
     }
 
     /**
@@ -219,14 +239,56 @@ class TransactionRequest implements TransactionRequestParam {
 
     /**
      * Determines if this is a dynamic fee transaction (EIP-1559).
-     * A transaction is considered dynamic if it has maxFeePerGas or maxPriorityFeePerGas set.
+     * A transaction is considered dynamic if it has
+     * - `gasPriceCoef` undefined, and
+     * - `maxFeePerGas` > 0, and
+     * - `maxPriorityFeePerGas` >= 0.
      *
      * @return {boolean} `true` if this is a dynamic fee transaction, `false` for legacy.
      */
     public get isDynamicFee(): boolean {
+        return TransactionRequest.isDynamicFee(this);
+    }
+
+    /**
+     * Determines if the fee configuration of a transaction request is dynamic (EIP-1559).
+     *
+     * @param {TransactionRequestParam} params - The transaction request parameters to evaluate for fee configuration.
+     * @return {boolean} True if the transaction uses dynamic fee configuration, otherwise false.
+     */
+    private static isDynamicFee(params: TransactionRequestParam): boolean {
         return (
-            this.maxFeePerGas !== undefined ||
-            this.maxPriorityFeePerGas !== undefined
+            params.maxFeePerGas !== undefined &&
+            params.maxFeePerGas > 0n &&
+            params.maxPriorityFeePerGas !== undefined &&
+            params.maxPriorityFeePerGas >= 0n &&
+            params.gasPriceCoef === undefined
+        );
+    }
+
+    /**
+     * Determines if this is a legacy transaction (pre-EIP-1559).
+     * A transaction is considered legacy if it has
+     * - `gasPriceCoef` defined, and
+     * - `maxFeePerGas` is undefined, and
+     * - `maxPriorityFeePerGas` is undefined.
+     */
+    public get isLegacy(): boolean {
+        return TransactionRequest.isLegacy(this);
+    }
+
+    /**
+     * Determines whether a given transaction request parameter is using legacy gas pricing.
+     *
+     * @param {TransactionRequestParam} params - The transaction request parameters to evaluate.
+     * @return {boolean} Returns true if the transaction request is considered legacy, otherwise false.
+     */
+    private static isLegacy(params: TransactionRequestParam): boolean {
+        return (
+            params.maxFeePerGas === undefined &&
+            params.maxPriorityFeePerGas === undefined &&
+            params.gasPriceCoef !== undefined &&
+            params.gasPriceCoef >= 0n
         );
     }
 
@@ -278,18 +340,8 @@ class TransactionRequest implements TransactionRequestParam {
                     ? HexUInt.of(this.gasPayerSignature).toString()
                     : undefined,
             gasPriceCoef: this.gasPriceCoef,
-            maxFeePerGas:
-                this.maxFeePerGas === undefined
-                    ? undefined
-                    : this.maxFeePerGas > 0n
-                      ? this.maxFeePerGas
-                      : undefined,
-            maxPriorityFeePerGas:
-                this.maxPriorityFeePerGas === undefined
-                    ? undefined
-                    : this.maxPriorityFeePerGas > 0n
-                      ? this.maxPriorityFeePerGas
-                      : undefined,
+            maxFeePerGas: this.maxFeePerGas,
+            maxPriorityFeePerGas: this.maxPriorityFeePerGas,
             nonce: this.nonce,
             originSignature:
                 this.originSignature.length > 0

@@ -123,7 +123,6 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
                 dependsOn: null,
                 expiration: 32,
                 gas: 25000n,
-                gasPriceCoef: 0n, // Can be 0 for dynamic fee
                 maxFeePerGas: 10027000000000n, // 20 Gwei
                 maxPriorityFeePerGas: 27000000000n, // 5 Gwei
                 // eslint-disable-next-line sonarjs/pseudo-random
@@ -180,9 +179,8 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
                 dependsOn: null,
                 expiration: 32,
                 gas: 25000n,
-                gasPriceCoef: 0n,
-                maxFeePerGas: 10027000000000n, // 15 Gwei
-                // No maxPriorityFeePerGas
+                maxFeePerGas: 10027000000000n, // 15 Gwei,
+                maxPriorityFeePerGas: 0n,
                 // eslint-disable-next-line sonarjs/pseudo-random
                 nonce: Math.floor(Math.random() * 1000000)
             });
@@ -190,7 +188,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
             // Should still be detected as dynamic fee
             expect(dynamicTx.isDynamicFee).toBe(true);
             expect(dynamicTx.maxFeePerGas).toBe(10027000000000n);
-            expect(dynamicTx.maxPriorityFeePerGas).toBeUndefined();
+            expect(dynamicTx.maxPriorityFeePerGas).not.toBeUndefined();
 
             // Sign and encode
             const signedTx = fromSigner.sign(dynamicTx);
@@ -276,7 +274,6 @@ describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
                 dependsOn: null,
                 expiration: 32,
                 gas: 25000n,
-                gasPriceCoef: 0n,
                 maxFeePerGas: 10027000000000n,
                 maxPriorityFeePerGas: 27000000000n,
                 // eslint-disable-next-line sonarjs/pseudo-random

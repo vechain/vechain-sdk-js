@@ -209,7 +209,7 @@ class TransactionRequestRLPCodec {
                 decoded.gasPriceCoef !== null &&
                 decoded.gasPriceCoef !== undefined
                     ? BigInt(decoded.gasPriceCoef as number)
-                    : 0n,
+                    : undefined,
             gasPayerSignature: decoded.gasPayerSignature as Uint8Array,
             maxFeePerGas:
                 decoded.maxFeePerGas !== undefined &&

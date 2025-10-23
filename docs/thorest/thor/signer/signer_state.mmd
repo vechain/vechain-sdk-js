@@ -3,7 +3,7 @@ title: TransactionRequest State Diagram - VIP-191
 ---
 stateDiagram-v2
     state "TransactionRequest" as TXR
-    state IS_INTENDED_TO_BE_SPONORED <<fork>>
+    state IS_INTENDED_TO_BE_SPONSORED <<fork>>
     state "TransactionRequest\n.beggar = NULL" as TXR_BF
     note left of TXR_BF
         Not intended to be sponsored.
@@ -30,9 +30,9 @@ stateDiagram-v2
     state SIGNED_AND_SPONSORED <<join>>
     state "TransactionRequest\n.beggar = ORIGIN\n.signature = ORIGIN & GAS PAYER SIGNATURES\n.isSigned=true" as STXR_BT_OS_GPS
     [*] --> TXR
-    TXR --> IS_INTENDED_TO_BE_SPONORED
-    IS_INTENDED_TO_BE_SPONORED --> TXR_BF
-    IS_INTENDED_TO_BE_SPONORED --> TXR_BT
+    TXR --> IS_INTENDED_TO_BE_SPONSORED
+    IS_INTENDED_TO_BE_SPONSORED --> TXR_BF
+    IS_INTENDED_TO_BE_SPONSORED --> TXR_BT
     TXR_BF --> TXR_BF_OS: ORIGIN signs
     TXR_BF_OS --> SIGNED_NOT_SPONSORED
     SIGNED_NOT_SPONSORED -->  STXR_BF_OS

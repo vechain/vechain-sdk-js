@@ -171,7 +171,6 @@ describe('PrivateKeySigner UNIT test', () => {
                 dependsOn: null,
                 expiration: mockExpiration,
                 gas: mockGas,
-                gasPriceCoef: 0n, // Dynamic fee transactions use 0
                 maxFeePerGas: mockMaxFeePerGas,
                 maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
                 nonce: mockNonce
@@ -202,7 +201,6 @@ describe('PrivateKeySigner UNIT test', () => {
                 dependsOn: null,
                 expiration: mockExpiration,
                 gas: mockGas,
-                gasPriceCoef: 0n, // Dynamic fee transactions use 0
                 maxFeePerGas: mockMaxFeePerGas,
                 maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
                 nonce: mockNonce
@@ -249,7 +247,6 @@ describe('PrivateKeySigner UNIT test', () => {
                 dependsOn: null,
                 expiration: mockExpiration,
                 gas: mockGas,
-                gasPriceCoef: 0n, // Dynamic fee transactions use 0
                 maxFeePerGas: mockMaxFeePerGas,
                 maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
                 nonce: mockNonce
@@ -294,7 +291,6 @@ describe('PrivateKeySigner UNIT test', () => {
                 dependsOn: null,
                 expiration: mockExpiration,
                 gas: mockGas,
-                gasPriceCoef: 0n, // Dynamic fee transactions use 0
                 maxFeePerGas: mockMaxFeePerGas,
                 maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
                 nonce: mockNonce
