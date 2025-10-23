@@ -291,7 +291,7 @@ class TransactionRequestRLPCodec {
      *
      * @param {TransactionRequest} transactionRequest - The transaction request object to be encoded.
      * @param {boolean} [isToHash=false] - Specifies whether the encoded output should be prepared for hashing.
-     *        If true, the ecoding ignore the `signature` field and only encodes the `clauses` and `reserved` fields.
+     *        If true, the encoding ignore the `signature` field and only encodes the `clauses` and `reserved` fields.
      *        If false, the encoding includes the `signature` field.
      * @return {Uint8Array} The serialized and encoded transaction request.
      */
