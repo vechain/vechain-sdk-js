@@ -19,7 +19,7 @@ import {
     RetrieveTransactionReceipt,
     SendTransaction
 } from '@thor/thorest';
-import { TransactionRequestRLPCodec } from '../model/transactions/TransactionRequestRLPCodec';
+import { TransactionRequestRLPCodec } from '../rlp/TransactionRequestRLPCodec';
 import { type TransactionRequest } from '@thor/thor-client/model/transactions/TransactionRequest';
 
 class TransactionsModule extends AbstractThorModule {
