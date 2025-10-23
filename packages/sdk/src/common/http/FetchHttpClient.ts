@@ -22,6 +22,21 @@ interface AbortSignalWithCleanup {
 }
 
 /**
+ * Interface for errors that are similar to socket errors.
+ */
+interface SocketLikeError {
+    code?: string;
+    errno?: string | number;
+    name?: string;
+    message?: string;
+    cause?: {
+        code?: string;
+        errno?: string | number;
+        name?: string;
+    };
+}
+
+/**
  * HTTP client implementation using the Fetch API.
  * Provides methods for making GET and POST requests to VeChain Thor networks.
  *
@@ -33,6 +48,8 @@ interface AbortSignalWithCleanup {
  */
 class FetchHttpClient implements HttpClient {
     private static readonly PATH_SEPARATOR = '/';
+    private static readonly DEFAULT_RETRY_SOCKET_ERROR = true;
+    private static readonly DEFAULT_RETRY_SOCKET_ERROR_COUNT = 3;
     public readonly baseURL: URL;
     public readonly options: HttpOptions;
 
@@ -42,6 +59,10 @@ class FetchHttpClient implements HttpClient {
 
     // Cookie store
     private readonly cookieStore: CookieStore;
+
+    // Socket retry settings
+    private readonly shouldRetrySocketError: boolean;
+    private readonly retrySocketErrorCount: number;
 
     constructor(
         baseURL: URL,
@@ -62,6 +83,17 @@ class FetchHttpClient implements HttpClient {
         this.fetchFunction = fetchFunction;
         this.options = httpOptions;
         this.cookieStore = new CookieStore();
+        // initialize socket error retry settings
+        if (this.options.retrySocketError === undefined) {
+            this.options.retrySocketError =
+                FetchHttpClient.DEFAULT_RETRY_SOCKET_ERROR;
+            this.options.retrySockerErrorCount =
+                FetchHttpClient.DEFAULT_RETRY_SOCKET_ERROR_COUNT;
+        }
+        this.shouldRetrySocketError = this.options.retrySocketError ?? false;
+        this.retrySocketErrorCount = this.shouldRetrySocketError
+            ? (this.options.retrySockerErrorCount ?? 0)
+            : 0;
     }
 
     /**
@@ -174,81 +206,114 @@ class FetchHttpClient implements HttpClient {
             init?: RequestInit
         ) => Request;
         const abortSignal = this.createAbortSignal(); // create the abort signal
-        try {
-            const requestInit: RequestInit = {
-                method: 'GET',
-                headers: this.buildHeaders(),
-                signal: abortSignal?.signal ?? null
-            };
-            const request = new RequestClass(pathUrl, requestInit);
-            const response = await this.fetchFunction(
-                this.options.onRequest?.(request) ?? request
-            );
-            await this.logResponse(request, response);
-
-            // Check for non-200 responses and raise HttpException
-            if (!response.ok) {
-                const responseBody = await response.text();
-                throw new HttpException(
-                    `${FQP}get(httpPath: HttpPath, httpQuery: HttpQuery): Promise<Response>`,
-                    `HTTP request failed with status ${response.status}`,
-                    response.status,
-                    response.statusText,
-                    responseBody,
-                    response.url,
-                    {
-                        method: 'GET',
-                        path: httpPath.path,
-                        query: httpQuery.query
-                    }
+        // socket error retry counter
+        let retryCount = 0;
+        // execute request at least once, then retry if a socket error is encountered
+        do {
+            try {
+                const requestInit: RequestInit = {
+                    method: 'GET',
+                    headers: this.buildHeaders(),
+                    signal: abortSignal?.signal ?? null
+                };
+                const request = new RequestClass(pathUrl, requestInit);
+                const response = await this.fetchFunction(
+                    this.options.onRequest?.(request) ?? request
                 );
-            }
+                await this.logResponse(request, response);
 
-            return (
-                this.options.onResponse?.(this.processResponse(response)) ??
-                response
-            );
-        } catch (error) {
-            // Handle network errors and timeouts
-            if (error instanceof HttpException) {
-                throw error; // Re-throw HTTP exceptions
-            }
+                // Check for non-200 responses and raise HttpException
+                if (!response.ok) {
+                    const responseBody = await response.text();
+                    throw new HttpException(
+                        `${FQP}get(httpPath: HttpPath, httpQuery: HttpQuery): Promise<Response>`,
+                        `HTTP request failed with status ${response.status}`,
+                        response.status,
+                        response.statusText,
+                        responseBody,
+                        response.url,
+                        {
+                            method: 'GET',
+                            path: httpPath.path,
+                            query: httpQuery.query
+                        }
+                    );
+                }
 
-            // Handle abort signal (timeout)
-            if (error instanceof Error && error.name === 'AbortError') {
+                return (
+                    this.options.onResponse?.(this.processResponse(response)) ??
+                    response
+                );
+            } catch (error) {
+                // Check for socket errors and retry if enabled
+                const isSocketError =
+                    this.shouldRetrySocketError && this.isSocketError(error);
+                if (isSocketError) {
+                    retryCount++;
+                    continue;
+                }
+
+                // Handle network errors and timeouts
+                if (error instanceof HttpException) {
+                    throw error; // Re-throw HTTP exceptions
+                }
+
+                // Handle abort signal (timeout)
+                if (error instanceof Error && error.name === 'AbortError') {
+                    throw new HttpNetworkException(
+                        `${FQP}get(httpPath: HttpPath, httpQuery: HttpQuery): Promise<Response>`,
+                        'Request timed out',
+                        'timeout',
+                        pathUrl.toString(),
+                        {
+                            method: 'GET',
+                            path: httpPath.path,
+                            query: httpQuery.query,
+                            timeout: this.options.timeout
+                        },
+                        error
+                    );
+                }
+
+                // Handle other network errors
                 throw new HttpNetworkException(
                     `${FQP}get(httpPath: HttpPath, httpQuery: HttpQuery): Promise<Response>`,
-                    'Request timed out',
-                    'timeout',
+                    error instanceof Error
+                        ? error.message
+                        : 'Network request failed',
+                    'connection',
                     pathUrl.toString(),
                     {
                         method: 'GET',
                         path: httpPath.path,
-                        query: httpQuery.query,
-                        timeout: this.options.timeout
+                        query: httpQuery.query
                     },
-                    error
+                    error instanceof Error ? error : undefined
                 );
+            } finally {
+                abortSignal?.cleanup(); // cleanup the abort signal
             }
-
-            // Handle other network errors
-            throw new HttpNetworkException(
-                `${FQP}get(httpPath: HttpPath, httpQuery: HttpQuery): Promise<Response>`,
-                error instanceof Error
-                    ? error.message
-                    : 'Network request failed',
-                'connection',
-                pathUrl.toString(),
-                {
-                    method: 'GET',
-                    path: httpPath.path,
-                    query: httpQuery.query
-                },
-                error instanceof Error ? error : undefined
-            );
-        } finally {
-            abortSignal?.cleanup(); // cleanup the abort signal
-        }
+        } while (retryCount < this.retrySocketErrorCount);
+        // if we get here, we have retried the maximum number of times and failed
+        // log the error and throw an exception
+        log.error({
+            message: 'Http Socket error detected after retries',
+            context: {
+                retryCount,
+                retrySocketErrorCount: this.retrySocketErrorCount
+            }
+        });
+        throw new HttpNetworkException(
+            `${FQP}get(httpPath: HttpPath, httpQuery: HttpQuery): Promise<Response>`,
+            'Http Socket error detected after retries',
+            'connection',
+            pathUrl.toString(),
+            {
+                method: 'GET',
+                path: httpPath.path,
+                query: httpQuery.query
+            }
+        );
     }
 
     /**
@@ -271,88 +336,120 @@ class FetchHttpClient implements HttpClient {
             init?: RequestInit
         ) => Request;
         const abortSignal = this.createAbortSignal(); // create the abort signal
-        try {
-            const requestInit: RequestInit = {
-                body:
-                    body !== undefined
-                        ? fastJsonStableStringify(body)
-                        : undefined,
-                method: 'POST',
-                headers: this.buildHeaders(),
-                signal: abortSignal?.signal ?? null
-            };
-            const request = new RequestClass(pathUrl, requestInit);
-            const response = await this.fetchFunction(
-                this.options.onRequest?.(request) ?? request
-            );
-            await this.logResponse(request, response);
-
-            // Check for non-200 responses and raise HttpException
-            if (!response.ok) {
-                const responseBody = await response.text();
-                throw new HttpException(
-                    `${FQP}post(httpPath: HttpPath, httpQuery: HttpQuery, body?: unknown): Promise<Response>`,
-                    `HTTP request failed with status ${response.status}`,
-                    response.status,
-                    response.statusText,
-                    responseBody,
-                    response.url,
-                    {
-                        method: 'POST',
-                        path: httpPath.path,
-                        query: httpQuery.query,
-                        body
-                    }
+        // socket error retry counter
+        let retryCount = 0;
+        // execute request at least once, then retry if a socket error is encountered
+        do {
+            try {
+                const requestInit: RequestInit = {
+                    body:
+                        body !== undefined
+                            ? fastJsonStableStringify(body)
+                            : undefined,
+                    method: 'POST',
+                    headers: this.buildHeaders(),
+                    signal: abortSignal?.signal ?? null
+                };
+                const request = new RequestClass(pathUrl, requestInit);
+                const response = await this.fetchFunction(
+                    this.options.onRequest?.(request) ?? request
                 );
-            }
+                await this.logResponse(request, response);
 
-            return (
-                this.options.onResponse?.(this.processResponse(response)) ??
-                response
-            );
-        } catch (error) {
-            // Handle network errors and timeouts
-            if (error instanceof HttpException) {
-                throw error; // Re-throw HTTP exceptions
-            }
+                // Check for non-200 responses and raise HttpException
+                if (!response.ok) {
+                    const responseBody = await response.text();
+                    throw new HttpException(
+                        `${FQP}post(httpPath: HttpPath, httpQuery: HttpQuery, body?: unknown): Promise<Response>`,
+                        `HTTP request failed with status ${response.status}`,
+                        response.status,
+                        response.statusText,
+                        responseBody,
+                        response.url,
+                        {
+                            method: 'POST',
+                            path: httpPath.path,
+                            query: httpQuery.query,
+                            body
+                        }
+                    );
+                }
 
-            // Handle abort signal (timeout)
-            if (error instanceof Error && error.name === 'AbortError') {
+                return (
+                    this.options.onResponse?.(this.processResponse(response)) ??
+                    response
+                );
+            } catch (error) {
+                // Check for socket errors and retry if enabled
+                const isSocketError =
+                    this.shouldRetrySocketError && this.isSocketError(error);
+                if (isSocketError) {
+                    retryCount++;
+                    continue;
+                }
+                // Handle network errors and timeouts
+                if (error instanceof HttpException) {
+                    throw error; // Re-throw HTTP exceptions
+                }
+
+                // Handle abort signal (timeout)
+                if (error instanceof Error && error.name === 'AbortError') {
+                    throw new HttpNetworkException(
+                        `${FQP}post(httpPath: HttpPath, httpQuery: HttpQuery, body?: unknown): Promise<Response>`,
+                        'Request timed out',
+                        'timeout',
+                        pathUrl.toString(),
+                        {
+                            method: 'POST',
+                            path: httpPath.path,
+                            query: httpQuery.query,
+                            body,
+                            timeout: this.options.timeout
+                        },
+                        error
+                    );
+                }
+
+                // Handle other network errors
                 throw new HttpNetworkException(
                     `${FQP}post(httpPath: HttpPath, httpQuery: HttpQuery, body?: unknown): Promise<Response>`,
-                    'Request timed out',
-                    'timeout',
+                    error instanceof Error
+                        ? error.message
+                        : 'Network request failed',
+                    'connection',
                     pathUrl.toString(),
                     {
                         method: 'POST',
                         path: httpPath.path,
                         query: httpQuery.query,
-                        body,
-                        timeout: this.options.timeout
+                        body
                     },
-                    error
+                    error instanceof Error ? error : undefined
                 );
+            } finally {
+                abortSignal?.cleanup(); // cleanup the abort signal
             }
-
-            // Handle other network errors
-            throw new HttpNetworkException(
-                `${FQP}post(httpPath: HttpPath, httpQuery: HttpQuery, body?: unknown): Promise<Response>`,
-                error instanceof Error
-                    ? error.message
-                    : 'Network request failed',
-                'connection',
-                pathUrl.toString(),
-                {
-                    method: 'POST',
-                    path: httpPath.path,
-                    query: httpQuery.query,
-                    body
-                },
-                error instanceof Error ? error : undefined
-            );
-        } finally {
-            abortSignal?.cleanup(); // cleanup the abort signal
-        }
+        } while (retryCount < this.retrySocketErrorCount);
+        // if we get here, we have retried the maximum number of times and failed
+        // log the error and throw an exception
+        log.error({
+            message: 'Http Socket error detected after retries',
+            context: {
+                retryCount,
+                retrySocketErrorCount: this.retrySocketErrorCount
+            }
+        });
+        throw new HttpNetworkException(
+            `${FQP}post(httpPath: HttpPath, httpQuery: HttpQuery, body?: unknown): Promise<Response>`,
+            'Http Socket error detected after retries',
+            'connection',
+            pathUrl.toString(),
+            {
+                method: 'POST',
+                path: httpPath.path,
+                query: httpQuery.query
+            }
+        );
     }
 
     /**
@@ -398,8 +495,35 @@ class FetchHttpClient implements HttpClient {
             };
             log.raw(logItem);
         } catch (err) {
-            console.error('❌ FetchHttpClient.logResponse failed:', err);
+            log.error({
+                message: 'FetchHttpClient.logResponse failed',
+                context: { error: err }
+            });
         }
+    }
+
+    /**
+     * Checks if the error is a socket error.
+     * @param err - The error to check.
+     * @returns True if the error is a socket error, false otherwise.
+     * @remarks Node fetch only
+     */
+    private isSocketError(err: unknown): boolean {
+        const e = err as SocketLikeError;
+        const isSocketError =
+            e?.code === 'ECONNRESET' ||
+            e?.errno === 'ECONNRESET' ||
+            (e?.message?.toLowerCase?.()?.includes('socket hang up') ??
+                false) ||
+            e?.name === 'SocketError' ||
+            e?.cause?.code === 'ECONNRESET' ||
+            e?.cause?.errno === 'ECONNRESET' ||
+            e?.cause?.name === 'SocketError';
+        log.warn({
+            message: 'Http Socket error detected',
+            context: { error: err }
+        });
+        return isSocketError;
     }
 }
 

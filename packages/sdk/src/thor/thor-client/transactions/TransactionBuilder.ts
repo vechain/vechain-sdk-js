@@ -2,8 +2,8 @@ import { IllegalArgumentError } from '@common';
 import { type Address, BlockRef, Hex, Revision } from '@common/vcdm';
 import { type EstimateGasOptions, type ThorClient } from '@thor/thor-client';
 import {
-    TransactionRequest,
     type Clause,
+    TransactionRequest,
     type TransactionRequestParam
 } from '@thor/thor-client/model/transactions';
 import { RetrieveRegularBlock } from '@thor/thorest/blocks';
@@ -18,6 +18,7 @@ class TransactionBuilder {
     private constructor(thorClient: ThorClient) {
         this.thorClient = thorClient;
         this.params = {
+            beggar: undefined,
             blockRef: Hex.of('0x0'),
             chainTag: 0,
             clauses: [],
@@ -26,7 +27,6 @@ class TransactionBuilder {
             gas: 0n,
             gasPriceCoef: undefined,
             nonce: 0,
-            isIntendedToBeSponsored: false,
             maxFeePerGas: undefined,
             maxPriorityFeePerGas: undefined
         } satisfies TransactionRequestParam;
@@ -37,6 +37,11 @@ class TransactionBuilder {
     }
 
     // with methods for each parameter
+
+    public withBeggar(v: Address): this {
+        this.params.beggar = v;
+        return this;
+    }
 
     /**
      * Sets the block reference for the transaction.
@@ -118,16 +123,6 @@ class TransactionBuilder {
      */
     public withNonce(nonce: number): this {
         this.params.nonce = nonce;
-        return this;
-    }
-
-    /**
-     * Sets the intended to be sponsored flag for the transaction.
-     * @param intent - The intended to be sponsored flag to set.
-     * @returns The builder instance.
-     */
-    public withIsIntendedToBeSponsored(intent: boolean): this {
-        this.params.isIntendedToBeSponsored = intent;
         return this;
     }
 

@@ -3,21 +3,16 @@ import {
     Blake2b256,
     InvalidPrivateKeyError,
     Secp256k1,
-    UnsupportedOperationError
+    VeChainSDKError
 } from '@common';
-import {
-    SignedTransactionRequest,
-    SponsoredTransactionRequest,
-    TransactionRequest
-} from '@thor/thor-client/model/transactions';
-import { RLPCodecTransactionRequest } from './RLPCodeTransactionRequest';
+import { TransactionRequest } from '@thor/thor-client/model/transactions';
 import { type Signer } from './Signer';
-import * as nc_utils from '@noble/curves/abstract/utils';
+import { concatBytes } from '@noble/curves/utils.js';
 
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/sdk/src/thor/thorest/signer/PrivateKeySigner.ts!';
+const FQP = 'packages/sdk/src/thor/signer/PrivateKeySigner.ts!';
 
 /**
  * The class implements the {@link Signer} interface,
@@ -54,7 +49,6 @@ class PrivateKeySigner implements Signer {
      *
      * @param {Uint8Array} privateKey The private key to be used for signing. Must be a valid Secp256k1 private key.
      * @throws {InvalidPrivateKeyError} Throws an error if the provided private key is invalid.
-     * @return {PrivateKeySigner} A new instance of PrivateKeySigner.
      */
     constructor(privateKey: Uint8Array) {
         if (Secp256k1.isValidPrivateKey(privateKey)) {
@@ -88,141 +82,177 @@ class PrivateKeySigner implements Signer {
     }
 
     /**
-     * Signs a transaction request using the private key associated with the signer.
+     * Finalizes the transaction request based on its sponsorship intent and signature availability.
      *
-     * @param {TransactionRequest} transactionRequest - The transaction request to be signed.
-     * @return {SignedTransactionRequest} A signed transaction request containing the original transaction details along with the generated signatures and the signing origin.
-     * @throws {InvalidPrivateKeyError} Throws an error if the private key is not set or invalid.
+     * - If the `transactionRequest` is intended to be sponsored and has both origin and gas payer signatures,
+     *   a new `TransactionRequest` is created, combining these signatures;
+     *   if only one or neither signature is present, the original `transactionRequest` is returned unmodified.
      *
-     * @remarks Security audited class, depends on
-     * - {@link Blake2b256.of};
-     * - {@link Secp256k1.sign}.
-     * - Follow links for additional security notes.
+     * - If the `transactionRequest` is not intended to be sponsored,
+     *   if the origin signature is present, a new `TransactionRequest` is created based on the origin signature;
+     *   otherwise, the original request is returned as-is.
+     *
+     * @param {TransactionRequest} transactionRequest - The transaction request to be finalized, which includes
+     * details of the transaction, its signatures (if available), and its sponsorship intent.
+     * @return {TransactionRequest} The finalized `TransactionRequest` object, updated based on the sponsorship
+     * intent and available signatures.
+     *
+     * @remarks Security auditable method, depends on
+     * - `concatBytes` from [noble-curves](https://github.com/paulmillr/noble-curves).
      */
-    private signTransactionRequest(
+    private static finalize(
         transactionRequest: TransactionRequest
-    ): SignedTransactionRequest {
+    ): TransactionRequest {
+        // Handle sponsored transactions
+        if (transactionRequest.isIntendedToBeSponsored) {
+            if (this.hasRequiredSignatures(transactionRequest)) {
+                return new TransactionRequest(
+                    transactionRequest,
+                    transactionRequest.originSignature,
+                    transactionRequest.gasPayerSignature,
+                    concatBytes(
+                        transactionRequest.originSignature,
+                        transactionRequest.gasPayerSignature
+                    )
+                );
+            }
+            return transactionRequest;
+        }
+        // Handle regular transactions
+        if (this.hasRequiredSignatures(transactionRequest)) {
+            return new TransactionRequest(
+                transactionRequest,
+                transactionRequest.originSignature,
+                transactionRequest.gasPayerSignature, // This is an empty array for regular transactions.
+                transactionRequest.originSignature
+            );
+        }
+        return transactionRequest;
+    }
+
+    /**
+     * Checks if the required signatures are present for the transaction type.
+     *
+     * @param transactionRequest - The transaction request to check
+     * @returns true if all required signatures are present, false otherwise
+     */
+    private static hasRequiredSignatures(
+        transactionRequest: TransactionRequest
+    ): boolean {
+        if (transactionRequest.isIntendedToBeSponsored) {
+            return (
+                transactionRequest.originSignature.length > 0 &&
+                transactionRequest.gasPayerSignature.length > 0
+            );
+        }
+        return transactionRequest.originSignature.length > 0;
+    }
+
+    /**
+     * Signs a transaction request.
+     * - If the transaction is intended to be sponsored,
+     *   - if the beggar address is equal to the signer address, signs as origin/sender;
+     *   - if the beggar address differs from the signer address, signs as gas payer.
+     * - If the transaction is not intended to be sponsored, signs as origin/sender.
+     *
+     * @param {TransactionRequest} transactionRequest - The transaction request object to be signed.
+     * @return {TransactionRequest} The signed transaction request object.
+     * @throws {VeChainSDKError} Throws an error if the signing process fails.
+     *
+     * @security Security auditable method, depends on
+     * - {@link PrivateKeySigner.finalize};
+     * - {@link PrivateKeySigner.signAsGasPayer};
+     * - {@link PrivateKeySigner.signAsOrigin}.
+     */
+    public sign(transactionRequest: TransactionRequest): TransactionRequest {
+        try {
+            if (transactionRequest.beggar !== undefined) {
+                if (transactionRequest.beggar.isEqual(this.address)) {
+                    return PrivateKeySigner.finalize(
+                        this.signAsOrigin(transactionRequest)
+                    );
+                }
+                return PrivateKeySigner.finalize(
+                    this.signAsGasPayer(transactionRequest)
+                );
+            }
+            return PrivateKeySigner.finalize(
+                this.signAsOrigin(transactionRequest)
+            );
+        } catch (error) {
+            throw new VeChainSDKError(
+                `${FQP}PrivateKeySigner.sign(transactionRequest: TransactionRequest): TransactionRequest`,
+                'unable to sign',
+                { transactionRequest },
+                error instanceof Error ? error : undefined
+            );
+        }
+    }
+
+    /**
+     * Signs the given transaction request as a gas payer using a private key.
+     *
+     * @param {TransactionRequest} transactionRequest - The transaction request to sign,
+     * which includes all necessary transaction details.
+     * @return {TransactionRequest} The signed transaction request with updated gas payer signature.
+     * @throws {InvalidPrivateKeyError} Throws an error if the private key is not available.
+     *
+     * @remarks Security auditable method, depends on
+     * - {@link Blake2b256.of};
+     * - `concatBytes` from [noble-curves](https://github.com/paulmillr/noble-curves);
+     * - {@link Secp256k1.sign}.
+     */
+    private signAsGasPayer(
+        transactionRequest: TransactionRequest
+    ): TransactionRequest {
         if (this.#privateKey !== null) {
-            const hash = Blake2b256.of(
-                RLPCodecTransactionRequest.encode(transactionRequest)
+            const gasPayerHash = Blake2b256.of(
+                concatBytes(
+                    transactionRequest.hash.bytes, // Origin hash.
+                    transactionRequest.beggar?.bytes ?? new Uint8Array()
+                )
             ).bytes;
-            const signature = Secp256k1.sign(hash, this.#privateKey);
-            return new SignedTransactionRequest({
-                ...transactionRequest,
-                origin: this.address,
-                originSignature: signature,
-                signature
-            });
+            return new TransactionRequest(
+                { ...transactionRequest },
+                transactionRequest.originSignature,
+                Secp256k1.sign(gasPayerHash, this.#privateKey),
+                transactionRequest.signature
+            );
         }
         throw new InvalidPrivateKeyError(
-            `${FQP}PrivateKeySigner.sign(transactionRequest: TransactionRequest): SignedTransactionRequest`,
+            `${FQP}PrivateKeySigner.signAsGasPayer(transactionRequest: TransactionRequest): TransactionRequest`,
             'no private key'
         );
     }
 
     /**
-     * Signs a given transaction request and returns the appropriate signed or sponsored transaction request.
+     * Signs the given transaction request as the origin using the private key.
      *
-     * @param {TransactionRequest | SignedTransactionRequest} transactionRequest - The transaction request to be signed.
-     * It can be either an unsigned transaction request or an already signed transaction request.
-     * - If the request is an unsigned transaction request, it will be signed using the private key associated with the signer as origin/sender of the transaction.
-     * - If the request is already signed, it will be sponsored and signed as gas payer, if it is eligible for sponsorship.
-     * @return {SignedTransactionRequest | SponsoredTransactionRequest} A signed or sponsored transaction request resulting from the provided transaction request.
+     * @param {TransactionRequest} transactionRequest - The transaction request to be signed.
+     * @return {TransactionRequest} A new instance of TransactionRequest with the origin signature included.
+     * @throws {InvalidPrivateKeyError} If no private key is available for signing.
      *
-     * @throws {InvalidPrivateKeyError} If the private key is null or invalid for signing the transaction.
-     * @throws {UnsupportedOperationError} If the transaction request is not intended to be sponsored.
-     *
-     * @remarks Security audited class, depends on
+     * @remarks Security auditable method, depends on
      * - {@link Blake2b256.of};
+     * - `concatBytes` from [noble-curves](https://github.com/paulmillr/noble-curves);
      * - {@link Secp256k1.sign}.
-     * - Follow links for additional security notes.
      */
-    public sign(
-        transactionRequest: TransactionRequest | SignedTransactionRequest
-    ): SignedTransactionRequest | SponsoredTransactionRequest {
-        if (transactionRequest instanceof SignedTransactionRequest) {
-            return this.sponsorTransactionRequest(transactionRequest);
-        }
-        return this.signTransactionRequest(transactionRequest);
-    }
-
-    /**
-     * Signs and sponsors as gas-payer a given transaction request if it is eligible for sponsorship.
-     *
-     * @param {SignedTransactionRequest} signedTransactionRequest - The signed transaction request to be sponsored.
-     * This request must already include all necessary fields and signatures from the transaction originator.
-     * @return {SponsoredTransactionRequest} The sponsored transaction request, which includes the signature from the gas payer,
-     * as well as all relevant transaction details.
-     *
-     * @throws {InvalidPrivateKeyError} If the private key is null or invalid for signing the transaction.
-     * @throws {UnsupportedOperationError} If the transaction request is not intended to be sponsored.
-     *
-     * @remarks Security audited class, depends on
-     * - {@link Blake2b256.of};
-     * - {@link Secp256k1.sign}.
-     * - Follow links for additional security notes.
-     */
-    private sponsorTransactionRequest(
-        signedTransactionRequest: SignedTransactionRequest
-    ): SponsoredTransactionRequest {
+    private signAsOrigin(
+        transactionRequest: TransactionRequest
+    ): TransactionRequest {
         if (this.#privateKey !== null) {
-            if (signedTransactionRequest.isIntendedToBeSponsored === true) {
-                const originHash = Blake2b256.of(
-                    RLPCodecTransactionRequest.encode(
-                        new TransactionRequest({
-                            blockRef: signedTransactionRequest.blockRef,
-                            chainTag: signedTransactionRequest.chainTag,
-                            clauses: signedTransactionRequest.clauses,
-                            dependsOn: signedTransactionRequest.dependsOn,
-                            expiration: signedTransactionRequest.expiration,
-                            gas: signedTransactionRequest.gas,
-                            gasPriceCoef: signedTransactionRequest.gasPriceCoef,
-                            nonce: signedTransactionRequest.nonce,
-                            isIntendedToBeSponsored:
-                                signedTransactionRequest.isIntendedToBeSponsored
-                        })
-                    )
-                );
-                const gasPayerHash = Blake2b256.of(
-                    nc_utils.concatBytes(
-                        originHash.bytes,
-                        signedTransactionRequest.origin.bytes
-                    )
-                );
-                const gasPayerSignature = Secp256k1.sign(
-                    gasPayerHash.bytes,
+            return new TransactionRequest(
+                { ...transactionRequest },
+                Secp256k1.sign(
+                    transactionRequest.hash.bytes, // Origin hash.
                     this.#privateKey
-                );
-                return new SponsoredTransactionRequest({
-                    blockRef: signedTransactionRequest.blockRef,
-                    chainTag: signedTransactionRequest.chainTag,
-                    clauses: signedTransactionRequest.clauses,
-                    dependsOn: signedTransactionRequest.dependsOn,
-                    expiration: signedTransactionRequest.expiration,
-                    gas: signedTransactionRequest.gas,
-                    gasPriceCoef: signedTransactionRequest.gasPriceCoef,
-                    nonce: signedTransactionRequest.nonce,
-                    isIntendedToBeSponsored: true,
-                    maxFeePerGas: signedTransactionRequest.maxFeePerGas,
-                    maxPriorityFeePerGas:
-                        signedTransactionRequest.maxPriorityFeePerGas,
-                    origin: signedTransactionRequest.origin,
-                    originSignature: signedTransactionRequest.originSignature,
-                    gasPayer: this.address,
-                    gasPayerSignature,
-                    signature: nc_utils.concatBytes(
-                        signedTransactionRequest.originSignature,
-                        gasPayerSignature
-                    )
-                });
-            }
-            throw new UnsupportedOperationError(
-                `${FQP}PrivateKeySigner.sign(signedTransactionRequest: SignedTransactionRequest): SponsoredTransactionRequest`,
-                'transaction request is not intended to be sponsored'
+                ),
+                transactionRequest.gasPayerSignature,
+                transactionRequest.signature
             );
         }
         throw new InvalidPrivateKeyError(
-            `${FQP}PrivateKeySigner.sign(signedTransactionRequest: SignedTransactionRequest): SponsoredTransactionRequest`,
+            `${FQP}PrivateKeySigner.signAsOrigin(transactionRequest: TransactionRequest): TransactionRequest`,
             'no private key'
         );
     }

@@ -43,7 +43,7 @@ class GetTxResponse extends Tx {
     toJSON(): GetTxResponseJSON {
         return {
             ...super.toJSON(),
-            meta: this.meta.toJSON()
+            meta: this.meta?.toJSON() ?? null
         } satisfies GetTxResponseJSON;
     }
 }

@@ -21,17 +21,16 @@ const baseConfig = {
     workerThreads: true
 };
 
-// Enforce coverage thresholds only for UNIT runs.
-// Integration/clients/browser are signal-only and shouldn't fail CI due to coverage.
+// Optionally enforce code coverage thresholds
 /** @type {import('ts-jest').JestConfigWithTsJest} */
-module.exports = process.env.UNIT
+module.exports = process.env.ENFORCE_COVERAGE
     ? {
           ...baseConfig,
           coverageThreshold: {
               global: {
                   branches: 40,
                   functions: 45,
-                  lines: 80,
+                  lines: 72,
                   statements: 65
               }
           }

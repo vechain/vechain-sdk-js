@@ -8,42 +8,6 @@
       "cache": false
     },
     "check:circular-dependencies": {},
-    "test": {
-      "outputs": [
-        "coverage/**"
-      ],
-      "dependsOn": [
-        "^build"
-      ],
-      "cache": false
-    },
-    "test:unit": {
-      "outputs": [
-        "coverage/**"
-      ],
-      "dependsOn": [
-        "^build"
-      ],
-      "cache": false
-    },
-    "test:browser": {
-      "outputs": [
-        "coverage/**"
-      ],
-      "dependsOn": [
-        "^build"
-      ],
-      "cache": false
-    },
-    "test:integration": {
-      "outputs": [
-        "coverage/**"
-      ],
-      "dependsOn": [
-        "^build"
-      ],
-      "cache": false
-    },
     "lint": {
       "dependsOn": [
         "^build"
@@ -51,7 +15,125 @@
       "cache": false
     },
     "format": {},
-    "test:examples": {
+    "test:node:unit": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "test:node:solo": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "test:browser:unit": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "test:browser:solo": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "test:node:testnet": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "test:node:mainnet": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "test:browser:testnet": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "test:browser:mainnet": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "test:node:unit:e2e": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "test:node:solo:e2e": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "test:browser:unit:e2e": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "test:browser:solo:e2e": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "test:node:testnet:e2e": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "test:node:mainnet:e2e": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "test:browser:testnet:e2e": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "test:browser:mainnet:e2e": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "test:node": {
+      "outputs": ["coverage/**"],
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "test:browser": {
+      "outputs": ["coverage/**"],
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "test:node:e2e": {
+      "outputs": ["coverage/**"],
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "test:browser:e2e": {
+      "outputs": ["coverage/**"],
       "dependsOn": [
         "^build"
       ],

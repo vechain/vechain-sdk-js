@@ -6,8 +6,7 @@ import {
     type SimulateTransactionOptions,
     ClauseSimulationResult,
     type GetTransactionReceiptOptions,
-    TransactionReceipt,
-    type SignedTransactionRequest
+    TransactionReceipt
 } from '@thor/thor-client/model/transactions';
 import { AbstractThorModule } from '../AbstractThorModule';
 import { Hex, Revision } from '@common/vcdm';
@@ -20,7 +19,8 @@ import {
     RetrieveTransactionReceipt,
     SendTransaction
 } from '@thor/thorest';
-import { RLPCodecTransactionRequest } from '@thor/signer/RLPCodeTransactionRequest';
+import { TransactionRequestRLPCodec } from '../model/transactions/TransactionRequestRLPCodec';
+import { type TransactionRequest } from '@thor/thor-client/model/transactions/TransactionRequest';
 
 class TransactionsModule extends AbstractThorModule {
     /**
@@ -117,7 +117,7 @@ class TransactionsModule extends AbstractThorModule {
      */
     public async sendRawTransaction(rawTx: Hex): Promise<Hex> {
         // Decode the raw transaction to check if it is valid
-        RLPCodecTransactionRequest.decode(rawTx.bytes);
+        TransactionRequestRLPCodec.decode(rawTx.bytes);
         // Send the transaction to the network
         const method = SendTransaction.of(rawTx.bytes);
         const thorResponse = await method.askTo(this.httpClient);
@@ -130,11 +130,9 @@ class TransactionsModule extends AbstractThorModule {
      * @param txRequest Signed transaction request to send.
      * @returns The transaction ID.
      */
-    public async sendTransaction<T extends SignedTransactionRequest>(
-        txRequest: T
-    ): Promise<Hex> {
+    public async sendTransaction(txRequest: TransactionRequest): Promise<Hex> {
         // encode the transaction request
-        const encoded = RLPCodecTransactionRequest.encode(txRequest);
+        const encoded = TransactionRequestRLPCodec.encode(txRequest);
         const encodedHex = Hex.of(encoded);
         // send the transaction to the network
         return await this.sendRawTransaction(encodedHex);

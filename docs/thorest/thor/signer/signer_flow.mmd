@@ -1,0 +1,34 @@
+---
+title: Signer Flow Diagram - VIP-191
+---
+flowchart TB
+    START(("Start"))
+    TXR("`**TransactionRequest.isSigned=false**`")
+    TXR_B{.beggar=null?}
+    OS_TXR["Signer.sign() as ORIGIN"]
+    TXR_BS{.beggar=SIGNER?}
+    OS_TXR_BST["Signer.sign() as ORIGIN"]
+    GS_TXR_BSF["Signer.sign() as GAS PAYER"]
+    TXR_G{.gasPayerSignature=null?}
+    TXR_O{.originSignature=null?}
+    TXR_S{".gasPayerSignature!=null AND .originSignature!=null"}
+    STXR("`**TransactionRequest.isSigned=true**`")
+    STOP(("Stop"))
+    START --> TXR
+    TXR --> TXR_B
+    TXR_B -- yes--> OS_TXR
+    OS_TXR --> STXR
+    TXR_B -- no --> TXR_G
+    TXR_G -- yes --> TXR_O
+    TXR_G -- no --> OS_TXR_BST
+    TXR_O -- yes --> TXR_BS
+    TXR_O -- no --> GS_TXR_BSF
+    TXR_BS -- yes --> OS_TXR_BST
+    TXR_BS -- "yes" --> GS_TXR_BSF
+    GS_TXR_BSF --> TXR_S
+    OS_TXR_BST --> TXR_S
+    TXR_S -- no --> TXR
+    TXR_S -- yes --> STXR
+    STXR --> STOP
+
+
