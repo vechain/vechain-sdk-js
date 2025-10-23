@@ -62,7 +62,7 @@ const testContractAbi = [
 ] as const;
 
 /**
- * @group quarrantine
+ * @group quarantine
  */
 describe('New Functionality Tests', () => {
     let contractsModule: ContractsModule;

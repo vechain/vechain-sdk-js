@@ -6,7 +6,7 @@ import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { GetTxPoolStatus } from '@thor/thorest/node';
 
 /**
- * @group quarrantine
+ * @group quarantine
  */
 describe('GetTxPoolStatus TESTNET tests', () => {
     test('ok|disabled <- askTo', async () => {

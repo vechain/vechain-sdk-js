@@ -11,12 +11,12 @@ Tests are grouped using the following names:
 | testnet | Tests that interact with thor testnet |
 | mainnet | Tests that interact with thor mainnet |
 | devnet | Specific tests for any temporary hardfork changes |
-| quarrantine | Tests that are WIP, flakey, or need fixing |
+| quarantine | Tests that are WIP, flakey, or need fixing |
 
 NOTE:
 
 * `devnet` group is short lived, once a hardfork is release to testnet, any corresponding tests group should be updated.
-* `quarrantine` group is excluded from all test commands
+* `quarantine` group is excluded from all test commands
 
 ## Test Scopes
 
@@ -67,15 +67,15 @@ The following uber test commands can be executed using `corepack yarn`
 
 Jest test coverage is only enforced when the Overall commands are used, when the Fine-Grained commands are used no code coverage is enforced. This enforcement is done via setting environment variable `ENFORCE_COVERAGE` with the code coverage settings being part of `jest.config.ts`
 
-## Quarrantine
+## Quarantine
 
-Tests can be marked as with group `quarrantine` if they should be excluded from the above test commands. This is useful if:
+Tests can be marked as with group `quarantine` if they should be excluded from the above test commands. This is useful if:
 
 * Tests are a WIP
 * Tests are flakey and are causing CI issues
 * Tests need reworking
 
-The objective is that the `quarrantine` group is short lived, periodically reviewed and tests are moved out of quarrantine when they are stable enough to be included.
+The objective is that the `quarantine` group is short lived, periodically reviewed and tests are moved out of quarantine when they are stable enough to be included.
 
 
 

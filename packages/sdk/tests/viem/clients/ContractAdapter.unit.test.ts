@@ -49,7 +49,7 @@ const mockWalletClient = {
 } as any;
 
 /**
- * @group quarrantine
+ * @group quarantine
  */
 describe('ContractAdapter Integration', () => {
     test('Should create contract with viem-compatible interface', () => {

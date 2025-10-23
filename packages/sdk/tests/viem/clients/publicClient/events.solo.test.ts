@@ -14,7 +14,7 @@ import { log } from '@common/logging';
  * - createEventFilter
  * - getFilterLogs
  *
- * @group quarrantine
+ * @group quarantine
  */
 describe('PublicClient - Events/Logs Methods', () => {
     const publicClient = createPublicClient({
