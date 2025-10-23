@@ -25,12 +25,10 @@ describe('TransactionBuilder SOLO tests', () => {
         const transaction = await builder
             .withClauses(clauses)
             .withDynFeeTxDefaults()
-            .then(async (builder) => {
-                return await builder.withEstimatedGas(sender, {
-                    revision: Revision.BEST
-                });
+            .withEstimatedGas(sender, {
+                revision: Revision.BEST
             })
-            .then((builder) => builder.build());
+            .build();
         // expect all defaults
         expect(transaction.clauses).toHaveLength(1);
         expect(transaction.clauses[0].to).toEqual(receiver);

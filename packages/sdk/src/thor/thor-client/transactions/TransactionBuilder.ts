@@ -9,37 +9,51 @@ import {
 import { RetrieveRegularBlock } from '@thor/thorest/blocks';
 
 class TransactionBuilder {
-    private readonly params: TransactionRequestParam;
-    private readonly thorClient: ThorClient;
+    private params: TransactionRequestParam;
+    private buildTasks: Array<() => Promise<void>>;
 
+    private readonly thorClient: ThorClient;
     public static readonly DEFAULT_EXPIRATION = 32;
     public static readonly DEFAULT_GAS_PRICE_COEF = 0n;
 
+    // starting values for the builder
+    private readonly startingParams: TransactionRequestParam = {
+        beggar: undefined,
+        blockRef: Hex.of('0x0'),
+        chainTag: 0,
+        clauses: [],
+        dependsOn: null,
+        expiration: TransactionBuilder.DEFAULT_EXPIRATION,
+        gas: 0n,
+        gasPriceCoef: undefined,
+        nonce: 0,
+        maxFeePerGas: undefined,
+        maxPriorityFeePerGas: undefined
+    } satisfies TransactionRequestParam;
+
+    // constructor from thor client
     private constructor(thorClient: ThorClient) {
         this.thorClient = thorClient;
-        this.params = {
-            beggar: undefined,
-            blockRef: Hex.of('0x0'),
-            chainTag: 0,
-            clauses: [],
-            dependsOn: null,
-            expiration: TransactionBuilder.DEFAULT_EXPIRATION,
-            gas: 0n,
-            gasPriceCoef: undefined,
-            nonce: 0,
-            maxFeePerGas: undefined,
-            maxPriorityFeePerGas: undefined
-        } satisfies TransactionRequestParam;
+        this.params = this.startingParams;
+        this.buildTasks = [];
     }
 
+    /**
+     * Creates a new instance of the TransactionBuilder.
+     * @param thorClient - The ThorClient instance.
+     * @returns The TransactionBuilder instance.
+     */
     public static create(thorClient: ThorClient): TransactionBuilder {
         return new TransactionBuilder(thorClient);
     }
 
-    // with methods for each parameter
-
-    public withBeggar(v: Address): this {
-        this.params.beggar = v;
+    /**
+     * Sets the requester for a gas sponsored transaction.
+     * @param requester - The address of the requester.
+     * @returns The builder instance.
+     */
+    public withSponsorReq(requester: Address): this {
+        this.params.beggar = requester;
         return this;
     }
 
@@ -154,29 +168,35 @@ class TransactionBuilder {
      * Sets the default block ref for the transaction to the current best block.
      * @returns The builder instance.
      */
-    public async withDefaultBlockRef(): Promise<this> {
-        // best block block ref
-        const blockResponse = await RetrieveRegularBlock.of(
-            Revision.of('best')
-        ).askTo(this.thorClient.httpClient);
-        if (blockResponse.response === null) {
-            throw new IllegalArgumentError(
-                'TransactionBuilder.withDefaultBlockRef',
-                'Best block not found.'
-            );
-        }
-        this.params.blockRef = BlockRef.of(blockResponse.response.id);
+    public withDefaultBlockRef(): this {
+        const task: () => Promise<void> = async () => {
+            // best block block ref
+            const blockResponse = await RetrieveRegularBlock.of(
+                Revision.of('best')
+            ).askTo(this.thorClient.httpClient);
+            if (blockResponse.response === null) {
+                throw new IllegalArgumentError(
+                    'TransactionBuilder.withDefaultBlockRef',
+                    'Best block not found.'
+                );
+            }
+            this.params.blockRef = BlockRef.of(blockResponse.response.id);
+        };
+        this.buildTasks.push(task);
         return this;
     }
 
     /**
-     * Sets the default chain tag for the transaction to the current thor clientchain tag.
+     * Sets the default chain tag for the transaction to the current thor client chain tag.
      * @returns The builder instance.
      */
-    public async withDefaultChainTag(): Promise<this> {
-        // best block chain tag
-        const chainTag = await this.thorClient.nodes.getChainTag();
-        this.params.chainTag = chainTag;
+    public withDefaultChainTag(): this {
+        const task: () => Promise<void> = async () => {
+            // best block chain tag
+            const chainTag = await this.thorClient.nodes.getChainTag();
+            this.params.chainTag = chainTag;
+        };
+        this.buildTasks.push(task);
         return this;
     }
 
@@ -202,12 +222,15 @@ class TransactionBuilder {
      * Sets the calculated max fee per gas for the transaction (dynamic fee transaction).
      * @returns The builder instance.
      */
-    public async withDefaultMaxFeePerGas(): Promise<this> {
-        const { maxFeePerGas, maxPriorityFeePerGas } =
-            await this.thorClient.gas.computeMaxFeePrices();
-        this.params.maxFeePerGas = maxFeePerGas;
-        this.params.maxPriorityFeePerGas = maxPriorityFeePerGas;
-        this.params.gasPriceCoef = undefined;
+    public withDefaultMaxFeePerGas(): this {
+        const task: () => Promise<void> = async () => {
+            const { maxFeePerGas, maxPriorityFeePerGas } =
+                await this.thorClient.gas.computeMaxFeePrices();
+            this.params.maxFeePerGas = maxFeePerGas;
+            this.params.maxPriorityFeePerGas = maxPriorityFeePerGas;
+            this.params.gasPriceCoef = undefined;
+        };
+        this.buildTasks.push(task);
         return this;
     }
 
@@ -217,39 +240,42 @@ class TransactionBuilder {
      * @param options - The options for the estimated gas.
      * @returns The builder instance.
      */
-    public async withEstimatedGas(
+    public withEstimatedGas(
         caller: Address,
         options: EstimateGasOptions
-    ): Promise<this> {
-        const estimate = await this.thorClient.gas.estimateGas(
-            this.params.clauses,
-            caller,
-            options
-        );
-        this.params.gas = estimate.totalGas;
+    ): this {
+        const task: () => Promise<void> = async () => {
+            const estimate = await this.thorClient.gas.estimateGas(
+                this.params.clauses,
+                caller,
+                options
+            );
+            this.params.gas = estimate.totalGas;
+        };
+        this.buildTasks.push(task);
         return this;
     }
 
     /**
-     * Sets all the default values for a dynamic fee transaction.
+     * Sets all the default values needed for a dynamic fee transaction.
      * @returns The builder instance.
      */
-    public async withDynFeeTxDefaults(): Promise<this> {
-        await this.withDefaultBlockRef();
-        await this.withDefaultChainTag();
+    public withDynFeeTxDefaults(): this {
+        this.withDefaultBlockRef();
+        this.withDefaultChainTag();
         this.withDefaultExpiration();
         this.withRandomNonce();
-        await this.withDefaultMaxFeePerGas();
+        this.withDefaultMaxFeePerGas();
         return this;
     }
 
     /**
-     * Sets all the default values for a legacy transaction.
+     * Sets all the default values neededfor a legacy transaction.
      * @returns The builder instance.
      */
-    public async withLegacyTxDefaults(): Promise<this> {
-        await this.withDefaultBlockRef();
-        await this.withDefaultChainTag();
+    public withLegacyTxDefaults(): this {
+        this.withDefaultBlockRef();
+        this.withDefaultChainTag();
         this.withDefaultExpiration();
         this.withRandomNonce();
         if (this.params.gasPriceCoef === undefined) {
@@ -259,11 +285,26 @@ class TransactionBuilder {
     }
 
     /**
-     * Builds the transaction request.
+     * Resets the builder, erasing all the set parameters.
+     * @returns The builder instance.
+     */
+    public reset(): this {
+        this.params = this.startingParams;
+        this.buildTasks = [];
+        return this;
+    }
+
+    /**
+     * Builds the transaction request and resets the builder.
      * @returns The transaction request.
      */
-    public build(): TransactionRequest {
-        return new TransactionRequest(this.params);
+    public async build(): Promise<TransactionRequest> {
+        for (const task of this.buildTasks) {
+            await task();
+        }
+        const txRequest = new TransactionRequest(this.params);
+        this.reset();
+        return txRequest;
     }
 }
 

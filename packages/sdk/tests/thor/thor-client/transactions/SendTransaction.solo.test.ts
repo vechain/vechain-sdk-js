@@ -33,12 +33,11 @@ describe('SendTransaction SOLO tests', () => {
             // create tx request to send 1 wei VET to receiver
             const clauses = [new Clause(receiver, 1n)];
             const builder = TransactionBuilder.create(thorClient);
-            const builderWithDefaults = await builder
+            const txRequest = await builder
                 .withClauses(clauses)
-                .withDynFeeTxDefaults();
-            const txRequest = await builderWithDefaults
+                .withDynFeeTxDefaults()
                 .withEstimatedGas(sender, { revision: Revision.BEST })
-                .then((b) => b.build());
+                .build();
             // sign the tx request
             const signedTxRequest = senderSigner.sign(txRequest);
             // send the transaction
@@ -67,12 +66,10 @@ describe('SendTransaction SOLO tests', () => {
             const txRequest = await builder
                 .withClauses(clauses)
                 .withLegacyTxDefaults()
-                .then(async (builder) => {
-                    return await builder.withEstimatedGas(sender, {
-                        revision: Revision.BEST
-                    });
+                .withEstimatedGas(sender, {
+                    revision: Revision.BEST
                 })
-                .then((builder) => builder.build());
+                .build();
             // sign the tx request
             const signedTxRequest = senderSigner.sign(txRequest);
             // send the transaction
@@ -100,13 +97,12 @@ describe('SendTransaction SOLO tests', () => {
             // create tx request to send 1 wei VET to receiver
             const clauses = [new Clause(receiver, 1n)];
             const builder = TransactionBuilder.create(thorClient);
-            const builderWithDefaults = await builder
+            const txRequest = await builder
                 .withClauses(clauses)
-                .withIsIntendedToBeSponsored(true)
-                .withDynFeeTxDefaults();
-            const txRequest = await builderWithDefaults
+                .withSponsorReq(sender)
+                .withDynFeeTxDefaults()
                 .withEstimatedGas(sender, { revision: Revision.BEST })
-                .then((b) => b.build());
+                .build();
             // sign the tx request as sender
             const senderSignedTxRequest = senderSigner.sign(txRequest);
             // sign the tx request as gas payer
@@ -147,14 +143,12 @@ describe('SendTransaction SOLO tests', () => {
             const builder = TransactionBuilder.create(thorClient);
             const txRequest = await builder
                 .withClauses(clauses)
-                .withIsIntendedToBeSponsored(true)
+                .withSponsorReq(sender)
                 .withLegacyTxDefaults()
-                .then(async (builder) => {
-                    return await builder.withEstimatedGas(sender, {
-                        revision: Revision.BEST
-                    });
+                .withEstimatedGas(sender, {
+                    revision: Revision.BEST
                 })
-                .then((builder) => builder.build());
+                .build();
             // sign the tx request
             const senderSignedTxRequest = senderSigner.sign(txRequest);
             // sign the tx request as gas payer
