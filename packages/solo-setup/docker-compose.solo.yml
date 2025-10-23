@@ -1,6 +1,7 @@
 services:
   thor-solo:
     image: vechain/thor:latest
+    pull_policy: always
     container_name: thor-solo
     user: root
     ports:
@@ -18,6 +19,7 @@ services:
       - --api-enable-deprecated
       - --api-call-gas-limit=150000000 
       - --gas-limit=150000000
+      - --api-enable-txpool
     healthcheck:
       # We run the health check using standard UNIX tools so we don't have to
       # install additional dependencies in the container.
