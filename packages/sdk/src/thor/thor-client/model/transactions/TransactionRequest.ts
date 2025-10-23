@@ -6,7 +6,7 @@ import {
     HexUInt,
     InvalidTransactionField
 } from '@common';
-import { TransactionRequestRLPCodec } from '@thor/thor-client/model/transactions/TransactionRequestRLPCodec';
+import { TransactionRequestRLPCodec } from '@thor/thor-client/rlp/TransactionRequestRLPCodec';
 import { type TransactionRequestJSON } from '@thor/thorest/json';
 
 const FQP =

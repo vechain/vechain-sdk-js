@@ -9,15 +9,18 @@ import {
     TransactionReceipt
 } from '@thor/thor-client/model/transactions';
 import { AbstractThorModule } from '../AbstractThorModule';
-import { Revision, type Hex } from '@common/vcdm';
+import { Hex, Revision } from '@common/vcdm';
 import {
     type ExecuteCodeResponse,
     ExecuteCodesRequest,
     InspectClauses,
     RetrieveRawTransactionByID,
     RetrieveTransactionByID,
-    RetrieveTransactionReceipt
+    RetrieveTransactionReceipt,
+    SendTransaction
 } from '@thor/thorest';
+import { TransactionRequestRLPCodec } from '../rlp/TransactionRequestRLPCodec';
+import { type TransactionRequest } from '@thor/thor-client/model/transactions/TransactionRequest';
 
 class TransactionsModule extends AbstractThorModule {
     /**
@@ -29,11 +32,11 @@ class TransactionsModule extends AbstractThorModule {
      */
     public async getTransaction(
         id: Hex,
-        options: GetTransactionOptions
+        options?: GetTransactionOptions
     ): Promise<Transaction | null> {
         const request = RetrieveTransactionByID.of(id)
-            .withPending(options.pending)
-            .withHead(options.head);
+            .withPending(options?.pending)
+            .withHead(options?.head);
         const thorResponse = await request.askTo(this.httpClient);
         return thorResponse.response !== null
             ? new Transaction(thorResponse.response)
@@ -105,6 +108,34 @@ class TransactionsModule extends AbstractThorModule {
         return thorResponse.response !== null
             ? TransactionReceipt.of(thorResponse.response)
             : null;
+    }
+
+    /**
+     * Submits a raw signed, RLP encoded transaction to the thor network.
+     * @param rawTx - The raw encoded transaction to send.
+     * @returns The transaction ID.
+     */
+    public async sendRawTransaction(rawTx: Hex): Promise<Hex> {
+        // Decode the raw transaction to check if it is valid
+        TransactionRequestRLPCodec.decode(rawTx.bytes);
+        // Send the transaction to the network
+        const method = SendTransaction.of(rawTx.bytes);
+        const thorResponse = await method.askTo(this.httpClient);
+        const txId = thorResponse.response.id;
+        return txId;
+    }
+
+    /**
+     * Sends a signed transaction request to the thor network.
+     * @param txRequest Signed transaction request to send.
+     * @returns The transaction ID.
+     */
+    public async sendTransaction(txRequest: TransactionRequest): Promise<Hex> {
+        // encode the transaction request
+        const encoded = TransactionRequestRLPCodec.encode(txRequest);
+        const encodedHex = Hex.of(encoded);
+        // send the transaction to the network
+        return await this.sendRawTransaction(encodedHex);
     }
 }
 

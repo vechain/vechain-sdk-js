@@ -24,13 +24,11 @@ describe('TransactionBuilder SOLO tests', () => {
         const builder = TransactionBuilder.create(thorClient);
         const transaction = await builder
             .withClauses(clauses)
-            .withDefaults()
-            .then(async (builder) => {
-                return await builder.withEstimatedGas(sender, {
-                    revision: Revision.BEST
-                });
+            .withDynFeeTxDefaults()
+            .withEstimatedGas(sender, {
+                revision: Revision.BEST
             })
-            .then((builder) => builder.build());
+            .build();
         // expect all defaults
         expect(transaction.clauses).toHaveLength(1);
         expect(transaction.clauses[0].to).toEqual(receiver);
