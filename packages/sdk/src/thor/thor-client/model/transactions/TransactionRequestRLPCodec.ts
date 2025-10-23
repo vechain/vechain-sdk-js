@@ -150,7 +150,7 @@ class TransactionRequestRLPCodec {
      * legacy transaction request while both
      * the gas payer and origin haven't signed yet.
      *
-     * The `beggar`, `gasPayerSigture` and `originSignature` fields are included;
+     * The `beggar`, `gasPayerSignature` and `originSignature` fields are included;
      * the `signature` field is removed.
      */
     private static readonly RLP_LEGACY_UNSIGNED_REQUEST =
