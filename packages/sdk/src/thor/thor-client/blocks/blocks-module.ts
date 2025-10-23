@@ -8,7 +8,29 @@ import {
     type RawBlockResponse,
     type RegularBlockResponse
 } from '@thor/thorest';
+import { IllegalArgumentError } from '@common/errors';
+import { waitUntil } from '@common/utils/poller';
 import { Block, ExpandedBlock, RawBlock } from '../model/blocks';
+
+/**
+ * Options for `waitForBlock` and `waitForBlockExpanded` methods.
+ */
+interface WaitForBlockOptions {
+    /**
+     * Delay (ms) between successive block queries when polling.
+     */
+    intervalMs?: number;
+
+    /**
+     * Maximum time (ms) to wait before aborting the operation.
+     */
+    timeoutMs?: number;
+
+    /**
+     * Maximum consecutive network errors tolerated before failing.
+     */
+    maxNetworkErrors?: number;
+}
 
 class BlocksModule extends AbstractThorModule {
     /**
@@ -31,6 +53,40 @@ class BlocksModule extends AbstractThorModule {
     ): Promise<ExpandedBlock | null> {
         const response = await this.fetchExpandedBlock(revision);
         return ExpandedBlock.fromResponse(response);
+    }
+
+    /**
+     * Polls Thor until the requested block number becomes available and returns it.
+     *
+     * @param blockNumber   Height to wait for (inclusive).
+     * @param options       Optional polling configuration (interval, timeout, error budget).
+     */
+    public async waitForBlock(
+        blockNumber: number,
+        options?: WaitForBlockOptions
+    ): Promise<Block> {
+        return (await this.waitForBlockInternal(
+            blockNumber,
+            options,
+            async (revision) => await this.getBlock(revision)
+        )) as Block;
+    }
+
+    /**
+     * Polls the chain until the specified block number is available, returning the expanded (full transactions) payload.
+     *
+     * @param blockNumber   Height to wait for (inclusive).
+     * @param options       Optional polling configuration (interval, timeout, error budget).
+     */
+    public async waitForBlockExpanded(
+        blockNumber: number,
+        options?: WaitForBlockOptions
+    ): Promise<ExpandedBlock> {
+        return (await this.waitForBlockInternal(
+            blockNumber,
+            options,
+            async (revision) => await this.getBlockExpanded(revision)
+        )) as ExpandedBlock;
     }
 
     /**
@@ -84,6 +140,42 @@ class BlocksModule extends AbstractThorModule {
         const query = RetrieveRawBlock.of(revision);
         const answer = await query.askTo(this.httpClient);
         return answer.response;
+    }
+
+    /**
+     * Shared wait helper that relies on the poller utilities to deliver the desired block shape.
+     */
+    private async waitForBlockInternal(
+        blockNumber: number,
+        options: WaitForBlockOptions | undefined,
+        resolver: (revision: Revision) => Promise<Block | ExpandedBlock | null>
+    ): Promise<Block | ExpandedBlock> {
+        const target = Number(blockNumber);
+        if (!Number.isFinite(target) || target < 0) {
+            throw new IllegalArgumentError(
+                'BlocksModule.waitForBlock(blockNumber)',
+                'blockNumber must be a non-negative integer',
+                { blockNumber }
+            );
+        }
+
+        const result = await waitUntil({
+            task: async () => await resolver(Revision.of(target)),
+            predicate: (block) => block !== null && block.number >= target,
+            intervalMs: options?.intervalMs,
+            timeoutMs: options?.timeoutMs,
+            maxNetworkErrors: options?.maxNetworkErrors
+        });
+
+        if (result === null) {
+            throw new IllegalArgumentError(
+                'BlocksModule.waitForBlock()',
+                'block was not produced before the timeout',
+                { blockNumber: target }
+            );
+        }
+
+        return result;
     }
 }
 
