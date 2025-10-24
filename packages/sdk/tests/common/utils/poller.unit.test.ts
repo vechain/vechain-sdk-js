@@ -1,6 +1,3 @@
-/**
- * @group unit/common/utils
- */
 import { describe, expect, jest, test } from '@jest/globals';
 import {
     createEventPoll,
@@ -10,12 +7,9 @@ import {
 import { log } from '@common/logging';
 import { IllegalArgumentError } from '@common/errors';
 
-const nextTick = async (): Promise<void> => {
-    await Promise.resolve();
-};
-
-// Removed unused helpers
-
+/**
+ * @group unit/common/utils
+ */
 describe('poller utilities', () => {
     beforeEach(() => {
         jest.useFakeTimers();
@@ -31,10 +25,12 @@ describe('poller utilities', () => {
     });
 
     test('createEventPoll delivers data to handler and tracks iterations', async () => {
-        const producer = jest.fn().mockResolvedValue('payload');
+        const producer = jest
+            .fn<() => Promise<string>>()
+            .mockResolvedValue('payload');
         const onData = jest.fn();
 
-        const poller: EventPollController<string> = createEventPoll({
+        const poller: EventPollController<string> = createEventPoll<string>({
             producer,
             intervalMs: 100
         }).onData(onData);
@@ -59,16 +55,14 @@ describe('poller utilities', () => {
         const networkError = Object.assign(new Error('boom'), {
             statusCode: 500
         });
-        const producer = jest.fn().mockRejectedValue(networkError);
+        const producer = async (): Promise<never> =>
+            Promise.reject(networkError);
         const onError = jest.fn();
 
         const poller = createEventPoll({
             producer,
             intervalMs: 50,
-            maxNetworkErrors: 2,
-            logger: {
-                debug: jest.fn()
-            }
+            maxNetworkErrors: 2
         }).onError(onError);
 
         poller.start();
@@ -105,7 +99,8 @@ describe('poller utilities', () => {
     });
 
     test('createEventPoll stops on non-network error when stopOnError is true', async () => {
-        const producer = jest.fn().mockRejectedValue(new Error('fatal'));
+        const producer = async (): Promise<never> =>
+            Promise.reject(new Error('fatal'));
         const onError = jest.fn();
 
         const poller = createEventPoll({
@@ -123,7 +118,7 @@ describe('poller utilities', () => {
 
     test('createEventPoll keeps running when stopOnError is false', async () => {
         const producer = jest
-            .fn()
+            .fn<() => Promise<string>>()
             .mockRejectedValueOnce(new Error('recoverable'))
             .mockResolvedValueOnce('ok');
         const onError = jest.fn();
@@ -151,7 +146,7 @@ describe('poller utilities', () => {
             statusCode: 502
         });
         const producer = jest
-            .fn()
+            .fn<() => Promise<string>>()
             .mockRejectedValueOnce(networkError)
             .mockResolvedValueOnce('ok');
         const onData = jest.fn();
@@ -184,7 +179,9 @@ describe('poller utilities', () => {
     });
 
     test('createEventPoll start is idempotent', async () => {
-        const producer = jest.fn().mockResolvedValue('payload');
+        const producer = jest
+            .fn<() => Promise<string>>()
+            .mockResolvedValue('payload');
 
         const poller = createEventPoll({
             producer,
@@ -206,13 +203,17 @@ describe('poller utilities', () => {
             intervalMs: 100
         });
 
-        expect(() => poller.stop()).not.toThrow();
+        expect(() => {
+            poller.stop();
+        }).not.toThrow();
         expect(poller.getState()).toEqual({ iterations: 0, isRunning: false });
     });
 
     test('createEventPoll stop is idempotent after running', async () => {
         const poller = createEventPoll({
-            producer: jest.fn().mockResolvedValue('data'),
+            producer: jest
+                .fn<() => Promise<string>>()
+                .mockResolvedValue('data'),
             intervalMs: 100
         });
 
@@ -221,13 +222,15 @@ describe('poller utilities', () => {
         poller.stop();
 
         expect(poller.getState().isRunning).toBe(false);
-        expect(() => poller.stop()).not.toThrow();
+        expect(() => {
+            poller.stop();
+        }).not.toThrow();
     });
 
     test('createEventPoll avoids overlapping producer executions', async () => {
         let concurrent = 0;
         let maxConcurrent = 0;
-        const producer = jest.fn().mockImplementation(() => {
+        const producer = jest.fn().mockImplementation(async () => {
             concurrent += 1;
             maxConcurrent = Math.max(maxConcurrent, concurrent);
             return new Promise<string>((resolve) => {
@@ -257,14 +260,16 @@ describe('poller utilities', () => {
 
     test('waitUntil resolves when predicate becomes true', async () => {
         let value = 0;
-        const task = jest.fn().mockImplementation(async () => {
-            value += 1;
-            return value;
-        });
+        const task = jest
+            .fn<() => Promise<number>>()
+            .mockImplementation(async () => {
+                value += 1;
+                return Promise.resolve(value);
+            });
 
         const promise = waitUntil({
             task,
-            predicate: (result) => (result as number) >= 3,
+            predicate: (result) => result >= 3,
             intervalMs: 100,
             timeoutMs: 1_000
         });
@@ -279,7 +284,9 @@ describe('poller utilities', () => {
         const networkError = Object.assign(new Error('net'), {
             statusCode: 503
         });
-        const task = jest.fn().mockRejectedValue(networkError);
+        const task = jest
+            .fn<() => Promise<never>>()
+            .mockRejectedValue(networkError);
 
         const promise = waitUntil({
             task,
@@ -295,7 +302,7 @@ describe('poller utilities', () => {
     });
 
     test('waitUntil rejects when timeout is reached', async () => {
-        const task = jest.fn().mockResolvedValue(null);
+        const task = jest.fn<() => Promise<unknown>>().mockResolvedValue(null);
 
         const promise = waitUntil({
             task,
@@ -312,7 +319,7 @@ describe('poller utilities', () => {
     });
 
     test('waitUntil respects timeout abort signal', async () => {
-        const task = jest.fn().mockResolvedValue(null);
+        const task = jest.fn<() => Promise<unknown>>().mockResolvedValue(null);
 
         const promise = waitUntil({
             task,
@@ -334,7 +341,7 @@ describe('poller utilities', () => {
             statusCode: 500
         });
         const task = jest
-            .fn()
+            .fn<() => Promise<string>>()
             .mockRejectedValueOnce(networkError)
             .mockResolvedValueOnce('ready');
 
@@ -361,7 +368,7 @@ describe('poller utilities', () => {
     });
 
     test('waitUntil resolves immediately when predicate is satisfied at first run', async () => {
-        const task = jest.fn().mockResolvedValue(42);
+        const task = jest.fn<() => Promise<number>>().mockResolvedValue(42);
 
         const result = await waitUntil({
             task,
@@ -374,7 +381,7 @@ describe('poller utilities', () => {
         expect(task).toHaveBeenCalledTimes(1);
     });
 
-    test('invalid interval throws IllegalArgumentError', () => {
+    test('invalid interval throws IllegalArgumentError', async () => {
         expect(() =>
             createEventPoll({
                 producer: () => 0,
@@ -391,7 +398,7 @@ describe('poller utilities', () => {
         ).rejects.toBeInstanceOf(IllegalArgumentError);
     });
 
-    test('invalid timeout throws IllegalArgumentError', () => {
+    test('invalid timeout throws IllegalArgumentError', async () => {
         return expect(
             waitUntil({
                 task: () => 0,
@@ -401,7 +408,7 @@ describe('poller utilities', () => {
         ).rejects.toBeInstanceOf(IllegalArgumentError);
     });
 
-    test('invalid maxNetworkErrors throws IllegalArgumentError', () => {
+    test('invalid maxNetworkErrors throws IllegalArgumentError', async () => {
         expect(() =>
             createEventPoll({
                 producer: () => 0,
@@ -420,7 +427,7 @@ describe('poller utilities', () => {
 
     test('waitUntil wraps non-network errors and stops immediately', async () => {
         const task = jest
-            .fn()
+            .fn<() => Promise<string>>()
             .mockRejectedValueOnce(new Error('boom'))
             .mockResolvedValueOnce('ok');
 
@@ -434,4 +441,3 @@ describe('poller utilities', () => {
         ).rejects.toThrow('boom');
     });
 });
-

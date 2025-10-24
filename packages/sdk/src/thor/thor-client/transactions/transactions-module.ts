@@ -6,7 +6,8 @@ import {
     type SimulateTransactionOptions,
     ClauseSimulationResult,
     type GetTransactionReceiptOptions,
-    TransactionReceipt
+    TransactionReceipt,
+    type WaitForTransactionReceiptOptions
 } from '@thor/thor-client/model/transactions';
 import { AbstractThorModule } from '../AbstractThorModule';
 import { Revision, type Hex } from '@common/vcdm';
@@ -18,6 +19,7 @@ import {
     RetrieveTransactionByID,
     RetrieveTransactionReceipt
 } from '@thor/thorest';
+import { waitUntil, type WaitUntilOptions } from '@common/utils';
 
 class TransactionsModule extends AbstractThorModule {
     /**
@@ -105,6 +107,32 @@ class TransactionsModule extends AbstractThorModule {
         return thorResponse.response !== null
             ? TransactionReceipt.of(thorResponse.response)
             : null;
+    }
+
+    /**
+     * Waits for the transaction receipt to exist
+     * @param transactionId - Id of the transaction to wait for its receipt
+     * @param options - Timeout and polling options
+     * @returns The transaction receipt or null if still not available
+     */
+    public async waitForTransactionReceipt(
+        transactionId: Hex,
+        options?: WaitForTransactionReceiptOptions
+    ): Promise<TransactionReceipt | null> {
+        // setup for polling
+        const getReceiptTask = async (): Promise<TransactionReceipt | null> => {
+            return this.getTransactionReceipt(transactionId);
+        };
+        const checkReceipt = (receipt: TransactionReceipt | null): boolean => {
+            return receipt !== null;
+        };
+        const waitOptions: WaitUntilOptions<TransactionReceipt | null> = {
+            task: getReceiptTask,
+            predicate: checkReceipt,
+            intervalMs: options?.intervalMs ?? 1000,
+            timeoutMs: options?.timeoutMs ?? 30000
+        };
+        return await waitUntil(waitOptions);
     }
 }
 
