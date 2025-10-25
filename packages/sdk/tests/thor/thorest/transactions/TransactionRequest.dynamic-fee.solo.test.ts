@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/pseudo-random */
 import { describe, expect, test } from '@jest/globals';
 import {
     Clause,
@@ -15,9 +16,9 @@ import {
 import { ThorClient } from '@thor/thor-client/ThorClient';
 
 /**
- * @group integration/solo
+ * @group solo
  */
-describe('TransactionRequest Dynamic Fee Support - Solo Integration', () => {
+describe('TransactionRequest Dynamic Fee Support - Solo', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
     const thorClient = ThorClient.at(httpClient);
 

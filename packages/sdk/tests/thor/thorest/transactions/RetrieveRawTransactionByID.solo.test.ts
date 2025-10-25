@@ -1,6 +1,3 @@
-/**
- * @group integration/transactions
- */
 import { Hex, HexUInt32, Revision } from '@common/vcdm';
 import {
     GetRawTxResponse,
@@ -13,7 +10,7 @@ import { FetchHttpClient } from '@common/http';
 import { beforeAll, expect } from '@jest/globals';
 
 /**
- * @group integration/thor/transactions
+ * @group solo/thor/transactions
  */
 describe('RetrieveRawTransactionByID SOLO tests', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));

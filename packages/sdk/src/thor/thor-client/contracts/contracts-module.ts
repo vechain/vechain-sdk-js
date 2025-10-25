@@ -339,7 +339,7 @@ class ContractsModule extends AbstractThorModule {
     ): Promise<SendTransactionResult> {
         try {
             // Build the clause for the contract function call
-            const clause = ClauseBuilder.callFunction(
+            const clauseBuilder = ClauseBuilder.callFunction(
                 Address.of(contractAddress),
                 [functionAbi],
                 functionAbi.name,
@@ -347,7 +347,16 @@ class ContractsModule extends AbstractThorModule {
                 value ?? 0n
             );
 
-            // Use provided TransactionRequest or create a default one
+            // Convert ClauseBuilder to Clause
+            const clause = new Clause(
+                clauseBuilder.to,
+                clauseBuilder.value,
+                clauseBuilder.data,
+                clauseBuilder.comment ?? null,
+                clauseBuilder.abi ?? null
+            );
+
+            // Use the provided TransactionRequest or create a default one
             const finalTransactionRequest = transactionRequest
                 ? new TransactionRequest({
                       ...transactionRequest,
@@ -509,12 +518,21 @@ class ContractsModule extends AbstractThorModule {
                     clause.functionAbi &&
                     clause.functionData
                 ) {
-                    return ClauseBuilder.callFunction(
+                    const clauseBuilder = ClauseBuilder.callFunction(
                         Address.of(clause.contractAddress),
                         [clause.functionAbi],
                         clause.functionAbi.name,
                         clause.functionData,
                         clause.value ?? 0n
+                    );
+
+                    // Convert ClauseBuilder to Clause
+                    return new Clause(
+                        clauseBuilder.to,
+                        clauseBuilder.value,
+                        clauseBuilder.data,
+                        clauseBuilder.comment ?? null,
+                        clauseBuilder.abi ?? null
                     );
                 }
                 return clause;

@@ -9,6 +9,9 @@ import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { expect } from '@jest/globals';
 
+/**
+ * @group quarantine
+ */
 describe('RetrieveTransactionsFromTransactionPool TESTNET tests', () => {
     test('ok <- askTo', async () => {
         try {

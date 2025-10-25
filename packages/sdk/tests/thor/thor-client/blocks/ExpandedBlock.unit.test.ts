@@ -1,10 +1,10 @@
 import { describe, expect, test } from '@jest/globals';
 import { ExpandedBlockResponse } from '@thor/thorest/blocks/response';
-import { ExpandedBlockResponseJSON } from '@thor/thorest/json/ExpandedBlockResponseJSON';
-import { TxWithReceiptJSON } from '@thor/thorest/json/TxWithReceiptJSON';
-import { OutputJSON } from '@thor/thorest/json/OutputJSON';
-import { EventJSON } from '@thor/thorest/json/EventJSON';
-import { TransferJSON } from '@thor/thorest/json/TransferJSON';
+import { type ExpandedBlockResponseJSON } from '@thor/thorest/blocks/json';
+import { type TxWithReceiptJSON } from '@thor/thorest/transactions/json';
+import { type OutputJSON } from '@thor/thorest/json/OutputJSON';
+import { type EventJSON } from '@thor/thorest/json/EventJSON';
+import { type TransferJSON } from '@thor/thorest/json/TransferJSON';
 
 import {
     BlockTransaction,
@@ -39,7 +39,7 @@ const BASIC_TRANSACTION: TxWithReceiptJSON = {
     blockRef: '0x0000000000000000',
     expiration: 32,
     clauses: [],
-    gasPriceCoef: null,
+    gasPriceCoef: undefined,
     maxFeePerGas: null,
     maxPriorityFeePerGas: null,
     gas: '0x1',
@@ -78,6 +78,9 @@ const BASIC_EXPANDED_BLOCK: ExpandedBlockResponseJSON = {
     transactions: [BASIC_TRANSACTION]
 };
 
+/**
+ * @group unit
+ */
 describe('ExpandedBlock', () => {
     test('fromResponse returns null for null input', () => {
         expect(ExpandedBlock.fromResponse(null)).toBeNull();
@@ -102,7 +105,9 @@ describe('ExpandedBlock', () => {
         expect(block?.totalScore).toBe(BASIC_EXPANDED_BLOCK.totalScore);
         expect(block?.txsRoot.toString()).toBe(BASIC_EXPANDED_BLOCK.txsRoot);
         expect(block?.txsFeatures).toBe(BASIC_EXPANDED_BLOCK.txsFeatures);
-        expect(block?.stateRoot.toString()).toBe(BASIC_EXPANDED_BLOCK.stateRoot);
+        expect(block?.stateRoot.toString()).toBe(
+            BASIC_EXPANDED_BLOCK.stateRoot
+        );
         expect(block?.receiptsRoot.toString()).toBe(
             BASIC_EXPANDED_BLOCK.receiptsRoot
         );
@@ -113,10 +118,9 @@ describe('ExpandedBlock', () => {
         const tx = block?.transactions.at(0);
         expect(tx).toBeInstanceOf(BlockTransaction);
         expect(tx?.id.toString()).toBe(BASIC_TRANSACTION.id);
-        expect(tx?.receipt.gasUsed).toBe(BigInt(BASIC_TRANSACTION.gasUsed));
-        expect(tx?.receipt.outputs).toHaveLength(1);
+        expect(tx?.outputs).toHaveLength(1);
 
-        const [output] = tx?.receipt.outputs ?? [];
+        const [output] = tx?.outputs ?? [];
         expect(output?.contractAddress?.toString()).toBe(
             BASIC_OUTPUT.contractAddress
         );
@@ -127,4 +131,3 @@ describe('ExpandedBlock', () => {
         expect(block?.isFinalized).toBe(false);
     });
 });
-

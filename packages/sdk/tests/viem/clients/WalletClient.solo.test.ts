@@ -15,7 +15,7 @@ import { log } from '@common/logging';
 const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
 
 /**
- * @group integration/clients
+ * @group solo/viem/clients
  */
 describe('WalletClient SOLO tests', () => {
     const mockExpiration = 32;

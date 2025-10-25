@@ -11,9 +11,9 @@ import { ClauseBuilder, TransactionRequest } from '@thor/thor-client';
 import { PrivateKeySigner } from '@thor';
 
 /**
- * VeChain beats subscription - integration
+ * VeChain beats subscription - solo
  *
- * @group integration/thor/subscriptions
+ * @group solo/thor/subscriptions
  */
 describe('NewTransactionSubscription solo tests', () => {
     let subscription: NewTransactionSubscription;

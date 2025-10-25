@@ -15,7 +15,7 @@ import { log } from '@common/logging';
 const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
 
 /**
- * @group integration/thor/signer
+ * @group solo/thor/signer
  */
 describe('PrivateKeySigner SOLO test', () => {
     const mockExpiration = 32;
