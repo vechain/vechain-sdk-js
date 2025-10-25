@@ -1,4 +1,3 @@
-import { ClauseData } from '@thor/thorest';
 import { type Address, type BlockRef } from '@common/vcdm';
 import { type ExecuteCodesRequestJSON } from '../json';
 import {
@@ -41,7 +40,7 @@ class ExecuteCodesRequest {
     /**
      * The clauses of the request.
      */
-    readonly clauses: ClauseData[] | null;
+    readonly clauses: Clause[] | null;
 
     /**
      * The gas of the request.
@@ -75,10 +74,7 @@ class ExecuteCodesRequest {
         this.gasPayer = options?.gasPayer ?? null;
         this.expiration = options?.expiration ?? null;
         this.blockRef = options?.blockRef ?? null;
-        this.clauses = clauses.map(
-            (clause: Clause) =>
-                new ClauseData(clause.to, clause.value, clause.data)
-        );
+        this.clauses = clauses;
         this.gas = options?.gas ?? null;
         this.gasPrice = options?.gasPrice ?? null;
         this.caller = options?.caller ?? null;
@@ -95,7 +91,7 @@ class ExecuteCodesRequest {
             gasPayer: this.gasPayer?.toString(),
             expiration: this.expiration?.valueOf(),
             blockRef: this.blockRef?.toString(),
-            clauses: this.clauses?.map((clause: ClauseData) => clause.toJSON()),
+            clauses: this.clauses?.map((clause: Clause) => clause.toJSON()),
             gas: this.gas !== null ? Number(this.gas) : undefined,
             gasPrice: this.gasPrice?.toString(),
             caller: this.caller?.toString()

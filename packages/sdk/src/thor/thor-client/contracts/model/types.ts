@@ -1,14 +1,9 @@
 /* eslint-disable */
 // TODO: Contracts module is pending rework - lint errors will be fixed during refactor
-import type {
-    Abi,
-    AbiParameter,
-    AbiParametersToPrimitiveTypes,
-    ExtractAbiFunction
-} from 'abitype';
-import type { Address, Hex, Revision } from '@common/vcdm';
+import type { Abi, AbiParameter, AbiParametersToPrimitiveTypes, ExtractAbiFunction } from 'abitype';
+import type { Address, Hex } from '@common/vcdm';
 import type { Clause } from '@thor/thor-client/model/transactions/Clause';
-import type { ClauseOptions } from '@thor/thorest/transactions/model/ClauseOptions';
+import type { ClauseOptions } from '@thor/thor-client/model/transactions/ClauseOptions';
 import type { ContractFilter } from './ContractFilter';
 
 /**

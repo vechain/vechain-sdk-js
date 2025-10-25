@@ -1,17 +1,15 @@
+import { Clause } from './Clause';
 import { ERC721_ABI, VIP180_ABI } from '@thor/utils';
-import { Hex, type Address, type HexUInt } from '@common/vcdm';
-import {
-    type ClauseOptions,
-    type DeployParams,
-    type TransactionClause
-} from '@thor/thorest';
+import { type Address, type Hex, HexUInt } from '@common/vcdm';
+import { type ClauseOptions } from './ClauseOptions';
+import { type DeployParams } from '@thor/thorest';
 import { IllegalArgumentError } from '@common/errors';
 import {
-    encodeFunctionData,
-    encodeAbiParameters,
-    parseAbiParameters,
+    type Abi,
     type AbiFunction,
-    type Abi
+    encodeAbiParameters,
+    encodeFunctionData,
+    parseAbiParameters
 } from 'viem';
 
 /**
@@ -21,25 +19,15 @@ const FQP =
     'packages/sdk/src/thor/thorest/transactions/model/ClauseBuilder.ts!';
 
 /**
- * This class represent a transaction clause.
+ * This class represents a transaction clause.
  *
  * @extends {TransactionClause}
  */
-class ClauseBuilder implements TransactionClause {
+class ClauseBuilder extends Clause {
     /**
      * Used internally in {@link Clause.callFunction}.
      */
     private static readonly FORMAT_TYPE = 'json';
-
-    /**
-     * Used internally to tag a transaction not tranferring token amount.
-     */
-    private static readonly NO_VALUE = Hex.PREFIX + '0';
-
-    /**
-     * Used internally to tag a transaction without data.
-     */
-    private static readonly NO_DATA = Hex.PREFIX;
 
     /**
      * Used internally in {@link Clause.transferNFT} method.
@@ -50,35 +38,6 @@ class ClauseBuilder implements TransactionClause {
      * Used internally in {@link Clause.transferToken} method.
      */
     private static readonly TRANSFER_TOKEN_FUNCTION = 'transfer';
-
-    /**
-     * Represents the address where:
-     * - transfer token to, or
-     * - invoke contract method on.
-     */
-    readonly to: string | null;
-
-    /**
-     * Return the amount to transfer to the destination.
-     */
-    readonly value: bigint;
-
-    /**
-     * Return the hexadecimal expression of the encoding of the arguments
-     * of the called function of a smart contract.
-     */
-    readonly data: string;
-
-    /**
-     * An optional comment to describe the purpose of the clause.
-     */
-    readonly comment?: string;
-
-    /**
-     * An optional  Application Binary Interface (ABI) of the called
-     * function of a smart contract.
-     */
-    readonly abi?: string;
 
     /**
      * Creates an instance of the class.
@@ -92,17 +51,13 @@ class ClauseBuilder implements TransactionClause {
      * @param {string} [abi] - An optional ABI string.
      */
     protected constructor(
-        to: string | null,
+        to: Address | null,
         value: bigint,
-        data: string,
+        data: Hex | null,
         comment?: string,
         abi?: string
     ) {
-        this.to = to;
-        this.value = value;
-        this.data = data;
-        this.comment = comment;
-        this.abi = abi;
+        super(to, value, data, comment, abi);
     }
 
     /**
@@ -147,9 +102,9 @@ class ClauseBuilder implements TransactionClause {
             ) as AbiFunction | undefined;
 
             return new ClauseBuilder(
-                contractAddress.toString().toLowerCase(),
+                contractAddress,
                 amount,
-                encodedData,
+                HexUInt.of(encodedData),
                 clauseOptions?.comment,
                 clauseOptions?.includeABI === true && functionAbi !== undefined
                     ? JSON.stringify(functionAbi)
@@ -166,13 +121,13 @@ class ClauseBuilder implements TransactionClause {
     /**
      * Returns a new clause to deploy a smart contract.
      *
-     * @param {HexUInt} contractBytecode - The bytecode of the contract to be deployed.
+     * @param {Hex} contractBytecode - The bytecode of the contract to be deployed.
      * @param {DeployParams} [deployParams] - Optional parameters to pass to the smart contract constructor.
      * @param {ClauseOptions} [clauseOptions] - Optional clause settings.
      * @return {ClauseBuilder} The clause to deploy the smart contract as part of a transaction.
      */
     public static deployContract(
-        contractBytecode: HexUInt,
+        contractBytecode: Hex,
         deployParams?: DeployParams,
         clauseOptions?: ClauseOptions
     ): ClauseBuilder {
@@ -195,7 +150,7 @@ class ClauseBuilder implements TransactionClause {
         return new ClauseBuilder(
             null,
             BigInt(0),
-            Hex.PREFIX + data,
+            HexUInt.of(data),
             clauseOptions?.comment
         );
     }
@@ -206,7 +161,7 @@ class ClauseBuilder implements TransactionClause {
      * @param {Address} contractAddress - The address of the NFT contract.
      * @param {Address} senderAddress - The address of the current owner (sender) of the NFT.
      * @param {Address} recipientAddress - The address of the new owner (recipient) of the NFT.
-     * @param {HexUInt} tokenId - The unique identifier of the NFT to be transferred.
+     * @param {Hex} tokenId - The unique identifier of the NFT to be transferred.
      * @param {ClauseOptions} [clauseOptions] - Optional clause settings.
      * @return {ClauseBuilder} The clause object representing the transfer operation as part of a transaction.
      */
@@ -214,7 +169,7 @@ class ClauseBuilder implements TransactionClause {
         contractAddress: Address,
         senderAddress: Address,
         recipientAddress: Address,
-        tokenId: HexUInt,
+        tokenId: Hex,
         clauseOptions?: ClauseOptions
     ): ClauseBuilder {
         return ClauseBuilder.callFunction(
@@ -286,9 +241,9 @@ class ClauseBuilder implements TransactionClause {
     ): ClauseBuilder {
         if (amount >= 0n) {
             return new ClauseBuilder(
-                recipientAddress.toString().toLowerCase(),
+                recipientAddress,
                 amount,
-                ClauseBuilder.NO_DATA,
+                null,
                 clauseOptions?.comment
             );
         }

@@ -180,7 +180,7 @@ const expandedBlockPayload: ExpandedBlockResponseJSON = {
             ],
             maxFeePerGas: '0xa3d6ca4699c',
             maxPriorityFeePerGas: '0xdb89ee99c',
-            gas: 414871,
+            gas: Hex.of(414871).toString(),
             origin: '0xf901020a285e4980b1e8cdcfa7645970bf37c56c',
             delegator: null,
             nonce: '0x4a545c05bb1e',

@@ -1,5 +1,5 @@
+import { type Clause } from './Clause';
 import { type Address, type Hex } from '@common/vcdm';
-import { Clause } from './Clause';
 import { TransactionMeta } from './TransactionMeta';
 import { type GetTxResponse } from '@thor/thorest/transactions';
 
@@ -100,7 +100,7 @@ class Transaction {
         this.chainTag = data.chainTag;
         this.blockRef = data.blockRef;
         this.expiration = data.expiration;
-        this.clauses = data.clauses.map((clause) => Clause.of(clause));
+        this.clauses = data.clauses;
         this.gasPriceCoef = data.gasPriceCoef;
         this.maxFeePerGas = data.maxFeePerGas;
         this.maxPriorityFeePerGas = data.maxPriorityFeePerGas;

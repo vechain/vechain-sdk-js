@@ -8,7 +8,7 @@ import { AbstractThorModule } from '../AbstractThorModule';
 import { Contract, ContractFactory } from './model';
 import { InspectClauses } from '@thor/thorest/accounts/methods/InspectClauses';
 import { ExecuteCodesRequest } from '@thor/thorest/accounts/methods/ExecuteCodesRequest';
-import { ClauseBuilder } from '@thor/thorest/transactions/model/ClauseBuilder';
+import { ClauseBuilder } from '@thor/thor-client/model/transactions/ClauseBuilder';
 import { SendTransaction } from '@thor/thorest/transactions/methods/SendTransaction';
 import { TransactionRequest } from '../model/transactions/TransactionRequest';
 import { Clause } from '../model/transactions/Clause';
@@ -349,14 +349,14 @@ class ContractsModule extends AbstractThorModule {
 
             // Convert ClauseBuilder to Clause
             const clause = new Clause(
-                clauseBuilder.to ? Address.of(clauseBuilder.to) : null,
+                clauseBuilder.to,
                 clauseBuilder.value,
-                clauseBuilder.data ? Hex.of(clauseBuilder.data) : null,
+                clauseBuilder.data,
                 clauseBuilder.comment ?? null,
                 clauseBuilder.abi ?? null
             );
 
-            // Use provided TransactionRequest or create a default one
+            // Use the provided TransactionRequest or create a default one
             const finalTransactionRequest = transactionRequest
                 ? new TransactionRequest({
                       ...transactionRequest,
@@ -528,9 +528,9 @@ class ContractsModule extends AbstractThorModule {
 
                     // Convert ClauseBuilder to Clause
                     return new Clause(
-                        clauseBuilder.to ? Address.of(clauseBuilder.to) : null,
+                        clauseBuilder.to,
                         clauseBuilder.value,
-                        clauseBuilder.data ? Hex.of(clauseBuilder.data) : null,
+                        clauseBuilder.data,
                         clauseBuilder.comment ?? null,
                         clauseBuilder.abi ?? null
                     );

@@ -4,7 +4,7 @@ import type { Abi, AbiParameter } from 'abitype';
 import { type Signer } from '@thor/signer';
 import { HexUInt } from '@common/vcdm';
 import { IllegalArgumentError } from '@common/errors';
-import { ClauseBuilder } from '@thor/thorest/transactions/model/ClauseBuilder';
+import { ClauseBuilder } from '@thor/thor-client/model/transactions/ClauseBuilder';
 import type { SimulateTransactionOptions } from '../types';
 import type { TransactionRequest } from '../../model/transactions/TransactionRequest';
 import type { ContractsModule } from '../contracts-module';
