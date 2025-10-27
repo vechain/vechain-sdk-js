@@ -7,7 +7,7 @@ import { VTHO_ADDRESS } from '@thor/utils/const/network';
 /**
  * VeChain retrieve account details - solo
  *
- * @group integration/thor/accounts
+ * @group solo/thor/accounts
  */
 describe('RetrieveAccountDetails solo tests', () => {
     test('ok <- askTo (without revision)', async () => {

@@ -1,20 +1,15 @@
-import * as nc_utils from '@noble/curves/abstract/utils';
+import * as nc_utils from '@noble/curves/utils';
+import { concatBytes } from '@noble/curves/utils';
 import { type Account } from 'viem';
 import { SendTransaction, type ThorNetworks } from '@thor/thorest';
 import {
     Clause,
-    TransactionRequest,
-    SignedTransactionRequest,
-    SponsoredTransactionRequest
+    TransactionRequest
 } from '@thor/thor-client/model/transactions';
 import { Address, Blake2b256, Hex, HexInt, HexUInt } from '@common/vcdm';
 import { FetchHttpClient, type HttpClient } from '@common/http';
-import {
-    IllegalArgumentError,
-    UnsupportedOperationError
-} from '@common/errors';
+import { UnsupportedOperationError } from '@common/errors';
 import { PublicClient, type PublicClientConfig } from './PublicClient';
-import { RLPCodecTransactionRequest } from '@thor';
 
 /**
  * Fill-Qualified Path
@@ -71,12 +66,83 @@ class WalletClient extends PublicClient {
     }
 
     /**
+     * Finalizes the transaction request based on its sponsorship intent and signature availability.
+     *
+     * - If the `transactionRequest` is intended to be sponsored and has both origin and gas payer signatures,
+     *   a new `TransactionRequest` is created, combining these signatures;
+     *   if only one or neither signature is present, the original `transactionRequest` is returned unmodified.
+     *
+     * - If the `transactionRequest` is not intended to be sponsored,
+     *   if the origin signature is present, a new `TransactionRequest` is created based on the origin signature;
+     *   otherwise, the original request is returned as-is.
+     *
+     * @param {TransactionRequest} transactionRequest - The transaction request to be finalized, which includes
+     * details of the transaction, its signatures (if available), and its sponsorship intent.
+     * @return {TransactionRequest} The finalized `TransactionRequest` object, updated based on the sponsorship
+     * intent and available signatures.
+     *
+     * @remarks Security auditable method, depends on
+     * - `concatBytes` from [noble-curves](https://github.com/paulmillr/noble-curves).
+     */
+    private static finalize(
+        transactionRequest: TransactionRequest
+    ): TransactionRequest {
+        if (transactionRequest.isIntendedToBeSponsored) {
+            // Intended to be sponsored.
+            if (WalletClient.hasRequiredSignatures(transactionRequest)) {
+                // Both origin and gas payer signed.
+                return new TransactionRequest(
+                    transactionRequest,
+                    transactionRequest.originSignature,
+                    transactionRequest.gasPayerSignature,
+                    concatBytes(
+                        transactionRequest.originSignature,
+                        transactionRequest.gasPayerSignature
+                    )
+                );
+            }
+            // Not both origin and gas payer signed.
+            return transactionRequest;
+        }
+        // Not intended to be sponsored.
+        if (WalletClient.hasRequiredSignatures(transactionRequest)) {
+            // Origin signed.
+            return new TransactionRequest(
+                { ...transactionRequest },
+                transactionRequest.originSignature,
+                transactionRequest.gasPayerSignature,
+                transactionRequest.originSignature
+            );
+        }
+        // Not intended to be sponsored, no origin signature.
+        return transactionRequest;
+    }
+
+    /**
      * Returns a list of account addresses owned by the wallet or client.
      *
      * @see https://viem.sh/docs/actions/wallet/getAddresses
      */
     public getAddresses(): Address[] {
         return this.account != null ? [Address.of(this.account.address)] : [];
+    }
+
+    /**
+     * Checks if the required signatures are present for the transaction type.
+     *
+     * @param transactionRequest - The transaction request to check
+     * @returns true if all required signatures are present, false otherwise
+     */
+    private static hasRequiredSignatures(
+        transactionRequest: TransactionRequest
+    ): boolean {
+        if (transactionRequest.isIntendedToBeSponsored) {
+            return (
+                transactionRequest.originSignature.length > 0 &&
+                transactionRequest.gasPayerSignature.length > 0
+            );
+        }
+        return transactionRequest.originSignature.length > 0;
     }
 
     /**
@@ -104,6 +170,7 @@ class WalletClient extends PublicClient {
                     : null
             );
             return new TransactionRequest({
+                beggar: request.beggar,
                 blockRef: request.blockRef,
                 chainTag: request.chainTag,
                 clauses: [clause],
@@ -111,9 +178,9 @@ class WalletClient extends PublicClient {
                 expiration: request.expiration,
                 gas: HexUInt.of(request.gas).bi,
                 gasPriceCoef: BigInt(request.gasPriceCoef),
-                nonce: request.nonce,
-                isIntendedToBeSponsored:
-                    request.isIntendedToBeSponsored ?? false
+                maxFeePerGas: request.maxFeePerGas,
+                maxPriorityFeePerGas: request.maxPriorityFeePerGas,
+                nonce: request.nonce
             });
         } catch (e) {
             throw new UnsupportedOperationError(
@@ -189,7 +256,7 @@ class WalletClient extends PublicClient {
      * - a prepared transaction request to be signed and sent,
      * - a signed transaction request to be sponsored and sent.
      *
-     * @param {PrepareTransactionRequestRequest | SignedTransactionRequest} request - The transaction request object.
+     * @param {PrepareTransactionRequestRequest | TransactionRequest} request - The transaction request object.
      * This can either be a prepared transaction request to be signed or a signed transaction request to be sponsored.
      * @return {Promise<Hex>} A promise that resolves to the transaction hash (Hex) of the sent transaction.
      * @throws {ThorError} If the transaction fails to send or the response is invalid.
@@ -200,10 +267,10 @@ class WalletClient extends PublicClient {
      * @see sendRawTransaction
      */
     public async sendTransaction(
-        request: PrepareTransactionRequestRequest | SignedTransactionRequest
+        request: PrepareTransactionRequestRequest | TransactionRequest
     ): Promise<Hex> {
         const transactionRequest =
-            request instanceof SignedTransactionRequest
+            request instanceof TransactionRequest
                 ? request
                 : this.prepareTransactionRequest(request);
         const raw = await this.signTransaction(transactionRequest);
@@ -211,138 +278,136 @@ class WalletClient extends PublicClient {
     }
 
     /**
-     * Signs the given transaction request and returns the resulting hexadecimal representation.
-     * The transaction request can either be
-     * - an unsigned transaction request,
-     * - an unsigned sponsored transaction request this wallet signs as origin/sender,
-     * - a signed sponsored transaction request this wallet sisgns as gas-payer.sponsor.
+     * Signs a transaction request.
+     * - If the transaction is intended to be sponsored,
+     *   - if the beggar address is equal to the signer address, signs as origin/sender;
+     *   - if the beggar address differs from the signer address, signs as gas payer.
+     * - If the transaction is not intended to be sponsored, signs as origin/sender.
      *
-     * @param {TransactionRequest | SignedTransactionRequest} transactionRequest - The transaction request to be signed.
-     * @return {Promise<Hex>} A promise that resolves to the signed transaction in hexadecimal format.
-     * @throws {UnsupportedOperationError} If the account is not set.
+     * @param {TransactionRequest} transactionRequest - The transaction request object to be signed.
+     * @return {Promise<Hex>} The hexadecimal expression of the RLP encoded signed transaction request object.
+     * @throws {VeChainSDKError} Throws an error if the signing process fails.
+     *
+     * @security Security auditable method, depends on
+     * - {@link WalletClient.finalize};
+     * - {@link WalletClient.signAsGasPayer};
+     * - {@link WalletClient.signAsOrigin}.
      */
     public async signTransaction(
-        transactionRequest: TransactionRequest | SignedTransactionRequest
+        transactionRequest: TransactionRequest
     ): Promise<Hex> {
         if (this.account !== null) {
-            if (transactionRequest instanceof SignedTransactionRequest) {
-                return await WalletClient.sponsorTransactionRequest(
-                    transactionRequest,
-                    this.account
+            if (transactionRequest.beggar !== undefined) {
+                if (
+                    transactionRequest.beggar.isEqual(
+                        Address.of(this.account.address)
+                    )
+                ) {
+                    return HexUInt.of(
+                        WalletClient.finalize(
+                            await WalletClient.signAsOrigin(
+                                transactionRequest,
+                                this.account
+                            )
+                        ).encoded
+                    );
+                }
+                return HexUInt.of(
+                    WalletClient.finalize(
+                        await WalletClient.signAsGasPayer(
+                            transactionRequest,
+                            this.account
+                        )
+                    ).encoded
                 );
             }
-            return await WalletClient.signTransactionRequest(
-                transactionRequest,
-                this.account
+            return HexUInt.of(
+                WalletClient.finalize(
+                    await WalletClient.signAsOrigin(
+                        transactionRequest,
+                        this.account
+                    )
+                ).encoded
             );
         }
         throw new UnsupportedOperationError(
-            `${FQP}WalletClient.signTransaction(transactionRequest: TransactionRequest | SignedTransactionRequest): Hex`,
+            `${FQP}WalletClient.signTransaction(transactionRequest: TransactionRequest): Hex`,
             'account is not set'
         );
     }
 
     /**
-     * Signs a given transaction request with the provided account and returns the signed transaction in hexadecimal format.
+     * Signs the given transaction request as a gas payer.
      *
-     * @param {TransactionRequest} transactionRequest - The transaction request object to be signed.
-     * @param {Account} account - The account object containing the necessary credentials for signing.
-     * @return {Promise<Hex>} A promise that resolves to the signed transaction encoded in hexadecimal format.
+     * @param {TransactionRequest} transactionRequest - The transaction request to sign,
+     * which includes all necessary transaction details.
+     * @param {Account} account - The account object used for signing the transaction.
+     * @return {TransactionRequest} The signed transaction request with updated gas payer signature.
+     * @throws {InvalidPrivateKeyError} Throws an error if the private key is not available.
+     *
+     * @remarks Security auditable method, depends on
+     * - {@link Blake2b256.of};
+     * - `concatBytes` from [noble-curves](https://github.com/paulmillr/noble-curves);
+     * - {@link Secp256k1.sign}.
      */
-    private static async signTransactionRequest(
+    private static async signAsGasPayer(
         transactionRequest: TransactionRequest,
         account: Account
-    ): Promise<Hex> {
-        const originHash = Blake2b256.of(
-            RLPCodecTransactionRequest.encode(transactionRequest)
+    ): Promise<TransactionRequest> {
+        const gasPayerHash = Blake2b256.of(
+            concatBytes(
+                transactionRequest.hash.bytes, // Origin hash.
+                transactionRequest.beggar?.bytes ?? new Uint8Array()
+            )
         ).bytes;
-        const originSignature = await WalletClient.signHash(
-            originHash,
+        const gasPayerSignature = await WalletClient.signHash(
+            gasPayerHash,
             account
         );
-        const signedTransactionRequest = new SignedTransactionRequest({
-            ...transactionRequest,
-            origin: Address.of(account.address),
-            originSignature,
-            signature: originSignature
-        });
-        return HexUInt.of(
-            RLPCodecTransactionRequest.encode(signedTransactionRequest)
+        return new TransactionRequest(
+            { ...transactionRequest },
+            transactionRequest.originSignature,
+            gasPayerSignature,
+            transactionRequest.signature
         );
     }
 
     /**
-     * Sponsors a transaction request and returns the resulting hex-encoded sponsored transaction.
+     * Signs the given transaction request as the origin using the private key.
      *
-     * @param {SignedTransactionRequest} signedTransactionRequest - The signed transaction request to be sponsored.
-     *        Must have the `isIntendedToBeSponsored` flag set to true.
-     * @param {Account} account - The account object providing the gas payer's private key for signing the transaction.
-     * @return {Promise<Hex>} A Promise that resolves to the hex-encoded representation of the sponsored transaction request.
-     * @throws {IllegalArgumentError} If the transaction request is not intended to be sponsored.
+     * @param {TransactionRequest} transactionRequest - The transaction request to be signed.
+     * @param {Account} account - The account object used for signing the transaction.
+     * @return {TransactionRequest} A new instance of TransactionRequest with the origin signature included.
+     * @throws {InvalidPrivateKeyError} If no private key is available for signing.
+     *
+     * @remarks Security auditable method, depends on
+     * - {@link Blake2b256.of};
+     * - `concatBytes` from [noble-curves](https://github.com/paulmillr/noble-curves);
+     * - {@link Secp256k1.sign}.
      */
-    private static async sponsorTransactionRequest(
-        signedTransactionRequest: SignedTransactionRequest,
+    private static async signAsOrigin(
+        transactionRequest: TransactionRequest,
         account: Account
-    ): Promise<Hex> {
-        if (signedTransactionRequest.isIntendedToBeSponsored === true) {
-            const originHash = Blake2b256.of(
-                RLPCodecTransactionRequest.encode(
-                    new TransactionRequest({
-                        blockRef: signedTransactionRequest.blockRef,
-                        chainTag: signedTransactionRequest.chainTag,
-                        clauses: signedTransactionRequest.clauses,
-                        dependsOn: signedTransactionRequest.dependsOn,
-                        expiration: signedTransactionRequest.expiration,
-                        gas: signedTransactionRequest.gas,
-                        gasPriceCoef: signedTransactionRequest.gasPriceCoef,
-                        nonce: signedTransactionRequest.nonce,
-                        isIntendedToBeSponsored:
-                            signedTransactionRequest.isIntendedToBeSponsored
-                    })
-                )
-            );
-            const gasPayerHash = Blake2b256.of(
-                nc_utils.concatBytes(
-                    originHash.bytes,
-                    signedTransactionRequest.origin.bytes
-                )
-            );
-            const gasPayerSignature = await WalletClient.signHash(
-                gasPayerHash.bytes,
-                account
-            );
-            const sponsoredTransactionRequest = new SponsoredTransactionRequest(
-                {
-                    blockRef: signedTransactionRequest.blockRef,
-                    chainTag: signedTransactionRequest.chainTag,
-                    clauses: signedTransactionRequest.clauses,
-                    dependsOn: signedTransactionRequest.dependsOn,
-                    expiration: signedTransactionRequest.expiration,
-                    gas: signedTransactionRequest.gas,
-                    gasPriceCoef: signedTransactionRequest.gasPriceCoef,
-                    nonce: signedTransactionRequest.nonce,
-                    isIntendedToBeSponsored: true,
-                    origin: signedTransactionRequest.origin,
-                    originSignature: signedTransactionRequest.originSignature,
-                    gasPayer: Address.of(account.address),
-                    gasPayerSignature,
-                    signature: nc_utils.concatBytes(
-                        signedTransactionRequest.originSignature,
-                        gasPayerSignature
-                    )
-                }
-            );
-            return HexUInt.of(
-                RLPCodecTransactionRequest.encode(sponsoredTransactionRequest)
-            );
-        }
-        throw new IllegalArgumentError(
-            `${FQP}WalletClient.signTransaction(signedTransactionRequest: SignedTransactionRequest): Hex`,
-            'not intended to be sponsored'
+    ): Promise<TransactionRequest> {
+        const originSignature = await WalletClient.signHash(
+            transactionRequest.hash.bytes, // Origin hash.
+            account
+        );
+        return new TransactionRequest(
+            { ...transactionRequest },
+            originSignature,
+            transactionRequest.gasPayerSignature,
+            transactionRequest.signature
         );
     }
 }
 
+/**
+ *
+ * Define an object compatible with
+ * [Viem prepareTransactionRequest](https://www.viem.sh/docs/actions/wallet/prepareTransactionRequest)
+ * argument.
+ */
 interface PrepareTransactionRequestRequest {
     // Clause
     to?: Address;
@@ -351,16 +416,21 @@ interface PrepareTransactionRequestRequest {
     comment?: string;
     abi?: Hex;
     // Transaction body
+    beggar?: Address;
     blockRef: Hex;
     chainTag: number;
     dependsOn?: Hex;
     expiration: number;
     gas: Hex | number;
     gasPriceCoef: number;
+    maxFeePerGas?: bigint;
+    maxPriorityFeePerGas?: bigint;
     nonce: number;
-    isIntendedToBeSponsored?: boolean;
 }
 
+/**
+ * Configuration object for the WalletClient.
+ */
 interface WalletClientConfig extends PublicClientConfig {
     account?: Account;
 }

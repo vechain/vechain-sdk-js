@@ -1,7 +1,7 @@
 import { VeChainSDKError } from './VeChainSDKError';
 
 /**
- * Represents an error that is thrown when an invalid encoding is detected.
+ * Represents an error thrown when an invalid encoding is detected.
  *
  * This error is used to indicate that the encoding provided or encountered is not recognized
  * or supported in the given context. It extends the VeChainSDKError, which is a base class

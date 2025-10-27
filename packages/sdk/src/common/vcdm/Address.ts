@@ -1,7 +1,7 @@
 import { HDKey } from '@common/cryptography/hdkey';
 import { IllegalArgumentError } from '@common/errors';
 import { Secp256k1 } from '@common/cryptography/secp256k1';
-import { Txt, Hex, Keccak256 } from '@common/vcdm';
+import { Hex, Keccak256, Txt } from '@common/vcdm';
 import { HexUInt } from './HexUInt';
 
 /**
@@ -118,9 +118,22 @@ class Address extends HexUInt {
     /**
      * Create an Address instance from the given public key.
      *
+     * The public key has the following formats:
+     * - **compressed**
+     *   - Byte 1: prefix `0x04`,
+     *   - Bytes 2-33: *x* coordinate (32 bytes),
+     *   - Byte 34-65: *y* coordinate (32 bytes);
+     * - **uncompressed**
+     *   - Byte 1: prefix
+     *      - `0x02` if the *y* coordinate is even,
+     *      - `0x03` if the *y* coordinate is odd,
+     *    - Bytes 2-33: *x* coordinate (32 bytes).
+     *
      * @param {Uint8Array} publicKey - The public key to convert.
      *
      * @returns {Address} The converted address.
+     *
+     * @throws {IllegalArgumentError} If the `publicKey` is invalid.
      *
      * @remarks Security audited method, depends on
      * * {@link Secp256k1.inflatePublicKey}.

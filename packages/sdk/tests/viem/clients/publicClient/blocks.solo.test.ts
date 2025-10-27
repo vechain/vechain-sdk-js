@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, expect, test } from '@jest/globals';
 import { createPublicClient, BlockReponseType } from '@viem/clients';
 import { ThorNetworks } from '@thor/thorest';
-import { Hex } from '@common/vcdm';
+import { Hex, Revision } from '@common/vcdm';
 import { FetchHttpClient } from '@common/http';
 import { log } from '@common/logging';
 
@@ -15,7 +16,7 @@ import { log } from '@common/logging';
  * - watchBlocks
  * - watchBlockNumber
  *
- * @group integration/clients
+ * @group solo/viem/clients
  */
 describe('PublicClient - Block Methods', () => {
     const customTransport = new FetchHttpClient(new URL(ThorNetworks.SOLONET), {
@@ -42,21 +43,17 @@ describe('PublicClient - Block Methods', () => {
         transport: customTransport
     });
 
-    // Genesis block ID for solo network
-    const genesisBlockId =
-        '0x00000000851caf3cfdb6e899cf5958bfb1ac3413d346d43539627e6be7ec1b4a';
-
     describe('getBlock', () => {
         test('should retrieve regular block by ID', async () => {
             const block = await publicClient.getBlock(
-                0, // Genesis block number
+                Revision.of(0), // Genesis block number
                 BlockReponseType.regular
             );
 
             expect(block).toBeDefined();
             expect(block).not.toBeNull();
 
-            if (block) {
+            if (block !== null) {
                 // Verify the block has expected properties for regular response
                 expect(block).toHaveProperty('number');
                 expect(block).toHaveProperty('id');
@@ -93,14 +90,14 @@ describe('PublicClient - Block Methods', () => {
 
         test('should retrieve expanded block by ID', async () => {
             const block = await publicClient.getBlock(
-                0, // Genesis block number
+                Revision.of(0), // Genesis block number
                 BlockReponseType.expanded
             );
 
             expect(block).toBeDefined();
             expect(block).not.toBeNull();
 
-            if (block) {
+            if (block !== null) {
                 // Verify the block has expected properties for expanded response
                 expect(block).toHaveProperty('number');
                 expect(block).toHaveProperty('id');
@@ -135,14 +132,14 @@ describe('PublicClient - Block Methods', () => {
 
         test('should retrieve raw block by ID', async () => {
             const block = await publicClient.getBlock(
-                0, // Genesis block number
+                Revision.of(0), // Genesis block number
                 BlockReponseType.raw
             );
 
             expect(block).toBeDefined();
             expect(block).not.toBeNull();
 
-            if (block) {
+            if (block !== null) {
                 // Raw block is returned as RawTx object with hex data
                 expect(block).toHaveProperty('raw');
                 const rawData = (block as any).raw;
@@ -162,12 +159,12 @@ describe('PublicClient - Block Methods', () => {
         }, 30000);
 
         test('should retrieve best block', async () => {
-            const block = await publicClient.getBlock('best');
+            const block = await publicClient.getBlock(Revision.BEST);
 
             expect(block).toBeDefined();
             expect(block).not.toBeNull();
 
-            if (block) {
+            if (block !== null) {
                 expect(block).toHaveProperty('id');
                 expect(block).toHaveProperty('number');
                 expect((block as any).number).toBeGreaterThan(0);
@@ -184,12 +181,12 @@ describe('PublicClient - Block Methods', () => {
 
         test('should retrieve block by number', async () => {
             const blockNumber = 0; // Genesis block number
-            const block = await publicClient.getBlock(blockNumber);
+            const block = await publicClient.getBlock(Revision.of(blockNumber));
 
             expect(block).toBeDefined();
             expect(block).not.toBeNull();
 
-            if (block) {
+            if (block !== null) {
                 expect(block).toHaveProperty('number');
                 expect((block as any).number).toBe(blockNumber);
 
@@ -295,7 +292,7 @@ describe('PublicClient - Block Methods', () => {
     });
 
     describe('watchBlockNumber', () => {
-        test('should create block number subscription', async () => {
+        test('should create block number subscription', () => {
             const subscription = publicClient.watchBlockNumber();
 
             expect(subscription).toBeDefined();
@@ -323,7 +320,9 @@ describe('PublicClient - Block Methods', () => {
                 '0x0000000000000000000000000000000000000000000000000000000000000000';
 
             try {
-                const block = await publicClient.getBlock(invalidBlockId);
+                const block = await publicClient.getBlock(
+                    Revision.of(invalidBlockId)
+                );
                 expect(block).toBeNull();
             } catch (error) {
                 expect(error).toBeDefined();
@@ -338,8 +337,9 @@ describe('PublicClient - Block Methods', () => {
             const invalidBlockNumber = 999999999; // Very high block number
 
             try {
-                const blockNumber =
-                    await publicClient.getBlockNumber(invalidBlockNumber);
+                const blockNumber = await publicClient.getBlockNumber(
+                    Revision.of(invalidBlockNumber)
+                );
                 expect(blockNumber).toBeUndefined();
             } catch (error) {
                 expect(error).toBeDefined();
