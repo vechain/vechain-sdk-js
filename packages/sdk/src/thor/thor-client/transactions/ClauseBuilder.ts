@@ -8,34 +8,23 @@ import {
     type Abi,
     type AbiFunction
 } from 'viem';
+import { type DeployParams } from '@thor/thorest/transactions/model';
+import { Clause } from '../model';
 import {
-    type DeployParams,
-    type TransactionClause
-} from '@thor/thorest/transactions/model';
-
+    NO_DATA,
+    ZERO_VALUE,
+    TRANSFER_NFT_FUNCTION,
+    TRANSFER_TOKEN_FUNCTION
+} from '@thor/utils/const/constants';
 /**
  * Additional metadata that callers can attach to a clause.
  */
 interface ClauseMetadata {
-    comment?: string;
+    comment: string | null;
     includeAbi?: boolean;
 }
 
 const FQP = 'packages/sdk/src/thor/thor-client/transactions/ClauseBuilder.ts!';
-
-const NO_DATA = Hex.PREFIX;
-
-const ZERO_VALUE = 0n;
-
-const TRANSFER_NFT_FUNCTION = 'transferFrom';
-
-const TRANSFER_TOKEN_FUNCTION = 'transfer';
-
-/**
- * Normalizes an address by returning the lowercase string representation or null.
- */
-const toLowercaseAddress = (address: Address | null): string | null =>
-    address === null ? null : address.toString().toLowerCase();
 
 /**
  * Optionally attach the ABI definition of the invoked function when requested.
@@ -44,15 +33,15 @@ const withAbi = (
     abi: Abi,
     functionName: string,
     includeAbi?: boolean
-): string | undefined => {
-    if (includeAbi !== true) return undefined;
+): string | null => {
+    if (includeAbi !== true) return null;
 
     const functionAbi = abi.find(
         (item: AbiFunction | { type?: string; name?: string }) =>
             item.type === 'function' && item.name === functionName
     ) as AbiFunction | undefined;
 
-    return functionAbi !== undefined ? JSON.stringify(functionAbi) : undefined;
+    return functionAbi !== undefined ? JSON.stringify(functionAbi) : null;
 };
 
 /**
@@ -65,7 +54,7 @@ const getFunctionCallClause = (
     args: readonly unknown[],
     value: bigint = ZERO_VALUE,
     metadata?: ClauseMetadata
-): TransactionClause => {
+): Clause => {
     if (value < ZERO_VALUE) {
         throw new IllegalArgumentError(
             `${FQP}callFunction(contractAddress: Address, contractAbi: Abi, functionName: string, args: unknown[], value: bigint, metadata?: ClauseMetadata)`,
@@ -74,19 +63,22 @@ const getFunctionCallClause = (
         );
     }
 
-    return {
-        to: toLowercaseAddress(contractAddress),
+    return new Clause(
+        contractAddress,
         value,
-        data: encodeFunctionData({
-            abi: contractAbi,
-            functionName,
-            args
-        }),
-        comment: metadata?.comment,
-        abi: withAbi(contractAbi, functionName, metadata?.includeAbi)
-    } satisfies TransactionClause;
+        Hex.of(
+            encodeFunctionData({
+                abi: contractAbi,
+                functionName,
+                args
+            })
+        ),
+        metadata?.comment ?? null,
+        withAbi(contractAbi, functionName, metadata?.includeAbi)
+    );
 };
 
+// PEDNING
 /**
  * Builds a clause that deploys bytecode with optional constructor parameters.
  */
@@ -94,7 +86,7 @@ const getDeployContractClause = (
     contractBytecode: HexUInt,
     deployParams?: DeployParams,
     metadata?: ClauseMetadata
-): TransactionClause => {
+): Clause => {
     let data = contractBytecode.digits;
 
     if (deployParams !== undefined) {
@@ -110,12 +102,13 @@ const getDeployContractClause = (
         data += encodedParams.slice(2);
     }
 
-    return {
-        to: null,
-        value: ZERO_VALUE,
-        data: Hex.PREFIX + data,
-        comment: metadata?.comment
-    } satisfies TransactionClause;
+    return new Clause(
+        null,
+        ZERO_VALUE,
+        Hex.of(data),
+        metadata?.comment ?? null,
+        null
+    );
 };
 
 /**
@@ -127,7 +120,7 @@ const getTransferNftClause = (
     recipientAddress: Address,
     tokenId: bigint,
     metadata?: ClauseMetadata
-): TransactionClause =>
+): Clause =>
     getFunctionCallClause(
         contractAddress,
         ERC721_ABI,
@@ -145,7 +138,7 @@ const getTransferTokenClause = (
     recipientAddress: Address,
     value: bigint,
     metadata?: ClauseMetadata
-): TransactionClause => {
+): Clause => {
     if (value < ZERO_VALUE) {
         throw new IllegalArgumentError(
             `${FQP}transferToken(tokenAddress: Address, recipientAddress: Address, value: bigint, metadata?: ClauseMetadata)`,
@@ -171,7 +164,7 @@ const getTransferVetClause = (
     recipientAddress: Address,
     value: bigint,
     metadata?: ClauseMetadata
-): TransactionClause => {
+): Clause => {
     if (value < ZERO_VALUE) {
         throw new IllegalArgumentError(
             `${FQP}transferVET(recipientAddress: Address, value: bigint, metadata?: ClauseMetadata)`,
@@ -180,12 +173,13 @@ const getTransferVetClause = (
         );
     }
 
-    return {
-        to: toLowercaseAddress(recipientAddress),
+    return new Clause(
+        recipientAddress,
         value,
-        data: NO_DATA,
-        comment: metadata?.comment
-    } satisfies TransactionClause;
+        Hex.of(NO_DATA),
+        metadata?.comment ?? null,
+        null
+    );
 };
 
 /**

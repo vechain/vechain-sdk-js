@@ -8,7 +8,6 @@ import type {
 } from 'abitype';
 import type { Address, Hex, Revision } from '@common/vcdm';
 import type { Clause } from '@thor/thor-client/model/transactions/Clause';
-import type { ClauseOptions } from '@thor/thorest/transactions/model/ClauseOptions';
 import type { ContractFilter } from './ContractFilter';
 
 /**
@@ -17,6 +16,16 @@ import type { ContractFilter } from './ContractFilter';
 export interface SendTransactionResult {
     id: string;
     wait: () => Promise<{ id: string; blockNumber: number; blockHash: string }>;
+}
+
+/**
+ * Base clause options
+ */
+export interface ClauseOptions {
+    /**
+     * Optional comment for the clause
+     */
+    comment?: string;
 }
 
 /**

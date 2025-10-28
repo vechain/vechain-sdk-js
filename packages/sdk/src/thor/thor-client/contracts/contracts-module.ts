@@ -10,7 +10,7 @@ import { InspectClauses } from '@thor/thorest/accounts/methods/InspectClauses';
 import { ExecuteCodesRequest } from '@thor/thorest/accounts/methods/ExecuteCodesRequest';
 import { type ExecuteCodesRequestJSON } from '@thor/thorest/accounts/json';
 import { type ExecuteCodesResponse } from '@thor/thorest/accounts/response';
-import { ClauseBuilder } from '@thor/thorest/transactions/model/ClauseBuilder';
+import { ClauseBuilder } from '@thor/thor-client/transactions/ClauseBuilder';
 import { SendTransaction } from '@thor/thorest/transactions/methods/SendTransaction';
 import { TransactionRequest } from '../model/transactions/TransactionRequest';
 import { RLPCodecTransactionRequest } from '@thor/signer/RLPCodeTransactionRequest';
@@ -348,21 +348,12 @@ class ContractsModule extends AbstractThorModule {
     ): Promise<SendTransactionResult> {
         try {
             // Build the clause for the contract function call
-            const clauseBuilder = ClauseBuilder.callFunction(
+            const clause = ClauseBuilder.callFunction(
                 Address.of(contractAddress),
                 [functionAbi],
                 functionAbi.name,
                 functionData,
                 value ?? 0n
-            );
-
-            // Convert ClauseBuilder to Clause
-            const clause = new Clause(
-                clauseBuilder.to ? Address.of(clauseBuilder.to) : null,
-                clauseBuilder.value,
-                clauseBuilder.data ? Hex.of(clauseBuilder.data) : null,
-                clauseBuilder.comment ?? null,
-                clauseBuilder.abi ?? null
             );
 
             // Use provided TransactionRequest or create a default one
@@ -528,21 +519,13 @@ class ContractsModule extends AbstractThorModule {
                     clause.functionAbi &&
                     clause.functionData
                 ) {
-                    const clauseBuilder = ClauseBuilder.callFunction(
+                    // ClauseBuilder.callFunction already returns a Clause instance
+                    return ClauseBuilder.callFunction(
                         Address.of(clause.contractAddress),
                         [clause.functionAbi],
                         clause.functionAbi.name,
                         clause.functionData,
                         clause.value ?? 0n
-                    );
-
-                    // Convert ClauseBuilder to Clause
-                    return new Clause(
-                        clauseBuilder.to ? Address.of(clauseBuilder.to) : null,
-                        clauseBuilder.value,
-                        clauseBuilder.data ? Hex.of(clauseBuilder.data) : null,
-                        clauseBuilder.comment ?? null,
-                        clauseBuilder.abi ?? null
                     );
                 }
                 return clause;

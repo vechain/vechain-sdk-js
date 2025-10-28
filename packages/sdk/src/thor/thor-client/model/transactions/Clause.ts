@@ -1,7 +1,6 @@
-import { Address, Hex, Quantity } from '@common/vcdm';
+import { type Address, Hex, Quantity } from '@common/vcdm';
 import { type ClauseJSON } from '@thor/thorest/json';
 import { type ClauseData } from '@thor/thorest/common';
-import { type TransactionClause } from '@thor/thorest/transactions/model';
 
 /**
  * [Clause](http://localhost:8669/doc/stoplight-ui/#/schemas/Clause)
@@ -73,21 +72,6 @@ class Clause {
             clauseData.data,
             null,
             null
-        );
-    }
-
-    /**
-     * Creates a Clause instance starting from a plain TransactionClause.
-     */
-    public static fromTransactionClause(clause: TransactionClause): Clause {
-        const to = clause.to !== null ? Address.of(clause.to) : null;
-
-        return new Clause(
-            to,
-            clause.value,
-            clause.data !== null ? Hex.of(clause.data) : null,
-            clause.comment,
-            clause.abi
         );
     }
 

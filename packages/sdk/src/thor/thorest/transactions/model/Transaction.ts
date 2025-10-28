@@ -21,7 +21,8 @@ import {
     UnsupportedOperationError
 } from '@common/errors';
 import { log } from '@common/logging';
-import { type TransactionBody, type TransactionClause } from '@thor/thorest';
+import { type TransactionBody } from '@thor/thorest';
+import { Clause } from '@thor/thor-client/model/transactions/Clause';
 
 /**
  * Full Qualified Path
@@ -384,11 +385,27 @@ class Transaction {
             rawTransaction,
             profile
         ).object as RLPValidObject;
+
+        // Convert decoded clauses to Clause instances
+        const decodedClauses = (
+            decodedRLPBody.clauses as Array<{
+                to: string | null;
+                value: bigint;
+                data: string;
+            }>
+        ).map((clauseData) => {
+            return new Clause(
+                clauseData.to !== null ? Address.of(clauseData.to) : null,
+                clauseData.value,
+                clauseData.data !== '' ? Hex.of(clauseData.data) : null
+            );
+        });
+
         // Create correct transaction body without reserved field
         const bodyWithoutReservedField: TransactionBody = {
             blockRef: decodedRLPBody.blockRef as string,
             chainTag: decodedRLPBody.chainTag as number,
-            clauses: decodedRLPBody.clauses as [],
+            clauses: decodedClauses,
             dependsOn: decodedRLPBody.dependsOn as string | null,
             expiration: decodedRLPBody.expiration as number,
             gas: decodedRLPBody.gas as number,
@@ -464,37 +481,33 @@ class Transaction {
     /**
      * Calculates the intrinsic gas required for the given transaction clauses.
      *
-     * @param {TransactionClause[]} clauses - An array of transaction clauses to calculate the intrinsic gas for.
+     * @param {Clause[]} clauses - An array of transaction clauses to calculate the intrinsic gas for.
      * @return {bigint} The total intrinsic gas required for the provided clauses.
      * @throws {IllegalArgumentError} If clauses have invalid data as invalid addresses.
      */
-    public static intrinsicGas(clauses: TransactionClause[]): bigint {
+    public static intrinsicGas(clauses: Clause[]): bigint {
         if (clauses.length > 0) {
-            const totalGas = clauses.reduce(
-                (sum: bigint, clause: TransactionClause) => {
-                    if (clause.to !== null) {
-                        // Invalid address or no vet.domains name
-                        if (
-                            !Address.isValid(clause.to) &&
-                            !clause.to.includes('.')
-                        )
-                            throw new IllegalArgumentError(
-                                `${FQP}Transaction.intrinsicGas(clauses: TransactionClause[]): VTHO`,
-                                'invalid data type in clause: each `to` field must be a valid address.',
-                                { clause }
-                            );
+            const totalGas = clauses.reduce((sum: bigint, clause: Clause) => {
+                if (clause.to !== null) {
+                    // Invalid address or no vet.domains name
+                    const toStr = clause.to.toString();
+                    if (!Address.isValid(toStr) && !toStr.includes('.'))
+                        throw new IllegalArgumentError(
+                            `${FQP}Transaction.intrinsicGas(clauses: Clause[]): VTHO`,
+                            'invalid data type in clause: each `to` field must be a valid address.',
+                            { clause }
+                        );
 
-                        sum += Transaction.GAS_CONSTANTS.CLAUSE_GAS;
-                    } else {
-                        sum +=
-                            Transaction.GAS_CONSTANTS
-                                .CLAUSE_GAS_CONTRACT_CREATION;
-                    }
-                    sum += Transaction.computeUsedGasFor(clause.data);
-                    return sum;
-                },
-                Transaction.GAS_CONSTANTS.TX_GAS
-            );
+                    sum += Transaction.GAS_CONSTANTS.CLAUSE_GAS;
+                } else {
+                    sum +=
+                        Transaction.GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION;
+                }
+                sum += Transaction.computeUsedGasFor(
+                    clause.data !== null ? clause.data.toString() : ''
+                );
+                return sum;
+            }, Transaction.GAS_CONSTANTS.TX_GAS);
             return totalGas;
         }
         // No clauses.
@@ -854,15 +867,15 @@ class Transaction {
                 // Existing body and the optional `reserved` field if present.
                 ...this.body,
                 /*
-                 * The `body.clauses` property is already an array,
-                 * albeit TypeScript realize, hence cast is needed
-                 * otherwise encodeObject will throw an error.
+                 * The `body.clauses` property contains Clause instances,
+                 * we need to convert them to the plain object format
+                 * required for RLP encoding.
                  */
-                clauses: this.body.clauses as Array<{
-                    to: string | null;
-                    value: bigint;
-                    data: string;
-                }>,
+                clauses: this.body.clauses.map((clause) => ({
+                    to: clause.to !== null ? clause.to.toString() : null,
+                    value: clause.value,
+                    data: clause.data !== null ? clause.data.toString() : ''
+                })),
                 // New reserved field.
                 reserved: this.encodeReservedField()
             },
