@@ -109,10 +109,6 @@ describe('SendTransaction SOLO tests', () => {
             const gasPayerSignedTxRequest = gasPayerSigner.sign(
                 senderSignedTxRequest
             );
-            console.log(
-                'should send a dynamic fee sponsored VET transfer transaction',
-                gasPayerSignedTxRequest.toJSON()
-            );
             // send the transaction
             const txId = await thorClient.transactions.sendTransaction(
                 gasPayerSignedTxRequest

@@ -34,7 +34,7 @@ class TransactionBuilder {
     // constructor from thor client
     private constructor(thorClient: ThorClient) {
         this.thorClient = thorClient;
-        this.params = this.startingParams;
+        this.params = { ...this.startingParams };
         this.buildTasks = [];
     }
 
@@ -270,7 +270,7 @@ class TransactionBuilder {
     }
 
     /**
-     * Sets all the default values neededfor a legacy transaction.
+     * Sets all the default values needed for a legacy transaction.
      * @returns The builder instance.
      */
     public withLegacyTxDefaults(): this {
@@ -289,7 +289,7 @@ class TransactionBuilder {
      * @returns The builder instance.
      */
     public reset(): this {
-        this.params = this.startingParams;
+        this.params = { ...this.startingParams };
         this.buildTasks = [];
         return this;
     }
@@ -299,12 +299,14 @@ class TransactionBuilder {
      * @returns The transaction request.
      */
     public async build(): Promise<TransactionRequest> {
-        for (const task of this.buildTasks) {
-            await task();
+        try {
+            for (const task of this.buildTasks) {
+                await task();
+            }
+            return new TransactionRequest(this.params);
+        } finally {
+            this.reset();
         }
-        const txRequest = new TransactionRequest(this.params);
-        this.reset();
-        return txRequest;
     }
 }
 

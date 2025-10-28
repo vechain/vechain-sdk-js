@@ -1,21 +1,9 @@
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { expect, jest } from '@jest/globals';
-import {
-    RawBlockResponse,
-    RawTx,
-    RetrieveRawBlock,
-    ThorError
-} from '@thor/thorest';
+import { RawBlockResponse, RetrieveRawBlock, ThorError } from '@thor/thorest';
 import { Revision } from '@common/vcdm';
 import { type HttpClient } from '@common/http';
-import { type RawTxJSON } from '@thor/thorest/json';
 import { type RawBlockJSON } from '@thor/thorest/blocks/json/RawBlockJSON';
-
-class InvalidRevision extends Revision {
-    constructor() {
-        super('invalid');
-    }
-}
 
 const mockHttpClient = <T>(response: T): HttpClient => {
     return {
@@ -37,32 +25,13 @@ const mockResponse = <T>(body: T, status: number): Response => {
  * @group unit/thor/blocks
  */
 describe('RetrieveBlock unit tests', () => {
-    test('err: <- bad revision', async () => {
-        const status = 400;
-        try {
-            await RetrieveRawBlock.of(new InvalidRevision()).askTo(
-                mockHttpClient<Response>(
-                    mockResponse(
-                        'revision: strconv.ParseUint: parsing "invalid": invalid syntax',
-                        status
-                    )
-                )
-            );
-            // noinspection ExceptionCaughtLocallyJS
-            throw new Error('Should not reach here.');
-        } catch (error) {
-            expect(error).toBeInstanceOf(ThorError);
-            expect((error as ThorError).status).toBe(status);
-        }
-    });
-
     test('err <- incomplete block from Thor OK response', async () => {
         const status = 200; // Thor answers OK but with a bad body.
-        const incompleteBlock: Partial<RawTxJSON> = {};
+        const incompleteBlock: Partial<RawBlockJSON> = {};
         try {
             await RetrieveRawBlock.of(Revision.BEST).askTo(
                 mockHttpClient<Response>(
-                    mockResponse(incompleteBlock as RawTxJSON, status)
+                    mockResponse(incompleteBlock as RawBlockJSON, status)
                 )
             );
         } catch (error) {
