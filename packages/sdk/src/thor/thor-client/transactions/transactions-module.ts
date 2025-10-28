@@ -175,7 +175,7 @@ class TransactionsModule extends AbstractThorModule {
         ) {
             throw new IllegalArgumentError(
                 'waitForTransactionReceipt(options.timeoutMs, options.intervalMs)',
-                'timeoutMs must be greater than intervalMs',
+                'timeoutMs must be greater than or equal to intervalMs',
                 { timeoutMs: options.timeoutMs, intervalMs: options.intervalMs }
             );
         }
