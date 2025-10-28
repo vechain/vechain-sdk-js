@@ -20,11 +20,10 @@ import {
     RetrieveTransactionReceipt,
     SendTransaction
 } from '@thor/thorest';
-import { waitUntil, type WaitUntilOptions } from '@common/utils';
 import { TransactionRequestRLPCodec } from '../rlp/TransactionRequestRLPCodec';
 import { type TransactionRequest } from '@thor/thor-client/model/transactions/TransactionRequest';
-import { IllegalArgumentError } from '@common/errors';
-import { TimeoutError } from '@common/errors/TimeoutError';
+import { IllegalArgumentError, TimeoutError } from '@common/errors';
+import { waitUntil, type WaitUntilOptions } from '@common/utils/poller';
 
 class TransactionsModule extends AbstractThorModule {
     /**
