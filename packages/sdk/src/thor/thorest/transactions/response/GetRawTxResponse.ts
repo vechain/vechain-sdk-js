@@ -54,7 +54,7 @@ class GetRawTxResponse {
     toJSON(): GetRawTxResponseJSON {
         return {
             raw: this.raw.toString(),
-            meta: this.meta.toJSON()
+            meta: this.meta !== null ? this.meta.toJSON() : null
         } satisfies GetRawTxResponseJSON;
     }
 }
