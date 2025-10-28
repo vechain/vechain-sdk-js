@@ -181,15 +181,11 @@ class TransactionsModule extends AbstractThorModule {
             );
         }
         // setup for polling
-        const getReceiptTask = async (): Promise<TransactionReceipt | null> => {
-            return this.getTransactionReceipt(transactionId);
-        };
-        const checkReceipt = (receipt: TransactionReceipt | null): boolean => {
-            return receipt !== null;
-        };
         const waitOptions: WaitUntilOptions<TransactionReceipt | null> = {
-            task: getReceiptTask,
-            predicate: checkReceipt,
+            task: async () => this.getTransactionReceipt(transactionId),
+            predicate: (receipt: TransactionReceipt | null): boolean => {
+                return receipt !== null;
+            },
             intervalMs: options?.intervalMs ?? 1000,
             timeoutMs: options?.timeoutMs ?? 30000
         };
