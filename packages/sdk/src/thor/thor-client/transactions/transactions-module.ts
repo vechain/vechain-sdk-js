@@ -23,6 +23,8 @@ import {
 import { waitUntil, type WaitUntilOptions } from '@common/utils';
 import { TransactionRequestRLPCodec } from '../rlp/TransactionRequestRLPCodec';
 import { type TransactionRequest } from '@thor/thor-client/model/transactions/TransactionRequest';
+import { IllegalArgumentError } from '@common/errors';
+import { TimeoutError } from '@common/errors/TimeoutError';
 
 class TransactionsModule extends AbstractThorModule {
     /**
@@ -145,11 +147,39 @@ class TransactionsModule extends AbstractThorModule {
      * @param transactionId - Id of the transaction to wait for its receipt
      * @param options - Timeout and polling options
      * @returns The transaction receipt or null if still not available
+     * @throws {IllegalArgumentError} If the intervalMs or timeoutMs are invalid
+     * @throws {TimeoutError} If the transaction receipt is not found within the timeout period
      */
     public async waitForTransactionReceipt(
         transactionId: Hex,
         options?: WaitForTransactionReceiptOptions
     ): Promise<TransactionReceipt | null> {
+        // check options
+        if (options?.intervalMs !== undefined && options?.intervalMs <= 0) {
+            throw new IllegalArgumentError(
+                'waitForTransactionReceipt(options.intervalMs)',
+                'intervalMs must be greater than zero',
+                { intervalMs: options.intervalMs }
+            );
+        }
+        if (options?.timeoutMs !== undefined && options?.timeoutMs <= 0) {
+            throw new IllegalArgumentError(
+                'waitForTransactionReceipt(options.timeoutMs)',
+                'timeoutMs must be greater than zero',
+                { timeoutMs: options.timeoutMs }
+            );
+        }
+        if (
+            options?.timeoutMs !== undefined &&
+            options?.intervalMs !== undefined &&
+            options?.timeoutMs < options?.intervalMs
+        ) {
+            throw new IllegalArgumentError(
+                'waitForTransactionReceipt(options.timeoutMs, options.intervalMs)',
+                'timeoutMs must be greater than intervalMs',
+                { timeoutMs: options.timeoutMs, intervalMs: options.intervalMs }
+            );
+        }
         // setup for polling
         const getReceiptTask = async (): Promise<TransactionReceipt | null> => {
             return this.getTransactionReceipt(transactionId);
@@ -163,7 +193,17 @@ class TransactionsModule extends AbstractThorModule {
             intervalMs: options?.intervalMs ?? 1000,
             timeoutMs: options?.timeoutMs ?? 30000
         };
-        return await waitUntil(waitOptions);
+        try {
+            return await waitUntil(waitOptions);
+        } catch (error) {
+            if (error instanceof TimeoutError) {
+                throw new TimeoutError(
+                    'waitForTransactionReceipt(transactionId, options)',
+                    'Transaction receipt not found within the timeout period'
+                );
+            }
+            throw error;
+        }
     }
 }
 

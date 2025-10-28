@@ -2,6 +2,10 @@ import { type RegularBlockResponse } from '@vechain/sdk/thor';
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
+import {
+    THOR_SOLO_DEFAULT_ACCOUNT_ADDRESSES,
+    THOR_SOLO_DEFAULT_ACCOUNT_PRIVATE_KEYS
+} from './constants';
 
 // Define the config structure type
 export interface ConfigData {
@@ -15,6 +19,8 @@ export interface ConfigData {
     TEST_TOKEN_ADDRESS: string;
     EVENTS_CONTRACT_ADDRESS: string;
     EVENTS_CONTRACT_ABI: any[];
+    DEFAULT_SOLO_ACCOUNT_ADDRESSES: string[];
+    DEFAULT_SOLO_ACCOUNT_PRIVATE_KEYS: string[];
 }
 
 // Get the config file path in the current working directory
@@ -74,7 +80,10 @@ function setConfig(
         SEED_TEST_TOKEN_TX_ID: seedTestTokenTxId,
         TEST_TOKEN_ADDRESS: testTokenAddress,
         EVENTS_CONTRACT_ADDRESS: eventsContractAddress,
-        EVENTS_CONTRACT_ABI: parsedEventsContractAbi
+        EVENTS_CONTRACT_ABI: parsedEventsContractAbi,
+        DEFAULT_SOLO_ACCOUNT_ADDRESSES: THOR_SOLO_DEFAULT_ACCOUNT_ADDRESSES,
+        DEFAULT_SOLO_ACCOUNT_PRIVATE_KEYS:
+            THOR_SOLO_DEFAULT_ACCOUNT_PRIVATE_KEYS
     };
 
     const configPath = getConfigPath();
