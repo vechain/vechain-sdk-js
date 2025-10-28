@@ -11,7 +11,7 @@ import { log } from '@common/logging';
  * - getBalance
  * - getChainId
  *
- * @group integration/clients
+ * @group solo/viem/clients
  */
 describe('PublicClient - Account Methods', () => {
     const publicClient = createPublicClient({

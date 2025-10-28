@@ -10,12 +10,15 @@ import { RetrieveRegularBlock } from '@thor/thorest/blocks';
  * @group unit
  */
 describe('TransactionBuilder UNIT tests', () => {
-    test('legacy tx with explicit parameters', () => {
+    test('legacy tx with explicit parameters', async () => {
         const thorClient = ThorClient.at(
             FetchHttpClient.at(new URL('http://localhost:8669'))
         );
         const builder = TransactionBuilder.create(thorClient);
-        const transaction = builder
+        const transaction = await builder
+            .withSponsorReq(
+                Address.of('0x05b0f21cCcF4c6AAbcA8Fe90904f878BeE47938A')
+            )
             .withBlockRef(Hex.of('0x1234'))
             .withChainTag(1)
             .withClauses([new Clause(Address.of('0x0'), 1n, null, null, null)])
@@ -24,7 +27,6 @@ describe('TransactionBuilder UNIT tests', () => {
             .withGas(1n)
             .withGasPriceCoef(2n)
             .withNonce(9)
-            .withIsIntendedToBeSponsored(true)
             .build();
         expect(transaction.blockRef.toString()).toBe('0x1234');
         expect(transaction.chainTag).toBe(1);
@@ -38,12 +40,12 @@ describe('TransactionBuilder UNIT tests', () => {
         expect(transaction.maxFeePerGas).toBeUndefined();
         expect(transaction.maxPriorityFeePerGas).toBeUndefined();
     });
-    test('dynamic fee gasPriceCoef is undefined', () => {
+    test('dynamic fee gasPriceCoef is undefined', async () => {
         const thorClient = ThorClient.at(
             FetchHttpClient.at(new URL('http://localhost:8669'))
         );
         const builder = TransactionBuilder.create(thorClient);
-        const transaction = builder
+        const transaction = await builder
             .withMaxFeePerGas(1n)
             .withMaxPriorityFeePerGas(6n)
             .build();
@@ -51,12 +53,13 @@ describe('TransactionBuilder UNIT tests', () => {
         expect(transaction.maxPriorityFeePerGas).toBe(6n);
         expect(transaction.gasPriceCoef).toBeUndefined();
     });
-    test('default expiration', () => {
+    test('default expiration', async () => {
         const thorClient = ThorClient.at(
             FetchHttpClient.at(new URL('http://localhost:8669'))
         );
-        const builder = TransactionBuilder.create(thorClient);
-        const transaction = builder.build();
+        const builder =
+            TransactionBuilder.create(thorClient).withGasPriceCoef(0n);
+        const transaction = await builder.build();
         expect(transaction.expiration).toBe(
             TransactionBuilder.DEFAULT_EXPIRATION
         );
@@ -76,7 +79,8 @@ describe('TransactionBuilder UNIT tests', () => {
         const RetrieveRegularBlockOf = jest.spyOn(RetrieveRegularBlock, 'of');
         RetrieveRegularBlockOf.mockReturnValue(query);
         // create the builder and try to set the default block ref
-        const builder = TransactionBuilder.create(thorClient);
-        await expect(builder.withDefaultBlockRef()).rejects.toThrow();
+        const builder =
+            TransactionBuilder.create(thorClient).withDefaultBlockRef();
+        await expect(async () => await builder.build()).rejects.toThrow();
     });
 });

@@ -5,13 +5,13 @@ import { Hex, Revision } from '@common/vcdm';
 import { type PostDebugTracerCallRequestJSON } from '@thor/thorest/json';
 
 /**
- * @group integration/thor/debug
+ * @group solo/thor/debug
  */
 describe('TraceCall SOLO tests', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
 
     test('err <- of() - revision not found', async () => {
-                const revision = Revision.of(Hex.of('0xBADC0FFEE'));
+        const revision = Revision.of(Hex.of('0xBADC0FFEE'));
         const request = {
             value: '0',
             to: '0x0000000000000000000000000000456E65726779',

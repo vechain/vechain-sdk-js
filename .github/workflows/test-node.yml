@@ -1,0 +1,64 @@
+name: Test on Node
+
+permissions:
+  contents: read
+
+on:
+    workflow_call:
+
+jobs:
+    tests_node:
+        name: Tests on Node
+        runs-on: ubuntu-latest
+        timeout-minutes: 25
+        steps:
+          - name: Checkout repository
+            uses: actions/checkout@v4
+
+          - name: Setup Node (LTS)
+            uses: actions/setup-node@v4
+            with:
+                node-version: lts/*
+                cache: 'npm'
+
+          - name: Enable Corepack
+            run: corepack enable
+
+          - name: Cache node_modules
+            uses: actions/cache@v4
+            with:
+              path: |
+                node_modules
+                packages/*/node_modules
+              key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}-yarn4
+              restore-keys: |
+                ${{ runner.os }}-modules-
+
+          - name: Install dependencies
+            run: corepack yarn install --immutable
+
+          - name: Build
+            run: corepack yarn build
+
+          - name: Preliminary Stop of Thor solo node
+            run: corepack yarn stop-thor-solo || true
+
+          - name: Start & Seed Thor solo node
+            run: |
+              corepack yarn start-thor-solo
+              corepack yarn seed-thor-solo
+
+          - name: Tests on Node
+            run: corepack yarn test:node
+
+          - name: Stop Thor solo node
+            if: always()
+            run: corepack yarn stop-thor-solo || true
+
+          - name: Archive coverage (integration)
+            if: always()
+            uses: actions/upload-artifact@v4
+            with:
+              name: coverageNode
+              path: |
+                packages/**/coverage/lcov.info

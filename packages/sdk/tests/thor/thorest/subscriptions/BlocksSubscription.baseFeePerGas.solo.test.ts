@@ -10,7 +10,7 @@ import fastJsonStableStringify from 'fast-json-stable-stringify';
 /**
  * VeChain blocks subscription with baseFeePerGas field - solo test
  *
- * @group integration/thor/subscriptions
+ * @group solo/thor/subscriptions
  */
 describe('BlocksSubscription baseFeePerGas solo tests', () => {
     let subscription: BlocksSubscription;
@@ -22,20 +22,27 @@ describe('BlocksSubscription baseFeePerGas solo tests', () => {
 
     test('data <- open with baseFeePerGas field', (done) => {
         let notificationReceived = false;
-        
+
         subscription
             .addListener({
                 onMessage: (message) => {
                     const data = message.data;
-                    log.debug('Received block notification:', fastJsonStableStringify(data));
-                    
+                    log.debug(
+                        'Received block notification:',
+                        fastJsonStableStringify(data)
+                    );
                     // Check if baseFeePerGas field is present
                     if (data.baseFeePerGas !== undefined) {
-                        log.debug('baseFeePerGas field found:', data.baseFeePerGas);
+                        log.debug(
+                            'baseFeePerGas field found:',
+                            data.baseFeePerGas
+                        );
                         notificationReceived = true;
                         done();
                     } else {
-                        log.debug('baseFeePerGas field not present in this notification, waiting...');
+                        log.debug(
+                            'baseFeePerGas field not present in this notification, waiting...'
+                        );
                     }
                 },
                 onOpen: () => {

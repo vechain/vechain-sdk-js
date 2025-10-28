@@ -1,8 +1,4 @@
-import {
-    type SignedTransactionRequest,
-    type SponsoredTransactionRequest,
-    type TransactionRequest
-} from '@thor/thor-client/model/transactions';
+import { type TransactionRequest } from '@thor/thor-client/model/transactions';
 import { type Address } from '@common';
 
 /**
@@ -16,17 +12,12 @@ interface Signer {
     address: Address;
 
     /**
-     * Signs a transaction request and produces a signed transaction request or a sponsored transaction request.
+     * Signs a given transaction request.
      *
-     * @param {TransactionRequest | SignedTransactionRequest} transactionRequest - The transaction request to be signed.
-     * This can either be an unsigned transaction request returning a signed transaction request,
-     * or an already signed transaction request returning a sponsored transaction request.
-     * @returns {SignedTransactionRequest | SponsoredTransactionRequest} The signed transaction request for an unsigned transaction request,
-     * or the sponsored transaction request for a signed transaction request.
+     * @param {TransactionRequest} transactionRequest - The transaction request object to be signed.
+     * @returns {TransactionRequest} The signed transaction request object.
      */
-    sign: (
-        transactionRequest: TransactionRequest | SignedTransactionRequest
-    ) => SignedTransactionRequest | SponsoredTransactionRequest;
+    sign: (transactionRequest: TransactionRequest) => TransactionRequest;
 }
 
 export { type Signer };
