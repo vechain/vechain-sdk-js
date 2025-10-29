@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, expect, test } from '@jest/globals';
 import { createPublicClient } from '@viem/clients';
 import { log } from '@common/logging';
@@ -15,7 +16,7 @@ import { Address, Hex } from '@common/vcdm';
  * - call
  * - simulateCalls
  *
- * @group integration/clients
+ * @group solo/viem/clients
  */
 describe('PublicClient - Contract/Call Methods', () => {
     const publicClient = createPublicClient({

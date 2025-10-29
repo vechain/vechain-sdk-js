@@ -1,0 +1,28 @@
+---
+title: Signer Sequence Diagram - VIP-191
+---
+sequenceDiagram
+    participant TransactionRequest
+    actor Signer
+    alt TransactionRequest.beggar = null
+        TransactionRequest ->> Signer: Signer.sign(...)
+        Signer ->> TransactionRequest: "Signer.sign(...) AS ORIGIN: SIGNATURE COMPLETE
+    else TransactionRequest.beggar != null
+        alt TransactionRequest.beggar = Signer.address
+            alt TransactionRequest.gasPayerSignature = null
+                TransactionRequest ->> Signer: Signer.sign(...)
+                Signer ->> TransactionRequest: Signer.sign(...) AS ORIGIN
+            else TransactionRequest.gasPayerSignature != null
+                TransactionRequest ->> Signer: Signer.sign(...)
+                Signer ->> TransactionRequest: Signer.sign(...) AS ORIGIN: SIGNATURE COMPLETE
+            end
+        else TransactionRequest.beggar != Signer.address
+            alt TransactionRequest.originSignature = null
+                TransactionRequest ->> Signer: Signer.sign(...)
+                Signer ->> TransactionRequest: Signer.sign(...) AS GAS PAYER
+            else TransactionRequest.originSignature != null
+                TransactionRequest ->> Signer: Signer.sign(...)
+                Signer ->> TransactionRequest: Signer.sign(...) AS GAS PAYER: SIGNATURE COMPLETE
+            end
+        end
+    end
