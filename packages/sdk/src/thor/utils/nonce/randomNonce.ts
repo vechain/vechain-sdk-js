@@ -5,7 +5,7 @@ import { Hex } from '@common/vcdm';
  * @returns A random nonce.
  */
 function randomNonce(): number {
-    return Number(Hex.random(4).toString());
+    return parseInt(Hex.random(4).toString(), 16);
 }
 
 export { randomNonce };
