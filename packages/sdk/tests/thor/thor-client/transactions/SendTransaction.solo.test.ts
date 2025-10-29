@@ -4,20 +4,22 @@ import { Clause, ThorClient } from '@thor/thor-client';
 import { TransactionBuilder } from '@thor/thor-client/transactions/TransactionBuilder';
 import { ThorNetworks } from '@thor/thorest/utils';
 import { PrivateKeySigner } from '@thor/signer';
+import { getConfigData } from '@vechain/sdk-solo-setup';
 
+const soloConfig = getConfigData();
 // Sender is 1st solo account
-const sender = Address.of('0xf077b491b355e64048ce21e3a6fc4751eeea77fa');
+const sender = Address.of(soloConfig.DEFAULT_SOLO_ACCOUNT_ADDRESSES[0]);
 const senderPrivateKey = Hex.of(
-    '0x99f0500549792796c14fed62011a51081dc5b5e68fe8bd8a13b86be829c4fd36'
+    soloConfig.DEFAULT_SOLO_ACCOUNT_PRIVATE_KEYS[0]
 );
 // Receiver is 2nd solo account
-const receiver = Address.of('0x435933c8064b4ae76be665428e0307ef2ccfbd68');
+const receiver = Address.of(soloConfig.DEFAULT_SOLO_ACCOUNT_ADDRESSES[1]);
 // sender signer
 const senderSigner = new PrivateKeySigner(senderPrivateKey.bytes);
 // gas payer is 3rd solo account
-const gasPayer = Address.of('0x0f872421dc479f3c11edd89512731814d0598db5');
+const gasPayer = Address.of(soloConfig.DEFAULT_SOLO_ACCOUNT_ADDRESSES[2]);
 const gasPayerPrivateKey = Hex.of(
-    '0xf4a1a17039216f535d42ec23732c79943ffb45a089fbb78a14daad0dae93e991'
+    soloConfig.DEFAULT_SOLO_ACCOUNT_PRIVATE_KEYS[2]
 );
 const gasPayerSigner = new PrivateKeySigner(gasPayerPrivateKey.bytes);
 

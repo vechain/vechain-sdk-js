@@ -6,7 +6,8 @@ import {
     type SimulateTransactionOptions,
     ClauseSimulationResult,
     type GetTransactionReceiptOptions,
-    TransactionReceipt
+    TransactionReceipt,
+    type WaitForTransactionReceiptOptions
 } from '@thor/thor-client/model/transactions';
 import { AbstractThorModule } from '../AbstractThorModule';
 import { Hex, Revision } from '@common/vcdm';
@@ -21,6 +22,8 @@ import {
 } from '@thor/thorest';
 import { TransactionRequestRLPCodec } from '../rlp/TransactionRequestRLPCodec';
 import { type TransactionRequest } from '@thor/thor-client/model/transactions/TransactionRequest';
+import { IllegalArgumentError, TimeoutError } from '@common/errors';
+import { waitUntil, type WaitUntilOptions } from '@common/utils/poller';
 
 class TransactionsModule extends AbstractThorModule {
     /**
@@ -136,6 +139,66 @@ class TransactionsModule extends AbstractThorModule {
         const encodedHex = Hex.of(encoded);
         // send the transaction to the network
         return await this.sendRawTransaction(encodedHex);
+    }
+
+    /**
+     * Waits for the transaction receipt to exist
+     * @param transactionId - Id of the transaction to wait for its receipt
+     * @param options - Timeout and polling options
+     * @returns The transaction receipt or null if still not available
+     * @throws {IllegalArgumentError} If the intervalMs or timeoutMs are invalid
+     * @throws {TimeoutError} If the transaction receipt is not found within the timeout period
+     */
+    public async waitForTransactionReceipt(
+        transactionId: Hex,
+        options?: WaitForTransactionReceiptOptions
+    ): Promise<TransactionReceipt | null> {
+        // check options
+        if (options?.intervalMs !== undefined && options?.intervalMs <= 0) {
+            throw new IllegalArgumentError(
+                'waitForTransactionReceipt(options.intervalMs)',
+                'intervalMs must be greater than zero',
+                { intervalMs: options.intervalMs }
+            );
+        }
+        if (options?.timeoutMs !== undefined && options?.timeoutMs <= 0) {
+            throw new IllegalArgumentError(
+                'waitForTransactionReceipt(options.timeoutMs)',
+                'timeoutMs must be greater than zero',
+                { timeoutMs: options.timeoutMs }
+            );
+        }
+        if (
+            options?.timeoutMs !== undefined &&
+            options?.intervalMs !== undefined &&
+            options?.timeoutMs < options?.intervalMs
+        ) {
+            throw new IllegalArgumentError(
+                'waitForTransactionReceipt(options.timeoutMs, options.intervalMs)',
+                'timeoutMs must be greater than or equal to intervalMs',
+                { timeoutMs: options.timeoutMs, intervalMs: options.intervalMs }
+            );
+        }
+        // setup for polling
+        const waitOptions: WaitUntilOptions<TransactionReceipt | null> = {
+            task: async () => this.getTransactionReceipt(transactionId),
+            predicate: (receipt: TransactionReceipt | null): boolean => {
+                return receipt !== null;
+            },
+            intervalMs: options?.intervalMs ?? 1000,
+            timeoutMs: options?.timeoutMs ?? 30000
+        };
+        try {
+            return await waitUntil(waitOptions);
+        } catch (error) {
+            if (error instanceof TimeoutError) {
+                throw new TimeoutError(
+                    'waitForTransactionReceipt(transactionId, options)',
+                    'Transaction receipt not found within the timeout period'
+                );
+            }
+            throw error;
+        }
     }
 }
 
