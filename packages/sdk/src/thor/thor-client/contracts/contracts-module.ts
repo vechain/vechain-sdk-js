@@ -11,11 +11,10 @@ import { ExecuteCodesRequest } from '@thor/thorest/accounts/methods/ExecuteCodes
 import { ClauseBuilder } from '@thor/thorest/transactions/model/ClauseBuilder';
 import { SendTransaction } from '@thor/thorest/transactions/methods/SendTransaction';
 import { TransactionRequest } from '../model/transactions/TransactionRequest';
-import { RLPCodecTransactionRequest } from '@thor/signer/RLPCodeTransactionRequest';
 import { Clause } from '../model/transactions/Clause';
 import { IllegalArgumentError } from '../../../common/errors';
 import { log } from '@common/logging';
-import { encodeFunctionData, type AbiParameter } from 'viem';
+import { type AbiParameter, encodeFunctionData } from 'viem';
 import type { ContractCallOptions, ContractCallResult } from './types';
 import type { SendTransactionResult } from './model/types';
 
@@ -384,8 +383,7 @@ class ContractsModule extends AbstractThorModule {
             const signedTransaction = signer.sign(finalTransactionRequest);
 
             // Encode the signed transaction
-            const encodedTransaction =
-                RLPCodecTransactionRequest.encode(signedTransaction);
+            const encodedTransaction = signedTransaction.encoded;
 
             //  PENDING - update to use thor client transaction module sendTransaction
 
@@ -569,8 +567,7 @@ class ContractsModule extends AbstractThorModule {
             const signedTransaction = signer.sign(finalTransactionRequest);
 
             // Encode the signed transaction
-            const encodedTransaction =
-                RLPCodecTransactionRequest.encode(signedTransaction);
+            const encodedTransaction = signedTransaction.encoded;
 
             // Send the transaction using SendTransaction
             const sendTransaction = SendTransaction.of(encodedTransaction);

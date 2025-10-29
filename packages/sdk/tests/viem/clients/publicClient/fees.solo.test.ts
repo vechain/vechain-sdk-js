@@ -1,7 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { createPublicClient } from '@viem/clients';
 import { ThorNetworks } from '@thor/thorest';
-import { type ExecuteCodesRequestJSON } from '@thor/thorest/json';
 import { log } from '@common/logging';
 import { Clause, type EstimateGasOptions } from '@thor/thor-client/model';
 import { Address, Hex } from '@common/vcdm';
@@ -16,7 +15,7 @@ import { Address, Hex } from '@common/vcdm';
  * - estimateGas
  * - estimateMaxPriorityFeePerGas
  *
- * @group integration/clients
+ * @group solo/viem/clients
  */
 describe('PublicClient - Fee Estimation Methods', () => {
     const publicClient = createPublicClient({
@@ -176,8 +175,7 @@ describe('PublicClient - Fee Estimation Methods', () => {
                 context: { data: gasEstimate.totalGas.toString() }
             });
             log.debug({
-                message:
-                    'Total gas used: ' + gasEstimate.totalGas.toString(),
+                message: 'Total gas used: ' + gasEstimate.totalGas.toString(),
                 context: { data: gasEstimate.totalGas.toString() }
             });
             log.debug({

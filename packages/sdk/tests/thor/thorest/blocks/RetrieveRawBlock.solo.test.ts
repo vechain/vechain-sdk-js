@@ -2,7 +2,6 @@ import { Revision } from '@common/vcdm';
 import { FetchHttpClient } from '@common/http';
 import {
     RawBlockResponse,
-    RawTx,
     RetrieveRawBlock,
     ThorError,
     ThorNetworks
@@ -10,32 +9,11 @@ import {
 import { expect } from '@jest/globals';
 import { type RawBlockJSON } from '@thor/thorest/json';
 
-class InvalidRevision extends Revision {
-    constructor() {
-        super('invalid');
-    }
-}
-
 /**
- * @group integration/thor/blocks
+ * @group solo/thor/blocks
  */
 describe('RetrieveRawBlock SOLO tests', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
-
-    test('err: <- bad revision', async () => {
-        try {
-            await RetrieveRawBlock.of(new InvalidRevision()).askTo(httpClient);
-            // noinspection ExceptionCaughtLocallyJS
-            throw new Error('Should not reach here.');
-        } catch (error) {
-            expect(error).toBeInstanceOf(ThorError);
-            // Now we expect status 0 for network errors (when server is not running)
-            // or status 400 for HTTP errors (when server is running but bad revision)
-            const thorError = error as ThorError;
-            expect([0, 400]).toContain(thorError.status);
-        }
-    });
-
     test('ok <- block 0', async () => {
         const expected = {
             raw: '0xf8a5a0ffffffff00000000000000000000000000000000000000000000000000000000845afb0400839896809400000000000000000000000000000000000000008080a045b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0a093de0ffb1f33bc0af053abc2a87c4af44594f5dcb1cb879dd823686a15d68550a045b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c080'

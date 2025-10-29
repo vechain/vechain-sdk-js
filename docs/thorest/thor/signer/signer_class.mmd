@@ -1,0 +1,46 @@
+---
+title: Signer Class Diagram - VIP-191
+---
+classDiagram
+    namespace thor_thor-client_model_transactions {
+        class TransactionRequest {
+            constructor(TransactionRequestParam param)
+            Uint8Array encoded
+            Uint8Array gasPayerSignature
+            Blake2b256 hash
+            boolean isDynamicFee
+            boolean isLegacy
+            boolean isIntendedToBeSponsored
+            boolean isSigned
+            Uint8Array originSignature
+            Uint8Array signature
+            TransactionRequest decode(Uint8Array encoded)$
+            TransactionRequestJSON toJSON()
+        }
+        class TransactionRequestParam {
+            <<interface>>
+            Address? beggar
+            Hex blockRef
+            number chainTag
+            Clause[] clauses
+            Hex|null dependsOn
+            number expiration
+            bigint gas
+            bigint? gasPriceCoef
+            bigint? maxFeePerGas
+            bigint? maxPriorityFeePerGas
+            number nonce
+        }
+    }
+    class Signer {
+        Address address
+        TrasactionRequest sign(TransactionRequest request)
+    }
+    class PrivateKeySigner {
+        constructor(UInt8Array orivateKey)
+        dispose()
+    }
+    Signer <|-- PrivateKeySigner
+    TransactionRequestParam <|.. TransactionRequest
+    TransactionRequest <-- "sign(TransactionRequest request)" Signer
+
