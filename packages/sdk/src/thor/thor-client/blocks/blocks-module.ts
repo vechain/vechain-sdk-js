@@ -11,26 +11,7 @@ import {
 import { IllegalArgumentError } from '@common/errors';
 import { waitUntil } from '@common/utils/poller';
 import { Block, ExpandedBlock, RawBlock } from '../model/blocks';
-
-/**
- * Options for `waitForBlock` and `waitForBlockExpanded` methods.
- */
-interface WaitForBlockOptions {
-    /**
-     * Delay (ms) between successive block queries when polling.
-     */
-    intervalMs?: number;
-
-    /**
-     * Maximum time (ms) to wait before aborting the operation.
-     */
-    timeoutMs?: number;
-
-    /**
-     * Maximum consecutive network errors tolerated before failing.
-     */
-    maxNetworkErrors?: number;
-}
+import { type WaitForBlockOptions } from '../model/blocks/WaitForBlockOptions';
 
 class BlocksModule extends AbstractThorModule {
     /**
@@ -60,6 +41,9 @@ class BlocksModule extends AbstractThorModule {
      *
      * @param blockNumber   Height to wait for (inclusive).
      * @param options       Optional polling configuration (interval, timeout, error budget).
+     * @returns The block
+     * @throws {IllegalArgumentError} If the block number is invalid
+     * @throws {TimeoutError} If the block is not found before the timeout
      */
     public async waitForBlock(
         blockNumber: number,
@@ -77,6 +61,9 @@ class BlocksModule extends AbstractThorModule {
      *
      * @param blockNumber   Height to wait for (inclusive).
      * @param options       Optional polling configuration (interval, timeout, error budget).
+     * @returns The expanded block
+     * @throws {IllegalArgumentError} If the block number is invalid
+     * @throws {TimeoutError} If the block is not found before the timeout
      */
     public async waitForBlockExpanded(
         blockNumber: number,
@@ -144,6 +131,8 @@ class BlocksModule extends AbstractThorModule {
 
     /**
      * Shared wait helper that relies on the poller utilities to deliver the desired block shape.
+     * @throws {IllegalArgumentError} If the block number is invalid
+     * @throws {TimeoutError} If the block is not found before the timeout
      */
     private async waitForBlockInternal(
         blockNumber: number,

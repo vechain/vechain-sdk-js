@@ -11,6 +11,7 @@ import { Clause, TransactionRequest } from '@thor/thor-client';
 import { createWalletClient } from '@viem/clients';
 import { privateKeyToAccount } from 'viem/accounts';
 import { log } from '@common/logging';
+import { randomNonce } from '@thor/utils';
 
 const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
 
@@ -23,7 +24,6 @@ describe('WalletClient SOLO tests', () => {
     const mockGasPriceCoef = 128n;
     const mockMaxFeePerGas = 10027000000000n; // 20 Gwei
     const mockMaxPriorityFeePerGas = 27000000000n; // 5 Gwei
-    const mockNonce = 3;
     const mockValue = 10n ** 15n; // 0.001 VET
 
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
@@ -52,7 +52,7 @@ describe('WalletClient SOLO tests', () => {
                 gas: mockGas,
                 maxFeePerGas: mockMaxFeePerGas,
                 maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
-                nonce: mockNonce
+                nonce: randomNonce()
             });
             // Sign as Sender. Finalized signature.
             const originWallet = createWalletClient({
@@ -94,7 +94,7 @@ describe('WalletClient SOLO tests', () => {
                 gas: mockGas,
                 maxFeePerGas: mockMaxFeePerGas,
                 maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
-                nonce: mockNonce
+                nonce: randomNonce()
             });
             // Sign as Sender. Partial signature.
             const originWallet = createWalletClient({
@@ -146,7 +146,7 @@ describe('WalletClient SOLO tests', () => {
                 gas: mockGas,
                 maxFeePerGas: mockMaxFeePerGas,
                 maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
-                nonce: mockNonce
+                nonce: randomNonce()
             });
             // Sign as Gas Payer. Partial signature.
             const gasPayerWallet = createWalletClient({
@@ -198,7 +198,7 @@ describe('WalletClient SOLO tests', () => {
                 expiration: mockExpiration,
                 gas: mockGas,
                 gasPriceCoef: mockGasPriceCoef,
-                nonce: mockNonce
+                nonce: randomNonce()
             });
             // Sign as Sender. Finalized signature.
             const originWallet = createWalletClient({
@@ -239,7 +239,7 @@ describe('WalletClient SOLO tests', () => {
                 expiration: mockExpiration,
                 gas: mockGas,
                 gasPriceCoef: mockGasPriceCoef,
-                nonce: mockNonce
+                nonce: randomNonce()
             });
             // Sign as Sender. Partial signature.
             const originWallet = createWalletClient({
@@ -290,7 +290,7 @@ describe('WalletClient SOLO tests', () => {
                 expiration: mockExpiration,
                 gas: mockGas,
                 gasPriceCoef: mockGasPriceCoef,
-                nonce: mockNonce
+                nonce: randomNonce()
             });
             // Sign as Gas Payer. Partial signature.
             const gasPayerWallet = createWalletClient({

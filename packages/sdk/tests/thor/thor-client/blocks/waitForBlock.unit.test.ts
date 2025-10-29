@@ -2,7 +2,7 @@ import { describe, expect, jest, test } from '@jest/globals';
 import { Block } from '@thor/thor-client/model/blocks/Block';
 import { ExpandedBlock } from '@thor/thor-client/model/blocks/ExpandedBlock';
 import { BlocksModule } from '@thor/thor-client/blocks';
-import { IllegalArgumentError } from '@common/errors';
+import { IllegalArgumentError, TimeoutError } from '@common/errors';
 import {
     ExpandedBlockResponse,
     RegularBlockResponse
@@ -20,16 +20,20 @@ describe('BlocksModule waitForBlock APIs', () => {
         number: 10,
         id: '0x0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20',
         size: 1,
-        parentID: '0x00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff',
+        parentID:
+            '0x00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff',
         timestamp: 1,
         gasLimit: '0x1',
         beneficiary: '0x0000000000000000000000000000000000000000',
         gasUsed: '0x0',
         totalScore: 1,
-        txsRoot: '0x0000000000000000000000000000000000000000000000000000000000000000',
+        txsRoot:
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
         txsFeatures: 0,
-        stateRoot: '0x0000000000000000000000000000000000000000000000000000000000000000',
-        receiptsRoot: '0x0000000000000000000000000000000000000000000000000000000000000000',
+        stateRoot:
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+        receiptsRoot:
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
         com: false,
         signer: '0x0000000000000000000000000000000000000000',
         isTrunk: true,
@@ -50,7 +54,7 @@ describe('BlocksModule waitForBlock APIs', () => {
                 clauses: [],
                 maxFeePerGas: '0x0',
                 maxPriorityFeePerGas: '0x0',
-                gas: 1,
+                gas: '0x1',
                 origin: '0x0000000000000000000000000000000000000000',
                 delegator: null,
                 nonce: '0x0',
@@ -101,8 +105,7 @@ describe('BlocksModule waitForBlock APIs', () => {
     test('waitForBlock resolves once the target block number is observed', async () => {
         jest.useFakeTimers();
         const module = createModule();
-        jest
-            .spyOn(module, 'getBlock')
+        jest.spyOn(module, 'getBlock')
             .mockResolvedValueOnce(null)
             .mockResolvedValueOnce(createBlock(4))
             .mockResolvedValueOnce(createBlock(5));
@@ -114,7 +117,7 @@ describe('BlocksModule waitForBlock APIs', () => {
 
         // Advance timers to trigger the polling
         await jest.advanceTimersByTimeAsync(200);
-        
+
         const result = await resultPromise;
         expect(result).toHaveProperty('number', 5);
     });
@@ -140,15 +143,16 @@ describe('BlocksModule waitForBlock APIs', () => {
         expect(spy).toHaveBeenCalledTimes(2);
     });
 
-
     test('waitForBlock rejects when the timeout is reached', async () => {
         const module = createModule();
         jest.spyOn(module, 'getBlock').mockResolvedValue(null);
 
-        await expect(module.waitForBlock(42, {
-            intervalMs: 10,
-            timeoutMs: 50
-        })).rejects.toThrow(IllegalArgumentError);
+        await expect(
+            module.waitForBlock(42, {
+                intervalMs: 10,
+                timeoutMs: 50
+            })
+        ).rejects.toThrow(TimeoutError);
     });
 
     test('waitForBlock validates the provided block number', async () => {
@@ -158,4 +162,3 @@ describe('BlocksModule waitForBlock APIs', () => {
         );
     });
 });
-
