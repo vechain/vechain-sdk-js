@@ -23,7 +23,7 @@ class GetRawTxResponse {
     /**
      * Transaction metadata such as block number, block timestamp, etc.
      */
-    readonly meta: TxMetaResponse;
+    readonly meta: TxMetaResponse | null;
 
     /**
      * Constructs an instance of the class using the provided JSON object.
@@ -34,7 +34,8 @@ class GetRawTxResponse {
     constructor(json: GetRawTxResponseJSON) {
         try {
             this.raw = HexUInt.of(json.raw);
-            this.meta = new TxMetaResponse(json.meta);
+            this.meta =
+                json.meta !== null ? new TxMetaResponse(json.meta) : null;
         } catch (error) {
             throw new IllegalArgumentError(
                 `${FQP}constructor(json: GetRawTxResponseJSON)`,
@@ -53,7 +54,7 @@ class GetRawTxResponse {
     toJSON(): GetRawTxResponseJSON {
         return {
             raw: this.raw.toString(),
-            meta: this.meta.toJSON()
+            meta: this.meta !== null ? this.meta.toJSON() : null
         } satisfies GetRawTxResponseJSON;
     }
 }

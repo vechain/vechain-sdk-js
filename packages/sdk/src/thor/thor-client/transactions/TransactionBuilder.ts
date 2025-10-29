@@ -9,161 +9,304 @@ import {
 import { RetrieveRegularBlock } from '@thor/thorest/blocks';
 
 class TransactionBuilder {
-    private readonly params: TransactionRequestParam;
+    private params: TransactionRequestParam;
+    private buildTasks: Array<() => Promise<void>>;
+
     private readonly thorClient: ThorClient;
-
     public static readonly DEFAULT_EXPIRATION = 32;
+    public static readonly DEFAULT_GAS_PRICE_COEF = 0n;
 
+    // starting values for the builder
+    private readonly startingParams: TransactionRequestParam = {
+        beggar: undefined,
+        blockRef: Hex.of('0x0'),
+        chainTag: 0,
+        clauses: [],
+        dependsOn: null,
+        expiration: TransactionBuilder.DEFAULT_EXPIRATION,
+        gas: 0n,
+        gasPriceCoef: undefined,
+        nonce: 0,
+        maxFeePerGas: undefined,
+        maxPriorityFeePerGas: undefined
+    } satisfies TransactionRequestParam;
+
+    // constructor from thor client
     private constructor(thorClient: ThorClient) {
         this.thorClient = thorClient;
-        this.params = {
-            beggar: undefined,
-            blockRef: Hex.of('0x0'),
-            chainTag: 0,
-            clauses: [],
-            dependsOn: null,
-            expiration: TransactionBuilder.DEFAULT_EXPIRATION,
-            gas: 0n,
-            gasPriceCoef: undefined,
-            nonce: 0,
-            maxFeePerGas: undefined,
-            maxPriorityFeePerGas: undefined
-        } satisfies TransactionRequestParam;
+        this.params = { ...this.startingParams };
+        this.buildTasks = [];
     }
 
+    /**
+     * Creates a new instance of the TransactionBuilder.
+     * @param thorClient - The ThorClient instance.
+     * @returns The TransactionBuilder instance.
+     */
     public static create(thorClient: ThorClient): TransactionBuilder {
         return new TransactionBuilder(thorClient);
     }
 
-    // with methods for each parameter
-
-    public withBeggar(v: Address): this {
-        this.params.beggar = v;
+    /**
+     * Sets the requester for a gas sponsored transaction.
+     * @param requester - The address of the requester.
+     * @returns The builder instance.
+     */
+    public withSponsorReq(requester: Address): this {
+        this.params.beggar = requester;
         return this;
     }
 
-    public withBlockRef(v: Hex): this {
-        this.params.blockRef = v;
+    /**
+     * Sets the block reference for the transaction.
+     * @param blockRef - The block reference to set.
+     * @returns The builder instance.
+     */
+    public withBlockRef(blockRef: Hex): this {
+        this.params.blockRef = blockRef;
         return this;
     }
 
-    public withChainTag(v: number): this {
-        this.params.chainTag = v;
+    /**
+     * Sets the chain tag for the transaction.
+     * @param chainTag - The chain tag to set.
+     * @returns The builder instance.
+     */
+    public withChainTag(chainTag: number): this {
+        this.params.chainTag = chainTag;
         return this;
     }
 
-    public withClauses(v: Clause[]): this {
-        this.params.clauses = v;
+    /**
+     * Sets the clauses for the transaction.
+     * @param clauses - The clauses to set.
+     * @returns The builder instance.
+     */
+    public withClauses(clauses: Clause[]): this {
+        this.params.clauses = clauses;
         return this;
     }
 
-    public withDependsOn(v: Hex): this {
-        this.params.dependsOn = v;
+    /**
+     * Sets the depends on for the transaction.
+     * @param dependsOn - The transaction ID that this transaction depends on.
+     * @returns The builder instance.
+     */
+    public withDependsOn(dependsOn: Hex): this {
+        this.params.dependsOn = dependsOn;
         return this;
     }
 
-    public withExpiration(v: number): this {
-        this.params.expiration = v;
+    /**
+     * Sets the expiration for the transaction.
+     * @param expiration - The expiration to set.
+     * @returns The builder instance.
+     */
+    public withExpiration(expiration: number): this {
+        this.params.expiration = expiration;
         return this;
     }
 
-    public withGas(v: bigint): this {
-        this.params.gas = v;
+    /**
+     * Sets the max gas for the transaction.
+     * @param gas - The max gas to set.
+     * @returns The builder instance.
+     */
+    public withGas(gas: bigint): this {
+        this.params.gas = gas;
         return this;
     }
 
-    public withGasPriceCoef(v: bigint): this {
+    /**
+     * Sets the gas price coef for the transaction (legacy transaction)
+     * @param coef - The gas price coef to set. (0 <= coef <= 256)
+     * @returns The builder instance.
+     */
+    public withGasPriceCoef(coef: bigint): this {
         // sets gasPriceCoef and clears maxFeePerGas and maxPriorityFeePerGas
-        this.params.gasPriceCoef = v;
+        this.params.gasPriceCoef = coef;
         this.params.maxFeePerGas = undefined;
         this.params.maxPriorityFeePerGas = undefined;
         return this;
     }
 
-    public withNonce(v: number): this {
-        this.params.nonce = v;
+    /**
+     * Sets the nonce for the transaction.
+     * @param nonce - The nonce to set.
+     * @returns The builder instance.
+     */
+    public withNonce(nonce: number): this {
+        this.params.nonce = nonce;
         return this;
     }
 
-    public withMaxFeePerGas(v: bigint): this {
-        this.params.maxFeePerGas = v;
+    /**
+     * Sets the max fee per gas for the transaction (dynamic fee transaction).
+     * @param maxFeePerGas - The max fee per gas to set.
+     * @returns The builder instance.
+     */
+    public withMaxFeePerGas(maxFeePerGas: bigint): this {
+        this.params.maxFeePerGas = maxFeePerGas;
         this.params.gasPriceCoef = undefined;
         return this;
     }
 
-    public withMaxPriorityFeePerGas(v: bigint): this {
-        this.params.maxPriorityFeePerGas = v;
+    /**
+     * Sets the max priority fee per gas for the transaction (dynamic fee transaction).
+     * @param maxPriorityFeePerGas - The max priority fee per gas to set.
+     * @returns The builder instance.
+     */
+    public withMaxPriorityFeePerGas(maxPriorityFeePerGas: bigint): this {
+        this.params.maxPriorityFeePerGas = maxPriorityFeePerGas;
         this.params.gasPriceCoef = undefined;
         return this;
     }
 
     // with default values for each parameter
 
-    public async withDefaultBlockRef(): Promise<this> {
-        // best block block ref
-        const blockResponse = await RetrieveRegularBlock.of(
-            Revision.of('best')
-        ).askTo(this.thorClient.httpClient);
-        if (blockResponse.response === null) {
-            throw new IllegalArgumentError(
-                'TransactionBuilder.withDefaultBlockRef',
-                'Best block not found.'
-            );
-        }
-        this.params.blockRef = BlockRef.of(blockResponse.response.id);
+    /**
+     * Sets the default block ref for the transaction to the current best block.
+     * @returns The builder instance.
+     */
+    public withDefaultBlockRef(): this {
+        const task: () => Promise<void> = async () => {
+            // best block block ref
+            const blockResponse = await RetrieveRegularBlock.of(
+                Revision.of('best')
+            ).askTo(this.thorClient.httpClient);
+            if (blockResponse.response === null) {
+                throw new IllegalArgumentError(
+                    'TransactionBuilder.withDefaultBlockRef',
+                    'Best block not found.'
+                );
+            }
+            this.params.blockRef = BlockRef.of(blockResponse.response.id);
+        };
+        this.buildTasks.push(task);
         return this;
     }
 
-    public async withDefaultChainTag(): Promise<this> {
-        // best block chain tag
-        const chainTag = await this.thorClient.nodes.getChainTag();
-        this.params.chainTag = chainTag;
+    /**
+     * Sets the default chain tag for the transaction to the current thor client chain tag.
+     * @returns The builder instance.
+     */
+    public withDefaultChainTag(): this {
+        const task: () => Promise<void> = async () => {
+            // best block chain tag
+            const chainTag = await this.thorClient.nodes.getChainTag();
+            this.params.chainTag = chainTag;
+        };
+        this.buildTasks.push(task);
         return this;
     }
 
+    /**
+     * Sets the default expiration for the transaction to the default expiration.
+     * @returns The builder instance.
+     */
     public withDefaultExpiration(): this {
         this.params.expiration = TransactionBuilder.DEFAULT_EXPIRATION;
         return this;
     }
 
+    /**
+     * Sets the default nonce for the transaction to a random nonce.
+     * @returns The builder instance.
+     */
     public withRandomNonce(): this {
         this.params.nonce = Number(Hex.random(4).toString());
         return this;
     }
 
-    public async withDefaultMaxFeePerGas(): Promise<this> {
-        const { maxFeePerGas, maxPriorityFeePerGas } =
-            await this.thorClient.gas.computeMaxFeePrices();
-        this.params.maxFeePerGas = maxFeePerGas;
-        this.params.maxPriorityFeePerGas = maxPriorityFeePerGas;
-        this.params.gasPriceCoef = undefined;
+    /**
+     * Sets the calculated max fee per gas for the transaction (dynamic fee transaction).
+     * @returns The builder instance.
+     */
+    public withDefaultMaxFeePerGas(): this {
+        const task: () => Promise<void> = async () => {
+            const { maxFeePerGas, maxPriorityFeePerGas } =
+                await this.thorClient.gas.computeMaxFeePrices();
+            this.params.maxFeePerGas = maxFeePerGas;
+            this.params.maxPriorityFeePerGas = maxPriorityFeePerGas;
+            this.params.gasPriceCoef = undefined;
+        };
+        this.buildTasks.push(task);
         return this;
     }
 
-    public async withEstimatedGas(
+    /**
+     * Sets the gas limit for the transaction by estimating the gas.
+     * @param caller - The address of the caller.
+     * @param options - The options for the estimated gas.
+     * @returns The builder instance.
+     */
+    public withEstimatedGas(
         caller: Address,
         options: EstimateGasOptions
-    ): Promise<this> {
-        const estimate = await this.thorClient.gas.estimateGas(
-            this.params.clauses,
-            caller,
-            options
-        );
-        this.params.gas = estimate.totalGas;
+    ): this {
+        const task: () => Promise<void> = async () => {
+            const estimate = await this.thorClient.gas.estimateGas(
+                this.params.clauses,
+                caller,
+                options
+            );
+            this.params.gas = estimate.totalGas;
+        };
+        this.buildTasks.push(task);
         return this;
     }
 
-    public async withDefaults(): Promise<this> {
-        await this.withDefaultBlockRef();
-        await this.withDefaultChainTag();
+    /**
+     * Sets all the default values needed for a dynamic fee transaction.
+     * @returns The builder instance.
+     */
+    public withDynFeeTxDefaults(): this {
+        this.withDefaultBlockRef();
+        this.withDefaultChainTag();
         this.withDefaultExpiration();
         this.withRandomNonce();
-        await this.withDefaultMaxFeePerGas();
+        this.withDefaultMaxFeePerGas();
         return this;
     }
 
-    public build(): TransactionRequest {
-        return new TransactionRequest(this.params);
+    /**
+     * Sets all the default values needed for a legacy transaction.
+     * @returns The builder instance.
+     */
+    public withLegacyTxDefaults(): this {
+        this.withDefaultBlockRef();
+        this.withDefaultChainTag();
+        this.withDefaultExpiration();
+        this.withRandomNonce();
+        if (this.params.gasPriceCoef === undefined) {
+            this.withGasPriceCoef(TransactionBuilder.DEFAULT_GAS_PRICE_COEF);
+        }
+        return this;
+    }
+
+    /**
+     * Resets the builder, erasing all the set parameters.
+     * @returns The builder instance.
+     */
+    public reset(): this {
+        this.params = { ...this.startingParams };
+        this.buildTasks = [];
+        return this;
+    }
+
+    /**
+     * Builds the transaction request and resets the builder.
+     * @returns The transaction request.
+     */
+    public async build(): Promise<TransactionRequest> {
+        try {
+            for (const task of this.buildTasks) {
+                await task();
+            }
+            return new TransactionRequest(this.params);
+        } finally {
+            this.reset();
+        }
     }
 }
 

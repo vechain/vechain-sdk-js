@@ -1,4 +1,5 @@
 import { IllegalArgumentError } from '@common/errors';
+import { TimeoutError } from '@common/errors/TimeoutError';
 import { log } from '@common/logging';
 
 type Producer<T> = () => Promise<T> | T;
@@ -218,23 +219,10 @@ export function createEventPoll<T>(
  *
  * @template T The type of the result produced by the task.
  * @param {WaitUntilOptions<T>} options - Configuration options for polling.
- * @param {Producer<T>} options.task - The asynchronous or synchronous task to execute on each poll.
- * @param {(result: T) => boolean} options.predicate - Function to test if the result satisfies the completion condition.
- * @param {number} [options.intervalMs] - Interval in milliseconds between polls. Defaults to 1000ms.
- * @param {number} [options.timeoutMs] - Maximum time in milliseconds to wait before aborting. Defaults to `intervalMs * (maxNetworkErrors + 1) * 5`.
- * @param {number} [options.maxNetworkErrors] - Maximum consecutive network errors allowed before aborting. Defaults to 5.
  * @returns {Promise<T>} Resolves with the result when the predicate returns true.
  * @throws {IllegalArgumentError} If timeoutMs or maxNetworkErrors are invalid, or if the operation times out.
+ * @throws {TimeoutError} If the operation times out.
  * @throws {Error} If the task throws a non-network error, or if network errors exceed the allowed maximum.
- *
- * @example
- * // Wait until a resource is available
- * await waitUntil({
- *   task: fetchResource,
- *   predicate: (res) => res.status === 'ready',
- *   intervalMs: 2000,
- *   timeoutMs: 10000
- * });
  */
 export async function waitUntil<T>(options: WaitUntilOptions<T>): Promise<T> {
     const intervalMs = validateInterval(
@@ -273,8 +261,8 @@ export async function waitUntil<T>(options: WaitUntilOptions<T>): Promise<T> {
     try {
         while (true) {
             if (controller.signal.aborted) {
-                // Timeout paths surface as IllegalArgumentError so callers can distinguish them from other failures.
-                throw new IllegalArgumentError(
+                // Timeout paths surface as WaitUntilTimeoutError so callers can distinguish them from other failures.
+                throw new TimeoutError(
                     'waitUntil()',
                     'Timed out while waiting for predicate'
                 );
@@ -302,7 +290,7 @@ export async function waitUntil<T>(options: WaitUntilOptions<T>): Promise<T> {
                 await delay(intervalMs, controller.signal);
             } catch (error) {
                 if (controller.signal.aborted) {
-                    throw new IllegalArgumentError(
+                    throw new TimeoutError(
                         'waitUntil()',
                         'Timed out while waiting for predicate'
                     );
