@@ -7,6 +7,7 @@ import {
     type TransactionRequestParam
 } from '@thor/thor-client/model/transactions';
 import { RetrieveRegularBlock } from '@thor/thorest/blocks';
+import { randomNonce } from '@thor/utils';
 
 class TransactionBuilder {
     private params: TransactionRequestParam;
@@ -214,7 +215,7 @@ class TransactionBuilder {
      * @returns The builder instance.
      */
     public withRandomNonce(): this {
-        this.params.nonce = Number(Hex.random(4).toString());
+        this.params.nonce = randomNonce();
         return this;
     }
 
