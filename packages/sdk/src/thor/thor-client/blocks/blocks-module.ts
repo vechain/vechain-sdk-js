@@ -8,7 +8,7 @@ import {
     type RawBlockResponse,
     type RegularBlockResponse
 } from '@thor/thorest';
-import { IllegalArgumentError } from '@common/errors';
+import { IllegalArgumentError, TimeoutError } from '@common/errors';
 import { waitUntil } from '@common/utils/poller';
 import { Block, ExpandedBlock, RawBlock } from '../model/blocks';
 import { type WaitForBlockOptions } from '../model/blocks/WaitForBlockOptions';
@@ -157,7 +157,7 @@ class BlocksModule extends AbstractThorModule {
         });
 
         if (result === null) {
-            throw new IllegalArgumentError(
+            throw new TimeoutError(
                 'BlocksModule.waitForBlock()',
                 'block was not produced before the timeout',
                 { blockNumber: target }
