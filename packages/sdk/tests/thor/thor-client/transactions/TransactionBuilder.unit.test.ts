@@ -1,4 +1,4 @@
-import { FetchHttpClient, Hex } from '@common';
+import { FetchHttpClient, Hex, IllegalArgumentError } from '@common';
 import { describe, expect, jest, test } from '@jest/globals';
 import { ThorClient } from '@thor/thor-client';
 import { TransactionBuilder } from '@thor/thor-client/transactions/TransactionBuilder';
@@ -46,6 +46,10 @@ describe('TransactionBuilder UNIT tests', () => {
         );
         const builder = TransactionBuilder.create(thorClient);
         const transaction = await builder
+            .withClauses([new Clause(Address.of('0x0'), 1n)])
+            .withBlockRef(Hex.of('0x1234'))
+            .withChainTag(1)
+            .withGas(1n)
             .withMaxFeePerGas(1n)
             .withMaxPriorityFeePerGas(6n)
             .build();
@@ -57,8 +61,12 @@ describe('TransactionBuilder UNIT tests', () => {
         const thorClient = ThorClient.at(
             FetchHttpClient.at(new URL('http://localhost:8669'))
         );
-        const builder =
-            TransactionBuilder.create(thorClient).withGasPriceCoef(0n);
+        const builder = TransactionBuilder.create(thorClient)
+            .withClauses([new Clause(Address.of('0x0'), 1n)])
+            .withBlockRef(Hex.of('0x1234'))
+            .withChainTag(1)
+            .withGasPriceCoef(0n)
+            .withGas(1n);
         const transaction = await builder.build();
         expect(transaction.expiration).toBe(
             TransactionBuilder.DEFAULT_EXPIRATION
@@ -82,5 +90,79 @@ describe('TransactionBuilder UNIT tests', () => {
         const builder =
             TransactionBuilder.create(thorClient).withDefaultBlockRef();
         await expect(async () => await builder.build()).rejects.toThrow();
+    });
+    test('with invalid chain tag throws error', () => {
+        const thorClient = ThorClient.at(
+            FetchHttpClient.at(new URL('http://localhost:8669'))
+        );
+        const builder = TransactionBuilder.create(thorClient).withClauses([
+            new Clause(Address.of('0x0'), 1n)
+        ]);
+        expect(() => builder.withChainTag(-1)).toThrow(IllegalArgumentError);
+    });
+    test('with empty clauses throws error', () => {
+        const thorClient = ThorClient.at(
+            FetchHttpClient.at(new URL('http://localhost:8669'))
+        );
+        const builder = TransactionBuilder.create(thorClient);
+        expect(() => builder.withClauses([])).toThrow(IllegalArgumentError);
+    });
+    test('with invalid expiration throws error', () => {
+        const thorClient = ThorClient.at(
+            FetchHttpClient.at(new URL('http://localhost:8669'))
+        );
+        const builder = TransactionBuilder.create(thorClient);
+        expect(() => builder.withExpiration(-1)).toThrow(IllegalArgumentError);
+    });
+    test('with invalid gas throws error', () => {
+        const thorClient = ThorClient.at(
+            FetchHttpClient.at(new URL('http://localhost:8669'))
+        );
+        const builder = TransactionBuilder.create(thorClient);
+        expect(() => builder.withGas(-1n)).toThrow(IllegalArgumentError);
+    });
+    test('with invalid gas throws error', () => {
+        const thorClient = ThorClient.at(
+            FetchHttpClient.at(new URL('http://localhost:8669'))
+        );
+        const builder = TransactionBuilder.create(thorClient);
+        expect(() => builder.withGas(-1n)).toThrow(IllegalArgumentError);
+    });
+    test('with invalid gas price coef throws error', () => {
+        const thorClient = ThorClient.at(
+            FetchHttpClient.at(new URL('http://localhost:8669'))
+        );
+        const builder = TransactionBuilder.create(thorClient);
+        expect(() => builder.withGasPriceCoef(-1n)).toThrow(
+            IllegalArgumentError
+        );
+        expect(() => builder.withGasPriceCoef(256n)).toThrow(
+            IllegalArgumentError
+        );
+    });
+    test('with invalid nonce throws error', () => {
+        const thorClient = ThorClient.at(
+            FetchHttpClient.at(new URL('http://localhost:8669'))
+        );
+        const builder = TransactionBuilder.create(thorClient);
+        expect(() => builder.withNonce(-1)).toThrow(IllegalArgumentError);
+    });
+    test('with invalid max fee per gas throws error', () => {
+        const thorClient = ThorClient.at(
+            FetchHttpClient.at(new URL('http://localhost:8669'))
+        );
+        const builder = TransactionBuilder.create(thorClient);
+        expect(() => builder.withMaxFeePerGas(-1n)).toThrow(
+            IllegalArgumentError
+        );
+    });
+    test('with invalid max priority fee per gas throws error', () => {
+        const thorClient = ThorClient.at(
+            FetchHttpClient.at(new URL('http://localhost:8669'))
+        );
+        const builder = TransactionBuilder.create(thorClient);
+        expect(() => builder.withMaxPriorityFeePerGas(-1n)).toThrow(
+            IllegalArgumentError
+        );
     });
 });
