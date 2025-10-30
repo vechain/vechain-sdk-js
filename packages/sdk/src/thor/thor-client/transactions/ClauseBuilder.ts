@@ -8,7 +8,7 @@ import {
     type Abi,
     type AbiFunction
 } from 'viem';
-import { type DeployParams } from '@thor/thorest/transactions/model';
+import type { DeployParams, ClauseOptions } from '../contracts';
 import { Clause } from '../model';
 import {
     NO_DATA,
@@ -16,13 +16,6 @@ import {
     TRANSFER_NFT_FUNCTION,
     TRANSFER_TOKEN_FUNCTION
 } from '@thor/utils/const/constants';
-/**
- * Additional metadata that callers can attach to a clause.
- */
-interface ClauseMetadata {
-    comment: string | null;
-    includeAbi?: boolean;
-}
 
 const FQP = 'packages/sdk/src/thor/thor-client/transactions/ClauseBuilder.ts!';
 
@@ -53,11 +46,11 @@ const getFunctionCallClause = (
     functionName: string,
     args: readonly unknown[],
     value: bigint = ZERO_VALUE,
-    metadata?: ClauseMetadata
+    metadata?: ClauseOptions
 ): Clause => {
     if (value < ZERO_VALUE) {
         throw new IllegalArgumentError(
-            `${FQP}callFunction(contractAddress: Address, contractAbi: Abi, functionName: string, args: unknown[], value: bigint, metadata?: ClauseMetadata)`,
+            `${FQP}callFunction(contractAddress: Address, contractAbi: Abi, functionName: string, args: unknown[], value: bigint, metadata?: ClauseOptions)`,
             'negative value is not allowed',
             { value: `${value}` }
         );
@@ -84,8 +77,7 @@ const getFunctionCallClause = (
  */
 const getDeployContractClause = (
     contractBytecode: HexUInt,
-    deployParams?: DeployParams,
-    metadata?: ClauseMetadata
+    deployParams?: DeployParams
 ): Clause => {
     let data = contractBytecode.digits;
 
@@ -102,13 +94,7 @@ const getDeployContractClause = (
         data += encodedParams.slice(2);
     }
 
-    return new Clause(
-        null,
-        ZERO_VALUE,
-        Hex.of(data),
-        metadata?.comment ?? null,
-        null
-    );
+    return new Clause(null, ZERO_VALUE, Hex.of(data), null);
 };
 
 /**
@@ -119,7 +105,7 @@ const getTransferNftClause = (
     senderAddress: Address,
     recipientAddress: Address,
     tokenId: bigint,
-    metadata?: ClauseMetadata
+    metadata?: ClauseOptions
 ): Clause =>
     getFunctionCallClause(
         contractAddress,
@@ -137,11 +123,11 @@ const getTransferTokenClause = (
     tokenAddress: Address,
     recipientAddress: Address,
     value: bigint,
-    metadata?: ClauseMetadata
+    metadata?: ClauseOptions
 ): Clause => {
     if (value < ZERO_VALUE) {
         throw new IllegalArgumentError(
-            `${FQP}transferToken(tokenAddress: Address, recipientAddress: Address, value: bigint, metadata?: ClauseMetadata)`,
+            `${FQP}transferToken(tokenAddress: Address, recipientAddress: Address, value: bigint, metadata?: ClauseOptions)`,
             'negative value is not allowed',
             { value: `${value}` }
         );
@@ -163,11 +149,11 @@ const getTransferTokenClause = (
 const getTransferVetClause = (
     recipientAddress: Address,
     value: bigint,
-    metadata?: ClauseMetadata
+    metadata?: ClauseOptions
 ): Clause => {
     if (value < ZERO_VALUE) {
         throw new IllegalArgumentError(
-            `${FQP}transferVET(recipientAddress: Address, value: bigint, metadata?: ClauseMetadata)`,
+            `${FQP}transferVET(recipientAddress: Address, value: bigint, metadata?: ClauseOptions)`,
             'negative value is not allowed',
             { value: `${value}` }
         );

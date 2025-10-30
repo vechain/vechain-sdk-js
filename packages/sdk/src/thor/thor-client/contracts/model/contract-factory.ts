@@ -114,11 +114,7 @@ class ContractFactory<TAbi extends Abi> {
             }
 
             // 4. Create and return deployment clause using VeChain's official ClauseBuilder
-            return ClauseBuilder.deployContract(
-                contractBytecode,
-                deployParams,
-                options?.comment ? { comment: options.comment } : undefined
-            );
+            return ClauseBuilder.deployContract(contractBytecode, deployParams);
         } catch (error) {
             if (error instanceof Error) {
                 throw new IllegalArgumentError(
@@ -193,8 +189,7 @@ class ContractFactory<TAbi extends Abi> {
             // 4. Create deployment clause using VeChain's official ClauseBuilder
             const deployClause = ClauseBuilder.deployContract(
                 contractBytecode,
-                deployParams,
-                undefined // Comment can be added to TransactionRequest if needed
+                deployParams
             );
 
             // 5. Create and send transaction using ThorClient
@@ -286,8 +281,7 @@ class ContractFactory<TAbi extends Abi> {
 
             const deployClause = ClauseBuilder.deployContract(
                 contractBytecode,
-                deployParams,
-                options?.comment ? { comment: options.comment } : undefined
+                deployParams
             );
 
             // 2. TODO: Use ThorClient to estimate gas for the deployment clause
@@ -384,8 +378,7 @@ class ContractFactory<TAbi extends Abi> {
 
             const deployClause = ClauseBuilder.deployContract(
                 contractBytecode,
-                deployParams,
-                undefined // Comment is not part of simulation options
+                deployParams
             );
 
             // 2. TODO: Use ThorClient to simulate the deployment clause

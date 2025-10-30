@@ -48,40 +48,6 @@ declare module '@vechain/sdk/thor' {
         toString(): string;
     }
 
-    export const ClauseBuilder: {
-        callFunction: (
-            contractAddress: Address,
-            contractAbi: unknown,
-            functionName: string,
-            args: unknown[],
-            value?: bigint,
-            metadata?: { comment?: string; includeAbi?: boolean }
-        ) => TransactionClause;
-        deployContract: (
-            contractBytecode: HexUInt,
-            deployParams?: { types: string | unknown[]; values: string[] },
-            metadata?: { comment?: string; includeAbi?: boolean }
-        ) => TransactionClause;
-        transferNFT: (
-            contractAddress: Address,
-            senderAddress: Address,
-            recipientAddress: Address,
-            tokenId: bigint,
-            metadata?: { comment?: string; includeAbi?: boolean }
-        ) => TransactionClause;
-        transferToken: (
-            tokenAddress: Address,
-            recipientAddress: Address,
-            amount: bigint,
-            metadata?: { comment?: string; includeAbi?: boolean }
-        ) => TransactionClause;
-        transferVET: (
-            recipientAddress: Address,
-            amount: bigint,
-            metadata?: { comment?: string; includeAbi?: boolean }
-        ) => TransactionClause;
-    };
-
     export class FetchHttpClient {
         static at(url: URL, options: any): FetchHttpClient;
     }
@@ -108,7 +74,9 @@ declare module '@vechain/sdk/thor' {
 
     export class RetrieveRegularBlock {
         static of(revision: Revision): RetrieveRegularBlock;
-        askTo(client: FetchHttpClient): Promise<{ response: RegularBlockResponse | null }>;
+        askTo(
+            client: FetchHttpClient
+        ): Promise<{ response: RegularBlockResponse | null }>;
     }
 
     export class SendTransaction {
@@ -118,7 +86,11 @@ declare module '@vechain/sdk/thor' {
 
     export class HDKey {
         static readonly VET_DERIVATION_PATH: string;
-        static fromMnemonic(words: string[], path?: string, passphrase?: string): HDKey;
+        static fromMnemonic(
+            words: string[],
+            path?: string,
+            passphrase?: string
+        ): HDKey;
         deriveChild(index: number): HDKey;
         readonly privateKey: Uint8Array | null;
         readonly publicKey: Uint8Array | null;

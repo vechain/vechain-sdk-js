@@ -26,6 +26,7 @@ export interface ClauseOptions {
      * Optional comment for the clause
      */
     comment?: string;
+    includeAbi?: boolean;
 }
 
 /**
