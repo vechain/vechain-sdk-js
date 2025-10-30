@@ -5,4 +5,3 @@
  * Clause comment type
  */
 export type ClauseComment = string;
-

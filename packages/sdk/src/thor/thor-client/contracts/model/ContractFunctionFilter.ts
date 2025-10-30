@@ -17,4 +17,3 @@ export type ContractFunctionFilter<
             | undefined
     ) => ContractFilter<TAbi>;
 };
-

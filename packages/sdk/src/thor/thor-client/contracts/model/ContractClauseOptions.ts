@@ -16,4 +16,3 @@ export interface ContractClauseOptions extends ClauseOptions {
      */
     revision?: string | number;
 }
-

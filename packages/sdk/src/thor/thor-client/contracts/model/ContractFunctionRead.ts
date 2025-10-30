@@ -22,4 +22,3 @@ export type ContractFunctionRead<
         >
     ) => Promise<(string | number | bigint | boolean | Address | Hex)[]>;
 };
-

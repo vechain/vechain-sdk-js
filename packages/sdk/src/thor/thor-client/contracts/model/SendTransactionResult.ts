@@ -8,4 +8,3 @@ export interface SendTransactionResult {
     id: string;
     wait: () => Promise<{ id: string; blockNumber: number; blockHash: string }>;
 }
-

@@ -21,4 +21,3 @@ export type ContractFunctionCriteria<
         topics: string[];
     };
 };
-

@@ -12,4 +12,3 @@ export type ContractFunctionClause<
 > = {
     [K in TFunctionNames]: (...args: AbiParameter[]) => Clause;
 };
-

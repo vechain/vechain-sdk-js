@@ -14,4 +14,3 @@ export type ContractFunctionTransact<
         ...args: AbiParameter[]
     ) => Promise<SendTransactionResult>;
 };
-

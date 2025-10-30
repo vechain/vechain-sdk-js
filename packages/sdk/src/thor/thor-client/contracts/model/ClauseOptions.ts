@@ -11,4 +11,3 @@ export interface ClauseOptions {
     comment?: string;
     includeAbi?: boolean;
 }
-
