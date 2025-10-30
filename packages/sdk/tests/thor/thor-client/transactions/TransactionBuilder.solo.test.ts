@@ -97,7 +97,7 @@ describe('TransactionBuilder SOLO tests', () => {
         // expect nonce to be set by the builder
         expect(transaction.nonce).toBeGreaterThan(0);
     });
-    test('create transaction with gas estimation not setby the user', async () => {
+    test('create transaction with gas estimation not set by the user', async () => {
         const builder =
             TransactionBuilder.create(thorClient).withClauses(clauses);
         // expect error on build as user did not call withEstimatedGas
