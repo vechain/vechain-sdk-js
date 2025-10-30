@@ -8,7 +8,8 @@ import {
     type Abi,
     type AbiFunction
 } from 'viem';
-import type { DeployParams, ClauseOptions } from '../contracts';
+import type { DeployParams } from '../contracts';
+import type { ClauseOptions } from '../contracts/model/ClauseOptions';
 import { Clause } from '../model';
 import {
     NO_DATA,

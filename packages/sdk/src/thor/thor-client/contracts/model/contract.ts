@@ -30,7 +30,7 @@ import { type Address, type Hex, Revision } from '@common/vcdm';
 import { IllegalArgumentError } from '@common/errors';
 import { log } from '@common/logging';
 import type { ContractCallOptions } from '../types';
-import type { SendTransactionResult } from './types';
+import type { SendTransactionResult } from './SendTransactionResult';
 import type { ContractsModule } from '../contracts-module';
 import type { TransactionRequest } from '../../model/transactions/TransactionRequest';
 

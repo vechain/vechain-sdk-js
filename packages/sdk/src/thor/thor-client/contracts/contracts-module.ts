@@ -25,7 +25,7 @@ import { encodeFunctionData, type AbiParameter } from 'viem';
 import { BUILT_IN_CONTRACTS } from './constants';
 import { dataUtils } from './utils';
 import type { ContractCallOptions, ContractCallResult } from './types';
-import type { SendTransactionResult } from './model/types';
+import type { SendTransactionResult } from './model/SendTransactionResult';
 
 // WHOLE MODULE IS IN PENDING TILL MERGED AND REWORKED THE TRANSACTIONS
 // Proper function arguments type using VeChain SDK types
