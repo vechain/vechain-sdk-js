@@ -11,10 +11,10 @@
   },
   "keywords": [
     "VeChain",
-    "contract",
-    "encoding",
-    "certificate",
-    "bloom"
+    "thor",
+    "blockchain",
+    "dapp",
+    "web3"
   ],
   "exports": {
     "./common": {
