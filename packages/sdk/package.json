@@ -1,6 +1,6 @@
 {
   "name": "@vechain/sdk",
-  "version": "2.0.0-beta.1",
+  "version": "3.0.0-beta.1",
   "description": "This module is crafted for dApp development and various blockchain operations that seamlessly unfold offline",
   "author": "VeChain Foundation",
   "license": "MIT",
