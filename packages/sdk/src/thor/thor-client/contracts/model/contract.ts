@@ -240,6 +240,103 @@ class Contract<TAbi extends Abi> {
     }
 
     /**
+     * Gets detailed parameter information (names and types) for a specific function.
+     * This is useful for inspecting function signatures and building dynamic UIs.
+     *
+     * @param functionName - The name of the function to inspect
+     * @returns Object containing inputs and outputs parameter information
+     *
+     * @example
+     * ```typescript
+     * const contract = thorClient.contracts.load(address, abi);
+     * const paramInfo = contract.getParameterInfo('transfer');
+     *
+     * // paramInfo.inputs = [
+     * //   { name: 'to', type: 'address', internalType: 'address' },
+     * //   { name: 'amount', type: 'uint256', internalType: 'uint256' }
+     * // ]
+     * // paramInfo.outputs = [
+     * //   { name: '', type: 'bool', internalType: 'bool' }
+     * // ]
+     * ```
+     */
+    public getParameterInfo(functionName: string): {
+        inputs: readonly AbiParameter[];
+        outputs: readonly AbiParameter[];
+        stateMutability: string;
+    } {
+        const functionAbi = this.getFunctionAbi(functionName);
+
+        if (!functionAbi) {
+            throw new IllegalArgumentError(
+                'Contract.getParameterInfo',
+                `Function ${functionName} not found in ABI`,
+                { functionName, abi: this.abi }
+            );
+        }
+
+        return {
+            inputs: functionAbi.inputs || [],
+            outputs: functionAbi.outputs || [],
+            stateMutability: functionAbi.stateMutability || 'nonpayable'
+        };
+    }
+
+    /**
+     * Gets a formatted string representation of a function's signature including parameter names.
+     * Useful for displaying in UIs or documentation.
+     *
+     * @param functionName - The name of the function
+     * @returns A formatted string like "transfer(address to, uint256 amount) returns (bool)"
+     *
+     * @example
+     * ```typescript
+     * const contract = thorClient.contracts.load(address, abi);
+     * const signature = contract.getFunctionSignature('transfer');
+     * // Returns: "transfer(address to, uint256 amount) returns (bool)"
+     * ```
+     */
+    public getFunctionSignature(functionName: string): string {
+        const paramInfo = this.getParameterInfo(functionName);
+
+        const inputsStr = paramInfo.inputs
+            .map(
+                (param) => `${param.type}${param.name ? ` ${param.name}` : ''}`
+            )
+            .join(', ');
+
+        const outputsStr =
+            paramInfo.outputs.length > 0
+                ? ` returns (${paramInfo.outputs.map((param) => param.type).join(', ')})`
+                : '';
+
+        return `${functionName}(${inputsStr})${outputsStr}`;
+    }
+
+    /**
+     * Lists all available functions in the contract with their signatures.
+     * Useful for debugging and documentation.
+     *
+     * @returns Array of function signatures
+     *
+     * @example
+     * ```typescript
+     * const contract = thorClient.contracts.load(address, abi);
+     * const functions = contract.listFunctions();
+     * // Returns: [
+     * //   "transfer(address to, uint256 amount) returns (bool)",
+     * //   "balanceOf(address account) returns (uint256)",
+     * //   ...
+     * // ]
+     * ```
+     */
+    public listFunctions(): string[] {
+        return this.abi
+            .filter((item): item is AbiFunction => item.type === 'function')
+            .map((func) => this.getFunctionSignature(func.name));
+    }
+
+    /**
      * Initializes the proxy objects for dynamic method binding
      * This replaces the complex proxy system with simple object initialization
      */
