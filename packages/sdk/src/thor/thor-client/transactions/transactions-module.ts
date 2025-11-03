@@ -25,6 +25,10 @@ import { type TransactionRequest } from '@thor/thor-client/model/transactions/Tr
 import { IllegalArgumentError, TimeoutError } from '@common/errors';
 import { waitUntil, type WaitUntilOptions } from '@common/utils/poller';
 
+/**
+ * The transactions module of the VeChain Thor blockchain.
+ * It allows to retrieve transactions and their receipts
+ */
 class TransactionsModule extends AbstractThorModule {
     /**
      * Retrieves a transaction by its ID.
