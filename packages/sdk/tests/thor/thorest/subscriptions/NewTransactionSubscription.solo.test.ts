@@ -15,9 +15,9 @@ import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 /**
- * VeChain beats subscription - integration
+ * VeChain beats subscription - solo
  *
- * @group integration/thor/subscriptions
+ * @group solo/thor/subscriptions
  */
 describe('NewTransactionSubscription solo tests', () => {
     let subscription: NewTransactionSubscription;

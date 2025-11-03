@@ -10,7 +10,7 @@ import {
 } from '@thor/thorest';
 
 /**
- * @group integration/thor/transactions
+ * @group solo/thor/transactions
  */
 describe('RetrieveTransactionReceipt SOLO tests', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));

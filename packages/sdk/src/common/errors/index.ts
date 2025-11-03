@@ -9,3 +9,4 @@ export * from './InvalidTransactionField';
 export * from './NoSuchElementError';
 export * from './UnsupportedOperationError';
 export * from './VeChainSDKError';
+export * from './TimeoutError';

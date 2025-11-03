@@ -9,7 +9,7 @@ const createThorClient = (): ThorClient =>
     ThorClient.at(FetchHttpClient.at(new URL(ThorNetworks.SOLONET)));
 
 /**
- * BlocksModule integration tests against the solo network.
+ * BlocksModule tests against the solo network.
  * @group solo
  */
 describe('BlocksModule (solo)', () => {

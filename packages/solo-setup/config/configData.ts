@@ -2,6 +2,10 @@ import { type RegularBlockResponse } from '@vechain/sdk/thor';
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
+import {
+    THOR_SOLO_DEFAULT_ACCOUNT_ADDRESSES,
+    THOR_SOLO_DEFAULT_ACCOUNT_PRIVATE_KEYS
+} from './constants';
 
 // Define the config structure type
 export interface ConfigData {
@@ -15,16 +19,13 @@ export interface ConfigData {
     TEST_TOKEN_ADDRESS: string;
     EVENTS_CONTRACT_ADDRESS: string;
     EVENTS_CONTRACT_ABI: any[];
+    DEFAULT_SOLO_ACCOUNT_ADDRESSES: string[];
+    DEFAULT_SOLO_ACCOUNT_PRIVATE_KEYS: string[];
 }
 
 // Get the config file path in the current working directory
 const getConfigPath = (): string => {
-    const filename = fileURLToPath(import.meta.url);
-    const dirname = path.dirname(filename);
-    const configPath =
-        process.env.SOLO_SETUP_ORIGINAL_CWD ??
-        path.resolve(dirname, '../config.json');
-    return configPath;
+    return path.resolve(__dirname, '../config.json');
 };
 
 /**
@@ -41,7 +42,7 @@ const getConfigData = (): ConfigData => {
 
     try {
         const configContent = fs.readFileSync(configPath, 'utf8');
-        return JSON.parse(configContent);
+        return JSON.parse(configContent) as unknown as ConfigData;
     } catch (error) {
         throw new Error(
             `Failed to read configuration file: ${error instanceof Error ? error.message : 'Unknown error'}`
@@ -79,7 +80,10 @@ function setConfig(
         SEED_TEST_TOKEN_TX_ID: seedTestTokenTxId,
         TEST_TOKEN_ADDRESS: testTokenAddress,
         EVENTS_CONTRACT_ADDRESS: eventsContractAddress,
-        EVENTS_CONTRACT_ABI: parsedEventsContractAbi
+        EVENTS_CONTRACT_ABI: parsedEventsContractAbi,
+        DEFAULT_SOLO_ACCOUNT_ADDRESSES: THOR_SOLO_DEFAULT_ACCOUNT_ADDRESSES,
+        DEFAULT_SOLO_ACCOUNT_PRIVATE_KEYS:
+            THOR_SOLO_DEFAULT_ACCOUNT_PRIVATE_KEYS
     };
 
     const configPath = getConfigPath();

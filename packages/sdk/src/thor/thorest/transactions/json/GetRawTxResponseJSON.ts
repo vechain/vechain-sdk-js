@@ -5,7 +5,7 @@ import type { TxMetaJSON } from '@thor/thorest/transactions/json';
  */
 interface GetRawTxResponseJSON {
     raw: string;
-    meta: TxMetaJSON;
+    meta: TxMetaJSON | null;
 }
 
 export { type GetRawTxResponseJSON };
