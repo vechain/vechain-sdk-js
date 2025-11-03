@@ -23,8 +23,10 @@ declare module '@vechain/sdk/thor' {
     // Transaction types
     export interface TransactionClause {
         to: string | null;
-        value: string;
+        value: bigint;
         data: string;
+        comment?: string;
+        abi?: string;
     }
 
     export interface TransactionBody {
@@ -44,11 +46,6 @@ declare module '@vechain/sdk/thor' {
         static of(address: string): Address;
         static ofPublicKey(publicKey: Uint8Array): Address;
         toString(): string;
-    }
-
-    export class ClauseBuilder {
-        static transferVET(to: Address, amount: bigint): TransactionClause;
-        static transferToken(tokenAddress: Address, to: Address, amount: bigint): TransactionClause;
     }
 
     export class FetchHttpClient {
@@ -77,7 +74,9 @@ declare module '@vechain/sdk/thor' {
 
     export class RetrieveRegularBlock {
         static of(revision: Revision): RetrieveRegularBlock;
-        askTo(client: FetchHttpClient): Promise<{ response: RegularBlockResponse | null }>;
+        askTo(
+            client: FetchHttpClient
+        ): Promise<{ response: RegularBlockResponse | null }>;
     }
 
     export class SendTransaction {
@@ -87,7 +86,11 @@ declare module '@vechain/sdk/thor' {
 
     export class HDKey {
         static readonly VET_DERIVATION_PATH: string;
-        static fromMnemonic(words: string[], path?: string, passphrase?: string): HDKey;
+        static fromMnemonic(
+            words: string[],
+            path?: string,
+            passphrase?: string
+        ): HDKey;
         deriveChild(index: number): HDKey;
         readonly privateKey: Uint8Array | null;
         readonly publicKey: Uint8Array | null;

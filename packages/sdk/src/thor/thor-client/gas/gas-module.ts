@@ -48,7 +48,7 @@ class GasModule extends AbstractThorModule {
     /**
      * Calculates the intrinsic gas required for the given clauses.
      *
-     * @param {TransactionClause[]} clauses - An array of transaction clauses to calculate the intrinsic gas for.
+     * @param {Clause[]} clauses - An array of transaction clauses to calculate the intrinsic gas for.
      * @return {bigint} The total intrinsic gas required for the provided clauses.
      * @throws {IllegalArgumentError} If clauses have invalid data as invalid addresses.
      */

@@ -2,12 +2,12 @@ import { afterEach, beforeEach, describe, test } from '@jest/globals';
 import { MozillaWebSocketClient, type WebSocketListener } from '@thor/ws';
 import { NewTransactionSubscription } from '@thor/thorest/subscriptions';
 import {
-    ClauseBuilder,
     RetrieveExpandedBlock,
     ThorNetworks,
     Transaction,
     type TXID
 } from '@thor/thorest';
+import { ClauseBuilder } from '@thor/thor-client/transactions';
 import { FetchHttpClient } from '@common/http';
 import { Address, BlockRef, HexUInt, Revision } from '@common/vcdm';
 import { ThorClient } from '@thor/thor-client/ThorClient';
@@ -50,7 +50,8 @@ describe('NewTransactionSubscription solo tests', () => {
                 onOpen: () => {
                     // Trigger a tx so that txpool emits a message
                     void (async () => {
-                        const transferClause = ClauseBuilder.transferVET(
+                        const transferClause =
+                            ClauseBuilder.getTransferVetClause(
                             Address.of(toAddress),
                             1n // minimal amount
                         );

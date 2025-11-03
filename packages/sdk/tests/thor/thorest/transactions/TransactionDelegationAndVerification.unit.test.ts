@@ -1,10 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { Address, BlockRef, HexUInt } from '@common/vcdm';
-import {
-    ClauseBuilder,
-    Transaction,
-    type TransactionBody
-} from '@thor/thorest';
+import { Transaction, type TransactionBody } from '@thor/thorest';
+import { ClauseBuilder } from '@thor/thor-client/transactions';
 import { networkInfo } from '@thor/utils';
 import { Secp256k1 } from '@common/cryptography/secp256k1';
 import {
@@ -39,7 +36,9 @@ describe('unit tests', () => {
     const mockChainTag = 0xf6;
 
     const OneVET = 10n ** 18n;
-    const clauses = [ClauseBuilder.transferVET(receiver.address, OneVET)];
+    const clauses = [
+        ClauseBuilder.getTransferVetClause(receiver.address, OneVET)
+    ];
 
     test('Delegated Tx', async () => {
         const mockBlockResponse = {

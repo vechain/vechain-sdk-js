@@ -1,4 +1,4 @@
-import { type TransactionClause } from '@thor/thorest/transactions/model';
+import { type Clause } from '@thor/thor-client/model/transactions/Clause';
 
 /**
  * Type for transaction body.
@@ -22,7 +22,7 @@ interface TransactionBody {
     /**
      * Array of clauses
      */
-    clauses: TransactionClause[];
+    clauses: Clause[];
 
     /**
      * Coefficient applied to base gas price [0,255]
