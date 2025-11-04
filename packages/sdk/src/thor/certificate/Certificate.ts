@@ -3,6 +3,7 @@ import { Address, Blake2b256, HexUInt, Txt } from '@common/vcdm';
 import { Secp256k1 } from '@common/cryptography/secp256k1';
 import { type CertificateData } from './CertificateData';
 import { IllegalArgumentError, InvalidSignatureError } from '@common/errors';
+import { log } from '@common/logging';
 
 /**
  * Full Qualified Path
@@ -299,12 +300,20 @@ class Certificate implements CertificateData {
                 HexUInt.of(this.signature as string).bytes
             )
         );
-        if (signer.toString().toLowerCase() !== this.signer)
+        if (signer.toString().toLowerCase() !== this.signer) {
+            log.warn({
+                message: "signature doesn't match with signer's public key",
+                source: FQP,
+                context: {
+                    certificate: this
+                }
+            });
             throw new InvalidSignatureError(
                 `${FQP}<Certificate>.verify(privateKey: Uint8Array): void`,
                 "signature doesn't match with signer's public key",
                 { certificate: this }
             );
+        }
     }
 }
 

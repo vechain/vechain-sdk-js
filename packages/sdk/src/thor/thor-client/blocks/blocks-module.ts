@@ -13,6 +13,10 @@ import { waitUntil } from '@common/utils/poller';
 import { Block, ExpandedBlock, RawBlock } from '../model/blocks';
 import { type WaitForBlockOptions } from '../model/blocks/WaitForBlockOptions';
 
+/**
+ * The blocks module of the VeChain Thor blockchain.
+ * It allows to retrieve blocks and their transactions
+ */
 class BlocksModule extends AbstractThorModule {
     /**
      * Retrieves a regular (compressed) block for the provided revision.
