@@ -7,6 +7,7 @@ import { PrivateKeySigner } from '@thor/signer';
 import { Clause } from '@thor/thor-client';
 import { TransactionBuilder } from '@thor/thor-client/transactions/TransactionBuilder';
 import { getConfigData } from '@vechain/sdk-solo-setup';
+import { TimeoutError } from '@common/errors';
 
 /**
  * @group solo
@@ -86,12 +87,12 @@ describe('ContractsModule - wait() method timeout tests', () => {
         };
 
         const startTime = Date.now();
-        const result = await mockSendResult.wait(); // Should use default 30s timeout
+        // Should throw TimeoutError after default 30s timeout
+        await expect(async () => await mockSendResult.wait()).rejects.toThrow(
+            TimeoutError
+        );
         const endTime = Date.now();
 
-        // Should return null due to timeout
-        expect(result).toBeNull();
-        
         // Should have taken approximately 30 seconds (with tolerance)
         expect(endTime - startTime).toBeGreaterThanOrEqual(29000);
         expect(endTime - startTime).toBeLessThan(35000);
@@ -113,13 +114,16 @@ describe('ContractsModule - wait() method timeout tests', () => {
         };
 
         const startTime = Date.now();
-        const result = await mockSendResult.wait({
-            timeoutMs: 2000,
-            intervalMs: 100
-        });
+        // Should throw TimeoutError after custom timeout
+        await expect(
+            async () =>
+                await mockSendResult.wait({
+                    timeoutMs: 2000,
+                    intervalMs: 100
+                })
+        ).rejects.toThrow(TimeoutError);
         const endTime = Date.now();
 
-        expect(result).toBeNull();
         expect(endTime - startTime).toBeGreaterThanOrEqual(1900);
         expect(endTime - startTime).toBeLessThan(3000);
     }, 5000);
