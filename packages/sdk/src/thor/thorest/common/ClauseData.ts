@@ -1,48 +1,18 @@
-import { Address, Hex, HexUInt, Quantity } from '@common/vcdm';
+import { Address, HexUInt } from '@common/vcdm';
 import { type ClauseJSON } from '@thor/thorest/json';
 import { IllegalArgumentError } from '@common/errors';
+import { Clause } from '@thor/thor-client/model';
 
 /**
  * Full-Qualified Path
  */
-const FQP = 'packages/sdk/src/thor/thorest/model/Clause.ts!';
+const FQP = 'packages/sdk/src/thor/thorest/model/ClauseData.ts!';
 
 /**
  * Clause request and response data.
  * [Clause](http://localhost:8669/doc/stoplight-ui/#/schemas/Clause)
  */
-class ClauseData {
-    /**
-     * The recipient of the clause. Null indicates contract deployment.
-     */
-    readonly to: Address | null;
-
-    /**
-     * The amount (wei) of VET to be transferred.
-     */
-    readonly value: bigint;
-
-    /**
-     * The input data for the clause (in bytes).
-     */
-    readonly data: Hex | null;
-
-    /**
-     * Constructs an instance representing a transaction or an interaction.
-     *
-     * @param {Address | null} to - The target address of the transaction. Can be null if not specified.
-     * @param {bigint} value - The amount of value associated with the transaction, defined as a bigint.
-     * @param {Hex | null} [data] - Optional hexadecimal data payload. Defaults to null if not provided.
-     * @param {string | null} [comment] - Optional comment or note associated with the transaction. Defaults to null if not provided.
-     * @param {string | null} [abi] - Optional ABI (Application Binary Interface) string defining the structure of the interaction. Defaults to null if not provided.
-     * @return {void} Does not return anything.
-     */
-    constructor(to: Address | null, value: bigint, data: Hex | null) {
-        this.to = to;
-        this.value = value;
-        this.data = data ?? null;
-    }
-
+class ClauseData extends Clause {
     /**
      * Creates a new Clause instance from the given ClauseJSON object.
      *
@@ -68,21 +38,6 @@ class ClauseData {
                 error instanceof Error ? error : undefined
             );
         }
-    }
-
-    /**
-     * Converts the current instance of the class into a ClauseJSON representation.
-     *
-     * No input data is expressed as `0x`.
-     *
-     * @return {ClauseJSON} The JSON object representing the current instance.
-     */
-    toJSON(): ClauseJSON {
-        return {
-            to: this.to !== null ? this.to.toString() : null,
-            value: Quantity.of(this.value).toString(),
-            data: this.data !== null ? this.data.toString() : Hex.PREFIX
-        } satisfies ClauseJSON;
     }
 }
 

@@ -1,24 +1,21 @@
 /* eslint-disable */
 // TODO: This module is pending rework - lint errors will be fixed during refactor
-import { type Abi, type AbiFunction } from 'abitype';
-import { type Signer } from '../../../thor/signer';
-import { Address, Hex, Revision } from '../../../common/vcdm';
-import { type HttpClient } from '@common/http';
 import { AbstractThorModule } from '../AbstractThorModule';
-import { Contract, ContractFactory } from './model';
-import { InspectClauses } from '@thor/thorest/accounts/methods/InspectClauses';
+import { Address, Hex, Revision } from '../../../common/vcdm';
+import { Clause } from '../model/transactions/Clause';
+import { Contract, ContractFactory, SendTransactionResult } from './model';
 import { ExecuteCodesRequest } from '@thor/thorest/accounts/methods/ExecuteCodesRequest';
-import { type ExecuteCodesRequestJSON } from '@thor/thorest/accounts/json';
-import { type ExecuteCodesResponse } from '@thor/thorest/accounts/response';
-import { ClauseBuilder } from '@thor/thor-client/transactions/ClauseBuilder';
+import { IllegalArgumentError } from '../../../common/errors';
+import { InspectClauses } from '@thor/thorest/accounts/methods/InspectClauses';
 import { SendTransaction } from '@thor/thorest/transactions/methods/SendTransaction';
 import { TransactionRequest } from '../model/transactions/TransactionRequest';
-import { Clause } from '../model/transactions/Clause';
-import { IllegalArgumentError } from '../../../common/errors';
 import { log } from '@common/logging';
+import { type Abi, type AbiFunction } from 'abitype';
 import { type AbiParameter, encodeFunctionData } from 'viem';
-import type { ContractCallOptions, ContractCallResult } from './types';
-import type { SendTransactionResult } from './model/SendTransactionResult';
+import { type ContractCallOptions, ContractCallResult } from './types';
+import { type HttpClient } from '@common/http';
+import { type Signer } from '../../../thor/signer';
+import { ClauseBuilder } from '@thor/thor-client/transactions';
 
 // WHOLE MODULE IS IN PENDING TILL MERGED AND REWORKED THE TRANSACTIONS
 // Proper function arguments type using VeChain SDK types
