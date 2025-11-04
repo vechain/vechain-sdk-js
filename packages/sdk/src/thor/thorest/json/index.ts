@@ -12,4 +12,3 @@ export * from './ReceiptMetaJSON';
 export * from './SignedTransactionRequestJSON';
 export * from './TransactionRequestJSON';
 export * from './TransferJSON';
-export * from './TransferJSON';

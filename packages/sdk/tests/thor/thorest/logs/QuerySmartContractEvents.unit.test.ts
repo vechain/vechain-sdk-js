@@ -11,9 +11,9 @@ import { type EventLogsResponseJSON } from '@thor/thorest/json';
 import { expect, jest } from '@jest/globals';
 import type { HttpClient } from '@common/http';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
-import { FilterRangeUnits } from '@thor/thorest/logs/response/FilterRangeRequestUnits';
 import { Address, Hex } from '@common/vcdm';
-import { LogSort } from '@thor/thorest/logs/response/LogSort';
+import { LogSortRequest } from '@thor/thorest/logs/response/LogSortRequest';
+import { FilterRangeRequestUnits } from '@thor/thorest/logs/response/FilterRangeRequestUnits';
 
 const mockHttpClient = <T>(response: T): HttpClient => {
     return {
@@ -39,7 +39,7 @@ describe('QuerySmartContractEvents UNIT tests', () => {
         const status = 400;
         // Valid request, mock error response.
         const request = new EventLogFilterRequest(
-            new FilterRangeRequest(FilterRangeUnits.block, 0, 0)
+            new FilterRangeRequest(FilterRangeRequestUnits.block, 0, 0)
         );
         try {
             const query = new QuerySmartContractEvents(request);
@@ -53,7 +53,11 @@ describe('QuerySmartContractEvents UNIT tests', () => {
 
     test('ok <- askTo - not empty', async () => {
         const filter = new EventLogFilterRequest(
-            new FilterRangeRequest(FilterRangeUnits.block, 17240365, 17289864),
+            new FilterRangeRequest(
+                FilterRangeRequestUnits.block,
+                17240365,
+                17289864
+            ),
             new FilterOptionsRequest(0, 100, true),
             [
                 new EventCriteriaRequest(
@@ -66,7 +70,7 @@ describe('QuerySmartContractEvents UNIT tests', () => {
                     )
                 )
             ],
-            LogSort.asc
+            LogSortRequest.asc
         );
         const expected = [
             {
@@ -100,7 +104,7 @@ describe('QuerySmartContractEvents UNIT tests', () => {
 
     test('ok <- askTo -  empty', async () => {
         const filter = new EventLogFilterRequest(
-            new FilterRangeRequest(FilterRangeUnits.block, 0, 0)
+            new FilterRangeRequest(FilterRangeRequestUnits.block, 0, 0)
         );
         const expected = [] satisfies EventLogsResponseJSON;
         const query = new QuerySmartContractEvents(filter);

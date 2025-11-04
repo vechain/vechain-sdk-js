@@ -6,7 +6,7 @@ export * from './FilterOptionsRequest';
 export * from './FilterRangeRequest';
 export * from './FilterRangeRequestUnits';
 export * from './LogMetaResponse';
-export * from './LogSort';
+export * from './LogSortRequest';
 export * from './TransferCriteriaRequest';
 export * from './TransferLogFilterRequest';
 export * from './TransferLogResponse';
