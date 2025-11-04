@@ -178,7 +178,7 @@ interface ContractCallResult {
     };
 }
 
-// SendTransactionResult is now defined in model/types.ts
+// Transaction methods now return Hex (transaction hash) directly
 
 export type {
     ContractCallOptions,

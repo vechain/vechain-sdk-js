@@ -7,45 +7,14 @@
 
 import { ThorClient } from '../src/thor';
 import { Address } from '../src/common';
-
-// Example ERC-20 Token ABI (simplified)
-const ERC20_ABI = [
-    {
-        type: 'function',
-        name: 'transfer',
-        stateMutability: 'nonpayable',
-        inputs: [
-            { name: 'to', type: 'address', internalType: 'address' },
-            { name: 'amount', type: 'uint256', internalType: 'uint256' }
-        ],
-        outputs: [{ name: '', type: 'bool', internalType: 'bool' }]
-    },
-    {
-        type: 'function',
-        name: 'balanceOf',
-        stateMutability: 'view',
-        inputs: [{ name: 'account', type: 'address', internalType: 'address' }],
-        outputs: [{ name: '', type: 'uint256', internalType: 'uint256' }]
-    },
-    {
-        type: 'function',
-        name: 'approve',
-        stateMutability: 'nonpayable',
-        inputs: [
-            { name: 'spender', type: 'address', internalType: 'address' },
-            { name: 'value', type: 'uint256', internalType: 'uint256' }
-        ],
-        outputs: [{ name: '', type: 'bool', internalType: 'bool' }]
-    }
-] as const; // Important: use 'as const' for proper type inference
+import { ERC20_ABI } from '../src/thor';
+import { VTHO_ADDRESS } from '@vechain/sdk/thor';
 
 async function demonstrateTypeSafety() {
     // Initialize ThorClient
     const thorClient = ThorClient.fromUrl('https://testnet.vechain.org');
 
-    const tokenAddress = Address.of(
-        '0x0000000000000000000000000000456E65726779'
-    );
+    const tokenAddress = Address.of(VTHO_ADDRESS);
 
     // 1. Load contract with typed ABI - this gives you full type safety
     const contract = thorClient.contracts.load(tokenAddress, ERC20_ABI);

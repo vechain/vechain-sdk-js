@@ -21,12 +21,11 @@ import {
     decodeFunctionResult
 } from 'viem';
 import type { ContractCallOptions, ContractCallResult } from './types';
-import type { SendTransactionResult } from './model/SendTransactionResult';
 import { EventLogFilter } from '../model/logs/EventLogFilter';
 import { EventCriteria } from '../model/logs/EventCriteria';
 import { FilterRange } from '../model/logs/FilterRange';
 import { FilterRangeUnits } from '../model/logs/FilterRangeUnits';
-import { QuerySmartContractEvents } from '@thor/thorest';
+import { QuerySmartContractEvents, type EventLogResponse } from '@thor/thorest';
 import { type TransactionReceipt } from '../model/transactions/TransactionReceipt';
 import { type WaitForTransactionReceiptOptions } from '../model/transactions/WaitForTransactionReceiptOptions';
 
@@ -353,7 +352,7 @@ class ContractsModule extends AbstractThorModule {
      * @param functionAbi - The ABI of the function to call.
      * @param functionData - The arguments to pass to the function.
      * @param options - Optional transaction options including gas, value, etc.
-     * @returns A Promise that resolves to the transaction result.
+     * @returns A Promise that resolves to the transaction hash.
      */
     public async executeTransaction(
         signer: Signer,
@@ -362,7 +361,7 @@ class ContractsModule extends AbstractThorModule {
         functionData: FunctionArgs,
         transactionRequest?: TransactionRequest,
         value?: bigint
-    ): Promise<SendTransactionResult> {
+    ): Promise<Hex> {
         try {
             // Build the clause for the contract function call
             const clause = ClauseBuilder.callFunction(
@@ -402,13 +401,7 @@ class ContractsModule extends AbstractThorModule {
                     encodedTransaction
                 );
 
-            return {
-                id: transactionId.toString(),
-                wait: async () =>
-                    await this.thorClient.transactions.waitForTransactionReceipt(
-                        transactionId
-                    )
-            };
+            return transactionId;
         } catch (error) {
             throw new IllegalArgumentError(
                 'ContractsModule.executeTransaction',
@@ -522,7 +515,7 @@ class ContractsModule extends AbstractThorModule {
         }[],
         signer: Signer,
         transactionRequest?: TransactionRequest
-    ): Promise<SendTransactionResult> {
+    ): Promise<Hex> {
         try {
             // Build multiple clauses for a single transaction
             const transactionClauses: (
@@ -577,13 +570,7 @@ class ContractsModule extends AbstractThorModule {
                     encodedTransaction
                 );
 
-            return {
-                id: transactionId.toString(),
-                wait: async () =>
-                    await this.thorClient.transactions.waitForTransactionReceipt(
-                        transactionId
-                    )
-            };
+            return transactionId;
         } catch (error) {
             throw new IllegalArgumentError(
                 'ContractsModule.executeMultipleClausesTransaction',
@@ -729,9 +716,9 @@ class ContractsModule extends AbstractThorModule {
             const resp = await query.askTo(this.httpClient);
 
             // Transform the response to match the expected format
-            return resp.response.map((log: any) => ({
+            return resp.response.map((log: EventLogResponse) => ({
                 address: log.address.toString(),
-                topics: log.topics.map((t: any) => t.toString()),
+                topics: log.topics.map((topic) => topic.toString()),
                 data: log.data.toString(),
                 blockNumber: log.meta.blockNumber,
                 transactionHash: log.meta.txID.toString()

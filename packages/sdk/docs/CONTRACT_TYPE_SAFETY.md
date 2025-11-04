@@ -52,8 +52,8 @@ contract.read.balanceOf(address); // Returns: Promise<bigint>
 contract.read.totalSupply(); // Returns: Promise<bigint>
 
 // Write methods (payable/nonpayable functions)
-contract.transact.transfer(to, amount); // Returns: Promise<SendTransactionResult>
-contract.write.approve(spender, value); // Returns: Promise<SendTransactionResult>
+contract.transact.transfer(to, amount); // Returns: Promise<Hex>
+contract.write.approve(spender, value); // Returns: Promise<Hex>
 
 // Event filters
 contract.filters.Transfer(from, to); // Returns: { address, topics }
