@@ -214,7 +214,9 @@ interface SendTransactionResult {
      */
     id: string;
 
-    wait: (options?: WaitForTransactionOptions) => Promise<TransactionReceipt | null>;
+    wait: (
+        options?: WaitForTransactionOptions
+    ) => Promise<TransactionReceipt | null>;
 }
 
 /**

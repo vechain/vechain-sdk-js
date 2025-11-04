@@ -30,7 +30,6 @@ import {
     BUILT_IN_CONTRACTS,
     ERROR_SELECTOR,
     PANIC_SELECTOR,
-    Poll,
     thorest,
     vnsUtils
 } from '../../utils';
