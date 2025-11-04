@@ -1,11 +1,6 @@
 export { Contract } from './contract';
 export { ContractFactory } from './contract-factory';
-export {
-    ERC20ClauseBuilder,
-    VET_TOKEN_ADDRESS,
-    VTHO_TOKEN_ADDRESS,
-    TokenUnits
-} from './ERC20ClauseBuilder';
+export { ERC20ClauseBuilder, TokenUnits } from './ERC20ClauseBuilder';
 export {
     createVET,
     createVTHO,
