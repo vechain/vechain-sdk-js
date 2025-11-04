@@ -1,7 +1,7 @@
 {
   "name": "@vechain/sdk",
-  "version": "2.0.0-beta.1",
-  "description": "This module is crafted for dApp development and various blockchain operations that seamlessly unfold offline",
+  "version": "3.0.0-beta.1",
+  "description": "VeChain SDK for Thor blockchain, for JavaScript and TypeScript development",
   "author": "VeChain Foundation",
   "license": "MIT",
   "homepage": "https://github.com/vechain/vechain-sdk-js",
@@ -11,10 +11,10 @@
   },
   "keywords": [
     "VeChain",
-    "contract",
-    "encoding",
-    "certificate",
-    "bloom"
+    "thor",
+    "blockchain",
+    "dapp",
+    "web3"
   ],
   "exports": {
     "./common": {

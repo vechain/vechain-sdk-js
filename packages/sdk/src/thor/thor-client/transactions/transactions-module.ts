@@ -6,19 +6,29 @@ import {
     type SimulateTransactionOptions,
     ClauseSimulationResult,
     type GetTransactionReceiptOptions,
-    TransactionReceipt
+    TransactionReceipt,
+    type WaitForTransactionReceiptOptions
 } from '@thor/thor-client/model/transactions';
 import { AbstractThorModule } from '../AbstractThorModule';
-import { Revision, type Hex } from '@common/vcdm';
+import { Hex, Revision } from '@common/vcdm';
 import {
     type ExecuteCodeResponse,
     ExecuteCodesRequest,
     InspectClauses,
     RetrieveRawTransactionByID,
     RetrieveTransactionByID,
-    RetrieveTransactionReceipt
+    RetrieveTransactionReceipt,
+    SendTransaction
 } from '@thor/thorest';
+import { TransactionRequestRLPCodec } from '../rlp/TransactionRequestRLPCodec';
+import { type TransactionRequest } from '@thor/thor-client/model/transactions/TransactionRequest';
+import { IllegalArgumentError, TimeoutError } from '@common/errors';
+import { waitUntil, type WaitUntilOptions } from '@common/utils/poller';
 
+/**
+ * The transactions module of the VeChain Thor blockchain.
+ * It allows to retrieve transactions and their receipts
+ */
 class TransactionsModule extends AbstractThorModule {
     /**
      * Retrieves a transaction by its ID.
@@ -29,11 +39,11 @@ class TransactionsModule extends AbstractThorModule {
      */
     public async getTransaction(
         id: Hex,
-        options: GetTransactionOptions
+        options?: GetTransactionOptions
     ): Promise<Transaction | null> {
         const request = RetrieveTransactionByID.of(id)
-            .withPending(options.pending)
-            .withHead(options.head);
+            .withPending(options?.pending)
+            .withHead(options?.head);
         const thorResponse = await request.askTo(this.httpClient);
         return thorResponse.response !== null
             ? new Transaction(thorResponse.response)
@@ -105,6 +115,94 @@ class TransactionsModule extends AbstractThorModule {
         return thorResponse.response !== null
             ? TransactionReceipt.of(thorResponse.response)
             : null;
+    }
+
+    /**
+     * Submits a raw signed, RLP encoded transaction to the thor network.
+     * @param rawTx - The raw encoded transaction to send.
+     * @returns The transaction ID.
+     */
+    public async sendRawTransaction(rawTx: Hex): Promise<Hex> {
+        // Decode the raw transaction to check if it is valid
+        TransactionRequestRLPCodec.decode(rawTx.bytes);
+        // Send the transaction to the network
+        const method = SendTransaction.of(rawTx.bytes);
+        const thorResponse = await method.askTo(this.httpClient);
+        const txId = thorResponse.response.id;
+        return txId;
+    }
+
+    /**
+     * Sends a signed transaction request to the thor network.
+     * @param txRequest Signed transaction request to send.
+     * @returns The transaction ID.
+     */
+    public async sendTransaction(txRequest: TransactionRequest): Promise<Hex> {
+        // encode the transaction request
+        const encoded = TransactionRequestRLPCodec.encode(txRequest);
+        const encodedHex = Hex.of(encoded);
+        // send the transaction to the network
+        return await this.sendRawTransaction(encodedHex);
+    }
+
+    /**
+     * Waits for the transaction receipt to exist
+     * @param transactionId - Id of the transaction to wait for its receipt
+     * @param options - Timeout and polling options
+     * @returns The transaction receipt or null if still not available
+     * @throws {IllegalArgumentError} If the intervalMs or timeoutMs are invalid
+     * @throws {TimeoutError} If the transaction receipt is not found within the timeout period
+     */
+    public async waitForTransactionReceipt(
+        transactionId: Hex,
+        options?: WaitForTransactionReceiptOptions
+    ): Promise<TransactionReceipt | null> {
+        // check options
+        if (options?.intervalMs !== undefined && options?.intervalMs <= 0) {
+            throw new IllegalArgumentError(
+                'waitForTransactionReceipt(options.intervalMs)',
+                'intervalMs must be greater than zero',
+                { intervalMs: options.intervalMs }
+            );
+        }
+        if (options?.timeoutMs !== undefined && options?.timeoutMs <= 0) {
+            throw new IllegalArgumentError(
+                'waitForTransactionReceipt(options.timeoutMs)',
+                'timeoutMs must be greater than zero',
+                { timeoutMs: options.timeoutMs }
+            );
+        }
+        if (
+            options?.timeoutMs !== undefined &&
+            options?.intervalMs !== undefined &&
+            options?.timeoutMs < options?.intervalMs
+        ) {
+            throw new IllegalArgumentError(
+                'waitForTransactionReceipt(options.timeoutMs, options.intervalMs)',
+                'timeoutMs must be greater than or equal to intervalMs',
+                { timeoutMs: options.timeoutMs, intervalMs: options.intervalMs }
+            );
+        }
+        // setup for polling
+        const waitOptions: WaitUntilOptions<TransactionReceipt | null> = {
+            task: async () => this.getTransactionReceipt(transactionId),
+            predicate: (receipt: TransactionReceipt | null): boolean => {
+                return receipt !== null;
+            },
+            intervalMs: options?.intervalMs ?? 1000,
+            timeoutMs: options?.timeoutMs ?? 30000
+        };
+        try {
+            return await waitUntil(waitOptions);
+        } catch (error) {
+            if (error instanceof TimeoutError) {
+                throw new TimeoutError(
+                    'waitForTransactionReceipt(transactionId, options)',
+                    'Transaction receipt not found within the timeout period'
+                );
+            }
+            throw error;
+        }
     }
 }
 

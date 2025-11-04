@@ -89,7 +89,7 @@ describe('PrivateKeySigner SOLO test', () => {
             gas: mockGas,
             maxFeePerGas: mockMaxFeePerGas,
             maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
-            nonce: mockNonce
+            nonce: mockNonce + 1
         });
         // Sign as Sender. Partial signature.
         const originSigner = new PrivateKeySigner(
@@ -135,7 +135,7 @@ describe('PrivateKeySigner SOLO test', () => {
             gas: mockGas,
             maxFeePerGas: mockMaxFeePerGas,
             maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
-            nonce: mockNonce
+            nonce: mockNonce + 2
         });
         // Sign as Gas Payer. Partial signature.
         const gasPayerSigner = new PrivateKeySigner(
@@ -179,7 +179,7 @@ describe('PrivateKeySigner SOLO test', () => {
             expiration: mockExpiration,
             gas: mockGas,
             gasPriceCoef: mockGasPriceCoef,
-            nonce: mockNonce
+            nonce: mockNonce + 3
         });
         // Sign as Sender. Finalized signature.
         const signer = new PrivateKeySigner(
@@ -217,7 +217,7 @@ describe('PrivateKeySigner SOLO test', () => {
             expiration: mockExpiration,
             gas: mockGas,
             gasPriceCoef: mockGasPriceCoef,
-            nonce: mockNonce
+            nonce: mockNonce + 4
         });
         expect(txRequest.isSigned).toBe(false);
         // Sign as Sender. Partial signature.
@@ -261,7 +261,7 @@ describe('PrivateKeySigner SOLO test', () => {
             expiration: mockExpiration,
             gas: mockGas,
             gasPriceCoef: mockGasPriceCoef,
-            nonce: mockNonce
+            nonce: mockNonce + 5
         });
         expect(txRequest.isSigned).toBe(false);
         // Sign as Gas Payer. Partial signature.

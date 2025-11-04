@@ -1,22 +1,21 @@
 /* eslint-disable */
 // TODO: This module is pending rework - lint errors will be fixed during refactor
-import { type Abi, type AbiFunction } from 'abitype';
-import { type Signer } from '../../../thor/signer';
-import { Address, Hex, Revision } from '../../../common/vcdm';
-import { type HttpClient } from '@common/http';
 import { AbstractThorModule } from '../AbstractThorModule';
-import { Contract, ContractFactory } from './model';
-import { InspectClauses } from '@thor/thorest/accounts/methods/InspectClauses';
+import { Address, Hex, Revision } from '../../../common/vcdm';
+import { Clause } from '../model/transactions/Clause';
+import { Contract, ContractFactory, SendTransactionResult } from './model';
 import { ExecuteCodesRequest } from '@thor/thorest/accounts/methods/ExecuteCodesRequest';
-import { ClauseBuilder } from '@thor/thor-client/model/transactions/ClauseBuilder';
+import { IllegalArgumentError } from '../../../common/errors';
+import { InspectClauses } from '@thor/thorest/accounts/methods/InspectClauses';
 import { SendTransaction } from '@thor/thorest/transactions/methods/SendTransaction';
 import { TransactionRequest } from '../model/transactions/TransactionRequest';
-import { Clause } from '../model/transactions/Clause';
-import { IllegalArgumentError } from '../../../common/errors';
 import { log } from '@common/logging';
+import { type Abi, type AbiFunction } from 'abitype';
 import { type AbiParameter, encodeFunctionData } from 'viem';
-import type { ContractCallOptions, ContractCallResult } from './types';
-import type { SendTransactionResult } from './model/types';
+import { type ContractCallOptions, ContractCallResult } from './types';
+import { type HttpClient } from '@common/http';
+import { type Signer } from '../../../thor/signer';
+import { ClauseBuilder } from '@thor/thor-client/transactions';
 
 // WHOLE MODULE IS IN PENDING TILL MERGED AND REWORKED THE TRANSACTIONS
 // Proper function arguments type using VeChain SDK types
@@ -221,7 +220,13 @@ class ContractsModule extends AbstractThorModule {
                 message: 'Creating InspectClauses with request',
                 context: { request: request.toJSON() }
             });
-            const inspectClauses = InspectClauses.of(request);
+            let inspectClauses = InspectClauses.of(request);
+
+            // Apply revision if provided
+            if (options?.revision) {
+                inspectClauses = inspectClauses.withRevision(options.revision);
+            }
+
             log.debug({
                 message: 'InspectClauses created successfully'
             });
@@ -339,7 +344,7 @@ class ContractsModule extends AbstractThorModule {
     ): Promise<SendTransactionResult> {
         try {
             // Build the clause for the contract function call
-            const clauseBuilder = ClauseBuilder.callFunction(
+            const clause = ClauseBuilder.callFunction(
                 Address.of(contractAddress),
                 [functionAbi],
                 functionAbi.name,
@@ -347,16 +352,7 @@ class ContractsModule extends AbstractThorModule {
                 value ?? 0n
             );
 
-            // Convert ClauseBuilder to Clause
-            const clause = new Clause(
-                clauseBuilder.to,
-                clauseBuilder.value,
-                clauseBuilder.data,
-                clauseBuilder.comment ?? null,
-                clauseBuilder.abi ?? null
-            );
-
-            // Use the provided TransactionRequest or create a default one
+            // Use provided TransactionRequest or create a default one
             const finalTransactionRequest = transactionRequest
                 ? new TransactionRequest({
                       ...transactionRequest,
@@ -518,21 +514,13 @@ class ContractsModule extends AbstractThorModule {
                     clause.functionAbi &&
                     clause.functionData
                 ) {
-                    const clauseBuilder = ClauseBuilder.callFunction(
+                    // ClauseBuilder.callFunction already returns a Clause instance
+                    return ClauseBuilder.callFunction(
                         Address.of(clause.contractAddress),
                         [clause.functionAbi],
                         clause.functionAbi.name,
                         clause.functionData,
                         clause.value ?? 0n
-                    );
-
-                    // Convert ClauseBuilder to Clause
-                    return new Clause(
-                        clauseBuilder.to,
-                        clauseBuilder.value,
-                        clauseBuilder.data,
-                        clauseBuilder.comment ?? null,
-                        clauseBuilder.abi ?? null
                     );
                 }
                 return clause;

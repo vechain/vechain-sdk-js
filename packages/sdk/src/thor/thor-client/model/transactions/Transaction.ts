@@ -85,7 +85,7 @@ class Transaction {
     /**
      * Transaction metadata such as block number, block timestamp, etc.
      */
-    readonly meta: TransactionMeta;
+    readonly meta: TransactionMeta | null;
 
     /**
      * Creates a new Transaction instance.
@@ -107,7 +107,7 @@ class Transaction {
         this.gas = data.gas;
         this.dependsOn = data.dependsOn;
         this.nonce = data.nonce;
-        this.meta = new TransactionMeta(data.meta);
+        this.meta = data.meta !== null ? new TransactionMeta(data.meta) : null;
     }
 }
 

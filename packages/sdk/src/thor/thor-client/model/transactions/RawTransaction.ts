@@ -14,14 +14,14 @@ class RawTransaction {
     /**
      * The transaction metadata.
      */
-    meta: TransactionMeta;
+    meta: TransactionMeta | null;
 
     /**
      * Constructs a new RawTransaction instance.
      * @param raw - The raw transaction hex.
      * @param meta - The transaction metadata.
      */
-    constructor(raw: HexUInt, meta: TransactionMeta) {
+    constructor(raw: HexUInt, meta: TransactionMeta | null) {
         this.raw = raw;
         this.meta = meta;
     }
@@ -34,7 +34,7 @@ class RawTransaction {
     static of(response: GetRawTxResponse): RawTransaction {
         return new RawTransaction(
             response.raw,
-            new TransactionMeta(response.meta)
+            response.meta !== null ? new TransactionMeta(response.meta) : null
         );
     }
 }

@@ -1,6 +1,4 @@
 export * from './Clause';
-export * from './ClauseBuilder';
-export * from './ClauseOptions';
 export * from './TransactionRequest';
 export * from './TransactionMeta';
 export * from './Transaction';
@@ -12,3 +10,4 @@ export * from './GetTransactionReceiptOptions';
 export * from './TransactionReceipt';
 export * from './TransactionReceiptMeta';
 export * from './TransactionReceiptOutput';
+export * from './WaitForTransactionReceiptOptions';

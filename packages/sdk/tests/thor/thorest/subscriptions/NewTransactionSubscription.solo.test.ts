@@ -1,14 +1,17 @@
-import { afterEach, beforeEach, describe, test } from '@jest/globals';
+import { Address, BlockRef, HexUInt, Revision } from '@common/vcdm';
+import { FetchHttpClient } from '@common/http';
 import { MozillaWebSocketClient, type WebSocketListener } from '@thor/ws';
 import { NewTransactionSubscription } from '@thor/thorest/subscriptions';
-import { RetrieveExpandedBlock, ThorNetworks, type TXID } from '@thor/thorest';
-import { FetchHttpClient } from '@common/http';
-import { Address, BlockRef, HexUInt, Revision } from '@common/vcdm';
 import { ThorClient } from '@thor/thor-client/ThorClient';
-import log from 'loglevel';
-import fastJsonStableStringify from 'fast-json-stable-stringify';
-import { ClauseBuilder, TransactionRequest } from '@thor/thor-client';
-import { PrivateKeySigner } from '@thor';
+import { afterEach, beforeEach, describe, test } from '@jest/globals';
+import { fastJsonStableStringify } from 'fast-json-stable-stringify';
+import { log } from 'loglevel';
+import {
+    ClauseBuilder,
+    RetrieveExpandedBlock,
+    ThorNetworks,
+    type TXID
+} from '@thor/thorest';
 
 /**
  * VeChain beats subscription - solo
@@ -46,10 +49,11 @@ describe('NewTransactionSubscription solo tests', () => {
                 onOpen: () => {
                     // Trigger a tx so that txpool emits a message
                     void (async () => {
-                        const transferClause = ClauseBuilder.transferVET(
-                            Address.of(toAddress),
-                            1n // minimal amount
-                        );
+                        const transferClause =
+                            ClauseBuilder.getTransferVetClause(
+                                Address.of(toAddress),
+                                1n // minimal amount
+                            );
 
                         const latestBlock = (
                             await RetrieveExpandedBlock.of(Revision.BEST).askTo(

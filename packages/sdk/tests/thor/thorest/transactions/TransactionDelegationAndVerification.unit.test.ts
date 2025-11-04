@@ -1,16 +1,17 @@
-import { describe, expect, test } from '@jest/globals';
 import { Address, Blake2b256, BlockRef, HexUInt } from '@common/vcdm';
+import { ClauseBuilder } from '@thor/thor-client/transactions';
+import { PrivateKeySigner } from '@thor';
 import { Secp256k1 } from '@common/cryptography/secp256k1';
+import { TransactionRequest } from '@thor/thor-client';
+import { concatBytes } from '@noble/curves/utils.js';
+import { describe, expect, test } from '@jest/globals';
+import { mockHttpClient } from '../../../MockHttpClient';
+import { secp256k1 as nc_secp256k1 } from '@noble/curves/secp256k1';
+import { type HttpPath } from '@common/http';
 import {
     type GetTxReceiptResponseJSON,
     type TXIDJSON
 } from '@thor/thorest/json';
-import { type HttpPath } from '@common/http';
-import { mockHttpClient } from '../../../MockHttpClient';
-import { secp256k1 as nc_secp256k1 } from '@noble/curves/secp256k1';
-import { ClauseBuilder, TransactionRequest } from '@thor/thor-client';
-import { PrivateKeySigner } from '@thor';
-import { concatBytes } from '@noble/curves/utils';
 
 /**
  * VeChain transaction - unit
@@ -36,7 +37,9 @@ describe('unit tests', () => {
     const mockChainTag = 0xf6;
 
     const OneVET = 10n ** 18n;
-    const clauses = [ClauseBuilder.transferVET(receiver.address, OneVET)];
+    const clauses = [
+        ClauseBuilder.getTransferVetClause(receiver.address, OneVET)
+    ];
 
     test('Delegated Tx', async () => {
         const mockBlockResponse = {

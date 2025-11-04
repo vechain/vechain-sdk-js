@@ -1,18 +1,15 @@
-import {
-    RetrieveExpandedBlock,
-    SendTransaction,
-    TXID
-} from '@thor/thorest';
+import { Address, BlockRef, HexUInt, Revision } from '@common/vcdm';
+import { ClauseBuilder } from '@thor/thor-client/transactions';
+import { PrivateKeySigner } from '@thor';
+import { RetrieveExpandedBlock, SendTransaction, TXID } from '@thor/thorest';
+import { TEST_ACCOUNTS } from '../../../fixture';
+import { TransactionRequest } from '@thor/thor-client';
+import { expect } from '@jest/globals';
+import { mockHttpClient } from '../../../MockHttpClient';
 import {
     type RegularBlockResponseJSON,
     type TXIDJSON
 } from '@thor/thorest/json';
-import { Address, BlockRef, HexUInt, Revision } from '@common/vcdm';
-import { TEST_ACCOUNTS } from '../../../fixture';
-import { expect } from '@jest/globals';
-import { mockHttpClient } from '../../../MockHttpClient';
-import { ClauseBuilder, TransactionRequest } from '@thor/thor-client';
-import { PrivateKeySigner } from '@thor';
 
 const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
 
@@ -57,7 +54,7 @@ describe('RetrieveTransactionReceipt UNIT tests', () => {
             )
         ).response;
         expect(latestBlock).toBeDefined();
-        const transferClause = ClauseBuilder.transferVET(
+        const transferClause = ClauseBuilder.getTransferVetClause(
             Address.of(TRANSACTION_RECEIVER.address),
             OneVET
         );

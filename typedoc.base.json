@@ -1,15 +1,20 @@
 {
-    "$schema": "https://typedoc.org/schema.json",
-    "compilerOptions":{
-      "strictNullChecks": false
-    },
-    "skipErrorChecking": true,
-    "excludeExternals": true,
-    "exclude": [ "**/*+(index|.spec|.e2e|test).ts" ],
-    "externalPattern": [
-      "**/node_modules/**"
-    ],
-    "readme": "none",
-    "excludePrivate": true,
-    "excludeInternal": true
+  "$schema": "https://typedoc.org/schema.json",
+  "compilerOptions": { "strictNullChecks": false },
+  "skipErrorChecking": true,
+  "excludeExternals": true,
+  "exclude": [
+    "**/*index.ts",
+    "**/*.spec.ts",
+    "**/*.e2e.ts",
+    "**/*test.ts",
+    "**/*JSON.ts"
+  ],
+  "externalPattern": ["**/node_modules/**"],
+  "readme": "none",
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "validation": {
+    "notDocumented": false
+  }
 }

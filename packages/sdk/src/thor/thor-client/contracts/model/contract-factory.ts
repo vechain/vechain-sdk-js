@@ -1,15 +1,16 @@
 /* eslint-disable */
 // TODO: Contracts module is pending rework - lint errors will be fixed during refactor
-import type { Abi, AbiParameter } from 'abitype';
-import { type Signer } from '@thor/signer';
-import { HexUInt } from '@common/vcdm';
-import { IllegalArgumentError } from '@common/errors';
-import { ClauseBuilder } from '@thor/thor-client/model/transactions/ClauseBuilder';
-import type { SimulateTransactionOptions } from '../types';
-import type { TransactionRequest } from '../../model/transactions/TransactionRequest';
-import type { ContractsModule } from '../contracts-module';
 import { Contract } from './contract';
 import { Hex } from 'viem';
+import { HexUInt } from '@common/vcdm';
+import { IllegalArgumentError } from '@common/errors';
+import { type Abi, AbiParameter } from 'abitype';
+import { type ContractsModule } from '../contracts-module';
+import { type Signer } from '@thor/signer';
+import { type SimulateTransactionOptions } from '../types';
+import { type TransactionRequest } from '../../model/transactions/TransactionRequest';
+import { Clause } from '@thor';
+import { ClauseBuilder } from '@thor/thor-client/transactions';
 
 // Proper function arguments type using VeChain SDK types
 type FunctionArgs = AbiParameter[];
@@ -77,7 +78,7 @@ class ContractFactory<TAbi extends Abi> {
     public createDeploymentClause(
         constructorArgs: FunctionArgs = [],
         options?: { comment?: string }
-    ): ClauseBuilder {
+    ): Clause {
         try {
             // 1. Convert bytecode to HexUInt (VeChain format)
             const contractBytecode = HexUInt.of(this.bytecode);
@@ -113,11 +114,7 @@ class ContractFactory<TAbi extends Abi> {
             }
 
             // 4. Create and return deployment clause using VeChain's official ClauseBuilder
-            return ClauseBuilder.deployContract(
-                contractBytecode,
-                deployParams,
-                options?.comment ? { comment: options.comment } : undefined
-            );
+            return ClauseBuilder.deployContract(contractBytecode, deployParams);
         } catch (error) {
             if (error instanceof Error) {
                 throw new IllegalArgumentError(
@@ -192,8 +189,7 @@ class ContractFactory<TAbi extends Abi> {
             // 4. Create deployment clause using VeChain's official ClauseBuilder
             const deployClause = ClauseBuilder.deployContract(
                 contractBytecode,
-                deployParams,
-                undefined // Comment can be added to TransactionRequest if needed
+                deployParams
             );
 
             // 5. Create and send transaction using ThorClient
@@ -285,8 +281,7 @@ class ContractFactory<TAbi extends Abi> {
 
             const deployClause = ClauseBuilder.deployContract(
                 contractBytecode,
-                deployParams,
-                options?.comment ? { comment: options.comment } : undefined
+                deployParams
             );
 
             // 2. TODO: Use ThorClient to estimate gas for the deployment clause
@@ -383,8 +378,7 @@ class ContractFactory<TAbi extends Abi> {
 
             const deployClause = ClauseBuilder.deployContract(
                 contractBytecode,
-                deployParams,
-                undefined // Comment is not part of simulation options
+                deployParams
             );
 
             // 2. TODO: Use ThorClient to simulate the deployment clause

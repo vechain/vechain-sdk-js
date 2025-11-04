@@ -15,14 +15,12 @@ import type {
     AbiParametersToPrimitiveTypes
 } from 'abitype';
 import type { Contract } from './contract';
-import type {
-    ContractClauseOptions,
-    ContractFunctionClause,
-    ContractFunctionCriteria,
-    ContractFunctionFilter,
-    ContractFunctionRead,
-    ContractFunctionTransact
-} from './types';
+import type { ContractClauseOptions } from './ContractClauseOptions';
+import type { ContractFunctionClause } from './ContractFunctionClause';
+import type { ContractFunctionCriteria } from './ContractFunctionCriteria';
+import type { ContractFunctionFilter } from './ContractFunctionFilter';
+import type { ContractFunctionRead } from './ContractFunctionRead';
+import type { ContractFunctionTransact } from './ContractFunctionTransact';
 
 /**
  * Extracts and removes additional options from function arguments
