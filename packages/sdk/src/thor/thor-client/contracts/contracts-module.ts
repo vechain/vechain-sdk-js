@@ -383,9 +383,10 @@ class ContractsModule extends AbstractThorModule {
 
             return {
                 id: response.response.id.toString(),
-                wait: async () =>
-                    await this.waitForTransaction(
-                        Hex.of(response.response.id.toString())
+                wait: async (options) =>
+                    await this.thorClient.transactions.waitForTransactionReceipt(
+                        Hex.of(response.response.id.toString()),
+                        options
                     )
             };
         } catch (error) {
@@ -557,9 +558,10 @@ class ContractsModule extends AbstractThorModule {
 
             return {
                 id: response.response.id.toString(),
-                wait: async () =>
-                    await this.waitForTransaction(
-                        Hex.of(response.response.id.toString())
+                wait: async (options) =>
+                    await this.thorClient.transactions.waitForTransactionReceipt(
+                        Hex.of(response.response.id.toString()),
+                        options
                     )
             };
         } catch (error) {
@@ -578,30 +580,6 @@ class ContractsModule extends AbstractThorModule {
         }
     }
 
-    //PENDING comment to remove when the same function is in the transaction module
-    /**
-     * Waits for a transaction to be confirmed on the blockchain.
-     *
-     * @param transactionId - The transaction ID to wait for
-     * @returns Promise that resolves when the transaction is confirmed
-     */
-    private async waitForTransaction(
-        transactionId: Hex
-    ): Promise<{ id: string; blockNumber: number; blockHash: string }> {
-        // This is a placeholder implementation
-        // In a full implementation, this would poll the blockchain for transaction confirmation
-        return new Promise((resolve) => {
-            setTimeout(
-                () =>
-                    resolve({
-                        id: transactionId.toString(),
-                        blockNumber: 0,
-                        blockHash: '0x'
-                    }),
-                1000
-            );
-        });
-    }
 
     // PENDING
     /**
