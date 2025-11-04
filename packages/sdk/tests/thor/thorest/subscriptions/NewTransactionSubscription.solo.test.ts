@@ -4,14 +4,12 @@ import { MozillaWebSocketClient, type WebSocketListener } from '@thor/ws';
 import { NewTransactionSubscription } from '@thor/thorest/subscriptions';
 import { ThorClient } from '@thor/thor-client/ThorClient';
 import { afterEach, beforeEach, describe, test } from '@jest/globals';
-import { fastJsonStableStringify } from 'fast-json-stable-stringify';
-import { log } from 'loglevel';
-import {
-    ClauseBuilder,
-    RetrieveExpandedBlock,
-    ThorNetworks,
-    type TXID
-} from '@thor/thorest';
+import { RetrieveExpandedBlock, ThorNetworks, type TXID } from '@thor/thorest';
+import { ClauseBuilder } from '@thor/thor-client/transactions';
+import { TransactionRequest } from '@thor/thor-client';
+import { PrivateKeySigner } from '@thor';
+import fastJsonStableStringify from 'fast-json-stable-stringify';
+import { log } from '@common/logging';
 
 /**
  * VeChain beats subscription - solo
@@ -39,7 +37,7 @@ describe('NewTransactionSubscription solo tests', () => {
             .addListener({
                 onMessage: (message) => {
                     const data = message.data;
-                    log.debug(fastJsonStableStringify(data));
+                    log.debug({ message: fastJsonStableStringify(data) });
                     if (fallbackTimer != null) clearTimeout(fallbackTimer);
                     subscription.close();
                     done();
