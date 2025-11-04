@@ -219,12 +219,10 @@ describe('ThorClient - Transactions Module', () => {
             // Create a mock SendTransactionResult
             const mockSendResult = {
                 id: nonExistentTxId,
-                wait: async (
-                    options?: {
-                        timeoutMs?: number;
-                        intervalMs?: number;
-                    }
-                ): Promise<TransactionReceipt | null> => {
+                wait: async (options?: {
+                    timeoutMs?: number;
+                    intervalMs?: number;
+                }): Promise<TransactionReceipt | null> => {
                     return await thorSoloClient.transactions.waitForTransaction(
                         nonExistentTxId,
                         options
@@ -253,12 +251,10 @@ describe('ThorClient - Transactions Module', () => {
 
             const mockSendResult = {
                 id: nonExistentTxId,
-                wait: async (
-                    options?: {
-                        timeoutMs?: number;
-                        intervalMs?: number;
-                    }
-                ): Promise<TransactionReceipt | null> => {
+                wait: async (options?: {
+                    timeoutMs?: number;
+                    intervalMs?: number;
+                }): Promise<TransactionReceipt | null> => {
                     return await thorSoloClient.transactions.waitForTransaction(
                         nonExistentTxId,
                         options
