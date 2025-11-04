@@ -10,7 +10,11 @@ import {
 import { TEST_ACCOUNTS } from '../../fixture';
 import { HexUInt, Transaction } from '@vechain/sdk-core';
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { THOR_SOLO_URL, ThorClient } from '../../../src';
+import {
+    THOR_SOLO_URL,
+    ThorClient,
+    type TransactionReceipt
+} from '../../../src';
 import { retryOperation } from '../../test-utils';
 
 /**
@@ -209,12 +213,18 @@ describe('ThorClient - Transactions Module', () => {
          */
         test('wait() should use default timeout of 30 seconds when no options provided', async () => {
             // Use a non-existent transaction ID to test timeout
-            const nonExistentTxId = '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
-            
+            const nonExistentTxId =
+                '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
+
             // Create a mock SendTransactionResult
             const mockSendResult = {
                 id: nonExistentTxId,
-                wait: async (options?: { timeoutMs?: number; intervalMs?: number }) => {
+                wait: async (
+                    options?: {
+                        timeoutMs?: number;
+                        intervalMs?: number;
+                    }
+                ): Promise<TransactionReceipt | null> => {
                     return await thorSoloClient.transactions.waitForTransaction(
                         nonExistentTxId,
                         options
@@ -228,7 +238,7 @@ describe('ThorClient - Transactions Module', () => {
 
             // Should return null due to timeout
             expect(receipt).toBeNull();
-            
+
             // Should have taken approximately 30 seconds (with tolerance)
             expect(endTime - startTime).toBeGreaterThanOrEqual(29000);
             expect(endTime - startTime).toBeLessThan(35000);
@@ -238,11 +248,17 @@ describe('ThorClient - Transactions Module', () => {
          * Test that wait() times out correctly with custom timeout
          */
         test('wait() should timeout correctly with custom timeout options', async () => {
-            const nonExistentTxId = '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
-            
+            const nonExistentTxId =
+                '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
+
             const mockSendResult = {
                 id: nonExistentTxId,
-                wait: async (options?: { timeoutMs?: number; intervalMs?: number }) => {
+                wait: async (
+                    options?: {
+                        timeoutMs?: number;
+                        intervalMs?: number;
+                    }
+                ): Promise<TransactionReceipt | null> => {
                     return await thorSoloClient.transactions.waitForTransaction(
                         nonExistentTxId,
                         options
