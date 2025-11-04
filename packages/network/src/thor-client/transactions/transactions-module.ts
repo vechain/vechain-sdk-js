@@ -259,8 +259,8 @@ class TransactionsModule {
 
         return {
             id: transactionResult.id,
-            wait: async () =>
-                await this.waitForTransaction(transactionResult.id)
+            wait: async (options?: WaitForTransactionOptions) =>
+                await this.waitForTransaction(transactionResult.id, options)
         };
     }
 
@@ -311,22 +311,12 @@ class TransactionsModule {
             );
         }
 
-        // If no timeout is specified, use the original polling behavior
-        if (options?.timeoutMs === undefined) {
-            return await Poll.SyncPoll(
-                async () => await this.getTransactionReceipt(txID),
-                {
-                    requestIntervalInMilliseconds: options?.intervalMs,
-                    maximumWaitingTimeInMilliseconds: options?.timeoutMs
-                }
-            ).waitUntil((result) => {
-                return result !== null;
-            });
-        }
+        // If no timeout is specified, use default timeout of 30 seconds
+        const timeoutMs = options?.timeoutMs ?? 30000;
+        const intervalMs = options?.intervalMs ?? 1000;
 
         const startTime = Date.now();
-        const deadline = startTime + options.timeoutMs;
-        const intervalMs = options?.intervalMs ?? 1000;
+        const deadline = startTime + timeoutMs;
         while (true) {
             // Check if timeout has been reached
             if (Date.now() >= deadline) {
@@ -1111,7 +1101,8 @@ class TransactionsModule {
 
         return {
             id,
-            wait: async () => await this.waitForTransaction(id)
+            wait: async (options?: WaitForTransactionOptions) =>
+                await this.waitForTransaction(id, options)
         };
     }
 
@@ -1160,7 +1151,8 @@ class TransactionsModule {
 
         return {
             id,
-            wait: async () => await this.waitForTransaction(id)
+            wait: async (options?: WaitForTransactionOptions) =>
+                await this.waitForTransaction(id, options)
         };
     }
 
