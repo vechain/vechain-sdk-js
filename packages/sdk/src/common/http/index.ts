@@ -6,3 +6,5 @@ export type { HttpPath } from './HttpPath';
 export type { HttpQuery } from './HttpQuery';
 export { HttpException } from './HttpException';
 export { HttpNetworkException } from './HttpNetworkException';
+export type { HttpOptions } from './HttpOptions';
+export type { CookieStore } from './CookieStore';

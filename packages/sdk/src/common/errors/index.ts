@@ -10,3 +10,5 @@ export * from './NoSuchElementError';
 export * from './UnsupportedOperationError';
 export * from './VeChainSDKError';
 export * from './TimeoutError';
+export * from './VeChainSDKError';
+export * from './ABIDecodeError';

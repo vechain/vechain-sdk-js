@@ -5,3 +5,4 @@ export * from './nodes';
 export * from './blocks';
 export * from './events';
 export * from './transactions';
+export * from './nodes';

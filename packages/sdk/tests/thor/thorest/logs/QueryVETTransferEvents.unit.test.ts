@@ -13,7 +13,7 @@ import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { Address } from '@common/vcdm';
 import { LogSort } from '@thor/thor-client/model/logs/LogSort';
 import { type TransferLogsResponseJSON } from '@thor/thorest/json';
-import { FilterRangeUnits } from '@thor/thorest/logs/response/FilterRangeUnits';
+import { FilterRangeUnits } from '@thor/thorest/logs/response/FilterRangeRequestUnits';
 
 const mockHttpClient = <T>(response: T): HttpClient => {
     return {

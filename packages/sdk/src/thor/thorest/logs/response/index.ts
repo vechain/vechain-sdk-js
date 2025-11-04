@@ -4,7 +4,7 @@ export * from './EventLogResponse';
 export * from './EventLogsResponse';
 export * from './FilterOptionsRequest';
 export * from './FilterRangeRequest';
-export * from './FilterRangeUnits';
+export * from './FilterRangeRequestUnits';
 export * from './LogMetaResponse';
 export * from './LogSort';
 export * from './TransferCriteriaRequest';

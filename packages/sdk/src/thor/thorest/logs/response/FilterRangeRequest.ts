@@ -1,4 +1,4 @@
-import { type FilterRangeUnits } from '@thor/thorest';
+import { type FilterRangeRequestUnits } from '@thor/thorest';
 import { type FilterRangeJSON } from '@thor/thorest/json';
 import { type FilterRange } from '@thor/thor-client/model/logs/FilterRange';
 
@@ -9,7 +9,7 @@ class FilterRangeRequest {
     /**
      * The unit of measurement for the from and to values.
      */
-    readonly unit?: FilterRangeUnits;
+    readonly unit?: FilterRangeRequestUnits;
 
     /**
      * The starting block number or timestamp for the specified range.
@@ -24,11 +24,11 @@ class FilterRangeRequest {
     /**
      * Constructs an instance of the class.
      *
-     * @param {FilterRangeUnits} unit - The unit of measurement for the from and to values.
+     * @param {FilterRangeRequestUnits} unit - The unit of measurement for the from and to values.
      * @param {number} from - The starting block number or timestamp for the specified range.
      * @param {number} to - The ending block number or timestamp for the specified range.
      */
-    constructor(unit?: FilterRangeUnits, from?: number, to?: number) {
+    constructor(unit?: FilterRangeRequestUnits, from?: number, to?: number) {
         this.unit = unit;
         this.from = from;
         this.to = to;
@@ -42,7 +42,9 @@ class FilterRangeRequest {
      */
     static of(range: FilterRange): FilterRangeRequest {
         return new FilterRangeRequest(
-            range.unit ?? undefined,
+            range.unit != null
+                ? (range.unit as unknown as FilterRangeRequestUnits)
+                : undefined,
             range.from ?? undefined,
             range.to ?? undefined
         );

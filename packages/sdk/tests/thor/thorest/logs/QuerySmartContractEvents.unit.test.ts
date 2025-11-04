@@ -11,7 +11,7 @@ import { type EventLogsResponseJSON } from '@thor/thorest/json';
 import { expect, jest } from '@jest/globals';
 import type { HttpClient } from '@common/http';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
-import { FilterRangeUnits } from '@thor/thorest/logs/response/FilterRangeUnits';
+import { FilterRangeUnits } from '@thor/thorest/logs/response/FilterRangeRequestUnits';
 import { Address, Hex } from '@common/vcdm';
 import { LogSort } from '@thor/thorest/logs/response/LogSort';
 
