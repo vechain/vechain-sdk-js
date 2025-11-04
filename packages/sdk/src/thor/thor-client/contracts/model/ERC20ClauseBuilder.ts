@@ -3,43 +3,8 @@
 import { Address, Hex } from '@common/vcdm';
 import { Clause } from '@thor/thor-client/model/transactions/Clause';
 import { encodeFunctionData, parseUnits } from 'viem';
+import { ERC20_ABI } from '@thor/utils';
 
-/**
- * Standard ERC20 ABI for common operations
- */
-const ERC20_ABI = [
-    {
-        type: 'function',
-        name: 'transfer',
-        stateMutability: 'nonpayable',
-        inputs: [
-            { name: 'to', type: 'address' },
-            { name: 'amount', type: 'uint256' }
-        ],
-        outputs: [{ name: '', type: 'bool' }]
-    },
-    {
-        type: 'function',
-        name: 'approve',
-        stateMutability: 'nonpayable',
-        inputs: [
-            { name: 'spender', type: 'address' },
-            { name: 'amount', type: 'uint256' }
-        ],
-        outputs: [{ name: '', type: 'bool' }]
-    },
-    {
-        type: 'function',
-        name: 'transferFrom',
-        stateMutability: 'nonpayable',
-        inputs: [
-            { name: 'from', type: 'address' },
-            { name: 'to', type: 'address' },
-            { name: 'amount', type: 'uint256' }
-        ],
-        outputs: [{ name: '', type: 'bool' }]
-    }
-] as const;
 
 /**
  * Token unit enumeration for ERC20 tokens
@@ -275,17 +240,3 @@ export class ERC20ClauseBuilder {
         return this.transferFrom(tokenAddress, from, to, amountInWei, comment);
     }
 }
-
-/**
- * VET token address (native token)
- */
-export const VET_TOKEN_ADDRESS = Address.of(
-    '0x0000000000000000000000000000000000000000'
-);
-
-/**
- * VTHO token address (energy token)
- */
-export const VTHO_TOKEN_ADDRESS = Address.of(
-    '0x0000000000000000000000000000456e65726779'
-);
