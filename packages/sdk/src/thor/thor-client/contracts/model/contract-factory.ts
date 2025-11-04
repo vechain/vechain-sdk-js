@@ -1,16 +1,16 @@
 /* eslint-disable */
 // TODO: Contracts module is pending rework - lint errors will be fixed during refactor
-import type { Abi, AbiParameter } from 'abitype';
-import { type Signer } from '@thor/signer';
-import { HexUInt } from '@common/vcdm';
-import { IllegalArgumentError } from '@common/errors';
-import { ClauseBuilder } from '@thor/thor-client/transactions/ClauseBuilder';
-import { Clause } from '@thor/thor-client/model/transactions';
-import type { SimulateTransactionOptions } from '../types';
-import type { TransactionRequest } from '../../model/transactions/TransactionRequest';
-import type { ContractsModule } from '../contracts-module';
 import { Contract } from './contract';
 import { Hex } from 'viem';
+import { HexUInt } from '@common/vcdm';
+import { IllegalArgumentError } from '@common/errors';
+import { type Abi, AbiParameter } from 'abitype';
+import { type ContractsModule } from '../contracts-module';
+import { type Signer } from '@thor/signer';
+import { type SimulateTransactionOptions } from '../types';
+import { type TransactionRequest } from '../../model/transactions/TransactionRequest';
+import { Clause } from '@thor';
+import { ClauseBuilder } from '@thor/thor-client/transactions';
 
 // Proper function arguments type using VeChain SDK types
 type FunctionArgs = AbiParameter[];

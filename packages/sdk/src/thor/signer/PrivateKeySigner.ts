@@ -2,12 +2,13 @@ import {
     Address,
     Blake2b256,
     InvalidPrivateKeyError,
-    Secp256k1,
-    VeChainSDKError
+    InvalidSignatureError,
+    Secp256k1
 } from '@common';
 import { TransactionRequest } from '@thor/thor-client/model/transactions';
 import { type Signer } from './Signer';
 import { concatBytes } from '@noble/curves/utils.js';
+import { log } from '@common/logging';
 
 /**
  * Full-Qualified Path
@@ -157,7 +158,7 @@ class PrivateKeySigner implements Signer {
      *
      * @param {TransactionRequest} transactionRequest - The transaction request object to be signed.
      * @return {TransactionRequest} The signed transaction request object.
-     * @throws {VeChainSDKError} Throws an error if the signing process fails.
+     * @throws {InvalidSignatureError} Throws an error if the signing process fails.
      *
      * @security Security auditable method, depends on
      * - {@link PrivateKeySigner.finalize};
@@ -180,7 +181,12 @@ class PrivateKeySigner implements Signer {
                 this.signAsOrigin(transactionRequest)
             );
         } catch (error) {
-            throw new VeChainSDKError(
+            log.error({
+                message: 'unable to sign transaction request',
+                source: FQP,
+                context: { transactionRequest }
+            });
+            throw new InvalidSignatureError(
                 `${FQP}PrivateKeySigner.sign(transactionRequest: TransactionRequest): TransactionRequest`,
                 'unable to sign',
                 { transactionRequest },
@@ -219,6 +225,11 @@ class PrivateKeySigner implements Signer {
                 transactionRequest.signature
             );
         }
+        log.error({
+            message:
+                'no private key available to sign transaction request as gas payer',
+            source: FQP
+        });
         throw new InvalidPrivateKeyError(
             `${FQP}PrivateKeySigner.signAsGasPayer(transactionRequest: TransactionRequest): TransactionRequest`,
             'no private key'
@@ -251,6 +262,11 @@ class PrivateKeySigner implements Signer {
                 transactionRequest.signature
             );
         }
+        log.error({
+            message:
+                'no private key available to sign transaction request as origin',
+            source: FQP
+        });
         throw new InvalidPrivateKeyError(
             `${FQP}PrivateKeySigner.signAsOrigin(transactionRequest: TransactionRequest): TransactionRequest`,
             'no private key'

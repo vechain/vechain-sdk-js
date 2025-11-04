@@ -1,8 +1,8 @@
 import { type Address, type Hex } from '@common/vcdm';
-import { Clause } from '../transactions/Clause';
-import type { ClauseData, OutputResponse } from '@thor/thorest/common';
-import type { TxWithReceipt } from '@thor/thorest/transactions/model';
+import { type Clause } from '@thor/thor-client/model/transactions';
+import { type TxWithReceipt } from '@thor/thorest/transactions/model';
 import { TransactionReceiptOutput } from '@thor/thor-client/model/transactions';
+import { type OutputResponse } from '@thor/thorest/common';
 
 /**
  * A transaction contained in an expanded block.
@@ -39,9 +39,7 @@ class BlockTransaction {
         this.chainTag = tx.chainTag;
         this.blockRef = tx.blockRef;
         this.expiration = tx.expiration;
-        this.clauses = tx.clauses.map((clause: ClauseData) =>
-            Clause.of(clause)
-        );
+        this.clauses = tx.clauses;
         this.gasPriceCoef = tx.gasPriceCoef;
         this.maxFeePerGas = tx.maxFeePerGas;
         this.maxPriorityFeePerGas = tx.maxPriorityFeePerGas;

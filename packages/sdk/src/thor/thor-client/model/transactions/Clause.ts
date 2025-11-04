@@ -1,6 +1,5 @@
-import { type Address, Hex, Quantity } from '@common/vcdm';
+import { Address, Hex, HexUInt, Quantity } from '@common/vcdm';
 import { type ClauseJSON } from '@thor/thorest/json';
-import { type ClauseData } from '@thor/thorest/common';
 
 /**
  * [Clause](http://localhost:8669/doc/stoplight-ui/#/schemas/Clause)
@@ -59,19 +58,11 @@ class Clause {
         this.abi = abi ?? null;
     }
 
-    /**
-     * Creates a new Clause instance from the given ClauseData object.
-     *
-     * @param {ClauseData} clauseData - The ClauseData object containing the input data to construct a Clause.
-     * @return {Clause} A new Clause instance created using the data extracted from the provided ClauseJSON object.
-     */
-    public static of(clauseData: ClauseData): Clause {
+    public static of(json: ClauseJSON): Clause {
         return new Clause(
-            clauseData.to,
-            clauseData.value,
-            clauseData.data,
-            null,
-            null
+            json.to !== null ? Address.of(json.to) : null,
+            HexUInt.of(json.value).bi,
+            json.data !== undefined ? HexUInt.of(json.data) : null
         );
     }
 
