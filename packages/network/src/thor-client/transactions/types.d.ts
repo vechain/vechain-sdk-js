@@ -20,7 +20,7 @@ interface WaitForTransactionOptions {
     /**
      * Timeout in milliseconds.
      * After this time, the method will return `null` if the transaction is not included in a block.
-     * If not specified, a default timeout of 120 seconds (2 minutes) will be used.
+     * If not specified, a default timeout of 30 seconds will be used.
      */
     timeoutMs?: number;
     /**
