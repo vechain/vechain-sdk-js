@@ -83,6 +83,8 @@ describe('ThorClient - Blocks Module', () => {
                             );
 
                         // Incorporate the description into the assertion message for clarity
+                        expect(expectedBlock).not.toBeNull();
+                        expect(expectedBlock?.number).toBeDefined();
                         expect(expectedBlock?.number).toBeGreaterThan(
                             bestBlock?.number
                         );
