@@ -1,7 +1,7 @@
 import * as nc_utils from '@noble/curves/utils';
 import { concatBytes } from '@noble/curves/utils';
 import { type Account } from 'viem';
-import { SendTransaction, type ThorNetworks } from '@thor/thorest';
+import { type ThorNetworks } from '@thor/thorest';
 import {
     Clause,
     TransactionRequest
@@ -246,8 +246,8 @@ class WalletClient extends PublicClient {
      * @see https://viem.sh/docs/actions/wallet/sendRawTransaction
      */
     public async sendRawTransaction(raw: Hex): Promise<Hex> {
-        return (await SendTransaction.of(raw.bytes).askTo(this.httpClient))
-            .response.id;
+        const txId = await this.thorClient.transactions.sendRawTransaction(raw);
+        return txId;
     }
 
     /**

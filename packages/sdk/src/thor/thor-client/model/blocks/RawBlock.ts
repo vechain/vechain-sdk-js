@@ -6,6 +6,7 @@ import { type RawBlockResponse } from '@thor/thorest/blocks/response';
  */
 class RawBlock {
     readonly raw: Hex;
+    private readonly _response: RawBlockResponse;
 
     /**
      * Constructs a new instance of the class from the thorest response.
@@ -14,6 +15,7 @@ class RawBlock {
      */
     private constructor(response: RawBlockResponse) {
         this.raw = response.raw;
+        this._response = response;
     }
 
     /**
@@ -26,6 +28,16 @@ class RawBlock {
         response: RawBlockResponse | null
     ): RawBlock | null {
         return response === null ? null : new RawBlock(response);
+    }
+
+    /**
+     * Returns the underlying thorest response.
+     * Useful for viem compatibility layer.
+     *
+     * @returns {RawBlockResponse} The underlying thorest response.
+     */
+    public toResponse(): RawBlockResponse {
+        return this._response;
     }
 }
 

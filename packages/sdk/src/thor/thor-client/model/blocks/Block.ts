@@ -7,6 +7,7 @@ import { BaseBlock } from './BaseBlock';
  */
 class Block extends BaseBlock {
     readonly transactions: HexUInt32[];
+    private readonly _response: RegularBlockResponse;
 
     /**
      * Constructs a new instance of the class from the thorest response.
@@ -18,6 +19,7 @@ class Block extends BaseBlock {
         this.transactions = response.transactions.map((hex: Hex) =>
             HexUInt32.of(hex)
         );
+        this._response = response;
     }
 
     /**
@@ -39,6 +41,16 @@ class Block extends BaseBlock {
         response: RegularBlockResponse | null
     ): Block | null {
         return response === null ? null : new Block(response);
+    }
+
+    /**
+     * Returns the underlying thorest response.
+     * Useful for viem compatibility layer.
+     *
+     * @returns {RegularBlockResponse} The underlying thorest response.
+     */
+    public toResponse(): RegularBlockResponse {
+        return this._response;
     }
 }
 

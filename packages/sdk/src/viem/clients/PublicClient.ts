@@ -7,23 +7,12 @@ import {
     type ExpandedBlockResponse,
     NewTransactionSubscription,
     type RegularBlockResponse,
-    RetrieveAccountDetails,
-    RetrieveContractBytecode,
-    RetrieveExpandedBlock,
-    RetrieveHistoricalFeeData,
-    RetrieveRawBlock,
-    RetrieveRegularBlock,
-    RetrieveStoragePositionValue,
-    RetrieveTransactionByID,
-    RetrieveTransactionReceipt,
     type SubscriptionEventResponse,
     type ThorNetworks,
-    type GetTxResponse,
-    type GetTxReceiptResponse,
     type TransfersSubscription,
-    type TXID,
     type RawBlockResponse
 } from '@thor/thorest';
+import type { GetTxResponse, TXID } from '@thor/thorest/transactions';
 import { MozillaWebSocketClient, type WebSocketListener } from '@thor/ws';
 import {
     BlockNotFoundError,
@@ -33,6 +22,7 @@ import {
     ChainNotFoundError,
     FilterTypeNotSupportedError,
     WebSocketRequestError,
+    WaitForTransactionReceiptTimeoutError,
     BaseError
 } from 'viem';
 import { ThorClient } from '@thor/thor-client/ThorClient';
@@ -49,11 +39,16 @@ import {
     type Clause,
     type SimulateTransactionOptions
 } from '@thor/thor-client/model/transactions';
-import {
-    type EstimateGasOptions,
-    type EstimateGasResult
+import type {
+    TransactionReceipt,
+    EstimateGasOptions,
+    EstimateGasResult
 } from '@thor/thor-client/model';
 import { RevisionType } from '@common/vcdm/RevisionType';
+import {
+    TimeoutError as ThorTimeoutError,
+    IllegalArgumentError
+} from '@common/errors';
 
 /**
  * Filter types for viem compatibility.
@@ -134,14 +129,29 @@ class PublicClient {
     }
 
     public async getBalance(address: Address): Promise<bigint> {
-        const accountDetails = await RetrieveAccountDetails.of(address).askTo(
-            this.httpClient
-        );
-        if (accountDetails?.response === null) {
-            throw new InvalidAddressError({ address: address.toString() });
+        try {
+            const accountDetails =
+                await this.thorClient.accounts.getAccount(address);
+            if (accountDetails === null) {
+                throw new InvalidAddressError({ address: address.toString() });
+            }
+            const balance = accountDetails.balance;
+            return balance;
+        } catch (error) {
+            // Create new viem InvalidAddressError if it's an address error
+            if (error instanceof InvalidAddressError) {
+                throw new InvalidAddressError({ address: address.toString() });
+            }
+            // Wrap any other thor-client error in viem BaseError
+            throw new BaseError(
+                `Failed to get balance for address ${address.toString()}`,
+                {
+                    details:
+                        error instanceof Error ? error.message : String(error),
+                    cause: error as Error
+                }
+            );
         }
-        const balance = accountDetails.response.balance;
-        return balance;
     }
 
     public async getBlock(
@@ -155,40 +165,49 @@ class PublicClient {
                 ? BigInt(revision.toString())
                 : undefined;
 
-        if (type === BlockReponseType.expanded) {
-            const data = await RetrieveExpandedBlock.of(revision).askTo(
-                this.httpClient
-            );
-            if (data.response === null) {
+        try {
+            if (type === BlockReponseType.expanded) {
+                const data =
+                    await this.thorClient.blocks.getBlockExpanded(revision);
+                if (data === null) {
+                    throw new BlockNotFoundError({ blockNumber });
+                }
+                return data.toResponse();
+            } else if (type === BlockReponseType.raw) {
+                const data = await this.thorClient.blocks.getBlockRaw(revision);
+                if (data === null) {
+                    throw new BlockNotFoundError({ blockNumber });
+                }
+                return data.toResponse();
+            } else {
+                const data = await this.thorClient.blocks.getBlock(revision);
+                if (data === null) {
+                    throw new BlockNotFoundError({ blockNumber });
+                }
+                return data.toResponse();
+            }
+        } catch (error) {
+            // Create new viem BlockNotFoundError instead of re-throwing
+            if (error instanceof BlockNotFoundError) {
                 throw new BlockNotFoundError({ blockNumber });
             }
-            return data.response;
-        } else if (type === BlockReponseType.raw) {
-            const data = await RetrieveRawBlock.of(revision).askTo(
-                this.httpClient
+            // Wrap any other thor-client error in viem BaseError
+            throw new BaseError(
+                `Failed to get block at revision ${revision.toString()}`,
+                {
+                    details:
+                        error instanceof Error ? error.message : String(error),
+                    cause: error as Error
+                }
             );
-            if (data.response === null) {
-                throw new BlockNotFoundError({ blockNumber });
-            }
-            return data.response;
-        } else {
-            const data = await RetrieveRegularBlock.of(revision).askTo(
-                this.httpClient
-            );
-            if (data.response === null) {
-                throw new BlockNotFoundError({ blockNumber });
-            }
-            return data.response;
         }
     }
 
     public async getBlockNumber(
         revision: Revision = Revision.BEST // vechain specific
     ): Promise<number | undefined> {
-        const selectedBlock = await RetrieveRegularBlock.of(revision).askTo(
-            this.httpClient
-        );
-        const blockNumber = selectedBlock?.response?.number;
+        const selectedBlock = await this.thorClient.blocks.getBlock(revision);
+        const blockNumber = selectedBlock?.number;
         if (blockNumber === null) {
             const notFoundRevision =
                 revision.revisionType === RevisionType.BlockNumber
@@ -202,10 +221,8 @@ class PublicClient {
     public async getBlockTransactionCount(
         revision: Revision = Revision.BEST // vechain specific
     ): Promise<number | undefined> {
-        const selectedBlock = await RetrieveRegularBlock.of(revision).askTo(
-            this.httpClient
-        );
-        const trxCount = selectedBlock?.response?.transactions.length;
+        const selectedBlock = await this.thorClient.blocks.getBlock(revision);
+        const trxCount = selectedBlock?.transactions.length;
         if (trxCount === null) {
             const notFoundRevision =
                 revision.revisionType === RevisionType.BlockNumber
@@ -246,35 +263,46 @@ class PublicClient {
         clause: Clause,
         options?: SimulateTransactionOptions
     ): Promise<ClauseSimulationResult> {
-        const result = await this.thorClient.transactions.simulateTransaction(
-            [clause],
-            options
-        );
-        return result[0];
+        try {
+            const result =
+                await this.thorClient.transactions.simulateTransaction(
+                    [clause],
+                    options
+                );
+            return result[0];
+        } catch (error) {
+            // Wrap any thor-client error in viem BaseError
+            throw new BaseError(`Failed to simulate transaction call`, {
+                details: error instanceof Error ? error.message : String(error),
+                cause: error as Error
+            });
+        }
     }
 
     public async getFeeHistory(blockCount: number): Promise<FeeHistory> {
-        const thorClient = ThorClient.at(this.httpClient);
-        const gasModule = thorClient.gas;
+        const gasModule = this.thorClient.gas;
         const gas = await gasModule.getFeeHistory(blockCount);
         return gas;
     }
 
     public async getGasPrice(): Promise<bigint[]> {
         // viem specific
-        const lastBlock = await RetrieveHistoricalFeeData.of(1).askTo(
-            this.httpClient
-        );
-        const lastBaseFeePerGas = lastBlock.response.baseFeePerGas;
+        const lastBlock = await this.thorClient.gas.getFeeHistory(1);
+        const lastBaseFeePerGas = lastBlock.baseFeePerGas;
         return lastBaseFeePerGas;
     }
 
     public async estimateFeePerGas(): Promise<bigint | undefined> {
         // viem specific
-        const lastRevision = await RetrieveRegularBlock.of(Revision.BEST).askTo(
-            this.httpClient
+        const lastRevision = await this.thorClient.blocks.getBlock(
+            Revision.BEST
         );
-        const lastBaseFeePerGas = lastRevision?.response?.baseFeePerGas;
+        if (lastRevision === null) {
+            throw new BlockNotFoundError({
+                blockNumber: undefined
+            });
+        }
+        const lastBaseFeePerGas = lastRevision.baseFeePerGas;
         return lastBaseFeePerGas;
     }
 
@@ -283,25 +311,21 @@ class PublicClient {
         caller: Address,
         options?: EstimateGasOptions
     ): Promise<EstimateGasResult> {
-        const thorClient = ThorClient.at(this.httpClient);
-        const gasModule = thorClient.gas;
+        const gasModule = this.thorClient.gas;
         const gas = await gasModule.estimateGas(clauses, caller, options);
         return gas;
     }
 
     public async suggestPriorityFeeRequest(): Promise<bigint> {
         // viem specific
-        const thorClient = ThorClient.at(this.httpClient);
-        const gasModule = thorClient.gas;
+        const gasModule = this.thorClient.gas;
         const gas = await gasModule.suggestPriorityFeeRequest();
         return gas;
     }
 
     public async getChainId(): Promise<bigint> {
-        const data = await RetrieveRegularBlock.of(Revision.of(0)).askTo(
-            this.httpClient
-        );
-        const res = data?.response?.id;
+        const data = await this.thorClient.blocks.getBlock(Revision.of(0));
+        const res = data?.id;
         if (res == null) {
             throw new ChainNotFoundError();
         }
@@ -309,36 +333,49 @@ class PublicClient {
     }
 
     public async getTransaction(hash: Hex): Promise<GetTxResponse | null> {
-        const data = await RetrieveTransactionByID.of(hash).askTo(
-            this.httpClient
-        );
-        if (data.response === null) {
-            throw new TransactionNotFoundError({
-                hash: hash.toString() as `0x${string}`
-            });
+        try {
+            const data =
+                await this.thorClient.transactions.getTransaction(hash);
+            if (data === null) {
+                throw new TransactionNotFoundError({
+                    hash: hash.toString() as `0x${string}`
+                });
+            }
+            return data.toResponse();
+        } catch (error) {
+            // Create new viem TransactionNotFoundError if it's a not found error
+            if (error instanceof TransactionNotFoundError) {
+                throw new TransactionNotFoundError({
+                    hash: hash.toString() as `0x${string}`
+                });
+            }
+            // Wrap any other thor-client error in viem BaseError
+            throw new BaseError(
+                `Failed to get transaction for hash ${hash.toString()}`,
+                {
+                    details:
+                        error instanceof Error ? error.message : String(error),
+                    cause: error as Error
+                }
+            );
         }
-        return data.response;
-    }
-
-    public async getTransactionReceipt(
-        hash: Hex
-    ): Promise<GetTxReceiptResponse | null> {
-        const data = await RetrieveTransactionReceipt.of(hash).askTo(
-            this.httpClient
-        );
-        if (data.response === null) {
-            throw new TransactionReceiptNotFoundError({
-                hash: hash.toString() as `0x${string}`
-            });
-        }
-        return data.response;
     }
 
     public async getBytecode(address: Address): Promise<Hex | undefined> {
-        const data = await RetrieveContractBytecode.of(address).askTo(
-            this.httpClient
-        );
-        return data.response?.code;
+        try {
+            const data = await this.thorClient.accounts.getBytecode(address);
+            return data;
+        } catch (error) {
+            // Wrap any thor-client error in viem BaseError
+            throw new BaseError(
+                `Failed to get bytecode for address ${address.toString()}`,
+                {
+                    details:
+                        error instanceof Error ? error.message : String(error),
+                    cause: error as Error
+                }
+            );
+        }
     }
 
     public async getCode(address: Address): Promise<Hex | undefined> {
@@ -348,23 +385,51 @@ class PublicClient {
     }
 
     public async getStorageAt(address: Address, slot: Hex): Promise<Hex> {
-        const data = await RetrieveStoragePositionValue.of(address, slot).askTo(
-            this.httpClient
-        );
-        return data.response?.value ?? '0x0';
+        try {
+            const data = await this.thorClient.accounts.getStorageAt(
+                address,
+                slot
+            );
+            return data ?? Hex.of('0x0');
+        } catch (error) {
+            // Wrap any thor-client error in viem BaseError
+            throw new BaseError(
+                `Failed to get storage at ${slot.toString()} for address ${address.toString()}`,
+                {
+                    details:
+                        error instanceof Error ? error.message : String(error),
+                    cause: error as Error
+                }
+            );
+        }
     }
 
     public async getTransactionCount(address: Address): Promise<number> {
-        // In VeChain, transaction count is equivalent to account nonce?
-        const accountDetails = await RetrieveAccountDetails.of(address).askTo(
-            this.httpClient
-        );
-        if (accountDetails?.response === null) {
-            throw new InvalidAddressError({ address: address.toString() });
+        try {
+            // In VeChain, transaction count is equivalent to account nonce?
+            const accountDetails =
+                await this.thorClient.accounts.getAccount(address);
+            if (accountDetails === null) {
+                throw new InvalidAddressError({ address: address.toString() });
+            }
+            // VeChain accounts don't have a txCount field, but we can simulate it
+            // For now, return 0 as VeChain handles nonces differently
+            return 0;
+        } catch (error) {
+            // Create new viem InvalidAddressError if it's an address error
+            if (error instanceof InvalidAddressError) {
+                throw new InvalidAddressError({ address: address.toString() });
+            }
+            // Wrap any other thor-client error in viem BaseError
+            throw new BaseError(
+                `Failed to get transaction count for address ${address.toString()}`,
+                {
+                    details:
+                        error instanceof Error ? error.message : String(error),
+                    cause: error as Error
+                }
+            );
         }
-        // VeChain accounts don't have a txCount field, but we can simulate it
-        // For now, return 0 as VeChain handles nonces differently
-        return 0;
     }
 
     public async getNonce(address: Address): Promise<number> {
@@ -457,10 +522,18 @@ class PublicClient {
     }
 
     public async getLogs(eventFilter: EventFilter): Promise<DecodedEventLog[]> {
-        return await this.thorClient.logs.filterEventLogs(
-            eventFilter.filter,
-            eventFilter.eventAbis
-        );
+        try {
+            return await this.thorClient.logs.filterEventLogs(
+                eventFilter.filter,
+                eventFilter.eventAbis
+            );
+        } catch (error) {
+            // Wrap any thor-client error in viem BaseError
+            throw new BaseError(`Failed to get logs`, {
+                details: error instanceof Error ? error.message : String(error),
+                cause: error as Error
+            });
+        }
     }
 
     public createEventFilter(params?: {
@@ -529,16 +602,34 @@ class PublicClient {
     public async getFilterLogs(params: {
         filter: Filter;
     }): Promise<DecodedEventLog[]> {
-        const { filter } = params;
-        if (filter.type !== 'event') {
-            throw new FilterTypeNotSupportedError(
-                (filter as { type: string }).type
+        try {
+            const { filter } = params;
+            if (filter.type !== 'event') {
+                throw new FilterTypeNotSupportedError(
+                    (filter as { type: string }).type
+                );
+            }
+            return await this.thorClient.logs.filterEventLogs(
+                filter.filter,
+                filter.eventAbis
             );
+        } catch (error) {
+            // Create new viem FilterTypeNotSupportedError if it's a filter type error
+            if (error instanceof FilterTypeNotSupportedError) {
+                const filterType =
+                    error instanceof Error &&
+                    'type' in error &&
+                    typeof error.type === 'string'
+                        ? error.type
+                        : 'unknown';
+                throw new FilterTypeNotSupportedError(filterType);
+            }
+            // Wrap any other thor-client error in viem BaseError
+            throw new BaseError(`Failed to get filter logs`, {
+                details: error instanceof Error ? error.message : String(error),
+                cause: error as Error
+            });
         }
-        return await this.thorClient.logs.filterEventLogs(
-            filter.filter,
-            filter.eventAbis
-        );
     }
 
     public async createBlockFilter(): Promise<BlockFilter> {
@@ -574,6 +665,72 @@ class PublicClient {
         };
 
         return filter;
+    }
+
+    public async waitForTransactionReceipt(
+        hex: Hex,
+        timeout?: number
+    ): Promise<TransactionReceipt | null> {
+        try {
+            const transactionModule = this.thorClient.transactions;
+            const receipt = await transactionModule.waitForTransactionReceipt(
+                hex,
+                {
+                    timeoutMs: timeout
+                }
+            );
+            return receipt;
+        } catch (error) {
+            // Convert thor-client TimeoutError to viem WaitForTransactionReceiptTimeoutError
+            if (error instanceof ThorTimeoutError) {
+                throw new WaitForTransactionReceiptTimeoutError({
+                    hash: hex.toString() as `0x${string}`
+                });
+            }
+            // Convert IllegalArgumentError to viem BaseError
+            if (error instanceof IllegalArgumentError) {
+                throw new BaseError(`Invalid arguments: ${error.message}`, {
+                    details: error.message,
+                    name: 'InvalidArgumentsError'
+                });
+            }
+            // Wrap any thor-client error in viem BaseError
+            throw new BaseError('Failed to wait for transaction receipt', {
+                details: error instanceof Error ? error.message : String(error),
+                cause: error as Error
+            });
+        }
+    }
+
+    public async getTransactionReceipt(
+        hash: Hex
+    ): Promise<TransactionReceipt | null> {
+        try {
+            const data =
+                await this.thorClient.transactions.getTransactionReceipt(hash);
+            if (data === null) {
+                throw new TransactionReceiptNotFoundError({
+                    hash: hash.toString() as `0x${string}`
+                });
+            }
+            return data;
+        } catch (error) {
+            // Create new viem TransactionReceiptNotFoundError if it's a not found error
+            if (error instanceof TransactionReceiptNotFoundError) {
+                throw new TransactionReceiptNotFoundError({
+                    hash: hash.toString() as `0x${string}`
+                });
+            }
+            // Wrap any other thor-client error in viem BaseError
+            throw new BaseError(
+                `Failed to get transaction receipt for hash ${hash.toString()}`,
+                {
+                    details:
+                        error instanceof Error ? error.message : String(error),
+                    cause: error as Error
+                }
+            );
+        }
     }
 
     public async getFilterChanges(params: {
@@ -647,13 +804,8 @@ class PublicClient {
                 const listener: WebSocketListener<TXID> = {
                     onMessage: (event: MessageEvent<TXID>) => {
                         const data = event.data;
-                        let txHash: string | undefined;
-
-                        if (typeof data === 'string') {
-                            txHash = data;
-                        } else if (Buffer.isBuffer(data)) {
-                            txHash = data.toString('hex'); // Convert Buffer to hex string
-                        }
+                        // Extract the transaction hash from TXID
+                        const txHash = data.id.toString();
 
                         if (txHash != null) {
                             if (txFilter.txQueue == null) {
