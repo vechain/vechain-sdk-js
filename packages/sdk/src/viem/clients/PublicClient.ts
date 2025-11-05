@@ -138,11 +138,7 @@ class PublicClient {
             const balance = accountDetails.balance;
             return balance;
         } catch (error) {
-            // Create new viem InvalidAddressError if it's an address error
-            if (error instanceof InvalidAddressError) {
-                throw new InvalidAddressError({ address: address.toString() });
-            }
-            // Wrap any other thor-client error in viem BaseError
+            // Wrap any SDK errors in viem BaseError
             throw new BaseError(
                 `Failed to get balance for address ${address.toString()}`,
                 {
@@ -187,11 +183,7 @@ class PublicClient {
                 return data.toResponse();
             }
         } catch (error) {
-            // Create new viem BlockNotFoundError instead of re-throwing
-            if (error instanceof BlockNotFoundError) {
-                throw new BlockNotFoundError({ blockNumber });
-            }
-            // Wrap any other thor-client error in viem BaseError
+            // Wrap any SDK errors in viem BaseError
             throw new BaseError(
                 `Failed to get block at revision ${revision.toString()}`,
                 {
@@ -343,13 +335,7 @@ class PublicClient {
             }
             return data.toResponse();
         } catch (error) {
-            // Create new viem TransactionNotFoundError if it's a not found error
-            if (error instanceof TransactionNotFoundError) {
-                throw new TransactionNotFoundError({
-                    hash: hash.toString() as `0x${string}`
-                });
-            }
-            // Wrap any other thor-client error in viem BaseError
+            // Wrap any SDK errors in viem BaseError
             throw new BaseError(
                 `Failed to get transaction for hash ${hash.toString()}`,
                 {
@@ -416,11 +402,7 @@ class PublicClient {
             // For now, return 0 as VeChain handles nonces differently
             return 0;
         } catch (error) {
-            // Create new viem InvalidAddressError if it's an address error
-            if (error instanceof InvalidAddressError) {
-                throw new InvalidAddressError({ address: address.toString() });
-            }
-            // Wrap any other thor-client error in viem BaseError
+            // Wrap any SDK errors in viem BaseError
             throw new BaseError(
                 `Failed to get transaction count for address ${address.toString()}`,
                 {
@@ -614,17 +596,7 @@ class PublicClient {
                 filter.eventAbis
             );
         } catch (error) {
-            // Create new viem FilterTypeNotSupportedError if it's a filter type error
-            if (error instanceof FilterTypeNotSupportedError) {
-                const filterType =
-                    error instanceof Error &&
-                    'type' in error &&
-                    typeof error.type === 'string'
-                        ? error.type
-                        : 'unknown';
-                throw new FilterTypeNotSupportedError(filterType);
-            }
-            // Wrap any other thor-client error in viem BaseError
+            // Wrap any SDK errors in viem BaseError
             throw new BaseError(`Failed to get filter logs`, {
                 details: error instanceof Error ? error.message : String(error),
                 cause: error as Error
@@ -715,13 +687,7 @@ class PublicClient {
             }
             return data;
         } catch (error) {
-            // Create new viem TransactionReceiptNotFoundError if it's a not found error
-            if (error instanceof TransactionReceiptNotFoundError) {
-                throw new TransactionReceiptNotFoundError({
-                    hash: hash.toString() as `0x${string}`
-                });
-            }
-            // Wrap any other thor-client error in viem BaseError
+            // Wrap any SDK errors in viem BaseError
             throw new BaseError(
                 `Failed to get transaction receipt for hash ${hash.toString()}`,
                 {
