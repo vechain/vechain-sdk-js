@@ -2,7 +2,7 @@
 // TODO: These tests are temporarily disabled pending contracts module rework
 // @ts-nocheck
 import { describe, expect, test, jest } from '@jest/globals';
-import { ContractsModule } from '../../../../src/thor/thor-client/contracts';
+import { ThorClient } from '../../../../src/thor/thor-client/ThorClient';
 import { Address } from '../../../../src/common/vcdm';
 import { IllegalArgumentError } from '../../../../src/common/errors';
 
@@ -35,6 +35,9 @@ const createMockHttpClient = () =>
         options: {},
         baseURL: 'http://localhost:8669'
     }) as any;
+
+// Helper to create ThorClient for tests
+const createThorClient = () => ThorClient.at(createMockHttpClient());
 
 // Mock signer
 // @ts-ignore - Jest mock typing issues
@@ -81,49 +84,31 @@ const testContractAbi = [
  */
 describe.skip('ContractsModule', () => {
     describe('Constructor and Basic Properties', () => {
-        test('Should create ContractsModule with HttpClient', () => {
-            const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+        test('Should create ThorClient with contracts module', () => {
+            const thorClient = createThorClient();
 
-            expect(contractsModule).toBeInstanceOf(ContractsModule);
+            expect(thorClient.contracts).toBeDefined();
         });
 
-        test('Should create ContractsModule with PublicClient and WalletClient', () => {
-            const mockPublicClient = {
-                thorNetworks: 'SOLONET',
-                call: jest.fn(),
-                simulateCalls: jest.fn(),
-                estimateGas: jest.fn(),
-                watchEvent: jest.fn(),
-                getLogs: jest.fn(),
-                createEventFilter: jest.fn()
-            } as any;
+        test('Should access contracts module through ThorClient', () => {
+            const thorClient = createThorClient();
 
-            const mockWalletClient = {
-                thorNetworks: 'SOLONET',
-                account: Address.of(
-                    '0x1234567890123456789012345678901234567890'
-                ),
-                sendTransaction: jest.fn()
-            } as any;
-
-            const contractsModule = new ContractsModule(mockPublicClient);
-
-            expect(contractsModule).toBeInstanceOf(ContractsModule);
+            expect(thorClient.contracts).toBeDefined();
+            expect(typeof thorClient.contracts.load).toBe('function');
+            expect(typeof thorClient.contracts.createContractFactory).toBe('function');
         });
     });
 
     describe('executeCall Method', () => {
         test('Should execute call for view function', async () => {
-            const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contractAddress = Address.of(
                 '0x1234567890123456789012345678901234567890'
             );
             const functionAbi = testContractAbi[0]; // getBalance function
             const args = ['0x1234567890123456789012345678901234567890'];
 
-            const result = await contractsModule.executeCall(
+            const result = await thorClient.contracts.executeCall(
                 contractAddress,
                 functionAbi,
                 args
@@ -135,8 +120,7 @@ describe.skip('ContractsModule', () => {
         });
 
         test('Should execute call with options', async () => {
-            const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contractAddress = Address.of(
                 '0x1234567890123456789012345678901234567890'
             );
@@ -147,7 +131,7 @@ describe.skip('ContractsModule', () => {
                 caller: '0x9876543210987654321098765432109876543210'
             };
 
-            const result = await contractsModule.executeCall(
+            const result = await thorClient.contracts.executeCall(
                 contractAddress,
                 functionAbi,
                 args,
@@ -160,19 +144,19 @@ describe.skip('ContractsModule', () => {
 
         test('Should throw IllegalArgumentError for invalid address', async () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const invalidAddress = 'invalid_address' as any;
             const functionAbi = testContractAbi[0];
             const args = ['0x1234567890123456789012345678901234567890'];
 
             await expect(
-                contractsModule.executeCall(invalidAddress, functionAbi, args)
+                thorClient.contracts.executeCall(invalidAddress, functionAbi, args)
             ).rejects.toThrow(IllegalArgumentError);
         });
 
         test('Should throw IllegalArgumentError for invalid function ABI', async () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contractAddress = Address.of(
                 '0x1234567890123456789012345678901234567890'
             );
@@ -180,7 +164,7 @@ describe.skip('ContractsModule', () => {
             const args = ['0x1234567890123456789012345678901234567890'];
 
             await expect(
-                contractsModule.executeCall(
+                thorClient.contracts.executeCall(
                     contractAddress,
                     invalidFunctionAbi,
                     args
@@ -207,7 +191,7 @@ describe.skip('ContractsModule', () => {
 
         test('Should throw IllegalArgumentError for invalid signer', async () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const invalidSigner = null as any;
             const contractAddress = Address.of(
                 '0x1234567890123456789012345678901234567890'
@@ -216,7 +200,7 @@ describe.skip('ContractsModule', () => {
             const args = ['0x9876543210987654321098765432109876543210', 1000n];
 
             await expect(
-                contractsModule.executeTransaction(
+                thorClient.contracts.executeTransaction(
                     invalidSigner,
                     contractAddress,
                     functionAbi,
@@ -227,14 +211,14 @@ describe.skip('ContractsModule', () => {
 
         test('Should throw IllegalArgumentError for invalid address', async () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const signer = createMockSigner();
             const invalidAddress = 'invalid_address' as any;
             const functionAbi = testContractAbi[1];
             const args = ['0x9876543210987654321098765432109876543210', 1000n];
 
             await expect(
-                contractsModule.executeTransaction(
+                thorClient.contracts.executeTransaction(
                     signer,
                     invalidAddress,
                     functionAbi,
@@ -247,7 +231,7 @@ describe.skip('ContractsModule', () => {
     describe('executeMultipleClausesCall Method', () => {
         test('Should execute multiple clauses call', async () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const clauses = [
                 {
                     to: Address.of(
@@ -266,14 +250,14 @@ describe.skip('ContractsModule', () => {
             ];
 
             const result =
-                await contractsModule.executeMultipleClausesCall(clauses);
+                await thorClient.contracts.executeMultipleClausesCall(clauses);
 
             expect(Array.isArray(result)).toBe(true);
         });
 
         test('Should execute multiple clauses call with options', async () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const clauses = [
                 {
                     to: Address.of(
@@ -288,7 +272,7 @@ describe.skip('ContractsModule', () => {
                 caller: '0x1234567890123456789012345678901234567890'
             };
 
-            const result = await contractsModule.executeMultipleClausesCall(
+            const result = await thorClient.contracts.executeMultipleClausesCall(
                 clauses,
                 options
             );
@@ -298,11 +282,11 @@ describe.skip('ContractsModule', () => {
 
         test('Should throw IllegalArgumentError for empty clauses', async () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const emptyClauses: any[] = [];
 
             await expect(
-                contractsModule.executeMultipleClausesCall(emptyClauses)
+                thorClient.contracts.executeMultipleClausesCall(emptyClauses)
             ).rejects.toThrow(IllegalArgumentError);
         });
 
@@ -325,7 +309,7 @@ describe.skip('ContractsModule', () => {
 
         test('Should throw IllegalArgumentError for invalid signer', async () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const invalidSigner = null as any;
             const clauses = [
                 {
@@ -338,7 +322,7 @@ describe.skip('ContractsModule', () => {
             ];
 
             await expect(
-                contractsModule.executeMultipleClausesTransaction(
+                thorClient.contracts.executeMultipleClausesTransaction(
                     clauses,
                     invalidSigner
                 )
@@ -347,12 +331,12 @@ describe.skip('ContractsModule', () => {
 
         test('Should throw IllegalArgumentError for empty clauses', async () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const signer = createMockSigner();
             const emptyClauses: any[] = [];
 
             await expect(
-                contractsModule.executeMultipleClausesTransaction(
+                thorClient.contracts.executeMultipleClausesTransaction(
                     emptyClauses,
                     signer
                 )
@@ -363,9 +347,9 @@ describe.skip('ContractsModule', () => {
     describe('getLegacyBaseGasPrice Method', () => {
         test('Should get legacy base gas price', async () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
 
-            const gasPrice = await contractsModule.getLegacyBaseGasPrice();
+            const gasPrice = await thorClient.contracts.getLegacyBaseGasPrice();
 
             expect(typeof gasPrice).toBe('string');
             expect(gasPrice).toMatch(/^0x[a-fA-F0-9]+$/);
@@ -373,10 +357,10 @@ describe.skip('ContractsModule', () => {
 
         test('Should handle gas price retrieval errors', async () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
 
             // This test is simplified to avoid complex error mocking
-            const result = await contractsModule.getLegacyBaseGasPrice();
+            const result = await thorClient.contracts.getLegacyBaseGasPrice();
             expect(typeof result).toBe('string');
         });
     });
@@ -384,19 +368,19 @@ describe.skip('ContractsModule', () => {
     describe('Error Handling', () => {
         test('Should throw IllegalArgumentError with proper context for executeCall', async () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const invalidAddress = 'invalid_address' as any;
             const functionAbi = testContractAbi[0];
             const args = ['0x1234567890123456789012345678901234567890'];
 
             await expect(
-                contractsModule.executeCall(invalidAddress, functionAbi, args)
+                thorClient.contracts.executeCall(invalidAddress, functionAbi, args)
             ).rejects.toThrow(IllegalArgumentError);
         });
 
         test('Should throw IllegalArgumentError with proper context for executeTransaction', async () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const invalidSigner = null as any;
             const contractAddress = Address.of(
                 '0x1234567890123456789012345678901234567890'
@@ -405,7 +389,7 @@ describe.skip('ContractsModule', () => {
             const args = ['0x9876543210987654321098765432109876543210', 1000n];
 
             await expect(
-                contractsModule.executeTransaction(
+                thorClient.contracts.executeTransaction(
                     invalidSigner,
                     contractAddress,
                     functionAbi,
@@ -416,11 +400,11 @@ describe.skip('ContractsModule', () => {
 
         test('Should throw IllegalArgumentError with proper context for multiple clauses', async () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const emptyClauses: any[] = [];
 
             await expect(
-                contractsModule.executeMultipleClausesCall(emptyClauses)
+                thorClient.contracts.executeMultipleClausesCall(emptyClauses)
             ).rejects.toThrow(IllegalArgumentError);
         });
     });
@@ -428,7 +412,7 @@ describe.skip('ContractsModule', () => {
     describe('Integration with VeChain SDK', () => {
         test('Should work with VeChain HttpClient', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
 
             expect(contractsModule).toBeInstanceOf(ContractsModule);
         });

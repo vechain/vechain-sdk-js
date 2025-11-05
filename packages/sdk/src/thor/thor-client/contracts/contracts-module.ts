@@ -6,10 +6,6 @@ import { Address, Hex, Revision } from '../../../common/vcdm';
 import { type HttpClient } from '@common/http';
 import { AbstractThorModule } from '../AbstractThorModule';
 import { Contract, ContractFactory } from './model';
-import { InspectClauses } from '@thor/thorest/accounts/methods/InspectClauses';
-import { ExecuteCodesRequest } from '@thor/thorest/accounts/methods/ExecuteCodesRequest';
-import { type ExecuteCodesRequestJSON } from '@thor/thorest/accounts/json';
-import { type ExecuteCodesResponse } from '@thor/thorest/accounts/response';
 import { ClauseBuilder } from '@thor/thor-client/transactions/ClauseBuilder';
 import { TransactionRequest } from '../model/transactions/TransactionRequest';
 import { Clause } from '../model/transactions/Clause';
@@ -99,7 +95,7 @@ class ContractsModule extends AbstractThorModule {
     }
 
     /**
-     * Executes a contract call using VeChain's official InspectClauses method.
+     * Executes a contract call by simulating a transaction through ThorClient.
      * This method allows reading from smart contracts without sending transactions.
      *
      * @param contractAddress - The address of the contract to call.
@@ -198,45 +194,30 @@ class ContractsModule extends AbstractThorModule {
                 null
             );
 
-            // Create the execute codes request
-            const request = new ExecuteCodesRequest([clause], {
-                caller: options?.caller
-            });
-
-            // Execute the call using InspectClauses
+            // Execute the call using ThorClient transactions module (middle layer)
             log.debug({
-                message: 'Creating InspectClauses with request',
-                context: { request: request.toJSON() }
+                message: 'Simulating transaction via ThorClient',
+                context: { clause }
             });
-            let inspectClauses = InspectClauses.of(request);
 
-            // Apply revision if provided
-            if (options?.revision) {
-                inspectClauses = inspectClauses.withRevision(options.revision);
-            }
+            const simulationOptions = {
+                caller: options?.caller,
+                revision: options?.revision
+            };
 
-            log.debug({
-                message: 'InspectClauses created successfully'
-            });
+            const simulationResults =
+                await this.thorClient.transactions.simulateTransaction(
+                    [clause],
+                    simulationOptions
+                );
 
             log.debug({
-                message: 'Making HTTP request'
-            });
-            const response = await inspectClauses.askTo(this.httpClient);
-            log.debug({
-                message: 'HTTP response received',
-                context: { response }
+                message: 'Simulation results received',
+                context: { simulationResults }
             });
 
-            // Process the response
-            const result = response.response;
-            log.debug({
-                message: 'Processing response result',
-                context: { result }
-            });
-
-            if (result.items && result.items.length > 0) {
-                const clauseResult = result.items[0];
+            if (simulationResults && simulationResults.length > 0) {
+                const clauseResult = simulationResults[0];
 
                 if (clauseResult.reverted) {
                     return {
@@ -736,58 +717,6 @@ class ContractsModule extends AbstractThorModule {
                 }
             );
         }
-    }
-
-    /**
-     * Watches for contract events in real-time.
-     *
-     * @deprecated This method is a stub and not fully implemented.
-     * For real-time event watching, use EventsSubscription directly with a WebSocket client:
-     *
-     * @example
-     * ```typescript
-     * import { EventsSubscription } from '@thor/thorest/subscriptions';
-     * import { MozillaWebSocketClient } from '@thor/ws';
-     *
-     * const wsClient = new MozillaWebSocketClient('ws://your-node-url');
-     * const subscription = EventsSubscription.at(wsClient)
-     *     .withContractAddress(address)
-     *     .withFilters(eventTopic0);
-     *
-     * subscription.addListener({
-     *     onMessage: (event) => { ... },
-     *     onError: (error) => { ... },
-     *     onOpen: () => { ... },
-     *     onClose: () => { ... }
-     * });
-     *
-     * subscription.open();
-     * ```
-     *
-     * @param address - The contract address.
-     * @param eventName - The event name to watch.
-     * @param callback - Callback function for events.
-     * @returns Event watcher with unsubscribe method (stub implementation).
-     */
-    public watchContractEvents(
-        address: Address,
-        eventName: string,
-        callback: (event: {
-            address: string;
-            topics: string[];
-            data: string;
-            blockNumber: number;
-            transactionHash: string;
-        }) => void
-    ): { unsubscribe: () => void } {
-        // Note: Full WebSocket event watching requires EventsSubscription with WebSocketClient
-        // This stub is provided for API compatibility but does not perform actual event watching
-        // Use EventsSubscription directly for real-time event monitoring
-        return {
-            unsubscribe: () => {
-                // Stub implementation - no actual subscription to unsubscribe from
-            }
-        };
     }
 
     /**

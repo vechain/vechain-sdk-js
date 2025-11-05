@@ -3,9 +3,9 @@
 // @ts-nocheck
 import { describe, expect, test, jest } from '@jest/globals';
 import {
-    Contract,
-    ContractsModule
+    Contract
 } from '../../../../src/thor/thor-client/contracts';
+import { ThorClient } from '../../../../src/thor/thor-client/ThorClient';
 import { Address } from '../../../../src/common/vcdm';
 import {
     type PublicClient,
@@ -95,6 +95,19 @@ const createMockSigner = () => ({
     sign: jest.fn()
 });
 
+// Mock HttpClient for ThorClient
+const createMockHttpClient = () => ({
+    get: jest.fn(),
+    post: jest.fn(),
+    put: jest.fn(),
+    delete: jest.fn(),
+    options: {},
+    baseURL: 'http://localhost:8669'
+}) as any;
+
+// Helper to create ThorClient for tests
+const createThorClient = () => ThorClient.at(createMockHttpClient());
+
 /**
  * @group unit/contracts
  */
@@ -104,13 +117,13 @@ describe.skip('Contract Advanced Functionality', () => {
     );
     let publicClient: PublicClient;
     let walletClient: WalletClient;
-    let contractsModule: ContractsModule;
+    let thorClient: ThorClient;
     let signer: any;
 
     beforeEach(() => {
         publicClient = createMockPublicClient();
         walletClient = createMockWalletClient();
-        contractsModule = new ContractsModule(publicClient, walletClient);
+        thorClient = createThorClient();
         signer = createMockSigner();
     });
 
@@ -119,7 +132,7 @@ describe.skip('Contract Advanced Functionality', () => {
             const contract = new Contract(
                 contractAddress,
                 complexContractAbi,
-                contractsModule
+                thorClient.contracts
             );
 
             expect(contract.read).toHaveProperty('balanceOf');
@@ -132,7 +145,7 @@ describe.skip('Contract Advanced Functionality', () => {
             const contract = new Contract(
                 contractAddress,
                 complexContractAbi,
-                contractsModule
+                thorClient.contracts
             );
 
             expect(contract.transact).toHaveProperty('transfer');
@@ -145,7 +158,7 @@ describe.skip('Contract Advanced Functionality', () => {
             const contract = new Contract(
                 contractAddress,
                 complexContractAbi,
-                contractsModule
+                thorClient.contracts
             );
 
             expect(contract.clause).toHaveProperty('balanceOf');
@@ -162,7 +175,7 @@ describe.skip('Contract Advanced Functionality', () => {
             const contract = new Contract(
                 contractAddress,
                 complexContractAbi,
-                contractsModule
+                thorClient.contracts
             );
 
             expect(contract.filters).toHaveProperty('Transfer');
@@ -175,7 +188,7 @@ describe.skip('Contract Advanced Functionality', () => {
             const contract = new Contract(
                 contractAddress,
                 complexContractAbi,
-                contractsModule
+                thorClient.contracts
             );
 
             expect(contract.criteria).toHaveProperty('Transfer');
@@ -190,7 +203,7 @@ describe.skip('Contract Advanced Functionality', () => {
             const contract = new Contract(
                 contractAddress,
                 complexContractAbi,
-                contractsModule
+                thorClient.contracts
             );
 
             const balanceOfAbi = contract.getFunctionAbi('balanceOf');
@@ -208,7 +221,7 @@ describe.skip('Contract Advanced Functionality', () => {
             const contract = new Contract(
                 contractAddress,
                 complexContractAbi,
-                contractsModule
+                thorClient.contracts
             );
 
             const transferEventAbi = contract.getEventAbi('Transfer');
@@ -226,7 +239,7 @@ describe.skip('Contract Advanced Functionality', () => {
             const contract = new Contract(
                 contractAddress,
                 complexContractAbi,
-                contractsModule
+                thorClient.contracts
             );
 
             expect(() =>
@@ -238,7 +251,7 @@ describe.skip('Contract Advanced Functionality', () => {
             const contract = new Contract(
                 contractAddress,
                 complexContractAbi,
-                contractsModule
+                thorClient.contracts
             );
 
             expect(() => contract.getEventAbi('NonExistentEvent')).toThrow(
@@ -262,7 +275,7 @@ describe.skip('Contract Advanced Functionality', () => {
             const contract = new Contract(
                 contractAddress,
                 complexContractAbi,
-                contractsModule
+                thorClient.contracts
             );
 
             const client = contract.getPublicClient();
@@ -273,7 +286,7 @@ describe.skip('Contract Advanced Functionality', () => {
             const contract = new Contract(
                 contractAddress,
                 complexContractAbi,
-                contractsModule
+                thorClient.contracts
             );
 
             const client = contract.getWalletClient();
@@ -281,11 +294,11 @@ describe.skip('Contract Advanced Functionality', () => {
         });
 
         test('Should handle missing clients gracefully', () => {
-            const contractsModuleWithoutClients = new ContractsModule();
+            const thorClientWithoutClients = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 complexContractAbi,
-                contractsModuleWithoutClients
+                thorClientWithoutClients.contracts
             );
 
             const publicClient = contract.getPublicClient();
@@ -301,7 +314,7 @@ describe.skip('Contract Advanced Functionality', () => {
             const contract = new Contract(
                 contractAddress,
                 complexContractAbi,
-                contractsModule
+                thorClient.contracts
             );
 
             const options = {
@@ -318,7 +331,7 @@ describe.skip('Contract Advanced Functionality', () => {
             const contract = new Contract(
                 contractAddress,
                 complexContractAbi,
-                contractsModule
+                thorClient.contracts
             );
 
             const options = { value: '1000000000000000000', gas: 2000000 };
@@ -332,7 +345,7 @@ describe.skip('Contract Advanced Functionality', () => {
             const contract = new Contract(
                 contractAddress,
                 complexContractAbi,
-                contractsModule
+                thorClient.contracts
             );
 
             contract.setContractReadOptions({
@@ -348,7 +361,7 @@ describe.skip('Contract Advanced Functionality', () => {
             const contract = new Contract(
                 contractAddress,
                 complexContractAbi,
-                contractsModule
+                thorClient.contracts
             );
 
             contract.setContractTransactOptions({
@@ -366,7 +379,7 @@ describe.skip('Contract Advanced Functionality', () => {
             const contract = new Contract(
                 contractAddress,
                 complexContractAbi,
-                contractsModule
+                thorClient.contracts
             );
 
             contract.setSigner(signer);
@@ -379,7 +392,7 @@ describe.skip('Contract Advanced Functionality', () => {
             const contract = new Contract(
                 contractAddress,
                 complexContractAbi,
-                contractsModule
+                thorClient.contracts
             );
             const newSigner = createMockSigner();
 
@@ -397,7 +410,7 @@ describe.skip('Contract Advanced Functionality', () => {
             const contract = new Contract(
                 contractAddress,
                 emptyAbi,
-                contractsModule
+                thorClient.contracts
             );
 
             expect(contract.abi).toEqual(emptyAbi);
@@ -416,7 +429,7 @@ describe.skip('Contract Advanced Functionality', () => {
             const contract = new Contract(
                 contractAddress,
                 malformedAbi,
-                contractsModule
+                thorClient.contracts
             );
 
             expect(contract.abi).toBe(malformedAbi);
