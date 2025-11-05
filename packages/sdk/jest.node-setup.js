@@ -1,11 +1,7 @@
 // Jest setup for Node.js environment
-require('whatwg-fetch');
-const fetchMock = require('jest-fetch-mock');
 const WebSocket = require('ws');
 const { LoggerRegistry, PrettyLogger } = require('@common/logging');
 
-// Don't auto-enable fetch mocks
-fetchMock.dontMock();
 
 // Polyfill WebSocket for Node.js environment
 if (typeof global !== 'undefined' && typeof global.WebSocket === 'undefined') {
