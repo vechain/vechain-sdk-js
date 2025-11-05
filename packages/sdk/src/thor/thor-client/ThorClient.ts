@@ -72,6 +72,7 @@ class ThorClient {
         this.logs.setThorClient(this);
         this.nodes.setThorClient(this);
         this.contracts.setThorClient(this);
+        this.transactions.setThorClient(this);
     }
 
     /**

@@ -2,10 +2,7 @@
 // TODO: These tests are temporarily disabled pending contracts module rework
 // @ts-nocheck
 import { describe, expect, test, jest } from '@jest/globals';
-import {
-    Contract,
-    ContractsModule
-} from '../../../../src/thor/thor-client/contracts';
+import { Contract } from '../../../../src/thor/thor-client/contracts';
 import { Address } from '../../../../src/common/vcdm';
 
 // Mock HttpClient
@@ -91,7 +88,7 @@ describe.skip('Contract', () => {
     describe('Constructor and Basic Properties', () => {
         test('Should create contract instance with required properties', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const signer = createMockSigner();
 
             const contract = new Contract(
@@ -109,7 +106,7 @@ describe.skip('Contract', () => {
 
         test('Should create contract without signer', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
 
             const contract = new Contract(
                 contractAddress,
@@ -124,7 +121,7 @@ describe.skip('Contract', () => {
     describe('Contract Options Management', () => {
         test('Should set and get contract read options', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 testingContractAbi,
@@ -140,7 +137,7 @@ describe.skip('Contract', () => {
 
         test('Should clear contract read options', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 testingContractAbi,
@@ -155,7 +152,7 @@ describe.skip('Contract', () => {
 
         test('Should set and get contract transaction options', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 testingContractAbi,
@@ -173,7 +170,7 @@ describe.skip('Contract', () => {
 
         test('Should clear contract transaction options', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 testingContractAbi,
@@ -190,7 +187,7 @@ describe.skip('Contract', () => {
     describe('Signer Management', () => {
         test('Should set and get signer', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 testingContractAbi,
@@ -208,7 +205,7 @@ describe.skip('Contract', () => {
     describe('ABI Parsing', () => {
         test('Should get function ABI by name', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 testingContractAbi,
@@ -228,7 +225,7 @@ describe.skip('Contract', () => {
 
         test('Should throw error for non-existent function', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 testingContractAbi,
@@ -242,7 +239,7 @@ describe.skip('Contract', () => {
 
         test('Should get event ABI by name', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 testingContractAbi,
@@ -265,7 +262,7 @@ describe.skip('Contract', () => {
 
         test('Should throw error for non-existent event', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 testingContractAbi,
@@ -281,7 +278,7 @@ describe.skip('Contract', () => {
     describe('Method Initialization', () => {
         test('Should initialize read methods for view/pure functions', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 testingContractAbi,
@@ -299,7 +296,7 @@ describe.skip('Contract', () => {
 
         test('Should initialize transact methods for payable/nonpayable functions', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 testingContractAbi,
@@ -317,7 +314,7 @@ describe.skip('Contract', () => {
 
         test('Should initialize clause methods for all functions', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 testingContractAbi,
@@ -337,7 +334,7 @@ describe.skip('Contract', () => {
 
         test('Should initialize filter and criteria methods for events', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 testingContractAbi,
@@ -355,7 +352,7 @@ describe.skip('Contract', () => {
     describe('Method Execution (Stub Behavior)', () => {
         test('Should execute read method with console logging', async () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 testingContractAbi,
@@ -374,7 +371,7 @@ describe.skip('Contract', () => {
 
         test('Should execute transact method with console logging', async () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 testingContractAbi,
@@ -392,7 +389,7 @@ describe.skip('Contract', () => {
 
         test('Should execute clause method with console logging', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 testingContractAbi,
@@ -416,7 +413,7 @@ describe.skip('Contract', () => {
 
         test('Should execute filter method with console logging', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 testingContractAbi,
@@ -444,7 +441,7 @@ describe.skip('Contract', () => {
     describe('VeChain SDK Integration', () => {
         test('Should work with ContractsModule', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 testingContractAbi,
@@ -458,7 +455,7 @@ describe.skip('Contract', () => {
 
         test('Should maintain reference to signer', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const signer = createMockSigner();
             const contract = new Contract(
                 contractAddress,

@@ -18,7 +18,7 @@ import {
 import { type DecodedEventLog } from '@thor/thor-client/model/logs/DecodedEventLog';
 import { Clause } from '@thor/thor-client/model/transactions/Clause';
 // Import the middle-layer contracts module
-import { ContractsModule } from '@thor/thor-client/contracts';
+import { ThorClient } from '@thor/thor-client/ThorClient';
 import { Contract as VeChainContract } from '@thor/thor-client/contracts/model/contract';
 import { ContractCallOptions } from '@thor/thor-client/contracts/types';
 import { TransactionRequest } from '@thor/thor-client/model/transactions/TransactionRequest';
@@ -179,7 +179,7 @@ function getContract<const TAbi extends Abi>({
         );
     }
 
-    // Create the underlying VeChain contract instance using the middle layer
+    // Create the underlying VeChain contract instance using ThorClient
     // Use the HttpClient from the viem clients (either publicClient or walletClient)
     let httpClient =
         (publicClient as any)?.httpClient || (walletClient as any)?.httpClient;
@@ -203,8 +203,8 @@ function getContract<const TAbi extends Abi>({
         }
     }
 
-    const contractsModule = new ContractsModule(httpClient);
-    const vechainContract = contractsModule.load(address, abi);
+    const thorClient = ThorClient.at(httpClient);
+    const vechainContract = thorClient.contracts.load(address, abi);
 
     // Initialize properties
     const readMethods: Record<
