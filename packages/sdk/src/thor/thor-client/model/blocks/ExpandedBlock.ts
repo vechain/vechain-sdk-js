@@ -8,7 +8,6 @@ import { BlockTransaction } from './BlockTransaction';
  */
 class ExpandedBlock extends BaseBlock {
     readonly transactions: BlockTransaction[];
-    private readonly _response: ExpandedBlockResponse;
 
     /**
      * Constructs a new instance of the class from the thorest response.
@@ -20,7 +19,6 @@ class ExpandedBlock extends BaseBlock {
         this.transactions = response.transactions.map((tx: TxWithReceipt) =>
             BlockTransaction.fromThorest(tx)
         );
-        this._response = response;
     }
 
     /**

@@ -7,7 +7,6 @@ import { BaseBlock } from './BaseBlock';
  */
 class Block extends BaseBlock {
     readonly transactions: HexUInt32[];
-    private readonly _response: RegularBlockResponse;
 
     /**
      * Constructs a new instance of the class from the thorest response.
@@ -19,7 +18,6 @@ class Block extends BaseBlock {
         this.transactions = response.transactions.map((hex: Hex) =>
             HexUInt32.of(hex)
         );
-        this._response = response;
     }
 
     /**

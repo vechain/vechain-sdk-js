@@ -47,8 +47,6 @@ class TransactionReceipt {
      */
     readonly meta: TransactionReceiptMeta;
 
-    private readonly _response: GetTxReceiptResponse;
-
     /**
      * Creates a new instance of the class using the provided parameters.
      *
@@ -60,7 +58,6 @@ class TransactionReceipt {
      * @param {boolean} reverted - Indicates whether the transaction was reverted (true means reverted).
      * @param {TransactionReceiptOutput[]} outputs - An array of outputs produced by the transaction.
      * @param {TransactionReceiptMeta} meta - The transaction receipt metadata.
-     * @param {GetTxReceiptResponse} response - The underlying thorest response.
      */
     // eslint-disable-next-line sonarjs/sonar-max-params
     constructor(
@@ -71,8 +68,7 @@ class TransactionReceipt {
         reward: bigint,
         reverted: boolean,
         outputs: TransactionReceiptOutput[],
-        meta: TransactionReceiptMeta,
-        response: GetTxReceiptResponse
+        meta: TransactionReceiptMeta
     ) {
         this.type = type;
         this.gasUsed = gasUsed;
@@ -82,7 +78,6 @@ class TransactionReceipt {
         this.reverted = reverted;
         this.outputs = outputs;
         this.meta = meta;
-        this._response = response;
     }
 
     /**
@@ -102,8 +97,7 @@ class TransactionReceipt {
             response.outputs.map((output) =>
                 TransactionReceiptOutput.of(output)
             ),
-            TransactionReceiptMeta.of(response.meta),
-            response
+            TransactionReceiptMeta.of(response.meta)
         );
     }
 }
