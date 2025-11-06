@@ -42,16 +42,6 @@ class Block extends BaseBlock {
     ): Block | null {
         return response === null ? null : new Block(response);
     }
-
-    /**
-     * Returns the underlying thorest response.
-     * Useful for viem compatibility layer.
-     *
-     * @returns {RegularBlockResponse} The underlying thorest response.
-     */
-    public toResponse(): RegularBlockResponse {
-        return this._response;
-    }
 }
 
 export { Block };

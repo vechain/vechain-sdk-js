@@ -34,16 +34,6 @@ class ExpandedBlock extends BaseBlock {
     ): ExpandedBlock | null {
         return response === null ? null : new ExpandedBlock(response);
     }
-
-    /**
-     * Returns the underlying thorest response.
-     * Useful for viem compatibility layer.
-     *
-     * @returns {ExpandedBlockResponse} The underlying thorest response.
-     */
-    public toResponse(): ExpandedBlockResponse {
-        return this._response;
-    }
 }
 
 export { ExpandedBlock };

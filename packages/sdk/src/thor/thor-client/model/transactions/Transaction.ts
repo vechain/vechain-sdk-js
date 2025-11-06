@@ -86,9 +86,6 @@ class Transaction {
      * Transaction metadata such as block number, block timestamp, etc.
      */
     readonly meta: TransactionMeta | null;
-
-    private readonly _response: GetTxResponse;
-
     /**
      * Creates a new Transaction instance.
      * @param data - The GetTxResponse to create the Transaction from.
@@ -110,17 +107,6 @@ class Transaction {
         this.dependsOn = data.dependsOn;
         this.nonce = data.nonce;
         this.meta = data.meta !== null ? new TransactionMeta(data.meta) : null;
-        this._response = data;
-    }
-
-    /**
-     * Returns the underlying thorest response.
-     * Useful for viem compatibility layer.
-     *
-     * @returns {GetTxResponse} The underlying thorest response.
-     */
-    public toResponse(): GetTxResponse {
-        return this._response;
     }
 }
 

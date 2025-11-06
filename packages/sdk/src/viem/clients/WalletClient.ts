@@ -17,15 +17,17 @@ import { PublicClient, type PublicClientConfig } from './PublicClient';
 const FQP = 'packages/sdk/src/viem/clients/WalletClient.ts!';
 
 /**
- * Creates a new instance of the WalletClient configured with the provided parameters.
+ * Creates a viem-compatible WalletClient for VeChain.
  *
- * @param {Object} config - Configuration object for the WalletClient.
- * @param {string} config.network - The network endpoint or base URL for the wallet client.
- * @param {Object} [config.transport] - Optional transport layer instance for handling network requests.
- * @param {Object|null} [config.account] - Optional account object associated with the wallet client.
- * @return {WalletClient} A new instance of WalletClient configured with the specified network, transport, and account.
+ * Extends PublicClient with account-specific operations for signing and sending transactions.
  *
- * @see https://viem.sh/docs/clients/wallet#wallet-client
+ * @param {WalletClientConfig} config - Configuration object.
+ * @param {URL | ThorNetworks} config.network - Network URL or ThorNetworks enum.
+ * @param {HttpClient} config.transport - Custom HTTP transport (optional, defaults to FetchHttpClient).
+ * @param {Account} config.account - Account for signing transactions (optional).
+ * @returns {WalletClient} A configured WalletClient instance.
+ *
+ * @see {@link https://viem.sh/docs/clients/wallet | Viem WalletClient}
  */
 function createWalletClient({
     network,
@@ -119,9 +121,10 @@ class WalletClient extends PublicClient {
     }
 
     /**
-     * Returns a list of account addresses owned by the wallet or client.
+     * Gets the account addresses associated with this wallet.
      *
-     * @see https://viem.sh/docs/actions/wallet/getAddresses
+     * @returns {Address[]} Array containing the wallet's address, or empty array if no account.
+     * @see {@link https://viem.sh/docs/actions/wallet/getAddresses | Viem getAddresses}
      */
     public getAddresses(): Address[] {
         return this.account != null ? [Address.of(this.account.address)] : [];
@@ -146,13 +149,12 @@ class WalletClient extends PublicClient {
     }
 
     /**
-     * Prepares a transaction request by constructing and returning a `TransactionRequest` object.
+     * Prepares a transaction request for signing.
      *
-     * @param {PrepareTransactionRequestRequest} request - The request object containing details necessary to prepare the transaction.
-     * @return {TransactionRequest} The prepared transaction request object with all required properties set, ready for execution.
-     * @throws {UnsupportedOperationError} Throws an error if the provided request object is invalid.
-     *
-     * @see https://viem.sh/docs/actions/wallet/prepareTransactionRequest
+     * @param {PrepareTransactionRequestRequest} request - Transaction parameters.
+     * @returns {TransactionRequest} The prepared transaction request.
+     * @throws {UnsupportedOperationError} If the request parameters are invalid.
+     * @see {@link https://viem.sh/docs/actions/wallet/prepareTransactionRequest | Viem prepareTransactionRequest}
      */
     public prepareTransactionRequest(
         request: PrepareTransactionRequestRequest
@@ -237,13 +239,11 @@ class WalletClient extends PublicClient {
     }
 
     /**
-     * Sends a raw transaction to the network through the provided HTTP client.
+     * Sends a raw signed transaction to the network.
      *
-     * @param {Hex} raw - The raw hexadecimal representation of the transaction to be sent.
-     * @return {Promise<Hex>} A promise that resolves with the transaction ID in hexadecimal format.
-     * @throws ThorError if the response is invalid or the request fails.
-     *
-     * @see https://viem.sh/docs/actions/wallet/sendRawTransaction
+     * @param {Hex} raw - The RLP-encoded signed transaction.
+     * @returns {Promise<Hex>} The transaction hash.
+     * @see {@link https://viem.sh/docs/actions/wallet/sendRawTransaction | Viem sendRawTransaction}
      */
     public async sendRawTransaction(raw: Hex): Promise<Hex> {
         const txId = await this.thorClient.transactions.sendRawTransaction(raw);
@@ -251,20 +251,14 @@ class WalletClient extends PublicClient {
     }
 
     /**
-     * Sends a transaction request to the blockchain network.
-     * The transaction request can either be
-     * - a prepared transaction request to be signed and sent,
-     * - a signed transaction request to be sponsored and sent.
+     * Signs and sends a transaction to the network.
      *
-     * @param {PrepareTransactionRequestRequest | TransactionRequest} request - The transaction request object.
-     * This can either be a prepared transaction request to be signed or a signed transaction request to be sponsored.
-     * @return {Promise<Hex>} A promise that resolves to the transaction hash (Hex) of the sent transaction.
-     * @throws {ThorError} If the transaction fails to send or the response is invalid.
-     * @throws {UnsupportedOperationError} If the account is not set.
+     * Handles both unsigned transactions (which will be signed) and signed transactions (for sponsorship).
      *
-     * @see https://viem.sh/docs/actions/wallet/sendTransaction
-     * @see signTransaction
-     * @see sendRawTransaction
+     * @param {PrepareTransactionRequestRequest | TransactionRequest} request - Transaction to sign and send.
+     * @returns {Promise<Hex>} The transaction hash.
+     * @throws {UnsupportedOperationError} If no account is configured.
+     * @see {@link https://viem.sh/docs/actions/wallet/sendTransaction | Viem sendTransaction}
      */
     public async sendTransaction(
         request: PrepareTransactionRequestRequest | TransactionRequest
@@ -279,19 +273,13 @@ class WalletClient extends PublicClient {
 
     /**
      * Signs a transaction request.
-     * - If the transaction is intended to be sponsored,
-     *   - if the beggar address is equal to the signer address, signs as origin/sender;
-     *   - if the beggar address differs from the signer address, signs as gas payer.
-     * - If the transaction is not intended to be sponsored, signs as origin/sender.
      *
-     * @param {TransactionRequest} transactionRequest - The transaction request object to be signed.
-     * @return {Promise<Hex>} The hexadecimal expression of the RLP encoded signed transaction request object.
-     * @throws {VeChainSDKError} Throws an error if the signing process fails.
+     * For sponsored transactions, signs as origin (sender) or gas payer based on the beggar address.
+     * For regular transactions, signs as the origin.
      *
-     * @security Security auditable method, depends on
-     * - {@link WalletClient.finalize};
-     * - {@link WalletClient.signAsGasPayer};
-     * - {@link WalletClient.signAsOrigin}.
+     * @param {TransactionRequest} transactionRequest - The transaction to sign.
+     * @returns {Promise<Hex>} The RLP-encoded signed transaction.
+     * @throws {UnsupportedOperationError} If no account is configured.
      */
     public async signTransaction(
         transactionRequest: TransactionRequest

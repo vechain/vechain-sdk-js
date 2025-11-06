@@ -29,16 +29,6 @@ class RawBlock {
     ): RawBlock | null {
         return response === null ? null : new RawBlock(response);
     }
-
-    /**
-     * Returns the underlying thorest response.
-     * Useful for viem compatibility layer.
-     *
-     * @returns {RawBlockResponse} The underlying thorest response.
-     */
-    public toResponse(): RawBlockResponse {
-        return this._response;
-    }
 }
 
 export { RawBlock };

@@ -22,6 +22,7 @@ import { ThorClient } from '@thor/thor-client/ThorClient';
 import { Contract as VeChainContract } from '@thor/thor-client/contracts/model/contract';
 import { ContractCallOptions } from '@thor/thor-client/contracts/types';
 import { TransactionRequest } from '@thor/thor-client/model/transactions/TransactionRequest';
+import { log } from '@common/logging';
 
 // Type alias for function arguments
 type FunctionArgs = AbiParameter[];
@@ -143,27 +144,33 @@ export interface Contract<TAbi extends Abi> {
 }
 
 /**
- * Creates a viem-compatible contract instance that uses the official VeChain contracts module as backend
+ * Creates a viem-compatible contract instance for VeChain.
  *
- * @param config Contract configuration including address, ABI and clients
- * @returns A viem-compatible contract instance powered by VeChain's official contracts module
+ * Provides a viem-like interface while using the VeChain contracts module internally.
+ * Supports both read operations (with publicClient) and write operations (with walletClient).
+ *
+ * @template TAbi - The contract ABI type.
+ * @param {ContractConfig<TAbi>} config - Contract configuration.
+ * @param {Address} config.address - The contract address.
+ * @param {TAbi} config.abi - The contract ABI.
+ * @param {PublicClient} config.publicClient - Public client for read operations (optional).
+ * @param {WalletClient} config.walletClient - Wallet client for write operations (optional).
+ * @returns {Contract<TAbi>} A viem-compatible contract instance.
+ * @throws {Error} If neither publicClient nor walletClient is provided.
  *
  * @example
- * ```ts
- * import { getContract } from '@vechain/sdk';
- *
+ * ```typescript
  * const contract = getContract({
- *   address: '0x...',
+ *   address: Address.of('0x...'),
  *   abi: [...],
- *   publicClient,
+ *   publicClient
  * });
  *
- * // viem-compatible interface
- * const value = await contract.read.balanceOf(['0x...']);
+ * // Read contract state
+ * const balance = await contract.read.balanceOf([address]);
  *
- * // VeChain-specific features
- * contract._vechain?.setReadOptions({ revision: 'best' });
- * const clause = contract._vechain?.clause.transfer('0x...', 100n);
+ * // Write to contract (requires walletClient)
+ * const tx = contract.write.transfer({ args: [recipient, amount] });
  * ```
  */
 function getContract<const TAbi extends Abi>({
@@ -174,9 +181,18 @@ function getContract<const TAbi extends Abi>({
 }: ContractConfig<TAbi>): Contract<TAbi> {
     // Validate that at least one client is provided
     if (publicClient == null && walletClient == null) {
-        throw new Error(
-            'At least one of publicClient or walletClient must be provided'
-        );
+        const errorMessage =
+            'At least one of publicClient or walletClient must be provided';
+        log.error({
+            message: errorMessage,
+            source: 'ContractAdapter.getContract',
+            context: {
+                address: address.toString(),
+                hasPublicClient: publicClient != null,
+                hasWalletClient: walletClient != null
+            }
+        });
+        throw new Error(errorMessage);
     }
 
     // Create the underlying VeChain contract instance using ThorClient

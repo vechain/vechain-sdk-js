@@ -106,16 +106,6 @@ class TransactionReceipt {
             response
         );
     }
-
-    /**
-     * Returns the underlying thorest response.
-     * Useful for viem compatibility layer.
-     *
-     * @returns {GetTxReceiptResponse} The underlying thorest response.
-     */
-    public toResponse(): GetTxReceiptResponse {
-        return this._response;
-    }
 }
 
 export { TransactionReceipt };
