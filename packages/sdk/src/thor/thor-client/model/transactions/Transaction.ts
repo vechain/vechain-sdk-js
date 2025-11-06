@@ -86,7 +86,6 @@ class Transaction {
      * Transaction metadata such as block number, block timestamp, etc.
      */
     readonly meta: TransactionMeta | null;
-
     /**
      * Creates a new Transaction instance.
      * @param data - The GetTxResponse to create the Transaction from.
