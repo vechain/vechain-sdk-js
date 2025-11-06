@@ -413,8 +413,9 @@ class PublicClient {
      */
     public async suggestPriorityFeeRequest(): Promise<bigint> {
         // viem specific
-        const gasModule = this.thorClient.gas;
-        const gas = await gasModule.suggestPriorityFeeRequest();
+        const thorClient = ThorClient.at(this.httpClient);
+        const gasModule = thorClient.gas;
+        const gas = await gasModule.getSuggestedMaxPriorityFeePerGas();
         return gas;
     }
 

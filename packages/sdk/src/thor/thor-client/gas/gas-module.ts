@@ -1,8 +1,4 @@
-import {
-    RetrieveHistoricalFeeData,
-    SuggestPriorityFee,
-    ThorError
-} from '@thor/thorest';
+import { RetrieveHistoricalFeeData, SuggestPriorityFee } from '@thor/thorest';
 import { type Address, HexUInt, Revision } from '@common/vcdm';
 import { IllegalArgumentError, NoSuchElementError } from '@common/errors';
 import { AbstractThorModule } from '@thor/thor-client/AbstractThorModule';
@@ -17,6 +13,7 @@ import {
     type EstimateGasOptions
 } from '@thor/thor-client/model/gas';
 import { decodeRevertReason } from './helpers/decode-evm-error';
+import { log } from '@common/logging';
 
 const FQP = 'packages/sdk/src/thor/thor-client/gas/gas-module.ts';
 
@@ -71,9 +68,18 @@ class GasModule extends AbstractThorModule {
                 }
                 return sum;
             }, GasModule.GAS_CONSTANTS.TX_GAS);
+            log.debug({
+                message: 'Computed intrinsic gas',
+                source: 'GasModule.computeIntrinsicGas',
+                context: { totalGas, clauses }
+            });
             return totalGas;
         }
         // No clauses.
+        log.warn({
+            message: 'No clauses provided, using default gas constants',
+            source: 'GasModule.computeIntrinsicGas'
+        });
         return (
             GasModule.GAS_CONSTANTS.TX_GAS + GasModule.GAS_CONSTANTS.CLAUSE_GAS
         );
@@ -84,6 +90,7 @@ class GasModule extends AbstractThorModule {
      *
      * @param request - The execute codes request containing transaction details.
      * @returns The execution response containing gas usage and other details.
+     * @throws {IllegalArgumentError} If clauses are empty or options are invalid.
      */
     public async estimateGas(
         clauses: Clause[],
@@ -92,6 +99,10 @@ class GasModule extends AbstractThorModule {
     ): Promise<EstimateGasResult> {
         // check if clauses are empty
         if (clauses.length === 0) {
+            log.warn({
+                message: 'Clauses are empty, using default gas constants',
+                source: 'GasModule.estimateGas'
+            });
             throw new IllegalArgumentError(
                 `${FQP}.estimateGas()`,
                 'Clauses cannot be empty.',
@@ -102,6 +113,11 @@ class GasModule extends AbstractThorModule {
         if (options !== undefined) {
             if (options.gasPadding !== undefined) {
                 if (options.gasPadding > 1 || options.gasPadding < 0) {
+                    log.error({
+                        message: 'Invalid gas padding',
+                        source: 'GasModule.estimateGas',
+                        context: { gasPadding: options.gasPadding }
+                    });
                     throw new IllegalArgumentError(
                         `${FQP}.estimateGas()`,
                         'Gas padding must be between 0 and 1.',
@@ -159,6 +175,14 @@ class GasModule extends AbstractThorModule {
                   revertReasons: [],
                   vmErrors: []
               };
+        log.debug({
+            message: 'Estimated gas',
+            source: 'GasModule.estimateGas',
+            context: {
+                totalGas: result.totalGas.toString(),
+                reverted: result.reverted
+            }
+        });
         return result;
     }
 
@@ -201,6 +225,7 @@ class GasModule extends AbstractThorModule {
     /**
      * Computes maxFeePerGas and maxPriorityFeePerGas for a transaction.
      * This is based on the current block base fee and fee history.
+     * @throws {IllegalArgumentError} If next block base fee is not available.
      *
      * @returns {MaxFeePrices} The maximum fee prices
      */
@@ -211,6 +236,10 @@ class GasModule extends AbstractThorModule {
         // get next block base fee
         const nextBlockBaseFee = await this.getNextBlockBaseFeePerGas();
         if (nextBlockBaseFee === null) {
+            log.error({
+                message: 'Next block base fee is not available',
+                source: 'GasModule.computeMaxFeePrices'
+            });
             throw new IllegalArgumentError(
                 `${FQP}.computeMaxFeePrices()`,
                 'Next block base fee is not available.',
@@ -222,6 +251,14 @@ class GasModule extends AbstractThorModule {
         // maxFeePerGas = 1.12 * baseFeePerGas + maxPriorityFeePerGas
         const maxFeePerGas =
             (112n * nextBlockBaseFee) / 100n + maxPriorityFeePerGas;
+        log.debug({
+            message: 'Computed max fee prices',
+            source: 'GasModule.computeMaxFeePrices',
+            context: {
+                maxFeePerGas: maxFeePerGas.toString(),
+                maxPriorityFeePerGas: maxPriorityFeePerGas.toString()
+            }
+        });
         return {
             maxFeePerGas,
             maxPriorityFeePerGas
@@ -320,6 +357,11 @@ class GasModule extends AbstractThorModule {
             !Number.isFinite(blockCount) ||
             blockCount <= 0
         ) {
+            log.error({
+                message: 'Invalid blockCount parameter',
+                source: 'GasModule.getFeeHistory',
+                context: { blockCount }
+            });
             throw new IllegalArgumentError(
                 `${FQP}.getFeeHistory()`,
                 'Invalid blockCount parameter. Must be a positive finite number.',
@@ -348,25 +390,33 @@ class GasModule extends AbstractThorModule {
 
     /**
      * Returns the base fee per gas of the next block.
-     *
-     * @returns The base fee per gas of the next block, or null if not available.
+     * @throws {NoSuchElementError} If base fee per gas for next block is not available.
+     * @returns The base fee per gas of the next block
      */
-    public async suggestPriorityFeeRequest(): Promise<bigint> {
-        const feeHistory = await this.getFeeHistory(1, Revision.of('next'));
-
+    public async getNextBlockBaseFeePerGas(): Promise<bigint> {
+        const feeHistory = await this.getFeeHistory(1, Revision.NEXT);
         if (
             feeHistory.baseFeePerGas === null ||
             feeHistory.baseFeePerGas === undefined ||
             feeHistory.baseFeePerGas.length === 0
         ) {
+            log.error({
+                message: 'Base fee per gas for next block is not available',
+                source: 'GasModule.getNextBlockBaseFeePerGas'
+            });
             throw new NoSuchElementError(
-                `${FQP}.suggestPriorityFeeRequest()`,
+                `${FQP}.getNextBlockBaseFeePerGas()`,
                 'Base fee per gas for next block is not available.',
                 { newestBlock: 'next' }
             );
         }
-
-        return feeHistory.baseFeePerGas[0];
+        const baseFeePerGas = feeHistory.baseFeePerGas[0];
+        log.debug({
+            message: 'Next block base fee per gas',
+            source: 'GasModule.getNextBlockBaseFeePerGas',
+            context: { baseFeePerGas: baseFeePerGas.toString() }
+        });
+        return baseFeePerGas;
     }
 
     /**
@@ -374,12 +424,17 @@ class GasModule extends AbstractThorModule {
      *
      * @param {Revision} revision - The revision to get the base fee per gas for.
      * @returns {bigint} The base fee per gas of the given revision.
-     * @throws {IllegalArgumentError} If the revision is NEXT
+     * @throws {IllegalArgumentError} If the revision is Next , block is not available, or block is prior to galactica hardfork
      */
     public async getBaseFeePerGas(
         revision: Revision = Revision.BEST
     ): Promise<bigint> {
         if (revision === Revision.NEXT) {
+            log.error({
+                message: 'Next block base fee is not available',
+                source: 'GasModule.getBaseFeePerGas',
+                context: { revision }
+            });
             throw new IllegalArgumentError(
                 `${FQP}.getBaseFeePerGas()`,
                 'Next block base fee is not available.',
@@ -387,38 +442,38 @@ class GasModule extends AbstractThorModule {
             );
         }
         // this needs changing eventually to use the blocks module
-        const response = await this.httpClient.get(
-            { path: `/blocks/${revision}` },
-            { query: '' }
-        );
-        if (!response.ok) {
-            throw new ThorError(
-                'GasModule.getBaseFeePerGas()',
-                'Network error: failed to get base fee per gas',
-                { revision },
-                undefined,
-                response.status
+        const block = await this.thorClient.blocks.getBlock(revision);
+        if (block === null) {
+            log.error({
+                message: 'Block is not available',
+                source: 'GasModule.getBaseFeePerGas',
+                context: { revision }
+            });
+            throw new IllegalArgumentError(
+                `${FQP}.getBaseFeePerGas()`,
+                'Block is not available.',
+                { revision }
             );
         }
-        const blockData = await response.json();
-        return BigInt(blockData.baseFeePerGas);
-    }
-
-    /**
-     * Returns the base fee per gas of the next block.
-     * This is a convenience method that calls getFeeHistory
-     * @returns The base fee per gas of the next block.
-     */
-    public async getNextBlockBaseFeePerGas(): Promise<bigint | null> {
-        const feeHistory = await this.getFeeHistory(1, Revision.NEXT);
-        if (
-            feeHistory.baseFeePerGas === null ||
-            feeHistory.baseFeePerGas === undefined ||
-            feeHistory.baseFeePerGas.length === 0
-        ) {
-            return null;
+        const baseFeePerGas = block.baseFeePerGas;
+        if (baseFeePerGas === undefined) {
+            log.error({
+                message: 'Base fee per gas is not available',
+                source: 'GasModule.getBaseFeePerGas',
+                context: { revision }
+            });
+            throw new NoSuchElementError(
+                `${FQP}.getBaseFeePerGas()`,
+                'Base fee per gas is not available.',
+                { revision }
+            );
         }
-        return HexUInt.of(feeHistory.baseFeePerGas[0]).bi;
+        log.debug({
+            message: 'Base fee per gas',
+            source: 'GasModule.getBaseFeePerGas',
+            context: { revision, baseFeePerGas: baseFeePerGas?.toString() }
+        });
+        return baseFeePerGas;
     }
 }
 
