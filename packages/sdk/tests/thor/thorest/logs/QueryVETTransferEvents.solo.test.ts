@@ -6,8 +6,8 @@ import {
 } from '@thor/thorest';
 import { FetchHttpClient } from '@common/http';
 import { TransferLogFilter } from '@thor/thor-client/model/logs/TransferLogFilter';
-import { FilterRangeUnits } from '@thor/thorest/logs/response/FilterRangeUnits';
 import { FilterRange } from '@thor/thor-client/model/logs/FilterRange';
+import { FilterRangeUnits } from '@thor/thor-client/model/logs/FilterRangeUnits';
 import { LogSort } from '@thor/thor-client/model/logs/LogSort';
 
 /**

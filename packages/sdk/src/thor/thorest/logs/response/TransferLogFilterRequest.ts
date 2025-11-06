@@ -2,7 +2,7 @@ import {
     FilterOptionsRequest,
     FilterRangeRequest,
     TransferCriteriaRequest,
-    type LogSort
+    type LogSortRequest
 } from '@thor/thorest';
 import { type TransferLogFilterRequestJSON } from '@thor/thorest/json';
 import { type TransferLogFilter } from '@thor/thor-client/model/logs/TransferLogFilter';
@@ -33,7 +33,7 @@ class TransferLogFilterRequest {
     /**
      * Specifies the order of the results. Use asc for ascending order, and desc for descending order.
      */
-    readonly order?: LogSort;
+    readonly order?: LogSortRequest;
 
     /**
      * Constructs an instance of the class.
@@ -47,7 +47,7 @@ class TransferLogFilterRequest {
         range?: FilterRangeRequest,
         options?: FilterOptionsRequest,
         criteriaSet?: TransferCriteriaRequest[],
-        order?: LogSort
+        order?: LogSortRequest
     ) {
         this.range = range;
         this.options = options;
@@ -78,7 +78,9 @@ class TransferLogFilterRequest {
                       TransferCriteriaRequest.of(criteria)
                   )
                 : undefined,
-            filter.order ?? undefined
+            filter.order != null
+                ? (filter.order as unknown as LogSortRequest)
+                : undefined
         );
     }
 

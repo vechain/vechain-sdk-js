@@ -15,3 +15,4 @@ export * from './Revision';
 export * from './Txt';
 export * from './UInt';
 export type * from './VeChainDataModel';
+export * from './RevisionType';

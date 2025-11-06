@@ -1,6 +1,7 @@
 import {
     FilterOptionsRequest,
     FilterRangeRequest,
+    LogSortRequest,
     QueryVETTransferEvents,
     ThorError,
     TransferCriteriaRequest,
@@ -13,7 +14,7 @@ import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { Address } from '@common/vcdm';
 import { LogSort } from '@thor/thor-client/model/logs/LogSort';
 import { type TransferLogsResponseJSON } from '@thor/thorest/json';
-import { FilterRangeUnits } from '@thor/thorest/logs/response/FilterRangeUnits';
+import { FilterRangeRequestUnits } from '@thor/thorest/logs/response/FilterRangeRequestUnits';
 
 const mockHttpClient = <T>(response: T): HttpClient => {
     return {
@@ -39,7 +40,7 @@ describe('QueryVERTransferEvents UNIT tests', () => {
         const status = 400;
         // Valid request, mock error response.
         const request = new TransferLogFilterRequest(
-            new FilterRangeRequest(FilterRangeUnits.block, 0, 0)
+            new FilterRangeRequest(FilterRangeRequestUnits.block, 0, 0)
         );
         try {
             const query = new QueryVETTransferEvents(request);
@@ -54,7 +55,11 @@ describe('QueryVERTransferEvents UNIT tests', () => {
 
     test('ok <- askTo - not empty', async () => {
         const filter = new TransferLogFilterRequest(
-            new FilterRangeRequest(FilterRangeUnits.block, 17240365, 17289864),
+            new FilterRangeRequest(
+                FilterRangeRequestUnits.block,
+                17240365,
+                17289864
+            ),
             new FilterOptionsRequest(0, 100, true),
             [
                 new TransferCriteriaRequest(
@@ -63,7 +68,7 @@ describe('QueryVERTransferEvents UNIT tests', () => {
                     Address.of('0x6d95E6dCa01D109882fe1726A2fb9865Fa41e7aA')
                 )
             ],
-            LogSort.asc
+            LogSortRequest.asc
         );
         const expected = [
             {
@@ -94,7 +99,7 @@ describe('QueryVERTransferEvents UNIT tests', () => {
 
     test('ok <- askTo -  empty', async () => {
         const filter = new TransferLogFilterRequest(
-            new FilterRangeRequest(FilterRangeUnits.block, 0, 0)
+            new FilterRangeRequest(FilterRangeRequestUnits.block, 0, 0)
         );
         const expected = [] satisfies TransferLogsResponseJSON;
         const query = new QueryVETTransferEvents(filter);

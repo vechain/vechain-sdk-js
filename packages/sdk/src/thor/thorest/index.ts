@@ -11,4 +11,3 @@ export * from './utils';
 export * from './ThorError';
 export type * from './ThorRequest';
 export type * from './ThorResponse';
-export * from './ThorError';

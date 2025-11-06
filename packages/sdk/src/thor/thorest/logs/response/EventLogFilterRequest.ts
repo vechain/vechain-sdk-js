@@ -2,7 +2,7 @@ import {
     FilterOptionsRequest,
     EventCriteriaRequest,
     FilterRangeRequest,
-    type LogSort
+    type LogSortRequest
 } from '@thor/thorest';
 import { type EventLogFilterRequestJSON } from '@thor/thorest/json';
 import { type EventLogFilter } from '@thor/thor-client/model/logs/EventLogFilter';
@@ -33,7 +33,7 @@ class EventLogFilterRequest {
     /**
      * The order of the results.
      */
-    readonly order?: LogSort;
+    readonly order?: LogSortRequest;
 
     /**
      * Constructs an instance of the class.
@@ -47,7 +47,7 @@ class EventLogFilterRequest {
         range?: FilterRangeRequest,
         options?: FilterOptionsRequest,
         criteriaSet?: EventCriteriaRequest[],
-        order?: LogSort
+        order?: LogSortRequest
     ) {
         this.range = range;
         this.options = options;
@@ -74,7 +74,9 @@ class EventLogFilterRequest {
                       EventCriteriaRequest.of(criteria)
                   )
                 : undefined,
-            filter.order ?? undefined
+            filter.order != null
+                ? (filter.order as unknown as LogSortRequest)
+                : undefined
         );
     }
 

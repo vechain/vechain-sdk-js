@@ -1,7 +1,7 @@
 import { Address, HexUInt, Quantity } from '@common/vcdm';
 import { type TransferLogResponseJSON } from '@thor/thorest/json';
 import { IllegalArgumentError } from '@common/errors';
-import { LogMetaResponse } from './LogMeta';
+import { LogMetaResponse } from '@thor/thorest/logs';
 
 /**
  * Full-Qualified-Path
