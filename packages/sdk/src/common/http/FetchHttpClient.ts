@@ -217,10 +217,11 @@ class FetchHttpClient implements HttpClient {
                     signal: abortSignal?.signal ?? null
                 };
                 const request = new RequestClass(pathUrl, requestInit);
+                const requestClone = request.clone();
                 const response = await this.fetchFunction(
                     this.options.onRequest?.(request) ?? request
                 );
-                await this.logResponse(request, response);
+                await this.logResponse(requestClone, response);
 
                 // Check for non-200 responses and raise HttpException
                 if (!response.ok) {
@@ -351,10 +352,11 @@ class FetchHttpClient implements HttpClient {
                     signal: abortSignal?.signal ?? null
                 };
                 const request = new RequestClass(pathUrl, requestInit);
+                const requestClone = request.clone();
                 const response = await this.fetchFunction(
                     this.options.onRequest?.(request) ?? request
                 );
-                await this.logResponse(request, response);
+                await this.logResponse(requestClone, response);
 
                 // Check for non-200 responses and raise HttpException
                 if (!response.ok) {
@@ -454,15 +456,14 @@ class FetchHttpClient implements HttpClient {
 
     /**
      * Logs the request and response details.
-     * @param request - The request to log.
+     * @param requestClone - The already cloned request to log.
      * @param response - The response to log.
      */
     private async logResponse(
-        request: Request,
+        requestClone: Request,
         response: Response
     ): Promise<void> {
         try {
-            const requestClone = request != null ? request.clone() : undefined;
             const responseClone =
                 response != null ? response.clone() : undefined;
             const requestDetails = {

@@ -3,9 +3,9 @@
 // @ts-nocheck
 import { describe, expect, test, jest } from '@jest/globals';
 import {
-    ContractFactory,
-    ContractsModule
+    ContractFactory
 } from '../../../../src/thor/thor-client/contracts';
+import { ThorClient } from '../../../../src/thor/thor-client/ThorClient';
 import { Address } from '../../../../src/common/vcdm';
 import { IllegalArgumentError } from '../../../../src/common/errors';
 
@@ -32,6 +32,9 @@ const createMockHttpClient = () => ({
     put: jest.fn(),
     delete: jest.fn()
 });
+
+// Helper to create ThorClient for tests
+const createThorClient = () => ThorClient.at(createMockHttpClient() as any);
 
 // Mock signer
 const createMockSigner = () => ({
@@ -81,8 +84,7 @@ const testBytecode =
  * @group unit/contracts/factory
  */
 describe.skip('ContractFactory', () => {
-    const mockHttpClient = createMockHttpClient();
-    const contractsModule = new ContractsModule(mockHttpClient);
+    const thorClient = createThorClient();
     const signer = createMockSigner();
 
     describe('Constructor and Basic Properties', () => {
@@ -91,7 +93,7 @@ describe.skip('ContractFactory', () => {
                 testContractAbi,
                 testBytecode,
                 signer,
-                contractsModule
+                thorClient.contracts
             );
 
             expect(factory).toBeInstanceOf(ContractFactory);

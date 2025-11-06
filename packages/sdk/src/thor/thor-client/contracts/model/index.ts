@@ -13,7 +13,6 @@ export type { VET, VTHO } from './tokens';
 export { ABI, ABIItem, ABIFunction, ABIEvent, ABIContract } from './ABI';
 export { Clause } from '@thor/thor-client/model/transactions/Clause';
 export { ContractFilter } from './ContractFilter';
-export type { SendTransactionResult } from './SendTransactionResult';
 export type { ClauseOptions } from './ClauseOptions';
 export type { ContractClauseOptions } from './ContractClauseOptions';
 export type { ClauseComment } from './ClauseComment';

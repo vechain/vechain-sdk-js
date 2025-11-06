@@ -3,9 +3,9 @@
 // @ts-nocheck
 import { describe, expect, test, jest } from '@jest/globals';
 import {
-    Contract,
-    ContractsModule
+    Contract
 } from '../../../../src/thor/thor-client/contracts';
+import { ThorClient } from '../../../../src/thor/thor-client/ThorClient';
 import { Address } from '../../../../src/common/vcdm';
 
 // Mock HttpClient
@@ -31,6 +31,9 @@ const createMockHttpClient = () => ({
     put: jest.fn(),
     delete: jest.fn()
 });
+
+// Helper to create ThorClient for tests
+const createThorClient = () => ThorClient.at(createMockHttpClient() as any);
 
 // Mock signer
 const createMockSigner = () => ({
@@ -125,7 +128,7 @@ describe.skip('Write-Only Contract', () => {
     describe('Constructor and Basic Properties', () => {
         test('Should create write-only contract instance', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const signer = createMockSigner();
 
             const contract = new Contract(
@@ -143,7 +146,7 @@ describe.skip('Write-Only Contract', () => {
 
         test('Should create write-only contract without signer', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
 
             const contract = new Contract(
                 contractAddress,
@@ -158,7 +161,7 @@ describe.skip('Write-Only Contract', () => {
     describe('Transact Methods Initialization', () => {
         test('Should initialize transact methods for nonpayable functions', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 writeOnlyContractAbi,
@@ -179,7 +182,7 @@ describe.skip('Write-Only Contract', () => {
 
         test('Should initialize transact methods for payable functions', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 writeOnlyContractAbi,
@@ -196,7 +199,7 @@ describe.skip('Write-Only Contract', () => {
 
         test('Should NOT initialize read methods for write-only contract', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 writeOnlyContractAbi,
@@ -211,7 +214,7 @@ describe.skip('Write-Only Contract', () => {
     describe('Transact Method Execution', () => {
         test('Should execute nonpayable function with parameters', async () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const signer = createMockSigner();
             const contract = new Contract(
                 contractAddress,
@@ -229,7 +232,7 @@ describe.skip('Write-Only Contract', () => {
 
         test('Should execute nonpayable function with single parameter', async () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const signer = createMockSigner();
             const contract = new Contract(
                 contractAddress,
@@ -246,7 +249,7 @@ describe.skip('Write-Only Contract', () => {
 
         test('Should execute payable function with parameters', async () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const signer = createMockSigner();
             const contract = new Contract(
                 contractAddress,
@@ -264,7 +267,7 @@ describe.skip('Write-Only Contract', () => {
 
         test('Should execute payable function without parameters', async () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const signer = createMockSigner();
             const contract = new Contract(
                 contractAddress,
@@ -280,7 +283,7 @@ describe.skip('Write-Only Contract', () => {
 
         test('Should execute function with array parameters', async () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const signer = createMockSigner();
             const contract = new Contract(
                 contractAddress,
@@ -306,7 +309,7 @@ describe.skip('Write-Only Contract', () => {
     describe('Clause Building for Write Functions', () => {
         test('Should build clause for nonpayable function', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 writeOnlyContractAbi,
@@ -327,7 +330,7 @@ describe.skip('Write-Only Contract', () => {
 
         test('Should build clause for payable function', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 writeOnlyContractAbi,
@@ -348,7 +351,7 @@ describe.skip('Write-Only Contract', () => {
 
         test('Should build clause for function without parameters', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 writeOnlyContractAbi,
@@ -367,7 +370,7 @@ describe.skip('Write-Only Contract', () => {
 
         test('Should build clause with value for payable function', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 writeOnlyContractAbi,
@@ -391,7 +394,7 @@ describe.skip('Write-Only Contract', () => {
     describe('Event Filtering for Write Functions', () => {
         test('Should create event filter for Transfer event', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 writeOnlyContractAbi,
@@ -412,7 +415,7 @@ describe.skip('Write-Only Contract', () => {
 
         test('Should create event criteria for Approval event', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 writeOnlyContractAbi,
@@ -434,7 +437,7 @@ describe.skip('Write-Only Contract', () => {
     describe('Contract Options for Write Operations', () => {
         test('Should set and get transaction options', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 writeOnlyContractAbi,
@@ -457,7 +460,7 @@ describe.skip('Write-Only Contract', () => {
 
         test('Should clear transaction options', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 writeOnlyContractAbi,
@@ -472,7 +475,7 @@ describe.skip('Write-Only Contract', () => {
 
         test('Should use transaction options in method calls', async () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const signer = createMockSigner();
             const contract = new Contract(
                 contractAddress,
@@ -503,7 +506,7 @@ describe.skip('Write-Only Contract', () => {
     describe('Error Handling for Write Operations', () => {
         test('Should throw error for transact without signer', async () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 writeOnlyContractAbi,
@@ -523,7 +526,7 @@ describe.skip('Write-Only Contract', () => {
 
         test('Should handle invalid function calls gracefully', async () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const signer = createMockSigner();
             const contract = new Contract(
                 contractAddress,
@@ -545,7 +548,7 @@ describe.skip('Write-Only Contract', () => {
     describe('VeChain SDK Integration for Write Operations', () => {
         test('Should work with ContractsModule for write operations', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 writeOnlyContractAbi,
@@ -559,7 +562,7 @@ describe.skip('Write-Only Contract', () => {
 
         test('Should maintain reference to signer for write operations', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const signer = createMockSigner();
             const contract = new Contract(
                 contractAddress,
@@ -575,7 +578,7 @@ describe.skip('Write-Only Contract', () => {
     describe('Write-Only Contract Specific Features', () => {
         test('Should not have any read methods', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 writeOnlyContractAbi,
@@ -589,7 +592,7 @@ describe.skip('Write-Only Contract', () => {
 
         test('Should have all transact methods for all functions', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 writeOnlyContractAbi,
@@ -614,7 +617,7 @@ describe.skip('Write-Only Contract', () => {
 
         test('Should have clause methods for all functions', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 writeOnlyContractAbi,
@@ -639,7 +642,7 @@ describe.skip('Write-Only Contract', () => {
 
         test('Should have filter and criteria methods for all events', () => {
             const mockHttpClient = createMockHttpClient();
-            const contractsModule = new ContractsModule(mockHttpClient);
+            const thorClient = createThorClient();
             const contract = new Contract(
                 contractAddress,
                 writeOnlyContractAbi,

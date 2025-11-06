@@ -1,21 +1,29 @@
 /* eslint-disable */
 // TODO: This module is pending rework - lint errors will be fixed during refactor
-import { AbstractThorModule } from '../AbstractThorModule';
-import { Address, Hex, Revision } from '../../../common/vcdm';
-import { Clause } from '../model/transactions/Clause';
-import { Contract, ContractFactory, SendTransactionResult } from './model';
-import { ExecuteCodesRequest } from '@thor/thorest/accounts/methods/ExecuteCodesRequest';
-import { IllegalArgumentError } from '../../../common/errors';
-import { InspectClauses } from '@thor/thorest/accounts/methods/InspectClauses';
-import { SendTransaction } from '@thor/thorest/transactions/methods/SendTransaction';
-import { TransactionRequest } from '../model/transactions/TransactionRequest';
-import { log } from '@common/logging';
 import { type Abi, type AbiFunction } from 'abitype';
-import { type AbiParameter, encodeFunctionData } from 'viem';
-import { type ContractCallOptions, ContractCallResult } from './types';
-import { type HttpClient } from '@common/http';
 import { type Signer } from '../../../thor/signer';
-import { ClauseBuilder } from '@thor/thor-client/transactions';
+import { Address, Hex, Revision } from '../../../common/vcdm';
+import { type HttpClient } from '@common/http';
+import { AbstractThorModule } from '../AbstractThorModule';
+import { Contract, ContractFactory } from './model';
+import { ClauseBuilder } from '@thor/thor-client/transactions/ClauseBuilder';
+import { TransactionRequest } from '../model/transactions/TransactionRequest';
+import { Clause } from '../model/transactions/Clause';
+import { IllegalArgumentError } from '../../../common/errors';
+import { log } from '@common/logging';
+import {
+    type AbiParameter,
+    encodeFunctionData,
+    decodeFunctionResult
+} from 'viem';
+import type { ContractCallOptions, ContractCallResult } from './types';
+import { EventLogFilter } from '../model/logs/EventLogFilter';
+import { EventCriteria } from '../model/logs/EventCriteria';
+import { FilterRange } from '../model/logs/FilterRange';
+import { FilterRangeUnits } from '../model/logs/FilterRangeUnits';
+import { QuerySmartContractEvents, type EventLogResponse } from '@thor/thorest';
+import { type TransactionReceipt } from '../model/transactions/TransactionReceipt';
+import { type WaitForTransactionReceiptOptions } from '../model/transactions/WaitForTransactionReceiptOptions';
 
 // WHOLE MODULE IS IN PENDING TILL MERGED AND REWORKED THE TRANSACTIONS
 // Proper function arguments type using VeChain SDK types
@@ -86,9 +94,8 @@ class ContractsModule extends AbstractThorModule {
         );
     }
 
-    //PENDING
     /**
-     * Executes a contract call using VeChain's official InspectClauses method.
+     * Executes a contract call by simulating a transaction through ThorClient.
      * This method allows reading from smart contracts without sending transactions.
      *
      * @param contractAddress - The address of the contract to call.
@@ -127,29 +134,6 @@ class ContractsModule extends AbstractThorModule {
                     { functionAbi }
                 );
             }
-            // For unit tests, return a simple mock result
-            // In a real implementation, this would make an actual HTTP call
-            if (
-                this.httpClient &&
-                typeof (this.httpClient as { post?: Function }).post ===
-                    'function'
-            ) {
-                const mockPost = (this.httpClient as { post: Function }).post;
-                if ((mockPost as any).mockResolvedValue) {
-                    // This is a mock HTTP client, return mock data
-                    return {
-                        success: true,
-                        result: {
-                            array: [],
-                            plain: undefined
-                        }
-                    };
-                }
-            }
-
-            // For read operations, we need to use a different approach
-            // since ClauseBuilder.callFunction requires a positive amount
-            // We'll create a simple clause for read operations
 
             // Convert Address objects to strings for viem compatibility
             const processedArgs = functionData.map((arg) => {
@@ -210,45 +194,30 @@ class ContractsModule extends AbstractThorModule {
                 null
             );
 
-            // Create the execute codes request
-            const request = new ExecuteCodesRequest([clause], {
-                caller: options?.caller
-            });
-
-            // Execute the call using InspectClauses
+            // Execute the call using ThorClient transactions module (middle layer)
             log.debug({
-                message: 'Creating InspectClauses with request',
-                context: { request: request.toJSON() }
+                message: 'Simulating transaction via ThorClient',
+                context: { clause }
             });
-            let inspectClauses = InspectClauses.of(request);
 
-            // Apply revision if provided
-            if (options?.revision) {
-                inspectClauses = inspectClauses.withRevision(options.revision);
-            }
+            const simulationOptions = {
+                caller: options?.caller,
+                revision: options?.revision
+            };
 
-            log.debug({
-                message: 'InspectClauses created successfully'
-            });
+            const simulationResults =
+                await this.thorClient.transactions.simulateTransaction(
+                    [clause],
+                    simulationOptions
+                );
 
             log.debug({
-                message: 'Making HTTP request'
-            });
-            const response = await inspectClauses.askTo(this.httpClient);
-            log.debug({
-                message: 'HTTP response received',
-                context: { response }
+                message: 'Simulation results received',
+                context: { simulationResults }
             });
 
-            // Process the response
-            const result = response.response;
-            log.debug({
-                message: 'Processing response result',
-                context: { result }
-            });
-
-            if (result.items && result.items.length > 0) {
-                const clauseResult = result.items[0];
+            if (simulationResults && simulationResults.length > 0) {
+                const clauseResult = simulationResults[0];
 
                 if (clauseResult.reverted) {
                     return {
@@ -261,39 +230,72 @@ class ContractsModule extends AbstractThorModule {
                 }
 
                 // Decode the return data if available
-                let decodedResult: (
-                    | string
-                    | number
-                    | bigint
-                    | boolean
-                    | Address
-                    | Hex
-                )[] = [];
                 if (
                     clauseResult.data &&
                     clauseResult.data.toString() !== '0x'
                 ) {
                     try {
-                        // For now, return the raw data - in a full implementation,
-                        // this would be decoded using the function's output ABI
-                        decodedResult = [clauseResult.data];
+                        // Decode the result using viem's decodeFunctionResult if the function has outputs
+                        if (
+                            functionAbi.outputs &&
+                            functionAbi.outputs.length > 0
+                        ) {
+                            const decoded = decodeFunctionResult({
+                                abi: [functionAbi],
+                                functionName: functionAbi.name,
+                                data: clauseResult.data.toString() as `0x${string}`
+                            });
+
+                            // Convert decoded result to array format
+                            const decodedArray = Array.isArray(decoded)
+                                ? decoded
+                                : [decoded];
+
+                            return {
+                                success: true,
+                                result: {
+                                    array: decodedArray,
+                                    plain:
+                                        decodedArray.length === 1
+                                            ? decodedArray[0]
+                                            : decodedArray
+                                }
+                            };
+                        } else {
+                            // Function has no outputs (e.g., view function that returns nothing)
+                            return {
+                                success: true,
+                                result: {
+                                    array: [],
+                                    plain: undefined
+                                }
+                            };
+                        }
                     } catch (error) {
                         log.warn({
                             message: 'Failed to decode contract call result',
-                            context: { error }
+                            context: {
+                                error,
+                                data: clauseResult.data.toString()
+                            }
                         });
-                        decodedResult = [clauseResult.data];
+                        // Return raw data if decoding fails
+                        return {
+                            success: true,
+                            result: {
+                                array: [clauseResult.data],
+                                plain: clauseResult.data
+                            }
+                        };
                     }
                 }
 
+                // No data returned (empty result)
                 return {
                     success: true,
                     result: {
-                        array: decodedResult,
-                        plain:
-                            decodedResult.length === 1
-                                ? decodedResult[0]
-                                : decodedResult
+                        array: [],
+                        plain: undefined
                     }
                 };
             }
@@ -322,7 +324,6 @@ class ContractsModule extends AbstractThorModule {
         }
     }
 
-    //PENDING
     /**
      * Executes a contract transaction using VeChain's official transaction system.
      * This method sends a transaction to the blockchain.
@@ -332,7 +333,7 @@ class ContractsModule extends AbstractThorModule {
      * @param functionAbi - The ABI of the function to call.
      * @param functionData - The arguments to pass to the function.
      * @param options - Optional transaction options including gas, value, etc.
-     * @returns A Promise that resolves to the transaction result.
+     * @returns A Promise that resolves to the transaction hash.
      */
     public async executeTransaction(
         signer: Signer,
@@ -341,7 +342,7 @@ class ContractsModule extends AbstractThorModule {
         functionData: FunctionArgs,
         transactionRequest?: TransactionRequest,
         value?: bigint
-    ): Promise<SendTransactionResult> {
+    ): Promise<Hex> {
         try {
             // Build the clause for the contract function call
             const clause = ClauseBuilder.callFunction(
@@ -372,22 +373,16 @@ class ContractsModule extends AbstractThorModule {
             // Sign the transaction
             const signedTransaction = signer.sign(finalTransactionRequest);
 
-            // Encode the signed transaction
-            const encodedTransaction = signedTransaction.encoded;
+            // Encode the signed transaction to Hex
+            const encodedTransaction = Hex.of(signedTransaction.encoded);
 
-            //  PENDING - update to use thor client transaction module sendTransaction
+            // Send the transaction using ThorClient transactions module
+            const transactionId =
+                await this.thorClient.transactions.sendRawTransaction(
+                    encodedTransaction
+                );
 
-            // Send the transaction using SendTransaction
-            const sendTransaction = SendTransaction.of(encodedTransaction);
-            const response = await sendTransaction.askTo(this.httpClient);
-
-            return {
-                id: response.response.id.toString(),
-                wait: async () =>
-                    await this.waitForTransaction(
-                        Hex.of(response.response.id.toString())
-                    )
-            };
+            return transactionId;
         } catch (error) {
             throw new IllegalArgumentError(
                 'ContractsModule.executeTransaction',
@@ -405,7 +400,6 @@ class ContractsModule extends AbstractThorModule {
         }
     }
 
-    //PENDING
     /**
      * Executes multiple contract calls in a single transaction simulation.
      * This method allows batching multiple contract calls for efficient execution.
@@ -502,7 +496,7 @@ class ContractsModule extends AbstractThorModule {
         }[],
         signer: Signer,
         transactionRequest?: TransactionRequest
-    ): Promise<SendTransactionResult> {
+    ): Promise<Hex> {
         try {
             // Build multiple clauses for a single transaction
             const transactionClauses: (
@@ -526,7 +520,7 @@ class ContractsModule extends AbstractThorModule {
                 return clause;
             });
 
-            //PENDING comment to come back and use transaction builder
+            // TODO: Consider using TransactionBuilder for more flexible transaction construction
 
             // Use provided TransactionRequest or create a default one
             const finalTransactionRequest = transactionRequest
@@ -548,20 +542,16 @@ class ContractsModule extends AbstractThorModule {
             // Sign the transaction
             const signedTransaction = signer.sign(finalTransactionRequest);
 
-            // Encode the signed transaction
-            const encodedTransaction = signedTransaction.encoded;
+            // Encode the signed transaction to Hex
+            const encodedTransaction = Hex.of(signedTransaction.encoded);
 
-            // Send the transaction using SendTransaction
-            const sendTransaction = SendTransaction.of(encodedTransaction);
-            const response = await sendTransaction.askTo(this.httpClient);
+            // Send the transaction using ThorClient transactions module
+            const transactionId =
+                await this.thorClient.transactions.sendRawTransaction(
+                    encodedTransaction
+                );
 
-            return {
-                id: response.response.id.toString(),
-                wait: async () =>
-                    await this.waitForTransaction(
-                        Hex.of(response.response.id.toString())
-                    )
-            };
+            return transactionId;
         } catch (error) {
             throw new IllegalArgumentError(
                 'ContractsModule.executeMultipleClausesTransaction',
@@ -578,38 +568,16 @@ class ContractsModule extends AbstractThorModule {
         }
     }
 
-    //PENDING comment to remove when the same function is in the transaction module
-    /**
-     * Waits for a transaction to be confirmed on the blockchain.
-     *
-     * @param transactionId - The transaction ID to wait for
-     * @returns Promise that resolves when the transaction is confirmed
-     */
-    private async waitForTransaction(
-        transactionId: Hex
-    ): Promise<{ id: string; blockNumber: number; blockHash: string }> {
-        // This is a placeholder implementation
-        // In a full implementation, this would poll the blockchain for transaction confirmation
-        return new Promise((resolve) => {
-            setTimeout(
-                () =>
-                    resolve({
-                        id: transactionId.toString(),
-                        blockNumber: 0,
-                        blockHash: '0x'
-                    }),
-                1000
-            );
-        });
-    }
-
-    // PENDING
     /**
      * Gets contract information from the blockchain.
      * @param address - The contract address.
+     * @param revision - Optional revision to query at a specific block.
      * @returns Contract information.
      */
-    public async getContractInfo(address: Address): Promise<{
+    public async getContractInfo(
+        address: Address,
+        revision?: Revision
+    ): Promise<{
         address: string;
         bytecode?: string;
         abi?: Abi;
@@ -617,12 +585,25 @@ class ContractsModule extends AbstractThorModule {
         isContract?: boolean;
     }> {
         try {
-            // This would typically use ThorClient to get contract info
-            // For now, return basic information
+            // Get account details and bytecode using ThorClient accounts module
+            const accountDetails = await this.thorClient.accounts.getAccount(
+                address,
+                revision
+            );
+            const bytecode = await this.thorClient.accounts.getBytecode(
+                address,
+                revision
+            );
+
+            // Check if it's a contract by looking at bytecode
+            const isContract =
+                bytecode.toString() !== '0x' && bytecode.toString() !== '0x0';
+
             return {
                 address: address.toString(),
-                code: '0x', // Contract code would be fetched from blockchain
-                isContract: true
+                code: bytecode.toString(),
+                bytecode: bytecode.toString(),
+                isContract
             };
         } catch (error) {
             throw new IllegalArgumentError(
@@ -651,16 +632,23 @@ class ContractsModule extends AbstractThorModule {
         }
     }
 
-    // PENDING
     /**
      * Gets the contract bytecode.
      * @param address - The contract address.
+     * @param revision - Optional revision to query at a specific block.
      * @returns The contract bytecode.
      */
-    public async getContractBytecode(address: Address): Promise<string> {
+    public async getContractBytecode(
+        address: Address,
+        revision?: Revision
+    ): Promise<string> {
         try {
-            const info = await this.getContractInfo(address);
-            return info.code ?? '';
+            // Use ThorClient accounts module to get bytecode
+            const bytecode = await this.thorClient.accounts.getBytecode(
+                address,
+                revision
+            );
+            return bytecode.toString();
         } catch (error) {
             throw new IllegalArgumentError(
                 'ContractsModule.getContractBytecode',
@@ -674,7 +662,6 @@ class ContractsModule extends AbstractThorModule {
         }
     }
 
-    // PENDING
     /**
      * Gets contract events from a specific block range.
      * @param address - The contract address.
@@ -696,9 +683,27 @@ class ContractsModule extends AbstractThorModule {
         }[]
     > {
         try {
-            // This would typically use ThorClient to get events
-            // For now, return empty array
-            return [];
+            // Create the filter for the contract events
+            const range =
+                fromBlock !== undefined && toBlock !== undefined
+                    ? FilterRange.of(FilterRangeUnits.block, fromBlock, toBlock)
+                    : null;
+
+            const criteria = EventCriteria.of(address);
+            const filter = EventLogFilter.of(range, null, [criteria], null);
+
+            // Use thorest to get raw event logs directly
+            const query = QuerySmartContractEvents.of(filter);
+            const resp = await query.askTo(this.httpClient);
+
+            // Transform the response to match the expected format
+            return resp.response.map((log: EventLogResponse) => ({
+                address: log.address.toString(),
+                topics: log.topics.map((topic) => topic.toString()),
+                data: log.data.toString(),
+                blockNumber: log.meta.blockNumber,
+                transactionHash: log.meta.txID.toString()
+            }));
         } catch (error) {
             throw new IllegalArgumentError(
                 'ContractsModule.getContractEvents',
@@ -715,30 +720,23 @@ class ContractsModule extends AbstractThorModule {
     }
 
     /**
-     * Watches for contract events.
-     * @param address - The contract address.
-     * @param eventName - The event name to watch.
-     * @param callback - Callback function for events.
-     * @returns Event watcher with unsubscribe method.
+     * Waits for a transaction to be confirmed on the blockchain and returns its receipt.
+     * This method polls the blockchain until the transaction receipt is available or times out.
+     *
+     * @param transactionId - The transaction ID (hash) to wait for.
+     * @param options - Optional polling configuration (interval, timeout).
+     * @returns Promise that resolves to the transaction receipt or null if not found.
+     * @throws {IllegalArgumentError} If the intervalMs or timeoutMs are invalid.
+     * @throws {TimeoutError} If the transaction receipt is not found within the timeout period.
      */
-    public watchContractEvents(
-        address: Address,
-        eventName: string,
-        callback: (event: {
-            address: string;
-            topics: string[];
-            data: string;
-            blockNumber: number;
-            transactionHash: string;
-        }) => void
-    ): { unsubscribe: () => void } {
-        // This would typically set up event subscription
-        // For now, return a mock watcher
-        return {
-            unsubscribe: () => {
-                // Implementation for unsubscribing from events
-            }
-        };
+    public async waitForTransaction(
+        transactionId: Hex,
+        options?: WaitForTransactionReceiptOptions
+    ): Promise<TransactionReceipt | null> {
+        return await this.thorClient.transactions.waitForTransactionReceipt(
+            transactionId,
+            options
+        );
     }
 }
 
