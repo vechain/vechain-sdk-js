@@ -293,7 +293,7 @@ class PublicClient {
         // viem specific
         const thorClient = ThorClient.at(this.httpClient);
         const gasModule = thorClient.gas;
-        const gas = await gasModule.suggestPriorityFeeRequest();
+        const gas = await gasModule.getSuggestedMaxPriorityFeePerGas();
         return gas;
     }
 

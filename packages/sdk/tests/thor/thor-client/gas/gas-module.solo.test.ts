@@ -359,14 +359,6 @@ describe('GasModule Solo Tests', () => {
         });
     });
 
-    describe('suggestPriorityFeeRequest', () => {
-        test('should suggest priority fee request', async () => {
-            const result = await gasModule.suggestPriorityFeeRequest();
-            expect(typeof result).toBe('bigint');
-            expect(result).toBeGreaterThanOrEqual(0n);
-        });
-    });
-
     describe('computeMaxFeePrices', () => {
         test('should compute max fee prices', async () => {
             const result = await gasModule.computeMaxFeePrices();
