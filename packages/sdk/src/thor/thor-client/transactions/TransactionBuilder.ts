@@ -64,7 +64,7 @@ class TransactionBuilder {
         this.buildTasks = [];
         log.debug({
             message: 'TransactionBuilder created',
-            context: { thorClient }
+            context: { thorClient: this.thorClient.httpClient.baseURL }
         });
     }
 
