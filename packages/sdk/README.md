@@ -35,7 +35,7 @@ If you want to contribute to this project please read the [Contributing guide](.
 
 ## License
 
-This project is licensed under the [MIT license](./.github/LICENSE.md).
+This project is licensed under the [MIT license](./LICENSE).
 
 ## Contact information
 
