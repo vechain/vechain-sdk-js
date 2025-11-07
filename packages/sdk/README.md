@@ -31,7 +31,7 @@ yarn test:examples
 
 ## Contributing
 
-If you want to contribute to this project please read the [Contributing guide](./.github/CONTRIBUTING.md) before submitting a pull request.
+If you want to contribute to this project please read the [Contributing guide](../../.github/CONTRIBUTING.md) before submitting a pull request.
 
 ## License
 
