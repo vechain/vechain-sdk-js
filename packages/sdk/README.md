@@ -11,7 +11,7 @@
 - Use of BigInt rather than BigNumber libraries
 - Infer typescript types from ABIs
 - Thor-Client for interacting with Thor
-- Viem style PublicClient and WalletClient for Viem style useage
+- Viem style PublicClient and WalletClient for Viem style usage
 
 
 ## Installation
