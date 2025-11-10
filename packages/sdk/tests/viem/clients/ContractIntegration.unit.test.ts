@@ -47,6 +47,7 @@ const mockContractAbi = [
 const createMockPublicClient = (): PublicClient =>
     ({
         thorNetworks: 'SOLONET',
+        network: 'https://testnet.vechain.org',
         call: jest.fn(),
         simulateCalls: jest.fn(),
         estimateGas: jest.fn(),
@@ -58,6 +59,7 @@ const createMockPublicClient = (): PublicClient =>
 const createMockWalletClient = (): WalletClient =>
     ({
         thorNetworks: 'SOLONET',
+        network: 'https://testnet.vechain.org',
         account: Address.of('0x1234567890123456789012345678901234567890'),
         sendTransaction: jest.fn()
     }) as any;
@@ -66,8 +68,9 @@ const createMockWalletClient = (): WalletClient =>
  * @group unit/viem
  */
 describe('Contract Viem Integration', () => {
+    // Use a valid non-zero address for testing
     const contractAddress = Address.of(
-        '0x0000000000000000000000000000000000000000'
+        '0x0000000000000000000000000000456E65726779'
     );
 
     describe('getContract Function', () => {
@@ -243,17 +246,16 @@ describe('Contract Viem Integration', () => {
     });
 
     describe('Error Handling', () => {
-        test('Should handle empty ABI', () => {
+        test('Should reject empty ABI', () => {
             const emptyAbi = [] as const;
             const publicClient = createMockPublicClient();
-            const contract = getContract({
-                address: contractAddress,
-                abi: emptyAbi,
-                publicClient
-            });
-            expect(contract.abi).toEqual(emptyAbi);
-            expect(Object.keys(contract.read)).toHaveLength(0);
-            expect(Object.keys(contract.write)).toHaveLength(0);
+            expect(() => {
+                getContract({
+                    address: contractAddress,
+                    abi: emptyAbi,
+                    publicClient
+                });
+            }).toThrow('Contract ABI cannot be empty');
         });
 
         test('Should handle malformed ABI gracefully', () => {
@@ -329,14 +331,14 @@ describe('Contract Viem Integration', () => {
         });
 
         test('Should handle string addresses', () => {
-            const stringAddress = '0x0000000000000000000000000000000000000000';
+            const stringAddress = '0x0000000000000000000000000000456E65726779';
             const publicClient = createMockPublicClient();
             const contract = getContract({
                 address: stringAddress,
                 abi: mockContractAbi,
                 publicClient
             });
-            expect(contract.address).toBe(stringAddress);
+            expect(contract.address.toString()).toBe(stringAddress);
         });
     });
 

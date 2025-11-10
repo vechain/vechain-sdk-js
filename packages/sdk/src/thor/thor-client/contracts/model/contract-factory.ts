@@ -13,7 +13,8 @@ import { Clause } from '@thor';
 import { ClauseBuilder } from '@thor/thor-client/transactions';
 
 // Proper function arguments type using VeChain SDK types
-type FunctionArgs = AbiParameter[];
+// Type alias for function arguments (runtime values, not ABI definitions)
+type FunctionArgs = readonly unknown[];
 
 /**
  * A factory class for deploying smart contracts to the blockchain.
