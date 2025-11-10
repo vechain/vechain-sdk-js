@@ -287,7 +287,7 @@ class ABIFunction<
         try {
             return encodeAbiParameters(
                 this._abi as readonly AbiParameter[],
-                args as readonly AbiParameter[]
+                args
             );
         } catch (error) {
             throw new IllegalArgumentError(
