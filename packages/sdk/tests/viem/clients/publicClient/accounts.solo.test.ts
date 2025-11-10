@@ -1,8 +1,8 @@
 import { describe, expect, test } from '@jest/globals';
 import { createPublicClient } from '@viem/clients';
-import { ThorNetworks } from '@thor/thorest';
 import { Address } from '@common/vcdm';
 import { log } from '@common/logging';
+import { ThorNetworks } from '@thor/utils/const/network';
 
 /**
  * Test suite for PublicClient account-related functionality

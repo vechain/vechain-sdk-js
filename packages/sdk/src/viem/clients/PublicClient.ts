@@ -6,11 +6,11 @@ import {
     EventsSubscription,
     NewTransactionSubscription,
     type SubscriptionEventResponse,
-    type ThorNetworks,
     type TransfersSubscription
 } from '@thor/thorest';
 import type { TXID } from '@thor/thorest/transactions';
 import { MozillaWebSocketClient, type WebSocketListener } from '@thor/ws';
+import type { ThorNetworks } from '@thor/utils/const';
 import {
     BlockNotFoundError,
     TransactionNotFoundError,

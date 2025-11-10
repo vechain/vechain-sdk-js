@@ -7,13 +7,13 @@ import {
 import { PrivateKeySigner } from '@thor/signer';
 import { Address, Hex, HexUInt, Revision } from '@common/vcdm';
 import { FetchHttpClient } from '@common/http';
-import { ThorNetworks } from '@thor/thorest';
 import { RetrieveExpandedBlock } from '@thor/thorest/blocks';
 import {
     RetrieveTransactionReceipt,
     SendTransaction
 } from '@thor/thorest/transactions';
 import { ThorClient } from '@thor/thor-client/ThorClient';
+import { ThorNetworks } from '@thor/utils/const/network';
 
 /**
  * @group solo

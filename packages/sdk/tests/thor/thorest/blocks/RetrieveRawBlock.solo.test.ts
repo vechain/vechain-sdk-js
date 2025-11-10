@@ -1,13 +1,9 @@
 import { Revision } from '@common/vcdm';
 import { FetchHttpClient } from '@common/http';
-import {
-    RawBlockResponse,
-    RetrieveRawBlock,
-    ThorError,
-    ThorNetworks
-} from '@thor/thorest';
+import { RawBlockResponse, RetrieveRawBlock } from '@thor/thorest';
 import { expect } from '@jest/globals';
 import { type RawBlockJSON } from '@thor/thorest/json';
+import { ThorNetworks } from '@thor/utils/const/network';
 
 /**
  * @group solo/thor/blocks

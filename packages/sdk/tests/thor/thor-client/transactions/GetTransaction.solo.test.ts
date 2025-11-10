@@ -1,7 +1,7 @@
 import { FetchHttpClient, Hex } from '@common';
 import { describe, expect, test } from '@jest/globals';
 import { ThorClient } from '@thor/thor-client';
-import { ThorNetworks } from '@thor/thorest/utils';
+import { ThorNetworks } from '@thor/utils/const/network';
 import { getConfigData } from '@vechain/sdk-solo-setup';
 
 /**

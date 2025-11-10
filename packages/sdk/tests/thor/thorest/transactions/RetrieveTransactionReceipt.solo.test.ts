@@ -5,9 +5,9 @@ import {
     GetTxReceiptResponse,
     type RegularBlockResponse,
     RetrieveRegularBlock,
-    RetrieveTransactionReceipt,
-    ThorNetworks
+    RetrieveTransactionReceipt
 } from '@thor/thorest';
+import { ThorNetworks } from '@thor/utils/const/network';
 
 /**
  * @group solo/thor/transactions

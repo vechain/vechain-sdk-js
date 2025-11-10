@@ -1,9 +1,9 @@
 import { describe, expect, test } from '@jest/globals';
 import { ThorClient } from '@thor/thor-client/ThorClient';
 import { FetchHttpClient } from '@common/http';
-import { ThorNetworks } from '@thor/thorest';
 import { BlockRef, Hex, Revision } from '@common/vcdm';
 import { getConfigData } from '@vechain/sdk-solo-setup';
+import { ThorNetworks } from '@thor/utils/const/network';
 
 const createThorClient = (): ThorClient =>
     ThorClient.at(FetchHttpClient.at(new URL(ThorNetworks.SOLONET)));

@@ -1,12 +1,9 @@
 import { expect } from '@jest/globals';
 import { Revision } from '@common/vcdm';
 import { FetchHttpClient } from '@common/http';
-import {
-    ExpandedBlockResponse,
-    RetrieveExpandedBlock,
-    ThorNetworks
-} from '@thor/thorest';
+import { ExpandedBlockResponse, RetrieveExpandedBlock } from '@thor/thorest';
 import { type ExpandedBlockResponseJSON } from '@thor/thorest/json';
+import { ThorNetworks } from '@thor/utils/const/network';
 
 /**
  * @group solo/thor/blocks

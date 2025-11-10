@@ -3,11 +3,11 @@ import {
     GetTxResponse,
     type RegularBlockResponse,
     RetrieveRegularBlock,
-    RetrieveTransactionByID,
-    ThorNetworks
+    RetrieveTransactionByID
 } from '@thor/thorest';
 import { FetchHttpClient } from '@common/http';
 import { beforeAll, expect } from '@jest/globals';
+import { ThorNetworks } from '@thor/utils/const/network';
 
 /**
  * @group solo/thor/transactions

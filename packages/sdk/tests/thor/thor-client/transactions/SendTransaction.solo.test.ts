@@ -2,9 +2,9 @@ import { Address, FetchHttpClient, Hex, Revision } from '@common';
 import { describe, expect, test } from '@jest/globals';
 import { Clause, ThorClient } from '@thor/thor-client';
 import { TransactionBuilder } from '@thor/thor-client/transactions/TransactionBuilder';
-import { ThorNetworks } from '@thor/thorest/utils';
 import { PrivateKeySigner } from '@thor/signer';
 import { getConfigData } from '@vechain/sdk-solo-setup';
+import { ThorNetworks } from '@thor/utils/const/network';
 
 const soloConfig = getConfigData();
 // Sender is 1st solo account

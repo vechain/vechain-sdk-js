@@ -1,6 +1,5 @@
 import { describe, expect, test, beforeAll } from '@jest/globals';
 import { ThorClient } from '@thor/thor-client/ThorClient';
-import { ThorNetworks } from '@thor/thorest';
 import { FetchHttpClient } from '@common/http';
 import { Address, Hex, Revision } from '@common/vcdm';
 import { GasModule } from '@thor/thor-client/gas/gas-module';
@@ -10,6 +9,7 @@ import {
     type ThorSoloAccount
 } from '@vechain/sdk-solo-setup';
 import { IllegalArgumentError } from '@common/errors';
+import { ThorNetworks } from '@thor/utils/const/network';
 
 /**
  * GasModule solo network tests
